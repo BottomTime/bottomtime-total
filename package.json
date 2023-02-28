@@ -1,0 +1,26 @@
+{
+  "name": "bottomtime",
+  "version": "1.0.0",
+  "description": "BottomTime application",
+  "main": "index.js",
+  "repository": "git@github.com:ChrisCarleton/bottomtime-total.git",
+  "author": "Chris Carleton <mrchriscarleton@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build",
+    "format": "prettier --write --ignore-unknown .",
+    "lint": "lerna run lint",
+    "prepare": "husky install",
+    "test": "lerna run test"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lerna": "^6.4.1",
+    "lint-staged": "^13.1.1",
+    "prettier": "^2.8.4"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}

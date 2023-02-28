@@ -1,0 +1,17 @@
+{
+  "name": "bottomtime-e2e",
+  "version": "1.0.0",
+  "description": "E2E test suite for the BottomTime platform",
+  "main": "src/index.ts",
+  "author": "Chris Carleton <mrchriscarleton@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "jest": "^29.4.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
