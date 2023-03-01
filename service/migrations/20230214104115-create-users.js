@@ -25,6 +25,19 @@ module.exports = {
         name: 'users_emailLowered',
       },
     );
+    await users.createIndex(
+      {
+        name: 'text',
+        email: 'text',
+      },
+      {
+        weights: {
+          name: 50,
+          email: 10,
+        },
+        name: 'users_text',
+      },
+    );
 
     // 3. Insert a default Admin account so we can sign in and start using the site right away.
     await users.insertOne({

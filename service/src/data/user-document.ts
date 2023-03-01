@@ -9,6 +9,7 @@ export interface UserDocument extends OptionalId<Document> {
   emailVerificationTokenExpiration?: Date;
   isLockedOut: boolean;
   lastLogin?: Date;
+  lastPasswordChange?: Date;
   memberSince: Date;
   passwordHash?: string;
   passwordResetToken?: string;

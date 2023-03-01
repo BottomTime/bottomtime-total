@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { type MongoMemoryServer } from 'mongodb-memory-server';
 
 export default async function (): Promise<void> {

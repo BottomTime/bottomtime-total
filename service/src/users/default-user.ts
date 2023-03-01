@@ -1,3 +1,4 @@
+import { compare, hash } from 'bcrypt';
 import { type Collection, type MongoClient } from 'mongodb';
 import type Logger from 'bunyan';
 import { randomBytes } from 'crypto';
@@ -5,10 +6,14 @@ import { randomBytes } from 'crypto';
 import { assertValid } from '../helpers/validation';
 import { Collections, type UserDocument } from '../data';
 import config from '../config';
-import { type User } from './interfaces';
+import { UserData, type User } from './interfaces';
 import { type UserRole } from '../constants';
 import { ConflictError } from '../errors';
-import { EmailSchema, UsernameSchema } from './validation';
+import {
+  EmailSchema,
+  PasswordStrengthSchema,
+  UsernameSchema,
+} from './validation';
 
 export class DefaultUser implements User {
   private readonly users: Collection<UserDocument>;
@@ -22,7 +27,7 @@ export class DefaultUser implements User {
   }
 
   get id(): string {
-    return this.data.id;
+    return this.data._id?.toString() ?? '';
   }
 
   get username(): string {
@@ -47,6 +52,18 @@ export class DefaultUser implements User {
 
   get isLockedOut(): boolean {
     return this.data.isLockedOut;
+  }
+
+  get memberSince(): Date {
+    return this.data.memberSince;
+  }
+
+  get lastLogin(): Date | undefined {
+    return this.data.lastLogin;
+  }
+
+  get lastPasswordChange(): Date | undefined {
+    return this.data.lastPasswordChange;
   }
 
   async changeUsername(newUsername: string): Promise<void> {
@@ -146,11 +163,10 @@ export class DefaultUser implements User {
   }
 
   async requestEmailVerificationToken(): Promise<string> {
-    const expirationOffset = config.emailTokenTTL * 60000;
+    const expirationOffset = config.tokenTTL * 60000;
     const expiration = new Date(new Date().valueOf() + expirationOffset);
-    const token = randomBytes(16).toString('base64');
+    const token = randomBytes(24).toString('base64url');
 
-    console.log(token);
     await this.users.updateOne(
       { _id: this.data._id },
       {
@@ -167,26 +183,228 @@ export class DefaultUser implements User {
   }
 
   async verifyEmail(token: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+    if (
+      !this.data.emailVerificationToken ||
+      !this.data.emailVerificationTokenExpiration
+    ) {
+      this.log.debug(
+        'Rejecting email verification: No verification token generated.',
+      );
+      return false;
+    }
+
+    if (token !== this.data.emailVerificationToken) {
+      this.log.debug('Rejecting email verification: Incorrect token provided.');
+      return false;
+    }
+
+    if (this.data.emailVerificationTokenExpiration < new Date()) {
+      this.log.debug(
+        'Rejecting email verification: Verification token expired.',
+      );
+      return false;
+    }
+
+    this.log.debug(
+      `Attempting to set emailVerified flag for user: ${this.data.username}`,
+    );
+
+    await this.users.updateOne(
+      { _id: this.data._id },
+      {
+        $set: {
+          emailVerified: true,
+        },
+        $unset: {
+          emailVerificationToken: true,
+          emailVerificationTokenExpiration: true,
+        },
+      },
+    );
+    this.data.emailVerified = true;
+    this.data.emailVerificationToken = undefined;
+    this.data.emailVerificationTokenExpiration = undefined;
+
+    return true;
+  }
+
+  async changePassword(
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<boolean> {
+    this.log.debug(`Attempting to change password for user ${this.username}`);
+
+    assertValid(newPassword, PasswordStrengthSchema);
+
+    if (!this.data.passwordHash) {
+      this.log.debug(
+        'Password change for user rejected because user does not yet have a password set.',
+      );
+      return false;
+    }
+
+    const oldPasswordMatches = await compare(
+      oldPassword,
+      this.data.passwordHash,
+    );
+    if (!oldPasswordMatches) {
+      this.log.debug(
+        'Password change for user rejected because old password was incorrect.',
+      );
+      return false;
+    }
+
+    const passwordHash = await hash(newPassword, config.passwordSaltRounds);
+    const now = new Date();
+
+    await this.users.updateOne(
+      { _id: this.data._id },
+      {
+        $set: {
+          passwordHash,
+          lastPasswordChange: now,
+        },
+      },
+    );
+    this.data.passwordHash = passwordHash;
+    this.data.lastPasswordChange = now;
+
+    return true;
   }
 
   async requestPasswordResetToken(): Promise<string> {
-    throw new Error('Method not implemented.');
+    const token = randomBytes(24).toString('base64url');
+    const expiration = new Date(config.tokenTTL * 60000 + new Date().valueOf());
+
+    this.log.debug(`Attempting to reset password for user: ${this.username}`);
+
+    await this.users.updateOne(
+      { _id: this.data._id },
+      {
+        $set: {
+          passwordResetToken: token,
+          passwordResetTokenExpiration: expiration,
+        },
+      },
+    );
+    this.data.passwordResetToken = token;
+    this.data.passwordResetTokenExpiration = expiration;
+
+    return token;
   }
 
   async resetPassword(token: string, newPassword: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+    this.log.debug(`Attempting to reset password for user: ${this.username}`);
+
+    assertValid(newPassword, PasswordStrengthSchema);
+
+    if (
+      !this.data.passwordResetToken ||
+      !this.data.passwordResetTokenExpiration
+    ) {
+      this.log.debug(
+        'Password reset attempt refused: No reset token has been generated.',
+      );
+      return false;
+    }
+
+    if (token !== this.data.passwordResetToken) {
+      this.log.debug('Password reset attempt refused: Token was incorrect.');
+      return false;
+    }
+
+    if (this.data.passwordResetTokenExpiration < new Date()) {
+      this.log.debug('Password reset attempt refused: Token has expired.');
+      return false;
+    }
+
+    const passwordHash = await hash(newPassword, config.passwordSaltRounds);
+    const now = new Date();
+
+    await this.users.updateOne(
+      { _id: this.data._id },
+      {
+        $set: {
+          passwordHash,
+          lastPasswordChange: now,
+        },
+        $unset: {
+          passwordResetToken: true,
+          passwordResetTokenExpiration: true,
+        },
+      },
+    );
+    this.data.passwordHash = passwordHash;
+    this.data.lastPasswordChange = now;
+    this.data.passwordResetToken = undefined;
+    this.data.passwordResetTokenExpiration = undefined;
+
+    return true;
   }
 
   async forceResetPassword(newPassword: string): Promise<void> {
-    throw new Error('Method not implemented.');
+    this.log.debug(
+      `Attempting to force password reset for user: ${this.username}`,
+    );
+
+    assertValid(newPassword, PasswordStrengthSchema);
+
+    const passwordHash = await hash(newPassword, config.passwordSaltRounds);
+    const now = new Date();
+
+    await this.users.updateOne(
+      { _id: this.data._id },
+      {
+        $set: {
+          passwordHash,
+          lastPasswordChange: now,
+        },
+      },
+    );
+    this.data.passwordHash = passwordHash;
+    this.data.lastPasswordChange = now;
   }
 
   async lockAccount(): Promise<void> {
-    throw new Error('Method not implemented.');
+    await this.setAccountIsLocked(true);
   }
 
   async unlockAccount(): Promise<void> {
-    throw new Error('Method not implemented.');
+    await this.setAccountIsLocked(false);
+  }
+
+  private async setAccountIsLocked(isLocked: boolean): Promise<void> {
+    if (isLocked === this.isLockedOut) return;
+
+    this.log.debug(
+      `Attempting to ${isLocked ? 'lock' : 'unlock'} account for user: ${
+        this.username
+      }`,
+    );
+
+    await this.users.updateOne(
+      { _id: this.data._id },
+      {
+        $set: {
+          isLockedOut: isLocked,
+        },
+      },
+    );
+    this.data.isLockedOut = isLocked;
+  }
+
+  toJSON(): UserData {
+    return {
+      id: this.id,
+      username: this.username,
+      email: this.email,
+      emailVerified: this.emailVerified,
+      hasPassword: this.hasPassword,
+      lastLogin: this.lastLogin,
+      lastPasswordChange: this.lastPasswordChange,
+      isLockedOut: this.isLockedOut,
+      memberSince: this.memberSince,
+      role: this.role,
+    };
   }
 }

@@ -21,5 +21,7 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/no-unused-vars': 1,
     '@typescript-eslint/strict-boolean-expressions': 0,
+    'no-console': 1,
+    'no-process-env': 2,
   },
 };
