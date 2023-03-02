@@ -155,6 +155,18 @@ export class DefaultUserManager implements UserManager {
       return undefined;
     }
 
+    this.log.debug(`Updating lastLogin date for user: ${data.username}`);
+    const now = new Date();
+    await this.users.updateOne(
+      { _id: data._id },
+      {
+        $set: {
+          lastLogin: now,
+        },
+      },
+    );
+    data.lastLogin = now;
+
     return new DefaultUser(this.mongoClient, this.log, data);
   }
 

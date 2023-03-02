@@ -26,6 +26,7 @@ export function fakeUser(
     data?.username ?? faker.internet.userName(firstName, lastName);
 
   const user: UserDocument = {
+    _id: data?._id,
     email,
     emailLowered: data?.emailLowered ?? email.toLowerCase(),
     emailVerified: data?.emailVerified ?? true,

@@ -1,12 +1,41 @@
 /* eslint-disable no-process-env */
 import 'dotenv-defaults/config';
 
-class Config {
-  private toNumber(value: string | undefined, defaultValue: number): number {
-    if (!value) return defaultValue;
-    const parsed = parseInt(value);
-    return isNaN(parsed) ? defaultValue : parsed;
+function toNumber(value: string | undefined, defaultValue: number): number {
+  if (!value) return defaultValue;
+  const parsed = parseInt(value);
+  return isNaN(parsed) ? defaultValue : parsed;
+}
+
+class SessionsConfig {
+  private static DefaultCookieTTL = 2 * 7 * 24 * 60; // Two weeks.
+
+  /** Gets the domain name to which the session cookie will be scoped. */
+  get cookieDomain(): string | undefined {
+    return process.env.BT_SESSION_COOKIE_DOMAIN;
   }
+
+  /** Gets the name of the session cookie. */
+  get cookieName(): string {
+    return process.env.BT_SESSION_COOKIE_NAME ?? 'bottomtime.local';
+  }
+
+  /** Gets the secret string used to encrypt the session cookie contents. */
+  get sessionSecret(): string {
+    return (
+      process.env.BT_SESSION_SECRET ??
+      'va20e0egr0aA/x2UFmckWDy1MYxoaZTaA2M4LGFli5k='
+    );
+  }
+
+  /** Gets the session cookie TTL in minutes */
+  get cookieTTL(): number {
+    return toNumber('', SessionsConfig.DefaultCookieTTL);
+  }
+}
+
+class Config {
+  readonly sessions = new SessionsConfig();
 
   /** True if NODE_ENV === 'production' */
   get isProduction(): boolean {
@@ -15,7 +44,7 @@ class Config {
 
   /** Email verification and password reset token TTL (in minutes). Default is 1,440 (one day). */
   get tokenTTL(): number {
-    return this.toNumber(process.env.BT_TOKEN_TTL, 1440);
+    return toNumber(process.env.BT_TOKEN_TTL, 1440);
   }
 
   /** Returns the value of $NODE_ENV! */
@@ -23,14 +52,23 @@ class Config {
     return process.env.NODE_ENV ?? 'local';
   }
 
+  get logLevel(): string {
+    return process.env.BT_LOG_LEVEL ?? 'debug';
+  }
+
   get mongoUri(): string {
     return (
-      process.env.BT_MONGO_URI ?? 'mongodb://localhost:27017/bottomtime-local'
+      process.env.BT_MONGO_URI ?? 'mongodb://127.0.0.1:27017/bottomtime-local'
     );
   }
 
   get passwordSaltRounds(): number {
-    return this.toNumber(process.env.BT_PASSWORD_SALT_ROUNDS, 15);
+    return toNumber(process.env.BT_PASSWORD_SALT_ROUNDS, 15);
+  }
+
+  /** Returns the TCP port number on which the service will listen for connections. */
+  get port(): number {
+    return toNumber(process.env.BT_PORT, 4800);
   }
 }
 
