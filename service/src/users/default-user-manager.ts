@@ -6,7 +6,6 @@ import {
   FindOptions,
   MongoClient,
   ObjectId,
-  WithId,
 } from 'mongodb';
 import config from '../config';
 import { SortOrder, UserRole } from '../constants';

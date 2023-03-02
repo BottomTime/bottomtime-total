@@ -1,16 +1,9 @@
-import { type Request } from 'express';
-import { type User } from '../users';
-
 export class ForbiddenError extends Error {
-  readonly path: string | undefined;
-  readonly method: string | undefined;
-  readonly user: User | undefined;
-
-  constructor(message?: string, req?: Request) {
-    super(message);
-    this.path = req?.originalUrl;
-    this.method = req?.method;
-    // this.user = req?.user;
+  constructor(message?: string) {
+    super(
+      message ??
+        'Your request could not be completed. You are not authorized to perform the desired action.',
+    );
     Object.setPrototypeOf(this, ForbiddenError.prototype);
   }
 }

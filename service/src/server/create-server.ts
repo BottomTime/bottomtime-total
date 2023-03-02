@@ -93,7 +93,7 @@ export async function createServer(
   app.use(passport.session());
 
   log.debug('[EXPRESS] Adding API routes...');
-  configureRouting(app);
+  configureRouting(app, log);
 
   return app;
 }

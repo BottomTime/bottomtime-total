@@ -10,7 +10,10 @@ export interface ValidationResult {
 
 export class ValidationError extends Error {
   constructor(message?: string, readonly errors?: ValidationErrors) {
-    super(message);
+    super(
+      message ??
+        'Your request could not be completed because there were some validation errors.',
+    );
     Object.setPrototypeOf(this, ValidationError.prototype);
   }
 }
