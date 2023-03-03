@@ -8,13 +8,17 @@ export const UsernameSchema = Joi.string()
 
 export const EmailSchema = Joi.string().email().max(50);
 
-export const PasswordStrengthSchema = Joi.string().regex(
-  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/,
-);
+export const PasswordStrengthSchema = Joi.string()
+  .regex(
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/,
+  )
+  .message('Password did not meet strength requirements.');
+
+export const RoleSchema = Joi.string().valid(...Object.values(UserRole));
 
 export const CreateUserOptionsSchema = Joi.object({
   username: UsernameSchema.required(),
   email: EmailSchema,
   password: PasswordStrengthSchema,
-  role: Joi.valid(UserRole.Admin, UserRole.User),
+  role: RoleSchema,
 });

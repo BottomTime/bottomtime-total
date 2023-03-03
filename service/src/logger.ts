@@ -17,6 +17,7 @@ export function createLogger(logLevel = 'info'): Logger {
     name: 'bottomtime',
     level: logLevelString,
     stream: process.stdout,
+    serializers: { err: Logger.stdSerializers.err },
   });
 
   if (logLevel !== logLevelString) {

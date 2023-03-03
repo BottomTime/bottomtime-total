@@ -1,9 +1,9 @@
-export enum UserRole {
-  User = 'user',
-  Admin = 'admin',
-}
+export const UserRole = {
+  User: 'user',
+  Admin: 'admin',
+} as const;
 
-export enum SortOrder {
-  Ascending = 'asc',
-  Descending = 'desc',
-}
+export const SortOrder = {
+  Ascending: 'asc',
+  Descending: 'desc',
+} as const;

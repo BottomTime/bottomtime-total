@@ -3,6 +3,7 @@ import { faker } from '@faker-js/faker';
 import { generate } from 'generate-password';
 import { type UserDocument } from '../../src/data';
 import { UserRole } from '../../src/constants';
+import { ObjectId } from 'mongodb';
 
 export function fakePassword(): string {
   return generate({
@@ -55,4 +56,17 @@ export function fakeUser(
   });
 
   return user;
+}
+
+export function fakeUserWithId(
+  data?: Partial<UserDocument>,
+  password?: string | null,
+): UserDocument {
+  return fakeUser(
+    {
+      ...data,
+      _id: new ObjectId(),
+    },
+    password,
+  );
 }

@@ -1,5 +1,4 @@
-import { type Document, type OptionalId } from 'mongodb';
-import { type UserRole } from '../constants';
+import { Document, OptionalId } from 'mongodb';
 
 export interface UserDocument extends OptionalId<Document> {
   email?: string;
@@ -8,13 +7,15 @@ export interface UserDocument extends OptionalId<Document> {
   emailVerificationToken?: string;
   emailVerificationTokenExpiration?: Date;
   isLockedOut: boolean;
+  githubId?: string;
+  googleId?: string;
   lastLogin?: Date;
   lastPasswordChange?: Date;
   memberSince: Date;
   passwordHash?: string;
   passwordResetToken?: string;
   passwordResetTokenExpiration?: Date;
-  role: UserRole;
+  role: string;
   username: string;
   usernameLowered: string;
 }

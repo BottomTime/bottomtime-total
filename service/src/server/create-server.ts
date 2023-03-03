@@ -66,14 +66,16 @@ export async function createServer(
   app.use((req, _res, next) => {
     req.requestId = uuid();
     req.log = log.child({
-      httpMethod: req.method,
-      httpRoute: req.originalUrl,
+      req_id: req.requestId,
+      http_method: req.method,
+      http_route: req.originalUrl,
       ip: req.ip,
-      requestId: req.requestId,
       user: req.user?.username,
       useragent: req.useragent?.source,
     });
     req.userManager = userManager;
+
+    req.log.debug(`Request made to ${req.method} ${req.originalUrl}`);
     next();
   });
 

@@ -346,7 +346,7 @@ describe('Default User Manager', () => {
     [UsersSortBy.MemberSince, UsersSortBy.Username].forEach((sortBy) => {
       it(`Will return results sorted by ${sortBy} in ascending order`, async () => {
         const userManager = new DefaultUserManager(mongoClient, Log);
-        const comparators: Record<UsersSortBy, (a: User, b: User) => number> = {
+        const comparators: Record<string, (a: User, b: User) => number> = {
           [UsersSortBy.MemberSince]: (a, b) =>
             a.memberSince.valueOf() - b.memberSince.valueOf(),
           [UsersSortBy.Username]: (a, b) =>
@@ -364,7 +364,7 @@ describe('Default User Manager', () => {
 
       it(`Will return results sorted by ${sortBy} in descending order`, async () => {
         const userManager = new DefaultUserManager(mongoClient, Log);
-        const comparators: Record<UsersSortBy, (a: User, b: User) => number> = {
+        const comparators: Record<string, (a: User, b: User) => number> = {
           [UsersSortBy.MemberSince]: (a, b) =>
             b.memberSince.valueOf() - a.memberSince.valueOf(),
           [UsersSortBy.Username]: (a, b) =>

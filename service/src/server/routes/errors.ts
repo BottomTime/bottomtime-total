@@ -32,14 +32,15 @@ export function notFound(req: Request, res: Response) {
 }
 
 // All four parameters need to be present on this function signature for Express to recognize it as an error handler.
-/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export function globalErrorHandler(
   error: Error,
   req: Request,
   res: Response,
+
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   _next: NextFunction,
 ) {
-  req.log.error('An unhandled exception was caught.', error);
+  req.log.error('An unhandled exception was caught.', { err: error });
 
   const json: ErrorResponse = {
     statusCode: 500,

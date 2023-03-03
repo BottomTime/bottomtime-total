@@ -1,6 +1,6 @@
-export enum Collections {
-  Sessions = 'Sessions',
-  Users = 'Users',
-}
+export const Collections = {
+  Sessions: 'Sessions',
+  Users: 'Users',
+} as const;
 
 export * from './user-document';

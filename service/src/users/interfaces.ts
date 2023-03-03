@@ -1,5 +1,3 @@
-import { SortOrder, type UserRole } from '../constants';
-
 export interface UserData {
   readonly username: string;
   readonly email?: string;
@@ -10,13 +8,13 @@ export interface UserData {
   readonly lastPasswordChange?: Date;
   readonly isLockedOut: boolean;
   readonly memberSince: Date;
-  readonly role: UserRole;
+  readonly role: string;
 }
 
 export interface User extends UserData {
   changeUsername(newUsername: string): Promise<void>;
   changeEmail(newEmail: string): Promise<void>;
-  changeRole(newRole: UserRole): Promise<void>;
+  changeRole(newRole: string): Promise<void>;
 
   requestEmailVerificationToken(): Promise<string>;
   verifyEmail(token: string): Promise<boolean>;
@@ -36,22 +34,22 @@ export interface CreateUserOptions {
   username: string;
   email?: string;
   password?: string;
-  role?: UserRole;
+  role?: string;
 }
 
-export enum UsersSortBy {
-  Relevance = 'relevance',
-  Username = 'username',
-  MemberSince = 'memberSince',
-}
+export const UsersSortBy = {
+  Relevance: 'relevance',
+  Username: 'username',
+  MemberSince: 'memberSince',
+} as const;
 
 export interface SearchUsersOptions {
   query?: string;
-  role?: UserRole;
+  role?: string;
   skip?: number;
   limit?: number;
-  sortBy?: UsersSortBy;
-  sortOrder?: SortOrder;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 export interface UserManager {

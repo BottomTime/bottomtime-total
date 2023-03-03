@@ -1,17 +1,17 @@
 import { compare, hash } from 'bcrypt';
-import { type Collection, type MongoClient } from 'mongodb';
-import type Logger from 'bunyan';
+import { Collection, MongoClient } from 'mongodb';
+import Logger from 'bunyan';
 import { randomBytes } from 'crypto';
 
 import { assertValid } from '../helpers/validation';
-import { Collections, type UserDocument } from '../data';
+import { Collections, UserDocument } from '../data';
 import config from '../config';
-import { UserData, type User } from './interfaces';
-import { type UserRole } from '../constants';
+import { UserData, User } from './interfaces';
 import { ConflictError } from '../errors';
 import {
   EmailSchema,
   PasswordStrengthSchema,
+  RoleSchema,
   UsernameSchema,
 } from './validation';
 
@@ -42,7 +42,7 @@ export class DefaultUser implements User {
     return this.data.emailVerified;
   }
 
-  get role(): UserRole {
+  get role(): string {
     return this.data.role;
   }
 
@@ -144,7 +144,9 @@ export class DefaultUser implements User {
     (this.data.emailLowered = lowered), (this.data.emailVerified = false);
   }
 
-  async changeRole(newRole: UserRole): Promise<void> {
+  async changeRole(newRole: string): Promise<void> {
+    assertValid(newRole, RoleSchema);
+
     if (newRole === this.data.role) {
       return;
     }
