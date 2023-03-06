@@ -18,17 +18,28 @@ import {
   unlockAccount,
   verifyEmail,
 } from './users';
-import { getCurrentUser, logout, requireAdmin, requireAuth } from './auth';
+import {
+  getCurrentUser,
+  logout,
+  requireAdmin,
+  requireAuth,
+  validateLogin,
+} from './auth';
 import { globalErrorHandler, notFound } from './errors';
 
 export function configureRouting(app: Express, log: Logger) {
   // Auth routes...
   app.get('/auth/me', getCurrentUser);
-  app.post('/auth/login', passport.authenticate('local'), async (req, res) => {
-    await req.user!.updateLastLogin();
-    req.log.info(`User has successfully logged in: ${req.user!.username}`);
-    res.json(req.user);
-  });
+  app.post(
+    '/auth/login',
+    validateLogin,
+    passport.authenticate('local'),
+    async (req, res) => {
+      await req.user!.updateLastLogin();
+      req.log.info(`User has successfully logged in: ${req.user!.username}`);
+      res.json(req.user);
+    },
+  );
   app.post('/auth/logout', logout);
 
   // User management routes...

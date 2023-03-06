@@ -85,7 +85,7 @@ export function globalErrorHandler(
       validationErrors: error.errors,
     };
 
-    req.log.debug('Request validation failed', { err: error });
+    req.log.info('Request validation failed', { err: error });
   } else {
     req.log.error('An unhandled exception was caught.', { err: error });
   }

@@ -1,7 +1,14 @@
+import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 
 import { ForbiddenError, UnauthorizedError } from '../../errors';
 import { UserRole } from '../../constants';
+import { assertValid } from '../../helpers/validation';
+
+const LoginSchema = Joi.object({
+  usernameOrEmail: Joi.string().required(),
+  password: Joi.string().required(),
+}).required();
 
 export function getCurrentUser(req: Request, res: Response) {
   res.json({
@@ -40,5 +47,18 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
     next(new UnauthorizedError());
   } else {
     next();
+  }
+}
+
+export function validateLogin(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
+  try {
+    assertValid(req.body, LoginSchema);
+    next();
+  } catch (error) {
+    next(error);
   }
 }
