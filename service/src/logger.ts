@@ -9,9 +9,13 @@ const ValidLogLevels = new Set<string>([
   'fatal',
 ]);
 
+function isLogLevelString(value: string): value is LogLevelString {
+  return ValidLogLevels.has(value);
+}
+
 export function createLogger(logLevel = 'info'): Logger {
-  const logLevelString: LogLevelString = ValidLogLevels.has(logLevel)
-    ? (logLevel as LogLevelString)
+  const logLevelString: LogLevelString = isLogLevelString(logLevel)
+    ? logLevel
     : 'info';
   const logger = Logger.createLogger({
     name: 'bottomtime',

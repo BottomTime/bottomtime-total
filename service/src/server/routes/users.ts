@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi, { object } from 'joi';
 import { NextFunction, Request, Response } from 'express';
 
 import { SortOrder, UserRole } from '../../constants';
@@ -35,11 +35,10 @@ const ChangeUsernameBodySchema = Joi.object({
 }).required();
 
 const CreateUserBodySchema = Joi.object({
-  username: UsernameSchema.required(),
   email: EmailSchema,
   password: PasswordStrengthSchema,
   role: RoleSchema,
-}).required();
+});
 
 const SearchUsersQuerySchema = Joi.object({
   query: Joi.string(),
@@ -182,6 +181,7 @@ export async function createUser(
   next: NextFunction,
 ) {
   try {
+    assertValid(req.params.username, UsernameSchema.required());
     assertValid(req.body, CreateUserBodySchema);
 
     if (req.body.role && req.user?.role !== UserRole.Admin) {
@@ -190,7 +190,10 @@ export async function createUser(
       );
     }
 
-    const user = await req.userManager.createUser(req.body);
+    const user = await req.userManager.createUser({
+      username: req.params.username,
+      ...req.body,
+    });
 
     req.log.info('New user account created.', {
       username: user.username,
@@ -200,6 +203,7 @@ export async function createUser(
 
     if (!req.user) {
       await loginUser(req, user);
+      await user.updateLastLogin();
       req.log.info(
         `User has been logged into their newly-created account: "${user.username}"`,
       );
@@ -269,9 +273,9 @@ export async function searchUsers(
   next: NextFunction,
 ) {
   try {
-    assertValid(req.query, SearchUsersQuerySchema);
+    const { parsed } = assertValid(req.query, SearchUsersQuerySchema);
 
-    const users = await req.userManager.searchUsers(req.query);
+    const users = await req.userManager.searchUsers(parsed);
     res.json({
       count: users.length,
       results: users.map((user) => user.toJSON()),

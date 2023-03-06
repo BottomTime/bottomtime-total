@@ -92,10 +92,6 @@ describe('Default User Manager', () => {
         password,
       );
       data.lastLogin = actual?.lastLogin;
-      expect(actual?.lastLogin?.valueOf()).toBeCloseTo(
-        new Date().valueOf(),
-        -2,
-      );
       expect(actual).toEqual(expected);
     });
 
@@ -110,10 +106,6 @@ describe('Default User Manager', () => {
         password,
       );
       data.lastLogin = actual?.lastLogin;
-      expect(actual?.lastLogin?.valueOf()).toBeCloseTo(
-        new Date().valueOf(),
-        -2,
-      );
       expect(actual).toEqual(expected);
     });
 

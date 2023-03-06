@@ -13,8 +13,8 @@ const Log = createTestLogger('user-routes-create');
 
 export default function () {
   it('Will create a new user based on the criteria', async () => {
+    const username = faker.internet.userName();
     const body = {
-      username: faker.internet.userName(),
       email: faker.internet.email(),
       password: fakePassword(),
     };
@@ -27,6 +27,7 @@ export default function () {
       user,
       userManager,
       body,
+      params: { username },
       login,
     });
     const expectedUser = new DefaultUser(
@@ -34,7 +35,7 @@ export default function () {
       Log,
       fakeUser(
         {
-          username: body.username,
+          username,
           email: body.email,
         },
         body.password,
@@ -49,7 +50,10 @@ export default function () {
 
     expect(login).not.toBeCalled();
     expect(next).not.toBeCalled();
-    expect(spy).toBeCalledWith(body);
+    expect(spy).toBeCalledWith({
+      username,
+      ...body,
+    });
     expect(res._isEndCalled()).toBe(true);
     expect(res._getStatusCode()).toBe(201);
     expect(res._getJSONData()).toEqual(
@@ -58,8 +62,8 @@ export default function () {
   });
 
   it('Will login a user automatically when they create an account while not logged in', async () => {
+    const username = faker.internet.userName();
     const body = {
-      username: faker.internet.userName(),
       email: faker.internet.email(),
       password: fakePassword(),
     };
@@ -72,6 +76,7 @@ export default function () {
       log: Log,
       userManager,
       body,
+      params: { username },
       login,
     });
     const expectedUser = new DefaultUser(
@@ -79,7 +84,7 @@ export default function () {
       Log,
       fakeUser(
         {
-          username: body.username,
+          username: username,
           email: body.email,
         },
         body.password,
@@ -94,7 +99,10 @@ export default function () {
 
     expect(next).not.toBeCalled();
     expect(login).toBeCalled();
-    expect(spy).toBeCalledWith(body);
+    expect(spy).toBeCalledWith({
+      username,
+      ...body,
+    });
     expect(res._isEndCalled()).toBe(true);
     expect(res._getStatusCode()).toBe(201);
     expect(res._getJSONData()).toEqual(
@@ -104,9 +112,6 @@ export default function () {
 
   it('Will return an error if an exception is thrown', async () => {
     const error = new Error('Nope');
-    const body = {
-      username: faker.internet.userName(),
-    };
     const data = fakeUser();
     const user = new DefaultUser(mongoClient, Log, data);
     const userManager = new DefaultUserManager(mongoClient, Log);
@@ -115,7 +120,9 @@ export default function () {
       log: Log,
       user,
       userManager,
-      body,
+      params: {
+        username: faker.internet.userName(),
+      },
       login,
     });
     jest.spyOn(userManager, 'createUser').mockRejectedValue(error);
@@ -130,9 +137,6 @@ export default function () {
 
   it('Will return an error if an exception is thrown while logging in a user', async () => {
     const error = new Error('Nope');
-    const body = {
-      username: faker.internet.userName(),
-    };
     const userManager = new DefaultUserManager(mongoClient, Log);
     const expectedUser = new DefaultUser(mongoClient, Log, fakeUser());
     const login = jest.fn().mockImplementation((user, cb) => {
@@ -142,7 +146,9 @@ export default function () {
     const { req, res } = createMocks({
       log: Log,
       userManager,
-      body,
+      params: {
+        username: faker.internet.userName(),
+      },
       login,
     });
     jest.spyOn(userManager, 'createUser').mockResolvedValue(expectedUser);
@@ -156,8 +162,8 @@ export default function () {
   });
 
   it('Will not allow regular users to set roles', async () => {
+    const username = faker.internet.userName();
     const body = {
-      username: faker.internet.userName(),
       email: faker.internet.email(),
       password: fakePassword(),
       role: UserRole.Admin,
@@ -171,6 +177,7 @@ export default function () {
       user,
       userManager,
       body,
+      params: { username },
       login,
     });
     const spy = jest.spyOn(userManager, 'createUser');
@@ -186,8 +193,8 @@ export default function () {
   });
 
   it('Will allow admins to set roles', async () => {
+    const username = faker.internet.userName();
     const body = {
-      username: faker.internet.userName(),
       email: faker.internet.email(),
       password: fakePassword(),
       role: UserRole.Admin,
@@ -201,6 +208,7 @@ export default function () {
       user,
       userManager,
       body,
+      params: { username },
       login,
     });
     const expectedUser = new DefaultUser(
@@ -208,7 +216,7 @@ export default function () {
       Log,
       fakeUser(
         {
-          username: body.username,
+          username: username,
           email: body.email,
           role: body.role,
         },
@@ -224,7 +232,10 @@ export default function () {
 
     expect(login).not.toBeCalled();
     expect(next).not.toBeCalled();
-    expect(spy).toBeCalledWith(body);
+    expect(spy).toBeCalledWith({
+      username,
+      ...body,
+    });
     expect(res._isEndCalled()).toBe(true);
     expect(res._getStatusCode()).toBe(201);
     expect(res._getJSONData()).toEqual(
@@ -235,32 +246,27 @@ export default function () {
   [
     {
       name: 'Bad username',
-      body: {
-        username: 'Not valid',
-      },
-    },
-    {
-      name: 'Missing username',
+      username: 'Not valid',
       body: {},
     },
     {
       name: 'Bad email',
+      username: 'user123',
       body: {
-        username: 'user123',
         email: 'not an email',
       },
     },
     {
       name: 'Invalid role',
+      username: 'user123',
       body: {
-        username: 'user123',
         role: 'lord-of-data',
       },
     },
     {
       name: 'Weak password',
+      username: 'user123',
       body: {
-        username: 'user123',
         password: 'weakness',
       },
     },
@@ -275,6 +281,9 @@ export default function () {
         user,
         userManager,
         body: test.body,
+        params: {
+          username: test.username,
+        },
         login,
       });
       const spy = jest.spyOn(userManager, 'createUser');

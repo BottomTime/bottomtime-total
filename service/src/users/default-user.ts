@@ -395,6 +395,17 @@ export class DefaultUser implements User {
     this.data.isLockedOut = isLocked;
   }
 
+  async updateLastLogin(): Promise<void> {
+    const now = new Date();
+    await this.users.updateOne(
+      { _id: this.data._id },
+      {
+        $set: { lastLogin: now },
+      },
+    );
+    this.data.lastLogin = now;
+  }
+
   toJSON(): UserData {
     return {
       id: this.id,

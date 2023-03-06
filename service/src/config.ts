@@ -30,7 +30,10 @@ class SessionsConfig {
 
   /** Gets the session cookie TTL in minutes */
   get cookieTTL(): number {
-    return toNumber('', SessionsConfig.DefaultCookieTTL);
+    return toNumber(
+      process.env.BT_SESSION_COOKIE_TTL,
+      SessionsConfig.DefaultCookieTTL,
+    );
   }
 }
 

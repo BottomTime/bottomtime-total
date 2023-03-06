@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import { Express, NextFunction } from 'express';
 import Logger from 'bunyan';
 import passport from 'passport';
 
@@ -24,7 +24,11 @@ import { globalErrorHandler, notFound } from './errors';
 export function configureRouting(app: Express, log: Logger) {
   // Auth routes...
   app.get('/auth/me', getCurrentUser);
-  app.post('/auth/login', passport.authenticate('local'));
+  app.post('/auth/login', passport.authenticate('local'), async (req, res) => {
+    await req.user!.updateLastLogin();
+    req.log.info(`User has successfully logged in: ${req.user!.username}`);
+    res.json(req.user);
+  });
   app.post('/auth/logout', logout);
 
   // User management routes...

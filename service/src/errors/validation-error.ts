@@ -6,6 +6,7 @@ export type ValidationErrors = Array<{
 export interface ValidationResult {
   readonly isValid: boolean;
   readonly errors?: ValidationErrors;
+  readonly parsed?: any;
 }
 
 export class ValidationError extends Error {

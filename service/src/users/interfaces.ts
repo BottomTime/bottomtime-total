@@ -27,6 +27,8 @@ export interface User extends UserData {
   lockAccount(): Promise<void>;
   unlockAccount(): Promise<void>;
 
+  updateLastLogin(): Promise<void>;
+
   toJSON(): UserData;
 }
 

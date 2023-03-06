@@ -1,6 +1,6 @@
-import { type Schema } from 'joi';
+import { Schema } from 'joi';
 
-import { ValidationError, type ValidationResult } from '../errors';
+import { ValidationError, ValidationResult } from '../errors';
 
 export function isValid(data: any, schema: Schema): ValidationResult {
   const result = schema.validate(data, { abortEarly: false });
@@ -14,12 +14,21 @@ export function isValid(data: any, schema: Schema): ValidationResult {
     };
   }
 
-  return { isValid: true };
+  return {
+    isValid: true,
+    parsed: result.value,
+  };
 }
 
-export function assertValid(data: any, schema: Schema, message?: string): void {
+export function assertValid(
+  data: any,
+  schema: Schema,
+  message?: string,
+): ValidationResult {
   const result = isValid(data, schema);
   if (!result.isValid) {
     throw new ValidationError(message ?? 'Validation failed', result.errors);
   }
+
+  return result;
 }

@@ -40,8 +40,6 @@ export function globalErrorHandler(
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   _next: NextFunction,
 ) {
-  req.log.error('An unhandled exception was caught.', { err: error });
-
   const json: ErrorResponse = {
     statusCode: 500,
     message:
@@ -57,21 +55,39 @@ export function globalErrorHandler(
     json.details = {
       conflictingField: error.conflictingField ?? '<unspecified>',
     };
+
+    req.log.info('Request was rejected with Conflict response:', {
+      err: error,
+    });
   } else if (error instanceof ForbiddenError) {
     json.statusCode = 403;
     json.message = error.message;
+
+    req.log.warn('Request was rejected with Forbidden response:', {
+      err: error,
+    });
   } else if (error instanceof MissingResourceError) {
     json.statusCode = 404;
     json.message = error.message;
+
+    req.log.info('Request was made for missing resource', { err: error });
   } else if (error instanceof UnauthorizedError) {
     json.statusCode = 401;
     json.message = error.message;
+
+    req.log.warn('Request was rejected with Unauthorized response:', {
+      err: error,
+    });
   } else if (error instanceof ValidationError) {
     json.statusCode = 400;
     json.message = error.message;
     json.details = {
       validationErrors: error.errors,
     };
+
+    req.log.debug('Request validation failed', { err: error });
+  } else {
+    req.log.error('An unhandled exception was caught.', { err: error });
   }
 
   res.status(json.statusCode).json(json);
