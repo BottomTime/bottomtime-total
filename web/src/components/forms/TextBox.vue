@@ -18,6 +18,7 @@ import { ErrorObject } from '@vuelidate/core';
 import {
   computed,
   defineEmits,
+  defineExpose,
   defineProps,
   onMounted,
   ref,
@@ -51,9 +52,15 @@ const value = computed({
   },
 });
 
+function focus() {
+  input.value?.focus();
+}
+
 onMounted(() => {
-  if (props.autofocus) {
-    input.value?.focus();
-  }
+  if (props.autofocus) focus();
+});
+
+defineExpose({
+  focus,
 });
 </script>

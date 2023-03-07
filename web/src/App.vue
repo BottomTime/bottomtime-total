@@ -1,6 +1,7 @@
 <template>
   <div v-if="isLoading"></div>
   <div v-else>
+    <SnackBar />
     <NavBar />
     <RouterView />
     <PageFooter />
@@ -9,16 +10,16 @@
 
 <script lang="ts" setup>
 import { onBeforeMount, ref } from 'vue';
-import { useStore } from 'vuex';
 
+import { Dispatch, useStore } from '@/store';
 import { inject } from './helpers';
 import NavBar from '@/components/main/NavBar.vue';
 import PageFooter from '@/components/main/PageFooter.vue';
-import { StoreKey, UserManagerKey } from '@/injection-keys';
-import { Dispatch } from '@/store';
+import SnackBar from '@/components/main/SnackBar.vue';
+import { UserManagerKey } from '@/injection-keys';
 
 const userManager = inject(UserManagerKey);
-const store = useStore(StoreKey);
+const store = useStore();
 const isLoading = ref(true);
 
 onBeforeMount(async () => {

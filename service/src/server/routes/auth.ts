@@ -22,7 +22,7 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
   return new Promise<void>((resolve) => {
     req.logout({ keepSessionInfo: false }, (error) => {
       if (error) next(error);
-      else res.sendStatus(204);
+      else res.redirect('/');
       resolve();
     });
   });

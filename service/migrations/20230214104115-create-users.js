@@ -1,7 +1,7 @@
 const DefaultAdminEmail = 'admin@bottomti.me';
 const DefaultAdminUsername = 'Admin';
 const DefaultAdminPasswordHash =
-  '$2b$15$XmVrN6gsq3N2QZQhcP3qqOCKIPfcUkiUGE5nQlCEcGsXNY37vwk.G'; // "admin"
+  '$2b$15$w/RXlIPZStVF.Y0LSs/q7e9UGtqQqct1eP.FrJEhXebN62SfN6KdC'; // "admin"
 const UsersCollection = 'Users';
 
 module.exports = {

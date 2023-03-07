@@ -40,7 +40,7 @@ export function configureRouting(app: Express, log: Logger) {
       res.json(req.user);
     },
   );
-  app.post('/auth/logout', logout);
+  app.get('/auth/logout', logout);
 
   // User management routes...
   const UserRoute = '/users/:username';

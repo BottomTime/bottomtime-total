@@ -12,6 +12,7 @@
         </FormField>
         <FormField label="Password" required>
           <TextBox
+            ref="passwordText"
             id="password"
             password
             v-model="v$.password.$model"
@@ -29,7 +30,7 @@
     <div class="column">
       <div class="has-text-centered">
         <div class="block">
-          <button class="button is-link">
+          <button class="button is-info">
             <span class="icon-text">
               <span class="icon">
                 <i class="fab fa-google"></i>
@@ -40,7 +41,18 @@
         </div>
 
         <div class="block">
-          <button class="button is-link">
+          <button class="button is-info">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fab fa-discord"></i>
+              </span>
+              <span>Login with Discord</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="block">
+          <button class="button is-info">
             <span class="icon-text">
               <span class="icon">
                 <i class="fab fa-github"></i>
@@ -55,28 +67,24 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { helpers, required } from '@vuelidate/validators';
-import { useStore } from 'vuex';
 import { useVuelidate } from '@vuelidate/core';
 
-import { Dispatch } from '@/store';
+import { Dispatch, useStore } from '@/store';
 import FormField from '@/components/forms/FormField.vue';
-import { inject } from '@/helpers';
+import { inject, ToastType } from '@/helpers';
 import router from '@/router';
 import TextBox from '@/components/forms/TextBox.vue';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from '@/injection-keys';
+import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
 
 interface LoginFormData {
   usernameOrEmail: string;
   password: string;
 }
 
-const store = useStore(StoreKey);
+const passwordText = ref<InstanceType<typeof TextBox> | null>();
+const store = useStore();
 const userManager = inject(UserManagerKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
 
@@ -111,8 +119,15 @@ async function onSubmit() {
       }
     },
     {
-      401: () => {
-        // TODO: Bad username or password!
+      401: async () => {
+        await store.dispatch(Dispatch.Toast, {
+          id: 'login-failed',
+          type: ToastType.Error,
+          message: 'Login failed',
+          description: 'Check your username and password and try again',
+        });
+        data.password = '';
+        passwordText.value?.focus();
       },
     },
   );

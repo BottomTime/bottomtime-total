@@ -4,7 +4,8 @@ require('dotenv-defaults').config();
 
 const config = {
   mongodb: {
-    url: process.env.BT_MONGO_URI || 'mongodb://127.0.0.1:27017/bottom_time',
+    url:
+      process.env.BT_MONGO_URI || 'mongodb://127.0.0.1:27017/bottomtime-local',
 
     options: {
       useNewUrlParser: true, // removes a deprecation warning when connecting
