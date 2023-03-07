@@ -1,11 +1,16 @@
 import { createStore } from 'vuex';
 
-export { BTState } from './state';
+import { actions } from './actions';
+import { BTState } from './state';
+import { mutations } from './mutations';
 
-export default createStore({
-  state: {},
+export * from './state';
+export * from './actions';
+export * from './mutations';
+
+export default createStore<BTState>({
+  state: () => ({}),
   getters: {},
-  mutations: {},
-  actions: {},
-  modules: {},
+  mutations,
+  actions,
 });

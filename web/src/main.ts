@@ -6,7 +6,7 @@ import { DefaultUserManager } from './users/default-user-manager';
 import router from './router';
 import store from './store';
 import { UserManagerKey, WithErrorHandlingKey } from './injection-keys';
-import { createErrorHandler } from './helpers/create-error-handler';
+import { createErrorHandler } from './helpers';
 
 const agent = request.agent();
 const userManager = new DefaultUserManager(agent);

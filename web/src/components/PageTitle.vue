@@ -10,12 +10,16 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from 'vue';
+import { defineProps, onMounted } from 'vue';
 
 interface PageTitleProps {
   title: string;
   subtitle?: string;
 }
 
-defineProps<PageTitleProps>();
+const props = defineProps<PageTitleProps>();
+
+onMounted(() => {
+  document.title = `BottomTime | ${props.title}`;
+});
 </script>

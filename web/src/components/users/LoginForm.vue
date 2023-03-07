@@ -57,18 +57,26 @@
 <script lang="ts" setup>
 import { reactive } from 'vue';
 import { helpers, required } from '@vuelidate/validators';
+import { useStore } from 'vuex';
 import { useVuelidate } from '@vuelidate/core';
 
+import { Dispatch } from '@/store';
 import FormField from '@/components/forms/FormField.vue';
 import { inject } from '@/helpers';
+import router from '@/router';
 import TextBox from '@/components/forms/TextBox.vue';
-import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
+import {
+  StoreKey,
+  UserManagerKey,
+  WithErrorHandlingKey,
+} from '@/injection-keys';
 
 interface LoginFormData {
   usernameOrEmail: string;
   password: string;
 }
 
+const store = useStore(StoreKey);
 const userManager = inject(UserManagerKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
 
@@ -88,13 +96,25 @@ const v$ = useVuelidate(validations, data);
 
 async function onSubmit() {
   const isValid = await v$.value.$validate();
-  // if (!isValid) return;
+  if (!isValid) return;
 
-  await withErrorHandling(async () => {
-    const user = await userManager.authenticateUser(
-      data.usernameOrEmail,
-      data.password,
-    );
-  });
+  await withErrorHandling(
+    async () => {
+      const user = await userManager.authenticateUser(
+        data.usernameOrEmail,
+        data.password,
+      );
+      await store.dispatch(Dispatch.SignInUser, user);
+
+      if (router.currentRoute.value.path === '/login') {
+        router.push('/');
+      }
+    },
+    {
+      401: () => {
+        // TODO: Bad username or password!
+      },
+    },
+  );
 }
 </script>
