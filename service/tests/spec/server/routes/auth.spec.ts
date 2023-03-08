@@ -68,7 +68,8 @@ describe('Auth Routes', () => {
       expect(spy).toBeCalled();
       expect(next).not.toBeCalled();
       expect(res._isEndCalled()).toBe(true);
-      expect(res._getStatusCode()).toEqual(204);
+      expect(res._getStatusCode()).toEqual(302);
+      expect(res._getRedirectUrl()).toEqual('/');
     });
 
     it('Will return an error if session store throws an exception', async () => {

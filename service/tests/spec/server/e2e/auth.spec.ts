@@ -85,7 +85,7 @@ describe('Auth End-to-End Tests', () => {
     });
 
     // Logout
-    await agent.post('/auth/logout').expect(204);
+    await agent.get('/auth/logout').expect(302);
 
     // Current user should now be anonymous
     const { body: anonymousUserResult } = await agent
