@@ -33,6 +33,12 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "profile" */ '../views/ProfileView.vue'),
   },
   {
+    path: '/welcome',
+    name: 'welcome',
+    component: () =>
+      import(/* webpackChunkName: "welcome" */ '../views/WelcomeView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: NotFoundView,

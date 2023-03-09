@@ -1,0 +1,64 @@
+doctype html
+html
+  head
+    title Welcome to Bottom Time
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css')
+    script(src='https://kit.fontawesome.com/0abec2fadd.js' crossorigin='anonymous')
+
+  body
+    div.hero.is-success
+      div.hero-body.container
+        h1.title Welcome to Bottom Time!
+
+    section.section
+      div.container
+
+        p.content.block
+          | Thanks for signing up with us! We're pleased to meet you! Here are a few useful links to get
+          | you started with your new account...
+
+        div.block
+          span.text-icon.is-size-5.is-info
+            span.icon.is-large
+              i.fas.fa-envelope
+            span Verify Your Email
+          p.content.ml-6
+            | First of all, please click&nbsp;
+            a(href=verifyEmailUrl) here
+            | &nbsp;to confirm your email address. If you did not sign up to use Bottom Time and you think you
+            | are receiving this email in error, then please disregard this message.
+
+        div.block
+          span.text-icon.is-size-5.is-info
+            span.icon.is-large
+              i.fas.fa-user
+            span Setup Your Profile
+          p.content.ml-6
+            | Next, take a minute to setup your user profile and set your preferences. Click&nbsp;
+            a(href=profileUrl) here
+            | &nbsp;to begin!
+
+        div.block
+          span.text-icon.is-size-5.is-info
+            span.icon.is-large
+              i.fas.fa-edit
+            span Log Your Dives!
+          p.content.ml-6
+            | Finally, head over to&nbsp;
+            a(href=logsUrl) here
+            | &nbsp;to start filling out your logbook! (You can even upload your dives from other apps!)
+
+        p.content.block
+          | Cheers,
+          br
+          | The BottomTime Team
+
+        footer.footer.has-text-centered.is-size-7
+          p
+            em Copyright &copy; Chris Carleton, #{year}
+          p
+            em
+              a(href=baseUrl) Home Page
+            | &nbsp;|&nbsp;
+            em
+              a(href=`mailto:${adminEmail}`) #{adminEmail}

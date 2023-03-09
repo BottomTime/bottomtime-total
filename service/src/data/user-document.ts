@@ -18,4 +18,20 @@ export interface UserDocument extends OptionalId<Document> {
   role: string;
   username: string;
   usernameLowered: string;
+
+  profile?: {
+    avatar?: string;
+    birthdate?: string;
+    certifications?: string[];
+    experienceLevel?: string;
+    name?: string;
+    startedDiving?: string;
+  };
+
+  settings?: {
+    depthUnit?: string;
+    pressureUnit?: string;
+    temperatureUnit?: string;
+    weightUnit?: string;
+  };
 }

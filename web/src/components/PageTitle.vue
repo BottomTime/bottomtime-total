@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-info">
+  <section class="hero is-dark">
     <div class="hero-body">
       <div class="container">
         <p class="title">{{ title }}</p>

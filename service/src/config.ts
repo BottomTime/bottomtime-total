@@ -7,6 +7,32 @@ function toNumber(value: string | undefined, defaultValue: number): number {
   return isNaN(parsed) ? defaultValue : parsed;
 }
 
+class MailConfig {
+  get host(): string {
+    return process.env.BT_SMTP_HOST ?? '';
+  }
+
+  get port(): number {
+    return toNumber(process.env.BT_SMTP_PORT, 587);
+  }
+
+  get username(): string {
+    return process.env.BT_SMTP_USERNAME ?? '';
+  }
+
+  get password(): string {
+    return process.env.BT_SMTP_PASSWORD ?? '';
+  }
+
+  get replyTo(): string {
+    return process.env.BT_SMTP_REPLY_TO ?? '';
+  }
+
+  get from(): string {
+    return process.env.BT_SMTP_FROM ?? '';
+  }
+}
+
 class SessionsConfig {
   private static DefaultCookieTTL = 2 * 7 * 24 * 60; // Two weeks.
 
@@ -38,6 +64,7 @@ class SessionsConfig {
 }
 
 class Config {
+  readonly mail = new MailConfig();
   readonly sessions = new SessionsConfig();
 
   /** True if NODE_ENV === 'production' */
