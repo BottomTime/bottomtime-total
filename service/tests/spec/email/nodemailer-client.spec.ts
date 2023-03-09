@@ -1,5 +1,5 @@
 import { createTransport, SentMessageInfo } from 'nodemailer';
-import { NodemailerClient } from '../../../src/email/nodemailer-client';
+import { NodemailerClient } from '../../../src/email';
 
 describe('Nodemailer Client', () => {
   it('Will send an email message correctly', async () => {
