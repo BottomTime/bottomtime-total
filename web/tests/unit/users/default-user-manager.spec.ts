@@ -1,10 +1,8 @@
 import nock from 'nock';
 import request from 'superagent';
 
-import { DefaultUserManager } from '@/users/default-user-manager';
+import { DefaultUser, DefaultUserManager, UserData } from '@/users';
 import { UserRole } from '@/helpers';
-import { UserData } from '@/users';
-import { DefaultUser } from '@/users/default-user';
 
 const AuthUser: UserData = {
   id: 'abc1234',

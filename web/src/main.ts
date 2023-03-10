@@ -5,7 +5,11 @@ import App from './App.vue';
 import { DefaultUserManager } from './users/default-user-manager';
 import router from './router';
 import store from './store';
-import { UserManagerKey, WithErrorHandlingKey } from './injection-keys';
+import {
+  StoreKey,
+  UserManagerKey,
+  WithErrorHandlingKey,
+} from './injection-keys';
 import { createErrorHandler } from './helpers';
 
 const agent = request.agent();
@@ -15,6 +19,6 @@ const withErrorHandling = createErrorHandler(store);
 createApp(App)
   .provide(UserManagerKey, userManager)
   .provide(WithErrorHandlingKey, withErrorHandling)
-  .use(store)
+  .use(store, StoreKey)
   .use(router)
   .mount('#app');
