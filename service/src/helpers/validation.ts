@@ -3,7 +3,10 @@ import { Schema } from 'joi';
 import { ValidationError, ValidationResult } from '../errors';
 
 export function isValid(data: any, schema: Schema): ValidationResult {
-  const result = schema.validate(data, { abortEarly: false });
+  const result = schema.validate(data, {
+    abortEarly: false,
+    stripUnknown: true,
+  });
   if (result.error) {
     return {
       isValid: false,

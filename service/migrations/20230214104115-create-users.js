@@ -26,14 +26,29 @@ module.exports = {
       },
     );
     await users.createIndex(
+      { 'profile.profileVisibility': 1 },
       {
-        name: 'text',
+        sparse: true,
+        name: 'users_profileVisibility',
+      },
+    );
+    await users.createIndex(
+      {
         email: 'text',
+        username: 'text',
+
+        'profile.bio': 'text',
+        'profile.location': 'text',
+        'profile.name': 'text',
       },
       {
         weights: {
-          name: 50,
-          email: 10,
+          email: 90,
+          username: 90,
+
+          'profile.bio': 50,
+          'proflie.location': 50,
+          'profile.name': 100,
         },
         name: 'users_text',
       },

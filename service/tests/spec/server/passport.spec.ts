@@ -1,6 +1,5 @@
 import { createRequest } from 'node-mocks-http';
 import { faker } from '@faker-js/faker';
-import { ObjectId } from 'mongodb';
 
 import { createTestLogger } from '../../test-logger';
 import { DefaultUserManager } from '../../../src/users/default-user-manager';
@@ -93,9 +92,7 @@ describe('Passport Callbacks', () => {
       const req = createRequest({
         log: Log,
       });
-      const data = fakeUser({
-        _id: new ObjectId(),
-      });
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const cb = jest.fn();
 
@@ -110,7 +107,7 @@ describe('Passport Callbacks', () => {
         log: Log,
         userManager,
       });
-      const data = fakeUser({ _id: new ObjectId() });
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const cb = jest.fn();
       const getUser = jest
@@ -124,7 +121,7 @@ describe('Passport Callbacks', () => {
     });
 
     it('Will fail to deserialize a user if the user ID cannot be found', async () => {
-      const userId = faker.database.mongodbObjectId();
+      const userId = faker.datatype.uuid();
       const userManager = new DefaultUserManager(mongoClient, Log);
       const req = createRequest({
         log: Log,
@@ -147,7 +144,7 @@ describe('Passport Callbacks', () => {
         log: Log,
         userManager,
       });
-      const data = fakeUser({ _id: new ObjectId(), isLockedOut: true });
+      const data = fakeUser({ isLockedOut: true });
       const user = new DefaultUser(mongoClient, Log, data);
       const cb = jest.fn();
       const getUser = jest
@@ -162,7 +159,7 @@ describe('Passport Callbacks', () => {
 
     it('Will return an error if an exception is thrown while deserializing a user', async () => {
       const error = new Error('Oh noes!');
-      const userId = faker.database.mongodbObjectId();
+      const userId = faker.datatype.uuid();
       const userManager = new DefaultUserManager(mongoClient, Log);
       const req = createRequest({
         log: Log,

@@ -1,12 +1,8 @@
 import { compare, hash } from 'bcrypt';
 import Logger from 'bunyan';
-import {
-  Collection,
-  Filter,
-  FindOptions,
-  MongoClient,
-  ObjectId,
-} from 'mongodb';
+import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
+import { v4 as uuid } from 'uuid';
+
 import config from '../config';
 import { SortOrder, UserRole } from '../constants';
 import { Collections, UserDocument } from '../data';
@@ -15,6 +11,8 @@ import { assertValid } from '../helpers/validation';
 import { DefaultUser } from './default-user';
 import {
   CreateUserOptions,
+  Profile,
+  SearchProfilesOptions,
   SearchUsersOptions,
   User,
   UserManager,
@@ -64,6 +62,7 @@ export class DefaultUserManager implements UserManager {
     }
 
     const data: UserDocument = {
+      _id: uuid(),
       emailVerified: false,
       isLockedOut: false,
       memberSince: new Date(),
@@ -71,6 +70,12 @@ export class DefaultUserManager implements UserManager {
       username,
       usernameLowered,
     };
+
+    if (options.profileVisibility) {
+      data.profile = {
+        profileVisibility: options.profileVisibility,
+      };
+    }
 
     if (options.email) {
       const email = options.email.trim();
@@ -107,10 +112,8 @@ export class DefaultUserManager implements UserManager {
 
   async getUser(id: string): Promise<User | undefined> {
     this.log.debug(`Attempting to query for user by id: ${id}`);
-    if (!ObjectId.isValid(id)) return undefined;
 
-    const data = await this.users.findOne({ _id: new ObjectId(id) });
-
+    const data = await this.users.findOne({ _id: id });
     return data ? new DefaultUser(this.mongoClient, this.log, data) : undefined;
   }
 
@@ -194,5 +197,9 @@ export class DefaultUserManager implements UserManager {
     });
 
     return results;
+  }
+
+  async searchProfiles(options?: SearchProfilesOptions): Promise<Profile[]> {
+    return [];
   }
 }

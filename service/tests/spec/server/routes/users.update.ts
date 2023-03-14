@@ -11,7 +11,7 @@ import {
   unlockAccount,
 } from '../../../../src/server/routes/users';
 import { DefaultUser } from '../../../../src/users/default-user';
-import { fakePassword, fakeUserWithId } from '../../../fixtures/fake-user';
+import { fakePassword, fakeUser } from '../../../fixtures/fake-user';
 import { mongoClient } from '../../../mongo-client';
 import { createTestLogger } from '../../../test-logger';
 
@@ -21,7 +21,7 @@ export default function () {
   describe('Update Email Address', () => {
     it('Will allow users to change their own email', async () => {
       const newEmail = faker.internet.email();
-      const data = fakeUserWithId();
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -45,7 +45,7 @@ export default function () {
     it('Will throw an error if changing email fails', async () => {
       const error = new Error('fails');
       const newEmail = faker.internet.email();
-      const data = fakeUserWithId();
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -66,7 +66,7 @@ export default function () {
     });
 
     it('Will respond with ValidationError if the request body is invalid', async () => {
-      const data = fakeUserWithId();
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -89,8 +89,8 @@ export default function () {
 
     it("Will not allow users to change another users' email", async () => {
       const newEmail = faker.internet.email();
-      const userData = fakeUserWithId();
-      const selectedUserData = fakeUserWithId();
+      const userData = fakeUser();
+      const selectedUserData = fakeUser();
       const user = new DefaultUser(mongoClient, Log, userData);
       const selectedUser = new DefaultUser(mongoClient, Log, selectedUserData);
       const { req, res } = createMocks({
@@ -114,8 +114,8 @@ export default function () {
 
     it("Will allow admins to change other users' emails", async () => {
       const newEmail = faker.internet.email();
-      const userData = fakeUserWithId({ role: UserRole.Admin });
-      const selectedUserData = fakeUserWithId();
+      const userData = fakeUser({ role: UserRole.Admin });
+      const selectedUserData = fakeUser();
       const user = new DefaultUser(mongoClient, Log, userData);
       const selectedUser = new DefaultUser(mongoClient, Log, selectedUserData);
       const { req, res } = createMocks({
@@ -142,7 +142,7 @@ export default function () {
     it('Will allow a user to change their password', async () => {
       const oldPassword = fakePassword();
       const newPassword = fakePassword();
-      const data = fakeUserWithId({}, oldPassword);
+      const data = fakeUser({}, oldPassword);
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -167,7 +167,7 @@ export default function () {
     it('Will respond with a ValidationError if the old password is incorrect', async () => {
       const oldPassword = fakePassword();
       const newPassword = fakePassword();
-      const data = fakeUserWithId();
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -192,7 +192,7 @@ export default function () {
     it('Will respond with ValidationError if request body does not pass validation', async () => {
       const oldPassword = fakePassword();
       const newPassword = fakePassword();
-      const data = fakeUserWithId({}, oldPassword);
+      const data = fakeUser({}, oldPassword);
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -218,7 +218,7 @@ export default function () {
       const error = new Error('nope');
       const oldPassword = fakePassword();
       const newPassword = fakePassword();
-      const data = fakeUserWithId({}, oldPassword);
+      const data = fakeUser({}, oldPassword);
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -242,8 +242,8 @@ export default function () {
     it("Will not allow a user to change another user's password", async () => {
       const oldPassword = fakePassword();
       const newPassword = fakePassword();
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId({}, oldPassword);
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser({}, oldPassword);
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -269,8 +269,8 @@ export default function () {
 
   describe('Change Role', () => {
     it("Will change a user's role", async () => {
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId();
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser();
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -294,8 +294,8 @@ export default function () {
 
     it('Will return an error if an exception is thrown', async () => {
       const error = new Error('Uh oh!');
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId();
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser();
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -317,8 +317,8 @@ export default function () {
     });
 
     it('Will return a ValidationError if the request body is invalid', async () => {
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId();
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser();
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -341,7 +341,7 @@ export default function () {
     });
 
     it('Will throw a ForbiddenError if a user tries to change their own role', async () => {
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
+      const adminData = fakeUser({ role: UserRole.Admin });
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const { req, res } = createMocks({
         log: Log,
@@ -366,7 +366,7 @@ export default function () {
   describe('Change Username', () => {
     it('Will allow a user to change their username', async () => {
       const newUsername = faker.internet.userName();
-      const data = fakeUserWithId();
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -390,7 +390,7 @@ export default function () {
     it('Will return an error if an exception is thrown', async () => {
       const error = new Error('Nope');
       const newUsername = faker.internet.userName();
-      const data = fakeUserWithId();
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -412,7 +412,7 @@ export default function () {
 
     it('Will return a ValidationError if the request body is invalid', async () => {
       const newUsername = faker.internet.userName();
-      const data = fakeUserWithId();
+      const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
@@ -435,8 +435,8 @@ export default function () {
 
     it("Will return a ForbiddenError if user attempts to change another user's username", async () => {
       const newUsername = faker.internet.userName();
-      const data = fakeUserWithId();
-      const otherUserData = fakeUserWithId();
+      const data = fakeUser();
+      const otherUserData = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const otherUser = new DefaultUser(mongoClient, Log, otherUserData);
       const { req, res } = createMocks({
@@ -460,8 +460,8 @@ export default function () {
 
     it("Will allow admins to change another user's username", async () => {
       const newUsername = faker.internet.userName();
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId();
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser();
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -486,8 +486,8 @@ export default function () {
 
   describe('Lock and Unlock Accounts', () => {
     it('Will lock an account', async () => {
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId();
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser();
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -507,8 +507,8 @@ export default function () {
     });
 
     it('Will unlock an account', async () => {
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId();
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser();
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -529,8 +529,8 @@ export default function () {
 
     it('Will return an error if an exception occurs while locking an account', async () => {
       const error = new Error('Lame!!');
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId();
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser();
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -550,8 +550,8 @@ export default function () {
 
     it('Will return an error if an exception occurs while unlocking an account', async () => {
       const error = new Error('Lame!!');
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
-      const userData = fakeUserWithId();
+      const adminData = fakeUser({ role: UserRole.Admin });
+      const userData = fakeUser();
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, userData);
       const { req, res } = createMocks({
@@ -570,7 +570,7 @@ export default function () {
     });
 
     it('Will not allow admins to lock their own account', async () => {
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
+      const adminData = fakeUser({ role: UserRole.Admin });
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const { req, res } = createMocks({
         log: Log,

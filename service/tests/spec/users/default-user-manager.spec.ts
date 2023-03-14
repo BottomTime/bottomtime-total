@@ -1,7 +1,7 @@
 /* eslint-disable no-process-env */
 import { faker } from '@faker-js/faker';
 import { compare } from 'bcrypt';
-import { Collection, ObjectId } from 'mongodb';
+import { Collection } from 'mongodb';
 import { SortOrder, UserRole } from '../../../src/constants';
 import { Collections, UserDocument } from '../../../src/data';
 import { ConflictError, ValidationError } from '../../../src/errors';
@@ -63,7 +63,7 @@ describe('Default User Manager', () => {
     it('Will return undefined if id is not found', async () => {
       const userManager = new DefaultUserManager(mongoClient, Log);
       await expect(
-        userManager.getUser(faker.database.mongodbObjectId()),
+        userManager.getUser(faker.datatype.uuid()),
       ).resolves.toBeUndefined();
     });
 
@@ -167,7 +167,7 @@ describe('Default User Manager', () => {
       });
       expect(result).toBeDefined();
       expect(result).toEqual({
-        _id: new ObjectId(user.id),
+        _id: user.id,
         emailVerified: false,
         isLockedOut: false,
         memberSince: user.memberSince,
@@ -210,7 +210,7 @@ describe('Default User Manager', () => {
 
       delete result?.passwordHash;
       expect(result).toEqual({
-        _id: new ObjectId(user.id),
+        _id: user.id,
         email,
         emailLowered,
         emailVerified: false,

@@ -1,9 +1,31 @@
-import { hashSync } from 'bcrypt';
+import dayjs from 'dayjs';
 import { faker } from '@faker-js/faker';
 import { generate } from 'generate-password';
-import { type UserDocument } from '../../src/data';
-import { UserRole } from '../../src/constants';
-import { ObjectId } from 'mongodb';
+import { hashSync } from 'bcrypt';
+
+import { KnownCertifications } from '../../src/data/seed-database';
+import { ProfileVisibility, UserRole } from '../../src/constants';
+import { UserDocument } from '../../src/data';
+import { ProfileCertificationData, ProfileData } from '../../src/users';
+
+const experienceLevels = [
+  'Beginner',
+  'Novice',
+  'Experience',
+  'Expert',
+  'Professional',
+];
+const certifications = KnownCertifications.map((c) => ({
+  agency: c.agency,
+  course: c.course,
+}));
+
+function randomCertifications(): ProfileCertificationData[] {
+  return faker.helpers.arrayElements(certifications).map((c) => ({
+    ...c,
+    date: dayjs(faker.date.past(12)).format('YYYY-MM-DD'),
+  }));
+}
 
 export function fakePassword(): string {
   return generate({
@@ -14,6 +36,25 @@ export function fakePassword(): string {
     uppercase: true,
     strict: true,
   });
+}
+
+export function fakeProfile(profile?: Partial<ProfileData>) {
+  return {
+    avatar: profile?.avatar ?? faker.internet.avatar(),
+    bio: profile?.bio ?? faker.lorem.paragraph(5),
+    birthdate:
+      profile?.birthdate ?? dayjs(faker.date.past(70)).format('YYYY-MM-DD'),
+    certifications: profile?.certifications ?? randomCertifications(),
+    experienceLevel:
+      profile?.experienceLevel ?? faker.helpers.arrayElement(experienceLevels),
+    location: profile?.location ?? faker.address.cityName(),
+    name: profile?.name ?? faker.name.fullName(),
+    profileVisibility:
+      profile?.profileVisibility ??
+      faker.helpers.arrayElement(Object.values(ProfileVisibility)),
+    startedDiving:
+      profile?.startedDiving ?? faker.date.past(40).getFullYear().toString(),
+  };
 }
 
 export function fakeUser(
@@ -27,7 +68,7 @@ export function fakeUser(
     data?.username ?? faker.internet.userName(firstName, lastName);
 
   const user: UserDocument = {
-    _id: data?._id,
+    _id: data?._id ?? faker.datatype.uuid(),
     email,
     emailLowered: data?.emailLowered ?? email.toLowerCase(),
     emailVerified: data?.emailVerified ?? true,
@@ -41,6 +82,8 @@ export function fakeUser(
     role: data?.role ?? UserRole.User,
     username,
     usernameLowered: data?.usernameLowered ?? username.toLowerCase(),
+
+    profile: data?.profile ?? fakeProfile(),
   };
 
   if (password !== null) {
@@ -56,17 +99,4 @@ export function fakeUser(
   });
 
   return user;
-}
-
-export function fakeUserWithId(
-  data?: Partial<UserDocument>,
-  password?: string | null,
-): UserDocument {
-  return fakeUser(
-    {
-      ...data,
-      _id: new ObjectId(),
-    },
-    password,
-  );
 }

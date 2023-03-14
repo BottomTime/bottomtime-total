@@ -7,7 +7,7 @@ export function fakeUser(): UserData {
   const lastName = faker.name.lastName();
 
   const data: UserData = {
-    id: faker.database.mongodbObjectId(),
+    id: faker.datatype.uuid(),
     email: faker.internet.email(firstName, lastName),
     emailVerified: true,
     hasPassword: true,

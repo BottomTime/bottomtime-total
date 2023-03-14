@@ -10,6 +10,7 @@ import { fakePassword, fakeUser } from '../../fixtures/fake-user';
 import { mongoClient } from '../../mongo-client';
 import { Collections, type UserDocument } from '../../../src/data';
 import { UserRole } from '../../../src/constants';
+import { DefaultProfile } from '../../../src/users';
 
 const Log = createTestLogger('default-user');
 
@@ -31,6 +32,14 @@ describe('Default User', () => {
 
   afterAll(() => {
     Object.assign(process.env, oldEnv);
+  });
+
+  it('Will return profile', () => {
+    const data = fakeUser();
+    const expected = new DefaultProfile(mongoClient, Log, data);
+    const user = new DefaultUser(mongoClient, Log, data);
+    const actual = user.profile;
+    expect(actual).toEqual(expected);
   });
 
   describe('Changing Username', () => {

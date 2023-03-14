@@ -6,7 +6,7 @@ import { randomBytes } from 'crypto';
 import { assertValid } from '../helpers/validation';
 import { Collections, UserDocument } from '../data';
 import config from '../config';
-import { UserData, User } from './interfaces';
+import { UserData, User, Profile } from './interfaces';
 import { ConflictError } from '../errors';
 import {
   EmailSchema,
@@ -14,12 +14,14 @@ import {
   RoleSchema,
   UsernameSchema,
 } from './validation';
+import { DefaultProfile } from './default-profile';
 
 export class DefaultUser implements User {
+  private _profile: Profile | undefined;
   private readonly users: Collection<UserDocument>;
 
   constructor(
-    mongoClient: MongoClient,
+    private readonly mongoClient: MongoClient,
     private readonly log: Logger,
     private readonly data: UserDocument,
   ) {
@@ -27,7 +29,7 @@ export class DefaultUser implements User {
   }
 
   get id(): string {
-    return this.data._id?.toString() ?? '';
+    return this.data._id;
   }
 
   get username(): string {
@@ -64,6 +66,14 @@ export class DefaultUser implements User {
 
   get lastPasswordChange(): Date | undefined {
     return this.data.lastPasswordChange;
+  }
+
+  get profile(): Profile {
+    if (!this._profile) {
+      this._profile = new DefaultProfile(this.mongoClient, this.log, this.data);
+    }
+
+    return this._profile;
   }
 
   async changeUsername(newUsername: string): Promise<void> {

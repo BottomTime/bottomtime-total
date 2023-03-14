@@ -1,6 +1,7 @@
-import { Document, OptionalId } from 'mongodb';
+import { Document } from 'mongodb';
 
-export interface UserDocument extends OptionalId<Document> {
+export interface UserDocument extends Document {
+  _id: string;
   email?: string;
   emailLowered?: string;
   emailVerified: boolean;
@@ -21,9 +22,16 @@ export interface UserDocument extends OptionalId<Document> {
 
   profile?: {
     avatar?: string;
+    bio?: string;
     birthdate?: string;
-    certifications?: string[];
+    certifications?: {
+      agency?: string;
+      course: string;
+      date?: string;
+    }[];
     experienceLevel?: string;
+    location?: string;
+    profileVisibility: string;
     name?: string;
     startedDiving?: string;
   };

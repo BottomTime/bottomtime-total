@@ -10,7 +10,7 @@ import {
 import { User, UsersSortBy } from '../../../../src/users';
 import { DefaultUser } from '../../../../src/users/default-user';
 import { DefaultUserManager } from '../../../../src/users/default-user-manager';
-import { fakeUser, fakeUserWithId } from '../../../fixtures/fake-user';
+import { fakeUser } from '../../../fixtures/fake-user';
 import { mongoClient } from '../../../mongo-client';
 import { createTestLogger } from '../../../test-logger';
 
@@ -88,8 +88,8 @@ export default function () {
 
   describe('Get User', () => {
     it('Will return info on the requested user', async () => {
-      const data = fakeUserWithId();
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
+      const data = fakeUser();
+      const adminData = fakeUser({ role: UserRole.Admin });
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
@@ -179,7 +179,7 @@ export default function () {
       },
     ].forEach((test) => {
       it(`Will throw a ValidationError if query string is invalid: ${test.name}`, async () => {
-        const adminData = fakeUserWithId({ role: UserRole.Admin });
+        const adminData = fakeUser({ role: UserRole.Admin });
         const admin = new DefaultUser(mongoClient, Log, adminData);
         const userManager = new DefaultUserManager(mongoClient, Log);
         const { req, res } = createMocks({
@@ -202,7 +202,7 @@ export default function () {
 
     it('Will return an error if an exception is thrown', async () => {
       const error = Error('Search fail');
-      const adminData = fakeUserWithId({ role: UserRole.Admin });
+      const adminData = fakeUser({ role: UserRole.Admin });
       const admin = new DefaultUser(mongoClient, Log, adminData);
       const userManager = new DefaultUserManager(mongoClient, Log);
       const { req, res } = createMocks({
