@@ -3,6 +3,7 @@ export const Collections = {
   FriendRequests: 'FriendRequests',
   KnownCertifications: 'KnownCertifications',
   Sessions: 'Sessions',
+  Tanks: 'PreDefinedTanks',
   Users: 'Users',
 } as const;
 

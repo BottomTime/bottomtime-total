@@ -1,5 +1,13 @@
 import { Document } from 'mongodb';
 
+export interface UserDefinedTankSubDocument {
+  _id: string;
+  name: string;
+  material: string;
+  workingPressure: number;
+  volume: number;
+}
+
 export interface UserDocument extends Document {
   _id: string;
   email?: string;
@@ -42,4 +50,6 @@ export interface UserDocument extends Document {
     temperatureUnit?: string;
     weightUnit?: string;
   };
+
+  tanks?: UserDefinedTankSubDocument[];
 }
