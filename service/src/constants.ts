@@ -21,6 +21,11 @@ export const SortOrder = {
   Descending: 'desc',
 } as const;
 
+export const TankMaterial = {
+  Aluminum: 'al',
+  Steel: 'fe',
+} as const;
+
 export const TemperatureUnit = {
   Celsius: 'C',
   Fahrenheit: 'F',

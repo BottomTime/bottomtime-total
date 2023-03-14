@@ -3,10 +3,11 @@ import { faker } from '@faker-js/faker';
 import { generate } from 'generate-password';
 import { hashSync } from 'bcrypt';
 
-import { KnownCertifications } from '../../src/data/seed-database';
 import { ProfileVisibility, UserRole } from '../../src/constants';
 import { UserDocument } from '../../src/data';
 import { ProfileCertificationData, ProfileData } from '../../src/users';
+
+import KnownCertifications from '../../src/data/certifications.json';
 
 const experienceLevels = [
   'Beginner',
