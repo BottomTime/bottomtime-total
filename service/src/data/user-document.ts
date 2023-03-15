@@ -24,7 +24,7 @@ export interface UserDocument extends Document {
   passwordHash?: string;
   passwordResetToken?: string;
   passwordResetTokenExpiration?: Date;
-  role: string;
+  role: number;
   username: string;
   usernameLowered: string;
 

@@ -1,4 +1,4 @@
-import Joi, { object } from 'joi';
+import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 
 import { SortOrder, UserRole } from '../../constants';
@@ -11,6 +11,7 @@ import { assertValid } from '../../helpers/validation';
 import {
   EmailSchema,
   PasswordStrengthSchema,
+  ProfileVisibilitySchema,
   RoleSchema,
   User,
   UsernameSchema,
@@ -37,7 +38,7 @@ const ChangeUsernameBodySchema = Joi.object({
 const CreateUserBodySchema = Joi.object({
   email: EmailSchema,
   password: PasswordStrengthSchema,
-  role: RoleSchema,
+  profileVisibility: ProfileVisibilitySchema,
 });
 
 const SearchUsersQuerySchema = Joi.object({
@@ -65,7 +66,7 @@ export async function changeEmail(
 ) {
   try {
     if (
-      req.user!.role !== UserRole.Admin &&
+      req.user!.role < UserRole.Admin &&
       req.user!.id !== req.selectedUser!.id
     ) {
       throw new ForbiddenError(
@@ -158,7 +159,7 @@ export async function changeUsername(
 ) {
   try {
     if (
-      req.user!.role !== UserRole.Admin &&
+      req.user!.role < UserRole.Admin &&
       req.user!.id !== req.selectedUser!.id
     ) {
       throw new ForbiddenError(
@@ -182,23 +183,16 @@ export async function createUser(
 ) {
   try {
     assertValid(req.params.username, UsernameSchema.required());
-    assertValid(req.body, CreateUserBodySchema);
-
-    if (req.body.role && req.user?.role !== UserRole.Admin) {
-      throw new ForbiddenError(
-        "Request denied. Only administrators are allowed to define a new user's role when creating an account.",
-      );
-    }
+    const { parsed: options } = assertValid(req.body, CreateUserBodySchema);
 
     const user = await req.userManager.createUser({
       username: req.params.username,
-      ...req.body,
+      ...options,
     });
 
     req.log.info('New user account created.', {
       username: user.username,
       email: user.email,
-      role: user.role,
     });
 
     if (!req.user) {

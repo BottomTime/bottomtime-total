@@ -39,7 +39,7 @@ export class DefaultUser implements User {
     return this.data.memberSince;
   }
 
-  get role(): string {
+  get role(): number {
     return this.data.role;
   }
 

@@ -44,7 +44,7 @@ export class DefaultUser implements User {
     return this.data.emailVerified;
   }
 
-  get role(): string {
+  get role(): number {
     return this.data.role;
   }
 
@@ -154,7 +154,7 @@ export class DefaultUser implements User {
     (this.data.emailLowered = lowered), (this.data.emailVerified = false);
   }
 
-  async changeRole(newRole: string): Promise<void> {
+  async changeRole(newRole: number): Promise<void> {
     assertValid(newRole, RoleSchema);
 
     if (newRole === this.data.role) {

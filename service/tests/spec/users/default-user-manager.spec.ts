@@ -2,7 +2,7 @@
 import { faker } from '@faker-js/faker';
 import { compare } from 'bcrypt';
 import { Collection } from 'mongodb';
-import { SortOrder, UserRole } from '../../../src/constants';
+import { ProfileVisibility, SortOrder, UserRole } from '../../../src/constants';
 import { Collections, UserDocument } from '../../../src/data';
 import { ConflictError, ValidationError } from '../../../src/errors';
 import { CreateUserOptions, User, UsersSortBy } from '../../../src/users';
@@ -161,6 +161,9 @@ describe('Default User Manager', () => {
       expect(user.memberSince.valueOf()).toBeCloseTo(new Date().valueOf(), -2);
       expect(user.role).toEqual(UserRole.User);
       expect(user.username).toEqual(username);
+      expect(user.profile.profileVisibility).toEqual(
+        ProfileVisibility.FriendsOnly,
+      );
 
       const result = await Users.findOne({
         usernameLowered: username.toLocaleLowerCase(),
@@ -183,13 +186,13 @@ describe('Default User Manager', () => {
       const email = faker.internet.email();
       const emailLowered = email.toLowerCase();
       const password = fakePassword();
-      const role = UserRole.Admin;
+      const profileVisibility = ProfileVisibility.Public;
       const userManager = new DefaultUserManager(mongoClient, Log);
       const user = await userManager.createUser({
         username,
         email,
-        role,
         password,
+        profileVisibility,
       });
 
       expect(user.email).toEqual(email);
@@ -198,8 +201,9 @@ describe('Default User Manager', () => {
       expect(user.id.length).toBeGreaterThan(1);
       expect(user.isLockedOut).toBe(false);
       expect(user.memberSince.valueOf()).toBeCloseTo(new Date().valueOf(), -2);
-      expect(user.role).toEqual(role);
+      expect(user.role).toEqual(UserRole.User);
       expect(user.username).toEqual(username);
+      expect(user.profile.profileVisibility).toEqual(profileVisibility);
 
       const result = await Users.findOne({
         usernameLowered: username.toLocaleLowerCase(),
@@ -216,9 +220,12 @@ describe('Default User Manager', () => {
         emailVerified: false,
         isLockedOut: false,
         memberSince: user.memberSince,
-        role,
+        role: UserRole.User,
         username,
         usernameLowered,
+        profile: {
+          profileVisibility,
+        },
       });
       await expect(compare(password, passwordHash!)).resolves.toBe(true);
     });

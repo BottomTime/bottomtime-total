@@ -32,8 +32,8 @@ export const TemperatureUnit = {
 } as const;
 
 export const UserRole = {
-  User: 'user',
-  Admin: 'admin',
+  User: 100,
+  Admin: 200,
 } as const;
 
 export const WeightUnit = {

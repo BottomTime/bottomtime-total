@@ -7,7 +7,7 @@ export interface UserData {
   readonly lastLogin?: Date;
   readonly lastPasswordChange?: Date;
   readonly memberSince: Date;
-  readonly role: string;
+  readonly role: number;
   readonly username: string;
 }
 

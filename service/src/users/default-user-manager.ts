@@ -66,7 +66,7 @@ export class DefaultUserManager implements UserManager {
       emailVerified: false,
       isLockedOut: false,
       memberSince: new Date(),
-      role: options.role ?? UserRole.User,
+      role: UserRole.User,
       username,
       usernameLowered,
     };

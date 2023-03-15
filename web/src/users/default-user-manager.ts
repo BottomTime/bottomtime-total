@@ -13,7 +13,7 @@ const UserDataSchema = Joi.object({
   lastLogin: Joi.date(),
   lastPasswordChange: Joi.date(),
   memberSince: Joi.date(),
-  role: Joi.string(),
+  role: Joi.number(),
   username: Joi.string(),
 });
 

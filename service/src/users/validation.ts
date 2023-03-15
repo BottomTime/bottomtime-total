@@ -25,7 +25,6 @@ export const CreateUserOptionsSchema = Joi.object({
   email: EmailSchema,
   password: PasswordStrengthSchema,
   profileVisibility: ProfileVisibilitySchema,
-  role: RoleSchema,
 });
 
 export const ProfileCertificationSchema = Joi.object({

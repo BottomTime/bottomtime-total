@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { UserData } from '@/users';
-import { UserRole } from '@/helpers';
+import { UserRole } from '@/constants';
 
 export function fakeUser(): UserData {
   const firstName = faker.name.firstName();

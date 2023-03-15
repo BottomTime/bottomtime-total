@@ -35,7 +35,7 @@ export interface UserData {
   readonly lastPasswordChange?: Date;
   readonly isLockedOut: boolean;
   readonly memberSince: Date;
-  readonly role: string;
+  readonly role: number;
 }
 
 export interface User extends UserData {
@@ -43,7 +43,7 @@ export interface User extends UserData {
 
   changeUsername(newUsername: string): Promise<void>;
   changeEmail(newEmail: string): Promise<void>;
-  changeRole(newRole: string): Promise<void>;
+  changeRole(newRole: number): Promise<void>;
 
   requestEmailVerificationToken(): Promise<string>;
   verifyEmail(token: string): Promise<boolean>;
@@ -66,7 +66,6 @@ export interface CreateUserOptions {
   email?: string;
   password?: string;
   profileVisibility?: string;
-  role?: string;
 }
 
 export const UsersSortBy = {
@@ -77,7 +76,7 @@ export const UsersSortBy = {
 
 export interface SearchUsersOptions {
   query?: string;
-  role?: string;
+  role?: number;
   skip?: number;
   limit?: number;
   sortBy?: string;

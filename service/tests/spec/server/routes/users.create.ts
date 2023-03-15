@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { createMocks } from 'node-mocks-http';
-import { UserRole } from '../../../../src/constants';
+import { ProfileVisibility, UserRole } from '../../../../src/constants';
 import { ForbiddenError, ValidationError } from '../../../../src/errors';
 import { createUser } from '../../../../src/server/routes/users';
 import { DefaultUser } from '../../../../src/users/default-user';
@@ -17,6 +17,7 @@ export default function () {
     const body = {
       email: faker.internet.email(),
       password: fakePassword(),
+      profileVisibility: ProfileVisibility.Public,
     };
     const data = fakeUser();
     const user = new DefaultUser(mongoClient, Log, data);
@@ -161,88 +162,6 @@ export default function () {
     expect(res._isEndCalled()).toBe(false);
   });
 
-  it('Will not allow regular users to set roles', async () => {
-    const username = faker.internet.userName();
-    const body = {
-      email: faker.internet.email(),
-      password: fakePassword(),
-      role: UserRole.Admin,
-    };
-    const data = fakeUser();
-    const user = new DefaultUser(mongoClient, Log, data);
-    const userManager = new DefaultUserManager(mongoClient, Log);
-    const login = jest.fn();
-    const { req, res } = createMocks({
-      log: Log,
-      user,
-      userManager,
-      body,
-      params: { username },
-      login,
-    });
-    const spy = jest.spyOn(userManager, 'createUser');
-    const next = jest.fn();
-
-    await createUser(req, res, next);
-
-    expect(login).not.toBeCalled();
-    expect(spy).not.toBeCalled();
-    expect(next).toBeCalled();
-    expect(next.mock.calls[0][0]).toBeInstanceOf(ForbiddenError);
-    expect(res._isEndCalled()).toBe(false);
-  });
-
-  it('Will allow admins to set roles', async () => {
-    const username = faker.internet.userName();
-    const body = {
-      email: faker.internet.email(),
-      password: fakePassword(),
-      role: UserRole.Admin,
-    };
-    const data = fakeUser({ role: UserRole.Admin });
-    const user = new DefaultUser(mongoClient, Log, data);
-    const userManager = new DefaultUserManager(mongoClient, Log);
-    const login = jest.fn();
-    const { req, res } = createMocks({
-      log: Log,
-      user,
-      userManager,
-      body,
-      params: { username },
-      login,
-    });
-    const expectedUser = new DefaultUser(
-      mongoClient,
-      Log,
-      fakeUser(
-        {
-          username: username,
-          email: body.email,
-          role: body.role,
-        },
-        body.password,
-      ),
-    );
-    const spy = jest
-      .spyOn(userManager, 'createUser')
-      .mockResolvedValue(expectedUser);
-    const next = jest.fn();
-
-    await createUser(req, res, next);
-
-    expect(login).not.toBeCalled();
-    expect(next).not.toBeCalled();
-    expect(spy).toBeCalledWith({
-      username,
-      ...body,
-    });
-    expect(res._isEndCalled()).toBe(true);
-    expect(res._getStatusCode()).toBe(201);
-    expect(res._getJSONData()).toEqual(
-      JSON.parse(JSON.stringify(expectedUser)),
-    );
-  });
-
   [
     {
       name: 'Bad username',
@@ -257,17 +176,17 @@ export default function () {
       },
     },
     {
-      name: 'Invalid role',
-      username: 'user123',
-      body: {
-        role: 'lord-of-data',
-      },
-    },
-    {
       name: 'Weak password',
       username: 'user123',
       body: {
         password: 'weakness',
+      },
+    },
+    {
+      name: 'Invalid profile visibility',
+      username: 'user123',
+      body: {
+        profileVisibility: 'Just my friends, please',
       },
     },
   ].forEach((test) => {

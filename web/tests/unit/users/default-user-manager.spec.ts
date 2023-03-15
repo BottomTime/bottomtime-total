@@ -2,7 +2,7 @@ import nock from 'nock';
 import request from 'superagent';
 
 import { DefaultUser, DefaultUserManager, UserData } from '@/users';
-import { UserRole } from '@/helpers';
+import { UserRole } from '@/constants';
 
 const AuthUser: UserData = {
   id: 'abc1234',
