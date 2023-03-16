@@ -1,15 +1,20 @@
 <template>
   <div class="control">
     <input
+      :id="id"
       ref="input"
       :class="{ input: true, 'is-danger': errors?.length }"
       :type="password ? 'password' : 'text'"
       :placeholder="placeholder"
       v-model="value"
     />
-    <span v-for="error in errors" :key="error.$uid" class="help is-danger">{{
-      error.$message
-    }}</span>
+    <span
+      :id="`err-${id}-${error.$validator}`"
+      v-for="error in errors"
+      :key="error.$uid"
+      class="help is-danger"
+      >{{ error.$message }}</span
+    >
   </div>
 </template>
 
@@ -27,6 +32,7 @@ import {
 
 interface TextBoxProps {
   autofocus?: boolean;
+  id: string;
   errors?: ErrorObject[];
   modelValue: string | number;
   password?: boolean;

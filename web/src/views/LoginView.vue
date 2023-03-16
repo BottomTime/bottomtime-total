@@ -1,7 +1,11 @@
 <template>
   <PageTitle title="Login" />
   <section class="section">
-    <div v-if="currentUser" class="container">
+    <div
+      v-if="currentUser"
+      id="user-already-authenticated-page"
+      class="container"
+    >
       <p class="content block">
         It looks like you're already signed in. Did you mean to
         <a href="/api/auth/logout">logout</a> and log in with a different

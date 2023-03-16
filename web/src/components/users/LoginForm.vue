@@ -21,7 +21,9 @@
         </FormField>
         <div class="field is-grouped is-grouped-centered">
           <div class="control">
-            <input type="submit" class="button is-primary" value="Login" />
+            <button id="btn-login" class="button is-primary" @click="onSubmit">
+              Login
+            </button>
           </div>
         </div>
       </form>

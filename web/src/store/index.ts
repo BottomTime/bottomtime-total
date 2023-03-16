@@ -15,11 +15,15 @@ export * from './getters';
 export * from './actions';
 export * from './mutations';
 
-export function createStore(): Store<BTState> {
+export function createStore(initState?: BTState): Store<BTState> {
   return vuexCreateStore<BTState>({
-    state: () => ({
-      toasts: {},
-    }),
+    state: () => {
+      return (
+        initState ?? {
+          toasts: {},
+        }
+      );
+    },
     getters,
     mutations,
     actions,

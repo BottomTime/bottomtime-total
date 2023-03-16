@@ -1,4 +1,5 @@
 import { createErrorHandler } from '@/helpers';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createStore } from '@/store';
 
 const store = createStore();
@@ -11,27 +12,6 @@ const NetworkError = {
   address: '::1',
   port: 666,
 };
-
-function createHttpError(status: number): unknown {
-  return {
-    status,
-    response: {
-      req: {
-        method: 'GET',
-        url: 'https://server.com/path',
-        headers: {},
-      },
-      header: {},
-      status,
-      text: JSON.stringify({
-        statusCode: status,
-        message: 'This is an error message.',
-        httpPath: 'https://server.com/path',
-        httpMethod: 'GET',
-      }),
-    },
-  };
-}
 
 describe('withErrorHandling HOF', () => {
   beforeEach(() => {
