@@ -39,6 +39,12 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "welcome" */ '../views/WelcomeView.vue'),
   },
   {
+    path: '/users',
+    name: 'manageUsers',
+    component: () =>
+      import(/* webpackChunkName: "manageUsers" */ '../views/UsersView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: NotFoundView,

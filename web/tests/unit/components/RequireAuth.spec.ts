@@ -2,17 +2,17 @@ import { mount } from '@vue/test-utils';
 import { createStore } from 'vuex';
 
 import { createErrorHandler } from '@/helpers';
+import { DefaultUser } from '@/users';
+import { fakeUser } from '../../fixtures/fake-user';
 import { initialStoreState } from '../../fixtures/store-state';
+import request from 'superagent';
 import RequireAuth from '@/components/RequireAuth.vue';
-import { TestUserManager } from '../../fixtures/test-user-manager';
 import {
   StoreKey,
   UserManagerKey,
   WithErrorHandlingKey,
 } from '@/injection-keys';
-import { fakeUser } from '../../fixtures/fake-user';
-import { DefaultUser } from '@/users';
-import request from 'superagent';
+import { TestUserManager } from '../../fixtures/test-user-manager';
 
 const agent = request.agent();
 

@@ -35,6 +35,13 @@
       >
         <div class="navbar-start">
           <RouterLink class="navbar-item" to="/">Home</RouterLink>
+          <RouterLink
+            v-if="currentUserRole >= UserRole.Admin"
+            class="navbar-item"
+            to="/manageUsers"
+          >
+            Manage Users
+          </RouterLink>
         </div>
 
         <div v-if="currentUser" class="navbar-end">
@@ -67,12 +74,14 @@
 import { computed, ref, onBeforeMount, onUnmounted } from 'vue';
 import router from '@/router';
 import { useStore } from '@/store';
+import { UserRole } from '@/constants';
 
 const dropdownExpanded = ref(false);
 const navbar = ref<HTMLDivElement>();
 const store = useStore();
 
 const currentUser = computed(() => store.state.currentUser);
+const currentUserRole = computed(() => currentUser.value?.role ?? 0);
 
 // Close dropdown on navigation
 router.beforeEach(() => {

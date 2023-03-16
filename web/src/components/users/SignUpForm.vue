@@ -47,13 +47,8 @@ import { useVuelidate } from '@vuelidate/core';
 
 import { Dispatch, useStore } from '@/store';
 import FormField from '@/components/forms/FormField.vue';
-import {
-  inject,
-  PasswordStrengthRegex,
-  Toast,
-  ToastType,
-  UsernameRegex,
-} from '@/helpers';
+import { inject, Toast, ToastType } from '@/helpers';
+import { PasswordStrengthRegex, UsernameRegex } from '@/constants';
 import router from '@/router';
 import TextBox from '@/components/forms/TextBox.vue';
 import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';

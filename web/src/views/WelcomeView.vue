@@ -3,6 +3,7 @@
     title="Welcome!"
     subtitle="...take a moment to setup your account!"
   />
+  <!-- TODO Refactor this to the home page. -->
   <section class="section">
     <div id="welcome-page" class="container">
       <p class="content block">Welcome to BottomTime,</p>

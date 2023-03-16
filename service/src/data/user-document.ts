@@ -32,6 +32,7 @@ export interface UserDocument extends Document {
     avatar?: string;
     bio?: string;
     birthdate?: string;
+    customData?: unknown;
     certifications?: {
       agency?: string;
       course: string;

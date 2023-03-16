@@ -4,7 +4,7 @@ import request from 'superagent';
 import App from './App.vue';
 import { DefaultUserManager } from './users/default-user-manager';
 import router from './router';
-import store from './store';
+import { createStore } from './store';
 import {
   StoreKey,
   UserManagerKey,
@@ -14,6 +14,7 @@ import { createErrorHandler } from './helpers';
 
 const agent = request.agent();
 const userManager = new DefaultUserManager(agent);
+const store = createStore();
 const withErrorHandling = createErrorHandler(store);
 
 createApp(App)

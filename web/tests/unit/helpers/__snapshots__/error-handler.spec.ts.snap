@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`withErrorHandling HOF Default Handlers For ResponseErrors Will logout current user on Unauthorized (401) 1`] = `
+Array [
+  "signOutUser",
+]
+`;
+
+exports[`withErrorHandling HOF Default Handlers For ResponseErrors Will toast on Forbidden (403) 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "You are not authorized to perform the requested action.",
+    "id": "forbidden-error",
+    "message": "Nope!",
+    "type": "is-danger",
+  },
+]
+`;
+
+exports[`withErrorHandling HOF Default Handlers For ResponseErrors Will toast on Not Found (404) 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "The resource you are looking for cannot be found. You action could not be completed.",
+    "id": "not-found-error",
+    "message": "Not Found",
+    "type": "is-danger",
+  },
+]
+`;
+
+exports[`withErrorHandling HOF Default Handlers For ResponseErrors Will toast on Server Error (500) 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "An unexpected server error has occurred. This is a problem on our end but, rest assured, we're on it! Please check back later.",
+    "id": "server-error",
+    "message": "Unexpected Server Error",
+    "type": "is-danger",
+  },
+]
+`;
+
+exports[`withErrorHandling HOF Default Handlers For ResponseErrors Will toast on bad request (400) 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "This is odd. The server rejected your request. This shouldn't happen but you can try checking the values you've entered for correctness and trying again.",
+    "id": "bad-request-error",
+    "message": "Bad Request Error",
+    "type": "is-danger",
+  },
+]
+`;
+
+exports[`withErrorHandling HOF Will toast on Network error 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "An unexpected server error has occurred. This is a problem on our end but, rest assured, we're on it! Please check back later.",
+    "id": "server-error",
+    "message": "Unexpected Server Error",
+    "type": "is-danger",
+  },
+]
+`;
+
+exports[`withErrorHandling HOF Will toast on unknown error 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "Well, this is embarrassing... the code did something it wasn't supposed to. Please contact support and try to describe what you were doing when the error occurred.",
+    "id": "unexpected-exception",
+    "message": "An Unexpected Error Has Occurred",
+    "type": "is-danger",
+  },
+]
+`;
+
+exports[`withErrorHandling HOF Will treat unknown status codes as server errors 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "An unexpected server error has occurred. This is a problem on our end but, rest assured, we're on it! Please check back later.",
+    "id": "server-error",
+    "message": "Unexpected Server Error",
+    "type": "is-danger",
+  },
+]
+`;

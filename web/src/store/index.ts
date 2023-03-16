@@ -1,4 +1,8 @@
-import { createStore, Store, useStore as vuexUseStore } from 'vuex';
+import {
+  createStore as vuexCreateStore,
+  Store,
+  useStore as vuexUseStore,
+} from 'vuex';
 
 import { actions } from './actions';
 import { BTState } from './state';
@@ -11,14 +15,16 @@ export * from './getters';
 export * from './actions';
 export * from './mutations';
 
-export default createStore<BTState>({
-  state: () => ({
-    toasts: {},
-  }),
-  getters,
-  mutations,
-  actions,
-});
+export function createStore(): Store<BTState> {
+  return vuexCreateStore<BTState>({
+    state: () => ({
+      toasts: {},
+    }),
+    getters,
+    mutations,
+    actions,
+  });
+}
 
 export function useStore(): Store<BTState> {
   return vuexUseStore<BTState>(StoreKey);

@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`inject Helper Function Will throw an exception if the requested dependency was not provided 1`] = `"Unable to inject dependency \\"wozzle\\". Object was not provided. Please check application initialization code."`;

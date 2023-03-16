@@ -1,6 +1,10 @@
 <template>
   <div :id="`toast-${toast.id}`" :class="classes">
-    <button class="delete" @click="onClose"></button>
+    <button
+      :id="`btn-dismiss-toast-${toast.id}`"
+      class="delete"
+      @click="onClose"
+    ></button>
     <div>
       <span class="is-size-5">
         <strong>{{ toast.message }}</strong>

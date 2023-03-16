@@ -12,6 +12,7 @@ export interface ProfileData {
   avatar?: string;
   bio?: string;
   birthdate?: string;
+  customData?: unknown;
   certifications?: ProfileCertificationData[];
   experienceLevel?: string;
   location?: string;

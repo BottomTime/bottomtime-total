@@ -56,6 +56,13 @@ export class DefaultProfile implements Profile {
     this.data.profile!.birthdate = value;
   }
 
+  get customData(): unknown | undefined {
+    return this.data.profile?.customData;
+  }
+  set customData(value: unknown | undefined) {
+    this.data.profile!.customData = value;
+  }
+
   get certifications(): ProfileCertificationData[] | undefined {
     return this.data.profile?.certifications;
   }

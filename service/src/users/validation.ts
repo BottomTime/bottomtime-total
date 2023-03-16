@@ -37,6 +37,7 @@ export const ProfileSchema = Joi.object({
   avatar: Joi.string().uri().max(150),
   bio: Joi.string().max(500),
   birthdate: Joi.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  customData: Joi.any(), // TODO: Can I enforce a size limit on this?
   certifications: Joi.array()
     .items(ProfileCertificationSchema.required())
     .max(200),
