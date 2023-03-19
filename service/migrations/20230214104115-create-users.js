@@ -1,3 +1,4 @@
+const DefaultAdminAccountId = '4a055f0a-0a9d-415d-8a36-93319e152055';
 const DefaultAdminEmail = 'admin@bottomti.me';
 const DefaultAdminUsername = 'Admin';
 const DefaultAdminPasswordHash =
@@ -56,6 +57,7 @@ module.exports = {
 
     // 3. Insert a default Admin account so we can sign in and start using the site right away.
     await users.insertOne({
+      _id: DefaultAdminAccountId,
       email: DefaultAdminEmail,
       emailLowered: DefaultAdminEmail.toLowerCase(),
       emailVerified: true,

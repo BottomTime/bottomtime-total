@@ -1,7 +1,7 @@
 <template>
   <div class="columns">
     <div class="column">
-      <form id="form-login" @submit.prevent="onSubmit">
+      <form id="form-login" class="box" @submit.prevent="onSubmit">
         <FormField label="Username or email" control-id="usernameOrEmail">
           <TextBox
             id="usernameOrEmail"

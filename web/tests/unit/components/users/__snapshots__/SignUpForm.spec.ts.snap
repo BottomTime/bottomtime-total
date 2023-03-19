@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sign Up Form Will validate fields 1`] = `"Username is required."`;
+
+exports[`Sign Up Form Will validate fields 2`] = `"Email address is required."`;
+
+exports[`Sign Up Form Will validate fields 3`] = `"Password is required."`;
+
+exports[`Sign Up Form Will validate fields 4`] = `"Please confirm your password."`;
+
+exports[`Sign Up Form Will validate fields 5`] = `"Username can only contain letters, numbers, underscores, dots, and dashes."`;
+
+exports[`Sign Up Form Will validate fields 6`] = `"Email address is invalid."`;
+
+exports[`Sign Up Form Will validate fields 7`] = `"Password does not meet strength requirements."`;
+
+exports[`Sign Up Form Will validate fields 8`] = `"Passwords must match."`;

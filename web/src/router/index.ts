@@ -22,9 +22,34 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/account',
-    name: 'account',
     component: () =>
       import(/* webpackChunkName: "account" */ '../views/AccountView.vue'),
+    children: [
+      {
+        path: '',
+        name: 'accountMain',
+        component: () =>
+          import(
+            /* webpackChunkName: "accountMain" */ '../components/account/AccountMain.vue'
+          ),
+      },
+      {
+        path: 'changePassword',
+        name: 'accountChangePassword',
+        component: () =>
+          import(
+            /* webpackChunkName: "changePassword" */ '../components/account/ChangePasswordForm.vue'
+          ),
+      },
+      {
+        path: 'settings',
+        name: 'accountSettings',
+        component: () =>
+          import(
+            /* webpackChunkName: "accountSettings" */ '../components/account/AccountSettings.vue'
+          ),
+      },
+    ],
   },
   {
     path: '/profile',

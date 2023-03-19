@@ -1,8 +1,12 @@
 <template>
   <PageTitle title="Sign Up" />
   <section class="section">
-    <div v-if="currentUser" class="container">
-      <p>Lol Wat?</p>
+    <div
+      v-if="currentUser"
+      id="user-already-authenticated-page"
+      class="container"
+    >
+      <UserAlreadyLoggedIn />
     </div>
 
     <div v-else id="signup-page" class="container">
@@ -19,6 +23,7 @@
 import { computed } from 'vue';
 import PageTitle from '@/components/PageTitle.vue';
 import SignupForm from '@/components/users/SignUpForm.vue';
+import UserAlreadyLoggedIn from '@/components/users/UserAlreadyLoggedIn.vue';
 import { useStore } from '@/store';
 
 const store = useStore();
