@@ -22,10 +22,12 @@ const certifications = KnownCertifications.map((c) => ({
 }));
 
 function randomCertifications(): ProfileCertificationData[] {
-  return faker.helpers.arrayElements(certifications).map((c) => ({
-    ...c,
-    date: dayjs(faker.date.past(12)).format('YYYY-MM-DD'),
-  }));
+  return faker.helpers
+    .arrayElements(certifications, faker.datatype.number({ min: 1, max: 6 }))
+    .map((c) => ({
+      ...c,
+      date: dayjs(faker.date.past(12)).format('YYYY-MM-DD'),
+    }));
 }
 
 export function fakePassword(): string {
@@ -39,7 +41,7 @@ export function fakePassword(): string {
   });
 }
 
-export function fakeProfile(profile?: Partial<ProfileData>) {
+export function fakeProfile(profile?: Partial<ProfileData>): ProfileData {
   return {
     avatar: profile?.avatar ?? faker.internet.avatar(),
     bio: profile?.bio ?? faker.lorem.paragraph(5),
@@ -85,6 +87,8 @@ export function fakeUser(
     usernameLowered: data?.usernameLowered ?? username.toLowerCase(),
 
     profile: data?.profile ?? fakeProfile(),
+
+    friends: data?.friends,
   };
 
   if (password !== null) {

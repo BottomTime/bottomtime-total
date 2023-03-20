@@ -19,6 +19,9 @@ describe('Default Profile', () => {
 
   it('Will return property values', () => {
     const data = fakeUser();
+    data.profile!.customData = {
+      someFrontEndProperty: 7,
+    };
     const profile = new DefaultProfile(mongoClient, Log, data);
 
     expect(profile.userId).toEqual(data._id);
@@ -28,6 +31,7 @@ describe('Default Profile', () => {
     expect(profile.bio).toEqual(data.profile?.bio);
     expect(profile.birthdate).toEqual(data.profile?.birthdate);
     expect(profile.certifications).toEqual(data.profile?.certifications);
+    expect(profile.customData).toEqual(data.profile?.customData);
     expect(profile.experienceLevel).toEqual(data.profile?.experienceLevel);
     expect(profile.location).toEqual(data.profile?.location);
     expect(profile.name).toEqual(data.profile?.name);
@@ -44,6 +48,7 @@ describe('Default Profile', () => {
     expect(profile.bio).toBeUndefined();
     expect(profile.birthdate).toBeUndefined();
     expect(profile.certifications).toBeUndefined();
+    expect(profile.customData).toBeUndefined();
     expect(profile.experienceLevel).toBeUndefined();
     expect(profile.location).toBeUndefined();
     expect(profile.name).toBeUndefined();
@@ -54,12 +59,16 @@ describe('Default Profile', () => {
   it('Will set property values', () => {
     const originalData = fakeUser();
     const newProfile = fakeProfile();
+    newProfile.customData = {
+      madeUpProperty: 'weeeee!',
+    };
     const profile = new DefaultProfile(mongoClient, Log, originalData);
 
     profile.avatar = newProfile.avatar;
     profile.bio = newProfile.bio;
     profile.birthdate = newProfile.birthdate;
     profile.certifications = newProfile.certifications;
+    profile.customData = newProfile.customData;
     profile.experienceLevel = newProfile.experienceLevel;
     profile.location = newProfile.location;
     profile.name = newProfile.name;
@@ -70,6 +79,7 @@ describe('Default Profile', () => {
     expect(profile.bio).toEqual(newProfile.bio);
     expect(profile.birthdate).toEqual(newProfile.birthdate);
     expect(profile.certifications).toEqual(newProfile.certifications);
+    expect(profile.customData).toEqual(newProfile.customData);
     expect(profile.experienceLevel).toEqual(newProfile.experienceLevel);
     expect(profile.location).toEqual(newProfile.location);
     expect(profile.name).toEqual(newProfile.name);
@@ -151,6 +161,20 @@ describe('Default Profile', () => {
       const data = fakeUser({ profile: test.profile });
       const profile = new DefaultProfile(mongoClient, Log, data);
       await expect(profile.save()).rejects.toThrowError(ValidationError);
+    });
+  });
+
+  it('Will export data as JSON', () => {
+    const data = fakeUser();
+    data.profile!.customData = {
+      includeMe: true,
+    };
+    const profile = new DefaultProfile(mongoClient, Log, data);
+    expect(profile.toJSON()).toEqual({
+      userId: data._id,
+      username: data.username,
+      memberSince: data.memberSince,
+      ...data.profile,
     });
   });
 });

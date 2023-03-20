@@ -4,15 +4,13 @@ import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
 import { v4 as uuid } from 'uuid';
 
 import config from '../config';
-import { SortOrder, UserRole } from '../constants';
+import { ProfileVisibility, SortOrder, UserRole } from '../constants';
 import { Collections, UserDocument } from '../data';
 import { ConflictError } from '../errors';
 import { assertValid } from '../helpers/validation';
 import { DefaultUser } from './default-user';
 import {
   CreateUserOptions,
-  Profile,
-  SearchProfilesOptions,
   SearchUsersOptions,
   User,
   UserManager,
@@ -172,6 +170,19 @@ export class DefaultUserManager implements UserManager {
       };
     }
 
+    if (options?.profileVisibleTo) {
+      query.$or = [
+        {
+          _id: { $ne: options.profileVisibleTo },
+          'profile.profileVisibility': ProfileVisibility.Public,
+        },
+        {
+          'profile.profileVisibility': ProfileVisibility.FriendsOnly,
+          friends: { friendId: options.profileVisibleTo },
+        },
+      ];
+    }
+
     if (options?.sortBy === UsersSortBy.Username) {
       queryOptions.sort = {
         username: options?.sortOrder === SortOrder.Descending ? -1 : 1,
@@ -197,9 +208,5 @@ export class DefaultUserManager implements UserManager {
     });
 
     return results;
-  }
-
-  async searchProfiles(options?: SearchProfilesOptions): Promise<Profile[]> {
-    return [];
   }
 }

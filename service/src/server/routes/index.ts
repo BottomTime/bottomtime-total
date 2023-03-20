@@ -1,4 +1,4 @@
-import { Express, NextFunction } from 'express';
+import { Express } from 'express';
 import Logger from 'bunyan';
 import passport from 'passport';
 

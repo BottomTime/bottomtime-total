@@ -121,7 +121,7 @@ export class DefaultProfile implements Profile {
     );
   }
 
-  toJSON(): ProfileData {
+  toJSON(): Record<string, unknown> {
     return {
       userId: this.userId,
       username: this.username,

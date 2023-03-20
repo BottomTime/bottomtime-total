@@ -5,10 +5,6 @@ export interface ProfileCertificationData {
 }
 
 export interface ProfileData {
-  readonly userId: string;
-  readonly username: string;
-  readonly memberSince: Date;
-
   avatar?: string;
   bio?: string;
   birthdate?: string;
@@ -22,6 +18,10 @@ export interface ProfileData {
 }
 
 export interface Profile extends ProfileData {
+  readonly userId: string;
+  readonly username: string;
+  readonly memberSince: Date;
+
   save(): Promise<void>;
   toJSON(): object;
 }
@@ -59,7 +59,7 @@ export interface User extends UserData {
 
   updateLastLogin(): Promise<void>;
 
-  toJSON(): UserData;
+  toJSON(): Record<string, unknown>;
 }
 
 export interface CreateUserOptions {
@@ -78,14 +78,11 @@ export const UsersSortBy = {
 export interface SearchUsersOptions {
   query?: string;
   role?: number;
+  profileVisibleTo?: string;
   skip?: number;
   limit?: number;
   sortBy?: string;
   sortOrder?: string;
-}
-
-export interface SearchProfilesOptions extends SearchUsersOptions {
-  visibleToUsername?: string;
 }
 
 export interface UserManager {
@@ -99,5 +96,4 @@ export interface UserManager {
   ): Promise<User | undefined>;
 
   searchUsers(options?: SearchUsersOptions): Promise<User[]>;
-  searchProfiles(options?: SearchUsersOptions): Promise<Profile[]>;
 }

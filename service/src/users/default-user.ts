@@ -416,7 +416,7 @@ export class DefaultUser implements User {
     this.data.lastLogin = now;
   }
 
-  toJSON(): UserData {
+  toJSON(): Record<string, unknown> {
     return {
       id: this.id,
       username: this.username,
@@ -427,6 +427,7 @@ export class DefaultUser implements User {
       lastPasswordChange: this.lastPasswordChange,
       isLockedOut: this.isLockedOut,
       memberSince: this.memberSince,
+      profile: this.profile,
       role: this.role,
     };
   }

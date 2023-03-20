@@ -8,6 +8,10 @@ export interface UserDefinedTankSubDocument {
   volume: number;
 }
 
+export interface FriendSubDocument {
+  friendId: string;
+}
+
 export interface UserDocument extends Document {
   _id: string;
   email?: string;
@@ -53,4 +57,6 @@ export interface UserDocument extends Document {
   };
 
   tanks?: UserDefinedTankSubDocument[];
+
+  friends?: FriendSubDocument[];
 }

@@ -8,7 +8,7 @@ import { ConflictError, ValidationError } from '../../../src/errors';
 import { CreateUserOptions, User, UsersSortBy } from '../../../src/users';
 import { DefaultUser } from '../../../src/users/default-user';
 import { DefaultUserManager } from '../../../src/users/default-user-manager';
-import { fakePassword, fakeUser } from '../../fixtures/fake-user';
+import { fakePassword, fakeProfile, fakeUser } from '../../fixtures/fake-user';
 import { mongoClient } from '../../mongo-client';
 import { createTestLogger } from '../../test-logger';
 
@@ -304,8 +304,7 @@ describe('Default User Manager', () => {
       expect(users).toEqual([]);
     });
 
-    // TODO: Improve this test when we actually have profile info to search over.
-    it.skip('Will perform text based searches', async () => {
+    it('Will perform text based searches', async () => {
       const userManager = new DefaultUserManager(mongoClient, Log);
       const users = await userManager.searchUsers({
         query: testUsers[3].username,
@@ -386,6 +385,63 @@ describe('Default User Manager', () => {
         const users = await userManager.searchUsers({ role });
         expect(users).toEqual(testUsers.filter((user) => user.role === role));
       });
+    });
+  });
+
+  describe('Searching Profiles', () => {
+    it('Will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is supplied', async () => {
+      const userData = fakeUser({
+        profile: fakeProfile({
+          profileVisibility: ProfileVisibility.Public,
+        }),
+      });
+
+      const publicUserData = fakeUser({
+        profile: fakeProfile({
+          profileVisibility: ProfileVisibility.Public,
+        }),
+      });
+
+      const privateUserData = fakeUser({
+        profile: fakeProfile({
+          profileVisibility: ProfileVisibility.Private,
+        }),
+      });
+
+      const friendsOnlyWithFriendUserData = fakeUser({
+        profile: fakeProfile({
+          profileVisibility: ProfileVisibility.FriendsOnly,
+        }),
+        friends: [{ friendId: userData._id }],
+      });
+
+      const friendsOnlyWithoutFriendUserData = fakeUser({
+        profile: fakeProfile({
+          profileVisibility: ProfileVisibility.FriendsOnly,
+        }),
+      });
+
+      await Users.insertMany([
+        userData,
+        privateUserData,
+        publicUserData,
+        friendsOnlyWithFriendUserData,
+        friendsOnlyWithoutFriendUserData,
+      ]);
+      const userManager = new DefaultUserManager(mongoClient, Log);
+
+      const expected = [publicUserData, friendsOnlyWithFriendUserData]
+        .sort((a, b) => b.memberSince.valueOf() - a.memberSince.valueOf())
+        .map((data) => new DefaultUser(mongoClient, Log, data));
+
+      const actual = await userManager.searchUsers({
+        profileVisibleTo: userData._id,
+        sortBy: UsersSortBy.MemberSince,
+        sortOrder: SortOrder.Descending,
+      });
+
+      expect(actual).toHaveLength(expected.length);
+      expect(actual).toEqual(expected);
     });
   });
 });
