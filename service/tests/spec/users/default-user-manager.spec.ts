@@ -382,14 +382,22 @@ describe('Default User Manager', () => {
     [UserRole.User, UserRole.Admin].forEach((role) => {
       it(`Will filter by role: ${role}`, async () => {
         const userManager = new DefaultUserManager(mongoClient, Log);
-        const users = await userManager.searchUsers({ role });
-        expect(users).toEqual(testUsers.filter((user) => user.role === role));
+        const expected = testUsers.filter((user) => user.role === role);
+        const actual = await userManager.searchUsers({ role });
+        expect(actual).toEqual(expected);
       });
+    });
+
+    it('Will throw a ValidationError if the query fails validation', async () => {
+      const userManager = new DefaultUserManager(mongoClient, Log);
+      await expect(
+        userManager.searchUsers({ sortBy: 'zodiacSign', skip: -50 }),
+      ).rejects.toThrowError(ValidationError);
     });
   });
 
   describe('Searching Profiles', () => {
-    it('Will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is supplied', async () => {
+    it('Will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is a user Id', async () => {
       const userData = fakeUser({
         profile: fakeProfile({
           profileVisibility: ProfileVisibility.Public,
@@ -441,6 +449,39 @@ describe('Default User Manager', () => {
       });
 
       expect(actual).toHaveLength(expected.length);
+      expect(actual).toEqual(expected);
+    });
+
+    it('Will return all public profiles when profileVisibleTo is set to "public"', async () => {
+      const userData = new Array<UserDocument>(12);
+      for (let i = 0; i < userData.length; i++) {
+        let visibility: string;
+
+        if (i < 4) {
+          visibility = ProfileVisibility.Public;
+        } else if (i < 8) {
+          visibility = ProfileVisibility.FriendsOnly;
+        } else {
+          visibility = ProfileVisibility.Private;
+        }
+
+        userData[i] = fakeUser({
+          profile: fakeProfile({ profileVisibility: visibility }),
+        });
+      }
+      await Users.insertMany([...userData]);
+      const userManager = new DefaultUserManager(mongoClient, Log);
+      const expected = userData
+        .slice(0, 4)
+        .sort((a, b) => b.memberSince.valueOf() - a.memberSince.valueOf())
+        .map((data) => new DefaultUser(mongoClient, Log, data));
+
+      const actual = await userManager.searchUsers({
+        profileVisibleTo: 'public',
+        sortBy: UsersSortBy.MemberSince,
+        sortOrder: SortOrder.Descending,
+      });
+
       expect(actual).toEqual(expected);
     });
   });

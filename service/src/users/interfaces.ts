@@ -78,7 +78,7 @@ export const UsersSortBy = {
 export interface SearchUsersOptions {
   query?: string;
   role?: number;
-  profileVisibleTo?: string;
+  profileVisibleTo?: 'public' | string;
   skip?: number;
   limit?: number;
   sortBy?: string;

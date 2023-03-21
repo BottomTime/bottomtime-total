@@ -6,18 +6,23 @@ import { createTestLogger } from '../../../test-logger';
 import {
   DefaultUser,
   DefaultUserManager,
-  User,
   UserManager,
+  UsersSortBy,
 } from '../../../../src/users';
 import { fakeProfile, fakeUser } from '../../../fixtures/fake-user';
 import {
   getProfile,
   loadUserProfile,
   patchProfile,
+  searchProfiles,
   udpateProfile,
 } from '../../../../src/server/routes/profiles';
 import { mongoClient } from '../../../mongo-client';
-import { ProfileVisibility, UserRole } from '../../../../src/constants';
+import {
+  ProfileVisibility,
+  SortOrder,
+  UserRole,
+} from '../../../../src/constants';
 import { MissingResourceError, ValidationError } from '../../../../src/errors';
 
 const Log = createTestLogger('profiles-routes');
@@ -556,10 +561,181 @@ describe('Profiles Routes', () => {
   });
 
   describe('Searching For Profiles', () => {
-    it('Will return results matching the search', async () => {});
+    let userManager: UserManager;
 
-    it('Will throw a validation error if the query string is invalid', async () => {});
+    beforeEach(() => {
+      userManager = new DefaultUserManager(mongoClient, Log);
+    });
 
-    it('Will throw a server error if the User Manager throws an exception', async () => {});
+    it('Will return results matching the search', async () => {
+      const userData = fakeUser();
+      const user = new DefaultUser(mongoClient, Log, userData);
+      const query = {
+        query: 'smith',
+        sortBy: UsersSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+        skip: 150,
+        limit: 50,
+      };
+      const { req, res } = createMocks({
+        log: Log,
+        user,
+        query,
+        userManager,
+      });
+      const expected = [fakeUser(), fakeUser(), fakeUser()].map(
+        (data) => new DefaultUser(mongoClient, Log, data),
+      );
+      const search = jest
+        .spyOn(userManager, 'searchUsers')
+        .mockResolvedValue(expected);
+      const next = jest.fn();
+
+      await searchProfiles(req, res, next);
+
+      expect(search).toBeCalledWith({
+        ...query,
+        profileVisibleTo: user.id,
+      });
+      expect(next).not.toBeCalled();
+      expect(res._isEndCalled()).toBe(true);
+      expect(res._getStatusCode()).toBe(200);
+      expect(res._getJSONData()).toEqual(
+        expected.map((user) => ({
+          ...user.profile.toJSON(),
+          memberSince: user.memberSince.toISOString(),
+        })),
+      );
+    });
+
+    it('Will search all public profiles if user is anonymous', async () => {
+      const query = {
+        query: 'smith',
+        sortBy: UsersSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+        skip: 150,
+        limit: 50,
+      };
+      const { req, res } = createMocks({
+        log: Log,
+        query,
+        userManager,
+      });
+      const expected = [fakeUser(), fakeUser(), fakeUser()].map(
+        (data) => new DefaultUser(mongoClient, Log, data),
+      );
+      const search = jest
+        .spyOn(userManager, 'searchUsers')
+        .mockResolvedValue(expected);
+      const next = jest.fn();
+
+      await searchProfiles(req, res, next);
+
+      expect(search).toBeCalledWith({
+        ...query,
+        profileVisibleTo: 'public',
+      });
+      expect(next).not.toBeCalled();
+      expect(res._isEndCalled()).toBe(true);
+      expect(res._getStatusCode()).toBe(200);
+      expect(res._getJSONData()).toEqual(
+        expected.map((user) => ({
+          ...user.profile.toJSON(),
+          memberSince: user.memberSince.toISOString(),
+        })),
+      );
+    });
+
+    it('Will search all profiles if user is an admin', async () => {
+      const userData = fakeUser({ role: UserRole.Admin });
+      const user = new DefaultUser(mongoClient, Log, userData);
+      const query = {
+        query: 'smith',
+        sortBy: UsersSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+        skip: 150,
+        limit: 50,
+      };
+      const { req, res } = createMocks({
+        log: Log,
+        user,
+        query,
+        userManager,
+      });
+      const expected = [fakeUser(), fakeUser(), fakeUser()].map(
+        (data) => new DefaultUser(mongoClient, Log, data),
+      );
+      const search = jest
+        .spyOn(userManager, 'searchUsers')
+        .mockResolvedValue(expected);
+      const next = jest.fn();
+
+      await searchProfiles(req, res, next);
+
+      expect(search).toBeCalledWith(query);
+      expect(next).not.toBeCalled();
+      expect(res._isEndCalled()).toBe(true);
+      expect(res._getStatusCode()).toBe(200);
+      expect(res._getJSONData()).toEqual(
+        expected.map((user) => ({
+          ...user.profile.toJSON(),
+          memberSince: user.memberSince.toISOString(),
+        })),
+      );
+    });
+
+    it('Will throw a validation error if the query string is invalid', async () => {
+      const userData = fakeUser();
+      const user = new DefaultUser(mongoClient, Log, userData);
+      const query = {
+        query: 'smith',
+        sortBy: 'birthdate',
+        sortOrder: SortOrder.Ascending,
+        skip: -150,
+        limit: 50,
+      };
+      const { req, res } = createMocks({
+        log: Log,
+        user,
+        query,
+        userManager,
+      });
+      const next = jest.fn();
+
+      await searchProfiles(req, res, next);
+
+      expect(next).toBeCalled();
+      expect(next.mock.lastCall[0]).toBeInstanceOf(ValidationError);
+      expect(res._isEndCalled()).toBe(false);
+    });
+
+    it('Will throw a server error if the User Manager throws an exception', async () => {
+      const error = new Error("Hello. I 'splode!");
+      const query = {
+        query: 'smith',
+        sortBy: UsersSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+        skip: 150,
+        limit: 50,
+      };
+      const { req, res } = createMocks({
+        log: Log,
+        query,
+        userManager,
+      });
+      const search = jest
+        .spyOn(userManager, 'searchUsers')
+        .mockRejectedValue(error);
+      const next = jest.fn();
+
+      await searchProfiles(req, res, next);
+
+      expect(search).toBeCalledWith({
+        ...query,
+        profileVisibleTo: 'public',
+      });
+      expect(res._isEndCalled()).toBe(false);
+      expect(next).toBeCalledWith(error);
+    });
   });
 });

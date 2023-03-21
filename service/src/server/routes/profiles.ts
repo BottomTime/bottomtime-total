@@ -6,20 +6,21 @@ import { ProfileSchema, UsernameSchema, UsersSortBy } from '../../users';
 import { assertValid, isValid } from '../../helpers/validation';
 import { MissingResourceError } from '../../errors';
 
-const SearchProfilesQuerySchema = Joi.object({
-  query: Joi.string(),
+const ProfileNotFoundError = new MissingResourceError(
+  'Unable to find the requested user profile',
+);
+
+const SearchProfilesQueryOptions = Joi.object({
+  query: Joi.string().trim(),
   sortBy: Joi.string().valid(...Object.values(UsersSortBy)),
   sortOrder: Joi.string().valid(...Object.values(SortOrder)),
   skip: Joi.number().min(0),
   limit: Joi.number().positive().max(200),
 });
-const ProfileNotFoundError = new MissingResourceError(
-  'Unable to find the requested user profile',
-);
 
 export async function loadUserProfile(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) {
   try {
@@ -146,4 +147,20 @@ export async function searchProfiles(
   req: Request,
   res: Response,
   next: NextFunction,
-) {}
+) {
+  try {
+    const { parsed } = assertValid(req.query, SearchProfilesQueryOptions);
+
+    if (!req.user) {
+      parsed.profileVisibleTo = 'public';
+    } else if (req.user.role !== UserRole.Admin) {
+      parsed.profileVisibleTo = req.user.id;
+    }
+
+    const users = await req.userManager.searchUsers(parsed);
+
+    res.json(users.map((user) => user.profile));
+  } catch (error) {
+    next(error);
+  }
+}

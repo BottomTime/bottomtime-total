@@ -1,12 +1,19 @@
 import Joi from 'joi';
-import { DateRegex, ProfileVisibility, UserRole } from '../constants';
+import {
+  DateRegex,
+  ProfileVisibility,
+  SortOrder,
+  UserRole,
+} from '../constants';
+import { UsersSortBy } from './interfaces';
 
 export const UsernameSchema = Joi.string()
+  .trim()
   .regex(/^[a-z0-9]+([_.-][a-z0-9]+)*$/i)
   .min(3)
   .max(50);
 
-export const EmailSchema = Joi.string().email().max(50);
+export const EmailSchema = Joi.string().trim().email().max(50);
 
 export const PasswordStrengthSchema = Joi.string()
   .regex(
@@ -14,7 +21,7 @@ export const PasswordStrengthSchema = Joi.string()
   )
   .message('Password did not meet strength requirements.');
 
-export const RoleSchema = Joi.string().valid(...Object.values(UserRole));
+export const RoleSchema = Joi.number().valid(...Object.values(UserRole));
 
 export const ProfileVisibilitySchema = Joi.string().valid(
   ...Object.values(ProfileVisibility),
@@ -27,16 +34,31 @@ export const CreateUserOptionsSchema = Joi.object({
   profileVisibility: ProfileVisibilitySchema,
 });
 
+export const SearchUsersOptionSchema = Joi.object({
+  query: Joi.string().trim(),
+  role: RoleSchema,
+  profileVisibleTo: Joi.string().trim().uuid().allow('public'),
+  skip: Joi.number().integer().min(0),
+  limit: Joi.number().integer().positive().max(500),
+  sortBy: Joi.string()
+    .trim()
+    .valid(...Object.values(UsersSortBy)),
+  sortOrder: Joi.string()
+    .trim()
+    .valid(...Object.values(SortOrder)),
+});
+
 export const ProfileCertificationSchema = Joi.object({
-  agency: Joi.string().max(100),
-  course: Joi.string().max(200).required(),
-  date: Joi.string().regex(DateRegex),
+  agency: Joi.string().trim().max(100),
+  course: Joi.string().trim().max(200).required(),
+  date: Joi.string().trim().regex(DateRegex),
 });
 
 export const ProfileSchema = Joi.object({
-  avatar: Joi.string().uri().max(150).allow(null),
-  bio: Joi.string().max(500).allow(null),
+  avatar: Joi.string().trim().uri().max(150).allow(null),
+  bio: Joi.string().trim().max(500).allow(null),
   birthdate: Joi.string()
+    .trim()
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .allow(null),
   customData: Joi.any()
@@ -53,11 +75,12 @@ export const ProfileSchema = Joi.object({
     .items(ProfileCertificationSchema.required())
     .max(200)
     .allow(null),
-  experienceLevel: Joi.string().max(50).allow(null),
-  location: Joi.string().max(50).allow(null),
-  name: Joi.string().max(100).allow(null),
+  experienceLevel: Joi.string().trim().max(50).allow(null),
+  location: Joi.string().trim().max(50).allow(null),
+  name: Joi.string().trim().max(100).allow(null),
   profileVisibility: ProfileVisibilitySchema.required(),
   startedDiving: Joi.string()
+    .trim()
     .regex(/^\d{4}(-\d{2}(-\d{2})?)?$/)
     .allow(null),
 });

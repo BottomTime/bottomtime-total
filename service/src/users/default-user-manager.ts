@@ -16,7 +16,7 @@ import {
   UserManager,
   UsersSortBy,
 } from './interfaces';
-import { CreateUserOptionsSchema } from './validation';
+import { CreateUserOptionsSchema, SearchUsersOptionSchema } from './validation';
 
 export class DefaultUserManager implements UserManager {
   private readonly users: Collection<UserDocument>;
@@ -43,9 +43,9 @@ export class DefaultUserManager implements UserManager {
   }
 
   async createUser(options: CreateUserOptions): Promise<User> {
-    assertValid(options, CreateUserOptionsSchema);
+    const { parsed } = assertValid(options, CreateUserOptionsSchema);
 
-    const username = options.username.trim();
+    const username = parsed.username;
     const usernameLowered = username.toLowerCase();
 
     const usernameConflict = await this.users.findOne(
@@ -69,14 +69,14 @@ export class DefaultUserManager implements UserManager {
       usernameLowered,
     };
 
-    if (options.profileVisibility) {
+    if (parsed.profileVisibility) {
       data.profile = {
-        profileVisibility: options.profileVisibility,
+        profileVisibility: parsed.profileVisibility,
       };
     }
 
-    if (options.email) {
-      const email = options.email.trim();
+    if (parsed.email) {
+      const email = parsed.email;
       const emailLowered = email.toLowerCase();
 
       const emailConflict = await this.users.findOne(
@@ -94,9 +94,9 @@ export class DefaultUserManager implements UserManager {
       data.emailLowered = emailLowered;
     }
 
-    if (options.password) {
+    if (parsed.password) {
       data.passwordHash = await hash(
-        options.password,
+        parsed.password,
         config.passwordSaltRounds,
       );
     }
@@ -159,49 +159,54 @@ export class DefaultUserManager implements UserManager {
   }
 
   async searchUsers(options?: SearchUsersOptions): Promise<User[]> {
+    const { parsed } = assertValid(options, SearchUsersOptionSchema);
     const query: Filter<UserDocument> = {};
     const queryOptions: FindOptions<UserDocument> = {};
 
-    if (options?.query) {
+    if (parsed?.query) {
       query.$text = {
-        $search: options.query,
+        $search: parsed.query,
         $diacriticSensitive: false,
         $caseSensitive: false,
       };
     }
 
-    if (options?.profileVisibleTo) {
-      query.$or = [
-        {
-          _id: { $ne: options.profileVisibleTo },
-          'profile.profileVisibility': ProfileVisibility.Public,
-        },
-        {
-          'profile.profileVisibility': ProfileVisibility.FriendsOnly,
-          friends: { friendId: options.profileVisibleTo },
-        },
-      ];
+    if (parsed?.profileVisibleTo) {
+      if (parsed.profileVisibleTo === 'public') {
+        query['profile.profileVisibility'] = ProfileVisibility.Public;
+      } else {
+        query.$or = [
+          {
+            _id: { $ne: parsed.profileVisibleTo },
+            'profile.profileVisibility': ProfileVisibility.Public,
+          },
+          {
+            'profile.profileVisibility': ProfileVisibility.FriendsOnly,
+            friends: { friendId: parsed.profileVisibleTo },
+          },
+        ];
+      }
     }
 
-    if (options?.sortBy === UsersSortBy.Username) {
+    if (parsed?.sortBy === UsersSortBy.Username) {
       queryOptions.sort = {
-        username: options?.sortOrder === SortOrder.Descending ? -1 : 1,
+        username: parsed?.sortOrder === SortOrder.Descending ? -1 : 1,
       };
-    } else if (options?.sortBy === UsersSortBy.MemberSince) {
+    } else if (parsed?.sortBy === UsersSortBy.MemberSince) {
       queryOptions.sort = {
-        memberSince: options?.sortOrder === SortOrder.Ascending ? 1 : -1,
+        memberSince: parsed?.sortOrder === SortOrder.Ascending ? 1 : -1,
       };
     }
 
-    if (options?.role) {
-      query.role = options.role;
+    if (parsed?.role) {
+      query.role = parsed.role;
     }
 
     const results: User[] = [];
     const cursor = this.users
       .find(query, queryOptions)
-      .skip(options?.skip ?? 0)
-      .limit(options?.limit ?? 100);
+      .skip(parsed?.skip ?? 0)
+      .limit(parsed?.limit ?? 100);
 
     await cursor.forEach((data) => {
       results.push(new DefaultUser(this.mongoClient, this.log, data));
