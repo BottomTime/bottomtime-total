@@ -99,7 +99,6 @@ describe('Default Profile', () => {
       await profile.save();
     } catch (error) {
       if (error instanceof ValidationError) {
-        console.log(error.errors);
         expect(error).toBeUndefined();
       }
     }

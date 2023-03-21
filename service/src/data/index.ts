@@ -10,4 +10,5 @@ export const Collections = {
 export * from './certification-document';
 export * from './dive-log-document';
 export * from './friend-request-document';
+export * from './tank-document';
 export * from './user-document';

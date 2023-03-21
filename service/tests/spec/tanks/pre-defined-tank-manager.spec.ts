@@ -1,0 +1,72 @@
+import { Collection } from 'mongodb';
+import { Collections, TankDocument } from '../../../src/data';
+import { createTestLogger } from '../../test-logger';
+import { fakeTank } from '../../fixtures/fake-tank';
+import { mongoClient } from '../../mongo-client';
+import {
+  PreDefinedTank,
+  PreDefinedTankManager,
+  TankData,
+  TankManager,
+} from '../../../src/tanks';
+import { ValidationError } from '../../../src/errors';
+
+const Log = createTestLogger('pre-defined-tank-manager');
+
+describe('Pre-Defined Tank Manager', () => {
+  let Tanks: Collection<TankDocument>;
+  let tankManager: TankManager;
+
+  beforeAll(() => {
+    Tanks = mongoClient.db().collection(Collections.Tanks);
+  });
+
+  beforeEach(() => {
+    tankManager = new PreDefinedTankManager(mongoClient, Log);
+  });
+
+  it('Will create a new tank', async () => {
+    const data = fakeTank({ _id: '' });
+    const expected = new PreDefinedTank(mongoClient, Log, data);
+
+    const actual = await tankManager.createTank({
+      name: data.name,
+      material: data.material,
+      volume: data.volume,
+      workingPressure: data.workingPressure,
+    });
+
+    data._id = actual.id;
+    expect(actual).toEqual(expected);
+  });
+
+  it('Will throw a validation error when creating a tank with invalid options', async () => {
+    const options: TankData = {
+      name: 'Tank',
+      material: 'unobtainium',
+      volume: 12.0,
+      workingPressure: -37.5,
+    };
+    await expect(tankManager.createTank(options)).rejects.toThrowError(
+      ValidationError,
+    );
+
+    const results = await Tanks.find({}).toArray();
+    expect(results).toHaveLength(0);
+  });
+
+  it('Will list the predefined tanks, ordered by name', async () => {
+    const data = new Array<TankDocument>(40);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = fakeTank();
+    }
+    const expected = data
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((tank) => new PreDefinedTank(mongoClient, Log, tank));
+    await Tanks.insertMany(data);
+
+    const actual = await tankManager.listTanks();
+
+    expect(actual).toEqual(expected);
+  });
+});

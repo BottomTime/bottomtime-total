@@ -58,4 +58,8 @@ export class UserDefinedTank implements Tank {
   async delete(): Promise<void> {}
 
   async save(): Promise<void> {}
+
+  toJSON(): Record<string, unknown> {
+    return {};
+  }
 }

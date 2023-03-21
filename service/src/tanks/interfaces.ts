@@ -1,5 +1,4 @@
 export interface TankData {
-  readonly id: string;
   name: string;
   material: string;
   volume: number;
@@ -7,14 +6,17 @@ export interface TankData {
 }
 
 export interface Tank extends TankData {
+  readonly id: string;
   readonly preDefined: boolean;
   readonly owner: string | undefined;
 
   delete(): Promise<void>;
   save(): Promise<void>;
+
+  toJSON(): Record<string, unknown>;
 }
 
 export interface TankManager {
-  createTank(data: TankData): Promise<Tank>;
+  createTank(options: TankData): Promise<Tank>;
   listTanks(): Promise<Tank[]>;
 }

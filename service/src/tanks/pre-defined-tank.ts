@@ -4,6 +4,8 @@ import { Collection, MongoClient } from 'mongodb';
 import { Collections } from '../data';
 import { Tank } from './interfaces';
 import { TankDocument } from '../data/tank-document';
+import { assertValid } from '../helpers/validation';
+import { TankSchema } from './validation';
 
 export class PreDefinedTank implements Tank {
   private readonly tanks: Collection<TankDocument>;
@@ -19,7 +21,7 @@ export class PreDefinedTank implements Tank {
   }
 
   get id(): string {
-    return this.data.id;
+    return this.data._id;
   }
 
   get name(): string {
@@ -56,17 +58,36 @@ export class PreDefinedTank implements Tank {
   }
 
   async save(): Promise<void> {
+    const { parsed } = assertValid(this.data, TankSchema);
+
     this.log.debug(`Saving changes to tank "${this.data.name}"...`);
     await this.tanks.updateOne(
       {
         _id: this.id,
       },
       {
-        $set: {},
+        $set: {
+          name: parsed.name,
+          material: parsed.material,
+          volume: parsed.volume,
+          workingPressure: parsed.workingPressure,
+        },
       },
       {
         upsert: true,
       },
     );
+  }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      id: this.id,
+      preDefined: this.preDefined,
+      owner: this.owner,
+      name: this.name,
+      material: this.material,
+      volume: this.volume,
+      workingPressure: this.workingPressure,
+    };
   }
 }
