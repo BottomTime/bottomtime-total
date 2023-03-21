@@ -42,7 +42,7 @@ export function fakePassword(): string {
 }
 
 export function fakeProfile(profile?: Partial<ProfileData>): ProfileData {
-  return {
+  const data: ProfileData = {
     avatar: profile?.avatar ?? faker.internet.avatar(),
     bio: profile?.bio ?? faker.lorem.paragraph(5),
     birthdate:
@@ -58,6 +58,12 @@ export function fakeProfile(profile?: Partial<ProfileData>): ProfileData {
     startedDiving:
       profile?.startedDiving ?? faker.date.past(40).getFullYear().toString(),
   };
+
+  if (profile?.customData) {
+    data.customData = profile.customData;
+  }
+
+  return data;
 }
 
 export function fakeUser(

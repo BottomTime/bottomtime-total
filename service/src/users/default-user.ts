@@ -6,7 +6,7 @@ import { randomBytes } from 'crypto';
 import { assertValid } from '../helpers/validation';
 import { Collections, UserDocument } from '../data';
 import config from '../config';
-import { UserData, User, Profile } from './interfaces';
+import { User, Profile } from './interfaces';
 import { ConflictError } from '../errors';
 import {
   EmailSchema,

@@ -26,6 +26,13 @@ import {
   validateLogin,
 } from './auth';
 import { globalErrorHandler, notFound } from './errors';
+import {
+  getProfile,
+  loadUserProfile,
+  patchProfile,
+  searchProfiles,
+  udpateProfile,
+} from './profiles';
 
 export function configureRouting(app: Express, log: Logger) {
   // Auth routes...
@@ -98,6 +105,19 @@ export function configureRouting(app: Express, log: Logger) {
     loadUserAccount,
     unlockAccount,
   );
+
+  // Profile routes
+  app.route('/profiles').get(searchProfiles);
+  app
+    .route('/profiles/:username')
+    .get(loadUserProfile, getProfile)
+    .put(loadUserProfile, udpateProfile)
+    .patch(loadUserProfile, patchProfile);
+  app
+    .route(`${UserRoute}/profile`)
+    .get(loadUserProfile, getProfile)
+    .put(loadUserProfile, udpateProfile)
+    .patch(loadUserProfile, patchProfile);
 
   // These are global error handlers and must be added last!
   log.debug('[EXPRESS] Adding error handling middleware...');

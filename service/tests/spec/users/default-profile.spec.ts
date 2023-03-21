@@ -7,6 +7,7 @@ import { fakeProfile, fakeUser } from '../../fixtures/fake-user';
 import { mongoClient } from '../../mongo-client';
 import { ProfileVisibility } from '../../../src/constants';
 import { ValidationError } from '../../../src/errors';
+import { randomBytes } from 'crypto';
 
 const Log = createTestLogger('default-profile');
 
@@ -154,6 +155,13 @@ describe('Default Profile', () => {
       profile: {
         profileVisibility: ProfileVisibility.FriendsOnly,
         startedDiving: 'a couple years ago',
+      },
+    },
+    {
+      name: 'Custom data is too big',
+      profile: {
+        profileVisibility: ProfileVisibility.FriendsOnly,
+        customData: randomBytes(800000).toString('base64'),
       },
     },
   ].forEach((test) => {

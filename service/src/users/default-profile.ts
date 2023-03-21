@@ -1,11 +1,25 @@
 import Logger from 'bunyan';
-import { Collection, MongoClient } from 'mongodb';
+import { Collection, MongoClient, UpdateFilter } from 'mongodb';
 
 import { Collections, UserDocument } from '../data';
 import { assertValid } from '../helpers/validation';
 import { Profile, ProfileCertificationData, ProfileData } from './interfaces';
 import { ProfileSchema } from './validation';
 import { ProfileVisibility } from '../constants';
+
+class ProfileReflection implements ProfileData {
+  avatar?: string | undefined;
+  bio?: string | undefined;
+  birthdate?: string | undefined;
+  customData?: unknown;
+  certifications?: ProfileCertificationData[] | undefined;
+  experienceLevel?: string | undefined;
+  location?: string | undefined;
+  name?: string | undefined;
+  profileVisibility = '';
+  startedDiving?: string | undefined;
+}
+const ProfileDataKeys: readonly string[] = Object.keys(new ProfileReflection());
 
 export class DefaultProfile implements Profile {
   private readonly users: Collection<UserDocument>;
@@ -107,18 +121,24 @@ export class DefaultProfile implements Profile {
 
   async save(): Promise<void> {
     const { parsed: profile } = assertValid(this.data.profile, ProfileSchema);
+    const update = {
+      $set: {},
+      $unset: {},
+    };
+
+    for (const key of ProfileDataKeys) {
+      if (profile[key]) {
+        Object.assign(update.$set, { [`profile.${key}`]: profile[key] });
+      } else {
+        Object.assign(update.$unset, { [`profile.${key}`]: true });
+      }
+    }
 
     this.log.debug(
       `Attempting to save profile data for user "${this.data.username}"...`,
+      update,
     );
-    await this.users.updateOne(
-      { _id: this.data._id },
-      {
-        $set: {
-          profile,
-        },
-      },
-    );
+    await this.users.updateOne({ _id: this.data._id }, update);
   }
 
   toJSON(): Record<string, unknown> {
