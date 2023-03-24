@@ -55,13 +55,27 @@ describe('Pre-Defined Tank Manager', () => {
     expect(results).toHaveLength(0);
   });
 
+  it('Will retrieve a tank by its ID', async () => {
+    const data = fakeTank();
+    const expected = new PreDefinedTank(mongoClient, Log, data);
+    await Tanks.insertOne(data);
+    const actual = await tankManager.getTank(expected.id);
+    expect(actual).toEqual(expected);
+  });
+
+  it('Will return undefined when a request is made for a tank that does not exist', async () => {
+    await expect(
+      tankManager.getTank('c5b4990f-e947-4f6e-8aa4-32b90de40446'),
+    ).resolves.toBeUndefined();
+  });
+
   it('Will list the predefined tanks, ordered by name', async () => {
     const data = new Array<TankDocument>(40);
     for (let i = 0; i < data.length; i++) {
       data[i] = fakeTank();
     }
     const expected = data
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => a.name.localeCompare(b.name, 'en-CA'))
       .map((tank) => new PreDefinedTank(mongoClient, Log, tank));
     await Tanks.insertMany(data);
 

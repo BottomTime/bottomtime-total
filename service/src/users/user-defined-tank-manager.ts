@@ -31,6 +31,10 @@ export class UserDefinedTankManager implements TankManager {
     return tank;
   }
 
+  async getTank(id: string): Promise<Tank | undefined> {
+    return undefined;
+  }
+
   async listTanks(): Promise<Tank[]> {
     return (
       this.userData.tanks?.map(

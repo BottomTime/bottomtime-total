@@ -4,7 +4,11 @@ import { NextFunction, Request, Response } from 'express';
 import { ProfileVisibility, SortOrder, UserRole } from '../../constants';
 import { ProfileSchema, UsernameSchema, UsersSortBy } from '../../users';
 import { assertValid, isValid } from '../../helpers/validation';
-import { MissingResourceError } from '../../errors';
+import {
+  ForbiddenError,
+  MissingResourceError,
+  UnauthorizedError,
+} from '../../errors';
 
 const ProfileNotFoundError = new MissingResourceError(
   'Unable to find the requested user profile',
@@ -46,10 +50,13 @@ export async function loadUserProfile(
 
     const visiblity = selectedUser.profile.profileVisibility;
 
-    // Public profiles are always returned and admins can request any profile.
+    // * Public profiles are always returned.
+    // * Admins can request any profile.
+    // * Users can always access their own profiles.
     if (
       visiblity === ProfileVisibility.Public ||
-      req.user?.role === UserRole.Admin
+      req.user?.role === UserRole.Admin ||
+      req.user?.id === selectedUser.id
     ) {
       req.selectedUser = selectedUser;
       next();
@@ -63,6 +70,19 @@ export async function loadUserProfile(
   } catch (error) {
     next(error);
   }
+}
+
+export function requireProfileWritePermission(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const canWrite =
+    (req.user?.role ?? 0) >= UserRole.Admin ||
+    req.user?.id === req.selectedUser!.id;
+
+  if (canWrite) next();
+  else next(ProfileNotFoundError);
 }
 
 export function getProfile(req: Request, res: Response) {

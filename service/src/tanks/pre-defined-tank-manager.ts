@@ -25,6 +25,16 @@ export class PreDefinedTankManager implements TankManager {
     return tank;
   }
 
+  async getTank(id: string): Promise<Tank | undefined> {
+    const data = await this.tanks.findOne({ _id: id });
+
+    if (data) {
+      return new PreDefinedTank(this.mongoClient, this.log, data);
+    }
+
+    return undefined;
+  }
+
   async listTanks(): Promise<Tank[]> {
     const tanks: PreDefinedTank[] = [];
 

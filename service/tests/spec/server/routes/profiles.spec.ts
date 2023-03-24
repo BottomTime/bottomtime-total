@@ -6,6 +6,7 @@ import { createTestLogger } from '../../../test-logger';
 import {
   DefaultUser,
   DefaultUserManager,
+  User,
   UserManager,
   UsersSortBy,
 } from '../../../../src/users';
@@ -14,6 +15,7 @@ import {
   getProfile,
   loadUserProfile,
   patchProfile,
+  requireProfileWritePermission,
   searchProfiles,
   udpateProfile,
 } from '../../../../src/server/routes/profiles';
@@ -221,6 +223,32 @@ describe('Profiles Routes', () => {
       });
     });
 
+    it('Will allow users to request their own profiles', async () => {
+      const userData = fakeUser({
+        profile: {
+          profileVisibility: ProfileVisibility.Private,
+        },
+      });
+      const user = new DefaultUser(mongoClient, Log, userData);
+      const { req, res } = createMocks({
+        log: Log,
+        params: { username: user.username },
+        user,
+        userManager,
+      });
+      const next = jest.fn();
+      const getUser = jest
+        .spyOn(userManager, 'getUserByUsernameOrEmail')
+        .mockResolvedValue(user);
+
+      await loadUserProfile(req, res, next);
+
+      expect(getUser).toBeCalledWith(user.username);
+      expect(next).toBeCalledWith();
+      expect(res._isEndCalled()).toBe(false);
+      expect(req.selectedUser).toEqual(user);
+    });
+
     it('Will return a MissingResource error if user is not found', async () => {
       const user = new DefaultUser(mongoClient, Log, fakeUser());
       const { req, res } = createMocks({
@@ -275,6 +303,94 @@ describe('Profiles Routes', () => {
       await loadUserProfile(req, res, next);
 
       expect(next).toBeCalledWith(error);
+      expect(res._isEndCalled()).toBe(false);
+    });
+  });
+
+  describe('Authorizing write operations', () => {
+    let selectedUser: User;
+
+    beforeEach(() => {
+      selectedUser = new DefaultUser(
+        mongoClient,
+        Log,
+        fakeUser({ role: UserRole.User }),
+      );
+    });
+
+    it('Will not allow anonymous users to modify profile data', () => {
+      const { req, res } = createMocks({
+        log: Log,
+        selectedUser,
+      });
+      const next = jest.fn();
+      requireProfileWritePermission(req, res, next);
+      expect(next).toBeCalled();
+      expect(next.mock.lastCall[0]).toBeInstanceOf(MissingResourceError);
+      expect(res._isEndCalled()).toBe(false);
+    });
+
+    it("Will not allow regular users to modify other users' profiles", () => {
+      const user = new DefaultUser(
+        mongoClient,
+        Log,
+        fakeUser({ role: UserRole.User }),
+      );
+      const { req, res } = createMocks({
+        log: Log,
+        selectedUser,
+        user,
+      });
+      const next = jest.fn();
+      requireProfileWritePermission(req, res, next);
+      expect(next).toBeCalled();
+      expect(next.mock.lastCall[0]).toBeInstanceOf(MissingResourceError);
+      expect(res._isEndCalled()).toBe(false);
+    });
+
+    it('Will allow regular users to modify their own profiles', () => {
+      const { req, res } = createMocks({
+        log: Log,
+        selectedUser,
+        user: selectedUser,
+      });
+      const next = jest.fn();
+      requireProfileWritePermission(req, res, next);
+      expect(next).toBeCalledWith();
+      expect(res._isEndCalled()).toBe(false);
+    });
+
+    it("Will allow admins to modify other users' profiles", () => {
+      const user = new DefaultUser(
+        mongoClient,
+        Log,
+        fakeUser({ role: UserRole.Admin }),
+      );
+      const { req, res } = createMocks({
+        log: Log,
+        selectedUser,
+        user,
+      });
+      const next = jest.fn();
+      requireProfileWritePermission(req, res, next);
+      expect(next).toBeCalledWith();
+      expect(res._isEndCalled()).toBe(false);
+    });
+
+    it('Will allow admins to modify their own profiles', () => {
+      const user = new DefaultUser(
+        mongoClient,
+        Log,
+        fakeUser({ role: UserRole.Admin }),
+      );
+      const { req, res } = createMocks({
+        log: Log,
+        selectedUser: user,
+        user,
+      });
+      const next = jest.fn();
+      requireProfileWritePermission(req, res, next);
+      expect(next).toBeCalledWith();
       expect(res._isEndCalled()).toBe(false);
     });
   });

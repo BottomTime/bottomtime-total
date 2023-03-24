@@ -18,5 +18,6 @@ export interface Tank extends TankData {
 
 export interface TankManager {
   createTank(options: TankData): Promise<Tank>;
+  getTank(id: string): Promise<Tank | undefined>;
   listTanks(): Promise<Tank[]>;
 }

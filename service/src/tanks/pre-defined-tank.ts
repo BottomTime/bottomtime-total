@@ -62,20 +62,9 @@ export class PreDefinedTank implements Tank {
 
     this.log.debug(`Saving changes to tank "${this.data.name}"...`);
     await this.tanks.updateOne(
-      {
-        _id: this.id,
-      },
-      {
-        $set: {
-          name: parsed.name,
-          material: parsed.material,
-          volume: parsed.volume,
-          workingPressure: parsed.workingPressure,
-        },
-      },
-      {
-        upsert: true,
-      },
+      { _id: this.id },
+      { $set: parsed },
+      { upsert: true },
     );
   }
 

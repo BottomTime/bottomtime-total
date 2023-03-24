@@ -67,6 +67,11 @@ class Config {
   readonly mail = new MailConfig();
   readonly sessions = new SessionsConfig();
 
+  /** Max number of friends any one user can have. */
+  get friendsLimit(): number {
+    return toNumber(process.env.BT_FRIENDS_LIMIT, 1000);
+  }
+
   /** True if NODE_ENV === 'production' */
   get isProduction(): boolean {
     return this.env === 'production';

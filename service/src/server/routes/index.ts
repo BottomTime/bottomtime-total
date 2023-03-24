@@ -30,9 +30,19 @@ import {
   getProfile,
   loadUserProfile,
   patchProfile,
+  requireProfileWritePermission,
   searchProfiles,
   udpateProfile,
 } from './profiles';
+import {
+  createPreDefinedTank,
+  deletePreDefinedTank,
+  getPreDefinedTank,
+  listPreDefinedTanks,
+  loadPreDefinedTank,
+  patchPreDefinedTank,
+  updatePreDefinedTank,
+} from './tanks';
 
 export function configureRouting(app: Express, log: Logger) {
   // Auth routes...
@@ -111,13 +121,20 @@ export function configureRouting(app: Express, log: Logger) {
   app
     .route('/profiles/:username')
     .get(loadUserProfile, getProfile)
-    .put(loadUserProfile, udpateProfile)
-    .patch(loadUserProfile, patchProfile);
+    .put(loadUserProfile, requireProfileWritePermission, udpateProfile)
+    .patch(loadUserProfile, requireProfileWritePermission, patchProfile);
+
+  // Pre-Defined Tanks Routes
   app
-    .route(`${UserRoute}/profile`)
-    .get(loadUserProfile, getProfile)
-    .put(loadUserProfile, udpateProfile)
-    .patch(loadUserProfile, patchProfile);
+    .route('/tanks')
+    .get(listPreDefinedTanks)
+    .post(requireAdmin, createPreDefinedTank);
+  app
+    .route('/tanks/:tankId')
+    .get(loadPreDefinedTank, getPreDefinedTank)
+    .put(requireAdmin, loadPreDefinedTank, updatePreDefinedTank)
+    .patch(requireAdmin, loadPreDefinedTank, patchPreDefinedTank)
+    .delete(requireAdmin, loadPreDefinedTank, deletePreDefinedTank);
 
   // These are global error handlers and must be added last!
   log.debug('[EXPRESS] Adding error handling middleware...');

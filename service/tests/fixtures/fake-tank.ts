@@ -7,7 +7,7 @@ export function fakeTank(data?: Partial<TankDocument>): TankDocument {
     _id: data?._id ?? faker.datatype.uuid(),
     name:
       data?.name ??
-      `${faker.company.bsAdjective()} ${faker.company.bsNoun()} tank #${faker.random.numeric(
+      `${faker.company.bsAdjective()} ${faker.company.catchPhraseNoun()} tank #${faker.random.numeric(
         4,
       )}`,
     material:
