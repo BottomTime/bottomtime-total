@@ -95,6 +95,8 @@ export function fakeUser(
     profile: data?.profile ?? fakeProfile(),
 
     friends: data?.friends,
+
+    settings: data?.settings,
   };
 
   if (password !== null) {

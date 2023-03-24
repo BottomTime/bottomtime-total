@@ -75,7 +75,7 @@ describe('Pre-Defined Tank Manager', () => {
       data[i] = fakeTank();
     }
     const expected = data
-      .sort((a, b) => a.name.localeCompare(b.name, 'en-CA'))
+      .sort((a, b) => a.name.localeCompare(b.name))
       .map((tank) => new PreDefinedTank(mongoClient, Log, tank));
     await Tanks.insertMany(data);
 

@@ -6,7 +6,7 @@ import { randomBytes } from 'crypto';
 import { assertValid } from '../helpers/validation';
 import { Collections, UserDocument } from '../data';
 import config from '../config';
-import { User, Profile } from './interfaces';
+import { User, Profile, UserSettings } from './interfaces';
 import { ConflictError } from '../errors';
 import {
   EmailSchema,
@@ -15,9 +15,11 @@ import {
   UsernameSchema,
 } from './validation';
 import { DefaultProfile } from './default-profile';
+import { DefaultUserSettings } from './default-user-settings';
 
 export class DefaultUser implements User {
   private _profile: Profile | undefined;
+  private _settings: UserSettings | undefined;
   private readonly users: Collection<UserDocument>;
 
   constructor(
@@ -74,6 +76,18 @@ export class DefaultUser implements User {
     }
 
     return this._profile;
+  }
+
+  get settings(): UserSettings {
+    if (!this._settings) {
+      this._settings = new DefaultUserSettings(
+        this.mongoClient,
+        this.log,
+        this.data,
+      );
+    }
+
+    return this._settings;
   }
 
   async changeUsername(newUsername: string): Promise<void> {

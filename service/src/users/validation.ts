@@ -1,9 +1,13 @@
 import Joi from 'joi';
 import {
   DateRegex,
+  DepthUnit,
+  PressureUnit,
   ProfileVisibility,
   SortOrder,
+  TemperatureUnit,
   UserRole,
+  WeightUnit,
 } from '../constants';
 import { UsersSortBy } from './interfaces';
 
@@ -83,4 +87,19 @@ export const ProfileSchema = Joi.object({
     .trim()
     .regex(/^\d{4}(-\d{2}(-\d{2})?)?$/)
     .allow(null),
+});
+
+export const UserSettingsSchema = Joi.object({
+  depthUnit: Joi.string()
+    .valid(...Object.values(DepthUnit))
+    .default(DepthUnit.Meters),
+  pressureUnit: Joi.string()
+    .valid(...Object.values(PressureUnit))
+    .default(PressureUnit.Bar),
+  temperatureUnit: Joi.string()
+    .valid(...Object.values(TemperatureUnit))
+    .default(TemperatureUnit.Celsius),
+  weightUnit: Joi.string()
+    .valid(...Object.values(WeightUnit))
+    .default(WeightUnit.Kilograms),
 });

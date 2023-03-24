@@ -26,6 +26,18 @@ export interface Profile extends ProfileData {
   toJSON(): object;
 }
 
+export interface UserSettingsData {
+  depthUnit: string;
+  pressureUnit: string;
+  temperatureUnit: string;
+  weightUnit: string;
+}
+
+export interface UserSettings extends UserSettingsData {
+  save(): Promise<void>;
+  toJSON(): Record<string, unknown>;
+}
+
 export interface UserData {
   readonly username: string;
   readonly email?: string;
@@ -41,6 +53,7 @@ export interface UserData {
 
 export interface User extends UserData {
   readonly profile: Profile;
+  readonly settings: UserSettings;
 
   changeUsername(newUsername: string): Promise<void>;
   changeEmail(newEmail: string): Promise<void>;
