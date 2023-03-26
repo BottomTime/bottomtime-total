@@ -182,7 +182,9 @@ export class DefaultUserManager implements UserManager {
           },
           {
             'profile.profileVisibility': ProfileVisibility.FriendsOnly,
-            friends: { friendId: parsed.profileVisibleTo },
+            friends: {
+              $elemMatch: { friendId: parsed.profileVisibleTo },
+            },
           },
         ];
       }
@@ -205,11 +207,14 @@ export class DefaultUserManager implements UserManager {
     const results: User[] = [];
     const cursor = this.users
       .find(query, queryOptions)
+      .project({ friends: 0 })
       .skip(parsed?.skip ?? 0)
       .limit(parsed?.limit ?? 100);
 
     await cursor.forEach((data) => {
-      results.push(new DefaultUser(this.mongoClient, this.log, data));
+      results.push(
+        new DefaultUser(this.mongoClient, this.log, data as UserDocument),
+      );
     });
 
     return results;

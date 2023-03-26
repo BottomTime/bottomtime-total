@@ -11,7 +11,8 @@ import {
   fakeUser,
 } from '../../../fixtures/fake-user';
 import { mongoClient } from '../../../mongo-client';
-import { ProfileVisibility } from '../../../../src/constants';
+import { ProfileVisibility, SortOrder } from '../../../../src/constants';
+import { UsersSortBy } from '../../../../src/users';
 
 const Log = createTestLogger('profiles-e2e');
 
@@ -158,7 +159,26 @@ describe('Profiles End-To-End Tests', () => {
     await agent.patch(publicProfileRoute).send(profileData).expect(404);
   });
 
-  it('Will allow profile searches', async () => {});
+  it('Will allow profile searches', async () => {
+    const data = new Array<UserDocument>(50);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = fakeUser();
+    }
+    await Users.insertMany(data);
 
-  it.todo('Will search for profiles');
+    const { body: results } = await agent
+      .get('/profiles')
+      .query({
+        sortBy: UsersSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+        limit: 100,
+      })
+      .expect(200);
+
+    expect(results.length).toBeGreaterThan(0);
+    const ids = data.map((user) => user._id);
+    for (const user of results) {
+      expect(ids).toContain(user.userId);
+    }
+  });
 });

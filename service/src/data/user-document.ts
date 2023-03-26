@@ -10,6 +10,24 @@ export interface UserDefinedTankSubDocument {
 
 export interface FriendSubDocument {
   friendId: string;
+  friendsSince: Date;
+}
+
+export interface ProfileSubDocument {
+  avatar?: string;
+  bio?: string;
+  birthdate?: string;
+  customData?: unknown;
+  certifications?: {
+    agency?: string;
+    course: string;
+    date?: string;
+  }[];
+  experienceLevel?: string;
+  location?: string;
+  profileVisibility: string;
+  name?: string;
+  startedDiving?: string;
 }
 
 export interface UserDocument extends Document {
@@ -32,22 +50,7 @@ export interface UserDocument extends Document {
   username: string;
   usernameLowered: string;
 
-  profile?: {
-    avatar?: string;
-    bio?: string;
-    birthdate?: string;
-    customData?: unknown;
-    certifications?: {
-      agency?: string;
-      course: string;
-      date?: string;
-    }[];
-    experienceLevel?: string;
-    location?: string;
-    profileVisibility: string;
-    name?: string;
-    startedDiving?: string;
-  };
+  profile?: ProfileSubDocument;
 
   settings?: {
     depthUnit?: string;

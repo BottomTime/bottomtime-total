@@ -38,6 +38,18 @@ export interface UserSettings extends UserSettingsData {
   toJSON(): Record<string, unknown>;
 }
 
+export interface Friend {
+  readonly friend: Profile;
+  readonly friendsSince: Date;
+}
+
+export interface FriendsManager {
+  addFriend(friend: Profile): Promise<Friend>;
+  isFriendsWith(friendId: string): Promise<boolean>;
+  listFriends(): Promise<Friend[]>;
+  removeFriend(friend: Friend): Promise<void>;
+}
+
 export interface UserData {
   readonly username: string;
   readonly email?: string;

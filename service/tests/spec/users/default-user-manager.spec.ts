@@ -420,7 +420,7 @@ describe('Default User Manager', () => {
         profile: fakeProfile({
           profileVisibility: ProfileVisibility.FriendsOnly,
         }),
-        friends: [{ friendId: userData._id }],
+        friends: [{ friendId: userData._id, friendsSince: new Date() }],
       });
 
       const friendsOnlyWithoutFriendUserData = fakeUser({
@@ -440,7 +440,10 @@ describe('Default User Manager', () => {
 
       const expected = [publicUserData, friendsOnlyWithFriendUserData]
         .sort((a, b) => b.memberSince.valueOf() - a.memberSince.valueOf())
-        .map((data) => new DefaultUser(mongoClient, Log, data));
+        .map((data) => {
+          delete data.friends;
+          return new DefaultUser(mongoClient, Log, data);
+        });
 
       const actual = await userManager.searchUsers({
         profileVisibleTo: userData._id,

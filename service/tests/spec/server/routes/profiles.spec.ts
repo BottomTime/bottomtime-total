@@ -194,7 +194,9 @@ describe('Profiles Routes', () => {
             profile: fakeProfile({
               profileVisibility: testCase.profileVisibility,
             }),
-            friends: testCase.friended ? [{ friendId: user.id }] : [],
+            friends: testCase.friended
+              ? [{ friendId: user.id, friendsSince: new Date() }]
+              : [],
           }),
         );
         const { req, res } = createMocks({

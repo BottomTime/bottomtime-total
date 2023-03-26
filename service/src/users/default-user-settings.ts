@@ -59,6 +59,11 @@ export class DefaultUserSettings implements UserSettings {
       this.data.settings,
       UserSettingsSchema,
     );
+
+    this.log.debug(
+      `Attempting to save profile settings for user "${this.data.username}...`,
+    );
+
     await this.users.updateOne(
       { _id: this.data._id },
       {
