@@ -1,6 +1,7 @@
 import {
   ConflictError,
   ForbiddenError,
+  InvalidOperationError,
   MissingResourceError,
   UnauthorizedError,
   ValidationError,
@@ -71,6 +72,14 @@ export function globalErrorHandler(
     json.message = error.message;
 
     req.log.info('Request was made for missing resource', { err: error });
+  } else if (error instanceof InvalidOperationError) {
+    json.statusCode = 405;
+    json.message = error.message;
+    json.details = error.details;
+
+    req.log.warn('An invalid operation was requested and prevented', {
+      err: error,
+    });
   } else if (error instanceof UnauthorizedError) {
     json.statusCode = 401;
     json.message = error.message;

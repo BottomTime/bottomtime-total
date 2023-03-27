@@ -161,7 +161,9 @@ export class DefaultUserManager implements UserManager {
   async searchUsers(options?: SearchUsersOptions): Promise<User[]> {
     const { parsed } = assertValid(options, SearchUsersOptionSchema);
     const query: Filter<UserDocument> = {};
-    const queryOptions: FindOptions<UserDocument> = {};
+    const queryOptions: FindOptions<UserDocument> = {
+      projection: { friends: 0 },
+    };
 
     if (parsed?.query) {
       query.$text = {
@@ -204,19 +206,13 @@ export class DefaultUserManager implements UserManager {
       query.role = parsed.role;
     }
 
-    const results: User[] = [];
     const cursor = this.users
       .find(query, queryOptions)
-      .project({ friends: 0 })
       .skip(parsed?.skip ?? 0)
       .limit(parsed?.limit ?? 100);
 
-    await cursor.forEach((data) => {
-      results.push(
-        new DefaultUser(this.mongoClient, this.log, data as UserDocument),
-      );
-    });
-
-    return results;
+    return await cursor
+      .map((data) => new DefaultUser(this.mongoClient, this.log, data))
+      .toArray();
   }
 }

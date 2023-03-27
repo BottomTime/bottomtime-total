@@ -64,7 +64,16 @@ export async function loadUserProfile(
     }
 
     // Friends-only profiles can be returned if the current user is a friend.
-    // TODO: Implement this check.
+    if (
+      req.user &&
+      selectedUser.profile.profileVisibility ===
+        ProfileVisibility.FriendsOnly &&
+      (await selectedUser.friends.isFriendsWith(req.user.id))
+    ) {
+      req.selectedUser = selectedUser;
+      next();
+      return;
+    }
 
     next(ProfileNotFoundError);
   } catch (error) {

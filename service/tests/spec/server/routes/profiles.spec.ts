@@ -179,26 +179,23 @@ describe('Profiles Routes', () => {
         succeeds: true,
       },
     ].forEach((testCase) => {
-      it.skip(`Will ${
+      it(`Will ${
         testCase.succeeds ? 'load user' : 'return MissingResource error'
       } if current user has role ${testCase.userData.role} and is ${
         testCase.friended ? '' : 'not '
-      } friended by target user with profile visibility: ${
+      }friended by target with profile visibility: ${
         testCase.profileVisibility
       }`, async () => {
         const user = new DefaultUser(mongoClient, Log, testCase.userData);
-        const expectedUser = new DefaultUser(
-          mongoClient,
-          Log,
-          fakeUser({
-            profile: fakeProfile({
-              profileVisibility: testCase.profileVisibility,
-            }),
-            friends: testCase.friended
-              ? [{ friendId: user.id, friendsSince: new Date() }]
-              : [],
+        const friendData = fakeUser({
+          profile: fakeProfile({
+            profileVisibility: testCase.profileVisibility,
           }),
-        );
+          friends: testCase.friended
+            ? [{ friendId: user.id, friendsSince: new Date() }]
+            : [],
+        });
+        const expectedUser = new DefaultUser(mongoClient, Log, friendData);
         const { req, res } = createMocks({
           log: Log,
           params: { username: expectedUser.username },
@@ -209,6 +206,7 @@ describe('Profiles Routes', () => {
         const getUser = jest
           .spyOn(userManager, 'getUserByUsernameOrEmail')
           .mockResolvedValue(expectedUser);
+        await Users.insertMany([testCase.userData, friendData]);
 
         await loadUserProfile(req, res, next);
 

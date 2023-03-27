@@ -1,3 +1,38 @@
+export const UsersSortBy = {
+  Relevance: 'relevance',
+  Username: 'username',
+  MemberSince: 'memberSince',
+} as const;
+
+export const FriendsSortBy = {
+  ...UsersSortBy,
+  FriendsSince: 'friendsSince',
+} as const;
+
+export interface SearchUsersOptions {
+  query?: string;
+  role?: number;
+  profileVisibleTo?: 'public' | string;
+  skip?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: string;
+}
+
+export interface ListFriendsOptions {
+  skip?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: string;
+}
+
+export interface CreateUserOptions {
+  username: string;
+  email?: string;
+  password?: string;
+  profileVisibility?: string;
+}
+
 export interface ProfileCertificationData {
   agency?: string;
   course: string;
@@ -46,8 +81,8 @@ export interface Friend {
 export interface FriendsManager {
   addFriend(friend: Profile): Promise<Friend>;
   isFriendsWith(friendId: string): Promise<boolean>;
-  listFriends(): Promise<Friend[]>;
-  removeFriend(friend: Friend): Promise<void>;
+  listFriends(options?: ListFriendsOptions): Promise<Friend[]>;
+  removeFriend(friendId: string): Promise<void>;
 }
 
 export interface UserData {
@@ -64,6 +99,7 @@ export interface UserData {
 }
 
 export interface User extends UserData {
+  readonly friends: FriendsManager;
   readonly profile: Profile;
   readonly settings: UserSettings;
 
@@ -85,29 +121,6 @@ export interface User extends UserData {
   updateLastLogin(): Promise<void>;
 
   toJSON(): Record<string, unknown>;
-}
-
-export interface CreateUserOptions {
-  username: string;
-  email?: string;
-  password?: string;
-  profileVisibility?: string;
-}
-
-export const UsersSortBy = {
-  Relevance: 'relevance',
-  Username: 'username',
-  MemberSince: 'memberSince',
-} as const;
-
-export interface SearchUsersOptions {
-  query?: string;
-  role?: number;
-  profileVisibleTo?: 'public' | string;
-  skip?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: string;
 }
 
 export interface UserManager {

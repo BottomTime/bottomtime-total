@@ -6,7 +6,7 @@ import { randomBytes } from 'crypto';
 import { assertValid } from '../helpers/validation';
 import { Collections, UserDocument } from '../data';
 import config from '../config';
-import { User, Profile, UserSettings } from './interfaces';
+import { User, Profile, UserSettings, FriendsManager } from './interfaces';
 import { ConflictError } from '../errors';
 import {
   EmailSchema,
@@ -16,8 +16,10 @@ import {
 } from './validation';
 import { DefaultProfile } from './default-profile';
 import { DefaultUserSettings } from './default-user-settings';
+import { DefaultFriendManager } from './default-friend-manager';
 
 export class DefaultUser implements User {
+  private _friends: FriendsManager | undefined;
   private _profile: Profile | undefined;
   private _settings: UserSettings | undefined;
   private readonly users: Collection<UserDocument>;
@@ -44,6 +46,18 @@ export class DefaultUser implements User {
 
   get emailVerified(): boolean {
     return this.data.emailVerified;
+  }
+
+  get friends(): FriendsManager {
+    if (!this._friends) {
+      this._friends = new DefaultFriendManager(
+        this.mongoClient,
+        this.log,
+        this.id,
+      );
+    }
+
+    return this._friends;
   }
 
   get role(): number {

@@ -9,7 +9,7 @@ import {
   UserRole,
   WeightUnit,
 } from '../constants';
-import { UsersSortBy } from './interfaces';
+import { FriendsSortBy, UsersSortBy } from './interfaces';
 
 export const UsernameSchema = Joi.string()
   .trim()
@@ -50,6 +50,13 @@ export const SearchUsersOptionSchema = Joi.object({
   sortOrder: Joi.string()
     .trim()
     .valid(...Object.values(SortOrder)),
+});
+
+export const ListFriendsOptionsSchema = Joi.object({
+  sortBy: Joi.string().valid(...Object.values(FriendsSortBy)),
+  sortOrder: Joi.string().valid(...Object.values(SortOrder)),
+  skip: Joi.number().integer().min(0),
+  limit: Joi.number().integer().positive().max(200),
 });
 
 export const ProfileCertificationSchema = Joi.object({

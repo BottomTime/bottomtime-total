@@ -1,4 +1,5 @@
 export const Collections = {
+  Applications: 'Applications',
   DiveLogs: 'DiveLogs',
   FriendRequests: 'FriendRequests',
   KnownCertifications: 'KnownCertifications',
@@ -7,6 +8,7 @@ export const Collections = {
   Users: 'Users',
 } as const;
 
+export * from './application-document';
 export * from './certification-document';
 export * from './dive-log-document';
 export * from './friend-request-document';
