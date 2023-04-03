@@ -6,6 +6,6 @@ module.exports = {
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   resetModules: true,
   restoreMocks: true,
-  silent: true, // Suppress console output so we don't clutter up the test output.
+  // silent: true, // Suppress console output so we don't clutter up the test output.
   verbose: true,
 };

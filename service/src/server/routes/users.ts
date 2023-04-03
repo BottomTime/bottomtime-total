@@ -209,6 +209,10 @@ export async function createUser(
   }
 }
 
+export async function getUserExists(req: Request, res: Response) {
+  res.sendStatus(200);
+}
+
 export async function getUser(req: Request, res: Response) {
   res.json(req.selectedUser);
 }

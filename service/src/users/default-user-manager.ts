@@ -85,7 +85,7 @@ export class DefaultUserManager implements UserManager {
       );
       if (emailConflict) {
         throw new ConflictError(
-          `Unable to create user account. Email address "${username}" is already in use.`,
+          `Unable to create user account. Email address "${email}" is already in use.`,
           'email',
         );
       }

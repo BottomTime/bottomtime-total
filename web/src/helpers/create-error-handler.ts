@@ -1,16 +1,15 @@
 import { ResponseError as HttpError } from 'superagent';
-import { Router } from 'vue-router';
 import { Store } from 'vuex';
 
 import { BTState, Dispatch } from '../store';
 import { Toast, ToastType } from './toast';
 
 export type HttpCodeHandlers = {
-  [status: number]: (error: HttpError) => void | Promise<void>;
+  [status: number]: (error: HttpError) => Promise<void>;
 };
 
 export type ErrorHandlingHOF = (
-  fn: () => void | Promise<void>,
+  fn: () => Promise<void>,
   overrides?: HttpCodeHandlers,
 ) => Promise<void>;
 
@@ -105,7 +104,7 @@ export function createErrorHandler(store: Store<BTState>): ErrorHandlingHOF {
     },
   };
 
-  return async (fn, overrides) => {
+  return async (fn, overrides): Promise<void> => {
     try {
       await fn();
     } catch (error) {

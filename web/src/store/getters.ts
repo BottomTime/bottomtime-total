@@ -6,4 +6,8 @@ export const getters: GetterTree<BTState, BTState> = {
   toasts(state): Toast[] {
     return Object.values(state.toasts);
   },
+
+  userDisplayName(state): string | undefined {
+    return state.currentUser?.profile.name ?? state.currentUser?.username;
+  },
 };

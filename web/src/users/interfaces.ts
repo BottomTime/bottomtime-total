@@ -1,3 +1,22 @@
+export interface ProfileCertificationData {
+  agency?: string;
+  course: string;
+  date?: string;
+}
+
+export interface ProfileData {
+  avatar?: string;
+  bio?: string;
+  birthdate?: string;
+  customData?: object;
+  certifications?: ProfileCertificationData[];
+  experienceLevel?: string;
+  location?: string;
+  name?: string;
+  profileVisibility: string;
+  startedDiving?: string;
+}
+
 export interface UserData {
   readonly id: string;
   readonly email?: string;
@@ -9,9 +28,21 @@ export interface UserData {
   readonly memberSince: Date;
   readonly role: number;
   readonly username: string;
+
+  readonly profile: ProfileData;
+}
+
+export interface Profile extends ProfileData {
+  readonly userId: string;
+  readonly username: string;
+  readonly memberSince: Date;
+
+  save(): Promise<void>;
+  toJSON(): object;
 }
 
 export interface User extends UserData {
+  readonly profile: Profile;
   toJSON(): UserData;
 }
 
@@ -26,4 +57,5 @@ export interface UserManager {
   createUser(options: CreateUserOptions): Promise<User>;
   getCurrentUser(): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User>;
+  isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean>;
 }

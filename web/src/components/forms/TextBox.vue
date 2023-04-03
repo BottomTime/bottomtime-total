@@ -6,6 +6,7 @@
       :class="{ input: true, 'is-danger': errors?.length }"
       :type="password ? 'password' : 'text'"
       :placeholder="placeholder"
+      :maxlength="maxlength"
       v-model="value"
     />
     <span
@@ -34,6 +35,7 @@ interface TextBoxProps {
   autofocus?: boolean;
   id: string;
   errors?: ErrorObject[];
+  maxlength?: number;
   modelValue: string | number;
   password?: boolean;
   placeholder?: string;

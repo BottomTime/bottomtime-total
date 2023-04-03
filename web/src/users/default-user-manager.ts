@@ -1,5 +1,7 @@
 import Joi from 'joi';
+import request from 'superagent';
 import { SuperAgentStatic } from 'superagent';
+import { ProfileSchema } from './default-profile';
 
 import { DefaultUser } from './default-user';
 import { CreateUserOptions, User, UserManager } from './interfaces';
@@ -15,6 +17,8 @@ const UserDataSchema = Joi.object({
   memberSince: Joi.date(),
   role: Joi.number(),
   username: Joi.string(),
+
+  profile: ProfileSchema,
 });
 
 export class DefaultUserManager implements UserManager {
@@ -59,5 +63,19 @@ export class DefaultUserManager implements UserManager {
     const { body } = await this.agent.get(`/api/users/${username}`);
     const { value: userData } = UserDataSchema.validate(body);
     return new DefaultUser(this.agent, userData);
+  }
+
+  isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      request
+        .head(`/api/users/${usernameOrEmail}`)
+        .then(() => {
+          resolve(false);
+        })
+        .catch((error) => {
+          if (error.status === 404) resolve(true);
+          else reject(error);
+        });
+    });
   }
 }

@@ -46,7 +46,7 @@
 
         <div v-if="currentUser" class="navbar-end">
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">{{ currentUser.username }}</a>
+            <a class="navbar-link">{{ displayName }}</a>
 
             <div class="navbar-dropdown">
               <RouterLink to="/profile" class="navbar-item">Profile</RouterLink>
@@ -82,6 +82,7 @@ const store = useStore();
 
 const currentUser = computed(() => store.state.currentUser);
 const currentUserRole = computed(() => currentUser.value?.role ?? 0);
+const displayName = computed(() => store.getters.userDisplayName);
 
 // Close dropdown on navigation
 router.beforeEach(() => {

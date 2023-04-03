@@ -1,5 +1,64 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Sign Up Form Will create a new user and sign them in if successful 1`] = `
+Array [
+  Array [
+    "signInUser",
+    Object {
+      "email": "ronny@gmail.com",
+      "emailVerified": false,
+      "hasPassword": true,
+      "id": "fa4fc9f5-f33c-47a9-85ee-079d6cf26524",
+      "isLockedOut": false,
+      "lastLogin": 2023-04-03T21:57:52.420Z,
+      "memberSince": 2023-04-03T21:57:50.591Z,
+      "profile": Object {
+        "location": "Vancouver, CA",
+        "memberSince": "2023-04-03T21:57:50.591Z",
+        "name": "Ron Haskinks",
+        "profileVisibility": "private",
+        "userId": "fa4fc9f5-f33c-47a9-85ee-079d6cf26524",
+        "username": "RonnyJ_82",
+      },
+      "role": 100,
+      "username": "RonnyJ_82",
+    },
+  ],
+  Array [
+    "toast",
+    Object {
+      "id": "account-created",
+      "message": "Your new account has been created!",
+      "type": "is-success",
+    },
+  ],
+]
+`;
+
+exports[`Sign Up Form Will show an error toast if email conflicts 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "Email address is already in use. Do you already have an account? Try logging in or resetting your password.",
+    "id": "create-account-failed",
+    "message": "Unable to create new account",
+    "type": "is-danger",
+  },
+]
+`;
+
+exports[`Sign Up Form Will show an error toast if username conflicts 1`] = `
+Array [
+  "toast",
+  Object {
+    "description": "Username is already taken. Please choose another one.",
+    "id": "create-account-failed",
+    "message": "Unable to create new account",
+    "type": "is-danger",
+  },
+]
+`;
+
 exports[`Sign Up Form Will validate fields 1`] = `"Username is required."`;
 
 exports[`Sign Up Form Will validate fields 2`] = `"Email address is required."`;

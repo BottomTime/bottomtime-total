@@ -1,40 +1,47 @@
 <template>
-  <form id="form-signup" class="box" @submit.prevent="onSubmit">
+  <form id="form-signup" class="box" @submit.prevent="() => {}">
     <FormField label="Username" control-id="username" required>
       <TextBox
         id="username"
-        v-model.trim="v$.username.$model"
+        v-model.trim="data.username"
         :errors="v$.username.$errors"
-        placeholder="Jonny123"
+        :maxlength="50"
       />
       <span class="help"
         >May contain letters, numbers, underscores, dashes, and dots.</span
       >
     </FormField>
 
-    <FormField label="Display Name" control-id="name">
-      <TextBox
-        id="name"
-        v-model.trim="v$.name.$model"
-        placeholder="John Smith"
-      />
-      <span class="help">How your name will appear on the site.</span>
-    </FormField>
-
     <FormField label="Email" control-id="email" required>
       <TextBox
         id="email"
-        v-model.trim="v$.email.$model"
+        v-model.trim="data.email"
         :errors="v$.email.$errors"
-        placeholder="johnsmith@gmail.com"
+        :maxlength="50"
       />
+    </FormField>
+
+    <FormField
+      label="Profile Visibility"
+      control-id="profileVisibility"
+      required
+    >
+      <DropDown
+        id="profileVisibility"
+        v-model="data.profileVisibility"
+        :options="ProfileVisibilityOptions"
+      />
+      <span class="help"
+        >Who will be allowed to view your profile information?</span
+      >
     </FormField>
 
     <FormField label="Password" control-id="password" required>
       <TextBox
         id="password"
-        v-model="v$.password.$model"
+        v-model="data.password"
         :errors="v$.password.$errors"
+        :maxlength="50"
         password
       />
       <span class="icon-text help block">
@@ -59,14 +66,27 @@
     <FormField label="Confirm password" control-id="confirmPassword" required>
       <TextBox
         id="confirmPassword"
-        v-model="v$.confirmPassword.$model"
+        v-model="data.confirmPassword"
         :errors="v$.confirmPassword.$errors"
+        :maxlength="50"
         password
       />
     </FormField>
 
+    <FormField label="Display Name" control-id="name">
+      <TextBox id="name" v-model.trim="data.name" :maxlength="100" />
+      <span class="help">How your name will appear on the site.</span>
+    </FormField>
+
+    <FormField label="Location" control-id="location">
+      <TextBox id="location" v-model.trim="data.location" :maxlength="50" />
+      <span class="help"
+        >Your general location in the world (i.e. city or region)</span
+      >
+    </FormField>
+
     <div class="field is-grouped is-grouped-centered">
-      <button id="btn-signup" class="button is-primary" @click="onSubmit">
+      <button id="btn-signup" class="button is-primary" @click="submit">
         Create Account
       </button>
     </div>
@@ -74,14 +94,21 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref } from 'vue';
+import { defineExpose, computed, reactive, ref } from 'vue';
 import { email, helpers, required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 
 import { Dispatch, useStore } from '@/store';
+import DropDown from '@/components/forms/DropDown.vue';
 import FormField from '@/components/forms/FormField.vue';
 import { inject, Toast, ToastType } from '@/helpers';
-import { PasswordStrengthRegex, UsernameRegex } from '@/constants';
+import {
+  DropDownOption,
+  EmailRegex,
+  PasswordStrengthRegex,
+  ProfileVisibility,
+  UsernameRegex,
+} from '@/constants';
 import PasswordStrengthRequirements from './PasswordStrengthRequirements.vue';
 import router from '@/router';
 import TextBox from '@/components/forms/TextBox.vue';
@@ -89,8 +116,10 @@ import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
 
 interface SignupFormData {
   username: string;
-  name: string;
   email: string;
+  profileVisibility: string;
+  name: string;
+  location: string;
   password: string;
   confirmPassword: string;
 }
@@ -105,6 +134,21 @@ const store = useStore();
 const userManager = inject(UserManagerKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
 
+const ProfileVisibilityOptions: DropDownOption[] = [
+  {
+    text: 'Everyone',
+    value: ProfileVisibility.Public,
+  },
+  {
+    text: 'Only My Dive Buddies',
+    value: ProfileVisibility.FriendsOnly,
+  },
+  {
+    text: 'Just Me',
+    value: ProfileVisibility.Private,
+  },
+];
+
 const showPasswordHelp = ref(false);
 const showPasswordHelpMessage = computed(() =>
   showPasswordHelp.value
@@ -113,11 +157,14 @@ const showPasswordHelpMessage = computed(() =>
 );
 const data = reactive<SignupFormData>({
   username: '',
-  name: '',
   email: '',
+  profileVisibility: ProfileVisibility.FriendsOnly,
+  name: '',
+  location: '',
   password: '',
   confirmPassword: '',
 });
+
 const validation = {
   username: {
     username: helpers.withMessage(
@@ -125,12 +172,30 @@ const validation = {
       helpers.regex(UsernameRegex),
     ),
     required: helpers.withMessage('Username is required.', required),
+    conflicted: helpers.withMessage(
+      'Username is taken.',
+      helpers.withAsync(async (username: string) => {
+        if (username.length < 3) return true;
+        if (!UsernameRegex.test(username)) return true;
+        return await userManager.isUsernameOrEmailAvailable(username);
+      }),
+    ),
   },
-  name: {},
   email: {
     email: helpers.withMessage('Email address is invalid.', email),
     required: helpers.withMessage('Email address is required.', required),
+    conflicted: helpers.withMessage(
+      'Email is already taken. Do you already have an account setup with us?',
+      helpers.withAsync(async (email: string) => {
+        if (email.length < 3) return true;
+        if (!EmailRegex.test(email)) return true;
+        return await userManager.isUsernameOrEmailAvailable(email);
+      }),
+    ),
   },
+  profileVisibility: {},
+  name: {},
+  location: {},
   password: {
     strength: helpers.withMessage(
       'Password does not meet strength requirements.',
@@ -146,26 +211,30 @@ const validation = {
     ),
   },
 };
-const v$ = useVuelidate(validation, data);
+const v$ = useVuelidate(validation, data, { $lazy: true });
 
-async function onSubmit() {
+async function submit() {
   const isValid = await v$.value.$validate();
   if (!isValid) return;
 
   await withErrorHandling(
-    async () => {
+    async (): Promise<void> => {
       const user = await userManager.createUser({
         username: data.username,
         email: data.email,
         password: data.password,
       });
+      user.profile.name = data.name;
+      user.profile.location = data.location;
+      user.profile.profileVisibility = data.profileVisibility;
+      await user.profile.save();
 
       await store.dispatch(Dispatch.SignInUser, user);
       await store.dispatch(Dispatch.Toast, SuccessToast);
       await router.push('/');
     },
     {
-      [409]: async (error) => {
+      [409]: async (error): Promise<void> => {
         const { conflictingField } = error.response?.body.details;
         let description: string | undefined;
 
@@ -191,4 +260,8 @@ async function onSubmit() {
 function togglePasswordHelp() {
   showPasswordHelp.value = !showPasswordHelp.value;
 }
+
+defineExpose({
+  submit,
+});
 </script>

@@ -1,6 +1,14 @@
 import { faker } from '@faker-js/faker';
-import { UserData } from '@/users';
-import { UserRole } from '@/constants';
+import { ProfileData, UserData } from '@/users';
+import { ProfileVisibility, UserRole } from '@/constants';
+
+export function fakeProfile(): ProfileData {
+  return {
+    profileVisibility: faker.helpers.arrayElement(
+      Object.values(ProfileVisibility),
+    ),
+  };
+}
 
 export function fakeUser(): UserData {
   const firstName = faker.name.firstName();
@@ -17,6 +25,7 @@ export function fakeUser(): UserData {
     memberSince: faker.date.past(6),
     role: UserRole.User,
     username: faker.internet.userName(firstName, lastName),
+    profile: fakeProfile(),
   };
 
   return data;

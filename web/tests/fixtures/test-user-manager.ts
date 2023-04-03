@@ -13,4 +13,7 @@ export class TestUserManager implements UserManager {
   getUserByUsername(username: string): Promise<User> {
     throw new Error('Method not implemented.');
   }
+  isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
 }

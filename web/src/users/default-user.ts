@@ -1,11 +1,21 @@
 import { SuperAgentStatic } from 'superagent';
-import { User, UserData } from './interfaces';
+import { DefaultProfile } from './default-profile';
+import { Profile, User, UserData } from './interfaces';
 
 export class DefaultUser implements User {
+  private _profile: Profile | undefined;
+
   constructor(
     private readonly agent: SuperAgentStatic,
     private readonly data: UserData,
   ) {}
+
+  get profile(): Profile {
+    if (!this._profile) {
+      this._profile = new DefaultProfile(this.agent, this.data);
+    }
+    return this._profile;
+  }
 
   get id(): string {
     return this.data.id;

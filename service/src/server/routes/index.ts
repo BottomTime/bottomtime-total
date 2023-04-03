@@ -9,6 +9,7 @@ import {
   changeUsername,
   createUser,
   getUser,
+  getUserExists,
   loadUserAccount,
   lockAccount,
   requestPasswordResetEmail,
@@ -64,6 +65,7 @@ export function configureRouting(app: Express, log: Logger) {
   app.get('/users', requireAdmin, searchUsers);
   app
     .route(UserRoute)
+    .head(loadUserAccount, getUserExists)
     .get(requireAdmin, loadUserAccount, getUser)
     .put(createUser);
   app.post(

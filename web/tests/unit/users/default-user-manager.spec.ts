@@ -1,8 +1,8 @@
-import nock from 'nock';
 import request from 'superagent';
 
 import { DefaultUser, DefaultUserManager, UserData } from '@/users';
-import { UserRole } from '@/constants';
+import { ProfileVisibility, UserRole } from '@/constants';
+import { scope } from '../../utils/scope';
 
 const AuthUser: UserData = {
   id: 'abc1234',
@@ -14,6 +14,9 @@ const AuthUser: UserData = {
   memberSince: new Date(),
   role: UserRole.User,
   username: 'dman_42',
+  profile: {
+    profileVisibility: ProfileVisibility.FriendsOnly,
+  },
 };
 
 describe('Default User Manager', () => {
@@ -23,7 +26,7 @@ describe('Default User Manager', () => {
     const agent = request.agent();
     const userManager = new DefaultUserManager(agent);
     const expected = new DefaultUser(agent, AuthUser);
-    nock('http://localhost:80')
+    scope
       .post('/api/auth/login', { usernameOrEmail: username, password })
       .reply(200, AuthUser);
 
@@ -36,12 +39,10 @@ describe('Default User Manager', () => {
     const agent = request.agent();
     const userManager = new DefaultUserManager(agent);
     const expected = new DefaultUser(agent, AuthUser);
-    nock('http://localhost:80')
-      .get('/api/auth/me')
-      .reply(200, {
-        anonymous: false,
-        ...AuthUser,
-      });
+    scope.get('/api/auth/me').reply(200, {
+      anonymous: false,
+      ...AuthUser,
+    });
 
     const actual = await userManager.getCurrentUser();
 
@@ -51,7 +52,7 @@ describe('Default User Manager', () => {
   it('Will return undefined if getCurrentUser is called anonymously', async () => {
     const agent = request.agent();
     const userManager = new DefaultUserManager(agent);
-    nock('http://localhost:80').get('/api/auth/me').reply(200, {
+    scope.get('/api/auth/me').reply(200, {
       anonymous: true,
       id: 'fwehfawpoefhwpohf',
     });
@@ -66,7 +67,7 @@ describe('Default User Manager', () => {
     const agent = request.agent();
     const userManager = new DefaultUserManager(agent);
     const expected = new DefaultUser(agent, AuthUser);
-    nock('http://localhost:80')
+    scope
       .put(`/api/users/${username}`, { email, password })
       .reply(201, expected);
 
@@ -79,10 +80,7 @@ describe('Default User Manager', () => {
     const agent = request.agent();
     const userManager = new DefaultUserManager(agent);
     const expected = new DefaultUser(agent, AuthUser);
-    nock('http://localhost:80')
-      .get(`/api/users/${AuthUser.username}`)
-      .reply(200, AuthUser);
-
+    scope.get(`/api/users/${AuthUser.username}`).reply(200, AuthUser);
     const actual = await userManager.getUserByUsername(AuthUser.username);
 
     expect(actual).toEqual(expected);
