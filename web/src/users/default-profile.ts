@@ -3,22 +3,22 @@ import { SuperAgentStatic } from 'superagent';
 import { Profile, ProfileCertificationData, UserData } from './interfaces';
 
 export const ProfileSchema = Joi.object({
-  avatar: Joi.string(),
-  bio: Joi.string(),
-  birthdate: Joi.string(),
+  avatar: Joi.string().trim(),
+  bio: Joi.string().trim(),
+  birthdate: Joi.string().trim(),
   customData: Joi.any(),
   certifications: Joi.array().items(
     Joi.object({
-      agency: Joi.string(),
-      course: Joi.string(),
-      date: Joi.string(),
+      agency: Joi.string().trim(),
+      course: Joi.string().trim(),
+      date: Joi.string().trim(),
     }),
   ),
-  experienceLevel: Joi.string(),
-  location: Joi.string(),
-  name: Joi.string(),
-  profileVisibility: Joi.string(),
-  startedDiving: Joi.string(),
+  experienceLevel: Joi.string().trim(),
+  location: Joi.string().trim(),
+  name: Joi.string().trim(),
+  profileVisibility: Joi.string().trim(),
+  startedDiving: Joi.string().trim(),
 });
 
 export class DefaultProfile implements Profile {
@@ -112,7 +112,9 @@ export class DefaultProfile implements Profile {
   }
 
   toJSON(): object {
-    const { value } = ProfileSchema.validate(this.data.profile);
+    const { value } = ProfileSchema.validate(this.data.profile, {
+      stripUnknown: true,
+    });
     return value;
   }
 }

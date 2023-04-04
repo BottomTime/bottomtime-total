@@ -155,7 +155,7 @@ describe('Sign Up Form', () => {
     expect(dispatch.mock.lastCall).toMatchSnapshot();
   });
 
-  it.only('Will create a new user and sign them in if successful', async () => {
+  it('Will create a new user and sign them in if successful', async () => {
     const username = 'RonnyJ_82';
     const email = 'ronny@gmail.com';
     const password = '(H*(*H982nijef2008390ujdo)*[';
@@ -174,7 +174,7 @@ describe('Sign Up Form', () => {
 
     const dispatch = jest.spyOn(store, 'dispatch').mockResolvedValue(undefined);
     const push = jest.spyOn(router, 'push');
-    scope.put(`/api/users/${username}`).reply(201, {
+    scope.put(`/api/users/${username}`, { email, password }).reply(201, {
       id: 'fa4fc9f5-f33c-47a9-85ee-079d6cf26524',
       username: 'RonnyJ_82',
       email: 'ronny@gmail.com',
@@ -191,15 +191,20 @@ describe('Sign Up Form', () => {
       },
       role: 100,
     });
-
-    scope.put(`/api/profiles/${username}`).reply(200, {
-      userId: 'fa4fc9f5-f33c-47a9-85ee-079d6cf26524',
-      username: 'RonnyJ_82',
-      memberSince: '2023-04-03T21:57:50.591Z',
-      profileVisibility: 'private',
-      location: 'Vancouver, CA',
-      name: 'Ron Haskinks',
-    });
+    scope
+      .put(`/api/profiles/${username}`, {
+        name,
+        profileVisibility: ProfileVisibility.Private,
+        location,
+      })
+      .reply(200, {
+        userId: 'fa4fc9f5-f33c-47a9-85ee-079d6cf26524',
+        username: 'RonnyJ_82',
+        memberSince: '2023-04-03T21:57:50.591Z',
+        profileVisibility: 'private',
+        location: 'Vancouver, CA',
+        name: 'Ron Haskinks',
+      });
 
     await wrapper.get('input#username').setValue(username);
     await wrapper.get('input#email').setValue(email);
