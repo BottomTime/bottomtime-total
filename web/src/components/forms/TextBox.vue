@@ -3,7 +3,7 @@
     <input
       :id="id"
       ref="input"
-      :class="{ input: true, 'is-danger': errors?.length }"
+      :class="inputClasses"
       :type="password ? 'password' : 'text'"
       :placeholder="placeholder"
       :maxlength="maxlength"
@@ -59,6 +59,12 @@ const value = computed({
     emit('update:modelValue', value);
   },
 });
+
+const inputClasses = computed(() => ({
+  input: true,
+  'is-danger': props.errors?.length,
+  'is-small': true,
+}));
 
 function focus() {
   input.value?.focus();

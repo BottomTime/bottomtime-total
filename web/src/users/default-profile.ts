@@ -22,6 +22,12 @@ export const ProfileSchema = Joi.object({
 });
 
 export class DefaultProfile implements Profile {
+  private static readonly JsonOmitKeys = new Set([
+    'userId',
+    'memberSince',
+    'username',
+  ]);
+
   constructor(
     private readonly agent: SuperAgentStatic,
     private readonly data: UserData,
@@ -112,9 +118,11 @@ export class DefaultProfile implements Profile {
   }
 
   toJSON(): object {
-    const { value } = ProfileSchema.validate(this.data.profile, {
-      stripUnknown: true,
+    const { value: parsed } = ProfileSchema.validate(this.data.profile);
+    Object.entries(parsed).forEach(([key, value]) => {
+      if (value === '' || DefaultProfile.JsonOmitKeys.has(key))
+        delete parsed[key];
     });
-    return value;
+    return parsed;
   }
 }

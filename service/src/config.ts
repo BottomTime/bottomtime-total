@@ -67,6 +67,16 @@ class Config {
   readonly mail = new MailConfig();
   readonly sessions = new SessionsConfig();
 
+  /** The email address at which the site administrator(s) can be contacted. */
+  get adminEmail(): string {
+    return process.env.BT_ADMIN_EMAIL ?? 'admin@bottomti.me';
+  }
+
+  /** The base URL at which the site will respond to requests. */
+  get baseUrl(): string {
+    return process.env.BT_BASE_URL ?? 'http://localhost:8080/';
+  }
+
   /** Max number of friends any one user can have. */
   get friendsLimit(): number {
     return toNumber(process.env.BT_FRIENDS_LIMIT, 1000);

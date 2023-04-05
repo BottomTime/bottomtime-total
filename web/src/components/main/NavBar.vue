@@ -50,8 +50,15 @@
 
             <div class="navbar-dropdown">
               <RouterLink to="/profile" class="navbar-item">Profile</RouterLink>
+              <hr class="navbar-divider" />
               <RouterLink to="/account" class="navbar-item"
                 >Manage Account</RouterLink
+              >
+              <RouterLink to="/account/changePassword" class="navbar-item"
+                >Change Password</RouterLink
+              >
+              <RouterLink to="/account/settings" class="navbar-item"
+                >Settings</RouterLink
               >
               <hr class="navbar-divider" />
               <a href="/api/auth/logout" class="navbar-item">Logout</a>

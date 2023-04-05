@@ -17,7 +17,7 @@ import { deserializeUser, loginWithPassword, serializeUser } from './passport';
 export async function createServer(
   createDependencies: () => Promise<ServerDependencies>,
 ): Promise<Express> {
-  const { log, mongoClient, tankManager, userManager } =
+  const { log, mail, mongoClient, tankManager, userManager } =
     await createDependencies();
   const app = express();
 
@@ -74,6 +74,7 @@ export async function createServer(
       user: req.user?.username,
       useragent: req.useragent?.source,
     });
+    req.mail = mail;
     req.tankManager = tankManager;
     req.userManager = userManager;
 

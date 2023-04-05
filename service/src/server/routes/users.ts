@@ -17,6 +17,8 @@ import {
   UsernameSchema,
   UsersSortBy,
 } from '../../users';
+import { WelcomeEmailTemplate } from '../../email';
+import config from '../../config';
 
 const ChangeEmailBodySchema = Joi.object({
   newEmail: Joi.string().required(),
@@ -195,11 +197,41 @@ export async function createUser(
       email: user.email,
     });
 
+    // Sign in the new user if they are not currently logged in as someone else.
     if (!req.user) {
       await loginUser(req, user);
       await user.updateLastLogin();
       req.log.info(
         `User has been logged into their newly-created account: "${user.username}"`,
+      );
+    }
+
+    // Send the new user a welcome email.
+    if (user.email) {
+      req.log.debug(
+        `Requesting email verification token for "${user.email}"...`,
+      );
+      const [verifyEmailToken, mailTemplate] = await Promise.all([
+        user.requestEmailVerificationToken(),
+        WelcomeEmailTemplate.create(),
+      ]);
+
+      req.log.debug(`Generating welcome email body for "${user.email}"...`);
+      const messageBody = mailTemplate.render({
+        adminEmail: config.adminEmail,
+        baseUrl: config.baseUrl,
+        recipientEmail: user.email,
+        recipientName: user.username,
+        verifyEmailToken,
+        year: new Date().getFullYear(),
+      });
+
+      req.log.debug(`Sending welcome email to "${user.email}"...`);
+      req.log.debug(req.mail);
+      await req.mail.sendMail(
+        { to: user.email },
+        'Welcome to Bottom Time!',
+        messageBody,
       );
     }
 

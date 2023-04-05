@@ -67,7 +67,7 @@ export const ProfileCertificationSchema = Joi.object({
 
 export const ProfileSchema = Joi.object({
   avatar: Joi.string().trim().uri().max(150).allow(null),
-  bio: Joi.string().trim().max(500).allow(null),
+  bio: Joi.string().trim().max(1000).allow(null),
   birthdate: Joi.string()
     .trim()
     .regex(/^\d{4}-\d{2}-\d{2}$/)

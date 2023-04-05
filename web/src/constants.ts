@@ -17,6 +17,21 @@ export const ProfileVisibility = {
   Public: 'public',
 } as const;
 
+export const ProfileVisibilityOptions: DropDownOption[] = [
+  {
+    text: 'Everyone',
+    value: ProfileVisibility.Public,
+  },
+  {
+    text: 'Only My Dive Buddies',
+    value: ProfileVisibility.FriendsOnly,
+  },
+  {
+    text: 'Just Me',
+    value: ProfileVisibility.Private,
+  },
+];
+
 export const UsernameRegex = /^[a-z0-9]+([_.-][a-z0-9]+)*$/i;
 
 export const UserRole = {

@@ -103,10 +103,10 @@ import DropDown from '@/components/forms/DropDown.vue';
 import FormField from '@/components/forms/FormField.vue';
 import { inject, Toast, ToastType } from '@/helpers';
 import {
-  DropDownOption,
   EmailRegex,
   PasswordStrengthRegex,
   ProfileVisibility,
+  ProfileVisibilityOptions,
   UsernameRegex,
 } from '@/constants';
 import PasswordStrengthRequirements from './PasswordStrengthRequirements.vue';
@@ -133,21 +133,6 @@ const SuccessToast: Toast = {
 const store = useStore();
 const userManager = inject(UserManagerKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
-
-const ProfileVisibilityOptions: DropDownOption[] = [
-  {
-    text: 'Everyone',
-    value: ProfileVisibility.Public,
-  },
-  {
-    text: 'Only My Dive Buddies',
-    value: ProfileVisibility.FriendsOnly,
-  },
-  {
-    text: 'Just Me',
-    value: ProfileVisibility.Private,
-  },
-];
 
 const showPasswordHelp = ref(false);
 const showPasswordHelpMessage = computed(() =>

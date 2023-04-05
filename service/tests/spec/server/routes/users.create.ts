@@ -1,21 +1,31 @@
 import { faker } from '@faker-js/faker';
 import { createMocks } from 'node-mocks-http';
-import { ProfileVisibility, UserRole } from '../../../../src/constants';
-import { ForbiddenError, ValidationError } from '../../../../src/errors';
+import { ProfileVisibility } from '../../../../src/constants';
+import { ValidationError } from '../../../../src/errors';
 import { createUser } from '../../../../src/server/routes/users';
 import { DefaultUser } from '../../../../src/users/default-user';
 import { DefaultUserManager } from '../../../../src/users/default-user-manager';
 import { fakePassword, fakeUser } from '../../../fixtures/fake-user';
 import { mongoClient } from '../../../mongo-client';
 import { createTestLogger } from '../../../test-logger';
+import { TestMailer } from '../../../utils/test-mailer';
 
 const Log = createTestLogger('user-routes-create');
 
 export default function () {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('Will create a new user based on the criteria', async () => {
-    const username = faker.internet.userName();
+    jest.useFakeTimers({
+      now: new Date('2023-04-05T11:33:14.961Z'),
+    });
+    const mail = new TestMailer();
+    const username = 'Telly.Monahan';
+    const verifyEmailToken = 'Ca1NjSesP7fOJZ0dKDpAkvif7dDnh4S2';
     const body = {
-      email: faker.internet.email(),
+      email: 'Telly.Monahan@gmail.com',
       password: fakePassword(),
       profileVisibility: ProfileVisibility.Public,
     };
@@ -25,6 +35,7 @@ export default function () {
     const login = jest.fn();
     const { req, res } = createMocks({
       log: Log,
+      mail,
       user,
       userManager,
       body,
@@ -45,6 +56,9 @@ export default function () {
     const spy = jest
       .spyOn(userManager, 'createUser')
       .mockResolvedValue(expectedUser);
+    jest
+      .spyOn(expectedUser, 'requestEmailVerificationToken')
+      .mockResolvedValue(verifyEmailToken);
     const next = jest.fn();
 
     await createUser(req, res, next);
@@ -60,9 +74,15 @@ export default function () {
     expect(res._getJSONData()).toEqual(
       JSON.parse(JSON.stringify(expectedUser)),
     );
+
+    const [mailMessage] = mail.sentMail;
+    expect(mailMessage.recipients).toEqual({ to: body.email });
+    expect(mailMessage.subject).toMatchSnapshot();
+    expect(mailMessage.body).toMatchSnapshot();
   });
 
   it('Will login a user automatically when they create an account while not logged in', async () => {
+    const mail = new TestMailer();
     const username = faker.internet.userName();
     const body = {
       email: faker.internet.email(),
@@ -75,6 +95,7 @@ export default function () {
     });
     const { req, res } = createMocks({
       log: Log,
+      mail,
       userManager,
       body,
       params: { username },
@@ -94,6 +115,9 @@ export default function () {
     const spy = jest
       .spyOn(userManager, 'createUser')
       .mockResolvedValue(expectedUser);
+    jest
+      .spyOn(expectedUser, 'requestEmailVerificationToken')
+      .mockResolvedValue('xZDBwifAwmkyfcP5QjZeN3jxsWqkSv7F');
     const next = jest.fn();
 
     await createUser(req, res, next);

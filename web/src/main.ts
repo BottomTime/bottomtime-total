@@ -1,4 +1,6 @@
 import { createApp } from 'vue';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import request from 'superagent';
 
 import App from './App.vue';
@@ -11,6 +13,8 @@ import {
   WithErrorHandlingKey,
 } from './injection-keys';
 import { createErrorHandler } from './helpers';
+
+dayjs.extend(relativeTime);
 
 const agent = request.agent();
 const userManager = new DefaultUserManager(agent);

@@ -1,6 +1,6 @@
 <template>
   <div class="control">
-    <div class="select is-rounded">
+    <div class="select is-rounded is-small">
       <select :id="id" v-model="value">
         <option
           v-for="option in options"

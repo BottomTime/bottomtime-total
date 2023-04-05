@@ -1,4 +1,5 @@
 import Logger from 'bunyan';
+import { MailClient } from '../../email';
 import { Tank, TankManager } from '../../tanks';
 import { User as BTUser, UserManager } from '../../users';
 
@@ -7,6 +8,9 @@ declare global {
     export interface Request {
       /** A Bunyan logger for writing to the event log. */
       log: Logger;
+
+      /** A mail client for sendint emails to users. */
+      mail: MailClient;
 
       /** A unique ID for the current request. */
       requestId: string;
