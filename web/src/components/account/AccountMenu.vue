@@ -1,5 +1,5 @@
 <template>
-  <aside id="account-menu" class="menu">
+  <aside id="account-menu" class="menu box">
     <p class="menu-label">Account</p>
     <ul class="menu-list">
       <li>

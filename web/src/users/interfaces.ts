@@ -43,6 +43,13 @@ export interface Profile extends ProfileData {
 
 export interface User extends UserData {
   readonly profile: Profile;
+
+  changeEmail(newEmail: string): Promise<void>;
+  changePassword(oldPassword: string, newPassword: string): Promise<void>;
+  changeUsername(newUsername: string): Promise<void>;
+  requestVerificationEmail(): Promise<void>;
+  verifyEmail(token: string): Promise<boolean>;
+
   toJSON(): UserData;
 }
 
@@ -58,4 +65,10 @@ export interface UserManager {
   getCurrentUser(): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User>;
   isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean>;
+  requestPasswordReset(usernameOrEmail: string): Promise<void>;
+  resetPassword(
+    username: string,
+    token: string,
+    newPassword: string,
+  ): Promise<void>;
 }

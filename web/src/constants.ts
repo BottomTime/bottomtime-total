@@ -32,6 +32,22 @@ export const ProfileVisibilityOptions: DropDownOption[] = [
   },
 ];
 
+export const enum TextBoxSize {
+  Small = 'is-small',
+  Normal = 'is-normal',
+  Large = 'is-large',
+}
+
+export const enum MessageBoxStyle {
+  Danger = 'is-danger',
+  Dark = 'is-dark',
+  Info = 'is-info',
+  Link = 'is-link',
+  Success = 'is-success',
+  Primary = 'is-primary',
+  Warning = 'is-warning',
+}
+
 export const UsernameRegex = /^[a-z0-9]+([_.-][a-z0-9]+)*$/i;
 
 export const UserRole = {

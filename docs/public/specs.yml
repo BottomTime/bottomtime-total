@@ -1,0 +1,215 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: Production
+    url: https://bottomti.me/api/
+info:
+  description: This is the API specifications for the Bottom Time application.
+  version: "1.0.0"
+  title: Bottom Time
+  contact:
+    email: mrchriscarleton@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: users
+    description: Operations available to regular developers
+paths:
+
+
+  /inventory:
+    get:
+      tags:
+        - developers
+      summary: searches inventory
+      operationId: searchInventory
+      description: |
+        By passing in the appropriate options, you can search for
+        available inventory in the system
+      parameters:
+        - in: query
+          name: searchString
+          description: pass an optional search string for looking up inventory
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: skip
+          description: number of records to skip for pagination
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          description: maximum number of records to return
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 50
+      responses:
+        '200':
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryItem'
+        '400':
+          description: bad input parameter
+    post:
+      tags:
+        - admins
+      summary: adds an inventory item
+      operationId: addInventory
+      description: Adds an item to the system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryItem'
+        description: Inventory item to add
+
+components:
+  schemas:
+    Users:
+      type: object
+      description: Represents a user of the application. This object will capture all of a user's information.
+      required:
+        - emailVerified
+        - hasPassword
+        - id
+        - isLockedOut
+        - memberSince
+        - role
+        - username
+      properties:
+        email:
+          type: string
+          description: User's email address. Used for authentication and communication.
+          format: email
+          example: micheller_27@gmail.com
+        emailVerified:
+          description: Indicates whether the user's email address has been verified or not.
+          type: boolean
+        hasPassword:
+          type: boolean
+          description: Inidicates whether the user has a password set on their account or not. (Some users may choose to use OAuth to sign in and will not have a password.)
+        lastLogin:
+          type: string
+          description: The time and date (UTC) at which the user was last logged into the application.
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        lastPasswordChange:
+          type: string
+          description: The time and date (UTC) at which the user last changed or set their password.
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        id:
+          type: string
+          format: uuid
+          description: A globally-unique identifier that can be used to identify the user's account.
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        isLockedOut:
+          type: boolean
+          description: Indicates whether or not the user's account is currently suspended. (Locked out accounts are prevented from signing in.)
+        memberSince:
+          type: string
+          format: date-time
+          description: Date and time (UTC) at which the user's account was first created.
+          example: '2016-08-29T09:12:33.001Z'
+        profile:
+          $ref: '#/components/schemas/Profiles'
+          description: The user's profile information.
+        role:
+          type: number
+          format: int32
+          description: The user's security role.
+          example: 100
+          enum:
+            - 100 (Normal user)
+            - 200 (Admin)
+        username:
+          type: string
+          description: The user's unique username. This is used for logging in and for retrieving account information.
+          example: MichelleR_27
+
+    Profiles:
+      type: object
+      description: Describes a user's profile information.
+      required:
+        - memberSince
+        - profileVisibility
+        - userId
+        - username
+      properties:
+        memberSince:
+          type: string
+          format: date-time
+          description: Date and time (UTC) at which the user's account was first created.
+          example: '2016-08-29T09:12:33.001Z'
+        profileVisibility:
+          type: string
+          description: Indicates who is authorized to view this user's profile information.
+          enum:
+            - private
+            - friends
+            - public
+        userId:
+          type: string
+          format: uuid
+          description: A globally-unique identifier that can be used to identify the user's account.
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        username:
+          type: string
+          description: The user's unique username. This is used for logging in and for retrieving account information.
+          example: MichelleR_27
+
+    InventoryItem:
+      type: object
+      required:
+        - id
+        - name
+        - manufacturer
+        - releaseDate
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: Widget Adapter
+        releaseDate:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        manufacturer:
+          $ref: '#/components/schemas/Manufacturer'
+    Manufacturer:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: ACME Corporation
+        homePage:
+          type: string
+          format: url
+          example: 'https://www.acme-corp.com'
+        phone:
+          type: string
+          example: 408-867-5309
+      type: object

@@ -57,6 +57,51 @@ export class DefaultUser implements User {
     return this.data.username;
   }
 
+  async changeEmail(newEmail: string): Promise<void> {
+    await this.agent
+      .post(`/api/users/${this.data.username}/changeEmail`)
+      .send({ newEmail });
+
+    Object.assign(this.data, {
+      email: newEmail,
+      emailVerified: false,
+    });
+  }
+
+  async changePassword(
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    await this.agent
+      .post(`/api/users/${this.data.username}/changePassword`)
+      .send({ oldPassword, newPassword });
+  }
+
+  async changeUsername(newUsername: string): Promise<void> {
+    await this.agent
+      .post(`/api/users/${this.data.username}/changeUsername`)
+      .send({ newUsername });
+
+    Object.assign(this.data, {
+      username: newUsername,
+    });
+  }
+
+  async requestVerificationEmail(): Promise<void> {
+    await this.agent.post(
+      `/api/users/${this.data.username}/requestEmailVerification`,
+    );
+  }
+
+  async verifyEmail(token: string): Promise<boolean> {
+    const {
+      body: { verified },
+    } = await this.agent
+      .post(`/api/users/${this.data.username}/verifyEmail`)
+      .send({ token });
+    return verified === true;
+  }
+
   toJSON(): UserData {
     return Object.assign({}, this.data);
   }

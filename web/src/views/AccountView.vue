@@ -4,10 +4,10 @@
     <RequireAuth>
       <div id="account-page" class="container">
         <div class="columns">
-          <div class="column is-one-fifth-tablet">
+          <div class="column is-3-tablet is-offset-1-tablet">
             <AccountMenu />
           </div>
-          <div class="column is-four-fifths-tablet">
+          <div class="column is-7-tablet">
             <RouterView />
           </div>
         </div>

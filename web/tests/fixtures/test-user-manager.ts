@@ -16,4 +16,14 @@ export class TestUserManager implements UserManager {
   isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
+  requestPasswordReset(usernameOrEmail: string): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  resetPassword(
+    username: string,
+    token: string,
+    newPassword: string,
+  ): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 }

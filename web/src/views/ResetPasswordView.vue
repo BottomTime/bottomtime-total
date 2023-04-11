@@ -1,11 +1,11 @@
 <template>
-  <PageTitle title="Sign Up" />
+  <PageTitle title="Reset Password" />
   <section class="section">
     <RequireAnonymous>
-      <div id="signup-page" class="container">
+      <div id="reset-password-page" class="container">
         <div class="columns">
-          <div class="column is-offset-one-quarter-tablet is-half-tablet">
-            <SignupForm />
+          <div class="column is-half-tablet is-offset-one-quarter-tablet">
+            <ResetPasswordForm />
           </div>
         </div>
       </div>
@@ -15,6 +15,6 @@
 
 <script lang="ts" setup>
 import PageTitle from '@/components/PageTitle.vue';
-import SignupForm from '@/components/users/SignUpForm.vue';
 import RequireAnonymous from '@/components/RequireAnonymous.vue';
+import ResetPasswordForm from '@/components/users/ResetPasswordForm.vue';
 </script>

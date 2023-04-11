@@ -78,4 +78,14 @@ export class DefaultUserManager implements UserManager {
         });
     });
   }
+
+  async requestPasswordReset(usernameOrEmail: string): Promise<void> {
+    await this.agent.post(`/api/users/${usernameOrEmail}/requestPasswordReset`);
+  }
+
+  async resetPassword(
+    username: string,
+    token: string,
+    newPassword: string,
+  ): Promise<void> {}
 }

@@ -16,10 +16,11 @@ export class ResetPasswordEmailTemplate extends HtmlTemplate<ResetPasswordEmailT
     const { baseUrl } = this.globals();
 
     const searchParams = new URLSearchParams({
+      user: data.user.username,
       token: data.resetToken,
     });
     const resetPasswordUrl = new URL(
-      `/verifyEmail?${searchParams.toString()}`,
+      `/newPassword?${searchParams.toString()}`,
       baseUrl,
     );
 

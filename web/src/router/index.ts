@@ -21,6 +21,22 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "signup" */ '../views/SignupView.vue'),
   },
   {
+    path: '/resetPassword',
+    name: 'resetPassword',
+    component: () =>
+      import(
+        /* webpackChunkName: "resetPassword" */ '../views/ResetPasswordView.vue'
+      ),
+  },
+  {
+    path: '/newPassword',
+    name: 'createNewPassword',
+    component: () =>
+      import(
+        /* webpackChunkName: "createNewPassword" */ '../views/CreateNewPasswordView.vue'
+      ),
+  },
+  {
     path: '/account',
     component: () =>
       import(/* webpackChunkName: "account" */ '../views/AccountView.vue'),

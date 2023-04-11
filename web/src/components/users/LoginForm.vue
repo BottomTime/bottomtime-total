@@ -10,6 +10,7 @@
             :errors="v$.usernameOrEmail.$errors"
           />
         </FormField>
+
         <FormField label="Password" required>
           <TextBox
             ref="passwordText"
@@ -19,12 +20,17 @@
             :errors="v$.password.$errors"
           />
         </FormField>
-        <div class="field is-grouped is-grouped-centered">
-          <div class="control">
-            <button id="btn-login" class="button is-primary" @click="onSubmit">
-              Login
-            </button>
-          </div>
+
+        <div class="buttons is-centered">
+          <button id="btn-login" class="button is-primary" @click="onSubmit">
+            Login
+          </button>
+        </div>
+
+        <div class="block has-text-centered is-size-6">
+          <RouterLink to="/resetPassword"
+            >Help! I forgot my password!</RouterLink
+          >
         </div>
       </form>
     </div>
