@@ -6,11 +6,11 @@ block content
 
   p.content.block
     | You are receiving this email because you requested a link to verify your email address with
-    | the #[a(href=baseUrl) Bottom Time] application for social scuba diving! Click the link below
+    | the #[a(href!=baseUrl) Bottom Time] application for social scuba diving! Click the link below
     | to complete the request!
 
   div.block.box.has-text-centered
-    a(href=verifyEmailUrl)= verifyEmailUrl
+    a(href!=verifyEmailUrl)= verifyEmailUrl
 
   p.content.block
     | Cheers,
