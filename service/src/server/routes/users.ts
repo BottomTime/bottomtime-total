@@ -18,16 +18,9 @@ import {
   UsernameSchema,
   UsersSortBy,
 } from '../../users';
-import {
-  ResetPasswordEmailTemplate,
-  ResetPasswordEmailTemplateData,
-  WelcomeEmailTemplate,
-} from '../../email';
+import { ResetPasswordEmailTemplate, WelcomeEmailTemplate } from '../../email';
 import config from '../../config';
-import {
-  VerifyEmailTemplate,
-  VerifyEmailTemplateData,
-} from '../../email/verify-email-template';
+import { VerifyEmailTemplate } from '../../email/verify-email-template';
 
 const ChangeEmailBodySchema = Joi.object({
   newEmail: Joi.string().required(),

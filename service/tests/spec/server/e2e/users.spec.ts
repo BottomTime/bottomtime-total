@@ -203,7 +203,6 @@ describe('Users End-To-End Tests', () => {
     const otherUserData = fakeUser({}, otherUserPassword);
     const userRoute = `/users/${otherUserData.username}`;
     const newEmail = faker.internet.email();
-    const newPassword = fakePassword();
     const newUsername = faker.internet.userName();
     await Users.insertMany([userData, otherUserData]);
 

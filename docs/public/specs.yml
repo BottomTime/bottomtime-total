@@ -18,7 +18,32 @@ tags:
   - name: users
     description: Operations available to regular developers
 paths:
+  /auth/me:
+    get:
+      tags:
+        - users
+      summary: get current user
+      operationId: getCurrentUser
+      description: |
+        Retrieves information on the currently logged in user.
+      responses:
+        '200':
+          description: Information on the currently logged in user (if any).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
 
+  /auth/logout:
+    get:
+      tags:
+        - users
+      summary: logout current user
+      operationId: logoutUser
+      description: Logs the current user out of their session and redirects back to the home page.
+      responses:
+        '302':
+          description: Redirect back to home page.
 
   /inventory:
     get:
@@ -145,6 +170,21 @@ components:
           type: string
           description: The user's unique username. This is used for logging in and for retrieving account information.
           example: MichelleR_27
+
+    CurrentUser:
+      description: Information on the currently logged-in user.
+      allOf:
+        - type: object
+          required:
+            - anonymous
+          properties:
+            anonymous:
+              type: boolean
+              description: |
+                Indicates if the user is anonymous (not currently authenticated.)
+                If true, then the other properties will be omitted.
+              example: false
+        - $ref: '#/components/schemas/Users'
 
     Profiles:
       type: object

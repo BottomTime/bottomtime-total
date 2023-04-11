@@ -4,11 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ProfileVisibility, SortOrder, UserRole } from '../../constants';
 import { ProfileSchema, UsernameSchema, UsersSortBy } from '../../users';
 import { assertValid, isValid } from '../../helpers/validation';
-import {
-  ForbiddenError,
-  MissingResourceError,
-  UnauthorizedError,
-} from '../../errors';
+import { MissingResourceError } from '../../errors';
 
 const ProfileNotFoundError = new MissingResourceError(
   'Unable to find the requested user profile',

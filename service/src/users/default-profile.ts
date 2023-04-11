@@ -1,5 +1,5 @@
 import Logger from 'bunyan';
-import { Collection, MongoClient, UpdateFilter } from 'mongodb';
+import { Collection, MongoClient } from 'mongodb';
 
 import { Collections, UserDocument } from '../data';
 import { assertValid } from '../helpers/validation';

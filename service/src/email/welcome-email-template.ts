@@ -1,8 +1,5 @@
-import fs from 'fs/promises';
 import path from 'path';
-import pug, { compileTemplate } from 'pug';
 import { URL } from 'url';
-
 import { BaseTemplateData, HtmlTemplate } from './interfaces';
 
 export interface WelcomeEmailTemplateData extends BaseTemplateData {

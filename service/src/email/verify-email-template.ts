@@ -1,7 +1,4 @@
-import fs from 'fs/promises';
 import path from 'path';
-import pug, { compileTemplate } from 'pug';
-
 import { BaseTemplateData, HtmlTemplate } from './interfaces';
 
 export interface VerifyEmailTemplateData extends BaseTemplateData {
