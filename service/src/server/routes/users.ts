@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import { SortOrder, UserRole } from '../../constants';
 import {
   ForbiddenError,
+  InvalidOperationError,
   MissingResourceError,
   ValidationError,
 } from '../../errors';
@@ -17,8 +18,16 @@ import {
   UsernameSchema,
   UsersSortBy,
 } from '../../users';
-import { WelcomeEmailTemplate } from '../../email';
+import {
+  ResetPasswordEmailTemplate,
+  ResetPasswordEmailTemplateData,
+  WelcomeEmailTemplate,
+} from '../../email';
 import config from '../../config';
+import {
+  VerifyEmailTemplate,
+  VerifyEmailTemplateData,
+} from '../../email/verify-email-template';
 
 const ChangeEmailBodySchema = Joi.object({
   newEmail: Joi.string().required(),
@@ -51,6 +60,10 @@ const SearchUsersQuerySchema = Joi.object({
   skip: Joi.number().min(0),
   limit: Joi.number().positive().max(200),
 });
+
+const VerifyEmailBodySchema = Joi.object({
+  token: Joi.string().required(),
+}).required();
 
 function loginUser(req: Request, user: User): Promise<void> {
   return new Promise<void>((resolve, reject) => {
@@ -211,19 +224,13 @@ export async function createUser(
       req.log.debug(
         `Requesting email verification token for "${user.email}"...`,
       );
-      const [verifyEmailToken, mailTemplate] = await Promise.all([
-        user.requestEmailVerificationToken(),
-        WelcomeEmailTemplate.create(),
-      ]);
+      const verifyEmailToken = await user.requestEmailVerificationToken();
 
       req.log.debug(`Generating welcome email body for "${user.email}"...`);
-      const messageBody = mailTemplate.render({
-        adminEmail: config.adminEmail,
-        baseUrl: config.baseUrl,
-        recipientEmail: user.email,
-        recipientName: user.username,
+      const mailTemplate = new WelcomeEmailTemplate();
+      const messageBody = await mailTemplate.render({
+        user,
         verifyEmailToken,
-        year: new Date().getFullYear(),
       });
 
       req.log.debug(`Sending welcome email to "${user.email}"...`);
@@ -291,11 +298,86 @@ export async function lockAccount(
   }
 }
 
-export function requestPasswordResetEmail() {}
+export async function requestPasswordResetEmail(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const user = req.selectedUser!;
+    if (!user.email) {
+      next(
+        new InvalidOperationError(
+          'Unable to send password reset token to user. User does not have an email address set.',
+        ),
+      );
+      return;
+    }
 
-export function requestVerificationEmail() {}
+    req.log.debug(
+      `Requesting password reset token for user "${user.username}"...`,
+    );
+    const mailTemplate = new ResetPasswordEmailTemplate();
+    const resetToken = await user.requestPasswordResetToken();
 
-export function resetPassword() {}
+    req.log.debug(`Generating and sending password reset email....`);
+    const messageBody = await mailTemplate.render({
+      user,
+      resetToken,
+    });
+    await req.mail.sendMail(
+      { to: user.email },
+      'Reset your Bottom Time password',
+      messageBody,
+    );
+
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function requestVerificationEmail(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  // TODO: Re-write this so that it doesn't give away the existence of user accounts.
+  try {
+    const user = req.selectedUser;
+    if (!user?.email) {
+      next(
+        new InvalidOperationError(
+          'Unable to generate and send token! User does not have an email address set.',
+        ),
+      );
+      return;
+    }
+
+    const mailTemplate = new VerifyEmailTemplate();
+    const verifyEmailToken = await user.requestEmailVerificationToken();
+
+    const messageBody = await mailTemplate.render({
+      user,
+      verifyEmailToken,
+    });
+    await req.mail.sendMail(
+      { to: user.email },
+      'Verify your email address',
+      messageBody,
+    );
+
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function resetPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {}
 
 export async function searchUsers(
   req: Request,
@@ -328,4 +410,21 @@ export async function unlockAccount(
   }
 }
 
-export function verifyEmail() {}
+export async function verifyEmail(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const user = req.selectedUser!;
+    const {
+      parsed: { token },
+    } = assertValid(req.body, VerifyEmailBodySchema);
+
+    const verified = await user.verifyEmail(token);
+
+    res.json({ verified });
+  } catch (error) {
+    next(error);
+  }
+}

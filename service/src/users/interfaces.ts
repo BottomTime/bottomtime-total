@@ -99,6 +99,7 @@ export interface UserData {
 }
 
 export interface User extends UserData {
+  readonly displayName: string;
   readonly friends: FriendsManager;
   readonly profile: Profile;
   readonly settings: UserSettings;

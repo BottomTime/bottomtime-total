@@ -104,6 +104,10 @@ export class DefaultUser implements User {
     return this._settings;
   }
 
+  get displayName(): string {
+    return this.profile.name ?? this.username;
+  }
+
   async changeUsername(newUsername: string): Promise<void> {
     newUsername = newUsername.trim();
     const lowered = newUsername.toLocaleLowerCase();

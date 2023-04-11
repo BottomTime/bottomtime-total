@@ -6,6 +6,8 @@ import { MailClient, MailRecipients } from './interfaces';
 export class NodemailerClient implements MailClient {
   constructor(
     private readonly transporter: Transporter<SMTPTransport.SentMessageInfo>,
+    private readonly fromAddress: string,
+    private readonly replyToAddress: string,
   ) {}
 
   async sendMail(
@@ -14,6 +16,8 @@ export class NodemailerClient implements MailClient {
     body: string,
   ): Promise<void> {
     await this.transporter.sendMail({
+      from: this.fromAddress,
+      replyTo: this.replyToAddress,
       to: recipients.to,
       cc: recipients.cc,
       bcc: recipients.bcc,

@@ -20,7 +20,7 @@ export interface ServerDependencies {
 export async function createDependencies(
   log: bunyan,
 ): Promise<ServerDependencies> {
-  const transporter = createTransport({
+  const transportOptions = {
     host: config.mail.host,
     port: config.mail.port,
     secure: true,
@@ -28,10 +28,18 @@ export async function createDependencies(
       user: config.mail.username,
       pass: config.mail.password,
     },
-    from: config.mail.from,
-    replyTo: config.mail.replyTo,
+  };
+
+  log.debug('[EXPRESS] Creating mail transport', {
+    ...transportOptions,
+    auth: '**REDACTED**',
   });
-  const mail = new NodemailerClient(transporter);
+  const transporter = createTransport(transportOptions);
+  const mail = new NodemailerClient(
+    transporter,
+    config.mail.from,
+    config.mail.replyTo,
+  );
   const mongoClient = await MongoClient.connect(config.mongoUri);
 
   const tankManager = new PreDefinedTankManager(mongoClient, log);
