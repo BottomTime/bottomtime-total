@@ -19,7 +19,6 @@ import {
   UsersSortBy,
 } from '../../users';
 import { ResetPasswordEmailTemplate, WelcomeEmailTemplate } from '../../email';
-import config from '../../config';
 import { VerifyEmailTemplate } from '../../email/verify-email-template';
 
 const ChangeEmailBodySchema = Joi.object({
@@ -56,6 +55,11 @@ const SearchUsersQuerySchema = Joi.object({
 
 const VerifyEmailBodySchema = Joi.object({
   token: Joi.string().required(),
+}).required();
+
+const ResetPasswordBodySchema = Joi.object({
+  token: Joi.string().trim().required(),
+  newPassword: PasswordStrengthSchema.required(),
 }).required();
 
 function loginUser(req: Request, user: User): Promise<void> {
@@ -297,13 +301,11 @@ export async function requestPasswordResetEmail(
   next: NextFunction,
 ) {
   try {
-    const user = req.selectedUser!;
-    if (!user.email) {
-      next(
-        new InvalidOperationError(
-          'Unable to send password reset token to user. User does not have an email address set.',
-        ),
-      );
+    const user = await req.userManager.getUserByUsernameOrEmail(
+      req.params.username,
+    );
+    if (!user || !user.email) {
+      res.sendStatus(204);
       return;
     }
 
@@ -366,11 +368,24 @@ export async function requestVerificationEmail(
   }
 }
 
-export function resetPassword(
+export async function resetPassword(
   req: Request,
   res: Response,
   next: NextFunction,
-) {}
+) {
+  try {
+    const {
+      parsed: { token, newPassword },
+    } = assertValid(req.body, ResetPasswordBodySchema);
+    const user = req.selectedUser!;
+
+    const succeeded = await user.resetPassword(token, newPassword);
+
+    res.json({ succeeded });
+  } catch (error) {
+    next(error);
+  }
+}
 
 export async function searchUsers(
   req: Request,

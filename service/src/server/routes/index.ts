@@ -99,11 +99,7 @@ export function configureRouting(app: Express, log: Logger) {
     loadUserAccount,
     requestVerificationEmail,
   );
-  app.post(
-    `${UserRoute}/requestPasswordReset`,
-    loadUserAccount,
-    requestPasswordResetEmail,
-  );
+  app.post(`${UserRoute}/requestPasswordReset`, requestPasswordResetEmail);
   app.post(`${UserRoute}/resetPassword`, loadUserAccount, resetPassword);
   app.post(
     `${UserRoute}/verifyEmail`,

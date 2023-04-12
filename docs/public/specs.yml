@@ -45,6 +45,41 @@ paths:
         '302':
           description: Redirect back to home page.
 
+  /users:
+    get:
+      tags:
+        - admins
+      summary: search Users
+      operationId: searchUsers
+      description: Searches for user accounts given a search criteria.
+      parameters:
+        - in: query
+          name: query
+          description: A text string that will be searched for amongst the user data.
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: sortOrder
+          description: The order in which the results should be returned.
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: |
+            The request succeeded and the request body will contain an array of users
+            matching the search criteria.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
   /inventory:
     get:
       tags:
@@ -109,7 +144,38 @@ paths:
 
 components:
   schemas:
-    Users:
+    Error:
+      type: object
+      description: A standard error resposne. This format is used when returning any kind of error.
+      required:
+        - statusCode
+        - message
+        - httpPath
+        - httpMethod
+      properties:
+        statusCode:
+          type: number
+          format: int32
+          description: The HTTP status code returned with the error.
+          example: 403
+        message:
+          type: string
+          description: The error message. Will provide a brief description of what went wrong.
+          example: 'You are not authorized to perform the requested action.'
+        httpPath:
+          type: string
+          description: The HTTP path that the request was made to.
+          example: '/profiles/Bob_47'
+        httpMethod:
+          type: string
+          description: The HTTP method that was used in the request.
+          example: 'POST'
+        username:
+          type: string
+          description: The username identifying the user that made the request.
+          example: 'Rick.M'
+
+    User:
       type: object
       description: Represents a user of the application. This object will capture all of a user's information.
       required:
@@ -156,7 +222,7 @@ components:
           description: Date and time (UTC) at which the user's account was first created.
           example: '2016-08-29T09:12:33.001Z'
         profile:
-          $ref: '#/components/schemas/Profiles'
+          $ref: '#/components/schemas/Profile'
           description: The user's profile information.
         role:
           type: number
@@ -184,9 +250,9 @@ components:
                 Indicates if the user is anonymous (not currently authenticated.)
                 If true, then the other properties will be omitted.
               example: false
-        - $ref: '#/components/schemas/Users'
+        - $ref: '#/components/schemas/User'
 
-    Profiles:
+    Profile:
       type: object
       description: Describes a user's profile information.
       required:
