@@ -1,3 +1,4 @@
+import { Strategy as BearerTokenStrategy } from 'passport-http-bearer';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
@@ -12,7 +13,12 @@ import { ServerDependencies } from './dependencies';
 import { Collections } from '../data';
 import config from '../config';
 import { configureRouting } from './routes';
-import { deserializeUser, loginWithPassword, serializeUser } from './passport';
+import {
+  deserializeUser,
+  loginWithBearerToken,
+  loginWithPassword,
+  serializeUser,
+} from './passport';
 
 export async function createServer(
   createDependencies: () => Promise<ServerDependencies>,
@@ -85,6 +91,14 @@ export async function createServer(
   log.debug('[EXPRESS] Adding auth middleware...');
   passport.serializeUser<string>(serializeUser);
   passport.deserializeUser<string>(deserializeUser);
+  passport.use(
+    new BearerTokenStrategy(
+      {
+        passReqToCallback: true,
+      },
+      loginWithBearerToken,
+    ),
+  );
   passport.use(
     new LocalStrategy(
       {

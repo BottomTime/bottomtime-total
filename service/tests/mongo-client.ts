@@ -5,9 +5,7 @@ let mongoClient: MongoClient;
 
 async function purgeDatabase() {
   const collections = await mongoClient.db().collections();
-  await Promise.all(
-    collections.map(async (collection) => await collection.deleteMany({})),
-  );
+  await Promise.all(collections.map((collection) => collection.deleteMany({})));
 }
 
 global.beforeAll(async () => {

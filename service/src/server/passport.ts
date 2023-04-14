@@ -1,5 +1,6 @@
-import { Express, Request } from 'express';
+import { Request } from 'express';
 import { User } from '../users';
+import { IVerifyOptions } from 'passport-http-bearer';
 
 export function serializeUser(
   req: Request,
@@ -66,6 +67,14 @@ export async function loginWithPassword(
   } catch (error) {
     cb(error);
   }
+}
+
+export async function loginWithBearerToken(
+  req: Request,
+  token: string,
+  cb: (error: any, user?: any, options?: IVerifyOptions | string) => void,
+) {
+  cb(null, false);
 }
 
 export function loginWithGoogle() {}

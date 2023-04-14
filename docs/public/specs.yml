@@ -175,6 +175,23 @@ components:
           description: The username identifying the user that made the request.
           example: 'Rick.M'
 
+    ValidationError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'First name must be a string'
+                  path:
+                    type: string
+                    example: 'name.firstName'
+
     User:
       type: object
       description: Represents a user of the application. This object will capture all of a user's information.
