@@ -109,3 +109,8 @@ dist
 # Cypress output
 /web/tests/e2e/videos/
 /web/tests/e2e/screenshots/
+
+# Terraform files
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate*
