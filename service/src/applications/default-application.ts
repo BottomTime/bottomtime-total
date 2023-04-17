@@ -1,21 +1,23 @@
-import { Collection, MongoClient, UpdateFilter } from 'mongodb';
+import { Collection, MongoClient } from 'mongodb';
 import Logger from 'bunyan';
+import { randomBytes } from 'crypto';
 
 import { Application } from './interfaces';
 import { ApplicationDocument, Collections } from '../data';
-import { User } from '../users';
+import { User, UserManager } from '../users';
 import { assertValid } from '../helpers/validation';
 import { ApplicationSchema } from './validation';
 import { ConflictError } from '../errors';
 
 export class DefaultApplication implements Application {
   private readonly applications: Collection<ApplicationDocument>;
+  private user: User | undefined;
 
   constructor(
+    private readonly userManager: UserManager,
     mongoClient: MongoClient,
     private readonly log: Logger,
     private readonly data: ApplicationDocument,
-    readonly user: User,
   ) {
     this.applications = mongoClient.db().collection(Collections.Applications);
   }
@@ -26,6 +28,10 @@ export class DefaultApplication implements Application {
 
   get created(): Date {
     return this.data.created;
+  }
+
+  get userId(): string {
+    return this.data.user;
   }
 
   get active(): boolean {
@@ -58,6 +64,29 @@ export class DefaultApplication implements Application {
 
   get token(): string {
     return this.data.token;
+  }
+
+  async getUser(): Promise<User> {
+    if (this.user) {
+      return this.user;
+    }
+
+    this.user = await this.userManager.getUser(this.data.user);
+    if (!this.user) {
+      throw new Error(
+        `Unexpected orphaned application found. Application was associated with user ID "${this.data.user}" which could not be found.`,
+      );
+    }
+
+    return this.user;
+  }
+
+  async delete(): Promise<void> {
+    await this.applications.deleteOne({ _id: this.id });
+  }
+
+  regenerateToken(): void {
+    this.data.token = randomBytes(32).toString('base64url');
   }
 
   async save(): Promise<void> {
@@ -102,10 +131,13 @@ export class DefaultApplication implements Application {
       created: this.created,
       name: this.name,
       token: this.token,
-      user: {
-        id: this.user.id,
-        username: this.user.username,
-      },
+      user: this.user
+        ? {
+            id: this.user.id,
+            memberSince: this.user.memberSince,
+            username: this.user.username,
+          }
+        : this.data.user,
     };
 
     if (this.allowedOrigins) {

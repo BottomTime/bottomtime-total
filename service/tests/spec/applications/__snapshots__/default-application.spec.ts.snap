@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Default Application Will throw an Error if getUser() is called on an application that is somehow orphaned 1`] = `"Unexpected orphaned application found. Application was associated with user ID "0a75912f-ede6-4a6b-8406-999118706511" which could not be found."`;
+
+exports[`Default Application Will throw an error if getUser() is called and the application is somehow orphaned 1`] = `"Unexpected orphaned application found. Application was associated with user ID "c0fd81c1-cc4f-491e-8747-45a8dafcb3e6" which could not be found."`;

@@ -4,10 +4,9 @@ import { ApplicationDocument } from '../../src/data';
 export function fakeApplication(
   data?: Partial<ApplicationDocument>,
 ): ApplicationDocument {
-  return {
+  const doc: ApplicationDocument = {
     _id: data?._id ?? faker.datatype.uuid(),
     active: data?.active ?? faker.datatype.boolean(),
-    allowedOrigins: data?.allowedOrigins,
     created: data?.created ?? faker.date.past(4),
     name:
       data?.name ??
@@ -18,4 +17,10 @@ export function fakeApplication(
     token: data?.token ?? faker.random.alphaNumeric(24),
     user: data?.user ?? faker.datatype.uuid(),
   };
+
+  if (data?.allowedOrigins) {
+    doc.allowedOrigins = data.allowedOrigins;
+  }
+
+  return doc;
 }

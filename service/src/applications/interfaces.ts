@@ -4,6 +4,7 @@ export interface ApplicationData {
   readonly id: string;
   readonly created: Date;
   readonly token: string;
+  readonly userId: string;
 
   active: boolean;
   allowedOrigins?: string[];
@@ -12,9 +13,19 @@ export interface ApplicationData {
 }
 
 export interface Application extends ApplicationData {
-  readonly user: User;
+  getUser(): Promise<User>;
+  delete(): Promise<void>;
+  regenerateToken(): void;
   save(): Promise<void>;
   toJSON(): object;
+}
+
+export interface CreateApplicationOptions {
+  name: string;
+  owner: User;
+  active?: boolean;
+  allowedOrigins?: string[];
+  description?: string;
 }
 
 export interface SearchApplicationsOptions {
@@ -26,6 +37,7 @@ export interface SearchApplicationsOptions {
 }
 
 export interface ApplicationManager {
+  createApplication(options: CreateApplicationOptions): Promise<Application>;
   getApplication(id: string): Promise<Application | undefined>;
   getApplicationsForUser(userId: string): Promise<Application[]>;
   searchApplications(
