@@ -13,19 +13,19 @@ RUN npx tsc
 
 FROM node:lts-bullseye-slim AS compiled
 
-WORKDIR /app
-COPY --from=base /app/dist ./dist/
-COPY --from=base /app/package.json .
-COPY --from=base /app/yarn.lock .
+COPY --from=base /app/dist /app/dist/
+COPY --from=base /app/package.json /app
+COPY --from=base /app/yarn.lock /app
 
+WORKDIR /app
 RUN yarn install --production
 
 FROM node:lts-bullseye-slim AS exec
 
-WORKDIR /app
-COPY --from=compiled /app/dist ./dist/
-COPY --from=compiled /app/node_modules .
-COPY --from=compiled /app/package.json .
+COPY --from=compiled /app/dist /app/dist/
+COPY --from=compiled /app/node_modules /app/node_modules
+COPY --from=compiled /app/package.json /app
 
-CMD ["npx", "nodemon", "dist/index.js"]
+WORKDIR /app
+ENTRYPOINT ["node", "dist/index.js"]
 EXPOSE 4800

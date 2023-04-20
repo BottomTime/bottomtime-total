@@ -18,10 +18,10 @@ resource "aws_internet_gateway" "gw" {
 }
 
 resource "aws_subnet" "public" {
-  count = var.availability_zone_count
-  cidr_block = cidrsubnet(local.cidr_block, 8, 2 * count.index)
-  vpc_id = aws_vpc.main.id
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  count                   = var.availability_zone_count
+  cidr_block              = cidrsubnet(local.cidr_block, 8, 2 * count.index)
+  vpc_id                  = aws_vpc.main.id
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
 
   tags = {
@@ -30,9 +30,9 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  count = var.availability_zone_count
-  cidr_block = cidrsubnet(local.cidr_block, 8, 2 * count.index + 1)
-  vpc_id = aws_vpc.main.id
+  count             = var.availability_zone_count
+  cidr_block        = cidrsubnet(local.cidr_block, 8, 2 * count.index + 1)
+  vpc_id            = aws_vpc.main.id
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
@@ -42,7 +42,7 @@ resource "aws_subnet" "private" {
 
 resource "aws_eip" "eip" {
   count = var.availability_zone_count
-  vpc = true
+  vpc   = true
 
   depends_on = [aws_internet_gateway.gw]
 
@@ -52,9 +52,9 @@ resource "aws_eip" "eip" {
 }
 
 resource "aws_nat_gateway" "nat" {
-  count = var.availability_zone_count
+  count         = var.availability_zone_count
   allocation_id = aws_eip.eip[count.index].id
-  subnet_id = aws_subnet.public[count.index].id
+  subnet_id     = aws_subnet.public[count.index].id
 
   tags = {
     Name = "${var.service_name} ${var.env} ${data.aws_availability_zones.available.names[count.index]} NAT gateway"
@@ -70,19 +70,19 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route" "public" {
-  route_table_id = aws_route_table.public.id
+  route_table_id         = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.gw.id
+  gateway_id             = aws_internet_gateway.gw.id
 }
 
 resource "aws_route_table_association" "public" {
-  count = var.availability_zone_count
+  count          = var.availability_zone_count
   route_table_id = aws_route_table.public.id
-  subnet_id = aws_subnet.public[count.index].id
+  subnet_id      = aws_subnet.public[count.index].id
 }
 
 resource "aws_route_table" "private" {
-  count = var.availability_zone_count
+  count  = var.availability_zone_count
   vpc_id = aws_vpc.main.id
 
   tags = {
@@ -91,14 +91,14 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route" "private" {
-  count = var.availability_zone_count
-  route_table_id = aws_route_table.private[count.index].id
+  count                  = var.availability_zone_count
+  route_table_id         = aws_route_table.private[count.index].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.nat[count.index].id
+  nat_gateway_id         = aws_nat_gateway.nat[count.index].id
 }
 
 resource "aws_route_table_association" "private" {
-  count = var.availability_zone_count
+  count          = var.availability_zone_count
   route_table_id = aws_route_table.private[count.index].id
-  subnet_id = aws_subnet.private[count.index].id
+  subnet_id      = aws_subnet.private[count.index].id
 }

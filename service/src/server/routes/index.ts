@@ -134,6 +134,13 @@ export function configureRouting(app: Express, log: Logger) {
     .patch(requireAdmin, loadPreDefinedTank, patchPreDefinedTank)
     .delete(requireAdmin, loadPreDefinedTank, deletePreDefinedTank);
 
+  // Health check route... elaborate on this later.
+  app.get('/health', (_req, res) => {
+    res.json({
+      status: 'HEALTHY',
+    });
+  });
+
   // These are global error handlers and must be added last!
   log.debug('[EXPRESS] Adding error handling middleware...');
   app.all('*', notFound);

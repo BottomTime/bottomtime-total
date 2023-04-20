@@ -13,7 +13,7 @@ class MailConfig {
   }
 
   get port(): number {
-    return toNumber(process.env.BT_SMTP_PORT, 587);
+    return toNumber(process.env.BT_SMTP_PORT, 465);
   }
 
   get username(): string {

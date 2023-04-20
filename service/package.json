@@ -9,6 +9,7 @@
   "scripts": {
     "build": "rm -rf dist/ && tsc",
     "docker:build": "docker build -t bottomtime/core .",
+    "docker:run": "docker run -it -p 4800:4800 --env-file .env.defaults --env-file .env bottomtime/core",
     "format": "prettier --write --ignore-unknown .",
     "lint": "eslint .",
     "migrate": "migrate-mongo",
@@ -29,7 +30,6 @@
     "joi": "^17.7.1",
     "mongodb": "^5.1.0",
     "nodemailer": "^6.9.1",
-    "nodemon": "^2.0.22",
     "passport": "^0.6.0",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
@@ -69,6 +69,7 @@
     "mongodb-memory-server": "^8.11.4",
     "moq.ts": "~9.0.2",
     "node-mocks-http": "^1.12.1",
+    "nodemon": "^2.0.22",
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
