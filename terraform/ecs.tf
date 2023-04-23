@@ -18,7 +18,7 @@ locals {
     },
     {
       name  = "BT_SESSION_COOKIE_NAME"
-      value = "${var.service_name_short}.${var.env}"
+      value = local.session_cookie_name
     },
     {
       name  = "BT_SMTP_FROM"

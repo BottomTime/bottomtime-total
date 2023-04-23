@@ -20,6 +20,12 @@ variable "certificate_domain" {
   default     = "*.bottomti.me"
 }
 
+variable "docs_domain" {
+  type = string
+  description = "The domain in the hosted zone at which the API documentation should be hosted."
+  default = "devs"
+}
+
 variable "env" {
   type        = string
   description = "The name of the environment that is being deployed. (This is to distinguish multiple environments running in the same AWS region.)"
@@ -29,7 +35,7 @@ variable "env" {
 variable "hosted_zone" {
   type        = string
   description = "The domain name of the hosted zone at which the service will respond to requests."
-  default     = "bottomti.me."
+  default     = "bottomti.me"
 }
 
 variable "image_tag" {
@@ -123,4 +129,5 @@ locals {
   base_url       = "https://${var.site_domain}.${var.hosted_zone}/"
   container_port = 4800
   image_name     = "${var.service_name_short}/${var.env}/core"
+  session_cookie_name =  "${var.service_name_short}.${var.env}"
 }

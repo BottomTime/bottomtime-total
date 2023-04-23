@@ -42,6 +42,7 @@ Create a user and assign these pre-defined roles:
 - `AmazonRoute53FullAccess`
 - `AmazonVPCFullAccess`
 - `AWSCertificateManagerReadOnly`
+- `CloudFrontFullAccess`
 - `CloudWatchLogsFullAccess`
 - `SecretsManagerReadWrite`
 
@@ -96,7 +97,8 @@ Edit the variables in that file to configure your new environment.
 | `admin_email`             | `string` | Email address for contacting the site admin. (This appears in a few spots on the site as well as email templates.)                                |                    |            `admin@bottomti.me`            |
 | `availability_zone_count` | `number` | The number of availability zones to which the service should be deployed for geographical redundancy.                                             |                    |                    `2`                    |
 | `certificate_domain`      | `string` | The domain name to which the TLS certificate in AWS ACM is registered. (This will be used to find the certificate at deploy time.)                |                    |              `*.bottomti.me`              |
-| `hosted_zone`             | `string` | The domain name of the hosted zone at which the service will respond to requests.                                                                 |                    |              `bottomti.me.`               |
+| `docs_domain`             | `string` | The domain in the hosted zone at which the API documentation should be hosted.                                                                    |                    |                  `devs`                   |
+| `hosted_zone`             | `string` | The domain name of the hosted zone at which the service will respond to requests.                                                                 |                    |               `bottomti.me`               |
 | `image_tag`               | `string` | The Docker image tag to pull when deploying the backend service.                                                                                  |                    |                 `latest`                  |
 | `log_level`               | `string` | The level of verbosity at which log messages will be written to the event log. Must be one of `trace`, `debug`, `info`, `warn`, `error`, `fatal`. |                    |                  `info`                   |
 | `secret_id`               | `string` | The ID of the AWS Secrets Manager secret that holds all of the sensitive config values for the application. (See above.)                          | :white_check_mark: |                                           |
