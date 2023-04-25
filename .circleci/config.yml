@@ -1,0 +1,110 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@8.2.1
+  node: circleci/node@5.1.0
+  terraform: circleci/terraform@3.2.1
+
+commands:
+  install_node:
+    parameters:
+      app_path:
+        type: string
+    steps:
+      - node/install:
+          install-yarn: true
+          node-version: '18'
+      - node/install-packages:
+          app-dir: <<parameters.app_path>>
+          pkg-manager: 'yarn'
+
+jobs:
+  test_core:
+    docker:
+      - image: cimg/base
+    steps:
+      - install_node:
+          app_path: ./service/
+      - run:
+          name: Lint, Build, and Test
+          working_directory: ./service/
+          command: |
+            yarn lint
+            yarn build --no-emit
+            yarn test
+
+  test_web:
+    docker:
+      - image: cimg/base
+    steps:
+      - install_node:
+          app_path: ./web/
+      - run:
+          name: Lint, Build, and Test
+          working_directory: ./web/
+          command: |
+            yarn lint
+            yarn build
+            yarn test
+      - persist_to_workspace:
+          root: ./web/
+          paths:
+            - dist/
+
+  deploy_core_image:
+    machine:
+      image: ubuntu-2004:current
+    resource_class: arm.medium
+    parameters:
+      env:
+        type: string
+    steps:
+      - aws-ecr/build-and-push-image:
+          platform: linux/arm64
+          repo: 'bt/<<parameters.env>>/core'
+          tag: latest, build_$CIRCLE_BUILD
+          workspace-root: ./service/
+
+  terraform:
+    docker:
+      - image: cimg/base
+    parameters:
+      env:
+        type: string
+    steps:
+      - terraform/install:
+          terraform_version: '1.4.5'
+      - terraform/init:
+          backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
+          path: ./terraform/
+      - terraform/validate:
+          path: ./terraform/
+      - terraform/apply:
+          path: ./terraform/
+          var_file: vars/<<parameters.env>>.tfvars
+
+workflows:
+  test_and_deploy:
+    jobs:
+      - test_core
+      - test_web
+
+      # Dev environment
+      - deploy_core_image:
+          name: deploy_core_image_dev
+          env: 'dev'
+          context:
+            - bt-aws
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - test_core
+            - test_web
+
+      - terraform:
+          name: terraform_dev
+          env: 'dev'
+          requires:
+            - deploy_core_image_dev

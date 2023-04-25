@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "web" {
-  bucket = "${var.service_name_short}-${data.aws_region.current.name}-${var.env}-web-distro"
+  bucket        = "${var.service_name_short}-${data.aws_region.current.name}-${var.env}-web-distro"
   force_destroy = true
 
   tags = {
@@ -14,7 +14,7 @@ resource "aws_s3_bucket_acl" "web" {
 }
 
 resource "aws_s3_bucket" "docs" {
-  bucket = "${var.service_name_short}-${data.aws_region.current.name}-${var.env}-docs-distro"
+  bucket        = "${var.service_name_short}-${data.aws_region.current.name}-${var.env}-docs-distro"
   force_destroy = true
 
   tags = {

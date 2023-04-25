@@ -21,9 +21,9 @@ variable "certificate_domain" {
 }
 
 variable "docs_domain" {
-  type = string
+  type        = string
   description = "The domain in the hosted zone at which the API documentation should be hosted."
-  default = "devs"
+  default     = "devs"
 }
 
 variable "env" {
@@ -126,8 +126,8 @@ data "aws_route53_zone" "main" {
 }
 
 locals {
-  base_url       = "https://${var.site_domain}.${var.hosted_zone}/"
-  container_port = 4800
-  image_name     = "${var.service_name_short}/${var.env}/core"
-  session_cookie_name =  "${var.service_name_short}.${var.env}"
+  base_url            = "https://${var.site_domain}.${var.hosted_zone}/"
+  container_port      = 4800
+  image_name          = "${var.service_name_short}/${var.env}/core"
+  session_cookie_name = "${var.service_name_short}.${var.env}"
 }

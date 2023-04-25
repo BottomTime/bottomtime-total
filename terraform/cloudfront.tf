@@ -1,6 +1,6 @@
 locals {
   api_origin_id = "${var.service_name_short}_api_origin_${var.env}"
-  s3_origin_id = "${var.service_name_short}_s3_origin_${var.env}"
+  s3_origin_id  = "${var.service_name_short}_s3_origin_${var.env}"
 }
 
 resource "aws_cloudfront_origin_access_control" "default" {
@@ -62,13 +62,13 @@ resource "aws_cloudfront_cache_policy" "api" {
       header_behavior = "whitelist"
       headers {
         items = [
-    "Accept",
-    "Accept-Encoding",
-    "Accept-Language",
-    "Host",
-    "Referer",
-    "User-Agent"
-  ]
+          "Accept",
+          "Accept-Encoding",
+          "Accept-Language",
+          "Host",
+          "Referer",
+          "User-Agent"
+        ]
       }
     }
 
@@ -85,20 +85,20 @@ resource "aws_cloudfront_distribution" "web" {
   comment = ""
 
   custom_error_response {
-    error_code = 404
-    response_code = 200
+    error_code         = 404
+    response_code      = 200
     response_page_path = "/index.html"
   }
 
   origin {
-    domain_name = aws_s3_bucket.web.bucket_regional_domain_name
+    domain_name              = aws_s3_bucket.web.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    origin_id = local.s3_origin_id
+    origin_id                = local.s3_origin_id
   }
 
   origin {
     domain_name = aws_alb.alb.dns_name
-    origin_id = local.api_origin_id
+    origin_id   = local.api_origin_id
     origin_path = ""
 
     # TODO: Add API token here.
@@ -108,47 +108,47 @@ resource "aws_cloudfront_distribution" "web" {
     # }
 
     custom_origin_config {
-      http_port = 80
-      https_port = 443
+      http_port              = 80
+      https_port             = 443
       origin_protocol_policy = "https-only"
-      origin_ssl_protocols = ["TLSv1.1", "TLSv1.2"]
+      origin_ssl_protocols   = ["TLSv1.1", "TLSv1.2"]
     }
   }
 
   ordered_cache_behavior {
-    allowed_methods = ["HEAD", "GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
-    cached_methods = ["HEAD", "GET", "OPTIONS"]
-    cache_policy_id = aws_cloudfront_cache_policy.api.id
-    path_pattern = "api/*"
-    target_origin_id = local.api_origin_id
+    allowed_methods        = ["HEAD", "GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
+    cached_methods         = ["HEAD", "GET", "OPTIONS"]
+    cache_policy_id        = aws_cloudfront_cache_policy.api.id
+    path_pattern           = "api/*"
+    target_origin_id       = local.api_origin_id
     viewer_protocol_policy = "https-only"
   }
 
   default_cache_behavior {
-    allowed_methods = ["GET", "HEAD", "OPTIONS"]
-    cached_methods = ["GET", "HEAD", "OPTIONS"]
-    cache_policy_id = aws_cloudfront_cache_policy.web.id
-    compress = true
-    default_ttl = 14400 # 4 hours (in seconds)
-    max_ttl = 432000 # 5 days (in seconds)
-    target_origin_id = local.s3_origin_id
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    cache_policy_id        = aws_cloudfront_cache_policy.web.id
+    compress               = true
+    default_ttl            = 14400  # 4 hours (in seconds)
+    max_ttl                = 432000 # 5 days (in seconds)
+    target_origin_id       = local.s3_origin_id
     viewer_protocol_policy = "redirect-to-https"
   }
 
-  enabled = true
+  enabled             = true
   default_root_object = "index.html"
-  price_class = "PriceClass_100"
+  price_class         = "PriceClass_100"
 
   viewer_certificate {
-    acm_certificate_arn = data.aws_acm_certificate.alb.arn
+    acm_certificate_arn      = data.aws_acm_certificate.alb.arn
     minimum_protocol_version = "TLSv1"
-    ssl_support_method = "sni-only"
+    ssl_support_method       = "sni-only"
   }
 
   # TODO: Open this up or make it configurable.
   restrictions {
     geo_restriction {
-      locations = ["CA"]
+      locations        = ["CA"]
       restriction_type = "whitelist"
     }
   }
@@ -161,42 +161,42 @@ resource "aws_cloudfront_distribution" "docs" {
   comment = ""
 
   custom_error_response {
-    error_code = 404
-    response_code = 200
+    error_code         = 404
+    response_code      = 200
     response_page_path = "/index.html"
   }
 
   origin {
-    domain_name = aws_s3_bucket.docs.bucket_regional_domain_name
+    domain_name              = aws_s3_bucket.docs.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    origin_id = local.s3_origin_id
+    origin_id                = local.s3_origin_id
   }
 
   default_cache_behavior {
-    allowed_methods = ["GET", "HEAD", "OPTIONS"]
-    cached_methods = ["GET", "HEAD", "OPTIONS"]
-    cache_policy_id = aws_cloudfront_cache_policy.docs.id
-    compress = true
-    default_ttl = 14400 # 4 hours (in seconds)
-    max_ttl = 432000 # 5 days (in seconds)
-    target_origin_id = local.s3_origin_id
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    cache_policy_id        = aws_cloudfront_cache_policy.docs.id
+    compress               = true
+    default_ttl            = 14400  # 4 hours (in seconds)
+    max_ttl                = 432000 # 5 days (in seconds)
+    target_origin_id       = local.s3_origin_id
     viewer_protocol_policy = "redirect-to-https"
   }
 
-  enabled = true
+  enabled             = true
   default_root_object = "index.html"
-  price_class = "PriceClass_100"
+  price_class         = "PriceClass_100"
 
   viewer_certificate {
-    acm_certificate_arn = data.aws_acm_certificate.alb.arn
+    acm_certificate_arn      = data.aws_acm_certificate.alb.arn
     minimum_protocol_version = "TLSv1"
-    ssl_support_method = "sni-only"
+    ssl_support_method       = "sni-only"
   }
 
   # TODO: Open this up or make it configurable.
   restrictions {
     geo_restriction {
-      locations = ["CA"]
+      locations        = ["CA"]
       restriction_type = "whitelist"
     }
   }
