@@ -45,7 +45,7 @@ jobs:
           working_directory: ./service/
           command: |
             yarn lint
-            yarn build --no-emit
+            yarn build --noEmit
             yarn test
 
   test_web:
@@ -184,7 +184,7 @@ workflows:
             - migrate_database_dev
 
       - publish_distros:
-          name: deploy_docs_dev
+          name: deploy_distros_dev
           env: 'dev'
           context:
             - bt-aws-dev
