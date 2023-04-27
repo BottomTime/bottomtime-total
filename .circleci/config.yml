@@ -114,7 +114,7 @@ jobs:
       - aws-ecr/build-and-push-image:
           platform: linux/arm64
           repo: 'bt/<<parameters.env>>/core'
-          tag: latest, build_$CIRCLE_BUILD
+          tag: latest,build_$CIRCLE_BUILD_NUM
           workspace-root: ./service/
 
   terraform:
