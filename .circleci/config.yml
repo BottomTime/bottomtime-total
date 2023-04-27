@@ -116,6 +116,7 @@ jobs:
           platform: linux/arm64
           repo: 'bt/<<parameters.env>>/core'
           tag: latest,build_$CIRCLE_BUILD_NUM
+          path: ./service/
           workspace-root: ./service/
 
   terraform:
