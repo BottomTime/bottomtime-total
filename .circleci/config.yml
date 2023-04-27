@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   aws-ecr: circleci/aws-ecr@8.2.1
+  aws-s3: circleci/aws-s3@3.1.1
   node: circleci/node@5.1.0
   terraform: circleci/terraform@3.2.1
 
@@ -18,10 +19,23 @@ commands:
           app-dir: <<parameters.app_path>>
           pkg-manager: 'yarn'
 
+  publish_distro:
+    parameters:
+      bucket:
+        type: string
+      env:
+        type: string
+      path:
+        type: string
+    steps:
+      - aws-s3/sync:
+          from: <<parameters.path>>
+          to: 's3://bt-$AWS_REGION-<<parameters.env>>-<<parameters.bucket>>-distro'
+
 jobs:
   test_core:
     docker:
-      - image: cimg/base
+      - image: cimg/base:latest
     steps:
       - install_node:
           app_path: ./service/
@@ -35,7 +49,7 @@ jobs:
 
   test_web:
     docker:
-      - image: cimg/base
+      - image: cimg/base:latest
     steps:
       - install_node:
           app_path: ./web/
@@ -47,9 +61,35 @@ jobs:
             yarn build
             yarn test
       - persist_to_workspace:
-          root: ./web/
+          root: .
           paths:
-            - dist/
+            - web/dist/
+
+  build_docs:
+    docker:
+      - image: cimg/base:latest
+    steps:
+      - install_node:
+          app_path: ./docs/
+      - run:
+          name: Build
+          working_directory: ./docs/
+          command: yarn build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docs/dist/
+
+  migrate_database:
+    docker:
+      - image: cimg/base:latest
+    steps:
+      - install_node:
+          app_path: ./service/
+      - run:
+          name: Migrate database
+          working_directory: ./service/
+          command: yarn migrate up
 
   deploy_core_image:
     machine:
@@ -67,38 +107,65 @@ jobs:
 
   terraform:
     docker:
-      - image: cimg/base
+      - image: cimg/base:latest
     parameters:
       env:
         type: string
     steps:
       - terraform/install:
           terraform_version: '1.4.5'
-      - terraform/init:
-          backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
-          path: ./terraform/
       - terraform/validate:
           path: ./terraform/
       - terraform/apply:
+          backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
           path: ./terraform/
           var_file: vars/<<parameters.env>>.tfvars
+
+  publish_distros:
+    docker:
+      - image: cimg/base:latest
+    parameters:
+      env:
+        type: string
+    steps:
+      - publish_distro:
+          bucket: docs
+          env: <<parameters.env>>
+          path: ./docs/dist/
+      - publish_distro:
+          bucket: web
+          env: <<parameters.env>>
+          path: ./web/dist/
 
 workflows:
   test_and_deploy:
     jobs:
       - test_core
       - test_web
+      - build_docs
 
       # Dev environment
+      - migrate_database:
+          name: migrate_database_dev
+          context:
+            - bt-mongo-dev
+          filters:
+            branches:
+              only:
+                - circleci
+          requires:
+            - test_core
+            - test_web
+
       - deploy_core_image:
           name: deploy_core_image_dev
           env: 'dev'
           context:
-            - bt-aws
+            - bt-aws-dev
           filters:
             branches:
               only:
-                - master
+                - circleci
           requires:
             - test_core
             - test_web
@@ -106,5 +173,17 @@ workflows:
       - terraform:
           name: terraform_dev
           env: 'dev'
+          context:
+            - bt-aws-dev
           requires:
             - deploy_core_image_dev
+            - migrate_database_dev
+
+      - publish_distros:
+          name: deploy_docs_dev
+          env: 'dev'
+          context:
+            - bt-aws-dev
+          requires:
+            - build_docs
+            - terraform_dev
