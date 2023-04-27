@@ -32,7 +32,7 @@ export const ProfileVisibilityOptions: DropDownOption[] = [
   },
 ];
 
-export const enum TextBoxSize {
+export enum TextBoxSize {
   Small = 'is-small',
   Normal = 'is-normal',
   Large = 'is-large',

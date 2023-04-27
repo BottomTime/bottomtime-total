@@ -47,8 +47,6 @@ interface TextBoxProps {
   size?: TextBoxSize;
 }
 
-const input = ref<HTMLInputElement | null>();
-
 const props = withDefaults(defineProps<TextBoxProps>(), {
   autofocus: false,
   disabled: false,
@@ -77,6 +75,8 @@ const inputClasses = computed(() => ({
   'is-normal': props.size === TextBoxSize.Normal,
   'is-large': props.size === TextBoxSize.Large,
 }));
+
+const input = ref<HTMLInputElement | null>();
 
 function focus() {
   input.value?.focus();
