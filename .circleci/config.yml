@@ -37,6 +37,8 @@ jobs:
     docker:
       - image: cimg/base:2023.04
       - image: mongo:5.0
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
       - install_node:
@@ -48,6 +50,11 @@ jobs:
             yarn lint
             yarn build --noEmit
             yarn test
+      - store_test_results:
+          path: ./service/reports/
+      - store_artifacts:
+          path: ./service/logs/
+          destination: logs/
 
   test_web:
     docker:

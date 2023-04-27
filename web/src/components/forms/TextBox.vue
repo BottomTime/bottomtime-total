@@ -23,7 +23,6 @@
 </template>
 
 <script lang="ts" setup>
-import { TextBoxSize } from '@/constants';
 import { ErrorObject } from '@vuelidate/core';
 import {
   computed,
@@ -34,6 +33,7 @@ import {
   ref,
   withDefaults,
 } from 'vue';
+import { TextBoxSize } from '@/constants';
 
 interface TextBoxProps {
   autofocus?: boolean;

@@ -114,3 +114,6 @@ dist
 .terraform/
 .terraform.lock.hcl
 terraform.tfstate*
+
+# JUnit Reports
+junit.xml
