@@ -112,11 +112,13 @@ jobs:
         type: string
     steps:
       - checkout
+      - run:
+          name: Change directory
+          command: cd service/
       - aws-ecr/build-and-push-image:
           platform: linux/arm64
           repo: 'bt/<<parameters.env>>/core'
           tag: latest,build_$CIRCLE_BUILD_NUM
-          path: ./service/
 
   terraform:
     docker:
