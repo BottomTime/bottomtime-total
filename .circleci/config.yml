@@ -112,7 +112,7 @@ jobs:
         type: string
     steps:
       - aws-ecr/build-and-push-image:
-          path: 'service/'
+          path: ./service
           platform: linux/arm64
           repo: 'bt/<<parameters.env>>/core'
           tag: 'latest,build$CIRCLE_BUILD_NUM'
