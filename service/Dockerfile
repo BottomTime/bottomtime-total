@@ -8,7 +8,6 @@ COPY yarn.lock .
 COPY tsconfig.json .
 
 RUN yarn install
-RUN ls src/
 RUN npx tsc
 
 FROM node:lts-bullseye-slim AS compiled
