@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-ecr: circleci/aws-ecr@8.2.1
+  aws-cli: circleci/aws-cli@3.1.5
   aws-s3: circleci/aws-s3@3.1.1
   node: circleci/node@5.1.0
   terraform: circleci/terraform@3.2.1
@@ -111,11 +111,20 @@ jobs:
       env:
         type: string
     steps:
-      - aws-ecr/build-and-push-image:
-          path: ./service
-          platform: linux/arm64
-          repo: 'bt/<<parameters.env>>/core'
-          tag: 'latest,build$CIRCLE_BUILD_NUM'
+      - checkout
+      - aws-cli/install
+      - run:
+          name: ECR login
+          command: aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY_ID.dkr.ecr.us-east-1.amazonaws.com
+      - run:
+          name: Build and push Docker image
+          working_directory: ./service/
+          command: |
+            docker build -t bt/<<parameters.env>>/core .
+            docker tag bt/sample/core:build$CIRCLE_BUILD_NUM $AWS_ECR_REGISTRY_ID.dkr.ecr.us-east-1.amazonaws.com/bt/sample/core:build$CIRCLE_BUILD_NUM
+            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.us-east-1.amazonaws.com/bt/sample/core:build$CIRCLE_BUILD_NUM
+            docker tag bt/sample/core:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.us-east-1.amazonaws.com/bt/sample/core:latest
+            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.us-east-1.amazonaws.com/bt/sample/core:latest
 
   terraform:
     docker:
