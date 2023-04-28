@@ -23,14 +23,20 @@ commands:
     parameters:
       bucket:
         type: string
+      distribution_id:
+        type: string
       env:
         type: string
       path:
         type: string
     steps:
       - aws-s3/sync:
+          install-aws-cli: false
           from: <<parameters.path>>
           to: 's3://bt-$AWS_REGION-<<parameters.env>>-<<parameters.bucket>>-distro'
+      - run:
+          name: Invalidate distribution cache
+          command: aws cloudfront create-invalidation --distribution-id <<parameters.distribution_id>> --paths "/*"
 
   prepare_coverage_reporting:
     steps:
@@ -182,7 +188,7 @@ jobs:
       - run:
           name: Save build number
           command: |
-            echo 'image_tag = "build$CIRCLE_BUILD_NUM"' >> build.tfvars
+            echo 'image_tag = "' build$CIRCLE_BUILD_NUM '"' >> build.tfvars
             echo "" >> build.tfvars
       - persist_to_workspace:
           root: .
@@ -207,6 +213,17 @@ jobs:
           backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
           path: ./terraform/
           var_file: vars/<<parameters.env>>.tfvars,vars/build.tfvars
+      - run:
+          name: Store distribution names
+          working_directory: ./terraform/
+          command: |
+            terraform output -raw site_distribution > site_distribution
+            terraform output -raw docs_distribution > docs_distribution
+      - persist_to_workspace:
+          root: ./terraform/
+          paths:
+            - site_distribution
+            - docs_distribution
 
   publish_distros:
     docker:
@@ -215,12 +232,17 @@ jobs:
       env:
         type: string
     steps:
+      - aws-cli/install
+      - attach_workspace:
+          at: .
       - publish_distro:
           bucket: docs
+          distribution_id: $(cat docs_distribution)
           env: <<parameters.env>>
           path: ./docs/dist/
       - publish_distro:
           bucket: web
+          distribution_id: $(cat site_distribution)
           env: <<parameters.env>>
           path: ./web/dist/
 
