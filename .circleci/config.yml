@@ -300,6 +300,6 @@ workflows:
           context:
             - bt-aws-dev
           requires:
+            - terraform
             - build_docs
             - test_web
-            - terraform_dev
