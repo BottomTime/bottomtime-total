@@ -301,4 +301,5 @@ workflows:
             - bt-aws-dev
           requires:
             - build_docs
+            - test_web
             - terraform_dev
