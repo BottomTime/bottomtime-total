@@ -96,7 +96,7 @@ jobs:
             - cc-test-reporter
             - service_coverage.json
 
-  test_web:
+  build_web:
     docker:
       - image: cimg/base:2023.04
     steps:
@@ -254,14 +254,14 @@ workflows:
   test_and_deploy:
     jobs:
       - test_core
-      - test_web
+      - build_web
       - build_docs
       - upload_coverage:
           context:
             - bt-code-climate
           requires:
             - test_core
-            - test_web
+            - build_web
 
       # Dev environment
       - migrate_database:
@@ -274,7 +274,7 @@ workflows:
                 - master
           requires:
             - test_core
-            - test_web
+            - build_web
 
       - deploy_core_image:
           name: deploy_core_image_dev
@@ -287,7 +287,7 @@ workflows:
                 - master
           requires:
             - test_core
-            - test_web
+            - build_web
 
       - terraform:
           name: terraform_dev
@@ -314,4 +314,4 @@ workflows:
           requires:
             - terraform_dev
             - build_docs
-            - test_web
+            - build_web
