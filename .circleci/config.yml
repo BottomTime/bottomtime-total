@@ -55,7 +55,6 @@ commands:
             ../cc-test-reporter format-coverage "coverage/lcov.info" \
               -t lcov \
               -o "../<<parameters.coverage_file>>" \
-              -d
 
 jobs:
   test_core:
@@ -125,8 +124,8 @@ jobs:
       - run:
           name: Report coverage
           command: |
-            .cc-test-reporter sum-coverage -o codeclimate.json -p 2 service_coverage.json web_coverage.json
-            .cc-test-reporter upload-coverage -i codeclimate.json
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 service_coverage.json web_coverage.json
+            ./cc-test-reporter upload-coverage -i codeclimate.json
 
   build_docs:
     docker:
