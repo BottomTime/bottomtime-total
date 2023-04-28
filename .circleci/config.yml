@@ -267,7 +267,7 @@ workflows:
           filters:
             branches:
               only:
-                - circleci
+                - master
           requires:
             - test_core
             - test_web
@@ -280,7 +280,7 @@ workflows:
           filters:
             branches:
               only:
-                - circleci
+                - master
           requires:
             - test_core
             - test_web
