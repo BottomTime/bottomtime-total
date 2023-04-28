@@ -47,10 +47,12 @@ commands:
         type: string
       coverage_file:
         type: string
+      coverage_root:
+        type: string
     steps:
       - run:
           name: Report test coverage
-          command: ./cc-test-reporter format-coverage "<<parameters.lcov_path>>" -t lcov -o "<<parameters.coverage_file>>"
+          command: ./cc-test-reporter format-coverage "<<parameters.lcov_path>>" -t lcov -o "<<parameters.coverage_file>>" -p "<<parameters.coverage_root>>"
 
 jobs:
   test_core:
@@ -74,6 +76,7 @@ jobs:
       - record_coverage:
           lcov_path: service/coverage/lcov.info
           coverage_file: service_coverage.json
+          coverage_root: ./service/src/
       - store_test_results:
           path: ./service/reports/
       - store_artifacts:
@@ -103,6 +106,7 @@ jobs:
       - record_coverage:
           lcov_path: web/coverage/lcov.info
           coverage_file: web_coverage.json
+          coverage_root: ./web/src/
       - store_test_results:
           path: ./web/reports/
       - persist_to_workspace:
