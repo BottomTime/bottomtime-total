@@ -188,7 +188,7 @@ jobs:
       - run:
           name: Save build number
           command: |
-            echo 'image_tag = "' build$CIRCLE_BUILD_NUM '"' >> build.tfvars
+            echo 'image_tag = "'build$CIRCLE_BUILD_NUM'"' >> build.tfvars
             echo "" >> build.tfvars
       - persist_to_workspace:
           root: .
