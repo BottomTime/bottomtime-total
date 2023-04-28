@@ -32,6 +32,26 @@ commands:
           from: <<parameters.path>>
           to: 's3://bt-$AWS_REGION-<<parameters.env>>-<<parameters.bucket>>-distro'
 
+  prepare_coverage_reporting:
+    steps:
+      - run:
+          name: Install Code Climate binary
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            ./cc-test-reporter before-build
+
+  record_coverage:
+    parameters:
+      lcov_path:
+        type: string
+      coverage_file:
+        type: string
+    steps:
+      - run:
+          name: Report test coverage
+          command: ./cc-test-reporter format-coverage -t lcov -o "<<parameters.coverage_file>>" "<<parameters.lcov_path>>"
+
 jobs:
   test_core:
     docker:
@@ -43,6 +63,7 @@ jobs:
       - checkout
       - install_node:
           app_path: ./service/
+      - prepare_coverage_reporting
       - run:
           name: Lint, Build, and Test
           working_directory: ./service/
@@ -50,11 +71,19 @@ jobs:
             yarn lint
             yarn build --noEmit
             yarn test
+      - record_coverage:
+          lcov_path: service/coverage/lcov.info
+          coverage_file: service_coverage.json
       - store_test_results:
           path: ./service/reports/
       - store_artifacts:
           path: ./service/logs/
           destination: logs/
+      - persist_to_workspace:
+          root: .
+          paths:
+            - cc-test-reporter
+            - service_coverage.json
 
   test_web:
     docker:
@@ -63,6 +92,7 @@ jobs:
       - checkout
       - install_node:
           app_path: ./web/
+      - prepare_coverage_reporting
       - run:
           name: Lint, Build, and Test
           working_directory: ./web/
@@ -70,10 +100,26 @@ jobs:
             yarn lint
             yarn build
             yarn test
+      - record_coverage:
+          lcov_path: web/coverage/lcov.info
+          coverage_file: web_coverage.json
       - persist_to_workspace:
           root: .
           paths:
             - web/dist/
+            - web_coverage.json
+
+  upload_coverage:
+    docker:
+      - image: cimg/base:2023.04
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Report coverage
+          command: |
+            .cc-test-reporter sum-coverage -o codeclimate.json -p 2 service_coverage.json web_coverage.json
+            .cc-test-reporter upload-coverage -i codeclimate.json
 
   build_docs:
     docker:
@@ -143,6 +189,9 @@ jobs:
       env:
         type: string
     steps:
+      - checkout
+      - attach_workspace:
+          at: ./terraform/vars
       - terraform/install:
           terraform_version: '1.4.5'
       - terraform/validate:
@@ -150,7 +199,7 @@ jobs:
       - terraform/apply:
           backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
           path: ./terraform/
-          var_file: vars/<<parameters.env>>.tfvars
+          var_file: vars/<<parameters.env>>.tfvars,vars/build.tfvars
 
   publish_distros:
     docker:
@@ -174,6 +223,12 @@ workflows:
       - test_core
       - test_web
       - build_docs
+      - upload_coverage:
+          context:
+            - bt-code-climate
+          requires:
+            - test_core
+            - test_web
 
       # Dev environment
       - migrate_database:
