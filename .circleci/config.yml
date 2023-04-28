@@ -114,19 +114,18 @@ jobs:
       - checkout
       - aws-cli/install
       - run:
-          name: ECR login
-          command: aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - run:
           name: Build and push Docker image
           working_directory: ./service/
           command: |
             docker build -t bt/<<parameters.env>>/core .
 
-            docker tag bt/<<parameters.env>>/core:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:latest
-            docker tag bt/<<parameters.env>>/core:build$CIRCLE_BUILD_NUM $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:build$CIRCLE_BUILD_NUM
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:build$CIRCLE_BUILD_NUM
+            docker tag bt/<<parameters.env>>/core:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:latest
+            docker tag bt/<<parameters.env>>/core:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:build$CIRCLE_BUILD_NUM
+
             docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:latest
+            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:build$CIRCLE_BUILD_NUM
       - run:
           name: Save build number
           command: |
