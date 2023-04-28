@@ -8,12 +8,19 @@ import { up } from 'migrate-mongo';
 export default async function (): Promise<void> {
   await mkdir(path.resolve(__dirname, '../logs'), { recursive: true });
 
-  console.log('\nStarting MongoDB server...');
-  const mongod = await MongoMemoryServer.create();
-  const uri = mongod.getUri();
+  let uri: string;
+  if (process.env.CIRCLECI === 'true') {
+    // MongoDB will be running in a dedicated Docker image in CircleCI. We can just use that.
+    uri = 'mongodb://localhost:27017/ci';
+  } else {
+    // Otherwise, we'll run an in-memory Mong server.
+    console.log('\nStarting MongoDB server...');
+    const mongod = await MongoMemoryServer.create();
+    uri = mongod.getUri();
+    (globalThis as any).mongod = mongod;
+  }
 
   process.env.__MONGO_URI__ = uri;
-  (globalThis as any).mongod = mongod;
 
   console.log('Performing migrations...');
   const client = await MongoClient.connect(uri);

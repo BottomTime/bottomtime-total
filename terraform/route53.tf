@@ -11,7 +11,7 @@ resource "aws_route53_record" "service" {
 }
 
 resource "aws_route53_record" "site_top_level" {
-  count = var.env == "production" ? 1 : 0
+  count   = var.env == "production" ? 1 : 0
   zone_id = data.aws_route53_zone.main.zone_id
   name    = ""
   type    = "A"
@@ -37,12 +37,12 @@ resource "aws_route53_record" "site" {
 
 resource "aws_route53_record" "docs" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name = var.docs_domain
-  type = "A"
+  name    = var.docs_domain
+  type    = "A"
 
   alias {
-    name = aws_cloudfront_distribution.docs.domain_name
-    zone_id = aws_cloudfront_distribution.docs.hosted_zone_id
+    name                   = aws_cloudfront_distribution.docs.domain_name
+    zone_id                = aws_cloudfront_distribution.docs.hosted_zone_id
     evaluate_target_health = true
   }
 }

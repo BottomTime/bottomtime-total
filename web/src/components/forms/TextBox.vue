@@ -23,7 +23,6 @@
 </template>
 
 <script lang="ts" setup>
-import { TextBoxSize } from '@/constants';
 import { ErrorObject } from '@vuelidate/core';
 import {
   computed,
@@ -34,6 +33,7 @@ import {
   ref,
   withDefaults,
 } from 'vue';
+import { TextBoxSize } from '@/constants';
 
 interface TextBoxProps {
   autofocus?: boolean;
@@ -46,8 +46,6 @@ interface TextBoxProps {
   placeholder?: string;
   size?: TextBoxSize;
 }
-
-const input = ref<HTMLInputElement | null>();
 
 const props = withDefaults(defineProps<TextBoxProps>(), {
   autofocus: false,
@@ -77,6 +75,8 @@ const inputClasses = computed(() => ({
   'is-normal': props.size === TextBoxSize.Normal,
   'is-large': props.size === TextBoxSize.Large,
 }));
+
+const input = ref<HTMLInputElement | null>();
 
 function focus() {
   input.value?.focus();
