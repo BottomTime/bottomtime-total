@@ -76,7 +76,7 @@ jobs:
       - record_coverage:
           lcov_path: service/coverage/lcov.info
           coverage_file: service_coverage.json
-          coverage_root: /home/circleci/project/service
+          coverage_root: /home/circleci/project/service/
       - store_test_results:
           path: ./service/reports/
       - store_artifacts:
@@ -106,7 +106,7 @@ jobs:
       - record_coverage:
           lcov_path: web/coverage/lcov.info
           coverage_file: web_coverage.json
-          coverage_root: /home/circleci/project/web
+          coverage_root: /home/circleci/project/web/
       - store_test_results:
           path: ./web/reports/
       - persist_to_workspace:
