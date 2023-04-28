@@ -290,6 +290,10 @@ workflows:
           env: 'dev'
           context:
             - bt-aws-dev
+          filters:
+            branches:
+              only:
+                - master
           requires:
             - deploy_core_image_dev
             - migrate_database_dev
@@ -299,6 +303,10 @@ workflows:
           env: 'dev'
           context:
             - bt-aws-dev
+          filters:
+            branches:
+              only:
+                - master
           requires:
             - terraform_dev
             - build_docs
