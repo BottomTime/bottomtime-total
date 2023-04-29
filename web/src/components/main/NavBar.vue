@@ -18,7 +18,7 @@
         <a
           @click="dropdownExpanded = !dropdownExpanded"
           role="button"
-          :class="{ 'navbar-burger': true, 'is-active': dropdownExpanded }"
+          :class="`navbar-burger${dropdownExpanded ? ' is-active' : ''}`"
           aria-label="menu"
           :aria-expanded="dropdownExpanded"
           data-target="nav-main-menu"
@@ -35,11 +35,7 @@
       >
         <div class="navbar-start">
           <RouterLink class="navbar-item" to="/">Home</RouterLink>
-          <RouterLink
-            v-if="currentUserRole >= UserRole.Admin"
-            class="navbar-item"
-            to="/manageUsers"
-          >
+          <RouterLink v-if="isAdmin" class="navbar-item" to="/manageUsers">
             Manage Users
           </RouterLink>
         </div>
@@ -79,17 +75,18 @@
 
 <script lang="ts" setup>
 import { computed, ref, onBeforeMount, onUnmounted } from 'vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
 import { UserRole } from '@/constants';
 
 const dropdownExpanded = ref(false);
 const navbar = ref<HTMLDivElement>();
+const router = useRouter();
 const store = useStore();
 
 const currentUser = computed(() => store.state.currentUser);
-const currentUserRole = computed(() => currentUser.value?.role ?? 0);
 const displayName = computed(() => store.getters.userDisplayName);
+const isAdmin = computed(() => currentUser.value?.role ?? 0 >= UserRole.Admin);
 
 // Close dropdown on navigation
 router.beforeEach(() => {

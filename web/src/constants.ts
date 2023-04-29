@@ -38,15 +38,15 @@ export enum TextBoxSize {
   Large = 'is-large',
 }
 
-export const enum MessageBoxStyle {
-  Danger = 'is-danger',
-  Dark = 'is-dark',
-  Info = 'is-info',
-  Link = 'is-link',
-  Success = 'is-success',
-  Primary = 'is-primary',
-  Warning = 'is-warning',
-}
+export const MessageBoxStyle = {
+  Danger: 'is-danger',
+  Dark: 'is-dark',
+  Info: 'is-info',
+  Link: 'is-link',
+  Success: 'is-success',
+  Primary: 'is-primary',
+  Warning: 'is-warning',
+} as const;
 
 export const UsernameRegex = /^[a-z0-9]+([_.-][a-z0-9]+)*$/i;
 
