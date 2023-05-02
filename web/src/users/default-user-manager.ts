@@ -87,5 +87,7 @@ export class DefaultUserManager implements UserManager {
     username: string,
     token: string,
     newPassword: string,
-  ): Promise<void> {}
+  ): Promise<boolean> {
+    return false;
+  }
 }

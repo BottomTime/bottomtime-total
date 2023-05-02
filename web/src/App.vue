@@ -12,7 +12,7 @@
 import { onBeforeMount, ref } from 'vue';
 
 import { Dispatch, useStore } from '@/store';
-import { inject } from './helpers';
+import { inject } from '@/helpers';
 import NavBar from '@/components/main/NavBar.vue';
 import PageFooter from '@/components/main/PageFooter.vue';
 import SnackBar from '@/components/main/SnackBar.vue';
@@ -25,9 +25,7 @@ const isLoading = ref(true);
 onBeforeMount(async () => {
   try {
     const currentUser = await userManager.getCurrentUser();
-    if (currentUser) {
-      await store.dispatch(Dispatch.SignInUser, currentUser);
-    }
+    await store.dispatch(Dispatch.SignInUser, currentUser);
   } catch (error) {
     console.error(error);
   } finally {

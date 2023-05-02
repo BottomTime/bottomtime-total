@@ -23,7 +23,7 @@ export class TestUserManager implements UserManager {
     username: string,
     token: string,
     newPassword: string,
-  ): Promise<void> {
+  ): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
 }

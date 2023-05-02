@@ -199,6 +199,16 @@ jobs:
           paths:
             - build.tfvars
 
+  test_end_to_end:
+    docker:
+      - image: cimg/base:2023.04
+    steps:
+      - checkout
+      - run:
+          name: End-to-end tests
+          working_directory: ./web/
+          command: yarn test:e2e --headless
+
   terraform:
     docker:
       - image: cimg/base:2023.04

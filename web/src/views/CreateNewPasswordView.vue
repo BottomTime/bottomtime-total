@@ -18,11 +18,13 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 import CreateNewPasswordForm from '@/components/users/CreateNewPasswordForm.vue';
 import PageTitle from '@/components/PageTitle.vue';
 import RequireAnonymous from '@/components/RequireAnonymous.vue';
-import router from '@/router';
+
+const route = useRoute();
 
 interface QueryParamters {
   username: string;
@@ -30,7 +32,7 @@ interface QueryParamters {
 }
 
 const query = computed<QueryParamters>(() => {
-  const { user, token } = router.currentRoute.value.query;
+  const { user, token } = route.query;
   return {
     username: typeof user === 'string' ? user.trim() : '',
     token: typeof token === 'string' ? token.trim() : '',

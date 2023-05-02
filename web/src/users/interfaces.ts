@@ -70,5 +70,5 @@ export interface UserManager {
     username: string,
     token: string,
     newPassword: string,
-  ): Promise<void>;
+  ): Promise<boolean>;
 }

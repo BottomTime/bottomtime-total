@@ -10,6 +10,10 @@ class AppConfig {
   get env(): string {
     return process.env.NODE_ENV ?? 'local';
   }
+
+  get isProduction(): boolean {
+    return this.env === 'production';
+  }
 }
 
 export default new AppConfig();

@@ -6,6 +6,7 @@ import {
 
 import { actions } from './actions';
 import { BTState } from './state';
+// import config from '@/config';
 import { getters } from './getters';
 import { mutations } from './mutations';
 import { StoreKey } from '@/injection-keys';
@@ -27,6 +28,7 @@ export function createStore(initState?: BTState): Store<BTState> {
     getters,
     mutations,
     actions,
+    // strict: !config.isProduction,
   });
 }
 

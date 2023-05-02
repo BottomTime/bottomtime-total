@@ -68,4 +68,6 @@ describe('NavBar component', () => {
     });
     expect(wrapper.html()).toMatchSnapshot();
   });
+
+  it.todo('Test closing drop down events...');
 });

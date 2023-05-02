@@ -3,6 +3,8 @@ import { mount } from '@vue/test-utils';
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';
 
 describe('ConfirmDialog component', () => {
+  const content = '<p>Content goes here</p>';
+
   it('Will not display when show is false', () => {
     const wrapper = mount(ConfirmDialog, {
       props: {},
@@ -11,7 +13,6 @@ describe('ConfirmDialog component', () => {
   });
 
   it('Will display correctly when shown', () => {
-    const content = '<p>Content goes here</p>';
     const wrapper = mount(ConfirmDialog, {
       props: {
         visible: true,
@@ -42,5 +43,57 @@ describe('ConfirmDialog component', () => {
     expect(wrapper.get('p.modal-card-title').text()).toEqual(title);
     expect(wrapper.get('button.dialog-confirm').text()).toEqual(confirmText);
     expect(wrapper.get('button.dialog-cancel').text()).toEqual(cancelText);
+  });
+
+  it('Will allow the dialog to be closed with confirm button', async () => {
+    const wrapper = mount(ConfirmDialog, {
+      props: {
+        visible: true,
+      },
+      slots: {
+        default: content,
+      },
+    });
+    await wrapper.get('button.dialog-confirm').trigger('click');
+    expect(wrapper.emitted().confirm).toEqual([[]]);
+  });
+
+  it('Will allow the dialog to be closed with cancel button', async () => {
+    const wrapper = mount(ConfirmDialog, {
+      props: {
+        visible: true,
+      },
+      slots: {
+        default: content,
+      },
+    });
+    await wrapper.get('button.dialog-cancel').trigger('click');
+    expect(wrapper.emitted().cancel).toEqual([[]]);
+  });
+
+  it('Will allow the dialog to be closed with close button', async () => {
+    const wrapper = mount(ConfirmDialog, {
+      props: {
+        visible: true,
+      },
+      slots: {
+        default: content,
+      },
+    });
+    await wrapper.get('button.delete').trigger('click');
+    expect(wrapper.emitted().cancel).toEqual([[]]);
+  });
+
+  it('Will allow the dialog to be closed by clicking outside of it', async () => {
+    const wrapper = mount(ConfirmDialog, {
+      props: {
+        visible: true,
+      },
+      slots: {
+        default: content,
+      },
+    });
+    await wrapper.get('div.modal-background').trigger('click');
+    expect(wrapper.emitted().cancel).toEqual([[]]);
   });
 });

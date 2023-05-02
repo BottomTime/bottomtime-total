@@ -1,6 +1,7 @@
 <template>
   <MessageBox
     v-if="isSaved"
+    id="msg-password-reset"
     title="Your Password Has Been Set"
     :style="MessageBoxStyle.Success"
   >
@@ -19,7 +20,11 @@
     </template>
   </MessageBox>
 
-  <fieldset v-else-if="propsAreValid" :disabled="isSaving">
+  <fieldset
+    v-else-if="propsAreValid"
+    id="form-new-password"
+    :disabled="isSaving"
+  >
     <FormField label="New Password" control-id="newPassword" required>
       <TextBox
         id="newPassword"
@@ -42,7 +47,11 @@
     </FormField>
 
     <div class="buttons is-centered">
-      <button :class="buttonClasses" @click="createPassword">
+      <button
+        id="btn-create-password"
+        :class="buttonClasses"
+        @click="createPassword"
+      >
         Create New Password
       </button>
     </div>
@@ -50,6 +59,7 @@
 
   <MessageBox
     v-else
+    id="msg-invalid-query"
     title="Unable To Create New Password"
     :style="MessageBoxStyle.Warning"
   >
@@ -79,7 +89,7 @@ import { required, helpers } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 
 import FormField from '../forms/FormField.vue';
-import { inject } from '@/helpers';
+import { Toast, ToastType, inject } from '@/helpers';
 import MessageBox from '../MessageBox.vue';
 import TextBox from '../forms/TextBox.vue';
 import {
@@ -89,6 +99,7 @@ import {
   UsernameRegex,
 } from '@/constants';
 import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
+import { Dispatch, useStore } from '@/store';
 
 interface CreateNewPasswordFormProps {
   username: string;
@@ -100,8 +111,18 @@ interface CreateNewPasswordFormData {
   confirmPassword: string;
 }
 
+const TokenRegx = /^\w{6,}/;
+const store = useStore();
 const userManager = inject(UserManagerKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
+
+const ResetRejectedToast: Toast = {
+  id: 'password-reset-rejected',
+  type: ToastType.Error,
+  message: 'Password reset failed',
+  description:
+    'Your request to reset your password was rejected. Try requesting a new password reset email.',
+};
 
 const props = defineProps<CreateNewPasswordFormProps>();
 const data = reactive<CreateNewPasswordFormData>({
@@ -110,14 +131,12 @@ const data = reactive<CreateNewPasswordFormData>({
 });
 const isSaving = ref(false);
 const isSaved = ref(false);
-const buttonClasses = computed(() => ({
-  button: true,
-  'is-primary': true,
-  'is-loading': isSaving.value,
-}));
+const buttonClasses = computed(
+  () => `button is-primary${isSaving.value ? ' is-loading' : ''}`,
+);
 
 const propsAreValid = computed(
-  () => UsernameRegex.test(props.username) && props.token.length > 0,
+  () => UsernameRegex.test(props.username) && TokenRegx.test(props.token),
 );
 
 const validators = {
@@ -149,12 +168,19 @@ async function createPassword() {
 
   isSaving.value = true;
   await withErrorHandling(async () => {
-    await userManager.resetPassword(
+    const result = await userManager.resetPassword(
       props.username,
       props.token,
       data.newPassword,
     );
-    isSaved.value = true;
+    isSaved.value = result;
+
+    if (!result) {
+      data.newPassword = '';
+      data.confirmPassword = '';
+      v$.value.$reset();
+      await store.dispatch(Dispatch.Toast, ResetRejectedToast);
+    }
   });
   isSaving.value = false;
 }

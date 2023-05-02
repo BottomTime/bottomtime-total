@@ -2,7 +2,7 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['./src/**/*.{ts,vue}', '!./src/**/*.d.ts'],
   coverageDirectory: 'coverage',
-  coverageProvider: 'babel',
+  coverageProvider: 'v8',
   maxWorkers: '1',
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   reporters: ['default', 'jest-junit'],
