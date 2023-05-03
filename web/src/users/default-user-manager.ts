@@ -88,6 +88,11 @@ export class DefaultUserManager implements UserManager {
     token: string,
     newPassword: string,
   ): Promise<boolean> {
-    return false;
+    const {
+      body: { succeeded },
+    } = await this.agent
+      .post(`/api/users/${username}/`)
+      .send({ token, newPassword });
+    return succeeded;
   }
 }

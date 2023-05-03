@@ -85,4 +85,31 @@ describe('Default User Manager', () => {
 
     expect(actual).toEqual(expected);
   });
+
+  it('Will request a password reset email', async () => {
+    const agent = request.agent();
+    const userManager = new DefaultUserManager(agent);
+    scope
+      .post(`/api/users/${AuthUser.username}/requestPasswordReset`)
+      .reply(204);
+    await userManager.requestPasswordReset(AuthUser.username);
+    expect(scope.isDone()).toBe(true);
+  });
+
+  [true, false].forEach((successful) => {
+    it(`Will return ${successful} if password reset is ${
+      successful ? 'successful' : 'unsuccessful'
+    }`, async () => {
+      const newPassword = '(HUG87987y&(*hoih';
+      const token = 'abcd12345678';
+      const agent = request.agent();
+      const userManager = new DefaultUserManager(agent);
+      scope
+        .post(`/api/users/${AuthUser.username}/`, { token, newPassword })
+        .reply(200, { succeeded: successful });
+      await expect(
+        userManager.resetPassword(AuthUser.username, token, newPassword),
+      ).resolves.toBe(successful);
+    });
+  });
 });
