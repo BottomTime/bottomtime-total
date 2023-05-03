@@ -1,5 +1,9 @@
 <template>
-  <article v-if="isRequested" class="message is-success">
+  <article
+    v-if="isRequested"
+    id="msg-request-submitted"
+    class="message is-success"
+  >
     <div class="message-header">
       <p>Request Has Been Sent</p>
     </div>
@@ -18,8 +22,8 @@
       <p class="content block">
         If after a few moments you still haven't received the email then it's
         possible the username or email address you entered was incorrect or
-        contained a typo. Please click <a @click="resetForm">here</a> to try
-        again.
+        contained a typo. Please click
+        <a id="btn-reset-form" @click="resetForm">here</a> to try again.
       </p>
     </div>
   </article>
@@ -36,6 +40,7 @@
 
     <div class="buttons is-centered">
       <button
+        id="btn-submit-reset-request"
         :class="buttonClasses"
         @click="resetPassword"
         :disabled="isRequesting"

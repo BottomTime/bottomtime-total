@@ -25,11 +25,9 @@
 <script lang="ts" setup>
 import { defineEmits, defineProps, withDefaults } from 'vue';
 
-import { MessageBoxStyle } from '@/constants';
-
 interface MessageBoxProps {
   closeable?: boolean;
-  style?: MessageBoxStyle;
+  style?: string;
   title: string;
 }
 

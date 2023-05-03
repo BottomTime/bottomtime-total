@@ -86,6 +86,14 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "manageUsers" */ '../views/UsersView.vue'),
   },
   {
+    path: '/privacy',
+    name: 'privacyPolicy',
+    component: () =>
+      import(
+        /* webpackChunkName: "privacyPolicy" */ '../views/PrivacyPolicyView.vue'
+      ),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: NotFoundView,
@@ -93,7 +101,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 

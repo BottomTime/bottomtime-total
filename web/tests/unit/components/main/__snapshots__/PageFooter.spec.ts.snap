@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageFooter Component Will render the footer with copyright and appropriate links 1`] = `
+<div id="app-footer-contact" class="columns">
+  <div class="column is-one-quarter-tablet is-offset-one-quarter-tablet"><span class="icon-text"><span class="icon"><i class="fas fa-envelope"></i></span><span><a href="mailto:admin@bottomti.me">admin@bottomti.me</a></span></span></div>
+  <div class="column is-one-quarter-tablet">
+    <routerlink to="/privacy">Privacy Policy</routerlink>
+  </div>
+</div>
+`;

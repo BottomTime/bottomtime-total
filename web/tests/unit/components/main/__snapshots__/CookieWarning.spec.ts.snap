@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CookieWarning component Will render correctly 1`] = `
+<div id="cookie-warning" class="cookie-message box">
+  <div class="container">
+    <article class="media">
+      <figure class="media-left">
+        <p class="image is-64x64"><span class="icon is-large"><i class="fas fa-cookie-bite fa-3x"></i></span></p>
+      </figure>
+      <div class="media-content">
+        <p class="subtitle">Cookies!!</p>
+        <p class="content is-italic is-size-6 block"> We totally use cookies. Don't worry though, it's not the third-party kind! We just use them to keep you logged in and we don't give away or sell your personal information to anyone! If you have any questions or concerns please read our <routerlink to="/privacy">privacy policy</routerlink>. </p>
+        <p class="content is-italic is-size-6 block"> By continuing to use the site you implicitly accept our use of cookies to maintain your session. </p>
+      </div>
+      <div class="media-right">
+        <div class="buttons is-right"><button id="btn-accept-cookies" class="button is-primary"> Ok! Got it! </button></div>
+      </div>
+    </article>
+  </div>
+</div>
+`;

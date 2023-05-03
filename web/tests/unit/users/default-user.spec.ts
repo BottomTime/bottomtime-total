@@ -1,6 +1,7 @@
 import request from 'superagent';
 import { DefaultUser } from '@/users';
 import { fakeUser } from '../../fixtures/fake-user';
+import { scope } from '../../utils/scope';
 
 describe('Default User Class', () => {
   it('Will return properties correctly', () => {
@@ -25,5 +26,63 @@ describe('Default User Class', () => {
     const agent = request.agent();
     const user = new DefaultUser(agent, data);
     expect(user.toJSON()).toEqual(data);
+  });
+
+  it('Will change an email address', async () => {
+    const newEmail = 'better_email@gmail.org';
+    const data = fakeUser();
+    const agent = request.agent();
+    const user = new DefaultUser(agent, data);
+
+    scope
+      .post(`/api/users/${data.username}/changeEmail`, { newEmail })
+      .reply(204);
+
+    await user.changeEmail(newEmail);
+    expect(data.email).toEqual(newEmail);
+    expect(data.emailVerified).toBe(false);
+  });
+
+  it('Will change username', async () => {
+    const newUsername = 'matilda_19';
+    const data = fakeUser();
+    const agent = request.agent();
+    const user = new DefaultUser(agent, data);
+
+    scope
+      .post(`/api/users/${data.username}/changeUsername`, { newUsername })
+      .reply(204);
+
+    await user.changeUsername(newUsername);
+    expect(data.username).toEqual(newUsername);
+  });
+
+  it('Will request email verification', async () => {
+    const data = fakeUser();
+    const agent = request.agent();
+    const user = new DefaultUser(agent, data);
+
+    scope
+      .post(`/api/users/${data.username}/requestEmailVerification`)
+      .reply(204);
+
+    await user.requestVerificationEmail();
+  });
+
+  [true, false].forEach((testCase) => {
+    it(`Will return ${testCase} if verifying an email address is ${
+      testCase ? 'successful' : 'unsuccessful'
+    }`, async () => {
+      const token = 'asdfasdfasfasefwefawef';
+      const data = fakeUser();
+      const agent = request.agent();
+      const user = new DefaultUser(agent, data);
+
+      scope
+        .post(`/api/users/${data.username}/verifyEmail`, { token })
+        .reply(200, { verified: testCase });
+
+      await expect(user.verifyEmail(token)).resolves.toBe(testCase);
+    });
   });
 });

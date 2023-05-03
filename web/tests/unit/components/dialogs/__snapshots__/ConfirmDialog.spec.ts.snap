@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmDialog component Will display correctly when shown 1`] = `
+<div class="modal is-active">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Confirm?</p><button class="delete" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <p>Content goes here</p>
+    </section>
+    <footer class="modal-card-foot has-text-right">
+      <div class="field is-grouped is-grouped-right">
+        <div class="control"><button class="button dialog-confirm is-primary">Confirm</button></div>
+        <div class="control"><button class="button dialog-cancel">Cancel</button></div>
+      </div>
+    </footer>
+  </div>
+</div>
+`;

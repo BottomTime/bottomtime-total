@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils';
 
-import config from '@/config';
 import PageFooter from '@/components/main/PageFooter.vue';
 
 describe('PageFooter Component', () => {
@@ -14,7 +13,7 @@ describe('PageFooter Component', () => {
       `Copyright © Chris Carleton, ${new Date().getFullYear().toString()}`,
     );
 
-    const contactText = footer.find('p#app-footer-contact').text();
-    expect(contactText).toContain(config.adminEmail);
+    const contactText = footer.find('div#app-footer-contact').html();
+    expect(contactText).toMatchSnapshot();
   });
 });

@@ -4,16 +4,23 @@
       <p id="app-footer-copyright" class="content block">
         Copyright &copy; Chris Carleton, {{ year }}
       </p>
-      <p id="app-footer-contact" class="content block">
-        <span class="icon-text">
-          <span class="icon">
-            <i class="fas fa-envelope fa-sm"></i>
+      <div id="app-footer-contact" class="columns">
+        <div class="column is-one-quarter-tablet is-offset-one-quarter-tablet">
+          <span class="icon-text">
+            <span class="icon">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <span>
+              <a :href="`mailto:${config.adminEmail}`">{{
+                config.adminEmail
+              }}</a>
+            </span>
           </span>
-          <span>
-            <a :href="`mailto:${config.adminEmail}`">{{ config.adminEmail }}</a>
-          </span>
-        </span>
-      </p>
+        </div>
+        <div class="column is-one-quarter-tablet">
+          <RouterLink to="/privacy">Privacy Policy</RouterLink>
+        </div>
+      </div>
     </div>
   </footer>
 </template>

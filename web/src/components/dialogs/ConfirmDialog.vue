@@ -17,7 +17,9 @@
             </button>
           </div>
           <div class="control">
-            <button class="button" @click="onCancel">{{ cancelText }}</button>
+            <button class="button dialog-cancel" @click="onCancel">
+              {{ cancelText }}
+            </button>
           </div>
         </div>
       </footer>
@@ -48,11 +50,9 @@ const emit = defineEmits<{
   (e: 'confirm'): void;
 }>();
 
-const confirmButtonClasses = computed(() => ({
-  button: true,
-  'is-primary': !props.dangerous,
-  'is-danger': props.dangerous,
-}));
+const confirmButtonClasses = computed(
+  () => `button dialog-confirm ${props.dangerous ? 'is-danger' : 'is-primary'}`,
+);
 
 function onCancel() {
   emit('cancel');
