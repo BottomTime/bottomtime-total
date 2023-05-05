@@ -3,12 +3,12 @@ locals {
   s3_origin_id  = "${var.service_name_short}_s3_origin_${var.env}"
 }
 
-resource "aws_cloudfront_origin_access_control" "default" {
-  name                              = "default"
-  description                       = "Default Access Policy"
-  origin_access_control_origin_type = "s3"
-  signing_behavior                  = "always"
-  signing_protocol                  = "sigv4"
+resource "aws_cloudfront_origin_access_identity" "web" {
+  comment = "${var.service_name} Origin Access Identity: Web/${var.env}"
+}
+
+resource "aws_cloudfront_origin_access_identity" "docs" {
+  comment = "${var.service_name} Origin Access Identity: Docs/${var.env}"
 }
 
 resource "aws_cloudfront_cache_policy" "web" {
@@ -90,16 +90,13 @@ resource "aws_cloudfront_distribution" "web" {
     response_page_path = "/index.html"
   }
 
-  logging_config {
-    bucket          = aws_s3_bucket.logs.bucket_domain_name
-    include_cookies = false
-    prefix          = "web/"
-  }
-
   origin {
-    domain_name              = aws_s3_bucket.web.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    origin_id                = local.s3_origin_id
+    domain_name = aws_s3_bucket.web.bucket_regional_domain_name
+    origin_id   = local.s3_origin_id
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.web.cloudfront_access_identity_path
+    }
   }
 
   origin {
@@ -172,16 +169,13 @@ resource "aws_cloudfront_distribution" "docs" {
     response_page_path = "/index.html"
   }
 
-  logging_config {
-    bucket          = aws_s3_bucket.logs.bucket_domain_name
-    include_cookies = false
-    prefix          = "docs/"
-  }
-
   origin {
-    domain_name              = aws_s3_bucket.docs.bucket_regional_domain_name
-    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    origin_id                = local.s3_origin_id
+    domain_name = aws_s3_bucket.docs.bucket_regional_domain_name
+    origin_id   = local.s3_origin_id
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.docs.cloudfront_access_identity_path
+    }
   }
 
   default_cache_behavior {

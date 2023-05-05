@@ -141,6 +141,7 @@ resource "aws_ecs_service" "main" {
   }
 
   depends_on = [
-    aws_alb_target_group.main
+    aws_alb_target_group.main,
+    aws_subnet.private
   ]
 }

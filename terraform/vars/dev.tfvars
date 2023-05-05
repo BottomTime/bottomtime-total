@@ -3,14 +3,14 @@
 ###   The commented variables are optional. Uncomment them to override the default values.
 
 # admin_email = "admin@bottomti.me"
-# availability_zone_count = 2
-env = "dev"
-log_level = "info"
+availability_zone_count = 2
+env                     = "dev"
+log_level               = "info"
 # image_tag = "latest"
 secret_id = "bt/core/dev"
 
 certificate_domain = "bottomti.me"
-docs_domain = "docs-dev"
+docs_domain        = "docs-dev"
 # hosted_zone = "bottomti.me"
 service_domain = "api-dev"
 # service_name = "Bottom Time"
