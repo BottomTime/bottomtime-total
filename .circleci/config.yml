@@ -80,7 +80,7 @@ jobs:
           working_directory: ./service/
           command: |
             yarn lint
-            yarn build --noEmit
+            yarn build
             yarn test
       - record_coverage:
           coverage_file: service_coverage.json
