@@ -33,7 +33,7 @@ resource "aws_s3_bucket" "logs" {
   force_destroy = true
 
   tags = {
-    Name        = "${var.servce_name} Cloudfront Logging"
+    Name        = "${var.service_name} Cloudfront Logging"
     Environment = var.env
   }
 }
