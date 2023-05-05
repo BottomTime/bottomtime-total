@@ -122,7 +122,7 @@ resource "aws_cloudfront_distribution" "web" {
     allowed_methods        = ["HEAD", "GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
     cached_methods         = ["HEAD", "GET", "OPTIONS"]
     cache_policy_id        = aws_cloudfront_cache_policy.api.id
-    path_pattern           = "api/*"
+    path_pattern           = "/api/*"
     target_origin_id       = local.api_origin_id
     viewer_protocol_policy = "https-only"
   }

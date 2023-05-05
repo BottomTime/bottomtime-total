@@ -5,6 +5,7 @@ import express, { type Express } from 'express';
 import { Strategy as LocalStrategy } from 'passport-local';
 import MongoDbSessionStore from 'connect-mongo';
 import passport from 'passport';
+import rewrite from 'express-urlrewrite';
 import session from 'express-session';
 import useragent from 'express-useragent';
 import { v4 as uuid } from 'uuid';
@@ -33,6 +34,7 @@ export async function createServer(
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(useragent.express());
+  app.use(rewrite('/api/*', '/$1'));
 
   log.debug('[EXPRESS] Adding CORS middleware...');
   app.use(

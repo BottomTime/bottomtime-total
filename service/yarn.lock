@@ -3130,6 +3130,14 @@ express-session@^1.17.3:
     safe-buffer "5.2.1"
     uid-safe "~2.1.5"
 
+express-urlrewrite@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/express-urlrewrite/-/express-urlrewrite-2.0.1.tgz#0443f784265e186d76af8cc806c85724bb0ad594"
+  integrity sha512-62RvXDgvj6Bnatg6Mi/McQ1H3s46RHMXM45M32O+Za4w7+zoPccNdi9ko0GgOOAklnrAWMLxzWuawaJ5evppPw==
+  dependencies:
+    debug "^4.3.4"
+    path-to-regexp "^6.2.1"
+
 express-useragent@^1.0.15:
   version "1.0.15"
   resolved "https://registry.yarnpkg.com/express-useragent/-/express-useragent-1.0.15.tgz#cefda5fa4904345d51d3368b117a8dd4124985d9"
@@ -5000,6 +5008,11 @@ path-to-regexp@0.1.7:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
   integrity sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==
+
+path-to-regexp@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-6.2.1.tgz#d54934d6798eb9e5ef14e7af7962c945906918e5"
+  integrity sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==
 
 path-type@^4.0.0:
   version "4.0.0"
