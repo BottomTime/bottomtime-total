@@ -21,6 +21,7 @@
     "prettier": "^2.8.4"
   },
   "lint-staged": {
+    "**/*.{tf,tfvars}": "terraform fmt",
     "**/*": "prettier --write --ignore-unknown"
   }
 }

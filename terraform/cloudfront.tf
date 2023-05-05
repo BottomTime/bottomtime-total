@@ -90,6 +90,12 @@ resource "aws_cloudfront_distribution" "web" {
     response_page_path = "/index.html"
   }
 
+  logging_config {
+    bucket          = aws_s3_bucket.logs.bucket_domain_name
+    include_cookies = false
+    prefix          = "web/"
+  }
+
   origin {
     domain_name              = aws_s3_bucket.web.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.default.id
@@ -164,6 +170,12 @@ resource "aws_cloudfront_distribution" "docs" {
     error_code         = 404
     response_code      = 200
     response_page_path = "/index.html"
+  }
+
+  logging_config {
+    bucket          = aws_s3_bucket.logs.bucket_domain_name
+    include_cookies = false
+    prefix          = "docs/"
   }
 
   origin {
