@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path');
+
 module.exports = {
   env: {
     es2022: true,
@@ -13,7 +16,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: './service/tsconfig.eslint.json',
+    project: path.resolve(__dirname, 'tsconfig.eslint.json'),
   },
   rules: {
     '@typescript-eslint/no-empty-function': 1,
