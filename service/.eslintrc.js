@@ -13,7 +13,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: 'tsconfig.eslint.json',
+    project: './service/tsconfig.eslint.json',
   },
   rules: {
     '@typescript-eslint/no-empty-function': 1,
