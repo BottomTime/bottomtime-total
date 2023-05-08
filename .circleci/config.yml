@@ -144,7 +144,7 @@ jobs:
       - run:
           name: Validate specs
           working_directory: ./docs/
-          command: npx @redocly/cli lint public/specs.yml
+          command: yarn validate
       - run:
           name: Build
           working_directory: ./docs/
