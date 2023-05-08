@@ -1,28 +1,88 @@
 openapi: 3.0.0
 servers:
   # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/MRCHRISCARLETON/BottomTime/1.0.0
+  - description: Development
+    url: https://api-dev.bottomti.me/
   - description: Production
-    url: https://bottomti.me/api/
+    url: https://api.bottomti.me/
+
 info:
   description: This is the API specifications for the Bottom Time application.
-  version: '1.0.0'
+  version: "1.0.0"
   title: Bottom Time
   contact:
     email: mrchriscarleton@gmail.com
+    name: Chris Carleton
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-tags:
-  - name: admins
-    description: Secured Admin-only calls
-  - name: users
-    description: Operations available to regular developers
+
 paths:
+  /auth/login:
+    post:
+      security: []
+      summary: Attempt to login a user with username and password pair.
+      operationId: loginUser
+      description: Logs in a user given their username and password.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - usernameOrEmail
+                - password
+              properties:
+                usernameOrEmail:
+                  type: string
+                  description: The user's username or email address.
+                  example: 'mike_42'
+                password:
+                  type: string
+                  description: The user's password.
+                  example: '*********'
+      responses:
+        '200':
+          description: |
+            Successful login! User account info will be returned and a session
+            cookie will be set in the response header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '401':
+          description: Login attempt failed due to invalid username or password.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+
+
+  /auth/logout:
+    get:
+      security:
+        - SessionCookie: []
+      summary: Logout the current user and end their session.
+      operationId: logoutUser
+      description: Logs the current user out of their session and redirects back to the home page.
+      responses:
+        '302':
+          description: Redirect back to home page with session cookie set.
+          headers:
+            Location:
+              schema:
+                type: string
+
   /auth/me:
     get:
-      tags:
-        - users
-      summary: get current user
+      security: []
+      summary: Get account information for the currently logged in user.
       operationId: getCurrentUser
       description: |
         Retrieves information on the currently logged in user.
@@ -34,22 +94,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
 
-  /auth/logout:
-    get:
-      tags:
-        - users
-      summary: logout current user
-      operationId: logoutUser
-      description: Logs the current user out of their session and redirects back to the home page.
-      responses:
-        '302':
-          description: Redirect back to home page.
-
   /users:
     get:
-      tags:
-        - admins
-      summary: search Users
+      summary: Search for user accounts matching a criteria.
+      security:
+        - SessionCookie: [admin]
       operationId: searchUsers
       description: Searches for user accounts given a search criteria.
       parameters:
@@ -60,6 +109,31 @@ paths:
           schema:
             type: string
         - in: query
+          name: role
+          description: |
+            Filters users to only show the indicated role.
+            * 100 = Regular user
+            * 200 = Administrator
+          required: false
+          schema:
+            type: number
+            format: int32
+            enum:
+              - 100
+              - 200
+        - in: query
+          name: sortBy
+          description: |
+            The field on which the the results should be sorted.
+            The default is `username` unless a query string is provided; then it becomes `relevance`.
+          required: false
+          schema:
+            type: string
+            enum:
+              - memberSince
+              - relevance
+              - username
+        - in: query
           name: sortOrder
           description: The order in which the results should be returned.
           required: false
@@ -68,6 +142,24 @@ paths:
             enum:
               - asc
               - desc
+        - in: query
+          name: skip
+          description: |
+            Indicates how many results should be skipped over. (Useful for paging results.)
+            Minimum value is `0`.
+          required: false
+          schema:
+            type: number
+            format: int32
+        - in: query
+          name: limit
+          description: |
+            Indicates the maximum number of results to return in the current request. Must be at least `1` and no greater than `200`.
+            The default is `100`.
+          required: false
+          schema:
+            type: number
+            format: int32
       responses:
         '200':
           description: |
@@ -79,89 +171,83 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '403':
+          $ref: '#/components/responses/AdminOnlyErrorResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
 
-  /inventory:
+  /user/{usernameOrEmail}:
     get:
-      tags:
-        - developers
-      summary: searches inventory
-      operationId: searchInventory
+      summary: Retrieve user account info.
+      operationId: getUser
       description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
+        Will attempt to retrieve a user's account information.
+      security:
+        - SessionCookie: [admin]
       parameters:
-        - in: query
-          name: searchString
-          description: pass an optional search string for looking up inventory
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: skip
-          description: number of records to skip for pagination
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-        - in: query
-          name: limit
-          description: maximum number of records to return
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-            maximum: 50
+        - $ref: '#/components/parameters/UsernameParameter'
       responses:
-        '200':
-          description: search results matching criteria
+        200:
+          description: |
+            The request succeeded and the user account information is returned in the response body.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InventoryItem'
-        '400':
-          description: bad input parameter
-    post:
-      tags:
-        - admins
-      summary: adds an inventory item
-      operationId: addInventory
-      description: Adds an item to the system
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          $ref: '#/components/responses/AdminOnlyErrorResponse'
+        404:
+          description: |
+            An account matching the requested username or email address could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+    head:
+      summary: Check for existence of username or email address.
+      operationId: userExists
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      description: |
+        This call can be used to quickly determine if a username or email address is already in use on the site.
       responses:
-        '201':
-          description: item created
-        '400':
-          description: 'invalid input, object invalid'
-        '409':
-          description: an existing item already exists
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InventoryItem'
-        description: Inventory item to add
+        200:
+          description: Username or email address exists in the database.
+        404:
+          description: The requested username or email was not found in the database.
 
 components:
+  securitySchemes:
+    SessionCookie:
+      type: apiKey
+      name: bottomtime.platform
+      in: cookie
+
+  parameters:
+    UsernameParameter:
+      in: path
+      name: usernameOrEmail
+      required: true
+      description: |
+        The username (or email address) that uniquely identifies the target user account.
+      schema:
+        type: string
+
   schemas:
     Error:
       type: object
       description: A standard error resposne. This format is used when returning any kind of error.
       required:
-        - statusCode
-        - message
         - httpPath
         - httpMethod
       properties:
-        statusCode:
-          type: number
-          format: int32
-          description: The HTTP status code returned with the error.
-          example: 403
-        message:
-          type: string
-          description: The error message. Will provide a brief description of what went wrong.
-          example: 'You are not authorized to perform the requested action.'
         httpPath:
           type: string
           description: The HTTP path that the request was made to.
@@ -175,11 +261,97 @@ components:
           description: The username identifying the user that made the request.
           example: 'Rick.M'
 
+    ServerError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - message
+            - statusCode
+          properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: 'An unexpected server error has occurred.'
+            statusCode:
+              type: number
+              format: int32
+              description: A 500 error code.
+              example: 500
+
+    NotFoundError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - message
+            - statusCode
+          properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: 'The requested resource could not be found.'
+            statusCode:
+              type: number
+              format: int32
+              description: A 404 error code.
+              example: 404
+
+    UnauthorizedError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - message
+            - statusCode
+          properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: 'Unable to process request. Please log in and try the request again.'
+            statusCode:
+              type: number
+              format: int32
+              description: A 401 error code.
+              example: 401
+
+    ForbiddenError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - message
+            - statusCode
+          properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: |
+                Requested operation was denied. You are not authorized to perform the requested action.
+            statusCode:
+              type: number
+              format: int32
+              description: A 403 error code.
+              example: 403
+
     ValidationError:
       allOf:
         - $ref: '#/components/schemas/Error'
         - type: object
+          required:
+            - message
+            - statusCode
           properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: |
+                Your request was malformed or contained invalid data.
+            statusCode:
+              type: number
+              format: int32
+              description: A 400 error code.
+              example: 400
             details:
               type: array
               items:
@@ -240,15 +412,14 @@ components:
           example: '2016-08-29T09:12:33.001Z'
         profile:
           $ref: '#/components/schemas/Profile'
-          description: The user's profile information.
         role:
           type: number
           format: int32
-          description: The user's security role.
+          description: The user's security role. 100 = normal user. 200 = admin user.
           example: 100
           enum:
-            - 100 (Normal user)
-            - 200 (Admin)
+            - 100
+            - 200
         username:
           type: string
           description: The user's unique username. This is used for logging in and for retrieving account information.
@@ -300,39 +471,32 @@ components:
           description: The user's unique username. This is used for logging in and for retrieving account information.
           example: MichelleR_27
 
-    InventoryItem:
-      type: object
-      required:
-        - id
-        - name
-        - manufacturer
-        - releaseDate
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        name:
-          type: string
-          example: Widget Adapter
-        releaseDate:
-          type: string
-          format: date-time
-          example: '2016-08-29T09:12:33.001Z'
-        manufacturer:
-          $ref: '#/components/schemas/Manufacturer'
-    Manufacturer:
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          example: ACME Corporation
-        homePage:
-          type: string
-          format: url
-          example: 'https://www.acme-corp.com'
-        phone:
-          type: string
-          example: 408-867-5309
-      type: object
+  responses:
+    AdminOnlyErrorResponse:
+      description: The request was denied because the user is not a site administrator.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+
+    UnauthorizedErrorResponse:
+      description: |
+        The operation was denied because the user is unauthenticated or did not provide the requisite session cookie or API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+
+    ValidationErrorResponse:
+      description: 'The request body or query string was invalid or contained invalid data.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+
+    ServerErrorResponse:
+      description: An unhandled server error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerError'
