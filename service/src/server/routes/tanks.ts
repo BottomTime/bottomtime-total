@@ -1,5 +1,7 @@
+import { Express } from 'express';
 import { NextFunction, Request, Response } from 'express';
 import { MissingResourceError } from '../../errors';
+import { requireAdmin } from './auth';
 
 export async function loadPreDefinedTank(
   req: Request,
@@ -109,4 +111,17 @@ export async function deletePreDefinedTank(
   } catch (error) {
     next(error);
   }
+}
+
+export function configureTanksRoutes(app: Express) {
+  app
+    .route('/tanks')
+    .get(listPreDefinedTanks)
+    .post(requireAdmin, createPreDefinedTank);
+  app
+    .route('/tanks/:tankId')
+    .get(loadPreDefinedTank, getPreDefinedTank)
+    .put(requireAdmin, loadPreDefinedTank, updatePreDefinedTank)
+    .patch(requireAdmin, loadPreDefinedTank, patchPreDefinedTank)
+    .delete(requireAdmin, loadPreDefinedTank, deletePreDefinedTank);
 }

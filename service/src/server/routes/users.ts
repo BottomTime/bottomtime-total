@@ -1,3 +1,4 @@
+import { Express } from 'express';
 import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 
@@ -20,6 +21,7 @@ import {
 } from '../../users';
 import { ResetPasswordEmailTemplate, WelcomeEmailTemplate } from '../../email';
 import { VerifyEmailTemplate } from '../../email/verify-email-template';
+import { requireAdmin, requireAuth } from './auth';
 
 const ChangeEmailBodySchema = Joi.object({
   newEmail: Joi.string().required(),
@@ -435,4 +437,60 @@ export async function verifyEmail(
   } catch (error) {
     next(error);
   }
+}
+
+export function configureUserRoutes(app: Express) {
+  // User management routes...
+  const UserRoute = '/users/:username';
+  app.get('/users', requireAdmin, searchUsers);
+  app
+    .route(UserRoute)
+    .head(loadUserAccount, getUserExists)
+    .get(requireAdmin, loadUserAccount, getUser)
+    .put(createUser);
+  app.post(
+    `${UserRoute}/changeEmail`,
+    requireAuth,
+    loadUserAccount,
+    changeEmail,
+  );
+  app.post(
+    `${UserRoute}/changePassword`,
+    requireAuth,
+    loadUserAccount,
+    changePassword,
+  );
+  app.post(`${UserRoute}/changeRole`, requireAuth, loadUserAccount, changeRole);
+  app.post(
+    `${UserRoute}/changeUsername`,
+    requireAuth,
+    loadUserAccount,
+    changeUsername,
+  );
+  app.post(
+    `${UserRoute}/lockAccount`,
+    requireAdmin,
+    loadUserAccount,
+    lockAccount,
+  );
+  app.post(
+    `${UserRoute}/requestEmailVerification`,
+    requireAuth,
+    loadUserAccount,
+    requestVerificationEmail,
+  );
+  app.post(`${UserRoute}/requestPasswordReset`, requestPasswordResetEmail);
+  app.post(`${UserRoute}/resetPassword`, loadUserAccount, resetPassword);
+  app.post(
+    `${UserRoute}/verifyEmail`,
+    requireAuth,
+    loadUserAccount,
+    verifyEmail,
+  );
+  app.post(
+    `${UserRoute}/unlockAccount`,
+    requireAdmin,
+    loadUserAccount,
+    unlockAccount,
+  );
 }

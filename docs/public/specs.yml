@@ -5,7 +5,7 @@ servers:
     url: https://bottomti.me/api/
 info:
   description: This is the API specifications for the Bottom Time application.
-  version: "1.0.0"
+  version: '1.0.0'
   title: Bottom Time
   contact:
     email: mrchriscarleton@gmail.com

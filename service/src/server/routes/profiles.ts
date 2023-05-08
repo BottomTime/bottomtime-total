@@ -1,3 +1,4 @@
+import { Express } from 'express';
 import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 
@@ -188,4 +189,13 @@ export async function searchProfiles(
   } catch (error) {
     next(error);
   }
+}
+
+export function configureProfileRoutes(app: Express) {
+  app.route('/profiles').get(searchProfiles);
+  app
+    .route('/profiles/:username')
+    .get(loadUserProfile, getProfile)
+    .put(loadUserProfile, requireProfileWritePermission, udpateProfile)
+    .patch(loadUserProfile, requireProfileWritePermission, patchProfile);
 }

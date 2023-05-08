@@ -1,5 +1,7 @@
+import { Express } from 'express';
 import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
+import passport from 'passport';
 
 import { ForbiddenError, UnauthorizedError } from '../../errors';
 import { UserRole } from '../../constants';
@@ -61,4 +63,19 @@ export function validateLogin(
   } catch (error) {
     next(error);
   }
+}
+
+export function configureAuthRoutes(app: Express) {
+  app.get('/auth/me', getCurrentUser);
+  app.post(
+    '/auth/login',
+    validateLogin,
+    passport.authenticate('local'),
+    async (req, res) => {
+      await req.user!.updateLastLogin();
+      req.log.info(`User has successfully logged in: ${req.user!.username}`);
+      res.json(req.user);
+    },
+  );
+  app.get('/auth/logout', logout);
 }
