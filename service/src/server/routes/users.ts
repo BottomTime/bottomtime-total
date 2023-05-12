@@ -220,25 +220,32 @@ export async function createUser(
 
     // Send the new user a welcome email.
     if (user.email) {
-      req.log.debug(
-        `Requesting email verification token for "${user.email}"...`,
-      );
-      const verifyEmailToken = await user.requestEmailVerificationToken();
+      try {
+        req.log.debug(
+          `Requesting email verification token for "${user.email}"...`,
+        );
+        const verifyEmailToken = await user.requestEmailVerificationToken();
 
-      req.log.debug(`Generating welcome email body for "${user.email}"...`);
-      const mailTemplate = new WelcomeEmailTemplate();
-      const messageBody = await mailTemplate.render({
-        user,
-        verifyEmailToken,
-      });
+        req.log.debug(`Generating welcome email body for "${user.email}"...`);
+        const mailTemplate = new WelcomeEmailTemplate();
+        const messageBody = await mailTemplate.render({
+          user,
+          verifyEmailToken,
+        });
 
-      req.log.debug(`Sending welcome email to "${user.email}"...`);
-      req.log.debug(req.mail);
-      await req.mail.sendMail(
-        { to: user.email },
-        'Welcome to Bottom Time!',
-        messageBody,
-      );
+        req.log.debug(`Sending welcome email to "${user.email}"...`);
+        req.log.debug(req.mail);
+        await req.mail.sendMail(
+          { to: user.email },
+          'Welcome to Bottom Time!',
+          messageBody,
+        );
+      } catch (mailError) {
+        req.log.error(
+          `Failed to send welcome email to new user: ${req.params.username}`,
+          mailError,
+        );
+      }
     }
 
     res.status(201).json(user);
@@ -440,7 +447,6 @@ export async function verifyEmail(
 }
 
 export function configureUserRoutes(app: Express) {
-  // User management routes...
   const UserRoute = '/users/:username';
   app.get('/users', requireAdmin, searchUsers);
   app
@@ -460,7 +466,12 @@ export function configureUserRoutes(app: Express) {
     loadUserAccount,
     changePassword,
   );
-  app.post(`${UserRoute}/changeRole`, requireAuth, loadUserAccount, changeRole);
+  app.post(
+    `${UserRoute}/changeRole`,
+    requireAdmin,
+    loadUserAccount,
+    changeRole,
+  );
   app.post(
     `${UserRoute}/changeUsername`,
     requireAuth,

@@ -26,13 +26,6 @@ export interface ListFriendsOptions {
   sortOrder?: string;
 }
 
-export interface CreateUserOptions {
-  username: string;
-  email?: string;
-  password?: string;
-  profileVisibility?: string;
-}
-
 export interface ProfileCertificationData {
   agency?: string;
   course: string;
@@ -59,6 +52,13 @@ export interface Profile extends ProfileData {
 
   save(): Promise<void>;
   toJSON(): object;
+}
+
+export interface CreateUserOptions {
+  username: string;
+  email?: string;
+  password?: string;
+  oldPassword?: string;
 }
 
 export interface UserSettingsData {
@@ -121,6 +121,7 @@ export interface User extends UserData {
 
   updateLastLogin(): Promise<void>;
 
+  save(): Promise<void>;
   toJSON(): Record<string, unknown>;
 }
 

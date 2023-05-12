@@ -11,12 +11,17 @@ import { assertValid } from '../helpers/validation';
 import { DefaultUser } from './default-user';
 import {
   CreateUserOptions,
+  ProfileData,
   SearchUsersOptions,
   User,
   UserManager,
   UsersSortBy,
 } from './interfaces';
-import { CreateUserOptionsSchema, SearchUsersOptionSchema } from './validation';
+import {
+  CreateUserOptionsSchema,
+  ProfileSchema,
+  SearchUsersOptionSchema,
+} from './validation';
 
 export class DefaultUserManager implements UserManager {
   private readonly users: Collection<UserDocument>;
@@ -42,67 +47,50 @@ export class DefaultUserManager implements UserManager {
     return data;
   }
 
-  async createUser(options: CreateUserOptions): Promise<User> {
-    const { parsed } = assertValid(options, CreateUserOptionsSchema);
-
-    const username = parsed.username;
-    const usernameLowered = username.toLowerCase();
-
-    const usernameConflict = await this.users.findOne(
-      { usernameLowered },
-      { projection: { _id: true } },
+  async createUser(
+    options: CreateUserOptions,
+    profile?: ProfileData,
+  ): Promise<User> {
+    const { parsed: parsedUser } = assertValid(
+      options,
+      CreateUserOptionsSchema,
     );
-    if (usernameConflict) {
-      throw new ConflictError(
-        `Unable to create user account. Username "${username}" is already taken.`,
-        'username',
-      );
+    const { username, email, role, password } = parsedUser;
+    let parsedProfile = undefined;
+
+    if (profile) {
+      parsedProfile = assertValid(profile, ProfileSchema).parsed;
     }
+
+    await this.checkForConflicts(username, email);
 
     const data: UserDocument = {
       _id: uuid(),
       emailVerified: false,
       isLockedOut: false,
       memberSince: new Date(),
-      role: UserRole.User,
+      role: role ?? UserRole.User,
       username,
-      usernameLowered,
+      usernameLowered: username.toLowerCase(),
     };
 
-    if (parsed.profileVisibility) {
-      data.profile = {
-        profileVisibility: parsed.profileVisibility,
-      };
-    }
-
-    if (parsed.email) {
-      const email = parsed.email;
-      const emailLowered = email.toLowerCase();
-
-      const emailConflict = await this.users.findOne(
-        { emailLowered },
-        { projection: { _id: true } },
-      );
-      if (emailConflict) {
-        throw new ConflictError(
-          `Unable to create user account. Email address "${email}" is already in use.`,
-          'email',
-        );
-      }
-
+    if (email) {
       data.email = email;
-      data.emailLowered = emailLowered;
+      data.emailLowered = email.toLowerCase();
     }
 
-    if (parsed.password) {
+    if (password) {
       data.passwordHash = await hash(
-        parsed.password,
+        parsedUser.password,
         config.passwordSaltRounds,
       );
     }
 
-    this.log.debug(`Attempting to create new user account: ${username}`);
+    if (parsedProfile) {
+      data.profile = parsedProfile;
+    }
 
+    this.log.debug(`Attempting to create new user account: ${username}`);
     await this.users.insertOne(data);
 
     return new DefaultUser(this.mongoClient, this.log, data);
@@ -214,5 +202,39 @@ export class DefaultUserManager implements UserManager {
     return await cursor
       .map((data) => new DefaultUser(this.mongoClient, this.log, data))
       .toArray();
+  }
+
+  private async checkForConflicts(
+    username: string,
+    email?: string,
+  ): Promise<void> {
+    const usernameLowered = username.toLocaleLowerCase();
+    const emailLowered = email?.toLowerCase();
+
+    const query = emailLowered
+      ? {
+          $or: [{ usernameLowered }, { emailLowered }],
+        }
+      : { usernameLowered: username.toLocaleLowerCase() };
+
+    const conflict = await this.users.findOne(query, {
+      projection: { email, username },
+    });
+
+    if (conflict) {
+      if (conflict.usernameLowered === usernameLowered) {
+        throw new ConflictError(
+          `Unable to create user account. Username "${username}" is already taken.`,
+          'username',
+        );
+      }
+
+      if (emailLowered && conflict.emailLowered === emailLowered) {
+        throw new ConflictError(
+          `Unable to create user account. Email address "${email}" is already taken.`,
+          'email',
+        );
+      }
+    }
   }
 }
