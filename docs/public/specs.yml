@@ -124,6 +124,48 @@ paths:
         200:
           description: Operation succeeded.
 
+  /tanks:
+    get:
+      summary: List predefined tank profiles.
+      operationId: listTanks
+      responses:
+        200:
+          description: Operation succeeded.
+    post:
+      summary: Create a new predefined tank profile.
+      operationId: createTank
+      responses:
+        200:
+          description: Operation succeeded.
+
+  /tanks/{tankId}:
+    parameters:
+      - $ref: '#/components/parameters/TankIdParameter'
+    get:
+      summary: Retrieve a tank profile.
+      operationId: getTank
+      responses:
+        200:
+          description: Operation succeeded.
+    put:
+      summary: Update a tank profile.
+      operationId: updateTank
+      responses:
+        204:
+          description: Operation succeeded.
+    patch:
+      summary: Partially update a tank profile.
+      operationId: patchTank
+      responses:
+        204:
+          description: Operation succeeded.
+    delete:
+      summary: Delete a tank profile.
+      operationId: deleteTank
+      responses:
+        204:
+          description: Operation succeeded.
+
   /users:
     get:
       summary: Search for user accounts matching a criteria.
@@ -352,48 +394,6 @@ paths:
         500:
           $ref: '#/components/responses/ServerErrorResponse'
 
-  /tanks:
-    get:
-      summary: List predefined tank profiles.
-      operationId: listTanks
-      responses:
-        200:
-          description: Operation succeeded.
-    post:
-      summary: Create a new predefined tank profile.
-      operationId: createTank
-      responses:
-        200:
-          description: Operation succeeded.
-
-  /tanks/{tankId}:
-    parameters:
-      - $ref: '#/components/parameters/TankIdParameter'
-    get:
-      summary: Retrieve a tank profile.
-      operationId: getTank
-      responses:
-        200:
-          description: Operation succeeded.
-    put:
-      summary: Update a tank profile.
-      operationId: updateTank
-      responses:
-        204:
-          description: Operation succeeded.
-    patch:
-      summary: Partially update a tank profile.
-      operationId: patchTank
-      responses:
-        204:
-          description: Operation succeeded.
-    delete:
-      summary: Delete a tank profile.
-      operationId: deleteTank
-      responses:
-        204:
-          description: Operation succeeded.
-
   /users/{username}/changeEmail:
     post:
       summary: Change a user's email address.
@@ -469,7 +469,6 @@ paths:
                             example: 'newEmail'
         500:
           $ref: '#/components/responses/ServerErrorResponse'
-
 
   /users/{username}/changePassword:
     post:
@@ -684,6 +683,133 @@ paths:
                 $ref: '#/components/schemas/ForbiddenError'
         404:
           description: The request was denied because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/requestEmailVerification:
+    post:
+      summary: Request email verification.
+      operationId: requestEmailVerification
+      description: |
+        Requests that an email be sent to the user with a token to verify their
+        email address.
+
+        The token can later be provided to the `/users/{username}/verifyEmail` route to complete the operation.
+      security:
+        - SessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      responses:
+        200:
+          description: |
+            Indicates that the request was received and the response body will indicate whether an email was
+            succussfully sent to the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - succeeded
+                properties:
+                  succeeded:
+                    type: boolean
+                    description: |
+                      Indicates whether the email was sent. Will be `true` if the email was sent successfully and `false
+                      if the email could not be sent because the user does not yet have an email address saved in their
+                      profile.
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: |
+            The request was rejected because a non-administrator user attempted to request a verification email
+            on behalf of another user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: The request failed because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/requestPasswordReset:
+    post:
+      summary: Request a password reset email.
+      operationId: requestPasswordReset
+      description: |
+        Requests that an email be sent to the indicated user with a token that can be used to reset
+        the user's password. (The token can be supplied to the `/users/{username}/resetPassword` route to complete
+        the operation.)
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      responses:
+        200:
+          description: |
+            The request was received and the response body will indicate whether the email was
+            successfully sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  succeeded:
+                    type: boolean
+                    description: |
+                      Indicates whether the email was successfully sent or not. Will be `true` if the email was sent
+                      or `false` if the email could not be sent because the user currently does not have an email address
+                      on their account.
+        404:
+          description: The request was rejected because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/resetPassword:
+    post:
+      summary: Reset a forgotten password.
+      operationId: resetPassword
+      description: |
+        Attempts to reset a forgotten password.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      responses:
+        200:
+          description: The request was received and the response body will indicate if the password was successfully changed.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - succeeded
+                properties:
+                  succeeded:
+                    type: boolean
+                    description: |
+                      Indicates whether or not the password was reset. Will return `true` if the password was successfully changed.
+                      Otherwise, will return `false` if the token was incorrect or expired.
+        400:
+          description: |
+            The request was rejected because the request body was malformed or the new password did not meet strength requirements.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        404:
+          description: |
+            The request was rejected because the indicated username could not be found.
           content:
             application/json:
               schema:

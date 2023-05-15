@@ -346,15 +346,11 @@ export async function requestVerificationEmail(
   res: Response,
   next: NextFunction,
 ) {
-  // TODO: Re-write this so that it doesn't give away the existence of user accounts.
   try {
     const user = req.selectedUser;
     if (!user?.email) {
-      next(
-        new InvalidOperationError(
-          'Unable to generate and send token! User does not have an email address set.',
-        ),
-      );
+      // Fail silently if the user does not have an email address set.
+      res.json({ succeeded: false });
       return;
     }
 
