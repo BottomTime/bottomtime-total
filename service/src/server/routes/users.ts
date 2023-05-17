@@ -5,7 +5,6 @@ import { NextFunction, Request, Response } from 'express';
 import { SortOrder, UserRole } from '../../constants';
 import {
   ForbiddenError,
-  InvalidOperationError,
   MissingResourceError,
   ValidationError,
 } from '../../errors';
