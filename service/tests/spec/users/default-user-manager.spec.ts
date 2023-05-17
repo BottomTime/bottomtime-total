@@ -11,6 +11,7 @@ import { DefaultUserManager } from '../../../src/users/default-user-manager';
 import { fakePassword, fakeProfile, fakeUser } from '../../fixtures/fake-user';
 import { mongoClient } from '../../mongo-client';
 import { createTestLogger } from '../../test-logger';
+import UserSearchData from '../../fixtures/user-search-data.json';
 
 const Log = createTestLogger('default-user-manager');
 
@@ -186,14 +187,16 @@ describe('Default User Manager', () => {
       const email = faker.internet.email();
       const emailLowered = email.toLowerCase();
       const password = fakePassword();
-      const profileVisibility = ProfileVisibility.Public;
+      const profileData = fakeProfile();
       const userManager = new DefaultUserManager(mongoClient, Log);
-      const user = await userManager.createUser({
-        username,
-        email,
-        password,
-        profileVisibility,
-      });
+      const user = await userManager.createUser(
+        {
+          username,
+          email,
+          password,
+        },
+        profileData,
+      );
 
       expect(user.email).toEqual(email);
       expect(user.emailVerified).toBe(false);
@@ -203,7 +206,17 @@ describe('Default User Manager', () => {
       expect(user.memberSince.valueOf()).toBeCloseTo(new Date().valueOf(), -2);
       expect(user.role).toEqual(UserRole.User);
       expect(user.username).toEqual(username);
-      expect(user.profile.profileVisibility).toEqual(profileVisibility);
+
+      expect(user.profile.avatar).toEqual(profileData.avatar);
+      expect(user.profile.bio).toEqual(profileData.bio);
+      expect(user.profile.birthdate).toEqual(profileData.birthdate);
+      expect(user.profile.certifications).toEqual(profileData.certifications);
+      expect(user.profile.experienceLevel).toEqual(profileData.experienceLevel);
+      expect(user.profile.location).toEqual(profileData.location);
+      expect(user.profile.profileVisibility).toEqual(
+        profileData.profileVisibility,
+      );
+      expect(user.profile.startedDiving).toEqual(profileData.startedDiving);
 
       const result = await Users.findOne({
         usernameLowered: username.toLocaleLowerCase(),
@@ -223,9 +236,7 @@ describe('Default User Manager', () => {
         role: UserRole.User,
         username,
         usernameLowered,
-        profile: {
-          profileVisibility,
-        },
+        profile: profileData,
       });
       await expect(compare(password, passwordHash!)).resolves.toBe(true);
     });
@@ -278,23 +289,22 @@ describe('Default User Manager', () => {
   });
 
   describe('Searching For Users', () => {
+    let testUsersData: UserDocument[];
     let testUsers: User[];
 
-    beforeEach(async () => {
-      const testUsersData = new Array<UserDocument>(50);
-      for (let i = 0; i < testUsersData.length; i++) {
-        testUsersData[i] = fakeUser({
-          // Mongo DB handles sorting differently than Node.js when it comes to underscores.
-          // This fix prevents flaky test results...
-          username: faker.internet.userName().replace('_', '.'),
-
-          role: faker.helpers.arrayElement([UserRole.User, UserRole.Admin]),
-        });
-      }
-      await Users.insertMany(testUsersData);
+    beforeAll(() => {
+      testUsersData = UserSearchData.map((user) => ({
+        ...user,
+        lastLogin: new Date(user.lastLogin),
+        memberSince: new Date(user.memberSince),
+      }));
       testUsers = testUsersData.map(
         (data) => new DefaultUser(mongoClient, Log, data),
       );
+    });
+
+    beforeEach(async () => {
+      await Users.insertMany(testUsersData);
     });
 
     it('Will return an empty array if no results match', async () => {
@@ -307,9 +317,9 @@ describe('Default User Manager', () => {
     it('Will perform text based searches', async () => {
       const userManager = new DefaultUserManager(mongoClient, Log);
       const users = await userManager.searchUsers({
-        query: testUsers[3].username,
+        query: 'Walker',
       });
-      expect(users).toEqual([testUsers[3]]);
+      expect(users).toMatchSnapshot();
     });
 
     it('Will limit "page" size', async () => {
@@ -319,11 +329,7 @@ describe('Default User Manager', () => {
         sortBy: UsersSortBy.Username,
       });
       expect(users).toHaveLength(7);
-      expect(users).toEqual(
-        testUsers
-          .sort((a, b) => a.username.localeCompare(b.username))
-          .slice(0, 7),
-      );
+      expect(users).toMatchSnapshot();
     });
 
     it('Will allow showing results beyond the first page', async () => {
@@ -334,57 +340,31 @@ describe('Default User Manager', () => {
         sortBy: UsersSortBy.Username,
       });
       expect(users).toHaveLength(7);
-      expect(users).toEqual(
-        testUsers
-          .sort((a, b) => a.username.localeCompare(b.username))
-          .slice(7, 14),
-      );
+      expect(users).toMatchSnapshot();
     });
 
-    [UsersSortBy.MemberSince, UsersSortBy.Username].forEach((sortBy) => {
-      it(`Will return results sorted by ${sortBy} in ascending order`, async () => {
+    [
+      { sortBy: UsersSortBy.MemberSince, sortOrder: SortOrder.Ascending },
+      { sortBy: UsersSortBy.MemberSince, sortOrder: SortOrder.Descending },
+      { sortBy: UsersSortBy.Username, sortOrder: SortOrder.Ascending },
+      { sortBy: UsersSortBy.Username, sortOrder: SortOrder.Descending },
+    ].forEach(({ sortBy, sortOrder }) => {
+      it(`Will return results sorted by ${sortBy} in ${sortOrder} order`, async () => {
         const userManager = new DefaultUserManager(mongoClient, Log);
-        const comparators: Record<string, (a: User, b: User) => number> = {
-          [UsersSortBy.MemberSince]: (a, b) =>
-            a.memberSince.valueOf() - b.memberSince.valueOf(),
-          [UsersSortBy.Username]: (a, b) =>
-            a.username.localeCompare(b.username),
-          [UsersSortBy.Relevance]: () => 0,
-        };
-
         const users = await userManager.searchUsers({
           sortBy,
-          sortOrder: SortOrder.Ascending,
+          sortOrder,
+          limit: 10,
         });
-
-        expect(users).toEqual(testUsers.sort(comparators[sortBy]));
-      });
-
-      it(`Will return results sorted by ${sortBy} in descending order`, async () => {
-        const userManager = new DefaultUserManager(mongoClient, Log);
-        const comparators: Record<string, (a: User, b: User) => number> = {
-          [UsersSortBy.MemberSince]: (a, b) =>
-            b.memberSince.valueOf() - a.memberSince.valueOf(),
-          [UsersSortBy.Username]: (a, b) =>
-            b.username.localeCompare(a.username),
-          [UsersSortBy.Relevance]: () => 0,
-        };
-
-        const users = await userManager.searchUsers({
-          sortBy,
-          sortOrder: SortOrder.Descending,
-        });
-
-        expect(users).toEqual(testUsers.sort(comparators[sortBy]));
+        expect(users).toMatchSnapshot();
       });
     });
 
     [UserRole.User, UserRole.Admin].forEach((role) => {
       it(`Will filter by role: ${role}`, async () => {
         const userManager = new DefaultUserManager(mongoClient, Log);
-        const expected = testUsers.filter((user) => user.role === role);
-        const actual = await userManager.searchUsers({ role });
-        expect(actual).toEqual(expected);
+        const results = await userManager.searchUsers({ role, limit: 10 });
+        expect(results).toMatchSnapshot();
       });
     });
 

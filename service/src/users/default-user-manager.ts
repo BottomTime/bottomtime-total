@@ -208,17 +208,17 @@ export class DefaultUserManager implements UserManager {
     username: string,
     email?: string,
   ): Promise<void> {
-    const usernameLowered = username.toLocaleLowerCase();
+    const usernameLowered = username.toLowerCase();
     const emailLowered = email?.toLowerCase();
 
     const query = emailLowered
       ? {
           $or: [{ usernameLowered }, { emailLowered }],
         }
-      : { usernameLowered: username.toLocaleLowerCase() };
+      : { usernameLowered: username.toLowerCase() };
 
     const conflict = await this.users.findOne(query, {
-      projection: { email, username },
+      projection: { emailLowered, usernameLowered },
     });
 
     if (conflict) {

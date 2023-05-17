@@ -91,10 +91,10 @@ export default function () {
 
       await requestVerificationEmail(req, res, next);
 
-      expect(next).toBeCalled();
-      expect(next.mock.lastCall[0]).toBeInstanceOf(InvalidOperationError);
+      expect(next).not.toBeCalled();
       expect(requestToken).not.toBeCalled();
-      expect(res._isEndCalled()).toBe(false);
+      expect(res._isEndCalled()).toBe(true);
+      expect(res._getJSONData()).toEqual({ succeeded: false });
       expect(mailClient.sentMail).toHaveLength(0);
     });
 

@@ -1,5 +1,4 @@
 export const UsersSortBy = {
-  Relevance: 'relevance',
   Username: 'username',
   MemberSince: 'memberSince',
 } as const;
@@ -121,7 +120,6 @@ export interface User extends UserData {
 
   updateLastLogin(): Promise<void>;
 
-  save(): Promise<void>;
   toJSON(): Record<string, unknown>;
 }
 

@@ -323,7 +323,6 @@ describe('Default Friend Manager', () => {
     });
 
     [
-      FriendsSortBy.Relevance,
       FriendsSortBy.Username,
       FriendsSortBy.MemberSince,
       FriendsSortBy.FriendsSince,
