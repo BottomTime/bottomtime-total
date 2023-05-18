@@ -1,28 +1,89 @@
 openapi: 3.0.0
 servers:
   # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/MRCHRISCARLETON/BottomTime/1.0.0
+  - description: Development
+    url: https://api-dev.bottomti.me
   - description: Production
-    url: https://bottomti.me/api/
+    url: https://api.bottomti.me
+
 info:
   description: This is the API specifications for the Bottom Time application.
-  version: "1.0.0"
+  version: '1.0.0'
   title: Bottom Time
   contact:
     email: mrchriscarleton@gmail.com
+    name: Chris Carleton
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-tags:
-  - name: admins
-    description: Secured Admin-only calls
-  - name: users
-    description: Operations available to regular developers
+
 paths:
+  /auth/login:
+    post:
+      security: []
+      summary: Attempt to login a user with username and password pair.
+      operationId: loginUser
+      description: Logs in a user given their username and password.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - usernameOrEmail
+                - password
+              properties:
+                usernameOrEmail:
+                  type: string
+                  description: The user's username or email address.
+                  example: 'mike_42'
+                password:
+                  type: string
+                  format: password
+                  description: The user's password.
+                  example: '*********'
+      responses:
+        '200':
+          description: |
+            Successful login! User account info will be returned and a session
+            cookie will be set in the response header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '401':
+          description: Login attempt failed due to invalid username or password.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /auth/logout:
+    get:
+      security:
+        - SessionCookie: []
+      summary: Logout the current user and end their session.
+      operationId: logoutUser
+      description: Logs the current user out of their session and redirects back to the home page.
+      responses:
+        '302':
+          description: Redirect back to home page with session cookie set.
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+
   /auth/me:
     get:
-      tags:
-        - users
-      summary: get current user
+      security: []
+      summary: Get account information for the currently logged in user.
       operationId: getCurrentUser
       description: |
         Retrieves information on the currently logged in user.
@@ -34,31 +95,201 @@ paths:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
 
-  /auth/logout:
+  /profiles:
     get:
-      tags:
-        - users
-      summary: logout current user
-      operationId: logoutUser
-      description: Logs the current user out of their session and redirects back to the home page.
+      summary: Search user profiles.
+      operationId: searchProfiles
+      description: |
+        Search user profiles based on a search criteria. This query will only return profile information for users
+        that are visible to the current user. (I.e. public profiles and friends-only profiles for users that are
+        friends with the current user.)
+      security: []
+      parameters:
+        - in: query
+          name: query
+          required: false
+          description: |
+            A search string to query for. If specified, this will be used to perform a text-based search for matching profiles.
+          schema:
+            type: string
+        - in: query
+          name: sortBy
+          required: false
+          description: |
+            Indicates the field on which the results should be sorted. For text searches,
+            the default is `relevance`; Otherwise, the default is `username`.
+          schema:
+            type: string
+            enum:
+              - relevance
+              - username
+              - memberSince
+        - in: query
+          name: sortOrder
+          required: false
+          description: |
+            Indicates the order in which results will be returned. Default value is `asc`.
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - in: query
+          name: limit
+          required: false
+          description: |
+            The maximum number of results to return in the query. This number must be a positive integer and can be no greater than `200`.
+            The default value is `100`.
+          example: 100
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 200
+        - in: query
+          name: skip
+          required: false
+          description: |
+            The number of search hits to skip over before returning results. Use this for pagination.
+            This number must be `0` or greater. The default is `0`.
+          example: 200
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
       responses:
-        '302':
-          description: Redirect back to home page.
+        200:
+          description: The request completed successfully and the response body will contain the search results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+
+  /profiles/{username}:
+    parameters:
+      - $ref: '#/components/parameters/UsernameParameter'
+    get:
+      summary: Get a user's profile info.
+      operationId: getProfile
+      security: []
+      responses:
+        200:
+          description: The request succeeded and the response body will contain the profile info.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+    put:
+      summary: Update a user's profile info.
+      operationId: updateProfile
+      security:
+        - SessionCookie: []
+      responses:
+        200:
+          description: Operation succeeded.
+    patch:
+      summary: Partially update a user's profile info.
+      operationId: patchProfile
+      security:
+        - SessionCookie: []
+      responses:
+        200:
+          description: Operation succeeded.
+
+  /tanks:
+    get:
+      summary: List predefined tank profiles.
+      operationId: listTanks
+      security: []
+      responses:
+        200:
+          description: Operation succeeded.
+    post:
+      summary: Create a new predefined tank profile.
+      operationId: createTank
+      security:
+        - SessionCookie: [admin]
+      responses:
+        200:
+          description: Operation succeeded.
+
+  /tanks/{tankId}:
+    parameters:
+      - $ref: '#/components/parameters/TankIdParameter'
+    get:
+      summary: Retrieve a tank profile.
+      operationId: getTank
+      security: []
+      responses:
+        200:
+          description: Operation succeeded.
+    put:
+      summary: Update a tank profile.
+      operationId: updateTank
+      security:
+        - SessionCookie: [admin]
+      responses:
+        204:
+          description: Operation succeeded.
+    patch:
+      summary: Partially update a tank profile.
+      operationId: patchTank
+      security:
+        - SessionCookie: [admin]
+      responses:
+        204:
+          description: Operation succeeded.
+    delete:
+      summary: Delete a tank profile.
+      operationId: deleteTank
+      security:
+        - SessionCookie: [admin]
+      responses:
+        204:
+          description: Operation succeeded.
 
   /users:
     get:
-      tags:
-        - admins
-      summary: search Users
+      summary: Search for user accounts matching a criteria.
+      security:
+        - SessionCookie: [admin]
       operationId: searchUsers
       description: Searches for user accounts given a search criteria.
       parameters:
         - in: query
           name: query
-          description: A text string that will be searched for amongst the user data.
+          description: |
+            A text string that will be searched for amongst the user data.
           required: false
           schema:
             type: string
+        - in: query
+          name: role
+          description: |
+            Filters users to only show the indicated role.
+            * 100 = Regular user
+            * 200 = Administrator
+          required: false
+          schema:
+            type: number
+            format: int32
+            enum:
+              - 100
+              - 200
+        - in: query
+          name: sortBy
+          description: |
+            The field on which the the results should be sorted.
+            The default is `username` unless a query string is provided; then it becomes `relevance`.
+          required: false
+          schema:
+            type: string
+            enum:
+              - memberSince
+              - relevance
+              - username
         - in: query
           name: sortOrder
           description: The order in which the results should be returned.
@@ -68,6 +299,27 @@ paths:
             enum:
               - asc
               - desc
+        - in: query
+          name: skip
+          description: |
+            Indicates how many results should be skipped over. (Useful for paging results.)
+            Minimum value is `0`.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+        - in: query
+          name: limit
+          description: |
+            Indicates the maximum number of results to return in the current request. Must be at least `1` and no greater than `200`.
+            The default is `100`.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            maximum: 200
       responses:
         '200':
           description: |
@@ -79,89 +331,693 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        '403':
+          $ref: '#/components/responses/AdminOnlyErrorResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
 
-  /inventory:
+  /users/{username}:
     get:
-      tags:
-        - developers
-      summary: searches inventory
-      operationId: searchInventory
+      summary: Retrieve user account info.
+      operationId: getUser
       description: |
-        By passing in the appropriate options, you can search for
-        available inventory in the system
+        Will attempt to retrieve a user's account information.
+      security:
+        - SessionCookie: [admin]
       parameters:
-        - in: query
-          name: searchString
-          description: pass an optional search string for looking up inventory
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: skip
-          description: number of records to skip for pagination
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-        - in: query
-          name: limit
-          description: maximum number of records to return
-          schema:
-            type: integer
-            format: int32
-            minimum: 0
-            maximum: 50
+        - $ref: '#/components/parameters/UsernameParameter'
       responses:
-        '200':
-          description: search results matching criteria
+        200:
+          description: |
+            The request succeeded and the user account information is returned in the response body.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InventoryItem'
-        '400':
-          description: bad input parameter
-    post:
-      tags:
-        - admins
-      summary: adds an inventory item
-      operationId: addInventory
-      description: Adds an item to the system
+                $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          $ref: '#/components/responses/AdminOnlyErrorResponse'
+        404:
+          description: |
+            An account matching the requested username or email address could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+    head:
+      summary: Check for existence of username or email address.
+      operationId: userExists
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      description: |
+        This call can be used to quickly determine if a username or email address is already in use on the site.
       responses:
-        '201':
-          description: item created
-        '400':
-          description: 'invalid input, object invalid'
-        '409':
-          description: an existing item already exists
+        200:
+          description: Username or email address exists in the database.
+        404:
+          description: The requested username or email was not found in the database.
+    put:
+      summary: Create a user account.
+      operationId: createUser
+      security: []
+      parameters:
+        - in: path
+          name: username
+          required: true
+          description: |
+            The username that uniquely identifies the user account to create.
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9]+([_.-][a-zA-Z0-9]+)*$'
+            minLength: 3
+            maxLength: 50
+      description: |
+        Creates a new user account given the provided information.
+
+        **NOTE:** Permissions required may vary depending on what attributes are being set:
+        * Any user can create a new account as long as it has a role of "Regular User" (`100`).
+        * Only administrators can create a new account with elevated privileges.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InventoryItem'
-        description: Inventory item to add
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 50
+                  description: The new user's email address.
+                  example: 'bob@gmail.org'
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  maxLength: 50
+                  pattern: '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$'
+                  description: The new user's password. (Must meet strength requirements.)
+                  example: 'IN98dwoi)*&(lll'
+                profile:
+                  description: Any profile information that should be updated.
+                  allOf:
+                    - $ref: '#/components/schemas/ProfileData'
+                role:
+                  type: integer
+                  format: int32
+                  description: |
+                    The role to assign to the new account.
+                    * 100 = regular user.
+                    * 200 = administrator.
+                  example: 100
+      responses:
+        200:
+          description: |
+            The new account was successfully created.
+            The details for the newly-created account will be returned in the response body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/ValidationErrorResponse'
+        401:
+          description: |
+            User attempted to create a new account with elevated privileges but is not currently logged in.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        403:
+          description: |
+            User attempted to create a new account with elevated privileges but is not an administrator.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        409:
+          description: |
+            Account creation failed because the requested username or email address is already in use.
+            (Check response body for details.)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Error'
+                  - type: object
+                    required:
+                      - message
+                      - statusCode
+                    properties:
+                      message:
+                        type: string
+                        example: Unable to create new account. Username or email address is already in use.
+                      statusCode:
+                        type: integer
+                        format: int32
+                        example: 409
+                      details:
+                        type: object
+                        required:
+                          - conflictingField
+                        properties:
+                          conflictingField:
+                            type: string
+                            description: The field that was found to be in conflict.
+                            example: username
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/changeEmail:
+    post:
+      summary: Change a user's email address.
+      operationId: changeEmail
+      description: Will attempt to change a user's email address.
+      security:
+        - SessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newEmail
+              properties:
+                newEmail:
+                  type: string
+                  format: email
+                  maxLength: 50
+                  description: The new email address to assign to the user account.
+                  example: newemail@otherprovider.org
+      responses:
+        204:
+          description: The email address was successfully changed.
+        400:
+          description: The new email address was not a valid address or the request body was malformed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: |
+            The request was denied because a non-admin user attempted to change another user's email address.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: The indicated user account could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        409:
+          description: |
+            The email address could not be changed because the new address is already in use by another user.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Error'
+                  - type: object
+                    required:
+                      - message
+                      - statusCode
+                    properties:
+                      message:
+                        type: string
+                        example: 'Unable to change email addres. New email is already in use.'
+                      statusCode:
+                        type: integer
+                        format: int32
+                        example: 409
+                      details:
+                        type: object
+                        required:
+                          - conflictingField
+                        properties:
+                          conflictingField:
+                            type: string
+                            example: 'newEmail'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/changePassword:
+    post:
+      summary: Change a user's password.
+      operationId: changePassword
+      description: |
+        Will attempt to change a user's password.
+
+        The `oldPassword` parameter is required _if_
+        * the user already has a password set on thier account and
+        * the user is not an administrator.
+      security:
+        - SessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newPassword
+              properties:
+                oldPassword:
+                  type: string
+                  format: password
+                  description: |
+                    The user's old (current) password that will be replaced.
+
+                    This value must be correct in order for the operation to succeed. It can be omitted if
+                    * the user does not yet have a password set on their account yet or
+                    * the user is an administrator.
+                newPassword:
+                  type: string
+                  format: password
+                  pattern: '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$'
+                  minLength: 8
+                  maxLength: 50
+                  description: The new password to assign to the user account.
+      responses:
+        204:
+          description: The password was successfully changed.
+        400:
+          description: The new password did not meet strength requirements.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: |
+            The request was denied because a non-admin user attempted to change another user's password or the `oldPassword` was incorrect.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: The indicated user account could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/changeRole:
+    post:
+      summary: Change a user's role.
+      operationId: changeRole
+      description: |
+        Will attempt to change a user's role in order to change their permission level. Only administrators are permitted to use this API endpoint.
+      security:
+        - SessionCookie: [admin]
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newRole
+              properties:
+                newRole:
+                  type: integer
+                  format: int32
+                  description: |
+                    The new role to assign to the user's account.
+
+                    * 100 = Regular user
+                    * 200 = Administrator
+                  enum:
+                    - 100
+                    - 200
+      responses:
+        204:
+          description: The role was updated successfully.
+        400:
+          description: The new role was invalid or the request body was malformed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: The request was denied because the user is not an administrator.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: The request was denied because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/changeUsername:
+    post:
+      summary: Attempt to change a user's username.
+      operationId: changeUsername
+      description: |
+        Changes a user's username.
+      security:
+        - SessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - newUsername
+              properties:
+                newUsername:
+                  type: string
+                  pattern: '^[a-zA-Z0-9]+([_.-][a-zA-Z0-9]+)*$'
+                  minLength: 3
+                  maxLength: 50
+                  description: The new username to assign to the user's account.
+                  example: maryj_46
+      responses:
+        204:
+          description: The username was updated successfully.
+        400:
+          description: The request was denied because the new username was invalid or the request body was malformed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: The request was denied because the user is not an administrator and attempted to change another user's username.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: The request was denied because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        409:
+          description: The request was denied because the username is already taken by another user.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Error'
+                  - type: object
+                    required:
+                      - message
+                      - statusCode
+                    properties:
+                      message:
+                        type: string
+                        example: 'Unable to change username. New username is already in use.'
+                      statusCode:
+                        type: number
+                        format: int32
+                        example: 409
+                      details:
+                        type: object
+                        required:
+                          - conflictingField
+                        properties:
+                          conflictingField:
+                            type: string
+                            example: 'newUsername'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/lockAccount:
+    post:
+      summary: Locks (suspends) a user account.
+      operationId: lockAccount
+      description: |
+        Locks a user's account and immediately ends all active sessions for that user.
+
+        Only administrators may call this API endpoint.
+      security:
+        - SessionCookie: [admin]
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      responses:
+        204:
+          description: The user account was successfully locked.
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: The request was denied because the user is not an administrator.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: The request was denied because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/requestEmailVerification:
+    post:
+      summary: Request email verification.
+      operationId: requestEmailVerification
+      description: |
+        Requests that an email be sent to the user with a token to verify their
+        email address.
+
+        The token can later be provided to the `/users/{username}/verifyEmail` route to complete the operation.
+      security:
+        - SessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      responses:
+        200:
+          description: |
+            Indicates that the request was received and the response body will indicate whether an email was
+            succussfully sent to the user.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - succeeded
+                properties:
+                  succeeded:
+                    type: boolean
+                    description: |
+                      Indicates whether the email was sent. Will be `true` if the email was sent successfully and `false
+                      if the email could not be sent because the user does not yet have an email address saved in their
+                      profile.
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: |
+            The request was rejected because a non-administrator user attempted to request a verification email
+            on behalf of another user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: The request failed because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/requestPasswordReset:
+    post:
+      summary: Request a password reset email.
+      operationId: requestPasswordReset
+      description: |
+        Requests that an email be sent to the indicated user with a token that can be used to reset
+        the user's password. (The token can be supplied to the `/users/{username}/resetPassword` route to complete
+        the operation.)
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      responses:
+        200:
+          description: |
+            The request was received and the response body will indicate whether the email was
+            successfully sent.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  succeeded:
+                    type: boolean
+                    description: |
+                      Indicates whether the email was successfully sent or not. Will be `true` if the email was sent
+                      or `false` if the email could not be sent because the user currently does not have an email address
+                      on their account.
+        404:
+          description: The request was rejected because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/resetPassword:
+    post:
+      summary: Reset a forgotten password.
+      operationId: resetPassword
+      description: |
+        Attempts to reset a forgotten password.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - newPassword
+              properties:
+                token:
+                  type: string
+                  description: |
+                    The reset token returned from a previous call to `/users/{username}/requestPasswordReset`.
+                  example: 'VHVK-15D0s4fxGzFJzsSIClXVtJY71jDVhngRhSqOvg'
+                newPassword:
+                  type: string
+                  format: password
+                  pattern: '^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$'
+                  description: The new password to apply to the user's account.
+                  example: 'q9]=qX%k,4tH5xM8]%%v'
+      responses:
+        200:
+          description: The request was received and the response body will indicate if the password was successfully changed.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - succeeded
+                properties:
+                  succeeded:
+                    type: boolean
+                    description: |
+                      Indicates whether or not the password was reset. Will return `true` if the password was successfully changed.
+                      Otherwise, will return `false` if the token was incorrect, expired, or non-existent.
+        400:
+          description: |
+            The request was rejected because the request body was malformed or the new password did not meet strength requirements.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        404:
+          description: |
+            The request was rejected because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/unlockAccount:
+    post:
+      summary: Unlocks (unsuspends) a user account.
+      operationId: unlockAccount
+      description: |
+        Unlocks a user's account that was previously suspended.
+
+        Only administrators may call this API endpoint.
+      security:
+        - SessionCookie: [admin]
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+      responses:
+        204:
+          description: The user account was successfully unlocked.
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: The request was denied because the user is not an administrator.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: The request was denied because the indicated username could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
 
 components:
+  securitySchemes:
+    SessionCookie:
+      type: apiKey
+      name: bottomtime.platform
+      in: cookie
+
+  parameters:
+    TankIdParameter:
+      in: path
+      name: tankId
+      required: true
+      description: |
+        The ID that uniquely identifies the pre-defined tank definition.
+      schema:
+        type: string
+        format: uuid
+
+    UsernameParameter:
+      in: path
+      name: username
+      required: true
+      description: |
+        The username (or email address) that uniquely identifies the target user account.
+      schema:
+        type: string
+        pattern: '^[a-zA-Z0-9]+([_.-][a-zA-Z0-9]+)*$'
+        minLength: 3
+        maxLength: 50
+
   schemas:
     Error:
       type: object
       description: A standard error resposne. This format is used when returning any kind of error.
       required:
-        - statusCode
-        - message
         - httpPath
         - httpMethod
       properties:
-        statusCode:
-          type: number
-          format: int32
-          description: The HTTP status code returned with the error.
-          example: 403
-        message:
-          type: string
-          description: The error message. Will provide a brief description of what went wrong.
-          example: 'You are not authorized to perform the requested action.'
         httpPath:
           type: string
           description: The HTTP path that the request was made to.
@@ -175,11 +1031,97 @@ components:
           description: The username identifying the user that made the request.
           example: 'Rick.M'
 
+    ServerError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - message
+            - statusCode
+          properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: 'An unexpected server error has occurred.'
+            statusCode:
+              type: integer
+              format: int32
+              description: A 500 error code.
+              example: 500
+
+    NotFoundError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - message
+            - statusCode
+          properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: 'The requested resource could not be found.'
+            statusCode:
+              type: integer
+              format: int32
+              description: A 404 error code.
+              example: 404
+
+    UnauthorizedError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - message
+            - statusCode
+          properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: 'Unable to process request. Please log in and try the request again.'
+            statusCode:
+              type: integer
+              format: int32
+              description: A 401 error code.
+              example: 401
+
+    ForbiddenError:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          required:
+            - message
+            - statusCode
+          properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: |
+                Requested operation was denied. You are not authorized to perform the requested action.
+            statusCode:
+              type: integer
+              format: int32
+              description: A 403 error code.
+              example: 403
+
     ValidationError:
       allOf:
         - $ref: '#/components/schemas/Error'
         - type: object
+          required:
+            - message
+            - statusCode
           properties:
+            message:
+              type: string
+              description: The error message. Will provide a brief description of what went wrong.
+              example: |
+                Your request was malformed or contained invalid data.
+            statusCode:
+              type: integer
+              format: int32
+              description: A 400 error code.
+              example: 400
             details:
               type: array
               items:
@@ -206,8 +1148,8 @@ components:
       properties:
         email:
           type: string
-          description: User's email address. Used for authentication and communication.
           format: email
+          description: User's email address. Used for authentication and communication.
           example: micheller_27@gmail.com
         emailVerified:
           description: Indicates whether the user's email address has been verified or not.
@@ -240,15 +1182,14 @@ components:
           example: '2016-08-29T09:12:33.001Z'
         profile:
           $ref: '#/components/schemas/Profile'
-          description: The user's profile information.
         role:
-          type: number
+          type: integer
           format: int32
-          description: The user's security role.
+          description: The user's security role. 100 = normal user. 200 = admin user.
           example: 100
           enum:
-            - 100 (Normal user)
-            - 200 (Admin)
+            - 100
+            - 200
         username:
           type: string
           description: The user's unique username. This is used for logging in and for retrieving account information.
@@ -269,20 +1210,67 @@ components:
               example: false
         - $ref: '#/components/schemas/User'
 
-    Profile:
+    ProfileData:
       type: object
-      description: Describes a user's profile information.
+      description: A user's profile information.
       required:
-        - memberSince
         - profileVisibility
-        - userId
-        - username
       properties:
-        memberSince:
+        avatar:
           type: string
-          format: date-time
-          description: Date and time (UTC) at which the user's account was first created.
-          example: '2016-08-29T09:12:33.001Z'
+          format: uri
+          description: A URL to an image that the user chose as their avatar.
+          example: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?f=y'
+        bio:
+          type: string
+          description: A brief bit of descriptive text that the user wrote about themselves.
+          example: Loves diving. Especially, in water!
+        birthdate:
+          type: string
+          format: date
+          description: The user's birthdate.
+        customData:
+          type: object
+          description: |
+            An object containing custom properties and metadata to save with the user's profile.
+            This is a free-form dictionary of key-value pairs.
+          example: { acceptedCookies: true, likesDiving: true }
+        certifications:
+          type: array
+          description: A collection of certifications that the user has earned.
+          items:
+            type: object
+            required:
+              - course
+            properties:
+              agency:
+                type: string
+                description: The agency that conferred the certification.
+                example: PADI
+              course:
+                type: string
+                description: The name of the course or certification.
+                example: Open Water Diver
+              date:
+                type: string
+                format: date
+                description: The date on which the certification was earned.
+                example: 2016-08-10
+        experienceLevel:
+          type: string
+          maxLength: 50
+          description: A brief description of the user's experience level as a diver.
+          example: Novice
+        location:
+          type: string
+          maxLength: 50
+          description: The user's approximate location.
+          example: Vancouver, BC
+        name:
+          type: string
+          maxLength: 100
+          description: The user's name. (This will be used a their preferred display name.)
+          example: Michelle R.
         profileVisibility:
           type: string
           description: Indicates who is authorized to view this user's profile information.
@@ -290,49 +1278,64 @@ components:
             - private
             - friends
             - public
-        userId:
+        startedDiving:
           type: string
-          format: uuid
-          description: A globally-unique identifier that can be used to identify the user's account.
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        username:
-          type: string
-          description: The user's unique username. This is used for logging in and for retrieving account information.
-          example: MichelleR_27
+          format: date
+          pattern: '^\d{4}(-\d{2}(-\d{2})?)?$'
+          description: The date on which the user started diving. (Can be approximate. E.g. 2007.)
+          example: 2007-04-19
+    Profile:
+      allOf:
+        - type: object
+          description: Describes a user's profile information.
+          required:
+            - memberSince
+            - profileVisibility
+            - userId
+            - username
+          properties:
+            memberSince:
+              type: string
+              format: date-time
+              description: Date and time (UTC) at which the user's account was first created.
+              example: '2016-08-29T09:12:33.001Z'
+            userId:
+              type: string
+              format: uuid
+              description: A globally-unique identifier that can be used to identify the user's account.
+              example: d290f1ee-6c54-4b01-90e6-d701748f0851
+            username:
+              type: string
+              description: The user's unique username. This is used for logging in and for retrieving account information.
+              example: MichelleR_27
+        - $ref: '#/components/schemas/ProfileData'
 
-    InventoryItem:
-      type: object
-      required:
-        - id
-        - name
-        - manufacturer
-        - releaseDate
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        name:
-          type: string
-          example: Widget Adapter
-        releaseDate:
-          type: string
-          format: date-time
-          example: '2016-08-29T09:12:33.001Z'
-        manufacturer:
-          $ref: '#/components/schemas/Manufacturer'
-    Manufacturer:
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          example: ACME Corporation
-        homePage:
-          type: string
-          format: url
-          example: 'https://www.acme-corp.com'
-        phone:
-          type: string
-          example: 408-867-5309
-      type: object
+  responses:
+    AdminOnlyErrorResponse:
+      description: The request was denied because the user is not a site administrator.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ForbiddenError'
+
+    UnauthorizedErrorResponse:
+      description: |
+        The operation was denied because the user is unauthenticated or did not provide the requisite session cookie or API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UnauthorizedError'
+
+    ValidationErrorResponse:
+      description: 'The request body or query string was invalid or contained invalid data.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+
+    ServerErrorResponse:
+      description: An unhandled server error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerError'

@@ -31,13 +31,6 @@ export const ProfileVisibilitySchema = Joi.string().valid(
   ...Object.values(ProfileVisibility),
 );
 
-export const CreateUserOptionsSchema = Joi.object({
-  username: UsernameSchema.required(),
-  email: EmailSchema,
-  password: PasswordStrengthSchema,
-  profileVisibility: ProfileVisibilitySchema,
-});
-
 export const SearchUsersOptionSchema = Joi.object({
   query: Joi.string().trim(),
   role: RoleSchema,
@@ -94,6 +87,14 @@ export const ProfileSchema = Joi.object({
     .trim()
     .regex(/^\d{4}(-\d{2}(-\d{2})?)?$/)
     .allow(null),
+});
+
+export const CreateUserOptionsSchema = Joi.object({
+  username: UsernameSchema.required(),
+  email: EmailSchema,
+  oldPassword: Joi.string(),
+  password: PasswordStrengthSchema,
+  role: RoleSchema,
 });
 
 export const UserSettingsSchema = Joi.object({

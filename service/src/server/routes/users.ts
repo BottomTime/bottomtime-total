@@ -1,10 +1,10 @@
+import { Express } from 'express';
 import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 
 import { SortOrder, UserRole } from '../../constants';
 import {
   ForbiddenError,
-  InvalidOperationError,
   MissingResourceError,
   ValidationError,
 } from '../../errors';
@@ -20,6 +20,7 @@ import {
 } from '../../users';
 import { ResetPasswordEmailTemplate, WelcomeEmailTemplate } from '../../email';
 import { VerifyEmailTemplate } from '../../email/verify-email-template';
+import { requireAdmin, requireAuth } from './auth';
 
 const ChangeEmailBodySchema = Joi.object({
   newEmail: Joi.string().required(),
@@ -218,25 +219,32 @@ export async function createUser(
 
     // Send the new user a welcome email.
     if (user.email) {
-      req.log.debug(
-        `Requesting email verification token for "${user.email}"...`,
-      );
-      const verifyEmailToken = await user.requestEmailVerificationToken();
+      try {
+        req.log.debug(
+          `Requesting email verification token for "${user.email}"...`,
+        );
+        const verifyEmailToken = await user.requestEmailVerificationToken();
 
-      req.log.debug(`Generating welcome email body for "${user.email}"...`);
-      const mailTemplate = new WelcomeEmailTemplate();
-      const messageBody = await mailTemplate.render({
-        user,
-        verifyEmailToken,
-      });
+        req.log.debug(`Generating welcome email body for "${user.email}"...`);
+        const mailTemplate = new WelcomeEmailTemplate();
+        const messageBody = await mailTemplate.render({
+          user,
+          verifyEmailToken,
+        });
 
-      req.log.debug(`Sending welcome email to "${user.email}"...`);
-      req.log.debug(req.mail);
-      await req.mail.sendMail(
-        { to: user.email },
-        'Welcome to Bottom Time!',
-        messageBody,
-      );
+        req.log.debug(`Sending welcome email to "${user.email}"...`);
+        req.log.debug(req.mail);
+        await req.mail.sendMail(
+          { to: user.email },
+          'Welcome to Bottom Time!',
+          messageBody,
+        );
+      } catch (mailError) {
+        req.log.error(
+          `Failed to send welcome email to new user: ${req.params.username}`,
+          mailError,
+        );
+      }
     }
 
     res.status(201).json(user);
@@ -337,15 +345,11 @@ export async function requestVerificationEmail(
   res: Response,
   next: NextFunction,
 ) {
-  // TODO: Re-write this so that it doesn't give away the existence of user accounts.
   try {
     const user = req.selectedUser;
     if (!user?.email) {
-      next(
-        new InvalidOperationError(
-          'Unable to generate and send token! User does not have an email address set.',
-        ),
-      );
+      // Fail silently if the user does not have an email address set.
+      res.json({ succeeded: false });
       return;
     }
 
@@ -435,4 +439,64 @@ export async function verifyEmail(
   } catch (error) {
     next(error);
   }
+}
+
+export function configureUserRoutes(app: Express) {
+  const UserRoute = '/users/:username';
+  app.get('/users', requireAdmin, searchUsers);
+  app
+    .route(UserRoute)
+    .head(loadUserAccount, getUserExists)
+    .get(requireAdmin, loadUserAccount, getUser)
+    .put(createUser);
+  app.post(
+    `${UserRoute}/changeEmail`,
+    requireAuth,
+    loadUserAccount,
+    changeEmail,
+  );
+  app.post(
+    `${UserRoute}/changePassword`,
+    requireAuth,
+    loadUserAccount,
+    changePassword,
+  );
+  app.post(
+    `${UserRoute}/changeRole`,
+    requireAdmin,
+    loadUserAccount,
+    changeRole,
+  );
+  app.post(
+    `${UserRoute}/changeUsername`,
+    requireAuth,
+    loadUserAccount,
+    changeUsername,
+  );
+  app.post(
+    `${UserRoute}/lockAccount`,
+    requireAdmin,
+    loadUserAccount,
+    lockAccount,
+  );
+  app.post(
+    `${UserRoute}/requestEmailVerification`,
+    requireAuth,
+    loadUserAccount,
+    requestVerificationEmail,
+  );
+  app.post(`${UserRoute}/requestPasswordReset`, requestPasswordResetEmail);
+  app.post(`${UserRoute}/resetPassword`, loadUserAccount, resetPassword);
+  app.post(
+    `${UserRoute}/verifyEmail`,
+    requireAuth,
+    loadUserAccount,
+    verifyEmail,
+  );
+  app.post(
+    `${UserRoute}/unlockAccount`,
+    requireAdmin,
+    loadUserAccount,
+    unlockAccount,
+  );
 }

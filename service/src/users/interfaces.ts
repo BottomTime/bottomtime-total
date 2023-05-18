@@ -1,5 +1,4 @@
 export const UsersSortBy = {
-  Relevance: 'relevance',
   Username: 'username',
   MemberSince: 'memberSince',
 } as const;
@@ -24,13 +23,6 @@ export interface ListFriendsOptions {
   limit?: number;
   sortBy?: string;
   sortOrder?: string;
-}
-
-export interface CreateUserOptions {
-  username: string;
-  email?: string;
-  password?: string;
-  profileVisibility?: string;
 }
 
 export interface ProfileCertificationData {
@@ -59,6 +51,13 @@ export interface Profile extends ProfileData {
 
   save(): Promise<void>;
   toJSON(): object;
+}
+
+export interface CreateUserOptions {
+  username: string;
+  email?: string;
+  password?: string;
+  oldPassword?: string;
 }
 
 export interface UserSettingsData {

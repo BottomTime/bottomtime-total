@@ -141,10 +141,10 @@ jobs:
       - checkout
       - install_node:
           app_path: ./docs/
-      # - run:
-      #     name: Validate specs
-      #     working_directory: ./docs/
-      #     command: npx @redocly/cli lint public/specs.yml
+      - run:
+          name: Validate specs
+          working_directory: ./docs/
+          command: yarn validate
       - run:
           name: Build
           working_directory: ./docs/
