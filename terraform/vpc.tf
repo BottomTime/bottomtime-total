@@ -111,21 +111,19 @@ resource "aws_vpc_endpoint" "s3" {
 }
 
 resource "aws_vpc_endpoint" "ecr-dkr" {
-  vpc_id              = aws_vpc.main.id
-  private_dns_enabled = true
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.dkr"
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.task.id]
-  subnet_ids          = aws_subnet.private.*.id
+  vpc_id             = aws_vpc.main.id
+  service_name       = "com.amazonaws.${data.aws_region.current.name}.ecr.dkr"
+  vpc_endpoint_type  = "Interface"
+  security_group_ids = [aws_security_group.task.id]
+  subnet_ids         = aws_subnet.private.*.id
 }
 
 resource "aws_vpc_endpoint" "ecr-api" {
-  vpc_id              = aws_vpc.main.id
-  private_dns_enabled = true
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.task.id]
-  subnet_ids          = aws_subnet.private.*.id
+  vpc_id             = aws_vpc.main.id
+  service_name       = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
+  vpc_endpoint_type  = "Interface"
+  security_group_ids = [aws_security_group.task.id]
+  subnet_ids         = aws_subnet.private.*.id
 }
 
 resource "aws_vpc_endpoint" "ecs-agent" {

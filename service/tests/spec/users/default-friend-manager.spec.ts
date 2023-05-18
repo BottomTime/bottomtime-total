@@ -21,6 +21,8 @@ import config from '../../../src/config';
 import { InvalidOperationError, ValidationError } from '../../../src/errors';
 import { ProfileVisibility, SortOrder } from '../../../src/constants';
 
+import FriendData from '../../fixtures/friend-search-data.json';
+
 const Log = createTestLogger('default-friend-manager');
 
 describe('Default Friend Manager', () => {
@@ -188,28 +190,18 @@ describe('Default Friend Manager', () => {
         friends: [],
       });
       friends = [];
-      const friendData = new Array<UserDocument>(100);
-      for (let i = 0; i < friendData.length; i++) {
-        friendData[i] = fakeUser({
-          username: faker.internet.userName().replace('_', '.'),
-          profile: fakeProfile({
-            profileVisibility: faker.helpers.arrayElement([
-              ProfileVisibility.Public,
-              ProfileVisibility.FriendsOnly,
-            ]),
-          }),
-        });
+      for (let i = 0; i < FriendData.length; i++) {
         const friendship = {
-          friendId: friendData[i]._id,
-          friendsSince: friendData[i].memberSince,
+          friendId: FriendData[i]._id,
+          friendsSince: new Date(FriendData[i].memberSince),
         };
         userData.friends!.push(friendship);
 
         const profileData: any = {
-          _id: friendData[i]._id,
-          memberSince: friendData[i].memberSince,
-          username: friendData[i].username,
-          profile: friendData[i].profile,
+          _id: FriendData[i]._id,
+          memberSince: new Date(FriendData[i].memberSince),
+          username: FriendData[i].username,
+          profile: FriendData[i].profile,
         };
         friends.push(
           new DefaultFriend(
@@ -219,22 +211,23 @@ describe('Default Friend Manager', () => {
         );
       }
 
-      await Users.insertMany([userData, ...friendData]);
+      await Users.insertMany([
+        userData,
+        ...FriendData.map((friend) => ({
+          ...friend,
+          lastLogin: new Date(friend.lastLogin),
+          memberSince: new Date(friend.memberSince),
+        })),
+      ]);
       user = new DefaultUser(mongoClient, Log, userData);
       friendManager = new DefaultFriendManager(mongoClient, Log, user.id);
     });
 
     it('Will return results based on default search query', async () => {
-      const expected = friends
-        .sort(
-          (a, b) =>
-            b.friend.memberSince.valueOf() - a.friend.memberSince.valueOf(),
-        )
-        .slice(0, 100);
-      const actual = await friendManager.listFriends({
+      const results = await friendManager.listFriends({
         sortBy: FriendsSortBy.MemberSince,
       });
-      expect(actual).toEqual(expected);
+      expect(results).toMatchSnapshot();
     });
 
     it('Will redact private profiles', async () => {
@@ -294,32 +287,21 @@ describe('Default Friend Manager', () => {
     });
 
     it('Will return the correct number of records', async () => {
-      const expected = friends
-        .sort(
-          (a, b) =>
-            b.friend.memberSince.valueOf() - a.friend.memberSince.valueOf(),
-        )
-        .slice(0, 20);
-      const actual = await friendManager.listFriends({
+      const results = await friendManager.listFriends({
         sortBy: FriendsSortBy.MemberSince,
         limit: 20,
       });
-      expect(actual).toEqual(expected);
+      expect(results).toHaveLength(20);
+      expect(results).toMatchSnapshot();
     });
 
     it('Will skip records if required', async () => {
-      const expected = friends
-        .sort(
-          (a, b) =>
-            b.friend.memberSince.valueOf() - a.friend.memberSince.valueOf(),
-        )
-        .slice(75, 100);
-      const actual = await friendManager.listFriends({
+      const results = await friendManager.listFriends({
         sortBy: FriendsSortBy.MemberSince,
         skip: 75,
         limit: 25,
       });
-      expect(actual).toEqual(expected);
+      expect(results).toMatchSnapshot();
     });
 
     [
@@ -355,42 +337,12 @@ describe('Default Friend Manager', () => {
       { sortBy: FriendsSortBy.FriendsSince, sortOrder: SortOrder.Descending },
     ].forEach((testCase) => {
       it(`Will sort friends by ${testCase.sortBy} in ${testCase.sortOrder} order`, async () => {
-        const expected = friends
-          .sort((a, b) => {
-            const multiplier =
-              testCase.sortOrder === SortOrder.Ascending ? 1 : -1;
-            switch (testCase.sortBy) {
-              case FriendsSortBy.Username:
-                return (
-                  multiplier *
-                  a.friend.username.localeCompare(b.friend.username)
-                );
-
-              case FriendsSortBy.MemberSince:
-                return (
-                  multiplier *
-                  (a.friend.memberSince.valueOf() -
-                    b.friend.memberSince.valueOf())
-                );
-
-              case FriendsSortBy.FriendsSince:
-                return (
-                  multiplier *
-                  (a.friendsSince.valueOf() - b.friendsSince.valueOf())
-                );
-
-              default:
-                return 0;
-            }
-          })
-          .slice(0, 30);
-
-        const actual = await friendManager.listFriends({
+        const results = await friendManager.listFriends({
           sortBy: testCase.sortBy,
           sortOrder: testCase.sortOrder,
           limit: 30,
         });
-        expect(actual).toEqual(expected);
+        expect(results).toMatchSnapshot();
       });
     });
 

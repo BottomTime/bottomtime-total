@@ -17,7 +17,7 @@ import {
   resetPassword,
   verifyEmail,
 } from '../../../../src/server/routes/users';
-import { InvalidOperationError, ValidationError } from '../../../../src/errors';
+import { ValidationError } from '../../../../src/errors';
 
 const Log = createTestLogger('users-verification-routes');
 

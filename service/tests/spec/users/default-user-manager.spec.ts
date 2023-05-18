@@ -5,7 +5,7 @@ import { Collection } from 'mongodb';
 import { ProfileVisibility, SortOrder, UserRole } from '../../../src/constants';
 import { Collections, UserDocument } from '../../../src/data';
 import { ConflictError, ValidationError } from '../../../src/errors';
-import { CreateUserOptions, User, UsersSortBy } from '../../../src/users';
+import { CreateUserOptions, UsersSortBy } from '../../../src/users';
 import { DefaultUser } from '../../../src/users/default-user';
 import { DefaultUserManager } from '../../../src/users/default-user-manager';
 import { fakePassword, fakeProfile, fakeUser } from '../../fixtures/fake-user';
@@ -290,7 +290,6 @@ describe('Default User Manager', () => {
 
   describe('Searching For Users', () => {
     let testUsersData: UserDocument[];
-    let testUsers: User[];
 
     beforeAll(() => {
       testUsersData = UserSearchData.map((user) => ({
@@ -298,9 +297,6 @@ describe('Default User Manager', () => {
         lastLogin: new Date(user.lastLogin),
         memberSince: new Date(user.memberSince),
       }));
-      testUsers = testUsersData.map(
-        (data) => new DefaultUser(mongoClient, Log, data),
-      );
     });
 
     beforeEach(async () => {
