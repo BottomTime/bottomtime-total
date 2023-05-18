@@ -108,10 +108,6 @@ resource "aws_vpc_endpoint" "s3" {
   service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = aws_route_table.private.*.id
-  # TODO
-  policy = jsonencode({
-
-  })
 }
 
 resource "aws_vpc_endpoint" "ecr-dkr" {
@@ -139,8 +135,6 @@ resource "aws_vpc_endpoint" "ecs-agent" {
   private_dns_enabled = true
   security_group_ids  = [aws_security_group.task.id]
   subnet_ids          = aws_subnet.private.*.id
-
-
 }
 
 resource "aws_vpc_endpoint" "ecs-telemetry" {
