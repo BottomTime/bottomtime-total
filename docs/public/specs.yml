@@ -281,6 +281,8 @@ paths:
         - Tanks
       summary: Delete tank
       operationId: deleteTank
+      security:
+        - SessionCookie: [admin]
       responses:
         204:
           description: Operation succeeded.
