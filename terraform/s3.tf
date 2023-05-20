@@ -21,17 +21,23 @@ resource "aws_s3_bucket" "docs" {
 resource "aws_s3_bucket_policy" "web" {
   bucket = aws_s3_bucket.web.id
   policy = jsonencode({
-    Version = "2012-10-17"
+    Id      = "PolicyForCloudFrontPrivateContent"
+    Version = "2008-10-17"
     Statement = [
       {
-        Sid      = "ReadAccess"
-        Effect   = "Allow"
-        Action   = ["s3:GetObject"]
-        Resource = ["${aws_s3_bucket.web.arn}/*"]
-        Principal = {
-          AWS = aws_cloudfront_origin_access_identity.web.iam_arn
+        Sid = "AllowCloudFrontServicePrincipal"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.web.arn
+          }
         }
-      },
+        Effect   = "Allow"
+        Action   = "s3:GetObject"
+        Resource = "${aws_s3_bucket.web.arn}/*"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+      }
     ]
   })
 }
@@ -39,15 +45,21 @@ resource "aws_s3_bucket_policy" "web" {
 resource "aws_s3_bucket_policy" "docs" {
   bucket = aws_s3_bucket.docs.id
   policy = jsonencode({
-    Version = "2012-10-17"
+    Id      = "PolicyForCloudFrontPrivateContent"
+    Version = "2008-10-17"
     Statement = [
       {
-        Sid      = "ReadAccess",
+        Sid = "AllowCloudFrontServicePrincipal"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.docs.arn
+          }
+        }
         Effect   = "Allow"
-        Action   = ["s3:GetObject"]
-        Resource = ["${aws_s3_bucket.docs.arn}/*"]
+        Action   = "s3:GetObject"
+        Resource = "${aws_s3_bucket.docs.arn}/*"
         Principal = {
-          AWS = aws_cloudfront_origin_access_identity.docs.iam_arn
+          Service = "cloudfront.amazonaws.com"
         }
       }
     ]

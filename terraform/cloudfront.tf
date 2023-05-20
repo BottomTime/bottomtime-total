@@ -3,12 +3,12 @@ locals {
   s3_origin_id  = "${var.service_name_short}_s3_origin_${var.env}"
 }
 
-resource "aws_cloudfront_origin_access_identity" "web" {
-  comment = "${var.service_name} Origin Access Identity: Web/${var.env}"
-}
-
-resource "aws_cloudfront_origin_access_identity" "docs" {
-  comment = "${var.service_name} Origin Access Identity: Docs/${var.env}"
+resource "aws_cloudfront_origin_access_control" "default" {
+  name                              = "S3 Access Control"
+  description                       = "S3 Access Control"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 resource "aws_cloudfront_cache_policy" "web" {
@@ -91,18 +91,14 @@ resource "aws_cloudfront_distribution" "web" {
   }
 
   origin {
-    domain_name = aws_s3_bucket.web.bucket_regional_domain_name
-    origin_id   = local.s3_origin_id
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.web.cloudfront_access_identity_path
-    }
+    domain_name              = aws_s3_bucket.web.bucket_regional_domain_name
+    origin_id                = local.s3_origin_id
+    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
   }
 
   origin {
     domain_name = aws_alb.alb.dns_name
     origin_id   = local.api_origin_id
-    origin_path = ""
 
     # TODO: Add API token here.
     # custom_header {
@@ -132,8 +128,6 @@ resource "aws_cloudfront_distribution" "web" {
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     cache_policy_id        = aws_cloudfront_cache_policy.web.id
     compress               = true
-    default_ttl            = 14400  # 4 hours (in seconds)
-    max_ttl                = 432000 # 5 days (in seconds)
     target_origin_id       = local.s3_origin_id
     viewer_protocol_policy = "redirect-to-https"
   }
@@ -170,12 +164,9 @@ resource "aws_cloudfront_distribution" "docs" {
   }
 
   origin {
-    domain_name = aws_s3_bucket.docs.bucket_regional_domain_name
-    origin_id   = local.s3_origin_id
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.docs.cloudfront_access_identity_path
-    }
+    domain_name              = aws_s3_bucket.docs.bucket_regional_domain_name
+    origin_id                = local.s3_origin_id
+    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
   }
 
   default_cache_behavior {
@@ -183,8 +174,6 @@ resource "aws_cloudfront_distribution" "docs" {
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     cache_policy_id        = aws_cloudfront_cache_policy.docs.id
     compress               = true
-    default_ttl            = 14400  # 4 hours (in seconds)
-    max_ttl                = 432000 # 5 days (in seconds)
     target_origin_id       = local.s3_origin_id
     viewer_protocol_policy = "redirect-to-https"
   }
