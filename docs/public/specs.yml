@@ -10,7 +10,7 @@ servers:
 
 info:
   description: This is the API specifications for the Bottom Time application.
-  version: '1.0.0'
+  version: "1.0.0"
   title: Bottom Time
   contact:
     email: mrchriscarleton@gmail.com
@@ -19,11 +19,23 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 
+tags:
+  - name: Auth
+    description: Routes used for authenticating and managing current user session
+  - name: Profiles
+    description: Routes used for managing profiles
+  - name: Tanks
+    description: Routes used for managing pre-defined tanks
+  - name: Users
+    description: Routes used for managing users
+
 paths:
   /auth/login:
     post:
+      tags:
+        - Auth
       security: []
-      summary: Attempt to login a user with username and password pair.
+      summary: Login
       operationId: loginUser
       description: Logs in a user given their username and password.
       requestBody:
@@ -64,11 +76,14 @@ paths:
         '500':
           $ref: '#/components/responses/ServerErrorResponse'
 
+
   /auth/logout:
     get:
+      tags:
+        - Auth
       security:
         - SessionCookie: []
-      summary: Logout the current user and end their session.
+      summary: Logout
       operationId: logoutUser
       description: Logs the current user out of their session and redirects back to the home page.
       responses:
@@ -82,8 +97,10 @@ paths:
 
   /auth/me:
     get:
+      tags:
+        - Auth
       security: []
-      summary: Get account information for the currently logged in user.
+      summary: Get current user
       operationId: getCurrentUser
       description: |
         Retrieves information on the currently logged in user.
@@ -97,7 +114,9 @@ paths:
 
   /profiles:
     get:
-      summary: Search user profiles.
+      tags:
+        - Profiles
+      summary: Search profiles
       operationId: searchProfiles
       description: |
         Search user profiles based on a search criteria. This query will only return profile information for users
@@ -171,7 +190,9 @@ paths:
     parameters:
       - $ref: '#/components/parameters/UsernameParameter'
     get:
-      summary: Get a user's profile info.
+      tags:
+        - Profiles
+      summary: Get profile
       operationId: getProfile
       security: []
       responses:
@@ -182,7 +203,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Profile'
     put:
-      summary: Update a user's profile info.
+      tags:
+        - Profiles
+      summary: Update profile
       operationId: updateProfile
       security:
         - SessionCookie: []
@@ -190,7 +213,9 @@ paths:
         200:
           description: Operation succeeded.
     patch:
-      summary: Partially update a user's profile info.
+      tags:
+        - Profiles
+      summary: Patch profile
       operationId: patchProfile
       security:
         - SessionCookie: []
@@ -200,14 +225,18 @@ paths:
 
   /tanks:
     get:
-      summary: List predefined tank profiles.
+      tags:
+        - Tanks
+      summary: List tanks
       operationId: listTanks
       security: []
       responses:
         200:
           description: Operation succeeded.
     post:
-      summary: Create a new predefined tank profile.
+      tags:
+        - Tanks
+      summary: Create tank
       operationId: createTank
       security:
         - SessionCookie: [admin]
@@ -219,14 +248,18 @@ paths:
     parameters:
       - $ref: '#/components/parameters/TankIdParameter'
     get:
-      summary: Retrieve a tank profile.
+      tags:
+        - Tanks
+      summary: Get tank
       operationId: getTank
       security: []
       responses:
         200:
           description: Operation succeeded.
     put:
-      summary: Update a tank profile.
+      tags:
+        - Tanks
+      summary: Update tank
       operationId: updateTank
       security:
         - SessionCookie: [admin]
@@ -234,7 +267,9 @@ paths:
         204:
           description: Operation succeeded.
     patch:
-      summary: Partially update a tank profile.
+      tags:
+        - Tanks
+      summary: Patch tank
       operationId: patchTank
       security:
         - SessionCookie: [admin]
@@ -242,17 +277,19 @@ paths:
         204:
           description: Operation succeeded.
     delete:
-      summary: Delete a tank profile.
+      tags:
+        - Tanks
+      summary: Delete tank
       operationId: deleteTank
-      security:
-        - SessionCookie: [admin]
       responses:
         204:
           description: Operation succeeded.
 
   /users:
     get:
-      summary: Search for user accounts matching a criteria.
+      tags:
+        - Users
+      summary: Search users
       security:
         - SessionCookie: [admin]
       operationId: searchUsers
@@ -342,7 +379,9 @@ paths:
 
   /users/{username}:
     get:
-      summary: Retrieve user account info.
+      tags:
+        - Users
+      summary: Get user
       operationId: getUser
       description: |
         Will attempt to retrieve a user's account information.
@@ -370,7 +409,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
     head:
-      summary: Check for existence of username or email address.
+      tags:
+        - Users
+      summary: Head user
       operationId: userExists
       security: []
       parameters:
@@ -383,7 +424,9 @@ paths:
         404:
           description: The requested username or email was not found in the database.
     put:
-      summary: Create a user account.
+      tags:
+        - Users
+      summary: Create user
       operationId: createUser
       security: []
       parameters:
@@ -495,7 +538,9 @@ paths:
 
   /users/{username}/changeEmail:
     post:
-      summary: Change a user's email address.
+      tags:
+        - Users
+      summary: Change email
       operationId: changeEmail
       description: Will attempt to change a user's email address.
       security:
@@ -573,7 +618,9 @@ paths:
 
   /users/{username}/changePassword:
     post:
-      summary: Change a user's password.
+      tags:
+        - Users
+      summary: Change password
       operationId: changePassword
       description: |
         Will attempt to change a user's password.
@@ -638,7 +685,9 @@ paths:
 
   /users/{username}/changeRole:
     post:
-      summary: Change a user's role.
+      tags:
+        - Users
+      summary: Change role
       operationId: changeRole
       description: |
         Will attempt to change a user's role in order to change their permission level. Only administrators are permitted to use this API endpoint.
@@ -693,7 +742,9 @@ paths:
 
   /users/{username}/changeUsername:
     post:
-      summary: Attempt to change a user's username.
+      tags:
+        - Users
+      summary: Change username
       operationId: changeUsername
       description: |
         Changes a user's username.
@@ -771,7 +822,9 @@ paths:
 
   /users/{username}/lockAccount:
     post:
-      summary: Locks (suspends) a user account.
+      tags:
+        - Users
+      summary: Lock account
       operationId: lockAccount
       description: |
         Locks a user's account and immediately ends all active sessions for that user.
@@ -803,7 +856,9 @@ paths:
 
   /users/{username}/requestEmailVerification:
     post:
-      summary: Request email verification.
+      tags:
+        - Users
+      summary: Request email verification
       operationId: requestEmailVerification
       description: |
         Requests that an email be sent to the user with a token to verify their
@@ -853,7 +908,9 @@ paths:
 
   /users/{username}/requestPasswordReset:
     post:
-      summary: Request a password reset email.
+      tags:
+        - Users
+      summary: Request password reset
       operationId: requestPasswordReset
       description: |
         Requests that an email be sent to the indicated user with a token that can be used to reset
@@ -889,7 +946,9 @@ paths:
 
   /users/{username}/resetPassword:
     post:
-      summary: Reset a forgotten password.
+      tags:
+        - Users
+      summary: Reset password
       operationId: resetPassword
       description: |
         Attempts to reset a forgotten password.
@@ -950,7 +1009,9 @@ paths:
 
   /users/{username}/unlockAccount:
     post:
-      summary: Unlocks (unsuspends) a user account.
+      tags:
+        - Users
+      summary: Unlock account
       operationId: unlockAccount
       description: |
         Unlocks a user's account that was previously suspended.
@@ -1234,7 +1295,11 @@ components:
           description: |
             An object containing custom properties and metadata to save with the user's profile.
             This is a free-form dictionary of key-value pairs.
-          example: { acceptedCookies: true, likesDiving: true }
+          example:
+            {
+              acceptedCookies: true,
+              likesDiving: true
+            }
         certifications:
           type: array
           description: A collection of certifications that the user has earned.
