@@ -189,14 +189,12 @@ describe('Default User Manager', () => {
       const password = fakePassword();
       const profileData = fakeProfile();
       const userManager = new DefaultUserManager(mongoClient, Log);
-      const user = await userManager.createUser(
-        {
-          username,
-          email,
-          password,
-        },
-        profileData,
-      );
+      const user = await userManager.createUser({
+        username,
+        email,
+        password,
+        profile: profileData,
+      });
 
       expect(user.email).toEqual(email);
       expect(user.emailVerified).toBe(false);
@@ -241,23 +239,46 @@ describe('Default User Manager', () => {
       await expect(compare(password, passwordHash!)).resolves.toBe(true);
     });
 
-    const invalidOptions: Record<string, CreateUserOptions> = {
-      'Will throw ValidationError if username is invalid': {
-        username: 'nope! Not VAlID###',
+    [
+      {
+        name: 'invalid username',
+        options: {
+          username: 'nope! Not VAlID###',
+        },
       },
-      'Will throw ValidationError if email address is invalid': {
-        username: 'jimmy_33',
-        email: 'NOT_AN EMAIL!',
+      {
+        name: 'invalid email address',
+        options: {
+          username: 'jimmy_33',
+          email: 'NOT_AN EMAIL!',
+        },
       },
-      'Will throw ValidationError if password does not meet strength requirments':
-        { username: 'ralph27', password: 'too weak' },
-    };
-    Object.keys(invalidOptions).forEach((key) => {
-      it(key, async () => {
+      {
+        name: 'weak password',
+        options: { username: 'ralph27', password: 'too weak' },
+      },
+      {
+        name: 'unknown role',
+        options: {
+          username: 'boris25',
+          role: -104,
+        },
+      },
+      {
+        name: 'invalid profile visibility',
+        options: {
+          username: 'lindsay.m',
+          profile: {
+            profileVisibility: 'all-the-n00bs',
+          },
+        },
+      },
+    ].forEach((testCase) => {
+      it(`Will throw a ValidationError if the options fail validation: ${testCase.name}`, async () => {
         const userManager = new DefaultUserManager(mongoClient, Log);
         await expect(
-          userManager.createUser(invalidOptions[key]),
-        ).rejects.toThrowError(ValidationError);
+          userManager.createUser(testCase.options),
+        ).rejects.toThrowErrorMatchingSnapshot();
       });
     });
 

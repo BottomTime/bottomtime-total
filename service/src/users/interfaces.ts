@@ -57,7 +57,8 @@ export interface CreateUserOptions {
   username: string;
   email?: string;
   password?: string;
-  oldPassword?: string;
+  role?: number;
+  profile?: ProfileData;
 }
 
 export interface UserSettingsData {
@@ -124,7 +125,7 @@ export interface User extends UserData {
 }
 
 export interface UserManager {
-  createUser: (options: CreateUserOptions) => Promise<User>;
+  createUser(options: CreateUserOptions): Promise<User>;
 
   getUser(id: string): Promise<User | undefined>;
   getUserByUsernameOrEmail(usernameOrEmail: string): Promise<User | undefined>;

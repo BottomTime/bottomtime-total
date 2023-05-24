@@ -1,0 +1,47 @@
+{
+  "_id": "2257ba3d-4f57-47f7-bcb1-91e0fef37892",
+  "email": "Afton.Dicki@gmail.com",
+  "emailLowered": "afton.dicki@gmail.com",
+  "emailVerified": true,
+  "isLockedOut": false,
+  "lastLogin": "2023-05-04T22:51:29.585Z",
+  "memberSince": "2018-06-28T18:27:42.519Z",
+  "role": 200,
+  "username": "Afton67",
+  "usernameLowered": "afton67",
+  "profile": {
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/197.jpg",
+    "bio": "Nulla repellat molestias eos voluptate a perspiciatis. Nulla sit labore nihil dignissimos a cumque. Quibusdam molestias quas mollitia consequatur temporibus corrupti voluptatum. Rem eum quae voluptate. Voluptatem soluta tempora quibusdam. Numquam nihil sint molestiae amet. Totam quo quae. Ipsam expedita velit illo fugit voluptatem voluptate excepturi non consequatur.",
+    "birthdate": "1987-01-06",
+    "certifications": [
+      {
+        "agency": "SSI",
+        "course": "Waves, Tides and Currents",
+        "date": "2021-05-24"
+      },
+      {
+        "agency": "SSI",
+        "course": "Diver Stress & Rescue",
+        "date": "2015-06-07"
+      },
+      { "agency": "SSI", "course": "Dive Guide", "date": "2014-02-28" },
+      { "agency": "SSI", "course": "Extended Range", "date": "2012-09-06" },
+      {
+        "agency": "SSI",
+        "course": "Night Diving and Limited Visibility",
+        "date": "2022-10-28"
+      },
+      {
+        "agency": "PADI",
+        "course": "Enriched Air Diver (Nitrox)",
+        "date": "2016-03-07"
+      }
+    ],
+    "experienceLevel": "Experience",
+    "location": "Kennewick",
+    "name": "Dixie Macejkovic",
+    "profileVisibility": "private",
+    "startedDiving": "2014"
+  },
+  "passwordHash": "$2b$04$innYqrg0Qlx5eV6WGSQJCuj7aGd4s366JlWcIQSrW7uK8xcgcLqF."
+}

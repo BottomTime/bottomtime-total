@@ -25,7 +25,9 @@ export const PasswordStrengthSchema = Joi.string()
   )
   .message('Password did not meet strength requirements.');
 
-export const RoleSchema = Joi.number().valid(...Object.values(UserRole));
+export const RoleSchema = Joi.number()
+  .integer()
+  .valid(...Object.values(UserRole));
 
 export const ProfileVisibilitySchema = Joi.string().valid(
   ...Object.values(ProfileVisibility),
@@ -92,9 +94,9 @@ export const ProfileSchema = Joi.object({
 export const CreateUserOptionsSchema = Joi.object({
   username: UsernameSchema.required(),
   email: EmailSchema,
-  oldPassword: Joi.string(),
   password: PasswordStrengthSchema,
   role: RoleSchema,
+  profile: ProfileSchema,
 });
 
 export const UserSettingsSchema = Joi.object({

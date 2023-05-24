@@ -57,6 +57,7 @@ export interface CreateUserOptions {
   username: string;
   password?: string;
   email?: string;
+  profile?: ProfileData;
 }
 
 export interface UserManager {

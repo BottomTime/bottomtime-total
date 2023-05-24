@@ -2,6 +2,7 @@ import { Express } from 'express';
 import Logger from 'bunyan';
 
 import { configureUserRoutes } from './users';
+import { configureUserUpdateRoutes } from './users-update';
 import { configureAuthRoutes } from './auth';
 import { globalErrorHandler, notFound } from './errors';
 import { configureProfileRoutes } from './profiles';
@@ -11,6 +12,7 @@ export function configureRouting(app: Express, log: Logger) {
   log.debug('[EXPRESS] Registering API routes...');
   configureAuthRoutes(app);
   configureUserRoutes(app);
+  configureUserUpdateRoutes(app);
   configureProfileRoutes(app);
   configureTanksRoutes(app);
 

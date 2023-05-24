@@ -1,57 +1,38 @@
 import { Express } from 'express';
 import Joi from 'joi';
+import Logger from 'bunyan';
 import { NextFunction, Request, Response } from 'express';
 
 import { SortOrder, UserRole } from '../../constants';
 import {
   ForbiddenError,
   MissingResourceError,
-  ValidationError,
+  UnauthorizedError,
 } from '../../errors';
 import { assertValid } from '../../helpers/validation';
 import {
-  EmailSchema,
+  CreateUserOptionsSchema,
   PasswordStrengthSchema,
-  ProfileVisibilitySchema,
   RoleSchema,
   User,
   UsernameSchema,
   UsersSortBy,
 } from '../../users';
-import { ResetPasswordEmailTemplate, WelcomeEmailTemplate } from '../../email';
+import {
+  MailClient,
+  ResetPasswordEmailTemplate,
+  WelcomeEmailTemplate,
+} from '../../email';
 import { VerifyEmailTemplate } from '../../email/verify-email-template';
 import { requireAdmin, requireAuth } from './auth';
-
-const ChangeEmailBodySchema = Joi.object({
-  newEmail: Joi.string().required(),
-}).required();
-
-const ChangePasswordBodySchema = Joi.object({
-  oldPassword: Joi.string().required(),
-  newPassword: PasswordStrengthSchema.required(),
-}).required();
-
-const ChangeRoleBodySchema = Joi.object({
-  newRole: RoleSchema.required(),
-}).required();
-
-const ChangeUsernameBodySchema = Joi.object({
-  newUsername: UsernameSchema.required(),
-}).required();
-
-const CreateUserBodySchema = Joi.object({
-  email: EmailSchema,
-  password: PasswordStrengthSchema,
-  profileVisibility: ProfileVisibilitySchema,
-});
 
 const SearchUsersQuerySchema = Joi.object({
   query: Joi.string(),
   role: RoleSchema,
   sortBy: Joi.string().valid(...Object.values(UsersSortBy)),
   sortOrder: Joi.string().valid(...Object.values(SortOrder)),
-  skip: Joi.number().min(0),
-  limit: Joi.number().positive().max(200),
+  skip: Joi.number().integer().min(0),
+  limit: Joi.number().integer().positive().max(200),
 });
 
 const VerifyEmailBodySchema = Joi.object({
@@ -72,120 +53,36 @@ function loginUser(req: Request, user: User): Promise<void> {
   });
 }
 
-export async function changeEmail(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+async function sendWelcomeEmail(
+  mail: MailClient,
+  user: User,
+  log: Logger,
+): Promise<void> {
   try {
-    if (
-      req.user!.role < UserRole.Admin &&
-      req.user!.id !== req.selectedUser!.id
-    ) {
-      throw new ForbiddenError(
-        "Request denied. You are not permitted to change another user's email",
-      );
+    if (log.debug()) {
+      log.debug(`Requesting email verification token for "${user.email}"...`);
     }
+    const verifyEmailToken = await user.requestEmailVerificationToken();
 
-    assertValid(req.body, ChangeEmailBodySchema);
+    if (log.debug())
+      log.debug(`Generating welcome email body for "${user.email}"...`);
+    const mailTemplate = new WelcomeEmailTemplate();
+    const messageBody = await mailTemplate.render({
+      user,
+      verifyEmailToken,
+    });
 
-    await req.selectedUser!.changeEmail(req.body.newEmail);
-    res.sendStatus(204);
-
-    req.log.info(
-      `Email address for user "${
-        req.selectedUser!.username
-      }" has been changed to "${req.body.newEmail}".`,
+    if (log.debug()) log.debug(`Sending welcome email to "${user.email}"...`);
+    await mail.sendMail(
+      { to: user.email! },
+      'Welcome to Bottom Time!',
+      messageBody,
     );
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function changePassword(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    if (req.user!.id !== req.selectedUser!.id) {
-      throw new ForbiddenError(
-        "Request denied. You are not permitted to change another user's password.",
-      );
-    }
-
-    assertValid(req.body, ChangePasswordBodySchema);
-
-    const changed = await req.selectedUser!.changePassword(
-      req.body.oldPassword,
-      req.body.newPassword,
+  } catch (mailError) {
+    log.error(
+      `Failed to send welcome email to new user: ${user.username}`,
+      mailError,
     );
-
-    if (changed) {
-      res.sendStatus(204);
-      req.log.info(
-        `Password for user "${req.selectedUser!.username}" has been changed.`,
-      );
-    } else {
-      next(
-        new ValidationError(
-          'Password could not be changed. Old password was incorrect.',
-        ),
-      );
-    }
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function changeRole(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    if (req.user!.id === req.selectedUser!.id) {
-      throw new ForbiddenError(
-        'Request denied. Admins may not change their own roles. (Safety FTW!)',
-      );
-    }
-
-    assertValid(req.body, ChangeRoleBodySchema);
-
-    await req.selectedUser!.changeRole(req.body.newRole);
-    req.log.info(
-      `Role updated for user "${req.selectedUser!.username}". New role: ${
-        req.body.newRole
-      }.`,
-    );
-
-    res.sendStatus(204);
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function changeUsername(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    if (
-      req.user!.role < UserRole.Admin &&
-      req.user!.id !== req.selectedUser!.id
-    ) {
-      throw new ForbiddenError(
-        "Request denied. You may not change another user's username.",
-      );
-    }
-
-    assertValid(req.body, ChangeUsernameBodySchema);
-
-    await req.selectedUser!.changeUsername(req.body.newUsername);
-    res.sendStatus(204);
-  } catch (error) {
-    next(error);
   }
 }
 
@@ -196,17 +93,37 @@ export async function createUser(
 ) {
   try {
     assertValid(req.params.username, UsernameSchema.required());
-    const { parsed: options } = assertValid(req.body, CreateUserBodySchema);
+    const { parsed: options } = assertValid(
+      {
+        username: req.params.username,
+        ...req.body,
+      },
+      CreateUserOptionsSchema,
+    );
+
+    if (options.role && options.role > UserRole.User) {
+      const errorMessage =
+        'Unable to create new user account with elevated privileges. Only authenticated admins are able to do that.';
+      if (!req.user) {
+        next(new UnauthorizedError(errorMessage));
+        return;
+      }
+      if (req.user.role < UserRole.Admin) {
+        throw new ForbiddenError(errorMessage);
+      }
+    }
 
     const user = await req.userManager.createUser({
       username: req.params.username,
       ...options,
     });
 
-    req.log.info('New user account created.', {
-      username: user.username,
-      email: user.email,
-    });
+    if (req.log.info()) {
+      req.log.info('New user account created.', {
+        username: user.username,
+        email: user.email,
+      });
+    }
 
     // Sign in the new user if they are not currently logged in as someone else.
     if (!req.user) {
@@ -219,32 +136,7 @@ export async function createUser(
 
     // Send the new user a welcome email.
     if (user.email) {
-      try {
-        req.log.debug(
-          `Requesting email verification token for "${user.email}"...`,
-        );
-        const verifyEmailToken = await user.requestEmailVerificationToken();
-
-        req.log.debug(`Generating welcome email body for "${user.email}"...`);
-        const mailTemplate = new WelcomeEmailTemplate();
-        const messageBody = await mailTemplate.render({
-          user,
-          verifyEmailToken,
-        });
-
-        req.log.debug(`Sending welcome email to "${user.email}"...`);
-        req.log.debug(req.mail);
-        await req.mail.sendMail(
-          { to: user.email },
-          'Welcome to Bottom Time!',
-          messageBody,
-        );
-      } catch (mailError) {
-        req.log.error(
-          `Failed to send welcome email to new user: ${req.params.username}`,
-          mailError,
-        );
-      }
+      await sendWelcomeEmail(req.mail, user, req.log);
     }
 
     res.status(201).json(user);
@@ -283,26 +175,6 @@ export async function loadUserAccount(
     next(error);
   }
 }
-
-export async function lockAccount(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    if (req.user!.id === req.selectedUser!.id) {
-      throw new ForbiddenError(
-        'Request denied. You may not lock yourself out of your own account. Safety first!',
-      );
-    }
-
-    await req.selectedUser!.lockAccount();
-    res.sendStatus(204);
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function requestPasswordResetEmail(
   req: Request,
   res: Response,
@@ -409,19 +281,6 @@ export async function searchUsers(
   }
 }
 
-export async function unlockAccount(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    await req.selectedUser!.unlockAccount();
-    res.sendStatus(204);
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function verifyEmail(
   req: Request,
   res: Response,
@@ -450,36 +309,6 @@ export function configureUserRoutes(app: Express) {
     .get(requireAdmin, loadUserAccount, getUser)
     .put(createUser);
   app.post(
-    `${UserRoute}/changeEmail`,
-    requireAuth,
-    loadUserAccount,
-    changeEmail,
-  );
-  app.post(
-    `${UserRoute}/changePassword`,
-    requireAuth,
-    loadUserAccount,
-    changePassword,
-  );
-  app.post(
-    `${UserRoute}/changeRole`,
-    requireAdmin,
-    loadUserAccount,
-    changeRole,
-  );
-  app.post(
-    `${UserRoute}/changeUsername`,
-    requireAuth,
-    loadUserAccount,
-    changeUsername,
-  );
-  app.post(
-    `${UserRoute}/lockAccount`,
-    requireAdmin,
-    loadUserAccount,
-    lockAccount,
-  );
-  app.post(
     `${UserRoute}/requestEmailVerification`,
     requireAuth,
     loadUserAccount,
@@ -492,11 +321,5 @@ export function configureUserRoutes(app: Express) {
     requireAuth,
     loadUserAccount,
     verifyEmail,
-  );
-  app.post(
-    `${UserRoute}/unlockAccount`,
-    requireAdmin,
-    loadUserAccount,
-    unlockAccount,
   );
 }

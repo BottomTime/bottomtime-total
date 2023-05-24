@@ -105,12 +105,14 @@ paths:
       description: |
         Retrieves information on the currently logged in user.
       responses:
-        '200':
+        200:
           description: Information on the currently logged in user (if any).
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
 
   /profiles:
     get:
@@ -291,11 +293,11 @@ paths:
     get:
       tags:
         - Users
-      summary: Search users
+      summary: List users
       security:
         - SessionCookie: [admin]
-      operationId: searchUsers
-      description: Searches for user accounts given a search criteria.
+      operationId: listUsers
+      description: Lists user accounts given a search criteria.
       parameters:
         - in: query
           name: query
@@ -320,14 +322,13 @@ paths:
         - in: query
           name: sortBy
           description: |
-            The field on which the the results should be sorted.
-            The default is `username` unless a query string is provided; then it becomes `relevance`.
+            The field on which the the results should be sorted. For text-based searches,
+            it is best to omit this parameter to get results in order of relevance.
           required: false
           schema:
             type: string
             enum:
               - memberSince
-              - relevance
               - username
         - in: query
           name: sortOrder
@@ -360,23 +361,32 @@ paths:
             minimum: 1
             maximum: 200
       responses:
-        '200':
+        200:
           description: |
             The request succeeded and the request body will contain an array of users
             matching the search criteria.
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-        '400':
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    format: int32
+                    description: The number of results returned in the query.
+                    example: 20
+                  results:
+                    type: array
+                    description: The user accounts found matching the query.
+                    items:
+                      $ref: '#/components/schemas/User'
+        400:
           $ref: '#/components/responses/ValidationErrorResponse'
-        '401':
+        401:
           $ref: '#/components/responses/UnauthorizedErrorResponse'
-        '403':
+        403:
           $ref: '#/components/responses/AdminOnlyErrorResponse'
-        '500':
+        500:
           $ref: '#/components/responses/ServerErrorResponse'
 
   /users/{username}:
@@ -410,6 +420,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
     head:
       tags:
         - Users
@@ -425,6 +437,8 @@ paths:
           description: Username or email address exists in the database.
         404:
           description: The requested username or email was not found in the database.
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
     put:
       tags:
         - Users
@@ -481,7 +495,7 @@ paths:
                     * 200 = administrator.
                   example: 100
       responses:
-        200:
+        201:
           description: |
             The new account was successfully created.
             The details for the newly-created account will be returned in the response body.
@@ -1376,6 +1390,7 @@ components:
               description: The user's unique username. This is used for logging in and for retrieving account information.
               example: MichelleR_27
         - $ref: '#/components/schemas/ProfileData'
+
 
   responses:
     AdminOnlyErrorResponse:

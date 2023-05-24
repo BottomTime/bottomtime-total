@@ -1,5 +1,64 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Users Routes Creating Users Will allow a an admin to create an account with elevated privileges 1`] = `
+{
+  "email": "Afton.Dicki@gmail.com",
+  "emailVerified": true,
+  "hasPassword": true,
+  "id": "2257ba3d-4f57-47f7-bcb1-91e0fef37892",
+  "isLockedOut": false,
+  "lastLogin": "2023-05-04T22:51:29.585Z",
+  "memberSince": "2018-06-28T18:27:42.519Z",
+  "profile": {
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/197.jpg",
+    "bio": "Nulla repellat molestias eos voluptate a perspiciatis. Nulla sit labore nihil dignissimos a cumque. Quibusdam molestias quas mollitia consequatur temporibus corrupti voluptatum. Rem eum quae voluptate. Voluptatem soluta tempora quibusdam. Numquam nihil sint molestiae amet. Totam quo quae. Ipsam expedita velit illo fugit voluptatem voluptate excepturi non consequatur.",
+    "birthdate": "1987-01-06",
+    "certifications": [
+      {
+        "agency": "SSI",
+        "course": "Waves, Tides and Currents",
+        "date": "2021-05-24",
+      },
+      {
+        "agency": "SSI",
+        "course": "Diver Stress & Rescue",
+        "date": "2015-06-07",
+      },
+      {
+        "agency": "SSI",
+        "course": "Dive Guide",
+        "date": "2014-02-28",
+      },
+      {
+        "agency": "SSI",
+        "course": "Extended Range",
+        "date": "2012-09-06",
+      },
+      {
+        "agency": "SSI",
+        "course": "Night Diving and Limited Visibility",
+        "date": "2022-10-28",
+      },
+      {
+        "agency": "PADI",
+        "course": "Enriched Air Diver (Nitrox)",
+        "date": "2016-03-07",
+      },
+    ],
+    "experienceLevel": "Experience",
+    "location": "Kennewick",
+    "memberSince": "2018-06-28T18:27:42.519Z",
+    "name": "Dixie Macejkovic",
+    "profileVisibility": "private",
+    "startedDiving": "2014",
+    "userId": "2257ba3d-4f57-47f7-bcb1-91e0fef37892",
+    "username": "Afton67",
+  },
+  "role": 200,
+  "username": "Afton67",
+}
+`;
+
 exports[`Users Routes Creating Users Will create a new user based on the criteria 1`] = `"Welcome to Bottom Time!"`;
 
 exports[`Users Routes Creating Users Will create a new user based on the criteria 2`] = `

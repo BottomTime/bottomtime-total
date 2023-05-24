@@ -11,7 +11,6 @@ import { assertValid } from '../helpers/validation';
 import { DefaultUser } from './default-user';
 import {
   CreateUserOptions,
-  ProfileData,
   SearchUsersOptions,
   User,
   UserManager,
@@ -47,20 +46,12 @@ export class DefaultUserManager implements UserManager {
     return data;
   }
 
-  async createUser(
-    options: CreateUserOptions,
-    profile?: ProfileData,
-  ): Promise<User> {
+  async createUser(options: CreateUserOptions): Promise<User> {
     const { parsed: parsedUser } = assertValid(
       options,
       CreateUserOptionsSchema,
     );
-    const { username, email, role, password } = parsedUser;
-    let parsedProfile = undefined;
-
-    if (profile) {
-      parsedProfile = assertValid(profile, ProfileSchema).parsed;
-    }
+    const { username, email, role, password, profile } = parsedUser;
 
     await this.checkForConflicts(username, email);
 
@@ -86,8 +77,8 @@ export class DefaultUserManager implements UserManager {
       );
     }
 
-    if (parsedProfile) {
-      data.profile = parsedProfile;
+    if (profile) {
+      data.profile = profile;
     }
 
     this.log.debug(`Attempting to create new user account: ${username}`);

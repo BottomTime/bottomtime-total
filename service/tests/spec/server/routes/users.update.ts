@@ -9,7 +9,7 @@ import {
   changeUsername,
   lockAccount,
   unlockAccount,
-} from '../../../../src/server/routes/users';
+} from '../../../../src/server/routes/users-update';
 import { DefaultUser } from '../../../../src/users/default-user';
 import { fakePassword, fakeUser } from '../../../fixtures/fake-user';
 import { mongoClient } from '../../../mongo-client';

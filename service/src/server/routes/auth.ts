@@ -20,11 +20,14 @@ export function getCurrentUser(req: Request, res: Response) {
   });
 }
 
-export async function logout(req: Request, res: Response, next: NextFunction) {
-  return new Promise<void>((resolve) => {
+export async function logout(req: Request, res: Response) {
+  await new Promise<void>((resolve) => {
     req.logout({ keepSessionInfo: false }, (error) => {
-      if (error) next(error);
-      else res.redirect('/');
+      if (error) {
+        req.log.error('Failed to end user session.', error);
+      }
+
+      res.redirect('/');
       resolve();
     });
   });

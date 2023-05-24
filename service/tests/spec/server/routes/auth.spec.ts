@@ -61,18 +61,16 @@ describe('Auth Routes', () => {
         log: Log,
         logout: spy,
       });
-      const next = jest.fn();
 
-      await logout(req, res, next);
+      await logout(req, res);
 
       expect(spy).toBeCalled();
-      expect(next).not.toBeCalled();
       expect(res._isEndCalled()).toBe(true);
       expect(res._getStatusCode()).toEqual(302);
       expect(res._getRedirectUrl()).toEqual('/');
     });
 
-    it('Will return an error if session store throws an exception', async () => {
+    it('Will fail silently if an error occurs while ending the session', async () => {
       const error = new Error('Uh oh! Session store is broken.');
       const spy = jest
         .fn()
@@ -84,13 +82,13 @@ describe('Auth Routes', () => {
         log: Log,
         logout: spy,
       });
-      const next = jest.fn();
 
-      await logout(req, res, next);
+      await logout(req, res);
 
       expect(spy).toBeCalled();
-      expect(next).toBeCalledWith(error);
-      expect(res._isEndCalled()).toBe(false);
+      expect(res._isEndCalled()).toBe(true);
+      expect(res._getStatusCode()).toEqual(302);
+      expect(res._getRedirectUrl()).toEqual('/');
     });
   });
 });

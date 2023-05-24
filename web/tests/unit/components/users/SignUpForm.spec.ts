@@ -174,36 +174,32 @@ describe('Sign Up Form', () => {
 
     const dispatch = jest.spyOn(store, 'dispatch').mockResolvedValue(undefined);
     const push = jest.spyOn(router, 'push');
-    scope.put(`/api/users/${username}`, { email, password }).reply(201, {
-      id: 'fa4fc9f5-f33c-47a9-85ee-079d6cf26524',
-      username: 'RonnyJ_82',
-      email: 'ronny@gmail.com',
-      emailVerified: false,
-      hasPassword: true,
-      lastLogin: '2023-04-03T21:57:52.420Z',
-      isLockedOut: false,
-      memberSince: '2023-04-03T21:57:50.591Z',
-      profile: {
-        userId: 'fa4fc9f5-f33c-47a9-85ee-079d6cf26524',
-        username: 'RonnyJ_82',
-        memberSince: '2023-04-03T21:57:50.591Z',
-        profileVisibility: 'friends',
-      },
-      role: 100,
-    });
     scope
-      .put(`/api/profiles/${username}`, {
-        name,
-        profileVisibility: ProfileVisibility.Private,
-        location,
+      .put(`/api/users/${username}`, {
+        email,
+        password,
+        profile: {
+          name,
+          location,
+          profileVisibility: 'private',
+        },
       })
-      .reply(200, {
-        userId: 'fa4fc9f5-f33c-47a9-85ee-079d6cf26524',
+      .reply(201, {
+        id: 'fa4fc9f5-f33c-47a9-85ee-079d6cf26524',
         username: 'RonnyJ_82',
+        email: 'ronny@gmail.com',
+        emailVerified: false,
+        hasPassword: true,
+        lastLogin: '2023-04-03T21:57:52.420Z',
+        isLockedOut: false,
         memberSince: '2023-04-03T21:57:50.591Z',
-        profileVisibility: 'private',
-        location: 'Vancouver, CA',
-        name: 'Ron Haskinks',
+        profile: {
+          userId: 'fa4fc9f5-f33c-47a9-85ee-079d6cf26524',
+          username: 'RonnyJ_82',
+          memberSince: '2023-04-03T21:57:50.591Z',
+          profileVisibility: 'private',
+        },
+        role: 100,
       });
 
     await wrapper.get('input#username').setValue(username);

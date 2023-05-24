@@ -42,6 +42,7 @@ export class DefaultUserManager implements UserManager {
       .send({
         email: options.email,
         password: options.password,
+        profile: options.profile,
       });
 
     const { value: userData } = UserDataSchema.validate(body);

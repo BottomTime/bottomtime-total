@@ -208,11 +208,12 @@ async function submit() {
         username: data.username,
         email: data.email,
         password: data.password,
+        profile: {
+          name: data.name,
+          location: data.location,
+          profileVisibility: data.profileVisibility,
+        },
       });
-      user.profile.name = data.name;
-      user.profile.location = data.location;
-      user.profile.profileVisibility = data.profileVisibility;
-      await user.profile.save();
 
       await store.dispatch(Dispatch.SignInUser, user);
       await store.dispatch(Dispatch.Toast, SuccessToast);

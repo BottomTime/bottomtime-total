@@ -13,9 +13,7 @@ Array [
       "lastLogin": 2023-04-03T21:57:52.420Z,
       "memberSince": 2023-04-03T21:57:50.591Z,
       "profile": Object {
-        "location": "Vancouver, CA",
         "memberSince": "2023-04-03T21:57:50.591Z",
-        "name": "Ron Haskinks",
         "profileVisibility": "private",
         "userId": "fa4fc9f5-f33c-47a9-85ee-079d6cf26524",
         "username": "RonnyJ_82",
