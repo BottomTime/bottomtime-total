@@ -214,6 +214,7 @@ jobs:
           name: Start Core Server
           working_directory: ./service/
           command: |
+            yarn install
             yarn build
             yarn daemon:start
       - run:
