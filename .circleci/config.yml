@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@3.1.5
   aws-s3: circleci/aws-s3@3.1.1
+  cypress: cypress-io/cypress@3.1.2
   node: circleci/node@5.1.0
   terraform: circleci/terraform@3.2.1
 
@@ -210,6 +211,10 @@ jobs:
       - checkout
       - install_node:
           app_path: ./web/
+      - cypress/install:
+          install-command: npx cypress install
+          package-manager: yarn
+          working-directory: ./web/
       - run:
           name: Start Core Server
           working_directory: ./service/
@@ -217,10 +222,9 @@ jobs:
             yarn install
             yarn build
             yarn daemon:start
-      - run:
-          name: End-to-end tests
-          working_directory: ./web/
-          command: yarn test:e2e --headless
+      - cypress/run-tests:
+          cypress-command: yarn test:e2e --headless
+          working-directory: ./web/
 
   terraform:
     docker:
