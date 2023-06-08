@@ -208,7 +208,8 @@ jobs:
       env:
         type: string
     steps:
-      - checkout
+      - install_node:
+          app_path: ./web/
       - run:
           name: End-to-end tests
           working_directory: ./web/
