@@ -208,6 +208,7 @@ jobs:
       env:
         type: string
     steps:
+      - checkout
       - install_node:
           app_path: ./web/
       - run:
