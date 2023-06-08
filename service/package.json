@@ -8,6 +8,8 @@
   "private": true,
   "scripts": {
     "build": "rm -rf dist/ && tsc && cp -R src/email/templates/ dist/email/templates/",
+    "daemon:start": "pm2 start dist/index.js",
+    "daemon:stop": "pm2 stop dist/index.js",
     "docker:build": "docker build -t bottomtime/core .",
     "docker:run": "docker run -it -p 4800:4800 --env-file .env.defaults --env-file .env bottomtime/core",
     "format": "prettier --write --ignore-unknown .",
@@ -72,6 +74,7 @@
     "moq.ts": "~9.0.2",
     "node-mocks-http": "^1.12.1",
     "nodemon": "^2.0.22",
+    "pm2": "^5.3.0",
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
