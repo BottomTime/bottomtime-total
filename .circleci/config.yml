@@ -201,7 +201,12 @@ jobs:
 
   test_end_to_end:
     docker:
+      - image: mongo:6.0
       - image: cimg/base:2023.04
+      - image: $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:latest
+    parameters:
+      env:
+        type: string
     steps:
       - checkout
       - run:
@@ -299,6 +304,19 @@ workflows:
             - test_core
             - build_web
 
+      - test_end_to_end:
+          name: test_e2e_dev
+          env: dev
+          context:
+            - bt-aws-dev
+          # filters:
+          #   branches:
+          #     only:
+          #       - master
+          # requires:
+          #   - deploy_core_image_dev
+          #   - migrate_database_dev
+
       - terraform:
           name: terraform_dev
           env: 'dev'
@@ -309,8 +327,7 @@ workflows:
               only:
                 - master
           requires:
-            - deploy_core_image_dev
-            - migrate_database_dev
+            - test_e2e_dev
 
       - publish_distros:
           name: deploy_distros_dev
