@@ -203,6 +203,8 @@ jobs:
   test_end_to_end:
     docker:
       - image: cimg/base:2023.04
+        environment:
+          ELECTRON_RUN_AS_NODE: '1'
       - image: mongo:6.0
     parameters:
       env:
