@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@3.1.5
+  aws-cli: circleci/aws-cli@4.0.0
   aws-s3: circleci/aws-s3@3.1.1
   cypress: cypress-io/cypress@3.1.2
   node: circleci/node@5.1.0
@@ -203,14 +203,12 @@ jobs:
   test_end_to_end:
     docker:
       - image: cimg/node:18.16-browsers
-      - image: mongo:6.0
+      - image: mongo:5.0
     parameters:
       env:
         type: string
     steps:
       - checkout
-      - install_node:
-          app_path: ./web/
       - cypress/install:
           install-command: npx cypress install
           package-manager: yarn
