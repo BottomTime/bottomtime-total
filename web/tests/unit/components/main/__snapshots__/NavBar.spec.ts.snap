@@ -7,7 +7,7 @@ exports[`NavBar component Will render correctly for administrators 1`] = `
     <div id="nav-main-menu" class="navbar-menu">
       <div class="navbar-start"><a aria-current="page" href="/" class="router-link-active router-link-exact-active navbar-item">Home</a><a href="/manageUsers" class="navbar-item"> Manage Users </a></div>
       <div class="navbar-end">
-        <div class="navbar-item has-dropdown is-hoverable"><a class="navbar-link">Jonny C</a>
+        <div class="navbar-item has-dropdown is-hoverable"><a id="nav-current-user" class="navbar-link">Jonny C</a>
           <div class="navbar-dropdown"><a href="/profile" class="navbar-item">Profile</a>
             <hr class="navbar-divider"><a href="/account" class="navbar-item">Manage Account</a><a href="/account/changePassword" class="navbar-item">Change Password</a><a href="/account/settings" class="navbar-item">Settings</a>
             <hr class="navbar-divider"><a href="/api/auth/logout" class="navbar-item">Logout</a>
@@ -40,7 +40,7 @@ exports[`NavBar component Will render correctly for regular users 1`] = `
     <div id="nav-main-menu" class="navbar-menu">
       <div class="navbar-start"><a aria-current="page" href="/" class="router-link-active router-link-exact-active navbar-item">Home</a><a href="/manageUsers" class="navbar-item"> Manage Users </a></div>
       <div class="navbar-end">
-        <div class="navbar-item has-dropdown is-hoverable"><a class="navbar-link">Jonny C</a>
+        <div class="navbar-item has-dropdown is-hoverable"><a id="nav-current-user" class="navbar-link">Jonny C</a>
           <div class="navbar-dropdown"><a href="/profile" class="navbar-item">Profile</a>
             <hr class="navbar-divider"><a href="/account" class="navbar-item">Manage Account</a><a href="/account/changePassword" class="navbar-item">Change Password</a><a href="/account/settings" class="navbar-item">Settings</a>
             <hr class="navbar-divider"><a href="/api/auth/logout" class="navbar-item">Logout</a>

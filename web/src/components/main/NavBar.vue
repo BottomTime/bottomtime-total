@@ -42,7 +42,7 @@
 
         <div v-if="currentUser" class="navbar-end">
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">{{ displayName }}</a>
+            <a id="nav-current-user" class="navbar-link">{{ displayName }}</a>
 
             <div class="navbar-dropdown">
               <RouterLink to="/profile" class="navbar-item">Profile</RouterLink>

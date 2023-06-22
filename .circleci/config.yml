@@ -3,7 +3,6 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@4.0.0
   aws-s3: circleci/aws-s3@3.1.1
-  cypress: cypress-io/cypress@3.1.2
   node: circleci/node@5.1.0
   terraform: circleci/terraform@3.2.1
 
@@ -202,26 +201,22 @@ jobs:
 
   test_end_to_end:
     docker:
-      - image: cimg/node:18.16-browsers
+      - image: cimg/base:2023.04
       - image: mongo:5.0
     parameters:
       env:
         type: string
     steps:
-      - cypress/install:
-          install-command: npx cypress install
-          package-manager: yarn
-          working-directory: ./web/
+      - checkout
+      - install_node:
+          app_path: ./
       - run:
-          name: Start Core Server
-          working_directory: ./service/
-          command: |
-            yarn install
-            yarn build
-            yarn daemon:start
-      - cypress/run-tests:
-          cypress-command: yarn test:e2e --headless
-          working-directory: ./web/
+          name: Install Dependencies
+          command: lerna install
+      - run:
+          name: End-to-End Tests
+          working_directory: ./e2e-tests
+          command: yarn test
 
   terraform:
     docker:

@@ -1,0 +1,21 @@
+{
+  "_id": "e533c573-eef5-4851-a5a3-e6c65f9fb792",
+  "emailVerified": false,
+  "isLockedOut": false,
+  "memberSince": {
+    "$date": "2023-04-28T23:30:42.343Z"
+  },
+  "role": 100,
+  "username": "RickyB_26",
+  "usernameLowered": "rickyb_26",
+  "email": "ShakeNBake@gmail.org",
+  "emailLowered": "shakenbake@gmail.org",
+  "passwordHash": "$2b$04$Jj5IQ1ZN30d7MUcSAOFXX.YM9x8JMPjfglPvSD6vjY6T8Dd0pkbSO",
+  "lastLogin": {
+    "$date": "2023-04-28T23:30:44.008Z"
+  },
+  "profile": {
+    "profileVisibility": "private",
+    "name": "Ricky Bobby"
+  }
+}
