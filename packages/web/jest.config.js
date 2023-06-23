@@ -4,6 +4,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   maxWorkers: '1',
+  modulePaths: ['./node_modules', '../../node_modules'],
   preset: '@vue/cli-plugin-unit-jest/presets/typescript-and-babel',
   reporters: ['default', 'jest-junit'],
   resetModules: true,

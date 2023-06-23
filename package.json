@@ -16,12 +16,15 @@
   },
   "devDependencies": {
     "husky": "^8.0.3",
-    "lerna": "^6.4.1",
+    "lerna": "^7.0.2",
     "lint-staged": "^13.1.1",
     "prettier": "^2.8.4"
   },
   "lint-staged": {
     "**/*.{tf,tfvars}": "terraform fmt",
     "**/*": "prettier --write --ignore-unknown"
-  }
+  },
+  "workspaces": [
+    "./packages/*"
+  ]
 }
