@@ -71,10 +71,10 @@ jobs:
       - image: mongo:5.0
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
-      NODE_OPTIONS: '--max_old_space_size=4096'
     steps:
       - checkout
-      - install_node
+      - install_node:
+          app_path: ./packages/service/
       - prepare_coverage_reporting
       - run:
           name: Lint, Build, and Test
