@@ -62,7 +62,7 @@ commands:
             ../../cc-test-reporter format-coverage "coverage/lcov.info" \
               --add-prefix "<<parameters.coverage_root>>" \
               -t lcov \
-              -o "../<<parameters.coverage_file>>" \
+              -o "../../<<parameters.coverage_file>>" \
 
 jobs:
   test_core:
