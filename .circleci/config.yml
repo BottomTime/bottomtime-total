@@ -8,16 +8,11 @@ orbs:
 
 commands:
   install_node:
-    parameters:
-      app_path:
-        type: string
-        default: ./
     steps:
       - node/install:
           install-yarn: true
           node-version: '18'
       - node/install-packages:
-          app-dir: <<parameters.app_path>>
           pkg-manager: 'yarn'
 
   publish_distro:
@@ -65,6 +60,22 @@ commands:
               -o "../../<<parameters.coverage_file>>" \
 
 jobs:
+  validate_and_build:
+    docker:
+      - image: cimg/base:2023.04
+      - image: mongo:5.0
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./reports/
+    steps:
+      - checkout
+      - install_node
+      - prepare_coverage_reporting
+      - run:
+          name: Lint, build, and test
+          command: |
+            yarn lint
+            yarn build
+
   test_core:
     docker:
       - image: cimg/base:2023.04
@@ -73,8 +84,7 @@ jobs:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
-      - install_node:
-          app_path: ./packages/service/
+      - install_node
       - prepare_coverage_reporting
       - run:
           name: Lint, Build, and Test
@@ -102,8 +112,7 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
-      - install_node:
-          app_path: ./packages/web/
+      - install_node
       - prepare_coverage_reporting
       - run:
           name: Lint, Build, and Test
@@ -140,8 +149,7 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
-      - install_node:
-          app_path: ./packages/docs/
+      - install_node
       - run:
           name: Validate specs
           working_directory: ./packages/docs/
@@ -160,8 +168,7 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
-      - install_node:
-          app_path: ./packages/service/
+      - install_node
       - run:
           name: Migrate database
           working_directory: ./packages/service/
@@ -269,77 +276,4 @@ jobs:
 workflows:
   test_and_deploy:
     jobs:
-      - test_core
-      - build_web
-      - build_docs
-      - upload_coverage:
-          context:
-            - bt-code-climate
-          requires:
-            - test_core
-            - build_web
-
-      # Dev environment
-      - migrate_database:
-          name: migrate_database_dev
-          context:
-            - bt-mongo-dev
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - test_core
-            - build_web
-
-      - deploy_core_image:
-          name: deploy_core_image_dev
-          env: 'dev'
-          context:
-            - bt-aws-dev
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - test_core
-            - build_web
-
-      - test_end_to_end:
-          name: test_e2e_dev
-          env: dev
-          context:
-            - bt-aws-dev
-          # filters:
-          #   branches:
-          #     only:
-          #       - master
-          # requires:
-          #   - deploy_core_image_dev
-          #   - migrate_database_dev
-
-      - terraform:
-          name: terraform_dev
-          env: 'dev'
-          context:
-            - bt-aws-dev
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - test_e2e_dev
-
-      - publish_distros:
-          name: deploy_distros_dev
-          env: 'dev'
-          context:
-            - bt-aws-dev
-          filters:
-            branches:
-              only:
-                - master
-          requires:
-            - terraform_dev
-            - build_docs
-            - build_web
+      - validate_and_build

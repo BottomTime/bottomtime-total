@@ -221,7 +221,8 @@ async function submit() {
     },
     {
       [409]: async (error): Promise<void> => {
-        const { conflictingField } = error.response?.body.details;
+        const conflictingField =
+          error.response?.body?.details?.conflictingField;
         let description: string | undefined;
 
         if (conflictingField === 'username') {

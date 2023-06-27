@@ -1,13 +1,13 @@
 import { expect, test } from '../../fixture';
 
-const UserData = require('../../fixtures/regular-user.json');
+import UserData from '../../fixtures/regular-user.json';
 
 test('Will log a user into their account with username and password', async ({
   app,
   page,
 }) => {
   const mongoClient = await app.mongoClient();
-  const Users = mongoClient.db().collection('Users');
+  const Users = mongoClient.db().collection<{ _id: string }>('Users');
 
   await Users.insertOne(UserData);
 

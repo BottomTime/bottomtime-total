@@ -11,10 +11,9 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier',
   ],
-  overrides: [],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 'latest',
+    ecmaVersion: 'es2022',
     sourceType: 'module',
     project: path.resolve(__dirname, 'tsconfig.eslint.json'),
   },

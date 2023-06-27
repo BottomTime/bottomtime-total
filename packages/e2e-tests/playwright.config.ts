@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
