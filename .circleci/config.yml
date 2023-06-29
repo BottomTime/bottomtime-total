@@ -97,6 +97,8 @@ jobs:
           path: ./packages/service/reports/
       - store_test_results:
           path: ./packages/web/reports/
+      - store_test_results:
+          path: ./packages/e2e-tests/test-results/
       - persist_to_workspace:
           root: .
           paths:
