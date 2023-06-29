@@ -33,7 +33,7 @@
     "lerna": "^7.0.2",
     "lint-staged": "^13.1.1",
     "prettier": "^2.8.4",
-    "typescript": "^5.1.3"
+    "typescript": "^5.0.4"
   },
   "lint-staged": {
     "**/*.{tf,tfvars}": "terraform fmt",
