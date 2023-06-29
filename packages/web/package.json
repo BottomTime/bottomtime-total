@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.0",
@@ -24,7 +24,6 @@
     "@types/jest": "^27.0.1",
     "@types/superagent": "^4.1.16",
     "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-plugin-unit-jest": "~5.0.0",
@@ -34,6 +33,8 @@
     "@vue/vue3-jest": "^27.0.0-alpha.1",
     "babel-jest": "^27.0.6",
     "dotenv-defaults": "^5.0.2",
+    "eslint": "^8.43.0",
+    "eslint-plugin-vue": "^9.15.1",
     "flush-promises": "^1.0.2",
     "jest": "^27.0.5",
     "jest-junit": "^16.0.0",
