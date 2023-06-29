@@ -1,5 +1,5 @@
 {
-  "name": "service",
+  "name": "@bottomtime/core",
   "version": "1.0.0",
   "description": "BottomTime backend service",
   "main": "src/index.ts",
