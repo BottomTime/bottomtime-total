@@ -70,7 +70,7 @@ commands:
 jobs:
   validate_and_build:
     docker:
-      - image: cimg/base:2023.04
+      - image: cimg/node:18.16.1-browsers
       - image: mongo:5.0
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
