@@ -85,6 +85,9 @@ jobs:
             yarn build
       - prepare_coverage_reporting
       - run:
+          name: Install Playwright
+          command: npx playwright install
+      - run:
           name: Test core and front-end
           command: yarn test
       - record_coverage:
