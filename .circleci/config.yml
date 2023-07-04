@@ -112,7 +112,7 @@ jobs:
           path: ./packages/service/logs/
           destination: logs/
       - persist_to_workspace:
-          root: ./package/service/
+          root: ./packages/service/
           paths:
             - service.coverage.json
 
@@ -133,9 +133,9 @@ jobs:
       - store_test_results:
           path: ./packages/web/reports/
       - persist_to_workspace:
-          root: packages/
+          root: .
           paths:
-            - web/dist/
+            - packages/web/dist/
       - persist_to_workspace:
           root: packages/web/
           paths:
