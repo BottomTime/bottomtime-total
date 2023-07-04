@@ -6,6 +6,9 @@ orbs:
   node: circleci/node@5.1.0
   terraform: circleci/terraform@3.2.1
 
+docker: &node_image
+  - image: cimg/node:18.16.1-browsers
+
 commands:
   install_node:
     steps:
@@ -68,7 +71,30 @@ commands:
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
 jobs:
-  validate_and_build:
+  lint_and_build:
+    docker: *node_image
+    steps:
+      - checkout
+      - install_node
+      - prepare_coverage_reporting
+      - run:
+          name: Lint
+          command: yarn lint
+      - run:
+          name: Build
+          command: yarn build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - cc-test-reporter
+      - persist_to_workspace:
+          root: packages/
+          paths:
+            - web/dist/
+            - docs/dist/
+            - core/dist/
+
+  test_e2e:
     docker:
       - image: cimg/node:18.16.1-browsers
       - image: mongo:5.0
@@ -297,4 +323,4 @@ jobs:
 workflows:
   test_and_deploy:
     jobs:
-      - validate_and_build
+      - lint_and_build
