@@ -62,7 +62,7 @@ commands:
           name: Report test coverage
           command: |
             ./cc-test-reporter format-coverage "<<parameters.coverage_root>>coverage/lcov.info" \
-              --add-prefix "<<parameters.coverage_root>>" \
+              -p "<<parameters.coverage_root>>" \
               -t lcov \
               -o "<<parameters.coverage_file>>" \
 
