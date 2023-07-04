@@ -61,10 +61,10 @@ commands:
       - run:
           name: Report test coverage
           command: |
-            ./cc-test-reporter format-coverage "<<parameters.coverage_root>>/coverage/lcov.info" \
+            ./cc-test-reporter format-coverage "<<parameters.coverage_root>>coverage/lcov.info" \
               --add-prefix "<<parameters.coverage_root>>" \
               -t lcov \
-              -o "../../<<parameters.coverage_file>>" \
+              -o "<<parameters.coverage_file>>" \
 
 jobs:
   lint_and_build:
