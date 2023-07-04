@@ -67,31 +67,18 @@ commands:
               -t lcov \
               -o "../../<<parameters.coverage_file>>" \
 
-  report_coverage:
-    steps:
-      - run:
-          name: Report coverage
-          command: |
-            ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 service_coverage.json web_coverage.json
-            ./cc-test-reporter upload-coverage -i codeclimate.json
-
 jobs:
   lint_and_build:
     docker: *base_image
     steps:
       - checkout
       - install_node
-      - prepare_coverage_reporting
       - run:
           name: Lint
           command: yarn lint
       - run:
           name: Build
           command: yarn build
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - cc-test-reporter
       - persist_to_workspace:
           root: packages/
           paths:
@@ -106,8 +93,7 @@ jobs:
     steps:
       - checkout
       - install_node
-      - attach_workspace:
-          at: ./
+      - prepare_coverage_reporting
       - run:
           name: Run unit tests
           working_directory: ./packages/service/
@@ -124,6 +110,39 @@ jobs:
           root: .
           paths:
             - service_coverage.json
+
+  test_web:
+    docker: *base_image
+    steps:
+      - checkout
+      - install_node
+      - prepare_coverage_reporting
+      - run:
+          name: Run unit tests
+          working_directory: ./packages/web/
+          command: yarn test
+      - record_coverage:
+          coverage_file: web_coverage.json
+          coverage_root: ./packages/web/
+      - store_test_results:
+          path: ./packages/web/reports/
+      - persist_to_workspace:
+          root: .
+          paths:
+            - packages/web/dist/
+            - web_coverage.json
+
+  report_coverage:
+    docker: *base_image
+    steps:
+      - attach_workspace:
+          at: .
+      - prepare_coverage_reporting
+      - run:
+          name: Report coverage
+          command: |
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 service_coverage.json web_coverage.json
+            ./cc-test-reporter upload-coverage -i codeclimate.json
 
   test_e2e:
     docker: *node_image
@@ -163,50 +182,6 @@ jobs:
             - packages/web/dist/
             - packages/docs/dist/
       - report_coverage
-
-  build_web:
-    docker:
-      - image: cimg/base:2023.04
-    steps:
-      - checkout
-      - install_node
-      - prepare_coverage_reporting
-      - run:
-          name: Lint, Build, and Test
-          working_directory: ./packages/web/
-          command: |
-            yarn lint
-            yarn build
-            yarn test
-      - record_coverage:
-          coverage_file: web_coverage.json
-          coverage_root: ./packages/web/
-      - store_test_results:
-          path: ./packages/web/reports/
-      - persist_to_workspace:
-          root: .
-          paths:
-            - packages/web/dist/
-            - web_coverage.json
-
-  build_docs:
-    docker:
-      - image: cimg/base:2023.04
-    steps:
-      - checkout
-      - install_node
-      - run:
-          name: Validate specs
-          working_directory: ./packages/docs/
-          command: yarn validate
-      - run:
-          name: Build
-          working_directory: ./packages/docs/
-          command: yarn build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - packages/docs/dist/
 
   migrate_database:
     docker:
@@ -325,3 +300,10 @@ workflows:
       - test_core:
           requires:
             - lint_and_build
+      - test_web:
+          requires:
+            - lint_and_build
+      - report_coverage:
+          requires:
+            - test_core
+            - test_web
