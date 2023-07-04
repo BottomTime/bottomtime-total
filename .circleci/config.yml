@@ -133,11 +133,7 @@ jobs:
       - store_test_results:
           path: ./packages/web/reports/
       - persist_to_workspace:
-          root: .
-          paths:
-            - packages/web/dist/
-      - persist_to_workspace:
-          root: packages/web/
+          root: ./packages/web/
           paths:
             - web.coverage.json
 
