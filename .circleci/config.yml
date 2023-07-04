@@ -99,7 +99,7 @@ jobs:
           working_directory: ./packages/service/
           command: yarn test
       - record_coverage:
-          coverage_file: service_coverage.json
+          coverage_file: service.coverage.json
           coverage_root: packages/service/
       - store_test_results:
           path: ./packages/service/reports/
@@ -109,7 +109,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - service_coverage.json
+            - service.coverage.json
 
   test_web:
     docker: *base_image
@@ -122,7 +122,7 @@ jobs:
           working_directory: ./packages/web/
           command: yarn test
       - record_coverage:
-          coverage_file: web_coverage.json
+          coverage_file: web.coverage.json
           coverage_root: ./packages/web/
       - store_test_results:
           path: ./packages/web/reports/
@@ -130,7 +130,7 @@ jobs:
           root: .
           paths:
             - packages/web/dist/
-            - web_coverage.json
+            - web.coverage.json
 
   report_coverage:
     docker: *base_image
@@ -141,7 +141,8 @@ jobs:
       - run:
           name: Report coverage
           command: |
-            ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 service_coverage.json web_coverage.json
+            ls -a
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
   test_e2e:
@@ -297,12 +298,8 @@ workflows:
   test_and_deploy:
     jobs:
       - lint_and_build
-      - test_core:
-          requires:
-            - lint_and_build
-      - test_web:
-          requires:
-            - lint_and_build
+      - test_core
+      - test_web
       - report_coverage:
           requires:
             - test_core
