@@ -6,8 +6,13 @@ orbs:
   node: circleci/node@5.1.0
   terraform: circleci/terraform@3.2.1
 
-docker: &node_image
+docker_node: &node_image
   - image: cimg/node:18.16.1-browsers
+  - image: mongo:5.0
+
+docker_base: &base_image
+  - image: cimg/base:2023.04
+  - image: mongo:5.0
 
 commands:
   install_node:
@@ -72,7 +77,7 @@ commands:
 
 jobs:
   lint_and_build:
-    docker: *node_image
+    docker: *base_image
     steps:
       - checkout
       - install_node
@@ -94,10 +99,34 @@ jobs:
             - docs/dist/
             - core/dist/
 
+  test_core:
+    docker: *base_image
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./reports/
+    steps:
+      - checkout
+      - install_node
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Run unit tests
+          working_directory: ./packages/service/
+          command: yarn test
+      - record_coverage:
+          coverage_file: service_coverage.json
+          coverage_root: packages/service/
+      - store_test_results:
+          path: ./packages/service/reports/
+      - store_artifacts:
+          path: ./packages/service/logs/
+          destination: logs/
+      - persist_to_workspace:
+          root: .
+          paths:
+            - service_coverage.json
+
   test_e2e:
-    docker:
-      - image: cimg/node:18.16.1-browsers
-      - image: mongo:5.0
+    docker: *node_image
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -134,37 +163,6 @@ jobs:
             - packages/web/dist/
             - packages/docs/dist/
       - report_coverage
-
-  test_core:
-    docker:
-      - image: cimg/base:2023.04
-      - image: mongo:5.0
-    environment:
-      JEST_JUNIT_OUTPUT_DIR: ./reports/
-    steps:
-      - checkout
-      - install_node
-      - prepare_coverage_reporting
-      - run:
-          name: Lint, Build, and Test
-          working_directory: ./packages/service/
-          command: |
-            yarn lint
-            yarn build
-            yarn test
-      - record_coverage:
-          coverage_file: service_coverage.json
-          coverage_root: packages/service/
-      - store_test_results:
-          path: ./packages/service/reports/
-      - store_artifacts:
-          path: ./packages/service/logs/
-          destination: logs/
-      - persist_to_workspace:
-          root: .
-          paths:
-            - cc-test-reporter
-            - service_coverage.json
 
   build_web:
     docker:
@@ -324,3 +322,6 @@ workflows:
   test_and_deploy:
     jobs:
       - lint_and_build
+      - test_core:
+          requires:
+            - lint_and_build
