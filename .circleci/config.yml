@@ -157,37 +157,15 @@ jobs:
     steps:
       - checkout
       - install_node
-      - prepare_coverage_reporting
-      - run:
-          name: Lint and build
-          command: |
-            yarn lint
-            yarn build
-      - prepare_coverage_reporting
       - run:
           name: Install Playwright
           command: npx playwright install
       - run:
-          name: Test core and front-end
+          name: Run end-to-end tests
+          working_directory: packages/e2e-tests/
           command: yarn test
-      - record_coverage:
-          coverage_file: service_coverage.json
-          coverage_root: packages/service/
-      - record_coverage:
-          coverage_file: web_coverage.json
-          coverage_root: ./packages/web/
-      - store_test_results:
-          path: ./packages/service/reports/
-      - store_test_results:
-          path: ./packages/web/reports/
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
-      - persist_to_workspace:
-          root: .
-          paths:
-            - packages/web/dist/
-            - packages/docs/dist/
-      - report_coverage
 
   migrate_database:
     docker:
@@ -307,6 +285,9 @@ workflows:
           requires:
             - lint_and_build
       - test_web:
+          requires:
+            - lint_and_build
+      - test_e2e:
           requires:
             - lint_and_build
       - report_coverage:
