@@ -81,11 +81,11 @@ jobs:
           name: Build
           command: yarn build
       - persist_to_workspace:
-          root: packages/
+          root: ./
           paths:
-            - web/dist/
-            - docs/dist/
-            - core/dist/
+            - packages/web/dist/
+            - packages/docs/dist/
+            - packages/core/dist/
             - cc-test-reporter
 
   test_core:
