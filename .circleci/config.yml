@@ -97,7 +97,7 @@ jobs:
             - cc-test-reporter
 
   test_core:
-    docker: *base_image
+    docker: *node_image
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
