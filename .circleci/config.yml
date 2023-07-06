@@ -303,8 +303,12 @@ workflows:
   test_and_deploy:
     jobs:
       - lint_and_build
-      - test_core
-      - test_web
+      - test_core:
+          requires:
+            - lint_and_build
+      - test_web:
+          requires:
+            - lint_and_build
       - report_coverage:
           requires:
             - test_core
