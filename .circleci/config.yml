@@ -218,23 +218,23 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./packages/terraform/vars
+          at: ./terraform/vars
       - terraform/install:
           terraform_version: '1.4.5'
       - terraform/validate:
-          path: ./packages/terraform/
+          path: ./terraform/
       - terraform/apply:
           backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
-          path: ./packages/terraform/
+          path: ./terraform/
           var_file: vars/<<parameters.env>>.tfvars,vars/build.tfvars
       - run:
           name: Store distribution names
-          working_directory: ./packages/terraform/
+          working_directory: ./terraform/
           command: |
             terraform output -raw site_distribution > site_distribution
             terraform output -raw docs_distribution > docs_distribution
       - persist_to_workspace:
-          root: ./packages/terraform/
+          root: ./terraform/
           paths:
             - site_distribution
             - docs_distribution
