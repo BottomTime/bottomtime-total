@@ -268,12 +268,12 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./packages/terraform/vars
+          at: ./terraform/vars
       - terraform/install:
           terraform_version: '1.4.5'
       - terraform/destroy:
           backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
-          path: ./packages/terraform/
+          path: ./terraform/
           var_file: vars/<<parameters.env>>.tfvars,vars/build.tfvars
 
 workflows:
@@ -335,4 +335,4 @@ workflows:
           context:
             - bt-aws-dev
           requires:
-            - terraform_dev
+            - publish_dev_distros
