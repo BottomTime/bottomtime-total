@@ -305,6 +305,10 @@ workflows:
             - test_core
             - test_web
             - test_e2e
+          # filters:
+          #   branches:
+          #     only:
+          #       - master
       - migrate_database:
           name: migrate_dev_database
           context:
@@ -320,6 +324,13 @@ workflows:
             - deploy_dev_image
       - publish_distros:
           name: publish_dev_distros
+          env: dev
+          context:
+            - bt-aws-dev
+          requires:
+            - terraform_dev
+      - teardown:
+          name: teardown_dev
           env: dev
           context:
             - bt-aws-dev
