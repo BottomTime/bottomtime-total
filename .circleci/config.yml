@@ -12,7 +12,6 @@ docker_node: &node_image
 
 docker_base: &base_image
   - image: cimg/base:2023.04
-  - image: mongo:5.0
 
 commands:
   install_node:
@@ -60,8 +59,17 @@ commands:
           working_directory: <<parameters.coverage_root>>
           command: |
             ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "<<parameters.coverage_root>>"
               -t lcov \
               -o "../../<<parameters.coverage_file>>" \
+
+  init_testing:
+    steps:
+      - checkout
+      - install_node
+      - attach_workspace:
+          at: ./
+      - prepare_coverage_reporting
 
 jobs:
   lint_and_build:
@@ -93,11 +101,7 @@ jobs:
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
-      - checkout
-      - install_node
-      - attach_workspace:
-          at: ./
-      - prepare_coverage_reporting
+      - init_testing
       - run:
           name: Run unit tests
           working_directory: ./packages/service/
@@ -118,11 +122,7 @@ jobs:
   test_web:
     docker: *base_image
     steps:
-      - checkout
-      - install_node
-      - attach_workspace:
-          at: ./
-      - prepare_coverage_reporting
+      - init_testing
       - run:
           name: Run unit tests
           working_directory: ./packages/web/
@@ -155,8 +155,7 @@ jobs:
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
-      - checkout
-      - install_node
+      - init_testing
       - run:
           name: Install Playwright
           command: npx playwright install
@@ -166,17 +165,6 @@ jobs:
           command: yarn test
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
-
-  migrate_database:
-    docker:
-      - image: cimg/base:2023.04
-    steps:
-      - checkout
-      - install_node
-      - run:
-          name: Migrate database
-          working_directory: ./packages/service/
-          command: yarn migrate up
 
   deploy_core_image:
     machine:
@@ -211,20 +199,16 @@ jobs:
           paths:
             - build.tfvars
 
-  test_end_to_end:
+  migrate_database:
     docker:
       - image: cimg/base:2023.04
-      - image: mongo:5.0
-    parameters:
-      env:
-        type: string
     steps:
       - checkout
       - install_node
       - run:
-          name: End-to-End Tests
-          working_directory: ./packages/e2e-tests
-          command: yarn test
+          name: Migrate database
+          working_directory: ./packages/service/
+          command: yarn migrate up
 
   terraform:
     docker:
