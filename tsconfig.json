@@ -108,7 +108,7 @@
   },
   "references": [
     {
-      "path": "packages/server/"
+      "path": "packages/service/"
     },
     {
       "path": "packages/web/"

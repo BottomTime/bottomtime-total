@@ -4,11 +4,10 @@ WORKDIR /app
 
 COPY src/ ./src/
 COPY package.json .
-# COPY yarn.lock .
+COPY yarn.lock .
 COPY tsconfig.json .
 
-RUN yarn install
-RUN npx tsc
+RUN yarn install && yarn build
 
 FROM node:lts-bullseye-slim AS compiled
 

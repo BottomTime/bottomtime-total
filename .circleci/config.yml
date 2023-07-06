@@ -211,8 +211,7 @@ jobs:
           command: yarn migrate up
 
   terraform:
-    docker:
-      - image: cimg/base:2023.04
+    docker: *base_image
     parameters:
       env:
         type: string
@@ -241,8 +240,7 @@ jobs:
             - docs_distribution
 
   publish_distros:
-    docker:
-      - image: cimg/base:2023.04
+    docker: *base_image
     parameters:
       env:
         type: string
@@ -260,6 +258,23 @@ jobs:
           distribution_id: $(cat site_distribution)
           env: <<parameters.env>>
           path: ./packages/web/dist/
+
+  # Temporary tear down step to save money in AWS...
+  teardown:
+    docker: *base_image
+    parameters:
+      env:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./packages/terraform/vars
+      - terraform/install:
+          terraform_version: '1.4.5'
+      - terraform/destroy:
+          backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
+          path: ./packages/terraform/
+          var_file: vars/<<parameters.env>>.tfvars,vars/build.tfvars
 
 workflows:
   test_and_deploy:
