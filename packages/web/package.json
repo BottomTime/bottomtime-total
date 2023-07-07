@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test": "vue-cli-service test:unit",
-    "lint": "eslint ."
+    "docker:build": "docker build -t bottomtime/web .",
+    "docker:run": "docker run -it -p 8080:8080 --env-file .env.defaults --env-file .env bottomtime/web",
+    "lint": "eslint .",
+    "serve": "vue-cli-service serve",
+    "test": "vue-cli-service test:unit"
   },
   "dependencies": {
     "@vuelidate/core": "^2.0.0",

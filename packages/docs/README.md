@@ -1,29 +1,24 @@
-# docs
+# Bottom Time API Documentation
 
-## Project setup
+This is where the documentation for the Bottom Time APIs lives. It is powered by [Swagger UI](https://swagger.io/tools/swagger-ui/).
 
-```
-yarn install
-```
+The actual documentation can be found in the `public/specs.yml` file. The file contents themselves are actually maintained on [SwaggerHub](https://app.swaggerhub.com/) - please do not manually edit them here.
 
-### Compiles and hot-reloads for development
+## Viewing the Documentation
 
-```
-yarn serve
-```
+The simplest way to view the documentation is to build and run the Docker container:
 
-### Compiles and minifies for production
-
-```
-yarn build
+```bash
+yarn docker:build
+yarn docker:run
 ```
 
-### Lints and fixes files
+The documentation can now be viewed at [http://localhost:3200/](http://localhost:3200/).
 
-```
+## Linting/Inspecting the Spec File
+
+Linting is provided by the [Redocly]() library. You can run the linter by running:
+
+```bash
 yarn lint
 ```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
