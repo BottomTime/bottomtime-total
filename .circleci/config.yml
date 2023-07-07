@@ -305,10 +305,10 @@ workflows:
             - test_core
             - test_web
             - test_e2e
-          # filters:
-          #   branches:
-          #     only:
-          #       - master
+          filters:
+            branches:
+              only:
+                - master
       - migrate_database:
           name: migrate_dev_database
           context:
