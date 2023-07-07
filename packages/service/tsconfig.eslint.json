@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["./coverage", "./dist"],
+  "include": [
+    "./src",
+    "./tests",
+    "./migrations",
+    "./.eslintrc.js",
+    "./jest.config.ts",
+    "./migrate-mongo-config.js"
+  ]
+}

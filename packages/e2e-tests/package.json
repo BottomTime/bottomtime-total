@@ -1,0 +1,17 @@
+{
+  "name": "@bottomtime/e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for BottomTime platform.",
+  "main": "src/index.ts",
+  "author": "Chris Carleton",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@playwright/test": "^1.35.1",
+    "mongodb": "^5.6.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "playwright test"
+  }
+}
