@@ -1,0 +1,49 @@
+services:
+  mongo:
+    container_name: bottomtime-mongo
+    image: mongo:5.0
+    ports:
+      - '27017:27017'
+    expose:
+      - '27017'
+    networks:
+      - public
+    volumes:
+      - dbdata:/data/db
+
+  core:
+    container_name: bottomtime-core
+    build: packages/service/
+    ports:
+      - '4800:4800'
+    expose:
+      - '4800'
+    env_file:
+      - packages/service/.env.defaults
+    environment:
+      - BT_MONGO_URI=mongodb://mongo:27017/bottomtime
+    depends_on:
+      - mongo
+    networks:
+      - public
+
+  web:
+    container_name: bottomtime-web
+    build: packages/web/
+    ports:
+      - '3000:3000'
+    expose:
+      - '3000'
+    env_file:
+      - packages/web/.env.defaults
+    depends_on:
+      - core
+    networks:
+      - public
+
+networks:
+  public:
+    driver: bridge
+
+volumes:
+  dbdata:

@@ -92,7 +92,7 @@ jobs:
           root: ./
           paths:
             - packages/web/dist/
-            - packages/docs/dist/
+            - packages/docs/public/
             - packages/core/dist/
             - cc-test-reporter
 
@@ -252,7 +252,7 @@ jobs:
           bucket: docs
           distribution_id: $(cat docs_distribution)
           env: <<parameters.env>>
-          path: ./packages/docs/dist/
+          path: ./packages/docs/public/
       - publish_distro:
           bucket: web
           distribution_id: $(cat site_distribution)
