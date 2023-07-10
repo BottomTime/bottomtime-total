@@ -11,6 +11,8 @@ import {
 } from '../../../src/tanks';
 import { ValidationError } from '../../../src/errors';
 
+import PreDefinedTanks from '../../fixtures/pre-defined-tanks.json';
+
 const Log = createTestLogger('pre-defined-tank-manager');
 
 describe('Pre-Defined Tank Manager', () => {
@@ -70,22 +72,7 @@ describe('Pre-Defined Tank Manager', () => {
   });
 
   it('Will list the predefined tanks, ordered by name', async () => {
-    const data = new Array<TankDocument>(40);
-    for (let i = 0; i < data.length; i++) {
-      data[i] = fakeTank();
-    }
-    const expected = data
-      .sort((a, b) =>
-        a.name.localeCompare(b.name, 'en', {
-          sensitivity: 'base',
-          ignorePunctuation: true,
-        }),
-      )
-      .map((tank) => new PreDefinedTank(mongoClient, Log, tank));
-    await Tanks.insertMany(data);
-
-    const actual = await tankManager.listTanks();
-
-    expect(actual).toEqual(expected);
+    await Tanks.insertMany(PreDefinedTanks);
+    await expect(tankManager.listTanks()).resolves.toMatchSnapshot();
   });
 });
