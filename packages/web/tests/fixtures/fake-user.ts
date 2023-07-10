@@ -2,11 +2,30 @@ import { faker } from '@faker-js/faker';
 import { ProfileData, UserData } from '@/users';
 import { ProfileVisibility, UserRole } from '@/constants';
 
-export function fakeProfile(): ProfileData {
+export function fakeProfile(
+  firstName?: string,
+  lastName?: string,
+): ProfileData {
   return {
+    avatar: faker.internet.avatar(),
+    bio: faker.lorem.sentences(6),
+    birthdate: faker.date.past(60).toISOString(),
+    customData: {},
+    certifications: [],
+    experienceLevel: faker.helpers.arrayElement([
+      'beginner',
+      'novice',
+      'experience',
+      'expert',
+    ]),
+    location: faker.address.city(),
+    name: `${firstName ?? faker.name.firstName()} ${
+      lastName ?? faker.name.lastName()
+    }`,
     profileVisibility: faker.helpers.arrayElement(
       Object.values(ProfileVisibility),
     ),
+    startedDiving: faker.date.past(12).getFullYear().toString(),
   };
 }
 
@@ -25,7 +44,7 @@ export function fakeUser(): UserData {
     memberSince: faker.date.past(6),
     role: UserRole.User,
     username: faker.internet.userName(firstName, lastName),
-    profile: fakeProfile(),
+    profile: fakeProfile(firstName, lastName),
   };
 
   return data;

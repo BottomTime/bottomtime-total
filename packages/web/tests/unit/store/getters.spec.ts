@@ -43,6 +43,7 @@ describe('Store Getters', () => {
 
   it('Will return username as display name if no profile name is present', () => {
     const currentUser = new DefaultUser(request.agent(), fakeUser());
+    currentUser.profile.name = undefined;
     const state = createDefaultState({ currentUser });
     expect(getters.userDisplayName(state, {}, state, {})).toEqual(
       currentUser.username,
