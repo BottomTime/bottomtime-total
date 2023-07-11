@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import dayjs from 'dayjs';
 
 import ConfirmDialog from '@/components/dialogs/ConfirmDialog.vue';

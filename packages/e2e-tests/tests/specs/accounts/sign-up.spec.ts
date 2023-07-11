@@ -24,4 +24,10 @@ test('Go to Signup Page', async ({ app, page }) => {
 
   await page.goto('/profile');
   await expect(page.locator('input#name')).toHaveValue(name);
+
+  const mongoClient = await app.mongoClient();
+  const Users = mongoClient.db().collection<{ _id: string }>('Users');
+
+  const user = await Users.findOne({ username });
+  expect(user).toBeDefined();
 });
