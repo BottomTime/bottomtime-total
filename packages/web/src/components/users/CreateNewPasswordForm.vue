@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { required, helpers } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 

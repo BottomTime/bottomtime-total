@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "cwd": "${workspaceFolder}/packages/web/",
+      "type": "node",
+      "request": "launch",
+      "name": "Debug ",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": ["test:debug", "${file}"],
+      "port": 9229
+    }
+  ]
+}

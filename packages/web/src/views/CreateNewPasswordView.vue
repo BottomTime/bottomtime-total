@@ -24,13 +24,12 @@ import CreateNewPasswordForm from '@/components/users/CreateNewPasswordForm.vue'
 import PageTitle from '@/components/PageTitle.vue';
 import RequireAnonymous from '@/components/RequireAnonymous.vue';
 
-const route = useRoute();
-
 interface QueryParamters {
   username: string;
   token: string;
 }
 
+const route = useRoute();
 const query = computed<QueryParamters>(() => {
   const { user, token } = route.query;
   return {
