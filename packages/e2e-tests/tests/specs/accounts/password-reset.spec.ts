@@ -21,5 +21,10 @@ test.describe('Resetting passwords', () => {
     await expect(
       page.locator('article#msg-request-submitted').isVisible(),
     ).toBe(true);
+
+    // User should have a reset token at this point...
+    const user = await Users.findOne({ username: RegularUser.username })!;
+
+    // Now we can reset with a new password...
   });
 });

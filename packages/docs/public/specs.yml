@@ -211,8 +211,37 @@ paths:
       security:
         - SessionCookie: []
       responses:
-        200:
-          description: Operation succeeded.
+        204:
+          description: Operation succeeded and profile information was updated.
+        400:
+          description: |
+            The operation failed because the request body was malformed,
+            invalid, or missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: |
+            The request was denied because the user is not an administrator
+            and does not own the profile being updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: |
+            The request failed because the indicated username could not be
+            found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
     patch:
       tags:
         - Profiles
@@ -221,8 +250,37 @@ paths:
       security:
         - SessionCookie: []
       responses:
-        200:
-          description: Operation succeeded.
+        204:
+          description: |
+            Operation succeeded and the profile was successfully patched.
+        400:
+          description: |
+            The operation failed because the request body was malformed,
+            invalid, or missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: |
+            The request was denied because the user is not an administrator
+            and does not own the profile being updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: |
+            The request failed because the indicated username could not be
+            found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
 
   /tanks:
     get:
@@ -1056,6 +1114,163 @@ paths:
         500:
           $ref: '#/components/responses/ServerErrorResponse'
 
+  /users/{username}/notifications:
+    get:
+      tags:
+        - Users
+        - Notifications
+      summary: List notifications
+      operationId: listNotifications
+      description: |
+        List notifications for the indicated user. Notifications will be
+        returned ordered by posted date. (Newest to oldest.)
+      security:
+        - SessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+        - in: query
+          name: skip
+          required: false
+          description: |
+            The number of notifications to skip over before returning
+            the result set.
+          schema:
+            type: number
+            format: int32
+            minimum: 0
+            default: 0
+        - in: query
+          name: limit
+          required: false
+          description: The number of notifications to return in the result set.
+          schema:
+            type: number
+            format: int32
+            minimum: 1
+            maximum: 500
+            default: 100
+      responses:
+        200:
+          description: |
+            The request succeeded and a list of notifications was
+            successfully returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: number
+                    format: int32
+                    description: The number of notifications returned in the query.
+                    example: 1
+                  notifications:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
+                    description: The notifications that were returned in the query.
+        400:
+          description: The request was denied because the query string was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: |
+            The request was rejected because the user is not an administrator
+            or is not signed in as the user whose notifications
+            are being requested.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: |
+            The request failed because the indicated user could not be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /users/{username}/notifications/{notificationId}:
+    delete:
+      tags:
+        - Users
+        - Notifications
+      summary: Dismiss notification
+      operationId: dismissNotification
+      description: |
+        Dismisses (deletes) a specified notification.
+      security:
+        - SessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/UsernameParameter'
+        - in: path
+          name: notificationId
+          required: true
+          description: The ID of the user's notification.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        204:
+          description: Notification was successfully deleted.
+        401:
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+        403:
+          description: The request was denied because the user is not an administrator or does not own the notification.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        404:
+          description: |
+            The request failed because the indicated username or notification
+            ID was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        500:
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /diveSites:
+    get:
+      tags:
+        - Dive Sites
+      summary: Search dive sites
+      operationId: searchDiveSites
+      description: |
+        Performs a search for dive sites matching the given criteria.
+      security: []
+      responses:
+        200:
+          description: |
+            The request succeeded and the response body will contain the
+            list of dive sites requested.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - results
+                  - sites
+                properties:
+                  results:
+                    type: number
+                    format: int32
+                    example: 1
+                    description: |
+                      Number of dive sites returned in the result set.
+                  sites:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Site'
+
 components:
   securitySchemes:
     SessionCookie:
@@ -1210,6 +1425,77 @@ components:
                     type: string
                     example: 'name.firstName'
 
+    Friend:
+      type: object
+      description: Describes a friend relationship.
+      required:
+        - username
+        - friendsSince
+      properties:
+        username:
+          type: string
+        friendsSince:
+          type: string
+          format: date-time
+        profile:
+          $ref: '#/components/schemas/ProfileData'
+
+    FriendRequest:
+      type: object
+      description: Describes a friend request from one user to another.
+      required:
+        - id
+        - from
+        - to
+        - expires
+      properties:
+        id:
+          type: string
+          format: uuid
+        from:
+          type: string
+        to:
+          type: string
+        expires:
+          type: string
+          format: date-time
+
+    Notification:
+      type: object
+      description: Describes a notification
+      required:
+        - id
+        - posted
+        - title
+        - message
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique identifier assigned to the notification.
+        posted:
+          type: string
+          format: date-time
+          description: The date and time at which the notification was posted.
+        title:
+          type: string
+          example: Friend request accepted!
+          description: The title of the notification for quick reading.
+        message:
+          type: string
+          description: |
+            The message to be displayed in the notification.
+            (May contain HTML.)
+          example: |
+            User <strong>Simon83</strong> has accepted your friend request!
+        expires:
+          type: string
+          description: |
+            The date and time at which point this notification will
+            automatically expire. (The notification will be automatically
+            deleted once it is expired.)
+          format: date-time
+
     User:
       type: object
       description: Represents a user of the application. This object will capture all of a user's information.
@@ -1301,6 +1587,7 @@ components:
           type: string
           description: A brief bit of descriptive text that the user wrote about themselves.
           example: Loves diving. Especially, in water!
+          maxLength: 1000
         birthdate:
           type: string
           format: date
@@ -1339,7 +1626,7 @@ components:
           example: Novice
         location:
           type: string
-          maxLength: 50
+          maxLength: 200
           description: The user's approximate location.
           example: Vancouver, BC
         name:
@@ -1401,6 +1688,10 @@ components:
           type: string
           example: 'Palancar Horseshoe'
           maxLength: 200
+        description:
+          type: string
+          example: 'This site is amazing! What a beautiful reef!'
+          maxLength: 1000
 
   responses:
     AdminOnlyErrorResponse:

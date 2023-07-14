@@ -82,7 +82,7 @@ export const ProfileSchema = Joi.object({
     .max(200)
     .allow(null),
   experienceLevel: Joi.string().trim().max(50).allow(null),
-  location: Joi.string().trim().max(50).allow(null),
+  location: Joi.string().trim().max(200).allow(null),
   name: Joi.string().trim().max(100).allow(null),
   profileVisibility: ProfileVisibilitySchema.required(),
   startedDiving: Joi.string()
