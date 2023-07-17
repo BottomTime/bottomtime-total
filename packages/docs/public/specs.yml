@@ -1363,7 +1363,11 @@ paths:
                   sites:
                     type: array
                     items:
-                      $ref: '#/components/schemas/DiveSiteWithId'
+                      type: object
+                      allOf:
+                        - $ref: '#/components/schemas/DiveSiteId'
+                        - $ref: '#/components/schemas/DiveSiteSummary'
+
         400:
           description: |
             The request was rejected because the query string was invalid.
@@ -2246,13 +2250,44 @@ components:
               example: MichelleR_27
         - $ref: '#/components/schemas/ProfileData'
 
-    DiveSite:
+    DiveSiteId:
       type: object
-      description: A full record of a dive site.
       required:
         - id
+        - createdOn
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 'cb1f3dd4-2d56-428e-a0d3-447d0da3860e'
+          description: |
+            An ID that uniquely identifies this dive site entry.
+        creator:
+          type: string
+          description: |
+            The username of the user that created the dive site record.
+          example: Brad77
+        createdOn:
+          type: string
+          format: date-time
+          description: |
+            Date and time on which this dive site entry was created.
+        updatedOn:
+          type: string
+          format: date-time
+          description: |
+            Date and time on which this dive site entry was last updated.
+
+    DiveSiteSummary:
+      type: object
+      description: |
+        A partial record of a dive site. Returned in search results.
+      required:
         - name
         - creator
+        - createdOn
+        - location
+        - averageRating
       properties:
         name:
           type: string
@@ -2266,14 +2301,13 @@ components:
           maxLength: 2000
           description: |
             A user-editable description of the dive site.
-        creator:
-          type: string
-          description: |
-            The username of the user that created the dive site record.
         location:
           type: string
           maxLength: 200
-          description: The location of the dive site.
+          description: |
+            The location of the dive site. (City, country, address, etc.)
+          example: |
+            Cozumel, Mexico
         averageRating:
           type: number
           format: float
@@ -2286,40 +2320,51 @@ components:
           description: |
             Indicates whether the site is free to dive at or costs
             money to access.
+          example: false
         shoreAccess:
           type: boolean
           description: |
             Indicates whether the dive site is accessible from the shore or
             whether a boat will be needed to reach it.
-        gps:
-          type: object
-          description: The GPS coordinates of the dive site.
-          required:
-            - latitude
-            - longitude
+          example: false
+
+    DiveSite:
+      type: object
+      description: A full record of a dive site.
+      allOf:
+        - $ref: '#/components/schemas/DiveSiteSummary'
+        - type: object
           properties:
-            latitude:
-              type: number
-              format: double
-              minimum: -90.0
-              maximum: 90.0
-            longitude:
-              type: number
-              format: double
-              minimum: -180.0
-              maximum: 180.0
+            directions:
+              type: string
+              maxLength: 500
+              description: |
+                An optional description of how to reach the dive site, if
+                necessary.
+              example: |
+                Take a boat to the indicated GPS coordinates.
+            gps:
+              type: object
+              description: The GPS coordinates of the dive site.
+              required:
+                - latitude
+                - longitude
+              properties:
+                lat:
+                  type: number
+                  format: double
+                  minimum: -90.0
+                  maximum: 90.0
+                lon:
+                  type: number
+                  format: double
+                  minimum: -180.0
+                  maximum: 180.0
 
     DiveSiteWithId:
       type: object
       allOf:
-        - type: object
-          properties:
-            id:
-              type: string
-              format: uuid
-              example: 'cb1f3dd4-2d56-428e-a0d3-447d0da3860e'
-              description: |
-                An ID that uniquely identifies this dive site entry.
+        - $ref: '#/components/schemas/DiveSiteId'
         - $ref: '#/components/schemas/DiveSite'
 
     DiveSiteReviewInfo:
@@ -2327,6 +2372,7 @@ components:
       description: Describes a rating and comments on a dive site.
       required:
         - rating
+        - title
       properties:
         rating:
           type: number
@@ -2343,6 +2389,13 @@ components:
           example: |
             This site is great! Tons of life and vegetation and visibility
             was excellent.
+        title:
+          type: string
+          maxLength: 200
+          description: |
+            A brief title or caption for the review.
+          example: |
+            Best dive site... evah!!!
 
     DiveSiteReview:
       type: object
@@ -2351,22 +2404,22 @@ components:
         - type: object
           required:
             - id
-            - owner
-            - dateCreated
-            - dateUpdated
+            - creator
+            - createdOn
           properties:
             id:
               type: string
               format: uuid
               description: Uniquely identifies the rating.
-            owner:
+            creator:
+              type: string
               description: Username of the user who posted the review.
-              $ref: '#/components/schemas/Profile'
-            dateCreated:
+              example: Sam_Dives88
+            createdOn:
               type: string
               format: date-time
               description: Date and time at which the rating was first posted.
-            dateUpdated:
+            updatedOn:
               type: string
               format: date-time
               description: Date and time at which the rating was last updated.
