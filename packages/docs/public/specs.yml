@@ -2265,10 +2265,29 @@ components:
           description: |
             An ID that uniquely identifies this dive site entry.
         creator:
-          type: string
+          type: object
+          required:
+            - id
+            - username
+            - displayName
           description: |
-            The username of the user that created the dive site record.
-          example: Brad77
+            Some basic info on the user who created the dive site record.
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: The unique ID of the user.
+            username:
+              type: string
+              example: SamTheMan87
+              description: The creator's username.
+            displayName:
+              type: string
+              example: Sam Smith
+              description: |
+                The creator's display name from their profile. (Alternatively,
+                this will be their username if they do not have their display
+                name set.)
         createdOn:
           type: string
           format: date-time
