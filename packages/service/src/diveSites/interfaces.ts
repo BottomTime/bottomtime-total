@@ -2,6 +2,12 @@ import { GpsCoordinates } from '../common';
 
 export const DiveSitesSortBy = {} as const;
 
+export interface DiveSiteCreator {
+  readonly id: string;
+  readonly username: string;
+  readonly displayName: string;
+}
+
 export interface DiveSiteData {
   name: string;
   description?: string;
@@ -16,11 +22,12 @@ export interface DiveSiteData {
 
 export interface DiveSite extends DiveSiteData {
   readonly id: string;
-  readonly creator: string;
   readonly createdOn: Date;
   readonly updatedOn?: Date;
   readonly averageRating: number;
   readonly averageDifficulty: number;
+
+  getCreator(): Promise<DiveSiteCreator>;
 
   save(): Promise<void>;
   delete(): Promise<void>;

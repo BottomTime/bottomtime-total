@@ -1,18 +1,22 @@
 import { Collection } from 'mongodb';
 
-import { Collections, DiveSiteDocument } from '../../../src/data';
+import { Collections, DiveSiteDocument, UserDocument } from '../../../src/data';
 import { createTestLogger } from '../../test-logger';
-import { DefaultDiveSite } from '../../../src/diveSites';
+import { DefaultDiveSite, DiveSiteCreator } from '../../../src/diveSites';
 import { fakeDiveSite } from '../../fixtures/fake-dive-site';
 import { mongoClient } from '../../mongo-client';
+import { fakeUser } from '../../fixtures/fake-user';
 
 const log = createTestLogger('default-dive-site');
 
 describe('Default Dive Site', () => {
   let Sites: Collection<DiveSiteDocument>;
+  let Users: Collection<UserDocument>;
 
   beforeAll(() => {
-    Sites = mongoClient.db().collection(Collections.DiveSites);
+    const db = mongoClient.db();
+    Sites = db.collection(Collections.DiveSites);
+    Users = db.collection(Collections.Users);
   });
 
   it('Will return properties correctly', () => {
@@ -21,7 +25,6 @@ describe('Default Dive Site', () => {
     expect(site.averageRating).toEqual(data.averageRating);
     expect(site.averageDifficulty).toEqual(data.averageDifficulty);
     expect(site.createdOn).toEqual(data.createdOn);
-    expect(site.creator).toEqual(data.creator);
     expect(site.description).toEqual(data.description);
     expect(site.directions).toEqual(data.directions);
     expect(site.freeToDive).toEqual(data.freeToDive);
@@ -131,10 +134,44 @@ describe('Default Dive Site', () => {
     await expect(site.delete()).resolves.toBeUndefined();
   });
 
+  it('Will return creator info if it is provided in constructor', async () => {
+    const creatorData = fakeUser();
+    const creator: DiveSiteCreator = {
+      id: creatorData._id,
+      username: creatorData.username,
+      displayName: creatorData.profile!.name!,
+    };
+    const siteData = fakeDiveSite({ creator: creator.id });
+    const site = new DefaultDiveSite(mongoClient, log, siteData, creator);
+    await expect(site.getCreator()).resolves.toEqual(creator);
+  });
+
+  it('Will attempt to lazy-load creator info it is not provided in constructor', async () => {
+    const creatorData = fakeUser();
+    const expected: DiveSiteCreator = {
+      id: creatorData._id,
+      username: creatorData.username,
+      displayName: creatorData.profile!.name!,
+    };
+    await Users.insertOne(creatorData);
+    const siteData = fakeDiveSite({ creator: expected.id });
+    const site = new DefaultDiveSite(mongoClient, log, siteData);
+    await expect(site.getCreator()).resolves.toEqual(expected);
+  });
+
+  it.todo(
+    'What happens if the creator cannot be found on lazy load!? Handle this case.',
+  );
+
   it('Will export a JSON object', () => {
+    const creator: DiveSiteCreator = {
+      id: 'a4fc342c-de93-4a6f-b433-8af6dbeadf90',
+      username: 'StanTheMan',
+      displayName: 'Stan Smith',
+    };
     const data: DiveSiteDocument = {
       _id: '3f83be2c-8d8a-4f06-a6b7-6bec1098ee11',
-      creator: '35dc2551-2ebf-477a-995d-1a2e6f574e3a',
+      creator: creator.id,
       createdOn: new Date('2018-08-19T08:56:21.007Z'),
       updatedOn: new Date('2022-12-08T23:06:27.525Z'),
       name: 'astonishing waste',
@@ -149,14 +186,19 @@ describe('Default Dive Site', () => {
       averageRating: 4.79,
       averageDifficulty: 2.28,
     };
-    const site = new DefaultDiveSite(mongoClient, log, data);
+    const site = new DefaultDiveSite(mongoClient, log, data, creator);
     expect(site.toJSON()).toMatchSnapshot();
   });
 
   it('Will export a summarized JSON object', () => {
+    const creator: DiveSiteCreator = {
+      id: 'a4fc342c-de93-4a6f-b433-8af6dbeadf90',
+      username: 'StanTheMan',
+      displayName: 'Stan Smith',
+    };
     const data: DiveSiteDocument = {
       _id: '363896cd-4310-416f-8861-47f3322af468',
-      creator: 'a4fc342c-de93-4a6f-b433-8af6dbeadf90',
+      creator: creator.id,
       createdOn: new Date('2022-04-11T13:04:56.199Z'),
       updatedOn: new Date('2022-06-09T21:00:40.101Z'),
       name: 'paltry linseed',
@@ -170,7 +212,7 @@ describe('Default Dive Site', () => {
       averageRating: 2.44,
       averageDifficulty: 1.81,
     };
-    const site = new DefaultDiveSite(mongoClient, log, data);
+    const site = new DefaultDiveSite(mongoClient, log, data, creator);
     expect(site.toSummaryJSON()).toMatchSnapshot();
   });
 });

@@ -1,8 +1,8 @@
 import { Collection, MongoClient } from 'mongodb';
 import Logger from 'bunyan';
 
-import { Collections, DiveSiteDocument } from '../data';
-import { DiveSite } from './interfaces';
+import { Collections, DiveSiteDocument, UserDocument } from '../data';
+import { DiveSite, DiveSiteCreator } from './interfaces';
 import { GpsCoordinates } from '../common';
 
 class DiveSiteReflection implements DiveSiteDocument {
@@ -25,22 +25,23 @@ const DiveSiteKeys: readonly string[] = Object.keys(new DiveSiteReflection());
 
 export class DefaultDiveSite implements DiveSite {
   private readonly sites: Collection<DiveSiteDocument>;
+  private readonly users: Collection<UserDocument>;
+  private creator: DiveSiteCreator | undefined;
 
   constructor(
     mongoClient: MongoClient,
     private readonly log: Logger,
     private readonly data: DiveSiteDocument,
+    creator?: DiveSiteCreator,
   ) {
-    this.sites = mongoClient.db().collection(Collections.DiveSites);
+    const db = mongoClient.db();
+    this.sites = db.collection(Collections.DiveSites);
+    this.users = db.collection(Collections.Users);
+    this.creator = creator;
   }
 
   get id(): string {
     return this.data._id;
-  }
-
-  get creator(): string {
-    // TODO: Nope.
-    return this.data.creator;
   }
 
   get createdOn(): Date {
@@ -118,7 +119,47 @@ export class DefaultDiveSite implements DiveSite {
     this.data.shoreAccess = value;
   }
 
+  async getCreator(): Promise<DiveSiteCreator> {
+    if (this.creator) {
+      return this.creator;
+    }
+
+    this.log.debug(
+      `Attempting to fetch creator info for dive site "${this.data._id}"...`,
+    );
+    const creator = await this.users.findOne(
+      { _id: this.data.creator },
+      {
+        projection: {
+          _id: true,
+          username: true,
+          'profile.name': true,
+        },
+      },
+    );
+
+    if (creator) {
+      this.creator = {
+        id: creator._id,
+        username: creator.username,
+        displayName: creator.profile?.name ?? creator.username,
+      };
+      return this.creator;
+    }
+
+    this.log.warn('Orphaned dive stie detected!', {
+      diveSite: this.data._id,
+      creatorId: this.data.creator,
+    });
+
+    // TODO: Need a better solution here. Assign to admin?
+    throw new Error(
+      'This dive site is orphaned! Creator ID could not be found!',
+    );
+  }
+
   async save(): Promise<void> {
+    const now = new Date();
     const update = {
       $set: {},
       $unset: {},
@@ -130,10 +171,14 @@ export class DefaultDiveSite implements DiveSite {
         Object.assign(update.$set, { [key]: this.data[key] });
       }
     }
+    Object.assign(update.$set, { updatedOn: now });
+
     this.log.debug(`Saving dive site data for site ${this.data._id}...`);
     await this.sites.updateOne({ _id: this.data._id }, update, {
       upsert: true,
     });
+    this.data.updatedOn = now;
+
     this.log.debug(
       `Dive site data saved successfully for site ${this.data._id}`,
     );
@@ -146,7 +191,7 @@ export class DefaultDiveSite implements DiveSite {
   toJSON(): Record<string, unknown> {
     return {
       id: this.id,
-      creator: 'Brad77',
+      creator: this.creator,
       createdOn: this.createdOn,
       updatedOn: this.updatedOn,
       averageRating: this.averageRating,
@@ -164,7 +209,7 @@ export class DefaultDiveSite implements DiveSite {
   toSummaryJSON(): Record<string, unknown> {
     return {
       id: this.id,
-      creator: 'Brad77',
+      creator: this.creator,
       createdOn: this.createdOn,
       updatedOn: this.updatedOn,
       averageRating: this.averageRating,
