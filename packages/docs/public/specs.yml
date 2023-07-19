@@ -2277,6 +2277,13 @@ components:
           format: date-time
           description: |
             Date and time on which this dive site entry was last updated.
+        averageRating:
+          type: number
+          format: float
+          minimum: 1.0
+          maximum: 5.0
+          description: |
+            The average rating of the site (aggregated from all user ratings.)
 
     DiveSiteSummary:
       type: object
@@ -2308,13 +2315,6 @@ components:
             The location of the dive site. (City, country, address, etc.)
           example: |
             Cozumel, Mexico
-        averageRating:
-          type: number
-          format: float
-          minimum: 1.0
-          maximum: 5.0
-          description: |
-            The average rating of the site (aggregated from all user ratings.)
         freeToDive:
           type: boolean
           description: |
