@@ -18,6 +18,7 @@ class DiveSiteReflection implements DiveSiteDocument {
   freeToDive = true;
   shoreAccess = true;
   averageRating = 0;
+  averageDifficulty = 0;
   reviews = [];
 }
 const DiveSiteKeys: readonly string[] = Object.keys(new DiveSiteReflection());
@@ -52,6 +53,10 @@ export class DefaultDiveSite implements DiveSite {
 
   get averageRating(): number {
     return this.data.averageRating;
+  }
+
+  get averageDifficulty(): number {
+    return this.data.averageDifficulty;
   }
 
   get name(): string {
@@ -145,6 +150,7 @@ export class DefaultDiveSite implements DiveSite {
       createdOn: this.createdOn,
       updatedOn: this.updatedOn,
       averageRating: this.averageRating,
+      averageDifficulty: this.averageDifficulty,
       name: this.name,
       description: this.description,
       location: this.location,
@@ -162,8 +168,8 @@ export class DefaultDiveSite implements DiveSite {
       createdOn: this.createdOn,
       updatedOn: this.updatedOn,
       averageRating: this.averageRating,
+      averageDifficulty: this.averageDifficulty,
       name: this.name,
-      description: this.description,
       location: this.location,
       freeToDive: this.freeToDive,
       shoreAccess: this.shoreAccess,

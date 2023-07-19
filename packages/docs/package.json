@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "docker:build": "docker build -t bottomtime/docs .",
-    "docker:run": "docker run -it -p 3200:3200 --name bt-docs bottomtime/docs",
+    "docker:run": "docker run -it -p 3200:3200 bottomtime/docs",
     "lint": "npx @redocly/cli lint public/specs.yml"
   },
   "devDependencies": {

@@ -1,5 +1,7 @@
 import { GpsCoordinates } from '../common';
 
+export const DiveSitesSortBy = {} as const;
+
 export interface DiveSiteData {
   name: string;
   description?: string;
@@ -18,6 +20,7 @@ export interface DiveSite extends DiveSiteData {
   readonly createdOn: Date;
   readonly updatedOn?: Date;
   readonly averageRating: number;
+  readonly averageDifficulty: number;
 
   save(): Promise<void>;
   delete(): Promise<void>;
@@ -28,6 +31,14 @@ export interface DiveSite extends DiveSiteData {
 
 export interface SearchDiveSitesOptions {
   query?: string;
+  location?: string;
+  radius?: number;
+  freeToDive?: boolean;
+  shoreAccess?: boolean;
+  sortBy?: string;
+  sortOrder?: string;
+  skip?: number;
+  limit?: number;
 }
 
 export interface DiveSiteManager {

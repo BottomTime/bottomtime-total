@@ -2255,6 +2255,8 @@ components:
       required:
         - id
         - createdOn
+        - averageRating
+        - averageDifficulty
       properties:
         id:
           type: string
@@ -2284,6 +2286,13 @@ components:
           maximum: 5.0
           description: |
             The average rating of the site (aggregated from all user ratings.)
+        averageDifficulty:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 5
+          description: |
+            The site's difficulty rating (from 1.0 to 5.0.)
 
     DiveSiteSummary:
       type: object
@@ -2294,7 +2303,6 @@ components:
         - creator
         - createdOn
         - location
-        - averageRating
       properties:
         name:
           type: string
@@ -2302,12 +2310,6 @@ components:
           maxLength: 200
           description: |
             The name of the dive site.
-        description:
-          type: string
-          example: 'This site is amazing! What a beautiful reef!'
-          maxLength: 2000
-          description: |
-            A user-editable description of the dive site.
         location:
           type: string
           maxLength: 200
@@ -2343,6 +2345,12 @@ components:
                 necessary.
               example: |
                 Take a boat to the indicated GPS coordinates.
+            description:
+              type: string
+              example: 'This site is amazing! What a beautiful reef!'
+              maxLength: 2000
+              description: |
+                A user-editable description of the dive site.
             gps:
               type: object
               description: The GPS coordinates of the dive site.
@@ -2381,6 +2389,14 @@ components:
           minimum: 1.0
           maximum: 5.0
           example: 4.2
+        difficulty:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 5
+          example: 1.8
+          description: |
+            The reviewer's difficulty rating for the site (from 1.0 to 5.0).
         comments:
           type: string
           maxLength: 1000

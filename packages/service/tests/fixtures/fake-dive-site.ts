@@ -26,5 +26,7 @@ export function fakeDiveSite(
     shoreAccess: data?.shoreAccess ?? faker.datatype.boolean(),
     averageRating:
       data?.averageRating ?? faker.datatype.float({ min: 1, max: 5 }),
+    averageDifficulty:
+      data?.averageDifficulty ?? faker.datatype.float({ min: 1, max: 5 }),
   };
 }

@@ -19,6 +19,7 @@ describe('Default Dive Site', () => {
     const data = fakeDiveSite();
     const site = new DefaultDiveSite(mongoClient, log, data);
     expect(site.averageRating).toEqual(data.averageRating);
+    expect(site.averageDifficulty).toEqual(data.averageDifficulty);
     expect(site.createdOn).toEqual(data.createdOn);
     expect(site.creator).toEqual(data.creator);
     expect(site.description).toEqual(data.description);
@@ -146,6 +147,7 @@ describe('Default Dive Site', () => {
       freeToDive: false,
       shoreAccess: true,
       averageRating: 4.79,
+      averageDifficulty: 2.28,
     };
     const site = new DefaultDiveSite(mongoClient, log, data);
     expect(site.toJSON()).toMatchSnapshot();
@@ -166,6 +168,7 @@ describe('Default Dive Site', () => {
       freeToDive: true,
       shoreAccess: true,
       averageRating: 2.44,
+      averageDifficulty: 1.81,
     };
     const site = new DefaultDiveSite(mongoClient, log, data);
     expect(site.toSummaryJSON()).toMatchSnapshot();

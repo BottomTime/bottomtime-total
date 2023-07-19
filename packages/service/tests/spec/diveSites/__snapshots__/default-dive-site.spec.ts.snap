@@ -2,6 +2,7 @@
 
 exports[`Default Dive Site Will export a JSON object 1`] = `
 {
+  "averageDifficulty": 2.28,
   "averageRating": 4.79,
   "createdOn": 2018-08-19T08:56:21.007Z,
   "creator": "Brad77",
@@ -22,10 +23,10 @@ exports[`Default Dive Site Will export a JSON object 1`] = `
 
 exports[`Default Dive Site Will export a summarized JSON object 1`] = `
 {
+  "averageDifficulty": 1.81,
   "averageRating": 2.44,
   "createdOn": 2022-04-11T13:04:56.199Z,
   "creator": "Brad77",
-  "description": "Modi beatae voluptates error. Magnam laboriosam quod dolores.",
   "freeToDive": true,
   "id": "363896cd-4310-416f-8861-47f3322af468",
   "location": "Coral Springs Hungary",

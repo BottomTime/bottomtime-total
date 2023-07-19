@@ -6,6 +6,7 @@ export interface DiveSiteReviewDocument extends Document {
   createdOn: Date;
   updatedOn?: Date;
   rating: number;
+  difficulty?: number;
   title: string;
   comments?: string;
 }
@@ -30,5 +31,6 @@ export interface DiveSiteDocument extends Document {
   shoreAccess?: boolean;
 
   averageRating: number;
+  averageDifficulty: number;
   reviews?: DiveSiteReviewDocument[];
 }
