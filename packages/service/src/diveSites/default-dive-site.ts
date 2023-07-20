@@ -4,6 +4,8 @@ import Logger from 'bunyan';
 import { Collections, DiveSiteDocument, UserDocument } from '../data';
 import { DiveSite, DiveSiteCreator } from './interfaces';
 import { GpsCoordinates } from '../common';
+import { assertValid } from '../helpers/validation';
+import { DiveSiteSchema } from './validation';
 
 class DiveSiteReflection implements DiveSiteDocument {
   _id = '';
@@ -159,13 +161,15 @@ export class DefaultDiveSite implements DiveSite {
   }
 
   async save(): Promise<void> {
+    assertValid(this.data, DiveSiteSchema);
+
     const now = new Date();
     const update: UpdateFilter<DiveSiteDocument> = {
       $set: {},
       $unset: {},
     };
     for (const key of DiveSiteKeys) {
-      if (key === 'updatedOn') {
+      if (key === 'updatedOn' || key === '_id') {
         break;
       } else if (this.data[key] === undefined) {
         update.$unset![key] = true;

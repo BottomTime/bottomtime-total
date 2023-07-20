@@ -14,6 +14,7 @@ import { fakeDiveSite } from '../../fixtures/fake-dive-site';
 import { fakeUser } from '../../fixtures/fake-user';
 import { mongoClient } from '../../mongo-client';
 import { Profile, User } from '../../../src/users';
+import { ValidationError } from '../../../src/errors';
 
 const log = createTestLogger('default-dive-site-manager');
 jest.mock('uuid');
@@ -21,11 +22,24 @@ jest.mock('uuid');
 describe('Default Dive Site Manager', () => {
   let Sites: Collection<DiveSiteDocument>;
   let Users: Collection<UserDocument>;
+  let Creator: User;
 
   beforeAll(() => {
     const db = mongoClient.db();
     Sites = db.collection(Collections.DiveSites);
     Users = db.collection(Collections.Users);
+    const profile = new Mock<Profile>()
+      .setup((p) => p.name)
+      .returns('Jacky Michaelson')
+      .object();
+    Creator = new Mock<User>()
+      .setup((u) => u.id)
+      .returns('379b88ad-d679-41ee-aa3e-af21deeb5568')
+      .setup((u) => u.username)
+      .returns('Jacky47')
+      .setup((u) => u.profile)
+      .returns(profile)
+      .object();
   });
 
   afterEach(() => {
@@ -63,24 +77,12 @@ describe('Default Dive Site Manager', () => {
       .spyOn(uuid, 'v4')
       .mockReturnValue('51a4b91e-eef0-40d9-b353-1feb666f3c1f');
 
-    const profile = new Mock<Profile>()
-      .setup((p) => p.name)
-      .returns('Jacky Michaelson')
-      .object();
-    const creator = new Mock<User>()
-      .setup((u) => u.id)
-      .returns('379b88ad-d679-41ee-aa3e-af21deeb5568')
-      .setup((u) => u.username)
-      .returns('Jacky47')
-      .setup((u) => u.profile)
-      .returns(profile)
-      .object();
     const options: DiveSiteData = {
       name: "Smuggler's Plane",
       location: 'Somewhere in the Bahamas',
     };
     const manager = new DefaultDiveSiteManager(mongoClient, log);
-    const site = await manager.createDiveSite(options, creator);
+    const site = await manager.createDiveSite(options, Creator);
     jest.runAllTimers();
 
     expect(site).toMatchSnapshot();
@@ -95,18 +97,6 @@ describe('Default Dive Site Manager', () => {
       .spyOn(uuid, 'v4')
       .mockReturnValue('51a4b91e-eef0-40d9-b353-1feb666f3c1f');
 
-    const profile = new Mock<Profile>()
-      .setup((p) => p.name)
-      .returns('Jacky Michaelson')
-      .object();
-    const creator = new Mock<User>()
-      .setup((u) => u.id)
-      .returns('379b88ad-d679-41ee-aa3e-af21deeb5568')
-      .setup((u) => u.username)
-      .returns('Jacky47')
-      .setup((u) => u.profile)
-      .returns(profile)
-      .object();
     const options: DiveSiteData = {
       name: 'Chac Mool Cenote',
       description: 'A sweet cavern dive near Playa del Carmen',
@@ -121,11 +111,26 @@ describe('Default Dive Site Manager', () => {
       shoreAccess: true,
     };
     const manager = new DefaultDiveSiteManager(mongoClient, log);
-    const site = await manager.createDiveSite(options, creator);
+    const site = await manager.createDiveSite(options, Creator);
     jest.runAllTimers();
 
     expect(site).toMatchSnapshot();
   });
 
-  it('Will throw a ValidationError when attempting to create a dive site with invalid options', async () => {});
+  it('Will throw a ValidationError when attempting to create a dive site with invalid options', async () => {
+    const manager = new DefaultDiveSiteManager(mongoClient, log);
+    await expect(
+      manager.createDiveSite(
+        {
+          name: '',
+          location: 'Somewhere',
+          gps: {
+            lat: -9000,
+            lon: 8080,
+          },
+        },
+        Creator,
+      ),
+    ).rejects.toThrowError(ValidationError);
+  });
 });
