@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Default Dive Site Manager Will create a new dive site with all options set 1`] = `
+{
+  "averageDifficulty": 0,
+  "averageRating": 0,
+  "createdOn": 2023-07-20T11:47:36.692Z,
+  "creator": {
+    "displayName": "Jacky Michaelson",
+    "id": "379b88ad-d679-41ee-aa3e-af21deeb5568",
+    "username": "Jacky47",
+  },
+  "description": "A sweet cavern dive near Playa del Carmen",
+  "directions": "Take highway 307 West from Playa del Carmen til ya get there.",
+  "freeToDive": false,
+  "gps": {
+    "lat": 20.513109539132362,
+    "lon": -87.24704767409908,
+  },
+  "id": "51a4b91e-eef0-40d9-b353-1feb666f3c1f",
+  "location": "Play del Carmen, Mexico",
+  "name": "Chac Mool Cenote",
+  "shoreAccess": true,
+  "updatedOn": 2023-07-20T11:47:36.692Z,
+}
+`;
+
+exports[`Default Dive Site Manager Will create a new dive stie with minimal options 1`] = `
+{
+  "averageDifficulty": 0,
+  "averageRating": 0,
+  "createdOn": 2023-07-20T11:47:36.692Z,
+  "creator": {
+    "displayName": "Jacky Michaelson",
+    "id": "379b88ad-d679-41ee-aa3e-af21deeb5568",
+    "username": "Jacky47",
+  },
+  "description": undefined,
+  "directions": undefined,
+  "freeToDive": undefined,
+  "gps": undefined,
+  "id": "51a4b91e-eef0-40d9-b353-1feb666f3c1f",
+  "location": "Somewhere in the Bahamas",
+  "name": "Smuggler's Plane",
+  "shoreAccess": undefined,
+  "updatedOn": 2023-07-20T11:47:36.692Z,
+}
+`;

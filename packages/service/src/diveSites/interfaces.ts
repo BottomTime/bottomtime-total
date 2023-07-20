@@ -1,4 +1,5 @@
 import { GpsCoordinates } from '../common';
+import { User } from '../users';
 
 export const DiveSitesSortBy = {} as const;
 
@@ -49,7 +50,7 @@ export interface SearchDiveSitesOptions {
 }
 
 export interface DiveSiteManager {
-  createDiveSite(data: DiveSiteData): Promise<DiveSite>;
+  createDiveSite(data: DiveSiteData, creator: User): Promise<DiveSite>;
   getDiveSite(id: string): Promise<DiveSite | undefined>;
   searchDiveSites(options?: SearchDiveSitesOptions): Promise<DiveSite[]>;
 }

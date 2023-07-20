@@ -1,4 +1,4 @@
-import { Collection, MongoClient } from 'mongodb';
+import { Collection, MongoClient, UpdateFilter } from 'mongodb';
 import Logger from 'bunyan';
 
 import { Collections, DiveSiteDocument, UserDocument } from '../data';
@@ -53,11 +53,11 @@ export class DefaultDiveSite implements DiveSite {
   }
 
   get averageRating(): number {
-    return this.data.averageRating;
+    return this.data.averageRating ?? 0;
   }
 
   get averageDifficulty(): number {
-    return this.data.averageDifficulty;
+    return this.data.averageDifficulty ?? 0;
   }
 
   get name(): string {
@@ -160,18 +160,20 @@ export class DefaultDiveSite implements DiveSite {
 
   async save(): Promise<void> {
     const now = new Date();
-    const update = {
+    const update: UpdateFilter<DiveSiteDocument> = {
       $set: {},
       $unset: {},
     };
     for (const key of DiveSiteKeys) {
-      if (this.data[key] === undefined) {
-        Object.assign(update.$unset, { [key]: true });
+      if (key === 'updatedOn') {
+        break;
+      } else if (this.data[key] === undefined) {
+        update.$unset![key] = true;
       } else {
-        Object.assign(update.$set, { [key]: this.data[key] });
+        update.$set![key] = this.data[key];
       }
     }
-    Object.assign(update.$set, { updatedOn: now });
+    Object.assign(update.$set!, { updatedOn: now });
 
     this.log.debug(`Saving dive site data for site ${this.data._id}...`);
     await this.sites.updateOne({ _id: this.data._id }, update, {

@@ -30,7 +30,7 @@ export interface DiveSiteDocument extends Document {
   freeToDive?: boolean;
   shoreAccess?: boolean;
 
-  averageRating: number;
-  averageDifficulty: number;
+  averageRating?: number;
+  averageDifficulty?: number;
   reviews?: DiveSiteReviewDocument[];
 }
