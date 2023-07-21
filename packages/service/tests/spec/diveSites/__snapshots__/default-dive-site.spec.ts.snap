@@ -14,8 +14,8 @@ exports[`Default Dive Site Will export a JSON object 1`] = `
   "directions": "Et tempore impedit deleniti placeat ea asperiores in itaque.",
   "freeToDive": false,
   "gps": {
-    "lat": -0.05,
-    "lon": -76.34,
+    "lat": -76.34,
+    "lon": -0.05,
   },
   "id": "3f83be2c-8d8a-4f06-a6b7-6bec1098ee11",
   "location": "Fayetteville Saint Martin",

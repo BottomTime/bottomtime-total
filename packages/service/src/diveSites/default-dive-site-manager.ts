@@ -41,7 +41,7 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
       gps: options.gps
         ? {
             type: 'Point',
-            coordinates: [options.gps.lat, options.gps.lon],
+            coordinates: [options.gps.lon, options.gps.lat],
           }
         : undefined,
 

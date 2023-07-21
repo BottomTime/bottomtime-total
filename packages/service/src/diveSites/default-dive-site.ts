@@ -7,23 +7,16 @@ import { GpsCoordinates } from '../common';
 import { assertValid } from '../helpers/validation';
 import { DiveSiteSchema } from './validation';
 
-class DiveSiteReflection implements DiveSiteDocument {
-  _id = '';
-  creator = '';
-  createdOn = new Date();
-  updatedOn = new Date();
-  name = '';
-  description = '';
-  location = '';
-  directions = '';
-  gps = { type: 'Point', coordinates: [0, 0] } as any;
-  freeToDive = true;
-  shoreAccess = true;
-  averageRating = 0;
-  averageDifficulty = 0;
-  reviews = [];
-}
-const DiveSiteKeys: readonly string[] = Object.keys(new DiveSiteReflection());
+const DiveSiteOptionalKeys: readonly string[] = [
+  'averageDifficulty',
+  'averageRating',
+  'description',
+  'directions',
+  'gps',
+  'freeToDive',
+  'shoreAccess',
+  'reviews',
+];
 
 export class DefaultDiveSite implements DiveSite {
   private readonly sites: Collection<DiveSiteDocument>;
@@ -33,7 +26,7 @@ export class DefaultDiveSite implements DiveSite {
   constructor(
     mongoClient: MongoClient,
     private readonly log: Logger,
-    private readonly data: DiveSiteDocument,
+    private data: DiveSiteDocument,
     creator?: DiveSiteCreator,
   ) {
     const db = mongoClient.db();
@@ -92,7 +85,7 @@ export class DefaultDiveSite implements DiveSite {
 
   get gps(): GpsCoordinates | undefined {
     if (this.data.gps) {
-      const [lat, lon] = this.data.gps.coordinates;
+      const [lon, lat] = this.data.gps.coordinates;
       return { lat, lon };
     }
 
@@ -102,7 +95,7 @@ export class DefaultDiveSite implements DiveSite {
     this.data.gps = value
       ? {
           type: 'Point',
-          coordinates: [value.lat, value.lon],
+          coordinates: [value.lon, value.lat],
         }
       : undefined;
   }
@@ -161,32 +154,34 @@ export class DefaultDiveSite implements DiveSite {
   }
 
   async save(): Promise<void> {
-    assertValid(this.data, DiveSiteSchema);
+    this.data = assertValid(this.data, DiveSiteSchema).parsed;
 
     const now = new Date();
     const update: UpdateFilter<DiveSiteDocument> = {
-      $set: {},
+      $set: {
+        ...this.data,
+        updatedOn: now,
+      },
       $unset: {},
     };
-    for (const key of DiveSiteKeys) {
-      if (key === 'updatedOn' || key === '_id') {
-        break;
-      } else if (this.data[key] === undefined) {
+    for (const key of DiveSiteOptionalKeys) {
+      if (this.data[key] === undefined) {
         update.$unset![key] = true;
-      } else {
-        update.$set![key] = this.data[key];
+        delete update.$set![key];
       }
     }
-    Object.assign(update.$set!, { updatedOn: now });
 
-    this.log.debug(`Saving dive site data for site ${this.data._id}...`);
+    this.log.debug(
+      `Saving dive site data for site "${this.data._id}"...`,
+      update,
+    );
     await this.sites.updateOne({ _id: this.data._id }, update, {
       upsert: true,
     });
     this.data.updatedOn = now;
 
     this.log.debug(
-      `Dive site data saved successfully for site ${this.data._id}`,
+      `Dive site data saved successfully for site "${this.data._id}"`,
     );
   }
 

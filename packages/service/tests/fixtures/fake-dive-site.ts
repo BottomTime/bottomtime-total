@@ -18,8 +18,8 @@ export function fakeDiveSite(
     gps: data?.gps ?? {
       type: 'Point',
       coordinates: [
-        faker.datatype.float({ min: -90, max: 90 }),
         faker.datatype.float({ min: -180, max: 180 }),
+        faker.datatype.float({ min: -90, max: 90 }),
       ],
     },
     freeToDive: data?.freeToDive ?? faker.datatype.boolean(),

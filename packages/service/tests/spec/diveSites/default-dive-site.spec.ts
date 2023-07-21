@@ -6,6 +6,8 @@ import { DefaultDiveSite, DiveSiteCreator } from '../../../src/diveSites';
 import { fakeDiveSite } from '../../fixtures/fake-dive-site';
 import { mongoClient } from '../../mongo-client';
 import { fakeUser } from '../../fixtures/fake-user';
+import { ValidationError } from '../../../src/errors';
+import { faker } from '@faker-js/faker';
 
 const log = createTestLogger('default-dive-site');
 
@@ -29,8 +31,8 @@ describe('Default Dive Site', () => {
     expect(site.directions).toEqual(data.directions);
     expect(site.freeToDive).toEqual(data.freeToDive);
     expect(site.gps).toEqual({
-      lat: data.gps!.coordinates[0],
-      lon: data.gps!.coordinates[1],
+      lat: data.gps!.coordinates[1],
+      lon: data.gps!.coordinates[0],
     });
     expect(site.id).toEqual(data._id);
     expect(site.location).toEqual(data.location);
@@ -51,8 +53,8 @@ describe('Default Dive Site', () => {
     site.directions = newData.directions!;
     site.freeToDive = newData.freeToDive!;
     site.gps = {
-      lat: newData.gps!.coordinates[0],
-      lon: newData.gps!.coordinates[1],
+      lat: newData.gps!.coordinates[1],
+      lon: newData.gps!.coordinates[0],
     };
     site.location = newData.location;
     site.name = newData.name;
@@ -62,8 +64,8 @@ describe('Default Dive Site', () => {
     expect(site.directions).toEqual(newData.directions);
     expect(site.freeToDive).toEqual(newData.freeToDive);
     expect(site.gps).toEqual({
-      lat: newData.gps!.coordinates[0],
-      lon: newData.gps!.coordinates[1],
+      lat: newData.gps!.coordinates[1],
+      lon: newData.gps!.coordinates[0],
     });
     expect(site.location).toEqual(newData.location);
     expect(site.name).toEqual(newData.name);
@@ -72,8 +74,9 @@ describe('Default Dive Site', () => {
 
   it('Will save a new dive site', async () => {
     const expected = fakeDiveSite();
-    const diveSite = new DefaultDiveSite(mongoClient, log, expected);
-    await diveSite.save();
+    const site = new DefaultDiveSite(mongoClient, log, expected);
+    await site.save();
+    expected.updatedOn = site.updatedOn;
     const actual = await Sites.findOne({ _id: expected._id });
     expect(actual).toEqual(expected);
   });
@@ -93,6 +96,7 @@ describe('Default Dive Site', () => {
 
     await site.save();
 
+    newData.updatedOn = site.updatedOn;
     const actual = await Sites.findOne({ _id: newData._id });
     expect(actual).toEqual(newData);
   });
@@ -116,8 +120,118 @@ describe('Default Dive Site', () => {
 
     await site.save();
 
+    expected.updatedOn = site.updatedOn;
     const actual = await Sites.findOne({ _id: expected._id });
     expect(actual).toEqual(expected);
+  });
+
+  describe('Will catch validation errors on save', () => {
+    const testCases: { name: string; data: Partial<DiveSiteDocument> }[] = [
+      {
+        name: 'Name is missing',
+        data: {
+          name: '',
+        },
+      },
+      {
+        name: 'Name is too long',
+        data: {
+          name: faker.lorem.sentences(10),
+        },
+      },
+      {
+        name: 'Description is too long',
+        data: {
+          description: faker.lorem.paragraphs(20),
+        },
+      },
+      {
+        name: 'Location is missing',
+        data: {
+          location: '',
+        },
+      },
+      {
+        name: 'Location is too long',
+        data: {
+          location: faker.lorem.sentences(10),
+        },
+      },
+      {
+        name: 'Directions are too long',
+        data: {
+          directions: faker.lorem.paragraphs(12),
+        },
+      },
+      {
+        name: 'GPS - Longitude is less than -180',
+        data: {
+          gps: {
+            type: 'Point',
+            coordinates: [-181, -90],
+          },
+        },
+      },
+      {
+        name: 'GPS - Longitude is greater than 180',
+        data: {
+          gps: {
+            type: 'Point',
+            coordinates: [181, 90],
+          },
+        },
+      },
+      {
+        name: 'GPS - Latitude is less than -90',
+        data: {
+          gps: {
+            type: 'Point',
+            coordinates: [-180, -91],
+          },
+        },
+      },
+      {
+        name: 'GPS - Latitude is greater than 90',
+        data: {
+          gps: {
+            type: 'Point',
+            coordinates: [180, 91],
+          },
+        },
+      },
+      {
+        name: 'Average rating is less than 1',
+        data: {
+          averageRating: 0.5,
+        },
+      },
+      {
+        name: 'Average rating is greater than 5',
+        data: {
+          averageRating: 5.5,
+        },
+      },
+      {
+        name: 'Average difficulty is less than 1',
+        data: {
+          averageDifficulty: 0.5,
+        },
+      },
+      {
+        name: 'Average difficulty is greater than 5',
+        data: {
+          averageDifficulty: 5.5,
+        },
+      },
+    ];
+
+    testCases.forEach((testCase) => {
+      it(testCase.name, async () => {
+        const data = fakeDiveSite(testCase.data);
+        const site = new DefaultDiveSite(mongoClient, log, data);
+        await expect(site.save()).rejects.toThrowError(ValidationError);
+      });
+    });
   });
 
   it('Will delete a dive site', async () => {
