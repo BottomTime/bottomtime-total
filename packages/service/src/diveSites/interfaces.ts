@@ -1,7 +1,10 @@
 import { GpsCoordinates } from '../common';
 import { User } from '../users';
 
-export const DiveSitesSortBy = {} as const;
+export const DiveSitesSortBy = {
+  Name: 'name',
+  Rating: 'rating',
+} as const;
 
 export interface DiveSiteCreator {
   readonly id: string;

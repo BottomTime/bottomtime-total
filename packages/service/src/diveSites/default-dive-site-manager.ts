@@ -74,6 +74,10 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
   async searchDiveSites(
     options?: SearchDiveSitesOptions | undefined,
   ): Promise<DiveSite[]> {
+    const results = await this.sites
+      .find()
+      .skip(options?.skip ?? 0)
+      .limit(options?.limit ?? 50);
     return [];
   }
 }

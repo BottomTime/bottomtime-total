@@ -16,6 +16,9 @@ import { mongoClient } from '../../mongo-client';
 import { Profile, User } from '../../../src/users';
 import { ValidationError } from '../../../src/errors';
 
+import DiveSiteCreators from '../../fixtures/dive-site-creators.json';
+import DiveSites from '../../fixtures/dive-sites.json';
+
 const log = createTestLogger('default-dive-site-manager');
 jest.mock('uuid');
 
@@ -132,5 +135,48 @@ describe('Default Dive Site Manager', () => {
         Creator,
       ),
     ).rejects.toThrowError(ValidationError);
+  });
+
+  describe('Searching dive sites', () => {
+    let diveSiteCreators: UserDocument[];
+    let diveSites: DiveSiteDocument[];
+
+    beforeAll(() => {
+      diveSiteCreators = DiveSiteCreators.map((creator) => ({
+        ...creator,
+        lastLogin: creator.lastLogin ? new Date(creator.lastLogin) : undefined,
+        memberSince: new Date(creator.memberSince),
+      }));
+
+      diveSites = DiveSites.map((site) => ({
+        ...site,
+        createdOn: new Date(site.createdOn),
+        updatedOn: site.updatedOn ? new Date(site.updatedOn) : undefined,
+        gps: site.gps
+          ? (site.gps as { type: 'Point'; coordinates: [number, number] })
+          : undefined,
+      }));
+    });
+
+    beforeEach(async () => {
+      await Promise.all([
+        Users.insertMany(diveSiteCreators),
+        Sites.insertMany(diveSites),
+      ]);
+    });
+
+    it('Will search based on a query string', async () => {});
+
+    it('Will filter based on shore access', async () => {});
+
+    it('Will filter by location', async () => {});
+
+    it('Will filter based on "free to dive"', async () => {});
+
+    it('Will filter by creator', async () => {});
+
+    it('Will allow pagination', async () => {});
+
+    it('Will allow custom page sizes', async () => {});
   });
 });
