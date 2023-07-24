@@ -1,7 +1,8 @@
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, { type Express } from 'express';
-import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
+import express, { Request, type Express } from 'express';
+import { Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 import MongoDbSessionStore from 'connect-mongo';
 import passport from 'passport';
@@ -14,12 +15,7 @@ import { ServerDependencies } from './dependencies';
 import { Collections } from '../data';
 import config from '../config';
 import { configureRouting } from './routes';
-import {
-  deserializeUser,
-  loginWithPassword,
-  serializeUser,
-  verifyJwtToken,
-} from './passport';
+import { loginWithPassword, verifyJwtToken } from './passport';
 
 export async function createServer(
   createDependencies: () => Promise<ServerDependencies>,
@@ -33,6 +29,7 @@ export async function createServer(
   );
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+  app.use(cookieParser());
   app.use(useragent.express());
   app.use(rewrite('/api/*', '/$1'));
 
@@ -44,30 +41,6 @@ export async function createServer(
         cb(null, true);
       },
       credentials: true,
-    }),
-  );
-
-  log.debug('[EXPRESS] Initializing MongoDB session store...');
-  const sessionStore = MongoDbSessionStore.create({
-    client: mongoClient,
-    collectionName: Collections.Sessions,
-  });
-  sessionStore.on('error', log.error);
-
-  app.use(
-    session({
-      name: config.sessions.cookieName,
-      secret: config.sessions.sessionSecret,
-      resave: false,
-      saveUninitialized: false,
-      rolling: false,
-      store: sessionStore,
-      cookie: {
-        domain: config.sessions.cookieDomain,
-        httpOnly: true,
-        maxAge: config.sessions.cookieTTL * 60 * 1000,
-        secure: false,
-      },
     }),
   );
 
@@ -91,8 +64,19 @@ export async function createServer(
   });
 
   log.debug('[EXPRESS] Adding auth middleware...');
-  passport.serializeUser<string>(serializeUser);
-  passport.deserializeUser<string>(deserializeUser);
+  passport.use(
+    new JwtStrategy(
+      {
+        issuer: config.baseUrl,
+        jsonWebTokenOptions: {},
+        jwtFromRequest: (req: Request) =>
+          req.cookies[config.sessions.cookieName] ?? null,
+        passReqToCallback: true,
+        secretOrKey: config.sessions.sessionSecret,
+      },
+      verifyJwtToken,
+    ),
+  );
   passport.use(
     new LocalStrategy(
       {
@@ -102,18 +86,7 @@ export async function createServer(
       loginWithPassword,
     ),
   );
-  passport.use(
-    new JwtStrategy(
-      {
-        jsonWebTokenOptions: {},
-        jwtFromRequest: ExtractJwt.fromAuthHeader(),
-        passReqToCallback: true,
-      },
-      verifyJwtToken,
-    ),
-  );
   app.use(passport.initialize());
-  app.use(passport.session());
 
   log.debug('[EXPRESS] Adding API routes...');
   configureRouting(app, log);

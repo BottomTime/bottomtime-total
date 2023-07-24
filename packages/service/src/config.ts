@@ -46,7 +46,7 @@ class SessionsConfig {
     return process.env.BT_SESSION_COOKIE_NAME ?? 'bottomtime.local';
   }
 
-  /** Gets the secret string used to encrypt the session cookie contents. */
+  /** Gets the secret string used to sign the JWT token in the session cookie. */
   get sessionSecret(): string {
     return (
       process.env.BT_SESSION_SECRET ??

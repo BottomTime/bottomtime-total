@@ -1,17 +1,19 @@
-import { Request } from 'express';
+import jwt from 'jsonwebtoken';
+import { NextFunction, Request } from 'express';
+import { v4 as uuid } from 'uuid';
+
+import config from '../config';
 import { User } from '../users';
 
 interface JwtPayload {
-  userId: string;
-}
-
-export function serializeUser(
-  req: Request,
-  user: Express.User,
-  cb: (error: any, id?: string) => void,
-) {
-  req.log.debug(`[AUTH] Serializing user with ID: ${user.id}`);
-  cb(null, user.id);
+  aud?: string;
+  exp?: number;
+  iat?: number;
+  iss?: string;
+  jti?: string;
+  nbf?: number;
+  sub?: string;
+  [key: string]: any;
 }
 
 export async function deserializeUser(
@@ -44,6 +46,27 @@ export async function deserializeUser(
   } catch (error) {
     cb(error);
   }
+}
+
+export async function createJwtToken(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const now = Date.now();
+  const payload: JwtPayload = {
+    iss: config.baseUrl,
+    sub: `user|${req.user?.id}`,
+    exp: config.sessions.cookieTTL * 60000 + now,
+    iat: now,
+    jti: uuid(),
+  };
+  const token = await new Promise<string>((resolve, reject) => {
+    jwt.sign(payload, config.sessions.sessionSecret, {}, (error, token) => {
+      if (error) reject(error);
+      else resolve(token!);
+    });
+  });
 }
 
 export async function verifyJwtToken(
