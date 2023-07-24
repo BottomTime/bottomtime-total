@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
-import { Strategy as JwtStrategy } from 'passport-jwt';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 import MongoDbSessionStore from 'connect-mongo';
 import passport from 'passport';
@@ -16,9 +16,9 @@ import config from '../config';
 import { configureRouting } from './routes';
 import {
   deserializeUser,
-  loginWithBearerToken,
   loginWithPassword,
   serializeUser,
+  verifyJwtToken,
 } from './passport';
 
 export async function createServer(
@@ -102,7 +102,16 @@ export async function createServer(
       loginWithPassword,
     ),
   );
-  passport.use(new JwtStrategy({}, verifyJwtToken));
+  passport.use(
+    new JwtStrategy(
+      {
+        jsonWebTokenOptions: {},
+        jwtFromRequest: ExtractJwt.fromAuthHeader(),
+        passReqToCallback: true,
+      },
+      verifyJwtToken,
+    ),
+  );
   app.use(passport.initialize());
   app.use(passport.session());
 
