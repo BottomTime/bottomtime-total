@@ -1,6 +1,9 @@
 import { Request } from 'express';
 import { User } from '../users';
-import { IVerifyOptions } from 'passport-http-bearer';
+
+interface JwtPayload {
+  userId: string;
+}
 
 export function serializeUser(
   req: Request,
@@ -43,6 +46,12 @@ export async function deserializeUser(
   }
 }
 
+export async function verifyJwtToken(
+  req: Request,
+  payload: JwtPayload,
+  done: (error: Error, user?: User | false) => void,
+): Promise<void> {}
+
 export async function loginWithPassword(
   req: Request,
   usernemeOrEmail: string,
@@ -67,14 +76,6 @@ export async function loginWithPassword(
   } catch (error) {
     cb(error);
   }
-}
-
-export async function loginWithBearerToken(
-  req: Request,
-  token: string,
-  cb: (error: any, user?: any, options?: IVerifyOptions | string) => void,
-) {
-  cb(null, false);
 }
 
 export function loginWithGoogle() {}

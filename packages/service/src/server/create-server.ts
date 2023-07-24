@@ -1,7 +1,7 @@
-import { Strategy as BearerTokenStrategy } from 'passport-http-bearer';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express, { type Express } from 'express';
+import { Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 import MongoDbSessionStore from 'connect-mongo';
 import passport from 'passport';
@@ -60,7 +60,7 @@ export async function createServer(
       secret: config.sessions.sessionSecret,
       resave: false,
       saveUninitialized: false,
-      rolling: true,
+      rolling: false,
       store: sessionStore,
       cookie: {
         domain: config.sessions.cookieDomain,
@@ -94,14 +94,6 @@ export async function createServer(
   passport.serializeUser<string>(serializeUser);
   passport.deserializeUser<string>(deserializeUser);
   passport.use(
-    new BearerTokenStrategy(
-      {
-        passReqToCallback: true,
-      },
-      loginWithBearerToken,
-    ),
-  );
-  passport.use(
     new LocalStrategy(
       {
         usernameField: 'usernameOrEmail',
@@ -110,6 +102,7 @@ export async function createServer(
       loginWithPassword,
     ),
   );
+  passport.use(new JwtStrategy({}, verifyJwtToken));
   app.use(passport.initialize());
   app.use(passport.session());
 
