@@ -2,26 +2,24 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Request, type Express } from 'express';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
-import MongoDbSessionStore from 'connect-mongo';
 import passport from 'passport';
 import rewrite from 'express-urlrewrite';
-import session from 'express-session';
 import useragent from 'express-useragent';
 import { v4 as uuid } from 'uuid';
+import url from 'url';
 
 import { ServerDependencies } from './dependencies';
-import { Collections } from '../data';
 import config from '../config';
 import { configureRouting } from './routes';
-import { loginWithPassword, verifyJwtToken } from './passport';
+import { loginWithGoogle, loginWithPassword, verifyJwtToken } from './passport';
 
 export async function createServer(
   createDependencies: () => Promise<ServerDependencies>,
 ): Promise<Express> {
-  const { log, mail, mongoClient, tankManager, userManager } =
-    await createDependencies();
+  const { log, mail, tankManager, userManager } = await createDependencies();
   const app = express();
 
   log.debug(
@@ -84,6 +82,18 @@ export async function createServer(
         passReqToCallback: true,
       },
       loginWithPassword,
+    ),
+  );
+  passport.use(
+    new GoogleStrategy(
+      {
+        callbackURL: url.resolve(config.baseUrl, '/auth/google/callback'),
+        clientID: config.google.clientId,
+        clientSecret: config.google.clientSecret,
+        passReqToCallback: true,
+        scope: ['email', 'profile'],
+      },
+      loginWithGoogle,
     ),
   );
   app.use(passport.initialize());

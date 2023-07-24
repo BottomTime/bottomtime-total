@@ -6,6 +6,7 @@ import passport from 'passport';
 import { ForbiddenError, UnauthorizedError } from '../../errors';
 import { UserRole } from '../../constants';
 import { assertValid } from '../../helpers/validation';
+import { createJwtToken } from '../passport';
 
 const LoginSchema = Joi.object({
   usernameOrEmail: Joi.string().required(),
@@ -14,7 +15,6 @@ const LoginSchema = Joi.object({
 
 export function getCurrentUser(req: Request, res: Response) {
   res.json({
-    id: req.sessionID,
     anonymous: !req.user,
     ...req.user?.toJSON(),
   });
@@ -74,6 +74,7 @@ export function configureAuthRoutes(app: Express) {
     '/auth/login',
     validateLogin,
     passport.authenticate('local'),
+    createJwtToken,
     async (req, res) => {
       await req.user!.updateLastLogin();
       req.log.info(`User has successfully logged in: ${req.user!.username}`);
@@ -81,4 +82,16 @@ export function configureAuthRoutes(app: Express) {
     },
   );
   app.get('/auth/logout', logout);
+
+  app.get('/auth/google', passport.authenticate('google'));
+  app.get(
+    '/auth/google/callback',
+    passport.authenticate('google'),
+    createJwtToken,
+    async (req, res) => {
+      await req.user!.updateLastLogin();
+      req.log.info(`User has successfully logged in: ${req.user!.username}`);
+      res.redirect('/');
+    },
+  );
 }
