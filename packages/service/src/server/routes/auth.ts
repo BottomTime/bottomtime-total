@@ -82,7 +82,7 @@ export function configureAuthRoutes(app: Express) {
   app.post(
     '/auth/login',
     validateLogin,
-    passport.authenticate('local'),
+    passport.authenticate('local', { session: false }),
     createJwtToken,
     async (req, res) => {
       await req.user!.updateLastLogin();

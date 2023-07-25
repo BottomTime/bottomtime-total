@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 
 import config from '../config';
@@ -8,45 +7,24 @@ import {
   GoogleCallbackParameters,
   Profile as GoogleProfile,
 } from 'passport-google-oauth20';
-
-interface JwtPayload {
-  aud?: string;
-  exp?: number;
-  iat?: number;
-  iss?: string;
-  jti?: string;
-  nbf?: number;
-  sub?: string;
-  [key: string]: any;
-}
-
-async function signJwtAsync(payload: JwtPayload): Promise<string> {
-  return new Promise((resolve, reject) => {
-    jwt.sign(payload, config.sessions.sessionSecret, {}, (error, token) => {
-      if (error) reject(error);
-      else resolve(token!);
-    });
-  });
-}
+import { JwtPayload, signUserToken } from './jwt';
 
 export async function createJwtToken(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const now = Date.now();
-  const expires = config.sessions.cookieTTL * 60000 + now;
-  const payload = {
-    iss: config.baseUrl,
-    sub: `user|${req.user?.id}`,
-    exp: expires,
-    iat: now,
-  };
   try {
-    req.log.debug(`Issuing JWT cookie for user "${req.user?.username}"...`);
-    const token = await signJwtAsync(payload);
+    if (!req.user) {
+      throw new Error(
+        'Attempted to generate a user token but no user is logged in!',
+      );
+    }
+
+    req.log.debug(`Issuing JWT cookie for user "${req.user.username}"...`);
+    const token = await signUserToken(req.user);
     res.cookie(config.sessions.cookieName, token, {
-      expires: new Date(expires),
+      expires: new Date(Date.now() + config.sessions.cookieTTL * 60000),
       domain: config.sessions.cookieDomain,
       httpOnly: true,
       sameSite: 'strict',

@@ -9,7 +9,6 @@ import express, {
 } from 'express';
 import { Strategy as GithubStrategy } from 'passport-github2';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import jwt from 'jsonwebtoken';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 import passport from 'passport';
