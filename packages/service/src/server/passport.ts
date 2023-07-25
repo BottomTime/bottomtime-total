@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 
 import config from '../config';
 import { User } from '../users';
+import { Profile as GithubProfile } from 'passport-github2';
 import {
   GoogleCallbackParameters,
   Profile as GoogleProfile,
@@ -143,4 +144,12 @@ export function loginWithGoogle(
   cb(new Error('Not implemented yet.'));
 }
 
-export function loginWithGithub() {}
+export function loginWithGithub(
+  req: Request,
+  accessToken: string,
+  refreshToken: string,
+  profile: GithubProfile,
+  cb: (err: Error | null, user?: User) => void,
+) {
+  cb(new Error('Not implemented yet.'));
+}

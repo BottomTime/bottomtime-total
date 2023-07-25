@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Request, type Express } from 'express';
+import { Strategy as GithubStrategy } from 'passport-github2';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
@@ -14,7 +15,12 @@ import url from 'url';
 import { ServerDependencies } from './dependencies';
 import config from '../config';
 import { configureRouting } from './routes';
-import { loginWithGoogle, loginWithPassword, verifyJwtToken } from './passport';
+import {
+  loginWithGithub,
+  loginWithGoogle,
+  loginWithPassword,
+  verifyJwtToken,
+} from './passport';
 
 export async function createServer(
   createDependencies: () => Promise<ServerDependencies>,
@@ -94,6 +100,17 @@ export async function createServer(
         scope: ['email', 'profile'],
       },
       loginWithGoogle,
+    ),
+  );
+  passport.use(
+    new GithubStrategy(
+      {
+        callbackURL: url.resolve(config.baseUrl, '/auth/github/callback'),
+        clientID: config.github.clientId,
+        clientSecret: config.github.clientSecret,
+        passReqToCallback: true,
+      },
+      loginWithGithub,
     ),
   );
   app.use(passport.initialize());

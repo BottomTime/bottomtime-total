@@ -7,6 +7,16 @@ function toNumber(value: string | undefined, defaultValue: number): number {
   return isNaN(parsed) ? defaultValue : parsed;
 }
 
+class GithubConfig {
+  get clientId(): string {
+    return process.env.BT_GITHUB_CLIENT_ID ?? '';
+  }
+
+  get clientSecret(): string {
+    return process.env.BT_GITHUB_CLIENT_SECRET ?? '';
+  }
+}
+
 class GoogleConfig {
   get clientId(): string {
     return process.env.BT_GOOGLE_CLIENT_ID ?? '';
@@ -74,6 +84,7 @@ class SessionsConfig {
 }
 
 class Config {
+  readonly github = new GithubConfig();
   readonly google = new GoogleConfig();
   readonly mail = new MailConfig();
   readonly sessions = new SessionsConfig();

@@ -68,6 +68,15 @@ export function validateLogin(
   }
 }
 
+export async function updateLastLoginAndRedirectHome(
+  req: Request,
+  res: Response,
+) {
+  await req.user!.updateLastLogin();
+  req.log.info(`User has successfully logged in: ${req.user!.username}`);
+  res.redirect('/');
+}
+
 export function configureAuthRoutes(app: Express) {
   app.get('/auth/me', getCurrentUser);
   app.post(
@@ -88,10 +97,14 @@ export function configureAuthRoutes(app: Express) {
     '/auth/google/callback',
     passport.authenticate('google'),
     createJwtToken,
-    async (req, res) => {
-      await req.user!.updateLastLogin();
-      req.log.info(`User has successfully logged in: ${req.user!.username}`);
-      res.redirect('/');
-    },
+    updateLastLoginAndRedirectHome,
+  );
+
+  app.get('/auth/github', passport.authenticate('github'));
+  app.get(
+    '/auth/github/callback',
+    passport.authenticate('github'),
+    createJwtToken,
+    updateLastLoginAndRedirectHome,
   );
 }
