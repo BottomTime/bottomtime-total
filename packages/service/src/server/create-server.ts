@@ -1,10 +1,16 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, { Request, type Express } from 'express';
+import express, {
+  Request,
+  Response,
+  type Express,
+  NextFunction,
+} from 'express';
 import { Strategy as GithubStrategy } from 'passport-github2';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { Strategy as JwtStrategy } from 'passport-jwt';
+import jwt from 'jsonwebtoken';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 import passport from 'passport';
 import rewrite from 'express-urlrewrite';
@@ -63,18 +69,20 @@ export async function createServer(
     req.tankManager = tankManager;
     req.userManager = userManager;
 
-    req.log.debug(`Request made to ${req.method} ${req.originalUrl}`);
     next();
   });
 
-  log.debug('[EXPRESS] Adding auth middleware...');
+  log.debug('[EXPRESS] Configuring Passport.js...');
+  const jwtFromRequest = ExtractJwt.fromExtractors([
+    ExtractJwt.fromAuthHeaderAsBearerToken(),
+    (req: Request) => req.cookies[config.sessions.cookieName] ?? null,
+  ]);
   passport.use(
     new JwtStrategy(
       {
         issuer: config.baseUrl,
         jsonWebTokenOptions: {},
-        jwtFromRequest: (req: Request) =>
-          req.cookies[config.sessions.cookieName] ?? null,
+        jwtFromRequest,
         passReqToCallback: true,
         secretOrKey: config.sessions.sessionSecret,
       },
@@ -114,6 +122,41 @@ export async function createServer(
     ),
   );
   app.use(passport.initialize());
+
+  // Authenticate user and log the request.
+  app.use(
+    // Authenticate JWT token if it is present.
+    async (req: Request, res: Response, next: NextFunction) => {
+      const token = jwtFromRequest(req);
+      req.log.debug('[EXPRESS] Attempting authentication...', token);
+      if (token)
+        passport.authenticate('jwt', { session: false, failWithError: true })(
+          req,
+          res,
+          next,
+        );
+      else next();
+
+      req.log.debug(`Request made to ${req.method} ${req.originalUrl}`, {
+        user: req.user
+          ? {
+              id: req.user.id,
+              username: req.user.username,
+            }
+          : undefined,
+        agent: req.useragent?.source,
+      });
+    },
+
+    // Intercept Passport error and format it to look like one of our UnauthorizedError responses.
+    (err: any, req: Request, _res: Response, next: NextFunction) => {
+      req.log.warn(
+        '[AUTH] Authentication failure: Invalid JSON Web Token.',
+        err,
+      );
+      next();
+    },
+  );
 
   log.debug('[EXPRESS] Adding API routes...');
   configureRouting(app, log);

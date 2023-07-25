@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "configurations": [
+    {
+      "type": "node",
+      "cwd": "${workspaceFolder}/packages/service/",
+      "request": "launch",
+      "name": "Debug Jest tests in current file",
+      "env": { "NODE_ENV": "test" },
+      "program": "${workspaceFolder}/packages/service/node_modules/.bin/jest",
+      "args": ["${fileBasenameNoExtension}", "--config", "jest.config.ts"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/packages/service/node_modules/jest/bin/jest"
+      }
+    },
+    {
+      "type": "node",
+      "cwd": "${workspaceFolder}/packages/service/",
+      "request": "launch",
+      "name": "Debug all Jest tests",
+      "env": { "NODE_ENV": "test" },
+      "program": "${workspaceFolder}/packages/service/node_modules/.bin/jest",
+      "args": ["--config", "jest.config.ts"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/packages/service/node_modules/jest/bin/jest"
+      }
+    }
+  ]
+}

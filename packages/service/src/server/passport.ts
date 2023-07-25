@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
-import { v4 as uuid } from 'uuid';
 
 import config from '../config';
 import { User } from '../users';
@@ -42,7 +41,6 @@ export async function createJwtToken(
     sub: `user|${req.user?.id}`,
     exp: expires,
     iat: now,
-    jti: uuid(),
   };
   try {
     req.log.debug(`Issuing JWT cookie for user "${req.user?.username}"...`);
@@ -67,6 +65,7 @@ export async function verifyJwtToken(
   payload: JwtPayload,
   cb: (error: any, user?: User | false) => void,
 ): Promise<void> {
+  req.log.debug('[AUTH] Verifying JWT token...', payload);
   try {
     if (!payload.sub || !/^\w+\|.+$/.test(payload.sub)) {
       req.log.debug(
