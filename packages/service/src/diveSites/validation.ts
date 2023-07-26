@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { SortOrder } from '../constants';
 import { DiveSitesSortBy } from './interfaces';
+import { UsernameSchema } from '../users';
 
 export const DiveSiteReviewSchema = Joi.object({
   _id: Joi.string().uuid().required(),
@@ -91,6 +92,7 @@ export const SearchDiveSitesSchema = Joi.object({
   radius: Joi.number().greater(0).max(500).default(50),
   freeToDive: Joi.bool(),
   shoreAccess: Joi.bool(),
+  creator: UsernameSchema,
   sortBy: Joi.string()
     .trim()
     .valid(...Object.values(DiveSitesSortBy)),

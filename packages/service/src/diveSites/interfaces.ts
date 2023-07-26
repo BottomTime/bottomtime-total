@@ -46,6 +46,7 @@ export interface SearchDiveSitesOptions {
   radius?: number;
   freeToDive?: boolean;
   shoreAccess?: boolean;
+  creator?: string;
   sortBy?: string;
   sortOrder?: string;
   skip?: number;

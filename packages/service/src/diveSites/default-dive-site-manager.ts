@@ -1,15 +1,27 @@
 import Logger from 'bunyan';
-import { Collection, MongoClient } from 'mongodb';
+import {
+  Collection,
+  Filter,
+  FindOptions,
+  MongoClient,
+  Sort,
+  SortDirection,
+} from 'mongodb';
 import {
   DiveSite,
+  DiveSiteCreator,
   DiveSiteData,
   DiveSiteManager,
+  DiveSitesSortBy,
   SearchDiveSitesOptions,
 } from './interfaces';
 import { Collections, DiveSiteDocument, UserDocument } from '../data';
 import { DefaultDiveSite } from './default-dive-site';
 import { v4 as uuid } from 'uuid';
 import { User } from '../users';
+import { SortOrder } from '../constants';
+
+type DiveSiteCreatorTable = { [creatorId: string]: DiveSiteCreator };
 
 export class DefaultDiveSiteManager implements DiveSiteManager {
   private readonly sites: Collection<DiveSiteDocument>;
@@ -74,10 +86,130 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
   async searchDiveSites(
     options?: SearchDiveSitesOptions | undefined,
   ): Promise<DiveSite[]> {
+    const searchFilter: Filter<DiveSiteDocument> = {};
+    const searchOptions: FindOptions<Document> = {
+      skip: options?.skip ?? 0,
+      limit: options?.limit ?? 50,
+    };
+    let singleCreator: DiveSiteCreator | undefined = undefined;
+
+    if (options?.query) {
+      searchFilter.$text = {
+        $search: options.query,
+        $language: 'en',
+        $caseSensitive: false,
+        $diacriticSensitive: false,
+      };
+    } else if (options?.sortBy || options?.sortOrder) {
+      const sortDirection = options.sortOrder === SortOrder.Descending ? -1 : 1;
+      searchOptions.sort =
+        options?.sortBy === DiveSitesSortBy.Rating
+          ? ['averageRating', sortDirection]
+          : ['name', sortDirection];
+    }
+
+    if (options?.shoreAccess !== undefined) {
+      searchFilter.shoreAccess = options.shoreAccess;
+    }
+
+    if (options?.freeToDive !== undefined) {
+      searchFilter.freeToDive = options.freeToDive;
+    }
+
+    if (options?.creator) {
+      singleCreator = await this.getCreatorByUsername(options.creator);
+      if (singleCreator) {
+        searchFilter.creator = singleCreator.id;
+      } else {
+        return [];
+      }
+    }
+
+    const creatorIds = new Set<string>();
     const results = await this.sites
-      .find()
-      .skip(options?.skip ?? 0)
-      .limit(options?.limit ?? 50);
-    return [];
+      .find(searchFilter, searchOptions)
+      .toArray();
+
+    if (singleCreator) {
+      return results.map(
+        (result) =>
+          new DefaultDiveSite(
+            this.mongoClient,
+            this.log,
+            result,
+            singleCreator,
+          ),
+      );
+    }
+
+    results.forEach((site) => {
+      creatorIds.add(site.creator);
+    });
+
+    const creators = await this.getCreatorsById(creatorIds);
+
+    return results.map(
+      (result) =>
+        new DefaultDiveSite(
+          this.mongoClient,
+          this.log,
+          result,
+          creators[result.creator],
+        ),
+    );
+  }
+
+  private async getCreatorByUsername(
+    username: string,
+  ): Promise<DiveSiteCreator | undefined> {
+    const creator = await this.users.findOne(
+      { usernameLowered: username.toLocaleLowerCase() },
+      {
+        projection: {
+          _id: 1,
+          username: 1,
+          'profile.name': 1,
+        },
+      },
+    );
+
+    if (creator) {
+      return {
+        id: creator._id,
+        username: creator.username,
+        displayName: creator.profile?.name ?? username,
+      };
+    }
+
+    return undefined;
+  }
+
+  private async getCreatorsById(
+    ids: Set<string>,
+  ): Promise<DiveSiteCreatorTable> {
+    const results = this.users.find(
+      {
+        _id: {
+          $in: [...ids],
+        },
+      },
+      {
+        projection: {
+          _id: true,
+          username: true,
+          'profile.name': true,
+        },
+      },
+    );
+
+    const creators: DiveSiteCreatorTable = {};
+    for await (const result of results) {
+      creators[result._id] = {
+        id: result._id,
+        username: result.username,
+        displayName: result.profile?.name ?? result.username,
+      };
+    }
+    return creators;
   }
 }

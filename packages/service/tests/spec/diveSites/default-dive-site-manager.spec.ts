@@ -9,6 +9,8 @@ import {
   DefaultDiveSite,
   DefaultDiveSiteManager,
   DiveSiteData,
+  DiveSiteManager,
+  DiveSitesSortBy,
 } from '../../../src/diveSites';
 import { fakeDiveSite } from '../../fixtures/fake-dive-site';
 import { fakeUser } from '../../fixtures/fake-user';
@@ -18,6 +20,7 @@ import { ValidationError } from '../../../src/errors';
 
 import DiveSiteCreators from '../../fixtures/dive-site-creators.json';
 import DiveSites from '../../fixtures/dive-sites.json';
+import { SortOrder } from '../../../src/constants';
 
 const log = createTestLogger('default-dive-site-manager');
 jest.mock('uuid');
@@ -140,8 +143,10 @@ describe('Default Dive Site Manager', () => {
   describe('Searching dive sites', () => {
     let diveSiteCreators: UserDocument[];
     let diveSites: DiveSiteDocument[];
+    let manager: DiveSiteManager;
 
     beforeAll(() => {
+      manager = new DefaultDiveSiteManager(mongoClient, log);
       diveSiteCreators = DiveSiteCreators.map((creator) => ({
         ...creator,
         lastLogin: creator.lastLogin ? new Date(creator.lastLogin) : undefined,
@@ -165,18 +170,84 @@ describe('Default Dive Site Manager', () => {
       ]);
     });
 
-    it('Will search based on a query string', async () => {});
+    it('Will search based on a query string', async () => {
+      const sites = await manager.searchDiveSites({
+        query: 'celebrated spain pariatur',
+        limit: 5,
+      });
+      expect(sites).toMatchSnapshot();
+    });
 
-    it('Will filter based on shore access', async () => {});
+    [true, false].forEach((shoreAccess) => {
+      it(`Will filter based on shore access: ${shoreAccess}`, async () => {
+        const sites = await manager.searchDiveSites({
+          shoreAccess,
+        });
+        expect(sites.length).toBeGreaterThan(0);
+        for (const site of sites) {
+          expect(site.shoreAccess).toBe(shoreAccess);
+        }
+      });
+    });
 
+    [true, false].forEach((freeToDive) => {
+      it(`Will filter based on "free to dive": ${freeToDive}`, async () => {
+        const sites = await manager.searchDiveSites({
+          freeToDive,
+        });
+        expect(sites.length).toBeGreaterThan(0);
+        for (const site of sites) {
+          expect(site.freeToDive).toBe(freeToDive);
+        }
+      });
+    });
+
+    it.todo('Location!');
     it('Will filter by location', async () => {});
 
-    it('Will filter based on "free to dive"', async () => {});
+    it('Will filter by creator', async () => {
+      const sites = await manager.searchDiveSites({
+        creator: diveSiteCreators[0].username.toUpperCase(),
+      });
+      expect(sites.length).toBeGreaterThan(0);
+      for (const site of sites) {
+        await expect(site.getCreator()).resolves.toEqual({
+          displayName: diveSiteCreators[0].profile!.name,
+          id: diveSiteCreators[0]._id,
+          username: diveSiteCreators[0].username,
+        });
+      }
+    });
 
-    it('Will filter by creator', async () => {});
+    it('Will return no results if creator cannot be found', async () => {
+      const sites = await manager.searchDiveSites({
+        creator: 'no-such-user',
+      });
+      expect(sites).toHaveLength(0);
+    });
 
-    it('Will allow pagination', async () => {});
+    it('Will allow pagination', async () => {
+      const sites = await manager.searchDiveSites({
+        skip: 12,
+        limit: 6,
+      });
+      expect(sites).toMatchSnapshot();
+    });
 
-    it('Will allow custom page sizes', async () => {});
+    [
+      { sortBy: DiveSitesSortBy.Name, sortOrder: SortOrder.Ascending },
+      { sortBy: DiveSitesSortBy.Name, sortOrder: SortOrder.Descending },
+      { sortBy: DiveSitesSortBy.Rating, sortOrder: SortOrder.Ascending },
+      { sortBy: DiveSitesSortBy.Rating, sortOrder: SortOrder.Descending },
+    ].forEach((testCase) => {
+      it(`Will sort results by ${testCase.sortBy} in ${testCase.sortOrder} order`, async () => {
+        const sites = await manager.searchDiveSites({
+          sortBy: testCase.sortBy,
+          sortOrder: testCase.sortOrder,
+          limit: 5,
+        });
+        expect(sites).toMatchSnapshot();
+      });
+    });
   });
 });
