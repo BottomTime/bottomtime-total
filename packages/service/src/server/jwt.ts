@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { Response } from 'express';
 
 import config from '../config';
 import { User } from '../users';
@@ -30,4 +31,20 @@ export function signUserToken(user: User): Promise<string> {
       else resolve(token!);
     });
   });
+}
+
+export async function issueAuthCookie(
+  user: User,
+  res: Response,
+): Promise<void> {
+  const token = await signUserToken(user);
+  res.cookie(config.sessions.cookieName, token, {
+    expires: new Date(Date.now() + config.sessions.cookieTTL * 60000),
+    domain: config.sessions.cookieDomain,
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: config.isProduction,
+    signed: false,
+  });
+  await user.updateLastLogin();
 }

@@ -25,8 +25,7 @@ import {
 } from '../../email';
 import { VerifyEmailTemplate } from '../../email/verify-email-template';
 import { requireAdmin, requireAuth } from './auth';
-import config from '../../config';
-import { signUserToken } from '../jwt';
+import { issueAuthCookie } from '../jwt';
 
 const SearchUsersQuerySchema = Joi.object({
   query: Joi.string(),
@@ -120,16 +119,7 @@ export async function createUser(
 
     // Sign in the new user if they are not currently logged in as someone else.
     if (!req.user) {
-      const token = await signUserToken(user);
-      res.cookie(config.sessions.cookieName, token, {
-        expires: new Date(Date.now() + config.sessions.cookieTTL * 60000),
-        domain: config.sessions.cookieDomain,
-        httpOnly: true,
-        sameSite: 'strict',
-        secure: config.isProduction,
-        signed: false,
-      });
-      await user.updateLastLogin();
+      await issueAuthCookie(user, res);
       req.log.info(
         `User has been logged into their newly-created account: "${user.username}"`,
       );

@@ -1,13 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 
-import config from '../config';
 import { User } from '../users';
 import { Profile as GithubProfile } from 'passport-github2';
 import {
   GoogleCallbackParameters,
   Profile as GoogleProfile,
 } from 'passport-google-oauth20';
-import { JwtPayload, signUserToken } from './jwt';
+import { JwtPayload, issueAuthCookie } from './jwt';
 
 export async function createJwtToken(
   req: Request,
@@ -22,15 +21,7 @@ export async function createJwtToken(
     }
 
     req.log.debug(`Issuing JWT cookie for user "${req.user.username}"...`);
-    const token = await signUserToken(req.user);
-    res.cookie(config.sessions.cookieName, token, {
-      expires: new Date(Date.now() + config.sessions.cookieTTL * 60000),
-      domain: config.sessions.cookieDomain,
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: config.isProduction,
-      signed: false,
-    });
+    await issueAuthCookie(req.user, res);
 
     next();
   } catch (error) {
