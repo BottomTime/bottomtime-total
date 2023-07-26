@@ -1,9 +1,12 @@
 openapi: 3.0.0
 servers:
   # Added by API Auto Mocking Plugin
+  # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/MRCHRISCARLETON/BottomTime/1.0.0
-  - description: Development
+  - description: Local development
+    url: http://localhost:8080
+  - description: Development/Staging
     url: https://api-dev.bottomti.me
   - description: Production
     url: https://api.bottomti.me
@@ -22,6 +25,8 @@ info:
 tags:
   - name: Auth
     description: Routes used for authenticating and managing current user session
+  - name: Dive Sites
+    description: Routes used for managing and searching dive sites
   - name: Profiles
     description: Routes used for managing profiles
   - name: Tanks
@@ -81,6 +86,7 @@ paths:
       tags:
         - Auth
       security:
+        - Jwt: []
         - SessionCookie: []
       summary: Logout
       operationId: logoutUser
@@ -209,6 +215,7 @@ paths:
       summary: Update profile
       operationId: updateProfile
       security:
+        - Jwt: []
         - SessionCookie: []
       responses:
         204:
@@ -248,6 +255,7 @@ paths:
       summary: Patch profile
       operationId: patchProfile
       security:
+        - Jwt: []
         - SessionCookie: []
       responses:
         204:
@@ -321,6 +329,7 @@ paths:
       summary: Update tank
       operationId: updateTank
       security:
+        - Jwt: [admin]
         - SessionCookie: [admin]
       responses:
         204:
@@ -331,6 +340,7 @@ paths:
       summary: Patch tank
       operationId: patchTank
       security:
+        - Jwt: [admin]
         - SessionCookie: [admin]
       responses:
         204:
@@ -341,6 +351,7 @@ paths:
       summary: Delete tank
       operationId: deleteTank
       security:
+        - Jwt: [admin]
         - SessionCookie: [admin]
       responses:
         204:
@@ -352,6 +363,7 @@ paths:
         - Users
       summary: List users
       security:
+        - Jwt: [admin]
         - SessionCookie: [admin]
       operationId: listUsers
       description: Lists user accounts given a search criteria.
@@ -455,6 +467,7 @@ paths:
       description: |
         Will attempt to retrieve a user's account information.
       security:
+        - Jwt: [admin]
         - SessionCookie: [admin]
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -617,6 +630,7 @@ paths:
       operationId: changeEmail
       description: Will attempt to change a user's email address.
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -702,6 +716,7 @@ paths:
         * the user already has a password set on thier account and
         * the user is not an administrator.
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -765,6 +780,7 @@ paths:
       description: |
         Will attempt to change a user's role in order to change their permission level. Only administrators are permitted to use this API endpoint.
       security:
+        - Jwt: [admin]
         - SessionCookie: [admin]
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -822,6 +838,7 @@ paths:
       description: |
         Changes a user's username.
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -904,6 +921,7 @@ paths:
 
         Only administrators may call this API endpoint.
       security:
+        - Jwt: [admin]
         - SessionCookie: [admin]
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -939,6 +957,7 @@ paths:
 
         The token can later be provided to the `/users/{username}/verifyEmail` route to complete the operation.
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -1091,6 +1110,7 @@ paths:
 
         Only administrators may call this API endpoint.
       security:
+        - Jwt: [admin]
         - SessionCookie: [admin]
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -1125,6 +1145,7 @@ paths:
         List notifications for the indicated user. Notifications will be
         returned ordered by posted date. (Newest to oldest.)
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -1206,6 +1227,7 @@ paths:
       description: |
         Dismisses (deletes) a specified notification.
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/UsernameParameter'
@@ -1261,7 +1283,7 @@ paths:
           description: |
             The geographical location around which to search for sites.
 
-            * Must be formatted as `<latitude>,<longitude>`.
+            * Must be formatted as `[<latitude>,<longitude>]`.
             * `<latitude>` must be a number between -90.0 and 90.0.
             * `<longitude>` must be a number between -180.0 and 180.0.
           schema:
@@ -1307,9 +1329,8 @@ paths:
           schema:
             type: string
             enum:
-              - relevance
               - name
-              - avgRating
+              - rating
             default: name
         - in: query
           name: sortOrder
@@ -1385,6 +1406,7 @@ paths:
       operationId: createDiveSite
       description: Creates a new dive site.
       security:
+        - Jwt: []
         - SessionCookie: []
       requestBody:
         content:
@@ -1442,6 +1464,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/DiveSiteIdParameter'
       security:
+        - Jwt: []
         - SessionCookie: []
       requestBody:
         content:
@@ -1493,6 +1516,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/DiveSiteIdParameter'
       security:
+        - Jwt: []
         - SessionCookie: []
       requestBody:
         content:
@@ -1648,6 +1672,7 @@ paths:
       summary: Create dive site review
       operationId: createDiveSiteReview
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/DiveSiteIdParameter'
@@ -1754,6 +1779,7 @@ paths:
       description: |
         Updates an existing dive site review.
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/DiveSiteIdParameter'
@@ -1801,6 +1827,7 @@ paths:
       description: |
         Deletes an existing dive site review.
       security:
+        - Jwt: []
         - SessionCookie: []
       parameters:
         - $ref: '#/components/parameters/DiveSiteIdParameter'
@@ -1836,6 +1863,11 @@ components:
       type: apiKey
       name: bottomtime.platform
       in: cookie
+
+    Jwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
   parameters:
     DiveSiteIdParameter:
