@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Auth Routes Logging Out Will remove session cookie and redirect user back to home page 1`] = `
+{
+  "bottomtime.platform": {
+    "options": {
+      "expires": 1970-01-01T00:00:00.001Z,
+      "path": "/",
+    },
+    "value": "",
+  },
+}
+`;

@@ -3,10 +3,11 @@ import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 
+import config from '../../config';
 import { ForbiddenError, UnauthorizedError } from '../../errors';
 import { UserRole } from '../../constants';
 import { assertValid } from '../../helpers/validation';
-import { createJwtToken } from '../passport';
+import { issueAuthCookie } from '../jwt';
 
 const LoginSchema = Joi.object({
   usernameOrEmail: Joi.string().required(),
@@ -20,17 +21,30 @@ export function getCurrentUser(req: Request, res: Response) {
   });
 }
 
-export async function logout(req: Request, res: Response) {
-  await new Promise<void>((resolve) => {
-    req.logout({ keepSessionInfo: false }, (error) => {
-      if (error) {
-        req.log.error('Failed to end user session.', error);
-      }
+export function logout(req: Request, res: Response) {
+  res.clearCookie(config.sessions.cookieName);
+  res.redirect('/');
+}
 
-      res.redirect('/');
-      resolve();
-    });
-  });
+export async function createJwtCookie(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    if (!req.user) {
+      throw new Error(
+        'Attempted to generate a user token but no user is logged in!',
+      );
+    }
+
+    req.log.debug(`Issuing JWT cookie for user "${req.user.username}"...`);
+    await issueAuthCookie(req.user, res);
+
+    next();
+  } catch (error) {
+    next(error);
+  }
 }
 
 export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
@@ -83,7 +97,7 @@ export function configureAuthRoutes(app: Express) {
     '/auth/login',
     validateLogin,
     passport.authenticate('local', { session: false }),
-    createJwtToken,
+    createJwtCookie,
     async (req, res) => {
       await req.user!.updateLastLogin();
       req.log.info(`User has successfully logged in: ${req.user!.username}`);
@@ -96,7 +110,7 @@ export function configureAuthRoutes(app: Express) {
   app.get(
     '/auth/google/callback',
     passport.authenticate('google'),
-    createJwtToken,
+    createJwtCookie,
     updateLastLoginAndRedirectHome,
   );
 
@@ -104,7 +118,7 @@ export function configureAuthRoutes(app: Express) {
   app.get(
     '/auth/github/callback',
     passport.authenticate('github'),
-    createJwtToken,
+    createJwtCookie,
     updateLastLoginAndRedirectHome,
   );
 }

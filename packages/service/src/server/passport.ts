@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request } from 'express';
 
 import { User } from '../users';
 import { Profile as GithubProfile } from 'passport-github2';
@@ -6,28 +6,7 @@ import {
   GoogleCallbackParameters,
   Profile as GoogleProfile,
 } from 'passport-google-oauth20';
-import { JwtPayload, issueAuthCookie } from './jwt';
-
-export async function createJwtToken(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    if (!req.user) {
-      throw new Error(
-        'Attempted to generate a user token but no user is logged in!',
-      );
-    }
-
-    req.log.debug(`Issuing JWT cookie for user "${req.user.username}"...`);
-    await issueAuthCookie(req.user, res);
-
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
+import { JwtPayload } from './jwt';
 
 export async function verifyJwtToken(
   req: Request,

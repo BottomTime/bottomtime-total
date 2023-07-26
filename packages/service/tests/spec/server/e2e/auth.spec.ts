@@ -91,11 +91,6 @@ describe('Auth End-to-End Tests', () => {
     const { body: anonymousUserResult } = await agent
       .get('/auth/me')
       .expect(200);
-    const sessionId = anonymousUserResult.id;
-    expect(sessionId.length).toBeGreaterThan(10);
-    expect(anonymousUserResult).toEqual({
-      id: sessionId,
-      anonymous: true,
-    });
+    expect(anonymousUserResult).toEqual({ anonymous: true });
   });
 });

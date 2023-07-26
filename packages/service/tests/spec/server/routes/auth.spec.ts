@@ -1,5 +1,5 @@
+/* eslint-disable no-process-env */
 import { createMocks } from 'node-mocks-http';
-import { faker } from '@faker-js/faker';
 
 import { DefaultUser } from '../../../../src/users/default-user';
 import { fakeUser } from '../../../fixtures/fake-user';
@@ -9,16 +9,25 @@ import { mongoClient } from '../../../mongo-client';
 import { createTestLogger } from '../../../test-logger';
 
 const Log = createTestLogger('auth-routes');
+const CookieName = 'bottomtime.platform';
 
 describe('Auth Routes', () => {
+  let oldEnv: object;
+
+  beforeAll(() => {
+    oldEnv = Object.assign({}, process.env);
+  });
+
+  afterAll(() => {
+    Object.assign(process.env, oldEnv);
+  });
+
   describe('Get Current User', () => {
     it('Will retrieve the current user profile', () => {
-      const sessionID = faker.datatype.uuid();
       const data = fakeUser();
       const user = new DefaultUser(mongoClient, Log, data);
       const { req, res } = createMocks({
         log: Log,
-        sessionID,
         user,
       });
       const expected = JSON.parse(JSON.stringify(user.toJSON()));
@@ -33,9 +42,7 @@ describe('Auth Routes', () => {
     });
 
     it('Will return info on an anonymous user if no one is logged in', () => {
-      const sessionID = faker.datatype.uuid();
       const { req, res } = createMocks({
-        sessionID,
         log: Log,
       });
 
@@ -43,52 +50,28 @@ describe('Auth Routes', () => {
 
       expect(res._isEndCalled()).toBe(true);
       expect(res._getJSONData()).toEqual({
-        id: sessionID,
         anonymous: true,
       });
     });
   });
 
   describe('Logging Out', () => {
-    it('Will end a user session', async () => {
-      const spy = jest
-        .fn()
-        .mockImplementation((options: unknown, cb: (error?: any) => void) => {
-          expect(options).toEqual({ keepSessionInfo: false });
-          cb();
-        });
+    it('Will remove session cookie and redirect user back to home page', async () => {
+      process.env.BT_SESSION_COOKIE_NAME = CookieName;
       const { req, res } = createMocks({
+        cookies: {
+          [CookieName]:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Rldi5ib3R0b210aS5tZS8iLCJzdWIiOiJ1c2VyfDRkYmVmN2RjLTY2YzgtNDllOC04YTVhLWQ3OGMzMjA0MmZlYyIsImV4cCI6MTY5MDQyODk1MTc4NCwiaWF0IjoxNjkwMzg1NzUxNzg0fQ.FyXdrAaX1NiqVKzLqACIR60--h5C6K3UybB3PrylJzA',
+        },
         log: Log,
-        logout: spy,
       });
 
       await logout(req, res);
 
-      expect(spy).toBeCalled();
       expect(res._isEndCalled()).toBe(true);
       expect(res._getStatusCode()).toEqual(302);
       expect(res._getRedirectUrl()).toEqual('/');
-    });
-
-    it('Will fail silently if an error occurs while ending the session', async () => {
-      const error = new Error('Uh oh! Session store is broken.');
-      const spy = jest
-        .fn()
-        .mockImplementation((options: unknown, cb: (error?: any) => void) => {
-          expect(options).toEqual({ keepSessionInfo: false });
-          cb(error);
-        });
-      const { req, res } = createMocks({
-        log: Log,
-        logout: spy,
-      });
-
-      await logout(req, res);
-
-      expect(spy).toBeCalled();
-      expect(res._isEndCalled()).toBe(true);
-      expect(res._getStatusCode()).toEqual(302);
-      expect(res._getRedirectUrl()).toEqual('/');
+      expect(res.cookies).toMatchSnapshot();
     });
   });
 });

@@ -49,6 +49,7 @@ export default function () {
 
   it('Will create a new user based on the criteria', async () => {
     jest.useFakeTimers({
+      doNotFake: ['nextTick', 'setImmediate'],
       now: new Date('2023-04-05T11:33:14.961Z'),
     });
     const mail = new TestMailer();
