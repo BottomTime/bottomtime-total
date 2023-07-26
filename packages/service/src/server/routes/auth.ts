@@ -85,10 +85,19 @@ export function validateLogin(
 export async function updateLastLoginAndRedirectHome(
   req: Request,
   res: Response,
+  next: NextFunction,
 ) {
-  await req.user!.updateLastLogin();
-  req.log.info(`User has successfully logged in: ${req.user!.username}`);
-  res.redirect('/');
+  try {
+    if (!req.user) {
+      throw new Error('User is not currently signed in!');
+    }
+
+    await req.user!.updateLastLogin();
+    req.log.info(`User has successfully logged in: ${req.user!.username}`);
+    res.redirect('/');
+  } catch (error) {
+    next(error);
+  }
 }
 
 export function configureAuthRoutes(app: Express) {
