@@ -213,6 +213,28 @@ describe('Default Dive Site Manager', () => {
       });
     });
 
+    it('Will filter based on rating range', async () => {
+      const sites = await manager.searchDiveSites({
+        rating: {
+          min: 4.5,
+          max: 4.9,
+        },
+        limit: 6,
+      });
+      expect(sites).toMatchSnapshot();
+    });
+
+    it('Will filter based on difficulty range', async () => {
+      const sites = await manager.searchDiveSites({
+        difficulty: {
+          min: 1.5,
+          max: 1.8,
+        },
+        limit: 6,
+      });
+      expect(sites).toMatchSnapshot();
+    });
+
     it('Will filter by creator', async () => {
       const sites = await manager.searchDiveSites({
         creator: diveSiteCreators[0].username.toUpperCase(),

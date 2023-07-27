@@ -136,6 +136,20 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
       }
     }
 
+    if (options?.rating) {
+      searchFilter.averageRating = {
+        $gte: options.rating.min,
+        $lte: options.rating.max,
+      };
+    }
+
+    if (options?.difficulty) {
+      searchFilter.averageDifficulty = {
+        $gte: options.difficulty.min,
+        $lte: options.difficulty.max,
+      };
+    }
+
     const creatorIds = new Set<string>();
     const results = await this.sites
       .find(searchFilter, searchOptions)
