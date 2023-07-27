@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env, no-console */
 import jwt from 'jsonwebtoken';
 import { MongoClient } from 'mongodb';
 

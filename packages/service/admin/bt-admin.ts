@@ -1,8 +1,9 @@
 #!/usr/bin/env ts-node-script
+/* eslint-disable no-console */
 import yargs from 'yargs';
 import { getUserToken } from './get-user-token';
 
-require('dotenv-defaults').config();
+import 'dotenv-defaults/config';
 
 async function processCommand(cmd: string[]) {
   await yargs(cmd)
