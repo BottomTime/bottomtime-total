@@ -25,6 +25,7 @@ import {
 } from '../../email';
 import { VerifyEmailTemplate } from '../../email/verify-email-template';
 import { requireAdmin, requireAuth } from './auth';
+import { issueAuthCookie } from '../jwt';
 
 const SearchUsersQuerySchema = Joi.object({
   query: Joi.string(),
@@ -43,15 +44,6 @@ const ResetPasswordBodySchema = Joi.object({
   token: Joi.string().trim().required(),
   newPassword: PasswordStrengthSchema.required(),
 }).required();
-
-function loginUser(req: Request, user: User): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
-    req.login(user, (error) => {
-      if (error) reject(error);
-      else resolve();
-    });
-  });
-}
 
 async function sendWelcomeEmail(
   mail: MailClient,
@@ -127,8 +119,7 @@ export async function createUser(
 
     // Sign in the new user if they are not currently logged in as someone else.
     if (!req.user) {
-      await loginUser(req, user);
-      await user.updateLastLogin();
+      await issueAuthCookie(user, res);
       req.log.info(
         `User has been logged into their newly-created account: "${user.username}"`,
       );

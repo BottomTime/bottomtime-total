@@ -1,22 +1,33 @@
 import { Request } from 'express';
+
 import { User } from '../users';
-import { IVerifyOptions } from 'passport-http-bearer';
+import { Profile as GithubProfile } from 'passport-github2';
+import {
+  GoogleCallbackParameters,
+  Profile as GoogleProfile,
+} from 'passport-google-oauth20';
+import { JwtPayload } from './jwt';
 
-export function serializeUser(
+export async function verifyJwtToken(
   req: Request,
-  user: Express.User,
-  cb: (error: any, id?: string) => void,
-) {
-  req.log.debug(`[AUTH] Serializing user with ID: ${user.id}`);
-  cb(null, user.id);
-}
-
-export async function deserializeUser(
-  req: Request,
-  id: string,
+  payload: JwtPayload,
   cb: (error: any, user?: User | false) => void,
-) {
+): Promise<void> {
+  req.log.debug('[AUTH] Verifying JWT token...', payload);
   try {
+    if (!payload.sub || !/^\w+\|.+$/.test(payload.sub)) {
+      req.log.debug(
+        `[AUTH] Rejecting JWT token. Invalid subject: ${
+          payload.sub ?? '<undefined>'
+        }.`,
+      );
+      cb(null, false);
+      return;
+    }
+
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    const [type, id] = payload.sub.split('|');
+
     req.log.debug(
       `[AUTH] Attempting to deserialize user account. User ID: ${id}`,
     );
@@ -69,14 +80,23 @@ export async function loginWithPassword(
   }
 }
 
-export async function loginWithBearerToken(
+export function loginWithGoogle(
   req: Request,
-  token: string,
-  cb: (error: any, user?: any, options?: IVerifyOptions | string) => void,
+  accessToken: string,
+  refreshToken: string,
+  params: GoogleCallbackParameters,
+  profile: GoogleProfile,
+  cb: (err: Error | null, user?: User) => void,
 ) {
-  cb(null, false);
+  cb(new Error('Not implemented yet.'));
 }
 
-export function loginWithGoogle() {}
-
-export function loginWithGithub() {}
+export function loginWithGithub(
+  req: Request,
+  accessToken: string,
+  refreshToken: string,
+  profile: GithubProfile,
+  cb: (err: Error | null, user?: User) => void,
+) {
+  cb(new Error('Not implemented yet.'));
+}

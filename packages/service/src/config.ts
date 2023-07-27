@@ -7,6 +7,26 @@ function toNumber(value: string | undefined, defaultValue: number): number {
   return isNaN(parsed) ? defaultValue : parsed;
 }
 
+class GithubConfig {
+  get clientId(): string {
+    return process.env.BT_GITHUB_CLIENT_ID ?? '';
+  }
+
+  get clientSecret(): string {
+    return process.env.BT_GITHUB_CLIENT_SECRET ?? '';
+  }
+}
+
+class GoogleConfig {
+  get clientId(): string {
+    return process.env.BT_GOOGLE_CLIENT_ID ?? '';
+  }
+
+  get clientSecret(): string {
+    return process.env.BT_GOOGLE_CLIENT_SECRET ?? '';
+  }
+}
+
 class MailConfig {
   get host(): string {
     return process.env.BT_SMTP_HOST ?? '';
@@ -46,7 +66,7 @@ class SessionsConfig {
     return process.env.BT_SESSION_COOKIE_NAME ?? 'bottomtime.local';
   }
 
-  /** Gets the secret string used to encrypt the session cookie contents. */
+  /** Gets the secret string used to sign the JWT token in the session cookie. */
   get sessionSecret(): string {
     return (
       process.env.BT_SESSION_SECRET ??
@@ -64,6 +84,8 @@ class SessionsConfig {
 }
 
 class Config {
+  readonly github = new GithubConfig();
+  readonly google = new GoogleConfig();
   readonly mail = new MailConfig();
   readonly sessions = new SessionsConfig();
 

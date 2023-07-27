@@ -1,31 +1,36 @@
-import { Strategy as BearerTokenStrategy } from 'passport-http-bearer';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, { type Express } from 'express';
+import express, {
+  Request,
+  Response,
+  type Express,
+  NextFunction,
+} from 'express';
+import { Strategy as GithubStrategy } from 'passport-github2';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
-import MongoDbSessionStore from 'connect-mongo';
 import passport from 'passport';
 import rewrite from 'express-urlrewrite';
-import session from 'express-session';
 import useragent from 'express-useragent';
 import { v4 as uuid } from 'uuid';
+import url from 'url';
 
 import { ServerDependencies } from './dependencies';
-import { Collections } from '../data';
 import config from '../config';
 import { configureRouting } from './routes';
 import {
-  deserializeUser,
-  loginWithBearerToken,
+  loginWithGithub,
+  loginWithGoogle,
   loginWithPassword,
-  serializeUser,
+  verifyJwtToken,
 } from './passport';
 
 export async function createServer(
   createDependencies: () => Promise<ServerDependencies>,
 ): Promise<Express> {
-  const { log, mail, mongoClient, tankManager, userManager } =
-    await createDependencies();
+  const { log, mail, tankManager, userManager } = await createDependencies();
   const app = express();
 
   log.debug(
@@ -33,6 +38,7 @@ export async function createServer(
   );
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+  app.use(cookieParser());
   app.use(useragent.express());
   app.use(rewrite('/api/*', '/$1'));
 
@@ -44,30 +50,6 @@ export async function createServer(
         cb(null, true);
       },
       credentials: true,
-    }),
-  );
-
-  log.debug('[EXPRESS] Initializing MongoDB session store...');
-  const sessionStore = MongoDbSessionStore.create({
-    client: mongoClient,
-    collectionName: Collections.Sessions,
-  });
-  sessionStore.on('error', log.error);
-
-  app.use(
-    session({
-      name: config.sessions.cookieName,
-      secret: config.sessions.sessionSecret,
-      resave: false,
-      saveUninitialized: false,
-      rolling: true,
-      store: sessionStore,
-      cookie: {
-        domain: config.sessions.cookieDomain,
-        httpOnly: true,
-        maxAge: config.sessions.cookieTTL * 60 * 1000,
-        secure: false,
-      },
     }),
   );
 
@@ -86,19 +68,24 @@ export async function createServer(
     req.tankManager = tankManager;
     req.userManager = userManager;
 
-    req.log.debug(`Request made to ${req.method} ${req.originalUrl}`);
     next();
   });
 
-  log.debug('[EXPRESS] Adding auth middleware...');
-  passport.serializeUser<string>(serializeUser);
-  passport.deserializeUser<string>(deserializeUser);
+  log.debug('[EXPRESS] Configuring Passport.js...');
+  const jwtFromRequest = ExtractJwt.fromExtractors([
+    ExtractJwt.fromAuthHeaderAsBearerToken(),
+    (req: Request) => req.cookies[config.sessions.cookieName] ?? null,
+  ]);
   passport.use(
-    new BearerTokenStrategy(
+    new JwtStrategy(
       {
+        issuer: config.baseUrl,
+        jsonWebTokenOptions: {},
+        jwtFromRequest,
         passReqToCallback: true,
+        secretOrKey: config.sessions.sessionSecret,
       },
-      loginWithBearerToken,
+      verifyJwtToken,
     ),
   );
   passport.use(
@@ -110,8 +97,65 @@ export async function createServer(
       loginWithPassword,
     ),
   );
+  passport.use(
+    new GoogleStrategy(
+      {
+        callbackURL: url.resolve(config.baseUrl, '/auth/google/callback'),
+        clientID: config.google.clientId,
+        clientSecret: config.google.clientSecret,
+        passReqToCallback: true,
+        scope: ['email', 'profile'],
+      },
+      loginWithGoogle,
+    ),
+  );
+  passport.use(
+    new GithubStrategy(
+      {
+        callbackURL: url.resolve(config.baseUrl, '/auth/github/callback'),
+        clientID: config.github.clientId,
+        clientSecret: config.github.clientSecret,
+        passReqToCallback: true,
+      },
+      loginWithGithub,
+    ),
+  );
   app.use(passport.initialize());
-  app.use(passport.session());
+
+  // Authenticate user and log the request.
+  app.use(
+    // Authenticate JWT token if it is present.
+    async (req: Request, res: Response, next: NextFunction) => {
+      const token = jwtFromRequest(req);
+      req.log.debug('[EXPRESS] Attempting authentication...', token);
+      if (token)
+        passport.authenticate('jwt', { session: false, failWithError: true })(
+          req,
+          res,
+          next,
+        );
+      else next();
+
+      req.log.debug(`Request made to ${req.method} ${req.originalUrl}`, {
+        user: req.user
+          ? {
+              id: req.user.id,
+              username: req.user.username,
+            }
+          : undefined,
+        agent: req.useragent?.source,
+      });
+    },
+
+    // Intercept Passport error and format it to look like one of our UnauthorizedError responses.
+    (err: any, req: Request, _res: Response, next: NextFunction) => {
+      req.log.warn(
+        '[AUTH] Authentication failure: Invalid JSON Web Token.',
+        err,
+      );
+      next();
+    },
+  );
 
   log.debug('[EXPRESS] Adding API routes...');
   configureRouting(app, log);
