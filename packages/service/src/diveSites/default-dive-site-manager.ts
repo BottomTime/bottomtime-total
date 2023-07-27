@@ -1,12 +1,5 @@
 import Logger from 'bunyan';
-import {
-  Collection,
-  Filter,
-  FindOptions,
-  MongoClient,
-  Sort,
-  SortDirection,
-} from 'mongodb';
+import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
 import {
   DiveSite,
   DiveSiteCreator,
@@ -21,6 +14,7 @@ import { v4 as uuid } from 'uuid';
 import { User } from '../users';
 import { SortOrder } from '../constants';
 
+const EquatorialRadiusOfEarthInKm = 6378.137;
 type DiveSiteCreatorTable = { [creatorId: string]: DiveSiteCreator };
 
 export class DefaultDiveSiteManager implements DiveSiteManager {
@@ -114,6 +108,17 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
 
     if (options?.freeToDive !== undefined) {
       searchFilter.freeToDive = options.freeToDive;
+    }
+
+    if (options?.location) {
+      searchFilter.gps = {
+        $geoWithin: {
+          $centerSphere: [
+            [options.location.lon, options.location.lat],
+            (options.radius ?? 50) / EquatorialRadiusOfEarthInKm,
+          ],
+        },
+      };
     }
 
     if (options?.creator) {

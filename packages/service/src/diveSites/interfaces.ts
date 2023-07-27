@@ -42,7 +42,10 @@ export interface DiveSite extends DiveSiteData {
 
 export interface SearchDiveSitesOptions {
   query?: string;
-  location?: string;
+  location?: {
+    lon: number;
+    lat: number;
+  };
   radius?: number;
   freeToDive?: boolean;
   shoreAccess?: boolean;

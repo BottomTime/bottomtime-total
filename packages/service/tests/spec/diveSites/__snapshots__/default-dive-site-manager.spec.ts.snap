@@ -137,6 +137,158 @@ exports[`Default Dive Site Manager Searching dive sites Will allow pagination 1`
 ]
 `;
 
+exports[`Default Dive Site Manager Searching dive sites Will filter by location with radius: 10 1`] = `
+[
+  {
+    "averageDifficulty": 3.15,
+    "averageRating": 4.22,
+    "createdOn": 2018-01-21T01:18:36.200Z,
+    "creator": {
+      "displayName": "Maxine Conn DDS",
+      "id": "79fea7a7-2448-4e0a-b119-47c994e00266",
+      "username": "Carolina_OConner93",
+    },
+    "description": "Cumque maiores perspiciatis asperiores voluptatum eos explicabo explicabo aperiam. Officia voluptatem numquam.",
+    "directions": "Sit consequuntur aspernatur fugiat officiis quasi nulla iusto.",
+    "freeToDive": false,
+    "gps": {
+      "lat": 39.03,
+      "lon": -76.41,
+    },
+    "id": "40c53d77-529f-4b66-8648-2a0ded7e2579",
+    "location": "Ocala Afghanistan",
+    "name": "flustered ray",
+    "shoreAccess": true,
+    "updatedOn": 2020-09-27T08:44:48.478Z,
+  },
+]
+`;
+
+exports[`Default Dive Site Manager Searching dive sites Will filter by location with radius: 50 1`] = `
+[
+  {
+    "averageDifficulty": 3.15,
+    "averageRating": 4.22,
+    "createdOn": 2018-01-21T01:18:36.200Z,
+    "creator": {
+      "displayName": "Maxine Conn DDS",
+      "id": "79fea7a7-2448-4e0a-b119-47c994e00266",
+      "username": "Carolina_OConner93",
+    },
+    "description": "Cumque maiores perspiciatis asperiores voluptatum eos explicabo explicabo aperiam. Officia voluptatem numquam.",
+    "directions": "Sit consequuntur aspernatur fugiat officiis quasi nulla iusto.",
+    "freeToDive": false,
+    "gps": {
+      "lat": 39.03,
+      "lon": -76.41,
+    },
+    "id": "40c53d77-529f-4b66-8648-2a0ded7e2579",
+    "location": "Ocala Afghanistan",
+    "name": "flustered ray",
+    "shoreAccess": true,
+    "updatedOn": 2020-09-27T08:44:48.478Z,
+  },
+]
+`;
+
+exports[`Default Dive Site Manager Searching dive sites Will filter by location with radius: 500 1`] = `
+[
+  {
+    "averageDifficulty": 2.2,
+    "averageRating": 4.96,
+    "createdOn": 2021-10-18T08:34:35.904Z,
+    "creator": {
+      "displayName": "Vincent Doyle",
+      "id": "5c945b43-dcea-4e47-b66b-23e17536968c",
+      "username": "Lucious.Pagac",
+    },
+    "description": "Iste vel assumenda mollitia porro odit iste voluptatem. Impedit rerum voluptate.",
+    "directions": "Dolores vel voluptate labore nisi porro ducimus amet.",
+    "freeToDive": true,
+    "gps": {
+      "lat": 36.58,
+      "lon": -76.93,
+    },
+    "id": "85128650-efb2-445c-ac25-179d64a7928e",
+    "location": "Lincoln Mauritania",
+    "name": "worthy retrospectivity",
+    "shoreAccess": true,
+    "updatedOn": 2021-05-02T06:49:13.715Z,
+  },
+  {
+    "averageDifficulty": 3.15,
+    "averageRating": 4.22,
+    "createdOn": 2018-01-21T01:18:36.200Z,
+    "creator": {
+      "displayName": "Maxine Conn DDS",
+      "id": "79fea7a7-2448-4e0a-b119-47c994e00266",
+      "username": "Carolina_OConner93",
+    },
+    "description": "Cumque maiores perspiciatis asperiores voluptatum eos explicabo explicabo aperiam. Officia voluptatem numquam.",
+    "directions": "Sit consequuntur aspernatur fugiat officiis quasi nulla iusto.",
+    "freeToDive": false,
+    "gps": {
+      "lat": 39.03,
+      "lon": -76.41,
+    },
+    "id": "40c53d77-529f-4b66-8648-2a0ded7e2579",
+    "location": "Ocala Afghanistan",
+    "name": "flustered ray",
+    "shoreAccess": true,
+    "updatedOn": 2020-09-27T08:44:48.478Z,
+  },
+  {
+    "averageDifficulty": 1.43,
+    "averageRating": 1.92,
+    "createdOn": 2018-08-29T02:47:21.115Z,
+    "creator": {
+      "displayName": "Harold Paucek",
+      "id": "d00fb87b-ad27-4666-91df-b3988ba763a6",
+      "username": "Aglae31",
+    },
+    "description": "Quam modi nam nulla id doloremque fuga ratione. Ullam natus repellendus similique ut aspernatur repellat sequi.",
+    "directions": "Qui non maiores reprehenderit.",
+    "freeToDive": false,
+    "gps": {
+      "lat": 39.1,
+      "lon": -72.87,
+    },
+    "id": "4f7b659e-bd15-4237-afd2-0459b75f1668",
+    "location": "Edina Tuvalu",
+    "name": "bronze poison",
+    "shoreAccess": false,
+    "updatedOn": 2022-09-27T10:12:26.130Z,
+  },
+]
+`;
+
+exports[`Default Dive Site Manager Searching dive sites Will filter by location with radius: undefined 1`] = `
+[
+  {
+    "averageDifficulty": 3.15,
+    "averageRating": 4.22,
+    "createdOn": 2018-01-21T01:18:36.200Z,
+    "creator": {
+      "displayName": "Maxine Conn DDS",
+      "id": "79fea7a7-2448-4e0a-b119-47c994e00266",
+      "username": "Carolina_OConner93",
+    },
+    "description": "Cumque maiores perspiciatis asperiores voluptatum eos explicabo explicabo aperiam. Officia voluptatem numquam.",
+    "directions": "Sit consequuntur aspernatur fugiat officiis quasi nulla iusto.",
+    "freeToDive": false,
+    "gps": {
+      "lat": 39.03,
+      "lon": -76.41,
+    },
+    "id": "40c53d77-529f-4b66-8648-2a0ded7e2579",
+    "location": "Ocala Afghanistan",
+    "name": "flustered ray",
+    "shoreAccess": true,
+    "updatedOn": 2020-09-27T08:44:48.478Z,
+  },
+]
+`;
+
 exports[`Default Dive Site Manager Searching dive sites Will search based on a query string 1`] = `
 [
   {

@@ -202,8 +202,15 @@ describe('Default Dive Site Manager', () => {
       });
     });
 
-    it.todo('Location!');
-    it('Will filter by location', async () => {});
+    [undefined, 10, 50, 500].forEach((radius) => {
+      it(`Will filter by location with radius: ${radius}`, async () => {
+        const sites = await manager.searchDiveSites({
+          location: { lon: -76.4, lat: 39.0 },
+          radius,
+        });
+        expect(sites).toMatchSnapshot();
+      });
+    });
 
     it('Will filter by creator', async () => {
       const sites = await manager.searchDiveSites({
