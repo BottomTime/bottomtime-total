@@ -13,6 +13,8 @@ import { DefaultDiveSite } from './default-dive-site';
 import { v4 as uuid } from 'uuid';
 import { User } from '../users';
 import { SortOrder } from '../constants';
+import { assertValid } from '../helpers/validation';
+import { SearchDiveSitesSchema } from './validation';
 
 const EquatorialRadiusOfEarthInKm = 6378.137;
 type DiveSiteCreatorTable = { [creatorId: string]: DiveSiteCreator };
@@ -80,6 +82,10 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
   async searchDiveSites(
     options?: SearchDiveSitesOptions | undefined,
   ): Promise<DiveSite[]> {
+    if (options) {
+      options = assertValid(options, SearchDiveSitesSchema).parsed;
+    }
+
     const searchFilter: Filter<DiveSiteDocument> = {};
     const searchOptions: FindOptions<Document> = {
       skip: options?.skip ?? 0,

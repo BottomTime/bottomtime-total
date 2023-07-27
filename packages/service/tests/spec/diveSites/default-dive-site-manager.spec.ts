@@ -11,6 +11,7 @@ import {
   DiveSiteData,
   DiveSiteManager,
   DiveSitesSortBy,
+  SearchDiveSitesOptions,
 } from '../../../src/diveSites';
 import { fakeDiveSite } from '../../fixtures/fake-dive-site';
 import { fakeUser } from '../../fixtures/fake-user';
@@ -254,6 +255,197 @@ describe('Default Dive Site Manager', () => {
           limit: 5,
         });
         expect(sites).toMatchSnapshot();
+      });
+    });
+
+    const validationTests: { name: string; options: SearchDiveSitesOptions }[] =
+      [
+        {
+          name: 'Query is too long',
+          options: { query: faker.lorem.sentences(6) },
+        },
+
+        {
+          name: 'Latitude is less than -90',
+          options: {
+            location: {
+              lat: -90.1,
+              lon: 80,
+            },
+          },
+        },
+        {
+          name: 'Latitude is greater than 90',
+          options: {
+            location: {
+              lat: 90.1,
+              lon: 80,
+            },
+          },
+        },
+        {
+          name: 'Longitude is less than -180',
+          options: {
+            location: {
+              lat: 14,
+              lon: -180.1,
+            },
+          },
+        },
+        {
+          name: 'Longitude is greater than 180',
+          options: {
+            location: {
+              lat: 14,
+              lon: 180.1,
+            },
+          },
+        },
+
+        {
+          name: 'Search radius is 0',
+          options: {
+            radius: 0,
+          },
+        },
+        {
+          name: 'Search radius is greater than 500km',
+          options: {
+            radius: 501,
+          },
+        },
+
+        {
+          name: 'Rating min is less than 1',
+          options: {
+            rating: {
+              min: 0.5,
+              max: 5,
+            },
+          },
+        },
+        {
+          name: 'Rating min is greater than 5',
+          options: {
+            rating: {
+              min: 5.5,
+              max: 5,
+            },
+          },
+        },
+        {
+          name: 'Rating max is less than min',
+          options: {
+            rating: {
+              min: 2.5,
+              max: 2.4,
+            },
+          },
+        },
+        {
+          name: 'Rating max is grearter than 5',
+          options: {
+            rating: {
+              min: 2.5,
+              max: 5.4,
+            },
+          },
+        },
+
+        {
+          name: 'Difficulty min is less than 1',
+          options: {
+            difficulty: {
+              min: 0.5,
+              max: 5,
+            },
+          },
+        },
+        {
+          name: 'Difficulty min is greater than 5',
+          options: {
+            difficulty: {
+              min: 5.5,
+              max: 5,
+            },
+          },
+        },
+        {
+          name: 'Difficulty max is less than min',
+          options: {
+            difficulty: {
+              min: 2.5,
+              max: 2.4,
+            },
+          },
+        },
+        {
+          name: 'Difficulty max is grearter than 5',
+          options: {
+            difficulty: {
+              min: 2.5,
+              max: 5.4,
+            },
+          },
+        },
+
+        {
+          name: 'Creator is not a valid username',
+          options: {
+            creator: 'Lol! Invalid',
+          },
+        },
+
+        {
+          name: 'Sort By is invalid',
+          options: {
+            sortBy: 'depth',
+          },
+        },
+        {
+          name: 'Sort Order is invalid',
+          options: {
+            sortOrder: 'backwards',
+          },
+        },
+
+        {
+          name: 'Skip is negative',
+          options: {
+            skip: -1,
+          },
+        },
+        {
+          name: 'Skip is not an integer',
+          options: {
+            skip: 12.2,
+          },
+        },
+        {
+          name: 'Limit is less than 1',
+          options: {
+            limit: 0,
+          },
+        },
+        {
+          name: 'Limit is greater than 500',
+          options: {
+            limit: 501,
+          },
+        },
+        {
+          name: 'Limit is not an integer',
+          options: {
+            limit: 50.8,
+          },
+        },
+      ];
+
+    validationTests.forEach((testCase) => {
+      it(`Will throw an exception on invalid search options: ${testCase.name}`, async () => {
+        await expect(
+          manager.searchDiveSites(testCase.options),
+        ).rejects.toThrowError(ValidationError);
       });
     });
   });

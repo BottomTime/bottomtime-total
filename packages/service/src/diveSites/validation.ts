@@ -46,10 +46,41 @@ export const DiveSiteSchema = Joi.object({
   reviews: Joi.array().items(DiveSiteReviewSchema.required()),
 });
 
+const RangeSchema = Joi.object({
+  min: Joi.number().min(1).max(5).required(),
+  max: Joi.number().min(Joi.ref('min')).max(5).required(),
+});
+
 const GPSFormatErrorMessage =
   'GPS must be formatted as a comma-delimited string in the format of "<latitude>,<longitude>".';
-export const SearchDiveSitesSchema = Joi.object({
+const SearchDiveSitesSchemaDefinition = {
   query: Joi.string().trim().max(200),
+  location: Joi.object({
+    lat: Joi.number().min(-90).max(90).required(),
+    lon: Joi.number().min(-180).max(180).required(),
+  }),
+  radius: Joi.number().greater(0).max(500).default(50),
+  freeToDive: Joi.bool(),
+  shoreAccess: Joi.bool(),
+  rating: RangeSchema,
+  difficulty: RangeSchema,
+  creator: UsernameSchema,
+  sortBy: Joi.string()
+    .trim()
+    .valid(...Object.values(DiveSitesSortBy)),
+  sortOrder: Joi.string()
+    .trim()
+    .valid(...Object.values(SortOrder)),
+  skip: Joi.number().integer().min(0).default(0),
+  limit: Joi.number().integer().greater(0).max(500).default(50),
+};
+
+export const SearchDiveSitesSchema = Joi.object(
+  SearchDiveSitesSchemaDefinition,
+);
+
+export const SearchDiveSitesRequestSchema = Joi.object({
+  ...SearchDiveSitesSchemaDefinition,
   location: Joi.string()
     .trim()
     .custom((value, helpers) => {
@@ -89,16 +120,4 @@ export const SearchDiveSitesSchema = Joi.object({
 
       return { lat, lon };
     }),
-  radius: Joi.number().greater(0).max(500).default(50),
-  freeToDive: Joi.bool(),
-  shoreAccess: Joi.bool(),
-  creator: UsernameSchema,
-  sortBy: Joi.string()
-    .trim()
-    .valid(...Object.values(DiveSitesSortBy)),
-  sortOrder: Joi.string()
-    .trim()
-    .valid(...Object.values(SortOrder)),
-  skip: Joi.number().integer().min(0).default(0),
-  limit: Joi.number().integer().greater(0).max(500).default(50),
 });

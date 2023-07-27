@@ -1275,6 +1275,7 @@ paths:
           description: |
             A search query for performing a text-based search. The result set
             will contain dive sites matching the search query.
+          example: Shipwreck
           schema:
             type: string
             maxLength: 200
@@ -1283,7 +1284,7 @@ paths:
           description: |
             The geographical location around which to search for sites.
 
-            * Must be formatted as `[<latitude>,<longitude>]`.
+            * Must be formatted as `<latitude>,<longitude>`.
             * `<latitude>` must be a number between -90.0 and 90.0.
             * `<longitude>` must be a number between -180.0 and 180.0.
           schema:
@@ -1315,12 +1316,13 @@ paths:
             The search radius (in kilometers) around `location` for which
             results will be returned.
 
-            An 400 error will result if `radius` is provided without
-            `location`.
+            The `radius` parameter will be ignored if the `location` parameter
+            is omitted.
           schema:
             type: number
             format: float
             minimum: 0
+            maximum: 500.0
             default: 50.0
         - in: query
           name: sortBy

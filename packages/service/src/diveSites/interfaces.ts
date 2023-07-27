@@ -1,4 +1,4 @@
-import { GpsCoordinates } from '../common';
+import { GpsCoordinates, Range } from '../common';
 import { User } from '../users';
 
 export const DiveSitesSortBy = {
@@ -49,6 +49,8 @@ export interface SearchDiveSitesOptions {
   radius?: number;
   freeToDive?: boolean;
   shoreAccess?: boolean;
+  rating?: Range;
+  difficulty?: Range;
   creator?: string;
   sortBy?: string;
   sortOrder?: string;
