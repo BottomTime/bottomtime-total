@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "exclude": ["./coverage", "./dist"],
   "include": [
+    ".admin",
     "./src",
     "./tests",
     "./migrations",

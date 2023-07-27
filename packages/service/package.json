@@ -7,6 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "admin": "ts-node admin/bt-admin.ts",
     "build": "rm -rf dist/ && tsc && cp -R src/email/templates/ dist/email/templates/",
     "daemon:start": "pm2 start dist/index.js",
     "daemon:stop": "pm2 stop dist/index.js",
@@ -73,6 +74,7 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "yargs": "^17.7.2"
   }
 }
