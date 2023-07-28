@@ -2,7 +2,7 @@ import { Express, NextFunction, Request, Response } from 'express';
 
 export function assertWritePermission() {}
 
-export function loadDiveSite() {}
+export function loadDiveSite(req: Request, res: Response, next: NextFunction) {}
 
 export function searchDiveSites() {}
 

@@ -30,7 +30,8 @@ import {
 export async function createServer(
   createDependencies: () => Promise<ServerDependencies>,
 ): Promise<Express> {
-  const { log, mail, tankManager, userManager } = await createDependencies();
+  const { log, mail, diveSiteManager, tankManager, userManager } =
+    await createDependencies();
   const app = express();
 
   log.debug(
@@ -65,6 +66,7 @@ export async function createServer(
       useragent: req.useragent?.source,
     });
     req.mail = mail;
+    req.diveSiteManager = diveSiteManager;
     req.tankManager = tankManager;
     req.userManager = userManager;
 
