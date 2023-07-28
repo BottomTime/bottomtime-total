@@ -16,8 +16,8 @@ export function configureRouting(app: Express, log: Logger) {
   configureUserRoutes(app);
   configureUserUpdateRoutes(app);
   configureProfileRoutes(app);
-  configureDiveSitesRoutes(app);
-  configureDiveSiteReviewsRoutes(app);
+  // configureDiveSitesRoutes(app);
+  // configureDiveSiteReviewsRoutes(app);
   configureTanksRoutes(app);
 
   // Health check route... elaborate on this later.
