@@ -26,6 +26,7 @@ export interface DiveSiteData {
 
 export interface DiveSite extends DiveSiteData {
   readonly id: string;
+  readonly creatorId: string;
   readonly createdOn: Date;
   readonly updatedOn?: Date;
   readonly averageRating: number;

@@ -39,6 +39,10 @@ export class DefaultDiveSite implements DiveSite {
     return this.data._id;
   }
 
+  get creatorId(): string {
+    return this.data.creator;
+  }
+
   get createdOn(): Date {
     return this.data.createdOn;
   }

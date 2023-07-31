@@ -89,6 +89,4 @@ describe('JWT utility functions', () => {
     await issueAuthCookie(user.object(), res);
     expect(res.cookies).toMatchSnapshot();
   });
-
-  it.todo('Test these...');
 });

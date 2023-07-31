@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dive Site End-to-End Tests Will retrieve a dive site 1`] = `
+{
+  "averageDifficulty": 2.06,
+  "averageRating": 4.85,
+  "createdOn": "2022-01-07T06:13:36.684Z",
+  "creator": {
+    "displayName": "Laurence Kuhn",
+    "id": "928449ec-03af-438b-84d7-d82922a2f549",
+    "username": "Jarod29",
+  },
+  "description": "Nemo suscipit id corrupti eum accusantium eligendi veritatis. Numquam placeat et perferendis quam earum.",
+  "directions": "Delectus quibusdam ullam numquam voluptas similique totam alias vitae.",
+  "freeToDive": false,
+  "gps": {
+    "lat": -40.04,
+    "lon": 137.41,
+  },
+  "id": "e0ac5b76-71fd-4a62-9542-3565c4cd5398",
+  "location": "Palatine Hong Kong",
+  "name": "direct trumpet",
+  "shoreAccess": false,
+  "updatedOn": "2023-03-12T11:16:45.403Z",
+}
+`;

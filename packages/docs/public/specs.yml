@@ -1291,6 +1291,20 @@ paths:
             type: string
             example: '20.3460942599771,-87.0260668489514'
         - in: query
+          name: radius
+          description: |
+            The search radius (in kilometers) around `location` for which
+            results will be returned.
+
+            The `radius` parameter will be ignored if the `location` parameter
+            is omitted.
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 500.0
+            default: 50.0
+        - in: query
           name: freeToDive
           description: |
             Filters results to show either free-to-dive sites or sites with
@@ -1310,20 +1324,6 @@ paths:
             * If omitted, the results will not be filtered.
           schema:
             type: boolean
-        - in: query
-          name: radius
-          description: |
-            The search radius (in kilometers) around `location` for which
-            results will be returned.
-
-            The `radius` parameter will be ignored if the `location` parameter
-            is omitted.
-          schema:
-            type: number
-            format: float
-            minimum: 0
-            maximum: 500.0
-            default: 50.0
         - in: query
           name: sortBy
           description: |
