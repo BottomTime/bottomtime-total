@@ -29,6 +29,7 @@ export async function getUserToken(mongoUri: string, username: string) {
     });
     console.log(token);
   } else {
-    throw new Error(`User not found: "${username}"`);
+    console.error(`User not found: "${username}"`);
+    process.exit(1);
   }
 }

@@ -2,9 +2,9 @@
 import { faker } from '@faker-js/faker';
 import { MongoClient } from 'mongodb';
 
-import { fakeDiveSite } from '../tests/fixtures/fake-dive-site';
-import { fakeUser } from '../tests/fixtures/fake-user';
-import { Collections, DiveSiteDocument, UserDocument } from '../src/data';
+import { fakeDiveSite } from '../../tests/fixtures/fake-dive-site';
+import { fakeUser } from '../../tests/fixtures/fake-user';
+import { Collections, DiveSiteDocument, UserDocument } from '../../src/data';
 
 /**
  * Creates items one-by-one and performs batch operations on them.
