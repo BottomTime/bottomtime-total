@@ -4,6 +4,7 @@ import { CommandModule } from 'yargs';
 
 import { createTestData } from './test-data';
 import { purgeDatabase } from './purge-db';
+import { seedDatabase } from './seed-db';
 
 export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
   command: 'db',
@@ -61,7 +62,9 @@ export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
         (yargs) => {
           return yargs.help();
         },
-        async (yargs) => {},
+        async (yargs) => {
+          await seedDatabase(yargs.mongoUri);
+        },
       );
   },
 

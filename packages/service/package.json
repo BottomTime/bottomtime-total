@@ -59,6 +59,7 @@
     "@types/passport-google-oauth20": "^2.0.11",
     "@types/passport-jwt": "^3.0.9",
     "@types/passport-local": "^1.0.35",
+    "@types/prompts": "^2.4.4",
     "@types/pug": "^2.0.6",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.1",

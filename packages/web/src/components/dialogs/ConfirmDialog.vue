@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, withDefaults } from 'vue';
+import { computed } from 'vue';
 
 interface ConfirmDialogProps {
   cancelText?: string;

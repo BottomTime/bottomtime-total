@@ -86,6 +86,12 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "manageUsers" */ '../views/UsersView.vue'),
   },
   {
+    path: '/diveSites',
+    name: 'diveSites',
+    component: () =>
+      import(/* webpackChunkName: "diveSites" */ '../views/DiveSitesView.vue'),
+  },
+  {
     path: '/privacy',
     name: 'privacyPolicy',
     component: () =>

@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps } from 'vue';
+import { computed } from 'vue';
 import { Toast } from '@/helpers';
 
 interface ToastMessageProps {

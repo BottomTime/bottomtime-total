@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps } from 'vue';
+import { computed } from 'vue';
 
 interface TextAreaProps {
   id: string;
