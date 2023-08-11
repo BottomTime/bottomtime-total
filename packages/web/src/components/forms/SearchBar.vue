@@ -7,15 +7,10 @@
           id="search"
           class="input is-rounded"
           :placeholder="placeholder"
-          v-model="data.query"
+          v-model="queryString"
+          @keydown.enter="onSearch"
+          @keydown.esc="onClear"
         />
-      </div>
-      <div class="control">
-        <button class="button" @click="onClear">
-          <span class="icon">
-            <i class="fas fa-times"></i>
-          </span>
-        </button>
       </div>
       <div class="control">
         <button :class="buttonClass" @click="onSearch">
@@ -29,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 interface SearchBarProps {
   autofocus?: boolean;
@@ -38,25 +33,20 @@ interface SearchBarProps {
   query?: string;
 }
 
-interface SearchBarData {
-  query: string;
-}
-
-const queryInput = ref<HTMLInputElement | null>();
-
 const emit = defineEmits<{
   (e: 'search', query: string): void;
+  (e: 'clear'): void;
 }>();
 
 const props = withDefaults(defineProps<SearchBarProps>(), {
   autofocus: false,
   isLoading: false,
   placeholder: 'Search...',
+  query: '',
 });
 
-const data = reactive<SearchBarData>({
-  query: props.query ?? '',
-});
+const queryInput = ref<HTMLInputElement | null>();
+const queryString = ref(props.query);
 
 const buttonClass = computed(() => ({
   button: true,
@@ -65,17 +55,24 @@ const buttonClass = computed(() => ({
   'is-loading': props.isLoading,
 }));
 
+function focus() {
+  queryInput.value?.focus();
+}
+
 onMounted(() => {
-  if (props.autofocus) {
-    queryInput.value?.focus();
-  }
+  if (props.autofocus) focus();
 });
 
 function onSearch() {
-  emit('search', data.query);
+  emit('search', queryString.value);
 }
 
 function onClear() {
-  data.query = '';
+  queryString.value = '';
+  emit('clear');
 }
+
+defineExpose({
+  focus,
+});
 </script>

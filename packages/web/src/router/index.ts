@@ -92,6 +92,12 @@ const routes: Array<RouteRecordRaw> = [
       import(/* webpackChunkName: "diveSites" */ '../views/DiveSitesView.vue'),
   },
   {
+    path: '/diveSites/:siteId',
+    name: 'diveSite',
+    component: () =>
+      import(/* webpackChunkName: "diveSite") */ '../views/DiveSiteView.vue'),
+  },
+  {
     path: '/privacy',
     name: 'privacyPolicy',
     component: () =>

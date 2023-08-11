@@ -1,6 +1,7 @@
 import { SuperAgentStatic } from 'superagent';
 import { DiveSite, DiveSiteCreator, DiveSiteData } from './interfaces';
 import { DiveSiteSchema, DiveSiteUpdateSchema } from './validation';
+import { Depth } from '@/constants';
 
 export class DefaultDiveSite implements DiveSite {
   private deleted = false;
@@ -48,6 +49,14 @@ export class DefaultDiveSite implements DiveSite {
   }
   set description(value: string | undefined) {
     this.data.description = value;
+    this.dirty = true;
+  }
+
+  get depth(): Depth | undefined {
+    return this.data.depth;
+  }
+  set depth(value: Depth | undefined) {
+    this.data.depth = value;
     this.dirty = true;
   }
 

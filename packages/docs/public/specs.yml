@@ -2370,6 +2370,32 @@ components:
             The location of the dive site. (City, country, address, etc.)
           example: |
             Cozumel, Mexico
+        description:
+          type: string
+          example: 'This site is amazing! What a beautiful reef!'
+          maxLength: 2000
+          description: |
+            A user-editable description of the dive site.
+        depth:
+          type: object
+          description: |
+            The maximum depth of the dive site. A value of `0` is taken to
+            mean "bottomless".
+          required:
+            - depth
+            - unit
+          properties:
+            depth:
+              type: number
+              format: float
+              minimum: 0
+              example: 28.2
+            unit:
+              type: string
+              enum:
+                - 'm'
+                - 'ft'
+              example: 'm'
         freeToDive:
           type: boolean
           description: |
@@ -2398,12 +2424,6 @@ components:
                 necessary.
               example: |
                 Take a boat to the indicated GPS coordinates.
-            description:
-              type: string
-              example: 'This site is amazing! What a beautiful reef!'
-              maxLength: 2000
-              description: |
-                A user-editable description of the dive site.
             gps:
               type: object
               description: The GPS coordinates of the dive site.

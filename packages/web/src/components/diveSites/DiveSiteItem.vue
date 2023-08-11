@@ -4,7 +4,9 @@
       <div class="level">
         <div class="level-left">
           <div class="level-item">
-            <span class="is-size-4 is-capitalized">{{ site.name }}</span>
+            <RouterLink :to="`/diveSites/${site.id}`">
+              <span class="is-size-4 is-capitalized">{{ site.name }}</span>
+            </RouterLink>
           </div>
         </div>
 
@@ -35,7 +37,65 @@
         </div>
       </div>
 
-      <p class="content">{{ site.location }}</p>
+      <p v-if="site.description" class="content is-size-6 has-text-info">
+        {{ site.description }}
+      </p>
+
+      <div class="level is-size-7">
+        <div class="level-left">
+          <div class="level-item">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-globe"></i>
+              </span>
+              <span>
+                <strong>Location:</strong>
+                <em>{{
+                  `${site.depth?.depth.toFixed(2)} ${site.depth?.unit}`
+                }}</em>
+              </span>
+            </span>
+          </div>
+
+          <div v-if="site.depth" class="level-item">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-weight"></i>
+              </span>
+              <span>
+                <strong>Depth:</strong>
+                <em>{{
+                  `${site.depth?.depth.toFixed(2)} ${site.depth?.unit}`
+                }}</em>
+              </span>
+            </span>
+          </div>
+
+          <div v-if="site.freeToDive" class="level-item">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-piggy-bank"></i>
+              </span>
+              <span>
+                <strong>Free to dive?</strong>
+                <em>{{ site.freeToDive ? 'Yes' : 'No' }}</em>
+              </span>
+            </span>
+          </div>
+
+          <div v-if="site.shoreAccess" class="level-item">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-umbrella-beach"></i>
+              </span>
+              <span>
+                <strong>Shore access?</strong>
+                <em>{{ site.shoreAccess ? 'Yes' : 'No' }}</em>
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   </article>
 </template>

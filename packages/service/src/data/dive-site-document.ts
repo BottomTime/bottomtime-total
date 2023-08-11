@@ -1,4 +1,5 @@
 import { Document } from 'mongodb';
+import { Depth } from '../common';
 
 export interface DiveSiteReviewDocument extends Document {
   _id: string;
@@ -19,6 +20,7 @@ export interface DiveSiteDocument extends Document {
 
   name: string;
   description?: string;
+  depth?: Depth;
 
   location: string;
   directions?: string;

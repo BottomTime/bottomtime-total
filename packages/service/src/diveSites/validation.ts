@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { SortOrder } from '../constants';
+import { DepthUnit, SortOrder } from '../constants';
 import { DiveSitesSortBy } from './interfaces';
 import { UsernameSchema } from '../users';
 
@@ -24,6 +24,12 @@ export const DiveSiteSchema = Joi.object({
 
   name: Joi.string().trim().min(1).max(200).required(),
   description: Joi.string().trim().max(2000),
+  depth: Joi.object({
+    depth: Joi.number().min(0).required(),
+    unit: Joi.string()
+      .valid(...Object.values(DepthUnit))
+      .required(),
+  }),
 
   location: Joi.string().trim().min(1).max(200).required(),
   directions: Joi.string().trim().max(500),

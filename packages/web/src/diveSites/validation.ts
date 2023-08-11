@@ -9,6 +9,11 @@ const DiveSiteSummaryFields = {
   }),
   createdOn: Joi.date(),
   updatedOn: Joi.date(),
+  description: Joi.string().trim(),
+  depth: Joi.object({
+    depth: Joi.number().required(),
+    unit: Joi.string().required(),
+  }),
   averageRating: Joi.number(),
   averageDifficulty: Joi.number(),
   name: Joi.string().trim().required(),
@@ -20,7 +25,6 @@ const DiveSiteSummaryFields = {
 const DiveSiteFields = {
   ...DiveSiteSummaryFields,
   directions: Joi.string().trim(),
-  description: Joi.string().trim(),
   gps: Joi.object({
     lat: Joi.number().required(),
     lon: Joi.number().required(),
@@ -34,6 +38,10 @@ export const DiveSiteUpdateSchema = Joi.object({
   location: Joi.string().trim(),
   freeToDive: Joi.bool(),
   shoreAccess: Joi.bool(),
+  depth: Joi.object({
+    depth: Joi.number(),
+    unit: Joi.string().trim(),
+  }),
   directions: Joi.string().trim(),
   description: Joi.string().trim(),
   gps: Joi.object({

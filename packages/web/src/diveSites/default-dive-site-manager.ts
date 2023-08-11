@@ -13,6 +13,11 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
 
   async searchDiveSites(options?: DiveSiteSearchOptions): Promise<DiveSite[]> {
     const query: Record<string, unknown> = {};
+
+    if (options?.query) {
+      query.query = options.query;
+    }
+
     const {
       body: { sites },
     } = await this.agent.get('/api/diveSites').query(query);

@@ -1,3 +1,8 @@
+export interface Depth {
+  depth: number;
+  unit: 'ft' | 'm';
+}
+
 export interface DropDownOption {
   value: string;
   text?: string;

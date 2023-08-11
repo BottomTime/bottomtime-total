@@ -1,3 +1,5 @@
+import { Depth } from '@/constants';
+
 export interface DiveSiteCreator {
   readonly id: string;
   readonly username: string;
@@ -14,6 +16,7 @@ export interface DiveSiteData {
 
   name: string;
   description?: string;
+  depth?: Depth;
   location: string;
   directions?: string;
   gps?: {

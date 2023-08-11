@@ -1,4 +1,4 @@
-import { GpsCoordinates, Range } from '../common';
+import { Depth, GpsCoordinates, Range } from '../common';
 import { User } from '../users';
 
 export const DiveSitesSortBy = {
@@ -15,6 +15,7 @@ export interface DiveSiteCreator {
 export interface DiveSiteData {
   name: string;
   description?: string;
+  depth?: Depth;
 
   location: string;
   directions?: string;

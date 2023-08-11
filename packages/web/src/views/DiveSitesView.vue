@@ -10,10 +10,10 @@
         </div>
         <div class="tile is-parent is-vertical is-9">
           <div class="tile is-child">
-            <SearchBar autofocus />
+            <SearchBar autofocus @search="onSearch" />
           </div>
           <div class="tile is-child">
-            <DiveSiteList :isLoading="state.isLoading" :sites="state.sites" />
+            <DiveSiteList :isLoading="data.isLoading" :sites="data.sites" />
           </div>
         </div>
       </div>
@@ -30,26 +30,35 @@ import { DiveSiteManagerKey, WithErrorHandlingKey } from '@/injection-keys';
 import { inject } from '@/helpers';
 import PageTitle from '@/components/PageTitle.vue';
 import SearchBar from '@/components/forms/SearchBar.vue';
-import { DiveSite } from '@/diveSites';
+import { DiveSite, DiveSiteSearchOptions } from '@/diveSites';
 
-interface DiveSitesViewState {
+interface DiveSitesViewData {
+  filters: DiveSiteSearchOptions;
   isLoading: boolean;
   sites: DiveSite[];
 }
 
 const diveSiteManager = inject(DiveSiteManagerKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
-const state = reactive<DiveSitesViewState>({
+const data = reactive<DiveSitesViewData>({
+  filters: {
+    query: '',
+  },
   isLoading: true,
   sites: [],
 });
 
 async function refreshList() {
-  state.isLoading = true;
+  data.isLoading = true;
   await withErrorHandling(async () => {
-    state.sites = await diveSiteManager.searchDiveSites();
+    data.sites = await diveSiteManager.searchDiveSites(data.filters);
   });
-  state.isLoading = false;
+  data.isLoading = false;
+}
+
+async function onSearch(queryString: string) {
+  data.filters.query = queryString;
+  await refreshList();
 }
 
 onMounted(async () => {

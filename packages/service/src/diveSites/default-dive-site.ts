@@ -3,7 +3,7 @@ import Logger from 'bunyan';
 
 import { Collections, DiveSiteDocument, UserDocument } from '../data';
 import { DiveSite, DiveSiteCreator } from './interfaces';
-import { GpsCoordinates } from '../common';
+import { Depth, GpsCoordinates } from '../common';
 import { assertValid } from '../helpers/validation';
 import { DiveSiteSchema } from './validation';
 
@@ -11,6 +11,7 @@ const DiveSiteOptionalKeys: readonly string[] = [
   'averageDifficulty',
   'averageRating',
   'description',
+  'depth',
   'directions',
   'gps',
   'freeToDive',
@@ -71,6 +72,13 @@ export class DefaultDiveSite implements DiveSite {
   }
   set description(value: string | undefined) {
     this.data.description = value;
+  }
+
+  get depth(): Depth | undefined {
+    return this.data.depth;
+  }
+  set depth(value: Depth | undefined) {
+    this.data.depth = value;
   }
 
   get location(): string {
@@ -203,6 +211,7 @@ export class DefaultDiveSite implements DiveSite {
       averageDifficulty: this.averageDifficulty,
       name: this.name,
       description: this.description,
+      depth: this.depth,
       location: this.location,
       freeToDive: this.freeToDive,
       shoreAccess: this.shoreAccess,
@@ -220,7 +229,9 @@ export class DefaultDiveSite implements DiveSite {
       averageRating: this.averageRating,
       averageDifficulty: this.averageDifficulty,
       name: this.name,
+      description: this.description,
       location: this.location,
+      depth: this.depth,
       freeToDive: this.freeToDive,
       shoreAccess: this.shoreAccess,
     };
