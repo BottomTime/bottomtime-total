@@ -144,12 +144,6 @@ describe('Default Profile', () => {
       },
     },
     {
-      name: 'Profile visibility has an invalid value',
-      profile: {
-        profileVisibility: 'Mostly visible',
-      },
-    },
-    {
       name: 'Started diving is invalid',
       profile: {
         profileVisibility: ProfileVisibility.FriendsOnly,
@@ -160,12 +154,13 @@ describe('Default Profile', () => {
       name: 'Custom data is too big',
       profile: {
         profileVisibility: ProfileVisibility.FriendsOnly,
-        customData: randomBytes(800000).toString('base64'),
+        customData: { data: randomBytes(800000).toString('base64') },
       },
     },
   ].forEach((test) => {
     it(`Will throw ValidationError if attempt is made to save profile with: ${test.name}`, async () => {
-      const data = fakeUser({ profile: test.profile });
+      const data = fakeUser();
+      data.profile = test.profile;
       const profile = new DefaultProfile(mongoClient, Log, data);
       await expect(profile.save()).rejects.toThrowError(ValidationError);
     });

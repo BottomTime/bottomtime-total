@@ -1,7 +1,12 @@
 import { Collection, MongoClient } from 'mongodb';
 import Logger from 'bunyan';
 
-import { Collections, UserDocument, UserSettingsSchema } from '../data';
+import {
+  Collections,
+  UserDocument,
+  UserSettingsDocument,
+  UserSettingsSchema,
+} from '../data';
 import {
   DepthUnit,
   PressureUnit,
@@ -21,7 +26,12 @@ export class DefaultUserSettings implements UserSettings {
   ) {
     this.users = mongoClient.db().collection(Collections.Users);
     if (!data.settings) {
-      this.data.settings = {};
+      this.data.settings = {
+        depthUnit: DepthUnit.Meters,
+        pressureUnit: PressureUnit.Bar,
+        temperatureUnit: TemperatureUnit.Celsius,
+        weightUnit: WeightUnit.Kilograms,
+      };
     }
   }
 
@@ -54,7 +64,10 @@ export class DefaultUserSettings implements UserSettings {
   }
 
   async save(): Promise<void> {
-    this.data.settings = assertValid(this.data.settings, UserSettingsSchema);
+    this.data.settings = assertValid<UserSettingsDocument>(
+      this.data.settings,
+      UserSettingsSchema,
+    );
 
     this.log.debug(
       `Attempting to save profile settings for user "${this.data.username}...`,

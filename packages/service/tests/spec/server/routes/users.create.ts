@@ -20,6 +20,7 @@ import { It, Mock, Times } from 'moq.ts';
 import { CreateUserOptions, UserManager } from '../../../../src/users';
 
 import AdminUser from '../../../fixtures/admin-user.json';
+import { UserSchema } from '../../../../src/data';
 
 const Log = createTestLogger('user-routes-create');
 const CookieName = 'bottomtime.test';
@@ -264,11 +265,11 @@ export default function () {
         role: UserRole.Admin,
       }),
     );
-    const newUser = new DefaultUser(mongoClient, Log, {
-      ...AdminUser,
-      memberSince: new Date(AdminUser.memberSince),
-      lastLogin: new Date(AdminUser.lastLogin),
-    });
+    const newUser = new DefaultUser(
+      mongoClient,
+      Log,
+      UserSchema.parse(AdminUser),
+    );
     const userManager = new Mock<UserManager>()
       .setup((instance) => instance.createUser(It.IsAny<CreateUserOptions>()))
       .returnsAsync(newUser)
@@ -301,11 +302,11 @@ export default function () {
   });
 
   it('Will not allow anonymous users to create an account with elevated privileges', async () => {
-    const newUser = new DefaultUser(mongoClient, Log, {
-      ...AdminUser,
-      memberSince: new Date(AdminUser.memberSince),
-      lastLogin: new Date(AdminUser.lastLogin),
-    });
+    const newUser = new DefaultUser(
+      mongoClient,
+      Log,
+      UserSchema.parse(AdminUser),
+    );
     const userManagerMock = new Mock<UserManager>();
     const userManager = userManagerMock.object();
     const mail = new TestMailer();
@@ -340,11 +341,11 @@ export default function () {
 
   it('Will not allow non administrators to create an account with elevated privileges', async () => {
     const user = new DefaultUser(mongoClient, Log, fakeUser());
-    const newUser = new DefaultUser(mongoClient, Log, {
-      ...AdminUser,
-      memberSince: new Date(AdminUser.memberSince),
-      lastLogin: new Date(AdminUser.lastLogin),
-    });
+    const newUser = new DefaultUser(
+      mongoClient,
+      Log,
+      UserSchema.parse(AdminUser),
+    );
     const userManagerMock = new Mock<UserManager>();
     const userManager = userManagerMock.object();
     const mail = new TestMailer();

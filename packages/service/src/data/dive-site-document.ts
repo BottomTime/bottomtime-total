@@ -3,8 +3,8 @@ import { z } from 'zod';
 export const DiveSiteReviewSchema = z.object({
   _id: z.string().uuid(),
   creator: z.string().uuid(),
-  createdOn: z.date(),
-  updatedOn: z.date().optional(),
+  createdOn: z.coerce.date(),
+  updatedOn: z.coerce.date().optional(),
 
   title: z.string().trim().min(1).max(200),
   rating: z.number().min(1).max(5),
@@ -17,8 +17,8 @@ export type DiveSiteReviewDocument = z.infer<typeof DiveSiteReviewSchema>;
 export const DiveSiteSchema = z.object({
   _id: z.string().uuid(),
   creator: z.string().uuid(),
-  createdOn: z.date(),
-  updatedOn: z.date().optional(),
+  createdOn: z.coerce.date(),
+  updatedOn: z.coerce.date().optional(),
 
   name: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000).optional(),

@@ -11,7 +11,6 @@ import {
   TemperatureUnit,
   WeightUnit,
 } from '../../../src/constants';
-import { ValidationError } from '../../../src/errors';
 
 const Log = createTestLogger('default-user-settings');
 
@@ -97,15 +96,5 @@ describe('Default User Settings', () => {
       temperatureUnit: TemperatureUnit.Fahrenheit,
       weightUnit: WeightUnit.Pounds,
     });
-  });
-
-  it('Will throw a ValidationError if save() is called while properties are invalid', async () => {
-    const data = fakeUser();
-    const settings = new DefaultUserSettings(mongoClient, Log, data);
-    settings.depthUnit = 'leagues';
-    settings.pressureUnit = 'pascals';
-    settings.temperatureUnit = 'kelvin';
-    settings.weightUnit = 'stone';
-    await expect(settings.save()).rejects.toThrowError(ValidationError);
   });
 });

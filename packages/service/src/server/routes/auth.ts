@@ -50,7 +50,7 @@ export async function createJwtCookie(
 export function requireAdmin(req: Request, _res: Response, next: NextFunction) {
   if (!req.user) {
     next(new UnauthorizedError());
-  } else if (req.user.role < UserRole.Admin) {
+  } else if (req.user.role !== UserRole.Admin) {
     next(
       new ForbiddenError(
         'Your request has been denied. Only administrators are permitted to perform the requested action.',

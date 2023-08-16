@@ -9,7 +9,6 @@ import {
   WeightUnit,
 } from '../constants';
 import { ProfileSchema, UsernameSchema } from '../data';
-import { EmailSchema, PasswordStrengthSchema } from './validation';
 
 export enum UsersSortBy {
   Username = 'username',
@@ -21,6 +20,14 @@ export enum FriendsSortBy {
   MemberSince = 'memberSince',
   FriendsSince = 'friendsSince',
 }
+
+export const EmailSchema = z.string().trim().email().max(50);
+export const PasswordStrengthSchema = z
+  .string()
+  .regex(
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/,
+    'Password did not meet strength requirements.',
+  );
 
 export const SearchUsersOptionsSchema = z
   .object({
@@ -35,12 +42,15 @@ export const SearchUsersOptionsSchema = z
   .partial();
 export type SearchUsersOptions = z.infer<typeof SearchUsersOptionsSchema>;
 
-export interface ListFriendsOptions {
-  skip?: number;
-  limit?: number;
-  sortBy?: FriendsSortBy;
-  sortOrder?: SortOrder;
-}
+export const ListFriendsOptionsSchema = z
+  .object({
+    sortBy: z.nativeEnum(FriendsSortBy),
+    sortOrder: z.nativeEnum(SortOrder),
+    skip: z.number().int().min(0),
+    limit: z.number().int().positive().max(200),
+  })
+  .partial();
+export type ListFriendsOptions = z.infer<typeof ListFriendsOptionsSchema>;
 
 export interface ProfileCertificationData {
   agency?: string;

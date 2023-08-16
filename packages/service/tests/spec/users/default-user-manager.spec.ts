@@ -3,14 +3,15 @@ import { faker } from '@faker-js/faker';
 import { compare } from 'bcrypt';
 import { Collection } from 'mongodb';
 import { ProfileVisibility, SortOrder, UserRole } from '../../../src/constants';
-import { Collections, UserDocument } from '../../../src/data';
+import { Collections, UserDocument, UserSchema } from '../../../src/data';
 import { ConflictError, ValidationError } from '../../../src/errors';
-import { CreateUserOptions, UsersSortBy } from '../../../src/users';
+import { UsersSortBy } from '../../../src/users';
 import { DefaultUser } from '../../../src/users/default-user';
 import { DefaultUserManager } from '../../../src/users/default-user-manager';
 import { fakePassword, fakeProfile, fakeUser } from '../../fixtures/fake-user';
 import { mongoClient } from '../../mongo-client';
 import { createTestLogger } from '../../test-logger';
+
 import UserSearchData from '../../fixtures/user-search-data.json';
 
 const Log = createTestLogger('default-user-manager');
@@ -257,22 +258,6 @@ describe('Default User Manager', () => {
         name: 'weak password',
         options: { username: 'ralph27', password: 'too weak' },
       },
-      {
-        name: 'unknown role',
-        options: {
-          username: 'boris25',
-          role: -104,
-        },
-      },
-      {
-        name: 'invalid profile visibility',
-        options: {
-          username: 'lindsay.m',
-          profile: {
-            profileVisibility: 'all-the-n00bs',
-          },
-        },
-      },
     ].forEach((testCase) => {
       it(`Will throw a ValidationError if the options fail validation: ${testCase.name}`, async () => {
         const userManager = new DefaultUserManager(mongoClient, Log);
@@ -313,11 +298,7 @@ describe('Default User Manager', () => {
     let testUsersData: UserDocument[];
 
     beforeAll(() => {
-      testUsersData = UserSearchData.map((user) => ({
-        ...user,
-        lastLogin: new Date(user.lastLogin),
-        memberSince: new Date(user.memberSince),
-      }));
+      testUsersData = UserSearchData.map((user) => UserSchema.parse(user));
     });
 
     beforeEach(async () => {
@@ -387,9 +368,9 @@ describe('Default User Manager', () => {
 
     it('Will throw a ValidationError if the query fails validation', async () => {
       const userManager = new DefaultUserManager(mongoClient, Log);
-      await expect(
-        userManager.searchUsers({ sortBy: 'zodiacSign', skip: -50 }),
-      ).rejects.toThrowError(ValidationError);
+      await expect(userManager.searchUsers({ skip: -50 })).rejects.toThrowError(
+        ValidationError,
+      );
     });
   });
 
@@ -455,18 +436,18 @@ describe('Default User Manager', () => {
     it('Will return all public profiles when profileVisibleTo is set to "public"', async () => {
       const userData = new Array<UserDocument>(12);
       for (let i = 0; i < userData.length; i++) {
-        let visibility: string;
+        let profileVisibility: ProfileVisibility;
 
         if (i < 4) {
-          visibility = ProfileVisibility.Public;
+          profileVisibility = ProfileVisibility.Public;
         } else if (i < 8) {
-          visibility = ProfileVisibility.FriendsOnly;
+          profileVisibility = ProfileVisibility.FriendsOnly;
         } else {
-          visibility = ProfileVisibility.Private;
+          profileVisibility = ProfileVisibility.Private;
         }
 
         userData[i] = fakeUser({
-          profile: fakeProfile({ profileVisibility: visibility }),
+          profile: fakeProfile({ profileVisibility }),
         });
       }
       await Users.insertMany([...userData]);

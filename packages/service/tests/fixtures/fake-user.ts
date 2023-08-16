@@ -2,9 +2,10 @@ import dayjs from 'dayjs';
 import { faker } from '@faker-js/faker';
 import { generate } from 'generate-password';
 import { hashSync } from 'bcrypt';
+import { z } from 'zod';
 
 import { ProfileVisibility, UserRole } from '../../src/constants';
-import { UserDocument } from '../../src/data';
+import { UserDocument, UserSchema } from '../../src/data';
 import { ProfileCertificationData, ProfileData } from '../../src/users';
 
 import KnownCertifications from '../../src/data/certifications.json';
@@ -104,12 +105,6 @@ export function fakeUser(
       data?.passwordHash ?? hashSync(password ?? fakePassword(), 1);
   }
 
-  // Remove undefined properties or MongoDB will write these as "null".
-  Object.keys(user).forEach((key) => {
-    if (user[key] === undefined) {
-      delete user[key];
-    }
-  });
-
-  return user;
+  // Allow Zod to remove "undefined" fields so MongoDB doesn't write these as "null".
+  return UserSchema.parse(user);
 }

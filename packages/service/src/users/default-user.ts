@@ -7,9 +7,15 @@ import { z } from 'zod';
 import { assertValid } from '../helpers/validation';
 import { Collections, UserDocument, UsernameSchema } from '../data';
 import config from '../config';
-import { User, Profile, UserSettings, FriendsManager } from './interfaces';
+import {
+  User,
+  Profile,
+  UserSettings,
+  FriendsManager,
+  EmailSchema,
+  PasswordStrengthSchema,
+} from './interfaces';
 import { ConflictError } from '../errors';
-import { EmailSchema, PasswordStrengthSchema } from './validation';
 import { DefaultProfile } from './default-profile';
 import { DefaultUserSettings } from './default-user-settings';
 import { DefaultFriendManager } from './default-friend-manager';
