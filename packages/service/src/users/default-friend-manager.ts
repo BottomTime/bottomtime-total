@@ -1,7 +1,10 @@
 import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
 import Logger from 'bunyan';
 
-import { Collections, FriendSubDocument, UserDocument } from '../data';
+import { Collections, FriendDocument, UserDocument } from '../data';
+import config from '../config';
+import { DefaultFriend } from './default-friend';
+import { DefaultProfile } from './default-profile';
 import {
   Friend,
   FriendsManager,
@@ -9,13 +12,8 @@ import {
   Profile,
   FriendsSortBy,
 } from './interfaces';
-import { DefaultFriend } from './default-friend';
-import config from '../config';
 import { InvalidOperationError } from '../errors';
-import { DefaultProfile } from './default-profile';
 import { ProfileVisibility, SortOrder } from '../constants';
-import { assertValid } from '../helpers/validation';
-import { ListFriendsOptionsSchema } from './validation';
 
 export class DefaultFriendManager implements FriendsManager {
   private readonly users: Collection<UserDocument>;
@@ -29,7 +27,7 @@ export class DefaultFriendManager implements FriendsManager {
   }
 
   async addFriend(friend: Profile): Promise<Friend> {
-    let friendship: FriendSubDocument | null | undefined;
+    let friendship: FriendDocument | null | undefined;
 
     const userDocument = await this.users.findOne(
       { _id: this.userId },
@@ -162,7 +160,6 @@ export class DefaultFriendManager implements FriendsManager {
   }
 
   async listFriends(options?: ListFriendsOptions): Promise<Friend[]> {
-    const { parsed } = assertValid(options, ListFriendsOptionsSchema);
     const userData = await this.users.findOne(
       { _id: this.userId },
       {
@@ -176,25 +173,25 @@ export class DefaultFriendManager implements FriendsManager {
 
     // Sorting by "FriendsSince" works a little differently since we already have all of the data for paging and sorting
     // in memory...
-    if (parsed?.sortBy === FriendsSortBy.FriendsSince) {
-      return this.listFriendsOrderedByFriendsSince(userData, parsed);
+    if (options?.sortBy === FriendsSortBy.FriendsSince) {
+      return this.listFriendsOrderedByFriendsSince(userData, options);
     }
 
     // TODO: This can get to be very memory intensive... can I improve it?
-    const relations: Record<string, FriendSubDocument> = {};
+    const relations: Record<string, FriendDocument> = {};
     userData.friends.forEach((relation) => {
       relations[relation.friendId] = relation;
     });
 
     const [queryFilter, queryOptions] = this.constructQuery(
       Object.keys(relations),
-      parsed,
+      options,
     );
 
     const profilesCursor = this.users
       .find(queryFilter, queryOptions)
-      .skip(parsed?.skip ?? 0)
-      .limit(parsed?.limit ?? 100)
+      .skip(options?.skip ?? 0)
+      .limit(options?.limit ?? 100)
       .map((user) => {
         // Redact private profile info.
         if (user.profile?.profileVisibility === ProfileVisibility.Private) {

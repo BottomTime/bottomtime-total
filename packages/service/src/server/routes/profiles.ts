@@ -1,23 +1,26 @@
 import { Express } from 'express';
-import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
+import { z } from 'zod';
 
 import { ProfileVisibility, SortOrder, UserRole } from '../../constants';
-import { ProfileSchema, UsernameSchema, UsersSortBy } from '../../users';
+import { ProfileSchema, UsernameSchema } from '../../data';
 import { assertValid, isValid } from '../../helpers/validation';
 import { MissingResourceError } from '../../errors';
+import { ProfileData, SearchUsersOptions, UsersSortBy } from '../../users';
 
 const ProfileNotFoundError = new MissingResourceError(
   'Unable to find the requested user profile',
 );
 
-const SearchProfilesQueryOptions = Joi.object({
-  query: Joi.string().trim(),
-  sortBy: Joi.string().valid(...Object.values(UsersSortBy)),
-  sortOrder: Joi.string().valid(...Object.values(SortOrder)),
-  skip: Joi.number().min(0),
-  limit: Joi.number().positive().max(200),
-});
+const SearchProfilesQueryOptions = z
+  .object({
+    query: z.string().trim(),
+    sortBy: z.nativeEnum(UsersSortBy),
+    sortOrder: z.nativeEnum(SortOrder),
+    skip: z.coerce.number().int().min(0),
+    limit: z.coerce.number().int().positive().max(200),
+  })
+  .partial();
 
 export async function loadUserProfile(
   req: Request,
@@ -27,7 +30,7 @@ export async function loadUserProfile(
   try {
     const { isValid: usernameValid } = isValid(
       req.params.username,
-      UsernameSchema.required(),
+      UsernameSchema,
     );
 
     if (!usernameValid) {
@@ -101,14 +104,13 @@ export async function udpateProfile(
   next: NextFunction,
 ) {
   try {
-    const { parsed: data } = assertValid(req.body, ProfileSchema);
-    const profile = req.selectedUser!.profile;
+    if (!req.selectedUser) {
+      next(new Error('No user profile loaded'));
+      return;
+    }
 
-    Object.keys(data).forEach((key) => {
-      if (data[key] === null) {
-        delete data[key];
-      }
-    });
+    const data = assertValid<ProfileData>(req.body, ProfileSchema);
+    const profile = req.selectedUser.profile;
 
     profile.avatar = data.avatar;
     profile.bio = data.bio;
@@ -135,20 +137,19 @@ export async function patchProfile(
   next: NextFunction,
 ) {
   try {
-    const profile = req.selectedUser!.profile;
-    const { parsed: data } = assertValid(
+    if (!req.selectedUser) {
+      next(new Error('No user profile loaded'));
+      return;
+    }
+
+    const profile = req.selectedUser.profile;
+    const data = assertValid<ProfileData>(
       {
         ...profile.toJSON(),
         ...req.body,
       },
       ProfileSchema,
     );
-
-    Object.keys(data).forEach((key) => {
-      if (data[key] === null) {
-        delete data[key];
-      }
-    });
 
     profile.avatar = data.avatar;
     profile.bio = data.bio;
@@ -175,15 +176,18 @@ export async function searchProfiles(
   next: NextFunction,
 ) {
   try {
-    const { parsed } = assertValid(req.query, SearchProfilesQueryOptions);
+    const options = assertValid<SearchUsersOptions>(
+      req.query,
+      SearchProfilesQueryOptions.required(),
+    );
 
     if (!req.user) {
-      parsed.profileVisibleTo = 'public';
+      options.profileVisibleTo = 'public';
     } else if (req.user.role !== UserRole.Admin) {
-      parsed.profileVisibleTo = req.user.id;
+      options.profileVisibleTo = req.user.id;
     }
 
-    const users = await req.userManager.searchUsers(parsed);
+    const users = await req.userManager.searchUsers(options);
 
     res.json(users.map((user) => user.profile));
   } catch (error) {

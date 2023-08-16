@@ -2,21 +2,18 @@ import { compare, hash } from 'bcrypt';
 import { Collection, MongoClient } from 'mongodb';
 import Logger from 'bunyan';
 import { randomBytes } from 'crypto';
+import { z } from 'zod';
 
 import { assertValid } from '../helpers/validation';
-import { Collections, UserDocument } from '../data';
+import { Collections, UserDocument, UsernameSchema } from '../data';
 import config from '../config';
 import { User, Profile, UserSettings, FriendsManager } from './interfaces';
 import { ConflictError } from '../errors';
-import {
-  EmailSchema,
-  PasswordStrengthSchema,
-  RoleSchema,
-  UsernameSchema,
-} from './validation';
+import { EmailSchema, PasswordStrengthSchema } from './validation';
 import { DefaultProfile } from './default-profile';
 import { DefaultUserSettings } from './default-user-settings';
 import { DefaultFriendManager } from './default-friend-manager';
+import { UserRole } from '../constants';
 
 export class DefaultUser implements User {
   private _friends: FriendsManager | undefined;
@@ -60,7 +57,7 @@ export class DefaultUser implements User {
     return this._friends;
   }
 
-  get role(): number {
+  get role(): UserRole {
     return this.data.role;
   }
 
@@ -186,8 +183,8 @@ export class DefaultUser implements User {
     (this.data.emailLowered = lowered), (this.data.emailVerified = false);
   }
 
-  async changeRole(newRole: number): Promise<void> {
-    assertValid(newRole, RoleSchema);
+  async changeRole(newRole: UserRole): Promise<void> {
+    assertValid(newRole, z.nativeEnum(UserRole));
 
     if (newRole === this.data.role) {
       return;

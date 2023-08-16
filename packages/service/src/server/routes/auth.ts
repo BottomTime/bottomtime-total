@@ -1,7 +1,7 @@
 import { Express } from 'express';
-import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
+import { z } from 'zod';
 
 import config from '../../config';
 import { ForbiddenError, UnauthorizedError } from '../../errors';
@@ -9,10 +9,10 @@ import { UserRole } from '../../constants';
 import { assertValid } from '../../helpers/validation';
 import { issueAuthCookie } from '../jwt';
 
-const LoginSchema = Joi.object({
-  usernameOrEmail: Joi.string().required(),
-  password: Joi.string().required(),
-}).required();
+const LoginSchema = z.object({
+  usernameOrEmail: z.string(),
+  password: z.string(),
+});
 
 export function getCurrentUser(req: Request, res: Response) {
   res.json({

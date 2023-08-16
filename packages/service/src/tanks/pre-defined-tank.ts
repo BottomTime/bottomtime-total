@@ -1,11 +1,11 @@
 import Logger from 'bunyan';
 import { Collection, MongoClient } from 'mongodb';
 
+import { assertValid } from '../helpers/validation';
 import { Collections } from '../data';
 import { Tank } from './interfaces';
-import { TankDocument } from '../data/tank-document';
-import { assertValid } from '../helpers/validation';
-import { TankSchema } from './validation';
+import { TankDocument, TankSchema } from '../data/tank-document';
+import { TankMaterial } from '../constants';
 
 export class PreDefinedTank implements Tank {
   private readonly tanks: Collection<TankDocument>;
@@ -15,7 +15,7 @@ export class PreDefinedTank implements Tank {
   constructor(
     mongoClient: MongoClient,
     private readonly log: Logger,
-    private readonly data: TankDocument,
+    private data: TankDocument,
   ) {
     this.tanks = mongoClient.db().collection(Collections.Tanks);
   }
@@ -31,10 +31,10 @@ export class PreDefinedTank implements Tank {
     this.data.name = value;
   }
 
-  get material(): string {
+  get material(): TankMaterial {
     return this.data.material;
   }
-  set material(value: string) {
+  set material(value: TankMaterial) {
     this.data.material = value;
   }
 
@@ -58,12 +58,12 @@ export class PreDefinedTank implements Tank {
   }
 
   async save(): Promise<void> {
-    const { parsed } = assertValid(this.data, TankSchema);
+    this.data = assertValid(this.data, TankSchema);
 
     this.log.debug(`Saving changes to tank "${this.data.name}"...`);
     await this.tanks.updateOne(
       { _id: this.id },
-      { $set: parsed },
+      { $set: this.data },
       { upsert: true },
     );
   }

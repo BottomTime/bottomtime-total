@@ -3,10 +3,9 @@ import Logger from 'bunyan';
 import { randomBytes } from 'crypto';
 
 import { Application } from './interfaces';
-import { ApplicationDocument, Collections } from '../data';
+import { ApplicationDocument, ApplicationSchema, Collections } from '../data';
 import { User, UserManager } from '../users';
 import { assertValid } from '../helpers/validation';
-import { ApplicationSchema } from './validation';
 import { ConflictError } from '../errors';
 
 export class DefaultApplication implements Application {
@@ -90,7 +89,7 @@ export class DefaultApplication implements Application {
   }
 
   async save(): Promise<void> {
-    const { parsed: data } = assertValid(this.data, ApplicationSchema);
+    const data = assertValid<ApplicationDocument>(this.data, ApplicationSchema);
 
     const conflict = await this.applications.findOne(
       {

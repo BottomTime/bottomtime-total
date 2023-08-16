@@ -3,10 +3,10 @@ export type ValidationErrors = Array<{
   path: string;
 }>;
 
-export interface ValidationResult {
+export interface ValidationResult<T = any> {
   readonly isValid: boolean;
   readonly errors?: ValidationErrors;
-  readonly parsed?: any;
+  readonly parsed?: T;
 }
 
 export class ValidationError extends Error {
