@@ -2,7 +2,7 @@ import request from 'superagent';
 import { ToastType } from '@/helpers';
 import { BTState, getters } from '@/store';
 import { fakeUser } from '../../fixtures/fake-user';
-import { DefaultUser } from '@/users';
+import { DefaultUser } from '@/client/users';
 
 function createDefaultState(state?: Partial<BTState>): BTState {
   return {

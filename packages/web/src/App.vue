@@ -18,15 +18,15 @@ import { inject } from '@/helpers';
 import NavBar from '@/components/main/NavBar.vue';
 import PageFooter from '@/components/main/PageFooter.vue';
 import SnackBar from '@/components/main/SnackBar.vue';
-import { UserManagerKey } from '@/injection-keys';
+import { ApiClientKey } from '@/injection-keys';
 
-const userManager = inject(UserManagerKey);
+const client = inject(ApiClientKey);
 const store = useStore();
 const isLoading = ref(true);
 
 onBeforeMount(async () => {
   try {
-    const currentUser = await userManager.getCurrentUser();
+    const currentUser = await client.users.getCurrentUser();
     await store.dispatch(Dispatch.SignInUser, currentUser);
   } catch (error) {
     console.error(error);

@@ -4,25 +4,23 @@ import request, { SuperAgentStatic } from 'superagent';
 import { BTState, createStore } from '@/store';
 import { createErrorHandler, ErrorHandlingHOF } from '@/helpers';
 import { createHttpError } from '../../../fixtures/create-http-error';
-import { DefaultUser, DefaultUserManager, UserManager } from '@/users';
+import { DefaultUser, DefaultUserManager, UserManager } from '@/client/users';
 import { fakeUser } from '../../..//fixtures/fake-user';
 import LoginForm from '@/components/users/LoginForm.vue';
 import { Store } from 'vuex';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from '@/injection-keys';
+import { ApiClientKey, StoreKey, WithErrorHandlingKey } from '@/injection-keys';
+import { ApiClient } from '@/client';
+import { SuperAgentClient } from '@/client/superagent-client';
 
 describe('Login Form', () => {
   let agent: SuperAgentStatic;
+  let apiClient: ApiClient;
   let withErrorHandling: ErrorHandlingHOF;
-  let userManager: UserManager;
   let store: Store<BTState>;
 
   beforeAll(() => {
     agent = request.agent();
-    userManager = new DefaultUserManager(agent);
+    apiClient = new SuperAgentClient(agent);
     store = createStore();
     withErrorHandling = createErrorHandler(store);
   });
@@ -32,12 +30,12 @@ describe('Login Form', () => {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
     });
-    const authenticateSpy = jest.spyOn(userManager, 'authenticateUser');
+    const authenticateSpy = jest.spyOn(apiClient.users, 'authenticateUser');
 
     await wrapper.get('button#btn-login').trigger('click');
     await flushPromises();
@@ -57,13 +55,13 @@ describe('Login Form', () => {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
     });
     const authenticateSpy = jest
-      .spyOn(userManager, 'authenticateUser')
+      .spyOn(apiClient.users, 'authenticateUser')
       .mockRejectedValue(error);
     const dispatchSpy = jest
       .spyOn(store, 'dispatch')
@@ -92,13 +90,13 @@ describe('Login Form', () => {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
     });
     const authenticateSpy = jest
-      .spyOn(userManager, 'authenticateUser')
+      .spyOn(apiClient.users, 'authenticateUser')
       .mockResolvedValue(user);
     const dispatchSpy = jest
       .spyOn(store, 'dispatch')

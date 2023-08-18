@@ -4,12 +4,9 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { createErrorHandler } from '@/helpers';
 import CreateNewPasswordForm from '@/components/users/CreateNewPasswordForm.vue';
 import { createStore } from '@/store';
-import { UserManager } from '@/users';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from '@/injection-keys';
+import { UserManager } from '@/client/users';
+import { ApiClientKey, StoreKey, WithErrorHandlingKey } from '@/injection-keys';
+import { ApiClient } from '@/client';
 
 const TestProps = {
   username: 'ricky_bobby',
@@ -19,6 +16,10 @@ const TestProps = {
 describe('CreateNewPasswordForm component', () => {
   const withErrorHandling = createErrorHandler(createStore());
   const userManager = new Mock<UserManager>().object();
+  const apiClient = new Mock<ApiClient>()
+    .setup((c) => c.users)
+    .returns(userManager)
+    .object();
 
   [
     {
@@ -44,7 +45,7 @@ describe('CreateNewPasswordForm component', () => {
       const wrapper = mount(CreateNewPasswordForm, {
         global: {
           provide: {
-            [UserManagerKey as symbol]: userManager,
+            [ApiClientKey as symbol]: apiClient,
             [WithErrorHandlingKey as symbol]: withErrorHandling,
           },
         },
@@ -62,7 +63,7 @@ describe('CreateNewPasswordForm component', () => {
     const wrapper = mount(CreateNewPasswordForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
@@ -84,7 +85,7 @@ describe('CreateNewPasswordForm component', () => {
     const wrapper = mount(CreateNewPasswordForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
@@ -118,11 +119,15 @@ describe('CreateNewPasswordForm component', () => {
       )
       .returnsAsync(false)
       .object();
+    const apiClient = new Mock<ApiClient>()
+      .setup((c) => c.users)
+      .returns(userManager)
+      .object();
     const wrapper = mount(CreateNewPasswordForm, {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
@@ -161,10 +166,14 @@ describe('CreateNewPasswordForm component', () => {
       )
       .returnsAsync(true)
       .object();
+    const apiClient = new Mock<ApiClient>()
+      .setup((c) => c.users)
+      .returns(userManager)
+      .object();
     const wrapper = mount(CreateNewPasswordForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },

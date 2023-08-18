@@ -1,7 +1,7 @@
 import request from 'superagent';
-import { DefaultUser } from '@/users';
-import { fakeUser } from '../../fixtures/fake-user';
-import { scope } from '../../utils/scope';
+import { DefaultUser } from '@/client/users';
+import { fakeUser } from '../../../fixtures/fake-user';
+import { scope } from '../../../utils/scope';
 
 describe('Default User Class', () => {
   it('Will return properties correctly', () => {

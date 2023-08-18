@@ -1,8 +1,8 @@
 import request from 'superagent';
 
-import { DefaultUser, DefaultUserManager, UserData } from '@/users';
+import { DefaultUser, DefaultUserManager, UserData } from '@/client/users';
 import { ProfileVisibility, UserRole } from '@/constants';
-import { scope } from '../../utils/scope';
+import { scope } from '../../../utils/scope';
 
 const AuthUser: UserData = {
   id: 'abc1234',

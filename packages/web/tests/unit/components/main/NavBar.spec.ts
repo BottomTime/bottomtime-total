@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils';
 import { createStore } from '@/store';
 import { initialStoreState } from '../../../fixtures/store-state';
 import NavBar from '@/components/main/NavBar.vue';
-import { Profile, User } from '@/users';
+import { Profile, User } from '@/client/users';
 import router from '@/router';
 import { StoreKey } from '@/injection-keys';
 import { UserRole } from '@/constants';

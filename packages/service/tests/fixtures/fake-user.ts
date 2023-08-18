@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import { faker } from '@faker-js/faker';
 import { generate } from 'generate-password';
 import { hashSync } from 'bcrypt';
-import { z } from 'zod';
 
 import { ProfileVisibility, UserRole } from '../../src/constants';
 import { UserDocument, UserSchema } from '../../src/data';

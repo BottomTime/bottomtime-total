@@ -6,26 +6,23 @@ import { Store } from 'vuex';
 
 import { BTState, createStore } from '@/store';
 import { createErrorHandler, ErrorHandlingHOF } from '@/helpers';
-import { DefaultUserManager, UserManager } from '@/users';
 import { scope } from '../../../utils/scope';
 import SignUpForm from '@/components/users/SignUpForm.vue';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from '@/injection-keys';
+import { ApiClientKey, StoreKey, WithErrorHandlingKey } from '@/injection-keys';
 import { ProfileVisibility } from '@/constants';
+import { ApiClient } from '@/client';
+import { SuperAgentClient } from '@/client/superagent-client';
 
 describe('Sign Up Form', () => {
   let agent: SuperAgentStatic;
+  let apiClient: ApiClient;
   let store: Store<BTState>;
-  let userManager: UserManager;
   let withErrorHandling: ErrorHandlingHOF;
 
   beforeAll(() => {
     agent = request.agent();
+    apiClient = new SuperAgentClient(agent);
     store = createStore();
-    userManager = new DefaultUserManager(agent);
     withErrorHandling = createErrorHandler(store);
   });
 
@@ -33,14 +30,14 @@ describe('Sign Up Form', () => {
     const wrapper = mount(SignUpForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [StoreKey as symbol]: store,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
     });
 
-    const createUserSpy = jest.spyOn(userManager, 'createUser');
+    const createUserSpy = jest.spyOn(apiClient.users, 'createUser');
     const signupButton = wrapper.get('button#btn-signup');
 
     await signupButton.trigger('click');
@@ -75,7 +72,7 @@ describe('Sign Up Form', () => {
     const wrapper = mount(SignUpForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [StoreKey as symbol]: store,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
@@ -96,7 +93,7 @@ describe('Sign Up Form', () => {
     const wrapper = mount(SignUpForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [StoreKey as symbol]: store,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
@@ -129,7 +126,7 @@ describe('Sign Up Form', () => {
     const wrapper = mount(SignUpForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [StoreKey as symbol]: store,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
@@ -165,7 +162,7 @@ describe('Sign Up Form', () => {
     const wrapper = mount(SignUpForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [StoreKey as symbol]: store,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },

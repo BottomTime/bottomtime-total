@@ -2,7 +2,6 @@ import { Collection } from 'mongodb';
 import {
   Collections,
   FriendDocument,
-  FriendSchema,
   UserDocument,
   UserSchema,
 } from '../../../src/data';
