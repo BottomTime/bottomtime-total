@@ -110,29 +110,21 @@ export class DefaultProfile implements Profile {
   }
 
   async save(): Promise<void> {
-    this.data.profile = assertValid<ProfileDocument>(
+    const profile = assertValid<ProfileDocument>(
       this.data.profile,
       ProfileSchema,
     );
-    const update = {
-      $set: {},
-      $unset: {},
-    };
 
     for (const key of ProfileSchema.keyof().options) {
-      if (this.data.profile[key] === undefined)
-        Object.assign(update.$unset, { [`profile.${key}`]: true });
-      else
-        Object.assign(update.$set, {
-          [`profile.${key}`]: this.data.profile[key],
-        });
+      if (profile[key] === undefined) delete profile[key];
     }
 
     this.log.debug(
       `Attempting to save profile data for user "${this.data.username}"...`,
-      update,
+      profile,
     );
-    await this.users.updateOne({ _id: this.data._id }, update);
+    await this.users.updateOne({ _id: this.data._id }, { $set: { profile } });
+    this.data.profile = profile;
   }
 
   toJSON(): Record<string, unknown> {

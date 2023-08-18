@@ -1,26 +1,30 @@
 import { Express } from 'express';
 import { NextFunction, Request, Response } from 'express';
-import { z } from 'zod';
 
-import { ProfileVisibility, SortOrder, UserRole } from '../../constants';
+import { ProfileVisibility, UserRole } from '../../constants';
 import { ProfileSchema, UsernameSchema } from '../../data';
 import { assertValid, isValid } from '../../helpers/validation';
 import { MissingResourceError } from '../../errors';
-import { ProfileData, SearchUsersOptions, UsersSortBy } from '../../users';
+import {
+  ProfileData,
+  SearchUsersOptions,
+  SearchUsersOptionsSchema,
+} from '../../users';
 
 const ProfileNotFoundError = new MissingResourceError(
   'Unable to find the requested user profile',
 );
 
-const SearchProfilesQueryOptions = z
-  .object({
-    query: z.string().trim(),
-    sortBy: z.nativeEnum(UsersSortBy),
-    sortOrder: z.nativeEnum(SortOrder),
-    skip: z.coerce.number().int().min(0),
-    limit: z.coerce.number().int().positive().max(200),
-  })
-  .partial();
+function valueOrDefault<T>(value: T | null, def: T): T | undefined {
+  if (value === undefined) return def;
+  else if (value === null) return undefined;
+  else return value;
+}
+
+const SearchProfilesQueryOptions = SearchUsersOptionsSchema.omit({
+  role: true,
+  profileVisibleTo: true,
+});
 
 export async function loadUserProfile(
   req: Request,
@@ -86,11 +90,13 @@ export function requireProfileWritePermission(
   res: Response,
   next: NextFunction,
 ) {
-  const canWrite =
-    (req.user?.role ?? 0) >= UserRole.Admin ||
-    req.user?.id === req.selectedUser!.id;
+  if (!req.user) {
+    next(ProfileNotFoundError);
+    return;
+  }
 
-  if (canWrite) next();
+  if (req.user.role === UserRole.Admin || req.user.id === req.selectedUser!.id)
+    next();
   else next(ProfileNotFoundError);
 }
 
@@ -143,24 +149,30 @@ export async function patchProfile(
     }
 
     const profile = req.selectedUser.profile;
-    const data = assertValid<ProfileData>(
-      {
-        ...profile.toJSON(),
-        ...req.body,
-      },
-      ProfileSchema,
-    );
+    const data: ProfileData = {
+      ...profile.toJSON(),
+      ...req.body,
+    };
 
-    profile.avatar = data.avatar;
-    profile.bio = data.bio;
-    profile.birthdate = data.birthdate;
-    profile.certifications = data.certifications;
-    profile.customData = data.customData;
-    profile.experienceLevel = data.experienceLevel;
-    profile.location = data.location;
-    profile.name = data.name;
+    profile.avatar = valueOrDefault(data.avatar, profile.avatar);
+    profile.bio = valueOrDefault(data.bio, profile.bio);
+    profile.birthdate = valueOrDefault(data.birthdate, profile.birthdate);
+    profile.certifications = valueOrDefault(
+      data.certifications,
+      profile.certifications,
+    );
+    profile.customData = valueOrDefault(data.customData, profile.customData);
+    profile.experienceLevel = valueOrDefault(
+      data.experienceLevel,
+      profile.experienceLevel,
+    );
+    profile.location = valueOrDefault(data.location, profile.location);
+    profile.name = valueOrDefault(data.name, profile.name);
     profile.profileVisibility = data.profileVisibility;
-    profile.startedDiving = data.startedDiving;
+    profile.startedDiving = valueOrDefault(
+      data.startedDiving,
+      profile.startedDiving,
+    );
 
     await profile.save();
 
@@ -178,7 +190,7 @@ export async function searchProfiles(
   try {
     const options = assertValid<SearchUsersOptions>(
       req.query,
-      SearchProfilesQueryOptions.required(),
+      SearchProfilesQueryOptions,
     );
 
     if (!req.user) {

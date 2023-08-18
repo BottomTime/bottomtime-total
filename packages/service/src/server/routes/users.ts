@@ -78,7 +78,7 @@ export async function createUser(
   next: NextFunction,
 ) {
   try {
-    const username = assertValid(req.params.username, UsernameSchema);
+    const { username } = req.params;
     const options = assertValid<CreateUserOptions>(
       {
         username,
@@ -87,14 +87,13 @@ export async function createUser(
       CreateUserOptionsSchema,
     );
 
-    if (options.role && options.role > UserRole.User) {
+    if (options.role && options.role !== UserRole.User) {
       const errorMessage =
         'Unable to create new user account with elevated privileges. Only authenticated admins are able to do that.';
       if (!req.user) {
-        next(new UnauthorizedError(errorMessage));
-        return;
+        throw new UnauthorizedError(errorMessage);
       }
-      if (req.user.role < UserRole.Admin) {
+      if (req.user.role !== UserRole.Admin) {
         throw new ForbiddenError(errorMessage);
       }
     }

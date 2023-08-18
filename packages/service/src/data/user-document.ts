@@ -25,34 +25,28 @@ export const ProfileCertificationSchema = z.object({
 });
 export type ProfileCertification = z.infer<typeof ProfileCertificationSchema>;
 
-export const ProfileSchema = z
-  .object({
-    avatar: z.string().trim().url().max(150).optional(),
-    bio: z.string().trim().max(1000).optional(),
-    birthdate: z.string().trim().regex(DateRegex).optional(),
-    customData: z
-      .record(z.string(), z.unknown())
-      .refine(
-        (json) => Buffer.from(JSON.stringify(json)).byteLength <= 1048576,
-        {
-          message:
-            'Custom data blob cannot be greater than 1Mb (1,048,576 bytes).',
-          path: ['customData'],
-        },
-      )
-      .optional(),
-    certifications: z.array(ProfileCertificationSchema).max(200).optional(),
-    experienceLevel: z.string().trim().max(50).optional(),
-    location: z.string().trim().max(50).optional(),
-    name: z.string().trim().max(100).optional(),
-    profileVisibility: z.nativeEnum(ProfileVisibility),
-    startedDiving: z
-      .string()
-      .trim()
-      .regex(/^\d{4}(-\d{2}(-\d{2})?)?$/)
-      .optional(),
-  })
-  .strip();
+export const ProfileSchema = z.object({
+  avatar: z.string().trim().url().max(150).optional(),
+  bio: z.string().trim().max(1000).optional(),
+  birthdate: z.string().trim().regex(DateRegex).optional(),
+  customData: z
+    .record(z.string(), z.unknown())
+    .refine((json) => Buffer.from(JSON.stringify(json)).byteLength <= 1048576, {
+      message: 'Custom data blob cannot be greater than 1Mb (1,048,576 bytes).',
+      path: ['customData'],
+    })
+    .optional(),
+  certifications: z.array(ProfileCertificationSchema).max(200).optional(),
+  experienceLevel: z.string().trim().max(50).optional(),
+  location: z.string().trim().max(50).optional(),
+  name: z.string().trim().max(100).optional(),
+  profileVisibility: z.nativeEnum(ProfileVisibility),
+  startedDiving: z
+    .string()
+    .trim()
+    .regex(/^\d{4}(-\d{2}(-\d{2})?)?$/)
+    .optional(),
+});
 export type ProfileDocument = z.infer<typeof ProfileSchema>;
 
 export const UserDefinedTankSchema = z.object({

@@ -41,7 +41,7 @@ export async function changeEmail(
     }
 
     if (
-      req.user!.role < UserRole.Admin &&
+      req.user!.role !== UserRole.Admin &&
       req.user!.id !== req.selectedUser!.id
     ) {
       throw new ForbiddenError(
@@ -156,7 +156,10 @@ export async function changeUsername(
       throw new Error('No user profile loaded.');
     }
 
-    if (req.user.role < UserRole.Admin && req.user.id !== req.selectedUser.id) {
+    if (
+      req.user.role !== UserRole.Admin &&
+      req.user.id !== req.selectedUser.id
+    ) {
       throw new ForbiddenError(
         "Request denied. You may not change another user's username.",
       );

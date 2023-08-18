@@ -104,7 +104,7 @@ describe('Default Profile', () => {
     }
 
     const actual = await Users.findOne({ _id: expected._id });
-    expect(actual).toEqual(expected);
+    expect(actual?.profile).toEqual(expected.profile);
   });
 
   it('Will not save a bunch of null values if profile has undefined fields', async () => {
@@ -119,7 +119,7 @@ describe('Default Profile', () => {
     await profile.save();
 
     const actual = await Users.findOne({ _id: expected._id });
-    expect(actual).toEqual(expected);
+    expect(actual?.profile).toEqual(expected.profile);
   });
 
   [

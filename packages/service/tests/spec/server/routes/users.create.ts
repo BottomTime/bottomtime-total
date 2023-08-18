@@ -257,7 +257,7 @@ export default function () {
     });
   });
 
-  it('Will allow a an admin to create an account with elevated privileges', async () => {
+  it('Will allow an admin to create an account with elevated privileges', async () => {
     const admin = new DefaultUser(
       mongoClient,
       Log,
@@ -339,7 +339,7 @@ export default function () {
     expect(mail.sentMail).toHaveLength(0);
   });
 
-  it('Will not allow non administrators to create an account with elevated privileges', async () => {
+  it('Will not allow non-administrators to create an account with elevated privileges', async () => {
     const user = new DefaultUser(mongoClient, Log, fakeUser());
     const newUser = new DefaultUser(
       mongoClient,
