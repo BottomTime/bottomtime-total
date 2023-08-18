@@ -105,6 +105,10 @@ export function fakeUser(
       data?.passwordHash ?? hashSync(password ?? fakePassword(), 1);
   }
 
-  // Allow Zod to remove "undefined" fields so MongoDB doesn't write these as "null".
-  return UserSchema.parse(user);
+  // Remove "undefined" fields so MongoDB doesn't write these as "null".
+  for (const key of UserSchema.keyof().options) {
+    if (user[key] === undefined) delete user[key];
+  }
+
+  return user;
 }

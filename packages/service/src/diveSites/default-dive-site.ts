@@ -155,7 +155,7 @@ export class DefaultDiveSite implements DiveSite {
       $unset: {},
     };
     DiveSiteSchema.keyof().options.forEach((key) => {
-      if (this.data[key] === undefined)
+      if (key !== 'updatedOn' && this.data[key] === undefined)
         Object.assign(update.$unset!, { [key]: true });
       else Object.assign(update.$set!, { [key]: this.data[key] });
     });

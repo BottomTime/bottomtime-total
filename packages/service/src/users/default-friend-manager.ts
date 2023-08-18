@@ -11,9 +11,11 @@ import {
   ListFriendsOptions,
   Profile,
   FriendsSortBy,
+  ListFriendsOptionsSchema,
 } from './interfaces';
 import { InvalidOperationError } from '../errors';
 import { ProfileVisibility, SortOrder } from '../constants';
+import { assertValid } from '../helpers/validation';
 
 export class DefaultFriendManager implements FriendsManager {
   private readonly users: Collection<UserDocument>;
@@ -159,7 +161,11 @@ export class DefaultFriendManager implements FriendsManager {
     );
   }
 
-  async listFriends(options?: ListFriendsOptions): Promise<Friend[]> {
+  async listFriends(options: ListFriendsOptions = {}): Promise<Friend[]> {
+    options = assertValid<ListFriendsOptions>(
+      options,
+      ListFriendsOptionsSchema,
+    );
     const userData = await this.users.findOne(
       { _id: this.userId },
       {

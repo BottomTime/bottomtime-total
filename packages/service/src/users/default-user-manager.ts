@@ -128,7 +128,7 @@ export class DefaultUserManager implements UserManager {
     return new DefaultUser(this.mongoClient, this.log, data);
   }
 
-  async searchUsers(options?: SearchUsersOptions): Promise<User[]> {
+  async searchUsers(options: SearchUsersOptions = {}): Promise<User[]> {
     options = assertValid(options, SearchUsersOptionsSchema);
     const query: Filter<UserDocument> = {};
     const queryOptions: FindOptions<UserDocument> = {
