@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineExpose, computed, reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { email, helpers, required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 
@@ -112,12 +112,12 @@ import {
 import PasswordStrengthRequirements from './PasswordStrengthRequirements.vue';
 import router from '@/router';
 import TextBox from '@/components/forms/TextBox.vue';
-import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
+import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 
 interface SignupFormData {
   username: string;
   email: string;
-  profileVisibility: string;
+  profileVisibility: ProfileVisibility;
   name: string;
   location: string;
   password: string;
@@ -131,7 +131,7 @@ const SuccessToast: Toast = {
 } as const;
 
 const store = useStore();
-const userManager = inject(UserManagerKey);
+const client = inject(ApiClientKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
 
 const showPasswordHelp = ref(false);
@@ -162,7 +162,7 @@ const validation = {
       helpers.withAsync(async (username: string) => {
         if (username.length < 3) return true;
         if (!UsernameRegex.test(username)) return true;
-        return await userManager.isUsernameOrEmailAvailable(username);
+        return await client.users.isUsernameOrEmailAvailable(username);
       }),
     ),
   },
@@ -174,7 +174,7 @@ const validation = {
       helpers.withAsync(async (email: string) => {
         if (email.length < 3) return true;
         if (!EmailRegex.test(email)) return true;
-        return await userManager.isUsernameOrEmailAvailable(email);
+        return await client.users.isUsernameOrEmailAvailable(email);
       }),
     ),
   },
@@ -204,7 +204,7 @@ async function submit() {
 
   await withErrorHandling(
     async (): Promise<void> => {
-      const user = await userManager.createUser({
+      const user = await client.users.createUser({
         username: data.username,
         email: data.email,
         password: data.password,

@@ -2,17 +2,14 @@ import { mount } from '@vue/test-utils';
 import { createStore } from 'vuex';
 
 import { createErrorHandler } from '@/helpers';
-import { DefaultUser } from '@/users';
+import { DefaultUser, UserManager } from '@/client/users';
 import { fakeUser } from '../../fixtures/fake-user';
 import { initialStoreState } from '../../fixtures/store-state';
 import request from 'superagent';
 import RequireAuth from '@/components/RequireAuth.vue';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from '@/injection-keys';
-import { TestUserManager } from '../../fixtures/test-user-manager';
+import { ApiClientKey, StoreKey, WithErrorHandlingKey } from '@/injection-keys';
+import { Mock } from 'moq.ts';
+import { ApiClient } from '@/client';
 
 const agent = request.agent();
 
@@ -25,13 +22,17 @@ describe('RequireAuth Component', () => {
       }),
     });
     const withErrorHandling = createErrorHandler(store);
-    const userManager = new TestUserManager();
+    const userManager = new Mock<UserManager>().object();
+    const apiClient = new Mock<ApiClient>()
+      .setup((c) => c.users)
+      .returns(userManager)
+      .object();
     expect(store.state).toBeDefined();
     const wrapper = mount(RequireAuth, {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
@@ -48,13 +49,17 @@ describe('RequireAuth Component', () => {
       state: initialStoreState,
     });
     const withErrorHandling = createErrorHandler(store);
-    const userManager = new TestUserManager();
+    const userManager = new Mock<UserManager>().object();
+    const apiClient = new Mock<ApiClient>()
+      .setup((c) => c.users)
+      .returns(userManager)
+      .object();
     expect(store.state).toBeDefined();
     const wrapper = mount(RequireAuth, {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },

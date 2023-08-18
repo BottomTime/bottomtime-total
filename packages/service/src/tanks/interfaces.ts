@@ -1,6 +1,8 @@
+import { TankMaterial } from '../constants';
+
 export interface TankData {
   name: string;
-  material: string;
+  material: TankMaterial;
   volume: number;
   workingPressure: number;
 }

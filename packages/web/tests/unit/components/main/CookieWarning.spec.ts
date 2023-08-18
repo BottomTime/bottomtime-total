@@ -5,7 +5,7 @@ import CookieWarning from '@/components/main/CookieWarning.vue';
 import { createStore } from '@/store';
 import { initialStoreState } from '../../../fixtures/store-state';
 import { StoreKey } from '@/injection-keys';
-import { User } from '@/users';
+import { User } from '@/client/users';
 
 const LocalStorageKey = 'cookies_accepted';
 

@@ -38,7 +38,9 @@ exports[`NavBar component Will render correctly for regular users 1`] = `
   <div class="container">
     <div class="navbar-brand"><a aria-current="page" href="/" class="router-link-active router-link-exact-active navbar-item"><img src="https://bulma.io/images/bulma-logo.png" width="112" height="28"></a><a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="nav-main-menu"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></a></div>
     <div id="nav-main-menu" class="navbar-menu">
-      <div class="navbar-start"><a aria-current="page" href="/" class="router-link-active router-link-exact-active navbar-item">Home</a><a href="/manageUsers" class="navbar-item"> Manage Users </a></div>
+      <div class="navbar-start"><a aria-current="page" href="/" class="router-link-active router-link-exact-active navbar-item">Home</a>
+        <!--v-if-->
+      </div>
       <div class="navbar-end">
         <div class="navbar-item has-dropdown is-hoverable"><a id="nav-current-user" class="navbar-link">Jonny C</a>
           <div class="navbar-dropdown"><a href="/profile" class="navbar-item">Profile</a>

@@ -84,7 +84,7 @@ import FormField from '@/components/forms/FormField.vue';
 import { inject, ToastType } from '@/helpers';
 import router from '@/router';
 import TextBox from '@/components/forms/TextBox.vue';
-import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
+import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 
 interface LoginFormData {
   usernameOrEmail: string;
@@ -93,7 +93,7 @@ interface LoginFormData {
 
 const passwordText = ref<InstanceType<typeof TextBox> | null>();
 const store = useStore();
-const userManager = inject(UserManagerKey);
+const client = inject(ApiClientKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
 
 const data = reactive<LoginFormData>({
@@ -116,7 +116,7 @@ async function onSubmit() {
 
   await withErrorHandling(
     async () => {
-      const user = await userManager.authenticateUser(
+      const user = await client.users.authenticateUser(
         data.usernameOrEmail,
         data.password,
       );

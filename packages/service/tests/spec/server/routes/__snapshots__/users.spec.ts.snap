@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Users Routes Creating Users Will allow a an admin to create an account with elevated privileges 1`] = `
+exports[`Users Routes Creating Users Will allow an admin to create an account with elevated privileges 1`] = `
 {
   "email": "Afton.Dicki@gmail.com",
   "emailVerified": true,
@@ -54,7 +54,7 @@ exports[`Users Routes Creating Users Will allow a an admin to create an account 
     "userId": "2257ba3d-4f57-47f7-bcb1-91e0fef37892",
     "username": "Afton67",
   },
-  "role": 200,
+  "role": "admin",
   "username": "Afton67",
 }
 `;

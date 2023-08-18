@@ -3,18 +3,19 @@ import { flushPromises, mount } from '@vue/test-utils';
 
 import { createStore } from '@/store';
 import ResetPasswordForm from '@/components/users/ResetPasswordForm.vue';
-import { UserManager } from '@/users';
-import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
+import { UserManager } from '@/client/users';
+import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 import { createErrorHandler } from '@/helpers';
+import { ApiClient } from '@/client';
 
 describe('ResetPasswordForm component', () => {
   it('Will raise validation error if username or email is not entered', async () => {
-    const userManager = new Mock<UserManager>().object();
+    const apiClient = new Mock<ApiClient>().object();
     const withErrorHandling = createErrorHandler(createStore());
     const wrapper = mount(ResetPasswordForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
@@ -26,12 +27,12 @@ describe('ResetPasswordForm component', () => {
   });
 
   it('Will raise validation error if username or email is invalid', async () => {
-    const userManager = new Mock<UserManager>().object();
+    const apiClient = new Mock<ApiClient>().object();
     const withErrorHandling = createErrorHandler(createStore());
     const wrapper = mount(ResetPasswordForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
@@ -48,11 +49,15 @@ describe('ResetPasswordForm component', () => {
     const userManagerMock = new Mock<UserManager>()
       .setup((instance) => instance.requestPasswordReset(email))
       .returnsAsync();
+    const apiClient = new Mock<ApiClient>()
+      .setup((c) => c.users)
+      .returns(userManagerMock.object())
+      .object();
     const withErrorHandling = createErrorHandler(createStore());
     const wrapper = mount(ResetPasswordForm, {
       global: {
         provide: {
-          [UserManagerKey as symbol]: userManagerMock.object(),
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },

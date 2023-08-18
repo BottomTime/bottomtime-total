@@ -1,7 +1,12 @@
 import { Collection, MongoClient } from 'mongodb';
 import Logger from 'bunyan';
 
-import { Collections, UserDocument } from '../data';
+import {
+  Collections,
+  UserDocument,
+  UserSettingsDocument,
+  UserSettingsSchema,
+} from '../data';
 import {
   DepthUnit,
   PressureUnit,
@@ -10,7 +15,6 @@ import {
 } from '../constants';
 import { UserSettings } from './interfaces';
 import { assertValid } from '../helpers/validation';
-import { UserSettingsSchema } from './validation';
 
 export class DefaultUserSettings implements UserSettings {
   private readonly users: Collection<UserDocument>;
@@ -22,40 +26,45 @@ export class DefaultUserSettings implements UserSettings {
   ) {
     this.users = mongoClient.db().collection(Collections.Users);
     if (!data.settings) {
-      this.data.settings = {};
+      this.data.settings = {
+        depthUnit: DepthUnit.Meters,
+        pressureUnit: PressureUnit.Bar,
+        temperatureUnit: TemperatureUnit.Celsius,
+        weightUnit: WeightUnit.Kilograms,
+      };
     }
   }
 
-  get depthUnit(): string {
+  get depthUnit(): DepthUnit {
     return this.data.settings?.depthUnit ?? DepthUnit.Meters;
   }
-  set depthUnit(value: string) {
+  set depthUnit(value: DepthUnit) {
     this.data.settings!.depthUnit = value;
   }
 
-  get pressureUnit(): string {
+  get pressureUnit(): PressureUnit {
     return this.data.settings?.pressureUnit ?? PressureUnit.Bar;
   }
-  set pressureUnit(value: string) {
+  set pressureUnit(value: PressureUnit) {
     this.data.settings!.pressureUnit = value;
   }
 
-  get temperatureUnit(): string {
+  get temperatureUnit(): TemperatureUnit {
     return this.data.settings?.temperatureUnit ?? TemperatureUnit.Celsius;
   }
-  set temperatureUnit(value: string) {
+  set temperatureUnit(value: TemperatureUnit) {
     this.data.settings!.temperatureUnit = value;
   }
 
-  get weightUnit(): string {
+  get weightUnit(): WeightUnit {
     return this.data.settings?.weightUnit ?? WeightUnit.Kilograms;
   }
-  set weightUnit(value: string) {
+  set weightUnit(value: WeightUnit) {
     this.data.settings!.weightUnit = value;
   }
 
   async save(): Promise<void> {
-    const { parsed: settings } = assertValid(
+    this.data.settings = assertValid<UserSettingsDocument>(
       this.data.settings,
       UserSettingsSchema,
     );
@@ -68,7 +77,7 @@ export class DefaultUserSettings implements UserSettings {
       { _id: this.data._id },
       {
         $set: {
-          settings,
+          settings: this.data.settings,
         },
       },
     );

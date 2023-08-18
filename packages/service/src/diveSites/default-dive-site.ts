@@ -1,22 +1,15 @@
 import { Collection, MongoClient, UpdateFilter } from 'mongodb';
 import Logger from 'bunyan';
 
-import { Collections, DiveSiteDocument, UserDocument } from '../data';
+import { assertValid } from '../helpers/validation';
+import {
+  Collections,
+  DiveSiteDocument,
+  DiveSiteSchema,
+  UserDocument,
+} from '../data';
 import { DiveSite, DiveSiteCreator } from './interfaces';
 import { GpsCoordinates } from '../common';
-import { assertValid } from '../helpers/validation';
-import { DiveSiteSchema } from './validation';
-
-const DiveSiteOptionalKeys: readonly string[] = [
-  'averageDifficulty',
-  'averageRating',
-  'description',
-  'directions',
-  'gps',
-  'freeToDive',
-  'shoreAccess',
-  'reviews',
-];
 
 export class DefaultDiveSite implements DiveSite {
   private readonly sites: Collection<DiveSiteDocument>;
@@ -154,22 +147,19 @@ export class DefaultDiveSite implements DiveSite {
   }
 
   async save(): Promise<void> {
-    this.data = assertValid(this.data, DiveSiteSchema).parsed;
+    this.data = assertValid<DiveSiteDocument>(this.data, DiveSiteSchema);
 
     const now = new Date();
     const update: UpdateFilter<DiveSiteDocument> = {
-      $set: {
-        ...this.data,
-        updatedOn: now,
-      },
+      $set: {},
       $unset: {},
     };
-    for (const key of DiveSiteOptionalKeys) {
-      if (this.data[key] === undefined) {
-        update.$unset![key] = true;
-        delete update.$set![key];
-      }
-    }
+    DiveSiteSchema.keyof().options.forEach((key) => {
+      if (key !== 'updatedOn' && this.data[key] === undefined)
+        Object.assign(update.$unset!, { [key]: true });
+      else Object.assign(update.$set!, { [key]: this.data[key] });
+    });
+    Object.assign(update.$set!, { updatedOn: now });
 
     this.log.debug(
       `Saving dive site data for site "${this.data._id}"...`,

@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { required, helpers } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 
@@ -98,7 +98,7 @@ import {
   TextBoxSize,
   UsernameRegex,
 } from '@/constants';
-import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
+import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 import { Dispatch, useStore } from '@/store';
 
 interface CreateNewPasswordFormProps {
@@ -113,7 +113,7 @@ interface CreateNewPasswordFormData {
 
 const TokenRegx = /^\w{6,}/;
 const store = useStore();
-const userManager = inject(UserManagerKey);
+const client = inject(ApiClientKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
 
 const ResetRejectedToast: Toast = {
@@ -168,7 +168,7 @@ async function createPassword() {
 
   isSaving.value = true;
   await withErrorHandling(async () => {
-    const result = await userManager.resetPassword(
+    const result = await client.users.resetPassword(
       props.username,
       props.token,
       data.newPassword,

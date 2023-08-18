@@ -1,6 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ZodType } from 'zod';
 
-import { ValidationError, ValidationResult } from '../errors';
+export type ValidationErrors = Array<{
+  message: string;
+  path: string;
+}>;
+
+export interface ValidationResult<T = any> {
+  readonly isValid: boolean;
+  readonly errors?: ValidationErrors;
+  readonly parsed?: T;
+}
+
+export class ValidationError extends Error {
+  constructor(message?: string, readonly errors?: ValidationErrors) {
+    super(
+      message ??
+        'Your request could not be completed because there were some validation errors.',
+    );
+    Object.setPrototypeOf(this, ValidationError.prototype);
+  }
+}
 
 export function isValid<T>(data: any, schema: ZodType<T>): ValidationResult<T> {
   const result = schema.safeParse(data);
