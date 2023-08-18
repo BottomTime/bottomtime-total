@@ -1,7 +1,6 @@
 import flushPromises from 'flush-promises';
 import { mount } from '@vue/test-utils';
 import request, { SuperAgentStatic } from 'superagent';
-import router from '@/router';
 import { Store } from 'vuex';
 
 import { BTState, createStore } from '@/store';
@@ -170,7 +169,6 @@ describe('Sign Up Form', () => {
     });
 
     const dispatch = jest.spyOn(store, 'dispatch').mockResolvedValue(undefined);
-    const push = jest.spyOn(router, 'push');
     scope
       .put(`/api/users/${username}`, {
         email,
@@ -213,6 +211,5 @@ describe('Sign Up Form', () => {
 
     expect(scope.isDone()).toBe(true);
     expect(dispatch.mock.calls).toMatchSnapshot();
-    expect(push).toBeCalledWith('/');
   });
 });

@@ -1,36 +1,44 @@
-export interface ProfileCertificationData {
-  agency?: string;
-  course: string;
-  date?: string;
-}
+import { ProfileVisibility, UserRole } from '@/constants';
+import { z } from 'zod';
 
-export interface ProfileData {
-  avatar?: string;
-  bio?: string;
-  birthdate?: string;
-  customData?: object;
-  certifications?: ProfileCertificationData[];
-  experienceLevel?: string;
-  location?: string;
-  name?: string;
-  profileVisibility: string;
-  startedDiving?: string;
-}
+export const ProfileCertificationDataSchema = z.object({
+  agency: z.string().optional(),
+  course: z.string(),
+  date: z.coerce.date().optional(),
+});
+export type ProfileCertificationData = z.infer<
+  typeof ProfileCertificationDataSchema
+>;
 
-export interface UserData {
-  readonly id: string;
-  readonly email?: string;
-  readonly emailVerified: boolean;
-  readonly hasPassword: boolean;
-  readonly isLockedOut: boolean;
-  readonly lastLogin?: Date;
-  readonly lastPasswordChange?: Date;
-  readonly memberSince: Date;
-  readonly role: number;
-  readonly username: string;
+export const ProfileDataSchema = z.object({
+  avatar: z.string().optional(),
+  bio: z.string().optional(),
+  birthdate: z.string().optional(),
+  customData: z.record(z.string(), z.unknown()).optional(),
+  certifications: z.array(ProfileCertificationDataSchema).optional(),
+  experienceLevel: z.string().optional(),
+  location: z.string().optional(),
+  name: z.string().optional(),
+  profileVisibility: z.nativeEnum(ProfileVisibility),
+  startedDiving: z.string().optional(),
+});
+export type ProfileData = z.infer<typeof ProfileDataSchema>;
 
-  readonly profile: ProfileData;
-}
+export const UserDataSchema = z.object({
+  id: z.string(),
+  email: z.string().optional(),
+  emailVerified: z.coerce.boolean(),
+  hasPassword: z.coerce.boolean(),
+  isLockedOut: z.coerce.boolean(),
+  lastLogin: z.coerce.date().optional(),
+  lastPasswordChange: z.coerce.date().optional(),
+  memberSince: z.coerce.date(),
+  role: z.nativeEnum(UserRole),
+  username: z.string(),
+
+  profile: ProfileDataSchema,
+});
+export type UserData = z.infer<typeof UserDataSchema>;
 
 export interface Profile extends ProfileData {
   readonly userId: string;
@@ -41,7 +49,7 @@ export interface Profile extends ProfileData {
   toJSON(): object;
 }
 
-export interface User extends UserData {
+export interface User extends Readonly<UserData> {
   readonly profile: Profile;
 
   changeEmail(newEmail: string): Promise<void>;

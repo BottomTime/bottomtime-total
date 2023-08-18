@@ -117,7 +117,7 @@ import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 interface SignupFormData {
   username: string;
   email: string;
-  profileVisibility: string;
+  profileVisibility: ProfileVisibility;
   name: string;
   location: string;
   password: string;

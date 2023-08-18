@@ -9,7 +9,7 @@ import router from '@/router';
 import { StoreKey } from '@/injection-keys';
 import { UserRole } from '@/constants';
 
-function createUser(role: number): User {
+function createUser(role: UserRole): User {
   const profile = new Mock<Profile>()
     .setup((instance) => instance.name)
     .returns('Jonny C')

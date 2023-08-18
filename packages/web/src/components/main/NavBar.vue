@@ -86,7 +86,7 @@ const store = useStore();
 
 const currentUser = computed(() => store.state.currentUser);
 const displayName = computed(() => store.getters.userDisplayName);
-const isAdmin = computed(() => currentUser.value?.role ?? 0 >= UserRole.Admin);
+const isAdmin = computed(() => currentUser.value?.role === UserRole.Admin);
 
 // Close dropdown on navigation
 router.beforeEach(() => {

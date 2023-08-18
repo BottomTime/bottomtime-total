@@ -1,6 +1,8 @@
 import { SuperAgentStatic } from 'superagent';
 import { DefaultProfile } from './default-profile';
-import { Profile, User, UserData } from './interfaces';
+import { Profile, User, UserData, UserDataSchema } from './interfaces';
+import { UserRole } from '@/constants';
+import { assertValid } from '@/helpers';
 
 export class DefaultUser implements User {
   private _profile: Profile | undefined;
@@ -49,7 +51,7 @@ export class DefaultUser implements User {
     return this.data.memberSince;
   }
 
-  get role(): number {
+  get role(): UserRole {
     return this.data.role;
   }
 
@@ -103,6 +105,6 @@ export class DefaultUser implements User {
   }
 
   toJSON(): UserData {
-    return Object.assign({}, this.data);
+    return assertValid(this.data, UserDataSchema);
   }
 }

@@ -17,12 +17,12 @@
 
 <script lang="ts" setup>
 import { DropDownOption } from '@/constants';
-import { computed, defineEmits, defineProps } from 'vue';
+import { computed } from 'vue';
 
 interface DropDownProps {
   id: string;
   modelValue: string | number;
-  options: DropDownOption[];
+  options: Readonly<DropDownOption[]>;
 }
 
 const props = defineProps<DropDownProps>();
