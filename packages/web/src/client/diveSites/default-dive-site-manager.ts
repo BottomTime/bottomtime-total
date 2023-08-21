@@ -1,14 +1,29 @@
 import { SuperAgentStatic } from 'superagent';
-import { DiveSite, DiveSiteManager, DiveSiteSearchOptions } from './interfaces';
+import { z } from 'zod';
+
+import { assertValid } from '@/helpers';
+import {
+  DiveSite,
+  DiveSiteData,
+  DiveSiteFullSchema,
+  DiveSiteManager,
+  DiveSiteSearchOptions,
+} from './interfaces';
 import { DefaultDiveSite } from './default-dive-site';
-import { DiveSiteSchema, DiveSiteSummarySchema } from './validation';
+
+const SearchDiveSitesResponseSchema = z.object({
+  results: z.number().int(),
+  sites: z.array(DiveSiteFullSchema),
+});
+type SearchDiveSitesResponse = z.infer<typeof SearchDiveSitesResponseSchema>;
 
 export class DefaultDiveSiteManager implements DiveSiteManager {
   constructor(private readonly agent: SuperAgentStatic) {}
 
   async getDiveSite(id: string): Promise<DiveSite> {
-    const { body: data } = await this.agent.get(`/api/diveSites/${id}`);
-    return new DefaultDiveSite(this.agent, DiveSiteSchema.validate(data).value);
+    const { body } = await this.agent.get(`/api/diveSites/${id}`);
+    const data = assertValid<DiveSiteData>(body, DiveSiteFullSchema);
+    return new DefaultDiveSite(this.agent, data);
   }
 
   async searchDiveSites(options?: DiveSiteSearchOptions): Promise<DiveSite[]> {
@@ -18,16 +33,14 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
       query.query = options.query;
     }
 
-    const {
-      body: { sites },
-    } = await this.agent.get('/api/diveSites').query(query);
+    const { body } = await this.agent.get('/api/diveSites').query(query);
+    const response = assertValid<SearchDiveSitesResponse>(
+      body,
+      SearchDiveSitesResponseSchema,
+    );
 
-    return sites.map(
-      (site: object) =>
-        new DefaultDiveSite(
-          this.agent,
-          DiveSiteSummarySchema.validate(site).value,
-        ),
+    return response.sites.map(
+      (site: DiveSiteData) => new DefaultDiveSite(this.agent, site),
     );
   }
 }

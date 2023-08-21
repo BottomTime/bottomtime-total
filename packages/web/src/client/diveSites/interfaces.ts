@@ -1,31 +1,39 @@
-import { Depth } from '@/constants';
+import { Depth, DepthSchema, GpsCoordinatesSchema } from '@/constants';
+import { z } from 'zod';
 
-export interface DiveSiteCreator {
-  readonly id: string;
-  readonly username: string;
-  readonly displayName: string;
-}
+export const DiveSiteCreatorSchema = z.object({
+  id: z.string(),
+  username: z.string(),
+  displayName: z.string(),
+});
+export type DiveSiteCreator = z.infer<typeof DiveSiteCreatorSchema>;
 
-export interface DiveSiteData {
-  readonly id: string;
-  readonly createdOn: Date;
-  readonly updatedOn?: Date;
-  readonly creator: DiveSiteCreator;
-  readonly averageRating: number;
-  readonly averageDifficulty: number;
+export const DiveSiteMetadataSchema = z.object({
+  id: z.string(),
+  createdOn: z.coerce.date(),
+  updatedOn: z.coerce.date().optional(),
+  creator: DiveSiteCreatorSchema,
+  averageRating: z.number(),
+  averageDifficulty: z.number(),
+});
+export type DiveSiteMetadata = z.infer<typeof DiveSiteMetadataSchema>;
 
-  name: string;
-  description?: string;
-  depth?: Depth;
-  location: string;
-  directions?: string;
-  gps?: {
-    lat: number;
-    lon: number;
-  };
-  freeToDive?: boolean;
-  shoreAccess?: boolean;
-}
+export const DiveSiteDataSchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  depth: DepthSchema.optional(),
+  location: z.string(),
+  directions: z.string().optional(),
+  gps: GpsCoordinatesSchema.optional(),
+  freeToDive: z.boolean().optional(),
+  shoreAccess: z.boolean().optional(),
+});
+export const DiveSiteFullSchema = z.intersection(
+  DiveSiteMetadataSchema,
+  DiveSiteDataSchema,
+);
+export type DiveSiteData = Readonly<DiveSiteMetadata> &
+  z.infer<typeof DiveSiteDataSchema>;
 
 export interface DiveSite extends DiveSiteData {
   readonly isDirty: boolean;

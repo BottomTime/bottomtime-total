@@ -1,7 +1,13 @@
 import { SuperAgentStatic } from 'superagent';
-import { DiveSite, DiveSiteCreator, DiveSiteData } from './interfaces';
-import { DiveSiteSchema, DiveSiteUpdateSchema } from './validation';
+import {
+  DiveSite,
+  DiveSiteCreator,
+  DiveSiteData,
+  DiveSiteDataSchema,
+  DiveSiteFullSchema,
+} from './interfaces';
 import { Depth } from '@/constants';
+import { assertValid } from '@/helpers';
 
 export class DefaultDiveSite implements DiveSite {
   private deleted = false;
@@ -109,12 +115,12 @@ export class DefaultDiveSite implements DiveSite {
   }
 
   async save(): Promise<void> {
-    const json = DiveSiteUpdateSchema.validate(this.data).value;
+    const data = assertValid(this.data, DiveSiteDataSchema);
     const { body: response } = await this.agent
       .put(`/api/diveSites/${this.data.id}`)
-      .send(json);
+      .send(data);
 
-    this.data = DiveSiteSchema.validate(response).value;
+    this.data = assertValid<DiveSiteData>(response, DiveSiteFullSchema);
     this.dirty = false;
     this.deleted = false;
   }
