@@ -7,10 +7,11 @@ export const DepthSchema = z.object({
 });
 export type Depth = z.infer<typeof DepthSchema>;
 
-export interface GpsCoordinates {
-  lat: number;
-  lon: number;
-}
+export const GpsCoordinatesSchema = z.object({
+  lat: z.number().gte(-90).lte(90),
+  lon: z.number().gte(-180).lte(180),
+});
+export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
 
 export interface Range {
   min: number;
