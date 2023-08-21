@@ -1,25 +1,15 @@
 import Logger from 'bunyan';
 import { Collection, MongoClient } from 'mongodb';
 
-import { Collections, UserDocument } from '../data';
 import { assertValid } from '../helpers/validation';
-import { Profile, ProfileCertificationData, ProfileData } from './interfaces';
-import { ProfileSchema } from './validation';
+import {
+  Collections,
+  ProfileDocument,
+  ProfileSchema,
+  UserDocument,
+} from '../data';
+import { Profile, ProfileCertificationData } from './interfaces';
 import { ProfileVisibility } from '../constants';
-
-class ProfileReflection implements ProfileData {
-  avatar?: string | undefined;
-  bio?: string | undefined;
-  birthdate?: string | undefined;
-  customData?: unknown;
-  certifications?: ProfileCertificationData[] | undefined;
-  experienceLevel?: string | undefined;
-  location?: string | undefined;
-  name?: string | undefined;
-  profileVisibility = '';
-  startedDiving?: string | undefined;
-}
-const ProfileDataKeys: readonly string[] = Object.keys(new ProfileReflection());
 
 export class DefaultProfile implements Profile {
   private readonly users: Collection<UserDocument>;
@@ -70,10 +60,10 @@ export class DefaultProfile implements Profile {
     this.data.profile!.birthdate = value;
   }
 
-  get customData(): unknown | undefined {
+  get customData(): Record<string, unknown> | undefined {
     return this.data.profile?.customData;
   }
-  set customData(value: unknown | undefined) {
+  set customData(value: Record<string, unknown> | undefined) {
     this.data.profile!.customData = value;
   }
 
@@ -105,10 +95,10 @@ export class DefaultProfile implements Profile {
     this.data.profile!.name = value;
   }
 
-  get profileVisibility(): string {
+  get profileVisibility(): ProfileVisibility {
     return this.data.profile!.profileVisibility;
   }
-  set profileVisibility(value: string) {
+  set profileVisibility(value: ProfileVisibility) {
     this.data.profile!.profileVisibility = value;
   }
 
@@ -120,25 +110,21 @@ export class DefaultProfile implements Profile {
   }
 
   async save(): Promise<void> {
-    const { parsed: profile } = assertValid(this.data.profile, ProfileSchema);
-    const update = {
-      $set: {},
-      $unset: {},
-    };
+    const profile = assertValid<ProfileDocument>(
+      this.data.profile,
+      ProfileSchema,
+    );
 
-    for (const key of ProfileDataKeys) {
-      if (profile[key]) {
-        Object.assign(update.$set, { [`profile.${key}`]: profile[key] });
-      } else {
-        Object.assign(update.$unset, { [`profile.${key}`]: true });
-      }
+    for (const key of ProfileSchema.keyof().options) {
+      if (profile[key] === undefined) delete profile[key];
     }
 
     this.log.debug(
       `Attempting to save profile data for user "${this.data.username}"...`,
-      update,
+      profile,
     );
-    await this.users.updateOne({ _id: this.data._id }, update);
+    await this.users.updateOne({ _id: this.data._id }, { $set: { profile } });
+    this.data.profile = profile;
   }
 
   toJSON(): Record<string, unknown> {

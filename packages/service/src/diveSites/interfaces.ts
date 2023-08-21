@@ -1,10 +1,45 @@
-import { Depth, GpsCoordinates, Range } from '../common';
-import { User } from '../users';
+import { z } from 'zod';
 
-export const DiveSitesSortBy = {
-  Name: 'name',
-  Rating: 'rating',
-} as const;
+import { Depth, GpsCoordinates } from '../common';
+import { SortOrder } from '../constants';
+import { User } from '../users';
+import { UsernameSchema } from '../data';
+
+export enum DiveSitesSortBy {
+  Name = 'name',
+  Rating = 'rating',
+}
+
+const RangeSchema = z
+  .object({
+    min: z.number().min(1).max(5),
+    max: z.number().max(5),
+  })
+  .refine((range) => range.max >= range.min, {
+    path: ['max'],
+    message: 'Maximum cannot be less than the minimum.',
+  });
+
+export const SearchDiveSitesSchema = z
+  .object({
+    query: z.string().trim().max(200),
+    location: z.object({
+      lat: z.number().min(-90).max(90),
+      lon: z.number().min(-180).max(180),
+    }),
+    radius: z.number().gt(0).max(500).default(50),
+    freeToDive: z.boolean(),
+    shoreAccess: z.boolean(),
+    rating: RangeSchema,
+    difficulty: RangeSchema,
+    creator: UsernameSchema,
+    sortBy: z.nativeEnum(DiveSitesSortBy),
+    sortOrder: z.nativeEnum(SortOrder),
+    skip: z.number().int().min(0).default(0),
+    limit: z.number().int().gt(0).max(500).default(50),
+  })
+  .partial();
+export type SearchDiveSitesOptions = z.infer<typeof SearchDiveSitesSchema>;
 
 export interface DiveSiteCreator {
   readonly id: string;
@@ -40,24 +75,6 @@ export interface DiveSite extends DiveSiteData {
 
   toJSON(): Record<string, unknown>;
   toSummaryJSON(): Record<string, unknown>;
-}
-
-export interface SearchDiveSitesOptions {
-  query?: string;
-  location?: {
-    lon: number;
-    lat: number;
-  };
-  radius?: number;
-  freeToDive?: boolean;
-  shoreAccess?: boolean;
-  rating?: Range;
-  difficulty?: Range;
-  creator?: string;
-  sortBy?: string;
-  sortOrder?: string;
-  skip?: number;
-  limit?: number;
 }
 
 export interface DiveSiteManager {

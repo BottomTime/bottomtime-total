@@ -1,65 +1,110 @@
-import { Document } from 'mongodb';
+import { z } from 'zod';
 
-export interface UserDefinedTankSubDocument {
-  _id: string;
-  name: string;
-  material: string;
-  workingPressure: number;
-  volume: number;
-}
+import {
+  DateRegex,
+  DepthUnit,
+  PressureUnit,
+  ProfileVisibility,
+  TankMaterial,
+  TemperatureUnit,
+  UserRole,
+  WeightUnit,
+} from '../constants';
 
-export interface FriendSubDocument {
-  friendId: string;
-  friendsSince: Date;
-}
+export const UsernameSchema = z
+  .string()
+  .trim()
+  .regex(/^[a-z0-9]+([_.-][a-z0-9]+)*$/i)
+  .min(3)
+  .max(50);
 
-export interface ProfileSubDocument {
-  avatar?: string;
-  bio?: string;
-  birthdate?: string;
-  customData?: unknown;
-  certifications?: {
-    agency?: string;
-    course: string;
-    date?: string;
-  }[];
-  experienceLevel?: string;
-  location?: string;
-  profileVisibility: string;
-  name?: string;
-  startedDiving?: string;
-}
+export const ProfileCertificationSchema = z.object({
+  agency: z.string().trim().max(100).optional(),
+  course: z.string().trim().max(200),
+  date: z.string().trim().regex(DateRegex).optional(),
+});
+export type ProfileCertification = z.infer<typeof ProfileCertificationSchema>;
 
-export interface UserDocument extends Document {
-  _id: string;
-  email?: string;
-  emailLowered?: string;
-  emailVerified: boolean;
-  emailVerificationToken?: string;
-  emailVerificationTokenExpiration?: Date;
-  isLockedOut: boolean;
-  githubId?: string;
-  googleId?: string;
-  lastLogin?: Date;
-  lastPasswordChange?: Date;
-  memberSince: Date;
-  passwordHash?: string;
-  passwordResetToken?: string;
-  passwordResetTokenExpiration?: Date;
-  role: number;
-  username: string;
-  usernameLowered: string;
+export const ProfileSchema = z.object({
+  avatar: z.string().trim().url().max(150).optional(),
+  bio: z.string().trim().max(1000).optional(),
+  birthdate: z.string().trim().regex(DateRegex).optional(),
+  customData: z
+    .record(z.string(), z.unknown())
+    .refine((json) => Buffer.from(JSON.stringify(json)).byteLength <= 1048576, {
+      message: 'Custom data blob cannot be greater than 1Mb (1,048,576 bytes).',
+      path: ['customData'],
+    })
+    .optional(),
+  certifications: z.array(ProfileCertificationSchema).max(200).optional(),
+  experienceLevel: z.string().trim().max(50).optional(),
+  location: z.string().trim().max(50).optional(),
+  name: z.string().trim().max(100).optional(),
+  profileVisibility: z.nativeEnum(ProfileVisibility),
+  startedDiving: z
+    .string()
+    .trim()
+    .regex(/^\d{4}(-\d{2}(-\d{2})?)?$/)
+    .optional(),
+});
+export type ProfileDocument = z.infer<typeof ProfileSchema>;
 
-  profile?: ProfileSubDocument;
+export const UserDefinedTankSchema = z.object({
+  _id: z.string().uuid(),
+  name: z.string().trim().max(200),
+  material: z.nativeEnum(TankMaterial),
+  workingPressure: z.number().positive(),
+  volume: z.number().positive(),
+});
+export type UserDefinedTankDocument = z.infer<typeof UserDefinedTankSchema>;
 
-  settings?: {
-    depthUnit?: string;
-    pressureUnit?: string;
-    temperatureUnit?: string;
-    weightUnit?: string;
-  };
+export const FriendSchema = z.object({
+  friendId: z.string().uuid(),
+  friendsSince: z.coerce.date(),
+});
+export type FriendDocument = z.infer<typeof FriendSchema>;
 
-  tanks?: UserDefinedTankSubDocument[];
+export const UserSettingsSchema = z.object({
+  depthUnit: z.nativeEnum(DepthUnit),
+  pressureUnit: z.nativeEnum(PressureUnit),
+  temperatureUnit: z.nativeEnum(TemperatureUnit),
+  weightUnit: z.nativeEnum(WeightUnit),
+});
+export type UserSettingsDocument = z.infer<typeof UserSettingsSchema>;
 
-  friends?: FriendSubDocument[];
-}
+export const UserSchema = z
+  .object({
+    _id: z.string().uuid(),
+    email: z.string().trim().email().optional(),
+    emailLowered: z.string().trim().email().toLowerCase().optional(),
+    emailVerified: z.boolean().default(false),
+    emailVerificationToken: z.string().optional(),
+    emailVerificationTokenExpiration: z.coerce.date().optional(),
+    isLockedOut: z.boolean().default(false),
+    lastLogin: z.coerce.date().optional(),
+    lastPasswordChange: z.coerce.date().optional(),
+    memberSince: z.coerce.date().default(() => new Date()),
+    oauthIds: z
+      .object({
+        github: z.string(),
+        google: z.string(),
+      })
+      .partial()
+      .optional(),
+    passwordHash: z.string().optional(),
+    passwordResetToken: z.string().optional(),
+    passwordResetTokenExpiration: z.coerce.date().optional(),
+    role: z.nativeEnum(UserRole).default(UserRole.User),
+    username: UsernameSchema,
+    usernameLowered: UsernameSchema.toLowerCase(),
+
+    profile: ProfileSchema.optional(),
+
+    settings: UserSettingsSchema.optional(),
+
+    tanks: z.array(UserDefinedTankSchema).optional(),
+
+    friends: z.array(FriendSchema).optional(),
+  })
+  .strip();
+export type UserDocument = z.infer<typeof UserSchema>;

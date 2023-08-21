@@ -1,9 +1,11 @@
 import Logger from 'bunyan';
 import { Collection, MongoClient } from 'mongodb';
 
-import { Collections, UserDocument } from '../data';
+import { Collections, TankSchema, UserDocument } from '../data';
 import { Tank } from '../tanks';
-import { UserDefinedTankSubDocument } from '../data';
+import { UserDefinedTankDocument } from '../data';
+import { TankMaterial } from '../constants';
+import { assertValid } from '../helpers/validation';
 
 export class UserDefinedTank implements Tank {
   private readonly users: Collection<UserDocument>;
@@ -12,7 +14,7 @@ export class UserDefinedTank implements Tank {
     mongoClient: MongoClient,
     private readonly log: Logger,
     private readonly userData: UserDocument,
-    private readonly tankData: UserDefinedTankSubDocument,
+    private readonly tankData: UserDefinedTankDocument,
   ) {
     this.users = mongoClient.db().collection(Collections.Users);
   }
@@ -34,10 +36,10 @@ export class UserDefinedTank implements Tank {
     this.tankData.name = value;
   }
 
-  get material(): string {
+  get material(): TankMaterial {
     return this.tankData.material;
   }
-  set material(value: string) {
+  set material(value: TankMaterial) {
     this.tankData.material = value;
   }
 
@@ -57,7 +59,9 @@ export class UserDefinedTank implements Tank {
 
   async delete(): Promise<void> {}
 
-  async save(): Promise<void> {}
+  async save(): Promise<void> {
+    assertValid(this.tankData, TankSchema);
+  }
 
   toJSON(): Record<string, unknown> {
     return {};

@@ -1,42 +1,42 @@
 export const DateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
-export const DepthUnit = {
-  Meters: 'm',
-  Feet: 'ft',
-} as const;
+export enum DepthUnit {
+  Meters = 'm',
+  Feet = 'ft',
+}
 
-export const PressureUnit = {
-  Bar: 'bar',
-  PSI: 'psi',
-} as const;
+export enum PressureUnit {
+  Bar = 'bar',
+  PSI = 'psi',
+}
 
-export const ProfileVisibility = {
-  Private: 'private',
-  FriendsOnly: 'friends',
-  Public: 'public',
-} as const;
+export enum ProfileVisibility {
+  Private = 'private',
+  FriendsOnly = 'friends',
+  Public = 'public',
+}
 
-export const SortOrder = {
-  Ascending: 'asc',
-  Descending: 'desc',
-} as const;
+export enum SortOrder {
+  Ascending = 'asc',
+  Descending = 'desc',
+}
 
-export const TankMaterial = {
-  Aluminum: 'al',
-  Steel: 'fe',
-} as const;
+export enum TankMaterial {
+  Aluminum = 'al',
+  Steel = 'fe',
+}
 
-export const TemperatureUnit = {
-  Celsius: 'C',
-  Fahrenheit: 'F',
-} as const;
+export enum TemperatureUnit {
+  Celsius = 'C',
+  Fahrenheit = 'F',
+}
 
-export const UserRole = {
-  User: 100,
-  Admin: 200,
-} as const;
+export enum UserRole {
+  User = 'user',
+  Admin = 'admin',
+}
 
-export const WeightUnit = {
-  Kilograms: 'kg',
-  Pounds: 'lbs',
-} as const;
+export enum WeightUnit {
+  Kilograms = 'kg',
+  Pounds = 'lbs',
+}

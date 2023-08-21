@@ -1,6 +1,22 @@
 import { expect, test } from '../../fixture';
 
-import UserData from '../../fixtures/regular-user.json';
+const UserData = {
+  _id: 'e533c573-eef5-4851-a5a3-e6c65f9fb792',
+  emailVerified: false,
+  isLockedOut: false,
+  memberSince: new Date('2023-04-28T23:30:42.343Z'),
+  role: 'user',
+  username: 'RickyB_26',
+  usernameLowered: 'rickyb_26',
+  email: 'ShakeNBake@gmail.org',
+  emailLowered: 'shakenbake@gmail.org',
+  passwordHash: '$2b$04$Jj5IQ1ZN30d7MUcSAOFXX.YM9x8JMPjfglPvSD6vjY6T8Dd0pkbSO',
+  lastLogin: new Date('2023-04-28T23:30:44.008Z'),
+  profile: {
+    profileVisibility: 'private',
+    name: 'Ricky Bobby',
+  },
+};
 
 test('Will log a user into their account with username and password', async ({
   app,

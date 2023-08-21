@@ -11,7 +11,7 @@ exports[`Auth Routes Creating JWT cookie Will issue a cookie for the user 1`] = 
       "secure": false,
       "signed": false,
     },
-    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvIiwic3ViIjoidXNlcnxlYzRmYzBlMC1kNThhLTQ4MTQtYjkwNS00MzM5NGUzN2QwMmYiLCJleHAiOjE2OTA0MDM5MDE5NTksImlhdCI6MTY5MDM5ODUwMTk1OX0.Qjrx_IM3tZwUGFBAnPUklNyzmGwF5-iQyaRsk4xnwyc",
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvIiwic3ViIjoidXNlcnxlYzRmYzBlMC1kNThhLTQ4MTQtYjkwNS00MzM5NGUzN2QwMmYiLCJleHAiOjE2OTA0MDM5MDE5NTksImlhdCI6MTY5MDM5ODUwMTk1OX0.vcgz2tr1bUAatxEO34pEjAFUdrw3zPQmYlRZy19WEbM",
   },
 }
 `;

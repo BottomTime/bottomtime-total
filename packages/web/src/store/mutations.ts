@@ -2,7 +2,7 @@ import { MutationTree } from 'vuex';
 
 import { BTState } from './state';
 import { Toast } from '@/helpers';
-import { User } from '@/users';
+import { User } from '@/client/users';
 
 export const Commit = {
   AddToast: 'addToast',

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { ProfileData, UserData } from '@/users';
+import { ProfileData, UserData } from '@/client/users';
 import { ProfileVisibility, UserRole } from '@/constants';
 
 export function fakeProfile(): ProfileData {

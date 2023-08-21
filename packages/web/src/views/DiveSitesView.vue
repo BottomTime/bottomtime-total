@@ -26,7 +26,7 @@ import { onMounted, reactive } from 'vue';
 
 import DiveSiteFilters from '@/components/diveSites/DiveSiteFilters.vue';
 import DiveSiteList from '@/components/diveSites/DiveSiteList.vue';
-import { DiveSiteManagerKey, WithErrorHandlingKey } from '@/injection-keys';
+import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 import { inject } from '@/helpers';
 import PageTitle from '@/components/PageTitle.vue';
 import SearchBar from '@/components/forms/SearchBar.vue';
@@ -38,7 +38,7 @@ interface DiveSitesViewData {
   sites: DiveSite[];
 }
 
-const diveSiteManager = inject(DiveSiteManagerKey);
+const client = inject(ApiClientKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
 const data = reactive<DiveSitesViewData>({
   filters: {
@@ -51,7 +51,7 @@ const data = reactive<DiveSitesViewData>({
 async function refreshList() {
   data.isLoading = true;
   await withErrorHandling(async () => {
-    data.sites = await diveSiteManager.searchDiveSites(data.filters);
+    data.sites = await client.diveSites.searchDiveSites(data.filters);
   });
   data.isLoading = false;
 }

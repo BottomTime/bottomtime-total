@@ -59,14 +59,14 @@ import { useVuelidate } from '@vuelidate/core';
 import FormField from '../forms/FormField.vue';
 import { inject } from '@/helpers';
 import TextBox from '../forms/TextBox.vue';
-import { UserManagerKey, WithErrorHandlingKey } from '@/injection-keys';
+import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 import { UsernameRegex } from '@/constants';
 
 interface ResetPasswordFormData {
   usernameOrEmail: string;
 }
 
-const userManager = inject(UserManagerKey);
+const client = inject(ApiClientKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
 
 const data = reactive<ResetPasswordFormData>({
@@ -97,7 +97,7 @@ async function resetPassword() {
 
   isRequesting.value = true;
   await withErrorHandling(async () => {
-    await userManager.requestPasswordReset(data.usernameOrEmail);
+    await client.users.requestPasswordReset(data.usernameOrEmail);
     isRequested.value = true;
   });
   isRequesting.value = false;

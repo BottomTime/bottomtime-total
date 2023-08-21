@@ -1,9 +1,9 @@
-import { FriendSubDocument } from '../data';
+import { FriendDocument } from '../data';
 import { Friend, Profile } from './interfaces';
 
 export class DefaultFriend implements Friend {
   constructor(
-    private readonly friendData: FriendSubDocument,
+    private readonly friendData: FriendDocument,
     private readonly friendProfile: Profile,
   ) {}
 

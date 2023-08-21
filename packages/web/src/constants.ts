@@ -16,13 +16,13 @@ export const EmailRegex =
 export const PasswordStrengthRegex =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/;
 
-export const ProfileVisibility = {
-  Private: 'private',
-  FriendsOnly: 'friends',
-  Public: 'public',
-} as const;
+export enum ProfileVisibility {
+  Private = 'private',
+  FriendsOnly = 'friends',
+  Public = 'public',
+}
 
-export const ProfileVisibilityOptions: DropDownOption[] = [
+export const ProfileVisibilityOptions: Readonly<DropDownOption[]> = [
   {
     text: 'Everyone',
     value: ProfileVisibility.Public,
@@ -55,7 +55,7 @@ export const MessageBoxStyle = {
 
 export const UsernameRegex = /^[a-z0-9]+([_.-][a-z0-9]+)*$/i;
 
-export const UserRole = {
-  User: 100,
-  Admin: 200,
-} as const;
+export enum UserRole {
+  User = 'user',
+  Admin = 'admin',
+}

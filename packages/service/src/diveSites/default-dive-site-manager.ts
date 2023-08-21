@@ -7,14 +7,19 @@ import {
   DiveSiteManager,
   DiveSitesSortBy,
   SearchDiveSitesOptions,
+  SearchDiveSitesSchema,
 } from './interfaces';
-import { Collections, DiveSiteDocument, UserDocument } from '../data';
+import {
+  Collections,
+  DiveSiteDocument,
+  DiveSiteSchema,
+  UserDocument,
+} from '../data';
 import { DefaultDiveSite } from './default-dive-site';
 import { v4 as uuid } from 'uuid';
 import { User } from '../users';
 import { SortOrder } from '../constants';
 import { assertValid } from '../helpers/validation';
-import { SearchDiveSitesSchema } from './validation';
 
 const EquatorialRadiusOfEarthInKm = 6378.137;
 type DiveSiteCreatorTable = { [creatorId: string]: DiveSiteCreator };
@@ -36,26 +41,29 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
     options: DiveSiteData,
     creator: User,
   ): Promise<DiveSite> {
-    const data: DiveSiteDocument = {
-      _id: uuid(),
-      creator: creator.id,
-      createdOn: new Date(),
+    const data: DiveSiteDocument = assertValid<DiveSiteDocument>(
+      {
+        _id: uuid(),
+        creator: creator.id,
+        createdOn: new Date(),
 
-      name: options.name,
-      description: options.description,
+        name: options.name,
+        description: options.description,
 
-      location: options.location,
-      directions: options.directions,
-      gps: options.gps
-        ? {
-            type: 'Point',
-            coordinates: [options.gps.lon, options.gps.lat],
-          }
-        : undefined,
+        location: options.location,
+        directions: options.directions,
+        gps: options.gps
+          ? {
+              type: 'Point',
+              coordinates: [options.gps.lon, options.gps.lat],
+            }
+          : undefined,
 
-      freeToDive: options.freeToDive,
-      shoreAccess: options.shoreAccess,
-    };
+        freeToDive: options.freeToDive,
+        shoreAccess: options.shoreAccess,
+      },
+      DiveSiteSchema,
+    );
 
     const site = new DefaultDiveSite(this.mongoClient, this.log, data, {
       id: creator.id,
@@ -82,9 +90,7 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
   async searchDiveSites(
     options?: SearchDiveSitesOptions | undefined,
   ): Promise<DiveSite[]> {
-    if (options) {
-      options = assertValid(options, SearchDiveSitesSchema).parsed;
-    }
+    options = assertValid(options, SearchDiveSitesSchema);
 
     const searchFilter: Filter<DiveSiteDocument> = {};
     const searchOptions: FindOptions<Document> = {

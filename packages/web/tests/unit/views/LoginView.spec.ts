@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import request, { SuperAgentStatic } from 'superagent';
 
 import { createStore } from '@/store';
-import { DefaultUser, DefaultUserManager, UserManager } from '@/users';
+import { DefaultUser, DefaultUserManager, UserManager } from '@/client/users';
 import { fakeUser } from '../../fixtures/fake-user';
 import LoginView from '@/views/LoginView.vue';
 import { StoreKey } from '@/injection-keys';

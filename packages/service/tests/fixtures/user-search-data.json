@@ -7,7 +7,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T18:28:59.884Z",
     "memberSince": "2017-06-11T10:24:45.815Z",
-    "role": 100,
+    "role": "user",
     "username": "Georgianna9",
     "usernameLowered": "georgianna9",
     "profile": {
@@ -54,7 +54,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T09:08:53.752Z",
     "memberSince": "2020-09-27T11:00:00.420Z",
-    "role": 100,
+    "role": "user",
     "username": "Assunta61",
     "usernameLowered": "assunta61",
     "profile": {
@@ -101,7 +101,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T21:34:34.706Z",
     "memberSince": "2021-01-07T22:51:16.961Z",
-    "role": 100,
+    "role": "user",
     "username": "Hillary1",
     "usernameLowered": "hillary1",
     "profile": {
@@ -133,7 +133,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T23:38:33.127Z",
     "memberSince": "2020-02-12T11:42:01.022Z",
-    "role": 100,
+    "role": "user",
     "username": "Kristoffer.Feest",
     "usernameLowered": "kristoffer.feest",
     "profile": {
@@ -170,7 +170,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-09T21:23:06.755Z",
     "memberSince": "2021-07-11T14:38:33.359Z",
-    "role": 200,
+    "role": "admin",
     "username": "Modesto48",
     "usernameLowered": "modesto48",
     "profile": {
@@ -196,7 +196,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T08:46:26.274Z",
     "memberSince": "2020-09-29T16:24:57.989Z",
-    "role": 100,
+    "role": "user",
     "username": "Pattie.Bode",
     "usernameLowered": "pattie.bode",
     "profile": {
@@ -231,7 +231,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T16:36:09.304Z",
     "memberSince": "2021-12-23T02:55:59.367Z",
-    "role": 200,
+    "role": "admin",
     "username": "Assunta.Kautzer",
     "usernameLowered": "assunta.kautzer",
     "profile": {
@@ -262,7 +262,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T20:25:48.529Z",
     "memberSince": "2020-09-13T12:25:33.443Z",
-    "role": 200,
+    "role": "admin",
     "username": "Sallie.Schultz",
     "usernameLowered": "sallie.schultz",
     "profile": {
@@ -288,7 +288,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-03T18:51:01.360Z",
     "memberSince": "2018-07-03T03:40:48.595Z",
-    "role": 100,
+    "role": "user",
     "username": "Constance.Kilback44",
     "usernameLowered": "constance.kilback44",
     "profile": {
@@ -328,7 +328,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T10:52:34.261Z",
     "memberSince": "2019-03-28T10:45:37.830Z",
-    "role": 100,
+    "role": "user",
     "username": "Clifton.Powlowski",
     "usernameLowered": "clifton.powlowski",
     "profile": {
@@ -370,7 +370,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-08T07:36:52.917Z",
     "memberSince": "2021-03-07T09:04:56.792Z",
-    "role": 200,
+    "role": "admin",
     "username": "Justina.Lang63",
     "usernameLowered": "justina.lang63",
     "profile": {
@@ -408,7 +408,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T00:22:40.494Z",
     "memberSince": "2022-05-10T11:14:59.067Z",
-    "role": 200,
+    "role": "admin",
     "username": "Elvie29",
     "usernameLowered": "elvie29",
     "profile": {
@@ -434,7 +434,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T16:24:40.204Z",
     "memberSince": "2019-02-17T04:39:55.411Z",
-    "role": 200,
+    "role": "admin",
     "username": "Nicolas.Keeling",
     "usernameLowered": "nicolas.keeling",
     "profile": {
@@ -471,7 +471,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T15:08:16.076Z",
     "memberSince": "2022-10-23T12:42:52.556Z",
-    "role": 100,
+    "role": "user",
     "username": "Amara.Ernser14",
     "usernameLowered": "amara.ernser14",
     "profile": {
@@ -506,7 +506,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T18:18:39.770Z",
     "memberSince": "2020-07-23T11:48:38.489Z",
-    "role": 200,
+    "role": "admin",
     "username": "Gwendolyn.Lakin",
     "usernameLowered": "gwendolyn.lakin",
     "profile": {
@@ -548,7 +548,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T11:20:37.307Z",
     "memberSince": "2022-10-05T20:12:28.103Z",
-    "role": 100,
+    "role": "user",
     "username": "Maverick.Bauch14",
     "usernameLowered": "maverick.bauch14",
     "profile": {
@@ -589,7 +589,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T20:07:30.841Z",
     "memberSince": "2022-03-20T01:36:39.055Z",
-    "role": 200,
+    "role": "admin",
     "username": "Tyrell.Ruecker",
     "usernameLowered": "tyrell.ruecker",
     "profile": {
@@ -632,7 +632,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T16:43:19.777Z",
     "memberSince": "2022-01-11T11:29:04.833Z",
-    "role": 100,
+    "role": "user",
     "username": "Novella16",
     "usernameLowered": "novella16",
     "profile": {
@@ -668,7 +668,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-01T13:06:07.485Z",
     "memberSince": "2018-03-04T18:40:33.741Z",
-    "role": 100,
+    "role": "user",
     "username": "Aurore.Tillman",
     "usernameLowered": "aurore.tillman",
     "profile": {
@@ -699,7 +699,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-03T13:53:43.251Z",
     "memberSince": "2022-10-27T13:51:10.709Z",
-    "role": 100,
+    "role": "user",
     "username": "Leopoldo39",
     "usernameLowered": "leopoldo39",
     "profile": {
@@ -740,7 +740,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T04:55:51.412Z",
     "memberSince": "2017-06-05T12:58:00.954Z",
-    "role": 100,
+    "role": "user",
     "username": "Lyda1",
     "usernameLowered": "lyda1",
     "profile": {
@@ -767,7 +767,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-12T00:48:08.388Z",
     "memberSince": "2019-05-01T17:53:58.993Z",
-    "role": 200,
+    "role": "admin",
     "username": "Jenifer.Mitchell92",
     "usernameLowered": "jenifer.mitchell92",
     "profile": {
@@ -801,7 +801,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T22:24:54.387Z",
     "memberSince": "2023-02-24T17:31:10.733Z",
-    "role": 100,
+    "role": "user",
     "username": "Karli.Mueller79",
     "usernameLowered": "karli.mueller79",
     "profile": {
@@ -833,7 +833,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T18:26:40.452Z",
     "memberSince": "2023-05-01T11:02:10.498Z",
-    "role": 100,
+    "role": "user",
     "username": "Jayson.Stark",
     "usernameLowered": "jayson.stark",
     "profile": {
@@ -859,7 +859,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T13:14:33.124Z",
     "memberSince": "2019-03-25T09:39:09.118Z",
-    "role": 100,
+    "role": "user",
     "username": "Bartholome.Beer37",
     "usernameLowered": "bartholome.beer37",
     "profile": {
@@ -896,7 +896,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-07T04:02:05.608Z",
     "memberSince": "2018-03-21T11:11:59.717Z",
-    "role": 100,
+    "role": "user",
     "username": "Lolita56",
     "usernameLowered": "lolita56",
     "profile": {
@@ -922,7 +922,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T17:44:18.487Z",
     "memberSince": "2020-02-14T12:43:19.019Z",
-    "role": 100,
+    "role": "user",
     "username": "Parker66",
     "usernameLowered": "parker66",
     "profile": {
@@ -973,7 +973,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T23:14:27.437Z",
     "memberSince": "2019-07-27T16:36:25.467Z",
-    "role": 200,
+    "role": "admin",
     "username": "Novella.Reichel",
     "usernameLowered": "novella.reichel",
     "profile": {
@@ -1011,7 +1011,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T13:28:57.320Z",
     "memberSince": "2021-11-08T15:06:42.683Z",
-    "role": 100,
+    "role": "user",
     "username": "Adalberto.Rau18",
     "usernameLowered": "adalberto.rau18",
     "profile": {
@@ -1037,7 +1037,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T14:14:04.787Z",
     "memberSince": "2020-03-07T12:56:57.727Z",
-    "role": 200,
+    "role": "admin",
     "username": "Maynard13",
     "usernameLowered": "maynard13",
     "profile": {
@@ -1067,7 +1067,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T20:01:34.391Z",
     "memberSince": "2017-08-21T21:49:43.225Z",
-    "role": 100,
+    "role": "user",
     "username": "Reuben.Langosh45",
     "usernameLowered": "reuben.langosh45",
     "profile": {
@@ -1098,7 +1098,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T02:26:07.370Z",
     "memberSince": "2018-09-12T19:35:30.058Z",
-    "role": 200,
+    "role": "admin",
     "username": "Josie.Sawayn44",
     "usernameLowered": "josie.sawayn44",
     "profile": {
@@ -1137,7 +1137,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T06:39:14.355Z",
     "memberSince": "2020-11-11T04:01:25.101Z",
-    "role": 100,
+    "role": "user",
     "username": "Stacey50",
     "usernameLowered": "stacey50",
     "profile": {
@@ -1180,7 +1180,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T07:27:33.756Z",
     "memberSince": "2022-05-29T00:01:15.302Z",
-    "role": 100,
+    "role": "user",
     "username": "Maiya37",
     "usernameLowered": "maiya37",
     "profile": {
@@ -1206,7 +1206,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T00:39:26.577Z",
     "memberSince": "2018-08-05T17:20:14.640Z",
-    "role": 100,
+    "role": "user",
     "username": "Fern.Hammes84",
     "usernameLowered": "fern.hammes84",
     "profile": {
@@ -1247,7 +1247,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-03T23:35:01.547Z",
     "memberSince": "2019-04-23T11:47:36.095Z",
-    "role": 200,
+    "role": "admin",
     "username": "Carlee.Skiles",
     "usernameLowered": "carlee.skiles",
     "profile": {
@@ -1288,7 +1288,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T15:47:50.741Z",
     "memberSince": "2020-07-03T12:02:40.135Z",
-    "role": 200,
+    "role": "admin",
     "username": "Shad.Daniel29",
     "usernameLowered": "shad.daniel29",
     "profile": {
@@ -1315,7 +1315,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T06:12:40.004Z",
     "memberSince": "2017-11-30T23:33:56.462Z",
-    "role": 200,
+    "role": "admin",
     "username": "Carissa.Dooley",
     "usernameLowered": "carissa.dooley",
     "profile": {
@@ -1366,7 +1366,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T02:20:52.567Z",
     "memberSince": "2022-12-24T08:02:15.088Z",
-    "role": 100,
+    "role": "user",
     "username": "Cyrus.Green79",
     "usernameLowered": "cyrus.green79",
     "profile": {
@@ -1404,7 +1404,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T11:46:43.218Z",
     "memberSince": "2022-04-26T08:57:48.469Z",
-    "role": 200,
+    "role": "admin",
     "username": "Skye.Walter59",
     "usernameLowered": "skye.walter59",
     "profile": {
@@ -1455,7 +1455,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-09T16:34:37.376Z",
     "memberSince": "2021-10-29T03:50:28.612Z",
-    "role": 100,
+    "role": "user",
     "username": "Rae88",
     "usernameLowered": "rae88",
     "profile": {
@@ -1492,7 +1492,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-01T02:42:56.412Z",
     "memberSince": "2021-11-04T11:41:24.757Z",
-    "role": 100,
+    "role": "user",
     "username": "Zachary81",
     "usernameLowered": "zachary81",
     "profile": {
@@ -1526,7 +1526,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T13:45:18.236Z",
     "memberSince": "2020-09-27T14:18:43.053Z",
-    "role": 200,
+    "role": "admin",
     "username": "Golda.Stark",
     "usernameLowered": "golda.stark",
     "profile": {
@@ -1557,7 +1557,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-09T05:33:31.652Z",
     "memberSince": "2019-03-02T01:15:49.932Z",
-    "role": 100,
+    "role": "user",
     "username": "Simone.Howe10",
     "usernameLowered": "simone.howe10",
     "profile": {
@@ -1604,7 +1604,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T03:07:16.556Z",
     "memberSince": "2021-01-27T09:12:55.017Z",
-    "role": 100,
+    "role": "user",
     "username": "Marilie5",
     "usernameLowered": "marilie5",
     "profile": {
@@ -1642,7 +1642,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T03:22:17.702Z",
     "memberSince": "2022-01-25T04:02:02.634Z",
-    "role": 100,
+    "role": "user",
     "username": "Jace88",
     "usernameLowered": "jace88",
     "profile": {
@@ -1684,7 +1684,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T10:47:47.738Z",
     "memberSince": "2022-06-06T13:21:37.541Z",
-    "role": 100,
+    "role": "user",
     "username": "Berniece.Bayer",
     "usernameLowered": "berniece.bayer",
     "profile": {
@@ -1727,7 +1727,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T21:24:28.550Z",
     "memberSince": "2020-08-25T09:38:41.942Z",
-    "role": 200,
+    "role": "admin",
     "username": "Louie.Mueller62",
     "usernameLowered": "louie.mueller62",
     "profile": {
@@ -1753,7 +1753,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-12T18:26:16.593Z",
     "memberSince": "2017-06-22T04:22:59.815Z",
-    "role": 100,
+    "role": "user",
     "username": "Houston.Mante",
     "usernameLowered": "houston.mante",
     "profile": {
@@ -1792,7 +1792,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-03T05:02:05.608Z",
     "memberSince": "2021-10-31T17:15:36.270Z",
-    "role": 200,
+    "role": "admin",
     "username": "Carson.Auer",
     "usernameLowered": "carson.auer",
     "profile": {
@@ -1820,7 +1820,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T16:34:21.894Z",
     "memberSince": "2018-06-05T02:18:14.627Z",
-    "role": 200,
+    "role": "admin",
     "username": "Elias.Schinner82",
     "usernameLowered": "elias.schinner82",
     "profile": {
@@ -1856,7 +1856,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T12:28:45.782Z",
     "memberSince": "2018-07-25T17:34:00.263Z",
-    "role": 100,
+    "role": "user",
     "username": "Euna86",
     "usernameLowered": "euna86",
     "profile": {
@@ -1899,7 +1899,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-10T00:47:41.377Z",
     "memberSince": "2019-07-08T01:54:33.050Z",
-    "role": 200,
+    "role": "admin",
     "username": "Mckenna.Greenfelder64",
     "usernameLowered": "mckenna.greenfelder64",
     "profile": {
@@ -1935,7 +1935,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-12T23:03:19.693Z",
     "memberSince": "2020-12-16T12:28:03.301Z",
-    "role": 200,
+    "role": "admin",
     "username": "Pearlie.Mayer13",
     "usernameLowered": "pearlie.mayer13",
     "profile": {
@@ -1982,7 +1982,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-12T06:10:45.504Z",
     "memberSince": "2019-10-16T11:49:33.243Z",
-    "role": 200,
+    "role": "admin",
     "username": "Van89",
     "usernameLowered": "van89",
     "profile": {
@@ -2025,7 +2025,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-26T22:02:13.104Z",
     "memberSince": "2020-04-16T06:22:01.399Z",
-    "role": 100,
+    "role": "user",
     "username": "Sven.Schulist13",
     "usernameLowered": "sven.schulist13",
     "profile": {
@@ -2061,7 +2061,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-03T03:47:47.051Z",
     "memberSince": "2022-02-07T15:52:09.135Z",
-    "role": 100,
+    "role": "user",
     "username": "Pearl.OHara",
     "usernameLowered": "pearl.ohara",
     "profile": {
@@ -2092,7 +2092,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T00:02:07.371Z",
     "memberSince": "2020-09-25T07:21:23.260Z",
-    "role": 200,
+    "role": "admin",
     "username": "Stephen.Goldner60",
     "usernameLowered": "stephen.goldner60",
     "profile": {
@@ -2139,7 +2139,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T01:14:24.386Z",
     "memberSince": "2021-09-06T16:48:57.999Z",
-    "role": 100,
+    "role": "user",
     "username": "Nathanael.Wilderman71",
     "usernameLowered": "nathanael.wilderman71",
     "profile": {
@@ -2175,7 +2175,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-03T12:54:47.292Z",
     "memberSince": "2021-07-18T01:15:28.342Z",
-    "role": 200,
+    "role": "admin",
     "username": "Mafalda35",
     "usernameLowered": "mafalda35",
     "profile": {
@@ -2201,7 +2201,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T14:04:40.889Z",
     "memberSince": "2020-10-11T00:13:36.714Z",
-    "role": 200,
+    "role": "admin",
     "username": "Mellie.Berge79",
     "usernameLowered": "mellie.berge79",
     "profile": {
@@ -2237,7 +2237,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T20:47:31.774Z",
     "memberSince": "2022-09-03T07:06:16.189Z",
-    "role": 200,
+    "role": "admin",
     "username": "Alicia.Lebsack68",
     "usernameLowered": "alicia.lebsack68",
     "profile": {
@@ -2284,7 +2284,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T06:51:03.518Z",
     "memberSince": "2021-04-03T01:41:43.317Z",
-    "role": 100,
+    "role": "user",
     "username": "Roman.Beatty66",
     "usernameLowered": "roman.beatty66",
     "profile": {
@@ -2319,7 +2319,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T07:59:07.891Z",
     "memberSince": "2020-04-01T18:41:01.744Z",
-    "role": 100,
+    "role": "user",
     "username": "Immanuel.Davis12",
     "usernameLowered": "immanuel.davis12",
     "profile": {
@@ -2353,7 +2353,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T01:35:06.675Z",
     "memberSince": "2020-07-04T22:43:57.329Z",
-    "role": 100,
+    "role": "user",
     "username": "Caitlyn.Zieme",
     "usernameLowered": "caitlyn.zieme",
     "profile": {
@@ -2386,7 +2386,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T07:01:57.987Z",
     "memberSince": "2018-10-25T10:58:05.896Z",
-    "role": 200,
+    "role": "admin",
     "username": "Dannie.Lebsack",
     "usernameLowered": "dannie.lebsack",
     "profile": {
@@ -2421,7 +2421,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-07T13:19:56.908Z",
     "memberSince": "2021-05-18T04:14:22.630Z",
-    "role": 200,
+    "role": "admin",
     "username": "Amina2",
     "usernameLowered": "amina2",
     "profile": {
@@ -2468,7 +2468,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T00:33:11.741Z",
     "memberSince": "2021-12-14T08:24:35.515Z",
-    "role": 200,
+    "role": "admin",
     "username": "Ernestina0",
     "usernameLowered": "ernestina0",
     "profile": {
@@ -2504,7 +2504,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-03T01:42:03.677Z",
     "memberSince": "2017-09-13T11:54:39.992Z",
-    "role": 100,
+    "role": "user",
     "username": "Gino65",
     "usernameLowered": "gino65",
     "profile": {
@@ -2540,7 +2540,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T22:26:38.193Z",
     "memberSince": "2021-10-24T14:50:34.184Z",
-    "role": 100,
+    "role": "user",
     "username": "Herminio44",
     "usernameLowered": "herminio44",
     "profile": {
@@ -2581,7 +2581,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-06T21:58:22.595Z",
     "memberSince": "2021-06-27T22:04:22.076Z",
-    "role": 100,
+    "role": "user",
     "username": "Ricky.Dibbert",
     "usernameLowered": "ricky.dibbert",
     "profile": {
@@ -2614,7 +2614,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T15:11:44.633Z",
     "memberSince": "2022-03-21T13:28:15.802Z",
-    "role": 100,
+    "role": "user",
     "username": "Carmen.Von13",
     "usernameLowered": "carmen.von13",
     "profile": {
@@ -2652,7 +2652,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T00:20:56.575Z",
     "memberSince": "2018-06-30T21:57:33.191Z",
-    "role": 100,
+    "role": "user",
     "username": "Brittany3",
     "usernameLowered": "brittany3",
     "profile": {
@@ -2688,7 +2688,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-07T16:20:42.158Z",
     "memberSince": "2019-06-30T11:48:40.946Z",
-    "role": 100,
+    "role": "user",
     "username": "Josianne54",
     "usernameLowered": "josianne54",
     "profile": {
@@ -2726,7 +2726,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-07T14:29:19.213Z",
     "memberSince": "2019-10-02T22:34:54.600Z",
-    "role": 100,
+    "role": "user",
     "username": "Kelvin.Connelly42",
     "usernameLowered": "kelvin.connelly42",
     "profile": {
@@ -2764,7 +2764,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T00:24:05.239Z",
     "memberSince": "2018-07-09T03:22:24.779Z",
-    "role": 200,
+    "role": "admin",
     "username": "Chad.Turcotte17",
     "usernameLowered": "chad.turcotte17",
     "profile": {
@@ -2810,7 +2810,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-07T18:38:13.041Z",
     "memberSince": "2020-08-28T10:21:41.105Z",
-    "role": 100,
+    "role": "user",
     "username": "Eugene.Zieme61",
     "usernameLowered": "eugene.zieme61",
     "profile": {
@@ -2848,7 +2848,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T05:37:08.154Z",
     "memberSince": "2022-06-10T18:59:44.318Z",
-    "role": 200,
+    "role": "admin",
     "username": "Jessika.Kohler",
     "usernameLowered": "jessika.kohler",
     "profile": {
@@ -2885,7 +2885,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-06T04:13:15.110Z",
     "memberSince": "2023-01-30T19:55:17.838Z",
-    "role": 100,
+    "role": "user",
     "username": "Rahul.Feil",
     "usernameLowered": "rahul.feil",
     "profile": {
@@ -2916,7 +2916,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T03:22:42.543Z",
     "memberSince": "2019-05-23T19:27:06.915Z",
-    "role": 100,
+    "role": "user",
     "username": "Glenda.Gleichner",
     "usernameLowered": "glenda.gleichner",
     "profile": {
@@ -2953,7 +2953,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T02:20:52.585Z",
     "memberSince": "2017-08-31T09:32:31.200Z",
-    "role": 200,
+    "role": "admin",
     "username": "Reva50",
     "usernameLowered": "reva50",
     "profile": {
@@ -2990,7 +2990,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-12T15:05:08.010Z",
     "memberSince": "2022-07-01T22:17:35.187Z",
-    "role": 200,
+    "role": "admin",
     "username": "Judson.Halvorson41",
     "usernameLowered": "judson.halvorson41",
     "profile": {
@@ -3028,7 +3028,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T06:24:16.754Z",
     "memberSince": "2019-01-30T02:38:10.640Z",
-    "role": 100,
+    "role": "user",
     "username": "Piper.Turcotte26",
     "usernameLowered": "piper.turcotte26",
     "profile": {
@@ -3073,7 +3073,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T18:03:52.107Z",
     "memberSince": "2020-11-17T06:43:40.542Z",
-    "role": 100,
+    "role": "user",
     "username": "Dovie.Roob",
     "usernameLowered": "dovie.roob",
     "profile": {
@@ -3116,7 +3116,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-06T23:04:27.190Z",
     "memberSince": "2020-08-22T06:03:59.724Z",
-    "role": 100,
+    "role": "user",
     "username": "Kenna.Dare",
     "usernameLowered": "kenna.dare",
     "profile": {
@@ -3155,7 +3155,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T14:59:12.835Z",
     "memberSince": "2020-06-30T10:40:16.911Z",
-    "role": 100,
+    "role": "user",
     "username": "Kelvin5",
     "usernameLowered": "kelvin5",
     "profile": {
@@ -3181,7 +3181,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-10T19:17:08.986Z",
     "memberSince": "2019-04-26T15:47:58.661Z",
-    "role": 200,
+    "role": "admin",
     "username": "Danny.Mosciski",
     "usernameLowered": "danny.mosciski",
     "profile": {
@@ -3228,7 +3228,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-07T03:09:38.130Z",
     "memberSince": "2023-01-08T23:22:34.936Z",
-    "role": 100,
+    "role": "user",
     "username": "Dejah.Bechtelar33",
     "usernameLowered": "dejah.bechtelar33",
     "profile": {
@@ -3267,7 +3267,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-09T08:53:26.170Z",
     "memberSince": "2018-07-21T05:49:20.759Z",
-    "role": 200,
+    "role": "admin",
     "username": "Orin2",
     "usernameLowered": "orin2",
     "profile": {
@@ -3305,7 +3305,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-01T02:10:40.737Z",
     "memberSince": "2019-08-07T21:27:23.525Z",
-    "role": 200,
+    "role": "admin",
     "username": "Alessia.Dietrich4",
     "usernameLowered": "alessia.dietrich4",
     "profile": {
@@ -3340,7 +3340,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-09T20:55:34.104Z",
     "memberSince": "2017-06-03T02:34:06.746Z",
-    "role": 200,
+    "role": "admin",
     "username": "Magali.Friesen",
     "usernameLowered": "magali.friesen",
     "profile": {
@@ -3383,7 +3383,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T22:30:50.585Z",
     "memberSince": "2017-06-22T08:09:53.159Z",
-    "role": 200,
+    "role": "admin",
     "username": "Hiram.Renner1",
     "usernameLowered": "hiram.renner1",
     "profile": {
@@ -3419,7 +3419,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T02:59:37.896Z",
     "memberSince": "2019-04-30T10:54:49.852Z",
-    "role": 100,
+    "role": "user",
     "username": "Leanne.Lockman38",
     "usernameLowered": "leanne.lockman38",
     "profile": {
@@ -3449,7 +3449,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T16:50:02.748Z",
     "memberSince": "2023-04-05T09:58:04.786Z",
-    "role": 100,
+    "role": "user",
     "username": "Dorthy34",
     "usernameLowered": "dorthy34",
     "profile": {
@@ -3486,7 +3486,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T13:46:57.405Z",
     "memberSince": "2022-12-28T08:45:10.343Z",
-    "role": 200,
+    "role": "admin",
     "username": "Jamaal2",
     "usernameLowered": "jamaal2",
     "profile": {
@@ -3513,7 +3513,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-07T07:02:29.332Z",
     "memberSince": "2021-04-24T01:19:08.468Z",
-    "role": 100,
+    "role": "user",
     "username": "Augustine.Bartoletti",
     "usernameLowered": "augustine.bartoletti",
     "profile": {
@@ -3559,7 +3559,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T17:03:56.925Z",
     "memberSince": "2020-09-08T13:31:39.406Z",
-    "role": 100,
+    "role": "user",
     "username": "Tyra.Rutherford",
     "usernameLowered": "tyra.rutherford",
     "profile": {
@@ -3601,7 +3601,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-10T09:11:35.527Z",
     "memberSince": "2018-07-27T13:00:55.946Z",
-    "role": 200,
+    "role": "admin",
     "username": "Davion90",
     "usernameLowered": "davion90",
     "profile": {
@@ -3639,7 +3639,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T21:52:29.859Z",
     "memberSince": "2022-08-11T15:09:58.025Z",
-    "role": 200,
+    "role": "admin",
     "username": "Rhea.Pfeffer35",
     "usernameLowered": "rhea.pfeffer35",
     "profile": {
@@ -3666,7 +3666,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-10T22:30:14.615Z",
     "memberSince": "2020-12-29T18:59:32.618Z",
-    "role": 100,
+    "role": "user",
     "username": "Aurore68",
     "usernameLowered": "aurore68",
     "profile": {
@@ -3713,7 +3713,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-06T01:18:28.293Z",
     "memberSince": "2022-05-18T21:21:40.080Z",
-    "role": 100,
+    "role": "user",
     "username": "Winston92",
     "usernameLowered": "winston92",
     "profile": {
@@ -3756,7 +3756,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T15:35:05.969Z",
     "memberSince": "2022-10-07T08:23:10.008Z",
-    "role": 100,
+    "role": "user",
     "username": "Nelda78",
     "usernameLowered": "nelda78",
     "profile": {
@@ -3792,7 +3792,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T08:08:29.988Z",
     "memberSince": "2021-04-21T19:47:33.266Z",
-    "role": 200,
+    "role": "admin",
     "username": "Keanu.Klocko",
     "usernameLowered": "keanu.klocko",
     "profile": {
@@ -3829,7 +3829,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T18:23:24.306Z",
     "memberSince": "2021-03-04T10:12:16.129Z",
-    "role": 100,
+    "role": "user",
     "username": "Henriette14",
     "usernameLowered": "henriette14",
     "profile": {
@@ -3866,7 +3866,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-26T20:04:22.859Z",
     "memberSince": "2018-04-10T05:45:41.676Z",
-    "role": 200,
+    "role": "admin",
     "username": "Jeanette7",
     "usernameLowered": "jeanette7",
     "profile": {
@@ -3892,7 +3892,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T03:11:18.497Z",
     "memberSince": "2019-08-02T19:15:30.174Z",
-    "role": 100,
+    "role": "user",
     "username": "Sheridan.Kulas13",
     "usernameLowered": "sheridan.kulas13",
     "profile": {
@@ -3929,7 +3929,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T10:26:36.665Z",
     "memberSince": "2021-09-15T02:29:45.671Z",
-    "role": 200,
+    "role": "admin",
     "username": "Dax.Leffler",
     "usernameLowered": "dax.leffler",
     "profile": {
@@ -3957,7 +3957,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T00:18:59.076Z",
     "memberSince": "2023-03-06T07:51:50.407Z",
-    "role": 200,
+    "role": "admin",
     "username": "Iva.Auer17",
     "usernameLowered": "iva.auer17",
     "profile": {
@@ -3987,7 +3987,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T10:40:17.968Z",
     "memberSince": "2017-08-12T14:23:03.706Z",
-    "role": 200,
+    "role": "admin",
     "username": "Roxanne58",
     "usernameLowered": "roxanne58",
     "profile": {
@@ -4024,7 +4024,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T12:12:28.123Z",
     "memberSince": "2019-09-19T20:25:55.388Z",
-    "role": 200,
+    "role": "admin",
     "username": "Anna99",
     "usernameLowered": "anna99",
     "profile": {
@@ -4051,7 +4051,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T20:41:31.969Z",
     "memberSince": "2019-11-18T01:07:34.502Z",
-    "role": 200,
+    "role": "admin",
     "username": "Meggie.Klein",
     "usernameLowered": "meggie.klein",
     "profile": {
@@ -4081,7 +4081,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T20:18:37.929Z",
     "memberSince": "2020-12-24T01:59:49.202Z",
-    "role": 100,
+    "role": "user",
     "username": "Jake.Hermann65",
     "usernameLowered": "jake.hermann65",
     "profile": {
@@ -4122,7 +4122,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T20:56:18.682Z",
     "memberSince": "2020-06-03T13:28:14.577Z",
-    "role": 100,
+    "role": "user",
     "username": "Sheridan.Rutherford",
     "usernameLowered": "sheridan.rutherford",
     "profile": {
@@ -4173,7 +4173,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-09T07:33:35.187Z",
     "memberSince": "2020-05-24T20:43:50.679Z",
-    "role": 200,
+    "role": "admin",
     "username": "Zachery.Deckow",
     "usernameLowered": "zachery.deckow",
     "profile": {
@@ -4199,7 +4199,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T16:10:57.660Z",
     "memberSince": "2021-10-12T10:14:57.262Z",
-    "role": 200,
+    "role": "admin",
     "username": "Zora.Stroman31",
     "usernameLowered": "zora.stroman31",
     "profile": {
@@ -4240,7 +4240,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T10:53:28.704Z",
     "memberSince": "2020-11-06T20:40:02.809Z",
-    "role": 200,
+    "role": "admin",
     "username": "Aurelia.Walsh",
     "usernameLowered": "aurelia.walsh",
     "profile": {
@@ -4277,7 +4277,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T18:18:02.488Z",
     "memberSince": "2020-11-27T18:30:48.062Z",
-    "role": 200,
+    "role": "admin",
     "username": "Nicholas47",
     "usernameLowered": "nicholas47",
     "profile": {
@@ -4310,7 +4310,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T04:00:57.251Z",
     "memberSince": "2017-08-12T22:44:17.657Z",
-    "role": 200,
+    "role": "admin",
     "username": "Winfield.Ebert",
     "usernameLowered": "winfield.ebert",
     "profile": {
@@ -4361,7 +4361,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T19:38:29.473Z",
     "memberSince": "2020-01-17T04:26:25.891Z",
-    "role": 100,
+    "role": "user",
     "username": "Isabel79",
     "usernameLowered": "isabel79",
     "profile": {
@@ -4387,7 +4387,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T04:36:49.103Z",
     "memberSince": "2020-11-13T00:08:05.447Z",
-    "role": 100,
+    "role": "user",
     "username": "Nya47",
     "usernameLowered": "nya47",
     "profile": {
@@ -4424,7 +4424,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-01T23:20:52.364Z",
     "memberSince": "2022-02-02T06:29:10.930Z",
-    "role": 100,
+    "role": "user",
     "username": "Samanta.Cummings",
     "usernameLowered": "samanta.cummings",
     "profile": {
@@ -4461,7 +4461,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T06:08:44.407Z",
     "memberSince": "2021-10-27T21:13:35.545Z",
-    "role": 100,
+    "role": "user",
     "username": "Hortense20",
     "usernameLowered": "hortense20",
     "profile": {
@@ -4512,7 +4512,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T19:52:57.534Z",
     "memberSince": "2017-12-22T01:05:33.096Z",
-    "role": 100,
+    "role": "user",
     "username": "Wilfrid.Satterfield",
     "usernameLowered": "wilfrid.satterfield",
     "profile": {
@@ -4542,7 +4542,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T06:48:44.052Z",
     "memberSince": "2018-09-15T14:30:53.245Z",
-    "role": 200,
+    "role": "admin",
     "username": "Kendrick.Lakin",
     "usernameLowered": "kendrick.lakin",
     "profile": {
@@ -4574,7 +4574,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T01:11:37.487Z",
     "memberSince": "2017-08-28T12:35:54.968Z",
-    "role": 100,
+    "role": "user",
     "username": "Osvaldo95",
     "usernameLowered": "osvaldo95",
     "profile": {
@@ -4616,7 +4616,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T06:00:09.535Z",
     "memberSince": "2018-04-02T00:14:40.664Z",
-    "role": 200,
+    "role": "admin",
     "username": "Milan23",
     "usernameLowered": "milan23",
     "profile": {
@@ -4662,7 +4662,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T15:26:40.867Z",
     "memberSince": "2019-08-19T00:03:01.377Z",
-    "role": 100,
+    "role": "user",
     "username": "Felipe35",
     "usernameLowered": "felipe35",
     "profile": {
@@ -4695,7 +4695,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T13:25:47.532Z",
     "memberSince": "2023-03-23T20:09:08.981Z",
-    "role": 200,
+    "role": "admin",
     "username": "Jaunita71",
     "usernameLowered": "jaunita71",
     "profile": {
@@ -4730,7 +4730,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-10T08:20:11.244Z",
     "memberSince": "2021-01-30T20:43:15.705Z",
-    "role": 100,
+    "role": "user",
     "username": "Ed.Metz",
     "usernameLowered": "ed.metz",
     "profile": {
@@ -4760,7 +4760,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-10T22:37:32.243Z",
     "memberSince": "2022-10-15T21:32:41.345Z",
-    "role": 200,
+    "role": "admin",
     "username": "Yesenia.Wisozk",
     "usernameLowered": "yesenia.wisozk",
     "profile": {
@@ -4791,7 +4791,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T21:37:56.634Z",
     "memberSince": "2017-09-24T18:48:10.524Z",
-    "role": 100,
+    "role": "user",
     "username": "Julio55",
     "usernameLowered": "julio55",
     "profile": {
@@ -4829,7 +4829,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T04:32:35.867Z",
     "memberSince": "2018-01-28T04:08:52.088Z",
-    "role": 200,
+    "role": "admin",
     "username": "Kiara.Schamberger11",
     "usernameLowered": "kiara.schamberger11",
     "profile": {
@@ -4859,7 +4859,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T16:46:05.497Z",
     "memberSince": "2023-04-16T20:30:49.629Z",
-    "role": 100,
+    "role": "user",
     "username": "Bernardo16",
     "usernameLowered": "bernardo16",
     "profile": {
@@ -4895,7 +4895,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T03:31:15.406Z",
     "memberSince": "2021-03-23T10:11:20.007Z",
-    "role": 100,
+    "role": "user",
     "username": "Elroy67",
     "usernameLowered": "elroy67",
     "profile": {
@@ -4927,7 +4927,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T10:56:21.920Z",
     "memberSince": "2021-01-16T00:33:40.186Z",
-    "role": 100,
+    "role": "user",
     "username": "Madelynn25",
     "usernameLowered": "madelynn25",
     "profile": {
@@ -4970,7 +4970,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T23:37:49.981Z",
     "memberSince": "2022-05-17T20:06:32.301Z",
-    "role": 200,
+    "role": "admin",
     "username": "Abigayle.Jaskolski61",
     "usernameLowered": "abigayle.jaskolski61",
     "profile": {
@@ -5013,7 +5013,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T09:03:43.698Z",
     "memberSince": "2019-11-24T12:17:18.770Z",
-    "role": 200,
+    "role": "admin",
     "username": "Travon.Satterfield10",
     "usernameLowered": "travon.satterfield10",
     "profile": {
@@ -5055,7 +5055,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T17:43:30.427Z",
     "memberSince": "2021-05-25T03:21:29.040Z",
-    "role": 100,
+    "role": "user",
     "username": "Kaci95",
     "usernameLowered": "kaci95",
     "profile": {
@@ -5093,7 +5093,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T03:50:44.214Z",
     "memberSince": "2023-03-14T13:57:42.993Z",
-    "role": 200,
+    "role": "admin",
     "username": "Natalie.Corwin",
     "usernameLowered": "natalie.corwin",
     "profile": {
@@ -5120,7 +5120,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-04T02:29:15.859Z",
     "memberSince": "2017-11-29T03:36:23.552Z",
-    "role": 200,
+    "role": "admin",
     "username": "Erik.Adams93",
     "usernameLowered": "erik.adams93",
     "profile": {
@@ -5161,7 +5161,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-06T17:15:47.319Z",
     "memberSince": "2019-01-31T15:33:38.788Z",
-    "role": 200,
+    "role": "admin",
     "username": "Parker38",
     "usernameLowered": "parker38",
     "profile": {
@@ -5201,7 +5201,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T17:31:03.258Z",
     "memberSince": "2019-06-12T12:41:15.864Z",
-    "role": 100,
+    "role": "user",
     "username": "Kylie64",
     "usernameLowered": "kylie64",
     "profile": {
@@ -5239,7 +5239,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-08T13:10:38.206Z",
     "memberSince": "2019-05-31T22:21:53.571Z",
-    "role": 100,
+    "role": "user",
     "username": "Pansy.Considine",
     "usernameLowered": "pansy.considine",
     "profile": {
@@ -5265,7 +5265,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T13:07:45.066Z",
     "memberSince": "2017-09-29T17:03:16.029Z",
-    "role": 200,
+    "role": "admin",
     "username": "Lisa57",
     "usernameLowered": "lisa57",
     "profile": {
@@ -5292,7 +5292,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-06T21:10:54.017Z",
     "memberSince": "2018-06-23T21:13:32.896Z",
-    "role": 200,
+    "role": "admin",
     "username": "Lina.Hayes98",
     "usernameLowered": "lina.hayes98",
     "profile": {
@@ -5328,7 +5328,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T08:50:03.991Z",
     "memberSince": "2018-07-07T21:51:52.887Z",
-    "role": 100,
+    "role": "user",
     "username": "Antonette.Dickens0",
     "usernameLowered": "antonette.dickens0",
     "profile": {
@@ -5359,7 +5359,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T22:49:43.124Z",
     "memberSince": "2022-01-01T12:17:16.169Z",
-    "role": 200,
+    "role": "admin",
     "username": "Reynold.Balistreri",
     "usernameLowered": "reynold.balistreri",
     "profile": {
@@ -5385,7 +5385,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T21:13:46.124Z",
     "memberSince": "2022-11-30T21:50:16.159Z",
-    "role": 200,
+    "role": "admin",
     "username": "Dwight90",
     "usernameLowered": "dwight90",
     "profile": {
@@ -5420,7 +5420,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T20:50:09.828Z",
     "memberSince": "2019-12-29T01:14:04.429Z",
-    "role": 100,
+    "role": "user",
     "username": "Bette.Kuhn84",
     "usernameLowered": "bette.kuhn84",
     "profile": {
@@ -5461,7 +5461,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T03:22:00.530Z",
     "memberSince": "2023-01-07T20:02:35.186Z",
-    "role": 200,
+    "role": "admin",
     "username": "Liam.Hartmann39",
     "usernameLowered": "liam.hartmann39",
     "profile": {
@@ -5503,7 +5503,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T04:19:47.735Z",
     "memberSince": "2018-04-10T13:40:09.363Z",
-    "role": 200,
+    "role": "admin",
     "username": "Kristy54",
     "usernameLowered": "kristy54",
     "profile": {
@@ -5534,7 +5534,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T03:05:46.226Z",
     "memberSince": "2021-11-02T13:11:03.290Z",
-    "role": 100,
+    "role": "user",
     "username": "Lexie76",
     "usernameLowered": "lexie76",
     "profile": {
@@ -5577,7 +5577,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T08:44:20.131Z",
     "memberSince": "2020-10-25T05:06:00.714Z",
-    "role": 200,
+    "role": "admin",
     "username": "Nathan.Toy42",
     "usernameLowered": "nathan.toy42",
     "profile": {
@@ -5624,7 +5624,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-07T13:44:04.048Z",
     "memberSince": "2023-05-08T09:32:23.762Z",
-    "role": 200,
+    "role": "admin",
     "username": "Leopold59",
     "usernameLowered": "leopold59",
     "profile": {
@@ -5656,7 +5656,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T06:30:22.544Z",
     "memberSince": "2017-06-28T03:15:19.793Z",
-    "role": 100,
+    "role": "user",
     "username": "Herminia.Donnelly81",
     "usernameLowered": "herminia.donnelly81",
     "profile": {
@@ -5688,7 +5688,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T02:33:04.494Z",
     "memberSince": "2019-05-01T23:34:24.517Z",
-    "role": 200,
+    "role": "admin",
     "username": "Hans.Collier",
     "usernameLowered": "hans.collier",
     "profile": {
@@ -5726,7 +5726,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T01:20:06.215Z",
     "memberSince": "2022-03-27T03:11:53.819Z",
-    "role": 100,
+    "role": "user",
     "username": "Julia.Little89",
     "usernameLowered": "julia.little89",
     "profile": {
@@ -5768,7 +5768,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T20:08:20.757Z",
     "memberSince": "2017-08-27T19:12:16.231Z",
-    "role": 100,
+    "role": "user",
     "username": "Emmet.Rogahn58",
     "usernameLowered": "emmet.rogahn58",
     "profile": {
@@ -5794,7 +5794,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T22:05:52.361Z",
     "memberSince": "2018-05-10T14:20:08.104Z",
-    "role": 200,
+    "role": "admin",
     "username": "Kenton.Lynch",
     "usernameLowered": "kenton.lynch",
     "profile": {
@@ -5824,7 +5824,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-12T08:15:38.488Z",
     "memberSince": "2018-03-22T12:26:13.381Z",
-    "role": 100,
+    "role": "user",
     "username": "Rosamond56",
     "usernameLowered": "rosamond56",
     "profile": {
@@ -5864,7 +5864,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T05:57:10.265Z",
     "memberSince": "2019-04-15T04:26:00.987Z",
-    "role": 200,
+    "role": "admin",
     "username": "Neal87",
     "usernameLowered": "neal87",
     "profile": {
@@ -5903,7 +5903,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T03:41:59.225Z",
     "memberSince": "2019-04-25T07:59:23.105Z",
-    "role": 200,
+    "role": "admin",
     "username": "Benedict.Stoltenberg",
     "usernameLowered": "benedict.stoltenberg",
     "profile": {
@@ -5935,7 +5935,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T15:12:24.912Z",
     "memberSince": "2020-11-11T18:23:30.797Z",
-    "role": 100,
+    "role": "user",
     "username": "Imelda1",
     "usernameLowered": "imelda1",
     "profile": {
@@ -5977,7 +5977,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T20:46:13.982Z",
     "memberSince": "2022-12-03T08:10:06.208Z",
-    "role": 200,
+    "role": "admin",
     "username": "Elisha.Erdman",
     "usernameLowered": "elisha.erdman",
     "profile": {
@@ -6028,7 +6028,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-08T14:26:39.973Z",
     "memberSince": "2021-03-03T13:10:15.641Z",
-    "role": 100,
+    "role": "user",
     "username": "Kameron.Cummings",
     "usernameLowered": "kameron.cummings",
     "profile": {
@@ -6075,7 +6075,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T10:59:17.684Z",
     "memberSince": "2021-11-29T11:36:28.019Z",
-    "role": 200,
+    "role": "admin",
     "username": "Kendra.Gusikowski39",
     "usernameLowered": "kendra.gusikowski39",
     "profile": {
@@ -6121,7 +6121,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-14T03:38:46.715Z",
     "memberSince": "2020-12-03T09:30:30.084Z",
-    "role": 200,
+    "role": "admin",
     "username": "Alba.Keeling",
     "usernameLowered": "alba.keeling",
     "profile": {
@@ -6148,7 +6148,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T11:59:32.461Z",
     "memberSince": "2021-10-19T07:12:49.309Z",
-    "role": 200,
+    "role": "admin",
     "username": "Houston.Bergstrom96",
     "usernameLowered": "houston.bergstrom96",
     "profile": {
@@ -6189,7 +6189,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T04:49:18.366Z",
     "memberSince": "2019-06-03T04:41:49.183Z",
-    "role": 200,
+    "role": "admin",
     "username": "Winifred.Feil",
     "usernameLowered": "winifred.feil",
     "profile": {
@@ -6231,7 +6231,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-10T00:52:22.674Z",
     "memberSince": "2022-12-08T01:35:22.471Z",
-    "role": 100,
+    "role": "user",
     "username": "Cora91",
     "usernameLowered": "cora91",
     "profile": {
@@ -6272,7 +6272,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T01:33:51.803Z",
     "memberSince": "2019-04-13T21:43:36.820Z",
-    "role": 100,
+    "role": "user",
     "username": "Kade.Wolf",
     "usernameLowered": "kade.wolf",
     "profile": {
@@ -6309,7 +6309,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T14:25:08.001Z",
     "memberSince": "2019-03-27T00:12:55.606Z",
-    "role": 200,
+    "role": "admin",
     "username": "Casper.Hagenes5",
     "usernameLowered": "casper.hagenes5",
     "profile": {
@@ -6345,7 +6345,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-12T15:39:27.684Z",
     "memberSince": "2020-11-18T11:22:01.840Z",
-    "role": 200,
+    "role": "admin",
     "username": "Helga.Jast92",
     "usernameLowered": "helga.jast92",
     "profile": {
@@ -6371,7 +6371,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T16:19:37.386Z",
     "memberSince": "2020-01-25T07:59:24.252Z",
-    "role": 100,
+    "role": "user",
     "username": "Pink.Conroy91",
     "usernameLowered": "pink.conroy91",
     "profile": {
@@ -6401,7 +6401,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T07:33:07.528Z",
     "memberSince": "2017-12-03T06:05:34.378Z",
-    "role": 100,
+    "role": "user",
     "username": "Dorian60",
     "usernameLowered": "dorian60",
     "profile": {
@@ -6443,7 +6443,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T16:28:34.925Z",
     "memberSince": "2023-03-04T04:27:07.048Z",
-    "role": 200,
+    "role": "admin",
     "username": "Talia.Parisian94",
     "usernameLowered": "talia.parisian94",
     "profile": {
@@ -6469,7 +6469,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T17:27:09.984Z",
     "memberSince": "2018-08-22T21:10:24.259Z",
-    "role": 200,
+    "role": "admin",
     "username": "Darrion.Harber",
     "usernameLowered": "darrion.harber",
     "profile": {
@@ -6516,7 +6516,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T19:47:39.515Z",
     "memberSince": "2019-06-27T22:01:54.072Z",
-    "role": 100,
+    "role": "user",
     "username": "Selmer68",
     "usernameLowered": "selmer68",
     "profile": {
@@ -6555,7 +6555,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T19:10:27.283Z",
     "memberSince": "2020-10-14T20:48:56.585Z",
-    "role": 100,
+    "role": "user",
     "username": "Imogene41",
     "usernameLowered": "imogene41",
     "profile": {
@@ -6605,7 +6605,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T19:33:47.302Z",
     "memberSince": "2019-02-21T18:39:47.891Z",
-    "role": 200,
+    "role": "admin",
     "username": "Adelbert93",
     "usernameLowered": "adelbert93",
     "profile": {
@@ -6650,7 +6650,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-17T15:30:52.936Z",
     "memberSince": "2021-10-02T07:15:57.919Z",
-    "role": 100,
+    "role": "user",
     "username": "Bernie67",
     "usernameLowered": "bernie67",
     "profile": {
@@ -6685,7 +6685,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T23:59:14.183Z",
     "memberSince": "2017-11-30T12:22:02.932Z",
-    "role": 100,
+    "role": "user",
     "username": "Nikki.Murphy99",
     "usernameLowered": "nikki.murphy99",
     "profile": {
@@ -6716,7 +6716,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T16:36:54.357Z",
     "memberSince": "2021-08-01T20:36:28.668Z",
-    "role": 200,
+    "role": "admin",
     "username": "Katarina76",
     "usernameLowered": "katarina76",
     "profile": {
@@ -6746,7 +6746,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-09T17:16:30.866Z",
     "memberSince": "2019-09-05T14:33:37.209Z",
-    "role": 200,
+    "role": "admin",
     "username": "Elian33",
     "usernameLowered": "elian33",
     "profile": {
@@ -6782,7 +6782,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T19:24:46.503Z",
     "memberSince": "2022-03-21T06:01:23.864Z",
-    "role": 200,
+    "role": "admin",
     "username": "Augustus.Schneider32",
     "usernameLowered": "augustus.schneider32",
     "profile": {
@@ -6827,7 +6827,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-02T19:56:19.119Z",
     "memberSince": "2020-10-23T10:16:01.351Z",
-    "role": 100,
+    "role": "user",
     "username": "Janick18",
     "usernameLowered": "janick18",
     "profile": {
@@ -6857,7 +6857,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-05T05:18:09.816Z",
     "memberSince": "2020-08-17T08:54:59.655Z",
-    "role": 100,
+    "role": "user",
     "username": "Velda42",
     "usernameLowered": "velda42",
     "profile": {
@@ -6888,7 +6888,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T13:24:32.269Z",
     "memberSince": "2018-08-07T01:42:21.626Z",
-    "role": 200,
+    "role": "admin",
     "username": "Emmitt4",
     "usernameLowered": "emmitt4",
     "profile": {
@@ -6926,7 +6926,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-08T22:53:45.401Z",
     "memberSince": "2017-12-11T02:44:18.030Z",
-    "role": 100,
+    "role": "user",
     "username": "Kennedi.Collier48",
     "usernameLowered": "kennedi.collier48",
     "profile": {
@@ -6955,7 +6955,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-11T03:42:26.301Z",
     "memberSince": "2017-11-19T01:15:44.277Z",
-    "role": 200,
+    "role": "admin",
     "username": "Kaitlin64",
     "usernameLowered": "kaitlin64",
     "profile": {
@@ -6990,7 +6990,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-28T19:53:46.138Z",
     "memberSince": "2017-09-04T04:24:15.303Z",
-    "role": 200,
+    "role": "admin",
     "username": "Giovanny.Schneider",
     "usernameLowered": "giovanny.schneider",
     "profile": {
@@ -7016,7 +7016,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-10T06:26:58.194Z",
     "memberSince": "2019-05-16T23:41:25.085Z",
-    "role": 100,
+    "role": "user",
     "username": "Kiley.Bernhard56",
     "usernameLowered": "kiley.bernhard56",
     "profile": {
@@ -7053,7 +7053,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T19:37:31.154Z",
     "memberSince": "2022-04-29T10:03:45.137Z",
-    "role": 100,
+    "role": "user",
     "username": "Emerson.Nikolaus72",
     "usernameLowered": "emerson.nikolaus72",
     "profile": {
@@ -7079,7 +7079,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-30T23:36:54.263Z",
     "memberSince": "2019-01-20T00:38:02.988Z",
-    "role": 100,
+    "role": "user",
     "username": "Jerald.Klein37",
     "usernameLowered": "jerald.klein37",
     "profile": {
@@ -7110,7 +7110,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-13T09:11:16.706Z",
     "memberSince": "2020-09-01T23:20:46.243Z",
-    "role": 100,
+    "role": "user",
     "username": "Hortense14",
     "usernameLowered": "hortense14",
     "profile": {
@@ -7142,7 +7142,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T09:11:59.797Z",
     "memberSince": "2020-02-15T20:47:30.895Z",
-    "role": 100,
+    "role": "user",
     "username": "Katrine.Kiehn69",
     "usernameLowered": "katrine.kiehn69",
     "profile": {
@@ -7177,7 +7177,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-16T22:06:00.325Z",
     "memberSince": "2018-03-16T10:06:44.398Z",
-    "role": 100,
+    "role": "user",
     "username": "Bo.Douglas49",
     "usernameLowered": "bo.douglas49",
     "profile": {
@@ -7203,7 +7203,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-27T00:55:28.034Z",
     "memberSince": "2017-09-18T21:17:53.140Z",
-    "role": 100,
+    "role": "user",
     "username": "Ellis.Parker12",
     "usernameLowered": "ellis.parker12",
     "profile": {
@@ -7229,7 +7229,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-05-15T22:11:44.941Z",
     "memberSince": "2018-03-02T23:28:10.525Z",
-    "role": 200,
+    "role": "admin",
     "username": "Ernesto96",
     "usernameLowered": "ernesto96",
     "profile": {
@@ -7260,7 +7260,7 @@
     "isLockedOut": false,
     "lastLogin": "2023-04-29T12:40:10.333Z",
     "memberSince": "2021-07-20T18:59:50.590Z",
-    "role": 200,
+    "role": "admin",
     "username": "Hilda.Hodkiewicz",
     "usernameLowered": "hilda.hodkiewicz",
     "profile": {

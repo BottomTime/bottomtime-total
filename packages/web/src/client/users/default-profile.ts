@@ -1,25 +1,13 @@
-import Joi from 'joi';
+import { assertValid } from '@/helpers';
 import { SuperAgentStatic } from 'superagent';
-import { Profile, ProfileCertificationData, UserData } from './interfaces';
-
-export const ProfileSchema = Joi.object({
-  avatar: Joi.string().trim(),
-  bio: Joi.string().trim(),
-  birthdate: Joi.string().trim(),
-  customData: Joi.any(),
-  certifications: Joi.array().items(
-    Joi.object({
-      agency: Joi.string().trim(),
-      course: Joi.string().trim(),
-      date: Joi.string().trim(),
-    }),
-  ),
-  experienceLevel: Joi.string().trim(),
-  location: Joi.string().trim(),
-  name: Joi.string().trim(),
-  profileVisibility: Joi.string().trim(),
-  startedDiving: Joi.string().trim(),
-});
+import {
+  Profile,
+  ProfileCertificationData,
+  ProfileData,
+  ProfileDataSchema,
+  UserData,
+} from './interfaces';
+import { ProfileVisibility } from '@/constants';
 
 export class DefaultProfile implements Profile {
   private static readonly JsonOmitKeys = new Set([
@@ -64,10 +52,10 @@ export class DefaultProfile implements Profile {
     this.data.profile.birthdate = value;
   }
 
-  get customData(): object | undefined {
+  get customData(): Record<string, unknown> | undefined {
     return this.data.profile.customData;
   }
-  set customData(value: object | undefined) {
+  set customData(value: Record<string, unknown> | undefined) {
     this.data.profile.customData = value;
   }
 
@@ -99,10 +87,10 @@ export class DefaultProfile implements Profile {
     this.data.profile.name = value;
   }
 
-  get profileVisibility(): string {
+  get profileVisibility(): ProfileVisibility {
     return this.data.profile.profileVisibility;
   }
-  set profileVisibility(value: string) {
+  set profileVisibility(value: ProfileVisibility) {
     this.data.profile.profileVisibility = value;
   }
 
@@ -114,15 +102,15 @@ export class DefaultProfile implements Profile {
   }
 
   async save(): Promise<void> {
-    await this.agent.put(`/api/profiles/${this.username}`).send(this.toJSON());
+    const profile = assertValid<ProfileData>(
+      this.data.profile,
+      ProfileDataSchema,
+    );
+    await this.agent.put(`/api/profiles/${this.username}`).send(profile);
+    this.data.profile = profile;
   }
 
-  toJSON(): object {
-    const { value: parsed } = ProfileSchema.validate(this.data.profile);
-    Object.entries(parsed).forEach(([key, value]) => {
-      if (value === '' || DefaultProfile.JsonOmitKeys.has(key))
-        delete parsed[key];
-    });
-    return parsed;
+  toJSON(): ProfileData {
+    return assertValid(this.data.profile, ProfileDataSchema);
   }
 }

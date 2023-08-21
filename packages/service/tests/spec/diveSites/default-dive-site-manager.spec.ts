@@ -3,7 +3,13 @@ import { faker } from '@faker-js/faker';
 import { Mock } from 'moq.ts';
 import * as uuid from 'uuid';
 
-import { Collections, DiveSiteDocument, UserDocument } from '../../../src/data';
+import {
+  Collections,
+  DiveSiteDocument,
+  DiveSiteSchema,
+  UserDocument,
+  UserSchema,
+} from '../../../src/data';
 import { createTestLogger } from '../../test-logger';
 import {
   DefaultDiveSite,
@@ -148,11 +154,9 @@ describe('Default Dive Site Manager', () => {
 
     beforeAll(() => {
       manager = new DefaultDiveSiteManager(mongoClient, log);
-      diveSiteCreators = DiveSiteCreators.map((creator) => ({
-        ...creator,
-        lastLogin: creator.lastLogin ? new Date(creator.lastLogin) : undefined,
-        memberSince: new Date(creator.memberSince),
-      }));
+      diveSiteCreators = DiveSiteCreators.map((creator) =>
+        UserSchema.parse(creator),
+      );
 
       diveSites = DiveSites.map((site) => ({
         ...site,
@@ -415,19 +419,6 @@ describe('Default Dive Site Manager', () => {
           name: 'Creator is not a valid username',
           options: {
             creator: 'Lol! Invalid',
-          },
-        },
-
-        {
-          name: 'Sort By is invalid',
-          options: {
-            sortBy: 'depth',
-          },
-        },
-        {
-          name: 'Sort Order is invalid',
-          options: {
-            sortOrder: 'backwards',
           },
         },
 

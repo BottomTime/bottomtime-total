@@ -3,7 +3,7 @@ import { Mock } from 'moq.ts';
 import { Commit, mutations } from '@/store';
 import { initialStoreState } from '../../fixtures/store-state';
 import { Toast, ToastType } from '@/helpers';
-import { User } from '@/users';
+import { User } from '@/client/users';
 
 describe('Store Mutations', () => {
   it('Will set current user to a new value', () => {

@@ -1,25 +1,21 @@
-import Joi from 'joi';
 import request from 'superagent';
 import { SuperAgentStatic } from 'superagent';
-import { ProfileSchema } from './default-profile';
+import { z } from 'zod';
 
 import { DefaultUser } from './default-user';
-import { CreateUserOptions, User, UserManager } from './interfaces';
+import {
+  CreateUserOptions,
+  User,
+  UserData,
+  UserDataSchema,
+  UserManager,
+} from './interfaces';
+import { assertValid } from '@/helpers';
 
-const UserDataSchema = Joi.object({
-  email: Joi.string(),
-  emailVerified: Joi.bool(),
-  hasPassword: Joi.bool(),
-  id: Joi.string(),
-  isLockedOut: Joi.bool(),
-  lastLogin: Joi.date(),
-  lastPasswordChange: Joi.date(),
-  memberSince: Joi.date(),
-  role: Joi.number(),
-  username: Joi.string(),
-
-  profile: ProfileSchema,
+const ResetPasswordResponseSchema = z.object({
+  succeeded: z.coerce.boolean(),
 });
+type ResetPasswordResponse = z.infer<typeof ResetPasswordResponseSchema>;
 
 export class DefaultUserManager implements UserManager {
   constructor(private readonly agent: SuperAgentStatic) {}
@@ -32,7 +28,7 @@ export class DefaultUserManager implements UserManager {
       usernameOrEmail,
       password,
     });
-    const { value: userData } = UserDataSchema.validate(body);
+    const userData = assertValid<UserData>(body, UserDataSchema);
     return new DefaultUser(this.agent, userData);
   }
 
@@ -45,7 +41,7 @@ export class DefaultUserManager implements UserManager {
         profile: options.profile,
       });
 
-    const { value: userData } = UserDataSchema.validate(body);
+    const userData = assertValid(body, UserDataSchema);
     return new DefaultUser(this.agent, userData);
   }
 
@@ -55,19 +51,19 @@ export class DefaultUserManager implements UserManager {
       return undefined;
     }
 
-    delete body.anonymous;
-    const { value: userData } = UserDataSchema.validate(body);
+    const userData = assertValid(body, UserDataSchema);
     return new DefaultUser(this.agent, userData);
   }
 
   async getUserByUsername(username: string): Promise<User> {
     const { body } = await this.agent.get(`/api/users/${username}`);
-    const { value: userData } = UserDataSchema.validate(body);
+    const userData = assertValid(body, UserDataSchema);
     return new DefaultUser(this.agent, userData);
   }
 
   isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
+      // Why the hell does Superagent not support HEAD requests!?
       request
         .head(`/api/users/${usernameOrEmail}`)
         .then(() => {
@@ -89,11 +85,14 @@ export class DefaultUserManager implements UserManager {
     token: string,
     newPassword: string,
   ): Promise<boolean> {
-    const {
-      body: { succeeded },
-    } = await this.agent
+    const { body } = await this.agent
       .post(`/api/users/${username}/`)
       .send({ token, newPassword });
+
+    const { succeeded } = assertValid<ResetPasswordResponse>(
+      body,
+      ResetPasswordResponseSchema,
+    );
     return succeeded;
   }
 }

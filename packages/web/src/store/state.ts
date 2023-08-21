@@ -1,5 +1,5 @@
 import { Toast } from '@/helpers';
-import { User } from '@/users';
+import { User } from '@/client/users';
 
 export interface BTState {
   currentUser?: User;
