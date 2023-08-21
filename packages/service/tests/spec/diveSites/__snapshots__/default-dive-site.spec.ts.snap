@@ -10,6 +10,10 @@ exports[`Default Dive Site Will export a JSON object 1`] = `
     "id": "a4fc342c-de93-4a6f-b433-8af6dbeadf90",
     "username": "StanTheMan",
   },
+  "depth": {
+    "depth": 64,
+    "unit": "ft",
+  },
   "description": "Dicta aliquam optio nesciunt error necessitatibus. Molestiae repellendus hic blanditiis voluptatibus.",
   "directions": "Et tempore impedit deleniti placeat ea asperiores in itaque.",
   "freeToDive": false,
@@ -35,6 +39,11 @@ exports[`Default Dive Site Will export a summarized JSON object 1`] = `
     "id": "a4fc342c-de93-4a6f-b433-8af6dbeadf90",
     "username": "StanTheMan",
   },
+  "depth": {
+    "depth": 24,
+    "unit": "m",
+  },
+  "description": "Modi beatae voluptates error. Magnam laboriosam quod dolores.",
   "freeToDive": true,
   "id": "363896cd-4310-416f-8861-47f3322af468",
   "location": "Coral Springs Hungary",

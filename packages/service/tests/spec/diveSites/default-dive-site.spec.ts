@@ -8,6 +8,7 @@ import { mongoClient } from '../../mongo-client';
 import { fakeUser } from '../../fixtures/fake-user';
 import { ValidationError } from '../../../src/errors';
 import { faker } from '@faker-js/faker';
+import { DepthUnit } from '../../../src/constants';
 
 const log = createTestLogger('default-dive-site');
 
@@ -291,6 +292,10 @@ describe('Default Dive Site', () => {
       name: 'astonishing waste',
       description:
         'Dicta aliquam optio nesciunt error necessitatibus. Molestiae repellendus hic blanditiis voluptatibus.',
+      depth: {
+        depth: 64,
+        unit: DepthUnit.Feet,
+      },
       location: 'Fayetteville Saint Martin',
       directions:
         'Et tempore impedit deleniti placeat ea asperiores in itaque.',
@@ -316,6 +321,10 @@ describe('Default Dive Site', () => {
       createdOn: new Date('2022-04-11T13:04:56.199Z'),
       updatedOn: new Date('2022-06-09T21:00:40.101Z'),
       name: 'paltry linseed',
+      depth: {
+        depth: 24,
+        unit: DepthUnit.Meters,
+      },
       description:
         'Modi beatae voluptates error. Magnam laboriosam quod dolores.',
       location: 'Coral Springs Hungary',

@@ -157,15 +157,7 @@ describe('Default Dive Site Manager', () => {
       diveSiteCreators = DiveSiteCreators.map((creator) =>
         UserSchema.parse(creator),
       );
-
-      diveSites = DiveSites.map((site) => ({
-        ...site,
-        createdOn: new Date(site.createdOn),
-        updatedOn: site.updatedOn ? new Date(site.updatedOn) : undefined,
-        gps: site.gps
-          ? (site.gps as { type: 'Point'; coordinates: [number, number] })
-          : undefined,
-      }));
+      diveSites = DiveSites.map((site) => DiveSiteSchema.parse(site));
     });
 
     beforeEach(async () => {

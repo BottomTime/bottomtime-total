@@ -256,14 +256,7 @@ describe('Dive Site Routes', () => {
         .setup((m) =>
           m.searchDiveSites(It.IsAny<SearchDiveSitesOptions | undefined>()),
         )
-        .callback(({ args: [options] }) => {
-          expect(options).toEqual({
-            skip: 0,
-            limit: 50,
-            radius: 50,
-          });
-          return Promise.resolve(searchResults);
-        });
+        .returnsAsync(searchResults);
       const { req, res } = createMocks({
         diveSiteManager: diveSiteManager.object(),
         log: Log,
@@ -279,6 +272,15 @@ describe('Dive Site Routes', () => {
         results: searchResults.length,
         sites: searchResults.map((result) => result.toSummaryJSON()),
       });
+      diveSiteManager.verify(
+        (m) =>
+          m.searchDiveSites(
+            It.Is<SearchDiveSitesOptions>(
+              (opts) => JSON.stringify(opts) === '{}',
+            ),
+          ),
+        Times.Once(),
+      );
     });
 
     it('Will perform a query with many options', async () => {
@@ -286,23 +288,21 @@ describe('Dive Site Routes', () => {
         .setup((m) =>
           m.searchDiveSites(It.IsAny<SearchDiveSitesOptions | undefined>()),
         )
-        .callback(({ args: [options] }) => {
-          expect(options).toEqual({
-            query: 'lake',
-            location: {
-              lat: 20.3460942599771,
-              lon: -87.0260668489514,
-            },
-            radius: 80,
-            freeToDive: false,
-            shoreAccess: true,
-            sortBy: DiveSitesSortBy.Rating,
-            sortOrder: SortOrder.Descending,
-            skip: 400,
-            limit: 100,
-          });
-          return Promise.resolve(searchResults);
-        });
+        .returnsAsync(searchResults);
+      const expected = JSON.stringify({
+        query: 'lake',
+        location: {
+          lat: 20.3460942599771,
+          lon: -87.0260668489514,
+        },
+        radius: 80,
+        freeToDive: false,
+        shoreAccess: true,
+        sortBy: DiveSitesSortBy.Rating,
+        sortOrder: SortOrder.Descending,
+        skip: 400,
+        limit: 100,
+      });
       const { req, res } = createMocks({
         diveSiteManager: diveSiteManager.object(),
         log: Log,
@@ -310,12 +310,12 @@ describe('Dive Site Routes', () => {
           query: 'lake',
           location: '20.3460942599771,-87.0260668489514',
           radius: '80',
-          freeToDive: false,
-          shoreAccess: true,
+          freeToDive: 'false',
+          shoreAccess: 'true',
           sortBy: 'rating',
           sortOrder: 'desc',
-          skip: 400,
-          limit: 100,
+          skip: '400',
+          limit: '100',
         },
       });
       const next = jest.fn();
@@ -329,6 +329,9 @@ describe('Dive Site Routes', () => {
         results: searchResults.length,
         sites: searchResults.map((result) => result.toSummaryJSON()),
       });
+      diveSiteManager.verify((m) =>
+        m.searchDiveSites(It.Is((opts) => JSON.stringify(opts) === expected)),
+      );
     });
 
     it('Will return a ValidationError if query string is invalid', async () => {

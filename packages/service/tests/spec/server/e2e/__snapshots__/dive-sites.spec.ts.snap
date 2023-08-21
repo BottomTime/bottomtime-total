@@ -2,25 +2,29 @@
 
 exports[`Dive Site End-to-End Tests Will retrieve a dive site 1`] = `
 {
-  "averageDifficulty": 2.06,
-  "averageRating": 4.85,
-  "createdOn": "2022-01-07T06:13:36.684Z",
+  "averageDifficulty": 4.25,
+  "averageRating": 3.89,
+  "createdOn": "2022-01-26T05:06:09.648Z",
   "creator": {
-    "displayName": "Laurence Kuhn",
-    "id": "928449ec-03af-438b-84d7-d82922a2f549",
-    "username": "Jarod29",
+    "displayName": "Cecilia Swaniawski",
+    "id": "7f8e1787-6c68-4554-a73f-d2f1395db89c",
+    "username": "Antonia.Purdy6",
   },
-  "description": "Nemo suscipit id corrupti eum accusantium eligendi veritatis. Numquam placeat et perferendis quam earum.",
-  "directions": "Delectus quibusdam ullam numquam voluptas similique totam alias vitae.",
-  "freeToDive": false,
+  "depth": {
+    "depth": 3.94,
+    "unit": "m",
+  },
+  "description": "Error soluta natus maiores consectetur quia molestias assumenda odio. Voluptate sed reiciendis odit suscipit libero ipsa.",
+  "directions": "Rem repudiandae error ea aliquam voluptas velit dolorem et vero.",
+  "freeToDive": true,
   "gps": {
-    "lat": -40.04,
-    "lon": 137.41,
+    "lat": 26.21,
+    "lon": -30.75,
   },
-  "id": "e0ac5b76-71fd-4a62-9542-3565c4cd5398",
-  "location": "Palatine Hong Kong",
-  "name": "direct trumpet",
+  "id": "d9c70155-d869-4656-8b86-e5784e7a56aa",
+  "location": "Meriden San Marino",
+  "name": "ignorant coyote",
   "shoreAccess": false,
-  "updatedOn": "2023-03-12T11:16:45.403Z",
+  "updatedOn": "2022-06-05T20:10:03.493Z",
 }
 `;

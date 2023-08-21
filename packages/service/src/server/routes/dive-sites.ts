@@ -2,7 +2,7 @@ import { Express, NextFunction, Request, Response } from 'express';
 import { IssueData, NEVER, ZodIssueCode, z } from 'zod';
 
 import { SearchDiveSitesOptions, SearchDiveSitesSchema } from '../../diveSites';
-import { GpsCoordinates } from '../../common';
+import { BooleanString, GpsCoordinates } from '../../common';
 import { assertValid } from '../../helpers/validation';
 import {
   ForbiddenError,
@@ -18,6 +18,8 @@ const LocationParseIssue: IssueData = {
   path: ['location'],
 };
 const SearchDiveSitesQueryParamsSchema = SearchDiveSitesSchema.extend({
+  freeToDive: BooleanString.optional(),
+  shoreAccess: BooleanString.optional(),
   location: z
     .string()
     .trim()

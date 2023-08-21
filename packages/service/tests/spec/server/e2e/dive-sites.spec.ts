@@ -7,7 +7,9 @@ import { Collection } from 'mongodb';
 import {
   Collections,
   DiveSiteDocument,
+  DiveSiteSchema,
   UserDocument,
+  UserSchema,
 } from '../../../../src/data';
 import { mongoClient } from '../../../mongo-client';
 
@@ -34,17 +36,10 @@ describe('Dive Site End-to-End Tests', () => {
     Users = db.collection(Collections.Users);
     DiveSites = db.collection(Collections.DiveSites);
 
-    diveSiteCreatorDocuments = DiveSiteCreatorData.map((creator) => ({
-      ...creator,
-      lastLogin: new Date(creator.lastLogin),
-      memberSince: new Date(creator.memberSince),
-    }));
-    diveSiteDocuments = DiveSiteData.map((site) => ({
-      ...site,
-      createdOn: new Date(site.createdOn),
-      updatedOn: new Date(site.updatedOn),
-      gps: site.gps as { type: 'Point'; coordinates: [number, number] },
-    }));
+    diveSiteCreatorDocuments = DiveSiteCreatorData.map((creator) =>
+      UserSchema.parse(creator),
+    );
+    diveSiteDocuments = DiveSiteData.map((site) => DiveSiteSchema.parse(site));
   });
 
   beforeEach(() => {

@@ -1,6 +1,10 @@
 import { z } from 'zod';
 import { DepthUnit } from './constants';
 
+export const BooleanString = z
+  .enum(['true', 'false'])
+  .transform((value) => value === 'true');
+
 export const DepthSchema = z.object({
   depth: z.number().min(0),
   unit: z.nativeEnum(DepthUnit),
