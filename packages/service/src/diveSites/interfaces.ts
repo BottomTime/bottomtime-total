@@ -42,6 +42,7 @@ export const SearchDiveSitesSchema = z
 export type SearchDiveSitesOptions = z.infer<typeof SearchDiveSitesSchema>;
 
 export interface DiveSiteCreator {
+  readonly avatar?: string;
   readonly id: string;
   readonly username: string;
   readonly displayName: string;

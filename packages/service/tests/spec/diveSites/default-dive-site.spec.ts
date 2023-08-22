@@ -264,6 +264,7 @@ describe('Default Dive Site', () => {
   it('Will attempt to lazy-load creator info it is not provided in constructor', async () => {
     const creatorData = fakeUser();
     const expected: DiveSiteCreator = {
+      avatar: creatorData.profile?.avatar,
       id: creatorData._id,
       username: creatorData.username,
       displayName: creatorData.profile!.name!,

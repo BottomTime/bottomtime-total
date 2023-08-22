@@ -132,6 +132,7 @@ export class DefaultDiveSite implements DiveSite {
         projection: {
           _id: true,
           username: true,
+          'profile.avatar': true,
           'profile.name': true,
         },
       },
@@ -140,6 +141,7 @@ export class DefaultDiveSite implements DiveSite {
     if (creator) {
       this.creator = {
         id: creator._id,
+        avatar: creator.profile?.avatar,
         username: creator.username,
         displayName: creator.profile?.name ?? creator.username,
       };

@@ -238,6 +238,7 @@ describe('Default Dive Site Manager', () => {
       expect(sites.length).toBeGreaterThan(0);
       for (const site of sites) {
         await expect(site.getCreator()).resolves.toEqual({
+          avatar: diveSiteCreators[0].profile!.avatar,
           displayName: diveSiteCreators[0].profile!.name,
           id: diveSiteCreators[0]._id,
           username: diveSiteCreators[0].username,
