@@ -46,6 +46,7 @@ export interface DiveSiteCreator {
   readonly id: string;
   readonly username: string;
   readonly displayName: string;
+  readonly memberSince: Date;
 }
 
 export interface DiveSiteData {

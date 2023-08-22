@@ -242,6 +242,7 @@ describe('Default Dive Site Manager', () => {
           displayName: diveSiteCreators[0].profile!.name,
           id: diveSiteCreators[0]._id,
           username: diveSiteCreators[0].username,
+          memberSince: diveSiteCreators[0].memberSince,
         });
       }
     });

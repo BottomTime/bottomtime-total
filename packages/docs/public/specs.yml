@@ -2301,6 +2301,7 @@ components:
             - id
             - username
             - displayName
+            - memberSince
           description: |
             Some basic info on the user who created the dive site record.
           properties:
@@ -2310,8 +2311,12 @@ components:
               description: The unique ID of the user.
             avatar:
               type: string
-              format: uri
+              format: url
               description: A URL to the creator's avatar image.
+            memberSince:
+              type: string
+              format: date-time
+              description: The date and time when the user's account was created.
             username:
               type: string
               example: SamTheMan87

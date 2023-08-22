@@ -255,6 +255,7 @@ describe('Default Dive Site', () => {
       id: creatorData._id,
       username: creatorData.username,
       displayName: creatorData.profile!.name!,
+      memberSince: creatorData.memberSince,
     };
     const siteData = fakeDiveSite({ creator: creator.id });
     const site = new DefaultDiveSite(mongoClient, log, siteData, creator);
@@ -266,6 +267,7 @@ describe('Default Dive Site', () => {
     const expected: DiveSiteCreator = {
       avatar: creatorData.profile?.avatar,
       id: creatorData._id,
+      memberSince: creatorData.memberSince,
       username: creatorData.username,
       displayName: creatorData.profile!.name!,
     };
@@ -284,6 +286,7 @@ describe('Default Dive Site', () => {
       id: 'a4fc342c-de93-4a6f-b433-8af6dbeadf90',
       username: 'StanTheMan',
       displayName: 'Stan Smith',
+      memberSince: new Date('2023-08-22T20:41:27.869Z'),
     };
     const data: DiveSiteDocument = {
       _id: '3f83be2c-8d8a-4f06-a6b7-6bec1098ee11',
@@ -315,6 +318,7 @@ describe('Default Dive Site', () => {
       id: 'a4fc342c-de93-4a6f-b433-8af6dbeadf90',
       username: 'StanTheMan',
       displayName: 'Stan Smith',
+      memberSince: new Date('2023-08-22T20:41:27.869Z'),
     };
     const data: DiveSiteDocument = {
       _id: '363896cd-4310-416f-8861-47f3322af468',

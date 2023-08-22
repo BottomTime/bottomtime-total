@@ -9,6 +9,7 @@ exports[`Dive Site End-to-End Tests Will retrieve a dive site 1`] = `
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/163.jpg",
     "displayName": "Cecilia Swaniawski",
     "id": "7f8e1787-6c68-4554-a73f-d2f1395db89c",
+    "memberSince": "2017-11-11T03:46:51.362Z",
     "username": "Antonia.Purdy6",
   },
   "depth": {

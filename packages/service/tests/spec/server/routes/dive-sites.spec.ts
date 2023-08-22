@@ -220,6 +220,7 @@ describe('Dive Site Routes', () => {
         id: 'user1',
         username: 'YannTheMann',
         displayName: 'Yann Jenkins',
+        memberSince: new Date('2023-08-22T20:41:27.869Z'),
       });
     const { req, res } = createMocks({
       log: Log,
