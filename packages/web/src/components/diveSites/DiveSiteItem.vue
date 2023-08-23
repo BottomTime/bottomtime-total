@@ -1,107 +1,84 @@
 <template>
-  <article class="media">
-    <div class="media-content">
-      <div class="level">
-        <div class="level-left">
-          <div class="level-item">
-            <RouterLink :to="`/diveSites/${site.id}`">
-              <span class="is-size-4 is-capitalized">{{ site.name }}</span>
-            </RouterLink>
-          </div>
-        </div>
-
-        <div class="level-right">
-          <div class="level-item">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fas fa-star"></i>
-              </span>
-              <span>
-                <strong>Rating:</strong>
-                {{ site.averageRating.toFixed(2) }}
-              </span>
-            </span>
-          </div>
-
-          <div class="level-item">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fas fa-trophy"></i>
-              </span>
-              <span>
-                <strong>Difficulty:</strong>
-                {{ site.averageDifficulty.toFixed(2) }}
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <p v-if="site.description" class="content is-size-6 has-text-info">
-        {{ site.description }}
+  <div class="tile is-child card">
+    <header class="card-header">
+      <p class="card-header-title">
+        <RouterLink :to="`/diveSites/${site.id}`">
+          <span class="is-capitalized">{{ site.name }}</span>
+        </RouterLink>
       </p>
 
-      <div class="level is-size-7">
-        <div class="level-left">
-          <div class="level-item">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fas fa-globe"></i>
-              </span>
-              <span>
-                <strong>Location:</strong>
-                <em>{{
-                  `${site.depth?.depth.toFixed(2)} ${site.depth?.unit}`
-                }}</em>
-              </span>
-            </span>
-          </div>
+      <span
+        class="card-header-icon icon-text has-text-info"
+        aria-label="Rating"
+      >
+        <span class="icon">
+          <i class="fas fa-star"></i>
+        </span>
+        <span>
+          {{ site.averageRating.toFixed(2) }}
+        </span>
+      </span>
+      <span
+        class="card-header-icon icon-text has-text-info"
+        aria-label="Difficulty"
+      >
+        <span class="icon">
+          <i class="fas fa-trophy"></i>
+        </span>
+        <span>
+          {{ site.averageDifficulty.toFixed(2) }}
+        </span>
+      </span>
+    </header>
 
-          <div v-if="site.depth" class="level-item">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fas fa-weight"></i>
-              </span>
-              <span>
-                <strong>Depth:</strong>
-                <em>{{
-                  `${site.depth?.depth.toFixed(2)} ${site.depth?.unit}`
-                }}</em>
-              </span>
-            </span>
-          </div>
+    <div class="card-image"></div>
 
-          <div v-if="site.freeToDive" class="level-item">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fas fa-piggy-bank"></i>
-              </span>
-              <span>
-                <strong>Free to dive?</strong>
-                <em>{{ site.freeToDive ? 'Yes' : 'No' }}</em>
-              </span>
-            </span>
-          </div>
+    <div class="card-content">
+      <div class="media">
+        <figure class="media-left"></figure>
+        <div class="media-content">
+          <p v-if="site.description" class="content">
+            {{ site.description }}
+          </p>
 
-          <div v-if="site.shoreAccess" class="level-item">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fas fa-umbrella-beach"></i>
-              </span>
-              <span>
-                <strong>Shore access?</strong>
-                <em>{{ site.shoreAccess ? 'Yes' : 'No' }}</em>
-              </span>
-            </span>
+          <div class="level is-size-7">
+            <div class="level-left"></div>
           </div>
         </div>
       </div>
     </div>
-  </article>
+
+    <div class="level">
+      <DiveSiteStat heading="Location" icon="fa-globe">
+        {{ site.location }}
+      </DiveSiteStat>
+
+      <DiveSiteStat v-if="site.depth" heading="Depth" icon="fa-weight">
+        {{ `${site.depth?.depth.toFixed(2)} ${site.depth?.unit}` }}
+      </DiveSiteStat>
+
+      <DiveSiteStat
+        v-if="site.freeToDive"
+        heading="Free to dive"
+        icon="fa-piggy-bank"
+      >
+        {{ site.freeToDive ? 'Yes' : 'No' }}
+      </DiveSiteStat>
+
+      <DiveSiteStat
+        v-if="site.shoreAccess"
+        heading="Shore access"
+        icon="fa-umbrella-beach"
+      >
+        {{ site.shoreAccess ? 'Yes' : 'No' }}
+      </DiveSiteStat>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { DiveSite } from '@/diveSites';
+import DiveSiteStat from '@/components/diveSites/DiveSiteStat.vue';
+import { DiveSite } from '@/client/diveSites';
 
 interface DiveSiteItemProps {
   site: DiveSite;

@@ -9,8 +9,10 @@
   </article>
 
   <!-- List dive sites ... -->
-  <div v-else-if="sites.length">
-    <DiveSiteItem v-for="site in sites" :key="site.id" :site="site" />
+  <div v-else-if="sites.length" class="tile is-ancestor">
+    <div class="tile is-parent is-vertical">
+      <DiveSiteItem v-for="site in sites" :key="site.id" :site="site" />
+    </div>
   </div>
 
   <!-- ...or a helpful message if there are none to show. -->
@@ -26,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveSite } from '@/diveSites';
+import { DiveSite } from '@/client/diveSites';
 import DiveSiteItem from '@/components/diveSites/DiveSiteItem.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
 

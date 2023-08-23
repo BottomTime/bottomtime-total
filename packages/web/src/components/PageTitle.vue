@@ -2,7 +2,7 @@
   <section class="hero is-dark">
     <div class="hero-body">
       <div class="container">
-        <p class="title">{{ title }}</p>
+        <p class="title is-capitalized">{{ title }}</p>
         <p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
         <slot></slot>
       </div>

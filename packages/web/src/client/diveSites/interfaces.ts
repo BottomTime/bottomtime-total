@@ -1,10 +1,12 @@
-import { Depth, DepthSchema, GpsCoordinatesSchema } from '@/constants';
+import { DepthSchema, GpsCoordinatesSchema } from '@/constants';
 import { z } from 'zod';
 
 export const DiveSiteCreatorSchema = z.object({
+  avatar: z.string().optional(),
   id: z.string(),
   username: z.string(),
   displayName: z.string(),
+  memberSince: z.coerce.date(),
 });
 export type DiveSiteCreator = z.infer<typeof DiveSiteCreatorSchema>;
 
