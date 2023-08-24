@@ -41,7 +41,7 @@ export class DefaultUserManager implements UserManager {
         profile: options.profile,
       });
 
-    const userData = assertValid(body, UserDataSchema);
+    const userData = assertValid<UserData>(body, UserDataSchema);
     return new DefaultUser(this.agent, userData);
   }
 
@@ -51,13 +51,13 @@ export class DefaultUserManager implements UserManager {
       return undefined;
     }
 
-    const userData = assertValid(body, UserDataSchema);
+    const userData = assertValid<UserData>(body, UserDataSchema);
     return new DefaultUser(this.agent, userData);
   }
 
   async getUserByUsername(username: string): Promise<User> {
     const { body } = await this.agent.get(`/api/users/${username}`);
-    const userData = assertValid(body, UserDataSchema);
+    const userData = assertValid<UserData>(body, UserDataSchema);
     return new DefaultUser(this.agent, userData);
   }
 

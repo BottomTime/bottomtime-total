@@ -26,6 +26,19 @@
       "windows": {
         "program": "${workspaceFolder}/packages/service/node_modules/jest/bin/jest"
       }
+    },
+    {
+      "name": "Debug Vue tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/web/node_modules/.bin/vue-cli-service",
+        "test:unit",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/packages/web/"
     }
   ]
 }

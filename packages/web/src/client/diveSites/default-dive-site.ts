@@ -115,7 +115,7 @@ export class DefaultDiveSite implements DiveSite {
   }
 
   async save(): Promise<void> {
-    const data = assertValid(this.data, DiveSiteDataSchema);
+    const data = assertValid<DiveSiteData>(this.data, DiveSiteDataSchema);
     const { body: response } = await this.agent
       .put(`/api/diveSites/${this.data.id}`)
       .send(data);

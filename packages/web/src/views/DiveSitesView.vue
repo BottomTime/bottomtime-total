@@ -3,7 +3,7 @@
   <section class="section">
     <div id="dive-sites-page" class="container">
       <div class="tile is-ancestor">
-        <div class="tile is-parent is-vertical is-3">
+        <div class="tile is-parent is-3">
           <div class="tile is-child box is-info">
             <DiveSiteFilters />
           </div>
@@ -12,8 +12,37 @@
           <div class="tile is-child">
             <SearchBar autofocus @search="onSearch" />
           </div>
+
           <div class="tile is-child">
-            <DiveSiteList :isLoading="data.isLoading" :sites="data.sites" />
+            <div class="level">
+              <div class="level-left">
+                <div class="level-item">
+                  <p id="site-count" class="content">
+                    Showing <strong>{{ state.sites.length }}</strong> dive
+                    sites.
+                  </p>
+                </div>
+              </div>
+
+              <div class="level-right">
+                <div class="level-item">
+                  <RouterLink to="/diveSites/new">
+                    <button class="button is-primary">
+                      <span class="icon-text">
+                        <span class="icon">
+                          <i class="fas fa-plus"></i>
+                        </span>
+                        <span>Add Site</span>
+                      </span>
+                    </button>
+                  </RouterLink>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tile is-child">
+            <DiveSiteList :isLoading="state.isLoading" :sites="state.sites" />
           </div>
         </div>
       </div>
@@ -30,9 +59,9 @@ import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 import { inject } from '@/helpers';
 import PageTitle from '@/components/PageTitle.vue';
 import SearchBar from '@/components/forms/SearchBar.vue';
-import { DiveSite, DiveSiteSearchOptions } from '@/diveSites';
+import { DiveSite, DiveSiteSearchOptions } from '@/client/diveSites';
 
-interface DiveSitesViewData {
+interface DiveSitesViewState {
   filters: DiveSiteSearchOptions;
   isLoading: boolean;
   sites: DiveSite[];
@@ -40,7 +69,7 @@ interface DiveSitesViewData {
 
 const client = inject(ApiClientKey);
 const withErrorHandling = inject(WithErrorHandlingKey);
-const data = reactive<DiveSitesViewData>({
+const state = reactive<DiveSitesViewState>({
   filters: {
     query: '',
   },
@@ -49,15 +78,15 @@ const data = reactive<DiveSitesViewData>({
 });
 
 async function refreshList() {
-  data.isLoading = true;
+  state.isLoading = true;
   await withErrorHandling(async () => {
-    data.sites = await client.diveSites.searchDiveSites(data.filters);
+    state.sites = await client.diveSites.searchDiveSites(state.filters);
   });
-  data.isLoading = false;
+  state.isLoading = false;
 }
 
 async function onSearch(queryString: string) {
-  data.filters.query = queryString;
+  state.filters.query = queryString;
   await refreshList();
 }
 

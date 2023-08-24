@@ -9,14 +9,20 @@
   </article>
 
   <!-- List dive sites ... -->
-  <div v-else-if="sites.length" class="tile is-ancestor">
+  <div v-else-if="sites.length" class="tile is-ancestor is-vertical">
     <div class="tile is-parent is-vertical">
       <DiveSiteItem v-for="site in sites" :key="site.id" :site="site" />
+    </div>
+
+    <div class="tile is-parent">
+      <div class="tile is-child has-text-centered">
+        <button class="button">Load More</button>
+      </div>
     </div>
   </div>
 
   <!-- ...or a helpful message if there are none to show. -->
-  <article v-else class="media">
+  <article id="no-sites-message" v-else class="media">
     <div class="media-content">
       <div class="content">
         <p class="has-text-centered">

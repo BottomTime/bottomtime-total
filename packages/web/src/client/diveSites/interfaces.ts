@@ -1,5 +1,13 @@
-import { DepthSchema, GpsCoordinatesSchema } from '@/constants';
+import { DepthSchema, GpsCoordinatesSchema, SortOrder } from '@/constants';
+import { getRangeSchema } from '@/helpers';
 import { z } from 'zod';
+
+const RatingRangeSchema = getRangeSchema(1, 5);
+
+export enum DiveSitesSortBy {
+  Name = 'name',
+  Rating = 'rating',
+}
 
 export const DiveSiteCreatorSchema = z.object({
   avatar: z.string().optional(),
@@ -34,8 +42,8 @@ export const DiveSiteFullSchema = z.intersection(
   DiveSiteMetadataSchema,
   DiveSiteDataSchema,
 );
-export type DiveSiteData = Readonly<DiveSiteMetadata> &
-  z.infer<typeof DiveSiteDataSchema>;
+export type CreateDiveSiteData = z.infer<typeof DiveSiteDataSchema>;
+export type DiveSiteData = Readonly<DiveSiteMetadata> & CreateDiveSiteData;
 
 export interface DiveSite extends DiveSiteData {
   readonly isDirty: boolean;
@@ -44,25 +52,32 @@ export interface DiveSite extends DiveSiteData {
   delete(): Promise<void>;
 }
 
-export interface DiveSiteSearchOptions {
-  query?: string;
-  location?: {
-    lon: number;
-    lat: number;
-  };
-  radius?: number;
-  freeToDive?: boolean;
-  shoreAccess?: boolean;
-  rating?: Range;
-  difficulty?: Range;
-  creator?: string;
-  sortBy?: string;
-  sortOrder?: string;
-  skip?: number;
-  limit?: number;
-}
+export const SearchDiveSitesOptionsSchema = z
+  .object({
+    query: z.string(),
+    location: z.object({
+      lat: z.number(),
+      lon: z.number(),
+    }),
+    radius: z.number(),
+    freeToDive: z.boolean(),
+    shoreAccess: z.boolean(),
+    rating: RatingRangeSchema,
+    difficulty: RatingRangeSchema,
+    creator: z.string(),
+    sortBy: z.nativeEnum(DiveSitesSortBy),
+    sortOrder: z.nativeEnum(SortOrder),
+    skip: z.number(),
+    limit: z.number(),
+  })
+  .partial()
+  .optional();
+export type SearchDiveSitesOptions = z.infer<
+  typeof SearchDiveSitesOptionsSchema
+>;
 
 export interface DiveSiteManager {
+  createDiveSite(data: CreateDiveSiteData): Promise<DiveSite>;
   getDiveSite(id: string): Promise<DiveSite>;
-  searchDiveSites(options?: DiveSiteSearchOptions): Promise<DiveSite[]>;
+  searchDiveSites(options?: SearchDiveSitesOptions): Promise<DiveSite[]>;
 }

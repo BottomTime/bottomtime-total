@@ -1,4 +1,4 @@
-import { ZodType, ZodTypeAny } from 'zod';
+import { ZodTypeAny } from 'zod';
 
 import { ValidationError, ValidationResult } from '../errors';
 

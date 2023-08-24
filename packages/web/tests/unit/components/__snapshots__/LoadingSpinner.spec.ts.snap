@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loading Spinner Will render with custom message 1`] = `<span class="icon-text has-text-info"><span class="icon is-large"><i class="fas fa-spinner fa-lg fa-spin"></i></span><span><em>Loading wozzles...</em></span></span>`;
+
+exports[`Loading Spinner Will render with default message 1`] = `<span class="icon-text has-text-info"><span class="icon is-large"><i class="fas fa-spinner fa-lg fa-spin"></i></span><span><em>Loading...</em></span></span>`;

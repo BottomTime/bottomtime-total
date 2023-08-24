@@ -9,7 +9,7 @@
       <div class="card-content">
         <article class="media">
           <figure class="media-left image is-64x64">
-            <img v-if="avatar" class="is-rounded" :src="avatar" />
+            <img class="is-rounded" :src="avatarUrl" />
           </figure>
 
           <div class="media-content">
@@ -39,4 +39,9 @@ interface IdBadgeProps {
 const props = defineProps<IdBadgeProps>();
 
 const memberSince = computed(() => dayjs(props.memberSince).fromNow());
+const avatarUrl = computed(
+  () =>
+    props.avatar ??
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(props.displayName)}`,
+);
 </script>

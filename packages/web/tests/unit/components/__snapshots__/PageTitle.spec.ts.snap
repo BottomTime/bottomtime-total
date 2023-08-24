@@ -4,7 +4,7 @@ exports[`PageTitle Component Will display a title and subtitle 1`] = `
 <section class="hero is-dark">
   <div class="hero-body">
     <div class="container">
-      <p class="title">Title</p>
+      <p class="title is-capitalized">Title</p>
       <p class="subtitle">A Witty Subtitle</p>
     </div>
   </div>
@@ -15,7 +15,7 @@ exports[`PageTitle Component Will display without a subtitle 1`] = `
 <section class="hero is-dark">
   <div class="hero-body">
     <div class="container">
-      <p class="title">Title</p>
+      <p class="title is-capitalized">Title</p>
       <!--v-if-->
     </div>
   </div>
