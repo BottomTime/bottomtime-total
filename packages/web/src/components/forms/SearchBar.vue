@@ -1,10 +1,11 @@
 <template>
-  <fieldset :disabled="isLoading">
+  <fieldset role="search" :disabled="isLoading">
     <div class="field has-addons">
       <div class="control is-expanded">
         <input
           ref="queryInput"
-          id="search"
+          type="search"
+          role="searchbox"
           class="input is-rounded"
           :placeholder="placeholder"
           v-model="queryString"

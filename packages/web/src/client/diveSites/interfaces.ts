@@ -70,8 +70,7 @@ export const SearchDiveSitesOptionsSchema = z
     skip: z.number(),
     limit: z.number(),
   })
-  .partial()
-  .optional();
+  .partial();
 export type SearchDiveSitesOptions = z.infer<
   typeof SearchDiveSitesOptionsSchema
 >;

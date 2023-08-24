@@ -1,9 +1,11 @@
 <template>
-  <div class="tile is-child card">
+  <div role="listitem" class="tile is-child card">
     <header class="card-header">
       <p class="card-header-title">
         <RouterLink :to="`/diveSites/${site.id}`">
-          <span class="is-capitalized">{{ site.name }}</span>
+          <span data-testid="dive-site-name" class="is-capitalized">{{
+            site.name
+          }}</span>
         </RouterLink>
       </p>
 

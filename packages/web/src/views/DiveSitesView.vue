@@ -13,11 +13,11 @@
             <SearchBar autofocus @search="onSearch" />
           </div>
 
-          <div class="tile is-child">
+          <div class="tile is-child" role="toolbar">
             <div class="level">
               <div class="level-left">
                 <div class="level-item">
-                  <p id="site-count" class="content">
+                  <p title="Site Count" class="content">
                     Showing <strong>{{ state.sites.length }}</strong> dive
                     sites.
                   </p>
@@ -59,10 +59,10 @@ import { ApiClientKey, WithErrorHandlingKey } from '@/injection-keys';
 import { inject } from '@/helpers';
 import PageTitle from '@/components/PageTitle.vue';
 import SearchBar from '@/components/forms/SearchBar.vue';
-import { DiveSite, DiveSiteSearchOptions } from '@/client/diveSites';
+import { DiveSite, SearchDiveSitesOptions } from '@/client/diveSites';
 
 interface DiveSitesViewState {
-  filters: DiveSiteSearchOptions;
+  filters: SearchDiveSitesOptions;
   isLoading: boolean;
   sites: DiveSite[];
 }

@@ -39,19 +39,33 @@ test.describe('Searching dive sites', () => {
 
   test('Will display a list of sites on page load', async ({ page }) => {
     await page.goto('/diveSites');
-    await expect(page.locator('p#site-count')).toMatchSnapshot();
+    const sites = await page.getByTestId('dive-site-name').allInnerTexts();
+    const count = await page.getByTitle('Site count').innerText();
+    expect(count).toContain(sites.length.toString());
+    expect(sites.join(',')).toMatchSnapshot();
   });
 
-  test('Will perform a text search', async ({ page }) => {});
+  test('Will perform a text search', async ({ page }) => {
+    await page.goto('/diveSites');
+
+    const searchBox = page.getByRole('searchbox');
+    await searchBox.type('placid');
+    await searchBox.press('Enter');
+
+    const sites = await page.getByTestId('dive-site-name').allInnerTexts();
+    const count = await page.getByTitle('Site count').innerText();
+    expect(count).toContain(sites.length.toString());
+    expect(sites.join(',')).toMatchSnapshot();
+  });
 
   test('Will display a message if no dive sites can be found', async ({
     page,
   }) => {
     await DiveSites.deleteMany({});
     await page.goto('/diveSites');
-    await expect(page.locator('article#no-sites-message')).toBeVisible();
-    await expect(
-      page.locator('article#no-sites-message').innerHTML(),
-    ).toMatchSnapshot();
+
+    const alert = page.getByRole('alert');
+    await expect(alert).toBeVisible();
+    await expect(alert.innerText()).resolves.toMatchSnapshot();
   });
 });

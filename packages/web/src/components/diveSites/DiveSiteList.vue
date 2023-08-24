@@ -10,7 +10,7 @@
 
   <!-- List dive sites ... -->
   <div v-else-if="sites.length" class="tile is-ancestor is-vertical">
-    <div class="tile is-parent is-vertical">
+    <div role="list" class="tile is-parent is-vertical">
       <DiveSiteItem v-for="site in sites" :key="site.id" :site="site" />
     </div>
 
@@ -22,7 +22,7 @@
   </div>
 
   <!-- ...or a helpful message if there are none to show. -->
-  <article id="no-sites-message" v-else class="media">
+  <article v-else class="media" role="alert">
     <div class="media-content">
       <div class="content">
         <p class="has-text-centered">

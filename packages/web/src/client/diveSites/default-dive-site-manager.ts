@@ -52,7 +52,9 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
     return new DefaultDiveSite(this.agent, data);
   }
 
-  async searchDiveSites(options?: SearchDiveSitesOptions): Promise<DiveSite[]> {
+  async searchDiveSites(
+    options: SearchDiveSitesOptions = {},
+  ): Promise<DiveSite[]> {
     const query = assertValid<SearchDiveSitesQueryString>(
       options,
       SearchDiveSitesQueryStringSchema,

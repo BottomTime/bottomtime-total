@@ -1,5 +1,5 @@
 <template>
-  <div :id="`toast-${toast.id}`" :class="classes">
+  <div :id="`toast-${toast.id}`" :class="classes" role="alert">
     <button
       :id="`btn-dismiss-toast-${toast.id}`"
       class="delete"
