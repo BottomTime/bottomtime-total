@@ -349,34 +349,6 @@ exports[`Default Dive Site Manager Searching dive sites Will filter based on dif
 exports[`Default Dive Site Manager Searching dive sites Will filter based on rating range 1`] = `
 [
   {
-    "averageDifficulty": 4.35,
-    "averageRating": 4.9,
-    "createdOn": 2018-06-27T20:05:37.095Z,
-    "creator": {
-      "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/518.jpg",
-      "displayName": "Taylor Will",
-      "id": "25793873-3413-4e78-aa6e-77717a7a23b8",
-      "memberSince": 2020-09-25T22:21:02.836Z,
-      "username": "Casimir_Reynolds11",
-    },
-    "depth": {
-      "depth": 35.16,
-      "unit": "m",
-    },
-    "description": "At perferendis repudiandae recusandae. Non totam ea molestias alias libero corporis quos repellendus culpa.",
-    "directions": "Natus facilis nam iure in.",
-    "freeToDive": true,
-    "gps": {
-      "lat": 66.65,
-      "lon": 140.28,
-    },
-    "id": "6dbb141e-2cbd-4ac7-bdd9-ed54ff10623e",
-    "location": "Cedar Park Denmark",
-    "name": "each breath",
-    "shoreAccess": true,
-    "updatedOn": 2021-05-03T12:52:47.304Z,
-  },
-  {
     "averageDifficulty": 4.7,
     "averageRating": 4.9,
     "createdOn": 2023-04-15T03:07:28.621Z,
@@ -515,6 +487,34 @@ exports[`Default Dive Site Manager Searching dive sites Will filter based on rat
     "name": "crafty den",
     "shoreAccess": false,
     "updatedOn": 2023-01-21T00:22:37.805Z,
+  },
+  {
+    "averageDifficulty": 2.95,
+    "averageRating": 4.82,
+    "createdOn": 2021-10-18T02:26:32.397Z,
+    "creator": {
+      "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/3.jpg",
+      "displayName": "Jerome Wunsch",
+      "id": "0fae3dce-e15c-43aa-ba82-e8b5742d2cbb",
+      "memberSince": 2023-01-15T03:59:59.677Z,
+      "username": "Elijah44",
+    },
+    "depth": {
+      "depth": 80.5,
+      "unit": "ft",
+    },
+    "description": "Impedit ipsam veniam amet iste delectus. Incidunt aliquam iure fugiat hic cumque aliquid perspiciatis.",
+    "directions": "Architecto laudantium illum debitis praesentium fugiat magni corporis suscipit nesciunt.",
+    "freeToDive": true,
+    "gps": {
+      "lat": 64.88,
+      "lon": 100.5,
+    },
+    "id": "2ea163d2-e9cd-4538-95a2-c4f3c90f7db9",
+    "location": "Shawnee Guinea",
+    "name": "glum lizard",
+    "shoreAccess": false,
+    "updatedOn": 2020-10-16T09:03:58.147Z,
   },
 ]
 `;
@@ -1223,7 +1223,7 @@ exports[`Default Dive Site Manager Searching dive sites Will sort results by rat
   },
   {
     "averageDifficulty": 4.35,
-    "averageRating": 4.9,
+    "averageRating": 4.902,
     "createdOn": 2018-06-27T20:05:37.095Z,
     "creator": {
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/518.jpg",

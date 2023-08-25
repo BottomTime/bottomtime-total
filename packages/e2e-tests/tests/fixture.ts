@@ -37,12 +37,4 @@ const test = base.extend<{ app: TestFixture }>({
   app: new E2ETestFixture(),
 });
 
-test.beforeAll(async ({ app }) => {
-  await app.purgeDatabase();
-});
-
-test.afterEach(async ({ app }) => {
-  await app.purgeDatabase();
-});
-
 export { expect, test };

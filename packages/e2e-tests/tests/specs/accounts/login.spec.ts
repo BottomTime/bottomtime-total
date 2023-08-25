@@ -37,3 +37,7 @@ test('Will log a user into their account with username and password', async ({
     UserData.profile.name,
   );
 });
+
+test.afterAll(async ({ app }) => {
+  await app.purgeDatabase();
+});

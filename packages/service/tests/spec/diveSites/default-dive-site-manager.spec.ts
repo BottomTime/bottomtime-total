@@ -24,10 +24,10 @@ import { fakeUser } from '../../fixtures/fake-user';
 import { mongoClient } from '../../mongo-client';
 import { Profile, User } from '../../../src/users';
 import { ValidationError } from '../../../src/errors';
+import { SortOrder } from '../../../src/constants';
 
 import DiveSiteCreators from '../../fixtures/dive-site-creators.json';
 import DiveSites from '../../fixtures/dive-sites.json';
-import { SortOrder } from '../../../src/constants';
 
 const log = createTestLogger('default-dive-site-manager');
 jest.mock('uuid');

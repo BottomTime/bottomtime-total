@@ -24,7 +24,7 @@ test.describe('Searching dive sites', () => {
     Users = db.collection(Collections.Users);
   });
 
-  test.beforeEach(async () => {
+  test.beforeAll(async () => {
     await Promise.all([
       Users.insertMany(
         SiteCreatorData.map((creator) => UserSchema.parse(creator)),
@@ -33,6 +33,10 @@ test.describe('Searching dive sites', () => {
         DiveSiteData.map((site) => DiveSiteSchema.parse(site)),
       ),
     ]);
+  });
+
+  test.afterAll(async ({ app }) => {
+    await app.purgeDatabase();
   });
 
   test('Will display a list of sites on page load', async ({ page }) => {

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixture';
 
-test('Go to Signup Page', async ({ app, page }) => {
+test('Go to Signup Page', async ({ page }) => {
   await page.goto('/signup');
 
   const username = 'Rocky_B';
@@ -24,4 +24,8 @@ test('Go to Signup Page', async ({ app, page }) => {
 
   await page.goto('/profile');
   await expect(page.locator('input#name')).toHaveValue(name);
+});
+
+test.afterAll(async ({ app }) => {
+  await app.purgeDatabase();
 });
