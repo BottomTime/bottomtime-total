@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixture';
 
-test('Go to Signup Page', async ({ page }) => {
+test('As a user, I can sign up to use the app', async ({ app, page }) => {
   await page.goto('/signup');
 
   const username = 'Rocky_B';
