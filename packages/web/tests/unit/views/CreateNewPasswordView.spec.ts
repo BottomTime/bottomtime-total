@@ -3,21 +3,22 @@ import { mount } from '@vue/test-utils';
 import request from 'superagent';
 
 import CreateNewPasswordView from '@/views/CreateNewPasswordView.vue';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from '@/injection-keys';
+import { ApiClientKey, StoreKey, WithErrorHandlingKey } from '@/injection-keys';
 import { createStore } from '@/store';
 import { initialStoreState } from '../../fixtures/store-state';
 import { fakeUser } from '../../fixtures/fake-user';
-import { DefaultUser, UserManager } from '@/users';
+import { DefaultUser, UserManager } from '@/client/users';
 import { createErrorHandler } from '@/helpers';
 import router from '@/router';
+import { ApiClient } from '@/client';
 
 describe('Create New Password View', () => {
   const agent = request.agent();
-  const userManager = new Mock<UserManager>().object;
+  const userManager = new Mock<UserManager>().object();
+  const apiClient = new Mock<ApiClient>()
+    .setup((c) => c.users)
+    .returns(userManager)
+    .object();
   const route = `/newPassword?user=Borat87&token=f23908h48h209ejf2489yrh20`;
 
   it('Will ask user for new password if the user is anonymous', async () => {
@@ -30,7 +31,7 @@ describe('Create New Password View', () => {
         plugins: [router],
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
@@ -59,7 +60,7 @@ describe('Create New Password View', () => {
         plugins: [router],
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },
@@ -80,7 +81,7 @@ describe('Create New Password View', () => {
         plugins: [router],
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: withErrorHandling,
         },
       },

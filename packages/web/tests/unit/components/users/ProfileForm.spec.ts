@@ -5,7 +5,7 @@ import request from 'superagent';
 
 import { createStore } from '@/store';
 import { createErrorHandler } from '@/helpers';
-import { DefaultUser } from '@/users';
+import { DefaultUser } from '@/client/users';
 import { fakeUser } from '../../../fixtures/fake-user';
 import ProfileForm from '@/components/users/ProfileForm.vue';
 import { WithErrorHandlingKey } from '@/injection-keys';

@@ -6,16 +6,17 @@ import { createStore } from '@/store';
 import { fakeUser } from '../../fixtures/fake-user';
 import { initialStoreState } from '../../fixtures/store-state';
 import SignUpView from '@/views/SignupView.vue';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from '@/injection-keys';
-import { DefaultUser, UserManager } from '@/users';
+import { ApiClientKey, StoreKey, WithErrorHandlingKey } from '@/injection-keys';
+import { DefaultUser, UserManager } from '@/client/users';
 import { createErrorHandler } from '@/helpers';
+import { ApiClient } from '@/client';
 
 describe('Sign Up Page', () => {
-  const userManager = new Mock<UserManager>().object;
+  const userManager = new Mock<UserManager>().object();
+  const apiClient = new Mock<ApiClient>()
+    .setup((c) => c.users)
+    .returns(userManager)
+    .object();
 
   it('Will display the signup form if the user is anonymous', async () => {
     const store = createStore(initialStoreState());
@@ -24,7 +25,7 @@ describe('Sign Up Page', () => {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: errorHandler,
         },
       },
@@ -45,7 +46,7 @@ describe('Sign Up Page', () => {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: errorHandler,
         },
       },

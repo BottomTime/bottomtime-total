@@ -7,16 +7,16 @@ import { DefaultUser, DefaultUserManager, UserManager } from '@/client/users';
 import { fakeUser } from '../../fixtures/fake-user';
 import LoginView from '@/views/LoginView.vue';
 import { Mock } from 'moq.ts';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from '@/injection-keys';
+import { ApiClientKey, StoreKey, WithErrorHandlingKey } from '@/injection-keys';
 import { initialStoreState } from '../../fixtures/store-state';
-import { UserManager } from '@/users';
+import { ApiClient } from '@/client';
 
 describe('Login View', () => {
-  const userManager = new Mock<UserManager>().object;
+  const userManager = new Mock<UserManager>().object();
+  const apiClient = new Mock<ApiClient>()
+    .setup((c) => c.users)
+    .returns(userManager)
+    .object();
   let agent: SuperAgentStatic;
 
   beforeAll(() => {
@@ -30,7 +30,7 @@ describe('Login View', () => {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: errorHandler,
         },
       },
@@ -51,7 +51,7 @@ describe('Login View', () => {
       global: {
         provide: {
           [StoreKey as symbol]: store,
-          [UserManagerKey as symbol]: userManager,
+          [ApiClientKey as symbol]: apiClient,
           [WithErrorHandlingKey as symbol]: errorHandler,
         },
       },

@@ -1,10 +1,11 @@
 import request from 'superagent';
 
-import { DefaultProfile } from '@/users/default-profile';
-import { fakeUser } from '../../fixtures/fake-user';
-import { scope } from '../../utils/scope';
-import { UserData } from '@/users';
+import { DefaultProfile } from '@/client/users/default-profile';
+import { UserData } from '@/client/users';
 import { RequestBodyMatcher } from 'nock';
+import { ProfileVisibility, UserRole } from '@/constants';
+import { fakeUser } from '../../../fixtures/fake-user';
+import { scope } from '../../../utils/scope';
 
 const ProfileToSave: UserData = {
   id: '86409282-b526-4a61-b815-7757f5cd0f56',
@@ -15,7 +16,7 @@ const ProfileToSave: UserData = {
   lastLogin: new Date('2023-07-06T12:10:10.132Z'),
   lastPasswordChange: new Date('2023-03-22T11:59:24.684Z'),
   memberSince: new Date('2021-12-22T03:17:58.314Z'),
-  role: 100,
+  role: UserRole.User,
   username: 'Michale86',
   profile: {
     avatar:
@@ -27,7 +28,7 @@ const ProfileToSave: UserData = {
     experienceLevel: 'expert',
     location: 'West Kameronbury',
     name: 'Michale Funk',
-    profileVisibility: 'private',
+    profileVisibility: ProfileVisibility.Private,
     startedDiving: '2020',
   },
 };
