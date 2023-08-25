@@ -22,7 +22,9 @@ test.describe('Searching dive sites', () => {
 
     DiveSites = db.collection(Collections.DiveSites);
     Users = db.collection(Collections.Users);
+  });
 
+  test.beforeEach(async () => {
     await Promise.all([
       Users.insertMany(
         SiteCreatorData.map((creator) => UserSchema.parse(creator)),
@@ -33,7 +35,7 @@ test.describe('Searching dive sites', () => {
     ]);
   });
 
-  test.afterAll(async ({ app }) => {
+  test.afterEach(async ({ app }) => {
     await app.purgeDatabase();
   });
 
@@ -49,8 +51,9 @@ test.describe('Searching dive sites', () => {
     await page.goto('/diveSites');
 
     const searchBox = page.getByRole('searchbox');
-    await searchBox.type('placid');
+    await searchBox.type('west');
     await searchBox.press('Enter');
+    await page.waitForLoadState('networkidle');
 
     const sites = await page.getByTestId('dive-site-name').allInnerTexts();
     const count = await page.getByTitle('Site count').innerText();
