@@ -47,10 +47,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { inject } from '@/helpers';
-import { User } from '@/users';
+import { User } from '@/client/users';
 import { WithErrorHandlingKey } from '@/injection-keys';
 
 interface EmailVerificationStatusProps {

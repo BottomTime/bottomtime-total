@@ -43,14 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  defineEmits,
-  defineProps,
-  reactive,
-  watch,
-  withDefaults,
-} from 'vue';
+import { computed, reactive, watch } from 'vue';
 
 interface FuzzyDatePickerProps {
   id: string;
