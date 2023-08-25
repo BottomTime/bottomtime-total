@@ -1,5 +1,5 @@
 <template>
-  <div :id="`toast-${toast.id}`" :class="classes">
+  <div :id="`toast-${toast.id}`" :class="classes" role="alert">
     <button
       :id="`btn-dismiss-toast-${toast.id}`"
       class="delete"
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps } from 'vue';
+import { computed } from 'vue';
 import { Toast } from '@/helpers';
 
 interface ToastMessageProps {

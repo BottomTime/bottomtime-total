@@ -1,8 +1,9 @@
 import { Collection } from 'mongodb';
 import {
   Collections,
-  FriendSubDocument,
+  FriendDocument,
   UserDocument,
+  UserSchema,
 } from '../../../src/data';
 import { createTestLogger } from '../../test-logger';
 import {
@@ -155,7 +156,7 @@ describe('Default Friend Manager', () => {
     it('Will throw InvalidOperation error if friend limit is exceeded', async () => {
       const userData = fakeUser();
       const friendData = fakeUser();
-      userData.friends = new Array<FriendSubDocument>(config.friendsLimit);
+      userData.friends = new Array<FriendDocument>(config.friendsLimit);
       for (let i = 0; i < userData.friends.length; i++) {
         userData.friends[i] = {
           friendId: faker.datatype.uuid(),
@@ -213,11 +214,7 @@ describe('Default Friend Manager', () => {
 
       await Users.insertMany([
         userData,
-        ...FriendData.map((friend) => ({
-          ...friend,
-          lastLogin: new Date(friend.lastLogin),
-          memberSince: new Date(friend.memberSince),
-        })),
+        ...FriendData.map((friend) => UserSchema.parse(friend)),
       ]);
       user = new DefaultUser(mongoClient, Log, userData);
       friendManager = new DefaultFriendManager(mongoClient, Log, user.id);
@@ -232,7 +229,7 @@ describe('Default Friend Manager', () => {
 
     it('Will redact private profiles', async () => {
       const newFriends = new Array<UserDocument>(4);
-      const newFriendships = new Array<FriendSubDocument>(newFriends.length);
+      const newFriendships = new Array<FriendDocument>(newFriends.length);
       let expected = new Array<DefaultFriend>(newFriends.length);
 
       for (let i = 0; i < newFriends.length; i++) {
@@ -347,18 +344,6 @@ describe('Default Friend Manager', () => {
     });
 
     [
-      {
-        name: 'Invalid sortBy',
-        options: {
-          sortBy: 'rank',
-        },
-      },
-      {
-        name: 'Invalid sortOrder',
-        options: {
-          sortOrder: 'backwards',
-        },
-      },
       {
         name: 'Negative skip',
         options: {

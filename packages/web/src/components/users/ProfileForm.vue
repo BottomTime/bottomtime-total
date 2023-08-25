@@ -88,8 +88,8 @@ import FuzzyDatePicker from '@/components/forms/FuzzyDatePicker.vue';
 import { Toast, ToastType, inject } from '@/helpers';
 import TextArea from '@/components/forms/TextArea.vue';
 import TextBox from '@/components/forms/TextBox.vue';
-import { Profile } from '@/users';
-import { ProfileVisibilityOptions } from '@/constants';
+import { Profile } from '@/client/users';
+import { ProfileVisibility, ProfileVisibilityOptions } from '@/constants';
 import { DropDownOption } from '@/constants';
 import { WithErrorHandlingKey } from '@/injection-keys';
 import { Dispatch, useStore } from '@/store';
@@ -100,7 +100,7 @@ interface ProfileFormData {
   experienceLevel: string;
   location: string;
   name: string;
-  profileVisibility: string;
+  profileVisibility: ProfileVisibility;
   startedDiving: string;
 }
 

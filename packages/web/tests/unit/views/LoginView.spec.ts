@@ -3,7 +3,7 @@ import request, { SuperAgentStatic } from 'superagent';
 
 import { createErrorHandler } from '@/helpers';
 import { createStore } from '@/store';
-import { DefaultUser } from '@/users';
+import { DefaultUser, DefaultUserManager, UserManager } from '@/client/users';
 import { fakeUser } from '../../fixtures/fake-user';
 import LoginView from '@/views/LoginView.vue';
 import { Mock } from 'moq.ts';

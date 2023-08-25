@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Default Dive Site Will export a JSON object 1`] = `
+{
+  "averageDifficulty": 2.28,
+  "averageRating": 4.79,
+  "createdOn": 2018-08-19T08:56:21.007Z,
+  "creator": {
+    "displayName": "Stan Smith",
+    "id": "a4fc342c-de93-4a6f-b433-8af6dbeadf90",
+    "memberSince": 2023-08-22T20:41:27.869Z,
+    "username": "StanTheMan",
+  },
+  "depth": {
+    "depth": 64,
+    "unit": "ft",
+  },
+  "description": "Dicta aliquam optio nesciunt error necessitatibus. Molestiae repellendus hic blanditiis voluptatibus.",
+  "directions": "Et tempore impedit deleniti placeat ea asperiores in itaque.",
+  "freeToDive": false,
+  "gps": {
+    "lat": -76.34,
+    "lon": -0.05,
+  },
+  "id": "3f83be2c-8d8a-4f06-a6b7-6bec1098ee11",
+  "location": "Fayetteville Saint Martin",
+  "name": "astonishing waste",
+  "shoreAccess": true,
+  "updatedOn": 2022-12-08T23:06:27.525Z,
+}
+`;
+
+exports[`Default Dive Site Will export a summarized JSON object 1`] = `
+{
+  "averageDifficulty": 1.81,
+  "averageRating": 2.44,
+  "createdOn": 2022-04-11T13:04:56.199Z,
+  "creator": {
+    "displayName": "Stan Smith",
+    "id": "a4fc342c-de93-4a6f-b433-8af6dbeadf90",
+    "memberSince": 2023-08-22T20:41:27.869Z,
+    "username": "StanTheMan",
+  },
+  "depth": {
+    "depth": 24,
+    "unit": "m",
+  },
+  "description": "Modi beatae voluptates error. Magnam laboriosam quod dolores.",
+  "freeToDive": true,
+  "id": "363896cd-4310-416f-8861-47f3322af468",
+  "location": "Coral Springs Hungary",
+  "name": "paltry linseed",
+  "shoreAccess": true,
+  "updatedOn": 2022-06-09T21:00:40.101Z,
+}
+`;

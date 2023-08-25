@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JWT utility functions Will issue JWT with issuer matching service base url 1`] = `
+{
+  "exp": 1690428951784,
+  "iat": 1690385751784,
+  "iss": "http://localhost:8080/",
+  "sub": "user|4dbef7dc-66c8-49e8-8a5a-d78c32042fec",
+}
+`;
+
+exports[`JWT utility functions Will issue a JWT for the designated user 1`] = `
+{
+  "exp": 1690428951784,
+  "iat": 1690385751784,
+  "iss": "https://dev.bottomti.me/",
+  "sub": "user|4dbef7dc-66c8-49e8-8a5a-d78c32042fec",
+}
+`;
+
+exports[`JWT utility functions Will issue a secure (HTTPS-only) cookie when in production 1`] = `
+{
+  "bottomtime.platform": {
+    "options": {
+      "domain": "https://bottomti.me/",
+      "expires": 2023-07-27T03:35:51.784Z,
+      "httpOnly": true,
+      "sameSite": "strict",
+      "secure": true,
+      "signed": false,
+    },
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Rldi5ib3R0b210aS5tZS8iLCJzdWIiOiJ1c2VyfDRkYmVmN2RjLTY2YzgtNDllOC04YTVhLWQ3OGMzMjA0MmZlYyIsImV4cCI6MTY5MDQyODk1MTc4NCwiaWF0IjoxNjkwMzg1NzUxNzg0fQ.FyXdrAaX1NiqVKzLqACIR60--h5C6K3UybB3PrylJzA",
+  },
+}
+`;
+
+exports[`JWT utility functions Will issue a session cookie containing a JWT for the designated user 1`] = `
+{
+  "bottomtime.platform": {
+    "options": {
+      "domain": "https://bottomti.me/",
+      "expires": 2023-07-27T03:35:51.784Z,
+      "httpOnly": true,
+      "sameSite": "strict",
+      "secure": false,
+      "signed": false,
+    },
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Rldi5ib3R0b210aS5tZS8iLCJzdWIiOiJ1c2VyfDRkYmVmN2RjLTY2YzgtNDllOC04YTVhLWQ3OGMzMjA0MmZlYyIsImV4cCI6MTY5MDQyODk1MTc4NCwiaWF0IjoxNjkwMzg1NzUxNzg0fQ.FyXdrAaX1NiqVKzLqACIR60--h5C6K3UybB3PrylJzA",
+  },
+}
+`;
+
+exports[`JWT utility functions Will issue issue JWT with expiration matching cookie TTL 1`] = `
+{
+  "exp": 1690990551784,
+  "iat": 1690385751784,
+  "iss": "https://dev.bottomti.me/",
+  "sub": "user|4dbef7dc-66c8-49e8-8a5a-d78c32042fec",
+}
+`;

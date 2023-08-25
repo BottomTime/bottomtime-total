@@ -441,47 +441,10 @@ describe('Profiles Routes', () => {
 
       await udpateProfile(req, res, next);
 
-      const result = await Users.findOne({ _id: userData._id });
-      expect(result?.profile).toEqual(newProfileData);
-      expect(next).not.toBeCalled();
-      expect(res._isEndCalled()).toBe(true);
-      expect(res._getStatusCode()).toBe(200);
-      expect(res._getJSONData()).toEqual({
-        memberSince: user.memberSince.toISOString(),
-        profileVisibility: user.profile.profileVisibility,
-        userId: user.id,
-        username: user.username,
-      });
-    });
-
-    it('Will clear updated profile fields if they are null in the update request', async () => {
-      const userData = fakeUser();
-      const newProfileData = {
-        profileVisibility: ProfileVisibility.Private,
-      };
-      const user = new DefaultUser(mongoClient, Log, userData);
-      const { req, res } = createMocks({
-        log: Log,
-        selectedUser: user,
-        body: {
-          ...newProfileData,
-          avatar: null,
-          bio: null,
-          birthdate: null,
-          certifications: null,
-          customData: null,
-          experienceLevel: null,
-          location: null,
-          name: null,
-          startedDiving: null,
-        },
-      });
-      const next = jest.fn();
-      await Users.insertOne(userData);
-
-      await udpateProfile(req, res, next);
-
-      const result = await Users.findOne({ _id: userData._id });
+      const result = await Users.findOne(
+        { _id: userData._id },
+        { projection: { profile: true } },
+      );
       expect(result?.profile).toEqual(newProfileData);
       expect(next).not.toBeCalled();
       expect(res._isEndCalled()).toBe(true);
@@ -646,11 +609,9 @@ describe('Profiles Routes', () => {
         },
       });
       const next = jest.fn();
-      const save = jest.spyOn(user.profile, 'save').mockResolvedValue();
 
       await patchProfile(req, res, next);
 
-      expect(save).not.toBeCalled();
       expect(next).toBeCalled();
       expect(next.mock.lastCall[0]).toBeInstanceOf(ValidationError);
       expect(res._isEndCalled()).toBe(false);

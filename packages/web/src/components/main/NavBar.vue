@@ -35,6 +35,9 @@
       >
         <div class="navbar-start">
           <RouterLink class="navbar-item" to="/">Home</RouterLink>
+          <RouterLink class="navbar-item" to="/diveSites"
+            >Dive Sites
+          </RouterLink>
           <RouterLink v-if="isAdmin" class="navbar-item" to="/manageUsers">
             Manage Users
           </RouterLink>
@@ -86,7 +89,7 @@ const store = useStore();
 
 const currentUser = computed(() => store.state.currentUser);
 const displayName = computed(() => store.getters.userDisplayName);
-const isAdmin = computed(() => currentUser.value?.role ?? 0 >= UserRole.Admin);
+const isAdmin = computed(() => currentUser.value?.role === UserRole.Admin);
 
 // Close dropdown on navigation
 router.beforeEach(() => {

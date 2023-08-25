@@ -1,18 +1,15 @@
 import { createRequest } from 'node-mocks-http';
 import { faker } from '@faker-js/faker';
+import { It, Mock } from 'moq.ts';
 
 import { createTestLogger } from '../../test-logger';
-import { DefaultUserManager } from '../../../src/users/default-user-manager';
 import { fakePassword, fakeUser } from '../../fixtures/fake-user';
 import {
-  deserializeUser,
   loginWithPassword,
-  serializeUser,
+  verifyJwtToken,
 } from '../../../src/server/passport';
-import { mongoClient } from '../../mongo-client';
-import { DefaultUser } from '../../../src/users/default-user';
-
-jest.mock('../../../src/users/default-user-manager');
+import { User, UserManager } from '../../../src/users';
+import { JwtPayload } from '../../../src/server/jwt';
 
 const Log = createTestLogger('passport-callbacks');
 
@@ -21,48 +18,48 @@ describe('Passport Callbacks', () => {
     it('Will return a user if successful', async () => {
       const username = faker.internet.userName();
       const password = fakePassword();
-      const userManager = new DefaultUserManager(mongoClient, Log);
-      const user = new DefaultUser(
-        mongoClient,
-        Log,
-        fakeUser(
-          {
-            username,
-          },
-          password,
-        ),
+      const userData = fakeUser(
+        {
+          username,
+        },
+        password,
       );
+      const user = new Mock<User>()
+        .setup((u) => u.username)
+        .returns(username)
+        .setup((u) => u.id)
+        .returns(userData._id)
+        .object();
+      const userManager = new Mock<UserManager>()
+        .setup((um) => um.authenticateUser(username, password))
+        .returnsAsync(user)
+        .object();
       const req = createRequest({
         log: Log,
         userManager,
       });
-      const authenticate = jest
-        .spyOn(userManager, 'authenticateUser')
-        .mockResolvedValue(user);
       const cb = jest.fn();
 
       await loginWithPassword(req, username, password, cb);
 
-      expect(authenticate).toBeCalledWith(username, password);
       expect(cb).toBeCalledWith(null, user);
     });
 
     it('Will return false if unsuccessful', async () => {
       const username = faker.internet.userName();
       const password = fakePassword();
-      const userManager = new DefaultUserManager(mongoClient, Log);
+      const userManager = new Mock<UserManager>()
+        .setup((um) => um.authenticateUser(username, password))
+        .returnsAsync(undefined)
+        .object();
       const req = createRequest({
         log: Log,
         userManager,
       });
-      const authenticate = jest
-        .spyOn(userManager, 'authenticateUser')
-        .mockResolvedValue(undefined);
       const cb = jest.fn();
 
       await loginWithPassword(req, username, password, cb);
 
-      expect(authenticate).toBeCalledWith(username, password);
       expect(cb).toBeCalledWith(null, false);
     });
 
@@ -70,110 +67,135 @@ describe('Passport Callbacks', () => {
       const error = new Error('nope');
       const username = faker.internet.userName();
       const password = fakePassword();
-      const userManager = new DefaultUserManager(mongoClient, Log);
+      const userManager = new Mock<UserManager>()
+        .setup((um) => um.authenticateUser(username, password))
+        .throwsAsync(error)
+        .object();
       const req = createRequest({
         log: Log,
         userManager,
       });
-      const authenticate = jest
-        .spyOn(userManager, 'authenticateUser')
-        .mockRejectedValue(error);
       const cb = jest.fn();
 
       await loginWithPassword(req, username, password, cb);
 
-      expect(authenticate).toBeCalledWith(username, password);
       expect(cb).toBeCalledWith(error);
     });
   });
 
-  describe('Serialize and Deserialize User', () => {
-    it('Will serialize a user and return the ID', async () => {
-      const req = createRequest({
-        log: Log,
-      });
-      const data = fakeUser();
-      const user = new DefaultUser(mongoClient, Log, data);
-      const cb = jest.fn();
+  describe('Deserializing user from JWT', () => {
+    let user: User;
+    let lockedUser: User;
+    let userManager: UserManager;
+    let payload: JwtPayload;
 
-      serializeUser(req, user, cb);
-
-      expect(cb).toBeCalledWith(null, user.id);
+    beforeAll(() => {
+      const userId = faker.datatype.uuid();
+      const lockedUserId = faker.datatype.uuid();
+      user = new Mock<User>()
+        .setup((u) => u.username)
+        .returns(faker.internet.userName())
+        .setup((u) => u.id)
+        .returns(userId)
+        .setup((u) => u.isLockedOut)
+        .returns(false)
+        .object();
+      lockedUser = new Mock<User>()
+        .setup((u) => u.username)
+        .returns(faker.internet.userName())
+        .setup((u) => u.id)
+        .returns(lockedUserId)
+        .setup((u) => u.isLockedOut)
+        .returns(true)
+        .object();
+      userManager = new Mock<UserManager>()
+        .setup((um) => um.getUser(userId))
+        .returnsAsync(user)
+        .setup((um) => um.getUser(lockedUserId))
+        .returnsAsync(lockedUser)
+        .object();
+      payload = {
+        iss: 'https://api.bottomti.me/',
+        exp: Date.now() + 100000,
+        iat: Date.now() - 10000,
+        sub: `user|${userId}`,
+      };
     });
 
     it('Will deserialize a user', async () => {
-      const userManager = new DefaultUserManager(mongoClient, Log);
       const req = createRequest({
         log: Log,
         userManager,
       });
-      const data = fakeUser();
-      const user = new DefaultUser(mongoClient, Log, data);
       const cb = jest.fn();
-      const getUser = jest
-        .spyOn(userManager, 'getUser')
-        .mockResolvedValue(user);
-
-      await deserializeUser(req, user.id, cb);
-
-      expect(getUser).toBeCalledWith(user.id);
+      await verifyJwtToken(req, payload, cb);
       expect(cb).toBeCalledWith(null, user);
     });
 
     it('Will fail to deserialize a user if the user ID cannot be found', async () => {
-      const userId = faker.datatype.uuid();
-      const userManager = new DefaultUserManager(mongoClient, Log);
+      const userManager = new Mock<UserManager>()
+        .setup((um) => um.getUser(user.id))
+        .returnsAsync(undefined)
+        .object();
       const req = createRequest({
         log: Log,
         userManager,
       });
       const cb = jest.fn();
-      const getUser = jest
-        .spyOn(userManager, 'getUser')
-        .mockResolvedValue(undefined);
-
-      await deserializeUser(req, userId, cb);
-
-      expect(getUser).toBeCalledWith(userId);
+      await verifyJwtToken(req, payload, cb);
       expect(cb).toBeCalledWith(null, false);
     });
 
     it('Will fail to deserialize a user if the account is locked', async () => {
-      const userManager = new DefaultUserManager(mongoClient, Log);
       const req = createRequest({
         log: Log,
         userManager,
       });
-      const data = fakeUser({ isLockedOut: true });
-      const user = new DefaultUser(mongoClient, Log, data);
       const cb = jest.fn();
-      const getUser = jest
-        .spyOn(userManager, 'getUser')
-        .mockResolvedValue(user);
+      await verifyJwtToken(
+        req,
+        { ...payload, sub: `user|${lockedUser.id}` },
+        cb,
+      );
+      expect(cb).toBeCalledWith(null, false);
+    });
 
-      await deserializeUser(req, user.id, cb);
+    it('Will fail if subject is missing from token', async () => {
+      const req = createRequest({
+        log: Log,
+        userManager,
+      });
+      const cb = jest.fn();
+      await verifyJwtToken(req, { ...payload, sub: '' }, cb);
+      expect(cb).toBeCalledWith(null, false);
+    });
 
-      expect(getUser).toBeCalledWith(user.id);
+    it('Will fail if subject is malformed in token', async () => {
+      const req = createRequest({
+        log: Log,
+        userManager,
+      });
+      const cb = jest.fn();
+      await verifyJwtToken(req, { ...payload, sub: 'nope!' }, cb);
       expect(cb).toBeCalledWith(null, false);
     });
 
     it('Will return an error if an exception is thrown while deserializing a user', async () => {
       const error = new Error('Oh noes!');
-      const userId = faker.datatype.uuid();
-      const userManager = new DefaultUserManager(mongoClient, Log);
+      const userManager = new Mock<UserManager>()
+        .setup((um) => um.getUser(It.IsAny<string>()))
+        .throwsAsync(error)
+        .object();
       const req = createRequest({
         log: Log,
         userManager,
       });
       const cb = jest.fn();
-      const getUser = jest
-        .spyOn(userManager, 'getUser')
-        .mockRejectedValue(error);
-
-      await deserializeUser(req, userId, cb);
-
-      expect(getUser).toBeCalledWith(userId);
+      await verifyJwtToken(req, payload, cb);
       expect(cb).toBeCalledWith(error);
     });
   });
+
+  it.todo('Test logging in with Google');
+  it.todo('Test logging in with Github');
 });

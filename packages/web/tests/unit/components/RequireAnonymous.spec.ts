@@ -5,7 +5,7 @@ import { createStore } from '@/store';
 import { initialStoreState } from '../../fixtures/store-state';
 import RequireAnonymous from '@/components/RequireAnonymous.vue';
 import { StoreKey } from '@/injection-keys';
-import { User } from '@/users';
+import { User } from '@/client/users';
 
 describe('RequireAnonymous component', () => {
   it('Will render content if user is anonymous', () => {

@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixture';
 
-test('Go to Signup Page', async ({ app, page }) => {
+test('Go to Signup Page', async ({ page }) => {
   await page.goto('/signup');
 
   const username = 'Rocky_B';
@@ -30,4 +30,8 @@ test('Go to Signup Page', async ({ app, page }) => {
 
   const user = await Users.findOne({ username });
   expect(user).toBeDefined();
+});
+
+test.afterAll(async ({ app }) => {
+  await app.purgeDatabase();
 });

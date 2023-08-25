@@ -1,9 +1,9 @@
 import { Express } from 'express';
-import Joi from 'joi';
 import Logger from 'bunyan';
 import { NextFunction, Request, Response } from 'express';
+import { z } from 'zod';
 
-import { SortOrder, UserRole } from '../../constants';
+import { UserRole } from '../../constants';
 import {
   ForbiddenError,
   MissingResourceError,
@@ -11,12 +11,12 @@ import {
 } from '../../errors';
 import { assertValid } from '../../helpers/validation';
 import {
+  CreateUserOptions,
   CreateUserOptionsSchema,
   PasswordStrengthSchema,
-  RoleSchema,
+  SearchUsersOptions,
+  SearchUsersOptionsSchema,
   User,
-  UsernameSchema,
-  UsersSortBy,
 } from '../../users';
 import {
   MailClient,
@@ -25,33 +25,19 @@ import {
 } from '../../email';
 import { VerifyEmailTemplate } from '../../email/verify-email-template';
 import { requireAdmin, requireAuth } from './auth';
+import { issueAuthCookie } from '../jwt';
+import { UsernameSchema } from '../../data';
 
-const SearchUsersQuerySchema = Joi.object({
-  query: Joi.string(),
-  role: RoleSchema,
-  sortBy: Joi.string().valid(...Object.values(UsersSortBy)),
-  sortOrder: Joi.string().valid(...Object.values(SortOrder)),
-  skip: Joi.number().integer().min(0),
-  limit: Joi.number().integer().positive().max(200),
+const VerifyEmailBodySchema = z.object({
+  token: z.string().trim(),
 });
+type VerifyEmailParams = z.infer<typeof VerifyEmailBodySchema>;
 
-const VerifyEmailBodySchema = Joi.object({
-  token: Joi.string().required(),
-}).required();
-
-const ResetPasswordBodySchema = Joi.object({
-  token: Joi.string().trim().required(),
-  newPassword: PasswordStrengthSchema.required(),
-}).required();
-
-function loginUser(req: Request, user: User): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
-    req.login(user, (error) => {
-      if (error) reject(error);
-      else resolve();
-    });
-  });
-}
+const ResetPasswordBodySchema = z.object({
+  token: z.string().trim(),
+  newPassword: PasswordStrengthSchema,
+});
+type ResetPasswordParams = z.infer<typeof ResetPasswordBodySchema>;
 
 async function sendWelcomeEmail(
   mail: MailClient,
@@ -92,31 +78,27 @@ export async function createUser(
   next: NextFunction,
 ) {
   try {
-    assertValid(req.params.username, UsernameSchema.required());
-    const { parsed: options } = assertValid(
+    const { username } = req.params;
+    const options = assertValid<CreateUserOptions>(
       {
-        username: req.params.username,
+        username,
         ...req.body,
       },
       CreateUserOptionsSchema,
     );
 
-    if (options.role && options.role > UserRole.User) {
+    if (options.role && options.role !== UserRole.User) {
       const errorMessage =
         'Unable to create new user account with elevated privileges. Only authenticated admins are able to do that.';
       if (!req.user) {
-        next(new UnauthorizedError(errorMessage));
-        return;
+        throw new UnauthorizedError(errorMessage);
       }
-      if (req.user.role < UserRole.Admin) {
+      if (req.user.role !== UserRole.Admin) {
         throw new ForbiddenError(errorMessage);
       }
     }
 
-    const user = await req.userManager.createUser({
-      username: req.params.username,
-      ...options,
-    });
+    const user = await req.userManager.createUser(options);
 
     if (req.log.info()) {
       req.log.info('New user account created.', {
@@ -127,8 +109,7 @@ export async function createUser(
 
     // Sign in the new user if they are not currently logged in as someone else.
     if (!req.user) {
-      await loginUser(req, user);
-      await user.updateLastLogin();
+      await issueAuthCookie(user, res);
       req.log.info(
         `User has been logged into their newly-created account: "${user.username}"`,
       );
@@ -175,6 +156,7 @@ export async function loadUserAccount(
     next(error);
   }
 }
+
 export async function requestPasswordResetEmail(
   req: Request,
   res: Response,
@@ -250,12 +232,15 @@ export async function resetPassword(
   next: NextFunction,
 ) {
   try {
-    const {
-      parsed: { token, newPassword },
-    } = assertValid(req.body, ResetPasswordBodySchema);
-    const user = req.selectedUser!;
+    if (!req.selectedUser) {
+      throw new Error('No user profile loaded.');
+    }
 
-    const succeeded = await user.resetPassword(token, newPassword);
+    const { token, newPassword } = assertValid<ResetPasswordParams>(
+      req.body,
+      ResetPasswordBodySchema,
+    );
+    const succeeded = await req.selectedUser.resetPassword(token, newPassword);
 
     res.json({ succeeded });
   } catch (error) {
@@ -269,9 +254,12 @@ export async function searchUsers(
   next: NextFunction,
 ) {
   try {
-    const { parsed } = assertValid(req.query, SearchUsersQuerySchema);
+    const options = assertValid<SearchUsersOptions>(
+      req.query,
+      SearchUsersOptionsSchema,
+    );
 
-    const users = await req.userManager.searchUsers(parsed);
+    const users = await req.userManager.searchUsers(options);
     res.json({
       count: users.length,
       results: users.map((user) => user.toJSON()),
@@ -288,9 +276,10 @@ export async function verifyEmail(
 ) {
   try {
     const user = req.selectedUser!;
-    const {
-      parsed: { token },
-    } = assertValid(req.body, VerifyEmailBodySchema);
+    const { token } = assertValid<VerifyEmailParams>(
+      req.body,
+      VerifyEmailBodySchema,
+    );
 
     const verified = await user.verifyEmail(token);
 

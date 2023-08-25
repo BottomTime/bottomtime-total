@@ -1,5 +1,5 @@
 import { Collection } from 'mongodb';
-import { Collections, TankDocument } from '../../../src/data';
+import { Collections, TankDocument, TankSchema } from '../../../src/data';
 import { createTestLogger } from '../../test-logger';
 import { fakeTank } from '../../fixtures/fake-tank';
 import { mongoClient } from '../../mongo-client';
@@ -12,6 +12,7 @@ import {
 import { ValidationError } from '../../../src/errors';
 
 import PreDefinedTanks from '../../fixtures/pre-defined-tanks.json';
+import { TankMaterial } from '../../../src/constants';
 
 const Log = createTestLogger('pre-defined-tank-manager');
 
@@ -45,7 +46,7 @@ describe('Pre-Defined Tank Manager', () => {
   it('Will throw a validation error when creating a tank with invalid options', async () => {
     const options: TankData = {
       name: 'Tank',
-      material: 'unobtainium',
+      material: TankMaterial.Aluminum,
       volume: 12.0,
       workingPressure: -37.5,
     };
@@ -72,7 +73,9 @@ describe('Pre-Defined Tank Manager', () => {
   });
 
   it('Will list the predefined tanks, ordered by name', async () => {
-    await Tanks.insertMany(PreDefinedTanks);
+    await Tanks.insertMany(
+      PreDefinedTanks.map((tank) => TankSchema.parse(tank)),
+    );
     await expect(tankManager.listTanks()).resolves.toMatchSnapshot();
   });
 });

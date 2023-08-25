@@ -1,29 +1,56 @@
-export const UsersSortBy = {
-  Username: 'username',
-  MemberSince: 'memberSince',
-} as const;
+import { z } from 'zod';
+import {
+  DepthUnit,
+  PressureUnit,
+  ProfileVisibility,
+  SortOrder,
+  TemperatureUnit,
+  UserRole,
+  WeightUnit,
+} from '../constants';
+import { ProfileSchema, UsernameSchema } from '../data';
 
-export const FriendsSortBy = {
-  ...UsersSortBy,
-  FriendsSince: 'friendsSince',
-} as const;
-
-export interface SearchUsersOptions {
-  query?: string;
-  role?: number;
-  profileVisibleTo?: 'public' | string;
-  skip?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: string;
+export enum UsersSortBy {
+  Username = 'username',
+  MemberSince = 'memberSince',
 }
 
-export interface ListFriendsOptions {
-  skip?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: string;
+export enum FriendsSortBy {
+  Username = 'username',
+  MemberSince = 'memberSince',
+  FriendsSince = 'friendsSince',
 }
+
+export const EmailSchema = z.string().trim().email().max(50);
+export const PasswordStrengthSchema = z
+  .string()
+  .regex(
+    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/,
+    'Password did not meet strength requirements.',
+  );
+
+export const SearchUsersOptionsSchema = z
+  .object({
+    query: z.string().trim(),
+    role: z.nativeEnum(UserRole),
+    profileVisibleTo: z.union([z.literal('public'), UsernameSchema]),
+    sortBy: z.nativeEnum(UsersSortBy),
+    sortOrder: z.nativeEnum(SortOrder),
+    skip: z.coerce.number().int().min(0),
+    limit: z.coerce.number().int().positive().max(200),
+  })
+  .partial();
+export type SearchUsersOptions = z.infer<typeof SearchUsersOptionsSchema>;
+
+export const ListFriendsOptionsSchema = z
+  .object({
+    sortBy: z.nativeEnum(FriendsSortBy),
+    sortOrder: z.nativeEnum(SortOrder),
+    skip: z.number().int().min(0),
+    limit: z.number().int().positive().max(200),
+  })
+  .partial();
+export type ListFriendsOptions = z.infer<typeof ListFriendsOptionsSchema>;
 
 export interface ProfileCertificationData {
   agency?: string;
@@ -35,12 +62,12 @@ export interface ProfileData {
   avatar?: string;
   bio?: string;
   birthdate?: string;
-  customData?: unknown;
+  customData?: Record<string, unknown>;
   certifications?: ProfileCertificationData[];
   experienceLevel?: string;
   location?: string;
   name?: string;
-  profileVisibility: string;
+  profileVisibility: ProfileVisibility;
   startedDiving?: string;
 }
 
@@ -53,19 +80,20 @@ export interface Profile extends ProfileData {
   toJSON(): object;
 }
 
-export interface CreateUserOptions {
-  username: string;
-  email?: string;
-  password?: string;
-  role?: number;
-  profile?: ProfileData;
-}
+export const CreateUserOptionsSchema = z.object({
+  username: UsernameSchema,
+  email: EmailSchema.optional(),
+  password: PasswordStrengthSchema.optional(),
+  role: z.nativeEnum(UserRole).optional(),
+  profile: ProfileSchema.optional(),
+});
+export type CreateUserOptions = z.infer<typeof CreateUserOptionsSchema>;
 
 export interface UserSettingsData {
-  depthUnit: string;
-  pressureUnit: string;
-  temperatureUnit: string;
-  weightUnit: string;
+  depthUnit: DepthUnit;
+  pressureUnit: PressureUnit;
+  temperatureUnit: TemperatureUnit;
+  weightUnit: WeightUnit;
 }
 
 export interface UserSettings extends UserSettingsData {
@@ -95,7 +123,7 @@ export interface UserData {
   readonly lastPasswordChange?: Date;
   readonly isLockedOut: boolean;
   readonly memberSince: Date;
-  readonly role: number;
+  readonly role: UserRole;
 }
 
 export interface User extends UserData {
@@ -106,7 +134,7 @@ export interface User extends UserData {
 
   changeUsername(newUsername: string): Promise<void>;
   changeEmail(newEmail: string): Promise<void>;
-  changeRole(newRole: number): Promise<void>;
+  changeRole(newRole: UserRole): Promise<void>;
 
   requestEmailVerificationToken(): Promise<string>;
   verifyEmail(token: string): Promise<boolean>;

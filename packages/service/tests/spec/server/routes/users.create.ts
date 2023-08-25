@@ -1,5 +1,8 @@
+/* eslint-disable no-process-env */
 import { faker } from '@faker-js/faker';
 import { createMocks } from 'node-mocks-http';
+import jwt from 'jsonwebtoken';
+
 import { ProfileVisibility, UserRole } from '../../../../src/constants';
 import {
   ForbiddenError,
@@ -17,16 +20,37 @@ import { It, Mock, Times } from 'moq.ts';
 import { CreateUserOptions, UserManager } from '../../../../src/users';
 
 import AdminUser from '../../../fixtures/admin-user.json';
+import { UserSchema } from '../../../../src/data';
 
 const Log = createTestLogger('user-routes-create');
+const CookieName = 'bottomtime.test';
+const SessionSecret = 'kitty_cat';
 
 export default function () {
+  let oldProcess: object;
+
+  beforeAll(() => {
+    oldProcess = Object.assign({}, process.env);
+    Object.assign(process.env, {
+      BT_BASE_URL: 'http://localhost:8080/',
+      BT_SESSION_COOKIE_DOMAIN: 'https://dev.bottomti.me/',
+      BT_SESSION_COOKIE_NAME: CookieName,
+      BT_SESSION_SECRET: SessionSecret,
+      BT_SESSION_COOKIE_TTL: 9000,
+    });
+  });
+
   afterEach(() => {
     jest.useRealTimers();
   });
 
+  afterAll(() => {
+    Object.assign(process.env, oldProcess);
+  });
+
   it('Will create a new user based on the criteria', async () => {
     jest.useFakeTimers({
+      doNotFake: ['nextTick', 'setImmediate'],
       now: new Date('2023-04-05T11:33:14.961Z'),
     });
     const mail = new TestMailer();
@@ -43,7 +67,6 @@ export default function () {
     const data = fakeUser();
     const user = new DefaultUser(mongoClient, Log, data);
     const userManager = new DefaultUserManager(mongoClient, Log);
-    const login = jest.fn();
     const { req, res } = createMocks({
       log: Log,
       mail,
@@ -51,7 +74,6 @@ export default function () {
       userManager,
       body,
       params: { username },
-      login,
     });
     const expectedUser = new DefaultUser(
       mongoClient,
@@ -74,7 +96,6 @@ export default function () {
 
     await createUser(req, res, next);
 
-    expect(login).not.toBeCalled();
     expect(next).not.toBeCalled();
     expect(spy).toBeCalledWith({
       username,
@@ -85,6 +106,7 @@ export default function () {
     expect(res._getJSONData()).toEqual(
       JSON.parse(JSON.stringify(expectedUser)),
     );
+    expect(res.cookies).toEqual({});
 
     const [mailMessage] = mail.sentMail;
     expect(mailMessage.recipients).toEqual({ to: body.email });
@@ -100,17 +122,12 @@ export default function () {
       password: fakePassword(),
     };
     const userManager = new DefaultUserManager(mongoClient, Log);
-    const login = jest.fn().mockImplementation((user, cb) => {
-      expect(user).toBe(expectedUser);
-      cb();
-    });
     const { req, res } = createMocks({
       log: Log,
       mail,
       userManager,
       body,
       params: { username },
-      login,
     });
     const expectedUser = new DefaultUser(
       mongoClient,
@@ -134,7 +151,6 @@ export default function () {
     await createUser(req, res, next);
 
     expect(next).not.toBeCalled();
-    expect(login).toBeCalled();
     expect(spy).toBeCalledWith({
       username,
       ...body,
@@ -143,6 +159,18 @@ export default function () {
     expect(res._getStatusCode()).toBe(201);
     expect(res._getJSONData()).toEqual(
       JSON.parse(JSON.stringify(expectedUser)),
+    );
+
+    expect(res.cookies[CookieName]).toBeDefined();
+    jwt.verify(
+      res.cookies[CookieName].value,
+      SessionSecret,
+      {},
+      (err, payload) => {
+        expect(err).toBeNull();
+        expect(payload).toBeDefined();
+        expect(payload!.sub).toEqual(`user|${expectedUser.id}`);
+      },
     );
   });
 
@@ -167,32 +195,6 @@ export default function () {
     await createUser(req, res, next);
 
     expect(login).not.toBeCalled();
-    expect(next).toBeCalledWith(error);
-    expect(res._isEndCalled()).toBe(false);
-  });
-
-  it('Will return an error if an exception is thrown while logging in a user', async () => {
-    const error = new Error('Nope');
-    const userManager = new DefaultUserManager(mongoClient, Log);
-    const expectedUser = new DefaultUser(mongoClient, Log, fakeUser());
-    const login = jest.fn().mockImplementation((user, cb) => {
-      expect(user).toBe(expectedUser);
-      cb(error);
-    });
-    const { req, res } = createMocks({
-      log: Log,
-      userManager,
-      params: {
-        username: faker.internet.userName(),
-      },
-      login,
-    });
-    jest.spyOn(userManager, 'createUser').mockResolvedValue(expectedUser);
-    const next = jest.fn();
-
-    await createUser(req, res, next);
-
-    expect(login).toBeCalled();
     expect(next).toBeCalledWith(error);
     expect(res._isEndCalled()).toBe(false);
   });
@@ -255,7 +257,7 @@ export default function () {
     });
   });
 
-  it('Will allow a an admin to create an account with elevated privileges', async () => {
+  it('Will allow an admin to create an account with elevated privileges', async () => {
     const admin = new DefaultUser(
       mongoClient,
       Log,
@@ -263,11 +265,11 @@ export default function () {
         role: UserRole.Admin,
       }),
     );
-    const newUser = new DefaultUser(mongoClient, Log, {
-      ...AdminUser,
-      memberSince: new Date(AdminUser.memberSince),
-      lastLogin: new Date(AdminUser.lastLogin),
-    });
+    const newUser = new DefaultUser(
+      mongoClient,
+      Log,
+      UserSchema.parse(AdminUser),
+    );
     const userManager = new Mock<UserManager>()
       .setup((instance) => instance.createUser(It.IsAny<CreateUserOptions>()))
       .returnsAsync(newUser)
@@ -300,11 +302,11 @@ export default function () {
   });
 
   it('Will not allow anonymous users to create an account with elevated privileges', async () => {
-    const newUser = new DefaultUser(mongoClient, Log, {
-      ...AdminUser,
-      memberSince: new Date(AdminUser.memberSince),
-      lastLogin: new Date(AdminUser.lastLogin),
-    });
+    const newUser = new DefaultUser(
+      mongoClient,
+      Log,
+      UserSchema.parse(AdminUser),
+    );
     const userManagerMock = new Mock<UserManager>();
     const userManager = userManagerMock.object();
     const mail = new TestMailer();
@@ -337,13 +339,13 @@ export default function () {
     expect(mail.sentMail).toHaveLength(0);
   });
 
-  it('Will not allow non administrators to create an account with elevated privileges', async () => {
+  it('Will not allow non-administrators to create an account with elevated privileges', async () => {
     const user = new DefaultUser(mongoClient, Log, fakeUser());
-    const newUser = new DefaultUser(mongoClient, Log, {
-      ...AdminUser,
-      memberSince: new Date(AdminUser.memberSince),
-      lastLogin: new Date(AdminUser.lastLogin),
-    });
+    const newUser = new DefaultUser(
+      mongoClient,
+      Log,
+      UserSchema.parse(AdminUser),
+    );
     const userManagerMock = new Mock<UserManager>();
     const userManager = userManagerMock.object();
     const mail = new TestMailer();

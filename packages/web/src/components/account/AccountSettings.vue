@@ -44,7 +44,7 @@ import {
   PressureUnitOptions,
   TemperatureUnitOptions,
   WeightUnitOptions,
-} from '@/units';
+} from '@/constants';
 import HorizontalFormField from '@/components/forms/HorizontalFormField.vue';
 import RadioGroup from '../forms/RadioGroup.vue';
 

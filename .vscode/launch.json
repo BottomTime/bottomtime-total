@@ -1,14 +1,44 @@
 {
-  "version": "0.2.0",
+  "version": "1.0.0",
   "configurations": [
     {
-      "cwd": "${workspaceFolder}/packages/web/",
+      "type": "node",
+      "cwd": "${workspaceFolder}/packages/service/",
+      "request": "launch",
+      "name": "Debug Jest tests in current file",
+      "env": { "NODE_ENV": "test" },
+      "program": "${workspaceFolder}/packages/service/node_modules/.bin/jest",
+      "args": ["${fileBasenameNoExtension}", "--config", "jest.config.ts"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/packages/service/node_modules/jest/bin/jest"
+      }
+    },
+    {
+      "type": "node",
+      "cwd": "${workspaceFolder}/packages/service/",
+      "request": "launch",
+      "name": "Debug all Jest tests",
+      "env": { "NODE_ENV": "test" },
+      "program": "${workspaceFolder}/packages/service/node_modules/.bin/jest",
+      "args": ["--config", "jest.config.ts"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/packages/service/node_modules/jest/bin/jest"
+      }
+    },
+    {
+      "name": "Debug Vue tests",
       "type": "node",
       "request": "launch",
-      "name": "Debug ",
-      "runtimeExecutable": "yarn",
-      "runtimeArgs": ["test:debug", "${file}"],
-      "port": 9229
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/packages/web/node_modules/.bin/vue-cli-service",
+        "test:unit",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/packages/web/"
     }
   ]
 }

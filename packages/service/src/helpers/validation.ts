@@ -1,37 +1,35 @@
-import { Schema } from 'joi';
+import { ZodTypeAny } from 'zod';
 
 import { ValidationError, ValidationResult } from '../errors';
 
-export function isValid(data: any, schema: Schema): ValidationResult {
-  const result = schema.validate(data, {
-    abortEarly: false,
-    stripUnknown: true,
-  });
-  if (result.error) {
+export function isValid<T>(data: any, schema: ZodTypeAny): ValidationResult<T> {
+  const result = schema.safeParse(data);
+
+  if (result.success) {
     return {
-      isValid: false,
-      errors: result.error.details.map((details) => ({
-        message: details.message,
-        path: details.path.map((element) => element.toString()).join('.'),
-      })),
+      isValid: true,
+      parsed: result.data,
     };
   }
 
   return {
-    isValid: true,
-    parsed: result.value,
+    isValid: false,
+    errors: result.error.errors.map((error) => ({
+      message: error.message,
+      path: error.path.map((element) => element.toString()).join('.'),
+    })),
   };
 }
 
-export function assertValid(
+export function assertValid<T>(
   data: any,
-  schema: Schema,
+  schema: ZodTypeAny,
   message?: string,
-): ValidationResult {
-  const result = isValid(data, schema);
-  if (!result.isValid) {
+): T {
+  const result = isValid<T>(data, schema);
+  if (!result.isValid || !result.parsed) {
     throw new ValidationError(message ?? 'Validation failed', result.errors);
   }
 
-  return result;
+  return result.parsed;
 }

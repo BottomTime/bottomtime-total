@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Auth Routes Creating JWT cookie Will issue a cookie for the user 1`] = `
+{
+  "bottomtime.platform.dev": {
+    "options": {
+      "domain": "https://dev.bottomti.me",
+      "expires": 2023-07-26T20:38:21.959Z,
+      "httpOnly": true,
+      "sameSite": "strict",
+      "secure": false,
+      "signed": false,
+    },
+    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvIiwic3ViIjoidXNlcnxlYzRmYzBlMC1kNThhLTQ4MTQtYjkwNS00MzM5NGUzN2QwMmYiLCJleHAiOjE2OTA0MDM5MDE5NTksImlhdCI6MTY5MDM5ODUwMTk1OX0.vcgz2tr1bUAatxEO34pEjAFUdrw3zPQmYlRZy19WEbM",
+  },
+}
+`;
+
+exports[`Auth Routes Creating JWT cookie Will return an error if no user is signed in 1`] = `
+[
+  [Error: Attempted to generate a user token but no user is logged in!],
+]
+`;
+
+exports[`Auth Routes Logging Out Will remove session cookie and redirect user back to home page 1`] = `
+{
+  "bottomtime.platform": {
+    "options": {
+      "expires": 1970-01-01T00:00:00.001Z,
+      "path": "/",
+    },
+    "value": "",
+  },
+}
+`;
+
+exports[`Auth Routes Updating user last login and redirecting to home page Will return an error if no user is logged in 1`] = `
+[
+  [Error: User is not currently signed in!],
+]
+`;

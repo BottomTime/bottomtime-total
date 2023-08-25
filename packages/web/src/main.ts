@@ -4,25 +4,21 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import request from 'superagent';
 
 import App from './App.vue';
-import { DefaultUserManager } from './users/default-user-manager';
 import router from './router';
 import { createStore } from './store';
-import {
-  StoreKey,
-  UserManagerKey,
-  WithErrorHandlingKey,
-} from './injection-keys';
+import { ApiClientKey, StoreKey, WithErrorHandlingKey } from './injection-keys';
 import { createErrorHandler } from './helpers';
+import { SuperAgentClient } from './client/superagent-client';
 
 dayjs.extend(relativeTime);
 
 const agent = request.agent();
-const userManager = new DefaultUserManager(agent);
+const apiClient = new SuperAgentClient(agent);
 const store = createStore();
 const withErrorHandling = createErrorHandler(store);
 
 createApp(App)
-  .provide(UserManagerKey, userManager)
+  .provide(ApiClientKey, apiClient)
   .provide(WithErrorHandlingKey, withErrorHandling)
   .use(store, StoreKey)
   .use(router)

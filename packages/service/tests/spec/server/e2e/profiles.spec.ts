@@ -3,6 +3,7 @@ import { Express } from 'express';
 import request, { SuperAgentTest } from 'supertest';
 
 import { Collections, UserDocument } from '../../../../src/data';
+import { createAuthHeader } from '../../../utils/jwt';
 import { createTestLogger } from '../../../test-logger';
 import { createTestServer } from '../../../test-app';
 import {
@@ -35,22 +36,17 @@ describe('Profiles End-To-End Tests', () => {
   it("Will retrieve and update a user's profile", async () => {
     const password = fakePassword();
     const user = fakeUser({}, password);
+    const authHeader = await createAuthHeader(user._id);
     const extraFields = {
       memberSince: user.memberSince.toISOString(),
       userId: user._id,
       username: user.username,
     } as const;
     await Users.insertOne(user);
-    await agent
-      .post('/auth/login')
-      .send({
-        usernameOrEmail: user.username,
-        password,
-      })
-      .expect(200);
 
     const { body: profileData } = await agent
       .get(`/profiles/${user.username}`)
+      .set(...authHeader)
       .expect(200);
 
     expect(profileData).toEqual({
@@ -61,11 +57,13 @@ describe('Profiles End-To-End Tests', () => {
     const updatedProfile = fakeProfile();
     await agent
       .put(`/profiles/${user.username}`)
+      .set(...authHeader)
       .send(updatedProfile)
       .expect(200);
 
     const { body: updatedProfileData } = await agent
       .get(`/profiles/${user.username}`)
+      .set(...authHeader)
       .expect(200);
     expect(updatedProfileData).toEqual({
       ...updatedProfile,
@@ -75,6 +73,7 @@ describe('Profiles End-To-End Tests', () => {
     const location = 'Atlantis';
     await agent
       .patch(`/profiles/${user.username}`)
+      .set(...authHeader)
       .send({
         location,
       })
@@ -88,19 +87,13 @@ describe('Profiles End-To-End Tests', () => {
   });
 
   it('Will return a 404 if a profile is not found', async () => {
-    const password = fakePassword();
-    const user = fakeUser({}, password);
+    const user = fakeUser();
+    const authHeader = await createAuthHeader(user._id);
     await Users.insertOne(user);
-
     await agent
-      .post('/auth/login')
-      .send({
-        usernameOrEmail: user.username,
-        password,
-      })
-      .expect(200);
-
-    await agent.get('/profiles/nosuchuser23').expect(404);
+      .get('/profiles/nosuchuser23')
+      .set(...authHeader)
+      .expect(404);
   });
 
   it('Will prevent users from viewing private profiles', async () => {
@@ -112,18 +105,17 @@ describe('Profiles End-To-End Tests', () => {
     const friendsOnlyUser = fakeUser({
       profile: { profileVisibility: ProfileVisibility.FriendsOnly },
     });
+    const authHeader = await createAuthHeader(currentUser._id);
     await Users.insertMany([currentUser, privateUser, friendsOnlyUser]);
 
     await agent
-      .post('/auth/login')
-      .send({
-        usernameOrEmail: currentUser.username,
-        password,
-      })
-      .expect(200);
-
-    await agent.get(`/profiles/${privateUser.username}`).expect(404);
-    await agent.get(`/profiles/${friendsOnlyUser.username}`).expect(404);
+      .get(`/profiles/${privateUser.username}`)
+      .set(...authHeader)
+      .expect(404);
+    await agent
+      .get(`/profiles/${friendsOnlyUser.username}`)
+      .set(...authHeader)
+      .expect(404);
   });
 
   it("Will prevent users from modifying each other's profiles", async () => {
@@ -136,6 +128,7 @@ describe('Profiles End-To-End Tests', () => {
     const profileData = fakeProfile();
     const privteProfileRoute = `/profiles/${privateUser.username}`;
     const publicProfileRoute = `/profiles/${publicUser.username}`;
+    const authHeader = await createAuthHeader(currentUser._id);
     await Users.insertMany([currentUser, privateUser]);
 
     // Anonymous user...
@@ -146,17 +139,25 @@ describe('Profiles End-To-End Tests', () => {
 
     // Authenticated user
     await agent
-      .post('/auth/login')
-      .send({
-        usernameOrEmail: currentUser.username,
-        password,
-      })
-      .expect(200);
-
-    await agent.post(privteProfileRoute).send(profileData).expect(404);
-    await agent.patch(privteProfileRoute).send(profileData).expect(404);
-    await agent.post(publicProfileRoute).send(profileData).expect(404);
-    await agent.patch(publicProfileRoute).send(profileData).expect(404);
+      .post(privteProfileRoute)
+      .set(...authHeader)
+      .send(profileData)
+      .expect(404);
+    await agent
+      .post(privteProfileRoute)
+      .set(...authHeader)
+      .send(profileData)
+      .expect(404);
+    await agent
+      .post(privteProfileRoute)
+      .set(...authHeader)
+      .send(profileData)
+      .expect(404);
+    await agent
+      .post(privteProfileRoute)
+      .set(...authHeader)
+      .send(profileData)
+      .expect(404);
   });
 
   it('Will allow profile searches', async () => {
