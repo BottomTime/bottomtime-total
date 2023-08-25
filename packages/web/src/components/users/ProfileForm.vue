@@ -27,11 +27,11 @@
     </nav>
 
     <FormField label="Name" control-id="name">
-      <TextBox id="name" v-model.trim="data.name" />
+      <TextBox id="name" v-model.trim="data.name" :maxlength="100" />
     </FormField>
 
     <FormField label="Location" control-id="location">
-      <TextBox id="location" v-model.trim="data.location" />
+      <TextBox id="location" v-model.trim="data.location" :maxlength="200" />
     </FormField>
 
     <FormField label="Experience level" control-id="experienceLevel">
@@ -64,12 +64,14 @@
 
     <div class="field is-grouped is-grouped-centered">
       <div class="control">
-        <button class="button is-primary" @click="saveChanges">
+        <button id="btn-save" class="button is-primary" @click="saveChanges">
           Save Changes
         </button>
       </div>
       <div class="control">
-        <button class="button" @click="discardChanges">Cancel</button>
+        <button id="btn-cancel" class="button" @click="discardChanges">
+          Cancel
+        </button>
       </div>
     </div>
   </form>

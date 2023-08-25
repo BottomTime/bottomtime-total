@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixture';
 
-test('Go to Signup Page', async ({ page }) => {
+test('As a user, I can sign up to use the app', async ({ app, page }) => {
   await page.goto('/signup');
 
   const username = 'Rocky_B';
@@ -24,6 +24,12 @@ test('Go to Signup Page', async ({ page }) => {
 
   await page.goto('/profile');
   await expect(page.locator('input#name')).toHaveValue(name);
+
+  const mongoClient = await app.mongoClient();
+  const Users = mongoClient.db().collection<{ _id: string }>('Users');
+
+  const user = await Users.findOne({ username });
+  expect(user).toBeDefined();
 });
 
 test.afterAll(async ({ app }) => {

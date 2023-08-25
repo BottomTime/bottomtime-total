@@ -10,7 +10,7 @@ const UserData = {
   usernameLowered: 'rickyb_26',
   email: 'ShakeNBake@gmail.org',
   emailLowered: 'shakenbake@gmail.org',
-  passwordHash: '$2b$04$Jj5IQ1ZN30d7MUcSAOFXX.YM9x8JMPjfglPvSD6vjY6T8Dd0pkbSO',
+  passwordHash: '$2b$04$Jj5IQ1ZN30d7MUcSAOFXX.YM9x8JMPjfglPvSD6vjY6T8Dd0pkbSO', // Password1
   lastLogin: new Date('2023-04-28T23:30:44.008Z'),
   profile: {
     profileVisibility: 'private',
@@ -18,7 +18,7 @@ const UserData = {
   },
 };
 
-test('Will log a user into their account with username and password', async ({
+test('As a user, I can log into my account with a password', async ({
   app,
   page,
 }) => {

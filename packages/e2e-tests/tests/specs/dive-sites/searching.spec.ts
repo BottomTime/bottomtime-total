@@ -12,10 +12,10 @@ import {
 import SiteCreatorData from '@tests/fixtures/dive-site-creators.json';
 import DiveSiteData from '@tests/fixtures/dive-sites.json';
 
-test.describe('Searching dive sites', () => {
-  let DiveSites: Collection<DiveSiteDocument>;
-  let Users: Collection<UserDocument>;
+let DiveSites: Collection<DiveSiteDocument>;
+let Users: Collection<UserDocument>;
 
+test.describe('Dive sites:', () => {
   test.beforeAll(async ({ app }) => {
     const client = await app.mongoClient();
     const db = client.db();
@@ -39,7 +39,9 @@ test.describe('Searching dive sites', () => {
     await app.purgeDatabase();
   });
 
-  test('Will display a list of sites on page load', async ({ page }) => {
+  test('As a user, I can navigate to the dive sites page and see a list of sites', async ({
+    page,
+  }) => {
     const expected = [
       'Ignorant Coyote',
       'Ethical Savings',
@@ -100,7 +102,7 @@ test.describe('Searching dive sites', () => {
     expect(sites).toEqual(expected);
   });
 
-  test('Will perform a text search', async ({ page }) => {
+  test('As a user, I can perform a text search', async ({ page }) => {
     const expected = [
       'Biodegradable Chassis',
       'Unwieldy Optimal',
@@ -119,7 +121,7 @@ test.describe('Searching dive sites', () => {
     expect(sites).toEqual(expected);
   });
 
-  test('Will display a message if no dive sites can be found', async ({
+  test('As a user, I will be informed if my search yields no results', async ({
     page,
   }) => {
     await page.goto('/diveSites');
