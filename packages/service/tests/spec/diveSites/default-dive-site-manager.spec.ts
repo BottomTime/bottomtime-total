@@ -24,10 +24,10 @@ import { fakeUser } from '../../fixtures/fake-user';
 import { mongoClient } from '../../mongo-client';
 import { Profile, User } from '../../../src/users';
 import { ValidationError } from '../../../src/errors';
+import { SortOrder } from '../../../src/constants';
 
 import DiveSiteCreators from '../../fixtures/dive-site-creators.json';
 import DiveSites from '../../fixtures/dive-sites.json';
-import { SortOrder } from '../../../src/constants';
 
 const log = createTestLogger('default-dive-site-manager');
 jest.mock('uuid');
@@ -157,15 +157,7 @@ describe('Default Dive Site Manager', () => {
       diveSiteCreators = DiveSiteCreators.map((creator) =>
         UserSchema.parse(creator),
       );
-
-      diveSites = DiveSites.map((site) => ({
-        ...site,
-        createdOn: new Date(site.createdOn),
-        updatedOn: site.updatedOn ? new Date(site.updatedOn) : undefined,
-        gps: site.gps
-          ? (site.gps as { type: 'Point'; coordinates: [number, number] })
-          : undefined,
-      }));
+      diveSites = DiveSites.map((site) => DiveSiteSchema.parse(site));
     });
 
     beforeEach(async () => {
@@ -246,9 +238,11 @@ describe('Default Dive Site Manager', () => {
       expect(sites.length).toBeGreaterThan(0);
       for (const site of sites) {
         await expect(site.getCreator()).resolves.toEqual({
+          avatar: diveSiteCreators[0].profile!.avatar,
           displayName: diveSiteCreators[0].profile!.name,
           id: diveSiteCreators[0]._id,
           username: diveSiteCreators[0].username,
+          memberSince: diveSiteCreators[0].memberSince,
         });
       }
     });

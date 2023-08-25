@@ -67,6 +67,7 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
 
     const site = new DefaultDiveSite(this.mongoClient, this.log, data, {
       id: creator.id,
+      memberSince: creator.memberSince,
       username: creator.username,
       displayName: creator.profile?.name ?? creator.username,
     });
@@ -199,6 +200,8 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
         projection: {
           _id: 1,
           username: 1,
+          memberSince: 1,
+          'profile.avatar': 1,
           'profile.name': 1,
         },
       },
@@ -206,7 +209,9 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
 
     if (creator) {
       return {
+        avatar: creator.profile?.avatar,
         id: creator._id,
+        memberSince: creator.memberSince,
         username: creator.username,
         displayName: creator.profile?.name ?? username,
       };
@@ -228,6 +233,8 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
         projection: {
           _id: true,
           username: true,
+          memberSince: true,
+          'profile.avatar': true,
           'profile.name': true,
         },
       },
@@ -236,7 +243,9 @@ export class DefaultDiveSiteManager implements DiveSiteManager {
     const creators: DiveSiteCreatorTable = {};
     for await (const result of results) {
       creators[result._id] = {
+        avatar: result.profile?.avatar,
         id: result._id,
+        memberSince: result.memberSince,
         username: result.username,
         displayName: result.profile?.name ?? result.username,
       };

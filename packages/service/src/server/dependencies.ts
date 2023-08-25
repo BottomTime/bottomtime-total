@@ -3,6 +3,7 @@ import { createTransport } from 'nodemailer';
 import { MongoClient } from 'mongodb';
 
 import config from '../config';
+import { DefaultDiveSiteManager, DiveSiteManager } from '../diveSites';
 import { MailClient } from '../email';
 import { NodemailerClient } from '../email/nodemailer-client';
 import { UserManager } from '../users';
@@ -13,6 +14,7 @@ export interface ServerDependencies {
   log: bunyan;
   mail: MailClient;
   mongoClient: MongoClient;
+  diveSiteManager: DiveSiteManager;
   tankManager: TankManager;
   userManager: UserManager;
 }
@@ -42,6 +44,7 @@ export async function createDependencies(
   );
   const mongoClient = await MongoClient.connect(config.mongoUri);
 
+  const diveSiteManager = new DefaultDiveSiteManager(mongoClient, log);
   const tankManager = new PreDefinedTankManager(mongoClient, log);
   const userManager = new DefaultUserManager(mongoClient, log);
 
@@ -49,6 +52,7 @@ export async function createDependencies(
     log,
     mail,
     mongoClient,
+    diveSiteManager,
     tankManager,
     userManager,
   };

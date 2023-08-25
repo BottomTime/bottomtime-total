@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from '@/store';
 
 const AcceptedCookiesKey = 'cookies_accepted';

@@ -2,9 +2,9 @@
 import jwt from 'jsonwebtoken';
 import { MongoClient } from 'mongodb';
 
-export async function getUserToken(username: string) {
+export async function getUserToken(mongoUri: string, username: string) {
   const lowered = username.trim().toLowerCase();
-  const mongoClient = await MongoClient.connect(process.env.BT_MONGO_URI ?? '');
+  const mongoClient = await MongoClient.connect(mongoUri);
   const users = mongoClient.db().collection('Users');
   const user = await users.findOne({
     $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
@@ -29,6 +29,7 @@ export async function getUserToken(username: string) {
     });
     console.log(token);
   } else {
-    throw new Error(`User not found: "${username}"`);
+    console.error(`User not found: "${username}"`);
+    process.exit(1);
   }
 }

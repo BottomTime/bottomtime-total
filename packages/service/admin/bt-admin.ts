@@ -1,29 +1,26 @@
 #!/usr/bin/env ts-node-script
-/* eslint-disable no-console */
+
+/* eslint-disable no-console, no-process-env */
 import yargs from 'yargs';
-import { getUserToken } from './get-user-token';
+
+import { dbModule } from './database';
+import { userModule } from './users';
 
 import 'dotenv-defaults/config';
 
 async function processCommand(cmd: string[]) {
   await yargs(cmd)
     .version('1.0.0')
-    .command(
-      'token <user>',
-      'Gets a token for a user',
-      async (yargs) => {
-        return await yargs
-          .positional('user', {
-            demandOption: true,
-            description: "The user's username or email address.",
-            type: 'string',
-          })
-          .help();
-      },
-      async (yargs) => {
-        await getUserToken(yargs.user);
-      },
-    )
+    .option('mongo-uri', {
+      alias: 'm',
+      default:
+        process.env.BT_MONGO_URI ??
+        'mongodb://127.0.0.1:27017/bottomtime-local',
+      description: 'Set the MongoDB connection string',
+      type: 'string',
+    })
+    .command(dbModule)
+    .command(userModule)
     .help().argv;
 }
 

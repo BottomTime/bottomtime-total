@@ -557,13 +557,14 @@ paths:
                   allOf:
                     - $ref: '#/components/schemas/ProfileData'
                 role:
-                  type: integer
+                  type: string
                   format: int32
                   description: |
                     The role to assign to the new account.
-                    * 100 = regular user.
-                    * 200 = administrator.
-                  example: 100
+                  example: user
+                  enum:
+                    - user
+                    - admin
       responses:
         201:
           description: |
@@ -793,16 +794,13 @@ paths:
                 - newRole
               properties:
                 newRole:
-                  type: integer
-                  format: int32
+                  type: string
                   description: |
                     The new role to assign to the user's account.
-
-                    * 100 = Regular user
-                    * 200 = Administrator
+                  example: user
                   enum:
-                    - 100
-                    - 200
+                    - user
+                    - admin
       responses:
         204:
           description: The role was updated successfully.
@@ -1291,6 +1289,20 @@ paths:
             type: string
             example: '20.3460942599771,-87.0260668489514'
         - in: query
+          name: radius
+          description: |
+            The search radius (in kilometers) around `location` for which
+            results will be returned.
+
+            The `radius` parameter will be ignored if the `location` parameter
+            is omitted.
+          schema:
+            type: number
+            format: float
+            minimum: 0
+            maximum: 500.0
+            default: 50.0
+        - in: query
           name: freeToDive
           description: |
             Filters results to show either free-to-dive sites or sites with
@@ -1311,20 +1323,6 @@ paths:
           schema:
             type: boolean
         - in: query
-          name: radius
-          description: |
-            The search radius (in kilometers) around `location` for which
-            results will be returned.
-
-            The `radius` parameter will be ignored if the `location` parameter
-            is omitted.
-          schema:
-            type: number
-            format: float
-            minimum: 0
-            maximum: 500.0
-            default: 50.0
-        - in: query
           name: sortBy
           description: |
             Indicates the field on which the results should be sorted.
@@ -1333,7 +1331,7 @@ paths:
             enum:
               - name
               - rating
-            default: name
+            default: rating
         - in: query
           name: sortOrder
           description: |
@@ -1344,7 +1342,7 @@ paths:
             enum:
               - asc
               - desc
-            default: asc
+            default: desc
         - in: query
           name: skip
           description: |
@@ -2156,13 +2154,12 @@ components:
         profile:
           $ref: '#/components/schemas/Profile'
         role:
-          type: integer
-          format: int32
-          description: The user's security role. 100 = normal user. 200 = admin user.
-          example: 100
+          type: string
+          description: The user's security role.
+          example: user
           enum:
-            - 100
-            - 200
+            - user
+            - admin
         username:
           type: string
           description: The user's unique username. This is used for logging in and for retrieving account information.
@@ -2304,6 +2301,7 @@ components:
             - id
             - username
             - displayName
+            - memberSince
           description: |
             Some basic info on the user who created the dive site record.
           properties:
@@ -2311,6 +2309,14 @@ components:
               type: string
               format: uuid
               description: The unique ID of the user.
+            avatar:
+              type: string
+              format: url
+              description: A URL to the creator's avatar image.
+            memberSince:
+              type: string
+              format: date-time
+              description: The date and time when the user's account was created.
             username:
               type: string
               example: SamTheMan87
@@ -2370,6 +2376,32 @@ components:
             The location of the dive site. (City, country, address, etc.)
           example: |
             Cozumel, Mexico
+        description:
+          type: string
+          example: 'This site is amazing! What a beautiful reef!'
+          maxLength: 2000
+          description: |
+            A user-editable description of the dive site.
+        depth:
+          type: object
+          description: |
+            The maximum depth of the dive site. A value of `0` is taken to
+            mean "bottomless".
+          required:
+            - depth
+            - unit
+          properties:
+            depth:
+              type: number
+              format: float
+              minimum: 0
+              example: 28.2
+            unit:
+              type: string
+              enum:
+                - 'm'
+                - 'ft'
+              example: 'm'
         freeToDive:
           type: boolean
           description: |
@@ -2398,12 +2430,6 @@ components:
                 necessary.
               example: |
                 Take a boat to the indicated GPS coordinates.
-            description:
-              type: string
-              example: 'This site is amazing! What a beautiful reef!'
-              maxLength: 2000
-              description: |
-                A user-editable description of the dive site.
             gps:
               type: object
               description: The GPS coordinates of the dive site.

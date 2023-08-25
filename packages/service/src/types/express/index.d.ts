@@ -1,3 +1,4 @@
+import { DiveSite, DiveSiteManager } from '../../diveSites';
 import Logger from 'bunyan';
 import { MailClient } from '../../email';
 import { Tank, TankManager } from '../../tanks';
@@ -15,11 +16,17 @@ declare global {
       /** A unique ID for the current request. */
       requestId: string;
 
+      /** For dive site routes, this will be set to the dive site specified in the path. */
+      selectedDiveSite?: DiveSite;
+
       /** For tank routes, this will be set to the pre-defined tank profile specified in the path. */
       selectedTank?: Tank;
 
       /** For user routes, this will be set to the user account specified in the path. */
       selectedUser?: User;
+
+      /** A {@link DiveSiteManager} that can be used to search for and manage dive sites. */
+      diveSiteManager: DiveSiteManager;
 
       /** A {@link TankManager} that can be used to access and manage pre-defined scuba tank profiles. */
       tankManager: TankManager;

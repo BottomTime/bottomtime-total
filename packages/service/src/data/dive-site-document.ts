@@ -1,3 +1,4 @@
+import { DepthSchema } from '../common';
 import { z } from 'zod';
 
 export const DiveSiteReviewSchema = z.object({
@@ -22,6 +23,7 @@ export const DiveSiteSchema = z.object({
 
   name: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000).optional(),
+  depth: DepthSchema.optional(),
 
   location: z.string().trim().min(1).max(200),
   directions: z.string().trim().max(500).optional(),

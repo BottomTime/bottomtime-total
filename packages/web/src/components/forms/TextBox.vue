@@ -24,15 +24,7 @@
 
 <script lang="ts" setup>
 import { ErrorObject } from '@vuelidate/core';
-import {
-  computed,
-  defineEmits,
-  defineExpose,
-  defineProps,
-  onMounted,
-  ref,
-  withDefaults,
-} from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { TextBoxSize } from '@/constants';
 
 interface TextBoxProps {

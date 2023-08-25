@@ -1,8 +1,8 @@
-import { ZodType } from 'zod';
+import { ZodTypeAny } from 'zod';
 
 import { ValidationError, ValidationResult } from '../errors';
 
-export function isValid<T>(data: any, schema: ZodType<T>): ValidationResult<T> {
+export function isValid<T>(data: any, schema: ZodTypeAny): ValidationResult<T> {
   const result = schema.safeParse(data);
 
   if (result.success) {
@@ -23,10 +23,10 @@ export function isValid<T>(data: any, schema: ZodType<T>): ValidationResult<T> {
 
 export function assertValid<T>(
   data: any,
-  schema: ZodType<T>,
+  schema: ZodTypeAny,
   message?: string,
 ): T {
-  const result = isValid(data, schema);
+  const result = isValid<T>(data, schema);
   if (!result.isValid || !result.parsed) {
     throw new ValidationError(message ?? 'Validation failed', result.errors);
   }

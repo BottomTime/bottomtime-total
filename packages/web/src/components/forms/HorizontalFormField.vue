@@ -12,8 +12,6 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, withDefaults } from 'vue';
-
 interface HorizontalFormFieldProps {
   controlId?: string;
   label?: string;

@@ -9,7 +9,7 @@ import {
   UserDocument,
 } from '../data';
 import { DiveSite, DiveSiteCreator } from './interfaces';
-import { GpsCoordinates } from '../common';
+import { Depth, GpsCoordinates } from '../common';
 
 export class DefaultDiveSite implements DiveSite {
   private readonly sites: Collection<DiveSiteDocument>;
@@ -30,6 +30,10 @@ export class DefaultDiveSite implements DiveSite {
 
   get id(): string {
     return this.data._id;
+  }
+
+  get creatorId(): string {
+    return this.data.creator;
   }
 
   get createdOn(): Date {
@@ -60,6 +64,13 @@ export class DefaultDiveSite implements DiveSite {
   }
   set description(value: string | undefined) {
     this.data.description = value;
+  }
+
+  get depth(): Depth | undefined {
+    return this.data.depth;
+  }
+  set depth(value: Depth | undefined) {
+    this.data.depth = value;
   }
 
   get location(): string {
@@ -121,6 +132,8 @@ export class DefaultDiveSite implements DiveSite {
         projection: {
           _id: true,
           username: true,
+          memberSince: true,
+          'profile.avatar': true,
           'profile.name': true,
         },
       },
@@ -129,6 +142,8 @@ export class DefaultDiveSite implements DiveSite {
     if (creator) {
       this.creator = {
         id: creator._id,
+        avatar: creator.profile?.avatar,
+        memberSince: creator.memberSince,
         username: creator.username,
         displayName: creator.profile?.name ?? creator.username,
       };
@@ -189,6 +204,7 @@ export class DefaultDiveSite implements DiveSite {
       averageDifficulty: this.averageDifficulty,
       name: this.name,
       description: this.description,
+      depth: this.depth,
       location: this.location,
       freeToDive: this.freeToDive,
       shoreAccess: this.shoreAccess,
@@ -206,7 +222,9 @@ export class DefaultDiveSite implements DiveSite {
       averageRating: this.averageRating,
       averageDifficulty: this.averageDifficulty,
       name: this.name,
+      description: this.description,
       location: this.location,
+      depth: this.depth,
       freeToDive: this.freeToDive,
       shoreAccess: this.shoreAccess,
     };

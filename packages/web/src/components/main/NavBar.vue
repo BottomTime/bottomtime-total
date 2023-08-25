@@ -35,6 +35,9 @@
       >
         <div class="navbar-start">
           <RouterLink class="navbar-item" to="/">Home</RouterLink>
+          <RouterLink class="navbar-item" to="/diveSites"
+            >Dive Sites
+          </RouterLink>
           <RouterLink v-if="isAdmin" class="navbar-item" to="/manageUsers">
             Manage Users
           </RouterLink>

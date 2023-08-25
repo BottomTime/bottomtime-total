@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { GpsCoordinates } from '../common';
+
+import { Depth, GpsCoordinates } from '../common';
 import { SortOrder } from '../constants';
 import { User } from '../users';
 import { UsernameSchema } from '../data';
@@ -26,29 +27,32 @@ export const SearchDiveSitesSchema = z
       lat: z.number().min(-90).max(90),
       lon: z.number().min(-180).max(180),
     }),
-    radius: z.number().gt(0).max(500).default(50),
+    radius: z.coerce.number().gt(0).max(500).default(50),
     freeToDive: z.boolean(),
     shoreAccess: z.boolean(),
     rating: RangeSchema,
     difficulty: RangeSchema,
     creator: UsernameSchema,
-    sortBy: z.nativeEnum(DiveSitesSortBy),
-    sortOrder: z.nativeEnum(SortOrder),
-    skip: z.number().int().min(0).default(0),
-    limit: z.number().int().gt(0).max(500).default(50),
+    sortBy: z.nativeEnum(DiveSitesSortBy).default(DiveSitesSortBy.Rating),
+    sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Descending),
+    skip: z.coerce.number().int().min(0).default(0),
+    limit: z.coerce.number().int().gt(0).max(500).default(50),
   })
   .partial();
 export type SearchDiveSitesOptions = z.infer<typeof SearchDiveSitesSchema>;
 
 export interface DiveSiteCreator {
+  readonly avatar?: string;
   readonly id: string;
   readonly username: string;
   readonly displayName: string;
+  readonly memberSince: Date;
 }
 
 export interface DiveSiteData {
   name: string;
   description?: string;
+  depth?: Depth;
 
   location: string;
   directions?: string;
@@ -60,6 +64,7 @@ export interface DiveSiteData {
 
 export interface DiveSite extends DiveSiteData {
   readonly id: string;
+  readonly creatorId: string;
   readonly createdOn: Date;
   readonly updatedOn?: Date;
   readonly averageRating: number;
