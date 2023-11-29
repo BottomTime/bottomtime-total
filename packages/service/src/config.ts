@@ -83,60 +83,61 @@ class SessionsConfig {
   }
 }
 
-class Config {
-  readonly github = new GithubConfig();
-  readonly google = new GoogleConfig();
-  readonly mail = new MailConfig();
-  readonly sessions = new SessionsConfig();
+export class Config {
+  static readonly github = new GithubConfig();
+  static readonly google = new GoogleConfig();
+  static readonly mail = new MailConfig();
+  static readonly sessions = new SessionsConfig();
 
   /** The email address at which the site administrator(s) can be contacted. */
-  get adminEmail(): string {
+  static get adminEmail(): string {
     return process.env.BT_ADMIN_EMAIL ?? 'admin@bottomti.me';
   }
 
   /** The base URL at which the site will respond to requests. */
-  get baseUrl(): string {
+  static get baseUrl(): string {
     return process.env.BT_BASE_URL ?? 'http://localhost:8080/';
   }
 
   /** Max number of friends any one user can have. */
-  get friendsLimit(): number {
+  static get friendsLimit(): number {
     return toNumber(process.env.BT_FRIENDS_LIMIT, 1000);
   }
 
   /** True if NODE_ENV === 'production' */
-  get isProduction(): boolean {
+  static get isProduction(): boolean {
     return this.env === 'production';
   }
 
   /** Email verification and password reset token TTL (in minutes). Default is 1,440 (one day). */
-  get tokenTTL(): number {
+  static get tokenTTL(): number {
     return toNumber(process.env.BT_TOKEN_TTL, 1440);
   }
 
   /** Returns the value of $NODE_ENV! */
-  get env(): string {
+  static get env(): string {
     return process.env.NODE_ENV ?? 'local';
   }
 
-  get logLevel(): string {
+  static get logLevel(): string {
     return process.env.BT_LOG_LEVEL ?? 'debug';
   }
 
-  get mongoUri(): string {
+  static get mongoUri(): string {
     return (
       process.env.BT_MONGO_URI ?? 'mongodb://127.0.0.1:27017/bottomtime-local'
     );
   }
 
-  get passwordSaltRounds(): number {
+  static get passwordSaltRounds(): number {
     return toNumber(process.env.BT_PASSWORD_SALT_ROUNDS, 15);
   }
 
   /** Returns the TCP port number on which the service will listen for connections. */
-  get port(): number {
+  static get port(): number {
     return toNumber(process.env.BT_PORT, 4800);
   }
 }
 
-export default new Config();
+/** @deprecated Don't use default export anymore */
+export default Config;

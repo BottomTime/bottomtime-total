@@ -4,9 +4,6 @@
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
-    "docker:build": "docker build -t bottomtime/web .",
-    "docker:run": "docker run -it -p 8080:8080 --env-file .env.defaults --env-file .env bottomtime/web",
-    "lint": "eslint .",
     "serve": "vue-cli-service serve",
     "test": "vue-cli-service test:unit",
     "test:debug": "node node_modules/.bin/vue-cli-service test:unit --no-cache --watch --runInBand"

@@ -1,15 +1,13 @@
-import config from './config';
+import { Config } from './config';
+import { createApp } from './create-app';
 import { createLogger } from './logger';
-import { createServer } from './server/create-server';
-import { createDependencies } from './server/dependencies';
 
-const log = createLogger(config.logLevel);
+const log = createLogger(Config.logLevel);
 
-createServer(() => createDependencies(log))
-  .then((app) => {
-    app.listen(config.port);
+createApp(log)
+  .then(() => {
     log.info(
-      `[SERVICE] Service has started and is listening on port ${config.port}.`,
+      `🎉 Service has successfully started and is listening on port ${Config.port}. 🎉`,
     );
   })
   .catch((error) => {

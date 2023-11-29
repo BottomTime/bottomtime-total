@@ -3,9 +3,14 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": [],
+        "cacheableOperations": ["build", "docker:build", "lint"],
         "parallel": 5
       }
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "outputs": ["{projectRoot}/dist/"]
     }
   }
 }
