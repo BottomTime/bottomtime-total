@@ -8,9 +8,10 @@ import cors from 'cors';
 import { NextFunction, Request, Response } from 'express';
 import { User } from './users';
 import { GlobalErrorFilter } from './global-error-filter';
-import { Config } from './config';
+import { INestApplication } from '@nestjs/common';
+import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 
-export async function createApp(logger: Logger): Promise<void> {
+export async function createApp(logger: Logger): Promise<INestApplication> {
   const logService = new BunyanLogger(logger);
 
   const app = await NestFactory.create(AppModule, {
@@ -50,8 +51,10 @@ export async function createApp(logger: Logger): Promise<void> {
     next();
   });
 
+  app.useGlobalGuards(new JwtOrAnonAuthGuard());
+
   const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalFilters(new GlobalErrorFilter(logService, httpAdapterHost));
 
-  await app.listen(Config.port);
+  return app;
 }

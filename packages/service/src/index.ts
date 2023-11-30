@@ -5,7 +5,9 @@ import { createLogger } from './logger';
 const log = createLogger(Config.logLevel);
 
 createApp(log)
-  .then(() => {
+  .then(async (app) => {
+    await app.listen(Config.port);
+
     log.info(
       `🎉 Service has successfully started and is listening on port ${Config.port}. 🎉`,
     );

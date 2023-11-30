@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { UserData, UserModel } from '../schemas';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,6 +16,29 @@ export class AuthService {
   constructor(
     @InjectModel(UserModel.name) private readonly Users: Model<UserData>,
   ) {}
+
+  async resolveJwtSubject(subject: string): Promise<User> {
+    if (!/^user\|.*/.test(subject)) {
+      throw new UnauthorizedException('Invalid subject in the JWT.');
+    }
+
+    const userId = subject.substring(5);
+    const user = await this.Users.findById(userId);
+
+    if (!user) {
+      throw new UnauthorizedException(
+        'Invalid user indicated in the JWT subject.',
+      );
+    }
+
+    if (user.isLockedOut) {
+      throw new ForbiddenException(
+        'Your account is currently suspended. You may not perform any actions on this site.',
+      );
+    }
+
+    return new User(user);
+  }
 
   async authenticateUser(
     usernameOrEmail: string,

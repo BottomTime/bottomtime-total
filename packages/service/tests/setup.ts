@@ -21,6 +21,7 @@ export default async function (): Promise<void> {
   }
 
   process.env.__MONGO_URI__ = uri;
+  process.env.BT_MONGO_URI = uri;
 
   console.log('Performing migrations...');
   const client = await MongoClient.connect(uri);

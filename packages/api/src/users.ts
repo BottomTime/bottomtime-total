@@ -57,6 +57,10 @@ export const UserSchema = z.object({
 });
 export type UserDTO = z.infer<typeof UserSchema>;
 
-export type CurrentUserDTO =
-  | { anonymous: true }
-  | ({ anonymous: false } & UserDTO);
+export const CurrentUserSchema = z.discriminatedUnion('anonymous', [
+  z.object({ anonymous: z.literal(true) }),
+  UserSchema.extend({
+    anonymous: z.literal(false),
+  }),
+]);
+export type CurrentUserDTO = z.infer<typeof CurrentUserSchema>;
