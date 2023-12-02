@@ -9,6 +9,8 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@anatine/zod-openapi": "^2.2.1",
+    "@nestjs/swagger": "^7.1.16",
     "zod": "^3.22.4"
   },
   "devDependencies": {

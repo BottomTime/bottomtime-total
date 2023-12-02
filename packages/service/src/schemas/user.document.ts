@@ -3,7 +3,6 @@ import {
   DepthUnit,
   PressureUnit,
   ProfileVisibility,
-  TankMaterial,
   TemperatureUnit,
   UserRole,
   WeightUnit,
@@ -99,26 +98,26 @@ export const UserSchema = new Schema(
       },
     },
 
-    tanks: [
-      {
-        _id: { type: String, required: true },
-        name: { type: String, required: true },
-        material: {
-          type: String,
-          enum: TankMaterial,
-          required: true,
-        },
-        workingPressure: { type: Number, required: true },
-        volume: { type: Number, required: true },
-      },
-    ],
+    // tanks: [
+    //   {
+    //     _id: { type: String, required: true },
+    //     name: { type: String, required: true },
+    //     material: {
+    //       type: String,
+    //       enum: TankMaterial,
+    //       required: true,
+    //     },
+    //     workingPressure: { type: Number, required: true },
+    //     volume: { type: Number, required: true },
+    //   },
+    // ],
 
-    friends: [
-      {
-        friendId: { type: String, ref: 'User' },
-        friendsSince: { type: Date, required: true },
-      },
-    ],
+    // friends: [
+    //   {
+    //     friendId: { type: String, ref: 'User' },
+    //     friendsSince: { type: Date, required: true },
+    //   },
+    // ],
   },
   { collection: Collections.Users },
 );

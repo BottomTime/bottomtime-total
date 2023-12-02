@@ -39,16 +39,13 @@ export function createTestUser(
     emailVerificationTokenExpiration: options?.emailVerificationTokenExpiration,
     isLockedOut: options?.isLockedOut ?? false,
     lastLogin: options?.lastLogin ?? faker.date.recent(21),
+    lastPasswordChange: options?.lastPasswordChange ?? faker.date.past(2),
     memberSince: options?.memberSince ?? faker.date.past(6),
     passwordResetToken: options?.passwordResetToken,
     passwordResetTokenExpiration: options?.passwordResetTokenExpiration,
     role: options?.role ?? UserRole.User,
     username,
     usernameLowered: options?.usernameLowered ?? username.toLowerCase(),
-
-    friends: [] as any,
-
-    tanks: [] as any,
 
     settings: {
       profileVisibility: ProfileVisibility.FriendsOnly,

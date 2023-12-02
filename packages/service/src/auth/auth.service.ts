@@ -17,12 +17,16 @@ export class AuthService {
     @InjectModel(UserModel.name) private readonly Users: Model<UserData>,
   ) {}
 
-  async resolveJwtSubject(subject: string): Promise<User> {
-    if (!/^user\|.*/.test(subject)) {
+  async validateJwt(payload: JwtPayload): Promise<User> {
+    if (!payload.sub) {
+      throw new UnauthorizedException('JWT payload did not contain a subject.');
+    }
+
+    if (!/^user\|.*/.test(payload.sub)) {
       throw new UnauthorizedException('Invalid subject in the JWT.');
     }
 
-    const userId = subject.substring(5);
+    const userId = payload.sub.substring(5);
     const user = await this.Users.findById(userId);
 
     if (!user) {

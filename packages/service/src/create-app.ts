@@ -10,6 +10,8 @@ import { User } from './users';
 import { GlobalErrorFilter } from './global-error-filter';
 import { INestApplication } from '@nestjs/common';
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
+import { Config } from './config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export async function createApp(logger: Logger): Promise<INestApplication> {
   const logService = new BunyanLogger(logger);
@@ -55,6 +57,44 @@ export async function createApp(logger: Logger): Promise<INestApplication> {
 
   const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalFilters(new GlobalErrorFilter(logService, httpAdapterHost));
+
+  if (!Config.isProduction) {
+    const documentationConfig = new DocumentBuilder()
+      .setTitle('Bottom Time Applciation')
+      .setDescription('Bottom Time application backend APIs.')
+      .setContact(
+        'Chris Carleton',
+        'https://bottomti.me/',
+        'mrchriscarleton@gmail.com',
+      )
+      .setVersion('1.0.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+        'bearerAuth',
+      )
+      .addCookieAuth(Config.sessions.cookieName, { type: 'http' }, 'cookieAuth')
+      .addTag(
+        'Admin',
+        'Restricted endpoints accessible only to administrators.',
+      )
+      .addTag('Auth', 'Endpoints used for authentication or authorization.')
+      .addTag(
+        'Users',
+        'Endpoints pertaining to the management of user accounts or profiles.',
+      )
+      .addServer(Config.baseUrl)
+      .build();
+
+    const documentation = SwaggerModule.createDocument(
+      app,
+      documentationConfig,
+    );
+    SwaggerModule.setup('docs', app, documentation);
+  }
 
   return app;
 }

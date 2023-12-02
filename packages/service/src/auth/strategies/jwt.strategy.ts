@@ -32,10 +32,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload): Promise<User> {
-    if (!payload.sub) {
-      throw new UnauthorizedException('JWT payload did not contain a subject.');
-    }
-
-    return await this.authService.resolveJwtSubject(payload.sub);
+    return await this.authService.validateJwt(payload);
   }
 }

@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Users Service when creating new user accounts will create new users with minimal options 1`] = `
+{
+  "email": undefined,
+  "emailVerified": false,
+  "hasPassword": false,
+  "id": "0EE2C4FF-1013-45DF-9F13-E45ED2DB9555",
+  "isLockedOut": false,
+  "lastLogin": undefined,
+  "lastPasswordChange": undefined,
+  "memberSince": 2023-10-02T10:23:02.003Z,
+  "profile": {
+    "memberSince": 2023-10-02T10:23:02.003Z,
+    "userId": "0EE2C4FF-1013-45DF-9F13-E45ED2DB9555",
+    "username": "Roger69_83",
+  },
+  "role": "user",
+  "username": "Roger69_83",
+}
+`;
+
+exports[`Users Service when creating new user accounts will create new users with minimal options 2`] = `
+{
+  "__v": 0,
+  "_id": "0EE2C4FF-1013-45DF-9F13-E45ED2DB9555",
+  "email": null,
+  "emailLowered": null,
+  "emailVerified": false,
+  "isLockedOut": false,
+  "memberSince": 2023-10-02T10:23:02.003Z,
+  "passwordHash": null,
+  "profile": {
+    "certifications": [],
+  },
+  "role": "user",
+  "settings": {
+    "profileVisibility": "friends",
+  },
+  "username": "Roger69_83",
+  "usernameLowered": "roger69_83",
+}
+`;
