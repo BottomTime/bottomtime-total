@@ -1,10 +1,21 @@
 import { UsersService } from '../../../src/users/users.service';
 import { createTestUser } from '../../utils';
 
-import { UserData, UserModel } from '../../../src/schemas';
+import { UserData, UserDocument, UserModel } from '../../../src/schemas';
 import { User } from '../../../src/users/user';
-import { CreateUserOptions } from '@bottomtime/api';
+import {
+  CreateUserOptions,
+  SortOrder,
+  UserRole,
+  UserSchema,
+  UsersSortBy,
+} from '@bottomtime/api';
 import * as uuid from 'uuid';
+import bcrypt from 'bcrypt';
+import { ConflictException } from '@nestjs/common';
+
+import SearchData from '../../fixtures/users.json';
+import { Model } from 'mongoose';
 
 const TestUserData: Partial<UserData> = {
   _id: '4E64038D-0ABF-4C1A-B678-55F8AFCB6B2D',
@@ -15,6 +26,7 @@ const TestUserData: Partial<UserData> = {
 };
 
 jest.mock('uuid');
+jest.mock('bcrypt');
 
 describe('Users Service', () => {
   let service: UsersService;
@@ -31,6 +43,9 @@ describe('Users Service', () => {
     jest
       .spyOn(uuid, 'v4')
       .mockReturnValue('0EE2C4FF-1013-45DF-9F13-E45ED2DB9555');
+    jest
+      .spyOn(bcrypt, 'hash')
+      .mockResolvedValue('<<HASHED PASSWORD>>' as never);
   });
 
   describe('when retrieving users', () => {
@@ -92,119 +107,203 @@ describe('Users Service', () => {
       const data = await UserModel.findById(user.id);
       expect(data).toMatchSnapshot();
     });
+
+    it('will create a new user with all options set', async () => {
+      const options: CreateUserOptions = {
+        username: 'Tyler.Durden',
+        email: 'rule1@diveclub.ca',
+        password: '(*H()@*&BNINFPOI()$*9ij90',
+        role: UserRole.User,
+        profile: {
+          avatar: 'https://gravatar.com/Tyler.Durden',
+          bio: "I don't talk about my dive clug",
+          birthdate: '1987-02-12',
+          certifications: [
+            { course: 'Open water', agency: 'SSI' },
+            { course: 'Stress and Rescue', agency: 'SSI', date: '2018' },
+          ],
+          customData: {},
+          experienceLevel: 'Experienced',
+          location: 'Vancouver, BC',
+          name: 'Tyler Durden, Esq.',
+          startedDiving: '2011',
+        },
+      };
+
+      const user = await service.createUser(options);
+
+      expect(user.toJSON()).toMatchSnapshot();
+
+      const data = await UserModel.findById(user.id);
+      expect(data).toMatchSnapshot();
+    });
+
+    it('Will throw a ConflictError if email is already taken', async () => {
+      const email = 'testemail@email.org';
+      const existingUser = createTestUser({
+        email,
+        emailLowered: email.toLowerCase(),
+      });
+      const options: CreateUserOptions = {
+        username: 'Roger69_83',
+        email,
+      };
+      await existingUser.save();
+
+      await expect(service.createUser(options)).rejects.toThrowError(
+        ConflictException,
+      );
+    });
+
+    it('Will throw a ConflictError if username is already taken', async () => {
+      const username = 'BestUsernameEver';
+      const existingUser = createTestUser({
+        username,
+        usernameLowered: username.toLowerCase(),
+      });
+      const options: CreateUserOptions = {
+        username,
+      };
+      await existingUser.save();
+
+      await expect(service.createUser(options)).rejects.toThrowError(
+        ConflictException,
+      );
+    });
   });
 
-  // describe('Create New User', () => {
+  describe('when searching profiles', () => {
+    let userDocuments: UserDocument[];
 
-  //   it('Will create a new user with all options set', async () => {
-  //     const username = faker.internet.userName();
-  //     const usernameLowered = username.toLowerCase();
-  //     const email = faker.internet.email();
-  //     const emailLowered = email.toLowerCase();
-  //     const password = fakePassword();
-  //     const profileData = fakeProfile();
-  //     const userManager = new DefaultUserManager(mongoClient, Log);
-  //     const user = await userManager.createUser({
-  //       username,
-  //       email,
-  //       password,
-  //       profile: profileData,
-  //     });
+    beforeAll(async () => {
+      userDocuments = SearchData.map((user) => new UserModel(user));
+    });
 
-  //     expect(user.email).toEqual(email);
-  //     expect(user.emailVerified).toBe(false);
-  //     expect(user.hasPassword).toBe(true);
-  //     expect(user.id.length).toBeGreaterThan(1);
-  //     expect(user.isLockedOut).toBe(false);
-  //     expect(user.memberSince.valueOf()).toBeCloseTo(new Date().valueOf(), -2);
-  //     expect(user.role).toEqual(UserRole.User);
-  //     expect(user.username).toEqual(username);
+    beforeEach(async () => {
+      await UserModel.insertMany(userDocuments);
+    });
 
-  //     expect(user.profile.avatar).toEqual(profileData.avatar);
-  //     expect(user.profile.bio).toEqual(profileData.bio);
-  //     expect(user.profile.birthdate).toEqual(profileData.birthdate);
-  //     expect(user.profile.certifications).toEqual(profileData.certifications);
-  //     expect(user.profile.experienceLevel).toEqual(profileData.experienceLevel);
-  //     expect(user.profile.location).toEqual(profileData.location);
-  //     expect(user.profile.profileVisibility).toEqual(
-  //       profileData.profileVisibility,
-  //     );
-  //     expect(user.profile.startedDiving).toEqual(profileData.startedDiving);
+    it('will return an empty array if no results match', async () => {
+      await UserModel.deleteMany({});
+      await expect(service.searchUsers()).resolves.toEqual([]);
+    });
 
-  //     const result = await Users.findOne({
-  //       usernameLowered: username.toLocaleLowerCase(),
-  //     });
-  //     const passwordHash = result?.passwordHash;
-  //     expect(result).toBeDefined();
-  //     expect(passwordHash).toBeDefined();
+    it('will perform text based searches', async () => {
+      await expect(
+        service.searchUsers({ query: 'Mount' }),
+      ).resolves.toMatchSnapshot();
+    });
 
-  //     delete result?.passwordHash;
-  //     expect(result).toEqual({
-  //       _id: user.id,
-  //       email,
-  //       emailLowered,
-  //       emailVerified: false,
-  //       isLockedOut: false,
-  //       memberSince: user.memberSince,
-  //       role: UserRole.User,
-  //       username,
-  //       usernameLowered,
-  //       profile: profileData,
-  //     });
-  //     await expect(compare(password, passwordHash!)).resolves.toBe(true);
-  //   });
+    it('will limit "page" size', async () => {
+      const results = await service.searchUsers({ limit: 7 });
+      expect(results).toHaveLength(7);
+      expect(results).toMatchSnapshot();
+    });
 
-  //   [
-  //     {
-  //       name: 'invalid username',
-  //       options: {
-  //         username: 'nope! Not VAlID###',
-  //       },
-  //     },
-  //     {
-  //       name: 'invalid email address',
-  //       options: {
-  //         username: 'jimmy_33',
-  //         email: 'NOT_AN EMAIL!',
-  //       },
-  //     },
-  //     {
-  //       name: 'weak password',
-  //       options: { username: 'ralph27', password: 'too weak' },
-  //     },
-  //   ].forEach((testCase) => {
-  //     it(`Will throw a ValidationError if the options fail validation: ${testCase.name}`, async () => {
-  //       const userManager = new DefaultUserManager(mongoClient, Log);
-  //       await expect(
-  //         userManager.createUser(testCase.options),
-  //       ).rejects.toThrowErrorMatchingSnapshot();
-  //     });
-  //   });
+    it('will allow showing results beyond the first page', async () => {
+      const results = await service.searchUsers({ limit: 7, skip: 7 });
+      expect(results).toHaveLength(7);
+      expect(results).toMatchSnapshot();
+    });
 
-  //   it('Will throw a ConflictError if email is already taken', async () => {
-  //     const existingUser = fakeUser();
-  //     const userManager = new DefaultUserManager(mongoClient, Log);
-  //     await Users.insertOne(existingUser);
+    [
+      { sortBy: UsersSortBy.MemberSince, sortOrder: SortOrder.Ascending },
+      { sortBy: UsersSortBy.MemberSince, sortOrder: SortOrder.Descending },
+      { sortBy: UsersSortBy.Username, sortOrder: SortOrder.Ascending },
+      { sortBy: UsersSortBy.Username, sortOrder: SortOrder.Descending },
+    ].forEach(({ sortBy, sortOrder }) => {
+      it(`Will return results sorted by ${sortBy} in ${sortOrder} order`, async () => {
+        await expect(
+          service.searchUsers({ sortBy, sortOrder, limit: 5 }),
+        ).resolves.toMatchSnapshot();
+      });
+    });
 
-  //     await expect(
-  //       userManager.createUser({
-  //         username: faker.internet.userName(),
-  //         email: existingUser.email?.toUpperCase(),
-  //       }),
-  //     ).rejects.toThrowError(ConflictError);
-  //   });
+    [UserRole.User, UserRole.Admin].forEach((role) => {
+      it(`Will filter by role: ${role}`, async () => {
+        await expect(
+          service.searchUsers({ role, limit: 10 }),
+        ).resolves.toMatchSnapshot();
+      });
+    });
 
-  //   it('Will throw a ConflictError if username is already taken', async () => {
-  //     const existingUser = fakeUser();
-  //     const userManager = new DefaultUserManager(mongoClient, Log);
-  //     await Users.insertOne(existingUser);
+    // it('Will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is a user Id', async () => {
+    //   const userData = fakeUser({
+    //     profile: fakeProfile({
+    //       profileVisibility: ProfileVisibility.Public,
+    //     }),
+    //   });
+    //   const publicUserData = fakeUser({
+    //     profile: fakeProfile({
+    //       profileVisibility: ProfileVisibility.Public,
+    //     }),
+    //   });
+    //   const privateUserData = fakeUser({
+    //     profile: fakeProfile({
+    //       profileVisibility: ProfileVisibility.Private,
+    //     }),
+    //   });
+    //   const friendsOnlyWithFriendUserData = fakeUser({
+    //     profile: fakeProfile({
+    //       profileVisibility: ProfileVisibility.FriendsOnly,
+    //     }),
+    //     friends: [{ friendId: userData._id, friendsSince: new Date() }],
+    //   });
+    //   const friendsOnlyWithoutFriendUserData = fakeUser({
+    //     profile: fakeProfile({
+    //       profileVisibility: ProfileVisibility.FriendsOnly,
+    //     }),
+    //   });
+    //   await Users.insertMany([
+    //     userData,
+    //     privateUserData,
+    //     publicUserData,
+    //     friendsOnlyWithFriendUserData,
+    //     friendsOnlyWithoutFriendUserData,
+    //   ]);
+    //   const userManager = new DefaultUserManager(mongoClient, Log);
+    //   const expected = [publicUserData, friendsOnlyWithFriendUserData]
+    //     .sort((a, b) => b.memberSince.valueOf() - a.memberSince.valueOf())
+    //     .map((data) => {
+    //       delete data.friends;
+    //       return new DefaultUser(mongoClient, Log, data);
+    //     });
+    //   const actual = await userManager.searchUsers({
+    //     profileVisibleTo: userData._id,
+    //     sortBy: UsersSortBy.MemberSince,
+    //     sortOrder: SortOrder.Descending,
+    //   });
+    //   expect(actual).toHaveLength(expected.length);
+    //   expect(actual).toEqual(expected);
+    // });
 
-  //     await expect(
-  //       userManager.createUser({
-  //         username: existingUser.username.toUpperCase(),
-  //         email: faker.internet.email(),
-  //       }),
-  //     ).rejects.toThrowError(ConflictError);
-  //   });
-  // });
+    // it('Will return all public profiles when profileVisibleTo is set to "public"', async () => {
+    //   const userData = new Array<UserDocument>(12);
+    //   for (let i = 0; i < userData.length; i++) {
+    //     let profileVisibility: ProfileVisibility;
+    //     if (i < 4) {
+    //       profileVisibility = ProfileVisibility.Public;
+    //     } else if (i < 8) {
+    //       profileVisibility = ProfileVisibility.FriendsOnly;
+    //     } else {
+    //       profileVisibility = ProfileVisibility.Private;
+    //     }
+    //     userData[i] = fakeUser({
+    //       profile: fakeProfile({ profileVisibility }),
+    //     });
+    //   }
+    //   await Users.insertMany([...userData]);
+    //   const userManager = new DefaultUserManager(mongoClient, Log);
+    //   const expected = userData
+    //     .slice(0, 4)
+    //     .sort((a, b) => b.memberSince.valueOf() - a.memberSince.valueOf())
+    //     .map((data) => new DefaultUser(mongoClient, Log, data));
+    //   const actual = await userManager.searchUsers({
+    //     profileVisibleTo: 'public',
+    //     sortBy: UsersSortBy.MemberSince,
+    //     sortOrder: SortOrder.Descending,
+    //   });
+    //   expect(actual).toEqual(expected);
+    // });
+  });
 });

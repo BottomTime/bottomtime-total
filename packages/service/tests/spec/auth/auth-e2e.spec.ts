@@ -4,7 +4,7 @@ import { createTestApp } from '../../utils/create-test-app';
 import { createAuthHeader, createTestUser } from '../../utils';
 import { User } from '../../../src/users/user';
 import { CurrentUserSchema, UserSchema } from '@bottomtime/api';
-import { UserData } from '../../../src/schemas';
+import { UserData, UserModel } from '../../../src/schemas';
 
 const Password = 'XTdc4LG,+5R/QTgb';
 const TestUserData: Partial<UserData> = {
@@ -36,7 +36,7 @@ describe('Auth Module E2E Tests', () => {
 
   it('will return the currently logged in user', async () => {
     const userDocument = createTestUser();
-    const user = new User(userDocument);
+    const user = new User(UserModel, userDocument);
     const authHeader = await createAuthHeader(user.id);
     await userDocument.save();
 
@@ -53,7 +53,7 @@ describe('Auth Module E2E Tests', () => {
 
   it('will login a user with username and password', async () => {
     const userData = createTestUser(TestUserData);
-    const user = new User(userData);
+    const user = new User(UserModel, userData);
     const agent = request.agent(server);
     await userData.save();
 

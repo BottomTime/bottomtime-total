@@ -1,3 +1,5 @@
+import { z } from './zod';
+
 export const DateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
 export enum DepthUnit {
@@ -40,3 +42,8 @@ export enum WeightUnit {
   Kilograms = 'kg',
   Pounds = 'lbs',
 }
+
+export const SuccessResponseSchema = z.object({
+  succeeded: z.boolean(),
+});
+export type SuccessResponse = z.infer<typeof SuccessResponseSchema>;

@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Config } from './config';
 import { UsersModule } from './users';
 import { PassportModule } from '@nestjs/passport';
+import { AdminModule } from './admin';
 
 @Module({
   imports: [
@@ -11,8 +12,10 @@ import { PassportModule } from '@nestjs/passport';
     PassportModule.register({
       session: false,
     }),
-    UsersModule,
+
+    AdminModule,
     AuthModule,
+    UsersModule,
   ],
   providers: [],
   controllers: [],

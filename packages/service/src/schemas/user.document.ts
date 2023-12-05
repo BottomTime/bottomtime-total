@@ -9,6 +9,8 @@ import {
 } from '@bottomtime/api';
 import { Collections } from '../data';
 
+export const UserProfileCertificationSchema = new Schema({});
+
 export const UserSchema = new Schema(
   {
     _id: { type: String, required: true },
@@ -60,13 +62,17 @@ export const UserSchema = new Schema(
       bio: String,
       birthdate: String,
       customData: Object,
-      certifications: [
-        {
-          agency: String,
-          course: { type: String, required: true },
-          date: Date,
-        },
-      ],
+      certifications: {
+        type: [
+          {
+            _id: String,
+            agency: String,
+            course: { type: String, required: true },
+            date: String,
+          },
+        ],
+        required: false,
+      },
       experienceLevel: String,
       location: String,
       name: String,
@@ -125,3 +131,5 @@ export const UserSchema = new Schema(
 export type UserData = InferSchemaType<typeof UserSchema>;
 export type UserDocument = HydratedDocument<UserData>;
 export const UserModel = model('User', UserSchema);
+
+export type ProfileData = NonNullable<UserData['profile']>;

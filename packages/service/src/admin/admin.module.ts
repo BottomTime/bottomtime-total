@@ -1,11 +1,17 @@
 import { Module } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { AdminController } from './admin.controller';
+import { AdminUsersController } from './admin-users.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserModel, UserSchema } from '../schemas';
+import { UsersModule } from '../users';
 
 @Module({
-  imports: [],
+  imports: [
+    MongooseModule.forFeature([{ name: UserModel.name, schema: UserSchema }]),
+    UsersModule,
+  ],
   providers: [AdminService],
-  controllers: [AdminController],
+  controllers: [AdminUsersController],
   exports: [],
 })
 export class AdminModule {}

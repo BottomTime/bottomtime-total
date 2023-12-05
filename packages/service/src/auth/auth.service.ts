@@ -41,7 +41,7 @@ export class AuthService {
       );
     }
 
-    return new User(user);
+    return new User(this.Users, user);
   }
 
   async authenticateUser(
@@ -65,7 +65,7 @@ export class AuthService {
     data.lastLogin = new Date();
     await data.save();
 
-    return new User(data);
+    return new User(this.Users, data);
   }
 
   async signJWT(subject: string): Promise<string> {

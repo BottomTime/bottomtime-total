@@ -23,11 +23,12 @@ module.exports = {
       { emailLowered: 1 },
       {
         unique: true,
+        sparse: true,
         name: 'users_emailLowered',
       },
     );
     await users.createIndex(
-      { 'profile.profileVisibility': 1 },
+      { 'settings.profileVisibility': 1 },
       {
         sparse: true,
         name: 'users_profileVisibility',

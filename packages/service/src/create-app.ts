@@ -13,6 +13,38 @@ import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 import { Config } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+function setupDocumentation(app: INestApplication): void {
+  const documentationConfig = new DocumentBuilder()
+    .setTitle('Bottom Time Applciation')
+    .setDescription('Bottom Time application backend APIs.')
+    .setContact(
+      'Chris Carleton',
+      'https://bottomti.me/',
+      'mrchriscarleton@gmail.com',
+    )
+    .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'bearerAuth',
+    )
+    .addCookieAuth(Config.sessions.cookieName, { type: 'http' }, 'cookieAuth')
+    .addTag('Admin', 'Restricted endpoints accessible only to administrators.')
+    .addTag('Auth', 'Endpoints used for authentication or authorization.')
+    .addTag(
+      'Users',
+      'Endpoints pertaining to the management of user accounts or profiles.',
+    )
+    .addServer(Config.baseUrl)
+    .build();
+
+  const documentation = SwaggerModule.createDocument(app, documentationConfig);
+  SwaggerModule.setup('docs', app, documentation);
+}
+
 export async function createApp(logger: Logger): Promise<INestApplication> {
   const logService = new BunyanLogger(logger);
 
@@ -32,10 +64,11 @@ export async function createApp(logger: Logger): Promise<INestApplication> {
     }),
   );
   app.use((req: Request, res: Response, next: NextFunction) => {
+    performance.mark('request-start');
     // Request-level logging.
     res.on('close', () => {
       const user = req.user ? (req.user as User) : undefined;
-      logService.log('Request logged', {
+      logService.log('Request', {
         method: req.method,
         path: req.path,
         ip: req.ip,
@@ -50,6 +83,18 @@ export async function createApp(logger: Logger): Promise<INestApplication> {
       });
     });
 
+    performance.mark('request-end');
+    logService.debug('Request performance', {
+      requestDuration: performance.measure(
+        'request-duration',
+        'request-start',
+        'request-end',
+      ).duration,
+      // TODO: Figure out how to get this values.
+      bytesSent: req.get('Content-Length'),
+      bytesReturned: res.get('Content-Length'),
+    });
+
     next();
   });
 
@@ -58,43 +103,7 @@ export async function createApp(logger: Logger): Promise<INestApplication> {
   const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalFilters(new GlobalErrorFilter(logService, httpAdapterHost));
 
-  if (!Config.isProduction) {
-    const documentationConfig = new DocumentBuilder()
-      .setTitle('Bottom Time Applciation')
-      .setDescription('Bottom Time application backend APIs.')
-      .setContact(
-        'Chris Carleton',
-        'https://bottomti.me/',
-        'mrchriscarleton@gmail.com',
-      )
-      .setVersion('1.0.0')
-      .addBearerAuth(
-        {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-        'bearerAuth',
-      )
-      .addCookieAuth(Config.sessions.cookieName, { type: 'http' }, 'cookieAuth')
-      .addTag(
-        'Admin',
-        'Restricted endpoints accessible only to administrators.',
-      )
-      .addTag('Auth', 'Endpoints used for authentication or authorization.')
-      .addTag(
-        'Users',
-        'Endpoints pertaining to the management of user accounts or profiles.',
-      )
-      .addServer(Config.baseUrl)
-      .build();
-
-    const documentation = SwaggerModule.createDocument(
-      app,
-      documentationConfig,
-    );
-    SwaggerModule.setup('docs', app, documentation);
-  }
+  setupDocumentation(app);
 
   return app;
 }

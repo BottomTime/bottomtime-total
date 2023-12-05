@@ -15,7 +15,7 @@ export class AssertAuth implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
-    if (!req.user) {
+    if (!(req.user instanceof User)) {
       throw new UnauthorizedException(
         'You must be logged in to take this action.',
       );

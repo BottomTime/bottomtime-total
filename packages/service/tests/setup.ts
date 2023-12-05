@@ -23,6 +23,10 @@ export default async function (): Promise<void> {
   process.env.__MONGO_URI__ = uri;
   process.env.BT_MONGO_URI = uri;
 
+  // Generate super insecure passwords for testing. We don't need the test suite taking forever to run
+  // and we don't care about security in a testing context.
+  process.env.BT_PASSWORD_SALT_ROUNDS = '1';
+
   console.log('Performing migrations...');
   const client = await MongoClient.connect(uri);
   const migrations = await up(client.db() as any, client as any);
