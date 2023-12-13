@@ -96,7 +96,7 @@ export function createTestUser(
     username,
     usernameLowered: options?.usernameLowered ?? username.toLowerCase(),
 
-    settings: {
+    settings: options?.settings ?? {
       profileVisibility: ProfileVisibility.FriendsOnly,
     },
   };

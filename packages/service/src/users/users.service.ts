@@ -17,6 +17,8 @@ import { hash } from 'bcrypt';
 import { Config } from '../config';
 import { z } from 'zod';
 
+const SelectString = '-friends';
+
 const SearchUsersOptionsSchema = SearchUsersParamsSchema.extend({
   role: z.nativeEnum(UserRole),
   profileVisibleTo: z.union([z.literal('#public'), UsernameSchema]),
@@ -98,13 +100,13 @@ export class UsersService {
       username: options.username,
       usernameLowered,
     };
-    const userDocument = await this.Users.create(data as any);
+    const userDocument = await this.Users.create(data);
 
     return new User(this.Users, userDocument);
   }
 
   async getUserById(id: string): Promise<User | undefined> {
-    const data = await this.Users.findById(id);
+    const data = await this.Users.findById(id).select(SelectString).exec();
     return data ? new User(this.Users, data) : undefined;
   }
 
@@ -115,7 +117,9 @@ export class UsersService {
 
     const data = await this.Users.findOne({
       $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
-    });
+    })
+      .select(SelectString)
+      .exec();
 
     return data ? new User(this.Users, data) : undefined;
   }
@@ -149,7 +153,7 @@ export class UsersService {
     query = query.skip(options.skip ?? 0).limit(options.limit ?? 100);
 
     // Execute query and return results.
-    const data = await query.exec();
+    const data = await query.select(SelectString).exec();
     return data.map((d) => new User(this.Users, d));
   }
 }

@@ -5,6 +5,7 @@ import { Config } from './config';
 import { UsersModule } from './users';
 import { PassportModule } from '@nestjs/passport';
 import { AdminModule } from './admin';
+import { EmailModule } from './email';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AdminModule } from './admin';
       session: false,
     }),
 
+    EmailModule,
     AdminModule,
     AuthModule,
     UsersModule,

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Head,
   HttpCode,
@@ -9,6 +10,7 @@ import {
   Param,
   Post,
   Query,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -21,10 +23,13 @@ import {
   CreateUserOptionsSchema,
   ProfileDTO,
   ProfileSchema,
+  ProfileVisibility,
+  SearchProfilesResponseSchema,
   SearchUsersParams,
   SearchUsersParamsSchema,
   SortOrder,
   UserDTO,
+  UserRole,
   UserSchema,
   UsersSortBy,
 } from '@bottomtime/api';
@@ -48,6 +53,7 @@ import { generateSchema } from '@anatine/zod-openapi';
 import { AssertAuth, CurrentUser } from '../auth';
 import { User } from './user';
 
+const UsernameOrEmail = 'usernameOrEmail';
 const UsernameOrEmailParam: ApiParamOptions = {
   name: 'usernameOrEmail',
   description:
@@ -109,7 +115,7 @@ export class UsersController {
     required: false,
   })
   @ApiOkResponse({
-    schema: generateSchema(ProfileSchema.array()),
+    schema: generateSchema(SearchProfilesResponseSchema),
     description:
       'The search has completed successfully. The results will be returned in the response body.',
   })
@@ -180,7 +186,7 @@ export class UsersController {
       'A user with the provided username or password does not exist.',
   })
   async isUsernameOrEmailAvailable(
-    @Param('usernameOrEmail') usernameOrEmail: string,
+    @Param(UsernameOrEmail) usernameOrEmail: string,
   ): Promise<void> {
     const user = await this.users.getUserByUsernameOrEmail(usernameOrEmail);
     if (!user) {
@@ -188,10 +194,24 @@ export class UsersController {
     }
   }
 
-  // TODO: Test this
+  @Get(`:${UsernameOrEmail}`)
+  @ApiOperation({
+    summary: 'Get User Profile',
+    description: 'Retrieves a user profile by its username or email address.',
+  })
+  @ApiParam(UsernameOrEmailParam)
+  @ApiOkResponse({
+    schema: generateSchema(ProfileSchema),
+    description:
+      'The request was successful. The profile information will be returned in the response body.',
+  })
+  @ApiNotFoundResponse({
+    description:
+      'A user with the provided username or email address does not exist or the current user does not have access to view the requested profile.',
+  })
   async getUserProfile(
     @CurrentUser() currentUser: User | undefined,
-    @Query() usernameOrEmail: string,
+    @Param(UsernameOrEmail) usernameOrEmail: string,
   ): Promise<ProfileDTO> {
     const user = await this.users.getUserByUsernameOrEmail(usernameOrEmail);
 
@@ -201,10 +221,35 @@ export class UsersController {
       );
     }
 
+    // Anonymous users MAY ONLY see profiles with public visibility.
+    if (!currentUser) {
+      if (user.settings.profileVisibility !== ProfileVisibility.Public) {
+        throw new UnauthorizedException(
+          'You must be logged in to view this profile',
+        );
+      }
+    } else if (currentUser.role === UserRole.User) {
+      // Regular users MAY NOT see profiles with private visibility.
+      if (user.settings.profileVisibility === ProfileVisibility.Private) {
+        throw new ForbiddenException(
+          'You are not authorized to view this profile.',
+        );
+      }
+
+      // TODO: Regular users MAY NOT see profiles with friends-only visibility if they are not friends with the profile owner.
+      if (user.settings.profileVisibility === ProfileVisibility.FriendsOnly) {
+        throw new ForbiddenException(
+          'You are not authorized to view this profile.',
+        );
+      }
+    }
+
+    // Administrators MAY see all profiles.
+
     return user.profile.toJSON();
   }
 
-  @Post(':usernameOrEmail/changeUsername')
+  @Post(`:${UsernameOrEmail}/changeUsername`)
   @UseGuards(AssertAuth)
   async changeUsername(
     @Param() usernameOrEmail: string,

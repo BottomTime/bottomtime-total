@@ -7,7 +7,6 @@ import {
   CreateUserOptions,
   SortOrder,
   UserRole,
-  UserSchema,
   UsersSortBy,
 } from '@bottomtime/api';
 import * as uuid from 'uuid';
@@ -15,7 +14,6 @@ import bcrypt from 'bcrypt';
 import { ConflictException } from '@nestjs/common';
 
 import SearchData from '../../fixtures/users.json';
-import { Model } from 'mongoose';
 
 const TestUserData: Partial<UserData> = {
   _id: '4E64038D-0ABF-4C1A-B678-55F8AFCB6B2D',
@@ -51,7 +49,7 @@ describe('Users Service', () => {
   describe('when retrieving users', () => {
     it('will retrieve a user by id', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(userDocument);
+      const expected = new User(UserModel, userDocument);
 
       await userDocument.save();
       const actual = await service.getUserById(userDocument._id);
@@ -61,7 +59,7 @@ describe('Users Service', () => {
 
     it('will retrieve a user by username', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(userDocument);
+      const expected = new User(UserModel, userDocument);
 
       await userDocument.save();
       const actual = await service.getUserByUsernameOrEmail(
@@ -73,7 +71,7 @@ describe('Users Service', () => {
 
     it('will retrieve a user by email', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(userDocument);
+      const expected = new User(UserModel, userDocument);
 
       await userDocument.save();
       const actual = await service.getUserByUsernameOrEmail(

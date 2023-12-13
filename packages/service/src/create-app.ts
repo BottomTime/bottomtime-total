@@ -4,7 +4,6 @@ import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import useragent from 'express-useragent';
-import cors from 'cors';
 import { NextFunction, Request, Response } from 'express';
 import { User } from './users';
 import { GlobalErrorFilter } from './global-error-filter';
@@ -12,6 +11,7 @@ import { INestApplication } from '@nestjs/common';
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 import { Config } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 
 function setupDocumentation(app: INestApplication): void {
   const documentationConfig = new DocumentBuilder()
@@ -35,6 +35,10 @@ function setupDocumentation(app: INestApplication): void {
     .addTag('Admin', 'Restricted endpoints accessible only to administrators.')
     .addTag('Auth', 'Endpoints used for authentication or authorization.')
     .addTag(
+      'Friends',
+      'Endpoints pertaining to the management of friends and friend requests.',
+    )
+    .addTag(
       'Users',
       'Endpoints pertaining to the management of user accounts or profiles.',
     )
@@ -49,20 +53,19 @@ export async function createApp(logger: Logger): Promise<INestApplication> {
   const logService = new BunyanLogger(logger);
 
   const app = await NestFactory.create(AppModule, {
-    logger: logService,
-  });
-
-  app.use(cookieParser());
-  app.use(useragent.express());
-  app.use(
-    cors({
+    cors: {
       // TODO: Limit domains.
       origin: (_origin, cb) => {
         cb(null, true);
       },
       credentials: true,
-    }),
-  );
+    },
+    logger: logService,
+  });
+
+  app.use(helmet());
+  app.use(cookieParser());
+  app.use(useragent.express());
   app.use((req: Request, res: Response, next: NextFunction) => {
     performance.mark('request-start');
     // Request-level logging.

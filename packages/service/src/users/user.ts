@@ -8,11 +8,13 @@ import { randomBytes } from 'crypto';
 import dayjs from 'dayjs';
 import { compare, hash } from 'bcrypt';
 import { Config } from '../config';
+import { UserSettings } from './user-settings';
 
 export class User {
   private readonly log = new Logger(User.name);
 
   private _profile: Profile | undefined;
+  private _settings: UserSettings | undefined;
 
   constructor(
     private readonly Users: Model<UserData>,
@@ -64,6 +66,13 @@ export class User {
 
   get role(): UserRole {
     return this.data.role as UserRole;
+  }
+
+  get settings(): UserSettings {
+    if (this._settings) return this._settings;
+
+    this._settings = new UserSettings(this.data);
+    return this._settings;
   }
 
   async changeUsername(newUsername: string): Promise<void> {

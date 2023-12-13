@@ -9,8 +9,6 @@ import {
 } from '@bottomtime/api';
 import { Collections } from '../data';
 
-export const UserProfileCertificationSchema = new Schema({});
-
 export const UserSchema = new Schema(
   {
     _id: { type: String, required: true },
@@ -115,13 +113,6 @@ export const UserSchema = new Schema(
     //     },
     //     workingPressure: { type: Number, required: true },
     //     volume: { type: Number, required: true },
-    //   },
-    // ],
-
-    // friends: [
-    //   {
-    //     friendId: { type: String, ref: 'User' },
-    //     friendsSince: { type: Date, required: true },
     //   },
     // ],
   },
