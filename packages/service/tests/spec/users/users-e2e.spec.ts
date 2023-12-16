@@ -49,7 +49,7 @@ describe('Users End-to-End Tests', () => {
   beforeEach(async () => {
     const adminUser = new UserModel(AdminUserData);
     const regularUser = new UserModel(RegularUserData);
-    await Promise.all([adminUser.save(), regularUser.save()]);
+    await UserModel.insertMany([adminUser, regularUser]);
   });
 
   afterAll(async () => {

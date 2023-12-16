@@ -2,23 +2,20 @@ import { Module } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import { FriendsController } from './friends.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  FriendModel,
-  FriendSchema,
-  FriendRequestModel,
-  FriendRequestSchema,
-  UserModel,
-  UserSchema,
-} from '../schemas';
+import { FriendSchema, FriendRequestSchema, UserSchema } from '../schemas';
 import { FriendRequestsController } from './friend-requests.controller';
+import { UsersModule } from '../users';
+import { Collections } from '../data';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: FriendModel.name, schema: FriendSchema },
-      { name: FriendRequestModel.name, schema: FriendRequestSchema },
-      { name: UserModel.name, schema: UserSchema },
+      { name: Collections.Users, schema: UserSchema },
+      { name: Collections.Friends, schema: FriendSchema },
+      { name: Collections.FriendRequests, schema: FriendRequestSchema },
     ]),
+
+    UsersModule,
   ],
   providers: [FriendsService],
   controllers: [FriendsController, FriendRequestsController],

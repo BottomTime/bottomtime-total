@@ -6,6 +6,7 @@ import { UsersModule } from './users';
 import { PassportModule } from '@nestjs/passport';
 import { AdminModule } from './admin';
 import { EmailModule } from './email';
+import { FriendsModule } from './friends';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EmailModule } from './email';
     AdminModule,
     AuthModule,
     UsersModule,
+    FriendsModule,
   ],
   providers: [],
   controllers: [],

@@ -60,7 +60,7 @@ describe('Friends Service', () => {
   let service: FriendsService;
 
   beforeAll(() => {
-    service = new FriendsService(FriendModel, FriendRequestModel, UserModel);
+    service = new FriendsService(UserModel, FriendModel, FriendRequestModel);
   });
 
   describe('when listing friends', () => {

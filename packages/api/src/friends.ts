@@ -41,8 +41,8 @@ export const ListFriendsParamsSchema = z
   .object({
     sortBy: z.nativeEnum(FriendsSortBy),
     sortOrder: z.nativeEnum(SortOrder),
-    skip: z.number().int().min(0),
-    limit: z.number().int().min(1).max(100),
+    skip: z.coerce.number().int().min(0),
+    limit: z.coerce.number().int().min(1).max(100),
   })
   .partial();
 export type ListFriendsParams = z.infer<typeof ListFriendsParamsSchema>;

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -29,6 +30,7 @@ import {
 import { FriendData, FriendModel } from '../schemas/friends.document';
 import { v4 as uuid } from 'uuid';
 import dayjs from 'dayjs';
+import { Collections } from '../data';
 
 // List Friends Types
 export type Friend = FriendDTO;
@@ -61,13 +63,15 @@ export class FriendsService {
     sortBy: FriendsSortBy.FriendsSince,
   };
 
+  private readonly log: Logger = new Logger(FriendsService.name);
+
   constructor(
-    @InjectModel(FriendModel.name)
-    private readonly Friends: Model<FriendData>,
-    @InjectModel(FriendRequestModel.name)
-    private readonly FriendRequests: Model<FriendRequestData>,
-    @InjectModel(UserModel.name)
+    @InjectModel(Collections.Users)
     private readonly Users: Model<UserData>,
+    @InjectModel(Collections.Friends)
+    private readonly Friends: Model<FriendData>,
+    @InjectModel(Collections.FriendRequests)
+    private readonly FriendRequests: Model<FriendRequestData>,
   ) {}
 
   private static toFriendDTO(friend: UserDocument, friendsSince: Date): Friend {
@@ -136,7 +140,11 @@ export class FriendsService {
       this.Friends.find({
         userId: options.userId,
       })
-        .populate('friendId', FriendProjection)
+        .populate({
+          path: 'friendId',
+          select: FriendProjection,
+          model: UserModel,
+        })
         .sort({ friendsSince: options.sortOrder === 'asc' ? 1 : -1 })
         .skip(options.skip ?? 0)
         .limit(options.limit ?? 100)
@@ -221,6 +229,7 @@ export class FriendsService {
       return this.listFriendsByFriendsSince(options);
     }
 
+    this.log.debug(`Querying for friends where userId = ${options.userId}...`);
     return this.listFriendsByOther(options);
   }
 
@@ -229,7 +238,11 @@ export class FriendsService {
     friendId: string,
   ): Promise<Friend | undefined> {
     const friend = await this.Friends.findOne({ userId, friendId })
-      .populate('friendId', FriendProjection)
+      .populate({
+        path: 'friendId',
+        select: FriendProjection,
+        model: UserModel,
+      })
       .exec();
 
     if (friend && typeof friend.friendId === 'object') {
@@ -277,8 +290,16 @@ export class FriendsService {
     const [requestsData, totalCount] = await Promise.all([
       this.FriendRequests.find(query)
         .sort({ expires: -1 })
-        .populate('from', FriendProjection)
-        .populate('to', FriendProjection)
+        .populate({
+          path: 'from',
+          select: FriendProjection,
+          model: UserModel,
+        })
+        .populate({
+          path: 'to',
+          select: FriendProjection,
+          model: UserModel,
+        })
         .skip(options.skip ?? 0)
         .limit(options.limit ?? 100)
         .exec(),

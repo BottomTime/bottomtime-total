@@ -1,7 +1,7 @@
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user';
-import { UserData, UserModel } from '../schemas';
+import { UserData } from '../schemas';
 import { FilterQuery, Model, Types } from 'mongoose';
 import {
   CreateUserOptions,
@@ -16,6 +16,7 @@ import { v4 as uuid } from 'uuid';
 import { hash } from 'bcrypt';
 import { Config } from '../config';
 import { z } from 'zod';
+import { Collections } from '../data';
 
 const SelectString = '-friends';
 
@@ -30,7 +31,7 @@ export class UsersService {
   private readonly log = new Logger(UsersService.name);
 
   constructor(
-    @InjectModel(UserModel.name)
+    @InjectModel(Collections.Users)
     private readonly Users: Model<UserData>,
   ) {}
 

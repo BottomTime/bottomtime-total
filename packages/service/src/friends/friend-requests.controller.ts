@@ -1,9 +1,17 @@
-import { Controller, Delete, Get, HttpCode, Put, Query } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import {
   ApiAcceptedResponse,
   ApiBadRequestResponse,
-  ApiConflictResponse,
+  ApiBody,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNoContentResponse,
@@ -17,8 +25,12 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
+  AcknowledgeFriendRequestParamsSchema,
+  FriendRequestDTO,
+  FriendRequestSchema,
   ListFriendRequestsParams,
   ListFriendRequestsParamsSchema,
+  ListFriendRequestsResponseDTO,
   ListFriendRequestsResponseSchema,
 } from '@bottomtime/api';
 import { generateSchema } from '@anatine/zod-openapi';
@@ -37,7 +49,7 @@ const FriendUsernameOrEmailApiParam: ApiParamOptions = {
   example: 'harry_godgins53',
 };
 
-@Controller('api/users/:usernameOrEmail/friendRequests')
+@Controller(`api/users/:${FriendUsernameOrEmailApiParam.name}/friendRequests`)
 @ApiTags('Friends')
 @ApiUnauthorizedResponse({
   description: 'The request failed because the current user is not logged in.',
@@ -83,9 +95,29 @@ export class FriendRequestsController {
     description:
       'The request has successfully completed. The results will be in the response body.',
   })
-  async listFriendRequests(@Query() options: ListFriendRequestsParams) {}
+  async listFriendRequests(
+    @Query() options: ListFriendRequestsParams,
+  ): Promise<ListFriendRequestsResponseDTO> {
+    throw new Error('Not implemented');
+  }
 
-  @Put(':friendUsernameOrEmail')
+  @Get(`:${FriendUsernameOrEmailApiParam.name}`)
+  @ApiOperation({
+    summary: 'Get Friend Request',
+    description: 'Gets an existing friend request.',
+  })
+  @ApiParam(UsernameOrEmailApiParam)
+  @ApiParam(FriendUsernameOrEmailApiParam)
+  @ApiOkResponse({
+    schema: generateSchema(FriendRequestSchema),
+    description:
+      'The request completed successfully and the friend request is in the response body.',
+  })
+  async getFriendRequest(): Promise<FriendRequestDTO> {
+    throw new Error('Not implemented');
+  }
+
+  @Put(`:${FriendUsernameOrEmailApiParam.name}`)
   @HttpCode(202)
   @ApiOperation({
     summary: 'Make Friend Request',
@@ -102,17 +134,21 @@ export class FriendRequestsController {
     description:
       'The request was rejected because there is already an active friend request addressed to the indicated user, or the users are already friends.',
   })
-  async sendFriendRequest() {}
+  async sendFriendRequest(): Promise<void> {}
 
-  @Put(':friendUsernameOrEmail')
+  @Post(`:${FriendUsernameOrEmailApiParam.name}/acknowledge}`)
   @ApiOperation({
     summary: 'Acknowledge Friend Request',
     description: 'Accepts or declines a friend request',
   })
   @ApiParam(UsernameOrEmailApiParam)
   @ApiParam(FriendUsernameOrEmailApiParam)
+  @ApiBody({
+    schema: generateSchema(AcknowledgeFriendRequestParamsSchema),
+    description: 'The friend request to acknowledge.',
+  })
   @ApiNoContentResponse({
-    description: 'Accepts or declines friend request',
+    description: 'Friend request has been accepted or declined.',
   })
   async acknowledgeFriendRequest(): Promise<void> {}
 

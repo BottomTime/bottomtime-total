@@ -17,6 +17,14 @@ export class GlobalErrorFilter implements ExceptionFilter {
     private readonly httpAdapterHost: HttpAdapterHost,
   ) {}
 
+  private isZodError(exception: unknown): exception is ZodError {
+    return (
+      exception instanceof Error &&
+      exception.name === 'ZodError' &&
+      'issues' in exception
+    );
+  }
+
   private handleError(exception: Error, response: ErrorResponse) {
     response.message = exception.message;
     if (!Config.isProduction) response.stack = exception.stack;
@@ -28,15 +36,15 @@ export class GlobalErrorFilter implements ExceptionFilter {
       } else {
         this.log.error(exception);
       }
-    }
-
-    if (exception instanceof ZodError) {
-      this.log.debug(exception);
+    } else if (this.isZodError(exception)) {
+      this.log.debug('Zod validation error', exception.issues);
 
       const details: ValidationErrorDetails = { issues: exception.issues };
+      response.message = 'Request validation failed';
       response.details = details;
       response.status = 400;
-      response.message = exception.message;
+    } else {
+      this.log.error(exception);
     }
   }
 
