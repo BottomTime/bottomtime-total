@@ -2,6 +2,7 @@
 import { EmailOptions, EmailService, EmailType } from '../../../src/email';
 import { UserData, UserModel } from '../../../src/schemas';
 import { User } from '../../../src/users/user';
+import { TestMailer } from '../../utils';
 
 const TestUserData: Partial<UserData> = {
   username: 'MostExcellentUser33',
@@ -33,6 +34,7 @@ describe('Email Service', () => {
 
   let oldEnv: object;
   let service: EmailService;
+  let mailClient: TestMailer;
 
   beforeAll(() => {
     oldEnv = Object.assign({}, process.env);
@@ -41,7 +43,9 @@ describe('Email Service', () => {
   });
 
   beforeEach(() => {
-    service = new EmailService();
+    mailClient = new TestMailer();
+    service = new EmailService(mailClient);
+    service.onModuleInit();
     jest.useFakeTimers({
       doNotFake: ['nextTick', 'setImmediate'],
       now: new Date('2023-07-20T11:47:36.692Z'),
@@ -56,6 +60,23 @@ describe('Email Service', () => {
     it(`will generate ${emailType} email`, async () => {
       const email = await service.generateMessageContent(options);
       expect(email).toMatchSnapshot();
+    });
+  });
+
+  it('will send a single email', async () => {
+    const recipients = {
+      to: ['mike@email.org', 'larry@email.org', 'sarah@email.org'],
+    };
+    const subject = 'Test Mail';
+    const body = 'Hi mike! How is it hanging?';
+
+    service.sendMail(recipients, subject, body);
+
+    expect(mailClient.sentMail).toHaveLength(1);
+    expect(mailClient.sentMail[0]).toEqual({
+      recipients,
+      subject,
+      body,
     });
   });
 });

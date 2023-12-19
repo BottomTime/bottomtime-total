@@ -1,5 +1,60 @@
 /* eslint-disable no-process-env */
+import { z } from 'zod';
+
 import 'dotenv-defaults/config';
+
+const ConfigSchema = z
+  .object({
+    // General config
+    BT_ADMIN_EMAIL: z.string().email().default('admin@bottomti.me'),
+    BT_BASE_URL: z.string().url().default('http://localhost:8080/'),
+    BT_FRIENDS_LIMIT: z.coerce.number().int().positive().default(1000),
+    BT_LOG_LEVEL: z
+      .enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal'])
+      .default('info'),
+    BT_MONGO_URI: z
+      .string()
+      .default('mongodb://127.0.0.1:27017/bottomtime-local'),
+    BT_PASSWORD_SALT_ROUNDS: z.coerce.number().int().positive().default(15),
+    BT_PORT: z.coerce.number().int().positive().default(4800),
+    NODE_ENV: z.string().default('local'),
+
+    // Session Cookie
+    BT_SESSION_COOKIE_DOMAIN: z.string().optional(),
+    BT_SESSION_COOKIE_NAME: z.string().default('bottomtime.local'),
+    BT_SESSION_SECRET: z.string().min(8),
+    BT_SESSION_COOKIE_TTL: z
+      .number()
+      .int()
+      .positive()
+      .default(14 * 24 * 60),
+
+    // SMTP/Email config
+    BT_SMTP_HOST: z.string().url(),
+  })
+  .transform((obj) => ({
+    adminEmail: obj.BT_ADMIN_EMAIL,
+    baseUrl: obj.BT_BASE_URL,
+    friendsLimit: obj.BT_FRIENDS_LIMIT,
+    logLevel: obj.BT_LOG_LEVEL,
+    isProduction: obj.NODE_ENV === 'production',
+    mongoUri: obj.BT_MONGO_URI,
+    passwordSaltRounds: obj.BT_PASSWORD_SALT_ROUNDS,
+    port: obj.BT_PORT,
+    env: obj.NODE_ENV,
+
+    mail: {
+      host: obj.BT_SMTP_HOST,
+    },
+
+    sessions: {
+      cookieDomain: obj.BT_SESSION_COOKIE_DOMAIN,
+      cookieName: obj.BT_SESSION_COOKIE_NAME,
+      sessionSecret: obj.BT_SESSION_SECRET,
+      cookieTTL: obj.BT_SESSION_COOKIE_TTL,
+    },
+  }));
+export type AppConfig = z.infer<typeof ConfigSchema>;
 
 function toNumber(value: string | undefined, defaultValue: number): number {
   if (!value) return defaultValue;

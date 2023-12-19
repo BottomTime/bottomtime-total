@@ -10,7 +10,11 @@ let mongoose: typeof Mongoose;
 
 async function purgeDatabase() {
   const collections = await mongoClient.db().collections();
-  await Promise.all(collections.map((collection) => collection.deleteMany({})));
+  await Promise.all(
+    collections
+      .filter((collection) => collection.collectionName !== 'changelog')
+      .map((collection) => collection.deleteMany({})),
+  );
 }
 
 global.beforeAll(async () => {

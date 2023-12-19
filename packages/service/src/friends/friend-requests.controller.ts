@@ -1,17 +1,25 @@
 import {
+  Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
+  Logger,
+  NotFoundException,
+  Param,
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import {
   ApiAcceptedResponse,
   ApiBadRequestResponse,
   ApiBody,
+  ApiConflictResponse,
+  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNoContentResponse,
@@ -25,6 +33,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
+  AcknowledgeFriendRequestParamsDTO,
   AcknowledgeFriendRequestParamsSchema,
   FriendRequestDTO,
   FriendRequestSchema,
@@ -32,24 +41,30 @@ import {
   ListFriendRequestsParamsSchema,
   ListFriendRequestsResponseDTO,
   ListFriendRequestsResponseSchema,
+  UserRole,
 } from '@bottomtime/api';
 import { generateSchema } from '@anatine/zod-openapi';
+import { RequestValidator } from '../request-validator';
+import { AssertAuth, CurrentUser } from '../auth';
+import { User } from '../users/user';
+import { UsersService } from '../users/users.service';
 
 const UsernameOrEmailApiParam: ApiParamOptions = {
-  name: 'usernameOrEmail',
+  name: 'user',
   description:
     'The username or email that uniquely identifies the user account.',
   example: 'harry_godgins53',
 };
 
 const FriendUsernameOrEmailApiParam: ApiParamOptions = {
-  name: 'friendUsernameOrEmail',
+  name: 'friend',
   description:
     'The username or email that uniquely identifies the user to whome the friend request is addressed.',
   example: 'harry_godgins53',
 };
 
-@Controller(`api/users/:${FriendUsernameOrEmailApiParam.name}/friendRequests`)
+@Controller(`api/users/:${UsernameOrEmailApiParam.name}/friendRequests`)
+@UseGuards(AssertAuth)
 @ApiTags('Friends')
 @ApiUnauthorizedResponse({
   description: 'The request failed because the current user is not logged in.',
@@ -66,7 +81,47 @@ const FriendUsernameOrEmailApiParam: ApiParamOptions = {
   description: 'The request failed due to an internal server error.',
 })
 export class FriendRequestsController {
-  constructor(private readonly friendsService: FriendsService) {}
+  private readonly log: Logger = new Logger(FriendRequestsController.name);
+
+  private async loadUserData(
+    currentUser: User,
+    username: string,
+    friendUsername?: string,
+  ): Promise<{ user: User; friend?: User }> {
+    this.log.debug(`Attempting to load user info for user "${username}"...`);
+    const user = await this.usersService.getUserByUsernameOrEmail(username);
+    if (!user) {
+      throw new NotFoundException(
+        `Unable to find user with username or email ${username}.`,
+      );
+    }
+
+    if (currentUser.role !== UserRole.Admin && currentUser.id !== user.id) {
+      throw new ForbiddenException(
+        'You are not authorized to view or modify the requested user account.',
+      );
+    }
+
+    let friend: User | undefined = undefined;
+    if (friendUsername) {
+      this.log.debug(
+        `Attempting to load user info for user "${friendUsername}...`,
+      );
+      friend = await this.usersService.getUserByUsernameOrEmail(friendUsername);
+      if (!friend) {
+        throw new NotFoundException(
+          `Unable to find user with username or email ${friendUsername}.`,
+        );
+      }
+    }
+
+    return { user, friend };
+  }
+
+  constructor(
+    private readonly friendsService: FriendsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -96,9 +151,20 @@ export class FriendRequestsController {
       'The request has successfully completed. The results will be in the response body.',
   })
   async listFriendRequests(
-    @Query() options: ListFriendRequestsParams,
+    @CurrentUser() currentUser: User,
+    @Param(UsernameOrEmailApiParam.name)
+    usernameOrEmail: string,
+    @Query(new RequestValidator(ListFriendRequestsParamsSchema))
+    options: ListFriendRequestsParams,
   ): Promise<ListFriendRequestsResponseDTO> {
-    throw new Error('Not implemented');
+    const { user } = await this.loadUserData(currentUser, usernameOrEmail);
+
+    const results = await this.friendsService.listFriendRequests({
+      ...options,
+      userId: user.id,
+    });
+
+    return results;
   }
 
   @Get(`:${FriendUsernameOrEmailApiParam.name}`)
@@ -113,12 +179,37 @@ export class FriendRequestsController {
     description:
       'The request completed successfully and the friend request is in the response body.',
   })
-  async getFriendRequest(): Promise<FriendRequestDTO> {
-    throw new Error('Not implemented');
+  async getFriendRequest(
+    @CurrentUser() currentUser: User,
+    @Param(UsernameOrEmailApiParam.name)
+    usernameOrEmail: string,
+    @Param(FriendUsernameOrEmailApiParam.name)
+    friendUsernameOrEmail: string,
+  ): Promise<FriendRequestDTO> {
+    const { user, friend } = await this.loadUserData(
+      currentUser,
+      usernameOrEmail,
+      friendUsernameOrEmail,
+    );
+
+    const friendRequest = await this.friendsService.getFriendRequest(
+      user.id,
+      friend!.id,
+    );
+
+    if (!friendRequest) {
+      throw new NotFoundException(
+        `Unable to find friend request from ${user.username} to ${
+          friend!.username
+        }.`,
+      );
+    }
+
+    return friendRequest;
   }
 
   @Put(`:${FriendUsernameOrEmailApiParam.name}`)
-  @HttpCode(202)
+  @HttpCode(201)
   @ApiOperation({
     summary: 'Make Friend Request',
     description:
@@ -126,17 +217,41 @@ export class FriendRequestsController {
   })
   @ApiParam(UsernameOrEmailApiParam)
   @ApiParam(FriendUsernameOrEmailApiParam)
-  @ApiAcceptedResponse({
+  @ApiCreatedResponse({
     description:
       'The friend request was created and the user to whom it was addressed will be notified.',
+    schema: generateSchema(FriendRequestSchema),
   })
-  @ApiBadRequestResponse({
+  @ApiConflictResponse({
     description:
       'The request was rejected because there is already an active friend request addressed to the indicated user, or the users are already friends.',
   })
-  async sendFriendRequest(): Promise<void> {}
+  @ApiBadRequestResponse({
+    description:
+      'The request failed because the user attempted to send a friend request to themselves.',
+  })
+  async sendFriendRequest(
+    @CurrentUser() currentUser: User,
+    @Param(UsernameOrEmailApiParam.name)
+    usernameOrEmail: string,
+    @Param(FriendUsernameOrEmailApiParam.name)
+    friendUsernameOrEmail: string,
+  ): Promise<FriendRequestDTO> {
+    const { user, friend } = await this.loadUserData(
+      currentUser,
+      usernameOrEmail,
+      friendUsernameOrEmail,
+    );
 
-  @Post(`:${FriendUsernameOrEmailApiParam.name}/acknowledge}`)
+    const result = await this.friendsService.createFriendRequest(
+      user.id,
+      friend!.id,
+    );
+    return result;
+  }
+
+  @Post(`:${FriendUsernameOrEmailApiParam.name}/acknowledge`)
+  @HttpCode(204)
   @ApiOperation({
     summary: 'Acknowledge Friend Request',
     description: 'Accepts or declines a friend request',
@@ -150,9 +265,41 @@ export class FriendRequestsController {
   @ApiNoContentResponse({
     description: 'Friend request has been accepted or declined.',
   })
-  async acknowledgeFriendRequest(): Promise<void> {}
+  async acknowledgeFriendRequest(
+    @CurrentUser() currentUser: User,
+    @Param(UsernameOrEmailApiParam.name) usernameOrEmail: string,
+    @Param(FriendUsernameOrEmailApiParam.name) friendUsernameOrEmail: string,
+    @Body(new RequestValidator(AcknowledgeFriendRequestParamsSchema))
+    params: AcknowledgeFriendRequestParamsDTO,
+  ): Promise<void> {
+    const { user, friend } = await this.loadUserData(
+      currentUser,
+      usernameOrEmail,
+      friendUsernameOrEmail,
+    );
 
-  @Delete(':friendUsernameOrEmail')
+    let success: boolean;
+
+    if (params.accepted) {
+      success = await this.friendsService.acceptFriendRequest(
+        user.id,
+        friend!.id,
+      );
+    } else {
+      success = await this.friendsService.rejectFriendRequest(
+        user.id,
+        friend!.id,
+        params.reason,
+      );
+    }
+
+    if (!success) {
+      throw new NotFoundException('Friend request was not found');
+    }
+  }
+
+  @Delete(`:${FriendUsernameOrEmailApiParam.name}`)
+  @HttpCode(204)
   @ApiOperation({
     summary: 'Cancel Friend Request',
     description: 'Cancels (deletes) an existing friend request.',
@@ -163,5 +310,26 @@ export class FriendRequestsController {
     description:
       'The request completed successfully and the friend request has been deleted/cancelled.',
   })
-  async cancelFriendRequest() {}
+  async cancelFriendRequest(
+    @CurrentUser() currentUser: User,
+    @Param(UsernameOrEmailApiParam.name)
+    usernameOrEmail: string,
+    @Param(FriendUsernameOrEmailApiParam.name)
+    friendUsernameOrEmail: string,
+  ): Promise<void> {
+    const { user, friend } = await this.loadUserData(
+      currentUser,
+      usernameOrEmail,
+      friendUsernameOrEmail,
+    );
+
+    const success = await this.friendsService.cancelFriendRequest(
+      user.id,
+      friend!.id,
+    );
+
+    if (!success) {
+      throw new NotFoundException('Friend request was not found');
+    }
+  }
 }

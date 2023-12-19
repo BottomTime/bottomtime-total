@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { User } from '../users/user';
 import { Config } from '../config';
 import { compileFile, compileTemplate, Options } from 'pug';
 import path from 'path';
+import { IMailClient, MailClientService } from './interfaces';
 
 export enum EmailType {
   ResetPassword = 'resetPassword',
@@ -48,9 +49,9 @@ export type Recipients = {
 };
 
 @Injectable()
-export class EmailService {
+export class EmailService implements OnModuleInit {
   private static readonly pugOptions: Options = {
-    basedir: path.resolve(__dirname, './templates'),
+    basedir: path.resolve(__dirname, '../../assets/templates'),
   } as const;
 
   private static readonly templatePaths: Record<EmailType, string> = {
@@ -58,9 +59,13 @@ export class EmailService {
     [EmailType.VerifyEmail]: 'verify-email-template.pug',
     [EmailType.Welcome]: 'welcome-email-template.pug',
   } as const;
-
-  private readonly templates: Record<EmailType, compileTemplate>;
   private readonly log: Logger = new Logger(EmailService.name);
+
+  private templates: Record<EmailType, compileTemplate> | undefined;
+
+  constructor(
+    @Inject(MailClientService) private readonly mailClient: IMailClient,
+  ) {}
 
   private preCompileTemplate(type: EmailType): compileTemplate {
     const basedir = path.resolve(__dirname, 'templates/');
@@ -75,16 +80,6 @@ export class EmailService {
     return compiledTemplate;
   }
 
-  constructor() {
-    this.templates = {
-      [EmailType.ResetPassword]: this.preCompileTemplate(
-        EmailType.ResetPassword,
-      ),
-      [EmailType.VerifyEmail]: this.preCompileTemplate(EmailType.VerifyEmail),
-      [EmailType.Welcome]: this.preCompileTemplate(EmailType.Welcome),
-    };
-  }
-
   private getFullEmailOptions(options: EmailOptions): EmailOptionsWithGlobals {
     return {
       adminEmail: Config.adminEmail,
@@ -94,11 +89,35 @@ export class EmailService {
     };
   }
 
+  onModuleInit() {
+    this.templates = {
+      [EmailType.ResetPassword]: this.preCompileTemplate(
+        EmailType.ResetPassword,
+      ),
+      [EmailType.VerifyEmail]: this.preCompileTemplate(EmailType.VerifyEmail),
+      [EmailType.Welcome]: this.preCompileTemplate(EmailType.Welcome),
+    };
+  }
+
   async generateMessageContent(options: EmailOptions): Promise<string> {
+    if (!this.templates) {
+      throw new Error('Module has not yet been initialized.');
+    }
+
     const locals = this.getFullEmailOptions(options);
     const html = this.templates[options.type](locals);
     return html;
   }
 
-  sendMail(recipients: Recipients, subject: string, body: string): void {}
+  sendMail(recipients: Recipients, subject: string, body: string): void {
+    this.mailClient
+      .sendMail(recipients, subject, body)
+      .then(() => {
+        this.log.debug('Email has been sent', {
+          recipients,
+          subject,
+        });
+      })
+      .catch(this.log.error);
+  }
 }

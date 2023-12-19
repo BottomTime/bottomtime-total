@@ -43,18 +43,18 @@ import { RequestValidator } from '../request-validator';
 import { UsersService } from '../users/users.service';
 
 const UsernameOrEmailApiParam: ApiParamOptions = {
-  name: 'usernameOrEmail',
+  name: 'user',
   description:
     'The username or email that uniquely identifies the user account.',
   example: 'harry_godgins53',
 };
 const FriendUsernameOrEmailApiParam: ApiParamOptions = {
-  name: 'friendUsernameOrEmail',
+  name: 'friend',
   description: "The username or email that identifies the user's friend.",
   example: 'ricky_bobby',
 };
 
-@Controller('api/users/:usernameOrEmail/friends')
+@Controller(`api/users/:${UsernameOrEmailApiParam.name}/friends`)
 @UseGuards(AssertAuth)
 @ApiTags('Friends')
 @ApiUnauthorizedResponse({

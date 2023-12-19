@@ -8,7 +8,8 @@
   "private": true,
   "scripts": {
     "admin": "ts-node admin/bt-admin.ts",
-    "build": "rm -rf dist/ && tsc && cp -R src/email/templates/ dist/email/templates/",
+    "clean": "rimraf dist/ && rimraf coverage/",
+    "build": "yarn clean && tsc",
     "daemon:start": "pm2 start dist/index.js",
     "daemon:stop": "pm2 stop dist/index.js",
     "migrate": "migrate-mongo",
@@ -91,6 +92,7 @@
     "nodemon": "^2.0.22",
     "pm2": "^5.3.0",
     "prompts": "^2.4.2",
+    "rimraf": "^5.0.5",
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",

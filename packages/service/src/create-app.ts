@@ -1,7 +1,7 @@
 import Logger from 'bunyan';
 import { BunyanLogger } from './bunyan-logger';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule, ServerDependencies } from './app.module';
 import cookieParser from 'cookie-parser';
 import useragent from 'express-useragent';
 import { NextFunction, Request, Response } from 'express';
@@ -49,10 +49,14 @@ function setupDocumentation(app: INestApplication): void {
   SwaggerModule.setup('docs', app, documentation);
 }
 
-export async function createApp(logger: Logger): Promise<INestApplication> {
+export async function createApp(
+  logger: Logger,
+  createDeps: () => Promise<ServerDependencies>,
+): Promise<INestApplication> {
   const logService = new BunyanLogger(logger);
+  const deps = await createDeps();
 
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create(AppModule.forRoot(deps), {
     cors: {
       // TODO: Limit domains.
       origin: (_origin, cb) => {

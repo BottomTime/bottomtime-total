@@ -4,7 +4,7 @@ import { MongoClient } from 'mongodb';
 
 import config from '../config';
 import { DefaultDiveSiteManager, DiveSiteManager } from '../diveSites';
-import { MailClient } from '../email';
+import { IMailClient } from '../email';
 import { NodemailerClient } from '../email/nodemailer-client';
 import { UserManager } from '../users';
 import { DefaultUserManager } from '../users/default-user-manager';
@@ -12,7 +12,7 @@ import { PreDefinedTankManager, TankManager } from '../tanks';
 
 export interface ServerDependencies {
   log: bunyan;
-  mail: MailClient;
+  mail: IMailClient;
   mongoClient: MongoClient;
   diveSiteManager: DiveSiteManager;
   tankManager: TankManager;

@@ -1,28 +1,34 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Config } from './config';
 import { UsersModule } from './users';
 import { PassportModule } from '@nestjs/passport';
 import { AdminModule } from './admin';
-import { EmailModule } from './email';
+import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
 
-@Module({
-  imports: [
-    MongooseModule.forRoot(Config.mongoUri),
-    PassportModule.register({
-      session: false,
-    }),
+export type ServerDependencies = {
+  mailClient: IMailClient;
+};
 
-    EmailModule,
-    AdminModule,
-    AuthModule,
-    UsersModule,
-    FriendsModule,
-  ],
-  providers: [],
-  controllers: [],
-  exports: [],
-})
-export class AppModule {}
+@Module({})
+export class AppModule {
+  static forRoot(deps: ServerDependencies): DynamicModule {
+    return {
+      module: AppModule,
+      imports: [
+        MongooseModule.forRoot(Config.mongoUri),
+        PassportModule.register({
+          session: false,
+        }),
+
+        EmailModule.register(deps.mailClient),
+        AdminModule,
+        AuthModule,
+        UsersModule,
+        FriendsModule,
+      ],
+    };
+  }
+}

@@ -19,7 +19,7 @@ import {
   User,
 } from '../../users';
 import {
-  MailClient,
+  IMailClient,
   ResetPasswordEmailTemplate,
   WelcomeEmailTemplate,
 } from '../../email';
@@ -40,7 +40,7 @@ const ResetPasswordBodySchema = z.object({
 type ResetPasswordParams = z.infer<typeof ResetPasswordBodySchema>;
 
 async function sendWelcomeEmail(
-  mail: MailClient,
+  mail: IMailClient,
   user: User,
   log: Logger,
 ): Promise<void> {

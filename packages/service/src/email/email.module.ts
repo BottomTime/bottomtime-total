@@ -1,10 +1,22 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { EmailService } from './email.service';
+import { IMailClient, MailClientService } from './interfaces';
 
-@Module({
-  imports: [],
-  providers: [EmailService],
-  controllers: [],
-  exports: [EmailService],
-})
-export class EmailModule {}
+@Module({})
+export class EmailModule {
+  static register(mailClient: IMailClient): DynamicModule {
+    return {
+      module: EmailModule,
+      imports: [],
+      providers: [
+        {
+          provide: MailClientService,
+          useValue: mailClient,
+        },
+        EmailService,
+      ],
+      controllers: [],
+      exports: [EmailService],
+    };
+  }
+}

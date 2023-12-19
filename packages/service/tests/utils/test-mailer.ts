@@ -1,4 +1,4 @@
-import { MailClient, Recipients } from '../../src/email';
+import { IMailClient, Recipients } from '../../src/email';
 
 export interface MailMessage {
   recipients: Recipients;
@@ -6,7 +6,7 @@ export interface MailMessage {
   body: string;
 }
 
-export class TestMailer implements MailClient {
+export class TestMailer implements IMailClient {
   private _sentMail: MailMessage[];
 
   constructor() {

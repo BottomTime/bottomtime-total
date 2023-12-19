@@ -42,13 +42,15 @@ export abstract class HtmlTemplate<TData extends BaseTemplateData> {
   abstract render(data: TData): Promise<string>;
 }
 
-export interface MailRecipients {
+export const MailClientService = Symbol('MAIL_CLIENT');
+
+export type MailRecipients = {
   to: string | string[];
   cc?: string | string[];
   bcc?: string | string[];
-}
+};
 
-export interface MailClient {
+export interface IMailClient {
   sendMail(
     recipients: MailRecipients,
     subject: string,

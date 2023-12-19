@@ -1,9 +1,9 @@
 import { Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-import { MailClient, MailRecipients } from './interfaces';
+import { IMailClient, MailRecipients } from './interfaces';
 
-export class NodemailerClient implements MailClient {
+export class NodemailerClient implements IMailClient {
   constructor(
     private readonly transporter: Transporter<SMTPTransport.SentMessageInfo>,
     private readonly fromAddress: string,
