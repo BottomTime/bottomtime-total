@@ -6,7 +6,7 @@ export const Collections = {
   FriendRequests: 'FriendRequests',
   KnownCertifications: 'KnownCertifications',
   Sessions: 'Sessions',
-  Tanks: 'PreDefinedTanks',
+  Tanks: 'Tanks',
   Users: 'Users',
 } as const;
 

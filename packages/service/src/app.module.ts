@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AdminModule } from './admin';
 import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
+import { TanksModule } from './tanks/tanks.module';
 
 export type ServerDependencies = {
   mailClient: IMailClient;
@@ -28,6 +29,7 @@ export class AppModule {
         AuthModule,
         UsersModule,
         FriendsModule,
+        TanksModule,
       ],
     };
   }

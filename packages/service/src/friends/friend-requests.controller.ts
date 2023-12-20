@@ -15,7 +15,6 @@ import {
 } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import {
-  ApiAcceptedResponse,
   ApiBadRequestResponse,
   ApiBody,
   ApiConflictResponse,

@@ -101,20 +101,6 @@ export const UserSchema = new Schema(
         required: true,
       },
     },
-
-    // tanks: [
-    //   {
-    //     _id: { type: String, required: true },
-    //     name: { type: String, required: true },
-    //     material: {
-    //       type: String,
-    //       enum: TankMaterial,
-    //       required: true,
-    //     },
-    //     workingPressure: { type: Number, required: true },
-    //     volume: { type: Number, required: true },
-    //   },
-    // ],
   },
   { collection: Collections.Users },
 );
