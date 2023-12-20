@@ -28,11 +28,13 @@ export const TankSchema = z.object({
 });
 export type TankDTO = z.infer<typeof TankSchema>;
 
-export const CreateTankParamsSchema = TankSchema.omit({
+export const CreateOrUpdateTankParamsSchema = TankSchema.omit({
   id: true,
   isSystem: true,
 });
-export type CreateTankParamsDTO = z.infer<typeof CreateTankParamsSchema>;
+export type CreateOrUpdateTankParamsDTO = z.infer<
+  typeof CreateOrUpdateTankParamsSchema
+>;
 
 export const ListTanksResponseSchema = z.object({
   tanks: TankSchema.array(),

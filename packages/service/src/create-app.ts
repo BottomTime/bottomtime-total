@@ -42,6 +42,7 @@ function setupDocumentation(app: INestApplication): void {
       'Users',
       'Endpoints pertaining to the management of user accounts or profiles.',
     )
+    .addTag('Tanks', 'Endpoints pertaining to the management of dive tanks.')
     .addServer(Config.baseUrl)
     .build();
 
