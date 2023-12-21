@@ -43,7 +43,7 @@ import {
   UserRole,
 } from '@bottomtime/api';
 import { generateSchema } from '@anatine/zod-openapi';
-import { RequestValidator } from '../request-validator';
+import { ZodValidator } from '../request-validator';
 import { AssertAuth, CurrentUser } from '../auth';
 import { User } from '../users/user';
 import { UsersService } from '../users/users.service';
@@ -153,7 +153,7 @@ export class FriendRequestsController {
     @CurrentUser() currentUser: User,
     @Param(UsernameOrEmailApiParam.name)
     usernameOrEmail: string,
-    @Query(new RequestValidator(ListFriendRequestsParamsSchema))
+    @Query(new ZodValidator(ListFriendRequestsParamsSchema))
     options: ListFriendRequestsParams,
   ): Promise<ListFriendRequestsResponseDTO> {
     const { user } = await this.loadUserData(currentUser, usernameOrEmail);
@@ -268,7 +268,7 @@ export class FriendRequestsController {
     @CurrentUser() currentUser: User,
     @Param(UsernameOrEmailApiParam.name) usernameOrEmail: string,
     @Param(FriendUsernameOrEmailApiParam.name) friendUsernameOrEmail: string,
-    @Body(new RequestValidator(AcknowledgeFriendRequestParamsSchema))
+    @Body(new ZodValidator(AcknowledgeFriendRequestParamsSchema))
     params: AcknowledgeFriendRequestParamsDTO,
   ): Promise<void> {
     const { user, friend } = await this.loadUserData(

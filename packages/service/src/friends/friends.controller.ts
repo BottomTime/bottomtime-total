@@ -39,7 +39,7 @@ import {
 import { AssertAuth, CurrentUser } from '../auth';
 import { User } from '../users/user';
 import { generateSchema } from '@anatine/zod-openapi';
-import { RequestValidator } from '../request-validator';
+import { ZodValidator } from '../request-validator';
 import { UsersService } from '../users/users.service';
 
 const UsernameOrEmailApiParam: ApiParamOptions = {
@@ -162,7 +162,7 @@ export class FriendsController {
   async listFriends(
     @CurrentUser() currentUser: User,
     @Param(UsernameOrEmailApiParam.name) username: string,
-    @Query(new RequestValidator(ListFriendsParamsSchema))
+    @Query(new ZodValidator(ListFriendsParamsSchema))
     options: ListFriendsParams,
   ): Promise<ListFriendsResponseDTO> {
     const { user } = await this.loadUserData(currentUser, username);

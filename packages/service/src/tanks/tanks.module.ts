@@ -4,6 +4,8 @@ import { TanksController } from './tanks.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TankSchema } from '../schemas';
 import { Collections } from '../data';
+import { AssertTankOwner } from './assert-tank-owner.guard';
+import { UserTanksController } from './user-tanks.controller';
 
 @Module({
   imports: [
@@ -11,7 +13,7 @@ import { Collections } from '../data';
       { name: Collections.Tanks, schema: TankSchema },
     ]),
   ],
-  providers: [TanksService],
-  controllers: [TanksController],
+  providers: [TanksService, AssertTankOwner],
+  controllers: [TanksController, UserTanksController],
 })
 export class TanksModule {}

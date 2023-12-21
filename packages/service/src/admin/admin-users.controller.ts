@@ -41,7 +41,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { RequestValidator } from '../request-validator';
+import { ZodValidator } from '../request-validator';
 import { generateSchema } from '@anatine/zod-openapi';
 
 const UsernameOrEmailParam = 'usernameOrEmail';
@@ -121,7 +121,7 @@ export class AdminUsersController {
   })
   @ApiBadRequestResponse({ description: 'The query string was invalid.' })
   async searchUsers(
-    @Query(new RequestValidator(AdminSearchUsersParamsSchema))
+    @Query(new ZodValidator(AdminSearchUsersParamsSchema))
     params: AdminSearchUsersParams,
   ): Promise<UserDTO[]> {
     return [];
@@ -149,7 +149,7 @@ export class AdminUsersController {
   @ApiNotFoundResponse({ description: 'The user was not found.' })
   async changeRole(
     @Param(UsernameOrEmailParam) usernameOrEmail: string,
-    @Body(new RequestValidator(ChangeRoleParamsSchema))
+    @Body(new ZodValidator(ChangeRoleParamsSchema))
     { newRole }: ChangeRoleParams,
   ): Promise<void> {
     const result = await this.adminService.changeRole(usernameOrEmail, newRole);
@@ -187,7 +187,7 @@ export class AdminUsersController {
   @ApiNotFoundResponse({ description: 'The user was not found.' })
   async resetPassword(
     @Param(UsernameOrEmailParam) usernameOrEmail: string,
-    @Body(new RequestValidator(ResetPasswordParamsSchema))
+    @Body(new ZodValidator(ResetPasswordParamsSchema))
     { newPassword }: ResetPasswordParams,
   ): Promise<void> {
     const result = await this.adminService.resetPassword(

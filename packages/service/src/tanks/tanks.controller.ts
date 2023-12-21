@@ -1,8 +1,11 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
+  Param,
   Post,
   Put,
   UseGuards,
@@ -25,10 +28,15 @@ import {
 } from '@nestjs/swagger';
 import { generateSchema } from '@anatine/zod-openapi';
 import {
+  CreateOrUpdateTankParamsDTO,
   CreateOrUpdateTankParamsSchema,
+  ListTanksResponseDTO,
   ListTanksResponseSchema,
+  TankDTO,
   TankSchema,
 } from '@bottomtime/api';
+import { Tank, TanksService } from './tanks.service';
+import { ZodValidator } from '../request-validator';
 
 const TankIdApiParam: ApiParamOptions = {
   name: 'tankId',
@@ -47,6 +55,19 @@ const TankIdApiParam: ApiParamOptions = {
   description: 'The request failed due to an internal server error.',
 })
 export class TanksController {
+  constructor(private readonly tanksService: TanksService) {}
+
+  private static toDTO(tank: Tank): TankDTO {
+    return {
+      id: tank.id,
+      material: tank.material,
+      name: tank.name,
+      volume: tank.volume,
+      workingPressure: tank.workingPressure,
+      isSystem: !tank.userId,
+    };
+  }
+
   @Get()
   @UseGuards(AssertAuth)
   @ApiOperation({
@@ -58,7 +79,13 @@ export class TanksController {
     description:
       'The query was successful and the results will be in the response body.',
   })
-  async listTanks(): Promise<void> {}
+  async listTanks(): Promise<ListTanksResponseDTO> {
+    const tankData = await this.tanksService.listTanks();
+    return {
+      tanks: tankData.tanks.map((tank) => TanksController.toDTO(tank)),
+      totalCount: tankData.totalCount,
+    };
+  }
 
   @Get(':tankId')
   @UseGuards(AssertAuth)
@@ -76,7 +103,15 @@ export class TanksController {
     description:
       'The request failed because the indicated tank ID could not be found.',
   })
-  async getTank(): Promise<void> {}
+  async getTank(@Param(TankIdApiParam.name) tankId: string): Promise<TankDTO> {
+    const tank = await this.tanksService.getTank(tankId);
+
+    if (!tank) {
+      throw new NotFoundException(`Tank with ID "${tankId}" not found.`);
+    }
+
+    return TanksController.toDTO(tank);
+  }
 
   @Post()
   @HttpCode(201)
@@ -101,7 +136,13 @@ export class TanksController {
   @ApiForbiddenResponse({
     description: 'The request failed because the user is not an administrator.',
   })
-  async createTank(): Promise<void> {}
+  async createTank(
+    @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
+    options: CreateOrUpdateTankParamsDTO,
+  ): Promise<TankDTO> {
+    const tank = await this.tanksService.createTank(options);
+    return TanksController.toDTO(tank);
+  }
 
   @Put(':tankId')
   @UseGuards(AssertAdmin)
@@ -130,9 +171,17 @@ export class TanksController {
     description:
       'The request failed because the indicated tank ID could not be found.',
   })
-  async updateTank(): Promise<void> {}
+  async updateTank(
+    @Param(TankIdApiParam.name) tankId: string,
+    @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
+    options: CreateOrUpdateTankParamsDTO,
+  ): Promise<TankDTO> {
+    const update = await this.tanksService.updateTank(tankId, options);
+    return TanksController.toDTO(update);
+  }
 
   @Delete(':tankId')
+  @HttpCode(204)
   @UseGuards(AssertAdmin)
   @ApiOperation({
     summary: 'Delete Tank Profile',
@@ -149,5 +198,11 @@ export class TanksController {
     description:
       'The request failed because the indicated tank ID could not be found.',
   })
-  async deleteTank(): Promise<void> {}
+  async deleteTank(@Param(TankIdApiParam.name) tankId: string): Promise<void> {
+    const success = await this.tanksService.deleteTank(tankId);
+
+    if (!success) {
+      throw new NotFoundException(`Tank with ID "${tankId}" not found.`);
+    }
+  }
 }

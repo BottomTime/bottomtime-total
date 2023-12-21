@@ -33,7 +33,7 @@ import {
   UserSchema,
   UsersSortBy,
 } from '@bottomtime/api';
-import { RequestValidator } from '../request-validator';
+import { ZodValidator } from '../request-validator';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -122,7 +122,7 @@ export class UsersController {
   @ApiBadRequestResponse({ description: 'The query string was invalid.' })
   async searchProfiles(
     @CurrentUser() user: User | undefined,
-    @Query(new RequestValidator<SearchUsersParams>(SearchUsersParamsSchema))
+    @Query(new ZodValidator<SearchUsersParams>(SearchUsersParamsSchema))
     params: SearchUsersParams,
   ): Promise<ProfileDTO[]> {
     let profileVisibleTo: string | undefined;
@@ -164,7 +164,7 @@ export class UsersController {
       'The request failed because the username or password is already taken.',
   })
   async createUser(
-    @Body(new RequestValidator<CreateUserOptions>(CreateUserOptionsSchema))
+    @Body(new ZodValidator<CreateUserOptions>(CreateUserOptionsSchema))
     options: CreateUserOptions,
   ): Promise<UserDTO> {
     const user = await this.users.createUser(options);
@@ -253,7 +253,7 @@ export class UsersController {
   @UseGuards(AssertAuth)
   async changeUsername(
     @Param() usernameOrEmail: string,
-    @Body(new RequestValidator(ChangeUsernameParamsSchema))
+    @Body(new ZodValidator(ChangeUsernameParamsSchema))
     { newUsername }: ChangeUsernameParams,
   ): Promise<void> {}
 
@@ -261,7 +261,7 @@ export class UsersController {
   @UseGuards(AssertAuth)
   async changeEmail(
     @Param() usernameOrEmail: string,
-    @Body(new RequestValidator(ChangeEmailParamsSchema))
+    @Body(new ZodValidator(ChangeEmailParamsSchema))
     { newEmail }: ChangeEmailParams,
   ): Promise<void> {}
 }
