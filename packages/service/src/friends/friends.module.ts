@@ -6,6 +6,7 @@ import { FriendSchema, FriendRequestSchema, UserSchema } from '../schemas';
 import { FriendRequestsController } from './friend-requests.controller';
 import { UsersModule } from '../users';
 import { Collections } from '../data';
+import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { Collections } from '../data';
 
     UsersModule,
   ],
-  providers: [FriendsService],
+  providers: [FriendsService, AssertFriendshipOwner],
   controllers: [FriendsController, FriendRequestsController],
   exports: [FriendsService],
 })
