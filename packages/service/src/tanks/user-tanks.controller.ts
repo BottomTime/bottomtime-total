@@ -1,4 +1,14 @@
-import { Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { TanksService } from './tanks.service';
 import {
   ApiBadRequestResponse,
@@ -12,16 +22,28 @@ import {
   ApiOperation,
   ApiParam,
   ApiParamOptions,
+  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AssertTankOwner } from './assert-tank-owner.guard';
+import { AssertTank } from './assert-tank';
 import { generateSchema } from '@anatine/zod-openapi';
 import {
+  CreateOrUpdateTankParamsDTO,
   CreateOrUpdateTankParamsSchema,
+  ListTanksResponseDTO,
   ListTanksResponseSchema,
+  ListUserTanksParamsDTO,
+  ListUserTanksParamsSchema,
+  TankDTO,
   TankSchema,
 } from '@bottomtime/api';
+import { AssertAuth } from '../auth';
+import { SelectedTank, TargetUser } from './tank.decorators';
+import { Tank } from './tank';
+import { User } from '../users/user';
+import { ZodValidator } from '../zod-validator';
+import { AssertTargetUser } from './assert-target-user.guard';
 
 const UsernameApiParam: ApiParamOptions = {
   name: 'username',
@@ -39,8 +61,8 @@ const TankIdApiParam: ApiParamOptions = {
   required: true,
 } as const;
 
-@Controller('api/users/:username/tanks')
-@UseGuards(AssertTankOwner)
+@Controller(`api/users/:${UsernameApiParam.name}/tanks`)
+@UseGuards(AssertAuth, AssertTargetUser)
 @ApiTags('Users', 'Tanks')
 @ApiUnauthorizedResponse({
   description:
@@ -65,14 +87,35 @@ export class UserTanksController {
     description: 'List all of the tank profiles defined by the user.',
   })
   @ApiParam(UsernameApiParam)
+  @ApiQuery({
+    name: 'includeSystem',
+    type: 'boolean',
+    description:
+      'Whether or not to include system tanks in the list of tanks returned.',
+    required: false,
+  })
   @ApiOkResponse({
     schema: generateSchema(ListTanksResponseSchema),
     description:
       'The query was successful and the results will be in the response body.',
   })
-  async listTanks(): Promise<void> {}
+  async listTanks(
+    @Query(new ZodValidator(ListUserTanksParamsSchema))
+    { includeSystem }: ListUserTanksParamsDTO,
+    @TargetUser() targetUser: User,
+  ): Promise<ListTanksResponseDTO> {
+    const result = await this.tanksService.listTanks({
+      userId: targetUser.id,
+      includeSystem,
+    });
+    return {
+      tanks: result.tanks.map((tank) => tank.toJSON()),
+      totalCount: result.totalCount,
+    };
+  }
 
-  @Get(':tankId')
+  @Get(`:${TankIdApiParam.name}`)
+  @UseGuards(AssertTank)
   @ApiOperation({
     summary: 'Get User Tank Profile',
     description: 'Get the details of a tank profile defined by the user.',
@@ -84,7 +127,9 @@ export class UserTanksController {
     description:
       'The query was successful and the requested tank profile data will be in the response body.',
   })
-  async getTank(): Promise<void> {}
+  getTank(@SelectedTank() tank: Tank): TankDTO {
+    return tank.toJSON();
+  }
 
   @Post()
   @ApiOperation({
@@ -105,9 +150,21 @@ export class UserTanksController {
     description:
       'The request failed because the parameters provided in the request body were invalid or the maximum number of user-defined tanks (10) has been exceeded by the current user.',
   })
-  async createTank(): Promise<void> {}
+  async createTank(
+    @TargetUser() targetUser: User,
+    @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
+    options: CreateOrUpdateTankParamsDTO,
+  ): Promise<TankDTO> {
+    const tank = await this.tanksService.createTank({
+      ...options,
+      userId: targetUser.id,
+    });
 
-  @Put(':tankId')
+    return tank.toJSON();
+  }
+
+  @Put(`:${TankIdApiParam.name}`)
+  @UseGuards(AssertTank)
   @ApiOperation({
     summary: 'Update User Tank Profile',
     description: 'Update an existing custom tank profile for the user.',
@@ -127,9 +184,23 @@ export class UserTanksController {
     description:
       'The request failed because the parameters provided in the request body were invalid.',
   })
-  async updateTank(): Promise<void> {}
+  async updateTank(
+    @SelectedTank() tank: Tank,
+    @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
+    options: CreateOrUpdateTankParamsDTO,
+  ): Promise<TankDTO> {
+    tank.material = options.material;
+    tank.name = options.name;
+    tank.volume = options.volume;
+    tank.workingPressure = options.workingPressure;
+    await tank.save();
 
-  @Delete(':tankId')
+    return tank.toJSON();
+  }
+
+  @Delete(`:${TankIdApiParam.name}`)
+  @HttpCode(204)
+  @UseGuards(AssertTank)
   @ApiOperation({
     summary: 'Delete User Tank Profile',
     description: 'Delete an existing custom tank profile for the user.',
@@ -139,5 +210,7 @@ export class UserTanksController {
   @ApiNoContentResponse({
     description: 'The tank profile was deleted successfully.',
   })
-  async deleteTank(): Promise<void> {}
+  async deleteTank(@SelectedTank() tank: Tank): Promise<void> {
+    await tank.delete();
+  }
 }

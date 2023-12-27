@@ -4,16 +4,18 @@ import { TanksController } from './tanks.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TankSchema } from '../schemas';
 import { Collections } from '../data';
-import { AssertTankOwner } from './assert-tank-owner.guard';
+import { AssertTank } from './assert-tank';
 import { UserTanksController } from './user-tanks.controller';
+import { UsersModule } from '../users';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Collections.Tanks, schema: TankSchema },
     ]),
+    UsersModule,
   ],
-  providers: [TanksService, AssertTankOwner],
+  providers: [TanksService, AssertTank],
   controllers: [TanksController, UserTanksController],
 })
 export class TanksModule {}

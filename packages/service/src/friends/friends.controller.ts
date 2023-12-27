@@ -39,7 +39,7 @@ import {
 import { AssertAuth, CurrentUser } from '../auth';
 import { User } from '../users/user';
 import { generateSchema } from '@anatine/zod-openapi';
-import { ZodValidator } from '../request-validator';
+import { ZodValidator } from '../zod-validator';
 import { UsersService } from '../users/users.service';
 
 const UsernameOrEmailApiParam: ApiParamOptions = {

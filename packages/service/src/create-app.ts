@@ -5,13 +5,14 @@ import { AppModule, ServerDependencies } from './app.module';
 import cookieParser from 'cookie-parser';
 import useragent from 'express-useragent';
 import { NextFunction, Request, Response } from 'express';
-import { User } from './users';
+import { User } from './users/user';
 import { GlobalErrorFilter } from './global-error-filter';
 import { INestApplication } from '@nestjs/common';
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 import { Config } from './config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import requestStats from 'request-stats';
 
 function setupDocumentation(app: INestApplication): void {
   const documentationConfig = new DocumentBuilder()
@@ -42,7 +43,10 @@ function setupDocumentation(app: INestApplication): void {
       'Users',
       'Endpoints pertaining to the management of user accounts or profiles.',
     )
-    .addTag('Tanks', 'Endpoints pertaining to the management of dive tanks.')
+    .addTag(
+      'Tanks',
+      'Endpoints pertaining to the management of dive tank profiles.',
+    )
     .addServer(Config.baseUrl)
     .build();
 
@@ -72,9 +76,7 @@ export async function createApp(
   app.use(cookieParser());
   app.use(useragent.express());
   app.use((req: Request, res: Response, next: NextFunction) => {
-    performance.mark('request-start');
-    // Request-level logging.
-    res.on('close', () => {
+    requestStats(req, res, (stats) => {
       const user = req.user ? (req.user as User) : undefined;
       logService.log('Request', {
         method: req.method,
@@ -82,25 +84,16 @@ export async function createApp(
         ip: req.ip,
         userAgent: req.useragent?.source,
         statusCode: res.statusCode,
+        duration: stats.time,
+        bytesRecieved: stats.req.bytes,
+        bytesSent: stats.res.bytes,
         user: user
           ? {
               id: user.id,
-              displayName: user.displayName,
+              username: user.username,
             }
           : '<anonymous>',
       });
-    });
-
-    performance.mark('request-end');
-    logService.debug('Request performance', {
-      requestDuration: performance.measure(
-        'request-duration',
-        'request-start',
-        'request-end',
-      ).duration,
-      // TODO: Figure out how to get this values.
-      bytesSent: req.get('Content-Length'),
-      bytesReturned: res.get('Content-Length'),
     });
 
     next();
@@ -112,6 +105,14 @@ export async function createApp(
   app.useGlobalFilters(new GlobalErrorFilter(logService, httpAdapterHost));
 
   setupDocumentation(app);
+
+  requestStats(app.getHttpServer(), (stats) => {
+    logService.debug('Request stats', {
+      duration: stats.time,
+      bytesRecieved: stats.req.bytes,
+      bytesSent: stats.res.bytes,
+    });
+  });
 
   return app;
 }

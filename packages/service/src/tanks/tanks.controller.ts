@@ -35,8 +35,8 @@ import {
   TankDTO,
   TankSchema,
 } from '@bottomtime/api';
-import { Tank, TanksService } from './tanks.service';
-import { ZodValidator } from '../request-validator';
+import { TanksService } from './tanks.service';
+import { ZodValidator } from '../zod-validator';
 
 const TankIdApiParam: ApiParamOptions = {
   name: 'tankId',
@@ -57,17 +57,6 @@ const TankIdApiParam: ApiParamOptions = {
 export class TanksController {
   constructor(private readonly tanksService: TanksService) {}
 
-  private static toDTO(tank: Tank): TankDTO {
-    return {
-      id: tank.id,
-      material: tank.material,
-      name: tank.name,
-      volume: tank.volume,
-      workingPressure: tank.workingPressure,
-      isSystem: !tank.userId,
-    };
-  }
-
   @Get()
   @UseGuards(AssertAuth)
   @ApiOperation({
@@ -82,7 +71,7 @@ export class TanksController {
   async listTanks(): Promise<ListTanksResponseDTO> {
     const tankData = await this.tanksService.listTanks();
     return {
-      tanks: tankData.tanks.map((tank) => TanksController.toDTO(tank)),
+      tanks: tankData.tanks.map((tank) => tank.toJSON()),
       totalCount: tankData.totalCount,
     };
   }
@@ -110,7 +99,7 @@ export class TanksController {
       throw new NotFoundException(`Tank with ID "${tankId}" not found.`);
     }
 
-    return TanksController.toDTO(tank);
+    return tank.toJSON();
   }
 
   @Post()
@@ -141,7 +130,7 @@ export class TanksController {
     options: CreateOrUpdateTankParamsDTO,
   ): Promise<TankDTO> {
     const tank = await this.tanksService.createTank(options);
-    return TanksController.toDTO(tank);
+    return tank.toJSON();
   }
 
   @Put(':tankId')
@@ -176,8 +165,19 @@ export class TanksController {
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
     options: CreateOrUpdateTankParamsDTO,
   ): Promise<TankDTO> {
-    const update = await this.tanksService.updateTank(tankId, options);
-    return TanksController.toDTO(update);
+    const tank = await this.tanksService.getTank(tankId);
+
+    if (!tank) {
+      throw new NotFoundException(`Tank with ID "${tankId}" not found.`);
+    }
+
+    tank.material = options.material;
+    tank.name = options.name;
+    tank.volume = options.volume;
+    tank.workingPressure = options.workingPressure;
+    await tank.save();
+
+    return tank.toJSON();
   }
 
   @Delete(':tankId')
@@ -199,10 +199,12 @@ export class TanksController {
       'The request failed because the indicated tank ID could not be found.',
   })
   async deleteTank(@Param(TankIdApiParam.name) tankId: string): Promise<void> {
-    const success = await this.tanksService.deleteTank(tankId);
+    const tank = await this.tanksService.getTank(tankId);
 
-    if (!success) {
+    if (!tank) {
       throw new NotFoundException(`Tank with ID "${tankId}" not found.`);
     }
+
+    await tank.delete();
   }
 }

@@ -33,7 +33,7 @@ import {
   UserSchema,
   UsersSortBy,
 } from '@bottomtime/api';
-import { ZodValidator } from '../request-validator';
+import { ZodValidator } from '../zod-validator';
 import {
   ApiBadRequestResponse,
   ApiBody,

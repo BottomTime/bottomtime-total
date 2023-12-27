@@ -1,18 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Collections } from '../data';
 import { Model, FilterQuery } from 'mongoose';
-import { TankData, TankDocument } from '../schemas';
-import { TankDTO } from '@bottomtime/api';
-import { Maybe } from '../maybe';
+import { TankData } from '../schemas';
 import { v4 as uuid } from 'uuid';
+import { Tank } from './tank';
+import { CreateOrUpdateTankParamsDTO } from '@bottomtime/api';
+import { Maybe } from '../maybe';
 
-export type Tank = Omit<TankDTO, 'isSystem'> & { userId?: Maybe<string> };
-export type CreateTankOptions = Omit<Tank, 'id'>;
+export type CreateTankOptions = CreateOrUpdateTankParamsDTO & {
+  userId?: Maybe<string>;
+};
 export type UpdateTankOptions = Partial<Omit<Tank, 'id' | 'userId'>>;
 export type ListTanksResponse = {
   tanks: Tank[];
@@ -32,17 +30,6 @@ export class TanksService {
   constructor(
     @InjectModel(Collections.Tanks) private readonly Tanks: Model<TankData>,
   ) {}
-
-  private static toTankEntity(tank: TankDocument): Tank {
-    return {
-      id: tank._id,
-      material: tank.material,
-      name: tank.name,
-      volume: tank.volume,
-      workingPressure: tank.workingPressure,
-      userId: tank.user,
-    };
-  }
 
   async listTanks(options?: ListTanksOptions): Promise<ListTanksResponse> {
     let query: FilterQuery<TankData>;
@@ -68,14 +55,14 @@ export class TanksService {
     const tanks = await this.Tanks.find(query).sort({ name: 1 }).exec();
 
     return {
-      tanks: tanks.map((tank) => TanksService.toTankEntity(tank)),
+      tanks: tanks.map((tank) => new Tank(tank)),
       totalCount: tanks.length,
     };
   }
 
   async getTank(tankId: string): Promise<Tank | undefined> {
     const tank = await this.Tanks.findById(tankId);
-    return tank ? TanksService.toTankEntity(tank) : undefined;
+    return tank ? new Tank(tank) : undefined;
   }
 
   async createTank(options: CreateTankOptions): Promise<Tank> {
@@ -90,7 +77,7 @@ export class TanksService {
       }
     }
 
-    const tank = new this.Tanks({
+    const tankData = new this.Tanks({
       _id: uuid(),
       material: options.material,
       name: options.name,
@@ -98,39 +85,9 @@ export class TanksService {
       workingPressure: options.workingPressure,
       user: options.userId,
     });
-
+    const tank = new Tank(tankData);
     await tank.save();
 
-    return TanksService.toTankEntity(tank);
-  }
-
-  async updateTank(tankId: string, update: UpdateTankOptions): Promise<Tank> {
-    const updated = await this.Tanks.findOneAndUpdate(
-      { _id: tankId },
-      {
-        $set: {
-          name: update.name,
-          material: update.material,
-          volume: update.volume,
-          workingPressure: update.workingPressure,
-        },
-      },
-    );
-
-    if (!updated) {
-      throw new NotFoundException(`No tank found with ID ${tankId}.`);
-    }
-
-    updated.name = update.name ?? updated.name;
-    updated.material = update.material ?? updated.material;
-    updated.volume = update.volume ?? updated.volume;
-    updated.workingPressure = update.workingPressure ?? updated.workingPressure;
-
-    return TanksService.toTankEntity(updated);
-  }
-
-  async deleteTank(tankId: string): Promise<boolean> {
-    const { deletedCount } = await this.Tanks.deleteOne({ _id: tankId });
-    return deletedCount > 0;
+    return tank;
   }
 }

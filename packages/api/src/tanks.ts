@@ -36,6 +36,14 @@ export type CreateOrUpdateTankParamsDTO = z.infer<
   typeof CreateOrUpdateTankParamsSchema
 >;
 
+export const ListUserTanksParamsSchema = z.object({
+  includeSystem: z.coerce.boolean().default(false).openapi({
+    description:
+      'Whether or not to include system tanks in the list of tanks returned.',
+  }),
+});
+export type ListUserTanksParamsDTO = z.infer<typeof ListUserTanksParamsSchema>;
+
 export const ListTanksResponseSchema = z.object({
   tanks: TankSchema.array(),
   totalCount: z.number().int(),

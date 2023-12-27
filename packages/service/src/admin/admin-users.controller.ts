@@ -41,7 +41,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { ZodValidator } from '../request-validator';
+import { ZodValidator } from '../zod-validator';
 import { generateSchema } from '@anatine/zod-openapi';
 
 const UsernameOrEmailParam = 'usernameOrEmail';
