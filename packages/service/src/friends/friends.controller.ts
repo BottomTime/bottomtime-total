@@ -6,167 +6,140 @@ import {
   HttpCode,
   Logger,
   NotFoundException,
-  Param,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { FriendsService } from './friends.service';
 import {
-  ApiBadRequestResponse,
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiNoContentResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiParamOptions,
-  ApiQuery,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
-import {
   FriendDTO,
-  FriendSchema,
-  FriendsSortBy,
   ListFriendsParams,
   ListFriendsParamsSchema,
   ListFriendsResponseDTO,
-  ListFriendsResposneSchema,
-  SortOrder,
   UserRole,
 } from '@bottomtime/api';
-import { AssertAuth, CurrentUser } from '../auth';
+import { AssertAuth } from '../auth';
 import { User } from '../users/user';
-import { generateSchema } from '@anatine/zod-openapi';
 import { ZodValidator } from '../zod-validator';
 import { UsersService } from '../users/users.service';
+import { AssertTargetUser } from '../users/assert-target-user.guard';
+import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
+import { AssertFriend } from './assert-friend.guard';
+import { TargetUser } from '../users/users.decorators';
+import { TargetFriend } from './friends.decorators';
 
-const UsernameOrEmailApiParam: ApiParamOptions = {
-  name: 'user',
-  description:
-    'The username or email that uniquely identifies the user account.',
-  example: 'harry_godgins53',
-};
-const FriendUsernameOrEmailApiParam: ApiParamOptions = {
-  name: 'friend',
-  description: "The username or email that identifies the user's friend.",
-  example: 'ricky_bobby',
-};
+const UsernameParam = 'username';
+const FriendParam = 'friend';
 
-@Controller(`api/users/:${UsernameOrEmailApiParam.name}/friends`)
-@UseGuards(AssertAuth)
-@ApiTags('Friends')
-@ApiUnauthorizedResponse({
-  description: 'The request was rejected because the user was not logged in.',
-})
-@ApiForbiddenResponse({
-  description:
-    'The request failed because a user attempted to view or modify a friend relationship that does not belong to them.',
-})
-@ApiNotFoundResponse({
-  description:
-    'The request failed because the user or the friend indicated in the request path could not be found.',
-})
-@ApiInternalServerErrorResponse({
-  description: 'The request failed because of an internal server error.',
-})
+@Controller(`api/users/:${UsernameParam}/friends`)
+@UseGuards(AssertAuth, AssertTargetUser, AssertFriendshipOwner)
 export class FriendsController {
   private readonly log: Logger = new Logger(FriendsController.name);
 
-  constructor(
-    private readonly friendsService: FriendsService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly friendsService: FriendsService) {}
 
-  private async loadUserData(
-    currentUser: User,
-    username: string,
-    friendUsername?: string,
-  ): Promise<{ user: User; friend?: User }> {
-    this.log.debug(`Attempting to load user info for user "${username}"...`);
-    const user = await this.usersService.getUserByUsernameOrEmail(username);
-    if (!user) {
-      throw new NotFoundException(
-        `Unable to find user with username or email ${username}.`,
-      );
-    }
-
-    if (currentUser.role !== UserRole.Admin && currentUser.id !== user.id) {
-      throw new ForbiddenException(
-        'You are not authorized to view or modify the requested user account.',
-      );
-    }
-
-    let friend: User | undefined = undefined;
-    if (friendUsername) {
-      this.log.debug(
-        `Attempting to load user info for user "${friendUsername}...`,
-      );
-      friend = await this.usersService.getUserByUsernameOrEmail(friendUsername);
-      if (!friend) {
-        throw new NotFoundException(
-          `Unable to find user with username or email ${friendUsername}.`,
-        );
-      }
-    }
-
-    return { user, friend };
-  }
-
-  /** LIST FRIENDS */
+  /**
+   * @openapi
+   * /api/users/{username}/friends:
+   *   get:
+   *     tags:
+   *       - Friends
+   *       - Users
+   *     summary: List friends of a user
+   *     operationId: listFriends
+   *     description: |
+   *       Lists the friends of a user.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - name: sortBy
+   *         in: query
+   *         description: The field to sort by
+   *         schema:
+   *           type: string
+   *           enum:
+   *             - username
+   *             - memberSince
+   *             - friendsSince
+   *           default: friendsSince
+   *       - name: sortOrder
+   *         in: query
+   *         description: The sort order
+   *         schema:
+   *           type: string
+   *           enum:
+   *             - asc
+   *             - desc
+   *           default: desc
+   *       - name: skip
+   *         in: query
+   *         description: The number of results to skip over.
+   *         schema:
+   *           type: integer
+   *           format: int32
+   *           default: 0
+   *       - name: limit
+   *         in: query
+   *         description: The maximum number of results to return.
+   *         schema:
+   *           type: integer
+   *           format: int32
+   *           default: 100
+   *     responses:
+   *       200:
+   *         description: List of friends
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - friends
+   *                 - totalCount
+   *               properties:
+   *                 friends:
+   *                   type: array
+   *                   items:
+   *                     $ref: "#/components/schemas/FriendWithFriendsSince"
+   *                 totalCount:
+   *                   type: integer
+   *                   format: int32
+   *                   description: The total number of friends.
+   *                   example: 2
+   *       400:
+   *         description: The request failed because the query string parameters were invalid.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not authorized to view the target user's friends.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the target user was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed due to an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get()
-  @ApiOperation({
-    summary: 'List Friends',
-    description: 'Lists the friends associated with the indicated user.',
-  })
-  @ApiParam(UsernameOrEmailApiParam)
-  @ApiQuery({
-    name: 'sortBy',
-    description: 'The field to sort the results by.',
-    schema: generateSchema(ListFriendsParamsSchema.shape.sortBy),
-    example: FriendsSortBy.FriendsSince,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'sortOrder',
-    description: 'The order to sort the results by.',
-    schema: generateSchema(ListFriendsParamsSchema.shape.sortOrder),
-    example: SortOrder.Descending,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'skip',
-    description:
-      'The number of records that should be skipped over before returning results.',
-    schema: generateSchema(ListFriendsParamsSchema.shape.skip),
-    example: 150,
-    required: false,
-  })
-  @ApiQuery({
-    name: 'limit',
-    description: 'The maximum number of records to return in the response.',
-    schema: generateSchema(ListFriendsParamsSchema.shape.limit),
-    example: 50,
-    required: false,
-  })
-  @ApiBadRequestResponse({
-    description:
-      'The request failed because the query parameters did not pass validation.',
-  })
-  @ApiOkResponse({
-    schema: generateSchema(ListFriendsResposneSchema),
-    description:
-      'The request completed successfully. The results will be found in the response body.',
-  })
   async listFriends(
-    @CurrentUser() currentUser: User,
-    @Param(UsernameOrEmailApiParam.name) username: string,
+    @TargetUser() user: User,
     @Query(new ZodValidator(ListFriendsParamsSchema))
     options: ListFriendsParams,
   ): Promise<ListFriendsResponseDTO> {
-    const { user } = await this.loadUserData(currentUser, username);
-
     this.log.debug(
       `Executing query for friends of user ${user.username} with query options:`,
       options,
@@ -178,31 +151,59 @@ export class FriendsController {
     });
   }
 
-  /** GET FRIEND */
-  @Get(`:${FriendUsernameOrEmailApiParam.name}`)
-  @ApiOperation({
-    summary: 'Get Friend',
-    description: 'Retrieves the friendship between two users.',
-  })
-  @ApiParam(UsernameOrEmailApiParam)
-  @ApiParam(FriendUsernameOrEmailApiParam)
-  @ApiOkResponse({
-    description:
-      'The request completed successfully and the friend details are in the response body.',
-    schema: generateSchema(FriendSchema),
-  })
+  /**
+   * @openapi
+   * /api/users/{username}/friends/{friend}:
+   *   get:
+   *     tags:
+   *       - Friends
+   *       - Users
+   *     summary: Get a friend
+   *     operationId: getFriend
+   *     description: |
+   *       Gets a friend of a user.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/FriendUsername"
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the data will be returned in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/FriendWithFriendsSince"
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not authorized to view the target user's friends.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the target user or friend was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed due to an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get(`:${FriendParam}`)
+  @UseGuards(AssertFriend)
   async getFriend(
-    @CurrentUser() currentUser: User,
-    @Param(UsernameOrEmailApiParam.name) usernameOrEmail: string,
-    @Param(FriendUsernameOrEmailApiParam.name) friendUsernameOrEmail: string,
+    @TargetUser() user: User,
+    @TargetFriend() friend: User,
   ): Promise<FriendDTO> {
-    const { user, friend } = await this.loadUserData(
-      currentUser,
-      usernameOrEmail,
-      friendUsernameOrEmail,
-    );
-
-    const friendData = await this.friendsService.getFriend(user.id, friend!.id);
+    const friendData = await this.friendsService.getFriend(user.id, friend.id);
     if (!friendData) {
       throw new NotFoundException('Users are not friends.');
     }
@@ -210,30 +211,55 @@ export class FriendsController {
     return friendData;
   }
 
-  /** UNFRIEND */
-  @Delete(`:${FriendUsernameOrEmailApiParam.name}`)
+  /**
+   * @openapi
+   * /api/users/{username}/friends/{friend}:
+   *   delete:
+   *     tags:
+   *       - Friends
+   *       - Users
+   *     summary: Remove a friend
+   *     operationId: removeFriend
+   *     description: |
+   *       Removes a friend from a user's friends list.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/FriendUsername"
+   *     responses:
+   *       204:
+   *         description: The request succeeded and the friend was removed.
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not authorized to remove the target user's friend.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the target user or friend was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed due to an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Delete(`:${FriendParam}`)
   @HttpCode(204)
-  @ApiOperation({
-    summary: 'Delete Friendship',
-    description:
-      'Removes a friendship. The two users will no longer be friends.',
-  })
-  @ApiParam(UsernameOrEmailApiParam)
-  @ApiParam(FriendUsernameOrEmailApiParam)
-  @ApiNoContentResponse({
-    description: 'The operation has successfully completed.',
-  })
+  @UseGuards(AssertFriend)
   async removeFriend(
-    @CurrentUser() currentUser: User,
-    @Param(UsernameOrEmailApiParam.name) usernameOrEmail: string,
-    @Param(FriendUsernameOrEmailApiParam.name) friendUsernameOrEmail: string,
+    @TargetUser() user: User,
+    @TargetFriend() friend: User,
   ): Promise<void> {
-    const { user, friend } = await this.loadUserData(
-      currentUser,
-      usernameOrEmail,
-      friendUsernameOrEmail,
-    );
-
     const result = await this.friendsService.unFriend(user.id, friend!.id);
     if (!result) {
       throw new NotFoundException('Users are not friends.');

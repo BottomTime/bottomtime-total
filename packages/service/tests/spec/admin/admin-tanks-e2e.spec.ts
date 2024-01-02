@@ -38,6 +38,10 @@ const RegularUserData: UserData = {
   },
 };
 
+function tanksUrl(tankId?: string): string {
+  return tankId ? `/api/admin/tanks/${tankId}` : '/api/admin/tanks';
+}
+
 describe('Tanks End-to-End Tests', () => {
   let app: INestApplication;
   let server: unknown;
@@ -69,7 +73,7 @@ describe('Tanks End-to-End Tests', () => {
       await TankModel.insertMany(tankData);
 
       const response = await request(server)
-        .get('/api/tanks')
+        .get(tanksUrl())
         .set(...regularAuthHeader)
         .expect(200);
 
@@ -77,7 +81,7 @@ describe('Tanks End-to-End Tests', () => {
     });
 
     it('will return 401 if the user is not authenticated', async () => {
-      await request(server).get('/api/tanks').expect(401);
+      await request(server).get(tanksUrl()).expect(401);
     });
   });
 
@@ -87,7 +91,7 @@ describe('Tanks End-to-End Tests', () => {
       await tankData.save();
 
       const response = await request(server)
-        .get(`/api/tanks/${tankData._id}`)
+        .get(tanksUrl(tankData._id))
         .set(...regularAuthHeader)
         .expect(200);
 
@@ -97,12 +101,12 @@ describe('Tanks End-to-End Tests', () => {
     it('will return a 401 error if the user is not authenticated', async () => {
       const tankData = new TankModel(TankTestData[0]);
       await tankData.save();
-      await request(server).get(`/api/tanks/${tankData._id}`).expect(401);
+      await request(server).get(tanksUrl(tankData._id)).expect(401);
     });
 
     it('will return 404 if the tank cannot be found', async () => {
       await request(server)
-        .get(`/api/tanks/${TankTestData[7]._id}}`)
+        .get(tanksUrl(TankTestData[7]._id))
         .set(...regularAuthHeader)
         .expect(404);
     });
@@ -117,7 +121,7 @@ describe('Tanks End-to-End Tests', () => {
         workingPressure: 219,
       };
       const { body } = await request(server)
-        .post('/api/tanks')
+        .post(tanksUrl())
         .set(...adminAuthHeader)
         .send(options)
         .expect(201);
@@ -135,7 +139,7 @@ describe('Tanks End-to-End Tests', () => {
 
     it('will return 400 if the request body is invalid', async () => {
       const { body: invalidResponse } = await request(server)
-        .post('/api/tanks')
+        .post(tanksUrl())
         .set(...adminAuthHeader)
         .send({
           material: 'unobtainium',
@@ -146,7 +150,7 @@ describe('Tanks End-to-End Tests', () => {
         .expect(400);
 
       const { body: missingBodyResponse } = await request(server)
-        .post('/api/tanks')
+        .post(tanksUrl())
         .set(...adminAuthHeader)
         .send({})
         .expect(400);
@@ -157,7 +161,7 @@ describe('Tanks End-to-End Tests', () => {
 
     it('will return 401 if the user is not authenticated', async () => {
       await request(server)
-        .post('/api/tanks')
+        .post(tanksUrl())
         .send({
           material: TankMaterial.Steel,
           name: 'My Tank',
@@ -169,7 +173,7 @@ describe('Tanks End-to-End Tests', () => {
 
     it('will return 403 if the user is not an administrator', async () => {
       await request(server)
-        .post('/api/tanks')
+        .post(tanksUrl())
         .set(...regularAuthHeader)
         .send({
           material: TankMaterial.Steel,
@@ -190,7 +194,7 @@ describe('Tanks End-to-End Tests', () => {
       const tankData = new TankModel(TankTestData[0]);
       await tankData.save();
       tankId = TankTestData[0]._id;
-      tankUrl = `/api/tanks/${tankId}`;
+      tankUrl = tanksUrl(tankId);
       update = {
         material: TankMaterial.Steel,
         name: 'Updated Tank',
@@ -256,7 +260,7 @@ describe('Tanks End-to-End Tests', () => {
 
     it('will return a 404 response if the indicated tank ID does not exist', async () => {
       await request(server)
-        .put(`/api/tanks/${TankTestData[4]._id}`)
+        .put(tanksUrl(TankTestData[4]._id))
         .set(...adminAuthHeader)
         .send(update)
         .expect(404);
@@ -271,7 +275,7 @@ describe('Tanks End-to-End Tests', () => {
       const tankData = new TankModel(TankTestData[0]);
       await tankData.save();
       tankId = TankTestData[0]._id;
-      tankUrl = `/api/tanks/${tankId}`;
+      tankUrl = tanksUrl(tankId);
     });
 
     it('will delete the indicated tank', async () => {
@@ -297,7 +301,7 @@ describe('Tanks End-to-End Tests', () => {
 
     it('will return a 404 response if the indicated tank ID does not exist', async () => {
       await request(server)
-        .delete(`/api/tanks/${TankTestData[4]._id}`)
+        .delete(tanksUrl(TankTestData[4]._id))
         .set(...adminAuthHeader)
         .expect(404);
     });

@@ -5,7 +5,11 @@ import {
   UserDocument,
   UserModel,
 } from '../../src/schemas/user.document';
-import { Certification, ProfileVisibility, UserRole } from '@bottomtime/api';
+import {
+  UserCertificationDTO,
+  ProfileVisibility,
+  UserRole,
+} from '@bottomtime/api';
 import { hashSync } from 'bcrypt';
 import { generate } from 'generate-password';
 
@@ -25,7 +29,7 @@ const certifications = KnownCertifications.map((c) => ({
   course: c.course,
 }));
 
-export function randomCertifications(): Certification[] {
+export function randomCertifications(): UserCertificationDTO[] {
   return faker.helpers
     .arrayElements(certifications, faker.datatype.number({ min: 1, max: 6 }))
     .map((c) => ({

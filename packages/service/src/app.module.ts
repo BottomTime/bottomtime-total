@@ -8,6 +8,9 @@ import { AdminModule } from './admin';
 import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
 import { TanksModule } from './tanks/tanks.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import path from 'path';
+import { Response } from 'express';
 
 export type ServerDependencies = {
   mailClient: IMailClient;
@@ -19,6 +22,13 @@ export class AppModule {
     return {
       module: AppModule,
       imports: [
+        ServeStaticModule.forRoot({
+          rootPath: path.join(__dirname, '../public/docs'),
+          serveRoot: '/docs',
+          serveStaticOptions: {
+            index: 'index.html',
+          },
+        }),
         MongooseModule.forRoot(Config.mongoUri),
         PassportModule.register({
           session: false,

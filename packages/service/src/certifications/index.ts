@@ -1,4 +1,4 @@
-export * from './interfaces';
-
-export * from './default-certification';
-export * from './default-certification-manager';
+export * from './certification';
+export * from './certifications.controller';
+export * from './certifications.service';
+export * from './certifications.module';

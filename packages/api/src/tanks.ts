@@ -1,30 +1,13 @@
 import { TankMaterial } from './constants';
-import { z } from './zod';
+import { z } from 'zod';
 
 export const TankSchema = z.object({
-  id: z.string().uuid().openapi({
-    description: 'The unique identifier for the tank.',
-  }),
-  name: z.string().trim().max(100).openapi({
-    description: 'A descriptive name for the tank.',
-    example: 'Aluminum 80',
-  }),
-  material: z.nativeEnum(TankMaterial).openapi({
-    description: 'The material the tank is made of.',
-    example: TankMaterial.Steel,
-  }),
-  workingPressure: z.number().positive().max(500).openapi({
-    description: 'The working pressure of the tank, in Bar.',
-    example: 232,
-  }),
-  volume: z.number().positive().max(30).openapi({
-    description: 'The volume of the tank, in Liters.',
-    example: 11.1,
-  }),
-  isSystem: z.boolean().openapi({
-    description:
-      'Whether or not this is a system tank (as opposed to a user-defined tank).',
-  }),
+  id: z.string().uuid(),
+  name: z.string().trim().max(100),
+  material: z.nativeEnum(TankMaterial),
+  workingPressure: z.number().positive().max(500),
+  volume: z.number().positive().max(30),
+  isSystem: z.boolean(),
 });
 export type TankDTO = z.infer<typeof TankSchema>;
 
@@ -37,10 +20,7 @@ export type CreateOrUpdateTankParamsDTO = z.infer<
 >;
 
 export const ListUserTanksParamsSchema = z.object({
-  includeSystem: z.coerce.boolean().default(false).openapi({
-    description:
-      'Whether or not to include system tanks in the list of tanks returned.',
-  }),
+  includeSystem: z.coerce.boolean().default(false),
 });
 export type ListUserTanksParamsDTO = z.infer<typeof ListUserTanksParamsSchema>;
 

@@ -1,9 +1,9 @@
-import { Certification, ProfileDTO } from '@bottomtime/api';
+import { UserCertificationDTO, ProfileDTO } from '@bottomtime/api';
 import { ProfileData, UserDocument } from '../schemas/user.document';
 import { Maybe } from '../maybe';
 
 export class Profile {
-  private _certifications: Certification[] | undefined;
+  private _certifications: UserCertificationDTO[] | undefined;
 
   constructor(private readonly data: UserDocument) {}
 
@@ -45,17 +45,17 @@ export class Profile {
     this.profile.customData = value;
   }
 
-  get certifications(): Certification[] {
-    if (this._certifications) {
-      return this._certifications;
-    }
+  // get certifications(): UserCertificationDTO[] {
+  //   if (this._certifications) {
+  //     return this._certifications;
+  //   }
 
-    this._certifications = this.data.profile?.certifications ?? [];
-    return this._certifications;
-  }
-  set certifications(value: Certification[]) {
-    this._certifications = value;
-  }
+  //   this._certifications = this.data.profile?.certifications ?? [];
+  //   return this._certifications;
+  // }
+  // set certifications(value: UserCertificationDTO[]) {
+  //   this._certifications = value;
+  // }
 
   get experienceLevel(): Maybe<string> {
     return this.profile.experienceLevel;
@@ -95,7 +95,6 @@ export class Profile {
       bio: this.bio ?? undefined,
       birthdate: this.birthdate ?? undefined,
       customData: this.customData ?? undefined,
-      certifications: this.certifications,
       experienceLevel: this.experienceLevel ?? undefined,
       location: this.location ?? undefined,
       memberSince: this.data.memberSince,

@@ -1,0 +1,197 @@
+/**
+ * @openapi
+ * components:
+ *   parameters:
+ *     Username:
+ *       name: username
+ *       in: path
+ *       required: true
+ *       description: The user's unique username (or email address).
+ *       schema:
+ *         type: string
+ *         pattern: ^[a-z0-9]+([_.-][a-z0-9]+)*$
+ *         example: johndoe
+ *
+ *   schemas:
+ *     UserCertification:
+ *       type: object
+ *       required:
+ *         - agency
+ *         - course
+ *         - date
+ *       properties:
+ *         agency:
+ *           title: Agency
+ *           type: string
+ *           description: The name of the agency that issued the certification.
+ *           example: PADI
+ *         course:
+ *           title: Course
+ *           type: string
+ *           description: The name of the course.
+ *           example: Open Water Diver
+ *         date:
+ *           title: Date
+ *           type: string
+ *           pattern: ^\d{4}(-\d{2}(-\d{2})?)?$
+ *           description: The date the certification was issued.
+ *           example: 2000-01-01
+ *
+ *     UpdateProfile:
+ *       type: object
+ *       properties:
+ *         avatar:
+ *           title: Avatar
+ *           description: A URL to an image that can be displayed as the diver's avatar.
+ *           type: string
+ *           format: url
+ *           maxlength: 150
+ *           example: https://example.com/avatar.png
+ *         bio:
+ *           title: Bio
+ *           type: string
+ *           description: A short description of about the user.
+ *           maxlength: 1000
+ *           example: |
+ *             I'm a diver from the Pacific Northwest. I love diving in the Puget Sound.
+ *             I'm a PADI Divemaster and I'm working on my instructor certification.
+ *         birthdate:
+ *           title: Birthdate
+ *           type: string
+ *           pattern: ^\d{4}(-\d{2}(-\d{2})?)?$
+ *           description: The user's birthdate.
+ *           example: 1980-01-01
+ *         certifications:
+ *           title: Certifications
+ *           type: array
+ *           description: A list of the user's certifications.
+ *           items:
+ *             $ref: "#/components/schemas/UserCertification"
+ *           maxItems: 200
+ *         experieceLevel:
+ *           title: Experience Level
+ *           type: string
+ *           description: The user's experience level.
+ *           example: Advanced
+ *           maxLength: 50
+ *         location:
+ *           title: Location
+ *           type: string
+ *           description: The user's location.
+ *           example: Seattle, WA
+ *           maxLength: 50
+ *         name:
+ *           title: Name
+ *           type: string
+ *           description: The user's name.
+ *           example: John Doe
+ *           maxLength: 100
+ *         startedDiving:
+ *           title: Started Diving
+ *           type: string
+ *           pattern: ^\d{4}(-\d{2}(-\d{2})?)?$
+ *           description: The year the user started diving.
+ *           example: 2000-01-01
+ *
+ *     Profile:
+ *       allOf:
+ *         - $ref: "#/components/schemas/UpdateProfile"
+ *         - type: object
+ *           required:
+ *             - userId
+ *             - username
+ *             - memberSince
+ *           properties:
+ *             userId:
+ *               title: User ID
+ *               type: string
+ *               format: uuid
+ *               description: The user's unique ID.
+ *               example: 00000000-0000-0000-0000-000000000000
+ *             username:
+ *               title: Username
+ *               type: string
+ *               pattern: ^[a-z0-9]+([_.-][a-z0-9]+)*$
+ *               description: The user's username. May only contain letters, numbers, dashes, periods, and underscores. Must be unique per user.
+ *               example: johndoe
+ *             memberSince:
+ *               title: Member Since
+ *               type: string
+ *               format: date-time
+ *               description: The date and time the user joined Bottom Time.
+ *               example: 2021-01-01T00:00:00.000Z
+ *
+ *     User:
+ *       type: object
+ *       required:
+ *         - id
+ *         - username
+ *         - emailVerified
+ *         - hasPassword
+ *         - isLockedOut
+ *         - memberSince
+ *         - profile
+ *         - role
+ *       properties:
+ *         id:
+ *           title: ID
+ *           type: string
+ *           format: uuid
+ *           description: The user's unique ID.
+ *           example: 00000000-0000-0000-0000-000000000000
+ *         username:
+ *           title: Username
+ *           type: string
+ *           pattern: ^[a-z0-9]+([_.-][a-z0-9]+)*$
+ *           description: The user's username. May only contain letters, numbers, dashes, periods, and underscores. Must be unique per user.
+ *           example: johndoe
+ *         email:
+ *           title: Email
+ *           type: string
+ *           format: email
+ *           description: The user's email address. Must be a valid email address and must be unique per user.
+ *           example: john.doe@gmail.com
+ *         emailVerified:
+ *           title: Email Verified
+ *           type: boolean
+ *           description: Indicates whether the user has verified their email address.
+ *           example: true
+ *         hasPassword:
+ *           title: Has Password
+ *           type: boolean
+ *           description: Indicates whether the user has set a password on their account.
+ *           example: true
+ *         lastLogin:
+ *           title: Last Login
+ *           type: string
+ *           format: date-time
+ *           description: The date and time the user last logged in.
+ *           example: 2021-01-01T00:00:00.000Z
+ *         lastPasswordChange:
+ *           title: Last Password Change
+ *           type: string
+ *           format: date-time
+ *           description: The date and time the user last changed their password.
+ *           example: 2021-01-01T00:00:00.000Z
+ *         isLockedOut:
+ *           title: Is Locked Out
+ *           type: boolean
+ *           description: Indicates whether the user's account is locked out.
+ *           example: false
+ *         memberSince:
+ *           title: Member Since
+ *           type: string
+ *           format: date-time
+ *           description: The date and time the user joined Bottom Time.
+ *           example: 2021-01-01T00:00:00.000Z
+ *         profile:
+ *           title: Profile
+ *           type: object
+ *           description: The user's profile information.
+ *           $ref: "#/components/schemas/Profile"
+ *         role:
+ *           title: Role
+ *           type: string
+ *           description: The user's role.
+ *           example: user
+ */

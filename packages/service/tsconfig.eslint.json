@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "exclude": ["./coverage", "./dist"],
+  "exclude": ["./coverage", "./dist", "./public"],
   "include": [
     "./admin",
     "./src",
@@ -8,6 +8,7 @@
     "./migrations",
     "./.eslintrc.js",
     "./jest.config.ts",
-    "./migrate-mongo-config.js"
+    "./migrate-mongo-config.js",
+    "./swaggerDefinition.cjs"
   ]
 }

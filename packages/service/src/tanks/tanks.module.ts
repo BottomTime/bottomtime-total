@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TanksService } from './tanks.service';
-import { TanksController } from './tanks.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TankSchema } from '../schemas';
 import { Collections } from '../data';
@@ -16,6 +15,7 @@ import { UsersModule } from '../users';
     UsersModule,
   ],
   providers: [TanksService, AssertTank],
-  controllers: [TanksController, UserTanksController],
+  controllers: [UserTanksController],
+  exports: [TanksService],
 })
 export class TanksModule {}

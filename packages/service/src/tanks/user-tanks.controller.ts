@@ -10,95 +10,76 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { TanksService } from './tanks.service';
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiNoContentResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiParamOptions,
-  ApiQuery,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger';
 import { AssertTank } from './assert-tank';
-import { generateSchema } from '@anatine/zod-openapi';
 import {
   CreateOrUpdateTankParamsDTO,
   CreateOrUpdateTankParamsSchema,
   ListTanksResponseDTO,
-  ListTanksResponseSchema,
   ListUserTanksParamsDTO,
   ListUserTanksParamsSchema,
   TankDTO,
-  TankSchema,
 } from '@bottomtime/api';
 import { AssertAuth } from '../auth';
-import { SelectedTank, TargetUser } from './tank.decorators';
+import { SelectedTank } from './tank.decorators';
 import { Tank } from './tank';
 import { User } from '../users/user';
 import { ZodValidator } from '../zod-validator';
 import { AssertTargetUser } from './assert-target-user.guard';
+import { TargetUser } from '../users/users.decorators';
 
-const UsernameApiParam: ApiParamOptions = {
-  name: 'username',
-  type: 'string',
-  description:
-    'The username or email that uniquely identifies the user that owns the tank profile.',
-  required: true,
-} as const;
+const UsernameParam = 'username';
+const TankIdParam = 'tankId';
 
-const TankIdApiParam: ApiParamOptions = {
-  name: 'tankId',
-  description: 'The unique identifier for the tank profile.',
-  type: 'string',
-  format: 'uuid',
-  required: true,
-} as const;
-
-@Controller(`api/users/:${UsernameApiParam.name}/tanks`)
+@Controller(`api/users/:${UsernameParam}/tanks`)
 @UseGuards(AssertAuth, AssertTargetUser)
-@ApiTags('Users', 'Tanks')
-@ApiUnauthorizedResponse({
-  description:
-    'The request failed because the user is not logged in or did not provide a valid token.',
-})
-@ApiForbiddenResponse({
-  description:
-    'The request failed because the user is not an administrator and does not own the requested tank profile.',
-})
-@ApiNotFoundResponse({
-  description: 'The user or the requested tank profile does not exist.',
-})
-@ApiInternalServerErrorResponse({
-  description: 'The request failed due to an internal server error.',
-})
 export class UserTanksController {
   constructor(private readonly tanksService: TanksService) {}
 
+  /**
+   * @openapi
+   * /api/users/{username}/tanks:
+   *   get:
+   *     tags:
+   *       - Tanks
+   *       - Users
+   *     summary: List a user's tanks
+   *     operationId: listTanks
+   *     description: List the tanks belonging to a user.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - name: includeSystem
+   *         schema:
+   *           type: boolean
+   *         in: query
+   *         description: Whether to include pre-defined system tanks in the results.
+   *         required: false
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body will contain the list of tank profiles.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/ListTanksResponse"
+   *       401:
+   *         description: The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the authenticated user does not have permission to access the requested user's tanks.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the requested user does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get()
-  @ApiOperation({
-    summary: 'List User Tank Profiles',
-    description: 'List all of the tank profiles defined by the user.',
-  })
-  @ApiParam(UsernameApiParam)
-  @ApiQuery({
-    name: 'includeSystem',
-    type: 'boolean',
-    description:
-      'Whether or not to include system tanks in the list of tanks returned.',
-    required: false,
-  })
-  @ApiOkResponse({
-    schema: generateSchema(ListTanksResponseSchema),
-    description:
-      'The query was successful and the results will be in the response body.',
-  })
   async listTanks(
     @Query(new ZodValidator(ListUserTanksParamsSchema))
     { includeSystem }: ListUserTanksParamsDTO,
@@ -114,42 +95,115 @@ export class UserTanksController {
     };
   }
 
-  @Get(`:${TankIdApiParam.name}`)
+  /**
+   * @openapi
+   * /api/users/{username}/tanks/{tankId}:
+   *   get:
+   *     summary: Get Tank Profile
+   *     operationId: getTank
+   *     description: Retrieves a tank profile by its unique Id.
+   *     tags:
+   *       - Tanks
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/TankId"
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body will contain the tank profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Tank"
+   *       401:
+   *         description: The request failed because the current user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the authenticated user does not have permission to access the requested user's tanks.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the requested user or tank does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because an unexpected internal server error occurred.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get(`:${TankIdParam}`)
   @UseGuards(AssertTank)
-  @ApiOperation({
-    summary: 'Get User Tank Profile',
-    description: 'Get the details of a tank profile defined by the user.',
-  })
-  @ApiParam(UsernameApiParam)
-  @ApiParam(TankIdApiParam)
-  @ApiOkResponse({
-    schema: generateSchema(TankSchema),
-    description:
-      'The query was successful and the requested tank profile data will be in the response body.',
-  })
   getTank(@SelectedTank() tank: Tank): TankDTO {
     return tank.toJSON();
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/tanks:
+   *   post:
+   *     tags:
+   *       - Tanks
+   *       - Users
+   *     summary: Create Tank Profile
+   *     operationId: createTank
+   *     description: Create a new tank profile for the specified user.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The details of the tank profile to be created.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/CreateOrUpdateTank"
+   *     responses:
+   *       201:
+   *         description: The request succeeded and the response body will contain the newly created tank profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Tank"
+   *       400:
+   *         description: The request failed because the request body did not contain a valid tank profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the current user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the authenticated user does not have permission to access the requested user's tanks.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the requested user does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because an unexpected internal server error occurred.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Post()
-  @ApiOperation({
-    summary: 'Create User Tank Profile',
-    description: 'Create a new custom tank profile for the user.',
-  })
-  @ApiParam(UsernameApiParam)
-  @ApiBody({
-    schema: generateSchema(CreateOrUpdateTankParamsSchema),
-    description: 'The details of the tank profile to create.',
-  })
-  @ApiCreatedResponse({
-    schema: generateSchema(TankSchema),
-    description:
-      'The tank profile was created successfully and will be returned in the response body.',
-  })
-  @ApiBadRequestResponse({
-    description:
-      'The request failed because the parameters provided in the request body were invalid or the maximum number of user-defined tanks (10) has been exceeded by the current user.',
-  })
   async createTank(
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
@@ -163,27 +217,66 @@ export class UserTanksController {
     return tank.toJSON();
   }
 
-  @Put(`:${TankIdApiParam.name}`)
+  /**
+   * @openapi
+   * /api/users/{username}/tanks/{tankId}:
+   *   put:
+   *     tags:
+   *       - Tanks
+   *       - Users
+   *     summary: Update Tank Profile
+   *     operationId: updateTank
+   *     description: Update an existing tank profile.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/TankId"
+   *     requestBody:
+   *       description: The details of the tank profile to be updated.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/CreateOrUpdateTank"
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body will contain the updated tank profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Tank"
+   *       400:
+   *         description: The request failed because the request body did not contain a valid tank profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the current user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the authenticated user does not have permission to access the requested user's tanks.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the requested user or tank does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because an unexpected internal server error occurred.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Put(`:${TankIdParam}`)
   @UseGuards(AssertTank)
-  @ApiOperation({
-    summary: 'Update User Tank Profile',
-    description: 'Update an existing custom tank profile for the user.',
-  })
-  @ApiParam(UsernameApiParam)
-  @ApiParam(TankIdApiParam)
-  @ApiBody({
-    schema: generateSchema(CreateOrUpdateTankParamsSchema),
-    description: 'The updated details to apply to the tank profile.',
-  })
-  @ApiOkResponse({
-    schema: generateSchema(TankSchema),
-    description:
-      'The tank profile was updated successfully and will newly-updated tank profile will be returned in the response body.',
-  })
-  @ApiBadRequestResponse({
-    description:
-      'The request failed because the parameters provided in the request body were invalid.',
-  })
   async updateTank(
     @SelectedTank() tank: Tank,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
@@ -198,18 +291,50 @@ export class UserTanksController {
     return tank.toJSON();
   }
 
-  @Delete(`:${TankIdApiParam.name}`)
+  /**
+   * @openapi
+   * /api/users/{username}/tanks/{tankId}:
+   *   delete:
+   *     tags:
+   *       - Tanks
+   *       - Users
+   *     summary: Delete Tank Profile
+   *     operationId: deleteTank
+   *     description: Delete an existing tank profile.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/TankId"
+   *     responses:
+   *       204:
+   *         description: The request succeeded and the tank profile has been deleted.
+   *       401:
+   *         description: The request failed because the current user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the authenticated user does not have permission to access the requested user's tanks.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the requested user or tank does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because an unexpected internal server error occurred.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Delete(`:${TankIdParam}`)
   @HttpCode(204)
   @UseGuards(AssertTank)
-  @ApiOperation({
-    summary: 'Delete User Tank Profile',
-    description: 'Delete an existing custom tank profile for the user.',
-  })
-  @ApiParam(UsernameApiParam)
-  @ApiParam(TankIdApiParam)
-  @ApiNoContentResponse({
-    description: 'The tank profile was deleted successfully.',
-  })
   async deleteTank(@SelectedTank() tank: Tank): Promise<void> {
     await tank.delete();
   }

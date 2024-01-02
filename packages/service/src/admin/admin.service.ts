@@ -5,13 +5,14 @@ import { UserData, UserDocument, UserModel } from '../schemas';
 import { Model } from 'mongoose';
 import { hash } from 'bcrypt';
 import { Config } from '../config';
+import { Collections } from '../data';
 
 @Injectable()
 export class AdminService {
   private readonly log = new Logger(AdminService.name);
 
   constructor(
-    @InjectModel(UserModel.name)
+    @InjectModel(Collections.Users)
     private readonly Users: Model<UserData>,
   ) {}
 

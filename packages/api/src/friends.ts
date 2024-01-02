@@ -1,5 +1,5 @@
 import { SortOrder } from './constants';
-import { z } from './zod';
+import { z } from 'zod';
 
 export enum FriendsSortBy {
   Username = 'username',
@@ -48,15 +48,8 @@ export const ListFriendsParamsSchema = z
 export type ListFriendsParams = z.infer<typeof ListFriendsParamsSchema>;
 
 export const ListFriendsResposneSchema = z.object({
-  friends: FriendSchema.array().openapi({
-    title: 'Friends',
-    description: "An array containing the user's friends.",
-  }),
-  totalCount: z.number().int().openapi({
-    title: 'Total Count',
-    description: 'The total number of friends associated with the user.',
-    example: 70,
-  }),
+  friends: FriendSchema.array(),
+  totalCount: z.number().int(),
 });
 export type ListFriendsResponseDTO = z.infer<typeof ListFriendsResposneSchema>;
 
@@ -75,15 +68,8 @@ export type ListFriendRequestsParams = z.infer<
 >;
 
 export const ListFriendRequestsResponseSchema = z.object({
-  friendRequests: FriendRequestSchema.array().openapi({
-    title: 'Friend Requests',
-    description: "An array containing the user's friend requests.",
-  }),
-  totalCount: z.number().int().openapi({
-    title: 'Total Count',
-    description:
-      'The total number of friend requests associated with the user.',
-  }),
+  friendRequests: FriendRequestSchema.array(),
+  totalCount: z.number().int(),
 });
 export type ListFriendRequestsResponseDTO = z.infer<
   typeof ListFriendRequestsResponseSchema
@@ -94,18 +80,10 @@ export const AcknowledgeFriendRequestParamsSchema = z.discriminatedUnion(
   'accepted',
   [
     z.object({
-      accepted: z.literal(true).openapi({
-        title: 'Accept Request',
-        description:
-          'Indicates whether the friend request should be accepted. A value of true accepts the request and a value of false declines the request.',
-      }),
+      accepted: z.literal(true),
     }),
     z.object({
-      accepted: z.literal(false).openapi({
-        title: 'Accept Request',
-        description:
-          'Indicates whether the friend request should be accepted. A value of true accepts the request and a value of false declines the request.',
-      }),
+      accepted: z.literal(false),
       reason: z.string().optional(),
     }),
   ],
