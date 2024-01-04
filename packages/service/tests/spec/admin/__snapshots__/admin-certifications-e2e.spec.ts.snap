@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Certifications End-to-End when creating a certification will create a new certification 1`] = `
+{
+  "agency": "BSAC",
+  "course": "Intro to Underwater Stuff",
+  "id": "dc3bce24-2a50-4623-a793-519e65ccf877",
+}
+`;
+
+exports[`Certifications End-to-End when getting a certification will return a certification by id 1`] = `
+{
+  "agency": "PADI",
+  "course": "Open Water Diver",
+  "id": "6b12745f-dc89-47d4-b6d7-07deb2127340",
+}
+`;
+
+exports[`Certifications End-to-End when searching certifications will perform a search for certifications 1`] = `
+{
+  "certifications": [
+    {
+      "agency": "SSI",
+      "course": "Equipment Techniques",
+      "id": "f9e0294b-6fb5-4103-bd6e-a26dc3c08087",
+    },
+    {
+      "agency": "SSI",
+      "course": "Extended Range",
+      "id": "16971174-46dd-450c-92e6-c34f9b9148c6",
+    },
+    {
+      "agency": "SSI",
+      "course": "Freediving 1",
+      "id": "0a314d67-7398-445f-9cdb-d129518c557e",
+    },
+    {
+      "agency": "SSI",
+      "course": "Freediving 2",
+      "id": "c1834a92-8f26-4824-bf58-4a739b9a354a",
+    },
+    {
+      "agency": "SSI",
+      "course": "Master Diver",
+      "id": "f3e57d9e-135a-4faf-9a36-57d6316d4d1e",
+    },
+    {
+      "agency": "SSI",
+      "course": "Navigation",
+      "id": "df2d1520-6b86-4a03-932a-60b995e8cc37",
+    },
+    {
+      "agency": "SSI",
+      "course": "Night Diving and Limited Visibility",
+      "id": "9725da3f-3fd5-4922-b904-883d8c100dd1",
+    },
+    {
+      "agency": "SSI",
+      "course": "Open Water Diver",
+      "id": "e9356339-da23-43d3-a16e-6e512f847832",
+    },
+    {
+      "agency": "SSI",
+      "course": "Open Water Instructor",
+      "id": "cf1bc979-1fee-48c7-93e8-a49d486611eb",
+    },
+    {
+      "agency": "SSI",
+      "course": "Perfect Buoyancy",
+      "id": "d183d199-67ec-4fd6-af12-94ea26c5da1f",
+    },
+  ],
+  "totalCount": 28,
+}
+`;
+
+exports[`Certifications End-to-End when updating a certification will update the indicated certification 1`] = `
+{
+  "agency": "BSAC",
+  "course": "Advanced Reef Identification",
+  "id": "4bc3792d-1c81-4b9a-a7e3-75f8e9d6b972",
+}
+`;

@@ -11,6 +11,10 @@ import { Certification } from './certification';
 import { v4 as uuid } from 'uuid';
 
 export type SearchCertificationsOptions = SearchCertificationsParamsDTO;
+export type SearchCertificationsResults = {
+  certifications: Certification[];
+  totalCount: number;
+};
 export type CreateCertificationOptions = CreateOrUpdateCertificationParamsDTO;
 
 @Injectable()
@@ -22,7 +26,7 @@ export class CertificationsService {
 
   async searchCertifications(
     options: SearchCertificationsOptions,
-  ): Promise<Certification[]> {
+  ): Promise<SearchCertificationsResults> {
     const query: FilterQuery<CertificationData> = {};
 
     if (options.agency) {
@@ -38,8 +42,19 @@ export class CertificationsService {
       };
     }
 
-    const results = await this.certifications.find(query);
-    return results.map((result) => new Certification(result));
+    const [results, count] = await Promise.all([
+      this.certifications
+        .find(query)
+        .sort({ course: 1 })
+        .skip(options.skip)
+        .limit(options.limit),
+      this.certifications.countDocuments(query),
+    ]);
+
+    return {
+      certifications: results.map((result) => new Certification(result)),
+      totalCount: count,
+    };
   }
 
   async getCertification(id: string): Promise<Certification | undefined> {
