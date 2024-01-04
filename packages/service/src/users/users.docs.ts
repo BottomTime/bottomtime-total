@@ -94,6 +94,7 @@
  *           example: 2000-01-01
  *
  *     Profile:
+ *       type: object
  *       allOf:
  *         - $ref: "#/components/schemas/UpdateProfile"
  *         - type: object
@@ -138,7 +139,7 @@
  *           type: string
  *           format: uuid
  *           description: The user's unique ID.
- *           example: 00000000-0000-0000-0000-000000000000
+ *           example: 222f0f03-3e1c-40e7-8582-05f5875b7174
  *         username:
  *           title: Username
  *           type: string
@@ -185,13 +186,31 @@
  *           description: The date and time the user joined Bottom Time.
  *           example: 2021-01-01T00:00:00.000Z
  *         profile:
- *           title: Profile
- *           type: object
- *           description: The user's profile information.
- *           $ref: "#/components/schemas/Profile"
+ *           $ref: '#/components/schemas/Profile'
  *         role:
  *           title: Role
  *           type: string
  *           description: The user's role.
  *           example: user
+ *
+ *     AnonymousStatus:
+ *       type: object
+ *       required:
+ *         - anonymous
+ *       properties:
+ *         anonymous:
+ *           type: boolean
+ *           description: |
+ *             Indicates whether the user is browsing anonymously or not.
+ *             * `true` - User is not authenticated.
+ *             * `false` - User is authenticated.
+ *           example: false
+ *
+ *     CurrentUser:
+ *       oneOf:
+ *         - allOf:
+ *             - $ref: "#/components/schemas/AnonymousStatus"
+ *             - $ref: "#/components/schemas/User"
+ *         - $ref: "#/components/schemas/AnonymousStatus"
+ *       discriminator: anonymous
  */
