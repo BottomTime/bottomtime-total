@@ -5,7 +5,8 @@ import { randomBytes } from 'crypto';
 import { z } from 'zod';
 
 import { assertValid } from '../helpers/validation';
-import { Collections, UserDocument, UsernameSchema } from '../data';
+import { UserDocument, UsernameSchema } from '../data';
+import { Collections } from '../schemas/collections';
 import config from '../config';
 import {
   User,

@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Redirect,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CurrentUserDTO, UserDTO } from '@bottomtime/api';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,7 +32,6 @@ export class AuthController {
       maxAge: Config.sessions.cookieTTL,
       httpOnly: true,
     });
-    res.status(200).json(user.toJSON());
   }
 
   /**
@@ -162,6 +168,11 @@ export class AuthController {
    *               type: string
    *               format: uri
    *               example: /
+   *           Set-Cookie:
+   *             description: |
+   *               This header will be used to invalidate the application's session cookie in the user's browser.
+   *             schema:
+   *               type: string
    *       500:
    *         description: The request failed because of an internal server error.
    *         content:
@@ -170,24 +181,156 @@ export class AuthController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get('logout')
+  @Redirect('/')
   logout(@Res() res: Response) {
     res.clearCookie(Config.sessions.cookieName);
-    res.redirect('/');
   }
 
+  /**
+   * @openapi
+   * /api/auth/google:
+   *   get:
+   *     summary: Log in with Google
+   *     operationId: googleLogin
+   *     description: |
+   *       Redirects the user to Google to authenticate. If the authentication attempt is successful, the user will be redirected back to the application.
+   *     tags:
+   *       - Auth
+   *     responses:
+   *       302:
+   *         description: The request succeeded and the user has been redirected to Google to authenticate.
+   *         headers:
+   *           Location:
+   *             description: Redirects to Google to authenticate when the request completes.
+   *             schema:
+   *               type: string
+   *               format: uri
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get('google')
   @UseGuards(GoogleAuthGuard)
-  loginWithGoogle() {}
+  loginWithGoogle() {
+    /* Nothing to do here. The Passport module will handle the redirect to Google. */
+  }
 
+  /**
+   * @openapi
+   * /api/auth/google/callback:
+   *   get:
+   *     summary: Google OAuth2 callback
+   *     operationId: googleLoginCallback
+   *     description: |
+   *       Handles the callback from Google after a user has authenticated. If the authentication attempt is successful, the user will be redirected back to the application.
+   *
+   *       **NOTE:** This endpoint is not intended to be called directly. It is called by Google after a user has authenticated.
+   *     tags:
+   *       - Auth
+   *     responses:
+   *       302:
+   *         description: The request succeeded and the user has been redirected back to the application.
+   *         headers:
+   *           Location:
+   *             description: Redirects back to the application when the request completes.
+   *             schema:
+   *               type: string
+   *               format: uri
+   *             example: https://localhost:3000/
+   *           Set-Cookie:
+   *             description: |
+   *               Sets a session cookie in the user's browser to keep the user logged in.
+   *               The cookie value will be a JWT that identifies the user to the backend service.
+   *             schema:
+   *               type: string
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  loginWithGoogleCallback() {}
+  @Redirect('/')
+  async loginWithGoogleCallback(
+    @CurrentUser() user: User,
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.issueSessionCookie(user, res);
+  }
 
+  /**
+   * @openapi
+   * /api/auth/github:
+   *   get:
+   *     summary: Log in with GitHub
+   *     operationId: githubLogin
+   *     description: |
+   *       Redirects the user to GitHub to authenticate. If the authentication attempt is successful, the user will be redirected back to the application.
+   *     tags:
+   *       - Auth
+   *     responses:
+   *       302:
+   *         description: The request succeeded and the user has been redirected to GitHub to authenticate.
+   *         headers:
+   *           Location:
+   *             description: Redirects to GitHub to authenticate when the request completes.
+   *             schema:
+   *               type: string
+   *               format: uri
+   */
   @Get('github')
   @UseGuards(GithubAuthGuard)
-  loginWithGithub() {}
+  loginWithGithub() {
+    /* Nothing to do here. The Passport module will handle the redirect to GitHub. */
+  }
 
+  /**
+   * @openapi
+   * /api/auth/github/callback:
+   *   get:
+   *     summary: Github OAuth2 callback
+   *     operationId: githubLoginCallback
+   *     description: |
+   *       Handles the callback from GitHub after a user has authenticated. If the authentication attempt is successful, the user will be redirected back to the application.
+   *
+   *       **NOTE:** This endpoint is not intended to be called directly. It is called by GitHub after a user has authenticated.
+   *     tags:
+   *       - Auth
+   *     responses:
+   *       302:
+   *         description: The request succeeded and the user has been redirected back to the application.
+   *         headers:
+   *           Location:
+   *             description: Redirects back to the application when the request completes.
+   *             schema:
+   *               type: string
+   *               format: uri
+   *             example: https://localhost:3000/
+   *           Set-Cookie:
+   *             description: |
+   *               Sets a session cookie in the user's browser to keep the user logged in.
+   *               The cookie value will be a JWT that identifies the user to the backend service.
+   *             schema:
+   *               type: string
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get('github/callback')
   @UseGuards(GithubAuthGuard)
-  loginWithGithubCallback() {}
+  @Redirect('/')
+  async loginWithGithubCallback(
+    @CurrentUser() user: User,
+    @Res() res: Response,
+  ): Promise<void> {
+    await this.issueSessionCookie(user, res);
+  }
 }

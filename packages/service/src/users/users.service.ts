@@ -5,18 +5,22 @@ import { UserData } from '../schemas';
 import { FilterQuery, Model, Types } from 'mongoose';
 import {
   CreateUserOptions,
+  DepthUnit,
+  PressureUnit,
   ProfileVisibility,
   SearchUsersParamsSchema,
   SortOrder,
+  TemperatureUnit,
   UserRole,
   UsernameSchema,
   UsersSortBy,
+  WeightUnit,
 } from '@bottomtime/api';
 import { v4 as uuid } from 'uuid';
 import { hash } from 'bcrypt';
 import { Config } from '../config';
 import { z } from 'zod';
-import { Collections } from '../data';
+import { Collections } from '../schemas/collections';
 
 const SelectString = '-friends';
 
@@ -96,6 +100,10 @@ export class UsersService {
         : null,
       role: options.role ?? UserRole.User,
       settings: {
+        depthUnit: DepthUnit.Meters,
+        pressureUnit: PressureUnit.Bar,
+        temperatureUnit: TemperatureUnit.Celsius,
+        weightUnit: WeightUnit.Kilograms,
         profileVisibility: ProfileVisibility.FriendsOnly,
       },
       username: options.username,

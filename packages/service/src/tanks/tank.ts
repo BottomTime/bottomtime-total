@@ -1,5 +1,5 @@
 import { TankDTO, TankMaterial } from '@bottomtime/api';
-import { Maybe } from '../maybe';
+import { Maybe } from '../common';
 import { TankDocument } from '../schemas';
 
 export class Tank {

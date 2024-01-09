@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dive Site Class will render dive site data as JSON 1`] = `
+{
+  "averageDifficulty": 2.2,
+  "averageRating": 4.7,
+  "createdOn": 2024-01-08T13:33:52.364Z,
+  "creator": {
+    "memberSince": 2024-01-08T13:24:58.620Z,
+    "userId": "5A4699D8-48C4-4410-9886-B74B8B85CAC1",
+    "username": "Joe.Regular",
+  },
+  "depth": {
+    "depth": 80,
+    "unit": "ft",
+  },
+  "description": "This site is amazing",
+  "directions": "Fly to Cozumel and then take a boat out there.",
+  "freeToDive": true,
+  "gps": {
+    "lat": 20.433333,
+    "lon": -86.933333,
+  },
+  "id": "85F18003-FFF8-4B54-8B58-D751EA613D79",
+  "location": "Cozumel, Mexico",
+  "name": "Palancar Horseshoe",
+  "shoreAccess": false,
+  "updatedOn": undefined,
+}
+`;

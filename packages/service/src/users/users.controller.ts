@@ -6,7 +6,9 @@ import {
   Head,
   HttpCode,
   Logger,
+  Patch,
   Post,
+  Put,
   Query,
   UnauthorizedException,
   UseGuards,
@@ -25,6 +27,8 @@ import {
   SearchUsersParamsSchema,
   UserDTO,
   UserRole,
+  UserSettingsDTO,
+  UserSettingsSchema,
 } from '@bottomtime/api';
 import { ZodValidator } from '../zod-validator';
 import { AssertAuth, CurrentUser } from '../auth';
@@ -51,48 +55,11 @@ export class UsersController {
    *       - Users
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
-   *       - name: query
-   *         description: The query text to search for in the user profiles.
-   *         in: query
-   *         required: false
-   *         schema:
-   *           type: string
-   *           maxLength: 200
-   *       - name: sortBy
-   *         description: The field to sort by.
-   *         in: query
-   *         required: false
-   *         schema:
-   *           type: string
-   *           enum:
-   *             - username
-   *             - memberSince
-   *       - name: sortOrder
-   *         description: The sort order.
-   *         in: query
-   *         required: false
-   *         schema:
-   *           type: string
-   *           enum:
-   *             - asc
-   *             - desc
-   *       - name: skip
-   *         description: The number of results to skip.
-   *         in: query
-   *         required: false
-   *         schema:
-   *           type: integer
-   *           minimum: 0
-   *           default: 0
-   *       - name: limit
-   *         description: The maximum number of results to return.
-   *         in: query
-   *         required: false
-   *         schema:
-   *           type: integer
-   *           minimum: 1
-   *           maximum: 200
-   *           default: 100
+   *       - $ref: "#/components/parameters/UserQuerySearch"
+   *       - $ref: "#/components/parameters/UserQuerySortBy"
+   *       - $ref: "#/components/parameters/SortOrder"
+   *       - $ref: "#/components/parameters/Skip"
+   *       - $ref: "#/components/parameters/Limit"
    *     responses:
    *       "200":
    *         description: |
@@ -541,5 +508,22 @@ export class UsersController {
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(ChangeEmailParamsSchema))
     { newEmail }: ChangeEmailParams,
+  ): Promise<void> {}
+
+  @Put(`:${UsernameParam}/settings`)
+  @HttpCode(204)
+  @UseGuards(AssertAuth, AssertTargetUser)
+  async updateSettings(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(UserSettingsSchema)) settings: UserSettingsDTO,
+  ): Promise<void> {}
+
+  @Patch(`:${UsernameParam}/settings`)
+  @HttpCode(204)
+  @UseGuards(AssertAuth, AssertTargetUser)
+  async patchSettings(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(UserSettingsSchema.partial()))
+    settings: Partial<UserSettingsDTO>,
   ): Promise<void> {}
 }

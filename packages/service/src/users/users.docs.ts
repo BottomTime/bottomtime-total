@@ -11,6 +11,25 @@
  *         type: string
  *         pattern: ^[a-z0-9]+([_.-][a-z0-9]+)*$
  *         example: johndoe
+ *     UserQuerySearch:
+ *       name: query
+ *       in: query
+ *       description: A search query string to look for. It will match on username as well as profile properties.
+ *       schema:
+ *         type: string
+ *         maxlength: 200
+ *       example: john
+ *     UserQuerySortBy:
+ *       name: sortBy
+ *       in: query
+ *       description: The property to sort the search results by.
+ *       schema:
+ *         type: string
+ *         enum:
+ *           - username
+ *           - memberSince
+ *       default: username
+ *       example: username
  *
  *   schemas:
  *     UserCertification:
@@ -186,7 +205,7 @@
  *           description: The date and time the user joined Bottom Time.
  *           example: 2021-01-01T00:00:00.000Z
  *         profile:
- *           $ref: '#/components/schemas/Profile'
+ *           $ref: "#/components/schemas/Profile"
  *         role:
  *           title: Role
  *           type: string

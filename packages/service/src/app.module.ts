@@ -11,6 +11,7 @@ import { TanksModule } from './tanks/tanks.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import path from 'path';
 import { Response } from 'express';
+import { DiveSitesModule } from './diveSites/dive-sites.module';
 
 export type ServerDependencies = {
   mailClient: IMailClient;
@@ -39,6 +40,7 @@ export class AppModule {
         AuthModule,
         UsersModule,
         FriendsModule,
+        DiveSitesModule,
         TanksModule,
       ],
     };

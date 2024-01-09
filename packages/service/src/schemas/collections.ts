@@ -9,11 +9,3 @@ export const Collections = {
   Tanks: 'Tanks',
   Users: 'Users',
 } as const;
-
-export * from './application-document';
-export * from './certification-document';
-export * from './dive-log-document';
-export * from './dive-site-document';
-export * from './friend-request-document';
-export * from './tank-document';
-export * from './user-document';

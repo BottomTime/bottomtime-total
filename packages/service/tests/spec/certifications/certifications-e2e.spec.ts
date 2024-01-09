@@ -19,9 +19,6 @@ const RegularUserData: UserData = {
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
-  settings: {
-    profileVisibility: ProfileVisibility.Private,
-  },
 };
 
 describe('Certifications End-to-End', () => {

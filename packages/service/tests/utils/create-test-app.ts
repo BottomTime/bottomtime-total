@@ -12,8 +12,10 @@ export function createTestLogger(): Bunyan {
     level: 'debug',
     streams: [
       {
-        type: 'file',
+        type: 'rotating-file',
         path: path.resolve(__dirname, '../../logs/tests.log'),
+        period: '1d',
+        count: 4,
       },
     ],
   });

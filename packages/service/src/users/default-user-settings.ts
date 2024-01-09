@@ -2,11 +2,11 @@ import { Collection, MongoClient } from 'mongodb';
 import Logger from 'bunyan';
 
 import {
-  Collections,
   UserDocument,
   UserSettingsDocument,
   UserSettingsSchema,
 } from '../data';
+import { Collections } from '../schemas/collections';
 import {
   DepthUnit,
   PressureUnit,

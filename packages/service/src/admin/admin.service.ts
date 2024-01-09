@@ -1,11 +1,23 @@
-import { UserRole } from '@bottomtime/api';
+import {
+  AdminSearchUsersParamsDTO,
+  SortOrder,
+  UserRole,
+  UsersSortBy,
+} from '@bottomtime/api';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserData, UserDocument, UserModel } from '../schemas';
-import { Model } from 'mongoose';
+import { UserData, UserDocument } from '../schemas';
+import { FilterQuery, Model } from 'mongoose';
 import { hash } from 'bcrypt';
 import { Config } from '../config';
-import { Collections } from '../data';
+import { Collections } from '../schemas/collections';
+import { User } from '../users/user';
+
+export type SearchUsersOptions = AdminSearchUsersParamsDTO;
+export type SearchUsersResults = {
+  users: User[];
+  totalCount: number;
+};
 
 @Injectable()
 export class AdminService {
@@ -24,6 +36,53 @@ export class AdminService {
       $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
     });
     return user;
+  }
+
+  async searchUsers(options: SearchUsersOptions): Promise<SearchUsersResults> {
+    const query: FilterQuery<UserData> = {};
+
+    if (options.query) {
+      query.$text = {
+        $search: options.query,
+        $caseSensitive: false,
+        $diacriticSensitive: false,
+      };
+    }
+
+    if (options.role) {
+      query.role = options.role;
+    }
+
+    let sort: { [key: string]: SortOrder };
+    switch (options.sortBy) {
+      case UsersSortBy.MemberSince:
+        sort = {
+          memberSince: options.sortOrder,
+        };
+        break;
+
+      case UsersSortBy.Username:
+      default:
+        sort = {
+          username: options.sortOrder,
+        };
+        break;
+    }
+
+    const [users, totalCount] = await Promise.all([
+      this.Users.find(query)
+        .sort(sort)
+        .skip(options.skip)
+        .limit(options.limit)
+        .exec(),
+      this.Users.countDocuments().exec(),
+    ]);
+    this.Users.find();
+
+    return {
+      users: users.map((user) => new User(this.Users, user)),
+      totalCount,
+    };
   }
 
   async changeRole(

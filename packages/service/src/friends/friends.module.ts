@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { FriendSchema, FriendRequestSchema, UserSchema } from '../schemas';
 import { FriendRequestsController } from './friend-requests.controller';
 import { UsersModule } from '../users';
-import { Collections } from '../data';
+import { Collections } from '../schemas/collections';
 import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
 
 @Module({

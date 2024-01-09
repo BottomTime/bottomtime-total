@@ -1,6 +1,6 @@
 import { UserCertificationDTO, ProfileDTO } from '@bottomtime/api';
 import { ProfileData, UserDocument } from '../schemas/user.document';
-import { Maybe } from '../maybe';
+import { Maybe } from '../common';
 
 export class Profile {
   private _certifications: UserCertificationDTO[] | undefined;

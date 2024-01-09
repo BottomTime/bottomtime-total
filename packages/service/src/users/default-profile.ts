@@ -2,12 +2,8 @@ import Logger from 'bunyan';
 import { Collection, MongoClient } from 'mongodb';
 
 import { assertValid } from '../helpers/validation';
-import {
-  Collections,
-  ProfileDocument,
-  ProfileSchema,
-  UserDocument,
-} from '../data';
+import { ProfileDocument, ProfileSchema, UserDocument } from '../data';
+import { Collections } from '../schemas/collections';
 import { Profile, ProfileCertificationData } from './interfaces';
 import { ProfileVisibility } from '../constants';
 

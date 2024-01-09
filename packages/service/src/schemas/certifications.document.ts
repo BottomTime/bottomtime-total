@@ -1,5 +1,5 @@
 import { HydratedDocument, InferSchemaType, Schema, model } from 'mongoose';
-import { Collections } from '../data';
+import { Collections } from './collections';
 
 export const CertificationSchema = new Schema(
   {

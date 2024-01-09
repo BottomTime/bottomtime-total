@@ -3,6 +3,7 @@ import {
   PressureUnit,
   ProfileVisibility,
   TemperatureUnit,
+  UserSettingsDTO,
   WeightUnit,
 } from '@bottomtime/api';
 import { UserData, UserDocument } from '../schemas';
@@ -15,7 +16,13 @@ export class UserSettings {
   private get settings(): SettingsData {
     if (this.data.settings) return this.data.settings;
 
-    this.data.settings = { profileVisibility: ProfileVisibility.FriendsOnly };
+    this.data.settings = {
+      depthUnit: DepthUnit.Meters,
+      pressureUnit: PressureUnit.Bar,
+      temperatureUnit: TemperatureUnit.Celsius,
+      weightUnit: WeightUnit.Kilograms,
+      profileVisibility: ProfileVisibility.FriendsOnly,
+    };
     return this.data.settings;
   }
 
@@ -27,31 +34,40 @@ export class UserSettings {
   }
 
   get depthUnit(): DepthUnit {
-    return (this.settings.depthUnit ?? DepthUnit.Meters) as DepthUnit;
+    return this.settings.depthUnit;
   }
   set depthUnit(value: DepthUnit) {
     this.settings.depthUnit = value;
   }
 
   get pressureUnit(): PressureUnit {
-    return (this.settings.pressureUnit ?? PressureUnit.Bar) as PressureUnit;
+    return this.settings.pressureUnit;
   }
   set pressureUnit(value: PressureUnit) {
     this.settings.pressureUnit = value;
   }
 
   get temperatureUnit(): TemperatureUnit {
-    return (this.settings.temperatureUnit ??
-      TemperatureUnit.Celsius) as TemperatureUnit;
+    return this.settings.temperatureUnit;
   }
   set temperatureUnit(value: TemperatureUnit) {
     this.settings.temperatureUnit = value;
   }
 
   get weightUnit(): WeightUnit {
-    return (this.settings.weightUnit ?? WeightUnit.Kilograms) as WeightUnit;
+    return this.settings.weightUnit;
   }
   set weightUnit(value: WeightUnit) {
     this.settings.weightUnit = value;
+  }
+
+  toJSON(): UserSettingsDTO {
+    return {
+      depthUnit: this.depthUnit,
+      pressureUnit: this.pressureUnit,
+      temperatureUnit: this.temperatureUnit,
+      weightUnit: this.weightUnit,
+      profileVisibility: this.profileVisibility,
+    };
   }
 }

@@ -7,7 +7,7 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
-import { Collections } from '../data';
+import { Collections } from './collections';
 
 export const UserSchema = new Schema(
   {
@@ -78,28 +78,35 @@ export const UserSchema = new Schema(
     },
 
     settings: {
-      depthUnit: {
-        type: String,
-        enum: DepthUnit,
-      },
-      pressureUnit: {
-        type: String,
-        enum: PressureUnit,
-      },
-      temperatureUnit: {
-        type: String,
-        enum: TemperatureUnit,
-      },
-      weightUnit: {
-        type: String,
-        enum: WeightUnit,
-      },
+      type: {
+        depthUnit: {
+          type: String,
+          enum: Object.values(DepthUnit),
+          required: true,
+        },
+        pressureUnit: {
+          type: String,
+          enum: Object.values(PressureUnit),
+          required: true,
+        },
+        temperatureUnit: {
+          type: String,
+          enum: Object.values(TemperatureUnit),
+          required: true,
+        },
+        weightUnit: {
+          type: String,
+          enum: Object.values(WeightUnit),
+          required: true,
+        },
 
-      profileVisibility: {
-        type: String,
-        enum: ProfileVisibility,
-        required: true,
+        profileVisibility: {
+          type: String,
+          enum: Object.values(ProfileVisibility),
+          required: true,
+        },
       },
+      required: false,
     },
   },
   { collection: Collections.Users },

@@ -16,7 +16,7 @@
     "migrate": "migrate-mongo",
     "prepare": "yarn docs",
     "serve": "nodemon src/index.ts",
-    "test": "jest"
+    "test": "jest --silent"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.10",

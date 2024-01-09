@@ -1,13 +1,21 @@
 import { UserRole } from './constants';
-import { PasswordStrengthSchema } from './users';
+import { PasswordStrengthSchema, UserSchema } from './users';
 import { SearchUsersParamsSchema } from './users';
 import { z } from 'zod';
 
 export const AdminSearchUsersParamsSchema = SearchUsersParamsSchema.extend({
   role: z.nativeEnum(UserRole).optional(),
 });
-export type AdminSearchUsersParams = z.infer<
+export type AdminSearchUsersParamsDTO = z.infer<
   typeof AdminSearchUsersParamsSchema
+>;
+
+export const AdminSearchUsersResponseSchema = z.object({
+  users: UserSchema.array(),
+  totalCount: z.number().int(),
+});
+export type AdminSearchUsersResponseDTO = z.infer<
+  typeof AdminSearchUsersResponseSchema
 >;
 
 export const ChangeRoleParamsSchema = z.object({

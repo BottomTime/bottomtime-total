@@ -1,7 +1,8 @@
 import { Collection, Filter, FindOptions, MongoClient } from 'mongodb';
 import Logger from 'bunyan';
 
-import { Collections, FriendDocument, UserDocument } from '../data';
+import { FriendDocument, UserDocument } from '../data';
+import { Collections } from '../schemas/collections';
 import config from '../config';
 import { DefaultFriend } from './default-friend';
 import { DefaultProfile } from './default-profile';

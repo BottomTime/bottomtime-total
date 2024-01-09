@@ -1,7 +1,6 @@
 import { UserDTO, UserRole } from '@bottomtime/api';
 import { ConflictException, Logger } from '@nestjs/common';
 import { UserData, UserDocument } from '../schemas/user.document';
-import { Maybe } from '../maybe';
 import { Profile } from './profile';
 import { Model } from 'mongoose';
 import { randomBytes } from 'crypto';
@@ -9,6 +8,7 @@ import dayjs from 'dayjs';
 import { compare, hash } from 'bcrypt';
 import { Config } from '../config';
 import { UserSettings } from './user-settings';
+import { Maybe } from '../common';
 
 export class User implements Express.User {
   private readonly log = new Logger(User.name);
@@ -231,6 +231,7 @@ export class User implements Express.User {
       email: this.email ?? undefined,
       lastLogin: this.lastLogin ?? undefined,
       lastPasswordChange: this.lastPasswordChange ?? undefined,
+      settings: this.settings.toJSON(),
     };
   }
 }

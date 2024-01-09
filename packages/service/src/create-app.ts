@@ -19,6 +19,7 @@ export async function createApp(
   const logService = new BunyanLogger(logger);
   const deps = await createDeps();
 
+  // Initialize the app with CORS settings and our provided logger.
   const app = await NestFactory.create(AppModule.forRoot(deps), {
     cors: {
       // TODO: Limit domains.
@@ -30,6 +31,7 @@ export async function createApp(
     logger: logService,
   });
 
+  // Add Express middleware.
   app.use(helmet());
   app.use(cookieParser());
   app.use(useragent.express());
@@ -57,18 +59,12 @@ export async function createApp(
     next();
   });
 
+  // Add JWT authentication
   app.useGlobalGuards(new JwtOrAnonAuthGuard());
 
+  // Add global error filter to format all error responses using standard JSON format.
   const httpAdapterHost = app.get(HttpAdapterHost);
   app.useGlobalFilters(new GlobalErrorFilter(logService, httpAdapterHost));
-
-  requestStats(app.getHttpServer(), (stats) => {
-    logService.debug('Request stats', {
-      duration: stats.time,
-      bytesRecieved: stats.req.bytes,
-      bytesSent: stats.res.bytes,
-    });
-  });
 
   return app;
 }

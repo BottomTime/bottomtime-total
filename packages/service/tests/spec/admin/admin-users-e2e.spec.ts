@@ -1,16 +1,17 @@
 import { INestApplication } from '@nestjs/common';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
-import { UserData, UserModel } from '../../../src/schemas';
+import { UserData, UserDocument, UserModel } from '../../../src/schemas';
 import { ProfileVisibility, UserRole } from '@bottomtime/api';
 import request from 'supertest';
 import { compare } from 'bcrypt';
+import TestUserData from '../../fixtures/users.json';
 
 const AdminUserId = 'F3669787-82E5-458F-A8AD-98D3F57DDA6E';
 const AdminUserData: UserData = {
   _id: AdminUserId,
   emailVerified: false,
   isLockedOut: false,
-  memberSince: new Date(),
+  memberSince: new Date('2024-01-06T00:05:49.712Z'),
   role: UserRole.Admin,
   username: 'Admin',
   usernameLowered: 'admin',
@@ -24,7 +25,7 @@ const RegularUserData: UserData = {
   _id: RegularUserId,
   emailVerified: false,
   isLockedOut: false,
-  memberSince: new Date(),
+  memberSince: new Date('2024-01-06T00:05:49.712Z'),
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
@@ -54,6 +55,64 @@ describe('Admin End-to-End Tests', () => {
 
   afterAll(async () => {
     await app.close();
+  });
+
+  describe('when searching users', () => {
+    let userData: UserDocument[];
+
+    beforeAll(() => {
+      userData = TestUserData.map((user) => new UserModel(user));
+    });
+
+    beforeEach(async () => {
+      await UserModel.insertMany(userData);
+    });
+
+    it('will return a list of users', async () => {
+      const response = await request(server)
+        .get(`/api/admin/users`)
+        .query({ limit: 15 })
+        .set(...adminAuthHeader)
+        .expect(200);
+
+      expect(response.body).toMatchSnapshot();
+    });
+
+    it('will filter results based on query string', async () => {
+      const response = await request(server)
+        .get(`/api/admin/users`)
+        .query({
+          query: 'city jenkins',
+          role: UserRole.User,
+        })
+        .set(...adminAuthHeader)
+        .expect(200);
+
+      expect(response.body).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if query string is invalid', async () => {
+      await request(server)
+        .get(`/api/admin/users?query=Joe&sortBy=NotAValidSortBy`)
+        .query({
+          role: 'wat',
+          limit: -3,
+          sortBy: 'NotAValidSortBy',
+        })
+        .set(...adminAuthHeader)
+        .expect(400);
+    });
+
+    it('will return a 401 response if user is not authenticated', async () => {
+      await request(server).get(`/api/admin/users`).expect(401);
+    });
+
+    it('will return a 403 response if user is not an administrator', async () => {
+      await request(server)
+        .get(`/api/admin/users`)
+        .set(...regualarAuthHeader)
+        .expect(403);
+    });
   });
 
   describe("when resetting a user's password", () => {

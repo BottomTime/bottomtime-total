@@ -1,5 +1,14 @@
 import { CertificationSchema } from './certifications';
-import { DateRegex, SortOrder, UserRole } from './constants';
+import {
+  DateRegex,
+  DepthUnit,
+  PressureUnit,
+  ProfileVisibility,
+  SortOrder,
+  TemperatureUnit,
+  UserRole,
+  WeightUnit,
+} from './constants';
 import { z } from 'zod';
 
 export enum UsersSortBy {
@@ -60,6 +69,16 @@ export const ProfileSchema = UpdateProfileParamsSchema.extend({
 });
 export type ProfileDTO = z.infer<typeof ProfileSchema>;
 
+const SuccinctProfileSchema = ProfileSchema.pick({
+  userId: true,
+  memberSince: true,
+  username: true,
+  avatar: true,
+  name: true,
+  location: true,
+});
+export type SuccinctProfileDTO = z.infer<typeof SuccinctProfileSchema>;
+
 export const CreateUserOptionsSchema = z.object({
   username: UsernameSchema,
   email: EmailSchema.optional(),
@@ -79,6 +98,15 @@ export const ChangeEmailParamsSchema = z.object({
 });
 export type ChangeEmailParams = z.infer<typeof ChangeEmailParamsSchema>;
 
+export const UserSettingsSchema = z.object({
+  depthUnit: z.nativeEnum(DepthUnit),
+  pressureUnit: z.nativeEnum(PressureUnit),
+  temperatureUnit: z.nativeEnum(TemperatureUnit),
+  weightUnit: z.nativeEnum(WeightUnit),
+  profileVisibility: z.nativeEnum(ProfileVisibility),
+});
+export type UserSettingsDTO = z.infer<typeof UserSettingsSchema>;
+
 export const UserSchema = z.object({
   id: z.string().uuid(),
   username: z.string(),
@@ -90,6 +118,7 @@ export const UserSchema = z.object({
   isLockedOut: z.boolean(),
   memberSince: z.coerce.date(),
   profile: ProfileSchema,
+  settings: UserSettingsSchema,
   role: z.nativeEnum(UserRole),
 });
 export type UserDTO = z.infer<typeof UserSchema>;
@@ -102,15 +131,13 @@ export const CurrentUserSchema = z.discriminatedUnion('anonymous', [
 ]);
 export type CurrentUserDTO = z.infer<typeof CurrentUserSchema>;
 
-export const SearchUsersParamsSchema = z
-  .object({
-    query: z.string().trim().max(200),
-    sortBy: z.nativeEnum(UsersSortBy).default(UsersSortBy.Username),
-    sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Ascending),
-    skip: z.coerce.number().int().min(0).default(0),
-    limit: z.coerce.number().int().positive().max(200).default(100),
-  })
-  .partial();
+export const SearchUsersParamsSchema = z.object({
+  query: z.string().trim().max(200).optional(),
+  sortBy: z.nativeEnum(UsersSortBy).default(UsersSortBy.Username),
+  sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Ascending),
+  skip: z.coerce.number().int().min(0).default(0),
+  limit: z.coerce.number().int().positive().max(200).default(100),
+});
 export type SearchUsersParams = z.infer<typeof SearchUsersParamsSchema>;
 
 export const SearchUsersResponseSchema = z.object({

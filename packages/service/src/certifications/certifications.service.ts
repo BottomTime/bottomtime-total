@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Collections } from '../data';
+import { Collections } from '../schemas/collections';
 import { FilterQuery, Model } from 'mongoose';
 import { CertificationData } from '../schemas/certifications.document';
 import {

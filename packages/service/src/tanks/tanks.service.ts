@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Collections } from '../data';
+import { Collections } from '../schemas/collections';
 import { Model, FilterQuery } from 'mongoose';
 import { TankData } from '../schemas';
 import { v4 as uuid } from 'uuid';
 import { Tank } from './tank';
 import { CreateOrUpdateTankParamsDTO } from '@bottomtime/api';
-import { Maybe } from '../maybe';
+import { Maybe } from '../common';
 
 export type CreateTankOptions = CreateOrUpdateTankParamsDTO & {
   userId?: Maybe<string>;

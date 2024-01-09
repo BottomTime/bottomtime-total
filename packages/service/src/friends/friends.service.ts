@@ -30,7 +30,7 @@ import {
 import { FriendData, FriendModel } from '../schemas/friends.document';
 import { v4 as uuid } from 'uuid';
 import dayjs from 'dayjs';
-import { Collections } from '../data';
+import { Collections } from '../schemas/collections';
 
 // List Friends Types
 export type Friend = FriendDTO;

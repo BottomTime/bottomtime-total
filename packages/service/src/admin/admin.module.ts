@@ -6,7 +6,7 @@ import { UserSchema } from '../schemas';
 import { UsersModule } from '../users';
 import { AdminTanksController } from './admin-tanks.controller';
 import { TanksModule } from '../tanks';
-import { Collections } from '../data';
+import { Collections } from '../schemas/collections';
 import { CertificationsModule } from '../certifications';
 import { AdminCertificationsController } from './admin-certifications.controller';
 

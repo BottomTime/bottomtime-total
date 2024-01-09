@@ -5,7 +5,8 @@ import { v4 as uuid } from 'uuid';
 
 import config from '../config';
 import { ProfileVisibility, SortOrder, UserRole } from '../constants';
-import { Collections, UserDocument } from '../data';
+import { UserDocument } from '../data';
+import { Collections } from '../schemas/collections';
 import { ConflictError } from '../errors';
 import { assertValid } from '../helpers/validation';
 import { DefaultUser } from './default-user';

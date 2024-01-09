@@ -1,11 +1,4 @@
-export * from './interfaces';
-
-export * from './default-profile';
-export * from './default-user-settings';
-export * from './default-friend';
-export * from './default-friend-manager';
-export * from './default-user';
-export * from './default-user-manager';
-
-export * from './users.module';
+export * from './user';
+export * from './users.service';
 export * from './users.controller';
+export * from './users.module';
