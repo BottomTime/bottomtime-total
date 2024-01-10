@@ -1,8 +1,12 @@
 import {
   CreateOrUpdateTankParamsDTO,
+  DepthUnit,
+  PressureUnit,
   ProfileVisibility,
   TankMaterial,
+  TemperatureUnit,
   UserRole,
+  WeightUnit,
 } from '@bottomtime/api';
 import {
   TankDocument,
@@ -26,6 +30,10 @@ const AdminUserData: UserData = {
   username: 'Admin',
   usernameLowered: 'admin',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -40,6 +48,10 @@ const RegularUserData: UserData = {
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };

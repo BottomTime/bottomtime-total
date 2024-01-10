@@ -1,8 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Collections } from '../schemas/collections';
 import { Model, FilterQuery } from 'mongoose';
-import { TankData } from '../schemas';
+import { TankData, TankModelName } from '../schemas';
 import { v4 as uuid } from 'uuid';
 import { Tank } from './tank';
 import { CreateOrUpdateTankParamsDTO } from '@bottomtime/api';
@@ -28,7 +27,7 @@ const UserTankLimit = 10;
 @Injectable()
 export class TanksService {
   constructor(
-    @InjectModel(Collections.Tanks) private readonly Tanks: Model<TankData>,
+    @InjectModel(TankModelName) private readonly Tanks: Model<TankData>,
   ) {}
 
   async listTanks(options?: ListTanksOptions): Promise<ListTanksResponse> {

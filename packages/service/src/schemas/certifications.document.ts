@@ -10,6 +10,10 @@ export const CertificationSchema = new Schema(
   { collection: Collections.KnownCertifications },
 );
 
+export const CertificationModelName = 'Certification';
 export type CertificationData = InferSchemaType<typeof CertificationSchema>;
 export type CertificationDocument = HydratedDocument<CertificationData>;
-export const CertificationModel = model('Certification', CertificationSchema);
+export const CertificationModel = model(
+  CertificationModelName,
+  CertificationSchema,
+);

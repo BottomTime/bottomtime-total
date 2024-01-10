@@ -9,13 +9,16 @@ import {
   UserCertificationDTO,
   ProfileVisibility,
   UserRole,
+  DepthUnit,
+  PressureUnit,
+  TemperatureUnit,
+  WeightUnit,
 } from '@bottomtime/api';
 import { hashSync } from 'bcrypt';
 import { generate } from 'generate-password';
 
-import KnownCertifications from '../../src/data/certifications.json';
+import KnownCertifications from '../fixtures/certifications.json';
 import dayjs from 'dayjs';
-import { Types } from 'mongoose';
 
 const ExperienceLevels: readonly string[] = [
   'Beginner',
@@ -101,6 +104,10 @@ export function createTestUser(
     usernameLowered: options?.usernameLowered ?? username.toLowerCase(),
 
     settings: options?.settings ?? {
+      depthUnit: DepthUnit.Meters,
+      pressureUnit: PressureUnit.Bar,
+      temperatureUnit: TemperatureUnit.Celsius,
+      weightUnit: WeightUnit.Kilograms,
       profileVisibility: ProfileVisibility.FriendsOnly,
     },
   };

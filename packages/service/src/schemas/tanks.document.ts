@@ -18,6 +18,7 @@ export const TankSchema = new Schema(
   { collection: Collections.Tanks },
 );
 
+export const TankModelName = 'Tank';
 export type TankData = InferSchemaType<typeof TankSchema>;
 export type TankDocument = HydratedDocument<TankData>;
-export const TankModel = model('Tank', TankSchema);
+export const TankModel = model(TankModelName, TankSchema);

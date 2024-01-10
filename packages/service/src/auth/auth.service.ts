@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { UserData, UserModel } from '../schemas';
+import { UserData, UserModelName } from '../schemas';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../users/user';
 import { compare } from 'bcrypt';
@@ -14,7 +14,7 @@ import { Config } from '../config';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(UserModel.name) private readonly Users: Model<UserData>,
+    @InjectModel(UserModelName) private readonly Users: Model<UserData>,
   ) {}
 
   async validateJwt(payload: JwtPayload): Promise<User> {

@@ -11,6 +11,7 @@ export const FriendSchema = new Schema(
   { collection: Collections.Friends },
 );
 
+export const FriendModelName = 'Friend';
 export type FriendData = InferSchemaType<typeof FriendSchema>;
 export type FriendDocument = HydratedDocument<FriendData>;
-export const FriendModel = model('Friend', FriendSchema);
+export const FriendModel = model(FriendModelName, FriendSchema);

@@ -1,4 +1,5 @@
 import {
+  BooleanString,
   DepthSchema,
   GpsCoordinatesSchema,
   RatingRangeSchema,
@@ -30,24 +31,6 @@ export const DiveSiteReviewSchema = CreateOrUpdateDiveSiteReviewSchema.extend({
 });
 export type DiveSiteReviewDTO = z.infer<typeof DiveSiteReviewSchema>;
 
-export const SearchDiveSitesParamsSchema = z.object({
-  query: z.string().trim().max(200).optional(),
-  location: GpsCoordinatesSchema.optional(),
-  radius: z.coerce.number().gt(0).max(500).default(50),
-  freeToDive: z.boolean().optional(),
-  shoreAccess: z.boolean().optional(),
-  rating: RatingRangeSchema.optional(),
-  difficulty: RatingRangeSchema.optional(),
-  creator: UsernameSchema.optional(),
-  sortBy: z.nativeEnum(DiveSitesSortBy).default(DiveSitesSortBy.Rating),
-  sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Descending),
-  skip: z.coerce.number().int().min(0).default(0),
-  limit: z.coerce.number().int().gt(0).max(500).default(50),
-});
-export type SearchDiveSitesParamsDTO = z.infer<
-  typeof SearchDiveSitesParamsSchema
->;
-
 export const CreateOrUpdateDiveSiteSchema = z.object({
   name: z.string().trim().min(1).max(200),
   description: z.string().trim().max(2000).optional(),
@@ -78,3 +61,29 @@ export const DiveSiteSchema = CreateOrUpdateDiveSiteSchema.extend({
   averageDifficulty: z.number().min(1).max(5).optional(),
 });
 export type DiveSiteDTO = z.infer<typeof DiveSiteSchema>;
+
+export const SearchDiveSitesParamsSchema = z.object({
+  query: z.string().trim().max(200).optional(),
+  location: GpsCoordinatesSchema.optional(),
+  radius: z.coerce.number().gt(0).max(500).default(50),
+  freeToDive: BooleanString.optional(),
+  shoreAccess: BooleanString.optional(),
+  rating: RatingRangeSchema.optional(),
+  difficulty: RatingRangeSchema.optional(),
+  creator: UsernameSchema.optional(),
+  sortBy: z.nativeEnum(DiveSitesSortBy).default(DiveSitesSortBy.Rating),
+  sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Descending),
+  skip: z.coerce.number().int().min(0).default(0),
+  limit: z.coerce.number().int().gt(0).max(500).default(50),
+});
+export type SearchDiveSitesParamsDTO = z.infer<
+  typeof SearchDiveSitesParamsSchema
+>;
+
+export const SearchDiveSitesResponseSchema = z.object({
+  sites: z.array(DiveSiteSchema),
+  totalCount: z.number().int(),
+});
+export type SearchDiveSitesResponseDTO = z.infer<
+  typeof SearchDiveSitesResponseSchema
+>;

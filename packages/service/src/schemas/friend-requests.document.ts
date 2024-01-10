@@ -14,6 +14,10 @@ export const FriendRequestSchema = new Schema(
   { collection: Collections.FriendRequests },
 );
 
+export const FriendRequestModelName = 'FriendRequest';
 export type FriendRequestData = InferSchemaType<typeof FriendRequestSchema>;
 export type FriendRequestDocument = HydratedDocument<FriendRequestData>;
-export const FriendRequestModel = model('FriendRequest', FriendRequestSchema);
+export const FriendRequestModel = model(
+  FriendRequestModelName,
+  FriendRequestSchema,
+);

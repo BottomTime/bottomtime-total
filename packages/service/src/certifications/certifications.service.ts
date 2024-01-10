@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Collections } from '../schemas/collections';
 import { FilterQuery, Model } from 'mongoose';
-import { CertificationData } from '../schemas/certifications.document';
+import {
+  CertificationData,
+  CertificationModelName,
+} from '../schemas/certifications.document';
 import {
   CreateOrUpdateCertificationParamsDTO,
   SearchCertificationsParamsDTO,
@@ -20,7 +22,7 @@ export type CreateCertificationOptions = CreateOrUpdateCertificationParamsDTO;
 @Injectable()
 export class CertificationsService {
   constructor(
-    @InjectModel(Collections.KnownCertifications)
+    @InjectModel(CertificationModelName)
     private readonly certifications: Model<CertificationData>,
   ) {}
 

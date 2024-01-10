@@ -1,8 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Model, PopulateOptions } from 'mongoose';
-import { DiveSiteData, DiveSiteModel } from '../schemas/dive-sites.document';
 import { InjectModel } from '@nestjs/mongoose';
-import { Collections, UserData } from '../schemas';
+import {
+  DiveSiteData,
+  DiveSiteModel,
+  DiveSiteModelName,
+  UserData,
+} from '../schemas';
 import { DiveSite, PopulatedDiveSiteDocument } from './dive-site';
 import {
   CreateOrUpdateDiveSiteDTO,
@@ -33,7 +37,7 @@ export class DiveSitesService {
   private readonly log = new Logger(DiveSitesService.name);
 
   constructor(
-    @InjectModel(Collections.DiveSites)
+    @InjectModel(DiveSiteModelName)
     private readonly DiveSites: Model<DiveSiteData>,
   ) {}
 

@@ -2,17 +2,19 @@ import { Module } from '@nestjs/common';
 import { DiveSitesService } from './dive-sites.service';
 import { DiveSitesController } from './dive-sites.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Collections } from '../schemas';
-import { DiveSiteSchema } from '../schemas/dive-sites.document';
+import { DiveSiteModelName, DiveSiteSchema } from '../schemas';
+import { UsersModule } from '../users';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Collections.DiveSites, schema: DiveSiteSchema },
+      { name: DiveSiteModelName, schema: DiveSiteSchema },
     ]),
+    UsersModule,
   ],
 
   providers: [DiveSitesService],
   controllers: [DiveSitesController],
+  exports: [DiveSitesService],
 })
 export class DiveSitesModule {}

@@ -51,6 +51,7 @@ export const DiveSiteSchema = new Schema(
   { collection: Collections.DiveSites },
 );
 
+export const DiveSiteModelName = 'DiveSite';
 export type DiveSiteData = InferSchemaType<typeof DiveSiteSchema>;
 export type DiveSiteDocument = HydratedDocument<DiveSiteData>;
-export const DiveSiteModel = model('DiveSite', DiveSiteSchema);
+export const DiveSiteModel = model(DiveSiteModelName, DiveSiteSchema);

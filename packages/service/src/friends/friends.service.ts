@@ -10,9 +10,11 @@ import {
   FriendRequestData,
   FriendRequestDocument,
   FriendRequestModel,
+  FriendRequestModelName,
   UserData,
   UserDocument,
   UserModel,
+  UserModelName,
 } from '../schemas';
 import { FilterQuery, Model } from 'mongoose';
 import {
@@ -27,10 +29,13 @@ import {
   ProfileVisibility,
   SortOrder,
 } from '@bottomtime/api';
-import { FriendData, FriendModel } from '../schemas/friends.document';
+import {
+  FriendData,
+  FriendModel,
+  FriendModelName,
+} from '../schemas/friends.document';
 import { v4 as uuid } from 'uuid';
 import dayjs from 'dayjs';
-import { Collections } from '../schemas/collections';
 
 // List Friends Types
 export type Friend = FriendDTO;
@@ -66,11 +71,11 @@ export class FriendsService {
   private readonly log: Logger = new Logger(FriendsService.name);
 
   constructor(
-    @InjectModel(Collections.Users)
+    @InjectModel(UserModelName)
     private readonly Users: Model<UserData>,
-    @InjectModel(Collections.Friends)
+    @InjectModel(FriendModelName)
     private readonly Friends: Model<FriendData>,
-    @InjectModel(Collections.FriendRequests)
+    @InjectModel(FriendRequestModelName)
     private readonly FriendRequests: Model<FriendRequestData>,
   ) {}
 

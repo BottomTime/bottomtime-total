@@ -2,19 +2,16 @@ import { Module } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { AdminUsersController } from './admin-users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from '../schemas';
+import { UserModelName, UserSchema } from '../schemas';
 import { UsersModule } from '../users';
 import { AdminTanksController } from './admin-tanks.controller';
 import { TanksModule } from '../tanks';
-import { Collections } from '../schemas/collections';
 import { CertificationsModule } from '../certifications';
 import { AdminCertificationsController } from './admin-certifications.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Collections.Users, schema: UserSchema },
-    ]),
+    MongooseModule.forFeature([{ name: UserModelName, schema: UserSchema }]),
     UsersModule,
     CertificationsModule,
     TanksModule,

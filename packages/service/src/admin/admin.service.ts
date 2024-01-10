@@ -6,11 +6,10 @@ import {
 } from '@bottomtime/api';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserData, UserDocument } from '../schemas';
+import { UserData, UserDocument, UserModelName } from '../schemas';
 import { FilterQuery, Model } from 'mongoose';
 import { hash } from 'bcrypt';
 import { Config } from '../config';
-import { Collections } from '../schemas/collections';
 import { User } from '../users/user';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO;
@@ -24,7 +23,7 @@ export class AdminService {
   private readonly log = new Logger(AdminService.name);
 
   constructor(
-    @InjectModel(Collections.Users)
+    @InjectModel(UserModelName)
     private readonly Users: Model<UserData>,
   ) {}
 

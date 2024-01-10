@@ -11,6 +11,8 @@ import { INestApplication } from '@nestjs/common';
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 import helmet from 'helmet';
 import requestStats from 'request-stats';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import path from 'path';
 
 export async function createApp(
   logger: Logger,
@@ -20,16 +22,19 @@ export async function createApp(
   const deps = await createDeps();
 
   // Initialize the app with CORS settings and our provided logger.
-  const app = await NestFactory.create(AppModule.forRoot(deps), {
-    cors: {
-      // TODO: Limit domains.
-      origin: (_origin, cb) => {
-        cb(null, true);
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule.forRoot(deps),
+    {
+      cors: {
+        // TODO: Limit domains.
+        origin: (_origin, cb) => {
+          cb(null, true);
+        },
+        credentials: true,
       },
-      credentials: true,
+      logger: logService,
     },
-    logger: logService,
-  });
+  );
 
   // Add Express middleware.
   app.use(helmet());
@@ -58,6 +63,10 @@ export async function createApp(
 
     next();
   });
+
+  // Enable Pug as view engine for rendering web pages
+  app.setBaseViewsDir(path.resolve(__dirname, '../assets/templates'));
+  app.setViewEngine('pug');
 
   // Add JWT authentication
   app.useGlobalGuards(new JwtOrAnonAuthGuard());

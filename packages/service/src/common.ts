@@ -8,10 +8,6 @@ export const AnonymousUserProfile: SuccinctProfileDTO = {
   name: 'Anonymous',
 };
 
-export const BooleanString = z
-  .enum(['true', 'false'])
-  .transform((value) => value === 'true');
-
 export type Depth = DepthDTO;
 
 export const GpsCoordinatesSchema = z.object({

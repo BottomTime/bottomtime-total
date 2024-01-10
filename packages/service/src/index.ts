@@ -33,9 +33,8 @@ async function createDependencies(): Promise<ServerDependencies> {
 }
 
 createApp(log, createDependencies)
-  .then(async (app) => {
-    await app.listen(Config.port);
-
+  .then((app) => app.listen(Config.port))
+  .then(() => {
     log.info(
       `🎉 Service has successfully started and is listening on port ${Config.port}. 🎉`,
     );

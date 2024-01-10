@@ -112,8 +112,9 @@ export const UserSchema = new Schema(
   { collection: Collections.Users },
 );
 
+export const UserModelName = 'User';
 export type UserData = InferSchemaType<typeof UserSchema>;
 export type UserDocument = HydratedDocument<UserData>;
-export const UserModel = model('User', UserSchema);
+export const UserModel = model(UserModelName, UserSchema);
 
 export type ProfileData = NonNullable<UserData['profile']>;

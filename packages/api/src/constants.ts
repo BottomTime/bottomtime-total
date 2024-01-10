@@ -43,8 +43,45 @@ export enum WeightUnit {
   Pounds = 'lbs',
 }
 
+export const BooleanString = z
+  .enum(['true', 'false'])
+  .transform((value) => value === 'true');
+
+/**
+ * Parses, validates, and transforms a string in the format "<lat>,<lon>" into a {@link GpsCoordinates} object.
+ * @example
+ * // '25.0865,-80.4473' becomes...
+ * {
+ *   lat: 25.0865,
+ *   lon: -80.4473,
+ * }
+ */
 export const GpsCoordinatesSchema = z
   .string()
+  .superRefine((val, ctx) => {
+    const values = val.split(',');
+    const validation = z
+      .tuple([
+        z.coerce.number().min(-90).max(90),
+        z.coerce.number().min(-180).max(180),
+      ])
+      .safeParse(values);
+
+    if (!validation.success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Must be in the format "<lat>,<lon>"',
+        path: ctx.path,
+      });
+      validation.error.issues.forEach((issue) => {
+        ctx.addIssue({
+          code: 'custom',
+          message: issue.message,
+          path: [...ctx.path, ...issue.path],
+        });
+      });
+    }
+  })
   .transform((val) => {
     const values = val.split(',');
     return z
@@ -52,23 +89,53 @@ export const GpsCoordinatesSchema = z
         z.coerce.number().min(-90).max(90),
         z.coerce.number().min(-180).max(180),
       ])
+      .transform(([lat, lon]) => ({ lat, lon }))
       .parse(values);
-  })
-  .transform((val) => ({ lat: val[0], lon: val[1] }));
+  });
 export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
 
+/**
+ * Parses, validates, and transforms a string in the format "<min-rating>,<max-rating>" into a {@link RatingRange} object.
+ * @example
+ * // '1.0,2.3' becomes...
+ * {
+ *   min: 1.0,
+ *   max: 2.3,
+ * }
+ */
 export const RatingRangeSchema = z
   .string()
+  .superRefine((val, ctx) => {
+    const values = val.split(',');
+    const validation = z
+      .tuple([z.coerce.number().min(0).max(5), z.coerce.number().min(0).max(5)])
+      .refine(([min, max]) => min <= max, {
+        message: 'Minimum rating cannot be greater than the maximum rating',
+      })
+      .safeParse(values);
+
+    if (!validation.success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Must be in the format "<min-rating>,<max-rating>"',
+        path: ctx.path,
+      });
+      validation.error.issues.forEach((issue) => {
+        ctx.addIssue({
+          code: 'custom',
+          message: issue.message,
+          path: [...ctx.path, ...issue.path],
+        });
+      });
+    }
+  })
   .transform((val) => {
     const values = val.split(',');
     return z
       .tuple([z.coerce.number().min(0).max(5), z.coerce.number().min(0).max(5)])
+      .transform(([min, max]) => ({ min, max }))
       .parse(values);
-  })
-  .refine((val) => val[0] <= val[1], {
-    message: 'Minimum rating cannot be greater than the maximum rating',
-  })
-  .transform((val) => ({ min: val[0], max: val[1] }));
+  });
 export type RatingRange = z.infer<typeof RatingRangeSchema>;
 
 export const SuccessResponseSchema = z.object({
