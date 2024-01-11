@@ -3,10 +3,14 @@ import { createAuthHeader, createTestApp } from '../../utils';
 import request from 'supertest';
 import { FriendModel, UserData, UserModel } from '../../../src/schemas';
 import {
+  DepthUnit,
   FriendsSortBy,
+  PressureUnit,
   ProfileVisibility,
   SortOrder,
+  TemperatureUnit,
   UserRole,
+  WeightUnit,
 } from '@bottomtime/api';
 import { v4 as uuid } from 'uuid';
 
@@ -23,6 +27,10 @@ const AdminUserData: UserData = {
   username: 'Admin',
   usernameLowered: 'admin',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -37,6 +45,10 @@ const RegularUserData: UserData = {
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -82,7 +94,7 @@ describe('Friends End-to-End Tests', () => {
         })
         .expect(400);
 
-      expect(body).toMatchSnapshot();
+      expect(body.details).toMatchSnapshot();
     });
 
     it('will return 401 error if current user is not logged in', async () => {

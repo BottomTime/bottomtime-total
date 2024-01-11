@@ -94,69 +94,32 @@ exports[`Friend Requests End-to-End Tests when listing friend requests will allo
 
 exports[`Friend Requests End-to-End Tests when listing friend requests will return a 400 error if the query parameters do not pass validation 1`] = `
 {
-  "details": {
-    "issues": [
-      {
-        "code": "invalid_enum_value",
-        "message": "Invalid enum value. Expected 'incoming' | 'outgoing' | 'both', received 'invalid'",
-        "options": [
-          "incoming",
-          "outgoing",
-          "both",
-        ],
-        "path": [
-          "direction",
-        ],
-        "received": "invalid",
-      },
-      {
-        "code": "too_small",
-        "exact": false,
-        "inclusive": true,
-        "message": "Number must be greater than or equal to 1",
-        "minimum": 1,
-        "path": [
-          "limit",
-        ],
-        "type": "number",
-      },
-    ],
-  },
-  "message": "Request validation failed",
-  "method": "GET",
-  "path": "/api/users/Joe.Regular/friendRequests?direction=invalid&limit=-1&sortBy=wat%3F",
-  "stack": "ZodError: [
-  {
-    "received": "invalid",
-    "code": "invalid_enum_value",
-    "options": [
-      "incoming",
-      "outgoing",
-      "both"
-    ],
-    "path": [
-      "direction"
-    ],
-    "message": "Invalid enum value. Expected 'incoming' | 'outgoing' | 'both', received 'invalid'"
-  },
-  {
-    "code": "too_small",
-    "minimum": 1,
-    "type": "number",
-    "inclusive": true,
-    "exact": false,
-    "message": "Number must be greater than or equal to 1",
-    "path": [
-      "limit"
-    ]
-  }
-]
-    at Object.get error [as error] (/Users/chriscarleton/Projects/bottomtime/node_modules/zod/lib/types.js:43:31)
-    at ZodObject.parse (/Users/chriscarleton/Projects/bottomtime/node_modules/zod/lib/types.js:143:22)
-    at RequestValidator.transform (/Users/chriscarleton/Projects/bottomtime/packages/service/src/request-validator.ts:9:24)
-    at /Users/chriscarleton/Projects/bottomtime/packages/service/node_modules/@nestjs/core/pipes/pipes-consumer.js:16:33
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
-  "status": 400,
+  "issues": [
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'incoming' | 'outgoing' | 'both', received 'invalid'",
+      "options": [
+        "incoming",
+        "outgoing",
+        "both",
+      ],
+      "path": [
+        "direction",
+      ],
+      "received": "invalid",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 1",
+      "minimum": 1,
+      "path": [
+        "limit",
+      ],
+      "type": "number",
+    },
+  ],
 }
 `;
 

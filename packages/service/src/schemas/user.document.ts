@@ -63,12 +63,12 @@ export const UserSchema = new Schema(
       certifications: {
         type: [
           {
-            _id: String,
-            agency: String,
+            agency: { type: String, required: true },
             course: { type: String, required: true },
             date: String,
           },
         ],
+        _id: false,
         required: false,
       },
       experienceLevel: String,
@@ -82,30 +82,26 @@ export const UserSchema = new Schema(
         depthUnit: {
           type: String,
           enum: Object.values(DepthUnit),
-          required: true,
         },
         pressureUnit: {
           type: String,
           enum: Object.values(PressureUnit),
-          required: true,
         },
         temperatureUnit: {
           type: String,
           enum: Object.values(TemperatureUnit),
-          required: true,
         },
         weightUnit: {
           type: String,
           enum: Object.values(WeightUnit),
-          required: true,
         },
 
         profileVisibility: {
           type: String,
           enum: Object.values(ProfileVisibility),
-          required: true,
         },
       },
+      _id: false,
       required: false,
     },
   },

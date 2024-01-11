@@ -3,8 +3,10 @@ import {
   ExecutionContext,
   Injectable,
   NotFoundException,
+  createParamDecorator,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { User } from './user';
 
 @Injectable()
 export class AssertTargetUser implements CanActivate {
@@ -24,3 +26,10 @@ export class AssertTargetUser implements CanActivate {
     return true;
   }
 }
+
+export const TargetUser = createParamDecorator(
+  (_: unknown, ctx: ExecutionContext): User => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.targetUser;
+  },
+);

@@ -1,7 +1,12 @@
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user';
-import { UserData, UserModelName } from '../schemas';
+import {
+  FriendData,
+  FriendModelName,
+  UserData,
+  UserModelName,
+} from '../schemas';
 import { FilterQuery, Model, Types } from 'mongoose';
 import {
   CreateUserOptions,
@@ -36,6 +41,8 @@ export class UsersService {
   constructor(
     @InjectModel(UserModelName)
     private readonly Users: Model<UserData>,
+    @InjectModel(FriendModelName)
+    private readonly Friends: Model<FriendData>,
   ) {}
 
   private async checkForConflicts(
@@ -163,5 +170,16 @@ export class UsersService {
     // Execute query and return results.
     const data = await query.select(SelectString).exec();
     return data.map((d) => new User(this.Users, d));
+  }
+
+  async testFriendship(userIdA: string, userIdB: string): Promise<boolean> {
+    const friend = await this.Friends.exists({
+      $or: [
+        { userId: userIdA, friendId: userIdB },
+        { userId: userIdB, friendId: userIdA },
+      ],
+    }).exec();
+
+    return !!friend;
   }
 }

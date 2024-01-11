@@ -14,10 +14,14 @@ import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import { createTestUser } from '../../utils';
 import { FriendsService } from '../../../src/friends';
 import {
+  DepthUnit,
   FriendRequestDirection,
   FriendsSortBy,
+  PressureUnit,
   ProfileVisibility,
   SortOrder,
+  TemperatureUnit,
+  WeightUnit,
 } from '@bottomtime/api';
 import {
   BadRequestException,
@@ -52,7 +56,11 @@ const TestUserData: UserData = {
     startedDiving: '2023',
   },
   settings: {
-    profileVisibility: 'friends',
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
+    profileVisibility: ProfileVisibility.FriendsOnly,
   },
 };
 
@@ -135,7 +143,13 @@ describe('Friends Service', () => {
             location: 'Privateville',
             avatar: 'https://example.com/private-pete.jpg',
           },
-          settings: { profileVisibility: ProfileVisibility.Private },
+          settings: {
+            depthUnit: DepthUnit.Meters,
+            temperatureUnit: TemperatureUnit.Celsius,
+            weightUnit: WeightUnit.Kilograms,
+            pressureUnit: PressureUnit.Bar,
+            profileVisibility: ProfileVisibility.Private,
+          },
         }),
         createTestUser({
           _id: 'e53ac770-374f-4a62-9202-a8d230cc43f8',
@@ -147,7 +161,13 @@ describe('Friends Service', () => {
             name: 'Nick Heller',
             location: 'El Monte',
           },
-          settings: { profileVisibility: ProfileVisibility.FriendsOnly },
+          settings: {
+            depthUnit: DepthUnit.Meters,
+            temperatureUnit: TemperatureUnit.Celsius,
+            weightUnit: WeightUnit.Kilograms,
+            pressureUnit: PressureUnit.Bar,
+            profileVisibility: ProfileVisibility.FriendsOnly,
+          },
         }),
         createTestUser({
           _id: 'edbc5d2c-da35-4724-a563-af88d69d5668',
@@ -159,7 +179,13 @@ describe('Friends Service', () => {
             name: 'Elena Bahringer',
             location: 'Diamond Bar',
           },
-          settings: { profileVisibility: ProfileVisibility.Public },
+          settings: {
+            depthUnit: DepthUnit.Meters,
+            temperatureUnit: TemperatureUnit.Celsius,
+            weightUnit: WeightUnit.Kilograms,
+            pressureUnit: PressureUnit.Bar,
+            profileVisibility: ProfileVisibility.Public,
+          },
         }),
       ];
       const friendRelations = friends.map(

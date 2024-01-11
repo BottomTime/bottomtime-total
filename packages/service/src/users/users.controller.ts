@@ -33,8 +33,7 @@ import {
 import { ZodValidator } from '../zod-validator';
 import { AssertAuth, CurrentUser } from '../auth';
 import { User } from './user';
-import { TargetUser } from './users.decorators';
-import { AssertTargetUser } from './assert-target-user.guard';
+import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
 
 const UsernameParam = 'username';
 @Controller('api/users')
@@ -327,11 +326,17 @@ export class UsersController {
         );
       }
 
-      // TODO: Regular users MAY NOT see profiles with friends-only visibility if they are not friends with the profile owner.
       if (user.settings.profileVisibility === ProfileVisibility.FriendsOnly) {
-        throw new ForbiddenException(
-          'You are not authorized to view this profile.',
+        const areFriends = await this.users.testFriendship(
+          currentUser.id,
+          user.id,
         );
+
+        if (!areFriends) {
+          throw new ForbiddenException(
+            'You are not authorized to view this profile.',
+          );
+        }
       }
     }
 

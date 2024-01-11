@@ -7,8 +7,18 @@ import {
 } from '../../../src/schemas';
 import { createAuthHeader, createTestApp } from '../../utils';
 import CertificationTestData from '../../fixtures/certifications.json';
-import { ProfileVisibility, UserRole } from '@bottomtime/api';
+import {
+  DepthUnit,
+  PressureUnit,
+  ProfileVisibility,
+  TemperatureUnit,
+  UserRole,
+  WeightUnit,
+} from '@bottomtime/api';
 import request from 'supertest';
+import * as uuid from 'uuid';
+
+jest.mock('uuid');
 
 const AdminUserId = 'F3669787-82E5-458F-A8AD-98D3F57DDA6E';
 const AdminUserData: UserData = {
@@ -20,6 +30,10 @@ const AdminUserData: UserData = {
   username: 'Admin',
   usernameLowered: 'admin',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -34,6 +48,10 @@ const RegularUserData: UserData = {
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -145,6 +163,11 @@ describe('Certifications End-to-End', () => {
   });
 
   describe('when creating a certification', () => {
+    beforeEach(() => {
+      jest
+        .spyOn(uuid, 'v4')
+        .mockReturnValue('B24AE74C-0802-47BB-9EAB-A88574BB78DF');
+    });
     const createData = {
       agency: 'BSAC',
       course: 'Intro to Underwater Stuff',

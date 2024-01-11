@@ -1,7 +1,11 @@
 import {
+  DepthUnit,
   FriendRequestDirection,
+  PressureUnit,
   ProfileVisibility,
+  TemperatureUnit,
   UserRole,
+  WeightUnit,
 } from '@bottomtime/api';
 import {
   FriendModel,
@@ -28,6 +32,10 @@ const AdminUserData: UserData = {
   username: 'Admin',
   usernameLowered: 'admin',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -42,6 +50,10 @@ const RegularUserData: UserData = {
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -109,7 +121,7 @@ describe('Friend Requests End-to-End Tests', () => {
         .query({ direction: 'invalid', limit: -1, sortBy: 'wat?' })
         .expect(400);
 
-      expect(body).toMatchSnapshot();
+      expect(body.details).toMatchSnapshot();
     });
 
     it('will return a 401 error if the user is not logged in', async () => {

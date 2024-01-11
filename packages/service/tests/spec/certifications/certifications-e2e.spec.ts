@@ -8,7 +8,7 @@ import {
 import { createAuthHeader, createTestApp } from '../../utils';
 import CertificationTestData from '../../fixtures/certifications.json';
 import request from 'supertest';
-import { ProfileVisibility, UserRole } from '@bottomtime/api';
+import { UserRole } from '@bottomtime/api';
 
 const RegularUserId = '5A4699D8-48C4-4410-9886-B74B8B85CAC1';
 const RegularUserData: UserData = {

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   Post,
@@ -10,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { TanksService } from './tanks.service';
-import { AssertTank } from './assert-tank';
+import { AssertTank, SelectedTank } from './assert-tank.guard';
 import {
   CreateOrUpdateTankParamsDTO,
   CreateOrUpdateTankParamsSchema,
@@ -18,20 +19,19 @@ import {
   ListUserTanksParamsDTO,
   ListUserTanksParamsSchema,
   TankDTO,
+  UserRole,
 } from '@bottomtime/api';
-import { AssertAuth } from '../auth';
-import { SelectedTank } from './tank.decorators';
+import { AssertAuth, CurrentUser } from '../auth';
 import { Tank } from './tank';
-import { User } from '../users/user';
+import { AssertTargetUser, TargetUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
-import { AssertTargetUser } from './assert-target-user.guard';
-import { TargetUser } from '../users/users.decorators';
+import { AssertTankPrivilege } from './assert-tank-privilege.guard';
 
 const UsernameParam = 'username';
 const TankIdParam = 'tankId';
 
 @Controller(`api/users/:${UsernameParam}/tanks`)
-@UseGuards(AssertAuth, AssertTargetUser)
+@UseGuards(AssertAuth, AssertTargetUser, AssertTankPrivilege)
 export class UserTanksController {
   constructor(private readonly tanksService: TanksService) {}
 
@@ -205,6 +205,7 @@ export class UserTanksController {
    */
   @Post()
   async createTank(
+    @CurrentUser() currentUser: User,
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
     options: CreateOrUpdateTankParamsDTO,

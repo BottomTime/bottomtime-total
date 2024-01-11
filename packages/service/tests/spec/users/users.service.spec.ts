@@ -1,8 +1,11 @@
-import { UsersService } from '../../../src/users/users.service';
+import { UsersService, User } from '../../../src/users';
 import { createTestUser } from '../../utils';
-
-import { UserData, UserDocument, UserModel } from '../../../src/schemas';
-import { User } from '../../../src/users/user';
+import {
+  FriendModel,
+  UserData,
+  UserDocument,
+  UserModel,
+} from '../../../src/schemas';
 import {
   CreateUserOptions,
   SortOrder,
@@ -30,7 +33,7 @@ describe('Users Service', () => {
   let service: UsersService;
 
   beforeAll(() => {
-    service = new UsersService(UserModel);
+    service = new UsersService(UserModel, FriendModel);
   });
 
   beforeEach(() => {

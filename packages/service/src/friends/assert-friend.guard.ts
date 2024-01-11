@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Injectable,
   NotFoundException,
+  createParamDecorator,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 
@@ -20,7 +21,14 @@ export class AssertFriend implements CanActivate {
       throw new NotFoundException(`Unable to find user ${req.params.friend}.`);
     }
 
-    req.friend = friend;
+    req.targetFriend = friend;
     return true;
   }
 }
+
+export const TargetFriend = createParamDecorator(
+  (_: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.targetFriend;
+  },
+);

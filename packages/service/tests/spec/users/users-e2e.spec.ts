@@ -1,9 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
-import { UserData, UserModel } from '../../../src/schemas';
+import { FriendModel, UserData, UserModel } from '../../../src/schemas';
 import { ProfileVisibility, UserRole } from '@bottomtime/api';
 import { User } from '../../../src/users/user';
 import request from 'supertest';
+import { v4 as uuid } from 'uuid';
 
 const AdminUserId = 'F3669787-82E5-458F-A8AD-98D3F57DDA6E';
 const AdminUserData: UserData = {
@@ -77,7 +78,22 @@ describe('Users End-to-End Tests', () => {
         });
         const user = new User(UserModel, data);
         const expected = JSON.parse(JSON.stringify(user.profile));
+        const friendsSince = new Date();
         await data.save();
+        await FriendModel.insertMany([
+          new FriendModel({
+            _id: uuid(),
+            userId: RegularUserId,
+            friendId: data._id,
+            friendsSince,
+          }),
+          new FriendModel({
+            _id: uuid(),
+            userId: data._id,
+            friendId: RegularUserId,
+            friendsSince,
+          }),
+        ]);
 
         if (role) {
           const { body: actual } = await request(server)

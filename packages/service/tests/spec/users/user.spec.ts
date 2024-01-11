@@ -1,9 +1,9 @@
 /* eslint-disable no-process-env */
 import { ConflictException } from '@nestjs/common';
 import { UserData, UserModel } from '../../../src/schemas';
-import { User } from '../../../src/users/user';
-import { createTestPassword, createTestUser } from '../../utils';
-import { UserRole } from '@bottomtime/api';
+import { User } from '../../../src/users';
+import { createTestUser } from '../../utils';
+import { ProfileVisibility } from '@bottomtime/api';
 import dayjs from 'dayjs';
 import { compare } from 'bcrypt';
 
@@ -31,7 +31,7 @@ const TestUserData: UserData = {
     startedDiving: '1986',
   },
   settings: {
-    profileVisibility: 'friends',
+    profileVisibility: ProfileVisibility.FriendsOnly,
   },
 };
 

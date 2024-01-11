@@ -198,89 +198,42 @@ exports[`Friends End-to-End Tests when listing friends will allow regular users 
 
 exports[`Friends End-to-End Tests when listing friends will return 400 if the query parameters do not pass validation 1`] = `
 {
-  "details": {
-    "issues": [
-      {
-        "code": "invalid_enum_value",
-        "message": "Invalid enum value. Expected 'asc' | 'desc', received 'up'",
-        "options": [
-          "asc",
-          "desc",
-        ],
-        "path": [
-          "sortOrder",
-        ],
-        "received": "up",
-      },
-      {
-        "code": "too_small",
-        "exact": false,
-        "inclusive": true,
-        "message": "Number must be greater than or equal to 0",
-        "minimum": 0,
-        "path": [
-          "skip",
-        ],
-        "type": "number",
-      },
-      {
-        "code": "too_small",
-        "exact": false,
-        "inclusive": true,
-        "message": "Number must be greater than or equal to 1",
-        "minimum": 1,
-        "path": [
-          "limit",
-        ],
-        "type": "number",
-      },
-    ],
-  },
-  "message": "Request validation failed",
-  "method": "GET",
-  "path": "/api/users/Joe.Regular/friends?skip=-2&limit=0&sortOrder=up",
-  "stack": "ZodError: [
-  {
-    "received": "up",
-    "code": "invalid_enum_value",
-    "options": [
-      "asc",
-      "desc"
-    ],
-    "path": [
-      "sortOrder"
-    ],
-    "message": "Invalid enum value. Expected 'asc' | 'desc', received 'up'"
-  },
-  {
-    "code": "too_small",
-    "minimum": 0,
-    "type": "number",
-    "inclusive": true,
-    "exact": false,
-    "message": "Number must be greater than or equal to 0",
-    "path": [
-      "skip"
-    ]
-  },
-  {
-    "code": "too_small",
-    "minimum": 1,
-    "type": "number",
-    "inclusive": true,
-    "exact": false,
-    "message": "Number must be greater than or equal to 1",
-    "path": [
-      "limit"
-    ]
-  }
-]
-    at Object.get error [as error] (/Users/chriscarleton/Projects/bottomtime/node_modules/zod/lib/types.js:43:31)
-    at ZodObject.parse (/Users/chriscarleton/Projects/bottomtime/node_modules/zod/lib/types.js:143:22)
-    at RequestValidator.transform (/Users/chriscarleton/Projects/bottomtime/packages/service/src/request-validator.ts:9:24)
-    at /Users/chriscarleton/Projects/bottomtime/packages/service/node_modules/@nestjs/core/pipes/pipes-consumer.js:16:33
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
-  "status": 400,
+  "issues": [
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'asc' | 'desc', received 'up'",
+      "options": [
+        "asc",
+        "desc",
+      ],
+      "path": [
+        "sortOrder",
+      ],
+      "received": "up",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 0",
+      "minimum": 0,
+      "path": [
+        "skip",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 1",
+      "minimum": 1,
+      "path": [
+        "limit",
+      ],
+      "type": "number",
+    },
+  ],
 }
 `;
 

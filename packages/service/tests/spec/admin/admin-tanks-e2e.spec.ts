@@ -4,9 +4,13 @@ import { createAuthHeader, createTestApp } from '../../utils';
 import { TankModel, UserData, UserModel } from '../../../src/schemas';
 import {
   CreateOrUpdateTankParamsDTO,
+  DepthUnit,
+  PressureUnit,
   ProfileVisibility,
   TankMaterial,
+  TemperatureUnit,
   UserRole,
+  WeightUnit,
 } from '@bottomtime/api';
 import TankTestData from '../../fixtures/pre-defined-tanks.json';
 
@@ -20,6 +24,10 @@ const AdminUserData: UserData = {
   username: 'Admin',
   usernameLowered: 'admin',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -34,6 +42,10 @@ const RegularUserData: UserData = {
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };

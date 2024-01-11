@@ -22,11 +22,9 @@ import {
 } from '@bottomtime/api';
 import { ZodValidator } from '../zod-validator';
 import { AssertAuth } from '../auth';
-import { User } from '../users/user';
+import { AssertTargetUser, TargetUser, User } from '../users';
 import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
-import { AssertTargetUser } from '../users/assert-target-user.guard';
-import { TargetUser } from '../users/users.decorators';
-import { TargetFriend } from './friends.decorators';
+import { AssertFriend, TargetFriend } from './assert-friend.guard';
 
 const UsernameParam = 'username';
 const FriendParam = 'friend';
@@ -190,6 +188,7 @@ export class FriendRequestsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(`:${FriendParam}`)
+  @UseGuards(AssertFriend)
   async getFriendRequest(
     @TargetUser() user: User,
     @TargetFriend() friend: User,
@@ -270,6 +269,7 @@ export class FriendRequestsController {
    */
   @Put(`:${FriendParam}`)
   @HttpCode(201)
+  @UseGuards(AssertFriend)
   async sendFriendRequest(
     @TargetUser() user: User,
     @TargetFriend() friend: User,
@@ -339,6 +339,7 @@ export class FriendRequestsController {
    */
   @Post(`:${FriendParam}/acknowledge`)
   @HttpCode(204)
+  @UseGuards(AssertFriend)
   async acknowledgeFriendRequest(
     @TargetUser() user: User,
     @TargetFriend() friend: User,
@@ -409,6 +410,7 @@ export class FriendRequestsController {
    */
   @Delete(`:${FriendParam}`)
   @HttpCode(204)
+  @UseGuards(AssertFriend)
   async cancelFriendRequest(
     @TargetUser() user: User,
     @TargetFriend() friend: User,

@@ -1,7 +1,14 @@
 import { INestApplication } from '@nestjs/common';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
 import { UserData, UserDocument, UserModel } from '../../../src/schemas';
-import { ProfileVisibility, UserRole } from '@bottomtime/api';
+import {
+  DepthUnit,
+  PressureUnit,
+  ProfileVisibility,
+  TemperatureUnit,
+  UserRole,
+  WeightUnit,
+} from '@bottomtime/api';
 import request from 'supertest';
 import { compare } from 'bcrypt';
 import TestUserData from '../../fixtures/users.json';
@@ -16,6 +23,10 @@ const AdminUserData: UserData = {
   username: 'Admin',
   usernameLowered: 'admin',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };
@@ -30,6 +41,10 @@ const RegularUserData: UserData = {
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
   settings: {
+    depthUnit: DepthUnit.Meters,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+    pressureUnit: PressureUnit.Bar,
     profileVisibility: ProfileVisibility.Private,
   },
 };

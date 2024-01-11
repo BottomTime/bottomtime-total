@@ -1,7 +1,7 @@
 import { JwtPayload, verify } from 'jsonwebtoken';
 import { AuthService } from '../../../src/auth';
 import { UserData, UserModel } from '../../../src/schemas';
-import { User } from '../../../src/users/user';
+import { User } from '../../../src/users';
 import { createTestUser } from '../../utils';
 import { Config } from '../../../src/config';
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
@@ -49,9 +49,8 @@ describe('Auth Service', () => {
     });
 
     it('will assert that the user in the subject has a valid account', async () => {
-      const user = createTestUser();
       const payload = createJwtPayload(`user|${TestUserData._id}`);
-      await expect(service.validateJwt(payload)).rejects.toThrowError(
+      await expect(service.validateJwt(payload)).rejects.toThrow(
         UnauthorizedException,
       );
     });
@@ -60,7 +59,7 @@ describe('Auth Service', () => {
       const user = createTestUser({ ...TestUserData, isLockedOut: true });
       const payload = createJwtPayload(`user|${TestUserData._id}`);
       await user.save();
-      await expect(service.validateJwt(payload)).rejects.toThrowError(
+      await expect(service.validateJwt(payload)).rejects.toThrow(
         ForbiddenException,
       );
     });
@@ -68,7 +67,7 @@ describe('Auth Service', () => {
     it('will return the user if the token is valid', async () => {
       const user = createTestUser(TestUserData);
       const payload = createJwtPayload(`user|${TestUserData._id}`);
-      const expected = new User(user);
+      const expected = new User(UserModel, user);
       await user.save();
 
       const actual = await service.validateJwt(payload);
@@ -80,7 +79,7 @@ describe('Auth Service', () => {
   describe('when authenticating a user', () => {
     it('will return a user if username and password match', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(userDocument);
+      const expected = new User(UserModel, userDocument);
       await userDocument.save();
 
       const actual = await service.authenticateUser(
@@ -97,7 +96,7 @@ describe('Auth Service', () => {
 
     it('will return a user if email and password match', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(userDocument);
+      const expected = new User(UserModel, userDocument);
 
       await userDocument.save();
       const actual = await service.authenticateUser(

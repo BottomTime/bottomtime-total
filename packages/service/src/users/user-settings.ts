@@ -27,35 +27,35 @@ export class UserSettings {
   }
 
   get profileVisibility(): ProfileVisibility {
-    return this.settings.profileVisibility as ProfileVisibility;
+    return this.settings.profileVisibility ?? ProfileVisibility.FriendsOnly;
   }
   set profileVisibility(value: ProfileVisibility) {
     this.settings.profileVisibility = value;
   }
 
   get depthUnit(): DepthUnit {
-    return this.settings.depthUnit;
+    return this.settings.depthUnit ?? DepthUnit.Meters;
   }
   set depthUnit(value: DepthUnit) {
     this.settings.depthUnit = value;
   }
 
   get pressureUnit(): PressureUnit {
-    return this.settings.pressureUnit;
+    return this.settings.pressureUnit ?? PressureUnit.Bar;
   }
   set pressureUnit(value: PressureUnit) {
     this.settings.pressureUnit = value;
   }
 
   get temperatureUnit(): TemperatureUnit {
-    return this.settings.temperatureUnit;
+    return this.settings.temperatureUnit ?? TemperatureUnit.Celsius;
   }
   set temperatureUnit(value: TemperatureUnit) {
     this.settings.temperatureUnit = value;
   }
 
   get weightUnit(): WeightUnit {
-    return this.settings.weightUnit;
+    return this.settings.weightUnit ?? WeightUnit.Kilograms;
   }
   set weightUnit(value: WeightUnit) {
     this.settings.weightUnit = value;

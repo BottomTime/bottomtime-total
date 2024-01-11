@@ -17,3 +17,7 @@ export const GpsCoordinatesSchema = z.object({
 export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
 
 export type Maybe<T> = T | null | undefined;
+
+export type PageRenderProps = {
+  title: string;
+};

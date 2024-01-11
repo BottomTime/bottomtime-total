@@ -1,7 +1,6 @@
 import {
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   HttpCode,
   Logger,
@@ -15,17 +14,12 @@ import {
   ListFriendsParams,
   ListFriendsParamsSchema,
   ListFriendsResponseDTO,
-  UserRole,
 } from '@bottomtime/api';
 import { AssertAuth } from '../auth';
-import { User } from '../users/user';
 import { ZodValidator } from '../zod-validator';
-import { UsersService } from '../users/users.service';
-import { AssertTargetUser } from '../users/assert-target-user.guard';
+import { AssertTargetUser, TargetUser, User } from '../users';
 import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
-import { AssertFriend } from './assert-friend.guard';
-import { TargetUser } from '../users/users.decorators';
-import { TargetFriend } from './friends.decorators';
+import { AssertFriend, TargetFriend } from './assert-friend.guard';
 
 const UsernameParam = 'username';
 const FriendParam = 'friend';

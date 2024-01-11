@@ -3,9 +3,11 @@ import {
   ExecutionContext,
   Injectable,
   NotFoundException,
+  createParamDecorator,
 } from '@nestjs/common';
 import { TanksService } from './tanks.service';
 import { User } from '../users/user';
+import { Tank } from './tank';
 
 @Injectable()
 export class AssertTank implements CanActivate {
@@ -27,3 +29,10 @@ export class AssertTank implements CanActivate {
     return true;
   }
 }
+
+export const SelectedTank = createParamDecorator<Tank>(
+  (_: unknown, ctx: ExecutionContext): Tank => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.selectedTank;
+  },
+);

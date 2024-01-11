@@ -140,12 +140,9 @@ export class AuthController {
    */
   @Post('login')
   @UseGuards(AuthGuard('local'))
-  async login(
-    @CurrentUser() user: User,
-    @Res() res: Response,
-  ): Promise<UserDTO> {
+  async login(@CurrentUser() user: User, @Res() res: Response): Promise<void> {
     await this.issueSessionCookie(user, res);
-    return user.toJSON();
+    res.status(200).send(user.toJSON());
   }
 
   /**
