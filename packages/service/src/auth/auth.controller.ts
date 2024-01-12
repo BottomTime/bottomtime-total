@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CurrentUserDTO, UserDTO } from '@bottomtime/api';
+import { CurrentUserDTO } from '@bottomtime/api';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from './current-user';
 import { User } from '../users/user';
@@ -15,13 +15,8 @@ import { Response } from 'express';
 import { Config } from '../config';
 import { GoogleAuthGuard } from './strategies/google.strategy';
 import { GithubAuthGuard } from './strategies/github.strategy';
-import { ApiInternalServerErrorResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('api/auth')
-@ApiTags('Auth')
-@ApiInternalServerErrorResponse({
-  description: 'An internal server error has occurred',
-})
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
