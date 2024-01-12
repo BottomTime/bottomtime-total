@@ -273,6 +273,71 @@ exports[`Admin Service when searching user accounts will filter results by role 
 }
 `;
 
+exports[`Admin Service when searching user accounts will perform a text-based search 1`] = `
+{
+  "totalCount": 200,
+  "users": [
+    {
+      "email": "Dave.Moen@gmail.com",
+      "emailVerified": true,
+      "hasPassword": true,
+      "id": "287f53a8-549f-4b17-840c-09e4ffb6911d",
+      "isLockedOut": false,
+      "lastLogin": "2023-04-27T04:49:18.366Z",
+      "memberSince": "2019-06-03T04:41:49.183Z",
+      "profile": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1116.jpg",
+        "bio": "Reiciendis nulla laborum. Numquam distinctio architecto corporis exercitationem aperiam iusto ex cum. Libero mollitia repudiandae neque similique officiis ipsa velit. Quis illum quod nisi optio. Ad molestias perferendis quos illo quod vitae iure. Cupiditate officia nostrum. Possimus eaque ratione ut blanditiis quod dolore earum.",
+        "birthdate": "1976-02-27",
+        "certifications": [
+          {
+            "agency": "PADI",
+            "course": "Drift Diver",
+            "date": "2013-08-04",
+          },
+          {
+            "agency": "SSI",
+            "course": "Dive Control Specialist",
+            "date": "2013-02-08",
+          },
+          {
+            "agency": "PADI",
+            "course": "Rebreather Diver",
+            "date": "2022-05-01",
+          },
+          {
+            "agency": "PADI",
+            "course": "Deep Diver",
+            "date": "2016-09-23",
+          },
+          {
+            "agency": "SSI",
+            "course": "Night Diving and Limited Visibility",
+            "date": "2013-01-03",
+          },
+        ],
+        "experienceLevel": "Beginner",
+        "location": "Poinciana",
+        "memberSince": "2019-06-03T04:41:49.183Z",
+        "name": "Roosevelt Schimmel DVM",
+        "startedDiving": "2003",
+        "userId": "287f53a8-549f-4b17-840c-09e4ffb6911d",
+        "username": "Winifred.Feil",
+      },
+      "role": "admin",
+      "settings": {
+        "depthUnit": "m",
+        "pressureUnit": "bar",
+        "profileVisibility": "friends",
+        "temperatureUnit": "C",
+        "weightUnit": "kg",
+      },
+      "username": "Winifred.Feil",
+    },
+  ],
+}
+`;
+
 exports[`Admin Service when searching user accounts will return a list of users 1`] = `
 {
   "totalCount": 200,

@@ -141,7 +141,16 @@ describe('Admin Service', () => {
       expect(JSON.parse(JSON.stringify(results))).toMatchSnapshot();
     });
 
-    it('will perform a text-based search', async () => {});
+    it('will perform a text-based search', async () => {
+      const results = await service.searchUsers({
+        limit: 10,
+        skip: 0,
+        sortBy: UsersSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+        query: 'Dave',
+      });
+      expect(JSON.parse(JSON.stringify(results))).toMatchSnapshot();
+    });
 
     [
       { sortBy: UsersSortBy.Username, sortOrder: SortOrder.Ascending },
