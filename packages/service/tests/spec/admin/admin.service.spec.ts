@@ -1,10 +1,11 @@
 /* eslint-disable no-process-env */
-import { UserRole } from '@bottomtime/api';
+import { SortOrder, UserRole, UsersSortBy } from '@bottomtime/api';
 import { AdminService } from '../../../src/admin';
-import { UserModel } from '../../../src/schemas';
+import { UserDocument, UserModel } from '../../../src/schemas';
 import { User } from '../../../src/users/user';
 import { createTestUser } from '../../utils';
 import { compare } from 'bcrypt';
+import TestUserData from '../../fixtures/user-search-data.json';
 
 describe('Admin Service', () => {
   const newPassword = 'IUHI9h023480213(*&*^^&';
@@ -117,5 +118,83 @@ describe('Admin Service', () => {
     await expect(
       service.resetPassword('does-not-exist', newPassword),
     ).resolves.toBe(false);
+  });
+
+  describe('when searching user accounts', () => {
+    let users: UserDocument[];
+
+    beforeAll(() => {
+      users = TestUserData.map((user) => new UserModel(user));
+    });
+
+    beforeEach(async () => {
+      await UserModel.insertMany(users);
+    });
+
+    it('will return a list of users', async () => {
+      const results = await service.searchUsers({
+        limit: 10,
+        skip: 0,
+        sortBy: UsersSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+      });
+      expect(JSON.parse(JSON.stringify(results))).toMatchSnapshot();
+    });
+
+    it('will perform a text-based search', async () => {});
+
+    [
+      { sortBy: UsersSortBy.Username, sortOrder: SortOrder.Ascending },
+      { sortBy: UsersSortBy.Username, sortOrder: SortOrder.Descending },
+      { sortBy: UsersSortBy.MemberSince, sortOrder: SortOrder.Ascending },
+      { sortBy: UsersSortBy.MemberSince, sortOrder: SortOrder.Descending },
+    ].forEach(({ sortBy, sortOrder }) => {
+      it(`will sort results by ${sortBy} in ${sortOrder} order`, async () => {
+        const results = await service.searchUsers({
+          limit: 30,
+          skip: 0,
+          sortBy,
+          sortOrder,
+        });
+        expect({
+          totalCount: results.totalCount,
+          users: results.users.map((user) => ({
+            username: user.username,
+            memberSince: user.memberSince,
+          })),
+        }).toMatchSnapshot();
+      });
+    });
+
+    [UserRole.User, UserRole.Admin].forEach((role) => {
+      it(`will filter results by role ${role}`, async () => {
+        const results = await service.searchUsers({
+          limit: 30,
+          skip: 0,
+          role,
+          sortBy: UsersSortBy.Username,
+          sortOrder: SortOrder.Ascending,
+        });
+        expect({
+          totalCount: results.totalCount,
+          users: results.users.map((user) => ({
+            username: user.username,
+            role: user.role,
+          })),
+        }).toMatchSnapshot();
+      });
+    });
+
+    it('will allow pagination', async () => {
+      const results = await service.searchUsers({
+        limit: 12,
+        skip: 80,
+        sortBy: UsersSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+      });
+      expect(results.users.length).toBe(12);
+      expect(results.totalCount).toBe(200);
+      expect(results.users.map((user) => user.username)).toMatchSnapshot();
+    });
   });
 });
