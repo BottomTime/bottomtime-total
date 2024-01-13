@@ -1,5 +1,14 @@
 import { z } from 'zod';
-import { DepthDTO, SuccinctProfileDTO } from '@bottomtime/api';
+import {
+  DepthDTO,
+  DepthUnit,
+  PressureUnit,
+  ProfileVisibility,
+  SuccinctProfileDTO,
+  TemperatureUnit,
+  WeightUnit,
+} from '@bottomtime/api';
+import { UserSettings } from './users';
 
 export const AnonymousUserProfile: SuccinctProfileDTO = {
   userId: '',
@@ -7,6 +16,14 @@ export const AnonymousUserProfile: SuccinctProfileDTO = {
   memberSince: new Date(0),
   name: 'Anonymous',
 };
+
+export const DefaultUserSettings: UserSettings = {
+  depthUnit: DepthUnit.Meters,
+  pressureUnit: PressureUnit.Bar,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
+  profileVisibility: ProfileVisibility.FriendsOnly,
+} as const;
 
 export type Depth = DepthDTO;
 

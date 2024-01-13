@@ -7,8 +7,12 @@ import { randomBytes } from 'crypto';
 import dayjs from 'dayjs';
 import { compare, hash } from 'bcrypt';
 import { Config } from '../config';
-import { UserSettings } from './user-settings';
-import { Maybe } from '../common';
+import { DefaultUserSettings, Maybe } from '../common';
+
+type UserDataSettings = NonNullable<UserData['settings']>;
+export type UserSettings = Required<{
+  [K in keyof UserDataSettings]: Exclude<UserDataSettings[K], null>;
+}>;
 
 export class User implements Express.User {
   private readonly log = new Logger(User.name);
@@ -69,10 +73,27 @@ export class User implements Express.User {
   }
 
   get settings(): UserSettings {
-    if (this._settings) return this._settings;
+    return {
+      depthUnit: this.data.settings?.depthUnit ?? DefaultUserSettings.depthUnit,
+      pressureUnit:
+        this.data.settings?.pressureUnit ?? DefaultUserSettings.pressureUnit,
+      profileVisibility:
+        this.data.settings?.profileVisibility ??
+        DefaultUserSettings.profileVisibility,
+      temperatureUnit:
+        this.data.settings?.temperatureUnit ??
+        DefaultUserSettings.temperatureUnit,
+      weightUnit:
+        this.data.settings?.weightUnit ?? DefaultUserSettings.weightUnit,
+    };
+  }
 
-    this._settings = new UserSettings(this.data);
-    return this._settings;
+  async changeSettings(settings: Partial<UserSettings>): Promise<void> {
+    if (!this.data.settings) {
+      this.data.settings = {};
+    }
+    Object.assign(this.data.settings, settings);
+    await this.data.save();
   }
 
   async changeUsername(newUsername: string): Promise<void> {
@@ -231,7 +252,7 @@ export class User implements Express.User {
       email: this.email ?? undefined,
       lastLogin: this.lastLogin ?? undefined,
       lastPasswordChange: this.lastPasswordChange ?? undefined,
-      settings: this.settings.toJSON(),
+      settings: this.settings,
     };
   }
 }

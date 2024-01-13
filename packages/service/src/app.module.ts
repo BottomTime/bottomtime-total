@@ -11,16 +11,14 @@ import { TanksModule } from './tanks/tanks.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import path from 'path';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
-import { HomeController } from './home.controller';
 import { HealthModule } from './health';
+import { WebModule } from './web/web.module';
 
 export type ServerDependencies = {
   mailClient: IMailClient;
 };
 
-@Module({
-  controllers: [HomeController],
-})
+@Module({})
 export class AppModule {
   static forRoot(deps: ServerDependencies): DynamicModule {
     return {
@@ -37,7 +35,6 @@ export class AppModule {
         PassportModule.register({
           session: false,
         }),
-
         EmailModule.register(deps.mailClient),
         HealthModule,
 
@@ -47,6 +44,8 @@ export class AppModule {
         FriendsModule,
         DiveSitesModule,
         TanksModule,
+
+        WebModule,
       ],
     };
   }

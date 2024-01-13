@@ -60,7 +60,7 @@ export const UpdateProfileParamsSchema = z
       .regex(/^\d{4}(-\d{2}(-\d{2})?)?$/),
   })
   .partial();
-export type UpdateProfileParams = z.infer<typeof UpdateProfileParamsSchema>;
+export type UpdateProfileParamsDTO = z.infer<typeof UpdateProfileParamsSchema>;
 
 export const ProfileSchema = UpdateProfileParamsSchema.extend({
   userId: z.string().uuid(),

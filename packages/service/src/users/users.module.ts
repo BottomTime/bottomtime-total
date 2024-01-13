@@ -8,6 +8,7 @@ import {
   UserModelName,
   UserSchema,
 } from '../schemas';
+import { AuthModule } from '../auth';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import {
       { name: UserModelName, schema: UserSchema },
       { name: FriendModelName, schema: FriendSchema },
     ]),
+    AuthModule,
   ],
   providers: [UsersService],
   controllers: [UsersController],

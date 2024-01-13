@@ -20,15 +20,6 @@ import { GithubAuthGuard } from './strategies/github.strategy';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  private async issueSessionCookie(user: User, res: Response): Promise<void> {
-    const token = await this.authService.signJWT(`user|${user.id}`);
-    res.cookie(Config.sessions.cookieName, token, {
-      domain: Config.sessions.cookieDomain,
-      maxAge: Config.sessions.cookieTTL,
-      httpOnly: true,
-    });
-  }
-
   /**
    * @openapi
    * /api/auth/me:
@@ -136,7 +127,7 @@ export class AuthController {
   @Post('login')
   @UseGuards(AuthGuard('local'))
   async login(@CurrentUser() user: User, @Res() res: Response): Promise<void> {
-    await this.issueSessionCookie(user, res);
+    await this.authService.issueSessionCookie(user, res);
     res.status(200).send(user.toJSON());
   }
 
@@ -252,7 +243,7 @@ export class AuthController {
     @CurrentUser() user: User,
     @Res() res: Response,
   ): Promise<void> {
-    await this.issueSessionCookie(user, res);
+    await this.authService.issueSessionCookie(user, res);
   }
 
   /**
@@ -323,6 +314,6 @@ export class AuthController {
     @CurrentUser() user: User,
     @Res() res: Response,
   ): Promise<void> {
-    await this.issueSessionCookie(user, res);
+    await this.authService.issueSessionCookie(user, res);
   }
 }

@@ -10,6 +10,7 @@ import {
   Post,
   Put,
   Query,
+  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
@@ -25,22 +26,28 @@ import {
   ProfileVisibility,
   SearchUsersParams,
   SearchUsersParamsSchema,
-  UserDTO,
+  UpdateProfileParamsDTO,
+  UpdateProfileParamsSchema,
   UserRole,
   UserSettingsDTO,
   UserSettingsSchema,
 } from '@bottomtime/api';
 import { ZodValidator } from '../zod-validator';
-import { AssertAuth, CurrentUser } from '../auth';
+import { AssertAuth, AuthService, CurrentUser } from '../auth';
 import { User } from './user';
 import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+import { Response } from 'express';
+import { AssertAccountOwner } from './assert-account-owner.guard';
 
 const UsernameParam = 'username';
 @Controller('api/users')
 export class UsersController {
   private readonly log = new Logger(UsersController.name);
 
-  constructor(private readonly users: UsersService) {}
+  constructor(
+    private readonly users: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
   /**
    * @openapi
@@ -217,13 +224,20 @@ export class UsersController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post()
-  @HttpCode(201)
   async createUser(
+    @Res() res: Response,
+    @CurrentUser() currentUser: User | undefined,
     @Body(new ZodValidator<CreateUserOptions>(CreateUserOptionsSchema))
     options: CreateUserOptions,
-  ): Promise<UserDTO> {
+  ): Promise<void> {
     const user = await this.users.createUser(options);
-    return user.toJSON();
+
+    // If the user is not currently signed in, sign them in as the new user.
+    if (!currentUser) {
+      await this.authService.issueSessionCookie(user, res);
+    }
+
+    res.status(201).send(user.toJSON());
   }
 
   /**
@@ -422,13 +436,14 @@ export class UsersController {
    */
   @Post(`:${UsernameParam}/changeUsername`)
   @HttpCode(204)
-  @UseGuards(AssertAuth, AssertTargetUser)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async changeUsername(
-    @CurrentUser() currentUser: User,
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(ChangeUsernameParamsSchema))
     { newUsername }: ChangeUsernameParams,
-  ): Promise<void> {}
+  ): Promise<void> {
+    await targetUser.changeUsername(newUsername);
+  }
 
   /**
    * @openapi
@@ -507,28 +522,55 @@ export class UsersController {
    */
   @Post(`:${UsernameParam}/changeEmail`)
   @HttpCode(204)
-  @UseGuards(AssertAuth, AssertTargetUser)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async changeEmail(
-    @CurrentUser() currentUser: User,
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(ChangeEmailParamsSchema))
     { newEmail }: ChangeEmailParams,
-  ): Promise<void> {}
+  ): Promise<void> {
+    await targetUser.changeEmail(newEmail);
+  }
+
+  @Put(`:${UsernameParam}/profile`)
+  @HttpCode(204)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+  async updateProfile(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(UpdateProfileParamsSchema))
+    profile: UpdateProfileParamsDTO,
+  ): Promise<void> {
+    // TODO
+  }
+
+  @Patch(`:${UsernameParam}/profile`)
+  @HttpCode(204)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+  async patchProfile(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(UpdateProfileParamsSchema))
+    profile: UpdateProfileParamsDTO,
+  ): Promise<void> {
+    // TODO
+  }
 
   @Put(`:${UsernameParam}/settings`)
   @HttpCode(204)
-  @UseGuards(AssertAuth, AssertTargetUser)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async updateSettings(
     @TargetUser() user: User,
     @Body(new ZodValidator(UserSettingsSchema)) settings: UserSettingsDTO,
-  ): Promise<void> {}
+  ): Promise<void> {
+    await user.changeSettings(settings);
+  }
 
   @Patch(`:${UsernameParam}/settings`)
   @HttpCode(204)
-  @UseGuards(AssertAuth, AssertTargetUser)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async patchSettings(
     @TargetUser() user: User,
     @Body(new ZodValidator(UserSettingsSchema.partial()))
     settings: Partial<UserSettingsDTO>,
-  ): Promise<void> {}
+  ): Promise<void> {
+    await user.changeSettings(settings);
+  }
 }

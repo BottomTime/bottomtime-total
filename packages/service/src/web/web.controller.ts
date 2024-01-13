@@ -1,8 +1,8 @@
 import { Controller, Get, Render } from '@nestjs/common';
-import { PageRenderProps } from './common';
+import { PageRenderProps } from '../common';
 
-@Controller('')
-export class HomeController {
+@Controller()
+export class WebController {
   @Get()
   @Render('index')
   index(): PageRenderProps {

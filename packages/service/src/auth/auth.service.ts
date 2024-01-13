@@ -10,6 +10,7 @@ import { User } from '../users/user';
 import { compare } from 'bcrypt';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import { Config } from '../config';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -83,6 +84,15 @@ export class AuthService {
         if (error) reject(error);
         else resolve(token!);
       });
+    });
+  }
+
+  async issueSessionCookie(user: User, res: Response): Promise<void> {
+    const token = await this.signJWT(`user|${user.id}`);
+    res.cookie(Config.sessions.cookieName, token, {
+      domain: Config.sessions.cookieDomain,
+      maxAge: Config.sessions.cookieTTL,
+      httpOnly: true,
     });
   }
 }
