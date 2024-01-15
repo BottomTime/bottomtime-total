@@ -1,12 +1,19 @@
-import { UserCertificationDTO, ProfileDTO } from '@bottomtime/api';
+import {
+  UserCertificationDTO,
+  ProfileDTO,
+  UpdateProfileParamsDTO,
+} from '@bottomtime/api';
 import { ProfileData, UserDocument } from '../schemas/user.document';
 import { Maybe } from '../common';
 import { Types } from 'mongoose';
 
+export type UpdateProfileOptions = UpdateProfileParamsDTO;
+export type UserCertification = UserCertificationDTO;
+
 export class Profile {
   constructor(private readonly data: UserDocument) {}
 
-  get profile(): ProfileData {
+  private get profile(): ProfileData {
     if (this.data.profile) {
       return this.data.profile;
     }
@@ -19,68 +26,71 @@ export class Profile {
   get avatar(): Maybe<string> {
     return this.profile.avatar;
   }
-  set avatar(value: Maybe<string>) {
-    this.profile.avatar = value;
-  }
 
   get bio(): Maybe<string> {
     return this.profile.bio;
-  }
-  set bio(value: Maybe<string>) {
-    this.profile.bio = value;
   }
 
   get birthdate(): Maybe<string> {
     return this.profile.birthdate;
   }
-  set birthdate(value: Maybe<string>) {
-    this.profile.birthdate = value;
-  }
 
   get customData(): Maybe<Record<string, unknown>> {
     return this.profile.customData;
   }
-  set customData(value: Maybe<Record<string, unknown>>) {
-    this.profile.customData = value;
-  }
 
-  get certifications(): UserCertificationDTO[] {
-    return this.profile.certifications?.map((c) => c.toJSON()) ?? [];
-  }
-  set certifications(value: UserCertificationDTO[]) {
-    this.profile.certifications = new Types.DocumentArray(value);
+  get certifications(): UserCertification[] | undefined {
+    return this.profile.certifications?.map((c) => c.toJSON());
   }
 
   get experienceLevel(): Maybe<string> {
     return this.profile.experienceLevel;
   }
-  set experienceLevel(value: Maybe<string>) {
-    this.profile.experienceLevel = value;
-  }
 
   get location(): Maybe<string> {
     return this.profile.location;
-  }
-  set location(value: Maybe<string>) {
-    this.profile.location = value;
   }
 
   get name(): Maybe<string> {
     return this.profile.name;
   }
-  set name(value: Maybe<string>) {
-    this.profile.name = value;
-  }
 
   get startedDiving(): Maybe<string> {
     return this.profile.startedDiving;
   }
-  set startedDiving(value: Maybe<string>) {
-    this.profile.startedDiving = value;
-  }
 
-  async save(): Promise<void> {
-    /* TODO */
+  async update(
+    params: UpdateProfileOptions,
+    ignoreUndefined = false,
+  ): Promise<void> {
+    if (!!params.avatar || !ignoreUndefined)
+      this.profile.avatar = params.avatar;
+
+    if (!!params.bio || !ignoreUndefined) this.profile.bio = params.bio;
+
+    if (!!params.birthdate || !ignoreUndefined)
+      this.profile.birthdate = params.birthdate;
+
+    if (!!params.certifications || !ignoreUndefined)
+      this.profile.certifications = params.certifications
+        ? new Types.DocumentArray(params.certifications)
+        : undefined;
+
+    if (!!params.customData || !ignoreUndefined)
+      this.profile.customData = params.customData;
+
+    if (!!params.experienceLevel || !ignoreUndefined)
+      this.profile.experienceLevel = params.experienceLevel;
+
+    if (!!params.location || !ignoreUndefined)
+      this.profile.location = params.location;
+
+    if (!!params.name || !ignoreUndefined) this.profile.name = params.name;
+
+    if (!!params.startedDiving || !ignoreUndefined)
+      this.profile.startedDiving = params.startedDiving;
+
+    await this.data.save();
   }
 
   toJSON(): ProfileDTO {

@@ -16,7 +16,7 @@ export function createLogger(): Bunyan {
   }
 
   const logger = Bunyan.createLogger({
-    name: 'gaia-project',
+    name: 'bottom-time',
     level,
   });
 

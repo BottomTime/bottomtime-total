@@ -22,13 +22,13 @@ describe('Email Service', () => {
       type: EmailType.VerifyEmail,
       title: 'Verify Email',
       user,
-      verifyEmailToken: 'abcd-1234',
+      verifyEmailUrl: `https://bottomti.me/verifyEmail?user=${TestUserData.username}&token=abcd-1234`,
     },
     [EmailType.Welcome]: {
       type: EmailType.Welcome,
       title: 'Welcome',
       user,
-      verifyEmailToken: 'abcd-1234',
+      verifyEmailUrl: `https://bottomti.me/verifyEmail?user=${TestUserData.username}&token=abcd-1234`,
     },
   } as const;
 

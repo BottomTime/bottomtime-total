@@ -86,7 +86,7 @@ export const CreateUserOptionsSchema = z.object({
   role: z.nativeEnum(UserRole).optional(),
   profile: UpdateProfileParamsSchema.optional(),
 });
-export type CreateUserOptions = z.infer<typeof CreateUserOptionsSchema>;
+export type CreateUserParamsDTO = z.infer<typeof CreateUserOptionsSchema>;
 
 export const ChangeUsernameParamsSchema = z.object({
   newUsername: UsernameSchema,
@@ -97,6 +97,14 @@ export const ChangeEmailParamsSchema = z.object({
   newEmail: EmailSchema,
 });
 export type ChangeEmailParams = z.infer<typeof ChangeEmailParamsSchema>;
+
+export const ChangePasswordParamsSchema = z.object({
+  oldPassword: z.string(),
+  newPassword: PasswordStrengthSchema,
+});
+export type ChangePasswordParamsDTO = z.infer<
+  typeof ChangePasswordParamsSchema
+>;
 
 export const UserSettingsSchema = z.object({
   depthUnit: z.nativeEnum(DepthUnit),
@@ -153,3 +161,8 @@ export const SearchProfilesResponseSchema = z.object({
 export type SearchProfilesResponseDTO = z.infer<
   typeof SearchProfilesResponseSchema
 >;
+
+export const VerifyEmailParamsSchema = z.object({
+  token: z.string().min(1),
+});
+export type VerifyEmailParamsDTO = z.infer<typeof VerifyEmailParamsSchema>;

@@ -138,10 +138,11 @@ export const RatingRangeSchema = z
   });
 export type RatingRange = z.infer<typeof RatingRangeSchema>;
 
-export const SuccessResponseSchema = z.object({
+export const SuccessFailResponseSchema = z.object({
   succeeded: z.boolean(),
+  reason: z.string().optional(),
 });
-export type SuccessResponse = z.infer<typeof SuccessResponseSchema>;
+export type SuccessFailResponseDTO = z.infer<typeof SuccessFailResponseSchema>;
 
 export const DepthSchema = z.object({
   depth: z.number().min(0),

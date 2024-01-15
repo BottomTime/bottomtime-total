@@ -29,12 +29,12 @@ type ResetPasswordEmailOptions = {
 
 type VerifyEmailOptions = {
   type: EmailType.VerifyEmail;
-  verifyEmailToken: string;
+  verifyEmailUrl: string;
 };
 
 type WelcomeEmailOptions = {
   type: EmailType.Welcome;
-  verifyEmailToken: string;
+  verifyEmailUrl: string;
 };
 
 export type EmailOptions = BaseEmailOptions &
@@ -68,7 +68,7 @@ export class EmailService implements OnModuleInit {
   ) {}
 
   private preCompileTemplate(type: EmailType): compileTemplate {
-    const basedir = path.resolve(__dirname, 'templates/');
+    const basedir = path.resolve(__dirname, EmailService.pugOptions.basedir!);
     const filename = path.resolve(basedir, EmailService.templatePaths[type]);
 
     this.log.debug(`Pre-compiling email template for ${type} emails...`);

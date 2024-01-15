@@ -141,6 +141,47 @@
  *               description: The date and time the user joined Bottom Time.
  *               example: 2021-01-01T00:00:00.000Z
  *
+ *     UserSettings:
+ *       type: object
+ *       properties:
+ *         depthUnit:
+ *           type: string
+ *           description: The user's preferred depth unit.
+ *           enum:
+ *             - m
+ *             - ft
+ *           example: m
+ *         pressureUnit:
+ *           type: string
+ *           description: The user's preferred pressure unit.
+ *           enum:
+ *             - bar
+ *             - psi
+ *           example: bar
+ *         temperatureUnit:
+ *           type: string
+ *           description: The user's preferred temperature unit.
+ *           enum:
+ *             - C
+ *             - F
+ *           example: C
+ *         weightUnit:
+ *           type: string
+ *           description: The user's preferred weight unit.
+ *           enum:
+ *             - kg
+ *             - lbs
+ *           example: kg
+ *         profileVisibility:
+ *           title: Profile Visibility
+ *           type: string
+ *           description: The user's profile visibility.
+ *           enum:
+ *             - public
+ *             - friends
+ *             - private
+ *           example: public
+ *
  *     User:
  *       type: object
  *       required:

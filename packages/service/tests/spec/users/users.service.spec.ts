@@ -7,7 +7,7 @@ import {
   UserModel,
 } from '../../../src/schemas';
 import {
-  CreateUserOptions,
+  CreateUserParamsDTO,
   SortOrder,
   UserRole,
   UsersSortBy,
@@ -98,7 +98,7 @@ describe('Users Service', () => {
 
   describe('when creating new user accounts', () => {
     it('will create new users with minimal options', async () => {
-      const options: CreateUserOptions = {
+      const options: CreateUserParamsDTO = {
         username: 'Roger69_83',
       };
       const user = await service.createUser(options);
@@ -110,7 +110,7 @@ describe('Users Service', () => {
     });
 
     it('will create a new user with all options set', async () => {
-      const options: CreateUserOptions = {
+      const options: CreateUserParamsDTO = {
         username: 'Tyler.Durden',
         email: 'rule1@diveclub.ca',
         password: '(*H()@*&BNINFPOI()$*9ij90',
@@ -145,7 +145,7 @@ describe('Users Service', () => {
         email,
         emailLowered: email.toLowerCase(),
       });
-      const options: CreateUserOptions = {
+      const options: CreateUserParamsDTO = {
         username: 'Roger69_83',
         email,
       };
@@ -162,7 +162,7 @@ describe('Users Service', () => {
         username,
         usernameLowered: username.toLowerCase(),
       });
-      const options: CreateUserOptions = {
+      const options: CreateUserParamsDTO = {
         username,
       };
       await existingUser.save();

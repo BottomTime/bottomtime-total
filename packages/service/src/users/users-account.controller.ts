@@ -20,7 +20,7 @@ import {
   ChangeEmailParamsSchema,
   ChangeUsernameParams,
   ChangeUsernameParamsSchema,
-  CreateUserOptions,
+  CreateUserParamsDTO,
   CreateUserOptionsSchema,
   ProfileDTO,
   ProfileVisibility,
@@ -31,6 +31,11 @@ import {
   UserRole,
   UserSettingsDTO,
   UserSettingsSchema,
+  SuccessFailResponseDTO,
+  VerifyEmailParamsSchema,
+  VerifyEmailParamsDTO,
+  ChangePasswordParamsDTO,
+  ChangePasswordParamsSchema,
 } from '@bottomtime/api';
 import { ZodValidator } from '../zod-validator';
 import { AssertAuth, AuthService, CurrentUser } from '../auth';
@@ -38,15 +43,19 @@ import { User } from './user';
 import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
 import { Response } from 'express';
 import { AssertAccountOwner } from './assert-account-owner.guard';
+import { EmailService, EmailType } from '../email';
+import { URL } from 'url';
+import { Config } from '../config';
 
 const UsernameParam = 'username';
 @Controller('api/users')
-export class UsersController {
-  private readonly log = new Logger(UsersController.name);
+export class UsersAccountController {
+  private readonly log = new Logger(UsersAccountController.name);
 
   constructor(
     private readonly users: UsersService,
     private readonly authService: AuthService,
+    private readonly emailService: EmailService,
   ) {}
 
   /**
@@ -227,14 +236,41 @@ export class UsersController {
   async createUser(
     @Res() res: Response,
     @CurrentUser() currentUser: User | undefined,
-    @Body(new ZodValidator<CreateUserOptions>(CreateUserOptionsSchema))
-    options: CreateUserOptions,
+    @Body(new ZodValidator<CreateUserParamsDTO>(CreateUserOptionsSchema))
+    options: CreateUserParamsDTO,
   ): Promise<void> {
+    if (options.role && options.role !== UserRole.User) {
+      if (!currentUser) {
+        throw new UnauthorizedException(
+          'You must be logged in to create an administrator account.',
+        );
+      }
+
+      if (currentUser.role !== UserRole.Admin) {
+        throw new ForbiddenException(
+          'You are not authorized to create an administrator account.',
+        );
+      }
+    }
+
     const user = await this.users.createUser(options);
 
+    // TODO: Send a welcome email.
+    // const verifyEmailToken = await user.requestEmailVerificationToken();
+    // const emailBody = await this.emailService.generateMessageContent({
+    //   type: EmailType.Welcome,
+    //   title: 'Welcome to Bottom Time',
+    //   user,
+    //   verifyEmailToken,
+    // });
+
     // If the user is not currently signed in, sign them in as the new user.
-    if (!currentUser) {
-      await this.authService.issueSessionCookie(user, res);
+    // Exception: Don't do this for admins since they may just be provisioning new accounts for other users.
+    if (!currentUser || currentUser.role !== UserRole.Admin) {
+      await Promise.all([
+        this.authService.issueSessionCookie(user, res),
+        user.updateLastLogin(),
+      ]);
     }
 
     res.status(201).send(user.toJSON());
@@ -361,7 +397,7 @@ export class UsersController {
 
   /**
    * @openapi
-   * /api/users/{username}/changeUsername:
+   * /api/users/{username}/username:
    *   post:
    *     summary: Change a User's Username
    *     operationId: changeUsername
@@ -434,7 +470,7 @@ export class UsersController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Post(`:${UsernameParam}/changeUsername`)
+  @Post(`:${UsernameParam}/username`)
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async changeUsername(
@@ -447,7 +483,7 @@ export class UsersController {
 
   /**
    * @openapi
-   * /api/users/{username}/changeEmail:
+   * /api/users/{username}/email:
    *   post:
    *     summary: Change a User's Email Address
    *     operationId: changeEmail
@@ -520,7 +556,7 @@ export class UsersController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Post(`:${UsernameParam}/changeEmail`)
+  @Post(`:${UsernameParam}/email`)
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async changeEmail(
@@ -531,6 +567,237 @@ export class UsersController {
     await targetUser.changeEmail(newEmail);
   }
 
+  @Post(`:${UsernameParam}/password`)
+  @HttpCode(200)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+  async changePassword(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(ChangePasswordParamsSchema))
+    { oldPassword, newPassword }: ChangePasswordParamsDTO,
+  ): Promise<SuccessFailResponseDTO> {
+    const succeeded = await user.changePassword(oldPassword, newPassword);
+    return { succeeded };
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/requestEmailVerification:
+   *   post:
+   *     summary: Request Email Verification Token
+   *     operationId: requestEmailVerification
+   *     description: |
+   *       Requests an email verification token for the user. This token can be used to verify the user's email address.
+   *       The token will be delivered to the user via email at the address in their profile.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     responses:
+   *       "202":
+   *         description: |
+   *           The request was successfully received. The response body will indicate whether the request will be processed.
+   *           * If `succeeded` is `true` then an the email verification token will be sent to the user's email address.
+   *           * Otherwise, the request was rejected because the user does not have an email address set on their account
+   *             or their email address is already verified.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Success"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to request an email verification token for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post(`:${UsernameParam}/requestEmailVerification`)
+  @HttpCode(202)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+  async requestEmailVerification(
+    @TargetUser() user: User,
+  ): Promise<SuccessFailResponseDTO> {
+    if (!user.email) {
+      return {
+        succeeded: false,
+        reason: 'User does not have an email address set on their account.',
+      };
+    }
+
+    if (user.emailVerified) {
+      return {
+        succeeded: false,
+        reason: 'User email address is already verified.',
+      };
+    }
+
+    const title = 'Verify Your Email Address';
+
+    const token = await user.requestEmailVerificationToken();
+    const search = new URLSearchParams({ user: user.username, token });
+    const verifyEmailUrl = new URL('/verifyEmail', Config.baseUrl);
+    verifyEmailUrl.search = search.toString();
+
+    const emailBody = await this.emailService.generateMessageContent({
+      type: EmailType.VerifyEmail,
+      title,
+      user,
+      verifyEmailUrl: verifyEmailUrl.toString(),
+    });
+    await this.emailService.sendMail({ to: [user.email!] }, title, emailBody);
+
+    return { succeeded: true };
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/verifyEmail:
+   *   post:
+   *     summary: Verify Email Address
+   *     operationId: verifyEmail
+   *     description: |
+   *       Verifies a user's email address using an email verification token.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The email verification token.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - token
+   *             properties:
+   *               token:
+   *                 title: Token
+   *                 type: string
+   *                 description: The email verification token.
+   *                 example: 1234567890abcdef
+   *     responses:
+   *       "200":
+   *         description: |
+   *           The request was received successfully and the request body will indicate whether the email address was verified.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Success"
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post(`:${UsernameParam}/verifyEmail`)
+  @HttpCode(200)
+  @UseGuards(AssertTargetUser)
+  async verifyEmail(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(VerifyEmailParamsSchema))
+    { token }: VerifyEmailParamsDTO,
+  ): Promise<SuccessFailResponseDTO> {
+    const succeeded = await user.verifyEmail(token);
+    return { succeeded };
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/profile:
+   *   put:
+   *     summary: Update a User's Profile
+   *     operationId: updateProfile
+   *     description: |
+   *       Updates a user's profile information.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The user's profile.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/UpdateProfile"
+   *     responses:
+   *       "204":
+   *         description: |
+   *           The profile was updated successfully.
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to update the profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Put(`:${UsernameParam}/profile`)
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
@@ -539,9 +806,68 @@ export class UsersController {
     @Body(new ZodValidator(UpdateProfileParamsSchema))
     profile: UpdateProfileParamsDTO,
   ): Promise<void> {
-    // TODO
+    await user.profile.update(profile);
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/profile:
+   *   patch:
+   *     summary: Update a User's Profile
+   *     operationId: patchProfile
+   *     description: |
+   *       Updates a user's profile information.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The user's profile.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/UpdateProfile"
+   *     responses:
+   *       "204":
+   *         description: |
+   *           The profile was updated successfully.
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to update the profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Patch(`:${UsernameParam}/profile`)
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
@@ -550,9 +876,68 @@ export class UsersController {
     @Body(new ZodValidator(UpdateProfileParamsSchema))
     profile: UpdateProfileParamsDTO,
   ): Promise<void> {
-    // TODO
+    await user.profile.update(profile, true);
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/settings:
+   *   put:
+   *     summary: Update a User's Settings
+   *     operationId: updateSettings
+   *     description: |
+   *       Updates a user's settings.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The user's settings.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/UserSettings"
+   *     responses:
+   *       "204":
+   *         description: |
+   *           The settings were updated successfully.
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to update the settings.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Put(`:${UsernameParam}/settings`)
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
@@ -563,6 +948,65 @@ export class UsersController {
     await user.changeSettings(settings);
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/settings:
+   *   patch:
+   *     summary: Update a User's Settings
+   *     operationId: patchSettings
+   *     description: |
+   *       Updates a user's settings.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The user's settings.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/UserSettings"
+   *     responses:
+   *       "204":
+   *         description: |
+   *           The settings were updated successfully.
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to update the settings.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Patch(`:${UsernameParam}/settings`)
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)

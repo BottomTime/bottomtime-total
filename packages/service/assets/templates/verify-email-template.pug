@@ -10,7 +10,9 @@ block content
     | to complete the request!
 
   div.block.box.has-text-centered
-    a(href!=verifyEmailUrl)= verifyEmailUrl
+    span
+      a(href!=verifyEmailUrl) Verify Your Email Address
+      | #{" (" + user.email + ")"}
 
   p.content.block
     | Cheers,

@@ -1,0 +1,238 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Users End-to-End Tests when creating a new user account will create a new account and sign in user 1`] = `
+{
+  "email": "newuser@gmail.com",
+  "emailVerified": false,
+  "hasPassword": true,
+  "id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+  "isLockedOut": false,
+  "lastLogin": "2024-01-15T12:40:18.319Z",
+  "memberSince": "2024-01-15T12:40:18.319Z",
+  "profile": {
+    "avatar": "https://example.com/avatar.png",
+    "bio": "This is a test user.",
+    "birthdate": "1980-01-01",
+    "certifications": [
+      {
+        "agency": "PADI",
+        "course": "Open Water Diver",
+        "date": "2000-01-01",
+      },
+    ],
+    "experienceLevel": "Advanced",
+    "location": "Seattle, WA",
+    "memberSince": "2024-01-15T12:40:18.319Z",
+    "name": "User McUserface",
+    "startedDiving": "2000-01-01",
+    "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+    "username": "User.McUserface",
+  },
+  "role": "user",
+  "settings": {
+    "depthUnit": "m",
+    "pressureUnit": "bar",
+    "profileVisibility": "friends",
+    "temperatureUnit": "C",
+    "weightUnit": "kg",
+  },
+  "username": "User.McUserface",
+}
+`;
+
+exports[`Users End-to-End Tests when creating a new user account will create a new account and sign in user 2`] = `
+{
+  "__v": 0,
+  "_id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+  "email": "newuser@gmail.com",
+  "emailLowered": "newuser@gmail.com",
+  "emailVerified": false,
+  "isLockedOut": false,
+  "lastLogin": 2024-01-15T12:40:18.319Z,
+  "memberSince": 2024-01-15T12:40:18.319Z,
+  "passwordHash": "$2b$04$wProYOHv1Qgo9oj1nwDIuObvp7V6K1SSm0Gcp2TSPQPhOqY8RLBRa",
+  "profile": {
+    "avatar": "https://example.com/avatar.png",
+    "bio": "This is a test user.",
+    "birthdate": "1980-01-01",
+    "certifications": [
+      {
+        "agency": "PADI",
+        "course": "Open Water Diver",
+        "date": "2000-01-01",
+      },
+    ],
+    "experienceLevel": "Advanced",
+    "location": "Seattle, WA",
+    "name": "User McUserface",
+    "startedDiving": "2000-01-01",
+  },
+  "role": "user",
+  "settings": {
+    "depthUnit": "m",
+    "pressureUnit": "bar",
+    "profileVisibility": "friends",
+    "temperatureUnit": "C",
+    "weightUnit": "kg",
+  },
+  "username": "User.McUserface",
+  "usernameLowered": "user.mcuserface",
+}
+`;
+
+exports[`Users End-to-End Tests when creating a new user account will create a new account and sign in user 3`] = `
+{
+  "anonymous": false,
+  "email": "newuser@gmail.com",
+  "emailVerified": false,
+  "hasPassword": true,
+  "id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+  "isLockedOut": false,
+  "lastLogin": "2024-01-15T12:40:18.319Z",
+  "memberSince": "2024-01-15T12:40:18.319Z",
+  "profile": {
+    "avatar": "https://example.com/avatar.png",
+    "bio": "This is a test user.",
+    "birthdate": "1980-01-01",
+    "certifications": [
+      {
+        "agency": "PADI",
+        "course": "Open Water Diver",
+        "date": "2000-01-01",
+      },
+    ],
+    "experienceLevel": "Advanced",
+    "location": "Seattle, WA",
+    "memberSince": "2024-01-15T12:40:18.319Z",
+    "name": "User McUserface",
+    "startedDiving": "2000-01-01",
+    "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+    "username": "User.McUserface",
+  },
+  "role": "user",
+  "settings": {
+    "depthUnit": "m",
+    "pressureUnit": "bar",
+    "profileVisibility": "friends",
+    "temperatureUnit": "C",
+    "weightUnit": "kg",
+  },
+  "username": "User.McUserface",
+}
+`;
+
+exports[`Users End-to-End Tests when creating a new user account will create a new account with minimal properties 1`] = `
+{
+  "emailVerified": false,
+  "hasPassword": false,
+  "id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+  "isLockedOut": false,
+  "lastLogin": "2024-01-15T12:40:18.319Z",
+  "memberSince": "2024-01-15T12:40:18.319Z",
+  "profile": {
+    "certifications": [],
+    "memberSince": "2024-01-15T12:40:18.319Z",
+    "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+    "username": "User.McUserface",
+  },
+  "role": "user",
+  "settings": {
+    "depthUnit": "m",
+    "pressureUnit": "bar",
+    "profileVisibility": "friends",
+    "temperatureUnit": "C",
+    "weightUnit": "kg",
+  },
+  "username": "User.McUserface",
+}
+`;
+
+exports[`Users End-to-End Tests when creating a new user account will create a new account with minimal properties 2`] = `
+{
+  "__v": 0,
+  "_id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+  "email": null,
+  "emailLowered": null,
+  "emailVerified": false,
+  "isLockedOut": false,
+  "lastLogin": 2024-01-15T12:40:18.319Z,
+  "memberSince": 2024-01-15T12:40:18.319Z,
+  "passwordHash": null,
+  "profile": {
+    "certifications": [],
+  },
+  "role": "user",
+  "settings": {
+    "depthUnit": "m",
+    "pressureUnit": "bar",
+    "profileVisibility": "friends",
+    "temperatureUnit": "C",
+    "weightUnit": "kg",
+  },
+  "username": "User.McUserface",
+  "usernameLowered": "user.mcuserface",
+}
+`;
+
+exports[`Users End-to-End Tests when creating a new user account will create a new account with minimal properties 3`] = `
+{
+  "anonymous": false,
+  "emailVerified": false,
+  "hasPassword": false,
+  "id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+  "isLockedOut": false,
+  "lastLogin": "2024-01-15T12:40:18.319Z",
+  "memberSince": "2024-01-15T12:40:18.319Z",
+  "profile": {
+    "certifications": [],
+    "memberSince": "2024-01-15T12:40:18.319Z",
+    "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+    "username": "User.McUserface",
+  },
+  "role": "user",
+  "settings": {
+    "depthUnit": "m",
+    "pressureUnit": "bar",
+    "profileVisibility": "friends",
+    "temperatureUnit": "C",
+    "weightUnit": "kg",
+  },
+  "username": "User.McUserface",
+}
+`;
+
+exports[`Users End-to-End Tests when creating a new user account will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_string",
+      "message": "Invalid",
+      "path": [
+        "username",
+      ],
+      "validation": "regex",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "email",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'user' | 'admin', received 'power_user'",
+      "options": [
+        "user",
+        "admin",
+      ],
+      "path": [
+        "role",
+      ],
+      "received": "power_user",
+    },
+  ],
+}
+`;

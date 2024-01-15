@@ -94,6 +94,16 @@ module.exports = {
     },
 
     responses: {
+      SuccessResponse: {
+        description: 'Represents a standardized success/fail response.',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/Success',
+            },
+          },
+        },
+      },
       ErrorResponse: {
         description: 'Represents a standardized error response.',
         content: {
@@ -107,6 +117,23 @@ module.exports = {
     },
 
     schemas: {
+      Success: {
+        type: 'object',
+        required: ['success'],
+        properties: {
+          success: {
+            title: 'Success',
+            type: 'boolean',
+            description: 'Indicates whether the request was successful.',
+          },
+          reason: {
+            title: 'Reason',
+            type: 'string',
+            description:
+              'A human-readable message describing the reason for the success or failure.',
+          },
+        },
+      },
       Error: {
         type: 'object',
         required: ['message', 'method', 'path', 'status'],

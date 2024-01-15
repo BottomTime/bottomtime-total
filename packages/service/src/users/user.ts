@@ -18,7 +18,6 @@ export class User implements Express.User {
   private readonly log = new Logger(User.name);
 
   private _profile: Profile | undefined;
-  private _settings: UserSettings | undefined;
 
   constructor(
     private readonly Users: Model<UserData>,
@@ -237,6 +236,11 @@ export class User implements Express.User {
     );
 
     return true;
+  }
+
+  async updateLastLogin(): Promise<void> {
+    this.data.lastLogin = new Date();
+    await this.data.save();
   }
 
   toJSON(): UserDTO {

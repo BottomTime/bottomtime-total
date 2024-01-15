@@ -9,7 +9,7 @@ import {
 } from '../schemas';
 import { FilterQuery, Model, Types } from 'mongoose';
 import {
-  CreateUserOptions,
+  CreateUserParamsDTO,
   DepthUnit,
   PressureUnit,
   ProfileVisibility,
@@ -33,6 +33,7 @@ const SearchUsersOptionsSchema = SearchUsersParamsSchema.extend({
   profileVisibleTo: z.union([z.literal('#public'), UsernameSchema]),
 }).partial();
 export type SearchUsersOptions = z.infer<typeof SearchUsersOptionsSchema>;
+export type CreateUserOptions = CreateUserParamsDTO;
 
 @Injectable()
 export class UsersService {

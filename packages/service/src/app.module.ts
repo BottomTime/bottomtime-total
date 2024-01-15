@@ -35,7 +35,7 @@ export class AppModule {
         PassportModule.register({
           session: false,
         }),
-        EmailModule.register(deps.mailClient),
+        EmailModule.forRoot(deps.mailClient),
         HealthModule,
 
         AdminModule,

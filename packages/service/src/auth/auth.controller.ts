@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CurrentUserDTO } from '@bottomtime/api';
+import { CurrentUserDTO, SuccessFailResponseDTO } from '@bottomtime/api';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from './current-user';
 import { User } from '../users/user';
@@ -127,7 +127,10 @@ export class AuthController {
   @Post('login')
   @UseGuards(AuthGuard('local'))
   async login(@CurrentUser() user: User, @Res() res: Response): Promise<void> {
-    await this.authService.issueSessionCookie(user, res);
+    await Promise.all([
+      this.authService.issueSessionCookie(user, res),
+      user.updateLastLogin(),
+    ]);
     res.status(200).send(user.toJSON());
   }
 
@@ -135,8 +138,8 @@ export class AuthController {
    * @openapi
    * /api/auth/logout:
    *   get:
-   *     summary: Log out
-   *     operationId: logout
+   *     summary: Log out and return to homepage
+   *     operationId: logoutWithRedirect
    *     description: |
    *       Logs out the current user. This will invalidate the user's session cookie and redirect them back to the home page.
    *     tags:
@@ -164,9 +167,36 @@ export class AuthController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get('logout')
-  @Redirect('/')
-  logout(@Res() res: Response) {
+  logoutWithRedirect(@Res() res: Response) {
     res.clearCookie(Config.sessions.cookieName);
+    res.redirect('/');
+  }
+
+  /**
+   * @openapi
+   * /api/auth/logout:
+   *   post:
+   *     summary: Log out
+   *     operationId: logout
+   *     description: |
+   *       Logs out the current user. This will invalidate the user's session cookie.
+   *     tags:
+   *       - Auth
+   *     responses:
+   *       200:
+   *         $ref: "#/components/responses/SuccessResponse"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post('logout')
+  logout(@Res() res: Response) {
+    const response: SuccessFailResponseDTO = { succeeded: true };
+    res.clearCookie(Config.sessions.cookieName);
+    res.json(response);
   }
 
   /**

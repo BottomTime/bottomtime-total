@@ -1,38 +1,17 @@
-import Bunyan from 'bunyan';
-import path from 'path';
-import { createApp } from '../../src/create-app';
 import { INestApplication } from '@nestjs/common';
+import { createApp } from '../../src/create-app';
+import { Log } from './test-logger';
 import { ServerDependencies } from '../../src/app.module';
 import { TestMailer } from './test-mailer';
 
-export function createTestLogger(): Bunyan {
-  return Bunyan.createLogger({
-    name: 'bt-tests',
-    serializers: { err: Bunyan.stdSerializers.err },
-    level: 'debug',
-    streams: [
-      {
-        type: 'rotating-file',
-        path: path.resolve(__dirname, '../../logs/tests.log'),
-        period: '1d',
-        count: 4,
-      },
-    ],
-  });
-}
-
 export async function createTestApp(
-  logger?: Bunyan,
   deps: Partial<ServerDependencies> = {},
 ): Promise<INestApplication> {
-  const app = await createApp(
-    logger ?? createTestLogger(),
-    async (): Promise<ServerDependencies> => {
-      return {
-        mailClient: deps.mailClient ?? new TestMailer(),
-      };
-    },
-  );
+  const app = await createApp(Log, async (): Promise<ServerDependencies> => {
+    return {
+      mailClient: deps.mailClient ?? new TestMailer(),
+    };
+  });
   await app.init();
   return app;
 }

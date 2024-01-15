@@ -193,6 +193,3 @@ export class Config {
     return toNumber(process.env.BT_PORT, 4800);
   }
 }
-
-/** @deprecated Don't use default export anymore */
-export default Config;
