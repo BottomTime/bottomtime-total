@@ -567,6 +567,84 @@ export class UsersAccountController {
     await targetUser.changeEmail(newEmail);
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/password:
+   *   post:
+   *     summary: Change Password
+   *     operationId: changePassword
+   *     description: |
+   *       Changes a user's password.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The new password.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - newPassword
+   *             properties:
+   *               oldPassword:
+   *                 title: Old Password
+   *                 type: string
+   *                 format: password
+   *                 description: The user's current password. This must be correct or the request will not succeed.
+   *                 example: old_password
+   *               newPassword:
+   *                 title: New Password
+   *                 type: string
+   *                 format: password
+   *                 description: The user's new password.
+   *                 example: new_password
+   *     responses:
+   *       "200":
+   *         description: |
+   *           The password was changed successfully.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Success"
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to change the password.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Post(`:${UsernameParam}/password`)
   @HttpCode(200)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
