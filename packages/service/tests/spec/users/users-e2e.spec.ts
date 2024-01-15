@@ -706,4 +706,103 @@ describe('Users End-to-End Tests', () => {
         .expect(404);
     });
   });
+
+  describe('when resetting a password', () => {
+    const newPassword = 'New_Password123!';
+    const requestTokenUrl = `${requestUrl(
+      RegularUserData.username,
+    )}/requestPasswordReset`;
+    const resetPasswordUrl = `${requestUrl(
+      RegularUserData.username,
+    )}/resetPassword`;
+
+    it('will request a password token', async () => {
+      await request(server).post(requestTokenUrl).expect(204);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(savedUser?.passwordResetToken).toBeDefined();
+      expect(savedUser?.passwordResetTokenExpiration?.valueOf()).toBeCloseTo(
+        Date.now() + TwoDaysInMs,
+        -2,
+      );
+
+      expect(mailClient.sentMail).toHaveLength(1);
+      expect(mailClient.sentMail[0].recipients.to).toContain(
+        RegularUserData.email,
+      );
+      expect(mailClient.sentMail[0].body).toContain(
+        savedUser?.passwordResetToken,
+      );
+    });
+
+    it('will return a 404 response if the indicated user does not exist', async () => {
+      await request(server)
+        .post(`${requestUrl('Not.A.User')}/requestPasswordReset`)
+        .expect(404);
+    });
+
+    it('will reset a password', async () => {
+      const token = 'abcd1234';
+      regularUser.passwordResetToken = token;
+      regularUser.passwordResetTokenExpiration = new Date(Date.now() + 10000);
+      await regularUser.save();
+
+      const {
+        body: { succeeded },
+      } = await request(server)
+        .post(resetPasswordUrl)
+        .send({ token, newPassword })
+        .expect(200);
+      expect(succeeded).toBe(true);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(savedUser?.passwordHash).toBeDefined();
+      expect(savedUser?.passwordResetToken).toBeNull();
+      expect(savedUser?.passwordResetTokenExpiration).toBeNull();
+      await expect(
+        compare(newPassword, savedUser!.passwordHash!),
+      ).resolves.toBe(true);
+    });
+
+    it('will inidicate if password reset failed', async () => {
+      const token = 'abcd1234';
+      regularUser.passwordResetToken = token;
+      regularUser.passwordResetTokenExpiration = new Date(Date.now() - 10000);
+      await regularUser.save();
+
+      const {
+        body: { succeeded },
+      } = await request(server)
+        .post(resetPasswordUrl)
+        .send({ token, newPassword })
+        .expect(200);
+      expect(succeeded).toBe(false);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      await expect(
+        compare(RegularUserPassword, savedUser!.passwordHash!),
+      ).resolves.toBe(true);
+    });
+
+    it('will return a 400 response if the new password is invalid', async () => {
+      await request(server)
+        .post(resetPasswordUrl)
+        .send({
+          token: 33,
+          newPassword: 'nope',
+        })
+        .expect(400);
+    });
+
+    it('will return a 400 response if the new password is missing', async () => {
+      await request(server).post(resetPasswordUrl).expect(400);
+    });
+
+    it('will return a 404 response if the indicated user does not exist', async () => {
+      await request(server)
+        .post(`${requestUrl('Not.A.User')}/resetPassword`)
+        .send({ token: 'abcd1234' })
+        .expect(404);
+    });
+  });
 });

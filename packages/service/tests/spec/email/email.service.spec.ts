@@ -16,7 +16,7 @@ describe('Email Service', () => {
       type: EmailType.ResetPassword,
       title: 'Reset Password',
       user,
-      resetToken: 'abcd-1234',
+      resetPasswordUrl: `https://bottomti.me/resetPassword?user=${TestUserData.username}&token=abcd-1234`,
     },
     [EmailType.VerifyEmail]: {
       type: EmailType.VerifyEmail,

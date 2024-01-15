@@ -24,7 +24,7 @@ type BaseEmailOptions = {
 
 type ResetPasswordEmailOptions = {
   type: EmailType.ResetPassword;
-  resetToken: string;
+  resetPasswordUrl: string;
 };
 
 type VerifyEmailOptions = {

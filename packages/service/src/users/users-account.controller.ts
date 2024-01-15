@@ -36,6 +36,8 @@ import {
   VerifyEmailParamsDTO,
   ChangePasswordParamsDTO,
   ChangePasswordParamsSchema,
+  ResetPasswordWithTokenParamsSchema,
+  ResetPasswordWithTokenParamsDTO,
 } from '@bottomtime/api';
 import { ZodValidator } from '../zod-validator';
 import { AssertAuth, AuthService, CurrentUser } from '../auth';
@@ -46,6 +48,7 @@ import { AssertAccountOwner } from './assert-account-owner.guard';
 import { EmailService, EmailType } from '../email';
 import { URL } from 'url';
 import { Config } from '../config';
+import { reset } from 'express-useragent';
 
 const UsernameParam = 'username';
 @Controller('api/users')
@@ -814,6 +817,37 @@ export class UsersAccountController {
     { token }: VerifyEmailParamsDTO,
   ): Promise<SuccessFailResponseDTO> {
     const succeeded = await user.verifyEmail(token);
+    return { succeeded };
+  }
+
+  @Post(`:${UsernameParam}/requestPasswordReset`)
+  @HttpCode(204)
+  @UseGuards(AssertTargetUser)
+  async requestPasswordReset(@TargetUser() user: User): Promise<void> {
+    const title = 'Reset Your Password';
+    const token = await user.requestPasswordResetToken();
+
+    const search = new URLSearchParams({ user: user.username, token });
+    const resetPasswordUrl = new URL('/resetPassword', Config.baseUrl);
+    resetPasswordUrl.search = search.toString();
+    const emailBody = await this.emailService.generateMessageContent({
+      type: EmailType.ResetPassword,
+      title,
+      user,
+      resetPasswordUrl: resetPasswordUrl.toString(),
+    });
+    await this.emailService.sendMail({ to: [user.email!] }, title, emailBody);
+  }
+
+  @Post(`:${UsernameParam}/resetPassword`)
+  @HttpCode(200)
+  @UseGuards(AssertTargetUser)
+  async resetPassword(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(ResetPasswordWithTokenParamsSchema))
+    { token, newPassword }: ResetPasswordWithTokenParamsDTO,
+  ): Promise<SuccessFailResponseDTO> {
+    const succeeded = await user.resetPassword(token, newPassword);
     return { succeeded };
   }
 
