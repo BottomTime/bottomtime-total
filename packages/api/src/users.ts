@@ -106,6 +106,14 @@ export type ChangePasswordParamsDTO = z.infer<
   typeof ChangePasswordParamsSchema
 >;
 
+export const ResetPasswordWithTokenParamsSchema = z.object({
+  token: z.string().min(1),
+  newPassword: PasswordStrengthSchema,
+});
+export type ResetPasswordWithTokenParamsDTO = z.infer<
+  typeof ResetPasswordWithTokenParamsSchema
+>;
+
 export const UserSettingsSchema = z.object({
   depthUnit: z.nativeEnum(DepthUnit),
   pressureUnit: z.nativeEnum(PressureUnit),

@@ -48,7 +48,6 @@ import { AssertAccountOwner } from './assert-account-owner.guard';
 import { EmailService, EmailType } from '../email';
 import { URL } from 'url';
 import { Config } from '../config';
-import { reset } from 'express-useragent';
 
 const UsernameParam = 'username';
 @Controller('api/users')
