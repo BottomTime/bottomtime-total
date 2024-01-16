@@ -27,5 +27,7 @@ export const userModule: CommandModule<{ 'mongo-uri': string }> = {
       .help();
   },
 
-  async handler(yargs) {},
+  async handler() {
+    /* TODO */
+  },
 };

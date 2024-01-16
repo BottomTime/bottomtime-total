@@ -68,5 +68,7 @@ export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
       );
   },
 
-  async handler(yargs) {},
+  async handler() {
+    /* TODO */
+  },
 };

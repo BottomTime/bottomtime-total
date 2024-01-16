@@ -11,7 +11,6 @@ import {
   CreateUserParamsDTO,
   ProfileVisibility,
   SortOrder,
-  UserDTO,
   UserRole,
   UsersSortBy,
 } from '@bottomtime/api';

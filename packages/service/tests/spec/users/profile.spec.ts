@@ -3,7 +3,6 @@ import { UserData, UserModel } from '../../../src/schemas';
 import { User } from '../../../src/users';
 import { Types } from 'mongoose';
 import { Profile, UpdateProfileOptions } from '../../../src/users/profile';
-import exp from 'constants';
 
 const TestUserData: UserData = {
   _id: 'BDB62177-2086-4D45-A46B-3120B33DAB7A',

@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   HttpCode,
   Post,
@@ -19,7 +18,6 @@ import {
   ListUserTanksParamsDTO,
   ListUserTanksParamsSchema,
   TankDTO,
-  UserRole,
 } from '@bottomtime/api';
 import { AssertAuth, CurrentUser } from '../auth';
 import { Tank } from './tank';

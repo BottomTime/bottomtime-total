@@ -13,6 +13,7 @@
     "daemon:start": "pm2 start dist/index.js",
     "daemon:stop": "pm2 stop dist/index.js",
     "docs": "npx swagger-jsdoc -d swaggerDefinition.cjs -o public/docs/swagger.json ./src/**/*.ts",
+    "lint": "eslint .",
     "migrate": "migrate-mongo",
     "prepare": "yarn docs",
     "serve": "nodemon src/index.ts",
