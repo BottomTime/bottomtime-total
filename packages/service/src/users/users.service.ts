@@ -13,7 +13,7 @@ import {
   DepthUnit,
   PressureUnit,
   ProfileVisibility,
-  SearchUsersParamsSchema,
+  SearchUserProfilesParamsSchema,
   SortOrder,
   TemperatureUnit,
   UserRole,
@@ -28,11 +28,15 @@ import { z } from 'zod';
 
 const SelectString = '-friends';
 
-const SearchUsersOptionsSchema = SearchUsersParamsSchema.extend({
+const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
   role: z.nativeEnum(UserRole),
   profileVisibleTo: z.union([z.literal('#public'), UsernameSchema]),
 }).partial();
 export type SearchUsersOptions = z.infer<typeof SearchUsersOptionsSchema>;
+export type SearchUsersResult = {
+  users: User[];
+  totalCount: number;
+};
 export type CreateUserOptions = CreateUserParamsDTO;
 
 @Injectable()
@@ -77,6 +81,14 @@ export class UsersService {
         { cause: { conflictingFields: ['email'] } },
       );
     }
+  }
+
+  private async getFriendedBy(userId: string): Promise<string[]> {
+    const friends = await this.Friends.find({
+      friendId: userId,
+    }).select('userId');
+
+    return friends.map((f) => f.userId);
   }
 
   async createUser(options: CreateUserOptions): Promise<User> {
@@ -140,7 +152,9 @@ export class UsersService {
     return data ? new User(this.Users, data) : undefined;
   }
 
-  async searchUsers(options: SearchUsersOptions = {}): Promise<User[]> {
+  async searchUsers(
+    options: SearchUsersOptions = {},
+  ): Promise<SearchUsersResult> {
     const searchFilter: FilterQuery<UserData> = {};
 
     // Text-based search
@@ -153,24 +167,54 @@ export class UsersService {
       searchFilter.role = options.role;
     }
 
-    let query = this.Users.find(searchFilter);
+    if (options.profileVisibleTo) {
+      if (options.profileVisibleTo === '#public') {
+        // All public profiles
+        searchFilter['settings.profileVisibility'] = ProfileVisibility.Public;
+      } else {
+        // Public profiles or profiles visible to the current user as a friend
+        const friendedBy = await this.getFriendedBy(options.profileVisibleTo);
+        searchFilter.$or = [
+          { 'settings.profileVisibility': ProfileVisibility.Public },
+          {
+            $and: [
+              { _id: { $in: friendedBy } },
+              { 'settings.profileVisibility': ProfileVisibility.FriendsOnly },
+            ],
+          },
+        ];
+      }
+    }
 
     // Sort order
+    let sort:
+      | {
+          [key: string]: -1 | 1;
+        }
+      | undefined = undefined;
     if (!options.query) {
       let sortField = 'username';
       if (options.sortBy === UsersSortBy.MemberSince) sortField = 'memberSince';
 
-      query = query.sort({
+      sort = {
         [sortField]: options.sortOrder === SortOrder.Descending ? -1 : 1,
-      });
+      };
     }
 
-    // Pagination
-    query = query.skip(options.skip ?? 0).limit(options.limit ?? 100);
-
     // Execute query and return results.
-    const data = await query.select(SelectString).exec();
-    return data.map((d) => new User(this.Users, d));
+    const [data, totalCount] = await Promise.all([
+      this.Users.find(searchFilter)
+        .select(SelectString)
+        .sort(sort)
+        .skip(options.skip ?? 0)
+        .limit(options.limit ?? 100)
+        .exec(),
+      this.Users.countDocuments(searchFilter).exec(),
+    ]);
+    return {
+      users: data.map((d) => new User(this.Users, d)),
+      totalCount,
+    };
   }
 
   async testFriendship(userIdA: string, userIdB: string): Promise<boolean> {

@@ -13,10 +13,10 @@ import { UsersService } from './users.service';
 import {
   CreateUserParamsDTO,
   CreateUserOptionsSchema,
-  ProfileDTO,
-  SearchUsersParams,
-  SearchUsersParamsSchema,
+  SearchUserProfilesParamsSchema,
   UserRole,
+  SearchProfilesResponseDTO,
+  SearchUserProfilesParamsDTO,
 } from '@bottomtime/api';
 import { ZodValidator } from '../zod-validator';
 import { AuthService, CurrentUser } from '../auth';
@@ -61,10 +61,10 @@ export class UsersController {
    *             schema:
    *               type: object
    *               required:
-   *                 - profiles
+   *                 - users
    *                 - totalCount
    *               properties:
-   *                 profiles:
+   *                 users:
    *                   type: array
    *                   items:
    *                     $ref: "#/components/schemas/Profile"
@@ -80,13 +80,6 @@ export class UsersController {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/Error"
-   *       "401":
-   *         description: |
-   *           The request failed because the user was not authenticated.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
    *       "500":
    *         description: |
    *           The request failed because of an internal server error.
@@ -97,25 +90,28 @@ export class UsersController {
    */
   @Get()
   async searchProfiles(
-    @CurrentUser() user: User | undefined,
-    @Query(new ZodValidator(SearchUsersParamsSchema))
-    params: SearchUsersParams,
-  ): Promise<ProfileDTO[]> {
+    @CurrentUser() user: User,
+    @Query(new ZodValidator(SearchUserProfilesParamsSchema))
+    params: SearchUserProfilesParamsDTO,
+  ): Promise<SearchProfilesResponseDTO> {
     let profileVisibleTo: string | undefined;
 
     if (user) {
-      if (user.role !== 'admin') {
-        profileVisibleTo = user.username;
+      if (user.role !== UserRole.Admin) {
+        profileVisibleTo = user.id;
       }
     } else {
       profileVisibleTo = '#public';
     }
 
-    const users = await this.users.searchUsers({
+    const result = await this.users.searchUsers({
       ...params,
       profileVisibleTo,
     });
-    return users.map((u) => u.profile.toJSON());
+    return {
+      users: result.users.map((u) => u.profile.toJSON()),
+      totalCount: result.totalCount,
+    };
   }
 
   /**
