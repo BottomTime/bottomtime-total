@@ -1,6 +1,7 @@
 import { UsersService, User } from '../../../src/users';
 import { createTestUser } from '../../utils';
 import {
+  FriendDocument,
   FriendModel,
   UserData,
   UserDocument,
@@ -8,15 +9,18 @@ import {
 } from '../../../src/schemas';
 import {
   CreateUserParamsDTO,
+  ProfileVisibility,
   SortOrder,
+  UserDTO,
   UserRole,
   UsersSortBy,
 } from '@bottomtime/api';
 import * as uuid from 'uuid';
 import bcrypt from 'bcrypt';
 import { ConflictException } from '@nestjs/common';
+import { faker } from '@faker-js/faker';
 
-import SearchData from '../../fixtures/users.json';
+import SearchData from '../../fixtures/user-search-data.json';
 
 const TestUserData: Partial<UserData> = {
   _id: '4E64038D-0ABF-4C1A-B678-55F8AFCB6B2D',
@@ -34,19 +38,6 @@ describe('Users Service', () => {
 
   beforeAll(() => {
     service = new UsersService(UserModel, FriendModel);
-  });
-
-  beforeEach(() => {
-    jest.useFakeTimers({
-      now: new Date('2023-10-02T10:23:02.003Z'),
-      doNotFake: ['nextTick', 'setImmediate'],
-    });
-    jest
-      .spyOn(uuid, 'v4')
-      .mockReturnValue('0EE2C4FF-1013-45DF-9F13-E45ED2DB9555');
-    jest
-      .spyOn(bcrypt, 'hash')
-      .mockResolvedValue('<<HASHED PASSWORD>>' as never);
   });
 
   describe('when retrieving users', () => {
@@ -97,6 +88,19 @@ describe('Users Service', () => {
   });
 
   describe('when creating new user accounts', () => {
+    beforeEach(() => {
+      jest.useFakeTimers({
+        now: new Date('2023-10-02T10:23:02.003Z'),
+        doNotFake: ['nextTick', 'setImmediate'],
+      });
+      jest
+        .spyOn(uuid, 'v4')
+        .mockReturnValue('0EE2C4FF-1013-45DF-9F13-E45ED2DB9555');
+      jest
+        .spyOn(bcrypt, 'hash')
+        .mockResolvedValue('<<HASHED PASSWORD>>' as never);
+    });
+
     it('will create new users with minimal options', async () => {
       const options: CreateUserParamsDTO = {
         username: 'Roger69_83',
@@ -174,19 +178,61 @@ describe('Users Service', () => {
   });
 
   describe('when searching profiles', () => {
-    let userDocuments: UserDocument[];
+    let friends: FriendDocument[];
+    let users: UserDocument[];
 
     beforeAll(async () => {
-      userDocuments = SearchData.map((user) => new UserModel(user));
+      const now = new Date();
+      friends = [];
+      users = SearchData.map((user) => new UserModel(user));
+      users.forEach((user, index) => {
+        switch (index % 3) {
+          case 0:
+            user.settings = { profileVisibility: ProfileVisibility.Public };
+            break;
+
+          case 1:
+            user.settings = {
+              profileVisibility: ProfileVisibility.FriendsOnly,
+            };
+            if (index % 6 === 1) {
+              friends.push(
+                new FriendModel({
+                  _id: faker.datatype.uuid(),
+                  userId: users[0]._id,
+                  friendId: users[index]._id,
+                  friendsSince: now,
+                }),
+                new FriendModel({
+                  _id: faker.datatype.uuid(),
+                  userId: users[index]._id,
+                  friendId: users[0]._id,
+                  friendsSince: now,
+                }),
+              );
+            }
+            break;
+
+          case 2:
+            user.settings = { profileVisibility: ProfileVisibility.Private };
+            break;
+        }
+      });
     });
 
     beforeEach(async () => {
-      await UserModel.insertMany(userDocuments);
+      await Promise.all([
+        UserModel.insertMany(users),
+        FriendModel.insertMany(friends),
+      ]);
     });
 
     it('will return an empty array if no results match', async () => {
       await UserModel.deleteMany({});
-      await expect(service.searchUsers()).resolves.toEqual([]);
+      await expect(service.searchUsers()).resolves.toEqual({
+        users: [],
+        totalCount: 0,
+      });
     });
 
     it('will perform text based searches', async () => {
@@ -197,13 +243,13 @@ describe('Users Service', () => {
 
     it('will limit "page" size', async () => {
       const results = await service.searchUsers({ limit: 7 });
-      expect(results).toHaveLength(7);
+      expect(results.users).toHaveLength(7);
       expect(results).toMatchSnapshot();
     });
 
     it('will allow showing results beyond the first page', async () => {
       const results = await service.searchUsers({ limit: 7, skip: 7 });
-      expect(results).toHaveLength(7);
+      expect(results.users).toHaveLength(7);
       expect(results).toMatchSnapshot();
     });
 
@@ -228,83 +274,32 @@ describe('Users Service', () => {
       });
     });
 
-    // it('Will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is a user Id', async () => {
-    //   const userData = fakeUser({
-    //     profile: fakeProfile({
-    //       profileVisibility: ProfileVisibility.Public,
-    //     }),
-    //   });
-    //   const publicUserData = fakeUser({
-    //     profile: fakeProfile({
-    //       profileVisibility: ProfileVisibility.Public,
-    //     }),
-    //   });
-    //   const privateUserData = fakeUser({
-    //     profile: fakeProfile({
-    //       profileVisibility: ProfileVisibility.Private,
-    //     }),
-    //   });
-    //   const friendsOnlyWithFriendUserData = fakeUser({
-    //     profile: fakeProfile({
-    //       profileVisibility: ProfileVisibility.FriendsOnly,
-    //     }),
-    //     friends: [{ friendId: userData._id, friendsSince: new Date() }],
-    //   });
-    //   const friendsOnlyWithoutFriendUserData = fakeUser({
-    //     profile: fakeProfile({
-    //       profileVisibility: ProfileVisibility.FriendsOnly,
-    //     }),
-    //   });
-    //   await Users.insertMany([
-    //     userData,
-    //     privateUserData,
-    //     publicUserData,
-    //     friendsOnlyWithFriendUserData,
-    //     friendsOnlyWithoutFriendUserData,
-    //   ]);
-    //   const userManager = new DefaultUserManager(mongoClient, Log);
-    //   const expected = [publicUserData, friendsOnlyWithFriendUserData]
-    //     .sort((a, b) => b.memberSince.valueOf() - a.memberSince.valueOf())
-    //     .map((data) => {
-    //       delete data.friends;
-    //       return new DefaultUser(mongoClient, Log, data);
-    //     });
-    //   const actual = await userManager.searchUsers({
-    //     profileVisibleTo: userData._id,
-    //     sortBy: UsersSortBy.MemberSince,
-    //     sortOrder: SortOrder.Descending,
-    //   });
-    //   expect(actual).toHaveLength(expected.length);
-    //   expect(actual).toEqual(expected);
-    // });
+    it('Will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is a user Id', async () => {
+      const result = await service.searchUsers({
+        profileVisibleTo: users[0]._id,
+      });
 
-    // it('Will return all public profiles when profileVisibleTo is set to "public"', async () => {
-    //   const userData = new Array<UserDocument>(12);
-    //   for (let i = 0; i < userData.length; i++) {
-    //     let profileVisibility: ProfileVisibility;
-    //     if (i < 4) {
-    //       profileVisibility = ProfileVisibility.Public;
-    //     } else if (i < 8) {
-    //       profileVisibility = ProfileVisibility.FriendsOnly;
-    //     } else {
-    //       profileVisibility = ProfileVisibility.Private;
-    //     }
-    //     userData[i] = fakeUser({
-    //       profile: fakeProfile({ profileVisibility }),
-    //     });
-    //   }
-    //   await Users.insertMany([...userData]);
-    //   const userManager = new DefaultUserManager(mongoClient, Log);
-    //   const expected = userData
-    //     .slice(0, 4)
-    //     .sort((a, b) => b.memberSince.valueOf() - a.memberSince.valueOf())
-    //     .map((data) => new DefaultUser(mongoClient, Log, data));
-    //   const actual = await userManager.searchUsers({
-    //     profileVisibleTo: 'public',
-    //     sortBy: UsersSortBy.MemberSince,
-    //     sortOrder: SortOrder.Descending,
-    //   });
-    //   expect(actual).toEqual(expected);
-    // });
+      expect(result.totalCount).toBe(101);
+      expect(
+        result.users.map((u) => ({
+          username: u.username,
+          profileVisibility: u.settings.profileVisibility,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    it('Will return all public profiles when profileVisibleTo is set to "#public"', async () => {
+      const result = await service.searchUsers({
+        profileVisibleTo: '#public',
+      });
+
+      expect(result.totalCount).toBe(67);
+      expect(
+        result.users.map((u) => ({
+          username: u.username,
+          profileVisibility: u.settings.profileVisibility,
+        })),
+      ).toMatchSnapshot();
+    });
   });
 });

@@ -89,6 +89,48 @@ exports[`Searching Profiles E2E Tests will perform a text search for user profil
 ]
 `;
 
+exports[`Searching Profiles E2E Tests will return a 400 response if the query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'username' | 'memberSince', received 'asdf'",
+      "options": [
+        "username",
+        "memberSince",
+      ],
+      "path": [
+        "sortBy",
+      ],
+      "received": "asdf",
+    },
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'asc' | 'desc', received '17'",
+      "options": [
+        "asc",
+        "desc",
+      ],
+      "path": [
+        "sortOrder",
+      ],
+      "received": "17",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": false,
+      "message": "Number must be greater than 0",
+      "minimum": 0,
+      "path": [
+        "limit",
+      ],
+      "type": "number",
+    },
+  ],
+}
+`;
+
 exports[`Searching Profiles E2E Tests will sort results by memberSince in asc order 1`] = `
 [
   "Magali.Friesen",
