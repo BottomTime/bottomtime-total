@@ -13,13 +13,19 @@ import {
 } from '../../../src/schemas';
 import {
   CreateUserParamsDTO,
+  DepthUnit,
+  PressureUnit,
   ProfileVisibility,
+  TemperatureUnit,
+  UpdateProfileParamsDTO,
   UserRole,
+  WeightUnit,
 } from '@bottomtime/api';
 import { User } from '../../../src/users/user';
 import request from 'supertest';
 import { compare } from 'bcrypt';
 import * as uuid from 'uuid';
+import { Types } from 'mongoose';
 
 jest.mock('uuid');
 
@@ -58,8 +64,28 @@ const RegularUserData: UserData = {
   email: 'RoflCopter17@gmail.com',
   emailLowered: 'roflcopter17@gmail.com',
   passwordHash: '$2b$04$EIK2SpqsdmO.nwAOPJ9wt.9o2z732N9s23pLrdPxz8kqXB1A3yhdS',
+  profile: {
+    avatar: 'https://example.com/avatar.png',
+    bio: 'This is a test user.',
+    birthdate: '1980-01-01',
+    certifications: new Types.DocumentArray([
+      {
+        agency: 'PADI',
+        course: 'Open Water Diver',
+        date: '2000-01-01',
+      },
+    ]),
+    experienceLevel: 'Advanced',
+    location: 'Seattle, WA',
+    name: 'Joe Regular',
+    startedDiving: '2000-01-01',
+  },
   settings: {
-    profileVisibility: ProfileVisibility.Private,
+    depthUnit: DepthUnit.Meters,
+    pressureUnit: PressureUnit.Bar,
+    profileVisibility: ProfileVisibility.FriendsOnly,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
   },
 };
 
@@ -802,6 +828,302 @@ describe('Users End-to-End Tests', () => {
       await request(server)
         .post(`${requestUrl('Not.A.User')}/resetPassword`)
         .send({ token: 'abcd1234' })
+        .expect(404);
+    });
+  });
+
+  describe('when updating profile information', () => {
+    const profileUrl = `${requestUrl(RegularUserData.username)}/profile`;
+    const newProfileInfo: UpdateProfileParamsDTO = {
+      avatar: 'https://avatars.com/my_picture.jpg',
+      bio: 'I really like diving and updating profiles.',
+      birthdate: '1992-03-30',
+      certifications: [
+        {
+          agency: 'PADI',
+          course: 'Open Water Diver',
+          date: '2000-01-01',
+        },
+        {
+          agency: 'PADI',
+          course: 'Advanced Open Water Diver',
+          date: '2002-01-01',
+        },
+      ],
+      experienceLevel: 'Mega Expert',
+      location: 'Vancouver, BC',
+      name: 'Joe Exotic',
+      startedDiving: '2015-01-01',
+    };
+
+    it('will update profile information', async () => {
+      await request(server)
+        .put(profileUrl)
+        .set(...regualarAuthHeader)
+        .send(newProfileInfo)
+        .expect(204);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(JSON.parse(JSON.stringify(savedUser?.profile))).toEqual(
+        newProfileInfo,
+      );
+    });
+
+    it('will allow partial updates to profile information', async () => {
+      const newProfileInfo: UpdateProfileParamsDTO = {
+        bio: 'I really like diving and updating profiles.',
+        certifications: [
+          {
+            agency: 'PADI',
+            course: 'Open Water Diver',
+            date: '2000-01-01',
+          },
+          {
+            agency: 'PADI',
+            course: 'Advanced Open Water Diver',
+            date: '2002-01-01',
+          },
+        ],
+        experienceLevel: 'Mega Expert',
+      };
+
+      await request(server)
+        .patch(profileUrl)
+        .set(...regualarAuthHeader)
+        .send(newProfileInfo)
+        .expect(204);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(JSON.parse(JSON.stringify(savedUser?.profile))).toEqual({
+        ...RegularUserData.profile,
+        ...newProfileInfo,
+      });
+    });
+
+    it('will allow users to clear their profile information', async () => {
+      await request(server)
+        .put(profileUrl)
+        .set(...regualarAuthHeader)
+        .expect(204);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(JSON.parse(JSON.stringify(savedUser?.profile))).toEqual({
+        certifications: [],
+      });
+    });
+
+    it('will allow admins to update another user profile', async () => {
+      await request(server)
+        .put(profileUrl)
+        .set(...adminAuthHeader)
+        .send(newProfileInfo)
+        .expect(204);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(JSON.parse(JSON.stringify(savedUser?.profile))).toEqual(
+        newProfileInfo,
+      );
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      const badData = {
+        derp: 'nope',
+        avatar: 'https://avatars.com/my_picture.jpg',
+        bio: true,
+        birthdate: new Date(),
+        certifications: [
+          {
+            agency: 'PADI',
+            date: '2000-01-01',
+          },
+          {
+            course: 'Advanced Open Water Diver',
+            date: '2002-01-01',
+          },
+        ],
+        experienceLevel: 'Mega Expert',
+        location: 27,
+        startedDiving: '2015-01-01',
+      };
+
+      await request(server)
+        .put(profileUrl)
+        .set(...regualarAuthHeader)
+        .send(badData)
+        .expect(400);
+      await request(server)
+        .patch(profileUrl)
+        .set(...regualarAuthHeader)
+        .send(badData)
+        .expect(400);
+    });
+
+    it('will return a 401 response if the calling user is not authenticated', async () => {
+      await request(server).put(profileUrl).send(newProfileInfo).expect(401);
+      await request(server).patch(profileUrl).send(newProfileInfo).expect(401);
+    });
+
+    it('will return a 403 response if the calling user is not the account owner', async () => {
+      const url = `${requestUrl(AdminUserData.username)}/profile`;
+      await request(server)
+        .put(url)
+        .set(...regualarAuthHeader)
+        .send(newProfileInfo)
+        .expect(403);
+      await request(server)
+        .patch(url)
+        .set(...regualarAuthHeader)
+        .send(newProfileInfo)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the indicated user does not exist', async () => {
+      const url = `${requestUrl('Not.A.User')}/profile`;
+      await request(server)
+        .put(url)
+        .set(...adminAuthHeader)
+        .send(newProfileInfo)
+        .expect(404);
+      await request(server)
+        .patch(url)
+        .set(...adminAuthHeader)
+        .send(newProfileInfo)
+        .expect(404);
+    });
+  });
+
+  describe('when changing settings', () => {
+    const settingsUrl = `${requestUrl(RegularUserData.username)}/settings`;
+
+    it('will update settings with new values', async () => {
+      const newSettings = {
+        depthUnit: DepthUnit.Feet,
+        pressureUnit: PressureUnit.PSI,
+        temperatureUnit: TemperatureUnit.Fahrenheit,
+        weightUnit: WeightUnit.Pounds,
+        profileVisibility: ProfileVisibility.Private,
+      };
+      await request(server)
+        .put(settingsUrl)
+        .set(...regualarAuthHeader)
+        .send(newSettings)
+        .expect(204);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(JSON.parse(JSON.stringify(savedUser?.settings))).toEqual(
+        newSettings,
+      );
+    });
+
+    it('will allow a partial update of settings', async () => {
+      const newSettings = {
+        pressureUnit: PressureUnit.PSI,
+        profileVisibility: ProfileVisibility.Private,
+      };
+      await request(server)
+        .patch(settingsUrl)
+        .set(...regualarAuthHeader)
+        .send(newSettings)
+        .expect(204);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(JSON.parse(JSON.stringify(savedUser?.settings))).toEqual({
+        ...RegularUserData.settings,
+        ...newSettings,
+      });
+    });
+
+    it("will allow admins to update another user's settings", async () => {
+      const newSettings = {
+        depthUnit: DepthUnit.Feet,
+        pressureUnit: PressureUnit.PSI,
+        temperatureUnit: TemperatureUnit.Fahrenheit,
+        weightUnit: WeightUnit.Pounds,
+        profileVisibility: ProfileVisibility.Private,
+      };
+      await request(server)
+        .put(settingsUrl)
+        .set(...adminAuthHeader)
+        .send(newSettings)
+        .expect(204);
+
+      const savedUser = await UserModel.findById(RegularUserId);
+      expect(JSON.parse(JSON.stringify(savedUser?.settings))).toEqual(
+        newSettings,
+      );
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      await request(server)
+        .put(settingsUrl)
+        .set(...regualarAuthHeader)
+        .send({ derp: 'nope', depthUnit: 17, profileVisibility: 'everyone' })
+        .expect(400);
+      await request(server)
+        .patch(settingsUrl)
+        .set(...regualarAuthHeader)
+        .send({ derp: 'nope', depthUnit: 17, profileVisibility: 'everyone' })
+        .expect(400);
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      await request(server)
+        .put(settingsUrl)
+        .set(...regualarAuthHeader)
+        .expect(400);
+    });
+
+    it('will return a 401 response if the calling user is not authenticated', async () => {
+      const newSettings = {
+        depthUnit: DepthUnit.Feet,
+        pressureUnit: PressureUnit.PSI,
+        temperatureUnit: TemperatureUnit.Fahrenheit,
+        weightUnit: WeightUnit.Pounds,
+        profileVisibility: ProfileVisibility.Private,
+      };
+      await request(server).put(settingsUrl).send(newSettings).expect(401);
+      await request(server).patch(settingsUrl).send(newSettings).expect(401);
+    });
+
+    it('will return a 403 response if the calling user is not the account owner', async () => {
+      const url = `${requestUrl(AdminUserData.username)}/settings`;
+      const newSettings = {
+        depthUnit: DepthUnit.Feet,
+        pressureUnit: PressureUnit.PSI,
+        temperatureUnit: TemperatureUnit.Fahrenheit,
+        weightUnit: WeightUnit.Pounds,
+        profileVisibility: ProfileVisibility.Private,
+      };
+      await request(server)
+        .put(url)
+        .set(...regualarAuthHeader)
+        .send(newSettings)
+        .expect(403);
+      await request(server)
+        .patch(url)
+        .set(...regualarAuthHeader)
+        .send(newSettings)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the indicated user does not exist', async () => {
+      const url = `${requestUrl('Not.A.User')}/settings`;
+      const newSettings = {
+        depthUnit: DepthUnit.Feet,
+        pressureUnit: PressureUnit.PSI,
+        temperatureUnit: TemperatureUnit.Fahrenheit,
+        weightUnit: WeightUnit.Pounds,
+        profileVisibility: ProfileVisibility.Private,
+      };
+      await request(server)
+        .put(url)
+        .set(...adminAuthHeader)
+        .send(newSettings)
+        .expect(404);
+      await request(server)
+        .patch(url)
+        .set(...adminAuthHeader)
+        .send(newSettings)
         .expect(404);
     });
   });

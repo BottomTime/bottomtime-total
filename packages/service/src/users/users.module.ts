@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersAccountController } from './users-account.controller';
+import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../schemas';
 import { AuthModule } from '../auth';
 import { EmailModule } from '../email';
+import { UserController } from './user.controller';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { EmailModule } from '../email';
     EmailModule.forFeature(),
   ],
   providers: [UsersService],
-  controllers: [UsersAccountController],
+  controllers: [UsersController, UserController],
   exports: [UsersService],
 })
 export class UsersModule {}

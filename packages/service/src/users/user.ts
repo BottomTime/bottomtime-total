@@ -91,7 +91,21 @@ export class User implements Express.User {
     if (!this.data.settings) {
       this.data.settings = {};
     }
-    Object.assign(this.data.settings, settings);
+
+    if (settings.depthUnit) this.data.settings.depthUnit = settings.depthUnit;
+
+    if (settings.pressureUnit)
+      this.data.settings.pressureUnit = settings.pressureUnit;
+
+    if (settings.profileVisibility)
+      this.data.settings.profileVisibility = settings.profileVisibility;
+
+    if (settings.temperatureUnit)
+      this.data.settings.temperatureUnit = settings.temperatureUnit;
+
+    if (settings.weightUnit)
+      this.data.settings.weightUnit = settings.weightUnit;
+
     await this.data.save();
   }
 

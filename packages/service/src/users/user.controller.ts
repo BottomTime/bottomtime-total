@@ -5,278 +5,47 @@ import {
   Get,
   Head,
   HttpCode,
-  Logger,
   Patch,
   Post,
   Put,
-  Query,
-  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+import { AssertAuth, CurrentUser } from '../auth';
+import { User } from './user';
 import {
   ChangeEmailParams,
   ChangeEmailParamsSchema,
+  ChangePasswordParamsDTO,
+  ChangePasswordParamsSchema,
   ChangeUsernameParams,
   ChangeUsernameParamsSchema,
-  CreateUserParamsDTO,
-  CreateUserOptionsSchema,
   ProfileDTO,
   ProfileVisibility,
-  SearchUsersParams,
-  SearchUsersParamsSchema,
+  ResetPasswordWithTokenParamsDTO,
+  ResetPasswordWithTokenParamsSchema,
+  SuccessFailResponseDTO,
   UpdateProfileParamsDTO,
   UpdateProfileParamsSchema,
   UserRole,
   UserSettingsDTO,
   UserSettingsSchema,
-  SuccessFailResponseDTO,
-  VerifyEmailParamsSchema,
   VerifyEmailParamsDTO,
-  ChangePasswordParamsDTO,
-  ChangePasswordParamsSchema,
-  ResetPasswordWithTokenParamsSchema,
-  ResetPasswordWithTokenParamsDTO,
+  VerifyEmailParamsSchema,
 } from '@bottomtime/api';
-import { ZodValidator } from '../zod-validator';
-import { AssertAuth, AuthService, CurrentUser } from '../auth';
-import { User } from './user';
-import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
-import { Response } from 'express';
+import { UsersService } from './users.service';
 import { AssertAccountOwner } from './assert-account-owner.guard';
-import { EmailService, EmailType } from '../email';
-import { URL } from 'url';
+import { ZodValidator } from '../zod-validator';
 import { Config } from '../config';
+import { EmailService, EmailType } from '../email';
 
-const UsernameParam = 'username';
-@Controller('api/users')
-export class UsersAccountController {
-  private readonly log = new Logger(UsersAccountController.name);
-
+@Controller('api/users/:username')
+export class UserController {
   constructor(
     private readonly users: UsersService,
-    private readonly authService: AuthService,
     private readonly emailService: EmailService,
   ) {}
-
-  /**
-   * @openapi
-   * /api/users:
-   *   get:
-   *     summary: Search User Profiles
-   *     operationId: searchUsers
-   *     description: |
-   *       Searches for user profiles matching the search criteria.
-   *     tags:
-   *       - Users
-   *     parameters:
-   *       - $ref: "#/components/parameters/Username"
-   *       - $ref: "#/components/parameters/UserQuerySearch"
-   *       - $ref: "#/components/parameters/UserQuerySortBy"
-   *       - $ref: "#/components/parameters/SortOrder"
-   *       - $ref: "#/components/parameters/Skip"
-   *       - $ref: "#/components/parameters/Limit"
-   *     responses:
-   *       "200":
-   *         description: |
-   *           The request succeeded and the list of user profiles matching the search criteria will be
-   *           returned in the response body.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               required:
-   *                 - profiles
-   *                 - totalCount
-   *               properties:
-   *                 profiles:
-   *                   type: array
-   *                   items:
-   *                     $ref: "#/components/schemas/Profile"
-   *                 totalCount:
-   *                   type: integer
-   *                   minimum: 0
-   *                   description: The total number of user profiles matching the search criteria.
-   *                   example: 1
-   *       "400":
-   *         description: |
-   *           The request failed because the query string parameters were invalid.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "401":
-   *         description: |
-   *           The request failed because the user was not authenticated.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "500":
-   *         description: |
-   *           The request failed because of an internal server error.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   */
-  @Get()
-  async searchProfiles(
-    @CurrentUser() user: User | undefined,
-    @Query(new ZodValidator(SearchUsersParamsSchema))
-    params: SearchUsersParams,
-  ): Promise<ProfileDTO[]> {
-    let profileVisibleTo: string | undefined;
-
-    if (user) {
-      if (user.role !== 'admin') {
-        profileVisibleTo = user.username;
-      }
-    } else {
-      profileVisibleTo = '#public';
-    }
-
-    const users = await this.users.searchUsers({
-      ...params,
-      profileVisibleTo,
-    });
-    return users.map((u) => u.profile.toJSON());
-  }
-
-  /**
-   * @openapi
-   * /api/users:
-   *   post:
-   *     summary: Create a New User
-   *     operationId: createUser
-   *     description: |
-   *       Creates a new user account and signs in the new user.
-   *     tags:
-   *       - Users
-   *     requestBody:
-   *       description: The user account to create.
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required:
-   *               - username
-   *             properties:
-   *               username:
-   *                 title: Username
-   *                 type: string
-   *                 pattern: ^[a-z0-9]+([_.-][a-z0-9]+)*$
-   *                 description: The user's username. May only contain letters, numbers, dashes, periods, and underscores. Must be unique per user.
-   *                 example: johndoe
-   *               email:
-   *                 title: Email
-   *                 type: string
-   *                 format: email
-   *                 description: The new user's email address. Must be unique per user.
-   *                 example: johndoe@gmail.com
-   *               password:
-   *                 title: Password
-   *                 type: string
-   *                 format: password
-   *                 description: The new user's password.
-   *                 example: password
-   *               role:
-   *                 title: Role
-   *                 type: string
-   *                 enum:
-   *                   - admin
-   *                   - user
-   *                 description: |
-   *                   The new user's role. This can only be set by administrators. Regular users creating a
-   *                   new account are not permitted to provide this property.
-   *                 example: user
-   *                 default: user
-   *               profile:
-   *                 $ref: "#/components/schemas/UpdateProfileParams"
-   *     responses:
-   *       "201":
-   *         description: |
-   *           The new user account was created successfully and the account details will be in the response body.
-   *           Additionally, if the user is not currently signed in, they will be signed in as the new user and the
-   *           session cookie will be set.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/User"
-   *       "400":
-   *         description: |
-   *           The request failed because the request body was invalid. See the error details for more information.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "403":
-   *         description: |
-   *           The request failed because the user attempted to create a new admin account but is not currently signed in as an admin.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "409":
-   *         description: |
-   *           The request failed because the username or email address is already in use. See the error details for more information.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "500":
-   *         description: |
-   *           The request failed because of an internal server error.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   */
-  @Post()
-  async createUser(
-    @Res() res: Response,
-    @CurrentUser() currentUser: User | undefined,
-    @Body(new ZodValidator<CreateUserParamsDTO>(CreateUserOptionsSchema))
-    options: CreateUserParamsDTO,
-  ): Promise<void> {
-    if (options.role && options.role !== UserRole.User) {
-      if (!currentUser) {
-        throw new UnauthorizedException(
-          'You must be logged in to create an administrator account.',
-        );
-      }
-
-      if (currentUser.role !== UserRole.Admin) {
-        throw new ForbiddenException(
-          'You are not authorized to create an administrator account.',
-        );
-      }
-    }
-
-    const user = await this.users.createUser(options);
-
-    // TODO: Send a welcome email.
-    // const verifyEmailToken = await user.requestEmailVerificationToken();
-    // const emailBody = await this.emailService.generateMessageContent({
-    //   type: EmailType.Welcome,
-    //   title: 'Welcome to Bottom Time',
-    //   user,
-    //   verifyEmailToken,
-    // });
-
-    // If the user is not currently signed in, sign them in as the new user.
-    // Exception: Don't do this for admins since they may just be provisioning new accounts for other users.
-    if (!currentUser || currentUser.role !== UserRole.Admin) {
-      await Promise.all([
-        this.authService.issueSessionCookie(user, res),
-        user.updateLastLogin(),
-      ]);
-    }
-
-    res.status(201).send(user.toJSON());
-  }
 
   /**
    * @openapi
@@ -301,7 +70,7 @@ export class UsersAccountController {
    *         description: |
    *           The request failed because of an internal server error.
    */
-  @Head(`:${UsernameParam}`)
+  @Head()
   @UseGuards(AssertTargetUser)
   async isUsernameOrEmailAvailable(): Promise<void> {
     // This method is effectively a no-op. If the guard hasn't thrown a NotFoundException, then we can just return a
@@ -357,7 +126,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Get(`:${UsernameParam}`)
+  @Get()
   @UseGuards(AssertTargetUser)
   async getUserProfile(
     @CurrentUser() currentUser: User | undefined,
@@ -472,7 +241,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Post(`:${UsernameParam}/username`)
+  @Post('username')
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async changeUsername(
@@ -558,7 +327,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Post(`:${UsernameParam}/email`)
+  @Post('email')
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async changeEmail(
@@ -647,7 +416,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Post(`:${UsernameParam}/password`)
+  @Post('password')
   @HttpCode(200)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async changePassword(
@@ -712,7 +481,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Post(`:${UsernameParam}/requestEmailVerification`)
+  @Post('requestEmailVerification')
   @HttpCode(202)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async requestEmailVerification(
@@ -807,7 +576,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Post(`:${UsernameParam}/verifyEmail`)
+  @Post('verifyEmail')
   @HttpCode(200)
   @UseGuards(AssertTargetUser)
   async verifyEmail(
@@ -819,7 +588,7 @@ export class UsersAccountController {
     return { succeeded };
   }
 
-  @Post(`:${UsernameParam}/requestPasswordReset`)
+  @Post('requestPasswordReset')
   @HttpCode(204)
   @UseGuards(AssertTargetUser)
   async requestPasswordReset(@TargetUser() user: User): Promise<void> {
@@ -838,7 +607,7 @@ export class UsersAccountController {
     await this.emailService.sendMail({ to: [user.email!] }, title, emailBody);
   }
 
-  @Post(`:${UsernameParam}/resetPassword`)
+  @Post('resetPassword')
   @HttpCode(200)
   @UseGuards(AssertTargetUser)
   async resetPassword(
@@ -909,7 +678,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Put(`:${UsernameParam}/profile`)
+  @Put('profile')
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async updateProfile(
@@ -979,7 +748,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Patch(`:${UsernameParam}/profile`)
+  @Patch('profile')
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async patchProfile(
@@ -1049,7 +818,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Put(`:${UsernameParam}/settings`)
+  @Put('settings')
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async updateSettings(
@@ -1118,7 +887,7 @@ export class UsersAccountController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Patch(`:${UsernameParam}/settings`)
+  @Patch('settings')
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
   async patchSettings(
