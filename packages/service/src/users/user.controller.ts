@@ -168,6 +168,146 @@ export class UserController {
 
   /**
    * @openapi
+   * /api/users/{username}:
+   *   put:
+   *     summary: Update a User's Profile
+   *     operationId: updateProfile
+   *     description: |
+   *       Updates a user's profile information.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The user's profile.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/UpdateProfile"
+   *     responses:
+   *       "204":
+   *         description: |
+   *           The profile was updated successfully.
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to update the profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Put()
+  @HttpCode(204)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+  async updateProfile(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(UpdateProfileParamsSchema))
+    profile: UpdateProfileParamsDTO,
+  ): Promise<void> {
+    await user.profile.update(profile);
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}:
+   *   patch:
+   *     summary: Update a User's Profile
+   *     operationId: patchProfile
+   *     description: |
+   *       Updates a user's profile information.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The user's profile.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/UpdateProfile"
+   *     responses:
+   *       "204":
+   *         description: |
+   *           The profile was updated successfully.
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to update the profile.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Patch()
+  @HttpCode(204)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+  async patchProfile(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(UpdateProfileParamsSchema))
+    profile: UpdateProfileParamsDTO,
+  ): Promise<void> {
+    await user.profile.update(profile, true);
+  }
+
+  /**
+   * @openapi
    * /api/users/{username}/username:
    *   post:
    *     summary: Change a User's Username
@@ -618,147 +758,6 @@ export class UserController {
     const succeeded = await user.resetPassword(token, newPassword);
     return { succeeded };
   }
-
-  /**
-   * @openapi
-   * /api/users/{username}/profile:
-   *   put:
-   *     summary: Update a User's Profile
-   *     operationId: updateProfile
-   *     description: |
-   *       Updates a user's profile information.
-   *     tags:
-   *       - Users
-   *     parameters:
-   *       - $ref: "#/components/parameters/Username"
-   *     requestBody:
-   *       description: The user's profile.
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: "#/components/schemas/UpdateProfile"
-   *     responses:
-   *       "204":
-   *         description: |
-   *           The profile was updated successfully.
-   *       "400":
-   *         description: |
-   *           The request failed because the request body was invalid. See the error details for more information.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "401":
-   *         description: |
-   *           The request failed because the user was not authenticated.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "403":
-   *         description: |
-   *           The request failed because the user is not authorized to update the profile.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "404":
-   *         description: |
-   *           The request failed because the username or email address could not be found.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "500":
-   *         description: |
-   *           The request failed because of an internal server error.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   */
-  @Put('profile')
-  @HttpCode(204)
-  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
-  async updateProfile(
-    @TargetUser() user: User,
-    @Body(new ZodValidator(UpdateProfileParamsSchema))
-    profile: UpdateProfileParamsDTO,
-  ): Promise<void> {
-    await user.profile.update(profile);
-  }
-
-  /**
-   * @openapi
-   * /api/users/{username}/profile:
-   *   patch:
-   *     summary: Update a User's Profile
-   *     operationId: patchProfile
-   *     description: |
-   *       Updates a user's profile information.
-   *     tags:
-   *       - Users
-   *     parameters:
-   *       - $ref: "#/components/parameters/Username"
-   *     requestBody:
-   *       description: The user's profile.
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: "#/components/schemas/UpdateProfile"
-   *     responses:
-   *       "204":
-   *         description: |
-   *           The profile was updated successfully.
-   *       "400":
-   *         description: |
-   *           The request failed because the request body was invalid. See the error details for more information.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "401":
-   *         description: |
-   *           The request failed because the user was not authenticated.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "403":
-   *         description: |
-   *           The request failed because the user is not authorized to update the profile.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "404":
-   *         description: |
-   *           The request failed because the username or email address could not be found.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       "500":
-   *         description: |
-   *           The request failed because of an internal server error.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   */
-  @Patch('profile')
-  @HttpCode(204)
-  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
-  async patchProfile(
-    @TargetUser() user: User,
-    @Body(new ZodValidator(UpdateProfileParamsSchema))
-    profile: UpdateProfileParamsDTO,
-  ): Promise<void> {
-    await user.profile.update(profile, true);
-  }
-
   /**
    * @openapi
    * /api/users/{username}/settings:

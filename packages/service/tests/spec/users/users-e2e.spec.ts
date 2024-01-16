@@ -833,7 +833,7 @@ describe('Users End-to-End Tests', () => {
   });
 
   describe('when updating profile information', () => {
-    const profileUrl = `${requestUrl(RegularUserData.username)}/profile`;
+    const profileUrl = `${requestUrl(RegularUserData.username)}`;
     const newProfileInfo: UpdateProfileParamsDTO = {
       avatar: 'https://avatars.com/my_picture.jpg',
       bio: 'I really like diving and updating profiles.',
@@ -964,7 +964,7 @@ describe('Users End-to-End Tests', () => {
     });
 
     it('will return a 403 response if the calling user is not the account owner', async () => {
-      const url = `${requestUrl(AdminUserData.username)}/profile`;
+      const url = `${requestUrl(AdminUserData.username)}`;
       await request(server)
         .put(url)
         .set(...regualarAuthHeader)
@@ -978,7 +978,7 @@ describe('Users End-to-End Tests', () => {
     });
 
     it('will return a 404 response if the indicated user does not exist', async () => {
-      const url = `${requestUrl('Not.A.User')}/profile`;
+      const url = `${requestUrl('Not.A.User')}`;
       await request(server)
         .put(url)
         .set(...adminAuthHeader)
