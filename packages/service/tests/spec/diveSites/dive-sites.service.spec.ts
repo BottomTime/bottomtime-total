@@ -38,7 +38,7 @@ describe('Dive Site Service', () => {
   });
 
   beforeEach(async () => {
-    new UserModel(RegularUserData).save();
+    await new UserModel(RegularUserData).save();
   });
 
   describe('when retrieving a dive site', () => {
@@ -49,7 +49,7 @@ describe('Dive Site Service', () => {
         ...DiveSiteTestData[5],
         creator: RegularUserId,
       });
-      await Promise.all([diveSiteData.save()]);
+      await DiveSiteModel.insertMany([diveSiteData]);
     });
 
     it('will return the requested dive site', async () => {
