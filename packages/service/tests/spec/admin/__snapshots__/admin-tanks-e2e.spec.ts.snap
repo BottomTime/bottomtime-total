@@ -1,0 +1,308 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tanks End-to-End Tests when creating a new tank will return 400 if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'al' | 'fe', received 'unobtainium'",
+      "options": [
+        "al",
+        "fe",
+      ],
+      "path": [
+        "material",
+      ],
+      "received": "unobtainium",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": false,
+      "message": "Number must be greater than 0",
+      "minimum": 0,
+      "path": [
+        "workingPressure",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 30,
+      "message": "Number must be less than or equal to 30",
+      "path": [
+        "volume",
+      ],
+      "type": "number",
+    },
+  ],
+}
+`;
+
+exports[`Tanks End-to-End Tests when creating a new tank will return 400 if the request body is invalid 2`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "name",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "'al' | 'fe'",
+      "message": "Required",
+      "path": [
+        "material",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Required",
+      "path": [
+        "workingPressure",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Required",
+      "path": [
+        "volume",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`Tanks End-to-End Tests when listing tanks will list system tanks 1`] = `
+{
+  "tanks": [
+    {
+      "id": "fc1b9f65-4b5d-4a93-804a-b44213cb67ce",
+      "isSystem": true,
+      "material": "al",
+      "name": "ashamed side tank #8076",
+      "volume": 7.02,
+      "workingPressure": 234.82,
+    },
+    {
+      "id": "84dbdf83-8318-4fd3-b17f-00d94f14ca9c",
+      "isSystem": true,
+      "material": "al",
+      "name": "big-hearted organ tank #5603",
+      "volume": 14.81,
+      "workingPressure": 193,
+    },
+    {
+      "id": "6c49381f-e1ce-4cd4-9d9e-cc33edd34fcb",
+      "isSystem": true,
+      "material": "fe",
+      "name": "careful bowler tank #9015",
+      "volume": 3.8,
+      "workingPressure": 228.4,
+    },
+    {
+      "id": "6c61c976-af15-40f2-975d-c1c8b3617171",
+      "isSystem": true,
+      "material": "fe",
+      "name": "famous underweight tank #8577",
+      "volume": 14.9,
+      "workingPressure": 216.65,
+    },
+    {
+      "id": "1b3607f3-0d40-46da-acc4-a974cd602b7e",
+      "isSystem": true,
+      "material": "fe",
+      "name": "gummy take-out tank #6746",
+      "volume": 8.92,
+      "workingPressure": 199.29,
+    },
+    {
+      "id": "d8efef55-95db-4125-a927-372d5815af2b",
+      "isSystem": true,
+      "material": "al",
+      "name": "happy-go-lucky cop tank #5770",
+      "volume": 11.68,
+      "workingPressure": 214.03,
+    },
+    {
+      "id": "fcdb1c51-d4c5-4bf3-8941-f04bae78b8b4",
+      "isSystem": true,
+      "material": "fe",
+      "name": "impartial novel tank #9786",
+      "volume": 13.44,
+      "workingPressure": 214.62,
+    },
+    {
+      "id": "466b0a25-0af0-4218-9650-f629c05fb8d1",
+      "isSystem": true,
+      "material": "fe",
+      "name": "lonely accelerator tank #7236",
+      "volume": 4.92,
+      "workingPressure": 193.64,
+    },
+    {
+      "id": "d7836583-430f-4c3c-8cfb-4891b7f721cd",
+      "isSystem": true,
+      "material": "al",
+      "name": "oval beggar tank #3716",
+      "volume": 14.24,
+      "workingPressure": 184.39,
+    },
+    {
+      "id": "a8885441-bd34-4846-b3f2-c4fe0961da87",
+      "isSystem": true,
+      "material": "al",
+      "name": "sentimental science tank #5196",
+      "volume": 12.21,
+      "workingPressure": 201.14,
+    },
+    {
+      "id": "1f1de50f-f6ab-4bd0-9635-0a9d8ff7eba8",
+      "isSystem": true,
+      "material": "al",
+      "name": "terrible daughter tank #1801",
+      "volume": 14.22,
+      "workingPressure": 226.26,
+    },
+    {
+      "id": "bfa03b8a-306b-4376-89b3-a3318e55581e",
+      "isSystem": true,
+      "material": "fe",
+      "name": "unrealistic loyalty tank #9533",
+      "volume": 5.61,
+      "workingPressure": 198.31,
+    },
+    {
+      "id": "a3a604e0-2545-4eed-bea4-48a595f1348f",
+      "isSystem": true,
+      "material": "fe",
+      "name": "warlike farrow tank #4050",
+      "volume": 11.44,
+      "workingPressure": 182.81,
+    },
+    {
+      "id": "c5cba7d8-2dfa-49a9-8c97-259e69694255",
+      "isSystem": true,
+      "material": "fe",
+      "name": "well-made cash tank #7681",
+      "volume": 7.87,
+      "workingPressure": 219.41,
+    },
+    {
+      "id": "0e51e765-7520-4c6d-a1e2-9c56c0397797",
+      "isSystem": true,
+      "material": "al",
+      "name": "woozy member tank #7461",
+      "volume": 12.7,
+      "workingPressure": 232.22,
+    },
+  ],
+  "totalCount": 15,
+}
+`;
+
+exports[`Tanks End-to-End Tests when retrieving a single tank will retrieve a tank by its ID 1`] = `
+{
+  "id": "a8885441-bd34-4846-b3f2-c4fe0961da87",
+  "isSystem": true,
+  "material": "al",
+  "name": "sentimental science tank #5196",
+  "volume": 12.21,
+  "workingPressure": 201.14,
+}
+`;
+
+exports[`Tanks End-to-End Tests when updating an existing tank will return a 400 response if the update parameters are invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'al' | 'fe', received 'unobtainium'",
+      "options": [
+        "al",
+        "fe",
+      ],
+      "path": [
+        "material",
+      ],
+      "received": "unobtainium",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": false,
+      "message": "Number must be greater than 0",
+      "minimum": 0,
+      "path": [
+        "workingPressure",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 30,
+      "message": "Number must be less than or equal to 30",
+      "path": [
+        "volume",
+      ],
+      "type": "number",
+    },
+  ],
+}
+`;
+
+exports[`Tanks End-to-End Tests when updating an existing tank will return a 400 response if the update parameters are invalid 2`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "name",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "'al' | 'fe'",
+      "message": "Required",
+      "path": [
+        "material",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Required",
+      "path": [
+        "workingPressure",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Required",
+      "path": [
+        "volume",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;

@@ -1,12 +1,12 @@
-import { MailClient, MailRecipients } from '../../src/email';
+import { IMailClient, Recipients } from '../../src/email';
 
 export interface MailMessage {
-  recipients: MailRecipients;
+  recipients: Recipients;
   subject: string;
   body: string;
 }
 
-export class TestMailer implements MailClient {
+export class TestMailer implements IMailClient {
   private _sentMail: MailMessage[];
 
   constructor() {
@@ -22,7 +22,7 @@ export class TestMailer implements MailClient {
   }
 
   async sendMail(
-    recipients: MailRecipients,
+    recipients: Recipients,
     subject: string,
     body: string,
   ): Promise<void> {

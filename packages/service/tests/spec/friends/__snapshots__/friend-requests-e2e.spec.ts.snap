@@ -1,0 +1,252 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Friend Requests End-to-End Tests when listing friend requests will allow admins to view friend requests for any user 1`] = `
+{
+  "friendRequests": [
+    {
+      "created": "2023-11-28T00:29:05.406Z",
+      "direction": "outgoing",
+      "expires": "2023-12-21T06:38:42.095Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/833.jpg",
+        "id": "dbb3b23c-7c86-4ea2-ba7b-8cd26882b5af",
+        "location": "Brooklyn Park",
+        "memberSince": "2023-02-12T12:57:20.352Z",
+        "name": "Anna Green",
+        "username": "Amy_Franecki",
+      },
+      "friendId": "dbb3b23c-7c86-4ea2-ba7b-8cd26882b5af",
+    },
+    {
+      "created": "2023-10-29T21:32:45.691Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T23:56:50.377Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/402.jpg",
+        "id": "fb44dd9c-bdb1-4267-9fc2-25778819c5df",
+        "location": "Portsmouth",
+        "memberSince": "2020-11-04T04:21:22.134Z",
+        "name": "Ms. Lindsey Runolfsson",
+        "username": "Abigale22",
+      },
+      "friendId": "fb44dd9c-bdb1-4267-9fc2-25778819c5df",
+    },
+    {
+      "created": "2023-11-03T03:46:58.171Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T16:17:18.457Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/959.jpg",
+        "id": "28b18988-9670-4f06-a4f8-210f084b34e8",
+        "location": "Waterbury",
+        "memberSince": "2018-03-15T05:43:50.090Z",
+        "name": "Edgar Stark",
+        "username": "Karianne.Kreiger",
+      },
+      "friendId": "28b18988-9670-4f06-a4f8-210f084b34e8",
+    },
+    {
+      "created": "2023-11-26T07:43:13.333Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T11:25:15.463Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/621.jpg",
+        "id": "e1266ade-6c78-4542-8b7c-578259661c76",
+        "location": "The Villages",
+        "memberSince": "2018-04-25T21:42:11.884Z",
+        "name": "Shaun Oberbrunner",
+        "username": "Queenie.Stracke50",
+      },
+      "friendId": "e1266ade-6c78-4542-8b7c-578259661c76",
+    },
+    {
+      "created": "2023-10-25T22:04:28.192Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T04:53:25.176Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/675.jpg",
+        "id": "bb87ea29-bade-461c-af1f-c29c0c72bac9",
+        "location": "Hamilton",
+        "memberSince": "2019-01-29T19:36:20.175Z",
+        "name": "Cristina Roberts",
+        "username": "Paolo90",
+      },
+      "friendId": "bb87ea29-bade-461c-af1f-c29c0c72bac9",
+    },
+    {
+      "created": "2023-12-10T19:11:09.925Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T02:22:45.637Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/650.jpg",
+        "id": "a87e4421-19b3-48e1-960a-6d48481e6b42",
+        "location": "Las Vegas",
+        "memberSince": "2022-02-02T00:03:18.698Z",
+        "name": "Fannie Kassulke",
+        "username": "Dorothea.Boyer99",
+      },
+      "friendId": "a87e4421-19b3-48e1-960a-6d48481e6b42",
+    },
+  ],
+  "totalCount": 50,
+}
+`;
+
+exports[`Friend Requests End-to-End Tests when listing friend requests will return a 400 error if the query parameters do not pass validation 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'incoming' | 'outgoing' | 'both', received 'invalid'",
+      "options": [
+        "incoming",
+        "outgoing",
+        "both",
+      ],
+      "path": [
+        "direction",
+      ],
+      "received": "invalid",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 1",
+      "minimum": 1,
+      "path": [
+        "limit",
+      ],
+      "type": "number",
+    },
+  ],
+}
+`;
+
+exports[`Friend Requests End-to-End Tests when listing friend requests will return a list of the user's friend requests 1`] = `
+{
+  "friendRequests": [
+    {
+      "created": "2023-11-28T00:29:05.406Z",
+      "direction": "outgoing",
+      "expires": "2023-12-21T06:38:42.095Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/833.jpg",
+        "id": "dbb3b23c-7c86-4ea2-ba7b-8cd26882b5af",
+        "location": "Brooklyn Park",
+        "memberSince": "2023-02-12T12:57:20.352Z",
+        "name": "Anna Green",
+        "username": "Amy_Franecki",
+      },
+      "friendId": "dbb3b23c-7c86-4ea2-ba7b-8cd26882b5af",
+    },
+    {
+      "created": "2023-10-29T21:32:45.691Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T23:56:50.377Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/402.jpg",
+        "id": "fb44dd9c-bdb1-4267-9fc2-25778819c5df",
+        "location": "Portsmouth",
+        "memberSince": "2020-11-04T04:21:22.134Z",
+        "name": "Ms. Lindsey Runolfsson",
+        "username": "Abigale22",
+      },
+      "friendId": "fb44dd9c-bdb1-4267-9fc2-25778819c5df",
+    },
+    {
+      "created": "2023-11-03T03:46:58.171Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T16:17:18.457Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/959.jpg",
+        "id": "28b18988-9670-4f06-a4f8-210f084b34e8",
+        "location": "Waterbury",
+        "memberSince": "2018-03-15T05:43:50.090Z",
+        "name": "Edgar Stark",
+        "username": "Karianne.Kreiger",
+      },
+      "friendId": "28b18988-9670-4f06-a4f8-210f084b34e8",
+    },
+    {
+      "created": "2023-11-26T07:43:13.333Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T11:25:15.463Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/621.jpg",
+        "id": "e1266ade-6c78-4542-8b7c-578259661c76",
+        "location": "The Villages",
+        "memberSince": "2018-04-25T21:42:11.884Z",
+        "name": "Shaun Oberbrunner",
+        "username": "Queenie.Stracke50",
+      },
+      "friendId": "e1266ade-6c78-4542-8b7c-578259661c76",
+    },
+    {
+      "created": "2023-10-25T22:04:28.192Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T04:53:25.176Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/675.jpg",
+        "id": "bb87ea29-bade-461c-af1f-c29c0c72bac9",
+        "location": "Hamilton",
+        "memberSince": "2019-01-29T19:36:20.175Z",
+        "name": "Cristina Roberts",
+        "username": "Paolo90",
+      },
+      "friendId": "bb87ea29-bade-461c-af1f-c29c0c72bac9",
+    },
+    {
+      "created": "2023-12-10T19:11:09.925Z",
+      "direction": "outgoing",
+      "expires": "2023-12-20T02:22:45.637Z",
+      "friend": {
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/650.jpg",
+        "id": "a87e4421-19b3-48e1-960a-6d48481e6b42",
+        "location": "Las Vegas",
+        "memberSince": "2022-02-02T00:03:18.698Z",
+        "name": "Fannie Kassulke",
+        "username": "Dorothea.Boyer99",
+      },
+      "friendId": "a87e4421-19b3-48e1-960a-6d48481e6b42",
+    },
+  ],
+  "totalCount": 50,
+}
+`;
+
+exports[`Friend Requests End-to-End Tests when retrieving a single friend request will allow admins to view friend requests for any user 1`] = `
+{
+  "created": "2023-11-25T02:03:59.931Z",
+  "direction": "outgoing",
+  "expires": "2023-12-24T02:53:48.438Z",
+  "friend": {
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1094.jpg",
+    "friendsSince": "2023-11-25T02:03:59.931Z",
+    "id": "a2a1a4b3-97ee-4f39-8f31-08da03e88699",
+    "location": "Federal Way",
+    "memberSince": "2020-03-01T05:46:30.094Z",
+    "name": "Rosalie Rodriguez",
+    "username": "Edwin_Donnelly84",
+  },
+  "friendId": "a2a1a4b3-97ee-4f39-8f31-08da03e88699",
+}
+`;
+
+exports[`Friend Requests End-to-End Tests when retrieving a single friend request will return the requested friend request 1`] = `
+{
+  "created": "2023-11-10T19:44:42.516Z",
+  "direction": "outgoing",
+  "expires": "2023-12-24T18:52:55.178Z",
+  "friend": {
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/680.jpg",
+    "friendsSince": "2023-11-10T19:44:42.516Z",
+    "id": "8eaefe52-399f-47af-9ad1-62cbde503296",
+    "location": "Cuyahoga Falls",
+    "memberSince": "2018-12-19T08:43:20.401Z",
+    "name": "Brenda Feest",
+    "username": "Litzy61",
+  },
+  "friendId": "8eaefe52-399f-47af-9ad1-62cbde503296",
+}
+`;

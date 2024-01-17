@@ -1,15 +1,42 @@
-import config from './config';
+import { ServerDependencies } from './app.module';
+import { Config } from './config';
+import { createApp } from './create-app';
+import { NodemailerClient } from './email';
 import { createLogger } from './logger';
-import { createServer } from './server/create-server';
-import { createDependencies } from './server/dependencies';
+import { createTransport } from 'nodemailer';
 
-const log = createLogger(config.logLevel);
+const log = createLogger(Config.logLevel);
 
-createServer(() => createDependencies(log))
-  .then((app) => {
-    app.listen(config.port);
+async function createDependencies(): Promise<ServerDependencies> {
+  const transportOptions = {
+    host: Config.mail.host,
+    port: Config.mail.port,
+    secure: true,
+    auth: {
+      user: Config.mail.username,
+      pass: Config.mail.password,
+    },
+  };
+
+  log.debug('Creating mail transport...', {
+    ...transportOptions,
+    auth: '**REDACTED**',
+  });
+  const transporter = createTransport(transportOptions);
+  const mailClient = new NodemailerClient(
+    transporter,
+    Config.mail.from,
+    Config.mail.replyTo,
+  );
+
+  return { mailClient };
+}
+
+createApp(log, createDependencies)
+  .then((app) => app.listen(Config.port))
+  .then(() => {
     log.info(
-      `[SERVICE] Service has started and is listening on port ${config.port}.`,
+      `🎉 Service has successfully started and is listening on port ${Config.port}. 🎉`,
     );
   })
   .catch((error) => {

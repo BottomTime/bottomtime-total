@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Dive Site Routes Asserting write permission Will return a server error if no dive site is loaded 1`] = `
-[
-  [Error: No dive site loaded!],
-]
-`;

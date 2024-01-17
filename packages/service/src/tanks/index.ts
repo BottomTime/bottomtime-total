@@ -1,4 +1,6 @@
-export * from './interfaces';
+export * from './tank';
 
-export * from './pre-defined-tank';
-export * from './pre-defined-tank-manager';
+export * from './user-tanks.controller';
+
+export * from './tanks.service';
+export * from './tanks.module';

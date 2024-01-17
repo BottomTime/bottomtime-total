@@ -1,15 +1,31 @@
 import { z } from 'zod';
-import { DepthUnit } from './constants';
+import {
+  DepthDTO,
+  DepthUnit,
+  PressureUnit,
+  ProfileVisibility,
+  SuccinctProfileDTO,
+  TemperatureUnit,
+  WeightUnit,
+} from '@bottomtime/api';
+import { UserSettings } from './users';
 
-export const BooleanString = z
-  .enum(['true', 'false'])
-  .transform((value) => value === 'true');
+export const AnonymousUserProfile: SuccinctProfileDTO = {
+  userId: '',
+  username: '<anonymous>',
+  memberSince: new Date(0),
+  name: 'Anonymous',
+};
 
-export const DepthSchema = z.object({
-  depth: z.number().min(0),
-  unit: z.nativeEnum(DepthUnit),
-});
-export type Depth = z.infer<typeof DepthSchema>;
+export const DefaultUserSettings: UserSettings = {
+  depthUnit: DepthUnit.Meters,
+  pressureUnit: PressureUnit.Bar,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
+  profileVisibility: ProfileVisibility.FriendsOnly,
+} as const;
+
+export type Depth = DepthDTO;
 
 export const GpsCoordinatesSchema = z.object({
   lat: z.number().gte(-90).lte(90),
@@ -17,7 +33,8 @@ export const GpsCoordinatesSchema = z.object({
 });
 export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
 
-export interface Range {
-  min: number;
-  max: number;
-}
+export type Maybe<T> = T | null | undefined;
+
+export type PageRenderProps = {
+  title: string;
+};
