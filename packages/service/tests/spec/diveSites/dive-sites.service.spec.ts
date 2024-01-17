@@ -189,8 +189,8 @@ describe('Dive Site Service', () => {
     it('will allow pagination of results', async () => {
       const results = await service.searchDiveSites({
         radius: 50,
-        sortBy: DiveSitesSortBy.Rating,
-        sortOrder: SortOrder.Descending,
+        sortBy: DiveSitesSortBy.Name,
+        sortOrder: SortOrder.Ascending,
         skip: 80,
         limit: 8,
       });
@@ -244,8 +244,8 @@ describe('Dive Site Service', () => {
           skip: 0,
           limit: 8,
           radius: 50,
-          sortBy: DiveSitesSortBy.Rating,
-          sortOrder: SortOrder.Descending,
+          sortBy: DiveSitesSortBy.Name,
+          sortOrder: SortOrder.Ascending,
         });
 
         const sites = results.sites.map((site) => site.toJSON());
