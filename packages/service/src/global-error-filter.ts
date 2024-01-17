@@ -7,13 +7,13 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ZodError } from 'zod';
-import { BunyanLogger } from './bunyan-logger';
+import { BunyanLoggerService } from '@bottomtime/common/src/bunyan-logger-service';
 import { Config } from './config';
 
 @Catch()
 export class GlobalErrorFilter implements ExceptionFilter {
   constructor(
-    protected readonly log: BunyanLogger,
+    protected readonly log: BunyanLoggerService,
     private readonly httpAdapterHost: HttpAdapterHost,
   ) {}
 

@@ -1,5 +1,5 @@
 import Logger from 'bunyan';
-import { BunyanLogger } from './bunyan-logger';
+import { BunyanLoggerService } from '@bottomtime/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule, ServerDependencies } from './app.module';
 import cookieParser from 'cookie-parser';
@@ -18,7 +18,7 @@ export async function createApp(
   logger: Logger,
   createDeps: () => Promise<ServerDependencies>,
 ): Promise<INestApplication> {
-  const logService = new BunyanLogger(logger);
+  const logService = new BunyanLoggerService(logger);
   const deps = await createDeps();
 
   // Initialize the app with CORS settings and our provided logger.

@@ -7,7 +7,7 @@
     "./tests",
     "./migrations",
     "./.eslintrc.js",
-    "./jest.config.ts",
+    "./jest.config.js",
     "./migrate-mongo-config.js",
     "./swaggerDefinition.cjs"
   ]

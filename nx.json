@@ -3,14 +3,30 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "docker:build", "lint"],
-        "parallel": 5
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "docs",
+          "build:client",
+          "build:server"
+        ]
       }
     }
   },
   "targetDefaults": {
     "build": {
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/dist/"]
+    },
+    "test": {
+      "outputs": ["{projectRoot}/coverage/"]
+    },
+    "build:client": {
+      "outputs": ["{projectRoot}/dist/client/"]
+    },
+    "build:server": {
+      "outputs": ["{projectRoot}/dist/server/"]
     }
   }
 }

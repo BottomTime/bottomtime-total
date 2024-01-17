@@ -2,7 +2,7 @@ import { ServerDependencies } from './app.module';
 import { Config } from './config';
 import { createApp } from './create-app';
 import { NodemailerClient } from './email';
-import { createLogger } from './logger';
+import { createLogger } from '@bottomtime/common/src/logger';
 import { createTransport } from 'nodemailer';
 
 const log = createLogger(Config.logLevel);

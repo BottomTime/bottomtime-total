@@ -7,12 +7,12 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "admin": "ts-node admin/bt-admin.ts",
+    "admin": "tsx admin/bt-admin.ts",
     "clean": "rimraf dist/ && rimraf coverage/",
     "build": "yarn clean && tsc",
     "daemon:start": "pm2 start dist/index.js",
     "daemon:stop": "pm2 stop dist/index.js",
-    "docs": "npx swagger-jsdoc -d swaggerDefinition.cjs -o public/docs/swagger.json ./src/**/*.ts",
+    "docs": "swagger-jsdoc -d swaggerDefinition.cjs -o public/docs/swagger.json ./src/**/*.ts",
     "lint": "eslint .",
     "migrate": "migrate-mongo",
     "prepare": "yarn docs",
@@ -32,7 +32,7 @@
     "bunyan": "^1.8.15",
     "cookie-parser": "^1.4.6",
     "dayjs": "^1.11.7",
-    "dotenv-defaults": "^5.0.2",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-urlrewrite": "^2.0.1",
     "express-useragent": "^1.0.15",
@@ -101,7 +101,7 @@
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "ts-jest": "^29.0.5",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.7.0",
     "typescript": "^5.0.4",
     "yargs": "^17.7.2"
   }

@@ -1,31 +1,8 @@
-import { Injectable, LoggerService } from '@nestjs/common';
-import Bunyan from 'bunyan';
-import { z } from 'zod';
+import { LoggerService } from '@nestjs/common';
+import Logger from 'bunyan';
 
-import { Config } from './config';
-
-const LogLevel = z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']);
-type LogLevel = z.infer<typeof LogLevel>;
-
-export function createLogger(): Bunyan {
-  let level: LogLevel = 'info';
-
-  const parsed = LogLevel.safeParse(Config.logLevel);
-  if (parsed.success) {
-    level = parsed.data;
-  }
-
-  const logger = Bunyan.createLogger({
-    name: 'bottom-time',
-    level,
-  });
-
-  return logger;
-}
-
-@Injectable()
-export class BunyanLogger implements LoggerService {
-  constructor(private readonly logger: Bunyan) {}
+export class BunyanLoggerService implements LoggerService {
+  constructor(private readonly logger: Logger) {}
 
   log(message: unknown, ...optionalParams: unknown[]) {
     this.logger.info(message, ...optionalParams);
