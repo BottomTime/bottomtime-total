@@ -296,43 +296,43 @@ workflows:
             - test_web
 
       # Deploy dev environment
-      - deploy_core_image:
-          name: deploy_dev_image
-          env: dev
-          context:
-            - bt-aws-dev
-          requires:
-            - test_core
-            - test_web
-            - test_e2e
-          filters:
-            branches:
-              only:
-                - master
-      - migrate_database:
-          name: migrate_dev_database
-          context:
-            - bt-mongo-dev
-          requires:
-            - deploy_dev_image
-      - terraform:
-          name: terraform_dev
-          env: dev
-          context:
-            - bt-aws-dev
-          requires:
-            - deploy_dev_image
-      - publish_distros:
-          name: publish_dev_distros
-          env: dev
-          context:
-            - bt-aws-dev
-          requires:
-            - terraform_dev
-      - teardown:
-          name: teardown_dev
-          env: dev
-          context:
-            - bt-aws-dev
-          requires:
-            - publish_dev_distros
+      # - deploy_core_image:
+      #     name: deploy_dev_image
+      #     env: dev
+      #     context:
+      #       - bt-aws-dev
+      #     requires:
+      #       - test_core
+      #       - test_web
+      #       - test_e2e
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      # - migrate_database:
+      #     name: migrate_dev_database
+      #     context:
+      #       - bt-mongo-dev
+      #     requires:
+      #       - deploy_dev_image
+      # - terraform:
+      #     name: terraform_dev
+      #     env: dev
+      #     context:
+      #       - bt-aws-dev
+      #     requires:
+      #       - deploy_dev_image
+      # - publish_distros:
+      #     name: publish_dev_distros
+      #     env: dev
+      #     context:
+      #       - bt-aws-dev
+      #     requires:
+      #       - terraform_dev
+      # - teardown:
+      #     name: teardown_dev
+      #     env: dev
+      #     context:
+      #       - bt-aws-dev
+      #     requires:
+      #       - publish_dev_distros
