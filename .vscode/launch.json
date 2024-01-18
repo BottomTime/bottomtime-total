@@ -41,10 +41,10 @@
       "cwd": "${workspaceFolder}/packages/web/"
     },
     {
-      "name": "Debug Vite Server",
+      "name": "Debug Vite/Vue Server",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/packages/vite/src/server/index.ts",
+      "program": "${workspaceRoot}/packages/vite/server/index.ts",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/tsx",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

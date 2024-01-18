@@ -7,8 +7,12 @@ function toNumber(value: string | undefined, defaultValue: number): number {
 }
 
 export class Config {
+  static get appTitle(): string {
+    return process.env.BTWEB_APP_TITLE ?? 'Bottom Time';
+  }
+
   static get baseUrl(): string {
-    return process.env.BT_BASE_URL ?? 'http://localhost:8080/';
+    return process.env.BTWEB_BASE_URL ?? 'http://localhost:4850/';
   }
 
   static get env(): string {
@@ -16,7 +20,7 @@ export class Config {
   }
 
   static get logLevel(): string {
-    return process.env.BT_LOG_LEVEL ?? 'info';
+    return process.env.BTWEB_LOG_LEVEL ?? 'debug';
   }
 
   static get isProduction(): boolean {
@@ -24,6 +28,6 @@ export class Config {
   }
 
   static get port(): number {
-    return toNumber(process.env.BT_PORT, 4850);
+    return toNumber(process.env.BTWEB_PORT, 4850);
   }
 }

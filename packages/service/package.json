@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^10.2.10",
     "@nestjs/serve-static": "^4.0.0",
     "@nestjs/terminus": "^10.2.0",
+    "@nestjs/throttler": "^5.1.1",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "bunyan": "^1.8.15",

@@ -6,6 +6,7 @@
   "author": "Chris Carleton",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "lint": "eslint .",
