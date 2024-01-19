@@ -18,14 +18,31 @@ export class HomeController {
   @Get()
   @Render('index')
   async index(): Promise<PageOptions> {
-    if (this.vite) {
-      this.log.debug('Rendering using Vite dev server...');
-    }
     const rendered = await this.vite.render();
+
+    const html = `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue + TS</title>
+    <!--app-head-->
+  </head>
+  <body>
+    <div id="app"><!--app-html--></div>
+    <script type="module" src="/src/entry-client.ts"></script>
+  </body>
+</html>`;
+
+    const transformed = await this.vite.transformHtml(html);
+    this.log.debug(`Transformed HTML: ${transformed}`);
 
     return {
       appTitle: Config.appTitle,
       pageTitle: 'Home',
+      head: rendered.head ?? '',
       content: rendered.html,
     };
   }

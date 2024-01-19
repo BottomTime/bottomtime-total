@@ -8,19 +8,39 @@ import { fileURLToPath } from 'url';
 import { AppModule } from './app.module';
 import { Config } from './config';
 import { BunyanLoggerService, createLogger } from '@bottomtime/common';
+import { ViteDevServer } from 'vite';
 
 const log = createLogger(Config.logLevel);
 
 async function createApp(): Promise<INestApplication> {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: {
-      origin: (_origin, cb) => {
-        cb(null, true);
+  let vite: ViteDevServer | undefined;
+  if (!Config.isProduction) {
+    log.debug('Initializing Vite dev server...');
+    vite = await import('vite').then((v) =>
+      v.createServer({
+        server: {
+          middlewareMode: true,
+        },
+        appType: 'custom',
+        base: '/',
+      }),
+    );
+  }
+
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule.forRoot({ vite }),
+    {
+      cors: {
+        origin: (_origin, cb) => {
+          cb(null, true);
+        },
+        credentials: true,
       },
-      credentials: true,
+      logger: new BunyanLoggerService(log),
     },
-    logger: new BunyanLoggerService(log),
-  });
+  );
+
+  if (vite) app.use(vite.middlewares);
 
   app.use(compression());
 
@@ -31,7 +51,7 @@ async function createApp(): Promise<INestApplication> {
   app.setBaseViewsDir(templatesRoot);
   app.setViewEngine('pug');
 
-  app.use(helmet());
+  // app.use(helmet());
 
   return app;
 }

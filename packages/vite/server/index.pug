@@ -6,6 +6,7 @@ html
     meta(name="viewport" content="width=device-width,initial-scale=1.0")
     link(rel="icon" href="/favicon.ico")
     title #{appTitle} | #{pageTitle}
+    script(type="module" src="/@vite/client")
 
   body
     noscript
@@ -15,6 +16,8 @@ html
         | continue.
 
     div#app!= content
+
+    script(type="module" src="/src/entry-client.js")
 
     //- Font Awesome
     script(src="https://kit.fontawesome.com/0abec2fadd.js" crossorigin="anonymous")
