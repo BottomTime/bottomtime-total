@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ViteModule } from '../vite';
-import { ApiModule } from '../api';
-import { HomeController } from './home.controller';
+import { WebService } from './web.service';
+import { WebController } from './web.controller';
 
 @Module({
-  imports: [ApiModule, ViteModule.forFeature()],
-  controllers: [HomeController],
+  providers: [WebService],
+  controllers: [WebController],
 })
 export class WebModule {}

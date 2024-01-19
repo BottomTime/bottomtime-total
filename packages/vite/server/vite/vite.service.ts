@@ -1,9 +1,9 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { RequestHandler } from 'express';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { dirname, resolve } from 'path';
 import { ViteDevServer, createServer } from 'vite';
 import { fileURLToPath } from 'url';
 import { Config } from '../config';
+import { ViteServer } from './constants';
 
 export type RenderResult = {
   head?: string;
@@ -13,8 +13,8 @@ export type RenderResult = {
 @Injectable()
 export class ViteService implements OnModuleInit {
   private readonly log = new Logger(ViteService.name);
-  private vite: ViteDevServer | undefined;
-  // private renderFunction: () => Promise<string> | undefined;
+
+  constructor(@Inject(ViteServer) private vite: ViteDevServer) {}
 
   async onModuleInit(): Promise<void> {
     if (Config.isProduction) {
@@ -34,31 +34,19 @@ export class ViteService implements OnModuleInit {
     });
   }
 
-  async render(): Promise<RenderResult> {
-    if (!this.vite) {
-      return {
-        head: '',
-        html: '<p>Vite server is not initialized</p>',
-      };
-    }
-
+  async render(url: string): Promise<RenderResult> {
     const path = resolve(
       dirname(fileURLToPath(import.meta.url)),
       '../../src/entry-server.ts',
     );
     this.log.debug(`SSR Load Module: ${path}`);
-    const module = await this.vite.ssrLoadModule('/src/entry-server.ts');
-
-    const result = await module.render();
+    const { render } = await this.vite.ssrLoadModule('/src/entry-server.ts');
+    const result = await render(url);
     return result;
   }
 
   async transformHtml(url: string, html: string): Promise<string> {
-    const transformed = await this.vite?.transformIndexHtml(url, html);
+    const transformed = await this.vite.transformIndexHtml(url, html);
     return transformed ?? html;
-  }
-
-  get middlewares(): RequestHandler | undefined {
-    return this.vite?.middlewares;
   }
 }

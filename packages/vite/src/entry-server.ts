@@ -1,7 +1,10 @@
 import { renderToString } from 'vue/server-renderer';
 import { createApp } from './main';
 
-export async function render() {
+export async function render(
+  url: string,
+  ssrManifest: Record<string, unknown>, // TODO: Do I need this?
+): Promise<{ html: string }> {
   const { app } = createApp();
 
   // passing SSR context object which will be available via useSSRContext()

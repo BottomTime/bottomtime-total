@@ -2,6 +2,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { ViteService } from './vite.service';
 import { ViteDevServer } from 'vite';
 import { ViteServer } from './constants';
+import { ViteController } from './vite.controller';
 
 @Module({})
 export class ViteModule {
@@ -14,10 +15,11 @@ export class ViteModule {
         useFactory: () => ViteModule.vite,
       },
     ],
+    controllers: [ViteController],
     exports: [ViteService],
   };
 
-  static forRoot(vite?: ViteDevServer): DynamicModule {
+  static forRoot(vite: ViteDevServer): DynamicModule {
     ViteModule.vite = vite;
     return {
       module: ViteModule,
@@ -26,6 +28,10 @@ export class ViteModule {
   }
 
   static forFeature(): DynamicModule {
+    if (!ViteModule.vite) {
+      throw new Error('ViteModule must be initialized with forRoot() first.');
+    }
+
     return {
       module: ViteModule,
       ...ViteModule.moduleDef,
