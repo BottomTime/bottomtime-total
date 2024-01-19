@@ -53,11 +53,9 @@ export class ViteService implements OnModuleInit {
     return result;
   }
 
-  async transformHtml(html: string): Promise<string> {
-    // TODO: Figure out what the trasformation
-
-    const transformed = await this.vite?.transformIndexHtml('/', html);
-    return transformed ?? 'lol';
+  async transformHtml(url: string, html: string): Promise<string> {
+    const transformed = await this.vite?.transformIndexHtml(url, html);
+    return transformed ?? html;
   }
 
   get middlewares(): RequestHandler | undefined {

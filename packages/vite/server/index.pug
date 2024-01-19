@@ -1,12 +1,12 @@
 doctype html
 html
   head
+    script(type="module" src="/@vite/client")
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width,initial-scale=1.0")
     link(rel="icon" href="/favicon.ico")
     title #{appTitle} | #{pageTitle}
-    script(type="module" src="/@vite/client")
 
   body
     noscript
@@ -17,6 +17,7 @@ html
 
     div#app!= content
 
+    //- App Code
     script(type="module" src="/src/entry-client.js")
 
     //- Font Awesome
