@@ -12,6 +12,7 @@
     "preview": "cross-env NODE_ENV=production nodemon server/index.ts"
   },
   "dependencies": {
+    "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^10.2.10",
     "@nestjs/core": "^10.2.10",
     "@nestjs/serve-static": "^4.0.0",

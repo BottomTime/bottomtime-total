@@ -1,10 +1,13 @@
+import { HttpModule } from '@nestjs/axios';
 import { DynamicModule, Logger, Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { TerminusModule } from '@nestjs/terminus';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { ViteDevServer } from 'vite';
 import { ViteModule } from './vite';
 import { WebModule } from './web';
+import { HealthController } from './health.controller';
 
 export type ServerDependencies = {
   vite?: ViteDevServer;
@@ -16,7 +19,7 @@ type Imports = NonNullable<DynamicModule['imports']>;
 export class AppModule {
   static forRoot(deps: ServerDependencies): DynamicModule {
     const log = new Logger(AppModule.name);
-    const imports: Imports = [];
+    const imports: Imports = [HttpModule, TerminusModule];
 
     if (deps.vite) {
       // When running in development mode, we'll have an instance of a ViteDevServer to
@@ -46,6 +49,7 @@ export class AppModule {
     return {
       module: AppModule,
       imports,
+      controllers: [HealthController],
     };
   }
 }
