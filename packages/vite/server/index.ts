@@ -2,8 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { INestApplication } from '@nestjs/common';
 import compression from 'compression';
 import helmet from 'helmet';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { AppModule } from './app.module';
 import { Config } from './config';
 import { BunyanLoggerService, createLogger } from '@bottomtime/common';
@@ -47,11 +45,6 @@ async function createApp(): Promise<INestApplication> {
   );
 
   if (vite) app.use(vite.middlewares);
-
-  const templatesRoot = fileURLToPath(dirname(import.meta.url));
-  log.debug(
-    `Initializing Pug as the view engine with root path ${templatesRoot}`,
-  );
 
   return app;
 }
