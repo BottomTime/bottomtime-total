@@ -1,11 +1,14 @@
+import { BunyanLoggerService, createLogger } from '@bottomtime/common';
 import { NestFactory } from '@nestjs/core';
 import { INestApplication } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
 import helmet from 'helmet';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+import { createServer, ViteDevServer } from 'vite';
 import { AppModule } from './app.module';
 import { Config } from './config';
-import { BunyanLoggerService, createLogger } from '@bottomtime/common';
-import { createServer, ViteDevServer } from 'vite';
 
 const log = createLogger(Config.logLevel);
 
@@ -22,15 +25,18 @@ async function createApp(): Promise<INestApplication> {
     });
   }
 
-  const app = await NestFactory.create(AppModule.forRoot({ vite }), {
-    cors: {
-      origin: (_origin, cb) => {
-        cb(null, true);
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule.forRoot({ vite }),
+    {
+      cors: {
+        origin: (_origin, cb) => {
+          cb(null, true);
+        },
+        credentials: true,
       },
-      credentials: true,
+      logger: new BunyanLoggerService(log),
     },
-    logger: new BunyanLoggerService(log),
-  });
+  );
 
   app.use(compression());
   app.use(
@@ -44,7 +50,17 @@ async function createApp(): Promise<INestApplication> {
     }),
   );
 
-  if (vite) app.use(vite.middlewares);
+  if (vite) {
+    app.use(vite.middlewares);
+  } else {
+    const staticAssetsPath = resolve(
+      dirname(fileURLToPath(import.meta.url)),
+      '../dist/client',
+    );
+    app.useStaticAssets(staticAssetsPath, {
+      index: false,
+    });
+  }
 
   return app;
 }

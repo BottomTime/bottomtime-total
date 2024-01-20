@@ -1,9 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { DynamicModule, Logger, Module } from '@nestjs/common';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { TerminusModule } from '@nestjs/terminus';
-import { dirname, resolve } from 'path';
-import { fileURLToPath } from 'url';
 import { ViteDevServer } from 'vite';
 import { ViteModule } from './vite';
 import { WebModule } from './web';
@@ -30,20 +27,7 @@ export class AppModule {
       // For production we are just serving the pre-compiled static assets,
       // so we need to add the ServeStaticModule to handle serving the files.
       log.log('Initializing application in production mode...');
-      const distPath = resolve(
-        dirname(fileURLToPath(import.meta.url)),
-        '../dist/client',
-      );
-      log.debug(`Serving files from ${distPath}...`);
-      imports.push(
-        ServeStaticModule.forRoot({
-          rootPath: distPath,
-          serveStaticOptions: {
-            index: false,
-          },
-        }),
-        WebModule,
-      );
+      imports.push(WebModule);
     }
 
     return {
