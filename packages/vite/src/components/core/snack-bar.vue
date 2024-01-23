@@ -5,7 +5,7 @@
     tag="ul"
   >
     <SnackBarToast
-      v-for="toast in toasts"
+      v-for="toast in store.toasts"
       :key="toast.id"
       :toast-id="toast.id"
       :message="toast.message"
@@ -16,13 +16,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { onMounted } from 'vue';
 import { Toast, ToastType } from '../../common';
 import SnackBarToast from './snack-bar-toast.vue';
-import { Dispatch, useStore } from '../../store';
+import { useToastsStore } from '../../store';
 
-const store = useStore();
-const toasts = computed(() => store.state.toasts);
+const store = useToastsStore();
 
 const ToastData: Toast[] = [
   {
@@ -48,12 +47,17 @@ const ToastData: Toast[] = [
   },
 ];
 
+onMounted(() => {
+  ToastData.forEach(store.toast);
+});
+
 function onDismiss(toastId: string): void {
-  store.dispatch(Dispatch.DismissToast, toastId);
+  store.dismissToast(toastId);
 }
 </script>
 
 <style scoped>
+.toasts-move,
 .toasts-enter-active,
 .toasts-leave-active {
   transition: all 0.7s ease;

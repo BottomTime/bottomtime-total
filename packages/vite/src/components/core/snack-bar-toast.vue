@@ -4,13 +4,13 @@
   >
     <span :class="`${icon} mt-1`"></span>
     <span class="grow">{{ message }}</span>
-    <CloseButton @click="$emit('dismiss', toastId)" />
+    <CloseButton @close="$emit('dismiss', toastId)" />
   </li>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import CloseButton from './close-button.vue';
+import CloseButton from '../common/close-button.vue';
 import { ToastType } from '../../common';
 
 type SnackBarToastProps = {

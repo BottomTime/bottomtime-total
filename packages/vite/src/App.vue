@@ -17,16 +17,20 @@ import NavBar from './components/core/nav-bar.vue';
 import PageFooter from './components/core/page-footer.vue';
 import SnackBar from './components/core/snack-bar.vue';
 import { useClient } from './client';
-import { Commit, useStore } from './store';
+import { useCurrentUserStore } from './store';
 
 const client = useClient();
-const store = useStore();
+const store = useCurrentUserStore();
 
 let gotCurrentUser = false;
 
 async function getCurrentUser(): Promise<void> {
-  const currentUser = await client.users.getCurrentUser();
-  store.commit(Commit.CurrentUser, currentUser);
+  try {
+    const currentUser = await client.users.getCurrentUser();
+    store.currentUser = currentUser;
+  } catch (e) {
+    console.error(e.message);
+  }
 }
 
 onMounted(async () => {

@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "types": ["jest"],
+    "typeRoots": ["node_modules/@types", "src/types"]
+  },
+  "extends": "./tsconfig.json",
+  "include": ["../src/**/*.ts", "./**/*.ts"]
+}
