@@ -20,7 +20,7 @@ export class WebController {
 
   @Get('*')
   async index(@OriginalUrl() url: string, @Res() res: Response): Promise<void> {
-    this.log.debug(`Handling render request for: /${url}`);
+    this.log.debug(`Handling render request for: ${url}`);
 
     const { render: ssrRender } = await import(this.serverEntryPath);
     const { head, html: content } = await ssrRender(

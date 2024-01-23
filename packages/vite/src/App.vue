@@ -1,31 +1,43 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue';
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <SnackBar />
+  <NavBar />
+  <div
+    class="md:container mx-auto font-content p-4 text-grey-900 bg-blue-200 rounded-b-xl shadow-md shadow-white opacity-90"
+  >
+    <section>
+      <RouterView></RouterView>
+    </section>
+    <PageFooter />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
+<script setup lang="ts">
+import { onMounted, onServerPrefetch } from 'vue';
+import NavBar from './components/core/nav-bar.vue';
+import PageFooter from './components/core/page-footer.vue';
+import SnackBar from './components/core/snack-bar.vue';
+import { useClient } from './client';
+import { Commit, useStore } from './store';
+
+const client = useClient();
+const store = useStore();
+
+let gotCurrentUser = false;
+
+async function getCurrentUser(): Promise<void> {
+  const currentUser = await client.users.getCurrentUser();
+  store.commit(Commit.CurrentUser, currentUser);
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+
+onMounted(async () => {
+  if (!gotCurrentUser) {
+    await getCurrentUser();
+    gotCurrentUser = true;
+  }
+});
+
+onServerPrefetch(async () => {
+  await getCurrentUser();
+  gotCurrentUser = true;
+});
+</script>

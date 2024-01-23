@@ -22,5 +22,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.{ts,vue}", "server/**/*.ts"]
+  "include": ["src/**/*.{ts,vue}", "server/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

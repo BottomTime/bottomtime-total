@@ -44,7 +44,12 @@ async function createApp(): Promise<INestApplication> {
       contentSecurityPolicy: {
         directives: {
           'script-src': ["'self'", "'unsafe-inline'", 'kit.fontawesome.com'],
-          'connect-src': ["'self'", 'ws:', 'ka-f.fontawesome.com'],
+          'connect-src': [
+            "'self'",
+            'ws:',
+            'ka-f.fontawesome.com',
+            'localhost:4800',
+          ],
         },
       },
     }),
