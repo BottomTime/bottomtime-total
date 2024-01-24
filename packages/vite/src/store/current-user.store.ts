@@ -1,13 +1,16 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
-import { CurrentUserDTO } from '@bottomtime/api';
+import { User } from '../client/user';
 
 export const useCurrentUser = defineStore('current-user', () => {
-  const currentUser = ref<CurrentUserDTO>({ anonymous: true });
+  const user = ref<User | null>(null);
+  const anonymous = computed(() => user.value === null);
+
   const displayName = computed(() => {
-    return currentUser.value.anonymous === false
-      ? currentUser.value.profile?.name ?? `@${currentUser.value.username}`
+    return user.value
+      ? user.value.profile?.name ?? `@${user.value.username}`
       : '';
   });
-  return { currentUser, displayName };
+
+  return { anonymous, user, displayName };
 });

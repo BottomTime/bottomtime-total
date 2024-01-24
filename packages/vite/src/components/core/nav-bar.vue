@@ -1,6 +1,6 @@
 <template>
   <DrawerPanel title="Login" :visible="showLogin" @close="showLogin = false">
-    <p>Lol</p>
+    <LoginForm @cancel="showLogin = false" />
   </DrawerPanel>
   <section class="h-16">
     <nav
@@ -29,7 +29,7 @@
             class="m-0 p-0 flex flex-row flex-nowrap justify-start items-start gap-6"
           >
             <NavBarLink
-              v-for="link in getNavLinks(store.currentUser)"
+              v-for="link in getNavLinks(currentUser.user)"
               :key="link.url"
               :to="link.url"
               :title="link.title"
@@ -40,12 +40,12 @@
         <!-- Right-Hand Dropdown (always visible) -->
         <div class="h-12 w-44 flex-none text-right">
           <ul
-            v-if="store.currentUser.anonymous"
+            v-if="currentUser.anonymous"
             class="flex flex-row flex-nowrap justify-end items-start gap-3 m-0 p-0"
           >
             <NavBarLink to="/register" title="Register" />
             <li>
-              <FormButton :type="ButtonType.Primary" @click="showLogin = true">
+              <FormButton type="primary" @click="showLogin = true">
                 Sign in
               </FormButton>
             </li>
@@ -53,19 +53,16 @@
         </div>
       </div>
     </nav>
-    <NavbarHamburger
-      :visible="showHamburger"
-      :current-user="store.currentUser"
-    />
+    <NavbarHamburger :visible="showHamburger" :current-user="currentUser" />
   </section>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ButtonType } from '../../common';
 import DrawerPanel from '../common/drawer-panel.vue';
 import { getNavLinks } from './nav-links';
 import FormButton from '../common/form-button.vue';
+import LoginForm from '../users/login-form.vue';
 import NavBarLink from './nav-bar-link.vue';
 import NavbarHamburger from './nav-bar-hamburger.vue';
 import { useCurrentUser } from '../../store';
@@ -73,5 +70,5 @@ import { useCurrentUser } from '../../store';
 const showLogin = ref(false);
 const showHamburger = ref(false);
 
-const store = useCurrentUser();
+const currentUser = useCurrentUser();
 </script>

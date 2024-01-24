@@ -12,12 +12,12 @@
 </template>
 
 <script setup lang="ts">
-import { CurrentUserDTO } from '@bottomtime/api';
 import { getNavLinks } from './nav-links';
+import { User } from '../../client/user';
 
 type NavBarHamburgerProps = {
   visible: boolean;
-  currentUser: CurrentUserDTO;
+  currentUser: User | null;
 };
 
 defineProps<NavBarHamburgerProps>();

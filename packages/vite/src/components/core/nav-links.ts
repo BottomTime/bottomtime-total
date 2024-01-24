@@ -1,11 +1,12 @@
 import { CurrentUserDTO, UserRole } from '@bottomtime/api';
+import { User } from '../../client/user';
 
 export type NavLink = {
   title: string;
   url: string;
 };
 
-export function getNavLinks(currentUser: CurrentUserDTO) {
+export function getNavLinks(currentUser: User | null) {
   const navLinks: NavLink[] = [
     {
       title: 'Home',
@@ -21,7 +22,7 @@ export function getNavLinks(currentUser: CurrentUserDTO) {
     },
   ];
 
-  if (!currentUser.anonymous && currentUser.role === UserRole.Admin) {
+  if (currentUser?.role === UserRole.Admin) {
     navLinks.push({
       title: 'Admin',
       url: '/admin',

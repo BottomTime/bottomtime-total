@@ -106,9 +106,5 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "exclude": ["*.d.ts", "coverage/", "dist/", "node_modules/"],
-  "references": [
-    { "path": "./packages/core/tsconfig.json" },
-    { "path": "./packages/vite/tsconfig.json" }
-  ]
+  "exclude": ["*.d.ts", "coverage/", "dist/", "node_modules/"]
 }
