@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<FormButtonProps>(), {
 
 const classes = computed(() => {
   const baseButton =
-    'text-black p-2 m-1 text-sm rounded-md outline-2 outline-grey-800 shadow-md shadow-grey-800';
+    'text-black p-2 m-0 text-sm rounded-md outline-2 outline-grey-800 shadow-md shadow-grey-800';
   const baseButtonWithGradient = `${baseButton} bg-gradient-to-t`;
   switch (props.type) {
     case ButtonType.Primary:

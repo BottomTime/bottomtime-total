@@ -4,7 +4,7 @@
   <div
     class="md:container mx-auto font-content p-4 text-grey-900 bg-blue-200 rounded-b-xl shadow-md shadow-white opacity-90"
   >
-    <section>
+    <section class="pb-6">
       <RouterView></RouterView>
     </section>
     <PageFooter />
