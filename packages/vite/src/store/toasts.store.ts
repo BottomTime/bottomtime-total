@@ -4,7 +4,7 @@ import { Toast } from '../common';
 
 export type ToastWithTimer = Toast & { timer: NodeJS.Timeout };
 
-export const useToastsStore = defineStore('toasts', () => {
+export const useToasts = defineStore('toasts', () => {
   const toastsData = ref<Record<string, ToastWithTimer>>({});
 
   function toast(toast: Toast) {

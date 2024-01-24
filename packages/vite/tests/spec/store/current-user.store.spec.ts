@@ -8,7 +8,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 import { Pinia, createPinia } from 'pinia';
-import { useCurrentUserStore } from '../../../src/store';
+import { useCurrentUser } from '../../../src/store';
 
 const AnonymousUser: CurrentUserDTO = {
   anonymous: true,
@@ -46,7 +46,7 @@ describe('Current User Store', () => {
   });
 
   it('will update current user', () => {
-    const store = useCurrentUserStore(pinia);
+    const store = useCurrentUser(pinia);
     expect(store.currentUser).toEqual(AnonymousUser);
 
     store.currentUser = AuthenticatedUser;

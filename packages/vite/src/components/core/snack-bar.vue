@@ -16,40 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { Toast, ToastType } from '../../common';
 import SnackBarToast from './snack-bar-toast.vue';
-import { useToastsStore } from '../../store';
+import { useToasts } from '../../store';
 
-const store = useToastsStore();
-
-const ToastData: Toast[] = [
-  {
-    id: '1',
-    message: 'Hey-o',
-    type: ToastType.Info,
-  },
-  {
-    id: '2',
-    message:
-      'Everything is awesome. Also, everything is bullshit. I hate UX. I hate CSS. Nothing ever works. Why do I bother? Why do I even bother?',
-    type: ToastType.Success,
-  },
-  {
-    id: '3',
-    message: 'Ruh roh!',
-    type: ToastType.Error,
-  },
-  {
-    id: '4',
-    message: 'Something is afoot',
-    type: ToastType.Warning,
-  },
-];
-
-onMounted(() => {
-  ToastData.forEach(store.toast);
-});
+const store = useToasts();
 
 function onDismiss(toastId: string): void {
   store.dismissToast(toastId);

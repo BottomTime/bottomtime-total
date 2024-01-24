@@ -1,4 +1,7 @@
 <template>
+  <DrawerPanel title="Login" :visible="showLogin" @close="showLogin = false">
+    <p>Lol</p>
+  </DrawerPanel>
   <section class="h-16">
     <div
       class="absolute top-0 w-full font-content bg-blue-900 text-blue-200 rounded-b-lg opacity-90 shadow-md shadow-blue-500"
@@ -22,12 +25,33 @@
         </div>
 
         <!-- Right-Hand Dropdown (always visible) -->
-        <div class="p-1 h-12 w-44 flex-non text-right text-lg">Menu</div>
+        <div class="p-1 h-12 w-44 flex-none text-right">
+          <ul
+            v-if="store.currentUser.anonymous"
+            class="flex flex-row flex-nowrap justify-start items-start gap-3"
+          >
+            <NavBarLink to="/register" title="Register" />
+            <li>
+              <FormButton :type="ButtonType.Primary" @click="showLogin = true">
+                Sign in
+              </FormButton>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { ButtonType } from '../../common';
+import DrawerPanel from '../common/drawer-panel.vue';
+import FormButton from '../common/form-button.vue';
 import NavBarLink from './nav-bar-link.vue';
+import { useCurrentUser } from '../../store';
+
+const showLogin = ref(false);
+
+const store = useCurrentUser();
 </script>

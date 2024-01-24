@@ -1,3 +1,10 @@
+export enum ButtonType {
+  Primary = 'primary',
+  Normal = 'normal',
+  Link = 'link',
+  Danger = 'danger',
+}
+
 export enum ToastType {
   Error = 'error',
   Info = 'info',

@@ -17,10 +17,10 @@ import NavBar from './components/core/nav-bar.vue';
 import PageFooter from './components/core/page-footer.vue';
 import SnackBar from './components/core/snack-bar.vue';
 import { useClient } from './client';
-import { useCurrentUserStore } from './store';
+import { useCurrentUser } from './store';
 
 const client = useClient();
-const store = useCurrentUserStore();
+const store = useCurrentUser();
 
 let gotCurrentUser = false;
 

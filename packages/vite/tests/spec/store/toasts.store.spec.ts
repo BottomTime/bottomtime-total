@@ -1,5 +1,5 @@
 import { createPinia, Pinia } from 'pinia';
-import { useToastsStore } from '../../../src/store';
+import { useToasts } from '../../../src/store';
 import { Toast, ToastType } from '../../../src/common';
 
 const ToastData: Toast[] = [
@@ -44,7 +44,7 @@ describe('Toasts Store', () => {
   });
 
   it('will raise toasts', () => {
-    const store = useToastsStore(pinia);
+    const store = useToasts(pinia);
     ToastData.forEach(store.toast);
 
     const results = store.toasts;
@@ -55,26 +55,26 @@ describe('Toasts Store', () => {
   });
 
   it('will replace existing toasts', () => {
-    const store = useToastsStore(pinia);
+    const store = useToasts(pinia);
     store.toast(ToastData[0]);
     store.toast(ToastData[0]);
     expect(store.toasts).toHaveLength(1);
   });
 
   it('will dismiss toasts', () => {
-    const store = useToastsStore(pinia);
+    const store = useToasts(pinia);
     store.toast(ToastData[0]);
     store.dismissToast(ToastData[0].id);
     expect(store.toasts).toHaveLength(0);
   });
 
   it('will not throw if dismissing a non-existent toast', () => {
-    const store = useToastsStore(pinia);
+    const store = useToasts(pinia);
     expect(() => store.dismissToast('foo')).not.toThrow();
   });
 
   it('will automatically dismiss toasts when their timers run out', async () => {
-    const store = useToastsStore(pinia);
+    const store = useToasts(pinia);
     store.toast(ToastData[0]);
 
     expect(store.toasts).toHaveLength(1);
