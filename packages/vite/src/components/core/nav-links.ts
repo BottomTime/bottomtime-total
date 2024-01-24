@@ -1,4 +1,4 @@
-import { CurrentUserDTO, UserRole } from '@bottomtime/api';
+import { UserRole } from '@bottomtime/api';
 import { User } from '../../client/user';
 
 export type NavLink = {

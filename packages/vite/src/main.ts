@@ -13,9 +13,13 @@ export function createApp(): {
   app: App;
   router: Router;
 } {
+  // API Client
   const client = new ApiClient(Config.apiUrl);
+
+  // Pinia (state store)
   const pinia = createPinia();
 
+  // Initialize the application
   const app = createSSRApp(AppComponent)
     .use(router)
     .use(pinia)
