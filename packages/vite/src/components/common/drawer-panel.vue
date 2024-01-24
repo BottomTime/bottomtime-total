@@ -11,7 +11,7 @@
     <!-- Drawer panel. Right half of the screen on most displays; full screen on mobile. -->
     <div
       v-show="visible"
-      class="absolute right-0 top-0 md:w-1/2 w-full h-full bg-grey-200 drop-shadow-md opacity-90 z-40 p-4"
+      class="fixed right-0 top-16 md:w-1/2 w-full h-full bg-grey-200 drop-shadow-md opacity-90 z-40 p-4"
     >
       <!-- Title and close button. -->
       <div v-if="title || showClose" class="flex flex-row mb-6 w-full">
