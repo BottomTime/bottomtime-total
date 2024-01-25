@@ -9,10 +9,7 @@ import {
 } from '@bottomtime/api';
 import { Pinia, createPinia } from 'pinia';
 import { useCurrentUser } from '../../../src/store';
-
-const AnonymousUser: CurrentUserDTO = {
-  anonymous: true,
-};
+import { User } from '../../../src/client/user';
 
 const AuthenticatedUser: CurrentUserDTO = {
   anonymous: false,
@@ -46,10 +43,11 @@ describe('Current User Store', () => {
   });
 
   it('will update current user', () => {
+    const user = new User(AuthenticatedUser);
     const store = useCurrentUser(pinia);
-    expect(store.currentUser).toEqual(AnonymousUser);
+    expect(store.user).toBeNull();
 
-    store.currentUser = AuthenticatedUser;
-    expect(store.currentUser).toEqual(AuthenticatedUser);
+    store.user = user;
+    expect(store.user).toEqual(new User(AuthenticatedUser));
   });
 });

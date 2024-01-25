@@ -2,8 +2,5 @@ coverage/
 dist/
 node_modules/
 
-# Vite dev server. No need to modify this.
-/server.js
-
 # Vite shim for compiling .vue files.
 /src/vite-env.d.ts
