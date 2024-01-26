@@ -1,6 +1,6 @@
 <template>
-  <DrawerPanel title="Login" :visible="showLogin" @close="showLogin = false">
-    <LoginForm @cancel="showLogin = false" />
+  <DrawerPanel title="Login" :visible="showLogin" @close="toggleLoginForm">
+    <LoginForm ref="loginForm" @cancel="toggleLoginForm" />
   </DrawerPanel>
   <section class="h-16">
     <nav
@@ -45,7 +45,7 @@
           >
             <NavBarLink to="/register" title="Register" />
             <li>
-              <FormButton type="primary" @click="showLogin = true">
+              <FormButton type="primary" @click="toggleLoginForm">
                 Sign in
               </FormButton>
             </li>
@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import DrawerPanel from '../common/drawer-panel.vue';
 import { getNavLinks } from './nav-links';
 import FormButton from '../common/form-button.vue';
@@ -69,6 +69,20 @@ import { useCurrentUser } from '../../store';
 
 const showLogin = ref(false);
 const showHamburger = ref(false);
+const loginForm = ref<InstanceType<typeof LoginForm> | null>();
 
 const currentUser = useCurrentUser();
+
+async function toggleLoginForm() {
+  if (!showLogin.value) {
+    loginForm.value?.reset(true);
+  }
+
+  showLogin.value = !showLogin.value;
+  await nextTick();
+
+  if (showLogin.value) {
+    loginForm.value?.focusUsername();
+  }
+}
 </script>

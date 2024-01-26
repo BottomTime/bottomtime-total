@@ -1,5 +1,6 @@
 <template>
   <input
+    ref="input"
     :type="password ? 'password' : 'text'"
     :class="`pl-2 pr-2 pt-1 pb-1 border-2 ${
       invalid ? 'border-danger' : 'border-grey-600'
@@ -10,6 +11,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
 type FormTextBoxProps = {
   invalid?: boolean;
   password?: boolean;
@@ -22,4 +25,11 @@ withDefaults(defineProps<FormTextBoxProps>(), {
 });
 
 const model = defineModel<string>();
+const input = ref<HTMLInputElement | null>();
+
+function focus() {
+  input.value?.focus();
+}
+
+defineExpose({ focus });
 </script>

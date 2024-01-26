@@ -3,9 +3,16 @@
     <div class="grid grid-cols-1 md:grid-cols-3">
       <div class="md:col-start-2 flex flex-col">
         <FormLabel label="Username or email" required />
-        <FormTextBox v-model.trim="loginDetails.usernameOrEmail" />
+        <FormTextBox
+          ref="usernameTextBox"
+          v-model.trim="loginDetails.usernameOrEmail"
+        />
         <FormLabel label="Password" required />
-        <FormTextBox v-model.trim="loginDetails.password" password />
+        <FormTextBox
+          ref="passwordTextBox"
+          v-model.trim="loginDetails.password"
+          password
+        />
       </div>
     </div>
     <div class="flex flex-row justify-center gap-3 mt-2 mb-6">
@@ -41,7 +48,7 @@
 
 <script setup lang="ts">
 import { LoginParamsDTO } from '@bottomtime/api';
-import { reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useClient } from '../../client';
 import { useCurrentUser } from '../../store';
 import { useOops } from '../../oops';
@@ -86,6 +93,9 @@ const loginDetails = reactive<LoginParamsDTO>({
   password: '',
 });
 
+const usernameTextBox = ref<InstanceType<typeof FormTextBox> | null>();
+const passwordTextBox = ref<InstanceType<typeof FormTextBox> | null>();
+
 withDefaults(defineProps<LoginFormProps>(), {
   showCancel: true,
 });
@@ -94,7 +104,40 @@ async function login() {
   await client.users.login(loginDetails.usernameOrEmail, loginDetails.password);
 }
 
+/**
+ * Resets the login form by clearing the text boxes.
+ * @param fullForm
+ * If true, both the username and password text boxes will be cleared. Otherwise, only the password will be cleared.
+ * Defaults to false.
+ */
+function reset(fullForm = false): void {
+  if (fullForm) loginDetails.usernameOrEmail = '';
+  loginDetails.password = '';
+  usernameTextBox.value?.focus();
+}
+
+/**
+ * Focuses the username text box.
+ */
+function focusUsername(): void {
+  usernameTextBox.value?.focus();
+}
+
+/**
+ * Focuses the password text box.
+ */
+function focusPassword(): void {
+  passwordTextBox.value?.focus();
+}
+
+onMounted(() => {
+  reset(true);
+  focusUsername();
+});
+
 defineEmits<{
   (e: 'cancel'): void;
 }>();
+
+defineExpose({ focusUsername, focusPassword, reset });
 </script>
