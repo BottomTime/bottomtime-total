@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { INestApplication } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -39,6 +40,7 @@ async function createApp(): Promise<INestApplication> {
   );
 
   app.use(compression());
+  app.use(cookieParser());
   app.use(
     helmet({
       contentSecurityPolicy: {

@@ -53,4 +53,8 @@ export class User {
 
     return this._profile;
   }
+
+  toJSON(): UserDTO {
+    return { ...this.data };
+  }
 }

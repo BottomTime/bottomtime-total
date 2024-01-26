@@ -11,8 +11,16 @@ export class Config {
     return process.env.BTWEB_APP_TITLE ?? 'Bottom Time';
   }
 
+  static get apiUrl(): string {
+    return process.env.BTWEB_API_URL ?? 'http://localhost:4800/';
+  }
+
   static get baseUrl(): string {
     return process.env.BTWEB_BASE_URL ?? 'http://localhost:4850/';
+  }
+
+  static get cookieName(): string {
+    return process.env.BTWEB_COOKIE_NAME ?? 'bottomtime.local';
   }
 
   static get env(): string {

@@ -3,4 +3,5 @@ export type PageOptions = {
   pageTitle: string;
   head: string;
   content: string;
+  initialState: string;
 };

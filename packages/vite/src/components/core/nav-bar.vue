@@ -1,6 +1,6 @@
 <template>
   <DrawerPanel title="Login" :visible="showLogin" @close="toggleLoginForm">
-    <LoginForm ref="loginForm" @cancel="toggleLoginForm" />
+    <LoginForm ref="loginForm" @close="toggleLoginForm" />
   </DrawerPanel>
   <section class="h-16">
     <nav
@@ -53,7 +53,10 @@
         </div>
       </div>
     </nav>
-    <NavbarHamburger :visible="showHamburger" :current-user="currentUser" />
+    <NavbarHamburger
+      :visible="showHamburger"
+      :current-user="currentUser.user"
+    />
   </section>
 </template>
 

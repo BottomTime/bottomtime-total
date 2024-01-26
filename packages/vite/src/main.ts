@@ -6,15 +6,14 @@ import { ApiClient, ApiClientKey } from './client';
 import { Config } from './config';
 import { router } from './router';
 
-// SSR requires a fresh app instance per request, therefore we export a function
-// that creates a fresh app instance. If using Vuex, we'd also be creating a
-// fresh store here.
 export function createApp(): {
   app: App;
   router: Router;
 } {
   // API Client
-  const client = new ApiClient(Config.apiUrl);
+  const client = new ApiClient({
+    baseUrl: Config.apiUrl,
+  });
 
   // Pinia (state store)
   const pinia = createPinia();

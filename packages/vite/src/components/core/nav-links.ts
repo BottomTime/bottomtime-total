@@ -1,12 +1,11 @@
-import { UserRole } from '@bottomtime/api';
-import { User } from '../../client/user';
+import { UserDTO, UserRole } from '@bottomtime/api';
 
 export type NavLink = {
   title: string;
   url: string;
 };
 
-export function getNavLinks(currentUser: User | null) {
+export function getNavLinks(currentUser: UserDTO | null) {
   const navLinks: NavLink[] = [
     {
       title: 'Home',

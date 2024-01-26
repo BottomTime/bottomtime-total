@@ -13,11 +13,11 @@
 
 <script setup lang="ts">
 import { getNavLinks } from './nav-links';
-import { User } from '../../client/user';
+import { UserDTO } from '@bottomtime/api';
 
 type NavBarHamburgerProps = {
   visible: boolean;
-  currentUser: User | null;
+  currentUser: UserDTO | null;
 };
 
 defineProps<NavBarHamburgerProps>();

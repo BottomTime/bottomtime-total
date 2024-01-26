@@ -3,11 +3,13 @@ import { ViteService } from './vite.service';
 import { ViteDevServer } from 'vite';
 import { ViteServer } from './constants';
 import { ViteController } from './vite.controller';
+import { JwtModule } from '../jwt';
 
 @Module({})
 export class ViteModule {
   private static vite: ViteDevServer | undefined;
   private static readonly moduleDef: Partial<DynamicModule> = {
+    imports: [JwtModule],
     providers: [
       ViteService,
       {

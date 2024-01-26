@@ -54,7 +54,7 @@ class MailConfig {
 }
 
 class SessionsConfig {
-  private static DefaultCookieTTL = 2 * 7 * 24 * 60; // Two weeks.
+  private static DefaultCookieTTL = 14 * 24 * 60 * 60 * 1000; // Two weeks (in milliseconds).
 
   /** Gets the domain name to which the session cookie will be scoped. */
   get cookieDomain(): string | undefined {

@@ -12,36 +12,28 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onServerPrefetch } from 'vue';
+import { onBeforeMount, onServerPrefetch, useSSRContext } from 'vue';
 import NavBar from './components/core/nav-bar.vue';
 import PageFooter from './components/core/page-footer.vue';
 import SnackBar from './components/core/snack-bar.vue';
-import { useClient } from './client';
 import { useCurrentUser } from './store';
+import { AppInitialState } from './common';
+import { Config } from './config';
 
-const client = useClient();
-const store = useCurrentUser();
+const currentUser = useCurrentUser();
 
-let gotCurrentUser = false;
-
-async function getCurrentUser(): Promise<void> {
-  try {
-    const currentUser = await client.users.getCurrentUser();
-    store.currentUser = currentUser;
-  } catch (e) {
-    console.error(e.message);
-  }
-}
-
-onMounted(async () => {
-  if (!gotCurrentUser) {
-    await getCurrentUser();
-    gotCurrentUser = true;
-  }
+// On the server-side, the initial state will be provided as the SSR context.
+onServerPrefetch(() => {
+  const initialState = useSSRContext() as AppInitialState;
+  currentUser.user = initialState.currentUser;
 });
 
-onServerPrefetch(async () => {
-  await getCurrentUser();
-  gotCurrentUser = true;
+// Initial state will also be serialized into the HTML by the server. We can access it on the `window`
+// object on the client-side.
+onBeforeMount(() => {
+  if (!Config.isServerSide) {
+    const appState: AppInitialState = (window as any).__INITIAL_STATE__;
+    currentUser.user = appState.currentUser;
+  }
 });
 </script>

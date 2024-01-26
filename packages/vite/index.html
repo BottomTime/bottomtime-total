@@ -18,6 +18,11 @@
       </strong>
     </noscript>
 
+    <!-- Inject the initial state into the page. (Think serialized user profile, etc.) -->
+    <script>
+      window.__INITIAL_STATE__ = {{ &initialState }};
+    </script>
+
     <!-- Vue application will be injected here. -->
     <div id="app">{{ &content }}</div>
 

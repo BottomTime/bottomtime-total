@@ -11,7 +11,7 @@ export class UsersApiClient {
     if (data.anonymous) {
       return null;
     } else {
-      return new User(data);
+      return new User(data as UserDTO);
     }
   }
 

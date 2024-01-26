@@ -14,7 +14,7 @@ export const useToasts = defineStore('toasts', () => {
 
     toastsData.value[toast.id] = {
       ...toast,
-      timer: setTimeout(() => dismissToast(toast.id), 3000),
+      timer: setTimeout(() => dismissToast(toast.id), 10000),
     };
   }
 

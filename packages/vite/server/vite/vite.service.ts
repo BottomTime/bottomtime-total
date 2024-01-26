@@ -34,14 +34,14 @@ export class ViteService implements OnModuleInit {
     });
   }
 
-  async render(url: string): Promise<RenderResult> {
+  async render(url: string, initialState: unknown): Promise<RenderResult> {
     const path = resolve(
       dirname(fileURLToPath(import.meta.url)),
       '../../src/entry-server.ts',
     );
     this.log.debug(`SSR Load Module: ${path}`);
     const { render } = await this.vite.ssrLoadModule('/src/entry-server.ts');
-    const result = await render(url);
+    const result = await render(url, initialState);
     return result;
   }
 

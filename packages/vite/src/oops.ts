@@ -37,7 +37,7 @@ async function oops<T>(
 export const UnauthorizedErrorToast: Toast = {
   id: 'unauthorized-error',
   message:
-    'It seems that you are no longer logged in. Try loggin in again and then retry your request.',
+    'It seems that you are no longer logged in. Try logging in again and then retry your request.',
   type: ToastType.Warning,
 } as const;
 

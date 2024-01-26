@@ -3,7 +3,7 @@ import { createApp } from './main';
 
 export async function render(
   url: string,
-  ssrManifest: Record<string, unknown>, // TODO: Do I need this?
+  initialState: unknown,
 ): Promise<{ html: string }> {
   const { app, router } = createApp();
   router.push(url);
@@ -12,8 +12,7 @@ export async function render(
   // @vitejs/plugin-vue injects code into a component's setup() that registers
   // itself on ctx.modules. After the render, ctx.modules would contain all the
   // components that have been instantiated during this render call.
-  const ctx = {};
-  const html = await renderToString(app, ctx);
+  const html = await renderToString(app, initialState ?? {});
 
   return { html };
 }

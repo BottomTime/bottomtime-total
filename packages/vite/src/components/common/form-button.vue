@@ -3,9 +3,13 @@
     :class="classes"
     :data-testid="testId"
     :type="submit ? 'submit' : 'button'"
+    :disabled="disabled || isLoading"
     @click="$emit('click')"
   >
-    <slot></slot>
+    <span v-if="isLoading">
+      <i class="fas fa-spinner fa-spin"></i>
+    </span>
+    <slot v-else></slot>
   </button>
 </template>
 
@@ -13,6 +17,8 @@
 import { computed } from 'vue';
 
 type FormButtonProps = {
+  disabled?: boolean;
+  isLoading?: boolean;
   stretch?: boolean;
   submit?: boolean;
   testId?: string;
@@ -20,6 +26,8 @@ type FormButtonProps = {
 };
 
 const props = withDefaults(defineProps<FormButtonProps>(), {
+  disabled: false,
+  isLoading: false,
   stretch: false,
   submit: false,
   type: 'normal',
