@@ -45,6 +45,7 @@ async function createApp(): Promise<INestApplication> {
     helmet({
       contentSecurityPolicy: {
         directives: {
+          'img-src': ["'self'", 'ui-avatars.com', 'data:'],
           'script-src': ["'self'", "'unsafe-inline'", 'kit.fontawesome.com'],
           'connect-src': [
             "'self'",

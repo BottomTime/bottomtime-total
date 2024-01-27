@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import axios, { AxiosError, isAxiosError } from 'axios';
 import { Response, Server } from 'miragejs';
 import { Pinia, createPinia } from 'pinia';
-import { defineComponent, nextTick, onMounted } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import { createMemoryHistory, createRouter, Router } from 'vue-router';
 import { createServer } from '../fixtures/create-server';
 import {
@@ -13,9 +13,7 @@ import {
   useOops,
 } from '../../src/oops';
 import { useCurrentUser, useToasts } from '../../src/store';
-import { User } from '../../src/client/user';
 import { BasicUser } from '../fixtures/users';
-import { resolve } from 'path';
 
 const NetworkError = new AxiosError('Nope', 'ERR_NETWORK');
 
@@ -147,7 +145,7 @@ describe('"Oops" error handler', () => {
 
     it('will logout users if their session expires', async () => {
       const currentUser = useCurrentUser(pinia);
-      currentUser.user = new User(BasicUser);
+      currentUser.user = BasicUser;
       server.get('/nope', () => new Response(401, {}, {}));
 
       const result = await testOops(async () => await axios.get('/nope'));

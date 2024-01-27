@@ -7,9 +7,7 @@ export const useCurrentUser = defineStore('current-user', () => {
   const anonymous = computed(() => user.value === null);
 
   const displayName = computed(() => {
-    return user.value
-      ? user.value.profile?.name ?? `@${user.value.username}`
-      : '';
+    return user.value ? user.value.profile?.name ?? user.value.username : '';
   });
 
   return { anonymous, user, displayName };

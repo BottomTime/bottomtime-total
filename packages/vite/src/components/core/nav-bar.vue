@@ -7,26 +7,28 @@
       class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500"
     >
       <div
-        class="container p-3 mx-auto h-16 flex flex-row items-baseline content-center justify-stretch flex-nowrap"
+        class="container p-2 mx-auto h-16 flex flex-row flex-nowrap items-center justify-stretch"
       >
         <!-- Brand Logo -->
-        <div class="h-12 w-40 md:flex-none grow">
-          <button
-            class="md:hidden visible pr-2"
-            role="navigation"
-            @click="showHamburger = !showHamburger"
-          >
-            <i class="fas fa-bars"></i>
-          </button>
-          <span class="font-bold text-red text-2xl">
-            <a href="/">Bottom Time</a>
-          </span>
+        <div class="h-8 w-40 mr-4 md:flex-none grow">
+          <div class="flex flex-row flex-nowrap justify-end items-center gap-3">
+            <button
+              class="md:hidden visible pr-2"
+              role="navigation"
+              @click="showHamburger = !showHamburger"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+            <span class="font-bold text-red text-2xl">
+              <a href="/">Bottom Time</a>
+            </span>
+          </div>
         </div>
 
         <!-- Collapsable Links (collapse to hamburger menu on small screens) -->
-        <div class="grow h-12 hidden md:block">
+        <div class="grow h-8 hidden md:block">
           <ul
-            class="m-0 p-0 flex flex-row flex-nowrap justify-start items-start gap-6"
+            class="flex flex-row flex-nowrap justify-start items-center gap-4"
           >
             <NavBarLink
               v-for="link in getNavLinks(currentUser.user)"
@@ -38,10 +40,10 @@
         </div>
 
         <!-- Right-Hand Dropdown (always visible) -->
-        <div class="h-12 w-44 flex-none text-right">
+        <div class="h-8 w-44 flex-initial text-right">
           <ul
             v-if="currentUser.anonymous"
-            class="flex flex-row flex-nowrap justify-end items-start gap-3 m-0 p-0"
+            class="flex flex-row flex-nowrap justify-end items-start gap-3"
           >
             <NavBarLink to="/register" title="Register" />
             <li>
@@ -50,6 +52,19 @@
               </FormButton>
             </li>
           </ul>
+
+          <div
+            v-else
+            class="flex flex-row flex-nowrap justify-end items-center gap-3"
+          >
+            <UserAvatar :user="currentUser.user!" />
+            <span class="text-lg">
+              {{ currentUser.displayName }}
+            </span>
+            <span class="text-lg">
+              <i class="fas fa-caret-down"></i>
+            </span>
+          </div>
         </div>
       </div>
     </nav>
@@ -69,6 +84,7 @@ import LoginForm from '../users/login-form.vue';
 import NavBarLink from './nav-bar-link.vue';
 import NavbarHamburger from './nav-bar-hamburger.vue';
 import { useCurrentUser } from '../../store';
+import UserAvatar from '../users/user-avatar.vue';
 
 const showLogin = ref(false);
 const showHamburger = ref(false);
