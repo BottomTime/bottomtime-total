@@ -92,6 +92,27 @@ jobs:
           name: Lint
           command: yarn lint
 
+  build_service:
+    docker:
+      - image: cimg/node:18.19
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bt-service-{{ checksum "packages/service/yarn.lock" }}
+            - bt-service-
+      - run:
+          name: Install dependencies
+          command: yarn
+      - save_cache:
+          key: bt-service-{{ checksum "packages/service/yarn.lock" }}
+          paths:
+            - packages/service/node_modules
+            - node_modules
+      - run:
+          name: Build and Test
+          command: npx lerna run build,test --scope @bottomtime/core --since=master --stream
+
   lint_and_build:
     docker: *base_image
     steps:
@@ -301,6 +322,9 @@ workflows:
     jobs:
       # Validate
       - lint
+      - build_service:
+          requires:
+            - lint
       # - lint_and_build
       # - test_core:
       #     requires:
