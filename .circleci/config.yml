@@ -79,15 +79,16 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - bt-root-{{ checksum "yarn.lock" }}
-            - bt-root-
+            - bt-{{ checksum "yarn.lock" }}
+            - bt-
       - run:
           name: Install dependencies
           command: yarn -W install
       - save_cache:
-          key: bt-root-{{ checksum "yarn.lock" }}
+          key: bt-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+            - packages/*/node_modules
       - run:
           name: Lint
           command: yarn lint
@@ -100,16 +101,11 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - bt-service-{{ checksum "packages/service/yarn.lock" }}
-            - bt-service-
+            - bt-{{ checksum "packages/service/yarn.lock" }}
+            - bt-
       - run:
           name: Install dependencies
           command: yarn
-      - save_cache:
-          key: bt-service-{{ checksum "packages/service/yarn.lock" }}
-          paths:
-            - packages/service/node_modules
-            - node_modules
       - run:
           name: Build and Test
           command: npx lerna run build,test --scope @bottomtime/core --since=master --stream
