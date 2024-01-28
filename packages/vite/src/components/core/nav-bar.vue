@@ -28,7 +28,7 @@
         <!-- Collapsable Links (collapse to hamburger menu on small screens) -->
         <div class="grow h-8 hidden md:block">
           <ul
-            class="flex flex-row flex-nowrap justify-start items-center gap-4"
+            class="flex flex-row flex-nowrap justify-start items-center gap-6"
           >
             <NavBarLink
               v-for="link in getNavLinks(currentUser.user)"

@@ -1,9 +1,9 @@
 <template>
   <SnackBar />
   <div
-    class="md:container mx-auto font-content p-4 mt-16 text-grey-900 bg-blue-200 rounded-b-xl shadow-md shadow-white opacity-90"
+    class="md:container mx-auto font-content text-grey-900 bg-blue-200 rounded-b-xl shadow-md shadow-white opacity-90"
   >
-    <section class="pb-6">
+    <section class="mt-16 p-4">
       <RouterView></RouterView>
     </section>
     <PageFooter />
