@@ -10,7 +10,7 @@
   "scripts": {
     "build": "lerna run build",
     "format": "prettier --write --ignore-unknown .",
-    "lint": "lerna run lint",
+    "lint": "eslint .",
     "prepare": "husky install",
     "test": "lerna run test"
   },
@@ -18,9 +18,11 @@
     "mongodb": "^5.6.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.60.1",
-    "@typescript-eslint/parser": "^5.60.1",
-    "@vue/eslint-config-typescript": "^11.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-vue": "^9.20.1",
     "husky": "^8.0.3",
     "lerna": "^7.0.2",
     "lint-staged": "^13.1.1",
@@ -29,6 +31,7 @@
   },
   "lint-staged": {
     "**/*.{tf,tfvars}": "terraform fmt",
+    "**/*.{js,ts,vue}": "eslint --fix",
     "**/*": "prettier --write --ignore-unknown"
   },
   "workspaces": [

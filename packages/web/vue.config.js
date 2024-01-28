@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 require('dotenv-defaults/config');
 const { defineConfig } = require('@vue/cli-service');
 

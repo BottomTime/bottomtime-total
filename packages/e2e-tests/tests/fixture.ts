@@ -10,7 +10,9 @@ interface TestFixture {
 class E2ETestFixture implements TestFixture {
   private _mongoClient: MongoClient | undefined;
 
-  async login(username: string): Promise<void> {}
+  async login(): Promise<void> {
+    // TODO
+  }
 
   async mongoClient(): Promise<MongoClient> {
     if (!this._mongoClient) {
