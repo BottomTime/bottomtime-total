@@ -95,6 +95,7 @@ jobs:
   build_service:
     docker:
       - image: cimg/node:18.19
+      - image: mongo:5.0
     steps:
       - checkout
       - restore_cache:
