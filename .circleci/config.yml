@@ -342,6 +342,9 @@ workflows:
       - build_service:
           requires:
             - lint
+      - build_web:
+          requires:
+            - lint
       # - lint_and_build
       # - test_core:
       #     requires:
