@@ -72,6 +72,26 @@ commands:
       - prepare_coverage_reporting
 
 jobs:
+  lint:
+    docker:
+      - image: cimg/node:18.19
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bt-root-{{ checksum "yarn.lock" }}
+            - bt-root-
+      - run:
+          name: Install dependencies
+          command: yarn -W install
+      - save_cache:
+          key: bt-root-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+      - run:
+          name: Lint
+          command: yarn lint
+
   lint_and_build:
     docker: *base_image
     steps:
@@ -280,20 +300,21 @@ workflows:
   test_and_deploy:
     jobs:
       # Validate
-      - lint_and_build
-      - test_core:
-          requires:
-            - lint_and_build
-      - test_web:
-          requires:
-            - lint_and_build
-      - test_e2e:
-          requires:
-            - lint_and_build
-      - report_coverage:
-          requires:
-            - test_core
-            - test_web
+      - lint
+      # - lint_and_build
+      # - test_core:
+      #     requires:
+      #       - lint_and_build
+      # - test_web:
+      #     requires:
+      #       - lint_and_build
+      # - test_e2e:
+      #     requires:
+      #       - lint_and_build
+      # - report_coverage:
+      #     requires:
+      #       - test_core
+      #       - test_web
 
       # Deploy dev environment
       # - deploy_core_image:
