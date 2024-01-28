@@ -40,7 +40,7 @@
         </div>
 
         <!-- Right-Hand Dropdown (always visible) -->
-        <div class="h-8 w-44 flex-initial text-right">
+        <div class="h-8 flex-initial text-right">
           <ul
             v-if="currentUser.anonymous"
             class="flex flex-row flex-nowrap justify-end items-start gap-3"
@@ -53,18 +53,7 @@
             </li>
           </ul>
 
-          <div
-            v-else
-            class="flex flex-row flex-nowrap justify-end items-center gap-3"
-          >
-            <UserAvatar :user="currentUser.user!" />
-            <span class="text-lg">
-              {{ currentUser.displayName }}
-            </span>
-            <span class="text-lg">
-              <i class="fas fa-caret-down"></i>
-            </span>
-          </div>
+          <NavbarDropdown v-else />
         </div>
       </div>
     </nav>
@@ -81,6 +70,7 @@ import DrawerPanel from '../common/drawer-panel.vue';
 import { getNavLinks } from './nav-links';
 import FormButton from '../common/form-button.vue';
 import LoginForm from '../users/login-form.vue';
+import NavbarDropdown from './navbar-dropdown.vue';
 import NavBarLink from './nav-bar-link.vue';
 import NavbarHamburger from './nav-bar-hamburger.vue';
 import { useCurrentUser } from '../../store';

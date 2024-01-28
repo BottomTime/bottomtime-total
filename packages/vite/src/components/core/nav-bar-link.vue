@@ -1,5 +1,9 @@
 <template>
-  <li :class="`text-lg${active ? ' text-blue-400 font-bold' : ''}`">
+  <li
+    :class="`text-lg hover:text-blue-300${
+      active ? ' text-blue-400 font-bold' : ''
+    }`"
+  >
     <a :href="to">{{ title }}</a>
   </li>
 </template>

@@ -1,14 +1,14 @@
 <template>
   <SnackBar />
-  <NavBar />
   <div
-    class="md:container mx-auto font-content p-4 text-grey-900 bg-blue-200 rounded-b-xl shadow-md shadow-white opacity-90"
+    class="md:container mx-auto font-content p-4 mt-16 text-grey-900 bg-blue-200 rounded-b-xl shadow-md shadow-white opacity-90"
   >
     <section class="pb-6">
       <RouterView></RouterView>
     </section>
     <PageFooter />
   </div>
+  <NavBar />
 </template>
 
 <script setup lang="ts">

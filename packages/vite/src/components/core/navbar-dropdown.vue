@@ -1,0 +1,40 @@
+<template>
+  <div class="inline-block relative">
+    <button
+      class="flex flex-row flex-nowrap justify-end items-center gap-3 text-lg hover:text-blue-300"
+      @click="isActive = !isActive"
+    >
+      <UserAvatar :user="currentUser.user!" />
+      <span class="text-lg">
+        {{ currentUser.displayName }}
+      </span>
+      <span class="text-lg">
+        <i class="fas fa-caret-down"></i>
+      </span>
+    </button>
+    <ul
+      v-if="isActive"
+      class="absolute bg-blue-800 min-w-48 -right-2 rounded-b-md opacity-100 text-left mt-4 z-[10000]"
+    >
+      <li class="w-full p-2 hover:bg-blue-600">
+        <a href="/profile">Profile</a>
+      </li>
+      <li class="w-full p-2 hover:bg-blue-600">
+        <a href="/account">Account</a>
+      </li>
+      <hr />
+      <li class="w-full p-2 hover:bg-blue-600 rounded-b-md">
+        <a href="/api/auth/logout">Logout</a>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useCurrentUser } from '../../store';
+import UserAvatar from '../users/user-avatar.vue';
+
+const currentUser = useCurrentUser();
+const isActive = ref(false);
+</script>
