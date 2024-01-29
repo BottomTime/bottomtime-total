@@ -1,18 +1,16 @@
 import {
-  CurrentUserDTO,
   DepthUnit,
   PressureUnit,
   ProfileVisibility,
   TemperatureUnit,
+  UserDTO,
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
 import { Pinia, createPinia } from 'pinia';
 import { useCurrentUser } from '../../../src/store';
-import { User } from '../../../src/client/user';
 
-const AuthenticatedUser: CurrentUserDTO = {
-  anonymous: false,
+const AuthenticatedUser: UserDTO = {
   id: '123',
   email: 'realuser@gmail.com',
   username: 'realuser',
@@ -25,6 +23,7 @@ const AuthenticatedUser: CurrentUserDTO = {
     memberSince: new Date('2021-01-01T00:00:00.000Z'),
     userId: '123',
     username: 'realuser',
+    name: 'Real User',
   },
   settings: {
     depthUnit: DepthUnit.Meters,
@@ -43,11 +42,18 @@ describe('Current User Store', () => {
   });
 
   it('will update current user', () => {
-    const user = new User(AuthenticatedUser);
     const store = useCurrentUser(pinia);
     expect(store.user).toBeNull();
+    expect(store.anonymous).toBe(true);
 
-    store.user = user;
-    expect(store.user).toEqual(new User(AuthenticatedUser));
+    store.user = AuthenticatedUser;
+    expect(store.user).toEqual(AuthenticatedUser);
+    expect(store.anonymous).toBe(false);
+  });
+
+  it('will show correct display name', () => {
+    const store = useCurrentUser(pinia);
+    store.user = AuthenticatedUser;
+    expect(store.displayName).toEqual('Real User');
   });
 });
