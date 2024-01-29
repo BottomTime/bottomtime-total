@@ -1,7 +1,7 @@
 import { createPinia } from 'pinia';
 import { App, createSSRApp } from 'vue';
 import { Router } from 'vue-router';
-import AppComponent from './app.vue';
+import AppComponent from './app-root.vue';
 import { ApiClient, ApiClientKey } from './client';
 import { Config } from './config';
 import { router } from './router';

@@ -83,7 +83,12 @@ jobs:
             - bt-
       - run:
           name: Install dependencies
-          command: yarn -W install
+          command: yarn install
+      - run:
+          name: Download Code Climate coverage tool
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
       - save_cache:
           key: bt-{{ checksum "yarn.lock" }}
           paths:
@@ -96,6 +101,10 @@ jobs:
       - run:
           name: Lint
           command: yarn lint
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - cc-test-reporter
 
   build_service:
     docker:
@@ -110,9 +119,26 @@ jobs:
       - run:
           name: Install dependencies
           command: yarn
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Initialize Code Climate
+          command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
           command: npx lerna run build,test --scope @bottomtime/core --since=master --stream
+      - run:
+          name: Report test coverage
+          working_directory: packages/service/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/service/" \
+              -t lcov \
+              -o "../../service.coverage.json" \
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - service.coverage.json
 
   build_web:
     docker:
@@ -126,9 +152,26 @@ jobs:
       - run:
           name: Install dependencies
           command: yarn
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Initialize Code Climate
+          command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
           command: npx lerna run build,test --scope @bottomtime/vite --since=master --stream
+      - run:
+          name: Report test coverage
+          working_directory: packages/vite/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/vite/" \
+              -t lcov \
+              -o "../../web.coverage.json" \
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - web.coverage.json
 
   lint_and_build:
     docker: *base_image
@@ -196,15 +239,17 @@ jobs:
             - web.coverage.json
 
   report_coverage:
-    docker: *base_image
+    docker:
+      - image: cimg/node:18.19
     steps:
       - attach_workspace:
           at: .
-      - prepare_coverage_reporting
+      - run:
+          name: Initialize Code Climate
+          command: ./cc-test-reporter before-build
       - run:
           name: Report coverage
           command: |
-            ls -a
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
@@ -345,6 +390,11 @@ workflows:
       - build_web:
           requires:
             - lint
+      - report_coverage:
+          requires:
+            - build_service
+            - build_web
+
       # - lint_and_build
       # - test_core:
       #     requires:
