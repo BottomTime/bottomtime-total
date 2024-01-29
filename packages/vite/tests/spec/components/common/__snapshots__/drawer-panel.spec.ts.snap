@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Drawer Panel component will render correctly with content 1`] = `
+"<!-- Blurred backgroud - covers entire viewport. -->
+<transition-stub name="backdrop" appear="false" persisted="true" css="true">
+  <div class="absolute top-0 left-0 w-full h-full backdrop-blur-sm z-30" data-testid="drawer-backdrop"></div>
+</transition-stub>
+<transition-stub name="drawer" appear="false" persisted="true" css="true">
+  <div class="fixed right-0 top-16 md:w-1/2 w-full h-full bg-grey-200 drop-shadow-md md:rounded-l-md opacity-90 z-40 p-4">
+    <!-- Title and close button. -->
+    <div class="flex flex-row mb-6 w-full">
+      <p class="font-title text-4xl grow">Test</p><button data-testid="drawer-close" aria-label="Close"><span class="fas fa-times-circle hover:text-grey-100 text-grey-800 hover:drop-shadow-lg"></span></button>
+    </div><!-- Content. -->
+    <div>Test</div>
+  </div>
+</transition-stub>"
+`;

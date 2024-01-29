@@ -171,13 +171,12 @@ function focusPassword(): void {
 }
 
 async function login() {
-  isLoading.value = true;
-
   const isValid = await v$.value.$validate();
   if (!isValid) return;
 
   let user: User | undefined;
 
+  isLoading.value = true;
   await oops(
     async () => {
       user = await client.users.login(
