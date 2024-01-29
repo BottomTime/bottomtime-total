@@ -2,19 +2,33 @@
   <form @submit.prevent="login">
     <div class="grid grid-cols-1 md:grid-cols-3">
       <div class="md:col-start-2 flex flex-col">
-        <FormLabel label="Username or email" required />
-        <FormTextBox
-          ref="usernameTextBox"
-          :maxlength="50"
-          v-model.trim="loginDetails.usernameOrEmail"
-        />
-        <FormLabel label="Password" required />
-        <FormTextBox
-          ref="passwordTextBox"
-          :maxlength="50"
-          v-model.trim="loginDetails.password"
-          password
-        />
+        <FormField
+          label="Username or email"
+          :invalid="v$.usernameOrEmail.$error"
+          :error="v$.usernameOrEmail.$errors[0]?.$message"
+          required
+        >
+          <FormTextBox
+            ref="usernameTextBox"
+            :maxlength="50"
+            :invalid="v$.usernameOrEmail.$error"
+            v-model.trim="loginDetails.usernameOrEmail"
+          />
+        </FormField>
+        <FormField
+          label="Password"
+          :invalid="v$.password.$error"
+          :error="v$.password.$errors[0]?.$message"
+          required
+        >
+          <FormTextBox
+            ref="passwordTextBox"
+            :maxlength="50"
+            :invalid="v$.password.$error"
+            v-model.trim="loginDetails.password"
+            password
+          />
+        </FormField>
       </div>
     </div>
     <div class="flex flex-row justify-center gap-3 mt-2 mb-6">
@@ -52,12 +66,14 @@
 
 <script setup lang="ts">
 import { LoginParamsDTO } from '@bottomtime/api';
+import { useVuelidate } from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
 import { onMounted, reactive, ref } from 'vue';
 import { useClient } from '../../client';
 import { useCurrentUser, useToasts } from '../../store';
 import { useOops } from '../../oops';
 import FormButton from '../common/form-button.vue';
-import FormLabel from '../common/form-label.vue';
+import FormField from '../common/form-field.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import { User } from '../../client/user';
 import { Toast, ToastType } from '../../common';
@@ -99,6 +115,17 @@ const loginDetails = reactive<LoginParamsDTO>({
   usernameOrEmail: '',
   password: '',
 });
+const v$ = useVuelidate(
+  {
+    usernameOrEmail: {
+      required: helpers.withMessage('Username or email is required.', required),
+    },
+    password: {
+      required: helpers.withMessage('Password is required.', required),
+    },
+  },
+  loginDetails,
+);
 
 const usernameTextBox = ref<InstanceType<typeof FormTextBox> | null>();
 const passwordTextBox = ref<InstanceType<typeof FormTextBox> | null>();
@@ -125,6 +152,7 @@ withDefaults(defineProps<LoginFormProps>(), {
 function reset(fullForm = false): void {
   if (fullForm) loginDetails.usernameOrEmail = '';
   loginDetails.password = '';
+  v$.value.$reset();
   usernameTextBox.value?.focus();
 }
 
@@ -143,9 +171,13 @@ function focusPassword(): void {
 }
 
 async function login() {
+  isLoading.value = true;
+
+  const isValid = await v$.value.$validate();
+  if (!isValid) return;
+
   let user: User | undefined;
 
-  isLoading.value = true;
   await oops(
     async () => {
       user = await client.users.login(
@@ -162,12 +194,13 @@ async function login() {
       401: () => {
         toasts.toast(LoginAttemptFailedToast);
         reset();
+        v$.value.$reset();
         focusPassword();
       },
     },
   );
+  isLoading.value = false;
 }
-isLoading.value = false;
 
 onMounted(() => {
   reset(true);
