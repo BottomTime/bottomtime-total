@@ -127,6 +127,8 @@ jobs:
       - run:
           name: Build and Test
           command: npx lerna run build,test --scope @bottomtime/core --since=master --stream
+      - store_test_results:
+          path: packages/service/reports/
       - run:
           name: Report test coverage
           working_directory: packages/service/
@@ -138,6 +140,8 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
+            - packages/service/dist/
+            - packages/service/coverage/
             - service.coverage.json
 
   build_web:
@@ -160,6 +164,8 @@ jobs:
       - run:
           name: Build and Test
           command: npx lerna run build,test --scope @bottomtime/vite --since=master --stream
+      - store_test_results:
+          path: packages/web/reports/
       - run:
           name: Report test coverage
           working_directory: packages/vite/
@@ -171,31 +177,9 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
+            - packages/vite/dist/
+            - packages/vite/coverage/
             - web.coverage.json
-
-  lint_and_build:
-    docker: *base_image
-    steps:
-      - checkout
-      - install_node
-      - run:
-          name: Download Code Climate coverage tool
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
-          name: Lint
-          command: yarn lint
-      - run:
-          name: Build
-          command: yarn build
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - packages/web/dist/
-            - packages/docs/public/
-            - packages/core/dist/
-            - cc-test-reporter
 
   test_core:
     docker: *node_image
