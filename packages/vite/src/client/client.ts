@@ -3,7 +3,6 @@ import { UsersApiClient } from './users';
 
 export type ApiClientOptions = {
   authToken?: string;
-  baseUrl?: string;
 };
 
 export class ApiClient {
@@ -11,16 +10,15 @@ export class ApiClient {
 
   readonly users: UsersApiClient;
 
-  constructor({ authToken, baseUrl }: ApiClientOptions) {
+  constructor(options?: ApiClientOptions) {
     this.client = axios.create({
-      baseURL: baseUrl,
       withCredentials: true,
     });
 
-    if (authToken) {
+    if (options?.authToken) {
       this.client.defaults.headers.common[
         'Authorization'
-      ] = `Bearer ${authToken}`;
+      ] = `Bearer ${options.authToken}`;
     }
 
     this.users = new UsersApiClient(this.client);

@@ -75,17 +75,17 @@ type OAuthProvider = {
 const oAuthProviders: Readonly<OAuthProvider[]> = [
   {
     name: 'Google',
-    url: 'https://google.com',
+    url: '/api/auth/google',
     icon: 'fab fa-google',
   },
   {
     name: 'Discord',
-    url: 'https://discord.com',
+    url: '/api/auth/discord',
     icon: 'fab fa-discord',
   },
   {
     name: 'Github',
-    url: 'https://github.com',
+    url: '/api/auth/github',
     icon: 'fab fa-github',
   },
 ];
@@ -153,7 +153,7 @@ async function login() {
         loginDetails.password,
       );
 
-      currentUser.user = user;
+      currentUser.user = user.toJSON();
       reset(true);
       focusUsername();
       emit('close');

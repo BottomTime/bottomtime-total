@@ -15,10 +15,6 @@ export class Config {
     return EnvSchema.parse((import.meta as any).env);
   }
 
-  static get apiUrl(): string {
-    return this.env.BTWEB_API_URL ?? 'http://localhost:4800/api/';
-  }
-
   static get isProduction(): boolean {
     return this.env.PROD;
   }

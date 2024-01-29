@@ -6,7 +6,7 @@ export class UsersApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
 
   async getCurrentUser(): Promise<User | null> {
-    const { data } = await this.apiClient.get<CurrentUserDTO>('/auth/me');
+    const { data } = await this.apiClient.get<CurrentUserDTO>('/api/auth/me');
 
     if (data.anonymous) {
       return null;
@@ -16,7 +16,7 @@ export class UsersApiClient {
   }
 
   async login(usernameOrEmail: string, password: string): Promise<User> {
-    const { data } = await this.apiClient.post<UserDTO>('/auth/login', {
+    const { data } = await this.apiClient.post<UserDTO>('/api/auth/login', {
       usernameOrEmail,
       password,
     });
