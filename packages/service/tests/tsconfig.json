@@ -1,6 +1,11 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["../src/", "./"],
+  "include": [
+    "../src/",
+    "./",
+    "../../common/src/bunyan-logger-service.ts",
+    "../../common/src/logger.ts"
+  ],
   "compilerOptions": {
     "paths": {
       "@/*": ["../src"],

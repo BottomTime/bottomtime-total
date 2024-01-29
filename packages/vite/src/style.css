@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(191 219 254);
+  background-attachment: fixed;
+  background-image: url('/img/reef-tortuga.webp');
+  background-origin: content-box;
+}

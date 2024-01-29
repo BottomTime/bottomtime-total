@@ -72,6 +72,107 @@ commands:
       - prepare_coverage_reporting
 
 jobs:
+  lint:
+    docker:
+      - image: cimg/node:18.19
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bt-{{ checksum "yarn.lock" }}
+            - bt-
+      - run:
+          name: Install dependencies
+          command: yarn install
+      - run:
+          name: Download Code Climate coverage tool
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - save_cache:
+          key: bt-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+            - packages/api/node_modules
+            - packages/common/node_modules
+            - packages/e2e-tests/node_modules
+            - packages/service/node_modules
+            - packages/vite/node_modules
+      - run:
+          name: Lint
+          command: yarn lint
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - cc-test-reporter
+
+  build_service:
+    docker:
+      - image: cimg/node:18.19
+      - image: mongo:5.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bt-{{ checksum "yarn.lock" }}
+            - bt-
+      - run:
+          name: Install dependencies
+          command: yarn
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Initialize Code Climate
+          command: ./cc-test-reporter before-build
+      - run:
+          name: Build and Test
+          command: npx lerna run build,test --scope @bottomtime/core --since=master --stream
+      - run:
+          name: Report test coverage
+          working_directory: packages/service/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/service/" \
+              -t lcov \
+              -o "../../service.coverage.json" \
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - service.coverage.json
+
+  build_web:
+    docker:
+      - image: cimg/node:18.19
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bt-{{ checksum "yarn.lock" }}
+            - bt-
+      - run:
+          name: Install dependencies
+          command: yarn
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Initialize Code Climate
+          command: ./cc-test-reporter before-build
+      - run:
+          name: Build and Test
+          command: npx lerna run build,test --scope @bottomtime/vite --since=master --stream
+      - run:
+          name: Report test coverage
+          working_directory: packages/vite/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/vite/" \
+              -t lcov \
+              -o "../../web.coverage.json" \
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - web.coverage.json
+
   lint_and_build:
     docker: *base_image
     steps:
@@ -138,15 +239,17 @@ jobs:
             - web.coverage.json
 
   report_coverage:
-    docker: *base_image
+    docker:
+      - image: cimg/node:18.19
     steps:
       - attach_workspace:
           at: .
-      - prepare_coverage_reporting
+      - run:
+          name: Initialize Code Climate
+          command: ./cc-test-reporter before-build
       - run:
           name: Report coverage
           command: |
-            ls -a
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
@@ -280,20 +383,32 @@ workflows:
   test_and_deploy:
     jobs:
       # Validate
-      - lint_and_build
-      - test_core:
+      - lint
+      - build_service:
           requires:
-            - lint_and_build
-      - test_web:
+            - lint
+      - build_web:
           requires:
-            - lint_and_build
-      - test_e2e:
-          requires:
-            - lint_and_build
+            - lint
       - report_coverage:
           requires:
-            - test_core
-            - test_web
+            - build_service
+            - build_web
+
+      # - lint_and_build
+      # - test_core:
+      #     requires:
+      #       - lint_and_build
+      # - test_web:
+      #     requires:
+      #       - lint_and_build
+      # - test_e2e:
+      #     requires:
+      #       - lint_and_build
+      # - report_coverage:
+      #     requires:
+      #       - test_core
+      #       - test_web
 
       # Deploy dev environment
       # - deploy_core_image:

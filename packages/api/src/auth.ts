@@ -4,4 +4,4 @@ export const LoginParamsSchema = z.object({
   usernameOrEmail: z.string(),
   password: z.string(),
 });
-export type LoginParams = z.infer<typeof LoginParamsSchema>;
+export type LoginParamsDTO = z.infer<typeof LoginParamsSchema>;

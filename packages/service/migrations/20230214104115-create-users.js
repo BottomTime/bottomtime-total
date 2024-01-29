@@ -65,7 +65,7 @@ module.exports = {
       isLockedOut: false,
       memberSince: new Date(),
       passwordHash: DefaultAdminPasswordHash,
-      role: 200,
+      role: 'admin',
       username: DefaultAdminUsername,
       usernameLowered: DefaultAdminUsername.toLocaleLowerCase(),
     });

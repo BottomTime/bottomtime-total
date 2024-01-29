@@ -1,4 +1,4 @@
-import { createLogger } from '../../src/logger';
+import { createLogger } from '@bottomtime/common/src/logger';
 
 describe('Create Logger', () => {
   it('Will create a new logger that will write to stdout', () => {

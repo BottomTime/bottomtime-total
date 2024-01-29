@@ -9,7 +9,7 @@ This is the monorepo for the Bottom Time platform.
 Documentation on the individual components can be found in their respective README files.
 
 - [Core Service](packages/service/README.md)
-- [Web (Vue.js) Front-End](packages/web/README.md)
+- [Web (Vite + Vue) Front-End](packages/web/README.md)
 - [Interactive API Documentation](packages/docs/README.md)
 - [Deployment (Terraform)](terraform/README.md)
 
@@ -36,6 +36,10 @@ The platform uses [MongoDb](https://www.mongodb.com/docs/manual/installation/) t
 ### Docker
 
 The components of the platform each have `Dockerfile`s and the platform can be run as a whole using Docker Compose. You can Docker from [here](https://docs.docker.com/get-docker/) if you don't already have it installed.
+
+### Mutagen Compose
+
+`TODO`
 
 ### Terraform and AWS CLI
 

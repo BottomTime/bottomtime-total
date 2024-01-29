@@ -39,6 +39,16 @@
       ],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}/packages/web/"
+    },
+    {
+      "name": "Debug Vite/Vue Server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/packages/vite/server/index.ts",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/tsx",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
     }
   ]
 }

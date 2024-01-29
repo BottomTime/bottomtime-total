@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Inject,
   Post,
   Redirect,
   Res,
@@ -18,7 +19,7 @@ import { GithubAuthGuard } from './strategies/github.strategy';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
   /**
    * @openapi
