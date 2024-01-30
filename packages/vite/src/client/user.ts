@@ -1,10 +1,14 @@
 import { UserDTO, UserRole } from '@bottomtime/api';
 import { UserProfile } from './user-profile';
+import { AxiosInstance } from 'axios';
 
 export class User {
   private _profile: UserProfile | undefined;
 
-  constructor(private readonly data: UserDTO) {}
+  constructor(
+    private readonly client: AxiosInstance,
+    private readonly data: UserDTO,
+  ) {}
 
   get id(): string {
     return this.data.id;

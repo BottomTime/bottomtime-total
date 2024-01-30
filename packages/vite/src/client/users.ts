@@ -11,7 +11,7 @@ export class UsersApiClient {
     if (data.anonymous) {
       return null;
     } else {
-      return new User(data as UserDTO);
+      return new User(this.apiClient, data as UserDTO);
     }
   }
 
@@ -20,6 +20,6 @@ export class UsersApiClient {
       usernameOrEmail,
       password,
     });
-    return new User(data);
+    return new User(this.apiClient, data);
   }
 }

@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Avatar component will render correctly for user with avatar URL 1`] = `"<img class="rounded-full w-8 h-8" alt="" src="https://example.com/avatar.png">"`;
+
+exports[`User Avatar component will render initials for user without avatar URL but with username 1`] = `"<img class="rounded-full w-8 h-8" alt="" src="https://ui-avatars.com/api/?name=Test%20User">"`;
+
+exports[`User Avatar component will url-encode value of display name when necessary 1`] = `"<img class="rounded-full w-8 h-8" alt="" src="https://ui-avatars.com/api/?name=%40TestUser_69%3F%3F">"`;

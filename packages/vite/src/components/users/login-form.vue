@@ -1,30 +1,36 @@
 <template>
-  <form @submit.prevent="login">
+  <form @submit.prevent="() => {}">
     <div class="grid grid-cols-1 md:grid-cols-3">
       <div class="md:col-start-2 flex flex-col">
         <FormField
           label="Username or email"
+          control-id="username"
           :invalid="v$.usernameOrEmail.$error"
           :error="v$.usernameOrEmail.$errors[0]?.$message"
           required
         >
           <FormTextBox
             ref="usernameTextBox"
+            control-id="username"
             :maxlength="50"
             :invalid="v$.usernameOrEmail.$error"
+            test-id="login-username"
             v-model.trim="loginDetails.usernameOrEmail"
           />
         </FormField>
         <FormField
+          control-id="password"
           label="Password"
           :invalid="v$.password.$error"
           :error="v$.password.$errors[0]?.$message"
           required
         >
           <FormTextBox
+            control-id="password"
             ref="passwordTextBox"
             :maxlength="50"
             :invalid="v$.password.$error"
+            test-id="login-password"
             v-model.trim="loginDetails.password"
             password
           />
@@ -32,7 +38,13 @@
       </div>
     </div>
     <div class="flex flex-row justify-center gap-3 mt-2 mb-6">
-      <FormButton type="primary" :is-loading="isLoading" submit>
+      <FormButton
+        type="primary"
+        test-id="login-submit"
+        :is-loading="isLoading"
+        submit
+        @click="login"
+      >
         Sign in
       </FormButton>
       <FormButton v-if="showCancel" @click="$emit('close')">Cancel</FormButton>
@@ -132,6 +144,7 @@ const passwordTextBox = ref<InstanceType<typeof FormTextBox> | null>();
 const isLoading = ref(false);
 const emit = defineEmits<{
   (e: 'close'): void;
+  (e: 'login', user: User): void;
 }>();
 const LoginAttemptFailedToast: Toast = {
   id: 'login-attempt-failed',
@@ -174,21 +187,10 @@ async function login() {
   const isValid = await v$.value.$validate();
   if (!isValid) return;
 
-  let user: User | undefined;
-
   isLoading.value = true;
-  await oops(
-    async () => {
-      user = await client.users.login(
-        loginDetails.usernameOrEmail,
-        loginDetails.password,
-      );
-
-      currentUser.user = user.toJSON();
-      reset(true);
-      focusUsername();
-      emit('close');
-    },
+  const user = await oops<User>(
+    () =>
+      client.users.login(loginDetails.usernameOrEmail, loginDetails.password),
     {
       401: () => {
         toasts.toast(LoginAttemptFailedToast);
@@ -199,6 +201,13 @@ async function login() {
     },
   );
   isLoading.value = false;
+
+  if (user) {
+    currentUser.user = user.toJSON();
+    reset(true);
+    emit('close');
+    emit('login', user);
+  }
 }
 
 onMounted(() => {
