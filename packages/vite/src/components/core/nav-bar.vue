@@ -74,7 +74,6 @@ import NavbarDropdown from './navbar-dropdown.vue';
 import NavBarLink from './nav-bar-link.vue';
 import NavbarHamburger from './nav-bar-hamburger.vue';
 import { useCurrentUser } from '../../store';
-import UserAvatar from '../users/user-avatar.vue';
 
 const showLogin = ref(false);
 const showHamburger = ref(false);

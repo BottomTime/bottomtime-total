@@ -4,7 +4,8 @@
     <div
       v-show="visible"
       class="absolute top-0 left-0 w-full h-full backdrop-blur-sm z-30"
-      @click="$emit('close')"
+      data-testid="drawer-backdrop"
+      @click="onClose"
     ></div>
   </Transition>
   <Transition name="drawer">
@@ -18,7 +19,7 @@
         <p class="font-title text-4xl grow">
           {{ title }}
         </p>
-        <CloseButton v-if="showClose" @close="$emit('close')" />
+        <CloseButton v-if="showClose" @close="onClose" test-id="drawer-close" />
       </div>
 
       <!-- Content. -->
@@ -36,14 +37,18 @@ type DrawerPanelProps = {
   visible?: boolean;
 };
 
-withDefaults(defineProps<DrawerPanelProps>(), {
+const props = withDefaults(defineProps<DrawerPanelProps>(), {
   showClose: true,
   visible: true,
 });
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'close'): void;
 }>();
+
+function onClose() {
+  if (props.showClose) emit('close');
+}
 </script>
 
 <style scoped>

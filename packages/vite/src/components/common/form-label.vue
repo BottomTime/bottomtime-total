@@ -1,5 +1,5 @@
 <template>
-  <label>
+  <label :for="controlId">
     <span class="font-bold">{{ `${label}:` }}</span>
     <span v-if="required" class="text-danger">*</span>
   </label>
@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 type FormLabelProps = {
-  for?: string;
+  controlId?: string;
   label: string;
   required?: boolean;
 };

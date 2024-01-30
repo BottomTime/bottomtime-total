@@ -3,7 +3,6 @@ import { App, createSSRApp } from 'vue';
 import { Router } from 'vue-router';
 import AppComponent from './app-root.vue';
 import { ApiClient, ApiClientKey } from './client';
-import { Config } from './config';
 import { router } from './router';
 
 export function createApp(): {
@@ -11,9 +10,7 @@ export function createApp(): {
   router: Router;
 } {
   // API Client
-  const client = new ApiClient({
-    baseUrl: Config.apiUrl,
-  });
+  const client = new ApiClient();
 
   // Pinia (state store)
   const pinia = createPinia();

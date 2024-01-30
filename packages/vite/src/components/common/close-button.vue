@@ -1,5 +1,5 @@
 <template>
-  <button @click="$emit('close')" :aria-label="label">
+  <button @click="$emit('close')" :data-testid="testId" :aria-label="label">
     <span
       class="fas fa-times-circle hover:text-grey-100 text-grey-800 hover:drop-shadow-lg"
     ></span>
@@ -9,6 +9,7 @@
 <script setup lang="ts">
 type CloseButtonProps = {
   label?: string;
+  testId?: string;
 };
 
 withDefaults(defineProps<CloseButtonProps>(), {

@@ -3,19 +3,17 @@
 </template>
 
 <script setup lang="ts">
-import { UserDTO } from '@bottomtime/api';
 import { computed } from 'vue';
 
 type UserAvatarProps = {
-  user: UserDTO;
+  avatar?: string;
+  displayName: string;
 };
 
 const props = defineProps<UserAvatarProps>();
 const avatar = computed(
   () =>
-    props.user.profile?.avatar ??
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      props.user.profile?.name ?? props.user.username,
-    )}`,
+    props.avatar ??
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(props.displayName)}`,
 );
 </script>

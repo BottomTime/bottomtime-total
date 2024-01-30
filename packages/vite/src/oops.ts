@@ -86,14 +86,14 @@ export type OopsFunction = <T>(
  * @returns An {@link OopsFunction} that can be used to safely invoke API requests and handle any errors that are returned.
  */
 export function useOops(): OopsFunction {
+  const toasts = useToasts();
+  const currentUser = useCurrentUser();
+  const router = useRouter();
+
   return async <T>(
     f: () => T | Promise<T>,
     handlers?: Partial<ErrorHandlers>,
   ): Promise<T | null> => {
-    const toasts = useToasts();
-    const currentUser = useCurrentUser();
-    const router = useRouter();
-
     return await oops(f, {
       // Provide a default set of handlers for common errors.
       [401]() {

@@ -1,24 +1,50 @@
 <template>
-  <form @submit.prevent="login">
+  <form @submit.prevent="() => {}">
     <div class="grid grid-cols-1 md:grid-cols-3">
       <div class="md:col-start-2 flex flex-col">
-        <FormLabel label="Username or email" required />
-        <FormTextBox
-          ref="usernameTextBox"
-          :maxlength="50"
-          v-model.trim="loginDetails.usernameOrEmail"
-        />
-        <FormLabel label="Password" required />
-        <FormTextBox
-          ref="passwordTextBox"
-          :maxlength="50"
-          v-model.trim="loginDetails.password"
-          password
-        />
+        <FormField
+          label="Username or email"
+          control-id="username"
+          :invalid="v$.usernameOrEmail.$error"
+          :error="v$.usernameOrEmail.$errors[0]?.$message"
+          required
+        >
+          <FormTextBox
+            ref="usernameTextBox"
+            control-id="username"
+            :maxlength="50"
+            :invalid="v$.usernameOrEmail.$error"
+            test-id="login-username"
+            v-model.trim="loginDetails.usernameOrEmail"
+          />
+        </FormField>
+        <FormField
+          control-id="password"
+          label="Password"
+          :invalid="v$.password.$error"
+          :error="v$.password.$errors[0]?.$message"
+          required
+        >
+          <FormTextBox
+            control-id="password"
+            ref="passwordTextBox"
+            :maxlength="50"
+            :invalid="v$.password.$error"
+            test-id="login-password"
+            v-model.trim="loginDetails.password"
+            password
+          />
+        </FormField>
       </div>
     </div>
     <div class="flex flex-row justify-center gap-3 mt-2 mb-6">
-      <FormButton type="primary" :is-loading="isLoading" submit>
+      <FormButton
+        type="primary"
+        test-id="login-submit"
+        :is-loading="isLoading"
+        submit
+        @click="login"
+      >
         Sign in
       </FormButton>
       <FormButton v-if="showCancel" @click="$emit('close')">Cancel</FormButton>
@@ -52,12 +78,14 @@
 
 <script setup lang="ts">
 import { LoginParamsDTO } from '@bottomtime/api';
+import { useVuelidate } from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
 import { onMounted, reactive, ref } from 'vue';
 import { useClient } from '../../client';
 import { useCurrentUser, useToasts } from '../../store';
 import { useOops } from '../../oops';
 import FormButton from '../common/form-button.vue';
-import FormLabel from '../common/form-label.vue';
+import FormField from '../common/form-field.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import { User } from '../../client/user';
 import { Toast, ToastType } from '../../common';
@@ -75,17 +103,17 @@ type OAuthProvider = {
 const oAuthProviders: Readonly<OAuthProvider[]> = [
   {
     name: 'Google',
-    url: 'https://google.com',
+    url: '/api/auth/google',
     icon: 'fab fa-google',
   },
   {
     name: 'Discord',
-    url: 'https://discord.com',
+    url: '/api/auth/discord',
     icon: 'fab fa-discord',
   },
   {
     name: 'Github',
-    url: 'https://github.com',
+    url: '/api/auth/github',
     icon: 'fab fa-github',
   },
 ];
@@ -99,12 +127,24 @@ const loginDetails = reactive<LoginParamsDTO>({
   usernameOrEmail: '',
   password: '',
 });
+const v$ = useVuelidate(
+  {
+    usernameOrEmail: {
+      required: helpers.withMessage('Username or email is required.', required),
+    },
+    password: {
+      required: helpers.withMessage('Password is required.', required),
+    },
+  },
+  loginDetails,
+);
 
 const usernameTextBox = ref<InstanceType<typeof FormTextBox> | null>();
 const passwordTextBox = ref<InstanceType<typeof FormTextBox> | null>();
 const isLoading = ref(false);
 const emit = defineEmits<{
   (e: 'close'): void;
+  (e: 'login', user: User): void;
 }>();
 const LoginAttemptFailedToast: Toast = {
   id: 'login-attempt-failed',
@@ -125,6 +165,7 @@ withDefaults(defineProps<LoginFormProps>(), {
 function reset(fullForm = false): void {
   if (fullForm) loginDetails.usernameOrEmail = '';
   loginDetails.password = '';
+  v$.value.$reset();
   usernameTextBox.value?.focus();
 }
 
@@ -143,31 +184,31 @@ function focusPassword(): void {
 }
 
 async function login() {
-  let user: User | undefined;
+  const isValid = await v$.value.$validate();
+  if (!isValid) return;
 
   isLoading.value = true;
-  await oops(
-    async () => {
-      user = await client.users.login(
-        loginDetails.usernameOrEmail,
-        loginDetails.password,
-      );
-
-      currentUser.user = user;
-      reset(true);
-      focusUsername();
-      emit('close');
-    },
+  const user = await oops<User>(
+    () =>
+      client.users.login(loginDetails.usernameOrEmail, loginDetails.password),
     {
       401: () => {
         toasts.toast(LoginAttemptFailedToast);
         reset();
+        v$.value.$reset();
         focusPassword();
       },
     },
   );
+  isLoading.value = false;
+
+  if (user) {
+    currentUser.user = user.toJSON();
+    reset(true);
+    emit('close');
+    emit('login', user);
+  }
 }
-isLoading.value = false;
 
 onMounted(() => {
   reset(true);

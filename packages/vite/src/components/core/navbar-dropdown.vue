@@ -4,7 +4,10 @@
       class="flex flex-row flex-nowrap justify-end items-center gap-3 text-lg hover:text-blue-300"
       @click="isActive = !isActive"
     >
-      <UserAvatar :user="currentUser.user!" />
+      <UserAvatar
+        :avatar="currentUser.user?.profile?.avatar"
+        :display-name="currentUser.displayName"
+      />
       <span class="text-lg">
         {{ currentUser.displayName }}
       </span>

@@ -9,7 +9,7 @@
     <span v-if="isLoading">
       <i class="fas fa-spinner fa-spin"></i>
     </span>
-    <slot v-else></slot>
+    <slot></slot>
   </button>
 </template>
 

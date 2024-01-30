@@ -126,7 +126,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/core --since=master --stream
+          command: npx lerna run build,test --scope @bottomtime/core --stream # --since=master
+      - store_test_results:
+          path: packages/service/reports/
       - run:
           name: Report test coverage
           working_directory: packages/service/
@@ -138,6 +140,8 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
+            - packages/service/dist/
+            - packages/service/coverage/
             - service.coverage.json
 
   build_web:
@@ -159,7 +163,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/vite --since=master --stream
+          command: npx lerna run build,test --scope @bottomtime/vite --stream # --since=master
+      - store_test_results:
+          path: packages/web/reports/
       - run:
           name: Report test coverage
           working_directory: packages/vite/
@@ -171,71 +177,8 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - web.coverage.json
-
-  lint_and_build:
-    docker: *base_image
-    steps:
-      - checkout
-      - install_node
-      - run:
-          name: Download Code Climate coverage tool
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
-          name: Lint
-          command: yarn lint
-      - run:
-          name: Build
-          command: yarn build
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - packages/web/dist/
-            - packages/docs/public/
-            - packages/core/dist/
-            - cc-test-reporter
-
-  test_core:
-    docker: *node_image
-    environment:
-      JEST_JUNIT_OUTPUT_DIR: ./reports/
-    steps:
-      - init_testing
-      - run:
-          name: Run unit tests
-          working_directory: ./packages/service/
-          command: yarn test
-      - record_coverage:
-          coverage_file: service.coverage.json
-          coverage_root: packages/service/
-      - store_test_results:
-          path: ./packages/service/reports/
-      - store_artifacts:
-          path: ./packages/service/logs/
-          destination: logs/
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - service.coverage.json
-
-  test_web:
-    docker: *base_image
-    steps:
-      - init_testing
-      - run:
-          name: Run unit tests
-          working_directory: ./packages/web/
-          command: yarn test
-      - record_coverage:
-          coverage_file: web.coverage.json
-          coverage_root: ./packages/web/
-      - store_test_results:
-          path: ./packages/web/reports/
-      - persist_to_workspace:
-          root: ./
-          paths:
+            - packages/vite/dist/
+            - packages/vite/coverage/
             - web.coverage.json
 
   report_coverage:

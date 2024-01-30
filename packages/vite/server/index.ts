@@ -5,6 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { createServer, ViteDevServer } from 'vite';
@@ -57,6 +58,7 @@ async function createApp(): Promise<INestApplication> {
       },
     }),
   );
+  app.use('/api', createProxyMiddleware({ target: Config.apiUrl }));
 
   if (vite) {
     app.use(vite.middlewares);
