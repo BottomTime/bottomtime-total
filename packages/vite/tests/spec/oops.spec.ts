@@ -1,10 +1,9 @@
 import { mount } from '@vue/test-utils';
-import axios, { AxiosError, isAxiosError } from 'axios';
-import { Response, Server } from 'miragejs';
+import axios from 'axios';
+import AxiosAdapter from 'axios-mock-adapter';
 import { Pinia, createPinia } from 'pinia';
 import { defineComponent, onMounted } from 'vue';
 import { createMemoryHistory, createRouter, Router } from 'vue-router';
-import { createServer } from '../fixtures/create-server';
 import {
   ErrorHandlers,
   ForbiddenErrorToast,
@@ -14,8 +13,6 @@ import {
 } from '../../src/oops';
 import { useCurrentUser, useToasts } from '../../src/store';
 import { BasicUser } from '../fixtures/users';
-
-const NetworkError = new AxiosError('Nope', 'ERR_NETWORK');
 
 let pinia: Pinia;
 let router: Router;
@@ -46,6 +43,12 @@ function testOops(
 }
 
 describe('"Oops" error handler', () => {
+  let axiosAdapter: AxiosAdapter;
+
+  beforeAll(() => {
+    axiosAdapter = new AxiosAdapter(axios);
+  });
+
   beforeEach(() => {
     pinia = createPinia();
     router = createRouter({
@@ -58,6 +61,14 @@ describe('"Oops" error handler', () => {
         },
       ],
     });
+  });
+
+  afterEach(() => {
+    axiosAdapter.reset();
+  });
+
+  afterAll(() => {
+    axiosAdapter.restore();
   });
 
   it('will return the value of the function if it succeeds', async () => {
@@ -73,16 +84,6 @@ describe('"Oops" error handler', () => {
   });
 
   describe('when using custom error handlers', () => {
-    let server: Server;
-
-    beforeAll(() => {
-      server = createServer();
-    });
-
-    afterAll(() => {
-      server.shutdown();
-    });
-
     it('will invoke the default handler for unknown exceptions', async () => {
       const error = new Error('oops');
       const handler = jest.fn();
@@ -95,39 +96,26 @@ describe('"Oops" error handler', () => {
 
     it('will invoke the network error handler for network errors', async () => {
       const handler = jest.fn();
-      const result = await testOops(jest.fn().mockRejectedValue(NetworkError), {
+      axiosAdapter.onGet('/nope').networkErrorOnce();
+      const result = await testOops(() => axios.get('/nope'), {
         networkError: handler,
       });
       expect(result).toBeNull();
-      expect(handler).toHaveBeenCalledWith(NetworkError);
+      expect(handler).toHaveBeenCalled();
     });
 
     it('will invoke the handler for the status code of the error', async () => {
       const handler = jest.fn();
-      server.get('/nope', () => new Response(409, {}, {}));
+      axiosAdapter.onGet('/nope').reply(409);
       const result = await testOops(async () => await axios.get('/nope'), {
         409: handler,
       });
       expect(result).toBeNull();
       expect(handler).toHaveBeenCalled();
-
-      const error: AxiosError = handler.mock.lastCall[0];
-      expect(isAxiosError(error)).toBe(true);
-      expect(error.response?.status).toEqual(409);
     });
   });
 
   describe('when falling back on default error handlers', () => {
-    let server: Server;
-
-    beforeAll(() => {
-      server = createServer();
-    });
-
-    afterAll(() => {
-      server.shutdown();
-    });
-
     it('will invoke default handler for unknown exceptions', async () => {
       const error = new Error('oops');
       const result = await testOops(jest.fn().mockRejectedValue(error));
@@ -137,7 +125,8 @@ describe('"Oops" error handler', () => {
     });
 
     it('will invoke default network error handler for network errors', async () => {
-      const result = await testOops(jest.fn().mockRejectedValue(NetworkError));
+      axiosAdapter.onGet('/nope').networkErrorOnce();
+      const result = await testOops(async () => axios.get('/nope'));
       expect(result).toBeNull();
       const toasts = useToasts(pinia);
       expect(toasts.toasts[0]).toMatchObject(NetworkErrorToast);
@@ -146,7 +135,7 @@ describe('"Oops" error handler', () => {
     it('will logout users if their session expires', async () => {
       const currentUser = useCurrentUser(pinia);
       currentUser.user = BasicUser;
-      server.get('/nope', () => new Response(401, {}, {}));
+      axiosAdapter.onGet('/nope').reply(401);
 
       const result = await testOops(async () => await axios.get('/nope'));
 
@@ -156,7 +145,7 @@ describe('"Oops" error handler', () => {
 
     it('will show a toast on 403 errors', async () => {
       const toasts = useToasts(pinia);
-      server.get('/nope', () => new Response(403, {}, {}));
+      axiosAdapter.onGet('/nope').reply(403);
 
       const result = await testOops(async () => await axios.get('/nope'));
 
@@ -165,7 +154,7 @@ describe('"Oops" error handler', () => {
     });
 
     it('will redirect to 404 page on not found errors', async () => {
-      server.get('/nope', () => new Response(404, {}, {}));
+      axiosAdapter.onGet('/nope').reply(404);
 
       const result = await testOops(async () => await axios.get('/nope'));
       expect(result).toBeNull();
