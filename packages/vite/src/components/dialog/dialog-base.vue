@@ -9,15 +9,23 @@
   </Transition>
   <div
     v-if="visible"
+    data-testid="dialog-modal"
     :class="`flex flex-col absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] ${sizeClass} bg-grey-200 opacity-100 shadow-lg rounded-lg z-50`"
   >
     <div class="flex flex-row bg-blue-800 text-grey-100 h-8 p-1 rounded-t-lg">
-      <div class="grow flex-nowrap font-title pl-2">{{ title }}</div>
+      <div class="grow flex-nowrap font-title pl-2" data-testid="dialog-title">
+        {{ title }}
+      </div>
       <div class="pr-2">
-        <CloseButton v-if="showClose" inverted @click="onClose" />
+        <CloseButton
+          v-if="showClose"
+          test-id="dialog-close-button"
+          inverted
+          @click="onClose"
+        />
       </div>
     </div>
-    <div class="grow p-2 pb-4">
+    <div class="grow p-2 pb-4" data-testid="dialog-content">
       <slot></slot>
     </div>
     <div class="h-12 text-center p-2 mb-3 flex flex-row justify-center gap-3">

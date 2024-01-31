@@ -12,11 +12,14 @@
     <template #buttons>
       <FormButton
         :type="dangerous ? 'danger' : 'primary'"
+        test-id="dialog-confirm-button"
         @click="$emit('confirm')"
       >
         {{ confirmText }}
       </FormButton>
-      <FormButton @click="$emit('cancel')">{{ cancelText }}</FormButton>
+      <FormButton test-id="dialog-cancel-button" @click="$emit('cancel')">
+        {{ cancelText }}
+      </FormButton>
     </template>
   </DialogBase>
 </template>
