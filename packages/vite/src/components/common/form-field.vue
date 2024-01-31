@@ -4,7 +4,7 @@
     <div>
       <slot></slot>
     </div>
-    <span v-if="help" class="text-sm">{{ help }}</span>
+    <span v-if="help" class="text-sm italic">{{ help }}</span>
     <span
       v-if="invalid"
       class="text-sm text-danger-dark"

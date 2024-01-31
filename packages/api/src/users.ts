@@ -16,19 +16,20 @@ export enum UsersSortBy {
   MemberSince = 'memberSince',
 }
 
+export const UsernameRegex = /^[a-z0-9]+([_.-][a-z0-9]+)*$/i;
+export const PasswordStrengthRegex =
+  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/;
+
 export const UsernameSchema = z
   .string()
   .trim()
-  .regex(/^[a-z0-9]+([_.-][a-z0-9]+)*$/i)
+  .regex(UsernameRegex)
   .min(3)
   .max(50);
 export const EmailSchema = z.string().trim().email().max(50);
 export const PasswordStrengthSchema = z
   .string()
-  .regex(
-    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/,
-    'Password did not meet strength requirements.',
-  );
+  .regex(PasswordStrengthRegex, 'Password did not meet strength requirements.');
 
 export const UserCertificationSchema = CertificationSchema.extend({
   date: z.string().trim().regex(DateRegex).nullable().optional(),
