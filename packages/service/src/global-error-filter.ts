@@ -1,4 +1,6 @@
-import { ErrorResponse, ValidationErrorDetails } from '@bottomtime/api';
+import { ErrorResponseDTO, ValidationErrorDetails } from '@bottomtime/api';
+import { BunyanLoggerService } from '@bottomtime/common/src/bunyan-logger-service';
+
 import {
   ArgumentsHost,
   Catch,
@@ -6,8 +8,9 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+
 import { ZodError } from 'zod';
-import { BunyanLoggerService } from '@bottomtime/common/src/bunyan-logger-service';
+
 import { Config } from './config';
 
 @Catch()
@@ -25,14 +28,16 @@ export class GlobalErrorFilter implements ExceptionFilter {
     );
   }
 
-  private handleError(exception: Error, response: ErrorResponse) {
+  private handleError(exception: Error, response: ErrorResponseDTO) {
     response.message = exception.message;
     if (!Config.isProduction) response.stack = exception.stack;
 
     if (exception instanceof HttpException) {
       response.status = exception.getStatus();
-      if (response.status < 500) {
+      if (response.status === 403) {
         this.log.warn(exception);
+      } else if (response.status < 500) {
+        this.log.debug(exception);
       } else {
         this.log.error(exception);
       }
@@ -54,7 +59,7 @@ export class GlobalErrorFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
 
-    const responseBody: ErrorResponse = {
+    const responseBody: ErrorResponseDTO = {
       method: httpAdapter.getRequestMethod(request),
       path: httpAdapter.getRequestUrl(request),
       status: 500,
