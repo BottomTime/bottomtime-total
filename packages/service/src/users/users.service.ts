@@ -1,13 +1,3 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from './user';
-import {
-  FriendData,
-  FriendModelName,
-  UserData,
-  UserModelName,
-} from '../schemas';
-import { FilterQuery, Model, Types } from 'mongoose';
 import {
   CreateUserParamsDTO,
   DepthUnit,
@@ -21,10 +11,23 @@ import {
   UsersSortBy,
   WeightUnit,
 } from '@bottomtime/api';
-import { v4 as uuid } from 'uuid';
+
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+
 import { hash } from 'bcrypt';
-import { Config } from '../config';
+import { FilterQuery, Model, Types } from 'mongoose';
+import { v4 as uuid } from 'uuid';
 import { z } from 'zod';
+
+import { Config } from '../config';
+import {
+  FriendData,
+  FriendModelName,
+  UserData,
+  UserModelName,
+} from '../schemas';
+import { User } from './user';
 
 const SelectString = '-friends';
 
@@ -67,17 +70,17 @@ export class UsersService {
 
     if (usernameTaken && emailTaken) {
       throw new ConflictException(
-        `The username ${username} and email address ${email} are already taken.`,
+        `The username "${username}" and email address "${email}" are already taken.`,
         { cause: { conflictingFields: ['username', 'email'] } },
       );
     } else if (usernameTaken) {
       throw new ConflictException(
-        `A user with the username ${username} already exists.`,
+        `A user with the username "${username}" already exists.`,
         { cause: { conflictingFields: ['username'] } },
       );
     } else if (emailTaken) {
       throw new ConflictException(
-        `A user with the email address ${email} already exists.`,
+        `A user with the email address "${email}" already exists.`,
         { cause: { conflictingFields: ['email'] } },
       );
     }
@@ -124,6 +127,7 @@ export class UsersService {
         temperatureUnit: TemperatureUnit.Celsius,
         weightUnit: WeightUnit.Kilograms,
         profileVisibility: ProfileVisibility.FriendsOnly,
+        ...options.settings,
       },
       username: options.username,
       usernameLowered,

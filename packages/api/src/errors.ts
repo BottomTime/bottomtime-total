@@ -32,4 +32,4 @@ export const ErrorResponseSchema = z.object({
     .optional(),
   stack: z.string().optional(),
 });
-export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+export type ErrorResponseDTO = z.infer<typeof ErrorResponseSchema>;

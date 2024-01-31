@@ -1,25 +1,9 @@
 <template>
-  <ConfirmDialog
-    title="Log out?"
-    confirm-text="Log out"
-    :visible="showConfirmLogout"
-    @cancel="showConfirmLogout = false"
-    @confirm="onLogout"
-  >
-    <p class="flex justify-start">
-      <span>
-        <i class="fas fa-question-circle fa-2x text-blue-400 mr-4"></i>
-      </span>
-      <span>
-        Are you sure you want to log out? This will end your current session.
-      </span>
-    </p>
-  </ConfirmDialog>
   <div class="grid grid-cols-1 md:grid-cols-5">
     <div
       class="md:col-start-2 md:col-span-3 flex flex-col bg-blue-100 p-4 rounded-md shadow-md opacity-100"
     >
-      <form v-if="currentUser.anonymous" @submit.prevent>
+      <form @submit.prevent>
         <FormField
           label="Username"
           control-id="username"
@@ -111,13 +95,11 @@
           />
         </FormField>
 
-        <span>{{ JSON.stringify(registerData) }}</span>
-
-        <div>
+        <div class="text-center">
           <FormButton
             type="primary"
             test-id="register-submit"
-            :is-loading="false"
+            :is-loading="isLoading"
             submit
             @click="register"
           >
@@ -125,27 +107,6 @@
           </FormButton>
         </div>
       </form>
-
-      <div v-else class="flex flex-row align-top">
-        <span class="text-warn mr-4 mt-2">
-          <i class="fas fa-exclamation fa-2x"></i>
-        </span>
-        <div>
-          <p class="mb-3">
-            It looks like you are trying to create a new account but you are
-            already signed in. If you are here by mistake, try navigating back
-            to the
-            <NavLink to="/">home page</NavLink> or navigating to where you want
-            to be using the nav bar at the top of the page.
-          </p>
-          <p>
-            If you are interested in creating a new account, you must first log
-            out and then return to this page. Click
-            <NavLink to="#" @click="showConfirmLogout = true">here</NavLink> to
-            log out.
-          </p>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -162,14 +123,15 @@ import { email, helpers, required } from '@vuelidate/validators';
 
 import { reactive, ref } from 'vue';
 
-import { SelectOption } from '../../common';
-import { useCurrentUser } from '../../store';
+import { useClient } from '../../client';
+import { SelectOption, ToastType } from '../../common';
+import { isErrorResponse, useOops } from '../../oops';
+import { router } from '../../router';
+import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
-import NavLink from '../common/nav-link.vue';
-import ConfirmDialog from '../dialog/confirm-dialog.vue';
 
 type RegisterData = {
   username: string;
@@ -187,7 +149,10 @@ const ProfileVisibilityOptions: SelectOption[] = [
   { label: 'Private', value: ProfileVisibility.Private },
 ];
 
+const client = useClient();
 const currentUser = useCurrentUser();
+const oops = useOops();
+const toasts = useToasts();
 
 const registerData = reactive<RegisterData>({
   username: '',
@@ -198,7 +163,7 @@ const registerData = reactive<RegisterData>({
   displayName: '',
   location: '',
 });
-const showConfirmLogout = ref(false);
+const isLoading = ref(false);
 
 const v$ = useVuelidate(
   {
@@ -208,12 +173,20 @@ const v$ = useVuelidate(
         'Username must contain only letters, numbers, underscores, dots, and dashes',
         helpers.regex(UsernameRegex),
       ),
+      conflict: helpers.withMessage(
+        'Username is already taken',
+        helpers.withAsync(isUsernameOrEmailAvailable),
+      ),
     },
     email: {
       required: helpers.withMessage('Email address is required', required),
       email: helpers.withMessage(
         'Must be a valid email address (e.g. address@server.org)',
         email,
+      ),
+      conflict: helpers.withMessage(
+        'Email address is already in use',
+        helpers.withAsync(isUsernameOrEmailAvailable),
       ),
     },
     password: {
@@ -234,11 +207,55 @@ const v$ = useVuelidate(
   registerData,
 );
 
-async function register() {
-  await v$.value.$validate();
+async function isUsernameOrEmailAvailable(
+  usernameOrEmail: string,
+): Promise<boolean> {
+  if (usernameOrEmail.length < 3) return true;
+
+  const available = await oops<boolean>(async () => {
+    const available = await client.users.isUsernameOrEmailAvailable(
+      encodeURIComponent(usernameOrEmail),
+    );
+    return available;
+  });
+
+  return available ?? false;
 }
 
-function onLogout() {
-  location.assign('/api/auth/logout');
+async function register() {
+  const isValid = await v$.value.$validate();
+  if (!isValid) return;
+
+  isLoading.value = true;
+  await oops(
+    async () => {
+      const user = await client.users.createUser({
+        username: registerData.username,
+        email: registerData.email,
+        password: registerData.password,
+        profile: {
+          name: registerData.displayName,
+          location: registerData.location,
+        },
+        settings: {
+          profileVisibility: registerData.profileVisibility,
+        },
+      });
+      currentUser.user = user.toJSON();
+      router.push('/welcome');
+    },
+    {
+      409: (e) => {
+        if (isErrorResponse(e)) {
+          toasts.toast({
+            id: 'username-or-email-conflict',
+            type: ToastType.Error,
+            message: e.message,
+          });
+        }
+      },
+    },
+  );
+  isLoading.value = false;
 }
 </script>

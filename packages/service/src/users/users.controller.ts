@@ -175,7 +175,9 @@ export class UsersController {
    *                 example: user
    *                 default: user
    *               profile:
-   *                 $ref: "#/components/schemas/UpdateProfileParams"
+   *                 $ref: "#/components/schemas/UpdateProfile"
+   *               settings:
+   *                 $ref: "#/components/schemas/UserSettings"
    *     responses:
    *       "201":
    *         description: |

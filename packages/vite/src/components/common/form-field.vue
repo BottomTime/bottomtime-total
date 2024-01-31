@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col items-stretch gap-2 pb-3">
+  <div class="w-full flex flex-col items-stretch gap-1 after:pb-3">
     <FormLabel :label="label" :control-id="controlId" :required="required" />
     <div>
       <slot></slot>
