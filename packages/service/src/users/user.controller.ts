@@ -1,20 +1,4 @@
 import {
-  Body,
-  Controller,
-  ForbiddenException,
-  Get,
-  Head,
-  HttpCode,
-  Patch,
-  Post,
-  Put,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
-import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
-import { AssertAuth, CurrentUser } from '../auth';
-import { User } from './user';
-import {
   ChangeEmailParams,
   ChangeEmailParamsSchema,
   ChangePasswordParamsDTO,
@@ -34,16 +18,38 @@ import {
   VerifyEmailParamsDTO,
   VerifyEmailParamsSchema,
 } from '@bottomtime/api';
-import { UsersService } from './users.service';
-import { AssertAccountOwner } from './assert-account-owner.guard';
-import { ZodValidator } from '../zod-validator';
+
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Head,
+  HttpCode,
+  Inject,
+  Patch,
+  Post,
+  Put,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
+
+import { AssertAuth, CurrentUser } from '../auth';
 import { Config } from '../config';
 import { EmailService, EmailType } from '../email';
+import { ZodValidator } from '../zod-validator';
+import { AssertAccountOwner } from './assert-account-owner.guard';
+import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+import { User } from './user';
+import { UsersService } from './users.service';
 
 @Controller('api/users/:username')
 export class UserController {
   constructor(
+    @Inject(UsersService)
     private readonly users: UsersService,
+
+    @Inject(EmailService)
     private readonly emailService: EmailService,
   ) {}
 

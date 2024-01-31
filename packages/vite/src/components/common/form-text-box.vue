@@ -1,15 +1,15 @@
 <template>
   <input
-    ref="input"
     :id="controlId"
+    ref="input"
+    v-model="model"
     :type="password ? 'password' : 'text'"
-    :class="`pl-2 pr-2 pt-1 pb-1 w-full border-2 outline-offset-1 rounded-md shadow-sm shadow-blue-400 text-sm ${
-      invalid ? 'border-danger' : 'border-grey-600'
+    :class="`pl-2 pr-2 pt-1 pb-1 w-full border-2 outline-offset-1 rounded-md shadow-sm shadow-blue-400 text-sm border-${
+      invalid ? 'danger' : 'grey-600'
     }`"
     :maxlength="maxlength"
     :placeholder="placeholder"
     :data-testid="testId"
-    v-model="model"
   />
 </template>
 

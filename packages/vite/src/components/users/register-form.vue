@@ -1,9 +1,25 @@
 <template>
-  <form @submit.prevent>
-    <div class="grid grid-cols-1 md:grid-cols-5">
-      <div
-        class="md:col-start-2 md:col-span-3 flex flex-col bg-blue-100 p-2 rounded-md shadow-md"
-      >
+  <ConfirmDialog
+    title="Log out?"
+    confirm-text="Log out"
+    :visible="showConfirmLogout"
+    @cancel="showConfirmLogout = false"
+    @confirm="onLogout"
+  >
+    <p class="flex justify-start">
+      <span>
+        <i class="fas fa-question-circle fa-2x text-blue-400 mr-4"></i>
+      </span>
+      <span>
+        Are you sure you want to log out? This will end your current session.
+      </span>
+    </p>
+  </ConfirmDialog>
+  <div class="grid grid-cols-1 md:grid-cols-5">
+    <div
+      class="md:col-start-2 md:col-span-3 flex flex-col bg-blue-100 p-4 rounded-md shadow-md opacity-100"
+    >
+      <form v-if="currentUser.anonymous" @submit.prevent>
         <FormField
           label="Username"
           control-id="username"
@@ -13,10 +29,10 @@
           required
         >
           <FormTextBox
+            v-model.trim="registerData.username"
             control-id="username"
             :maxlength="50"
             :invalid="v$.username.$error"
-            v-model="registerData.username"
           />
         </FormField>
 
@@ -28,10 +44,10 @@
           required
         >
           <FormTextBox
+            v-model.trim="registerData.email"
             control-id="email"
             :maxlength="50"
             :invalid="v$.email.$error"
-            v-model.trim="registerData.email"
           />
         </FormField>
 
@@ -43,10 +59,10 @@
           required
         >
           <FormTextBox
+            v-model="registerData.password"
             control-id="password"
             :maxlength="50"
             :invalid="v$.password.$error"
-            v-model="registerData.password"
             password
           />
         </FormField>
@@ -59,48 +75,39 @@
           required
         >
           <FormTextBox
+            v-model="registerData.confirmPassword"
             control-id="confirm-password"
             :maxlength="50"
             :invalid="v$.confirmPassword.$error"
-            v-model="registerData.confirmPassword"
             password
           />
         </FormField>
 
         <FormField
-          label="Profile visibility"
-          control-id="profile-visibility"
-          :invalid="v$.profileVisibility.$error"
-          :error="v$.profileVisibility.$errors[0]?.$message"
+          label="Profile info visible to"
+          control-id="profileVisibility"
+          required
         >
-          <FormSelect> </FormSelect>
-        </FormField>
-
-        <FormField
-          label="Display name"
-          control-id="display-name"
-          :invalid="v$.displayName.$error"
-          :error="v$.displayName.$errors[0]?.$message"
-        >
-          <FormTextBox
-            control-id="display-name"
-            :maxlength="100"
-            :invalid="v$.displayName.$error"
-            v-model="registerData.displayName"
+          <FormSelect
+            v-model="registerData.profileVisibility"
+            control-id="profileVisibility"
+            :options="ProfileVisibilityOptions"
           />
         </FormField>
 
-        <FormField
-          label="Location"
-          control-id="location"
-          :invalid="v$.location.$error"
-          :error="v$.location.$errors[0]?.$message"
-        >
+        <FormField label="Display name" control-id="display-name">
           <FormTextBox
+            v-model.trim="registerData.displayName"
+            control-id="display-name"
+            :maxlength="100"
+          />
+        </FormField>
+
+        <FormField label="Location" control-id="location">
+          <FormTextBox
+            v-model.trim="registerData.location"
             control-id="location"
             :maxlength="50"
-            :invalid="v$.location.$error"
-            v-model="registerData.location"
           />
         </FormField>
 
@@ -117,48 +124,89 @@
             Register
           </FormButton>
         </div>
+      </form>
+
+      <div v-else class="flex flex-row align-top">
+        <span class="text-warn mr-4 mt-2">
+          <i class="fas fa-exclamation fa-2x"></i>
+        </span>
+        <div>
+          <p class="mb-3">
+            It looks like you are trying to create a new account but you are
+            already signed in. If you are here by mistake, try navigating back
+            to the
+            <NavLink to="/">home page</NavLink> or navigating to where you want
+            to be using the nav bar at the top of the page.
+          </p>
+          <p>
+            If you are interested in creating a new account, you must first log
+            out and then return to this page. Click
+            <NavLink to="#" @click="showConfirmLogout = true">here</NavLink> to
+            log out.
+          </p>
+        </div>
       </div>
     </div>
-  </form>
+  </div>
 </template>
 
 <script setup lang="ts">
+import {
+  PasswordStrengthRegex,
+  ProfileVisibility,
+  UsernameRegex,
+} from '@bottomtime/api';
+
 import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required } from '@vuelidate/validators';
-import { reactive } from 'vue';
+
+import { reactive, ref } from 'vue';
+
+import { SelectOption } from '../../common';
+import { useCurrentUser } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
-import { PasswordStrengthRegex } from '../../../../web/src/constants';
+import NavLink from '../common/nav-link.vue';
+import ConfirmDialog from '../dialog/confirm-dialog.vue';
 
 type RegisterData = {
   username: string;
   email: string;
   password: string;
   confirmPassword: string;
-  profileVisibility: string;
+  profileVisibility: ProfileVisibility;
   displayName: string;
   location: string;
 };
+
+const ProfileVisibilityOptions: SelectOption[] = [
+  { label: 'Only my friends', value: ProfileVisibility.FriendsOnly },
+  { label: 'Public', value: ProfileVisibility.Public },
+  { label: 'Private', value: ProfileVisibility.Private },
+];
+
+const currentUser = useCurrentUser();
 
 const registerData = reactive<RegisterData>({
   username: '',
   email: '',
   password: '',
   confirmPassword: '',
-  profileVisibility: 'public',
+  profileVisibility: ProfileVisibility.FriendsOnly,
   displayName: '',
   location: '',
 });
+const showConfirmLogout = ref(false);
 
 const v$ = useVuelidate(
   {
     username: {
       required: helpers.withMessage('Username is required', required),
       username: helpers.withMessage(
-        'Username should contain only letters, numbers, and underscores',
-        helpers.regex('username', /^[a-zA-Z0-9_]+$/),
+        'Username must contain only letters, numbers, underscores, dots, and dashes',
+        helpers.regex(UsernameRegex),
       ),
     },
     email: {
@@ -175,9 +223,6 @@ const v$ = useVuelidate(
         helpers.regex(PasswordStrengthRegex),
       ),
     },
-    profileVisibility: {
-      required: helpers.withMessage('Profile visibility is required', required),
-    },
     confirmPassword: {
       required: helpers.withMessage('Confirm password is required', required),
       sameAsPassword: helpers.withMessage(
@@ -185,13 +230,15 @@ const v$ = useVuelidate(
         () => registerData.password === registerData.confirmPassword,
       ),
     },
-    displayName: {},
-    location: {},
   },
   registerData,
 );
 
 async function register() {
   await v$.value.$validate();
+}
+
+function onLogout() {
+  location.assign('/api/auth/logout');
 }
 </script>

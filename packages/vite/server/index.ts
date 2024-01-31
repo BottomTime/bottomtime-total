@@ -1,14 +1,17 @@
 import { BunyanLoggerService, createLogger } from '@bottomtime/common';
-import { NestFactory } from '@nestjs/core';
+
 import { INestApplication } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { createServer, ViteDevServer } from 'vite';
+import { ViteDevServer, createServer } from 'vite';
+
 import { AppModule } from './app.module';
 import { Config } from './config';
 
@@ -42,22 +45,22 @@ async function createApp(): Promise<INestApplication> {
 
   app.use(compression());
   app.use(cookieParser());
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          'img-src': ["'self'", 'ui-avatars.com', 'data:'],
-          'script-src': ["'self'", "'unsafe-inline'", 'kit.fontawesome.com'],
-          'connect-src': [
-            "'self'",
-            'ws:',
-            'ka-f.fontawesome.com',
-            'localhost:4800',
-          ],
-        },
-      },
-    }),
-  );
+  // app.use(
+  //   helmet({
+  //     contentSecurityPolicy: {
+  //       directives: {
+  //         'img-src': ["'self'", 'ui-avatars.com', 'data:'],
+  //         'script-src': ["'self'", "'unsafe-inline'", 'kit.fontawesome.com'],
+  //         'connect-src': [
+  //           "'self'",
+  //           'ws:',
+  //           'ka-f.fontawesome.com',
+  //           'localhost:4800',
+  //         ],
+  //       },
+  //     },
+  //   }),
+  // );
   app.use('/api', createProxyMiddleware({ target: Config.apiUrl }));
 
   if (vite) {

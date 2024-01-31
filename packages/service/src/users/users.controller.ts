@@ -1,36 +1,47 @@
 import {
+  CreateUserOptionsSchema,
+  CreateUserParamsDTO,
+  SearchProfilesResponseDTO,
+  SearchUserProfilesParamsDTO,
+  SearchUserProfilesParamsSchema,
+  UserRole,
+} from '@bottomtime/api';
+
+import {
   Body,
   Controller,
   ForbiddenException,
   Get,
+  Inject,
   Logger,
   Post,
   Query,
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import {
-  CreateUserParamsDTO,
-  CreateUserOptionsSchema,
-  SearchUserProfilesParamsSchema,
-  UserRole,
-  SearchProfilesResponseDTO,
-  SearchUserProfilesParamsDTO,
-} from '@bottomtime/api';
-import { ZodValidator } from '../zod-validator';
-import { AuthService, CurrentUser } from '../auth';
-import { User } from './user';
+
 import { Response } from 'express';
-import { EmailService } from '../email';
+import { URL } from 'url';
+
+import { AuthService, CurrentUser } from '../auth';
+import { Config } from '../config';
+import { EmailService, EmailType } from '../email';
+import { ZodValidator } from '../zod-validator';
+import { User } from './user';
+import { UsersService } from './users.service';
 
 @Controller('api/users')
 export class UsersController {
   private readonly log = new Logger(UsersController.name);
 
   constructor(
+    @Inject(UsersService)
     private readonly users: UsersService,
+
+    @Inject(AuthService)
     private readonly authService: AuthService,
+
+    @Inject(EmailService)
     private readonly emailService: EmailService,
   ) {}
 
@@ -227,14 +238,24 @@ export class UsersController {
 
     const user = await this.users.createUser(options);
 
-    // TODO: Send a welcome email.
-    // const verifyEmailToken = await user.requestEmailVerificationToken();
-    // const emailBody = await this.emailService.generateMessageContent({
-    //   type: EmailType.Welcome,
-    //   title: 'Welcome to Bottom Time',
-    //   user,
-    //   verifyEmailToken,
-    // });
+    // Send a welcome email. (If an email address was provided.)
+    if (user.email) {
+      const verifyEmailToken = await user.requestEmailVerificationToken();
+      const verificationUrl = new URL('/verifyEmail', Config.baseUrl);
+      verificationUrl.searchParams.append('email', user.email);
+      verificationUrl.searchParams.append('token', verifyEmailToken);
+      const emailContent = await this.emailService.generateMessageContent({
+        type: EmailType.Welcome,
+        title: 'Welcome to Bottom Time',
+        user,
+        verifyEmailUrl: verificationUrl.toString(),
+      });
+      this.emailService.sendMail(
+        { to: user.email },
+        'Welcome to Bottom Time',
+        emailContent,
+      );
+    }
 
     // If the user is not currently signed in, sign them in as the new user.
     // Exception: Don't do this for admins since they may just be provisioning new accounts for other users.

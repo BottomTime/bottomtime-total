@@ -1,9 +1,11 @@
 import { mount } from '@vue/test-utils';
+
 import axios from 'axios';
 import AxiosAdapter from 'axios-mock-adapter';
 import { Pinia, createPinia } from 'pinia';
 import { defineComponent, onMounted } from 'vue';
-import { createMemoryHistory, createRouter, Router } from 'vue-router';
+import { Router, createMemoryHistory, createRouter } from 'vue-router';
+
 import {
   ErrorHandlers,
   ForbiddenErrorToast,
@@ -23,7 +25,6 @@ function testOops(
 ): Promise<string | null> {
   return new Promise((resolve) => {
     const testComponent = defineComponent({
-      template: '<div></div>',
       setup() {
         const oops = useOops();
 
@@ -32,6 +33,7 @@ function testOops(
           resolve(result);
         });
       },
+      template: '<div></div>',
     });
 
     mount(testComponent, {

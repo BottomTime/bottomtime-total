@@ -1,3 +1,9 @@
 {
-  "recommendations": ["Vue.volar"]
+  "recommendations": [
+    "vue.volar",
+    "ajmnz.swagger-jsdoc-indent",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "ms-playwright.playwright"
+  ]
 }
