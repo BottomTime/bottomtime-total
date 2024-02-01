@@ -43,23 +43,22 @@ export default {
     },
     fontFamily: {
       content: [
-        'Rubik',
+        'Alegreya Sans',
         'system-ui',
         'Avenir',
         'Helvetica',
         'Arial',
         'sans-serif',
       ],
-      title: [
-        'Exo',
-        'Impact',
-        'Haettenschweiler',
-        'Arial Narrow Bold',
-        'sans-serif',
-      ],
+      title: ['"Exo 2"', 'Lobster', 'Arial Narrow Bold', 'sans-serif'],
       mono: ['JetBrains Mono', 'monospace'],
     },
-    extend: {},
+    extend: {
+      backgroundImage: {
+        tortuga: "url('/img/reef-tortuga.webp')",
+        lionfish: "url('/img/lion-fish.webp')",
+      },
+    },
   },
   plugins: [],
 };

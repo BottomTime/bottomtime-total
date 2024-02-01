@@ -24,7 +24,7 @@ defineEmits<{
 
 const colours = computed(() => {
   return props.inverted
-    ? 'text-grey-100 hover:text-grey-400'
-    : 'text-grey-800 hover:text-grey-100';
+    ? 'text-grey-100 hover:text-grey-400 dark:text-grey-200 hover:dark:text-grey-800'
+    : 'text-grey-800 hover:text-grey-100 dark:text-grey-200 hover:dark:text-grey-800';
 });
 </script>

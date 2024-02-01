@@ -2,7 +2,7 @@
   <select
     :id="controlId"
     v-model="value"
-    :class="`p-1 w-full border-2 outline-offset-1 rounded-md shadow-sm shadow-blue-400 text-sm border-${
+    :class="`p-1 w-full border-2 outline-offset-1 rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 text-sm dark:text-grey-950 border-${
       invalid ? 'danger' : 'grey-600'
     }`"
     :name="controlId"

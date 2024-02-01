@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-1 md:grid-cols-5">
     <div
-      class="md:col-start-2 md:col-span-3 flex flex-col bg-blue-100 p-4 rounded-md shadow-md opacity-100"
+      class="md:col-start-2 md:col-span-3 flex flex-col bg-blue-100 dark:bg-blue-900 p-4 rounded-md shadow-md opacity-100"
     >
       <form @submit.prevent>
         <FormField
