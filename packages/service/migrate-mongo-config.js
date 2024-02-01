@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires, no-process-env */
-require('dotenv-defaults').config();
+require('dotenv').config();
 // In this file you can configure migrate-mongo
 
 const config = {

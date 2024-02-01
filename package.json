@@ -14,9 +14,6 @@
     "prepare": "husky install",
     "test": "lerna run test"
   },
-  "dependencies": {
-    "mongodb": "^5.6.0"
-  },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",

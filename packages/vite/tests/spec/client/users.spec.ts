@@ -1,5 +1,6 @@
 import { CreateUserParamsDTO, UserRole } from '@bottomtime/api';
 
+// import { UsersApiClient } from '@/client/users';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import AxiosAdapter from 'axios-mock-adapter';
 
