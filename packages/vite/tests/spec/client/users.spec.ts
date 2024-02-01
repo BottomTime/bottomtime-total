@@ -1,3 +1,5 @@
+import { CreateUserParamsDTO, UserRole } from '@bottomtime/api';
+
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import AxiosAdapter from 'axios-mock-adapter';
 
@@ -68,21 +70,45 @@ describe('Users API client', () => {
       expect(user).not.toBeNull();
       expect(user?.toJSON()).toEqual({
         anonymous: false,
-        ...JSON.parse(JSON.stringify(BasicUser)),
+        ...BasicUser,
       });
     });
   });
 
-  describe('when creating a user', () => {});
+  describe('when creating a user', () => {
+    const requestData: CreateUserParamsDTO = {
+      username: BasicUser.username,
+      email: BasicUser.email,
+      password: 'password',
+      role: UserRole.User,
+      profile: {
+        name: BasicUser.profile.name,
+      },
+      settings: { ...BasicUser.settings },
+    };
+
+    it('will return the new user account if the creation is successful', async () => {
+      axiosAdapter.onPost('/api/users', requestData).reply(201, BasicUser);
+      const user = await client.createUser(requestData);
+      expect(user.toJSON()).toEqual(BasicUser);
+    });
+
+    it('will allow any errors to bubble up', async () => {
+      axiosAdapter.onPost('/api/users', requestData).reply(409);
+      await expect(client.createUser(requestData)).rejects.toThrow(AxiosError);
+    });
+  });
 
   describe('when logging in', () => {
     it('will return the user if the login is successful', async () => {
       const usernameOrEmail = 'test';
       const password = 'password';
-      axiosAdapter.onPost('/api/auth/login').reply(200, BasicUser);
+      axiosAdapter
+        .onPost('/api/auth/login', { usernameOrEmail, password })
+        .reply(200, BasicUser);
 
       const user = await client.login(usernameOrEmail, password);
-      expect(user.toJSON()).toEqual(JSON.parse(JSON.stringify(BasicUser)));
+      expect(user.toJSON()).toEqual(BasicUser);
       expect(axiosAdapter.history.post[0]?.data).toEqual(
         JSON.stringify({
           usernameOrEmail,
