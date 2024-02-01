@@ -4,6 +4,7 @@ import {
   createRouter,
   createWebHistory,
 } from 'vue-router';
+
 import { Config } from '../config';
 
 const routes: RouteRecordRaw[] = [
@@ -16,6 +17,11 @@ const routes: RouteRecordRaw[] = [
     path: '/register',
     name: 'register',
     component: () => import('../views/register-view.vue'),
+  },
+  {
+    path: '/welcome',
+    name: 'welcome',
+    component: () => import('../views/welcome-view.vue'),
   },
   {
     path: '/:pathMatch(.*)*',

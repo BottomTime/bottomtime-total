@@ -1,8 +1,3 @@
-import { mount } from '@vue/test-utils';
-import axios from 'axios';
-import AxiosAdapter from 'axios-mock-adapter';
-import flushPromises from 'flush-promises';
-import { Pinia, createPinia } from 'pinia';
 import {
   DepthUnit,
   PressureUnit,
@@ -12,11 +7,19 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+
+import { mount } from '@vue/test-utils';
+
+import axios from 'axios';
+import AxiosAdapter from 'axios-mock-adapter';
+import flushPromises from 'flush-promises';
+import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
-import { createRouter } from '../../../fixtures/create-router';
+
+import { ApiClient, ApiClientKey } from '../../../../src/client';
 import LoginForm from '../../../../src/components/users/login-form.vue';
-import { ApiClient, ApiClientKey, User } from '../../../../src/client';
 import { useCurrentUser, useToasts } from '../../../../src/store';
+import { createRouter } from '../../../fixtures/create-router';
 
 const UserData: UserDTO = {
   id: 'B8D70E2C-BEA3-4F21-9EEB-42A4AA79F706',
