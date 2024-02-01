@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import {
   HealthCheck,
   HealthCheckService,
@@ -8,7 +8,10 @@ import {
 @Controller('health')
 export class HealthController {
   constructor(
+    @Inject(HealthCheckService)
     private readonly health: HealthCheckService,
+
+    @Inject(MongooseHealthIndicator)
     private readonly mongoose: MongooseHealthIndicator,
   ) {}
 

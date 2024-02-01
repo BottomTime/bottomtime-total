@@ -11,6 +11,8 @@
     "mongodb": "^5.6.0"
   },
   "scripts": {
+    "codegen": "playwright codegen http://127.0.0.1:4850",
+    "prepare": "playwright install",
     "test": "playwright test"
   }
 }
