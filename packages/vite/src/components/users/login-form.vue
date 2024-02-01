@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="() => {}">
+  <form @submit.prevent>
     <div class="grid grid-cols-1 md:grid-cols-3">
       <div class="md:col-start-2 flex flex-col">
         <FormField
@@ -31,7 +31,7 @@
             :maxlength="50"
             :invalid="v$.password.$error"
             test-id="login-password"
-            v-model.trim="loginDetails.password"
+            v-model="loginDetails.password"
             password
           />
         </FormField>

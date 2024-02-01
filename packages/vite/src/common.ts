@@ -4,6 +4,12 @@ export type AppInitialState = {
   currentUser: UserDTO | null;
 };
 
+export type SelectOption = {
+  disabled?: boolean;
+  label?: string;
+  value: string;
+};
+
 export enum ToastType {
   Error = 'error',
   Info = 'info',

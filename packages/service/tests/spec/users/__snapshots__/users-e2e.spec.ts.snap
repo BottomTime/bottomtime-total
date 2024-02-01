@@ -46,6 +46,8 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "_id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
   "email": "newuser@gmail.com",
   "emailLowered": "newuser@gmail.com",
+  "emailVerificationToken": "oqh6qlk1wQsFvYiGO__KK0ZlQcMc6CW6I08zPbsgLtM",
+  "emailVerificationTokenExpiration": 2024-01-17T12:40:18.319Z,
   "emailVerified": false,
   "isLockedOut": false,
   "lastLogin": 2024-01-15T12:40:18.319Z,

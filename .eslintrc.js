@@ -7,7 +7,8 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:vue/vue3-essential',
+    'plugin:vue/vue3-recommended',
+    'prettier',
   ],
   overrides: [
     {
@@ -22,13 +23,16 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest',
+    extraFileExtensions: ['.vue'],
     parser: '@typescript-eslint/parser',
     sourceType: 'module',
+    project: ['./packages/*/tsconfig.eslint.json'],
   },
   plugins: ['@typescript-eslint', 'vue'],
   rules: {
     '@typescript-eslint/no-empty-function': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-unused-vars': 'warn',
+    'vue/require-default-prop': 'off',
   },
 };

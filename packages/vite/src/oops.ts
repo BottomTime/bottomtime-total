@@ -1,7 +1,15 @@
+import { ErrorResponseDTO, ErrorResponseSchema } from '@bottomtime/api';
+
 import { isAxiosError } from 'axios';
-import { useCurrentUser, useToasts } from './store';
-import { Toast, ToastType } from './common';
 import { useRouter } from 'vue-router';
+
+import { Toast, ToastType } from './common';
+import { useCurrentUser, useToasts } from './store';
+
+export function isErrorResponse(e: unknown): e is ErrorResponseDTO {
+  const validation = ErrorResponseSchema.safeParse(e);
+  return validation.success;
+}
 
 export type ErrorFunc = (e: unknown) => void | Promise<void>;
 export type ErrorHandlers = {
@@ -21,7 +29,7 @@ async function oops<T>(
       if (e.response) {
         // Server responded with an error
         const handler = handlers[e.response.status] ?? handlers.default;
-        await handler(e);
+        await handler(e.response.data);
       } else {
         // Request was made but no response received
         await handlers.networkError(e);

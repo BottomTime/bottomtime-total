@@ -1,3 +1,6 @@
 /packages/service/public
 
 dist/
+coverage/
+node_modules/
+.eslintrc.js

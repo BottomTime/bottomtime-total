@@ -1,16 +1,3 @@
-import { INestApplication } from '@nestjs/common';
-import {
-  TestMailer,
-  createAuthHeader,
-  createTestApp,
-  createTestUser,
-} from '../../utils';
-import {
-  FriendModel,
-  UserData,
-  UserDocument,
-  UserModel,
-} from '../../../src/schemas';
 import {
   CreateUserParamsDTO,
   DepthUnit,
@@ -21,11 +8,22 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
-import { User } from '../../../src/users/user';
-import request from 'supertest';
+
+import { FriendModel, UserData, UserDocument, UserModel } from '@/schemas';
+import { User } from '@/users';
+import { INestApplication } from '@nestjs/common';
+
 import { compare } from 'bcrypt';
-import * as uuid from 'uuid';
 import { Types } from 'mongoose';
+import request from 'supertest';
+import * as uuid from 'uuid';
+
+import {
+  TestMailer,
+  createAuthHeader,
+  createTestApp,
+  createTestUser,
+} from '../../utils';
 
 jest.mock('uuid');
 
@@ -262,6 +260,8 @@ describe('Users End-to-End Tests', () => {
       expect(savedUser).not.toBeNull();
       savedUser!.passwordHash =
         '$2b$04$wProYOHv1Qgo9oj1nwDIuObvp7V6K1SSm0Gcp2TSPQPhOqY8RLBRa';
+      savedUser!.emailVerificationToken =
+        'oqh6qlk1wQsFvYiGO__KK0ZlQcMc6CW6I08zPbsgLtM';
       expect(savedUser).toMatchSnapshot();
 
       const { body: currentUser } = await agent.get('/api/auth/me').expect(200);

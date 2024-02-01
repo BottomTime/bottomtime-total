@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import { CertificationSchema } from './certifications';
 import {
   DateRegex,
@@ -9,26 +11,26 @@ import {
   UserRole,
   WeightUnit,
 } from './constants';
-import { z } from 'zod';
 
 export enum UsersSortBy {
   Username = 'username',
   MemberSince = 'memberSince',
 }
 
+export const UsernameRegex = /^[a-z0-9]+([_.-][a-z0-9]+)*$/i;
+export const PasswordStrengthRegex =
+  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/;
+
 export const UsernameSchema = z
   .string()
   .trim()
-  .regex(/^[a-z0-9]+([_.-][a-z0-9]+)*$/i)
+  .regex(UsernameRegex)
   .min(3)
   .max(50);
 export const EmailSchema = z.string().trim().email().max(50);
 export const PasswordStrengthSchema = z
   .string()
-  .regex(
-    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/,
-    'Password did not meet strength requirements.',
-  );
+  .regex(PasswordStrengthRegex, 'Password did not meet strength requirements.');
 
 export const UserCertificationSchema = CertificationSchema.extend({
   date: z.string().trim().regex(DateRegex).nullable().optional(),
@@ -79,12 +81,22 @@ const SuccinctProfileSchema = ProfileSchema.pick({
 });
 export type SuccinctProfileDTO = z.infer<typeof SuccinctProfileSchema>;
 
+export const UserSettingsSchema = z.object({
+  depthUnit: z.nativeEnum(DepthUnit),
+  pressureUnit: z.nativeEnum(PressureUnit),
+  temperatureUnit: z.nativeEnum(TemperatureUnit),
+  weightUnit: z.nativeEnum(WeightUnit),
+  profileVisibility: z.nativeEnum(ProfileVisibility),
+});
+export type UserSettingsDTO = z.infer<typeof UserSettingsSchema>;
+
 export const CreateUserOptionsSchema = z.object({
   username: UsernameSchema,
   email: EmailSchema.optional(),
   password: PasswordStrengthSchema.optional(),
   role: z.nativeEnum(UserRole).optional(),
   profile: UpdateProfileParamsSchema.optional(),
+  settings: UserSettingsSchema.partial().optional(),
 });
 export type CreateUserParamsDTO = z.infer<typeof CreateUserOptionsSchema>;
 
@@ -113,15 +125,6 @@ export const ResetPasswordWithTokenParamsSchema = z.object({
 export type ResetPasswordWithTokenParamsDTO = z.infer<
   typeof ResetPasswordWithTokenParamsSchema
 >;
-
-export const UserSettingsSchema = z.object({
-  depthUnit: z.nativeEnum(DepthUnit),
-  pressureUnit: z.nativeEnum(PressureUnit),
-  temperatureUnit: z.nativeEnum(TemperatureUnit),
-  weightUnit: z.nativeEnum(WeightUnit),
-  profileVisibility: z.nativeEnum(ProfileVisibility),
-});
-export type UserSettingsDTO = z.infer<typeof UserSettingsSchema>;
 
 export const UserSchema = z.object({
   id: z.string().uuid(),

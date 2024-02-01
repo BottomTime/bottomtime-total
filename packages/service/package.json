@@ -93,6 +93,7 @@
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
     "typescript": "^5.0.4",
     "yargs": "^17.7.2"

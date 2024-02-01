@@ -3,6 +3,7 @@
     class="font-bold text-link underline hover:text-link-hover"
     :href="to"
     :aria-label="label"
+    @click="$emit('click')"
   >
     <slot></slot>
   </a>
@@ -15,4 +16,7 @@ type NavLinkProps = {
 };
 
 defineProps<NavLinkProps>();
+defineEmits<{
+  (e: 'click'): void;
+}>();
 </script>

@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Close Button component will render correctly 1`] = `"<button aria-label="Dissmiss"><span class="fas fa-times-circle hover:text-grey-100 text-grey-800 hover:drop-shadow-lg"></span></button>"`;
+exports[`Close Button component will render correctly 1`] = `"<button aria-label="Dissmiss"><span class="fas fa-times-circle text-grey-800 hover:text-grey-100 dark:text-grey-200 hover:dark:text-grey-800 hover:drop-shadow-lg"></span></button>"`;

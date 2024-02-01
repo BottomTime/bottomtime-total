@@ -1,4 +1,5 @@
 import { Injectable, Logger, PipeTransform } from '@nestjs/common';
+
 import { ZodType, ZodTypeDef } from 'zod';
 
 @Injectable()
@@ -8,7 +9,7 @@ export class ZodValidator<T> implements PipeTransform {
   constructor(private readonly zodSchema: ZodType<T, ZodTypeDef, unknown>) {}
 
   transform(value: unknown): T {
-    this.log.debug('Validating raw object:', value);
+    this.log.verbose('Validating raw object:', value);
     return this.zodSchema.parse(value);
   }
 }

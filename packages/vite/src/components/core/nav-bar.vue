@@ -4,7 +4,7 @@
   </DrawerPanel>
   <section class="h-16">
     <nav
-      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500"
+      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-50"
     >
       <div
         class="container p-2 mx-auto h-16 flex flex-row flex-nowrap items-center justify-stretch"
@@ -66,14 +66,15 @@
 
 <script setup lang="ts">
 import { nextTick, ref } from 'vue';
+
+import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
-import { getNavLinks } from './nav-links';
 import FormButton from '../common/form-button.vue';
 import LoginForm from '../users/login-form.vue';
-import NavbarDropdown from './navbar-dropdown.vue';
-import NavBarLink from './nav-bar-link.vue';
 import NavbarHamburger from './nav-bar-hamburger.vue';
-import { useCurrentUser } from '../../store';
+import NavBarLink from './nav-bar-link.vue';
+import { getNavLinks } from './nav-links';
+import NavbarDropdown from './navbar-dropdown.vue';
 
 const showLogin = ref(false);
 const showHamburger = ref(false);
