@@ -206,7 +206,7 @@ jobs:
       - run:
           name: Run end-to-end tests
           working_directory: packages/e2e-tests/
-          command: lerna run test --scope @bottomtime/e2e-tests --stream
+          command: yarn test --scope @bottomtime/e2e-tests --stream
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
 
