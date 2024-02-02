@@ -204,12 +204,6 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Initialize Code Climate
-          command: ./cc-test-reporter before-build
-      - run:
-          name: Install Playwright
-          command: lerna run prepare --scope @bottomtime/e2e-tests --stream
-      - run:
           name: Run end-to-end tests
           working_directory: packages/e2e-tests/
           command: lerna run test --scope @bottomtime/e2e-tests --stream
