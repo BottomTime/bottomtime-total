@@ -8,8 +8,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "test": "jest --watchAll"
+    "build": "tsc"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",
