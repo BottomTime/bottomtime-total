@@ -72,7 +72,7 @@ commands:
       - prepare_coverage_reporting
 
 jobs:
-  lint:
+  init_and_lint:
     docker:
       - image: cimg/node:18.19
     steps:
@@ -106,10 +106,12 @@ jobs:
           paths:
             - cc-test-reporter
 
-  build_service:
+  test_service:
     docker:
       - image: cimg/node:18.19
       - image: mongo:5.0
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
       - restore_cache:
@@ -144,9 +146,11 @@ jobs:
             - packages/service/coverage/
             - service.coverage.json
 
-  build_web:
+  test_web:
     docker:
       - image: cimg/node:18.19
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
       - restore_cache:
@@ -181,6 +185,37 @@ jobs:
             - packages/vite/coverage/
             - web.coverage.json
 
+  test_e2e:
+    docker:
+      - image: cimg/node:18.19-browsers
+      - image: mongo:5.0
+    environment:
+      BT_MONGO_URI: mongodb://localhost:27017/ci
+      JEST_JUNIT_OUTPUT_DIR: ./reports/
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bt-{{ checksum "yarn.lock" }}
+            - bt-
+      - run:
+          name: Install dependencies
+          command: yarn
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Initialize Code Climate
+          command: ./cc-test-reporter before-build
+      - run:
+          name: Install Playwright
+          command: lerna run prepare --scope @bottomtime/e2e-tests --stream
+      - run:
+          name: Run end-to-end tests
+          working_directory: packages/e2e-tests/
+          command: lerna run test --scope @bottomtime/e2e-tests --stream
+      - store_test_results:
+          path: ./packages/e2e-tests/test-results/
+
   report_coverage:
     docker:
       - image: cimg/node:18.19
@@ -195,22 +230,6 @@ jobs:
           command: |
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
-
-  test_e2e:
-    docker: *node_image
-    environment:
-      JEST_JUNIT_OUTPUT_DIR: ./reports/
-    steps:
-      - init_testing
-      - run:
-          name: Install Playwright
-          command: npx playwright install
-      - run:
-          name: Run end-to-end tests
-          working_directory: packages/e2e-tests/
-          command: yarn test
-      - store_test_results:
-          path: ./packages/e2e-tests/test-results/
 
   deploy_core_image:
     machine:
@@ -326,17 +345,20 @@ workflows:
   test_and_deploy:
     jobs:
       # Validate
-      - lint
-      - build_service:
+      - init_and_lint
+      - test_service:
           requires:
-            - lint
-      - build_web:
+            - init_and_lint
+      - test_web:
           requires:
-            - lint
+            - init_and_lint
+      - test_e2e:
+          requires:
+            - report_coverage
       - report_coverage:
           requires:
-            - build_service
-            - build_web
+            - test_service
+            - test_web
 
       # - lint_and_build
       # - test_core:
