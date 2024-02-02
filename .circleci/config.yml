@@ -354,7 +354,7 @@ workflows:
             - init_and_lint
       - test_e2e:
           requires:
-            - lint_and_init
+            - init_and_lint
       - report_coverage:
           requires:
             - test_service
