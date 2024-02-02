@@ -11,7 +11,7 @@
     "build": "lerna run build",
     "format": "prettier --write --ignore-unknown .",
     "lint": "eslint .",
-    "prepare": "husky install",
+    "prepare": "husky install && lerna run prepare",
     "test": "lerna run test"
   },
   "devDependencies": {

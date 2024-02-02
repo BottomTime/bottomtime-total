@@ -1,14 +1,6 @@
-import { expect, test } from '../fixture';
+import { test } from '@fixture';
 
 test.describe('Registration', () => {
-  test.beforeAll(async ({ app }) => {
-    await app.purgeDatabase();
-  });
-
-  test.afterEach(async ({ app }) => {
-    await app.purgeDatabase();
-  });
-
   test('will allow a user to register using the registration page', async ({
     page,
   }) => {
