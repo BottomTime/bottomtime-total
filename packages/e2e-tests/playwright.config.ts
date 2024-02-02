@@ -1,6 +1,5 @@
 /* eslint-disable no-process-env */
 import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
 
 /**
  * Read environment variables from file.
@@ -12,7 +11,9 @@ import path from 'path';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
+  testDir: './tests/specs/',
+
+  testMatch: '**/*.spec.ts',
 
   /* Do not run tests in files in parallel - shared database will make this a problem. */
   fullyParallel: false,
@@ -32,29 +33,13 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://127.0.0.1:8081',
+    baseURL: 'http://127.0.0.1:4851',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
     /* Capture screenshots on failed tests. */
     screenshot: 'only-on-failure',
-
-    /* Dismiss the cookie warning in tests. */
-    storageState: {
-      origins: [
-        {
-          origin: 'localhost',
-          localStorage: [
-            {
-              name: 'cookies_accepted',
-              value: 'true',
-            },
-          ],
-        },
-      ],
-      cookies: [],
-    },
   },
 
   /* Configure projects for major browsers */
@@ -100,21 +85,26 @@ export default defineConfig({
     {
       command: 'yarn migrate up && yarn serve',
       url: 'http://127.0.0.1:4801/health',
-      cwd: path.resolve(__dirname, '../service'),
+      cwd: '../service',
       env: {
+        BT_LOG_LEVEL: 'error',
         BT_MONGO_URI: 'mongodb://127.0.0.1:27017/bottomtime-e2e',
         BT_PORT: '4801',
       },
+      timeout: 10000,
       reuseExistingServer: true,
+      stdout: 'pipe',
     },
     {
       command: 'yarn serve',
-      url: 'http://127.0.0.1:8081',
-      cwd: path.resolve(__dirname, '../web'),
+      url: 'http://127.0.0.1:4851/health',
+      cwd: '../vite',
       env: {
-        BT_SERVICE_URL: 'http://127.0.0.1:4801/',
-        PORT: '8081',
+        BTWEB_API_URL: 'http://localhost:4801/',
+        BTWEB_BASE_URL: 'http://localhost:4851/',
+        BTWEB_PORT: '4851',
       },
+      timeout: 10000,
       reuseExistingServer: true,
     },
   ],

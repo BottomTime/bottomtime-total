@@ -65,7 +65,7 @@ export const UpdateProfileParamsSchema = z
 export type UpdateProfileParamsDTO = z.infer<typeof UpdateProfileParamsSchema>;
 
 export const ProfileSchema = UpdateProfileParamsSchema.extend({
-  userId: z.string().uuid(),
+  userId: z.string(),
   username: UsernameSchema,
   memberSince: z.coerce.date(),
 });
@@ -127,7 +127,7 @@ export type ResetPasswordWithTokenParamsDTO = z.infer<
 >;
 
 export const UserSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   username: z.string(),
   email: EmailSchema.optional(),
   emailVerified: z.boolean(),

@@ -1,8 +1,10 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { User } from '../users/user';
-import { Config } from '../config';
-import { compileFile, compileTemplate, Options } from 'pug';
+
 import path from 'path';
+import { Options, compileFile, compileTemplate } from 'pug';
+
+import { Config } from '../config';
+import { User } from '../users/user';
 import { IMailClient, MailClientService } from './interfaces';
 
 export enum EmailType {
@@ -59,6 +61,7 @@ export class EmailService implements OnModuleInit {
     [EmailType.VerifyEmail]: 'verify-email-template.pug',
     [EmailType.Welcome]: 'welcome-email-template.pug',
   } as const;
+
   private readonly log: Logger = new Logger(EmailService.name);
 
   private templates: Record<EmailType, compileTemplate> | undefined;
@@ -118,6 +121,8 @@ export class EmailService implements OnModuleInit {
           subject,
         });
       })
-      .catch(this.log.error);
+      .catch((error) => {
+        this.log.error(error);
+      });
   }
 }
