@@ -7,21 +7,24 @@ import {
   ResetPasswordParams,
   ResetPasswordParamsSchema,
 } from '@bottomtime/api';
+
 import {
   Body,
   Controller,
   Get,
   HttpCode,
+  Inject,
   NotFoundException,
   Param,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AdminService } from './admin.service';
-import { UsersService } from '../users/users.service';
+
 import { AssertAdmin } from '../auth';
+import { UsersService } from '../users/users.service';
 import { ZodValidator } from '../zod-validator';
+import { AdminService } from './admin.service';
 
 const UsernameParam = 'username';
 
@@ -29,7 +32,10 @@ const UsernameParam = 'username';
 @UseGuards(AssertAdmin)
 export class AdminUsersController {
   constructor(
+    @Inject(AdminService)
     private readonly adminService: AdminService,
+
+    @Inject(UsersService)
     private readonly usersService: UsersService,
   ) {}
 

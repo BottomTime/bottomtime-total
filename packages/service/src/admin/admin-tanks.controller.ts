@@ -1,22 +1,25 @@
 import {
+  CreateOrUpdateTankParamsDTO,
+  CreateOrUpdateTankParamsSchema,
+  ListTanksResponseDTO,
+  TankDTO,
+} from '@bottomtime/api';
+
+import {
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
+  Inject,
   NotFoundException,
   Param,
   Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
+
 import { AssertAdmin, AssertAuth } from '../auth';
-import {
-  CreateOrUpdateTankParamsDTO,
-  CreateOrUpdateTankParamsSchema,
-  ListTanksResponseDTO,
-  TankDTO,
-} from '@bottomtime/api';
 import { TanksService } from '../tanks/tanks.service';
 import { ZodValidator } from '../zod-validator';
 
@@ -24,7 +27,9 @@ const TankIdParam = 'tankId';
 
 @Controller('api/admin/tanks')
 export class AdminTanksController {
-  constructor(private readonly tanksService: TanksService) {}
+  constructor(
+    @Inject(TanksService) private readonly tanksService: TanksService,
+  ) {}
 
   /**
    * @openapi
