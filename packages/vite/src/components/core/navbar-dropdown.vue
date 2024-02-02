@@ -1,6 +1,7 @@
 <template>
   <div class="inline-block relative z-50">
     <button
+      data-testid="nav-dropdown-button"
       class="flex flex-row flex-nowrap justify-end items-center gap-3 text-lg hover:text-blue-300"
       @click="isActive = !isActive"
     >

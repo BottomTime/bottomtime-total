@@ -25,6 +25,7 @@ async function oops<T>(
   try {
     return await f();
   } catch (e) {
+    console.error('Oops!', e);
     if (isAxiosError(e)) {
       if (e.response) {
         // Server responded with an error

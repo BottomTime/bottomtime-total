@@ -87,11 +87,13 @@ export default defineConfig({
       url: 'http://127.0.0.1:4801/health',
       cwd: '../service',
       env: {
+        BT_LOG_LEVEL: 'error',
         BT_MONGO_URI: 'mongodb://127.0.0.1:27017/bottomtime-e2e',
         BT_PORT: '4801',
       },
       timeout: 10000,
       reuseExistingServer: true,
+      stdout: 'pipe',
     },
     {
       command: 'yarn serve',

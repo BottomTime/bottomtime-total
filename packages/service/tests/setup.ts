@@ -1,9 +1,9 @@
 /* eslint-disable no-console, no-process-env */
 import { mkdir } from 'fs/promises';
+import { up } from 'migrate-mongo';
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import path from 'path';
-import { up } from 'migrate-mongo';
 
 export default async function (): Promise<void> {
   await mkdir(path.resolve(__dirname, '../logs'), { recursive: true });
@@ -13,7 +13,7 @@ export default async function (): Promise<void> {
     // MongoDB will be running in a dedicated Docker image in CircleCI. We can just use that.
     uri = 'mongodb://localhost:27017/ci';
   } else {
-    // Otherwise, we'll run an in-memory Mong server.
+    // Otherwise, we'll run an in-memory Mongo server.
     console.log('\nStarting MongoDB server...');
     const mongod = await MongoMemoryServer.create();
     uri = mongod.getUri();

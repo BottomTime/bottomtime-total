@@ -1,4 +1,6 @@
-import { MongoClient } from 'mongodb';
+import { Collections as CollectionNames, UserData } from '@/schemas';
+
+import { Collection, MongoClient } from 'mongodb';
 
 // IMPORTANT:
 // These collections will be preserved between tests. They are not to have their data purged.
@@ -7,15 +9,33 @@ const PreservedCollections = new Set<string>([
 ]);
 
 let mongoClient: MongoClient | undefined;
+let collections: Collections | undefined;
+
+export interface Collections {
+  users: Collection<UserData>;
+}
 
 export async function getMongoClient() {
   if (!mongoClient) {
-    mongoClient = await MongoClient.connect(
-      process.env.BTTEST_MONGO_URI ??
-        'mongodb://127.0.0.1:27017/bottomtime-e2e',
-    );
+    const mongoURI =
+      process.env.BTTEST_MONGO_URI ||
+      'mongodb://127.0.0.1:27017/bottomtime-e2e';
+    mongoClient = await MongoClient.connect(mongoURI);
   }
+
   return mongoClient;
+}
+
+export async function getCollections(): Promise<Collections> {
+  if (!collections) {
+    const mongoClient = await getMongoClient();
+    const db = mongoClient.db();
+    collections = {
+      users: db.collection<UserData>(CollectionNames.Users),
+    };
+  }
+
+  return collections;
 }
 
 export async function purgeDatabase() {

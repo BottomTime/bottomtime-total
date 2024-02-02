@@ -11,11 +11,11 @@
         >
           <FormTextBox
             ref="usernameTextBox"
+            v-model.trim="loginDetails.usernameOrEmail"
             control-id="username"
             :maxlength="50"
             :invalid="v$.usernameOrEmail.$error"
             test-id="login-username"
-            v-model.trim="loginDetails.usernameOrEmail"
           />
         </FormField>
         <FormField
@@ -26,12 +26,12 @@
           required
         >
           <FormTextBox
-            control-id="password"
             ref="passwordTextBox"
+            v-model="loginDetails.password"
+            control-id="password"
             :maxlength="50"
             :invalid="v$.password.$error"
             test-id="login-password"
-            v-model="loginDetails.password"
             password
           />
         </FormField>
@@ -78,17 +78,20 @@
 
 <script setup lang="ts">
 import { LoginParamsDTO } from '@bottomtime/api';
+
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
+
 import { onMounted, reactive, ref } from 'vue';
+
 import { useClient } from '../../client';
-import { useCurrentUser, useToasts } from '../../store';
+import { User } from '../../client/user';
+import { Toast, ToastType } from '../../common';
 import { useOops } from '../../oops';
+import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextBox from '../common/form-text-box.vue';
-import { User } from '../../client/user';
-import { Toast, ToastType } from '../../common';
 
 type LoginFormProps = {
   showCancel?: boolean;
