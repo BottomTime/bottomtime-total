@@ -1,8 +1,6 @@
 /* eslint-disable no-process-env */
 import { defineConfig, devices } from '@playwright/test';
 
-import path from 'path';
-
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -13,7 +11,9 @@ import path from 'path';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
+  testDir: './tests/specs/',
+
+  testMatch: '**/*.spec.ts',
 
   /* Do not run tests in files in parallel - shared database will make this a problem. */
   fullyParallel: false,
@@ -85,7 +85,7 @@ export default defineConfig({
     {
       command: 'yarn migrate up && yarn serve',
       url: 'http://127.0.0.1:4801/health',
-      cwd: path.resolve(__dirname, '../service'),
+      cwd: '../service',
       env: {
         BT_MONGO_URI: 'mongodb://127.0.0.1:27017/bottomtime-e2e',
         BT_PORT: '4801',
@@ -96,7 +96,7 @@ export default defineConfig({
     {
       command: 'yarn serve',
       url: 'http://127.0.0.1:4851/health',
-      cwd: path.resolve(__dirname, '../vite'),
+      cwd: '../vite',
       env: {
         BTWEB_API_URL: 'http://localhost:4801/',
         BTWEB_BASE_URL: 'http://localhost:4851/',

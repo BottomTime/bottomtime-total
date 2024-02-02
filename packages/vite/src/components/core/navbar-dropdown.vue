@@ -15,21 +15,19 @@
         <i class="fas fa-caret-down"></i>
       </span>
     </button>
-    <ul
+    <div
       v-if="isActive"
-      class="absolute bg-gradient-to-b from-blue-800 to-blue-600 min-w-48 -right-3 rounded-b-md drop-shadow-lg opacity-100 text-left mt-4 z-40"
+      class="absolute flex flex-col bg-gradient-to-b from-blue-800 to-blue-600 min-w-48 -right-3 rounded-b-md drop-shadow-lg opacity-100 text-left mt-4"
     >
-      <li class="w-full p-2 hover:bg-blue-600">
-        <a href="/profile">Profile</a>
-      </li>
-      <li class="w-full p-2 hover:bg-blue-600">
-        <a href="/account">Account</a>
-      </li>
+      <a class="w-full p-2 hover:bg-blue-600" href="/profile">Profile</a>
+      <a class="w-full p-2 hover:bg-blue-600" href="/account">Account</a>
       <hr />
-      <li class="w-full p-2 hover:bg-blue-600 rounded-b-md">
-        <a href="/api/auth/logout">Logout</a>
-      </li>
-    </ul>
+      <a
+        class="w-full p-2 rounded-b-md hover:bg-blue-600"
+        href="/api/auth/logout"
+        >Logout</a
+      >
+    </div>
   </div>
 </template>
 
