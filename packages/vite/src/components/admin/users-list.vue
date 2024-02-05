@@ -9,7 +9,7 @@
   <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
     <!-- Search criteria panel -->
     <FormBox class="lg:col-start-2">
-      <form class="flex flex-col" @submit.prevent="">
+      <form class="flex flex-col sticky top-20" @submit.prevent="">
         <div class="relative mb-3">
           <span
             class="absolute pointer-events-none right-3 top-1.5 dark:text-grey-950"
@@ -42,7 +42,7 @@
 
     <div class="md:col-span-3">
       <!-- Summary bar and sort order select -->
-      <div class="flex flex-row gap-3 items-baseline">
+      <FormBox class="flex flex-row gap-3 items-baseline sticky top-16">
         <span class="font-bold">Showing Users:</span>
         <span class="font-title"> {{ data.users.length }} </span>
         <span>of </span>
@@ -53,7 +53,7 @@
           control-id="sort-order"
           :options="SortOrderOptions"
         />
-      </div>
+      </FormBox>
 
       <!-- Loading message -->
       <p v-if="isLoading" class="mt-6 text-lg text-info">

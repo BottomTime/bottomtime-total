@@ -1,5 +1,7 @@
 import { UserDTO } from '@bottomtime/api';
 
+import { string } from 'zod';
+
 export type AppInitialState = {
   currentUser: UserDTO | null;
 };
@@ -8,6 +10,11 @@ export type SelectOption = {
   disabled?: boolean;
   label?: string;
   value: string;
+};
+
+export type TabInfo = {
+  key: string;
+  label: string;
 };
 
 export enum ToastType {
