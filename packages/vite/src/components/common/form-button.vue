@@ -41,15 +41,15 @@ const classes = computed(() => {
 
   switch (props.type) {
     case 'primary':
-      classes = `${baseButtonWithGradient} from-primary-dark hover:to-primary-hover to-primary font-bold`;
+      classes = `${baseButtonWithGradient} from-primary-dark hover:to-primary-hover to-primary`;
       break;
 
     case 'link':
-      classes = 'text-link hover:text-link-hover p-2 m-1 text-sm';
+      classes = 'text-link hover:text-link-hover pt-2 pb-2 mt-1 mb-1 text-sm';
       break;
 
     case 'danger':
-      classes = `${baseButtonWithGradient} from-danger-dark hover:to-danger-hover to-danger font-bold`;
+      classes = `${baseButtonWithGradient} from-danger-dark hover:to-danger-hover to-danger`;
       break;
 
     case 'normal':

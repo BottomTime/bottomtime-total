@@ -4,14 +4,16 @@
   </DrawerPanel>
   <section class="h-16">
     <nav
-      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-50"
+      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30"
     >
       <div
-        class="container p-2 mx-auto h-16 flex flex-row flex-nowrap items-center justify-stretch"
+        class="container pl-2 pr-2 pt-4 mx-auto h-16 flex flex-row flex-nowrap items-baseline"
       >
         <!-- Brand Logo -->
-        <div class="h-8 w-40 mr-4 md:flex-none grow">
-          <div class="flex flex-row flex-nowrap justify-end items-center gap-3">
+        <div class="h-8 w-40 md:flex-none grow">
+          <div
+            class="flex flex-row flex-nowrap justify-start items-baseline gap-3"
+          >
             <button
               class="md:hidden visible pr-2"
               role="navigation"
@@ -43,7 +45,7 @@
         <div class="h-8 flex-initial text-right">
           <ul
             v-if="currentUser.anonymous"
-            class="flex flex-row flex-nowrap justify-end items-start gap-3"
+            class="flex flex-row flex-nowrap justify-end items-baseline gap-3"
           >
             <NavBarLink to="/register" title="Register" />
             <li>

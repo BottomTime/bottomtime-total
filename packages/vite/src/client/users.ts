@@ -1,4 +1,5 @@
 import {
+  AdminSearchUsersParamsDTO,
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
@@ -37,7 +38,7 @@ export class UsersApiClient {
     if (currentUser.anonymous) {
       return null;
     } else {
-      return new User(this.apiClient, currentUser);
+      return new User(this.apiClient, UserSchema.parse(data));
     }
   }
 
@@ -49,8 +50,12 @@ export class UsersApiClient {
     return new User(this.apiClient, UserSchema.parse(data));
   }
 
-  async searchUsers(): Promise<{ users: User[]; totalCount: number }> {
-    const { data } = await this.apiClient.get('/api/admin/users');
+  async searchUsers(
+    options: AdminSearchUsersParamsDTO,
+  ): Promise<{ users: User[]; totalCount: number }> {
+    const { data } = await this.apiClient.get('/api/admin/users', {
+      params: options,
+    });
     const response = AdminSearchUsersResponseSchema.parse(data);
 
     return {

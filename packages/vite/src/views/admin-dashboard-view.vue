@@ -1,5 +1,5 @@
 <template>
-  <PageTitle title="Admin Dashboard" />
+  <PageTitle title="Admin Dashboard" subtitle="Manage Users" />
   <UsersList />
 </template>
 
