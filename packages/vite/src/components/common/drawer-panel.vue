@@ -13,7 +13,7 @@
   <Transition name="drawer">
     <div
       v-if="visible"
-      class="fixed right-0 top-16 md:w-1/2 w-full h-full font-content bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-90 z-40 p-4"
+      class="fixed right-0 top-16 md:w-1/2 w-full h-full font-content bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-40 p-4"
     >
       <!-- Title and close button. -->
       <div v-if="title || showClose" class="flex flex-row mb-6 w-full">

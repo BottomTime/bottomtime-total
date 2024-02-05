@@ -148,7 +148,6 @@ const data = reactive<UsersData>({
 });
 const isLoading = ref(true);
 const selectedUser = ref<UserDTO | null>(null);
-const showManageUser = ref(false);
 
 async function refreshUsers(): Promise<void> {
   const [sortBy, sortOrder] = searchParams.sortOrder.split('-');

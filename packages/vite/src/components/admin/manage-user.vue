@@ -5,7 +5,7 @@
     @tab-changing="onTabChanging"
     @tab-changed="onTabChanged"
   >
-    <ManageUserAccount v-if="activeTab === Tabs[0].key" />
+    <ManageUserAccount v-if="activeTab === Tabs[0].key" :user="user" />
     <p v-else>Hihi!</p>
   </TabPanel>
 </template>

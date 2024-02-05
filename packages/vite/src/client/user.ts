@@ -1,6 +1,8 @@
 import { UserDTO, UserRole } from '@bottomtime/api';
-import { UserProfile } from './user-profile';
+
 import { AxiosInstance } from 'axios';
+
+import { UserProfile } from './user-profile';
 
 export class User {
   private _profile: UserProfile | undefined;
@@ -12,6 +14,10 @@ export class User {
 
   get id(): string {
     return this.data.id;
+  }
+
+  get displayName(): string {
+    return this.profile.name || this.username;
   }
 
   get email(): string | undefined {
@@ -56,6 +62,14 @@ export class User {
     }
 
     return this._profile;
+  }
+
+  async toggleAccountLock(): Promise<void> {
+    const url = `/api/admin/users/${this.username}/${
+      this.isLockedOut ? 'unlockAccount' : 'lockAccount'
+    }`;
+    await this.client.post(url);
+    this.data.isLockedOut = !this.data.isLockedOut;
   }
 
   toJSON(): UserDTO {
