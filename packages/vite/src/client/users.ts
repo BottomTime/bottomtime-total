@@ -3,6 +3,7 @@ import {
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
+  UserDTO,
   UserSchema,
 } from '@bottomtime/api';
 
@@ -62,5 +63,9 @@ export class UsersApiClient {
       users: response.users.map((user) => new User(this.apiClient, user)),
       totalCount: response.totalCount,
     };
+  }
+
+  wrapDTO(dto: unknown): User {
+    return new User(this.apiClient, UserSchema.parse(dto));
   }
 }

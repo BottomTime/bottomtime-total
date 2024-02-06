@@ -19,7 +19,7 @@ exports[`Admin Service when searching user accounts will allow pagination 1`] = 
 
 exports[`Admin Service when searching user accounts will filter results by role admin 1`] = `
 {
-  "totalCount": 200,
+  "totalCount": 94,
   "users": [
     {
       "role": "admin",
@@ -147,7 +147,7 @@ exports[`Admin Service when searching user accounts will filter results by role 
 
 exports[`Admin Service when searching user accounts will filter results by role user 1`] = `
 {
-  "totalCount": 200,
+  "totalCount": 106,
   "users": [
     {
       "role": "user",
@@ -275,7 +275,7 @@ exports[`Admin Service when searching user accounts will filter results by role 
 
 exports[`Admin Service when searching user accounts will perform a text-based search 1`] = `
 {
-  "totalCount": 200,
+  "totalCount": 1,
   "users": [
     {
       "email": "Dave.Moen@gmail.com",

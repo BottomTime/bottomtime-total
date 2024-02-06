@@ -141,7 +141,7 @@ export class AdminUsersController {
    *             required:
    *               - role
    *             properties:
-   *               role:
+   *               newRole:
    *                 type: string
    *                 description: The new role to assign to the user.
    *                 enum:
@@ -155,31 +155,31 @@ export class AdminUsersController {
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       401:
    *         description: The request failed because the user is not authenticated.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       403:
    *         description: The request failed because the user is not an admin.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       404:
    *         description: The request failed because the target user was not found.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       500:
    *         description: The request failed because of an internal server error.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    */
   @Post(`:${UsernameParam}/role`)
   @HttpCode(204)
@@ -231,31 +231,31 @@ export class AdminUsersController {
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       401:
    *         description: The request failed because the user is not authenticated.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       403:
    *         description: The request failed because the user is not an admin.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       404:
    *         description: The request failed because the target user was not found.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       500:
    *         description: The request failed because of an internal server error.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    */
   @Post(`:${UsernameParam}/password`)
   @HttpCode(204)
@@ -295,31 +295,31 @@ export class AdminUsersController {
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       401:
    *         description: The request failed because the user is not authenticated.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       403:
    *         description: The request failed because the user is not an admin.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       404:
    *         description: The request failed because the target user was not found.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       500:
    *         description: The request failed because of an internal server error.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    */
   @Post(`:${UsernameParam}/lockAccount`)
   @HttpCode(204)
@@ -354,31 +354,31 @@ export class AdminUsersController {
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       401:
    *         description: The request failed because the user is not authenticated.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       403:
    *         description: The request failed because the user is not an admin.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       404:
    *         description: The request failed because the target user was not found.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    *       500:
    *         description: The request failed because of an internal server error.
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: "#/components/schemas/ErrorResponse"
+   *               $ref: "#/components/schemas/Error"
    */
   @Post(`:${UsernameParam}/unlockAccount`)
   @HttpCode(204)

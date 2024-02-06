@@ -4,7 +4,13 @@
     :visible="!!selectedUser"
     @close="onCloseManageUser"
   >
-    <ManageUser v-if="selectedUser" :user="selectedUser" />
+    <ManageUser
+      v-if="selectedUser"
+      :user="selectedUser"
+      @account-lock-toggled="onAccountLockToggled"
+      @role-changed="onRoleChanged"
+      @password-reset="onPasswordReset"
+    />
   </DrawerPanel>
   <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
     <!-- Search criteria panel -->
@@ -78,6 +84,12 @@
           :user="user"
           @user-click="onUserClick"
         />
+
+        <li class="text-center mt-2">
+          <FormButton type="link" @click="onLoadMore">
+            <span class="text-lg">Load more results...</span>
+          </FormButton>
+        </li>
       </ul>
     </div>
   </div>
@@ -94,7 +106,7 @@ import {
 
 import { onMounted, reactive, ref } from 'vue';
 
-import { User, useClient } from '../../client';
+import { useClient } from '../../client';
 import { SelectOption } from '../../common';
 import { useOops } from '../../oops';
 import DrawerPanel from '../common/drawer-panel.vue';
@@ -107,7 +119,7 @@ import ManageUser from './manage-user.vue';
 import UsersListItem from './users-list-item.vue';
 
 type UsersData = {
-  users: User[];
+  users: UserDTO[];
   totalUsers: number;
 };
 
@@ -156,13 +168,14 @@ async function refreshUsers(): Promise<void> {
     role: searchParams.role || undefined,
     sortBy: sortBy as UsersSortBy,
     sortOrder: sortOrder as SortOrder,
+    skip: 0,
     limit: 100,
   };
 
   isLoading.value = true;
   await oops(async () => {
     const response = await client.users.searchUsers(params);
-    data.users = response.users;
+    data.users = response.users.map((u) => u.toJSON());
     data.totalUsers = response.totalCount;
   });
   isLoading.value = false;
@@ -176,5 +189,28 @@ function onUserClick(user: UserDTO): void {
 
 function onCloseManageUser() {
   selectedUser.value = null;
+}
+
+function onLoadMore() {
+  // TODO
+}
+
+function onAccountLockToggled() {
+  if (selectedUser.value) {
+    selectedUser.value.isLockedOut = !selectedUser.value.isLockedOut;
+  }
+}
+
+function onRoleChanged(_id: string, role: UserRole) {
+  if (selectedUser.value) {
+    selectedUser.value.role = role;
+  }
+}
+
+function onPasswordReset() {
+  if (selectedUser.value) {
+    selectedUser.value.hasPassword = true;
+    selectedUser.value.lastPasswordChange = new Date();
+  }
 }
 </script>

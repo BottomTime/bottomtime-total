@@ -71,20 +71,22 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs';
+import { UserDTO } from '@bottomtime/api';
 
-import { User } from '../../client';
+import dayjs from 'dayjs';
+import 'dayjs/plugin/relativeTime';
+
 import FormButton from '../common/form-button.vue';
 import NavLink from '../common/nav-link.vue';
 import UserAvatar from '../users/user-avatar.vue';
 
 type UsersListItemProps = {
-  user: User;
+  user: UserDTO;
 };
 
 defineProps<UsersListItemProps>();
 
 defineEmits<{
-  (e: 'user-click', user: User): void;
+  (e: 'user-click', user: UserDTO): void;
 }>();
 </script>

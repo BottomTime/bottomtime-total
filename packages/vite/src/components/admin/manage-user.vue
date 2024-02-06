@@ -5,21 +5,28 @@
     @tab-changing="onTabChanging"
     @tab-changed="onTabChanged"
   >
-    <ManageUserAccount v-if="activeTab === Tabs[0].key" :user="user" />
+    <ManageUserAccount
+      v-if="activeTab === Tabs[0].key"
+      :user="user"
+      @account-lock-toggled="(id) => $emit('account-lock-toggled', id)"
+      @password-reset="(id) => $emit('password-reset', id)"
+      @role-changed="(id, role) => $emit('role-changed', id, role)"
+    />
     <p v-else>Hihi!</p>
   </TabPanel>
 </template>
 
 <script setup lang="ts">
+import { UserDTO, UserRole } from '@bottomtime/api';
+
 import { ref } from 'vue';
 
-import { User } from '../../client';
 import { TabInfo } from '../../common';
 import TabPanel from '../common/tabs-panel.vue';
 import ManageUserAccount from './manage-user-account.vue';
 
 type ManageUserProps = {
-  user: User;
+  user: UserDTO;
 };
 
 const Tabs: TabInfo[] = [
@@ -30,6 +37,11 @@ const Tabs: TabInfo[] = [
 const activeTab = ref(Tabs[0].key);
 
 defineProps<ManageUserProps>();
+defineEmits<{
+  (e: 'account-lock-toggled', userId: string): void;
+  (e: 'password-reset', userId: string): void;
+  (e: 'role-changed', userId: string, role: UserRole): void;
+}>();
 
 function onTabChanging(key: string, cancel: () => void) {
   // TODO: Check for unsaved changes and cancel if necessary.

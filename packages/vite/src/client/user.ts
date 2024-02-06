@@ -1,4 +1,9 @@
-import { UserDTO, UserRole } from '@bottomtime/api';
+import {
+  ChangeRoleParams,
+  ResetPasswordParams,
+  UserDTO,
+  UserRole,
+} from '@bottomtime/api';
 
 import { AxiosInstance } from 'axios';
 
@@ -62,6 +67,22 @@ export class User {
     }
 
     return this._profile;
+  }
+
+  async changeRole(role: UserRole): Promise<void> {
+    const params: ChangeRoleParams = { newRole: role };
+    await this.client.post(`/api/admin/users/${this.username}/role`, params);
+    this.data.role = role;
+  }
+
+  async resetPassword(newPassword: string): Promise<void> {
+    const params: ResetPasswordParams = { newPassword };
+    await this.client.post(
+      `/api/admin/users/${this.username}/password`,
+      params,
+    );
+    this.data.hasPassword = true;
+    this.data.lastPasswordChange = new Date();
   }
 
   async toggleAccountLock(): Promise<void> {

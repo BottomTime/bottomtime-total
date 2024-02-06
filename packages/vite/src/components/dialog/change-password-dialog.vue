@@ -2,7 +2,7 @@
   <DialogBase
     :title="title"
     :visible="visible"
-    :show-close="false"
+    :show-close="!isWorking"
     @close="$emit('cancel')"
   >
     <template #default>
@@ -34,18 +34,36 @@
           required
         >
           <FormTextBox
+            ref="newPasswordInput"
             v-model="data.newPassword"
             control-id="newPassword"
             :maxlength="50"
             test-id="newPassword"
             :invalid="v$.newPassword.$error"
             :autofocus="!requireOldPassword"
-            password
-          />
+            :password="!state.showPassword"
+          >
+            <template #right>
+              <button
+                class="dark:text-grey-950"
+                :aria-label="
+                  state.showPassword ? 'hide password' : 'show password'
+                "
+                @click="onToggleShowPassword"
+              >
+                <span v-if="state.showPassword">
+                  <i class="fas fa-eye-slash"></i>
+                </span>
+                <span v-else>
+                  <i class="fas fa-eye"></i>
+                </span>
+              </button>
+            </template>
+          </FormTextBox>
         </FormField>
 
         <FormField
-          v-if="!showPassword"
+          v-if="!state.showPassword"
           control-id="confirmPassword"
           label="Confirm password"
           :invalid="v$.confirmPassword.$error"
@@ -63,7 +81,12 @@
       </form>
     </template>
     <template #buttons>
-      <FormButton type="primary" :is-loading="isWorking" @click="onConfirm">
+      <FormButton
+        type="primary"
+        :is-loading="isWorking"
+        submit
+        @click="onConfirm"
+      >
         Change Password
       </FormButton>
       <FormButton :disabled="isWorking" @click="$emit('cancel')">
@@ -79,7 +102,7 @@ import { PasswordStrengthRegex } from '@bottomtime/api';
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required, requiredIf } from '@vuelidate/validators';
 
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
@@ -121,6 +144,8 @@ const data = reactive<FormData>({
   newPassword: '',
   confirmPassword: '',
 });
+
+const newPasswordInput = ref<InstanceType<typeof FormTextBox> | null>(null);
 
 const v$ = useVuelidate(
   {
@@ -166,6 +191,11 @@ async function onConfirm(): Promise<void> {
       props.requireOldPassword ? data.oldPassword : undefined,
     );
   }
+}
+
+function onToggleShowPassword() {
+  state.showPassword = !state.showPassword;
+  newPasswordInput.value?.focus();
 }
 
 function reset() {

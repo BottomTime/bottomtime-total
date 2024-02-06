@@ -2,7 +2,7 @@
 
 exports[`Admin End-to-End Tests when searching users will filter results based on query string 1`] = `
 {
-  "totalCount": 52,
+  "totalCount": 5,
   "users": [
     {
       "email": "Anais.Mills26@hotmail.com",

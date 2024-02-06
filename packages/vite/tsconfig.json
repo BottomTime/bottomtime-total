@@ -10,7 +10,8 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@bottomtime/api": ["../api/src/index.ts"]
     },
 
     /* Bundler mode */

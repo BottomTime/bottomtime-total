@@ -14,7 +14,7 @@
       <p>
         Are you sure you want to
         {{ user.isLockedOut ? 'reactivate' : 'suspend' }} the account for
-        <strong>{{ user.displayName }}</strong
+        <strong>{{ user.profile?.name || user.username }}</strong
         >?
       </p>
     </div>
@@ -89,52 +89,109 @@
       </FormButton>
     </div>
 
-    <div class="flex flex-row gap-3 items-baseline">
+    <form class="flex flex-row gap-3 items-baseline" @submit.prevent="">
       <label class="font-bold text-right w-36">User Role:</label>
-      <span class="grow">
-        {{ user.role }}
-      </span>
-      <FormButton class="w-40" @click="onChangeRole">
-        Change Role...
-      </FormButton>
-    </div>
+      <div class="grow">
+        <FormSelect
+          v-if="state.isChangingRole"
+          v-model="state.selectedRole"
+          control-id="user-role"
+          test-id="user-role"
+          :options="RoleOptions"
+          autofocus
+        />
+        <span v-else>
+          {{ user.role }}
+        </span>
+      </div>
+      <div class="w-40">
+        <div v-if="state.isChangingRole" class="grid grid-cols-2 gap-2">
+          <FormButton type="primary" submit @click="onSaveRoleChange">
+            <span class="text-success mr-1">
+              <i class="fas fa-check"></i>
+            </span>
+            <span>Save</span>
+          </FormButton>
+          <FormButton @click="onCancelRoleChange">
+            <span class="text-danger mr-1">
+              <i class="fas fa-times"></i>
+            </span>
+            <span>Cancel</span>
+          </FormButton>
+        </div>
+
+        <FormButton v-else class="w-40" @click="onChangeRole">
+          Change Role...
+        </FormButton>
+      </div>
+    </form>
   </div>
 </template>
 
 <script setup lang="ts">
+import { UserDTO, UserRole } from '@bottomtime/api';
+
 import dayjs from 'dayjs';
 import 'dayjs/plugin/relativeTime';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
-import { User } from '../../client';
+import { useClient } from '../../client';
+import { SelectOption, ToastType } from '../../common';
 import { useOops } from '../../oops';
+import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
+import FormSelect from '../common/form-select.vue';
 import FormToggle from '../common/form-toggle.vue';
 import ChangePasswordDialog from '../dialog/change-password-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 
+// Type Defs
 type ManageUserAccountProps = {
-  user: User;
+  user: UserDTO;
 };
 type ManageUserAccountState = {
   isChangingPassword: boolean;
+  isChangingRole: boolean;
   isTogglingLockout: boolean;
+  selectedRole: UserRole;
   showConfirmToggleLockout: boolean;
   showChangePassword: boolean;
   showExactTimes: boolean;
 };
 
+const RoleOptions: SelectOption[] = [
+  { label: 'User', value: UserRole.User },
+  { label: 'Administrator', value: UserRole.Admin },
+];
+
+// Dependencies
+const client = useClient();
+const toasts = useToasts();
 const oops = useOops();
 
+// Component state
+const changePasswordDialog = ref<InstanceType<
+  typeof ChangePasswordDialog
+> | null>(null);
 const props = defineProps<ManageUserAccountProps>();
 const state = reactive<ManageUserAccountState>({
   isChangingPassword: false,
+  isChangingRole: false,
   isTogglingLockout: false,
+  selectedRole: props.user.role,
   showExactTimes: false,
   showChangePassword: false,
   showConfirmToggleLockout: false,
 });
 
+// Emits
+const emit = defineEmits<{
+  (e: 'account-lock-toggled', userId: string): void;
+  (e: 'password-reset', userId: string): void;
+  (e: 'role-changed', userId: string, newRole: UserRole): void;
+}>();
+
+// Event handlers
 function formatTime(time?: Date) {
   if (!time) return 'Never';
   return state.showExactTimes
@@ -143,11 +200,24 @@ function formatTime(time?: Date) {
 }
 
 function onResetPassword() {
+  changePasswordDialog.value?.reset();
   state.showChangePassword = true;
 }
 
 async function onConfirmResetPassword(newPassword: string): Promise<void> {
   state.isChangingPassword = true;
+  await oops(async () => {
+    const user = client.users.wrapDTO(props.user);
+    await user.resetPassword(newPassword);
+    state.showChangePassword = false;
+    emit('password-reset', user.id);
+    toasts.toast({
+      id: 'password-reset',
+      type: ToastType.Success,
+      message: 'Password has successfully been reset.',
+    });
+  });
+  state.isChangingPassword = false;
 }
 
 function onCancelResetPassword() {
@@ -163,7 +233,16 @@ async function onConfirmToggleLockout(): Promise<void> {
   state.showConfirmToggleLockout = false;
 
   await oops(async () => {
-    await props.user.toggleAccountLock();
+    const user = client.users.wrapDTO(props.user);
+    await user.toggleAccountLock();
+    emit('account-lock-toggled', user.id);
+    toasts.toast({
+      id: 'account-lock-toggled',
+      type: ToastType.Success,
+      message: `Account has successfully been ${
+        user.isLockedOut ? 'suspended' : 'reactivated'
+      }.`,
+    });
   });
 
   state.isTogglingLockout = false;
@@ -173,5 +252,26 @@ function onCancelToggleLockout() {
   state.showConfirmToggleLockout = false;
 }
 
-function onChangeRole() {}
+function onChangeRole() {
+  state.isChangingRole = true;
+}
+
+async function onSaveRoleChange(): Promise<void> {
+  state.isChangingRole = false;
+  await oops(async () => {
+    const user = client.users.wrapDTO(props.user);
+    await user.changeRole(state.selectedRole);
+    emit('role-changed', user.id, state.selectedRole);
+    toasts.toast({
+      id: 'role-changed',
+      type: ToastType.Success,
+      message: `Role has successfully been changed to "${state.selectedRole}"".`,
+    });
+  });
+}
+
+function onCancelRoleChange() {
+  state.isChangingRole = false;
+  state.selectedRole = props.user.role;
+}
 </script>
