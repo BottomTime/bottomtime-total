@@ -14,9 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 type FormTextBoxProps = {
+  autofocus?: boolean;
   controlId?: string;
   invalid?: boolean;
   maxlength?: number;
@@ -25,7 +26,8 @@ type FormTextBoxProps = {
   testId?: string;
 };
 
-withDefaults(defineProps<FormTextBoxProps>(), {
+const props = withDefaults(defineProps<FormTextBoxProps>(), {
+  autofocus: false,
   invalid: false,
   password: false,
 });
@@ -38,4 +40,10 @@ function focus() {
 }
 
 defineExpose({ focus });
+
+onMounted(() => {
+  if (props.autofocus) {
+    focus();
+  }
+});
 </script>
