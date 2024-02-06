@@ -29,7 +29,7 @@
   />
 
   <div class="flex flex-row mb-4">
-    <h1 class="grow text-xl font-bold font-title">Account Activity</h1>
+    <TextHeading class="grow">Account Activity</TextHeading>
     <div class="text-sm text-right">
       <FormToggle v-model="state.showExactTimes" label="Show exact times" />
     </div>
@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <h1 class="text-xl font-bold font-title mb-4">Update Account</h1>
+    <TextHeading>Update Account</TextHeading>
     <div class="flex flex-row gap-3 items-baseline">
       <label class="font-bold text-right w-36">Account Status:</label>
       <span
@@ -142,6 +142,7 @@ import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormSelect from '../common/form-select.vue';
 import FormToggle from '../common/form-toggle.vue';
+import TextHeading from '../common/text-heading.vue';
 import ChangePasswordDialog from '../dialog/change-password-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 

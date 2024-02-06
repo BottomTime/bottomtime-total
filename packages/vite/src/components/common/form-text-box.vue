@@ -5,7 +5,7 @@
       ref="input"
       v-model="model"
       :type="password ? 'password' : 'text'"
-      :class="`pl-2 pr-2 pt-1 pb-1 w-full border-2 rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 text-sm dark:text-grey-950 select-all ring-2 ring-offset-1 ring-${highlightColour} caret-${highlightColour}`"
+      :class="`pl-2 pr-2 pt-1 pb-1 w-full border-2 rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 dark:text-grey-950 select-all ring-2 ring-offset-1 ring-${highlightColour} caret-${highlightColour}`"
       :maxlength="maxlength"
       :placeholder="placeholder"
       :data-testid="testId"

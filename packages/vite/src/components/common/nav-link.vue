@@ -2,6 +2,7 @@
   <a
     class="font-bold text-link underline hover:text-link-hover"
     :href="to"
+    :target="newTab ? '_blank' : '_self'"
     :aria-label="label"
     @click="$emit('click')"
   >
@@ -13,9 +14,12 @@
 type NavLinkProps = {
   to: string;
   label?: string;
+  newTab?: boolean;
 };
 
-defineProps<NavLinkProps>();
+withDefaults(defineProps<NavLinkProps>(), {
+  newTab: false,
+});
 defineEmits<{
   (e: 'click'): void;
 }>();

@@ -3,7 +3,7 @@
     :id="controlId"
     ref="selectInput"
     v-model="value"
-    :class="`p-1 border-2 outline-offset-1 ${width} caret-${highlightColour} rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 text-sm dark:text-grey-950`"
+    :class="`p-1 border-2 outline-offset-1 ${width} caret-${highlightColour} rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 dark:text-grey-950`"
     :name="controlId"
   >
     <option v-for="option in options" :key="option.value" :value="option.value">
