@@ -5,11 +5,11 @@
   >
     <button
       data-testid="nav-dropdown-button"
-      class="flex flex-row flex-nowrap justify-end items-baseline gap-3 text-lg hover:text-blue-300"
+      class="flex flex-row flex-nowrap justify-end items-baseline gap-3 ml-12 text-lg hover:text-blue-300"
       @click="isActive = !isActive"
     >
       <UserAvatar
-        class="absolute -left-10 -top-0.5"
+        class="absolute left-2 -top-0.5"
         :avatar="currentUser.user?.profile?.avatar"
         :display-name="currentUser.displayName"
       />

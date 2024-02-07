@@ -42,10 +42,13 @@
         </div>
 
         <!-- Right-Hand Dropdown (always visible) -->
-        <div class="h-8 flex-initial text-right">
+        <div
+          class="h-8 flex-initial flex flex-row flex-nowrap justify-end items-baseline gap-3 text-right"
+        >
+          <DarkModeToggle />
           <ul
             v-if="currentUser.anonymous"
-            class="flex flex-row flex-nowrap justify-end items-baseline gap-3"
+            class="flex flex-row ml-4 gap-3 justify-end items-baseline"
           >
             <NavBarLink to="/register" title="Register" />
             <li>
@@ -73,6 +76,7 @@ import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
 import LoginForm from '../users/login-form.vue';
+import DarkModeToggle from './dark-mode-toggle.vue';
 import NavbarHamburger from './nav-bar-hamburger.vue';
 import NavBarLink from './nav-bar-link.vue';
 import { getNavLinks } from './nav-links';

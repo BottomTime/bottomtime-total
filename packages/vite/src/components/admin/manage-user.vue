@@ -12,11 +12,13 @@
       @password-reset="(id) => $emit('password-reset', id)"
       @role-changed="(id, role) => $emit('role-changed', id, role)"
     />
+
     <EditProfile
       v-else-if="activeTab === Tabs[1].key"
       :profile="user.profile"
     />
-    <p v-else>Hihi!</p>
+
+    <EditSettings v-else-if="activeTab === Tabs[2].key" :user="user" />
   </TabPanel>
 </template>
 
@@ -28,6 +30,7 @@ import { ref } from 'vue';
 import { TabInfo } from '../../common';
 import TabPanel from '../common/tabs-panel.vue';
 import EditProfile from '../users/edit-profile.vue';
+import EditSettings from '../users/edit-settings.vue';
 import ManageUserAccount from './manage-user-account.vue';
 
 type ManageUserProps = {

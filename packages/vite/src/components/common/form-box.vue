@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`bg-blue-100 dark:bg-blue-900 p-4 ${roundingStyle} shadow-md opacity-100`"
+    :class="`bg-blue-100 dark:bg-blue-900 p-4 ${roundingStyle} ${shadowStyle} opacity-100`"
   >
     <slot></slot>
   </div>
@@ -11,10 +11,12 @@ import { computed } from 'vue';
 
 type FormBoxProps = {
   rounding?: 'none' | 'all' | 'top' | 'bottom';
+  shadow?: boolean;
 };
 
 const props = withDefaults(defineProps<FormBoxProps>(), {
   rounding: 'all',
+  shadow: false,
 });
 
 const roundingStyle = computed(() => {
@@ -30,4 +32,7 @@ const roundingStyle = computed(() => {
       return 'rounded-md';
   }
 });
+const shadowStyle = computed(() =>
+  props.shadow ? 'shadow-sm shadow-grey-600 dark:shadow-blue-500' : '',
+);
 </script>
