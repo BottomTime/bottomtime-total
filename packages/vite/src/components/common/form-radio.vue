@@ -3,6 +3,7 @@
     <input
       :id="controlId"
       v-model="model"
+      class="accent-blue-800 dark:accent-blue-300"
       type="radio"
       :name="group"
       :value="value"

@@ -8,9 +8,11 @@ import {
 import { AxiosInstance } from 'axios';
 
 import { UserProfile } from './user-profile';
+import { UserSettings } from './user-settings';
 
 export class User {
   private _profile: UserProfile | undefined;
+  private _settings: UserSettings | undefined;
 
   constructor(
     private readonly client: AxiosInstance,
@@ -63,7 +65,7 @@ export class User {
 
   get profile(): UserProfile {
     if (!this._profile) {
-      this._profile = new UserProfile(this.data.profile);
+      this._profile = new UserProfile(this.client, this.data);
     }
 
     return this._profile;
@@ -83,6 +85,14 @@ export class User {
     );
     this.data.hasPassword = true;
     this.data.lastPasswordChange = new Date();
+  }
+
+  get settings(): UserSettings {
+    if (!this._settings) {
+      this._settings = new UserSettings(this.client, this.data);
+    }
+
+    return this._settings;
   }
 
   async toggleAccountLock(): Promise<void> {

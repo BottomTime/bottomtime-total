@@ -26,9 +26,10 @@ type TabsPanelProps = {
   activeTab?: string;
 };
 
-const BaseTabStyle = 'font-title p-2 hover:text-blue-300';
+const BaseTabStyle =
+  'font-title p-2 hover:text-blue-500 hover:dark:text-blue-500';
 const inactiveTabStyle = `${BaseTabStyle} text-gray-500`;
-const activeTabStyle = `${BaseTabStyle} text-blue-400 font-bold rounded-t-md bg-blue-100 dark:bg-blue-900`;
+const activeTabStyle = `${BaseTabStyle} text-blue-800 dark:text-blue-300 font-bold rounded-t-md bg-blue-200 dark:bg-blue-900`;
 
 const props = defineProps<TabsPanelProps>();
 const emit = defineEmits<{

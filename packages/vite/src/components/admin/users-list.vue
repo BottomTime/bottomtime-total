@@ -10,6 +10,8 @@
       @account-lock-toggled="onAccountLockToggled"
       @role-changed="onRoleChanged"
       @password-reset="onPasswordReset"
+      @save-profile="onSaveProfile"
+      @save-settings="onSaveSettings"
     />
   </DrawerPanel>
   <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
@@ -98,9 +100,11 @@
 <script setup lang="ts">
 import {
   AdminSearchUsersParamsDTO,
+  ProfileDTO,
   SortOrder,
   UserDTO,
   UserRole,
+  UserSettingsDTO,
   UsersSortBy,
 } from '@bottomtime/api';
 
@@ -211,6 +215,18 @@ function onPasswordReset() {
   if (selectedUser.value) {
     selectedUser.value.hasPassword = true;
     selectedUser.value.lastPasswordChange = new Date();
+  }
+}
+
+function onSaveSettings(settings: UserSettingsDTO) {
+  if (selectedUser.value) {
+    selectedUser.value.settings = settings;
+  }
+}
+
+function onSaveProfile(profile: ProfileDTO) {
+  if (selectedUser.value) {
+    selectedUser.value.profile = profile;
   }
 }
 </script>

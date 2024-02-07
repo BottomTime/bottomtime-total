@@ -86,17 +86,21 @@ const dayOptions = computed<SelectOption[]>(() => {
   ];
 });
 
-watch(value, (newValue) => {
-  if (!newValue || !FuzzyDateRegex.test(newValue)) {
-    Object.assign(data, EmptyValue);
-    return;
-  }
+watch(
+  value,
+  (newValue) => {
+    if (!newValue || !FuzzyDateRegex.test(newValue)) {
+      Object.assign(data, EmptyValue);
+      return;
+    }
 
-  const [year, month, day] = newValue.split('-');
-  data.year = year;
-  data.month = month || '';
-  data.day = day || '';
-});
+    const [year, month, day] = newValue.split('-');
+    data.year = year;
+    data.month = month || '';
+    data.day = day || '';
+  },
+  { immediate: true },
+);
 
 watch(
   data,

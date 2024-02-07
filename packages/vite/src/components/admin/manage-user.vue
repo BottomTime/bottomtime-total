@@ -15,15 +15,25 @@
 
     <EditProfile
       v-else-if="activeTab === Tabs[1].key"
-      :profile="user.profile"
+      :user="user"
+      @save-profile="(profile) => $emit('save-profile', profile)"
     />
 
-    <EditSettings v-else-if="activeTab === Tabs[2].key" :user="user" />
+    <EditSettings
+      v-else-if="activeTab === Tabs[2].key"
+      :user="user"
+      @save-settings="(settings) => $emit('save-settings', settings)"
+    />
   </TabPanel>
 </template>
 
 <script setup lang="ts">
-import { UserDTO, UserRole } from '@bottomtime/api';
+import {
+  ProfileDTO,
+  UserDTO,
+  UserRole,
+  UserSettingsDTO,
+} from '@bottomtime/api';
 
 import { ref } from 'vue';
 
@@ -49,6 +59,8 @@ defineEmits<{
   (e: 'account-lock-toggled', userId: string): void;
   (e: 'password-reset', userId: string): void;
   (e: 'role-changed', userId: string, role: UserRole): void;
+  (e: 'save-profile', profile: ProfileDTO): void;
+  (e: 'save-settings', settings: UserSettingsDTO): void;
 }>();
 
 function onTabChanging(key: string, cancel: () => void) {
