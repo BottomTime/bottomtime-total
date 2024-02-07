@@ -1,42 +1,38 @@
 <template>
   <form @submit.prevent>
-    <div class="grid grid-cols-1 md:grid-cols-3">
-      <div class="md:col-start-2 flex flex-col">
-        <FormField
-          label="Username or email"
-          control-id="username"
-          :invalid="v$.usernameOrEmail.$error"
-          :error="v$.usernameOrEmail.$errors[0]?.$message"
-          required
-        >
-          <FormTextBox
-            ref="usernameTextBox"
-            v-model.trim="loginDetails.usernameOrEmail"
-            control-id="username"
-            :maxlength="50"
-            :invalid="v$.usernameOrEmail.$error"
-            test-id="login-username"
-          />
-        </FormField>
-        <FormField
-          control-id="password"
-          label="Password"
-          :invalid="v$.password.$error"
-          :error="v$.password.$errors[0]?.$message"
-          required
-        >
-          <FormTextBox
-            ref="passwordTextBox"
-            v-model="loginDetails.password"
-            control-id="password"
-            :maxlength="50"
-            :invalid="v$.password.$error"
-            test-id="login-password"
-            password
-          />
-        </FormField>
-      </div>
-    </div>
+    <FormField
+      label="Username or email"
+      control-id="username"
+      :invalid="v$.usernameOrEmail.$error"
+      :error="v$.usernameOrEmail.$errors[0]?.$message"
+      required
+    >
+      <FormTextBox
+        ref="usernameTextBox"
+        v-model.trim="loginDetails.usernameOrEmail"
+        control-id="username"
+        :maxlength="50"
+        :invalid="v$.usernameOrEmail.$error"
+        test-id="login-username"
+      />
+    </FormField>
+    <FormField
+      control-id="password"
+      label="Password"
+      :invalid="v$.password.$error"
+      :error="v$.password.$errors[0]?.$message"
+      required
+    >
+      <FormTextBox
+        ref="passwordTextBox"
+        v-model="loginDetails.password"
+        control-id="password"
+        :maxlength="50"
+        :invalid="v$.password.$error"
+        test-id="login-password"
+        password
+      />
+    </FormField>
     <div class="flex flex-row justify-center gap-3 mt-2 mb-6">
       <FormButton
         type="primary"

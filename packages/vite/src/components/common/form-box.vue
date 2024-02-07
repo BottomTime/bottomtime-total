@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`bg-blue-200 dark:bg-blue-900 p-4 ${roundingStyle} ${shadowStyle} opacity-100`"
+    :class="`bg-blue-300 dark:bg-blue-900 p-4 ${roundingStyle} ${shadowStyle} opacity-100`"
   >
     <slot></slot>
   </div>

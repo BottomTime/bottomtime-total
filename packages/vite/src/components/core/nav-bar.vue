@@ -1,6 +1,10 @@
 <template>
   <DrawerPanel title="Login" :visible="showLogin" @close="toggleLoginForm">
-    <LoginForm ref="loginForm" @close="toggleLoginForm" />
+    <div class="grid grid-cols-1 xl:grid-cols-6">
+      <div class="xl:col-start-2 xl:col-span-4">
+        <LoginForm ref="loginForm" @close="toggleLoginForm" />
+      </div>
+    </div>
   </DrawerPanel>
   <section class="h-16">
     <nav

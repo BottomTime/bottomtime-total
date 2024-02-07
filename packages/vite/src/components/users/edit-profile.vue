@@ -1,7 +1,24 @@
 <template>
+  <ConfirmDialog
+    title="Reset Profile?"
+    :visible="showConfirmResetDialog"
+    @confirm="onConfirmReset"
+    @cancel="onCancelReset"
+  >
+    <div class="flex flex-row gap-4">
+      <span class="pt-2">
+        <i class="fas fa-question-circle fa-2x"></i>
+      </span>
+      <p>
+        Are you sure you want to cancel the changes you have made to your
+        profile?
+      </p>
+    </div>
+  </ConfirmDialog>
+
   <ChangeAvatarDialog
     :avatar-url="data.avatar"
-    :display-name="data.name || user.username"
+    :display-name="user.profile.name || user.username"
     :visible="showAvatarDialog"
     @cancel="showAvatarDialog = false"
     @save="onAvatarChanged"
@@ -53,7 +70,7 @@
             <button @click="showAvatarDialog = !showAvatarDialog">
               <UserAvatar
                 :avatar="data.avatar"
-                :display-name="data.name || user.username"
+                :display-name="user.profile.name || user.username"
                 size="x-large"
               />
             </button>
@@ -87,7 +104,7 @@
         >
           Save Changes
         </FormButton>
-        <FormButton @click="onCancel">Cancel</FormButton>
+        <FormButton @click="onReset">Cancel</FormButton>
       </div>
     </fieldset>
   </form>
@@ -110,6 +127,7 @@ import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import TextHeading from '../common/text-heading.vue';
 import ChangeAvatarDialog from '../dialog/change-avatar-dialog.vue';
+import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UserAvatar from './user-avatar.vue';
 
 type EditProfileProps = {
@@ -148,6 +166,7 @@ const data = reactive<ProfileData>({
   startedDiving: props.user.profile.startedDiving ?? '',
 });
 const showAvatarDialog = ref(false);
+const showConfirmResetDialog = ref(false);
 const isSaving = ref(false);
 
 const emit = defineEmits<{
@@ -195,5 +214,22 @@ async function onSave() {
   isSaving.value = false;
 }
 
-function onCancel() {}
+function onReset() {
+  showConfirmResetDialog.value = true;
+}
+
+function onConfirmReset() {
+  data.avatar = props.user.profile.avatar ?? '';
+  data.bio = props.user.profile.bio ?? '';
+  data.birthdate = props.user.profile.birthdate ?? '';
+  data.experienceLevel = props.user.profile.experienceLevel ?? '';
+  data.location = props.user.profile.location ?? '';
+  data.name = props.user.profile.name ?? '';
+  data.startedDiving = props.user.profile.startedDiving ?? '';
+  showConfirmResetDialog.value = false;
+}
+
+function onCancelReset() {
+  showConfirmResetDialog.value = false;
+}
 </script>

@@ -1,10 +1,5 @@
 <template>
-  <TabPanel
-    :tabs="Tabs"
-    :active-tab="activeTab"
-    @tab-changing="onTabChanging"
-    @tab-changed="onTabChanged"
-  >
+  <TabPanel :tabs="Tabs" :active-tab="activeTab" @tab-changed="onTabChanged">
     <ManageUserAccount
       v-if="activeTab === Tabs[0].key"
       :user="user"
@@ -15,6 +10,7 @@
 
     <EditProfile
       v-else-if="activeTab === Tabs[1].key"
+      ref="editProfileTab"
       :user="user"
       @save-profile="(profile) => $emit('save-profile', profile)"
     />
@@ -53,6 +49,7 @@ const Tabs: TabInfo[] = [
   { key: 'settings', label: 'Settings' },
 ];
 const activeTab = ref(Tabs[0].key);
+const editProfileTab = ref<InstanceType<typeof EditProfile> | null>(null);
 
 defineProps<ManageUserProps>();
 defineEmits<{
@@ -62,10 +59,6 @@ defineEmits<{
   (e: 'save-profile', profile: ProfileDTO): void;
   (e: 'save-settings', settings: UserSettingsDTO): void;
 }>();
-
-function onTabChanging(key: string, cancel: () => void) {
-  // TODO: Check for unsaved changes and cancel if necessary.
-}
 
 function onTabChanged(key: string) {
   activeTab.value = key;
