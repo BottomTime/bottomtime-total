@@ -69,10 +69,7 @@ describe('Users API client', () => {
       });
       const user = await client.getCurrentUser();
       expect(user).not.toBeNull();
-      expect(user?.toJSON()).toEqual({
-        anonymous: false,
-        ...BasicUser,
-      });
+      expect(user?.toJSON()).toEqual(BasicUser);
     });
   });
 
