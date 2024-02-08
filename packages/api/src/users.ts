@@ -100,12 +100,14 @@ export type CreateUserParamsDTO = z.infer<typeof CreateUserOptionsSchema>;
 export const ChangeUsernameParamsSchema = z.object({
   newUsername: UsernameSchema,
 });
-export type ChangeUsernameParams = z.infer<typeof ChangeUsernameParamsSchema>;
+export type ChangeUsernameParamsDTO = z.infer<
+  typeof ChangeUsernameParamsSchema
+>;
 
 export const ChangeEmailParamsSchema = z.object({
   newEmail: EmailSchema,
 });
-export type ChangeEmailParams = z.infer<typeof ChangeEmailParamsSchema>;
+export type ChangeEmailParamsDTO = z.infer<typeof ChangeEmailParamsSchema>;
 
 export const ChangePasswordParamsSchema = z.object({
   oldPassword: z.string(),

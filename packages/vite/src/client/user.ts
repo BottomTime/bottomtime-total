@@ -1,5 +1,7 @@
 import {
+  ChangeEmailParamsDTO,
   ChangeRoleParams,
+  ChangeUsernameParamsDTO,
   ResetPasswordParams,
   UserDTO,
   UserRole,
@@ -71,10 +73,22 @@ export class User {
     return this._profile;
   }
 
+  async changeEmail(newEmail: string): Promise<void> {
+    const params: ChangeEmailParamsDTO = { newEmail };
+    await this.client.post(`/api/users/${this.username}/email`, params);
+    this.data.email = newEmail;
+  }
+
   async changeRole(role: UserRole): Promise<void> {
     const params: ChangeRoleParams = { newRole: role };
     await this.client.post(`/api/admin/users/${this.username}/role`, params);
     this.data.role = role;
+  }
+
+  async changeUsername(newUsername: string): Promise<void> {
+    const params: ChangeUsernameParamsDTO = { newUsername };
+    await this.client.post(`/api/users/${this.username}/username`, params);
+    this.data.username = newUsername;
   }
 
   async resetPassword(newPassword: string): Promise<void> {
