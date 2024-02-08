@@ -2,9 +2,9 @@
 import prompts from 'prompts';
 import { CommandModule } from 'yargs';
 
-import { createTestData } from './test-data';
 import { purgeDatabase } from './purge-db';
 import { seedDatabase } from './seed-db';
+import { createTestData } from './test-data';
 
 export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
   command: 'db',
@@ -17,10 +17,18 @@ export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
         'test-data',
         'Seed the database with some randomly-generated test data',
         (yargs) => {
-          return yargs.help();
+          return yargs
+            .option('users', {
+              default: 0,
+              description: 'The number of users to generate',
+              type: 'number',
+            })
+            .help();
         },
         async (yargs) => {
-          await createTestData(yargs.mongoUri);
+          await createTestData(yargs.mongoUri, {
+            users: yargs.users,
+          });
         },
       )
       .command(

@@ -2,10 +2,12 @@
 import jwt from 'jsonwebtoken';
 import { MongoClient } from 'mongodb';
 
+import { UserData } from '../../src/schemas';
+
 export async function getUserToken(mongoUri: string, username: string) {
   const lowered = username.trim().toLowerCase();
   const mongoClient = await MongoClient.connect(mongoUri);
-  const users = mongoClient.db().collection('Users');
+  const users = mongoClient.db().collection<UserData>('Users');
   const user = await users.findOne({
     $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
   });

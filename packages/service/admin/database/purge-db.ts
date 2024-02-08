@@ -1,11 +1,7 @@
 /* eslint-disable no-console */
 import { MongoClient } from 'mongodb';
 
-const ExcludedTables = new Set([
-  'changelog',
-  'KnownCertifications',
-  'PreDefinedTanks',
-]);
+const ExcludedTables = new Set(['changelog']);
 
 export async function purgeDatabase(mongoUri: string) {
   console.log('Connecting to MongoDb...');
