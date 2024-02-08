@@ -1,4 +1,12 @@
 <template>
+  <ChangePasswordDialog
+    ref="changePasswordDialog"
+    :visible="state.showChangePassword"
+    :is-working="state.isSavingPassword"
+    require-old-password
+    @cancel="onCancelChangePassword"
+    @confirm="onConfirmChangePassword"
+  />
   <AccountTimestamps :user="user" />
 
   <form @submit.prevent="">
@@ -128,68 +136,123 @@
         </div>
       </fieldset>
 
-      <div class="flex flex-row gap-4 items-baseline">
-        <span class="w-48"></span>
-        <div class="grow">
-          <span v-if="user.emailVerified" class="text-success">
+      <!-- Email verification -->
+      <div class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline">
+        <span
+          class="hidden lg:inline-block lg:min-w-40 xl:min-w-48 lg:text-right"
+        ></span>
+
+        <div class="grow w-full">
+          <span
+            v-if="state.verificationEmail === VerificationEmailState.Verified"
+            class="text-success"
+          >
             <span class="mr-2">
               <i class="fas fa-check"></i>
             </span>
-            <span class="italic">Email address is verified</span>
+            <span class="italic text-sm">Email address is verified</span>
           </span>
+
+          <div
+            v-else-if="state.verificationEmail === VerificationEmailState.Sent"
+            class="text-success flex flex-row gap-3"
+          >
+            <span class="flex-initial">
+              <i class="fas fa-envelope fa-lg"></i>
+            </span>
+            <div class="grow flex flex-col gap-4 italic text-sm">
+              <p>
+                A verification email has been sent to your email address. It
+                will contain a link to verify your email address.
+              </p>
+              <p>
+                <strong>NOTE:</strong> It may take several minutes to arrive in
+                your inbox. If you do not receive the email, please check your
+                spam folder and, if you have still not received the message
+                after several minutes, you can try refreshing this page and
+                requesting another email.
+              </p>
+            </div>
+          </div>
 
           <span v-else class="text-warn">
             <span class="mr-2">
               <i class="fas fa-exclamation-triangle"></i>
             </span>
-            <span class="italic">Email address has not been verified</span>
+            <span class="italic text-sm"
+              >Email address has not been verified</span
+            >
           </span>
         </div>
-        <div v-if="!user.emailVerified" class="w-48">
-          <FormButton stretch @click="onSendVerificationEmail">
+
+        <div
+          v-if="
+            state.verificationEmail === VerificationEmailState.NotSent ||
+            state.verificationEmail === VerificationEmailState.Sending
+          "
+          class="min-w-36 lg:min-w-40 xl:min-w-48"
+        >
+          <FormButton
+            stretch
+            :is-loading="
+              state.verificationEmail === VerificationEmailState.Sending
+            "
+            @click="onSendVerificationEmail"
+          >
             Send verification email
           </FormButton>
         </div>
       </div>
 
       <TextHeading>Password and Security</TextHeading>
-      <div class="flex flex-row gap-4 items-baseline">
-        <FormLabel class="w-48 text-right" for="password" label="Password" />
-        <span class="grow">
+      <div class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline">
+        <FormLabel
+          class="lg:min-w-40 xl:min-w-48 lg:text-right"
+          for="password"
+          label="Password"
+        />
+
+        <span class="grow w-full">
           {{
             user.hasPassword
               ? 'A password has been set on this account'
               : 'No password has been set on this account'
           }}
         </span>
-        <div class="w-48">
+
+        <div class="min-w-36 lg:min-w-40 xl:min-w-48">
           <FormButton stretch @click="onChangePassword">
             {{ user.hasPassword ? 'Change' : 'Set' }} password...
           </FormButton>
         </div>
       </div>
 
-      <div class="flex flex-row gap-4 items-baseline">
-        <FormLabel class="w-48 text-right" label="Login providers" />
-        <div class="grow flex flex-col gap-3">
+      <div class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline">
+        <FormLabel
+          class="lg:min-w-40 xl:min-w-48 lg:text-right"
+          label="Login providers"
+        />
+        <div class="w-full flex flex-col gap-3">
           <div
             v-for="provider in OAuthProviders"
             :key="provider.name"
             class="flex flex-row gap-4 items-baseline"
           >
-            <span class="grow">
+            <span class="hidden md:inline-block md:grow">
               <span class="mr-2">
                 <i :class="provider.icon"></i>
               </span>
               <span> Enable logging in with {{ provider.name }} </span>
             </span>
 
-            <FormButton class="w-48" @click="onLinkAccount(provider.name)">
-              <span class="mr-2">
-                <i :class="provider.icon"></i>
-              </span>
-              <span>Link your {{ provider.name }} account</span>
-            </FormButton>
+            <div class="flex-initial min-w-40 xl:min-w-48">
+              <FormButton stretch @click="onLinkAccount(provider.name)">
+                <span class="inline-block md:hidden mr-1">
+                  <i :class="provider.icon"></i>
+                </span>
+                <span>Link {{ provider.name }} account</span>
+              </FormButton>
+            </div>
           </div>
         </div>
       </div>
@@ -213,7 +276,15 @@ import FormButton from '../common/form-button.vue';
 import FormLabel from '../common/form-label.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import TextHeading from '../common/text-heading.vue';
+import ChangePasswordDialog from '../dialog/change-password-dialog.vue';
 import AccountTimestamps from './account-timestamps.vue';
+
+enum VerificationEmailState {
+  NotSent,
+  Sending,
+  Sent,
+  Verified,
+}
 
 type ManageAccountProps = {
   user: UserDTO;
@@ -226,7 +297,7 @@ type ManageAccountState = {
   showChangePassword: boolean;
   isSavingPassword: boolean;
   isSendingVerificationEmail: boolean;
-  verificationEmailSent: boolean;
+  verificationEmail: VerificationEmailState;
 };
 type OAuthProvider = {
   name: string;
@@ -265,12 +336,17 @@ const state = reactive<ManageAccountState>({
   showChangePassword: false,
   isSavingPassword: false,
   isSendingVerificationEmail: false,
-  verificationEmailSent: false,
+  verificationEmail: props.user.emailVerified
+    ? VerificationEmailState.Verified
+    : VerificationEmailState.NotSent,
 });
 const username = ref('');
 const usernameInput = ref<InstanceType<typeof FormTextBox> | null>(null);
 const email = ref('');
 const emailInput = ref<InstanceType<typeof FormTextBox> | null>(null);
+const changePasswordDialog = ref<InstanceType<
+  typeof ChangePasswordDialog
+> | null>(null);
 
 const vUsername$ = useVuelidate(
   {
@@ -298,6 +374,7 @@ const vEmail$ = useVuelidate(
 const emit = defineEmits<{
   (e: 'change-username', username: string): void;
   (e: 'change-email', email: string): void;
+  (e: 'change-password'): void;
 }>();
 
 // Managing Username
@@ -400,12 +477,59 @@ function onCancelChangeEmail() {
   state.isEditingEmail = false;
 }
 
-function onSendVerificationEmail() {
-  console.log('Send verification email');
+async function onSendVerificationEmail(): Promise<void> {
+  state.verificationEmail = VerificationEmailState.Sending;
+
+  await oops(async () => {
+    const user = client.users.wrapDTO(props.user);
+    await user.requestEmailVerification();
+    state.verificationEmail = VerificationEmailState.Sent;
+  });
+
+  if (state.verificationEmail === VerificationEmailState.Sending) {
+    state.verificationEmail = VerificationEmailState.NotSent;
+  }
 }
 
 function onChangePassword() {
-  console.log('Change password');
+  state.showChangePassword = true;
+}
+
+async function onConfirmChangePassword(
+  newPassword: string,
+  oldPassword: string,
+): Promise<void> {
+  state.isSavingPassword = true;
+
+  await oops(async () => {
+    const user = client.users.wrapDTO(props.user);
+    const success = await user.changePassword(oldPassword, newPassword);
+
+    if (success) {
+      emit('change-password');
+      toasts.toast({
+        id: 'password-changed',
+        message: 'Password was successfully changed.',
+        type: ToastType.Success,
+      });
+      state.showChangePassword = false;
+      changePasswordDialog.value?.reset();
+    } else {
+      toasts.toast({
+        id: 'password-incorrect',
+        message: 'Your old password was incorrect. Please try again.',
+        type: ToastType.Error,
+      });
+      changePasswordDialog.value?.clearOldPassword();
+    }
+  });
+
+  state.isSavingPassword = false;
+}
+
+function onCancelChangePassword() {
+  state.showChangePassword = false;
+  changePasswordDialog.value?.reset();
 }
 
 function onLinkAccount(provider: string) {

@@ -6,79 +6,79 @@
     @close="$emit('cancel')"
   >
     <template #default>
-      <form class="p-2" @submit.prevent="">
-        <FormField
-          v-if="requireOldPassword"
+      <FormField
+        v-if="requireOldPassword"
+        control-id="oldPassword"
+        label="Old password"
+        :invalid="v$.oldPassword.$error"
+        :error="v$.oldPassword.$errors[0]?.$message"
+        required
+      >
+        <FormTextBox
+          ref="oldPasswordInput"
+          v-model="data.oldPassword"
           control-id="oldPassword"
-          label="Old password"
+          :maxlength="50"
+          test-id="oldPassword"
+          :autofocus="requireOldPassword"
           :invalid="v$.oldPassword.$error"
-          :error="v$.oldPassword.$errors[0]?.$message"
-          required
-        >
-          <FormTextBox
-            v-model="data.oldPassword"
-            control-id="oldPassword"
-            :maxlength="50"
-            test-id="oldPassword"
-            :autofocus="requireOldPassword"
-            :invalid="v$.oldPassword.$error"
-            password
-          />
-        </FormField>
+          password
+        />
+      </FormField>
 
-        <FormField
+      <FormField
+        control-id="newPassword"
+        label="New password"
+        :invalid="v$.newPassword.$error"
+        :error="v$.newPassword.$errors[0]?.$message"
+        required
+      >
+        <FormTextBox
+          ref="newPasswordInput"
+          v-model="data.newPassword"
           control-id="newPassword"
-          label="New password"
+          :maxlength="50"
+          test-id="newPassword"
           :invalid="v$.newPassword.$error"
-          :error="v$.newPassword.$errors[0]?.$message"
-          required
+          :autofocus="!requireOldPassword"
+          :password="!state.showPassword"
         >
-          <FormTextBox
-            ref="newPasswordInput"
-            v-model="data.newPassword"
-            control-id="newPassword"
-            :maxlength="50"
-            test-id="newPassword"
-            :invalid="v$.newPassword.$error"
-            :autofocus="!requireOldPassword"
-            :password="!state.showPassword"
-          >
-            <template #right>
-              <button
-                class="dark:text-grey-950"
-                :aria-label="
-                  state.showPassword ? 'hide password' : 'show password'
-                "
-                @click="onToggleShowPassword"
-              >
-                <span v-if="state.showPassword">
-                  <i class="fas fa-eye-slash"></i>
-                </span>
-                <span v-else>
-                  <i class="fas fa-eye"></i>
-                </span>
-              </button>
-            </template>
-          </FormTextBox>
-        </FormField>
+          <template #right>
+            <a
+              href="#"
+              class="dark:text-grey-950"
+              :aria-label="
+                state.showPassword ? 'hide password' : 'show password'
+              "
+              @click="onToggleShowPassword"
+            >
+              <span v-if="state.showPassword">
+                <i class="fas fa-eye-slash"></i>
+              </span>
+              <span v-else>
+                <i class="fas fa-eye"></i>
+              </span>
+            </a>
+          </template>
+        </FormTextBox>
+      </FormField>
 
-        <FormField
-          v-if="!state.showPassword"
+      <FormField
+        v-if="!state.showPassword"
+        control-id="confirmPassword"
+        label="Confirm password"
+        :invalid="v$.confirmPassword.$error"
+        :error="v$.confirmPassword.$errors[0]?.$message"
+        required
+      >
+        <FormTextBox
+          v-model="data.confirmPassword"
           control-id="confirmPassword"
-          label="Confirm password"
-          :invalid="v$.confirmPassword.$error"
-          :error="v$.confirmPassword.$errors[0]?.$message"
-          required
-        >
-          <FormTextBox
-            v-model="data.confirmPassword"
-            control-id="confirmPassword"
-            :maxlength="50"
-            test-id="confirmPassword"
-            password
-          />
-        </FormField>
-      </form>
+          :maxlength="50"
+          test-id="confirmPassword"
+          password
+        />
+      </FormField>
     </template>
     <template #buttons>
       <FormButton
@@ -145,6 +145,7 @@ const data = reactive<FormData>({
   confirmPassword: '',
 });
 
+const oldPasswordInput = ref<InstanceType<typeof FormTextBox> | null>(null);
 const newPasswordInput = ref<InstanceType<typeof FormTextBox> | null>(null);
 
 const v$ = useVuelidate(
@@ -165,11 +166,11 @@ const v$ = useVuelidate(
     confirmPassword: {
       required: helpers.withMessage(
         'Please confirm the new password',
-        requiredIf(!state.showPassword),
+        requiredIf(() => !state.showPassword),
       ),
       match: helpers.withMessage(
         'Passwords do not match',
-        (value) => value === data.newPassword,
+        (value) => state.showPassword || value === data.newPassword,
       ),
     },
   },
@@ -206,5 +207,11 @@ function reset() {
   state.showPassword = props.showPassword;
 }
 
-defineExpose({ reset });
+function clearOldPassword() {
+  data.oldPassword = '';
+  v$.value.oldPassword.$reset();
+  oldPasswordInput.value?.focus();
+}
+
+defineExpose({ clearOldPassword, reset });
 </script>

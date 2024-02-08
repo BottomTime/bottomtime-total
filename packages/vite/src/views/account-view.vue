@@ -7,6 +7,7 @@
           :user="currentUser.user!"
           @change-username="onChangeUsername"
           @change-email="onChangeEmail"
+          @change-password="onChangePassword"
         />
       </FormBox>
     </div>
@@ -32,6 +33,13 @@ function onChangeEmail(email: string) {
   if (currentUser.user) {
     currentUser.user.email = email;
     currentUser.user.emailVerified = false;
+  }
+}
+
+function onChangePassword() {
+  if (currentUser.user) {
+    currentUser.user.hasPassword = true;
+    currentUser.user.lastPasswordChange = new Date();
   }
 }
 </script>

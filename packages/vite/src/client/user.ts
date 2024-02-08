@@ -1,8 +1,10 @@
 import {
   ChangeEmailParamsDTO,
+  ChangePasswordParamsDTO,
   ChangeRoleParams,
   ChangeUsernameParamsDTO,
   ResetPasswordParams,
+  SuccessFailResponseDTO,
   UserDTO,
   UserRole,
 } from '@bottomtime/api';
@@ -79,6 +81,26 @@ export class User {
     this.data.email = newEmail;
   }
 
+  async changePassword(
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<boolean> {
+    const params: ChangePasswordParamsDTO = { oldPassword, newPassword };
+    const {
+      data: { succeeded },
+    } = await this.client.post<SuccessFailResponseDTO>(
+      `/api/users/${this.username}/password`,
+      params,
+    );
+
+    if (succeeded) {
+      this.data.hasPassword = true;
+      this.data.lastPasswordChange = new Date();
+    }
+
+    return succeeded;
+  }
+
   async changeRole(role: UserRole): Promise<void> {
     const params: ChangeRoleParams = { newRole: role };
     await this.client.post(`/api/admin/users/${this.username}/role`, params);
@@ -89,6 +111,12 @@ export class User {
     const params: ChangeUsernameParamsDTO = { newUsername };
     await this.client.post(`/api/users/${this.username}/username`, params);
     this.data.username = newUsername;
+  }
+
+  async requestEmailVerification(): Promise<void> {
+    await this.client.post(
+      `/api/users/${this.username}/requestEmailVerification`,
+    );
   }
 
   async resetPassword(newPassword: string): Promise<void> {

@@ -12,6 +12,7 @@
     data-testid="dialog-modal"
     :class="`flex flex-col absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] ${sizeClass} bg-grey-200 dark:bg-grey-800 opacity-100 shadow-lg rounded-lg z-50`"
   >
+    <!-- Title bar -->
     <div class="flex flex-row bg-blue-800 text-grey-100 h-8 p-1 rounded-t-lg">
       <div class="grow flex-nowrap font-title pl-2" data-testid="dialog-title">
         {{ title }}
@@ -25,12 +26,18 @@
         />
       </div>
     </div>
-    <div class="grow p-2 pb-4" data-testid="dialog-content">
-      <slot></slot>
-    </div>
-    <div class="h-12 text-center p-2 mb-3 flex flex-row justify-center gap-3">
-      <slot name="buttons"></slot>
-    </div>
+
+    <form @submit.prevent="">
+      <!-- Content -->
+      <div class="grow p-2 pb-4" data-testid="dialog-content">
+        <slot></slot>
+      </div>
+
+      <!-- Buttons-->
+      <div class="h-12 text-center p-2 mb-3 flex flex-row justify-center gap-3">
+        <slot name="buttons"></slot>
+      </div>
+    </form>
   </div>
 </template>
 
