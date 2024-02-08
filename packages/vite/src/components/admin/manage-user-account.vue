@@ -35,28 +35,7 @@
     </div>
   </div>
   <div class="flex flex-col gap-4">
-    <div class="grid grid-cols-3 text-center mb-6">
-      <div class="flex flex-col">
-        <label class="font-bold">Joined</label>
-        <span class="italic">
-          {{ formatTime(user.memberSince) }}
-        </span>
-      </div>
-
-      <div class="flex flex-col">
-        <label class="font-bold">Last Login</label>
-        <span class="italic">
-          {{ formatTime(user.lastLogin) }}
-        </span>
-      </div>
-
-      <div class="flex flex-col">
-        <label class="font-bold">Last Password Change</label>
-        <span class="italic">
-          {{ formatTime(user.lastPasswordChange) }}
-        </span>
-      </div>
-    </div>
+    <AccountTimestamps :user="user" :exact-times="state.showExactTimes" />
 
     <TextHeading>Update Account</TextHeading>
     <div class="flex flex-row gap-3 items-baseline">
@@ -145,6 +124,7 @@ import FormToggle from '../common/form-toggle.vue';
 import TextHeading from '../common/text-heading.vue';
 import ChangePasswordDialog from '../dialog/change-password-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import AccountTimestamps from '../users/account-timestamps.vue';
 
 // Type Defs
 type ManageUserAccountProps = {
@@ -193,13 +173,6 @@ const emit = defineEmits<{
 }>();
 
 // Event handlers
-function formatTime(time?: Date) {
-  if (!time) return 'Never';
-  return state.showExactTimes
-    ? dayjs(time).format('MMMM D, YYYY h:mm:ss A')
-    : dayjs(time).fromNow();
-}
-
 function onResetPassword() {
   changePasswordDialog.value?.reset();
   state.showChangePassword = true;

@@ -51,6 +51,20 @@ export class UsersApiClient {
     return new User(this.apiClient, UserSchema.parse(data));
   }
 
+  // async requestPasswordReset(usernameOrEmail: string): Promise<void> {
+  //   const url = `/api/users/${encodeURIComponent(
+  //     usernameOrEmail,
+  //   )}/resetPassword`;
+  // }
+
+  // async resetPasswordWithToken(
+  //   token: string,
+  //   newPassword: string,
+  // ): Promise<void> {
+  //   const url = `/api/users/resetPassword/${encodeURIComponent(token)}`;
+  //   await this.apiClient.post(url, { newPassword });
+  // }
+
   async searchUsers(
     options: AdminSearchUsersParamsDTO,
   ): Promise<{ users: User[]; totalCount: number }> {

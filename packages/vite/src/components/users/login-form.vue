@@ -45,6 +45,10 @@
       </FormButton>
       <FormButton v-if="showCancel" @click="$emit('close')">Cancel</FormButton>
     </div>
+    <div class="text-center mb-6">
+      Forgot your username or password? No problem!
+      <NavLink to="/resetPassword">Recover them here</NavLink>.
+    </div>
 
     <hr />
 
@@ -88,6 +92,7 @@ import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextBox from '../common/form-text-box.vue';
+import NavLink from '../common/nav-link.vue';
 
 type LoginFormProps = {
   showCancel?: boolean;
