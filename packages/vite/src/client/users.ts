@@ -50,6 +50,7 @@ export class UsersApiClient {
     return new User(this.apiClient, UserSchema.parse(data));
   }
 
+  // TODO: We need these endpoints on the backend first.
   // async requestPasswordReset(usernameOrEmail: string): Promise<void> {
   //   const url = `/api/users/${encodeURIComponent(
   //     usernameOrEmail,

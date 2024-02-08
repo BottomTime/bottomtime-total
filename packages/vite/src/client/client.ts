@@ -1,9 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
+
 import { UsersApiClient } from './users';
 
 export type ApiClientOptions = {
   baseURL?: string;
-  authToken?: string;
 };
 
 export class ApiClient {
@@ -15,12 +15,6 @@ export class ApiClient {
       baseURL: options?.baseURL,
       withCredentials: true,
     });
-
-    if (options?.authToken) {
-      this.client.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${options.authToken}`;
-    }
 
     this.users = new UsersApiClient(this.client);
   }

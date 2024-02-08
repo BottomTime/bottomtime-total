@@ -1,9 +1,16 @@
-import { CreateUserParamsDTO, UserRole } from '@bottomtime/api';
+import {
+  AdminSearchUsersParamsDTO,
+  CreateUserParamsDTO,
+  SortOrder,
+  UserRole,
+  UsersSortBy,
+} from '@bottomtime/api';
 
-// import { UsersApiClient } from '@/client/users';
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import AxiosAdapter from 'axios-mock-adapter';
 
+import SearchResults from '../../../../service/tests/fixtures/user-search-data.json';
+import { User } from '../../../src/client';
 import { UsersApiClient } from '../../../src/client/users';
 import { BasicUser } from '../../fixtures/users';
 
@@ -121,5 +128,35 @@ describe('Users API client', () => {
         AxiosError,
       );
     });
+  });
+
+  it('will perform a search for users', async () => {
+    const expectedTtotalCount = 838;
+    const params: AdminSearchUsersParamsDTO = {
+      query: 'bob',
+      role: UserRole.User,
+      sortBy: UsersSortBy.Username,
+      sortOrder: SortOrder.Ascending,
+      skip: 50,
+      limit: 200,
+    };
+
+    axiosAdapter.onGet('/api/admin/users', { params }).reply(200, {
+      totalCount: expectedTtotalCount,
+      users: SearchResults.slice(0, 20),
+    });
+    const { users, totalCount } = await client.searchUsers(params);
+
+    expect(totalCount).toBe(expectedTtotalCount);
+    expect(users).toHaveLength(SearchResults.length);
+    users.forEach((user, index) => {
+      expect(user.toJSON()).toEqual(SearchResults[index]);
+    });
+  });
+
+  it('will wrap a user DTO in a User instance', () => {
+    const user = client.wrapDTO(BasicUser);
+    expect(user).toBeInstanceOf(User);
+    expect(user.username).toBe(BasicUser.username);
   });
 });
