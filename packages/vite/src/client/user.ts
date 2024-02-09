@@ -75,6 +75,14 @@ export class User {
     return this._profile;
   }
 
+  get settings(): UserSettings {
+    if (!this._settings) {
+      this._settings = new UserSettings(this.client, this.data);
+    }
+
+    return this._settings;
+  }
+
   async changeEmail(newEmail: string): Promise<void> {
     const params: ChangeEmailParamsDTO = { newEmail };
     await this.client.post(`/api/users/${this.username}/email`, params);
@@ -127,14 +135,6 @@ export class User {
     );
     this.data.hasPassword = true;
     this.data.lastPasswordChange = new Date();
-  }
-
-  get settings(): UserSettings {
-    if (!this._settings) {
-      this._settings = new UserSettings(this.client, this.data);
-    }
-
-    return this._settings;
   }
 
   async toggleAccountLock(): Promise<void> {
