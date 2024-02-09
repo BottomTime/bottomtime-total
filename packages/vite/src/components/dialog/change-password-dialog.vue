@@ -50,6 +50,7 @@
               :aria-label="
                 state.showPassword ? 'hide password' : 'show password'
               "
+              data-testid="toggle-show-password"
               @click="onToggleShowPassword"
             >
               <span v-if="state.showPassword">
@@ -85,11 +86,16 @@
         type="primary"
         :is-loading="isWorking"
         submit
+        data-testid="confirm-change-password"
         @click="onConfirm"
       >
         Change Password
       </FormButton>
-      <FormButton :disabled="isWorking" @click="$emit('cancel')">
+      <FormButton
+        :disabled="isWorking"
+        data-testid="cancel-change-password"
+        @click="$emit('cancel')"
+      >
         Cancel
       </FormButton>
     </template>
@@ -114,7 +120,7 @@ type ChangePasswordDialogProps = {
   requireOldPassword?: boolean;
   showPassword?: boolean;
   title?: string;
-  visible: boolean;
+  visible?: boolean;
 };
 
 type ChangePasswordDialogState = {
@@ -132,7 +138,6 @@ const props = withDefaults(defineProps<ChangePasswordDialogProps>(), {
   requireOldPassword: true,
   showPassword: false,
   title: 'Change Password',
-  visible: false,
 });
 
 const state = reactive<ChangePasswordDialogState>({
@@ -159,7 +164,7 @@ const v$ = useVuelidate(
     newPassword: {
       required: helpers.withMessage('New password is required', required),
       strength: helpers.withMessage(
-        'New password must meet stength requirements',
+        'New password must meet strength requirements',
         helpers.regex(PasswordStrengthRegex),
       ),
     },
