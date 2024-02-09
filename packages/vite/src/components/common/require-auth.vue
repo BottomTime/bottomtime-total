@@ -7,7 +7,7 @@
           <span class="mt-2">
             <i class="fas fa-exclamation fa-2x text-warn"></i>
           </span>
-          <div>
+          <div data-testid="require-auth-anonymous">
             <p class="mb-3">
               Sorry, but you must be logged in to view this page. Please enter
               your credentials below.
@@ -35,7 +35,7 @@
           <span class="mt-2">
             <i class="fas fa-hand-paper fa-2x text-danger"></i>
           </span>
-          <div>
+          <div data-testid="require-auth-unauthorized">
             <p class="mb-3">
               <strong>Stop!</strong> You are not authorized to view this page.
             </p>

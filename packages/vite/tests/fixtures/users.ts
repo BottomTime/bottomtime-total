@@ -33,3 +33,29 @@ export const BasicUser: UserDTO = {
   },
   username: 'sam_smith',
 };
+
+export const AdminUser: UserDTO = {
+  id: '50A9504C-EE2C-485E-91E0-4D352409338E',
+  email: 'andy_admin@bottomti.me',
+  emailVerified: true,
+  hasPassword: true,
+  isLockedOut: false,
+  lastLogin: new Date('2021-01-01T00:00:00.000Z'),
+  lastPasswordChange: new Date('2021-01-01T00:00:00.000Z'),
+  memberSince: new Date('2021-01-01T00:00:00.000Z'),
+  role: UserRole.Admin,
+  settings: {
+    depthUnit: DepthUnit.Meters,
+    pressureUnit: PressureUnit.Bar,
+    profileVisibility: ProfileVisibility.FriendsOnly,
+    temperatureUnit: TemperatureUnit.Celsius,
+    weightUnit: WeightUnit.Kilograms,
+  },
+  profile: {
+    username: 'andy_admin',
+    memberSince: new Date('2021-01-01T00:00:00.000Z'),
+    userId: '50A9504C-EE2C-485E-91E0-4D352409338E',
+    name: 'Andy Admin',
+  },
+  username: 'andy_admin',
+};
