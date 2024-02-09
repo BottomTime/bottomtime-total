@@ -27,6 +27,7 @@
       >
         <a class="w-full p-2 hover:bg-blue-600" href="/profile">Profile</a>
         <a class="w-full p-2 hover:bg-blue-600" href="/account">Account</a>
+        <a class="w-full p-2 hover:bg-blue-600" href="/settings">Settings</a>
         <hr />
         <a
           class="w-full p-2 rounded-b-md hover:bg-blue-600"

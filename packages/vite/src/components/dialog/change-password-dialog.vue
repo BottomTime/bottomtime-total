@@ -210,6 +210,7 @@ function reset() {
   data.confirmPassword = '';
   v$.value.$reset();
   state.showPassword = props.showPassword;
+  oldPasswordInput.value?.focus();
 }
 
 function clearOldPassword() {

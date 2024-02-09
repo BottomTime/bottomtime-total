@@ -21,18 +21,30 @@
     <fieldset :disabled="isSaving">
       <TextHeading>Preferred Units</TextHeading>
       <div class="flex flex-row gap-6 items-baseline">
-        <div class="w-40"></div>
-        <FormButton type="link" @click="onAllMetric">All Metric</FormButton>
-        <FormButton type="link" @click="onAllImperial">All Imperial</FormButton>
+        <div class="w-40 hidden md:inline-block"></div>
+        <FormButton
+          type="link"
+          test-id="select-all-metric"
+          @click="onAllMetric"
+        >
+          All Metric
+        </FormButton>
+        <FormButton
+          type="link"
+          test-id="select-all-imperial"
+          @click="onAllImperial"
+        >
+          All Imperial
+        </FormButton>
       </div>
 
-      <div class="flex flex-row gap-6 mb-4">
-        <FormLabel class="w-40 text-right" label="Depth" />
+      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
+        <FormLabel class="w-40 md:text-right" label="Depth" />
         <FormRadio
           v-for="option in DepthOptions"
           :key="option.id"
           v-model="data.depthUnit"
-          class="w-36"
+          class="w-36 pl-4 md:pl-0"
           :control-id="option.id"
           :group="option.group"
           :value="option.value"
@@ -41,13 +53,13 @@
         </FormRadio>
       </div>
 
-      <div class="flex flex-row gap-6 mb-4">
-        <FormLabel class="w-40 text-right" label="Pressure" />
+      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
+        <FormLabel class="w-40 md:text-right" label="Pressure" />
         <FormRadio
           v-for="option in PressureOptions"
           :key="option.id"
           v-model="data.pressureUnit"
-          class="w-36"
+          class="w-36 pl-4 md:pl-0"
           :control-id="option.id"
           :group="option.group"
           :value="option.value"
@@ -56,13 +68,13 @@
         </FormRadio>
       </div>
 
-      <div class="flex flex-row gap-6 mb-4">
-        <FormLabel class="w-40 text-right" label="Temperature" />
+      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
+        <FormLabel class="w-40 md:text-right" label="Temperature" />
         <FormRadio
           v-for="option in TemperatureOptions"
           :key="option.id"
           v-model="data.temperatureUnit"
-          class="w-36"
+          class="w-36 pl-4 md:pl-0"
           :control-id="option.id"
           :group="option.group"
           :value="option.value"
@@ -71,13 +83,13 @@
         </FormRadio>
       </div>
 
-      <div class="flex flex-row gap-6 mb-4">
-        <FormLabel class="w-40 text-right" label="Weight" />
+      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
+        <FormLabel class="w-40 md:text-right" label="Weight" />
         <FormRadio
           v-for="option in WeightOptions"
           :key="option.id"
           v-model="data.weightUnit"
-          class="w-36"
+          class="w-36 pl-4 md:pl-0"
           :control-id="option.id"
           :group="option.group"
           :value="option.value"
@@ -87,13 +99,13 @@
       </div>
 
       <TextHeading>Privacy</TextHeading>
-      <div class="flex flex-row gap-6 mb-4">
-        <FormLabel class="w-40 text-right" label="Profile visible to" />
+      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
+        <FormLabel class="w-40 md:text-right" label="Profile visible to" />
         <FormRadio
           v-for="option in ProfileVisibilityOptions"
           :key="option.id"
           v-model="data.profileVisibility"
-          class="w-30"
+          class="w-30 pl-4 md:pl-0"
           :control-id="option.id"
           :group="option.group"
           :value="option.value"
@@ -106,12 +118,15 @@
         <FormButton
           type="primary"
           :is-loading="isSaving"
+          data-testid="save-settings"
           submit
           @click="onSave"
         >
           Save Changes
         </FormButton>
-        <FormButton @click="onReset">Cancel</FormButton>
+        <FormButton data-testid="cancel-settings" @click="onReset">
+          Cancel
+        </FormButton>
       </div>
     </fieldset>
   </form>

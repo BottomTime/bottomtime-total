@@ -210,4 +210,66 @@ describe('Change Password dialog', () => {
     );
     expect(wrapper.emitted('confirm')).toBeUndefined();
   });
+
+  it('will allow the parent component to reset the dialog', async () => {
+    const wrapper = mount(ChangePasswordDialog, {
+      props: {
+        visible: true,
+      },
+    });
+
+    await wrapper.get(NewPasswordSelector).setValue('weak sauce');
+    await wrapper.get(ConfirmPasswordSelector).setValue(StrongPassword);
+    await wrapper.get(ConfirmSelector).trigger('click');
+    await flushPromises();
+
+    wrapper.vm.reset();
+    await nextTick();
+
+    const oldPasswordInput = wrapper.get<HTMLInputElement>(OldPasswordSelector);
+    expect(oldPasswordInput.element.value).toBe('');
+
+    // TODO: How do I test focus??
+    // expect(oldPasswordInput.element).toBe(document.activeElement);
+
+    expect(
+      wrapper.get<HTMLInputElement>(NewPasswordSelector).element.value,
+    ).toBe('');
+    expect(
+      wrapper.get<HTMLInputElement>(ConfirmPasswordSelector).element.value,
+    ).toBe('');
+
+    expect(wrapper.find('[data-testid="oldPassword-error"]').exists()).toBe(
+      false,
+    );
+    expect(wrapper.find('[data-testid="newPassword-error"]').exists()).toBe(
+      false,
+    );
+    expect(wrapper.find('[data-testid="confirmPassword-error"]').exists()).toBe(
+      false,
+    );
+  });
+
+  it('will allow the parent to clear the old password on a bad guess', async () => {
+    const wrapper = mount(ChangePasswordDialog, {
+      props: {
+        visible: true,
+      },
+    });
+
+    await wrapper.get(OldPasswordSelector).setValue(OldPassword);
+    await wrapper.get(NewPasswordSelector).setValue(StrongPassword);
+    await wrapper.get(ConfirmPasswordSelector).setValue(StrongPassword);
+    await wrapper.get(ConfirmSelector).trigger('click');
+    await flushPromises();
+
+    wrapper.vm.clearOldPassword();
+    await nextTick();
+
+    const oldPasswordInput = wrapper.get<HTMLInputElement>(OldPasswordSelector);
+    expect(oldPasswordInput.element.value).toBe('');
+
+    // TODO: How do I check for focus?
+    // expect(oldPasswordInput.element).toBe(document.activeElement);
+  });
 });
