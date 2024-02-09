@@ -39,23 +39,22 @@ type FormFuzzyDateProps = {
 };
 
 const FuzzyDateRegex = /^\d{4}(-\d{2}(-\d{2})?)?$/;
-const EmptyValue: FuzzyDate = {
-  year: '',
-  month: '',
-  day: '',
-};
 
 const props = withDefaults(defineProps<FormFuzzyDateProps>(), {
   maxYear: dayjs().year(),
   minYear: dayjs().year() - 100,
 });
 const value = defineModel<string>();
-const data = reactive<FuzzyDate>(EmptyValue);
+const data = reactive<FuzzyDate>({
+  year: '',
+  month: '',
+  day: '',
+});
 
 const yearOptions = computed<SelectOption[]>(() => {
   return [
     { label: '(Year)', value: '' },
-    ...Array.from({ length: props.maxYear - props.minYear }, (_, i) => {
+    ...Array.from({ length: props.maxYear - props.minYear + 1 }, (_, i) => {
       const year = props.maxYear - i;
       return { value: year.toString() };
     }),
@@ -77,6 +76,7 @@ const dayOptions = computed<SelectOption[]>(() => {
     `${data.year}-${data.month}`,
     'YYYY-MM',
   ).daysInMonth();
+
   return [
     { label: '(Day)', value: '' },
     ...Array.from({ length: daysInMonth }, (_, i) => {
@@ -90,11 +90,37 @@ watch(
   value,
   (newValue) => {
     if (!newValue || !FuzzyDateRegex.test(newValue)) {
-      Object.assign(data, EmptyValue);
-      return;
+      newValue = '';
     }
 
     const [year, month, day] = newValue.split('-');
+
+    // Complicated validation logic!
+    // If a part of the date is out of range, reset the value to the closest valid date.
+    if (year) {
+      const yearValue = parseInt(year, 10);
+      if (yearValue < props.minYear || yearValue > props.maxYear) {
+        newValue = '';
+      } else {
+        if (month) {
+          const monthValue = parseInt(month, 10);
+          if (monthValue < 1 || monthValue > 12) {
+            newValue = year;
+          } else {
+            if (day) {
+              const dayValue = parseInt(day, 10);
+              if (
+                dayValue < 1 ||
+                dayValue > dayjs(`${year}-${month}`, 'YYYY-MM').daysInMonth()
+              ) {
+                newValue = `${year}-${month}`;
+              }
+            }
+          }
+        }
+      }
+    }
+
     data.year = year;
     data.month = month || '';
     data.day = day || '';
@@ -134,6 +160,6 @@ watch(
 
     value.value = newValue;
   },
-  { deep: true },
+  { deep: true, once: true },
 );
 </script>

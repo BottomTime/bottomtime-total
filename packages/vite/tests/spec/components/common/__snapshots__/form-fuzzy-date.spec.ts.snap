@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fuzzy Date component will allow the min and max years to be set 1`] = `"(Year)202520242023202220212020"`;
