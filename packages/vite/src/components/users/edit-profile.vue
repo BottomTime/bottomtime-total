@@ -23,6 +23,7 @@
     @cancel="showAvatarDialog = false"
     @save="onAvatarChanged"
   />
+
   <form @submit.prevent="">
     <fieldset :disabled="isSaving">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -32,6 +33,7 @@
             <FormTextBox
               v-model.trim="data.name"
               control-id="name"
+              test-id="nameInput"
               :maxlength="100"
               autofocus
             />
@@ -41,6 +43,7 @@
             <FormTextBox
               v-model.trim="data.location"
               control-id="location"
+              test-id="locationInput"
               :maxlength="50"
             />
           </FormField>
@@ -49,6 +52,7 @@
             <FormFuzzyDate
               v-model="data.birthdate"
               control-id="birthdate"
+              test-id="birthdateInput"
               :max-year="new Date().getFullYear() - 6"
               :min-year="new Date().getFullYear() - 100"
             />
@@ -58,6 +62,7 @@
             <FormTextArea
               v-model.trim="data.bio"
               control-id="bio"
+              test-id="bioInput"
               :maxlength="500"
               :rows="6"
               resize="none"
@@ -72,6 +77,7 @@
                 :avatar="data.avatar"
                 :display-name="user.profile.name || user.username"
                 size="x-large"
+                test-id="profile-avatar"
               />
             </button>
           </div>
@@ -81,6 +87,7 @@
             <FormSelect
               v-model.trim="data.experienceLevel"
               control-id="experience-level"
+              test-id="experienceLevelInput"
               :options="ExperienceLevelOptions"
               stretch
             />
@@ -90,6 +97,7 @@
             <FormFuzzyDate
               v-model="data.startedDiving"
               control-id="started-diving"
+              test-id="startedDivingInput"
               :min-year="new Date().getFullYear() - 80"
             />
           </FormField>
@@ -99,12 +107,15 @@
         <FormButton
           type="primary"
           :is-loading="isSaving"
+          test-id="save-profile"
           submit
           @click="onSave"
         >
           Save Changes
         </FormButton>
-        <FormButton @click="onReset">Cancel</FormButton>
+        <FormButton test-id="cancel-profile" @click="onReset">
+          Cancel
+        </FormButton>
       </div>
     </fieldset>
   </form>

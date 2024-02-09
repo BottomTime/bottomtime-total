@@ -1,5 +1,12 @@
 <template>
-  <img class="rounded-full" :width="size" :height="size" alt="" :src="avatar" />
+  <img
+    class="rounded-full"
+    :width="size"
+    :height="size"
+    alt=""
+    :src="avatar"
+    :data-testid="testId"
+  />
 </template>
 
 <script setup lang="ts">
@@ -9,6 +16,7 @@ type UserAvatarProps = {
   avatar?: string;
   displayName: string;
   size?: 'small' | 'medium' | 'large' | 'x-large';
+  testId?: string;
 };
 
 const props = withDefaults(defineProps<UserAvatarProps>(), {

@@ -59,3 +59,58 @@ export const AdminUser: UserDTO = {
   },
   username: 'andy_admin',
 };
+
+export const UserWithFullProfile: UserDTO = {
+  emailVerified: false,
+  hasPassword: true,
+  id: 'e7fdcf40-509e-49f1-85d2-24f35b0afe28',
+  isLockedOut: false,
+  memberSince: new Date('2017-12-29T17:03:07.671Z'),
+  profile: {
+    avatar:
+      'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg',
+    bio: 'Facilis deleniti fugiat. Nesciunt architecto facilis consectetur laborum iusto doloribus. Minima nulla nemo unde quisquam quod suscipit deserunt blanditiis deserunt. Ipsa saepe quibusdam beatae tempora labore maxime odio. Labore debitis id doloribus voluptatibus ratione animi dolores.',
+    birthdate: '2014-09-19',
+    certifications: [],
+    experienceLevel: 'Intermediate',
+    location: 'Hamillside, CO, AZ',
+    memberSince: new Date('2017-12-29T17:03:07.671Z'),
+    name: 'Abel Koss',
+    startedDiving: '2018-11-20',
+    userId: 'e7fdcf40-509e-49f1-85d2-24f35b0afe28',
+    username: 'Abel_Koss49',
+  },
+  role: UserRole.User,
+  username: 'Abel_Koss49',
+  email: 'Abel5@yahoo.com',
+  settings: {
+    depthUnit: DepthUnit.Feet,
+    pressureUnit: PressureUnit.PSI,
+    profileVisibility: ProfileVisibility.Public,
+    temperatureUnit: TemperatureUnit.Fahrenheit,
+    weightUnit: WeightUnit.Pounds,
+  },
+};
+
+export const UserWithEmptyProfile: UserDTO = {
+  emailVerified: false,
+  hasPassword: true,
+  id: '8772f482-8bc1-4ae2-ab15-e0d4d741878d',
+  isLockedOut: false,
+  memberSince: new Date('2022-01-25T11:40:20.928Z'),
+  profile: {
+    memberSince: new Date('2022-01-25T11:40:20.928Z'),
+    userId: '8772f482-8bc1-4ae2-ab15-e0d4d741878d',
+    username: 'Adolf19',
+  },
+  role: UserRole.User,
+  username: 'Adolf19',
+  email: 'Adolf.DAmore33@hotmail.com',
+  settings: {
+    depthUnit: DepthUnit.Feet,
+    pressureUnit: PressureUnit.PSI,
+    profileVisibility: ProfileVisibility.Public,
+    temperatureUnit: TemperatureUnit.Fahrenheit,
+    weightUnit: WeightUnit.Pounds,
+  },
+};
