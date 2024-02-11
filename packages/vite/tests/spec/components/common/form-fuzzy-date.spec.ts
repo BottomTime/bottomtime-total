@@ -210,7 +210,7 @@ describe('Fuzzy Date component', () => {
 
     const dayInput = wrapper.find<HTMLSelectElement>(DayInputSelector);
     expect(dayInput.exists()).toBe(false);
-    expect(wrapper.emitted('update:modelValue')).toEqual([['2021']]);
+    expect(wrapper.emitted('update:modelValue')).toEqual([['2021'], ['2021']]);
   });
 
   it('will hide the month and day if the year is cleared', async () => {
@@ -230,7 +230,7 @@ describe('Fuzzy Date component', () => {
     const dayInput = wrapper.find<HTMLSelectElement>(DayInputSelector);
     expect(monthInput.exists()).toBe(false);
     expect(dayInput.exists()).toBe(false);
-    expect(wrapper.emitted('update:modelValue')).toEqual([['']]);
+    expect(wrapper.emitted('update:modelValue')).toEqual([[''], ['']]);
   });
 
   it('will clear the day, when necessary, if month is changed to a shorter month', async () => {

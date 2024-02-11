@@ -160,6 +160,6 @@ watch(
 
     value.value = newValue;
   },
-  { deep: true, once: true },
+  { deep: true },
 );
 </script>

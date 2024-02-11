@@ -1,7 +1,5 @@
 import { UserDTO } from '@bottomtime/api';
 
-import { string } from 'zod';
-
 export type AppInitialState = {
   currentUser: UserDTO | null;
 };
