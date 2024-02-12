@@ -497,13 +497,13 @@ function onChangePassword() {
 
 async function onConfirmChangePassword(
   newPassword: string,
-  oldPassword: string,
+  oldPassword?: string,
 ): Promise<void> {
   state.isSavingPassword = true;
 
   await oops(async () => {
     const user = client.users.wrapDTO(props.user);
-    const success = await user.changePassword(oldPassword, newPassword);
+    const success = await user.changePassword(oldPassword ?? '', newPassword);
 
     if (success) {
       emit('change-password');
