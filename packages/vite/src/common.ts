@@ -2,6 +2,7 @@ import { UserDTO } from '@bottomtime/api';
 
 export type AppInitialState = {
   currentUser: UserDTO | null;
+  SSR: boolean;
 };
 
 export type SelectOption = {

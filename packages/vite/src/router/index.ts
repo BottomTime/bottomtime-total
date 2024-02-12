@@ -55,9 +55,7 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-const history = Config.isServerSide
-  ? createMemoryHistory()
-  : createWebHistory();
+const history = Config.isSSR ? createMemoryHistory() : createWebHistory();
 
 export const router = createRouter({
   history,

@@ -1,13 +1,17 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+
 import { dirname, resolve } from 'path';
-import { ViteDevServer, createServer } from 'vite';
 import { fileURLToPath } from 'url';
+import { ViteDevServer, createServer } from 'vite';
+import { SSRContext } from 'vue/server-renderer';
+
 import { Config } from '../config';
 import { ViteServer } from './constants';
 
 export type RenderResult = {
   head?: string;
   html: string;
+  ctx: SSRContext;
 };
 
 @Injectable()

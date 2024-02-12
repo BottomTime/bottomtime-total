@@ -21,8 +21,7 @@
           </p>
           <p>
             If you continue to have trouble, please contact
-            <NavLink :to="`mailto:admin@bottomti.me`">support</NavLink> for
-            help.
+            <NavLink :to="adminEmail">support</NavLink> for help.
           </p>
         </div>
       </FormBox>
@@ -77,7 +76,7 @@
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 import FormBox from '../components/common/form-box.vue';
 import FormButton from '../components/common/form-button.vue';
@@ -85,6 +84,7 @@ import FormLabel from '../components/common/form-label.vue';
 import FormTextBox from '../components/common/form-text-box.vue';
 import NavLink from '../components/common/nav-link.vue';
 import PageTitle from '../components/common/page-title.vue';
+import { Config } from '../config';
 
 const data = reactive<{ usernameOrEmail: string }>({
   usernameOrEmail: '',
@@ -92,6 +92,7 @@ const data = reactive<{ usernameOrEmail: string }>({
 const usernameOrEmailInput = ref<InstanceType<typeof FormTextBox> | null>(null);
 const isLoading = ref(false);
 const emailSent = ref(false);
+const adminEmail = computed(() => `mailto:${Config.adminEmail}`);
 
 const v$ = useVuelidate(
   {

@@ -1,17 +1,20 @@
-import { CurrentUserDTO, UserDTO } from '@bottomtime/api';
+import { CurrentUserDTO } from '@bottomtime/api';
+
 import { Controller, Get, Inject, Logger, Req, Res } from '@nestjs/common';
+
 import axios from 'axios';
+import { Request, Response } from 'express';
 import { readFile } from 'fs/promises';
 import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
 import { fileURLToPath, resolve as resolveURL } from 'url';
-import { AppInitialState } from '../../src/common';
+
 import { ViteService } from '.';
+import { AppInitialState } from '../../src/common';
 import { Config } from '../config';
-import { Request, Response } from 'express';
-import { OriginalUrl } from '../original-url.decorator';
 import { PageOptions } from '../constants';
 import { JwtService } from '../jwt';
+import { OriginalUrl } from '../original-url.decorator';
 
 @Controller('/')
 export class ViteController {
@@ -77,7 +80,7 @@ export class ViteController {
       pageTitle: 'Home',
       head: rendered.head ?? '',
       content: rendered.html,
-      initialState: JSON.stringify(initialState),
+      initialState: JSON.stringify(rendered.ctx),
     };
 
     const content = Mustache.render(html, opts);

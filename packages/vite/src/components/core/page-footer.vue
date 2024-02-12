@@ -10,7 +10,17 @@
       <li class="p-0.5">|</li>
       <li class="p-0.5"><a href="#">Cookie Policy</a></li>
       <li class="p-0.5">|</li>
-      <li class="p-0.5"><a href="#">Contact</a></li>
+      <li class="p-0.5">
+        <a :href="adminEmail">Contact</a>
+      </li>
     </ul>
   </section>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+
+import { Config } from '../../config';
+
+const adminEmail = computed(() => `mailto:${Config.adminEmail}`);
+</script>

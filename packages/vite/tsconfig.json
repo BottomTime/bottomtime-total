@@ -22,6 +22,11 @@
     "noEmit": true,
     "jsx": "preserve",
     "types": ["vite/client"],
+    "typeRoots": [
+      "../../node_modules/@types",
+      "./node_modules/@types",
+      "./src/types"
+    ] /* Specify multiple folders that act like './node_modules/@types'. */,
 
     /* Linting */
     "strict": true
