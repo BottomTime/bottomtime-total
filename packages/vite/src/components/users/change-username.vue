@@ -44,10 +44,12 @@
         >
           Save
         </FormButton>
-        <FormButton stretch @click="onCancel"> Cancel </FormButton>
+        <FormButton stretch test-id="cancel-save-username" @click="onCancel">
+          Cancel
+        </FormButton>
       </div>
 
-      <FormButton v-else stretch @click="onEdit">
+      <FormButton v-else stretch test-id="edit-username" @click="onEdit">
         Change username...
       </FormButton>
     </div>

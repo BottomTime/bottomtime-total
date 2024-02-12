@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Change Username component will disable form and show spinner while saving 1`] = `"<button class="text-black p-2 m-0 text-sm rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800 bg-gradient-to-t disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary w-full" data-testid="save-username" type="button" disabled=""><span class="mr-2"><i class="fas fa-spinner fa-spin"></i></span> Save </button>"`;
+
+exports[`Change Username component will render in edit mode 1`] = `
+"<fieldset class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline"><label for="username" class="lg:min-w-40 xl:min-w-48 lg:text-right"><span class="font-bold">Username:</span>
+    <!--v-if-->
+  </label>
+  <div class="grow w-full">
+    <div class="flex flex-col gap-2">
+      <div class="relative" stretch=""><input id="username" type="text" class="pl-2 pr-2 pt-1 pb-1 w-full select-all border-2 border-grey-600 rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 dark:text-grey-950 caret-grey-600" maxlength="50" data-testid="username">
+        <div class="absolute right-2 top-1.5"></div>
+      </div>
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="min-w-36 lg:min-w-40 xl:min-w-48">
+    <div class="flex flex-row gap-2 justify-stretch"><button class="text-black p-2 m-0 text-sm rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800 bg-gradient-to-t disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary w-full" data-testid="save-username" type="button">
+        <!--v-if--> Save
+      </button><button class="text-black p-2 m-0 text-sm rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover w-full" data-testid="cancel-save-username" type="button">
+        <!--v-if--> Cancel
+      </button></div>
+  </div>
+</fieldset>"
+`;
+
+exports[`Change Username component will render in non-edit mode 1`] = `
+"<fieldset class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline"><label for="username" class="lg:min-w-40 xl:min-w-48 lg:text-right"><span class="font-bold">Username:</span>
+    <!--v-if-->
+  </label>
+  <div class="grow w-full"><span>Claus53</span></div>
+  <div class="min-w-36 lg:min-w-40 xl:min-w-48"><button class="text-black p-2 m-0 text-sm rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover w-full" data-testid="edit-username" type="button">
+      <!--v-if--> Change username...
+    </button></div>
+</fieldset>"
+`;
