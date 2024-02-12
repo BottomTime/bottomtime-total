@@ -8,20 +8,21 @@ import {
 } from '@bottomtime/api';
 
 import axios, { AxiosInstance } from 'axios';
-import AxiosAdapter from 'axios-mock-adapter';
+import nock, { Scope } from 'nock';
 
 import { UserSettings } from '../../../src/client/user-settings';
+import { createScope } from '../../fixtures/nock';
 import { BasicUser } from '../../fixtures/users';
 
 describe('User Settings client object', () => {
   let axiosInstance: AxiosInstance;
-  let axiosAdapter: AxiosAdapter;
   let settings: UserSettings;
   let testUser: UserDTO;
+  let scope: Scope;
 
   beforeAll(() => {
     axiosInstance = axios.create();
-    axiosAdapter = new AxiosAdapter(axiosInstance);
+    scope = createScope();
 
     testUser = {
       ...BasicUser,
@@ -38,11 +39,11 @@ describe('User Settings client object', () => {
   });
 
   afterEach(() => {
-    axiosAdapter.reset();
+    nock.cleanAll();
   });
 
   afterAll(() => {
-    axiosAdapter.restore();
+    nock.restore();
   });
 
   it('will return properties correctly', () => {
@@ -81,13 +82,12 @@ describe('User Settings client object', () => {
     settings.temperatureUnit = TemperatureUnit.Fahrenheit;
     settings.weightUnit = WeightUnit.Pounds;
     settings.profileVisibility = ProfileVisibility.Private;
-
-    axiosAdapter
-      .onPut(`/api/users/${testUser.username}/settings`, testUser.settings)
+    scope
+      .put(`/api/users/${testUser.username}/settings`, testUser.settings)
       .reply(204);
 
     await settings.save();
 
-    expect(axiosAdapter.history.put).toHaveLength(1);
+    expect(scope.isDone()).toBe(true);
   });
 });

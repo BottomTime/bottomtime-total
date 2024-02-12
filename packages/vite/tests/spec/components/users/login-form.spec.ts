@@ -8,17 +8,16 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { mount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 
-import axios from 'axios';
-import AxiosAdapter from 'axios-mock-adapter';
-import flushPromises from 'flush-promises';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClient, ApiClientKey } from '../../../../src/client';
+import { User } from '../../../../src/client/user';
 import LoginForm from '../../../../src/components/users/login-form.vue';
 import { useCurrentUser, useToasts } from '../../../../src/store';
+import { createAxiosError } from '../../../fixtures/create-axios-error';
 import { createRouter } from '../../../fixtures/create-router';
 
 const UserData: UserDTO = {
@@ -51,20 +50,11 @@ describe('Login Form component', () => {
   let pinia: Pinia;
   let router: Router;
   let client: ApiClient;
-  let axiosAdapter: AxiosAdapter;
-
-  beforeAll(() => {
-    axiosAdapter = new AxiosAdapter(axios);
-  });
 
   beforeEach(() => {
     pinia = createPinia();
     router = createRouter();
     client = new ApiClient();
-  });
-
-  afterEach(() => {
-    axiosAdapter.reset();
   });
 
   it('will validate missing fields', async () => {
@@ -99,7 +89,9 @@ describe('Login Form component', () => {
         },
       },
     });
-    axiosAdapter.onPost('/api/auth/login').reply(200, UserData);
+    const spy = jest
+      .spyOn(client.users, 'login')
+      .mockResolvedValue(new User(client.axios, UserData));
 
     await wrapper
       .find('[data-testid="login-username"]')
@@ -110,6 +102,7 @@ describe('Login Form component', () => {
     await flushPromises();
 
     expect(currentUser.displayName).toEqual(UserData.profile.name);
+    expect(spy).toHaveBeenCalledWith(usernameOrEmail, password);
   });
 
   it('will show an error toast when user fails login', async () => {
@@ -125,7 +118,14 @@ describe('Login Form component', () => {
         },
       },
     });
-    axiosAdapter.onPost('/api/auth/login').reply(401);
+    jest.spyOn(client.users, 'login').mockRejectedValue(
+      createAxiosError({
+        status: 401,
+        message: 'Nope',
+        method: 'POST',
+        path: '/api/auth/login',
+      }),
+    );
 
     await wrapper
       .find('[data-testid="login-username"]')

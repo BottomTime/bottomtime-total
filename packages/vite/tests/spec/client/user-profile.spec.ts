@@ -1,21 +1,21 @@
-import { UserDTO } from '@bottomtime/api';
+import { UpdateProfileParamsSchema, UserDTO } from '@bottomtime/api';
 
-import axios, { AxiosInstance } from 'axios';
-import AxiosAdapter from 'axios-mock-adapter';
+import nock, { Scope } from 'nock';
 
+import { ApiClient } from '../../../src/client/client';
 import { UserProfile } from '../../../src/client/user-profile';
+import { createScope } from '../../fixtures/nock';
 import { BasicUser } from '../../fixtures/users';
 
 describe('UserProfile client object', () => {
-  let axiosInstance: AxiosInstance;
-  let axiosAdapter: AxiosAdapter;
+  let client: ApiClient;
   let profile: UserProfile;
   let testUser: UserDTO;
+  let scope: Scope;
 
   beforeAll(() => {
-    axiosInstance = axios.create();
-    axiosAdapter = new AxiosAdapter(axiosInstance);
-
+    client = new ApiClient();
+    scope = createScope();
     testUser = {
       ...BasicUser,
       profile: {
@@ -32,15 +32,15 @@ describe('UserProfile client object', () => {
       },
     };
 
-    profile = new UserProfile(axiosInstance, testUser);
+    profile = new UserProfile(client.axios, testUser);
   });
 
   afterEach(() => {
-    axiosAdapter.reset();
+    nock.cleanAll();
   });
 
   afterAll(() => {
-    axiosAdapter.restore();
+    nock.restore();
   });
 
   it('will return properties correctly', () => {
@@ -82,19 +82,13 @@ describe('UserProfile client object', () => {
     profile.name = 'Updated User';
     profile.startedDiving = '2011-01-01';
 
-    const expectedRequest: Record<string, unknown> = Object.assign(
-      {},
-      testUser.profile,
-    );
-    delete expectedRequest.userId;
-    delete expectedRequest.username;
-    delete expectedRequest.memberSince;
+    const expected = UpdateProfileParamsSchema.parse(profile);
 
-    axiosAdapter
-      .onPut(`/api/users/${testUser.username}`, expectedRequest)
-      .reply(200);
+    scope
+      .put(`/api/users/${testUser.username}`, JSON.stringify(expected))
+      .reply(200, testUser.profile);
     await profile.save();
 
-    expect(axiosAdapter.history.put).toHaveLength(1);
+    expect(scope.isDone()).toBe(true);
   });
 });

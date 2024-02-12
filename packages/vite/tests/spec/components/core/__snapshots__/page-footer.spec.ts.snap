@@ -10,7 +10,7 @@ exports[`Page Footer component will render correctly 1`] = `
     <li class="p-0.5">|</li>
     <li class="p-0.5"><a href="#">Cookie Policy</a></li>
     <li class="p-0.5">|</li>
-    <li class="p-0.5"><a href="mailto:admin@bottomti.me">Contact</a></li>
+    <li class="p-0.5"><a href="mailto:administrator@website.com">Contact</a></li>
   </ul>
 </section>"
 `;

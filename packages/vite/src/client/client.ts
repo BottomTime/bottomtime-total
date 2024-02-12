@@ -18,4 +18,8 @@ export class ApiClient {
 
     this.users = new UsersApiClient(this.client);
   }
+
+  get axios(): AxiosInstance {
+    return this.client;
+  }
 }

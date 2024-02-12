@@ -1,12 +1,12 @@
 export class Config {
   /** Email address for contacting support/admin. */
   static get adminEmail(): string {
-    return process.env.ADMIN_EMAIL || 'admin@bottomti.me';
+    return process.env.BTWEB_VITE_ADMIN_EMAIL || 'admin@bottomti.me';
   }
 
   /** Base URL at which the app is listening for requests. */
   static get baseUrl(): string {
-    return process.env.BASE_URL || 'http://localhost:4850/';
+    return process.env.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';
   }
 
   /** The value of the `NODE_ENV` environment variable. */

@@ -1,7 +1,7 @@
+/* eslint-disable vue/one-component-per-file */
 import { mount } from '@vue/test-utils';
 
-import axios from 'axios';
-import AxiosAdapter from 'axios-mock-adapter';
+import { AxiosError } from 'axios';
 import { Pinia, createPinia } from 'pinia';
 import { defineComponent, onMounted } from 'vue';
 import { Router, createMemoryHistory, createRouter } from 'vue-router';
@@ -14,10 +14,23 @@ import {
   useOops,
 } from '../../src/oops';
 import { useCurrentUser, useToasts } from '../../src/store';
+import {
+  createAxiosError,
+  createNetworkError,
+} from '../fixtures/create-axios-error';
 import { BasicUser } from '../fixtures/users';
 
 let pinia: Pinia;
 let router: Router;
+
+function getErrorResponse(status: number, method = 'GET'): AxiosError {
+  return createAxiosError({
+    status,
+    message: 'Nope!',
+    method,
+    path: '/nope',
+  });
+}
 
 function testOops(
   fn: () => string | Promise<string>,
@@ -45,12 +58,6 @@ function testOops(
 }
 
 describe('"Oops" error handler', () => {
-  let axiosAdapter: AxiosAdapter;
-
-  beforeAll(() => {
-    axiosAdapter = new AxiosAdapter(axios);
-  });
-
   beforeEach(() => {
     pinia = createPinia();
     router = createRouter({
@@ -63,14 +70,6 @@ describe('"Oops" error handler', () => {
         },
       ],
     });
-  });
-
-  afterEach(() => {
-    axiosAdapter.reset();
-  });
-
-  afterAll(() => {
-    axiosAdapter.restore();
   });
 
   it('will return the value of the function if it succeeds', async () => {
@@ -98,20 +97,24 @@ describe('"Oops" error handler', () => {
 
     it('will invoke the network error handler for network errors', async () => {
       const handler = jest.fn();
-      axiosAdapter.onGet('/nope').networkErrorOnce();
-      const result = await testOops(() => axios.get('/nope'), {
-        networkError: handler,
-      });
+      const result = await testOops(
+        jest.fn().mockRejectedValue(createAxiosError('nope')),
+        {
+          networkError: handler,
+        },
+      );
       expect(result).toBeNull();
       expect(handler).toHaveBeenCalled();
     });
 
     it('will invoke the handler for the status code of the error', async () => {
       const handler = jest.fn();
-      axiosAdapter.onGet('/nope').reply(409);
-      const result = await testOops(async () => await axios.get('/nope'), {
-        409: handler,
-      });
+      const result = await testOops(
+        jest.fn().mockRejectedValue(getErrorResponse(409)),
+        {
+          409: handler,
+        },
+      );
       expect(result).toBeNull();
       expect(handler).toHaveBeenCalled();
     });
@@ -127,8 +130,9 @@ describe('"Oops" error handler', () => {
     });
 
     it('will invoke default network error handler for network errors', async () => {
-      axiosAdapter.onGet('/nope').networkErrorOnce();
-      const result = await testOops(async () => axios.get('/nope'));
+      const result = await testOops(
+        jest.fn().mockRejectedValue(createNetworkError('Network error')),
+      );
       expect(result).toBeNull();
       const toasts = useToasts(pinia);
       expect(toasts.toasts[0]).toMatchObject(NetworkErrorToast);
@@ -137,9 +141,10 @@ describe('"Oops" error handler', () => {
     it('will logout users if their session expires', async () => {
       const currentUser = useCurrentUser(pinia);
       currentUser.user = BasicUser;
-      axiosAdapter.onGet('/nope').reply(401);
 
-      const result = await testOops(async () => await axios.get('/nope'));
+      const result = await testOops(
+        jest.fn().mockRejectedValue(getErrorResponse(401)),
+      );
 
       expect(result).toBeNull();
       expect(currentUser.user).toBeNull();
@@ -147,18 +152,19 @@ describe('"Oops" error handler', () => {
 
     it('will show a toast on 403 errors', async () => {
       const toasts = useToasts(pinia);
-      axiosAdapter.onGet('/nope').reply(403);
 
-      const result = await testOops(async () => await axios.get('/nope'));
+      const result = await testOops(
+        jest.fn().mockRejectedValue(getErrorResponse(403)),
+      );
 
       expect(result).toBeNull();
       expect(toasts.toasts[0]).toMatchObject(ForbiddenErrorToast);
     });
 
     it('will redirect to 404 page on not found errors', async () => {
-      axiosAdapter.onGet('/nope').reply(404);
-
-      const result = await testOops(async () => await axios.get('/nope'));
+      const result = await testOops(
+        jest.fn().mockRejectedValue(getErrorResponse(404)),
+      );
       expect(result).toBeNull();
       expect(router.currentRoute.value.fullPath).toBe('/notFound');
     });

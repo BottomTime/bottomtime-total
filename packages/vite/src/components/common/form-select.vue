@@ -4,6 +4,7 @@
     ref="selectInput"
     v-model="value"
     :class="`p-1 border-2 outline-offset-1 ${width} caret-${highlightColour} rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 dark:text-grey-950`"
+    :data-testid="testId"
     :name="controlId"
   >
     <option v-for="option in options" :key="option.value" :value="option.value">
@@ -23,6 +24,7 @@ type FormSelectProps = {
   invalid?: boolean;
   options: SelectOption[];
   stretch?: boolean;
+  testId?: string;
 };
 
 const value = defineModel<string>();

@@ -15,7 +15,9 @@ export class UsersApiClient {
 
   async isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean> {
     try {
-      await this.apiClient.head(`/api/users/${usernameOrEmail}`);
+      await this.apiClient.head(
+        `/api/users/${encodeURIComponent(usernameOrEmail)}`,
+      );
       return false;
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 404) {
