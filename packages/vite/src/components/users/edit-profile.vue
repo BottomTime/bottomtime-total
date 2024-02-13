@@ -26,9 +26,23 @@
 
   <form @submit.prevent="">
     <fieldset :disabled="isSaving">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <TextHeading>Personal Info</TextHeading>
+      <div class="flex flex-row gap-3">
+        <div class="flex-initial">
+          <button class="p-3" @click="showAvatarDialog = !showAvatarDialog">
+            <UserAvatar
+              :avatar="data.avatar"
+              :display-name="user.profile.name || user.username"
+              size="x-large"
+              test-id="profile-avatar"
+            />
+          </button>
+        </div>
+
+        <div class="grow">
+          <FormField>
+            <TextHeading>Personal Info</TextHeading>
+          </FormField>
+
           <FormField label="Name" control-id="name">
             <FormTextBox
               v-model.trim="data.name"
@@ -58,7 +72,10 @@
             />
           </FormField>
 
-          <FormField label="Bio" control-id="bio">
+          <FormField>
+            <TextHeading class="mt-5">Bio</TextHeading>
+          </FormField>
+          <FormField control-id="bio">
             <FormTextArea
               v-model.trim="data.bio"
               control-id="bio"
@@ -68,21 +85,10 @@
               resize="none"
             />
           </FormField>
-        </div>
 
-        <div>
-          <div class="w-full flex justify-center mb-4">
-            <button @click="showAvatarDialog = !showAvatarDialog">
-              <UserAvatar
-                :avatar="data.avatar"
-                :display-name="user.profile.name || user.username"
-                size="x-large"
-                test-id="profile-avatar"
-              />
-            </button>
-          </div>
-
-          <TextHeading>Dive Experience</TextHeading>
+          <FormField>
+            <TextHeading class="mt-5">Dive Experience</TextHeading>
+          </FormField>
           <FormField label="Experience level" control-id="experience-level">
             <FormSelect
               v-model.trim="data.experienceLevel"
@@ -103,6 +109,7 @@
           </FormField>
         </div>
       </div>
+
       <div class="flex justify-center mt-6 gap-3">
         <FormButton
           type="primary"
