@@ -33,6 +33,7 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-unused-vars': 'warn',
+    'no-console': 'warn',
     'vue/require-default-prop': 'off',
   },
 };

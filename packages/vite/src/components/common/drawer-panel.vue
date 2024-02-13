@@ -3,7 +3,7 @@
   <Transition name="backdrop">
     <div
       v-if="visible"
-      class="absolute top-0 left-0 w-full h-full backdrop-blur-sm z-30"
+      class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-30"
       data-testid="drawer-backdrop"
       @click="onClose"
     ></div>
@@ -13,10 +13,10 @@
   <Transition name="drawer">
     <div
       v-if="visible"
-      class="fixed right-0 top-16 md:w-1/2 w-full h-full font-content bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-40 p-4"
+      class="fixed box-border right-0 top-16 pb-20 md:w-1/2 w-full h-full font-content flex flex-col gap-6 bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-40 p-4"
     >
       <!-- Title and close button. -->
-      <div v-if="title || showClose" class="flex flex-row mb-6 w-full">
+      <div v-if="title || showClose" class="flex flex-initial flex-row w-full">
         <p class="font-title dark:text-blue-200 text-4xl grow">
           {{ title }}
         </p>
@@ -28,7 +28,9 @@
       </div>
 
       <!-- Content. -->
-      <slot></slot>
+      <div class="grow overflow-y-auto overflow-x-hidden">
+        <slot></slot>
+      </div>
     </div>
   </Transition>
 </template>

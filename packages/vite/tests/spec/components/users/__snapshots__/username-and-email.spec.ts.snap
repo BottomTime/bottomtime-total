@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Username and Email component will indicate if an email is unverified 1`] = `"<div class="grow w-full" data-testid="email-verification-status"><span class="text-warn"><span class="mr-2"><i class="fas fa-exclamation-triangle"></i></span><span class="italic text-sm">Email address has not been verified</span></span></div>"`;
+
+exports[`Username and Email component will indicate if an email is verified 1`] = `"<div class="grow w-full" data-testid="email-verification-status"><span class="text-success"><span class="mr-2"><i class="fas fa-check"></i></span><span class="italic text-sm">Email address is verified</span></span></div>"`;
+
+exports[`Username and Email component will send a verification email upon request 1`] = `
+"<div class="grow w-full" data-testid="email-verification-status">
+  <div class="text-success flex flex-row gap-3"><span class="flex-initial"><i class="fas fa-envelope fa-lg"></i></span>
+    <div class="grow flex flex-col gap-4 italic text-sm">
+      <p> A verification email has been sent to your email address. It will contain a link to verify your email address. </p>
+      <p><strong>NOTE:</strong> It may take several minutes to arrive in your inbox. If you do not receive the email, please check your spam folder and, if you have still not received the message after several minutes, you can try refreshing this page and requesting another email. </p>
+    </div>
+  </div>
+</div>"
+`;

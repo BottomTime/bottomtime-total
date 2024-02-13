@@ -1,25 +1,28 @@
 <template>
   <TabPanel :tabs="Tabs" :active-tab="activeTab" @tab-changed="onTabChanged">
-    <ManageUserAccount
-      v-if="activeTab === Tabs[0].key"
-      :user="user"
-      @account-lock-toggled="(id) => $emit('account-lock-toggled', id)"
-      @password-reset="(id) => $emit('password-reset', id)"
-      @role-changed="(id, role) => $emit('role-changed', id, role)"
-    />
+    <div class="overflow-y-auto">
+      <ManageUserAccount
+        v-if="activeTab === Tabs[0].key"
+        :user="user"
+        @account-lock-toggled="(id) => $emit('account-lock-toggled', id)"
+        @password-reset="(id) => $emit('password-reset', id)"
+        @role-changed="(id, role) => $emit('role-changed', id, role)"
+      />
 
-    <EditProfile
-      v-else-if="activeTab === Tabs[1].key"
-      ref="editProfileTab"
-      :user="user"
-      @save-profile="(profile) => $emit('save-profile', profile)"
-    />
+      <EditProfile
+        v-else-if="activeTab === Tabs[1].key"
+        ref="editProfileTab"
+        :user="user"
+        :responsive="false"
+        @save-profile="(profile) => $emit('save-profile', profile)"
+      />
 
-    <EditSettings
-      v-else-if="activeTab === Tabs[2].key"
-      :user="user"
-      @save-settings="(settings) => $emit('save-settings', settings)"
-    />
+      <EditSettings
+        v-else-if="activeTab === Tabs[2].key"
+        :user="user"
+        @save-settings="(settings) => $emit('save-settings', settings)"
+      />
+    </div>
   </TabPanel>
 </template>
 

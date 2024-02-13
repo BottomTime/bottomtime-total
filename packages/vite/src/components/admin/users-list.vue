@@ -9,34 +9,50 @@
       :user="selectedUser"
       @account-lock-toggled="onAccountLockToggled"
       @role-changed="onRoleChanged"
+      @username-changed="onUsernameChanged"
+      @email-changed="onEmailChanged"
       @password-reset="onPasswordReset"
       @save-profile="onSaveProfile"
       @save-settings="onSaveSettings"
     />
   </DrawerPanel>
-  <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-6">
+  <div class="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-8 gap-6">
     <!-- Search criteria panel -->
-    <FormBox class="lg:col-start-2">
+    <FormBox class="xl:col-start-2 xl:col-span-2">
       <form class="flex flex-col sticky top-20" @submit.prevent="">
-        <div class="relative mb-3">
-          <span
-            class="absolute pointer-events-none right-3 top-1.5 dark:text-grey-950"
-          >
-            <i class="fas fa-search"></i>
-          </span>
+        <FormField :responsive="false">
           <FormTextBox
             v-model="searchParams.query"
             control-id="search"
             :maxlength="200"
             placeholder="Search users"
             test-id="search-users"
-          />
-        </div>
-        <FormField label="Filter by role" control-id="role">
+            autofocus
+          >
+            <template #right>
+              <span class="pointer-events-auto dark:text-grey-950">
+                <i class="fas fa-search"></i>
+              </span>
+            </template>
+          </FormTextBox>
+        </FormField>
+        <FormField label="Role" control-id="role" :responsive="false">
           <FormSelect
             v-model="searchParams.role"
             control-id="role"
             :options="UserRoleOptions"
+            stretch
+          />
+        </FormField>
+        <FormField
+          label="Account status"
+          control-id="account-status"
+          :responsive="false"
+        >
+          <FormSelect
+            v-model="searchParams.isLockedOut"
+            control-id="account-status"
+            :options="AccountStatusOptions"
             stretch
           />
         </FormField>
@@ -48,7 +64,7 @@
       </form>
     </FormBox>
 
-    <div class="md:col-span-3">
+    <div class="lg:col-span-3 xl:col-span-4">
       <!-- Summary bar and sort order select -->
       <FormBox class="flex flex-row gap-3 items-baseline sticky top-16">
         <span class="font-bold">Showing Users:</span>
@@ -146,14 +162,22 @@ const UserRoleOptions: SelectOption[] = [
   { label: 'Admin', value: UserRole.Admin },
   { label: 'User', value: UserRole.User },
 ];
+const AccountStatusOptions: SelectOption[] = [
+  { label: 'All', value: '' },
+  { label: 'Active', value: 'false' },
+  { label: 'Suspended', value: 'true' },
+];
+
 const client = useClient();
 const oops = useOops();
 
 const searchParams = reactive<{
+  isLockedOut: string;
   query: string;
   role: UserRole | '';
   sortOrder: string;
 }>({
+  isLockedOut: '',
   query: '',
   role: '',
   sortOrder: SortOrderOptions[0].value,
@@ -208,6 +232,19 @@ function onAccountLockToggled() {
 function onRoleChanged(_id: string, role: UserRole) {
   if (selectedUser.value) {
     selectedUser.value.role = role;
+  }
+}
+
+function onUsernameChanged(_id: string, username: string) {
+  if (selectedUser.value) {
+    selectedUser.value.username = username;
+  }
+}
+
+function onEmailChanged(_id: string, email: string) {
+  if (selectedUser.value) {
+    selectedUser.value.email = email;
+    selectedUser.value.emailVerified = false;
   }
 }
 

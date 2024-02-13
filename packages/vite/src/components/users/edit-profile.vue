@@ -26,13 +26,21 @@
 
   <form @submit.prevent="">
     <fieldset :disabled="isSaving">
-      <div class="flex flex-row gap-3">
-        <div class="flex-initial">
+      <div
+        :class="`flex ${
+          responsive ? 'flex-col lg:flex-row' : 'flex-col'
+        } gap-3`"
+      >
+        <div
+          :class="`${
+            responsive ? 'min-w-[80px] flex-initial' : 'w-full text-center'
+          }`"
+        >
           <button class="p-3" @click="showAvatarDialog = !showAvatarDialog">
             <UserAvatar
               :avatar="data.avatar"
               :display-name="user.profile.name || user.username"
-              size="x-large"
+              size="large"
               test-id="profile-avatar"
             />
           </button>
@@ -149,6 +157,7 @@ import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UserAvatar from './user-avatar.vue';
 
 type EditProfileProps = {
+  responsive?: boolean;
   user: UserDTO;
 };
 type ProfileData = {
@@ -173,7 +182,9 @@ const client = useClient();
 const toasts = useToasts();
 const oops = useOops();
 
-const props = defineProps<EditProfileProps>();
+const props = withDefaults(defineProps<EditProfileProps>(), {
+  responsive: true,
+});
 const data = reactive<ProfileData>({
   avatar: props.user.profile.avatar ?? '',
   bio: props.user.profile.bio ?? '',

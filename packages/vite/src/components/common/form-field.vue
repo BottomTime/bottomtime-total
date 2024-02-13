@@ -1,6 +1,14 @@
 <template>
-  <div class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline mb-3">
-    <div class="lg:min-w-40 xl:min-w-48 lg:text-right">
+  <div
+    :class="`flex flex-col gap-2 ${
+      responsive
+        ? 'lg:flex-row lg:gap-4 lg:align-center lg:place-items-center'
+        : ''
+    } mb-3`"
+  >
+    <div
+      :class="`${responsive ? 'lg:min-w-40 xl:min-w-48 lg:text-right' : ''}`"
+    >
       <FormLabel
         v-if="label"
         :label="label"
@@ -9,9 +17,7 @@
       />
     </div>
     <div class="grow w-full">
-      <div>
-        <slot></slot>
-      </div>
+      <slot></slot>
       <span v-if="help && !invalid" class="text-sm italic">{{ help }}</span>
       <span
         v-if="invalid"
@@ -36,10 +42,12 @@ type FormFieldProps = {
   label?: string;
   invalid?: boolean;
   required?: boolean;
+  responsive?: boolean;
 };
 
 withDefaults(defineProps<FormFieldProps>(), {
   invalid: false,
   required: false,
+  responsive: true,
 });
 </script>

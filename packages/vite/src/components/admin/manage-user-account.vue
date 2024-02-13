@@ -28,14 +28,21 @@
     @cancel="onCancelResetPassword"
   />
 
-  <div class="flex flex-row mb-4">
-    <TextHeading class="grow">Account Activity</TextHeading>
-    <div class="text-sm text-right">
-      <FormToggle v-model="state.showExactTimes" label="Show exact times" />
-    </div>
-  </div>
   <div class="flex flex-col gap-4">
+    <div class="flex flex-row mb-4">
+      <TextHeading class="grow">Account Activity</TextHeading>
+      <div class="text-sm text-right">
+        <FormToggle v-model="state.showExactTimes" label="Show exact times" />
+      </div>
+    </div>
     <AccountTimestamps :user="user" :exact-times="state.showExactTimes" />
+
+    <TextHeading>Username And Email</TextHeading>
+    <UsernameAndEmail
+      :user="user"
+      @change-email="(email) => $emit('email-changed', email)"
+      @change-username="(username) => $emit('username-changed', username)"
+    />
 
     <TextHeading>Update Account</TextHeading>
     <div class="flex flex-row gap-3 items-baseline">
@@ -46,7 +53,7 @@
         {{ user.isLockedOut ? 'Suspended' : 'Active' }}
       </span>
       <FormButton
-        class="w-40"
+        class="min-w-40"
         :is-loading="state.isTogglingLockout"
         @click="onToggleLockout"
       >
@@ -63,7 +70,7 @@
             : 'User has not set a password on their account'
         }}
       </span>
-      <FormButton class="w-40" @click="onResetPassword">
+      <FormButton class="min-w-40" @click="onResetPassword">
         Reset Password...
       </FormButton>
     </div>
@@ -83,7 +90,7 @@
           {{ user.role }}
         </span>
       </div>
-      <div class="w-40">
+      <div class="min-w-40">
         <div v-if="state.isChangingRole" class="grid grid-cols-2 gap-2">
           <FormButton type="primary" submit @click="onSaveRoleChange">
             <span class="text-success mr-1">
@@ -110,8 +117,6 @@
 <script setup lang="ts">
 import { UserDTO, UserRole } from '@bottomtime/api';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/relativeTime';
 import { reactive, ref } from 'vue';
 
 import { useClient } from '../../client';
@@ -125,6 +130,7 @@ import TextHeading from '../common/text-heading.vue';
 import ChangePasswordDialog from '../dialog/change-password-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import AccountTimestamps from '../users/account-timestamps.vue';
+import UsernameAndEmail from '../users/username-and-email.vue';
 
 // Type Defs
 type ManageUserAccountProps = {
@@ -170,6 +176,8 @@ const emit = defineEmits<{
   (e: 'account-lock-toggled', userId: string): void;
   (e: 'password-reset', userId: string): void;
   (e: 'role-changed', userId: string, newRole: UserRole): void;
+  (e: 'username-changed', username: string): void;
+  (e: 'email-changed', email: string): void;
 }>();
 
 // Event handlers

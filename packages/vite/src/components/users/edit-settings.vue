@@ -20,99 +20,124 @@
   <form @submit.prevent="">
     <fieldset :disabled="isSaving">
       <TextHeading>Preferred Units</TextHeading>
-      <div class="flex flex-row gap-6 items-baseline">
-        <div class="w-40 hidden md:inline-block"></div>
-        <FormButton
-          type="link"
-          test-id="select-all-metric"
-          @click="onAllMetric"
-        >
-          All Metric
-        </FormButton>
-        <FormButton
-          type="link"
-          test-id="select-all-imperial"
-          @click="onAllImperial"
-        >
-          All Imperial
-        </FormButton>
-      </div>
+      <FormField :responsive="responsive">
+        <div class="flex gap-3">
+          <FormButton
+            type="link"
+            test-id="select-all-metric"
+            @click="onAllMetric"
+          >
+            All Metric
+          </FormButton>
+          <FormButton
+            type="link"
+            test-id="select-all-imperial"
+            @click="onAllImperial"
+          >
+            All Imperial
+          </FormButton>
+        </div>
+      </FormField>
 
-      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
-        <FormLabel class="w-40 md:text-right" label="Depth" />
-        <FormRadio
-          v-for="option in DepthOptions"
-          :key="option.id"
-          v-model="data.depthUnit"
-          class="w-36 pl-4 md:pl-0"
-          :control-id="option.id"
-          :group="option.group"
-          :value="option.value"
+      <FormField label="Depth" :responsive="responsive">
+        <div
+          :class="`flex flex-col gap-3 ${
+            responsive ? 'md:flex-row md:gap-0 pl-4 lg:pl-0' : ''
+          }`"
         >
-          {{ option.label }}
-        </FormRadio>
-      </div>
+          <FormRadio
+            v-for="option in DepthOptions"
+            :key="option.id"
+            v-model="data.depthUnit"
+            class="w-36"
+            :control-id="option.id"
+            :group="option.group"
+            :value="option.value"
+          >
+            {{ option.label }}
+          </FormRadio>
+        </div>
+      </FormField>
 
-      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
-        <FormLabel class="w-40 md:text-right" label="Pressure" />
-        <FormRadio
-          v-for="option in PressureOptions"
-          :key="option.id"
-          v-model="data.pressureUnit"
-          class="w-36 pl-4 md:pl-0"
-          :control-id="option.id"
-          :group="option.group"
-          :value="option.value"
+      <FormField label="Pressure" :responsive="responsive">
+        <div
+          :class="`flex flex-col gap-3 ${
+            responsive ? 'md:flex-row md:gap-0 pl-4 lg:pl-0' : ''
+          }`"
         >
-          {{ option.label }}
-        </FormRadio>
-      </div>
+          <FormRadio
+            v-for="option in PressureOptions"
+            :key="option.id"
+            v-model="data.pressureUnit"
+            class="w-36"
+            :control-id="option.id"
+            :group="option.group"
+            :value="option.value"
+          >
+            {{ option.label }}
+          </FormRadio>
+        </div>
+      </FormField>
 
-      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
-        <FormLabel class="w-40 md:text-right" label="Temperature" />
-        <FormRadio
-          v-for="option in TemperatureOptions"
-          :key="option.id"
-          v-model="data.temperatureUnit"
-          class="w-36 pl-4 md:pl-0"
-          :control-id="option.id"
-          :group="option.group"
-          :value="option.value"
+      <FormField label="Temperature" :responsive="responsive">
+        <div
+          :class="`flex flex-col gap-3 ${
+            responsive ? 'md:flex-row md:gap-0 pl-4 lg:pl-0' : ''
+          }`"
         >
-          {{ option.label }}
-        </FormRadio>
-      </div>
+          <FormRadio
+            v-for="option in TemperatureOptions"
+            :key="option.id"
+            v-model="data.temperatureUnit"
+            class="w-36"
+            :control-id="option.id"
+            :group="option.group"
+            :value="option.value"
+          >
+            {{ option.label }}
+          </FormRadio>
+        </div>
+      </FormField>
 
-      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
-        <FormLabel class="w-40 md:text-right" label="Weight" />
-        <FormRadio
-          v-for="option in WeightOptions"
-          :key="option.id"
-          v-model="data.weightUnit"
-          class="w-36 pl-4 md:pl-0"
-          :control-id="option.id"
-          :group="option.group"
-          :value="option.value"
+      <FormField label="Weight" :responsive="responsive">
+        <div
+          :class="`flex flex-col gap-3 ${
+            responsive ? 'md:flex-row md:gap-0 pl-4 lg:pl-0' : ''
+          }`"
         >
-          {{ option.label }}
-        </FormRadio>
-      </div>
+          <FormRadio
+            v-for="option in WeightOptions"
+            :key="option.id"
+            v-model="data.weightUnit"
+            class="w-36"
+            :control-id="option.id"
+            :group="option.group"
+            :value="option.value"
+          >
+            {{ option.label }}
+          </FormRadio>
+        </div>
+      </FormField>
 
       <TextHeading>Privacy</TextHeading>
-      <div class="flex flex-col gap-3 md:flex-row md:gap-6 mb-4">
-        <FormLabel class="w-40 md:text-right" label="Profile visible to" />
-        <FormRadio
-          v-for="option in ProfileVisibilityOptions"
-          :key="option.id"
-          v-model="data.profileVisibility"
-          class="w-30 pl-4 md:pl-0"
-          :control-id="option.id"
-          :group="option.group"
-          :value="option.value"
+      <FormField label="Profile visible to" :responsive="responsive">
+        <div
+          :class="`flex flex-col gap-3 ${
+            responsive ? 'md:flex-row pl-4 lg:pl-0' : ''
+          }`"
         >
-          {{ option.label }}
-        </FormRadio>
-      </div>
+          <FormRadio
+            v-for="option in ProfileVisibilityOptions"
+            :key="option.id"
+            v-model="data.profileVisibility"
+            :control-id="option.id"
+            :group="option.group"
+            :value="option.value"
+          >
+            {{ option.label }}
+          </FormRadio>
+        </div>
+      </FormField>
 
       <div class="flex flex-row justify-center items-baseline gap-3">
         <FormButton
@@ -150,12 +175,14 @@ import { ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
+import FormField from '../common/form-field.vue';
 import FormLabel from '../common/form-label.vue';
 import FormRadio from '../common/form-radio.vue';
 import TextHeading from '../common/text-heading.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 
 type EditSettingsProps = {
+  responsive?: boolean;
   user: UserDTO;
 };
 type RadioOption = {
@@ -250,7 +277,9 @@ const client = useClient();
 const toasts = useToasts();
 const oops = useOops();
 
-const props = defineProps<EditSettingsProps>();
+const props = withDefaults(defineProps<EditSettingsProps>(), {
+  responsive: true,
+});
 const data = reactive<UserSettingsDTO>({
   depthUnit: props.user.settings.depthUnit,
   pressureUnit: props.user.settings.pressureUnit,
