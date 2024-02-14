@@ -55,12 +55,14 @@
           :class="`grow text-sm ${
             user.isLockedOut ? 'text-danger' : 'text-success'
           }`"
+          data-testid="account-status"
         >
           {{ user.isLockedOut ? 'Suspended' : 'Active' }}
         </span>
         <FormButton
           class="min-w-36 lg:min-w-40 xl:min-w-48"
           :is-loading="state.isTogglingLockout"
+          test-id="toggle-account-lock"
           @click="onToggleLockout"
         >
           {{
@@ -77,7 +79,7 @@
             v-if="state.isChangingRole"
             v-model="state.selectedRole"
             control-id="user-role"
-            test-id="user-role"
+            test-id="role-select"
             :options="RoleOptions"
             autofocus
           />
@@ -87,13 +89,18 @@
         </div>
         <div class="min-w-40">
           <div v-if="state.isChangingRole" class="grid grid-cols-2 gap-2">
-            <FormButton type="primary" submit @click="onSaveRoleChange">
+            <FormButton
+              type="primary"
+              submit
+              test-id="confirm-role"
+              @click="onSaveRoleChange"
+            >
               <span class="text-success mr-1">
                 <i class="fas fa-check"></i>
               </span>
               <span>Save</span>
             </FormButton>
-            <FormButton @click="onCancelRoleChange">
+            <FormButton test-id="cancel-role" @click="onCancelRoleChange">
               <span class="text-danger mr-1">
                 <i class="fas fa-times"></i>
               </span>
@@ -104,6 +111,7 @@
           <FormButton
             v-else
             class="min-w-36 lg:min-w-40 xl:min-w-48"
+            test-id="change-role"
             @click="onChangeRole"
           >
             Change Role...

@@ -1,5 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Manage User Account component will display correct account lock state when account is active 1`] = `"<span class="grow text-sm text-success" data-testid="account-status">Active</span>"`;
+
+exports[`Manage User Account component will display correct account lock state when account is suspended 1`] = `"<span class="grow text-sm text-danger" data-testid="account-status">Suspended</span>"`;
+
 exports[`Manage User Account component will display timestamps with exact dates 1`] = `
 "<div class="grid grid-cols-3 text-center mb-6" data-testid="account-timestamps">
   <div class="flex flex-col"><label class="font-bold">Joined</label><span>Jan 1, 2021 0:00:00 (UTC)</span></div>
