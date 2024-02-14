@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Manage User Account component will display timestamps with exact dates 1`] = `
+"<div class="grid grid-cols-3 text-center mb-6" data-testid="account-timestamps">
+  <div class="flex flex-col"><label class="font-bold">Joined</label><span>Jan 1, 2021 0:00:00 (UTC)</span></div>
+  <div class="flex flex-col"><label class="font-bold">Last Login</label><span>Jan 1, 2021 0:00:00 (UTC)</span></div>
+  <div class="flex flex-col"><label class="font-bold">Last Password Change</label><span>Jan 1, 2021 0:00:00 (UTC)</span></div>
+</div>"
+`;
+
+exports[`Manage User Account component will display timestamps with fuzzy dates 1`] = `
+"<div class="grid grid-cols-3 text-center mb-6" data-testid="account-timestamps">
+  <div class="flex flex-col"><label class="font-bold">Joined</label><span>3 years ago</span></div>
+  <div class="flex flex-col"><label class="font-bold">Last Login</label><span>3 years ago</span></div>
+  <div class="flex flex-col"><label class="font-bold">Last Password Change</label><span>3 years ago</span></div>
+</div>"
+`;

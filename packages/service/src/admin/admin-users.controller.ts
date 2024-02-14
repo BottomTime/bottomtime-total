@@ -122,6 +122,64 @@ export class AdminUsersController {
 
   /**
    * @openapi
+   * /api/admin/users/{username}:
+   *   get:
+   *     summary: Get a user by username or email
+   *     operationId: getUser
+   *     tags:
+   *       - Admin
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body contains the user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/User"
+   *       401:
+   *         description: The request failed because the current user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not an admin.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the target user was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get(`:${UsernameParam}`)
+  async getUser(@Param(UsernameParam) usernameOrEmail: string) {
+    const user = await this.usersService.getUserByUsernameOrEmail(
+      usernameOrEmail,
+    );
+
+    if (!user) {
+      throw new NotFoundException(
+        `Username or email not found: ${usernameOrEmail}`,
+      );
+    }
+
+    return user.toJSON();
+  }
+
+  /**
+   * @openapi
    * /api/admin/users/{username}/role:
    *   post:
    *     summary: Change a user's role

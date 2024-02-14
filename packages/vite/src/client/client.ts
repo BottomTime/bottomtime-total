@@ -1,8 +1,9 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosHeaders, AxiosInstance } from 'axios';
 
 import { UsersApiClient } from './users';
 
 export type ApiClientOptions = {
+  authToken?: string;
   baseURL?: string;
 };
 
@@ -11,8 +12,14 @@ export class ApiClient {
   readonly users: UsersApiClient;
 
   constructor(options?: ApiClientOptions) {
+    const headers = new AxiosHeaders();
+    if (options?.authToken) {
+      headers.Authorization = `Bearer ${options.authToken}`;
+    }
+
     this.client = axios.create({
       baseURL: options?.baseURL,
+      headers,
       withCredentials: true,
     });
 

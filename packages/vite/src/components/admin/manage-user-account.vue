@@ -20,19 +20,15 @@
     </div>
   </ConfirmDialog>
 
-  <ChangePasswordDialog
-    :visible="state.showChangePassword"
-    :is-working="state.isChangingPassword"
-    :require-old-password="false"
-    @confirm="onConfirmResetPassword"
-    @cancel="onCancelResetPassword"
-  />
-
   <div class="flex flex-col gap-4">
     <div class="flex flex-row mb-4">
       <TextHeading class="grow">Account Activity</TextHeading>
       <div class="text-sm text-right">
-        <FormToggle v-model="state.showExactTimes" label="Show exact times" />
+        <FormToggle
+          v-model="state.showExactTimes"
+          label="Show exact times"
+          test-id="toggle-fuzzy-timestamps"
+        />
       </div>
     </div>
     <AccountTimestamps :user="user" :exact-times="state.showExactTimes" />
@@ -47,91 +43,94 @@
     />
 
     <TextHeading>Update Account</TextHeading>
-    <div class="flex flex-row gap-3 items-baseline">
-      <label class="font-bold text-right w-36">Account Status:</label>
-      <span
-        :class="`grow ${user.isLockedOut ? 'text-danger' : 'text-success'}`"
-      >
-        {{ user.isLockedOut ? 'Suspended' : 'Active' }}
-      </span>
-      <FormButton
-        class="min-w-40"
-        :is-loading="state.isTogglingLockout"
-        @click="onToggleLockout"
-      >
-        {{ user.isLockedOut ? 'Reactivate Account...' : 'Suspend Account...' }}
-      </FormButton>
-    </div>
+    <ManagePassword
+      :user="user"
+      :admin="true"
+      @change-password="$emit('password-reset', user.id)"
+    />
 
-    <div class="flex flex-row gap-3 items-baseline">
-      <label class="font-bold text-right w-36">Account Password:</label>
-      <span class="grow">
-        {{
-          user.hasPassword
-            ? 'User has set a password on their account'
-            : 'User has not set a password on their account'
-        }}
-      </span>
-      <FormButton class="min-w-40" @click="onResetPassword">
-        Reset Password...
-      </FormButton>
-    </div>
-
-    <form class="flex flex-row gap-3 items-baseline" @submit.prevent="">
-      <label class="font-bold text-right w-36">User Role:</label>
-      <div class="grow">
-        <FormSelect
-          v-if="state.isChangingRole"
-          v-model="state.selectedRole"
-          control-id="user-role"
-          test-id="user-role"
-          :options="RoleOptions"
-          autofocus
-        />
-        <span v-else>
-          {{ user.role }}
+    <FormField label="Account status">
+      <div class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline">
+        <span
+          :class="`grow text-sm ${
+            user.isLockedOut ? 'text-danger' : 'text-success'
+          }`"
+        >
+          {{ user.isLockedOut ? 'Suspended' : 'Active' }}
         </span>
-      </div>
-      <div class="min-w-40">
-        <div v-if="state.isChangingRole" class="grid grid-cols-2 gap-2">
-          <FormButton type="primary" submit @click="onSaveRoleChange">
-            <span class="text-success mr-1">
-              <i class="fas fa-check"></i>
-            </span>
-            <span>Save</span>
-          </FormButton>
-          <FormButton @click="onCancelRoleChange">
-            <span class="text-danger mr-1">
-              <i class="fas fa-times"></i>
-            </span>
-            <span>Cancel</span>
-          </FormButton>
-        </div>
-
-        <FormButton v-else class="w-40" @click="onChangeRole">
-          Change Role...
+        <FormButton
+          class="min-w-36 lg:min-w-40 xl:min-w-48"
+          :is-loading="state.isTogglingLockout"
+          @click="onToggleLockout"
+        >
+          {{
+            user.isLockedOut ? 'Reactivate Account...' : 'Suspend Account...'
+          }}
         </FormButton>
       </div>
-    </form>
+    </FormField>
+
+    <FormField label="User role">
+      <div class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline">
+        <div class="grow">
+          <FormSelect
+            v-if="state.isChangingRole"
+            v-model="state.selectedRole"
+            control-id="user-role"
+            test-id="user-role"
+            :options="RoleOptions"
+            autofocus
+          />
+          <span v-else class="text-sm">
+            {{ user.role }}
+          </span>
+        </div>
+        <div class="min-w-40">
+          <div v-if="state.isChangingRole" class="grid grid-cols-2 gap-2">
+            <FormButton type="primary" submit @click="onSaveRoleChange">
+              <span class="text-success mr-1">
+                <i class="fas fa-check"></i>
+              </span>
+              <span>Save</span>
+            </FormButton>
+            <FormButton @click="onCancelRoleChange">
+              <span class="text-danger mr-1">
+                <i class="fas fa-times"></i>
+              </span>
+              <span>Cancel</span>
+            </FormButton>
+          </div>
+
+          <FormButton
+            v-else
+            class="min-w-36 lg:min-w-40 xl:min-w-48"
+            @click="onChangeRole"
+          >
+            Change Role...
+          </FormButton>
+        </div>
+      </div>
+    </FormField>
   </div>
 </template>
 
 <script setup lang="ts">
 import { UserDTO, UserRole } from '@bottomtime/api';
 
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 
 import { useClient } from '../../client';
 import { SelectOption, ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
+import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormToggle from '../common/form-toggle.vue';
 import TextHeading from '../common/text-heading.vue';
-import ChangePasswordDialog from '../dialog/change-password-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import AccountTimestamps from '../users/account-timestamps.vue';
+import ManagePassword from '../users/manage-password.vue';
 import UsernameAndEmail from '../users/username-and-email.vue';
 
 // Type Defs
@@ -139,12 +138,10 @@ type ManageUserAccountProps = {
   user: UserDTO;
 };
 type ManageUserAccountState = {
-  isChangingPassword: boolean;
   isChangingRole: boolean;
   isTogglingLockout: boolean;
   selectedRole: UserRole;
   showConfirmToggleLockout: boolean;
-  showChangePassword: boolean;
   showExactTimes: boolean;
 };
 
@@ -159,17 +156,12 @@ const toasts = useToasts();
 const oops = useOops();
 
 // Component state
-const changePasswordDialog = ref<InstanceType<
-  typeof ChangePasswordDialog
-> | null>(null);
 const props = defineProps<ManageUserAccountProps>();
 const state = reactive<ManageUserAccountState>({
-  isChangingPassword: false,
   isChangingRole: false,
   isTogglingLockout: false,
   selectedRole: props.user.role,
   showExactTimes: false,
-  showChangePassword: false,
   showConfirmToggleLockout: false,
 });
 
@@ -181,32 +173,6 @@ const emit = defineEmits<{
   (e: 'username-changed', userId: string, username: string): void;
   (e: 'email-changed', userId: string, email: string): void;
 }>();
-
-// Event handlers
-function onResetPassword() {
-  changePasswordDialog.value?.reset();
-  state.showChangePassword = true;
-}
-
-async function onConfirmResetPassword(newPassword: string): Promise<void> {
-  state.isChangingPassword = true;
-  await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
-    await user.resetPassword(newPassword);
-    state.showChangePassword = false;
-    emit('password-reset', user.id);
-    toasts.toast({
-      id: 'password-reset',
-      type: ToastType.Success,
-      message: 'Password has successfully been reset.',
-    });
-  });
-  state.isChangingPassword = false;
-}
-
-function onCancelResetPassword() {
-  state.showChangePassword = false;
-}
 
 function onToggleLockout() {
   state.showConfirmToggleLockout = true;

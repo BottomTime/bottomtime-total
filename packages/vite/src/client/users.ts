@@ -3,6 +3,7 @@ import {
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
+  UserDTO,
   UserSchema,
 } from '@bottomtime/api';
 
@@ -42,6 +43,13 @@ export class UsersApiClient {
     } else {
       return new User(this.apiClient, UserSchema.parse(data));
     }
+  }
+
+  async getUser(usernameOrEmail: string): Promise<User | null> {
+    const { data } = await this.apiClient.get(
+      `/api/admin/users/${encodeURIComponent(usernameOrEmail)}`,
+    );
+    return new User(this.apiClient, UserSchema.parse(data));
   }
 
   async login(usernameOrEmail: string, password: string): Promise<User> {

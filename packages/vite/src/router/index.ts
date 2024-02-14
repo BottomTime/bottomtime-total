@@ -19,9 +19,14 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/account-view.vue'),
   },
   {
-    path: '/admin',
-    name: 'admin-dashboard',
+    path: '/admin/users',
+    name: 'admin-users',
     component: () => import('../views/admin-dashboard-view.vue'),
+  },
+  {
+    path: '/admin/users/:username',
+    name: 'admin-user',
+    component: () => import('../views/admin-user-view.vue'),
   },
   {
     path: '/profile',

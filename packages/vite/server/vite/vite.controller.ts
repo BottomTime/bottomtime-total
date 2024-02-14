@@ -72,7 +72,10 @@ export class ViteController {
       this.log.error('Failed to retrieve current user info:', error);
     }
 
-    const rendered = await this.vite.render(url, initialState);
+    const rendered = await this.vite.render(url, initialState, {
+      authToken,
+      baseURL: Config.apiUrl,
+    });
     this.log.verbose('Rendered Vue Content:', rendered.html);
 
     const opts: PageOptions = {

@@ -1,8 +1,13 @@
 import { UserDTO } from '@bottomtime/api';
 
 export type AppInitialState = {
+  adminCurrentUser?: UserDTO;
   currentUser: UserDTO | null;
-  SSR: boolean;
+};
+
+export type Breadcrumb = {
+  label: string | (() => string);
+  to?: string;
 };
 
 export type SelectOption = {
