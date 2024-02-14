@@ -6,6 +6,11 @@
     @close="$emit('cancel')"
   >
     <template #default>
+      <p v-if="requireOldPassword" class="mb-3">
+        To change your password, you must provide your current password and then
+        enter your new password twice to confirm it.
+      </p>
+      <PasswordRequirements class="mb-4" />
       <FormField
         v-if="requireOldPassword"
         control-id="oldPassword"
@@ -113,6 +118,7 @@ import { reactive, ref } from 'vue';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextBox from '../common/form-text-box.vue';
+import PasswordRequirements from '../users/password-requirements.vue';
 import DialogBase from './dialog-base.vue';
 
 type ChangePasswordDialogProps = {

@@ -29,7 +29,7 @@
 
     <form @submit.prevent="">
       <!-- Content -->
-      <div class="grow p-2 pb-4" data-testid="dialog-content">
+      <div class="grow p-4" data-testid="dialog-content">
         <slot></slot>
       </div>
 

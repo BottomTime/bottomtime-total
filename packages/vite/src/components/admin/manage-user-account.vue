@@ -40,8 +40,10 @@
     <TextHeading>Username And Email</TextHeading>
     <UsernameAndEmail
       :user="user"
-      @change-email="(email) => $emit('email-changed', email)"
-      @change-username="(username) => $emit('username-changed', username)"
+      @change-email="(email) => $emit('email-changed', user.id, email)"
+      @change-username="
+        (username) => $emit('username-changed', user.id, username)
+      "
     />
 
     <TextHeading>Update Account</TextHeading>
@@ -176,8 +178,8 @@ const emit = defineEmits<{
   (e: 'account-lock-toggled', userId: string): void;
   (e: 'password-reset', userId: string): void;
   (e: 'role-changed', userId: string, newRole: UserRole): void;
-  (e: 'username-changed', username: string): void;
-  (e: 'email-changed', email: string): void;
+  (e: 'username-changed', userId: string, username: string): void;
+  (e: 'email-changed', userId: string, email: string): void;
 }>();
 
 // Event handlers

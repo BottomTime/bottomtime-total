@@ -7,6 +7,10 @@
         @account-lock-toggled="(id) => $emit('account-lock-toggled', id)"
         @password-reset="(id) => $emit('password-reset', id)"
         @role-changed="(id, role) => $emit('role-changed', id, role)"
+        @username-changed="
+          (id, username) => $emit('username-changed', id, username)
+        "
+        @email-changed="(id, email) => $emit('email-changed', id, email)"
       />
 
       <EditProfile
@@ -61,6 +65,8 @@ defineEmits<{
   (e: 'role-changed', userId: string, role: UserRole): void;
   (e: 'save-profile', profile: ProfileDTO): void;
   (e: 'save-settings', settings: UserSettingsDTO): void;
+  (e: 'username-changed', userId: string, username: string): void;
+  (e: 'email-changed', userId: string, email: string): void;
 }>();
 
 function onTabChanged(key: string) {
