@@ -71,7 +71,7 @@
         <span class="font-bold">Showing Users:</span>
         <span class="font-title"> {{ data.users.length }} </span>
         <span>of </span>
-        <span class="grow font-title"> {{ data.totalUsers }} </span>
+        <span class="grow font-title"> {{ data.totalCount }} </span>
         <label for="sort-order" class="font-bold">Sort order:</label>
         <FormSelect
           v-model="searchParams.sortOrder"
@@ -89,14 +89,18 @@
       </p>
 
       <!-- No results found message -->
-      <p v-else-if="data.users.length === 0" class="mt-6 text-lg text-warn">
+      <p
+        v-else-if="data.users.length === 0"
+        class="mt-6 text-lg text-warn"
+        data-testid="users-list-no-users"
+      >
         <span class="pr-2">
           <i class="fas fa-exclamation-triangle"></i>
         </span>
         <span> No users found matching your search criteria.</span>
       </p>
 
-      <ul v-else>
+      <ul v-else data-testid="users-list">
         <UsersListItem
           v-for="user in data.users"
           :key="user.id"
@@ -105,7 +109,11 @@
         />
 
         <li class="text-center mt-2">
-          <FormButton type="link" @click="onLoadMore">
+          <FormButton
+            type="link"
+            test-id="users-list-load-more"
+            @click="onLoadMore"
+          >
             <span class="text-lg">Load more results...</span>
           </FormButton>
         </li>
@@ -117,6 +125,7 @@
 <script setup lang="ts">
 import {
   AdminSearchUsersParamsDTO,
+  AdminSearchUsersResponseDTO,
   ProfileDTO,
   SortOrder,
   UserDTO,
@@ -125,10 +134,18 @@ import {
   UsersSortBy,
 } from '@bottomtime/api';
 
-import { onMounted, reactive, ref } from 'vue';
+import {
+  onBeforeMount,
+  onServerPrefetch,
+  reactive,
+  ref,
+  useSSRContext,
+} from 'vue';
 
 import { useClient } from '../../client';
-import { SelectOption } from '../../common';
+import { AppInitialState, SelectOption } from '../../common';
+import { Config } from '../../config';
+import { useInitialState } from '../../initial-state';
 import { useOops } from '../../oops';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormBox from '../common/form-box.vue';
@@ -138,11 +155,6 @@ import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import ManageUser from './manage-user.vue';
 import UsersListItem from './users-list-item.vue';
-
-type UsersData = {
-  users: UserDTO[];
-  totalUsers: number;
-};
 
 const SortOrderOptions: SelectOption[] = [
   {
@@ -171,6 +183,7 @@ const AccountStatusOptions: SelectOption[] = [
 
 const client = useClient();
 const oops = useOops();
+const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 
 const searchParams = reactive<{
   isLockedOut: string;
@@ -183,9 +196,9 @@ const searchParams = reactive<{
   role: '',
   sortOrder: SortOrderOptions[0].value,
 });
-const data = reactive<UsersData>({
+const data = reactive<AdminSearchUsersResponseDTO>({
   users: [],
-  totalUsers: 0,
+  totalCount: 0,
 });
 const isLoading = ref(true);
 const selectedUser = ref<UserDTO | null>(null);
@@ -205,12 +218,33 @@ async function refreshUsers(): Promise<void> {
   await oops(async () => {
     const response = await client.users.searchUsers(params);
     data.users = response.users.map((u) => u.toJSON());
-    data.totalUsers = response.totalCount;
+    data.totalCount = response.totalCount;
   });
   isLoading.value = false;
 }
 
-onMounted(refreshUsers);
+onBeforeMount(async () => {
+  if (Config.isSSR) return;
+
+  const ctx = useInitialState();
+  if (ctx?.adminUsersList) {
+    data.users = ctx.adminUsersList.users;
+    data.totalCount = ctx.adminUsersList.totalCount;
+    isLoading.value = false;
+  } else {
+    await refreshUsers();
+  }
+});
+
+onServerPrefetch(async () => {
+  await refreshUsers();
+
+  if (ctx) {
+    ctx.adminUsersList = {
+      ...data,
+    };
+  }
+});
 
 function onUserClick(user: UserDTO): void {
   selectedUser.value = user;

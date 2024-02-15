@@ -1,6 +1,5 @@
 import { ErrorResponseDTO, UserDTO, UserRole } from '@bottomtime/api';
 
-import RegisterForm from '@/components/users/register-form.vue';
 import {
   ComponentMountingOptions,
   flushPromises,
@@ -8,10 +7,12 @@ import {
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { defineComponent } from 'vue';
 import { Router } from 'vue-router';
 
 import { ApiClient, ApiClientKey, User } from '../../../../src/client';
 import { ToastType } from '../../../../src/common';
+import RegisterForm from '../../../../src/components/users/register-form.vue';
 import { useToasts } from '../../../../src/store';
 import { useCurrentUser } from '../../../../src/store/current-user.store';
 import { createAxiosError } from '../../../fixtures/create-axios-error';
@@ -60,7 +61,15 @@ describe('Registration form', () => {
 
   beforeAll(() => {
     client = new ApiClient();
-    router = createRouter();
+    router = createRouter([
+      {
+        path: '/welcome',
+        name: 'welcome',
+        component: defineComponent({
+          template: '<div>Welcome!</div>',
+        }),
+      },
+    ]);
   });
 
   beforeEach(() => {

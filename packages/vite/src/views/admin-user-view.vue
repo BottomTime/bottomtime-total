@@ -51,6 +51,7 @@ import { useOops } from '../oops';
 
 // Dependencies
 const client = useClient();
+const ctx = useSSRContext<AppInitialState>();
 const currentRoute = useRoute();
 const oops = useOops();
 
@@ -92,13 +93,9 @@ onBeforeMount(async () => {
 });
 
 onServerPrefetch(async () => {
-  const ctx = useSSRContext<AppInitialState>()!;
   const userData = await fetchUser();
-
   user.value = userData;
-  ctx.adminCurrentUser = user.value ?? undefined;
-
-  user.value = userData;
+  if (ctx) ctx.adminCurrentUser = user.value ?? undefined;
 });
 
 // Event handlers

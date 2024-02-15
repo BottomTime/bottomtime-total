@@ -1,13 +1,10 @@
-import { CurrentUserDTO } from '@bottomtime/api';
-
 import { Controller, Get, Inject, Logger, Req, Res } from '@nestjs/common';
 
-import axios from 'axios';
 import { Request, Response } from 'express';
 import { readFile } from 'fs/promises';
 import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
-import { fileURLToPath, resolve as resolveURL } from 'url';
+import { fileURLToPath } from 'url';
 
 import { ViteService } from '.';
 import { AppInitialState } from '../../src/common';
@@ -50,27 +47,6 @@ export class ViteController {
     const initialState: AppInitialState = {
       currentUser: null,
     };
-
-    try {
-      this.log.debug('Querying for current user info...');
-      const { data } = await axios.get<CurrentUserDTO>(
-        resolveURL(Config.apiUrl, '/api/auth/me'),
-        {
-          headers: authToken
-            ? {
-                Authorization: `Bearer ${authToken}`,
-              }
-            : {},
-          withCredentials: true,
-        },
-      );
-
-      if (data.anonymous === false) {
-        initialState.currentUser = data;
-      }
-    } catch (error) {
-      this.log.error('Failed to retrieve current user info:', error);
-    }
 
     const rendered = await this.vite.render(url, initialState, {
       authToken,

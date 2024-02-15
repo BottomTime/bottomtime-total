@@ -51,6 +51,7 @@ describe('Tabs panel component', () => {
 
   it('will render correctly when no tabs are provided', () => {
     const wrapper = mount(TabsPanel, {
+      props: { tabs: [] },
       slots: {
         default: Content,
       },

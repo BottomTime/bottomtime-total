@@ -34,6 +34,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/admin-user-view.vue'),
   },
   {
+    path: '/cookies',
+    name: 'cookies',
+    component: () => import('../views/cookies-view.vue'),
+  },
+  {
+    path: '/privacy',
+    name: 'privacy',
+    component: () => import('../views/privacy-view.vue'),
+  },
+  {
     path: '/profile',
     name: 'profile',
     component: () => import('../views/profile-view.vue'),
@@ -52,6 +62,11 @@ const routes: RouteRecordRaw[] = [
     path: '/settings',
     name: 'settings',
     component: () => import('../views/settings-view.vue'),
+  },
+  {
+    path: '/termsOfService',
+    name: 'terms-of-service',
+    component: () => import('../views/terms-of-service-view.vue'),
   },
   {
     path: '/welcome',

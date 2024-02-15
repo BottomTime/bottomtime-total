@@ -2,7 +2,7 @@
   "compilerOptions": {
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
-    "types": ["jest", "vite/client"],
+    "types": ["jest", "vite/client", "vite-env"],
     "typeRoots": ["node_modules/@types", "src/types"]
   },
   "extends": "./tsconfig.json",
