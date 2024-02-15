@@ -14,6 +14,7 @@
         <FormButton
           class="m-0 p-0"
           type="link"
+          :test-id="`userslist-link-${user.id}`"
           @click="$emit('user-click', user)"
         >
           <span class="text-xl font-bold">{{ user.username }}</span>
