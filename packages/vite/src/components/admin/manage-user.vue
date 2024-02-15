@@ -1,5 +1,5 @@
 <template>
-  <TabPanel :tabs="Tabs" :active-tab="activeTab" @tab-changed="onTabChanged">
+  <TabsPanel :tabs="Tabs" :active-tab="activeTab" @tab-changed="onTabChanged">
     <div class="overflow-y-auto">
       <ManageUserAccount
         v-if="activeTab === Tabs[0].key"
@@ -18,16 +18,16 @@
         ref="editProfileTab"
         :user="user"
         :responsive="false"
-        @save-profile="(profile) => $emit('save-profile', profile)"
+        @save-profile="(profile) => $emit('save-profile', user.id, profile)"
       />
 
       <EditSettings
         v-else-if="activeTab === Tabs[2].key"
         :user="user"
-        @save-settings="(settings) => $emit('save-settings', settings)"
+        @save-settings="(settings) => $emit('save-settings', user.id, settings)"
       />
     </div>
-  </TabPanel>
+  </TabsPanel>
 </template>
 
 <script setup lang="ts">
@@ -41,7 +41,7 @@ import {
 import { ref } from 'vue';
 
 import { TabInfo } from '../../common';
-import TabPanel from '../common/tabs-panel.vue';
+import TabsPanel from '../common/tabs-panel.vue';
 import EditProfile from '../users/edit-profile.vue';
 import EditSettings from '../users/edit-settings.vue';
 import ManageUserAccount from './manage-user-account.vue';
@@ -63,8 +63,8 @@ defineEmits<{
   (e: 'account-lock-toggled', userId: string): void;
   (e: 'password-reset', userId: string): void;
   (e: 'role-changed', userId: string, role: UserRole): void;
-  (e: 'save-profile', profile: ProfileDTO): void;
-  (e: 'save-settings', settings: UserSettingsDTO): void;
+  (e: 'save-profile', userId: string, profile: ProfileDTO): void;
+  (e: 'save-settings', userId: string, settings: UserSettingsDTO): void;
   (e: 'username-changed', userId: string, username: string): void;
   (e: 'email-changed', userId: string, email: string): void;
 }>();

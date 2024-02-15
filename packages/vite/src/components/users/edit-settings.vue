@@ -176,7 +176,6 @@ import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
-import FormLabel from '../common/form-label.vue';
 import FormRadio from '../common/form-radio.vue';
 import TextHeading from '../common/text-heading.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';

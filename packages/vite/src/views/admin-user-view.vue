@@ -11,6 +11,9 @@
           @email-changed="onEmailChanged"
           @password-reset="onPasswordReset"
           @role-changed="onRoleChanged"
+          @username-changed="onUsernameChanged"
+          @save-profile="onSaveProfile"
+          @save-settings="onSaveSettings"
         />
         <NotFound v-else />
       </div>
@@ -19,7 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import { UserDTO, UserRole } from '@bottomtime/api';
+import {
+  ProfileDTO,
+  UserDTO,
+  UserRole,
+  UserSettingsDTO,
+} from '@bottomtime/api';
 
 import {
   computed,
@@ -117,6 +125,24 @@ function onPasswordReset() {
 function onRoleChanged(_: string, newRole: UserRole) {
   if (user.value) {
     user.value.role = newRole;
+  }
+}
+
+function onUsernameChanged(_: string, username: string) {
+  if (user.value) {
+    user.value.username = username;
+  }
+}
+
+function onSaveProfile(_: string, profile: ProfileDTO) {
+  if (user.value) {
+    user.value.profile = profile;
+  }
+}
+
+function onSaveSettings(_: string, settings: UserSettingsDTO) {
+  if (user.value) {
+    user.value.settings = settings;
   }
 }
 </script>

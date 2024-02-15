@@ -256,13 +256,13 @@ function onPasswordReset() {
   }
 }
 
-function onSaveSettings(settings: UserSettingsDTO) {
+function onSaveSettings(_id: string, settings: UserSettingsDTO) {
   if (selectedUser.value) {
     selectedUser.value.settings = settings;
   }
 }
 
-function onSaveProfile(profile: ProfileDTO) {
+function onSaveProfile(_id: string, profile: ProfileDTO) {
   if (selectedUser.value) {
     selectedUser.value.profile = profile;
   }
