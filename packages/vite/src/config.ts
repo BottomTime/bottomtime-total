@@ -4,6 +4,11 @@ export class Config {
     return process.env.BTWEB_VITE_ADMIN_EMAIL || 'admin@bottomti.me';
   }
 
+  /** The application title as it should appear in the browser tab, etc. */
+  static get appTitle(): string {
+    return process.env.BTWEB_VITE_APP_TITLE || 'Bottom Time';
+  }
+
   /** Base URL at which the app is listening for requests. */
   static get baseUrl(): string {
     return process.env.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';

@@ -26,7 +26,7 @@
               <i class="fas fa-bars"></i>
             </button>
             <span class="font-bold text-red text-2xl">
-              <a href="/">Bottom Time</a>
+              <a href="/">{{ appTitle }}</a>
             </span>
           </div>
         </div>
@@ -74,8 +74,9 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 
+import { Config } from '../../config';
 import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
@@ -86,11 +87,12 @@ import NavBarLink from './nav-bar-link.vue';
 import { getNavLinks } from './nav-links';
 import NavbarDropdown from './navbar-dropdown.vue';
 
+const currentUser = useCurrentUser();
+
 const showLogin = ref(false);
 const showHamburger = ref(false);
 const loginForm = ref<InstanceType<typeof LoginForm> | null>();
-
-const currentUser = useCurrentUser();
+const appTitle = computed(() => Config.appTitle);
 
 async function toggleLoginForm() {
   if (!showLogin.value) {

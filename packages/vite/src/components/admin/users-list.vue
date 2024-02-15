@@ -2,6 +2,7 @@
   <DrawerPanel
     :title="selectedUser?.username"
     :visible="!!selectedUser"
+    :full-screen="`/admin/users/${selectedUser?.username}`"
     @close="onCloseManageUser"
   >
     <ManageUser

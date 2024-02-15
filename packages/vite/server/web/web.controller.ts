@@ -1,5 +1,6 @@
 import { CurrentUserDTO } from '@bottomtime/api';
 
+import { ApiClientOptions } from '@/client';
 import { Controller, Get, Inject, Logger, Req, Res } from '@nestjs/common';
 
 import axios from 'axios';
@@ -63,8 +64,16 @@ export class WebController {
       this.log.error('Failed to retrieve info for current user:', error);
     }
 
+    const clientOptions: ApiClientOptions = {
+      authToken: jwtToken,
+      baseURL: Config.apiUrl,
+    };
     const { render: ssrRender } = await import(this.serverEntryPath);
-    const { head, html: content, ctx } = await ssrRender(url, initialState);
+    const {
+      head,
+      html: content,
+      ctx,
+    } = await ssrRender(url, initialState, clientOptions);
     this.log.verbose('Raw server-rendered Vue content:', content);
 
     const opts: PageOptions = {

@@ -8,6 +8,7 @@ export type AppInitialState = {
 export type Breadcrumb = {
   label: string | (() => string);
   to?: string;
+  active?: boolean;
 };
 
 export type SelectOption = {
@@ -19,6 +20,7 @@ export type SelectOption = {
 export type TabInfo = {
   key: string;
   label: string;
+  disabled?: boolean;
 };
 
 export enum ToastType {

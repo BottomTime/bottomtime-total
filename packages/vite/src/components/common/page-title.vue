@@ -8,9 +8,17 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
+
+import { Config } from '../../config';
+
 type PageTitleProps = {
   title: string;
   subtitle?: string;
 };
-defineProps<PageTitleProps>();
+const props = defineProps<PageTitleProps>();
+
+onMounted(() => {
+  document.title = `${Config.appTitle} | ${props.title}`;
+});
 </script>

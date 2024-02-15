@@ -1,23 +1,28 @@
 <template>
   <div>
-    <ul class="flex flex-row">
-      <li
-        v-for="tab in tabs"
-        :key="tab.key"
-        :class="isActive(tab.key) ? activeTabStyle : inactiveTabStyle"
-      >
-        <button :disabled="isActive(tab.key)" @click="onTabChanging(tab.key)">
+    <ul class="flex flex-row" role="tablist">
+      <li v-for="tab in tabs" :key="tab.key" :class="tabStyle(tab.key)">
+        <button
+          :id="`tab-${tab.key}`"
+          :data-testid="`tab-${tab.key}`"
+          :disabled="tab.disabled || isActive(tab.key)"
+          role="tab"
+          :aria-selected="isActive(tab.key)"
+          @click="$emit('tab-changed', tab.key)"
+        >
           {{ tab.label }}
         </button>
       </li>
     </ul>
-    <FormBox rounding="bottom">
+    <FormBox rounding="bottom" role="tabpanel" :aria-labelledby="labelledBy">
       <slot></slot>
     </FormBox>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import { TabInfo } from '../../common';
 import FormBox from './form-box.vue';
 
@@ -32,22 +37,18 @@ const inactiveTabStyle = `${BaseTabStyle} text-gray-500`;
 const activeTabStyle = `${BaseTabStyle} text-blue-800 dark:text-blue-300 font-bold rounded-t-md bg-blue-300 dark:bg-blue-900`;
 
 const props = defineProps<TabsPanelProps>();
-const emit = defineEmits<{
-  (e: 'tab-changing', key: string, cancel: () => void): void;
+defineEmits<{
   (e: 'tab-changed', key: string): void;
 }>();
+const labelledBy = computed(() =>
+  props.activeTab ? `tab-${props.activeTab}` : undefined,
+);
 
-function isActive(key: string) {
+function isActive(key: string): boolean {
   return key === props.activeTab;
 }
 
-function onTabChanging(key: string) {
-  let cancel = false;
-  emit('tab-changing', key, () => {
-    cancel = true;
-  });
-
-  if (cancel) return;
-  emit('tab-changed', key);
+function tabStyle(key: string): string {
+  return isActive(key) ? activeTabStyle : inactiveTabStyle;
 }
 </script>

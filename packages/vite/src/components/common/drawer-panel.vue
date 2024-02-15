@@ -16,10 +16,27 @@
       class="fixed box-border right-0 top-16 pb-20 md:w-1/2 w-full h-full font-content flex flex-col gap-6 bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-40 p-4"
     >
       <!-- Title and close button. -->
-      <div v-if="title || showClose" class="flex flex-initial flex-row w-full">
+      <div
+        v-if="title || showClose"
+        class="flex flex-initial flex-row gap-3 items-center"
+      >
         <p class="font-title dark:text-blue-200 text-4xl grow">
           {{ title }}
         </p>
+        <a
+          v-if="fullScreen"
+          :href="fullScreen"
+          data-testid="drawer-fullscreen"
+          aria-label="Open panel full screen"
+        >
+          <button>
+            <span
+              class="text-grey-100 hover:text-grey-400 dark:text-grey-200 hover:dark:text-grey-500"
+            >
+              <i class="fas fa-expand-alt"></i>
+            </span>
+          </button>
+        </a>
         <CloseButton
           v-if="showClose"
           data-testid="drawer-close"
@@ -39,6 +56,7 @@
 import CloseButton from './close-button.vue';
 
 type DrawerPanelProps = {
+  fullScreen?: string;
   title?: string;
   showClose?: boolean;
   visible?: boolean;

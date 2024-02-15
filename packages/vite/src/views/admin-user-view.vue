@@ -1,9 +1,9 @@
 <template>
   <PageTitle :title="title" :subtitle="subtitle" />
   <RequireAuth :role="role">
+    <BreadCrumbs :items="breadcrumbs" />
     <div class="grid grid-cols-1 lg:grid-cols-6">
       <div class="lg:col-start-2 lg:col-span-4">
-        <BreadCrumbs :items="breadcrumbs" />
         <ManageUser
           v-if="user"
           :user="user"
@@ -55,9 +55,9 @@ const subtitle = computed(() =>
 );
 
 const breadcrumbs: Breadcrumb[] = [
-  { label: 'Admin' },
+  { label: 'Admin', to: '/admin' },
   { label: 'Users', to: '/admin/users' },
-  { label: () => title.value },
+  { label: () => title.value, active: true },
 ];
 
 // Fetch the user data
