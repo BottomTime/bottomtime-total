@@ -41,6 +41,7 @@
           <FormSelect
             v-model="searchParams.role"
             control-id="role"
+            test-id="role"
             :options="UserRoleOptions"
             stretch
           />
@@ -53,12 +54,18 @@
           <FormSelect
             v-model="searchParams.isLockedOut"
             control-id="account-status"
+            test-id="account-status"
             :options="AccountStatusOptions"
             stretch
           />
         </FormField>
         <div class="text-center">
-          <FormButton type="primary" submit @click="refreshUsers">
+          <FormButton
+            type="primary"
+            test-id="refresh"
+            submit
+            @click="refreshUsers"
+          >
             Refresh
           </FormButton>
         </div>
@@ -67,16 +74,18 @@
 
     <div class="lg:col-span-3 xl:col-span-4">
       <!-- Summary bar and sort order select -->
-      <FormBox class="flex flex-row gap-3 items-baseline sticky top-16">
+      <FormBox class="flex flex-row gap-2 items-baseline sticky top-16">
         <span class="font-bold">Showing Users:</span>
-        <span class="font-title"> {{ data.users.length }} </span>
-        <span>of </span>
-        <span class="grow font-title"> {{ data.totalCount }} </span>
+        <span>{{ data.users.length }}</span>
+        <span>of</span>
+        <span class="grow">{{ data.totalCount }}</span>
         <label for="sort-order" class="font-bold">Sort order:</label>
         <FormSelect
           v-model="searchParams.sortOrder"
           control-id="sort-order"
+          test-id="sort-order"
           :options="SortOrderOptions"
+          @change="refreshUsers"
         />
       </FormBox>
 
@@ -108,13 +117,29 @@
           @user-click="onUserClick"
         />
 
-        <li class="text-center mt-2">
+        <li class="text-center text-lg mt-2">
+          <div
+            v-if="isLoadingMore"
+            class="mt-4 flex gap-3 justify-center align-middle"
+          >
+            <span>
+              <i class="fas fa-spinner fa-spin"></i>
+            </span>
+            <span>Loading...</span>
+          </div>
+
           <FormButton
+            v-else
             type="link"
+            :disabled="noMoreResults"
             test-id="users-list-load-more"
             @click="onLoadMore"
           >
-            <span class="text-lg">Load more results...</span>
+            <span>
+              {{
+                noMoreResults ? 'No more results to show' : 'Load more results'
+              }}
+            </span>
           </FormButton>
         </li>
       </ul>
@@ -177,8 +202,8 @@ const UserRoleOptions: SelectOption[] = [
 ];
 const AccountStatusOptions: SelectOption[] = [
   { label: 'All', value: '' },
-  { label: 'Active', value: 'false' },
-  { label: 'Suspended', value: 'true' },
+  { label: 'Active', value: 'active' },
+  { label: 'Suspended', value: 'suspended' },
 ];
 
 const client = useClient();
@@ -201,18 +226,24 @@ const data = reactive<AdminSearchUsersResponseDTO>({
   totalCount: 0,
 });
 const isLoading = ref(true);
+const isLoadingMore = ref(false);
+const noMoreResults = ref(false);
 const selectedUser = ref<UserDTO | null>(null);
 
-async function refreshUsers(): Promise<void> {
+function getSearchParameters(): AdminSearchUsersParamsDTO {
   const [sortBy, sortOrder] = searchParams.sortOrder.split('-');
-  const params: AdminSearchUsersParamsDTO = {
+  return {
     query: searchParams.query || undefined,
     role: searchParams.role || undefined,
     sortBy: sortBy as UsersSortBy,
     sortOrder: sortOrder as SortOrder,
     skip: 0,
-    limit: 100,
+    limit: 50,
   };
+}
+
+async function refreshUsers(): Promise<void> {
+  const params = getSearchParameters();
 
   isLoading.value = true;
   await oops(async () => {
@@ -220,7 +251,24 @@ async function refreshUsers(): Promise<void> {
     data.users = response.users.map((u) => u.toJSON());
     data.totalCount = response.totalCount;
   });
+  noMoreResults.value = data.users.length < params.limit;
   isLoading.value = false;
+}
+
+async function onLoadMore(): Promise<void> {
+  const params = getSearchParameters();
+  params.skip = data.users.length;
+
+  isLoadingMore.value = true;
+  let resultCount = params.limit;
+  await oops(async () => {
+    const response = await client.users.searchUsers(params);
+    resultCount = response.users.length;
+    data.users.push(...response.users.map((u) => u.toJSON()));
+    data.totalCount = response.totalCount;
+  });
+  noMoreResults.value = resultCount < params.limit;
+  isLoadingMore.value = false;
 }
 
 onBeforeMount(async () => {
@@ -252,10 +300,6 @@ function onUserClick(user: UserDTO): void {
 
 function onCloseManageUser() {
   selectedUser.value = null;
-}
-
-function onLoadMore() {
-  // TODO
 }
 
 function onAccountLockToggled() {
