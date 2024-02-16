@@ -4,7 +4,6 @@ import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClient, ApiClientKey } from '../../../src/client';
-import EditSettings from '../../../src/components/users/edit-settings.vue';
 import { useCurrentUser } from '../../../src/store';
 import RegisterView from '../../../src/views/register-view.vue';
 import { createRouter } from '../../fixtures/create-router';
