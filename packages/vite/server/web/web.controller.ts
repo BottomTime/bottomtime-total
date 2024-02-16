@@ -45,6 +45,11 @@ export class WebController {
       baseURL: Config.apiUrl,
     };
     const { render: ssrRender } = await import(this.serverEntryPath);
+    this.log.verbose('Rendering Vue content', {
+      url,
+      initialState,
+      clientOptions,
+    });
     const {
       head,
       html: content,

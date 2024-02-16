@@ -3,7 +3,6 @@ import {
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
-  UserDTO,
   UserSchema,
 } from '@bottomtime/api';
 

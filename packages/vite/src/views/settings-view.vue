@@ -4,7 +4,11 @@
     <div class="grid grid-cols-1 lg:grid-cols-5">
       <div class="lg:col-start-2 lg:col-span-3">
         <FormBox>
-          <EditSettings :user="currentUser.user" @save-settings="onSave" />
+          <EditSettings
+            v-if="currentUser.user"
+            :user="currentUser.user"
+            @save-settings="onSave"
+          />
         </FormBox>
       </div>
     </div>
@@ -23,6 +27,8 @@ import { useCurrentUser } from '../store';
 const currentUser = useCurrentUser();
 
 function onSave(settings: UserSettingsDTO) {
-  currentUser.user.settings = settings;
+  if (currentUser.user) {
+    currentUser.user.settings = settings;
+  }
 }
 </script>

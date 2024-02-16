@@ -1,5 +1,8 @@
 <template>
-  <ul class="flex flex-row gap-5 font-bold text-link mb-4">
+  <ul
+    class="flex flex-row gap-5 font-bold text-link mb-4"
+    data-testid="breadcrumbs"
+  >
     <li>
       <NavLink to="/">Home</NavLink>
     </li>

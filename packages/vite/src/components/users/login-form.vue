@@ -211,6 +211,7 @@ async function login() {
     reset(true);
     emit('close');
     emit('login', user);
+    location.reload();
   }
 }
 

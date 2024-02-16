@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Manage Account component will render timestamps correctly 1`] = `"Joined3 years agoLast Login2 hours agoLast Password Change2 months ago"`;

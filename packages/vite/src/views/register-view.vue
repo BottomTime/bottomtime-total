@@ -21,7 +21,7 @@
   <RegisterForm v-if="currentUser.anonymous" />
 
   <!-- Show some helpful text instead if the user is already logged in. -->
-  <div v-else class="flex flex-row align-top">
+  <div v-else class="flex flex-row align-top" data-testid="require-anonymous">
     <span class="text-warn mr-4 mt-2">
       <i class="fas fa-exclamation fa-2x"></i>
     </span>

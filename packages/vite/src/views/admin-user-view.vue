@@ -51,7 +51,7 @@ import { useOops } from '../oops';
 
 // Dependencies
 const client = useClient();
-const ctx = useSSRContext<AppInitialState>();
+const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const currentRoute = useRoute();
 const oops = useOops();
 
@@ -72,9 +72,9 @@ const breadcrumbs: Breadcrumb[] = [
 // Fetch the user data
 async function fetchUser(): Promise<UserDTO | null> {
   const username = currentRoute.params.username as string;
-  const result = await client.users.getUser(username);
   return await oops(
     async () => {
+      const result = await client.users.getUser(username);
       return result?.toJSON() ?? null;
     },
     {

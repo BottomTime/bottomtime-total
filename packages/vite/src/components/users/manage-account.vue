@@ -13,7 +13,10 @@
 
       <TextHeading>Password and Security</TextHeading>
 
-      <ManagePassword :user="user" />
+      <ManagePassword
+        :user="user"
+        @change-password="$emit('change-password')"
+      />
 
       <div class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline">
         <FormLabel
@@ -97,6 +100,6 @@ defineEmits<{
 
 // EVENT HANDLERS
 function onLinkAccount(provider: string) {
-  console.log('Link account', provider);
+  // TODO
 }
 </script>
