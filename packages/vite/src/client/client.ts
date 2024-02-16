@@ -1,9 +1,10 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosHeaders, AxiosInstance } from 'axios';
+
 import { UsersApiClient } from './users';
 
 export type ApiClientOptions = {
-  baseURL?: string;
   authToken?: string;
+  baseURL?: string;
 };
 
 export class ApiClient {
@@ -11,17 +12,21 @@ export class ApiClient {
   readonly users: UsersApiClient;
 
   constructor(options?: ApiClientOptions) {
+    const headers = new AxiosHeaders();
+    if (options?.authToken) {
+      headers.Authorization = `Bearer ${options.authToken}`;
+    }
+
     this.client = axios.create({
       baseURL: options?.baseURL,
+      headers,
       withCredentials: true,
     });
 
-    if (options?.authToken) {
-      this.client.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${options.authToken}`;
-    }
-
     this.users = new UsersApiClient(this.client);
+  }
+
+  get axios(): AxiosInstance {
+    return this.client;
   }
 }

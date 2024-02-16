@@ -1,15 +1,16 @@
-import { CurrentUserDTO } from '@bottomtime/api';
+import { ApiClientOptions } from '@/client';
 import { Controller, Get, Inject, Logger, Req, Res } from '@nestjs/common';
+
 import { Request, Response } from 'express';
 import { dirname, resolve } from 'path';
-import { fileURLToPath, resolve as resolveURL } from 'url';
-import { OriginalUrl } from '../original-url.decorator';
-import { PageOptions } from '../constants';
-import { WebService } from './web.service';
-import { JwtService } from '../jwt';
+import { fileURLToPath } from 'url';
+
 import { AppInitialState } from '../../src/common';
-import axios from 'axios';
 import { Config } from '../config';
+import { PageOptions } from '../constants';
+import { JwtService } from '../jwt';
+import { OriginalUrl } from '../original-url.decorator';
+import { WebService } from './web.service';
 
 @Controller()
 export class WebController {
@@ -39,29 +40,21 @@ export class WebController {
       currentUser: null,
     };
 
-    try {
-      this.log.debug('Attempting to get current user info...');
-      const { data } = await axios.get<CurrentUserDTO>(
-        resolveURL(Config.apiUrl, '/api/auth/me'),
-        {
-          headers: jwtToken
-            ? {
-                Authorization: `Bearer ${jwtToken}`,
-              }
-            : {},
-          withCredentials: true,
-        },
-      );
-
-      if (data.anonymous === false) {
-        initialState.currentUser = data;
-      }
-    } catch (error) {
-      this.log.error('Failed to retrieve info for current user:', error);
-    }
-
+    const clientOptions: ApiClientOptions = {
+      authToken: jwtToken,
+      baseURL: Config.apiUrl,
+    };
     const { render: ssrRender } = await import(this.serverEntryPath);
-    const { head, html: content } = await ssrRender(url, initialState);
+    this.log.verbose('Rendering Vue content', {
+      url,
+      initialState,
+      clientOptions,
+    });
+    const {
+      head,
+      html: content,
+      ctx,
+    } = await ssrRender(url, initialState, clientOptions);
     this.log.verbose('Raw server-rendered Vue content:', content);
 
     const opts: PageOptions = {
@@ -69,7 +62,7 @@ export class WebController {
       pageTitle: 'Home',
       head,
       content,
-      initialState: JSON.stringify(initialState),
+      initialState: JSON.stringify(ctx),
     };
     const html = await this.service.renderHtml(opts);
     this.log.verbose('Rendered HTML:', html);

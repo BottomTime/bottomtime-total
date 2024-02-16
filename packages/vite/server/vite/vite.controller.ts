@@ -1,17 +1,17 @@
-import { CurrentUserDTO, UserDTO } from '@bottomtime/api';
 import { Controller, Get, Inject, Logger, Req, Res } from '@nestjs/common';
-import axios from 'axios';
+
+import { Request, Response } from 'express';
 import { readFile } from 'fs/promises';
 import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
-import { fileURLToPath, resolve as resolveURL } from 'url';
-import { AppInitialState } from '../../src/common';
+import { fileURLToPath } from 'url';
+
 import { ViteService } from '.';
+import { AppInitialState } from '../../src/common';
 import { Config } from '../config';
-import { Request, Response } from 'express';
-import { OriginalUrl } from '../original-url.decorator';
 import { PageOptions } from '../constants';
 import { JwtService } from '../jwt';
+import { OriginalUrl } from '../original-url.decorator';
 
 @Controller('/')
 export class ViteController {
@@ -48,28 +48,10 @@ export class ViteController {
       currentUser: null,
     };
 
-    try {
-      this.log.debug('Querying for current user info...');
-      const { data } = await axios.get<CurrentUserDTO>(
-        resolveURL(Config.apiUrl, '/api/auth/me'),
-        {
-          headers: authToken
-            ? {
-                Authorization: `Bearer ${authToken}`,
-              }
-            : {},
-          withCredentials: true,
-        },
-      );
-
-      if (data.anonymous === false) {
-        initialState.currentUser = data;
-      }
-    } catch (error) {
-      this.log.error('Failed to retrieve current user info:', error);
-    }
-
-    const rendered = await this.vite.render(url, initialState);
+    const rendered = await this.vite.render(url, initialState, {
+      authToken,
+      baseURL: Config.apiUrl,
+    });
     this.log.verbose('Rendered Vue Content:', rendered.html);
 
     const opts: PageOptions = {
@@ -77,7 +59,7 @@ export class ViteController {
       pageTitle: 'Home',
       head: rendered.head ?? '',
       content: rendered.html,
-      initialState: JSON.stringify(initialState),
+      initialState: JSON.stringify(rendered.ctx),
     };
 
     const content = Mustache.render(html, opts);

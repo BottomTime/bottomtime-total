@@ -1,14 +1,19 @@
 import {
   CanActivate,
   ExecutionContext,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+
 import { CertificationsService } from '../certifications';
 
 @Injectable()
 export class AssertCertification implements CanActivate {
-  constructor(private readonly certificationsService: CertificationsService) {}
+  constructor(
+    @Inject(CertificationsService)
+    private readonly certificationsService: CertificationsService,
+  ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const req = ctx.switchToHttp().getRequest();

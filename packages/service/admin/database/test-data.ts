@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
-import { faker } from '@faker-js/faker';
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 
-import { fakeDiveSite } from '../../tests/fixtures/fake-dive-site';
-import { fakeUser } from '../../tests/fixtures/fake-user';
-import { Collections, DiveSiteDocument, UserDocument } from '../../src/data';
+import { UserModel } from '../../src/schemas';
+import { fakeUser } from './fakes';
+
+export type EntityCounts = {
+  users: number;
+};
 
 /**
  * Creates items one-by-one and performs batch operations on them.
@@ -46,23 +48,17 @@ async function batch<T>(
  * Create a bunch of users and return their IDs.
  * @param count The number of users to insert.
  */
-async function createUsers(
-  mongoClient: MongoClient,
-  count: number,
-): Promise<string[]> {
-  const usersCollection = mongoClient
-    .db()
-    .collection<UserDocument>(Collections.Users);
+async function createUsers(count: number): Promise<string[]> {
   const ids: string[] = [];
 
   await batch(
     async () => {
-      const data = fakeUser({}, 'Password1');
+      const data = fakeUser();
       ids.push(data._id);
       return data;
     },
     async (users) => {
-      await usersCollection.insertMany(users);
+      await UserModel.insertMany(users);
     },
     count,
   );
@@ -70,45 +66,49 @@ async function createUsers(
   return ids;
 }
 
-async function createDiveSites(
-  mongoClient: MongoClient,
-  userIds: string[],
-  count: number,
-) {
-  const sitesCollection = mongoClient
-    .db()
-    .collection<DiveSiteDocument>(Collections.DiveSites);
+// async function createDiveSites(
+//   mongoClient: MongoClient,
+//   userIds: string[],
+//   count: number,
+// ) {
+//   const sitesCollection = mongoClient
+//     .db()
+//     .collection<DiveSiteDocument>(Collections.DiveSites);
 
-  await batch(
-    () => {
-      return fakeDiveSite({
-        creator: faker.helpers.arrayElement(userIds),
-      });
-    },
-    async (sites) => {
-      await sitesCollection.insertMany(sites);
-    },
-    count,
-    100,
-  );
-}
+//   await batch(
+//     () => {
+//       return fakeDiveSite({
+//         creator: faker.helpers.arrayElement(userIds),
+//       });
+//     },
+//     async (sites) => {
+//       await sitesCollection.insertMany(sites);
+//     },
+//     count,
+//     100,
+//   );
+// }
 
-export async function createTestData(mongoUri: string) {
-  let mongoClient: MongoClient | undefined = undefined;
+export async function createTestData(mongoUri: string, counts: EntityCounts) {
   try {
     console.log('Connecting to MongoDb...');
-    mongoClient = await MongoClient.connect(mongoUri);
+    await mongoose.connect(mongoUri);
 
     console.log('Seeding database (this might take a few minutes!)...');
 
-    console.log('Creating 175 users...');
-    const userIds = await createUsers(mongoClient, 175);
+    let userIds: string[] = [];
+    if (counts.users > 0) {
+      console.log(`Creating ${counts.users} users...`);
+      userIds = await createUsers(counts.users);
+    }
 
-    console.log('Creating 1000 dive sites...');
-    await createDiveSites(mongoClient, userIds, 1000);
+    // console.log('Creating 1000 dive sites...');
+    // await createDiveSites(mongoClient, userIds, 1000);
 
     console.log('Finished inserting test data');
+  } catch (error) {
+    console.error('Error seeding database:', error);
   } finally {
-    await mongoClient?.close();
+    await mongoose.disconnect();
   }
 }

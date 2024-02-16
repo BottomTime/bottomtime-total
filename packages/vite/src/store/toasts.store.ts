@@ -1,31 +1,32 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, reactive } from 'vue';
+
 import { Toast } from '../common';
 
 export type ToastWithTimer = Toast & { timer: NodeJS.Timeout };
 
 export const useToasts = defineStore('toasts', () => {
-  const toastsData = ref<Record<string, ToastWithTimer>>({});
+  const toastsData = reactive<Record<string, ToastWithTimer>>({});
 
   function toast(toast: Toast) {
-    if (toastsData.value[toast.id]) {
-      clearTimeout(toastsData.value[toast.id].timer);
+    if (toastsData[toast.id]) {
+      clearTimeout(toastsData[toast.id].timer);
     }
 
-    toastsData.value[toast.id] = {
+    toastsData[toast.id] = {
       ...toast,
       timer: setTimeout(() => dismissToast(toast.id), 10000),
     };
   }
 
   function dismissToast(id: string) {
-    if (toastsData.value[id]) {
-      clearTimeout(toastsData.value[id].timer);
-      delete toastsData.value[id];
+    if (toastsData[id]) {
+      clearTimeout(toastsData[id].timer);
+      delete toastsData[id];
     }
   }
 
-  const toasts = computed(() => Object.values(toastsData.value));
+  const toasts = computed(() => Object.values(toastsData));
 
   return { toasts, toast, dismissToast };
 });

@@ -4,12 +4,15 @@ import {
   UserRole,
   UsersSortBy,
 } from '@bottomtime/api';
+
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserData, UserDocument, UserModelName } from '../schemas';
-import { FilterQuery, Model } from 'mongoose';
+
 import { hash } from 'bcrypt';
+import { FilterQuery, Model } from 'mongoose';
+
 import { Config } from '../config';
+import { UserData, UserDocument, UserModelName } from '../schemas';
 import { User } from '../users/user';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO;
@@ -74,7 +77,7 @@ export class AdminService {
         .skip(options.skip)
         .limit(options.limit)
         .exec(),
-      this.Users.countDocuments().exec(),
+      this.Users.countDocuments(query).exec(),
     ]);
     this.Users.find();
 

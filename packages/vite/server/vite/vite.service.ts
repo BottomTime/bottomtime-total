@@ -1,13 +1,18 @@
+import { ApiClientOptions } from '@/client';
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+
 import { dirname, resolve } from 'path';
-import { ViteDevServer, createServer } from 'vite';
 import { fileURLToPath } from 'url';
+import { ViteDevServer, createServer } from 'vite';
+import { SSRContext } from 'vue/server-renderer';
+
 import { Config } from '../config';
 import { ViteServer } from './constants';
 
 export type RenderResult = {
   head?: string;
   html: string;
+  ctx: SSRContext;
 };
 
 @Injectable()
@@ -34,14 +39,18 @@ export class ViteService implements OnModuleInit {
     });
   }
 
-  async render(url: string, initialState: unknown): Promise<RenderResult> {
+  async render(
+    url: string,
+    initialState: SSRContext,
+    clientOptions: ApiClientOptions,
+  ): Promise<RenderResult> {
     const path = resolve(
       dirname(fileURLToPath(import.meta.url)),
       '../../src/entry-server.ts',
     );
     this.log.debug(`SSR Load Module: ${path}`);
     const { render } = await this.vite.ssrLoadModule('/src/entry-server.ts');
-    const result = await render(url, initialState);
+    const result = await render(url, initialState, clientOptions);
     return result;
   }
 

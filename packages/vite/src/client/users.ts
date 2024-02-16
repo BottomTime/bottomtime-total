@@ -1,4 +1,6 @@
 import {
+  AdminSearchUsersParamsDTO,
+  AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
   UserSchema,
@@ -13,7 +15,9 @@ export class UsersApiClient {
 
   async isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean> {
     try {
-      await this.apiClient.head(`/api/users/${usernameOrEmail}`);
+      await this.apiClient.head(
+        `/api/users/${encodeURIComponent(usernameOrEmail)}`,
+      );
       return false;
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 404) {
@@ -36,8 +40,15 @@ export class UsersApiClient {
     if (currentUser.anonymous) {
       return null;
     } else {
-      return new User(this.apiClient, currentUser);
+      return new User(this.apiClient, UserSchema.parse(data));
     }
+  }
+
+  async getUser(usernameOrEmail: string): Promise<User | null> {
+    const { data } = await this.apiClient.get(
+      `/api/admin/users/${encodeURIComponent(usernameOrEmail)}`,
+    );
+    return new User(this.apiClient, UserSchema.parse(data));
   }
 
   async login(usernameOrEmail: string, password: string): Promise<User> {
@@ -46,5 +57,38 @@ export class UsersApiClient {
       password,
     });
     return new User(this.apiClient, UserSchema.parse(data));
+  }
+
+  // TODO: We need these endpoints on the backend first.
+  // async requestPasswordReset(usernameOrEmail: string): Promise<void> {
+  //   const url = `/api/users/${encodeURIComponent(
+  //     usernameOrEmail,
+  //   )}/resetPassword`;
+  // }
+
+  // async resetPasswordWithToken(
+  //   token: string,
+  //   newPassword: string,
+  // ): Promise<void> {
+  //   const url = `/api/users/resetPassword/${encodeURIComponent(token)}`;
+  //   await this.apiClient.post(url, { newPassword });
+  // }
+
+  async searchUsers(
+    options: AdminSearchUsersParamsDTO,
+  ): Promise<{ users: User[]; totalCount: number }> {
+    const { data } = await this.apiClient.get('/api/admin/users', {
+      params: options,
+    });
+    const response = AdminSearchUsersResponseSchema.parse(data);
+
+    return {
+      users: response.users.map((user) => new User(this.apiClient, user)),
+      totalCount: response.totalCount,
+    };
+  }
+
+  wrapDTO(dto: unknown): User {
+    return new User(this.apiClient, UserSchema.parse(dto));
   }
 }

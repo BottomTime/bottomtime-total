@@ -1,12 +1,11 @@
 #!/usr/bin/env ts-node-script
 
 /* eslint-disable no-console, no-process-env */
+import 'dotenv/config';
 import yargs from 'yargs';
 
 import { dbModule } from './database';
 import { userModule } from './users';
-
-import 'dotenv-defaults/config';
 
 async function processCommand(cmd: string[]) {
   await yargs(cmd)

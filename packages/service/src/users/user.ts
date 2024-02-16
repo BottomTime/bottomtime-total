@@ -1,13 +1,16 @@
 import { UserDTO, UserRole } from '@bottomtime/api';
+
 import { ConflictException, Logger } from '@nestjs/common';
-import { UserData, UserDocument } from '../schemas/user.document';
-import { Profile } from './profile';
-import { Model } from 'mongoose';
+
+import { compare, hash } from 'bcrypt';
 import { randomBytes } from 'crypto';
 import dayjs from 'dayjs';
-import { compare, hash } from 'bcrypt';
-import { Config } from '../config';
+import { Model } from 'mongoose';
+
 import { DefaultUserSettings, Maybe } from '../common';
+import { Config } from '../config';
+import { UserData, UserDocument } from '../schemas/user.document';
+import { Profile } from './profile';
 
 type UserDataSettings = NonNullable<UserData['settings']>;
 export type UserSettings = Required<{
@@ -136,6 +139,12 @@ export class User implements Express.User {
 
     this.data.email = newEmail;
     this.data.emailLowered = lowered;
+
+    // Invalidate any existing email verification token so that if there is one floating
+    // around in the wild it cannot be re-played to verify a fake email address.
+    this.data.emailVerificationToken = null;
+    this.data.emailVerificationTokenExpiration = null;
+
     await this.data.save();
   }
 

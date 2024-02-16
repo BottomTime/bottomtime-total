@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+
 import DrawerPanel from '../../../../src/components/common/drawer-panel.vue';
 
 describe('Drawer Panel component', () => {
@@ -73,5 +74,23 @@ describe('Drawer Panel component', () => {
       },
     });
     expect(wrapper.find('[data-testid="drawer-close"]').exists()).toBe(false);
+  });
+
+  it('will display a link button to a full screen view', () => {
+    const wrapper = mount(DrawerPanel, {
+      props: {
+        title: 'Test',
+        visible: true,
+        showClose: true,
+        fullScreen: '/test',
+      },
+      slots: {
+        default: '<div>Test</div>',
+      },
+    });
+
+    const fullScreenButton = wrapper.find('[data-testid="drawer-fullscreen"]');
+    expect(fullScreenButton.isVisible()).toBe(true);
+    expect(fullScreenButton.html()).toMatchSnapshot();
   });
 });

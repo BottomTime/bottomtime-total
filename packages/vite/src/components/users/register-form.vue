@@ -13,8 +13,9 @@
           required
         >
           <FormTextBox
-            v-model.trim="registerData.username"
+            v-model.trim="data.username"
             control-id="username"
+            test-id="username"
             :maxlength="50"
             :invalid="v$.username.$error"
           />
@@ -28,8 +29,9 @@
           required
         >
           <FormTextBox
-            v-model.trim="registerData.email"
+            v-model.trim="data.email"
             control-id="email"
+            test-id="email"
             :maxlength="50"
             :invalid="v$.email.$error"
           />
@@ -43,12 +45,14 @@
           required
         >
           <FormTextBox
-            v-model="registerData.password"
+            v-model="data.password"
             control-id="password"
+            test-id="password"
             :maxlength="50"
             :invalid="v$.password.$error"
             password
           />
+          <PasswordRequirements class="m-1" />
         </FormField>
 
         <FormField
@@ -59,8 +63,9 @@
           required
         >
           <FormTextBox
-            v-model="registerData.confirmPassword"
+            v-model="data.confirmPassword"
             control-id="confirm-password"
+            test-id="confirm-password"
             :maxlength="50"
             :invalid="v$.confirmPassword.$error"
             password
@@ -70,27 +75,32 @@
         <FormField
           label="Profile info visible to"
           control-id="profileVisibility"
+          help="This controls who can see your profile and dive logs. Users will still be able to search for your username to send you friend requests."
           required
         >
           <FormSelect
-            v-model="registerData.profileVisibility"
+            v-model="data.profileVisibility"
             control-id="profileVisibility"
+            test-id="profile-visibility"
+            stretch
             :options="ProfileVisibilityOptions"
           />
         </FormField>
 
         <FormField label="Display name" control-id="display-name">
           <FormTextBox
-            v-model.trim="registerData.displayName"
+            v-model.trim="data.displayName"
             control-id="display-name"
+            test-id="display-name"
             :maxlength="100"
           />
         </FormField>
 
         <FormField label="Location" control-id="location">
           <FormTextBox
-            v-model.trim="registerData.location"
+            v-model.trim="data.location"
             control-id="location"
+            test-id="location"
             :maxlength="50"
           />
         </FormField>
@@ -122,16 +132,17 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required } from '@vuelidate/validators';
 
 import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useClient } from '../../client';
 import { SelectOption, ToastType } from '../../common';
 import { isErrorResponse, useOops } from '../../oops';
-import { router } from '../../router';
 import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
+import PasswordRequirements from './password-requirements.vue';
 
 type RegisterData = {
   username: string;
@@ -145,16 +156,17 @@ type RegisterData = {
 
 const ProfileVisibilityOptions: SelectOption[] = [
   { label: 'Only my friends', value: ProfileVisibility.FriendsOnly },
-  { label: 'Public', value: ProfileVisibility.Public },
-  { label: 'Private', value: ProfileVisibility.Private },
+  { label: 'Everyone', value: ProfileVisibility.Public },
+  { label: 'Just me', value: ProfileVisibility.Private },
 ];
 
 const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();
 const toasts = useToasts();
+const router = useRouter();
 
-const registerData = reactive<RegisterData>({
+const data = reactive<RegisterData>({
   username: '',
   email: '',
   password: '',
@@ -197,14 +209,17 @@ const v$ = useVuelidate(
       ),
     },
     confirmPassword: {
-      required: helpers.withMessage('Confirm password is required', required),
+      required: helpers.withMessage(
+        'Password confirmation is required',
+        required,
+      ),
       sameAsPassword: helpers.withMessage(
-        'Confirm password must match password',
-        () => registerData.password === registerData.confirmPassword,
+        'Passwords do not match',
+        (value) => value === data.password,
       ),
     },
   },
-  registerData,
+  data,
 );
 
 async function isUsernameOrEmailAvailable(
@@ -214,7 +229,7 @@ async function isUsernameOrEmailAvailable(
 
   const available = await oops<boolean>(async () => {
     const available = await client.users.isUsernameOrEmailAvailable(
-      encodeURIComponent(usernameOrEmail),
+      usernameOrEmail,
     );
     return available;
   });
@@ -230,15 +245,15 @@ async function register() {
   await oops(
     async () => {
       const user = await client.users.createUser({
-        username: registerData.username,
-        email: registerData.email,
-        password: registerData.password,
+        username: data.username,
+        email: data.email,
+        password: data.password,
         profile: {
-          name: registerData.displayName,
-          location: registerData.location,
+          name: data.displayName,
+          location: data.location,
         },
         settings: {
-          profileVisibility: registerData.profileVisibility,
+          profileVisibility: data.profileVisibility,
         },
       });
       currentUser.user = user.toJSON();

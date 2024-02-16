@@ -4,7 +4,7 @@
     "rootDir": ".",
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "target": "ES2020",
+    "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -20,12 +20,17 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "types": ["vite/client"],
+    "typeRoots": [
+      "../../node_modules/@types",
+      "./node_modules/@types",
+      "./src/types"
+    ] /* Specify multiple folders that act like './node_modules/@types'. */,
+    "types": ["vite-env"],
 
     /* Linting */
     "strict": true
   },
-  "include": ["src/**/*.{ts,vue}", "server/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.vue", "server/**/*.ts"],
   "exclude": ["node_modules", "dist"],
   "ts-node": {
     "files": true

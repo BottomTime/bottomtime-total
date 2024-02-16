@@ -1,6 +1,8 @@
 <template>
   <button :data-testid="testId" :aria-label="label" @click="$emit('close')">
-    <span :class="`fas fa-times-circle ${colours} hover:drop-shadow-lg`"></span>
+    <span :class="`${colours} hover:drop-shadow-lg`">
+      <i class="fas fa-times-circle"></i>
+    </span>
   </button>
 </template>
 
@@ -24,7 +26,7 @@ defineEmits<{
 
 const colours = computed(() => {
   return props.inverted
-    ? 'text-grey-100 hover:text-grey-400 dark:text-grey-200 hover:dark:text-grey-800'
-    : 'text-grey-800 hover:text-grey-100 dark:text-grey-200 hover:dark:text-grey-800';
+    ? 'text-grey-100 hover:text-grey-400 dark:text-grey-200 hover:dark:text-grey-500'
+    : 'text-grey-800 hover:text-grey-100 dark:text-grey-200 hover:dark:text-grey-500';
 });
 </script>

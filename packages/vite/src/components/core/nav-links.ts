@@ -24,7 +24,7 @@ export function getNavLinks(currentUser: UserDTO | null) {
   if (currentUser?.role === UserRole.Admin) {
     navLinks.push({
       title: 'Admin',
-      url: '/admin',
+      url: '/admin/users',
     });
   }
 

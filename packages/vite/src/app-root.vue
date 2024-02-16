@@ -1,7 +1,7 @@
 <template>
   <SnackBar />
   <div
-    class="md:container mx-auto font-content text-grey-900 bg-blue-200 dark:text-grey-100 dark:bg-blue-950 rounded-b-xl shadow-md shadow-white dark:shadow-grey-700 opacity-90"
+    class="md:container mx-auto font-content text-grey-900 bg-blue-200 dark:text-grey-100 dark:bg-blue-950 rounded-b-xl shadow-md shadow-white dark:shadow-grey-700 opacity-95"
   >
     <section class="mt-16 p-4">
       <RouterView></RouterView>
@@ -14,27 +14,35 @@
 <script setup lang="ts">
 import { onBeforeMount, onServerPrefetch, useSSRContext } from 'vue';
 
+import { useClient } from './client';
 import { AppInitialState } from './common';
 import NavBar from './components/core/nav-bar.vue';
 import PageFooter from './components/core/page-footer.vue';
 import SnackBar from './components/core/snack-bar.vue';
 import { Config } from './config';
+import { useInitialState } from './initial-state';
+import { useOops } from './oops';
 import { useCurrentUser } from './store';
 
+const client = useClient();
 const currentUser = useCurrentUser();
+const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
+const oops = useOops();
 
-// On the server-side, the initial state will be provided as the SSR context.
-onServerPrefetch(() => {
-  const initialState = useSSRContext() as AppInitialState;
-  currentUser.user = initialState.currentUser;
+onServerPrefetch(async () => {
+  await client.users.getCurrentUser();
+  const user = await oops(async () => {
+    const user = await client.users.getCurrentUser();
+    return user?.toJSON() ?? null;
+  });
+  if (ctx) ctx.currentUser = user;
+  currentUser.user = user;
 });
 
-// Initial state will also be serialized into the HTML by the server. We can access it on the `window`
-// object on the client-side.
 onBeforeMount(() => {
-  if (!Config.isServerSide) {
-    const appState: AppInitialState = (window as any).__INITIAL_STATE__;
-    currentUser.user = appState.currentUser;
+  if (!Config.isSSR) {
+    const initialState = useInitialState();
+    currentUser.user = initialState?.currentUser ?? null;
   }
 });
 </script>

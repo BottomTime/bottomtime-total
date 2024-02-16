@@ -1,19 +1,4 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { AssertCertification } from './assert-certificaiton.guard';
-import { AssertAdmin } from '../auth';
-import { TargetCertification } from './admin.decorators';
-import { Certification, CertificationsService } from '../certifications';
-import {
   CertificationDTO,
   CreateOrUpdateCertificationParamsDTO,
   CreateOrUpdateCertificationParamsSchema,
@@ -21,14 +6,35 @@ import {
   SearchCertificationsParamsSchema,
   SearchCertificationsResponseDTO,
 } from '@bottomtime/api';
+
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Inject,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+
+import { AssertAdmin } from '../auth';
+import { Certification, CertificationsService } from '../certifications';
 import { ZodValidator } from '../zod-validator';
+import { TargetCertification } from './admin.decorators';
+import { AssertCertification } from './assert-certificaiton.guard';
 
 const CertificationIdParam = 'certificationId';
 
 @Controller('api/admin/certifications')
 @UseGuards(AssertAdmin)
 export class AdminCertificationsController {
-  constructor(private readonly certificationsService: CertificationsService) {}
+  constructor(
+    @Inject(CertificationsService)
+    private readonly certificationsService: CertificationsService,
+  ) {}
 
   /**
    * @openapi

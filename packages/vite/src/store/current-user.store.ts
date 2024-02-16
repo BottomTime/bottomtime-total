@@ -3,7 +3,7 @@ import { UserDTO } from '@bottomtime/api';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
-export const useCurrentUser = defineStore('current-user', () => {
+export const useCurrentUser = defineStore('currentUser', () => {
   const user = ref<UserDTO | null>(null);
   const anonymous = computed(() => user.value === null);
 

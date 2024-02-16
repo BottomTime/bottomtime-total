@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
-    "types": ["jest"],
+    "types": ["jest", "vite/client", "vite-env"],
     "typeRoots": ["node_modules/@types", "src/types"]
   },
   "extends": "./tsconfig.json",
-  "include": ["../src/**/*.ts", "./**/*.ts"]
+  "include": ["../src/**/*.ts", "../src/**/*.vue", "./**/*.ts", "./**/*.vue"]
 }

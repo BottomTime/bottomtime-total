@@ -1,9 +1,9 @@
 import {
-  ChangeEmailParams,
+  ChangeEmailParamsDTO,
   ChangeEmailParamsSchema,
   ChangePasswordParamsDTO,
   ChangePasswordParamsSchema,
-  ChangeUsernameParams,
+  ChangeUsernameParamsDTO,
   ChangeUsernameParamsSchema,
   ProfileDTO,
   ProfileVisibility,
@@ -393,7 +393,7 @@ export class UserController {
   async changeUsername(
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(ChangeUsernameParamsSchema))
-    { newUsername }: ChangeUsernameParams,
+    { newUsername }: ChangeUsernameParamsDTO,
   ): Promise<void> {
     await targetUser.changeUsername(newUsername);
   }
@@ -479,7 +479,7 @@ export class UserController {
   async changeEmail(
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(ChangeEmailParamsSchema))
-    { newEmail }: ChangeEmailParams,
+    { newEmail }: ChangeEmailParamsDTO,
   ): Promise<void> {
     await targetUser.changeEmail(newEmail);
   }

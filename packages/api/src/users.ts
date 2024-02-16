@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 import { CertificationSchema } from './certifications';
 import {
-  DateRegex,
   DepthUnit,
+  FuzzyDateRegex,
   PressureUnit,
   ProfileVisibility,
   SortOrder,
@@ -33,7 +33,7 @@ export const PasswordStrengthSchema = z
   .regex(PasswordStrengthRegex, 'Password did not meet strength requirements.');
 
 export const UserCertificationSchema = CertificationSchema.extend({
-  date: z.string().trim().regex(DateRegex).nullable().optional(),
+  date: z.string().trim().regex(FuzzyDateRegex).nullable().optional(),
 }).omit({ id: true });
 export type UserCertificationDTO = z.infer<typeof UserCertificationSchema>;
 
@@ -41,7 +41,7 @@ export const UpdateProfileParamsSchema = z
   .object({
     avatar: z.string().trim().url().max(150),
     bio: z.string().trim().max(1000),
-    birthdate: z.string().trim().regex(DateRegex),
+    birthdate: z.string().trim().regex(FuzzyDateRegex),
     customData: z
       .record(z.string(), z.unknown())
       .refine(
@@ -56,10 +56,7 @@ export const UpdateProfileParamsSchema = z
     experienceLevel: z.string().trim().max(50),
     location: z.string().trim().max(50),
     name: z.string().trim().max(100),
-    startedDiving: z
-      .string()
-      .trim()
-      .regex(/^\d{4}(-\d{2}(-\d{2})?)?$/),
+    startedDiving: z.string().trim().regex(FuzzyDateRegex),
   })
   .partial();
 export type UpdateProfileParamsDTO = z.infer<typeof UpdateProfileParamsSchema>;
@@ -103,12 +100,14 @@ export type CreateUserParamsDTO = z.infer<typeof CreateUserOptionsSchema>;
 export const ChangeUsernameParamsSchema = z.object({
   newUsername: UsernameSchema,
 });
-export type ChangeUsernameParams = z.infer<typeof ChangeUsernameParamsSchema>;
+export type ChangeUsernameParamsDTO = z.infer<
+  typeof ChangeUsernameParamsSchema
+>;
 
 export const ChangeEmailParamsSchema = z.object({
   newEmail: EmailSchema,
 });
-export type ChangeEmailParams = z.infer<typeof ChangeEmailParamsSchema>;
+export type ChangeEmailParamsDTO = z.infer<typeof ChangeEmailParamsSchema>;
 
 export const ChangePasswordParamsSchema = z.object({
   oldPassword: z.string(),

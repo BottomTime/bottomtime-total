@@ -1,23 +1,9 @@
 <template>
   <PageTitle title="Page Not Found" subtitle="(404 Error)" />
-  <div class="text-center">
-    <p class="text-lg mb-5">
-      Uh oh! The page you are looking for could not be found. Check your URL or
-      click <NavLink to="/">here</NavLink> to go back to the home page.
-    </p>
-
-    <p>
-      <img
-        class="rounded-lg drop-shadow-md block m-auto w-1/2"
-        src="/img/diver_lost.jpeg"
-        alt=""
-        aria-hidden="true"
-      />
-    </p>
-  </div>
+  <NotFound />
 </template>
 
 <script setup lang="ts">
-import NavLink from '../components/common/nav-link.vue';
+import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 </script>

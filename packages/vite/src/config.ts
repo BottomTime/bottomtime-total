@@ -1,25 +1,41 @@
-import { z } from 'zod';
-
-const EnvSchema = z.object({
-  BTWEB_API_URL: z.string().optional(),
-  BASE_URL: z.string().optional(),
-  MODE: z.string().optional(),
-  PROD: z.coerce.boolean().default(false),
-  SSR: z.coerce.boolean().default(false),
-});
-type Env = z.infer<typeof EnvSchema>;
-
 export class Config {
-  private static get env(): Env {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    return EnvSchema.parse((import.meta as any).env);
+  /** Email address for contacting support/admin. */
+  static get adminEmail(): string {
+    return process.env.BTWEB_VITE_ADMIN_EMAIL || 'admin@bottomti.me';
+  }
+
+  /** The application title as it should appear in the browser tab, etc. */
+  static get appTitle(): string {
+    return process.env.BTWEB_VITE_APP_TITLE || 'Bottom Time';
+  }
+
+  /** Base URL at which the app is listening for requests. */
+  static get baseUrl(): string {
+    return process.env.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';
+  }
+
+  /** The value of the `NODE_ENV` environment variable. */
+  static get env(): string {
+    return process.env.NODE_ENV || 'development';
+  }
+
+  /**
+   * Vite mode. (`development` or `production`). This differs from `NODE_ENV`.
+   * See documentation here https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
+   */
+  static get mode(): string {
+    return process.env.MODE || 'development';
   }
 
   static get isProduction(): boolean {
-    return this.env.PROD;
+    return Config.env === 'production';
   }
 
-  static get isServerSide(): boolean {
-    return this.env.SSR;
+  /**
+   * Detects server-side rendering.
+   * Will be true if we are currently executing on the server-side or false if we are running in the browser.
+   */
+  static get isSSR(): boolean {
+    return typeof window === 'undefined';
   }
 }
