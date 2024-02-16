@@ -1,8 +1,8 @@
 module.exports = {
   env: {
-    browser: true,
     es2021: true,
     node: true,
+    browser: true,
   },
   extends: [
     'eslint:recommended',
@@ -10,17 +10,7 @@ module.exports = {
     'plugin:vue/vue3-recommended',
     'prettier',
   ],
-  overrides: [
-    {
-      env: {
-        node: true,
-      },
-      files: ['.eslintrc.{js,cjs}'],
-      parserOptions: {
-        sourceType: 'script',
-      },
-    },
-  ],
+  parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 'latest',
     extraFileExtensions: ['.vue'],

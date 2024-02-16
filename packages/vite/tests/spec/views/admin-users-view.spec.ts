@@ -1,10 +1,4 @@
-import { UserDTO, UserRole } from '@bottomtime/api';
-
-import {
-  ComponentMountingOptions,
-  mount,
-  renderToString,
-} from '@vue/test-utils';
+import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -12,17 +6,13 @@ import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey, User } from '../../../src/client';
+import { ApiClient, ApiClientKey } from '../../../src/client';
 import ManageUser from '../../../src/components/admin/manage-user.vue';
 import UsersList from '../../../src/components/admin/users-list.vue';
 import { useCurrentUser } from '../../../src/store';
 import AdminUsersView from '../../../src/views/admin-users-view.vue';
 import { createRouter } from '../../fixtures/create-router';
-import {
-  AdminUser,
-  BasicUser,
-  UserWithFullProfile,
-} from '../../fixtures/users';
+import { AdminUser, BasicUser } from '../../fixtures/users';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
