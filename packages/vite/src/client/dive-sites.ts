@@ -11,7 +11,7 @@ import { DiveSite } from '.';
 export class DiveSitesApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
 
-  async searchDiveSites(query: SearchDiveSitesParamsDTO): Promise<{
+  async searchDiveSites(query?: SearchDiveSitesParamsDTO): Promise<{
     sites: DiveSite[];
     totalCount: number;
   }> {
