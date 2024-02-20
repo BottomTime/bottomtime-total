@@ -1,5 +1,6 @@
 import {
   CreateOrUpdateDiveSiteSchema,
+  DepthDTO,
   DiveSiteDTO,
   ProfileDTO,
 } from '@bottomtime/api';
@@ -52,6 +53,13 @@ export class DiveSite {
   }
   set description(value: string | undefined) {
     this.data.description = value;
+  }
+
+  get depth(): DepthDTO | undefined {
+    return this.data.depth;
+  }
+  set depth(value: DepthDTO | undefined) {
+    this.data.depth = value;
   }
 
   get location(): string {

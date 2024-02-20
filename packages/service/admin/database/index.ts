@@ -23,10 +23,16 @@ export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
               description: 'The number of users to generate',
               type: 'number',
             })
+            .option('sites', {
+              default: 0,
+              description: 'The number of dive sites to generate',
+              type: 'number',
+            })
             .help();
         },
         async (yargs) => {
           await createTestData(yargs.mongoUri, {
+            diveSites: yargs.sites,
             users: yargs.users,
           });
         },
