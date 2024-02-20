@@ -7,6 +7,16 @@ function toNumber(value: string | undefined, defaultValue: number): number {
   return isNaN(parsed) ? defaultValue : parsed;
 }
 
+class AwsConfig {
+  get mediaBucket(): string {
+    return process.env.BT_AWS_MEDIA_BUCKET ?? 'bottomtime-media-local';
+  }
+
+  get region(): string {
+    return process.env.AWS_REGION ?? 'us-east-1';
+  }
+}
+
 class GithubConfig {
   get clientId(): string {
     return process.env.BT_GITHUB_CLIENT_ID ?? '';
@@ -84,6 +94,7 @@ class SessionsConfig {
 }
 
 export class Config {
+  static readonly aws = new AwsConfig();
   static readonly github = new GithubConfig();
   static readonly google = new GoogleConfig();
   static readonly mail = new MailConfig();

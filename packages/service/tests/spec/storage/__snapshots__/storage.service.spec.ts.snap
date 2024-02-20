@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storage Service will list additional files in a directory with a continuation token 1`] = `
+{
+  "continuationToken": "1kQQslyxa7N3CO0BtdLehYTtQ+X3n6vjEvdU1tJAtQmWz9i5ImURDXg==",
+  "count": 4,
+  "files": [
+    {
+      "key": "GH010089.MP4",
+      "lastModified": 2018-11-27T20:55:38.000Z,
+      "size": 29831602,
+    },
+    {
+      "key": "GH010090.MP4",
+      "lastModified": 2018-11-27T20:56:58.000Z,
+      "size": 32007869,
+    },
+    {
+      "key": "GH010091.MP4",
+      "lastModified": 2018-11-27T21:00:02.000Z,
+      "size": 111557152,
+    },
+    {
+      "key": "GH010092.MP4",
+      "lastModified": 2018-11-27T21:00:33.000Z,
+      "size": 70749772,
+    },
+  ],
+}
+`;
+
+exports[`Storage Service will list files in a directory 1`] = `
+{
+  "continuationToken": "1KZWSjKFPgGtgAShvnyMY5XK4BJ3l//6c7QRKBHIl2XDCR/VoBM4BNg==",
+  "count": 4,
+  "files": [
+    {
+      "key": "Danger_reef_shark_feed.MP4",
+      "lastModified": 2018-11-27T20:55:38.000Z,
+      "size": 243946715,
+    },
+    {
+      "key": "GH010086.MP4",
+      "lastModified": 2018-11-27T20:55:38.000Z,
+      "size": 254676783,
+    },
+    {
+      "key": "GH010087.MP4",
+      "lastModified": 2018-11-27T20:55:38.000Z,
+      "size": 54400775,
+    },
+    {
+      "key": "GH010088.MP4",
+      "lastModified": 2018-11-27T20:55:38.000Z,
+      "size": 238595180,
+    },
+  ],
+}
+`;
