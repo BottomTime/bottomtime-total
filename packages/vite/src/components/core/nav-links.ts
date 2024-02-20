@@ -12,12 +12,8 @@ export function getNavLinks(currentUser: UserDTO | null) {
       url: '/',
     },
     {
-      title: 'About',
-      url: '/about',
-    },
-    {
-      title: 'Contact',
-      url: '/contact',
+      title: 'Dive Sites',
+      url: '/diveSites',
     },
   ];
 
