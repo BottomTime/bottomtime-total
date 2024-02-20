@@ -1,20 +1,25 @@
+import { S3Client } from '@aws-sdk/client-s3';
 import { DynamicModule, Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Config } from './config';
-import { UsersModule } from './users';
 import { PassportModule } from '@nestjs/passport';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
+import path from 'path';
+
 import { AdminModule } from './admin';
+import { AuthModule } from './auth/auth.module';
+import { Config } from './config';
+import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
-import { TanksModule } from './tanks/tanks.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import path from 'path';
-import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { HealthModule } from './health';
+import { StorageModule } from './storage';
+import { TanksModule } from './tanks/tanks.module';
+import { UsersModule } from './users';
 
 export type ServerDependencies = {
   mailClient: IMailClient;
+  s3Client: S3Client;
 };
 
 @Module({})
@@ -37,6 +42,7 @@ export class AppModule {
           session: false,
         }),
         EmailModule.forRoot(deps.mailClient),
+        StorageModule.forRoot(deps.s3Client),
         HealthModule,
 
         AdminModule,

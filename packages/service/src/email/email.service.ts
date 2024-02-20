@@ -125,4 +125,8 @@ export class EmailService implements OnModuleInit {
         this.log.error(error);
       });
   }
+
+  async ping(): Promise<void> {
+    await this.mailClient.ping();
+  }
 }

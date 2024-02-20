@@ -7,6 +7,7 @@ export type MailRecipients = {
 };
 
 export interface IMailClient {
+  ping(): Promise<void>;
   sendMail(
     recipients: MailRecipients,
     subject: string,

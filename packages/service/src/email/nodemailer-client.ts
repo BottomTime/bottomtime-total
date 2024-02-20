@@ -10,6 +10,10 @@ export class NodemailerClient implements IMailClient {
     private readonly replyToAddress: string,
   ) {}
 
+  async ping(): Promise<void> {
+    await this.transporter.verify();
+  }
+
   async sendMail(
     recipients: MailRecipients,
     subject: string,

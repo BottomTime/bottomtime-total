@@ -32,4 +32,8 @@ export class TestMailer implements IMailClient {
       body,
     });
   }
+
+  ping(): Promise<void> {
+    return Promise.resolve();
+  }
 }
