@@ -1,6 +1,16 @@
+import {
+  CreateOrUpdateDiveSiteDTO,
+  DiveSitesSortBy,
+  SearchDiveSitesParamsDTO,
+  SortOrder,
+} from '@bottomtime/api';
+
 import { Injectable, Logger } from '@nestjs/common';
-import { Model, PopulateOptions } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+
+import { Model, PopulateOptions } from 'mongoose';
+import { v4 as uuid } from 'uuid';
+
 import {
   DiveSiteData,
   DiveSiteModel,
@@ -8,13 +18,6 @@ import {
   UserData,
 } from '../schemas';
 import { DiveSite, PopulatedDiveSiteDocument } from './dive-site';
-import {
-  CreateOrUpdateDiveSiteDTO,
-  DiveSitesSortBy,
-  SearchDiveSitesParamsDTO,
-  SortOrder,
-} from '@bottomtime/api';
-import { v4 as uuid } from 'uuid';
 import { DiveSiteQueryBuilder } from './dive-site-query-builder';
 
 export type CreateDiveSiteOptions = CreateOrUpdateDiveSiteDTO & {

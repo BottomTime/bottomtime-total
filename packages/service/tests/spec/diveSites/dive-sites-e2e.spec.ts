@@ -1,16 +1,3 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import { createAuthHeader, createTestApp } from '../../utils';
-import request from 'supertest';
-
-import TestDiveSiteData from '../../fixtures/dive-sites.json';
-import TestDiveSiteCreatorData from '../../fixtures/dive-site-creators.json';
-import {
-  DiveSiteDocument,
-  DiveSiteModel,
-  UserData,
-  UserDocument,
-  UserModel,
-} from '../../../src/schemas';
 import {
   CreateOrUpdateDiveSiteDTO,
   DepthUnit,
@@ -20,7 +7,22 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+
+import { HttpServer, INestApplication } from '@nestjs/common';
+
+import request from 'supertest';
 import * as uuid from 'uuid';
+
+import {
+  DiveSiteDocument,
+  DiveSiteModel,
+  UserData,
+  UserDocument,
+  UserModel,
+} from '../../../src/schemas';
+import TestDiveSiteCreatorData from '../../fixtures/dive-site-creators.json';
+import TestDiveSiteData from '../../fixtures/dive-sites.json';
+import { createAuthHeader, createTestApp } from '../../utils';
 
 jest.mock('uuid');
 
@@ -43,7 +45,7 @@ const AdminUserData: UserData = {
 };
 
 function requestUrl(siteId?: string): string {
-  return `/diveSites${siteId ? `/${siteId}` : ''}`;
+  return `/api/diveSites${siteId ? `/${siteId}` : ''}`;
 }
 
 describe('Dive Sites End-to-End Tests', () => {

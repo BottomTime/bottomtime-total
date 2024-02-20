@@ -1,19 +1,4 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { DiveSitesService } from './dive-sites.service';
-import { AssertDiveSite, TargetDiveSite } from './assert-dive-site.guard';
-import { DiveSite } from './dive-site';
-import { ZodValidator } from '../zod-validator';
-import {
   CreateOrUpdateDiveSiteDTO,
   CreateOrUpdateDiveSiteSchema,
   DiveSiteDTO,
@@ -21,16 +6,37 @@ import {
   SearchDiveSitesParamsSchema,
   SearchDiveSitesResponseDTO,
 } from '@bottomtime/api';
+
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Inject,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+
 import { AssertAuth, CurrentUser } from '../auth';
-import { AssertDiveSiteWrite } from './assert-dive-site-write.guard';
 import { User, UsersService } from '../users';
+import { ZodValidator } from '../zod-validator';
+import { AssertDiveSiteWrite } from './assert-dive-site-write.guard';
+import { AssertDiveSite, TargetDiveSite } from './assert-dive-site.guard';
+import { DiveSite } from './dive-site';
+import { DiveSitesService } from './dive-sites.service';
 
 const DiveSiteIdParam = 'siteId';
 
-@Controller('diveSites')
+@Controller('api/diveSites')
 export class DiveSitesController {
   constructor(
+    @Inject(DiveSitesService)
     private readonly diveSitesService: DiveSitesService,
+
+    @Inject(UsersService)
     private readonly usersService: UsersService,
   ) {}
 
