@@ -1,8 +1,10 @@
-import { inject, InjectionKey } from 'vue';
+import { InjectionKey, inject } from 'vue';
+
 import { ApiClient } from './client';
 
 export * from './user-profile';
 export * from './user';
+export * from './dive-site';
 export * from './client';
 
 export const ApiClientKey: InjectionKey<ApiClient> = Symbol('ApiClient');

@@ -1,28 +1,23 @@
 import { UserDTO, UserRole } from '@bottomtime/api';
 
-export type NavLink = {
-  title: string;
-  url: string;
-};
-
-export function getNavLinks(currentUser: UserDTO | null) {
+export function getNavLinks(currentUser: UserDTO | null): NavLink[] {
   const navLinks: NavLink[] = [
     {
       title: 'Home',
       url: '/',
+      visible: true,
     },
     {
       title: 'Dive Sites',
       url: '/diveSites',
+      visible: true,
     },
-  ];
-
-  if (currentUser?.role === UserRole.Admin) {
-    navLinks.push({
+    {
       title: 'Admin',
       url: '/admin/users',
-    });
-  }
+      visible: currentUser?.role === UserRole.Admin,
+    },
+  ];
 
   return navLinks;
 }

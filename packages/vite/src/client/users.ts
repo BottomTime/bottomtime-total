@@ -75,10 +75,10 @@ export class UsersApiClient {
   // }
 
   async searchUsers(
-    options: AdminSearchUsersParamsDTO,
+    query: AdminSearchUsersParamsDTO,
   ): Promise<{ users: User[]; totalCount: number }> {
     const { data } = await this.apiClient.get('/api/admin/users', {
-      params: options,
+      params: query,
     });
     const response = AdminSearchUsersResponseSchema.parse(data);
 
