@@ -39,7 +39,7 @@ class GoogleConfig {
 
 class MailConfig {
   get host(): string {
-    return process.env.BT_SMTP_HOST ?? '';
+    return process.env.BT_SMTP_HOST ?? 'email-smtp.us-east-1.amazonaws.com';
   }
 
   get port(): number {
@@ -55,11 +55,13 @@ class MailConfig {
   }
 
   get replyTo(): string {
-    return process.env.BT_SMTP_REPLY_TO ?? '';
+    return process.env.BT_SMTP_REPLY_TO ?? 'donotreply@bottomti.me';
   }
 
   get from(): string {
-    return process.env.BT_SMTP_FROM ?? '';
+    return (
+      process.env.BT_SMTP_FROM ?? '"Bottom Time Admin" <admin@bottomti.me>'
+    );
   }
 }
 
@@ -102,7 +104,9 @@ export class Config {
 
   /** The email address at which the site administrator(s) can be contacted. */
   static get adminEmail(): string {
-    return process.env.BT_ADMIN_EMAIL ?? 'admin@bottomti.me';
+    return (
+      process.env.BT_ADMIN_EMAIL ?? '"Bottom Time Admin" <admin@bottomti.me>'
+    );
   }
 
   /** The base URL at which the site will respond to requests. */

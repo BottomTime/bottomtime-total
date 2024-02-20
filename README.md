@@ -8,9 +8,8 @@ This is the monorepo for the Bottom Time platform.
 
 Documentation on the individual components can be found in their respective README files.
 
-- [Core Service](packages/service/README.md)
-- [Web (Vite + Vue) Front-End](packages/web/README.md)
-- [Interactive API Documentation](packages/docs/README.md)
+- [Core (Backend) Service](packages/service/README.md)
+- [Web (Vite + Vue) Front-End](packages/vite/README.md)
 - [Deployment (Terraform)](terraform/README.md)
 
 ## Dependencies
@@ -19,7 +18,7 @@ There are a few dependencies that you will have to have installed to work with t
 
 ### Node.js
 
-You'll need [Node.js](https://nodejs.org/en). The platform is currently built for version 18. (The LTS at the time of this writing.) It is recommended that you use [NVM](https://github.com/nvm-sh/nvm#readme) to manage your Node installation.
+You'll need [Node.js](https://nodejs.org/en). The platform is currently built for version 20. (The LTS at the time of this writing.) It is recommended that you use [NVM](https://github.com/nvm-sh/nvm#readme) to manage your Node installation.
 
 ### Yarn
 
@@ -33,25 +32,25 @@ npm i -g yarn
 
 The platform uses [MongoDb](https://www.mongodb.com/docs/manual/installation/) to persist its data. You'll want to have version 5 installed to host your databases.
 
-### Docker
+### Docker and Docker Compose
 
 The components of the platform each have `Dockerfile`s and the platform can be run as a whole using Docker Compose. You can Docker from [here](https://docs.docker.com/get-docker/) if you don't already have it installed.
 
-### Mutagen Compose
+### AWS CLI
 
-`TODO`
+Install the AWS CLI tool by following the directions [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
-### Terraform and AWS CLI
-
-If you plan on deploying a running version of the platform to AWS then you'll need [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) and the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed.
-
-If you have not done so already, you'll need to set your AWS credentials and default region in order to deploy the platform to your AWS environment. To do so run
+Once installed, you'll need to set your AWS credentials and default region in order to deploy the platform to your AWS environment. To do so run
 
 ```bash
 aws configure
 ```
 
-and enter your key, secret, and region when prompted.
+and enter your key, secret, and region when prompted. (By default `us-east-1` can be used as the region.)
+
+### Terraform
+
+If you plan on deploying a running version of the platform to AWS then you'll need [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) installed.
 
 ## Working With the Platform as a Whole
 
@@ -65,7 +64,7 @@ The commands in this section must be run from the root directory of the reposito
 yarn
 ```
 
-**Note:** This will also install Git hooks to automatically format files correctly on commit! :tada:
+**Note:** This operation may take several minutes on the first time it's run. This is because it will also perform a number of preparation steps like downloading/installing the Playwright runtime, generating the API docs, and installing Git hooks.
 
 ### Formatting all files
 
@@ -79,7 +78,7 @@ yarn format
 yarn lint
 ```
 
-Eslint will be used for linting most files. Redocly will be used to validate the API documentation.
+Eslint and Prettier will be used for linting and formatting most files.
 
 ### Running all test suites (including end-to-end tests)
 
@@ -98,7 +97,7 @@ This will result in compiled, minified versions of the core and web libraries be
 I.e.
 
 - `packages/core/dist/` and
-- `packages/web/dist/`
+- `packages/vite/dist/`
 
 ## Running the whole platform locally
 
@@ -115,5 +114,3 @@ If you need to rebuild any of the images due to code changes you can run
 ```bash
 docker-compose build
 ```
-
-**Note:** This is not the most convenient way to work and I'm looking at using [Mutagen Compose](https://mutagen.io/documentation/orchestration/compose) to make this much nicer.

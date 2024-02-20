@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Storage Service will delete a file 1`] = `"{"middlewareStack":{},"input":{"Bucket":"test-bucket","Key":"test/file.txt"}}"`;
+
 exports[`Storage Service will list additional files in a directory with a continuation token 1`] = `
 {
   "continuationToken": "1kQQslyxa7N3CO0BtdLehYTtQ+X3n6vjEvdU1tJAtQmWz9i5ImURDXg==",
@@ -29,6 +31,8 @@ exports[`Storage Service will list additional files in a directory with a contin
 }
 `;
 
+exports[`Storage Service will list additional files in a directory with a continuation token 2`] = `"{"middlewareStack":{},"input":{"Bucket":"test-bucket","ContinuationToken":"1KZWSjKFPgGtgAShvnyMY5XK4BJ3l//6c7QRKBHIl2XDCR/VoBM4BNg==","Delimiter":"/","MaxKeys":200}}"`;
+
 exports[`Storage Service will list files in a directory 1`] = `
 {
   "continuationToken": "1KZWSjKFPgGtgAShvnyMY5XK4BJ3l//6c7QRKBHIl2XDCR/VoBM4BNg==",
@@ -57,3 +61,7 @@ exports[`Storage Service will list files in a directory 1`] = `
   ],
 }
 `;
+
+exports[`Storage Service will list files in a directory 2`] = `"{"middlewareStack":{},"input":{"Bucket":"test-bucket","Delimiter":"/","MaxKeys":200}}"`;
+
+exports[`Storage Service will upload a file 1`] = `"{"middlewareStack":{},"input":{"Body":{"type":"Buffer","data":[85,112,108,111,97,100,32,109,101]},"Bucket":"test-bucket","Key":"test/file.txt","ServerSideEncryption":"AES256","StorageClass":"STANDARD","ContentType":"text/plain"}}"`;

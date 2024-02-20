@@ -5,11 +5,13 @@ import {
   ListObjectsV2Command,
   NoSuchKey,
   NotFound,
+  PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 
+import { Readable } from 'stream';
 import { ReadableStream } from 'stream/web';
 
 import { Config } from '../config';
@@ -22,6 +24,7 @@ export class StorageService {
   private readonly log = new Logger(StorageService.name);
 
   constructor(@Inject(S3ClientKey) private readonly client: S3Client) {}
+
   // Requires s3:getObject
   async getFileMetadata(key: string): Promise<FileMetadata | null> {
     try {
@@ -53,6 +56,8 @@ export class StorageService {
       Bucket: Config.aws.mediaBucket,
       Key: key,
     });
+
+    this.log.debug(`Attempting to delete file with key "${key}"...`);
     await this.client.send(command);
   }
 
@@ -62,6 +67,7 @@ export class StorageService {
       Key: key,
     });
 
+    this.log.debug(`Attempting to get signed URL for "${key}"...`);
     const url = await getSignedUrl(this.client, command, {
       expiresIn: expiration ?? 3600,
     });
@@ -82,6 +88,10 @@ export class StorageService {
       MaxKeys: options?.maxResults ?? 200,
       Prefix: options?.prefix,
     });
+
+    this.log.debug(
+      `Attempting to list files in bucket "${Config.aws.mediaBucket}"...`,
+    );
     const response = await this.client.send(command);
 
     return {
@@ -106,6 +116,7 @@ export class StorageService {
     });
 
     try {
+      this.log.debug(`Attempting to read file with key "${key}"...`);
       const response = await this.client.send(command);
       return response.Body
         ? {
@@ -125,7 +136,27 @@ export class StorageService {
     }
   }
 
-  async writeFile(key: string, content: ReadableStream): Promise<void> {
-    // TODO: Work out how mutli-part uploads work.
+  async writeFile(
+    key: string,
+    content: Readable | Buffer,
+    mimeType: string = 'application/octet-stream',
+  ): Promise<FileMetadata> {
+    const command = new PutObjectCommand({
+      Body: content,
+      Bucket: Config.aws.mediaBucket,
+      Key: key,
+      ServerSideEncryption: 'AES256',
+      StorageClass: 'STANDARD',
+      ContentType: mimeType,
+    });
+
+    this.log.debug(`Attempting to write file with key "${key}"...`);
+    await this.client.send(command);
+
+    return {
+      key,
+      lastModified: new Date(),
+      mimeType,
+    };
   }
 }

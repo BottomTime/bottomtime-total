@@ -6,6 +6,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
@@ -36,6 +37,16 @@ export class GlobalErrorFilter implements ExceptionFilter {
       response.status = exception.getStatus();
       if (response.status === 403) {
         this.log.warn(exception);
+      } else if (response.status === 503) {
+        // Service unavailable error.
+        // This was likely thrown by the health check controller. We'll try and return the health details as JSON.
+        if (exception instanceof ServiceUnavailableException) {
+          this.log.warn('Health check failed', exception.getResponse());
+          response.message = 'Health check failed';
+          response.details = exception.getResponse();
+        } else {
+          this.log.error(exception);
+        }
       } else if (response.status < 500) {
         this.log.debug(exception);
       } else {

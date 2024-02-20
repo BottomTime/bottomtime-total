@@ -9,12 +9,23 @@ import { StorageService } from '../../../src/storage/storage.service';
 jest.mock('@aws-sdk/s3-request-presigner');
 
 describe('Storage Service', () => {
+  const bucket = 'test-bucket';
+  const key = 'test/file.txt';
+  let env: object;
   let client: S3Client;
   let service: StorageService;
 
   beforeAll(() => {
-    client = new S3Client({});
+    client = new S3Client({
+      region: 'us-east-1',
+    });
     service = new StorageService(client);
+    env = Object.assign({}, process.env);
+    process.env.BT_AWS_MEDIA_BUCKET = bucket;
+  });
+
+  afterAll(() => {
+    Object.assign(process.env, env);
   });
 
   it('will return file metadata', async () => {
@@ -37,9 +48,9 @@ describe('Storage Service', () => {
       Metadata: {},
     } as never);
 
-    const result = await service.getFileMetadata('test/file.txt');
+    const result = await service.getFileMetadata(key);
     expect(result).toEqual({
-      key: 'test/file.txt',
+      key,
       lastModified: new Date('2024-02-18T14:31:50.000Z'),
       mimeType: 'text/plain',
       size: 27,
@@ -53,7 +64,7 @@ describe('Storage Service', () => {
     });
     jest.spyOn(client, 'send').mockRejectedValue(notFound as never);
 
-    const result = await service.getFileMetadata('test/file.txt');
+    const result = await service.getFileMetadata(key);
     expect(result).toBeNull();
   });
 
@@ -86,10 +97,10 @@ describe('Storage Service', () => {
     };
     jest.spyOn(client, 'send').mockResolvedValue(response as never);
 
-    const result = await service.readFile('test/test.txt');
+    const result = await service.readFile(key);
 
     expect(result).not.toBeNull();
-    expect(result!.key).toBe('test/test.txt');
+    expect(result!.key).toBe(key);
     expect(result!.lastModified).toEqual(new Date('2024-02-18T14:31:50.000Z'));
     expect(result!.mimeType).toBe('text/plain');
     expect(result!.size).toBe(27);
@@ -117,7 +128,7 @@ describe('Storage Service', () => {
       $metadata: {},
     });
     jest.spyOn(client, 'send').mockRejectedValue(noSuchKey as never);
-    const result = await service.readFile('test/file.txt');
+    const result = await service.readFile(key);
     expect(result).toBeNull();
   });
 
@@ -128,14 +139,13 @@ describe('Storage Service', () => {
       .mocked(Presigner)
       .getSignedUrl.mockResolvedValue(expectedUrl);
 
-    const url = await service.getSignedUrl('test/file.txt', 5000);
+    const url = await service.getSignedUrl(key, 5000);
     expect(url).toBe(expectedUrl);
     expect(spy).toHaveBeenCalledWith(client, expect.any(Object), {
       expiresIn: 5000,
     });
   });
 
-  // TODO: Implement this test
   it('will list files in a directory', async () => {
     const response = {
       $metadata: {
@@ -186,10 +196,13 @@ describe('Storage Service', () => {
         '1KZWSjKFPgGtgAShvnyMY5XK4BJ3l//6c7QRKBHIl2XDCR/VoBM4BNg==',
       Prefix: '',
     };
-    jest.spyOn(client, 'send').mockResolvedValue(response as never);
+    const spy = jest.spyOn(client, 'send').mockResolvedValue(response as never);
 
     const result = await service.listFiles();
     expect(result).toMatchSnapshot();
+
+    expect(spy).toHaveBeenCalled();
+    expect(JSON.stringify(spy.mock.lastCall![0])).toMatchSnapshot();
   });
 
   it('will list additional files in a directory with a continuation token', async () => {
@@ -244,13 +257,15 @@ describe('Storage Service', () => {
         '1kQQslyxa7N3CO0BtdLehYTtQ+X3n6vjEvdU1tJAtQmWz9i5ImURDXg==',
       Prefix: '',
     };
-    jest.spyOn(client, 'send').mockResolvedValue(response as never);
+    const spy = jest.spyOn(client, 'send').mockResolvedValue(response as never);
 
     const result = await service.listFiles({
       continuationToken:
         '1KZWSjKFPgGtgAShvnyMY5XK4BJ3l//6c7QRKBHIl2XDCR/VoBM4BNg==',
     });
     expect(result).toMatchSnapshot();
+    expect(spy).toHaveBeenCalled();
+    expect(JSON.stringify(spy.mock.lastCall![0])).toMatchSnapshot();
   });
 
   it('will delete a file', async () => {
@@ -265,7 +280,34 @@ describe('Storage Service', () => {
         totalRetryDelay: 0,
       },
     };
-    jest.spyOn(client, 'send').mockResolvedValue(response as never);
-    await service.deleteFile('test/test.txt');
+    const spy = jest.spyOn(client, 'send').mockResolvedValue(response as never);
+    await service.deleteFile(key);
+
+    expect(spy).toHaveBeenCalled();
+    expect(JSON.stringify(spy.mock.lastCall![0])).toMatchSnapshot();
+  });
+
+  it('will upload a file', async () => {
+    const mimeType = 'text/plain';
+    const response = {
+      $metadata: {
+        httpStatusCode: 200,
+        requestId: 'MNT2GBBYPYCZNR1D',
+        extendedRequestId:
+          'R+R3GMGN2xMW1omVcBznV57RHjhHrpIezpeV6lUMV+fpwAFam9eLlJPN+KeJZ9JOTeS5F3PV2GY=',
+        cfId: undefined,
+        attempts: 1,
+        totalRetryDelay: 0,
+      },
+      ETag: '"c2cd2c4aaa5284dc17e6972cbfa47f71"',
+      ServerSideEncryption: 'AES256',
+    };
+    const spy = jest.spyOn(client, 'send').mockResolvedValue(response as never);
+
+    const buffer = Buffer.from('Upload me', 'utf-8');
+    await service.writeFile(key, buffer, mimeType);
+
+    expect(spy).toHaveBeenCalled();
+    expect(JSON.stringify(spy.mock.lastCall![0])).toMatchSnapshot();
   });
 });
