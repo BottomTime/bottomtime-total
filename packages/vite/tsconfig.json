@@ -25,7 +25,7 @@
       "./node_modules/@types",
       "./src/types"
     ] /* Specify multiple folders that act like './node_modules/@types'. */,
-    "types": ["vite-env"],
+    "types": ["google.maps", "vite-env"],
 
     /* Linting */
     "strict": true

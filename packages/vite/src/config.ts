@@ -19,6 +19,11 @@ export class Config {
     return process.env.NODE_ENV || 'development';
   }
 
+  /** Google API key for accessing the Google Maps API. */
+  static get googleApiKey(): string {
+    return process.env.BTWEB_VITE_GOOGLE_API_KEY || '';
+  }
+
   /**
    * Vite mode. (`development` or `production`). This differs from `NODE_ENV`.
    * See documentation here https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes

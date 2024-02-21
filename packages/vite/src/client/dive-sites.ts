@@ -11,12 +11,20 @@ import { DiveSite } from '.';
 export class DiveSitesApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
 
-  async searchDiveSites(query?: SearchDiveSitesParamsDTO): Promise<{
+  async searchDiveSites(query: SearchDiveSitesParamsDTO = {}): Promise<{
     sites: DiveSite[];
     totalCount: number;
   }> {
     const { data } = await this.apiClient.get('/api/diveSites', {
-      params: query,
+      params: {
+        ...query,
+        difficulty: query.difficulty
+          ? `${query.difficulty.min},${query.difficulty.max}`
+          : undefined,
+        rating: query.rating
+          ? `${query.rating.min},${query.rating.max}`
+          : undefined,
+      },
     });
 
     const result = SearchDiveSitesResponseSchema.parse(data);

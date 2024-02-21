@@ -1,0 +1,210 @@
+<template>
+  <LocationDialog
+    :visible="state.showLocationDialog"
+    @cancel="onCancelSelectLocation"
+  />
+
+  <form class="flex flex-col" @submit.prevent="">
+    <FormField :responsive="false">
+      <FormTextBox
+        v-model="state.query"
+        control-id="search"
+        :maxlength="200"
+        placeholder="Search dive sites"
+        test-id="search-dive-sites"
+        autofocus
+      >
+        <template #right>
+          <span class="pointer-events-auto dark:text-grey-950">
+            <i class="fas fa-search"></i>
+          </span>
+        </template>
+      </FormTextBox>
+    </FormField>
+
+    <FormField label="Location" :responsive="false">
+      <div class="text-center">
+        <FormButton test-id="select-location" @click="onSelectLocation">
+          <i class="fas fa-map-marker-alt"></i>
+          <span class="ml-2">Select Location</span>
+        </FormButton>
+      </div>
+    </FormField>
+
+    <FormField label="Minimum Rating" control-id="rating" :responsive="false">
+      <div class="flex gap-2">
+        <span>
+          <i class="fas fa-star text-warn-hover"></i>
+        </span>
+        <FormSlider
+          v-model="state.minRating"
+          :min="1"
+          :max="5"
+          :step="0.5"
+          control-id="rating"
+          test-id="rating"
+        />
+      </div>
+    </FormField>
+
+    <FormField
+      label="Maximum Difficulty"
+      control-id="difficulty"
+      :responsive="false"
+    >
+      <div class="flex gap-2">
+        <span>
+          <i class="fas fa-tachometer-alt text-warn-hover"></i>
+        </span>
+        <FormSlider
+          v-model="state.maxDifficulty"
+          :min="1"
+          :max="5"
+          :step="0.5"
+          control-id="difficulty"
+          test-id="difficulty"
+        />
+      </div>
+    </FormField>
+
+    <FormField label="Shore Access" :responsive="false">
+      <div class="flex flex-col gap-1 pl-2">
+        <FormRadio
+          v-model="state.shoreAccess"
+          control-id="shore-access-all"
+          test-id="shore-access-all"
+          group="shore-access"
+          value=""
+        >
+          Any
+        </FormRadio>
+        <FormRadio
+          v-model="state.shoreAccess"
+          control-id="shore-access-true"
+          test-id="shore-access-true"
+          group="shore-access"
+          value="true"
+        >
+          Accessible from shore
+        </FormRadio>
+        <FormRadio
+          v-model="state.shoreAccess"
+          control-id="shore-access-false"
+          test-id="shore-access-false"
+          group="shore-access"
+          value="false"
+        >
+          Accessible by boat
+        </FormRadio>
+      </div>
+    </FormField>
+
+    <FormField label="Free to dive" :responsive="false">
+      <div class="flex flex-col gap-1 pl-2">
+        <FormRadio
+          v-model="state.freeToDive"
+          control-id="free-to-dive-all"
+          test-id="free-to-dive-all"
+          group="free-to-dive"
+          value=""
+        >
+          Any
+        </FormRadio>
+        <FormRadio
+          v-model="state.freeToDive"
+          control-id="free-to-dive-true"
+          test-id="free-to-dive-true"
+          group="free-to-dive"
+          value="true"
+        >
+          Free to dive
+        </FormRadio>
+        <FormRadio
+          v-model="state.freeToDive"
+          control-id="free-to-dive-false"
+          test-id="free-to-dive-false"
+          group="free-to-dive"
+          value="false"
+        >
+          Fee required
+        </FormRadio>
+      </div>
+    </FormField>
+
+    <div class="text-center">
+      <FormButton type="primary" test-id="refresh" submit @click="onRefresh">
+        Refresh
+      </FormButton>
+    </div>
+  </form>
+</template>
+
+<script setup lang="ts">
+import { SearchDiveSitesParamsDTO } from '@bottomtime/api';
+
+import { reactive } from 'vue';
+
+import FormButton from '../common/form-button.vue';
+import FormField from '../common/form-field.vue';
+import FormRadio from '../common/form-radio.vue';
+import FormSlider from '../common/form-slider.vue';
+import FormTextBox from '../common/form-text-box.vue';
+import LocationDialog from '../dialog/location-dialog.vue';
+
+type SearchDiveSitesFormProps = {
+  params: SearchDiveSitesParamsDTO;
+};
+
+type SearchDiveSitesFormState = {
+  maxDifficulty: number;
+  minRating: number;
+  query: string;
+  shoreAccess: string;
+  freeToDive: string;
+  showLocationDialog: boolean;
+};
+
+const props = defineProps<SearchDiveSitesFormProps>();
+const emit = defineEmits<{
+  (e: 'search', query: SearchDiveSitesParamsDTO): void;
+}>();
+const state = reactive<SearchDiveSitesFormState>({
+  maxDifficulty: props.params.difficulty?.max || 5,
+  minRating: props.params.rating?.min || 1,
+  query: props.params.query || '',
+  shoreAccess:
+    typeof props.params.shoreAccess === 'boolean'
+      ? props.params.shoreAccess.toString()
+      : '',
+  freeToDive:
+    typeof props.params.freeToDive === 'boolean'
+      ? props.params.freeToDive.toString()
+      : '',
+
+  showLocationDialog: false,
+});
+
+function onRefresh() {
+  const query: SearchDiveSitesParamsDTO = {
+    query: state.query,
+    difficulty: {
+      min: 1,
+      max: state.maxDifficulty,
+    },
+    rating: {
+      min: state.minRating,
+      max: 5,
+    },
+  };
+
+  emit('search', query);
+}
+
+function onSelectLocation() {
+  state.showLocationDialog = true;
+}
+
+function onCancelSelectLocation() {
+  state.showLocationDialog = false;
+}
+</script>
