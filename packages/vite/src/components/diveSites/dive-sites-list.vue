@@ -34,7 +34,12 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO, SearchDiveSitesResponseDTO } from '@bottomtime/api';
+import {
+  DiveSiteDTO,
+  DiveSitesSortBy,
+  SearchDiveSitesResponseDTO,
+  SortOrder,
+} from '@bottomtime/api';
 
 import { onBeforeMount, reactive, ref } from 'vue';
 
@@ -63,7 +68,10 @@ async function refreshDiveSites() {
   state.isLoading = true;
 
   await oops(async () => {
-    const results = await client.diveSites.searchDiveSites();
+    const results = await client.diveSites.searchDiveSites({
+      sortBy: DiveSitesSortBy.Name,
+      sortOrder: SortOrder.Ascending,
+    });
     data.value = {
       sites: results.sites.map((site) => site.toJSON()),
       totalCount: results.totalCount,
