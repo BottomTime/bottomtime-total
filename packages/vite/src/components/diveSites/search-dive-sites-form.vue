@@ -1,7 +1,10 @@
 <template>
   <LocationDialog
+    ref="locationDialog"
     :visible="state.showLocationDialog"
+    :location="state.gps"
     @cancel="onCancelSelectLocation"
+    @confirm="onConfirmSelectLocation"
   />
 
   <form class="flex flex-col" @submit.prevent="">
@@ -12,17 +15,17 @@
         :maxlength="200"
         placeholder="Search dive sites"
         test-id="search-dive-sites"
+        show-right
         autofocus
       >
         <template #right>
-          <span class="pointer-events-auto dark:text-grey-950">
-            <i class="fas fa-search"></i>
-          </span>
+          <i class="fas fa-search"></i>
         </template>
       </FormTextBox>
     </FormField>
 
     <FormField label="Location" :responsive="false">
+      <div>TODO: Location</div>
       <div class="text-center">
         <FormButton test-id="select-location" @click="onSelectLocation">
           <i class="fas fa-map-marker-alt"></i>
@@ -140,9 +143,9 @@
 </template>
 
 <script setup lang="ts">
-import { SearchDiveSitesParamsDTO } from '@bottomtime/api';
+import { GpsCoordinates, SearchDiveSitesParamsDTO } from '@bottomtime/api';
 
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
@@ -159,6 +162,7 @@ type SearchDiveSitesFormState = {
   maxDifficulty: number;
   minRating: number;
   query: string;
+  gps?: GpsCoordinates;
   shoreAccess: string;
   freeToDive: string;
   showLocationDialog: boolean;
@@ -172,6 +176,7 @@ const state = reactive<SearchDiveSitesFormState>({
   maxDifficulty: props.params.difficulty?.max || 5,
   minRating: props.params.rating?.min || 1,
   query: props.params.query || '',
+  gps: props.params.location,
   shoreAccess:
     typeof props.params.shoreAccess === 'boolean'
       ? props.params.shoreAccess.toString()
@@ -183,6 +188,7 @@ const state = reactive<SearchDiveSitesFormState>({
 
   showLocationDialog: false,
 });
+const locationDialog = ref<InstanceType<typeof LocationDialog> | null>(null);
 
 function onRefresh() {
   const query: SearchDiveSitesParamsDTO = {
@@ -195,6 +201,11 @@ function onRefresh() {
       min: state.minRating,
       max: 5,
     },
+    shoreAccess:
+      state.shoreAccess === '' ? undefined : state.shoreAccess === 'true',
+    freeToDive:
+      state.freeToDive === '' ? undefined : state.freeToDive === 'true',
+    location: state.gps,
   };
 
   emit('search', query);
@@ -204,7 +215,13 @@ function onSelectLocation() {
   state.showLocationDialog = true;
 }
 
+function onConfirmSelectLocation(location: GpsCoordinates) {
+  state.showLocationDialog = false;
+  state.gps = location;
+}
+
 function onCancelSelectLocation() {
   state.showLocationDialog = false;
+  locationDialog.value?.reset();
 }
 </script>

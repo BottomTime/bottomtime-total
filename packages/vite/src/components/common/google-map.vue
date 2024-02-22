@@ -13,14 +13,46 @@
 </template>
 
 <script setup lang="ts">
+import { GpsCoordinates } from '@bottomtime/api';
+
 import * as GoogleMaps from '@googlemaps/js-api-loader';
 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { Config } from '../../config';
 
+type GoogleMapProps = {
+  location?: GpsCoordinates | null;
+};
+
+const MarkerId = 'marker';
+
+const props = withDefaults(defineProps<GoogleMapProps>(), { location: null });
 const mapPlaceholder = ref<HTMLElement | null>(null);
+const emit = defineEmits<{
+  (e: 'location-changed', location: GpsCoordinates): void;
+}>();
+
 let map: globalThis.google.maps.Map | undefined;
+
+function getLocation(): Promise<globalThis.google.maps.LatLng> {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve(
+          new globalThis.google.maps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude,
+          ),
+        );
+      },
+      (error) => {
+        reject(error);
+      },
+      { enableHighAccuracy: true },
+    );
+  });
+}
 
 function onMapClicked(
   event:
@@ -28,10 +60,29 @@ function onMapClicked(
     | globalThis.google.maps.IconMouseEvent,
 ) {
   if (event.latLng) {
-    console.log('Map clicked:', event.latLng.lat(), event.latLng.lng());
-    map?.data.add({
-      geometry: new globalThis.google.maps.Data.Point(event.latLng),
+    emit('location-changed', {
+      lat: event.latLng.lat(),
+      lon: event.latLng.lng(),
     });
+  }
+}
+
+function updateMarker() {
+  if (!map) return;
+
+  if (props.location) {
+    map.data.add({
+      id: MarkerId,
+      geometry: new globalThis.google.maps.Data.Point(
+        new globalThis.google.maps.LatLng(
+          props.location.lat,
+          props.location.lon,
+        ),
+      ),
+    });
+  } else {
+    const marker = map.data.getFeatureById(MarkerId);
+    if (marker) map.data.remove(marker);
   }
 }
 
@@ -45,12 +96,29 @@ onMounted(async () => {
 
   const { Map } = await loader.importLibrary('maps');
   map = new Map(mapPlaceholder.value, {
-    center: { lat: 43.70011, lng: -79.4163 }, // TODO: Invoke Location API to get user's current location.
+    center: props.location
+      ? { lat: props.location.lat, lng: props.location.lon }
+      : { lat: 43.70011, lng: -79.4163 }, // Default to Toronto... for now.
     fullscreenControl: false,
     streetViewControl: false,
-    zoom: 8,
+    zoom: 5,
   });
 
   map.addListener('click', onMapClicked);
+
+  updateMarker();
+
+  if (!props.location) {
+    getLocation()
+      .then((location) => {
+        map?.setCenter(location);
+      })
+      .catch((error) => {
+        /* eslint-disable-next-line no-console */
+        console.error('Error getting location:', error);
+      });
+  }
 });
+
+watch(props, updateMarker);
 </script>

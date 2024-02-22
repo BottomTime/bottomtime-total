@@ -109,6 +109,9 @@ async function onSearch(params: SearchDiveSitesParamsDTO): Promise<void> {
   searchParams.query = params.query;
   searchParams.rating = params.rating;
   searchParams.difficulty = params.difficulty;
+  searchParams.shoreAccess = params.shoreAccess;
+  searchParams.freeToDive = params.freeToDive;
+  searchParams.location = params.location;
   await refreshDiveSites();
 }
 
