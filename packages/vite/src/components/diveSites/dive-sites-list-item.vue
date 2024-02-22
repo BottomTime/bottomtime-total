@@ -47,19 +47,19 @@
       <!-- Depth, shore access, free to dive -->
       <div class="flex gap-1.5 justify-evenly">
         <div v-if="site.depth" class="text-center">
-          <p class="text-bold">Depth:</p>
+          <p class="font-bold">Depth:</p>
           <p class="text-sm italic">
             <DepthText :depth="site.depth.depth" :unit="site.depth.unit" />
           </p>
         </div>
         <div v-if="typeof site.shoreAccess === 'boolean'" class="text-center">
-          <p class="text-bold">Shore Access:</p>
+          <p class="font-bold">Shore Access:</p>
           <p class="text-sm italic">
             {{ site.shoreAccess ? 'Yes' : 'No' }}
           </p>
         </div>
         <div v-if="typeof site.freeToDive === 'boolean'" class="text-center">
-          <p class="text-bold">Free to Dive:</p>
+          <p class="font-bold">Free to Dive:</p>
           <p class="text-sm italic">
             {{ site.freeToDive ? 'Yes' : 'No' }}
           </p>
@@ -69,14 +69,14 @@
       <!-- Rating and difficulty -->
       <div class="flex items-center justify-evenly">
         <div v-if="site.averageRating" class="text-center">
-          <p class="text-bold">Rating:</p>
+          <p class="font-bold">Rating:</p>
           <p>
             <StarRating :rating="site.averageRating" />
           </p>
         </div>
         <div class="grow"></div>
         <div v-if="site.averageDifficulty" class="text-center">
-          <p class="text-bold">Difficulty:</p>
+          <p class="font-bold">Difficulty:</p>
           <p>
             <StarRating :rating="site.averageDifficulty" />
           </p>

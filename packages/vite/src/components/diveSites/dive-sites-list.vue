@@ -28,7 +28,7 @@
         v-for="site in data.sites"
         :key="site.id"
         :site="site"
-        @site-selected="onSiteSelected"
+        @site-selected="$emit('site-selected', site)"
       />
     </div>
   </div>
@@ -37,8 +37,6 @@
 <script lang="ts" setup>
 import { DiveSiteDTO, SearchDiveSitesResponseDTO } from '@bottomtime/api';
 
-import { ref, watch } from 'vue';
-
 import DiveSitesListItem from './dive-sites-list-item.vue';
 
 type DiveSitesListProps = {
@@ -46,16 +44,10 @@ type DiveSitesListProps = {
   isLoading?: boolean;
 };
 
-const props = withDefaults(defineProps<DiveSitesListProps>(), {
+withDefaults(defineProps<DiveSitesListProps>(), {
   isLoading: false,
 });
-const selectedSite = ref<DiveSiteDTO | null>(null);
-
-watch(props.data, () => {
-  selectedSite.value = null;
-});
-
-function onSiteSelected(site: DiveSiteDTO) {
-  selectedSite.value = site;
-}
+defineEmits<{
+  (e: 'site-selected', site: DiveSiteDTO): void;
+}>();
 </script>

@@ -1,4 +1,13 @@
 <template>
+  <DrawerPanel
+    :visible="!!selectedSite"
+    :title="selectedSite?.name"
+    :full-screen="`/diveSites/${selectedSite?.id}`"
+    @close="selectedSite = null"
+  >
+    <ViewDiveSite v-if="selectedSite" :site="selectedSite" />
+  </DrawerPanel>
+
   <PageTitle title="Dive Sites" />
   <div class="grid gap-6 grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
     <FormBox class="w-full">
@@ -25,13 +34,18 @@
           @change="onChangeSortOrder"
         />
       </FormBox>
-      <DiveSitesList :data="data" :is-loading="isLoading" />
+      <DiveSitesList
+        :data="data"
+        :is-loading="isLoading"
+        @site-selected="(site) => (selectedSite = site)"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import {
+  DiveSiteDTO,
   DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesResponseDTO,
@@ -42,11 +56,13 @@ import { onBeforeMount, onServerPrefetch, reactive, ref } from 'vue';
 
 import { useClient } from '../client';
 import { SelectOption } from '../common';
+import DrawerPanel from '../components/common/drawer-panel.vue';
 import FormBox from '../components/common/form-box.vue';
 import FormSelect from '../components/common/form-select.vue';
 import PageTitle from '../components/common/page-title.vue';
 import DiveSitesList from '../components/diveSites/dive-sites-list.vue';
 import SearchDiveSitesForm from '../components/diveSites/search-dive-sites-form.vue';
+import ViewDiveSite from '../components/diveSites/view-dive-site.vue';
 import { useOops } from '../oops';
 
 const SortOrderOptions: SelectOption[] = [
@@ -82,9 +98,11 @@ const searchParams = reactive<SearchDiveSitesParamsDTO>({
 });
 const isLoading = ref(false);
 const selectedSortOrder = ref(SortOrderOptions[0].value);
+const selectedSite = ref<DiveSiteDTO | null>(null);
 
 async function refreshDiveSites(): Promise<void> {
   isLoading.value = true;
+  selectedSite.value = null;
 
   await oops(async () => {
     const results = await client.diveSites.searchDiveSites(searchParams);
