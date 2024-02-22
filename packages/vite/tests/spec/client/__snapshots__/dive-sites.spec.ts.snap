@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dive Site API client will perform a search for dive sites 1`] = `
+[
+  "/api/diveSites",
+  {
+    "params": {
+      "creator": "bob",
+      "difficulty": "1,3",
+      "freeToDive": true,
+      "limit": 200,
+      "location": "47.6,-122.3",
+      "query": "Puget Sound",
+      "radius": 250,
+      "rating": "3.5,5",
+      "shoreAccess": true,
+      "skip": 100,
+      "sortBy": "rating",
+      "sortOrder": "desc",
+    },
+  },
+]
+`;
+
+exports[`Dive Site API client will perform a search with minimal options 1`] = `
+[
+  "/api/diveSites",
+  {
+    "params": {
+      "difficulty": undefined,
+      "location": undefined,
+      "rating": undefined,
+    },
+  },
+]
+`;
