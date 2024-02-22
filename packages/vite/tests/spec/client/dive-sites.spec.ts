@@ -31,7 +31,13 @@ describe('Dive Site API client', () => {
 
     const result = await apiClient.searchDiveSites();
 
-    expect(spy).toHaveBeenCalledWith('/api/diveSites', { params: undefined });
+    expect(spy).toHaveBeenCalledWith('/api/diveSites', {
+      params: {
+        difficulty: undefined,
+        location: undefined,
+        rating: undefined,
+      },
+    });
     expect(result.totalCount).toBe(searchResults.totalCount);
     expect(result.sites).toHaveLength(searchResults.sites.length);
     expect(result.sites.map((site: DiveSite) => site.toJSON())).toEqual(

@@ -47,6 +47,7 @@
           :invalid="v$.newPassword.$error"
           :autofocus="!requireOldPassword"
           :password="!state.showPassword"
+          show-right
         >
           <template #right>
             <a

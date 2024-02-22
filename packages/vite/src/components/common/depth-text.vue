@@ -18,8 +18,13 @@ const props = defineProps<DepthTextProps>();
 const currentUser = useCurrentUser();
 
 const text = computed(() => {
-  const preferredUnit =
-    currentUser.user?.settings.depthUnit || DepthUnit.Meters;
+  if (!currentUser.user) {
+    return props.unit === DepthUnit.Meters
+      ? `${props.depth.toFixed(2)} m`
+      : `${props.depth.toFixed(1)} ft`;
+  }
+
+  const preferredUnit = currentUser.user.settings.depthUnit;
 
   if (preferredUnit === props.unit) {
     // No conversion necessary. Just render the string.
