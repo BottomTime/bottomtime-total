@@ -10,7 +10,7 @@
     </FormBox>
     <div class="md:col-span-2 lg:col-span-4">
       <FormBox
-        class="flex flex-row gap-2 sticky top-16 items-baseline shadow-lg"
+        class="flex flex-row gap-2 sticky top-16 items-baseline shadow-lg z-30"
       >
         <span class="font-bold">Showing Dive Sites:</span>
         <span>{{ data.sites.length }}</span>
@@ -112,6 +112,7 @@ async function onSearch(params: SearchDiveSitesParamsDTO): Promise<void> {
   searchParams.shoreAccess = params.shoreAccess;
   searchParams.freeToDive = params.freeToDive;
   searchParams.location = params.location;
+  searchParams.radius = params.radius;
   await refreshDiveSites();
 }
 

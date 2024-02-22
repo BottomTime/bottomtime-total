@@ -7,7 +7,7 @@
     @confirm="onConfirmSelectLocation"
   />
 
-  <form class="flex flex-col" @submit.prevent="">
+  <form class="flex flex-col sticky top-20" @submit.prevent="">
     <FormField :responsive="false">
       <FormTextBox
         v-model="state.query"
@@ -25,11 +25,51 @@
     </FormField>
 
     <FormField label="Location" :responsive="false">
-      <div>TODO: Location</div>
-      <div class="text-center">
-        <FormButton test-id="select-location" @click="onSelectLocation">
-          <i class="fas fa-map-marker-alt"></i>
-          <span class="ml-2">Select Location</span>
+      <div v-if="state.gps" class="text-sm mb-2">
+        <p class="flex gap-2">
+          <span class="text-danger">
+            <i class="fas fa-map-marker-alt"></i>
+          </span>
+          <span class="font-bold">Coordinates:</span>
+        </p>
+        <p class="ml-6">
+          <span>{{ state.gps.lat }}, {{ state.gps.lon }}</span>
+        </p>
+        <p class="flex gap-2">
+          <span>
+            <i class="fas fa-ruler-horizontal"></i>
+          </span>
+          <span class="font-bold">Range:</span>
+        </p>
+        <p class="ml-6 my-2">
+          <FormSlider
+            v-model="state.range"
+            :min="10"
+            :max="500"
+            :step="10"
+            :show-value="false"
+          />
+        </p>
+        <p class="ml-6">
+          <span>{{ state.range }} km</span>
+        </p>
+      </div>
+
+      <div class="flex gap-2">
+        <FormButton
+          test-id="select-location"
+          size="sm"
+          @click="onSelectLocation"
+        >
+          {{ state.gps ? 'Change' : 'Select' }} Location
+        </FormButton>
+        <FormButton
+          v-if="state.gps"
+          size="sm"
+          test-id="clear-location"
+          @click="onClearLocation"
+        >
+          Clear
         </FormButton>
       </div>
     </FormField>
@@ -163,6 +203,7 @@ type SearchDiveSitesFormState = {
   minRating: number;
   query: string;
   gps?: GpsCoordinates;
+  range: number;
   shoreAccess: string;
   freeToDive: string;
   showLocationDialog: boolean;
@@ -177,6 +218,7 @@ const state = reactive<SearchDiveSitesFormState>({
   minRating: props.params.rating?.min || 1,
   query: props.params.query || '',
   gps: props.params.location,
+  range: 50,
   shoreAccess:
     typeof props.params.shoreAccess === 'boolean'
       ? props.params.shoreAccess.toString()
@@ -206,6 +248,7 @@ function onRefresh() {
     freeToDive:
       state.freeToDive === '' ? undefined : state.freeToDive === 'true',
     location: state.gps,
+    radius: state.range,
   };
 
   emit('search', query);
@@ -222,6 +265,11 @@ function onConfirmSelectLocation(location: GpsCoordinates) {
 
 function onCancelSelectLocation() {
   state.showLocationDialog = false;
+  locationDialog.value?.reset();
+}
+
+function onClearLocation() {
+  state.gps = undefined;
   locationDialog.value?.reset();
 }
 </script>

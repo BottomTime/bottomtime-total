@@ -24,6 +24,9 @@ export class DiveSitesApiClient {
         rating: query.rating
           ? `${query.rating.min},${query.rating.max}`
           : undefined,
+        location: query.location
+          ? `${query.location.lat},${query.location.lon}`
+          : undefined,
       },
     });
 

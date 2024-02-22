@@ -51,7 +51,7 @@
     </template>
 
     <template #buttons>
-      <FormButton type="primary" @click="onSelect">Select</FormButton>
+      <FormButton type="primary" @click="onSelect">Select Location</FormButton>
       <FormButton @click="$emit('cancel')">Cancel</FormButton>
     </template>
   </DialogBase>
@@ -61,13 +61,7 @@
 import { GpsCoordinates } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
-import {
-  helpers,
-  maxValue,
-  minValue,
-  numeric,
-  required,
-} from '@vuelidate/validators';
+import { helpers, maxValue, minValue, required } from '@vuelidate/validators';
 
 import { computed, reactive } from 'vue';
 
@@ -119,13 +113,11 @@ const v$ = useVuelidate(
   {
     lat: {
       required: helpers.withMessage('Latitude is required', required),
-      numeric: helpers.withMessage(LatitudeError, numeric),
       minValue: helpers.withMessage(LatitudeError, minValue(-90)),
       maxValue: helpers.withMessage(LatitudeError, maxValue(90)),
     },
     lon: {
       required: helpers.withMessage('Longitude is required', required),
-      numeric: helpers.withMessage(LongitudeError, numeric),
       minValue: helpers.withMessage(LongitudeError, minValue(-180)),
       maxValue: helpers.withMessage(LongitudeError, maxValue(180)),
     },

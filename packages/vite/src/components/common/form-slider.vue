@@ -3,14 +3,14 @@
     <input
       :id="controlId"
       v-model.number="value"
-      class="grow appearance-none h-2 rounded-full bg-grey-400 dark:bg-grey-600 cursor-pointer accent-blue-500 hover:dark:accent-blue-400 hover:accent-blue-600"
+      class="grow appearance-none h-2 rounded-full bg-grey-300 dark:bg-grey-400 cursor-pointer accent-blue-500 hover:dark:accent-blue-400 hover:accent-blue-600"
       type="range"
       :min="min"
       :max="max"
       :step="step"
       :data-testid="testId"
     />
-    <span>{{ valueString }}</span>
+    <span v-if="showValue">{{ valueString }}</span>
   </div>
 </template>
 
@@ -21,6 +21,7 @@ type FormSliderProps = {
   controlId?: string;
   max?: number;
   min?: number;
+  showValue?: boolean;
   step?: number;
   testId?: string;
 };
@@ -29,6 +30,7 @@ const value = defineModel<number>({ default: 1, required: true });
 withDefaults(defineProps<FormSliderProps>(), {
   min: 1,
   max: 5,
+  showValue: true,
   step: 0.5,
 });
 

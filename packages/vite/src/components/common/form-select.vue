@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="relative">
     <span
-      class="absolute bottom-6 end-3 flex items-center pe-3.5 text-lg pointer-events-none text-grey-500"
+      class="absolute bottom-2 right-2 flex items-center text-lg pointer-events-none text-grey-500"
     >
       <i class="fas fa-caret-down"></i>
     </span>
@@ -48,7 +48,7 @@ const selectInput = ref<HTMLSelectElement | null>();
 const classes = computed(() => {
   const width = props.stretch ? 'w-full' : 'w-auto';
   const highlightColour = props.invalid ? 'danger' : 'grey-600';
-  return `p-1 appearance-none border border-${highlightColour} focus:ring-${highlightColour} ${width} block pe-10 rounded-lg bg-gray-200 dark:bg-grey-300 text-black`;
+  return `p-1 pl-2 appearance-none border border-${highlightColour} focus:ring-${highlightColour} ${width} block pe-10 rounded-lg bg-gray-200 dark:bg-grey-300 text-black`;
 });
 
 function focus() {
