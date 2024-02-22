@@ -52,10 +52,16 @@ import {
   SortOrder,
 } from '@bottomtime/api';
 
-import { onBeforeMount, onServerPrefetch, reactive, ref } from 'vue';
+import {
+  onBeforeMount,
+  onServerPrefetch,
+  reactive,
+  ref,
+  useSSRContext,
+} from 'vue';
 
 import { useClient } from '../client';
-import { SelectOption } from '../common';
+import { AppInitialState, SelectOption } from '../common';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import FormBox from '../components/common/form-box.vue';
 import FormSelect from '../components/common/form-select.vue';
@@ -63,6 +69,8 @@ import PageTitle from '../components/common/page-title.vue';
 import DiveSitesList from '../components/diveSites/dive-sites-list.vue';
 import SearchDiveSitesForm from '../components/diveSites/search-dive-sites-form.vue';
 import ViewDiveSite from '../components/diveSites/view-dive-site.vue';
+import { Config } from '../config';
+import { useInitialState } from '../initial-state';
 import { useOops } from '../oops';
 
 const SortOrderOptions: SelectOption[] = [
@@ -86,6 +94,8 @@ const SortOrderOptions: SelectOption[] = [
 
 const client = useClient();
 const oops = useOops();
+const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
+const initialState = useInitialState();
 
 const data = ref<SearchDiveSitesResponseDTO>({
   sites: [],
@@ -135,11 +145,17 @@ async function onSearch(params: SearchDiveSitesParamsDTO): Promise<void> {
 }
 
 onBeforeMount(async () => {
-  await refreshDiveSites();
+  if (!Config.isSSR && initialState?.diveSites) {
+    data.value = initialState.diveSites;
+  }
 });
 
 onServerPrefetch(async () => {
-  // TODO
-  // await refreshDiveSites();
+  if (ctx) {
+    await oops(async () => {
+      await refreshDiveSites();
+      ctx.diveSites = data.value;
+    });
+  }
 });
 </script>

@@ -1,9 +1,14 @@
-import { AdminSearchUsersResponseDTO, UserDTO } from '@bottomtime/api';
+import {
+  AdminSearchUsersResponseDTO,
+  SearchDiveSitesResponseDTO,
+  UserDTO,
+} from '@bottomtime/api';
 
 export type AppInitialState = {
   adminCurrentUser?: UserDTO;
   adminUsersList?: AdminSearchUsersResponseDTO;
   currentUser: UserDTO | null;
+  diveSites?: SearchDiveSitesResponseDTO;
 };
 
 export type Breadcrumb = {
