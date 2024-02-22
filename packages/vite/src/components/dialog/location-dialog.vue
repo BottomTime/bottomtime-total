@@ -20,6 +20,7 @@
             v-model.number="currentLocation.lat"
             class="grow"
             control-id="latitude"
+            test-id="latitude"
             :invalid="v$.lat.$error"
             :maxlength="10"
           />
@@ -34,6 +35,7 @@
             v-model.number="currentLocation.lon"
             class="grow"
             control-id="longitude"
+            test-id="longitude"
             :invalid="v$.lon.$error"
             :maxlength="10"
           />
@@ -43,7 +45,11 @@
           </div>
         </div>
 
-        <ul v-if="v$.$error" class="text-danger list-disc list-outside ml-10">
+        <ul
+          v-if="v$.$error"
+          data-testid="location-errors"
+          class="text-danger list-disc list-outside ml-10"
+        >
           <li v-if="v$.lat.$error">{{ v$.lat.$errors[0].$message }}</li>
           <li v-if="v$.lon.$error">{{ v$.lon.$errors[0].$message }}</li>
         </ul>
@@ -51,8 +57,12 @@
     </template>
 
     <template #buttons>
-      <FormButton type="primary" @click="onSelect">Select Location</FormButton>
-      <FormButton @click="$emit('cancel')">Cancel</FormButton>
+      <FormButton type="primary" test-id="confirm-location" @click="onSelect">
+        Select Location
+      </FormButton>
+      <FormButton test-id="cancel-location" @click="$emit('cancel')">
+        Cancel
+      </FormButton>
     </template>
   </DialogBase>
 </template>
@@ -77,7 +87,7 @@ type LocationDialogProps = {
   visible?: boolean;
 };
 
-withDefaults(defineProps<LocationDialogProps>(), {
+const props = withDefaults(defineProps<LocationDialogProps>(), {
   title: 'Select Location',
   visible: false,
 });
@@ -85,8 +95,8 @@ const currentLocation = reactive<{
   lat: string | number;
   lon: string | number;
 }>({
-  lat: '',
-  lon: '',
+  lat: props.location ? props.location.lat : '',
+  lon: props.location ? props.location.lon : '',
 });
 const gps = computed<GpsCoordinates | null>(() => {
   if (

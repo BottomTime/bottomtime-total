@@ -26,6 +26,7 @@
           <FormButton
             type="link"
             size="lg"
+            :test-id="`site-creator-${site.id}`"
             @click="$emit('user-selected', site.creator.username)"
           >
             <span class="mr-2">

@@ -30,20 +30,24 @@
           <span class="text-danger">
             <i class="fas fa-map-marker-alt"></i>
           </span>
-          <span class="font-bold">Coordinates:</span>
+          <label class="font-bold">Coordinates:</label>
         </p>
         <p class="ml-6">
-          <span>{{ state.gps.lat }}, {{ state.gps.lon }}</span>
+          <span data-testid="search-coordinates">
+            {{ state.gps.lat }}, {{ state.gps.lon }}
+          </span>
         </p>
         <p class="flex gap-2">
           <span>
             <i class="fas fa-ruler-horizontal"></i>
           </span>
-          <span class="font-bold">Range:</span>
+          <label class="font-bold">Range:</label>
         </p>
         <p class="ml-6 my-2">
           <FormSlider
             v-model="state.range"
+            control-id="search-range"
+            test-id="search-range"
             :min="10"
             :max="500"
             :step="10"
@@ -175,7 +179,12 @@
     </FormField>
 
     <div class="text-center">
-      <FormButton type="primary" test-id="refresh" submit @click="onRefresh">
+      <FormButton
+        type="primary"
+        test-id="refresh-dive-sites"
+        submit
+        @click="onRefresh"
+      >
         Refresh
       </FormButton>
     </div>
@@ -234,7 +243,7 @@ const locationDialog = ref<InstanceType<typeof LocationDialog> | null>(null);
 
 function onRefresh() {
   const query: SearchDiveSitesParamsDTO = {
-    query: state.query,
+    query: state.query || undefined,
     difficulty: {
       min: 1,
       max: state.maxDifficulty,

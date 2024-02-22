@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Location Dialog will validate for invalid latitude: -91 1`] = `"Latitude must be a numeric value between -90.0 and 90.0"`;
+
+exports[`Location Dialog will validate for invalid latitude: 91 1`] = `"Latitude must be a numeric value between -90.0 and 90.0"`;
+
+exports[`Location Dialog will validate for invalid latitude: north 1`] = `"Latitude must be a numeric value between -90.0 and 90.0"`;
+
+exports[`Location Dialog will validate for invalid longitude: -181 1`] = `"Longitude must be a numeric value between -180.0 and 180.0"`;
+
+exports[`Location Dialog will validate for invalid longitude: 181 1`] = `"Longitude must be a numeric value between -180.0 and 180.0"`;
+
+exports[`Location Dialog will validate for invalid longitude: west 1`] = `"Longitude must be a numeric value between -180.0 and 180.0"`;
+
+exports[`Location Dialog will validate for missing fields 1`] = `"Latitude is requiredLongitude is required"`;

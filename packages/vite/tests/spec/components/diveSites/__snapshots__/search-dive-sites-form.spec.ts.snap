@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Search Dive Sites Form will allow a user to clear the location 1`] = `"20.422207555692225, -87.015536937484"`;
+
+exports[`Search Dive Sites Form will allow a user to clear the location 2`] = `
+[
+  [
+    {
+      "difficulty": {
+        "max": 5,
+        "min": 1,
+      },
+      "freeToDive": undefined,
+      "location": undefined,
+      "query": undefined,
+      "radius": 50,
+      "rating": {
+        "max": 5,
+        "min": 1,
+      },
+      "shoreAccess": undefined,
+    },
+  ],
+]
+`;
+
+exports[`Search Dive Sites Form will allow a user to filter their search results 1`] = `
+[
+  [
+    {
+      "difficulty": {
+        "max": 3.5,
+        "min": 1,
+      },
+      "freeToDive": true,
+      "location": {
+        "lat": 20.422207555692225,
+        "lon": -87.015536937484,
+      },
+      "query": "secret cove",
+      "radius": 350,
+      "rating": {
+        "max": 5,
+        "min": 4,
+      },
+      "shoreAccess": true,
+    },
+  ],
+]
+`;
+
+exports[`Search Dive Sites Form will allow a user to refresh with minimal search criteria 1`] = `
+[
+  [
+    {
+      "difficulty": {
+        "max": 5,
+        "min": 1,
+      },
+      "freeToDive": undefined,
+      "location": undefined,
+      "query": undefined,
+      "radius": 50,
+      "rating": {
+        "max": 5,
+        "min": 1,
+      },
+      "shoreAccess": undefined,
+    },
+  ],
+]
+`;
