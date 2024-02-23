@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Nav Bar component will render correctly for admins 1`] = `
+"<!-- Blurred backgroud - covers entire viewport. -->
+<transition-stub name="backdrop" appear="false" persisted="false" css="true">
+  <!--v-if-->
+</transition-stub>
+<!-- Drawer panel. Right half of the screen on most displays; full screen on mobile. -->
+<transition-stub name="drawer" appear="false" persisted="false" css="true">
+  <!--v-if-->
+</transition-stub>
+<section class="h-16">
+  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30">
+    <div class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between">
+      <!-- Brand Logo --><a href="/" class="flex flex-initial items-center space-x-3"><img src="/img/flag-logo.png" alt="logo" class="w-12 h-8 rounded-md shadow-sm shadow-danger"><span class="font-bold text-red text-2xl">Bottom Time</span></a><!-- Right-Hand Dropdown (always visible) -->
+      <div class="flex items-center space-x-0 md:order-2 md:space-x-3"><label class="relative cursor-pointer" aria-label="Toggle dark mode"><input type="checkbox" class="sr-only peer">
+          <div class="flex space-x-2 items-center align-middle ring-1 ring-offset-1 h-5 pl-1 pr-1 ring-blue-400 shadow-sm rounded-full bg-gradient-to-t from-blue-400 to-blue-200 dark:from-blue-800 dark:to-blue-950 hover:shadow-md"><span class="text-warn dark:text-grey-500"><i class="fas fa-sun fa-xs"></i></span><span class="text-grey-500 dark:text-blue-300"><i class="fas fa-moon fa-xs"></i></span></div>
+        </label><!-- Login/register links for anonymous users -->
+        <!-- Avatar for authenticated users --><button id="user-menu-button" data-testid="user-menu-button" class="flex items-center space-x-3 relative h-16" aria-expanded="false"><span class="sr-only">Open User Menu</span><img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=Andy%20Admin"><span class="text-lg hidden md:block">Andy Admin</span><span class="text-lg hidden md:block"><i class="fas fa-caret-down"></i></span><!-- User Dropdown Menu -->
+          <transition-stub name="nav-dropdown" appear="false" persisted="true" css="true">
+            <div id="user-dropdown" data-testid="user-dropdown" class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left" style="display: none;"><a class="w-full p-2 hover:bg-blue-700" href="/profile"> Profile </a><a class="w-full p-2 hover:bg-blue-700" href="/account"> Account </a><a class="w-full p-2 hover:bg-blue-700" href="/settings"> Settings </a>
+              <hr><a class="w-full p-2 rounded-b-md hover:bg-blue-700" href="/api/auth/logout"> Logout </a>
+            </div>
+          </transition-stub>
+        </button><button class="inline-flex items-center p-2 w-10 h-10 justify-center rounded-lg md:hidden" data-testid="hamburger-button" aria-controls="navbar-user" aria-expanded="false"><span class="sr-only">Open Main Menu</span><span aria-hidden="true"><i class="fas fa-bars"></i></span></button>
+      </div><!-- Collapsable Links (collapse to hamburger menu on small screens) -->
+      <div id="navbar-user" class="items-center justify-between grow w-full md:w-auto px-0 md:px-4 md:flex md:order-1 fixed top-16 left-0 md:static hidden" data-testid="hamburger-menu">
+        <ul class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md">
+          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold w-full"><a class="w-full md:w-auto" href="/">Home</a></li>
+          <li class="text-lg hover:text-blue-300 false w-full"><a class="w-full md:w-auto" href="/about">About</a></li>
+          <li class="text-lg hover:text-blue-300 false w-full"><a class="w-full md:w-auto" href="/contact">Contact</a></li>
+          <li class="text-lg hover:text-blue-300 false w-full"><a class="w-full md:w-auto" href="/admin/users">Admin</a></li>
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+        </ul>
+      </div>
+    </div>
+  </nav>
+</section>"
+`;
+
+exports[`Nav Bar component will render correctly for anonymous users 1`] = `
+"<!-- Blurred backgroud - covers entire viewport. -->
+<transition-stub name="backdrop" appear="false" persisted="false" css="true">
+  <!--v-if-->
+</transition-stub>
+<!-- Drawer panel. Right half of the screen on most displays; full screen on mobile. -->
+<transition-stub name="drawer" appear="false" persisted="false" css="true">
+  <!--v-if-->
+</transition-stub>
+<section class="h-16">
+  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30">
+    <div class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between">
+      <!-- Brand Logo --><a href="/" class="flex flex-initial items-center space-x-3"><img src="/img/flag-logo.png" alt="logo" class="w-12 h-8 rounded-md shadow-sm shadow-danger"><span class="font-bold text-red text-2xl">Bottom Time</span></a><!-- Right-Hand Dropdown (always visible) -->
+      <div class="flex items-center space-x-0 md:order-2 md:space-x-3"><label class="relative cursor-pointer" aria-label="Toggle dark mode"><input type="checkbox" class="sr-only peer">
+          <div class="flex space-x-2 items-center align-middle ring-1 ring-offset-1 h-5 pl-1 pr-1 ring-blue-400 shadow-sm rounded-full bg-gradient-to-t from-blue-400 to-blue-200 dark:from-blue-800 dark:to-blue-950 hover:shadow-md"><span class="text-warn dark:text-grey-500"><i class="fas fa-sun fa-xs"></i></span><span class="text-grey-500 dark:text-blue-300"><i class="fas fa-moon fa-xs"></i></span></div>
+        </label><!-- Login/register links for anonymous users -->
+        <ul class="hidden md:flex flex-row ml-4 gap-3 justify-end items-baseline">
+          <li class="text-lg hover:text-blue-300 false"><a class="w-full md:w-auto" href="/register">Register</a></li>
+          <li><button class="text-black p-2 m-0 text-sm rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800 bg-gradient-to-t disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary" data-testid="login-button" type="button">
+              <!--v-if--> Sign in
+            </button></li>
+        </ul><button class="inline-flex items-center p-2 w-10 h-10 justify-center rounded-lg md:hidden" data-testid="hamburger-button" aria-controls="navbar-user" aria-expanded="false"><span class="sr-only">Open Main Menu</span><span aria-hidden="true"><i class="fas fa-bars"></i></span></button>
+      </div><!-- Collapsable Links (collapse to hamburger menu on small screens) -->
+      <div id="navbar-user" class="items-center justify-between grow w-full md:w-auto px-0 md:px-4 md:flex md:order-1 fixed top-16 left-0 md:static hidden" data-testid="hamburger-menu">
+        <ul class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md">
+          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold w-full"><a class="w-full md:w-auto" href="/">Home</a></li>
+          <li class="text-lg hover:text-blue-300 false w-full"><a class="w-full md:w-auto" href="/about">About</a></li>
+          <li class="text-lg hover:text-blue-300 false w-full"><a class="w-full md:w-auto" href="/contact">Contact</a></li>
+          <hr class="block md:hidden my-2 align-middle">
+          <li class="text-lg hover:text-blue-300 false block md:hidden w-full"><a class="w-full md:w-auto" data-testid="login-link" href="#">Login</a></li>
+          <li class="text-lg hover:text-blue-300 false block md:hidden w-full"><a class="w-full md:w-auto" href="/register">Register</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</section>"
+`;
+
+exports[`Nav Bar component will render correctly for authenticated users 1`] = `
+"<!-- Blurred backgroud - covers entire viewport. -->
+<transition-stub name="backdrop" appear="false" persisted="false" css="true">
+  <!--v-if-->
+</transition-stub>
+<!-- Drawer panel. Right half of the screen on most displays; full screen on mobile. -->
+<transition-stub name="drawer" appear="false" persisted="false" css="true">
+  <!--v-if-->
+</transition-stub>
+<section class="h-16">
+  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30">
+    <div class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between">
+      <!-- Brand Logo --><a href="/" class="flex flex-initial items-center space-x-3"><img src="/img/flag-logo.png" alt="logo" class="w-12 h-8 rounded-md shadow-sm shadow-danger"><span class="font-bold text-red text-2xl">Bottom Time</span></a><!-- Right-Hand Dropdown (always visible) -->
+      <div class="flex items-center space-x-0 md:order-2 md:space-x-3"><label class="relative cursor-pointer" aria-label="Toggle dark mode"><input type="checkbox" class="sr-only peer">
+          <div class="flex space-x-2 items-center align-middle ring-1 ring-offset-1 h-5 pl-1 pr-1 ring-blue-400 shadow-sm rounded-full bg-gradient-to-t from-blue-400 to-blue-200 dark:from-blue-800 dark:to-blue-950 hover:shadow-md"><span class="text-warn dark:text-grey-500"><i class="fas fa-sun fa-xs"></i></span><span class="text-grey-500 dark:text-blue-300"><i class="fas fa-moon fa-xs"></i></span></div>
+        </label><!-- Login/register links for anonymous users -->
+        <!-- Avatar for authenticated users --><button id="user-menu-button" data-testid="user-menu-button" class="flex items-center space-x-3 relative h-16" aria-expanded="false"><span class="sr-only">Open User Menu</span><img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=Sam%20Smith"><span class="text-lg hidden md:block">Sam Smith</span><span class="text-lg hidden md:block"><i class="fas fa-caret-down"></i></span><!-- User Dropdown Menu -->
+          <transition-stub name="nav-dropdown" appear="false" persisted="true" css="true">
+            <div id="user-dropdown" data-testid="user-dropdown" class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left" style="display: none;"><a class="w-full p-2 hover:bg-blue-700" href="/profile"> Profile </a><a class="w-full p-2 hover:bg-blue-700" href="/account"> Account </a><a class="w-full p-2 hover:bg-blue-700" href="/settings"> Settings </a>
+              <hr><a class="w-full p-2 rounded-b-md hover:bg-blue-700" href="/api/auth/logout"> Logout </a>
+            </div>
+          </transition-stub>
+        </button><button class="inline-flex items-center p-2 w-10 h-10 justify-center rounded-lg md:hidden" data-testid="hamburger-button" aria-controls="navbar-user" aria-expanded="false"><span class="sr-only">Open Main Menu</span><span aria-hidden="true"><i class="fas fa-bars"></i></span></button>
+      </div><!-- Collapsable Links (collapse to hamburger menu on small screens) -->
+      <div id="navbar-user" class="items-center justify-between grow w-full md:w-auto px-0 md:px-4 md:flex md:order-1 fixed top-16 left-0 md:static hidden" data-testid="hamburger-menu">
+        <ul class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md">
+          <li class="text-lg hover:text-blue-300 text-blue-400 font-bold w-full"><a class="w-full md:w-auto" href="/">Home</a></li>
+          <li class="text-lg hover:text-blue-300 false w-full"><a class="w-full md:w-auto" href="/about">About</a></li>
+          <li class="text-lg hover:text-blue-300 false w-full"><a class="w-full md:w-auto" href="/contact">Contact</a></li>
+          <!--v-if-->
+          <!--v-if-->
+          <!--v-if-->
+        </ul>
+      </div>
+    </div>
+  </nav>
+</section>"
+`;

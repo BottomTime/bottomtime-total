@@ -1,7 +1,7 @@
 <template>
   <PageTitle title="Terms of Service" />
   <BreadCrumbs :items="[{ label: 'Terms of Service', active: true }]" />
-  <div class="flex flex-col gap-4">
+  <div class="space-y-4">
     <p class="font-bold">Effective Date: February 14, 2024</p>
 
     <p>
