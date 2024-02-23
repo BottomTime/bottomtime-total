@@ -167,7 +167,6 @@ import LoginForm from '../users/login-form.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import DarkModeToggle from './dark-mode-toggle.vue';
 import NavBarLink from './nav-bar-link.vue';
-import { getNavLinks } from './nav-links';
 
 type NavLink = {
   title: string;
