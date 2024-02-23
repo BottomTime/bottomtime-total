@@ -1,9 +1,5 @@
 <template>
-  <li
-    :class="`text-lg hover:text-blue-300 ${
-      active && 'text-blue-400 font-bold'
-    }`"
-  >
+  <li :class="classes">
     <a
       class="w-full md:w-auto"
       :data-testid="testId"
@@ -16,7 +12,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 type NavBarLinkProps = {
   to: string;
@@ -24,10 +20,15 @@ type NavBarLinkProps = {
   testId?: string;
 };
 
-const router = useRouter();
+const route = useRoute();
 
 const props = defineProps<NavBarLinkProps>();
-const active = computed(() => router.currentRoute.value.path === props.to);
+const classes = computed(() => {
+  const active = route.path === props.to;
+  return `text-lg hover:text-blue-300${
+    active ? ' text-blue-400 font-bold' : ''
+  }`;
+});
 
 defineEmits<{
   (e: 'click'): void;

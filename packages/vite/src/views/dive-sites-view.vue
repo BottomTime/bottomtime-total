@@ -32,7 +32,9 @@
       </FormBox>
       <DiveSitesList
         :data="data"
+        :is-loading-more="isLoadingMore"
         @site-selected="(site) => (selectedSite = site)"
+        @load-more="onLoadMore"
       />
     </div>
   </div>
@@ -104,6 +106,7 @@ const selectedSortOrder = ref(
   }`,
 );
 const selectedSite = ref<DiveSiteDTO | null>(null);
+const isLoadingMore = ref(false);
 
 const data = ref<SearchDiveSitesResponseDTO>(
   !Config.isSSR && initialState?.diveSites
@@ -138,6 +141,23 @@ async function onSearch(params: SearchDiveSitesParamsDTO): Promise<void> {
     router.currentRoute.value.path
   }?${client.diveSites.searchQueryString(searchParams)}`;
   await location.assign(newPath);
+}
+
+async function onLoadMore(): Promise<void> {
+  isLoadingMore.value = true;
+
+  await oops(async () => {
+    const params = {
+      ...searchParams,
+      skip: data.value.sites.length,
+    };
+    const newResults = await client.diveSites.searchDiveSites(params);
+
+    data.value.sites.push(...newResults.sites.map((site) => site.toJSON()));
+    data.value.totalCount = newResults.totalCount;
+  });
+
+  isLoadingMore.value = false;
 }
 
 onServerPrefetch(async () => {
