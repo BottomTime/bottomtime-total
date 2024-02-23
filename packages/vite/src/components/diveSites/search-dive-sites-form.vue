@@ -227,7 +227,7 @@ const state = reactive<SearchDiveSitesFormState>({
   minRating: props.params.rating?.min || 1,
   query: props.params.query || '',
   gps: props.params.location,
-  range: 50,
+  range: props.params.radius ?? 50,
   shoreAccess:
     typeof props.params.shoreAccess === 'boolean'
       ? props.params.shoreAccess.toString()
