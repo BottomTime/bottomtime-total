@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dive Sites List component will indicate when there are no results to show 1`] = `"No sites were found matching your search criteria."`;

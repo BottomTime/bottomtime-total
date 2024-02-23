@@ -1,5 +1,9 @@
 <template>
-  <div v-if="data.sites.length === 0" class="text-center text-lg m-6">
+  <div
+    v-if="data.sites.length === 0"
+    class="text-center text-lg m-6"
+    data-testid="no-results"
+  >
     <span class="mr-2">
       <i class="fas fa-exclamation-circle"></i>
     </span>
@@ -19,8 +23,9 @@
         @site-selected="$emit('site-selected', site)"
       />
     </div>
+
     <div v-if="canLoadMore" class="text-center font-bold text-lg">
-      <p v-if="isLoadingMore" class="p-2">
+      <p v-if="isLoadingMore" data-testid="loading-more" class="p-2">
         <span>
           <i class="fas fa-spinner fa-spin"></i>
         </span>
