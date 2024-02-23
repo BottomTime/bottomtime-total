@@ -1,8 +1,10 @@
 <template>
   <PageTitle title="Manage Profile" />
   <RequireAuth>
-    <div class="grid grid-cols-6">
-      <FormBox class="col-start-2 col-span-4">
+    <div class="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-5">
+      <FormBox
+        class="md:col-span-4 lg:col-span-3 col-start-1 md:col-start-2 lg:col-start-2"
+      >
         <EditProfile :user="currentUser.user!" @save-profile="onSave" />
       </FormBox>
     </div>

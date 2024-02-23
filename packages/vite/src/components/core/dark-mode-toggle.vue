@@ -2,13 +2,13 @@
   <label class="relative cursor-pointer" aria-label="Toggle dark mode">
     <input v-model="darkMode" type="checkbox" class="sr-only peer" />
     <div
-      class="flex flex-row gap-4 items-center align-middle ring-1 ring-offset-1 h-6 pl-1 pr-1 ring-blue-400 shadow-sm rounded-full bg-gradient-to-t from-blue-400 to-blue-200 dark:from-blue-800 dark:to-blue-950 hover:shadow-md"
+      class="flex space-x-2 items-center align-middle ring-1 ring-offset-1 h-5 pl-1 pr-1 ring-blue-400 shadow-sm rounded-full bg-gradient-to-t from-blue-400 to-blue-200 dark:from-blue-800 dark:to-blue-950 hover:shadow-md"
     >
       <span class="text-warn dark:text-grey-500">
-        <i class="fas fa-sun fa-sm"></i>
+        <i class="fas fa-sun fa-xs"></i>
       </span>
       <span class="text-grey-500 dark:text-blue-300">
-        <i class="fas fa-moon fa-sm"></i>
+        <i class="fas fa-moon fa-xs"></i>
       </span>
     </div>
   </label>

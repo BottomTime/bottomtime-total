@@ -11,65 +11,147 @@
       class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30"
     >
       <div
-        class="container pl-2 pr-2 pt-4 mx-auto h-16 flex flex-row flex-nowrap items-baseline"
+        class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between"
       >
         <!-- Brand Logo -->
-        <div class="h-8 w-40 md:flex-none grow">
-          <div
-            class="flex flex-row flex-nowrap justify-start items-baseline gap-3"
-          >
-            <button
-              class="md:hidden visible pr-2"
-              role="navigation"
-              @click="showHamburger = !showHamburger"
-            >
-              <i class="fas fa-bars"></i>
-            </button>
-            <span class="font-bold text-red text-2xl">
-              <a href="/">{{ appTitle }}</a>
-            </span>
-          </div>
-        </div>
-
-        <!-- Collapsable Links (collapse to hamburger menu on small screens) -->
-        <div class="grow h-8 hidden md:block">
-          <ul
-            class="flex flex-row flex-nowrap justify-start items-center gap-6"
-          >
-            <NavBarLink
-              v-for="link in getNavLinks(currentUser.user)"
-              :key="link.url"
-              :to="link.url"
-              :title="link.title"
-            />
-          </ul>
-        </div>
+        <a href="/" class="flex flex-initial items-center space-x-3">
+          <img
+            src="/img/flag-logo.png"
+            alt="logo"
+            class="w-12 h-8 rounded-md shadow-sm shadow-danger"
+          />
+          <span class="font-bold text-red text-2xl">
+            {{ appTitle }}
+          </span>
+        </a>
 
         <!-- Right-Hand Dropdown (always visible) -->
-        <div
-          class="h-8 flex-initial flex flex-row flex-nowrap justify-end items-baseline gap-3 text-right"
-        >
+        <div class="flex items-center space-x-0 md:order-2 md:space-x-3">
           <DarkModeToggle />
+
+          <!-- Login/register links for anonymous users -->
           <ul
             v-if="currentUser.anonymous"
-            class="flex flex-row ml-4 gap-3 justify-end items-baseline"
+            class="hidden md:flex flex-row ml-4 gap-3 justify-end items-baseline"
           >
             <NavBarLink to="/register" title="Register" />
             <li>
-              <FormButton type="primary" @click="toggleLoginForm">
+              <FormButton
+                type="primary"
+                test-id="login-button"
+                @click="toggleLoginForm"
+              >
                 Sign in
               </FormButton>
             </li>
           </ul>
 
-          <NavbarDropdown v-else />
+          <!-- Avatar for authenticated users -->
+          <button
+            v-else
+            id="user-menu-button"
+            v-click-outside="() => (showUserDropdown = false)"
+            data-testid="user-menu-button"
+            class="flex items-center space-x-3 relative h-16"
+            :aria-expanded="showUserDropdown"
+            @click="showUserDropdown = !showUserDropdown"
+          >
+            <span class="sr-only">Open User Menu</span>
+            <UserAvatar
+              class=""
+              :avatar="currentUser.user?.profile?.avatar"
+              :display-name="currentUser.displayName"
+            />
+            <span class="text-lg hidden md:block">
+              {{ currentUser.displayName }}
+            </span>
+            <span class="text-lg hidden md:block">
+              <i class="fas fa-caret-down"></i>
+            </span>
+
+            <!-- User Dropdown Menu -->
+            <Transition name="nav-dropdown">
+              <div
+                v-show="showUserDropdown"
+                id="user-dropdown"
+                data-testid="user-dropdown"
+                class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left"
+              >
+                <a class="w-full p-2 hover:bg-blue-700" href="/profile">
+                  Profile
+                </a>
+                <a class="w-full p-2 hover:bg-blue-700" href="/account">
+                  Account
+                </a>
+                <a class="w-full p-2 hover:bg-blue-700" href="/settings">
+                  Settings
+                </a>
+                <hr />
+                <a
+                  class="w-full p-2 rounded-b-md hover:bg-blue-700"
+                  href="/api/auth/logout"
+                >
+                  Logout
+                </a>
+              </div>
+            </Transition>
+          </button>
+
+          <button
+            v-click-outside="() => (showHamburger = false)"
+            class="inline-flex items-center p-2 w-10 h-10 justify-center rounded-lg md:hidden"
+            data-testid="hamburger-button"
+            aria-controls="navbar-user"
+            :aria-expanded="showHamburger"
+            @click="showHamburger = !showHamburger"
+          >
+            <span class="sr-only">Open Main Menu</span>
+            <span aria-hidden="true">
+              <i class="fas fa-bars"></i>
+            </span>
+          </button>
+        </div>
+
+        <!-- Collapsable Links (collapse to hamburger menu on small screens) -->
+        <div
+          id="navbar-user"
+          :class="`items-center justify-between grow w-full md:w-auto px-0 md:px-4 md:flex md:order-1 fixed top-16 left-0 md:static ${
+            !showHamburger && 'hidden'
+          }`"
+          data-testid="hamburger-menu"
+        >
+          <ul
+            class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md"
+          >
+            <NavBarLink
+              v-for="link in getNavLinks(currentUser.user)"
+              :key="link.url"
+              class="w-full"
+              :to="link.url"
+              :title="link.title"
+            />
+            <hr
+              v-if="currentUser.anonymous"
+              class="block md:hidden my-2 align-middle"
+            />
+            <NavBarLink
+              v-if="currentUser.anonymous"
+              class="block md:hidden w-full"
+              test-id="login-link"
+              to="#"
+              title="Login"
+              @click="toggleLoginForm"
+            />
+            <NavBarLink
+              v-if="currentUser.anonymous"
+              class="block md:hidden w-full"
+              to="/register"
+              title="Register"
+            />
+          </ul>
         </div>
       </div>
     </nav>
-    <NavbarHamburger
-      :visible="showHamburger"
-      :current-user="currentUser.user"
-    />
   </section>
 </template>
 
@@ -81,22 +163,23 @@ import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
 import LoginForm from '../users/login-form.vue';
+import UserAvatar from '../users/user-avatar.vue';
 import DarkModeToggle from './dark-mode-toggle.vue';
-import NavbarHamburger from './nav-bar-hamburger.vue';
 import NavBarLink from './nav-bar-link.vue';
 import { getNavLinks } from './nav-links';
-import NavbarDropdown from './navbar-dropdown.vue';
 
 const currentUser = useCurrentUser();
 
 const showLogin = ref(false);
 const showHamburger = ref(false);
+const showUserDropdown = ref(false);
 const loginForm = ref<InstanceType<typeof LoginForm> | null>();
 const appTitle = computed(() => Config.appTitle);
 
 async function toggleLoginForm() {
   if (!showLogin.value) {
     loginForm.value?.reset(true);
+    showHamburger.value = false;
   }
 
   showLogin.value = !showLogin.value;
@@ -107,3 +190,15 @@ async function toggleLoginForm() {
   }
 }
 </script>
+
+<style scoped>
+.nav-dropdown-leave-active,
+.nav-dropdown-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.nav-dropdown-enter-from,
+.nav-dropdown-leave-to {
+  opacity: 0;
+}
+</style>
