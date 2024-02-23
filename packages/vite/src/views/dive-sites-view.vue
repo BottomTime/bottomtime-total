@@ -161,15 +161,13 @@ async function onLoadMore(): Promise<void> {
 }
 
 onServerPrefetch(async () => {
-  if (ctx) {
-    await oops(async () => {
-      const results = await client.diveSites.searchDiveSites(searchParams);
-      data.value = {
-        sites: results.sites.map((site) => site.toJSON()),
-        totalCount: results.totalCount,
-      };
-      ctx.diveSites = data.value;
-    });
-  }
+  await oops(async () => {
+    const results = await client.diveSites.searchDiveSites(searchParams);
+    data.value = {
+      sites: results.sites.map((site) => site.toJSON()),
+      totalCount: results.totalCount,
+    };
+    if (ctx) ctx.diveSites = data.value;
+  });
 });
 </script>
