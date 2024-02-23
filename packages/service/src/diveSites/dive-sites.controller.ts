@@ -2,9 +2,11 @@ import {
   CreateOrUpdateDiveSiteDTO,
   CreateOrUpdateDiveSiteSchema,
   DiveSiteDTO,
+  DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesParamsSchema,
   SearchDiveSitesResponseDTO,
+  SortOrder,
 } from '@bottomtime/api';
 
 import {
@@ -14,6 +16,7 @@ import {
   Get,
   HttpCode,
   Inject,
+  Logger,
   Post,
   Put,
   Query,
@@ -32,6 +35,8 @@ const DiveSiteIdParam = 'siteId';
 
 @Controller('api/diveSites')
 export class DiveSitesController {
+  private readonly log = new Logger(DiveSitesController.name);
+
   constructor(
     @Inject(DiveSitesService)
     private readonly diveSitesService: DiveSitesService,
@@ -151,6 +156,12 @@ export class DiveSitesController {
     @Query(new ZodValidator(SearchDiveSitesParamsSchema))
     options: SearchDiveSitesParamsDTO,
   ): Promise<SearchDiveSitesResponseDTO> {
+    options.radius = options.radius ?? 50;
+    options.skip = options.skip ?? 0;
+    options.limit = options.limit ?? 50;
+    options.sortBy = options.sortBy ?? DiveSitesSortBy.Rating;
+    options.sortOrder = options.sortOrder ?? SortOrder.Descending;
+
     // The API specification says that the creator parameter should be a username, but the
     // underlying service expects an ID so we need to look up the user before invoking the
     // actual search.
@@ -169,6 +180,7 @@ export class DiveSitesController {
       options.creator = creator.id;
     }
 
+    this.log.debug('Searching dive sites', options);
     const results = await this.diveSitesService.searchDiveSites(options);
     return {
       sites: results.sites.map((site) => site.toJSON()),

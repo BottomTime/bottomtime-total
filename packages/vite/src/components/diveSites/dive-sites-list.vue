@@ -1,17 +1,5 @@
 <template>
-  <!-- Loading spinner -->
-  <div
-    v-if="isLoading"
-    class="text-center text-lg m-6"
-    data-testid="loading-dive=sites"
-  >
-    <span class="mr-2">
-      <i class="fas fa-spinner fa-spin"></i>
-    </span>
-    <span class="italic">Loading...</span>
-  </div>
-
-  <div v-else-if="data.sites.length === 0" class="text-center text-lg m-6">
+  <div v-if="data.sites.length === 0" class="text-center text-lg m-6">
     <span class="mr-2">
       <i class="fas fa-exclamation-circle"></i>
     </span>
@@ -41,12 +29,9 @@ import DiveSitesListItem from './dive-sites-list-item.vue';
 
 type DiveSitesListProps = {
   data: SearchDiveSitesResponseDTO;
-  isLoading?: boolean;
 };
 
-withDefaults(defineProps<DiveSitesListProps>(), {
-  isLoading: false,
-});
+defineProps<DiveSitesListProps>();
 defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
 }>();

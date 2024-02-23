@@ -1,9 +1,12 @@
 import { DiveSiteDTO, SuccinctProfileDTO } from '@bottomtime/api';
-import { DiveSiteData, DiveSiteDocument } from '../schemas/dive-sites.document';
+
+import { Logger } from '@nestjs/common';
+
 import { Model } from 'mongoose';
+
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
 import { UserData } from '../schemas';
-import { Logger } from '@nestjs/common';
+import { DiveSiteData, DiveSiteDocument } from '../schemas/dive-sites.document';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
 export type PopulatedDiveSiteDocument = Omit<DiveSiteDocument, 'creator'> & {
@@ -34,10 +37,6 @@ export class DiveSite {
   }
 
   get creator(): SuccinctProfileDTO {
-    this.log.debug(
-      'Attempting to parse "creator" property of dive site.',
-      this.data.creator,
-    );
     if (typeof this.data.creator === 'string') {
       throw new Error(`DiveSite.creator is not populated ${this.data.creator}`);
     }
@@ -152,7 +151,6 @@ export class DiveSite {
   }
 
   toJSON(): DiveSiteDTO {
-    this.log.debug('Serializing DiveSite instance to JSON.');
     return {
       id: this.id,
       creator: this.creator,
