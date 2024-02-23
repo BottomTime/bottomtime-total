@@ -62,10 +62,10 @@ test.describe('Registration', () => {
     await page.getByLabel('Display name:').fill('Randy Randerson');
     await page.getByTestId('register-submit').click();
 
-    expect(page.getByTestId('username-error')).toContainText(
+    await expect(page.getByTestId('username-error')).toContainText(
       'Username is already taken',
     );
-    expect(page.getByTestId('email-error')).toContainText(
+    await expect(page.getByTestId('email-error')).toContainText(
       'Email address is already in use',
     );
   });
@@ -80,8 +80,8 @@ test.describe('Registration', () => {
     await page.getByTestId('login-submit').click();
 
     // Look for the navbar to be updated to show the user's display name.
-    expect(page.getByTestId('nav-dropdown-button')).toBeVisible();
-    expect(page.getByTestId('nav-dropdown-button')).toHaveText(
+    await expect(page.getByTestId('user-menu-button')).toBeVisible();
+    await expect(page.getByTestId('user-menu-button')).toContainText(
       TestUser.profile!.name!,
     );
   });
@@ -98,8 +98,8 @@ test.describe('Registration', () => {
     await page.getByTestId('login-password').fill('wrong');
     await page.getByTestId('login-submit').click();
 
-    expect(page.getByTestId('toast-login-attempt-failed')).toBeVisible();
-    expect(page.getByTestId('login-password')).toBeFocused();
-    expect(page.getByTestId('login-password')).toBeEmpty();
+    await expect(page.getByTestId('toast-login-attempt-failed')).toBeVisible();
+    await expect(page.getByTestId('login-password')).toBeFocused();
+    await expect(page.getByTestId('login-password')).toBeEmpty();
   });
 });
