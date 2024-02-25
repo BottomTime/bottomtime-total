@@ -15,7 +15,10 @@
   <!-- Dive sites list -->
   <div v-else class="mx-2">
     <!-- Dive site entries -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-4">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-4"
+      data-testid="sites-list-content"
+    >
       <DiveSitesListItem
         v-for="site in data.sites"
         :key="site.id"

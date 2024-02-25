@@ -64,6 +64,7 @@ import SearchDiveSitesForm from '../components/diveSites/search-dive-sites-form.
 import ViewDiveSite from '../components/diveSites/view-dive-site.vue';
 import { Config } from '../config';
 import { useInitialState } from '../initial-state';
+import { useLocation } from '../location';
 import { useOops } from '../oops';
 
 const SortOrderOptions: SelectOption[] = [
@@ -88,6 +89,7 @@ const SortOrderOptions: SelectOption[] = [
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const initialState = useInitialState();
+const location = useLocation();
 const oops = useOops();
 const router = useRouter();
 
@@ -140,7 +142,7 @@ async function onSearch(params: SearchDiveSitesParamsDTO): Promise<void> {
   const newPath = `${
     router.currentRoute.value.path
   }?${client.diveSites.searchQueryString(searchParams)}`;
-  await location.assign(newPath);
+  location.assign(newPath);
 }
 
 async function onLoadMore(): Promise<void> {
