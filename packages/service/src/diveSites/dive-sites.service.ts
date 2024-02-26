@@ -70,8 +70,8 @@ export class DiveSitesService {
       this.DiveSites.find(query)
         .sort(sort)
         .populate<UserData>(CreatorPopulateOptions)
-        .skip(options.skip)
-        .limit(options.limit)
+        .skip(options.skip ?? 0)
+        .limit(options.limit ?? 100)
         .exec(),
       this.DiveSites.countDocuments(query).exec(),
     ]);
