@@ -1,23 +1,4 @@
 import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import {
-  FriendRequestData,
-  FriendRequestDocument,
-  FriendRequestModel,
-  FriendRequestModelName,
-  UserData,
-  UserDocument,
-  UserModel,
-  UserModelName,
-} from '../schemas';
-import { FilterQuery, Model } from 'mongoose';
-import {
   FriendDTO,
   FriendRequestDTO,
   FriendRequestDirection,
@@ -29,13 +10,34 @@ import {
   ProfileVisibility,
   SortOrder,
 } from '@bottomtime/api';
+
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+
+import { FilterQuery, Model } from 'mongoose';
+import { v4 as uuid } from 'uuid';
+
+import {
+  FriendRequestData,
+  FriendRequestDocument,
+  FriendRequestModel,
+  FriendRequestModelName,
+  UserData,
+  UserDocument,
+  UserModel,
+  UserModelName,
+} from '../schemas';
 import {
   FriendData,
   FriendModel,
   FriendModelName,
 } from '../schemas/friends.document';
-import { v4 as uuid } from 'uuid';
-import dayjs from 'dayjs';
 
 // List Friends Types
 export type Friend = FriendDTO;
@@ -59,6 +61,8 @@ const FriendProjection = {
   'profile.location': 1,
   'settings.profileVisibility': 1,
 } as const;
+
+const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
 
 @Injectable()
 export class FriendsService {
@@ -394,7 +398,7 @@ export class FriendsService {
     const friendRequest = new FriendRequestModel({
       _id: uuid(),
       created: new Date(),
-      expires: dayjs().add(14, 'days').toDate(),
+      expires: new Date(Date.now() + TwoWeeksInMilliseconds),
       from,
       to,
     });
@@ -415,7 +419,7 @@ export class FriendsService {
     }
 
     friendRequest.accepted = true;
-    friendRequest.expires = dayjs().add(14, 'days').toDate();
+    friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
 
     await Promise.all([
       friendRequest.save(),
@@ -454,7 +458,7 @@ export class FriendsService {
     }
 
     friendRequest.accepted = false;
-    friendRequest.expires = dayjs().add(14, 'days').toDate();
+    friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
     friendRequest.reason = reason;
     await friendRequest.save();
 

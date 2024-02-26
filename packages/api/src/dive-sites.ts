@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import {
   BooleanString,
   DepthSchema,
@@ -5,7 +7,6 @@ import {
   RatingRangeSchema,
   SortOrder,
 } from './constants';
-import { z } from 'zod';
 import { ProfileSchema, UsernameSchema } from './users';
 
 export enum DiveSitesSortBy {
@@ -62,20 +63,22 @@ export const DiveSiteSchema = CreateOrUpdateDiveSiteSchema.extend({
 });
 export type DiveSiteDTO = z.infer<typeof DiveSiteSchema>;
 
-export const SearchDiveSitesParamsSchema = z.object({
-  query: z.string().trim().max(200).optional(),
-  location: GpsCoordinatesSchema.optional(),
-  radius: z.coerce.number().gt(0).max(500).default(50),
-  freeToDive: BooleanString.optional(),
-  shoreAccess: BooleanString.optional(),
-  rating: RatingRangeSchema.optional(),
-  difficulty: RatingRangeSchema.optional(),
-  creator: UsernameSchema.optional(),
-  sortBy: z.nativeEnum(DiveSitesSortBy).default(DiveSitesSortBy.Rating),
-  sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Descending),
-  skip: z.coerce.number().int().min(0).default(0),
-  limit: z.coerce.number().int().gt(0).max(500).default(50),
-});
+export const SearchDiveSitesParamsSchema = z
+  .object({
+    query: z.string().trim().max(200),
+    location: GpsCoordinatesSchema,
+    radius: z.coerce.number().gt(0).max(500).default(50),
+    freeToDive: BooleanString,
+    shoreAccess: BooleanString,
+    rating: RatingRangeSchema,
+    difficulty: RatingRangeSchema,
+    creator: UsernameSchema,
+    sortBy: z.nativeEnum(DiveSitesSortBy).default(DiveSitesSortBy.Rating),
+    sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Descending),
+    skip: z.coerce.number().int().min(0).default(0),
+    limit: z.coerce.number().int().gt(0).max(500).default(50),
+  })
+  .partial();
 export type SearchDiveSitesParamsDTO = z.infer<
   typeof SearchDiveSitesParamsSchema
 >;

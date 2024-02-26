@@ -1,6 +1,7 @@
 import vue from '@vitejs/plugin-vue';
 
 import { defineConfig, loadEnv } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // Use process.env instead of import.meta.env
 function loadDefine(mode: string): Record<string, string> {
@@ -22,7 +23,12 @@ function loadDefine(mode: string): Record<string, string> {
 export default defineConfig(({ mode }) => {
   const define = loadDefine(mode);
   return {
-    plugins: [vue()],
+    plugins: [
+      vue(),
+      nodePolyfills({
+        include: ['url'],
+      }),
+    ],
     define,
   };
 });

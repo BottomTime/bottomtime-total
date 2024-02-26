@@ -1,36 +1,47 @@
 import {
+  CreateOrUpdateDiveSiteDTO,
+  CreateOrUpdateDiveSiteSchema,
+  DiveSiteDTO,
+  DiveSitesSortBy,
+  SearchDiveSitesParamsDTO,
+  SearchDiveSitesParamsSchema,
+  SearchDiveSitesResponseDTO,
+  SortOrder,
+} from '@bottomtime/api';
+
+import {
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
+  Inject,
+  Logger,
   Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { DiveSitesService } from './dive-sites.service';
+
+import { AssertAuth, CurrentUser } from '../auth';
+import { User, UsersService } from '../users';
+import { ZodValidator } from '../zod-validator';
+import { AssertDiveSiteWrite } from './assert-dive-site-write.guard';
 import { AssertDiveSite, TargetDiveSite } from './assert-dive-site.guard';
 import { DiveSite } from './dive-site';
-import { ZodValidator } from '../zod-validator';
-import {
-  CreateOrUpdateDiveSiteDTO,
-  CreateOrUpdateDiveSiteSchema,
-  DiveSiteDTO,
-  SearchDiveSitesParamsDTO,
-  SearchDiveSitesParamsSchema,
-  SearchDiveSitesResponseDTO,
-} from '@bottomtime/api';
-import { AssertAuth, CurrentUser } from '../auth';
-import { AssertDiveSiteWrite } from './assert-dive-site-write.guard';
-import { User, UsersService } from '../users';
+import { DiveSitesService } from './dive-sites.service';
 
 const DiveSiteIdParam = 'siteId';
 
-@Controller('diveSites')
+@Controller('api/diveSites')
 export class DiveSitesController {
+  private readonly log = new Logger(DiveSitesController.name);
+
   constructor(
+    @Inject(DiveSitesService)
     private readonly diveSitesService: DiveSitesService,
+
+    @Inject(UsersService)
     private readonly usersService: UsersService,
   ) {}
 
@@ -145,6 +156,12 @@ export class DiveSitesController {
     @Query(new ZodValidator(SearchDiveSitesParamsSchema))
     options: SearchDiveSitesParamsDTO,
   ): Promise<SearchDiveSitesResponseDTO> {
+    options.radius = options.radius ?? 50;
+    options.skip = options.skip ?? 0;
+    options.limit = options.limit ?? 50;
+    options.sortBy = options.sortBy ?? DiveSitesSortBy.Rating;
+    options.sortOrder = options.sortOrder ?? SortOrder.Descending;
+
     // The API specification says that the creator parameter should be a username, but the
     // underlying service expects an ID so we need to look up the user before invoking the
     // actual search.
@@ -163,6 +180,7 @@ export class DiveSitesController {
       options.creator = creator.id;
     }
 
+    this.log.debug('Searching dive sites', options);
     const results = await this.diveSitesService.searchDiveSites(options);
     return {
       sites: results.sites.map((site) => site.toJSON()),

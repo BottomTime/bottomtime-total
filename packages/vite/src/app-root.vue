@@ -30,7 +30,6 @@ const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const oops = useOops();
 
 onServerPrefetch(async () => {
-  await client.users.getCurrentUser();
   const user = await oops(async () => {
     const user = await client.users.getCurrentUser();
     return user?.toJSON() ?? null;

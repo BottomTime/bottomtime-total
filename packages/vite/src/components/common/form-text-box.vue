@@ -1,20 +1,20 @@
 <template>
-  <div class="relative">
+  <div class="flex">
     <input
       :id="controlId"
       ref="input"
       v-model="model"
       :type="password ? 'password' : 'text'"
-      :class="`pl-2 pr-2 pt-1 pb-1 w-full ${selectStyle} border-2 border-${highlightColour} rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 dark:text-grey-950 caret-${highlightColour}`"
+      :class="inputClasses"
       :maxlength="maxlength"
       :placeholder="placeholder"
       :data-testid="testId"
       @keyup.enter="$emit('enter')"
       @keyup.esc="$emit('esc')"
     />
-    <div class="absolute right-2 top-1.5">
+    <span v-if="showRight" :class="rightSlotClasses">
       <slot name="right"></slot>
-    </div>
+    </span>
   </div>
 </template>
 
@@ -29,6 +29,8 @@ type FormTextBoxProps = {
   password?: boolean;
   placeholder?: string;
   selectOnFocus?: boolean;
+  showRight?: boolean;
+  showLeft?: boolean;
   testId?: string;
 };
 
@@ -37,13 +39,35 @@ const props = withDefaults(defineProps<FormTextBoxProps>(), {
   invalid: false,
   password: false,
   selectOnFocus: false,
+  showRight: false,
+  showLeft: false,
 });
 
-const model = defineModel<string>();
+const model = defineModel<string | number>();
 const input = ref<HTMLInputElement | null>();
 
-const highlightColour = computed(() => (props.invalid ? 'danger' : 'grey-600'));
-const selectStyle = computed(() => (props.selectOnFocus ? 'select-all' : ''));
+const inputClasses = computed(() => {
+  const highlightColour = props.invalid ? 'danger' : 'grey-600';
+  const selectStyle = props.selectOnFocus ? 'select-all' : '';
+  let roundingStyle: string;
+
+  if (props.showLeft && props.showRight) {
+    roundingStyle = 'rounded-md-0';
+  } else if (props.showLeft) {
+    roundingStyle = 'rounded-e-lg';
+  } else if (props.showRight) {
+    roundingStyle = 'rounded-s-lg';
+  } else {
+    roundingStyle = 'rounded-lg';
+  }
+
+  return `pl-2 pr-2 pt-1 pb-1 w-full appearance-none ${selectStyle} bg-gray-200 dark:bg-grey-300 border border-${highlightColour} focus:ring-${highlightColour} ${roundingStyle} text-black placeholder-grey-700`;
+});
+
+const rightSlotClasses = computed(() => {
+  const highlightColour = props.invalid ? 'danger' : 'grey-600';
+  return `inline-flex items-center px-3 text-sm bg-gray-200 dark:bg-grey-300 text-black border border-${highlightColour} rounded-s-0 rounded-e-lg`;
+});
 
 defineEmits<{
   (e: 'enter'): void;

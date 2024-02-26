@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 import mongoose from 'mongoose';
 
-import { UserModel } from '../../src/schemas';
-import { fakeUser } from './fakes';
+import { DiveSiteModel, UserModel } from '../../src/schemas';
+import { fakeDiveSite, fakeUser } from './fakes';
 
 export type EntityCounts = {
+  diveSites: number;
   users: number;
 };
 
@@ -48,13 +49,10 @@ async function batch<T>(
  * Create a bunch of users and return their IDs.
  * @param count The number of users to insert.
  */
-async function createUsers(count: number): Promise<string[]> {
-  const ids: string[] = [];
-
+async function createUsers(count: number): Promise<void> {
   await batch(
     async () => {
       const data = fakeUser();
-      ids.push(data._id);
       return data;
     },
     async (users) => {
@@ -62,32 +60,20 @@ async function createUsers(count: number): Promise<string[]> {
     },
     count,
   );
-
-  return ids;
 }
 
-// async function createDiveSites(
-//   mongoClient: MongoClient,
-//   userIds: string[],
-//   count: number,
-// ) {
-//   const sitesCollection = mongoClient
-//     .db()
-//     .collection<DiveSiteDocument>(Collections.DiveSites);
-
-//   await batch(
-//     () => {
-//       return fakeDiveSite({
-//         creator: faker.helpers.arrayElement(userIds),
-//       });
-//     },
-//     async (sites) => {
-//       await sitesCollection.insertMany(sites);
-//     },
-//     count,
-//     100,
-//   );
-// }
+async function createDiveSites(userIds: string[], count: number) {
+  await batch(
+    () => {
+      const data = fakeDiveSite(userIds);
+      return data;
+    },
+    async (sites) => {
+      await DiveSiteModel.insertMany(sites);
+    },
+    count,
+  );
+}
 
 export async function createTestData(mongoUri: string, counts: EntityCounts) {
   try {
@@ -96,14 +82,21 @@ export async function createTestData(mongoUri: string, counts: EntityCounts) {
 
     console.log('Seeding database (this might take a few minutes!)...');
 
-    let userIds: string[] = [];
     if (counts.users > 0) {
       console.log(`Creating ${counts.users} users...`);
-      userIds = await createUsers(counts.users);
+      await createUsers(counts.users);
     }
 
-    // console.log('Creating 1000 dive sites...');
-    // await createDiveSites(mongoClient, userIds, 1000);
+    const userIdQuery = await UserModel.find(
+      {},
+      {
+        _id: 1,
+      },
+    ).limit(1000);
+    const userIds = userIdQuery.map((user) => user._id);
+
+    console.log(`Creating ${counts.diveSites} dive sites...`);
+    await createDiveSites(userIds, counts.diveSites);
 
     console.log('Finished inserting test data');
   } catch (error) {

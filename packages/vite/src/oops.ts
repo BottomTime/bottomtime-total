@@ -4,6 +4,7 @@ import { isAxiosError } from 'axios';
 import { useRouter } from 'vue-router';
 
 import { Toast, ToastType } from './common';
+import { Config } from './config';
 import { useCurrentUser, useToasts } from './store';
 
 export function isErrorResponse(e: unknown): e is ErrorResponseDTO {
@@ -25,6 +26,9 @@ async function oops<T>(
   try {
     return await f();
   } catch (e) {
+    /* eslint-disable-next-line no-console */
+    if (!Config.isProduction) console.error(e);
+
     if (isAxiosError(e)) {
       if (e.response) {
         // Server responded with an error

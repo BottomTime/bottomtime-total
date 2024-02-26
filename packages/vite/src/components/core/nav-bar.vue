@@ -124,9 +124,8 @@
             class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md"
           >
             <NavBarLink
-              v-for="link in getNavLinks(currentUser.user)"
+              v-for="link in navLinks.filter((l) => l.visible)"
               :key="link.url"
-              class="w-full"
               :to="link.url"
               :title="link.title"
             />
@@ -136,7 +135,7 @@
             />
             <NavBarLink
               v-if="currentUser.anonymous"
-              class="block md:hidden w-full"
+              class="block md:hidden"
               test-id="login-link"
               to="#"
               title="Login"
@@ -144,7 +143,7 @@
             />
             <NavBarLink
               v-if="currentUser.anonymous"
-              class="block md:hidden w-full"
+              class="block md:hidden"
               to="/register"
               title="Register"
             />
@@ -156,6 +155,8 @@
 </template>
 
 <script setup lang="ts">
+import { UserRole } from '@bottomtime/api';
+
 import { computed, nextTick, ref } from 'vue';
 
 import { Config } from '../../config';
@@ -166,7 +167,12 @@ import LoginForm from '../users/login-form.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import DarkModeToggle from './dark-mode-toggle.vue';
 import NavBarLink from './nav-bar-link.vue';
-import { getNavLinks } from './nav-links';
+
+type NavLink = {
+  title: string;
+  url: string;
+  visible: boolean;
+};
 
 const currentUser = useCurrentUser();
 
@@ -175,6 +181,25 @@ const showHamburger = ref(false);
 const showUserDropdown = ref(false);
 const loginForm = ref<InstanceType<typeof LoginForm> | null>();
 const appTitle = computed(() => Config.appTitle);
+const navLinks = computed<NavLink[]>(() => {
+  return [
+    {
+      title: 'Home',
+      url: '/',
+      visible: true,
+    },
+    {
+      title: 'Dive Sites',
+      url: '/diveSites',
+      visible: true,
+    },
+    {
+      title: 'Admin',
+      url: '/admin/users',
+      visible: currentUser.user?.role === UserRole.Admin,
+    },
+  ];
+});
 
 async function toggleLoginForm() {
   if (!showLogin.value) {

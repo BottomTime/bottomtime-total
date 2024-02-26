@@ -1,16 +1,27 @@
 <template>
-  <select
-    :id="controlId"
-    ref="selectInput"
-    v-model="value"
-    :class="`p-1 border-2 outline-offset-1 ${width} caret-${highlightColour} rounded-md shadow-sm shadow-blue-400 dark:shadow-blue-700 dark:text-grey-950`"
-    :data-testid="testId"
-    :name="controlId"
-  >
-    <option v-for="option in options" :key="option.value" :value="option.value">
-      {{ option.label ?? option.value }}
-    </option>
-  </select>
+  <div class="relative">
+    <span
+      class="absolute bottom-2 right-2 flex items-center text-lg pointer-events-none text-grey-500"
+    >
+      <i class="fas fa-caret-down"></i>
+    </span>
+    <select
+      :id="controlId"
+      ref="selectInput"
+      v-model="value"
+      :class="classes"
+      :data-testid="testId"
+      :name="controlId"
+    >
+      <option
+        v-for="option in options"
+        :key="option.value"
+        :value="option.value"
+      >
+        {{ option.label ?? option.value }}
+      </option>
+    </select>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -34,8 +45,11 @@ const props = withDefaults(defineProps<FormSelectProps>(), {
   stretch: false,
 });
 const selectInput = ref<HTMLSelectElement | null>();
-const highlightColour = computed(() => (props.invalid ? 'danger' : 'grey-600'));
-const width = computed(() => (props.stretch ? 'w-full' : 'w-auto'));
+const classes = computed(() => {
+  const width = props.stretch ? 'w-full' : 'w-auto';
+  const highlightColour = props.invalid ? 'danger' : 'grey-600';
+  return `p-1 pl-2 appearance-none border border-${highlightColour} focus:ring-${highlightColour} ${width} block pe-10 rounded-lg bg-gray-200 dark:bg-grey-300 text-black`;
+});
 
 function focus() {
   selectInput.value?.focus();

@@ -1,6 +1,6 @@
 <template>
   <TransitionGroup
-    class="absolute top-20 right-8 z-50 w-72 flex flex-col-reverse gap-4"
+    class="fixed top-20 right-8 z-50 w-72 flex flex-col-reverse gap-4"
     name="toasts"
     tag="ul"
   >
@@ -16,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import SnackBarToast from './snack-bar-toast.vue';
 import { useToasts } from '../../store';
+import SnackBarToast from './snack-bar-toast.vue';
 
 const store = useToasts();
 

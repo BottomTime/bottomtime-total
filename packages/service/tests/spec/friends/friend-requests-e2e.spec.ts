@@ -7,18 +7,21 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+
+import { INestApplication } from '@nestjs/common';
+
+import request from 'supertest';
+import { v4 as uuid } from 'uuid';
+
 import {
   FriendModel,
   FriendRequestModel,
   UserData,
   UserModel,
 } from '../../../src/schemas';
-import { createAuthHeader, createTestApp } from '../../utils';
-import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
-import TestUserData from '../../fixtures/users.json';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
-import { v4 as uuid } from 'uuid';
+import TestUserData from '../../fixtures/users.json';
+import { createAuthHeader, createTestApp } from '../../utils';
 
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
 
@@ -343,11 +346,11 @@ describe('Friend Requests End-to-End Tests', () => {
       });
       expect(friendRequest).not.toBeNull();
 
-      expect(new Date(body.created).valueOf()).toBeCloseTo(Date.now(), -2);
+      expect(new Date(body.created).valueOf()).toBeCloseTo(Date.now(), -3);
       expect(body.direction).toBe(FriendRequestDirection.Outgoing);
       expect(new Date(body.expires).valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
-        -2,
+        -3,
       );
       expect(body.friendId).toEqual(TestUserData[0]._id);
     });

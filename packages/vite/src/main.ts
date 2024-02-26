@@ -8,6 +8,7 @@ import { Router } from 'vue-router';
 import AppComponent from './app-root.vue';
 import { clickOutside } from './click-outside';
 import { ApiClient, ApiClientKey, ApiClientOptions } from './client';
+import { LocationKey, MockLocation } from './location';
 import { router } from './router';
 
 dayjs.extend(relativeTime);
@@ -28,7 +29,11 @@ export function createApp(clientOptions?: ApiClientOptions): {
     .directive('click-outside', clickOutside)
     .use(router)
     .use(pinia)
-    .provide(ApiClientKey, client);
+    .provide(ApiClientKey, client)
+    .provide(
+      LocationKey,
+      typeof window === 'undefined' ? new MockLocation() : window.location,
+    );
 
   return { app, router };
 }

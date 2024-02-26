@@ -19,6 +19,7 @@ import { computed } from 'vue';
 type FormButtonProps = {
   disabled?: boolean;
   isLoading?: boolean;
+  size?: 'sm' | 'md' | 'lg';
   stretch?: boolean;
   submit?: boolean;
   testId?: string;
@@ -28,14 +29,14 @@ type FormButtonProps = {
 const props = withDefaults(defineProps<FormButtonProps>(), {
   disabled: false,
   isLoading: false,
+  size: 'sm',
   stretch: false,
   submit: false,
   type: 'normal',
 });
 
 const classes = computed(() => {
-  const baseButton =
-    'text-black p-2 m-0 text-sm rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800';
+  const baseButton = `text-black p-2 m-0 text-${props.size} rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800`;
   const baseButtonWithGradient = `${baseButton} bg-gradient-to-t`;
   let classes: string;
 
@@ -45,7 +46,7 @@ const classes = computed(() => {
       break;
 
     case 'link':
-      classes = 'text-link hover:text-link-hover pt-2 pb-2 mt-1 mb-1 text-sm';
+      classes = `text-link hover:text-link-hover pt-2 pb-2 mt-1 mb-1 text-${props.size}`;
       break;
 
     case 'danger':

@@ -10,6 +10,7 @@ import {
 import { faker } from '@faker-js/faker';
 
 import dayjs from 'dayjs';
+import { Types } from 'mongoose';
 
 import { UserData, UserDocument, UserModel } from '../../../src/schemas';
 
@@ -46,7 +47,11 @@ export function fakeUser(): UserDocument {
       avatar: faker.internet.avatar(),
       bio: faker.lorem.paragraph(),
       birthdate: dayjs(faker.date.past(50)).format('YYYY-MM-DD'),
-      certifications: [],
+      certifications: new Types.DocumentArray<{
+        agency: string;
+        course: string;
+        date: string | null | undefined;
+      }>([]),
       name: `${firstName} ${lastName}`,
       location: `${faker.address.city()}, ${faker.address.stateAbbr()}, ${faker.address.countryCode()}`,
       experienceLevel: faker.helpers.arrayElement([
