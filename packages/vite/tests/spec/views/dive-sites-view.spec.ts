@@ -4,6 +4,7 @@ import {
 } from '@bottomtime/api';
 
 import { ApiClient, ApiClientKey, DiveSite } from '@/client';
+import DiveSitesListItem from '@/components/diveSites/dive-sites-list-item.vue';
 import { LocationKey, MockLocation } from '@/location';
 import DiveSitesView from '@/views/dive-sites-view.vue';
 import {
@@ -30,13 +31,6 @@ describe('Dive Sites View', () => {
 
   beforeAll(() => {
     searchResults = SearchDiveSitesResponseSchema.parse(SearchResults);
-    window.__INITIAL_STATE__ = {
-      currentUser: null,
-      diveSites: {
-        sites: searchResults.sites.slice(0, 10),
-        totalCount: searchResults.totalCount,
-      },
-    };
     client = new ApiClient();
     router = createRouter([
       {
@@ -49,6 +43,13 @@ describe('Dive Sites View', () => {
 
   beforeEach(async () => {
     await router.push('/diveSites');
+    window.__INITIAL_STATE__ = {
+      currentUser: null,
+      diveSites: {
+        sites: searchResults.sites.slice(0, 10),
+        totalCount: searchResults.totalCount,
+      },
+    };
     pinia = createPinia();
     location = new MockLocation('http://localhost/diveSites');
     opts = {
@@ -173,5 +174,66 @@ describe('Dive Sites View', () => {
     expect(spy).toHaveBeenCalledWith(
       '/diveSites?query=cove&freeToDive=true&shoreAccess=false&difficulty=1%2C3.5&rating=3%2C5&location=24.99129899138199%2C-76.36965622408646&radius=150',
     );
+  });
+
+  it('will load more results upon request', async () => {
+    const spy = jest
+      .spyOn(client.diveSites, 'searchDiveSites')
+      .mockResolvedValue({
+        sites: searchResults.sites
+          .slice(10, 20)
+          .map((site) => new DiveSite(client.axios, site)),
+        totalCount: searchResults.totalCount,
+      });
+    const wrapper = mount(DiveSitesView, opts);
+
+    await wrapper.get('[data-testid="load-more"]').trigger('click');
+    await flushPromises();
+
+    const items = wrapper.findAllComponents(DiveSitesListItem);
+    expect(items).toHaveLength(20);
+
+    items.forEach((item, index) => {
+      const site = searchResults.sites[index];
+      expect(item.props('site')).toEqual(site);
+    });
+    expect(spy).toBeCalledWith({ skip: 10 });
+  });
+
+  it('will load more results building on the previous query', async () => {
+    await router.push(
+      '/diveSites?query=cove&freeToDive=true&shoreAccess=false&difficulty=1%2C3.5&rating=3%2C5&location=24.99129899138199%2C-76.36965622408646&radius=150&limit=10',
+    );
+    const spy = jest
+      .spyOn(client.diveSites, 'searchDiveSites')
+      .mockResolvedValue({
+        sites: searchResults.sites
+          .slice(10, 20)
+          .map((site) => new DiveSite(client.axios, site)),
+        totalCount: searchResults.totalCount,
+      });
+    const wrapper = mount(DiveSitesView, opts);
+
+    await wrapper.get('[data-testid="load-more"]').trigger('click');
+    await flushPromises();
+
+    const items = wrapper.findAllComponents(DiveSitesListItem);
+    expect(spy).toBeCalledWith({
+      query: 'cove',
+      location: { lat: 24.99129899138199, lon: -76.36965622408646 },
+      radius: 150,
+      freeToDive: true,
+      shoreAccess: false,
+      rating: { min: 3, max: 5 },
+      difficulty: { min: 1, max: 3.5 },
+      limit: 10,
+      skip: 10,
+    });
+    expect(items).toHaveLength(20);
+
+    items.forEach((item, index) => {
+      const site = searchResults.sites[index];
+      expect(item.props('site')).toEqual(site);
+    });
   });
 });
