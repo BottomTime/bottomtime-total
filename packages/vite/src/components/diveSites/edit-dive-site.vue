@@ -25,13 +25,20 @@
       <div class="col-span-1 lg:col-span-3">
         <TextHeading>Site Info</TextHeading>
 
-        <FormField label="Name" control-id="name" required>
+        <FormField
+          label="Name"
+          control-id="name"
+          required
+          :invalid="v$.name.$error"
+          :error="v$.name.$errors[0]?.$message"
+        >
           <FormTextBox
             v-model.trim="state.name"
             control-id="name"
             test-id="name"
             :maxlength="200"
             placeholder="Name of the dive site"
+            :invalid="v$.name.$error"
             autofocus
           />
         </FormField>
@@ -46,13 +53,19 @@
           />
         </FormField>
 
-        <FormField label="Depth" control-id="depth">
+        <FormField
+          label="Depth"
+          control-id="depth"
+          :invalid="v$.depth.$error"
+          :error="v$.depth.$errors[0]?.$message"
+        >
           <div class="flex flex-wrap gap-3">
             <FormTextBox
-              v-model.number="state.depth.depth"
+              v-model.trim="state.depth.depth"
               class="w-32"
               control-id="depth"
               test-id="depth"
+              :invalid="v$.depth.$error"
               :maxlength="6"
               :disabled="state.depth.bottomless"
             />
@@ -147,32 +160,63 @@
       </div>
 
       <FormBox class="col-span-1 lg:col-span-2 flex flex-col gap-3">
-        <TextHeading>Location</TextHeading>
-        <FormTextBox
-          v-model.trim="state.location"
+        <FormField
+          label="Location"
           control-id="location"
-          test-id="location"
-          :maxlength="200"
-          placeholder="Nearest city or landmark"
+          :invalid="v$.location.$error"
+          :error="v$.location.$errors[0]?.$message"
+          :responsive="false"
+          required
+        >
+          <FormTextBox
+            v-model.trim="state.location"
+            control-id="location"
+            test-id="location"
+            :maxlength="200"
+            :invalid="v$.location.$error"
+            placeholder="Nearest city or landmark"
+          />
+        </FormField>
+
+        <GoogleMap
+          :location="gps"
+          :disabled="isSaving"
+          @location-changed="onLocationChanged"
         />
-        <GoogleMap :location="gps" @location-changed="onLocationChanged" />
+
         <div class="flex flex-nowrap px-2 items-baseline gap-1">
           <label class="font-bold text-right">Lat:</label>
           <FormTextBox
-            v-model.number="state.gps.lat"
+            v-model.trim="state.gps.lat"
             control-id="gps-lat"
             test-id="gps-lat"
             :maxlength="10"
+            :invalid="v$.gps.lat.$error"
           />
+
           <div class="grow"></div>
+
           <label class="font-bold text-right">Lon:</label>
           <FormTextBox
-            v-model.number="state.gps.lon"
+            v-model.trim="state.gps.lon"
             control-id="gps-lon"
             test-id="gps-lon"
             :maxlength="10"
+            :invalid="v$.gps.lon.$error"
           />
         </div>
+
+        <ul
+          v-if="v$.gps.lat.$error || v$.gps.lon.$error"
+          class="text-danger text-sm list-disc list-inside ml-10"
+        >
+          <li v-if="v$.gps.lat.$error">
+            {{ v$.gps.lat.$errors[0]?.$message }}
+          </li>
+          <li v-if="v$.gps.lon.$error">
+            {{ v$.gps.lon.$errors[0]?.$message }}
+          </li>
+        </ul>
 
         <FormField
           label="Directions"
@@ -201,6 +245,7 @@
       >
         Save Changes
       </FormButton>
+
       <FormButton
         control-id="cancel-save-site"
         test-id="cancel-save-site"
@@ -215,6 +260,9 @@
 
 <script lang="ts" setup>
 import { DepthUnit, DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
+
+import { useVuelidate } from '@vuelidate/core';
+import { helpers, required, requiredIf } from '@vuelidate/validators';
 
 import { computed, reactive, ref } from 'vue';
 
@@ -242,15 +290,15 @@ type EditDiveSiteFormState = {
   name: string;
   description: string;
   depth: {
-    depth: string | number;
+    depth: string;
     unit: DepthUnit;
     bottomless: boolean;
   };
   location: string;
   directions: string;
   gps: {
-    lat: string | number;
-    lon: string | number;
+    lat: string;
+    lon: string;
   };
   freeToDive: string;
   shoreAccess: string;
@@ -286,12 +334,64 @@ const emit = defineEmits<{
   (e: 'site-updated', site: DiveSiteDTO): void;
 }>();
 
+const v$ = useVuelidate(
+  {
+    name: { required: helpers.withMessage('Name is required', required) },
+    depth: {
+      depth: {
+        minValue: helpers.withMessage(
+          'Depth must be a positive value',
+          (value: string) => validateNumber(value, 0),
+        ),
+      },
+    },
+    location: {
+      required: helpers.withMessage('Location is required', required),
+    },
+    gps: {
+      lat: {
+        required: helpers.withMessage(
+          'Latitude is required if longitude is provided',
+          requiredIf(() => !!state.gps.lon),
+        ),
+        valid: helpers.withMessage(
+          'Latitude must be a number between -90 and 90',
+          (value: string) => validateNumber(value, -90, 90),
+        ),
+      },
+      lon: {
+        required: helpers.withMessage(
+          'Longitude is required if latitude is provided',
+          requiredIf(() => !!state.gps.lat),
+        ),
+        valid: helpers.withMessage(
+          'Longitude must be a number between -180 and 180',
+          (value: string) => validateNumber(value, -180, 180),
+        ),
+      },
+    },
+  },
+  state,
+);
+
+function validateNumber(value: string, min?: number, max?: number): boolean {
+  if (value === '') return true;
+
+  const parsed = parseFloat(value);
+  if (isNaN(parsed)) return false;
+
+  if (typeof min === 'number' && parsed < min) return false;
+  if (typeof max === 'number' && parsed > max) return false;
+
+  return true;
+}
+
 function loadFromProps(): EditDiveSiteFormState {
   return {
     name: props.site.name,
     description: props.site.description || '',
     depth: {
-      depth: props.site.depth?.depth || '',
+      depth: props.site.depth?.depth?.toString() || '',
       unit:
         props.site.depth?.unit ||
         currentUser.user?.settings.depthUnit ||
@@ -300,35 +400,41 @@ function loadFromProps(): EditDiveSiteFormState {
     },
     location: props.site.location,
     directions: props.site.directions || '',
-    gps: {
-      lat: props.site.gps?.lat || '',
-      lon: props.site.gps?.lon || '',
-    },
+    gps: props.site.gps
+      ? {
+          lat: props.site.gps.lat.toString(),
+          lon: props.site.gps.lon.toString(),
+        }
+      : { lat: '', lon: '' },
     freeToDive: props.site.freeToDive?.toString() || '',
     shoreAccess: props.site.shoreAccess?.toString() || '',
   };
 }
 
 function onLocationChanged(location: GpsCoordinates) {
-  state.gps.lat = location.lat;
-  state.gps.lon = location.lon;
+  state.gps.lat = location.lat.toString();
+  state.gps.lon = location.lon.toString();
 }
 
 async function onSave(): Promise<void> {
+  const isValid = await v$.value.$validate();
+  if (!isValid) return;
+
   isSaving.value = true;
 
   await oops(async () => {
+    const depth = parseFloat(state.depth.depth);
+
     const dto = client.diveSites.wrapDTO(props.site);
     dto.name = state.name;
     dto.description = state.description || undefined;
-    dto.depth =
-      typeof state.depth.depth === 'number'
-        ? {
-            depth: state.depth.depth,
-            unit: state.depth.unit,
-            // bottomless: state.depth.bottomless,
-          }
-        : undefined;
+    dto.depth = isNaN(depth)
+      ? undefined
+      : {
+          depth,
+          unit: state.depth.unit,
+          // bottomless: state.depth.bottomless,
+        };
     dto.location = state.location;
     dto.directions = state.directions || undefined;
     dto.gps = gps.value ?? undefined;
@@ -361,6 +467,7 @@ function onCancelDiscard(): void {
 function onConfirmDiscard(): void {
   const newState = loadFromProps();
   Object.assign(state, newState);
+  v$.value.$reset();
   showConfirmCancelDialog.value = false;
 }
 </script>
