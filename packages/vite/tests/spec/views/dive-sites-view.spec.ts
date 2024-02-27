@@ -14,11 +14,15 @@ import {
   renderToString,
 } from '@vue/test-utils';
 
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { createRouter } from '../../fixtures/create-router';
 import SearchResults from '../../fixtures/dive-sites-search-results.json';
+
+dayjs.extend(relativeTime);
 
 describe('Dive Sites View', () => {
   let searchResults: SearchDiveSitesResponseDTO;

@@ -1,21 +1,6 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-    <div class="">
-      <FormField label="Created by">
-        <a href="#" class="flex space-x-2 items-center">
-          <UserAvatar
-            size="x-small"
-            :avatar="site.creator.avatar"
-            :display-name="site.creator.name || site.creator.username"
-          />
-          <span>{{ site.creator.name || `@${site.creator.username}` }}</span>
-        </a>
-      </FormField>
-
-      <FormField label="Created on">
-        <span>{{ dayjs(site.createdOn).fromNow() }}</span>
-      </FormField>
-
+  <div :class="`grid grid-cols-1 ${columns ? 'lg:grid-cols-2 ' : ''}gap-3`">
+    <div>
       <FormField v-if="site.averageRating" label="Average rating">
         <StarRating :rating="site.averageRating" />
       </FormField>
@@ -48,18 +33,47 @@
       </FormField>
     </div>
 
-    <div v-if="site.description" class="">
-      <TextHeading>Description</TextHeading>
-      <p>{{ site.description }}</p>
+    <div class="space-y-3">
+      <TextHeading>Location</TextHeading>
+      <div class="flex gap-2 items-baseline">
+        <p class="text-lg">{{ site.location }}</p>
+        <p class="ml-2">
+          <span class="mr-1 text-danger">
+            <i class="fas fa-map-marker-alt fa-sm"></i>
+          </span>
+          <span v-if="site.gps">{{ site.gps.lat }}, {{ site.gps.lon }}</span>
+        </p>
+      </div>
+      <div v-if="site.gps" class="mx-auto">
+        <GoogleMap :location="site.gps" />
+      </div>
     </div>
 
-    <div class="col-span-2 lg:col-span-1">
-      <TextHeading>Location</TextHeading>
-      <p class="font-bold">{{ site.location }}</p>
-      <div v-if="site.gps">
-        <GoogleMap :location="site.gps" />
-        <FormField label="Coordinates" :responsive="false">
-          <span>{{ site.gps.lat }}, {{ site.gps.lon }}</span>
+    <div v-if="site.description || site.directions" class="space-y-3">
+      <div v-if="site.directions">
+        <TextHeading>Directions</TextHeading>
+        <p>{{ site.directions }}</p>
+      </div>
+
+      <div v-if="site.description">
+        <TextHeading>Description</TextHeading>
+        <p>{{ site.description }}</p>
+      </div>
+
+      <div class="flex justify-evenly gap-6">
+        <FormField label="Created by" :responsive="false">
+          <a href="#" class="flex space-x-2 items-center">
+            <UserAvatar
+              size="x-small"
+              :avatar="site.creator.avatar"
+              :display-name="site.creator.name || site.creator.username"
+            />
+            <span>{{ site.creator.name || `@${site.creator.username}` }}</span>
+          </a>
+        </FormField>
+
+        <FormField label="Created" :responsive="false">
+          <span>{{ dayjs(site.createdOn).fromNow() }}</span>
         </FormField>
       </div>
     </div>
@@ -70,7 +84,7 @@
 import { DiveSiteDTO } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
-import 'dayjs/plugin/relativeTime';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { computed } from 'vue';
 
 import DepthText from '../common/depth-text.vue';
@@ -80,11 +94,16 @@ import StarRating from '../common/star-rating.vue';
 import TextHeading from '../common/text-heading.vue';
 import UserAvatar from '../users/user-avatar.vue';
 
+dayjs.extend(relativeTime);
+
 type ViewDiveSiteProps = {
+  columns?: boolean;
   site: DiveSiteDTO;
 };
 
-const props = defineProps<ViewDiveSiteProps>();
+const props = withDefaults(defineProps<ViewDiveSiteProps>(), {
+  columns: true,
+});
 
 const freeToDive = computed(() => {
   if (props.site.freeToDive === true) {
