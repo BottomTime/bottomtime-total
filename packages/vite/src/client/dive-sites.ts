@@ -11,6 +11,12 @@ import { DiveSite } from '.';
 export class DiveSitesApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
 
+  async getDiveSite(id: string): Promise<DiveSite> {
+    const url = `/api/diveSites/${id}`;
+    const { data } = await this.apiClient.get(url);
+    return new DiveSite(this.apiClient, DiveSiteSchema.parse(data));
+  }
+
   searchQueryString(params: SearchDiveSitesParamsDTO = {}): string {
     const query = new URLSearchParams();
 

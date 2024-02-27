@@ -15,7 +15,7 @@ import { computed } from 'vue';
 type UserAvatarProps = {
   avatar?: string;
   displayName: string;
-  size?: 'small' | 'medium' | 'large' | 'x-large';
+  size?: 'x-small' | 'small' | 'medium' | 'large' | 'x-large';
   testId?: string;
 };
 
@@ -37,6 +37,9 @@ const size = computed(() => {
 
     case 'medium':
       return '64px';
+
+    case 'x-small':
+      return '24px';
 
     case 'small':
     default:

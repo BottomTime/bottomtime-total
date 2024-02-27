@@ -5,7 +5,7 @@
     :full-screen="`/diveSites/${selectedSite?.id}`"
     @close="selectedSite = null"
   >
-    <ViewDiveSite v-if="selectedSite" :site="selectedSite" />
+    <ViewDiveSite v-if="selectedSite" :site="selectedSite" :columns="false" />
   </DrawerPanel>
 
   <PageTitle title="Dive Sites" />

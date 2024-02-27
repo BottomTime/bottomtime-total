@@ -1,16 +1,21 @@
 import {
   CanActivate,
   ExecutionContext,
+  Inject,
   Injectable,
   NotFoundException,
   createParamDecorator,
 } from '@nestjs/common';
+
 import { DiveSite } from './dive-site';
 import { DiveSitesService } from './dive-sites.service';
 
 @Injectable()
 export class AssertDiveSite implements CanActivate {
-  constructor(private readonly service: DiveSitesService) {}
+  constructor(
+    @Inject(DiveSitesService)
+    private readonly service: DiveSitesService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();

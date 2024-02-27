@@ -1,9 +1,9 @@
 <template>
   <div
     ref="mapPlaceholder"
-    class="w-[600px] h-[400px] text-center border-2 border-grey-400 rounded-md"
+    class="w-[400px] h-[300px] text-center border-2 border-grey-400 rounded-md"
   >
-    <p class="mt-[200px]">
+    <p class="mt-[150px]">
       <span class="mr-2">
         <i class="fas fa-spinner fa-spin"></i>
       </span>
@@ -17,7 +17,7 @@ import { GpsCoordinates } from '@bottomtime/api';
 
 import * as GoogleMaps from '@googlemaps/js-api-loader';
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 import { Config } from '../../config';
 
@@ -27,11 +27,14 @@ type GoogleMapProps = {
 
 const MarkerId = 'marker';
 
-const props = withDefaults(defineProps<GoogleMapProps>(), { location: null });
+const props = withDefaults(defineProps<GoogleMapProps>(), {
+  location: null,
+});
 const mapPlaceholder = ref<HTMLElement | null>(null);
 const emit = defineEmits<{
   (e: 'location-changed', location: GpsCoordinates): void;
 }>();
+const classes = computed(() => ``);
 
 let map: globalThis.google.maps.Map | undefined;
 

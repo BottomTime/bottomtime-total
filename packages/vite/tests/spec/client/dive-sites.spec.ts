@@ -24,6 +24,19 @@ describe('Dive Site API client', () => {
     searchResults = SearchDiveSitesResponseSchema.parse(SearchResults);
   });
 
+  it('will retrieve a single dive site', async () => {
+    const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
+      data: DiveSiteWithFullProperties,
+    });
+
+    const result = await apiClient.getDiveSite(DiveSiteWithFullProperties.id);
+
+    expect(spy).toHaveBeenCalledWith(
+      `/api/diveSites/${DiveSiteWithFullProperties.id}`,
+    );
+    expect(result.toJSON()).toEqual(DiveSiteWithFullProperties);
+  });
+
   it('will perform a search for dive sites', async () => {
     const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
       data: searchResults,

@@ -13,7 +13,9 @@
     :class="`flex flex-col absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] ${sizeClass} bg-grey-200 dark:bg-grey-800 opacity-100 shadow-lg rounded-lg z-50`"
   >
     <!-- Title bar -->
-    <div class="flex flex-row bg-blue-800 text-grey-100 h-8 p-1 rounded-t-lg">
+    <div
+      class="flex flex-row bg-blue-800 text-grey-100 h-8 p-1 rounded-t-lg items-center"
+    >
       <div class="grow flex-nowrap font-title pl-2" data-testid="dialog-title">
         {{ title }}
       </div>
