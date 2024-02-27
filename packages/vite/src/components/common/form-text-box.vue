@@ -9,6 +9,7 @@
       :maxlength="maxlength"
       :placeholder="placeholder"
       :data-testid="testId"
+      :disabled="disabled"
       @keyup.enter="$emit('enter')"
       @keyup.esc="$emit('esc')"
     />
@@ -24,6 +25,7 @@ import { computed, onMounted, ref } from 'vue';
 type FormTextBoxProps = {
   autofocus?: boolean;
   controlId?: string;
+  disabled?: boolean;
   invalid?: boolean;
   maxlength?: number;
   password?: boolean;
@@ -36,6 +38,7 @@ type FormTextBoxProps = {
 
 const props = withDefaults(defineProps<FormTextBoxProps>(), {
   autofocus: false,
+  disabled: false,
   invalid: false,
   password: false,
   selectOnFocus: false,
@@ -61,12 +64,12 @@ const inputClasses = computed(() => {
     roundingStyle = 'rounded-lg';
   }
 
-  return `pl-2 pr-2 pt-1 pb-1 w-full appearance-none ${selectStyle} bg-gray-200 dark:bg-grey-300 border border-${highlightColour} focus:ring-${highlightColour} ${roundingStyle} text-black placeholder-grey-700`;
+  return `px-2 py-1 w-full appearance-none ${selectStyle} bg-grey-200 dark:bg-grey-300 border border-${highlightColour} focus:ring-${highlightColour} ${roundingStyle} text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0`;
 });
 
 const rightSlotClasses = computed(() => {
   const highlightColour = props.invalid ? 'danger' : 'grey-600';
-  return `inline-flex items-center px-3 text-sm bg-gray-200 dark:bg-grey-300 text-black border border-${highlightColour} rounded-s-0 rounded-e-lg`;
+  return `inline-flex items-center px-3 text-sm text-grey-950 bg-gray-200 dark:bg-grey-300 text-black border border-${highlightColour} rounded-s-0 rounded-e-lg`;
 });
 
 defineEmits<{

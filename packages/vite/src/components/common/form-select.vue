@@ -12,6 +12,7 @@
       :class="classes"
       :data-testid="testId"
       :name="controlId"
+      :disabled="disabled"
     >
       <option
         v-for="option in options"
@@ -32,6 +33,7 @@ import { SelectOption } from '../../common';
 type FormSelectProps = {
   autofocus?: boolean;
   controlId: string;
+  disabled?: boolean;
   invalid?: boolean;
   options: SelectOption[];
   stretch?: boolean;
@@ -41,6 +43,7 @@ type FormSelectProps = {
 const value = defineModel<string>();
 const props = withDefaults(defineProps<FormSelectProps>(), {
   autofocus: false,
+  disabled: false,
   invalid: false,
   stretch: false,
 });
@@ -48,7 +51,7 @@ const selectInput = ref<HTMLSelectElement | null>();
 const classes = computed(() => {
   const width = props.stretch ? 'w-full' : 'w-auto';
   const highlightColour = props.invalid ? 'danger' : 'grey-600';
-  return `p-1 pl-2 appearance-none border border-${highlightColour} focus:ring-${highlightColour} ${width} block pe-10 rounded-lg bg-gray-200 dark:bg-grey-300 text-black`;
+  return `p-1 pl-2 appearance-none border border-${highlightColour} focus:ring-${highlightColour} ${width} block pe-10 rounded-lg bg-grey-200 dark:bg-grey-300 disabled:bg-grey-400 disabled:dark:bg-grey-500 text-grey-950 disabled:text-grey-700`;
 });
 
 function focus() {

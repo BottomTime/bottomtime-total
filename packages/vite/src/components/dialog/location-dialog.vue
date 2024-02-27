@@ -7,9 +7,7 @@
   >
     <template #default>
       <div class="flex flex-col gap-6">
-        <div class="mx-auto">
-          <GoogleMap :location="gps" @location-changed="onLocationChanged" />
-        </div>
+        <GoogleMap :location="gps" @location-changed="onLocationChanged" />
 
         <div class="flex gap-3 items-baseline">
           <FormLabel
