@@ -75,7 +75,7 @@ const mapSites = computed<DiveSiteDTO[]>(
 );
 
 onBeforeMount(async () => {
-  if (!props.center && !props.marker) {
+  if (!props.center && !props.marker && navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         currentCenter.value = {

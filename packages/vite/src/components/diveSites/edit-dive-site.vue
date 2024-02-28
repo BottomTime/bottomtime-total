@@ -241,14 +241,15 @@
         control-id="save-site"
         test-id="save-site"
         :is-loading="isSaving"
+        submit
         @click="onSave"
       >
         Save Changes
       </FormButton>
 
       <FormButton
-        control-id="cancel-save-site"
-        test-id="cancel-save-site"
+        control-id="reset-site"
+        test-id="reset-site"
         :disabled="isSaving"
         @click="onDiscard"
       >

@@ -100,6 +100,7 @@ export class DiveSite {
   async save(): Promise<void> {
     const params = CreateOrUpdateDiveSiteSchema.parse(this.data);
     await this.client.put(`/api/diveSites/${this.id}`, params);
+    this.data.updatedOn = new Date();
   }
 
   toJSON(): DiveSiteDTO {
