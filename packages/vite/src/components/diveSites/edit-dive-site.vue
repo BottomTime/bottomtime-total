@@ -179,9 +179,9 @@
         </FormField>
 
         <GoogleMap
-          :location="gps"
+          :marker="gps"
           :disabled="isSaving"
-          @location-changed="onLocationChanged"
+          @click="onLocationChanged"
         />
 
         <div class="flex flex-nowrap px-2 items-baseline gap-1">
@@ -319,15 +319,15 @@ const state = reactive<EditDiveSiteFormState>(loadFromProps());
 const isSaving = ref(false);
 const showConfirmCancelDialog = ref(false);
 
-const gps = computed<GpsCoordinates | null>(() => {
-  if (typeof state.gps.lat === 'number' && typeof state.gps.lon === 'number') {
-    return {
-      lat: state.gps.lat,
-      lon: state.gps.lon,
-    };
+const gps = computed<GpsCoordinates | undefined>(() => {
+  const lat = parseFloat(state.gps.lat);
+  const lon = parseFloat(state.gps.lon);
+
+  if (!isNaN(lat) && !isNaN(lon)) {
+    return { lat, lon };
   }
 
-  return null;
+  return undefined;
 });
 
 const emit = defineEmits<{

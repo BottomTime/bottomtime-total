@@ -45,7 +45,7 @@
         </p>
       </div>
       <div v-if="site.gps" class="mx-auto">
-        <GoogleMap :location="site.gps" />
+        <GoogleMap :marker="site.gps" />
       </div>
     </div>
 

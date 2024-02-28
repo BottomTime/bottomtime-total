@@ -1,128 +1,75 @@
 <template>
-  <div
-    ref="mapPlaceholder"
-    class="w-full aspect-video text-center border-2 border-grey-400 rounded-md"
+  <GoogleMap
+    :api-key="Config.googleApiKey"
+    class="w-full aspect-video"
+    :control-size="30"
+    :fullscreen-control="false"
+    :center="{
+      lat: currentCenter.lat,
+      lng: currentCenter.lon,
+    }"
+    :street-view-control="false"
+    :zoom="8"
+    @click="onMapClick"
   >
-    <p class="mt-[50%]">
-      <span class="mr-2">
-        <i class="fas fa-spinner fa-spin"></i>
-      </span>
-      <span class="italic">Loading map...</span>
-    </p>
-  </div>
+    <Marker
+      v-if="marker"
+      :options="{ position: { lat: marker.lat, lng: marker.lon } }"
+    />
+  </GoogleMap>
 </template>
 
 <script setup lang="ts">
 import { GpsCoordinates } from '@bottomtime/api';
 
-import * as GoogleMaps from '@googlemaps/js-api-loader';
-
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeMount, ref } from 'vue';
+import { GoogleMap, Marker } from 'vue3-google-map';
 
 import { Config } from '../../config';
 
 type GoogleMapProps = {
+  center?: GpsCoordinates;
   disabled?: boolean;
-  location?: GpsCoordinates | null;
+  marker?: GpsCoordinates;
 };
 
-const MarkerId = 'marker';
+// Toronto, Ontario... for now
+const DefaultCenter = { lat: 43.70011, lon: -79.4163 };
 
 const props = withDefaults(defineProps<GoogleMapProps>(), {
   disabled: false,
-  location: null,
 });
-const mapPlaceholder = ref<HTMLElement | null>(null);
 const emit = defineEmits<{
-  (e: 'location-changed', location: GpsCoordinates): void;
+  (e: 'click', location: GpsCoordinates): void;
 }>();
 
-let map: globalThis.google.maps.Map | undefined;
+const currentCenter = ref<GpsCoordinates>(
+  props.center ?? props.marker ?? DefaultCenter,
+);
 
-function getLocation(): Promise<globalThis.google.maps.LatLng> {
-  return new Promise((resolve, reject) => {
+onBeforeMount(async () => {
+  if (!props.center && !props.marker) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        resolve(
-          new globalThis.google.maps.LatLng(
-            position.coords.latitude,
-            position.coords.longitude,
-          ),
-        );
+        currentCenter.value = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
       },
       (error) => {
-        reject(error);
+        /* eslint-disable-next-line no-console */
+        console.error('Error getting current position', error);
       },
-      { enableHighAccuracy: true },
     );
-  });
-}
+  }
+});
 
-function onMapClicked(
-  event:
-    | globalThis.google.maps.MapMouseEvent
-    | globalThis.google.maps.IconMouseEvent,
-) {
-  if (event.latLng) {
-    emit('location-changed', {
+function onMapClick(event: globalThis.google.maps.MapMouseEvent) {
+  if (event.latLng && !props.disabled) {
+    emit('click', {
       lat: event.latLng.lat(),
       lon: event.latLng.lng(),
     });
   }
 }
-
-function updateMarker() {
-  if (!map) return;
-
-  if (props.location) {
-    map.data.add({
-      id: MarkerId,
-      geometry: new globalThis.google.maps.Data.Point(
-        new globalThis.google.maps.LatLng(
-          props.location.lat,
-          props.location.lon,
-        ),
-      ),
-    });
-  } else {
-    const marker = map.data.getFeatureById(MarkerId);
-    if (marker) map.data.remove(marker);
-  }
-}
-
-onMounted(async () => {
-  if (!mapPlaceholder.value) return;
-
-  const loader = new GoogleMaps.Loader({
-    apiKey: Config.googleApiKey,
-    version: 'weekly',
-  });
-
-  const { Map } = await loader.importLibrary('maps');
-  map = new Map(mapPlaceholder.value, {
-    center: props.location
-      ? { lat: props.location.lat, lng: props.location.lon }
-      : { lat: 43.70011, lng: -79.4163 }, // Default to Toronto... for now.
-    fullscreenControl: false,
-    streetViewControl: false,
-    zoom: 5,
-  });
-
-  map.addListener('click', onMapClicked);
-
-  updateMarker();
-
-  if (!props.location) {
-    getLocation()
-      .then((location) => {
-        map?.setCenter(location);
-      })
-      .catch((error) => {
-        /* eslint-disable-next-line no-console */
-        console.error('Error getting location:', error);
-      });
-  }
-});
-
-watch(props, updateMarker);
 </script>
