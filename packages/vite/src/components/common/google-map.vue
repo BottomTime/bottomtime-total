@@ -9,21 +9,43 @@
       lng: currentCenter.lon,
     }"
     :street-view-control="false"
-    :zoom="8"
+    :zoom="5"
     @click="onMapClick"
   >
     <Marker
       v-if="marker"
       :options="{ position: { lat: marker.lat, lng: marker.lon } }"
     />
+    <CustomMarker
+      v-for="site in mapSites"
+      :key="site.id"
+      :options="{
+        position: { lat: site.gps!.lat, lng: site.gps!.lon },
+      }"
+    >
+      <a
+        :href="`#${site.id}`"
+        class="flex items-center space-x-1 pr-0 z-10 hover:z-30 hover:pr-1 rounded-md h-[16px] shadow-sm bg-grey-200 group"
+        @click="$emit('site-selected', site)"
+      >
+        <img
+          class="w-[16px] h-[16px] rounded-md shadow-sm shadow-danger-hover"
+          src="/img/flag-marker.svg"
+          :alt="site.name"
+        />
+        <span class="hidden group-hover:block text-grey-950 text-xs">
+          {{ site.name }}
+        </span>
+      </a>
+    </CustomMarker>
   </GoogleMap>
 </template>
 
 <script setup lang="ts">
-import { GpsCoordinates } from '@bottomtime/api';
+import { DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
 
-import { onBeforeMount, ref } from 'vue';
-import { GoogleMap, Marker } from 'vue3-google-map';
+import { computed, onBeforeMount, ref } from 'vue';
+import { CustomMarker, GoogleMap, Marker } from 'vue3-google-map';
 
 import { Config } from '../../config';
 
@@ -31,6 +53,7 @@ type GoogleMapProps = {
   center?: GpsCoordinates;
   disabled?: boolean;
   marker?: GpsCoordinates;
+  sites?: DiveSiteDTO[];
 };
 
 // Toronto, Ontario... for now
@@ -41,10 +64,14 @@ const props = withDefaults(defineProps<GoogleMapProps>(), {
 });
 const emit = defineEmits<{
   (e: 'click', location: GpsCoordinates): void;
+  (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
 const currentCenter = ref<GpsCoordinates>(
   props.center ?? props.marker ?? DefaultCenter,
+);
+const mapSites = computed<DiveSiteDTO[]>(
+  () => props.sites?.filter((site) => !!site.gps) ?? [],
 );
 
 onBeforeMount(async () => {

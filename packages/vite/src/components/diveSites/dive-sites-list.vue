@@ -13,10 +13,16 @@
   </div>
 
   <!-- Dive sites list -->
-  <div v-else class="mx-2">
+  <div v-else class="mx-2 mt-3">
     <!-- Dive site entries -->
+    <div class="flex justify-center w-full">
+      <div class="w-full lg:w-[600px]">
+        <GoogleMap :sites="data.sites" @site-selected="onMapClicked" />
+      </div>
+    </div>
+
     <div
-      class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-4"
+      class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-3"
       data-testid="sites-list-content"
     >
       <DiveSitesListItem
@@ -53,6 +59,7 @@ import { DiveSiteDTO, SearchDiveSitesResponseDTO } from '@bottomtime/api';
 import { computed } from 'vue';
 
 import FormButton from '../common/form-button.vue';
+import GoogleMap from '../common/google-map.vue';
 import DiveSitesListItem from './dive-sites-list-item.vue';
 
 type DiveSitesListProps = {
@@ -63,7 +70,7 @@ type DiveSitesListProps = {
 const props = withDefaults(defineProps<DiveSitesListProps>(), {
   isLoadingMore: false,
 });
-defineEmits<{
+const emit = defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
   (e: 'load-more'): void;
 }>();
@@ -71,4 +78,8 @@ defineEmits<{
 const canLoadMore = computed(
   () => props.data.sites.length < props.data.totalCount,
 );
+
+function onMapClicked(site: DiveSiteDTO) {
+  emit('site-selected', site);
+}
 </script>
