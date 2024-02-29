@@ -1,5 +1,5 @@
 <template>
-  <label :for="controlId" class="flex flex-row gap-2">
+  <label :for="controlId" class="flex flex-row gap-1.5">
     <input
       :id="controlId"
       v-model="model"

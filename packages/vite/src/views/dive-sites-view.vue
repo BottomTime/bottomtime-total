@@ -9,11 +9,12 @@
   </DrawerPanel>
 
   <PageTitle title="Dive Sites" />
-  <div class="grid gap-6 grid-cols-1 md:grid-cols-3 lg:grid-cols-5">
+  <div class="grid gap-6 grid-cols-1 lg:grid-cols-3 xl:grid-cols-5">
     <FormBox class="w-full">
       <SearchDiveSitesForm :params="searchParams" @search="onSearch" />
     </FormBox>
-    <div class="md:col-span-2 lg:col-span-4">
+
+    <div class="lg:col-span-2 xl:col-span-4">
       <FormBox
         class="flex flex-row gap-2 sticky top-16 items-baseline shadow-lg z-30"
       >
@@ -29,7 +30,16 @@
           :options="SortOrderOptions"
           @change="onChangeSortOrder"
         />
+        <FormButton
+          v-if="!currentUser.anonymous"
+          type="primary"
+          test-id="create-dive-site"
+          @click="onCreateSite"
+        >
+          Create Site
+        </FormButton>
       </FormBox>
+
       <DiveSitesList
         :data="data"
         :is-loading-more="isLoadingMore"
@@ -57,6 +67,7 @@ import { useClient } from '../client';
 import { AppInitialState, SelectOption } from '../common';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import FormBox from '../components/common/form-box.vue';
+import FormButton from '../components/common/form-button.vue';
 import FormSelect from '../components/common/form-select.vue';
 import PageTitle from '../components/common/page-title.vue';
 import DiveSitesList from '../components/diveSites/dive-sites-list.vue';
@@ -66,6 +77,7 @@ import { Config } from '../config';
 import { useInitialState } from '../initial-state';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
+import { useCurrentUser } from '../store';
 
 const SortOrderOptions: SelectOption[] = [
   {
@@ -88,6 +100,7 @@ const SortOrderOptions: SelectOption[] = [
 
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
+const currentUser = useCurrentUser();
 const initialState = useInitialState();
 const location = useLocation();
 const oops = useOops();
@@ -160,6 +173,10 @@ async function onLoadMore(): Promise<void> {
   });
 
   isLoadingMore.value = false;
+}
+
+function onCreateSite(): void {
+  location.assign('/diveSites/new');
 }
 
 onServerPrefetch(async () => {

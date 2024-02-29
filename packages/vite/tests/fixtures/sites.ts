@@ -1,5 +1,17 @@
 import { DepthUnit, DiveSiteDTO } from '@bottomtime/api';
 
+export const BlankDiveSite: DiveSiteDTO = {
+  id: '',
+  creator: {
+    userId: '',
+    username: '',
+    memberSince: new Date(),
+  },
+  createdOn: new Date(),
+  name: '',
+  location: '',
+};
+
 export const DiveSiteWithMinimalProperties: DiveSiteDTO = {
   id: '90b06d4a-605c-49d0-8738-cf557cf34b0a',
   creator: {

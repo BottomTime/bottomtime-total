@@ -17,176 +17,190 @@
         test-id="search-dive-sites"
         show-right
         autofocus
+        @right-button-click="onRefresh"
       >
         <template #right>
           <i class="fas fa-search"></i>
         </template>
       </FormTextBox>
-    </FormField>
-
-    <FormField label="Location" :responsive="false">
-      <div v-if="state.gps" class="text-sm mb-2">
-        <p class="flex gap-2">
-          <span class="text-danger">
-            <i class="fas fa-map-marker-alt"></i>
-          </span>
-          <label class="font-bold">Coordinates:</label>
-        </p>
-        <p class="ml-6">
-          <span data-testid="search-coordinates">
-            {{ state.gps.lat }}, {{ state.gps.lon }}
-          </span>
-        </p>
-        <p class="flex gap-2">
-          <span>
-            <i class="fas fa-ruler-horizontal"></i>
-          </span>
-          <label class="font-bold">Range:</label>
-        </p>
-        <p class="ml-6 my-2">
-          <FormSlider
-            v-model="state.range"
-            control-id="search-range"
-            test-id="search-range"
-            :min="10"
-            :max="500"
-            :step="10"
-            :show-value="false"
-          />
-        </p>
-        <p class="ml-6">
-          <span>{{ state.range }} km</span>
-        </p>
-      </div>
-
-      <div class="flex gap-2">
-        <FormButton
-          test-id="select-location"
-          size="sm"
-          @click="onSelectLocation"
-        >
-          {{ state.gps ? 'Change' : 'Select' }} Location
-        </FormButton>
-        <FormButton
-          v-if="state.gps"
-          size="sm"
-          test-id="clear-location"
-          @click="onClearLocation"
-        >
-          Clear
-        </FormButton>
-      </div>
-    </FormField>
-
-    <FormField label="Minimum Rating" control-id="rating" :responsive="false">
-      <div class="flex gap-2">
-        <span>
-          <i class="fas fa-star text-warn-hover"></i>
-        </span>
-        <FormSlider
-          v-model="state.minRating"
-          :min="1"
-          :max="5"
-          :step="0.5"
-          control-id="rating"
-          test-id="rating"
-        />
-      </div>
-    </FormField>
-
-    <FormField
-      label="Maximum Difficulty"
-      control-id="difficulty"
-      :responsive="false"
-    >
-      <div class="flex gap-2">
-        <span>
-          <i class="fas fa-tachometer-alt text-warn-hover"></i>
-        </span>
-        <FormSlider
-          v-model="state.maxDifficulty"
-          :min="1"
-          :max="5"
-          :step="0.5"
-          control-id="difficulty"
-          test-id="difficulty"
-        />
-      </div>
-    </FormField>
-
-    <FormField label="Shore Access" :responsive="false">
-      <div class="flex flex-col gap-1 pl-2">
-        <FormRadio
-          v-model="state.shoreAccess"
-          control-id="shore-access-all"
-          test-id="shore-access-all"
-          group="shore-access"
-          value=""
-        >
-          Any
-        </FormRadio>
-        <FormRadio
-          v-model="state.shoreAccess"
-          control-id="shore-access-true"
-          test-id="shore-access-true"
-          group="shore-access"
-          value="true"
-        >
-          Accessible from shore
-        </FormRadio>
-        <FormRadio
-          v-model="state.shoreAccess"
-          control-id="shore-access-false"
-          test-id="shore-access-false"
-          group="shore-access"
-          value="false"
-        >
-          Accessible by boat
-        </FormRadio>
-      </div>
-    </FormField>
-
-    <FormField label="Free to dive" :responsive="false">
-      <div class="flex flex-col gap-1 pl-2">
-        <FormRadio
-          v-model="state.freeToDive"
-          control-id="free-to-dive-all"
-          test-id="free-to-dive-all"
-          group="free-to-dive"
-          value=""
-        >
-          Any
-        </FormRadio>
-        <FormRadio
-          v-model="state.freeToDive"
-          control-id="free-to-dive-true"
-          test-id="free-to-dive-true"
-          group="free-to-dive"
-          value="true"
-        >
-          Free to dive
-        </FormRadio>
-        <FormRadio
-          v-model="state.freeToDive"
-          control-id="free-to-dive-false"
-          test-id="free-to-dive-false"
-          group="free-to-dive"
-          value="false"
-        >
-          Fee required
-        </FormRadio>
-      </div>
-    </FormField>
-
-    <div class="text-center">
       <FormButton
-        type="primary"
-        test-id="refresh-dive-sites"
-        submit
-        @click="onRefresh"
+        class="block lg:hidden"
+        type="link"
+        test-id="toggle-advanced-search"
+        @click="state.showAdvancedSearch = !state.showAdvancedSearch"
       >
-        Refresh
+        <span v-if="state.showAdvancedSearch">
+          <i class="fas fa-chevron-up"></i>
+        </span>
+        <span v-else>
+          <i class="fas fa-chevron-down"></i>
+        </span>
+        <span class="ml-2">
+          {{ state.showAdvancedSearch ? 'Hide' : 'Show' }} Search Filters
+        </span>
       </FormButton>
+    </FormField>
+
+    <div :class="state.showAdvancedSearch ? '' : 'hidden lg:block'">
+      <FormField label="Location" :responsive="false">
+        <div v-if="state.gps" class="text-sm mb-2">
+          <p class="flex gap-2">
+            <span class="text-danger">
+              <i class="fas fa-map-marker-alt"></i>
+            </span>
+            <label class="font-bold">Coordinates:</label>
+          </p>
+          <p class="ml-6">
+            <span data-testid="search-coordinates">
+              {{ state.gps.lat }}, {{ state.gps.lon }}
+            </span>
+          </p>
+          <p class="flex gap-2">
+            <span>
+              <i class="fas fa-ruler-horizontal"></i>
+            </span>
+            <label class="font-bold">Range:</label>
+          </p>
+          <p class="ml-6 my-2">
+            <FormSlider
+              v-model="state.range"
+              control-id="search-range"
+              test-id="search-range"
+              :min="10"
+              :max="500"
+              :step="10"
+              :show-value="false"
+            />
+          </p>
+          <p class="ml-6">
+            <span>{{ state.range }} km</span>
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+          <FormButton
+            test-id="select-location"
+            size="sm"
+            @click="onSelectLocation"
+          >
+            {{ state.gps ? 'Change' : 'Select' }} Location
+          </FormButton>
+          <FormButton
+            v-if="state.gps"
+            size="sm"
+            test-id="clear-location"
+            @click="onClearLocation"
+          >
+            Clear
+          </FormButton>
+        </div>
+      </FormField>
+
+      <FormField label="Minimum Rating" control-id="rating" :responsive="false">
+        <div class="flex gap-2">
+          <span>
+            <i class="fas fa-star text-warn-hover"></i>
+          </span>
+          <FormSlider
+            v-model="state.minRating"
+            :min="1"
+            :max="5"
+            :step="0.5"
+            control-id="rating"
+            test-id="rating"
+          />
+        </div>
+      </FormField>
+
+      <FormField
+        label="Maximum Difficulty"
+        control-id="difficulty"
+        :responsive="false"
+      >
+        <div class="flex gap-2">
+          <span>
+            <i class="fas fa-tachometer-alt text-warn-hover"></i>
+          </span>
+          <FormSlider
+            v-model="state.maxDifficulty"
+            :min="1"
+            :max="5"
+            :step="0.5"
+            control-id="difficulty"
+            test-id="difficulty"
+          />
+        </div>
+      </FormField>
+
+      <FormField label="Shore Access" :responsive="false">
+        <div class="flex flex-col gap-1 pl-2">
+          <FormRadio
+            v-model="state.shoreAccess"
+            control-id="shore-access-all"
+            test-id="shore-access-all"
+            group="shore-access"
+            value=""
+          >
+            Any
+          </FormRadio>
+          <FormRadio
+            v-model="state.shoreAccess"
+            control-id="shore-access-true"
+            test-id="shore-access-true"
+            group="shore-access"
+            value="true"
+          >
+            Accessible from shore
+          </FormRadio>
+          <FormRadio
+            v-model="state.shoreAccess"
+            control-id="shore-access-false"
+            test-id="shore-access-false"
+            group="shore-access"
+            value="false"
+          >
+            Accessible by boat
+          </FormRadio>
+        </div>
+      </FormField>
+
+      <FormField label="Free to dive" :responsive="false">
+        <div class="flex flex-col gap-1 pl-2">
+          <FormRadio
+            v-model="state.freeToDive"
+            control-id="free-to-dive-all"
+            test-id="free-to-dive-all"
+            group="free-to-dive"
+            value=""
+          >
+            Any
+          </FormRadio>
+          <FormRadio
+            v-model="state.freeToDive"
+            control-id="free-to-dive-true"
+            test-id="free-to-dive-true"
+            group="free-to-dive"
+            value="true"
+          >
+            Free to dive
+          </FormRadio>
+          <FormRadio
+            v-model="state.freeToDive"
+            control-id="free-to-dive-false"
+            test-id="free-to-dive-false"
+            group="free-to-dive"
+            value="false"
+          >
+            Fee required
+          </FormRadio>
+        </div>
+      </FormField>
+
+      <div class="text-center">
+        <FormButton test-id="refresh-dive-sites" submit @click="onRefresh">
+          Refresh
+        </FormButton>
+      </div>
     </div>
   </form>
 </template>
@@ -215,6 +229,7 @@ type SearchDiveSitesFormState = {
   range: number;
   shoreAccess: string;
   freeToDive: string;
+  showAdvancedSearch: boolean;
   showLocationDialog: boolean;
 };
 
@@ -237,6 +252,7 @@ const state = reactive<SearchDiveSitesFormState>({
       ? props.params.freeToDive.toString()
       : '',
 
+  showAdvancedSearch: false,
   showLocationDialog: false,
 });
 const locationDialog = ref<InstanceType<typeof LocationDialog> | null>(null);
@@ -244,14 +260,20 @@ const locationDialog = ref<InstanceType<typeof LocationDialog> | null>(null);
 function onRefresh() {
   const query: SearchDiveSitesParamsDTO = {
     query: state.query || undefined,
-    difficulty: {
-      min: 1,
-      max: state.maxDifficulty,
-    },
-    rating: {
-      min: state.minRating,
-      max: 5,
-    },
+    difficulty:
+      state.maxDifficulty < 5
+        ? {
+            min: 1,
+            max: state.maxDifficulty,
+          }
+        : undefined,
+    rating:
+      state.minRating > 1
+        ? {
+            min: state.minRating,
+            max: 5,
+          }
+        : undefined,
     shoreAccess:
       state.shoreAccess === '' ? undefined : state.shoreAccess === 'true',
     freeToDive:

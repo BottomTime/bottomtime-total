@@ -2,19 +2,17 @@
   <div
     :class="`flex flex-col gap-2 ${
       responsive
-        ? 'lg:flex-row lg:gap-4 lg:align-center lg:place-items-center'
+        ? 'lg:flex-row lg:gap-4 lg:align-center lg:place-items-top'
         : ''
     } mb-3`"
   >
     <div
-      :class="`${responsive ? 'lg:min-w-40 xl:min-w-48 lg:text-right' : ''}`"
+      v-if="label"
+      :class="`${
+        responsive ? 'lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5' : ''
+      }`"
     >
-      <FormLabel
-        v-if="label"
-        :label="label"
-        :control-id="controlId"
-        :required="required"
-      />
+      <FormLabel :label="label" :control-id="controlId" :required="required" />
     </div>
     <div class="grow w-full">
       <slot></slot>

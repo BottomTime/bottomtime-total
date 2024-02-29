@@ -2,34 +2,40 @@
   <div :class="`grid grid-cols-1 ${columns ? 'lg:grid-cols-2 ' : ''}gap-3`">
     <div>
       <FormField v-if="site.averageRating" label="Average rating">
-        <StarRating :rating="site.averageRating" />
+        <StarRating class="mt-2" :rating="site.averageRating" />
       </FormField>
 
       <FormField v-if="site.averageDifficulty" label="Difficulty rating">
-        <StarRating :rating="site.averageDifficulty" />
+        <StarRating class="mt-2" :rating="site.averageDifficulty" />
       </FormField>
     </div>
 
     <div>
       <FormField v-if="site.depth" label="Depth">
-        <span class="mr-1">
-          <i class="fas fa-tachometer-alt fa-sm"></i>
-        </span>
-        <DepthText :depth="site.depth.depth" :unit="site.depth.unit" />
+        <div class="mt-1.5">
+          <span class="mr-1">
+            <i class="fas fa-tachometer-alt fa-sm"></i>
+          </span>
+          <DepthText :depth="site.depth.depth" :unit="site.depth.unit" />
+        </div>
       </FormField>
 
       <FormField label="Shore access">
-        <span class="mr-1">
-          <i class="fas fa-anchor fa-sm"></i>
-        </span>
-        <span>{{ shoreAccess }}</span>
+        <div class="mt-1.5">
+          <span class="mr-1">
+            <i class="fas fa-anchor fa-sm"></i>
+          </span>
+          <span>{{ shoreAccess }}</span>
+        </div>
       </FormField>
 
       <FormField label="Free to dive">
-        <span class="mr-1">
-          <i class="far fa-money-bill-alt fa-sm"></i>
-        </span>
-        <span>{{ freeToDive }}</span>
+        <div class="mt-1.5">
+          <span class="mr-1">
+            <i class="far fa-money-bill-alt fa-sm"></i>
+          </span>
+          <span>{{ freeToDive }}</span>
+        </div>
       </FormField>
     </div>
 
@@ -45,7 +51,7 @@
         </p>
       </div>
       <div v-if="site.gps" class="mx-auto">
-        <GoogleMap :location="site.gps" />
+        <GoogleMap :marker="site.gps" />
       </div>
     </div>
 

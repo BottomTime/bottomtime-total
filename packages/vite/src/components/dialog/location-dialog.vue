@@ -7,9 +7,7 @@
   >
     <template #default>
       <div class="flex flex-col gap-6">
-        <div class="mx-auto">
-          <GoogleMap :location="gps" @location-changed="onLocationChanged" />
-        </div>
+        <GoogleMap :marker="gps" @click="onLocationChanged" />
 
         <div class="flex gap-3 items-baseline">
           <FormLabel
@@ -100,7 +98,7 @@ const currentLocation = reactive<{
   lat: props.location ? props.location.lat : '',
   lon: props.location ? props.location.lon : '',
 });
-const gps = computed<GpsCoordinates | null>(() => {
+const gps = computed<GpsCoordinates | undefined>(() => {
   if (
     typeof currentLocation.lat === 'number' &&
     typeof currentLocation.lon === 'number'
@@ -111,7 +109,7 @@ const gps = computed<GpsCoordinates | null>(() => {
     };
   }
 
-  return null;
+  return undefined;
 });
 const emit = defineEmits<{
   (e: 'cancel'): void;

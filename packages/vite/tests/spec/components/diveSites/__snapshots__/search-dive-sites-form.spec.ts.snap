@@ -6,18 +6,12 @@ exports[`Search Dive Sites Form will allow a user to clear the location 2`] = `
 [
   [
     {
-      "difficulty": {
-        "max": 5,
-        "min": 1,
-      },
+      "difficulty": undefined,
       "freeToDive": undefined,
       "location": undefined,
       "query": undefined,
       "radius": 50,
-      "rating": {
-        "max": 5,
-        "min": 1,
-      },
+      "rating": undefined,
       "shoreAccess": undefined,
     },
   ],
@@ -53,18 +47,12 @@ exports[`Search Dive Sites Form will allow a user to refresh with minimal search
 [
   [
     {
-      "difficulty": {
-        "max": 5,
-        "min": 1,
-      },
+      "difficulty": undefined,
       "freeToDive": undefined,
       "location": undefined,
       "query": undefined,
       "radius": 50,
-      "rating": {
-        "max": 5,
-        "min": 1,
-      },
+      "rating": undefined,
       "shoreAccess": undefined,
     },
   ],

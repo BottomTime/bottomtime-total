@@ -1,127 +1,102 @@
 <template>
-  <div
-    ref="mapPlaceholder"
-    class="w-[400px] h-[300px] text-center border-2 border-grey-400 rounded-md"
+  <GoogleMap
+    :api-key="Config.googleApiKey"
+    class="w-full aspect-video"
+    :control-size="30"
+    :fullscreen-control="false"
+    :center="{
+      lat: currentCenter.lat,
+      lng: currentCenter.lon,
+    }"
+    :street-view-control="false"
+    :zoom="5"
+    @click="onMapClick"
   >
-    <p class="mt-[150px]">
-      <span class="mr-2">
-        <i class="fas fa-spinner fa-spin"></i>
-      </span>
-      <span class="italic">Loading map...</span>
-    </p>
-  </div>
+    <Marker
+      v-if="marker"
+      :options="{ position: { lat: marker.lat, lng: marker.lon } }"
+    />
+    <CustomMarker
+      v-for="site in mapSites"
+      :key="site.id"
+      :options="{
+        position: { lat: site.gps!.lat, lng: site.gps!.lon },
+      }"
+    >
+      <a
+        :href="`#${site.id}`"
+        class="flex items-center space-x-1 pr-0 z-10 hover:z-30 hover:pr-1 rounded-md h-[16px] shadow-sm bg-grey-200 group"
+        @click="$emit('site-selected', site)"
+      >
+        <img
+          class="w-[16px] h-[16px] rounded-md shadow-sm shadow-danger-hover"
+          src="/img/flag-marker.svg"
+          :alt="site.name"
+        />
+        <span class="hidden group-hover:block text-grey-950 text-xs">
+          {{ site.name }}
+        </span>
+      </a>
+    </CustomMarker>
+  </GoogleMap>
 </template>
 
 <script setup lang="ts">
-import { GpsCoordinates } from '@bottomtime/api';
+import { DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
 
-import * as GoogleMaps from '@googlemaps/js-api-loader';
-
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
+import { CustomMarker, GoogleMap, Marker } from 'vue3-google-map';
 
 import { Config } from '../../config';
 
 type GoogleMapProps = {
-  location?: GpsCoordinates | null;
+  center?: GpsCoordinates;
+  disabled?: boolean;
+  marker?: GpsCoordinates;
+  sites?: DiveSiteDTO[];
 };
 
-const MarkerId = 'marker';
+// Toronto, Ontario... for now
+const DefaultCenter = { lat: 43.70011, lon: -79.4163 };
 
 const props = withDefaults(defineProps<GoogleMapProps>(), {
-  location: null,
+  disabled: false,
 });
-const mapPlaceholder = ref<HTMLElement | null>(null);
 const emit = defineEmits<{
-  (e: 'location-changed', location: GpsCoordinates): void;
+  (e: 'click', location: GpsCoordinates): void;
+  (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
-const classes = computed(() => ``);
 
-let map: globalThis.google.maps.Map | undefined;
+const currentCenter = ref<GpsCoordinates>(
+  props.center ?? props.marker ?? DefaultCenter,
+);
+const mapSites = computed<DiveSiteDTO[]>(
+  () => props.sites?.filter((site) => !!site.gps) ?? [],
+);
 
-function getLocation(): Promise<globalThis.google.maps.LatLng> {
-  return new Promise((resolve, reject) => {
+onBeforeMount(async () => {
+  if (!props.center && !props.marker && navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        resolve(
-          new globalThis.google.maps.LatLng(
-            position.coords.latitude,
-            position.coords.longitude,
-          ),
-        );
+        currentCenter.value = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
       },
       (error) => {
-        reject(error);
+        /* eslint-disable-next-line no-console */
+        console.error('Error getting current position', error);
       },
-      { enableHighAccuracy: true },
     );
-  });
-}
+  }
+});
 
-function onMapClicked(
-  event:
-    | globalThis.google.maps.MapMouseEvent
-    | globalThis.google.maps.IconMouseEvent,
-) {
-  if (event.latLng) {
-    emit('location-changed', {
+function onMapClick(event: globalThis.google.maps.MapMouseEvent) {
+  if (event.latLng && !props.disabled) {
+    emit('click', {
       lat: event.latLng.lat(),
       lon: event.latLng.lng(),
     });
   }
 }
-
-function updateMarker() {
-  if (!map) return;
-
-  if (props.location) {
-    map.data.add({
-      id: MarkerId,
-      geometry: new globalThis.google.maps.Data.Point(
-        new globalThis.google.maps.LatLng(
-          props.location.lat,
-          props.location.lon,
-        ),
-      ),
-    });
-  } else {
-    const marker = map.data.getFeatureById(MarkerId);
-    if (marker) map.data.remove(marker);
-  }
-}
-
-onMounted(async () => {
-  if (!mapPlaceholder.value) return;
-
-  const loader = new GoogleMaps.Loader({
-    apiKey: Config.googleApiKey,
-    version: 'weekly',
-  });
-
-  const { Map } = await loader.importLibrary('maps');
-  map = new Map(mapPlaceholder.value, {
-    center: props.location
-      ? { lat: props.location.lat, lng: props.location.lon }
-      : { lat: 43.70011, lng: -79.4163 }, // Default to Toronto... for now.
-    fullscreenControl: false,
-    streetViewControl: false,
-    zoom: 5,
-  });
-
-  map.addListener('click', onMapClicked);
-
-  updateMarker();
-
-  if (!props.location) {
-    getLocation()
-      .then((location) => {
-        map?.setCenter(location);
-      })
-      .catch((error) => {
-        /* eslint-disable-next-line no-console */
-        console.error('Error getting location:', error);
-      });
-  }
-});
-
-watch(props, updateMarker);
 </script>
