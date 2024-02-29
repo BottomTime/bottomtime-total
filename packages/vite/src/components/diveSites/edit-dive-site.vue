@@ -260,7 +260,12 @@
 </template>
 
 <script lang="ts" setup>
-import { DepthUnit, DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
+import {
+  CreateOrUpdateDiveSiteDTO,
+  DepthUnit,
+  DiveSiteDTO,
+  GpsCoordinates,
+} from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required, requiredIf } from '@vuelidate/validators';
@@ -417,6 +422,63 @@ function onLocationChanged(location: GpsCoordinates) {
   state.gps.lon = location.lon.toString();
 }
 
+async function createSite(): Promise<void> {
+  const depth = parseFloat(state.depth.depth);
+
+  const data: CreateOrUpdateDiveSiteDTO = {
+    name: state.name,
+    description: state.description || undefined,
+    depth: isNaN(depth) ? undefined : { depth, unit: state.depth.unit },
+    location: state.location,
+    directions: state.directions || undefined,
+    gps: gps.value ?? undefined,
+    freeToDive:
+      state.freeToDive === '' ? undefined : state.freeToDive === 'true',
+    shoreAccess:
+      state.shoreAccess === '' ? undefined : state.shoreAccess === 'true',
+  };
+
+  const newSite = await client.diveSites.createDiveSite(data);
+
+  toasts.toast({
+    id: 'site-created',
+    message: 'Dive site was successfully created',
+    type: ToastType.Success,
+  });
+  emit('site-updated', newSite.toJSON());
+}
+
+async function updateSite(): Promise<void> {
+  const depth = parseFloat(state.depth.depth);
+
+  const dto = client.diveSites.wrapDTO(props.site);
+  dto.name = state.name;
+  dto.description = state.description || undefined;
+  dto.depth = isNaN(depth)
+    ? undefined
+    : {
+        depth,
+        unit: state.depth.unit,
+        // bottomless: state.depth.bottomless,
+      };
+  dto.location = state.location;
+  dto.directions = state.directions || undefined;
+  dto.gps = gps.value ?? undefined;
+  dto.freeToDive =
+    state.freeToDive === '' ? undefined : state.freeToDive === 'true';
+  dto.shoreAccess =
+    state.shoreAccess === '' ? undefined : state.shoreAccess === 'true';
+
+  await dto.save();
+
+  toasts.toast({
+    id: 'site-updated',
+    message: 'Dive site was successfully updated',
+    type: ToastType.Success,
+  });
+  emit('site-updated', dto.toJSON());
+}
+
 async function onSave(): Promise<void> {
   const isValid = await v$.value.$validate();
   if (!isValid) return;
@@ -424,34 +486,8 @@ async function onSave(): Promise<void> {
   isSaving.value = true;
 
   await oops(async () => {
-    const depth = parseFloat(state.depth.depth);
-
-    const dto = client.diveSites.wrapDTO(props.site);
-    dto.name = state.name;
-    dto.description = state.description || undefined;
-    dto.depth = isNaN(depth)
-      ? undefined
-      : {
-          depth,
-          unit: state.depth.unit,
-          // bottomless: state.depth.bottomless,
-        };
-    dto.location = state.location;
-    dto.directions = state.directions || undefined;
-    dto.gps = gps.value ?? undefined;
-    dto.freeToDive =
-      state.freeToDive === '' ? undefined : state.freeToDive === 'true';
-    dto.shoreAccess =
-      state.shoreAccess === '' ? undefined : state.shoreAccess === 'true';
-
-    await dto.save();
-
-    toasts.toast({
-      id: 'site-updated',
-      message: 'Dive site was successfully updated',
-      type: ToastType.Success,
-    });
-    emit('site-updated', dto.toJSON());
+    if (props.site.id) await updateSite();
+    else await createSite();
   });
 
   isSaving.value = false;

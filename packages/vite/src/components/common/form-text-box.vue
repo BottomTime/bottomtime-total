@@ -13,9 +13,13 @@
       @keyup.enter="$emit('enter')"
       @keyup.esc="$emit('esc')"
     />
-    <span v-if="showRight" :class="rightSlotClasses">
+    <button
+      v-if="showRight"
+      :class="rightSlotClasses"
+      @click="$emit('right-button-click')"
+    >
       <slot name="right"></slot>
-    </span>
+    </button>
   </div>
 </template>
 
@@ -75,6 +79,7 @@ const rightSlotClasses = computed(() => {
 defineEmits<{
   (e: 'enter'): void;
   (e: 'esc'): void;
+  (e: 'right-button-click'): void;
 }>();
 
 function focus() {

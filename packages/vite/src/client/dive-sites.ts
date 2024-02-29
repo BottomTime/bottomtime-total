@@ -1,4 +1,5 @@
 import {
+  CreateOrUpdateDiveSiteDTO,
   DiveSiteSchema,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesResponseSchema,
@@ -10,6 +11,11 @@ import { DiveSite } from '.';
 
 export class DiveSitesApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
+
+  async createDiveSite(site: CreateOrUpdateDiveSiteDTO): Promise<DiveSite> {
+    const { data } = await this.apiClient.post('/api/diveSites', site);
+    return new DiveSite(this.apiClient, DiveSiteSchema.parse(data));
+  }
 
   async getDiveSite(id: string): Promise<DiveSite> {
     const url = `/api/diveSites/${id}`;

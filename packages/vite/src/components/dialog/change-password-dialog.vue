@@ -48,16 +48,15 @@
           :autofocus="!requireOldPassword"
           :password="!state.showPassword"
           show-right
+          @right-button-click="onToggleShowPassword"
         >
           <template #right>
-            <a
-              href="#"
+            <div
               class="dark:text-grey-950"
               :aria-label="
                 state.showPassword ? 'hide password' : 'show password'
               "
               data-testid="toggle-show-password"
-              @click="onToggleShowPassword"
             >
               <span v-if="state.showPassword">
                 <i class="fas fa-eye-slash"></i>
@@ -65,7 +64,7 @@
               <span v-else>
                 <i class="fas fa-eye"></i>
               </span>
-            </a>
+            </div>
           </template>
         </FormTextBox>
       </FormField>
