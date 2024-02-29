@@ -2,7 +2,7 @@
   <PageTitle title="Create Dive Site" />
   <BreadCrumbs :items="Breadcrumbs" />
   <RequireAuth>
-    <EditDiveSite :site="site" />
+    <EditDiveSite :site="site" @site-updated="onSiteCreated" />
   </RequireAuth>
   <div></div>
 </template>

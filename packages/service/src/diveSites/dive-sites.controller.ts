@@ -237,6 +237,10 @@ export class DiveSitesController {
     @Body(new ZodValidator(CreateOrUpdateDiveSiteSchema))
     options: CreateOrUpdateDiveSiteDTO,
   ): Promise<DiveSiteDTO> {
+    this.log.debug('Attempting to create a new dive site', {
+      creator: user.id,
+      ...options,
+    });
     const site = await this.diveSitesService.createDiveSite({
       creator: user.id,
       ...options,

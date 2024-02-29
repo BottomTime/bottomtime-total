@@ -11,12 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, PopulateOptions } from 'mongoose';
 import { v4 as uuid } from 'uuid';
 
-import {
-  DiveSiteData,
-  DiveSiteModel,
-  DiveSiteModelName,
-  UserData,
-} from '../schemas';
+import { DiveSiteData, DiveSiteModelName, UserData } from '../schemas';
 import { DiveSite, PopulatedDiveSiteDocument } from './dive-site';
 import { DiveSiteQueryBuilder } from './dive-site-query-builder';
 
@@ -32,7 +27,7 @@ export type SearchDiveSitesResults = {
 
 const CreatorPopulateOptions: PopulateOptions = {
   path: 'creator',
-  select: '_id username memberSince',
+  select: '_id username memberSince profile.name',
 } as const;
 
 @Injectable()
@@ -94,7 +89,7 @@ export class DiveSitesService {
   }
 
   async createDiveSite(options: CreateDiveSiteOptions): Promise<DiveSite> {
-    const data = new DiveSiteModel({
+    const data = new this.DiveSites({
       _id: uuid(),
       creator: options.creator,
       createdOn: new Date(),

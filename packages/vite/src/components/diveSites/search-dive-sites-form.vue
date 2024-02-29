@@ -260,14 +260,20 @@ const locationDialog = ref<InstanceType<typeof LocationDialog> | null>(null);
 function onRefresh() {
   const query: SearchDiveSitesParamsDTO = {
     query: state.query || undefined,
-    difficulty: {
-      min: 1,
-      max: state.maxDifficulty,
-    },
-    rating: {
-      min: state.minRating,
-      max: 5,
-    },
+    difficulty:
+      state.maxDifficulty < 5
+        ? {
+            min: 1,
+            max: state.maxDifficulty,
+          }
+        : undefined,
+    rating:
+      state.minRating > 1
+        ? {
+            min: state.minRating,
+            max: 5,
+          }
+        : undefined,
     shoreAccess:
       state.shoreAccess === '' ? undefined : state.shoreAccess === 'true',
     freeToDive:
