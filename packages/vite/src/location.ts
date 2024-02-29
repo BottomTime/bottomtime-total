@@ -54,7 +54,8 @@ export class MockLocation implements Location {
   }
 
   assign(url: string | URL): void {
-    this.location = typeof url === 'string' ? new URL(url) : url;
+    this.location =
+      typeof url === 'string' ? new URL(url, this.location.origin) : url;
   }
 
   reload(): void {

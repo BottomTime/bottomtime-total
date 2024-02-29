@@ -1,4 +1,8 @@
-import { DepthUnit, DiveSiteDTO } from '@bottomtime/api';
+import {
+  CreateOrUpdateDiveSiteSchema,
+  DepthUnit,
+  DiveSiteDTO,
+} from '@bottomtime/api';
 
 import { ApiClient, ApiClientKey, DiveSite } from '@/client';
 import GoogleMap from '@/components/common/google-map.vue';
@@ -140,12 +144,18 @@ describe('Edit Dive Site component', () => {
     );
   });
 
+  it.todo('Test validation');
+
   it('will allow a user to edit a dive site', async () => {
-    opts.props!.site = BlankDiveSite;
+    const BlankDiveSiteWithId: DiveSiteDTO = {
+      ...BlankDiveSite,
+      id: 'CBC457DB-9A4F-4D93-A0B1-A02D36945395',
+    };
+    opts.props!.site = BlankDiveSiteWithId;
     const wrapper = mount(EditDiveSite, opts);
 
     const expected: DiveSiteDTO = {
-      ...BlankDiveSite,
+      ...BlankDiveSiteWithId,
       name: 'new site name',
       description: 'new site description',
       depth: {
@@ -162,7 +172,7 @@ describe('Edit Dive Site component', () => {
       directions: 'new site directions',
     };
 
-    const site = new DiveSite(client.axios, { ...BlankDiveSite });
+    const site = new DiveSite(client.axios, { ...BlankDiveSiteWithId });
     const wrapSpy = jest
       .spyOn(client.diveSites, 'wrapDTO')
       .mockReturnValue(site);
@@ -182,11 +192,60 @@ describe('Edit Dive Site component', () => {
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
-    expect(wrapSpy).toHaveBeenCalledWith(BlankDiveSite);
+    expect(wrapSpy).toHaveBeenCalledWith(BlankDiveSiteWithId);
     expect(saveSpy).toHaveBeenCalled();
     expect(site.toJSON()).toEqual(expected);
 
     expect(wrapper.emitted('site-updated')).toEqual([[expected]]);
+  });
+
+  it('will allow a user to save a new dive site', async () => {
+    opts.props!.site = BlankDiveSite;
+    const wrapper = mount(EditDiveSite, opts);
+
+    const expected: DiveSiteDTO = {
+      ...BlankDiveSite,
+      id: 'CBC457DB-9A4F-4D93-A0B1-A02D36945395',
+      name: 'new site name',
+      description: 'new site description',
+      depth: {
+        depth: 12.34,
+        unit: DepthUnit.Feet,
+      },
+      freeToDive: false,
+      shoreAccess: false,
+      location: 'new site location',
+      gps: {
+        lat: 12.345,
+        lon: -123.456,
+      },
+      directions: 'new site directions',
+    };
+
+    const site = new DiveSite(client.axios, expected);
+    const createSpy = jest
+      .spyOn(client.diveSites, 'createDiveSite')
+      .mockResolvedValue(site);
+
+    await wrapper.get(NameInput).setValue(expected.name);
+    await wrapper.get(DescriptionInput).setValue(expected.description);
+    await wrapper.get(DepthInput).setValue(expected.depth!.depth);
+    await wrapper.get(DepthUnitInput).setValue(expected.depth!.unit);
+    await wrapper.get(FreeToDiveInput.No).setValue(true);
+    await wrapper.get(ShoreAccessInput.No).setValue(true);
+    await wrapper.get(LocationInput).setValue(expected.location);
+    await wrapper.get(GpsInput.Lat).setValue(expected.gps!.lat);
+    await wrapper.get(GpsInput.Lon).setValue(expected.gps!.lon);
+    await wrapper.get(DirectionsInput).setValue(expected.directions);
+
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.emitted('site-updated')).toEqual([[expected]]);
+    expect(site.toJSON()).toEqual(expected);
+    expect(createSpy).toHaveBeenCalledWith(
+      CreateOrUpdateDiveSiteSchema.parse(expected),
+    );
   });
 
   it('will allow a user to reset changes made to a dive site', async () => {
