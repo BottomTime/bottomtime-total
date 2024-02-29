@@ -13,6 +13,7 @@ import {
   mount,
 } from '@vue/test-utils';
 
+import { wrap } from 'module';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
@@ -144,7 +145,41 @@ describe('Edit Dive Site component', () => {
     );
   });
 
-  it.todo('Test validation');
+  it('will validate missing fields', async () => {
+    opts.props!.site = BlankDiveSite;
+    const wrapper = mount(EditDiveSite, opts);
+    const spy = jest.spyOn(client.diveSites, 'createDiveSite');
+
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="name-error"]').isVisible()).toBe(true);
+    expect(wrapper.get('[data-testid="location-error"]').isVisible()).toBe(
+      true,
+    );
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('will validate invalid fields', async () => {
+    opts.props!.site = BlankDiveSite;
+    const wrapper = mount(EditDiveSite, opts);
+    const spy = jest.spyOn(client.diveSites, 'createDiveSite');
+
+    await wrapper.get(DepthInput).setValue('seventeen');
+    await wrapper.get(GpsInput.Lat).setValue('west');
+    await wrapper.get(GpsInput.Lon).setValue('north');
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    const depthError = wrapper.get('[data-testid="depth-error"]');
+    const gpsErrors = wrapper.get('[data-testid="gps-errors"]');
+
+    expect(depthError.isVisible()).toBe(true);
+    expect(depthError.text()).toMatchSnapshot();
+    expect(gpsErrors.isVisible()).toBe(true);
+    expect(gpsErrors.html()).toMatchSnapshot();
+    expect(spy).not.toHaveBeenCalled();
+  });
 
   it('will allow a user to edit a dive site', async () => {
     const BlankDiveSiteWithId: DiveSiteDTO = {

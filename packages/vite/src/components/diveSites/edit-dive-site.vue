@@ -209,6 +209,7 @@
         <ul
           v-if="v$.gps.lat.$error || v$.gps.lon.$error"
           class="text-danger text-sm list-disc list-inside ml-10"
+          data-testid="gps-errors"
         >
           <li v-if="v$.gps.lat.$error">
             {{ v$.gps.lat.$errors[0]?.$message }}

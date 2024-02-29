@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Edit Dive Site component will validate invalid fields 1`] = `"Depth must be a positive value"`;
+
+exports[`Edit Dive Site component will validate invalid fields 2`] = `
+"<ul class="text-danger text-sm list-disc list-inside ml-10" data-testid="gps-errors">
+  <li>Latitude must be a number between -90 and 90</li>
+  <li>Longitude must be a number between -180 and 180</li>
+</ul>"
+`;
