@@ -3,8 +3,10 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import path from 'path';
+import { DataSource } from 'typeorm';
 
 import { AdminModule } from './admin';
 import { AuthModule } from './auth/auth.module';
@@ -18,6 +20,7 @@ import { TanksModule } from './tanks/tanks.module';
 import { UsersModule } from './users';
 
 export type ServerDependencies = {
+  dataSource: DataSource;
   mailClient: IMailClient;
   s3Client: S3Client;
 };
@@ -36,6 +39,11 @@ export class AppModule {
           serveStaticOptions: {
             index: 'index.html',
           },
+        }),
+        TypeOrmModule.forRoot({
+          type: 'postgres',
+          url: Config.postgresUri,
+          entities: [path.join(__dirname, './data/**/*.entity.ts')],
         }),
         MongooseModule.forRoot(Config.mongoUri),
         PassportModule.register({

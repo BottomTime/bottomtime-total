@@ -28,9 +28,21 @@ Once you have Node.js installed you'll need the Yarn package manager installed g
 npm i -g yarn
 ```
 
-### MongoDb
+### PostgreSQL
 
-The platform uses [MongoDb](https://www.mongodb.com/docs/manual/installation/) to persist its data. You'll want to have version 5 installed to host your databases.
+The backend database is powered by [PostgreSQL](https://www.postgresql.org/). First head over to the [download](https://www.postgresql.org/download/) page to get the Postgres server installed locally.
+
+Once installed, you'll want to run the `psql` tool to create a user:
+
+```bash
+psql postgres
+```
+
+When prompted, create the local user account:
+
+```bash
+postgres=# CREATE USER "bt_user" WITH PASSWORD 'bt_admin1234' CREATEDB;
+```
 
 ### Docker and Docker Compose
 
