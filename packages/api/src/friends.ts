@@ -1,5 +1,6 @@
-import { SortOrder } from './constants';
 import { z } from 'zod';
+
+import { SortOrder } from './constants';
 
 export enum FriendsSortBy {
   Username = 'username',
@@ -84,7 +85,7 @@ export const AcknowledgeFriendRequestParamsSchema = z.discriminatedUnion(
     }),
     z.object({
       accepted: z.literal(false),
-      reason: z.string().optional(),
+      reason: z.string().max(500).optional(),
     }),
   ],
 );
