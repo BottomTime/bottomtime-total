@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -20,9 +21,11 @@ export class FriendRequestEntity {
   to: UserEntity = new UserEntity();
 
   @CreateDateColumn()
+  @Index()
   created: Date = new Date();
 
   @Column('timestamp')
+  @Index()
   expires: Date = new Date();
 
   @Column('boolean')

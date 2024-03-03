@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,18 +23,22 @@ export class DiveSiteReview {
   site: DiveSiteEntity = new DiveSiteEntity();
 
   @CreateDateColumn()
+  @Index()
   createdOn: Date = new Date();
 
   @UpdateDateColumn()
   updatedOn?: Date;
 
   @Column('varchar', { length: 200 })
+  @Index()
   title: string = '';
 
   @Column('float')
+  @Index()
   rating: number = 0;
 
   @Column('float')
+  @Index()
   difficulty?: number;
 
   @Column('varchar', { length: 1000 })

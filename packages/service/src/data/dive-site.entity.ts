@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   Point,
   PrimaryGeneratedColumn,
@@ -27,6 +28,7 @@ export class DiveSiteEntity {
   updatedOn: Date = new Date();
 
   @Column('varchar', { length: 200 })
+  @Index()
   name: string = '';
 
   @Column('varchar', { length: 2000 })
@@ -45,11 +47,14 @@ export class DiveSiteEntity {
   directions?: string;
 
   @Column('geometry')
+  @Index({ spatial: true })
   gps?: Point;
 
   @Column('boolean')
+  @Index()
   freeToDive?: boolean;
 
   @Column('boolean')
+  @Index()
   shoreAccess?: boolean;
 }

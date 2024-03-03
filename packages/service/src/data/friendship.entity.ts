@@ -21,5 +21,6 @@ export class FriendshipEntity {
   friend: UserEntity = new UserEntity();
 
   @Column('timestamp')
+  @Index()
   friendsSince: Date = new Date();
 }

@@ -1,8 +1,15 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { UserEntity } from './user.entity';
 
 @Entity()
+@Index(['agency', 'course'])
 export class UserCertificationEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string = '';

@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
+@Index(['agency', 'course'])
 export class CertificationEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string = '';

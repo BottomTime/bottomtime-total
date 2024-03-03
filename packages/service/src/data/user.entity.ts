@@ -11,6 +11,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -52,6 +53,7 @@ export class UserEntity {
   email?: string;
 
   @Column({ type: 'varchar', length: 50 })
+  @Index({ unique: true })
   emailLowered?: string;
 
   @Column({ type: 'boolean', default: false })
@@ -67,6 +69,7 @@ export class UserEntity {
   experienceLevel?: string;
 
   @Column({ type: 'boolean', default: false })
+  @Index()
   isLockedOut: boolean = false;
 
   @Column({ type: 'timestamp' })
@@ -79,6 +82,7 @@ export class UserEntity {
   location?: string;
 
   @CreateDateColumn()
+  @Index()
   memberSince: Date = new Date();
 
   @Column({ type: 'varchar', length: 100 })
@@ -123,6 +127,7 @@ export class UserEntity {
     enum: UserRole,
     default: UserRole.User,
   })
+  @Index()
   role: UserRole = UserRole.User;
 
   @Column({ type: 'varchar', length: 10 })
@@ -132,6 +137,7 @@ export class UserEntity {
   username: string = '';
 
   @Column({ type: 'varchar', length: 50 })
+  @Index({ unique: true })
   usernameLowered: string = '';
 
   @Column({ type: 'enum', enum: WeightUnit, default: WeightUnit.Kilograms })

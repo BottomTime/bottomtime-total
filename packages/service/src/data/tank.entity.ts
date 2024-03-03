@@ -1,6 +1,12 @@
 import { TankMaterial } from '@bottomtime/api';
 
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { UserEntity } from './user.entity';
 
@@ -13,6 +19,7 @@ export class TankEntity {
   user?: UserEntity;
 
   @Column({ type: 'varchar', length: 100 })
+  @Index()
   name: string = '';
 
   @Column({ type: 'enum', enum: TankMaterial })
