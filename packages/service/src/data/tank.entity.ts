@@ -1,18 +1,12 @@
 import { TankMaterial } from '@bottomtime/api';
 
-import {
-  Column,
-  Entity,
-  Index,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { UserEntity } from './user.entity';
 
-@Entity()
+@Entity('tanks')
 export class TankEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string = '';
 
   @ManyToOne(() => UserEntity, (user) => user.tanks, { onDelete: 'CASCADE' })

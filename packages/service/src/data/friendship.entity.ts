@@ -1,17 +1,11 @@
-import {
-  Column,
-  Entity,
-  Index,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { UserEntity } from './user.entity';
 
-@Entity()
+@Entity('friendships')
 @Index(['user', 'friend'], { unique: true })
 export class FriendshipEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string = '';
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })

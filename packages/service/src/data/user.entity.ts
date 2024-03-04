@@ -13,16 +13,16 @@ import {
   Entity,
   Index,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from 'typeorm';
 
 import { TankEntity } from './tank.entity';
 import { UserCertificationEntity } from './user-certification.entity';
 import { UserOAuthEntity } from './user-oauth.entity';
 
-@Entity()
+@Entity('users')
 export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string = '';
 
   @Column({ type: 'varchar', length: 150 })
@@ -41,7 +41,7 @@ export class UserEntity {
       onDelete: 'CASCADE',
     },
   )
-  certifications?: UserCertificationEntity[] = [];
+  certifications?: UserCertificationEntity[];
 
   @Column({ type: 'json' })
   customData?: Record<string, unknown>;
@@ -91,7 +91,7 @@ export class UserEntity {
   @OneToMany(() => UserOAuthEntity, (oauth) => oauth.user, {
     onDelete: 'CASCADE',
   })
-  oauth?: UserOAuthEntity[] = [];
+  oauth?: UserOAuthEntity[];
 
   @Column()
   passwordHash?: string;

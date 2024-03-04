@@ -1,17 +1,11 @@
-import {
-  Column,
-  Entity,
-  Index,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { UserEntity } from './user.entity';
 
-@Entity()
+@Entity('user_certifications')
 @Index(['agency', 'course'])
 export class UserCertificationEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string = '';
 
   @ManyToOne(() => UserEntity, (user) => user.certifications, {

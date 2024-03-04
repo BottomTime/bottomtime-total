@@ -7,15 +7,15 @@ import {
   Index,
   ManyToOne,
   Point,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { UserEntity } from './user.entity';
 
-@Entity()
+@Entity('dive_sites')
 export class DiveSiteEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string = '';
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })

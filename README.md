@@ -32,16 +32,22 @@ npm i -g yarn
 
 The backend database is powered by [PostgreSQL](https://www.postgresql.org/). First head over to the [download](https://www.postgresql.org/download/) page to get the Postgres server installed locally.
 
-Once installed, you'll want to run the `psql` tool to create a user:
+In addition, you will also need to install the PostGIS extension for PostgreSQL. This allows, indexing of GPS
+coordinates for doing searches for sites in specific areas. It can be downloaded and installed following the instructions [here](https://postgis.net/documentation/getting_started/).
+
+Once PostgreSQL and PostGIS are installed, you'll want to run the `psql` tool to create a new user and a local database:
 
 ```bash
 psql postgres
 ```
 
-When prompted, create the local user account:
+When you see the `postgres=#` prompt, create the user account and local database and register the PostGIS extension by running the following commands:
 
-```bash
-postgres=# CREATE USER "bt_user" WITH PASSWORD 'bt_admin1234' CREATEDB;
+```sql
+CREATE USER "bt_user" WITH PASSWORD 'bt_admin1234' CREATEDB;
+CREATE DATABASE "bottomtime_local" WITH OWNER "bt_user";
+\c "bottomtime_local"
+CREATE EXTENSION "postgis";
 ```
 
 ### Docker and Docker Compose

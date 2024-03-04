@@ -1,9 +1,9 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 
-@Entity()
+@Entity('certifications')
 @Index(['agency', 'course'])
 export class CertificationEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string = '';
 
   @Column({ type: 'varchar', length: 100 })

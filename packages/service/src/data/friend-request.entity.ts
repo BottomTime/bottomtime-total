@@ -4,14 +4,14 @@ import {
   Entity,
   Index,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from 'typeorm';
 
 import { UserEntity } from './user.entity';
 
-@Entity()
+@Entity('friend_requests')
 export class FriendRequestEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string = '';
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })

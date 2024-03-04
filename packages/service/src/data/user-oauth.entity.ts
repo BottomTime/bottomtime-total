@@ -1,10 +1,13 @@
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { UserEntity } from './user.entity';
 
-@Entity()
+@Entity('user_oauth')
 @Index(['provider', 'providerId'], { unique: true })
 export class UserOAuthEntity {
+  @PrimaryColumn('uuid')
+  id: string = '';
+
   @Column()
   provider: string = '';
 
