@@ -3,19 +3,22 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { UserData, UserModelName } from '../schemas';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../users/user';
+import { InjectRepository } from '@nestjs/typeorm';
+
 import { compare } from 'bcrypt';
-import { JwtPayload, sign } from 'jsonwebtoken';
-import { Config } from '../config';
 import { Response } from 'express';
+import { JwtPayload, sign } from 'jsonwebtoken';
+import { Repository } from 'typeorm';
+
+import { Config } from '../config';
+import { UserEntity } from '../data';
+import { User } from '../users/user';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(UserModelName) private readonly Users: Model<UserData>,
+    @InjectRepository(UserEntity)
+    private readonly Users: Repository<UserEntity>,
   ) {}
 
   async validateJwt(payload: JwtPayload): Promise<User> {
@@ -28,7 +31,7 @@ export class AuthService {
     }
 
     const userId = payload.sub.substring(5);
-    const user = await this.Users.findById(userId);
+    const user = await this.Users.findOneBy({ id: userId });
 
     if (!user) {
       throw new UnauthorizedException(
@@ -50,9 +53,10 @@ export class AuthService {
     password: string,
   ): Promise<User | undefined> {
     const lowered = usernameOrEmail.toLowerCase();
-    const data = await this.Users.findOne({
-      $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
-    });
+    const data = await this.Users.findOneBy([
+      { usernameLowered: lowered },
+      { emailLowered: lowered },
+    ]);
 
     if (!data || !data.passwordHash || data.isLockedOut) {
       return undefined;
@@ -64,7 +68,7 @@ export class AuthService {
     }
 
     data.lastLogin = new Date();
-    await data.save();
+    await this.Users.save(data);
 
     return new User(this.Users, data);
   }

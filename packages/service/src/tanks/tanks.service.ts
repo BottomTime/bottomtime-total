@@ -1,14 +1,16 @@
+import { CreateOrUpdateTankParamsDTO } from '@bottomtime/api';
+
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery } from 'mongoose';
-import { TankData, TankModelName } from '../schemas';
+
+import { FilterQuery, Model } from 'mongoose';
 import { v4 as uuid } from 'uuid';
+
+import { TankData, TankModelName } from '../schemas';
 import { Tank } from './tank';
-import { CreateOrUpdateTankParamsDTO } from '@bottomtime/api';
-import { Maybe } from '../common';
 
 export type CreateTankOptions = CreateOrUpdateTankParamsDTO & {
-  userId?: Maybe<string>;
+  userId?: string | null;
 };
 export type UpdateTankOptions = Partial<Omit<Tank, 'id' | 'userId'>>;
 export type ListTanksResponse = {

@@ -92,28 +92,29 @@ export class UsersService {
 
     const data = new UserEntity();
     data.id = uuid();
-    data.email = options.email;
+    data.email = options.email ?? null;
     data.emailLowered = emailLowered;
-    data.passwordHash = passwordHash;
+    data.passwordHash = passwordHash ?? null;
     data.role = options.role || UserRole.User;
     data.username = options.username;
     data.usernameLowered = usernameLowered;
 
-    data.avatar = options.profile?.avatar;
-    data.bio = options.profile?.bio;
-    data.birthdate = options.profile?.birthdate;
+    data.avatar = options.profile?.avatar ?? null;
+    data.bio = options.profile?.bio ?? null;
+    data.birthdate = options.profile?.birthdate ?? null;
     data.certifications = options.profile?.certifications?.map((cert) => {
       const certification = new UserCertificationEntity();
+      certification.id = uuid();
       certification.agency = cert.agency;
       certification.course = cert.course;
       certification.date = cert.date;
       return certification;
     });
-    data.customData = options.profile?.customData;
-    data.experienceLevel = options.profile?.experienceLevel;
-    data.location = options.profile?.location;
-    data.name = options.profile?.name;
-    data.startedDiving = options.profile?.startedDiving;
+    data.customData = options.profile?.customData ?? null;
+    data.experienceLevel = options.profile?.experienceLevel ?? null;
+    data.location = options.profile?.location ?? null;
+    data.name = options.profile?.name ?? null;
+    data.startedDiving = options.profile?.startedDiving ?? null;
 
     data.depthUnit = options.settings?.depthUnit || DepthUnit.Meters;
     data.pressureUnit = options.settings?.pressureUnit || PressureUnit.Bar;
@@ -148,24 +149,53 @@ export class UsersService {
   async searchUsers(
     options: SearchUsersOptions = {},
   ): Promise<SearchUsersResult> {
-    let query = this.Users.createQueryBuilder('users').from(
-      UserEntity,
-      'users',
-    );
+    let query = this.Users.createQueryBuilder('users');
 
     if (options.role) {
-      query = query.andWhere('role = :role', { role: options.role });
+      query = query.andWhere('users.role = :role', { role: options.role });
     }
 
     if (options.query) {
-      query = query.andWhere('fulltext @@ to_tsquery(:query)', {
-        query: options.query,
-      });
+      query = query.andWhere(
+        "users.fulltext @@ to_tsquery('english', :query)",
+        {
+          query: options.query,
+        },
+      );
+    }
+
+    if (options.profileVisibleTo) {
+      if (options.profileVisibleTo === '#public') {
+        query = query.andWhere('users.profileVisibility = :visibility', {
+          visibility: ProfileVisibility.Public,
+        });
+      } else {
+        query = query
+          .innerJoin('users.friends', 'friend_relations')
+          .innerJoin(
+            'friend_relations.friend',
+            'friends',
+            'friends.usernameLowered = :friendUsername',
+            {
+              friendUsername: options.profileVisibleTo.toLowerCase(),
+              visibilities: [
+                ProfileVisibility.Public,
+                ProfileVisibility.FriendsOnly,
+              ],
+            },
+          )
+          .andWhere('users.profileVisibility IN (:...visibilities)', {
+            visibilities: [
+              ProfileVisibility.Public,
+              ProfileVisibility.FriendsOnly,
+            ],
+          });
+      }
     }
 
     query = query.skip(options.skip ?? 0).take(options.limit ?? 100);
 
-    const sortBy = options.sortBy || UsersSortBy.Username;
+    const sortBy = `users.${options.sortBy || UsersSortBy.Username}`;
     const sortOrder = options.sortOrder
       ? options.sortOrder
       : sortBy === UsersSortBy.MemberSince
@@ -177,11 +207,22 @@ export class UsersService {
       sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
     );
 
-    const users: UserEntity[] = await query.execute();
+    this.log.verbose('Performing user search with query', query.getQuery());
+
+    const [users, totalCount] = await query.getManyAndCount();
 
     return {
       users: users.map((d) => new User(this.Users, d)),
-      totalCount: 0,
+      totalCount,
     };
+  }
+
+  async areFriends(userIdA: string, userIdB: string): Promise<boolean> {
+    return await this.Friends.exists({
+      where: [
+        { user: { id: userIdA }, friend: { id: userIdB } },
+        { user: { id: userIdB }, friend: { id: userIdA } },
+      ],
+    });
   }
 }

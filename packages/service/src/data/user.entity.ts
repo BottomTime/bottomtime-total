@@ -16,6 +16,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
+import { FriendshipEntity } from './friendship.entity';
 import { TankEntity } from './tank.entity';
 import { UserCertificationEntity } from './user-certification.entity';
 import { UserOAuthEntity } from './user-oauth.entity';
@@ -73,6 +74,9 @@ export class UserEntity {
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   experienceLevel: string | null = null;
+
+  @OneToMany(() => FriendshipEntity, (friendship) => friendship.user)
+  friends?: FriendshipEntity[];
 
   @Column({ type: 'boolean', default: false })
   @Index()

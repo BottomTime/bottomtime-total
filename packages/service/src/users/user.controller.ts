@@ -154,10 +154,7 @@ export class UserController {
       }
 
       if (user.settings.profileVisibility === ProfileVisibility.FriendsOnly) {
-        const areFriends = await this.users.testFriendship(
-          currentUser.id,
-          user.id,
-        );
+        const areFriends = await this.users.areFriends(currentUser.id, user.id);
 
         if (!areFriends) {
           throw new ForbiddenException(
@@ -309,7 +306,7 @@ export class UserController {
     @Body(new ZodValidator(UpdateProfileParamsSchema))
     profile: UpdateProfileParamsDTO,
   ): Promise<void> {
-    await user.profile.update(profile, true);
+    await user.profile.update(profile);
   }
 
   /**

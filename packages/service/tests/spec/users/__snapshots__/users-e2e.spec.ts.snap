@@ -41,44 +41,40 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 `;
 
 exports[`Users End-to-End Tests when creating a new user account will create a new account and sign in user 2`] = `
-{
-  "__v": 0,
-  "_id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+UserEntity {
+  "avatar": "https://example.com/avatar.png",
+  "bio": "This is a test user.",
+  "birthdate": "1980-01-01",
+  "certifications": undefined,
+  "customData": null,
+  "depthUnit": "m",
   "email": "newuser@gmail.com",
   "emailLowered": "newuser@gmail.com",
   "emailVerificationToken": "oqh6qlk1wQsFvYiGO__KK0ZlQcMc6CW6I08zPbsgLtM",
   "emailVerificationTokenExpiration": 2024-01-17T12:40:18.319Z,
   "emailVerified": false,
+  "experienceLevel": "Advanced",
+  "friends": undefined,
+  "id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
   "isLockedOut": false,
   "lastLogin": 2024-01-15T12:40:18.319Z,
+  "lastPasswordChange": null,
+  "location": "Seattle, WA",
   "memberSince": 2024-01-15T12:40:18.319Z,
+  "name": "User McUserface",
+  "oauth": undefined,
   "passwordHash": "$2b$04$wProYOHv1Qgo9oj1nwDIuObvp7V6K1SSm0Gcp2TSPQPhOqY8RLBRa",
-  "profile": {
-    "avatar": "https://example.com/avatar.png",
-    "bio": "This is a test user.",
-    "birthdate": "1980-01-01",
-    "certifications": [
-      {
-        "agency": "PADI",
-        "course": "Open Water Diver",
-        "date": "2000-01-01",
-      },
-    ],
-    "experienceLevel": "Advanced",
-    "location": "Seattle, WA",
-    "name": "User McUserface",
-    "startedDiving": "2000-01-01",
-  },
+  "passwordResetToken": null,
+  "passwordResetTokenExpiration": null,
+  "pressureUnit": "bar",
+  "profileVisibility": "friends",
   "role": "user",
-  "settings": {
-    "depthUnit": "m",
-    "pressureUnit": "bar",
-    "profileVisibility": "friends",
-    "temperatureUnit": "C",
-    "weightUnit": "kg",
-  },
+  "startedDiving": "2000-01-01",
+  "tanks": undefined,
+  "temperatureUnit": "C",
   "username": "User.McUserface",
   "usernameLowered": "user.mcuserface",
+  "weightUnit": "kg",
 }
 `;
 
@@ -96,13 +92,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
     "avatar": "https://example.com/avatar.png",
     "bio": "This is a test user.",
     "birthdate": "1980-01-01",
-    "certifications": [
-      {
-        "agency": "PADI",
-        "course": "Open Water Diver",
-        "date": "2000-01-01",
-      },
-    ],
     "experienceLevel": "Advanced",
     "location": "Seattle, WA",
     "memberSince": "2024-01-15T12:40:18.319Z",
@@ -132,7 +121,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "lastLogin": "2024-01-15T12:40:18.319Z",
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
-    "certifications": [],
     "memberSince": "2024-01-15T12:40:18.319Z",
     "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
     "username": "User.McUserface",
@@ -150,29 +138,40 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 `;
 
 exports[`Users End-to-End Tests when creating a new user account will create a new account with minimal properties 2`] = `
-{
-  "__v": 0,
-  "_id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
+UserEntity {
+  "avatar": null,
+  "bio": null,
+  "birthdate": null,
+  "certifications": undefined,
+  "customData": null,
+  "depthUnit": "m",
   "email": null,
   "emailLowered": null,
+  "emailVerificationToken": null,
+  "emailVerificationTokenExpiration": null,
   "emailVerified": false,
+  "experienceLevel": null,
+  "friends": undefined,
+  "id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
   "isLockedOut": false,
   "lastLogin": 2024-01-15T12:40:18.319Z,
+  "lastPasswordChange": null,
+  "location": null,
   "memberSince": 2024-01-15T12:40:18.319Z,
+  "name": null,
+  "oauth": undefined,
   "passwordHash": null,
-  "profile": {
-    "certifications": [],
-  },
+  "passwordResetToken": null,
+  "passwordResetTokenExpiration": null,
+  "pressureUnit": "bar",
+  "profileVisibility": "friends",
   "role": "user",
-  "settings": {
-    "depthUnit": "m",
-    "pressureUnit": "bar",
-    "profileVisibility": "friends",
-    "temperatureUnit": "C",
-    "weightUnit": "kg",
-  },
+  "startedDiving": null,
+  "tanks": undefined,
+  "temperatureUnit": "C",
   "username": "User.McUserface",
   "usernameLowered": "user.mcuserface",
+  "weightUnit": "kg",
 }
 `;
 
@@ -186,7 +185,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "lastLogin": "2024-01-15T12:40:18.319Z",
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
-    "certifications": [],
     "memberSince": "2024-01-15T12:40:18.319Z",
     "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
     "username": "User.McUserface",

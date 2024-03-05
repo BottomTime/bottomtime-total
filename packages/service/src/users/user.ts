@@ -7,7 +7,7 @@ import { randomBytes } from 'crypto';
 import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 
-import { DefaultUserSettings, Maybe } from '../common';
+import { DefaultUserSettings } from '../common';
 import { Config } from '../config';
 import { UserEntity } from '../data';
 import { Profile } from './profile';
@@ -40,7 +40,7 @@ export class User implements Express.User {
     return this.data.username;
   }
 
-  get email(): Maybe<string> {
+  get email(): string | null {
     return this.data.email;
   }
 
@@ -56,11 +56,11 @@ export class User implements Express.User {
     return !!this.data.passwordHash;
   }
 
-  get lastLogin(): Maybe<Date> {
+  get lastLogin(): Date | null {
     return this.data.lastLogin;
   }
 
-  get lastPasswordChange(): Maybe<Date> {
+  get lastPasswordChange(): Date | null {
     return this.data.lastPasswordChange;
   }
 
@@ -146,8 +146,8 @@ export class User implements Express.User {
 
     // Invalidate any existing email verification token so that if there is one floating
     // around in the wild it cannot be re-played to verify a fake email address.
-    this.data.emailVerificationToken = undefined;
-    this.data.emailVerificationTokenExpiration = undefined;
+    this.data.emailVerificationToken = null;
+    this.data.emailVerificationTokenExpiration = null;
 
     await this.Users.save(this.data);
   }
@@ -188,8 +188,8 @@ export class User implements Express.User {
     }
 
     this.data.emailVerified = true;
-    this.data.emailVerificationToken = undefined;
-    this.data.emailVerificationTokenExpiration = undefined;
+    this.data.emailVerificationToken = null;
+    this.data.emailVerificationTokenExpiration = null;
 
     this.log.log(
       `User ${this.username} has verified their email address: ${this.email}.`,
@@ -254,8 +254,8 @@ export class User implements Express.User {
 
     this.data.passwordHash = passwordHash;
     this.data.lastPasswordChange = new Date();
-    this.data.passwordResetToken = undefined;
-    this.data.passwordResetTokenExpiration = undefined;
+    this.data.passwordResetToken = null;
+    this.data.passwordResetTokenExpiration = null;
     await this.Users.save(this.data);
 
     this.log.log(

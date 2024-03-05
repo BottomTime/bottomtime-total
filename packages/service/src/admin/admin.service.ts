@@ -6,13 +6,13 @@ import {
 } from '@bottomtime/api';
 
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { hash } from 'bcrypt';
-import { FilterQuery, Model } from 'mongoose';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Config } from '../config';
-import { UserData, UserDocument, UserModelName } from '../schemas';
+import { UserEntity } from '../data';
 import { User } from '../users/user';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO;
@@ -26,63 +26,52 @@ export class AdminService {
   private readonly log = new Logger(AdminService.name);
 
   constructor(
-    @InjectModel(UserModelName)
-    private readonly Users: Model<UserData>,
+    @InjectRepository(UserEntity)
+    private readonly Users: Repository<UserEntity>,
   ) {}
 
-  private async findUser(
-    usernameOrEmail: string,
-  ): Promise<UserDocument | null> {
+  private async findUser(usernameOrEmail: string): Promise<UserEntity | null> {
     const lowered = usernameOrEmail.toLowerCase();
-    const user = await this.Users.findOne({
-      $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
-    });
+    const user = await this.Users.findOneBy([
+      { usernameLowered: lowered },
+      { emailLowered: lowered },
+    ]);
     return user;
   }
 
   async searchUsers(options: SearchUsersOptions): Promise<SearchUsersResults> {
-    const query: FilterQuery<UserData> = {};
+    const where: FindOptionsWhere<UserEntity> = {};
 
     if (options.query) {
-      query.$text = {
-        $search: options.query,
-        $caseSensitive: false,
-        $diacriticSensitive: false,
-      };
+      // TODO
+      // query.$text = {
+      //   $search: options.query,
+      //   $caseSensitive: false,
+      //   $diacriticSensitive: false,
+      // };
     }
 
     if (options.role) {
-      query.role = options.role;
+      where.role = options.role;
     }
 
-    let sort: { [key: string]: SortOrder };
-    switch (options.sortBy) {
-      case UsersSortBy.MemberSince:
-        sort = {
-          memberSince: options.sortOrder,
-        };
-        break;
-
-      case UsersSortBy.Username:
-      default:
-        sort = {
-          username: options.sortOrder,
-        };
-        break;
-    }
+    const query = this.Users.createQueryBuilder()
+      .from(UserEntity, 'users')
+      .where(where)
+      .orderBy(
+        options.sortBy || UsersSortBy.MemberSince,
+        options.sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
+      )
+      .skip(options.skip ?? 0)
+      .limit(options.limit ?? 100);
 
     const [users, totalCount] = await Promise.all([
-      this.Users.find(query)
-        .sort(sort)
-        .skip(options.skip)
-        .limit(options.limit)
-        .exec(),
-      this.Users.countDocuments(query).exec(),
+      query.execute(),
+      query.getCount(),
     ]);
-    this.Users.find();
 
     return {
-      users: users.map((user) => new User(this.Users, user)),
+      users: users.map((user: UserEntity) => new User(this.Users, user)),
       totalCount,
     };
   }
@@ -95,7 +84,7 @@ export class AdminService {
 
     if (user) {
       user.role = newRole;
-      await user.save();
+      await this.Users.save(user);
       return true;
     }
 
@@ -107,7 +96,7 @@ export class AdminService {
 
     if (user) {
       user.isLockedOut = true;
-      await user.save();
+      await this.Users.save(user);
       return true;
     }
 
@@ -125,7 +114,7 @@ export class AdminService {
     if (user) {
       user.passwordHash = await hash(newPassword, Config.passwordSaltRounds);
       user.lastPasswordChange = new Date();
-      await user.save();
+      await this.Users.save(user);
       return true;
     }
 
@@ -137,7 +126,7 @@ export class AdminService {
 
     if (user) {
       user.isLockedOut = false;
-      await user.save();
+      await this.Users.save(user);
       return true;
     }
 

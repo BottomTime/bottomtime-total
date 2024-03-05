@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Init1709581448101 implements MigrationInterface {
-  name = 'Init1709581448101';
+export class Init1709656114380 implements MigrationInterface {
+  name = 'Init1709656114380';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -18,6 +18,12 @@ export class Init1709581448101 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_4d10bff77f069a4f92ec9ab1f1" ON "user_certifications" ("agency", "course") `,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "user_oauth" ("id" uuid NOT NULL, "provider" character varying(50) NOT NULL, "providerId" character varying(100) NOT NULL, "userId" uuid, CONSTRAINT "PK_95d512d160789656ed4f21af994" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_b7a9b856329b6e832f5ffb017d" ON "user_oauth" ("provider", "providerId") `,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."users_depthunit_enum" AS ENUM('m', 'ft')`,
@@ -56,10 +62,22 @@ export class Init1709581448101 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_3bb366d1cc723386bb537d1951" ON "users" ("usernameLowered") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "user_oauth" ("id" uuid NOT NULL, "provider" character varying(50) NOT NULL, "providerId" character varying(100) NOT NULL, "userId" uuid, CONSTRAINT "PK_95d512d160789656ed4f21af994" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "friendships" ("id" uuid NOT NULL, "friendsSince" TIMESTAMP NOT NULL, "userId" uuid, "friendId" uuid, CONSTRAINT "PK_08af97d0be72942681757f07bc8" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_b7a9b856329b6e832f5ffb017d" ON "user_oauth" ("provider", "providerId") `,
+      `CREATE INDEX "IDX_bd702c3c85f038336e96446739" ON "friendships" ("friendsSince") `,
+    );
+    await queryRunner.query(
+      `CREATE UNIQUE INDEX "IDX_79319c79ccb0d109db66e5faaf" ON "friendships" ("userId", "friendId") `,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "friend_requests" ("id" uuid NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "expires" TIMESTAMP NOT NULL, "accepted" boolean, "reason" character varying(500), "fromId" uuid, "toId" uuid, CONSTRAINT "PK_3827ba86ce64ecb4b90c92eeea6" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_0611a39fee13104e56c4d63f9a" ON "friend_requests" ("created") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_0b9caea4e9a2183babc3a807c6" ON "friend_requests" ("expires") `,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."dive_sites_depthunit_enum" AS ENUM('m', 'ft')`,
@@ -95,24 +113,6 @@ export class Init1709581448101 implements MigrationInterface {
       `CREATE INDEX "IDX_86f9f0ce42116a405999b132f8" ON "dive_site_reviews" ("difficulty") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "friendships" ("id" uuid NOT NULL, "friendsSince" TIMESTAMP NOT NULL, "userId" uuid, "friendId" uuid, CONSTRAINT "PK_08af97d0be72942681757f07bc8" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_bd702c3c85f038336e96446739" ON "friendships" ("friendsSince") `,
-    );
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX "IDX_79319c79ccb0d109db66e5faaf" ON "friendships" ("userId", "friendId") `,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "friend_requests" ("id" uuid NOT NULL, "created" TIMESTAMP NOT NULL DEFAULT now(), "expires" TIMESTAMP NOT NULL, "accepted" boolean, "reason" character varying(500), "fromId" uuid, "toId" uuid, CONSTRAINT "PK_3827ba86ce64ecb4b90c92eeea6" PRIMARY KEY ("id"))`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_0611a39fee13104e56c4d63f9a" ON "friend_requests" ("created") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_0b9caea4e9a2183babc3a807c6" ON "friend_requests" ("expires") `,
-    );
-    await queryRunner.query(
       `CREATE TABLE "certifications" ("id" uuid NOT NULL, "agency" character varying(100) NOT NULL, "course" character varying(200) NOT NULL, CONSTRAINT "PK_fd763d412e4a1fb1b6dadd6e72b" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
@@ -128,15 +128,6 @@ export class Init1709581448101 implements MigrationInterface {
       `ALTER TABLE "user_oauth" ADD CONSTRAINT "FK_5ed0c676645727b4be0f3c27abf" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "dive_sites" ADD CONSTRAINT "FK_3681025ed319874bfb8907ab659" FOREIGN KEY ("creatorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "dive_site_reviews" ADD CONSTRAINT "FK_7e54d76e17186fe677b826e1e3c" FOREIGN KEY ("creatorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "dive_site_reviews" ADD CONSTRAINT "FK_a927bd1320cbb280ec7486baf8f" FOREIGN KEY ("siteId") REFERENCES "dive_sites"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "friendships" ADD CONSTRAINT "FK_721d9e1784e4eb781d7666fa7ab" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
@@ -148,9 +139,27 @@ export class Init1709581448101 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "friend_requests" ADD CONSTRAINT "FK_b6893fbcb759cd455c63c03da5a" FOREIGN KEY ("toId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
+    await queryRunner.query(
+      `ALTER TABLE "dive_sites" ADD CONSTRAINT "FK_3681025ed319874bfb8907ab659" FOREIGN KEY ("creatorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" ADD CONSTRAINT "FK_7e54d76e17186fe677b826e1e3c" FOREIGN KEY ("creatorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" ADD CONSTRAINT "FK_a927bd1320cbb280ec7486baf8f" FOREIGN KEY ("siteId") REFERENCES "dive_sites"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" DROP CONSTRAINT "FK_a927bd1320cbb280ec7486baf8f"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" DROP CONSTRAINT "FK_7e54d76e17186fe677b826e1e3c"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "dive_sites" DROP CONSTRAINT "FK_3681025ed319874bfb8907ab659"`,
+    );
     await queryRunner.query(
       `ALTER TABLE "friend_requests" DROP CONSTRAINT "FK_b6893fbcb759cd455c63c03da5a"`,
     );
@@ -162,15 +171,6 @@ export class Init1709581448101 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "friendships" DROP CONSTRAINT "FK_721d9e1784e4eb781d7666fa7ab"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "dive_site_reviews" DROP CONSTRAINT "FK_a927bd1320cbb280ec7486baf8f"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "dive_site_reviews" DROP CONSTRAINT "FK_7e54d76e17186fe677b826e1e3c"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "dive_sites" DROP CONSTRAINT "FK_3681025ed319874bfb8907ab659"`,
     );
     await queryRunner.query(
       `ALTER TABLE "user_oauth" DROP CONSTRAINT "FK_5ed0c676645727b4be0f3c27abf"`,
@@ -185,20 +185,6 @@ export class Init1709581448101 implements MigrationInterface {
       `DROP INDEX "public"."IDX_6059f3015a538f7656da969186"`,
     );
     await queryRunner.query(`DROP TABLE "certifications"`);
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_0b9caea4e9a2183babc3a807c6"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_0611a39fee13104e56c4d63f9a"`,
-    );
-    await queryRunner.query(`DROP TABLE "friend_requests"`);
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_79319c79ccb0d109db66e5faaf"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_bd702c3c85f038336e96446739"`,
-    );
-    await queryRunner.query(`DROP TABLE "friendships"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_86f9f0ce42116a405999b132f8"`,
     );
@@ -227,9 +213,19 @@ export class Init1709581448101 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "dive_sites"`);
     await queryRunner.query(`DROP TYPE "public"."dive_sites_depthunit_enum"`);
     await queryRunner.query(
-      `DROP INDEX "public"."IDX_b7a9b856329b6e832f5ffb017d"`,
+      `DROP INDEX "public"."IDX_0b9caea4e9a2183babc3a807c6"`,
     );
-    await queryRunner.query(`DROP TABLE "user_oauth"`);
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_0611a39fee13104e56c4d63f9a"`,
+    );
+    await queryRunner.query(`DROP TABLE "friend_requests"`);
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_79319c79ccb0d109db66e5faaf"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_bd702c3c85f038336e96446739"`,
+    );
+    await queryRunner.query(`DROP TABLE "friendships"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_3bb366d1cc723386bb537d1951"`,
     );
@@ -254,6 +250,10 @@ export class Init1709581448101 implements MigrationInterface {
     );
     await queryRunner.query(`DROP TYPE "public"."users_pressureunit_enum"`);
     await queryRunner.query(`DROP TYPE "public"."users_depthunit_enum"`);
+    await queryRunner.query(
+      `DROP INDEX "public"."IDX_b7a9b856329b6e832f5ffb017d"`,
+    );
+    await queryRunner.query(`DROP TABLE "user_oauth"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_4d10bff77f069a4f92ec9ab1f1"`,
     );

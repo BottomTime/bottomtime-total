@@ -8,7 +8,7 @@ export class FriendshipEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, (user) => user.friends, { onDelete: 'CASCADE' })
   user: UserEntity = new UserEntity();
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })

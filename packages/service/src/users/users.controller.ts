@@ -109,7 +109,7 @@ export class UsersController {
 
     if (user) {
       if (user.role !== UserRole.Admin) {
-        profileVisibleTo = user.id;
+        profileVisibleTo = user.username;
       }
     } else {
       profileVisibleTo = '#public';

@@ -1,5 +1,5 @@
 import { TankDTO, TankMaterial } from '@bottomtime/api';
-import { Maybe } from '../common';
+
 import { TankDocument } from '../schemas';
 
 export class Tank {
@@ -37,8 +37,9 @@ export class Tank {
     this.data.workingPressure = value;
   }
 
-  get userId(): Maybe<string> {
-    return this.data.user;
+  get userId(): string | null {
+    // return this.data.user;
+    return '';
   }
 
   get isSystem(): boolean {
