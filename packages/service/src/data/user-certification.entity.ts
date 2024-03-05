@@ -19,6 +19,6 @@ export class UserCertificationEntity {
   @Column({ type: 'varchar', length: 200 })
   course: string = '';
 
-  @Column({ type: 'timestamp' })
-  date?: Date;
+  @Column({ type: 'varchar', length: 10, nullable: true })
+  date?: string;
 }

@@ -28,9 +28,9 @@ export class FriendRequestEntity {
   @Index()
   expires: Date = new Date();
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   accepted?: boolean = false;
 
-  @Column('varchar', { length: 500 })
+  @Column('varchar', { length: 500, nullable: true })
   reason?: string;
 }

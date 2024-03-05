@@ -5,14 +5,23 @@ import { ConflictException, Logger } from '@nestjs/common';
 import { compare, hash } from 'bcrypt';
 import { randomBytes } from 'crypto';
 import dayjs from 'dayjs';
-import { Model } from 'mongoose';
+import { Repository } from 'typeorm';
 
 import { DefaultUserSettings, Maybe } from '../common';
 import { Config } from '../config';
-import { UserData, UserDocument } from '../schemas/user.document';
+import { UserEntity } from '../data';
 import { Profile } from './profile';
 
-type UserDataSettings = NonNullable<UserData['settings']>;
+type UserDataSettings = NonNullable<
+  Pick<
+    UserEntity,
+    | 'depthUnit'
+    | 'pressureUnit'
+    | 'temperatureUnit'
+    | 'weightUnit'
+    | 'profileVisibility'
+  >
+>;
 export type UserSettings = Required<{
   [K in keyof UserDataSettings]: Exclude<UserDataSettings[K], null>;
 }>;
@@ -23,8 +32,8 @@ export class User implements Express.User {
   private _profile: Profile | undefined;
 
   constructor(
-    private readonly Users: Model<UserData>,
-    private readonly data: UserDocument,
+    private readonly Users: Repository<UserEntity>,
+    private readonly data: UserEntity,
   ) {}
 
   get username(): string {
@@ -40,7 +49,7 @@ export class User implements Express.User {
   }
 
   get id(): string {
-    return this.data._id;
+    return this.data.id;
   }
 
   get hasPassword(): boolean {
@@ -66,7 +75,7 @@ export class User implements Express.User {
   get profile(): Profile {
     if (this._profile) return this._profile;
 
-    this._profile = new Profile(this.data);
+    this._profile = new Profile(this.Users, this.data);
     return this._profile;
   }
 
@@ -76,47 +85,39 @@ export class User implements Express.User {
 
   get settings(): UserSettings {
     return {
-      depthUnit: this.data.settings?.depthUnit ?? DefaultUserSettings.depthUnit,
-      pressureUnit:
-        this.data.settings?.pressureUnit ?? DefaultUserSettings.pressureUnit,
+      depthUnit: this.data.depthUnit ?? DefaultUserSettings.depthUnit,
+      pressureUnit: this.data.pressureUnit ?? DefaultUserSettings.pressureUnit,
       profileVisibility:
-        this.data.settings?.profileVisibility ??
-        DefaultUserSettings.profileVisibility,
+        this.data.profileVisibility ?? DefaultUserSettings.profileVisibility,
       temperatureUnit:
-        this.data.settings?.temperatureUnit ??
-        DefaultUserSettings.temperatureUnit,
-      weightUnit:
-        this.data.settings?.weightUnit ?? DefaultUserSettings.weightUnit,
+        this.data.temperatureUnit ?? DefaultUserSettings.temperatureUnit,
+      weightUnit: this.data.weightUnit ?? DefaultUserSettings.weightUnit,
     };
   }
 
   async changeSettings(settings: Partial<UserSettings>): Promise<void> {
-    if (!this.data.settings) {
-      this.data.settings = {};
-    }
+    if (settings.depthUnit) this.data.depthUnit = settings.depthUnit;
 
-    if (settings.depthUnit) this.data.settings.depthUnit = settings.depthUnit;
-
-    if (settings.pressureUnit)
-      this.data.settings.pressureUnit = settings.pressureUnit;
+    if (settings.pressureUnit) this.data.pressureUnit = settings.pressureUnit;
 
     if (settings.profileVisibility)
-      this.data.settings.profileVisibility = settings.profileVisibility;
+      this.data.profileVisibility = settings.profileVisibility;
 
     if (settings.temperatureUnit)
-      this.data.settings.temperatureUnit = settings.temperatureUnit;
+      this.data.temperatureUnit = settings.temperatureUnit;
 
-    if (settings.weightUnit)
-      this.data.settings.weightUnit = settings.weightUnit;
+    if (settings.weightUnit) this.data.weightUnit = settings.weightUnit;
 
-    await this.data.save();
+    await this.Users.save(this.data);
   }
 
   async changeUsername(newUsername: string): Promise<void> {
     const lowered = newUsername.toLowerCase();
 
     this.log.debug(`Attempting to change username for user with ID ${this.id}`);
-    const exists = await this.Users.findOne({ usernameLowered: lowered });
+    const exists = await this.Users.findOne({
+      where: { usernameLowered: lowered },
+    });
     if (exists) {
       throw new ConflictException(
         `Username "${newUsername}" is already taken.`,
@@ -125,14 +126,17 @@ export class User implements Express.User {
 
     this.data.username = newUsername;
     this.data.usernameLowered = lowered;
-    await this.data.save();
+
+    await this.Users.save(this.data);
   }
 
   async changeEmail(newEmail: string): Promise<void> {
     const lowered = newEmail.toLowerCase();
 
     this.log.debug(`Attempting to change email for user with ID ${this.id}`);
-    const exists = await this.Users.findOne({ emailLowered: lowered });
+    const exists = await this.Users.findOne({
+      where: { emailLowered: lowered },
+    });
     if (exists) {
       throw new ConflictException(`Email "${newEmail}" is already taken.`);
     }
@@ -142,10 +146,10 @@ export class User implements Express.User {
 
     // Invalidate any existing email verification token so that if there is one floating
     // around in the wild it cannot be re-played to verify a fake email address.
-    this.data.emailVerificationToken = null;
-    this.data.emailVerificationTokenExpiration = null;
+    this.data.emailVerificationToken = undefined;
+    this.data.emailVerificationTokenExpiration = undefined;
 
-    await this.data.save();
+    await this.Users.save(this.data);
   }
 
   async requestEmailVerificationToken(): Promise<string> {
@@ -153,7 +157,7 @@ export class User implements Express.User {
 
     this.data.emailVerificationToken = token;
     this.data.emailVerificationTokenExpiration = dayjs().add(2, 'day').toDate();
-    await this.data.save();
+    await this.Users.save(this.data);
 
     return token;
   }
@@ -184,13 +188,13 @@ export class User implements Express.User {
     }
 
     this.data.emailVerified = true;
-    this.data.emailVerificationToken = null;
-    this.data.emailVerificationTokenExpiration = null;
+    this.data.emailVerificationToken = undefined;
+    this.data.emailVerificationTokenExpiration = undefined;
 
     this.log.log(
       `User ${this.username} has verified their email address: ${this.email}.`,
     );
-    await this.data.save();
+    await this.Users.save(this.data);
 
     return true;
   }
@@ -216,7 +220,7 @@ export class User implements Express.User {
 
     this.data.passwordHash = passwordHash;
     this.data.lastPasswordChange = new Date();
-    await this.data.save();
+    await this.Users.save(this.data);
 
     this.log.log(`User ${this.username} has changed their password.`);
 
@@ -228,7 +232,7 @@ export class User implements Express.User {
     this.data.passwordResetToken = token;
     this.data.passwordResetTokenExpiration = dayjs().add(2, 'day').toDate();
 
-    await this.data.save();
+    await this.Users.save(this.data);
 
     return token;
   }
@@ -250,9 +254,9 @@ export class User implements Express.User {
 
     this.data.passwordHash = passwordHash;
     this.data.lastPasswordChange = new Date();
-    this.data.passwordResetToken = null;
-    this.data.passwordResetTokenExpiration = null;
-    await this.data.save();
+    this.data.passwordResetToken = undefined;
+    this.data.passwordResetTokenExpiration = undefined;
+    await this.Users.save(this.data);
 
     this.log.log(
       `User ${this.username} has successfully reset their password.`,
@@ -263,7 +267,7 @@ export class User implements Express.User {
 
   async updateLastLogin(): Promise<void> {
     this.data.lastLogin = new Date();
-    await this.data.save();
+    await this.Users.save(this.data);
   }
 
   toJSON(): UserDTO {

@@ -24,37 +24,37 @@ export class DiveSiteEntity {
   @CreateDateColumn()
   createdOn: Date = new Date();
 
-  @UpdateDateColumn()
-  updatedOn: Date = new Date();
+  @UpdateDateColumn({ nullable: true })
+  updatedOn?: Date = new Date();
 
   @Column('varchar', { length: 200 })
   @Index()
   name: string = '';
 
-  @Column('varchar', { length: 2000 })
+  @Column('varchar', { length: 2000, nullable: true })
   description?: string;
 
-  @Column('float')
+  @Column('float', { nullable: true })
   depth?: number;
 
-  @Column('enum', { enum: DepthUnit })
+  @Column('enum', { enum: DepthUnit, nullable: true })
   depthUnit?: DepthUnit;
 
   @Column('varchar', { length: 200 })
   location: string = '';
 
-  @Column('varchar', { length: 500 })
+  @Column('varchar', { length: 500, nullable: true })
   directions?: string;
 
   @Column('geometry')
   @Index({ spatial: true })
   gps?: Point;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Index()
   freeToDive?: boolean;
 
-  @Column('boolean')
+  @Column('boolean', { nullable: true })
   @Index()
   shoreAccess?: boolean;
 }

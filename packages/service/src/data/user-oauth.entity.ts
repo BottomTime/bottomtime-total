@@ -8,10 +8,10 @@ export class UserOAuthEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
-  @Column()
+  @Column('varchar', { length: 50 })
   provider: string = '';
 
-  @Column()
+  @Column('varchar', { length: 100 })
   providerId: string = '';
 
   @ManyToOne(() => UserEntity, (user) => user.oauth, { onDelete: 'CASCADE' })

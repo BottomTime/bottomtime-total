@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Fulltext1709562262152 implements MigrationInterface {
+export class Fulltext1709581505428 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
       `ALTER TABLE users ADD COLUMN fulltext tsvector GENERATED ALWAYS AS (to_tsvector('english', username || ' ' || COALESCE(name, '') || ' ' || COALESCE(bio, '') || ' ' || COALESCE(email, ''))) STORED`,

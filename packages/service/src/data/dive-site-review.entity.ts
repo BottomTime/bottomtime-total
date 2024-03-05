@@ -26,7 +26,7 @@ export class DiveSiteReview {
   @Index()
   createdOn: Date = new Date();
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ nullable: true })
   updatedOn?: Date;
 
   @Column('varchar', { length: 200 })
@@ -37,10 +37,10 @@ export class DiveSiteReview {
   @Index()
   rating: number = 0;
 
-  @Column('float')
+  @Column('float', { nullable: true })
   @Index()
   difficulty?: number;
 
-  @Column('varchar', { length: 1000 })
+  @Column('varchar', { length: 1000, nullable: true })
   comments?: string;
 }

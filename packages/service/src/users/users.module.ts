@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { AuthModule } from '../auth';
+import { FriendshipEntity, UserEntity } from '../data';
+import { EmailModule } from '../email';
 import {
   FriendModelName,
   FriendSchema,
   UserModelName,
   UserSchema,
 } from '../schemas';
-import { AuthModule } from '../auth';
-import { EmailModule } from '../email';
 import { UserController } from './user.controller';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
 
 @Module({
   imports: [
@@ -18,8 +21,9 @@ import { UserController } from './user.controller';
       { name: UserModelName, schema: UserSchema },
       { name: FriendModelName, schema: FriendSchema },
     ]),
-    AuthModule,
+    TypeOrmModule.forFeature([UserEntity, FriendshipEntity]),
     EmailModule.forFeature(),
+    AuthModule,
   ],
   providers: [UsersService],
   controllers: [UsersController, UserController],

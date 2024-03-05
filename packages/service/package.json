@@ -81,6 +81,7 @@
     "@types/passport-google-oauth20": "^2.0.11",
     "@types/passport-jwt": "^3.0.9",
     "@types/passport-local": "^1.0.35",
+    "@types/pg": "^8.11.2",
     "@types/prompts": "^2.4.4",
     "@types/pug": "^2.0.6",
     "@types/request-stats": "^3.0.3",
