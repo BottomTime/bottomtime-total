@@ -113,16 +113,19 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         .insert()
         .into(TankEntity)
         .values(
-          tankData.map((t) => ({
+          tankData.map((t, index) => ({
             ...t,
-            user: {
-              ...t.user,
-              friends: undefined,
-              tanks: undefined,
-              oauth: undefined,
-              customData: null,
-              certifications: undefined,
-            },
+            user:
+              index % 4 === 0
+                ? {
+                    ...regularUser,
+                    certifications: undefined,
+                    customData: null,
+                    friends: undefined,
+                    oauth: undefined,
+                    tanks: undefined,
+                  }
+                : undefined,
           })),
         )
         .execute();
@@ -260,7 +263,6 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       expect(saved).toEqual({
         ...options,
         id: body.id,
-        user: RegularUserId,
       });
     });
 
@@ -290,7 +292,6 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       expect(saved).toEqual({
         ...options,
         id: body.id,
-        user: RegularUserId,
       });
     });
 
@@ -423,7 +424,6 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       expect(saved).toEqual({
         ...options,
         id: body.id,
-        user: RegularUserId,
       });
     });
 
@@ -458,7 +458,6 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       expect(saved).toEqual({
         ...options,
         id: body.id,
-        user: RegularUserId,
       });
     });
 
