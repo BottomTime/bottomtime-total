@@ -1,14 +1,18 @@
-import { JwtPayload, verify } from 'jsonwebtoken';
-import { AuthService } from '../../../src/auth';
-import { UserData, UserModel } from '../../../src/schemas';
-import { User } from '../../../src/users';
-import { createTestUser } from '../../utils';
-import { Config } from '../../../src/config';
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 
+import { JwtPayload, verify } from 'jsonwebtoken';
+import { Repository } from 'typeorm';
+
+import { AuthService } from '../../../src/auth';
+import { Config } from '../../../src/config';
+import { UserEntity } from '../../../src/data';
+import { User } from '../../../src/users';
+import { dataSource } from '../../data-source';
+import { createTestUser } from '../../utils';
+
 const Password = 'XTdc4LG,+5R/QTgb';
-const TestUserData: Partial<UserData> = {
-  _id: '4E64038D-0ABF-4C1A-B678-55F8AFCB6B2D',
+const TestUserData: Partial<UserEntity> = {
+  id: '4e64038d-0abf-4c1a-b678-55f8afcb6b2d',
   username: 'DonkeyKong33',
   usernameLowered: 'donkeykong33',
   email: 'dk@aol.com',
@@ -27,10 +31,12 @@ function createJwtPayload(subject?: string, expired = false): JwtPayload {
 }
 
 describe('Auth Service', () => {
+  let Users: Repository<UserEntity>;
   let service: AuthService;
 
   beforeAll(() => {
-    service = new AuthService(UserModel);
+    Users = dataSource.getRepository(UserEntity);
+    service = new AuthService(Users);
   });
 
   describe('when validating a JWT', () => {
@@ -49,7 +55,7 @@ describe('Auth Service', () => {
     });
 
     it('will assert that the user in the subject has a valid account', async () => {
-      const payload = createJwtPayload(`user|${TestUserData._id}`);
+      const payload = createJwtPayload(`user|${TestUserData.id}`);
       await expect(service.validateJwt(payload)).rejects.toThrow(
         UnauthorizedException,
       );
@@ -57,8 +63,8 @@ describe('Auth Service', () => {
 
     it("will assert that the user's account has not been suspended", async () => {
       const user = createTestUser({ ...TestUserData, isLockedOut: true });
-      const payload = createJwtPayload(`user|${TestUserData._id}`);
-      await user.save();
+      const payload = createJwtPayload(`user|${TestUserData.id}`);
+      await Users.save(user);
       await expect(service.validateJwt(payload)).rejects.toThrow(
         ForbiddenException,
       );
@@ -66,9 +72,9 @@ describe('Auth Service', () => {
 
     it('will return the user if the token is valid', async () => {
       const user = createTestUser(TestUserData);
-      const payload = createJwtPayload(`user|${TestUserData._id}`);
-      const expected = new User(UserModel, user);
-      await user.save();
+      const payload = createJwtPayload(`user|${TestUserData.id}`);
+      const expected = new User(Users, user);
+      await Users.save(user);
 
       const actual = await service.validateJwt(payload);
 
@@ -78,9 +84,9 @@ describe('Auth Service', () => {
 
   describe('when authenticating a user', () => {
     it('will return a user if username and password match', async () => {
-      const userDocument = createTestUser(TestUserData);
-      const expected = new User(UserModel, userDocument);
-      await userDocument.save();
+      const userData = createTestUser(TestUserData);
+      const expected = new User(Users, userData);
+      await Users.save(userData);
 
       const actual = await service.authenticateUser(
         TestUserData.username!.toUpperCase(),
@@ -95,10 +101,10 @@ describe('Auth Service', () => {
     });
 
     it('will return a user if email and password match', async () => {
-      const userDocument = createTestUser(TestUserData);
-      const expected = new User(UserModel, userDocument);
+      const userData = createTestUser(TestUserData);
+      const expected = new User(Users, userData);
 
-      await userDocument.save();
+      await Users.save(userData);
       const actual = await service.authenticateUser(
         TestUserData.email!.toUpperCase(),
         Password,
@@ -118,8 +124,8 @@ describe('Auth Service', () => {
     });
 
     it('will return undefined if password is incorrect', async () => {
-      const userDocument = createTestUser(TestUserData);
-      await userDocument.save();
+      const userData = createTestUser(TestUserData);
+      await Users.save(userData);
 
       await expect(
         service.authenticateUser(TestUserData.username!, 'wrong_password!'),
@@ -127,8 +133,8 @@ describe('Auth Service', () => {
     });
 
     it('will return undefined if account has no password set', async () => {
-      const userDocument = createTestUser(TestUserData, null);
-      await userDocument.save();
+      const userData = createTestUser(TestUserData, null);
+      await Users.save(userData);
 
       await expect(
         service.authenticateUser(TestUserData.username!, Password),
@@ -136,11 +142,11 @@ describe('Auth Service', () => {
     });
 
     it('will return undefined if account is currently locked', async () => {
-      const userDocument = createTestUser({
+      const userData = createTestUser({
         ...TestUserData,
         isLockedOut: true,
       });
-      await userDocument.save();
+      await Users.save(userData);
 
       await expect(
         service.authenticateUser(TestUserData.username!, Password),
