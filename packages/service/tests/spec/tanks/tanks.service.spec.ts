@@ -1,34 +1,73 @@
 import { TankMaterial } from '@bottomtime/api';
-import { TankModel } from '../../../src/schemas';
+
+import { BadRequestException } from '@nestjs/common';
+
+import { Repository } from 'typeorm';
+
+import { TankEntity, UserEntity } from '../../../src/data';
 import {
   CreateTankOptions,
   TanksService,
 } from '../../../src/tanks/tanks.service';
+import { dataSource } from '../../data-source';
 import TankData from '../../fixtures/pre-defined-tanks.json';
-import { BadRequestException } from '@nestjs/common';
+import { createTestUser } from '../../utils/create-test-user';
 
 const UserIds = [
-  '3DFB75CC-4193-42C5-B8BF-87438C5A79CB',
-  'C613704D-4C9C-4A4F-982A-9FE8521DBA4C',
+  '3dfb75cc-4193-42c5-b8bf-87438c5a79cb',
+  'c613704d-4c9c-4a4f-982a-9fe8521dba4c',
 ];
 
 describe('Tanks Service', () => {
+  let Users: Repository<UserEntity>;
+  let Tanks: Repository<TankEntity>;
+
+  let users: UserEntity[];
   let service: TanksService;
 
-  beforeEach(() => {
-    service = new TanksService(TankModel);
+  beforeAll(() => {
+    Tanks = dataSource.getRepository(TankEntity);
+    Users = dataSource.getRepository(UserEntity);
+
+    users = [
+      createTestUser({ id: UserIds[0] }),
+      createTestUser({ id: UserIds[1] }),
+    ];
+  });
+
+  beforeEach(async () => {
+    service = new TanksService(Tanks, Users);
+    await Promise.all([Users.save(users[0]), Users.save(users[1])]);
   });
 
   describe('when listing tanks', () => {
     beforeEach(async () => {
       const tanks = TankData.map((tank, index) => {
-        const document = new TankModel(tank);
+        const entity = new TankEntity();
+        Object.assign(entity, tank);
         if (index % 2 === 0) {
-          document.user = index % 4 === 0 ? UserIds[0] : UserIds[1];
+          entity.user = index % 4 === 0 ? users[0] : users[1];
         }
-        return document;
+        return entity;
       });
-      await TankModel.insertMany(tanks);
+
+      await Tanks.createQueryBuilder()
+        .insert()
+        .into(TankEntity)
+        .values(
+          tanks.map((t: TankEntity) => ({
+            ...t,
+            user: {
+              ...t.user,
+              friends: undefined,
+              tanks: undefined,
+              oauth: undefined,
+              customData: null,
+              certifications: undefined,
+            },
+          })),
+        )
+        .execute();
     });
 
     it('will list system tanks', async () => {
@@ -54,14 +93,15 @@ describe('Tanks Service', () => {
 
   describe('when retrieving a single tank', () => {
     it('will retrieve a single tank', async () => {
-      const data = new TankModel(TankData[0]);
-      await data.save();
-      const tank = await service.getTank(data._id);
+      const data = new TankEntity();
+      Object.assign(data, TankData[0]);
+      await Tanks.save(data);
+      const tank = await service.getTank(data.id);
       expect(tank).toMatchSnapshot();
     });
 
     it('will return undefined if the tank cannot be found', async () => {
-      const tank = await service.getTank(TankData[4]._id);
+      const tank = await service.getTank(TankData[4].id);
       expect(tank).toBeUndefined();
     });
   });
@@ -83,14 +123,17 @@ describe('Tanks Service', () => {
         isSystem: true,
       });
 
-      const result = await TankModel.findById(tank.id);
+      const result = await Tanks.findOne({
+        relations: ['user'],
+        where: { id: tank.id },
+      });
       expect(result).not.toBeNull();
       expect(result!.id).toBeDefined();
       expect(result!.name).toBe(options.name);
       expect(result!.material).toBe(options.material);
       expect(result!.volume).toBe(options.volume);
       expect(result!.workingPressure).toBe(options.workingPressure);
-      expect(result!.user).toBeUndefined();
+      expect(result!.user).toBeNull();
     });
 
     it('will create a new user-defined tank', async () => {
@@ -105,31 +148,52 @@ describe('Tanks Service', () => {
       const tank = await service.createTank(options);
       expect(tank.id).toBeDefined();
       expect(tank.toJSON()).toEqual({
-        ...options,
-        userId: undefined,
         id: tank.id,
+        material: options.material,
+        name: options.name,
+        volume: options.volume,
+        workingPressure: options.workingPressure,
         isSystem: false,
       });
 
-      const result = await TankModel.findById(tank.id);
+      const result = await Tanks.findOne({
+        relations: ['user'],
+        where: { id: tank.id },
+      });
       expect(result).not.toBeNull();
       expect(result!.id).toBeDefined();
       expect(result!.name).toBe(options.name);
       expect(result!.material).toBe(options.material);
       expect(result!.volume).toBe(options.volume);
       expect(result!.workingPressure).toBe(options.workingPressure);
-      expect(result!.user).toBe(options.userId);
+      expect(result!.user).toEqual(users[0]);
     });
 
     it('will limit users to 10 pre-defined tanks', async () => {
-      const userTanksData = TankData.slice(0, 10).map(
-        (tank) =>
-          new TankModel({
-            ...tank,
-            user: UserIds[0],
-          }),
-      );
-      await TankModel.insertMany(userTanksData);
+      const tanks = TankData.slice(0, 10).map((tank) => {
+        const entity = new TankEntity();
+        Object.assign(entity, tank);
+        entity.user = users[0];
+        return entity;
+      });
+
+      await Tanks.createQueryBuilder()
+        .insert()
+        .into(TankEntity)
+        .values(
+          tanks.map((t: TankEntity) => ({
+            ...t,
+            user: {
+              ...t.user,
+              friends: undefined,
+              tanks: undefined,
+              oauth: undefined,
+              customData: null,
+              certifications: undefined,
+            },
+          })),
+        )
+        .execute();
 
       const options: CreateTankOptions = {
         material: TankMaterial.Steel,

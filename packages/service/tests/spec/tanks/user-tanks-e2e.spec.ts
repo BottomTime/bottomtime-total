@@ -8,52 +8,48 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
-import {
-  TankDocument,
-  TankModel,
-  UserData,
-  UserModel,
-} from '../../../src/schemas';
-import { INestApplication } from '@nestjs/common';
-import { createAuthHeader, createTestApp } from '../../utils';
-import request from 'supertest';
-import TestTankData from '../../fixtures/pre-defined-tanks.json';
-import { faker } from '@faker-js/faker';
 
-const AdminUserId = 'F3669787-82E5-458F-A8AD-98D3F57DDA6E';
-const AdminUserData: UserData = {
-  _id: AdminUserId,
+import { faker } from '@faker-js/faker';
+import { INestApplication } from '@nestjs/common';
+
+import request from 'supertest';
+import { Repository } from 'typeorm';
+
+import { TankEntity, UserEntity } from '../../../src/data';
+import { dataSource } from '../../data-source';
+import TestTankData from '../../fixtures/pre-defined-tanks.json';
+import { createAuthHeader, createTestApp } from '../../utils';
+
+const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
+const AdminUserData: Partial<UserEntity> = {
+  id: AdminUserId,
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date(),
   role: UserRole.Admin,
   username: 'Admin',
   usernameLowered: 'admin',
-  settings: {
-    depthUnit: DepthUnit.Meters,
-    temperatureUnit: TemperatureUnit.Celsius,
-    weightUnit: WeightUnit.Kilograms,
-    pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.Private,
-  },
+  depthUnit: DepthUnit.Meters,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
+  pressureUnit: PressureUnit.Bar,
+  profileVisibility: ProfileVisibility.Private,
 };
 
-const RegularUserId = '5A4699D8-48C4-4410-9886-B74B8B85CAC1';
-const RegularUserData: UserData = {
-  _id: RegularUserId,
+const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
+const RegularUserData: Partial<UserEntity> = {
+  id: RegularUserId,
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date(),
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
-  settings: {
-    depthUnit: DepthUnit.Meters,
-    temperatureUnit: TemperatureUnit.Celsius,
-    weightUnit: WeightUnit.Kilograms,
-    pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.Private,
-  },
+  depthUnit: DepthUnit.Meters,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
+  pressureUnit: PressureUnit.Bar,
+  profileVisibility: ProfileVisibility.Private,
 };
 
 function tankUrl(username: string, tankId?: string): string {
@@ -68,17 +64,30 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
   let adminAuthHeader: [string, string];
   let regularAuthHeader: [string, string];
 
+  let adminUser: UserEntity;
+  let regularUser: UserEntity;
+
+  let Tanks: Repository<TankEntity>;
+  let Users: Repository<UserEntity>;
+
   beforeAll(async () => {
     app = await createTestApp();
     server = app.getHttpServer();
     adminAuthHeader = await createAuthHeader(AdminUserId);
     regularAuthHeader = await createAuthHeader(RegularUserId);
+
+    Tanks = dataSource.getRepository(TankEntity);
+    Users = dataSource.getRepository(UserEntity);
   });
 
   beforeEach(async () => {
-    const adminUser = new UserModel(AdminUserData);
-    const regularUser = new UserModel(RegularUserData);
-    await UserModel.insertMany([adminUser, regularUser]);
+    adminUser = new UserEntity();
+    Object.assign(adminUser, AdminUserData);
+
+    regularUser = new UserEntity();
+    Object.assign(regularUser, RegularUserData);
+
+    await Promise.all([Users.save(adminUser), Users.save(regularUser)]);
   });
 
   afterAll(async () => {
@@ -86,25 +95,42 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
   });
 
   describe('when listing user-defined tanks', () => {
-    let tankData: TankDocument[];
+    let tankData: TankEntity[];
 
     beforeAll(() => {
       tankData = TestTankData.map((tank, index) => {
-        const document = new TankModel(tank);
+        const data = new TankEntity();
+        Object.assign(data, tank);
         if (index % 2 === 0) {
-          document.user = index % 4 === 0 ? AdminUserId : RegularUserId;
+          data.user = index % 4 === 0 ? adminUser : regularUser;
         }
-        return document;
+        return data;
       });
     });
 
     beforeEach(async () => {
-      await TankModel.insertMany(tankData);
+      await Tanks.createQueryBuilder()
+        .insert()
+        .into(TankEntity)
+        .values(
+          tankData.map((t) => ({
+            ...t,
+            user: {
+              ...t.user,
+              friends: undefined,
+              tanks: undefined,
+              oauth: undefined,
+              customData: null,
+              certifications: undefined,
+            },
+          })),
+        )
+        .execute();
     });
 
     it('will list user-defined tanks', async () => {
       const response = await request(server)
-        .get(tankUrl(RegularUserData.username))
+        .get(tankUrl(regularUser.username))
         .set(...regularAuthHeader)
         .expect(200);
 
@@ -113,7 +139,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will list both system and user-defined tanks', async () => {
       const response = await request(server)
-        .get(tankUrl(RegularUserData.username))
+        .get(tankUrl(regularUser.username))
         .set(...regularAuthHeader)
         .query({ includeSystem: true })
         .expect(200);
@@ -123,7 +149,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will allow admins to list all user-defined tanks', async () => {
       const response = await request(server)
-        .get(tankUrl(RegularUserData.username))
+        .get(tankUrl(regularUser.username))
         .set(...adminAuthHeader)
         .expect(200);
 
@@ -131,12 +157,12 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
     });
 
     it('will return a 401 response if user is not logged in', async () => {
-      await request(server).get(tankUrl(RegularUserData.username)).expect(401);
+      await request(server).get(tankUrl(regularUser.username)).expect(401);
     });
 
     it('will return a 403 response if user is not an administrator and does not own the requested tank profile', async () => {
       await request(server)
-        .get(tankUrl(AdminUserData.username))
+        .get(tankUrl(adminUser.username))
         .set(...regularAuthHeader)
         .expect(403);
     });
@@ -151,12 +177,13 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
   describe('when retrieving a single user-defined tank', () => {
     it('will retrieve a single user-defined tank', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       const response = await request(server)
-        .get(tankUrl(RegularUserData.username, tankData._id))
+        .get(tankUrl(regularUser.username, tankData.id))
         .set(...regularAuthHeader)
         .expect(200);
 
@@ -164,40 +191,43 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
     });
 
     it('will return a 401 response if the user is not logged in', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .get(tankUrl(RegularUserData.username, tankData._id))
+        .get(tankUrl(regularUser.username, tankData.id))
         .expect(401);
     });
 
     it('will return a 403 response if the user is not an administrator and does not own the requested tank profile', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = AdminUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = adminUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .get(tankUrl(AdminUserData.username, tankData._id))
+        .get(tankUrl(adminUser.username, tankData.id))
         .set(...regularAuthHeader)
         .expect(403);
     });
 
     it('will return a 404 response if the user does not exist', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .get(tankUrl('Not.A.User', tankData._id))
+        .get(tankUrl('Not.A.User', tankData.id))
         .set(...adminAuthHeader)
         .expect(404);
     });
 
     it('will return a 404 response if the tank does not exist', async () => {
       await request(server)
-        .get(tankUrl(RegularUserData.username, faker.datatype.uuid()))
+        .get(tankUrl(regularUser.username, faker.datatype.uuid()))
         .set(...adminAuthHeader)
         .expect(404);
     });
@@ -213,7 +243,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       };
 
       const { body } = await request(server)
-        .post(tankUrl(RegularUserData.username))
+        .post(tankUrl(regularUser.username))
         .set(...regularAuthHeader)
         .send(options)
         .expect(201);
@@ -225,12 +255,11 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         isSystem: false,
       });
 
-      const saved = await TankModel.findById(body.id);
+      const saved = await Tanks.findOneBy({ id: body.id });
       expect(saved).not.toBeNull();
-      expect(saved?.toJSON()).toEqual({
+      expect(saved).toEqual({
         ...options,
-        __v: 0,
-        _id: body.id,
+        id: body.id,
         user: RegularUserId,
       });
     });
@@ -244,7 +273,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       };
 
       const { body } = await request(server)
-        .post(tankUrl(RegularUserData.username))
+        .post(tankUrl(regularUser.username))
         .set(...adminAuthHeader)
         .send(options)
         .expect(201);
@@ -256,28 +285,42 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         isSystem: false,
       });
 
-      const saved = await TankModel.findById(body.id);
+      const saved = await Tanks.findOneBy({ id: body.id });
       expect(saved).not.toBeNull();
-      expect(saved?.toJSON()).toEqual({
+      expect(saved).toEqual({
         ...options,
-        __v: 0,
-        _id: body.id,
+        id: body.id,
         user: RegularUserId,
       });
     });
 
     it('will return a 400 response if the user has exceeded their tank limit', async () => {
-      const tankData = TestTankData.slice(0, 10).map(
-        (tank) =>
-          new TankModel({
-            ...tank,
-            user: RegularUserId,
-          }),
-      );
-      await TankModel.insertMany(tankData);
+      const tankData = TestTankData.slice(0, 10).map((tank) => {
+        const entity = new TankEntity();
+        Object.assign(entity, tank);
+        entity.user = regularUser;
+        return entity;
+      });
+      await Tanks.createQueryBuilder()
+        .insert()
+        .into(TankEntity)
+        .values(
+          tankData.map((t) => ({
+            ...t,
+            user: {
+              ...t.user,
+              friends: undefined,
+              tanks: undefined,
+              oauth: undefined,
+              customData: null,
+              certifications: undefined,
+            },
+          })),
+        )
+        .execute();
 
       await request(server)
-        .post(tankUrl(RegularUserData.username))
+        .post(tankUrl(regularUser.username))
         .set(...regularAuthHeader)
         .send({
           material: TankMaterial.Steel,
@@ -290,7 +333,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will return a 400 response if the tank parameters are invalid', async () => {
       await request(server)
-        .post(tankUrl(RegularUserData.username))
+        .post(tankUrl(regularUser.username))
         .set(...regularAuthHeader)
         .send({
           material: 'unobtainium',
@@ -303,7 +346,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will return a 400 response if the tank parameters are missing', async () => {
       await request(server)
-        .post(tankUrl(RegularUserData.username))
+        .post(tankUrl(regularUser.username))
         .set(...regularAuthHeader)
         .send({})
         .expect(400);
@@ -311,7 +354,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will return a 401 response if the user is not logged in', async () => {
       await request(server)
-        .post(tankUrl(RegularUserData.username))
+        .post(tankUrl(regularUser.username))
         .send({
           material: TankMaterial.Steel,
           name: 'My Tank',
@@ -323,7 +366,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will return a 403 response if the user is not an administrator and attempts to create a tank profile for another user', async () => {
       await request(server)
-        .post(tankUrl(AdminUserData.username))
+        .post(tankUrl(adminUser.username))
         .set(...regularAuthHeader)
         .send({
           material: TankMaterial.Steel,
@@ -350,9 +393,10 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
   describe('when updating an existing user-defined tank', () => {
     it('will update the tank profile', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       const options: CreateOrUpdateTankParamsDTO = {
         material: TankMaterial.Steel,
@@ -362,32 +406,32 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       };
 
       const { body } = await request(server)
-        .put(tankUrl(RegularUserData.username, tankData._id))
+        .put(tankUrl(regularUser.username, tankData.id))
         .set(...regularAuthHeader)
         .send(options)
         .expect(200);
 
-      expect(body.id).toBe(tankData._id);
+      expect(body.id).toBe(tankData.id);
       expect(body).toEqual({
         ...options,
         id: body.id,
         isSystem: false,
       });
 
-      const saved = await TankModel.findById(body.id);
+      const saved = await Tanks.findOneBy({ id: body.id });
       expect(saved).not.toBeNull();
-      expect(saved?.toJSON()).toEqual({
+      expect(saved).toEqual({
         ...options,
-        __v: 0,
-        _id: body.id,
+        id: body.id,
         user: RegularUserId,
       });
     });
 
     it('will allow admins to update a tank profile for another user', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       const options: CreateOrUpdateTankParamsDTO = {
         material: TankMaterial.Steel,
@@ -397,35 +441,35 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       };
 
       const { body } = await request(server)
-        .put(tankUrl(RegularUserData.username, tankData._id))
+        .put(tankUrl(regularUser.username, tankData.id))
         .set(...adminAuthHeader)
         .send(options)
         .expect(200);
 
-      expect(body.id).toBe(tankData._id);
+      expect(body.id).toBe(tankData.id);
       expect(body).toEqual({
         ...options,
         id: body.id,
         isSystem: false,
       });
 
-      const saved = await TankModel.findById(body.id);
+      const saved = await Tanks.findOneBy({ id: body.id });
       expect(saved).not.toBeNull();
-      expect(saved?.toJSON()).toEqual({
+      expect(saved).toEqual({
         ...options,
-        __v: 0,
-        _id: body.id,
+        id: body.id,
         user: RegularUserId,
       });
     });
 
     it('will return a 400 response if the tank parameters are invalid', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .put(tankUrl(RegularUserData.username, tankData._id))
+        .put(tankUrl(regularUser.username, tankData.id))
         .set(...regularAuthHeader)
         .send({
           material: 'unobtainium',
@@ -437,24 +481,26 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
     });
 
     it('will return a 400 response if the tank parameters are missing', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .put(tankUrl(RegularUserData.username, tankData._id))
+        .put(tankUrl(regularUser.username, tankData.id))
         .set(...regularAuthHeader)
         .send({})
         .expect(400);
     });
 
     it('will return a 401 response if the user is not logged in', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .put(tankUrl(RegularUserData.username, tankData._id))
+        .put(tankUrl(regularUser.username, tankData.id))
         .send({
           material: TankMaterial.Steel,
           name: 'My Tank',
@@ -465,12 +511,13 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
     });
 
     it('will return a 403 response if the user is not an administrator and attempts to update a tank profile for another user', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = AdminUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = adminUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .put(tankUrl(AdminUserData.username, tankData._id))
+        .put(tankUrl(adminUser.username, tankData.id))
         .set(...regularAuthHeader)
         .send({
           material: TankMaterial.Steel,
@@ -482,12 +529,13 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
     });
 
     it('will return a 404 response if the user does not exist', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .put(tankUrl('Not.A.User', tankData._id))
+        .put(tankUrl('Not.A.User', tankData.id))
         .set(...adminAuthHeader)
         .send({
           material: TankMaterial.Steel,
@@ -500,7 +548,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will return a 404 response if the tank does not exist', async () => {
       await request(server)
-        .put(tankUrl(RegularUserData.username, faker.datatype.uuid()))
+        .put(tankUrl(regularUser.username, faker.datatype.uuid()))
         .set(...adminAuthHeader)
         .send({
           material: TankMaterial.Steel,
@@ -514,68 +562,73 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
   describe('when deleting an existing user-defined tank', () => {
     it('will delete the tank profile', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .delete(tankUrl(RegularUserData.username, tankData._id))
+        .delete(tankUrl(regularUser.username, tankData.id))
         .set(...regularAuthHeader)
         .expect(204);
 
-      const saved = await TankModel.findById(tankData._id);
+      const saved = await Tanks.findOneBy({ id: tankData.id });
       expect(saved).toBeNull();
     });
 
     it('will allow admins to delete a tank profile for another user', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .delete(tankUrl(RegularUserData.username, tankData._id))
+        .delete(tankUrl(regularUser.username, tankData.id))
         .set(...adminAuthHeader)
         .expect(204);
 
-      const saved = await TankModel.findById(tankData._id);
+      const saved = await Tanks.findOneBy({ id: tankData.id });
       expect(saved).toBeNull();
     });
 
     it('will return a 401 response if the user is not logged in', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .delete(tankUrl(RegularUserData.username, tankData._id))
+        .delete(tankUrl(regularUser.username, tankData.id))
         .expect(401);
     });
 
     it('will return a 403 response if the user is not an administrator and attempts to delete a tank profile for another user', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = AdminUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = adminUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .delete(tankUrl(AdminUserData.username, tankData._id))
+        .delete(tankUrl(adminUser.username, tankData.id))
         .set(...regularAuthHeader)
         .expect(403);
     });
 
     it('will return a 404 response if the user does not exist', async () => {
-      const tankData = new TankModel(TestTankData[0]);
-      tankData.user = RegularUserId;
-      await tankData.save();
+      const tankData = new TankEntity();
+      Object.assign(tankData, TestTankData[0]);
+      tankData.user = regularUser;
+      await Tanks.save(tankData);
 
       await request(server)
-        .delete(tankUrl('Not.A.User', tankData._id))
+        .delete(tankUrl('Not.A.User', tankData.id))
         .set(...adminAuthHeader)
         .expect(404);
     });
 
     it('will return a 404 response if the tank does not exist', async () => {
       await request(server)
-        .delete(tankUrl(RegularUserData.username, faker.datatype.uuid()))
+        .delete(tankUrl(regularUser.username, faker.datatype.uuid()))
         .set(...adminAuthHeader)
         .expect(404);
     });

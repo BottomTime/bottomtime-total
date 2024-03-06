@@ -1,12 +1,21 @@
-import { TankDTO, TankMaterial } from '@bottomtime/api';
+import { SuccinctProfileDTO, TankDTO, TankMaterial } from '@bottomtime/api';
 
-import { TankDocument } from '../schemas';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+
+import { TankEntity } from '../data';
 
 export class Tank {
-  constructor(private readonly data: TankDocument) {}
+  constructor(
+    @InjectRepository(TankEntity)
+    private readonly Tanks: Repository<TankEntity>,
+
+    private readonly data: TankEntity,
+  ) {}
 
   get id(): string {
-    return this.data._id;
+    return this.data.id;
   }
 
   get name(): string {
@@ -37,22 +46,32 @@ export class Tank {
     this.data.workingPressure = value;
   }
 
-  get userId(): string | null {
-    // return this.data.user;
-    return '';
+  get user(): SuccinctProfileDTO | null {
+    return this.data.user
+      ? {
+          memberSince: this.data.user.memberSince,
+          userId: this.data.user.id,
+          username: this.data.user.username,
+
+          avatar: this.data.user.avatar,
+          name: this.data.user.name,
+          location: this.data.user.location,
+        }
+      : null;
   }
 
   get isSystem(): boolean {
-    return !this.userId;
+    if (this.data.user) return false;
+    return true;
   }
 
   async save(): Promise<void> {
-    await this.data.save();
+    await this.Tanks.save(this.data);
   }
 
   async delete(): Promise<boolean> {
-    const { deletedCount } = await this.data.deleteOne();
-    return deletedCount > 0;
+    const { affected } = await this.Tanks.delete({ id: this.id });
+    return !!affected && affected > 0;
   }
 
   toJSON(): TankDTO {
