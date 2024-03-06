@@ -1,45 +1,51 @@
 /* eslint-disable no-process-env */
+import { UserEntity } from '../../../src/data';
 import { EmailOptions, EmailService, EmailType } from '../../../src/email';
-import { UserData, UserModel } from '../../../src/schemas';
 import { User } from '../../../src/users/user';
+import { dataSource } from '../../data-source';
 import { TestMailer } from '../../utils';
 
-const TestUserData: Partial<UserData> = {
+const TestUserData: Partial<UserEntity> = {
   username: 'MostExcellentUser33',
   email: 'totally_legit_user@gmail.com',
 };
 
 describe('Email Service', () => {
-  const user = new User(UserModel, new UserModel(TestUserData));
-  const generateEmailTestCases: Record<EmailType, EmailOptions> = {
-    [EmailType.ResetPassword]: {
-      type: EmailType.ResetPassword,
-      title: 'Reset Password',
-      user,
-      resetPasswordUrl: `https://bottomti.me/resetPassword?user=${TestUserData.username}&token=abcd-1234`,
-    },
-    [EmailType.VerifyEmail]: {
-      type: EmailType.VerifyEmail,
-      title: 'Verify Email',
-      user,
-      verifyEmailUrl: `https://bottomti.me/verifyEmail?user=${TestUserData.username}&token=abcd-1234`,
-    },
-    [EmailType.Welcome]: {
-      type: EmailType.Welcome,
-      title: 'Welcome',
-      user,
-      verifyEmailUrl: `https://bottomti.me/verifyEmail?user=${TestUserData.username}&token=abcd-1234`,
-    },
-  } as const;
+  let user: User;
 
   let oldEnv: object;
   let service: EmailService;
   let mailClient: TestMailer;
 
+  const generateEmailTestCases: Record<EmailType, () => EmailOptions> = {
+    [EmailType.ResetPassword]: () => ({
+      type: EmailType.ResetPassword,
+      title: 'Reset Password',
+      user,
+      resetPasswordUrl: `https://bottomti.me/resetPassword?user=${TestUserData.username}&token=abcd-1234`,
+    }),
+    [EmailType.VerifyEmail]: () => ({
+      type: EmailType.VerifyEmail,
+      title: 'Verify Email',
+      user,
+      verifyEmailUrl: `https://bottomti.me/verifyEmail?user=${TestUserData.username}&token=abcd-1234`,
+    }),
+    [EmailType.Welcome]: () => ({
+      type: EmailType.Welcome,
+      title: 'Welcome',
+      user,
+      verifyEmailUrl: `https://bottomti.me/verifyEmail?user=${TestUserData.username}&token=abcd-1234`,
+    }),
+  } as const;
+
   beforeAll(() => {
     oldEnv = Object.assign({}, process.env);
     process.env.BT_ADMIN_EMAIL = 'admin@bottomti.me';
     process.env.BT_BASE_URL = 'https://bottomti.me/';
+
+    const userData = new UserEntity();
+    Object.assign(userData, TestUserData);
+    user = new User(dataSource.getRepository(UserEntity), userData);
   });
 
   beforeEach(() => {
@@ -58,7 +64,7 @@ describe('Email Service', () => {
 
   Object.entries(generateEmailTestCases).forEach(([emailType, options]) => {
     it(`will generate ${emailType} email`, async () => {
-      const email = await service.generateMessageContent(options);
+      const email = await service.generateMessageContent(options());
       expect(email).toMatchSnapshot();
     });
   });
