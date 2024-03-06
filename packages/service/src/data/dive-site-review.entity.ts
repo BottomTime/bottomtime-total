@@ -43,4 +43,8 @@ export class DiveSiteReview {
 
   @Column('varchar', { length: 1000, nullable: true })
   comments?: string;
+
+  @Column('tsvector', { select: false })
+  @Index()
+  fulltext: unknown;
 }

@@ -164,4 +164,8 @@ export class UserEntity {
     nullable: true,
   })
   weightUnit: WeightUnit = WeightUnit.Kilograms;
+
+  @Column({ type: 'tsvector', select: false })
+  @Index()
+  fulltext: unknown;
 }

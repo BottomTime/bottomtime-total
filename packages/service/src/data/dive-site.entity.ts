@@ -46,7 +46,7 @@ export class DiveSiteEntity {
   @Column('varchar', { length: 500, nullable: true })
   directions?: string;
 
-  @Column('geometry')
+  @Column('point')
   @Index({ spatial: true })
   gps?: Point;
 
@@ -57,4 +57,7 @@ export class DiveSiteEntity {
   @Column('boolean', { nullable: true })
   @Index()
   shoreAccess?: boolean;
+
+  @Column('tsvector', { select: false })
+  fulltext: unknown;
 }

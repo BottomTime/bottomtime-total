@@ -1,29 +1,34 @@
+import { Repository } from 'typeorm';
+
 import { Certification } from '../../../src/certifications';
-import {
-  CertificationDocument,
-  CertificationModel,
-} from '../../../src/schemas';
+import { CertificationEntity } from '../../../src/data';
+import { dataSource } from '../../data-source';
 
 describe('Certification Class', () => {
-  let data: CertificationDocument;
+  let Certifications: Repository<CertificationEntity>;
+  let data: CertificationEntity;
+  let cert: Certification;
+
+  beforeAll(() => {
+    Certifications = dataSource.getRepository(CertificationEntity);
+  });
 
   beforeEach(() => {
-    data = new CertificationModel({
-      _id: '4659CA3E-46C4-4865-B2A2-B9CC16818ED6',
-      agency: 'PADI',
-      course: 'Open Water Diver',
-    });
+    data = new CertificationEntity();
+    data.id = '4659ca3e-46c4-4865-b2a2-b9cc16818ed6';
+    data.agency = 'PADI';
+    data.course = 'Open Water Diver';
+
+    cert = new Certification(Certifications, data);
   });
 
   it('will return properties correctly', () => {
-    const cert = new Certification(data);
-    expect(cert.id).toEqual(data._id);
+    expect(cert.id).toEqual(data.id);
     expect(cert.agency).toEqual(data.agency);
     expect(cert.course).toEqual(data.course);
   });
 
   it('will update properties correctly', () => {
-    const cert = new Certification(data);
     cert.agency = 'SSI';
     cert.course = 'Advanced Open Water Diver';
     expect(cert.agency).toEqual('SSI');
@@ -31,33 +36,28 @@ describe('Certification Class', () => {
   });
 
   it('will render class to JSON correctly', () => {
-    const cert = new Certification(data);
     expect(cert.toJSON()).toEqual({
-      id: data._id,
+      id: data.id,
       agency: data.agency,
       course: data.course,
     });
   });
 
   it('will save a new certification to the database', async () => {
-    const cert = new Certification(data);
     await cert.save();
-
-    const result = await CertificationModel.findById(data._id);
-    expect(result?.toJSON()).toEqual(data.toJSON());
+    const result = await Certifications.findOneByOrFail({ id: data.id });
+    expect(result).toEqual(data);
   });
 
   it('will save changes to properties', async () => {
-    await data.save();
-    const cert = new Certification(data);
+    await Certifications.save(data);
     cert.agency = 'SSI';
     cert.course = 'Advanced Open Water Diver';
     await cert.save();
 
-    const result = await CertificationModel.findById(data._id);
-    expect(result?.toJSON()).toEqual({
-      __v: 0,
-      _id: data._id,
+    const result = await Certifications.findOneByOrFail({ id: data.id });
+    expect(result).toEqual({
+      id: data.id,
       agency: 'SSI',
       course: 'Advanced Open Water Diver',
     });

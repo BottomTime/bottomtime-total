@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
-import {
-  CertificationData,
-  CertificationModelName,
-} from '../schemas/certifications.document';
 import {
   CreateOrUpdateCertificationParamsDTO,
   SearchCertificationsParamsDTO,
 } from '@bottomtime/api';
-import { Certification } from './certification';
+
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+
+import { CertificationEntity } from '../data';
+import { Certification } from './certification';
 
 export type SearchCertificationsOptions = SearchCertificationsParamsDTO;
 export type SearchCertificationsResults = {
@@ -21,60 +21,64 @@ export type CreateCertificationOptions = CreateOrUpdateCertificationParamsDTO;
 
 @Injectable()
 export class CertificationsService {
+  private readonly log = new Logger(CertificationsService.name);
+
   constructor(
-    @InjectModel(CertificationModelName)
-    private readonly certifications: Model<CertificationData>,
+    @InjectRepository(CertificationEntity)
+    private readonly certifications: Repository<CertificationEntity>,
   ) {}
 
   async searchCertifications(
     options: SearchCertificationsOptions,
   ): Promise<SearchCertificationsResults> {
-    const query: FilterQuery<CertificationData> = {};
+    let query = this.certifications.createQueryBuilder('certifications');
 
     if (options.agency) {
-      query.agency = options.agency;
+      query = query.andWhere({ agency: options.agency });
     }
 
-    if (options.query) {
-      query.$text = {
-        $search: options.query,
-        $language: 'en',
-        $caseSensitive: false,
-        $diacriticSensitive: false,
-      };
-    }
+    query = query
+      .orderBy('agency', 'ASC')
+      .orderBy('course', 'ASC')
+      .skip(options.skip)
+      .take(options.limit);
 
-    const [results, count] = await Promise.all([
-      this.certifications
-        .find(query)
-        .sort({ course: 1 })
-        .skip(options.skip)
-        .limit(options.limit),
-      this.certifications.countDocuments(query),
-    ]);
+    // TODO:
+    // if (options.query) {
+    //   query.$text = {
+    //     $search: options.query,
+    //     $language: 'en',
+    //     $caseSensitive: false,
+    //     $diacriticSensitive: false,
+    //   };
+    // }
+
+    this.log.verbose('Querying for certifications using query', query.getSql());
+    const [results, totalCount] = await query.getManyAndCount();
 
     return {
-      certifications: results.map((result) => new Certification(result)),
-      totalCount: count,
+      certifications: results.map(
+        (result) => new Certification(this.certifications, result),
+      ),
+      totalCount,
     };
   }
 
   async getCertification(id: string): Promise<Certification | undefined> {
-    const cert = await this.certifications.findById(id);
-    return cert ? new Certification(cert) : undefined;
+    const cert = await this.certifications.findOneBy({ id });
+    return cert ? new Certification(this.certifications, cert) : undefined;
   }
 
   async createCertification(
     options: CreateCertificationOptions,
   ): Promise<Certification> {
-    const data = new this.certifications({
-      _id: uuid(),
-      ...options,
-    });
+    const data = new CertificationEntity();
+    data.id = uuid();
+    data.course = options.course;
+    data.agency = options.agency;
 
-    const cert = new Certification(data);
-    await cert.save();
+    await this.certifications.save(data);
 
-    return cert;
+    return new Certification(this.certifications, data);
   }
 }

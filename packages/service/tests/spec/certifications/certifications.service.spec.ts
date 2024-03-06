@@ -1,27 +1,35 @@
+import { Repository } from 'typeorm';
+
 import {
   Certification,
   CertificationsService,
 } from '../../../src/certifications';
-import {
-  CertificationDocument,
-  CertificationModel,
-} from '../../../src/schemas';
+import { CertificationEntity } from '../../../src/data';
+import { dataSource } from '../../data-source';
 import CertificationTestData from '../../fixtures/certifications.json';
 
 describe('Certifications Service', () => {
-  let certifications: CertificationDocument[];
+  let Certifications: Repository<CertificationEntity>;
+  let certsData: CertificationEntity[];
   let service: CertificationsService;
 
   beforeAll(() => {
-    service = new CertificationsService(CertificationModel);
-    certifications = CertificationTestData.map(
-      (cert) => new CertificationModel(cert),
-    );
+    Certifications = dataSource.getRepository(CertificationEntity);
+    service = new CertificationsService(Certifications);
+    certsData = CertificationTestData.map((data) => {
+      const cert = new CertificationEntity();
+      Object.assign(cert, data);
+      return cert;
+    });
   });
 
   describe('when searching certifications', () => {
     beforeEach(async () => {
-      await CertificationModel.insertMany(certifications);
+      await Certifications.createQueryBuilder()
+        .insert()
+        .into(CertificationEntity)
+        .values(certsData)
+        .execute();
     });
 
     it('will list all certifications by default', async () => {
@@ -61,14 +69,16 @@ describe('Certifications Service', () => {
 
   describe('when retrieving a certification', () => {
     it('will return a certification if it exists', async () => {
-      await CertificationModel.insertMany([certifications[7]]);
-      const expected = new Certification(certifications[7]).toJSON();
-      const actual = await service.getCertification(certifications[7].id);
+      await Certifications.save(certsData[7]);
+      const expected = new Certification(Certifications, certsData[7]).toJSON();
+      const actual = await service.getCertification(certsData[7].id);
       expect(actual?.toJSON()).toEqual(expected);
     });
 
     it('will return undefined if the certification ID cannot be found', async () => {
-      const cert = await service.getCertification('does-not-exist');
+      const cert = await service.getCertification(
+        '04a91216-37bc-406a-9b9d-996af7fc1750',
+      );
       expect(cert).toBeUndefined();
     });
   });
@@ -83,10 +93,9 @@ describe('Certifications Service', () => {
     expect(cert.course).toEqual(data.course);
     expect(cert.id).toBeDefined();
 
-    const result = await CertificationModel.findById(cert.id);
-    expect(result?.toJSON()).toEqual({
-      __v: 0,
-      _id: cert.id,
+    const result = await Certifications.findOneByOrFail({ id: cert.id });
+    expect(result).toEqual({
+      id: cert.id,
       ...data,
     });
   });

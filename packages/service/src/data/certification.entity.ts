@@ -11,4 +11,8 @@ export class CertificationEntity {
 
   @Column({ type: 'varchar', length: 200 })
   course: string = '';
+
+  @Column({ type: 'tsvector', select: false })
+  @Index()
+  fulltext: unknown;
 }
