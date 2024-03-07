@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class FullText1709825927444 implements MigrationInterface {
-  name = 'FullText1709825927444';
+export class FullText1709826967462 implements MigrationInterface {
+  name = 'FullText1709826967462';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "users" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(name, '') || ' ' || username), 'A') || setweight(to_tsvector('english', coalesce(bio, '') || ' ' || coalesce(location, '')), 'B')) STORED NOT NULL`,
+      `ALTER TABLE "users" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(name, '') || ' ' || username), 'A') || setweight(to_tsvector('english', coalesce(bio, '') || ' ' || coalesce(location, '')), 'B')) STORED`,
     );
     await queryRunner.query(
       `INSERT INTO "typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -19,7 +19,7 @@ export class FullText1709825927444 implements MigrationInterface {
       ],
     );
     await queryRunner.query(
-      `ALTER TABLE "dive_sites" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(name, '')), 'A') || setweight(to_tsvector('english', coalesce(description, '') || ' ' || location), 'B') || setweight(to_tsvector('english', coalesce(directions, '')), 'C')) STORED NOT NULL`,
+      `ALTER TABLE "dive_sites" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(name, '')), 'A') || setweight(to_tsvector('english', coalesce(description, '') || ' ' || location), 'B') || setweight(to_tsvector('english', coalesce(directions, '')), 'C')) STORED`,
     );
     await queryRunner.query(
       `INSERT INTO "typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -33,7 +33,7 @@ export class FullText1709825927444 implements MigrationInterface {
       ],
     );
     await queryRunner.query(
-      `ALTER TABLE "dive_site_reviews" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(title, '')), 'A') || setweight(to_tsvector('english', coalesce(comments, '')), 'B')) STORED NOT NULL`,
+      `ALTER TABLE "dive_site_reviews" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(title, '')), 'A') || setweight(to_tsvector('english', coalesce(comments, '')), 'B')) STORED`,
     );
     await queryRunner.query(
       `INSERT INTO "typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -47,7 +47,7 @@ export class FullText1709825927444 implements MigrationInterface {
       ],
     );
     await queryRunner.query(
-      `ALTER TABLE "certifications" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(agency, '') || ' ' || coalesce(course, '')), 'A')) STORED NOT NULL`,
+      `ALTER TABLE "certifications" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(agency, '') || ' ' || coalesce(course, '')), 'A')) STORED`,
     );
     await queryRunner.query(
       `INSERT INTO "typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES ($1, $2, $3, $4, $5, $6)`,

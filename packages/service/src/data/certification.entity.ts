@@ -12,7 +12,15 @@ export class CertificationEntity {
   @Column({ type: 'varchar', length: 200 })
   course: string = '';
 
-  @Column({ type: 'tsvector', select: false })
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+    insert: false,
+    update: false,
+    asExpression: `setweight(to_tsvector('english', coalesce(agency, '') || ' ' || coalesce(course, '')), 'A')`,
+    generatedType: 'STORED',
+  })
   @Index()
-  fulltext: unknown;
+  fulltext?: string;
 }

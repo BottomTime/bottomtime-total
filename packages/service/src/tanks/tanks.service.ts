@@ -40,14 +40,15 @@ export class TanksService {
 
   async listTanks(options?: ListTanksOptions): Promise<ListTanksResponse> {
     let query = this.Tanks.createQueryBuilder('tanks');
-    query.leftJoinAndMapOne(
-      'tanks.user',
-      UserEntity,
-      'owner',
-      'tanks.user = owner.id',
-    );
 
     if (options?.userId) {
+      query = query.leftJoinAndMapOne(
+        'tanks.user',
+        UserEntity,
+        'owner',
+        'tanks.user = owner.id',
+      );
+
       if (options?.includeSystem) {
         query = query.where('tanks.user IS NULL OR tanks.user = :userId', {
           userId: options.userId,
@@ -64,7 +65,7 @@ export class TanksService {
     query = query.orderBy(`tanks.name`, 'ASC');
 
     this.log.debug('Attempting to retrieve list of tanks...');
-    this.log.debug('Listing tanks using query', query.getSql());
+    this.log.verbose('Listing tanks using query', query.getSql());
 
     const [tanks, totalCount] = await query.getManyAndCount();
 

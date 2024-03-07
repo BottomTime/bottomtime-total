@@ -165,7 +165,15 @@ export class UserEntity {
   })
   weightUnit: WeightUnit = WeightUnit.Kilograms;
 
-  @Column({ type: 'tsvector', select: false })
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+    insert: false,
+    update: false,
+    asExpression: `setweight(to_tsvector('english', coalesce(name, '') || ' ' || username), 'A') || setweight(to_tsvector('english', coalesce(bio, '') || ' ' || coalesce(location, '')), 'B')`,
+    generatedType: 'STORED',
+  })
   @Index()
-  fulltext: unknown;
+  fulltext?: unknown;
 }

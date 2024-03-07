@@ -55,8 +55,7 @@ export class AdminService {
       where.role = options.role;
     }
 
-    const query = this.Users.createQueryBuilder()
-      .from(UserEntity, 'users')
+    const query = this.Users.createQueryBuilder('users')
       .where(where)
       .orderBy(
         options.sortBy || UsersSortBy.MemberSince,
@@ -65,13 +64,10 @@ export class AdminService {
       .skip(options.skip ?? 0)
       .limit(options.limit ?? 100);
 
-    const [users, totalCount] = await Promise.all([
-      query.execute(),
-      query.getCount(),
-    ]);
+    const [users, totalCount] = await query.getManyAndCount();
 
     return {
-      users: users.map((user: UserEntity) => new User(this.Users, user)),
+      users: users.map((user) => new User(this.Users, user)),
       totalCount,
     };
   }

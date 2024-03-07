@@ -44,7 +44,15 @@ export class DiveSiteReview {
   @Column('varchar', { length: 1000, nullable: true })
   comments?: string;
 
-  @Column('tsvector', { select: false })
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+    insert: false,
+    update: false,
+    asExpression: `setweight(to_tsvector('english', coalesce(title, '')), 'A') || setweight(to_tsvector('english', coalesce(comments, '')), 'B')`,
+    generatedType: 'STORED',
+  })
   @Index()
-  fulltext: unknown;
+  fulltext?: unknown;
 }

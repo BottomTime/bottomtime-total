@@ -64,6 +64,7 @@ describe('Tanks Service', () => {
               oauth: undefined,
               customData: null,
               certifications: undefined,
+              fulltext: undefined,
             },
           })),
         )
@@ -190,6 +191,7 @@ describe('Tanks Service', () => {
               oauth: undefined,
               customData: null,
               certifications: undefined,
+              fulltext: undefined,
             },
           })),
         )

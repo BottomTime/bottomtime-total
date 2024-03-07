@@ -4,7 +4,7 @@ exports[`Certifications End-to-End when creating a certification will create a n
 {
   "agency": "BSAC",
   "course": "Intro to Underwater Stuff",
-  "id": "B24AE74C-0802-47BB-9EAB-A88574BB78DF",
+  "id": "b24ae74c-0802-47bb-9eab-a88574bb78df",
 }
 `;
 

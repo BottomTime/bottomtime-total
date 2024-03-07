@@ -58,6 +58,15 @@ export class DiveSiteEntity {
   @Index()
   shoreAccess?: boolean;
 
-  @Column('tsvector', { select: false })
-  fulltext: unknown;
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+    insert: false,
+    update: false,
+    asExpression: `setweight(to_tsvector('english', coalesce(name, '')), 'A') || setweight(to_tsvector('english', coalesce(description, '') || ' ' || location), 'B') || setweight(to_tsvector('english', coalesce(directions, '')), 'C')`,
+    generatedType: 'STORED',
+  })
+  @Index()
+  fulltext?: unknown;
 }
