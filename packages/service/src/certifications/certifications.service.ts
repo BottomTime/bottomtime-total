@@ -39,9 +39,9 @@ export class CertificationsService {
 
     query = query
       .orderBy('agency', 'ASC')
-      .orderBy('course', 'ASC')
+      .addOrderBy('course', 'ASC')
       .offset(options.skip)
-      .take(options.limit);
+      .limit(options.limit);
 
     // TODO:
     // if (options.query) {

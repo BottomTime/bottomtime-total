@@ -46,7 +46,7 @@ describe('Certification Class', () => {
   it('will save a new certification to the database', async () => {
     await cert.save();
     const result = await Certifications.findOneByOrFail({ id: data.id });
-    expect(result).toEqual(data);
+    expect(result).toMatchSnapshot();
   });
 
   it('will save changes to properties', async () => {

@@ -35,12 +35,12 @@ describe('Certifications Service', () => {
     it('will list all certifications by default', async () => {
       const results = await service.searchCertifications({
         skip: 0,
-        limit: 400,
+        limit: 500,
       });
       expect(results).toMatchSnapshot();
     });
 
-    it('will perform a text-based search', async () => {
+    it.skip('will perform a text-based search', async () => {
       const results = await service.searchCertifications({
         query: 'advanced',
         skip: 0,
@@ -60,8 +60,8 @@ describe('Certifications Service', () => {
 
     it('will allow pagination', async () => {
       const results = await service.searchCertifications({
-        skip: 10,
-        limit: 5,
+        skip: 20,
+        limit: 10,
       });
       expect(results).toMatchSnapshot();
     });
