@@ -193,7 +193,7 @@ export class UsersService {
       }
     }
 
-    query = query.skip(options.skip ?? 0).take(options.limit ?? 100);
+    query = query.offset(options.skip).take(options.limit ?? 100);
 
     const sortBy = `users.${options.sortBy || UsersSortBy.Username}`;
     const sortOrder = options.sortOrder

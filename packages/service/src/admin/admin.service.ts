@@ -2,7 +2,6 @@ import {
   AdminSearchUsersParamsDTO,
   SortOrder,
   UserRole,
-  UsersSortBy,
 } from '@bottomtime/api';
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -40,7 +39,7 @@ export class AdminService {
   }
 
   async searchUsers(options: SearchUsersOptions): Promise<SearchUsersResults> {
-    const where: FindOptionsWhere<UserEntity> = {};
+    let query = this.Users.createQueryBuilder('users');
 
     if (options.query) {
       // TODO
@@ -52,18 +51,18 @@ export class AdminService {
     }
 
     if (options.role) {
-      where.role = options.role;
+      query = query.andWhere({ role: options.role });
     }
 
-    const query = this.Users.createQueryBuilder('users')
-      .where(where)
+    query = query
       .orderBy(
-        options.sortBy || UsersSortBy.MemberSince,
+        `users.${options.sortBy}`,
         options.sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
       )
-      .skip(options.skip ?? 0)
+      .offset(options.skip)
       .limit(options.limit ?? 100);
 
+    this.log.verbose('Listing users using query:', query.getSql());
     const [users, totalCount] = await query.getManyAndCount();
 
     return {
