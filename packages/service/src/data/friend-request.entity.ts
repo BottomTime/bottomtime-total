@@ -29,8 +29,8 @@ export class FriendRequestEntity {
   expires: Date = new Date();
 
   @Column('boolean', { nullable: true })
-  accepted?: boolean = false;
+  accepted: boolean | null = null;
 
   @Column('varchar', { length: 500, nullable: true })
-  reason?: string;
+  reason: string | null = null;
 }

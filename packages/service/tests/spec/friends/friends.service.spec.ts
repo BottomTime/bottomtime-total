@@ -27,9 +27,14 @@ import {
 import { FriendsService } from '../../../src/friends';
 import { dataSource } from '../../data-source';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
-import TestFriendData from '../../fixtures/friend-search-data.json';
 import TestFriendshipData from '../../fixtures/friends.json';
+import TestFriendData from '../../fixtures/user-search-data.json';
 import { InsertableUser, createTestUser } from '../../utils';
+
+type InsertableFriendship = Omit<FriendshipEntity, 'user' | 'friend'> & {
+  user: InsertableUser;
+  friend: InsertableUser;
+};
 
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
 
@@ -68,54 +73,55 @@ describe('Friends Service', () => {
 
   let service: FriendsService;
   let userData: UserEntity;
+  let friendData: UserEntity[];
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     Friends = dataSource.getRepository(FriendshipEntity);
     FriendRequests = dataSource.getRepository(FriendRequestEntity);
-    service = new FriendsService(Users, Friends, FriendRequests);
+
+    service = new FriendsService(dataSource, Users, Friends, FriendRequests);
+
     userData = new UserEntity();
     Object.assign(userData, TestUserData);
+
+    friendData = TestFriendData.map((data) => {
+      const user = new UserEntity();
+      Object.assign(user, data);
+      return user;
+    });
   });
 
   describe('when listing friends', () => {
-    let userData: UserEntity;
-    let friends: InsertableUser[];
-    let friendRelations: FriendshipEntity[];
+    let friendships: FriendshipEntity[];
 
     beforeAll(() => {
-      userData = new UserEntity();
-      Object.assign(userData, TestUserData);
-
-      friends = TestFriendData.map((data) => {
-        const user = new UserEntity();
-        Object.assign(user, data);
-        return user;
-      });
-      friendRelations = TestFriendshipData.map((r) => {
-        const relation = new FriendshipEntity();
-        Object.assign(relation, r);
-        return relation;
+      friendships = TestFriendshipData.map((r, index) => {
+        const friendship = new FriendshipEntity();
+        Object.assign(friendship, r);
+        friendship.user = userData;
+        friendship.friend = friendData[index];
+        return friendship;
       });
     });
 
     beforeEach(async () => {
+      await Users.save(userData);
       await Users.createQueryBuilder()
         .insert()
         .into(UserEntity)
-        .values(friends)
+        .values(friendData as InsertableUser[])
         .execute();
       await Friends.createQueryBuilder()
         .insert()
         .into(FriendshipEntity)
-        .values(
-          TestFriendshipData.map((r) => ({ ...r, user: { id: userData.id } })),
-        )
+        .values(friendships as InsertableFriendship[])
         .execute();
     });
 
     it('will list friends with default options', async () => {
       const results = await service.listFriends({ userId: userData.id });
+      expect(results.friends).toHaveLength(100);
       expect(results).toMatchSnapshot();
     });
 
@@ -125,6 +131,7 @@ describe('Friends Service', () => {
         skip: 25,
         limit: 5,
       });
+      expect(results.friends).toHaveLength(5);
       expect(results).toMatchSnapshot();
     });
 
@@ -144,12 +151,19 @@ describe('Friends Service', () => {
           limit: 10,
         });
 
-        expect(results).toMatchSnapshot();
+        expect(results.friends).toHaveLength(10);
+        expect(results.totalCount).toBe(100);
+        expect(
+          results.friends.map((f) => ({
+            username: f.username,
+            friendsSince: f.friendsSince,
+            memberSince: f.memberSince,
+          })),
+        ).toMatchSnapshot();
       });
     });
 
     it('will list friends, respecting the privacy of private accounts', async () => {
-      const friendsSince = new Date('2023-12-11T17:21:44.781Z');
       const user = createTestUser();
       const friends = [
         createTestUser({
@@ -194,25 +208,35 @@ describe('Friends Service', () => {
           profileVisibility: ProfileVisibility.Public,
         }),
       ];
-      const friendRelations = friends.map((data) => {
+
+      const friendships = friends.map((friend) => {
         const friendship = new FriendshipEntity();
-        Object.assign(friendship, data);
+        friendship.id = uuid();
+        friendship.user = user;
+        friendship.friend = friend;
+        friendship.friendsSince = new Date();
         return friendship;
       });
 
-      await Users.save(friends);
-      await Friends.save(friendRelations);
+      await Users.save([user, ...friends]);
+      await Friends.save(friendships);
 
       const results = await service.listFriends({ userId: user.id });
-
-      expect(results).toMatchSnapshot();
+      expect(results.friends).toHaveLength(3);
+      expect(
+        results.friends.map((friend) => ({
+          username: friend.username,
+          location: friend.location,
+          name: friend.name,
+          avatar: friend.avatar,
+        })),
+      ).toMatchSnapshot();
     });
   });
 
   describe('when retrieving a single friend', () => {
     it('will return the friend if the friend exists', async () => {
-      const friend = new UserEntity();
-      Object.assign(friend, TestFriendData[0]);
+      const friend = friendData[0];
 
       const friendRelation = new FriendshipEntity();
       friendRelation.id = friend.id;
@@ -220,6 +244,7 @@ describe('Friends Service', () => {
       friendRelation.friend = friend;
       friendRelation.friendsSince = new Date('2023-12-11T17:21:44.781Z');
 
+      await Users.save([userData, friend]);
       await Friends.save(friendRelation);
 
       const result = await service.getFriend(userData.id, friend.id);
@@ -228,10 +253,16 @@ describe('Friends Service', () => {
     });
 
     it("will respect the friend's privacy settings", async () => {
-      const friend = new UserEntity();
-      Object.assign(friend, TestFriendData[0]);
-      friend.profileVisibility = ProfileVisibility.Private;
-      await Users.save(friend);
+      const friend = createTestUser({
+        id: 'ee942718-f5b4-4e74-8ac5-66b6ed254f90',
+        username: 'private_pete',
+        memberSince: new Date('2022-09-20T22:53:03.480Z'),
+        avatar: 'https://example.com/private-pete.jpg',
+        location: 'Secretsville, Secretland',
+        name: 'Private Pete',
+        profileVisibility: ProfileVisibility.Private,
+      });
+      await Users.save([userData, friend]);
 
       const friendRelation = new FriendshipEntity();
       friendRelation.id = friend.id;
@@ -246,12 +277,9 @@ describe('Friends Service', () => {
     });
 
     it('will return undefined if the users are not friends', async () => {
-      const friend = new UserEntity();
-      Object.assign(friend, TestFriendData[0]);
-      await Promise.all([Users.save(friend), Users.save(userData)]);
-
+      await Users.save([userData, friendData[0]]);
       await expect(
-        service.getFriend(userData.id, friend.id),
+        service.getFriend(userData.id, friendData[0].id),
       ).resolves.toBeUndefined();
     });
   });
@@ -259,9 +287,8 @@ describe('Friends Service', () => {
   describe('when removing a friend', () => {
     it('will remove the friend relationship and return true', async () => {
       const friendsSince = new Date('2023-12-11T17:21:44.781Z');
-      const friend = new UserEntity();
-      Object.assign(friend, TestFriendData[0]);
-      await Promise.all([Users.save(userData), Users.save(friend)]);
+      const friend = friendData[0];
+      await Users.save([userData, friend]);
 
       const friendRelations = new Array<FriendshipEntity>(2);
       friendRelations[0] = new FriendshipEntity();
@@ -282,65 +309,49 @@ describe('Friends Service', () => {
         true,
       );
 
-      await expect(
-        FriendModel.findOne({
-          $or: [
-            {
-              userId: user.id,
-              friendId: friend.id,
-            },
-            {
-              userId: friend.id,
-              friendId: user.id,
-            },
-          ],
-        }),
-      ).resolves.toBeNull();
+      await expect(Friends.count()).resolves.toBe(0);
     });
 
     it('will return false if the friend relationship did not exist', async () => {
-      const user = new UserModel(TestUserData);
-      const friend = new UserModel(TestFriendData[0]);
-      await UserModel.insertMany([user, friend]);
-      await expect(service.unFriend(user.id, friend.id)).resolves.toBe(false);
+      const friend = friendData[0];
+      await Users.save([userData, friend]);
+      await expect(service.unFriend(userData.id, friend.id)).resolves.toBe(
+        false,
+      );
     });
   });
 
   describe('when listing friend requests', () => {
-    let userData: UserDocument;
-    let friends: UserDocument[];
-    let friendRequests: FriendRequestDocument[];
+    let friendRequests: FriendRequestEntity[];
 
-    beforeEach(async () => {
-      userData = new UserModel(TestUserData);
-      friends = TestFriendData.map((u) => new UserModel(u));
+    beforeAll(() => {
       friendRequests = TestFriendRequestData.map((r, index) => {
+        const request = new FriendRequestEntity();
+        Object.assign(request, r);
+
         // Half incoming, half outgoing
         if (index % 2 === 0) {
-          return new FriendRequestModel({
-            ...r,
-            from: userData.id,
-          });
+          request.from = userData;
+          request.to = friendData[index];
         } else {
-          return new FriendRequestModel({
-            ...r,
-            from: r.to,
-            to: userData.id,
-          });
+          request.from = friendData[index];
+          request.to = userData;
         }
-      });
 
-      await Promise.all([
-        UserModel.insertMany(friends),
-        FriendRequestModel.insertMany(friendRequests),
-        userData.save(),
-      ]);
+        return request;
+      });
+    });
+
+    beforeEach(async () => {
+      await Users.save([userData, ...friendData]);
+      await FriendRequests.save(friendRequests);
     });
 
     it('will list friend requests with default options', async () => {
       const results = await service.listFriendRequests({
         userId: userData.id,
       });
+      expect(results.friendRequests).toHaveLength(50);
       expect(results).toMatchSnapshot();
     });
 
@@ -350,6 +361,7 @@ describe('Friends Service', () => {
         skip: 10,
         limit: 5,
       });
+      expect(results.friendRequests).toHaveLength(5);
       expect(results).toMatchSnapshot();
     });
 
@@ -369,8 +381,8 @@ describe('Friends Service', () => {
     it('will create a new friend request', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      await Promise.all([originUser.save(), destinationUser.save()]);
 
+      await Users.save([originUser, destinationUser]);
       const friendRequest = await service.createFriendRequest(
         originUser.id,
         destinationUser.id,
@@ -385,13 +397,12 @@ describe('Friends Service', () => {
         -2,
       );
 
-      const stored = await FriendRequestModel.findOne({
-        from: originUser.id,
-        to: destinationUser.id,
+      const stored = await FriendRequests.findOneByOrFail({
+        from: originUser,
+        to: destinationUser,
       });
-      expect(stored).not.toBeNull();
-      expect(stored!.created.valueOf()).toBeCloseTo(Date.now(), -2);
-      expect(stored!.expires.valueOf()).toBeCloseTo(
+      expect(stored.created.valueOf()).toBeCloseTo(Date.now(), -2);
+      expect(stored.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
         -2,
       );
@@ -399,7 +410,7 @@ describe('Friends Service', () => {
 
     it('will not create a friend request if the origin and destination user are the same', async () => {
       const user = createTestUser();
-      await user.save();
+      await Users.save(user);
       await expect(
         service.createFriendRequest(user.id, user.id),
       ).rejects.toThrowError(BadRequestException);
@@ -408,7 +419,7 @@ describe('Friends Service', () => {
     it('will not create a friend request if the origin user does not exist', async () => {
       const originUser = uuid();
       const destinationUser = createTestUser();
-      await destinationUser.save();
+      await Users.save(destinationUser);
 
       await expect(
         service.createFriendRequest(originUser, destinationUser.id),
@@ -418,7 +429,7 @@ describe('Friends Service', () => {
     it('will not create a friend request if the destination user does not exist', async () => {
       const destinationUser = uuid();
       const originUser = createTestUser();
-      await originUser.save();
+      await Users.save(originUser);
 
       await expect(
         service.createFriendRequest(originUser.id, destinationUser),
@@ -428,18 +439,16 @@ describe('Friends Service', () => {
     it('will not create a friend request if an existing request already exists matching the origin and destination', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: originUser.id,
-        to: destinationUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + TwoWeeksInMilliseconds),
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       await expect(
         service.createFriendRequest(originUser.id, destinationUser.id),
@@ -449,18 +458,16 @@ describe('Friends Service', () => {
     it('will not create a friend request if an existing request already exists from the destination user to the origin user', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: destinationUser.id,
-        to: originUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + TwoWeeksInMilliseconds),
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = destinationUser;
+      friendRequest.to = originUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       await expect(
         service.createFriendRequest(originUser.id, destinationUser.id),
@@ -470,26 +477,20 @@ describe('Friends Service', () => {
     it('will not create a friend request if the origin and destination user are already friends', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRelations = [
-        new FriendModel({
-          id: uuid(),
-          userId: originUser.id,
-          friendId: destinationUser.id,
-          friendsSince: new Date(),
-        }),
-        new FriendModel({
-          id: uuid(),
-          userId: destinationUser.id,
-          friendId: originUser.id,
-          friendsSince: new Date(),
-        }),
-      ];
+      const friendRelations = [new FriendshipEntity(), new FriendshipEntity()];
 
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        FriendModel.insertMany(friendRelations),
-      ]);
+      friendRelations[0].id = uuid();
+      friendRelations[0].user = originUser;
+      friendRelations[0].friend = destinationUser;
+      friendRelations[0].friendsSince = new Date();
+
+      friendRelations[1].id = uuid();
+      friendRelations[1].user = destinationUser;
+      friendRelations[1].friend = originUser;
+      friendRelations[1].friendsSince = new Date();
+
+      await Users.save([originUser, destinationUser]);
+      await Friends.save(friendRelations);
 
       await expect(
         service.createFriendRequest(originUser.id, destinationUser.id),
@@ -501,18 +502,16 @@ describe('Friends Service', () => {
     it('will return the requested outgoing friend request', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: originUser.id,
-        to: destinationUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + 10000),
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       const result = await service.getFriendRequest(
         originUser.id,
@@ -530,18 +529,16 @@ describe('Friends Service', () => {
     it('will return the requested incoming friend request', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: destinationUser.id,
-        to: originUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + 10000),
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = destinationUser;
+      friendRequest.to = originUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       const result = await service.getFriendRequest(
         originUser.id,
@@ -559,7 +556,7 @@ describe('Friends Service', () => {
     it('will return undefined if the friend request cannot be found', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      await Promise.all([originUser.save(), destinationUser.save()]);
+      await Users.save([originUser, destinationUser]);
 
       await expect(
         service.getFriendRequest(originUser.id, destinationUser.id),
@@ -568,7 +565,7 @@ describe('Friends Service', () => {
 
     it('will return undefined if origin user does not exist', async () => {
       const destinationUser = createTestUser();
-      await destinationUser.save();
+      await Users.save(destinationUser);
 
       await expect(
         service.getFriendRequest(uuid(), destinationUser.id),
@@ -577,7 +574,7 @@ describe('Friends Service', () => {
 
     it('will return undefined if destination user does not exist', async () => {
       const originUser = createTestUser();
-      await originUser.save();
+      await Users.save(originUser);
 
       await expect(
         service.getFriendRequest(originUser.id, uuid()),
@@ -585,45 +582,40 @@ describe('Friends Service', () => {
     });
   });
 
-  describe('when accepting, cancelling, or rejecting friend requests', () => {
+  describe.only('when accepting, cancelling, or rejecting friend requests', () => {
     it('will accept a friend request and make both users friends', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: originUser.id,
-        to: destinationUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + 10000),
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       await expect(
         service.acceptFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(true);
 
       const [relations, request] = await Promise.all([
-        FriendModel.find({
-          $or: [
-            { userId: originUser.id, friendId: destinationUser.id },
-            { userId: destinationUser.id, friendId: originUser.id },
-          ],
-        }),
-        FriendRequestModel.findOne({
-          to: destinationUser.id,
-          from: originUser.id,
+        Friends.findBy([
+          { user: originUser, friend: destinationUser },
+          { user: destinationUser, friend: originUser },
+        ]),
+        FriendRequests.findOneByOrFail({
+          to: destinationUser,
+          from: originUser,
         }),
       ]);
 
       // Request should be marked as accepted and the expiration extended.
       // The friend relationship should be created in both directions.
-      expect(request).not.toBeNull();
-      expect(request?.accepted).toBe(true);
-      expect(request?.expires.valueOf()).toBeCloseTo(
+      expect(request.accepted).toBe(true);
+      expect(request.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
         -2,
       );
@@ -633,7 +625,7 @@ describe('Friends Service', () => {
     it('will not accept a friend request that does not exist', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      await Promise.all([originUser.save(), destinationUser.save()]);
+      await Users.save([originUser, destinationUser]);
 
       await expect(
         service.acceptFriendRequest(originUser.id, destinationUser.id),
@@ -643,19 +635,36 @@ describe('Friends Service', () => {
     it('will not accept a friend request that has already been accepted', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: originUser.id,
-        to: destinationUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + 10000),
-        accepted: true,
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+      friendRequest.accepted = true;
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
+
+      await expect(
+        service.acceptFriendRequest(originUser.id, destinationUser.id),
+      ).rejects.toThrowError(BadRequestException);
+    });
+
+    it('will not accept an expired friend request', async () => {
+      const originUser = createTestUser();
+      const destinationUser = createTestUser();
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date(Date.now() - 15000);
+      friendRequest.expires = new Date(Date.now() - 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       await expect(
         service.acceptFriendRequest(originUser.id, destinationUser.id),
@@ -665,26 +674,50 @@ describe('Friends Service', () => {
     it('will cancel a friend request', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: originUser.id,
-        to: destinationUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + TwoWeeksInMilliseconds),
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       await expect(
         service.cancelFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(true);
 
-      const request = await FriendRequestModel.findOne({
-        from: originUser.id,
-        to: destinationUser.id,
+      const request = await FriendRequests.findOneBy({
+        from: originUser,
+        to: destinationUser,
+      });
+
+      expect(request).toBeNull();
+    });
+
+    it('will cancel a friend request that has expired', async () => {
+      const originUser = createTestUser();
+      const destinationUser = createTestUser();
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date(Date.now() - 15000);
+      friendRequest.expires = new Date(Date.now() - 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
+
+      await expect(
+        service.cancelFriendRequest(originUser.id, destinationUser.id),
+      ).resolves.toBe(true);
+
+      const request = await FriendRequests.findOneBy({
+        from: originUser,
+        to: destinationUser,
       });
 
       expect(request).toBeNull();
@@ -693,42 +726,59 @@ describe('Friends Service', () => {
     it('will not cancel a friend request that does not exist', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      await Promise.all([originUser.save(), destinationUser.save()]);
+      await Users.save([originUser, destinationUser]);
 
       await expect(
         service.cancelFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(false);
     });
 
+    it('will not cancel a friend request that has already been accepted', async () => {
+      const originUser = createTestUser();
+      const destinationUser = createTestUser();
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+      friendRequest.accepted = true;
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
+
+      await expect(
+        service.cancelFriendRequest(originUser.id, destinationUser.id),
+      ).rejects.toThrowError(BadRequestException);
+    });
+
     it('will reject a friend request with no reason given and extend the expiration', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: originUser.id,
-        to: destinationUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + 100000),
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       await expect(
         service.rejectFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(true);
 
-      const request = await FriendRequestModel.findOne({
-        from: originUser.id,
-        to: destinationUser.id,
+      const request = await FriendRequests.findOneByOrFail({
+        from: originUser,
+        to: destinationUser,
       });
 
-      expect(request).not.toBeNull();
-      expect(request?.accepted).toBe(false);
-      expect(request!.reason).toBeUndefined();
-      expect(request!.expires.valueOf()).toBeCloseTo(
+      expect(request.accepted).toBe(false);
+      expect(request.reason).toBeUndefined();
+      expect(request.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
         -2,
       );
@@ -738,32 +788,29 @@ describe('Friends Service', () => {
       const reason = 'You are a jerk.';
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: originUser.id,
-        to: destinationUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + 100000),
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       await expect(
         service.rejectFriendRequest(originUser.id, destinationUser.id, reason),
       ).resolves.toBe(true);
 
-      const request = await FriendRequestModel.findOne({
-        from: originUser.id,
-        to: destinationUser.id,
+      const request = await FriendRequests.findOneByOrFail({
+        from: originUser,
+        to: destinationUser,
       });
 
-      expect(request).not.toBeNull();
-      expect(request?.accepted).toBe(false);
-      expect(request!.reason).toBe(reason);
-      expect(request!.expires.valueOf()).toBeCloseTo(
+      expect(request.accepted).toBe(false);
+      expect(request.reason).toBe(reason);
+      expect(request.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
         -2,
       );
@@ -772,7 +819,7 @@ describe('Friends Service', () => {
     it('will not reject a friend request that does not exist', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      await Promise.all([originUser.save(), destinationUser.save()]);
+      await Users.save([originUser, destinationUser]);
 
       await expect(
         service.rejectFriendRequest(originUser.id, destinationUser.id),
@@ -782,19 +829,17 @@ describe('Friends Service', () => {
     it('will not reject a friend request that has already been accepted', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
-      const friendRequest = new FriendRequestModel({
-        id: uuid(),
-        from: originUser.id,
-        to: destinationUser.id,
-        created: new Date(),
-        expires: new Date(Date.now() + 10000),
-        accepted: true,
-      });
-      await Promise.all([
-        originUser.save(),
-        destinationUser.save(),
-        friendRequest.save(),
-      ]);
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+      friendRequest.accepted = true;
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
 
       await expect(
         service.rejectFriendRequest(originUser.id, destinationUser.id),
