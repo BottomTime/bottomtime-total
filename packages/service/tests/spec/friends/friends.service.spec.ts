@@ -1,19 +1,4 @@
 import {
-  FriendDocument,
-  FriendModel,
-  FriendRequestDocument,
-  FriendRequestModel,
-  UserData,
-  UserDocument,
-  UserModel,
-} from '../../../src/schemas';
-
-import TestFriendData from '../../fixtures/users.json';
-import TestFriendRelationData from '../../fixtures/friends.json';
-import TestFriendRequestData from '../../fixtures/friend-requests.json';
-import { createTestUser } from '../../utils';
-import { FriendsService } from '../../../src/friends';
-import {
   DepthUnit,
   FriendRequestDirection,
   FriendsSortBy,
@@ -21,19 +6,35 @@ import {
   ProfileVisibility,
   SortOrder,
   TemperatureUnit,
+  UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+
 import {
   BadRequestException,
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
+
+import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+
+import {
+  FriendRequestEntity,
+  FriendshipEntity,
+  UserEntity,
+} from '../../../src/data';
+import { FriendsService } from '../../../src/friends';
+import { dataSource } from '../../data-source';
+import TestFriendRequestData from '../../fixtures/friend-requests.json';
+import TestFriendData from '../../fixtures/friend-search-data.json';
+import TestFriendshipData from '../../fixtures/friends.json';
+import { InsertableUser, createTestUser } from '../../utils';
 
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
 
-const TestUserData: UserData = {
-  _id: 'ea60a001-a27b-4fb8-a1f2-998ab77d9726',
+const TestUserData: Partial<UserEntity> = {
+  id: 'ea60a001-a27b-4fb8-a1f2-998ab77d9726',
   email: 'Marlee60@gmail.com',
   emailLowered: 'marlee60@gmail.com',
   emailVerified: true,
@@ -42,68 +43,85 @@ const TestUserData: UserData = {
   lastPasswordChange: new Date('2022-07-16T22:05:07.094Z'),
   memberSince: new Date('2019-02-13T23:22:31.727Z'),
   passwordHash: '$2b$04$ob6zcztbDs5jBN.G.fNBTuqPoP8GVqLK94/cKkz8qiSNugnYAT8R6',
-  role: 'user',
+  role: UserRole.User,
   username: 'Marlee55',
   usernameLowered: 'marlee55',
-  profile: {
-    avatar:
-      'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/338.jpg',
-    bio: 'Minus aspernatur sit autem nam numquam ullam sed reiciendis quidem. Enim quia at. Ab rerum architecto mollitia modi odio suscipit quidem in eaque. Dolorem corrupti facere quos iste delectus iure beatae reiciendis. Neque odit consequuntur. Asperiores aperiam amet dolorum natus animi sint dicta. Consectetur sit enim quibusdam quae.',
-    birthdate: '2012-07-10',
-    experienceLevel: 'Professional',
-    location: 'Stratford',
-    name: 'Darrel Wuckert',
-    startedDiving: '2023',
-  },
-  settings: {
-    depthUnit: DepthUnit.Meters,
-    temperatureUnit: TemperatureUnit.Celsius,
-    weightUnit: WeightUnit.Kilograms,
-    pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.FriendsOnly,
-  },
+  avatar:
+    'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/338.jpg',
+  bio: 'Minus aspernatur sit autem nam numquam ullam sed reiciendis quidem. Enim quia at. Ab rerum architecto mollitia modi odio suscipit quidem in eaque. Dolorem corrupti facere quos iste delectus iure beatae reiciendis. Neque odit consequuntur. Asperiores aperiam amet dolorum natus animi sint dicta. Consectetur sit enim quibusdam quae.',
+  birthdate: '2012-07-10',
+  experienceLevel: 'Professional',
+  location: 'Stratford',
+  name: 'Darrel Wuckert',
+  startedDiving: '2023',
+  depthUnit: DepthUnit.Meters,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
+  pressureUnit: PressureUnit.Bar,
+  profileVisibility: ProfileVisibility.FriendsOnly,
 };
 
 describe('Friends Service', () => {
+  let Users: Repository<UserEntity>;
+  let Friends: Repository<FriendshipEntity>;
+  let FriendRequests: Repository<FriendRequestEntity>;
+
   let service: FriendsService;
+  let userData: UserEntity;
 
   beforeAll(() => {
-    service = new FriendsService(UserModel, FriendModel, FriendRequestModel);
+    Users = dataSource.getRepository(UserEntity);
+    Friends = dataSource.getRepository(FriendshipEntity);
+    FriendRequests = dataSource.getRepository(FriendRequestEntity);
+    service = new FriendsService(Users, Friends, FriendRequests);
+    userData = new UserEntity();
+    Object.assign(userData, TestUserData);
   });
 
   describe('when listing friends', () => {
-    let userData: UserDocument;
-    let friends: UserDocument[];
-    let friendRelations: FriendDocument[];
+    let userData: UserEntity;
+    let friends: InsertableUser[];
+    let friendRelations: FriendshipEntity[];
+
+    beforeAll(() => {
+      userData = new UserEntity();
+      Object.assign(userData, TestUserData);
+
+      friends = TestFriendData.map((data) => {
+        const user = new UserEntity();
+        Object.assign(user, data);
+        return user;
+      });
+      friendRelations = TestFriendshipData.map((r) => {
+        const relation = new FriendshipEntity();
+        Object.assign(relation, r);
+        return relation;
+      });
+    });
 
     beforeEach(async () => {
-      userData = new UserModel(TestUserData);
-
-      friends = TestFriendData.map((u) => new UserModel(u));
-      friendRelations = TestFriendRelationData.map(
-        (r) =>
-          new FriendModel({
-            ...r,
-            _id: r.friendId,
-            userId: userData._id,
-          }),
-      );
-
-      await Promise.all([
-        UserModel.insertMany(friends),
-        FriendModel.insertMany(friendRelations),
-        userData.save(),
-      ]);
+      await Users.createQueryBuilder()
+        .insert()
+        .into(UserEntity)
+        .values(friends)
+        .execute();
+      await Friends.createQueryBuilder()
+        .insert()
+        .into(FriendshipEntity)
+        .values(
+          TestFriendshipData.map((r) => ({ ...r, user: { id: userData.id } })),
+        )
+        .execute();
     });
 
     it('will list friends with default options', async () => {
-      const results = await service.listFriends({ userId: userData._id });
+      const results = await service.listFriends({ userId: userData.id });
       expect(results).toMatchSnapshot();
     });
 
     it('will allow pagination of friends', async () => {
       const results = await service.listFriends({
-        userId: userData._id,
+        userId: userData.id,
         skip: 25,
         limit: 5,
       });
@@ -120,7 +138,7 @@ describe('Friends Service', () => {
     ].forEach(({ sortBy, sortOrder }) => {
       it(`will allow sorting by ${sortBy} in ${sortOrder} order`, async () => {
         const results = await service.listFriends({
-          userId: userData._id,
+          userId: userData.id,
           sortBy,
           sortOrder,
           limit: 10,
@@ -135,76 +153,57 @@ describe('Friends Service', () => {
       const user = createTestUser();
       const friends = [
         createTestUser({
-          _id: 'ee942718-f5b4-4e74-8ac5-66b6ed254f90',
+          id: 'ee942718-f5b4-4e74-8ac5-66b6ed254f90',
           username: 'Emerald_Johnson43',
           memberSince: new Date('2022-09-20T22:53:03.480Z'),
-          profile: {
-            name: 'Private Pete',
-            location: 'Privateville',
-            avatar: 'https://example.com/private-pete.jpg',
-          },
-          settings: {
-            depthUnit: DepthUnit.Meters,
-            temperatureUnit: TemperatureUnit.Celsius,
-            weightUnit: WeightUnit.Kilograms,
-            pressureUnit: PressureUnit.Bar,
-            profileVisibility: ProfileVisibility.Private,
-          },
+          name: 'Private Pete',
+          location: 'Privateville',
+          avatar: 'https://example.com/private-pete.jpg',
+          depthUnit: DepthUnit.Meters,
+          temperatureUnit: TemperatureUnit.Celsius,
+          weightUnit: WeightUnit.Kilograms,
+          pressureUnit: PressureUnit.Bar,
+          profileVisibility: ProfileVisibility.Private,
         }),
         createTestUser({
-          _id: 'e53ac770-374f-4a62-9202-a8d230cc43f8',
+          id: 'e53ac770-374f-4a62-9202-a8d230cc43f8',
           username: 'Dahlia.Kerluke59',
           memberSince: new Date('2022-03-21T22:58:19.726Z'),
-          profile: {
-            avatar:
-              'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1232.jpg',
-            name: 'Nick Heller',
-            location: 'El Monte',
-          },
-          settings: {
-            depthUnit: DepthUnit.Meters,
-            temperatureUnit: TemperatureUnit.Celsius,
-            weightUnit: WeightUnit.Kilograms,
-            pressureUnit: PressureUnit.Bar,
-            profileVisibility: ProfileVisibility.FriendsOnly,
-          },
+          avatar:
+            'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1232.jpg',
+          name: 'Nick Heller',
+          location: 'El Monte',
+          depthUnit: DepthUnit.Meters,
+          temperatureUnit: TemperatureUnit.Celsius,
+          weightUnit: WeightUnit.Kilograms,
+          pressureUnit: PressureUnit.Bar,
+          profileVisibility: ProfileVisibility.FriendsOnly,
         }),
         createTestUser({
-          _id: 'edbc5d2c-da35-4724-a563-af88d69d5668',
+          id: 'edbc5d2c-da35-4724-a563-af88d69d5668',
           username: 'Elisabeth_Raynor30',
           memberSince: new Date('2021-07-02T08:27:54.544Z'),
-          profile: {
-            avatar:
-              'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1087.jpg',
-            name: 'Elena Bahringer',
-            location: 'Diamond Bar',
-          },
-          settings: {
-            depthUnit: DepthUnit.Meters,
-            temperatureUnit: TemperatureUnit.Celsius,
-            weightUnit: WeightUnit.Kilograms,
-            pressureUnit: PressureUnit.Bar,
-            profileVisibility: ProfileVisibility.Public,
-          },
+          avatar:
+            'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1087.jpg',
+          name: 'Elena Bahringer',
+          location: 'Diamond Bar',
+          depthUnit: DepthUnit.Meters,
+          temperatureUnit: TemperatureUnit.Celsius,
+          weightUnit: WeightUnit.Kilograms,
+          pressureUnit: PressureUnit.Bar,
+          profileVisibility: ProfileVisibility.Public,
         }),
       ];
-      const friendRelations = friends.map(
-        (friend) =>
-          new FriendModel({
-            _id: friend._id,
-            userId: user._id,
-            friendId: friend._id,
-            friendsSince,
-          }),
-      );
+      const friendRelations = friends.map((data) => {
+        const friendship = new FriendshipEntity();
+        Object.assign(friendship, data);
+        return friendship;
+      });
 
-      await Promise.all([
-        UserModel.insertMany(friends),
-        FriendModel.insertMany(friendRelations),
-        user.save(),
-      ]);
+      await Users.save(friends);
+      await Friends.save(friendRelations);
 
-      const results = await service.listFriends({ userId: user._id });
+      const results = await service.listFriends({ userId: user.id });
 
       expect(results).toMatchSnapshot();
     });
@@ -212,95 +211,87 @@ describe('Friends Service', () => {
 
   describe('when retrieving a single friend', () => {
     it('will return the friend if the friend exists', async () => {
-      const user = new UserModel(TestUserData);
-      const friend = new UserModel(TestFriendData[0]);
-      const friendRelation = new FriendModel({
-        _id: friend._id,
-        userId: user._id,
-        friendId: friend._id,
-        friendsSince: new Date('2023-12-11T17:21:44.781Z'),
-      });
+      const friend = new UserEntity();
+      Object.assign(friend, TestFriendData[0]);
 
-      await Promise.all([
-        UserModel.insertMany([user, friend]),
-        friendRelation.save(),
-      ]);
+      const friendRelation = new FriendshipEntity();
+      friendRelation.id = friend.id;
+      friendRelation.user = userData;
+      friendRelation.friend = friend;
+      friendRelation.friendsSince = new Date('2023-12-11T17:21:44.781Z');
 
-      const result = await service.getFriend(user._id, friend._id);
+      await Friends.save(friendRelation);
+
+      const result = await service.getFriend(userData.id, friend.id);
 
       expect(result).toMatchSnapshot();
     });
 
     it("will respect the friend's privacy settings", async () => {
-      const user = new UserModel(TestUserData);
-      const friend = new UserModel({
-        ...TestFriendData[0],
-        settings: { profileVisibility: ProfileVisibility.Private },
-      });
-      const friendRelation = new FriendModel({
-        _id: friend._id,
-        userId: user._id,
-        friendId: friend._id,
-        friendsSince: new Date('2023-12-11T17:21:44.781Z'),
-      });
+      const friend = new UserEntity();
+      Object.assign(friend, TestFriendData[0]);
+      friend.profileVisibility = ProfileVisibility.Private;
+      await Users.save(friend);
 
-      await Promise.all([
-        UserModel.insertMany([user, friend]),
-        friendRelation.save(),
-      ]);
+      const friendRelation = new FriendshipEntity();
+      friendRelation.id = friend.id;
+      friendRelation.user = userData;
+      friendRelation.friend = friend;
+      friendRelation.friendsSince = new Date('2023-12-11T17:21:44.781Z');
+      await Friends.save(friendRelation);
 
-      const result = await service.getFriend(user._id, friend._id);
+      const result = await service.getFriend(userData.id, friend.id);
 
       expect(result).toMatchSnapshot();
     });
 
     it('will return undefined if the users are not friends', async () => {
-      const user = new UserModel(TestUserData);
-      const friend = new UserModel(TestFriendData[0]);
-
-      await UserModel.insertMany([user, friend]);
+      const friend = new UserEntity();
+      Object.assign(friend, TestFriendData[0]);
+      await Promise.all([Users.save(friend), Users.save(userData)]);
 
       await expect(
-        service.getFriend(user._id, friend._id),
+        service.getFriend(userData.id, friend.id),
       ).resolves.toBeUndefined();
     });
   });
 
   describe('when removing a friend', () => {
     it('will remove the friend relationship and return true', async () => {
-      const user = new UserModel(TestUserData);
-      const friend = new UserModel(TestFriendData[0]);
-      const friendRelations = [
-        new FriendModel({
-          _id: uuid(),
-          userId: user._id,
-          friendId: friend._id,
-          friendsSince: new Date('2023-12-11T17:21:44.781Z'),
-        }),
-        new FriendModel({
-          _id: uuid(),
-          userId: friend._id,
-          friendId: user._id,
-          friendsSince: new Date('2023-12-11T17:21:44.781Z'),
-        }),
-      ];
-      await Promise.all([
-        UserModel.insertMany([user, friend]),
-        FriendModel.insertMany(friendRelations),
-      ]);
+      const friendsSince = new Date('2023-12-11T17:21:44.781Z');
+      const friend = new UserEntity();
+      Object.assign(friend, TestFriendData[0]);
+      await Promise.all([Users.save(userData), Users.save(friend)]);
 
-      await expect(service.unFriend(user._id, friend._id)).resolves.toBe(true);
+      const friendRelations = new Array<FriendshipEntity>(2);
+      friendRelations[0] = new FriendshipEntity();
+      friendRelations[0].id = uuid();
+      friendRelations[0].user = userData;
+      friendRelations[0].friend = friend;
+      friendRelations[0].friendsSince = friendsSince;
+
+      friendRelations[1] = new FriendshipEntity();
+      friendRelations[1].id = uuid();
+      friendRelations[1].user = friend;
+      friendRelations[1].friend = userData;
+      friendRelations[1].friendsSince = friendsSince;
+
+      await Friends.save(friendRelations);
+
+      await expect(service.unFriend(userData.id, friend.id)).resolves.toBe(
+        true,
+      );
 
       await expect(
         FriendModel.findOne({
           $or: [
             {
-              userId: user._id,
-              friendId: friend._id,
+              userId: user.id,
+              friendId: friend.id,
             },
             {
-              userId: friend._id,
-              friendId: user._id,
+              userId: friend.id,
+              friendId: user.id,
             },
           ],
         }),
@@ -311,7 +302,7 @@ describe('Friends Service', () => {
       const user = new UserModel(TestUserData);
       const friend = new UserModel(TestFriendData[0]);
       await UserModel.insertMany([user, friend]);
-      await expect(service.unFriend(user._id, friend._id)).resolves.toBe(false);
+      await expect(service.unFriend(user.id, friend.id)).resolves.toBe(false);
     });
   });
 
@@ -328,13 +319,13 @@ describe('Friends Service', () => {
         if (index % 2 === 0) {
           return new FriendRequestModel({
             ...r,
-            from: userData._id,
+            from: userData.id,
           });
         } else {
           return new FriendRequestModel({
             ...r,
             from: r.to,
-            to: userData._id,
+            to: userData.id,
           });
         }
       });
@@ -348,14 +339,14 @@ describe('Friends Service', () => {
 
     it('will list friend requests with default options', async () => {
       const results = await service.listFriendRequests({
-        userId: userData._id,
+        userId: userData.id,
       });
       expect(results).toMatchSnapshot();
     });
 
     it('will allow pagination of friend requests', async () => {
       const results = await service.listFriendRequests({
-        userId: userData._id,
+        userId: userData.id,
         skip: 10,
         limit: 5,
       });
@@ -365,7 +356,7 @@ describe('Friends Service', () => {
     Object.values(FriendRequestDirection).forEach((direction) => {
       it(`will allow filtering by ${direction} friend requests`, async () => {
         const results = await service.listFriendRequests({
-          userId: userData._id,
+          userId: userData.id,
           direction,
           limit: 5,
         });
@@ -381,13 +372,13 @@ describe('Friends Service', () => {
       await Promise.all([originUser.save(), destinationUser.save()]);
 
       const friendRequest = await service.createFriendRequest(
-        originUser._id,
-        destinationUser._id,
+        originUser.id,
+        destinationUser.id,
       );
 
       expect(friendRequest.direction).toBe(FriendRequestDirection.Outgoing);
-      expect(friendRequest.friendId).toBe(destinationUser._id);
-      expect(friendRequest.friend.id).toBe(destinationUser._id);
+      expect(friendRequest.friendId).toBe(destinationUser.id);
+      expect(friendRequest.friend.id).toBe(destinationUser.id);
       expect(friendRequest.created.valueOf()).toBeCloseTo(Date.now(), -2);
       expect(friendRequest.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
@@ -395,8 +386,8 @@ describe('Friends Service', () => {
       );
 
       const stored = await FriendRequestModel.findOne({
-        from: originUser._id,
-        to: destinationUser._id,
+        from: originUser.id,
+        to: destinationUser.id,
       });
       expect(stored).not.toBeNull();
       expect(stored!.created.valueOf()).toBeCloseTo(Date.now(), -2);
@@ -410,7 +401,7 @@ describe('Friends Service', () => {
       const user = createTestUser();
       await user.save();
       await expect(
-        service.createFriendRequest(user._id, user._id),
+        service.createFriendRequest(user.id, user.id),
       ).rejects.toThrowError(BadRequestException);
     });
 
@@ -420,7 +411,7 @@ describe('Friends Service', () => {
       await destinationUser.save();
 
       await expect(
-        service.createFriendRequest(originUser, destinationUser._id),
+        service.createFriendRequest(originUser, destinationUser.id),
       ).rejects.toThrowError(NotFoundException);
     });
 
@@ -430,7 +421,7 @@ describe('Friends Service', () => {
       await originUser.save();
 
       await expect(
-        service.createFriendRequest(originUser._id, destinationUser),
+        service.createFriendRequest(originUser.id, destinationUser),
       ).rejects.toThrowError(NotFoundException);
     });
 
@@ -438,9 +429,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: originUser._id,
-        to: destinationUser._id,
+        id: uuid(),
+        from: originUser.id,
+        to: destinationUser.id,
         created: new Date(),
         expires: new Date(Date.now() + TwoWeeksInMilliseconds),
       });
@@ -451,7 +442,7 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.createFriendRequest(originUser._id, destinationUser._id),
+        service.createFriendRequest(originUser.id, destinationUser.id),
       ).rejects.toThrowError(ConflictException);
     });
 
@@ -459,9 +450,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: destinationUser._id,
-        to: originUser._id,
+        id: uuid(),
+        from: destinationUser.id,
+        to: originUser.id,
         created: new Date(),
         expires: new Date(Date.now() + TwoWeeksInMilliseconds),
       });
@@ -472,7 +463,7 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.createFriendRequest(originUser._id, destinationUser._id),
+        service.createFriendRequest(originUser.id, destinationUser.id),
       ).rejects.toThrowError(ConflictException);
     });
 
@@ -481,15 +472,15 @@ describe('Friends Service', () => {
       const destinationUser = createTestUser();
       const friendRelations = [
         new FriendModel({
-          _id: uuid(),
-          userId: originUser._id,
-          friendId: destinationUser._id,
+          id: uuid(),
+          userId: originUser.id,
+          friendId: destinationUser.id,
           friendsSince: new Date(),
         }),
         new FriendModel({
-          _id: uuid(),
-          userId: destinationUser._id,
-          friendId: originUser._id,
+          id: uuid(),
+          userId: destinationUser.id,
+          friendId: originUser.id,
           friendsSince: new Date(),
         }),
       ];
@@ -501,7 +492,7 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.createFriendRequest(originUser._id, destinationUser._id),
+        service.createFriendRequest(originUser.id, destinationUser.id),
       ).rejects.toThrowError(ConflictException);
     });
   });
@@ -511,9 +502,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: originUser._id,
-        to: destinationUser._id,
+        id: uuid(),
+        from: originUser.id,
+        to: destinationUser.id,
         created: new Date(),
         expires: new Date(Date.now() + 10000),
       });
@@ -524,12 +515,12 @@ describe('Friends Service', () => {
       ]);
 
       const result = await service.getFriendRequest(
-        originUser._id,
-        destinationUser._id,
+        originUser.id,
+        destinationUser.id,
       );
 
       expect(result).toBeDefined();
-      expect(result?.friendId).toBe(destinationUser._id);
+      expect(result?.friendId).toBe(destinationUser.id);
       expect(result?.direction).toBe(FriendRequestDirection.Outgoing);
       expect(result?.created).toEqual(friendRequest.created);
       expect(result?.expires).toEqual(friendRequest.expires);
@@ -540,9 +531,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: destinationUser._id,
-        to: originUser._id,
+        id: uuid(),
+        from: destinationUser.id,
+        to: originUser.id,
         created: new Date(),
         expires: new Date(Date.now() + 10000),
       });
@@ -553,12 +544,12 @@ describe('Friends Service', () => {
       ]);
 
       const result = await service.getFriendRequest(
-        originUser._id,
-        destinationUser._id,
+        originUser.id,
+        destinationUser.id,
       );
 
       expect(result).toBeDefined();
-      expect(result?.friendId).toBe(destinationUser._id);
+      expect(result?.friendId).toBe(destinationUser.id);
       expect(result?.direction).toBe(FriendRequestDirection.Incoming);
       expect(result?.created).toEqual(friendRequest.created);
       expect(result?.expires).toEqual(friendRequest.expires);
@@ -571,7 +562,7 @@ describe('Friends Service', () => {
       await Promise.all([originUser.save(), destinationUser.save()]);
 
       await expect(
-        service.getFriendRequest(originUser._id, destinationUser._id),
+        service.getFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBeUndefined();
     });
 
@@ -580,7 +571,7 @@ describe('Friends Service', () => {
       await destinationUser.save();
 
       await expect(
-        service.getFriendRequest(uuid(), destinationUser._id),
+        service.getFriendRequest(uuid(), destinationUser.id),
       ).resolves.toBeUndefined();
     });
 
@@ -589,7 +580,7 @@ describe('Friends Service', () => {
       await originUser.save();
 
       await expect(
-        service.getFriendRequest(originUser._id, uuid()),
+        service.getFriendRequest(originUser.id, uuid()),
       ).resolves.toBeUndefined();
     });
   });
@@ -599,9 +590,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: originUser._id,
-        to: destinationUser._id,
+        id: uuid(),
+        from: originUser.id,
+        to: destinationUser.id,
         created: new Date(),
         expires: new Date(Date.now() + 10000),
       });
@@ -612,19 +603,19 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.acceptFriendRequest(originUser._id, destinationUser._id),
+        service.acceptFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(true);
 
       const [relations, request] = await Promise.all([
         FriendModel.find({
           $or: [
-            { userId: originUser._id, friendId: destinationUser._id },
-            { userId: destinationUser._id, friendId: originUser._id },
+            { userId: originUser.id, friendId: destinationUser.id },
+            { userId: destinationUser.id, friendId: originUser.id },
           ],
         }),
         FriendRequestModel.findOne({
-          to: destinationUser._id,
-          from: originUser._id,
+          to: destinationUser.id,
+          from: originUser.id,
         }),
       ]);
 
@@ -645,7 +636,7 @@ describe('Friends Service', () => {
       await Promise.all([originUser.save(), destinationUser.save()]);
 
       await expect(
-        service.acceptFriendRequest(originUser._id, destinationUser._id),
+        service.acceptFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(false);
     });
 
@@ -653,9 +644,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: originUser._id,
-        to: destinationUser._id,
+        id: uuid(),
+        from: originUser.id,
+        to: destinationUser.id,
         created: new Date(),
         expires: new Date(Date.now() + 10000),
         accepted: true,
@@ -667,7 +658,7 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.acceptFriendRequest(originUser._id, destinationUser._id),
+        service.acceptFriendRequest(originUser.id, destinationUser.id),
       ).rejects.toThrowError(BadRequestException);
     });
 
@@ -675,9 +666,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: originUser._id,
-        to: destinationUser._id,
+        id: uuid(),
+        from: originUser.id,
+        to: destinationUser.id,
         created: new Date(),
         expires: new Date(Date.now() + TwoWeeksInMilliseconds),
       });
@@ -688,12 +679,12 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.cancelFriendRequest(originUser._id, destinationUser._id),
+        service.cancelFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(true);
 
       const request = await FriendRequestModel.findOne({
-        from: originUser._id,
-        to: destinationUser._id,
+        from: originUser.id,
+        to: destinationUser.id,
       });
 
       expect(request).toBeNull();
@@ -705,7 +696,7 @@ describe('Friends Service', () => {
       await Promise.all([originUser.save(), destinationUser.save()]);
 
       await expect(
-        service.cancelFriendRequest(originUser._id, destinationUser._id),
+        service.cancelFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(false);
     });
 
@@ -713,9 +704,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: originUser._id,
-        to: destinationUser._id,
+        id: uuid(),
+        from: originUser.id,
+        to: destinationUser.id,
         created: new Date(),
         expires: new Date(Date.now() + 100000),
       });
@@ -726,12 +717,12 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.rejectFriendRequest(originUser._id, destinationUser._id),
+        service.rejectFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(true);
 
       const request = await FriendRequestModel.findOne({
-        from: originUser._id,
-        to: destinationUser._id,
+        from: originUser.id,
+        to: destinationUser.id,
       });
 
       expect(request).not.toBeNull();
@@ -748,9 +739,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: originUser._id,
-        to: destinationUser._id,
+        id: uuid(),
+        from: originUser.id,
+        to: destinationUser.id,
         created: new Date(),
         expires: new Date(Date.now() + 100000),
       });
@@ -761,16 +752,12 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.rejectFriendRequest(
-          originUser._id,
-          destinationUser._id,
-          reason,
-        ),
+        service.rejectFriendRequest(originUser.id, destinationUser.id, reason),
       ).resolves.toBe(true);
 
       const request = await FriendRequestModel.findOne({
-        from: originUser._id,
-        to: destinationUser._id,
+        from: originUser.id,
+        to: destinationUser.id,
       });
 
       expect(request).not.toBeNull();
@@ -788,7 +775,7 @@ describe('Friends Service', () => {
       await Promise.all([originUser.save(), destinationUser.save()]);
 
       await expect(
-        service.rejectFriendRequest(originUser._id, destinationUser._id),
+        service.rejectFriendRequest(originUser.id, destinationUser.id),
       ).resolves.toBe(false);
     });
 
@@ -796,9 +783,9 @@ describe('Friends Service', () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestModel({
-        _id: uuid(),
-        from: originUser._id,
-        to: destinationUser._id,
+        id: uuid(),
+        from: originUser.id,
+        to: destinationUser.id,
         created: new Date(),
         expires: new Date(Date.now() + 10000),
         accepted: true,
@@ -810,7 +797,7 @@ describe('Friends Service', () => {
       ]);
 
       await expect(
-        service.rejectFriendRequest(originUser._id, destinationUser._id),
+        service.rejectFriendRequest(originUser.id, destinationUser.id),
       ).rejects.toThrowError(BadRequestException);
     });
   });

@@ -8,9 +8,9 @@ import {
   ListFriendsParams,
   ListFriendsResponseDTO,
   ProfileVisibility,
-  SortOrder,
 } from '@bottomtime/api';
 
+import { FriendRequestEntity, FriendshipEntity, UserEntity } from '@/data';
 import {
   BadRequestException,
   ConflictException,
@@ -18,26 +18,10 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import { FilterQuery, Model } from 'mongoose';
+import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-
-import {
-  FriendRequestData,
-  FriendRequestDocument,
-  FriendRequestModel,
-  FriendRequestModelName,
-  UserData,
-  UserDocument,
-  UserModel,
-  UserModelName,
-} from '../schemas';
-import {
-  FriendData,
-  FriendModel,
-  FriendModelName,
-} from '../schemas/friends.document';
 
 // List Friends Types
 export type Friend = FriendDTO;
@@ -53,15 +37,6 @@ export type ListFriendRequestOptions = ListFriendRequestsParams & {
 };
 export type ListFriendRequestsResults = ListFriendRequestsResponseDTO;
 
-const FriendProjection = {
-  username: 1,
-  memberSince: 1,
-  'profile.avatar': 1,
-  'profile.name': 1,
-  'profile.location': 1,
-  'settings.profileVisibility': 1,
-} as const;
-
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
 
 @Injectable()
@@ -75,255 +50,299 @@ export class FriendsService {
   private readonly log: Logger = new Logger(FriendsService.name);
 
   constructor(
-    @InjectModel(UserModelName)
-    private readonly Users: Model<UserData>,
-    @InjectModel(FriendModelName)
-    private readonly Friends: Model<FriendData>,
-    @InjectModel(FriendRequestModelName)
-    private readonly FriendRequests: Model<FriendRequestData>,
+    @InjectRepository(UserEntity)
+    private readonly Users: Repository<UserEntity>,
+    @InjectRepository(FriendshipEntity)
+    private readonly Friends: Repository<FriendshipEntity>,
+    @InjectRepository(FriendRequestEntity)
+    private readonly FriendRequests: Repository<FriendRequestEntity>,
   ) {}
 
-  private static toFriendDTO(friend: UserDocument, friendsSince: Date): Friend {
-    const profileData =
-      friend.settings?.profileVisibility === ProfileVisibility.Private
-        ? {}
-        : {
-            avatar: friend.profile?.avatar ?? undefined,
-            name: friend.profile?.name ?? undefined,
-            location: friend.profile?.location ?? undefined,
-          };
+  // private static toFriendDTO(friend: UserEntity, friendsSince: Date): Friend {
+  //   const profileData =
+  //     friend.profileVisibility === ProfileVisibility.Private
+  //       ? {}
+  //       : {
+  //           avatar: friend.avatar ?? undefined,
+  //           name: friend.name ?? undefined,
+  //           location: friend.location ?? undefined,
+  //         };
 
-    return {
-      id: friend._id,
-      username: friend.username,
-      friendsSince,
-      memberSince: friend.memberSince,
-      ...profileData,
-    };
-  }
+  //   return {
+  //     id: friend.id,
+  //     username: friend.username,
+  //     friendsSince,
+  //     memberSince: friend.memberSince,
+  //     ...profileData,
+  //   };
+  // }
 
-  private static toFriendRequestDTO(
-    userId: string,
-    user: UserDocument,
-    friend: UserDocument,
-    friendRequest: FriendRequestDocument,
-  ): FriendRequest {
-    const direction =
-      userId === user._id
-        ? FriendRequestDirection.Outgoing
-        : FriendRequestDirection.Incoming;
-    const friendData: Omit<Friend, 'friendsSince'> =
-      direction === FriendRequestDirection.Outgoing
-        ? {
-            id: friend._id,
-            username: friend.username,
-            memberSince: friend.memberSince,
-            avatar: friend.profile?.avatar ?? undefined,
-            name: friend.profile?.name ?? undefined,
-            location: friend.profile?.location ?? undefined,
-          }
-        : {
-            id: user._id,
-            username: user.username,
-            memberSince: user.memberSince,
-            avatar: user.profile?.avatar ?? undefined,
-            name: user.profile?.name ?? undefined,
-            location: user.profile?.location ?? undefined,
-          };
+  // private static toFriendRequestDTO(
+  //   userId: string,
+  //   user: UserEntity,
+  //   friend: UserEntity,
+  //   friendRequest: FriendRequestEntity,
+  // ): FriendRequest {
+  //   const direction =
+  //     userId === user.id
+  //       ? FriendRequestDirection.Outgoing
+  //       : FriendRequestDirection.Incoming;
+  //   const friendData: Omit<Friend, 'friendsSince'> =
+  //     direction === FriendRequestDirection.Outgoing
+  //       ? {
+  //           id: friend.id,
+  //           username: friend.username,
+  //           memberSince: friend.memberSince,
+  //           avatar: friend.avatar ?? undefined,
+  //           name: friend.name ?? undefined,
+  //           location: friend.location ?? undefined,
+  //         }
+  //       : {
+  //           id: user.id,
+  //           username: user.username,
+  //           memberSince: user.memberSince,
+  //           avatar: user.avatar ?? undefined,
+  //           name: user.name ?? undefined,
+  //           location: user.location ?? undefined,
+  //         };
 
-    return {
-      friendId: friend._id,
-      friend: friendData,
-      direction,
-      created: friendRequest.created,
-      expires: friendRequest.expires,
-      accepted: friendRequest.accepted ?? undefined,
-      reason: friendRequest.reason ?? undefined,
-    };
-  }
+  //   return {
+  //     friendId: friend.id,
+  //     friend: friendData,
+  //     direction,
+  //     created: friendRequest.created,
+  //     expires: friendRequest.expires,
+  //     accepted: friendRequest.accepted ?? undefined,
+  //     reason: friendRequest.reason ?? undefined,
+  //   };
+  // }
 
-  private async listFriendsByFriendsSince(
-    options: ListFriendsOptions,
-  ): Promise<ListFriendsResults> {
-    const [sortedFriendIds, totalCount] = await Promise.all([
-      this.Friends.find({
-        userId: options.userId,
-      })
-        .populate({
-          path: 'friendId',
-          select: FriendProjection,
-          model: UserModel,
-        })
-        .sort({ friendsSince: options.sortOrder === 'asc' ? 1 : -1 })
-        .skip(options.skip ?? 0)
-        .limit(options.limit ?? 100)
-        .exec(),
-      this.Friends.estimatedDocumentCount({
-        userId: options.userId,
-      }),
-    ]);
+  // private async listFriendsByFriendsSince(
+  //   options: ListFriendsOptions,
+  // ): Promise<ListFriendsResults> {
+  //   const [sortedFriendIds, totalCount] = await Promise.all([
+  //     this.Friends.find({
+  //       userId: options.userId,
+  //     })
+  //       .populate({
+  //         path: 'friendId',
+  //         select: FriendProjection,
+  //         model: UserModel,
+  //       })
+  //       .sort({ friendsSince: options.sortOrder === 'asc' ? 1 : -1 })
+  //       .skip(options.skip ?? 0)
+  //       .limit(options.limit ?? 100)
+  //       .exec(),
+  //     this.Friends.estimatedDocumentCount({
+  //       userId: options.userId,
+  //     }),
+  //   ]);
 
-    return {
-      friends: sortedFriendIds.map((friend) =>
-        FriendsService.toFriendDTO(
-          friend.friendId as unknown as UserDocument,
-          friend.friendsSince,
-        ),
-      ),
-      totalCount,
-    };
-  }
+  //   return {
+  //     friends: sortedFriendIds.map((friend) =>
+  //       FriendsService.toFriendDTO(
+  //         friend.friendId as unknown as UserDocument,
+  //         friend.friendsSince,
+  //       ),
+  //     ),
+  //     totalCount,
+  //   };
+  // }
 
-  private async listFriendsByOther(
-    options: ListFriendsOptions,
-  ): Promise<ListFriendsResults> {
-    const friendRelations = await this.Friends.find(
-      { userId: options.userId },
-      { friendId: 1, friendsSince: 1 },
-    ).exec();
+  // private async listFriendsByOther(
+  //   options: ListFriendsOptions,
+  // ): Promise<ListFriendsResults> {
+  //   const friendRelations = await this.Friends.find(
+  //     { userId: options.userId },
+  //     { friendId: 1, friendsSince: 1 },
+  //   ).exec();
 
-    const friendsSince = friendRelations.reduce<Record<string, Date>>(
-      (map, friend) => {
-        map[friend.friendId] = friend.friendsSince;
-        return map;
-      },
-      {},
-    );
+  //   const friendsSince = friendRelations.reduce<Record<string, Date>>(
+  //     (map, friend) => {
+  //       map[friend.friendId] = friend.friendsSince;
+  //       return map;
+  //     },
+  //     {},
+  //   );
 
-    let sort: { [key: string]: -1 | 1 };
+  //   let sort: { [key: string]: -1 | 1 };
 
-    switch (options.sortBy) {
-      case FriendsSortBy.MemberSince:
-        sort = {
-          memberSince: options.sortOrder === SortOrder.Ascending ? 1 : -1,
-        };
-        break;
+  //   switch (options.sortBy) {
+  //     case FriendsSortBy.MemberSince:
+  //       sort = {
+  //         memberSince: options.sortOrder === SortOrder.Ascending ? 1 : -1,
+  //       };
+  //       break;
 
-      case FriendsSortBy.Username:
-      default:
-        sort = {
-          username: options.sortOrder === SortOrder.Descending ? -1 : 1,
-        };
-        break;
-    }
+  //     case FriendsSortBy.Username:
+  //     default:
+  //       sort = {
+  //         username: options.sortOrder === SortOrder.Descending ? -1 : 1,
+  //       };
+  //       break;
+  //   }
 
-    const friends = await this.Users.find(
-      {
-        _id: {
-          $in: Object.keys(friendsSince),
-        },
-      },
-      FriendProjection,
-    )
-      .sort(sort)
-      .skip(options.skip ?? 0)
-      .limit(options.limit ?? 100)
-      .exec();
+  //   const friends = await this.Users.find(
+  //     {
+  //       _id: {
+  //         $in: Object.keys(friendsSince),
+  //       },
+  //     },
+  //     FriendProjection,
+  //   )
+  //     .sort(sort)
+  //     .skip(options.skip ?? 0)
+  //     .limit(options.limit ?? 100)
+  //     .exec();
 
-    return {
-      friends: friends.map((friend) =>
-        FriendsService.toFriendDTO(friend, friendsSince[friend._id]),
-      ),
-      totalCount: friendRelations.length,
-    };
-  }
+  //   return {
+  //     friends: friends.map((friend) =>
+  //       FriendsService.toFriendDTO(friend, friendsSince[friend._id]),
+  //     ),
+  //     totalCount: friendRelations.length,
+  //   };
+  // }
 
-  listFriends(options: ListFriendsOptions): Promise<ListFriendsResults> {
-    options = {
-      ...FriendsService.DefaultListFriendsOptions,
-      ...options,
-    };
+  async listFriends(options: ListFriendsOptions): Promise<ListFriendsResults> {
+    // options = {
+    //   ...FriendsService.DefaultListFriendsOptions,
+    //   ...options,
+    // };
 
-    if (options.sortBy === FriendsSortBy.FriendsSince) {
-      return this.listFriendsByFriendsSince(options);
-    }
+    // const sortOrder = options.sortOrder === 'asc' ? 'ASC' : 'DESC';
+    // let sortBy: string;
+    // switch (options.sortBy) {
+    //   case FriendsSortBy.FriendsSince:
+    //     sortBy = 'friends.friendsSince';
+    //     break;
 
-    this.log.debug(`Querying for friends where userId = ${options.userId}...`);
-    return this.listFriendsByOther(options);
+    //   case FriendsSortBy.MemberSince:
+    //     sortBy = 'friend.memberSince';
+    //     break;
+
+    //   case FriendsSortBy.Username:
+    //   default:
+    //     sortBy = 'friend.username';
+    //     break;
+    // }
+
+    // const query = this.Friends.createQueryBuilder('friends')
+    //   .innerJoinAndMapMany('friends.friend', UserEntity, 'friend')
+    //   .where('friends.user = :userId', { userId: options.userId })
+    //   .orderBy(sortBy, sortOrder)
+    //   .offset(options.skip)
+    //   .limit(options.limit);
+
+    // this.log.verbose(`Listing friends using query`, query.getSql());
+
+    // const [friends, totalCount] = await query.getManyAndCount();
+
+    // // if (options.sortBy === FriendsSortBy.FriendsSince) {
+    // //   return this.listFriendsByFriendsSince(options);
+    // // }
+
+    // // this.log.debug(`Querying for friends where userId = ${options.userId}...`);
+    // // return this.listFriendsByOther(options);
+    // return {
+    //   friends: [],
+    //   totalCount: 0,
+    // };
+    throw new Error('Fix me');
   }
 
   async getFriend(
     userId: string,
     friendId: string,
   ): Promise<Friend | undefined> {
-    const friend = await this.Friends.findOne({ userId, friendId })
-      .populate({
-        path: 'friendId',
-        select: FriendProjection,
-        model: UserModel,
-      })
-      .exec();
+    //   const friend = await this.Friends.findOne({
+    //     relations: ['friend'],
+    //     where: {
+    //       user: { id: userId },
+    //       friend: { id: friendId },
+    //     },
+    //   });
 
-    if (friend && typeof friend.friendId === 'object') {
-      return FriendsService.toFriendDTO(
-        friend.friendId as unknown as UserDocument,
-        friend.friendsSince,
-      );
-    }
+    //   if (friend) {
+    //     return FriendsService.toFriendDTO(friend.friend, friend.friendsSince);
+    //   }
 
-    return undefined;
+    //   return undefined;
+    throw new Error('fix me');
   }
 
   async unFriend(userId: string, friendId: string): Promise<boolean> {
-    const { deletedCount } = await this.Friends.deleteMany({
-      $or: [
-        { userId, friendId },
-        { userId: friendId, friendId: userId },
-      ],
-    });
-    return deletedCount > 0;
+    const query = this.Friends.createQueryBuilder('friends')
+      .delete()
+      .from(FriendshipEntity)
+      .where('friends.user = :userId AND friends.friend = :friendId', {
+        userId,
+        friendId,
+      })
+      .orWhere('friends.user = :friendId AND friends.friend = :userId', {
+        userId,
+        friendId,
+      });
+
+    this.log.verbose('Executing delete with query', query.getSql());
+
+    const { affected } = await query.execute();
+    return typeof affected === 'number' && affected > 0;
   }
 
   async listFriendRequests(
     options: ListFriendRequestOptions,
   ): Promise<ListFriendRequestsResults> {
-    let query: FilterQuery<FriendRequestData>;
+    let query = this.FriendRequests.createQueryBuilder('requests');
 
     switch (options.direction) {
       case FriendRequestDirection.Incoming:
-        query = { to: options.userId };
+        query = query.where('requests.to = :userId', {
+          userId: options.userId,
+        });
         break;
 
       case FriendRequestDirection.Outgoing:
-        query = { from: options.userId };
+        query = query.where('requests.from = :userId', {
+          userId: options.userId,
+        });
         break;
 
       case FriendRequestDirection.Both:
       default:
-        query = {
-          $or: [{ from: options.userId }, { to: options.userId }],
-        };
+        query = query.where(
+          'requests.from = :userId OR requests.to = :userId',
+          { userId: options.userId },
+        );
         break;
     }
 
-    const [requestsData, totalCount] = await Promise.all([
-      this.FriendRequests.find(query)
-        .sort({ expires: -1 })
-        .populate({
-          path: 'from',
-          select: FriendProjection,
-          model: UserModel,
-        })
-        .populate({
-          path: 'to',
-          select: FriendProjection,
-          model: UserModel,
-        })
-        .skip(options.skip ?? 0)
-        .limit(options.limit ?? 100)
-        .exec(),
-      this.FriendRequests.estimatedDocumentCount(query),
-    ]);
+    query = query.offset(options.skip).limit(options.limit);
+
+    this.log.verbose(`Listing friend requests using query`, query.getSql());
+
+    const [requests, totalCount] = await query.getManyAndCount();
+
+    // const [requestsData, totalCount] = await Promise.all([
+    //   this.FriendRequests.find(query)
+    //     .sort({ expires: -1 })
+    //     .populate({
+    //       path: 'from',
+    //       select: FriendProjection,
+    //       model: UserModel,
+    //     })
+    //     .populate({
+    //       path: 'to',
+    //       select: FriendProjection,
+    //       model: UserModel,
+    //     })
+    //     .skip(options.skip ?? 0)
+    //     .limit(options.limit ?? 100)
+    //     .exec(),
+    //   this.FriendRequests.estimatedDocumentCount(query),
+    // ]);
 
     return {
-      friendRequests: requestsData.map((fr) =>
-        FriendsService.toFriendRequestDTO(
-          options.userId,
-          fr.from as unknown as UserDocument,
-          fr.to as unknown as UserDocument,
-          fr,
-        ),
-      ),
+      friendRequests: [],
       totalCount,
     };
   }
@@ -332,112 +351,124 @@ export class FriendsService {
     userId: string,
     friendId: string,
   ): Promise<FriendRequest | undefined> {
-    const [friendRequest, user, friend] = await Promise.all([
-      this.FriendRequests.findOne({
-        $or: [
-          { from: userId, to: friendId },
-          { from: friendId, to: userId },
-        ],
-      }),
-      this.Users.findById(userId),
-      this.Users.findById(friendId),
-    ]);
+    const request = await this.FriendRequests.findOne({
+      relations: ['from', 'to'],
+      where: [
+        { from: { id: userId }, to: { id: friendId } },
+        { from: { id: friendId }, to: { id: userId } },
+      ],
+    });
 
-    if (friendRequest && user && friend) {
-      return {
-        friendId: friend._id,
-        friend: FriendsService.toFriendDTO(friend, friendRequest.created),
-        direction:
-          userId === friendRequest.from
-            ? FriendRequestDirection.Outgoing
-            : FriendRequestDirection.Incoming,
-        created: friendRequest.created,
-        expires: friendRequest.expires,
-        accepted: friendRequest.accepted ?? undefined,
-        reason: friendRequest.reason ?? undefined,
-      };
-    }
+    throw new Error('Test me.');
 
-    return undefined;
+    // const [friendRequest, user, friend] = await Promise.all([
+    //   this.FriendRequests.findOne({
+    //     $or: [
+    //       { from: userId, to: friendId },
+    //       { from: friendId, to: userId },
+    //     ],
+    //   }),
+    //   this.Users.findById(userId),
+    //   this.Users.findById(friendId),
+    // ]);
+
+    // if (friendRequest && user && friend) {
+    //   return {
+    //     friendId: friend._id,
+    //     friend: FriendsService.toFriendDTO(friend, friendRequest.created),
+    //     direction:
+    //       userId === friendRequest.from
+    //         ? FriendRequestDirection.Outgoing
+    //         : FriendRequestDirection.Incoming,
+    //     created: friendRequest.created,
+    //     expires: friendRequest.expires,
+    //     accepted: friendRequest.accepted ?? undefined,
+    //     reason: friendRequest.reason ?? undefined,
+    //   };
+    // }
+
+    // return undefined;
   }
 
   async createFriendRequest(from: string, to: string): Promise<FriendRequest> {
-    if (from === to) {
-      throw new BadRequestException('You cannot friend yourself.');
-    }
+    // if (from === to) {
+    //   throw new BadRequestException('You cannot friend yourself.');
+    // }
 
-    const [user, friend, requestExists, friendshipExists] = await Promise.all([
-      this.Users.findById(from),
-      this.Users.findById(to),
-      FriendRequestModel.exists({
-        $or: [
-          { from, to },
-          { from: to, to: from },
-        ],
-      }),
-      FriendModel.exists({
-        $or: [
-          { userId: from, friendId: to },
-          { userId: to, friendId: from },
-        ],
-      }),
-    ]);
+    // const [user, friend, requestExists, friendshipExists] = await Promise.all([
+    //   this.Users.findById(from),
+    //   this.Users.findById(to),
+    //   FriendRequestModel.exists({
+    //     $or: [
+    //       { from, to },
+    //       { from: to, to: from },
+    //     ],
+    //   }),
+    //   FriendModel.exists({
+    //     $or: [
+    //       { userId: from, friendId: to },
+    //       { userId: to, friendId: from },
+    //     ],
+    //   }),
+    // ]);
 
-    if (!user || !friend) {
-      throw new NotFoundException(
-        'User or friend accounts could not be found.',
-      );
-    }
+    // if (!user || !friend) {
+    //   throw new NotFoundException(
+    //     'User or friend accounts could not be found.',
+    //   );
+    // }
 
-    if (requestExists || friendshipExists) {
-      throw new ConflictException(
-        'A friend request or friendship already exists between the two users.',
-      );
-    }
+    // if (requestExists || friendshipExists) {
+    //   throw new ConflictException(
+    //     'A friend request or friendship already exists between the two users.',
+    //   );
+    // }
 
-    const friendRequest = new FriendRequestModel({
-      _id: uuid(),
-      created: new Date(),
-      expires: new Date(Date.now() + TwoWeeksInMilliseconds),
-      from,
-      to,
-    });
-    await friendRequest.save();
+    // const friendRequest = new FriendRequestModel({
+    //   _id: uuid(),
+    //   created: new Date(),
+    //   expires: new Date(Date.now() + TwoWeeksInMilliseconds),
+    //   from,
+    //   to,
+    // });
+    // await friendRequest.save();
 
-    return FriendsService.toFriendRequestDTO(from, user, friend, friendRequest);
+    // return FriendsService.toFriendRequestDTO(from, user, friend, friendRequest);
+
+    throw new Error('fix me');
   }
 
   async acceptFriendRequest(from: string, to: string): Promise<boolean> {
-    const friendRequest = await FriendRequestModel.findOne({ from, to });
+    // const friendRequest = await FriendRequestModel.findOne({ from, to });
 
-    if (!friendRequest) return false;
+    // if (!friendRequest) return false;
 
-    if (friendRequest.accepted === true) {
-      throw new BadRequestException(
-        'Friend request has already been accepted.',
-      );
-    }
+    // if (friendRequest.accepted === true) {
+    //   throw new BadRequestException(
+    //     'Friend request has already been accepted.',
+    //   );
+    // }
 
-    friendRequest.accepted = true;
-    friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
+    // friendRequest.accepted = true;
+    // friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
 
-    await Promise.all([
-      friendRequest.save(),
-      FriendModel.insertMany([
-        new FriendModel({
-          _id: uuid(),
-          userId: from,
-          friendId: to,
-          friendsSince: new Date(),
-        }),
-        new FriendModel({
-          _id: uuid(),
-          userId: to,
-          friendId: from,
-          friendsSince: new Date(),
-        }),
-      ]),
-    ]);
+    // await Promise.all([
+    //   friendRequest.save(),
+    //   FriendModel.insertMany([
+    //     new FriendModel({
+    //       _id: uuid(),
+    //       userId: from,
+    //       friendId: to,
+    //       friendsSince: new Date(),
+    //     }),
+    //     new FriendModel({
+    //       _id: uuid(),
+    //       userId: to,
+    //       friendId: from,
+    //       friendsSince: new Date(),
+    //     }),
+    //   ]),
+    // ]);
 
     return true;
   }
@@ -447,26 +478,28 @@ export class FriendsService {
     to: string,
     reason?: string,
   ): Promise<boolean> {
-    const friendRequest = await this.FriendRequests.findOne({ from, to });
+    //   const friendRequest = await this.FriendRequests.findOne({ from, to });
 
-    if (!friendRequest) return false;
+    //   if (!friendRequest) return false;
 
-    if (friendRequest.accepted === true) {
-      throw new BadRequestException(
-        'Friend request has already been accepted.',
-      );
-    }
+    //   if (friendRequest.accepted === true) {
+    //     throw new BadRequestException(
+    //       'Friend request has already been accepted.',
+    //     );
+    //   }
 
-    friendRequest.accepted = false;
-    friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
-    friendRequest.reason = reason;
-    await friendRequest.save();
+    //   friendRequest.accepted = false;
+    //   friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
+    //   friendRequest.reason = reason;
+    //   await friendRequest.save();
 
-    return true;
-  }
+    //   return true;
+    // }
 
-  async cancelFriendRequest(from: string, to: string): Promise<boolean> {
-    const { deletedCount } = await FriendRequestModel.deleteOne({ from, to });
-    return deletedCount > 0;
+    // async cancelFriendRequest(from: string, to: string): Promise<boolean> {
+    //   const { deletedCount } = await FriendRequestModel.deleteOne({ from, to });
+    //   return deletedCount > 0;
+
+    throw new Error('fix me');
   }
 }
