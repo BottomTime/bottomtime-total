@@ -395,17 +395,37 @@ export class FriendsService {
     to: string,
     reason?: string,
   ): Promise<boolean> {
-    //   const friendRequest = await this.FriendRequests.findOne({ from, to });
-    //   if (!friendRequest) return false;
-    //   if (friendRequest.accepted === true) {
-    //     throw new BadRequestException(
-    //       'Friend request has already been accepted.',
-    //     );
-    //   }
-    //   friendRequest.accepted = false;
-    //   friendRequest.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
-    //   friendRequest.reason = reason;
-    //   await friendRequest.save();
+    const request = await this.FriendRequests.findOne({
+      where: {
+        from: { id: from },
+        to: { id: to },
+      },
+      select: ['id', 'accepted', 'expires'],
+    });
+
+    if (!request) return false;
+
+    if (request.accepted === true) {
+      throw new BadRequestException(
+        'Friend request has already been accepted. You may need to unfriend the user instead.',
+      );
+    }
+    if (request.accepted === false) {
+      throw new BadRequestException(
+        'Friend request has already been rejected.',
+      );
+    }
+    if (request.expires < new Date()) {
+      throw new BadRequestException('Friend request has expired.');
+    }
+
+    request.accepted = false;
+    request.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
+    request.reason = reason ?? null;
+    request.from = { id: from } as UserEntity;
+    request.to = { id: to } as UserEntity;
+    await this.FriendRequests.save(request);
+
     return true;
   }
 

@@ -582,7 +582,7 @@ describe('Friends Service', () => {
     });
   });
 
-  describe.only('when accepting, cancelling, or rejecting friend requests', () => {
+  describe('when accepting, cancelling, or rejecting friend requests', () => {
     it('will accept a friend request and make both users friends', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
@@ -777,7 +777,7 @@ describe('Friends Service', () => {
       });
 
       expect(request.accepted).toBe(false);
-      expect(request.reason).toBeUndefined();
+      expect(request.reason).toBeNull();
       expect(request.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
         -2,
@@ -845,5 +845,46 @@ describe('Friends Service', () => {
         service.rejectFriendRequest(originUser.id, destinationUser.id),
       ).rejects.toThrowError(BadRequestException);
     });
+
+    it('will not reject a friend request that has already been rejected', async () => {
+      const originUser = createTestUser();
+      const destinationUser = createTestUser();
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date();
+      friendRequest.expires = new Date(Date.now() + 10000);
+      friendRequest.accepted = false;
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
+
+      await expect(
+        service.rejectFriendRequest(originUser.id, destinationUser.id),
+      ).rejects.toThrowError(BadRequestException);
+    });
+
+    it('will not reject a friend request that has expired', async () => {
+      const originUser = createTestUser();
+      const destinationUser = createTestUser();
+      const friendRequest = new FriendRequestEntity();
+
+      friendRequest.id = uuid();
+      friendRequest.from = originUser;
+      friendRequest.to = destinationUser;
+      friendRequest.created = new Date(Date.now() - 15000);
+      friendRequest.expires = new Date(Date.now() - 10000);
+
+      await Users.save([originUser, destinationUser]);
+      await FriendRequests.save(friendRequest);
+
+      await expect(
+        service.rejectFriendRequest(originUser.id, destinationUser.id),
+      ).rejects.toThrowError(BadRequestException);
+    });
   });
+
+  it.todo('Test purging expired friend requests');
 });
