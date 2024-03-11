@@ -124,17 +124,16 @@ describe('Tanks Service', () => {
         isSystem: true,
       });
 
-      const result = await Tanks.findOne({
+      const result = await Tanks.findOneOrFail({
         relations: ['user'],
         where: { id: tank.id },
       });
-      expect(result).not.toBeNull();
-      expect(result!.id).toBeDefined();
-      expect(result!.name).toBe(options.name);
-      expect(result!.material).toBe(options.material);
-      expect(result!.volume).toBe(options.volume);
-      expect(result!.workingPressure).toBe(options.workingPressure);
-      expect(result!.user).toBeNull();
+      expect(result.id).toBeDefined();
+      expect(result.name).toBe(options.name);
+      expect(result.material).toBe(options.material);
+      expect(result.volume).toBe(options.volume);
+      expect(result.workingPressure).toBe(options.workingPressure);
+      expect(result.user).toBeNull();
     });
 
     it('will create a new user-defined tank', async () => {
@@ -157,17 +156,16 @@ describe('Tanks Service', () => {
         isSystem: false,
       });
 
-      const result = await Tanks.findOne({
+      const result = await Tanks.findOneOrFail({
         relations: ['user'],
         where: { id: tank.id },
       });
-      expect(result).not.toBeNull();
-      expect(result!.id).toBeDefined();
-      expect(result!.name).toBe(options.name);
-      expect(result!.material).toBe(options.material);
-      expect(result!.volume).toBe(options.volume);
-      expect(result!.workingPressure).toBe(options.workingPressure);
-      expect(result!.user).toEqual(users[0]);
+      expect(result.id).toBeDefined();
+      expect(result.name).toBe(options.name);
+      expect(result.material).toBe(options.material);
+      expect(result.volume).toBe(options.volume);
+      expect(result.workingPressure).toBe(options.workingPressure);
+      expect(result.user!.id).toEqual(users[0].id);
     });
 
     it('will limit users to 10 pre-defined tanks', async () => {

@@ -13,7 +13,6 @@ import { INestApplication } from '@nestjs/common';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 import { FriendshipEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';

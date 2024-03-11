@@ -69,46 +69,6 @@ exports[`Certifications End-to-End when searching certifications will perform a 
       "course": "Perfect Buoyancy",
       "id": "d183d199-67ec-4fd6-af12-94ea26c5da1f",
     },
-    {
-      "agency": "SSI",
-      "course": "Science of Diving",
-      "id": "4b50f4a0-4cac-4aaa-8daf-eaff086ce52f",
-    },
-    {
-      "agency": "SSI",
-      "course": "Scuba Diver",
-      "id": "18f79e85-9676-4557-8009-2fc63f3150fa",
-    },
-    {
-      "agency": "SSI",
-      "course": "Search and Recovery",
-      "id": "9f0e249d-3d3d-485f-89a0-4d5f996d58ec",
-    },
-    {
-      "agency": "SSI",
-      "course": "Stress and Rescue",
-      "id": "eaba24cf-5922-427a-ab81-9bab5b240854",
-    },
-    {
-      "agency": "SSI",
-      "course": "Waves, Tides and Currents",
-      "id": "36e309af-12a5-4775-a0dc-92f714b787b4",
-    },
-    {
-      "agency": "SSI",
-      "course": "Wreck Diving",
-      "id": "3118c00f-1e14-44ae-911f-bc4dc7fbbffb",
-    },
-    {
-      "agency": "SSI",
-      "course": "XR Advanced Wreck",
-      "id": "58b2ff9f-f928-47c8-9b63-ca65c58e2e2c",
-    },
-    {
-      "agency": "SSI",
-      "course": "XR Nitrox",
-      "id": "ccf15870-d93c-4731-b5ad-979d90aea794",
-    },
   ],
   "totalCount": 28,
 }

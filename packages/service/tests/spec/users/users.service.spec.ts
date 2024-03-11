@@ -125,10 +125,6 @@ describe('Users Service', () => {
           avatar: 'https://gravatar.com/Tyler.Durden',
           bio: "I don't talk about my dive clug",
           birthdate: '1987-02-12',
-          certifications: [
-            { course: 'Open water', agency: 'SSI' },
-            { course: 'Stress and Rescue', agency: 'SSI', date: '2018' },
-          ],
           customData: {},
           experienceLevel: 'Experienced',
           location: 'Vancouver, BC',
@@ -221,31 +217,8 @@ describe('Users Service', () => {
     });
 
     beforeEach(async () => {
-      await Users.createQueryBuilder()
-        .insert()
-        .into(UserEntity)
-        .values(
-          users.map((u) => ({
-            ...u,
-            friends: undefined,
-            tanks: undefined,
-            oauth: undefined,
-            customData: undefined,
-            certifications: undefined,
-          })),
-        )
-        .execute();
-      await Friends.createQueryBuilder()
-        .insert()
-        .into(FriendshipEntity)
-        .values(
-          friends.map((f) => ({
-            ...f,
-            user: { id: f.user.id },
-            friend: { id: f.friend.id },
-          })),
-        )
-        .execute();
+      await Users.save(users);
+      await Friends.save(friends);
     });
 
     it('will return an empty array if no results match', async () => {

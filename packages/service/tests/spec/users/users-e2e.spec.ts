@@ -111,13 +111,9 @@ describe('Users End-to-End Tests', () => {
   });
 
   beforeEach(async () => {
-    adminUser = new UserEntity();
-    Object.assign(adminUser, AdminUserData);
-
-    regularUser = new UserEntity();
-    Object.assign(regularUser, RegularUserData);
-
-    await Promise.all([Users.save(adminUser), Users.save(regularUser)]);
+    adminUser = createTestUser(AdminUserData);
+    regularUser = createTestUser(RegularUserData);
+    await Users.save([adminUser, regularUser]);
   });
 
   afterEach(() => {
@@ -241,13 +237,6 @@ describe('Users End-to-End Tests', () => {
           avatar: 'https://example.com/avatar.png',
           bio: 'This is a test user.',
           birthdate: '1980-01-01',
-          certifications: [
-            {
-              agency: 'PADI',
-              course: 'Open Water Diver',
-              date: '2000-01-01',
-            },
-          ],
           experienceLevel: 'Advanced',
           location: 'Seattle, WA',
           name: 'User McUserface',
@@ -847,18 +836,6 @@ describe('Users End-to-End Tests', () => {
       avatar: 'https://avatars.com/my_picture.jpg',
       bio: 'I really like diving and updating profiles.',
       birthdate: '1992-03-30',
-      certifications: [
-        {
-          agency: 'PADI',
-          course: 'Open Water Diver',
-          date: '2000-01-01',
-        },
-        {
-          agency: 'PADI',
-          course: 'Advanced Open Water Diver',
-          date: '2002-01-01',
-        },
-      ],
       experienceLevel: 'Mega Expert',
       location: 'Vancouver, BC',
       name: 'Joe Exotic',
@@ -877,24 +854,13 @@ describe('Users End-to-End Tests', () => {
         ...regularUser,
         ...newProfileInfo,
         certifications: undefined,
+        fulltext: undefined,
       });
     });
 
     it('will allow partial updates to profile information', async () => {
       const newProfileInfo: UpdateProfileParamsDTO = {
         bio: 'I really like diving and updating profiles.',
-        certifications: [
-          {
-            agency: 'PADI',
-            course: 'Open Water Diver',
-            date: '2000-01-01',
-          },
-          {
-            agency: 'PADI',
-            course: 'Advanced Open Water Diver',
-            date: '2002-01-01',
-          },
-        ],
         experienceLevel: 'Mega Expert',
       };
 
@@ -904,16 +870,17 @@ describe('Users End-to-End Tests', () => {
         .send(newProfileInfo)
         .expect(204);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
+      const savedUser = await Users.findOneByOrFail({ id: RegularUserId });
       expect(savedUser).toEqual({
         ...regularUser,
         ...newProfileInfo,
         certifications: undefined,
+        fulltext: undefined,
       });
     });
 
     it('will allow users to clear their profile information', async () => {
-      const { body } = await request(server)
+      await request(server)
         .put(profileUrl)
         .set(...regualarAuthHeader)
         .send({
@@ -930,18 +897,22 @@ describe('Users End-to-End Tests', () => {
         })
         .expect(204);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser).toEqual({
-        ...regularUser,
-        avatar: null,
-        bio: null,
-        birthdate: null,
-        certifications: undefined,
-        experienceLevel: null,
-        location: null,
-        name: null,
-        startedDiving: null,
+      const expected = new UserEntity();
+      const actual = await Users.findOneOrFail({
+        where: { id: RegularUserId },
+        select: [
+          'avatar',
+          'bio',
+          'birthdate',
+          'experienceLevel',
+          'location',
+          'memberSince',
+          'name',
+          'startedDiving',
+        ],
       });
+      actual.memberSince = expected.memberSince;
+      expect(actual).toEqual(expected);
     });
 
     it('will allow admins to update another user profile', async () => {
@@ -951,12 +922,25 @@ describe('Users End-to-End Tests', () => {
         .send(newProfileInfo)
         .expect(204);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser).toEqual({
-        ...regularUser,
-        ...newProfileInfo,
-        certifications: undefined,
+      const expected = new UserEntity();
+      Object.assign(expected, newProfileInfo);
+
+      const actual = await Users.findOneOrFail({
+        where: { id: RegularUserId },
+        select: [
+          'avatar',
+          'bio',
+          'birthdate',
+          'experienceLevel',
+          'location',
+          'memberSince',
+          'name',
+          'startedDiving',
+        ],
       });
+      actual.memberSince = expected.memberSince;
+      actual.certifications = expected.certifications;
+      expect(actual).toEqual(expected);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -1044,13 +1028,26 @@ describe('Users End-to-End Tests', () => {
         .send(newSettings)
         .expect(204);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser).toEqual({ ...regularUser, ...newSettings });
+      const actual = await Users.findOneOrFail({
+        where: { id: RegularUserId },
+        select: [
+          'depthUnit',
+          'pressureUnit',
+          'temperatureUnit',
+          'weightUnit',
+          'profileVisibility',
+        ],
+      });
+
+      expect(actual.depthUnit).toBe(newSettings.depthUnit);
+      expect(actual.pressureUnit).toBe(newSettings.pressureUnit);
+      expect(actual.temperatureUnit).toBe(newSettings.temperatureUnit);
+      expect(actual.weightUnit).toBe(newSettings.weightUnit);
+      expect(actual.profileVisibility).toBe(newSettings.profileVisibility);
     });
 
     it('will allow a partial update of settings', async () => {
       const newSettings = {
-        certifications: undefined,
         pressureUnit: PressureUnit.PSI,
         profileVisibility: ProfileVisibility.Private,
       };
@@ -1060,11 +1057,12 @@ describe('Users End-to-End Tests', () => {
         .send(newSettings)
         .expect(204);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser).toEqual({
-        ...regularUser,
-        ...newSettings,
-      });
+      const savedUser = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(savedUser.depthUnit).toBe(regularUser.depthUnit);
+      expect(savedUser.pressureUnit).toBe(newSettings.pressureUnit);
+      expect(savedUser.temperatureUnit).toBe(regularUser.temperatureUnit);
+      expect(savedUser.weightUnit).toBe(regularUser.weightUnit);
+      expect(savedUser.profileVisibility).toBe(newSettings.profileVisibility);
     });
 
     it("will allow admins to update another user's settings", async () => {
@@ -1082,11 +1080,25 @@ describe('Users End-to-End Tests', () => {
         .send(newSettings)
         .expect(204);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser).toEqual({
-        ...regularUser,
-        ...newSettings,
+      const expected = new UserEntity();
+      Object.assign(expected, newSettings);
+
+      const actual = await Users.findOneOrFail({
+        where: { id: RegularUserId },
+        select: [
+          'depthUnit',
+          'pressureUnit',
+          'temperatureUnit',
+          'weightUnit',
+          'profileVisibility',
+        ],
       });
+
+      expect(actual.depthUnit).toBe(expected.depthUnit);
+      expect(actual.pressureUnit).toBe(expected.pressureUnit);
+      expect(actual.temperatureUnit).toBe(expected.temperatureUnit);
+      expect(actual.weightUnit).toBe(expected.weightUnit);
+      expect(actual.profileVisibility).toBe(expected.profileVisibility);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -1163,4 +1175,6 @@ describe('Users End-to-End Tests', () => {
         .expect(404);
     });
   });
+
+  it.todo('Get certifications working');
 });

@@ -55,34 +55,32 @@ describe('Tank Class', () => {
   it('will create a new system-wide tank profile', async () => {
     await tank.save();
 
-    const result = await Tanks.findOne({
+    const result = await Tanks.findOneOrFail({
       relations: ['user'],
       where: { id: TestData.id },
     });
-    expect(result).not.toBeNull();
-    expect(result!.id).toBe(TestData.id);
-    expect(result!.name).toBe(TestData.name);
-    expect(result!.material).toBe(TestData.material);
-    expect(result!.volume).toBe(TestData.volume);
-    expect(result!.workingPressure).toBe(TestData.workingPressure);
-    expect(result!.user).toBeNull();
+    expect(result.id).toBe(TestData.id);
+    expect(result.name).toBe(TestData.name);
+    expect(result.material).toBe(TestData.material);
+    expect(result.volume).toBe(TestData.volume);
+    expect(result.workingPressure).toBe(TestData.workingPressure);
+    expect(result.user).toBeNull();
   });
 
   it('will create a new user-defined tank profile', async () => {
     tankData.user = user;
     await tank.save();
 
-    const result = await Tanks.findOne({
+    const result = await Tanks.findOneOrFail({
       relations: ['user'],
       where: { id: TestData.id },
     });
-    expect(result).not.toBeNull();
-    expect(result!.id).toBe(TestData.id);
-    expect(result!.name).toBe(TestData.name);
-    expect(result!.material).toBe(TestData.material);
-    expect(result!.volume).toBe(TestData.volume);
-    expect(result!.workingPressure).toBe(TestData.workingPressure);
-    expect(result!.user).toEqual(user);
+    expect(result.id).toBe(TestData.id);
+    expect(result.name).toBe(TestData.name);
+    expect(result.material).toBe(TestData.material);
+    expect(result.volume).toBe(TestData.volume);
+    expect(result.workingPressure).toBe(TestData.workingPressure);
+    expect(result.user!.id).toEqual(user.id);
   });
 
   it('will update a tank profile', async () => {
@@ -94,13 +92,12 @@ describe('Tank Class', () => {
     tank.workingPressure = 140.5;
     await tank.save();
 
-    const result = await Tanks.findOneBy({ id: TestData.id });
-    expect(result).not.toBeNull();
-    expect(result!.id).toBe(TestData.id);
-    expect(result!.name).toBe('Updated Tank');
-    expect(result!.material).toBe(TankMaterial.Steel);
-    expect(result!.volume).toBe(13.22);
-    expect(result!.workingPressure).toBe(140.5);
+    const result = await Tanks.findOneByOrFail({ id: TestData.id });
+    expect(result.id).toBe(TestData.id);
+    expect(result.name).toBe('Updated Tank');
+    expect(result.material).toBe(TankMaterial.Steel);
+    expect(result.volume).toBe(13.22);
+    expect(result.workingPressure).toBe(140.5);
   });
 
   it('will delete a tank profile', async () => {

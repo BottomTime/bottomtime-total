@@ -33,24 +33,6 @@ const TestUserData: UserEntity = {
   passwordHash: null,
   passwordResetToken: null,
   passwordResetTokenExpiration: null,
-  certifications: undefined,
-  // certifications: [
-  //   {
-  //     agency: 'PADI',
-  //     course: 'Open Water Diver',
-  //     date: '2020-01-01',
-  //   },
-  //   {
-  //     agency: 'PADI',
-  //     course: 'Advanced Open Water Diver',
-  //     date: '2020-05-02',
-  //   },
-  //   {
-  //     agency: 'PADI',
-  //     course: 'Drysuit Diver',
-  //     date: '2020-05-03',
-  //   },
-  // ],
   customData: {
     acceptedCookies: true,
   },
@@ -81,7 +63,6 @@ describe('Profile Class', () => {
     expect(profile.avatar).toBe(TestUserData.avatar);
     expect(profile.bio).toBe(TestUserData.bio);
     expect(profile.birthdate).toBe(TestUserData.birthdate);
-    expect(profile.certifications).toEqual(TestUserData.certifications);
     expect(profile.customData).toEqual(TestUserData.customData);
     expect(profile.experienceLevel).toBe(TestUserData.experienceLevel);
     expect(profile.location).toBe(TestUserData.location);
@@ -94,18 +75,6 @@ describe('Profile Class', () => {
       avatar: 'https://example.com/avatar2.png',
       bio: 'Definitely, a new bio.',
       birthdate: '1983-01-01',
-      certifications: [
-        {
-          agency: 'SSI',
-          course: 'Open Water Diver',
-          date: '2020-01-01',
-        },
-        {
-          agency: 'SSI',
-          course: 'Stress & Rescue Diver',
-          date: '2020-05-02',
-        },
-      ],
       customData: {
         acceptedCookies: false,
       },
@@ -157,7 +126,6 @@ describe('Profile Class', () => {
     expect(profile.avatar).toBeUndefined();
     expect(profile.bio).toBeUndefined();
     expect(profile.birthdate).toBeUndefined();
-    expect(profile.certifications).toBeUndefined();
     expect(profile.experienceLevel).toBeUndefined();
     expect(profile.location).toBeUndefined();
     expect(profile.name).toBeUndefined();
@@ -181,7 +149,6 @@ describe('Profile Class', () => {
     expect(profile.avatar).toBe(TestUserData.avatar);
     expect(profile.bio).toBe(TestUserData.bio);
     expect(profile.birthdate).toBe(TestUserData.birthdate);
-    expect(profile.certifications).toEqual(TestUserData.certifications);
     expect(profile.customData).toEqual(TestUserData.customData);
     expect(profile.experienceLevel).toBe(TestUserData.experienceLevel);
     expect(profile.location).toBe(TestUserData.location);

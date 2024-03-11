@@ -21,7 +21,7 @@ import { v4 as uuid } from 'uuid';
 import { z } from 'zod';
 
 import { Config } from '../config';
-import { FriendshipEntity, UserCertificationEntity, UserEntity } from '../data';
+import { FriendshipEntity, UserEntity } from '../data';
 import { User } from './user';
 
 const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
@@ -102,14 +102,6 @@ export class UsersService {
     data.avatar = options.profile?.avatar ?? null;
     data.bio = options.profile?.bio ?? null;
     data.birthdate = options.profile?.birthdate ?? null;
-    data.certifications = options.profile?.certifications?.map((cert) => {
-      const certification = new UserCertificationEntity();
-      certification.id = uuid();
-      certification.agency = cert.agency;
-      certification.course = cert.course;
-      certification.date = cert.date;
-      return certification;
-    });
     data.customData = options.profile?.customData ?? null;
     data.experienceLevel = options.profile?.experienceLevel ?? null;
     data.location = options.profile?.location ?? null;
@@ -193,7 +185,7 @@ export class UsersService {
       }
     }
 
-    query = query.offset(options.skip).take(options.limit ?? 100);
+    query = query.offset(options.skip).limit(options.limit ?? 100);
 
     const sortBy = `users.${options.sortBy || UsersSortBy.Username}`;
     const sortOrder = options.sortOrder

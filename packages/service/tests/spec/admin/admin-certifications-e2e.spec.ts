@@ -121,6 +121,7 @@ describe('Certifications End-to-End', () => {
         })
         .set(...adminAuthHeader)
         .expect(200);
+      expect(body.certifications.length).toBe(10);
       expect(body).toMatchSnapshot();
     });
 

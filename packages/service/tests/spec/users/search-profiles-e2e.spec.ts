@@ -15,7 +15,12 @@ import { v4 as uuid } from 'uuid';
 import { FriendshipEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
-import { createAuthHeader, createTestApp, parseUserJSON } from '../../utils';
+import {
+  createAuthHeader,
+  createTestApp,
+  createTestUser,
+  parseUserJSON,
+} from '../../utils';
 
 const SearchUrl = '/api/users';
 
@@ -37,18 +42,19 @@ describe('Searching Profiles E2E Tests', () => {
   let app: INestApplication;
   let server: HttpServer;
   let friends: FriendshipEntity[];
-  let users: UserEntity[];
   let authHeader: [string, string];
   let adminAuthHeader: [string, string];
 
   let Users: Repository<UserEntity>;
   let Friends: Repository<FriendshipEntity>;
+  let users: UserEntity[];
+  let adminUser: UserEntity;
 
   beforeAll(async () => {
     const now = new Date();
     friends = [];
     users = TestUserData.map((data) => parseUserJSON(data));
-    const adminUser = new UserEntity();
+    adminUser = createTestUser(AdminUserData);
     Object.assign(adminUser, AdminUserData);
     users.push(adminUser);
     users.forEach((user, index) => {
@@ -94,32 +100,8 @@ describe('Searching Profiles E2E Tests', () => {
   });
 
   beforeEach(async () => {
-    await Users.createQueryBuilder()
-      .insert()
-      .into(UserEntity)
-      .values(
-        users.map((u) => ({
-          ...u,
-          certifications: undefined,
-          customData: null,
-          friends: undefined,
-          oauth: undefined,
-          tanks: undefined,
-        })),
-      )
-      .execute();
-
-    await Friends.createQueryBuilder()
-      .insert()
-      .into(FriendshipEntity)
-      .values(
-        friends.map((f) => ({
-          ...f,
-          user: { id: f.user.id },
-          friend: { id: f.friend.id },
-        })),
-      )
-      .execute();
+    await Users.save(users);
+    await Friends.save(friends);
   });
 
   afterAll(async () => {

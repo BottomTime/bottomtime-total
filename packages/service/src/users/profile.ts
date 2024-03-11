@@ -1,16 +1,10 @@
-import {
-  ProfileDTO,
-  UpdateProfileParamsDTO,
-  UserCertificationDTO,
-} from '@bottomtime/api';
+import { ProfileDTO, UpdateProfileParamsDTO } from '@bottomtime/api';
 
 import { Repository } from 'typeorm';
-import { isUndefined } from 'util';
 
 import { UserEntity } from '../data';
 
 export type UpdateProfileOptions = UpdateProfileParamsDTO;
-export type UserCertification = UserCertificationDTO;
 
 export class Profile {
   constructor(
@@ -32,14 +26,6 @@ export class Profile {
 
   get customData(): Record<string, unknown> | undefined {
     return this.data.customData ?? undefined;
-  }
-
-  get certifications(): UserCertification[] | undefined {
-    return this.data.certifications?.map((c) => ({
-      agency: c.agency,
-      course: c.course,
-      date: c.date,
-    }));
   }
 
   get experienceLevel(): string | undefined {
@@ -92,7 +78,6 @@ export class Profile {
       avatar: this.avatar ?? undefined,
       bio: this.bio ?? undefined,
       birthdate: this.birthdate ?? undefined,
-      certifications: this.certifications,
       customData: this.customData ?? undefined,
       experienceLevel: this.experienceLevel ?? undefined,
       location: this.location ?? undefined,

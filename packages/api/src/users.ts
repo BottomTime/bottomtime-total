@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { CertificationSchema } from './certifications';
 import {
   DepthUnit,
   FuzzyDateRegex,
@@ -32,11 +31,6 @@ export const PasswordStrengthSchema = z
   .string()
   .regex(PasswordStrengthRegex, 'Password did not meet strength requirements.');
 
-export const UserCertificationSchema = CertificationSchema.extend({
-  date: z.string().trim().regex(FuzzyDateRegex).optional(),
-}).omit({ id: true });
-export type UserCertificationDTO = z.infer<typeof UserCertificationSchema>;
-
 export const UpdateProfileParamsSchema = z
   .object({
     avatar: z.string().trim().url().max(150).nullable(),
@@ -52,7 +46,6 @@ export const UpdateProfileParamsSchema = z
           path: ['customData'],
         },
       ),
-    certifications: UserCertificationSchema.array().max(200),
     experienceLevel: z.string().trim().max(50).nullable(),
     location: z.string().trim().max(50).nullable(),
     name: z.string().trim().max(100).nullable(),

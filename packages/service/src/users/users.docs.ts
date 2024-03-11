@@ -80,13 +80,6 @@
  *           pattern: ^\d{4}(-\d{2}(-\d{2})?)?$
  *           description: The user's birthdate.
  *           example: 1980-01-01
- *         certifications:
- *           title: Certifications
- *           type: array
- *           description: A list of the user's certifications.
- *           items:
- *             $ref: "#/components/schemas/UserCertification"
- *           maxItems: 200
  *         experieceLevel:
  *           title: Experience Level
  *           type: string

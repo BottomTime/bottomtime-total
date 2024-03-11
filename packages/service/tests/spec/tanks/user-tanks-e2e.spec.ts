@@ -18,7 +18,7 @@ import { Repository } from 'typeorm';
 import { TankEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import TestTankData from '../../fixtures/pre-defined-tanks.json';
-import { createAuthHeader, createTestApp } from '../../utils';
+import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
 
 const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
 const AdminUserData: Partial<UserEntity> = {
@@ -78,15 +78,12 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     Tanks = dataSource.getRepository(TankEntity);
     Users = dataSource.getRepository(UserEntity);
+
+    adminUser = createTestUser(AdminUserData);
+    regularUser = createTestUser(RegularUserData);
   });
 
   beforeEach(async () => {
-    adminUser = new UserEntity();
-    Object.assign(adminUser, AdminUserData);
-
-    regularUser = new UserEntity();
-    Object.assign(regularUser, RegularUserData);
-
     await Promise.all([Users.save(adminUser), Users.save(regularUser)]);
   });
 
@@ -95,10 +92,10 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
   });
 
   describe('when listing user-defined tanks', () => {
-    let tankData: TankEntity[];
+    let tanks: TankEntity[];
 
     beforeAll(() => {
-      tankData = TestTankData.map((tank, index) => {
+      tanks = TestTankData.map((tank, index) => {
         const data = new TankEntity();
         Object.assign(data, tank);
         if (index % 2 === 0) {
@@ -109,26 +106,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
     });
 
     beforeEach(async () => {
-      await Tanks.createQueryBuilder()
-        .insert()
-        .into(TankEntity)
-        .values(
-          tankData.map((t, index) => ({
-            ...t,
-            user:
-              index % 4 === 0
-                ? {
-                    ...regularUser,
-                    certifications: undefined,
-                    customData: null,
-                    friends: undefined,
-                    oauth: undefined,
-                    tanks: undefined,
-                  }
-                : undefined,
-          })),
-        )
-        .execute();
+      await Tanks.save(tanks);
     });
 
     it('will list user-defined tanks', async () => {
@@ -185,12 +163,12 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       tankData.user = regularUser;
       await Tanks.save(tankData);
 
-      const response = await request(server)
+      const { body: response } = await request(server)
         .get(tankUrl(regularUser.username, tankData.id))
         .set(...regularAuthHeader)
         .expect(200);
 
-      expect(response.body).toMatchSnapshot();
+      expect(response).toMatchSnapshot();
     });
 
     it('will return a 401 response if the user is not logged in', async () => {
@@ -302,23 +280,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         entity.user = regularUser;
         return entity;
       });
-      await Tanks.createQueryBuilder()
-        .insert()
-        .into(TankEntity)
-        .values(
-          tankData.map((t) => ({
-            ...t,
-            user: {
-              ...t.user,
-              friends: undefined,
-              tanks: undefined,
-              oauth: undefined,
-              customData: null,
-              certifications: undefined,
-            },
-          })),
-        )
-        .execute();
+      await Tanks.save(tankData);
 
       await request(server)
         .post(tankUrl(regularUser.username))
