@@ -15,12 +15,11 @@ import { FriendRequestEntity, FriendshipEntity, UserEntity } from '@/data';
 import {
   BadRequestException,
   ConflictException,
-  Inject,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { DataSource, LessThan, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -72,7 +71,7 @@ export class FriendsService {
   private readonly log: Logger = new Logger(FriendsService.name);
 
   constructor(
-    @Inject(DataSource)
+    @InjectDataSource()
     private readonly dataSource: DataSource,
     @InjectRepository(UserEntity)
     private readonly Users: Repository<UserEntity>,

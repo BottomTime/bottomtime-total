@@ -1,4 +1,9 @@
-import { FriendRequestEntity, FriendshipEntity, UserEntity } from '@/data';
+import {
+  FriendRequestEntity,
+  FriendshipEntity,
+  PostgresDataSourceOptions,
+  UserEntity,
+} from '@/data';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';

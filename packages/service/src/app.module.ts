@@ -6,7 +6,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import path from 'path';
-import { DataSourceOptions } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { AdminModule } from './admin';
 import { AuthModule } from './auth/auth.module';
@@ -40,7 +40,13 @@ export class AppModule {
             index: 'index.html',
           },
         }),
-        TypeOrmModule.forRoot(deps.dataSource),
+        TypeOrmModule.forRootAsync({
+          useFactory: () => deps.dataSource,
+          dataSourceFactory: async (options?: DataSourceOptions) => {
+            const ds = new DataSource(options ?? deps.dataSource);
+            return await ds.initialize();
+          },
+        }),
         MongooseModule.forRoot(Config.mongoUri),
         PassportModule.register({
           session: false,
