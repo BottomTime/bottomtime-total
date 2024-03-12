@@ -2,12 +2,12 @@
 
 exports[`Dive Site Class will render dive site data as JSON 1`] = `
 {
-  "averageDifficulty": 2.2,
-  "averageRating": 4.7,
+  "averageDifficulty": 3,
+  "averageRating": 4.5,
   "createdOn": 2024-01-08T13:33:52.364Z,
   "creator": {
     "memberSince": 2024-01-08T13:24:58.620Z,
-    "userId": "5A4699D8-48C4-4410-9886-B74B8B85CAC1",
+    "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",
     "username": "Joe.Regular",
   },
   "depth": {
@@ -21,7 +21,7 @@ exports[`Dive Site Class will render dive site data as JSON 1`] = `
     "lat": 20.433333,
     "lon": -86.933333,
   },
-  "id": "85F18003-FFF8-4B54-8B58-D751EA613D79",
+  "id": "85f18003-fff8-4b54-8b58-d751ea613d79",
   "location": "Cozumel, Mexico",
   "name": "Palancar Horseshoe",
   "shoreAccess": false,

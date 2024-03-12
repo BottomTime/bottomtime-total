@@ -1,18 +1,16 @@
 import {
   CreateOrUpdateDiveSiteDTO,
-  DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
-  SortOrder,
 } from '@bottomtime/api';
 
+import { DiveSiteEntity, UserEntity } from '@/data';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import { Model, PopulateOptions } from 'mongoose';
+import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { DiveSiteData, DiveSiteModelName, UserData } from '../schemas';
-import { DiveSite, PopulatedDiveSiteDocument } from './dive-site';
+import { DiveSite } from './dive-site';
 import { DiveSiteQueryBuilder } from './dive-site-query-builder';
 
 export type CreateDiveSiteOptions = CreateOrUpdateDiveSiteDTO & {
@@ -25,24 +23,19 @@ export type SearchDiveSitesResults = {
   totalCount: number;
 };
 
-const CreatorPopulateOptions: PopulateOptions = {
-  path: 'creator',
-  select: '_id username memberSince profile.name',
-} as const;
-
 @Injectable()
 export class DiveSitesService {
   private readonly log = new Logger(DiveSitesService.name);
 
   constructor(
-    @InjectModel(DiveSiteModelName)
-    private readonly DiveSites: Model<DiveSiteData>,
+    @InjectRepository(DiveSiteEntity)
+    private readonly DiveSites: Repository<DiveSiteEntity>,
   ) {}
 
   async searchDiveSites(
     options: SearchDiveSitesOptions,
   ): Promise<SearchDiveSitesResults> {
-    const query = new DiveSiteQueryBuilder()
+    const query = new DiveSiteQueryBuilder(this.DiveSites)
       .withTextSearch(options.query)
       .withCreatorId(options.creator)
       .withDifficulty(options.difficulty)
@@ -50,66 +43,70 @@ export class DiveSitesService {
       .withGeoLocation(options.location, options.radius)
       .withRating(options.rating)
       .withShoreAccesss(options.shoreAccess)
+      .withSortOrder(options.sortBy, options.sortOrder)
+      .withPagination(options.skip, options.limit)
       .build();
 
-    const sortOrder = options.sortOrder === SortOrder.Ascending ? 1 : -1;
-    let sort: { [key: string]: -1 | 1 };
-
-    if (options.sortBy === DiveSitesSortBy.Name) {
-      sort = { name: sortOrder };
-    } else {
-      sort = { averageRating: sortOrder };
-    }
-
-    const [sites, totalCount] = await Promise.all([
-      this.DiveSites.find(query)
-        .sort(sort)
-        .populate<UserData>(CreatorPopulateOptions)
-        .skip(options.skip ?? 0)
-        .limit(options.limit ?? 100)
-        .exec(),
-      this.DiveSites.countDocuments(query).exec(),
-    ]);
+    const [sites, totalCount] = await query.getManyAndCount();
 
     return {
-      sites: sites.map((site) => new DiveSite(this.DiveSites, site)),
+      sites: sites.map(
+        (site) =>
+          new DiveSite(this.DiveSites, site, {
+            rating: site.rating,
+            difficulty: site.difficulty,
+          }),
+      ),
       totalCount,
     };
   }
 
   async getDiveSite(siteId: string): Promise<DiveSite | undefined> {
-    const site: PopulatedDiveSiteDocument | null =
-      await this.DiveSites.findById(siteId)
-        .populate<UserData>(CreatorPopulateOptions)
-        .exec();
+    const query = new DiveSiteQueryBuilder(this.DiveSites)
+      .build()
+      .andWhere({ id: siteId });
 
-    this.log.debug('Retrieved raw dive site data:', site);
+    this.log.debug(`Attempting to retrieve dive site with ID: ${siteId}`);
+    this.log.verbose(query.getSql());
 
-    return site ? new DiveSite(this.DiveSites, site) : undefined;
+    const result = await query.getOne();
+
+    if (result) {
+      return new DiveSite(this.DiveSites, result, {
+        rating: result.rating,
+        difficulty: result.difficulty,
+      });
+    }
+
+    return undefined;
   }
 
   async createDiveSite(options: CreateDiveSiteOptions): Promise<DiveSite> {
-    const data = new this.DiveSites({
-      _id: uuid(),
-      creator: options.creator,
-      createdOn: new Date(),
+    const data = new DiveSiteEntity();
 
-      name: options.name,
-      location: options.location,
-      description: options.description,
-      depth: options.depth,
-      directions: options.directions,
-      freeToDive: options.freeToDive,
-      shoreAccess: options.shoreAccess,
-    });
-    await data.populate(CreatorPopulateOptions);
+    data.id = uuid();
+    data.creator = { id: options.creator } as UserEntity;
+    data.name = options.name;
+    data.location = options.location;
+    data.description = options.description ?? null;
+    data.depth = options.depth?.depth ?? null;
+    data.depthUnit = options.depth?.unit ?? null;
+    data.directions = options.directions ?? null;
+    data.freeToDive = options.freeToDive ?? null;
+    data.shoreAccess = options.shoreAccess ?? null;
 
-    const site = new DiveSite(this.DiveSites, data);
     if (options.gps) {
-      site.gps = options.gps;
+      data.gps = {
+        type: 'Point',
+        coordinates: [options.gps.lon, options.gps.lat],
+      };
     }
-    await site.save();
 
-    return site;
+    await this.DiveSites.save(data);
+
+    return new DiveSite(this.DiveSites, data, {
+      rating: undefined,
+      difficulty: undefined,
+    });
   }
 }

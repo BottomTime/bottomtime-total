@@ -1,79 +1,150 @@
-import { FilterQuery } from 'mongoose';
-import { DiveSiteData } from '../schemas';
-import { GpsCoordinates, RatingRange } from '@bottomtime/api';
+import {
+  DiveSitesSortBy,
+  GpsCoordinates,
+  RatingRange,
+  SortOrder,
+} from '@bottomtime/api';
 
-const RadiusOfEarthInKm = 6371;
+import { DiveSiteEntity } from '@/data';
+
+import { Repository, SelectQueryBuilder } from 'typeorm';
+
+import { DiveSiteMetadata } from './dive-site';
 
 export class DiveSiteQueryBuilder {
-  private readonly query: FilterQuery<DiveSiteData> = {};
+  private query: SelectQueryBuilder<DiveSiteEntity & DiveSiteMetadata>;
 
-  build(): FilterQuery<DiveSiteData> {
+  constructor(diveSites: Repository<DiveSiteEntity>) {
+    this.query = diveSites
+      .createQueryBuilder()
+      .from(DiveSiteEntity, 'sites')
+      .innerJoin('sites.creator', 'creator')
+      .leftJoin('sites.reviews', 'reviews')
+      .select([
+        'sites.id',
+        'sites.name',
+        'sites.description',
+        'sites.depth',
+        'sites.depthUnit',
+        'sites.location',
+        'sites.directions',
+        'sites.gps',
+        'sites.shoreAccess',
+        'sites.freeToDive',
+        'sites.createdOn',
+        'sites.updatedOn',
+        'creator.id',
+        'creator.username',
+        'creator.memberSince',
+        'AVG(reviews.rating) AS rating',
+        'AVG(reviews.difficulty) AS difficulty',
+      ]);
+  }
+
+  build(): SelectQueryBuilder<DiveSiteEntity & DiveSiteMetadata> {
     return this.query;
   }
 
   withCreatorId(creatorId?: string): this {
     if (creatorId) {
-      this.query.creator = creatorId;
+      this.query = this.query.andWhere('creator.id = :creatorId', {
+        creatorId,
+      });
     }
     return this;
   }
 
   withDifficulty(difficulty?: RatingRange): this {
     if (difficulty) {
-      this.query.averageDifficulty = {
-        $gte: difficulty.min,
-        $lte: difficulty.max,
-      };
+      this.query = this.query.andWhere('difficulty BETWEEN :min AND :max', {
+        min: difficulty.min,
+        max: difficulty.max,
+      });
     }
     return this;
   }
 
   withFreeToDive(freeToDive?: boolean): this {
     if (typeof freeToDive === 'boolean') {
-      this.query.freeToDive = freeToDive;
+      this.query = this.query.andWhere('freeToDive = :freeToDive', {
+        freeToDive,
+      });
     }
     return this;
   }
 
-  withGeoLocation(position?: GpsCoordinates, radius?: number): this {
-    if (position && radius) {
-      this.query.gps = {
-        $geoWithin: {
-          $centerSphere: [
-            [position.lon, position.lat],
-            radius / RadiusOfEarthInKm,
-          ],
+  withGeoLocation(position?: GpsCoordinates, distance?: number): this {
+    if (position && distance) {
+      this.query = this.query.andWhere(
+        'ST_DWithin(gps::geography, ST_MakePoint(:lon, :lat), :distance)',
+        {
+          lon: position.lon,
+          lat: position.lat,
+          distance: distance * 1000, // Distance must be converted from km to meters
         },
-      };
+      );
     }
+    return this;
+  }
+
+  withPagination(skip?: number, limit?: number): this {
+    this.query = this.query.skip(skip ?? 0).take(limit ?? 100);
     return this;
   }
 
   withRating(rating?: RatingRange): this {
     if (rating) {
-      this.query.averageRating = {
-        $gte: rating.min,
-        $lte: rating.max,
-      };
+      this.query = this.query.andWhere('rating BETWEEN :min AND :max', {
+        min: rating.min,
+        max: rating.max,
+      });
     }
     return this;
   }
 
   withShoreAccesss(shoreAccess?: boolean): this {
     if (typeof shoreAccess === 'boolean') {
-      this.query.shoreAccess = shoreAccess;
+      this.query = this.query.andWhere('shoreAccess = :shoreAccess', {
+        shoreAccess,
+      });
     }
     return this;
   }
 
   withTextSearch(query?: string): this {
     if (query) {
-      this.query.$text = {
-        $search: query,
-        $caseSensitive: false,
-        $diacriticSensitive: false,
-      };
+      // TODO:
+      // this.query.$text = {
+      //   $search: query,
+      //   $caseSensitive: false,
+      //   $diacriticSensitive: false,
+      // };
     }
+    return this;
+  }
+
+  withSortOrder(sortBy?: DiveSitesSortBy, sortOrder?: SortOrder): this {
+    let sortByField: string;
+    let sortOrderString: 'ASC' | 'DESC';
+
+    if (sortOrder) {
+      sortOrderString = sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC';
+    }
+
+    switch (sortBy) {
+      case DiveSitesSortBy.Name:
+        sortByField = 'sites.name';
+        sortOrderString ||= 'ASC';
+        break;
+
+      case DiveSitesSortBy.Rating:
+      default:
+        sortByField = 'rating';
+        sortOrderString ||= 'DESC';
+        break;
+    }
+
+    this.query = this.query.orderBy(sortByField, sortOrderString);
     return this;
   }
 }

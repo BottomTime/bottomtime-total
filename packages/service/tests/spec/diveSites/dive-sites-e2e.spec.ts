@@ -13,35 +13,27 @@ import { HttpServer, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import * as uuid from 'uuid';
 
-import {
-  DiveSiteDocument,
-  DiveSiteModel,
-  UserData,
-  UserDocument,
-  UserModel,
-} from '../../../src/schemas';
+import { UserEntity } from '../../../src/data';
 import TestDiveSiteCreatorData from '../../fixtures/dive-site-creators.json';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import { createAuthHeader, createTestApp } from '../../utils';
 
 jest.mock('uuid');
 
-const AdminUserId = 'F3669787-82E5-458F-A8AD-98D3F57DDA6E';
-const AdminUserData: UserData = {
-  _id: AdminUserId,
+const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
+const AdminUserData: Partial<UserEntity> = {
+  id: AdminUserId,
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date(),
   role: UserRole.Admin,
   username: 'Admin',
   usernameLowered: 'admin',
-  settings: {
-    depthUnit: DepthUnit.Meters,
-    temperatureUnit: TemperatureUnit.Celsius,
-    weightUnit: WeightUnit.Kilograms,
-    pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.Private,
-  },
+  depthUnit: DepthUnit.Meters,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
+  pressureUnit: PressureUnit.Bar,
+  profileVisibility: ProfileVisibility.Private,
 };
 
 function requestUrl(siteId?: string): string {

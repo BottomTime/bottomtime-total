@@ -12,14 +12,14 @@ import { DiveSiteEntity } from './dive-site.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('dive_site_reviews')
-export class DiveSiteReview {
+export class DiveSiteReviewEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   creator: UserEntity = new UserEntity();
 
-  @ManyToOne(() => DiveSiteEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => DiveSiteEntity, (site) => site.reviews)
   site: DiveSiteEntity = new DiveSiteEntity();
 
   @CreateDateColumn()
