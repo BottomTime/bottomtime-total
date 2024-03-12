@@ -25,6 +25,9 @@ const DiveSiteSchema = z.object({
     .default(null),
   freeToDive: z.boolean().nullable().default(null),
   shoreAccess: z.boolean().nullable().default(null),
+
+  averageRating: z.number().nullable().default(null),
+  averageDifficulty: z.number().nullable().default(null),
 });
 
 export function createTestDiveSite(
@@ -62,8 +65,23 @@ export function createTestDiveSite(
     faker.helpers.maybe(() => faker.datatype.boolean(), { probability: 0.8 }) ??
     null;
   data.freeToDive =
-    options?.shoreAccess ??
+    options?.freeToDive ??
     faker.helpers.maybe(() => faker.datatype.boolean(), { probability: 0.8 }) ??
+    null;
+
+  data.averageRating =
+    options?.averageRating ??
+    faker.helpers.maybe(
+      () => faker.datatype.number({ min: 1, max: 5, precision: 0.01 }),
+      { probability: 0.9 },
+    ) ??
+    null;
+  data.averageDifficulty =
+    options?.averageDifficulty ??
+    faker.helpers.maybe(
+      () => faker.datatype.number({ min: 1, max: 5, precision: 0.01 }),
+      { probability: 0.9 },
+    ) ??
     null;
 
   return data;

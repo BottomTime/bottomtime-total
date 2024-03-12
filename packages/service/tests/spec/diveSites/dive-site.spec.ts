@@ -36,11 +36,8 @@ const DiveSiteData: Partial<DiveSiteEntity> = {
     type: 'Point',
     coordinates: [-86.933333, 20.433333],
   },
-};
-
-const DiveSiteMetadata = {
-  rating: 4.5,
-  difficulty: 3,
+  averageDifficulty: 2.5,
+  averageRating: 3.8,
 };
 
 describe('Dive Site Class', () => {
@@ -61,7 +58,7 @@ describe('Dive Site Class', () => {
     diveSiteData = new DiveSiteEntity();
     Object.assign(diveSiteData, DiveSiteData);
     diveSiteData.creator = regularUser;
-    site = new DiveSite(DiveSites, diveSiteData, DiveSiteMetadata);
+    site = new DiveSite(DiveSites, diveSiteData);
   });
 
   it('will return properties correctly', () => {
@@ -73,8 +70,8 @@ describe('Dive Site Class', () => {
       username: RegularUserData.username,
       memberSince: RegularUserData.memberSince,
     });
-    expect(site.averageRating).toEqual(DiveSiteMetadata.rating);
-    expect(site.averageDifficulty).toEqual(DiveSiteMetadata.difficulty);
+    expect(site.averageRating).toEqual(DiveSiteData.averageRating);
+    expect(site.averageDifficulty).toEqual(DiveSiteData.averageDifficulty);
     expect(site.depth).toEqual({
       depth: DiveSiteData.depth,
       unit: DiveSiteData.depthUnit,
@@ -97,10 +94,7 @@ describe('Dive Site Class', () => {
     data.creator = regularUser;
     data.name = 'Dive Site';
     data.location = 'Imaginary Place';
-    const site = new DiveSite(DiveSites, data, {
-      rating: undefined,
-      difficulty: undefined,
-    });
+    const site = new DiveSite(DiveSites, data);
 
     expect(site.updatedOn).toBeUndefined();
     expect(site.description).toBeUndefined();

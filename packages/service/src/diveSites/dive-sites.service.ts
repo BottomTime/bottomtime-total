@@ -47,16 +47,13 @@ export class DiveSitesService {
       .withPagination(options.skip, options.limit)
       .build();
 
+    this.log.debug('Searching dive sites', options);
+    this.log.verbose(query.getSql());
+
     const [sites, totalCount] = await query.getManyAndCount();
 
     return {
-      sites: sites.map(
-        (site) =>
-          new DiveSite(this.DiveSites, site, {
-            rating: site.rating,
-            difficulty: site.difficulty,
-          }),
-      ),
+      sites: sites.map((site) => new DiveSite(this.DiveSites, site)),
       totalCount,
     };
   }
@@ -72,10 +69,7 @@ export class DiveSitesService {
     const result = await query.getOne();
 
     if (result) {
-      return new DiveSite(this.DiveSites, result, {
-        rating: result.rating,
-        difficulty: result.difficulty,
-      });
+      return new DiveSite(this.DiveSites, result);
     }
 
     return undefined;
@@ -104,9 +98,6 @@ export class DiveSitesService {
 
     await this.DiveSites.save(data);
 
-    return new DiveSite(this.DiveSites, data, {
-      rating: undefined,
-      difficulty: undefined,
-    });
+    return new DiveSite(this.DiveSites, data);
   }
 }

@@ -10,11 +10,6 @@ import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
 
-export type DiveSiteMetadata = {
-  rating?: number;
-  difficulty?: number;
-};
-
 export class DiveSite {
   private readonly log = new Logger(DiveSite.name);
 
@@ -22,7 +17,6 @@ export class DiveSite {
     @InjectRepository(DiveSiteEntity)
     private readonly DiveSites: Repository<DiveSiteEntity>,
     private readonly data: DiveSiteEntity,
-    private readonly metadata: DiveSiteMetadata,
   ) {}
 
   // READ-ONLY METADATA
@@ -52,11 +46,11 @@ export class DiveSite {
   }
 
   get averageRating(): number | undefined {
-    return this.metadata.rating ?? undefined;
+    return this.data.averageRating ?? undefined;
   }
 
   get averageDifficulty(): number | undefined {
-    return this.metadata.difficulty ?? undefined;
+    return this.data.averageDifficulty ?? undefined;
   }
 
   // BASIC INFO

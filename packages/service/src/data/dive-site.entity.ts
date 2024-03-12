@@ -76,4 +76,11 @@ export class DiveSiteEntity {
   })
   @Index()
   fulltext?: unknown;
+
+  @Column('float', { nullable: true })
+  @Index()
+  averageRating: number | null = null;
+
+  @Column('float', { nullable: true })
+  averageDifficulty: number | null = null;
 }

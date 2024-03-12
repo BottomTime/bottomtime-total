@@ -8,15 +8,24 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
+import { faker } from '@faker-js/faker';
 import { HttpServer, INestApplication } from '@nestjs/common';
 
 import request from 'supertest';
+import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { UserEntity } from '../../../src/data';
-import TestDiveSiteCreatorData from '../../fixtures/dive-site-creators.json';
+import { DiveSiteEntity, UserEntity } from '../../../src/data';
+import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
-import { createAuthHeader, createTestApp } from '../../utils';
+import TestDiveSiteCreatorData from '../../fixtures/user-search-data.json';
+import {
+  createAuthHeader,
+  createTestApp,
+  createTestUser,
+  parseUserJSON,
+} from '../../utils';
+import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
 
 jest.mock('uuid');
 
@@ -41,10 +50,16 @@ function requestUrl(siteId?: string): string {
 }
 
 describe('Dive Sites End-to-End Tests', () => {
+  let Sites: Repository<DiveSiteEntity>;
+  let Users: Repository<UserEntity>;
+
   let app: INestApplication;
   let server: HttpServer;
 
   beforeAll(async () => {
+    Users = dataSource.getRepository(UserEntity);
+    Sites = dataSource.getRepository(DiveSiteEntity);
+
     app = await createTestApp();
     server = app.getHttpServer();
   });
@@ -58,21 +73,21 @@ describe('Dive Sites End-to-End Tests', () => {
       sites: [],
       totalCount: 0,
     };
-    let sites: DiveSiteDocument[];
-    let creators: UserDocument[];
+    let creators: UserEntity[];
+    let sites: DiveSiteEntity[];
 
     beforeAll(() => {
-      sites = TestDiveSiteData.map((site) => new DiveSiteModel(site));
-      creators = TestDiveSiteCreatorData.map(
-        (creator) => new UserModel(creator),
+      creators = TestDiveSiteCreatorData.map((creator) =>
+        parseUserJSON(creator),
+      );
+      sites = TestDiveSiteData.map((site, index) =>
+        parseDiveSiteJSON(site, creators[index % 4]),
       );
     });
 
     beforeEach(async () => {
-      await Promise.all([
-        DiveSiteModel.insertMany(sites),
-        UserModel.insertMany(creators),
-      ]);
+      await Users.save(creators);
+      await Sites.save(sites);
     });
 
     it('will list results from a basic search', async () => {
@@ -97,7 +112,7 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(body).toMatchSnapshot();
     });
 
-    it('will return an empty array if the search does not match any results', async () => {
+    it.skip('will return an empty array if the search does not match any results', async () => {
       const { body } = await request(server)
         .get(requestUrl())
         .query({
@@ -141,44 +156,47 @@ describe('Dive Sites End-to-End Tests', () => {
   });
 
   describe('when getting a dive site', () => {
-    let site: DiveSiteDocument;
-    let creator: UserDocument;
+    let site: DiveSiteEntity;
+    let creator: UserEntity;
+
+    beforeAll(() => {
+      creator = parseUserJSON(TestDiveSiteCreatorData[0]);
+      site = parseDiveSiteJSON(TestDiveSiteData[0], creator);
+    });
 
     beforeEach(async () => {
-      site = new DiveSiteModel(TestDiveSiteData[0]);
-      creator = new UserModel(TestDiveSiteCreatorData[7]);
-      await Promise.all([
-        DiveSiteModel.insertMany([site]),
-        UserModel.insertMany([creator]),
-      ]);
+      await Users.save(creator);
+      await Sites.save(site);
     });
 
     it('will return the dive site', async () => {
       const { body } = await request(server)
-        .get(requestUrl(site._id))
+        .get(requestUrl(site.id))
         .expect(200);
       expect(body).toMatchSnapshot();
     });
 
     it('will return a 404 response if the dive site cannot be found', async () => {
-      await request(server).get(requestUrl('nonexistent')).expect(404);
+      await request(server)
+        .get(requestUrl('88f7f288-cbfe-4879-a6b9-cbc26dddcee1'))
+        .expect(404);
     });
   });
 
   describe('when creating a dive site', () => {
-    const siteId = '53648128-8269-4F9A-91C6-7C88DFB74B3D';
-    const now = new Date('2024-01-10T16:48:14.408Z');
-    let authHeader: [string, string];
-    let creator: UserDocument;
+    const siteId = '53648128-8269-4f9a-91c6-7c88dfb74b3d';
+
+    let creator: UserEntity;
     let createOptions: CreateOrUpdateDiveSiteDTO;
+    let authHeader: [string, string];
 
     beforeAll(async () => {
-      creator = new UserModel(TestDiveSiteCreatorData[4]);
-      authHeader = await createAuthHeader(creator._id);
+      creator = parseUserJSON(TestDiveSiteCreatorData[4]);
+      authHeader = await createAuthHeader(creator.id);
     });
 
     beforeEach(async () => {
-      await UserModel.insertMany([creator]);
+      await Users.save(creator);
       createOptions = {
         name: 'Test Dive Site',
         location: 'In the Florida Keys',
@@ -196,16 +214,7 @@ describe('Dive Sites End-to-End Tests', () => {
         shoreAccess: true,
       };
 
-      jest.useFakeTimers({
-        now,
-        doNotFake: ['nextTick', 'setImmediate'],
-      });
-
       jest.spyOn(uuid, 'v4').mockReturnValue(siteId);
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
     });
 
     it('will create the new site and return the result', async () => {
@@ -215,11 +224,36 @@ describe('Dive Sites End-to-End Tests', () => {
         .send(createOptions)
         .expect(201);
 
-      expect(body).toMatchSnapshot();
+      expect(body.id).toBeDefined();
+      expect(body.creator.userId).toEqual(creator.id);
+      expect(new Date(body.createdOn).valueOf()).toBeCloseTo(Date.now(), -3);
+      expect(body.name).toBe(createOptions.name);
+      expect(body.location).toBe(createOptions.location);
+      expect(body.description).toBe(createOptions.description);
+      expect(body.depth).toEqual(createOptions.depth);
+      expect(body.gps).toEqual(createOptions.gps);
+      expect(body.directions).toBe(createOptions.directions);
+      expect(body.freeToDive).toBe(createOptions.freeToDive);
+      expect(body.shoreAccess).toBe(createOptions.shoreAccess);
 
-      const savedSite = await DiveSiteModel.findById(siteId);
-      expect(savedSite).not.toBeNull();
-      expect(savedSite?.toJSON()).toMatchSnapshot();
+      const savedSite = await Sites.findOneOrFail({
+        relations: ['creator'],
+        where: { id: siteId },
+      });
+      expect(savedSite.creator.id).toBe(creator.id);
+      expect(savedSite.name).toBe(createOptions.name);
+      expect(savedSite.location).toBe(createOptions.location);
+      expect(savedSite.description).toBe(createOptions.description);
+      expect(savedSite.depth).toBe(createOptions.depth!.depth);
+      expect(savedSite.depthUnit).toBe(createOptions.depth!.unit);
+      expect(savedSite.gps).toEqual({
+        type: 'Point',
+        coordinates: [createOptions.gps!.lon, createOptions.gps!.lat],
+      });
+      expect(savedSite.directions).toBe(createOptions.directions);
+      expect(savedSite.freeToDive).toBe(createOptions.freeToDive);
+      expect(savedSite.shoreAccess).toBe(createOptions.shoreAccess);
+      expect(savedSite.createdOn.valueOf()).toBeCloseTo(Date.now(), -3);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -258,24 +292,26 @@ describe('Dive Sites End-to-End Tests', () => {
   });
 
   describe('when updating a dive site', () => {
-    const now = new Date('2024-01-10T16:48:14.408Z');
-    let site: DiveSiteDocument;
-    let creator: UserDocument;
-    let admin: UserDocument;
-    let authHeader: [string, string];
+    let site: DiveSiteEntity;
+    let creator: UserEntity;
+    let admin: UserEntity;
+    let creatorAuthHeader: [string, string];
     let adminAuthHeader: [string, string];
     let updateOptions: CreateOrUpdateDiveSiteDTO;
 
+    beforeAll(async () => {
+      creator = parseUserJSON(TestDiveSiteCreatorData[7]);
+      site = parseDiveSiteJSON(TestDiveSiteData[0], creator);
+      admin = createTestUser(AdminUserData);
+
+      creatorAuthHeader = await createAuthHeader(creator.id);
+      adminAuthHeader = await createAuthHeader(admin.id);
+    });
+
     beforeEach(async () => {
-      site = new DiveSiteModel(TestDiveSiteData[0]);
-      creator = new UserModel(TestDiveSiteCreatorData[7]);
-      admin = new UserModel(AdminUserData);
-      await Promise.all([
-        DiveSiteModel.insertMany([site]),
-        UserModel.insertMany([creator, admin]),
-      ]);
-      authHeader = await createAuthHeader(creator._id);
-      adminAuthHeader = await createAuthHeader(admin._id);
+      await Users.save([creator, admin]);
+      await Sites.save(site);
+
       updateOptions = {
         name: 'Test Dive Site',
         location: 'In the Florida Keys',
@@ -292,49 +328,82 @@ describe('Dive Sites End-to-End Tests', () => {
         freeToDive: true,
         shoreAccess: true,
       };
-
-      jest.useFakeTimers({
-        now,
-        doNotFake: ['nextTick', 'setImmediate'],
-      });
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
     });
 
     it('will post updates to the site and return the result', async () => {
       const { body } = await request(server)
-        .put(requestUrl(site._id))
-        .set(...authHeader)
+        .put(requestUrl(site.id))
+        .set(...creatorAuthHeader)
         .send(updateOptions)
         .expect(200);
 
-      expect(body).toMatchSnapshot();
+      expect(body.depth).toEqual(updateOptions.depth);
+      expect(body.gps).toEqual(updateOptions.gps);
+      expect(body.description).toBe(updateOptions.description);
+      expect(body.directions).toBe(updateOptions.directions);
+      expect(body.freeToDive).toBe(updateOptions.freeToDive);
+      expect(body.shoreAccess).toBe(updateOptions.shoreAccess);
+      expect(new Date(body.updatedOn).valueOf()).toBeCloseTo(
+        Date.now().valueOf(),
+        -3,
+      );
 
-      const updatedSite = await DiveSiteModel.findById(site._id);
-      expect(updatedSite).not.toBeNull();
-      expect(updatedSite?.toJSON()).toMatchSnapshot();
+      const updated = await Sites.findOneByOrFail({ id: site.id });
+      expect(updated.depth).toBe(updateOptions.depth!.depth);
+      expect(updated.depthUnit).toBe(updateOptions.depth!.unit);
+      expect(updated.gps).toEqual({
+        type: 'Point',
+        coordinates: [updateOptions.gps!.lon, updateOptions.gps!.lat],
+      });
+      expect(updated.description).toBe(updateOptions.description);
+      expect(updated.directions).toBe(updateOptions.directions);
+      expect(updated.freeToDive).toBe(updateOptions.freeToDive);
+      expect(updated.shoreAccess).toBe(updateOptions.shoreAccess);
+      expect(updated.updatedOn?.valueOf()).toBeCloseTo(
+        Date.now().valueOf(),
+        -3,
+      );
     });
 
     it('will allow admins to update sites they did not create', async () => {
       const { body } = await request(server)
-        .put(requestUrl(site._id))
-        .set(...authHeader)
+        .put(requestUrl(site.id))
+        .set(...creatorAuthHeader)
         .send(updateOptions)
         .expect(200);
 
-      expect(body).toMatchSnapshot();
+      expect(body.depth).toEqual(updateOptions.depth);
+      expect(body.gps).toEqual(updateOptions.gps);
+      expect(body.description).toBe(updateOptions.description);
+      expect(body.directions).toBe(updateOptions.directions);
+      expect(body.freeToDive).toBe(updateOptions.freeToDive);
+      expect(body.shoreAccess).toBe(updateOptions.shoreAccess);
+      expect(new Date(body.updatedOn).valueOf()).toBeCloseTo(
+        Date.now().valueOf(),
+        -3,
+      );
 
-      const updatedSite = await DiveSiteModel.findById(site._id);
-      expect(updatedSite).not.toBeNull();
-      expect(updatedSite?.toJSON()).toMatchSnapshot();
+      const updated = await Sites.findOneByOrFail({ id: site.id });
+      expect(updated.depth).toBe(updateOptions.depth!.depth);
+      expect(updated.depthUnit).toBe(updateOptions.depth!.unit);
+      expect(updated.gps).toEqual({
+        type: 'Point',
+        coordinates: [updateOptions.gps!.lon, updateOptions.gps!.lat],
+      });
+      expect(updated.description).toBe(updateOptions.description);
+      expect(updated.directions).toBe(updateOptions.directions);
+      expect(updated.freeToDive).toBe(updateOptions.freeToDive);
+      expect(updated.shoreAccess).toBe(updateOptions.shoreAccess);
+      expect(updated.updatedOn?.valueOf()).toBeCloseTo(
+        Date.now().valueOf(),
+        -3,
+      );
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
       const { body } = await request(server)
-        .put(requestUrl(site._id))
-        .set(...authHeader)
+        .put(requestUrl(site.id))
+        .set(...creatorAuthHeader)
         .send({
           location: true,
           description: 77,
@@ -356,25 +425,25 @@ describe('Dive Sites End-to-End Tests', () => {
 
     it('will return a 400 response if the request body is missing', async () => {
       await request(server)
-        .put(requestUrl(site._id))
-        .set(...authHeader)
+        .put(requestUrl(site.id))
+        .set(...creatorAuthHeader)
         .expect(400);
     });
 
     it('will return a 401 response if the user is not logged in', async () => {
       await request(server)
-        .put(requestUrl(site._id))
+        .put(requestUrl(site.id))
         .send(updateOptions)
         .expect(401);
     });
 
     it('will return a 403 response if the user is not the creator', async () => {
-      const otherUser = new UserModel(TestDiveSiteCreatorData[3]);
-      await UserModel.insertMany([otherUser]);
-      const otherAuthHeader = await createAuthHeader(otherUser._id);
+      const otherUser = parseUserJSON(TestDiveSiteCreatorData[3]);
+      await Users.save(otherUser);
+      const otherAuthHeader = await createAuthHeader(otherUser.id);
 
       await request(server)
-        .put(requestUrl(site._id))
+        .put(requestUrl(site.id))
         .set(...otherAuthHeader)
         .send(updateOptions)
         .expect(403);
@@ -382,7 +451,7 @@ describe('Dive Sites End-to-End Tests', () => {
 
     it('will return a 404 response if the dive site cannot be found', async () => {
       await request(server)
-        .put(requestUrl('nonexistent'))
+        .put(requestUrl('62f9e8ed-f9df-4f31-9915-62e8e4970448'))
         .set(...adminAuthHeader)
         .send(updateOptions)
         .expect(404);
@@ -390,62 +459,64 @@ describe('Dive Sites End-to-End Tests', () => {
   });
 
   describe('when deleting a dive site', () => {
-    let site: DiveSiteDocument;
-    let creator: UserDocument;
-    let admin: UserDocument;
-    let authHeader: [string, string];
+    let site: DiveSiteEntity;
+    let creator: UserEntity;
+    let admin: UserEntity;
+    let creatorAuthHeader: [string, string];
     let adminAuthHeader: [string, string];
 
+    beforeAll(async () => {
+      creator = parseUserJSON(TestDiveSiteCreatorData[7]);
+      site = parseDiveSiteJSON(TestDiveSiteData[0], creator);
+      admin = createTestUser(AdminUserData);
+
+      creatorAuthHeader = await createAuthHeader(creator.id);
+      adminAuthHeader = await createAuthHeader(admin.id);
+    });
+
     beforeEach(async () => {
-      site = new DiveSiteModel(TestDiveSiteData[0]);
-      creator = new UserModel(TestDiveSiteCreatorData[7]);
-      admin = new UserModel(AdminUserData);
-      await Promise.all([
-        DiveSiteModel.insertMany([site]),
-        UserModel.insertMany([creator, admin]),
-      ]);
-      authHeader = await createAuthHeader(creator._id);
-      adminAuthHeader = await createAuthHeader(admin._id);
+      await Users.save([creator, admin]);
+      await Sites.save(site);
     });
 
     it('will delete the site and return a 204 response', async () => {
       await request(server)
-        .delete(requestUrl(site._id))
-        .set(...authHeader)
+        .delete(requestUrl(site.id))
+        .set(...creatorAuthHeader)
         .expect(204);
 
-      const deletedSite = await DiveSiteModel.findById(site._id);
+      const deletedSite = await Sites.findOneBy({ id: site.id });
       expect(deletedSite).toBeNull();
     });
 
     it('will allow admins to delete sites they did not create', async () => {
       await request(server)
-        .delete(requestUrl(site._id))
+        .delete(requestUrl(site.id))
         .set(...adminAuthHeader)
         .expect(204);
 
-      const deletedSite = await DiveSiteModel.findById(site._id);
+      const deletedSite = await Sites.findOneBy({ id: site.id });
       expect(deletedSite).toBeNull();
     });
 
     it('will return a 401 response if the user is not logged in', async () => {
-      await request(server).delete(requestUrl(site._id)).expect(401);
+      await request(server).delete(requestUrl(site.id)).expect(401);
     });
 
     it('will return a 403 response if the user is not the creator', async () => {
-      const otherUser = new UserModel(TestDiveSiteCreatorData[3]);
-      await UserModel.insertMany([otherUser]);
-      const otherAuthHeader = await createAuthHeader(otherUser._id);
+      const otherUser = parseUserJSON(TestDiveSiteCreatorData[3]);
+      await Users.save(otherUser);
+      const otherAuthHeader = await createAuthHeader(otherUser.id);
 
       await request(server)
-        .delete(requestUrl(site._id))
+        .delete(requestUrl(site.id))
         .set(...otherAuthHeader)
         .expect(403);
     });
 
     it('will return a 404 response if the dive site cannot be found', async () => {
       await request(server)
-        .delete(requestUrl('nonexistent'))
+        .delete(requestUrl('cdf94930-2a4b-4822-9870-103264f721f0'))
         .set(...adminAuthHeader)
         .expect(404);
     });

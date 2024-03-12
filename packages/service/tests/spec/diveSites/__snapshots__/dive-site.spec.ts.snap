@@ -2,8 +2,8 @@
 
 exports[`Dive Site Class will render dive site data as JSON 1`] = `
 {
-  "averageDifficulty": 3,
-  "averageRating": 4.5,
+  "averageDifficulty": 2.5,
+  "averageRating": 3.8,
   "createdOn": 2024-01-08T13:33:52.364Z,
   "creator": {
     "memberSince": 2024-01-08T13:24:58.620Z,

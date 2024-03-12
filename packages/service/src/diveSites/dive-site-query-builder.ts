@@ -9,17 +9,14 @@ import { DiveSiteEntity } from '@/data';
 
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import { DiveSiteMetadata } from './dive-site';
-
 export class DiveSiteQueryBuilder {
-  private query: SelectQueryBuilder<DiveSiteEntity & DiveSiteMetadata>;
+  private query: SelectQueryBuilder<DiveSiteEntity>;
 
   constructor(diveSites: Repository<DiveSiteEntity>) {
     this.query = diveSites
       .createQueryBuilder()
       .from(DiveSiteEntity, 'sites')
       .innerJoin('sites.creator', 'creator')
-      .leftJoin('sites.reviews', 'reviews')
       .select([
         'sites.id',
         'sites.name',
@@ -33,15 +30,15 @@ export class DiveSiteQueryBuilder {
         'sites.freeToDive',
         'sites.createdOn',
         'sites.updatedOn',
+        'sites.averageRating',
+        'sites.averageDifficulty',
         'creator.id',
         'creator.username',
         'creator.memberSince',
-        'AVG(reviews.rating) AS rating',
-        'AVG(reviews.difficulty) AS difficulty',
       ]);
   }
 
-  build(): SelectQueryBuilder<DiveSiteEntity & DiveSiteMetadata> {
+  build(): SelectQueryBuilder<DiveSiteEntity> {
     return this.query;
   }
 
@@ -56,17 +53,20 @@ export class DiveSiteQueryBuilder {
 
   withDifficulty(difficulty?: RatingRange): this {
     if (difficulty) {
-      this.query = this.query.andWhere('difficulty BETWEEN :min AND :max', {
-        min: difficulty.min,
-        max: difficulty.max,
-      });
+      this.query = this.query.andWhere(
+        'sites.averageDifficulty BETWEEN :min AND :max',
+        {
+          min: difficulty.min,
+          max: difficulty.max,
+        },
+      );
     }
     return this;
   }
 
   withFreeToDive(freeToDive?: boolean): this {
     if (typeof freeToDive === 'boolean') {
-      this.query = this.query.andWhere('freeToDive = :freeToDive', {
+      this.query = this.query.andWhere('sites.freeToDive = :freeToDive', {
         freeToDive,
       });
     }
@@ -76,7 +76,7 @@ export class DiveSiteQueryBuilder {
   withGeoLocation(position?: GpsCoordinates, distance?: number): this {
     if (position && distance) {
       this.query = this.query.andWhere(
-        'ST_DWithin(gps::geography, ST_MakePoint(:lon, :lat), :distance)',
+        'ST_DWithin(sites.gps::geography, ST_MakePoint(:lon, :lat), :distance)',
         {
           lon: position.lon,
           lat: position.lat,
@@ -94,17 +94,20 @@ export class DiveSiteQueryBuilder {
 
   withRating(rating?: RatingRange): this {
     if (rating) {
-      this.query = this.query.andWhere('rating BETWEEN :min AND :max', {
-        min: rating.min,
-        max: rating.max,
-      });
+      this.query = this.query.andWhere(
+        'sites.averageRating BETWEEN :min AND :max',
+        {
+          min: rating.min,
+          max: rating.max,
+        },
+      );
     }
     return this;
   }
 
   withShoreAccesss(shoreAccess?: boolean): this {
     if (typeof shoreAccess === 'boolean') {
-      this.query = this.query.andWhere('shoreAccess = :shoreAccess', {
+      this.query = this.query.andWhere('sites.shoreAccess = :shoreAccess', {
         shoreAccess,
       });
     }
@@ -139,12 +142,12 @@ export class DiveSiteQueryBuilder {
 
       case DiveSitesSortBy.Rating:
       default:
-        sortByField = 'rating';
+        sortByField = 'sites.averageRating';
         sortOrderString ||= 'DESC';
         break;
     }
 
-    this.query = this.query.orderBy(sortByField, sortOrderString);
+    this.query = this.query.orderBy(sortByField, sortOrderString, 'NULLS LAST');
     return this;
   }
 }
