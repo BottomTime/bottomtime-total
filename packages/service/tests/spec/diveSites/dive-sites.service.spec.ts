@@ -31,6 +31,14 @@ const RegularUserData: Partial<UserEntity> = {
   usernameLowered: 'joe.regular',
 };
 
+const OtherUserData: Partial<UserEntity> = {
+  id: '5a4699d8-48c4-4410-9886-b74b8b85cac2',
+  memberSince: new Date('2024-01-08T13:24:58.620Z'),
+  username: 'Other.User',
+  usernameLowered: 'other.user',
+  role: UserRole.User,
+};
+
 describe('Dive Site Service', () => {
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
@@ -45,10 +53,8 @@ describe('Dive Site Service', () => {
     DiveSites = dataSource.getRepository(DiveSiteEntity);
 
     regularUser = createTestUser(RegularUserData);
-    otherUser = createTestUser();
+    otherUser = createTestUser(OtherUserData);
     service = new DiveSitesService(DiveSites);
-
-    regularUser = createTestUser(RegularUserData);
 
     diveSiteData = DiveSiteTestData.map((data, index) =>
       parseDiveSiteJSON(data, index % 2 === 0 ? regularUser : otherUser),
@@ -235,9 +241,9 @@ describe('Dive Site Service', () => {
       expect(sites).toMatchSnapshot();
     });
 
-    it.skip('will perform text-based searches', async () => {
+    it('will perform text-based searches', async () => {
       const results = await service.searchDiveSites({
-        query: 'inexperienced lauderdale',
+        query: 'lake dolore',
         skip: 0,
         limit: 50,
         radius: 50,
@@ -246,7 +252,7 @@ describe('Dive Site Service', () => {
       });
 
       const sites = results.sites.map((site) => site.toJSON());
-      expect(results.totalCount).toEqual(2);
+      expect(results.totalCount).toEqual(10);
       expect(sites).toMatchSnapshot();
     });
 

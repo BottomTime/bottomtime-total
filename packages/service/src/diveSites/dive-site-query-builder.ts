@@ -116,12 +116,10 @@ export class DiveSiteQueryBuilder {
 
   withTextSearch(query?: string): this {
     if (query) {
-      // TODO:
-      // this.query.$text = {
-      //   $search: query,
-      //   $caseSensitive: false,
-      //   $diacriticSensitive: false,
-      // };
+      this.query = this.query.andWhere(
+        'sites.fulltext @@ plainto_tsquery(:query)',
+        { query },
+      );
     }
     return this;
   }

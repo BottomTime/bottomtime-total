@@ -8,7 +8,6 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { faker } from '@faker-js/faker';
 import { HttpServer, INestApplication } from '@nestjs/common';
 
 import request from 'supertest';
@@ -112,7 +111,7 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(body).toMatchSnapshot();
     });
 
-    it.skip('will return an empty array if the search does not match any results', async () => {
+    it('will return an empty array if the search does not match any results', async () => {
       const { body } = await request(server)
         .get(requestUrl())
         .query({
