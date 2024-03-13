@@ -37,21 +37,20 @@ export class CertificationsService {
       query = query.andWhere({ agency: options.agency });
     }
 
+    if (options.query) {
+      query = query.andWhere(
+        "fulltext @@ websearch_to_tsquery('english', :query)",
+        {
+          query: options.query,
+        },
+      );
+    }
+
     query = query
       .orderBy('agency', 'ASC')
       .addOrderBy('course', 'ASC')
       .offset(options.skip)
       .limit(options.limit);
-
-    // TODO:
-    // if (options.query) {
-    //   query.$text = {
-    //     $search: options.query,
-    //     $language: 'en',
-    //     $caseSensitive: false,
-    //     $diacriticSensitive: false,
-    //   };
-    // }
 
     this.log.verbose('Querying for certifications using query', query.getSql());
     const [results, totalCount] = await query.getManyAndCount();

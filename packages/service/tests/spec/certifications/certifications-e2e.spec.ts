@@ -73,7 +73,7 @@ describe('Certifications End-to-End', () => {
       expect(body).toMatchSnapshot();
     });
 
-    it.skip('will perform a text-based search', async () => {
+    it('will perform a text-based search', async () => {
       const { body } = await request(server)
         .get('/api/certifications')
         .query({

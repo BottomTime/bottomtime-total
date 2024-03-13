@@ -230,7 +230,7 @@ describe('Users Service', () => {
     });
 
     // TODO: Figure out how to get full text search working properly in Postgres. Might need MongoDB for this.
-    it.skip('will perform text based searches', async () => {
+    it('will perform text based searches', async () => {
       await expect(
         service.searchUsers({ query: 'Town' }),
       ).resolves.toMatchSnapshot();

@@ -42,12 +42,12 @@ export class AdminService {
     let query = this.Users.createQueryBuilder('users');
 
     if (options.query) {
-      // TODO
-      // query.$text = {
-      //   $search: options.query,
-      //   $caseSensitive: false,
-      //   $diacriticSensitive: false,
-      // };
+      query = query.andWhere(
+        "fulltext @@ websearch_to_tsquery('english', :query)",
+        {
+          query: options.query,
+        },
+      );
     }
 
     if (options.role) {

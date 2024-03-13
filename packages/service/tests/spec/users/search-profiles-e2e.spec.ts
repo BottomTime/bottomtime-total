@@ -55,7 +55,6 @@ describe('Searching Profiles E2E Tests', () => {
     friends = [];
     users = TestUserData.map((data) => parseUserJSON(data));
     adminUser = createTestUser(AdminUserData);
-    Object.assign(adminUser, AdminUserData);
     users.push(adminUser);
     users.forEach((user, index) => {
       switch (index % 3) {
@@ -158,9 +157,9 @@ describe('Searching Profiles E2E Tests', () => {
     expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
   });
 
-  it.skip('will perform a text search for user profiles', async () => {
+  it('will perform a text search for user profiles', async () => {
     const options = {
-      query: 'Sally Port',
+      query: 'ipsam',
     };
     const { body: result } = await request(server)
       .get(SearchUrl)
@@ -168,7 +167,7 @@ describe('Searching Profiles E2E Tests', () => {
       .query(options)
       .expect(200);
 
-    expect(result.totalCount).toBe(4);
+    expect(result.totalCount).toBe(3);
     expect(result.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
   });
 

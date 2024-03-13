@@ -40,12 +40,13 @@ describe('Certifications Service', () => {
       expect(results).toMatchSnapshot();
     });
 
-    it.skip('will perform a text-based search', async () => {
+    it('will perform a text-based search', async () => {
       const results = await service.searchCertifications({
         query: 'advanced',
         skip: 0,
-        limit: 10,
+        limit: 50,
       });
+      expect(results.totalCount).toBe(3);
       expect(results).toMatchSnapshot();
     });
 

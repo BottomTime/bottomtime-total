@@ -118,17 +118,17 @@ describe('Admin End-to-End Tests', () => {
       expect(result).toMatchSnapshot();
     });
 
-    it.skip('will filter results based on query string', async () => {
+    it('will filter results based on query string', async () => {
       const { body: result } = await request(server)
         .get(`/api/admin/users`)
         .query({
-          query: 'city jenkins',
+          query: 'city',
           role: UserRole.User,
         })
         .set(...adminAuthHeader)
         .expect(200);
 
-      expect(result.users).toHaveLength(15);
+      expect(result.users).toHaveLength(4);
       expect(result).toMatchSnapshot();
     });
 

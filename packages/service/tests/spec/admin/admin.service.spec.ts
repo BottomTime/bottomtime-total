@@ -155,13 +155,13 @@ describe('Admin Service', () => {
       expect(results).toMatchSnapshot();
     });
 
-    it.skip('will perform a text-based search', async () => {
+    it('will perform a text-based search', async () => {
       const results = await service.searchUsers({
-        limit: 10,
+        limit: 50,
         skip: 0,
         sortBy: UsersSortBy.Username,
         sortOrder: SortOrder.Ascending,
-        query: 'Dave',
+        query: 'Taylor',
       });
       expect(results).toMatchSnapshot();
     });

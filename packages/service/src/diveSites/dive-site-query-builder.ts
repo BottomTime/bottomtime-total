@@ -117,7 +117,7 @@ export class DiveSiteQueryBuilder {
   withTextSearch(query?: string): this {
     if (query) {
       this.query = this.query.andWhere(
-        'sites.fulltext @@ plainto_tsquery(:query)',
+        "sites.fulltext @@ websearch_to_tsquery('english', :query)",
         { query },
       );
     }

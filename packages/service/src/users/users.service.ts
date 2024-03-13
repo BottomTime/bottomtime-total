@@ -21,7 +21,7 @@ import { v4 as uuid } from 'uuid';
 import { z } from 'zod';
 
 import { Config } from '../config';
-import { FriendshipEntity, UserEntity } from '../data';
+import { FriendshipEntity, UserEntity, getQueryVector } from '../data';
 import { User } from './user';
 
 const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
@@ -149,7 +149,7 @@ export class UsersService {
 
     if (options.query) {
       query = query.andWhere(
-        "users.fulltext @@ to_tsquery('english', :query)",
+        "users.fulltext @@ websearch_to_tsquery('english', :query)",
         {
           query: options.query,
         },
@@ -199,6 +199,7 @@ export class UsersService {
       sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
     );
 
+    this.log.debug('Attempting search for users', options);
     this.log.verbose('Performing user search with query', query.getQuery());
 
     const [users, totalCount] = await query.getManyAndCount();

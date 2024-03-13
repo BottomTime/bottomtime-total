@@ -82,10 +82,9 @@ exports[`Searching Profiles E2E Tests will list profiles when no query string pa
 
 exports[`Searching Profiles E2E Tests will perform a text search for user profiles 1`] = `
 [
-  "Kendra.Gusikowski39",
-  "Shad.Daniel29",
-  "Novella.Reichel",
-  "Sallie.Schultz",
+  "Audreanne.Larkin79",
+  "Minerva.Olson",
+  "Reina54",
 ]
 `;
 

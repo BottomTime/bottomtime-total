@@ -481,14 +481,14 @@ exports[`Certifications End-to-End when searching certifications will perform a 
 {
   "certifications": [
     {
-      "agency": "SSI",
-      "course": "Advanced Adventurer",
-      "id": "41abe56e-3b6a-406a-8902-4b296ce89271",
-    },
-    {
       "agency": "PADI",
       "course": "Advanced Open Water Diver",
       "id": "040752f8-460d-436e-9d73-fd4224ec8fc5",
+    },
+    {
+      "agency": "SSI",
+      "course": "Advanced Adventurer",
+      "id": "41abe56e-3b6a-406a-8902-4b296ce89271",
     },
     {
       "agency": "SSI",
