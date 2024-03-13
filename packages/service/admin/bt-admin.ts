@@ -10,12 +10,12 @@ import { userModule } from './users';
 async function processCommand(cmd: string[]) {
   await yargs(cmd)
     .version('1.0.0')
-    .option('mongo-uri', {
-      alias: 'm',
+    .option('postgres-uri', {
+      alias: 'd',
       default:
-        process.env.BT_MONGO_URI ??
-        'mongodb://127.0.0.1:27017/bottomtime-local',
-      description: 'Set the MongoDB connection string',
+        process.env.BT_MONGO_URI ||
+        'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_local',
+      description: 'Set the PostgresSQL connection string',
       type: 'string',
     })
     .command(dbModule)

@@ -1,13 +1,15 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+
 import { readFile } from 'fs/promises';
 import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
+
 import { PageOptions } from '../constants';
 
 @Injectable()
-export class WebService implements OnModuleInit {
-  private readonly log = new Logger(WebService.name);
+export class ProductionService implements OnModuleInit {
+  private readonly log = new Logger(ProductionService.name);
   private htmlTemplate: string | undefined;
   private ssrManifest: Record<string, unknown> | undefined;
 

@@ -6,7 +6,6 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import helmet from 'helmet';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -31,7 +30,7 @@ async function createApp(): Promise<INestApplication> {
   }
 
   const app = await NestFactory.create<NestExpressApplication>(
-    AppModule.forRoot({ vite }),
+    AppModule.forRoot(),
     {
       cors: {
         origin: (_origin, cb) => {
@@ -45,22 +44,6 @@ async function createApp(): Promise<INestApplication> {
 
   app.use(compression());
   app.use(cookieParser());
-  // app.use(
-  //   helmet({
-  //     contentSecurityPolicy: {
-  //       directives: {
-  //         'img-src': ["'self'", 'ui-avatars.com', 'data:'],
-  //         'script-src': ["'self'", "'unsafe-inline'", 'kit.fontawesome.com'],
-  //         'connect-src': [
-  //           "'self'",
-  //           'ws:',
-  //           'ka-f.fontawesome.com',
-  //           'localhost:4800',
-  //         ],
-  //       },
-  //     },
-  //   }),
-  // );
   app.use('/api', createProxyMiddleware({ target: Config.apiUrl }));
 
   if (vite) {

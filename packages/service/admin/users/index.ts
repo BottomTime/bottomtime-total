@@ -1,7 +1,8 @@
 import { CommandModule } from 'yargs';
+
 import { getUserToken } from './get-user-token';
 
-export const userModule: CommandModule<{ 'mongo-uri': string }> = {
+export const userModule: CommandModule<{ 'postgres-uri': string }> = {
   command: 'user',
 
   describe: 'Commands for managing a user account',
@@ -21,7 +22,7 @@ export const userModule: CommandModule<{ 'mongo-uri': string }> = {
             .help();
         },
         async (yargs) => {
-          await getUserToken(yargs.mongoUri, yargs.user);
+          await getUserToken(yargs.postgresUri, yargs.user);
         },
       )
       .help();

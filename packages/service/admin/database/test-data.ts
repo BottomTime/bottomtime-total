@@ -1,7 +1,9 @@
 /* eslint-disable no-console */
-import mongoose from 'mongoose';
+import { DiveSiteEntity, UserEntity } from '@/data';
 
-import { DiveSiteModel, UserModel } from '../../src/schemas';
+import { DataSource, Repository } from 'typeorm';
+
+import { getDataSource } from './data-source';
 import { fakeDiveSite, fakeUser } from './fakes';
 
 export type EntityCounts = {
@@ -49,59 +51,66 @@ async function batch<T>(
  * Create a bunch of users and return their IDs.
  * @param count The number of users to insert.
  */
-async function createUsers(count: number): Promise<void> {
+async function createUsers(
+  Users: Repository<UserEntity>,
+  count: number,
+): Promise<void> {
   await batch(
-    async () => {
-      const data = fakeUser();
-      return data;
-    },
+    fakeUser,
     async (users) => {
-      await UserModel.insertMany(users);
+      await Users.save(users);
     },
     count,
   );
 }
 
-async function createDiveSites(userIds: string[], count: number) {
+async function createDiveSites(
+  Sites: Repository<DiveSiteEntity>,
+  userIds: string[],
+  count: number,
+) {
   await batch(
-    () => {
-      const data = fakeDiveSite(userIds);
-      return data;
-    },
+    () => fakeDiveSite(userIds),
     async (sites) => {
-      await DiveSiteModel.insertMany(sites);
+      await Sites.save(sites);
     },
     count,
   );
 }
 
-export async function createTestData(mongoUri: string, counts: EntityCounts) {
+export async function createTestData(
+  postgresUri: string,
+  counts: EntityCounts,
+) {
+  let ds: DataSource | undefined;
+
   try {
-    console.log('Connecting to MongoDb...');
-    await mongoose.connect(mongoUri);
+    ds = await getDataSource(postgresUri);
+    const Users = ds.getRepository(UserEntity);
+    const Sites = ds.getRepository(DiveSiteEntity);
 
     console.log('Seeding database (this might take a few minutes!)...');
 
     if (counts.users > 0) {
       console.log(`Creating ${counts.users} users...`);
-      await createUsers(counts.users);
+      await createUsers(Users, counts.users);
     }
 
-    const userIdQuery = await UserModel.find(
-      {},
-      {
-        _id: 1,
-      },
-    ).limit(1000);
-    const userIds = userIdQuery.map((user) => user._id);
+    const userIds = (
+      await Users.find({
+        select: ['id'],
+        take: 1000,
+      })
+    ).map((user) => user.id);
 
     console.log(`Creating ${counts.diveSites} dive sites...`);
-    await createDiveSites(userIds, counts.diveSites);
+    await createDiveSites(Sites, userIds, counts.diveSites);
 
     console.log('Finished inserting test data');
   } catch (error) {
     console.error('Error seeding database:', error);
+    process.exitCode = 1;
   } finally {
-    await mongoose.disconnect();
+    if (ds) await ds.destroy();
   }
 }

@@ -10,15 +10,15 @@ import { Config } from '../config';
 import { PageOptions } from '../constants';
 import { JwtService } from '../jwt';
 import { OriginalUrl } from '../original-url.decorator';
-import { WebService } from './web.service';
+import { ProductionService } from './production.service';
 
 @Controller()
-export class WebController {
-  private readonly log = new Logger(WebController.name);
+export class ProductionController {
+  private readonly log = new Logger(ProductionController.name);
   private readonly serverEntryPath: string;
 
   constructor(
-    @Inject(WebService) private readonly service: WebService,
+    @Inject(ProductionService) private readonly service: ProductionService,
     @Inject(JwtService) private readonly jwt: JwtService,
   ) {
     this.serverEntryPath = resolve(

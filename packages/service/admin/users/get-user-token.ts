@@ -1,37 +1,50 @@
 /* eslint-disable no-process-env, no-console */
+import { UserEntity } from '@/data';
+
+import { getDataSource } from 'admin/database/data-source';
 import jwt from 'jsonwebtoken';
-import { MongoClient } from 'mongodb';
+import { DataSource } from 'typeorm';
 
-import { UserData } from '../../src/schemas';
+export async function getUserToken(postgresUri: string, username: string) {
+  let ds: DataSource | undefined;
 
-export async function getUserToken(mongoUri: string, username: string) {
-  const lowered = username.trim().toLowerCase();
-  const mongoClient = await MongoClient.connect(mongoUri);
-  const users = mongoClient.db().collection<UserData>('Users');
-  const user = await users.findOne({
-    $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
-  });
+  try {
+    ds = await getDataSource(postgresUri);
 
-  if (user) {
-    const token = await new Promise<string>((resolve, reject) => {
-      jwt.sign(
-        {
-          iss: process.env.BT_BASE_URL,
-          iat: Date.now(),
-          exp: Date.now() + 20 * 60 * 1000,
-          sub: `user|${user._id}`,
-        },
-        process.env.BT_SESSION_SECRET ?? '',
-        {},
-        (error, token) => {
-          if (error) reject(error);
-          else resolve(token!);
-        },
-      );
+    const lowered = username.trim().toLowerCase();
+    const users = ds.getRepository(UserEntity);
+
+    const user = await users.findOne({
+      where: [{ usernameLowered: lowered }, { emailLowered: lowered }],
+      select: ['id'],
     });
-    console.log(token);
-  } else {
-    console.error(`User not found: "${username}"`);
-    process.exit(1);
+
+    if (user) {
+      const token = await new Promise<string>((resolve, reject) => {
+        jwt.sign(
+          {
+            iss: process.env.BT_BASE_URL,
+            iat: Date.now(),
+            exp: Date.now() + 20 * 60 * 1000,
+            sub: `user|${user.id}`,
+          },
+          process.env.BT_SESSION_SECRET ?? '',
+          {},
+          (error, token) => {
+            if (error) reject(error);
+            else resolve(token!);
+          },
+        );
+      });
+      console.log(token);
+    } else {
+      console.error(`User not found: "${username}"`);
+      process.exit(1);
+    }
+  } catch (error) {
+    console.error('Error getting user token:', error);
+    process.exitCode = 1;
+  } finally {
+    if (ds) await ds.destroy();
   }
 }

@@ -6,7 +6,7 @@ import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
-import { ViteService } from '.';
+import { DevService } from '.';
 import { AppInitialState } from '../../src/common';
 import { Config } from '../config';
 import { PageOptions } from '../constants';
@@ -14,15 +14,21 @@ import { JwtService } from '../jwt';
 import { OriginalUrl } from '../original-url.decorator';
 
 @Controller('/')
-export class ViteController {
-  private readonly log = new Logger(ViteController.name);
+export class DevController {
+  private readonly log = new Logger(DevController.name);
+  private readonly htmlTemplatePath: string;
 
   constructor(
-    @Inject(ViteService)
-    private readonly vite: ViteService,
+    @Inject(DevService)
+    private readonly vite: DevService,
     @Inject(JwtService)
     private readonly jwt: JwtService,
-  ) {}
+  ) {
+    this.htmlTemplatePath = resolve(
+      dirname(fileURLToPath(import.meta.url)),
+      '../../index.html',
+    );
+  }
 
   @Get('*')
   async render(
@@ -32,13 +38,8 @@ export class ViteController {
   ): Promise<void> {
     this.log.debug(`Handling render request for: ${url}`);
 
-    const htmlTemplatePath = resolve(
-      dirname(fileURLToPath(import.meta.url)),
-      '../../index.html',
-    );
-
-    this.log.debug(`Reading HTML template from ${htmlTemplatePath}...`);
-    const htmlTemplate = await readFile(htmlTemplatePath, 'utf-8');
+    this.log.debug(`Reading HTML template from ${this.htmlTemplatePath}...`);
+    const htmlTemplate = await readFile(this.htmlTemplatePath, 'utf-8');
 
     const html = await this.vite.transformHtml(url, htmlTemplate);
     this.log.verbose('Transformed HTML:', html);
@@ -48,6 +49,7 @@ export class ViteController {
       currentUser: null,
     };
 
+    // TODO: Try/catch
     const rendered = await this.vite.render(url, initialState, {
       authToken,
       baseURL: Config.apiUrl,

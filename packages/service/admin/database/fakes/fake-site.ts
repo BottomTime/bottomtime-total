@@ -1,6 +1,6 @@
 import { DepthDTO, DepthUnit } from '@bottomtime/api';
 
-import { DiveSiteDocument, DiveSiteModel } from '@/schemas';
+import { DiveSiteEntity, UserEntity } from '@/data';
 import { faker } from '@faker-js/faker';
 
 import { possibly } from './possibly';
@@ -15,20 +15,24 @@ export function fakeDepth(): DepthDTO {
   return { depth, unit };
 }
 
-export function fakeDiveSite(userIds: string[]): DiveSiteDocument {
-  return new DiveSiteModel({
-    _id: faker.datatype.uuid(),
-    creator: faker.helpers.arrayElement(userIds),
-    createdOn: faker.date.past(5),
-    updatedOn: possibly(() => faker.date.past(2), 0.5),
+export function fakeDiveSite(userIds: string[]): DiveSiteEntity {
+  const data = new DiveSiteEntity();
+  const depth = possibly(fakeDepth, 0.7);
 
-    name: `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`,
-    description: possibly(() => faker.lorem.paragraph(), 0.85),
-    depth: possibly(fakeDepth, 0.7),
+  data.id = faker.datatype.uuid();
+  data.creator = { id: faker.helpers.arrayElement(userIds) } as UserEntity;
+  data.createdOn = faker.date.past(5);
+  data.updatedOn = possibly(() => faker.date.past(2), 0.5) ?? null;
 
-    location: `${faker.address.city()}, ${faker.address.stateAbbr()}, ${faker.address.countryCode()}`,
-    directions: possibly(() => faker.lorem.sentences(3), 0.62),
-    gps: possibly(
+  data.name = `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`;
+  data.description = possibly(() => faker.lorem.paragraph(), 0.85) ?? null;
+  data.depth = depth?.depth ?? null;
+  data.depthUnit = depth?.unit ?? null;
+
+  data.location = `${faker.address.city()}, ${faker.address.stateAbbr()}, ${faker.address.countryCode()}`;
+  data.directions = possibly(() => faker.lorem.sentences(3), 0.62) ?? null;
+  data.gps =
+    possibly(
       () => ({
         type: 'Point',
         coordinates: [
@@ -37,16 +41,21 @@ export function fakeDiveSite(userIds: string[]): DiveSiteDocument {
         ],
       }),
       0.75,
-    ),
+    ) ?? null;
 
-    freeToDive: possibly(() => faker.datatype.boolean(), 0.9),
-    shoreAccess: possibly(() => faker.datatype.boolean(), 0.8),
+  data.freeToDive = possibly(() => faker.datatype.boolean(), 0.9) ?? null;
+  data.shoreAccess = possibly(() => faker.datatype.boolean(), 0.8) ?? null;
 
-    averageRating: faker.datatype.number({ min: 1, max: 5, precision: 0.1 }),
-    averageDifficulty: faker.datatype.number({
-      min: 1,
-      max: 5,
-      precision: 0.1,
-    }),
+  data.averageRating = faker.datatype.number({
+    min: 1,
+    max: 5,
+    precision: 0.1,
   });
+  data.averageDifficulty = faker.datatype.number({
+    min: 1,
+    max: 5,
+    precision: 0.1,
+  });
+
+  return data;
 }

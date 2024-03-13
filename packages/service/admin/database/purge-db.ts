@@ -1,19 +1,26 @@
 /* eslint-disable no-console */
-import { MongoClient } from 'mongodb';
+import { DataSource } from 'typeorm';
 
-const ExcludedTables = new Set(['changelog']);
+import { getDataSource } from './data-source';
 
-export async function purgeDatabase(mongoUri: string) {
-  console.log('Connecting to MongoDb...');
-  const mongoClient = await MongoClient.connect(mongoUri);
-  const collections = await mongoClient.db().collections();
+export async function purgeDatabase(postgresUri: string) {
+  let ds: DataSource | undefined;
 
-  console.log('Purging data from', collections.length, 'collections...');
-  await Promise.all(
-    collections
-      .filter((collection) => !ExcludedTables.has(collection.collectionName))
-      .map((collection) => collection.deleteMany({})),
-  );
+  try {
+    ds = await getDataSource(postgresUri);
 
-  console.log('Database has been purged.');
+    console.log('Purging database...');
+
+    for (const entity of ds.entityMetadatas) {
+      const repository = ds.getRepository(entity.name);
+      await repository.query(`DELETE FROM ${entity.tableName}`);
+    }
+
+    console.log('Database has been purged.');
+  } catch (error) {
+    console.error('Error purging database:', error);
+    process.exitCode = 1;
+  } finally {
+    if (ds) await ds.destroy();
+  }
 }
