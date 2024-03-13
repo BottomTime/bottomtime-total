@@ -12,7 +12,6 @@ import {
 import { INestApplication } from '@nestjs/common';
 
 import { compare } from 'bcrypt';
-import { Types } from 'mongoose';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
@@ -65,13 +64,6 @@ const RegularUserData: Partial<UserEntity> = {
   avatar: 'https://example.com/avatar.png',
   bio: 'This is a test user.',
   birthdate: '1980-01-01',
-  certifications: new Types.DocumentArray([
-    {
-      agency: 'PADI',
-      course: 'Open Water Diver',
-      date: '2000-01-01',
-    },
-  ]),
   experienceLevel: 'Advanced',
   location: 'Seattle, WA',
   name: 'Joe Regular',

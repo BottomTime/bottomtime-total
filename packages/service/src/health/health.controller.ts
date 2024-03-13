@@ -3,7 +3,7 @@ import {
   HealthCheck,
   HealthCheckService,
   MemoryHealthIndicator,
-  MongooseHealthIndicator,
+  TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 
 import { SmtpHealthIndicator } from './smtp-health-indicator';
@@ -20,8 +20,8 @@ export class HealthController {
     @Inject(MemoryHealthIndicator)
     private readonly memory: MemoryHealthIndicator,
 
-    @Inject(MongooseHealthIndicator)
-    private readonly mongoose: MongooseHealthIndicator,
+    @Inject(TypeOrmHealthIndicator)
+    private readonly db: TypeOrmHealthIndicator,
   ) {}
 
   @Get()
@@ -29,8 +29,8 @@ export class HealthController {
   check() {
     return this.health.check([
       async () => this.memory.checkRSS('memory-usage', 200 * 1024 * 1024), // 200MB - Tune as needed
-      async () => this.mongoose.pingCheck('mongodb'),
       async () => this.smtp.isHealthy('smtp'),
+      async () => this.db.pingCheck('posgressql'),
     ]);
   }
 }

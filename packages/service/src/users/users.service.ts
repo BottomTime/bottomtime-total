@@ -21,7 +21,7 @@ import { v4 as uuid } from 'uuid';
 import { z } from 'zod';
 
 import { Config } from '../config';
-import { FriendshipEntity, UserEntity, getQueryVector } from '../data';
+import { FriendshipEntity, UserEntity } from '../data';
 import { User } from './user';
 
 const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
