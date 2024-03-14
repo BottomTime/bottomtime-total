@@ -15,7 +15,7 @@ beforeAll(async () => {
     type: 'postgres',
     url:
       process.env.BT_POSTGRES_TEST_URI ||
-      'postgres://localhost:5432/bottomtime_test',
+      'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_test',
     entities: [path.resolve(__dirname, '../src/data/**/*.entity.ts')],
     migrations: [path.resolve(__dirname, '../migrations/*.ts')],
   });
