@@ -14,27 +14,18 @@
 <script setup lang="ts">
 import { onBeforeMount, onServerPrefetch, useSSRContext } from 'vue';
 
-import { useClient } from './client';
 import NavBar from './components/core/nav-bar.vue';
 import PageFooter from './components/core/page-footer.vue';
 import SnackBar from './components/core/snack-bar.vue';
 import { Config } from './config';
 import { AppInitialState, useInitialState } from './initial-state';
-import { useOops } from './oops';
 import { useCurrentUser } from './store';
 
-const client = useClient();
 const currentUser = useCurrentUser();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
-const oops = useOops();
 
 onServerPrefetch(async () => {
-  const user = await oops(async () => {
-    const user = await client.users.getCurrentUser();
-    return user?.toJSON() ?? null;
-  });
-  if (ctx) ctx.currentUser = user;
-  currentUser.user = user;
+  currentUser.user = ctx?.currentUser ?? null;
 });
 
 onBeforeMount(() => {
