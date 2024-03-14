@@ -1,6 +1,8 @@
 import path from 'path';
 import { DataSource } from 'typeorm';
 
+import { PostgresUri } from './postgres-uri';
+
 let dataSource: DataSource;
 
 async function purgeDatabase(): Promise<void> {
@@ -13,9 +15,7 @@ async function purgeDatabase(): Promise<void> {
 beforeAll(async () => {
   dataSource = new DataSource({
     type: 'postgres',
-    url:
-      process.env.BT_POSTGRES_TEST_URI ||
-      'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_test',
+    url: PostgresUri,
     entities: [path.resolve(__dirname, '../src/data/**/*.entity.ts')],
     migrations: [path.resolve(__dirname, '../migrations/*.ts')],
   });

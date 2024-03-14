@@ -4,6 +4,8 @@ import path from 'path';
 import { Client } from 'pg';
 import { DataSource } from 'typeorm';
 
+import { PostgresUri } from './postgres-uri';
+
 export default async function (): Promise<void> {
   // Create a directory for logs
   await mkdir(path.resolve(__dirname, '../logs'), { recursive: true });
@@ -13,10 +15,7 @@ export default async function (): Promise<void> {
   process.env.BT_PASSWORD_SALT_ROUNDS = '1';
 
   // Now create the test database
-  const postgresUri = new URL(
-    process.env.BT_POSTGRES_TEST_URI ||
-      'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_test',
-  );
+  const postgresUri = new URL(PostgresUri);
   const database = postgresUri.pathname.slice(1);
 
   console.log('Initializing test database...');
