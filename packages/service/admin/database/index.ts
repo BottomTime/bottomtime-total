@@ -2,6 +2,7 @@
 import prompts from 'prompts';
 import { CommandModule } from 'yargs';
 
+import { initDatabase } from './init-db';
 import { purgeDatabase } from './purge-db';
 import { seedDatabase } from './seed-db';
 import { createTestData } from './test-data';
@@ -13,6 +14,24 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
 
   async builder(yargs) {
     return yargs
+      .command(
+        'init',
+        'Initialize a new database (including running migrations)',
+        (yargs) => {
+          return yargs
+            .option('force', {
+              alias: 'f',
+              default: false,
+              description:
+                'Drop the database if it already exists and recreate it',
+              type: 'boolean',
+            })
+            .help();
+        },
+        async (yargs) => {
+          await initDatabase(yargs.postgresUri, yargs.force);
+        },
+      )
       .command(
         'test-data',
         'Seed the database with some randomly-generated test data',

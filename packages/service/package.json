@@ -13,7 +13,6 @@
     "daemon:start": "pm2 start dist/index.js",
     "daemon:stop": "pm2 stop dist/index.js",
     "docs": "swagger-jsdoc -d swaggerDefinition.cjs -o public/docs/swagger.json ./src/**/*.ts",
-    "migrate": "migrate-mongo",
     "migrate:create": "typeorm-ts-node-commonjs migration:create",
     "migrate:down": "typeorm-ts-node-commonjs migration:revert -d data-source.ts",
     "migrate:generate": "typeorm-ts-node-commonjs migration:generate -d data-source.ts",

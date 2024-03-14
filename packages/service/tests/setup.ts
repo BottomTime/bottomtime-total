@@ -18,7 +18,7 @@ export default async function (): Promise<void> {
   const postgresUri = new URL(PostgresUri);
   const database = postgresUri.pathname.slice(1);
 
-  console.log('Initializing test database...');
+  console.log('\n\nInitializing test database...');
   let pgClient = new Client({
     host: postgresUri.hostname,
     port: parseInt(postgresUri.port, 10),
@@ -27,10 +27,11 @@ export default async function (): Promise<void> {
     database: 'postgres',
   });
   await pgClient.connect();
-  await pgClient.query(`DROP DATABASE IF EXISTS ${database}`);
+  await pgClient.query(`DROP DATABASE IF EXISTS ${database} WITH (FORCE)`);
   await pgClient.query(`CREATE DATABASE ${database}`);
   await pgClient.end();
 
+  console.log('Database created. Installing PostGIS extension...');
   pgClient = new Client({
     host: postgresUri.hostname,
     port: parseInt(postgresUri.port, 10),
@@ -39,13 +40,13 @@ export default async function (): Promise<void> {
     database,
   });
   await pgClient.connect();
-  await pgClient.query(`CREATE EXTENSION IF NOT EXISTS "postgis"`);
+  await pgClient.query(`CREATE EXTENSION "postgis"`);
   await pgClient.end();
 
   console.log('Database initialized. Performing migrations...');
   const dataSource = new DataSource({
     type: 'postgres',
-    url: postgresUri.toString(),
+    url: PostgresUri,
     entities: [path.resolve(__dirname, '../src/data/**/*.entity.ts')],
     migrations: [path.resolve(__dirname, '../migrations/*.ts')],
   });

@@ -1,19 +1,21 @@
 /* eslint-disable no-empty-pattern */
 import { test as base } from '@playwright/test';
 
-import { Collections, getCollections, purgeDatabase } from './mongodb';
+import { DataSource } from 'typeorm';
+
+import { getDataSource, purgeDatabase } from './typeorm';
 
 export const test = base.extend<{
-  db: Collections;
+  db: DataSource;
   resetDb: string;
 }>({
   db: async ({}, use) => {
-    const collections = await getCollections();
-    await use(collections);
+    const ds = await getDataSource();
+    await use(ds);
   },
   resetDb: [
-    async ({}, use) => {
-      await purgeDatabase();
+    async ({ db }, use) => {
+      await purgeDatabase(db);
       await use('resetDb');
     },
     { scope: 'test', auto: true },

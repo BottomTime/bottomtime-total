@@ -5,7 +5,7 @@ DO \$\$
   BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_roles users WHERE users.rolname = 'bt_user')
     THEN
-      CREATE USER bt_user WITH PASSWORD 'bt_admin1234' CREATEDB;
+      CREATE USER bt_user WITH PASSWORD 'bt_admin1234' SUPERUSER;
       RAISE NOTICE 'User "bt_user" created';
     ELSE
       RAISE NOTICE 'User "bt_user" already exists';
