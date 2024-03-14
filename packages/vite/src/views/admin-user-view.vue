@@ -39,14 +39,14 @@ import {
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../client';
-import { AppInitialState, Breadcrumb } from '../common';
+import { Breadcrumb } from '../common';
 import ManageUser from '../components/admin/manage-user.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
 import { Config } from '../config';
-import { useInitialState } from '../initial-state';
+import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
 
 // Dependencies

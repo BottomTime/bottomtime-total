@@ -1,14 +1,18 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
 
-import { ViteDevServer } from 'vite';
-
+import { Config } from '../config';
 import { JwtModule } from '../jwt';
-import { ViteServer } from './constants';
 import { DevController } from './dev.controller';
 import { DevService } from './dev.service';
 
 @Module({
-  imports: [JwtModule],
+  imports: [
+    JwtModule,
+    HttpModule.register({
+      baseURL: Config.apiUrl,
+    }),
+  ],
   providers: [DevService],
   controllers: [DevController],
 })

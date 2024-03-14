@@ -1,11 +1,11 @@
 import { ApiClientOptions } from '@/client';
+import { AppInitialState } from '@/initial-state';
 import { Controller, Get, Inject, Logger, Req, Res } from '@nestjs/common';
 
 import { Request, Response } from 'express';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
-import { AppInitialState } from '../../src/common';
 import { Config } from '../config';
 import { PageOptions } from '../constants';
 import { JwtService } from '../jwt';

@@ -15,12 +15,11 @@
 import { onBeforeMount, onServerPrefetch, useSSRContext } from 'vue';
 
 import { useClient } from './client';
-import { AppInitialState } from './common';
 import NavBar from './components/core/nav-bar.vue';
 import PageFooter from './components/core/page-footer.vue';
 import SnackBar from './components/core/snack-bar.vue';
 import { Config } from './config';
-import { useInitialState } from './initial-state';
+import { AppInitialState, useInitialState } from './initial-state';
 import { useOops } from './oops';
 import { useCurrentUser } from './store';
 

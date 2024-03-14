@@ -74,6 +74,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/reset-password-view.vue'),
   },
   {
+    path: '/serverError',
+    name: 'server-error',
+    component: () => import('../views/server-error-view.vue'),
+  },
+  {
     path: '/settings',
     name: 'settings',
     component: () => import('../views/settings-view.vue'),

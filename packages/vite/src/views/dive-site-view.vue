@@ -17,14 +17,14 @@ import { computed, onServerPrefetch, ref, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../client';
-import { AppInitialState, Breadcrumb } from '../common';
+import { Breadcrumb } from '../common';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import EditDiveSite from '../components/diveSites/edit-dive-site.vue';
 import ViewDiveSite from '../components/diveSites/view-dive-site.vue';
 import { Config } from '../config';
-import { useInitialState } from '../initial-state';
+import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
 import { useCurrentUser } from '../store';
 

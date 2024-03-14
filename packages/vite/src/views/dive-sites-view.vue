@@ -64,7 +64,7 @@ import { onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useClient } from '../client';
-import { AppInitialState, SelectOption } from '../common';
+import { SelectOption } from '../common';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import FormBox from '../components/common/form-box.vue';
 import FormButton from '../components/common/form-button.vue';
@@ -74,7 +74,7 @@ import DiveSitesList from '../components/diveSites/dive-sites-list.vue';
 import SearchDiveSitesForm from '../components/diveSites/search-dive-sites-form.vue';
 import ViewDiveSite from '../components/diveSites/view-dive-site.vue';
 import { Config } from '../config';
-import { useInitialState } from '../initial-state';
+import { AppInitialState, useInitialState } from '../initial-state';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
 import { useCurrentUser } from '../store';

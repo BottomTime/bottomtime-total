@@ -1,5 +1,5 @@
 import { ApiClientOptions } from '@/client';
-import { AppInitialState } from '@/common';
+import { AppInitialState } from '@/initial-state';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 import { ViteDevServer, createServer } from 'vite';

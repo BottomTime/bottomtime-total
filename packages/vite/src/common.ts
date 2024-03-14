@@ -1,18 +1,3 @@
-import {
-  AdminSearchUsersResponseDTO,
-  DiveSiteDTO,
-  SearchDiveSitesResponseDTO,
-  UserDTO,
-} from '@bottomtime/api';
-
-export type AppInitialState = {
-  adminCurrentUser?: UserDTO;
-  adminUsersList?: AdminSearchUsersResponseDTO;
-  currentDiveSite?: DiveSiteDTO | null;
-  currentUser: UserDTO | null;
-  diveSites?: SearchDiveSitesResponseDTO;
-};
-
 export type Breadcrumb = {
   label: string | (() => string);
   to?: string;
