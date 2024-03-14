@@ -109,7 +109,10 @@ jobs:
   test_service:
     docker:
       - image: cimg/node:20.11
-      - image: mongo:5.0
+      - image: postgres:14
+        environment:
+          POSTGRES_USER: bt_user
+          POSTGRES_PASSWORD: bt_admin1234
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
