@@ -13,6 +13,9 @@
   },
   "dependencies": {
     "@playwright/test": "^1.41.2",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "reflect-metadata": "^0.2.1",
+    "typeorm": "^0.3.20",
+    "typescript": "^5.4.2"
   }
 }

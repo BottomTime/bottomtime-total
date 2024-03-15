@@ -1,8 +1,9 @@
 import { UserRole } from '@bottomtime/api';
-import { UserEntity } from '@bottomtime/core/src/data';
 
 import { test } from '@fixture';
 import { expect } from '@playwright/test';
+
+import { UserEntity } from '../../../service/src/data/user.entity';
 
 const TestPassword = 'Sn@ke_Eyes_77';
 const TestUser: Partial<UserEntity> = {
