@@ -1,9 +1,8 @@
 /* eslint-disable no-console, no-process-env */
 import { mkdir } from 'fs/promises';
 import path from 'path';
-import { Client } from 'pg';
-import { DataSource } from 'typeorm';
 
+import { initDatabase } from '../admin/database/init-db';
 import { PostgresUri } from './postgres-uri';
 
 export default async function (): Promise<void> {
@@ -15,46 +14,5 @@ export default async function (): Promise<void> {
   process.env.BT_PASSWORD_SALT_ROUNDS = '1';
 
   // Now create the test database
-  const postgresUri = new URL(PostgresUri);
-  const database = postgresUri.pathname.slice(1);
-
-  console.log('\n\nInitializing test database...');
-  let pgClient = new Client({
-    host: postgresUri.hostname,
-    port: parseInt(postgresUri.port, 10),
-    user: postgresUri.username,
-    password: postgresUri.password,
-    database: 'postgres',
-  });
-  await pgClient.connect();
-  await pgClient.query(`DROP DATABASE IF EXISTS ${database} WITH (FORCE)`);
-  await pgClient.query(`CREATE DATABASE ${database}`);
-  await pgClient.end();
-
-  console.log('Database created. Installing PostGIS extension...');
-  pgClient = new Client({
-    host: postgresUri.hostname,
-    port: parseInt(postgresUri.port, 10),
-    user: postgresUri.username,
-    password: postgresUri.password,
-    database,
-  });
-  await pgClient.connect();
-  await pgClient.query(`CREATE EXTENSION "postgis"`);
-  await pgClient.end();
-
-  console.log('Database initialized. Performing migrations...');
-  const dataSource = new DataSource({
-    type: 'postgres',
-    url: PostgresUri,
-    entities: [path.resolve(__dirname, '../src/data/**/*.entity.ts')],
-    migrations: [path.resolve(__dirname, '../migrations/*.ts')],
-  });
-
-  await dataSource.initialize();
-  const migrationResults = await dataSource.runMigrations();
-  console.table(migrationResults);
-  await dataSource.destroy();
-
-  console.log('Database is ready.\n');
+  await initDatabase(PostgresUri, true);
 }

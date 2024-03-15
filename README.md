@@ -35,20 +35,16 @@ The backend database is powered by [PostgreSQL](https://www.postgresql.org/). Fi
 In addition, you will also need to install the PostGIS extension for PostgreSQL. This allows, indexing of GPS
 coordinates for doing searches for sites in specific areas. It can be downloaded and installed following the instructions [here](https://postgis.net/documentation/getting_started/).
 
-Once PostgreSQL and PostGIS are installed, you'll want to run the `psql` tool to create a new user and a local database:
+Once PostgreSQL and PostGIS are installed, you'll want to create a new Postgres user that can create and manage the
+application's databases:
 
 ```bash
-psql postgres
+psql postgres -c "CREATE USER bt_user WITH PASSWORD 'bt_admin1234' SUPERUSER;"
 ```
 
-When you see the `postgres=#` prompt, create the user account and local database and register the PostGIS extension by running the following commands:
-
-```sql
-CREATE USER "bt_user" WITH PASSWORD 'bt_admin1234' CREATEDB;
-CREATE DATABASE "bottomtime_local" WITH OWNER "bt_user";
-\c "bottomtime_local"
-CREATE EXTENSION "postgis";
-```
+Your local Postgres server should be ready for use now. See the README for the [backend service](packages/service/README.md)
+for instructions on how to initialize your development database so you can begin using the platform locally. However, for now,
+continue reading to finish installing the remaining platform dependencies.
 
 ### Docker and Docker Compose
 
@@ -82,7 +78,8 @@ The commands in this section must be run from the root directory of the reposito
 yarn
 ```
 
-**Note:** This operation may take several minutes on the first time it's run. This is because it will also perform a number of preparation steps like downloading/installing the Playwright runtime, generating the API docs, and installing Git hooks.
+**Note:** This operation may take several minutes on the first run. This is because it will also perform a number of preparation steps like downloading/installing the Playwright runtime, generating the API docs, initializing the database, and
+installing Git hooks.
 
 ### Formatting all files
 

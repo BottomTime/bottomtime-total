@@ -1,7 +1,7 @@
 /* eslint-disable no-process-env */
 import { defineConfig, devices } from '@playwright/test';
 
-import { PostgresUri } from './tests/fixture/typeorm';
+import { PostgresUri } from './tests/fixture/postgres';
 
 /**
  * Read environment variables from file.

@@ -17,7 +17,7 @@
     "migrate:down": "typeorm-ts-node-commonjs migration:revert -d data-source.ts",
     "migrate:generate": "typeorm-ts-node-commonjs migration:generate -d data-source.ts",
     "migrate:up": "typeorm-ts-node-commonjs migration:run -d data-source.ts",
-    "prepare": "yarn docs",
+    "prepare": "yarn docs && yarn admin db init && yarn migrate:up",
     "serve": "nodemon src/index.ts",
     "test": "jest"
   },

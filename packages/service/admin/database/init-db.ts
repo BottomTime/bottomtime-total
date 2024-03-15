@@ -14,7 +14,7 @@ export async function initDatabase(
   let dataSource: DataSource | undefined;
 
   try {
-    console.log('Initializing test database...');
+    console.log('Initializing database...');
     pgClient = new Client({
       host: url.hostname,
       port: parseInt(url.port, 10),
@@ -25,11 +25,23 @@ export async function initDatabase(
     await pgClient.connect();
 
     if (force) {
+      console.log('Dropping existing database...');
       await pgClient.query(`DROP DATABASE IF EXISTS ${database} WITH (FORCE)`);
+    } else {
+      const { rowCount } = await pgClient.query(
+        `SELECT 1 FROM pg_database WHERE datname='${database}'`,
+      );
+      if (typeof rowCount === 'number' && rowCount > 0) {
+        console.log('Database already exists. Exiting...');
+        console.log(
+          '  HINT: If you want to force the database to be dropped and recreated, use the --force flag.',
+        );
+        return;
+      }
     }
 
     await pgClient.query(
-      `CREATE DATABASE ${database} WITH OWNER ${url.username}`,
+      `CREATE DATABASE ${database} WITH OWNER ${url.username} ENCODING 'UTF8' LOCALE 'en_US' TEMPLATE 'template0'`,
     );
     await pgClient.end();
 
@@ -57,12 +69,14 @@ export async function initDatabase(
     console.table(migrationResults);
     await dataSource.destroy();
 
-    console.log('Database is ready.\n');
+    console.log('Database is ready.\n\n');
   } catch (error) {
     console.error(error);
     process.exit(1);
   } finally {
     await pgClient?.end();
-    await dataSource?.destroy();
+    if (dataSource?.isInitialized) {
+      await dataSource?.destroy();
+    }
   }
 }

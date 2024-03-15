@@ -1,6 +1,6 @@
 import { UserRole } from '@bottomtime/api';
+import { UserEntity } from '@bottomtime/core/src/data';
 
-import { UserEntity } from '@/data';
 import { test } from '@fixture';
 import { expect } from '@playwright/test';
 

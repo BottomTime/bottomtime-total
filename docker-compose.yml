@@ -1,16 +1,4 @@
 services:
-  mongo:
-    container_name: bottomtime-mongo
-    image: mongo:5.0
-    ports:
-      - '27017:27017'
-    expose:
-      - '27017'
-    networks:
-      - public
-    volumes:
-      - dbdata:/data/db
-
   core:
     container_name: bottomtime-core
     build: packages/service/
@@ -25,7 +13,8 @@ services:
     depends_on:
       - mongo
     networks:
-      - public
+      - backend
+      - frontend
 
   web:
     container_name: bottomtime-web
@@ -39,10 +28,12 @@ services:
     depends_on:
       - core
     networks:
-      - public
+      - frontend
 
 networks:
-  public:
+  frontend:
+    driver: bridge
+  backend:
     driver: bridge
 
 volumes:
