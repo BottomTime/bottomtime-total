@@ -1,40 +1,41 @@
 services:
+  postgres:
+    image: postgis/postgis:14-3.4-alpine
+    restart: always
+    shm_size: 128mb
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=bt_user
+      - POSTGRES_PASSWORD=bt_admin1234
+    ports:
+      - '5432:5432'
+    networks:
+      - backend
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
   core:
     container_name: bottomtime-core
-    build: packages/service/
+    build:
+      context: ./
+      dockerfile: Dockerfile.core
     ports:
       - '4800:4800'
     expose:
       - '4800'
     env_file:
-      - packages/service/.env.defaults
+      - packages/service/.env
     environment:
-      - BT_MONGO_URI=mongodb://mongo:27017/bottomtime
+      - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
     depends_on:
-      - mongo
+      - postgres
     networks:
       - backend
       - frontend
 
-  web:
-    container_name: bottomtime-web
-    build: packages/web/
-    ports:
-      - '3000:3000'
-    expose:
-      - '3000'
-    env_file:
-      - packages/web/.env.defaults
-    depends_on:
-      - core
-    networks:
-      - frontend
-
 networks:
   frontend:
-    driver: bridge
   backend:
-    driver: bridge
 
 volumes:
   dbdata:
