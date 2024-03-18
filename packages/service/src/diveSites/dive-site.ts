@@ -137,6 +137,7 @@ export class DiveSite {
   }
 
   async save(): Promise<void> {
+    this.data.updatedOn = new Date();
     await this.DiveSites.save(this.data);
   }
 
