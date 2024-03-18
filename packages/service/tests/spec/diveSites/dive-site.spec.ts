@@ -1,41 +1,33 @@
 import { DepthUnit, UserRole } from '@bottomtime/api';
-import { UserData, UserModel } from '../../../src/schemas';
-import {
-  DiveSiteData,
-  DiveSiteDocument,
-  DiveSiteModel,
-} from '../../../src/schemas/dive-sites.document';
-import { DiveSite } from '../../../src/diveSites/dive-site';
-import { AnonymousUserProfile } from '../../../src/common';
 
-const RegularUserId = '5A4699D8-48C4-4410-9886-B74B8B85CAC1';
-const RegularUserData: UserData = {
-  _id: RegularUserId,
+import { Repository } from 'typeorm';
+
+import { DiveSiteEntity, UserEntity } from '../../../src/data';
+import { DiveSite } from '../../../src/diveSites';
+import { dataSource } from '../../data-source';
+import { createTestUser } from '../../utils/create-test-user';
+
+const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
+const RegularUserData: Partial<UserEntity> = {
+  id: RegularUserId,
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date('2024-01-08T13:24:58.620Z'),
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
-  profile: {
-    avatar: 'https://example.com/avatar.png',
-    location: 'San Diego, CA',
-    name: 'Joe Regular',
-  },
+  avatar: 'https://example.com/avatar.png',
+  location: 'San Diego, CA',
+  name: 'Joe Regular',
 };
 
-const DiveSiteData: DiveSiteData = {
-  _id: '85F18003-FFF8-4B54-8B58-D751EA613D79',
+const DiveSiteData: Partial<DiveSiteEntity> = {
+  id: '85f18003-fff8-4b54-8b58-d751ea613d79',
   createdOn: new Date('2024-01-08T13:33:52.364Z'),
-  creator: RegularUserId,
   location: 'Cozumel, Mexico',
   name: 'Palancar Horseshoe',
-  averageDifficulty: 2.2,
-  averageRating: 4.7,
-  depth: {
-    depth: 80,
-    unit: DepthUnit.Feet,
-  },
+  depth: 80,
+  depthUnit: DepthUnit.Feet,
   description: 'This site is amazing',
   directions: 'Fly to Cozumel and then take a boat out there.',
   freeToDive: true,
@@ -44,24 +36,33 @@ const DiveSiteData: DiveSiteData = {
     type: 'Point',
     coordinates: [-86.933333, 20.433333],
   },
+  averageDifficulty: 2.5,
+  averageRating: 3.8,
 };
 
 describe('Dive Site Class', () => {
-  let diveSiteData: DiveSiteDocument;
+  let Users: Repository<UserEntity>;
+  let DiveSites: Repository<DiveSiteEntity>;
+
+  let diveSiteData: DiveSiteEntity;
   let site: DiveSite;
+  let regularUser: UserEntity;
 
-  beforeEach(async () => {
-    const user = new UserModel(RegularUserData);
-    await user.save();
+  beforeAll(() => {
+    Users = dataSource.getRepository(UserEntity);
+    DiveSites = dataSource.getRepository(DiveSiteEntity);
+    regularUser = createTestUser(RegularUserData);
+  });
 
-    diveSiteData = new DiveSiteModel(DiveSiteData);
-    await diveSiteData.populate('creator');
-
-    site = new DiveSite(DiveSiteModel, diveSiteData);
+  beforeEach(() => {
+    diveSiteData = new DiveSiteEntity();
+    Object.assign(diveSiteData, DiveSiteData);
+    diveSiteData.creator = regularUser;
+    site = new DiveSite(DiveSites, diveSiteData);
   });
 
   it('will return properties correctly', () => {
-    expect(site.id).toEqual(DiveSiteData._id);
+    expect(site.id).toEqual(DiveSiteData.id);
     expect(site.createdOn).toEqual(DiveSiteData.createdOn);
     expect(site.updatedOn).toBeUndefined();
     expect(site.creator).toEqual({
@@ -71,7 +72,10 @@ describe('Dive Site Class', () => {
     });
     expect(site.averageRating).toEqual(DiveSiteData.averageRating);
     expect(site.averageDifficulty).toEqual(DiveSiteData.averageDifficulty);
-    expect(site.depth).toEqual(DiveSiteData.depth);
+    expect(site.depth).toEqual({
+      depth: DiveSiteData.depth,
+      unit: DiveSiteData.depthUnit,
+    });
     expect(site.description).toEqual(DiveSiteData.description);
     expect(site.directions).toEqual(DiveSiteData.directions);
     expect(site.freeToDive).toEqual(DiveSiteData.freeToDive);
@@ -85,14 +89,12 @@ describe('Dive Site Class', () => {
   });
 
   it('will return undefined for missing properties', () => {
-    const data = new DiveSiteModel({
-      _id: '8A1E4390-C0AE-48DE-A76E-37E1A6093232',
-      creator: RegularUserId,
-      createdOn: new Date(),
-      name: 'Dive Site',
-      location: 'Imaginary Place',
-    });
-    const site = new DiveSite(DiveSiteModel, data);
+    const data = new DiveSiteEntity();
+    data.id = '8a1e4390-c0ae-48de-a76e-37e1a6093232';
+    data.creator = regularUser;
+    data.name = 'Dive Site';
+    data.location = 'Imaginary Place';
+    const site = new DiveSite(DiveSites, data);
 
     expect(site.updatedOn).toBeUndefined();
     expect(site.description).toBeUndefined();
@@ -145,37 +147,10 @@ describe('Dive Site Class', () => {
     expect(site.name).toEqual(newName);
   });
 
-  it('will return creator properties if populated', async () => {
-    expect(site.creator).toEqual({
-      userId: RegularUserId,
-      username: RegularUserData.username,
-      memberSince: RegularUserData.memberSince,
-    });
-  });
-
-  it('will throw an error if creator is not populated', async () => {
-    await diveSiteData.depopulate('creator');
-    expect(() => site.creator).toThrow();
-  });
-
-  it('will return a default creator object if creator is populated but resolved to null', async () => {
-    diveSiteData.depopulate('creator');
-    await UserModel.findByIdAndDelete(RegularUserId);
-    await diveSiteData.populate('creator');
-
-    expect(site.creator).toEqual(AnonymousUserProfile);
-  });
-
-  it('will save a new dive site', async () => {
-    await site.save();
-    diveSiteData.depopulate('creator');
-    const savedSite = await DiveSiteModel.findById(DiveSiteData._id);
-    expect(savedSite).not.toBeNull();
-    expect(savedSite?.toJSON()).toEqual(diveSiteData.toJSON());
-  });
-
   it('will save changes to an existing dive site', async () => {
-    await diveSiteData.save();
+    await Users.save(regularUser);
+    await DiveSites.save(diveSiteData);
+
     site.depth = {
       depth: 24.3,
       unit: DepthUnit.Meters,
@@ -188,17 +163,25 @@ describe('Dive Site Class', () => {
 
     await site.save();
 
-    diveSiteData.depopulate('creator');
-    const savedSite = await DiveSiteModel.findById(DiveSiteData._id);
-    expect(savedSite).not.toBeNull();
-    expect(savedSite?.toJSON()).toEqual(diveSiteData.toJSON());
+    const savedSite = await DiveSites.findOneOrFail({
+      relations: ['creator'],
+      where: { id: DiveSiteData.id },
+    });
+
+    expect(savedSite.depth).toEqual(24.3);
+    expect(savedSite.depthUnit).toEqual(DepthUnit.Meters);
+    expect(savedSite.description).toEqual('This is a new description');
+    expect(savedSite.directions).toEqual('These are new directions');
+    expect(savedSite.location).toEqual('Cozumel, Mexico (West Side)');
+    expect(savedSite.freeToDive).toEqual(false);
+    expect(savedSite.name).toEqual('Palancar Reef');
   });
 
   it('will delete a dive site', async () => {
-    await site.save();
+    await Users.save(regularUser);
+    await DiveSites.save(diveSiteData);
     await expect(site.delete()).resolves.toBe(true);
-    const deletedSite = await DiveSiteModel.findById(DiveSiteData._id);
-    expect(deletedSite).toBeNull();
+    await expect(DiveSites.existsBy({ id: site.id })).resolves.toBe(false);
   });
 
   it('will return false if delete is called against a dive site that does not exist in the database', async () => {

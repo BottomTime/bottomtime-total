@@ -1,11 +1,17 @@
 import { CertificationDTO } from '@bottomtime/api';
-import { CertificationDocument } from '../schemas';
+
+import { Repository } from 'typeorm';
+
+import { CertificationEntity } from '../data';
 
 export class Certification {
-  constructor(private readonly data: CertificationDocument) {}
+  constructor(
+    private readonly Certifications: Repository<CertificationEntity>,
+    private readonly data: CertificationEntity,
+  ) {}
 
   get id(): string {
-    return this.data._id;
+    return this.data.id;
   }
 
   get course(): string {
@@ -23,12 +29,12 @@ export class Certification {
   }
 
   async save(): Promise<void> {
-    await this.data.save();
+    await this.Certifications.save(this.data);
   }
 
   async delete(): Promise<boolean> {
-    const { deletedCount } = await this.data.deleteOne();
-    return deletedCount > 0;
+    const { affected } = await this.Certifications.delete(this.data.id);
+    return typeof affected === 'number' && affected > 0;
   }
 
   toJSON(): CertificationDTO {

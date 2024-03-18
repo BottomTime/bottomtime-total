@@ -1,12 +1,14 @@
-import { createLogger } from '@bottomtime/common/src/logger';
+import { createLogger } from '@bottomtime/common';
 
 import { S3Client } from '@aws-sdk/client-s3';
 
 import { createTransport } from 'nodemailer';
+import 'reflect-metadata';
 
 import { ServerDependencies } from './app.module';
 import { Config } from './config';
 import { createApp } from './create-app';
+import { PostgresDataSourceOptions } from './data';
 import { NodemailerClient } from './email';
 
 const log = createLogger(Config.logLevel);
@@ -38,7 +40,7 @@ async function createDependencies(): Promise<ServerDependencies> {
     logger: log,
   });
 
-  return { mailClient, s3Client };
+  return { dataSource: PostgresDataSourceOptions, mailClient, s3Client };
 }
 
 createApp(log, createDependencies)

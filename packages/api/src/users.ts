@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { CertificationSchema } from './certifications';
 import {
   DepthUnit,
   FuzzyDateRegex,
@@ -32,16 +31,11 @@ export const PasswordStrengthSchema = z
   .string()
   .regex(PasswordStrengthRegex, 'Password did not meet strength requirements.');
 
-export const UserCertificationSchema = CertificationSchema.extend({
-  date: z.string().trim().regex(FuzzyDateRegex).nullable().optional(),
-}).omit({ id: true });
-export type UserCertificationDTO = z.infer<typeof UserCertificationSchema>;
-
 export const UpdateProfileParamsSchema = z
   .object({
-    avatar: z.string().trim().url().max(150),
-    bio: z.string().trim().max(1000),
-    birthdate: z.string().trim().regex(FuzzyDateRegex),
+    avatar: z.string().trim().url().max(150).nullable(),
+    bio: z.string().trim().max(1000).nullable(),
+    birthdate: z.string().trim().regex(FuzzyDateRegex).nullable(),
     customData: z
       .record(z.string(), z.unknown())
       .refine(
@@ -52,11 +46,10 @@ export const UpdateProfileParamsSchema = z
           path: ['customData'],
         },
       ),
-    certifications: UserCertificationSchema.array().max(200),
-    experienceLevel: z.string().trim().max(50),
-    location: z.string().trim().max(50),
-    name: z.string().trim().max(100),
-    startedDiving: z.string().trim().regex(FuzzyDateRegex),
+    experienceLevel: z.string().trim().max(50).nullable(),
+    location: z.string().trim().max(50).nullable(),
+    name: z.string().trim().max(100).nullable(),
+    startedDiving: z.string().trim().regex(FuzzyDateRegex).nullable(),
   })
   .partial();
 export type UpdateProfileParamsDTO = z.infer<typeof UpdateProfileParamsSchema>;

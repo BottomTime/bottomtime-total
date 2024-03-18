@@ -1,6 +1,8 @@
 /* eslint-disable no-process-env */
 import { defineConfig, devices } from '@playwright/test';
 
+import { PostgresUri } from './tests/fixture/postgres';
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -83,12 +85,12 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'yarn migrate up && yarn serve',
+      command: `yarn admin db init -f -d ${PostgresUri} && yarn serve`,
       url: 'http://127.0.0.1:4801/health',
       cwd: '../service',
       env: {
         BT_LOG_LEVEL: 'error',
-        BT_MONGO_URI: 'mongodb://127.0.0.1:27017/bottomtime-e2e',
+        BT_POSTGRES_URI: PostgresUri,
         BT_PORT: '4801',
       },
       timeout: 10000,

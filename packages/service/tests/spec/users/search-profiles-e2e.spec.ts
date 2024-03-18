@@ -1,14 +1,3 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import {
-  FriendDocument,
-  FriendModel,
-  UserData,
-  UserDocument,
-  UserModel,
-} from '../../../src/schemas';
-import TestUserData from '../../fixtures/user-search-data.json';
-import { createAuthHeader, createTestApp } from '../../utils';
-import request from 'supertest';
 import {
   ProfileDTO,
   ProfileVisibility,
@@ -16,13 +5,28 @@ import {
   UserRole,
   UsersSortBy,
 } from '@bottomtime/api';
+
+import { HttpServer, INestApplication } from '@nestjs/common';
+
+import request from 'supertest';
+import { In, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+
+import { FriendshipEntity, UserEntity } from '../../../src/data';
+import { dataSource } from '../../data-source';
+import TestUserData from '../../fixtures/user-search-data.json';
+import {
+  createAuthHeader,
+  createTestApp,
+  createTestUser,
+  parseUserJSON,
+} from '../../utils';
 
 const SearchUrl = '/api/users';
 
-const AdminUserId = 'F3669787-82E5-458F-A8AD-98D3F57DDA6E';
-const AdminUserData: UserData = {
-  _id: AdminUserId,
+const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
+const AdminUserData: Partial<UserEntity> = {
+  id: AdminUserId,
   email: 'admin@site.org',
   emailLowered: 'admin@site.org',
   emailVerified: true,
@@ -31,66 +35,72 @@ const AdminUserData: UserData = {
   role: UserRole.Admin,
   username: 'Admin',
   usernameLowered: 'admin',
-  settings: {
-    profileVisibility: ProfileVisibility.Private,
-  },
+  profileVisibility: ProfileVisibility.Private,
 };
 
 describe('Searching Profiles E2E Tests', () => {
   let app: INestApplication;
   let server: HttpServer;
-  let friends: FriendDocument[];
-  let users: UserDocument[];
+  let friends: FriendshipEntity[];
   let authHeader: [string, string];
   let adminAuthHeader: [string, string];
+
+  let Users: Repository<UserEntity>;
+  let Friends: Repository<FriendshipEntity>;
+  let users: UserEntity[];
+  let adminUser: UserEntity;
 
   beforeAll(async () => {
     const now = new Date();
     friends = [];
-    users = TestUserData.map((data) => new UserModel(data));
-    users.push(new UserModel(AdminUserData));
+    users = TestUserData.map((data) => parseUserJSON(data));
+    adminUser = createTestUser(AdminUserData);
+    users.push(adminUser);
     users.forEach((user, index) => {
       switch (index % 3) {
         case 0:
-          user.settings = { profileVisibility: ProfileVisibility.Public };
+          user.profileVisibility = ProfileVisibility.Public;
           break;
 
         case 1:
-          user.settings = { profileVisibility: ProfileVisibility.FriendsOnly };
+          user.profileVisibility = ProfileVisibility.FriendsOnly;
           if (index % 6 === 1) {
             friends.push(
-              new FriendModel({
-                _id: uuid(),
-                userId: users[0]._id,
-                friendId: users[index]._id,
+              {
+                id: uuid(),
+                user: users[0],
+                friend: users[index],
                 friendsSince: now,
-              }),
-              new FriendModel({
-                _id: uuid(),
-                userId: users[index]._id,
-                friendId: users[0]._id,
+              },
+              {
+                id: uuid(),
+                user: users[index],
+                friend: users[0],
                 friendsSince: now,
-              }),
+              },
             );
           }
           break;
 
         case 2:
-          user.settings = { profileVisibility: ProfileVisibility.Private };
+          user.profileVisibility = ProfileVisibility.Private;
           break;
       }
     });
     [authHeader, adminAuthHeader] = await Promise.all([
-      await createAuthHeader(users[0]._id),
+      await createAuthHeader(users[0].id),
       await createAuthHeader(AdminUserId),
     ]);
     app = await createTestApp();
     server = app.getHttpServer();
+
+    Users = dataSource.getRepository(UserEntity);
+    Friends = dataSource.getRepository(FriendshipEntity);
   });
 
   beforeEach(async () => {
-    await UserModel.insertMany(users);
-    await FriendModel.insertMany(friends);
+    await Users.save(users);
+    await Friends.save(friends);
   });
 
   afterAll(async () => {
@@ -104,17 +114,17 @@ describe('Searching Profiles E2E Tests', () => {
       .query({ limit: 10 })
       .expect(200);
 
-    expect(body.totalCount).toBe(101);
+    expect(body.totalCount).toBe(17);
     expect(body.users).toHaveLength(10);
     expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
 
     const ids = body.users.map((u: ProfileDTO) => u.userId);
-    const findUsers = await UserModel.find({ _id: { $in: ids } });
+    const findUsers = await Users.findBy({ id: In(ids) });
     findUsers.forEach((user) => {
       expect([
         ProfileVisibility.Public,
         ProfileVisibility.FriendsOnly,
-      ]).toContain(user.settings?.profileVisibility);
+      ]).toContain(user.profileVisibility);
     });
   });
 
@@ -124,14 +134,14 @@ describe('Searching Profiles E2E Tests', () => {
       .query({ limit: 25 })
       .expect(200);
 
-    expect(body.totalCount).toBe(67);
+    expect(body.totalCount).toBe(34);
     expect(body.users).toHaveLength(25);
     expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
 
     const ids = body.users.map((u: ProfileDTO) => u.userId);
-    const findUsers = await UserModel.find({ _id: { $in: ids } });
+    const findUsers = await Users.findBy({ id: In(ids) });
     findUsers.forEach((user) => {
-      expect(user.settings?.profileVisibility).toBe(ProfileVisibility.Public);
+      expect(user.profileVisibility).toBe(ProfileVisibility.Public);
     });
   });
 
@@ -142,14 +152,14 @@ describe('Searching Profiles E2E Tests', () => {
       .query({ limit: 30 })
       .expect(200);
 
-    expect(body.totalCount).toBe(201);
+    expect(body.totalCount).toBe(101);
     expect(body.users).toHaveLength(30);
     expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
   });
 
   it('will perform a text search for user profiles', async () => {
     const options = {
-      query: 'Sally Port',
+      query: 'ipsam',
     };
     const { body: result } = await request(server)
       .get(SearchUrl)
@@ -157,7 +167,7 @@ describe('Searching Profiles E2E Tests', () => {
       .query(options)
       .expect(200);
 
-    expect(result.totalCount).toBe(4);
+    expect(result.totalCount).toBe(3);
     expect(result.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
   });
 
@@ -172,7 +182,7 @@ describe('Searching Profiles E2E Tests', () => {
     },
     {
       sortBy: UsersSortBy.Username,
-      sortOrder: SortOrder.Descending,
+      sortOrder: SortOrder.Ascending,
     },
     {
       sortBy: UsersSortBy.Username,
@@ -186,8 +196,13 @@ describe('Searching Profiles E2E Tests', () => {
         .query({ sortBy, sortOrder })
         .expect(200);
 
-      expect(body.totalCount).toBe(101);
-      expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
+      expect(body.totalCount).toBe(17);
+      expect(
+        body.users.map((u: ProfileDTO) => ({
+          username: u.username,
+          memberSince: u.memberSince,
+        })),
+      ).toMatchSnapshot();
     });
   });
 

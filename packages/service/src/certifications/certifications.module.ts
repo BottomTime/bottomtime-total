@@ -1,15 +1,12 @@
 import { Module } from '@nestjs/common';
-import { CertificationsService } from './certifications.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { CertificationModelName, CertificationSchema } from '../schemas';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { CertificationEntity } from '../data';
 import { CertificationsController } from './certifications.controller';
+import { CertificationsService } from './certifications.service';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: CertificationModelName, schema: CertificationSchema },
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([CertificationEntity])],
   providers: [CertificationsService],
   controllers: [CertificationsController],
   exports: [CertificationsService],

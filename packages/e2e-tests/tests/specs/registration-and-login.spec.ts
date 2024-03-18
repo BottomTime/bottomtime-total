@@ -1,23 +1,24 @@
+import { UserRole } from '@bottomtime/api';
+
 import { test } from '@fixture';
 import { expect } from '@playwright/test';
-import { UserData } from '@schemas';
+
+import { UserEntity } from '../../../service/src/data/user.entity';
 
 const TestPassword = 'Sn@ke_Eyes_77';
-const TestUser: UserData = {
-  _id: 'CEC01CB6-9832-4854-ADC1-72493563AFEA',
+const TestUser: Partial<UserEntity> = {
+  id: 'cec01cb6-9832-4854-adc1-72493563afea',
   email: 'randy-bobandy@microsoft.com',
   emailLowered: 'randy-bobandy@microsoft.com',
   emailVerified: true,
   isLockedOut: false,
   memberSince: new Date(),
   passwordHash: '$2b$04$w563pCU0MEL0X1Fvxpjyxez.ZRbty4gblpyfKffd0PsvJDVOb6VdS',
-  role: 'user',
+  role: UserRole.User,
   username: 'randy_randerson',
   usernameLowered: 'randy_randerson',
-  profile: {
-    name: 'Randy Randerson',
-    location: 'Sunnyvale, CA',
-  },
+  name: 'Randy Randerson',
+  location: 'Sunnyvale, CA',
 };
 
 test.describe('Registration', () => {
@@ -38,7 +39,8 @@ test.describe('Registration', () => {
     await page.getByTestId('register-submit').click();
     await page.waitForURL('**/welcome');
 
-    const user = await db.users.findOne({ username: 'dave_a32' });
+    const users = db.getRepository(UserEntity);
+    const user = await users.findOneBy({ username: 'dave_a32' });
     expect(user).not.toBeNull();
   });
 
@@ -46,7 +48,10 @@ test.describe('Registration', () => {
     db,
     page,
   }) => {
-    await db.users.insertOne(TestUser);
+    const users = db.getRepository(UserEntity);
+    const user = new UserEntity();
+    Object.assign(user, TestUser);
+    await users.save(user);
 
     await page.goto('/register');
     await page.getByLabel('Username:*').fill('randy_randerson');
@@ -71,18 +76,21 @@ test.describe('Registration', () => {
   });
 
   test('will allow a user to log into their account', async ({ db, page }) => {
-    await db.users.insertOne(TestUser);
+    const users = db.getRepository(UserEntity);
+    const user = new UserEntity();
+    Object.assign(user, TestUser);
+    await users.save(user);
 
     await page.goto('/');
     await page.getByRole('button', { name: 'Sign in' }).click();
-    await page.getByTestId('login-username').fill(TestUser.username);
+    await page.getByTestId('login-username').fill(user.username);
     await page.getByTestId('login-password').fill(TestPassword);
     await page.getByTestId('login-submit').click();
 
     // Look for the navbar to be updated to show the user's display name.
     await expect(page.getByTestId('user-menu-button')).toBeVisible();
     await expect(page.getByTestId('user-menu-button')).toContainText(
-      TestUser.profile!.name!,
+      user.name!,
     );
   });
 
@@ -90,11 +98,14 @@ test.describe('Registration', () => {
     db,
     page,
   }) => {
-    await db.users.insertOne(TestUser);
+    const users = db.getRepository(UserEntity);
+    const user = new UserEntity();
+    Object.assign(user, TestUser);
+    await users.save(user);
 
     await page.goto('/login');
     await page.getByRole('button', { name: 'Sign in' }).click();
-    await page.getByTestId('login-username').fill(TestUser.username);
+    await page.getByTestId('login-username').fill(user.username);
     await page.getByTestId('login-password').fill('wrong');
     await page.getByTestId('login-submit').click();
 

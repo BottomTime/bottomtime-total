@@ -1,12 +1,3 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import {
-  CertificationDocument,
-  CertificationModel,
-  UserData,
-  UserModel,
-} from '../../../src/schemas';
-import { createAuthHeader, createTestApp } from '../../utils';
-import CertificationTestData from '../../fixtures/certifications.json';
 import {
   DepthUnit,
   PressureUnit,
@@ -15,45 +6,50 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+
+import { HttpServer, INestApplication } from '@nestjs/common';
+
 import request from 'supertest';
+import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
+
+import { CertificationEntity, UserEntity } from '../../../src/data';
+import { dataSource } from '../../data-source';
+import CertificationTestData from '../../fixtures/certifications.json';
+import { createAuthHeader, createTestApp } from '../../utils';
 
 jest.mock('uuid');
 
-const AdminUserId = 'F3669787-82E5-458F-A8AD-98D3F57DDA6E';
-const AdminUserData: UserData = {
-  _id: AdminUserId,
+const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
+const AdminUserData: Partial<UserEntity> = {
+  id: AdminUserId,
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date(),
   role: UserRole.Admin,
   username: 'Admin',
   usernameLowered: 'admin',
-  settings: {
-    depthUnit: DepthUnit.Meters,
-    temperatureUnit: TemperatureUnit.Celsius,
-    weightUnit: WeightUnit.Kilograms,
-    pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.Private,
-  },
+  depthUnit: DepthUnit.Meters,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
+  pressureUnit: PressureUnit.Bar,
+  profileVisibility: ProfileVisibility.Private,
 };
 
-const RegularUserId = '5A4699D8-48C4-4410-9886-B74B8B85CAC1';
-const RegularUserData: UserData = {
-  _id: RegularUserId,
+const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
+const RegularUserData: Partial<UserEntity> = {
+  id: RegularUserId,
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date(),
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
-  settings: {
-    depthUnit: DepthUnit.Meters,
-    temperatureUnit: TemperatureUnit.Celsius,
-    weightUnit: WeightUnit.Kilograms,
-    pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.Private,
-  },
+  depthUnit: DepthUnit.Meters,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
+  pressureUnit: PressureUnit.Bar,
+  profileVisibility: ProfileVisibility.Private,
 };
 
 const BaseUrl = '/api/admin/certifications';
@@ -64,25 +60,42 @@ function requestUrl(certificationId?: string): string {
 describe('Certifications End-to-End', () => {
   let app: INestApplication;
   let server: HttpServer;
-  let certifications: CertificationDocument[];
+  let Users: Repository<UserEntity>;
+  let Certifications: Repository<CertificationEntity>;
+
+  let certData: CertificationEntity[];
   let regularAuthHeader: [string, string];
   let adminAuthHeader: [string, string];
+  let regularUser: UserEntity;
+  let adminUser: UserEntity;
 
   beforeAll(async () => {
-    app = await createTestApp();
+    certData = CertificationTestData.map((data) => {
+      const cert = new CertificationEntity();
+      Object.assign(cert, data);
+      return cert;
+    });
+
+    Users = dataSource.getRepository(UserEntity);
+    Certifications = dataSource.getRepository(CertificationEntity);
+
+    [app, regularAuthHeader, adminAuthHeader] = await Promise.all([
+      createTestApp(),
+      createAuthHeader(RegularUserId),
+      createAuthHeader(AdminUserId),
+    ]);
+
     server = app.getHttpServer();
-    certifications = CertificationTestData.map(
-      (cert) => new CertificationModel(cert),
-    );
-    regularAuthHeader = await createAuthHeader(RegularUserId);
-    adminAuthHeader = await createAuthHeader(AdminUserId);
   });
 
   beforeEach(async () => {
-    await UserModel.insertMany([
-      new UserModel(AdminUserData),
-      new UserModel(RegularUserData),
-    ]);
+    regularUser = new UserEntity();
+    Object.assign(regularUser, RegularUserData);
+
+    adminUser = new UserEntity();
+    Object.assign(adminUser, AdminUserData);
+
+    await Promise.all([Users.save(regularUser), Users.save(adminUser)]);
   });
 
   afterAll(async () => {
@@ -91,7 +104,11 @@ describe('Certifications End-to-End', () => {
 
   describe('when searching certifications', () => {
     beforeEach(async () => {
-      await CertificationModel.insertMany(certifications);
+      await Certifications.createQueryBuilder()
+        .insert()
+        .into(CertificationEntity)
+        .values(certData)
+        .execute();
     });
 
     it('will perform a search for certifications', async () => {
@@ -104,6 +121,7 @@ describe('Certifications End-to-End', () => {
         })
         .set(...adminAuthHeader)
         .expect(200);
+      expect(body.certifications.length).toBe(10);
       expect(body).toMatchSnapshot();
     });
 
@@ -132,46 +150,51 @@ describe('Certifications End-to-End', () => {
 
   describe('when getting a certification', () => {
     beforeEach(async () => {
-      await CertificationModel.insertMany([certifications[0]]);
+      await Certifications.createQueryBuilder()
+        .insert()
+        .into(CertificationEntity)
+        .values(certData)
+        .execute();
     });
 
     it('will return a certification by id', async () => {
       const { body } = await request(server)
-        .get(requestUrl(certifications[0]._id))
+        .get(requestUrl(certData[0].id))
         .set(...adminAuthHeader)
         .expect(200);
       expect(body).toMatchSnapshot();
     });
 
     it('will return a 401 response if the user is not authenticated', async () => {
-      await request(server).get(requestUrl(certifications[0]._id)).expect(401);
+      await request(server).get(requestUrl(certData[0].id)).expect(401);
     });
 
     it('will return a 403 response if the user is not an admin', async () => {
       await request(server)
-        .get(requestUrl(certifications[0]._id))
+        .get(requestUrl(certData[0].id))
         .set(...regularAuthHeader)
         .expect(403);
     });
 
     it('will return a 404 if the certification is not found', async () => {
       await request(server)
-        .get(requestUrl('does-not-exist'))
+        .get(requestUrl('666e07ba-1716-4726-ba33-ab23baf74cd9'))
         .set(...adminAuthHeader)
         .expect(404);
     });
   });
 
   describe('when creating a certification', () => {
-    beforeEach(() => {
-      jest
-        .spyOn(uuid, 'v4')
-        .mockReturnValue('B24AE74C-0802-47BB-9EAB-A88574BB78DF');
-    });
     const createData = {
       agency: 'BSAC',
       course: 'Intro to Underwater Stuff',
     };
+
+    beforeEach(() => {
+      jest
+        .spyOn(uuid, 'v4')
+        .mockReturnValue('b24ae74c-0802-47bb-9eab-a88574bb78df');
+    });
 
     it('will create a new certification', async () => {
       const { body } = await request(server)
@@ -181,10 +204,9 @@ describe('Certifications End-to-End', () => {
         .expect(201);
       expect(body).toMatchSnapshot();
 
-      const result = await CertificationModel.findById(body.id);
-      expect(result?.toJSON()).toEqual({
-        __v: 0,
-        _id: body.id,
+      const result = await Certifications.findOneBy({ id: body.id });
+      expect(result).toEqual({
+        id: body.id,
         ...createData,
       });
     });
@@ -228,11 +250,11 @@ describe('Certifications End-to-End', () => {
     let updateUrl: string;
 
     beforeAll(() => {
-      updateUrl = requestUrl(certifications[7]._id);
+      updateUrl = requestUrl(certData[7].id);
     });
 
     beforeEach(async () => {
-      await CertificationModel.insertMany([certifications[7]]);
+      await Certifications.save(certData[7]);
     });
 
     it('will update the indicated certification', async () => {
@@ -244,10 +266,9 @@ describe('Certifications End-to-End', () => {
 
       expect(body).toMatchSnapshot();
 
-      const result = await CertificationModel.findById(certifications[7]._id);
-      expect(result?.toJSON()).toEqual({
-        __v: 0,
-        _id: certifications[7]._id,
+      const result = await Certifications.findOneBy({ id: certData[7].id });
+      expect(result).toEqual({
+        id: certData[7].id,
         ...updateData,
       });
     });
@@ -283,7 +304,7 @@ describe('Certifications End-to-End', () => {
 
     it('will return a 404 response if the certification is not found', async () => {
       await request(server)
-        .put(requestUrl('does-not-exist'))
+        .put(requestUrl('666e07ba-1716-4726-ba33-ab23baf74cd9'))
         .set(...adminAuthHeader)
         .send(updateData)
         .expect(404);
@@ -294,11 +315,11 @@ describe('Certifications End-to-End', () => {
     let deleteUrl: string;
 
     beforeAll(() => {
-      deleteUrl = requestUrl(certifications[17]._id);
+      deleteUrl = requestUrl(certData[17].id);
     });
 
     beforeEach(async () => {
-      await CertificationModel.insertMany([certifications[17]]);
+      await Certifications.save(certData[17]);
     });
 
     it('will delete the indicated certification', async () => {
@@ -307,7 +328,7 @@ describe('Certifications End-to-End', () => {
         .set(...adminAuthHeader)
         .expect(204);
 
-      const result = await CertificationModel.findById(certifications[17]._id);
+      const result = await Certifications.findOneBy({ id: certData[17].id });
       expect(result).toBeNull();
     });
 
@@ -324,7 +345,7 @@ describe('Certifications End-to-End', () => {
 
     it('will return a 404 response if the certirfication does not exist', async () => {
       await request(server)
-        .delete(requestUrl('does-not-exist'))
+        .delete(requestUrl('666e07ba-1716-4726-ba33-ab23baf74cd9'))
         .set(...adminAuthHeader)
         .expect(404);
     });

@@ -5,9 +5,8 @@ import {
   TemperatureUnit,
   WeightUnit,
 } from '@bottomtime/api';
-import { UserData } from '../../src/schemas';
 
-export const DefaultUserSettings: UserData['settings'] = {
+export const DefaultUserSettings = {
   depthUnit: DepthUnit.Meters,
   pressureUnit: PressureUnit.Bar,
   temperatureUnit: TemperatureUnit.Celsius,

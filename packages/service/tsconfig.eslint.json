@@ -6,7 +6,7 @@
     "admin/**/*.ts",
     "src/**/*.ts",
     "tests/**/*.ts",
-    "migrations/**/*.js"
+    "migrations/**/*.ts"
   ],
   "exclude": ["node_modules/", "dist/", "coverage/"]
 }

@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import {
   DepthDTO,
   DepthUnit,
@@ -8,6 +7,9 @@ import {
   TemperatureUnit,
   WeightUnit,
 } from '@bottomtime/api';
+
+import { z } from 'zod';
+
 import { UserSettings } from './users';
 
 export const AnonymousUserProfile: SuccinctProfileDTO = {
@@ -32,8 +34,6 @@ export const GpsCoordinatesSchema = z.object({
   lon: z.number().gte(-180).lte(180),
 });
 export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
-
-export type Maybe<T> = T | null | undefined;
 
 export type PageRenderProps = {
   title: string;

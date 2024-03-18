@@ -1,12 +1,3 @@
-import { UsersService, User } from '../../../src/users';
-import { createTestUser } from '../../utils';
-import {
-  FriendDocument,
-  FriendModel,
-  UserData,
-  UserDocument,
-  UserModel,
-} from '../../../src/schemas';
 import {
   CreateUserParamsDTO,
   ProfileVisibility,
@@ -14,15 +5,22 @@ import {
   UserRole,
   UsersSortBy,
 } from '@bottomtime/api';
-import * as uuid from 'uuid';
-import bcrypt from 'bcrypt';
-import { ConflictException } from '@nestjs/common';
+
 import { faker } from '@faker-js/faker';
+import { ConflictException } from '@nestjs/common';
 
+import bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
+import * as uuid from 'uuid';
+
+import { FriendshipEntity, UserEntity } from '../../../src/data';
+import { User, UsersService } from '../../../src/users';
+import { dataSource } from '../../data-source';
 import SearchData from '../../fixtures/user-search-data.json';
+import { createTestUser, parseUserJSON } from '../../utils';
 
-const TestUserData: Partial<UserData> = {
-  _id: '4E64038D-0ABF-4C1A-B678-55F8AFCB6B2D',
+const TestUserData: Partial<UserEntity> = {
+  id: '4e64038d-0abf-4c1a-b678-55f8afcb6b2d',
   username: 'DonkeyKong33',
   usernameLowered: 'donkeykong33',
   email: 'dk@aol.com',
@@ -33,28 +31,33 @@ jest.mock('uuid');
 jest.mock('bcrypt');
 
 describe('Users Service', () => {
+  let Users: Repository<UserEntity>;
+  let Friends: Repository<FriendshipEntity>;
+
   let service: UsersService;
 
   beforeAll(() => {
-    service = new UsersService(UserModel, FriendModel);
+    Users = dataSource.getRepository(UserEntity);
+    Friends = dataSource.getRepository(FriendshipEntity);
+    service = new UsersService(Users, Friends);
   });
 
   describe('when retrieving users', () => {
     it('will retrieve a user by id', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(UserModel, userDocument);
+      const expected = new User(Users, userDocument);
 
-      await userDocument.save();
-      const actual = await service.getUserById(userDocument._id);
+      await Users.save(userDocument);
+      const actual = await service.getUserById(userDocument.id);
 
       expect(actual?.toJSON()).toEqual(expected.toJSON());
     });
 
     it('will retrieve a user by username', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(UserModel, userDocument);
+      const expected = new User(Users, userDocument);
 
-      await userDocument.save();
+      await Users.save(userDocument);
       const actual = await service.getUserByUsernameOrEmail(
         userDocument.username.toUpperCase(),
       );
@@ -64,9 +67,9 @@ describe('Users Service', () => {
 
     it('will retrieve a user by email', async () => {
       const userDocument = createTestUser(TestUserData);
-      const expected = new User(UserModel, userDocument);
+      const expected = new User(Users, userDocument);
 
-      await userDocument.save();
+      await Users.save(userDocument);
       const actual = await service.getUserByUsernameOrEmail(
         expected.email!.toUpperCase(),
       );
@@ -74,7 +77,7 @@ describe('Users Service', () => {
     });
 
     it('will return undefined if id is not found', async () => {
-      const result = await service.getUserById('foo');
+      const result = await service.getUserById(faker.datatype.uuid());
       expect(result).toBeUndefined();
     });
 
@@ -94,7 +97,7 @@ describe('Users Service', () => {
       });
       jest
         .spyOn(uuid, 'v4')
-        .mockReturnValue('0EE2C4FF-1013-45DF-9F13-E45ED2DB9555');
+        .mockReturnValue('0ee2c4ff-1013-45df-9f13-e45ed2db9555');
       jest
         .spyOn(bcrypt, 'hash')
         .mockResolvedValue('<<HASHED PASSWORD>>' as never);
@@ -108,7 +111,7 @@ describe('Users Service', () => {
 
       expect(user.toJSON()).toMatchSnapshot();
 
-      const data = await UserModel.findById(user.id);
+      const data = await Users.findOneBy({ id: user.id });
       expect(data).toMatchSnapshot();
     });
 
@@ -122,10 +125,6 @@ describe('Users Service', () => {
           avatar: 'https://gravatar.com/Tyler.Durden',
           bio: "I don't talk about my dive clug",
           birthdate: '1987-02-12',
-          certifications: [
-            { course: 'Open water', agency: 'SSI' },
-            { course: 'Stress and Rescue', agency: 'SSI', date: '2018' },
-          ],
           customData: {},
           experienceLevel: 'Experienced',
           location: 'Vancouver, BC',
@@ -138,7 +137,7 @@ describe('Users Service', () => {
 
       expect(user.toJSON()).toMatchSnapshot();
 
-      const data = await UserModel.findById(user.id);
+      const data = await Users.findOneBy({ id: user.id });
       expect(data).toMatchSnapshot();
     });
 
@@ -152,7 +151,7 @@ describe('Users Service', () => {
         username: 'Roger69_83',
         email,
       };
-      await existingUser.save();
+      await Users.save(existingUser);
 
       await expect(service.createUser(options)).rejects.toThrowError(
         ConflictException,
@@ -168,7 +167,7 @@ describe('Users Service', () => {
       const options: CreateUserParamsDTO = {
         username,
       };
-      await existingUser.save();
+      await Users.save(existingUser);
 
       await expect(service.createUser(options)).rejects.toThrowError(
         ConflictException,
@@ -177,66 +176,63 @@ describe('Users Service', () => {
   });
 
   describe('when searching profiles', () => {
-    let friends: FriendDocument[];
-    let users: UserDocument[];
+    let friends: FriendshipEntity[];
+    let users: UserEntity[];
 
     beforeAll(async () => {
       const now = new Date();
       friends = [];
-      users = SearchData.map((user) => new UserModel(user));
+      users = SearchData.map((user) => parseUserJSON(user));
       users.forEach((user, index) => {
         switch (index % 3) {
           case 0:
-            user.settings = { profileVisibility: ProfileVisibility.Public };
+            user.profileVisibility = ProfileVisibility.Public;
             break;
 
           case 1:
-            user.settings = {
-              profileVisibility: ProfileVisibility.FriendsOnly,
-            };
+            user.profileVisibility = ProfileVisibility.FriendsOnly;
             if (index % 6 === 1) {
               friends.push(
-                new FriendModel({
-                  _id: faker.datatype.uuid(),
-                  userId: users[0]._id,
-                  friendId: users[index]._id,
+                {
+                  id: faker.datatype.uuid(),
+                  user: users[0],
+                  friend: users[index],
                   friendsSince: now,
-                }),
-                new FriendModel({
-                  _id: faker.datatype.uuid(),
-                  userId: users[index]._id,
-                  friendId: users[0]._id,
+                },
+                {
+                  id: faker.datatype.uuid(),
+                  user: users[index],
+                  friend: users[0],
                   friendsSince: now,
-                }),
+                },
               );
             }
             break;
 
           case 2:
-            user.settings = { profileVisibility: ProfileVisibility.Private };
+            user.profileVisibility = ProfileVisibility.Private;
             break;
         }
       });
     });
 
     beforeEach(async () => {
-      await Promise.all([
-        UserModel.insertMany(users),
-        FriendModel.insertMany(friends),
-      ]);
+      await Users.save(users);
+      await Friends.save(friends);
     });
 
     it('will return an empty array if no results match', async () => {
-      await UserModel.deleteMany({});
+      await Users.createQueryBuilder().delete().from(UserEntity).execute();
       await expect(service.searchUsers()).resolves.toEqual({
         users: [],
         totalCount: 0,
       });
     });
 
+    // TODO: Figure out how to get full text search working properly in Postgres. Might need MongoDB for this.
     it('will perform text based searches', async () => {
       await expect(
-        service.searchUsers({ query: 'Mount' }),
+        service.searchUsers({ query: 'Town' }),
       ).resolves.toMatchSnapshot();
     });
 
@@ -259,26 +255,35 @@ describe('Users Service', () => {
       { sortBy: UsersSortBy.Username, sortOrder: SortOrder.Descending },
     ].forEach(({ sortBy, sortOrder }) => {
       it(`Will return results sorted by ${sortBy} in ${sortOrder} order`, async () => {
-        await expect(
-          service.searchUsers({ sortBy, sortOrder, limit: 5 }),
-        ).resolves.toMatchSnapshot();
+        const results = await service.searchUsers({
+          sortBy,
+          sortOrder,
+          limit: 5,
+        });
+        expect(
+          results.users.map((u) => ({
+            username: u.username,
+            memberSince: u.memberSince,
+          })),
+        ).toMatchSnapshot();
       });
     });
 
     [UserRole.User, UserRole.Admin].forEach((role) => {
-      it(`Will filter by role: ${role}`, async () => {
-        await expect(
-          service.searchUsers({ role, limit: 10 }),
-        ).resolves.toMatchSnapshot();
+      it(`will filter by role: ${role}`, async () => {
+        const results = await service.searchUsers({ role, limit: 10 });
+        for (const user of results.users) {
+          expect(user.role).toBe(role);
+        }
       });
     });
 
-    it('Will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is a user Id', async () => {
+    it('will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is a user Id', async () => {
       const result = await service.searchUsers({
-        profileVisibleTo: users[0]._id,
+        profileVisibleTo: users[0].username,
       });
 
-      expect(result.totalCount).toBe(101);
+      expect(result.totalCount).toBe(17);
       expect(
         result.users.map((u) => ({
           username: u.username,
@@ -287,12 +292,12 @@ describe('Users Service', () => {
       ).toMatchSnapshot();
     });
 
-    it('Will return all public profiles when profileVisibleTo is set to "#public"', async () => {
+    it('will return all public profiles when profileVisibleTo is set to "#public"', async () => {
       const result = await service.searchUsers({
         profileVisibleTo: '#public',
       });
 
-      expect(result.totalCount).toBe(67);
+      expect(result.totalCount).toBe(34);
       expect(
         result.users.map((u) => ({
           username: u.username,

@@ -13,23 +13,16 @@ import {
 } from '@bottomtime/api';
 
 import { ConflictException, Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { hash } from 'bcrypt';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import { z } from 'zod';
 
 import { Config } from '../config';
-import {
-  FriendData,
-  FriendModelName,
-  UserData,
-  UserModelName,
-} from '../schemas';
+import { FriendshipEntity, UserEntity } from '../data';
 import { User } from './user';
-
-const SelectString = '-friends';
 
 const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
   role: z.nativeEnum(UserRole),
@@ -47,26 +40,27 @@ export class UsersService {
   private readonly log = new Logger(UsersService.name);
 
   constructor(
-    @InjectModel(UserModelName)
-    private readonly Users: Model<UserData>,
-    @InjectModel(FriendModelName)
-    private readonly Friends: Model<FriendData>,
+    @InjectRepository(UserEntity)
+    private readonly Users: Repository<UserEntity>,
+
+    @InjectRepository(FriendshipEntity)
+    private readonly Friends: Repository<FriendshipEntity>,
   ) {}
 
   private async checkForConflicts(
     username: string,
     email?: string,
   ): Promise<void> {
-    const usernameTaken = await this.Users.exists({
-      usernameLowered: username,
-    });
-
-    let emailTaken: { _id: string } | null = null;
-    if (email) {
-      emailTaken = await this.Users.exists({
-        emailLowered: email,
-      });
-    }
+    const [usernameTaken, emailTaken] = await Promise.all([
+      this.Users.exists({
+        where: { usernameLowered: username.toLocaleLowerCase() },
+      }),
+      email
+        ? this.Users.exists({
+            where: { emailLowered: email?.toLocaleLowerCase() },
+          })
+        : Promise.resolve(false),
+    ]);
 
     if (usernameTaken && emailTaken) {
       throw new ConflictException(
@@ -86,14 +80,6 @@ export class UsersService {
     }
   }
 
-  private async getFriendedBy(userId: string): Promise<string[]> {
-    const friends = await this.Friends.find({
-      friendId: userId,
-    }).select('userId');
-
-    return friends.map((f) => f.userId);
-  }
-
   async createUser(options: CreateUserOptions): Promise<User> {
     const usernameLowered = options.username.toLowerCase();
     const emailLowered = options.email?.toLowerCase();
@@ -102,43 +88,41 @@ export class UsersService {
 
     const passwordHash = options.password
       ? await hash(options.password, Config.passwordSaltRounds)
-      : null;
+      : undefined;
 
-    const data: UserData = {
-      _id: uuid(),
-      email: options.email ?? null,
-      emailLowered: emailLowered ?? null,
-      emailVerified: false,
-      isLockedOut: false,
-      memberSince: new Date(),
-      passwordHash,
-      profile: options.profile
-        ? {
-            ...options.profile,
-            certifications: options.profile.certifications
-              ? new Types.DocumentArray(options.profile.certifications)
-              : null,
-          }
-        : null,
-      role: options.role ?? UserRole.User,
-      settings: {
-        depthUnit: DepthUnit.Meters,
-        pressureUnit: PressureUnit.Bar,
-        temperatureUnit: TemperatureUnit.Celsius,
-        weightUnit: WeightUnit.Kilograms,
-        profileVisibility: ProfileVisibility.FriendsOnly,
-        ...options.settings,
-      },
-      username: options.username,
-      usernameLowered,
-    };
-    const userDocument = await this.Users.create(data);
+    const data = new UserEntity();
+    data.id = uuid();
+    data.email = options.email ?? null;
+    data.emailLowered = emailLowered;
+    data.passwordHash = passwordHash ?? null;
+    data.role = options.role || UserRole.User;
+    data.username = options.username;
+    data.usernameLowered = usernameLowered;
 
-    return new User(this.Users, userDocument);
+    data.avatar = options.profile?.avatar ?? null;
+    data.bio = options.profile?.bio ?? null;
+    data.birthdate = options.profile?.birthdate ?? null;
+    data.customData = options.profile?.customData ?? null;
+    data.experienceLevel = options.profile?.experienceLevel ?? null;
+    data.location = options.profile?.location ?? null;
+    data.name = options.profile?.name ?? null;
+    data.startedDiving = options.profile?.startedDiving ?? null;
+
+    data.depthUnit = options.settings?.depthUnit || DepthUnit.Meters;
+    data.pressureUnit = options.settings?.pressureUnit || PressureUnit.Bar;
+    data.profileVisibility =
+      options.settings?.profileVisibility || ProfileVisibility.FriendsOnly;
+    data.temperatureUnit =
+      options.settings?.temperatureUnit || TemperatureUnit.Celsius;
+    data.weightUnit = options.settings?.weightUnit || WeightUnit.Kilograms;
+
+    await this.Users.save(data);
+
+    return new User(this.Users, data);
   }
 
   async getUserById(id: string): Promise<User | undefined> {
-    const data = await this.Users.findById(id).select(SelectString).exec();
+    const data = await this.Users.findOne({ where: { id } });
     return data ? new User(this.Users, data) : undefined;
   }
 
@@ -148,10 +132,8 @@ export class UsersService {
     const lowered = usernameOrEmail.toLowerCase();
 
     const data = await this.Users.findOne({
-      $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
-    })
-      .select(SelectString)
-      .exec();
+      where: [{ usernameLowered: lowered }, { emailLowered: lowered }],
+    });
 
     return data ? new User(this.Users, data) : undefined;
   }
@@ -159,76 +141,81 @@ export class UsersService {
   async searchUsers(
     options: SearchUsersOptions = {},
   ): Promise<SearchUsersResult> {
-    const searchFilter: FilterQuery<UserData> = {};
+    let query = this.Users.createQueryBuilder('users');
 
-    // Text-based search
-    if (options.query) {
-      searchFilter.$text = { $search: options.query, $caseSensitive: false };
+    if (options.role) {
+      query = query.andWhere('users.role = :role', { role: options.role });
     }
 
-    // Role filter
-    if (options.role) {
-      searchFilter.role = options.role;
+    if (options.query) {
+      query = query.andWhere(
+        "users.fulltext @@ websearch_to_tsquery('english', :query)",
+        {
+          query: options.query,
+        },
+      );
     }
 
     if (options.profileVisibleTo) {
       if (options.profileVisibleTo === '#public') {
-        // All public profiles
-        searchFilter['settings.profileVisibility'] = ProfileVisibility.Public;
+        query = query.andWhere('users.profileVisibility = :visibility', {
+          visibility: ProfileVisibility.Public,
+        });
       } else {
-        // Public profiles or profiles visible to the current user as a friend
-        const friendedBy = await this.getFriendedBy(options.profileVisibleTo);
-        searchFilter.$or = [
-          { 'settings.profileVisibility': ProfileVisibility.Public },
-          {
-            $and: [
-              { _id: { $in: friendedBy } },
-              { 'settings.profileVisibility': ProfileVisibility.FriendsOnly },
+        query = query
+          .innerJoin('users.friends', 'friend_relations')
+          .innerJoin(
+            'friend_relations.friend',
+            'friends',
+            'friends.usernameLowered = :friendUsername',
+            {
+              friendUsername: options.profileVisibleTo.toLowerCase(),
+              visibilities: [
+                ProfileVisibility.Public,
+                ProfileVisibility.FriendsOnly,
+              ],
+            },
+          )
+          .andWhere('users.profileVisibility IN (:...visibilities)', {
+            visibilities: [
+              ProfileVisibility.Public,
+              ProfileVisibility.FriendsOnly,
             ],
-          },
-        ];
+          });
       }
     }
 
-    // Sort order
-    let sort:
-      | {
-          [key: string]: -1 | 1;
-        }
-      | undefined = undefined;
-    if (!options.query) {
-      let sortField = 'username';
-      if (options.sortBy === UsersSortBy.MemberSince) sortField = 'memberSince';
+    query = query.offset(options.skip).limit(options.limit ?? 100);
 
-      sort = {
-        [sortField]: options.sortOrder === SortOrder.Descending ? -1 : 1,
-      };
-    }
+    const sortBy = `users.${options.sortBy || UsersSortBy.Username}`;
+    const sortOrder = options.sortOrder
+      ? options.sortOrder
+      : sortBy === UsersSortBy.MemberSince
+      ? SortOrder.Descending
+      : SortOrder.Ascending;
 
-    // Execute query and return results.
-    const [data, totalCount] = await Promise.all([
-      this.Users.find(searchFilter)
-        .select(SelectString)
-        .sort(sort)
-        .skip(options.skip ?? 0)
-        .limit(options.limit ?? 100)
-        .exec(),
-      this.Users.countDocuments(searchFilter).exec(),
-    ]);
+    query = query.orderBy(
+      sortBy,
+      sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
+    );
+
+    this.log.debug('Attempting search for users', options);
+    this.log.verbose('Performing user search with query', query.getQuery());
+
+    const [users, totalCount] = await query.getManyAndCount();
+
     return {
-      users: data.map((d) => new User(this.Users, d)),
+      users: users.map((d) => new User(this.Users, d)),
       totalCount,
     };
   }
 
-  async testFriendship(userIdA: string, userIdB: string): Promise<boolean> {
-    const friend = await this.Friends.exists({
-      $or: [
-        { userId: userIdA, friendId: userIdB },
-        { userId: userIdB, friendId: userIdA },
+  async areFriends(userIdA: string, userIdB: string): Promise<boolean> {
+    return await this.Friends.exists({
+      where: [
+        { user: { id: userIdA }, friend: { id: userIdB } },
+        { user: { id: userIdB }, friend: { id: userIdA } },
       ],
-    }).exec();
-
-    return !!friend;
+    });
   }
 }

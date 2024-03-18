@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Certification Class will save a new certification to the database 1`] = `
+CertificationEntity {
+  "agency": "PADI",
+  "course": "Open Water Diver",
+  "fulltext": undefined,
+  "id": "4659ca3e-46c4-4865-b2a2-b9cc16818ed6",
+}
+`;

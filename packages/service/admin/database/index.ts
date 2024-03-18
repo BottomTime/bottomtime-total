@@ -2,17 +2,36 @@
 import prompts from 'prompts';
 import { CommandModule } from 'yargs';
 
+import { initDatabase } from './init-db';
 import { purgeDatabase } from './purge-db';
 import { seedDatabase } from './seed-db';
 import { createTestData } from './test-data';
 
-export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
+export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
   command: 'db',
 
   describe: 'Commands for working with the database',
 
   async builder(yargs) {
     return yargs
+      .command(
+        'init',
+        'Initialize a new database (including running migrations)',
+        (yargs) => {
+          return yargs
+            .option('force', {
+              alias: 'f',
+              default: false,
+              description:
+                'Drop the database if it already exists and recreate it',
+              type: 'boolean',
+            })
+            .help();
+        },
+        async (yargs) => {
+          await initDatabase(yargs.postgresUri, yargs.force);
+        },
+      )
       .command(
         'test-data',
         'Seed the database with some randomly-generated test data',
@@ -31,7 +50,7 @@ export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
             .help();
         },
         async (yargs) => {
-          await createTestData(yargs.mongoUri, {
+          await createTestData(yargs.postgresUri, {
             diveSites: yargs.sites,
             users: yargs.users,
           });
@@ -64,7 +83,7 @@ export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
               ).confirmed;
 
           if (confirmed) {
-            await purgeDatabase(yargs.mongoUri);
+            await purgeDatabase(yargs.postgresUri);
           } else {
             console.log('Aborted.');
           }
@@ -77,7 +96,7 @@ export const dbModule: CommandModule<{ 'mongo-uri': string }> = {
           return yargs.help();
         },
         async (yargs) => {
-          await seedDatabase(yargs.mongoUri);
+          await seedDatabase(yargs.postgresUri);
         },
       );
   },

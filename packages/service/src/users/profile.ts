@@ -1,96 +1,76 @@
-import {
-  UserCertificationDTO,
-  ProfileDTO,
-  UpdateProfileParamsDTO,
-} from '@bottomtime/api';
-import { ProfileData, UserDocument } from '../schemas/user.document';
-import { Maybe } from '../common';
-import { Types } from 'mongoose';
+import { ProfileDTO, UpdateProfileParamsDTO } from '@bottomtime/api';
+
+import { Repository } from 'typeorm';
+
+import { UserEntity } from '../data';
 
 export type UpdateProfileOptions = UpdateProfileParamsDTO;
-export type UserCertification = UserCertificationDTO;
 
 export class Profile {
-  constructor(private readonly data: UserDocument) {}
+  constructor(
+    private readonly Users: Repository<UserEntity>,
+    private data: UserEntity,
+  ) {}
 
-  private get profile(): ProfileData {
-    if (this.data.profile) {
-      return this.data.profile;
-    }
-
-    const profileData = {};
-    this.data.profile = profileData;
-    return profileData;
+  get avatar(): string | undefined {
+    return this.data.avatar ?? undefined;
   }
 
-  get avatar(): Maybe<string> {
-    return this.profile.avatar;
+  get bio(): string | undefined {
+    return this.data.bio ?? undefined;
   }
 
-  get bio(): Maybe<string> {
-    return this.profile.bio;
+  get birthdate(): string | undefined {
+    return this.data.birthdate ?? undefined;
   }
 
-  get birthdate(): Maybe<string> {
-    return this.profile.birthdate;
+  get customData(): Record<string, unknown> | undefined {
+    return this.data.customData ?? undefined;
   }
 
-  get customData(): Maybe<Record<string, unknown>> {
-    return this.profile.customData;
+  get experienceLevel(): string | undefined {
+    return this.data.experienceLevel ?? undefined;
   }
 
-  get certifications(): UserCertification[] | undefined {
-    return this.profile.certifications?.map((c) => c.toJSON());
+  get location(): string | undefined {
+    return this.data.location ?? undefined;
   }
 
-  get experienceLevel(): Maybe<string> {
-    return this.profile.experienceLevel;
+  get name(): string | undefined {
+    return this.data.name ?? undefined;
   }
 
-  get location(): Maybe<string> {
-    return this.profile.location;
+  get startedDiving(): string | undefined {
+    return this.data.startedDiving ?? undefined;
   }
 
-  get name(): Maybe<string> {
-    return this.profile.name;
-  }
+  async update(params: UpdateProfileOptions): Promise<void> {
+    if (params.avatar !== undefined) this.data.avatar = params.avatar ?? null;
 
-  get startedDiving(): Maybe<string> {
-    return this.profile.startedDiving;
-  }
+    if (params.bio !== undefined) this.data.bio = params.bio ?? null;
 
-  async update(
-    params: UpdateProfileOptions,
-    ignoreUndefined = false,
-  ): Promise<void> {
-    if (!!params.avatar || !ignoreUndefined)
-      this.profile.avatar = params.avatar;
+    if (params.birthdate !== undefined)
+      this.data.birthdate = params.birthdate ?? null;
 
-    if (!!params.bio || !ignoreUndefined) this.profile.bio = params.bio;
+    // TODO
+    // if (!!params.certifications || !ignoreUndefined)
+    //   this.data.certifications = params.certifications;
 
-    if (!!params.birthdate || !ignoreUndefined)
-      this.profile.birthdate = params.birthdate;
+    if (params.customData !== undefined)
+      this.data.customData = params.customData ?? null;
 
-    if (!!params.certifications || !ignoreUndefined)
-      this.profile.certifications = params.certifications
-        ? new Types.DocumentArray(params.certifications)
-        : undefined;
+    if (params.experienceLevel !== undefined)
+      this.data.experienceLevel = params.experienceLevel ?? null;
 
-    if (!!params.customData || !ignoreUndefined)
-      this.profile.customData = params.customData;
+    if (params.location !== undefined)
+      this.data.location = params.location ?? null;
 
-    if (!!params.experienceLevel || !ignoreUndefined)
-      this.profile.experienceLevel = params.experienceLevel;
+    if (params.name !== undefined) this.data.name = params.name ?? null;
 
-    if (!!params.location || !ignoreUndefined)
-      this.profile.location = params.location;
+    if (params.startedDiving !== undefined)
+      this.data.startedDiving = params.startedDiving ?? null;
 
-    if (!!params.name || !ignoreUndefined) this.profile.name = params.name;
-
-    if (!!params.startedDiving || !ignoreUndefined)
-      this.profile.startedDiving = params.startedDiving;
-
-    await this.data.save();
+    this.data = await this.Users.save(this.data);
   }
 
   toJSON(): ProfileDTO {
@@ -98,14 +78,13 @@ export class Profile {
       avatar: this.avatar ?? undefined,
       bio: this.bio ?? undefined,
       birthdate: this.birthdate ?? undefined,
-      certifications: this.certifications,
       customData: this.customData ?? undefined,
       experienceLevel: this.experienceLevel ?? undefined,
       location: this.location ?? undefined,
       memberSince: this.data.memberSince,
       name: this.name ?? undefined,
       startedDiving: this.startedDiving ?? undefined,
-      userId: this.data._id,
+      userId: this.data.id,
       username: this.data.username,
     };
   }

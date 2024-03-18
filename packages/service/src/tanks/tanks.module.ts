@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
-import { TanksService } from './tanks.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { TankModelName, TankSchema } from '../schemas';
-import { AssertTank } from './assert-tank.guard';
-import { UserTanksController } from './user-tanks.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { TankEntity, UserEntity } from '../data';
 import { UsersModule } from '../users';
+import { AssertTank } from './assert-tank.guard';
+import { TanksService } from './tanks.service';
+import { UserTanksController } from './user-tanks.controller';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: TankModelName, schema: TankSchema }]),
-    UsersModule,
-  ],
+  imports: [TypeOrmModule.forFeature([TankEntity, UserEntity]), UsersModule],
   providers: [TanksService, AssertTank],
   controllers: [UserTanksController],
   exports: [TanksService],

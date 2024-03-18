@@ -10,70 +10,59 @@ import {
 import { faker } from '@faker-js/faker';
 
 import dayjs from 'dayjs';
-import { Types } from 'mongoose';
 
-import { UserData, UserDocument, UserModel } from '../../../src/schemas';
+import { UserEntity } from '../../../src/data';
 
 // Matches Password = 'Password1';
 const PasswordHash =
   '$2b$04$KJMuCKJh.TTOGzp8PwqaDeNAZLEeP1PlcriTpoAYCAWxldk0oj6Ii';
 
-export function fakeUser(): UserDocument {
+export function fakeUser(): UserEntity {
   const firstName = faker.name.firstName();
   const lastName = faker.name.lastName();
   const username = faker.internet.userName(firstName, lastName);
   const email = faker.internet.email(firstName, lastName);
 
-  const data: UserData = {
-    _id: faker.datatype.uuid(),
-    username,
-    usernameLowered: username.toLowerCase(),
-    email,
-    emailLowered: email.toLowerCase(),
-    emailVerified: faker.datatype.boolean(),
-    passwordHash: PasswordHash,
-    memberSince: faker.date.past(10),
+  const data = new UserEntity();
+  data.id = faker.datatype.uuid();
+  data.username = username;
+  data.usernameLowered = username.toLowerCase();
+  data.email = email;
+  data.emailLowered = email.toLowerCase();
+  data.emailVerified = faker.datatype.boolean();
+  data.passwordHash = PasswordHash;
+  data.memberSince = faker.date.past(10);
+  data.role =
+    faker.helpers.maybe(() => UserRole.Admin, { probability: 0.005 }) ??
+    UserRole.User;
+  data.isLockedOut =
+    faker.helpers.maybe(() => true, { probability: 0.05 }) ?? false;
 
-    // 0.5% of users will be admins.
-    role:
-      faker.helpers.maybe(() => UserRole.Admin, { probability: 0.005 }) ??
-      UserRole.User,
+  // Profile
+  data.avatar = faker.internet.avatar();
+  data.bio = faker.lorem.paragraph();
+  data.birthdate = dayjs(faker.date.past(50)).format('YYYY-MM-DD');
+  data.certifications = [];
+  data.name = `${firstName} ${lastName}`;
+  data.location = `${faker.address.city()}, ${faker.address.stateAbbr()}, ${faker.address.countryCode()}`;
+  data.experienceLevel = faker.helpers.arrayElement([
+    'Beginner',
+    'Novice',
+    'Experienced',
+    'Expert',
+  ]);
+  data.startedDiving = dayjs(faker.date.past(20)).format('YYYY-MM-DD');
 
-    // 5% of users will have their accounts suspended.
-    isLockedOut:
-      faker.helpers.maybe(() => true, { probability: 0.05 }) ?? false,
+  // Settings
+  data.depthUnit = faker.helpers.arrayElement(Object.values(DepthUnit));
+  data.pressureUnit = faker.helpers.arrayElement(Object.values(PressureUnit));
+  data.temperatureUnit = faker.helpers.arrayElement(
+    Object.values(TemperatureUnit),
+  );
+  data.weightUnit = faker.helpers.arrayElement(Object.values(WeightUnit));
+  data.profileVisibility = faker.helpers.arrayElement(
+    Object.values(ProfileVisibility),
+  );
 
-    profile: {
-      avatar: faker.internet.avatar(),
-      bio: faker.lorem.paragraph(),
-      birthdate: dayjs(faker.date.past(50)).format('YYYY-MM-DD'),
-      certifications: new Types.DocumentArray<{
-        agency: string;
-        course: string;
-        date: string | null | undefined;
-      }>([]),
-      name: `${firstName} ${lastName}`,
-      location: `${faker.address.city()}, ${faker.address.stateAbbr()}, ${faker.address.countryCode()}`,
-      experienceLevel: faker.helpers.arrayElement([
-        'Beginner',
-        'Novice',
-        'Experienced',
-        'Expert',
-      ]),
-      startedDiving: dayjs(faker.date.past(20)).format('YYYY-MM-DD'),
-    },
-    settings: {
-      depthUnit: faker.helpers.arrayElement(Object.values(DepthUnit)),
-      pressureUnit: faker.helpers.arrayElement(Object.values(PressureUnit)),
-      temperatureUnit: faker.helpers.arrayElement(
-        Object.values(TemperatureUnit),
-      ),
-      weightUnit: faker.helpers.arrayElement(Object.values(WeightUnit)),
-      profileVisibility: faker.helpers.arrayElement(
-        Object.values(ProfileVisibility),
-      ),
-    },
-  };
-
-  return new UserModel(data);
+  return data;
 }

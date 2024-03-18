@@ -1,10 +1,15 @@
 import { TankMaterial } from '@bottomtime/api';
-import { TankData, TankDocument, TankModel } from '../../../src/schemas';
-import { Tank } from '../../../src/tanks/tank';
 
-const UserId = 'D0A65997-9015-4F1E-BBB2-FA25B45CFC09';
-const TestData: TankData = {
-  _id: '55912587-8024-4F43-B527-9CB3740FF996',
+import { Repository } from 'typeorm';
+
+import { TankEntity, UserEntity } from '../../../src/data';
+import { Tank } from '../../../src/tanks/tank';
+import { dataSource } from '../../data-source';
+import { createTestUser } from '../../utils/create-test-user';
+
+const UserId = 'd0a65997-9015-4f1e-bbb2-fa25b45cfc09';
+const TestData: Partial<TankEntity> = {
+  id: '55912587-8024-4f43-b527-9cb3740ff996',
   name: 'Special Test Tank',
   material: TankMaterial.Aluminum,
   volume: 12.1,
@@ -12,53 +17,70 @@ const TestData: TankData = {
 };
 
 describe('Tank Class', () => {
-  let tankDocument: TankDocument;
+  let Tanks: Repository<TankEntity>;
+  let Users: Repository<UserEntity>;
+
+  let user: UserEntity;
+  let tankData: TankEntity;
   let tank: Tank;
 
-  beforeEach(() => {
-    tankDocument = new TankModel(TestData);
-    tank = new Tank(tankDocument);
+  beforeAll(() => {
+    Tanks = dataSource.getRepository(TankEntity);
+    Users = dataSource.getRepository(UserEntity);
+  });
+
+  beforeEach(async () => {
+    tankData = new TankEntity();
+    Object.assign(tankData, TestData);
+    tank = new Tank(Tanks, tankData);
+
+    user = createTestUser({ id: UserId });
+    await Users.save(user);
   });
 
   it('will return properties correctly', () => {
-    expect(tank.id).toBe(TestData._id);
+    expect(tank.id).toBe(TestData.id);
     expect(tank.name).toBe(TestData.name);
     expect(tank.material).toBe(TestData.material);
     expect(tank.volume).toBe(TestData.volume);
     expect(tank.workingPressure).toBe(TestData.workingPressure);
-    expect(tank.userId).toBeUndefined();
+    expect(tank.user).toBeNull();
     expect(tank.isSystem).toBe(true);
 
-    tankDocument.user = UserId;
-    expect(tank.userId).toBe(UserId);
+    tankData.user = user;
+    expect(tank.user?.userId).toBe(UserId);
     expect(tank.isSystem).toBe(false);
   });
 
   it('will create a new system-wide tank profile', async () => {
     await tank.save();
 
-    const result = await TankModel.findById(TestData._id);
-    expect(result).not.toBeNull();
-    expect(result!.id).toBe(TestData._id);
-    expect(result!.name).toBe(TestData.name);
-    expect(result!.material).toBe(TestData.material);
-    expect(result!.volume).toBe(TestData.volume);
-    expect(result!.workingPressure).toBe(TestData.workingPressure);
-    expect(result!.user).toBeUndefined();
+    const result = await Tanks.findOneOrFail({
+      relations: ['user'],
+      where: { id: TestData.id },
+    });
+    expect(result.id).toBe(TestData.id);
+    expect(result.name).toBe(TestData.name);
+    expect(result.material).toBe(TestData.material);
+    expect(result.volume).toBe(TestData.volume);
+    expect(result.workingPressure).toBe(TestData.workingPressure);
+    expect(result.user).toBeNull();
   });
 
   it('will create a new user-defined tank profile', async () => {
-    tankDocument.user = UserId;
+    tankData.user = user;
     await tank.save();
 
-    const result = await TankModel.findById(TestData._id);
-    expect(result).not.toBeNull();
-    expect(result!.id).toBe(TestData._id);
-    expect(result!.name).toBe(TestData.name);
-    expect(result!.material).toBe(TestData.material);
-    expect(result!.volume).toBe(TestData.volume);
-    expect(result!.workingPressure).toBe(TestData.workingPressure);
-    expect(result!.user).toBe(UserId);
+    const result = await Tanks.findOneOrFail({
+      relations: ['user'],
+      where: { id: TestData.id },
+    });
+    expect(result.id).toBe(TestData.id);
+    expect(result.name).toBe(TestData.name);
+    expect(result.material).toBe(TestData.material);
+    expect(result.volume).toBe(TestData.volume);
+    expect(result.workingPressure).toBe(TestData.workingPressure);
+    expect(result.user!.id).toEqual(user.id);
   });
 
   it('will update a tank profile', async () => {
@@ -70,21 +92,18 @@ describe('Tank Class', () => {
     tank.workingPressure = 140.5;
     await tank.save();
 
-    const result = await TankModel.findById(TestData._id);
-    expect(result).not.toBeNull();
-    expect(result!.id).toBe(TestData._id);
-    expect(result!.name).toBe('Updated Tank');
-    expect(result!.material).toBe(TankMaterial.Steel);
-    expect(result!.volume).toBe(13.22);
-    expect(result!.workingPressure).toBe(140.5);
+    const result = await Tanks.findOneByOrFail({ id: TestData.id });
+    expect(result.id).toBe(TestData.id);
+    expect(result.name).toBe('Updated Tank');
+    expect(result.material).toBe(TankMaterial.Steel);
+    expect(result.volume).toBe(13.22);
+    expect(result.workingPressure).toBe(140.5);
   });
 
   it('will delete a tank profile', async () => {
-    await tankDocument.save();
-
+    await Tanks.save(tankData);
     await expect(tank.delete()).resolves.toBe(true);
-
-    const result = await TankModel.findById(TestData._id);
+    const result = await Tanks.findOneBy({ id: TestData.id });
     expect(result).toBeNull();
   });
 
@@ -94,7 +113,7 @@ describe('Tank Class', () => {
 
   it('will return the JSON representation of the tank profile', () => {
     expect(tank.toJSON()).toEqual({
-      id: TestData._id,
+      id: TestData.id,
       name: TestData.name,
       material: TestData.material,
       volume: TestData.volume,

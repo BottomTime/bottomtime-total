@@ -2,17 +2,16 @@ import {
   AdminSearchUsersParamsDTO,
   SortOrder,
   UserRole,
-  UsersSortBy,
 } from '@bottomtime/api';
 
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { hash } from 'bcrypt';
-import { FilterQuery, Model } from 'mongoose';
+import { Repository } from 'typeorm';
 
 import { Config } from '../config';
-import { UserData, UserDocument, UserModelName } from '../schemas';
+import { UserEntity } from '../data';
 import { User } from '../users/user';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO;
@@ -26,60 +25,45 @@ export class AdminService {
   private readonly log = new Logger(AdminService.name);
 
   constructor(
-    @InjectModel(UserModelName)
-    private readonly Users: Model<UserData>,
+    @InjectRepository(UserEntity)
+    private readonly Users: Repository<UserEntity>,
   ) {}
 
-  private async findUser(
-    usernameOrEmail: string,
-  ): Promise<UserDocument | null> {
+  private async findUser(usernameOrEmail: string): Promise<UserEntity | null> {
     const lowered = usernameOrEmail.toLowerCase();
-    const user = await this.Users.findOne({
-      $or: [{ usernameLowered: lowered }, { emailLowered: lowered }],
-    });
+    const user = await this.Users.findOneBy([
+      { usernameLowered: lowered },
+      { emailLowered: lowered },
+    ]);
     return user;
   }
 
   async searchUsers(options: SearchUsersOptions): Promise<SearchUsersResults> {
-    const query: FilterQuery<UserData> = {};
+    let query = this.Users.createQueryBuilder('users');
 
     if (options.query) {
-      query.$text = {
-        $search: options.query,
-        $caseSensitive: false,
-        $diacriticSensitive: false,
-      };
+      query = query.andWhere(
+        "fulltext @@ websearch_to_tsquery('english', :query)",
+        {
+          query: options.query,
+        },
+      );
     }
 
     if (options.role) {
-      query.role = options.role;
+      query = query.andWhere({ role: options.role });
     }
 
-    let sort: { [key: string]: SortOrder };
-    switch (options.sortBy) {
-      case UsersSortBy.MemberSince:
-        sort = {
-          memberSince: options.sortOrder,
-        };
-        break;
+    query = query
+      .orderBy(
+        `users.${options.sortBy}`,
+        options.sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
+      )
+      .offset(options.skip)
+      .limit(options.limit ?? 100);
 
-      case UsersSortBy.Username:
-      default:
-        sort = {
-          username: options.sortOrder,
-        };
-        break;
-    }
-
-    const [users, totalCount] = await Promise.all([
-      this.Users.find(query)
-        .sort(sort)
-        .skip(options.skip)
-        .limit(options.limit)
-        .exec(),
-      this.Users.countDocuments(query).exec(),
-    ]);
-    this.Users.find();
+    this.log.verbose('Listing users using query:', query.getSql());
+    const [users, totalCount] = await query.getManyAndCount();
 
     return {
       users: users.map((user) => new User(this.Users, user)),
@@ -95,7 +79,7 @@ export class AdminService {
 
     if (user) {
       user.role = newRole;
-      await user.save();
+      await this.Users.save(user);
       return true;
     }
 
@@ -107,7 +91,7 @@ export class AdminService {
 
     if (user) {
       user.isLockedOut = true;
-      await user.save();
+      await this.Users.save(user);
       return true;
     }
 
@@ -125,7 +109,7 @@ export class AdminService {
     if (user) {
       user.passwordHash = await hash(newPassword, Config.passwordSaltRounds);
       user.lastPasswordChange = new Date();
-      await user.save();
+      await this.Users.save(user);
       return true;
     }
 
@@ -137,7 +121,7 @@ export class AdminService {
 
     if (user) {
       user.isLockedOut = false;
-      await user.save();
+      await this.Users.save(user);
       return true;
     }
 

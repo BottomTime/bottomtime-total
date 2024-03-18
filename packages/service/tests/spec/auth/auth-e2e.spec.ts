@@ -1,14 +1,19 @@
-import request from 'supertest';
-import { INestApplication } from '@nestjs/common';
-import { createTestApp } from '../../utils/create-test-app';
-import { createAuthHeader, createTestUser } from '../../utils';
-import { User } from '../../../src/users/user';
 import { CurrentUserSchema, UserSchema } from '@bottomtime/api';
-import { UserData, UserModel } from '../../../src/schemas';
+
+import { INestApplication } from '@nestjs/common';
+
+import request from 'supertest';
+import { Repository } from 'typeorm';
+
+import { UserEntity } from '../../../src/data';
+import { User } from '../../../src/users/user';
+import { dataSource } from '../../data-source';
+import { createAuthHeader, createTestUser } from '../../utils';
+import { createTestApp } from '../../utils/create-test-app';
 
 const Password = 'XTdc4LG,+5R/QTgb';
-const TestUserData: Partial<UserData> = {
-  _id: '4E64038D-0ABF-4C1A-B678-55F8AFCB6B2D',
+const TestUserData: Partial<UserEntity> = {
+  id: '4e64038d-0abf-4c1a-b678-55f8afcb6b2d',
   username: 'DonkeyKong33',
   usernameLowered: 'donkeykong33',
   email: 'dk@aol.com',
@@ -17,10 +22,14 @@ const TestUserData: Partial<UserData> = {
 };
 
 describe('Auth Module E2E Tests', () => {
+  let Users: Repository<UserEntity>;
+
   let app: INestApplication;
   let server: unknown;
 
   beforeAll(async () => {
+    Users = dataSource.getRepository(UserEntity);
+
     app = await createTestApp();
     server = app.getHttpServer();
   });
@@ -35,10 +44,10 @@ describe('Auth Module E2E Tests', () => {
   });
 
   it('will return the currently logged in user', async () => {
-    const userDocument = createTestUser();
-    const user = new User(UserModel, userDocument);
+    const userData = createTestUser();
+    const user = new User(Users, userData);
     const authHeader = await createAuthHeader(user.id);
-    await userDocument.save();
+    await Users.save(userData);
 
     const { body } = await request(server)
       .get('/api/auth/me')
@@ -53,9 +62,9 @@ describe('Auth Module E2E Tests', () => {
 
   it('will login a user with username and password', async () => {
     const userData = createTestUser(TestUserData);
-    const user = new User(UserModel, userData);
+    const user = new User(Users, userData);
     const agent = request.agent(server);
-    await userData.save();
+    await Users.save(userData);
 
     const { body: loginResponse } = await agent
       .post('/api/auth/login')
@@ -65,7 +74,7 @@ describe('Auth Module E2E Tests', () => {
       })
       .expect(200);
     const login = UserSchema.parse(loginResponse);
-    userData.lastLogin = login.lastLogin;
+    userData.lastLogin = login.lastLogin!;
 
     // Last login should be updated.
     expect(login.lastLogin?.valueOf()).toBeCloseTo(Date.now(), -2);
@@ -85,7 +94,7 @@ describe('Auth Module E2E Tests', () => {
   it('will return a 401 error if password is incorrect', async () => {
     const userData = createTestUser(TestUserData);
     const agent = request.agent(server);
-    await userData.save();
+    await Users.save(userData);
 
     await agent
       .post('/api/auth/login')
@@ -108,7 +117,7 @@ describe('Auth Module E2E Tests', () => {
       isLockedOut: true,
     });
     const agent = request.agent(server);
-    await userData.save();
+    await Users.save(userData);
 
     await agent
       .post('/api/auth/login')

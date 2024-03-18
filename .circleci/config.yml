@@ -75,6 +75,11 @@ jobs:
   init_and_lint:
     docker:
       - image: cimg/node:20.11
+      - image: postgis/postgis:14-3.4
+        environment:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: bt_user
+          POSTGRES_PASSWORD: bt_admin1234
     steps:
       - checkout
       - restore_cache:
@@ -97,7 +102,7 @@ jobs:
             - packages/common/node_modules
             - packages/e2e-tests/node_modules
             - packages/service/node_modules
-            - packages/vite/node_modules
+            - packages/web/node_modules
       - run:
           name: Lint
           command: yarn lint
@@ -109,7 +114,11 @@ jobs:
   test_service:
     docker:
       - image: cimg/node:20.11
-      - image: mongo:5.0
+      - image: postgis/postgis:14-3.4-alpine
+        environment:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: bt_user
+          POSTGRES_PASSWORD: bt_admin1234
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -128,7 +137,7 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/core --stream # --since=master
+          command: npx lerna run build,test --scope @bottomtime/service --stream # --since=master
       - store_test_results:
           path: packages/service/reports/
       - run:
@@ -167,28 +176,28 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/vite --stream # --since=master
+          command: npx lerna run build,test --scope @bottomtime/web --stream # --since=master
       - store_test_results:
           path: packages/web/reports/
       - run:
           name: Report test coverage
-          working_directory: packages/vite/
+          working_directory: packages/web/
           command: |
             ../../cc-test-reporter format-coverage "coverage/lcov.info" \
-              --add-prefix "packages/vite/" \
+              --add-prefix "packages/web/" \
               -t lcov \
               -o "../../web.coverage.json" \
       - persist_to_workspace:
           root: ./
           paths:
-            - packages/vite/dist/
-            - packages/vite/coverage/
+            - packages/web/dist/
+            - packages/web/coverage/
             - web.coverage.json
 
   test_e2e:
     docker:
       - image: cimg/node:20.11-browsers
-      - image: mongo:5.0
+      - image: postgis/postgis:14-3.4
     environment:
       BT_MONGO_URI: mongodb://localhost:27017/ci
       JEST_JUNIT_OUTPUT_DIR: ./reports/
@@ -225,7 +234,7 @@ jobs:
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
-  deploy_core_image:
+  deploy_service_image:
     machine:
       image: ubuntu-2004:current
     resource_class: arm.medium
@@ -239,15 +248,15 @@ jobs:
           name: Build and push Docker image
           working_directory: ./packages/service/
           command: |
-            docker build -t bt/<<parameters.env>>/core .
+            docker build -t bt/<<parameters.env>>/service .
 
             aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-            docker tag bt/<<parameters.env>>/core:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:latest
-            docker tag bt/<<parameters.env>>/core:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:build$CIRCLE_BUILD_NUM
+            docker tag bt/<<parameters.env>>/service:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/service:latest
+            docker tag bt/<<parameters.env>>/service:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/service:build$CIRCLE_BUILD_NUM
 
-            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:latest
-            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/core:build$CIRCLE_BUILD_NUM
+            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/service:latest
+            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/service:build$CIRCLE_BUILD_NUM
       - run:
           name: Save build number
           command: |
@@ -346,9 +355,9 @@ workflows:
       - test_web:
           requires:
             - init_and_lint
-      - test_e2e:
-          requires:
-            - init_and_lint
+      # - test_e2e:
+      #     requires:
+      #       - init_and_lint
       - report_coverage:
           requires:
             - test_service

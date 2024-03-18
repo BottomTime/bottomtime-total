@@ -9,15 +9,16 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { FriendModel, UserData, UserDocument, UserModel } from '@/schemas';
-import { User } from '@/users';
 import { INestApplication } from '@nestjs/common';
 
 import { compare } from 'bcrypt';
-import { Types } from 'mongoose';
 import request from 'supertest';
+import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
+import { FriendshipEntity, UserEntity } from '../../../src/data';
+import { User } from '../../../src/users';
+import { dataSource } from '../../data-source';
 import {
   TestMailer,
   createAuthHeader,
@@ -33,9 +34,9 @@ function requestUrl(username?: string): string {
 
 const TwoDaysInMs = 1000 * 60 * 60 * 24 * 2;
 
-const AdminUserId = 'F3669787-82E5-458F-A8AD-98D3F57DDA6E';
-const AdminUserData: UserData = {
-  _id: AdminUserId,
+const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
+const AdminUserData: Partial<UserEntity> = {
+  id: AdminUserId,
   email: 'admin@site.org',
   emailLowered: 'admin@site.org',
   emailVerified: true,
@@ -44,15 +45,13 @@ const AdminUserData: UserData = {
   role: UserRole.Admin,
   username: 'Admin',
   usernameLowered: 'admin',
-  settings: {
-    profileVisibility: ProfileVisibility.Private,
-  },
+  profileVisibility: ProfileVisibility.Private,
 };
 
 const RegularUserPassword = 'wJ5]6H<w44,5';
-const RegularUserId = '5A4699D8-48C4-4410-9886-B74B8B85CAC1';
-const RegularUserData: UserData = {
-  _id: RegularUserId,
+const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
+const RegularUserData: Partial<UserEntity> = {
+  id: RegularUserId,
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date(),
@@ -62,29 +61,18 @@ const RegularUserData: UserData = {
   email: 'RoflCopter17@gmail.com',
   emailLowered: 'roflcopter17@gmail.com',
   passwordHash: '$2b$04$EIK2SpqsdmO.nwAOPJ9wt.9o2z732N9s23pLrdPxz8kqXB1A3yhdS',
-  profile: {
-    avatar: 'https://example.com/avatar.png',
-    bio: 'This is a test user.',
-    birthdate: '1980-01-01',
-    certifications: new Types.DocumentArray([
-      {
-        agency: 'PADI',
-        course: 'Open Water Diver',
-        date: '2000-01-01',
-      },
-    ]),
-    experienceLevel: 'Advanced',
-    location: 'Seattle, WA',
-    name: 'Joe Regular',
-    startedDiving: '2000-01-01',
-  },
-  settings: {
-    depthUnit: DepthUnit.Meters,
-    pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.FriendsOnly,
-    temperatureUnit: TemperatureUnit.Celsius,
-    weightUnit: WeightUnit.Kilograms,
-  },
+  avatar: 'https://example.com/avatar.png',
+  bio: 'This is a test user.',
+  birthdate: '1980-01-01',
+  experienceLevel: 'Advanced',
+  location: 'Seattle, WA',
+  name: 'Joe Regular',
+  startedDiving: '2000-01-01',
+  depthUnit: DepthUnit.Meters,
+  pressureUnit: PressureUnit.Bar,
+  profileVisibility: ProfileVisibility.FriendsOnly,
+  temperatureUnit: TemperatureUnit.Celsius,
+  weightUnit: WeightUnit.Kilograms,
 };
 
 describe('Users End-to-End Tests', () => {
@@ -93,8 +81,12 @@ describe('Users End-to-End Tests', () => {
   let adminAuthHeader: [string, string];
   let regualarAuthHeader: [string, string];
   let mailClient: TestMailer;
-  let adminUser: UserDocument;
-  let regularUser: UserDocument;
+
+  let Users: Repository<UserEntity>;
+  let Friends: Repository<FriendshipEntity>;
+
+  let adminUser: UserEntity;
+  let regularUser: UserEntity;
 
   beforeAll(async () => {
     mailClient = new TestMailer();
@@ -102,14 +94,18 @@ describe('Users End-to-End Tests', () => {
       mailClient,
     });
     server = app.getHttpServer();
+
     adminAuthHeader = await createAuthHeader(AdminUserId);
     regualarAuthHeader = await createAuthHeader(RegularUserId);
+
+    Users = dataSource.getRepository(UserEntity);
+    Friends = dataSource.getRepository(FriendshipEntity);
   });
 
   beforeEach(async () => {
-    adminUser = new UserModel(AdminUserData);
-    regularUser = new UserModel(RegularUserData);
-    await UserModel.insertMany([adminUser, regularUser]);
+    adminUser = createTestUser(AdminUserData);
+    regularUser = createTestUser(RegularUserData);
+    await Users.save([adminUser, regularUser]);
   });
 
   afterEach(() => {
@@ -137,23 +133,24 @@ describe('Users End-to-End Tests', () => {
           : 'anonymous'
       } and the profile visibility is set to "${visibility}"`, async () => {
         const data = createTestUser({
-          settings: { profileVisibility: visibility },
+          profileVisibility: visibility,
         });
-        const user = new User(UserModel, data);
+        const user = new User(Users, data);
         const expected = JSON.parse(JSON.stringify(user.profile));
         const friendsSince = new Date();
-        await data.save();
-        await FriendModel.insertMany([
-          new FriendModel({
-            _id: 'D5A06BA4-C826-4EB6-A257-5C0A98F37721',
-            userId: RegularUserId,
-            friendId: data._id,
+
+        await Users.save(data);
+        await Promise.all([
+          Friends.save({
+            id: 'd5a06ba4-c826-4eb6-a257-5c0a98f37721',
+            user: regularUser,
+            friend: data,
             friendsSince,
           }),
-          new FriendModel({
-            _id: '52730A5D-4F7C-4E9D-90CA-C53268CD8134',
-            userId: data._id,
-            friendId: RegularUserId,
+          Friends.save({
+            id: '52730a5d-4f7c-4e9d-90ca-c53268cd8134',
+            user: data,
+            friend: regularUser,
             friendsSince,
           }),
         ]);
@@ -187,9 +184,9 @@ describe('Users End-to-End Tests', () => {
         role ? 'a regular user' : 'anonymous'
       } and the profile visibility is set to "${visibility}"`, async () => {
         const data = createTestUser({
-          settings: { profileVisibility: visibility },
+          profileVisibility: visibility,
         });
-        await data.save();
+        await Users.save(data);
 
         if (role) {
           await request(server)
@@ -232,13 +229,6 @@ describe('Users End-to-End Tests', () => {
           avatar: 'https://example.com/avatar.png',
           bio: 'This is a test user.',
           birthdate: '1980-01-01',
-          certifications: [
-            {
-              agency: 'PADI',
-              course: 'Open Water Diver',
-              date: '2000-01-01',
-            },
-          ],
           experienceLevel: 'Advanced',
           location: 'Seattle, WA',
           name: 'User McUserface',
@@ -253,7 +243,7 @@ describe('Users End-to-End Tests', () => {
 
       expect(user).toMatchSnapshot();
 
-      const savedUser = await UserModel.findById(user.id);
+      const savedUser = await Users.findOneBy({ id: user.id });
       await expect(
         compare(options.password!, savedUser!.passwordHash!),
       ).resolves.toBe(true);
@@ -280,7 +270,7 @@ describe('Users End-to-End Tests', () => {
         .expect(201);
       expect(user).toMatchSnapshot();
 
-      const savedUser = await UserModel.findById(user.id);
+      const savedUser = await Users.findOneBy({ id: user.id });
       expect(savedUser).not.toBeNull();
       expect(savedUser).toMatchSnapshot();
 
@@ -333,7 +323,7 @@ describe('Users End-to-End Tests', () => {
 
     it('will return a 409 response if the username is already in use', async () => {
       const options: CreateUserParamsDTO = {
-        username: RegularUserData.username.toUpperCase(),
+        username: RegularUserData.username!.toUpperCase(),
         email: 'new_User@gmail.com',
         password: 'Str0ng_Password123!',
       };
@@ -528,7 +518,7 @@ describe('Users End-to-End Tests', () => {
         .expect(200);
       expect(succeeded).toBe(true);
 
-      const savedUser = await UserModel.findById(RegularUserId);
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.passwordHash).toBeDefined();
       await expect(
         compare(newPassword, savedUser!.passwordHash!),
@@ -546,7 +536,7 @@ describe('Users End-to-End Tests', () => {
 
       expect(succeeded).toBe(false);
 
-      const savedUser = await UserModel.findById(RegularUserId);
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.passwordHash).toBeDefined();
       const derp = await compare(
         RegularUserPassword,
@@ -612,7 +602,7 @@ describe('Users End-to-End Tests', () => {
         .expect(202);
       expect(succeeded).toBe(true);
 
-      const savedUser = await UserModel.findById(RegularUserId);
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.emailVerificationToken).toBeDefined();
       expect(
         savedUser?.emailVerificationTokenExpiration?.valueOf(),
@@ -629,7 +619,7 @@ describe('Users End-to-End Tests', () => {
 
     it('will do nothing if email address is already verified', async () => {
       regularUser.emailVerified = true;
-      await regularUser.save();
+      await Users.save(regularUser);
 
       const {
         body: { succeeded },
@@ -639,15 +629,15 @@ describe('Users End-to-End Tests', () => {
         .expect(202);
       expect(succeeded).toBe(false);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(savedUser?.emailVerificationToken).toBeUndefined();
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
+      expect(savedUser?.emailVerificationToken).toBeNull();
       expect(mailClient.sentMail).toHaveLength(0);
     });
 
     it('will do nothing if user does not have an email address on their account', async () => {
-      regularUser.email = undefined;
-      regularUser.emailLowered = undefined;
-      await regularUser.save();
+      regularUser.email = null;
+      regularUser.emailLowered = null;
+      await Users.save(regularUser);
 
       const {
         body: { succeeded },
@@ -657,8 +647,8 @@ describe('Users End-to-End Tests', () => {
         .expect(202);
       expect(succeeded).toBe(false);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(savedUser?.emailVerificationToken).toBeUndefined();
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
+      expect(savedUser?.emailVerificationToken).toBeNull();
       expect(mailClient.sentMail).toHaveLength(0);
     });
 
@@ -686,14 +676,14 @@ describe('Users End-to-End Tests', () => {
       regularUser.emailVerificationTokenExpiration = new Date(
         Date.now() + 10000,
       );
-      await regularUser.save();
+      await Users.save(regularUser);
 
       const {
         body: { succeeded },
       } = await request(server).post(verifyUrl).send({ token }).expect(200);
       expect(succeeded).toBe(true);
 
-      const savedUser = await UserModel.findById(RegularUserId);
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.emailVerified).toBe(true);
       expect(savedUser?.emailVerificationToken).toBeNull();
       expect(savedUser?.emailVerificationTokenExpiration).toBeNull();
@@ -706,14 +696,14 @@ describe('Users End-to-End Tests', () => {
       regularUser.emailVerificationTokenExpiration = new Date(
         Date.now() - 10000,
       );
-      await regularUser.save();
+      await Users.save(regularUser);
 
       const {
         body: { succeeded },
       } = await request(server).post(verifyUrl).send({ token }).expect(200);
       expect(succeeded).toBe(false);
 
-      const savedUser = await UserModel.findById(RegularUserId);
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.emailVerified).toBe(false);
     });
 
@@ -745,7 +735,7 @@ describe('Users End-to-End Tests', () => {
     it('will request a password token', async () => {
       await request(server).post(requestTokenUrl).expect(204);
 
-      const savedUser = await UserModel.findById(RegularUserId);
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.passwordResetToken).toBeDefined();
       expect(savedUser?.passwordResetTokenExpiration?.valueOf()).toBeCloseTo(
         Date.now() + TwoDaysInMs,
@@ -771,7 +761,7 @@ describe('Users End-to-End Tests', () => {
       const token = 'abcd1234';
       regularUser.passwordResetToken = token;
       regularUser.passwordResetTokenExpiration = new Date(Date.now() + 10000);
-      await regularUser.save();
+      await Users.save(regularUser);
 
       const {
         body: { succeeded },
@@ -781,7 +771,7 @@ describe('Users End-to-End Tests', () => {
         .expect(200);
       expect(succeeded).toBe(true);
 
-      const savedUser = await UserModel.findById(RegularUserId);
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.passwordHash).toBeDefined();
       expect(savedUser?.passwordResetToken).toBeNull();
       expect(savedUser?.passwordResetTokenExpiration).toBeNull();
@@ -794,7 +784,7 @@ describe('Users End-to-End Tests', () => {
       const token = 'abcd1234';
       regularUser.passwordResetToken = token;
       regularUser.passwordResetTokenExpiration = new Date(Date.now() - 10000);
-      await regularUser.save();
+      await Users.save(regularUser);
 
       const {
         body: { succeeded },
@@ -804,7 +794,7 @@ describe('Users End-to-End Tests', () => {
         .expect(200);
       expect(succeeded).toBe(false);
 
-      const savedUser = await UserModel.findById(RegularUserId);
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
       await expect(
         compare(RegularUserPassword, savedUser!.passwordHash!),
       ).resolves.toBe(true);
@@ -838,18 +828,6 @@ describe('Users End-to-End Tests', () => {
       avatar: 'https://avatars.com/my_picture.jpg',
       bio: 'I really like diving and updating profiles.',
       birthdate: '1992-03-30',
-      certifications: [
-        {
-          agency: 'PADI',
-          course: 'Open Water Diver',
-          date: '2000-01-01',
-        },
-        {
-          agency: 'PADI',
-          course: 'Advanced Open Water Diver',
-          date: '2002-01-01',
-        },
-      ],
       experienceLevel: 'Mega Expert',
       location: 'Vancouver, BC',
       name: 'Joe Exotic',
@@ -863,27 +841,18 @@ describe('Users End-to-End Tests', () => {
         .send(newProfileInfo)
         .expect(204);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(JSON.parse(JSON.stringify(savedUser?.profile))).toEqual(
-        newProfileInfo,
-      );
+      const savedUser = await Users.findOneBy({ id: RegularUserId });
+      expect(savedUser).toEqual({
+        ...regularUser,
+        ...newProfileInfo,
+        certifications: undefined,
+        fulltext: undefined,
+      });
     });
 
     it('will allow partial updates to profile information', async () => {
       const newProfileInfo: UpdateProfileParamsDTO = {
         bio: 'I really like diving and updating profiles.',
-        certifications: [
-          {
-            agency: 'PADI',
-            course: 'Open Water Diver',
-            date: '2000-01-01',
-          },
-          {
-            agency: 'PADI',
-            course: 'Advanced Open Water Diver',
-            date: '2002-01-01',
-          },
-        ],
         experienceLevel: 'Mega Expert',
       };
 
@@ -893,10 +862,12 @@ describe('Users End-to-End Tests', () => {
         .send(newProfileInfo)
         .expect(204);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(JSON.parse(JSON.stringify(savedUser?.profile))).toEqual({
-        ...RegularUserData.profile,
+      const savedUser = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(savedUser).toEqual({
+        ...regularUser,
         ...newProfileInfo,
+        certifications: undefined,
+        fulltext: undefined,
       });
     });
 
@@ -904,12 +875,36 @@ describe('Users End-to-End Tests', () => {
       await request(server)
         .put(profileUrl)
         .set(...regualarAuthHeader)
+        .send({
+          avatar: null,
+          bio: null,
+          birthdate: null,
+          certifications: [
+            { agency: 'PADI', course: 'Open Water Diver', date: '2000-01-01' },
+          ],
+          experienceLevel: null,
+          location: null,
+          name: null,
+          startedDiving: null,
+        })
         .expect(204);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(JSON.parse(JSON.stringify(savedUser?.profile))).toEqual({
-        certifications: [],
+      const expected = new UserEntity();
+      const actual = await Users.findOneOrFail({
+        where: { id: RegularUserId },
+        select: [
+          'avatar',
+          'bio',
+          'birthdate',
+          'experienceLevel',
+          'location',
+          'memberSince',
+          'name',
+          'startedDiving',
+        ],
       });
+      actual.memberSince = expected.memberSince;
+      expect(actual).toEqual(expected);
     });
 
     it('will allow admins to update another user profile', async () => {
@@ -919,10 +914,25 @@ describe('Users End-to-End Tests', () => {
         .send(newProfileInfo)
         .expect(204);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(JSON.parse(JSON.stringify(savedUser?.profile))).toEqual(
-        newProfileInfo,
-      );
+      const expected = new UserEntity();
+      Object.assign(expected, newProfileInfo);
+
+      const actual = await Users.findOneOrFail({
+        where: { id: RegularUserId },
+        select: [
+          'avatar',
+          'bio',
+          'birthdate',
+          'experienceLevel',
+          'location',
+          'memberSince',
+          'name',
+          'startedDiving',
+        ],
+      });
+      actual.memberSince = expected.memberSince;
+      actual.certifications = expected.certifications;
+      expect(actual).toEqual(expected);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -997,6 +1007,7 @@ describe('Users End-to-End Tests', () => {
 
     it('will update settings with new values', async () => {
       const newSettings = {
+        certifications: undefined,
         depthUnit: DepthUnit.Feet,
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
@@ -1009,10 +1020,22 @@ describe('Users End-to-End Tests', () => {
         .send(newSettings)
         .expect(204);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(JSON.parse(JSON.stringify(savedUser?.settings))).toEqual(
-        newSettings,
-      );
+      const actual = await Users.findOneOrFail({
+        where: { id: RegularUserId },
+        select: [
+          'depthUnit',
+          'pressureUnit',
+          'temperatureUnit',
+          'weightUnit',
+          'profileVisibility',
+        ],
+      });
+
+      expect(actual.depthUnit).toBe(newSettings.depthUnit);
+      expect(actual.pressureUnit).toBe(newSettings.pressureUnit);
+      expect(actual.temperatureUnit).toBe(newSettings.temperatureUnit);
+      expect(actual.weightUnit).toBe(newSettings.weightUnit);
+      expect(actual.profileVisibility).toBe(newSettings.profileVisibility);
     });
 
     it('will allow a partial update of settings', async () => {
@@ -1026,15 +1049,17 @@ describe('Users End-to-End Tests', () => {
         .send(newSettings)
         .expect(204);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(JSON.parse(JSON.stringify(savedUser?.settings))).toEqual({
-        ...RegularUserData.settings,
-        ...newSettings,
-      });
+      const savedUser = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(savedUser.depthUnit).toBe(regularUser.depthUnit);
+      expect(savedUser.pressureUnit).toBe(newSettings.pressureUnit);
+      expect(savedUser.temperatureUnit).toBe(regularUser.temperatureUnit);
+      expect(savedUser.weightUnit).toBe(regularUser.weightUnit);
+      expect(savedUser.profileVisibility).toBe(newSettings.profileVisibility);
     });
 
     it("will allow admins to update another user's settings", async () => {
       const newSettings = {
+        certifications: undefined,
         depthUnit: DepthUnit.Feet,
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
@@ -1047,10 +1072,25 @@ describe('Users End-to-End Tests', () => {
         .send(newSettings)
         .expect(204);
 
-      const savedUser = await UserModel.findById(RegularUserId);
-      expect(JSON.parse(JSON.stringify(savedUser?.settings))).toEqual(
-        newSettings,
-      );
+      const expected = new UserEntity();
+      Object.assign(expected, newSettings);
+
+      const actual = await Users.findOneOrFail({
+        where: { id: RegularUserId },
+        select: [
+          'depthUnit',
+          'pressureUnit',
+          'temperatureUnit',
+          'weightUnit',
+          'profileVisibility',
+        ],
+      });
+
+      expect(actual.depthUnit).toBe(expected.depthUnit);
+      expect(actual.pressureUnit).toBe(expected.pressureUnit);
+      expect(actual.temperatureUnit).toBe(expected.temperatureUnit);
+      expect(actual.weightUnit).toBe(expected.weightUnit);
+      expect(actual.profileVisibility).toBe(expected.profileVisibility);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -1127,4 +1167,6 @@ describe('Users End-to-End Tests', () => {
         .expect(404);
     });
   });
+
+  it.todo('Get certifications working');
 });

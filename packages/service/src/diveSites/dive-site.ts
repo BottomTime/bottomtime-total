@@ -1,31 +1,27 @@
 import { DiveSiteDTO, SuccinctProfileDTO } from '@bottomtime/api';
 
 import { Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import { Model } from 'mongoose';
+import { Repository } from 'typeorm';
 
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
-import { UserData } from '../schemas';
-import { DiveSiteData, DiveSiteDocument } from '../schemas/dive-sites.document';
+import { DiveSiteEntity } from '../data';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
-export type PopulatedDiveSiteDocument = Omit<DiveSiteDocument, 'creator'> & {
-  creator:
-    | Pick<UserData, '_id' | 'username' | 'memberSince' | 'profile'>
-    | string;
-};
 
 export class DiveSite {
   private readonly log = new Logger(DiveSite.name);
 
   constructor(
-    private readonly diveSites: Model<DiveSiteData>,
-    private readonly data: PopulatedDiveSiteDocument,
+    @InjectRepository(DiveSiteEntity)
+    private readonly DiveSites: Repository<DiveSiteEntity>,
+    private readonly data: DiveSiteEntity,
   ) {}
 
   // READ-ONLY METADATA
   get id(): string {
-    return this.data._id;
+    return this.data.id;
   }
 
   get createdOn(): Date {
@@ -37,17 +33,13 @@ export class DiveSite {
   }
 
   get creator(): SuccinctProfileDTO {
-    if (typeof this.data.creator === 'string') {
-      throw new Error(`DiveSite.creator is not populated ${this.data.creator}`);
-    }
-
     if (!this.data.creator) {
       // Populate failed. The user record is missing. This should never happen.
       return AnonymousUserProfile;
     }
 
     return {
-      userId: this.data.creator._id,
+      userId: this.data.creator.id,
       username: this.data.creator.username,
       memberSince: this.data.creator.memberSince,
     };
@@ -70,36 +62,42 @@ export class DiveSite {
   }
 
   get description(): string | undefined {
-    return this.data.description ?? undefined;
+    return this.data.description || undefined;
   }
   set description(val: string | undefined) {
-    this.data.description = val;
+    this.data.description = val || null;
   }
 
   get depth(): Depth | undefined {
-    return this.data.depth
+    return typeof this.data.depth === 'number' && this.data.depthUnit
       ? {
-          depth: this.data.depth.depth,
-          unit: this.data.depth.unit,
+          depth: this.data.depth,
+          unit: this.data.depthUnit,
         }
       : undefined;
   }
   set depth(val: Depth | undefined) {
-    this.data.depth = val;
+    if (val) {
+      this.data.depth = val.depth;
+      this.data.depthUnit = val.unit;
+    } else {
+      this.data.depth = null;
+      this.data.depthUnit = null;
+    }
   }
 
   get freeToDive(): boolean | undefined {
     return this.data.freeToDive ?? undefined;
   }
   set freeToDive(val: boolean | undefined) {
-    this.data.freeToDive = val;
+    this.data.freeToDive = typeof val === 'boolean' ? val : null;
   }
 
   get shoreAccess(): boolean | undefined {
     return this.data.shoreAccess ?? undefined;
   }
   set shoreAccess(val: boolean | undefined) {
-    this.data.shoreAccess = val;
+    this.data.shoreAccess = typeof val === 'boolean' ? val : null;
   }
 
   // LOCATION INFO
@@ -114,7 +112,7 @@ export class DiveSite {
     return this.data.directions ?? undefined;
   }
   set directions(val: string | undefined) {
-    this.data.directions = val;
+    this.data.directions = val || null;
   }
 
   get gps(): GpsCoordinates | undefined {
@@ -134,20 +132,18 @@ export class DiveSite {
         coordinates: [val.lon, val.lat],
       };
     } else {
-      this.data.gps = val;
+      this.data.gps = null;
     }
   }
 
   async save(): Promise<void> {
-    if (!this.data.isNew) {
-      this.data.updatedOn = new Date();
-    }
-    await this.data.save();
+    this.data.updatedOn = new Date();
+    await this.DiveSites.save(this.data);
   }
 
   async delete(): Promise<boolean> {
-    const { deletedCount } = await this.data.deleteOne();
-    return deletedCount > 0;
+    const { affected } = await this.DiveSites.delete({ id: this.id });
+    return typeof affected === 'number' && affected > 0;
   }
 
   toJSON(): DiveSiteDTO {

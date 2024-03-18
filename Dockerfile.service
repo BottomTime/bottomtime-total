@@ -1,0 +1,31 @@
+FROM node:20 AS build
+
+WORKDIR /app
+
+COPY package.json yarn.lock nx.json lerna.json ./
+COPY packages/service/package.json packages/service/yarn.lock packages/service/tsconfig.json ./packages/service/
+COPY packages/common/package.json packages/common/yarn.lock packages/common/tsconfig.json ./packages/common/
+COPY packages/api/package.json packages/api/yarn.lock packages/api/tsconfig.json ./packages/api/
+
+RUN yarn install --frozen-lockfile
+
+COPY packages/service/bootstrap-docker.sh packages/service/swaggerDefinition.cjs packages/service/data-source.ts ./packages/service/
+COPY packages/service/admin/ ./packages/service/admin/
+COPY packages/service/public/ ./packages/service/public/
+COPY packages/service/migrations/ ./packages/service/migrations/
+COPY packages/service/assets/ ./packages/service/assets/
+
+COPY packages/common/src/ ./packages/common/src/
+COPY packages/api/src/ ./packages/api/src/
+COPY packages/service/src/ ./packages/service/src/
+
+RUN yarn build
+RUN yarn --cwd packages/service/ docs
+
+FROM node:20 AS release
+COPY --from=build /app/ /app/
+WORKDIR /app/packages/service/
+
+EXPOSE 4800
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "curl", "http://localhost:4800/health" ]
+ENTRYPOINT ["./bootstrap-docker.sh"]

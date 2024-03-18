@@ -138,12 +138,6 @@ export class Config {
     return process.env.BT_LOG_LEVEL ?? 'debug';
   }
 
-  static get mongoUri(): string {
-    return (
-      process.env.BT_MONGO_URI ?? 'mongodb://127.0.0.1:27017/bottomtime-local'
-    );
-  }
-
   static get passwordSaltRounds(): number {
     return toNumber(process.env.BT_PASSWORD_SALT_ROUNDS, 15);
   }
@@ -151,5 +145,12 @@ export class Config {
   /** Returns the TCP port number on which the service will listen for connections. */
   static get port(): number {
     return toNumber(process.env.BT_PORT, 4800);
+  }
+
+  static get postgresUri(): string {
+    return (
+      process.env.BT_POSTGRES_URI ??
+      'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_local'
+    );
   }
 }

@@ -1,14 +1,14 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import { DynamicModule, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import path from 'path';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { AdminModule } from './admin';
 import { AuthModule } from './auth/auth.module';
-import { Config } from './config';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
@@ -18,6 +18,7 @@ import { TanksModule } from './tanks/tanks.module';
 import { UsersModule } from './users';
 
 export type ServerDependencies = {
+  dataSource: DataSourceOptions;
   mailClient: IMailClient;
   s3Client: S3Client;
 };
@@ -37,7 +38,13 @@ export class AppModule {
             index: 'index.html',
           },
         }),
-        MongooseModule.forRoot(Config.mongoUri),
+        TypeOrmModule.forRootAsync({
+          useFactory: () => deps.dataSource,
+          dataSourceFactory: async (options?: DataSourceOptions) => {
+            const ds = new DataSource(options ?? deps.dataSource);
+            return await ds.initialize();
+          },
+        }),
         PassportModule.register({
           session: false,
         }),

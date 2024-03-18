@@ -1,18 +1,18 @@
-import { HttpServer, INestApplication } from '@nestjs/common';
-import {
-  CertificationDocument,
-  CertificationModel,
-  UserData,
-  UserModel,
-} from '../../../src/schemas';
-import { createAuthHeader, createTestApp } from '../../utils';
-import CertificationTestData from '../../fixtures/certifications.json';
-import request from 'supertest';
 import { UserRole } from '@bottomtime/api';
 
-const RegularUserId = '5A4699D8-48C4-4410-9886-B74B8B85CAC1';
-const RegularUserData: UserData = {
-  _id: RegularUserId,
+import { HttpServer, INestApplication } from '@nestjs/common';
+
+import request from 'supertest';
+import { Repository } from 'typeorm';
+
+import { CertificationEntity, UserEntity } from '../../../src/data';
+import { dataSource } from '../../data-source';
+import CertificationTestData from '../../fixtures/certifications.json';
+import { createAuthHeader, createTestApp } from '../../utils';
+
+const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
+const RegularUserData: Partial<UserEntity> = {
+  id: RegularUserId,
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date(),
@@ -22,22 +22,34 @@ const RegularUserData: UserData = {
 };
 
 describe('Certifications End-to-End', () => {
+  let Users: Repository<UserEntity>;
+  let Certifications: Repository<CertificationEntity>;
+
   let app: INestApplication;
   let server: HttpServer;
-  let certifications: CertificationDocument[];
+  let certData: CertificationEntity[];
   let regularAuthHeader: [string, string];
+  let regularUser: UserEntity;
 
   beforeAll(async () => {
+    Users = dataSource.getRepository(UserEntity);
+    Certifications = dataSource.getRepository(CertificationEntity);
+
     app = await createTestApp();
     server = app.getHttpServer();
-    certifications = CertificationTestData.map(
-      (cert) => new CertificationModel(cert),
-    );
+    certData = CertificationTestData.map((data) => {
+      const cert = new CertificationEntity();
+      Object.assign(cert, data);
+      return cert;
+    });
     regularAuthHeader = await createAuthHeader(RegularUserId);
+
+    regularUser = new UserEntity();
+    Object.assign(regularUser, RegularUserData);
   });
 
   beforeEach(async () => {
-    await UserModel.insertMany([new UserModel(RegularUserData)]);
+    await Users.save(regularUser);
   });
 
   afterAll(async () => {
@@ -46,7 +58,11 @@ describe('Certifications End-to-End', () => {
 
   describe('when searching certifications', () => {
     beforeEach(async () => {
-      await CertificationModel.insertMany(certifications);
+      await Certifications.createQueryBuilder()
+        .insert()
+        .into(CertificationEntity)
+        .values(certData)
+        .execute();
     });
 
     it('will list all certifications by default', async () => {
@@ -109,12 +125,12 @@ describe('Certifications End-to-End', () => {
 
   describe('when getting a certification', () => {
     beforeEach(async () => {
-      await CertificationModel.insertMany([certifications[0]]);
+      await Certifications.save(certData[0]);
     });
 
     it('will return a certification by ID', async () => {
       const { body } = await request(server)
-        .get(`/api/certifications/${certifications[0]._id}`)
+        .get(`/api/certifications/${certData[0].id}`)
         .set(...regularAuthHeader)
         .expect(200);
       expect(body).toMatchSnapshot();
@@ -122,13 +138,13 @@ describe('Certifications End-to-End', () => {
 
     it('will return a 401 response if the user is not authenticated', async () => {
       await request(server)
-        .get(`/api/certifications/${certifications[0]._id}`)
+        .get(`/api/certifications/${certData[0].id}`)
         .expect(401);
     });
 
     it('will return a 404 response if the certification does not exist', async () => {
       await request(server)
-        .get('/api/certifications/does-not-exist')
+        .get('/api/certifications/184ee397-3ee4-4a3d-a790-0b8fede230e2')
         .set(...regularAuthHeader)
         .expect(404);
     });

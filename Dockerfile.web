@@ -1,0 +1,27 @@
+FROM node:20 AS build
+
+WORKDIR /app
+
+COPY package.json yarn.lock nx.json lerna.json ./
+COPY packages/web/package.json packages/web/yarn.lock packages/web/tsconfig.json packages/web/vite.config.ts packages/web/tailwind.config.js packages/web/postcss.config.js packages/web/bootstrap-docker.sh packages/web/index.html ./packages/web/
+COPY packages/common/package.json packages/common/yarn.lock packages/common/tsconfig.json ./packages/common/
+COPY packages/api/package.json packages/api/yarn.lock packages/api/tsconfig.json ./packages/api/
+
+RUN yarn install --frozen-lockfile
+
+COPY packages/common/src/ ./packages/common/src/
+COPY packages/api/src/ ./packages/api/src/
+
+COPY packages/web/public/ ./packages/web/public/
+COPY packages/web/server/ ./packages/web/server/
+COPY packages/web/src/ ./packages/web/src/
+
+RUN yarn build
+
+FROM node:20 AS release
+COPY --from=build /app/ /app/
+WORKDIR /app/packages/web/
+
+EXPOSE 4850
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "curl", "http://localhost:4850/health" ]
+ENTRYPOINT ["./bootstrap-docker.sh"]

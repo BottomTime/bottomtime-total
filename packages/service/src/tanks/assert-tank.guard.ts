@@ -5,9 +5,10 @@ import {
   NotFoundException,
   createParamDecorator,
 } from '@nestjs/common';
-import { TanksService } from './tanks.service';
+
 import { User } from '../users/user';
 import { Tank } from './tank';
+import { TanksService } from './tanks.service';
 
 @Injectable()
 export class AssertTank implements CanActivate {
@@ -19,7 +20,7 @@ export class AssertTank implements CanActivate {
     const targetUser: User = req.targetUser;
     const tank = await this.tanksService.getTank(req.params.tankId);
 
-    if (!tank || tank.userId !== targetUser.id) {
+    if (!tank || tank.user?.userId !== targetUser.id) {
       throw new NotFoundException(
         `Unable to find tank profile with ID "${req.params.username}".`,
       );

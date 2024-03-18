@@ -1,25 +1,19 @@
 import { Module } from '@nestjs/common';
-import { FriendsService } from './friends.service';
-import { FriendsController } from './friends.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import {
-  FriendSchema,
-  FriendRequestSchema,
-  UserSchema,
-  UserModelName,
-  FriendModelName,
-  FriendRequestModelName,
-} from '../schemas';
-import { FriendRequestsController } from './friend-requests.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { FriendRequestEntity, FriendshipEntity, UserEntity } from '../data';
 import { UsersModule } from '../users';
 import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
+import { FriendRequestsController } from './friend-requests.controller';
+import { FriendsController } from './friends.controller';
+import { FriendsService } from './friends.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: UserModelName, schema: UserSchema },
-      { name: FriendModelName, schema: FriendSchema },
-      { name: FriendRequestModelName, schema: FriendRequestSchema },
+    TypeOrmModule.forFeature([
+      UserEntity,
+      FriendshipEntity,
+      FriendRequestEntity,
     ]),
 
     UsersModule,

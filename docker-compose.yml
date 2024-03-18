@@ -1,49 +1,51 @@
 services:
-  mongo:
-    container_name: bottomtime-mongo
-    image: mongo:5.0
+  postgres:
+    image: postgis/postgis:14-3.4-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=bt_user
+      - POSTGRES_PASSWORD=bt_admin1234
     ports:
-      - '27017:27017'
-    expose:
-      - '27017'
-    networks:
-      - public
+      - '5432:5432'
     volumes:
-      - dbdata:/data/db
+      - ./.postgresql/:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', "sh -c 'pg_isready -U bt_user -d postgres'"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
 
   core:
-    container_name: bottomtime-core
-    build: packages/service/
+    container_name: bottomtime-service
+    build:
+      context: ./
+      dockerfile: Dockerfile.service
     ports:
       - '4800:4800'
     expose:
       - '4800'
     env_file:
-      - packages/service/.env.defaults
+      - packages/service/.env
     environment:
-      - BT_MONGO_URI=mongodb://mongo:27017/bottomtime
+      - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
     depends_on:
-      - mongo
-    networks:
-      - public
+      postgres:
+        condition: service_healthy
 
   web:
     container_name: bottomtime-web
-    build: packages/web/
+    build:
+      context: ./
+      dockerfile: Dockerfile.web
     ports:
-      - '3000:3000'
+      - '4850:4850'
     expose:
-      - '3000'
+      - '4850'
     env_file:
-      - packages/web/.env.defaults
+      - packages/web/.env
+    environment:
+      - BTWEB_API_URL=http://bottomtime-service:4800/
     depends_on:
-      - core
-    networks:
-      - public
-
-networks:
-  public:
-    driver: bridge
-
-volumes:
-  dbdata:
+      core:
+        condition: service_started
