@@ -1,18 +1,21 @@
-import Logger from 'bunyan';
 import { BunyanLoggerService } from '@bottomtime/common';
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { AppModule, ServerDependencies } from './app.module';
-import cookieParser from 'cookie-parser';
-import useragent from 'express-useragent';
-import { NextFunction, Request, Response } from 'express';
-import { User } from './users/user';
-import { GlobalErrorFilter } from './global-error-filter';
+
 import { INestApplication } from '@nestjs/common';
-import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
-import helmet from 'helmet';
-import requestStats from 'request-stats';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+
+import Logger from 'bunyan';
+import cookieParser from 'cookie-parser';
+import { NextFunction, Request, Response } from 'express';
+import useragent from 'express-useragent';
+import helmet from 'helmet';
 import path from 'path';
+import requestStats from 'request-stats';
+
+import { AppModule, ServerDependencies } from './app.module';
+import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
+import { GlobalErrorFilter } from './global-error-filter';
+import { User } from './users/user';
 
 export async function createApp(
   logger: Logger,

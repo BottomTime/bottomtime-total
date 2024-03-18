@@ -13,7 +13,7 @@ async function processCommand(cmd: string[]) {
     .option('postgres-uri', {
       alias: 'd',
       default:
-        process.env.BT_MONGO_URI ||
+        process.env.BT_POSTGRES_URI ||
         'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_local',
       description: 'Set the PostgresSQL connection string',
       type: 'string',

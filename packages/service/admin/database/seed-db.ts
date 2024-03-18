@@ -1,9 +1,8 @@
 import { UserRole } from '@bottomtime/api';
 
-import { UserEntity } from '@/data';
-
 import { DataSource } from 'typeorm';
 
+import { UserEntity } from '../../src/data';
 import { getDataSource } from './data-source';
 
 /* eslint-disable no-console */

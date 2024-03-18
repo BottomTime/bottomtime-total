@@ -4,10 +4,10 @@ set -e
 if [ "$NODE_ENV" = "production" ]
 then
   echo "Starting in production mode..."
-  npx pm2 start --no-daemon src/index.ts
+  yarn build
+  # npx pm2 start --no-daemon src/index.ts
 else
   echo "Starting in development mode..."
-  yarn admin db init
-  yarn migrate:up
   yarn serve
 fi
+

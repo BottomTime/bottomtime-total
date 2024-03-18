@@ -11,7 +11,6 @@ import {
   SortOrder,
 } from '@bottomtime/api';
 
-import { FriendRequestEntity, FriendshipEntity, UserEntity } from '@/data';
 import {
   BadRequestException,
   ConflictException,
@@ -23,6 +22,8 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { DataSource, LessThan, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+
+import { FriendRequestEntity, FriendshipEntity, UserEntity } from '../data';
 
 // List Friends Types
 export type Friend = FriendDTO;

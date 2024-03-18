@@ -1,5 +1,5 @@
 import { ErrorResponseDTO, ValidationErrorDetails } from '@bottomtime/api';
-import { BunyanLoggerService } from '@bottomtime/common/src/bunyan-logger-service';
+import { BunyanLoggerService } from '@bottomtime/common';
 
 import {
   ArgumentsHost,

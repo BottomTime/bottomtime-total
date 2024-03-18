@@ -1,9 +1,9 @@
 /* eslint-disable no-process-env, no-console */
-import { UserEntity } from '@/data';
-
-import { getDataSource } from 'admin/database/data-source';
 import jwt from 'jsonwebtoken';
 import { DataSource } from 'typeorm';
+
+import { UserEntity } from '../../src/data';
+import { getDataSource } from '../database/data-source';
 
 export async function getUserToken(postgresUri: string, username: string) {
   let ds: DataSource | undefined;

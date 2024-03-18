@@ -1,8 +1,8 @@
 import { DepthDTO, DepthUnit } from '@bottomtime/api';
 
-import { DiveSiteEntity, UserEntity } from '@/data';
 import { faker } from '@faker-js/faker';
 
+import { DiveSiteEntity, UserEntity } from '../../../src/data';
 import { possibly } from './possibly';
 
 export function fakeDepth(): DepthDTO {

@@ -7,10 +7,11 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { UserEntity } from '@/data';
 import { faker } from '@faker-js/faker';
 
 import dayjs from 'dayjs';
+
+import { UserEntity } from '../../../src/data';
 
 // Matches Password = 'Password1';
 const PasswordHash =

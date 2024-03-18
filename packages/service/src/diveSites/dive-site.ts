@@ -1,12 +1,12 @@
 import { DiveSiteDTO, SuccinctProfileDTO } from '@bottomtime/api';
 
-import { DiveSiteEntity } from '@/data';
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
+import { DiveSiteEntity } from '../data';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
 

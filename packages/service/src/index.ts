@@ -1,4 +1,4 @@
-import { createLogger } from '@bottomtime/common/src/logger';
+import { createLogger } from '@bottomtime/common';
 
 import { S3Client } from '@aws-sdk/client-s3';
 

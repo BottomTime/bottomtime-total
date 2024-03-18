@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
-import { DiveSiteEntity, UserEntity } from '@/data';
-
 import { DataSource, Repository } from 'typeorm';
 
+import { DiveSiteEntity, UserEntity } from '../../src/data';
 import { getDataSource } from './data-source';
 import { fakeDiveSite, fakeUser } from './fakes';
 

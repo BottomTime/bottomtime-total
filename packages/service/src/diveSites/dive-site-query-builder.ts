@@ -5,9 +5,9 @@ import {
   SortOrder,
 } from '@bottomtime/api';
 
-import { DiveSiteEntity } from '@/data';
-
 import { Repository, SelectQueryBuilder } from 'typeorm';
+
+import { DiveSiteEntity } from '../data';
 
 export class DiveSiteQueryBuilder {
   private query: SelectQueryBuilder<DiveSiteEntity>;

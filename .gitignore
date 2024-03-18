@@ -123,3 +123,5 @@ swagger.json
 
 # Vite timestamp files
 vite.config.ts.timestamp*
+
+.postgresql/
