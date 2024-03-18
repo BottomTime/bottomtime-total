@@ -71,7 +71,6 @@ export const UserWithFullProfile: UserDTO = {
       'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg',
     bio: 'Facilis deleniti fugiat. Nesciunt architecto facilis consectetur laborum iusto doloribus. Minima nulla nemo unde quisquam quod suscipit deserunt blanditiis deserunt. Ipsa saepe quibusdam beatae tempora labore maxime odio. Labore debitis id doloribus voluptatibus ratione animi dolores.',
     birthdate: '2014-09-19',
-    certifications: [],
     experienceLevel: 'Experienced',
     location: 'Hamillside, CO, AZ',
     memberSince: new Date('2017-12-29T17:03:07.671Z'),

@@ -9,49 +9,49 @@ export class UserProfile {
   ) {}
 
   get avatar(): string | undefined {
-    return this.data.profile.avatar;
+    return this.data.profile.avatar ?? undefined;
   }
   set avatar(value: string | undefined) {
     this.data.profile.avatar = value;
   }
 
   get bio(): string | undefined {
-    return this.data.profile.bio;
+    return this.data.profile.bio ?? undefined;
   }
   set bio(value: string | undefined) {
     this.data.profile.bio = value;
   }
 
   get birthdate(): string | undefined {
-    return this.data.profile.birthdate;
+    return this.data.profile.birthdate ?? undefined;
   }
   set birthdate(value: string | undefined) {
     this.data.profile.birthdate = value;
   }
 
   get experienceLevel(): string | undefined {
-    return this.data.profile.experienceLevel;
+    return this.data.profile.experienceLevel ?? undefined;
   }
   set experienceLevel(value: string | undefined) {
     this.data.profile.experienceLevel = value;
   }
 
   get location(): string | undefined {
-    return this.data.profile.location;
+    return this.data.profile.location ?? undefined;
   }
   set location(value: string | undefined) {
     this.data.profile.location = value;
   }
 
   get name(): string | undefined {
-    return this.data.profile.name;
+    return this.data.profile.name ?? undefined;
   }
   set name(value: string | undefined) {
     this.data.profile.name = value;
   }
 
   get startedDiving(): string | undefined {
-    return this.data.profile.startedDiving;
+    return this.data.profile.startedDiving ?? undefined;
   }
   set startedDiving(value: string | undefined) {
     this.data.profile.startedDiving = value;
