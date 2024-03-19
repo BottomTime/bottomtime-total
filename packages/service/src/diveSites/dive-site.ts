@@ -7,8 +7,13 @@ import { Repository } from 'typeorm';
 
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
 import { DiveSiteEntity } from '../data';
+import { DiveSiteReview } from './dive-site-review';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
+export type ListReviewsResult = {
+  reviews: DiveSiteReview[];
+  totalCount: number;
+};
 
 export class DiveSite {
   private readonly log = new Logger(DiveSite.name);
@@ -144,6 +149,18 @@ export class DiveSite {
   async delete(): Promise<boolean> {
     const { affected } = await this.DiveSites.delete({ id: this.id });
     return typeof affected === 'number' && affected > 0;
+  }
+
+  async createReview(): Promise<DiveSiteReview> {
+    throw new Error('Implement pls');
+  }
+
+  async getReview(): Promise<DiveSiteReview | undefined> {
+    throw new Error('Implement pls');
+  }
+
+  async listReviews(): Promise<ListReviewsResult> {
+    throw new Error('Implement pls');
   }
 
   toJSON(): DiveSiteDTO {

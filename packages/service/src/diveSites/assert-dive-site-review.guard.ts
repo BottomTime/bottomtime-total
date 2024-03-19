@@ -3,9 +3,11 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
+  NotFoundException,
   createParamDecorator,
 } from '@nestjs/common';
 
+import { DiveSite } from './dive-site';
 import { DiveSiteReview } from './dive-site-review';
 import { DiveSitesService } from './dive-sites.service';
 
@@ -17,6 +19,12 @@ export class AssertDiveSiteReview implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
+    const diveSite: DiveSite | undefined = req.diveSite;
+
+    if (!diveSite) {
+      throw new NotFoundException('Dive site not found');
+    }
+
     return true;
   }
 }
