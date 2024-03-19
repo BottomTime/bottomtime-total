@@ -26,7 +26,7 @@ export type CreateOrUpdateDiveSiteReviewDTO = z.infer<
 
 export const DiveSiteReviewSchema = CreateOrUpdateDiveSiteReviewSchema.extend({
   id: z.string().uuid(),
-  creator: z.string().uuid(),
+  creator: ProfileSchema,
   createdOn: z.coerce.date(),
   updatedOn: z.coerce.date().optional(),
 });
