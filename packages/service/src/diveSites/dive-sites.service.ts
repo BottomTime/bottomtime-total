@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { DiveSiteEntity, UserEntity } from '../data';
+import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
 import { DiveSite } from './dive-site';
 import { DiveSiteQueryBuilder } from './dive-site-query-builder';
 
@@ -28,8 +28,14 @@ export class DiveSitesService {
   private readonly log = new Logger(DiveSitesService.name);
 
   constructor(
+    @InjectRepository(UserEntity)
+    private readonly Users: Repository<UserEntity>,
+
     @InjectRepository(DiveSiteEntity)
     private readonly DiveSites: Repository<DiveSiteEntity>,
+
+    @InjectRepository(DiveSiteReviewEntity)
+    private readonly Reviews: Repository<DiveSiteReviewEntity>,
   ) {}
 
   async searchDiveSites(
@@ -53,7 +59,9 @@ export class DiveSitesService {
     const [sites, totalCount] = await query.getManyAndCount();
 
     return {
-      sites: sites.map((site) => new DiveSite(this.DiveSites, site)),
+      sites: sites.map(
+        (site) => new DiveSite(this.Users, this.DiveSites, this.Reviews, site),
+      ),
       totalCount,
     };
   }
@@ -69,7 +77,7 @@ export class DiveSitesService {
     const result = await query.getOne();
 
     if (result) {
-      return new DiveSite(this.DiveSites, result);
+      return new DiveSite(this.Users, this.DiveSites, this.Reviews, result);
     }
 
     return undefined;
@@ -98,6 +106,6 @@ export class DiveSitesService {
 
     await this.DiveSites.save(data);
 
-    return new DiveSite(this.DiveSites, data);
+    return new DiveSite(this.Users, this.DiveSites, this.Reviews, data);
   }
 }

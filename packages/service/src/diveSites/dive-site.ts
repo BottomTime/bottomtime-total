@@ -1,26 +1,45 @@
-import { DiveSiteDTO, SuccinctProfileDTO } from '@bottomtime/api';
+import {
+  CreateOrUpdateDiveSiteReviewDTO,
+  DiveSiteDTO,
+  ListDiveSiteReviewsParamsDTO,
+  SortOrder,
+  SuccinctProfileDTO,
+} from '@bottomtime/api';
 
-import { Logger } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
-import { DiveSiteEntity } from '../data';
+import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
 import { DiveSiteReview } from './dive-site-review';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
+
 export type ListReviewsResult = {
   reviews: DiveSiteReview[];
   totalCount: number;
+};
+
+export type CreateDiveSiteReviewOptions = CreateOrUpdateDiveSiteReviewDTO & {
+  creatorId: string;
 };
 
 export class DiveSite {
   private readonly log = new Logger(DiveSite.name);
 
   constructor(
+    @InjectRepository(UserEntity)
+    private readonly Users: Repository<UserEntity>,
+
     @InjectRepository(DiveSiteEntity)
     private readonly DiveSites: Repository<DiveSiteEntity>,
+
+    @InjectRepository(DiveSiteReviewEntity)
+    private readonly Reviews: Repository<DiveSiteReviewEntity>,
+
     private readonly data: DiveSiteEntity,
   ) {}
 
@@ -151,16 +170,71 @@ export class DiveSite {
     return typeof affected === 'number' && affected > 0;
   }
 
-  async createReview(): Promise<DiveSiteReview> {
-    throw new Error('Implement pls');
+  async createReview(
+    options: CreateDiveSiteReviewOptions,
+  ): Promise<DiveSiteReview> {
+    const creator = await this.Users.findOneBy({ id: options.creatorId });
+
+    if (!creator) {
+      throw new NotFoundException(
+        `Unable to find user with ID ${options.creatorId}`,
+      );
+    }
+
+    const data = new DiveSiteReviewEntity();
+    data.id = uuid();
+    data.comments = options.comments ?? null;
+    data.rating = options.rating;
+    data.difficulty = options.difficulty ?? null;
+    data.title = options.title;
+
+    data.site = this.data;
+    data.creator = creator;
+
+    const review = new DiveSiteReview(this.Reviews, data);
+    await review.save();
+
+    return review;
   }
 
-  async getReview(): Promise<DiveSiteReview | undefined> {
-    throw new Error('Implement pls');
+  async getReview(reviewId: string): Promise<DiveSiteReview | undefined> {
+    const data = await this.Reviews.findOne({
+      where: { id: reviewId, site: { id: this.data.id } },
+      relations: ['creator'],
+    });
+
+    if (data) {
+      return new DiveSiteReview(this.Reviews, data);
+    }
+
+    return undefined;
   }
 
-  async listReviews(): Promise<ListReviewsResult> {
-    throw new Error('Implement pls');
+  async listReviews(
+    options: ListDiveSiteReviewsParamsDTO,
+  ): Promise<ListReviewsResult> {
+    const query = this.Reviews.createQueryBuilder('review')
+      .innerJoin('review.creator', 'creator')
+      .where('review.site = :siteId', { siteId: this.id })
+      .addOrderBy(
+        `review.${options.sortBy}`,
+        options.sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
+      )
+      .addOrderBy('review.title', 'ASC')
+      .offset(options.skip)
+      .limit(options.limit);
+
+    this.log.debug(`Listing reviews for dive site ${this.id}...`);
+    this.log.verbose(query.getSql());
+
+    const [reviews, totalCount] = await query.getManyAndCount();
+
+    return {
+      reviews: reviews.map(
+        (review) => new DiveSiteReview(this.Reviews, review),
+      ),
+      totalCount,
+    };
   }
 
   toJSON(): DiveSiteDTO {

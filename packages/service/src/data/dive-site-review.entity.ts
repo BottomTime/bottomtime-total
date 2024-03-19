@@ -42,7 +42,7 @@ export class DiveSiteReviewEntity {
   difficulty: number | null = null;
 
   @Column('varchar', { length: 1000, nullable: true })
-  comments?: string | null = null;
+  comments: string | null = null;
 
   @Column({
     type: 'tsvector',
