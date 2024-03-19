@@ -1,5 +1,6 @@
 import { CommandModule } from 'yargs';
 
+import { createAdmin } from './create-admin';
 import { getUserToken } from './get-user-token';
 
 export const userModule: CommandModule<{ 'postgres-uri': string }> = {
@@ -9,6 +10,31 @@ export const userModule: CommandModule<{ 'postgres-uri': string }> = {
 
   builder(yargs) {
     return yargs
+      .command(
+        'new-admin',
+        'Creates a new admin user.',
+        (yargs) => {
+          return yargs
+            .positional('username', {
+              alias: 'u',
+              description: "The user's username.",
+              type: 'string',
+            })
+            .positional('password', {
+              alias: 'p',
+              description: 'The password to set on the new admin account',
+              type: 'string',
+            })
+            .help();
+        },
+        async (yargs) => {
+          await createAdmin({
+            potgresUri: yargs.postgresUri,
+            username: yargs.username,
+            password: yargs.password,
+          });
+        },
+      )
       .command(
         'token <user>',
         'Gets a token for a user',
