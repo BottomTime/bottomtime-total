@@ -366,5 +366,9 @@ describe('Dive Site Class', () => {
         })),
       ).toMatchSnapshot();
     });
+
+    it.todo(
+      'will throw an error if user attempts to review the same site twice within 48 hours.',
+    );
   });
 });

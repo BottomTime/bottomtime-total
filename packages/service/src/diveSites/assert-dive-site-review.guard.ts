@@ -1,7 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  Inject,
   Injectable,
   NotFoundException,
   createParamDecorator,
@@ -9,20 +8,23 @@ import {
 
 import { DiveSite } from './dive-site';
 import { DiveSiteReview } from './dive-site-review';
-import { DiveSitesService } from './dive-sites.service';
 
 @Injectable()
 export class AssertDiveSiteReview implements CanActivate {
-  constructor(
-    @Inject(DiveSitesService) private readonly service: DiveSitesService,
-  ) {}
-
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     const diveSite: DiveSite | undefined = req.diveSite;
 
     if (!diveSite) {
       throw new NotFoundException('Dive site not found');
+    }
+
+    req.diveSiteReview = await diveSite.getReview(req.params.reviewId);
+
+    if (!req.diveSiteReview) {
+      throw new NotFoundException(
+        `Unable to find review with ID ${req.params.reviewId} for dive site ${diveSite.id}`,
+      );
     }
 
     return true;
