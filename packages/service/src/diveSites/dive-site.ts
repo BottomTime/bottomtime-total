@@ -6,10 +6,11 @@ import {
   SuccinctProfileDTO,
 } from '@bottomtime/api';
 
-import { Logger, NotFoundException } from '@nestjs/common';
+import { HttpException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import dayjs from 'dayjs';
+import { MoreThan, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
@@ -181,6 +182,21 @@ export class DiveSite {
       );
     }
 
+    // Users may not review the same site twice within 48 hours.
+    const existingReview = await this.Reviews.existsBy({
+      creator: { id: creator.id },
+      site: { id: this.id },
+      createdOn: MoreThan(dayjs().subtract(2, 'days').toDate()),
+    });
+
+    if (existingReview) {
+      throw new HttpException(
+        'You may not review the same site twice in the same 48 hour period.',
+        429,
+        { description: 'Rate limited' },
+      );
+    }
+
     const data = new DiveSiteReviewEntity();
     data.id = uuid();
     data.comments = options.comments ?? null;
@@ -204,6 +220,7 @@ export class DiveSite {
     });
 
     if (data) {
+      data.site = this.data;
       return new DiveSiteReview(this.Reviews, data);
     }
 

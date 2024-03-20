@@ -6,12 +6,14 @@ import {
   ListDiveSiteReviewsParamsSchema,
   ListDiveSiteReviewsResponseDTO,
   SuccessFailResponseDTO,
+  UserRole,
 } from '@bottomtime/api';
 
 import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Logger,
   Param,
@@ -21,6 +23,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { AssertAuth, CurrentUser } from '../auth';
+import { User } from '../users';
 import { ZodValidator } from '../zod-validator';
 import {
   AssertDiveSiteReview,
@@ -120,9 +124,11 @@ export class DiveSiteReviewsController {
     @Query(new ZodValidator(ListDiveSiteReviewsParamsSchema))
     options: ListDiveSiteReviewsParamsDTO,
   ): Promise<ListDiveSiteReviewsResponseDTO> {
+    const results = await site.listReviews(options);
+
     return {
-      reviews: [],
-      totalCount: 0,
+      reviews: results.reviews.map((review) => review.toJSON()),
+      totalCount: results.totalCount,
     };
   }
 
@@ -182,12 +188,19 @@ export class DiveSiteReviewsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post()
+  @UseGuards(AssertAuth)
   async createReview(
     @TargetDiveSite() site: DiveSite,
+    @CurrentUser() currentUser: User,
     @Body(new ZodValidator(CreateOrUpdateDiveSiteReviewSchema))
     options: CreateOrUpdateDiveSiteReviewDTO,
   ): Promise<DiveSiteReviewDTO> {
-    throw new Error('Not implemented');
+    const review = await site.createReview({
+      ...options,
+      creatorId: currentUser.id,
+    });
+
+    return review.toJSON();
   }
 
   /**
@@ -226,7 +239,6 @@ export class DiveSiteReviewsController {
   @UseGuards(AssertDiveSiteReview)
   async getReview(
     @TargetDiveSiteReview() review: DiveSiteReview,
-    @Param(DiveSiteReviewIdParam) reviewId: string,
   ): Promise<DiveSiteReviewDTO> {
     return review.toJSON();
   }
@@ -288,13 +300,29 @@ export class DiveSiteReviewsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(`:${DiveSiteReviewIdParam}`)
-  @UseGuards(AssertDiveSiteReview)
+  @UseGuards(AssertAuth, AssertDiveSiteReview)
   async updateReview(
+    @CurrentUser() currentUser: User,
     @TargetDiveSiteReview() review: DiveSiteReview,
     @Body(new ZodValidator(CreateOrUpdateDiveSiteReviewSchema))
     options: CreateOrUpdateDiveSiteReviewDTO,
   ): Promise<DiveSiteReviewDTO> {
-    throw new Error('Not implemented');
+    if (
+      currentUser.role !== UserRole.Admin &&
+      currentUser.id !== review.creator.userId
+    ) {
+      throw new ForbiddenException(
+        "You are not authorized to update this review. You must be the review's creator or an Admin.",
+      );
+    }
+
+    review.comments = options.comments;
+    review.rating = options.rating;
+    review.title = options.title;
+    review.difficulty = options.difficulty;
+
+    await review.save();
+    return review.toJSON();
   }
 
   /**
@@ -342,10 +370,25 @@ export class DiveSiteReviewsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Delete(`:${DiveSiteReviewIdParam}`)
-  @UseGuards(AssertDiveSiteReview)
+  @UseGuards(AssertAuth)
   async deleteReview(
-    @TargetDiveSiteReview() review: DiveSiteReview,
+    @CurrentUser() currentUser: User,
+    @TargetDiveSite() diveSite: DiveSite,
+    @Param(DiveSiteReviewIdParam) reviewId: string,
   ): Promise<SuccessFailResponseDTO> {
-    return { succeeded: true };
+    const review = await diveSite.getReview(reviewId);
+    if (!review) return { succeeded: false };
+
+    if (
+      currentUser.role !== UserRole.Admin &&
+      review.creator.userId !== currentUser.id
+    ) {
+      throw new ForbiddenException(
+        "You are not authorized to delete this review. You must be the review's creator or an Admin.",
+      );
+    }
+
+    const succeeded = await review.delete();
+    return { succeeded };
   }
 }

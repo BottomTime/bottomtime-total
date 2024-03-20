@@ -1,10 +1,14 @@
 import { DiveSiteReviewDTO, SuccinctProfileDTO } from '@bottomtime/api';
 
+import { Logger } from '@nestjs/common';
+
 import { Repository } from 'typeorm';
 
 import { DiveSiteReviewEntity } from '../data';
 
 export class DiveSiteReview {
+  private readonly log = new Logger(DiveSiteReview.name);
+
   constructor(
     private readonly Reviews: Repository<DiveSiteReviewEntity>,
     private readonly data: DiveSiteReviewEntity,
@@ -65,6 +69,9 @@ export class DiveSiteReview {
     if (this.data.createdOn === undefined) this.data.createdOn = new Date();
     else this.data.updatedOn = new Date();
 
+    this.log.debug(
+      `Attempting to save dive site review with ID "${this.data.id}"...`,
+    );
     await this.Reviews.save(this.data);
   }
 

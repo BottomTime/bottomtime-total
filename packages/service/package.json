@@ -8,13 +8,13 @@
   "private": true,
   "scripts": {
     "admin": "tsx admin/bt-admin.ts",
-    "clean": "rimraf dist/ && rimraf coverage/",
-    "build": "yarn clean && tsc",
+    "build": "tsc",
     "docs": "swagger-jsdoc -d swaggerDefinition.cjs -o public/docs/swagger.json ./src/**/*.ts",
     "migrate:create": "typeorm-ts-node-commonjs migration:create",
     "migrate:down": "typeorm-ts-node-commonjs migration:revert -d data-source.ts",
     "migrate:generate": "typeorm-ts-node-commonjs migration:generate -d data-source.ts",
     "migrate:up": "typeorm-ts-node-commonjs migration:run -d data-source.ts",
+    "prepare": "cp -n .env.example .env || true",
     "serve": "nodemon src/index.ts",
     "test": "jest"
   },
@@ -83,7 +83,6 @@
     "jest-junit": "^16.0.0",
     "nodemon": "^2.0.22",
     "pm2": "^5.3.0",
-    "rimraf": "^5.0.5",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "ts-jest": "^29.0.5",

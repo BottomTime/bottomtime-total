@@ -5,6 +5,8 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
+import { HttpException } from '@nestjs/common';
+
 import { Repository } from 'typeorm';
 
 import {
@@ -367,8 +369,19 @@ describe('Dive Site Class', () => {
       ).toMatchSnapshot();
     });
 
-    it.todo(
-      'will throw an error if user attempts to review the same site twice within 48 hours.',
-    );
+    it('will throw an error if user attempts to review the same site twice within 48 hours.', async () => {
+      await site.createReview({
+        title: 'OMG! Diving!!',
+        rating: 4.5,
+        creatorId: regularUser.id,
+      });
+      await expect(
+        site.createReview({
+          title: 'OMG! Another review!!',
+          rating: 4.5,
+          creatorId: regularUser.id,
+        }),
+      ).rejects.toThrow(HttpException);
+    });
   });
 });

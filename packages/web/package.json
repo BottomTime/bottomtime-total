@@ -8,6 +8,7 @@
     "build:client": "vite build --ssrManifest --minify --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.ts --minify --outDir dist/server",
     "serve": "nodemon --exec tsx server/index.ts",
+    "prepare": "cp -n .env.example .env || true",
     "preview": "cross-env NODE_ENV=production nodemon server/index.ts",
     "test": "jest --runInBand"
   },
