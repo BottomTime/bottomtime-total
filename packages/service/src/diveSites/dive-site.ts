@@ -7,7 +7,7 @@ import {
 } from '@bottomtime/api';
 
 import { HttpException, Logger, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import dayjs from 'dayjs';
 import { MoreThan, Repository } from 'typeorm';
@@ -32,15 +32,10 @@ export class DiveSite {
   private readonly log = new Logger(DiveSite.name);
 
   constructor(
-    @InjectRepository(UserEntity)
     private readonly Users: Repository<UserEntity>,
-
-    @InjectRepository(DiveSiteEntity)
     private readonly DiveSites: Repository<DiveSiteEntity>,
-
-    @InjectRepository(DiveSiteReviewEntity)
     private readonly Reviews: Repository<DiveSiteReviewEntity>,
-
+    private readonly emitter: EventEmitter2,
     private readonly data: DiveSiteEntity,
   ) {}
 
@@ -207,7 +202,7 @@ export class DiveSite {
     data.site = this.data;
     data.creator = creator;
 
-    const review = new DiveSiteReview(this.Reviews, data);
+    const review = new DiveSiteReview(this.Reviews, this.emitter, data);
     await review.save();
 
     return review;
@@ -221,7 +216,7 @@ export class DiveSite {
 
     if (data) {
       data.site = this.data;
-      return new DiveSiteReview(this.Reviews, data);
+      return new DiveSiteReview(this.Reviews, this.emitter, data);
     }
 
     return undefined;
@@ -248,7 +243,7 @@ export class DiveSite {
 
     return {
       reviews: reviews.map(
-        (review) => new DiveSiteReview(this.Reviews, review),
+        (review) => new DiveSiteReview(this.Reviews, this.emitter, review),
       ),
       totalCount,
     };

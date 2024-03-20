@@ -5,6 +5,8 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
@@ -52,6 +54,7 @@ describe('Dive Site Service', () => {
   let regularUser: UserEntity;
   let otherUser: UserEntity;
   let diveSiteData: DiveSiteEntity[];
+  let emitter: EventEmitter2;
 
   beforeAll(async () => {
     Users = dataSource.getRepository(UserEntity);
@@ -60,7 +63,8 @@ describe('Dive Site Service', () => {
 
     regularUser = createTestUser(RegularUserData);
     otherUser = createTestUser(OtherUserData);
-    service = new DiveSitesService(Users, DiveSites, Reviews);
+    emitter = new EventEmitter2();
+    service = new DiveSitesService(Users, DiveSites, Reviews, emitter);
 
     diveSiteData = DiveSiteTestData.map((data, index) =>
       parseDiveSiteJSON(data, index % 2 === 0 ? regularUser : otherUser),
