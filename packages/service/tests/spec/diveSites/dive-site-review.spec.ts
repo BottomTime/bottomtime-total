@@ -85,9 +85,6 @@ describe('Dive Site Review Class', () => {
       userId: CreatorData.id,
       username: CreatorData.username,
       memberSince: CreatorData.memberSince,
-      avatar: CreatorData.avatar,
-      location: CreatorData.location,
-      name: CreatorData.name,
     });
   });
 
@@ -122,9 +119,6 @@ describe('Dive Site Review Class', () => {
         userId: CreatorData.id,
         username: CreatorData.username,
         memberSince: CreatorData.memberSince,
-        avatar: CreatorData.avatar,
-        location: CreatorData.location,
-        name: CreatorData.name,
       },
       createdOn: FullReviewData.createdOn,
       updatedOn: FullReviewData.updatedOn,

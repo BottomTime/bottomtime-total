@@ -23,9 +23,6 @@ export class DiveSiteReview {
       memberSince: this.data.creator.memberSince,
       userId: this.data.creator.id,
       username: this.data.creator.username,
-      avatar: this.data.creator.avatar,
-      location: this.data.creator.location,
-      name: this.data.creator.name,
     };
   }
 

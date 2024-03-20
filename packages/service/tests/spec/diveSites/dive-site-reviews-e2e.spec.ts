@@ -193,9 +193,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       expect(body.creator).toEqual({
         userId: user.id,
         username: user.username,
-        name: user.name,
-        avatar: user.avatar,
-        location: user.location,
         memberSince: user.memberSince.toISOString(),
       });
       expect(body.difficulty).toBe(newReview.difficulty);
@@ -295,9 +292,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       expect(body.creator).toEqual({
         userId: user.id,
         username: user.username,
-        name: user.name,
-        avatar: user.avatar,
-        location: user.location,
         memberSince: user.memberSince.toISOString(),
       });
       expect(body.difficulty).toBe(1.5);
@@ -333,9 +327,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       expect(body.creator).toEqual({
         userId: user.id,
         username: user.username,
-        name: user.name,
-        avatar: user.avatar,
-        location: user.location,
         memberSince: user.memberSince.toISOString(),
       });
       expect(body.difficulty).toBe(1.5);

@@ -262,9 +262,6 @@ describe('Dive Site Class', () => {
         userId: regularUser.id,
         username: regularUser.username,
         memberSince: regularUser.memberSince,
-        name: regularUser.name,
-        avatar: regularUser.avatar,
-        location: regularUser.location,
       });
       expect(review.difficulty).toEqual(options.difficulty);
       expect(review.rating).toEqual(options.rating);
@@ -297,9 +294,6 @@ describe('Dive Site Class', () => {
         userId: regularUser.id,
         username: regularUser.username,
         memberSince: regularUser.memberSince,
-        name: regularUser.name,
-        avatar: regularUser.avatar,
-        location: regularUser.location,
       });
       expect(review.difficulty).toBeUndefined();
       expect(review.rating).toEqual(options.rating);
