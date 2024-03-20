@@ -8,7 +8,11 @@ import {
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { DiveSiteEntity, UserEntity } from '../../../src/data';
+import {
+  DiveSiteEntity,
+  DiveSiteReviewEntity,
+  UserEntity,
+} from '../../../src/data';
 import {
   CreateDiveSiteOptions,
   DiveSitesService,
@@ -42,6 +46,7 @@ const OtherUserData: Partial<UserEntity> = {
 describe('Dive Site Service', () => {
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
+  let Reviews: Repository<DiveSiteReviewEntity>;
 
   let service: DiveSitesService;
   let regularUser: UserEntity;
@@ -51,10 +56,11 @@ describe('Dive Site Service', () => {
   beforeAll(async () => {
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
+    Reviews = dataSource.getRepository(DiveSiteReviewEntity);
 
     regularUser = createTestUser(RegularUserData);
     otherUser = createTestUser(OtherUserData);
-    service = new DiveSitesService(DiveSites);
+    service = new DiveSitesService(Users, DiveSites, Reviews);
 
     diveSiteData = DiveSiteTestData.map((data, index) =>
       parseDiveSiteJSON(data, index % 2 === 0 ? regularUser : otherUser),

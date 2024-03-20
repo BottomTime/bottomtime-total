@@ -121,8 +121,8 @@ module.exports = {
         type: 'object',
         required: ['success'],
         properties: {
-          success: {
-            title: 'Success',
+          succeeded: {
+            title: 'Succeeded',
             type: 'boolean',
             description: 'Indicates whether the request was successful.',
           },

@@ -1,21 +1,46 @@
-import { DiveSiteDTO, SuccinctProfileDTO } from '@bottomtime/api';
+import {
+  CreateOrUpdateDiveSiteReviewDTO,
+  DiveSiteDTO,
+  ListDiveSiteReviewsParamsDTO,
+  SortOrder,
+  SuccinctProfileDTO,
+} from '@bottomtime/api';
 
-import { Logger } from '@nestjs/common';
+import { HttpException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import dayjs from 'dayjs';
+import { MoreThan, Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
-import { DiveSiteEntity } from '../data';
+import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
+import { DiveSiteReview } from './dive-site-review';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
+
+export type ListReviewsResult = {
+  reviews: DiveSiteReview[];
+  totalCount: number;
+};
+
+export type CreateDiveSiteReviewOptions = CreateOrUpdateDiveSiteReviewDTO & {
+  creatorId: string;
+};
 
 export class DiveSite {
   private readonly log = new Logger(DiveSite.name);
 
   constructor(
+    @InjectRepository(UserEntity)
+    private readonly Users: Repository<UserEntity>,
+
     @InjectRepository(DiveSiteEntity)
     private readonly DiveSites: Repository<DiveSiteEntity>,
+
+    @InjectRepository(DiveSiteReviewEntity)
+    private readonly Reviews: Repository<DiveSiteReviewEntity>,
+
     private readonly data: DiveSiteEntity,
   ) {}
 
@@ -144,6 +169,89 @@ export class DiveSite {
   async delete(): Promise<boolean> {
     const { affected } = await this.DiveSites.delete({ id: this.id });
     return typeof affected === 'number' && affected > 0;
+  }
+
+  async createReview(
+    options: CreateDiveSiteReviewOptions,
+  ): Promise<DiveSiteReview> {
+    const creator = await this.Users.findOneBy({ id: options.creatorId });
+
+    if (!creator) {
+      throw new NotFoundException(
+        `Unable to find user with ID ${options.creatorId}`,
+      );
+    }
+
+    // Users may not review the same site twice within 48 hours.
+    const existingReview = await this.Reviews.existsBy({
+      creator: { id: creator.id },
+      site: { id: this.id },
+      createdOn: MoreThan(dayjs().subtract(2, 'days').toDate()),
+    });
+
+    if (existingReview) {
+      throw new HttpException(
+        'You may not review the same site twice in the same 48 hour period.',
+        429,
+        { description: 'Rate limited' },
+      );
+    }
+
+    const data = new DiveSiteReviewEntity();
+    data.id = uuid();
+    data.comments = options.comments ?? null;
+    data.rating = options.rating;
+    data.difficulty = options.difficulty ?? null;
+    data.title = options.title;
+
+    data.site = this.data;
+    data.creator = creator;
+
+    const review = new DiveSiteReview(this.Reviews, data);
+    await review.save();
+
+    return review;
+  }
+
+  async getReview(reviewId: string): Promise<DiveSiteReview | undefined> {
+    const data = await this.Reviews.findOne({
+      where: { id: reviewId, site: { id: this.data.id } },
+      relations: ['creator'],
+    });
+
+    if (data) {
+      data.site = this.data;
+      return new DiveSiteReview(this.Reviews, data);
+    }
+
+    return undefined;
+  }
+
+  async listReviews(
+    options: ListDiveSiteReviewsParamsDTO,
+  ): Promise<ListReviewsResult> {
+    const query = this.Reviews.createQueryBuilder('review')
+      .innerJoin('review.creator', 'creator')
+      .where('review.site = :siteId', { siteId: this.id })
+      .addOrderBy(
+        `review.${options.sortBy}`,
+        options.sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
+      )
+      .addOrderBy('review.title', 'ASC')
+      .offset(options.skip)
+      .limit(options.limit);
+
+    this.log.debug(`Listing reviews for dive site ${this.id}...`);
+    this.log.verbose(query.getSql());
+
+    const [reviews, totalCount] = await query.getManyAndCount();
+
+    return {
+      reviews: reviews.map(
+        (review) => new DiveSiteReview(this.Reviews, review),
+      ),
+      totalCount,
+    };
   }
 
   toJSON(): DiveSiteDTO {

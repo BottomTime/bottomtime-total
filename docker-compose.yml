@@ -32,6 +32,20 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: packages/service/package.json
+          target: /app/packages/service/package.json
+        - action: sync
+          path: packages/service/public/docs/swagger.json
+          target: /app/packages/service/public/docs/swagger.json
+        - action: sync+restart
+          path: packages/api/src
+          target: /app/packages/api/src
+        - action: sync
+          path: packages/service/src
+          target: /app/packages/service/src
 
   web:
     container_name: bottomtime-web

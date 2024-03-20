@@ -14,6 +14,11 @@ export enum DiveSitesSortBy {
   Rating = 'rating',
 }
 
+export enum DiveSiteReviewsSortBy {
+  Rating = 'rating',
+  CreatedOn = 'createdOn',
+}
+
 export const CreateOrUpdateDiveSiteReviewSchema = z.object({
   title: z.string().trim().min(1).max(200),
   rating: z.number().min(1).max(5),
@@ -26,11 +31,32 @@ export type CreateOrUpdateDiveSiteReviewDTO = z.infer<
 
 export const DiveSiteReviewSchema = CreateOrUpdateDiveSiteReviewSchema.extend({
   id: z.string().uuid(),
-  creator: z.string().uuid(),
+  creator: ProfileSchema,
   createdOn: z.coerce.date(),
   updatedOn: z.coerce.date().optional(),
 });
 export type DiveSiteReviewDTO = z.infer<typeof DiveSiteReviewSchema>;
+
+export const ListDiveSiteReviewsParamsSchema = z.object({
+  sortBy: z
+    .nativeEnum(DiveSiteReviewsSortBy)
+    .optional()
+    .default(DiveSiteReviewsSortBy.Rating),
+  sortOrder: z.nativeEnum(SortOrder).optional().default(SortOrder.Descending),
+  skip: z.coerce.number().int().min(0).optional().default(0),
+  limit: z.coerce.number().int().gt(0).max(200).optional().default(50),
+});
+export type ListDiveSiteReviewsParamsDTO = z.infer<
+  typeof ListDiveSiteReviewsParamsSchema
+>;
+
+export const ListDiveSiteReviewsResponseSchema = z.object({
+  reviews: z.array(DiveSiteReviewSchema),
+  totalCount: z.number().int(),
+});
+export type ListDiveSiteReviewsResponseDTO = z.infer<
+  typeof ListDiveSiteReviewsResponseSchema
+>;
 
 export const CreateOrUpdateDiveSiteSchema = z.object({
   name: z.string().trim().min(1).max(200),

@@ -1,10 +1,28 @@
-import { DepthUnit, UserRole } from '@bottomtime/api';
+import {
+  DepthUnit,
+  DiveSiteReviewsSortBy,
+  SortOrder,
+  UserRole,
+} from '@bottomtime/api';
+
+import { HttpException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 
-import { DiveSiteEntity, UserEntity } from '../../../src/data';
-import { DiveSite } from '../../../src/diveSites';
+import {
+  DiveSiteEntity,
+  DiveSiteReviewEntity,
+  UserEntity,
+} from '../../../src/data';
+import { CreateDiveSiteReviewOptions, DiveSite } from '../../../src/diveSites';
+import { DiveSiteReview } from '../../../src/diveSites/dive-site-review';
 import { dataSource } from '../../data-source';
+import ReviewTestData from '../../fixtures/dive-site-reviews.json';
+import { createTestDiveSite } from '../../utils/create-test-dive-site';
+import {
+  createTestDiveSiteReview,
+  parseDiveSiteReviewJSON,
+} from '../../utils/create-test-dive-site-review';
 import { createTestUser } from '../../utils/create-test-user';
 
 const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
@@ -43,6 +61,7 @@ const DiveSiteData: Partial<DiveSiteEntity> = {
 describe('Dive Site Class', () => {
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
+  let Reviews: Repository<DiveSiteReviewEntity>;
 
   let diveSiteData: DiveSiteEntity;
   let site: DiveSite;
@@ -51,6 +70,7 @@ describe('Dive Site Class', () => {
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
+    Reviews = dataSource.getRepository(DiveSiteReviewEntity);
     regularUser = createTestUser(RegularUserData);
   });
 
@@ -58,7 +78,7 @@ describe('Dive Site Class', () => {
     diveSiteData = new DiveSiteEntity();
     Object.assign(diveSiteData, DiveSiteData);
     diveSiteData.creator = regularUser;
-    site = new DiveSite(DiveSites, diveSiteData);
+    site = new DiveSite(Users, DiveSites, Reviews, diveSiteData);
   });
 
   it('will return properties correctly', () => {
@@ -94,7 +114,7 @@ describe('Dive Site Class', () => {
     data.creator = regularUser;
     data.name = 'Dive Site';
     data.location = 'Imaginary Place';
-    const site = new DiveSite(DiveSites, data);
+    const site = new DiveSite(Users, DiveSites, Reviews, data);
 
     expect(site.updatedOn).toBeUndefined();
     expect(site.description).toBeUndefined();
@@ -190,5 +210,172 @@ describe('Dive Site Class', () => {
 
   it('will render dive site data as JSON', () => {
     expect(site.toJSON()).toMatchSnapshot();
+  });
+
+  describe('Reviews', () => {
+    let reviewData: DiveSiteReviewEntity[];
+
+    beforeAll(() => {
+      reviewData = ReviewTestData.map((review) =>
+        parseDiveSiteReviewJSON(review, regularUser, diveSiteData),
+      );
+    });
+
+    beforeEach(async () => {
+      await Users.save(regularUser);
+      await DiveSites.save(diveSiteData);
+      await Reviews.save(reviewData);
+    });
+
+    it('will retrieve a single review', async () => {
+      const review = await site.getReview(reviewData[0].id);
+      const expected = new DiveSiteReview(Reviews, reviewData[0]).toJSON();
+      expect(review).toBeDefined();
+      expect(review?.toJSON()).toEqual(expected);
+    });
+
+    it('will return undefined if a non-existent review is requested', async () => {
+      await expect(
+        site.getReview('3855463c-fd1d-4539-ad45-20ecf4fe568b'),
+      ).resolves.toBeUndefined();
+    });
+
+    it('will return undefined if a review is requested that is not associated with the current dive site', async () => {
+      const siteData = createTestDiveSite(regularUser);
+      const review = createTestDiveSiteReview(regularUser, siteData);
+      await DiveSites.save(siteData);
+      await Reviews.save(review);
+      await expect(site.getReview(review.id)).resolves.toBeUndefined();
+    });
+
+    it('will create a new dive site review with all options', async () => {
+      const options: CreateDiveSiteReviewOptions = {
+        title: 'OMG! Diving!!',
+        comments: 'This is a great dive site!',
+        rating: 4.5,
+        difficulty: 3.2,
+        creatorId: regularUser.id,
+      };
+      const review = await site.createReview(options);
+      expect(review.comments).toEqual(options.comments);
+      expect(review.creator).toEqual({
+        userId: regularUser.id,
+        username: regularUser.username,
+        memberSince: regularUser.memberSince,
+      });
+      expect(review.difficulty).toEqual(options.difficulty);
+      expect(review.rating).toEqual(options.rating);
+      expect(review.title).toEqual(options.title);
+      expect(review.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const savedReview = await Reviews.findOneOrFail({
+        where: { id: review.id },
+        relations: ['creator', 'site'],
+      });
+
+      expect(savedReview.comments).toEqual(options.comments);
+      expect(savedReview.creator.id).toEqual(regularUser.id);
+      expect(savedReview.difficulty).toEqual(options.difficulty);
+      expect(savedReview.site.id).toEqual(site.id);
+      expect(savedReview.rating).toEqual(options.rating);
+      expect(savedReview.title).toEqual(options.title);
+      expect(savedReview.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
+    });
+
+    it('will create a new review with minimal options', async () => {
+      const options: CreateDiveSiteReviewOptions = {
+        title: 'OMG! Diving!!',
+        rating: 4.5,
+        creatorId: regularUser.id,
+      };
+      const review = await site.createReview(options);
+      expect(review.comments).toBeUndefined();
+      expect(review.creator).toEqual({
+        userId: regularUser.id,
+        username: regularUser.username,
+        memberSince: regularUser.memberSince,
+      });
+      expect(review.difficulty).toBeUndefined();
+      expect(review.rating).toEqual(options.rating);
+      expect(review.title).toEqual(options.title);
+      expect(review.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const savedReview = await Reviews.findOneOrFail({
+        where: { id: review.id },
+        relations: ['creator', 'site'],
+      });
+
+      expect(savedReview.comments).toBeNull();
+      expect(savedReview.creator.id).toEqual(regularUser.id);
+      expect(savedReview.difficulty).toBeNull();
+      expect(savedReview.site.id).toEqual(site.id);
+      expect(savedReview.rating).toEqual(options.rating);
+      expect(savedReview.title).toEqual(options.title);
+      expect(savedReview.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
+    });
+
+    [
+      { sortBy: DiveSiteReviewsSortBy.Rating, sortOrder: SortOrder.Ascending },
+      { sortBy: DiveSiteReviewsSortBy.Rating, sortOrder: SortOrder.Descending },
+      {
+        sortBy: DiveSiteReviewsSortBy.CreatedOn,
+        sortOrder: SortOrder.Ascending,
+      },
+      {
+        sortBy: DiveSiteReviewsSortBy.CreatedOn,
+        sortOrder: SortOrder.Descending,
+      },
+    ].forEach(({ sortBy, sortOrder }) => {
+      it(`will list reviews sorted by ${sortBy} in ${sortOrder} order`, async () => {
+        const results = await site.listReviews({
+          sortBy,
+          sortOrder,
+          skip: 0,
+          limit: 10,
+        });
+
+        expect(results.totalCount).toBe(100);
+
+        const reviews = results.reviews.map((r) => ({
+          title: r.title,
+          rating: r.rating,
+          createdOn: r.createdOn,
+        }));
+        expect(reviews).toMatchSnapshot();
+      });
+    });
+
+    it('will list reviews with pagination', async () => {
+      const results = await site.listReviews({
+        sortBy: DiveSiteReviewsSortBy.Rating,
+        sortOrder: SortOrder.Descending,
+        skip: 20,
+        limit: 28,
+      });
+
+      expect(results.totalCount).toBe(100);
+      expect(results.reviews).toHaveLength(28);
+      expect(
+        results.reviews.map((review) => ({
+          title: review.title,
+          rating: review.rating,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    it('will throw an error if user attempts to review the same site twice within 48 hours.', async () => {
+      await site.createReview({
+        title: 'OMG! Diving!!',
+        rating: 4.5,
+        creatorId: regularUser.id,
+      });
+      await expect(
+        site.createReview({
+          title: 'OMG! Another review!!',
+          rating: 4.5,
+          creatorId: regularUser.id,
+        }),
+      ).rejects.toThrow(HttpException);
+    });
   });
 });

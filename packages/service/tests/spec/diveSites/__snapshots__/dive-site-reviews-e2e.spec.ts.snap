@@ -1,0 +1,224 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dive Site Reviews End-to-End Tests when creating a review will return a 400 response if the the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "title",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "rating",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 1",
+      "minimum": 1,
+      "path": [
+        "difficulty",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "comments",
+      ],
+      "received": "boolean",
+    },
+  ],
+}
+`;
+
+exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for a list of reviews and return the results 1`] = `
+[
+  "noxious so adept depressive",
+  "keen why unfinished drizzle",
+  "vengeful yet tattered puppet",
+  "dry inasmuch cheery skyscraper",
+  "attractive inasmuch lumbering moon",
+  "different who anchored dignity",
+  "outlying whereas lined townhouse",
+  "handsome what uncommon noodles",
+  "homely yet envious importance",
+  "offensive inasmuch loud wire",
+  "slippery provided scented tornado",
+  "golden so handy leopard",
+  "blushing why colossal departure",
+  "difficult yet striped downturn",
+  "tough though reliable perfection",
+  "formal meanwhile triangular command",
+  "slow nor disgusting lid",
+  "zealous instead alienated nightmare",
+  "dim incidentally stunning flintlock",
+  "unwitting yet pure spreadsheet",
+  "sugary unless blue stair",
+  "energetic whether clever divalent",
+  "canine even adored calm",
+  "cautious while wealthy hesitation",
+  "glass nor unconscious covariate",
+  "metallic till lustrous rocket-ship",
+  "high-level incidentally jittery plover",
+  "shy till fearful tortoise",
+  "melodic who lazy sow",
+  "hollow and talkative programme",
+  "jovial than great criterion",
+  "smug till unsightly epic",
+  "imperturbable and unknown belligerency",
+  "acrobatic if square stain",
+  "unsightly when horrible kitten",
+  "shabby when awesome laborer",
+  "messy until cylindrical massage",
+  "moist whether mammoth processing",
+  "pessimistic but courteous center",
+  "illiterate furthermore filthy faith",
+  "necessary supposing oily frontier",
+  "quiet which sophisticated executive",
+  "bumpy furthermore wiggly allergist",
+  "slippery as defensive avenue",
+  "quick-witted once powerless tutu",
+  "reasonable until vague similarity",
+  "substantial after monthly overview",
+  "easy finally salty principle",
+  "well-worn although physical rocket-ship",
+  "difficult even needy exit",
+]
+`;
+
+exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for a list of reviews given query string options 1`] = `
+[
+  "golden so handy leopard",
+  "unimportant likewise basic copy",
+  "offensive inasmuch loud wire",
+  "little incidentally flustered deck",
+  "formal meanwhile triangular command",
+]
+`;
+
+exports[`Dive Site Reviews End-to-End Tests when listing reviews will return a 400 response if the query string options are invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'rating' | 'createdOn', received 'chillFactor'",
+      "options": [
+        "rating",
+        "createdOn",
+      ],
+      "path": [
+        "sortBy",
+      ],
+      "received": "chillFactor",
+    },
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'asc' | 'desc', received 'up'",
+      "options": [
+        "asc",
+        "desc",
+      ],
+      "path": [
+        "sortOrder",
+      ],
+      "received": "up",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 0",
+      "minimum": 0,
+      "path": [
+        "skip",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "limit",
+      ],
+      "received": "nan",
+    },
+  ],
+}
+`;
+
+exports[`Dive Site Reviews End-to-End Tests when retrieving a single review will return a review when it is requested 1`] = `
+{
+  "comments": "Provident illo repellat. Eius tempora ullam voluptas ullam quo optio quaerat adipisci qui. Tempora expedita tenetur.",
+  "createdOn": "2020-03-12T23:08:09.751Z",
+  "creator": {
+    "memberSince": "2024-03-20T13:12:03.449Z",
+    "userId": "9dcf5f2e-db68-4061-aba4-6a3d6dc088bb",
+    "username": "testy_mctestface",
+  },
+  "difficulty": 1.02,
+  "id": "d94ec3e1-b178-4e15-b486-c372adeb8aef",
+  "rating": 4.91,
+  "title": "attractive inasmuch lumbering moon",
+  "updatedOn": "2023-04-18T11:07:27.008Z",
+}
+`;
+
+exports[`Dive Site Reviews End-to-End Tests when updating a review will return a 400 response if the the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "title",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "rating",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 1",
+      "minimum": 1,
+      "path": [
+        "difficulty",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "comments",
+      ],
+      "received": "boolean",
+    },
+  ],
+}
+`;

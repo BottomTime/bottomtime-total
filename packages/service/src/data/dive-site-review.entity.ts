@@ -16,18 +16,18 @@ export class DiveSiteReviewEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
-  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity)
   creator: UserEntity = new UserEntity();
 
   @ManyToOne(() => DiveSiteEntity, (site) => site.reviews)
   site: DiveSiteEntity = new DiveSiteEntity();
 
-  @CreateDateColumn()
+  @CreateDateColumn({ nullable: false })
   @Index()
-  createdOn: Date = new Date();
+  createdOn?: Date;
 
   @UpdateDateColumn({ nullable: true })
-  updatedOn?: Date;
+  updatedOn: Date | null = null;
 
   @Column('varchar', { length: 200 })
   @Index()
@@ -39,10 +39,10 @@ export class DiveSiteReviewEntity {
 
   @Column('float', { nullable: true })
   @Index()
-  difficulty?: number;
+  difficulty: number | null = null;
 
   @Column('varchar', { length: 1000, nullable: true })
-  comments?: string;
+  comments: string | null = null;
 
   @Column({
     type: 'tsvector',

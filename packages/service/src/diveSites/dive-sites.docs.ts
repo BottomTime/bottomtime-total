@@ -10,6 +10,14 @@
  *       schema:
  *         type: string
  *         format: uuid
+ *     DiveSiteReviewId:
+ *       name: reviewId
+ *       in: path
+ *       description: The ID of the dive site review being requested.
+ *       required: true
+ *       schema:
+ *         type: string
+ *         format: uuid
  *   schemas:
  *     CreateOrUpdateDiveSite:
  *       type: object
@@ -120,4 +128,63 @@
  *               min: 1.0
  *               max: 5.0
  *         - $ref: "#/components/schemas/CreateOrUpdateDiveSite"
+ *     CreateOrUpdateDiveSiteReview:
+ *       type: object
+ *       required:
+ *         - title
+ *         - rating
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: The title of the dive site review.
+ *           example: Great Dive Site
+ *           maxlength: 200
+ *         rating:
+ *           type: number
+ *           format: float
+ *           description: The rating of the dive site review.
+ *           example: 4.5
+ *           min: 1.0
+ *           max: 5.0
+ *         difficulty:
+ *           type: number
+ *           format: float
+ *           description: The difficulty of the dive site review.
+ *           example: 3.5
+ *           min: 1.0
+ *           max: 5.0
+ *         comments:
+ *           type: string
+ *           description: Comments about the dive site review.
+ *           example: This was a great dive site. I would definitely dive it again.
+ *           maxlength: 1000
+ *     DiveSiteReview:
+ *       allOf:
+ *         - type: object
+ *           required:
+ *             - id
+ *             - creator
+ *             - createdOn
+ *           properties:
+ *             id:
+ *               type: string
+ *               format: uuid
+ *               description: The ID of the dive site review.
+ *               example: 123e4567-e89b-12d3-a456-426614174000
+ *             creator:
+ *               type: string
+ *               format: uuid
+ *               description: The ID of the user who created the review.
+ *               example: 123e4567-e89b-12d3-a456-426614174000
+ *             createdOn:
+ *               type: string
+ *               format: date-time
+ *               description: The date and time the dive site review was created.
+ *               example: 2021-06-10T03:00:00.000Z
+ *             updatedOn:
+ *               type: string
+ *               format: date-time
+ *               description: The date and time the dive site review was last updated.
+ *               example: 2021-06-10T03:00:00.000Z
+ *         - $ref: "#/components/schemas/CreateOrUpdateDiveSiteReview"
  */
