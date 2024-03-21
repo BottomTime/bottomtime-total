@@ -1,5 +1,6 @@
 import { S3Client } from '@aws-sdk/client-s3';
 import { DynamicModule, Module } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -29,8 +30,8 @@ export class AppModule {
     return {
       module: AppModule,
       imports: [
+        EventEmitterModule.forRoot(),
         // Serve statically-generated API documentation.
-        // TODO: This should be moved somewhere else. The backend should not be serving this content.
         ServeStaticModule.forRoot({
           rootPath: path.join(__dirname, '../public/docs'),
           serveRoot: '/docs',

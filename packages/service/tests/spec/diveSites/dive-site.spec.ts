@@ -6,6 +6,7 @@ import {
 } from '@bottomtime/api';
 
 import { HttpException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { Repository } from 'typeorm';
 
@@ -66,6 +67,7 @@ describe('Dive Site Class', () => {
   let diveSiteData: DiveSiteEntity;
   let site: DiveSite;
   let regularUser: UserEntity;
+  let emitter: EventEmitter2;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
@@ -75,10 +77,11 @@ describe('Dive Site Class', () => {
   });
 
   beforeEach(() => {
+    emitter = new EventEmitter2();
     diveSiteData = new DiveSiteEntity();
     Object.assign(diveSiteData, DiveSiteData);
     diveSiteData.creator = regularUser;
-    site = new DiveSite(Users, DiveSites, Reviews, diveSiteData);
+    site = new DiveSite(Users, DiveSites, Reviews, emitter, diveSiteData);
   });
 
   it('will return properties correctly', () => {
@@ -114,7 +117,7 @@ describe('Dive Site Class', () => {
     data.creator = regularUser;
     data.name = 'Dive Site';
     data.location = 'Imaginary Place';
-    const site = new DiveSite(Users, DiveSites, Reviews, data);
+    const site = new DiveSite(Users, DiveSites, Reviews, emitter, data);
 
     expect(site.updatedOn).toBeUndefined();
     expect(site.description).toBeUndefined();
@@ -204,6 +207,24 @@ describe('Dive Site Class', () => {
     await expect(DiveSites.existsBy({ id: site.id })).resolves.toBe(false);
   });
 
+  it('will delete reviews associated with a dive site when the site is deleted', async () => {
+    await Users.save(regularUser);
+    await DiveSites.save(diveSiteData);
+
+    const reviewData = [
+      createTestDiveSiteReview(regularUser, diveSiteData),
+      createTestDiveSiteReview(regularUser, diveSiteData),
+      createTestDiveSiteReview(regularUser, diveSiteData),
+    ];
+    await Reviews.save(reviewData);
+
+    await expect(site.delete()).resolves.toBe(true);
+    await expect(DiveSites.existsBy({ id: site.id })).resolves.toBe(false);
+    await expect(
+      Reviews.findBy({ site: { id: site.id } }),
+    ).resolves.toHaveLength(0);
+  });
+
   it('will return false if delete is called against a dive site that does not exist in the database', async () => {
     await expect(site.delete()).resolves.toBe(false);
   });
@@ -229,7 +250,11 @@ describe('Dive Site Class', () => {
 
     it('will retrieve a single review', async () => {
       const review = await site.getReview(reviewData[0].id);
-      const expected = new DiveSiteReview(Reviews, reviewData[0]).toJSON();
+      const expected = new DiveSiteReview(
+        Reviews,
+        emitter,
+        reviewData[0],
+      ).toJSON();
       expect(review).toBeDefined();
       expect(review?.toJSON()).toEqual(expected);
     });

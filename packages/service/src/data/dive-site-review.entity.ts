@@ -16,10 +16,12 @@ export class DiveSiteReviewEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   creator: UserEntity = new UserEntity();
 
-  @ManyToOne(() => DiveSiteEntity, (site) => site.reviews)
+  @ManyToOne(() => DiveSiteEntity, (site) => site.reviews, {
+    onDelete: 'CASCADE',
+  })
   site: DiveSiteEntity = new DiveSiteEntity();
 
   @CreateDateColumn({ nullable: false })

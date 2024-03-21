@@ -1,5 +1,7 @@
 import { DepthUnit, UserRole } from '@bottomtime/api';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 import { Repository } from 'typeorm';
 
 import {
@@ -49,6 +51,7 @@ describe('Dive Site Review Class', () => {
 
   let data: DiveSiteReviewEntity;
   let review: DiveSiteReview;
+  let emitter: EventEmitter2;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
@@ -57,6 +60,8 @@ describe('Dive Site Review Class', () => {
   });
 
   beforeEach(async () => {
+    emitter = new EventEmitter2();
+
     const creator = new UserEntity();
     Object.assign(creator, CreatorData);
     await Users.save(creator);
@@ -70,7 +75,7 @@ describe('Dive Site Review Class', () => {
     Object.assign(data, FullReviewData);
     data.creator = creator;
     data.site = diveSite;
-    review = new DiveSiteReview(Reviews, data);
+    review = new DiveSiteReview(Reviews, emitter, data);
   });
 
   it('will return properties correctly', () => {
@@ -92,7 +97,7 @@ describe('Dive Site Review Class', () => {
     const data = new DiveSiteReviewEntity();
     data.id = '8a1e4390-c0ae-48de-a76e-37e1a6093232';
     data.title = 'Dive Site';
-    const review = new DiveSiteReview(Reviews, data);
+    const review = new DiveSiteReview(Reviews, emitter, data);
     expect(review.difficulty).toBeUndefined();
     expect(review.comments).toBeUndefined();
   });

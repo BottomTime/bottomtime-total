@@ -3,7 +3,8 @@ import {
   SearchDiveSitesParamsDTO,
 } from '@bottomtime/api';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -36,6 +37,9 @@ export class DiveSitesService {
 
     @InjectRepository(DiveSiteReviewEntity)
     private readonly Reviews: Repository<DiveSiteReviewEntity>,
+
+    @Inject(EventEmitter2)
+    private readonly emitter: EventEmitter2,
   ) {}
 
   async searchDiveSites(
@@ -60,7 +64,14 @@ export class DiveSitesService {
 
     return {
       sites: sites.map(
-        (site) => new DiveSite(this.Users, this.DiveSites, this.Reviews, site),
+        (site) =>
+          new DiveSite(
+            this.Users,
+            this.DiveSites,
+            this.Reviews,
+            this.emitter,
+            site,
+          ),
       ),
       totalCount,
     };
@@ -77,7 +88,13 @@ export class DiveSitesService {
     const result = await query.getOne();
 
     if (result) {
-      return new DiveSite(this.Users, this.DiveSites, this.Reviews, result);
+      return new DiveSite(
+        this.Users,
+        this.DiveSites,
+        this.Reviews,
+        this.emitter,
+        result,
+      );
     }
 
     return undefined;
@@ -106,6 +123,12 @@ export class DiveSitesService {
 
     await this.DiveSites.save(data);
 
-    return new DiveSite(this.Users, this.DiveSites, this.Reviews, data);
+    return new DiveSite(
+      this.Users,
+      this.DiveSites,
+      this.Reviews,
+      this.emitter,
+      data,
+    );
   }
 }

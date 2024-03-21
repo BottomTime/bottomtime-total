@@ -1,16 +1,22 @@
 import { DiveSiteReviewDTO, SuccinctProfileDTO } from '@bottomtime/api';
 
 import { Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { Repository } from 'typeorm';
 
 import { DiveSiteReviewEntity } from '../data';
+import {
+  DiveSite_ReviewDeleted,
+  DiveSite_ReviewSaved,
+} from './dive-site-review.event';
 
 export class DiveSiteReview {
   private readonly log = new Logger(DiveSiteReview.name);
 
   constructor(
     private readonly Reviews: Repository<DiveSiteReviewEntity>,
+    private readonly emitter: EventEmitter2,
     private readonly data: DiveSiteReviewEntity,
   ) {}
 
@@ -70,11 +76,27 @@ export class DiveSiteReview {
       `Attempting to save dive site review with ID "${this.data.id}"...`,
     );
     await this.Reviews.save(this.data);
+
+    this.emitter.emit(DiveSite_ReviewSaved, {
+      reviewId: this.data.id,
+      siteId: this.data.site.id,
+      rating: this.data.rating,
+      difficulty: this.data.difficulty,
+    });
   }
 
   async delete(): Promise<boolean> {
     const { affected } = await this.Reviews.delete(this.data.id);
-    return affected === 1;
+
+    if (affected === 1) {
+      this.emitter.emit(DiveSite_ReviewDeleted, {
+        reviewId: this.data.id,
+        siteId: this.data.site.id,
+      });
+      return true;
+    }
+
+    return false;
   }
 
   toJSON(): DiveSiteReviewDTO {

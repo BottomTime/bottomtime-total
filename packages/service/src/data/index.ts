@@ -1,5 +1,4 @@
 export * from './data-source';
-export * from './get-query-vector';
 
 export * from './certification.entity';
 export * from './dive-site-review.entity';
