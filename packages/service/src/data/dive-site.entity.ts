@@ -23,9 +23,7 @@ export class DiveSiteEntity {
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   creator: UserEntity = new UserEntity();
 
-  @OneToMany(() => DiveSiteReviewEntity, (review) => review.site, {
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => DiveSiteReviewEntity, (review) => review.site)
   reviews?: DiveSiteReviewEntity;
 
   @CreateDateColumn()

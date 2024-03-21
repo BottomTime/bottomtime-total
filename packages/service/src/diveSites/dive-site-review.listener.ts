@@ -23,15 +23,40 @@ export class DiveSiteReviewEventListener {
   ) {}
 
   private async updateAggregates(siteId: string): Promise<void> {
-    const aggregates: {
-      averageRating: number | null;
-      averageDifficulty: number | null;
-    } = await this.DiveSites.query(
-      'SELECT avg("rating") AS "averageRating", avg("difficulty") AS "averageDifficulty" FROM dive_site_reviews WHERE "siteId" = $1 GROUP BY "siteId"',
-      [siteId],
-    );
+    try {
+      const aggregates: {
+        averageRating: number | null;
+        averageDifficulty: number | null;
+      }[] = await this.DiveSites.query(
+        'SELECT AVG("rating") AS "averageRating", AVG("difficulty") AS "averageDifficulty" FROM dive_site_reviews WHERE "siteId" = $1 GROUP BY "siteId"',
+        [siteId],
+      );
 
-    await this.DiveSites.update(siteId, { ...aggregates });
+      if (aggregates[0]) {
+        this.log.debug(
+          `Calculated aggregates: Rating = ${aggregates[0].averageRating}, Difficulty = ${aggregates[0].averageDifficulty}`,
+          aggregates,
+        );
+
+        await this.DiveSites.update(
+          { id: siteId },
+          {
+            averageDifficulty: aggregates[0].averageDifficulty,
+            averageRating: aggregates[0].averageRating,
+          },
+        );
+      } else {
+        this.log.debug(
+          `No reviews found while updating aggregates for site ${siteId}.`,
+        );
+        await this.DiveSites.update(
+          { id: siteId },
+          { averageRating: null, averageDifficulty: null },
+        );
+      }
+    } catch (error) {
+      this.log.error(`Failed to update aggregates for site ${siteId}.`, error);
+    }
   }
 
   @OnEvent(DiveSite_ReviewSaved, { async: true })

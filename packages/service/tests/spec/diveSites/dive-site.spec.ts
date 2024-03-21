@@ -207,6 +207,24 @@ describe('Dive Site Class', () => {
     await expect(DiveSites.existsBy({ id: site.id })).resolves.toBe(false);
   });
 
+  it('will delete reviews associated with a dive site when the site is deleted', async () => {
+    await Users.save(regularUser);
+    await DiveSites.save(diveSiteData);
+
+    const reviewData = [
+      createTestDiveSiteReview(regularUser, diveSiteData),
+      createTestDiveSiteReview(regularUser, diveSiteData),
+      createTestDiveSiteReview(regularUser, diveSiteData),
+    ];
+    await Reviews.save(reviewData);
+
+    await expect(site.delete()).resolves.toBe(true);
+    await expect(DiveSites.existsBy({ id: site.id })).resolves.toBe(false);
+    await expect(
+      Reviews.findBy({ site: { id: site.id } }),
+    ).resolves.toHaveLength(0);
+  });
+
   it('will return false if delete is called against a dive site that does not exist in the database', async () => {
     await expect(site.delete()).resolves.toBe(false);
   });
