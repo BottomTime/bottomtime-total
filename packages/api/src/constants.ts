@@ -13,12 +13,6 @@ export enum PressureUnit {
   PSI = 'psi',
 }
 
-export enum ProfileVisibility {
-  Private = 'private',
-  FriendsOnly = 'friends',
-  Public = 'public',
-}
-
 export enum SortOrder {
   Ascending = 'asc',
   Descending = 'desc',

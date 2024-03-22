@@ -72,21 +72,6 @@
           />
         </FormField>
 
-        <FormField
-          label="Profile info visible to"
-          control-id="profileVisibility"
-          help="This controls who can see your profile and dive logs. Users will still be able to search for your username to send you friend requests."
-          required
-        >
-          <FormSelect
-            v-model="data.profileVisibility"
-            control-id="profileVisibility"
-            test-id="profile-visibility"
-            stretch
-            :options="ProfileVisibilityOptions"
-          />
-        </FormField>
-
         <FormField label="Display name" control-id="display-name">
           <FormTextBox
             v-model.trim="data.displayName"
@@ -122,11 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  PasswordStrengthRegex,
-  ProfileVisibility,
-  UsernameRegex,
-} from '@bottomtime/api';
+import { PasswordStrengthRegex, UsernameRegex } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required } from '@vuelidate/validators';
@@ -135,12 +116,11 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useClient } from '../../client';
-import { SelectOption, ToastType } from '../../common';
+import { ToastType } from '../../common';
 import { isErrorResponse, useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
-import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import PasswordRequirements from './password-requirements.vue';
 
@@ -149,16 +129,9 @@ type RegisterData = {
   email: string;
   password: string;
   confirmPassword: string;
-  profileVisibility: ProfileVisibility;
   displayName: string;
   location: string;
 };
-
-const ProfileVisibilityOptions: SelectOption[] = [
-  { label: 'Only my friends', value: ProfileVisibility.FriendsOnly },
-  { label: 'Everyone', value: ProfileVisibility.Public },
-  { label: 'Just me', value: ProfileVisibility.Private },
-];
 
 const client = useClient();
 const currentUser = useCurrentUser();
@@ -171,7 +144,6 @@ const data = reactive<RegisterData>({
   email: '',
   password: '',
   confirmPassword: '',
-  profileVisibility: ProfileVisibility.FriendsOnly,
   displayName: '',
   location: '',
 });
@@ -251,9 +223,6 @@ async function register() {
         profile: {
           name: data.displayName,
           location: data.location,
-        },
-        settings: {
-          profileVisibility: data.profileVisibility,
         },
       });
       currentUser.user = user.toJSON();

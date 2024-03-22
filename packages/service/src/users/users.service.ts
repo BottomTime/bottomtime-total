@@ -2,12 +2,10 @@ import {
   CreateUserParamsDTO,
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   SearchUserProfilesParamsSchema,
   SortOrder,
   TemperatureUnit,
   UserRole,
-  UsernameSchema,
   UsersSortBy,
   WeightUnit,
 } from '@bottomtime/api';
@@ -26,7 +24,6 @@ import { User } from './user';
 
 const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
   role: z.nativeEnum(UserRole),
-  profileVisibleTo: z.union([z.literal('#public'), UsernameSchema]),
 }).partial();
 export type SearchUsersOptions = z.infer<typeof SearchUsersOptionsSchema>;
 export type SearchUsersResult = {
@@ -110,8 +107,6 @@ export class UsersService {
 
     data.depthUnit = options.settings?.depthUnit || DepthUnit.Meters;
     data.pressureUnit = options.settings?.pressureUnit || PressureUnit.Bar;
-    data.profileVisibility =
-      options.settings?.profileVisibility || ProfileVisibility.FriendsOnly;
     data.temperatureUnit =
       options.settings?.temperatureUnit || TemperatureUnit.Celsius;
     data.weightUnit = options.settings?.weightUnit || WeightUnit.Kilograms;
@@ -154,35 +149,6 @@ export class UsersService {
           query: options.query,
         },
       );
-    }
-
-    if (options.profileVisibleTo) {
-      if (options.profileVisibleTo === '#public') {
-        query = query.andWhere('users.profileVisibility = :visibility', {
-          visibility: ProfileVisibility.Public,
-        });
-      } else {
-        query = query
-          .innerJoin('users.friends', 'friend_relations')
-          .innerJoin(
-            'friend_relations.friend',
-            'friends',
-            'friends.usernameLowered = :friendUsername',
-            {
-              friendUsername: options.profileVisibleTo.toLowerCase(),
-              visibilities: [
-                ProfileVisibility.Public,
-                ProfileVisibility.FriendsOnly,
-              ],
-            },
-          )
-          .andWhere('users.profileVisibility IN (:...visibilities)', {
-            visibilities: [
-              ProfileVisibility.Public,
-              ProfileVisibility.FriendsOnly,
-            ],
-          });
-      }
     }
 
     query = query.offset(options.skip).limit(options.limit ?? 100);

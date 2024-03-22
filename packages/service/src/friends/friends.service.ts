@@ -7,7 +7,6 @@ import {
   ListFriendRequestsResponseDTO,
   ListFriendsParams,
   ListFriendsResponseDTO,
-  ProfileVisibility,
   SortOrder,
 } from '@bottomtime/api';
 
@@ -88,13 +87,9 @@ export class FriendsService {
       username: friend.friend.username,
       memberSince: friend.friend.memberSince,
       friendsSince: friend.friendsSince,
-      ...(friend.friend.profileVisibility === ProfileVisibility.Private
-        ? {}
-        : {
-            avatar: friend.friend.avatar ?? undefined,
-            name: friend.friend.name ?? undefined,
-            location: friend.friend.location ?? undefined,
-          }),
+      avatar: friend.friend.avatar ?? undefined,
+      name: friend.friend.name ?? undefined,
+      location: friend.friend.location ?? undefined,
     };
   }
 
@@ -121,13 +116,9 @@ export class FriendsService {
         id: friend.id,
         username: friend.username,
         memberSince: friend.memberSince,
-        ...(friend.profileVisibility === ProfileVisibility.Private
-          ? {}
-          : {
-              avatar: friend.avatar ?? undefined,
-              name: friend.name ?? undefined,
-              location: friend.location ?? undefined,
-            }),
+        avatar: friend.avatar ?? undefined,
+        name: friend.name ?? undefined,
+        location: friend.location ?? undefined,
       },
     };
   }
