@@ -1,3 +1,5 @@
+import { NotificationDTO } from '@bottomtime/api';
+
 import { Repository } from 'typeorm';
 
 import { NotificationEntity } from '../data';
@@ -64,5 +66,17 @@ export class Notification {
 
     this.data.dismissed = dismissed;
     await this.save();
+  }
+
+  toJSON(): NotificationDTO {
+    return {
+      id: this.id,
+      dismissed: this.dismissed,
+      icon: this.icon,
+      message: this.message,
+      title: this.title,
+      active: this.active,
+      expires: this.expires ?? undefined,
+    };
   }
 }

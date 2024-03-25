@@ -161,4 +161,8 @@ describe('Notification class', () => {
       expect(saved.dismissed).toBe(dismissed);
     });
   });
+
+  it('will render as JSON correctly', () => {
+    expect(notification.toJSON()).toMatchSnapshot();
+  });
 });
