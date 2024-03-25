@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserDTO,
   WeightUnit,
@@ -31,7 +30,6 @@ describe('User Settings client object', () => {
         pressureUnit: PressureUnit.Bar,
         temperatureUnit: TemperatureUnit.Celsius,
         weightUnit: WeightUnit.Kilograms,
-        profileVisibility: ProfileVisibility.Public,
       },
     };
 
@@ -51,9 +49,6 @@ describe('User Settings client object', () => {
     expect(settings.pressureUnit).toBe(testUser.settings.pressureUnit);
     expect(settings.temperatureUnit).toBe(testUser.settings.temperatureUnit);
     expect(settings.weightUnit).toBe(testUser.settings.weightUnit);
-    expect(settings.profileVisibility).toBe(
-      testUser.settings.profileVisibility,
-    );
   });
 
   it('will update properties correctly', () => {
@@ -61,19 +56,16 @@ describe('User Settings client object', () => {
     settings.pressureUnit = PressureUnit.PSI;
     settings.temperatureUnit = TemperatureUnit.Fahrenheit;
     settings.weightUnit = WeightUnit.Pounds;
-    settings.profileVisibility = ProfileVisibility.Private;
 
     expect(settings.depthUnit).toBe(DepthUnit.Feet);
     expect(settings.pressureUnit).toBe(PressureUnit.PSI);
     expect(settings.temperatureUnit).toBe(TemperatureUnit.Fahrenheit);
     expect(settings.weightUnit).toBe(WeightUnit.Pounds);
-    expect(settings.profileVisibility).toBe(ProfileVisibility.Private);
 
     expect(testUser.settings.depthUnit).toBe(DepthUnit.Feet);
     expect(testUser.settings.pressureUnit).toBe(PressureUnit.PSI);
     expect(testUser.settings.temperatureUnit).toBe(TemperatureUnit.Fahrenheit);
     expect(testUser.settings.weightUnit).toBe(WeightUnit.Pounds);
-    expect(testUser.settings.profileVisibility).toBe(ProfileVisibility.Private);
   });
 
   it('will save changes upon request', async () => {
@@ -81,7 +73,6 @@ describe('User Settings client object', () => {
     settings.pressureUnit = PressureUnit.PSI;
     settings.temperatureUnit = TemperatureUnit.Fahrenheit;
     settings.weightUnit = WeightUnit.Pounds;
-    settings.profileVisibility = ProfileVisibility.Private;
     scope
       .put(`/api/users/${testUser.username}/settings`, testUser.settings)
       .reply(204);

@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserDTO,
   WeightUnit,
@@ -42,7 +41,6 @@ describe('Edit Settings form', () => {
             pressureUnit: PressureUnit.PSI,
             temperatureUnit: TemperatureUnit.Fahrenheit,
             weightUnit: WeightUnit.Pounds,
-            profileVisibility: ProfileVisibility.Public,
           },
         },
       },
@@ -67,9 +65,6 @@ describe('Edit Settings form', () => {
     expect(
       wrapper.get<HTMLInputElement>('input#weight-pounds').element.checked,
     ).toBe(true);
-    expect(
-      wrapper.get<HTMLInputElement>('input#profile-public').element.checked,
-    ).toBe(true);
   });
 
   it('will allow the user to change settings', async () => {
@@ -80,7 +75,6 @@ describe('Edit Settings form', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Public,
       },
     };
     const wrapper = mount(EditSettings, {
@@ -102,7 +96,6 @@ describe('Edit Settings form', () => {
     await wrapper.get('input#pressure-bar').setValue(true);
     await wrapper.get('input#temperature-celsius').setValue(true);
     await wrapper.get('input#weight-kilograms').setValue(true);
-    await wrapper.get('input#profile-private').setValue(true);
     await wrapper.get('[data-testid="save-settings"]').trigger('click');
     await flushPromises();
 
@@ -110,7 +103,6 @@ describe('Edit Settings form', () => {
     expect(user.settings.pressureUnit).toBe(PressureUnit.Bar);
     expect(user.settings.temperatureUnit).toBe(TemperatureUnit.Celsius);
     expect(user.settings.weightUnit).toBe(WeightUnit.Kilograms);
-    expect(user.settings.profileVisibility).toBe(ProfileVisibility.Private);
     expect(spy).toHaveBeenCalled();
 
     expect(wrapper.emitted('save-settings')).toEqual([
@@ -120,7 +112,6 @@ describe('Edit Settings form', () => {
           pressureUnit: PressureUnit.Bar,
           temperatureUnit: TemperatureUnit.Celsius,
           weightUnit: WeightUnit.Kilograms,
-          profileVisibility: ProfileVisibility.Private,
         },
       ],
     ]);
@@ -134,7 +125,6 @@ describe('Edit Settings form', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Public,
       },
     };
     const wrapper = mount(EditSettings, {
@@ -174,7 +164,6 @@ describe('Edit Settings form', () => {
         pressureUnit: PressureUnit.Bar,
         temperatureUnit: TemperatureUnit.Celsius,
         weightUnit: WeightUnit.Kilograms,
-        profileVisibility: ProfileVisibility.Public,
       },
     };
     const wrapper = mount(EditSettings, {
@@ -214,7 +203,6 @@ describe('Edit Settings form', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Public,
       },
     };
     const wrapper = mount(EditSettings, {
@@ -234,7 +222,6 @@ describe('Edit Settings form', () => {
     await wrapper.get('input#pressure-bar').setValue(true);
     await wrapper.get('input#temperature-celsius').setValue(true);
     await wrapper.get('input#weight-kilograms').setValue(true);
-    await wrapper.get('input#profile-private').setValue(true);
 
     // Cancel changes
     await wrapper.get('[data-testid="cancel-settings"]').trigger('click');
@@ -254,9 +241,6 @@ describe('Edit Settings form', () => {
     expect(
       wrapper.get<HTMLInputElement>('input#weight-pounds').element.checked,
     ).toBe(true);
-    expect(
-      wrapper.get<HTMLInputElement>('input#profile-public').element.checked,
-    ).toBe(true);
   });
 
   it('will allow a user to change their mind about cancelling changes', async () => {
@@ -267,7 +251,6 @@ describe('Edit Settings form', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Public,
       },
     };
     const wrapper = mount(EditSettings, {
@@ -287,7 +270,6 @@ describe('Edit Settings form', () => {
     await wrapper.get('input#pressure-bar').setValue(true);
     await wrapper.get('input#temperature-celsius').setValue(true);
     await wrapper.get('input#weight-kilograms').setValue(true);
-    await wrapper.get('input#profile-private').setValue(true);
 
     // Cancel changes
     await wrapper.get('[data-testid="cancel-settings"]').trigger('click');
@@ -306,9 +288,6 @@ describe('Edit Settings form', () => {
     ).toBe(true);
     expect(
       wrapper.get<HTMLInputElement>('input#weight-kilograms').element.checked,
-    ).toBe(true);
-    expect(
-      wrapper.get<HTMLInputElement>('input#profile-private').element.checked,
     ).toBe(true);
   });
 });

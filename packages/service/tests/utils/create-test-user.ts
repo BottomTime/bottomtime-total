@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserRole,
   WeightUnit,
@@ -39,9 +38,6 @@ const UserJsonSchema = z.object({
   passwordResetToken: z.string().nullable().default(null),
   passwordResetTokenExpiration: z.coerce.date().nullable().default(null),
   pressureUnit: z.nativeEnum(PressureUnit).default(PressureUnit.Bar),
-  profileVisibility: z
-    .nativeEnum(ProfileVisibility)
-    .default(ProfileVisibility.FriendsOnly),
   temperatureUnit: z
     .nativeEnum(TemperatureUnit)
     .default(TemperatureUnit.Celsius),
@@ -131,8 +127,6 @@ export function createTestUser(
     pressureUnit: options?.pressureUnit ?? PressureUnit.Bar,
     temperatureUnit: options?.temperatureUnit ?? TemperatureUnit.Celsius,
     weightUnit: options?.weightUnit ?? WeightUnit.Kilograms,
-    profileVisibility:
-      options?.profileVisibility ?? ProfileVisibility.FriendsOnly,
   };
 
   if (typeof password === 'string') {

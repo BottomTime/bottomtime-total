@@ -203,7 +203,6 @@ exports[`Admin Service when searching user accounts will perform a text-based se
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -235,7 +234,6 @@ exports[`Admin Service when searching user accounts will perform a text-based se
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -275,7 +273,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -307,7 +304,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -339,7 +335,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -371,7 +366,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -403,7 +397,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -435,7 +428,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -467,7 +459,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -499,7 +490,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -531,7 +521,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -563,7 +552,6 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },

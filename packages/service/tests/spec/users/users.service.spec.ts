@@ -1,6 +1,5 @@
 import {
   CreateUserParamsDTO,
-  ProfileVisibility,
   SortOrder,
   UserRole,
   UsersSortBy,
@@ -13,7 +12,7 @@ import bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { FriendshipEntity, UserEntity } from '../../../src/data';
+import { UserEntity } from '../../../src/data';
 import { User, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import SearchData from '../../fixtures/user-search-data.json';
@@ -32,14 +31,12 @@ jest.mock('bcrypt');
 
 describe('Users Service', () => {
   let Users: Repository<UserEntity>;
-  let Friends: Repository<FriendshipEntity>;
 
   let service: UsersService;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
-    Friends = dataSource.getRepository(FriendshipEntity);
-    service = new UsersService(Users, Friends);
+    service = new UsersService(Users);
   });
 
   describe('when retrieving users', () => {
@@ -176,49 +173,14 @@ describe('Users Service', () => {
   });
 
   describe('when searching profiles', () => {
-    let friends: FriendshipEntity[];
     let users: UserEntity[];
 
     beforeAll(async () => {
-      const now = new Date();
-      friends = [];
       users = SearchData.map((user) => parseUserJSON(user));
-      users.forEach((user, index) => {
-        switch (index % 3) {
-          case 0:
-            user.profileVisibility = ProfileVisibility.Public;
-            break;
-
-          case 1:
-            user.profileVisibility = ProfileVisibility.FriendsOnly;
-            if (index % 6 === 1) {
-              friends.push(
-                {
-                  id: faker.datatype.uuid(),
-                  user: users[0],
-                  friend: users[index],
-                  friendsSince: now,
-                },
-                {
-                  id: faker.datatype.uuid(),
-                  user: users[index],
-                  friend: users[0],
-                  friendsSince: now,
-                },
-              );
-            }
-            break;
-
-          case 2:
-            user.profileVisibility = ProfileVisibility.Private;
-            break;
-        }
-      });
     });
 
     beforeEach(async () => {
       await Users.save(users);
-      await Friends.save(friends);
     });
 
     it('will return an empty array if no results match', async () => {
@@ -229,7 +191,6 @@ describe('Users Service', () => {
       });
     });
 
-    // TODO: Figure out how to get full text search working properly in Postgres. Might need MongoDB for this.
     it('will perform text based searches', async () => {
       await expect(
         service.searchUsers({ query: 'Town' }),
@@ -276,34 +237,6 @@ describe('Users Service', () => {
           expect(user.role).toBe(role);
         }
       });
-    });
-
-    it('will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is a user Id', async () => {
-      const result = await service.searchUsers({
-        profileVisibleTo: users[0].username,
-      });
-
-      expect(result.totalCount).toBe(17);
-      expect(
-        result.users.map((u) => ({
-          username: u.username,
-          profileVisibility: u.settings.profileVisibility,
-        })),
-      ).toMatchSnapshot();
-    });
-
-    it('will return all public profiles when profileVisibleTo is set to "#public"', async () => {
-      const result = await service.searchUsers({
-        profileVisibleTo: '#public',
-      });
-
-      expect(result.totalCount).toBe(34);
-      expect(
-        result.users.map((u) => ({
-          username: u.username,
-          profileVisibility: u.settings.profileVisibility,
-        })),
-      ).toMatchSnapshot();
     });
   });
 });

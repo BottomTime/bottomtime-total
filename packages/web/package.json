@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "yarn build:client && yarn build:server",
+    "build": "tsc && yarn build:client && yarn build:server",
     "build:client": "vite build --ssrManifest --minify --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.ts --minify --outDir dist/server",
     "serve": "nodemon --exec tsx server/index.ts",

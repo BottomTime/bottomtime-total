@@ -2,7 +2,6 @@ import {
   DepthDTO,
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   SuccinctProfileDTO,
   TemperatureUnit,
   WeightUnit,
@@ -24,7 +23,6 @@ export const DefaultUserSettings: UserSettings = {
   pressureUnit: PressureUnit.Bar,
   temperatureUnit: TemperatureUnit.Celsius,
   weightUnit: WeightUnit.Kilograms,
-  profileVisibility: ProfileVisibility.FriendsOnly,
 } as const;
 
 export type Depth = DepthDTO;

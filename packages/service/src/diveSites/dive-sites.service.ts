@@ -11,11 +11,12 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
+import { User } from '../users';
 import { DiveSite } from './dive-site';
 import { DiveSiteQueryBuilder } from './dive-site-query-builder';
 
 export type CreateDiveSiteOptions = CreateOrUpdateDiveSiteDTO & {
-  creator: string;
+  creator: User;
 };
 
 export type SearchDiveSitesOptions = SearchDiveSitesParamsDTO;
@@ -79,8 +80,8 @@ export class DiveSitesService {
 
   async getDiveSite(siteId: string): Promise<DiveSite | undefined> {
     const query = new DiveSiteQueryBuilder(this.DiveSites)
-      .build()
-      .andWhere({ id: siteId });
+      .withSiteId(siteId)
+      .build();
 
     this.log.debug(`Attempting to retrieve dive site with ID: ${siteId}`);
     this.log.verbose(query.getSql());
@@ -104,7 +105,14 @@ export class DiveSitesService {
     const data = new DiveSiteEntity();
 
     data.id = uuid();
-    data.creator = { id: options.creator } as UserEntity;
+    data.creator = {
+      id: options.creator.id,
+      username: options.creator.username,
+      memberSince: options.creator.memberSince,
+      name: options.creator.profile.name,
+      location: options.creator.profile.location,
+      avatar: options.creator.profile.avatar,
+    } as UserEntity;
     data.name = options.name;
     data.location = options.location;
     data.description = options.description ?? null;

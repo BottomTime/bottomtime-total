@@ -6,13 +6,11 @@ import {
   ChangeUsernameParamsDTO,
   ChangeUsernameParamsSchema,
   ProfileDTO,
-  ProfileVisibility,
   ResetPasswordWithTokenParamsDTO,
   ResetPasswordWithTokenParamsSchema,
   SuccessFailResponseDTO,
   UpdateProfileParamsDTO,
   UpdateProfileParamsSchema,
-  UserRole,
   UserSettingsDTO,
   UserSettingsSchema,
   VerifyEmailParamsDTO,
@@ -22,7 +20,6 @@ import {
 import {
   Body,
   Controller,
-  ForbiddenException,
   Get,
   Head,
   HttpCode,
@@ -30,11 +27,10 @@ import {
   Patch,
   Post,
   Put,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth, CurrentUser } from '../auth';
+import { AssertAuth } from '../auth';
 import { Config } from '../config';
 import { EmailService, EmailType } from '../email';
 import { ZodValidator } from '../zod-validator';
@@ -133,39 +129,8 @@ export class UserController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get()
-  @UseGuards(AssertTargetUser)
-  async getUserProfile(
-    @CurrentUser() currentUser: User | undefined,
-    @TargetUser() user: User,
-  ): Promise<ProfileDTO> {
-    // Anonymous users MAY ONLY see profiles with public visibility.
-    if (!currentUser) {
-      if (user.settings.profileVisibility !== ProfileVisibility.Public) {
-        throw new UnauthorizedException(
-          'You must be logged in to view this profile',
-        );
-      }
-    } else if (currentUser.role === UserRole.User) {
-      // Regular users MAY NOT see profiles with private visibility.
-      if (user.settings.profileVisibility === ProfileVisibility.Private) {
-        throw new ForbiddenException(
-          'You are not authorized to view this profile.',
-        );
-      }
-
-      if (user.settings.profileVisibility === ProfileVisibility.FriendsOnly) {
-        const areFriends = await this.users.areFriends(currentUser.id, user.id);
-
-        if (!areFriends) {
-          throw new ForbiddenException(
-            'You are not authorized to view this profile.',
-          );
-        }
-      }
-    }
-
-    // Administrators MAY see all profiles.
-
+  @UseGuards(AssertAuth, AssertTargetUser)
+  async getUserProfile(@TargetUser() user: User): Promise<ProfileDTO> {
     return user.profile.toJSON();
   }
 

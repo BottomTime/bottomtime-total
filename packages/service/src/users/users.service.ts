@@ -2,12 +2,10 @@ import {
   CreateUserParamsDTO,
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   SearchUserProfilesParamsSchema,
   SortOrder,
   TemperatureUnit,
   UserRole,
-  UsernameSchema,
   UsersSortBy,
   WeightUnit,
 } from '@bottomtime/api';
@@ -21,12 +19,11 @@ import { v4 as uuid } from 'uuid';
 import { z } from 'zod';
 
 import { Config } from '../config';
-import { FriendshipEntity, UserEntity } from '../data';
+import { UserEntity } from '../data';
 import { User } from './user';
 
 const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
   role: z.nativeEnum(UserRole),
-  profileVisibleTo: z.union([z.literal('#public'), UsernameSchema]),
 }).partial();
 export type SearchUsersOptions = z.infer<typeof SearchUsersOptionsSchema>;
 export type SearchUsersResult = {
@@ -42,9 +39,6 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly Users: Repository<UserEntity>,
-
-    @InjectRepository(FriendshipEntity)
-    private readonly Friends: Repository<FriendshipEntity>,
   ) {}
 
   private async checkForConflicts(
@@ -110,8 +104,6 @@ export class UsersService {
 
     data.depthUnit = options.settings?.depthUnit || DepthUnit.Meters;
     data.pressureUnit = options.settings?.pressureUnit || PressureUnit.Bar;
-    data.profileVisibility =
-      options.settings?.profileVisibility || ProfileVisibility.FriendsOnly;
     data.temperatureUnit =
       options.settings?.temperatureUnit || TemperatureUnit.Celsius;
     data.weightUnit = options.settings?.weightUnit || WeightUnit.Kilograms;
@@ -156,35 +148,6 @@ export class UsersService {
       );
     }
 
-    if (options.profileVisibleTo) {
-      if (options.profileVisibleTo === '#public') {
-        query = query.andWhere('users.profileVisibility = :visibility', {
-          visibility: ProfileVisibility.Public,
-        });
-      } else {
-        query = query
-          .innerJoin('users.friends', 'friend_relations')
-          .innerJoin(
-            'friend_relations.friend',
-            'friends',
-            'friends.usernameLowered = :friendUsername',
-            {
-              friendUsername: options.profileVisibleTo.toLowerCase(),
-              visibilities: [
-                ProfileVisibility.Public,
-                ProfileVisibility.FriendsOnly,
-              ],
-            },
-          )
-          .andWhere('users.profileVisibility IN (:...visibilities)', {
-            visibilities: [
-              ProfileVisibility.Public,
-              ProfileVisibility.FriendsOnly,
-            ],
-          });
-      }
-    }
-
     query = query.offset(options.skip).limit(options.limit ?? 100);
 
     const sortBy = `users.${options.sortBy || UsersSortBy.Username}`;
@@ -208,14 +171,5 @@ export class UsersService {
       users: users.map((d) => new User(this.Users, d)),
       totalCount,
     };
-  }
-
-  async areFriends(userIdA: string, userIdB: string): Promise<boolean> {
-    return await this.Friends.exists({
-      where: [
-        { user: { id: userIdA }, friend: { id: userIdB } },
-        { user: { id: userIdB }, friend: { id: userIdA } },
-      ],
-    });
   }
 }

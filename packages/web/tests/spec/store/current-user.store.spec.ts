@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserDTO,
   UserRole,
@@ -30,7 +29,6 @@ const AuthenticatedUser: UserDTO = {
   settings: {
     depthUnit: DepthUnit.Meters,
     pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.Private,
     temperatureUnit: TemperatureUnit.Celsius,
     weightUnit: WeightUnit.Kilograms,
   },

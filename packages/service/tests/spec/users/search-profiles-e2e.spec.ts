@@ -1,106 +1,36 @@
-import {
-  ProfileDTO,
-  ProfileVisibility,
-  SortOrder,
-  UserRole,
-  UsersSortBy,
-} from '@bottomtime/api';
+import { ProfileDTO, SortOrder, UsersSortBy } from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
 
 import request from 'supertest';
-import { In, Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { Repository } from 'typeorm';
 
-import { FriendshipEntity, UserEntity } from '../../../src/data';
+import { UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
-import {
-  createAuthHeader,
-  createTestApp,
-  createTestUser,
-  parseUserJSON,
-} from '../../utils';
+import { createAuthHeader, createTestApp, parseUserJSON } from '../../utils';
 
 const SearchUrl = '/api/users';
-
-const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
-const AdminUserData: Partial<UserEntity> = {
-  id: AdminUserId,
-  email: 'admin@site.org',
-  emailLowered: 'admin@site.org',
-  emailVerified: true,
-  isLockedOut: false,
-  memberSince: new Date(),
-  role: UserRole.Admin,
-  username: 'Admin',
-  usernameLowered: 'admin',
-  profileVisibility: ProfileVisibility.Private,
-};
 
 describe('Searching Profiles E2E Tests', () => {
   let app: INestApplication;
   let server: HttpServer;
-  let friends: FriendshipEntity[];
   let authHeader: [string, string];
-  let adminAuthHeader: [string, string];
 
   let Users: Repository<UserEntity>;
-  let Friends: Repository<FriendshipEntity>;
   let users: UserEntity[];
-  let adminUser: UserEntity;
 
   beforeAll(async () => {
-    const now = new Date();
-    friends = [];
     users = TestUserData.map((data) => parseUserJSON(data));
-    adminUser = createTestUser(AdminUserData);
-    users.push(adminUser);
-    users.forEach((user, index) => {
-      switch (index % 3) {
-        case 0:
-          user.profileVisibility = ProfileVisibility.Public;
-          break;
-
-        case 1:
-          user.profileVisibility = ProfileVisibility.FriendsOnly;
-          if (index % 6 === 1) {
-            friends.push(
-              {
-                id: uuid(),
-                user: users[0],
-                friend: users[index],
-                friendsSince: now,
-              },
-              {
-                id: uuid(),
-                user: users[index],
-                friend: users[0],
-                friendsSince: now,
-              },
-            );
-          }
-          break;
-
-        case 2:
-          user.profileVisibility = ProfileVisibility.Private;
-          break;
-      }
-    });
-    [authHeader, adminAuthHeader] = await Promise.all([
-      await createAuthHeader(users[0].id),
-      await createAuthHeader(AdminUserId),
-    ]);
+    authHeader = await createAuthHeader(users[0].id);
     app = await createTestApp();
     server = app.getHttpServer();
 
     Users = dataSource.getRepository(UserEntity);
-    Friends = dataSource.getRepository(FriendshipEntity);
   });
 
   beforeEach(async () => {
     await Users.save(users);
-    await Friends.save(friends);
   });
 
   afterAll(async () => {
@@ -114,46 +44,8 @@ describe('Searching Profiles E2E Tests', () => {
       .query({ limit: 10 })
       .expect(200);
 
-    expect(body.totalCount).toBe(17);
+    expect(body.totalCount).toBe(100);
     expect(body.users).toHaveLength(10);
-    expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
-
-    const ids = body.users.map((u: ProfileDTO) => u.userId);
-    const findUsers = await Users.findBy({ id: In(ids) });
-    findUsers.forEach((user) => {
-      expect([
-        ProfileVisibility.Public,
-        ProfileVisibility.FriendsOnly,
-      ]).toContain(user.profileVisibility);
-    });
-  });
-
-  it('will allow anonymous users to list public profiles', async () => {
-    const { body } = await request(server)
-      .get(SearchUrl)
-      .query({ limit: 25 })
-      .expect(200);
-
-    expect(body.totalCount).toBe(34);
-    expect(body.users).toHaveLength(25);
-    expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
-
-    const ids = body.users.map((u: ProfileDTO) => u.userId);
-    const findUsers = await Users.findBy({ id: In(ids) });
-    findUsers.forEach((user) => {
-      expect(user.profileVisibility).toBe(ProfileVisibility.Public);
-    });
-  });
-
-  it('will allow admins to list all profiles, including private', async () => {
-    const { body } = await request(server)
-      .get(SearchUrl)
-      .set(...adminAuthHeader)
-      .query({ limit: 30 })
-      .expect(200);
-
-    expect(body.totalCount).toBe(101);
-    expect(body.users).toHaveLength(30);
     expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
   });
 
@@ -167,7 +59,7 @@ describe('Searching Profiles E2E Tests', () => {
       .query(options)
       .expect(200);
 
-    expect(result.totalCount).toBe(3);
+    expect(result.totalCount).toBe(28);
     expect(result.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
   });
 
@@ -196,7 +88,7 @@ describe('Searching Profiles E2E Tests', () => {
         .query({ sortBy, sortOrder })
         .expect(200);
 
-      expect(body.totalCount).toBe(17);
+      expect(body.totalCount).toBe(100);
       expect(
         body.users.map((u: ProfileDTO) => ({
           username: u.username,
@@ -212,6 +104,7 @@ describe('Searching Profiles E2E Tests', () => {
     };
     const { body: result } = await request(server)
       .get(SearchUrl)
+      .set(...authHeader)
       .query(options)
       .expect(200);
 
@@ -222,8 +115,13 @@ describe('Searching Profiles E2E Tests', () => {
   it('will return a 400 response if the query string is invalid', async () => {
     const { body: error } = await request(server)
       .get(SearchUrl)
+      .set(...authHeader)
       .query({ sortBy: 'asdf', sortOrder: 17, query: true, limit: -1 })
       .expect(400);
     expect(error.details).toMatchSnapshot();
+  });
+
+  it('will return a 401 response if the user is not authenticated', async () => {
+    await request(server).get(SearchUrl).expect(401);
   });
 });

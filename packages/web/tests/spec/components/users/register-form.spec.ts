@@ -27,7 +27,6 @@ const Password = '[data-testid="password"]';
 const PasswordError = '[data-testid="password-error"]';
 const ConfirmPassword = '[data-testid="confirm-password"]';
 const ConfirmPasswordError = '[data-testid="confirm-password-error"]';
-const ProfileVisibility = '[data-testid="profile-visibility"]';
 const DisplayName = '[data-testid="display-name"]';
 const Location = '[data-testid="location"]';
 const SubmitButton = '[data-testid="register-submit"]';
@@ -237,7 +236,6 @@ describe('Registration form', () => {
         location: '',
         name: '',
       },
-      settings: { profileVisibility: NewUser.settings.profileVisibility },
       username: NewUser.username,
     });
     const toasts = useToasts(pinia).toasts;
@@ -263,9 +261,6 @@ describe('Registration form', () => {
     await wrapper.get(Email).setValue(NewUser.email);
     await wrapper.get(Password).setValue(password);
     await wrapper.get(ConfirmPassword).setValue(password);
-    await wrapper
-      .get(ProfileVisibility)
-      .setValue(NewUser.settings.profileVisibility);
     await wrapper.get(DisplayName).setValue(NewUser.profile.name);
     await wrapper.get(Location).setValue(NewUser.profile.location);
 
@@ -279,7 +274,6 @@ describe('Registration form', () => {
         location: NewUser.profile.location,
         name: NewUser.profile.name,
       },
-      settings: { profileVisibility: NewUser.settings.profileVisibility },
       username: NewUser.username,
     });
     expect(currentUser.user).toEqual(NewUser);

@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserSettingsDTO,
   WeightUnit,
@@ -58,7 +57,6 @@ describe('Account View', () => {
       pressureUnit: PressureUnit.PSI,
       temperatureUnit: TemperatureUnit.Fahrenheit,
       weightUnit: WeightUnit.Pounds,
-      profileVisibility: ProfileVisibility.Private,
     };
     const currentUser = useCurrentUser(pinia);
     currentUser.user = { ...BasicUser, settings: { ...BasicUser.settings } };

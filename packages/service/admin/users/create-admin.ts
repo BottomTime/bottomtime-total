@@ -1,6 +1,5 @@
 import {
   PasswordStrengthSchema,
-  ProfileVisibility,
   UserRole,
   UsernameSchema,
 } from '@bottomtime/api';
@@ -112,7 +111,6 @@ export async function createAdmin(options: CreateAdminOptions): Promise<void> {
     admin.id = uuid();
     admin.name = 'Administrator';
     admin.passwordHash = await hash(completedOptions.password, 16);
-    admin.profileVisibility = ProfileVisibility.Private;
     admin.role = UserRole.Admin;
     admin.username = completedOptions.username;
     admin.usernameLowered = admin.username.toLowerCase();

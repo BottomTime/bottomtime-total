@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserDTO,
   WeightUnit,
@@ -41,13 +40,6 @@ export class UserSettings {
   }
   set weightUnit(value: WeightUnit) {
     this.data.settings.weightUnit = value;
-  }
-
-  get profileVisibility(): ProfileVisibility {
-    return this.data.settings.profileVisibility;
-  }
-  set profileVisibility(value: ProfileVisibility) {
-    this.data.settings.profileVisibility = value;
   }
 
   async save(): Promise<void> {
