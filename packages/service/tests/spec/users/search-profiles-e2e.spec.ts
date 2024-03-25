@@ -1,10 +1,4 @@
-import {
-  ProfileDTO,
-  ProfileVisibility,
-  SortOrder,
-  UserRole,
-  UsersSortBy,
-} from '@bottomtime/api';
+import { ProfileDTO, SortOrder, UserRole, UsersSortBy } from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
 
@@ -35,7 +29,6 @@ const AdminUserData: Partial<UserEntity> = {
   role: UserRole.Admin,
   username: 'Admin',
   usernameLowered: 'admin',
-  profileVisibility: ProfileVisibility.Private,
 };
 
 describe('Searching Profiles E2E Tests', () => {
@@ -56,37 +49,6 @@ describe('Searching Profiles E2E Tests', () => {
     users = TestUserData.map((data) => parseUserJSON(data));
     adminUser = createTestUser(AdminUserData);
     users.push(adminUser);
-    users.forEach((user, index) => {
-      switch (index % 3) {
-        case 0:
-          user.profileVisibility = ProfileVisibility.Public;
-          break;
-
-        case 1:
-          user.profileVisibility = ProfileVisibility.FriendsOnly;
-          if (index % 6 === 1) {
-            friends.push(
-              {
-                id: uuid(),
-                user: users[0],
-                friend: users[index],
-                friendsSince: now,
-              },
-              {
-                id: uuid(),
-                user: users[index],
-                friend: users[0],
-                friendsSince: now,
-              },
-            );
-          }
-          break;
-
-        case 2:
-          user.profileVisibility = ProfileVisibility.Private;
-          break;
-      }
-    });
     [authHeader, adminAuthHeader] = await Promise.all([
       await createAuthHeader(users[0].id),
       await createAuthHeader(AdminUserId),
@@ -117,15 +79,6 @@ describe('Searching Profiles E2E Tests', () => {
     expect(body.totalCount).toBe(17);
     expect(body.users).toHaveLength(10);
     expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
-
-    const ids = body.users.map((u: ProfileDTO) => u.userId);
-    const findUsers = await Users.findBy({ id: In(ids) });
-    findUsers.forEach((user) => {
-      expect([
-        ProfileVisibility.Public,
-        ProfileVisibility.FriendsOnly,
-      ]).toContain(user.profileVisibility);
-    });
   });
 
   it('will allow anonymous users to list public profiles', async () => {
@@ -137,12 +90,6 @@ describe('Searching Profiles E2E Tests', () => {
     expect(body.totalCount).toBe(34);
     expect(body.users).toHaveLength(25);
     expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
-
-    const ids = body.users.map((u: ProfileDTO) => u.userId);
-    const findUsers = await Users.findBy({ id: In(ids) });
-    findUsers.forEach((user) => {
-      expect(user.profileVisibility).toBe(ProfileVisibility.Public);
-    });
   });
 
   it('will allow admins to list all profiles, including private', async () => {

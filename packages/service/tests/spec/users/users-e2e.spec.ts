@@ -2,7 +2,6 @@ import {
   CreateUserParamsDTO,
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UpdateProfileParamsDTO,
   UserRole,
@@ -45,7 +44,6 @@ const AdminUserData: Partial<UserEntity> = {
   role: UserRole.Admin,
   username: 'Admin',
   usernameLowered: 'admin',
-  profileVisibility: ProfileVisibility.Private,
 };
 
 const RegularUserPassword = 'wJ5]6H<w44,5';
@@ -70,7 +68,6 @@ const RegularUserData: Partial<UserEntity> = {
   startedDiving: '2000-01-01',
   depthUnit: DepthUnit.Meters,
   pressureUnit: PressureUnit.Bar,
-  profileVisibility: ProfileVisibility.FriendsOnly,
   temperatureUnit: TemperatureUnit.Celsius,
   weightUnit: WeightUnit.Kilograms,
 };
@@ -83,7 +80,6 @@ describe('Users End-to-End Tests', () => {
   let mailClient: TestMailer;
 
   let Users: Repository<UserEntity>;
-  let Friends: Repository<FriendshipEntity>;
 
   let adminUser: UserEntity;
   let regularUser: UserEntity;
@@ -99,7 +95,6 @@ describe('Users End-to-End Tests', () => {
     regualarAuthHeader = await createAuthHeader(RegularUserId);
 
     Users = dataSource.getRepository(UserEntity);
-    Friends = dataSource.getRepository(FriendshipEntity);
   });
 
   beforeEach(async () => {
@@ -117,86 +112,24 @@ describe('Users End-to-End Tests', () => {
   });
 
   describe('when requesting a user profile', () => {
-    [
-      { role: UserRole.Admin, visibility: ProfileVisibility.Private },
-      { role: UserRole.Admin, visibility: ProfileVisibility.FriendsOnly },
-      { role: UserRole.Admin, visibility: ProfileVisibility.Public },
-      { role: UserRole.User, visibility: ProfileVisibility.FriendsOnly },
-      { role: UserRole.User, visibility: ProfileVisibility.Public },
-      { role: null, visibility: ProfileVisibility.Public },
-    ].forEach(({ role, visibility }) => {
-      it(`will return the profile when the calling user is ${
-        role
-          ? role === UserRole.Admin
-            ? 'an administrator'
-            : 'a regular user'
-          : 'anonymous'
-      } and the profile visibility is set to "${visibility}"`, async () => {
-        const data = createTestUser({
-          profileVisibility: visibility,
-        });
-        const user = new User(Users, data);
-        const expected = JSON.parse(JSON.stringify(user.profile));
-        const friendsSince = new Date();
+    it('will return the requested profile', async () => {
+      const data = createTestUser();
+      const user = new User(Users, data);
+      const expected = user.profile.toJSON();
 
-        await Users.save(data);
-        await Promise.all([
-          Friends.save({
-            id: 'd5a06ba4-c826-4eb6-a257-5c0a98f37721',
-            user: regularUser,
-            friend: data,
-            friendsSince,
-          }),
-          Friends.save({
-            id: '52730a5d-4f7c-4e9d-90ca-c53268cd8134',
-            user: data,
-            friend: regularUser,
-            friendsSince,
-          }),
-        ]);
-
-        if (role) {
-          const { body: actual } = await request(server)
-            .get(`/api/users/${user.username}`)
-            .set(
-              ...(role === UserRole.Admin
-                ? adminAuthHeader
-                : regualarAuthHeader),
-            )
-            .expect(200);
-          expect(actual).toEqual(expected);
-        } else {
-          const { body: actual } = await request(server)
-            .get(`/api/users/${user.username}`)
-            .expect(200);
-          expect(actual).toEqual(expected);
-        }
-      });
+      await Users.save(data);
+      const { body: actual } = await request(server)
+        .get(`/api/users/${user.username}`)
+        .set(...regualarAuthHeader)
+        .expect(200);
+      expect(actual).toEqual(expected);
     });
 
-    [
-      { role: UserRole.User, visibility: ProfileVisibility.Private },
-      { role: UserRole.User, visibility: ProfileVisibility.FriendsOnly },
-      { role: null, visibility: ProfileVisibility.FriendsOnly },
-      { role: null, visibility: ProfileVisibility.Private },
-    ].forEach(({ role, visibility }) => {
-      it(`will return a 401/403 response when the calling user is ${
-        role ? 'a regular user' : 'anonymous'
-      } and the profile visibility is set to "${visibility}"`, async () => {
-        const data = createTestUser({
-          profileVisibility: visibility,
-        });
-        await Users.save(data);
+    it('will return a 401 resposne if the calling user is not authenticated', async () => {
+      const data = createTestUser();
+      await Users.save(data);
 
-        if (role) {
-          await request(server)
-            .get(`/api/users/${data.username}`)
-            .set(...regualarAuthHeader)
-            .expect(403);
-        } else {
-          await request(server).get(`/api/users/${data.username}`).expect(401);
-        }
-      });
+      await request(server).get(`/api/users/${data.username}`).expect(401);
     });
   });
 
@@ -1012,7 +945,6 @@ describe('Users End-to-End Tests', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Private,
       };
       await request(server)
         .put(settingsUrl)
@@ -1022,26 +954,18 @@ describe('Users End-to-End Tests', () => {
 
       const actual = await Users.findOneOrFail({
         where: { id: RegularUserId },
-        select: [
-          'depthUnit',
-          'pressureUnit',
-          'temperatureUnit',
-          'weightUnit',
-          'profileVisibility',
-        ],
+        select: ['depthUnit', 'pressureUnit', 'temperatureUnit', 'weightUnit'],
       });
 
       expect(actual.depthUnit).toBe(newSettings.depthUnit);
       expect(actual.pressureUnit).toBe(newSettings.pressureUnit);
       expect(actual.temperatureUnit).toBe(newSettings.temperatureUnit);
       expect(actual.weightUnit).toBe(newSettings.weightUnit);
-      expect(actual.profileVisibility).toBe(newSettings.profileVisibility);
     });
 
     it('will allow a partial update of settings', async () => {
       const newSettings = {
         pressureUnit: PressureUnit.PSI,
-        profileVisibility: ProfileVisibility.Private,
       };
       await request(server)
         .patch(settingsUrl)
@@ -1054,7 +978,6 @@ describe('Users End-to-End Tests', () => {
       expect(savedUser.pressureUnit).toBe(newSettings.pressureUnit);
       expect(savedUser.temperatureUnit).toBe(regularUser.temperatureUnit);
       expect(savedUser.weightUnit).toBe(regularUser.weightUnit);
-      expect(savedUser.profileVisibility).toBe(newSettings.profileVisibility);
     });
 
     it("will allow admins to update another user's settings", async () => {
@@ -1064,7 +987,6 @@ describe('Users End-to-End Tests', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Private,
       };
       await request(server)
         .put(settingsUrl)
@@ -1077,20 +999,13 @@ describe('Users End-to-End Tests', () => {
 
       const actual = await Users.findOneOrFail({
         where: { id: RegularUserId },
-        select: [
-          'depthUnit',
-          'pressureUnit',
-          'temperatureUnit',
-          'weightUnit',
-          'profileVisibility',
-        ],
+        select: ['depthUnit', 'pressureUnit', 'temperatureUnit', 'weightUnit'],
       });
 
       expect(actual.depthUnit).toBe(expected.depthUnit);
       expect(actual.pressureUnit).toBe(expected.pressureUnit);
       expect(actual.temperatureUnit).toBe(expected.temperatureUnit);
       expect(actual.weightUnit).toBe(expected.weightUnit);
-      expect(actual.profileVisibility).toBe(expected.profileVisibility);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -1119,7 +1034,6 @@ describe('Users End-to-End Tests', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Private,
       };
       await request(server).put(settingsUrl).send(newSettings).expect(401);
       await request(server).patch(settingsUrl).send(newSettings).expect(401);
@@ -1132,7 +1046,6 @@ describe('Users End-to-End Tests', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Private,
       };
       await request(server)
         .put(url)
@@ -1153,7 +1066,6 @@ describe('Users End-to-End Tests', () => {
         pressureUnit: PressureUnit.PSI,
         temperatureUnit: TemperatureUnit.Fahrenheit,
         weightUnit: WeightUnit.Pounds,
-        profileVisibility: ProfileVisibility.Private,
       };
       await request(server)
         .put(url)

@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserRole,
   WeightUnit,
@@ -42,7 +41,6 @@ const TestUserData: UserEntity = {
   startedDiving: '2019-01-01',
   depthUnit: DepthUnit.Meters,
   pressureUnit: PressureUnit.Bar,
-  profileVisibility: ProfileVisibility.FriendsOnly,
   temperatureUnit: TemperatureUnit.Celsius,
   weightUnit: WeightUnit.Kilograms,
   oauth: undefined,
