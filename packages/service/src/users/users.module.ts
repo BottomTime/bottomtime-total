@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth';
 import { FriendshipEntity, UserEntity } from '../data';
 import { EmailModule } from '../email';
+import { NotificationsController } from './notifications.controller';
+import { NotificationsService } from './notifications.service';
 import { UserController } from './user.controller';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -14,8 +16,8 @@ import { UsersService } from './users.service';
     EmailModule.forFeature(),
     AuthModule,
   ],
-  providers: [UsersService],
-  controllers: [UsersController, UserController],
-  exports: [UsersService],
+  providers: [UsersService, NotificationsService],
+  controllers: [UsersController, UserController, NotificationsController],
+  exports: [UsersService, NotificationsService],
 })
 export class UsersModule {}

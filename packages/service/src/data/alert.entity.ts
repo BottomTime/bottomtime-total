@@ -23,9 +23,9 @@ export class AlertEntity {
   @Column('text')
   message: string = '';
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column('timestamp')
   @Index()
-  active: Date | null = null;
+  active: Date = new Date();
 
   @Column({ type: 'timestamp', nullable: true })
   @Index()

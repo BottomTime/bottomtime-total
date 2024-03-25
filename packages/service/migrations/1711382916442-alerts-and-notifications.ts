@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AlertsAndNotifications1711379435635 implements MigrationInterface {
-  name = 'AlertsAndNotifications1711379435635';
+export class AlertsAndNotifications1711382916442 implements MigrationInterface {
+  name = 'AlertsAndNotifications1711382916442';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "notifications" ("id" uuid NOT NULL, "icon" character varying(100) NOT NULL, "title" character varying(200) NOT NULL, "message" character varying(2000) NOT NULL, "active" TIMESTAMP, "expires" TIMESTAMP, "dismissed" boolean NOT NULL, "recipientId" uuid NOT NULL, CONSTRAINT "PK_6a72c3c0f683f6462415e653c3a" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "notifications" ("id" uuid NOT NULL, "icon" character varying(100) NOT NULL, "title" character varying(200) NOT NULL, "message" character varying(2000) NOT NULL, "active" TIMESTAMP NOT NULL, "expires" TIMESTAMP, "dismissed" boolean NOT NULL, "recipientId" uuid NOT NULL, CONSTRAINT "PK_6a72c3c0f683f6462415e653c3a" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_6f19ca23ca4d6700ff293e27e5" ON "notifications" ("active") `,
@@ -14,7 +14,7 @@ export class AlertsAndNotifications1711379435635 implements MigrationInterface {
       `CREATE INDEX "IDX_a6d0e41a1e448674bfd05b1102" ON "notifications" ("expires") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "alerts" ("id" uuid NOT NULL, "icon" character varying(100) NOT NULL, "title" character varying(200) NOT NULL, "message" text NOT NULL, "active" TIMESTAMP, "expires" TIMESTAMP, CONSTRAINT "PK_60f895662df096bfcdfab7f4b96" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "alerts" ("id" uuid NOT NULL, "icon" character varying(100) NOT NULL, "title" character varying(200) NOT NULL, "message" text NOT NULL, "active" TIMESTAMP NOT NULL, "expires" TIMESTAMP, CONSTRAINT "PK_60f895662df096bfcdfab7f4b96" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_f3b5748040fb851426315e9373" ON "alerts" ("active") `,
