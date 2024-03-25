@@ -1,9 +1,8 @@
 import { DepthUnit } from '@bottomtime/api';
 
-import { DiveSite } from '@/client';
-
 import axios, { AxiosInstance } from 'axios';
 
+import { DiveSite } from '../../../src/client';
 import {
   DiveSiteWithFullProperties,
   DiveSiteWithMinimalProperties,

@@ -19,7 +19,7 @@ import { v4 as uuid } from 'uuid';
 import { z } from 'zod';
 
 import { Config } from '../config';
-import { FriendshipEntity, UserEntity } from '../data';
+import { UserEntity } from '../data';
 import { User } from './user';
 
 const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
@@ -39,9 +39,6 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly Users: Repository<UserEntity>,
-
-    @InjectRepository(FriendshipEntity)
-    private readonly Friends: Repository<FriendshipEntity>,
   ) {}
 
   private async checkForConflicts(
@@ -174,14 +171,5 @@ export class UsersService {
       users: users.map((d) => new User(this.Users, d)),
       totalCount,
     };
-  }
-
-  async areFriends(userIdA: string, userIdB: string): Promise<boolean> {
-    return await this.Friends.exists({
-      where: [
-        { user: { id: userIdA }, friend: { id: userIdB } },
-        { user: { id: userIdB }, friend: { id: userIdA } },
-      ],
-    });
   }
 }

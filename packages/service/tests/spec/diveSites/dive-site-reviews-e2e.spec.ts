@@ -194,6 +194,9 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         userId: user.id,
         username: user.username,
         memberSince: user.memberSince.toISOString(),
+        name: user.name,
+        avatar: user.avatar,
+        location: user.location,
       });
       expect(body.difficulty).toBe(newReview.difficulty);
       expect(body.title).toBe(newReview.title);
@@ -293,6 +296,9 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         userId: user.id,
         username: user.username,
         memberSince: user.memberSince.toISOString(),
+        name: user.name,
+        avatar: user.avatar,
+        location: user.location,
       });
       expect(body.difficulty).toBe(1.5);
       expect(body.title).toBe('Changed My Mind');
@@ -328,6 +334,9 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         userId: user.id,
         username: user.username,
         memberSince: user.memberSince.toISOString(),
+        name: user.name,
+        avatar: user.avatar,
+        location: user.location,
       });
       expect(body.difficulty).toBe(1.5);
       expect(body.title).toBe('Changed My Mind');

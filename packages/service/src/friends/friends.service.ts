@@ -46,7 +46,6 @@ const UserSelectFields: string[] = [
   'avatar',
   'name',
   'location',
-  'profileVisibility',
 ];
 const FriendSelectFields = [
   ...UserSelectFields.map((field) => `friend.${field}`),

@@ -1,9 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Searching Profiles E2E Tests will allow admins to list all profiles, including private 1`] = `
+exports[`Searching Profiles E2E Tests will list profiles when no query string parameters are provided 1`] = `
 [
   "Aaron_Wehner28",
-  "Admin",
   "Aiyana.McCullough",
   "Alessia.Upton8",
   "Aliyah.Kunde4",
@@ -13,78 +12,39 @@ exports[`Searching Profiles E2E Tests will allow admins to list all profiles, in
   "Audreanne.Larkin79",
   "Ayla.Rippin",
   "Barrett_Stracke77",
-  "Bell_Herzog",
-  "Bernadette_Kihn",
-  "Bernhard54",
-  "Braulio19",
-  "Breanne_Cummings",
-  "Brigitte.Kihn",
-  "Bryana.Glover",
-  "Bryce_Thompson97",
-  "Bulah_Bins",
-  "Caesar71",
-  "Casimir_DuBuque",
-  "Charley.Corkery2",
-  "Chaya.Feeney",
-  "Clarabelle_Funk69",
-  "Danielle56",
-  "Deanna_Mante68",
-  "Delphia.Rohan22",
-  "Destin74",
-  "Donato99",
-]
-`;
-
-exports[`Searching Profiles E2E Tests will allow anonymous users to list public profiles 1`] = `
-[
-  "Aiyana.McCullough",
-  "Ashly71",
-  "Ayla.Rippin",
-  "Braulio19",
-  "Brigitte.Kihn",
-  "Bryce_Thompson97",
-  "Bulah_Bins",
-  "Casimir_DuBuque",
-  "Danielle56",
-  "Deanna_Mante68",
-  "Drew75",
-  "Erick_Roberts",
-  "Gracie.Stroman",
-  "Hermina.Emard99",
-  "Jacey_Bernier",
-  "Jamey87",
-  "Jamie16",
-  "Jaylon8",
-  "Jett_Block95",
-  "Judge69",
-  "Julia.Hintz25",
-  "Julia15",
-  "Kendra_Little",
-  "Kirstin52",
-  "Liliane94",
-]
-`;
-
-exports[`Searching Profiles E2E Tests will list profiles when no query string parameters are provided 1`] = `
-[
-  "Ashlynn_Kreiger86",
-  "Audreanne.Larkin79",
-  "Barrett_Stracke77",
-  "Clarabelle_Funk69",
-  "Eleonore.Hilpert",
-  "Giovani48",
-  "Isabelle.Moen91",
-  "Jaden_McGlynn33",
-  "Jakob_Goyette",
-  "Jeramy_Cole43",
 ]
 `;
 
 exports[`Searching Profiles E2E Tests will perform a text search for user profiles 1`] = `
 [
+  "Aiyana.McCullough",
+  "Aliyah.Kunde4",
+  "Amara.Cummings13",
   "Audreanne.Larkin79",
+  "Bell_Herzog",
+  "Bernhard54",
+  "Delphia.Rohan22",
+  "Destin74",
+  "Erick_Roberts",
+  "Gardner.Johnson74",
+  "Gracie.Stroman",
+  "Grady_Cassin28",
+  "Hermina.Emard99",
+  "Jairo_Lemke",
+  "Jamey87",
+  "Jefferey_Davis41",
+  "Jett_Block95",
+  "Joesph_Morar",
+  "Judge69",
+  "Kendra.Haag",
+  "Logan41",
+  "Lucy55",
+  "Malcolm89",
   "Minerva.Olson",
+  "Oscar.Kling5",
   "Reina54",
+  "Sigurd_Reinger55",
+  "Sonya.Hintz0",
 ]
 `;
 
@@ -133,8 +93,72 @@ exports[`Searching Profiles E2E Tests will return a 400 response if the query st
 exports[`Searching Profiles E2E Tests will sort results by memberSince in asc order 1`] = `
 [
   {
+    "memberSince": "2018-03-19T11:29:22.558Z",
+    "username": "Gardner.Johnson74",
+  },
+  {
+    "memberSince": "2018-04-19T21:25:00.549Z",
+    "username": "Brigitte.Kihn",
+  },
+  {
+    "memberSince": "2018-04-20T20:37:07.766Z",
+    "username": "Lorenz59",
+  },
+  {
+    "memberSince": "2018-05-13T22:06:14.604Z",
+    "username": "Casimir_DuBuque",
+  },
+  {
+    "memberSince": "2018-06-25T23:18:47.167Z",
+    "username": "Lucy55",
+  },
+  {
+    "memberSince": "2018-07-18T13:52:01.897Z",
+    "username": "Donato99",
+  },
+  {
+    "memberSince": "2018-07-20T15:41:36.849Z",
+    "username": "Leonardo35",
+  },
+  {
+    "memberSince": "2018-07-22T12:29:38.317Z",
+    "username": "Kareem90",
+  },
+  {
+    "memberSince": "2018-09-17T04:34:19.609Z",
+    "username": "Dorothy.Hahn",
+  },
+  {
+    "memberSince": "2018-10-09T05:39:37.418Z",
+    "username": "Delphia.Rohan22",
+  },
+  {
+    "memberSince": "2018-10-20T04:40:09.678Z",
+    "username": "Alessia.Upton8",
+  },
+  {
+    "memberSince": "2018-11-01T15:29:20.898Z",
+    "username": "Rhianna.Terry",
+  },
+  {
+    "memberSince": "2018-11-17T10:11:45.627Z",
+    "username": "Kelsi26",
+  },
+  {
+    "memberSince": "2018-11-21T03:30:20.378Z",
+    "username": "Jamie16",
+  },
+  {
+    "memberSince": "2018-12-26T21:22:15.314Z",
+    "username": "Caesar71",
+  },
+  {
     "memberSince": "2019-02-17T21:57:07.852Z",
     "username": "Audreanne.Larkin79",
+  },
+  {
+    "memberSince": "2019-04-20T22:35:13.742Z",
+    "username": "Jaqueline19",
   },
   {
     "memberSince": "2019-05-01T03:13:57.366Z",
@@ -149,32 +173,188 @@ exports[`Searching Profiles E2E Tests will sort results by memberSince in asc or
     "username": "Jewel12",
   },
   {
+    "memberSince": "2019-06-29T09:03:36.186Z",
+    "username": "Amara.Cummings13",
+  },
+  {
+    "memberSince": "2019-07-12T02:08:37.969Z",
+    "username": "Danielle56",
+  },
+  {
+    "memberSince": "2019-08-11T20:25:07.035Z",
+    "username": "Jacey_Bernier",
+  },
+  {
+    "memberSince": "2019-09-25T20:40:18.753Z",
+    "username": "Ken17",
+  },
+  {
+    "memberSince": "2019-10-01T21:17:02.463Z",
+    "username": "Kendra_Little",
+  },
+  {
+    "memberSince": "2019-10-03T09:19:05.878Z",
+    "username": "Gerald79",
+  },
+  {
+    "memberSince": "2019-10-07T20:47:44.281Z",
+    "username": "Judge69",
+  },
+  {
+    "memberSince": "2019-10-23T15:30:16.630Z",
+    "username": "Liliane94",
+  },
+  {
+    "memberSince": "2019-11-28T18:48:52.375Z",
+    "username": "Julia.Hintz25",
+  },
+  {
+    "memberSince": "2019-11-30T06:19:48.587Z",
+    "username": "Bell_Herzog",
+  },
+  {
+    "memberSince": "2019-12-19T18:01:36.736Z",
+    "username": "Linnea_Kutch23",
+  },
+  {
+    "memberSince": "2020-02-24T22:30:50.944Z",
+    "username": "Ayla.Rippin",
+  },
+  {
+    "memberSince": "2020-04-06T22:51:23.486Z",
+    "username": "Logan41",
+  },
+  {
+    "memberSince": "2020-04-08T12:22:42.152Z",
+    "username": "Tyler30",
+  },
+  {
+    "memberSince": "2020-05-08T16:18:13.221Z",
+    "username": "Nigel_Herman30",
+  },
+  {
+    "memberSince": "2020-08-09T18:23:26.326Z",
+    "username": "Deanna_Mante68",
+  },
+  {
+    "memberSince": "2020-10-04T13:42:59.298Z",
+    "username": "Sonya.Hintz0",
+  },
+  {
+    "memberSince": "2020-10-23T22:55:55.555Z",
+    "username": "Destin74",
+  },
+  {
+    "memberSince": "2020-10-25T14:48:30.836Z",
+    "username": "Braulio19",
+  },
+  {
+    "memberSince": "2020-11-02T13:33:22.544Z",
+    "username": "Sean_Ruecker",
+  },
+  {
+    "memberSince": "2020-11-05T02:52:58.866Z",
+    "username": "Bryana.Glover",
+  },
+  {
+    "memberSince": "2020-12-24T06:16:47.642Z",
+    "username": "Tomasa33",
+  },
+  {
     "memberSince": "2021-01-11T03:52:12.425Z",
     "username": "Jakob_Goyette",
+  },
+  {
+    "memberSince": "2021-01-14T11:24:43.236Z",
+    "username": "Bryce_Thompson97",
+  },
+  {
+    "memberSince": "2021-01-18T00:12:59.934Z",
+    "username": "Julia15",
+  },
+  {
+    "memberSince": "2021-01-29T21:41:30.627Z",
+    "username": "Felton36",
+  },
+  {
+    "memberSince": "2021-02-13T04:26:21.255Z",
+    "username": "Aiyana.McCullough",
   },
   {
     "memberSince": "2021-02-16T14:58:14.097Z",
     "username": "Jaden_McGlynn33",
   },
   {
+    "memberSince": "2021-02-27T16:49:44.220Z",
+    "username": "Stephany76",
+  },
+  {
     "memberSince": "2021-04-03T02:46:49.858Z",
     "username": "Okey84",
+  },
+  {
+    "memberSince": "2021-05-16T16:18:37.188Z",
+    "username": "Larue_Denesik32",
+  },
+  {
+    "memberSince": "2021-05-31T21:55:28.679Z",
+    "username": "Malcolm89",
   },
   {
     "memberSince": "2021-06-07T15:13:53.218Z",
     "username": "Clarabelle_Funk69",
   },
   {
+    "memberSince": "2021-06-22T21:35:37.567Z",
+    "username": "Bernhard54",
+  },
+  {
+    "memberSince": "2021-06-25T23:57:46.168Z",
+    "username": "Jamison_Veum",
+  },
+  {
     "memberSince": "2021-07-13T10:09:38.862Z",
     "username": "Minerva.Olson",
+  },
+  {
+    "memberSince": "2021-08-04T21:17:03.303Z",
+    "username": "Jaylon8",
   },
   {
     "memberSince": "2021-09-08T03:26:09.493Z",
     "username": "Jeramy_Cole43",
   },
   {
+    "memberSince": "2021-11-03T23:21:09.613Z",
+    "username": "Trey.Langosh",
+  },
+  {
+    "memberSince": "2021-11-26T22:55:51.421Z",
+    "username": "Gracie.Stroman",
+  },
+  {
+    "memberSince": "2022-01-03T11:06:19.499Z",
+    "username": "Aaron_Wehner28",
+  },
+  {
+    "memberSince": "2022-01-22T03:33:26.869Z",
+    "username": "Jamey87",
+  },
+  {
     "memberSince": "2022-02-11T12:41:13.993Z",
     "username": "Isabelle.Moen91",
+  },
+  {
+    "memberSince": "2022-02-12T23:12:59.931Z",
+    "username": "Sigurd_Reinger55",
+  },
+  {
+    "memberSince": "2022-02-24T10:45:52.314Z",
+    "username": "Bernadette_Kihn",
+  },
+  {
+    "memberSince": "2022-03-22T04:11:46.804Z",
+    "username": "Jaydon83",
   },
   {
     "memberSince": "2022-03-28T18:30:41.189Z",
@@ -185,20 +365,132 @@ exports[`Searching Profiles E2E Tests will sort results by memberSince in asc or
     "username": "Rene47",
   },
   {
+    "memberSince": "2022-05-01T21:17:29.093Z",
+    "username": "Breanne_Cummings",
+  },
+  {
+    "memberSince": "2022-05-10T07:53:38.044Z",
+    "username": "Hermina.Emard99",
+  },
+  {
+    "memberSince": "2022-05-13T00:37:52.945Z",
+    "username": "Lurline96",
+  },
+  {
+    "memberSince": "2022-06-20T01:36:16.997Z",
+    "username": "Winona.Doyle",
+  },
+  {
     "memberSince": "2022-07-30T02:21:58.884Z",
     "username": "Giovani48",
+  },
+  {
+    "memberSince": "2022-08-31T08:43:02.480Z",
+    "username": "Aliyah.Kunde4",
+  },
+  {
+    "memberSince": "2022-11-01T21:22:58.922Z",
+    "username": "Jairo_Lemke",
+  },
+  {
+    "memberSince": "2022-11-09T16:15:26.987Z",
+    "username": "Donnell_Abbott",
+  },
+  {
+    "memberSince": "2022-11-20T03:31:13.989Z",
+    "username": "Jett_Block95",
+  },
+  {
+    "memberSince": "2022-11-23T18:17:56.470Z",
+    "username": "Charley.Corkery2",
+  },
+  {
+    "memberSince": "2022-12-01T21:41:35.894Z",
+    "username": "Ashly71",
+  },
+  {
+    "memberSince": "2022-12-09T07:16:35.140Z",
+    "username": "Grady_Cassin28",
   },
   {
     "memberSince": "2022-12-23T08:35:35.933Z",
     "username": "Norris_Kshlerin60",
   },
   {
+    "memberSince": "2022-12-25T01:34:37.361Z",
+    "username": "Joesph_Morar",
+  },
+  {
+    "memberSince": "2023-02-09T21:55:54.648Z",
+    "username": "Oscar.Kling5",
+  },
+  {
+    "memberSince": "2023-02-16T13:20:13.657Z",
+    "username": "Drew75",
+  },
+  {
+    "memberSince": "2023-02-20T01:57:38.687Z",
+    "username": "Justina.Bechtelar60",
+  },
+  {
+    "memberSince": "2023-03-18T21:23:30.000Z",
+    "username": "Chaya.Feeney",
+  },
+  {
+    "memberSince": "2023-03-24T09:52:37.562Z",
+    "username": "Donnell51",
+  },
+  {
+    "memberSince": "2023-04-12T21:55:47.341Z",
+    "username": "Kirstin52",
+  },
+  {
+    "memberSince": "2023-05-09T21:01:23.626Z",
+    "username": "Harold_Lebsack20",
+  },
+  {
     "memberSince": "2023-05-22T08:27:23.626Z",
     "username": "Barrett_Stracke77",
   },
   {
+    "memberSince": "2023-06-04T11:35:31.480Z",
+    "username": "Jeffry_Kuphal38",
+  },
+  {
+    "memberSince": "2023-06-11T09:01:09.171Z",
+    "username": "Bulah_Bins",
+  },
+  {
+    "memberSince": "2023-06-15T09:05:46.140Z",
+    "username": "Kendra.Haag",
+  },
+  {
+    "memberSince": "2023-07-26T22:28:03.294Z",
+    "username": "Jefferey_Davis41",
+  },
+  {
+    "memberSince": "2023-08-05T13:09:34.040Z",
+    "username": "Linwood.Stark",
+  },
+  {
     "memberSince": "2023-10-02T23:57:14.826Z",
     "username": "Eleonore.Hilpert",
+  },
+  {
+    "memberSince": "2023-11-21T22:50:56.464Z",
+    "username": "Marie28",
+  },
+  {
+    "memberSince": "2023-12-07T15:19:18.511Z",
+    "username": "Erick_Roberts",
+  },
+  {
+    "memberSince": "2024-01-22T09:55:07.775Z",
+    "username": "Lavonne0",
+  },
+  {
+    "memberSince": "2024-03-03T00:29:00.081Z",
+    "username": "Steve54",
   },
 ]
 `;
@@ -206,20 +498,132 @@ exports[`Searching Profiles E2E Tests will sort results by memberSince in asc or
 exports[`Searching Profiles E2E Tests will sort results by memberSince in desc order 1`] = `
 [
   {
+    "memberSince": "2024-03-03T00:29:00.081Z",
+    "username": "Steve54",
+  },
+  {
+    "memberSince": "2024-01-22T09:55:07.775Z",
+    "username": "Lavonne0",
+  },
+  {
+    "memberSince": "2023-12-07T15:19:18.511Z",
+    "username": "Erick_Roberts",
+  },
+  {
+    "memberSince": "2023-11-21T22:50:56.464Z",
+    "username": "Marie28",
+  },
+  {
     "memberSince": "2023-10-02T23:57:14.826Z",
     "username": "Eleonore.Hilpert",
+  },
+  {
+    "memberSince": "2023-08-05T13:09:34.040Z",
+    "username": "Linwood.Stark",
+  },
+  {
+    "memberSince": "2023-07-26T22:28:03.294Z",
+    "username": "Jefferey_Davis41",
+  },
+  {
+    "memberSince": "2023-06-15T09:05:46.140Z",
+    "username": "Kendra.Haag",
+  },
+  {
+    "memberSince": "2023-06-11T09:01:09.171Z",
+    "username": "Bulah_Bins",
+  },
+  {
+    "memberSince": "2023-06-04T11:35:31.480Z",
+    "username": "Jeffry_Kuphal38",
   },
   {
     "memberSince": "2023-05-22T08:27:23.626Z",
     "username": "Barrett_Stracke77",
   },
   {
+    "memberSince": "2023-05-09T21:01:23.626Z",
+    "username": "Harold_Lebsack20",
+  },
+  {
+    "memberSince": "2023-04-12T21:55:47.341Z",
+    "username": "Kirstin52",
+  },
+  {
+    "memberSince": "2023-03-24T09:52:37.562Z",
+    "username": "Donnell51",
+  },
+  {
+    "memberSince": "2023-03-18T21:23:30.000Z",
+    "username": "Chaya.Feeney",
+  },
+  {
+    "memberSince": "2023-02-20T01:57:38.687Z",
+    "username": "Justina.Bechtelar60",
+  },
+  {
+    "memberSince": "2023-02-16T13:20:13.657Z",
+    "username": "Drew75",
+  },
+  {
+    "memberSince": "2023-02-09T21:55:54.648Z",
+    "username": "Oscar.Kling5",
+  },
+  {
+    "memberSince": "2022-12-25T01:34:37.361Z",
+    "username": "Joesph_Morar",
+  },
+  {
     "memberSince": "2022-12-23T08:35:35.933Z",
     "username": "Norris_Kshlerin60",
   },
   {
+    "memberSince": "2022-12-09T07:16:35.140Z",
+    "username": "Grady_Cassin28",
+  },
+  {
+    "memberSince": "2022-12-01T21:41:35.894Z",
+    "username": "Ashly71",
+  },
+  {
+    "memberSince": "2022-11-23T18:17:56.470Z",
+    "username": "Charley.Corkery2",
+  },
+  {
+    "memberSince": "2022-11-20T03:31:13.989Z",
+    "username": "Jett_Block95",
+  },
+  {
+    "memberSince": "2022-11-09T16:15:26.987Z",
+    "username": "Donnell_Abbott",
+  },
+  {
+    "memberSince": "2022-11-01T21:22:58.922Z",
+    "username": "Jairo_Lemke",
+  },
+  {
+    "memberSince": "2022-08-31T08:43:02.480Z",
+    "username": "Aliyah.Kunde4",
+  },
+  {
     "memberSince": "2022-07-30T02:21:58.884Z",
     "username": "Giovani48",
+  },
+  {
+    "memberSince": "2022-06-20T01:36:16.997Z",
+    "username": "Winona.Doyle",
+  },
+  {
+    "memberSince": "2022-05-13T00:37:52.945Z",
+    "username": "Lurline96",
+  },
+  {
+    "memberSince": "2022-05-10T07:53:38.044Z",
+    "username": "Hermina.Emard99",
+  },
+  {
+    "memberSince": "2022-05-01T21:17:29.093Z",
+    "username": "Breanne_Cummings",
   },
   {
     "memberSince": "2022-04-07T18:19:09.373Z",
@@ -230,32 +634,188 @@ exports[`Searching Profiles E2E Tests will sort results by memberSince in desc o
     "username": "Reina54",
   },
   {
+    "memberSince": "2022-03-22T04:11:46.804Z",
+    "username": "Jaydon83",
+  },
+  {
+    "memberSince": "2022-02-24T10:45:52.314Z",
+    "username": "Bernadette_Kihn",
+  },
+  {
+    "memberSince": "2022-02-12T23:12:59.931Z",
+    "username": "Sigurd_Reinger55",
+  },
+  {
     "memberSince": "2022-02-11T12:41:13.993Z",
     "username": "Isabelle.Moen91",
+  },
+  {
+    "memberSince": "2022-01-22T03:33:26.869Z",
+    "username": "Jamey87",
+  },
+  {
+    "memberSince": "2022-01-03T11:06:19.499Z",
+    "username": "Aaron_Wehner28",
+  },
+  {
+    "memberSince": "2021-11-26T22:55:51.421Z",
+    "username": "Gracie.Stroman",
+  },
+  {
+    "memberSince": "2021-11-03T23:21:09.613Z",
+    "username": "Trey.Langosh",
   },
   {
     "memberSince": "2021-09-08T03:26:09.493Z",
     "username": "Jeramy_Cole43",
   },
   {
+    "memberSince": "2021-08-04T21:17:03.303Z",
+    "username": "Jaylon8",
+  },
+  {
     "memberSince": "2021-07-13T10:09:38.862Z",
     "username": "Minerva.Olson",
+  },
+  {
+    "memberSince": "2021-06-25T23:57:46.168Z",
+    "username": "Jamison_Veum",
+  },
+  {
+    "memberSince": "2021-06-22T21:35:37.567Z",
+    "username": "Bernhard54",
   },
   {
     "memberSince": "2021-06-07T15:13:53.218Z",
     "username": "Clarabelle_Funk69",
   },
   {
+    "memberSince": "2021-05-31T21:55:28.679Z",
+    "username": "Malcolm89",
+  },
+  {
+    "memberSince": "2021-05-16T16:18:37.188Z",
+    "username": "Larue_Denesik32",
+  },
+  {
     "memberSince": "2021-04-03T02:46:49.858Z",
     "username": "Okey84",
+  },
+  {
+    "memberSince": "2021-02-27T16:49:44.220Z",
+    "username": "Stephany76",
   },
   {
     "memberSince": "2021-02-16T14:58:14.097Z",
     "username": "Jaden_McGlynn33",
   },
   {
+    "memberSince": "2021-02-13T04:26:21.255Z",
+    "username": "Aiyana.McCullough",
+  },
+  {
+    "memberSince": "2021-01-29T21:41:30.627Z",
+    "username": "Felton36",
+  },
+  {
+    "memberSince": "2021-01-18T00:12:59.934Z",
+    "username": "Julia15",
+  },
+  {
+    "memberSince": "2021-01-14T11:24:43.236Z",
+    "username": "Bryce_Thompson97",
+  },
+  {
     "memberSince": "2021-01-11T03:52:12.425Z",
     "username": "Jakob_Goyette",
+  },
+  {
+    "memberSince": "2020-12-24T06:16:47.642Z",
+    "username": "Tomasa33",
+  },
+  {
+    "memberSince": "2020-11-05T02:52:58.866Z",
+    "username": "Bryana.Glover",
+  },
+  {
+    "memberSince": "2020-11-02T13:33:22.544Z",
+    "username": "Sean_Ruecker",
+  },
+  {
+    "memberSince": "2020-10-25T14:48:30.836Z",
+    "username": "Braulio19",
+  },
+  {
+    "memberSince": "2020-10-23T22:55:55.555Z",
+    "username": "Destin74",
+  },
+  {
+    "memberSince": "2020-10-04T13:42:59.298Z",
+    "username": "Sonya.Hintz0",
+  },
+  {
+    "memberSince": "2020-08-09T18:23:26.326Z",
+    "username": "Deanna_Mante68",
+  },
+  {
+    "memberSince": "2020-05-08T16:18:13.221Z",
+    "username": "Nigel_Herman30",
+  },
+  {
+    "memberSince": "2020-04-08T12:22:42.152Z",
+    "username": "Tyler30",
+  },
+  {
+    "memberSince": "2020-04-06T22:51:23.486Z",
+    "username": "Logan41",
+  },
+  {
+    "memberSince": "2020-02-24T22:30:50.944Z",
+    "username": "Ayla.Rippin",
+  },
+  {
+    "memberSince": "2019-12-19T18:01:36.736Z",
+    "username": "Linnea_Kutch23",
+  },
+  {
+    "memberSince": "2019-11-30T06:19:48.587Z",
+    "username": "Bell_Herzog",
+  },
+  {
+    "memberSince": "2019-11-28T18:48:52.375Z",
+    "username": "Julia.Hintz25",
+  },
+  {
+    "memberSince": "2019-10-23T15:30:16.630Z",
+    "username": "Liliane94",
+  },
+  {
+    "memberSince": "2019-10-07T20:47:44.281Z",
+    "username": "Judge69",
+  },
+  {
+    "memberSince": "2019-10-03T09:19:05.878Z",
+    "username": "Gerald79",
+  },
+  {
+    "memberSince": "2019-10-01T21:17:02.463Z",
+    "username": "Kendra_Little",
+  },
+  {
+    "memberSince": "2019-09-25T20:40:18.753Z",
+    "username": "Ken17",
+  },
+  {
+    "memberSince": "2019-08-11T20:25:07.035Z",
+    "username": "Jacey_Bernier",
+  },
+  {
+    "memberSince": "2019-07-12T02:08:37.969Z",
+    "username": "Danielle56",
+  },
+  {
+    "memberSince": "2019-06-29T09:03:36.186Z",
+    "username": "Amara.Cummings13",
   },
   {
     "memberSince": "2019-06-27T19:02:49.241Z",
@@ -270,8 +830,72 @@ exports[`Searching Profiles E2E Tests will sort results by memberSince in desc o
     "username": "Sven_White",
   },
   {
+    "memberSince": "2019-04-20T22:35:13.742Z",
+    "username": "Jaqueline19",
+  },
+  {
     "memberSince": "2019-02-17T21:57:07.852Z",
     "username": "Audreanne.Larkin79",
+  },
+  {
+    "memberSince": "2018-12-26T21:22:15.314Z",
+    "username": "Caesar71",
+  },
+  {
+    "memberSince": "2018-11-21T03:30:20.378Z",
+    "username": "Jamie16",
+  },
+  {
+    "memberSince": "2018-11-17T10:11:45.627Z",
+    "username": "Kelsi26",
+  },
+  {
+    "memberSince": "2018-11-01T15:29:20.898Z",
+    "username": "Rhianna.Terry",
+  },
+  {
+    "memberSince": "2018-10-20T04:40:09.678Z",
+    "username": "Alessia.Upton8",
+  },
+  {
+    "memberSince": "2018-10-09T05:39:37.418Z",
+    "username": "Delphia.Rohan22",
+  },
+  {
+    "memberSince": "2018-09-17T04:34:19.609Z",
+    "username": "Dorothy.Hahn",
+  },
+  {
+    "memberSince": "2018-07-22T12:29:38.317Z",
+    "username": "Kareem90",
+  },
+  {
+    "memberSince": "2018-07-20T15:41:36.849Z",
+    "username": "Leonardo35",
+  },
+  {
+    "memberSince": "2018-07-18T13:52:01.897Z",
+    "username": "Donato99",
+  },
+  {
+    "memberSince": "2018-06-25T23:18:47.167Z",
+    "username": "Lucy55",
+  },
+  {
+    "memberSince": "2018-05-13T22:06:14.604Z",
+    "username": "Casimir_DuBuque",
+  },
+  {
+    "memberSince": "2018-04-20T20:37:07.766Z",
+    "username": "Lorenz59",
+  },
+  {
+    "memberSince": "2018-04-19T21:25:00.549Z",
+    "username": "Brigitte.Kihn",
+  },
+  {
+    "memberSince": "2018-03-19T11:29:22.558Z",
+    "username": "Gardner.Johnson74",
   },
 ]
 `;
@@ -279,6 +903,30 @@ exports[`Searching Profiles E2E Tests will sort results by memberSince in desc o
 exports[`Searching Profiles E2E Tests will sort results by username in asc order 1`] = `
 [
   {
+    "memberSince": "2022-01-03T11:06:19.499Z",
+    "username": "Aaron_Wehner28",
+  },
+  {
+    "memberSince": "2021-02-13T04:26:21.255Z",
+    "username": "Aiyana.McCullough",
+  },
+  {
+    "memberSince": "2018-10-20T04:40:09.678Z",
+    "username": "Alessia.Upton8",
+  },
+  {
+    "memberSince": "2022-08-31T08:43:02.480Z",
+    "username": "Aliyah.Kunde4",
+  },
+  {
+    "memberSince": "2019-06-29T09:03:36.186Z",
+    "username": "Amara.Cummings13",
+  },
+  {
+    "memberSince": "2022-12-01T21:41:35.894Z",
+    "username": "Ashly71",
+  },
+  {
     "memberSince": "2019-05-28T07:18:27.652Z",
     "username": "Ashlynn_Kreiger86",
   },
@@ -287,44 +935,308 @@ exports[`Searching Profiles E2E Tests will sort results by username in asc order
     "username": "Audreanne.Larkin79",
   },
   {
+    "memberSince": "2020-02-24T22:30:50.944Z",
+    "username": "Ayla.Rippin",
+  },
+  {
     "memberSince": "2023-05-22T08:27:23.626Z",
     "username": "Barrett_Stracke77",
+  },
+  {
+    "memberSince": "2019-11-30T06:19:48.587Z",
+    "username": "Bell_Herzog",
+  },
+  {
+    "memberSince": "2022-02-24T10:45:52.314Z",
+    "username": "Bernadette_Kihn",
+  },
+  {
+    "memberSince": "2021-06-22T21:35:37.567Z",
+    "username": "Bernhard54",
+  },
+  {
+    "memberSince": "2020-10-25T14:48:30.836Z",
+    "username": "Braulio19",
+  },
+  {
+    "memberSince": "2022-05-01T21:17:29.093Z",
+    "username": "Breanne_Cummings",
+  },
+  {
+    "memberSince": "2018-04-19T21:25:00.549Z",
+    "username": "Brigitte.Kihn",
+  },
+  {
+    "memberSince": "2020-11-05T02:52:58.866Z",
+    "username": "Bryana.Glover",
+  },
+  {
+    "memberSince": "2021-01-14T11:24:43.236Z",
+    "username": "Bryce_Thompson97",
+  },
+  {
+    "memberSince": "2023-06-11T09:01:09.171Z",
+    "username": "Bulah_Bins",
+  },
+  {
+    "memberSince": "2018-12-26T21:22:15.314Z",
+    "username": "Caesar71",
+  },
+  {
+    "memberSince": "2018-05-13T22:06:14.604Z",
+    "username": "Casimir_DuBuque",
+  },
+  {
+    "memberSince": "2022-11-23T18:17:56.470Z",
+    "username": "Charley.Corkery2",
+  },
+  {
+    "memberSince": "2023-03-18T21:23:30.000Z",
+    "username": "Chaya.Feeney",
   },
   {
     "memberSince": "2021-06-07T15:13:53.218Z",
     "username": "Clarabelle_Funk69",
   },
   {
+    "memberSince": "2019-07-12T02:08:37.969Z",
+    "username": "Danielle56",
+  },
+  {
+    "memberSince": "2020-08-09T18:23:26.326Z",
+    "username": "Deanna_Mante68",
+  },
+  {
+    "memberSince": "2018-10-09T05:39:37.418Z",
+    "username": "Delphia.Rohan22",
+  },
+  {
+    "memberSince": "2020-10-23T22:55:55.555Z",
+    "username": "Destin74",
+  },
+  {
+    "memberSince": "2018-07-18T13:52:01.897Z",
+    "username": "Donato99",
+  },
+  {
+    "memberSince": "2023-03-24T09:52:37.562Z",
+    "username": "Donnell51",
+  },
+  {
+    "memberSince": "2022-11-09T16:15:26.987Z",
+    "username": "Donnell_Abbott",
+  },
+  {
+    "memberSince": "2018-09-17T04:34:19.609Z",
+    "username": "Dorothy.Hahn",
+  },
+  {
+    "memberSince": "2023-02-16T13:20:13.657Z",
+    "username": "Drew75",
+  },
+  {
     "memberSince": "2023-10-02T23:57:14.826Z",
     "username": "Eleonore.Hilpert",
+  },
+  {
+    "memberSince": "2023-12-07T15:19:18.511Z",
+    "username": "Erick_Roberts",
+  },
+  {
+    "memberSince": "2021-01-29T21:41:30.627Z",
+    "username": "Felton36",
+  },
+  {
+    "memberSince": "2018-03-19T11:29:22.558Z",
+    "username": "Gardner.Johnson74",
+  },
+  {
+    "memberSince": "2019-10-03T09:19:05.878Z",
+    "username": "Gerald79",
   },
   {
     "memberSince": "2022-07-30T02:21:58.884Z",
     "username": "Giovani48",
   },
   {
+    "memberSince": "2021-11-26T22:55:51.421Z",
+    "username": "Gracie.Stroman",
+  },
+  {
+    "memberSince": "2022-12-09T07:16:35.140Z",
+    "username": "Grady_Cassin28",
+  },
+  {
+    "memberSince": "2023-05-09T21:01:23.626Z",
+    "username": "Harold_Lebsack20",
+  },
+  {
+    "memberSince": "2022-05-10T07:53:38.044Z",
+    "username": "Hermina.Emard99",
+  },
+  {
     "memberSince": "2022-02-11T12:41:13.993Z",
     "username": "Isabelle.Moen91",
+  },
+  {
+    "memberSince": "2019-08-11T20:25:07.035Z",
+    "username": "Jacey_Bernier",
   },
   {
     "memberSince": "2021-02-16T14:58:14.097Z",
     "username": "Jaden_McGlynn33",
   },
   {
+    "memberSince": "2022-11-01T21:22:58.922Z",
+    "username": "Jairo_Lemke",
+  },
+  {
     "memberSince": "2021-01-11T03:52:12.425Z",
     "username": "Jakob_Goyette",
+  },
+  {
+    "memberSince": "2022-01-22T03:33:26.869Z",
+    "username": "Jamey87",
+  },
+  {
+    "memberSince": "2018-11-21T03:30:20.378Z",
+    "username": "Jamie16",
+  },
+  {
+    "memberSince": "2021-06-25T23:57:46.168Z",
+    "username": "Jamison_Veum",
+  },
+  {
+    "memberSince": "2019-04-20T22:35:13.742Z",
+    "username": "Jaqueline19",
+  },
+  {
+    "memberSince": "2022-03-22T04:11:46.804Z",
+    "username": "Jaydon83",
+  },
+  {
+    "memberSince": "2021-08-04T21:17:03.303Z",
+    "username": "Jaylon8",
+  },
+  {
+    "memberSince": "2023-07-26T22:28:03.294Z",
+    "username": "Jefferey_Davis41",
+  },
+  {
+    "memberSince": "2023-06-04T11:35:31.480Z",
+    "username": "Jeffry_Kuphal38",
   },
   {
     "memberSince": "2021-09-08T03:26:09.493Z",
     "username": "Jeramy_Cole43",
   },
   {
+    "memberSince": "2022-11-20T03:31:13.989Z",
+    "username": "Jett_Block95",
+  },
+  {
     "memberSince": "2019-06-27T19:02:49.241Z",
     "username": "Jewel12",
   },
   {
+    "memberSince": "2022-12-25T01:34:37.361Z",
+    "username": "Joesph_Morar",
+  },
+  {
+    "memberSince": "2019-10-07T20:47:44.281Z",
+    "username": "Judge69",
+  },
+  {
+    "memberSince": "2019-11-28T18:48:52.375Z",
+    "username": "Julia.Hintz25",
+  },
+  {
+    "memberSince": "2021-01-18T00:12:59.934Z",
+    "username": "Julia15",
+  },
+  {
+    "memberSince": "2023-02-20T01:57:38.687Z",
+    "username": "Justina.Bechtelar60",
+  },
+  {
+    "memberSince": "2018-07-22T12:29:38.317Z",
+    "username": "Kareem90",
+  },
+  {
+    "memberSince": "2018-11-17T10:11:45.627Z",
+    "username": "Kelsi26",
+  },
+  {
+    "memberSince": "2019-09-25T20:40:18.753Z",
+    "username": "Ken17",
+  },
+  {
+    "memberSince": "2023-06-15T09:05:46.140Z",
+    "username": "Kendra.Haag",
+  },
+  {
+    "memberSince": "2019-10-01T21:17:02.463Z",
+    "username": "Kendra_Little",
+  },
+  {
+    "memberSince": "2023-04-12T21:55:47.341Z",
+    "username": "Kirstin52",
+  },
+  {
+    "memberSince": "2021-05-16T16:18:37.188Z",
+    "username": "Larue_Denesik32",
+  },
+  {
+    "memberSince": "2024-01-22T09:55:07.775Z",
+    "username": "Lavonne0",
+  },
+  {
+    "memberSince": "2018-07-20T15:41:36.849Z",
+    "username": "Leonardo35",
+  },
+  {
+    "memberSince": "2019-10-23T15:30:16.630Z",
+    "username": "Liliane94",
+  },
+  {
+    "memberSince": "2019-12-19T18:01:36.736Z",
+    "username": "Linnea_Kutch23",
+  },
+  {
+    "memberSince": "2023-08-05T13:09:34.040Z",
+    "username": "Linwood.Stark",
+  },
+  {
+    "memberSince": "2020-04-06T22:51:23.486Z",
+    "username": "Logan41",
+  },
+  {
+    "memberSince": "2018-04-20T20:37:07.766Z",
+    "username": "Lorenz59",
+  },
+  {
+    "memberSince": "2018-06-25T23:18:47.167Z",
+    "username": "Lucy55",
+  },
+  {
+    "memberSince": "2022-05-13T00:37:52.945Z",
+    "username": "Lurline96",
+  },
+  {
+    "memberSince": "2021-05-31T21:55:28.679Z",
+    "username": "Malcolm89",
+  },
+  {
+    "memberSince": "2023-11-21T22:50:56.464Z",
+    "username": "Marie28",
+  },
+  {
     "memberSince": "2021-07-13T10:09:38.862Z",
     "username": "Minerva.Olson",
+  },
+  {
+    "memberSince": "2020-05-08T16:18:13.221Z",
+    "username": "Nigel_Herman30",
   },
   {
     "memberSince": "2022-12-23T08:35:35.933Z",
@@ -335,6 +1247,10 @@ exports[`Searching Profiles E2E Tests will sort results by username in asc order
     "username": "Okey84",
   },
   {
+    "memberSince": "2023-02-09T21:55:54.648Z",
+    "username": "Oscar.Kling5",
+  },
+  {
     "memberSince": "2022-03-28T18:30:41.189Z",
     "username": "Reina54",
   },
@@ -343,8 +1259,48 @@ exports[`Searching Profiles E2E Tests will sort results by username in asc order
     "username": "Rene47",
   },
   {
+    "memberSince": "2018-11-01T15:29:20.898Z",
+    "username": "Rhianna.Terry",
+  },
+  {
+    "memberSince": "2020-11-02T13:33:22.544Z",
+    "username": "Sean_Ruecker",
+  },
+  {
+    "memberSince": "2022-02-12T23:12:59.931Z",
+    "username": "Sigurd_Reinger55",
+  },
+  {
+    "memberSince": "2020-10-04T13:42:59.298Z",
+    "username": "Sonya.Hintz0",
+  },
+  {
+    "memberSince": "2021-02-27T16:49:44.220Z",
+    "username": "Stephany76",
+  },
+  {
+    "memberSince": "2024-03-03T00:29:00.081Z",
+    "username": "Steve54",
+  },
+  {
     "memberSince": "2019-05-01T03:13:57.366Z",
     "username": "Sven_White",
+  },
+  {
+    "memberSince": "2020-12-24T06:16:47.642Z",
+    "username": "Tomasa33",
+  },
+  {
+    "memberSince": "2021-11-03T23:21:09.613Z",
+    "username": "Trey.Langosh",
+  },
+  {
+    "memberSince": "2020-04-08T12:22:42.152Z",
+    "username": "Tyler30",
+  },
+  {
+    "memberSince": "2022-06-20T01:36:16.997Z",
+    "username": "Winona.Doyle",
   },
 ]
 `;
@@ -352,8 +1308,48 @@ exports[`Searching Profiles E2E Tests will sort results by username in asc order
 exports[`Searching Profiles E2E Tests will sort results by username in desc order 1`] = `
 [
   {
+    "memberSince": "2022-06-20T01:36:16.997Z",
+    "username": "Winona.Doyle",
+  },
+  {
+    "memberSince": "2020-04-08T12:22:42.152Z",
+    "username": "Tyler30",
+  },
+  {
+    "memberSince": "2021-11-03T23:21:09.613Z",
+    "username": "Trey.Langosh",
+  },
+  {
+    "memberSince": "2020-12-24T06:16:47.642Z",
+    "username": "Tomasa33",
+  },
+  {
     "memberSince": "2019-05-01T03:13:57.366Z",
     "username": "Sven_White",
+  },
+  {
+    "memberSince": "2024-03-03T00:29:00.081Z",
+    "username": "Steve54",
+  },
+  {
+    "memberSince": "2021-02-27T16:49:44.220Z",
+    "username": "Stephany76",
+  },
+  {
+    "memberSince": "2020-10-04T13:42:59.298Z",
+    "username": "Sonya.Hintz0",
+  },
+  {
+    "memberSince": "2022-02-12T23:12:59.931Z",
+    "username": "Sigurd_Reinger55",
+  },
+  {
+    "memberSince": "2020-11-02T13:33:22.544Z",
+    "username": "Sean_Ruecker",
+  },
+  {
+    "memberSince": "2018-11-01T15:29:20.898Z",
+    "username": "Rhianna.Terry",
   },
   {
     "memberSince": "2022-04-07T18:19:09.373Z",
@@ -364,6 +1360,10 @@ exports[`Searching Profiles E2E Tests will sort results by username in desc orde
     "username": "Reina54",
   },
   {
+    "memberSince": "2023-02-09T21:55:54.648Z",
+    "username": "Oscar.Kling5",
+  },
+  {
     "memberSince": "2021-04-03T02:46:49.858Z",
     "username": "Okey84",
   },
@@ -372,44 +1372,308 @@ exports[`Searching Profiles E2E Tests will sort results by username in desc orde
     "username": "Norris_Kshlerin60",
   },
   {
+    "memberSince": "2020-05-08T16:18:13.221Z",
+    "username": "Nigel_Herman30",
+  },
+  {
     "memberSince": "2021-07-13T10:09:38.862Z",
     "username": "Minerva.Olson",
+  },
+  {
+    "memberSince": "2023-11-21T22:50:56.464Z",
+    "username": "Marie28",
+  },
+  {
+    "memberSince": "2021-05-31T21:55:28.679Z",
+    "username": "Malcolm89",
+  },
+  {
+    "memberSince": "2022-05-13T00:37:52.945Z",
+    "username": "Lurline96",
+  },
+  {
+    "memberSince": "2018-06-25T23:18:47.167Z",
+    "username": "Lucy55",
+  },
+  {
+    "memberSince": "2018-04-20T20:37:07.766Z",
+    "username": "Lorenz59",
+  },
+  {
+    "memberSince": "2020-04-06T22:51:23.486Z",
+    "username": "Logan41",
+  },
+  {
+    "memberSince": "2023-08-05T13:09:34.040Z",
+    "username": "Linwood.Stark",
+  },
+  {
+    "memberSince": "2019-12-19T18:01:36.736Z",
+    "username": "Linnea_Kutch23",
+  },
+  {
+    "memberSince": "2019-10-23T15:30:16.630Z",
+    "username": "Liliane94",
+  },
+  {
+    "memberSince": "2018-07-20T15:41:36.849Z",
+    "username": "Leonardo35",
+  },
+  {
+    "memberSince": "2024-01-22T09:55:07.775Z",
+    "username": "Lavonne0",
+  },
+  {
+    "memberSince": "2021-05-16T16:18:37.188Z",
+    "username": "Larue_Denesik32",
+  },
+  {
+    "memberSince": "2023-04-12T21:55:47.341Z",
+    "username": "Kirstin52",
+  },
+  {
+    "memberSince": "2019-10-01T21:17:02.463Z",
+    "username": "Kendra_Little",
+  },
+  {
+    "memberSince": "2023-06-15T09:05:46.140Z",
+    "username": "Kendra.Haag",
+  },
+  {
+    "memberSince": "2019-09-25T20:40:18.753Z",
+    "username": "Ken17",
+  },
+  {
+    "memberSince": "2018-11-17T10:11:45.627Z",
+    "username": "Kelsi26",
+  },
+  {
+    "memberSince": "2018-07-22T12:29:38.317Z",
+    "username": "Kareem90",
+  },
+  {
+    "memberSince": "2023-02-20T01:57:38.687Z",
+    "username": "Justina.Bechtelar60",
+  },
+  {
+    "memberSince": "2021-01-18T00:12:59.934Z",
+    "username": "Julia15",
+  },
+  {
+    "memberSince": "2019-11-28T18:48:52.375Z",
+    "username": "Julia.Hintz25",
+  },
+  {
+    "memberSince": "2019-10-07T20:47:44.281Z",
+    "username": "Judge69",
+  },
+  {
+    "memberSince": "2022-12-25T01:34:37.361Z",
+    "username": "Joesph_Morar",
   },
   {
     "memberSince": "2019-06-27T19:02:49.241Z",
     "username": "Jewel12",
   },
   {
+    "memberSince": "2022-11-20T03:31:13.989Z",
+    "username": "Jett_Block95",
+  },
+  {
     "memberSince": "2021-09-08T03:26:09.493Z",
     "username": "Jeramy_Cole43",
+  },
+  {
+    "memberSince": "2023-06-04T11:35:31.480Z",
+    "username": "Jeffry_Kuphal38",
+  },
+  {
+    "memberSince": "2023-07-26T22:28:03.294Z",
+    "username": "Jefferey_Davis41",
+  },
+  {
+    "memberSince": "2021-08-04T21:17:03.303Z",
+    "username": "Jaylon8",
+  },
+  {
+    "memberSince": "2022-03-22T04:11:46.804Z",
+    "username": "Jaydon83",
+  },
+  {
+    "memberSince": "2019-04-20T22:35:13.742Z",
+    "username": "Jaqueline19",
+  },
+  {
+    "memberSince": "2021-06-25T23:57:46.168Z",
+    "username": "Jamison_Veum",
+  },
+  {
+    "memberSince": "2018-11-21T03:30:20.378Z",
+    "username": "Jamie16",
+  },
+  {
+    "memberSince": "2022-01-22T03:33:26.869Z",
+    "username": "Jamey87",
   },
   {
     "memberSince": "2021-01-11T03:52:12.425Z",
     "username": "Jakob_Goyette",
   },
   {
+    "memberSince": "2022-11-01T21:22:58.922Z",
+    "username": "Jairo_Lemke",
+  },
+  {
     "memberSince": "2021-02-16T14:58:14.097Z",
     "username": "Jaden_McGlynn33",
+  },
+  {
+    "memberSince": "2019-08-11T20:25:07.035Z",
+    "username": "Jacey_Bernier",
   },
   {
     "memberSince": "2022-02-11T12:41:13.993Z",
     "username": "Isabelle.Moen91",
   },
   {
+    "memberSince": "2022-05-10T07:53:38.044Z",
+    "username": "Hermina.Emard99",
+  },
+  {
+    "memberSince": "2023-05-09T21:01:23.626Z",
+    "username": "Harold_Lebsack20",
+  },
+  {
+    "memberSince": "2022-12-09T07:16:35.140Z",
+    "username": "Grady_Cassin28",
+  },
+  {
+    "memberSince": "2021-11-26T22:55:51.421Z",
+    "username": "Gracie.Stroman",
+  },
+  {
     "memberSince": "2022-07-30T02:21:58.884Z",
     "username": "Giovani48",
+  },
+  {
+    "memberSince": "2019-10-03T09:19:05.878Z",
+    "username": "Gerald79",
+  },
+  {
+    "memberSince": "2018-03-19T11:29:22.558Z",
+    "username": "Gardner.Johnson74",
+  },
+  {
+    "memberSince": "2021-01-29T21:41:30.627Z",
+    "username": "Felton36",
+  },
+  {
+    "memberSince": "2023-12-07T15:19:18.511Z",
+    "username": "Erick_Roberts",
   },
   {
     "memberSince": "2023-10-02T23:57:14.826Z",
     "username": "Eleonore.Hilpert",
   },
   {
+    "memberSince": "2023-02-16T13:20:13.657Z",
+    "username": "Drew75",
+  },
+  {
+    "memberSince": "2018-09-17T04:34:19.609Z",
+    "username": "Dorothy.Hahn",
+  },
+  {
+    "memberSince": "2022-11-09T16:15:26.987Z",
+    "username": "Donnell_Abbott",
+  },
+  {
+    "memberSince": "2023-03-24T09:52:37.562Z",
+    "username": "Donnell51",
+  },
+  {
+    "memberSince": "2018-07-18T13:52:01.897Z",
+    "username": "Donato99",
+  },
+  {
+    "memberSince": "2020-10-23T22:55:55.555Z",
+    "username": "Destin74",
+  },
+  {
+    "memberSince": "2018-10-09T05:39:37.418Z",
+    "username": "Delphia.Rohan22",
+  },
+  {
+    "memberSince": "2020-08-09T18:23:26.326Z",
+    "username": "Deanna_Mante68",
+  },
+  {
+    "memberSince": "2019-07-12T02:08:37.969Z",
+    "username": "Danielle56",
+  },
+  {
     "memberSince": "2021-06-07T15:13:53.218Z",
     "username": "Clarabelle_Funk69",
   },
   {
+    "memberSince": "2023-03-18T21:23:30.000Z",
+    "username": "Chaya.Feeney",
+  },
+  {
+    "memberSince": "2022-11-23T18:17:56.470Z",
+    "username": "Charley.Corkery2",
+  },
+  {
+    "memberSince": "2018-05-13T22:06:14.604Z",
+    "username": "Casimir_DuBuque",
+  },
+  {
+    "memberSince": "2018-12-26T21:22:15.314Z",
+    "username": "Caesar71",
+  },
+  {
+    "memberSince": "2023-06-11T09:01:09.171Z",
+    "username": "Bulah_Bins",
+  },
+  {
+    "memberSince": "2021-01-14T11:24:43.236Z",
+    "username": "Bryce_Thompson97",
+  },
+  {
+    "memberSince": "2020-11-05T02:52:58.866Z",
+    "username": "Bryana.Glover",
+  },
+  {
+    "memberSince": "2018-04-19T21:25:00.549Z",
+    "username": "Brigitte.Kihn",
+  },
+  {
+    "memberSince": "2022-05-01T21:17:29.093Z",
+    "username": "Breanne_Cummings",
+  },
+  {
+    "memberSince": "2020-10-25T14:48:30.836Z",
+    "username": "Braulio19",
+  },
+  {
+    "memberSince": "2021-06-22T21:35:37.567Z",
+    "username": "Bernhard54",
+  },
+  {
+    "memberSince": "2022-02-24T10:45:52.314Z",
+    "username": "Bernadette_Kihn",
+  },
+  {
+    "memberSince": "2019-11-30T06:19:48.587Z",
+    "username": "Bell_Herzog",
+  },
+  {
     "memberSince": "2023-05-22T08:27:23.626Z",
     "username": "Barrett_Stracke77",
+  },
+  {
+    "memberSince": "2020-02-24T22:30:50.944Z",
+    "username": "Ayla.Rippin",
   },
   {
     "memberSince": "2019-02-17T21:57:07.852Z",
@@ -418,6 +1682,30 @@ exports[`Searching Profiles E2E Tests will sort results by username in desc orde
   {
     "memberSince": "2019-05-28T07:18:27.652Z",
     "username": "Ashlynn_Kreiger86",
+  },
+  {
+    "memberSince": "2022-12-01T21:41:35.894Z",
+    "username": "Ashly71",
+  },
+  {
+    "memberSince": "2019-06-29T09:03:36.186Z",
+    "username": "Amara.Cummings13",
+  },
+  {
+    "memberSince": "2022-08-31T08:43:02.480Z",
+    "username": "Aliyah.Kunde4",
+  },
+  {
+    "memberSince": "2018-10-20T04:40:09.678Z",
+    "username": "Alessia.Upton8",
+  },
+  {
+    "memberSince": "2021-02-13T04:26:21.255Z",
+    "username": "Aiyana.McCullough",
+  },
+  {
+    "memberSince": "2022-01-03T11:06:19.499Z",
+    "username": "Aaron_Wehner28",
   },
 ]
 `;

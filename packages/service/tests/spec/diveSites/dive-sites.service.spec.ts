@@ -19,6 +19,7 @@ import {
   CreateDiveSiteOptions,
   DiveSitesService,
 } from '../../../src/diveSites';
+import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import DiveSiteTestData from '../../fixtures/dive-sites.json';
 import { createTestUser } from '../../utils';
@@ -35,6 +36,9 @@ const RegularUserData: Partial<UserEntity> = {
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
+  name: 'Joe Regular',
+  location: 'San Diego, CA',
+  avatar: 'https://example.com/avatar.jpg',
 };
 
 const OtherUserData: Partial<UserEntity> = {
@@ -43,6 +47,9 @@ const OtherUserData: Partial<UserEntity> = {
   username: 'Other.User',
   usernameLowered: 'other.user',
   role: UserRole.User,
+  name: 'Other User',
+  location: 'Toronto, ON',
+  avatar: 'https://example.com/other-avatar.jpg',
 };
 
 describe('Dive Site Service', () => {
@@ -116,8 +123,9 @@ describe('Dive Site Service', () => {
     });
 
     it('will create a new site and save it to the database', async () => {
+      const creator = new User(Users, regularUser);
       const options: CreateDiveSiteOptions = {
-        creator: RegularUserId,
+        creator,
         name: 'Test Site',
         location: 'San Diego, CA',
         description: 'This is a test site.',
@@ -168,8 +176,9 @@ describe('Dive Site Service', () => {
     });
 
     it('will create a new dive site with minimal information', async () => {
+      const creator = new User(Users, regularUser);
       const options: CreateDiveSiteOptions = {
-        creator: RegularUserId,
+        creator,
         name: 'Test Site',
         location: 'San Diego, CA',
       };

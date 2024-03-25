@@ -25,7 +25,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "settings": {
     "depthUnit": "m",
     "pressureUnit": "bar",
-    "profileVisibility": "friends",
     "temperatureUnit": "C",
     "weightUnit": "kg",
   },
@@ -61,7 +60,6 @@ UserEntity {
   "passwordResetToken": null,
   "passwordResetTokenExpiration": null,
   "pressureUnit": "bar",
-  "profileVisibility": "friends",
   "role": "user",
   "startedDiving": "2000-01-01",
   "tanks": undefined,
@@ -98,7 +96,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "settings": {
     "depthUnit": "m",
     "pressureUnit": "bar",
-    "profileVisibility": "friends",
     "temperatureUnit": "C",
     "weightUnit": "kg",
   },
@@ -123,7 +120,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "settings": {
     "depthUnit": "m",
     "pressureUnit": "bar",
-    "profileVisibility": "friends",
     "temperatureUnit": "C",
     "weightUnit": "kg",
   },
@@ -159,7 +155,6 @@ UserEntity {
   "passwordResetToken": null,
   "passwordResetTokenExpiration": null,
   "pressureUnit": "bar",
-  "profileVisibility": "friends",
   "role": "user",
   "startedDiving": null,
   "tanks": undefined,
@@ -188,7 +183,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "settings": {
     "depthUnit": "m",
     "pressureUnit": "bar",
-    "profileVisibility": "friends",
     "temperatureUnit": "C",
     "weightUnit": "kg",
   },

@@ -11,7 +11,6 @@ import {
   SuccessFailResponseDTO,
   UpdateProfileParamsDTO,
   UpdateProfileParamsSchema,
-  UserRole,
   UserSettingsDTO,
   UserSettingsSchema,
   VerifyEmailParamsDTO,
@@ -21,7 +20,6 @@ import {
 import {
   Body,
   Controller,
-  ForbiddenException,
   Get,
   Head,
   HttpCode,
@@ -29,11 +27,10 @@ import {
   Patch,
   Post,
   Put,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth, CurrentUser } from '../auth';
+import { AssertAuth } from '../auth';
 import { Config } from '../config';
 import { EmailService, EmailType } from '../email';
 import { ZodValidator } from '../zod-validator';

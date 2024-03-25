@@ -15,7 +15,7 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { FriendshipEntity, UserEntity } from '../../../src/data';
+import { UserEntity } from '../../../src/data';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import {
@@ -122,7 +122,10 @@ describe('Users End-to-End Tests', () => {
         .get(`/api/users/${user.username}`)
         .set(...regualarAuthHeader)
         .expect(200);
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual({
+        ...expected,
+        memberSince: expected.memberSince.toISOString(),
+      });
     });
 
     it('will return a 401 resposne if the calling user is not authenticated', async () => {
