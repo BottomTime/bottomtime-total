@@ -27,7 +27,6 @@ exports[`Users Service when creating new user accounts will create a new user wi
   "settings": {
     "depthUnit": "m",
     "pressureUnit": "bar",
-    "profileVisibility": "friends",
     "temperatureUnit": "C",
     "weightUnit": "kg",
   },
@@ -63,7 +62,6 @@ UserEntity {
   "passwordResetToken": null,
   "passwordResetTokenExpiration": null,
   "pressureUnit": "bar",
-  "profileVisibility": "friends",
   "role": "user",
   "startedDiving": "2011",
   "tanks": undefined,
@@ -101,7 +99,6 @@ exports[`Users Service when creating new user accounts will create new users wit
   "settings": {
     "depthUnit": "m",
     "pressureUnit": "bar",
-    "profileVisibility": "friends",
     "temperatureUnit": "C",
     "weightUnit": "kg",
   },
@@ -137,7 +134,6 @@ UserEntity {
   "passwordResetToken": null,
   "passwordResetTokenExpiration": null,
   "pressureUnit": "bar",
-  "profileVisibility": "friends",
   "role": "user",
   "startedDiving": null,
   "tanks": undefined,
@@ -278,7 +274,6 @@ exports[`Users Service when searching profiles will allow showing results beyond
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -310,7 +305,6 @@ exports[`Users Service when searching profiles will allow showing results beyond
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "public",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -342,7 +336,6 @@ exports[`Users Service when searching profiles will allow showing results beyond
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -374,7 +367,6 @@ exports[`Users Service when searching profiles will allow showing results beyond
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -406,7 +398,6 @@ exports[`Users Service when searching profiles will allow showing results beyond
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -438,7 +429,6 @@ exports[`Users Service when searching profiles will allow showing results beyond
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "private",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -470,7 +460,6 @@ exports[`Users Service when searching profiles will allow showing results beyond
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "public",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -510,7 +499,6 @@ exports[`Users Service when searching profiles will limit "page" size 1`] = `
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "private",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -542,7 +530,6 @@ exports[`Users Service when searching profiles will limit "page" size 1`] = `
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "public",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -574,7 +561,6 @@ exports[`Users Service when searching profiles will limit "page" size 1`] = `
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "private",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -606,7 +592,6 @@ exports[`Users Service when searching profiles will limit "page" size 1`] = `
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "private",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -638,7 +623,6 @@ exports[`Users Service when searching profiles will limit "page" size 1`] = `
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -670,7 +654,6 @@ exports[`Users Service when searching profiles will limit "page" size 1`] = `
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "public",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -702,7 +685,6 @@ exports[`Users Service when searching profiles will limit "page" size 1`] = `
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "friends",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -742,7 +724,6 @@ exports[`Users Service when searching profiles will perform text based searches 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "public",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -774,7 +755,6 @@ exports[`Users Service when searching profiles will perform text based searches 
       "settings": {
         "depthUnit": "m",
         "pressureUnit": "bar",
-        "profileVisibility": "private",
         "temperatureUnit": "C",
         "weightUnit": "kg",
       },
@@ -782,218 +762,4 @@ exports[`Users Service when searching profiles will perform text based searches 
     },
   ],
 }
-`;
-
-exports[`Users Service when searching profiles will return all public profiles when profileVisibleTo is set to "#public" 1`] = `
-[
-  {
-    "profileVisibility": "public",
-    "username": "Aiyana.McCullough",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Ashly71",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Ayla.Rippin",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Braulio19",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Brigitte.Kihn",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Bryce_Thompson97",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Bulah_Bins",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Casimir_DuBuque",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Danielle56",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Deanna_Mante68",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Drew75",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Erick_Roberts",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Gracie.Stroman",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Hermina.Emard99",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Jacey_Bernier",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Jamey87",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Jamie16",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Jaylon8",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Jett_Block95",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Judge69",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Julia.Hintz25",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Julia15",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Kendra_Little",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Kirstin52",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Liliane94",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Lurline96",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Malcolm89",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Oscar.Kling5",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Rhianna.Terry",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Sean_Ruecker",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Sonya.Hintz0",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Stephany76",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Tomasa33",
-  },
-  {
-    "profileVisibility": "public",
-    "username": "Trey.Langosh",
-  },
-]
-`;
-
-exports[`Users Service when searching profiles will return public profiles and profiles belonging to friends when "profilesVisibleTo" parameter is a user Id 1`] = `
-[
-  {
-    "profileVisibility": "friends",
-    "username": "Ashlynn_Kreiger86",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Audreanne.Larkin79",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Barrett_Stracke77",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Clarabelle_Funk69",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Eleonore.Hilpert",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Giovani48",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Isabelle.Moen91",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Jaden_McGlynn33",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Jakob_Goyette",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Jeramy_Cole43",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Jewel12",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Minerva.Olson",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Norris_Kshlerin60",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Okey84",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Reina54",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Rene47",
-  },
-  {
-    "profileVisibility": "friends",
-    "username": "Sven_White",
-  },
-]
 `;

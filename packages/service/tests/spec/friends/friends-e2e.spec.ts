@@ -2,7 +2,6 @@ import {
   DepthUnit,
   FriendsSortBy,
   PressureUnit,
-  ProfileVisibility,
   SortOrder,
   TemperatureUnit,
   UserRole,
@@ -38,7 +37,6 @@ const AdminUserData: Partial<UserEntity> = {
   temperatureUnit: TemperatureUnit.Celsius,
   weightUnit: WeightUnit.Kilograms,
   pressureUnit: PressureUnit.Bar,
-  profileVisibility: ProfileVisibility.Private,
 };
 
 const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
@@ -54,7 +52,6 @@ const RegularUserData: Partial<UserEntity> = {
   temperatureUnit: TemperatureUnit.Celsius,
   weightUnit: WeightUnit.Kilograms,
   pressureUnit: PressureUnit.Bar,
-  profileVisibility: ProfileVisibility.Private,
 };
 
 function friendUrl(username: string, friend?: string): string {

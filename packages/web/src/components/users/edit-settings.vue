@@ -119,26 +119,6 @@
         </div>
       </FormField>
 
-      <TextHeading>Privacy</TextHeading>
-      <FormField label="Profile visible to" :responsive="responsive">
-        <div
-          :class="`flex flex-col gap-3 ${
-            responsive ? 'md:flex-row pl-4 lg:pl-0' : ''
-          }`"
-        >
-          <FormRadio
-            v-for="option in ProfileVisibilityOptions"
-            :key="option.id"
-            v-model="data.profileVisibility"
-            :control-id="option.id"
-            :group="option.group"
-            :value="option.value"
-          >
-            {{ option.label }}
-          </FormRadio>
-        </div>
-      </FormField>
-
       <div class="flex flex-row justify-center items-baseline gap-3">
         <FormButton
           type="primary"
@@ -161,7 +141,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserDTO,
   UserSettingsDTO,
@@ -251,27 +230,6 @@ const WeightOptions: RadioOption[] = [
   },
 ];
 
-const ProfileVisibilityOptions: RadioOption[] = [
-  {
-    id: 'profile-public',
-    group: 'profile',
-    value: ProfileVisibility.Public,
-    label: 'Anyone',
-  },
-  {
-    id: 'profile-friends',
-    group: 'profile',
-    value: ProfileVisibility.FriendsOnly,
-    label: 'Only my friends',
-  },
-  {
-    id: 'profile-private',
-    group: 'profile',
-    value: ProfileVisibility.Private,
-    label: 'Just me',
-  },
-];
-
 const client = useClient();
 const toasts = useToasts();
 const oops = useOops();
@@ -284,7 +242,6 @@ const data = reactive<UserSettingsDTO>({
   pressureUnit: props.user.settings.pressureUnit,
   temperatureUnit: props.user.settings.temperatureUnit,
   weightUnit: props.user.settings.weightUnit,
-  profileVisibility: props.user.settings.profileVisibility,
 });
 const isSaving = ref(false);
 const showConfirmResetDialog = ref(false);
@@ -317,7 +274,6 @@ async function onSave(): Promise<void> {
     settings.pressureUnit = data.pressureUnit;
     settings.temperatureUnit = data.temperatureUnit;
     settings.weightUnit = data.weightUnit;
-    settings.profileVisibility = data.profileVisibility;
 
     await settings.save();
     emit('save-settings', data);
@@ -340,7 +296,6 @@ function onConfirmReset() {
   data.pressureUnit = props.user.settings.pressureUnit;
   data.temperatureUnit = props.user.settings.temperatureUnit;
   data.weightUnit = props.user.settings.weightUnit;
-  data.profileVisibility = props.user.settings.profileVisibility;
   showConfirmResetDialog.value = false;
 }
 

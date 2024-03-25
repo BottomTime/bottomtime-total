@@ -18,12 +18,13 @@ import {
   Query,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 
 import { Response } from 'express';
 import { URL } from 'url';
 
-import { AuthService, CurrentUser } from '../auth';
+import { AssertAuth, AuthService, CurrentUser } from '../auth';
 import { Config } from '../config';
 import { EmailService, EmailType } from '../email';
 import { ZodValidator } from '../zod-validator';
@@ -91,6 +92,13 @@ export class UsersController {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user is not currently authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
    *       "500":
    *         description: |
    *           The request failed because of an internal server error.
@@ -100,25 +108,12 @@ export class UsersController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get()
+  @UseGuards(AssertAuth)
   async searchProfiles(
-    @CurrentUser() user: User,
     @Query(new ZodValidator(SearchUserProfilesParamsSchema))
     params: SearchUserProfilesParamsDTO,
   ): Promise<SearchProfilesResponseDTO> {
-    let profileVisibleTo: string | undefined;
-
-    if (user) {
-      if (user.role !== UserRole.Admin) {
-        profileVisibleTo = user.username;
-      }
-    } else {
-      profileVisibleTo = '#public';
-    }
-
-    const result = await this.users.searchUsers({
-      ...params,
-      profileVisibleTo,
-    });
+    const result = await this.users.searchUsers(params);
     return {
       users: result.users.map((u) => u.profile.toJSON()),
       totalCount: result.totalCount,

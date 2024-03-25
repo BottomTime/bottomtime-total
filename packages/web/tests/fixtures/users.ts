@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserDTO,
   UserRole,
@@ -21,7 +20,6 @@ export const BasicUser: UserDTO = {
   settings: {
     depthUnit: DepthUnit.Meters,
     pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.FriendsOnly,
     temperatureUnit: TemperatureUnit.Celsius,
     weightUnit: WeightUnit.Kilograms,
   },
@@ -47,7 +45,6 @@ export const AdminUser: UserDTO = {
   settings: {
     depthUnit: DepthUnit.Meters,
     pressureUnit: PressureUnit.Bar,
-    profileVisibility: ProfileVisibility.FriendsOnly,
     temperatureUnit: TemperatureUnit.Celsius,
     weightUnit: WeightUnit.Kilograms,
   },
@@ -85,7 +82,6 @@ export const UserWithFullProfile: UserDTO = {
   settings: {
     depthUnit: DepthUnit.Feet,
     pressureUnit: PressureUnit.PSI,
-    profileVisibility: ProfileVisibility.Public,
     temperatureUnit: TemperatureUnit.Fahrenheit,
     weightUnit: WeightUnit.Pounds,
   },
@@ -108,7 +104,6 @@ export const UserWithEmptyProfile: UserDTO = {
   settings: {
     depthUnit: DepthUnit.Feet,
     pressureUnit: PressureUnit.PSI,
-    profileVisibility: ProfileVisibility.Public,
     temperatureUnit: TemperatureUnit.Fahrenheit,
     weightUnit: WeightUnit.Pounds,
   },

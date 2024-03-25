@@ -2,7 +2,6 @@ import {
   CreateOrUpdateDiveSiteDTO,
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserRole,
   WeightUnit,
@@ -41,7 +40,6 @@ const AdminUserData: Partial<UserEntity> = {
   temperatureUnit: TemperatureUnit.Celsius,
   weightUnit: WeightUnit.Kilograms,
   pressureUnit: PressureUnit.Bar,
-  profileVisibility: ProfileVisibility.Private,
 };
 
 function requestUrl(siteId?: string): string {

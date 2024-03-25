@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserRole,
   WeightUnit,
@@ -60,9 +59,6 @@ export function fakeUser(): UserEntity {
     Object.values(TemperatureUnit),
   );
   data.weightUnit = faker.helpers.arrayElement(Object.values(WeightUnit));
-  data.profileVisibility = faker.helpers.arrayElement(
-    Object.values(ProfileVisibility),
-  );
 
   return data;
 }

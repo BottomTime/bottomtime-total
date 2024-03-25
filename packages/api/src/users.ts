@@ -4,7 +4,6 @@ import {
   DepthUnit,
   FuzzyDateRegex,
   PressureUnit,
-  ProfileVisibility,
   SortOrder,
   TemperatureUnit,
   UserRole,
@@ -76,7 +75,6 @@ export const UserSettingsSchema = z.object({
   pressureUnit: z.nativeEnum(PressureUnit),
   temperatureUnit: z.nativeEnum(TemperatureUnit),
   weightUnit: z.nativeEnum(WeightUnit),
-  profileVisibility: z.nativeEnum(ProfileVisibility),
 });
 export type UserSettingsDTO = z.infer<typeof UserSettingsSchema>;
 

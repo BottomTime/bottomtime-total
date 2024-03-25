@@ -1,7 +1,6 @@
 import {
   DepthUnit,
   PressureUnit,
-  ProfileVisibility,
   TemperatureUnit,
   UserRole,
   WeightUnit,
@@ -119,14 +118,6 @@ export class UserEntity {
     nullable: true,
   })
   pressureUnit: PressureUnit = PressureUnit.Bar;
-
-  @Column({
-    type: 'enum',
-    enum: ProfileVisibility,
-    default: ProfileVisibility.FriendsOnly,
-    nullable: true,
-  })
-  profileVisibility: ProfileVisibility = ProfileVisibility.FriendsOnly;
 
   @OneToMany(() => TankEntity, (tank) => tank.user, { onDelete: 'CASCADE' })
   tanks?: TankEntity[];

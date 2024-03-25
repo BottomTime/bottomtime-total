@@ -3,7 +3,6 @@ import {
   FriendRequestDirection,
   FriendsSortBy,
   PressureUnit,
-  ProfileVisibility,
   SortOrder,
   TemperatureUnit,
   UserRole,
@@ -63,7 +62,6 @@ const TestUserData: Partial<UserEntity> = {
   temperatureUnit: TemperatureUnit.Celsius,
   weightUnit: WeightUnit.Kilograms,
   pressureUnit: PressureUnit.Bar,
-  profileVisibility: ProfileVisibility.FriendsOnly,
 };
 
 describe('Friends Service', () => {
@@ -158,79 +156,12 @@ describe('Friends Service', () => {
             username: f.username,
             friendsSince: f.friendsSince,
             memberSince: f.memberSince,
+            name: f.name,
+            location: f.location,
+            avatar: f.avatar,
           })),
         ).toMatchSnapshot();
       });
-    });
-
-    it('will list friends, respecting the privacy of private accounts', async () => {
-      const user = createTestUser();
-      const friends = [
-        createTestUser({
-          id: 'ee942718-f5b4-4e74-8ac5-66b6ed254f90',
-          username: 'Emerald_Johnson43',
-          memberSince: new Date('2022-09-20T22:53:03.480Z'),
-          name: 'Private Pete',
-          location: 'Privateville',
-          avatar: 'https://example.com/private-pete.jpg',
-          depthUnit: DepthUnit.Meters,
-          temperatureUnit: TemperatureUnit.Celsius,
-          weightUnit: WeightUnit.Kilograms,
-          pressureUnit: PressureUnit.Bar,
-          profileVisibility: ProfileVisibility.Private,
-        }),
-        createTestUser({
-          id: 'e53ac770-374f-4a62-9202-a8d230cc43f8',
-          username: 'Dahlia.Kerluke59',
-          memberSince: new Date('2022-03-21T22:58:19.726Z'),
-          avatar:
-            'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1232.jpg',
-          name: 'Nick Heller',
-          location: 'El Monte',
-          depthUnit: DepthUnit.Meters,
-          temperatureUnit: TemperatureUnit.Celsius,
-          weightUnit: WeightUnit.Kilograms,
-          pressureUnit: PressureUnit.Bar,
-          profileVisibility: ProfileVisibility.FriendsOnly,
-        }),
-        createTestUser({
-          id: 'edbc5d2c-da35-4724-a563-af88d69d5668',
-          username: 'Elisabeth_Raynor30',
-          memberSince: new Date('2021-07-02T08:27:54.544Z'),
-          avatar:
-            'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1087.jpg',
-          name: 'Elena Bahringer',
-          location: 'Diamond Bar',
-          depthUnit: DepthUnit.Meters,
-          temperatureUnit: TemperatureUnit.Celsius,
-          weightUnit: WeightUnit.Kilograms,
-          pressureUnit: PressureUnit.Bar,
-          profileVisibility: ProfileVisibility.Public,
-        }),
-      ];
-
-      const friendships = friends.map((friend) => {
-        const friendship = new FriendshipEntity();
-        friendship.id = uuid();
-        friendship.user = user;
-        friendship.friend = friend;
-        friendship.friendsSince = new Date();
-        return friendship;
-      });
-
-      await Users.save([user, ...friends]);
-      await Friends.save(friendships);
-
-      const results = await service.listFriends({ userId: user.id });
-      expect(results.friends).toHaveLength(3);
-      expect(
-        results.friends.map((friend) => ({
-          username: friend.username,
-          location: friend.location,
-          name: friend.name,
-          avatar: friend.avatar,
-        })),
-      ).toMatchSnapshot();
     });
   });
 
@@ -245,30 +176,6 @@ describe('Friends Service', () => {
       friendRelation.friendsSince = new Date('2023-12-11T17:21:44.781Z');
 
       await Users.save([userData, friend]);
-      await Friends.save(friendRelation);
-
-      const result = await service.getFriend(userData.id, friend.id);
-
-      expect(result).toMatchSnapshot();
-    });
-
-    it("will respect the friend's privacy settings", async () => {
-      const friend = createTestUser({
-        id: 'ee942718-f5b4-4e74-8ac5-66b6ed254f90',
-        username: 'private_pete',
-        memberSince: new Date('2022-09-20T22:53:03.480Z'),
-        avatar: 'https://example.com/private-pete.jpg',
-        location: 'Secretsville, Secretland',
-        name: 'Private Pete',
-        profileVisibility: ProfileVisibility.Private,
-      });
-      await Users.save([userData, friend]);
-
-      const friendRelation = new FriendshipEntity();
-      friendRelation.id = friend.id;
-      friendRelation.user = userData;
-      friendRelation.friend = friend;
-      friendRelation.friendsSince = new Date('2023-12-11T17:21:44.781Z');
       await Friends.save(friendRelation);
 
       const result = await service.getFriend(userData.id, friend.id);

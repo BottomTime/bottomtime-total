@@ -35,6 +35,9 @@ export class DiveSiteQueryBuilder {
         'creator.id',
         'creator.username',
         'creator.memberSince',
+        'creator.avatar',
+        'creator.location',
+        'creator.name',
       ]);
   }
 
@@ -146,6 +149,11 @@ export class DiveSiteQueryBuilder {
     }
 
     this.query = this.query.orderBy(sortByField, sortOrderString, 'NULLS LAST');
+    return this;
+  }
+
+  withSiteId(siteId: string): this {
+    this.query = this.query.andWhere('sites.id = :siteId', { siteId });
     return this;
   }
 }

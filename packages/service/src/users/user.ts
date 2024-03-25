@@ -15,11 +15,7 @@ import { Profile } from './profile';
 type UserDataSettings = NonNullable<
   Pick<
     UserEntity,
-    | 'depthUnit'
-    | 'pressureUnit'
-    | 'temperatureUnit'
-    | 'weightUnit'
-    | 'profileVisibility'
+    'depthUnit' | 'pressureUnit' | 'temperatureUnit' | 'weightUnit'
   >
 >;
 export type UserSettings = Required<{
@@ -87,8 +83,6 @@ export class User implements Express.User {
     return {
       depthUnit: this.data.depthUnit ?? DefaultUserSettings.depthUnit,
       pressureUnit: this.data.pressureUnit ?? DefaultUserSettings.pressureUnit,
-      profileVisibility:
-        this.data.profileVisibility ?? DefaultUserSettings.profileVisibility,
       temperatureUnit:
         this.data.temperatureUnit ?? DefaultUserSettings.temperatureUnit,
       weightUnit: this.data.weightUnit ?? DefaultUserSettings.weightUnit,
@@ -99,9 +93,6 @@ export class User implements Express.User {
     if (settings.depthUnit) this.data.depthUnit = settings.depthUnit;
 
     if (settings.pressureUnit) this.data.pressureUnit = settings.pressureUnit;
-
-    if (settings.profileVisibility)
-      this.data.profileVisibility = settings.profileVisibility;
 
     if (settings.temperatureUnit)
       this.data.temperatureUnit = settings.temperatureUnit;
