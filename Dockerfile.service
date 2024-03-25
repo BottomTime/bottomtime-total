@@ -22,7 +22,7 @@ COPY packages/service/src/ ./packages/service/src/
 RUN yarn build
 RUN yarn --cwd packages/service/ docs
 
-FROM node:20 AS release
+FROM node:20-slim AS release
 COPY --from=build /app/ /app/
 WORKDIR /app/packages/service/
 
