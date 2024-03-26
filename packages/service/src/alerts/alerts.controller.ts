@@ -1,6 +1,27 @@
-import { Controller, Inject } from '@nestjs/common';
+import {
+  AlertDTO,
+  CreateOrUpdateAlertParamsDTO,
+  CreateOrUpdateAlertParamsSchema,
+} from '@bottomtime/api';
 
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Inject,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
+
+import { AssertAdmin, AssertAuth, CurrentUser } from '../auth';
+import { User } from '../users';
+import { ZodValidator } from '../zod-validator';
+import { Alert } from './alert';
 import { AlertsService } from './alerts.service';
+import { AssertTargetAlert, TargetAlert } from './assert-target-alert.guard';
 
 const AlertIdParam = ':alertId';
 
@@ -51,7 +72,7 @@ export class AlertsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  listAlerts() {}
+  async listAlerts(): Promise<void> {}
 
   /**
    * @openapi
@@ -84,7 +105,11 @@ export class AlertsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  getAlert() {}
+  @Get(AlertIdParam)
+  @UseGuards(AssertTargetAlert)
+  async getAlert(@TargetAlert() alert: Alert): Promise<AlertDTO> {
+    return alert.toJSON();
+  }
 
   /**
    * @openapi
@@ -133,7 +158,15 @@ export class AlertsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  createAlert() {}
+  @Post()
+  @UseGuards(AssertAdmin)
+  async createAlert(
+    @Body(new ZodValidator(CreateOrUpdateAlertParamsSchema))
+    options: CreateOrUpdateAlertParamsDTO,
+  ): Promise<AlertDTO> {
+    const alert = await this.service.createAlert(options);
+    return alert.toJSON();
+  }
 
   /**
    * @openapi
@@ -190,7 +223,22 @@ export class AlertsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  updateAlert() {}
+  @Put(AlertIdParam)
+  @UseGuards(AssertAdmin, AssertTargetAlert)
+  async updateAlert(
+    @TargetAlert() alert: Alert,
+    @Body(new ZodValidator(CreateOrUpdateAlertParamsSchema))
+    options: CreateOrUpdateAlertParamsDTO,
+  ): Promise<AlertDTO> {
+    alert.active = options.active;
+    alert.expires = options.expires;
+    alert.icon = options.icon;
+    alert.message = options.message;
+    alert.title = options.title;
+
+    await alert.save();
+    return alert.toJSON();
+  }
 
   /**
    * @openapi
@@ -231,7 +279,12 @@ export class AlertsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  deleteAlert() {}
+  @Delete(AlertIdParam)
+  @HttpCode(204)
+  @UseGuards(AssertAdmin, AssertTargetAlert)
+  async deleteAlert(@TargetAlert() alert: Alert): Promise<void> {
+    await alert.delete();
+  }
 
   /**
    * @openapi
@@ -266,5 +319,13 @@ export class AlertsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  dismissAlert() {}
+  @Post(`${AlertIdParam}/dismiss`)
+  @UseGuards(AssertAuth, AssertTargetAlert)
+  @HttpCode(204)
+  async dismissAlert(
+    @CurrentUser() user: User,
+    @TargetAlert() alert: Alert,
+  ): Promise<void> {
+    await alert.dismiss(user.id);
+  }
 }

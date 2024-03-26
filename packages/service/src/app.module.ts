@@ -9,6 +9,7 @@ import path from 'path';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { AdminModule } from './admin';
+import { AlertsModule } from './alerts';
 import { AuthModule } from './auth/auth.module';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule, IMailClient } from './email';
@@ -54,6 +55,7 @@ export class AppModule {
         HealthModule,
 
         AdminModule,
+        AlertsModule,
         AuthModule,
         UsersModule,
         FriendsModule,
