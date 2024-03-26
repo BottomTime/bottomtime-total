@@ -1,6 +1,17 @@
 import { faker } from '@faker-js/faker';
 
+import { z } from 'zod';
+
 import { AlertEntity } from '../../src/data';
+
+const AlertSchema = z.object({
+  id: z.string(),
+  icon: z.string(),
+  title: z.string(),
+  message: z.string(),
+  active: z.coerce.date(),
+  expires: z.coerce.date().nullable(),
+});
 
 export function createTestAlert(options?: Partial<AlertEntity>): AlertEntity {
   const alert = new AlertEntity();
@@ -16,4 +27,8 @@ export function createTestAlert(options?: Partial<AlertEntity>): AlertEntity {
     null;
 
   return alert;
+}
+
+export function parseAlertJSON(json: unknown): AlertEntity {
+  return AlertSchema.parse(json);
 }
