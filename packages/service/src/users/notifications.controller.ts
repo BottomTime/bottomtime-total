@@ -2,6 +2,7 @@ import {
   CreateOrUpdateNotificationParamsDTO,
   CreateOrUpdateNotificationParamsSchema,
   ListNotificationsParamsDTO,
+  ListNotificationsParamsSchema,
   ListNotificationsResponseDTO,
   NotificationDTO,
 } from '@bottomtime/api';
@@ -11,13 +12,23 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Inject,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
-import { TargetUser } from './assert-target-user.guard';
+import { AssertAdmin, AssertAuth } from '../auth';
+import { ZodValidator } from '../zod-validator';
+import { AssertAccountOwner } from './assert-account-owner.guard';
+import {
+  AssertTargetNotification,
+  TargetNotification,
+} from './assert-target-notification.guard';
+import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+import { Notification } from './notification';
 import { NotificationsService } from './notifications.service';
 import { User } from './user';
 
@@ -25,6 +36,7 @@ const UsernameParam = 'username';
 const NotificationIdParam = ':notificationId';
 
 @Controller(`api/users/:${UsernameParam}/notifications`)
+@UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
 export class NotificationsController {
   constructor(
     @Inject(NotificationsService)
@@ -117,11 +129,19 @@ export class NotificationsController {
   @Get()
   async listNotifications(
     @TargetUser() user: User,
-    @Body() options: ListNotificationsParamsDTO,
+    @Query(new ZodValidator(ListNotificationsParamsSchema))
+    options: ListNotificationsParamsDTO,
   ): Promise<ListNotificationsResponseDTO> {
+    const results = await this.service.listNotifications({
+      ...options,
+      userId: user.id,
+    });
+
     return {
-      notifications: [],
-      totalCount: 0,
+      notifications: results.notifications.map((notification) =>
+        notification.toJSON(),
+      ),
+      totalCount: results.totalCount,
     };
   }
 
@@ -183,11 +203,71 @@ export class NotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post()
+  @UseGuards(AssertAdmin)
   async createNofitication(
     @TargetUser() user: User,
-    @Body() options: CreateOrUpdateNotificationParamsDTO,
+    @Body(new ZodValidator(CreateOrUpdateNotificationParamsSchema))
+    options: CreateOrUpdateNotificationParamsDTO,
   ): Promise<NotificationDTO> {
-    throw new Error('Not implemented');
+    const notification = await this.service.createNotification({
+      ...options,
+      userId: user.id,
+    });
+
+    return notification.toJSON();
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/notifications/{notificationId}:
+   *   get:
+   *     summary: Get a notification
+   *     description: Get a single notification for a user.
+   *     operationId: getNotification
+   *     tags:
+   *       - Notifications
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/NotificationId"
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the notification will be returned in the request body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Notification"
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to view the notification for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user or notification could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: The request failed because of an unexpected internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get(NotificationIdParam)
+  @UseGuards(AssertTargetNotification)
+  async getNotification(
+    @TargetNotification() notification: Notification,
+  ): Promise<NotificationDTO> {
+    return notification.toJSON();
   }
 
   /**
@@ -249,11 +329,22 @@ export class NotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(NotificationIdParam)
+  @UseGuards(AssertAdmin, AssertTargetNotification)
   async updateNotification(
-    @TargetUser() user: User,
-    @Body() options: CreateOrUpdateNotificationParamsDTO,
+    @TargetNotification() notification: Notification,
+    @Body(new ZodValidator(CreateOrUpdateNotificationParamsSchema))
+    options: CreateOrUpdateNotificationParamsDTO,
   ): Promise<NotificationDTO> {
-    throw new Error('Not implemented');
+    notification.active = options.active ?? new Date();
+    notification.expires = options.expires;
+    notification.icon = options.icon;
+    notification.message = options.message;
+    notification.title = options.title;
+
+    await notification.save();
+    if (notification.dismissed) await notification.markDismissed(false);
+
+    return notification.toJSON();
   }
 
   /**
@@ -299,7 +390,13 @@ export class NotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Delete(NotificationIdParam)
-  deleteNotification() {}
+  @HttpCode(204)
+  @UseGuards(AssertAdmin, AssertTargetNotification)
+  async deleteNotification(
+    @TargetNotification() notification: Notification,
+  ): Promise<void> {
+    await notification.delete();
+  }
 
   /**
    * @openapi
@@ -346,7 +443,13 @@ export class NotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`${NotificationIdParam}/dismiss`)
-  dismissNotification() {}
+  @HttpCode(204)
+  @UseGuards(AssertAdmin, AssertTargetNotification)
+  async dismissNotification(
+    @TargetNotification() notification: Notification,
+  ): Promise<void> {
+    await notification.markDismissed(true);
+  }
 
   /**
    * @openapi
@@ -392,5 +495,11 @@ export class NotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`${NotificationIdParam}/undismiss`)
-  undismissNotification() {}
+  @UseGuards(AssertAdmin, AssertTargetNotification)
+  @HttpCode(204)
+  async undismissNotification(
+    @TargetNotification() notifification: Notification,
+  ): Promise<void> {
+    await notifification.markDismissed(false);
+  }
 }

@@ -1,7 +1,6 @@
 import {
   CreateOrUpdateNotificationParamsDTO,
   ListNotificationsParamsDTO,
-  NotificationDTO,
 } from '@bottomtime/api';
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -68,7 +67,7 @@ export class NotificationsService {
   async getNotification(
     userId: string,
     notificationid: string,
-  ): Promise<NotificationDTO | undefined> {
+  ): Promise<Notification | undefined> {
     const notification = await this.Notifications.findOneBy({
       id: notificationid,
       recipient: { id: userId },
@@ -80,7 +79,7 @@ export class NotificationsService {
 
   async createNotification(
     options: CreateNotificationOptions,
-  ): Promise<NotificationDTO> {
+  ): Promise<Notification> {
     const notification = new NotificationEntity();
     notification.id = uuid();
     notification.icon = options.icon;

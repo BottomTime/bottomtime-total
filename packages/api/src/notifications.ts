@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const CreateOrUpdateNotificationParamsSchema = z.object({
-  icon: z.string().max(100),
-  title: z.string().max(200),
+  icon: z.string().min(1).max(100),
+  title: z.string().min(1).max(200),
   message: z.string().max(2000),
   active: z.coerce.date().optional(),
   expires: z.coerce.date().optional(),
@@ -20,9 +20,9 @@ export const NotificationSchema = CreateOrUpdateNotificationParamsSchema.extend(
 export type NotificationDTO = z.infer<typeof NotificationSchema>;
 
 export const ListNotificationsParamsSchema = z.object({
-  showDismissed: z.boolean().optional(),
-  skip: z.number().int().optional(),
-  limit: z.number().int().optional(),
+  showDismissed: z.coerce.boolean().optional(),
+  skip: z.coerce.number().int().optional(),
+  limit: z.coerce.number().int().optional(),
 });
 export type ListNotificationsParamsDTO = z.infer<
   typeof ListNotificationsParamsSchema
