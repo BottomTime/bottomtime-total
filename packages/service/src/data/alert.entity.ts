@@ -31,7 +31,7 @@ export class AlertEntity {
   @Index()
   expires: Date | null = null;
 
-  @ManyToMany(() => UserEntity, { onDelete: 'CASCADE' })
+  @ManyToMany(() => UserEntity, { onDelete: 'CASCADE', cascade: true })
   @JoinTable({ name: 'alert_dismissals' })
   dismissals?: UserEntity[];
 }

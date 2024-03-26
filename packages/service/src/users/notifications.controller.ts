@@ -64,15 +64,15 @@ export class NotificationsController {
    *         name: skip
    *         schema:
    *           type: integer
-   *           min: 0
+   *           minimum: 0
    *           default: 50
    *         description: The number of notifications to skip.
    *       - in: query
    *         name: limit
    *         schema:
    *           type: integer
-   *           min: 1
-   *           max: 200
+   *           minimum: 1
+   *           maximum: 200
    *           default: 50
    *         description: The maximum number of notifications to return.
    *     responses:

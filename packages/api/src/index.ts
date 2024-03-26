@@ -1,5 +1,6 @@
 export * from './constants';
 
+export * from './alerts';
 export * from './certifications';
 export * from './admin';
 export * from './auth';
