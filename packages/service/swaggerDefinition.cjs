@@ -26,6 +26,11 @@ module.exports = {
       description: 'Restricted endpoints accessible only to administrators.',
     },
     {
+      name: 'Alerts',
+      description:
+        'Endpoints pertaining to the management of alerts to be shown to all users on the home page.',
+    },
+    {
       name: 'Auth',
       description: 'Endpoints used for authentication or authorization.',
     },
@@ -46,6 +51,11 @@ module.exports = {
       name: 'Friends',
       description:
         'Endpoints pertaining to the management of friends and friend requests.',
+    },
+    {
+      name: 'Notifications',
+      description:
+        'Endpoints pertaining to the management of notifications that can be sent to individual users.',
     },
     {
       name: 'Users',

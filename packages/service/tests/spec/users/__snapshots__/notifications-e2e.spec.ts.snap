@@ -1,0 +1,451 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Notifications End-to-End Tests when creating a new notification will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "icon",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "String must contain at least 1 character(s)",
+      "minimum": 1,
+      "path": [
+        "title",
+      ],
+      "type": "string",
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "active",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when creating a new notification will return a 400 response if the request body is missing required fields 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "icon",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "title",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "message",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when listing notifications will allow admins to view notifications for another user 1`] = `
+[
+  "Similique nesciunt optio.",
+  "Repellendus aliquam ullam.",
+  "Magni quas impedit dolorum accusamus rem facilis.",
+  "Voluptatem ullam explicabo accusamus culpa placeat reiciendis.",
+  "Quia eum possimus accusantium optio ex reiciendis.",
+  "Ea accusantium tempora.",
+  "Quae expedita natus eum molestiae eaque accusamus vitae.",
+  "Consectetur illo officiis corrupti labore veniam saepe maxime dolorum autem.",
+  "Cumque enim corrupti laboriosam fugit incidunt.",
+  "Qui harum voluptatem.",
+  "Voluptates perferendis natus aperiam incidunt maiores in.",
+  "Quo corporis reprehenderit rerum laudantium ab veniam officia.",
+  "Quibusdam incidunt quasi quod.",
+  "Qui ut nemo.",
+  "Suscipit nemo earum.",
+  "Sed ea culpa.",
+  "Laudantium quis occaecati explicabo.",
+  "Perspiciatis ad similique explicabo deleniti labore a minima non veritatis.",
+  "Harum eligendi nihil ab quae veniam eius.",
+  "Repellendus neque debitis libero optio voluptatum eius laboriosam iusto.",
+  "Asperiores occaecati ipsa pariatur iure similique incidunt.",
+]
+`;
+
+exports[`Notifications End-to-End Tests when listing notifications will allow notifications to be listed given query string options 1`] = `
+[
+  {
+    "active": "2024-01-23T04:37:36.310Z",
+    "dismissed": true,
+    "expires": "2024-04-05T17:03:27.118Z",
+    "icon": "proximity",
+    "id": "c523ebd4-2ffb-44ed-9320-18fc5315d864",
+    "message": "Perferendis repudiandae quis repellat. Ipsa exercitationem ipsa aliquam assumenda voluptatibus delectus sapiente earum voluptas. Nostrum quasi necessitatibus neque repellendus ex quod. Culpa ea hic quasi.",
+    "title": "Laborum corrupti commodi nam nemo atque sit molestiae rem sit.",
+  },
+  {
+    "active": "2024-01-14T03:45:09.503Z",
+    "dismissed": true,
+    "expires": "2024-03-30T17:43:55.368Z",
+    "icon": "tolerance",
+    "id": "0dcb3ab3-1402-4b31-84b7-cc55dd902ad2",
+    "message": "Aliquid quasi maiores adipisci exercitationem. Nulla cum autem numquam ullam hic deserunt rerum neque maiores. Placeat id blanditiis non eos reiciendis rem. Commodi vitae rerum. Illo vero est ab maxime. Harum veniam soluta voluptatibus esse.",
+    "title": "Eius consequatur officiis saepe amet rerum ex consectetur nihil reiciendis.",
+  },
+  {
+    "active": "2024-01-08T14:20:22.240Z",
+    "dismissed": false,
+    "expires": "2024-04-14T08:55:43.503Z",
+    "icon": "exchange",
+    "id": "e7e89014-5040-4100-930c-766d103de86c",
+    "message": "Itaque rem adipisci ut accusamus minus omnis vitae. Animi dolore fugiat unde eum sunt voluptatum veniam quis. Dolore veniam alias odio minus illo. Possimus expedita aspernatur sit assumenda. Quod autem nesciunt in aperiam soluta sunt odio reprehenderit dolorum. Placeat harum quia nemo.",
+    "title": "Cumque enim corrupti laboriosam fugit incidunt.",
+  },
+  {
+    "active": "2024-01-07T22:36:05.014Z",
+    "dismissed": true,
+    "expires": "2024-04-11T13:47:39.698Z",
+    "icon": "zoology",
+    "id": "40698f77-3f9c-4c53-b9e8-bc424c3dfb2b",
+    "message": "Cum iste nemo. Id tenetur quasi. Nisi laudantium pariatur culpa velit est voluptates nostrum fuga. Blanditiis hic porro similique dignissimos sequi esse. Hic est tempore illo qui velit error tempore expedita porro. Quis placeat voluptatem voluptate iusto molestias ex.",
+    "title": "Nulla officiis illum.",
+  },
+  {
+    "active": "2024-01-06T23:21:05.621Z",
+    "dismissed": true,
+    "icon": "lobster",
+    "id": "f1b7ad73-57c2-4fff-8d58-d4b72dcb8814",
+    "message": "Voluptas veritatis ab ad. Perspiciatis eaque perferendis maiores eligendi molestias. Sunt suscipit quod adipisci.",
+    "title": "Molestias nesciunt nihil molestiae dicta dolorem quaerat reprehenderit totam adipisci.",
+  },
+]
+`;
+
+exports[`Notifications End-to-End Tests when listing notifications will return a 400 response if the query string parameters are invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "limit",
+      ],
+      "received": "nan",
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when listing notifications will return un-dismissed notifications for a user 1`] = `
+[
+  {
+    "active": "2024-03-23T15:14:37.852Z",
+    "dismissed": false,
+    "icon": "muscle",
+    "id": "66c5d4d7-8126-4b05-9f2a-6774a7313d2b",
+    "message": "Eaque animi aperiam officiis similique. Atque doloribus voluptates alias ipsum eaque. Quam dolore dignissimos porro voluptate porro iste quae. Fuga nesciunt debitis. Cupiditate fugiat fugiat est eos quam officia occaecati voluptatem. Delectus at corrupti ipsam.",
+    "title": "Similique nesciunt optio.",
+  },
+  {
+    "active": "2024-03-18T21:31:26.978Z",
+    "dismissed": false,
+    "expires": "2024-04-05T17:40:44.964Z",
+    "icon": "chop",
+    "id": "e0692ce8-27f5-48bd-82a6-db01488799ee",
+    "message": "Aperiam itaque voluptas. Quasi et aliquam corporis. Culpa voluptas ab. Totam vel quos. Est voluptatibus placeat facere officia at. Libero soluta facilis eius.",
+    "title": "Repellendus aliquam ullam.",
+  },
+  {
+    "active": "2024-03-18T12:34:32.992Z",
+    "dismissed": false,
+    "expires": "2024-04-09T18:50:14.358Z",
+    "icon": "reprocessing",
+    "id": "62b7c664-d3ba-4016-8af1-e3c488d5823e",
+    "message": "At earum voluptas quia. Corporis rerum totam saepe cumque repellendus laboriosam quisquam quibusdam magnam. Veritatis incidunt optio animi quod id amet aperiam.",
+    "title": "Magni quas impedit dolorum accusamus rem facilis.",
+  },
+  {
+    "active": "2024-03-04T07:17:52.302Z",
+    "dismissed": false,
+    "expires": "2024-04-23T14:16:53.120Z",
+    "icon": "silo",
+    "id": "882ee7cf-bcd4-4671-aac9-80f7bfd84b7c",
+    "message": "Ratione dolores quod illo nisi fuga corrupti. Quaerat iure doloremque minima. Quod voluptatum laborum provident neque eos libero. Itaque quibusdam nihil molestiae. Rem placeat sint quas eius provident doloribus ut.",
+    "title": "Voluptatem ullam explicabo accusamus culpa placeat reiciendis.",
+  },
+  {
+    "active": "2024-02-02T10:12:43.860Z",
+    "dismissed": false,
+    "expires": "2024-03-27T09:28:01.364Z",
+    "icon": "gamma-ray",
+    "id": "e7c28880-7bdf-4fe6-bfbf-23a8fd49043e",
+    "message": "Nisi doloremque repudiandae. Velit fugit laborum illum culpa ducimus mollitia explicabo esse. Molestiae voluptatum nesciunt odit amet voluptate. Labore corrupti voluptates et earum modi adipisci. Similique laborum fugit facere.",
+    "title": "Quia eum possimus accusantium optio ex reiciendis.",
+  },
+  {
+    "active": "2024-01-28T04:40:26.392Z",
+    "dismissed": false,
+    "expires": "2024-03-27T05:10:17.406Z",
+    "icon": "luxury",
+    "id": "24fe8aca-9a75-4b23-8734-9214f319195e",
+    "message": "Dicta asperiores odio. Aut aut non aliquam deserunt quae quia adipisci. Earum in eos placeat dolores placeat nobis optio id veritatis. Cum non quasi magni. A ex praesentium pariatur.",
+    "title": "Ea accusantium tempora.",
+  },
+  {
+    "active": "2024-01-27T09:05:02.434Z",
+    "dismissed": false,
+    "expires": "2024-03-26T19:39:13.679Z",
+    "icon": "alley",
+    "id": "f8c26922-638a-4bac-a9b4-2d0a6a6e5512",
+    "message": "Hic ducimus ducimus. Impedit error asperiores laudantium sint. Illum ipsum nulla veniam praesentium iste.",
+    "title": "Quae expedita natus eum molestiae eaque accusamus vitae.",
+  },
+  {
+    "active": "2024-01-25T23:44:16.285Z",
+    "dismissed": false,
+    "expires": "2024-04-17T12:42:46.217Z",
+    "icon": "vitamin",
+    "id": "180a8843-cd33-4871-8383-899753b8fa31",
+    "message": "Assumenda dolorem ab quibusdam cupiditate pariatur consequuntur laborum. Veritatis unde explicabo itaque optio inventore fuga et tempore. Iure ad ratione natus quaerat nisi architecto veniam. Voluptatibus quas ipsa repudiandae consequatur dignissimos quo consequuntur itaque modi.",
+    "title": "Consectetur illo officiis corrupti labore veniam saepe maxime dolorum autem.",
+  },
+  {
+    "active": "2024-01-08T14:20:22.240Z",
+    "dismissed": false,
+    "expires": "2024-04-14T08:55:43.503Z",
+    "icon": "exchange",
+    "id": "e7e89014-5040-4100-930c-766d103de86c",
+    "message": "Itaque rem adipisci ut accusamus minus omnis vitae. Animi dolore fugiat unde eum sunt voluptatum veniam quis. Dolore veniam alias odio minus illo. Possimus expedita aspernatur sit assumenda. Quod autem nesciunt in aperiam soluta sunt odio reprehenderit dolorum. Placeat harum quia nemo.",
+    "title": "Cumque enim corrupti laboriosam fugit incidunt.",
+  },
+  {
+    "active": "2023-12-30T14:02:43.975Z",
+    "dismissed": false,
+    "expires": "2024-04-15T10:25:03.019Z",
+    "icon": "rally",
+    "id": "e915b570-e8f4-4ca5-a1a0-6460db969715",
+    "message": "Quia aliquid aperiam architecto molestiae debitis tempore nobis autem. Architecto ex praesentium iure. Qui rerum quas itaque. Vitae praesentium dolores rerum fugit natus. Facere omnis incidunt tempore excepturi sit aliquam similique dolorum. Alias eveniet occaecati deleniti.",
+    "title": "Qui harum voluptatem.",
+  },
+  {
+    "active": "2023-12-21T01:21:58.755Z",
+    "dismissed": false,
+    "expires": "2024-04-23T12:30:05.780Z",
+    "icon": "top",
+    "id": "2eb0bfb4-70a4-476e-89af-26de11154e6a",
+    "message": "Iure est quod. Unde ea temporibus. Nihil saepe quas. Placeat quos quasi iusto consectetur perferendis. Eaque voluptatem soluta maxime hic voluptas aut delectus. Quasi itaque perspiciatis soluta.",
+    "title": "Voluptates perferendis natus aperiam incidunt maiores in.",
+  },
+  {
+    "active": "2023-12-14T17:47:01.665Z",
+    "dismissed": false,
+    "expires": "2024-04-03T16:24:52.615Z",
+    "icon": "basement",
+    "id": "fa0bb615-1715-418b-931f-ba1c7aa6d88d",
+    "message": "Nesciunt consequuntur eos praesentium qui minima vero repudiandae nemo. Quasi dolorem hic aperiam provident sequi. Esse nam ad ducimus minima quae qui.",
+    "title": "Quo corporis reprehenderit rerum laudantium ab veniam officia.",
+  },
+  {
+    "active": "2023-12-14T15:20:23.800Z",
+    "dismissed": false,
+    "expires": "2024-04-19T03:33:11.878Z",
+    "icon": "airbus",
+    "id": "c6c82a3e-38db-471c-b89b-8c525bb926fb",
+    "message": "Illum fuga fugiat ullam accusamus quos quos. Nulla magni laboriosam dolores. Aliquam excepturi accusamus hic assumenda commodi qui assumenda consectetur assumenda. Voluptatem saepe asperiores impedit. Sunt asperiores accusantium. Voluptatem cum eum laborum est veniam.",
+    "title": "Quibusdam incidunt quasi quod.",
+  },
+  {
+    "active": "2023-12-08T12:11:56.393Z",
+    "dismissed": false,
+    "icon": "doctorate",
+    "id": "4afea3c0-a94d-4477-a77b-c38b361022d5",
+    "message": "Tempore aspernatur veritatis suscipit dolore. Tenetur autem facere illum nam consequuntur enim libero placeat. Quibusdam dicta sit eius dignissimos reprehenderit necessitatibus accusantium. Facere blanditiis porro dolorum nobis ullam illum. Minus quidem necessitatibus. Ratione cumque eaque sunt excepturi suscipit eius.",
+    "title": "Qui ut nemo.",
+  },
+  {
+    "active": "2023-12-04T15:00:54.262Z",
+    "dismissed": false,
+    "expires": "2024-04-02T23:17:30.299Z",
+    "icon": "arrival",
+    "id": "f24d93f9-947e-4cdf-b002-305c4a2650d7",
+    "message": "Sapiente quibusdam accusamus earum nostrum in. Quibusdam perspiciatis eligendi cupiditate libero vitae vel aperiam. Fugit aut doloremque accusamus vitae laudantium consequuntur. Sed voluptatem esse earum. Tempore itaque odit vero mollitia magni consequuntur optio.",
+    "title": "Suscipit nemo earum.",
+  },
+  {
+    "active": "2023-11-16T11:09:07.597Z",
+    "dismissed": false,
+    "icon": "handle",
+    "id": "02c5d5ac-8fbe-4a3f-a1dd-413a79d74cb6",
+    "message": "Nihil deleniti neque molestiae debitis officia eum. Corporis recusandae illum aliquam quia doloremque facere consectetur. Dolorem delectus nisi placeat.",
+    "title": "Sed ea culpa.",
+  },
+  {
+    "active": "2023-11-12T09:13:20.667Z",
+    "dismissed": false,
+    "expires": "2024-04-09T19:57:33.467Z",
+    "icon": "panty",
+    "id": "42592163-c976-4dc4-85c2-f7355093c96e",
+    "message": "Accusantium assumenda mollitia id eveniet. Odio dolorum laboriosam. Vero voluptatem ipsam dolor molestiae aut.",
+    "title": "Laudantium quis occaecati explicabo.",
+  },
+  {
+    "active": "2023-11-12T00:48:25.073Z",
+    "dismissed": false,
+    "expires": "2024-04-07T09:18:53.350Z",
+    "icon": "intervention",
+    "id": "800cd884-dc61-4573-bfee-fd6613dc74aa",
+    "message": "Magni error animi dignissimos voluptate expedita alias vero praesentium. Ipsam excepturi porro voluptatum tempore deserunt esse eius at aliquid. Nihil autem aperiam corporis animi laboriosam officia aliquam ipsa molestias. Tenetur asperiores perferendis iure facilis fugiat.",
+    "title": "Perspiciatis ad similique explicabo deleniti labore a minima non veritatis.",
+  },
+  {
+    "active": "2023-11-02T04:07:07.108Z",
+    "dismissed": false,
+    "expires": "2024-03-28T15:11:29.876Z",
+    "icon": "comment",
+    "id": "e569788f-d065-4f73-a7a5-2b4039fed33f",
+    "message": "Quidem quasi impedit ipsam reprehenderit accusantium praesentium. Repudiandae dolorum saepe. Perferendis provident corrupti eos aliquid quae nemo. Totam consectetur molestias qui hic porro non alias odit. Non quo labore.",
+    "title": "Harum eligendi nihil ab quae veniam eius.",
+  },
+  {
+    "active": "2023-10-13T09:46:49.611Z",
+    "dismissed": false,
+    "expires": "2024-04-07T04:23:56.126Z",
+    "icon": "balloon",
+    "id": "48b3856a-cc0d-42e2-97a2-93380e941bee",
+    "message": "Aliquid eligendi placeat iure excepturi perferendis praesentium ullam. Error sequi in velit iusto deserunt dolorem labore. Totam recusandae quos. Id corrupti ipsum minima ut officia. Delectus temporibus tempore.",
+    "title": "Repellendus neque debitis libero optio voluptatum eius laboriosam iusto.",
+  },
+  {
+    "active": "2023-10-11T06:38:45.398Z",
+    "dismissed": false,
+    "icon": "burst",
+    "id": "b5d1da99-c8d2-45e0-b8fe-02bcf6e53db0",
+    "message": "Quod deserunt similique atque ab dicta. Enim accusantium consequuntur aliquid sint iure. Quod necessitatibus ad doloribus. Alias blanditiis autem eligendi doloribus quaerat quas facilis ea explicabo.",
+    "title": "Asperiores occaecati ipsa pariatur iure similique incidunt.",
+  },
+]
+`;
+
+exports[`Notifications End-to-End Tests when retrieving a single notification will retrieve the requested notification 1`] = `
+{
+  "active": "2024-03-04T07:17:52.302Z",
+  "dismissed": false,
+  "expires": "2024-04-23T14:16:53.120Z",
+  "icon": "silo",
+  "id": "882ee7cf-bcd4-4671-aac9-80f7bfd84b7c",
+  "message": "Ratione dolores quod illo nisi fuga corrupti. Quaerat iure doloremque minima. Quod voluptatum laborum provident neque eos libero. Itaque quibusdam nihil molestiae. Rem placeat sint quas eius provident doloribus ut.",
+  "title": "Voluptatem ullam explicabo accusamus culpa placeat reiciendis.",
+}
+`;
+
+exports[`Notifications End-to-End Tests when retrieving a single notification will retrieve the requested notification even if it is dismissed 1`] = `
+{
+  "active": "2024-01-01T15:40:13.131Z",
+  "dismissed": true,
+  "expires": "2024-04-20T13:16:12.612Z",
+  "icon": "caviar",
+  "id": "67fce478-d478-4700-8938-e6dca40b2d09",
+  "message": "Aperiam minima voluptas. Rerum quaerat culpa. Debitis minus soluta nam ex. Cum ut eveniet quasi nobis. Unde sapiente cumque nisi quaerat nemo asperiores voluptatum itaque.",
+  "title": "Impedit nulla illo hic consectetur facere neque quasi quaerat.",
+}
+`;
+
+exports[`Notifications End-to-End Tests when updating an existing notification will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "icon",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "String must contain at least 1 character(s)",
+      "minimum": 1,
+      "path": [
+        "title",
+      ],
+      "type": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "message",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "active",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when updating an existing notification will return a 400 response if the request body is missing required fields 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "icon",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "title",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "message",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;

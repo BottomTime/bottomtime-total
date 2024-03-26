@@ -1,0 +1,183 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Alerts End-to-End Tests when creating a new alert will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "icon",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "String must contain at least 1 character(s)",
+      "minimum": 1,
+      "path": [
+        "title",
+      ],
+      "type": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "message",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "active",
+      ],
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "expires",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Alerts End-to-End Tests when creating a new alert will return a 400 response if the request body is missing required properties 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "icon",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "title",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "message",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "active",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Alerts End-to-End Tests when updating an existing alert will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "icon",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "String must contain at least 1 character(s)",
+      "minimum": 1,
+      "path": [
+        "title",
+      ],
+      "type": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "message",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "active",
+      ],
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "expires",
+      ],
+    },
+  ],
+}
+`;
+
+exports[`Alerts End-to-End Tests when updating an existing alert will return a 400 response if the request body is missing required properties 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "icon",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "title",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "message",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "active",
+      ],
+    },
+  ],
+}
+`;
