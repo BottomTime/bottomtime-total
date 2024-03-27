@@ -44,7 +44,6 @@ import { computed } from 'vue';
 import { Breadcrumb } from '../common';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import FormBox from '../components/common/form-box.vue';
-import NavLink from '../components/common/nav-link.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
 import TextHeading from '../components/common/text-heading.vue';
