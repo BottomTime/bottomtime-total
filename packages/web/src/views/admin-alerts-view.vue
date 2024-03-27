@@ -2,11 +2,12 @@
   <PageTitle title="Manage Alerts" />
   <BreadCrumbs :items="Breadcrumbs" />
 
-  <div>Alerts!!!</div>
+  <AlertsList />
 </template>
 
 <script lang="ts" setup>
 import { Breadcrumb } from '../common';
+import AlertsList from '../components/admin/alerts-list.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import PageTitle from '../components/common/page-title.vue';
 
