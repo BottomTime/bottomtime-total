@@ -195,7 +195,7 @@ const navLinks = computed<NavLink[]>(() => {
     },
     {
       title: 'Admin',
-      url: '/admin/users',
+      url: '/admin',
       visible: currentUser.user?.role === UserRole.Admin,
     },
   ];

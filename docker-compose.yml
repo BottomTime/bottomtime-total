@@ -54,8 +54,10 @@ services:
       dockerfile: Dockerfile.web
     ports:
       - '4850:4850'
+      - '24678:24678'
     expose:
       - '4850'
+      - '24678'
     env_file:
       - packages/web/.env
     environment:
@@ -63,3 +65,20 @@ services:
     depends_on:
       core:
         condition: service_started
+    develop:
+      watch:
+        - action: rebuild
+          path: packages/web/package.json
+          target: /app/packages/web/package.json
+        - action: sync+restart
+          path: packages/api/src
+          target: /app/packages/api/src
+        - action: sync
+          path: packages/web/public
+          target: /app/packages/web/public
+        - action: sync
+          path: packages/web/server
+          target: /app/packages/web/server
+        - action: sync
+          path: packages/web/src
+          target: /app/packages/web/src
