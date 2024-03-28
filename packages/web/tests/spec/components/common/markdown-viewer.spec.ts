@@ -1,3 +1,7 @@
+import { mount } from '@vue/test-utils';
+
+import MarkdownViewer from '../../../../src/components/common/markdown-viewer.vue';
+
 const SampleMarkdown = `
 # Heading
 ## Other Heading
@@ -7,15 +11,9 @@ const SampleMarkdown = `
 * Yup
 * Nope
 
-_italic_
-
-__bold__
+This paragraph contains some _italic_ text and some __bold__ text. Additionally, there is some ~~strikethrough~~ text. :smile:
 
 > Block quote
-
-~~strikethrough~~
-
-:smile:
 
 \`code\`
 
@@ -36,3 +34,15 @@ blah
 | omg | table |
 | wat | wat |
 `;
+
+describe('MarkdownViewer component', () => {
+  it('will render markup as HTML', () => {
+    const wrapper = mount(MarkdownViewer, {
+      props: {
+        modelValue: SampleMarkdown,
+      },
+    });
+
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+});

@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MarkdownViewer component will render markup as HTML 1`] = `
+"<!-- eslint-disable-next-line vue/no-v-html -->
+<div class="overflow-x-auto space-y-3">
+  <h1 class="text-2xl font-bold font-title" id="heading">Heading</h1>
+  <h2 class="text-xl font-bold font-title" id="otherheading">Other Heading</h2>
+  <h3 class="text-lg font-bold font-title" id="smallerheading">Smaller heading</h3>
+  <ul class="list-disc list-inside pl-2">
+    <li>Hi</li>
+    <li>Yup</li>
+    <li>Nope</li>
+  </ul>
+  <p>This paragraph contains some <em>italic</em> text and some <strong>bold</strong> text. Additionally, there is some <del>strikethrough</del> text. 😄</p>
+  <blockquote class="border-l-4 border-gray-300 pl-4 italic">
+    <p>Block quote</p>
+  </blockquote>
+  <p><code class="text-sm">code</code></p>
+  <pre class="whitespace-pre"><code class="text-sm">blah
+</code></pre>
+  <ol class="list-decimal list-inside pl-2">
+    <li>lol</li>
+    <li>lol</li>
+  </ol>
+  <ul class="list-disc list-inside pl-2">
+    <li>[x] Get groceries</li>
+    <li>[ ] Fold clothes</li>
+  </ul>
+  <p><a class="font-bold text-link underline hover:text-link-hover" href="https://tailwindcss.com">link</a></p>
+  <p>| Heading 1 | Heading 2 |
+    | --- | ---: |
+    | omg | table |
+    | wat | wat |</p>
+</div>"
+`;

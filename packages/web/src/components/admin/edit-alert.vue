@@ -22,6 +22,7 @@
       v-model="data.message"
       control-id="message"
       :maxlength="2000"
+      :rows="10"
       placeholder="Enter message content. Markdown format is supported."
     />
     <MarkdownViewer v-model="data.message" />

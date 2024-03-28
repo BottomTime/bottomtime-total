@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <div v-html="html"></div>
+  <div class="overflow-x-auto space-y-3" v-html="html"></div>
 </template>
 
 <script lang="ts" setup>
@@ -21,6 +21,7 @@ const classMap: Record<string, string> = {
   h5: 'font-title',
   h6: 'font-title',
   ol: 'list-decimal list-inside pl-2',
+  pre: 'whitespace-pre',
   table: 'border-collapse table-fixed rounded-md',
   th: 'font-title font-bold bg-grey-600 p-2',
   tr: 'text-sm bg-grey-500 p-2',
