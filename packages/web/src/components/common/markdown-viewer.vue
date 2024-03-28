@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Converter } from 'showdown';
+import showdown from 'showdown';
 import { computed } from 'vue';
 
 const markdown = defineModel<string>({ default: '' });
@@ -33,7 +33,7 @@ const bindings = Object.keys(classMap).map((key) => ({
   replace: `<${key} class="${classMap[key]}" $1>`,
 }));
 
-const converter = new Converter({
+const converter = new showdown.Converter({
   emoji: true,
   extensions: [...bindings],
   strikethrough: true,

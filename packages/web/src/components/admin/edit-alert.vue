@@ -36,8 +36,7 @@
 <script lang="ts" setup>
 import { AlertDTO } from '@bottomtime/api';
 
-import { Converter } from 'showdown';
-import { computed, reactive } from 'vue';
+import { reactive } from 'vue';
 
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
@@ -55,8 +54,6 @@ interface EditAlertData extends Pick<AlertDTO, 'icon' | 'title' | 'message'> {
   expires: string;
 }
 
-const converter = new Converter();
-
 const props = defineProps<EditAlertProps>();
 const data = reactive<EditAlertData>({
   icon: props.alert.icon,
@@ -65,8 +62,6 @@ const data = reactive<EditAlertData>({
   active: '',
   expires: '',
 });
-
-const previewHtml = computed(() => converter.makeHtml(data.message));
 
 async function onSave(): Promise<void> {}
 

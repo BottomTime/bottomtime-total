@@ -33,10 +33,10 @@ export class Alert {
     this.data.message = value;
   }
 
-  get active(): Date {
+  get active(): Date | undefined {
     return this.data.active;
   }
-  set active(value: Date) {
+  set active(value: Date | undefined) {
     this.data.active = value;
   }
 

@@ -40,7 +40,7 @@ services:
         - action: sync
           path: packages/service/public/docs/swagger.json
           target: /app/packages/service/public/docs/swagger.json
-        - action: sync+restart
+        - action: rebuild
           path: packages/api/src
           target: /app/packages/api/src
         - action: sync
@@ -70,7 +70,7 @@ services:
         - action: rebuild
           path: packages/web/package.json
           target: /app/packages/web/package.json
-        - action: sync+restart
+        - action: rebuild
           path: packages/api/src
           target: /app/packages/api/src
         - action: sync
