@@ -35,8 +35,8 @@ services:
     develop:
       watch:
         - action: rebuild
-          path: packages/service/package.json
-          target: /app/packages/service/package.json
+          path: packages/service/yarn.lock
+          target: /app/packages/service/yarn.lock
         - action: sync
           path: packages/service/public/docs/swagger.json
           target: /app/packages/service/public/docs/swagger.json
@@ -68,8 +68,8 @@ services:
     develop:
       watch:
         - action: rebuild
-          path: packages/web/package.json
-          target: /app/packages/web/package.json
+          path: packages/web/yarn.lock
+          target: /app/packages/web/yarn.lock
         - action: rebuild
           path: packages/api/src
           target: /app/packages/api/src

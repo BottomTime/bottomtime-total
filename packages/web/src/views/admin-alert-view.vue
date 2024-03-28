@@ -2,8 +2,8 @@
   <PageTitle :title="title" />
   <BreadCrumbs :items="Breadcrumbs" />
 
-  <div class="grid grid-cols-1 md:grid-cols-5">
-    <FormBox class="md:col-start-2 md:col-span-3">
+  <div class="grid grid-cols-1 xl:grid-cols-5">
+    <FormBox class="xl:col-start-2 xl:col-span-3">
       <EditAlert :alert="alert" />
     </FormBox>
   </div>

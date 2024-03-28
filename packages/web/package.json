@@ -22,6 +22,7 @@
     "@nestjs/throttler": "^5.1.1",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
+    "@vuepic/vue-datepicker": "^8.3.1",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.5",
     "compression": "^1.7.4",
