@@ -9,6 +9,7 @@
     auto-apply
     :placeholder="placeholder"
     :disabled="disabled"
+    position="left"
   />
 </template>
 
@@ -25,7 +26,7 @@ interface FormDatePickerProps {
   placeholder?: string;
 }
 
-const value = defineModel<string>();
+const value = defineModel<string | Date>();
 const props = withDefaults(defineProps<FormDatePickerProps>(), {
   disabled: false,
   invalid: false,
