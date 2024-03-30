@@ -1,16 +1,20 @@
 <template>
   <FormBox class="flex place-items-baseline">
     <span class="grow">
-      Showing <strong>{{ data.alerts.length }}</strong> of
-      <strong>{{ data.totalCount }}</strong> alerts
+      Showing <strong>{{ alerts.alerts.length }}</strong> of
+      <strong>{{ alerts.totalCount }}</strong> alerts
     </span>
 
     <a href="/admin/alerts/new">
       <FormButton type="primary">Create New Alert</FormButton>
     </a>
   </FormBox>
-  <div>Create Alert</div>
-  <div>Alerts</div>
+
+  <ul>
+    <li v-for="alert in alerts.alerts" :key="alert.id" class="space-y-3">
+      <AlertsListItem :alert="alert" />
+    </li>
+  </ul>
   <div>No alerts found</div>
   <div>Other stuff</div>
 </template>
@@ -18,24 +22,13 @@
 <script lang="ts" setup>
 import { ListAlertsResponseDTO } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive } from 'vue';
-
-import { useClient } from '../../client';
-import { useOops } from '../../oops';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
+import AlertsListItem from './alerts-list-item.vue';
 
-const client = useClient();
-const oops = useOops();
+interface AlertsListProps {
+  alerts: ListAlertsResponseDTO;
+}
 
-const data = reactive<ListAlertsResponseDTO>({
-  alerts: [],
-  totalCount: 0,
-});
-
-onServerPrefetch(async () => {
-  await oops(async () => {
-    const alerts = await client.alerts.listAlerts();
-  });
-});
+defineProps<AlertsListProps>();
 </script>

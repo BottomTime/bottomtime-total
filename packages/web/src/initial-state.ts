@@ -1,6 +1,8 @@
 import {
   AdminSearchUsersResponseDTO,
+  AlertDTO,
   DiveSiteDTO,
+  ListAlertsResponseDTO,
   SearchDiveSitesResponseDTO,
   UserDTO,
 } from '@bottomtime/api';
@@ -8,6 +10,8 @@ import {
 export type AppInitialState = {
   adminCurrentUser?: UserDTO;
   adminUsersList?: AdminSearchUsersResponseDTO;
+  alerts?: ListAlertsResponseDTO;
+  currentAlert?: AlertDTO;
   currentDiveSite?: DiveSiteDTO | null;
   currentUser: UserDTO | null;
   diveSites?: SearchDiveSitesResponseDTO;
