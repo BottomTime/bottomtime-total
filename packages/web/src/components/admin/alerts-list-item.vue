@@ -1,6 +1,6 @@
 <template>
-  <div class="flex space-x-3 p-4">
-    <span>
+  <div class="flex space-x-4 p-4">
+    <span class="mt-1.5">
       <i :class="alert.icon"></i>
     </span>
 
@@ -20,17 +20,21 @@
       </div>
     </div>
 
-    <div class="flex space-x-2">
-      <FormButton>
-        <span>
-          <i class="fas fa-edit"></i>
-        </span>
-      </FormButton>
-      <FormButton type="danger">
-        <span>
-          <i class="fas fa-trash"></i>
-        </span>
-      </FormButton>
+    <div>
+      <div class="inline-flex rounded-md" role="group">
+        <a :href="`/admin/alerts/${alert.id}`">
+          <FormButton rounded="start" @click="$emit('edit', alert)">
+            <span>
+              <i class="fas fa-edit"></i>
+            </span>
+          </FormButton>
+        </a>
+        <FormButton type="danger" rounded="end" @click="$emit('delete', alert)">
+          <span>
+            <i class="fas fa-trash"></i>
+          </span>
+        </FormButton>
+      </div>
     </div>
   </div>
 </template>
@@ -45,4 +49,8 @@ interface AlertsListItemProps {
 }
 
 defineProps<AlertsListItemProps>();
+defineEmits<{
+  (e: 'delete', alert: AlertDTO): void;
+  (e: 'edit', alert: AlertDTO): void;
+}>();
 </script>

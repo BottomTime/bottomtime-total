@@ -19,6 +19,7 @@ import { computed } from 'vue';
 type FormButtonProps = {
   disabled?: boolean;
   isLoading?: boolean;
+  rounded?: boolean | 'left' | 'right' | 'top' | 'bottom' | 'start' | 'end';
   size?: 'sm' | 'md' | 'lg';
   stretch?: boolean;
   submit?: boolean;
@@ -29,24 +30,48 @@ type FormButtonProps = {
 const props = withDefaults(defineProps<FormButtonProps>(), {
   disabled: false,
   isLoading: false,
+  rounded: true,
   size: 'sm',
   stretch: false,
   submit: false,
   type: 'normal',
 });
 
+function getRounding(): string {
+  switch (props.rounded) {
+    case true:
+      return 'rounded-md';
+    case false:
+      return 'rounded-none';
+    case 'left':
+      return 'rounded-l-md';
+    case 'right':
+      return 'rounded-r-md';
+    case 'top':
+      return 'rounded-t-md';
+    case 'bottom':
+      return 'rounded-b-md';
+    case 'start':
+      return 'rounded-s-md';
+    case 'end':
+      return 'rounded-e-md';
+  }
+}
+
 const classes = computed(() => {
-  const baseButton = `text-black p-2 m-0 text-${props.size} rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800`;
+  const baseButton = `text-black p-2 m-0 text-${
+    props.size
+  } outline-2 outline-grey-800 shadow-sm shadow-grey-800 ${getRounding()}`;
   const baseButtonWithGradient = `${baseButton} bg-gradient-to-t`;
   let classes: string;
 
   switch (props.type) {
     case 'primary':
-      classes = `${baseButtonWithGradient} disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary`;
+      classes = `${baseButtonWithGradient} disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary font-bold`;
       break;
 
     case 'link':
-      classes = `text-link hover:text-link-hover pt-2 pb-2 mt-1 mb-1 text-${props.size}`;
+      classes = `text-link hover:text-link-hover py-2 mt-1 mb-1 text-${props.size}`;
       break;
 
     case 'danger':

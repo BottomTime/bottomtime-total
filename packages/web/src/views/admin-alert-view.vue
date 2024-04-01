@@ -4,7 +4,11 @@
 
   <div class="grid grid-cols-1 xl:grid-cols-5">
     <FormBox v-if="alert" class="xl:col-start-2 xl:col-span-3">
-      <EditAlert :alert="alert" @saved="onAlertSaved" />
+      <EditAlert
+        :alert="alert"
+        :show-revert="typeof route.params.alertId === 'string'"
+        @saved="onAlertSaved"
+      />
     </FormBox>
     <NotFound v-else />
   </div>

@@ -46,7 +46,7 @@
     required
   >
     <FormTextBox
-      v-model="data.title"
+      v-model.trim="data.title"
       control-id="title"
       test-id="title"
       :maxlength="200"
@@ -87,7 +87,7 @@
     <div>
       <TextHeading>Content</TextHeading>
       <FormTextArea
-        v-model="data.message"
+        v-model.trim="data.message"
         control-id="message"
         :maxlength="2000"
         :rows="10"
@@ -111,7 +111,10 @@
 
   <div class="text-center mt-5 space-x-3">
     <FormButton type="primary" @click="onSave">Save Alert</FormButton>
-    <FormButton @click="onCancel">Cancel</FormButton>
+    <FormButton v-if="alert.id" @click="onCancel">Cancel Changes</FormButton>
+    <a v-else href="/admin/alerts">
+      <FormButton>Cancel</FormButton>
+    </a>
   </div>
 </template>
 

@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 export const CreateOrUpdateAlertParamsSchema = z.object({
-  icon: z.string().min(1).max(100),
-  title: z.string().min(1).max(200),
-  message: z.string().min(1).max(10000),
+  icon: z.string().trim().min(1).max(100),
+  title: z.string().trim().min(1).max(200),
+  message: z.string().trim().min(1).max(10000),
   active: z.coerce.date().optional(),
   expires: z.coerce.date().optional(),
 });

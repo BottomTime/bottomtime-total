@@ -2,33 +2,40 @@
   <PageTitle title="Manage Alerts" />
   <BreadCrumbs :items="Breadcrumbs" />
 
-  <AlertsList :alerts="data" />
+  <AlertsList :alerts="data" @delete="onDeleteAlert" />
 </template>
 
 <script lang="ts" setup>
-import { ListAlertsResponseDTO } from '@bottomtime/api';
+import {
+  AlertDTO,
+  ListAlertsResponseDTO,
+  ListAlertsResponseSchema,
+} from '@bottomtime/api';
 
-import { onMounted, onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { onServerPrefetch, reactive, useSSRContext } from 'vue';
 
 import { useClient } from '../client';
-import { Breadcrumb } from '../common';
+import { Breadcrumb, ToastType } from '../common';
 import AlertsList from '../components/admin/alerts-list.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import PageTitle from '../components/common/page-title.vue';
-import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
+import { useToasts } from '../store';
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
+const ctx = useSSRContext<AppInitialState>();
 const initialState = useInitialState();
 const oops = useOops();
+const toasts = useToasts();
 
 const data = reactive<ListAlertsResponseDTO>(
-  initialState?.alerts ?? {
-    alerts: [],
-    totalCount: 0,
-  },
+  initialState?.alerts
+    ? ListAlertsResponseSchema.parse(initialState.alerts)
+    : {
+        alerts: [],
+        totalCount: 0,
+      },
 );
 
 const Breadcrumbs: Breadcrumb[] = [
@@ -36,7 +43,7 @@ const Breadcrumbs: Breadcrumb[] = [
   { label: 'Manage Alerts', active: true },
 ];
 
-onMounted(async () => {
+onServerPrefetch(async () => {
   await oops(async () => {
     const { alerts, totalCount } = await client.alerts.listAlerts({
       showDismissed: true,
@@ -47,4 +54,23 @@ onMounted(async () => {
 
   if (ctx) ctx.alerts = data;
 });
+
+async function onDeleteAlert(dto: AlertDTO): Promise<void> {
+  await oops(async () => {
+    const alert = client.alerts.wrapDTO(dto);
+    await alert.delete();
+
+    const index = data.alerts.findIndex((a) => a.id === alert.id);
+    if (index >= 0) {
+      data.alerts.splice(index, 1);
+      data.totalCount--;
+    }
+
+    toasts.toast({
+      id: 'alert-deleted',
+      message: 'Alert was successfully deleted',
+      type: ToastType.Success,
+    });
+  });
+}
 </script>
