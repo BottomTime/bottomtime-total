@@ -42,5 +42,6 @@ const innerClasses = computed<Record<string, boolean>>(() => ({
   'text-grey-950': true,
   'px-20': true,
   'py-3': true,
+  'space-y-4': true,
 }));
 </script>

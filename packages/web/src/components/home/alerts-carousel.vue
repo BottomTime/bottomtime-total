@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full h-64">
+  <div v-if="alerts.length > 0" class="relative w-full h-64">
     <div class="relative overflow-hidden rounded-lg h-full bg-grey-50">
       <AlertsCarouselItem
         v-for="(alert, index) in alerts"
@@ -10,6 +10,7 @@
     </div>
 
     <button
+      v-if="alerts.length > 1"
       type="button"
       class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
       @click="onPrevious"
@@ -23,6 +24,7 @@
     </button>
 
     <button
+      v-if="alerts.length > 1"
       type="button"
       class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
       @click="onNext"
@@ -36,6 +38,7 @@
     </button>
 
     <div
+      v-if="alerts.length > 1"
       class="absolute bottom-3 flex items-center justify-center w-full text-grey-950 space-x-3"
     >
       <button
