@@ -1,7 +1,7 @@
 <template>
   <div :class="outerClasses">
     <div :class="innerClasses">
-      <p class="text-3xl font-bold font-title">
+      <p class="text-3xl font-bold font-title capitalize">
         {{ alert.title }}
       </p>
 
@@ -37,6 +37,7 @@ const outerClasses = computed<Record<string, boolean>>(() => ({
   'translate-x-0': props.relativePosition === 0,
   'translate-x-full': props.relativePosition > 0,
   'top-0': true,
+  hidden: props.relativePosition < -1 || props.relativePosition > 1,
 }));
 const innerClasses = computed<Record<string, boolean>>(() => ({
   'text-grey-950': true,

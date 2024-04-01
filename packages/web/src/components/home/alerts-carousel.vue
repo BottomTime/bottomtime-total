@@ -1,8 +1,8 @@
 <template>
-  <div v-if="alerts.length > 0" class="relative w-full h-64">
+  <div v-if="data.alerts.length > 0" class="relative w-full h-64">
     <div class="relative overflow-hidden rounded-lg h-full bg-grey-50">
       <AlertsCarouselItem
-        v-for="(alert, index) in alerts"
+        v-for="(alert, index) in data.alerts"
         :key="alert.id"
         :alert="alert"
         :relative-position="index - currentIndex"
@@ -10,7 +10,7 @@
     </div>
 
     <button
-      v-if="alerts.length > 1"
+      v-if="data.alerts.length > 1"
       type="button"
       class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
       @click="onPrevious"
@@ -24,7 +24,7 @@
     </button>
 
     <button
-      v-if="alerts.length > 1"
+      v-if="data.alerts.length > 1"
       type="button"
       class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
       @click="onNext"
@@ -38,11 +38,11 @@
     </button>
 
     <div
-      v-if="alerts.length > 1"
+      v-if="data.alerts.length > 1"
       class="absolute bottom-3 flex items-center justify-center w-full text-grey-950 space-x-3"
     >
       <button
-        v-for="(_, index) in alerts"
+        v-for="(_, index) in data.alerts"
         :key="index"
         :class="
           index === currentIndex ? 'text-grey-950/80' : 'text-grey-950/40'
@@ -58,33 +58,60 @@
 </template>
 
 <script lang="ts" setup>
-import { AlertDTO } from '@bottomtime/api';
+import { ListAlertsResponseDTO } from '@bottomtime/api';
 
-import { onMounted, ref } from 'vue';
+import { onMounted, onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
 
 import { useClient } from '../../client';
+import { AppInitialState, useInitialState } from '../../initial-state';
 import { useOops } from '../../oops';
 import AlertsCarouselItem from './alerts-carousel-item.vue';
 
+interface AlertsCarouselProps {
+  rotateInterval?: number;
+}
+
 const client = useClient();
+const ctx = useSSRContext<AppInitialState>();
+const initialState = useInitialState();
 const oops = useOops();
 
-const alerts = ref<AlertDTO[]>([]);
+const props = withDefaults(defineProps<AlertsCarouselProps>(), {
+  rotateInterval: 10000,
+});
+
+const data = reactive<ListAlertsResponseDTO>(
+  initialState?.alerts ?? {
+    alerts: [],
+    totalCount: 0,
+  },
+);
 const currentIndex = ref(0);
 
-onMounted(async () => {
+function rotate() {
+  onNext();
+  setTimeout(rotate, props.rotateInterval);
+}
+
+onMounted(() => {
+  setTimeout(rotate, props.rotateInterval);
+});
+
+onServerPrefetch(async () => {
   await oops(async () => {
     const result = await client.alerts.listAlerts({ showDismissed: false });
-    alerts.value = result.alerts.map((a) => a.toJSON());
+    data.totalCount = result.totalCount;
+    data.alerts = result.alerts.map((a) => a.toJSON());
+    if (ctx) ctx.alerts = data;
   });
 });
 
 function onPrevious() {
   currentIndex.value =
-    (currentIndex.value - 1 + alerts.value.length) % alerts.value.length;
+    (currentIndex.value - 1 + data.alerts.length) % data.alerts.length;
 }
 
 function onNext() {
-  currentIndex.value = (currentIndex.value + 1) % alerts.value.length;
+  currentIndex.value = (currentIndex.value + 1) % data.alerts.length;
 }
 </script>

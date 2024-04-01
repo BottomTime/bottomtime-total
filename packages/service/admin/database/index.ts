@@ -37,6 +37,11 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
         'Seed the database with some randomly-generated test data',
         (yargs) => {
           return yargs
+            .option('alerts', {
+              default: 0,
+              description: 'The number of home page alerts to generate',
+              type: 'number',
+            })
             .option('users', {
               default: 0,
               description: 'The number of users to generate',
@@ -51,6 +56,7 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
         },
         async (yargs) => {
           await createTestData(yargs.postgresUri, {
+            alerts: yargs.alerts,
             diveSites: yargs.sites,
             users: yargs.users,
           });

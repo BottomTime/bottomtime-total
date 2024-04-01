@@ -2,7 +2,12 @@
   <PageTitle title="Manage Alerts" />
   <BreadCrumbs :items="Breadcrumbs" />
 
-  <AlertsList :alerts="data" @delete="onDeleteAlert" />
+  <AlertsList
+    :alerts="data"
+    :is-loading-more="isLoadingMore"
+    @load-more="onLoadMore"
+    @delete="onDeleteAlert"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -12,7 +17,7 @@ import {
   ListAlertsResponseSchema,
 } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
 
 import { useClient } from '../client';
 import { Breadcrumb, ToastType } from '../common';
@@ -37,6 +42,7 @@ const data = reactive<ListAlertsResponseDTO>(
         totalCount: 0,
       },
 );
+const isLoadingMore = ref(false);
 
 const Breadcrumbs: Breadcrumb[] = [
   { label: 'Admin', to: '/admin' },
@@ -72,5 +78,19 @@ async function onDeleteAlert(dto: AlertDTO): Promise<void> {
       type: ToastType.Success,
     });
   });
+}
+
+async function onLoadMore(): Promise<void> {
+  isLoadingMore.value = true;
+  await oops(async () => {
+    const results = await client.alerts.listAlerts({
+      showDismissed: true,
+      skip: data.alerts.length,
+    });
+
+    data.totalCount = results.totalCount;
+    data.alerts.push(...results.alerts.map((a) => a.toJSON()));
+  });
+  isLoadingMore.value = false;
 }
 </script>

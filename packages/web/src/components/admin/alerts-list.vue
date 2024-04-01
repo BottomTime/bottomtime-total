@@ -48,7 +48,9 @@
       v-else-if="alerts.alerts.length < alerts.totalCount"
       class="text-center"
     >
-      <FormButton size="lg" type="link">Load More...</FormButton>
+      <FormButton size="lg" type="link" @click="$emit('load-more')">
+        Load More...
+      </FormButton>
     </li>
   </ul>
 </template>
@@ -65,16 +67,19 @@ import AlertsListItem from './alerts-list-item.vue';
 
 interface AlertsListProps {
   alerts: ListAlertsResponseDTO;
+  isLoadingMore?: boolean;
 }
 
-defineProps<AlertsListProps>();
+withDefaults(defineProps<AlertsListProps>(), {
+  isLoadingMore: false,
+});
 const emit = defineEmits<{
   (e: 'delete', alert: AlertDTO): void;
+  (e: 'load-more'): void;
 }>();
 
 const showConfirmDeleteDialog = ref(false);
 const selectedAlert = ref<AlertDTO | null>(null);
-const isLoadingMore = ref(false);
 
 function onDelete(alert: AlertDTO) {
   selectedAlert.value = alert;
