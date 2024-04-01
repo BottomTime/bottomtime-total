@@ -28,7 +28,7 @@ exports[`Nav Bar component will render correctly for admins 1`] = `
         <ul class="flex flex-col space-x-0 md:flex-row md:space-x-4 p-2 w-full md:w-auto bg-blue-900 outline-black rounded-b-md">
           <li class="text-lg hover:text-blue-300 text-blue-400 font-bold"><a class="w-full md:w-auto" href="/">Home</a></li>
           <li class="text-lg hover:text-blue-300"><a class="w-full md:w-auto" href="/diveSites">Dive Sites</a></li>
-          <li class="text-lg hover:text-blue-300"><a class="w-full md:w-auto" href="/admin/users">Admin</a></li>
+          <li class="text-lg hover:text-blue-300"><a class="w-full md:w-auto" href="/admin">Admin</a></li>
           <!--v-if-->
           <!--v-if-->
           <!--v-if-->
@@ -57,7 +57,7 @@ exports[`Nav Bar component will render correctly for anonymous users 1`] = `
         </label><!-- Login/register links for anonymous users -->
         <ul class="hidden md:flex flex-row ml-4 gap-3 justify-end items-baseline">
           <li class="text-lg hover:text-blue-300"><a class="w-full md:w-auto" href="/register">Register</a></li>
-          <li><button class="text-black p-2 m-0 text-sm rounded-md outline-2 outline-grey-800 shadow-sm shadow-grey-800 bg-gradient-to-t disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary" data-testid="login-button" type="button">
+          <li><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary font-bold" data-testid="login-button" type="button">
               <!--v-if--> Sign in
             </button></li>
         </ul><button class="inline-flex items-center p-2 w-10 h-10 justify-center rounded-lg md:hidden" data-testid="hamburger-button" aria-controls="navbar-user" aria-expanded="false"><span class="sr-only">Open Main Menu</span><span aria-hidden="true"><i class="fas fa-bars"></i></span></button>
