@@ -3,15 +3,19 @@
   <BreadCrumbs :items="Breadcrumbs" />
 
   <div class="grid grid-cols-1 xl:grid-cols-5">
-    <FormBox v-if="alert" class="xl:col-start-2 xl:col-span-3">
-      <EditAlert :alert="alert" @save="onSaveAlert" />
-    </FormBox>
-    <NotFound v-else />
+    <div class="xl:col-start-2 xl:col-span-3">
+      <RequireAuth :role="UserRole.Admin">
+        <FormBox v-if="alert">
+          <EditAlert :alert="alert" @save="onSaveAlert" />
+        </FormBox>
+        <NotFound v-else />
+      </RequireAuth>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { AlertDTO } from '@bottomtime/api';
+import { AlertDTO, UserRole } from '@bottomtime/api';
 
 import { computed, onServerPrefetch, ref, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
@@ -23,33 +27,39 @@ import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import FormBox from '../components/common/form-box.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
+import RequireAuth from '../components/common/require-auth.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
+import { useLocation } from '../location';
 import { useOops } from '../oops';
 import { useToasts } from '../store';
 
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const initialSate = useInitialState();
+const location = useLocation();
 const oops = useOops();
 const route = useRoute();
 const toasts = useToasts();
 
+const alert = ref<AlertDTO | undefined>(
+  route.params.alertId
+    ? initialSate?.currentAlert
+    : {
+        id: '',
+        icon: '',
+        title: '',
+        message: '',
+      },
+);
+const title = computed(() =>
+  alert.value ? alert.value.title || 'New Alert' : 'Edit Alert',
+);
 const Breadcrumbs: Breadcrumb[] = [
   { label: 'Admin', to: '/admin' },
   { label: 'Alerts', to: '/admin/alerts' },
   { label: () => title.value, active: true },
 ];
-
-const alert = ref<AlertDTO | undefined>(
-  initialSate?.currentAlert ?? {
-    id: '',
-    icon: '',
-    title: '',
-    message: '',
-  },
-);
-const title = computed(() => alert.value?.title || 'New Alert');
 
 async function onSaveAlert(updated: AlertDTO) {
   await oops(async () => {
@@ -74,8 +84,8 @@ async function onSaveAlert(updated: AlertDTO) {
 }
 
 onServerPrefetch(async () => {
-  const alertId = route.params.alertId as string | undefined;
-  if (!alertId) {
+  const alertId = route.params.alertId;
+  if (typeof alertId !== 'string' || !alertId) {
     // No Alert ID in the URL!
     // This means we are creating a new alert from scratch.
     // Proceed without requesting information from the backend.

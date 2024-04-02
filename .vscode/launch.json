@@ -33,7 +33,7 @@
       "request": "launch",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/web/node_modules/.bin/vue-cli-service",
+        "${workspaceFolder}/packages/web/node_modules/.bin/vue-cli-service",
         "test:unit",
         "--runInBand"
       ],

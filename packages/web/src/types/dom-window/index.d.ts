@@ -1,4 +1,4 @@
-import { AppInitialState } from '../../common';
+import { AppInitialState } from '../../initial-state';
 
 declare global {
   interface Window {

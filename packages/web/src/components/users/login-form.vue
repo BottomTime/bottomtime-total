@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent>
+  <form data-testid="login-form" @submit.prevent>
     <FormField
       label="Username or email"
       control-id="username"
