@@ -1,15 +1,16 @@
 <template>
   <DatePicker
     v-model="value"
-    :uid="id"
+    auto-apply
+    :disabled="disabled"
+    :enable-time-picker="mode === 'datetime'"
+    :format="DateTimeFormat"
     :input-class-name="inputClasses"
     menu-class-name="rounded-lg bg-secondary text-sm text-grey-950 shadow-lg"
     time-picker-inline
-    :enable-time-picker="mode === 'datetime'"
-    auto-apply
     :placeholder="placeholder"
-    :disabled="disabled"
     position="left"
+    :uid="controlId"
   />
 </template>
 
@@ -18,9 +19,11 @@ import DatePicker from '@vuepic/vue-datepicker';
 
 import { computed } from 'vue';
 
+import { DateTimeFormat } from '../../common';
+
 interface FormDatePickerProps {
   disabled?: boolean;
-  id?: string;
+  controlId?: string;
   invalid?: boolean;
   mode?: 'date' | 'datetime';
   placeholder?: string;
@@ -75,7 +78,7 @@ const inputClasses = computed(() => {
   /*General*/
   --dp-font-family: 'system-ui', 'Avenir', 'Helvetica', 'Arial', 'sans-serif';
 
-  --dp-border-radius: 4px; /*Configurable border-radius*/
+  --dp-border-radius: 0.5rem; /*Configurable border-radius*/
   --dp-cell-border-radius: 4px; /*Specific border radius for the calendar cell*/
   --dp-common-transition: all 0.1s ease-in; /*Generic transition applied on buttons and calendar cells*/
 

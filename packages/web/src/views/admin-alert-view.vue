@@ -4,11 +4,7 @@
 
   <div class="grid grid-cols-1 xl:grid-cols-5">
     <FormBox v-if="alert" class="xl:col-start-2 xl:col-span-3">
-      <EditAlert
-        :alert="alert"
-        :show-revert="typeof route.params.alertId === 'string'"
-        @saved="onAlertSaved"
-      />
+      <EditAlert :alert="alert" @save="onSaveAlert" />
     </FormBox>
     <NotFound v-else />
   </div>
@@ -21,7 +17,7 @@ import { computed, onServerPrefetch, ref, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../client';
-import { Breadcrumb } from '../common';
+import { Breadcrumb, ToastType } from '../common';
 import EditAlert from '../components/admin/edit-alert.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import FormBox from '../components/common/form-box.vue';
@@ -30,12 +26,14 @@ import PageTitle from '../components/common/page-title.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
+import { useToasts } from '../store';
 
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const initialSate = useInitialState();
 const oops = useOops();
 const route = useRoute();
+const toasts = useToasts();
 
 const Breadcrumbs: Breadcrumb[] = [
   { label: 'Admin', to: '/admin' },
@@ -53,7 +51,25 @@ const alert = ref<AlertDTO | undefined>(
 );
 const title = computed(() => alert.value?.title || 'New Alert');
 
-function onAlertSaved(updated: AlertDTO) {
+async function onSaveAlert(updated: AlertDTO) {
+  await oops(async () => {
+    if (alert.value?.id) {
+      // Alert already exists, update it.
+      const alert = client.alerts.wrapDTO(updated);
+      await alert.save();
+      toasts.toast({
+        id: 'alert-saved',
+        message: 'Alert successfully saved',
+        type: ToastType.Success,
+      });
+    } else {
+      // Alert is new, create it.
+      const result = await client.alerts.createAlert(updated);
+      alert.value = result.toJSON();
+      location.assign(`/admin/alerts/${result.id}`);
+    }
+  });
+
   alert.value = updated;
 }
 

@@ -19,24 +19,7 @@
     </div>
   </ConfirmDialog>
 
-  <TextHeading>General Properties</TextHeading>
-
-  <FormField
-    label="Icon"
-    control-id="icon"
-    :invalid="v$.icon.$error"
-    :error="v$.icon.$errors[0]?.$message"
-    required
-  >
-    <FormSelect
-      v-model="data.icon"
-      control-id="icon"
-      test-id="icon"
-      :options="IconOptions"
-      :invalid="v$.icon.$error"
-      autofocus
-    />
-  </FormField>
+  <TextHeading>General</TextHeading>
 
   <FormField
     control-id="title"
@@ -89,13 +72,18 @@
       <FormTextArea
         v-model.trim="data.message"
         control-id="message"
+        test-id="message"
         :maxlength="2000"
         :rows="10"
         resize="vertical"
         :invalid="v$.message.$error"
         placeholder="Enter message content. Markdown format is supported."
       />
-      <p v-if="v$.message.$error" class="text-danger text-sm">
+      <p
+        v-if="v$.message.$error"
+        class="text-danger text-sm"
+        data-testid="message-error"
+      >
         {{ v$.message.$errors[0]?.$message }}
       </p>
     </div>
@@ -110,16 +98,20 @@
   </div>
 
   <div class="text-center mt-5 space-x-3">
-    <FormButton type="primary" @click="onSave">Save Alert</FormButton>
-    <FormButton v-if="alert.id" @click="onCancel">Cancel Changes</FormButton>
+    <FormButton type="primary" test-id="btn-save" @click="onSave">
+      Save Alert
+    </FormButton>
+    <FormButton v-if="alert.id" test-id="btn-cancel-edit" @click="onCancel">
+      Cancel Changes
+    </FormButton>
     <a v-else href="/admin/alerts">
-      <FormButton>Cancel</FormButton>
+      <FormButton test-id="btn-cancel-new">Cancel</FormButton>
     </a>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { AlertDTO, CreateOrUpdateAlertParamsDTO } from '@bottomtime/api';
+import { AlertDTO } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
@@ -127,15 +119,9 @@ import { helpers, required } from '@vuelidate/validators';
 import dayjs from 'dayjs';
 import { reactive, ref } from 'vue';
 
-import { useClient } from '../../client';
-import { SelectOption, ToastType } from '../../common';
-import { useLocation } from '../../location';
-import { useOops } from '../../oops';
-import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormDatePicker from '../common/form-date-picker.vue';
 import FormField from '../common/form-field.vue';
-import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import MarkdownViewer from '../common/markdown-viewer.vue';
@@ -151,21 +137,12 @@ interface EditAlertData extends Pick<AlertDTO, 'icon' | 'title' | 'message'> {
   expires: string | Date;
 }
 
-const IconOptions: SelectOption[] = [
-  { label: '😀', value: 'fa-regular fa-face-grin' },
-];
-
-const client = useClient();
-const oops = useOops();
-const location = useLocation();
-const toasts = useToasts();
-
 const props = defineProps<EditAlertProps>();
 const emit = defineEmits<{
-  (e: 'saved', alert: AlertDTO): void;
+  (e: 'save', alert: AlertDTO): void;
 }>();
 const data = reactive<EditAlertData>({
-  icon: props.alert.icon,
+  icon: '',
   title: props.alert.title,
   message: props.alert.message,
   active: props.alert.active ?? '',
@@ -183,7 +160,6 @@ function expiresAfterActive(
 
 const v$ = useVuelidate(
   {
-    icon: { required: helpers.withMessage('Please select an icon', required) },
     title: {
       required: helpers.withMessage('Alert title is required', required),
     },
@@ -202,37 +178,16 @@ const v$ = useVuelidate(
 
 async function onSave(): Promise<void> {
   const isValid = await v$.value.$validate();
-  if (!isValid) return;
-
-  await oops(async () => {
-    const params: CreateOrUpdateAlertParamsDTO = {
+  if (isValid) {
+    emit('save', {
+      id: props.alert.id,
       icon: data.icon,
       title: data.title,
       message: data.message,
       active: data.active ? dayjs(data.active).toDate() : undefined,
       expires: data.expires ? dayjs(data.expires).toDate() : undefined,
-    };
-
-    if (props.alert.id) {
-      // Alert already exists, update it.
-      const dto: AlertDTO = {
-        id: props.alert.id,
-        ...params,
-      };
-      const alert = client.alerts.wrapDTO(dto);
-      await alert.save();
-      emit('saved', dto);
-      toasts.toast({
-        id: 'alert-saved',
-        message: 'Alert successfully saved',
-        type: ToastType.Success,
-      });
-    } else {
-      // Alert is new, create it.
-      const result = await client.alerts.createAlert(params);
-      location.assign(`/admin/alerts/${result.id}`);
-    }
-  });
+    });
+  }
 }
 
 function onCancel(): void {
