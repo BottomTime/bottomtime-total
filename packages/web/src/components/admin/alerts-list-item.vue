@@ -13,7 +13,9 @@
       <div class="flex space-x-12">
         <p class="space-x-4">
           <label class="font-bold">Active:</label>
-          <span>{{ alert.active ? alert.active.toDateString() : 'wat' }}</span>
+          <span>{{
+            alert.active ? alert.active.toDateString() : 'always active'
+          }}</span>
         </p>
         <p class="flex space-x-4">
           <label class="font-bold">Exires:</label>
@@ -27,14 +29,23 @@
     <div>
       <div class="inline-flex rounded-md" role="group">
         <a :href="`/admin/alerts/${alert.id}`">
-          <FormButton rounded="start" @click="$emit('edit', alert)">
+          <FormButton
+            rounded="start"
+            :test-id="`btn-edit-alert-${alert.id}`"
+            @click="$emit('edit', alert)"
+          >
             <span>
               <i class="fas fa-edit"></i>
             </span>
             <span class="sr-only">Edit Alert: {{ alert.title }}</span>
           </FormButton>
         </a>
-        <FormButton type="danger" rounded="end" @click="$emit('delete', alert)">
+        <FormButton
+          type="danger"
+          rounded="end"
+          :test-id="`btn-delete-alert-${alert.id}`"
+          @click="$emit('delete', alert)"
+        >
           <span>
             <i class="fas fa-trash"></i>
           </span>

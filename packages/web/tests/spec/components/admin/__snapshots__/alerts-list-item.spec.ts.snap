@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Alerts List Item component will render details correctly 1`] = `
+"<div class="flex space-x-4 p-4"><span class="mt-1.5"><i class="fa-solid fa-circle-chevron-right"></i></span>
+  <div class="grow space-y-2">
+    <p class="text-xl font-title capitalize"><a class="font-bold text-link underline hover:text-link-hover" href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96">Test Alert</a></p>
+    <div class="flex space-x-12">
+      <p class="space-x-4"><label class="font-bold">Active:</label><span>Tue Apr 02 2024</span></p>
+      <p class="flex space-x-4"><label class="font-bold">Exires:</label><span>Thu May 02 2024</span></p>
+    </div>
+  </div>
+  <div>
+    <div class="inline-flex rounded-md" role="group"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96"><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-s-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-edit-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
+          <!--v-if--><span><i class="fas fa-edit"></i></span><span class="sr-only">Edit Alert: Test Alert</span>
+        </button></a><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-e-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-delete-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
+        <!--v-if--><span><i class="fas fa-trash"></i></span><span class="sr-only">Delete Alert: Test Alert</span>
+      </button></div>
+  </div>
+</div>"
+`;
+
+exports[`Alerts List Item component will render details correctly when dates are not set 1`] = `
+"<div class="flex space-x-4 p-4"><span class="mt-1.5"><i class="fa-solid fa-circle-chevron-right"></i></span>
+  <div class="grow space-y-2">
+    <p class="text-xl font-title capitalize"><a class="font-bold text-link underline hover:text-link-hover" href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96">Test Alert</a></p>
+    <div class="flex space-x-12">
+      <p class="space-x-4"><label class="font-bold">Active:</label><span>always active</span></p>
+      <p class="flex space-x-4"><label class="font-bold">Exires:</label><span>no expiration</span></p>
+    </div>
+  </div>
+  <div>
+    <div class="inline-flex rounded-md" role="group"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96"><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-s-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-edit-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
+          <!--v-if--><span><i class="fas fa-edit"></i></span><span class="sr-only">Edit Alert: Test Alert</span>
+        </button></a><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-e-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-delete-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
+        <!--v-if--><span><i class="fas fa-trash"></i></span><span class="sr-only">Delete Alert: Test Alert</span>
+      </button></div>
+  </div>
+</div>"
+`;

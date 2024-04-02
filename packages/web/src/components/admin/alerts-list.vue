@@ -22,7 +22,7 @@
   </ConfirmDialog>
 
   <FormBox class="flex place-items-baseline">
-    <p class="grow">
+    <p class="grow" data-testid="alerts-count">
       Showing <span class="font-bold">{{ alerts.alerts.length }}</span> of
       <span class="font-bold">{{ alerts.totalCount }}</span> alerts
     </p>
@@ -32,12 +32,29 @@
     </a>
   </FormBox>
 
-  <ul>
+  <p
+    v-if="alerts.alerts.length === 0"
+    class="my-6 text-center text-lg italic space-x-3"
+    data-testid="alerts-list-empty"
+  >
+    <span>
+      <i class="fa-solid fa-info-circle"></i>
+    </span>
+    <span>
+      No alerts found. Click <NavLink to="/admin/alerts/new">here</NavLink> to
+      create one.
+    </span>
+  </p>
+
+  <ul v-else data-testid="alerts-list">
     <li v-for="alert in alerts.alerts" :key="alert.id" class="space-y-3">
       <AlertsListItem :alert="alert" @delete="onDelete" />
     </li>
     <li v-if="isLoadingMore">
-      <p class="text-center text-lg italic space-x-3">
+      <p
+        class="text-center text-lg italic space-x-3"
+        data-testid="loading-more-alerts"
+      >
         <span>
           <i class="fa-solid fa-spinner fa-spin"></i>
         </span>
@@ -48,7 +65,12 @@
       v-else-if="alerts.alerts.length < alerts.totalCount"
       class="text-center"
     >
-      <FormButton size="lg" type="link" @click="$emit('load-more')">
+      <FormButton
+        size="lg"
+        type="link"
+        test-id="btn-load-more"
+        @click="$emit('load-more')"
+      >
         Load More...
       </FormButton>
     </li>
@@ -62,6 +84,7 @@ import { ref } from 'vue';
 
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
+import NavLink from '../common/nav-link.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import AlertsListItem from './alerts-list-item.vue';
 
