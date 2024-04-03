@@ -2,12 +2,14 @@
   <PageTitle title="Manage Alerts" />
   <BreadCrumbs :items="Breadcrumbs" />
 
-  <AlertsList
-    :alerts="data"
-    :is-loading-more="isLoadingMore"
-    @load-more="onLoadMore"
-    @delete="onDeleteAlert"
-  />
+  <RequireAuth :role="UserRole.Admin">
+    <AlertsList
+      :alerts="data"
+      :is-loading-more="isLoadingMore"
+      @load-more="onLoadMore"
+      @delete="onDeleteAlert"
+    />
+  </RequireAuth>
 </template>
 
 <script lang="ts" setup>
@@ -15,6 +17,7 @@ import {
   AlertDTO,
   ListAlertsResponseDTO,
   ListAlertsResponseSchema,
+  UserRole,
 } from '@bottomtime/api';
 
 import { onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
@@ -24,12 +27,14 @@ import { Breadcrumb, ToastType } from '../common';
 import AlertsList from '../components/admin/alerts-list.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import PageTitle from '../components/common/page-title.vue';
+import RequireAuth from '../components/common/require-auth.vue';
+import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
 import { useToasts } from '../store';
 
 const client = useClient();
-const ctx = useSSRContext<AppInitialState>();
+const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const initialState = useInitialState();
 const oops = useOops();
 const toasts = useToasts();
@@ -70,13 +75,13 @@ async function onDeleteAlert(dto: AlertDTO): Promise<void> {
     if (index >= 0) {
       data.alerts.splice(index, 1);
       data.totalCount--;
-    }
 
-    toasts.toast({
-      id: 'alert-deleted',
-      message: 'Alert was successfully deleted',
-      type: ToastType.Success,
-    });
+      toasts.toast({
+        id: 'alert-deleted',
+        message: 'Alert was successfully deleted',
+        type: ToastType.Success,
+      });
+    }
   });
 }
 

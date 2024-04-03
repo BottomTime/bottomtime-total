@@ -35,7 +35,7 @@ import { useOops } from '../oops';
 import { useToasts } from '../store';
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
+const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const initialSate = useInitialState();
 const location = useLocation();
 const oops = useOops();
