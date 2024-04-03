@@ -1,5 +1,5 @@
 <template>
-  <div :class="outerClasses">
+  <div :class="outerClasses" :data-testid="`alert-content-${alert.id}`">
     <div :class="innerClasses">
       <p class="text-3xl font-bold font-title capitalize">
         {{ alert.title }}

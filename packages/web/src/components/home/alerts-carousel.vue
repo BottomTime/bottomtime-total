@@ -1,6 +1,9 @@
 <template>
   <div v-if="data.alerts.length > 0" class="relative w-full h-64">
-    <div class="relative overflow-hidden rounded-lg h-full bg-grey-50">
+    <div
+      class="relative overflow-hidden rounded-lg h-full bg-grey-50"
+      data-testid="carousel-content"
+    >
       <AlertsCarouselItem
         v-for="(alert, index) in data.alerts"
         :key="alert.id"
@@ -13,6 +16,7 @@
       v-if="data.alerts.length > 1"
       type="button"
       class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+      data-testid="carousel-prev"
       @click="onPrevious"
     >
       <span
@@ -27,6 +31,7 @@
       v-if="data.alerts.length > 1"
       type="button"
       class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+      data-testid="carousel-next"
       @click="onNext"
     >
       <span
@@ -40,6 +45,7 @@
     <div
       v-if="data.alerts.length > 1"
       class="absolute bottom-3 flex items-center justify-center w-full text-grey-950 space-x-3"
+      data-testid="carousel-indicators"
     >
       <button
         v-for="(_, index) in data.alerts"
@@ -63,6 +69,7 @@ import { ListAlertsResponseDTO } from '@bottomtime/api';
 import { onMounted, onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
 
 import { useClient } from '../../client';
+import { Config } from '../../config';
 import { AppInitialState, useInitialState } from '../../initial-state';
 import { useOops } from '../../oops';
 import AlertsCarouselItem from './alerts-carousel-item.vue';
@@ -72,7 +79,7 @@ interface AlertsCarouselProps {
 }
 
 const client = useClient();
-const ctx = useSSRContext<AppInitialState>();
+const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const initialState = useInitialState();
 const oops = useOops();
 
