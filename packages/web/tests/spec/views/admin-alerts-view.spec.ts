@@ -133,4 +133,25 @@ describe('Admin Alerts View', () => {
 
     expect(spy).toHaveBeenCalled();
   });
+
+  it('will load more alerts', async () => {
+    const spy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValueOnce({
+      alerts: alertData.alerts
+        .slice(10, 20)
+        .map((dto) => new Alert(client.axios, dto)),
+      totalCount: alertData.totalCount,
+    });
+    const wrapper = mount(AdminAlertsView, options);
+    const listItem = wrapper.getComponent(AlertsList);
+
+    listItem.vm.$emit('loadMore');
+    await flushPromises();
+
+    expect(spy).toHaveBeenCalledWith({ showDismissed: true, skip: 10 });
+    const items = wrapper.get('[data-testid="alerts-list"]').findAll('li');
+    expect(items).toHaveLength(21);
+    for (let i = 10; i < 20; i++) {
+      expect(items.at(i)!.text()).toContain(alertData.alerts[i].title);
+    }
+  });
 });
