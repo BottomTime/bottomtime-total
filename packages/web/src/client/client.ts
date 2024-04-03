@@ -1,5 +1,6 @@
 import axios, { AxiosHeaders, AxiosInstance } from 'axios';
 
+import { AlertsApiClient } from './alerts';
 import { DiveSitesApiClient } from './dive-sites';
 import { UsersApiClient } from './users';
 
@@ -10,6 +11,7 @@ export type ApiClientOptions = {
 
 export class ApiClient {
   private readonly client: AxiosInstance;
+  readonly alerts: AlertsApiClient;
   readonly users: UsersApiClient;
   readonly diveSites: DiveSitesApiClient;
 
@@ -25,6 +27,7 @@ export class ApiClient {
       withCredentials: true,
     });
 
+    this.alerts = new AlertsApiClient(this.client);
     this.users = new UsersApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
   }

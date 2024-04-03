@@ -4,6 +4,8 @@ export type Breadcrumb = {
   active?: boolean;
 };
 
+export const DateTimeFormat = 'yyyy-MMM-dd hh:mm:ss a';
+
 export type SelectOption = {
   disabled?: boolean;
   label?: string;

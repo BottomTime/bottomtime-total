@@ -68,7 +68,7 @@ const inputClasses = computed(() => {
     roundingStyle = 'rounded-lg';
   }
 
-  return `px-2 py-1 w-full appearance-none ${selectStyle} bg-grey-200 dark:bg-grey-300 border border-${highlightColour} focus:ring-${highlightColour} ${roundingStyle} text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0`;
+  return `px-2 py-1 w-full ${selectStyle} bg-grey-200 dark:bg-grey-300 border border-${highlightColour} ring-0 ${roundingStyle} text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500`;
 });
 
 const rightSlotClasses = computed(() => {

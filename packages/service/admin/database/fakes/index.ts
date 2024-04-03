@@ -1,2 +1,3 @@
-export * from './fake-user';
+export * from './fake-alert';
 export * from './fake-site';
+export * from './fake-user';

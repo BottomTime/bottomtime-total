@@ -1,7 +1,6 @@
 import {
   CreateOrUpdateAlertParamsDTO,
   ListAlertsParamsDTO,
-  ListAlertsResponseDTO,
 } from '@bottomtime/api';
 
 import { Injectable } from '@nestjs/common';
@@ -64,7 +63,7 @@ export class AlertsService {
       icon: options.icon,
       title: options.title,
       message: options.message,
-      active: options.active,
+      active: options.active ?? new Date(),
       expires: options.expires ?? null,
     };
 

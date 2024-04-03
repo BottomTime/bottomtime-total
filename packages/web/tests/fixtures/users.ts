@@ -8,7 +8,7 @@ import {
 } from '@bottomtime/api';
 
 export const BasicUser: UserDTO = {
-  id: '50A9504C-EE2C-485E-91E0-4D352409338E',
+  id: '50a9504c-ee2c-485e-91e0-4d352409338e',
   email: 'sam_smith@gmail.com',
   emailVerified: true,
   hasPassword: true,
@@ -33,7 +33,7 @@ export const BasicUser: UserDTO = {
 };
 
 export const AdminUser: UserDTO = {
-  id: '50A9504C-EE2C-485E-91E0-4D352409338E',
+  id: '50a9504c-ee2c-485e-91e0-4d352409338e',
   email: 'andy_admin@bottomti.me',
   emailVerified: true,
   hasPassword: true,

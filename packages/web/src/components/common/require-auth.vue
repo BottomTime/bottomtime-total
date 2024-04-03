@@ -27,7 +27,7 @@
   </div>
 
   <!-- User is authenticated but not authorized -->
-  <div v-else-if="!isAuthorized">
+  <div v-else-if="!isAuthorized" data-testid="forbidden-message">
     <div class="grid grid-cols-1 md:grid-cols-5">
       <div class="md:col-start-2 md:col-span-3 p-3 rounded-md">
         <TextHeading>Unauthorized</TextHeading>

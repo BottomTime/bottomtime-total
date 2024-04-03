@@ -33,7 +33,7 @@
       "request": "launch",
       "runtimeArgs": [
         "--inspect-brk",
-        "${workspaceRoot}/packages/web/node_modules/.bin/vue-cli-service",
+        "${workspaceFolder}/packages/web/node_modules/.bin/vue-cli-service",
         "test:unit",
         "--runInBand"
       ],
@@ -44,7 +44,8 @@
       "name": "Debug Vite/Vue Server",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/packages/vite/server/index.ts",
+      "cwd": "${workspaceFolder}/packages/web/",
+      "program": "${workspaceRoot}/packages/web/server/index.ts",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/tsx",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Alerts list component will render an empty list 1`] = `"<p class="my-6 text-center text-lg italic space-x-3" data-testid="alerts-list-empty"><span><i class="fa-solid fa-info-circle"></i></span><span> No alerts found. Click <a class="font-bold text-link underline hover:text-link-hover" href="/admin/alerts/new">here</a> to create one. </span></p>"`;

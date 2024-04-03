@@ -2,6 +2,9 @@ import {
   AlertDTO,
   CreateOrUpdateAlertParamsDTO,
   CreateOrUpdateAlertParamsSchema,
+  ListAlertsParamsDTO,
+  ListAlertsParamsSchema,
+  ListAlertsResponseDTO,
 } from '@bottomtime/api';
 
 import {
@@ -13,6 +16,7 @@ import {
   Inject,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
@@ -65,6 +69,14 @@ export class AlertsController {
    *               type: array
    *               items:
    *                 $ref: "#/components/schemas/Alert"
+   *       400:
+   *         description: The request was rejected because one or more of the query string parameters were invalid.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: "#/components/schemas/Error"
    *       500:
    *         description: The request failed due to an unexpected server error.
    *         content:
@@ -72,7 +84,21 @@ export class AlertsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  async listAlerts(): Promise<void> {}
+  @Get()
+  async listAlerts(
+    @CurrentUser() user: User | undefined,
+    @Query(new ZodValidator(ListAlertsParamsSchema))
+    options: ListAlertsParamsDTO,
+  ): Promise<ListAlertsResponseDTO> {
+    const { alerts, totalCount } = await this.service.listAlerts({
+      ...options,
+      userId: user?.id,
+    });
+    return {
+      alerts: alerts.map((alert) => alert.toJSON()),
+      totalCount,
+    };
+  }
 
   /**
    * @openapi
@@ -230,7 +256,7 @@ export class AlertsController {
     @Body(new ZodValidator(CreateOrUpdateAlertParamsSchema))
     options: CreateOrUpdateAlertParamsDTO,
   ): Promise<AlertDTO> {
-    alert.active = options.active;
+    alert.active = options.active ?? new Date();
     alert.expires = options.expires;
     alert.icon = options.icon;
     alert.message = options.message;

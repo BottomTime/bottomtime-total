@@ -1,10 +1,10 @@
 <template>
-  <div class="relative">
-    <span
+  <div>
+    <!-- <span
       class="absolute bottom-2 right-2 flex items-center text-lg pointer-events-none text-grey-500"
     >
       <i class="fas fa-caret-down"></i>
-    </span>
+    </span> -->
     <select
       :id="controlId"
       ref="selectInput"
@@ -49,9 +49,9 @@ const props = withDefaults(defineProps<FormSelectProps>(), {
 });
 const selectInput = ref<HTMLSelectElement | null>();
 const classes = computed(() => {
-  const width = props.stretch ? 'w-full' : 'w-auto';
+  const width = props.stretch ? 'w-full' : 'min-w-36';
   const highlightColour = props.invalid ? 'danger' : 'grey-600';
-  return `p-1 pl-2 appearance-none border border-${highlightColour} focus:ring-${highlightColour} ${width} block pe-10 rounded-lg bg-grey-200 dark:bg-grey-300 disabled:bg-grey-400 disabled:dark:bg-grey-500 text-grey-950 disabled:text-grey-700`;
+  return `bg-grey-200 border border-${highlightColour} text-grey-950 rounded-lg focus:ring-${highlightColour} focus:border-${highlightColour} block py-1 dark:bg-grey-300 dark:placeholder-grey-400 dark:focus:ring-${highlightColour} dark:focus:border-${highlightColour} disabled:bg-grey-400 disabled:text-grey-700 disabled:dark:bg-grey-500 ${width}`;
 });
 
 function focus() {

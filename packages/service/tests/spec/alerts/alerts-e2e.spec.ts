@@ -1,4 +1,4 @@
-import { CreateOrUpdateAlertParamsDTO, UserRole } from '@bottomtime/api';
+import { UserRole } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
 
@@ -85,6 +85,49 @@ describe('Alerts End-to-End Tests', () => {
 
   afterAll(async () => {
     await app.close();
+  });
+
+  describe('when listing alerts', () => {
+    beforeEach(async () => {
+      await Alerts.save(alertData);
+    });
+
+    it('will return a list of alerts with default params', async () => {
+      const { body: result } = await request(server).get(getUrl()).expect(200);
+      expect(result.totalCount).toBe(alertData.length);
+      expect(result.alerts).toHaveLength(10);
+      expect(result.alerts).toMatchSnapshot();
+    });
+
+    it('will return a list of alerts with params provided in the query string', async () => {
+      const { body: result } = await request(server)
+        .get(getUrl())
+        .query({
+          showDismissed: true,
+          skip: 4,
+          limit: 8,
+        })
+        .expect(200);
+
+      expect(result.totalCount).toBe(alertData.length);
+      expect(result.alerts).toHaveLength(8);
+      expect(result.alerts).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the query string contains invalid params', async () => {
+      const {
+        body: { details },
+      } = await request(server)
+        .get(getUrl())
+        .query({
+          showDismissed: 'why not?',
+          skip: -4,
+          limit: 'lots',
+        })
+        .expect(400);
+
+      expect(details).toMatchSnapshot();
+    });
   });
 
   describe('when retrieving a single alert', () => {

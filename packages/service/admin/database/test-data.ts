@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 import { DataSource, Repository } from 'typeorm';
 
-import { DiveSiteEntity, UserEntity } from '../../src/data';
+import { AlertEntity, DiveSiteEntity, UserEntity } from '../../src/data';
 import { getDataSource } from './data-source';
-import { fakeDiveSite, fakeUser } from './fakes';
+import { fakeAlert, fakeDiveSite, fakeUser } from './fakes';
 
 export type EntityCounts = {
+  alerts: number;
   diveSites: number;
   users: number;
 };
@@ -67,11 +68,24 @@ async function createDiveSites(
   Sites: Repository<DiveSiteEntity>,
   userIds: string[],
   count: number,
-) {
+): Promise<void> {
   await batch(
     () => fakeDiveSite(userIds),
     async (sites) => {
       await Sites.save(sites);
+    },
+    count,
+  );
+}
+
+async function createAlerts(
+  Alerts: Repository<AlertEntity>,
+  count: number,
+): Promise<void> {
+  await batch(
+    fakeAlert,
+    async (alerts) => {
+      await Alerts.save(alerts);
     },
     count,
   );
@@ -85,6 +99,7 @@ export async function createTestData(
 
   try {
     ds = await getDataSource(postgresUri);
+    const Alerts = ds.getRepository(AlertEntity);
     const Users = ds.getRepository(UserEntity);
     const Sites = ds.getRepository(DiveSiteEntity);
 
@@ -102,8 +117,15 @@ export async function createTestData(
       })
     ).map((user) => user.id);
 
-    console.log(`Creating ${counts.diveSites} dive sites...`);
-    await createDiveSites(Sites, userIds, counts.diveSites);
+    if (counts.diveSites > 0) {
+      console.log(`Creating ${counts.diveSites} dive sites...`);
+      await createDiveSites(Sites, userIds, counts.diveSites);
+    }
+
+    if (counts.alerts > 0) {
+      console.log(`Creating ${counts.alerts} home page alerts...`);
+      await createAlerts(Alerts, counts.alerts);
+    }
 
     console.log('Finished inserting test data');
   } catch (error) {

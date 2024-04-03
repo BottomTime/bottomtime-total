@@ -2,6 +2,7 @@ import { InjectionKey, inject } from 'vue';
 
 import { ApiClient } from './client';
 
+export * from './alert';
 export * from './user-profile';
 export * from './user';
 export * from './dive-site';
