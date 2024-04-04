@@ -5,9 +5,8 @@ if [ "$NODE_ENV" = "production" ]
 then
   echo "Starting in production mode..."
   yarn build
-  # npx pm2 start --no-daemon src/index.ts
+  npx pm2 start --no-daemon dist/server/entry-server.js
 else
   echo "Starting in development mode..."
   yarn serve
 fi
-

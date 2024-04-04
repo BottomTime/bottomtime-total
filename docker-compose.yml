@@ -16,7 +16,7 @@ services:
       timeout: 3s
       retries: 3
 
-  core:
+  service:
     container_name: bottomtime-service
     build:
       context: ./

@@ -7,9 +7,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { expect } from '@playwright/test';
-
-import { test } from '../fixtures';
+import { expect, test } from '../fixtures';
 
 const TestPassword = 'Sn@ke_Eyes_77';
 const TestUser: UserDTO = {

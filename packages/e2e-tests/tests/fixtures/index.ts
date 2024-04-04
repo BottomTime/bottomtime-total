@@ -5,12 +5,14 @@ import { test as base } from '@playwright/test';
 
 import { Client } from 'pg';
 
+import { AuthFixture } from './auth.fixture';
 import { createAuthToken } from './jwt';
 import { PostgresFixture } from './postgres.fixture';
 
 export const test = base.extend<{
-  db: PostgresFixture;
   api: ApiClient;
+  auth: AuthFixture;
+  db: PostgresFixture;
 }>({
   api: async ({ db }, use) => {
     // Create an admin user and matching auth token
@@ -25,6 +27,11 @@ export const test = base.extend<{
     });
 
     await use(client);
+  },
+
+  auth: async ({ page }, use) => {
+    const auth = new AuthFixture(page);
+    await use(auth);
   },
 
   db: async ({}, use) => {
@@ -42,3 +49,5 @@ export const test = base.extend<{
     await client.end();
   },
 });
+
+export { expect } from '@playwright/test';
