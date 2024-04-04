@@ -1,11 +1,11 @@
+import { AxiosInstance } from 'axios';
+
 import {
   CreateOrUpdateDiveSiteSchema,
   DepthDTO,
   DiveSiteDTO,
   ProfileDTO,
-} from '@bottomtime/api';
-
-import { AxiosInstance } from 'axios';
+} from '../types';
 
 export type GPSCoordinates = DiveSiteDTO['gps'];
 

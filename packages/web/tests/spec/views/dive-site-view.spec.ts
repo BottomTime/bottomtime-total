@@ -1,3 +1,5 @@
+import { ApiClient, DiveSite } from '@bottomtime/api';
+
 import {
   ComponentMountingOptions,
   mount,
@@ -7,7 +9,7 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey, DiveSite } from '../../../src/client';
+import { ApiClientKey } from '../../../src/api-client';
 import DiveSiteView from '../../../src/views/dive-site-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';

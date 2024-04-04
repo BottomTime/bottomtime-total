@@ -1,19 +1,18 @@
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import nock, { Scope } from 'nock';
+
+import { User } from '../../src/client';
+import { UsersApiClient } from '../../src/client/users';
 import {
   AdminSearchUsersParamsDTO,
   CreateUserParamsDTO,
   SortOrder,
   UserRole,
   UsersSortBy,
-} from '@bottomtime/api';
-
-import axios, { AxiosError, AxiosInstance } from 'axios';
-import nock, { Scope } from 'nock';
-
-import { User } from '../../../src/client';
-import { UsersApiClient } from '../../../src/client/users';
-import { createScope } from '../../fixtures/nock';
-import SearchResults from '../../fixtures/user-search-results.json';
-import { BasicUser } from '../../fixtures/users';
+} from '../../src/types';
+import { createScope } from '../fixtures/nock';
+import SearchResults from '../fixtures/user-search-results.json';
+import { BasicUser } from '../fixtures/users';
 
 describe('Users API client', () => {
   let axiosInstance: AxiosInstance;

@@ -1,4 +1,5 @@
 import { UserDTO, UserRole } from '@bottomtime/api';
+import { ApiClient, User } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -12,7 +13,7 @@ import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey, User } from '../../../src/client';
+import { ApiClientKey } from '../../../src/api-client';
 import ManageUser from '../../../src/components/admin/manage-user.vue';
 import { useCurrentUser } from '../../../src/store';
 import AdminUserView from '../../../src/views/admin-user-view.vue';

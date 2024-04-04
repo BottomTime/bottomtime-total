@@ -5,13 +5,14 @@ import {
   UserSettingsDTO,
   WeightUnit,
 } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey } from '../../../src/client';
+import { ApiClientKey } from '../../../src/api-client';
 import EditSettings from '../../../src/components/users/edit-settings.vue';
 import { useCurrentUser } from '../../../src/store';
 import SettingsView from '../../../src/views/settings-view.vue';

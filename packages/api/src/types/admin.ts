@@ -1,7 +1,8 @@
+import { z } from 'zod';
+
 import { UserRole } from './constants';
 import { PasswordStrengthSchema, UserSchema } from './users';
 import { SearchUserProfilesParamsSchema } from './users';
-import { z } from 'zod';
 
 export const AdminSearchUsersParamsSchema =
   SearchUserProfilesParamsSchema.extend({

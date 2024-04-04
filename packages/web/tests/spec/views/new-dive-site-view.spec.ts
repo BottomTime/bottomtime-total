@@ -1,3 +1,5 @@
+import { ApiClient } from '@bottomtime/api';
+
 import {
   ComponentMountingOptions,
   flushPromises,
@@ -7,7 +9,7 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey } from '../../../src/client';
+import { ApiClientKey } from '../../../src/api-client';
 import EditDiveSite from '../../../src/components/diveSites/edit-dive-site.vue';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser } from '../../../src/store';

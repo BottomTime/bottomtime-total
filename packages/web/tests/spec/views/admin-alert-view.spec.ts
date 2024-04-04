@@ -1,4 +1,5 @@
 import { AlertDTO } from '@bottomtime/api';
+import { Alert, ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -10,7 +11,7 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { Alert, ApiClient, ApiClientKey } from '../../../src/client';
+import { ApiClientKey } from '../../../src/api-client';
 import { ToastType } from '../../../src/common';
 import EditAlert from '../../../src/components/admin/edit-alert.vue';
 import { AppInitialState, useInitialState } from '../../../src/initial-state';

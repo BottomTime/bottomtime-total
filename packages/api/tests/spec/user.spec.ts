@@ -1,13 +1,12 @@
-import { UserDTO, UserRole } from '@bottomtime/api';
-
 import axios, { AxiosInstance } from 'axios';
 import nock, { Scope } from 'nock';
 
-import { UserProfile } from '../../../src/client';
-import { User } from '../../../src/client/user';
-import { UserSettings } from '../../../src/client/user-settings';
-import { createScope } from '../../fixtures/nock';
-import { BasicUser } from '../../fixtures/users';
+import { UserProfile } from '../../src/client';
+import { User } from '../../src/client/user';
+import { UserSettings } from '../../src/client/user-settings';
+import { UserDTO, UserRole } from '../../src/types';
+import { createScope } from '../fixtures/nock';
+import { BasicUser } from '../fixtures/users';
 
 function getUser(axios: AxiosInstance, data?: Partial<UserDTO>): User {
   return new User(axios, { ...BasicUser, ...data });

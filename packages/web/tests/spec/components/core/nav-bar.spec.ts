@@ -1,11 +1,13 @@
-import { ApiClient, ApiClientKey } from '@/client';
-import NavBar from '@/components/core/nav-bar.vue';
-import { useCurrentUser } from '@/store';
+import { ApiClient } from '@bottomtime/api';
+
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
+import { ApiClientKey } from '../../../../src/api-client';
+import NavBar from '../../../../src/components/core/nav-bar.vue';
+import { useCurrentUser } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
 

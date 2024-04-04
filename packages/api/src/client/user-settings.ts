@@ -1,12 +1,12 @@
+import { AxiosInstance } from 'axios';
+
 import {
   DepthUnit,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
   WeightUnit,
-} from '@bottomtime/api';
-
-import { AxiosInstance } from 'axios';
+} from '../types';
 
 export class UserSettings {
   constructor(

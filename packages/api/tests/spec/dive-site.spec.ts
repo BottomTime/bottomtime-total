@@ -1,12 +1,11 @@
-import { DepthUnit } from '@bottomtime/api';
-
 import axios, { AxiosInstance } from 'axios';
 
-import { DiveSite } from '../../../src/client';
+import { DiveSite } from '../../src/client';
+import { DepthUnit } from '../../src/types';
 import {
   DiveSiteWithFullProperties,
   DiveSiteWithMinimalProperties,
-} from '../../fixtures/sites';
+} from '../fixtures/sites';
 
 describe('Dive Site API class', () => {
   let client: AxiosInstance;

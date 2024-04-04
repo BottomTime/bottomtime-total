@@ -1,9 +1,6 @@
 import { UserDTO } from '@bottomtime/api';
+import { ApiClient, User } from '@bottomtime/api';
 
-import { ApiClient, ApiClientKey, User } from '@/client';
-import { ToastType } from '@/common';
-import ManagePassword from '@/components/users/manage-password.vue';
-import { useToasts } from '@/store';
 import {
   ComponentMountingOptions,
   flushPromises,
@@ -13,6 +10,10 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
+import { ApiClientKey } from '../../../../src/api-client';
+import { ToastType } from '../../../../src/common';
+import ManagePassword from '../../../../src/components/users/manage-password.vue';
+import { useToasts } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
 

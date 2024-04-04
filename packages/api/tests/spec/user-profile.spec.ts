@@ -1,11 +1,10 @@
-import { UpdateProfileParamsSchema, UserDTO } from '@bottomtime/api';
-
 import nock, { Scope } from 'nock';
 
-import { ApiClient } from '../../../src/client/client';
-import { UserProfile } from '../../../src/client/user-profile';
-import { createScope } from '../../fixtures/nock';
-import { BasicUser } from '../../fixtures/users';
+import { ApiClient } from '../../src/client/client';
+import { UserProfile } from '../../src/client/user-profile';
+import { UpdateProfileParamsSchema, UserDTO } from '../../src/types';
+import { createScope } from '../fixtures/nock';
+import { BasicUser } from '../fixtures/users';
 
 describe('UserProfile client object', () => {
   let client: ApiClient;

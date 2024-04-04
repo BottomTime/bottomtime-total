@@ -20,7 +20,7 @@ import { AlertDTO, UserRole } from '@bottomtime/api';
 import { computed, onServerPrefetch, ref, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { useClient } from '../client';
+import { useClient } from '../api-client';
 import { Breadcrumb, ToastType } from '../common';
 import EditAlert from '../components/admin/edit-alert.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';

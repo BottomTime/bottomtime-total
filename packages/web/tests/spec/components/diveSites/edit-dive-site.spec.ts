@@ -3,20 +3,20 @@ import {
   DepthUnit,
   DiveSiteDTO,
 } from '@bottomtime/api';
+import { ApiClient, DiveSite } from '@bottomtime/api';
 
-import { ApiClient, ApiClientKey, DiveSite } from '@/client';
-import GoogleMap from '@/components/common/google-map.vue';
-import EditDiveSite from '@/components/diveSites/edit-dive-site.vue';
 import {
   ComponentMountingOptions,
   flushPromises,
   mount,
 } from '@vue/test-utils';
 
-import { wrap } from 'module';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
+import { ApiClientKey } from '../../../../src/api-client';
+import GoogleMap from '../../../../src/components/common/google-map.vue';
+import EditDiveSite from '../../../../src/components/diveSites/edit-dive-site.vue';
 import { createRouter } from '../../../fixtures/create-router';
 import {
   BlankDiveSite,

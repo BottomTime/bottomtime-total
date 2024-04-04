@@ -22,7 +22,7 @@ import {
 
 import { onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
 
-import { useClient } from '../client';
+import { useClient } from '../../src/api-client';
 import { Breadcrumb, ToastType } from '../common';
 import AlertsList from '../components/admin/alerts-list.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';

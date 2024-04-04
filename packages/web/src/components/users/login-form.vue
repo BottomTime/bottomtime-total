@@ -78,14 +78,14 @@
 
 <script setup lang="ts">
 import { LoginParamsDTO } from '@bottomtime/api';
+import { User } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 
 import { onMounted, reactive, ref } from 'vue';
 
-import { useClient } from '../../client';
-import { User } from '../../client/user';
+import { useClient } from '../../api-client';
 import { Toast, ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';

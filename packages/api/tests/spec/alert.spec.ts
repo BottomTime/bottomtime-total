@@ -2,7 +2,7 @@ import { AlertDTO } from '@bottomtime/api';
 
 import axios, { AxiosInstance } from 'axios';
 
-import { Alert } from '../../../src/client';
+import { Alert } from '../../src/client';
 
 const AlertData: AlertDTO = {
   id: 'b80cad85-108d-4113-92db-be9ec9fe0aae',

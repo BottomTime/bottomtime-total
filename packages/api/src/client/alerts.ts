@@ -1,12 +1,11 @@
+import { AxiosInstance } from 'axios';
+
 import {
   AlertSchema,
   CreateOrUpdateAlertParamsDTO,
   ListAlertsParamsDTO,
   ListAlertsResponseSchema,
-} from '@bottomtime/api';
-
-import { AxiosInstance } from 'axios';
-
+} from '../types';
 import { Alert } from './alert';
 
 export class AlertsApiClient {

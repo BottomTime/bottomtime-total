@@ -141,7 +141,7 @@ import { ProfileDTO, UserDTO } from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
 
-import { useClient } from '../../client';
+import { useClient } from '../../api-client';
 import { SelectOption, ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';

@@ -1,17 +1,16 @@
+import axios, { AxiosInstance } from 'axios';
+import nock, { Scope } from 'nock';
+
+import { UserSettings } from '../../src/client/user-settings';
 import {
   DepthUnit,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
   WeightUnit,
-} from '@bottomtime/api';
-
-import axios, { AxiosInstance } from 'axios';
-import nock, { Scope } from 'nock';
-
-import { UserSettings } from '../../../src/client/user-settings';
-import { createScope } from '../../fixtures/nock';
-import { BasicUser } from '../../fixtures/users';
+} from '../../src/types';
+import { createScope } from '../fixtures/nock';
+import { BasicUser } from '../fixtures/users';
 
 describe('User Settings client object', () => {
   let axiosInstance: AxiosInstance;

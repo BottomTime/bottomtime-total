@@ -68,7 +68,7 @@ import { ListAlertsResponseDTO } from '@bottomtime/api';
 
 import { onMounted, onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
 
-import { useClient } from '../../client';
+import { useClient } from '../../api-client';
 import { Config } from '../../config';
 import { AppInitialState, useInitialState } from '../../initial-state';
 import { useOops } from '../../oops';

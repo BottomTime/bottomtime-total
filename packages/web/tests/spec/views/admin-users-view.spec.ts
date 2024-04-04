@@ -1,3 +1,5 @@
+import { ApiClient } from '@bottomtime/api';
+
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
@@ -6,7 +8,7 @@ import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey } from '../../../src/client';
+import { ApiClientKey } from '../../../src/api-client';
 import ManageUser from '../../../src/components/admin/manage-user.vue';
 import UsersList from '../../../src/components/admin/users-list.vue';
 import { useCurrentUser } from '../../../src/store';

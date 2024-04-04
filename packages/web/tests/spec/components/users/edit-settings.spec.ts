@@ -5,6 +5,7 @@ import {
   UserDTO,
   WeightUnit,
 } from '@bottomtime/api';
+import { ApiClient, User } from '@bottomtime/api';
 
 import { flushPromises, mount } from '@vue/test-utils';
 
@@ -12,7 +13,7 @@ import axios from 'axios';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey, User } from '../../../../src/client';
+import { ApiClientKey } from '../../../../src/api-client';
 import EditSettings from '../../../../src/components/users/edit-settings.vue';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';

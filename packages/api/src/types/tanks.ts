@@ -1,5 +1,6 @@
-import { TankMaterial } from './constants';
 import { z } from 'zod';
+
+import { TankMaterial } from './constants';
 
 export const TankSchema = z.object({
   id: z.string().uuid(),

@@ -1,3 +1,5 @@
+import { ApiClient, ApiClientOptions } from '@bottomtime/api';
+
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import utc from 'dayjs/plugin/utc';
@@ -5,9 +7,9 @@ import { createPinia } from 'pinia';
 import { App, createSSRApp } from 'vue';
 import { Router } from 'vue-router';
 
+import { ApiClientKey } from './api-client';
 import AppComponent from './app-root.vue';
 import { clickOutside } from './click-outside';
-import { ApiClient, ApiClientKey, ApiClientOptions } from './client';
 import { LocationKey, MockLocation } from './location';
 import { router } from './router';
 

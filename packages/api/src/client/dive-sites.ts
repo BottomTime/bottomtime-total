@@ -1,13 +1,12 @@
+import { AxiosInstance } from 'axios';
+
+import { DiveSite } from '.';
 import {
   CreateOrUpdateDiveSiteDTO,
   DiveSiteSchema,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesResponseSchema,
-} from '@bottomtime/api';
-
-import { AxiosInstance } from 'axios';
-
-import { DiveSite } from '.';
+} from '../types';
 
 export class DiveSitesApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
