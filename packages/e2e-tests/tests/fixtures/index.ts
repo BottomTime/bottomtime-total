@@ -6,6 +6,7 @@ import { test as base } from '@playwright/test';
 import { Client } from 'pg';
 
 import { AuthFixture } from './auth.fixture';
+import { DiveSitesFixture } from './dive-sites.fixture';
 import { createAuthToken } from './jwt';
 import { PostgresFixture } from './postgres.fixture';
 
@@ -13,6 +14,7 @@ export const test = base.extend<{
   api: ApiClient;
   auth: AuthFixture;
   db: PostgresFixture;
+  diveSites: DiveSitesFixture;
 }>({
   api: async ({ db }, use) => {
     // Create an admin user and matching auth token
@@ -47,6 +49,11 @@ export const test = base.extend<{
     // Purge the database and disconnnect.
     await postgres.purgeDatabase();
     await client.end();
+  },
+
+  diveSites: async ({ page }, use) => {
+    const diveSites = new DiveSitesFixture(page);
+    await use(diveSites);
   },
 });
 

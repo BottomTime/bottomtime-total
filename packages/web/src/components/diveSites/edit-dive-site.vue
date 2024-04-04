@@ -17,7 +17,7 @@
     </div>
   </ConfirmDialog>
 
-  <form @submit.prevent="">
+  <form data-testid="edit-dive-site-form" @submit.prevent="">
     <fieldset
       class="grid grid-cols-1 lg:grid-cols-5 gap-3"
       :disabled="isSaving"

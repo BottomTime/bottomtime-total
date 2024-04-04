@@ -63,7 +63,7 @@ services:
     environment:
       - BTWEB_API_URL=http://bottomtime-service:4800/
     depends_on:
-      core:
+      service:
         condition: service_started
     develop:
       watch:
