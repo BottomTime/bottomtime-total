@@ -44,7 +44,7 @@ export class UsersApiClient {
     }
   }
 
-  async getUser(usernameOrEmail: string): Promise<User | null> {
+  async getUser(usernameOrEmail: string): Promise<User> {
     const { data } = await this.apiClient.get(
       `/api/admin/users/${encodeURIComponent(usernameOrEmail)}`,
     );

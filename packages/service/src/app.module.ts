@@ -10,6 +10,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { AdminModule } from './admin';
 import { AlertsModule } from './alerts';
+import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule, IMailClient } from './email';
@@ -62,6 +63,8 @@ export class AppModule {
         DiveSitesModule,
         TanksModule,
       ],
+
+      controllers: [AppController],
     };
   }
 }

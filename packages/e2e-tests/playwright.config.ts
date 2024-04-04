@@ -1,7 +1,8 @@
 /* eslint-disable no-process-env */
 import { defineConfig, devices } from '@playwright/test';
 
-import { PostgresUri } from './tests/fixture/postgres';
+import { getSessionSecret } from './tests/fixtures/jwt';
+import { PostgresFixture } from './tests/fixtures/postgres.fixture';
 
 /**
  * Read environment variables from file.
@@ -85,26 +86,28 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `yarn admin db init -f -d ${PostgresUri} && yarn serve`,
-      url: 'http://127.0.0.1:4801/health',
+      command: `yarn admin db init -f -d "${PostgresFixture.postgresUri}" && npx tsx ./src/index.ts`,
+      url: 'http://127.0.0.1:4801/',
       cwd: '../service',
       env: {
-        BT_LOG_LEVEL: 'error',
-        BT_POSTGRES_URI: PostgresUri,
+        BT_LOG_LEVEL: 'info',
+        BT_POSTGRES_URI: PostgresFixture.postgresUri,
         BT_PORT: '4801',
+        BT_SESSION_SECRET: getSessionSecret(),
+        NODE_ENV: 'production',
       },
       timeout: 10000,
       reuseExistingServer: true,
-      stdout: 'pipe',
     },
     {
-      command: 'yarn serve',
-      url: 'http://127.0.0.1:4851/health',
-      cwd: '../vite',
+      command: 'npx tsx ./server/index.ts',
+      url: 'http://127.0.0.1:4851/',
+      cwd: '../web',
       env: {
         BTWEB_API_URL: 'http://localhost:4801/',
         BTWEB_BASE_URL: 'http://localhost:4851/',
         BTWEB_PORT: '4851',
+        // NODE_ENV: 'production',
       },
       timeout: 10000,
       reuseExistingServer: true,
