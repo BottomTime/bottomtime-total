@@ -86,11 +86,11 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `yarn admin db init -f -d "${PostgresFixture.postgresUri}" && npx tsx src/index.ts`,
-      url: 'http://127.0.0.1:4801/health',
+      command: `yarn admin db init -f -d "${PostgresFixture.postgresUri}" && npx tsx ./src/index.ts`,
+      url: 'http://127.0.0.1:4801/',
       cwd: '../service',
       env: {
-        BT_LOG_LEVEL: 'fatal',
+        BT_LOG_LEVEL: 'info',
         BT_POSTGRES_URI: PostgresFixture.postgresUri,
         BT_PORT: '4801',
         BT_SESSION_SECRET: getSessionSecret(),
@@ -100,8 +100,8 @@ export default defineConfig({
       reuseExistingServer: true,
     },
     {
-      command: 'yarn serve',
-      url: 'http://127.0.0.1:4851/health',
+      command: 'npx tsx ./server/index.ts',
+      url: 'http://127.0.0.1:4851/',
       cwd: '../web',
       env: {
         BTWEB_API_URL: 'http://localhost:4801/',
