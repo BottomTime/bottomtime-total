@@ -204,10 +204,6 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - bt-{{ checksum "yarn.lock" }}
-            - bt-
       - setup_remote_docker
       - run:
           name: Build Image
@@ -215,7 +211,6 @@ jobs:
             docker build \
             -f ./Dockerfile.service \
             -t bt/service:latest -t bt/service:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM  \
-            --platform arm64 \
             .
 
   build_web_image:
@@ -223,10 +218,6 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - bt-{{ checksum "yarn.lock" }}
-            - bt-
       - setup_remote_docker
       - run:
           name: Build Image
@@ -234,7 +225,6 @@ jobs:
             docker build \
             -f ./Dockerfile.web \
             -t bt/web:latest -t bt/web:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM \
-            --platform arm64 \
             .
 
   deploy_service_image:
