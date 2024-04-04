@@ -204,7 +204,8 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Build Image
           command: |
@@ -218,7 +219,8 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Build Image
           command: |
@@ -348,12 +350,12 @@ workflows:
             - test_web
 
       # Build
-      - build_service_image:
-          requires:
-            - init_and_lint
-      - build_web_image:
-          requires:
-            - init_and_lint
+      # - build_service_image:
+      #     requires:
+      #       - init_and_lint
+      # - build_web_image:
+      #     requires:
+      #       - init_and_lint
 
       # - lint_and_build
       # - test_core:
