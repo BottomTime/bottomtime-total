@@ -31,8 +31,8 @@ export const test = base.extend<{
     await use(client);
   },
 
-  auth: async ({ page }, use) => {
-    const auth = new AuthFixture(page);
+  auth: async ({ api, page }, use) => {
+    const auth = new AuthFixture(api, page);
     await use(auth);
   },
 

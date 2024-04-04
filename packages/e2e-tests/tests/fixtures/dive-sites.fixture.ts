@@ -13,6 +13,10 @@ export class DiveSitesFixture {
     await this.page.goto(`/diveSites/${id}`);
   }
 
+  async gotoNewDiveSite(): Promise<void> {
+    await this.page.goto('/diveSites/new');
+  }
+
   async searchForDiveSite(
     options: Omit<
       SearchDiveSitesParamsDTO,

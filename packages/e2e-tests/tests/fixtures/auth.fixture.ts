@@ -1,7 +1,18 @@
+import { ApiClient } from '@bottomtime/web/src/client';
+
 import { Page } from '@playwright/test';
 
 export class AuthFixture {
-  constructor(private readonly page: Page) {}
+  constructor(private readonly api: ApiClient, private readonly page: Page) {}
+
+  async createUserAndLogin(username: string, password: string): Promise<void> {
+    await this.api.users.createUser({
+      username,
+      password,
+      email: `${username}@testing.org`,
+    });
+    await this.login(username, password);
+  }
 
   async login(username: string, password: string): Promise<void> {
     await this.page.goto('/');
