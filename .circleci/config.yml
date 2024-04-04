@@ -3,7 +3,6 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@4.0.0
   aws-s3: circleci/aws-s3@3.1.1
-  node: circleci/node@5.1.0
   terraform: circleci/terraform@3.2.1
 
 docker_node: &node_image
@@ -32,28 +31,6 @@ commands:
       - run:
           name: Invalidate distribution cache
           command: aws cloudfront create-invalidation --distribution-id <<parameters.distribution_id>> --paths "/*"
-
-  prepare_coverage_reporting:
-    steps:
-      - run:
-          name: Initialize Code Climate
-          command: ./cc-test-reporter before-build
-
-  record_coverage:
-    parameters:
-      coverage_file:
-        type: string
-      coverage_root:
-        type: string
-    steps:
-      - run:
-          name: Report test coverage
-          working_directory: <<parameters.coverage_root>>
-          command: |
-            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
-              --add-prefix "<<parameters.coverage_root>>" \
-              -t lcov \
-              -o "../../<<parameters.coverage_file>>" \
 
 jobs:
   init_and_lint:
@@ -227,6 +204,10 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - bt-{{ checksum "yarn.lock" }}
+            - bt-
       - setup_remote_docker
       - run:
           name: Build Image
@@ -242,6 +223,10 @@ jobs:
       - image: cimg/base:2023.04
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - bt-{{ checksum "yarn.lock" }}
+            - bt-
       - setup_remote_docker
       - run:
           name: Build Image
@@ -375,10 +360,10 @@ workflows:
       # Build
       - build_service_image:
           requires:
-            - test_service
+            - init_and_lint
       - build_web_image:
           requires:
-            - test_web
+            - init_and_lint
 
       # - lint_and_build
       # - test_core:
