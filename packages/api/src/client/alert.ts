@@ -1,6 +1,6 @@
-import { AlertDTO, CreateOrUpdateAlertParamsSchema } from '@bottomtime/api';
-
 import { AxiosInstance } from 'axios';
+
+import { AlertDTO, CreateOrUpdateAlertParamsSchema } from '../types';
 
 export class Alert {
   constructor(

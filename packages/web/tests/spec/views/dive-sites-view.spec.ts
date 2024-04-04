@@ -2,11 +2,8 @@ import {
   SearchDiveSitesResponseDTO,
   SearchDiveSitesResponseSchema,
 } from '@bottomtime/api';
+import { ApiClient, DiveSite } from '@bottomtime/api';
 
-import { ApiClient, ApiClientKey, DiveSite } from '@/client';
-import DiveSitesListItem from '@/components/diveSites/dive-sites-list-item.vue';
-import { LocationKey, MockLocation } from '@/location';
-import DiveSitesView from '@/views/dive-sites-view.vue';
 import {
   ComponentMountingOptions,
   flushPromises,
@@ -19,6 +16,10 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
+import { ApiClientKey } from '../../../src/api-client';
+import DiveSitesListItem from '../../../src/components/diveSites/dive-sites-list-item.vue';
+import { LocationKey, MockLocation } from '../../../src/location';
+import DiveSitesView from '../../../src/views/dive-sites-view.vue';
 import { createRouter } from '../../fixtures/create-router';
 import SearchResults from '../../fixtures/dive-sites-search-results.json';
 

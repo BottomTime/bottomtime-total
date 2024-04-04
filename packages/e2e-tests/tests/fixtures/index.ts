@@ -1,5 +1,5 @@
 /* eslint-disable no-empty-pattern */
-import { ApiClient } from '@bottomtime/web/src/client';
+import { ApiClient } from '@bottomtime/api';
 
 import { test as base } from '@playwright/test';
 

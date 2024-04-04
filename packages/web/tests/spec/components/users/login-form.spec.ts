@@ -6,14 +6,14 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+import { ApiClient, User } from '@bottomtime/api';
 
 import { flushPromises, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey } from '../../../../src/client';
-import { User } from '../../../../src/client/user';
+import { ApiClientKey } from '../../../../src/api-client';
 import LoginForm from '../../../../src/components/users/login-form.vue';
 import { useCurrentUser, useToasts } from '../../../../src/store';
 import { createAxiosError } from '../../../fixtures/create-axios-error';

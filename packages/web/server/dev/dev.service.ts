@@ -1,4 +1,5 @@
-import { ApiClientOptions } from '@/client';
+import { ApiClientOptions } from '@bottomtime/api';
+
 import { AppInitialState } from '@/initial-state';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 

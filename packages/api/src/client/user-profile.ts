@@ -1,6 +1,6 @@
-import { UpdateProfileParamsSchema, UserDTO } from '@bottomtime/api';
-
 import { AxiosInstance } from 'axios';
+
+import { UpdateProfileParamsSchema, UserDTO } from '../types';
 
 export class UserProfile {
   constructor(

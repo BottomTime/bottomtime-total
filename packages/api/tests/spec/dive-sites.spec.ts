@@ -1,16 +1,15 @@
+import axios, { AxiosInstance } from 'axios';
+
+import { DiveSite } from '../../src/client';
+import { DiveSitesApiClient } from '../../src/client/dive-sites';
 import {
   DiveSitesSortBy,
   SearchDiveSitesResponseDTO,
   SearchDiveSitesResponseSchema,
   SortOrder,
-} from '@bottomtime/api';
-
-import axios, { AxiosInstance } from 'axios';
-
-import { DiveSite } from '../../../src/client';
-import { DiveSitesApiClient } from '../../../src/client/dive-sites';
-import SearchResults from '../../fixtures/dive-sites-search-results.json';
-import { DiveSiteWithFullProperties } from '../../fixtures/sites';
+} from '../../src/types';
+import SearchResults from '../fixtures/dive-sites-search-results.json';
+import { DiveSiteWithFullProperties } from '../fixtures/sites';
 
 describe('Dive Site API client', () => {
   let axiosClient: AxiosInstance;

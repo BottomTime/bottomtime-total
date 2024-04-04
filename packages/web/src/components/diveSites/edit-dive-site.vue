@@ -273,7 +273,7 @@ import { helpers, required, requiredIf } from '@vuelidate/validators';
 
 import { computed, reactive, ref } from 'vue';
 
-import { useClient } from '../../client';
+import { useClient } from '../../api-client';
 import { SelectOption, ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';

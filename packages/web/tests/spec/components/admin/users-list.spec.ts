@@ -1,4 +1,10 @@
-import { SortOrder, UserRole, UsersSortBy } from '@bottomtime/api';
+import {
+  ApiClient,
+  SortOrder,
+  User,
+  UserRole,
+  UsersSortBy,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -16,7 +22,7 @@ import {
   AdminSearchUsersResponseDTO,
   UserSchema,
 } from '../../../../../api/src';
-import { ApiClient, ApiClientKey, User } from '../../../../src/client';
+import { ApiClientKey } from '../../../../src/api-client';
 import ManageUser from '../../../../src/components/admin/manage-user.vue';
 import UsersListItem from '../../../../src/components/admin/users-list-item.vue';
 import UsersList from '../../../../src/components/admin/users-list.vue';

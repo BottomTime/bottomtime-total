@@ -1,3 +1,5 @@
+import { AxiosInstance } from 'axios';
+
 import {
   ChangeEmailParamsDTO,
   ChangePasswordParamsDTO,
@@ -7,10 +9,7 @@ import {
   SuccessFailResponseDTO,
   UserDTO,
   UserRole,
-} from '@bottomtime/api';
-
-import { AxiosInstance } from 'axios';
-
+} from '../types';
 import { UserProfile } from './user-profile';
 import { UserSettings } from './user-settings';
 

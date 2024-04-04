@@ -209,7 +209,7 @@ import { helpers, required, email as validEmail } from '@vuelidate/validators';
 
 import { nextTick, reactive, ref } from 'vue';
 
-import { useClient } from '../../client';
+import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';

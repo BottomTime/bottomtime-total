@@ -2,6 +2,7 @@ import {
   ListAlertsResponseDTO,
   ListAlertsResponseSchema,
 } from '@bottomtime/api';
+import { Alert, ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -13,7 +14,7 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { Alert, ApiClient, ApiClientKey } from '../../../src/client';
+import { ApiClientKey } from '../../../src/api-client';
 import AlertsList from '../../../src/components/admin/alerts-list.vue';
 import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { useCurrentUser } from '../../../src/store';

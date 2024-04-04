@@ -16,7 +16,7 @@ import { DiveSiteDTO, UserRole } from '@bottomtime/api';
 import { computed, onServerPrefetch, ref, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { useClient } from '../client';
+import { useClient } from '../api-client';
 import { Breadcrumb } from '../common';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import NotFound from '../components/common/not-found.vue';

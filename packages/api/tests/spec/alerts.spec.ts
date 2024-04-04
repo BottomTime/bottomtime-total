@@ -1,13 +1,12 @@
+import axios, { AxiosInstance } from 'axios';
+
+import { Alert } from '../../src/client';
+import { AlertsApiClient } from '../../src/client/alerts';
 import {
   AlertDTO,
   CreateOrUpdateAlertParamsDTO,
   ListAlertsParamsDTO,
-} from '@bottomtime/api';
-
-import axios, { AxiosInstance } from 'axios';
-
-import { Alert } from '../../../src/client';
-import { AlertsApiClient } from '../../../src/client/alerts';
+} from '../../src/types';
 
 const AlertData: AlertDTO[] = [
   {

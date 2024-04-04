@@ -45,7 +45,7 @@ test.describe('Dive Sites', () => {
     );
 
     await page.getByTestId(`select-site-${id}`).click();
-    await page.getByTestId('drawer-fullscreen').getByRole('button').click();
+    await page.getByTestId('drawer-fullscreen').click();
     await page.waitForURL(`**/diveSites/${id}`);
 
     await expect(

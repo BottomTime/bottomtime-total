@@ -1,13 +1,12 @@
+import { AxiosInstance, isAxiosError } from 'axios';
+
 import {
   AdminSearchUsersParamsDTO,
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
   UserSchema,
-} from '@bottomtime/api';
-
-import { AxiosInstance, isAxiosError } from 'axios';
-
+} from '../types';
 import { User } from './user';
 
 export class UsersApiClient {

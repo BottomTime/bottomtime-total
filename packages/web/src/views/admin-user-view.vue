@@ -38,7 +38,7 @@ import {
 } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { useClient } from '../client';
+import { useClient } from '../api-client';
 import { Breadcrumb } from '../common';
 import ManageUser from '../components/admin/manage-user.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';

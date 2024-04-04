@@ -167,10 +167,10 @@ import {
   useSSRContext,
 } from 'vue';
 
-import { useClient } from '../../client';
-import { AppInitialState, SelectOption } from '../../common';
+import { useClient } from '../../api-client';
+import { SelectOption } from '../../common';
 import { Config } from '../../config';
-import { useInitialState } from '../../initial-state';
+import { AppInitialState, useInitialState } from '../../initial-state';
 import { useOops } from '../../oops';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormBox from '../common/form-box.vue';

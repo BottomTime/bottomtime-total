@@ -63,7 +63,7 @@ import {
 import { onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useClient } from '../client';
+import { useClient } from '../api-client';
 import { SelectOption } from '../common';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import FormBox from '../components/common/form-box.vue';

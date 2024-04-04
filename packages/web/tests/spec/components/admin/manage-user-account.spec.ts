@@ -1,5 +1,5 @@
 /* eslint-disable vue/one-component-per-file */
-import { UserDTO, UserRole } from '@bottomtime/api';
+import { ApiClient, User, UserDTO, UserRole } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -15,7 +15,7 @@ import { Pinia, createPinia } from 'pinia';
 import { defineComponent } from 'vue';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey, User } from '../../../../src/client';
+import { ApiClientKey } from '../../../../src/api-client';
 import ManageUserAccount from '../../../../src/components/admin/manage-user-account.vue';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';

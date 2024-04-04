@@ -1,6 +1,7 @@
+import { ApiClientOptions } from '@bottomtime/api';
+
 import { SSRContext, renderToString } from 'vue/server-renderer';
 
-import { ApiClientOptions } from './client';
 import { createApp } from './main';
 
 export async function render(

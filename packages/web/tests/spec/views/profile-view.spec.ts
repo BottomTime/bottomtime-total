@@ -1,10 +1,12 @@
+import { ApiClient } from '@bottomtime/api';
+
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ProfileDTO } from '../../../../api/src';
-import { ApiClient, ApiClientKey } from '../../../src/client';
+import { ApiClientKey } from '../../../src/api-client';
 import EditProfile from '../../../src/components/users/edit-profile.vue';
 import { useCurrentUser } from '../../../src/store';
 import ProfileView from '../../../src/views/profile-view.vue';

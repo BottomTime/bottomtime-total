@@ -115,7 +115,7 @@ import { email, helpers, required } from '@vuelidate/validators';
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { useClient } from '../../client';
+import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
 import { isErrorResponse, useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';

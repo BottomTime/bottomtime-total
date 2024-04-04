@@ -1,4 +1,5 @@
 import { ErrorResponseDTO, UserDTO, UserRole } from '@bottomtime/api';
+import { ApiClient, User } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -10,7 +11,7 @@ import { Pinia, createPinia } from 'pinia';
 import { defineComponent } from 'vue';
 import { Router } from 'vue-router';
 
-import { ApiClient, ApiClientKey, User } from '../../../../src/client';
+import { ApiClientKey } from '../../../../src/api-client';
 import { ToastType } from '../../../../src/common';
 import RegisterForm from '../../../../src/components/users/register-form.vue';
 import { useToasts } from '../../../../src/store';
