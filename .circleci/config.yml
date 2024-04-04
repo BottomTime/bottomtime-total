@@ -198,6 +198,10 @@ jobs:
     docker:
       - image: cimg/node:20.11-browsers
       - image: postgis/postgis:14-3.4
+        environment:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: bt_user
+          POSTGRES_PASSWORD: bt_admin1234
     environment:
       BT_MONGO_URI: mongodb://localhost:27017/ci
       JEST_JUNIT_OUTPUT_DIR: ./reports/
