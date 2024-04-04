@@ -14,14 +14,6 @@ docker_base: &base_image
   - image: cimg/base:2023.04
 
 commands:
-  install_node:
-    steps:
-      - node/install:
-          install-yarn: true
-          node-version: '18'
-      - node/install-packages:
-          pkg-manager: 'yarn'
-
   publish_distro:
     parameters:
       bucket:
@@ -62,14 +54,6 @@ commands:
               --add-prefix "<<parameters.coverage_root>>" \
               -t lcov \
               -o "../../<<parameters.coverage_file>>" \
-
-  init_testing:
-    steps:
-      - checkout
-      - install_node
-      - attach_workspace:
-          at: ./
-      - prepare_coverage_reporting
 
 jobs:
   init_and_lint:
@@ -238,6 +222,36 @@ jobs:
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
+  build_service_image:
+    docker:
+      - image: cimg/base:2023.04
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Image
+          command: |
+            docker build \
+            -f ./Dockerfile.service \
+            -t bt/service:latest -t bt/service:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM  \
+            --platform arm64 \
+            .
+
+  build_web_image:
+    docker:
+      - image: cimg/base:2023.04
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Image
+          command: |
+            docker build \
+            -f ./Dockerfile.web \
+            -t bt/web:latest -t bt/web:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM \
+            --platform arm64 \
+            .
+
   deploy_service_image:
     machine:
       image: ubuntu-2004:current
@@ -270,17 +284,6 @@ jobs:
           root: .
           paths:
             - build.tfvars
-
-  migrate_database:
-    docker:
-      - image: cimg/base:2023.04
-    steps:
-      - checkout
-      - install_node
-      - run:
-          name: Migrate database
-          working_directory: ./packages/service/
-          command: yarn migrate up
 
   terraform:
     docker: *base_image
@@ -353,6 +356,7 @@ workflows:
     jobs:
       # Validate
       - init_and_lint
+
       - test_service:
           requires:
             - init_and_lint
@@ -362,9 +366,18 @@ workflows:
       - test_e2e:
           requires:
             - init_and_lint
+
       - report_coverage:
           requires:
             - test_service
+            - test_web
+
+      # Build
+      - build_service_image:
+          requires:
+            - test_service
+      - build_web_image:
+          requires:
             - test_web
 
       # - lint_and_build

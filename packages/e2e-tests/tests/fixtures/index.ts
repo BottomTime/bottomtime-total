@@ -16,7 +16,7 @@ export const test = base.extend<{
 }>({
   api: async ({ db }, use) => {
     // Create an admin user and matching auth token
-    const [_, authToken] = await Promise.all([
+    const [, authToken] = await Promise.all([
       db.createAdmin(),
       createAuthToken(PostgresFixture.adminUser.id),
     ]);
