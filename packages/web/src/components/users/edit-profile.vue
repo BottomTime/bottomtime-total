@@ -18,7 +18,6 @@
 
   <ChangeAvatarDialog
     :avatar-url="data.avatar"
-    :display-name="user.profile.name || user.username"
     :visible="showAvatarDialog"
     @cancel="showAvatarDialog = false"
     @save="onAvatarChanged"
@@ -36,13 +35,20 @@
             responsive ? 'min-w-[80px] flex-initial' : 'w-full text-center'
           }`"
         >
-          <button class="p-3" @click="showAvatarDialog = !showAvatarDialog">
+          <button
+            class="flex flex-col space-y-3 p-3 items-center"
+            @click="showAvatarDialog = !showAvatarDialog"
+          >
             <UserAvatar
               :avatar="data.avatar"
               :display-name="user.profile.name || user.username"
               size="large"
               test-id="profile-avatar"
             />
+
+            <span class="font-bold text-link underline hover:text-link-hover">
+              Edit Avatar...
+            </span>
           </button>
         </div>
 

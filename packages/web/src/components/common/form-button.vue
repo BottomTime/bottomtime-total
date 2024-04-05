@@ -61,7 +61,7 @@ function getRounding(): string {
 const classes = computed(() => {
   const baseButton = `text-black p-2 m-0 text-${
     props.size
-  } outline-2 outline-grey-800 shadow-sm shadow-grey-800 ${getRounding()}`;
+  } border-1 border-grey-800 shadow-sm shadow-grey-800 ${getRounding()}`;
   const baseButtonWithGradient = `${baseButton} bg-gradient-to-t`;
   let classes: string;
 
