@@ -72,6 +72,45 @@ jobs:
           paths:
             - cc-test-reporter
 
+  test_api:
+    docker:
+      - image: cimg/node:20.11
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: ./reports/
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - bt-{{ checksum "yarn.lock" }}
+            - bt-
+      - run:
+          name: Install dependencies
+          command: yarn
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Initialize Code Climate
+          command: ./cc-test-reporter before-build
+      - run:
+          name: Build and Test
+          command: npx lerna run build,test --scope @bottomtime/api --stream # --since=master
+      - store_test_results:
+          path: packages/api/reports/
+      - run:
+          name: Report test coverage
+          working_directory: packages/api/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/api/" \
+              -t lcov \
+              -o "../../api.coverage.json" \
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - packages/api/dist/
+            - packages/api/coverage/
+            - api.coverage.json
+
   test_service:
     docker:
       - image: cimg/node:20.11
@@ -196,7 +235,7 @@ jobs:
       - run:
           name: Report coverage
           command: |
-            ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 *.coverage.json
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 3 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
   build_service_image:
@@ -334,6 +373,9 @@ workflows:
       # Validate
       - init_and_lint
 
+      - test_api:
+          requires:
+            - init_and_lint
       - test_service:
           requires:
             - init_and_lint
@@ -346,6 +388,7 @@ workflows:
 
       - report_coverage:
           requires:
+            - test_api
             - test_service
             - test_web
 
