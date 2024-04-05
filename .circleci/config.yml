@@ -235,7 +235,7 @@ jobs:
       - run:
           name: Report coverage
           command: |
-            ./cc-test-reporter sum-coverage -o codeclimate.json -p 2 *.coverage.json
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 3 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
   build_service_image:
