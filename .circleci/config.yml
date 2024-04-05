@@ -75,11 +75,6 @@ jobs:
   test_api:
     docker:
       - image: cimg/node:20.11
-      - image: postgis/postgis:14-3.4-alpine
-        environment:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: bt_user
-          POSTGRES_PASSWORD: bt_admin1234
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -378,6 +373,9 @@ workflows:
       # Validate
       - init_and_lint
 
+      - test_api:
+          requires:
+            - init_and_lint
       - test_service:
           requires:
             - init_and_lint
