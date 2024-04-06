@@ -15,7 +15,7 @@
       />
 
       <!-- Otherwise, show a drag-and-drop target -->
-      <FileUpload v-else accept="image/*" />
+      <FileUpload v-else accept="image/*" upload-url="/api/files/lol" />
     </template>
 
     <template #buttons>
