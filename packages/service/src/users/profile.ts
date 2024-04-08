@@ -45,16 +45,10 @@ export class Profile {
   }
 
   async update(params: UpdateProfileOptions): Promise<void> {
-    if (params.avatar !== undefined) this.data.avatar = params.avatar ?? null;
-
     if (params.bio !== undefined) this.data.bio = params.bio ?? null;
 
     if (params.birthdate !== undefined)
       this.data.birthdate = params.birthdate ?? null;
-
-    // TODO
-    // if (!!params.certifications || !ignoreUndefined)
-    //   this.data.certifications = params.certifications;
 
     if (params.customData !== undefined)
       this.data.customData = params.customData ?? null;

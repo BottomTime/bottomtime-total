@@ -10,7 +10,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "lastLogin": "2024-01-15T12:40:18.319Z",
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
-    "avatar": "https://example.com/avatar.png",
     "bio": "This is a test user.",
     "birthdate": "1980-01-01",
     "experienceLevel": "Advanced",
@@ -34,7 +33,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 
 exports[`Users End-to-End Tests when creating a new user account will create a new account and sign in user 2`] = `
 UserEntity {
-  "avatar": "https://example.com/avatar.png",
+  "avatar": null,
   "bio": "This is a test user.",
   "birthdate": "1980-01-01",
   "certifications": undefined,
@@ -81,7 +80,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "lastLogin": "2024-01-15T12:40:18.319Z",
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
-    "avatar": "https://example.com/avatar.png",
     "bio": "This is a test user.",
     "birthdate": "1980-01-01",
     "experienceLevel": "Advanced",

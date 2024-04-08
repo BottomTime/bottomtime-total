@@ -93,7 +93,6 @@ export class UsersService {
     data.username = options.username;
     data.usernameLowered = usernameLowered;
 
-    data.avatar = options.profile?.avatar ?? null;
     data.bio = options.profile?.bio ?? null;
     data.birthdate = options.profile?.birthdate ?? null;
     data.customData = options.profile?.customData ?? null;

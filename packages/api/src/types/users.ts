@@ -32,7 +32,6 @@ export const PasswordStrengthSchema = z
 
 export const UpdateProfileParamsSchema = z
   .object({
-    avatar: z.string().trim().url().max(150).nullable(),
     bio: z.string().trim().max(1000).nullable(),
     birthdate: z.string().trim().regex(FuzzyDateRegex).nullable(),
     customData: z
@@ -57,6 +56,7 @@ export const ProfileSchema = UpdateProfileParamsSchema.extend({
   userId: z.string(),
   username: UsernameSchema,
   memberSince: z.coerce.date(),
+  avatar: z.string().nullable().optional(),
 });
 export type ProfileDTO = z.infer<typeof ProfileSchema>;
 
@@ -169,3 +169,13 @@ export const VerifyEmailParamsSchema = z.object({
   token: z.string().min(1),
 });
 export type VerifyEmailParamsDTO = z.infer<typeof VerifyEmailParamsSchema>;
+
+export const SetProfileAvatarParamsSchema = z.object({
+  left: z.coerce.number().int().min(0),
+  top: z.coerce.number().int().min(0),
+  width: z.coerce.number().int().min(1),
+  height: z.coerce.number().int().min(1),
+});
+export type SetProfileAvatarParamsDTO = z.infer<
+  typeof SetProfileAvatarParamsSchema
+>;

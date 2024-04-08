@@ -70,7 +70,6 @@ describe('Profile Class', () => {
 
   it('will update properties', async () => {
     const options: UpdateProfileOptions = {
-      avatar: 'https://example.com/avatar2.png',
       bio: 'Definitely, a new bio.',
       birthdate: '1983-01-01',
       customData: {
@@ -83,10 +82,8 @@ describe('Profile Class', () => {
     };
     await profile.update(options);
 
-    expect(profile.avatar).toBe(options.avatar);
     expect(profile.bio).toBe(options.bio);
     expect(profile.birthdate).toBe(options.birthdate);
-    // expect(profile.certifications).toEqual(options.certifications);
     expect(profile.customData).toEqual(options.customData);
     expect(profile.experienceLevel).toBe(options.experienceLevel);
     expect(profile.location).toBe(options.location);
@@ -97,10 +94,8 @@ describe('Profile Class', () => {
       where: { id: TestUserData.id },
     });
 
-    expect(result?.avatar).toEqual(options.avatar);
     expect(result?.bio).toEqual(options.bio);
     expect(result?.birthdate).toEqual(options.birthdate);
-    // expect(result?.certifications).toEqual(options.certifications);
     expect(result?.customData).toEqual(options.customData);
     expect(result?.experienceLevel).toEqual(options.experienceLevel);
     expect(result?.location).toEqual(options.location);
@@ -110,7 +105,6 @@ describe('Profile Class', () => {
 
   it('will set properties to null', async () => {
     const options: UpdateProfileOptions = {
-      avatar: null,
       bio: null,
       birthdate: null,
       // certifications: null,
@@ -121,7 +115,7 @@ describe('Profile Class', () => {
     };
     await profile.update(options);
 
-    expect(profile.avatar).toBeUndefined();
+    expect(profile.avatar).toBe(TestUserData.avatar);
     expect(profile.bio).toBeUndefined();
     expect(profile.birthdate).toBeUndefined();
     expect(profile.experienceLevel).toBeUndefined();
@@ -130,10 +124,9 @@ describe('Profile Class', () => {
     expect(profile.startedDiving).toBeUndefined();
 
     const result = await Users.findOne({ where: { id: TestUserData.id } });
-    expect(result?.avatar).toBeNull();
+    expect(result?.avatar).toBe(TestUserData.avatar);
     expect(result?.bio).toBeNull();
     expect(result?.birthdate).toBeNull();
-    // expect(result?.certifications).toEqual(options.certifications);
     expect(result?.experienceLevel).toBeNull();
     expect(result?.location).toBeNull();
     expect(result?.name).toBeNull();
