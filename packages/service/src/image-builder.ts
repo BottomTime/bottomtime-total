@@ -1,40 +1,65 @@
-import sharp, { Sharp } from 'sharp';
+import Jimp from 'jimp';
 
 export type ImageMetadata = {
   format: string;
   width: number;
   height: number;
-  size: number;
 };
 
-export class ImageBuilder {
-  private image: Sharp;
+type JimpInterface = Awaited<ReturnType<typeof Jimp.read>>;
 
-  constructor(data: Buffer) {
-    this.image = sharp(data);
+export class ImageBuilder {
+  private image: JimpInterface;
+
+  private constructor(image: JimpInterface) {
+    this.image = image;
   }
 
-  async getMetadata(): Promise<ImageMetadata> {
-    const metadata = await this.image.metadata();
+  getMetadata(): ImageMetadata {
     return {
-      format: metadata.format || '',
-      width: metadata.width || 0,
-      height: metadata.height || 0,
-      size: metadata.size || 0,
+      format: this.image.getMIME(),
+      width: this.image.getWidth(),
+      height: this.image.getHeight(),
     };
   }
 
-  crop(top: number, left: number, width: number, height: number): ImageBuilder {
-    this.image = this.image.extract({ top, left, width, height });
-    return this;
+  crop(
+    left: number,
+    top: number,
+    width: number,
+    height: number,
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.image.crop(left, top, width, height, (err, value) => {
+        if (err) {
+          reject(err);
+        } else {
+          this.image = value;
+          resolve();
+        }
+      });
+    });
   }
 
-  resize(width: number, height?: number): ImageBuilder {
-    this.image = this.image.resize(height ? { width, height } : width);
-    return this;
+  resize(width: number, height?: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.image.resize(width, height || width, (err, value) => {
+        if (err) {
+          reject(err);
+        } else {
+          this.image = value;
+          resolve();
+        }
+      });
+    });
   }
 
   toBuffer(): Promise<Buffer> {
-    return this.image.toBuffer();
+    return this.image.getBufferAsync(this.image.getMIME());
+  }
+
+  static async fromBuffer(buffer: Buffer): Promise<ImageBuilder> {
+    const image = await Jimp.read(buffer);
+    return new ImageBuilder(image);
   }
 }
