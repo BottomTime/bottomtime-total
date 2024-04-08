@@ -106,7 +106,7 @@ export class UserAvatarController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get()
-  async getAvatar(): Promise<void> {}
+  async getAvatarUrls(): Promise<void> {}
 
   /**
    * @openapi
@@ -152,7 +152,7 @@ export class UserAvatarController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(':size')
-  async getSizedAvatar(): Promise<void> {}
+  async getAvatar(): Promise<void> {}
 
   /**
    * @openapi

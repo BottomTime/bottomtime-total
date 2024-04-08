@@ -62,6 +62,21 @@ aws configure
 
 and enter your key, secret, and region when prompted. (`us-east-1` can be used as the region.)
 
+### LIBVIPS
+
+> **NOTE:** This _might_ be necessary depending on your system. At the time of this writing it is required, on dev machines running MacOS on Apple Silicon.
+> Results may vary on other platforms.
+
+This is a library used for image manipulation. It is a dependency of the [Sharp](https://sharp.pixelplumbing.com/) library.
+Sharp will attempt to build this from source if it is not found on your system when Sharp is initially installed via yarn.
+If you run into issues where Sharp complains that it cannot load the correct version of the library
+then install the correct version manually and then use yarn to force sharp to reinstall using the appropriate version of libvips.
+
+```bash
+brew install vips
+yarn workspace @bottomtime/service add --force sharp
+```
+
 ### Terraform
 
 If you plan on deploying a running version of the platform to AWS then you'll need
