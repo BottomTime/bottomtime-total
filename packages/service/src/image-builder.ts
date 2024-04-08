@@ -43,14 +43,20 @@ export class ImageBuilder {
 
   resize(width: number, height?: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.image.resize(width, height || width, (err, value) => {
-        if (err) {
-          reject(err);
-        } else {
-          this.image = value;
-          resolve();
-        }
-      });
+      // TODO: Yeesh! This operation is slow.  Gotta find a faster library.
+      this.image.resize(
+        width,
+        height || width,
+        Jimp.RESIZE_NEAREST_NEIGHBOR,
+        (err, value) => {
+          if (err) {
+            reject(err);
+          } else {
+            this.image = value;
+            resolve();
+          }
+        },
+      );
     });
   }
 
