@@ -20,7 +20,7 @@ import { UsersService } from './users.service';
       NotificationEntity,
     ]),
     EmailModule.forFeature(),
-    StorageModule,
+    StorageModule.forFeature(),
     AuthModule,
   ],
   providers: [UsersService, NotificationsService],

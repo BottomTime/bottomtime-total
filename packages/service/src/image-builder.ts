@@ -68,4 +68,8 @@ export class ImageBuilder {
     const image = await Jimp.read(buffer);
     return new ImageBuilder(image);
   }
+
+  clone(): ImageBuilder {
+    return new ImageBuilder(this.image.clone());
+  }
 }

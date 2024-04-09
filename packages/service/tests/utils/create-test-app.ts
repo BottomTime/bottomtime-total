@@ -15,7 +15,13 @@ export async function createTestApp(
   const app = await createApp(Log, async (): Promise<ServerDependencies> => {
     return {
       mailClient: deps.mailClient ?? new TestMailer(),
-      s3Client: deps.s3Client ?? new S3Client({ region: 'us-east-1' }),
+      s3Client:
+        deps.s3Client ??
+        new S3Client({
+          forcePathStyle: true,
+          endpoint: 'http://localhost:4569/',
+          region: 'us-east-1',
+        }),
       dataSource: deps.dataSource ?? {
         type: 'postgres',
         url: PostgresUri,
@@ -23,6 +29,6 @@ export async function createTestApp(
       },
     };
   });
-  await app.init();
-  return app;
+
+  return await app.init();
 }

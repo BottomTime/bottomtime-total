@@ -67,6 +67,11 @@ export class Profile {
     this.data = await this.Users.save(this.data);
   }
 
+  async setAvatarUrl(avatarUrl: string | null): Promise<void> {
+    await this.Users.update({ id: this.data.id }, { avatar: avatarUrl });
+    this.data.avatar = avatarUrl;
+  }
+
   toJSON(): ProfileDTO {
     return {
       avatar: this.avatar ?? undefined,

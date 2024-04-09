@@ -170,14 +170,16 @@ export const VerifyEmailParamsSchema = z.object({
 });
 export type VerifyEmailParamsDTO = z.infer<typeof VerifyEmailParamsSchema>;
 
-export const SetProfileAvatarParamsSchema = z
-  .object({
+export const SetProfileAvatarParamsSchema = z.union([
+  z.object({
+    avatar: z.unknown(),
     left: z.coerce.number().int().min(0),
     top: z.coerce.number().int().min(0),
     width: z.coerce.number().int().min(1),
     height: z.coerce.number().int().min(1),
-  })
-  .optional();
+  }),
+  z.object({ avatar: z.unknown() }),
+]);
 export type SetProfileAvatarParamsDTO = z.infer<
   typeof SetProfileAvatarParamsSchema
 >;

@@ -124,4 +124,6 @@ swagger.json
 # Vite timestamp files
 vite.config.ts.timestamp*
 
+# Docker container volumes
 .postgresql/
+.s3/

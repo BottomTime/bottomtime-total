@@ -4,28 +4,56 @@ import {
 } from '@bottomtime/api';
 
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Head,
+  Inject,
+  NotFoundException,
   Post,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { Express } from 'express';
+import { Response } from 'express';
 import 'multer';
-import { ZodValidator } from 'src/zod-validator';
+import { URL, resolve } from 'url';
 
+import { AssertAuth } from '../auth';
+import { Config } from '../config';
+import { ImageBuilder } from '../image-builder';
+import { StorageService } from '../storage';
+import { ZodValidator } from '../zod-validator';
 import { AssertAccountOwner } from './assert-account-owner.guard';
-import { AssertTargetUser } from './assert-target-user.guard';
+import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+import { User } from './user';
 
 @Controller('/api/users/:username/avatar')
-@UseGuards(AssertTargetUser, AssertAccountOwner)
+@UseGuards(AssertTargetUser)
 export class UserAvatarController {
+  constructor(
+    @Inject(StorageService) private readonly storage: StorageService,
+  ) {}
+
+  private getBaseUrl(username: string): string {
+    return new URL(`/api/users/${username}/avatar/`, Config.baseUrl).toString();
+  }
+
+  private getUrls(username: string) {
+    const base = this.getBaseUrl(username);
+    return {
+      '32x32': resolve(base, './32x32'),
+      '64x64': resolve(base, './64x64'),
+      '128x128': resolve(base, './128x128'),
+      '256x256': resolve(base, './256x256'),
+    };
+  }
+
   /**
    * @openapi
    * /api/users/{username}/avatar:
@@ -46,7 +74,12 @@ export class UserAvatarController {
    *         description: The request failed due to an unexpected internal server error.
    */
   @Head()
-  async hasAvatar(): Promise<void> {}
+  async hasAvatar(
+    @TargetUser() user: User,
+    @Res() res: Response,
+  ): Promise<void> {
+    res.sendStatus(user.profile.avatar ? 200 : 404);
+  }
 
   /**
    * @openapi
@@ -106,7 +139,15 @@ export class UserAvatarController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get()
-  async getAvatarUrls(): Promise<void> {}
+  async getAvatarUrls(
+    @TargetUser() user: User,
+  ): Promise<Record<string, string>> {
+    if (!user.profile.avatar) {
+      throw new NotFoundException('User does not have an avatar saved.');
+    }
+
+    return this.getUrls(user.username);
+  }
 
   /**
    * @openapi
@@ -269,12 +310,87 @@ export class UserAvatarController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post()
-  @UseInterceptors(FileInterceptor('avatar'))
+  @UseGuards(AssertAuth, AssertAccountOwner)
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      limits: {
+        files: 1,
+        fileSize: 10 * 1024 * 1024, // 10Mb
+      },
+    }),
+  )
   async uploadAvatar(
-    @UploadedFile() avatar: Express.Multer.File,
-    @Body(new ZodValidator(SetProfileAvatarParamsSchema))
+    @TargetUser() user: User,
+    @Body(new ZodValidator(SetProfileAvatarParamsSchema.optional()))
     params: SetProfileAvatarParamsDTO,
-  ): Promise<void> {}
+    @UploadedFile()
+    avatar: Express.Multer.File | undefined,
+  ): Promise<Record<string, string>> {
+    // 1. Validate the image
+    // 2. Crop/resize the image
+    // 3. Save the image
+    // 4. Update database
+    // 5. Return URLs
+
+    if (!avatar) {
+      throw new BadRequestException('No avatar image was provided.');
+    }
+
+    if (!avatar.mimetype.startsWith('image/')) {
+      throw new BadRequestException(
+        `The uploaded file has an invalid MIME type: "${avatar.mimetype}". Expected "image/*".`,
+      );
+    }
+
+    const imageBuilder256 = await ImageBuilder.fromBuffer(avatar.buffer);
+
+    if ('left' in params) {
+      await imageBuilder256.crop(
+        params.left,
+        params.top,
+        params.width,
+        params.height,
+      );
+    }
+
+    const imageBuilder128 = imageBuilder256.clone();
+    const imageBuilder64 = imageBuilder256.clone();
+    const imageBuilder32 = imageBuilder256.clone();
+
+    await Promise.all([
+      imageBuilder256.resize(256),
+      imageBuilder128.resize(128),
+      imageBuilder64.resize(64),
+      imageBuilder32.resize(32),
+    ]);
+
+    await Promise.all([
+      this.storage.writeFile(
+        `avatars/${user.id}/256x256`,
+        await imageBuilder256.toBuffer(),
+        avatar.mimetype,
+      ),
+      this.storage.writeFile(
+        `avatars/${user.id}/128x128`,
+        await imageBuilder128.toBuffer(),
+        avatar.mimetype,
+      ),
+      this.storage.writeFile(
+        `avatars/${user.id}/64x64`,
+        await imageBuilder64.toBuffer(),
+        avatar.mimetype,
+      ),
+      this.storage.writeFile(
+        `avatars/${user.id}/32x32`,
+        await imageBuilder32.toBuffer(),
+        avatar.mimetype,
+      ),
+    ]);
+
+    await user.profile.setAvatarUrl(`/api/users/${user.username}/avatar`);
+
+    return this.getUrls(user.username);
+  }
 
   /**
    * @openapi
