@@ -57,10 +57,13 @@ export class UserAvatarController {
   private getUrls(username: string): ListAvatarURLsResponseDTO {
     const base = this.getBaseUrl(username);
     return {
-      [AvatarSize.Small]: resolve(base, './32x32'),
-      [AvatarSize.Medium]: resolve(base, './64x64'),
-      [AvatarSize.Large]: resolve(base, './128x128'),
-      [AvatarSize.XLarge]: resolve(base, './256x256'),
+      root: base,
+      sizes: {
+        [AvatarSize.Small]: resolve(base, './32x32'),
+        [AvatarSize.Medium]: resolve(base, './64x64'),
+        [AvatarSize.Large]: resolve(base, './128x128'),
+        [AvatarSize.XLarge]: resolve(base, './256x256'),
+      },
     };
   }
 

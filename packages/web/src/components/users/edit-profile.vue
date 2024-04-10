@@ -19,6 +19,7 @@
   <ChangeAvatarDialog
     :avatar-url="data.avatar"
     :visible="showAvatarDialog"
+    :is-saving="isSavingAvatar"
     @cancel="showAvatarDialog = false"
     @save="onAvatarChanged"
   />
@@ -148,7 +149,7 @@ import { ProfileDTO, UserDTO } from '@bottomtime/api';
 import { reactive, ref } from 'vue';
 
 import { useClient } from '../../api-client';
-import { SelectOption, ToastType } from '../../common';
+import { Coordinates, SelectOption, ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
@@ -203,14 +204,32 @@ const data = reactive<ProfileData>({
 const showAvatarDialog = ref(false);
 const showConfirmResetDialog = ref(false);
 const isSaving = ref(false);
+const isSavingAvatar = ref(false);
 
 const emit = defineEmits<{
   (e: 'save-profile', profile: ProfileDTO): void;
 }>();
 
-function onAvatarChanged(avatarUrl: string | undefined) {
-  data.avatar = avatarUrl ?? '';
-  showAvatarDialog.value = false;
+async function onAvatarChanged(file: File, coords: Coordinates) {
+  isSavingAvatar.value = true;
+
+  await oops(async () => {
+    const { profile } = client.users.wrapDTO(props.user);
+
+    const avatars = await profile.uploadAvatar(file, coords);
+    emit('save-profile', {
+      ...props.user.profile,
+      avatar: avatars.root,
+    });
+    toasts.toast({
+      id: 'avatar-uploaded',
+      message: 'Avatar was successfully uploaded.',
+      type: ToastType.Success,
+    });
+    showAvatarDialog.value = false;
+  });
+
+  isSavingAvatar.value = false;
 }
 
 async function onSave() {
@@ -219,7 +238,6 @@ async function onSave() {
   await oops(async () => {
     const { profile } = client.users.wrapDTO(props.user);
 
-    profile.avatar = data.avatar || undefined;
     profile.bio = data.bio || undefined;
     profile.birthdate = data.birthdate || undefined;
     profile.experienceLevel = data.experienceLevel || undefined;

@@ -22,10 +22,10 @@ export enum AvatarSize {
   XLarge = '256x256',
 }
 
-const ListAvatarURLsResponseSchema = z.record(
-  z.nativeEnum(AvatarSize),
-  z.string(),
-);
+const ListAvatarURLsResponseSchema = z.object({
+  root: z.string(),
+  sizes: z.record(z.nativeEnum(AvatarSize), z.string()),
+});
 export type ListAvatarURLsResponseDTO = z.infer<
   typeof ListAvatarURLsResponseSchema
 >;

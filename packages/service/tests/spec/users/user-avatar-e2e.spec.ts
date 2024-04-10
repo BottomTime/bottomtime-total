@@ -216,10 +216,13 @@ describe('User Avatar E2E tests', () => {
 
   describe('when listing URLs for user avatars', () => {
     const expectedUrls = {
-      '32x32': 'http://bottomti.me/api/users/Joe.Regular/avatar/32x32',
-      '64x64': 'http://bottomti.me/api/users/Joe.Regular/avatar/64x64',
-      '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
-      '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
+      root: 'http://bottomti.me/api/users/Joe.Regular/avatar/',
+      sizes: {
+        '32x32': 'http://bottomti.me/api/users/Joe.Regular/avatar/32x32',
+        '64x64': 'http://bottomti.me/api/users/Joe.Regular/avatar/64x64',
+        '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
+        '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
+      },
     };
 
     it('will return a list of URLs for the user avatar', async () => {
@@ -376,10 +379,13 @@ describe('User Avatar E2E tests', () => {
         .expect(201);
 
       expect(body).toEqual({
-        '32x32': 'http://bottomti.me/api/users/Joe.Regular/avatar/32x32',
-        '64x64': 'http://bottomti.me/api/users/Joe.Regular/avatar/64x64',
-        '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
-        '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
+        root: 'http://bottomti.me/api/users/Joe.Regular/avatar/',
+        sizes: {
+          '32x32': 'http://bottomti.me/api/users/Joe.Regular/avatar/32x32',
+          '64x64': 'http://bottomti.me/api/users/Joe.Regular/avatar/64x64',
+          '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
+          '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
+        },
       });
 
       const { avatar: saved } = await Users.findOneOrFail({
@@ -417,10 +423,13 @@ describe('User Avatar E2E tests', () => {
         .expect(201);
 
       expect(body).toEqual({
-        '32x32': 'http://bottomti.me/api/users/Joe.Regular/avatar/32x32',
-        '64x64': 'http://bottomti.me/api/users/Joe.Regular/avatar/64x64',
-        '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
-        '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
+        root: 'http://bottomti.me/api/users/Joe.Regular/avatar/',
+        sizes: {
+          '32x32': 'http://bottomti.me/api/users/Joe.Regular/avatar/32x32',
+          '64x64': 'http://bottomti.me/api/users/Joe.Regular/avatar/64x64',
+          '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
+          '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
+        },
       });
 
       const { avatar: saved } = await Users.findOneOrFail({
@@ -457,10 +466,13 @@ describe('User Avatar E2E tests', () => {
         .expect(201);
 
       expect(body).toEqual({
-        '32x32': 'http://bottomti.me/api/users/Joe.Regular/avatar/32x32',
-        '64x64': 'http://bottomti.me/api/users/Joe.Regular/avatar/64x64',
-        '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
-        '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
+        root: 'http://bottomti.me/api/users/Joe.Regular/avatar/',
+        sizes: {
+          '32x32': 'http://bottomti.me/api/users/Joe.Regular/avatar/32x32',
+          '64x64': 'http://bottomti.me/api/users/Joe.Regular/avatar/64x64',
+          '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
+          '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
+        },
       });
     });
   });

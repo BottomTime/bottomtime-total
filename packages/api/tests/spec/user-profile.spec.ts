@@ -16,10 +16,13 @@ import { createScope } from '../fixtures/nock';
 import { BasicUser } from '../fixtures/users';
 
 const TestURLs: ListAvatarURLsResponseDTO = {
-  [AvatarSize.Small]: 'https://example.com/avatars/test_user/32x32',
-  [AvatarSize.Medium]: 'https://example.com/avatars/test_user/64x64',
-  [AvatarSize.Large]: 'https://example.com/avatars/test_user/128x128',
-  [AvatarSize.XLarge]: 'https://example.com/avatars/test_user/256x256',
+  root: 'https://example.com/avatars/test_user',
+  sizes: {
+    [AvatarSize.Small]: 'https://example.com/avatars/test_user/32x32',
+    [AvatarSize.Medium]: 'https://example.com/avatars/test_user/64x64',
+    [AvatarSize.Large]: 'https://example.com/avatars/test_user/128x128',
+    [AvatarSize.XLarge]: 'https://example.com/avatars/test_user/256x256',
+  },
 } as const;
 
 describe('UserProfile client object', () => {

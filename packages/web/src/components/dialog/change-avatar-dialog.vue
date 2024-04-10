@@ -6,9 +6,19 @@
     @close="$emit('cancel')"
   >
     <template #default>
+      <div
+        v-if="isSaving"
+        class="w-full h-[400px] text-xl italic flex justify-center items-center space-x-3"
+      >
+        <span>
+          <i class="fas fa-spinner fa-spin"></i>
+        </span>
+        <span>Processing image...</span>
+      </div>
+
       <!-- Show image cropper if we have a URL -->
       <ImageCropper
-        v-if="imageUrl"
+        v-else-if="imageUrl"
         class="w-full h-[400px]"
         default-boundaries="fill"
         :image="imageUrl"
@@ -23,7 +33,7 @@
 
     <template #buttons>
       <FormButton
-        v-if="imageUrl && coordinates"
+        v-if="file && coordinates"
         type="primary"
         :is-loading="isSaving"
         @click="onSave"
@@ -32,7 +42,7 @@
       </FormButton>
 
       <FormButton
-        v-if="imageUrl && coordinates"
+        v-if="file && coordinates"
         :disabled="isSaving"
         @click="onChangeImage"
       >
@@ -67,30 +77,32 @@ withDefaults(defineProps<ChangeAvatarDialogProps>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'save', imageUrl: string, coordinates: Coordinates): void;
+  (e: 'save', file: File, coordinates: Coordinates): void;
   (e: 'cancel'): void;
 }>();
 
+const file = ref<File | null>(null);
 const imageUrl = ref<string | null>(null);
 const coordinates = ref<Coordinates | null>(null);
 
 function onSave() {
-  if (imageUrl.value && coordinates.value) {
-    emit('save', imageUrl.value, coordinates.value);
+  if (file.value && coordinates.value) {
+    emit('save', file.value, coordinates.value);
   }
 }
 
 function onChangeImage() {
   if (imageUrl.value) URL.revokeObjectURL(imageUrl.value);
   imageUrl.value = null;
+  file.value = null;
   coordinates.value = null;
 }
 
 function onFileSelect(files: FileList) {
   if (!files.length) return;
 
-  const file = files[0];
-  imageUrl.value = URL.createObjectURL(file);
+  file.value = files[0];
+  imageUrl.value = URL.createObjectURL(file.value);
 }
 
 function onImageCropperChange(coords: Coordinates) {
