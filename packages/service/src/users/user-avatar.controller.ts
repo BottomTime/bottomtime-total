@@ -12,11 +12,11 @@ import {
   Head,
   HttpCode,
   Inject,
+  Logger,
   NotFoundException,
   Param,
   Post,
   Res,
-  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -42,6 +42,8 @@ const SizeParams = new Set(AvatarSizes.map((size) => `${size}x${size}`));
 @Controller('/api/users/:username/avatar')
 @UseGuards(AssertTargetUser)
 export class UserAvatarController {
+  private readonly log = new Logger(UserAvatarController.name);
+
   constructor(
     @Inject(StorageService) private readonly storage: StorageService,
   ) {}
@@ -216,17 +218,22 @@ export class UserAvatarController {
       throw new NotFoundException('User does not have an avatar saved.');
     }
 
-    const file = await this.storage.readFile(
-      `avatars/${user.id}/${size}x${size}`,
-    );
+    const filePath = `avatars/${user.id}/${size}`;
+    this.log.debug(`Attempting to retrieve file "${filePath}"...`);
+    const file = await this.storage.readFile(filePath);
 
     if (!file) {
       throw new NotFoundException('Avatar is not available in specified size.');
     }
 
-    // if (file?.mimeType) res.type(file.mimeType);
+    if (file.mimeType) res.type(file.mimeType);
 
-    // new StreamableFile();
+    this.log.debug(`Streaming file "${filePath}" to client...`);
+    for await (const chunk of file.content) {
+      res.write(chunk);
+    }
+
+    res.end();
   }
 
   /**
@@ -360,12 +367,6 @@ export class UserAvatarController {
     @UploadedFile()
     avatar: Express.Multer.File | undefined,
   ): Promise<Record<string, string>> {
-    // 1. Validate the image
-    // 2. Crop/resize the image
-    // 3. Save the image
-    // 4. Update database
-    // 5. Return URLs
-
     if (!avatar) {
       throw new BadRequestException('No avatar image was provided.');
     }
@@ -376,9 +377,11 @@ export class UserAvatarController {
       );
     }
 
+    this.log.debug('Processing uploaded avatar image...');
     const imageBuilder256 = await ImageBuilder.fromBuffer(avatar.buffer);
 
     if ('left' in params) {
+      this.log.debug('Cropping uploaded image to specified region...');
       await imageBuilder256.crop(
         params.left,
         params.top,
@@ -391,6 +394,9 @@ export class UserAvatarController {
     const imageBuilder64 = imageBuilder256.clone();
     const imageBuilder32 = imageBuilder256.clone();
 
+    this.log.debug(
+      'Resizing uploaded avatar to 256x256, 128x128, 64x64, and 32x32...',
+    );
     await Promise.all([
       imageBuilder256.resize(256),
       imageBuilder128.resize(128),
@@ -398,6 +404,7 @@ export class UserAvatarController {
       imageBuilder32.resize(32),
     ]);
 
+    this.log.debug('Persisting finished images to storage...');
     await Promise.all([
       this.storage.writeFile(
         `avatars/${user.id}/256x256`,
@@ -421,6 +428,7 @@ export class UserAvatarController {
       ),
     ]);
 
+    this.log.debug('Updating user profile with new avatar URL...');
     await user.profile.setAvatarUrl(`/api/users/${user.username}/avatar`);
 
     return this.getUrls(user.username);
@@ -469,11 +477,14 @@ export class UserAvatarController {
   @HttpCode(204)
   @UseGuards(AssertAuth, AssertAccountOwner)
   async deleteAvatar(@TargetUser() user: User): Promise<void> {
+    this.log.debug('Deleting user avatars from storage...');
     await Promise.all([
       AvatarSizes.map((size) =>
         this.storage.deleteFile(`avatars/${user.id}/${size}x${size}`),
       ),
     ]);
+
+    this.log.debug('Clearing user profile avatar URL...');
     await user.profile.setAvatarUrl(null);
   }
 }

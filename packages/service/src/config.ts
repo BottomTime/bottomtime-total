@@ -1,6 +1,15 @@
 /* eslint-disable no-process-env */
 import 'dotenv/config';
 
+function evaluateBoolean(
+  value: string | undefined,
+  defaultValue: boolean,
+): boolean {
+  if (/^true|1$/i.test(value || '')) return true;
+  else if (/^false|0$/i.test(value || '')) return false;
+  else return defaultValue;
+}
+
 function toNumber(value: string | undefined, defaultValue: number): number {
   if (!value) return defaultValue;
   const parsed = parseInt(value);
@@ -112,6 +121,16 @@ export class Config {
   /** The base URL at which the site will respond to requests. */
   static get baseUrl(): string {
     return process.env.BT_BASE_URL ?? 'http://localhost:8080/';
+  }
+
+  /**
+   * Use a faster (but lower quality) algorithm when resizing images. Default is "true".
+   * This is useful in testing but in production, this should be set to false to preserve image quality.
+   *
+   * Valid values are `true`, `false`, `1`, and `0`.
+   */
+  static get fastImageResize(): boolean {
+    return evaluateBoolean(process.env.BT_FAST_IMAGE_RESIZE, true);
   }
 
   /** Max number of friends any one user can have. */

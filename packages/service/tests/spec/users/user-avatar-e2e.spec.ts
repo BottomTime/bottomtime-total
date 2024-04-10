@@ -101,11 +101,11 @@ async function purgeBucket(s3Client: S3Client): Promise<void> {
   }
 }
 
-async function loadTestImage(): Promise<Buffer> {
+async function loadTestImage(size: string): Promise<Buffer> {
   let file: FileHandle | undefined;
   try {
     file = await fs.open(
-      path.resolve(__dirname, '../../fixtures/test-image.jpg'),
+      path.resolve(__dirname, `../../fixtures/test-image-${size}.jpg`),
     );
     return file.readFile();
   } finally {
@@ -467,7 +467,7 @@ describe('User Avatar E2E tests', () => {
 
   describe("when removing a user's avatar", () => {
     it("will remove a user's avatar and delete the images", async () => {
-      const img = await loadTestImage();
+      const img = await loadTestImage('32x32');
       await Promise.all(
         AvatarSizes.map((size) =>
           s3Client.send(
@@ -505,7 +505,7 @@ describe('User Avatar E2E tests', () => {
     });
 
     it("will allow an admin to delete a user's avatar", async () => {
-      const img = await loadTestImage();
+      const img = await loadTestImage('32x32');
       await Promise.all(
         AvatarSizes.map((size) =>
           s3Client.send(
@@ -569,10 +569,10 @@ describe('User Avatar E2E tests', () => {
     });
   });
 
-  describe.only('when downloading an avatar', () => {
+  describe('when downloading an avatar', () => {
     AvatarSizes.forEach((size) => {
-      it.skip(`will return the avatar when requested at ${size}x${size}`, async () => {
-        const img = await loadTestImage();
+      it(`will return the avatar when requested at ${size}x${size}`, async () => {
+        const img = await loadTestImage(`${size}x${size}`);
         await s3Client.send(
           new PutObjectCommand({
             Bucket: BucketName,
@@ -585,10 +585,11 @@ describe('User Avatar E2E tests', () => {
         const { body } = await request(server)
           .get(getUrl(regularUser.username, parseInt(size)))
           .set(...authHeader)
-          .buffer()
           .expect(200);
 
-        expect(body).toBe('');
+        const buffer = Buffer.from(body);
+        const md5 = createHash('md5').update(buffer).digest('hex');
+        expect(md5).toMatchSnapshot();
       });
     });
 

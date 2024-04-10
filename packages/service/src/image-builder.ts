@@ -1,5 +1,7 @@
 import Jimp from 'jimp';
 
+import { Config } from './config';
+
 export type ImageMetadata = {
   format: string;
   width: number;
@@ -47,7 +49,9 @@ export class ImageBuilder {
       this.image.resize(
         width,
         height || width,
-        Jimp.RESIZE_NEAREST_NEIGHBOR,
+        Config.fastImageResize
+          ? Jimp.RESIZE_NEAREST_NEIGHBOR
+          : Jimp.RESIZE_HERMITE,
         (err, value) => {
           if (err) {
             reject(err);
