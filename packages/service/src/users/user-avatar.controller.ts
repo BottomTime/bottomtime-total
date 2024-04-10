@@ -1,4 +1,6 @@
 import {
+  AvatarSize,
+  ListAvatarURLsResponseDTO,
   SetProfileAvatarParamsDTO,
   SetProfileAvatarParamsSchema,
 } from '@bottomtime/api';
@@ -52,13 +54,13 @@ export class UserAvatarController {
     return new URL(`/api/users/${username}/avatar/`, Config.baseUrl).toString();
   }
 
-  private getUrls(username: string) {
+  private getUrls(username: string): ListAvatarURLsResponseDTO {
     const base = this.getBaseUrl(username);
     return {
-      '32x32': resolve(base, './32x32'),
-      '64x64': resolve(base, './64x64'),
-      '128x128': resolve(base, './128x128'),
-      '256x256': resolve(base, './256x256'),
+      [AvatarSize.Small]: resolve(base, './32x32'),
+      [AvatarSize.Medium]: resolve(base, './64x64'),
+      [AvatarSize.Large]: resolve(base, './128x128'),
+      [AvatarSize.XLarge]: resolve(base, './256x256'),
     };
   }
 
@@ -149,7 +151,7 @@ export class UserAvatarController {
   @Get()
   async getAvatarUrls(
     @TargetUser() user: User,
-  ): Promise<Record<string, string>> {
+  ): Promise<ListAvatarURLsResponseDTO> {
     if (!user.profile.avatar) {
       throw new NotFoundException('User does not have an avatar saved.');
     }
@@ -366,7 +368,7 @@ export class UserAvatarController {
     params: SetProfileAvatarParamsDTO,
     @UploadedFile()
     avatar: Express.Multer.File | undefined,
-  ): Promise<Record<string, string>> {
+  ): Promise<ListAvatarURLsResponseDTO> {
     if (!avatar) {
       throw new BadRequestException('No avatar image was provided.');
     }

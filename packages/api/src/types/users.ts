@@ -15,6 +15,21 @@ export enum UsersSortBy {
   MemberSince = 'memberSince',
 }
 
+export enum AvatarSize {
+  Small = '32x32',
+  Medium = '64x64',
+  Large = '128x128',
+  XLarge = '256x256',
+}
+
+const ListAvatarURLsResponseSchema = z.record(
+  z.nativeEnum(AvatarSize),
+  z.string(),
+);
+export type ListAvatarURLsResponseDTO = z.infer<
+  typeof ListAvatarURLsResponseSchema
+>;
+
 export const UsernameRegex = /^[a-z0-9]+([_.-][a-z0-9]+)*$/i;
 export const PasswordStrengthRegex =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/;
@@ -172,13 +187,12 @@ export type VerifyEmailParamsDTO = z.infer<typeof VerifyEmailParamsSchema>;
 
 export const SetProfileAvatarParamsSchema = z.union([
   z.object({
-    avatar: z.unknown(),
     left: z.coerce.number().int().min(0),
     top: z.coerce.number().int().min(0),
     width: z.coerce.number().int().min(1),
     height: z.coerce.number().int().min(1),
   }),
-  z.object({ avatar: z.unknown() }),
+  z.object({}),
 ]);
 export type SetProfileAvatarParamsDTO = z.infer<
   typeof SetProfileAvatarParamsSchema

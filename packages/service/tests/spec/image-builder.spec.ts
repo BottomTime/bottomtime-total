@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import fs, { FileHandle } from 'fs/promises';
 import path from 'path';
 
@@ -34,7 +35,9 @@ describe('ImageBuilder class', () => {
   it('will crop a section of the image', async () => {
     await builder.crop(260, 1150, 1440, 1440);
     const result = await builder.toBuffer();
-    expect(result.toString('base64')).toMatchSnapshot();
+
+    const md5 = createHash('md5').update(result).digest('hex');
+    expect(md5).toMatchSnapshot();
   });
 
   it('will throw an exception if crop bounding area is invalid', async () => {
@@ -42,12 +45,11 @@ describe('ImageBuilder class', () => {
   });
 
   it('will resize the image', async () => {
-    await builder.resize(900, 2000);
+    await builder.resize(225, 500);
     const result = await builder.toBuffer();
 
-    const file = await fs.open(path.resolve(__dirname, './result.jpg'), 'w');
-    await file.write(result);
-    await file.close();
+    const md5 = createHash('md5').update(result).digest('hex');
+    expect(md5).toMatchSnapshot();
   });
 
   it('will throw an exception if image size is invalid', async () => {
