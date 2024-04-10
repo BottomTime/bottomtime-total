@@ -8,6 +8,8 @@ import {
   DeleteObjectCommand,
   GetObjectCommand,
   ListObjectsV2Command,
+  NoSuchKey,
+  PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
 import { INestApplication } from '@nestjs/common';
@@ -17,10 +19,13 @@ import fs, { FileHandle } from 'fs/promises';
 import path from 'path';
 import request from 'supertest';
 import { Repository } from 'typeorm';
+import { resolve } from 'url';
 
 import { UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
+
+const AvatarSizes: ReadonlyArray<string> = ['32', '64', '128', '256'];
 
 const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
 const AdminUserData: Partial<UserEntity> = {
@@ -72,7 +77,9 @@ const OtherUserData: Partial<UserEntity> = {
 const BucketName = 'avatar-test-bucket';
 
 function getUrl(username?: string, size?: number): string {
-  return `/api/users/${username || RegularUserData.username}/avatar`;
+  let url = `/api/users/${username || RegularUserData.username}/avatar`;
+  if (size) url = `${url}/${size}x${size}`;
+  return url;
 }
 
 async function purgeBucket(s3Client: S3Client): Promise<void> {
@@ -97,7 +104,9 @@ async function purgeBucket(s3Client: S3Client): Promise<void> {
 async function loadTestImage(): Promise<Buffer> {
   let file: FileHandle | undefined;
   try {
-    file = await fs.open(path.resolve(__dirname, '../fixtures/test-image.jpg'));
+    file = await fs.open(
+      path.resolve(__dirname, '../../fixtures/test-image.jpg'),
+    );
     return file.readFile();
   } finally {
     if (file) await file.close();
@@ -379,7 +388,7 @@ describe('User Avatar E2E tests', () => {
       });
       expect(saved).toBe('/api/users/Joe.Regular/avatar');
 
-      ['32', '64', '128', '256'].forEach(async (size) => {
+      AvatarSizes.forEach(async (size) => {
         const { Body } = await s3Client.send(
           new GetObjectCommand({
             Bucket: BucketName,
@@ -420,7 +429,7 @@ describe('User Avatar E2E tests', () => {
       });
       expect(saved).toBe('/api/users/Joe.Regular/avatar');
 
-      ['32', '64', '128', '256'].forEach(async (size) => {
+      AvatarSizes.forEach(async (size) => {
         const { Body } = await s3Client.send(
           new GetObjectCommand({
             Bucket: BucketName,
@@ -453,6 +462,165 @@ describe('User Avatar E2E tests', () => {
         '128x128': 'http://bottomti.me/api/users/Joe.Regular/avatar/128x128',
         '256x256': 'http://bottomti.me/api/users/Joe.Regular/avatar/256x256',
       });
+    });
+  });
+
+  describe("when removing a user's avatar", () => {
+    it("will remove a user's avatar and delete the images", async () => {
+      const img = await loadTestImage();
+      await Promise.all(
+        AvatarSizes.map((size) =>
+          s3Client.send(
+            new PutObjectCommand({
+              Bucket: BucketName,
+              Key: `avatars/${regularUser.id}/${size}x${size}`,
+              Body: img,
+              ContentType: 'image/jpeg',
+            }),
+          ),
+        ),
+      );
+
+      await request(server)
+        .delete(getUrl())
+        .set(...authHeader)
+        .expect(204);
+
+      const { avatar: saved } = await Users.findOneOrFail({
+        where: { id: regularUser.id },
+        select: ['id', 'avatar'],
+      });
+      expect(saved).toBeNull();
+
+      AvatarSizes.forEach(async (size) => {
+        await expect(
+          s3Client.send(
+            new GetObjectCommand({
+              Bucket: BucketName,
+              Key: `avatars/${regularUser.id}/${size}x${size}`,
+            }),
+          ),
+        ).rejects.toThrow(NoSuchKey);
+      });
+    });
+
+    it("will allow an admin to delete a user's avatar", async () => {
+      const img = await loadTestImage();
+      await Promise.all(
+        AvatarSizes.map((size) =>
+          s3Client.send(
+            new PutObjectCommand({
+              Bucket: BucketName,
+              Key: `avatars/${regularUser.id}/${size}x${size}`,
+              Body: img,
+              ContentType: 'image/jpeg',
+            }),
+          ),
+        ),
+      );
+
+      await request(server)
+        .delete(getUrl())
+        .set(...adminAuthHeader)
+        .expect(204);
+
+      const { avatar: saved } = await Users.findOneOrFail({
+        where: { id: regularUser.id },
+        select: ['id', 'avatar'],
+      });
+      expect(saved).toBeNull();
+
+      AvatarSizes.forEach(async (size) => {
+        await expect(
+          s3Client.send(
+            new GetObjectCommand({
+              Bucket: BucketName,
+              Key: `avatars/${regularUser.id}/${size}x${size}`,
+            }),
+          ),
+        ).rejects.toThrow(NoSuchKey);
+      });
+    });
+
+    it('will do nothing if the user does not have an avatar', async () => {
+      await Users.update({ id: regularUser.id }, { avatar: null });
+      await request(server)
+        .delete(getUrl())
+        .set(...adminAuthHeader)
+        .expect(204);
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server).delete(getUrl()).expect(401);
+    });
+
+    it('will return a 403 response if the user does not have permission to update the avatar', async () => {
+      await request(server)
+        .delete(getUrl())
+        .set(...otherAuthHeader)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the target user does not exist', async () => {
+      await request(server)
+        .delete(getUrl('does.not.exist'))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+  });
+
+  describe.only('when downloading an avatar', () => {
+    AvatarSizes.forEach((size) => {
+      it.skip(`will return the avatar when requested at ${size}x${size}`, async () => {
+        const img = await loadTestImage();
+        await s3Client.send(
+          new PutObjectCommand({
+            Bucket: BucketName,
+            Key: `avatars/${regularUser.id}/${size}x${size}`,
+            Body: img,
+            ContentType: 'image/jpeg',
+          }),
+        );
+
+        const { body } = await request(server)
+          .get(getUrl(regularUser.username, parseInt(size)))
+          .set(...authHeader)
+          .buffer()
+          .expect(200);
+
+        expect(body).toBe('');
+      });
+    });
+
+    it('will return a 404 response if the size is not recognized', async () => {
+      await request(server)
+        .get(resolve(getUrl(), './blah'))
+        .set(...authHeader)
+        .expect(404);
+
+      await request(server)
+        .get(getUrl(regularUser.username, 1024))
+        .set(...authHeader)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the user does not have an avatar', async () => {
+      await Users.update({ id: regularUser.id }, { avatar: null });
+      await request(server)
+        .get(getUrl(regularUser.username, 64))
+        .set(...authHeader)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the user does not exist', async () => {
+      await request(server).get(getUrl('does.not.exist', 32)).expect(404);
+    });
+
+    it('will return a 404 response if the requested file cannot be retrieved from storage', async () => {
+      await request(server)
+        .get(getUrl(regularUser.username, 128))
+        .set(...authHeader)
+        .expect(404);
     });
   });
 });

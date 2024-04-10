@@ -10,10 +10,13 @@ import {
   Delete,
   Get,
   Head,
+  HttpCode,
   Inject,
   NotFoundException,
+  Param,
   Post,
   Res,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -32,6 +35,9 @@ import { ZodValidator } from '../zod-validator';
 import { AssertAccountOwner } from './assert-account-owner.guard';
 import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
 import { User } from './user';
+
+const AvatarSizes: ReadonlyArray<string> = ['32', '64', '128', '256'];
+const SizeParams = new Set(AvatarSizes.map((size) => `${size}x${size}`));
 
 @Controller('/api/users/:username/avatar')
 @UseGuards(AssertTargetUser)
@@ -193,7 +199,35 @@ export class UserAvatarController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(':size')
-  async getAvatar(): Promise<void> {}
+  async getAvatar(
+    @TargetUser() user: User,
+    @Param('size') size: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    if (!SizeParams.has(size)) {
+      throw new NotFoundException(
+        `Resource not found. Avatar size was unrecognized: "${size}". Expected one of: ${AvatarSizes.join(
+          ', ',
+        )}.`,
+      );
+    }
+
+    if (!user.profile.avatar) {
+      throw new NotFoundException('User does not have an avatar saved.');
+    }
+
+    const file = await this.storage.readFile(
+      `avatars/${user.id}/${size}x${size}`,
+    );
+
+    if (!file) {
+      throw new NotFoundException('Avatar is not available in specified size.');
+    }
+
+    // if (file?.mimeType) res.type(file.mimeType);
+
+    // new StreamableFile();
+  }
 
   /**
    * @openapi
@@ -432,5 +466,14 @@ export class UserAvatarController {
    *               $ref: "#/components/schemas/Error"
    */
   @Delete()
-  async deleteAvatar(): Promise<void> {}
+  @HttpCode(204)
+  @UseGuards(AssertAuth, AssertAccountOwner)
+  async deleteAvatar(@TargetUser() user: User): Promise<void> {
+    await Promise.all([
+      AvatarSizes.map((size) =>
+        this.storage.deleteFile(`avatars/${user.id}/${size}x${size}`),
+      ),
+    ]);
+    await user.profile.setAvatarUrl(null);
+  }
 }
