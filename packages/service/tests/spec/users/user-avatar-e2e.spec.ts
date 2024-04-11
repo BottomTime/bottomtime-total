@@ -21,9 +21,12 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 import { resolve } from 'url';
 
+import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
+
+jest.mock('../../../src/config');
 
 const AvatarSizes: ReadonlyArray<string> = ['32', '64', '128', '256'];
 
@@ -114,8 +117,6 @@ async function loadTestImage(size: string): Promise<Buffer> {
 }
 
 describe('User Avatar E2E tests', () => {
-  let oldEnv: object;
-
   let app: INestApplication;
   let server: unknown;
   let Users: Repository<UserEntity>;
@@ -142,9 +143,8 @@ describe('User Avatar E2E tests', () => {
     adminAuthHeader = await createAuthHeader(AdminUserId);
     otherAuthHeader = await createAuthHeader(OtherUserId);
 
-    oldEnv = Object.assign({}, process.env);
-    process.env.BT_BASE_URL = 'http://bottomti.me';
-    process.env.BT_AWS_MEDIA_BUCKET = BucketName;
+    Config.baseUrl = 'http://bottomti.me';
+    Config.aws.s3.mediaBucket = BucketName;
   });
 
   beforeEach(async () => {
@@ -176,7 +176,6 @@ describe('User Avatar E2E tests', () => {
   });
 
   afterAll(async () => {
-    Object.assign(process.env, oldEnv);
     await app.close();
     await s3Client.send(new DeleteBucketCommand({ Bucket: BucketName }));
   });

@@ -4,14 +4,15 @@ import * as Presigner from '@aws-sdk/s3-request-presigner';
 import { open } from 'fs/promises';
 import path from 'path';
 
+import { Config } from '../../../src/config';
 import { StorageService } from '../../../src/storage/storage.service';
 
 jest.mock('@aws-sdk/s3-request-presigner');
+jest.mock('../../../src/config');
 
 describe('Storage Service', () => {
   const bucket = 'test-bucket';
   const key = 'test/file.txt';
-  let env: object;
   let client: S3Client;
   let service: StorageService;
 
@@ -20,12 +21,7 @@ describe('Storage Service', () => {
       region: 'us-east-1',
     });
     service = new StorageService(client);
-    env = Object.assign({}, process.env);
-    process.env.BT_AWS_MEDIA_BUCKET = bucket;
-  });
-
-  afterAll(() => {
-    Object.assign(process.env, env);
+    Config.aws.s3.mediaBucket = bucket;
   });
 
   it('will return file metadata', async () => {

@@ -1,31 +1,27 @@
-/* eslint-disable no-process-env */
 import { SortOrder, UserRole, UsersSortBy } from '@bottomtime/api';
 
 import { compare } from 'bcrypt';
 import { Repository } from 'typeorm';
 
 import { AdminService } from '../../../src/admin';
+import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
 import { User } from '../../../src/users/user';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
 import { InsertableUser, createTestUser } from '../../utils';
 
+jest.mock('../../../src/config');
+
 describe('Admin Service', () => {
   const newPassword = 'IUHI9h023480213(*&*^^&';
   let Users: Repository<UserEntity>;
   let service: AdminService;
-  let oldEnv: object;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     service = new AdminService(Users);
-    oldEnv = Object.assign({}, process.env);
-    process.env.PASSWORD_SALT_ROUNDS = '1';
-  });
-
-  afterAll(() => {
-    Object.assign(process.env, oldEnv);
+    Config.passwordSaltRounds = 1;
   });
 
   [

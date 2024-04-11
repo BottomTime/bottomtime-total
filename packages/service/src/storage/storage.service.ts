@@ -29,7 +29,7 @@ export class StorageService {
   async getFileMetadata(key: string): Promise<FileMetadata | null> {
     try {
       const command = new HeadObjectCommand({
-        Bucket: Config.aws.mediaBucket,
+        Bucket: Config.aws.s3.mediaBucket,
         Key: key,
       });
 
@@ -53,7 +53,7 @@ export class StorageService {
   // Requires s3:deleteObject
   async deleteFile(key: string): Promise<void> {
     const command = new DeleteObjectCommand({
-      Bucket: Config.aws.mediaBucket,
+      Bucket: Config.aws.s3.mediaBucket,
       Key: key,
     });
 
@@ -63,7 +63,7 @@ export class StorageService {
 
   async getSignedUrl(key: string, expiration?: number): Promise<string> {
     const command = new GetObjectCommand({
-      Bucket: Config.aws.mediaBucket,
+      Bucket: Config.aws.s3.mediaBucket,
       Key: key,
     });
 
@@ -82,7 +82,7 @@ export class StorageService {
     }
 
     const command = new ListObjectsV2Command({
-      Bucket: Config.aws.mediaBucket,
+      Bucket: Config.aws.s3.mediaBucket,
       ContinuationToken: options?.continuationToken,
       Delimiter: '/',
       MaxKeys: options?.maxResults ?? 200,
@@ -90,7 +90,7 @@ export class StorageService {
     });
 
     this.log.debug(
-      `Attempting to list files in bucket "${Config.aws.mediaBucket}"...`,
+      `Attempting to list files in bucket "${Config.aws.s3.mediaBucket}"...`,
     );
     const response = await this.client.send(command);
 
@@ -111,7 +111,7 @@ export class StorageService {
   // Requires s3:getObject
   async readFile(key: string): Promise<File | null> {
     const command = new GetObjectCommand({
-      Bucket: Config.aws.mediaBucket,
+      Bucket: Config.aws.s3.mediaBucket,
       Key: key,
     });
 
@@ -143,7 +143,7 @@ export class StorageService {
   ): Promise<FileMetadata> {
     const command = new PutObjectCommand({
       Body: content,
-      Bucket: Config.aws.mediaBucket,
+      Bucket: Config.aws.s3.mediaBucket,
       Key: key,
       ServerSideEncryption: 'AES256',
       StorageClass: 'STANDARD',

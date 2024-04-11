@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import { mount } from '@vue/test-utils';
 
 import PageFooter from '../../../../src/components/core/page-footer.vue';

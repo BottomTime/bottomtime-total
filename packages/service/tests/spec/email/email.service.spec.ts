@@ -1,9 +1,11 @@
-/* eslint-disable no-process-env */
+import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
 import { EmailOptions, EmailService, EmailType } from '../../../src/email';
 import { User } from '../../../src/users/user';
 import { dataSource } from '../../data-source';
 import { TestMailer } from '../../utils';
+
+jest.mock('../../../src/config');
 
 const TestUserData: Partial<UserEntity> = {
   username: 'MostExcellentUser33',
@@ -13,7 +15,6 @@ const TestUserData: Partial<UserEntity> = {
 describe('Email Service', () => {
   let user: User;
 
-  let oldEnv: object;
   let service: EmailService;
   let mailClient: TestMailer;
 
@@ -39,9 +40,8 @@ describe('Email Service', () => {
   } as const;
 
   beforeAll(() => {
-    oldEnv = Object.assign({}, process.env);
-    process.env.BT_ADMIN_EMAIL = 'admin@bottomti.me';
-    process.env.BT_BASE_URL = 'https://bottomti.me/';
+    Config.adminEmail = 'admin@bottomti.me';
+    Config.baseUrl = 'https://bottomti.me/';
 
     const userData = new UserEntity();
     Object.assign(userData, TestUserData);
@@ -56,10 +56,6 @@ describe('Email Service', () => {
       doNotFake: ['nextTick', 'setImmediate'],
       now: new Date('2023-07-20T11:47:36.692Z'),
     });
-  });
-
-  afterAll(() => {
-    Object.assign(process.env, oldEnv);
   });
 
   Object.entries(generateEmailTestCases).forEach(([emailType, options]) => {
