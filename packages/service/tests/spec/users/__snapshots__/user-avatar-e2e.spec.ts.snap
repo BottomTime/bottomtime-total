@@ -8,18 +8,20 @@ exports[`User Avatar E2E tests when downloading an avatar will return the avatar
 
 exports[`User Avatar E2E tests when downloading an avatar will return the avatar when requested at 256x256 1`] = `"2b43538f12405da7db9b9c71872d2963"`;
 
-exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with dimensions specified: 32x32 1`] = `"060379c162e9c57e8bba8b2c9db6e47e"`;
+exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with dimensions specified 1`] = `
+[
+  "060379c162e9c57e8bba8b2c9db6e47e",
+  "6371fa8891d1650abe66c98c3a5d0f50",
+  "9aeb0eee7f81d70512d28590ee2a2646",
+  "62aa2a9cac9efb0d2242b7956ca945f4",
+]
+`;
 
-exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with dimensions specified: 64x64 1`] = `"6371fa8891d1650abe66c98c3a5d0f50"`;
-
-exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with dimensions specified: 128x128 1`] = `"9aeb0eee7f81d70512d28590ee2a2646"`;
-
-exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with dimensions specified: 256x256 1`] = `"62aa2a9cac9efb0d2242b7956ca945f4"`;
-
-exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with no dimensions specified: 32x32 1`] = `"d7d88b07932197d1b93c778b4ee40ba0"`;
-
-exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with no dimensions specified: 64x64 1`] = `"fab38dc578d3f17e9f8d6cd72f7302bf"`;
-
-exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with no dimensions specified: 128x128 1`] = `"7df79524382978f79fbfbd3f6adbaede"`;
-
-exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with no dimensions specified: 256x256 1`] = `"1de857c20da0f91063727dad396aaf30"`;
+exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with no dimensions specified 1`] = `
+[
+  "d7d88b07932197d1b93c778b4ee40ba0",
+  "fab38dc578d3f17e9f8d6cd72f7302bf",
+  "7df79524382978f79fbfbd3f6adbaede",
+  "1de857c20da0f91063727dad396aaf30",
+]
+`;
