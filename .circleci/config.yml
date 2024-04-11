@@ -380,6 +380,8 @@ workflows:
       - test_service:
           requires:
             - init_and_lint
+          context:
+            - bt-aws-dev
       - test_web:
           requires:
             - init_and_lint
