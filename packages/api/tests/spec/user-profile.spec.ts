@@ -82,23 +82,6 @@ describe('UserProfile client object', () => {
     expect(profile.startedDiving).toBe(testUser.profile.startedDiving);
   });
 
-  it('will return avatar URLs correctly', () => {
-    for (const size of Object.values(AvatarSize)) {
-      testUser.profile.avatar = 'https://example.com/avatars/test_user';
-      expect(profile.getAvatar(size)).toBe(
-        `https://example.com/avatars/test_user/${size}`,
-      );
-
-      testUser.profile.avatar = 'https://example.com/avatars/test_user/';
-      expect(profile.getAvatar(size)).toBe(
-        `https://example.com/avatars/test_user/${size}`,
-      );
-
-      testUser.profile.avatar = null;
-      expect(profile.getAvatar(size)).toBeUndefined();
-    }
-  });
-
   it('will update properties correctly', () => {
     profile.bio = 'This is an updated bio';
     profile.location = 'Updatedville, Updatedland';

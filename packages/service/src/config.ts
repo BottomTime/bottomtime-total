@@ -17,12 +17,24 @@ function toNumber(value: string | undefined, defaultValue: number): number {
 }
 
 class AwsConfig {
-  get mediaBucket(): string {
-    return process.env.BT_AWS_MEDIA_BUCKET ?? 'bottomtime-media-local';
+  get accessKeyId(): string {
+    return process.env.AWS_ACCESS_KEY_ID || '';
+  }
+
+  get secretAccessKey(): string {
+    return process.env.AWS_SECRET_ACCESS_KEY || '';
   }
 
   get region(): string {
-    return process.env.AWS_REGION ?? 'us-east-1';
+    return process.env.AWS_DEFAULT_REGION ?? 'us-east-1';
+  }
+
+  get s3Endpoint(): string | undefined {
+    return process.env.BT_AWS_S3_ENDPOINT || undefined;
+  }
+
+  get mediaBucket(): string {
+    return process.env.BT_AWS_MEDIA_BUCKET ?? 'bottomtime-media-local';
   }
 }
 

@@ -1,8 +1,6 @@
 import { AxiosInstance } from 'axios';
-import { URL } from 'url';
 
 import {
-  AvatarSize,
   ListAvatarURLsResponseDTO,
   SetProfileAvatarParamsDTO,
   UpdateProfileParamsSchema,
@@ -15,22 +13,26 @@ export class UserProfile {
     private readonly data: UserDTO,
   ) {}
 
+  get avatar(): string | undefined {
+    return this.data.profile.avatar || undefined;
+  }
+
   get bio(): string | undefined {
-    return this.data.profile.bio ?? undefined;
+    return this.data.profile.bio || undefined;
   }
   set bio(value: string | undefined) {
     this.data.profile.bio = value;
   }
 
   get birthdate(): string | undefined {
-    return this.data.profile.birthdate ?? undefined;
+    return this.data.profile.birthdate || undefined;
   }
   set birthdate(value: string | undefined) {
     this.data.profile.birthdate = value;
   }
 
   get experienceLevel(): string | undefined {
-    return this.data.profile.experienceLevel ?? undefined;
+    return this.data.profile.experienceLevel || undefined;
   }
   set experienceLevel(value: string | undefined) {
     this.data.profile.experienceLevel = value;
@@ -44,14 +46,14 @@ export class UserProfile {
   }
 
   get name(): string | undefined {
-    return this.data.profile.name ?? undefined;
+    return this.data.profile.name || undefined;
   }
   set name(value: string | undefined) {
     this.data.profile.name = value;
   }
 
   get startedDiving(): string | undefined {
-    return this.data.profile.startedDiving ?? undefined;
+    return this.data.profile.startedDiving || undefined;
   }
   set startedDiving(value: string | undefined) {
     this.data.profile.startedDiving = value;
@@ -60,14 +62,6 @@ export class UserProfile {
   async save(): Promise<void> {
     const params = UpdateProfileParamsSchema.parse(this.data.profile);
     await this.client.put(`/api/users/${this.data.username}`, params);
-  }
-
-  getAvatar(size: AvatarSize): string | undefined {
-    if (!this.data.profile.avatar) return undefined;
-
-    return this.data.profile.avatar.endsWith('/')
-      ? new URL(size, this.data.profile.avatar).toString()
-      : new URL(size, `${this.data.profile.avatar}/`).toString();
   }
 
   async uploadAvatar(

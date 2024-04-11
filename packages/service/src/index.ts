@@ -35,9 +35,18 @@ async function createDependencies(): Promise<ServerDependencies> {
     Config.mail.replyTo,
   );
 
-  const s3Client = new S3Client({
+  log.debug('Initializing AWS S3 client', {
+    endpoint: Config.aws.s3Endpoint || '<default>',
     region: Config.aws.region,
-    logger: log,
+  });
+  const s3Client = new S3Client({
+    credentials: {
+      accessKeyId: Config.aws.accessKeyId,
+      secretAccessKey: Config.aws.secretAccessKey,
+    },
+    endpoint: Config.aws.s3Endpoint,
+    forcePathStyle: !!Config.aws.s3Endpoint,
+    region: Config.aws.region,
   });
 
   return { dataSource: PostgresDataSourceOptions, mailClient, s3Client };
