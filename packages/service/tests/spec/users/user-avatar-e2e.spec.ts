@@ -101,6 +101,21 @@ async function purgeBucket(s3Client: S3Client): Promise<void> {
   }
 }
 
+async function getChecksum(s3Client: S3Client, key: string): Promise<string> {
+  const { Body } = await s3Client.send(
+    new GetObjectCommand({
+      Bucket: BucketName,
+      Key: key,
+    }),
+  );
+  expect(Body).toBeDefined();
+
+  const md5 = createHash('md5')
+    .update(await Body!.transformToByteArray())
+    .digest('hex');
+  return md5;
+}
+
 async function loadTestImage(size: string): Promise<Buffer> {
   let file: FileHandle | undefined;
   try {
@@ -394,20 +409,12 @@ describe('User Avatar E2E tests', () => {
       });
       expect(saved).toBe('/api/users/Joe.Regular/avatar');
 
-      AvatarSizes.forEach(async (size) => {
-        const { Body } = await s3Client.send(
-          new GetObjectCommand({
-            Bucket: BucketName,
-            Key: `avatars/${regularUser.id}/${size}x${size}`,
-          }),
-        );
-        expect(Body).toBeDefined();
-
-        const md5 = createHash('md5')
-          .update(await Body!.transformToByteArray())
-          .digest('hex');
-        expect(md5).toMatchSnapshot(`${size}x${size}`);
-      });
+      const checksums = await Promise.all(
+        AvatarSizes.map((size) =>
+          getChecksum(s3Client, `avatars/${regularUser.id}/${size}x${size}`),
+        ),
+      );
+      expect(checksums).toMatchSnapshot();
     });
 
     it('will allow a user to save a new avatar with dimensions specified', async () => {
@@ -438,20 +445,12 @@ describe('User Avatar E2E tests', () => {
       });
       expect(saved).toBe('/api/users/Joe.Regular/avatar');
 
-      AvatarSizes.forEach(async (size) => {
-        const { Body } = await s3Client.send(
-          new GetObjectCommand({
-            Bucket: BucketName,
-            Key: `avatars/${regularUser.id}/${size}x${size}`,
-          }),
-        );
-        expect(Body).toBeDefined();
-
-        const md5 = createHash('md5')
-          .update(await Body!.transformToByteArray())
-          .digest('hex');
-        expect(md5).toMatchSnapshot(`${size}x${size}`);
-      });
+      const checksums = await Promise.all(
+        AvatarSizes.map((size) =>
+          getChecksum(s3Client, `avatars/${regularUser.id}/${size}x${size}`),
+        ),
+      );
+      expect(checksums).toMatchSnapshot();
     });
 
     it("will allow an admin to update another user's avatar", async () => {
