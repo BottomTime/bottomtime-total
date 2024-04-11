@@ -16,6 +16,24 @@
     </div>
   </ConfirmDialog>
 
+  <ConfirmDialog
+    title="Delete Avatar?"
+    :visible="showDeleteAvatarDialog"
+    dangerous
+    @confirm="onConfirmDeleteAvatar"
+    @cancel="onCancelDeleteAvatar"
+  >
+    <div class="flex flex-row gap-4">
+      <span class="pt-2">
+        <i class="fas fa-question-circle fa-2x"></i>
+      </span>
+      <p>
+        Are you sure you want to delete your avatar picture? This cannot be
+        undone.
+      </p>
+    </div>
+  </ConfirmDialog>
+
   <ChangeAvatarDialog
     :avatar-url="data.avatar"
     :visible="showAvatarDialog"
@@ -37,7 +55,7 @@
           }`"
         >
           <button
-            class="flex flex-col space-y-3 p-3 items-center"
+            class="flex flex-col space-y-3 py-2 items-center"
             @click="showAvatarDialog = !showAvatarDialog"
           >
             <UserAvatar
@@ -48,7 +66,17 @@
             />
 
             <span class="font-bold text-link underline hover:text-link-hover">
-              Edit Avatar...
+              {{ data.avatar ? 'Edit Avatar...' : 'Upload avatar...' }}
+            </span>
+          </button>
+
+          <button
+            v-if="data.avatar"
+            class="flex flex-col space-y-3 py-2 items-center"
+            @click="onDeleteAvatar"
+          >
+            <span class="font-bold text-link underline hover:text-link-hover">
+              Delete Avatar...
             </span>
           </button>
         </div>
@@ -203,6 +231,7 @@ const data = reactive<ProfileData>({
 });
 const showAvatarDialog = ref(false);
 const showConfirmResetDialog = ref(false);
+const showDeleteAvatarDialog = ref(false);
 const isSaving = ref(false);
 const isSavingAvatar = ref(false);
 
@@ -284,5 +313,31 @@ function onConfirmReset() {
 
 function onCancelReset() {
   showConfirmResetDialog.value = false;
+}
+
+function onDeleteAvatar() {
+  showDeleteAvatarDialog.value = true;
+}
+
+async function onConfirmDeleteAvatar(): Promise<void> {
+  await oops(async () => {
+    const { profile } = client.users.wrapDTO(props.user);
+    await profile.deleteAvatar();
+
+    emit('save-profile', {
+      ...props.user.profile,
+      avatar: undefined,
+    });
+    toasts.toast({
+      id: 'avatar-deleted',
+      message: 'Avatar was successfully deleted.',
+      type: ToastType.Success,
+    });
+  });
+  showDeleteAvatarDialog.value = false;
+}
+
+function onCancelDeleteAvatar() {
+  showDeleteAvatarDialog.value = false;
 }
 </script>
