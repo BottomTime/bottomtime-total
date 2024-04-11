@@ -27,10 +27,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Response } from 'express';
 import 'multer';
-import { URL, resolve } from 'url';
 
 import { AssertAuth } from '../auth';
-import { Config } from '../config';
 import { ImageBuilder } from '../image-builder';
 import { StorageService } from '../storage';
 import { ZodValidator } from '../zod-validator';
@@ -51,7 +49,7 @@ export class UserAvatarController {
   ) {}
 
   private getBaseUrl(username: string): string {
-    return new URL(`/api/users/${username}/avatar/`, Config.baseUrl).toString();
+    return `/api/users/${username}/avatar/`;
   }
 
   private getUrls(username: string): ListAvatarURLsResponseDTO {
@@ -59,10 +57,10 @@ export class UserAvatarController {
     return {
       root: base,
       sizes: {
-        [AvatarSize.Small]: resolve(base, './32x32'),
-        [AvatarSize.Medium]: resolve(base, './64x64'),
-        [AvatarSize.Large]: resolve(base, './128x128'),
-        [AvatarSize.XLarge]: resolve(base, './256x256'),
+        [AvatarSize.Small]: `${base}32x32`,
+        [AvatarSize.Medium]: `${base}64x64`,
+        [AvatarSize.Large]: `${base}128x128`,
+        [AvatarSize.XLarge]: `${base}256x256`,
       },
     };
   }

@@ -1,12 +1,14 @@
 <template>
-  <img
-    class="rounded-full"
-    :width="size"
-    :height="size"
-    alt=""
-    :src="avatar"
-    :data-testid="testId"
-  />
+  <div :key="avatar">
+    <img
+      class="rounded-full"
+      :width="size"
+      :height="size"
+      alt=""
+      :src="avatar"
+      :data-testid="testId"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

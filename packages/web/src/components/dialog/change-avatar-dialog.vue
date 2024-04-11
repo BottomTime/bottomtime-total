@@ -44,7 +44,7 @@
       <FormButton
         v-if="file && coordinates"
         :disabled="isSaving"
-        @click="onChangeImage"
+        @click="reset"
       >
         Change Image
       </FormButton>
@@ -85,17 +85,17 @@ const file = ref<File | null>(null);
 const imageUrl = ref<string | null>(null);
 const coordinates = ref<Coordinates | null>(null);
 
-function onSave() {
-  if (file.value && coordinates.value) {
-    emit('save', file.value, coordinates.value);
-  }
-}
-
-function onChangeImage() {
+function reset() {
   if (imageUrl.value) URL.revokeObjectURL(imageUrl.value);
   imageUrl.value = null;
   file.value = null;
   coordinates.value = null;
+}
+
+function onSave() {
+  if (file.value && coordinates.value) {
+    emit('save', file.value, coordinates.value);
+  }
 }
 
 function onFileSelect(files: FileList) {
@@ -108,4 +108,6 @@ function onFileSelect(files: FileList) {
 function onImageCropperChange(coords: Coordinates) {
   coordinates.value = coords;
 }
+
+defineExpose({ reset });
 </script>

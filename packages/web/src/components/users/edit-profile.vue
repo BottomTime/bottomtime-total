@@ -35,6 +35,7 @@
   </ConfirmDialog>
 
   <ChangeAvatarDialog
+    ref="changeAvatarDialog"
     :avatar-url="data.avatar"
     :visible="showAvatarDialog"
     :is-saving="isSavingAvatar"
@@ -55,8 +56,8 @@
           }`"
         >
           <button
-            class="flex flex-col space-y-3 py-2 items-center"
-            @click="showAvatarDialog = !showAvatarDialog"
+            class="flex flex-col space-y-3 items-center w-full"
+            @click="onEditAvatar"
           >
             <UserAvatar
               :avatar="data.avatar"
@@ -72,7 +73,7 @@
 
           <button
             v-if="data.avatar"
-            class="flex flex-col space-y-3 py-2 items-center"
+            class="flex flex-col space-y-3 items-center w-full"
             @click="onDeleteAvatar"
           >
             <span class="font-bold text-link underline hover:text-link-hover">
@@ -235,9 +236,20 @@ const showDeleteAvatarDialog = ref(false);
 const isSaving = ref(false);
 const isSavingAvatar = ref(false);
 
+const changeAvatarDialog = ref<InstanceType<typeof ChangeAvatarDialog> | null>(
+  null,
+);
+
 const emit = defineEmits<{
   (e: 'save-profile', profile: ProfileDTO): void;
 }>();
+
+function onEditAvatar() {
+  if (changeAvatarDialog.value) {
+    changeAvatarDialog.value.reset();
+  }
+  showAvatarDialog.value = true;
+}
 
 async function onAvatarChanged(file: File, coords: Coordinates) {
   isSavingAvatar.value = true;
@@ -246,6 +258,7 @@ async function onAvatarChanged(file: File, coords: Coordinates) {
     const { profile } = client.users.wrapDTO(props.user);
 
     const avatars = await profile.uploadAvatar(file, coords);
+    data.avatar = avatars.root;
     emit('save-profile', {
       ...props.user.profile,
       avatar: avatars.root,
@@ -301,7 +314,6 @@ function onReset() {
 }
 
 function onConfirmReset() {
-  data.avatar = props.user.profile.avatar ?? '';
   data.bio = props.user.profile.bio ?? '';
   data.birthdate = props.user.profile.birthdate ?? '';
   data.experienceLevel = props.user.profile.experienceLevel ?? '';
@@ -324,6 +336,7 @@ async function onConfirmDeleteAvatar(): Promise<void> {
     const { profile } = client.users.wrapDTO(props.user);
     await profile.deleteAvatar();
 
+    data.avatar = '';
     emit('save-profile', {
       ...props.user.profile,
       avatar: undefined,
