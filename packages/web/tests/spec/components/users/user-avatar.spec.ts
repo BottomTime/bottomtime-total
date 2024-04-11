@@ -3,11 +3,23 @@ import { shallowMount } from '@vue/test-utils';
 import UserAvatar from '../../../../src/components/users/user-avatar.vue';
 
 describe('User Avatar component', () => {
-  it('will render correctly for user with avatar URL', () => {
+  it('will render correctly for user with absolute avatar URL', () => {
     const wrapper = shallowMount(UserAvatar, {
       props: {
         displayName: 'Test User',
-        avatar: 'https://example.com/avatar.png',
+        avatar: 'https://example.com/users/dave/avatar',
+      },
+    });
+
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will render correctly for user with relative avatar URL', () => {
+    const wrapper = shallowMount(UserAvatar, {
+      props: {
+        displayName: 'Test User',
+        avatar: '/api/users/Dave_Tests/avatar',
+        size: 'large',
       },
     });
 

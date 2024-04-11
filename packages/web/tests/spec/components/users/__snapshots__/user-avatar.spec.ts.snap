@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`User Avatar component will render correctly for user with avatar URL 1`] = `"<img class="rounded-full" width="32px" height="32px" alt="" src="https://example.com/avatar.png">"`;
+exports[`User Avatar component will render correctly for user with absolute avatar URL 1`] = `"<img class="rounded-full" width="32px" height="32px" alt="" src="https://example.com/users/dave/avatar">"`;
+
+exports[`User Avatar component will render correctly for user with relative avatar URL 1`] = `"<img class="rounded-full" width="128px" height="128px" alt="" src="/api/users/Dave_Tests/avatar/128x128">"`;
 
 exports[`User Avatar component will render initials for user without avatar URL but with username 1`] = `"<img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=Test%20User">"`;
 

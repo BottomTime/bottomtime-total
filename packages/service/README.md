@@ -23,6 +23,20 @@ The relevant environment variables you will need to set are
 - `AWS_REGION`
 - `BT_AWS_MEDIA_BUCKET`
 
+### Using S3 Locally
+
+If you are developing locally using Docker Compose you will be using a local version of AWS S3 running in a container. Before you will
+be able to save or retrieve files from the container you will need to create an S3 bucket. Running this commmand will do that for you:
+
+```bash
+aws s3api create-bucket --endpoint-url http://localhost:4569 --bucket bottomtime-media-local
+```
+
+If you are not using the default bucket name (`bottomtime-media-local`), then you will need to change it accordingly in the command.
+
+**NOTE:** The S3 container saves files in a mounted volume so they will persist when you restart the Docker container. You can inspect
+the files at `<repositoryRoot>/.s3/`.
+
 ### Enabling OAuth Authentication
 
 TODO

@@ -7,52 +7,107 @@
   >
     <template #default>
       <div
-        class="flex flex-row gap-3 m-4 mb-3 p-2 rounded-md text-sm bg-link text-grey-900"
+        v-if="isSaving"
+        class="w-full h-[400px] text-xl italic flex justify-center items-center space-x-3"
       >
         <span>
-          <i class="fas fa-info-circle fa-2x"></i>
+          <i class="fas fa-spinner fa-spin"></i>
         </span>
-        <div class="grow">
-          <span class="font-bold">
-            TODO: I need to build out this dialog still but I need some
-            additional infrastructure first.
-          </span>
-          <ul class="list-inside list-disc">
-            <li>I need file storage for uploaded images.</li>
-            <li>I need a way to crop and center uploaded images.</li>
-            <li>I might accept URLs from trusted sources (e.g. Gravatar.)</li>
-          </ul>
-        </div>
+        <span>Processing image...</span>
       </div>
+
+      <!-- Show image cropper if we have a URL -->
+      <ImageCropper
+        v-else-if="imageUrl"
+        class="w-full h-[400px]"
+        default-boundaries="fill"
+        :image="imageUrl"
+        :target-width="512"
+        circle
+        @change="onImageCropperChange"
+      />
+
+      <!-- Otherwise, show a drag-and-drop target -->
+      <FileUpload v-else accept="image/*" @change="onFileSelect" />
     </template>
 
     <template #buttons>
-      <FormButton type="primary" disabled @click="onSave"> Save </FormButton>
-      <FormButton @click="$emit('cancel')"> Cancel </FormButton>
+      <FormButton
+        v-if="file && coordinates"
+        type="primary"
+        :is-loading="isSaving"
+        @click="onSave"
+      >
+        Save
+      </FormButton>
+
+      <FormButton
+        v-if="file && coordinates"
+        :disabled="isSaving"
+        @click="reset"
+      >
+        Change Image
+      </FormButton>
+
+      <FormButton :disabled="isSaving" @click="$emit('cancel')">
+        Cancel
+      </FormButton>
     </template>
   </DialogBase>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
+import { Coordinates } from '../../common';
+import FileUpload from '../common/file-upload.vue';
 import FormButton from '../common/form-button.vue';
+import ImageCropper from '../common/image-cropper.vue';
 import DialogBase from './dialog-base.vue';
 
 type ChangeAvatarDialogProps = {
-  avatarUrl: string;
-  displayName: string;
+  avatarUrl?: string;
+  isSaving?: boolean;
   visible?: boolean;
 };
 
 withDefaults(defineProps<ChangeAvatarDialogProps>(), {
+  isSaving: false,
   visible: false,
 });
 
 const emit = defineEmits<{
-  (e: 'save', avatarUrl: string): void;
+  (e: 'save', file: File, coordinates: Coordinates): void;
   (e: 'cancel'): void;
 }>();
 
-function onSave() {
-  emit('save', '');
+const file = ref<File | null>(null);
+const imageUrl = ref<string | null>(null);
+const coordinates = ref<Coordinates | null>(null);
+
+function reset() {
+  if (imageUrl.value) URL.revokeObjectURL(imageUrl.value);
+  imageUrl.value = null;
+  file.value = null;
+  coordinates.value = null;
 }
+
+function onSave() {
+  if (file.value && coordinates.value) {
+    emit('save', file.value, coordinates.value);
+  }
+}
+
+function onFileSelect(files: FileList) {
+  if (!files.length) return;
+
+  file.value = files[0];
+  imageUrl.value = URL.createObjectURL(file.value);
+}
+
+function onImageCropperChange(coords: Coordinates) {
+  coordinates.value = coords;
+}
+
+defineExpose({ reset });
 </script>

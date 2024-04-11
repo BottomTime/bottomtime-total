@@ -162,7 +162,6 @@ describe('Users End-to-End Tests', () => {
         password: 'Str0ng_Password123!',
         role: UserRole.User,
         profile: {
-          avatar: 'https://example.com/avatar.png',
           bio: 'This is a test user.',
           birthdate: '1980-01-01',
           experienceLevel: 'Advanced',
@@ -761,7 +760,6 @@ describe('Users End-to-End Tests', () => {
   describe('when updating profile information', () => {
     const profileUrl = `${requestUrl(RegularUserData.username)}`;
     const newProfileInfo: UpdateProfileParamsDTO = {
-      avatar: 'https://avatars.com/my_picture.jpg',
       bio: 'I really like diving and updating profiles.',
       birthdate: '1992-03-30',
       experienceLevel: 'Mega Expert',
@@ -812,7 +810,6 @@ describe('Users End-to-End Tests', () => {
         .put(profileUrl)
         .set(...regualarAuthHeader)
         .send({
-          avatar: null,
           bio: null,
           birthdate: null,
           certifications: [
@@ -829,7 +826,6 @@ describe('Users End-to-End Tests', () => {
       const actual = await Users.findOneOrFail({
         where: { id: RegularUserId },
         select: [
-          'avatar',
           'bio',
           'birthdate',
           'experienceLevel',
@@ -856,7 +852,6 @@ describe('Users End-to-End Tests', () => {
       const actual = await Users.findOneOrFail({
         where: { id: RegularUserId },
         select: [
-          'avatar',
           'bio',
           'birthdate',
           'experienceLevel',

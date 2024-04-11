@@ -119,7 +119,6 @@ describe('Users Service', () => {
         password: '(*H()@*&BNINFPOI()$*9ij90',
         role: UserRole.User,
         profile: {
-          avatar: 'https://gravatar.com/Tyler.Durden',
           bio: "I don't talk about my dive clug",
           birthdate: '1987-02-12',
           customData: {},

@@ -1,4 +1,13 @@
+version: '3.8'
 services:
+  s3:
+    image: lphoward/fake-s3
+    restart: always
+    ports:
+      - '4569:4569'
+    volumes:
+      - ./.s3/:/fakes3_root/
+
   postgres:
     image: postgis/postgis:14-3.4-alpine
     restart: always
@@ -28,8 +37,11 @@ services:
     env_file:
       - packages/service/.env
     environment:
+      - BT_AWS_S3_ENDPOINT=http://s3:4569
       - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
     depends_on:
+      s3:
+        condition: service_started
       postgres:
         condition: service_healthy
     develop:

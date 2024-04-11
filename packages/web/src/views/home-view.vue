@@ -1,6 +1,6 @@
 <template>
   <HeroSection />
-  <div class="grid gap-4">
+  <div class="grid lg:grid-cols-2 gap-4">
     <AlertsCarousel />
   </div>
 </template>

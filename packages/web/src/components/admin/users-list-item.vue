@@ -3,7 +3,7 @@
     <!-- Avatar -->
     <div class="w-10 flex-initial mt-4">
       <UserAvatar
-        :avatar="user.profile?.avatar"
+        :avatar="user.profile?.avatar || undefined"
         :display-name="user.profile?.name || user.username"
       />
     </div>

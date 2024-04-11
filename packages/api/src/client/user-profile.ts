@@ -1,6 +1,11 @@
 import { AxiosInstance } from 'axios';
 
-import { UpdateProfileParamsSchema, UserDTO } from '../types';
+import {
+  ListAvatarURLsResponseDTO,
+  SetProfileAvatarParamsDTO,
+  UpdateProfileParamsSchema,
+  UserDTO,
+} from '../types';
 
 export class UserProfile {
   constructor(
@@ -9,28 +14,25 @@ export class UserProfile {
   ) {}
 
   get avatar(): string | undefined {
-    return this.data.profile.avatar ?? undefined;
-  }
-  set avatar(value: string | undefined) {
-    this.data.profile.avatar = value;
+    return this.data.profile.avatar || undefined;
   }
 
   get bio(): string | undefined {
-    return this.data.profile.bio ?? undefined;
+    return this.data.profile.bio || undefined;
   }
   set bio(value: string | undefined) {
     this.data.profile.bio = value;
   }
 
   get birthdate(): string | undefined {
-    return this.data.profile.birthdate ?? undefined;
+    return this.data.profile.birthdate || undefined;
   }
   set birthdate(value: string | undefined) {
     this.data.profile.birthdate = value;
   }
 
   get experienceLevel(): string | undefined {
-    return this.data.profile.experienceLevel ?? undefined;
+    return this.data.profile.experienceLevel || undefined;
   }
   set experienceLevel(value: string | undefined) {
     this.data.profile.experienceLevel = value;
@@ -44,14 +46,14 @@ export class UserProfile {
   }
 
   get name(): string | undefined {
-    return this.data.profile.name ?? undefined;
+    return this.data.profile.name || undefined;
   }
   set name(value: string | undefined) {
     this.data.profile.name = value;
   }
 
   get startedDiving(): string | undefined {
-    return this.data.profile.startedDiving ?? undefined;
+    return this.data.profile.startedDiving || undefined;
   }
   set startedDiving(value: string | undefined) {
     this.data.profile.startedDiving = value;
@@ -60,5 +62,36 @@ export class UserProfile {
   async save(): Promise<void> {
     const params = UpdateProfileParamsSchema.parse(this.data.profile);
     await this.client.put(`/api/users/${this.data.username}`, params);
+  }
+
+  async uploadAvatar(
+    avatar: File,
+    region?: SetProfileAvatarParamsDTO,
+  ): Promise<ListAvatarURLsResponseDTO> {
+    const formData = new FormData();
+    formData.append('avatar', avatar);
+
+    if (region && 'left' in region) {
+      formData.append('left', region.left.toString());
+      formData.append('top', region.top.toString());
+      formData.append('width', region.width.toString());
+      formData.append('height', region.height.toString());
+    }
+
+    const { data } = await this.client.post<ListAvatarURLsResponseDTO>(
+      `/api/users/${this.data.username}/avatar`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+
+    return data;
+  }
+
+  async deleteAvatar(): Promise<void> {
+    await this.client.delete(`/api/users/${this.data.username}/avatar`);
   }
 }

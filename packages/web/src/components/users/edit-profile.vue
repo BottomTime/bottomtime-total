@@ -16,10 +16,29 @@
     </div>
   </ConfirmDialog>
 
+  <ConfirmDialog
+    title="Delete Avatar?"
+    :visible="showDeleteAvatarDialog"
+    dangerous
+    @confirm="onConfirmDeleteAvatar"
+    @cancel="onCancelDeleteAvatar"
+  >
+    <div class="flex flex-row gap-4">
+      <span class="pt-2">
+        <i class="fas fa-question-circle fa-2x"></i>
+      </span>
+      <p>
+        Are you sure you want to delete your avatar picture? This cannot be
+        undone.
+      </p>
+    </div>
+  </ConfirmDialog>
+
   <ChangeAvatarDialog
+    ref="changeAvatarDialog"
     :avatar-url="data.avatar"
-    :display-name="user.profile.name || user.username"
     :visible="showAvatarDialog"
+    :is-saving="isSavingAvatar"
     @cancel="showAvatarDialog = false"
     @save="onAvatarChanged"
   />
@@ -36,13 +55,30 @@
             responsive ? 'min-w-[80px] flex-initial' : 'w-full text-center'
           }`"
         >
-          <button class="p-3" @click="showAvatarDialog = !showAvatarDialog">
+          <button
+            class="flex flex-col space-y-3 items-center w-full"
+            @click="onEditAvatar"
+          >
             <UserAvatar
               :avatar="data.avatar"
               :display-name="user.profile.name || user.username"
               size="large"
               test-id="profile-avatar"
             />
+
+            <span class="font-bold text-link underline hover:text-link-hover">
+              {{ data.avatar ? 'Edit Avatar...' : 'Upload avatar...' }}
+            </span>
+          </button>
+
+          <button
+            v-if="data.avatar"
+            class="flex flex-col space-y-3 items-center w-full"
+            @click="onDeleteAvatar"
+          >
+            <span class="font-bold text-link underline hover:text-link-hover">
+              Delete Avatar...
+            </span>
           </button>
         </div>
 
@@ -142,7 +178,7 @@ import { ProfileDTO, UserDTO } from '@bottomtime/api';
 import { reactive, ref } from 'vue';
 
 import { useClient } from '../../api-client';
-import { SelectOption, ToastType } from '../../common';
+import { Coordinates, SelectOption, ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
@@ -196,15 +232,46 @@ const data = reactive<ProfileData>({
 });
 const showAvatarDialog = ref(false);
 const showConfirmResetDialog = ref(false);
+const showDeleteAvatarDialog = ref(false);
 const isSaving = ref(false);
+const isSavingAvatar = ref(false);
+
+const changeAvatarDialog = ref<InstanceType<typeof ChangeAvatarDialog> | null>(
+  null,
+);
 
 const emit = defineEmits<{
   (e: 'save-profile', profile: ProfileDTO): void;
 }>();
 
-function onAvatarChanged(avatarUrl: string | undefined) {
-  data.avatar = avatarUrl ?? '';
-  showAvatarDialog.value = false;
+function onEditAvatar() {
+  if (changeAvatarDialog.value) {
+    changeAvatarDialog.value.reset();
+  }
+  showAvatarDialog.value = true;
+}
+
+async function onAvatarChanged(file: File, coords: Coordinates) {
+  isSavingAvatar.value = true;
+
+  await oops(async () => {
+    const { profile } = client.users.wrapDTO(props.user);
+
+    const avatars = await profile.uploadAvatar(file, coords);
+    data.avatar = avatars.root;
+    emit('save-profile', {
+      ...props.user.profile,
+      avatar: avatars.root,
+    });
+    toasts.toast({
+      id: 'avatar-uploaded',
+      message: 'Avatar was successfully uploaded.',
+      type: ToastType.Success,
+    });
+    showAvatarDialog.value = false;
+  });
+
+  isSavingAvatar.value = false;
 }
 
 async function onSave() {
@@ -213,7 +280,6 @@ async function onSave() {
   await oops(async () => {
     const { profile } = client.users.wrapDTO(props.user);
 
-    profile.avatar = data.avatar || undefined;
     profile.bio = data.bio || undefined;
     profile.birthdate = data.birthdate || undefined;
     profile.experienceLevel = data.experienceLevel || undefined;
@@ -248,7 +314,6 @@ function onReset() {
 }
 
 function onConfirmReset() {
-  data.avatar = props.user.profile.avatar ?? '';
   data.bio = props.user.profile.bio ?? '';
   data.birthdate = props.user.profile.birthdate ?? '';
   data.experienceLevel = props.user.profile.experienceLevel ?? '';
@@ -260,5 +325,32 @@ function onConfirmReset() {
 
 function onCancelReset() {
   showConfirmResetDialog.value = false;
+}
+
+function onDeleteAvatar() {
+  showDeleteAvatarDialog.value = true;
+}
+
+async function onConfirmDeleteAvatar(): Promise<void> {
+  await oops(async () => {
+    const { profile } = client.users.wrapDTO(props.user);
+    await profile.deleteAvatar();
+
+    data.avatar = '';
+    emit('save-profile', {
+      ...props.user.profile,
+      avatar: undefined,
+    });
+    toasts.toast({
+      id: 'avatar-deleted',
+      message: 'Avatar was successfully deleted.',
+      type: ToastType.Success,
+    });
+  });
+  showDeleteAvatarDialog.value = false;
+}
+
+function onCancelDeleteAvatar() {
+  showDeleteAvatarDialog.value = false;
 }
 </script>

@@ -10,9 +10,9 @@ exports[`Alerts List Item component will render details correctly 1`] = `
     </div>
   </div>
   <div>
-    <div class="inline-flex rounded-md" role="group"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96"><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-s-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-edit-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
+    <div class="inline-flex rounded-md" role="group"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-s-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-edit-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
           <!--v-if--><span><i class="fas fa-edit"></i></span><span class="sr-only">Edit Alert: Test Alert</span>
-        </button></a><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-e-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-delete-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
+        </button></a><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-e-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-delete-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
         <!--v-if--><span><i class="fas fa-trash"></i></span><span class="sr-only">Delete Alert: Test Alert</span>
       </button></div>
   </div>
@@ -29,9 +29,9 @@ exports[`Alerts List Item component will render details correctly when dates are
     </div>
   </div>
   <div>
-    <div class="inline-flex rounded-md" role="group"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96"><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-s-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-edit-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
+    <div class="inline-flex rounded-md" role="group"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-s-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-edit-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
           <!--v-if--><span><i class="fas fa-edit"></i></span><span class="sr-only">Edit Alert: Test Alert</span>
-        </button></a><button class="text-black p-2 m-0 text-sm outline-2 outline-grey-800 shadow-sm shadow-grey-800 rounded-e-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-delete-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
+        </button></a><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-e-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-delete-alert-2fbcb477-26d8-499f-9558-4d3ee1500b96" type="button">
         <!--v-if--><span><i class="fas fa-trash"></i></span><span class="sr-only">Delete Alert: Test Alert</span>
       </button></div>
   </div>

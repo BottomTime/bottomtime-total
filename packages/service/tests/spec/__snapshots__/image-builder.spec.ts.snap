@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ImageBuilder class will crop a section of the image 1`] = `"8c0a8aba6fb65848754ed59c610e2efc"`;
+
+exports[`ImageBuilder class will resize the image 1`] = `"1b3cc9b47d1f789112f65f0f9d306d65"`;

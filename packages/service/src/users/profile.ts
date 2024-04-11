@@ -45,16 +45,10 @@ export class Profile {
   }
 
   async update(params: UpdateProfileOptions): Promise<void> {
-    if (params.avatar !== undefined) this.data.avatar = params.avatar ?? null;
-
     if (params.bio !== undefined) this.data.bio = params.bio ?? null;
 
     if (params.birthdate !== undefined)
       this.data.birthdate = params.birthdate ?? null;
-
-    // TODO
-    // if (!!params.certifications || !ignoreUndefined)
-    //   this.data.certifications = params.certifications;
 
     if (params.customData !== undefined)
       this.data.customData = params.customData ?? null;
@@ -71,6 +65,11 @@ export class Profile {
       this.data.startedDiving = params.startedDiving ?? null;
 
     this.data = await this.Users.save(this.data);
+  }
+
+  async setAvatarUrl(avatarUrl: string | null): Promise<void> {
+    await this.Users.update({ id: this.data.id }, { avatar: avatarUrl });
+    this.data.avatar = avatarUrl;
   }
 
   toJSON(): ProfileDTO {

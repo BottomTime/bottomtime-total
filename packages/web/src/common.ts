@@ -4,6 +4,13 @@ export type Breadcrumb = {
   active?: boolean;
 };
 
+export type Coordinates = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+
 export const DateTimeFormat = 'yyyy-MMM-dd hh:mm:ss a';
 
 export type SelectOption = {
