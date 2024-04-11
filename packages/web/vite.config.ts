@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import vue from '@vitejs/plugin-vue';
 
 import { defineConfig, loadEnv } from 'vite';

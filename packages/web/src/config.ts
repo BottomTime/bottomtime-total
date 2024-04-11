@@ -1,3 +1,5 @@
+/* eslint-disable no-process-env */
+
 export class Config {
   /** Email address for contacting support/admin. */
   static get adminEmail(): string {

@@ -1,4 +1,3 @@
-/* eslint-disable no-process-env */
 import { UserRole } from '@bottomtime/api';
 
 import { ConflictException } from '@nestjs/common';
@@ -7,10 +6,13 @@ import { compare } from 'bcrypt';
 import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 
+import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createTestUser } from '../../utils';
+
+jest.mock('../../../src/config');
 
 const Password = '%HBc..`9Cbt]3/S';
 const TestUserData: Partial<UserEntity> = {
@@ -37,13 +39,11 @@ const TestUserData: Partial<UserEntity> = {
 
 describe('User Class', () => {
   let Users: Repository<UserEntity>;
-  let oldEnv: object;
   let data: UserEntity;
   let user: User;
 
   beforeAll(() => {
-    oldEnv = Object.assign({}, process.env);
-    process.env.BT_PASSWORD_SALT_ROUNDS = '1';
+    Config.passwordSaltRounds = 1;
     Users = dataSource.getRepository(UserEntity);
   });
 
@@ -51,10 +51,6 @@ describe('User Class', () => {
     data = new UserEntity();
     Object.assign(data, TestUserData);
     user = new User(Users, data);
-  });
-
-  afterAll(() => {
-    Object.assign(process.env, oldEnv);
   });
 
   it('will change the username', async () => {

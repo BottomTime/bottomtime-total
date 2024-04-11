@@ -36,7 +36,7 @@ async function createDependencies(): Promise<ServerDependencies> {
   );
 
   log.debug('Initializing AWS S3 client', {
-    endpoint: Config.aws.s3Endpoint || '<default>',
+    endpoint: Config.aws.s3.endpoint || '<default>',
     region: Config.aws.region,
   });
   const s3Client = new S3Client({
@@ -44,8 +44,8 @@ async function createDependencies(): Promise<ServerDependencies> {
       accessKeyId: Config.aws.accessKeyId,
       secretAccessKey: Config.aws.secretAccessKey,
     },
-    endpoint: Config.aws.s3Endpoint,
-    forcePathStyle: !!Config.aws.s3Endpoint,
+    endpoint: Config.aws.s3.endpoint,
+    forcePathStyle: !!Config.aws.s3.endpoint,
     region: Config.aws.region,
   });
 

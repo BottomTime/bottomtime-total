@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import 'dotenv/config';
 
 function toNumber(value: string | undefined, defaultValue: number): number {

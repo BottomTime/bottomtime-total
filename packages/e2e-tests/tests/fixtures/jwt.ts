@@ -1,3 +1,4 @@
+/* eslint-disable no-process-env */
 import { JwtPayload, sign } from 'jsonwebtoken';
 
 const FiveMinutes = 1000 * 60 * 5;

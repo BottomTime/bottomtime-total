@@ -1,7 +1,6 @@
-import DarkModeToggle from '@/components/core/dark-mode-toggle.vue';
 import { mount } from '@vue/test-utils';
 
-import { before } from 'node:test';
+import DarkModeToggle from '../../../../src/components/core/dark-mode-toggle.vue';
 
 describe('Dark Mode Toggle component', () => {
   afterEach(() => {
