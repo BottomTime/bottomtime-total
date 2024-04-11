@@ -1,4 +1,3 @@
-import fs from 'fs/promises';
 import { Repository } from 'typeorm';
 
 import { NotificationEntity, UserEntity } from '../../../src/data';
@@ -8,10 +7,7 @@ import {
 } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import NotificationTestData from '../../fixtures/notifications.json';
-import {
-  createTestNotification,
-  parseNotificationJSON,
-} from '../../utils/create-test-notification';
+import { parseNotificationJSON } from '../../utils/create-test-notification';
 import { createTestUser } from '../../utils/create-test-user';
 
 const UserId = '3850992b-d5cb-47f9-be99-3249d4fad24f';
@@ -36,18 +32,6 @@ describe('Notifications Service', () => {
 
   beforeEach(async () => {
     await Users.save(userData);
-  });
-
-  it.skip('will generate test data', async () => {
-    const notifications = new Array<NotificationEntity>(50);
-    for (let i = 0; i < notifications.length; i++) {
-      notifications[i] = createTestNotification(userData);
-      notifications[i].recipient = undefined;
-    }
-    await fs.writeFile(
-      'notifications.json',
-      JSON.stringify(notifications, null, 2),
-    );
   });
 
   describe('when listing notifications for a user', () => {

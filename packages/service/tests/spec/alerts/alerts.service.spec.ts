@@ -1,13 +1,12 @@
 import { CreateOrUpdateAlertParamsDTO } from '@bottomtime/api';
 
-import fs from 'fs/promises';
 import { Repository } from 'typeorm';
 
 import { AlertsService } from '../../../src/alerts';
 import { AlertEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import AlertTestData from '../../fixtures/alerts.json';
-import { createTestAlert, parseAlertJSON } from '../../utils/create-test-alert';
+import { parseAlertJSON } from '../../utils/create-test-alert';
 import { createTestUser } from '../../utils/create-test-user';
 
 describe('Alerts Service', () => {
@@ -22,18 +21,6 @@ describe('Alerts Service', () => {
     service = new AlertsService(Alerts);
 
     alertData = AlertTestData.map((data) => parseAlertJSON(data));
-  });
-
-  it.skip('will generate some sweet, sweet data', async () => {
-    const alertData = new Array<AlertEntity>(20);
-    for (let i = 0; i < alertData.length; i++) {
-      alertData[i] = createTestAlert();
-    }
-    await fs.writeFile(
-      'alerts.json',
-      JSON.stringify(alertData, null, 2),
-      'utf-8',
-    );
   });
 
   describe('when listing alerts', () => {
