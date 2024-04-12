@@ -75,7 +75,7 @@ export const ProfileSchema = UpdateProfileParamsSchema.extend({
 });
 export type ProfileDTO = z.infer<typeof ProfileSchema>;
 
-const SuccinctProfileSchema = ProfileSchema.pick({
+export const SuccinctProfileSchema = ProfileSchema.pick({
   userId: true,
   memberSince: true,
   username: true,

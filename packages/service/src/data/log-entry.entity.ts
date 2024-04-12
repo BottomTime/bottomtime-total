@@ -1,33 +1,59 @@
-import { Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { DepthUnit } from '@bottomtime/api';
 
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
+
+import { DiveSiteEntity } from './dive-site.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entries')
 export class LogEntryEntity {
+  // Identifiers
   @PrimaryColumn('uuid')
   id: string = '';
 
-  // Who?
+  @Column({ type: 'integer', nullable: true })
+  @Index({ sparse: true })
+  logNumber?: number;
+
+  // Owner
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   creator: UserEntity = new UserEntity();
 
-  // What?
+  // Timing
+  @Column({ type: 'timestamp', nullable: false })
+  @Index()
+  timestamp: Date = new Date();
 
-  // Where?
-  /*
-    - Maybe a site?
-    - Maybe a specified location?
-    - This has to be pretty flexible
-  */
+  @Column({ type: 'timestamp', nullable: false })
+  entryTime: string = '';
 
-  // When?
-  /*
-    - Need a time/date w/ a timezone
-    - Need to consider other timing as well... I think everything should be relevant to the start time.
-    - How do I define start time though? Is it when the user enters the water? When they descend? Can I extract this from dive computer data?
-  */
+  @Column({ type: 'text', nullable: false })
+  timezone: string = '';
 
-  // Why?
+  @Column({ type: 'integer', nullable: true })
+  bottomTime?: number;
 
-  // How?
+  @Column({ type: 'integer', nullable: true })
+  duration?: number;
+
+  // Location
+  @OneToMany(() => DiveSiteEntity, (site) => site.id, { nullable: true })
+  site?: string;
+
+  @Column({ type: 'float', nullable: true })
+  maxDepth?: number;
+
+  @Column({ type: 'enum', enum: DepthUnit, nullable: true })
+  maxDepthUnit?: DepthUnit;
+
+  // Miscellaneous data
+  @Column({ type: 'text', nullable: true })
+  notes?: string;
 }

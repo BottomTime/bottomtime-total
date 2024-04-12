@@ -16,6 +16,7 @@ import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
 import { HealthModule } from './health';
+import { LogEntriesModule } from './logEntries';
 import { StorageModule } from './storage';
 import { TanksModule } from './tanks/tanks.module';
 import { UsersModule } from './users';
@@ -61,6 +62,7 @@ export class AppModule {
         UsersModule,
         FriendsModule,
         DiveSitesModule,
+        LogEntriesModule,
         TanksModule,
       ],
 
