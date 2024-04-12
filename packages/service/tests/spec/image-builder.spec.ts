@@ -2,7 +2,10 @@ import { createHash } from 'crypto';
 import fs, { FileHandle } from 'fs/promises';
 import path from 'path';
 
+import { Config } from '../../src/config';
 import { ImageBuilder } from '../../src/image-builder';
+
+jest.mock('../../src/config');
 
 async function loadTestImage(): Promise<Buffer> {
   let file: FileHandle | undefined;
@@ -17,6 +20,10 @@ async function loadTestImage(): Promise<Buffer> {
 describe('ImageBuilder class', () => {
   let testImage: Buffer;
   let builder: ImageBuilder;
+
+  beforeAll(() => {
+    Config.fastImageResize = true;
+  });
 
   beforeEach(async () => {
     testImage = await loadTestImage();
