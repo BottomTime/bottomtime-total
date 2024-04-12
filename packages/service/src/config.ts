@@ -24,13 +24,13 @@ export interface AppConfig {
   };
 
   github: {
-    clientId: string;
-    clientSecret: string;
+    clientId?: string;
+    clientSecret?: string;
   };
 
   google: {
-    clientId: string;
-    clientSecret: string;
+    clientId?: string;
+    clientSecret?: string;
   };
 
   mail: {
@@ -54,7 +54,6 @@ export interface AppConfig {
   fastImageResize: boolean;
   friendsLimit: number;
   isProduction: boolean;
-  tokenTTL: number;
   env: string;
   logLevel: LogLevel;
   passwordSaltRounds: number;
@@ -67,17 +66,17 @@ const ConfigSchema = z
     // AWS
     AWS_ACCESS_KEY_ID: z.string().min(1),
     AWS_SECRET_ACCESS_KEY: z.string().min(1),
-    AWS_DEFAULT_REGION: z.string().default('us-east-1'),
+    AWS_REGION: z.string().default('us-east-1'),
     BT_AWS_S3_ENDPOINT: z.string().optional(),
     BT_AWS_MEDIA_BUCKET: z.string().default('bottomtime-media-local'),
 
     // Github
-    BT_GITHUB_CLIENT_ID: z.string().default(''),
-    BT_GITHUB_CLIENT_SECRET: z.string().default(''),
+    BT_GITHUB_CLIENT_ID: z.string().optional(),
+    BT_GITHUB_CLIENT_SECRET: z.string().optional(),
 
     // Google
-    BT_GOOGLE_CLIENT_ID: z.string().default(''),
-    BT_GOOGLE_CLIENT_SECRET: z.string().default(''),
+    BT_GOOGLE_CLIENT_ID: z.string().optional(),
+    BT_GOOGLE_CLIENT_SECRET: z.string().optional(),
 
     // SMTP
     BT_SMTP_HOST: z.string().default('email-smtp.us-east-1.amazonaws.com'),
@@ -100,13 +99,10 @@ const ConfigSchema = z
       .default(14 * 24 * 60 * 60 * 1000),
 
     // Misc.
-    BT_ADMIN_EMAIL: z
-      .string()
-      .default('"Bottom Time Admin" <admin@bottomti.me>'),
+    BT_ADMIN_EMAIL: z.string().default('admin@bottomti.me'),
     BT_BASE_URL: z.string().url().default('http://localhost:4850'),
-    BT_FAST_IMAGE_RESIZE: z.coerce.boolean().default(true),
+    BT_FAST_IMAGE_RESIZE: z.coerce.boolean().default(false),
     BT_FRIENDS_LIMIT: z.coerce.number().int().min(1).max(5000).default(1000),
-    BT_TOKEN_TTL: z.coerce.number().int().min(1).default(1440),
     BT_LOG_LEVEL: LogLevelSchema.default('debug'),
     BT_PASSWORD_SALT_ROUNDS: z.coerce.number().int().min(1).default(15),
     BT_PORT: z.coerce.number().int().min(1).max(65535).default(4800),
@@ -117,56 +113,53 @@ const ConfigSchema = z
       ),
     NODE_ENV: z.string().default('local'),
   })
-  .transform(
-    (env): AppConfig => ({
-      aws: {
-        accessKeyId: env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
-        region: env.AWS_DEFAULT_REGION,
-        s3: {
-          mediaBucket: env.BT_AWS_MEDIA_BUCKET,
-          endpoint: env.BT_AWS_S3_ENDPOINT,
-        },
+  .transform<AppConfig>((env) => ({
+    aws: {
+      accessKeyId: env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+      region: env.AWS_REGION,
+      s3: {
+        mediaBucket: env.BT_AWS_MEDIA_BUCKET,
+        endpoint: env.BT_AWS_S3_ENDPOINT,
       },
+    },
 
-      github: {
-        clientId: env.BT_GITHUB_CLIENT_ID,
-        clientSecret: env.BT_GITHUB_CLIENT_SECRET,
-      },
+    github: {
+      clientId: env.BT_GITHUB_CLIENT_ID,
+      clientSecret: env.BT_GITHUB_CLIENT_SECRET,
+    },
 
-      google: {
-        clientId: env.BT_GOOGLE_CLIENT_ID,
-        clientSecret: env.BT_GOOGLE_CLIENT_SECRET,
-      },
+    google: {
+      clientId: env.BT_GOOGLE_CLIENT_ID,
+      clientSecret: env.BT_GOOGLE_CLIENT_SECRET,
+    },
 
-      mail: {
-        host: env.BT_SMTP_HOST,
-        port: env.BT_SMTP_PORT,
-        username: env.BT_SMTP_USERNAME,
-        password: env.BT_SMTP_PASSWORD,
-        replyTo: env.BT_SMTP_REPLY_TO,
-        from: env.BT_SMTP_FROM,
-      },
+    mail: {
+      host: env.BT_SMTP_HOST,
+      port: env.BT_SMTP_PORT,
+      username: env.BT_SMTP_USERNAME,
+      password: env.BT_SMTP_PASSWORD,
+      replyTo: env.BT_SMTP_REPLY_TO,
+      from: env.BT_SMTP_FROM,
+    },
 
-      sessions: {
-        cookieDomain: env.BT_SESSION_COOKIE_DOMAIN,
-        cookieName: env.BT_SESSION_COOKIE_NAME,
-        sessionSecret: env.BT_SESSION_SECRET,
-        cookieTTL: env.BT_SESSION_COOKIE_TTL,
-      },
+    sessions: {
+      cookieDomain: env.BT_SESSION_COOKIE_DOMAIN,
+      cookieName: env.BT_SESSION_COOKIE_NAME,
+      sessionSecret: env.BT_SESSION_SECRET,
+      cookieTTL: env.BT_SESSION_COOKIE_TTL,
+    },
 
-      adminEmail: env.BT_ADMIN_EMAIL,
-      baseUrl: env.BT_BASE_URL,
-      fastImageResize: env.BT_FAST_IMAGE_RESIZE,
-      friendsLimit: env.BT_FRIENDS_LIMIT,
-      isProduction: env.NODE_ENV === 'production',
-      tokenTTL: env.BT_TOKEN_TTL,
-      env: env.NODE_ENV,
-      logLevel: env.BT_LOG_LEVEL,
-      passwordSaltRounds: env.BT_PASSWORD_SALT_ROUNDS,
-      port: env.BT_PORT,
-      postgresUri: env.BT_POSTGRES_URI,
-    }),
-  );
+    adminEmail: env.BT_ADMIN_EMAIL,
+    baseUrl: env.BT_BASE_URL,
+    fastImageResize: env.BT_FAST_IMAGE_RESIZE,
+    friendsLimit: env.BT_FRIENDS_LIMIT,
+    isProduction: env.NODE_ENV === 'production',
+    env: env.NODE_ENV,
+    logLevel: env.BT_LOG_LEVEL,
+    passwordSaltRounds: env.BT_PASSWORD_SALT_ROUNDS,
+    port: env.BT_PORT,
+    postgresUri: env.BT_POSTGRES_URI,
+  }));
 
 export const Config = ConfigSchema.parse(process.env);
