@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import fs from 'fs/promises';
-import { start } from 'repl';
 import { Repository } from 'typeorm';
 
 import { LogEntryEntity, UserEntity } from '../../../src/data';
@@ -196,7 +195,7 @@ describe('Log entries service', () => {
     });
   });
 
-  describe.only('when listing log entries', () => {
+  describe('when listing log entries', () => {
     beforeEach(async () => {
       await Entries.save(logEntryData);
     });
