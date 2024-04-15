@@ -66,11 +66,11 @@ export class LogEntry {
     this.data.bottomTime = value ?? null;
   }
 
-  get duration(): number | undefined {
-    return this.data.duration ?? undefined;
+  get duration(): number {
+    return this.data.duration;
   }
-  set duration(value: number | undefined) {
-    this.data.duration = value ?? null;
+  set duration(value: number) {
+    this.data.duration = value;
   }
 
   get maxDepth(): DepthDTO | undefined {

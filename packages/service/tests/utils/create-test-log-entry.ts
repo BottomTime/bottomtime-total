@@ -3,6 +3,7 @@ import { DepthUnit } from '@bottomtime/api';
 import { faker } from '@faker-js/faker';
 
 import dayjs from 'dayjs';
+import 'dayjs/plugin/timezone';
 import { z } from 'zod';
 
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../src/data';
@@ -22,7 +23,7 @@ const LogEntrySchema = z.object({
   timezone: z.string(),
   logNumber: z.number().nullable(),
   bottomTime: z.number().nullable(),
-  duration: z.number().nullable(),
+  duration: z.number(),
   maxDepth: z.number().nullable(),
   maxDepthUnit: z.nativeEnum(DepthUnit).nullable(),
   notes: z.string().nullable(),
@@ -33,6 +34,7 @@ export function createTestLogEntry(
   options?: Partial<LogEntryEntity>,
 ): LogEntryEntity {
   const data = new LogEntryEntity();
+  const timezone = options?.timezone ?? faker.helpers.arrayElement(Timezones);
 
   data.owner = owner;
 
@@ -45,8 +47,9 @@ export function createTestLogEntry(
 
   data.timestamp = options?.timestamp ?? faker.date.past(3);
   data.entryTime =
-    options?.entryTime ?? dayjs(data.timestamp).format('YYYY-MM-DDTHH:mm:ss');
-  data.timezone = options?.timezone ?? faker.helpers.arrayElement(Timezones);
+    options?.entryTime ??
+    dayjs(data.timestamp).tz(timezone).format('YYYY-MM-DDTHH:mm:ss');
+  data.timezone = timezone;
 
   data.bottomTime =
     options?.bottomTime ?? faker.datatype.number({ min: 12, max: 95 });

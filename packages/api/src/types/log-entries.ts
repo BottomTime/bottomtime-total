@@ -11,8 +11,8 @@ export const CreateOrUpdateLogEntryParamsSchema = z.object({
   logNumber: z.number().int().positive().optional(),
 
   entryTime: DateWithTimezoneSchema,
-  bottomTime: z.number().int().positive().optional(),
-  duration: z.number().int().positive().optional(),
+  bottomTime: z.number().positive().optional(),
+  duration: z.number().positive(),
 
   maxDepth: DepthSchema.optional(),
 
@@ -27,6 +27,17 @@ export const LogEntrySchema = CreateOrUpdateLogEntryParamsSchema.extend({
   creator: SuccinctProfileSchema,
 });
 export type LogEntryDTO = z.infer<typeof LogEntrySchema>;
+
+export const SuccinctLogEntrySchema = LogEntrySchema.pick({
+  id: true,
+  entryTime: true,
+  creator: true,
+  logNumber: true,
+  maxDepth: true,
+  bottomTime: true,
+  duration: true,
+});
+export type SuccinctLogEntryDTO = z.infer<typeof SuccinctLogEntrySchema>;
 
 export const ListLogEntriesParamsSchema = z
   .object({
@@ -46,4 +57,12 @@ export const ListLogEntriesParamsSchema = z
   .partial();
 export type ListLogEntriesParamsDTO = z.infer<
   typeof ListLogEntriesParamsSchema
+>;
+
+export const ListLogEntriesResponseSchema = z.object({
+  logEntries: z.array(SuccinctLogEntrySchema),
+  totalCount: z.number().int(),
+});
+export type ListLogEntriesResponseDTO = z.infer<
+  typeof ListLogEntriesResponseSchema
 >;

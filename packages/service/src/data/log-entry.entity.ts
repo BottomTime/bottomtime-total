@@ -30,11 +30,11 @@ export class LogEntryEntity {
   @Column({ type: 'text', nullable: false })
   timezone: string = '';
 
-  @Column({ type: 'integer', nullable: true })
+  @Column({ type: 'float', nullable: true })
   bottomTime: number | null = null;
 
-  @Column({ type: 'integer', nullable: true })
-  duration: number | null = null;
+  @Column({ type: 'float', nullable: false })
+  duration: number = 0;
 
   // Location
   @ManyToOne(() => DiveSiteEntity, (site) => site.logEntries, {

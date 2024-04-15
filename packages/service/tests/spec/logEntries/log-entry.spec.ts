@@ -125,13 +125,11 @@ describe('Log Entry class', () => {
   it('will allow optional properties to be set to undefined', () => {
     logEntry.logNumber = undefined;
     logEntry.bottomTime = undefined;
-    logEntry.duration = undefined;
     logEntry.maxDepth = undefined;
     logEntry.notes = undefined;
 
     expect(logEntry.logNumber).toBeUndefined();
     expect(logEntry.bottomTime).toBeUndefined();
-    expect(logEntry.duration).toBeUndefined();
     expect(logEntry.maxDepth).toBeUndefined();
     expect(logEntry.notes).toBeUndefined();
   });

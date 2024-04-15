@@ -1,9 +1,10 @@
-import { DepthUnit } from '@bottomtime/api';
+import { DepthUnit, LogEntrySortBy, SortOrder } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import fs from 'fs/promises';
+import { start } from 'repl';
 import { Repository } from 'typeorm';
 
 import { LogEntryEntity, UserEntity } from '../../../src/data';
@@ -69,6 +70,7 @@ describe('Log entries service', () => {
           date: '2024-03-28T13:45:00',
           timezone: 'Europe/Amsterdam',
         },
+        duration: 52,
       };
 
       const entry = await service.createLogEntry(options);
@@ -85,6 +87,7 @@ describe('Log entries service', () => {
         date: '2024-03-28T13:45:00',
         timezone: 'Europe/Amsterdam',
       });
+      expect(entry.duration).toEqual(options.duration);
 
       const saved = await Entries.findOneOrFail({
         where: { id: entry.id },
@@ -92,6 +95,7 @@ describe('Log entries service', () => {
       });
       expect(saved.entryTime).toEqual(entry.entryTime.date);
       expect(saved.timezone).toEqual(entry.entryTime.timezone);
+      expect(saved.duration).toEqual(options.duration);
       expect(saved.owner.id).toEqual(ownerData[0].id);
       expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
     });
@@ -192,5 +196,118 @@ describe('Log entries service', () => {
     });
   });
 
-  describe('when listing log entries', () => {});
+  describe.only('when listing log entries', () => {
+    beforeEach(async () => {
+      await Entries.save(logEntryData);
+    });
+
+    it('will perform a basic search', async () => {
+      const results = await service.listLogEntries();
+
+      expect(results.totalCount).toBe(logEntryData.length);
+      expect(results.logEntries).toHaveLength(50);
+
+      expect(
+        results.logEntries.map((entry) => ({
+          id: entry.id,
+          entryTime: entry.entryTime,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    it('will perform a search with pagination', async () => {
+      const results = await service.listLogEntries({ skip: 50, limit: 10 });
+
+      expect(results.totalCount).toBe(logEntryData.length);
+      expect(results.logEntries).toHaveLength(10);
+
+      expect(
+        results.logEntries.map((entry) => ({
+          id: entry.id,
+          entryTime: entry.entryTime,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    [
+      { sortBy: LogEntrySortBy.EntryTime, sortOrder: SortOrder.Ascending },
+      { sortBy: LogEntrySortBy.EntryTime, sortOrder: SortOrder.Descending },
+    ].forEach(({ sortBy, sortOrder }) => {
+      it(`will sort log entries by "${sortBy}" in "${sortOrder}" order`, async () => {
+        const results = await service.listLogEntries({
+          sortBy,
+          sortOrder,
+          limit: 10,
+        });
+
+        expect(results.totalCount).toBe(logEntryData.length);
+        expect(results.logEntries).toHaveLength(10);
+
+        expect(
+          results.logEntries.map((entry) => ({
+            id: entry.id,
+            entryTime: entry.entryTime,
+          })),
+        ).toMatchSnapshot();
+      });
+    });
+
+    it('will perform a search for log entries belonging to a specific diver', async () => {
+      const results = await service.listLogEntries({
+        owner: ownerData[0].id,
+        limit: 20,
+      });
+
+      expect(results.totalCount).toBe(75);
+      expect(results.logEntries).toHaveLength(20);
+
+      expect(
+        results.logEntries.map((entry) => ({
+          id: entry.id,
+          owner: entry.owner.username,
+          entryTime: entry.entryTime,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    [
+      {
+        start: new Date('2023-09-01T00:00:00.000Z'),
+        end: new Date('2023-10-01T00:00:00.000Z'),
+        expectedTotal: 8,
+        expectedLength: 8,
+      },
+      {
+        start: new Date('2023-09-01T00:00:00.000Z'),
+        end: undefined,
+        expectedTotal: 69,
+        expectedLength: 15,
+      },
+      {
+        start: undefined,
+        end: new Date('2023-10-01T00:00:00.000Z'),
+        expectedTotal: 239,
+        expectedLength: 15,
+      },
+    ].forEach(({ start, end, expectedTotal, expectedLength }) => {
+      it(`will perform a search for log entries between dates ${
+        start ? dayjs(start).format('YYYY-MM-DD') : '<ANY>'
+      } and ${end ? dayjs(end).format('YYYY-MM-DD') : '<ANY>'}`, async () => {
+        const results = await service.listLogEntries({
+          dateRange: { start, end },
+          limit: 15,
+        });
+
+        expect(results.totalCount).toBe(expectedTotal);
+        expect(results.logEntries).toHaveLength(expectedLength);
+
+        expect(
+          results.logEntries.map((entry) => ({
+            id: entry.id,
+            entryTime: entry.entryTime,
+          })),
+        ).toMatchSnapshot();
+      });
+    });
+  });
 });
