@@ -28,14 +28,14 @@ export class LogEntry {
     return this.data.id;
   }
 
-  get creator(): SuccinctProfileDTO {
+  get owner(): SuccinctProfileDTO {
     return {
-      userId: this.data.creator.id,
-      username: this.data.creator.username,
-      memberSince: this.data.creator.memberSince,
-      avatar: this.data.creator.avatar,
-      name: this.data.creator.name,
-      location: this.data.creator.location,
+      userId: this.data.owner.id,
+      username: this.data.owner.username,
+      memberSince: this.data.owner.memberSince,
+      avatar: this.data.owner.avatar,
+      name: this.data.owner.name,
+      location: this.data.owner.location,
     };
   }
 
@@ -99,7 +99,7 @@ export class LogEntry {
     return {
       id: this.id,
       logNumber: this.logNumber,
-      creator: this.creator,
+      creator: this.owner,
       entryTime: this.entryTime,
       bottomTime: this.bottomTime,
       duration: this.duration,

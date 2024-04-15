@@ -1,0 +1,18 @@
+export const LogEntrySelectFields = [
+  'entries.id',
+  'entries.logNumber',
+  'entries.timestamp',
+  'entries.entryTime',
+  'entries.timezone',
+  'entries.bottomTime',
+  'entries.duration',
+  'entries.maxDepth',
+  'entries.maxDepthUnit',
+  'entries.notes',
+  'owners.id',
+  'owners.username',
+  'owners.memberSince',
+  'owners.name',
+  'owners.location',
+  'owners.avatar',
+];

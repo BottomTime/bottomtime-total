@@ -64,7 +64,7 @@ describe('Log Entry class', () => {
   it('will return properties correctly', () => {
     expect(logEntry.id).toBe(data.id);
     expect(logEntry.logNumber).toBe(data.logNumber);
-    expect(logEntry.creator).toEqual({
+    expect(logEntry.owner).toEqual({
       userId: CreatorData.id,
       memberSince: CreatorData.memberSince,
       username: CreatorData.username,
@@ -167,11 +167,11 @@ describe('Log Entry class', () => {
 
     const saved = await Entries.findOneOrFail({
       where: { id: logEntry.id },
-      relations: ['creator'],
+      relations: ['owner'],
     });
     expect(saved.id).toBe(logEntry.id);
     expect(saved.logNumber).toBe(logEntry.logNumber);
-    expect(saved.creator.id).toEqual(user.id);
+    expect(saved.owner.id).toEqual(user.id);
     expect(saved.timestamp).toEqual(data.timestamp);
     expect(saved.entryTime).toBe(data.entryTime);
     expect(saved.timezone).toBe(data.timezone);
@@ -202,11 +202,11 @@ describe('Log Entry class', () => {
 
     const saved = await Entries.findOneOrFail({
       where: { id: logEntry.id },
-      relations: ['creator'],
+      relations: ['owner'],
     });
     expect(saved.id).toBe(logEntry.id);
     expect(saved.logNumber).toBe(logEntry.logNumber);
-    expect(saved.creator.id).toEqual(user.id);
+    expect(saved.owner.id).toEqual(user.id);
     expect(saved.entryTime).toBe('2024-05-08T08:34:56');
     expect(saved.timezone).toBe('Asia/Singapore');
     expect(saved.timestamp).toEqual(new Date('2024-05-08T00:34:56.000Z'));

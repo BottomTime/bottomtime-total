@@ -1,13 +1,6 @@
 import { DepthUnit } from '@bottomtime/api';
 
-import {
-  Column,
-  Entity,
-  Index,
-  ManyToOne,
-  OneToMany,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { DiveSiteEntity } from './dive-site.entity';
 import { UserEntity } from './user.entity';
@@ -24,7 +17,7 @@ export class LogEntryEntity {
 
   // Owner
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
-  creator: UserEntity = new UserEntity();
+  owner: UserEntity = new UserEntity();
 
   // Timing
   @Column({ type: 'timestamp', nullable: false })
