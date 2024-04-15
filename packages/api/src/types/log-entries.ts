@@ -1,18 +1,16 @@
 import { z } from 'zod';
 
-import { DepthUnit } from './constants';
+import { DateWithTimezoneSchema, DepthSchema } from './constants';
 import { SuccinctProfileSchema } from './users';
 
 export const CreateOrUpdateLogEntryParamsSchema = z.object({
   logNumber: z.number().int().positive().optional(),
 
-  entryTime: z.coerce.date(),
-  timezone: z.string(),
+  entryTime: DateWithTimezoneSchema,
   bottomTime: z.number().int().positive().optional(),
   duration: z.number().int().positive().optional(),
 
-  maxDepth: z.number().positive().optional(),
-  maxDepthUnit: z.nativeEnum(DepthUnit).optional(),
+  maxDepth: DepthSchema.optional(),
 
   notes: z.string().max(5000).optional(),
 });

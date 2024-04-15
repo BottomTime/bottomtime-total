@@ -20,7 +20,7 @@ export class LogEntryEntity {
 
   @Column({ type: 'integer', nullable: true })
   @Index({ sparse: true })
-  logNumber?: number;
+  logNumber: number | null = null;
 
   // Owner
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
@@ -31,29 +31,32 @@ export class LogEntryEntity {
   @Index()
   timestamp: Date = new Date();
 
-  @Column({ type: 'timestamp', nullable: false })
+  @Column({ type: 'varchar', length: 20, nullable: false })
   entryTime: string = '';
 
   @Column({ type: 'text', nullable: false })
   timezone: string = '';
 
   @Column({ type: 'integer', nullable: true })
-  bottomTime?: number;
+  bottomTime: number | null = null;
 
   @Column({ type: 'integer', nullable: true })
-  duration?: number;
+  duration: number | null = null;
 
   // Location
-  @OneToMany(() => DiveSiteEntity, (site) => site.id, { nullable: true })
-  site?: string;
+  @ManyToOne(() => DiveSiteEntity, (site) => site.logEntries, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  site: DiveSiteEntity | null = null;
 
   @Column({ type: 'float', nullable: true })
-  maxDepth?: number;
+  maxDepth: number | null = null;
 
   @Column({ type: 'enum', enum: DepthUnit, nullable: true })
-  maxDepthUnit?: DepthUnit;
+  maxDepthUnit: DepthUnit | null = null;
 
   // Miscellaneous data
   @Column({ type: 'text', nullable: true })
-  notes?: string;
+  notes: string | null = null;
 }

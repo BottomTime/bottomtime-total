@@ -19,7 +19,8 @@ export function createTestLogEntry(
   data.id = options?.id ?? faker.datatype.uuid();
   data.logNumber =
     options?.logNumber ??
-    faker.helpers.maybe(() => faker.datatype.number(), { probability: 0.9 });
+    faker.helpers.maybe(() => faker.datatype.number(), { probability: 0.9 }) ??
+    null;
   data.creator = creator;
 
   data.timestamp = options?.timestamp ?? faker.date.past(3);
@@ -36,6 +37,8 @@ export function createTestLogEntry(
   data.maxDepthUnit =
     options?.maxDepthUnit ??
     faker.helpers.arrayElement(Object.values(DepthUnit));
+
+  data.notes = options?.notes ?? faker.lorem.paragraph();
 
   return data;
 }
