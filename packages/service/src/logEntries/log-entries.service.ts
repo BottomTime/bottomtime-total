@@ -17,6 +17,10 @@ export type CreateLogEntryOptions = CreateOrUpdateLogEntryParamsDTO & {
   ownerId: string;
 };
 
+export type ListLogEntriesOptions = ListLogEntriesParamsDTO & {
+  ownerId?: string;
+};
+
 export type ListLogEntriesResults = {
   logEntries: LogEntry[];
   totalCount: number;
@@ -35,11 +39,11 @@ export class LogEntriesService {
   ) {}
 
   async listLogEntries(
-    options?: ListLogEntriesParamsDTO,
+    options?: ListLogEntriesOptions,
   ): Promise<ListLogEntriesResults> {
     const query = new LogEntryQueryBuilder(this.Entries)
-      .withDateRange(options?.dateRange?.start, options?.dateRange?.end)
-      .withOwner(options?.owner)
+      .withDateRange(options?.startDate, options?.endDate)
+      .withOwner(options?.ownerId)
       .withPagination(options?.skip, options?.limit)
       .withSortOrder(options?.sortBy, options?.sortOrder)
       .build();
@@ -55,7 +59,10 @@ export class LogEntriesService {
     };
   }
 
-  async getLogEntry(entryId: string): Promise<LogEntry | undefined> {
+  async getLogEntry(
+    entryId: string,
+    ownerId?: string,
+  ): Promise<LogEntry | undefined> {
     const query = this.Entries.createQueryBuilder()
       .from(LogEntryEntity, 'entries')
       .innerJoin('entries.owner', 'owners')
@@ -78,6 +85,10 @@ export class LogEntriesService {
         'owners.location',
         'owners.avatar',
       ]);
+
+    if (ownerId) {
+      query.andWhere('owners.id = :ownerId', { ownerId });
+    }
 
     this.log.debug(`Attempting to retrieve log entry with ID "${entryId}"...`);
     this.log.verbose(query.getSql());

@@ -42,13 +42,8 @@ export type SuccinctLogEntryDTO = z.infer<typeof SuccinctLogEntrySchema>;
 export const ListLogEntriesParamsSchema = z
   .object({
     query: z.string().max(500),
-    dateRange: z
-      .object({
-        start: z.coerce.date(),
-        end: z.coerce.date(),
-      })
-      .partial(),
-    owner: UsernameSchema,
+    startDate: z.coerce.date().optional(),
+    endDate: z.coerce.date().optional(),
     skip: z.number().int().min(0),
     limit: z.number().int().min(1).max(500),
     sortBy: z.nativeEnum(LogEntrySortBy),

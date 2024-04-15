@@ -193,6 +193,42 @@ describe('Log entries service', () => {
       );
       expect(result).toBeUndefined();
     });
+
+    it('will retrieve a log entry belonging to a specific user', async () => {
+      const data = logEntryData[0];
+      await Entries.save(data);
+      const result = (await service.getLogEntry(data.id, ownerData[0].id))!;
+
+      expect(result).toBeDefined();
+      expect(result.id).toEqual(data.id);
+      expect(result.logNumber).toEqual(data.logNumber);
+      expect(result.bottomTime).toEqual(data.bottomTime);
+      expect(result.duration).toEqual(data.duration);
+      expect(result.maxDepth).toEqual({
+        depth: data.maxDepth!,
+        unit: data.maxDepthUnit!,
+      });
+      expect(result.notes).toEqual(data.notes);
+      expect(result.entryTime).toEqual({
+        date: data.entryTime,
+        timezone: data.timezone,
+      });
+      expect(result.owner).toEqual({
+        userId: data.owner.id,
+        username: data.owner.username,
+        memberSince: data.owner.memberSince,
+        name: data.owner.name,
+        location: data.owner.location,
+        avatar: data.owner.avatar,
+      });
+    });
+
+    it('will return undefined if the indicated log entry does not belong to the specified user', async () => {
+      const data = logEntryData[0];
+      await Entries.save(data);
+      const result = await service.getLogEntry(data.id, ownerData[1].id);
+      expect(result).toBeUndefined();
+    });
   });
 
   describe('when listing log entries', () => {
@@ -253,7 +289,7 @@ describe('Log entries service', () => {
 
     it('will perform a search for log entries belonging to a specific diver', async () => {
       const results = await service.listLogEntries({
-        owner: ownerData[0].id,
+        ownerId: ownerData[0].id,
         limit: 20,
       });
 
@@ -293,7 +329,8 @@ describe('Log entries service', () => {
         start ? dayjs(start).format('YYYY-MM-DD') : '<ANY>'
       } and ${end ? dayjs(end).format('YYYY-MM-DD') : '<ANY>'}`, async () => {
         const results = await service.listLogEntries({
-          dateRange: { start, end },
+          startDate: start,
+          endDate: end,
           limit: 15,
         });
 
