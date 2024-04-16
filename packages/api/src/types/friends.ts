@@ -57,11 +57,10 @@ export type ListFriendsResponseDTO = z.infer<typeof ListFriendsResposneSchema>;
 // Listing Friend Requests
 export const ListFriendRequestsParamsSchema = z
   .object({
-    direction: z
-      .nativeEnum(FriendRequestDirection)
-      .default(FriendRequestDirection.Both),
-    skip: z.coerce.number().int().min(0).default(0),
-    limit: z.coerce.number().int().min(1).max(200).default(50),
+    direction: z.nativeEnum(FriendRequestDirection),
+    showAcknowledged: z.boolean(),
+    skip: z.coerce.number().int().min(0),
+    limit: z.coerce.number().int().min(1).max(200),
   })
   .partial();
 export type ListFriendRequestsParams = z.infer<

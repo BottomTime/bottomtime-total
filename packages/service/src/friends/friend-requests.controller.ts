@@ -68,6 +68,13 @@ export class FriendRequestsController {
    *             - incoming
    *             - outgoing
    *             - both
+   *       - name: showAcknowledged
+   *         in: query
+   *         description: Whether or not to return friend requests that have already been accepted/rejected.
+   *         schema:
+   *           type: boolean
+   *           default: false
+   *           example: true
    *       - name: skip
    *         in: query
    *         description: The number of records to skip

@@ -15,7 +15,8 @@
     "id": "a2a1a4b3-97ee-4f39-8f31-08da03e88699",
     "to": "a2a1a4b3-97ee-4f39-8f31-08da03e88699",
     "created": "2023-11-25T02:03:59.931Z",
-    "expires": "2023-12-24T02:53:48.438Z"
+    "expires": "2023-12-24T02:53:48.438Z",
+    "accepted": true
   },
   {
     "id": "bb87ea29-bade-461c-af1f-c29c0c72bac9",
@@ -27,7 +28,9 @@
     "id": "8f9d78df-760f-46c5-a6fe-32f87277b17d",
     "to": "8f9d78df-760f-46c5-a6fe-32f87277b17d",
     "created": "2023-10-24T04:36:48.047Z",
-    "expires": "2023-12-19T16:27:19.246Z"
+    "expires": "2023-12-19T16:27:19.246Z",
+    "accepted": false,
+    "reason": "Nope!"
   },
   {
     "id": "cb6da4ee-b0be-4828-8c20-ad6b04fd8ceb",
@@ -111,7 +114,8 @@
     "id": "e5ad74ec-43a5-4a1b-8b9b-7ad85f8fee13",
     "to": "e5ad74ec-43a5-4a1b-8b9b-7ad85f8fee13",
     "created": "2023-11-12T23:19:44.983Z",
-    "expires": "2023-12-13T10:32:59.659Z"
+    "expires": "2023-12-13T10:32:59.659Z",
+    "accepted": true
   },
   {
     "id": "dbb3b23c-7c86-4ea2-ba7b-8cd26882b5af",
@@ -171,7 +175,9 @@
     "id": "a15f630c-6cb1-456c-a2f6-1b5f60c79a0f",
     "to": "a15f630c-6cb1-456c-a2f6-1b5f60c79a0f",
     "created": "2023-12-07T14:06:30.281Z",
-    "expires": "2023-12-14T13:40:16.452Z"
+    "expires": "2023-12-14T13:40:16.452Z",
+    "accepted": false,
+    "reason": "You smell funny."
   },
   {
     "id": "bbcd7884-e08d-44b8-b9e7-919c50a84283",
@@ -207,13 +213,15 @@
     "id": "9616d456-44dd-4514-b57e-a16e43cba340",
     "to": "9616d456-44dd-4514-b57e-a16e43cba340",
     "created": "2023-12-08T16:34:52.200Z",
-    "expires": "2023-12-16T05:55:05.810Z"
+    "expires": "2023-12-16T05:55:05.810Z",
+    "accepted": true
   },
   {
     "id": "d22e174b-e14d-49ab-bb36-10edc701a210",
     "to": "d22e174b-e14d-49ab-bb36-10edc701a210",
     "created": "2023-11-04T23:03:27.620Z",
-    "expires": "2023-12-16T12:12:56.330Z"
+    "expires": "2023-12-16T12:12:56.330Z",
+    "accepted": false
   },
   {
     "id": "53f26b77-7821-425e-aa13-68f256ec9473",
@@ -279,7 +287,8 @@
     "id": "e1266ade-6c78-4542-8b7c-578259661c76",
     "to": "e1266ade-6c78-4542-8b7c-578259661c76",
     "created": "2023-11-26T07:43:13.333Z",
-    "expires": "2023-12-20T11:25:15.463Z"
+    "expires": "2023-12-20T11:25:15.463Z",
+    "accepted": true
   },
   {
     "id": "40222789-063f-46da-b6d8-382fc2f81cf7",
@@ -297,6 +306,8 @@
     "id": "0df06e55-8e58-4cb3-8499-9873f9677783",
     "to": "0df06e55-8e58-4cb3-8499-9873f9677783",
     "created": "2023-10-22T12:05:07.209Z",
-    "expires": "2023-12-12T07:23:24.903Z"
+    "expires": "2023-12-12T07:23:24.903Z",
+    "accepted": false,
+    "reason": "May thy knife chip and shatter."
   }
 ]

@@ -211,31 +211,36 @@ export class FriendsService {
   async listFriendRequests(
     options: ListFriendRequestOptions,
   ): Promise<ListFriendRequestsResults> {
+    this.log.debug('Fucking lame', options.showAcknowledged);
     let query = this.FriendRequests.createQueryBuilder('requests')
       .innerJoin('requests.from', 'from')
       .innerJoin('requests.to', 'to')
       .select(FriendRequestSelectFields)
       .orderBy('requests.created', 'DESC')
       .offset(options.skip)
-      .limit(options.limit ?? 100);
+      .limit(options.limit || 100);
+
+    if (options.showAcknowledged !== true) {
+      query = query.andWhere('requests.accepted IS NULL');
+    }
 
     switch (options.direction) {
       case FriendRequestDirection.Incoming:
-        query = query.where('requests.to = :userId', {
+        query = query.andWhere('requests.to = :userId', {
           userId: options.userId,
         });
         break;
 
       case FriendRequestDirection.Outgoing:
-        query = query.where('requests.from = :userId', {
+        query = query.andWhere('requests.from = :userId', {
           userId: options.userId,
         });
         break;
 
       case FriendRequestDirection.Both:
       default:
-        query = query.where(
-          'requests.from = :userId OR requests.to = :userId',
+        query = query.andWhere(
+          '(requests.from = :userId OR requests.to = :userId)',
           { userId: options.userId },
         );
         break;

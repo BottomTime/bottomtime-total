@@ -257,7 +257,7 @@ describe('Friends Service', () => {
       const results = await service.listFriendRequests({
         userId: userData.id,
       });
-      expect(results.friendRequests).toHaveLength(50);
+      expect(results.friendRequests).toHaveLength(42);
       expect(results).toMatchSnapshot();
     });
 
@@ -280,6 +280,15 @@ describe('Friends Service', () => {
         });
         expect(results).toMatchSnapshot();
       });
+    });
+
+    it('will return acknowledged friend requests when requested', async () => {
+      const results = await service.listFriendRequests({
+        userId: userData.id,
+        showAcknowledged: true,
+      });
+      expect(results.friendRequests).toHaveLength(50);
+      expect(results).toMatchSnapshot();
     });
   });
 
