@@ -12,6 +12,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Inject,
   Post,
   Put,
@@ -410,6 +411,9 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Delete(LogEntryIdParam)
+  @HttpCode(204)
   @UseGuards(AssertTargetLogEntry)
-  async deleteLog(@TargetLogEntry() logEntry: LogEntry): Promise<void> {}
+  async deleteLog(@TargetLogEntry() logEntry: LogEntry): Promise<void> {
+    await logEntry.delete();
+  }
 }

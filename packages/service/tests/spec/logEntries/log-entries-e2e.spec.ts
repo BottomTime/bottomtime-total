@@ -417,4 +417,61 @@ describe('Log entries E2E tests', () => {
         .expect(404);
     });
   });
+
+  describe('when deleting log entries', () => {
+    let entry: LogEntryEntity;
+
+    beforeAll(() => {
+      entry = logEntryData[0];
+    });
+
+    beforeEach(async () => {
+      await Entries.save(entry);
+    });
+
+    it('will delete the requested log entry', async () => {
+      await request(server)
+        .delete(getUrl(entry.id))
+        .set(...authHeader)
+        .expect(204);
+
+      const deleted = await Entries.findOneBy({ id: entry.id });
+      expect(deleted).toBeNull();
+    });
+
+    it('will allow an admin to delete any log entry', async () => {
+      await request(server)
+        .delete(getUrl(entry.id))
+        .set(...adminAuthHeader)
+        .expect(204);
+
+      const deleted = await Entries.findOneBy({ id: entry.id });
+      expect(deleted).toBeNull();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server).delete(getUrl(entry.id)).expect(401);
+    });
+
+    it('will return a 403 response if the user is not authorized to delete the log entry', async () => {
+      await request(server)
+        .delete(getUrl(entry.id))
+        .set(...otherAuthHeader)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the log entry does not exist', async () => {
+      await request(server)
+        .delete(getUrl('308023b5-df12-4e48-88e9-3e8fe88756d3'))
+        .set(...authHeader)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the target user does not exist', async () => {
+      await request(server)
+        .delete(getUrl(entry.id, 'not_a_user'))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+  });
 });
