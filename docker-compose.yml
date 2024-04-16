@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   s3:
     image: lphoward/fake-s3

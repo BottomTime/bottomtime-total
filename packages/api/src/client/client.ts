@@ -2,6 +2,7 @@ import axios, { AxiosHeaders, AxiosInstance } from 'axios';
 
 import { AlertsApiClient } from './alerts';
 import { DiveSitesApiClient } from './dive-sites';
+import { FriendsApiClient } from './friends';
 import { UsersApiClient } from './users';
 
 export type ApiClientOptions = {
@@ -12,6 +13,7 @@ export type ApiClientOptions = {
 export class ApiClient {
   private readonly client: AxiosInstance;
   readonly alerts: AlertsApiClient;
+  readonly friends: FriendsApiClient;
   readonly users: UsersApiClient;
   readonly diveSites: DiveSitesApiClient;
 
@@ -28,6 +30,7 @@ export class ApiClient {
     });
 
     this.alerts = new AlertsApiClient(this.client);
+    this.friends = new FriendsApiClient(this.client);
     this.users = new UsersApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
   }

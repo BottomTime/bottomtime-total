@@ -1,25 +1,28 @@
 import {
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Logger,
-  NotFoundException,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { FriendsService } from './friends.service';
-import {
   FriendDTO,
   ListFriendsParams,
   ListFriendsParamsSchema,
   ListFriendsResponseDTO,
 } from '@bottomtime/api';
+
+import {
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Inject,
+  Logger,
+  NotFoundException,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+
 import { AssertAuth } from '../auth';
-import { ZodValidator } from '../zod-validator';
 import { AssertTargetUser, TargetUser, User } from '../users';
-import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
+import { ZodValidator } from '../zod-validator';
 import { AssertFriend, TargetFriend } from './assert-friend.guard';
+import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
+import { FriendsService } from './friends.service';
 
 const UsernameParam = 'username';
 const FriendParam = 'friend';
@@ -29,7 +32,9 @@ const FriendParam = 'friend';
 export class FriendsController {
   private readonly log: Logger = new Logger(FriendsController.name);
 
-  constructor(private readonly friendsService: FriendsService) {}
+  constructor(
+    @Inject(FriendsService) private readonly friendsService: FriendsService,
+  ) {}
 
   /**
    * @openapi
