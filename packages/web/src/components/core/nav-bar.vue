@@ -58,8 +58,7 @@
           >
             <span class="sr-only">Open User Menu</span>
             <UserAvatar
-              class=""
-              :avatar="currentUser.user?.profile?.avatar"
+              :avatar="currentUser.user?.profile?.avatar ?? undefined"
               :display-name="currentUser.displayName"
             />
             <span class="text-lg hidden md:block">
@@ -77,6 +76,10 @@
                 data-testid="user-dropdown"
                 class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left"
               >
+                <a class="w-full p-2 hover:bg-blue-700" href="/friends">
+                  Friends
+                </a>
+                <hr />
                 <a class="w-full p-2 hover:bg-blue-700" href="/profile">
                   Profile
                 </a>
