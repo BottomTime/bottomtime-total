@@ -1,14 +1,21 @@
 /* eslint-disable no-console */
 import { DataSource, Repository } from 'typeorm';
 
-import { AlertEntity, DiveSiteEntity, UserEntity } from '../../src/data';
+import {
+  AlertEntity,
+  DiveSiteEntity,
+  FriendRequestEntity,
+  UserEntity,
+} from '../../src/data';
 import { getDataSource } from './data-source';
-import { fakeAlert, fakeDiveSite, fakeUser } from './fakes';
+import { fakeAlert, fakeDiveSite, fakeFriendRequest, fakeUser } from './fakes';
 
 export type EntityCounts = {
   alerts: number;
   diveSites: number;
+  friendRequests: number;
   users: number;
+  targetUser?: string;
 };
 
 /**
@@ -78,6 +85,21 @@ async function createDiveSites(
   );
 }
 
+async function createFriendRequests(
+  FriendRequests: Repository<FriendRequestEntity>,
+  userIds: string[],
+  friendIds: string[],
+  count: number,
+): Promise<void> {
+  await batch(
+    () => fakeFriendRequest(userIds, friendIds),
+    async (requests) => {
+      await FriendRequests.save(requests);
+    },
+    count,
+  );
+}
+
 async function createAlerts(
   Alerts: Repository<AlertEntity>,
   count: number,
@@ -100,6 +122,7 @@ export async function createTestData(
   try {
     ds = await getDataSource(postgresUri);
     const Alerts = ds.getRepository(AlertEntity);
+    const FriendRequests = ds.getRepository(FriendRequestEntity);
     const Users = ds.getRepository(UserEntity);
     const Sites = ds.getRepository(DiveSiteEntity);
 
@@ -125,6 +148,23 @@ export async function createTestData(
     if (counts.alerts > 0) {
       console.log(`Creating ${counts.alerts} home page alerts...`);
       await createAlerts(Alerts, counts.alerts);
+    }
+
+    let targetUser: UserEntity | undefined;
+    if (counts.targetUser) {
+      targetUser = await Users.findOneOrFail({
+        where: { usernameLowered: counts.targetUser.toLocaleLowerCase() },
+      });
+    }
+
+    if (counts.friendRequests) {
+      console.log(`Creating ${counts.friendRequests} friend requests...`);
+      await createFriendRequests(
+        FriendRequests,
+        targetUser ? [targetUser.id] : userIds,
+        userIds,
+        counts.friendRequests,
+      );
     }
 
     console.log('Finished inserting test data');
