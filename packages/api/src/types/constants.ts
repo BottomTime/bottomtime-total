@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const DateRegex = /^\d{4}-\d{2}-\d{2}$/;
+export const DateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?$/;
 export const FuzzyDateRegex = /^\d{4}(-\d{2}(-\d{2})?)?$/;
 
 export enum DepthUnit {
@@ -144,3 +145,9 @@ export const DepthSchema = z.object({
   unit: z.nativeEnum(DepthUnit),
 });
 export type DepthDTO = z.infer<typeof DepthSchema>;
+
+export const DateWithTimezoneSchema = z.object({
+  date: z.string().regex(DateTimeRegex),
+  timezone: z.string(),
+});
+export type DateWithTimezoneDTO = z.infer<typeof DateWithTimezoneSchema>;

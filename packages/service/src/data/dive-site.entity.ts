@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 
 import { DiveSiteReviewEntity } from './dive-site-review.entity';
+import { LogEntryEntity } from './log-entry.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('dive_sites')
@@ -78,6 +79,11 @@ export class DiveSiteEntity {
   @Column('float', { nullable: true })
   @Index()
   averageRating: number | null = null;
+
+  @OneToMany(() => LogEntryEntity, (logEntry) => logEntry.site, {
+    onDelete: 'CASCADE',
+  })
+  logEntries?: LogEntryEntity[];
 
   @Column('float', { nullable: true })
   averageDifficulty: number | null = null;

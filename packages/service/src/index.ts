@@ -2,6 +2,9 @@ import { createLogger } from '@bottomtime/common';
 
 import { S3Client } from '@aws-sdk/client-s3';
 
+import dayjs from 'dayjs';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { createTransport } from 'nodemailer';
 import 'reflect-metadata';
 
@@ -10,6 +13,9 @@ import { Config } from './config';
 import { createApp } from './create-app';
 import { PostgresDataSourceOptions } from './data';
 import { NodemailerClient } from './email';
+
+dayjs.extend(tz);
+dayjs.extend(utc);
 
 const log = createLogger(Config.logLevel);
 

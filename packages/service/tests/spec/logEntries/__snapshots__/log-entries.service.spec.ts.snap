@@ -1,0 +1,1027 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Log entries service when listing log entries will perform a basic search 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2024-04-11T20:35:30",
+      "timezone": "America/New_York",
+    },
+    "id": "3d9e2689-bd3c-4292-9f1c-70519b312eea",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-30T16:54:25",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "5e3b5fcc-8bbf-40cd-8d2d-3df6112cb5b0",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-31T05:14:52",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "9f907460-96d3-4c9b-828e-ac4d057d9bfe",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-27T00:58:53",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "03ff0a51-9535-4419-a524-5118840a40c1",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-26T07:58:18",
+      "timezone": "America/New_York",
+    },
+    "id": "bdee414a-5adb-440a-8fcb-bdd768935fc9",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-23T14:26:14",
+      "timezone": "UTC",
+    },
+    "id": "c75c55fe-436c-4167-a870-b3447f856ea4",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T20:41:55",
+      "timezone": "UTC",
+    },
+    "id": "d1af5f9e-dda0-4de2-86fd-338d65b40518",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T08:23:11",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "635bbb8c-febd-4b0f-932e-24d017364427",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-14T20:24:13",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "fea57516-e783-4159-95fa-8710a61a7379",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-08T18:00:34",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "f732ecd7-9aae-453f-9b5f-eb38c3792f48",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-05T15:24:28",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "2c32c62a-aac2-4b72-931a-b117270019a1",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-01T03:05:37",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "bbe40137-0a3e-4346-8118-9707ff0a2b6d",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-29T18:52:56",
+      "timezone": "UTC",
+    },
+    "id": "efff891e-a0df-4c9c-9f90-9a4990da346c",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-23T11:38:06",
+      "timezone": "America/New_York",
+    },
+    "id": "be02dd24-1b9f-45be-8eb7-98350635a4ea",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-22T06:40:20",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "3a80384c-6f11-4b36-b91f-785a16935f02",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-17T05:53:26",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "2c5832a9-b64a-4f90-8519-c272cbb320c1",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-13T11:20:41",
+      "timezone": "America/New_York",
+    },
+    "id": "6e082428-5cd2-4d74-8b8b-5872025ba1dc",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-12T18:32:10",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "11146c05-675f-4fb6-a9e4-4da05ca0ff54",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-07T04:15:18",
+      "timezone": "UTC",
+    },
+    "id": "b6a39187-bdb7-47c6-b1fc-a6874bc598cd",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-05T11:49:51",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "99736ee9-dc1d-43e4-9022-33f010abd046",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-05T00:33:34",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "397a3da5-b39e-4f8c-9daf-0c9817e39f25",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-26T22:32:34",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "b07e5f28-c783-43f1-86e1-5fa8c69e1acc",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-26T09:23:42",
+      "timezone": "UTC",
+    },
+    "id": "8cb96cba-10c5-4744-a474-dd9ca3a70c1e",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-21T13:08:22",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "ef7dc4ac-fcd6-43e7-8f43-1ae0645c7aba",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-19T23:32:49",
+      "timezone": "America/New_York",
+    },
+    "id": "9e00f13a-04e0-45df-a075-f4208394fafe",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-18T20:07:05",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "60ef95db-0b75-45b1-8c88-77e699021c4a",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-17T20:09:26",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "980882cb-00de-462c-a4c7-98508f4eaccc",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-15T23:04:06",
+      "timezone": "UTC",
+    },
+    "id": "a0c4bc26-c533-4e38-af7e-2f66b253a82d",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-12T07:02:48",
+      "timezone": "UTC",
+    },
+    "id": "5a442607-9b5a-4b3a-92c3-9104e43f5afe",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-04T23:23:44",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "e5d2f80c-822e-42b9-931d-9785e30fb875",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-30T11:06:20",
+      "timezone": "America/New_York",
+    },
+    "id": "e53afb61-854f-4239-ac54-f9a1dfa4fa57",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-29T11:39:24",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "52e6c975-ee97-4bee-955a-6eb06d4fcc1b",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-26T23:56:01",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "aa9db458-4e78-4d63-a549-66852fde732d",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-26T14:55:58",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "993324b3-3f18-4e6b-be00-4446907c42fa",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-24T22:59:21",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "23065cf6-d50b-4174-91ba-9539c48faee9",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-24T08:41:03",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "4f50e233-6b8e-4659-b0c4-6e0643cd599a",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-20T19:05:32",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "65ce5428-21bb-4656-a695-42de416f2d9b",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-14T05:01:27",
+      "timezone": "UTC",
+    },
+    "id": "22e6c87f-73f7-4091-8e31-2253be9acb28",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-14T01:13:16",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "27de6508-7f25-46e3-b5df-38356ba53c02",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-11T02:37:31",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "fd18aa79-3dbd-405f-95d1-783f351133a1",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-10T00:43:36",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "ac536d66-7901-4596-8f38-06693dd1fa37",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-10T14:18:41",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "e3c116ef-2325-4736-8dbf-c41a453631b8",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-10T02:42:17",
+      "timezone": "UTC",
+    },
+    "id": "db13ec03-72df-4372-8f1e-11d25f4be862",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-03T20:54:49",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "3c883fdf-4658-4e49-9f0d-044101dadf44",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-27T01:52:43",
+      "timezone": "UTC",
+    },
+    "id": "9c180df6-5a61-466b-b069-07428e20128b",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-24T02:59:33",
+      "timezone": "America/New_York",
+    },
+    "id": "bac2bb21-5d70-4ef3-bd1e-96999f3ba97f",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-23T20:20:08",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "d0f4ce77-90d8-46e7-a227-18a89e6f48d2",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-19T05:34:51",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "e41eeb6d-7324-4241-b131-6d16c15efe42",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-07T11:48:37",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "4aa3bb0f-d7e3-42fe-938f-7017eb4f1468",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-07T06:48:11",
+      "timezone": "UTC",
+    },
+    "id": "76f18976-ed76-481e-a4c5-dc868bf8a5bc",
+  },
+]
+`;
+
+exports[`Log entries service when listing log entries will perform a search for log entries after a start date 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2024-04-11T20:35:30",
+      "timezone": "America/New_York",
+    },
+    "id": "3d9e2689-bd3c-4292-9f1c-70519b312eea",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-30T16:54:25",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "5e3b5fcc-8bbf-40cd-8d2d-3df6112cb5b0",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-31T05:14:52",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "9f907460-96d3-4c9b-828e-ac4d057d9bfe",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-27T00:58:53",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "03ff0a51-9535-4419-a524-5118840a40c1",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-26T07:58:18",
+      "timezone": "America/New_York",
+    },
+    "id": "bdee414a-5adb-440a-8fcb-bdd768935fc9",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-23T14:26:14",
+      "timezone": "UTC",
+    },
+    "id": "c75c55fe-436c-4167-a870-b3447f856ea4",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T20:41:55",
+      "timezone": "UTC",
+    },
+    "id": "d1af5f9e-dda0-4de2-86fd-338d65b40518",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T08:23:11",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "635bbb8c-febd-4b0f-932e-24d017364427",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-14T20:24:13",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "fea57516-e783-4159-95fa-8710a61a7379",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-08T18:00:34",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "f732ecd7-9aae-453f-9b5f-eb38c3792f48",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-05T15:24:28",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "2c32c62a-aac2-4b72-931a-b117270019a1",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-01T03:05:37",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "bbe40137-0a3e-4346-8118-9707ff0a2b6d",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-29T18:52:56",
+      "timezone": "UTC",
+    },
+    "id": "efff891e-a0df-4c9c-9f90-9a4990da346c",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-23T11:38:06",
+      "timezone": "America/New_York",
+    },
+    "id": "be02dd24-1b9f-45be-8eb7-98350635a4ea",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-22T06:40:20",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "3a80384c-6f11-4b36-b91f-785a16935f02",
+  },
+]
+`;
+
+exports[`Log entries service when listing log entries will perform a search for log entries before an end date 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2023-09-27T15:48:56",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "fc9f7b92-7593-4338-a5e3-be98fb451d5a",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-21T16:53:03",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "57b46e6a-06da-44ad-ade5-033a124c49cf",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-21T08:47:04",
+      "timezone": "UTC",
+    },
+    "id": "f9b211e0-ccc1-4b2f-aea6-a971a0a280ac",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-20T15:18:31",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "deaee628-5fa4-48e7-bd46-c3bc66ce9c4b",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-18T15:19:49",
+      "timezone": "America/New_York",
+    },
+    "id": "adcd9af8-b1a1-4f04-882c-0702eb4e5ff2",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-12T18:16:39",
+      "timezone": "America/New_York",
+    },
+    "id": "eca8865b-f1fa-438b-a356-4f403c86887f",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-02T10:33:10",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "270f696e-328f-4a6c-be37-06ce38cf738a",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-01T13:00:16",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "68c51383-77c8-4a71-89e3-523d859b2708",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-27T14:51:43",
+      "timezone": "UTC",
+    },
+    "id": "df4fcba5-a042-450f-a43d-947a7fa840eb",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-25T23:39:04",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "d786f6fe-b3a3-43d5-869f-f3837c5ed08e",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-24T11:52:35",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "b8ba790d-637a-42bb-9fac-ffb3157e590f",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-22T03:43:18",
+      "timezone": "America/New_York",
+    },
+    "id": "ada42804-33ff-470d-bf9a-b98802952627",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-14T16:15:35",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "73bc4c8f-ac2c-4f68-b6b5-1ead37cc316c",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-11T14:46:42",
+      "timezone": "America/New_York",
+    },
+    "id": "9f84e68c-f022-4956-b1d8-62db9cac7b64",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-11T14:47:27",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "cfcf4a41-d47f-48c7-b1dc-75eba6460e44",
+  },
+]
+`;
+
+exports[`Log entries service when listing log entries will perform a search for log entries belonging to a specific diver 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2024-03-31T05:14:52",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "9f907460-96d3-4c9b-828e-ac4d057d9bfe",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-23T14:26:14",
+      "timezone": "UTC",
+    },
+    "id": "c75c55fe-436c-4167-a870-b3447f856ea4",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T20:41:55",
+      "timezone": "UTC",
+    },
+    "id": "d1af5f9e-dda0-4de2-86fd-338d65b40518",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-01T03:05:37",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "bbe40137-0a3e-4346-8118-9707ff0a2b6d",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-26T22:32:34",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "b07e5f28-c783-43f1-86e1-5fa8c69e1acc",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2024-01-04T23:23:44",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "e5d2f80c-822e-42b9-931d-9785e30fb875",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-29T11:39:24",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "52e6c975-ee97-4bee-955a-6eb06d4fcc1b",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-14T05:01:27",
+      "timezone": "UTC",
+    },
+    "id": "22e6c87f-73f7-4091-8e31-2253be9acb28",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-12-10T00:43:36",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "ac536d66-7901-4596-8f38-06693dd1fa37",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-23T20:20:08",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "d0f4ce77-90d8-46e7-a227-18a89e6f48d2",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-07T06:48:11",
+      "timezone": "UTC",
+    },
+    "id": "76f18976-ed76-481e-a4c5-dc868bf8a5bc",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-11T23:22:25",
+      "timezone": "UTC",
+    },
+    "id": "0723a198-1dd6-4292-acf8-47be234eb3ae",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-20T15:18:31",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "deaee628-5fa4-48e7-bd46-c3bc66ce9c4b",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-18T15:19:49",
+      "timezone": "America/New_York",
+    },
+    "id": "adcd9af8-b1a1-4f04-882c-0702eb4e5ff2",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-12T18:16:39",
+      "timezone": "America/New_York",
+    },
+    "id": "eca8865b-f1fa-438b-a356-4f403c86887f",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-02T10:33:10",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "270f696e-328f-4a6c-be37-06ce38cf738a",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-25T23:39:04",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "d786f6fe-b3a3-43d5-869f-f3837c5ed08e",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-04T20:21:39",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "9eddcb94-39d8-40dd-80ae-32ef7c9d2e88",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-02T11:43:48",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "07607a66-5e82-403b-a02f-802b8e814b90",
+    "owner": "Ayla.Rippin",
+  },
+  {
+    "entryTime": {
+      "date": "2023-07-09T17:54:10",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "7ca9609b-a872-4f5b-a4dc-ad690fe0962b",
+    "owner": "Ayla.Rippin",
+  },
+]
+`;
+
+exports[`Log entries service when listing log entries will perform a search for log entries between a start date and end date 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2023-09-27T15:48:56",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "fc9f7b92-7593-4338-a5e3-be98fb451d5a",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-21T16:53:03",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "57b46e6a-06da-44ad-ade5-033a124c49cf",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-21T08:47:04",
+      "timezone": "UTC",
+    },
+    "id": "f9b211e0-ccc1-4b2f-aea6-a971a0a280ac",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-20T15:18:31",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "deaee628-5fa4-48e7-bd46-c3bc66ce9c4b",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-18T15:19:49",
+      "timezone": "America/New_York",
+    },
+    "id": "adcd9af8-b1a1-4f04-882c-0702eb4e5ff2",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-12T18:16:39",
+      "timezone": "America/New_York",
+    },
+    "id": "eca8865b-f1fa-438b-a356-4f403c86887f",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-02T10:33:10",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "270f696e-328f-4a6c-be37-06ce38cf738a",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-01T13:00:16",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "68c51383-77c8-4a71-89e3-523d859b2708",
+  },
+]
+`;
+
+exports[`Log entries service when listing log entries will perform a search with pagination 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2023-11-06T06:39:57",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "c4989c0d-6e0c-472c-bb95-8157823deab7",
+  },
+  {
+    "entryTime": {
+      "date": "2023-11-04T21:25:33",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "aac8d643-42cf-42bf-b71e-405cd4c90f22",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-29T20:41:17",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "69506e99-5e89-4795-bf6f-c42c372b76de",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-28T05:40:48",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "6fdcd210-9b24-4af8-9295-4dc91ec33ff1",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-27T17:24:52",
+      "timezone": "UTC",
+    },
+    "id": "1cd7e1a7-5512-4562-b590-a1d4948cea30",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-24T06:47:27",
+      "timezone": "America/New_York",
+    },
+    "id": "e84a9f1b-da66-4d25-964e-dff2cfadab77",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-16T22:13:44",
+      "timezone": "America/New_York",
+    },
+    "id": "172feb0b-7fa1-4094-8acb-7a4998ba08c5",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-12T16:25:30",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "e70f234d-b2bb-45af-85c2-5e4259cd8b43",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-11T23:22:25",
+      "timezone": "UTC",
+    },
+    "id": "0723a198-1dd6-4292-acf8-47be234eb3ae",
+  },
+  {
+    "entryTime": {
+      "date": "2023-10-10T05:50:28",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "43a14956-c9b1-4a11-95f0-8153aec4f1af",
+  },
+]
+`;
+
+exports[`Log entries service when listing log entries will sort log entries by "entryTime" in "asc" order 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2021-04-27T00:48:51",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "8e9e76a1-0701-4740-a0a6-e4b4db74a9a4",
+  },
+  {
+    "entryTime": {
+      "date": "2021-04-28T06:56:14",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "9f6dd74d-fa6b-4270-85d8-b7ce88018d21",
+  },
+  {
+    "entryTime": {
+      "date": "2021-04-30T09:08:37",
+      "timezone": "America/New_York",
+    },
+    "id": "25b725c8-b568-4dd8-9085-931446678028",
+  },
+  {
+    "entryTime": {
+      "date": "2021-04-30T13:45:56",
+      "timezone": "UTC",
+    },
+    "id": "76c7e561-eb11-4bd3-a0b1-5d250af33ee8",
+  },
+  {
+    "entryTime": {
+      "date": "2021-04-30T15:51:54",
+      "timezone": "America/New_York",
+    },
+    "id": "103b8762-2f06-4e21-8f5f-108ad91f3a21",
+  },
+  {
+    "entryTime": {
+      "date": "2021-05-11T17:22:02",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "794e026c-bcfb-4e3c-9564-bd5e5b26aea2",
+  },
+  {
+    "entryTime": {
+      "date": "2021-05-13T04:32:41",
+      "timezone": "America/New_York",
+    },
+    "id": "07ddc858-4adc-42f3-bfce-277301e9400e",
+  },
+  {
+    "entryTime": {
+      "date": "2021-05-22T09:07:59",
+      "timezone": "America/New_York",
+    },
+    "id": "e223dd2a-60ad-4dd5-b182-e199c74f663d",
+  },
+  {
+    "entryTime": {
+      "date": "2021-05-22T20:05:55",
+      "timezone": "UTC",
+    },
+    "id": "d6790909-4e4a-453d-8139-c403ac8772b9",
+  },
+  {
+    "entryTime": {
+      "date": "2021-05-25T00:16:51",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "738719af-5298-495d-a702-7ed4e946faa4",
+  },
+]
+`;
+
+exports[`Log entries service when listing log entries will sort log entries by "entryTime" in "desc" order 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2024-04-11T20:35:30",
+      "timezone": "America/New_York",
+    },
+    "id": "3d9e2689-bd3c-4292-9f1c-70519b312eea",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-30T16:54:25",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "5e3b5fcc-8bbf-40cd-8d2d-3df6112cb5b0",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-31T05:14:52",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "9f907460-96d3-4c9b-828e-ac4d057d9bfe",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-27T00:58:53",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "03ff0a51-9535-4419-a524-5118840a40c1",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-26T07:58:18",
+      "timezone": "America/New_York",
+    },
+    "id": "bdee414a-5adb-440a-8fcb-bdd768935fc9",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-23T14:26:14",
+      "timezone": "UTC",
+    },
+    "id": "c75c55fe-436c-4167-a870-b3447f856ea4",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T20:41:55",
+      "timezone": "UTC",
+    },
+    "id": "d1af5f9e-dda0-4de2-86fd-338d65b40518",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T08:23:11",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "635bbb8c-febd-4b0f-932e-24d017364427",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-14T20:24:13",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "fea57516-e783-4159-95fa-8710a61a7379",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-08T18:00:34",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "f732ecd7-9aae-453f-9b5f-eb38c3792f48",
+  },
+]
+`;
