@@ -18,7 +18,8 @@ exports[`Nav Bar component will render correctly for admins 1`] = `
         </label><!-- Login/register links for anonymous users -->
         <!-- Avatar for authenticated users --><button id="user-menu-button" data-testid="user-menu-button" class="flex items-center space-x-3 relative h-16" aria-expanded="false"><span class="sr-only">Open User Menu</span><img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=Andy%20Admin"><span class="text-lg hidden md:block">Andy Admin</span><span class="text-lg hidden md:block"><i class="fas fa-caret-down"></i></span><!-- User Dropdown Menu -->
           <transition-stub name="nav-dropdown" appear="false" persisted="true" css="true">
-            <div id="user-dropdown" data-testid="user-dropdown" class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left" style="display: none;"><a class="w-full p-2 hover:bg-blue-700" href="/profile"> Profile </a><a class="w-full p-2 hover:bg-blue-700" href="/account"> Account </a><a class="w-full p-2 hover:bg-blue-700" href="/settings"> Settings </a>
+            <div id="user-dropdown" data-testid="user-dropdown" class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left" style="display: none;"><a class="w-full p-2 hover:bg-blue-700" href="/friends"> Friends </a>
+              <hr><a class="w-full p-2 hover:bg-blue-700" href="/profile"> Profile </a><a class="w-full p-2 hover:bg-blue-700" href="/account"> Account </a><a class="w-full p-2 hover:bg-blue-700" href="/settings"> Settings </a>
               <hr><a class="w-full p-2 rounded-b-md hover:bg-blue-700" href="/api/auth/logout"> Logout </a>
             </div>
           </transition-stub>
@@ -94,7 +95,8 @@ exports[`Nav Bar component will render correctly for authenticated users 1`] = `
         </label><!-- Login/register links for anonymous users -->
         <!-- Avatar for authenticated users --><button id="user-menu-button" data-testid="user-menu-button" class="flex items-center space-x-3 relative h-16" aria-expanded="false"><span class="sr-only">Open User Menu</span><img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=Sam%20Smith"><span class="text-lg hidden md:block">Sam Smith</span><span class="text-lg hidden md:block"><i class="fas fa-caret-down"></i></span><!-- User Dropdown Menu -->
           <transition-stub name="nav-dropdown" appear="false" persisted="true" css="true">
-            <div id="user-dropdown" data-testid="user-dropdown" class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left" style="display: none;"><a class="w-full p-2 hover:bg-blue-700" href="/profile"> Profile </a><a class="w-full p-2 hover:bg-blue-700" href="/account"> Account </a><a class="w-full p-2 hover:bg-blue-700" href="/settings"> Settings </a>
+            <div id="user-dropdown" data-testid="user-dropdown" class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left" style="display: none;"><a class="w-full p-2 hover:bg-blue-700" href="/friends"> Friends </a>
+              <hr><a class="w-full p-2 hover:bg-blue-700" href="/profile"> Profile </a><a class="w-full p-2 hover:bg-blue-700" href="/account"> Account </a><a class="w-full p-2 hover:bg-blue-700" href="/settings"> Settings </a>
               <hr><a class="w-full p-2 rounded-b-md hover:bg-blue-700" href="/api/auth/logout"> Logout </a>
             </div>
           </transition-stub>
