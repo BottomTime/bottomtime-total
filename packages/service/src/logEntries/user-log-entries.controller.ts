@@ -366,7 +366,15 @@ export class UserLogEntriesController {
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
     options: CreateOrUpdateLogEntryParamsDTO,
   ): Promise<LogEntryDTO> {
-    throw new Error('Not implemented');
+    logEntry.bottomTime = options.bottomTime;
+    logEntry.duration = options.duration;
+    logEntry.entryTime = options.entryTime;
+    logEntry.logNumber = options.logNumber;
+    logEntry.maxDepth = options.maxDepth;
+    logEntry.notes = options.notes;
+
+    await logEntry.save();
+    return logEntry.toJSON();
   }
 
   /**

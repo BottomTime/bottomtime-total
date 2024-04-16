@@ -474,4 +474,180 @@ describe('Log entries E2E tests', () => {
         .expect(404);
     });
   });
+
+  describe('when updating an existing log entry', () => {
+    const updatedEntry: CreateOrUpdateLogEntryParamsDTO = {
+      duration: 58.32,
+      bottomTime: 46,
+      entryTime: {
+        date: '2024-03-20T13:12:00',
+        timezone: 'Asia/Tokyo',
+      },
+      logNumber: 102,
+      maxDepth: {
+        depth: 28.2,
+        unit: DepthUnit.Meters,
+      },
+      notes: 'I did a dive!',
+    };
+
+    let entry: LogEntryEntity;
+
+    beforeAll(() => {
+      entry = logEntryData[0];
+    });
+
+    beforeEach(async () => {
+      await Entries.save(entry);
+    });
+
+    it('will update the requested log entry', async () => {
+      const { body } = await request(server)
+        .put(getUrl(entry.id))
+        .set(...authHeader)
+        .send(updatedEntry)
+        .expect(200);
+
+      expect(body.id).toBe(entry.id);
+      expect(body.creator.username).toBe(ownerData[0].username);
+      expect(body.logNumber).toBe(updatedEntry.logNumber);
+      expect(body.entryTime).toEqual(updatedEntry.entryTime);
+      expect(body.bottomTime).toBe(updatedEntry.bottomTime);
+      expect(body.duration).toBe(updatedEntry.duration);
+      expect(body.maxDepth).toEqual(updatedEntry.maxDepth);
+      expect(body.notes).toBe(updatedEntry.notes);
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: body.id },
+        relations: ['owner'],
+      });
+      expect(saved.bottomTime).toBe(updatedEntry.bottomTime);
+      expect(saved.duration).toBe(updatedEntry.duration);
+      expect(saved.entryTime).toEqual(updatedEntry.entryTime.date);
+      expect(saved.timezone).toBe(updatedEntry.entryTime.timezone);
+      expect(saved.timestamp).toEqual(
+        dayjs(updatedEntry.entryTime.date)
+          .tz(updatedEntry.entryTime.timezone, true)
+          .toDate(),
+      );
+      expect(saved.logNumber).toBe(updatedEntry.logNumber);
+      expect(saved.maxDepth).toEqual(updatedEntry.maxDepth!.depth);
+      expect(saved.maxDepthUnit).toBe(updatedEntry.maxDepth!.unit);
+      expect(saved.notes).toBe(updatedEntry.notes);
+    });
+
+    it('will allow an admin to update any log entry', async () => {
+      const { body } = await request(server)
+        .put(getUrl(entry.id))
+        .set(...adminAuthHeader)
+        .send(updatedEntry)
+        .expect(200);
+
+      expect(body.id).toBe(entry.id);
+      expect(body.creator.username).toBe(ownerData[0].username);
+      expect(body.logNumber).toBe(updatedEntry.logNumber);
+      expect(body.entryTime).toEqual(updatedEntry.entryTime);
+      expect(body.bottomTime).toBe(updatedEntry.bottomTime);
+      expect(body.duration).toBe(updatedEntry.duration);
+      expect(body.maxDepth).toEqual(updatedEntry.maxDepth);
+      expect(body.notes).toBe(updatedEntry.notes);
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: body.id },
+        relations: ['owner'],
+      });
+      expect(saved.bottomTime).toBe(updatedEntry.bottomTime);
+      expect(saved.duration).toBe(updatedEntry.duration);
+      expect(saved.entryTime).toEqual(updatedEntry.entryTime.date);
+      expect(saved.timezone).toBe(updatedEntry.entryTime.timezone);
+      expect(saved.timestamp).toEqual(
+        dayjs(updatedEntry.entryTime.date)
+          .tz(updatedEntry.entryTime.timezone, true)
+          .toDate(),
+      );
+      expect(saved.logNumber).toBe(updatedEntry.logNumber);
+      expect(saved.maxDepth).toEqual(updatedEntry.maxDepth!.depth);
+      expect(saved.maxDepthUnit).toBe(updatedEntry.maxDepth!.unit);
+      expect(saved.notes).toBe(updatedEntry.notes);
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      const {
+        body: { details },
+      } = await request(server)
+        .put(getUrl(entry.id))
+        .set(...authHeader)
+        .send({
+          duration: 'long',
+          bottomTime: true,
+          entryTime: {
+            date: 'yesterday',
+            timezone: 'Arrakis/Arrakeen',
+          },
+          logNumber: -102,
+          maxDepth: {
+            depth: -28.2,
+            unit: 'fathoms',
+          },
+          notes: 72,
+        })
+        .expect(400);
+
+      expect(details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the request body is missing required fields', async () => {
+      const {
+        body: { details },
+      } = await request(server)
+        .put(getUrl(entry.id))
+        .set(...authHeader)
+        .send({})
+        .expect(400);
+
+      expect(details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      const {
+        body: { details },
+      } = await request(server)
+        .put(getUrl(entry.id))
+        .set(...authHeader)
+        .expect(400);
+
+      expect(details).toMatchSnapshot();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .put(getUrl(entry.id))
+        .send(updatedEntry)
+        .expect(401);
+    });
+
+    it('will return a 403 response if the current user is not authorized to update the log entry', async () => {
+      await request(server)
+        .put(getUrl(entry.id))
+        .set(...otherAuthHeader)
+        .send(updatedEntry)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the log entry does not exist', async () => {
+      await request(server)
+        .put(getUrl('308023b5-df12-4e48-88e9-3e8fe88756d3'))
+        .set(...authHeader)
+        .send(updatedEntry)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the target user does not exist', async () => {
+      await request(server)
+        .put(getUrl(entry.id, 'not_a_user'))
+        .set(...adminAuthHeader)
+        .send(updatedEntry)
+        .expect(404);
+    });
+  });
 });
