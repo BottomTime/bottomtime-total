@@ -1,5 +1,134 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Log entries E2E tests when creating log entries will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": false,
+      "message": "Number must be greater than 0",
+      "minimum": 0,
+      "path": [
+        "logNumber",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid",
+      "path": [
+        "entryTime",
+        "date",
+      ],
+      "validation": "regex",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received boolean",
+      "path": [
+        "bottomTime",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "duration",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 0",
+      "minimum": 0,
+      "path": [
+        "maxDepth",
+        "depth",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'm' | 'ft', received 'fathoms'",
+      "options": [
+        "m",
+        "ft",
+      ],
+      "path": [
+        "maxDepth",
+        "unit",
+      ],
+      "received": "fathoms",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "notes",
+      ],
+      "received": "number",
+    },
+  ],
+}
+`;
+
+exports[`Log entries E2E tests when creating log entries will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "object",
+      "message": "Required",
+      "path": [
+        "entryTime",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Required",
+      "path": [
+        "duration",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`Log entries E2E tests when creating log entries will return a 400 response if the request body is missing required fields 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "object",
+      "message": "Required",
+      "path": [
+        "entryTime",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Required",
+      "path": [
+        "duration",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;
+
 exports[`Log entries E2E tests when retrieving single log entries will allow an admin to view any log entry 1`] = `
 {
   "bottomTime": 60,
@@ -1009,4 +1138,82 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     "owner": "Ayla.Rippin",
   },
 ]
+`;
+
+exports[`Log entries E2E tests when searching log entries will return a 400 response if the query parameters are invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "startDate",
+      ],
+    },
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "endDate",
+      ],
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 0",
+      "minimum": 0,
+      "path": [
+        "skip",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 500,
+      "message": "Number must be less than or equal to 500",
+      "path": [
+        "limit",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'entryTime', received 'wetness'",
+      "options": [
+        "entryTime",
+      ],
+      "path": [
+        "sortBy",
+      ],
+      "received": "wetness",
+    },
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'asc' | 'desc', received 'backwards'",
+      "options": [
+        "asc",
+        "desc",
+      ],
+      "path": [
+        "sortOrder",
+      ],
+      "received": "backwards",
+    },
+  ],
+}
+`;
+
+exports[`Log entries E2E tests when searching log entries will return a 400 response if the start date comes after the end date in the query string 1`] = `
+{
+  "issues": [
+    {
+      "code": "custom",
+      "message": "Start date must be before end date.",
+      "path": [],
+    },
+  ],
+}
 `;

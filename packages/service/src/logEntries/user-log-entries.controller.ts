@@ -242,7 +242,12 @@ export class UserLogEntriesController {
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
     options: CreateOrUpdateLogEntryParamsDTO,
   ): Promise<LogEntryDTO> {
-    throw new Error('Not implemented');
+    const logEntry = await this.service.createLogEntry({
+      ...options,
+      ownerId: owner.id,
+    });
+
+    return logEntry.toJSON();
   }
 
   /**
