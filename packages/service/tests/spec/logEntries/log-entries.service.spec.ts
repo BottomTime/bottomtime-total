@@ -307,27 +307,28 @@ describe('Log entries service', () => {
 
     [
       {
+        name: 'between a start date and end date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: new Date('2023-10-01T00:00:00.000Z'),
         expectedTotal: 8,
         expectedLength: 8,
       },
       {
+        name: 'after a start date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: undefined,
         expectedTotal: 69,
         expectedLength: 15,
       },
       {
+        name: 'before an end date',
         start: undefined,
         end: new Date('2023-10-01T00:00:00.000Z'),
         expectedTotal: 239,
         expectedLength: 15,
       },
-    ].forEach(({ start, end, expectedTotal, expectedLength }) => {
-      it(`will perform a search for log entries between dates ${
-        start ? dayjs(start).format('YYYY-MM-DD') : '<ANY>'
-      } and ${end ? dayjs(end).format('YYYY-MM-DD') : '<ANY>'}`, async () => {
+    ].forEach(({ name, start, end, expectedTotal, expectedLength }) => {
+      it(`will perform a search for log entries ${name}`, async () => {
         const results = await service.listLogEntries({
           startDate: start,
           endDate: end,

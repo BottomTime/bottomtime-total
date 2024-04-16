@@ -355,6 +355,226 @@ exports[`Log entries service when listing log entries will perform a basic searc
 ]
 `;
 
+exports[`Log entries service when listing log entries will perform a search for log entries after a start date 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2024-04-11T20:35:30",
+      "timezone": "America/New_York",
+    },
+    "id": "3d9e2689-bd3c-4292-9f1c-70519b312eea",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-30T16:54:25",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "5e3b5fcc-8bbf-40cd-8d2d-3df6112cb5b0",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-31T05:14:52",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "9f907460-96d3-4c9b-828e-ac4d057d9bfe",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-27T00:58:53",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "03ff0a51-9535-4419-a524-5118840a40c1",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-26T07:58:18",
+      "timezone": "America/New_York",
+    },
+    "id": "bdee414a-5adb-440a-8fcb-bdd768935fc9",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-23T14:26:14",
+      "timezone": "UTC",
+    },
+    "id": "c75c55fe-436c-4167-a870-b3447f856ea4",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T20:41:55",
+      "timezone": "UTC",
+    },
+    "id": "d1af5f9e-dda0-4de2-86fd-338d65b40518",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-22T08:23:11",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "635bbb8c-febd-4b0f-932e-24d017364427",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-14T20:24:13",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "fea57516-e783-4159-95fa-8710a61a7379",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-08T18:00:34",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "f732ecd7-9aae-453f-9b5f-eb38c3792f48",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-05T15:24:28",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "2c32c62a-aac2-4b72-931a-b117270019a1",
+  },
+  {
+    "entryTime": {
+      "date": "2024-03-01T03:05:37",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "bbe40137-0a3e-4346-8118-9707ff0a2b6d",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-29T18:52:56",
+      "timezone": "UTC",
+    },
+    "id": "efff891e-a0df-4c9c-9f90-9a4990da346c",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-23T11:38:06",
+      "timezone": "America/New_York",
+    },
+    "id": "be02dd24-1b9f-45be-8eb7-98350635a4ea",
+  },
+  {
+    "entryTime": {
+      "date": "2024-02-22T06:40:20",
+      "timezone": "America/Los_Angeles",
+    },
+    "id": "3a80384c-6f11-4b36-b91f-785a16935f02",
+  },
+]
+`;
+
+exports[`Log entries service when listing log entries will perform a search for log entries before an end date 1`] = `
+[
+  {
+    "entryTime": {
+      "date": "2023-09-27T15:48:56",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "fc9f7b92-7593-4338-a5e3-be98fb451d5a",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-21T16:53:03",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "57b46e6a-06da-44ad-ade5-033a124c49cf",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-21T08:47:04",
+      "timezone": "UTC",
+    },
+    "id": "f9b211e0-ccc1-4b2f-aea6-a971a0a280ac",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-20T15:18:31",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "deaee628-5fa4-48e7-bd46-c3bc66ce9c4b",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-18T15:19:49",
+      "timezone": "America/New_York",
+    },
+    "id": "adcd9af8-b1a1-4f04-882c-0702eb4e5ff2",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-12T18:16:39",
+      "timezone": "America/New_York",
+    },
+    "id": "eca8865b-f1fa-438b-a356-4f403c86887f",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-02T10:33:10",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "270f696e-328f-4a6c-be37-06ce38cf738a",
+  },
+  {
+    "entryTime": {
+      "date": "2023-09-01T13:00:16",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "68c51383-77c8-4a71-89e3-523d859b2708",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-27T14:51:43",
+      "timezone": "UTC",
+    },
+    "id": "df4fcba5-a042-450f-a43d-947a7fa840eb",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-25T23:39:04",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "d786f6fe-b3a3-43d5-869f-f3837c5ed08e",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-24T11:52:35",
+      "timezone": "Europe/Amsterdam",
+    },
+    "id": "b8ba790d-637a-42bb-9fac-ffb3157e590f",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-22T03:43:18",
+      "timezone": "America/New_York",
+    },
+    "id": "ada42804-33ff-470d-bf9a-b98802952627",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-14T16:15:35",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "73bc4c8f-ac2c-4f68-b6b5-1ead37cc316c",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-11T14:46:42",
+      "timezone": "America/New_York",
+    },
+    "id": "9f84e68c-f022-4956-b1d8-62db9cac7b64",
+  },
+  {
+    "entryTime": {
+      "date": "2023-08-11T14:47:27",
+      "timezone": "Asia/Singapore",
+    },
+    "id": "cfcf4a41-d47f-48c7-b1dc-75eba6460e44",
+  },
+]
+`;
+
 exports[`Log entries service when listing log entries will perform a search for log entries belonging to a specific diver 1`] = `
 [
   {
@@ -520,227 +740,7 @@ exports[`Log entries service when listing log entries will perform a search for 
 ]
 `;
 
-exports[`Log entries service when listing log entries will perform a search for log entries between dates <ANY> and 2023-09-30 1`] = `
-[
-  {
-    "entryTime": {
-      "date": "2023-09-27T15:48:56",
-      "timezone": "Europe/Amsterdam",
-    },
-    "id": "fc9f7b92-7593-4338-a5e3-be98fb451d5a",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-21T16:53:03",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "57b46e6a-06da-44ad-ade5-033a124c49cf",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-21T08:47:04",
-      "timezone": "UTC",
-    },
-    "id": "f9b211e0-ccc1-4b2f-aea6-a971a0a280ac",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-20T15:18:31",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "deaee628-5fa4-48e7-bd46-c3bc66ce9c4b",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-18T15:19:49",
-      "timezone": "America/New_York",
-    },
-    "id": "adcd9af8-b1a1-4f04-882c-0702eb4e5ff2",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-12T18:16:39",
-      "timezone": "America/New_York",
-    },
-    "id": "eca8865b-f1fa-438b-a356-4f403c86887f",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-02T10:33:10",
-      "timezone": "Europe/Amsterdam",
-    },
-    "id": "270f696e-328f-4a6c-be37-06ce38cf738a",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-01T13:00:16",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "68c51383-77c8-4a71-89e3-523d859b2708",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-27T14:51:43",
-      "timezone": "UTC",
-    },
-    "id": "df4fcba5-a042-450f-a43d-947a7fa840eb",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-25T23:39:04",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "d786f6fe-b3a3-43d5-869f-f3837c5ed08e",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-24T11:52:35",
-      "timezone": "Europe/Amsterdam",
-    },
-    "id": "b8ba790d-637a-42bb-9fac-ffb3157e590f",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-22T03:43:18",
-      "timezone": "America/New_York",
-    },
-    "id": "ada42804-33ff-470d-bf9a-b98802952627",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-14T16:15:35",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "73bc4c8f-ac2c-4f68-b6b5-1ead37cc316c",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-11T14:46:42",
-      "timezone": "America/New_York",
-    },
-    "id": "9f84e68c-f022-4956-b1d8-62db9cac7b64",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-11T14:47:27",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "cfcf4a41-d47f-48c7-b1dc-75eba6460e44",
-  },
-]
-`;
-
-exports[`Log entries service when listing log entries will perform a search for log entries between dates 2023-08-31 and <ANY> 1`] = `
-[
-  {
-    "entryTime": {
-      "date": "2024-04-11T20:35:30",
-      "timezone": "America/New_York",
-    },
-    "id": "3d9e2689-bd3c-4292-9f1c-70519b312eea",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-30T16:54:25",
-      "timezone": "America/Los_Angeles",
-    },
-    "id": "5e3b5fcc-8bbf-40cd-8d2d-3df6112cb5b0",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-31T05:14:52",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "9f907460-96d3-4c9b-828e-ac4d057d9bfe",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-27T00:58:53",
-      "timezone": "Europe/Amsterdam",
-    },
-    "id": "03ff0a51-9535-4419-a524-5118840a40c1",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-26T07:58:18",
-      "timezone": "America/New_York",
-    },
-    "id": "bdee414a-5adb-440a-8fcb-bdd768935fc9",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-23T14:26:14",
-      "timezone": "UTC",
-    },
-    "id": "c75c55fe-436c-4167-a870-b3447f856ea4",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-22T20:41:55",
-      "timezone": "UTC",
-    },
-    "id": "d1af5f9e-dda0-4de2-86fd-338d65b40518",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-22T08:23:11",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "635bbb8c-febd-4b0f-932e-24d017364427",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-14T20:24:13",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "fea57516-e783-4159-95fa-8710a61a7379",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-08T18:00:34",
-      "timezone": "Europe/Amsterdam",
-    },
-    "id": "f732ecd7-9aae-453f-9b5f-eb38c3792f48",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-05T15:24:28",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "2c32c62a-aac2-4b72-931a-b117270019a1",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-01T03:05:37",
-      "timezone": "America/Los_Angeles",
-    },
-    "id": "bbe40137-0a3e-4346-8118-9707ff0a2b6d",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-29T18:52:56",
-      "timezone": "UTC",
-    },
-    "id": "efff891e-a0df-4c9c-9f90-9a4990da346c",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-23T11:38:06",
-      "timezone": "America/New_York",
-    },
-    "id": "be02dd24-1b9f-45be-8eb7-98350635a4ea",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-22T06:40:20",
-      "timezone": "America/Los_Angeles",
-    },
-    "id": "3a80384c-6f11-4b36-b91f-785a16935f02",
-  },
-]
-`;
-
-exports[`Log entries service when listing log entries will perform a search for log entries between dates 2023-08-31 and 2023-09-30 1`] = `
+exports[`Log entries service when listing log entries will perform a search for log entries between a start date and end date 1`] = `
 [
   {
     "entryTime": {
