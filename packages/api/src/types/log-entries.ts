@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { DateWithTimezoneSchema, DepthSchema, SortOrder } from './constants';
-import { SuccinctProfileSchema, UsernameSchema } from './users';
+import { SuccinctProfileSchema } from './users';
 
 export enum LogEntrySortBy {
   EntryTime = 'entryTime',
@@ -44,12 +44,19 @@ export const ListLogEntriesParamsSchema = z
     query: z.string().max(500),
     startDate: z.coerce.date().optional(),
     endDate: z.coerce.date().optional(),
-    skip: z.number().int().min(0),
-    limit: z.number().int().min(1).max(500),
+    skip: z.coerce.number().int().min(0),
+    limit: z.coerce.number().int().min(1).max(500),
     sortBy: z.nativeEnum(LogEntrySortBy),
     sortOrder: z.nativeEnum(SortOrder),
   })
-  .partial();
+  .partial()
+  .refine((params) => {
+    if (params.startDate && params.endDate) {
+      return params.startDate < params.endDate;
+    }
+
+    return true;
+  }, 'Start date must be before end date.');
 export type ListLogEntriesParamsDTO = z.infer<
   typeof ListLogEntriesParamsSchema
 >;

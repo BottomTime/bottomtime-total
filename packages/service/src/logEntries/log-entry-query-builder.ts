@@ -38,7 +38,7 @@ export class LogEntryQueryBuilder {
 
   withDateRange(start?: Date, end?: Date): this {
     if (start && end) {
-      this.query = this.query.where(
+      this.query = this.query.andWhere(
         'entries.timestamp BETWEEN :start AND :end',
         {
           start,
@@ -46,9 +46,11 @@ export class LogEntryQueryBuilder {
         },
       );
     } else if (start) {
-      this.query = this.query.where('entries.timestamp >= :start', { start });
+      this.query = this.query.andWhere('entries.timestamp >= :start', {
+        start,
+      });
     } else if (end) {
-      this.query = this.query.where('entries.timestamp < :end', { end });
+      this.query = this.query.andWhere('entries.timestamp < :end', { end });
     }
 
     return this;
@@ -56,7 +58,7 @@ export class LogEntryQueryBuilder {
 
   withOwner(ownerId?: string): this {
     if (ownerId) {
-      this.query = this.query.where('owners.id = :ownerId', { ownerId });
+      this.query = this.query.andWhere('owners.id = :ownerId', { ownerId });
     }
     return this;
   }

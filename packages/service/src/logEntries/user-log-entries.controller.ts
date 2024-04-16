@@ -165,12 +165,18 @@ export class UserLogEntriesController {
    */
   @Get()
   async searchLogs(
+    @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
     options?: ListLogEntriesParamsDTO,
   ): Promise<ListLogEntriesResponseDTO> {
+    const { logEntries, totalCount } = await this.service.listLogEntries({
+      ...options,
+      ownerId: user.id,
+    });
+
     return {
-      logEntries: [],
-      totalCount: 0,
+      logEntries: logEntries.map((entry) => entry.toJSON()),
+      totalCount,
     };
   }
 
@@ -286,8 +292,8 @@ export class UserLogEntriesController {
    */
   @Get(LogEntryIdParam)
   @UseGuards(AssertTargetLogEntry)
-  async getLog(@TargetLogEntry() logEntry: LogEntry): Promise<LogEntryDTO> {
-    throw new Error('Not implemented');
+  getLog(@TargetLogEntry() logEntry: LogEntry): LogEntryDTO {
+    return logEntry.toJSON();
   }
 
   /**

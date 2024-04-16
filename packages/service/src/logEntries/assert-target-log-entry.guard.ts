@@ -20,19 +20,19 @@ export class AssertTargetLogEntry implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
 
-    const currentUser: User | undefined = req.targetUser;
-    if (!currentUser) {
+    const targetUser: User | undefined = req.targetUser;
+    if (!targetUser) {
       throw new NotFoundException(
         'Unable to retrieve dive log entry. Target user information is not loaded.',
       );
     }
 
     const logEntryId: string = req.params.entryId;
-    const logEntry = await this.service.getLogEntry(logEntryId, currentUser.id);
+    const logEntry = await this.service.getLogEntry(logEntryId, targetUser.id);
 
     if (!logEntry) {
       throw new NotFoundException(
-        `Unable to find log entry with ID "${logEntryId}" belonging to user "${currentUser.username}".`,
+        `Unable to find log entry with ID "${logEntryId}" belonging to user "${targetUser.username}".`,
       );
     }
 
