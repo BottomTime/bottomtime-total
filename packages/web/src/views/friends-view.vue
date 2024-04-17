@@ -1,7 +1,7 @@
 <template>
   <PageTitle title="Friends" />
 
-  <div class="flex gap-3">
+  <div class="flex gap-3 items-start">
     <ul
       class="min-w-60 text-lg *:p-3 hover:*:bg-blue-700 flex flex-col align-middle bg-gradient-to-b from-blue-700 to-blue-900 rounded-md text-grey-50"
     >
@@ -11,12 +11,16 @@
       </li>
     </ul>
 
-    <FriendsList :friends="friends" />
+    <FriendsList
+      :friends="friends"
+      :sort-by="queryParams.sortBy"
+      :sort-order="queryParams.sortOrder"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ListFriendsResponseDTO } from '@bottomtime/api';
+import { ListFriendsParams, ListFriendsResponseDTO } from '@bottomtime/api';
 
 import { onServerPrefetch, reactive, useSSRContext } from 'vue';
 
@@ -28,6 +32,10 @@ import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
 import { useCurrentUser } from '../store';
 
+function parseQueryString(): ListFriendsParams {
+  return {};
+}
+
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const currentUser = useCurrentUser();
@@ -38,11 +46,14 @@ const friends = reactive<ListFriendsResponseDTO>(
   initialState?.friends ? initialState.friends : { friends: [], totalCount: 0 },
 );
 
+const queryParams = reactive<ListFriendsParams>(parseQueryString());
+
 onServerPrefetch(async () => {
   await oops(async () => {
     if (!currentUser.user) return;
     const friendsResult = await client.friends.listFriends(
       currentUser.user.username,
+      queryParams,
     );
 
     friends.friends = friendsResult.friends.map((friend) => friend.toJSON());
