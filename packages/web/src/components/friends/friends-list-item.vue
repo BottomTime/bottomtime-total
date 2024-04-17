@@ -1,6 +1,6 @@
 <template>
-  <li class="my-3 flex space-x-3">
-    <div class="mx-2 my-4 min-w-[64px]">
+  <li class="my-3 flex space-x-3 items-center">
+    <div class="mx-2 min-w-[64px]">
       <UserAvatar
         :avatar="friend.avatar"
         :display-name="friend.name || friend.username"
@@ -8,7 +8,7 @@
       />
     </div>
 
-    <div class="grow flex flex-col space-y-2">
+    <div class="grow flex flex-col">
       <p class="flex space-x-3 items-baseline">
         <FormButton
           type="link"
@@ -23,30 +23,32 @@
         </span>
       </p>
 
-      <div class="flex space-x-3">
-        <div class="grow flex flex-col space-y-2">
-          <div class="flex flex-col space-y-2">
-            <p class="flex space-x-3">
-              <span class="font-bold min-w-24 text-right">Friends since:</span>
-              <span>{{ dayjs(friend.friendsSince).fromNow() }}</span>
-            </p>
+      <div class="flex flex-col xl:flex-row flex-nowrap xl:space-x-3">
+        <p class="flex space-x-3">
+          <span class="font-bold min-w-24 text-right">Friends since:</span>
+          <span class="min-w-36">
+            {{ dayjs(friend.friendsSince).fromNow() }}
+          </span>
+        </p>
 
-            <p class="flex space-x-3">
-              <span class="font-bold min-w-24 text-right">Member since:</span>
-              <span>{{ dayjs(friend.memberSince).fromNow() }}</span>
-            </p>
+        <p class="flex space-x-3">
+          <span class="font-bold min-w-24 text-right">Member since:</span>
+          <span class="min-w-36">
+            {{ dayjs(friend.memberSince).fromNow() }}
+          </span>
+        </p>
 
-            <p v-if="friend.location" class="flex space-x-3">
-              <span class="font-bold min-w-24 text-right">Location:</span>
-              <span>{{ friend.location }}</span>
-            </p>
-          </div>
-        </div>
-
-        <div class="px-4">
-          <FormButton type="danger" @click="onUnfriend">Unfriend</FormButton>
-        </div>
+        <p v-if="friend.location" class="flex space-x-3">
+          <span class="font-bold min-w-24 text-right">Location:</span>
+          <span class="min-w-36">
+            {{ friend.location }}
+          </span>
+        </p>
       </div>
+    </div>
+
+    <div class="px-4">
+      <FormButton type="danger" @click="onUnfriend">Unfriend</FormButton>
     </div>
   </li>
 </template>
@@ -64,9 +66,17 @@ interface FriendsListItemProps {
   friend: FriendDTO;
 }
 
-defineProps<FriendsListItemProps>();
+const props = defineProps<FriendsListItemProps>();
+const emit = defineEmits<{
+  (e: 'select', friend: FriendDTO): void;
+  (e: 'unfriend', friend: FriendDTO): void;
+}>();
 
-function onSelectFriend() {}
+function onSelectFriend() {
+  emit('select', props.friend);
+}
 
-function onUnfriend() {}
+function onUnfriend() {
+  emit('unfriend', props.friend);
+}
 </script>

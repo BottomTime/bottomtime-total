@@ -71,7 +71,7 @@ const classes = computed(() => {
       break;
 
     case 'link':
-      classes = `text-link hover:text-link-hover py-2 mt-1 mb-1 text-${props.size}`;
+      classes = `text-link hover:text-link-hover text-${props.size}`;
       break;
 
     case 'danger':
