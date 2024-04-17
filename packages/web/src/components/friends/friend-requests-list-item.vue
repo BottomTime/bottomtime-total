@@ -47,7 +47,7 @@
     </div>
 
     <div v-else class="grow flex flex-col space-y-2">
-      <NavLink class="text-2xl" to="#">
+      <NavLink class="text-2xl" to="#" @click="onSelect">
         {{ `@${request.friend.username}` }}
       </NavLink>
 
@@ -112,11 +112,16 @@ const props = defineProps<FriendRequestsListItemProps>();
 const emit = defineEmits<{
   (e: 'accept', request: FriendRequestDTO): void;
   (e: 'reject', request: FriendRequestDTO): void;
+  (e: 'select', request: FriendRequestDTO): void;
 }>();
 
 const showConfirmAccept = ref(false);
 const showConfirmDecline = ref(false);
 const declineReason = ref('');
+
+function onSelect() {
+  emit('select', props.request);
+}
 
 function onAcceptRequest() {
   showConfirmAccept.value = true;
