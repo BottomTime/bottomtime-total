@@ -2,6 +2,7 @@ import {
   AdminSearchUsersParamsDTO,
   SortOrder,
   UserRole,
+  UsersSortBy,
 } from '@bottomtime/api';
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -56,7 +57,7 @@ export class AdminService {
 
     query = query
       .orderBy(
-        `users.${options.sortBy}`,
+        `users.${options.sortBy || UsersSortBy.Username}`,
         options.sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
       )
       .offset(options.skip)

@@ -191,21 +191,43 @@ describe('Users Service', () => {
     });
 
     it('will perform text based searches', async () => {
-      await expect(
-        service.searchUsers({ query: 'Town' }),
-      ).resolves.toMatchSnapshot();
+      const results = await service.searchUsers({ query: 'Town' });
+
+      expect(results.users).toHaveLength(2);
+      expect(results.totalCount).toBe(2);
+      expect(
+        results.users.map((u) => ({
+          id: u.id,
+          username: u.username,
+          memberSince: u.memberSince,
+        })),
+      ).toMatchSnapshot();
     });
 
     it('will limit "page" size', async () => {
       const results = await service.searchUsers({ limit: 7 });
       expect(results.users).toHaveLength(7);
-      expect(results).toMatchSnapshot();
+      expect(results.totalCount).toBe(100);
+      expect(
+        results.users.map((u: User) => ({
+          id: u.id,
+          username: u.username,
+          memberSince: u.memberSince,
+        })),
+      ).toMatchSnapshot();
     });
 
     it('will allow showing results beyond the first page', async () => {
       const results = await service.searchUsers({ limit: 7, skip: 7 });
       expect(results.users).toHaveLength(7);
-      expect(results).toMatchSnapshot();
+      expect(results.totalCount).toBe(100);
+      expect(
+        results.users.map((u: User) => ({
+          id: u.id,
+          username: u.username,
+          memberSince: u.memberSince,
+        })),
+      ).toMatchSnapshot();
     });
 
     [

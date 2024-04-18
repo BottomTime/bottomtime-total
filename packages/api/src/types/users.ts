@@ -151,13 +151,16 @@ export const CurrentUserSchema = z.discriminatedUnion('anonymous', [
 ]);
 export type CurrentUserDTO = z.infer<typeof CurrentUserSchema>;
 
-export const SearchUserProfilesParamsSchema = z.object({
-  query: z.string().trim().max(200).optional(),
-  sortBy: z.nativeEnum(UsersSortBy).default(UsersSortBy.Username),
-  sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Ascending),
-  skip: z.coerce.number().int().min(0).default(0),
-  limit: z.coerce.number().int().positive().max(200).default(100),
-});
+export const SearchUserProfilesParamsSchema = z
+  .object({
+    filterFriends: z.boolean(),
+    query: z.string().trim().max(200),
+    sortBy: z.nativeEnum(UsersSortBy),
+    sortOrder: z.nativeEnum(SortOrder),
+    skip: z.coerce.number().int().min(0),
+    limit: z.coerce.number().int().positive().max(200),
+  })
+  .partial();
 export type SearchUserProfilesParamsDTO = z.infer<
   typeof SearchUserProfilesParamsSchema
 >;

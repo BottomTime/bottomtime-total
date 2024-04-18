@@ -4,10 +4,8 @@ import {
   LogBookSharing,
   PressureUnit,
   SearchUserProfilesParamsSchema,
-  SortOrder,
   TemperatureUnit,
   UserRole,
-  UsersSortBy,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -22,6 +20,7 @@ import { z } from 'zod';
 import { Config } from '../config';
 import { UserEntity } from '../data';
 import { User } from './user';
+import { UsersQueryBuilder } from './users-query-builder';
 
 const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
   role: z.nativeEnum(UserRole),
@@ -133,37 +132,20 @@ export class UsersService {
   async searchUsers(
     options: SearchUsersOptions = {},
   ): Promise<SearchUsersResult> {
-    let query = this.Users.createQueryBuilder('users');
+    let queryBuilder = new UsersQueryBuilder(this.Users)
+      .withQuery(options.query)
+      .withRole(options.role)
+      .withSortOrder(options.sortBy, options.sortOrder)
+      .withPagination(options.skip, options.limit);
 
-    if (options.role) {
-      query = query.andWhere('users.role = :role', { role: options.role });
+    if (options.filterFriends) {
+      queryBuilder = queryBuilder.filterFriends();
     }
 
-    if (options.query) {
-      query = query.andWhere(
-        "users.fulltext @@ websearch_to_tsquery('english', :query)",
-        {
-          query: options.query,
-        },
-      );
-    }
-
-    query = query.offset(options.skip).limit(options.limit ?? 100);
-
-    const sortBy = `users.${options.sortBy || UsersSortBy.Username}`;
-    const sortOrder = options.sortOrder
-      ? options.sortOrder
-      : sortBy === UsersSortBy.MemberSince
-      ? SortOrder.Descending
-      : SortOrder.Ascending;
-
-    query = query.orderBy(
-      sortBy,
-      sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
-    );
+    const query = queryBuilder.build();
 
     this.log.debug('Attempting search for users', options);
-    this.log.verbose('Performing user search with query', query.getQuery());
+    this.log.verbose('Performing user search with query', query.getSql());
 
     const [users, totalCount] = await query.getManyAndCount();
 

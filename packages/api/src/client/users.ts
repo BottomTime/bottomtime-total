@@ -5,6 +5,11 @@ import {
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
+  ProfileDTO,
+  SearchProfilesResponseDTO,
+  SearchProfilesResponseSchema,
+  SearchUserProfilesParamsDTO,
+  SuccinctProfileDTO,
   UserSchema,
 } from '../types';
 import { User } from './user';
@@ -85,6 +90,13 @@ export class UsersApiClient {
       users: response.users.map((user) => new User(this.apiClient, user)),
       totalCount: response.totalCount,
     };
+  }
+
+  async searchProfiles(
+    query: SearchUserProfilesParamsDTO,
+  ): Promise<SearchProfilesResponseDTO> {
+    const { data } = await this.apiClient.get('/api/users', { params: query });
+    return SearchProfilesResponseSchema.parse(data);
   }
 
   wrapDTO(dto: unknown): User {

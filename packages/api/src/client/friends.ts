@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios';
 
 import {
+  FriendRequestSchema,
   FriendSchema,
   ListFriendRequestsParams,
   ListFriendRequestsResponseSchema,
@@ -41,6 +42,12 @@ export class FriendsApiClient {
     };
   }
 
+  async unfriend(username: string, friendUsername: string): Promise<void> {
+    await this.apiClient.delete(
+      `/api/users/${username}/friends/${friendUsername}`,
+    );
+  }
+
   async listFriendRequests(
     username: string,
     params?: ListFriendRequestsParams,
@@ -57,6 +64,17 @@ export class FriendsApiClient {
       ),
       totalCount: result.totalCount,
     };
+  }
+
+  async createFriendRequest(
+    username: string,
+    friendUsername: string,
+  ): Promise<FriendRequest> {
+    const { data } = await this.apiClient.put(
+      `/api/users/${username}/friendRequests/${friendUsername}`,
+    );
+
+    return new FriendRequest(this.apiClient, FriendRequestSchema.parse(data));
   }
 
   wrapFriendDTO(data: unknown): Friend {

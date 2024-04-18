@@ -7,7 +7,7 @@ import { SearchUserProfilesParamsSchema } from './users';
 export const AdminSearchUsersParamsSchema =
   SearchUserProfilesParamsSchema.extend({
     role: z.nativeEnum(UserRole).optional(),
-  });
+  }).omit({ filterFriends: true });
 export type AdminSearchUsersParamsDTO = z.infer<
   typeof AdminSearchUsersParamsSchema
 >;

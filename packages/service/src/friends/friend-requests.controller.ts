@@ -233,14 +233,6 @@ export class FriendRequestsController {
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/FriendUsername"
-   *     requestBody:
-   *       description: |
-   *         The friend request to send.
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: "#/components/schemas/FriendRequest"
    *     responses:
    *       201:
    *         description: The friend request was sent successfully.
