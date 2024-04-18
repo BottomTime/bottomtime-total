@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import {
+  BooleanString,
   DepthUnit,
   FuzzyDateRegex,
   PressureUnit,
@@ -153,7 +154,7 @@ export type CurrentUserDTO = z.infer<typeof CurrentUserSchema>;
 
 export const SearchUserProfilesParamsSchema = z
   .object({
-    filterFriends: z.boolean(),
+    filterFriends: BooleanString,
     query: z.string().trim().max(200),
     sortBy: z.nativeEnum(UsersSortBy),
     sortOrder: z.nativeEnum(SortOrder),

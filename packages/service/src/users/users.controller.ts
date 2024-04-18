@@ -118,10 +118,15 @@ export class UsersController {
   @Get()
   @UseGuards(AssertAuth)
   async searchProfiles(
+    @CurrentUser() currentUser: User,
     @Query(new ZodValidator(SearchUserProfilesParamsSchema))
     params: SearchUserProfilesParamsDTO,
   ): Promise<SearchProfilesResponseDTO> {
-    const result = await this.users.searchUsers(params);
+    const result = await this.users.searchUsers({
+      ...params,
+      filterFriendsFor:
+        params.filterFriends === true ? currentUser.id : undefined,
+    });
     return {
       users: result.users.map((u) => u.profile.toJSON()),
       totalCount: result.totalCount,
