@@ -13,11 +13,12 @@ import bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { UserEntity } from '../../../src/data';
+import { FriendshipEntity, UserEntity } from '../../../src/data';
 import { User, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import SearchData from '../../fixtures/user-search-data.json';
 import { createTestUser, parseUserJSON } from '../../utils';
+import { createTestFriendship } from '../../utils/create-test-friendship';
 
 const TestUserData: Partial<UserEntity> = {
   id: '4e64038d-0abf-4c1a-b678-55f8afcb6b2d',
@@ -32,11 +33,12 @@ jest.mock('bcrypt');
 
 describe('Users Service', () => {
   let Users: Repository<UserEntity>;
-
+  let Friends: Repository<FriendshipEntity>;
   let service: UsersService;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
+    Friends = dataSource.getRepository(FriendshipEntity);
     service = new UsersService(Users);
   });
 
@@ -201,6 +203,48 @@ describe('Users Service', () => {
           username: u.username,
           memberSince: u.memberSince,
         })),
+      ).toMatchSnapshot();
+    });
+
+    it('will allow filtering out profiles of users who are already friends', async () => {
+      const friendRelations: FriendshipEntity[] = [
+        createTestFriendship(
+          users[0].id,
+          '007f3635-e492-4a43-83e5-55de54b4e3fd',
+        ),
+        createTestFriendship(
+          '007f3635-e492-4a43-83e5-55de54b4e3fd',
+          users[0].id,
+        ),
+
+        createTestFriendship(
+          users[0].id,
+          'e8086bb6-10a8-4070-abb9-965acdc04ea3',
+        ),
+        createTestFriendship(
+          'e8086bb6-10a8-4070-abb9-965acdc04ea3',
+          users[0].id,
+        ),
+
+        createTestFriendship(
+          users[0].id,
+          '921811b8-2bab-40e9-b491-dd79dea9caf8',
+        ),
+        createTestFriendship(
+          '921811b8-2bab-40e9-b491-dd79dea9caf8',
+          users[0].id,
+        ),
+      ];
+      await Friends.save(friendRelations);
+
+      const results = await service.searchUsers({
+        filterFriendsFor: users[0].id,
+        limit: 15,
+      });
+
+      expect(results.totalCount).toBe(97);
+      expect(
+        results.users.map((u) => ({ id: u.id, username: u.username })),
       ).toMatchSnapshot();
     });
 

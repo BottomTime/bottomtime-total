@@ -25,7 +25,18 @@ export class UsersQueryBuilder {
     return this.query;
   }
 
-  filterFriends(): this {
+  filterFriendsForUser(userId?: string): this {
+    if (userId) {
+      this.query = this.query
+        .leftJoin(
+          'users.friends',
+          'friends',
+          'friends.userId = users.id AND friends.friendId = :userId',
+          { userId },
+        )
+        .andWhere('friends.id IS NULL')
+        .groupBy('users.id');
+    }
     return this;
   }
 

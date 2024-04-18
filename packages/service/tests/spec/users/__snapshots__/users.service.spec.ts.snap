@@ -242,6 +242,71 @@ exports[`Users Service when searching profiles Will return results sorted by use
 ]
 `;
 
+exports[`Users Service when searching profiles will allow filtering out profiles of users who are already friends 1`] = `
+[
+  {
+    "id": "5e1c2714-ad34-418f-9840-df005c61ead9",
+    "username": "Aaron_Wehner28",
+  },
+  {
+    "id": "e8c59a17-31db-4ad0-8b7b-71873c39281e",
+    "username": "Alessia.Upton8",
+  },
+  {
+    "id": "df272310-96df-449a-bb4e-8663dea787f3",
+    "username": "Aliyah.Kunde4",
+  },
+  {
+    "id": "cbbdc55c-4f64-4fdf-ac63-5c42cfd80607",
+    "username": "Amara.Cummings13",
+  },
+  {
+    "id": "f449ef5a-6fb9-4459-8cdd-8cf813a0b820",
+    "username": "Ashly71",
+  },
+  {
+    "id": "9d72ecc0-b240-47c9-9d42-e6d196a3383f",
+    "username": "Audreanne.Larkin79",
+  },
+  {
+    "id": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
+    "username": "Ayla.Rippin",
+  },
+  {
+    "id": "959eb386-3ca8-42e1-9ce8-750a80e787eb",
+    "username": "Barrett_Stracke77",
+  },
+  {
+    "id": "1cde744c-c746-4f1a-84e5-3def80532ce3",
+    "username": "Bell_Herzog",
+  },
+  {
+    "id": "91456c36-010a-4c72-82b7-2330e98f63bb",
+    "username": "Bernadette_Kihn",
+  },
+  {
+    "id": "a966e53e-0d66-4dff-8f7c-2c3658eea2e4",
+    "username": "Bernhard54",
+  },
+  {
+    "id": "d826c5cc-dade-4480-8598-4d9a7995020a",
+    "username": "Breanne_Cummings",
+  },
+  {
+    "id": "a72967c3-cb27-45e3-b496-47c39cfb02c8",
+    "username": "Brigitte.Kihn",
+  },
+  {
+    "id": "9ae018c2-5a6b-432e-ba97-c83cb7e32880",
+    "username": "Bryana.Glover",
+  },
+  {
+    "id": "6f8f977c-5034-4ca2-90ce-36a8bead0678",
+    "username": "Bryce_Thompson97",
+  },
+]
+`;
+
 exports[`Users Service when searching profiles will allow showing results beyond the first page 1`] = `
 [
   {

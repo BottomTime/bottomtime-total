@@ -1,9 +1,9 @@
 import {
+  AdminSearchUsersParamsDTO,
   CreateUserParamsDTO,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
-  SearchUserProfilesParamsSchema,
   TemperatureUnit,
   UserRole,
   WeightUnit,
@@ -15,17 +15,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { z } from 'zod';
 
 import { Config } from '../config';
 import { UserEntity } from '../data';
 import { User } from './user';
 import { UsersQueryBuilder } from './users-query-builder';
 
-const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
-  role: z.nativeEnum(UserRole),
-}).partial();
-export type SearchUsersOptions = z.infer<typeof SearchUsersOptionsSchema>;
+export type SearchUsersOptions = AdminSearchUsersParamsDTO & {
+  filterFriendsFor?: string;
+};
 export type SearchUsersResult = {
   users: User[];
   totalCount: number;
@@ -132,17 +130,13 @@ export class UsersService {
   async searchUsers(
     options: SearchUsersOptions = {},
   ): Promise<SearchUsersResult> {
-    let queryBuilder = new UsersQueryBuilder(this.Users)
+    const query = new UsersQueryBuilder(this.Users)
+      .filterFriendsForUser(options.filterFriendsFor)
       .withQuery(options.query)
       .withRole(options.role)
       .withSortOrder(options.sortBy, options.sortOrder)
-      .withPagination(options.skip, options.limit);
-
-    if (options.filterFriends) {
-      queryBuilder = queryBuilder.filterFriends();
-    }
-
-    const query = queryBuilder.build();
+      .withPagination(options.skip, options.limit)
+      .build();
 
     this.log.debug('Attempting search for users', options);
     this.log.verbose('Performing user search with query', query.getSql());
