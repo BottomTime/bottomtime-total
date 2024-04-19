@@ -16,7 +16,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ListFriendRequestsResponseDTO } from '@bottomtime/api';
+import {
+  FriendRequestDirection,
+  ListFriendRequestsResponseDTO,
+} from '@bottomtime/api';
 
 import { onServerPrefetch, reactive, useSSRContext } from 'vue';
 
@@ -46,6 +49,10 @@ onServerPrefetch(async () => {
 
     const friendRequestsResults = await client.friends.listFriendRequests(
       currentUser.user.username,
+      {
+        direction: FriendRequestDirection.Incoming,
+        showAcknowledged: false,
+      },
     );
 
     friendRequests.friendRequests = friendRequestsResults.friendRequests.map(

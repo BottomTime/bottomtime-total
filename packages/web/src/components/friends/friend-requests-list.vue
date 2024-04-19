@@ -15,7 +15,10 @@
         v-for="request in requests.friendRequests"
         :key="request.friendId"
         :request="request"
-        @cancel-request="(request) => $emit('cancel-request', request)"
+        @cancel="(request) => $emit('cancel', request)"
+        @accept="(request) => $emit('accept', request)"
+        @decline="(request) => $emit('decline', request)"
+        @select="(request) => $emit('select', request)"
       />
     </ul>
   </div>
@@ -36,6 +39,9 @@ interface FriendRequestsListProps {
 
 defineProps<FriendRequestsListProps>();
 defineEmits<{
-  (e: 'cancel-request', request: FriendRequestDTO): void;
+  (e: 'cancel', request: FriendRequestDTO): void;
+  (e: 'accept', request: FriendRequestDTO): void;
+  (e: 'decline', request: FriendRequestDTO): void;
+  (e: 'select', request: FriendRequestDTO): void;
 }>();
 </script>
