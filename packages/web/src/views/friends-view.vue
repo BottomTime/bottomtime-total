@@ -1,9 +1,11 @@
 <template>
+  <!-- Confirm Unfriend dialog -->
   <ConfirmDialog
-    :visible="showConfirmUnfriend && !!selectedFriend"
+    :visible="state.showConfirmUnfriend && !!state.selectedFriend"
     title="Remove Friend?"
     confirm-text="Unfriend"
     dangerous
+    :is-loading="state.isUnfriending"
     @confirm="onConfirmUnfriend"
     @cancel="onCancelUnfriend"
   >
@@ -16,7 +18,9 @@
         <p>
           <span>Are you sure you want to remove </span>
           <span class="font-bold">
-            {{ selectedFriend?.name || `@${selectedFriend?.username}` }}
+            {{
+              state.selectedFriend?.name || `@${state.selectedFriend?.username}`
+            }}
           </span>
           <span> as a friend?</span>
         </p>
@@ -26,17 +30,28 @@
     </div>
   </ConfirmDialog>
 
+  <!-- User proflie drawer -->
   <DrawerPanel
-    :visible="showFriendPanel && !!selectedFriend"
-    :title="selectedFriend?.name || `@${selectedFriend?.username}`"
+    :visible="state.showFriendPanel && !!state.selectedFriend"
+    :title="state.selectedFriend?.name || `@${state.selectedFriend?.username}`"
     @close="onCloseFriendPanel"
   >
     Yo!
   </DrawerPanel>
 
+  <!-- Search users drawer -->
+  <DrawerPanel
+    :visible="state.showSearchUsers"
+    title="Search For Friends"
+    @close="onCancelSearchFriends"
+  >
+    <SearchFriendsForm />
+  </DrawerPanel>
+
   <PageTitle title="Friends" />
 
   <div class="flex flex-col md:flex-row gap-3 items-start">
+    <!-- Nav menu -->
     <ul
       class="w-full md:w-60 text-md md:text-lg *:p-3 hover:*:bg-blue-700 flex flex-col align-middle bg-gradient-to-b from-blue-700 to-blue-900 rounded-md text-grey-50"
     >
@@ -46,35 +61,67 @@
       </li>
     </ul>
 
-    <FriendsList
-      :friends="friends"
-      :sort-by="queryParams.sortBy"
-      :sort-order="queryParams.sortOrder"
-      @add-friend="onAddFriend"
-      @select-friend="onSelectFriend"
-      @unfriend="onUnfriend"
-    />
+    <!-- Friends list-->
+    <div class="flex flex-col space-y-3 grow w-full">
+      <FriendsList
+        :friends="state.friends"
+        :sort-by="state.queryParams.sortBy"
+        :sort-order="state.queryParams.sortOrder"
+        @add-friend="onAddFriend"
+        @select-friend="onSelectFriend"
+        @unfriend="onUnfriend"
+      />
+
+      <TextHeading>Pending Friend Requests</TextHeading>
+      <p class="italic text-sm">
+        These are friend requests that you have sent that have not yet been
+        acknowledged.
+      </p>
+      <FriendRequestsList :requests="state.pendingRequests" />
+
+      <!-- <TextHeading>TODO: Blocked Users</TextHeading>
+      <p class="italic text-sm">
+        Can't believe I hadn't thought of this. Need to implement block lists.
+      </p> -->
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import {
   FriendDTO,
+  FriendRequestDirection,
+  ListFriendRequestsResponseDTO,
   ListFriendsParams,
   ListFriendsResponseDTO,
 } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
+import { onServerPrefetch, reactive, useSSRContext } from 'vue';
 
 import { useClient } from '../api-client';
+import { ToastType } from '../common';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import PageTitle from '../components/common/page-title.vue';
+import TextHeading from '../components/common/text-heading.vue';
 import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
+import FriendRequestsList from '../components/friends/friend-requests-list.vue';
 import FriendsList from '../components/friends/friends-list.vue';
+import SearchFriendsForm from '../components/friends/search-friends-form.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
-import { useCurrentUser } from '../store';
+import { useCurrentUser, useToasts } from '../store';
+
+interface FriendsViewState {
+  friends: ListFriendsResponseDTO;
+  isUnfriending: boolean;
+  pendingRequests: ListFriendRequestsResponseDTO;
+  queryParams: ListFriendsParams;
+  selectedFriend: FriendDTO | null;
+  showConfirmUnfriend: boolean;
+  showFriendPanel: boolean;
+  showSearchUsers: boolean;
+}
 
 function parseQueryString(): ListFriendsParams {
   return {};
@@ -85,57 +132,102 @@ const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const currentUser = useCurrentUser();
 const initialState = useInitialState();
 const oops = useOops();
+const toasts = useToasts();
 
-const friends = reactive<ListFriendsResponseDTO>(
-  initialState?.friends ? initialState.friends : { friends: [], totalCount: 0 },
-);
-
-const queryParams = reactive<ListFriendsParams>(parseQueryString());
-const showConfirmUnfriend = ref(false);
-const showFriendPanel = ref(false);
-const selectedFriend = ref<FriendDTO | null>(null);
+const state = reactive<FriendsViewState>({
+  friends: initialState?.friends ?? { friends: [], totalCount: 0 },
+  isUnfriending: false,
+  pendingRequests: initialState?.friendRequests ?? {
+    friendRequests: [],
+    totalCount: 0,
+  },
+  queryParams: parseQueryString(),
+  selectedFriend: null,
+  showConfirmUnfriend: false,
+  showFriendPanel: false,
+  showSearchUsers: false,
+});
 
 onServerPrefetch(async () => {
   await oops(async () => {
     if (!currentUser.user) return;
-    const friendsResult = await client.friends.listFriends(
-      currentUser.user.username,
-      queryParams,
-    );
 
-    friends.friends = friendsResult.friends.map((friend) => friend.toJSON());
-    friends.totalCount = friendsResult.totalCount;
+    const [friendsResult, pendingRequests] = await Promise.all([
+      client.friends.listFriends(currentUser.user.username, state.queryParams),
+      client.friends.listFriendRequests(currentUser.user.username, {
+        direction: FriendRequestDirection.Outgoing,
+        showAcknowledged: true,
+        limit: 50,
+      }),
+    ]);
+
+    state.friends = {
+      friends: friendsResult.friends.map((f) => f.toJSON()),
+      totalCount: friendsResult.totalCount,
+    };
+    state.pendingRequests = {
+      friendRequests: pendingRequests.friendRequests.map((r) => r.toJSON()),
+      totalCount: pendingRequests.totalCount,
+    };
 
     if (ctx) {
-      ctx.friends = friends;
+      ctx.friends = state.friends;
+      ctx.friendRequests = state.pendingRequests;
     }
   });
 });
 
 function onAddFriend() {
-  console.log('Add friend');
+  state.showSearchUsers = true;
 }
 
 function onSelectFriend(friend: FriendDTO) {
-  selectedFriend.value = friend;
-  showFriendPanel.value = true;
+  state.selectedFriend = friend;
+  state.showFriendPanel = true;
 }
 
 function onCloseFriendPanel() {
-  showFriendPanel.value = false;
+  state.showFriendPanel = false;
 }
 
 function onUnfriend(friend: FriendDTO) {
-  selectedFriend.value = friend;
-  showConfirmUnfriend.value = true;
+  state.selectedFriend = friend;
+  state.showConfirmUnfriend = true;
 }
 
 async function onConfirmUnfriend(): Promise<void> {
-  console.log('Unfriending', selectedFriend.value?.username);
-  showConfirmUnfriend.value = false;
+  state.isUnfriending = true;
+
+  await oops(async () => {
+    const friend = state.selectedFriend;
+    if (!friend || !currentUser.user) return;
+
+    await client.friends.unfriend(currentUser.user.username, friend.username);
+
+    const index = state.friends.friends.findIndex((f) => f.id === friend.id);
+
+    if (index > -1) {
+      state.friends.friends.splice(index, 1);
+    }
+
+    toasts.toast({
+      id: 'unfriend-succeeded',
+      message: `You have successfully unfriended ${
+        friend.name || `@${friend.username}`
+      }.`,
+      type: ToastType.Success,
+    });
+  });
+
+  state.showConfirmUnfriend = false;
+  state.isUnfriending = false;
 }
 
 function onCancelUnfriend() {
-  showConfirmUnfriend.value = false;
+  state.showConfirmUnfriend = false;
+}
+
+function onCancelSearchFriends() {
+  state.showSearchUsers = false;
 }
 </script>

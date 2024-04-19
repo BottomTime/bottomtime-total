@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { SortOrder } from './constants';
+import { BooleanString, SortOrder } from './constants';
 
 export enum FriendsSortBy {
   Username = 'username',
@@ -58,7 +58,7 @@ export type ListFriendsResponseDTO = z.infer<typeof ListFriendsResposneSchema>;
 export const ListFriendRequestsParamsSchema = z
   .object({
     direction: z.nativeEnum(FriendRequestDirection),
-    showAcknowledged: z.boolean(),
+    showAcknowledged: BooleanString,
     skip: z.coerce.number().int().min(0),
     limit: z.coerce.number().int().min(1).max(200),
   })

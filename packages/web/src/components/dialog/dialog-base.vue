@@ -22,6 +22,7 @@
       <div class="pr-2">
         <CloseButton
           v-if="showClose"
+          :disabled="disabled"
           test-id="dialog-close-button"
           inverted
           @click="onClose"
@@ -30,15 +31,19 @@
     </div>
 
     <form @submit.prevent="">
-      <!-- Content -->
-      <div class="grow p-4" data-testid="dialog-content">
-        <slot></slot>
-      </div>
+      <fieldset :disabled="disabled">
+        <!-- Content -->
+        <div class="grow p-4" data-testid="dialog-content">
+          <slot></slot>
+        </div>
 
-      <!-- Buttons-->
-      <div class="h-12 text-center p-2 mb-3 flex flex-row justify-center gap-3">
-        <slot name="buttons"></slot>
-      </div>
+        <!-- Buttons-->
+        <div
+          class="h-12 text-center p-2 mb-3 flex flex-row justify-center gap-3"
+        >
+          <slot name="buttons"></slot>
+        </div>
+      </fieldset>
     </form>
   </div>
 </template>
@@ -49,6 +54,7 @@ import { computed } from 'vue';
 import CloseButton from '../common/close-button.vue';
 
 type DialogBaseProps = {
+  disabled?: boolean;
   showClose?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   title: string;
@@ -56,6 +62,7 @@ type DialogBaseProps = {
 };
 
 const props = withDefaults(defineProps<DialogBaseProps>(), {
+  disabled: false,
   showClose: true,
   size: 'md',
   visible: false,
@@ -66,7 +73,7 @@ const emit = defineEmits<{
 }>();
 
 function onClose() {
-  if (props.showClose) {
+  if (props.showClose && !props.disabled) {
     emit('close');
   }
 }

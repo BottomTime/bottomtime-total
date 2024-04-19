@@ -1,38 +1,36 @@
 <template>
-  <div class="flex flex-col space-y-3 grow w-full">
-    <FormBox class="flex justify-between items-center">
-      <p>
-        <span>Showing </span>
-        <span class="font-bold">{{ friends.friends.length }}</span>
-        <span> of </span>
-        <span class="font-bold">{{ friends.totalCount }}</span>
-        <span> friends</span>
-      </p>
+  <FormBox class="flex justify-between items-center">
+    <p>
+      <span>Showing </span>
+      <span class="font-bold">{{ friends.friends.length }}</span>
+      <span> of </span>
+      <span class="font-bold">{{ friends.totalCount }}</span>
+      <span> friends</span>
+    </p>
 
-      <div class="flex space-x-3 items-baseline">
-        <label class="font-bold" for="sort-order">Sort order:</label>
-        <FormSelect
-          v-model="sortOrderString"
-          control-id="sort-order"
-          test-id="sort-order"
-          :options="SortOrderOptions"
-        />
-        <FormButton type="primary" @click="$emit('add-friend')">
-          Add Friend
-        </FormButton>
-      </div>
-    </FormBox>
-
-    <ul class="">
-      <FriendsListItem
-        v-for="friend in friends.friends"
-        :key="friend.id"
-        :friend="friend"
-        @select="(friend) => $emit('select-friend', friend)"
-        @unfriend="(friend) => $emit('unfriend', friend)"
+    <div class="flex space-x-3 items-baseline">
+      <label class="font-bold" for="sort-order">Sort order:</label>
+      <FormSelect
+        v-model="sortOrderString"
+        control-id="sort-order"
+        test-id="sort-order"
+        :options="SortOrderOptions"
       />
-    </ul>
-  </div>
+      <FormButton type="primary" @click="$emit('add-friend')">
+        Add Friend
+      </FormButton>
+    </div>
+  </FormBox>
+
+  <ul class="">
+    <FriendsListItem
+      v-for="friend in friends.friends"
+      :key="friend.id"
+      :friend="friend"
+      @select="(friend) => $emit('select-friend', friend)"
+      @unfriend="(friend) => $emit('unfriend', friend)"
+    />
+  </ul>
 </template>
 
 <script lang="ts" setup>

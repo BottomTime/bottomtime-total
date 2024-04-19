@@ -35,6 +35,7 @@ export class UsersQueryBuilder {
           { userId },
         )
         .andWhere('friends.id IS NULL')
+        .andWhere('users.id != :userId', { userId })
         .groupBy('users.id');
     }
     return this;
