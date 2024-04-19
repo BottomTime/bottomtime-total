@@ -6,6 +6,7 @@
   <OutgoingFriendRequestItem
     v-if="request.direction === FriendRequestDirection.Outgoing"
     :request="request"
+    @cancel="(request) => $emit('cancel-request', request)"
   />
 </template>
 
@@ -19,4 +20,7 @@ interface FriendRequestsListItemProps {
 }
 
 defineProps<FriendRequestsListItemProps>();
+defineEmits<{
+  (e: 'cancel-request', request: FriendRequestDTO): void;
+}>();
 </script>

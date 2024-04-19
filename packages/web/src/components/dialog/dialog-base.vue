@@ -10,7 +10,7 @@
   <div
     v-if="visible"
     data-testid="dialog-modal"
-    :class="`flex flex-col absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] ${sizeClass} bg-grey-200 dark:bg-grey-800 opacity-100 shadow-lg rounded-lg z-50`"
+    :class="`flex flex-col fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] ${sizeClass} bg-grey-200 dark:bg-grey-800 opacity-100 shadow-lg rounded-lg z-50`"
   >
     <!-- Title bar -->
     <div

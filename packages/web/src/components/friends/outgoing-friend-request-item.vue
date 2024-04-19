@@ -1,6 +1,6 @@
 <template>
   <li
-    class="flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2"
+    class="flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center"
   >
     <div class="min-w-[64px]">
       <UserAvatar
@@ -10,12 +10,12 @@
       />
     </div>
 
-    <div class="grow flex flex-col space-y-2">
+    <div class="grow flex flex-col space-y-1">
       <p class="flex space-x-3 items-baseline">
-        <span class="font-bold text-2xl">
+        <span class="text-2xl">
           {{ request.friend.name || `@${request.friend.username}` }}
         </span>
-        <span v-if="request.friend.name" class="text-lg">
+        <span v-if="request.friend.name" class="text-lg font-bold">
           {{ `@${request.friend.username}` }}
         </span>
       </p>
@@ -40,15 +40,15 @@
         <p v-if="request.reason" class="italic">"{{ request.reason }}"</p>
       </div>
 
-      <div v-else class="flex text-grey-400 italic space-x-6 justify-between">
-        <p>
+      <div v-else class="flex text-grey-400 space-x-8">
+        <p class="flex space-x-2">
           <span class="font-bold">Requested:</span>
-          <span>{{ dayjs(request.created).format() }}</span>
+          <span class="italic">{{ dayjs(request.created).format('lll') }}</span>
         </p>
 
-        <p>
+        <p class="flex space-x-2">
           <span class="font-bold">Expires:</span>
-          <span>{{ dayjs(request.expires).format() }}</span>
+          <span class="italic">{{ dayjs(request.expires).format('lll') }}</span>
         </p>
       </div>
     </div>
@@ -62,7 +62,7 @@
       </div>
 
       <div v-else class="texst-right my-6 mx-2">
-        <FormButton> Cancel </FormButton>
+        <FormButton @click="$emit('cancel', request)">Cancel</FormButton>
       </div>
     </div>
   </li>
@@ -82,4 +82,7 @@ interface OutgoingFriendRequestItemProps {
 }
 
 defineProps<OutgoingFriendRequestItemProps>();
+defineEmits<{
+  (e: 'cancel', request: FriendRequestDTO): void;
+}>();
 </script>

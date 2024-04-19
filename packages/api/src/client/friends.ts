@@ -77,6 +77,15 @@ export class FriendsApiClient {
     return new FriendRequest(this.apiClient, FriendRequestSchema.parse(data));
   }
 
+  async cancelFriendRequest(
+    username: string,
+    friendUsername: string,
+  ): Promise<void> {
+    await this.apiClient.delete(
+      `/api/users/${username}/friendRequests/${friendUsername}`,
+    );
+  }
+
   wrapFriendDTO(data: unknown): Friend {
     const dto = FriendSchema.parse(data);
     return new Friend(this.apiClient, dto);

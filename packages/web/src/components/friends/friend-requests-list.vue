@@ -15,13 +15,17 @@
         v-for="request in requests.friendRequests"
         :key="request.friendId"
         :request="request"
+        @cancel-request="(request) => $emit('cancel-request', request)"
       />
     </ul>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ListFriendRequestsResponseDTO } from '@bottomtime/api';
+import {
+  FriendRequestDTO,
+  ListFriendRequestsResponseDTO,
+} from '@bottomtime/api';
 
 import FormBox from '../common/form-box.vue';
 import FriendRequestsListItem from './friend-requests-list-item.vue';
@@ -31,4 +35,7 @@ interface FriendRequestsListProps {
 }
 
 defineProps<FriendRequestsListProps>();
+defineEmits<{
+  (e: 'cancel-request', request: FriendRequestDTO): void;
+}>();
 </script>

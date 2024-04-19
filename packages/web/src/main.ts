@@ -1,6 +1,7 @@
 import { ApiClient, ApiClientOptions } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import utc from 'dayjs/plugin/utc';
 import { createPinia } from 'pinia';
@@ -13,6 +14,7 @@ import { clickOutside } from './click-outside';
 import { LocationKey, MockLocation } from './location';
 import { router } from './router';
 
+dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
 

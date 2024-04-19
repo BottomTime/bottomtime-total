@@ -30,7 +30,11 @@
 </template>
 
 <script lang="ts" setup>
-import { SearchProfilesResponseDTO, SuccinctProfileDTO } from '@bottomtime/api';
+import {
+  FriendRequestDTO,
+  SearchProfilesResponseDTO,
+  SuccinctProfileDTO,
+} from '@bottomtime/api';
 
 import { reactive } from 'vue';
 
@@ -52,6 +56,10 @@ const currentUser = useCurrentUser();
 const client = useClient();
 const oops = useOops();
 const toasts = useToasts();
+
+const emit = defineEmits<{
+  (e: 'request-sent', request: FriendRequestDTO): void;
+}>();
 
 const state = reactive<SearchFriendsFormData>({
   query: '',
@@ -75,10 +83,12 @@ async function onSearch(): Promise<void> {
 async function onSendRequest(targetUser: SuccinctProfileDTO): Promise<void> {
   await oops(async () => {
     if (!currentUser.user) return;
-    await client.friends.createFriendRequest(
+    const newRequest = await client.friends.createFriendRequest(
       currentUser.user.username,
       targetUser.username,
     );
+
+    emit('request-sent', newRequest.toJSON());
 
     toasts.toast({
       id: 'friend-request-sent',

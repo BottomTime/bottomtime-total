@@ -30,6 +30,34 @@
     </div>
   </ConfirmDialog>
 
+  <ConfirmDialog
+    :visible="state.showConfirmCancelRequest"
+    title="Cancel Friend Request?"
+    confirm-text="Cancel Request"
+    :is-loading="state.isCancellingRequest"
+    @confirm="onConfirmCancelRequest"
+    @cancel="onCancelCancelRequest"
+  >
+    <div class="flex space-x-4">
+      <div>
+        <i class="fa-regular fa-circle-question fa-2x"></i>
+      </div>
+
+      <div class="flex flex-col space-y-2">
+        <p>
+          <span>Are you sure you want to cancel your friend request to </span>
+          <span class="font-bold">
+            {{
+              state.selectedFriendRequest?.friend.name ||
+              `@${state.selectedFriendRequest?.friend.username}`
+            }}
+          </span>
+          <span>?</span>
+        </p>
+      </div>
+    </div>
+  </ConfirmDialog>
+
   <!-- User proflie drawer -->
   <DrawerPanel
     :visible="state.showFriendPanel && !!state.selectedFriend"
@@ -45,7 +73,7 @@
     title="Search For Friends"
     @close="onCancelSearchFriends"
   >
-    <SearchFriendsForm />
+    <SearchFriendsForm @request-sent="onRequestSent" />
   </DrawerPanel>
 
   <PageTitle title="Friends" />
@@ -77,7 +105,10 @@
         These are friend requests that you have sent that have not yet been
         acknowledged.
       </p>
-      <FriendRequestsList :requests="state.pendingRequests" />
+      <FriendRequestsList
+        :requests="state.pendingRequests"
+        @cancel-request="onCancelRequest"
+      />
 
       <!-- <TextHeading>TODO: Blocked Users</TextHeading>
       <p class="italic text-sm">
@@ -90,6 +121,7 @@
 <script lang="ts" setup>
 import {
   FriendDTO,
+  FriendRequestDTO,
   FriendRequestDirection,
   ListFriendRequestsResponseDTO,
   ListFriendsParams,
@@ -114,10 +146,13 @@ import { useCurrentUser, useToasts } from '../store';
 
 interface FriendsViewState {
   friends: ListFriendsResponseDTO;
+  isCancellingRequest: boolean;
   isUnfriending: boolean;
   pendingRequests: ListFriendRequestsResponseDTO;
   queryParams: ListFriendsParams;
   selectedFriend: FriendDTO | null;
+  selectedFriendRequest: FriendRequestDTO | null;
+  showConfirmCancelRequest: boolean;
   showConfirmUnfriend: boolean;
   showFriendPanel: boolean;
   showSearchUsers: boolean;
@@ -136,6 +171,7 @@ const toasts = useToasts();
 
 const state = reactive<FriendsViewState>({
   friends: initialState?.friends ?? { friends: [], totalCount: 0 },
+  isCancellingRequest: false,
   isUnfriending: false,
   pendingRequests: initialState?.friendRequests ?? {
     friendRequests: [],
@@ -143,6 +179,8 @@ const state = reactive<FriendsViewState>({
   },
   queryParams: parseQueryString(),
   selectedFriend: null,
+  selectedFriendRequest: null,
+  showConfirmCancelRequest: false,
   showConfirmUnfriend: false,
   showFriendPanel: false,
   showSearchUsers: false,
@@ -179,6 +217,12 @@ onServerPrefetch(async () => {
 
 function onAddFriend() {
   state.showSearchUsers = true;
+}
+
+function onRequestSent(request: FriendRequestDTO) {
+  state.pendingRequests.friendRequests.unshift(request);
+  state.pendingRequests.totalCount++;
+  state.showSearchUsers = false;
 }
 
 function onSelectFriend(friend: FriendDTO) {
@@ -229,5 +273,50 @@ function onCancelUnfriend() {
 
 function onCancelSearchFriends() {
   state.showSearchUsers = false;
+}
+
+function onCancelRequest(request: FriendRequestDTO) {
+  state.selectedFriendRequest = request;
+  state.showConfirmCancelRequest = true;
+}
+
+function onCancelCancelRequest() {
+  state.showConfirmCancelRequest = false;
+  state.selectedFriendRequest = null;
+}
+
+async function onConfirmCancelRequest(): Promise<void> {
+  state.isCancellingRequest = true;
+
+  await oops(async () => {
+    if (!currentUser.user || !state.selectedFriendRequest) return;
+
+    await client.friends.cancelFriendRequest(
+      currentUser.user.username,
+      state.selectedFriendRequest.friend.username,
+    );
+
+    const index = state.pendingRequests.friendRequests.findIndex(
+      (r) => r.friendId === state.selectedFriendRequest?.friendId,
+    );
+
+    if (index > -1) {
+      state.pendingRequests.friendRequests.splice(index, 1);
+      state.pendingRequests.totalCount--;
+    }
+
+    toasts.toast({
+      id: 'cancel-friend-request-succeeded',
+      message: `You have successfully canceled your friend request to ${
+        state.selectedFriendRequest.friend.name ||
+        `@${state.selectedFriendRequest.friend.username}`
+      }.`,
+      type: ToastType.Success,
+    });
+  });
+
+  state.showConfirmCancelRequest = false;
+  state.isCancellingRequest = false;
+  state.selectedFriendRequest = null;
 }
 </script>
