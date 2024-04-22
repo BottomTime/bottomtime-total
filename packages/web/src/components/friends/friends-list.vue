@@ -1,5 +1,5 @@
 <template>
-  <FormBox class="flex justify-between items-center">
+  <FormBox class="flex flex-col lg:flex-row justify-between items-center">
     <p>
       <span>Showing </span>
       <span class="font-bold">{{ friends.friends.length }}</span>
@@ -22,7 +22,7 @@
     </div>
   </FormBox>
 
-  <ul class="">
+  <ul>
     <FriendsListItem
       v-for="friend in friends.friends"
       :key="friend.id"

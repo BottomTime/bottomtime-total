@@ -10,6 +10,7 @@
   <OutgoingFriendRequestItem
     v-if="request.direction === FriendRequestDirection.Outgoing"
     :request="request"
+    @dismiss="(request) => $emit('dismiss', request)"
     @cancel="(request) => $emit('cancel', request)"
   />
 </template>
@@ -28,6 +29,7 @@ defineProps<FriendRequestsListItemProps>();
 defineEmits<{
   (e: 'accept', request: FriendRequestDTO): void;
   (e: 'cancel', request: FriendRequestDTO): void;
+  (e: 'dismiss', request: FriendRequestDTO): void;
   (e: 'decline', request: FriendRequestDTO, reason?: string): void;
   (e: 'select', request: FriendRequestDTO): void;
 }>();

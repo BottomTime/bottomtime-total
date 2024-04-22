@@ -107,7 +107,8 @@
       </p>
       <FriendRequestsList
         :requests="state.pendingRequests"
-        @cancel-request="onCancelRequest"
+        @dismiss="onDismissRequest"
+        @cancel="onCancelRequest"
       />
 
       <!-- <TextHeading>TODO: Blocked Users</TextHeading>
@@ -291,10 +292,11 @@ async function onConfirmCancelRequest(): Promise<void> {
   await oops(async () => {
     if (!currentUser.user || !state.selectedFriendRequest) return;
 
-    await client.friends.cancelFriendRequest(
+    const request = client.friends.wrapFriendRequestDTO(
       currentUser.user.username,
-      state.selectedFriendRequest.friend.username,
+      state.selectedFriendRequest,
     );
+    await request.cancel();
 
     const index = state.pendingRequests.friendRequests.findIndex(
       (r) => r.friendId === state.selectedFriendRequest?.friendId,
@@ -318,5 +320,27 @@ async function onConfirmCancelRequest(): Promise<void> {
   state.showConfirmCancelRequest = false;
   state.isCancellingRequest = false;
   state.selectedFriendRequest = null;
+}
+
+async function onDismissRequest(dto: FriendRequestDTO): Promise<void> {
+  await oops(async () => {
+    if (!currentUser.user) return;
+
+    const request = client.friends.wrapFriendRequestDTO(
+      currentUser.user.username,
+      dto,
+    );
+
+    await request.cancel();
+
+    const index = state.pendingRequests.friendRequests.findIndex(
+      (r) => r.friendId === request.friend.id,
+    );
+
+    if (index > -1) {
+      state.pendingRequests.friendRequests.splice(index, 1);
+      state.pendingRequests.totalCount--;
+    }
+  });
 }
 </script>

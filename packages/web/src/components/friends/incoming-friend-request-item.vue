@@ -11,7 +11,9 @@
     </div>
 
     <div v-if="state.mode === Mode.Normal" class="grow flex flex-col space-y-1">
-      <p class="flex space-x-3 items-baseline">
+      <p
+        class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"
+      >
         <span class="text-2xl">
           {{ request.friend.name || `@${request.friend.username}` }}
         </span>
@@ -20,14 +22,16 @@
         </span>
       </p>
 
-      <div class="flex text-grey-400 space-x-8">
+      <div
+        class="flex flex-col lg:flex-row text-grey-400 space-x-0 lg:space-x-8"
+      >
         <p class="flex space-x-2">
-          <span class="font-bold">Requested:</span>
+          <span class="font-bold min-w-20 text-right">Requested:</span>
           <span class="italic">{{ dayjs(request.created).format('lll') }}</span>
         </p>
 
         <p class="flex space-x-2">
-          <span class="font-bold">Expires:</span>
+          <span class="font-bold min-w-20 text-right">Expires:</span>
           <span class="italic">{{ dayjs(request.expires).format('lll') }}</span>
         </p>
       </div>
@@ -50,10 +54,11 @@
         <span>?</span>
       </p>
 
-      <div class="flex space-x-3 justify-end">
+      <div class="flex space-x-2 justify-end">
         <FormButton type="primary" @click="onConfirmAccept">
-          Confirm Accept
+          Accept
         </FormButton>
+
         <FormButton @click="onCancelAccept">Cancel</FormButton>
       </div>
     </div>
@@ -70,22 +75,27 @@
         <span>?</span>
       </p>
 
-      <div class="flex space-x-3 justify-end items-center">
-        <label class="font-bold" for="decline-reason">Reason:</label>
+      <div class="flex flex-col lg:flex-row gap-2">
+        <div class="flex space-x-3 items-center lg:grow">
+          <label class="font-bold" for="decline-reason">Reason:</label>
 
-        <FormTextBox
-          id="decline-reason"
-          v-model="state.declineReason"
-          class="grow"
-          test-id="decline-reason"
-          placeholder="Enter an optional reason..."
-          autofocus
-        />
+          <FormTextBox
+            v-model="state.declineReason"
+            control-id="decline-reason"
+            class="grow"
+            test-id="decline-reason"
+            placeholder="Enter an optional reason..."
+            autofocus
+          />
+        </div>
 
-        <FormButton type="danger" @click="onConfirmDecline">
-          Confirm Decline
-        </FormButton>
-        <FormButton @click="onCancelDecline">Cancel</FormButton>
+        <div class="flex space-x-2 justify-end">
+          <FormButton type="danger" @click="onConfirmDecline">
+            Decline
+          </FormButton>
+
+          <FormButton @click="onCancelDecline">Cancel</FormButton>
+        </div>
       </div>
     </div>
   </li>

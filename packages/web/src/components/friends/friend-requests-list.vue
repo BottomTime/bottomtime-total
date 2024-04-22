@@ -16,6 +16,7 @@
         :key="request.friendId"
         :request="request"
         @cancel="(request) => $emit('cancel', request)"
+        @dismiss="(request) => $emit('dismiss', request)"
         @accept="(request) => $emit('accept', request)"
         @decline="(request, reason) => $emit('decline', request, reason)"
         @select="(request) => $emit('select', request)"
@@ -39,9 +40,10 @@ interface FriendRequestsListProps {
 
 defineProps<FriendRequestsListProps>();
 defineEmits<{
-  (e: 'cancel', request: FriendRequestDTO): void;
   (e: 'accept', request: FriendRequestDTO): void;
+  (e: 'cancel', request: FriendRequestDTO): void;
   (e: 'decline', request: FriendRequestDTO, reason?: string): void;
+  (e: 'dismiss', request: FriendRequestDTO): void;
   (e: 'select', request: FriendRequestDTO): void;
 }>();
 </script>

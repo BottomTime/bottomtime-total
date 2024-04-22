@@ -60,7 +60,7 @@ export class FriendsApiClient {
 
     return {
       friendRequests: result.friendRequests.map(
-        (request) => new FriendRequest(this.apiClient, request),
+        (request) => new FriendRequest(this.apiClient, username, request),
       ),
       totalCount: result.totalCount,
     };
@@ -74,20 +74,20 @@ export class FriendsApiClient {
       `/api/users/${username}/friendRequests/${friendUsername}`,
     );
 
-    return new FriendRequest(this.apiClient, FriendRequestSchema.parse(data));
-  }
-
-  async cancelFriendRequest(
-    username: string,
-    friendUsername: string,
-  ): Promise<void> {
-    await this.apiClient.delete(
-      `/api/users/${username}/friendRequests/${friendUsername}`,
+    return new FriendRequest(
+      this.apiClient,
+      username,
+      FriendRequestSchema.parse(data),
     );
   }
 
   wrapFriendDTO(data: unknown): Friend {
     const dto = FriendSchema.parse(data);
     return new Friend(this.apiClient, dto);
+  }
+
+  wrapFriendRequestDTO(username: string, data: unknown): FriendRequest {
+    const dto = FriendRequestSchema.parse(data);
+    return new FriendRequest(this.apiClient, username, dto);
   }
 }

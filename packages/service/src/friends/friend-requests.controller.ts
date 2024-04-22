@@ -295,7 +295,7 @@ export class FriendRequestsController {
    *     summary: Acknowledge friend request
    *     operationId: acknowledgeFriendRequest
    *     description: |
-   *       Acknowledges a friend request.
+   *       Acknowledges (accepts or declines) a friend request. An optional reason can be provided on decline.
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/FriendUsername"
@@ -306,7 +306,20 @@ export class FriendRequestsController {
    *       content:
    *         application/json:
    *           schema:
-   *             $ref: "#/components/schemas/AcknowledgeFriendRequestParams"
+   *             type: object
+   *             required:
+   *               - accepted
+   *             properties:
+   *               accepted:
+   *                 type: boolean
+   *                 description: Indicates whether the friend request is accepted (`true`) or declined (`false`).
+   *                 example: false
+   *               reason:
+   *                 type: string
+   *                 description: |
+   *                   A user-provided reason for declining the friend request. This value is only permitted in the case
+   *                   where `accepted` is `false`.
+   *                 example: "I don't know you, and you might be a jerk."
    *     responses:
    *       204:
    *         description: The friend request was acknowledged successfully.
