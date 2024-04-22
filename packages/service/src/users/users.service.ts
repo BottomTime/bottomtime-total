@@ -1,6 +1,7 @@
 import {
   CreateUserParamsDTO,
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   SearchUserProfilesParamsSchema,
   SortOrder,
@@ -94,10 +95,10 @@ export class UsersService {
     data.usernameLowered = usernameLowered;
 
     data.bio = options.profile?.bio ?? null;
-    data.birthdate = options.profile?.birthdate ?? null;
-    data.customData = options.profile?.customData ?? null;
     data.experienceLevel = options.profile?.experienceLevel ?? null;
     data.location = options.profile?.location ?? null;
+    data.logBookSharing =
+      options.profile?.logBookSharing ?? LogBookSharing.Private;
     data.name = options.profile?.name ?? null;
     data.startedDiving = options.profile?.startedDiving ?? null;
 

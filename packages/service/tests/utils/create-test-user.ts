@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserRole,
@@ -9,7 +10,6 @@ import {
 import { faker } from '@faker-js/faker';
 
 import { hashSync } from 'bcrypt';
-import dayjs from 'dayjs';
 import { generate } from 'generate-password';
 import { z } from 'zod';
 
@@ -19,8 +19,7 @@ const UserJsonSchema = z.object({
   id: z.string(),
   avatar: z.string().nullable().default(null),
   bio: z.string().nullable().default(null),
-  birthdate: z.string().nullable().default(null),
-  customData: z.record(z.unknown()).nullable().default(null),
+  customData: z.record(z.unknown()).nullable(),
   depthUnit: z.nativeEnum(DepthUnit).default(DepthUnit.Meters),
   email: z.string().nullable().default(null),
   emailLowered: z.string().nullable().default(null),
@@ -32,6 +31,7 @@ const UserJsonSchema = z.object({
   lastLogin: z.coerce.date().nullable().default(null),
   lastPasswordChange: z.coerce.date().nullable().default(null),
   location: z.string().nullable().default(null),
+  logBookSharing: z.nativeEnum(LogBookSharing).default(LogBookSharing.Private),
   memberSince: z.coerce.date(),
   name: z.string().nullable().default(null),
   passwordHash: z.string().nullable().default(null),
@@ -109,12 +109,12 @@ export function createTestUser(
 
     avatar: options?.avatar ?? faker.internet.avatar(),
     bio: options?.bio ?? faker.lorem.paragraph(5),
-    birthdate:
-      options?.birthdate ?? dayjs(faker.date.past(70)).format('YYYY-MM-DD'),
-    // certifications: profile?.certifications ?? randomCertifications(),
     experienceLevel:
       options?.experienceLevel ?? faker.helpers.arrayElement(ExperienceLevels),
     location: options?.location ?? faker.address.cityName(),
+    logBookSharing:
+      options?.logBookSharing ??
+      faker.helpers.arrayElement(Object.values(LogBookSharing)),
     name: options?.name ?? faker.name.fullName(),
     startedDiving:
       options?.startedDiving ?? faker.date.past(40).getFullYear().toString(),

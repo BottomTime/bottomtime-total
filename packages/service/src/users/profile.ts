@@ -1,4 +1,8 @@
-import { ProfileDTO, UpdateProfileParamsDTO } from '@bottomtime/api';
+import {
+  LogBookSharing,
+  ProfileDTO,
+  UpdateProfileParamsDTO,
+} from '@bottomtime/api';
 
 import { Repository } from 'typeorm';
 
@@ -20,10 +24,6 @@ export class Profile {
     return this.data.bio ?? undefined;
   }
 
-  get birthdate(): string | undefined {
-    return this.data.birthdate ?? undefined;
-  }
-
   get customData(): Record<string, unknown> | undefined {
     return this.data.customData ?? undefined;
   }
@@ -34,6 +34,10 @@ export class Profile {
 
   get location(): string | undefined {
     return this.data.location ?? undefined;
+  }
+
+  get logBookSharing(): LogBookSharing {
+    return this.data.logBookSharing;
   }
 
   get name(): string | undefined {
@@ -47,17 +51,14 @@ export class Profile {
   async update(params: UpdateProfileOptions): Promise<void> {
     if (params.bio !== undefined) this.data.bio = params.bio ?? null;
 
-    if (params.birthdate !== undefined)
-      this.data.birthdate = params.birthdate ?? null;
-
-    if (params.customData !== undefined)
-      this.data.customData = params.customData ?? null;
-
     if (params.experienceLevel !== undefined)
       this.data.experienceLevel = params.experienceLevel ?? null;
 
     if (params.location !== undefined)
       this.data.location = params.location ?? null;
+
+    if (params.logBookSharing !== undefined)
+      this.data.logBookSharing = params.logBookSharing;
 
     if (params.name !== undefined) this.data.name = params.name ?? null;
 
@@ -76,10 +77,9 @@ export class Profile {
     return {
       avatar: this.avatar ?? undefined,
       bio: this.bio ?? undefined,
-      birthdate: this.birthdate ?? undefined,
-      customData: this.customData ?? undefined,
       experienceLevel: this.experienceLevel ?? undefined,
       location: this.location ?? undefined,
+      logBookSharing: this.logBookSharing,
       memberSince: this.data.memberSince,
       name: this.name ?? undefined,
       startedDiving: this.startedDiving ?? undefined,

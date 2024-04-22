@@ -1,5 +1,6 @@
 import {
   CreateUserParamsDTO,
+  LogBookSharing,
   SortOrder,
   UserRole,
   UsersSortBy,
@@ -120,12 +121,11 @@ describe('Users Service', () => {
         role: UserRole.User,
         profile: {
           bio: "I don't talk about my dive clug",
-          birthdate: '1987-02-12',
-          customData: {},
           experienceLevel: 'Experienced',
           location: 'Vancouver, BC',
           name: 'Tyler Durden, Esq.',
           startedDiving: '2011',
+          logBookSharing: LogBookSharing.Public,
         },
       };
 

@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserRole,
@@ -22,13 +23,13 @@ const TestUserData: UserEntity = {
   usernameLowered: 'testuser',
   avatar: 'https://example.com/avatar.png',
   bio: 'I am a test user.',
-  birthdate: '1990-01-01',
   email: null,
   emailLowered: null,
   emailVerificationToken: null,
   emailVerificationTokenExpiration: null,
   lastLogin: null,
   lastPasswordChange: null,
+  logBookSharing: LogBookSharing.FriendsOnly,
   passwordHash: null,
   passwordResetToken: null,
   passwordResetTokenExpiration: null,
@@ -60,9 +61,8 @@ describe('Profile Class', () => {
   it('will return properties correctly', () => {
     expect(profile.avatar).toBe(TestUserData.avatar);
     expect(profile.bio).toBe(TestUserData.bio);
-    expect(profile.birthdate).toBe(TestUserData.birthdate);
-    expect(profile.customData).toEqual(TestUserData.customData);
     expect(profile.experienceLevel).toBe(TestUserData.experienceLevel);
+    expect(profile.logBookSharing).toBe(TestUserData.logBookSharing);
     expect(profile.location).toBe(TestUserData.location);
     expect(profile.name).toBe(TestUserData.name);
     expect(profile.startedDiving).toBe(TestUserData.startedDiving);
@@ -71,22 +71,18 @@ describe('Profile Class', () => {
   it('will update properties', async () => {
     const options: UpdateProfileOptions = {
       bio: 'Definitely, a new bio.',
-      birthdate: '1983-01-01',
-      customData: {
-        acceptedCookies: false,
-      },
       experienceLevel: 'Beginner',
       location: 'Somewhere, Mexico',
+      logBookSharing: LogBookSharing.Public,
       name: 'Testy McTesterson',
       startedDiving: '2100-01-01',
     };
     await profile.update(options);
 
     expect(profile.bio).toBe(options.bio);
-    expect(profile.birthdate).toBe(options.birthdate);
-    expect(profile.customData).toEqual(options.customData);
     expect(profile.experienceLevel).toBe(options.experienceLevel);
     expect(profile.location).toBe(options.location);
+    expect(profile.logBookSharing).toBe(options.logBookSharing);
     expect(profile.name).toBe(options.name);
     expect(profile.startedDiving).toBe(options.startedDiving);
 
@@ -95,10 +91,9 @@ describe('Profile Class', () => {
     });
 
     expect(result?.bio).toEqual(options.bio);
-    expect(result?.birthdate).toEqual(options.birthdate);
-    expect(result?.customData).toEqual(options.customData);
     expect(result?.experienceLevel).toEqual(options.experienceLevel);
     expect(result?.location).toEqual(options.location);
+    expect(result?.logBookSharing).toEqual(options.logBookSharing);
     expect(result?.name).toEqual(options.name);
     expect(result?.startedDiving).toEqual(options.startedDiving);
   });
@@ -106,8 +101,6 @@ describe('Profile Class', () => {
   it('will set properties to null', async () => {
     const options: UpdateProfileOptions = {
       bio: null,
-      birthdate: null,
-      // certifications: null,
       experienceLevel: null,
       location: null,
       name: null,
@@ -117,7 +110,6 @@ describe('Profile Class', () => {
 
     expect(profile.avatar).toBe(TestUserData.avatar);
     expect(profile.bio).toBeUndefined();
-    expect(profile.birthdate).toBeUndefined();
     expect(profile.experienceLevel).toBeUndefined();
     expect(profile.location).toBeUndefined();
     expect(profile.name).toBeUndefined();
@@ -126,7 +118,6 @@ describe('Profile Class', () => {
     const result = await Users.findOne({ where: { id: TestUserData.id } });
     expect(result?.avatar).toBe(TestUserData.avatar);
     expect(result?.bio).toBeNull();
-    expect(result?.birthdate).toBeNull();
     expect(result?.experienceLevel).toBeNull();
     expect(result?.location).toBeNull();
     expect(result?.name).toBeNull();
@@ -139,12 +130,12 @@ describe('Profile Class', () => {
 
     expect(profile.avatar).toBe(TestUserData.avatar);
     expect(profile.bio).toBe(TestUserData.bio);
-    expect(profile.birthdate).toBe(TestUserData.birthdate);
     expect(profile.customData).toEqual(TestUserData.customData);
     expect(profile.experienceLevel).toBe(TestUserData.experienceLevel);
     expect(profile.location).toBe(TestUserData.location);
     expect(profile.name).toBe(TestUserData.name);
     expect(profile.startedDiving).toBe(TestUserData.startedDiving);
+    expect(profile.logBookSharing).toBe(TestUserData.logBookSharing);
 
     const result = await Users.findOne({ where: { id: TestUserData.id } });
     expect(result).toEqual(TestUserData);
@@ -155,11 +146,10 @@ describe('Profile Class', () => {
     expect(json).toEqual({
       avatar: TestUserData.avatar,
       bio: TestUserData.bio,
-      birthdate: TestUserData.birthdate,
       certifications: TestUserData.certifications,
-      customData: TestUserData.customData,
       experienceLevel: TestUserData.experienceLevel,
       location: TestUserData.location,
+      logBookSharing: TestUserData.logBookSharing,
       name: TestUserData.name,
       startedDiving: TestUserData.startedDiving,
       memberSince: TestUserData.memberSince,

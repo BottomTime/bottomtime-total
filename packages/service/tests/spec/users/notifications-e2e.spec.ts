@@ -42,7 +42,6 @@ const RegularUserData: Partial<UserEntity> = {
   passwordHash: '$2b$04$EIK2SpqsdmO.nwAOPJ9wt.9o2z732N9s23pLrdPxz8kqXB1A3yhdS',
   avatar: 'https://example.com/avatar.png',
   bio: 'This is a test user.',
-  birthdate: '1980-01-01',
   experienceLevel: 'Advanced',
   location: 'Seattle, WA',
   name: 'Joe Regular',

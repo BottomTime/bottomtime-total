@@ -2,6 +2,7 @@ import { AxiosInstance } from 'axios';
 
 import {
   ListAvatarURLsResponseDTO,
+  LogBookSharing,
   SetProfileAvatarParamsDTO,
   UpdateProfileParamsSchema,
   UserDTO,
@@ -24,13 +25,6 @@ export class UserProfile {
     this.data.profile.bio = value;
   }
 
-  get birthdate(): string | undefined {
-    return this.data.profile.birthdate || undefined;
-  }
-  set birthdate(value: string | undefined) {
-    this.data.profile.birthdate = value;
-  }
-
   get experienceLevel(): string | undefined {
     return this.data.profile.experienceLevel || undefined;
   }
@@ -43,6 +37,13 @@ export class UserProfile {
   }
   set location(value: string | undefined) {
     this.data.profile.location = value;
+  }
+
+  get logBookSharing(): LogBookSharing {
+    return this.data.profile.logBookSharing ?? LogBookSharing.Private;
+  }
+  set logBookSharing(value: LogBookSharing) {
+    this.data.profile.logBookSharing = value;
   }
 
   get name(): string | undefined {

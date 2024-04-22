@@ -9,6 +9,7 @@ import { UserProfile } from '../../src/client/user-profile';
 import {
   AvatarSize,
   ListAvatarURLsResponseDTO,
+  LogBookSharing,
   UpdateProfileParamsSchema,
   UserDTO,
 } from '../../src/types';
@@ -52,13 +53,13 @@ describe('UserProfile client object', () => {
         bio: 'This is a test bio',
         location: 'Testville, Testland',
         avatar: 'https://example.com/avatars/test_user',
-        birthdate: '2000-01-01',
         experienceLevel: 'Advanced',
         memberSince: BasicUser.memberSince,
         name: 'Test User',
         startedDiving: '2010-01-01',
         userId: BasicUser.id,
         username: BasicUser.username,
+        logBookSharing: LogBookSharing.FriendsOnly,
       },
     };
 
@@ -76,35 +77,35 @@ describe('UserProfile client object', () => {
   it('will return properties correctly', () => {
     expect(profile.bio).toBe(testUser.profile.bio);
     expect(profile.location).toBe(testUser.profile.location);
-    expect(profile.birthdate).toBe(testUser.profile.birthdate);
     expect(profile.experienceLevel).toBe(testUser.profile.experienceLevel);
     expect(profile.name).toBe(testUser.profile.name);
     expect(profile.startedDiving).toBe(testUser.profile.startedDiving);
+    expect(profile.logBookSharing).toBe(testUser.profile.logBookSharing);
   });
 
   it('will update properties correctly', () => {
     profile.bio = 'This is an updated bio';
     profile.location = 'Updatedville, Updatedland';
-    profile.birthdate = '2001-01-01';
     profile.experienceLevel = 'Beginner';
     profile.name = 'Updated User';
     profile.startedDiving = '2011-01-01';
+    profile.logBookSharing = LogBookSharing.Public;
 
     expect(testUser.profile.bio).toBe('This is an updated bio');
     expect(testUser.profile.location).toBe('Updatedville, Updatedland');
-    expect(testUser.profile.birthdate).toBe('2001-01-01');
     expect(testUser.profile.experienceLevel).toBe('Beginner');
     expect(testUser.profile.name).toBe('Updated User');
     expect(testUser.profile.startedDiving).toBe('2011-01-01');
+    expect(testUser.profile.logBookSharing).toBe(LogBookSharing.Public);
   });
 
   it('will save changes', async () => {
     profile.bio = 'This is an updated bio';
     profile.location = 'Updatedville, Updatedland';
-    profile.birthdate = '2001-01-01';
     profile.experienceLevel = 'Beginner';
     profile.name = 'Updated User';
     profile.startedDiving = '2011-01-01';
+    profile.logBookSharing = LogBookSharing.Private;
 
     const expected = UpdateProfileParamsSchema.parse(profile);
 

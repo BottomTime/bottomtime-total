@@ -30,7 +30,6 @@ const TestUserData: Partial<UserEntity> = {
   avatar:
     'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/876.jpg',
   bio: 'Placeat magnam repudiandae eos velit labore. Molestias repellat magnam molestias possimus minus corrupti nihil nesciunt. Facilis aliquid ab harum saepe architecto quidem sunt dignissimos magnam. Culpa excepturi ex provident quibusdam quam. Similique eius deleniti nam vitae autem et. Quod ea modi facilis quam saepe sequi quis temporibus accusamus. Porro doloribus necessitatibus numquam. Impedit dolores quam hic fuga.',
-  birthdate: '2013-03-07',
   experienceLevel: 'Professional',
   location: 'Baldwin Park',
   name: 'Luther Blick',
