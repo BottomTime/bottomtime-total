@@ -6,13 +6,14 @@ import {
   CreateUserParamsDTO,
   CurrentUserSchema,
   ProfileDTO,
+  ProfileSchema,
   SearchProfilesResponseDTO,
   SearchProfilesResponseSchema,
   SearchUserProfilesParamsDTO,
-  SuccinctProfileDTO,
   UserSchema,
 } from '../types';
 import { User } from './user';
+import { UserProfile } from './user-profile';
 
 export class UsersApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
@@ -53,6 +54,11 @@ export class UsersApiClient {
       `/api/admin/users/${encodeURIComponent(usernameOrEmail)}`,
     );
     return new User(this.apiClient, UserSchema.parse(data));
+  }
+
+  async getProfile(username: string): Promise<ProfileDTO> {
+    const { data } = await this.apiClient.get(`/api/users/${username}`);
+    return ProfileSchema.parse(data);
   }
 
   async login(usernameOrEmail: string, password: string): Promise<User> {

@@ -64,7 +64,14 @@
     :title="state.selectedFriend?.name || `@${state.selectedFriend?.username}`"
     @close="onCloseFriendPanel"
   >
-    Yo!
+    <ViewProfile v-if="state.friendProfile" :profile="state.friendProfile" />
+
+    <div v-else class="text-lg italic flex space-x-3 justify-center my-20">
+      <span>
+        <i class="fa-solid fa-spinner fa-spin"></i>
+      </span>
+      <span>Loading profile...</span>
+    </div>
   </DrawerPanel>
 
   <!-- Search users drawer -->
@@ -127,6 +134,7 @@ import {
   ListFriendRequestsResponseDTO,
   ListFriendsParams,
   ListFriendsResponseDTO,
+  ProfileDTO,
 } from '@bottomtime/api';
 
 import { onServerPrefetch, reactive, useSSRContext } from 'vue';
@@ -140,12 +148,14 @@ import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import FriendRequestsList from '../components/friends/friend-requests-list.vue';
 import FriendsList from '../components/friends/friends-list.vue';
 import SearchFriendsForm from '../components/friends/search-friends-form.vue';
+import ViewProfile from '../components/users/view-profile.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
 import { useCurrentUser, useToasts } from '../store';
 
 interface FriendsViewState {
+  friendProfile: ProfileDTO | null;
   friends: ListFriendsResponseDTO;
   isCancellingRequest: boolean;
   isUnfriending: boolean;
@@ -171,6 +181,7 @@ const oops = useOops();
 const toasts = useToasts();
 
 const state = reactive<FriendsViewState>({
+  friendProfile: null,
   friends: initialState?.friends ?? { friends: [], totalCount: 0 },
   isCancellingRequest: false,
   isUnfriending: false,
@@ -226,9 +237,14 @@ function onRequestSent(request: FriendRequestDTO) {
   state.showSearchUsers = false;
 }
 
-function onSelectFriend(friend: FriendDTO) {
+async function onSelectFriend(friend: FriendDTO): Promise<void> {
   state.selectedFriend = friend;
+  state.friendProfile = null;
   state.showFriendPanel = true;
+
+  await oops(async () => {
+    state.friendProfile = await client.users.getProfile(friend.username);
+  });
 }
 
 function onCloseFriendPanel() {
