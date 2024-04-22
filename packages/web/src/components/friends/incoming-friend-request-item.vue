@@ -1,6 +1,6 @@
 <template>
   <li
-    class="flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center"
+    class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center"
   >
     <div class="min-w-[64px]">
       <UserAvatar
@@ -10,7 +10,7 @@
       />
     </div>
 
-    <div class="grow flex flex-col space-y-1">
+    <div v-if="state.mode === Mode.Normal" class="grow flex flex-col space-y-1">
       <p class="flex space-x-3 items-baseline">
         <span class="text-2xl">
           {{ request.friend.name || `@${request.friend.username}` }}
@@ -33,11 +33,60 @@
       </div>
     </div>
 
-    <div class="flex space-x-3 px-2">
-      <FormButton @click="$emit('accept', request)">Accept</FormButton>
-      <FormButton type="danger" @click="$emit('decline', request)">
-        Decline
-      </FormButton>
+    <div v-if="state.mode === Mode.Normal" class="flex space-x-3 px-2">
+      <FormButton @click="onAccept">Accept</FormButton>
+      <FormButton type="danger" @click="onDecline">Decline</FormButton>
+    </div>
+
+    <div
+      v-if="state.mode === Mode.Accept"
+      class="grow flex flex-col space-y-2 px-4"
+    >
+      <p class="text-xl italic text-right">
+        <span>Are you sure you want to accept this friend request from </span>
+        <span class="font-bold">
+          {{ request.friend.name || `@${request.friend.username}` }}
+        </span>
+        <span>?</span>
+      </p>
+
+      <div class="flex space-x-3 justify-end">
+        <FormButton type="primary" @click="onConfirmAccept">
+          Confirm Accept
+        </FormButton>
+        <FormButton @click="onCancelAccept">Cancel</FormButton>
+      </div>
+    </div>
+
+    <div
+      v-if="state.mode === Mode.Decline"
+      class="grow flex flex-col space-y-2 px-4"
+    >
+      <p class="text-xl italic text-right">
+        <span>Are you sure you want to decline this friend request from </span>
+        <span class="font-bold">
+          {{ request.friend.name || `@${request.friend.username}` }}
+        </span>
+        <span>?</span>
+      </p>
+
+      <div class="flex space-x-3 justify-end items-center">
+        <label class="font-bold" for="decline-reason">Reason:</label>
+
+        <FormTextBox
+          id="decline-reason"
+          v-model="state.declineReason"
+          class="grow"
+          test-id="decline-reason"
+          placeholder="Enter an optional reason..."
+          autofocus
+        />
+
+        <FormButton type="danger" @click="onConfirmDecline">
+          Confirm Decline
+        </FormButton>
+        <FormButton @click="onCancelDecline">Cancel</FormButton>
+      </div>
     </div>
   </li>
 </template>
@@ -46,18 +95,60 @@
 import { FriendRequestDTO } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
+import { reactive } from 'vue';
 
 import FormButton from '../common/form-button.vue';
+import FormTextBox from '../common/form-text-box.vue';
 import UserAvatar from '../users/user-avatar.vue';
+
+enum Mode {
+  Accept = 'accept',
+  Decline = 'decline',
+  Normal = 'normal',
+}
 
 interface IncomingFriendRequestItemProps {
   request: FriendRequestDTO;
 }
 
-defineProps<IncomingFriendRequestItemProps>();
-defineEmits<{
+interface IncomingFriendRequestItemState {
+  declineReason: string;
+  mode: Mode;
+}
+
+const props = defineProps<IncomingFriendRequestItemProps>();
+const emit = defineEmits<{
   (e: 'accept', request: FriendRequestDTO): void;
-  (e: 'decline', request: FriendRequestDTO): void;
+  (e: 'decline', request: FriendRequestDTO, reason?: string): void;
   (e: 'select', request: FriendRequestDTO): void;
 }>();
+
+const state = reactive<IncomingFriendRequestItemState>({
+  declineReason: '',
+  mode: Mode.Normal,
+});
+
+function onAccept() {
+  state.mode = Mode.Accept;
+}
+
+function onConfirmAccept() {
+  emit('accept', props.request);
+}
+
+function onCancelAccept() {
+  state.mode = Mode.Normal;
+}
+
+function onDecline() {
+  state.mode = Mode.Decline;
+}
+
+function onConfirmDecline() {
+  emit('decline', props.request, state.declineReason);
+}
+
+function onCancelDecline() {
+  state.mode = Mode.Normal;
+}
 </script>

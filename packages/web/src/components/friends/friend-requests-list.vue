@@ -17,7 +17,7 @@
         :request="request"
         @cancel="(request) => $emit('cancel', request)"
         @accept="(request) => $emit('accept', request)"
-        @decline="(request) => $emit('decline', request)"
+        @decline="(request, reason) => $emit('decline', request, reason)"
         @select="(request) => $emit('select', request)"
       />
     </ul>
@@ -41,7 +41,7 @@ defineProps<FriendRequestsListProps>();
 defineEmits<{
   (e: 'cancel', request: FriendRequestDTO): void;
   (e: 'accept', request: FriendRequestDTO): void;
-  (e: 'decline', request: FriendRequestDTO): void;
+  (e: 'decline', request: FriendRequestDTO, reason?: string): void;
   (e: 'select', request: FriendRequestDTO): void;
 }>();
 </script>

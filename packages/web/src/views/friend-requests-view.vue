@@ -11,12 +11,18 @@
       <li class="bg-blue-600 rounded-b-md">Friend Requests</li>
     </ul>
 
-    <FriendRequestsList :requests="friendRequests" />
+    <FriendRequestsList
+      :requests="friendRequests"
+      @accept="onAcceptFriendRequest"
+      @decline="onDeclineFriendRequest"
+      @select="onSelectFriendRequest"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import {
+  FriendRequestDTO,
   FriendRequestDirection,
   ListFriendRequestsResponseDTO,
 } from '@bottomtime/api';
@@ -65,4 +71,27 @@ onServerPrefetch(async () => {
     }
   });
 });
+
+async function onAcceptFriendRequest(request: FriendRequestDTO) {
+  await oops(async () => {
+    // await client.friends.acceptFriendRequest(request.id);
+    // friendRequests.friendRequests = friendRequests.friendRequests.filter(
+    //   (r) => r.id !== request.id,
+    // );
+  });
+}
+
+async function onDeclineFriendRequest(
+  request: FriendRequestDTO,
+  reason?: string,
+) {
+  await oops(async () => {
+    // await client.friends.declineFriendRequest(request.id, reason);
+    // friendRequests.friendRequests = friendRequests.friendRequests.filter(
+    //   (r) => r.id !== request.id,
+    // );
+  });
+}
+
+function onSelectFriendRequest(requeest: FriendRequestDTO) {}
 </script>

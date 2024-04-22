@@ -3,7 +3,7 @@
     v-if="request.direction === FriendRequestDirection.Incoming"
     :request="request"
     @accept="(request) => $emit('accept', request)"
-    @decline="(request) => $emit('decline', request)"
+    @decline="(request, reason) => $emit('decline', request, reason)"
     @select="(request) => $emit('select', request)"
   />
 
@@ -28,7 +28,7 @@ defineProps<FriendRequestsListItemProps>();
 defineEmits<{
   (e: 'accept', request: FriendRequestDTO): void;
   (e: 'cancel', request: FriendRequestDTO): void;
-  (e: 'decline', request: FriendRequestDTO): void;
+  (e: 'decline', request: FriendRequestDTO, reason?: string): void;
   (e: 'select', request: FriendRequestDTO): void;
 }>();
 </script>
