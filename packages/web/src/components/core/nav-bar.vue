@@ -197,6 +197,11 @@ const navLinks = computed<NavLink[]>(() => {
       visible: true,
     },
     {
+      title: 'Log Book',
+      url: '/logbook',
+      visible: !currentUser.anonymous,
+    },
+    {
       title: 'Admin',
       url: '/admin',
       visible: currentUser.user?.role === UserRole.Admin,
