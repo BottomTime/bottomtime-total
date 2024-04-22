@@ -44,5 +44,5 @@ interface ViewProfileProps {
   profile: ProfileDTO;
 }
 
-const props = defineProps<ViewProfileProps>();
+defineProps<ViewProfileProps>();
 </script>
