@@ -211,7 +211,6 @@ export class FriendsService {
   async listFriendRequests(
     options: ListFriendRequestOptions,
   ): Promise<ListFriendRequestsResults> {
-    this.log.debug('Fucking lame', options.showAcknowledged);
     let query = this.FriendRequests.createQueryBuilder('requests')
       .innerJoin('requests.from', 'from')
       .innerJoin('requests.to', 'to')

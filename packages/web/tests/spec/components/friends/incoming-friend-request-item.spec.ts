@@ -1,0 +1,99 @@
+import { FriendRequestDTO, FriendRequestDirection } from '@bottomtime/api';
+
+import { mount } from '@vue/test-utils';
+
+import IncomingFriendRequestListItem from '../../../../src/components/friends/incoming-friend-request-item.vue';
+
+const TestRequestItem: FriendRequestDTO = {
+  created: new Date('2024-04-23T12:25:09.653Z'),
+  expires: new Date('2024-04-30T12:25:09.653Z'),
+  direction: FriendRequestDirection.Incoming,
+  friendId: 'c0175aac-fe45-4a53-a3f7-41eb0f0f52b6',
+  friend: {
+    id: 'c0175aac-fe45-4a53-a3f7-41eb0f0f52b6',
+    memberSince: new Date('2022-02-18T12:25:09.653Z'),
+    username: 'testuser',
+    avatar: 'https://example.com/avatar.jpg',
+    location: 'Testville, USA',
+    name: 'Test User',
+  },
+};
+
+const AcceptButton = `[data-testid="accept-request-${TestRequestItem.friendId}"]`;
+const DeclineButton = `[data-testid="decline-request-${TestRequestItem.friendId}"]`;
+const DismissButton = `[data-testid="dismiss-request-${TestRequestItem.friendId}"]`;
+const SelectLink = `[data-testid="select-request-${TestRequestItem.friendId}"]`;
+
+describe('Incoming friend request list item', () => {
+  let request: FriendRequestDTO;
+
+  beforeEach(() => {
+    request = { ...TestRequestItem };
+  });
+
+  it('will render correctly', () => {
+    const wrapper = mount(IncomingFriendRequestListItem, {
+      props: { request },
+    });
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will render correctly for an accepted request', () => {
+    request.accepted = true;
+    const wrapper = mount(IncomingFriendRequestListItem, {
+      props: { request },
+    });
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will render correctly for a declined request with no reason', () => {
+    request.accepted = false;
+    const wrapper = mount(IncomingFriendRequestListItem, {
+      props: { request },
+    });
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will render correctly for a declined request with a reason', () => {
+    request.accepted = false;
+    request.reason = 'Nope. Denied!';
+    const wrapper = mount(IncomingFriendRequestListItem, {
+      props: { request },
+    });
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will emit "select" event when select link is clicked', async () => {
+    const wrapper = mount(IncomingFriendRequestListItem, {
+      props: { request },
+    });
+    await wrapper.get(SelectLink).trigger('click');
+    expect(wrapper.emitted('select')).toEqual([[request]]);
+  });
+
+  it('will emit "accept" event when accept button is clicked', async () => {
+    const wrapper = mount(IncomingFriendRequestListItem, {
+      props: { request },
+    });
+    await wrapper.get(AcceptButton).trigger('click');
+    expect(wrapper.emitted('accept')).toEqual([[request]]);
+  });
+
+  it('will emit "decline" event when decline button is clicked', async () => {
+    const wrapper = mount(IncomingFriendRequestListItem, {
+      props: { request },
+    });
+    await wrapper.get(DeclineButton).trigger('click');
+    expect(wrapper.emitted('decline')).toEqual([[request]]);
+  });
+
+  it('will emit "dismiss" event when dismiss button is clicked', async () => {
+    request.accepted = false;
+    request.reason = 'Nope. Denied!';
+    const wrapper = mount(IncomingFriendRequestListItem, {
+      props: { request },
+    });
+    await wrapper.get(DismissButton).trigger('click');
+    expect(wrapper.emitted('dismiss')).toEqual([[request]]);
+  });
+});

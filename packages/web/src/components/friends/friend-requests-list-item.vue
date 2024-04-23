@@ -4,14 +4,16 @@
     :request="request"
     @accept="(request) => $emit('accept', request)"
     @decline="(request, reason) => $emit('decline', request, reason)"
+    @dismiss="(request) => $emit('dismiss', request)"
     @select="(request) => $emit('select', request)"
   />
 
   <OutgoingFriendRequestItem
     v-if="request.direction === FriendRequestDirection.Outgoing"
     :request="request"
-    @dismiss="(request) => $emit('dismiss', request)"
     @cancel="(request) => $emit('cancel', request)"
+    @dismiss="(request) => $emit('dismiss', request)"
+    @select="(request) => $emit('select', request)"
   />
 </template>
 

@@ -10,15 +10,19 @@
       />
     </div>
 
-    <div v-if="state.showConfirmCancel"></div>
-
-    <div v-else class="grow flex flex-col space-y-1">
+    <div class="grow flex flex-col space-y-1">
       <p
         class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"
       >
-        <span class="text-2xl">
+        <FormButton
+          :test-id="`select-request-${request.friendId}`"
+          type="link"
+          size="2xl"
+          @click="$emit('select', request)"
+        >
           {{ request.friend.name || `@${request.friend.username}` }}
-        </span>
+        </FormButton>
+
         <span v-if="request.friend.name" class="text-lg font-bold">
           {{ `@${request.friend.username}` }}
         </span>
@@ -65,11 +69,21 @@
         v-if="typeof request.accepted === 'boolean'"
         class="text-right my-6 mx-2"
       >
-        <FormButton @click="$emit('dismiss', request)">Dismiss</FormButton>
+        <FormButton
+          :test-id="`dismiss-request-${request.friendId}`"
+          @click="$emit('dismiss', request)"
+        >
+          Dismiss
+        </FormButton>
       </div>
 
       <div v-else class="texst-right my-6 mx-2">
-        <FormButton @click="$emit('cancel', request)">Cancel</FormButton>
+        <FormButton
+          :test-id="`cancel-request-${request.friendId}`"
+          @click="$emit('cancel', request)"
+        >
+          Cancel
+        </FormButton>
       </div>
     </div>
   </li>
@@ -79,7 +93,6 @@
 import { FriendRequestDTO } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
-import { reactive } from 'vue';
 
 import FormButton from '../common/form-button.vue';
 import UserAvatar from '../users/user-avatar.vue';
@@ -88,18 +101,10 @@ interface OutgoingFriendRequestItemProps {
   request: FriendRequestDTO;
 }
 
-interface OutgoingFriendRequestItemState {
-  showConfirmCancel: boolean;
-}
-
 defineProps<OutgoingFriendRequestItemProps>();
 defineEmits<{
   (e: 'cancel', request: FriendRequestDTO): void;
   (e: 'dismiss', request: FriendRequestDTO): void;
   (e: 'select', request: FriendRequestDTO): void;
 }>();
-
-const state = reactive<OutgoingFriendRequestItemState>({
-  showConfirmCancel: false,
-});
 </script>
