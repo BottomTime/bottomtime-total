@@ -1,6 +1,7 @@
 import {
   CreateUserParamsDTO,
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   ProfileDTO,
   TemperatureUnit,
@@ -25,10 +26,10 @@ const TestUser: CreateUserParamsDTO = {
 const UserProfile: Partial<ProfileDTO> = {
   name: 'Bubbles McGee',
   location: 'Sunnyvale',
-  birthdate: '1967-04-10',
   bio: 'I live in Sunnyvale',
   experienceLevel: 'Beginner',
   startedDiving: '2023-03-09',
+  logBookSharing: LogBookSharing.Public,
 };
 
 test.describe('Account and Profile Management', () => {
@@ -47,9 +48,7 @@ test.describe('Account and Profile Management', () => {
 
     await page.getByTestId('nameInput').fill(UserProfile.name!);
     await page.getByTestId('locationInput').fill(UserProfile.location!);
-    await page.locator('#birthdate-year').selectOption('1967');
-    await page.locator('#birthdate-month').selectOption('04');
-    await page.locator('#birthdate-day').selectOption('10');
+    await page.locator('#logbook-sharing').selectOption(LogBookSharing.Public);
     await page.getByTestId('bioInput').fill(UserProfile.bio!);
     await page.getByTestId('experienceLevelInput').selectOption('Beginner');
     await page.locator('#started-diving-year').selectOption('2023');
@@ -64,8 +63,8 @@ test.describe('Account and Profile Management', () => {
 
     const user = await api.users.getUser(TestUser.username);
     expect(user.profile.bio).toBe(UserProfile.bio);
-    expect(user.profile.birthdate).toBe(UserProfile.birthdate);
     expect(user.profile.experienceLevel).toBe(UserProfile.experienceLevel);
+    expect(user.profile.logBookSharing).toBe(UserProfile.logBookSharing);
     expect(user.profile.location).toBe(UserProfile.location);
     expect(user.profile.name).toBe(UserProfile.name);
     expect(user.profile.startedDiving).toBe(UserProfile.startedDiving);
