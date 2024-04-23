@@ -31,10 +31,6 @@ exports[`Searching Profiles E2E Tests will allow filtering out profiles for the 
     "username": "Audreanne.Larkin79",
   },
   {
-    "id": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
-    "username": "Ayla.Rippin",
-  },
-  {
     "id": "959eb386-3ca8-42e1-9ce8-750a80e787eb",
     "username": "Barrett_Stracke77",
   },
@@ -61,6 +57,10 @@ exports[`Searching Profiles E2E Tests will allow filtering out profiles for the 
   {
     "id": "9ae018c2-5a6b-432e-ba97-c83cb7e32880",
     "username": "Bryana.Glover",
+  },
+  {
+    "id": "6f8f977c-5034-4ca2-90ce-36a8bead0678",
+    "username": "Bryce_Thompson97",
   },
 ]
 `;

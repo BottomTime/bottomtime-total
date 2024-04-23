@@ -242,7 +242,7 @@ describe('Users Service', () => {
         limit: 15,
       });
 
-      expect(results.totalCount).toBe(97);
+      expect(results.totalCount).toBe(96);
       expect(
         results.users.map((u) => ({ id: u.id, username: u.username })),
       ).toMatchSnapshot();

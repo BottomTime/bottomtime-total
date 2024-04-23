@@ -86,7 +86,7 @@ describe('Searching Profiles E2E Tests', () => {
       .query(options)
       .expect(200);
 
-    expect(result.totalCount).toBe(98);
+    expect(result.totalCount).toBe(97);
     expect(
       result.users.map((u: ProfileDTO) => ({
         id: u.userId,

@@ -79,6 +79,7 @@ export const SuccinctProfileSchema = ProfileSchema.pick({
   avatar: true,
   name: true,
   location: true,
+  logBookSharing: true,
 });
 export type SuccinctProfileDTO = z.infer<typeof SuccinctProfileSchema>;
 
