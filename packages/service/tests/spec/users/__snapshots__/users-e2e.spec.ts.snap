@@ -11,9 +11,9 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
     "bio": "This is a test user.",
-    "birthdate": "1980-01-01",
     "experienceLevel": "Advanced",
     "location": "Seattle, WA",
+    "logBookSharing": "public",
     "memberSince": "2024-01-15T12:40:18.319Z",
     "name": "User McUserface",
     "startedDiving": "2000-01-01",
@@ -35,7 +35,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 UserEntity {
   "avatar": null,
   "bio": "This is a test user.",
-  "birthdate": "1980-01-01",
   "certifications": undefined,
   "customData": null,
   "depthUnit": "m",
@@ -52,6 +51,7 @@ UserEntity {
   "lastLogin": 2024-01-15T12:40:18.319Z,
   "lastPasswordChange": null,
   "location": "Seattle, WA",
+  "logBookSharing": "public",
   "memberSince": 2024-01-15T12:40:18.319Z,
   "name": "User McUserface",
   "oauth": undefined,
@@ -81,9 +81,9 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
     "bio": "This is a test user.",
-    "birthdate": "1980-01-01",
     "experienceLevel": "Advanced",
     "location": "Seattle, WA",
+    "logBookSharing": "public",
     "memberSince": "2024-01-15T12:40:18.319Z",
     "name": "User McUserface",
     "startedDiving": "2000-01-01",
@@ -110,6 +110,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "lastLogin": "2024-01-15T12:40:18.319Z",
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
+    "logBookSharing": "private",
     "memberSince": "2024-01-15T12:40:18.319Z",
     "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
     "username": "User.McUserface",
@@ -129,7 +130,6 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 UserEntity {
   "avatar": null,
   "bio": null,
-  "birthdate": null,
   "certifications": undefined,
   "customData": null,
   "depthUnit": "m",
@@ -146,6 +146,7 @@ UserEntity {
   "lastLogin": 2024-01-15T12:40:18.319Z,
   "lastPasswordChange": null,
   "location": null,
+  "logBookSharing": "private",
   "memberSince": 2024-01-15T12:40:18.319Z,
   "name": null,
   "oauth": undefined,
@@ -173,6 +174,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "lastLogin": "2024-01-15T12:40:18.319Z",
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
+    "logBookSharing": "private",
     "memberSince": "2024-01-15T12:40:18.319Z",
     "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
     "username": "User.McUserface",

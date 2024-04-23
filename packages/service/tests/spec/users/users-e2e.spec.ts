@@ -1,6 +1,7 @@
 import {
   CreateUserParamsDTO,
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UpdateProfileParamsDTO,
@@ -61,9 +62,9 @@ const RegularUserData: Partial<UserEntity> = {
   passwordHash: '$2b$04$EIK2SpqsdmO.nwAOPJ9wt.9o2z732N9s23pLrdPxz8kqXB1A3yhdS',
   avatar: 'https://example.com/avatar.png',
   bio: 'This is a test user.',
-  birthdate: '1980-01-01',
   experienceLevel: 'Advanced',
   location: 'Seattle, WA',
+  logBookSharing: LogBookSharing.FriendsOnly,
   name: 'Joe Regular',
   startedDiving: '2000-01-01',
   depthUnit: DepthUnit.Meters,
@@ -163,9 +164,9 @@ describe('Users End-to-End Tests', () => {
         role: UserRole.User,
         profile: {
           bio: 'This is a test user.',
-          birthdate: '1980-01-01',
           experienceLevel: 'Advanced',
           location: 'Seattle, WA',
+          logBookSharing: LogBookSharing.Public,
           name: 'User McUserface',
           startedDiving: '2000-01-01',
         },
@@ -761,9 +762,9 @@ describe('Users End-to-End Tests', () => {
     const profileUrl = `${requestUrl(RegularUserData.username)}`;
     const newProfileInfo: UpdateProfileParamsDTO = {
       bio: 'I really like diving and updating profiles.',
-      birthdate: '1992-03-30',
       experienceLevel: 'Mega Expert',
       location: 'Vancouver, BC',
+      logBookSharing: LogBookSharing.FriendsOnly,
       name: 'Joe Exotic',
       startedDiving: '2015-01-01',
     };
@@ -827,16 +828,19 @@ describe('Users End-to-End Tests', () => {
         where: { id: RegularUserId },
         select: [
           'bio',
-          'birthdate',
           'experienceLevel',
           'location',
+          'logBookSharing',
           'memberSince',
           'name',
           'startedDiving',
         ],
       });
       actual.memberSince = expected.memberSince;
-      expect(actual).toEqual(expected);
+      expect(actual).toEqual({
+        ...expected,
+        logBookSharing: LogBookSharing.FriendsOnly,
+      });
     });
 
     it('will allow admins to update another user profile', async () => {
@@ -853,9 +857,9 @@ describe('Users End-to-End Tests', () => {
         where: { id: RegularUserId },
         select: [
           'bio',
-          'birthdate',
           'experienceLevel',
           'location',
+          'logBookSharing',
           'memberSince',
           'name',
           'startedDiving',

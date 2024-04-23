@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserRole,
@@ -31,9 +32,6 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 1000, nullable: true })
   bio: string | null = null;
 
-  @Column({ type: 'varchar', length: 10, nullable: true })
-  birthdate: string | null = null;
-
   @OneToMany(
     () => UserCertificationEntity,
     (certification) => certification.user,
@@ -51,7 +49,7 @@ export class UserEntity {
     type: 'enum',
     enum: DepthUnit,
     default: DepthUnit.Meters,
-    nullable: true,
+    nullable: false,
   })
   depthUnit: DepthUnit = DepthUnit.Meters;
 
@@ -90,6 +88,14 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 50, nullable: true })
   location: string | null = null;
 
+  @Column({
+    type: 'enum',
+    enum: LogBookSharing,
+    nullable: false,
+    default: LogBookSharing.Private,
+  })
+  logBookSharing: LogBookSharing = LogBookSharing.Private;
+
   @CreateDateColumn()
   @Index()
   memberSince: Date = new Date();
@@ -115,7 +121,7 @@ export class UserEntity {
     type: 'enum',
     enum: PressureUnit,
     default: PressureUnit.Bar,
-    nullable: true,
+    nullable: false,
   })
   pressureUnit: PressureUnit = PressureUnit.Bar;
 
@@ -126,7 +132,7 @@ export class UserEntity {
     type: 'enum',
     enum: TemperatureUnit,
     default: TemperatureUnit.Celsius,
-    nullable: true,
+    nullable: false,
   })
   temperatureUnit: TemperatureUnit = TemperatureUnit.Celsius;
 
@@ -152,7 +158,7 @@ export class UserEntity {
     type: 'enum',
     enum: WeightUnit,
     default: WeightUnit.Kilograms,
-    nullable: true,
+    nullable: false,
   })
   weightUnit: WeightUnit = WeightUnit.Kilograms;
 

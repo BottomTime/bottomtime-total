@@ -22,6 +22,12 @@ export enum AvatarSize {
   XLarge = '256x256',
 }
 
+export enum LogBookSharing {
+  Public = 'public',
+  Private = 'private',
+  FriendsOnly = 'friends',
+}
+
 const ListAvatarURLsResponseSchema = z.object({
   root: z.string(),
   sizes: z.record(z.nativeEnum(AvatarSize), z.string()),
@@ -48,21 +54,11 @@ export const PasswordStrengthSchema = z
 export const UpdateProfileParamsSchema = z
   .object({
     bio: z.string().trim().max(1000).nullable(),
-    birthdate: z.string().trim().regex(FuzzyDateRegex).nullable(),
-    customData: z
-      .record(z.string(), z.unknown())
-      .refine(
-        (json) => Buffer.from(JSON.stringify(json)).byteLength <= 1048576,
-        {
-          message:
-            'Custom data blob cannot be greater than 1Mb (1,048,576 bytes).',
-          path: ['customData'],
-        },
-      ),
     experienceLevel: z.string().trim().max(50).nullable(),
     location: z.string().trim().max(50).nullable(),
     name: z.string().trim().max(100).nullable(),
     startedDiving: z.string().trim().regex(FuzzyDateRegex).nullable(),
+    logBookSharing: z.nativeEnum(LogBookSharing).optional(),
   })
   .partial();
 export type UpdateProfileParamsDTO = z.infer<typeof UpdateProfileParamsSchema>;

@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserRole,
@@ -40,10 +41,12 @@ export function fakeUser(): UserEntity {
   // Profile
   data.avatar = faker.internet.avatar();
   data.bio = faker.lorem.paragraph();
-  data.birthdate = dayjs(faker.date.past(50)).format('YYYY-MM-DD');
   data.certifications = [];
   data.name = `${firstName} ${lastName}`;
   data.location = `${faker.address.city()}, ${faker.address.stateAbbr()}, ${faker.address.countryCode()}`;
+  data.logBookSharing = faker.helpers.arrayElement(
+    Object.values(LogBookSharing),
+  );
   data.experienceLevel = faker.helpers.arrayElement([
     'Beginner',
     'Novice',

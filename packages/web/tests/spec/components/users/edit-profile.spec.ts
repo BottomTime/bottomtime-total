@@ -1,4 +1,8 @@
-import { UpdateProfileParamsDTO, UserDTO } from '@bottomtime/api';
+import {
+  LogBookSharing,
+  UpdateProfileParamsDTO,
+  UserDTO,
+} from '@bottomtime/api';
 import { ApiClient, User } from '@bottomtime/api';
 
 import { flushPromises, mount } from '@vue/test-utils';
@@ -65,9 +69,6 @@ describe('Edit Profile form', () => {
     expect(wrapper.get<HTMLInputElement>('input#location').element.value).toBe(
       '',
     );
-    expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-year').element.value,
-    ).toBe('');
     expect(wrapper.get<HTMLTextAreaElement>('textarea#bio').element.value).toBe(
       '',
     );
@@ -94,7 +95,6 @@ describe('Edit Profile form', () => {
       },
     });
 
-    const birthdate = UserWithFullProfile.profile.birthdate?.split('-') ?? [];
     const startedDiving =
       UserWithFullProfile.profile.startedDiving?.split('-') ?? [];
 
@@ -108,16 +108,6 @@ describe('Edit Profile form', () => {
     expect(wrapper.get<HTMLInputElement>('input#location').element.value).toBe(
       UserWithFullProfile.profile.location,
     );
-
-    expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-year').element.value,
-    ).toBe(birthdate[0]);
-    expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-month').element.value,
-    ).toBe(birthdate[1]);
-    expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-day').element.value,
-    ).toBe(birthdate[2]);
 
     expect(wrapper.get<HTMLTextAreaElement>('textarea#bio').element.value).toBe(
       UserWithFullProfile.profile.bio,
@@ -159,10 +149,10 @@ describe('Edit Profile form', () => {
     const updatedProfile: UpdateProfileParamsDTO = {
       name: 'Updated Name',
       location: 'Updated Location',
-      birthdate: '1990-01-01',
       bio: 'Updated Bio',
       experienceLevel: 'Expert',
       startedDiving: '2000-01-01',
+      logBookSharing: LogBookSharing.Public,
     };
     const expected = {
       ...userData.profile,
@@ -179,10 +169,7 @@ describe('Edit Profile form', () => {
     await wrapper.get('select#started-diving-year').setValue('2000');
     await wrapper.get('select#started-diving-month').setValue('01');
     await wrapper.get('select#started-diving-day').setValue('01');
-
-    await wrapper.get('select#birthdate-year').setValue('1990');
-    await wrapper.get('select#birthdate-month').setValue('01');
-    await wrapper.get('select#birthdate-day').setValue('01');
+    await wrapper.get('select#logbook-sharing').setValue(LogBookSharing.Public);
 
     await wrapper.get('[data-testid="save-profile"]').trigger('click');
     await flushPromises();
@@ -209,13 +196,12 @@ describe('Edit Profile form', () => {
     const updatedProfile: UpdateProfileParamsDTO = {
       name: 'Updated Name',
       location: 'Updated Location',
-      birthdate: '1990-01-01',
       bio: 'Updated Bio',
       experienceLevel: 'Expert',
+      logBookSharing: LogBookSharing.Public,
       startedDiving: '2000-01-01',
     };
 
-    const birthdate = UserWithFullProfile.profile.birthdate?.split('-') ?? [];
     const startedDiving =
       UserWithFullProfile.profile.startedDiving?.split('-') ?? [];
 
@@ -229,10 +215,7 @@ describe('Edit Profile form', () => {
     await wrapper.get('select#started-diving-year').setValue('2000');
     await wrapper.get('select#started-diving-month').setValue('01');
     await wrapper.get('select#started-diving-day').setValue('01');
-
-    await wrapper.get('select#birthdate-year').setValue('1990');
-    await wrapper.get('select#birthdate-month').setValue('01');
-    await wrapper.get('select#birthdate-day').setValue('01');
+    await wrapper.get('select#logbook-sharing').setValue(LogBookSharing.Public);
 
     await wrapper.get('[data-testid="cancel-profile"]').trigger('click');
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
@@ -247,16 +230,9 @@ describe('Edit Profile form', () => {
     expect(wrapper.get<HTMLInputElement>('input#location').element.value).toBe(
       UserWithFullProfile.profile.location,
     );
-
     expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-year').element.value,
-    ).toBe(birthdate[0]);
-    expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-month').element.value,
-    ).toBe(birthdate[1]);
-    expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-day').element.value,
-    ).toBe(birthdate[2]);
+      wrapper.get<HTMLSelectElement>('select#logbook-sharing').element.value,
+    ).toBe(UserWithFullProfile.profile.logBookSharing);
 
     expect(wrapper.get<HTMLTextAreaElement>('textarea#bio').element.value).toBe(
       UserWithFullProfile.profile.bio,
@@ -297,9 +273,9 @@ describe('Edit Profile form', () => {
     const updatedProfile: UpdateProfileParamsDTO = {
       name: 'Updated Name',
       location: 'Updated Location',
-      birthdate: '1990-01-01',
       bio: 'Updated Bio',
       experienceLevel: 'Expert',
+      logBookSharing: LogBookSharing.Public,
       startedDiving: '2000-01-01',
     };
 
@@ -313,10 +289,7 @@ describe('Edit Profile form', () => {
     await wrapper.get('select#started-diving-year').setValue('2000');
     await wrapper.get('select#started-diving-month').setValue('01');
     await wrapper.get('select#started-diving-day').setValue('01');
-
-    await wrapper.get('select#birthdate-year').setValue('1990');
-    await wrapper.get('select#birthdate-month').setValue('01');
-    await wrapper.get('select#birthdate-day').setValue('01');
+    await wrapper.get('select#logbook-sharing').setValue(LogBookSharing.Public);
 
     await wrapper.get('[data-testid="cancel-profile"]').trigger('click');
     await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
@@ -327,16 +300,9 @@ describe('Edit Profile form', () => {
     expect(wrapper.get<HTMLInputElement>('input#location').element.value).toBe(
       updatedProfile.location,
     );
-
     expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-year').element.value,
-    ).toBe('1990');
-    expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-month').element.value,
-    ).toBe('01');
-    expect(
-      wrapper.get<HTMLSelectElement>('select#birthdate-day').element.value,
-    ).toBe('01');
+      wrapper.get<HTMLSelectElement>('select#logbook-sharing').element.value,
+    ).toBe(updatedProfile.logBookSharing);
 
     expect(wrapper.get<HTMLTextAreaElement>('textarea#bio').element.value).toBe(
       updatedProfile.bio,

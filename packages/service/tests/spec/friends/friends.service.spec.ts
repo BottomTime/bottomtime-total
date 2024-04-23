@@ -53,7 +53,6 @@ const TestUserData: Partial<UserEntity> = {
   avatar:
     'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/338.jpg',
   bio: 'Minus aspernatur sit autem nam numquam ullam sed reiciendis quidem. Enim quia at. Ab rerum architecto mollitia modi odio suscipit quidem in eaque. Dolorem corrupti facere quos iste delectus iure beatae reiciendis. Neque odit consequuntur. Asperiores aperiam amet dolorum natus animi sint dicta. Consectetur sit enim quibusdam quae.',
-  birthdate: '2012-07-10',
   experienceLevel: 'Professional',
   location: 'Stratford',
   name: 'Darrel Wuckert',

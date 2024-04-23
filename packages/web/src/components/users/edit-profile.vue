@@ -36,7 +36,7 @@
 
   <ChangeAvatarDialog
     ref="changeAvatarDialog"
-    :avatar-url="data.avatar"
+    :avatar-url="state.avatar"
     :visible="showAvatarDialog"
     :is-saving="isSavingAvatar"
     @cancel="showAvatarDialog = false"
@@ -60,19 +60,19 @@
             @click="onEditAvatar"
           >
             <UserAvatar
-              :avatar="data.avatar"
+              :avatar="state.avatar"
               :display-name="user.profile.name || user.username"
               size="large"
               test-id="profile-avatar"
             />
 
             <span class="font-bold text-link underline hover:text-link-hover">
-              {{ data.avatar ? 'Edit Avatar...' : 'Upload avatar...' }}
+              {{ state.avatar ? 'Edit Avatar...' : 'Upload avatar...' }}
             </span>
           </button>
 
           <button
-            v-if="data.avatar"
+            v-if="state.avatar"
             class="flex flex-col space-y-3 items-center w-full"
             @click="onDeleteAvatar"
           >
@@ -83,13 +83,9 @@
         </div>
 
         <div class="grow">
-          <FormField>
-            <TextHeading>Personal Info</TextHeading>
-          </FormField>
-
           <FormField label="Name" control-id="name">
             <FormTextBox
-              v-model.trim="data.name"
+              v-model.trim="state.name"
               control-id="name"
               test-id="nameInput"
               :maxlength="100"
@@ -99,29 +95,32 @@
 
           <FormField label="Location" control-id="location">
             <FormTextBox
-              v-model.trim="data.location"
+              v-model.trim="state.location"
               control-id="location"
               test-id="locationInput"
               :maxlength="50"
             />
           </FormField>
 
-          <FormField label="Birthdate" control-id="birthdate">
-            <FormFuzzyDate
-              v-model="data.birthdate"
-              control-id="birthdate"
-              test-id="birthdateInput"
-              :max-year="new Date().getFullYear() - 6"
-              :min-year="new Date().getFullYear() - 100"
+          <FormField
+            label="Share my logbook with"
+            control-id="logbook-sharing"
+            :help="LogbookSharingHelp"
+            required
+          >
+            <FormSelect
+              v-model="state.logBookSharing"
+              control-id="logbook-sharing"
+              test-id="logBookSharingInput"
+              :options="LogbookSharingOptions"
+              stretch
             />
           </FormField>
 
-          <FormField>
-            <TextHeading class="mt-5">Bio</TextHeading>
-          </FormField>
+          <TextHeading class="mt-5">Bio</TextHeading>
           <FormField control-id="bio">
             <FormTextArea
-              v-model.trim="data.bio"
+              v-model.trim="state.bio"
               control-id="bio"
               test-id="bioInput"
               :maxlength="500"
@@ -130,12 +129,10 @@
             />
           </FormField>
 
-          <FormField>
-            <TextHeading class="mt-5">Dive Experience</TextHeading>
-          </FormField>
+          <TextHeading class="mt-5">Dive Experience</TextHeading>
           <FormField label="Experience level" control-id="experience-level">
             <FormSelect
-              v-model.trim="data.experienceLevel"
+              v-model.trim="state.experienceLevel"
               control-id="experience-level"
               test-id="experienceLevelInput"
               :options="ExperienceLevelOptions"
@@ -145,7 +142,7 @@
 
           <FormField label="Started diving" control-id="started-diving">
             <FormFuzzyDate
-              v-model="data.startedDiving"
+              v-model="state.startedDiving"
               control-id="started-diving"
               test-id="startedDivingInput"
               :min-year="new Date().getFullYear() - 80"
@@ -173,7 +170,7 @@
 </template>
 
 <script setup lang="ts">
-import { ProfileDTO, UserDTO } from '@bottomtime/api';
+import { LogBookSharing, ProfileDTO, UserDTO } from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
 
@@ -196,15 +193,18 @@ type EditProfileProps = {
   responsive?: boolean;
   user: UserDTO;
 };
-type ProfileData = {
+type EditProfileState = {
   avatar: string;
   bio: string;
-  birthdate: string;
   experienceLevel: string;
   location: string;
+  logBookSharing: LogBookSharing;
   name: string;
   startedDiving: string;
 };
+
+const LogbookSharingHelp =
+  'This will determine who can view your log book records. You can keep your log book private by ("Just me"), make it visible to only your friends ("Me and my friends"), or make it public ("Everyone"). Only you will be able to modify your log book.';
 
 const ExperienceLevelOptions: SelectOption[] = [
   { label: '(unspecified)', value: '' },
@@ -214,6 +214,12 @@ const ExperienceLevelOptions: SelectOption[] = [
   { value: 'Expert' },
 ];
 
+const LogbookSharingOptions: SelectOption[] = [
+  { label: 'Just me', value: LogBookSharing.Private },
+  { label: 'Me and my friends', value: LogBookSharing.FriendsOnly },
+  { label: 'Everyone', value: LogBookSharing.Public },
+];
+
 const client = useClient();
 const toasts = useToasts();
 const oops = useOops();
@@ -221,12 +227,12 @@ const oops = useOops();
 const props = withDefaults(defineProps<EditProfileProps>(), {
   responsive: true,
 });
-const data = reactive<ProfileData>({
+const state = reactive<EditProfileState>({
   avatar: props.user.profile.avatar ?? '',
   bio: props.user.profile.bio ?? '',
-  birthdate: props.user.profile.birthdate ?? '',
   experienceLevel: props.user.profile.experienceLevel ?? '',
   location: props.user.profile.location ?? '',
+  logBookSharing: props.user.profile.logBookSharing ?? LogBookSharing.Private,
   name: props.user.profile.name ?? '',
   startedDiving: props.user.profile.startedDiving ?? '',
 });
@@ -258,7 +264,7 @@ async function onAvatarChanged(file: File, coords: Coordinates) {
     const { profile } = client.users.wrapDTO(props.user);
 
     const avatars = await profile.uploadAvatar(file, coords);
-    data.avatar = avatars.root;
+    state.avatar = avatars.root;
     emit('save-profile', {
       ...props.user.profile,
       avatar: avatars.root,
@@ -280,24 +286,24 @@ async function onSave() {
   await oops(async () => {
     const { profile } = client.users.wrapDTO(props.user);
 
-    profile.bio = data.bio || undefined;
-    profile.birthdate = data.birthdate || undefined;
-    profile.experienceLevel = data.experienceLevel || undefined;
-    profile.location = data.location || undefined;
-    profile.name = data.name || undefined;
-    profile.startedDiving = data.startedDiving || undefined;
+    profile.bio = state.bio || undefined;
+    profile.experienceLevel = state.experienceLevel || undefined;
+    profile.location = state.location || undefined;
+    profile.logBookSharing = state.logBookSharing;
+    profile.name = state.name || undefined;
+    profile.startedDiving = state.startedDiving || undefined;
 
     await profile.save();
 
     emit('save-profile', {
       ...props.user.profile,
-      avatar: data.avatar || undefined,
-      bio: data.bio || undefined,
-      birthdate: data.birthdate || undefined,
-      experienceLevel: data.experienceLevel || undefined,
-      location: data.location || undefined,
-      name: data.name || undefined,
-      startedDiving: data.startedDiving || undefined,
+      avatar: state.avatar || undefined,
+      bio: state.bio || undefined,
+      experienceLevel: state.experienceLevel || undefined,
+      location: state.location || undefined,
+      logBookSharing: state.logBookSharing,
+      name: state.name || undefined,
+      startedDiving: state.startedDiving || undefined,
     });
     toasts.toast({
       id: 'profile-saved',
@@ -314,12 +320,13 @@ function onReset() {
 }
 
 function onConfirmReset() {
-  data.bio = props.user.profile.bio ?? '';
-  data.birthdate = props.user.profile.birthdate ?? '';
-  data.experienceLevel = props.user.profile.experienceLevel ?? '';
-  data.location = props.user.profile.location ?? '';
-  data.name = props.user.profile.name ?? '';
-  data.startedDiving = props.user.profile.startedDiving ?? '';
+  state.bio = props.user.profile.bio ?? '';
+  state.experienceLevel = props.user.profile.experienceLevel ?? '';
+  state.location = props.user.profile.location ?? '';
+  state.logBookSharing =
+    props.user.profile.logBookSharing ?? LogBookSharing.Private;
+  state.name = props.user.profile.name ?? '';
+  state.startedDiving = props.user.profile.startedDiving ?? '';
   showConfirmResetDialog.value = false;
 }
 
@@ -336,7 +343,7 @@ async function onConfirmDeleteAvatar(): Promise<void> {
     const { profile } = client.users.wrapDTO(props.user);
     await profile.deleteAvatar();
 
-    data.avatar = '';
+    state.avatar = '';
     emit('save-profile', {
       ...props.user.profile,
       avatar: undefined,
