@@ -18,7 +18,8 @@
           type="link"
           size="2xl"
           class="text-2xl"
-          @click="onSelectFriend"
+          :test-id="`select-friend-${friend.username}`"
+          @click="$emit('select', friend)"
         >
           {{ friend.name || `@${friend.username}` }}
         </FormButton>
@@ -53,7 +54,13 @@
     </div>
 
     <div>
-      <FormButton type="danger" @click="onUnfriend">Unfriend</FormButton>
+      <FormButton
+        type="danger"
+        :test-id="`unfriend-${friend.username}`"
+        @click="$emit('unfriend', friend)"
+      >
+        Unfriend
+      </FormButton>
     </div>
   </li>
 </template>
@@ -71,17 +78,9 @@ interface FriendsListItemProps {
   friend: FriendDTO;
 }
 
-const props = defineProps<FriendsListItemProps>();
-const emit = defineEmits<{
+defineProps<FriendsListItemProps>();
+defineEmits<{
   (e: 'select', friend: FriendDTO): void;
   (e: 'unfriend', friend: FriendDTO): void;
 }>();
-
-function onSelectFriend() {
-  emit('select', props.friend);
-}
-
-function onUnfriend() {
-  emit('unfriend', props.friend);
-}
 </script>

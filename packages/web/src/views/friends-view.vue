@@ -107,7 +107,7 @@
         @unfriend="onUnfriend"
       />
 
-      <TextHeading>Pending Friend Requests</TextHeading>
+      <TextHeading class="pt-12">Pending Friend Requests</TextHeading>
       <p class="italic text-sm">
         These are friend requests that you have sent that have not yet been
         acknowledged.
@@ -117,11 +117,6 @@
         @dismiss="onDismissRequest"
         @cancel="onCancelRequest"
       />
-
-      <!-- <TextHeading>TODO: Blocked Users</TextHeading>
-      <p class="italic text-sm">
-        Can't believe I hadn't thought of this. Need to implement block lists.
-      </p> -->
     </div>
   </div>
 </template>
