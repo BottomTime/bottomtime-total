@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
@@ -67,9 +68,9 @@ export const UserWithFullProfile: UserDTO = {
     avatar:
       'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg',
     bio: 'Facilis deleniti fugiat. Nesciunt architecto facilis consectetur laborum iusto doloribus. Minima nulla nemo unde quisquam quod suscipit deserunt blanditiis deserunt. Ipsa saepe quibusdam beatae tempora labore maxime odio. Labore debitis id doloribus voluptatibus ratione animi dolores.',
-    birthdate: '2014-09-19',
     experienceLevel: 'Experienced',
     location: 'Hamillside, CO, AZ',
+    logBookSharing: LogBookSharing.FriendsOnly,
     memberSince: new Date('2017-12-29T17:03:07.671Z'),
     name: 'Abel Koss',
     startedDiving: '2018-11-20',
