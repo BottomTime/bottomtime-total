@@ -113,4 +113,22 @@ describe('Friend requests list component', () => {
     ).toBe(true);
     expect(wrapper.find(LoadMoreButton).exists()).toBe(false);
   });
+
+  ['accept', 'cancel', 'dismiss', 'decline', 'select'].forEach((event) => {
+    it(`will bubble up a "${event}" event when a list item raises it`, async () => {
+      const wrapper = mount(FriendRequestsList, {
+        props: {
+          requests: requestsData,
+        },
+      });
+
+      await wrapper
+        .findComponent(FriendRequestsListItem)
+        .vm.$emit(event, requestsData.friendRequests[0]);
+
+      expect(wrapper.emitted(event)).toEqual([
+        [requestsData.friendRequests[0]],
+      ]);
+    });
+  });
 });
