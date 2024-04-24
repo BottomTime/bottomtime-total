@@ -447,9 +447,9 @@ export class FriendsService {
     return typeof affected === 'number' && affected > 0;
   }
 
-  async purgeExpiredFriendRequests(): Promise<number> {
+  async purgeExpiredFriendRequests(date?: Date): Promise<number> {
     const { affected } = await this.FriendRequests.delete({
-      expires: LessThan(new Date()),
+      expires: LessThan(date ?? new Date()),
     });
     return typeof affected === 'number' ? affected : 0;
   }

@@ -31,3 +31,17 @@ export const ResetPasswordParamsSchema = z.object({
   newPassword: PasswordStrengthSchema,
 });
 export type ResetPasswordParams = z.infer<typeof ResetPasswordParamsSchema>;
+
+export const PurgeExpiredFriendRequestsParamsSchema = z.object({
+  expiration: z.coerce.date().optional(),
+});
+export type PurgeExpiredFriendRequestsParamsDTO = z.infer<
+  typeof PurgeExpiredFriendRequestsParamsSchema
+>;
+
+export const PurgeExpiredFriendRequestsResultsSchema = z.object({
+  requestsDeleted: z.number().int(),
+});
+export type PurgeExpiredFriendRequestsResultsDTO = z.infer<
+  typeof PurgeExpiredFriendRequestsResultsSchema
+>;
