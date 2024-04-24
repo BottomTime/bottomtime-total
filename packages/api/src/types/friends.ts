@@ -59,6 +59,7 @@ export const ListFriendRequestsParamsSchema = z
   .object({
     direction: z.nativeEnum(FriendRequestDirection),
     showAcknowledged: BooleanString,
+    showExpired: BooleanString,
     skip: z.coerce.number().int().min(0),
     limit: z.coerce.number().int().min(1).max(200),
   })

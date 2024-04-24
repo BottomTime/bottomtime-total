@@ -2,7 +2,7 @@
   <DialogBase
     :disabled="isLoading"
     :visible="visible"
-    size="sm"
+    :size="size"
     :title="title"
     @close="$emit('cancel')"
   >
@@ -35,6 +35,7 @@ type ConfirmDialogProps = {
   confirmText?: string;
   dangerous?: boolean;
   isLoading?: boolean;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   title?: string;
   visible?: boolean;
 };
@@ -44,6 +45,7 @@ withDefaults(defineProps<ConfirmDialogProps>(), {
   confirmText: 'Confirm',
   dangerous: false,
   isLoading: false,
+  size: 'sm',
   title: 'Confirm?',
   visible: false,
 });

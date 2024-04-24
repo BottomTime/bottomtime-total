@@ -1,6 +1,83 @@
 <template>
   <PageTitle title="Friend Requests" />
 
+  <!-- Accept request dialog -->
+  <ConfirmDialog
+    :visible="state.showConfirmAccept && !!state.selectedRequest"
+    confirm-text="Accept"
+    title="Accept friend request?"
+    :is-loading="state.isAcceptingRequest"
+    @confirm="onConfirmAcceptRequest"
+    @cancel="onCancelAcceptRequest"
+  >
+    <div class="flex space-x-3">
+      <div class="my-2">
+        <i class="fa-regular fa-circle-question fa-2x"></i>
+      </div>
+
+      <div>
+        <p>
+          <span>Are you sure you want to accept a friend request from </span>
+          <span class="font-bold">
+            {{
+              state.selectedRequest?.friend.name ||
+              `@${state.selectedRequest?.friend.username}`
+            }}
+          </span>
+          <span>?</span>
+        </p>
+      </div>
+    </div>
+  </ConfirmDialog>
+
+  <!-- Decline request dialog -->
+  <ConfirmDialog
+    :visible="state.showConfirmDecline && !!state.selectedRequest"
+    confirm-text="Decline"
+    title="Decline friend request?"
+    :is-loading="state.isDecliningRequest"
+    dangerous
+    size="md"
+    @confirm="onConfirmDeclineRequest"
+    @cancel="onCancelDeclineRequest"
+  >
+    <div class="flex space-x-3">
+      <div class="my-2">
+        <i class="fa-regular fa-circle-question fa-2x"></i>
+      </div>
+
+      <div class="space-y-2">
+        <p>
+          <span>Are you sure you want to decline a friend request from </span>
+          <span class="font-bold">
+            {{
+              state.selectedRequest?.friend.name ||
+              `@${state.selectedRequest?.friend.username}`
+            }}
+          </span>
+          <span>? You can provide an optional reason.</span>
+        </p>
+
+        <FormField
+          control-id="decline-reason"
+          label="Reason"
+          :responsive="false"
+        >
+          <FormTextBox
+            v-model="state.declineReason"
+            placeholder="Reason for declining request..."
+            control-id="decline-reason"
+            test-id="decline-reason"
+            :maxlength="500"
+            autofocus
+            @enter="onConfirmDeclineRequest"
+            @esc="onCancelDeclineRequest"
+          />
+        </FormField>
+      </div>
+    </div>
+  </ConfirmDialog>
+
   <RequireAuth>
     <div class="flex flex-col md:flex-row gap-3 items-start">
       <!-- Nav menu -->
@@ -14,9 +91,10 @@
       </ul>
 
       <FriendRequestsList
-        :requests="friendRequests"
-        @accept="onAcceptFriendRequest"
-        @decline="onDeclineFriendRequest"
+        :requests="state.friendRequests"
+        @accept="onAcceptRequest"
+        @decline="onDeclineRequest"
+        @dismiss="onDismissFriendRequest"
         @select="onSelectFriendRequest"
       />
     </div>
@@ -34,13 +112,26 @@ import { onServerPrefetch, reactive, useSSRContext } from 'vue';
 
 import { useClient } from '../api-client';
 import { ToastType } from '../common';
+import FormField from '../components/common/form-field.vue';
+import FormTextBox from '../components/common/form-text-box.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
+import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import FriendRequestsList from '../components/friends/friend-requests-list.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
 import { useCurrentUser, useToasts } from '../store';
+
+interface FriendRequestsViewState {
+  declineReason: string;
+  friendRequests: ListFriendRequestsResponseDTO;
+  isAcceptingRequest: boolean;
+  isDecliningRequest: boolean;
+  selectedRequest: FriendRequestDTO | null;
+  showConfirmAccept: boolean;
+  showConfirmDecline: boolean;
+}
 
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
@@ -49,11 +140,17 @@ const initialState = useInitialState();
 const oops = useOops();
 const toasts = useToasts();
 
-const friendRequests = reactive<ListFriendRequestsResponseDTO>(
-  initialState?.friendRequests
+const state = reactive<FriendRequestsViewState>({
+  declineReason: '',
+  friendRequests: initialState?.friendRequests
     ? initialState.friendRequests
     : { friendRequests: [], totalCount: 0 },
-);
+  isAcceptingRequest: false,
+  isDecliningRequest: false,
+  selectedRequest: null,
+  showConfirmAccept: false,
+  showConfirmDecline: false,
+});
 
 onServerPrefetch(async () => {
   await oops(async () => {
@@ -67,71 +164,161 @@ onServerPrefetch(async () => {
       },
     );
 
-    friendRequests.friendRequests = friendRequestsResults.friendRequests.map(
-      (friend) => friend.toJSON(),
-    );
-    friendRequests.totalCount = friendRequestsResults.totalCount;
+    state.friendRequests = {
+      friendRequests: friendRequestsResults.friendRequests.map((friend) =>
+        friend.toJSON(),
+      ),
+      totalCount: friendRequestsResults.totalCount,
+    };
 
     if (ctx) {
-      ctx.friendRequests = friendRequests;
+      ctx.friendRequests = state.friendRequests;
     }
   });
 });
 
-async function onAcceptFriendRequest(dto: FriendRequestDTO) {
-  await oops(async () => {
-    if (!currentUser.user) return;
-
-    const request = client.friends.wrapFriendRequestDTO(
-      currentUser.user.username,
-      dto,
-    );
-
-    await request.accept();
-
-    const index = friendRequests.friendRequests.findIndex(
-      (r) => r.friendId === request.friend.id,
-    );
-    if (index > -1) {
-      friendRequests.friendRequests.splice(index, 1);
-    }
-
-    toasts.toast({
-      id: 'friend-request-accepted',
-      message: `You are now friends with ${
-        request.friend.name || request.friend.username
-      }.`,
-      type: ToastType.Success,
-    });
-  });
+function onAcceptRequest(request: FriendRequestDTO) {
+  state.selectedRequest = request;
+  state.showConfirmAccept = true;
 }
 
-async function onDeclineFriendRequest(dto: FriendRequestDTO, reason?: string) {
-  await oops(async () => {
-    if (!currentUser.user) return;
+function onCancelAcceptRequest() {
+  state.showConfirmAccept = false;
+  state.selectedRequest = null;
+}
 
-    const request = client.friends.wrapFriendRequestDTO(
-      currentUser.user.username,
-      dto,
-    );
+async function onConfirmAcceptRequest() {
+  state.isAcceptingRequest = true;
 
-    await request.decline(reason);
+  await oops(
+    async () => {
+      if (!currentUser.user) return;
 
-    const index = friendRequests.friendRequests.findIndex(
-      (r) => r.friendId === request.friend.id,
-    );
-    if (index > -1) {
-      friendRequests.friendRequests.splice(index, 1);
-    }
+      const request = client.friends.wrapFriendRequestDTO(
+        currentUser.user.username,
+        state.selectedRequest,
+      );
 
-    toasts.toast({
-      id: 'friend-request-declined',
-      message: `You have successfully declined friend request from ${
-        request.friend.name || request.friend.username
-      }.`,
-      type: ToastType.Success,
-    });
-  });
+      await request.accept();
+
+      const index = state.friendRequests.friendRequests.findIndex(
+        (r) => r.friendId === request.friend.id,
+      );
+      if (index > -1) {
+        state.friendRequests.friendRequests[index].accepted = true;
+      }
+
+      toasts.toast({
+        id: 'friend-request-accepted',
+        message: `You are now friends with ${
+          request.friend.name || request.friend.username
+        }.`,
+        type: ToastType.Success,
+      });
+    },
+    {
+      [404]: () => {
+        toasts.toast({
+          id: 'friend-request-not-found',
+          message: `The friend request from ${
+            state.selectedRequest?.friend.name ||
+            `@${state.selectedRequest?.friend.username}`
+          } no longer exists. Unable to accept.`,
+          type: ToastType.Warning,
+        });
+
+        const index = state.friendRequests.friendRequests.findIndex(
+          (r) => r.friendId === state.selectedRequest?.friend.id,
+        );
+        if (index > -1) {
+          state.friendRequests.friendRequests.splice(index, 1);
+          state.friendRequests.totalCount--;
+        }
+      },
+    },
+  );
+
+  state.isAcceptingRequest = false;
+  state.showConfirmAccept = false;
+  state.selectedRequest = null;
+}
+
+function onDeclineRequest(request: FriendRequestDTO, reason?: string) {
+  state.selectedRequest = request;
+  state.declineReason = reason || '';
+  state.showConfirmDecline = true;
+}
+
+function onCancelDeclineRequest() {
+  state.showConfirmDecline = false;
+  state.selectedRequest = null;
+}
+
+async function onConfirmDeclineRequest() {
+  state.isDecliningRequest = true;
+
+  await oops(
+    async () => {
+      if (!currentUser.user || !state.selectedRequest) return;
+
+      const request = client.friends.wrapFriendRequestDTO(
+        currentUser.user.username,
+        state.selectedRequest,
+      );
+
+      await request.decline(state.declineReason);
+
+      const index = state.friendRequests.friendRequests.findIndex(
+        (r) => r.friendId === request.friend.id,
+      );
+      if (index > -1) {
+        state.friendRequests.friendRequests[index].accepted = false;
+        state.friendRequests.friendRequests[index].reason = state.declineReason;
+      }
+
+      toasts.toast({
+        id: 'friend-request-declined',
+        message: `You have successfully declined friend request from ${
+          request.friend.name || request.friend.username
+        }.`,
+        type: ToastType.Success,
+      });
+    },
+    {
+      [404]: () => {
+        toasts.toast({
+          id: 'friend-request-not-found',
+          message: `The friend request from ${
+            state.selectedRequest?.friend.name ||
+            `@${state.selectedRequest?.friend.username}`
+          } no longer exists. Unable to decline.`,
+          type: ToastType.Warning,
+        });
+
+        const index = state.friendRequests.friendRequests.findIndex(
+          (r) => r.friendId === state.selectedRequest?.friend.id,
+        );
+        if (index > -1) {
+          state.friendRequests.friendRequests.splice(index, 1);
+          state.friendRequests.totalCount--;
+        }
+      },
+    },
+  );
+
+  state.showConfirmDecline = false;
+  state.isDecliningRequest = false;
+  state.selectedRequest = null;
+}
+
+function onDismissFriendRequest(dto: FriendRequestDTO) {
+  const index = state.friendRequests.friendRequests.findIndex(
+    (r) => r.friendId === dto.friend.id,
+  );
+  if (index > -1) {
+    state.friendRequests.friendRequests.splice(index, 1);
+    state.friendRequests.totalCount--;
+  }
 }
 
 function onSelectFriendRequest(request: FriendRequestDTO) {}

@@ -40,12 +40,15 @@
 
       <div
         v-else-if="request.accepted === false"
-        class="flex space-x-3 text-lg italic text-danger"
+        class="flex space-x-3 text-danger"
       >
-        <span>
+        <div class="my-1">
           <i class="fa-regular fa-circle-xmark"></i>
-        </span>
-        <span>This friend request has been declined.</span>
+        </div>
+        <div>
+          <p class="text-lg italic">This friend request has been declined.</p>
+          <p v-if="request.reason" class="text-sm">"{{ request.reason }}"</p>
+        </div>
       </div>
 
       <div

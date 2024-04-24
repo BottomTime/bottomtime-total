@@ -223,6 +223,12 @@ export class FriendsService {
       query = query.andWhere('requests.accepted IS NULL');
     }
 
+    if (!options.showExpired) {
+      query = query.andWhere('requests.expires > :now', {
+        now: new Date(),
+      });
+    }
+
     switch (options.direction) {
       case FriendRequestDirection.Incoming:
         query = query.andWhere('requests.to = :userId', {

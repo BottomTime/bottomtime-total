@@ -75,6 +75,13 @@ export class FriendRequestsController {
    *           type: boolean
    *           default: false
    *           example: true
+   *       - name: showExpired
+   *         in: query
+   *         description: Whether or not to return friend requests that have expired.
+   *         schema:
+   *           type: boolean
+   *           default: false
+   *           example: true
    *       - name: skip
    *         in: query
    *         description: The number of records to skip
@@ -296,6 +303,7 @@ export class FriendRequestsController {
    *     operationId: acknowledgeFriendRequest
    *     description: |
    *       Acknowledges (accepts or declines) a friend request. An optional reason can be provided on decline.
+   *       The request being acknowledged would need to have been made from `{friend}` to `{username}`.
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/FriendUsername"
@@ -365,21 +373,29 @@ export class FriendRequestsController {
   ): Promise<void> {
     let success: boolean;
 
+    this.log.log(
+      `Acknowledging friend request from ${friend.username} to ${
+        user.username
+      }: ${params.accepted ? 'accept' : 'reject'}.`,
+    );
+
     if (params.accepted) {
       success = await this.friendsService.acceptFriendRequest(
-        user.id,
         friend.id,
+        user.id,
       );
     } else {
       success = await this.friendsService.rejectFriendRequest(
-        user.id,
         friend.id,
+        user.id,
         params.reason,
       );
     }
 
     if (!success) {
-      throw new NotFoundException('Friend request was not found');
+      throw new NotFoundException(
+        'Unable to acknowledge friend request. Friend request was not found',
+      );
     }
   }
 
