@@ -35,10 +35,7 @@ export function fakeDiveSite(userIds: string[]): DiveSiteEntity {
     possibly(
       () => ({
         type: 'Point',
-        coordinates: [
-          parseFloat(faker.address.longitude()),
-          parseFloat(faker.address.latitude()),
-        ],
+        coordinates: [faker.location.longitude(), faker.location.latitude()],
       }),
       0.75,
     ) ?? null;
