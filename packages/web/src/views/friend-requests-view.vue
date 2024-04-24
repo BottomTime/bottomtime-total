@@ -1,24 +1,26 @@
 <template>
   <PageTitle title="Friend Requests" />
 
-  <div class="flex flex-col md:flex-row gap-3 items-start">
-    <!-- Nav menu -->
-    <ul
-      class="w-full md:w-60 text-md md:text-lg *:p-3 hover:*:bg-blue-700 flex flex-col align-middle bg-gradient-to-b from-blue-700 to-blue-900 rounded-md text-grey-50"
-    >
-      <li class="rounded-t-md">
-        <a href="/friends"> Friends </a>
-      </li>
-      <li class="bg-blue-600 rounded-b-md">Friend Requests</li>
-    </ul>
+  <RequireAuth>
+    <div class="flex flex-col md:flex-row gap-3 items-start">
+      <!-- Nav menu -->
+      <ul
+        class="w-full md:w-60 text-md md:text-lg *:p-3 hover:*:bg-blue-700 flex flex-col align-middle bg-gradient-to-b from-blue-700 to-blue-900 rounded-md text-grey-50"
+      >
+        <li class="rounded-t-md">
+          <a href="/friends"> Friends </a>
+        </li>
+        <li class="bg-blue-600 rounded-b-md">Friend Requests</li>
+      </ul>
 
-    <FriendRequestsList
-      :requests="friendRequests"
-      @accept="onAcceptFriendRequest"
-      @decline="onDeclineFriendRequest"
-      @select="onSelectFriendRequest"
-    />
-  </div>
+      <FriendRequestsList
+        :requests="friendRequests"
+        @accept="onAcceptFriendRequest"
+        @decline="onDeclineFriendRequest"
+        @select="onSelectFriendRequest"
+      />
+    </div>
+  </RequireAuth>
 </template>
 
 <script lang="ts" setup>
@@ -33,6 +35,7 @@ import { onServerPrefetch, reactive, useSSRContext } from 'vue';
 import { useClient } from '../api-client';
 import { ToastType } from '../common';
 import PageTitle from '../components/common/page-title.vue';
+import RequireAuth from '../components/common/require-auth.vue';
 import FriendRequestsList from '../components/friends/friend-requests-list.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
