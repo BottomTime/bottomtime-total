@@ -80,7 +80,10 @@
     title="Search For Friends"
     @close="onCancelSearchFriends"
   >
-    <SearchFriendsForm @request-sent="onRequestSent" />
+    <SearchFriendsForm
+      @request-sent="onRequestSent"
+      @close="onCancelSearchFriends"
+    />
   </DrawerPanel>
 
   <PageTitle title="Friends" />

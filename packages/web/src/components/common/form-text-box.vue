@@ -16,6 +16,7 @@
     <button
       v-if="showRight"
       :class="rightSlotClasses"
+      :data-testid="testId ? `${testId}-right` : undefined"
       @click="$emit('right-button-click')"
     >
       <slot name="right"></slot>
