@@ -17,6 +17,8 @@ import {
   renderToString,
 } from '@vue/test-utils';
 
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { Pinia, createPinia } from 'pinia';
 import { defineComponent } from 'vue';
 import { Router } from 'vue-router';
@@ -29,6 +31,8 @@ import FriendRequestsView from '../../../src/views/friend-requests-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
 import { BasicUser } from '../../fixtures/users';
+
+dayjs.extend(relativeTime);
 
 jest.mock('../../../src/initial-state.ts');
 
