@@ -78,6 +78,13 @@
     </div>
   </ConfirmDialog>
 
+  <ProfilePanel
+    :profile="state.friendProfile"
+    :visible="state.showFriendProfile"
+    @close="onCloseFriendProfile"
+  />
+
+  <!-- Profile viewer -->
   <RequireAuth>
     <div class="flex flex-col md:flex-row gap-3 items-start">
       <!-- Nav menu -->
@@ -106,6 +113,7 @@ import {
   FriendRequestDTO,
   FriendRequestDirection,
   ListFriendRequestsResponseDTO,
+  ProfileDTO,
 } from '@bottomtime/api';
 
 import { onServerPrefetch, reactive, useSSRContext } from 'vue';
@@ -118,6 +126,7 @@ import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
 import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import FriendRequestsList from '../components/friends/friend-requests-list.vue';
+import ProfilePanel from '../components/users/profile-panel.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
@@ -125,12 +134,14 @@ import { useCurrentUser, useToasts } from '../store';
 
 interface FriendRequestsViewState {
   declineReason: string;
+  friendProfile?: ProfileDTO | null;
   friendRequests: ListFriendRequestsResponseDTO;
   isAcceptingRequest: boolean;
   isDecliningRequest: boolean;
   selectedRequest: FriendRequestDTO | null;
   showConfirmAccept: boolean;
   showConfirmDecline: boolean;
+  showFriendProfile: boolean;
 }
 
 const client = useClient();
@@ -150,6 +161,7 @@ const state = reactive<FriendRequestsViewState>({
   selectedRequest: null,
   showConfirmAccept: false,
   showConfirmDecline: false,
+  showFriendProfile: false,
 });
 
 onServerPrefetch(async () => {
@@ -321,5 +333,36 @@ function onDismissFriendRequest(dto: FriendRequestDTO) {
   }
 }
 
-function onSelectFriendRequest(request: FriendRequestDTO) {}
+async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
+  state.friendProfile = undefined;
+  state.selectedRequest = request;
+  state.showFriendProfile = true;
+
+  await oops(
+    async () => {
+      state.friendProfile = await client.users.getProfile(
+        request.friend.username,
+      );
+    },
+    {
+      [404]: () => {
+        state.friendProfile = null;
+      },
+      default: () => {
+        state.showFriendProfile = false;
+        toasts.toast({
+          id: 'get-profile-failed',
+          message:
+            "An error occurred while trying to retrieve the user's profile info. Please try again later.",
+          type: ToastType.Error,
+        });
+      },
+    },
+  );
+}
+
+function onCloseFriendProfile() {
+  state.showFriendProfile = false;
+  state.selectedRequest = null;
+}
 </script>

@@ -3,6 +3,8 @@ import {
   FriendRequestDTO,
   FriendRequestDirection,
   ListFriendRequestsResponseDTO,
+  LogBookSharing,
+  ProfileDTO,
   UserDTO,
 } from '@bottomtime/api';
 import { FriendRequest } from '@bottomtime/api/src/client/friend-request';
@@ -368,5 +370,75 @@ describe('Friend requests view', () => {
     ).toBe(false);
   });
 
-  it.todo('test selecting a friend request and showing the friend profile');
+  it('will display the profile of the user who sent the friend request when their name is clicked', async () => {
+    const wrapper = mount(FriendRequestsView, opts);
+    const request = friendRequestData.friendRequests[0];
+    const profile: ProfileDTO = {
+      userId: request.friendId,
+      memberSince: new Date(),
+      username: request.friend.username,
+      avatar: request.friend.avatar,
+      bio: faker.person.bio(),
+      experienceLevel: 'Expert',
+      location: request.friend.location,
+      logBookSharing: LogBookSharing.Public,
+      name: request.friend.name,
+      startedDiving: '1989',
+    };
+    const spy = jest
+      .spyOn(client.users, 'getProfile')
+      .mockResolvedValue(profile);
+
+    await wrapper
+      .get(`[data-testid="select-request-${request.friendId}"]`)
+      .trigger('click');
+    await flushPromises();
+
+    const profileName = wrapper.find('[data-testid="profile-name"]');
+    expect(profileName.isVisible()).toBe(true);
+    expect(profileName.text()).toBe(profile.name);
+
+    expect(spy).toHaveBeenCalledWith(request.friend.username);
+  });
+
+  it("will show a not found message if the user's profile cannot be retrieved", async () => {
+    const wrapper = mount(FriendRequestsView, opts);
+    const request = friendRequestData.friendRequests[0];
+    const spy = jest.spyOn(client.users, 'getProfile').mockRejectedValue(
+      createAxiosError({
+        message: 'Could not find profile',
+        method: 'GET',
+        path: '/api/users/user',
+        status: 404,
+      }),
+    );
+
+    await wrapper
+      .get(`[data-testid="select-request-${request.friendId}"]`)
+      .trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="profile-not-found"]').isVisible()).toBe(
+      true,
+    );
+    expect(spy).toHaveBeenCalledWith(request.friend.username);
+  });
+
+  it('will show an error toast if something goes wrong while retrieving profile', async () => {
+    const wrapper = mount(FriendRequestsView, opts);
+    const request = friendRequestData.friendRequests[0];
+    const spy = jest
+      .spyOn(client.users, 'getProfile')
+      .mockRejectedValue(new Error('nope'));
+
+    await wrapper
+      .get(`[data-testid="select-request-${request.friendId}"]`)
+      .trigger('click');
+    await flushPromises();
+
+    expect(toasts.toasts).toHaveLength(1);
+    expect(toasts.toasts[0].id).toBe('get-profile-failed');
+    expect(wrapper.find('[data-testid="drawer-panel"]').exists()).toBe(false);
+    expect(spy).toHaveBeenCalledWith(request.friend.username);
+  });
 });
