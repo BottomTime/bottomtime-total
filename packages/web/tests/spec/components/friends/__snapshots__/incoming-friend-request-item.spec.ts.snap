@@ -27,7 +27,13 @@ exports[`Incoming friend request list item will render correctly for a declined 
     <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if-->Test User
       </button><span class="text-lg font-bold">@testuser</span></p>
-    <div class="flex space-x-3 text-lg italic text-danger"><span><i class="fa-regular fa-circle-xmark"></i></span><span>This friend request has been declined.</span></div>
+    <div class="flex space-x-3 text-danger">
+      <div class="my-1"><i class="fa-regular fa-circle-xmark"></i></div>
+      <div>
+        <p class="text-lg italic">This friend request has been declined.</p>
+        <p class="text-sm">"Nope. Denied!"</p>
+      </div>
+    </div>
   </div>
   <div><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
       <!--v-if--> Dismiss
@@ -42,7 +48,13 @@ exports[`Incoming friend request list item will render correctly for a declined 
     <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if-->Test User
       </button><span class="text-lg font-bold">@testuser</span></p>
-    <div class="flex space-x-3 text-lg italic text-danger"><span><i class="fa-regular fa-circle-xmark"></i></span><span>This friend request has been declined.</span></div>
+    <div class="flex space-x-3 text-danger">
+      <div class="my-1"><i class="fa-regular fa-circle-xmark"></i></div>
+      <div>
+        <p class="text-lg italic">This friend request has been declined.</p>
+        <!--v-if-->
+      </div>
+    </div>
   </div>
   <div><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
       <!--v-if--> Dismiss
