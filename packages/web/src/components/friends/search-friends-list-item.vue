@@ -1,8 +1,8 @@
 <template>
   <li
-    class="flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-sm p-2"
+    class="flex space-x-3 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-sm p-2"
   >
-    <div class="min-w-[32px] my-2">
+    <div class="w-[32px]">
       <UserAvatar
         :avatar="user.avatar ?? undefined"
         :display-name="user.name || user.username"
@@ -17,7 +17,7 @@
         </span>
 
         <span v-if="user.name" class="text-lg">
-          {{ `(@${user.username})` }}
+          {{ `@${user.username}` }}
         </span>
       </p>
 
@@ -29,13 +29,16 @@
       </p>
 
       <p class="text-sm italic flex space-x-3 text-grey-400">
-        <span class="font-bold">Member since:</span>
+        <span class="font-bold">Joined:</span>
         <span>{{ dayjs(user.memberSince).fromNow() }}</span>
       </p>
     </div>
 
     <div>
-      <FormButton @click="$emit('send-request', user)">
+      <FormButton
+        :test-id="`send-request-${user.username}`"
+        @click="$emit('send-request', user)"
+      >
         Send Friend Request
       </FormButton>
     </div>

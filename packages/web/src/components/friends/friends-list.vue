@@ -16,7 +16,11 @@
         test-id="sort-order"
         :options="SortOrderOptions"
       />
-      <FormButton type="primary" @click="$emit('add-friend')">
+      <FormButton
+        type="primary"
+        test-id="add-friend"
+        @click="$emit('add-friend')"
+      >
         Add Friend
       </FormButton>
     </div>

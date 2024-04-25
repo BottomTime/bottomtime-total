@@ -185,4 +185,14 @@ describe('Friends list component', () => {
       [FriendsSortBy.FriendsSince, SortOrder.Descending],
     ]);
   });
+
+  it('will emit "add-friend" event when Add Friend button is clicked', async () => {
+    const wrapper = mount(FriendsList, {
+      props: {
+        friends: friendData,
+      },
+    });
+    await wrapper.get('[data-testid="add-friend"]').trigger('click');
+    expect(wrapper.emitted('add-friend')).toEqual([[]]);
+  });
 });
