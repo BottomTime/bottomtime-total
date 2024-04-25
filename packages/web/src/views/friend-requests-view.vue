@@ -80,6 +80,7 @@
 
   <ProfilePanel
     :profile="state.friendProfile"
+    :is-loading="state.isLoadingProfile"
     :visible="state.showFriendProfile"
     @close="onCloseFriendProfile"
   />
@@ -134,10 +135,11 @@ import { useCurrentUser, useToasts } from '../store';
 
 interface FriendRequestsViewState {
   declineReason: string;
-  friendProfile?: ProfileDTO | null;
+  friendProfile?: ProfileDTO;
   friendRequests: ListFriendRequestsResponseDTO;
   isAcceptingRequest: boolean;
   isDecliningRequest: boolean;
+  isLoadingProfile: boolean;
   selectedRequest: FriendRequestDTO | null;
   showConfirmAccept: boolean;
   showConfirmDecline: boolean;
@@ -158,6 +160,7 @@ const state = reactive<FriendRequestsViewState>({
     : { friendRequests: [], totalCount: 0 },
   isAcceptingRequest: false,
   isDecliningRequest: false,
+  isLoadingProfile: false,
   selectedRequest: null,
   showConfirmAccept: false,
   showConfirmDecline: false,
@@ -334,6 +337,7 @@ function onDismissFriendRequest(dto: FriendRequestDTO) {
 }
 
 async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
+  state.isLoadingProfile = true;
   state.friendProfile = undefined;
   state.selectedRequest = request;
   state.showFriendProfile = true;
@@ -346,7 +350,7 @@ async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
     },
     {
       [404]: () => {
-        state.friendProfile = null;
+        /* No-op. A "not found message" will be displayed. */
       },
       default: () => {
         state.showFriendProfile = false;
@@ -359,6 +363,8 @@ async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
       },
     },
   );
+
+  state.isLoadingProfile = false;
 }
 
 function onCloseFriendProfile() {

@@ -5,10 +5,21 @@
     :full-screen="profile ? `/profile/${profile.username}` : undefined"
     @close="$emit('close')"
   >
-    <ViewProfile v-if="profile" :profile="profile" />
+    <div
+      v-if="isLoading"
+      class="my-12 text-center text-xl italic space-x-3"
+      data-testid="loading-profile"
+    >
+      <span>
+        <i class="fa-solid fa-spinner fa-spin"></i>
+      </span>
+      <span>Loading profile info...</span>
+    </div>
+
+    <ViewProfile v-else-if="profile" :profile="profile" />
 
     <div
-      v-else-if="profile === null"
+      v-else
       class="my-12 text-center text-xl italic space-x-3"
       data-testid="profile-not-found"
     >
@@ -18,17 +29,6 @@
       <span>
         Oops! We can't seem to find this user's profile info at the moment.
       </span>
-    </div>
-
-    <div
-      v-else
-      class="my-12 text-center text-xl italic space-x-3"
-      data-testid="loading-profile"
-    >
-      <span>
-        <i class="fa-solid fa-spinner fa-spin"></i>
-      </span>
-      <span>Loading profile info...</span>
     </div>
   </DrawerPanel>
 </template>
@@ -41,7 +41,7 @@ import ViewProfile from './view-profile.vue';
 
 interface ProfilePanelProps {
   isLoading?: boolean;
-  profile?: ProfileDTO | null;
+  profile?: ProfileDTO;
   visible?: boolean;
 }
 
