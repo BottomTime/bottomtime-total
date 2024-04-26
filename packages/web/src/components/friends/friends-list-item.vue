@@ -29,24 +29,24 @@
         </span>
       </p>
 
-      <div class="flex flex-col lg:flex-row space-x-0 lg:space-x-3">
+      <div class="flex flex-col xl:flex-row space-x-0 xl:space-x-3">
         <p class="flex space-x-2">
           <span class="font-bold min-w-20 text-right">Friends for:</span>
-          <span class="min-w-36">
+          <span class="w-36">
             {{ dayjs(friend.friendsSince).fromNow(true) }}
           </span>
         </p>
 
         <p class="flex space-x-2">
           <span class="font-bold min-w-20 text-right">Member for:</span>
-          <span class="min-w-36">
+          <span class="w-36">
             {{ dayjs(friend.memberSince).fromNow(true) }}
           </span>
         </p>
 
         <p v-if="friend.location" class="flex space-x-2">
           <span class="font-bold min-w-20 text-right">Location:</span>
-          <span class="min-w-36">
+          <span class="w-36">
             {{ friend.location }}
           </span>
         </p>

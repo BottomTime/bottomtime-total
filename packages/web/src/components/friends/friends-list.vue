@@ -1,81 +1,83 @@
 <template>
-  <FormBox class="flex flex-col lg:flex-row justify-between items-center">
-    <p data-testid="friends-count">
-      <span>Showing </span>
-      <span class="font-bold">{{ friends.friends.length }}</span>
-      <span> of </span>
-      <span class="font-bold">{{ friends.totalCount }}</span>
-      <span> friends</span>
-    </p>
-
-    <div class="flex space-x-3 items-baseline">
-      <label class="font-bold" for="sort-order">Sort order:</label>
-      <FormSelect
-        v-model="sortOrderString"
-        control-id="sort-order"
-        test-id="sort-order"
-        :options="SortOrderOptions"
-      />
-      <FormButton
-        type="primary"
-        test-id="add-friend"
-        @click="$emit('add-friend')"
-      >
-        Add Friend
-      </FormButton>
-    </div>
-  </FormBox>
-
-  <ul v-if="friends.friends.length" data-testid="friends-list">
-    <FriendsListItem
-      v-for="friend in friends.friends"
-      :key="friend.id"
-      :friend="friend"
-      @select="(friend) => $emit('select', friend)"
-      @unfriend="(friend) => $emit('unfriend', friend)"
-    />
-
-    <li
-      v-if="friends.friends.length < friends.totalCount"
-      class="min-h-24 flex items-center justify-center"
-    >
-      <p
-        v-if="isLoadingMore"
-        class="flex space-x-3 text-lg italic"
-        data-testid="friends-loading-more"
-      >
-        <span>
-          <i class="fa-solid fa-spinner fa-spin"></i>
-        </span>
-        <span>Loading more friends...</span>
+  <div>
+    <FormBox class="flex flex-col lg:flex-row justify-between items-center">
+      <p data-testid="friends-count">
+        <span>Showing </span>
+        <span class="font-bold">{{ friends.friends.length }}</span>
+        <span> of </span>
+        <span class="font-bold">{{ friends.totalCount }}</span>
+        <span> friends</span>
       </p>
 
-      <FormButton
-        v-else
-        type="link"
-        size="lg"
-        test-id="friends-load-more"
-        @click="$emit('load-more')"
-      >
-        Load more friends...
-      </FormButton>
-    </li>
-  </ul>
+      <div class="flex space-x-3 items-baseline">
+        <label class="font-bold" for="sort-order">Sort order:</label>
+        <FormSelect
+          v-model="sortOrderString"
+          control-id="sort-order"
+          test-id="sort-order"
+          :options="SortOrderOptions"
+        />
+        <FormButton
+          type="primary"
+          test-id="add-friend"
+          @click="$emit('add-friend')"
+        >
+          Add Friend
+        </FormButton>
+      </div>
+    </FormBox>
 
-  <p
-    v-else
-    data-testid="no-friends"
-    class="py-6 text-lg italic flex space-x-3 justify-center"
-  >
-    <span>
-      <i class="fa-solid fa-circle-info"></i>
-    </span>
-    <span> You have not added any friends yet. You can click the </span>
-    <FormButton type="link" size="md" @click="$emit('add-friend')">
-      here
-    </FormButton>
-    <span> to search for your first dive buddy!</span>
-  </p>
+    <ul v-if="friends.friends.length" data-testid="friends-list">
+      <FriendsListItem
+        v-for="friend in friends.friends"
+        :key="friend.id"
+        :friend="friend"
+        @select="(friend) => $emit('select', friend)"
+        @unfriend="(friend) => $emit('unfriend', friend)"
+      />
+
+      <li
+        v-if="friends.friends.length < friends.totalCount"
+        class="min-h-24 flex items-center justify-center"
+      >
+        <p
+          v-if="isLoadingMore"
+          class="flex space-x-3 text-lg italic"
+          data-testid="friends-loading-more"
+        >
+          <span>
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          </span>
+          <span>Loading more friends...</span>
+        </p>
+
+        <FormButton
+          v-else
+          type="link"
+          size="lg"
+          test-id="friends-load-more"
+          @click="$emit('load-more')"
+        >
+          Load more friends...
+        </FormButton>
+      </li>
+    </ul>
+
+    <p
+      v-else
+      data-testid="no-friends"
+      class="py-6 text-lg italic flex space-x-3 justify-center"
+    >
+      <span>
+        <i class="fa-solid fa-circle-info"></i>
+      </span>
+      <span> You have not added any friends yet. You can click the </span>
+      <FormButton type="link" size="md" @click="$emit('add-friend')">
+        here
+      </FormButton>
+      <span> to search for your first dive buddy!</span>
+    </p>
+  </div>
 </template>
 
 <script lang="ts" setup>

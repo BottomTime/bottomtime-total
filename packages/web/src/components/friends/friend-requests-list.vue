@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-col space-y-3">
+  <div class="grow flex flex-col space-y-3">
     <FormBox>
       <p data-testid="request-counts">
         <span>Showing </span>
