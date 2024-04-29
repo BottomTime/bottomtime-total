@@ -1,6 +1,7 @@
 import {
   DepthUnit,
   FriendRequestDirection,
+  ListFriendRequestsParams,
   PressureUnit,
   TemperatureUnit,
   UserRole,
@@ -67,7 +68,7 @@ function friendRequestUrl(username: string, friend?: string): string {
 }
 
 function acknowledgeRequestUrl(username: string, friend: string): string {
-  return `/api/users/${username}/friendRequests/${friend}/acknowledge`;
+  return `${friendRequestUrl(username, friend)}/acknowledge`;
 }
 
 describe('Friend Requests End-to-End Tests', () => {
@@ -167,30 +168,34 @@ describe('Friend Requests End-to-End Tests', () => {
     });
 
     it("will return a list of the user's friend requests", async () => {
+      const options: ListFriendRequestsParams = {
+        direction: FriendRequestDirection.Both,
+        skip: 12,
+        limit: 6,
+        showExpired: true,
+      };
       await insertFriendRequests(regularUser);
       const { body } = await request(server)
         .get(friendRequestUrl(regularUser.username))
         .set(...regularAuthHeader)
-        .query({
-          direction: FriendRequestDirection.Both,
-          skip: 12,
-          limit: 6,
-        })
+        .query(options)
         .expect(200);
 
       expect(body).toMatchSnapshot();
     });
 
     it('will allow admins to view friend requests for any user', async () => {
+      const options: ListFriendRequestsParams = {
+        direction: FriendRequestDirection.Both,
+        skip: 12,
+        limit: 6,
+        showExpired: true,
+      };
       await insertFriendRequests(regularUser);
       const { body } = await request(server)
         .get(friendRequestUrl(regularUser.username))
         .set(...adminAuthHeader)
-        .query({
-          direction: FriendRequestDirection.Both,
-          skip: 12,
-          limit: 6,
-        })
+        .query(options)
         .expect(200);
 
       expect(body).toMatchSnapshot();
@@ -445,8 +450,8 @@ describe('Friend Requests End-to-End Tests', () => {
         const friendRequest = new FriendRequestEntity();
 
         friendRequest.id = uuid();
-        friendRequest.from = regularUser;
-        friendRequest.to = friend;
+        friendRequest.from = friend;
+        friendRequest.to = regularUser;
         friendRequest.created = new Date();
         friendRequest.expires = new Date(Date.now() + 10000);
 
@@ -515,8 +520,8 @@ describe('Friend Requests End-to-End Tests', () => {
               { user: friend, friend: regularUser },
             ]),
             FriendRequests.findOneByOrFail({
-              to: friend,
-              from: regularUser,
+              to: regularUser,
+              from: friend,
             }),
           ]);
 
@@ -544,8 +549,8 @@ describe('Friend Requests End-to-End Tests', () => {
               },
             ]),
             FriendRequests.findOneByOrFail({
-              to: friend,
-              from: regularUser,
+              to: regularUser,
+              from: friend,
             }),
           ]);
 

@@ -1,7 +1,7 @@
 import { NoSuchKey, NotFound, S3Client } from '@aws-sdk/client-s3';
 import * as Presigner from '@aws-sdk/s3-request-presigner';
 
-import { open } from 'fs/promises';
+import { FileHandle, open } from 'fs/promises';
 import path from 'path';
 
 import { Config } from '../../../src/config';
@@ -65,57 +65,65 @@ describe('Storage Service', () => {
   });
 
   it('will retrieve a file upon request', async () => {
-    const fd = await open(
-      path.resolve(__dirname, '../../fixtures/text-file.txt'),
-      'r',
-    );
-    const stream = fd.readableWebStream();
-    const response = {
-      $metadata: {
-        httpStatusCode: 200,
-        requestId: 'G7YKMWR052STC5B1',
-        extendedRequestId:
-          'MtMdDVXl78hQVNQr4zTrHUj2Q8Ga0Ue+AkMdE0N9ctRmDLTA3IhxW4gjl1S8hwVqXQFfnkClh5c=',
-        cfId: undefined,
-        attempts: 1,
-        totalRetryDelay: 0,
-      },
-      AcceptRanges: 'bytes',
-      LastModified: new Date('2024-02-18T14:31:50.000Z'),
-      ContentLength: 27,
-      ETag: '"ea7c44f60c938333d5ead34460b68ba4"',
-      ContentType: 'text/plain',
-      ServerSideEncryption: 'AES256',
-      Metadata: {},
-      Body: {
-        transformToWebStream: () => stream,
-      },
-    };
-    jest.spyOn(client, 'send').mockResolvedValue(response as never);
+    let fd: FileHandle;
 
-    const result = await service.readFile(key);
+    try {
+      fd = await open(
+        path.resolve(__dirname, '../../fixtures/text-file.txt'),
+        'r',
+      );
+      const stream = fd.readableWebStream();
+      const response = {
+        $metadata: {
+          httpStatusCode: 200,
+          requestId: 'G7YKMWR052STC5B1',
+          extendedRequestId:
+            'MtMdDVXl78hQVNQr4zTrHUj2Q8Ga0Ue+AkMdE0N9ctRmDLTA3IhxW4gjl1S8hwVqXQFfnkClh5c=',
+          cfId: undefined,
+          attempts: 1,
+          totalRetryDelay: 0,
+        },
+        AcceptRanges: 'bytes',
+        LastModified: new Date('2024-02-18T14:31:50.000Z'),
+        ContentLength: 27,
+        ETag: '"ea7c44f60c938333d5ead34460b68ba4"',
+        ContentType: 'text/plain',
+        ServerSideEncryption: 'AES256',
+        Metadata: {},
+        Body: {
+          transformToWebStream: () => stream,
+        },
+      };
+      jest.spyOn(client, 'send').mockResolvedValue(response as never);
 
-    expect(result).not.toBeNull();
-    expect(result!.key).toBe(key);
-    expect(result!.lastModified).toEqual(new Date('2024-02-18T14:31:50.000Z'));
-    expect(result!.mimeType).toBe('text/plain');
-    expect(result!.size).toBe(27);
+      const result = await service.readFile(key);
 
-    const reader = result!.content.getReader();
-    let finished = false;
-    let text = '';
-    const textDecoder = new TextDecoder();
+      expect(result).not.toBeNull();
+      expect(result!.key).toBe(key);
+      expect(result!.lastModified).toEqual(
+        new Date('2024-02-18T14:31:50.000Z'),
+      );
+      expect(result!.mimeType).toBe('text/plain');
+      expect(result!.size).toBe(27);
 
-    while (!finished) {
-      const { done, value } = await reader.read();
-      if (done) {
-        finished = true;
-      } else {
-        text += textDecoder.decode(value!);
+      const reader = result!.content.getReader();
+      let finished = false;
+      let text = '';
+      const textDecoder = new TextDecoder();
+
+      while (!finished) {
+        const { done, value } = await reader.read();
+        if (done) {
+          finished = true;
+        } else {
+          text += textDecoder.decode(value!);
+        }
       }
-    }
 
-    expect(text).toEqual('This is a small text file.\n');
+      expect(text).toEqual('This is a small text file.\n');
+    } finally {
+      await fd!.close();
+    }
   });
 
   it('will return null when a file is requested that does not exist', async () => {

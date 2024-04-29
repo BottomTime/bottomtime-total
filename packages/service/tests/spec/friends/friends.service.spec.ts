@@ -9,6 +9,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
+import { faker } from '@faker-js/faker';
 import {
   BadRequestException,
   ConflictException,
@@ -256,6 +257,7 @@ describe('Friends Service', () => {
     it('will list friend requests with default options', async () => {
       const results = await service.listFriendRequests({
         userId: userData.id,
+        showExpired: true,
       });
       expect(results.friendRequests).toHaveLength(42);
       expect(results).toMatchSnapshot();
@@ -264,6 +266,7 @@ describe('Friends Service', () => {
     it('will allow pagination of friend requests', async () => {
       const results = await service.listFriendRequests({
         userId: userData.id,
+        showExpired: true,
         skip: 10,
         limit: 5,
       });
@@ -276,6 +279,7 @@ describe('Friends Service', () => {
         const results = await service.listFriendRequests({
           userId: userData.id,
           direction,
+          showExpired: true,
           limit: 5,
         });
         expect(results).toMatchSnapshot();
@@ -285,10 +289,21 @@ describe('Friends Service', () => {
     it('will return acknowledged friend requests when requested', async () => {
       const results = await service.listFriendRequests({
         userId: userData.id,
+        showExpired: true,
         showAcknowledged: true,
       });
       expect(results.friendRequests).toHaveLength(50);
       expect(results).toMatchSnapshot();
+    });
+
+    it('will filter out expired friend requests when requested', async () => {
+      const results = await service.listFriendRequests({
+        userId: userData.id,
+      });
+      expect(results).toEqual({
+        friendRequests: [],
+        totalCount: 0,
+      });
     });
   });
 
