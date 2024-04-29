@@ -9,8 +9,8 @@ export function fakeDepth(): DepthDTO {
   const unit = faker.helpers.arrayElement([DepthUnit.Feet, DepthUnit.Meters]);
   const depth =
     unit === DepthUnit.Feet
-      ? faker.number.float({ min: 20, max: 145, precision: 0.1 })
-      : faker.number.float({ min: 6, max: 44, precision: 0.01 });
+      ? faker.number.float({ min: 20, max: 145, multipleOf: 0.1 })
+      : faker.number.float({ min: 6, max: 44, multipleOf: 0.01 });
 
   return { depth, unit };
 }
@@ -48,12 +48,12 @@ export function fakeDiveSite(userIds: string[]): DiveSiteEntity {
   data.averageRating = faker.number.float({
     min: 1,
     max: 5,
-    precision: 0.1,
+    multipleOf: 0.1,
   });
   data.averageDifficulty = faker.number.float({
     min: 1,
     max: 5,
-    precision: 0.1,
+    multipleOf: 0.1,
   });
 
   return data;

@@ -59,7 +59,7 @@ export function createTestLogEntry(
 
   data.maxDepth =
     options?.maxDepth ??
-    faker.number.float({ min: 10, max: 40, precision: 0.01 });
+    faker.number.float({ min: 10, max: 40, multipleOf: 0.01 });
   data.maxDepthUnit =
     options?.maxDepthUnit ??
     faker.helpers.arrayElement(Object.values(DepthUnit));

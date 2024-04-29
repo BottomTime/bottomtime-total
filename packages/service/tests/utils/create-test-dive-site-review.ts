@@ -42,11 +42,11 @@ export function createTestDiveSiteReview(
     null;
   data.title = options?.title || title;
   data.rating =
-    options?.rating ?? faker.number.float({ min: 1, max: 5, precision: 0.01 });
+    options?.rating ?? faker.number.float({ min: 1, max: 5, multipleOf: 0.01 });
   data.difficulty =
     options?.difficulty ??
     faker.helpers.maybe(
-      () => faker.number.float({ min: 1, max: 5, precision: 0.01 }),
+      () => faker.number.float({ min: 1, max: 5, multipleOf: 0.01 }),
       {
         probability: 0.7,
       },

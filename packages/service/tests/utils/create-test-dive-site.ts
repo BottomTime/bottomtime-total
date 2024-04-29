@@ -51,7 +51,8 @@ export function createTestDiveSite(
   data.name = name;
   data.description = options?.description ?? faker.lorem.paragraph();
   data.depth =
-    options?.depth ?? faker.number.float({ min: 10, max: 40, precision: 0.01 });
+    options?.depth ??
+    faker.number.float({ min: 10, max: 40, multipleOf: 0.01 });
   data.depthUnit =
     options?.depthUnit ?? faker.helpers.arrayElement(Object.values(DepthUnit));
   data.location = location;
@@ -72,14 +73,14 @@ export function createTestDiveSite(
   data.averageRating =
     options?.averageRating ??
     faker.helpers.maybe(
-      () => faker.number.float({ min: 1, max: 5, precision: 0.01 }),
+      () => faker.number.float({ min: 1, max: 5, multipleOf: 0.01 }),
       { probability: 0.9 },
     ) ??
     null;
   data.averageDifficulty =
     options?.averageDifficulty ??
     faker.helpers.maybe(
-      () => faker.number.float({ min: 1, max: 5, precision: 0.01 }),
+      () => faker.number.float({ min: 1, max: 5, multipleOf: 0.01 }),
       { probability: 0.9 },
     ) ??
     null;
