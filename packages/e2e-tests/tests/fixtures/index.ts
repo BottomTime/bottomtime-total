@@ -7,6 +7,7 @@ import { Client } from 'pg';
 
 import { AuthFixture } from './auth.fixture';
 import { DiveSitesFixture } from './dive-sites.fixture';
+import { FriendsFixture } from './friends.fixture';
 import { createAuthToken } from './jwt';
 import { PostgresFixture } from './postgres.fixture';
 
@@ -15,6 +16,7 @@ export const test = base.extend<{
   auth: AuthFixture;
   db: PostgresFixture;
   diveSites: DiveSitesFixture;
+  friends: FriendsFixture;
 }>({
   api: async ({ db }, use) => {
     // Create an admin user and matching auth token
@@ -54,6 +56,11 @@ export const test = base.extend<{
   diveSites: async ({ page }, use) => {
     const diveSites = new DiveSitesFixture(page);
     await use(diveSites);
+  },
+
+  friends: async ({ page }, use) => {
+    const friends = new FriendsFixture(page);
+    await use(friends);
   },
 });
 
