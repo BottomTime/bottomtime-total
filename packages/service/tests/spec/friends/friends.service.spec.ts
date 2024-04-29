@@ -9,7 +9,6 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { faker } from '@faker-js/faker';
 import {
   BadRequestException,
   ConflictException,
