@@ -429,6 +429,11 @@ describe('Friends view', () => {
     friends.forEach((friend, i) => {
       expect(friend.text()).toContain(friendsData.friends[i].username);
     });
+
+    expect(spy).toHaveBeenCalledWith(BasicUser.username, {
+      limit: 50,
+      skip: 20,
+    });
   });
 
   it('will load more friend requests when the load more button is clicked', async () => {
@@ -456,6 +461,13 @@ describe('Friends view', () => {
       expect(request.text()).toContain(
         friendRequestsData.friendRequests[i].friend.username,
       );
+    });
+
+    expect(spy).toHaveBeenCalledWith(BasicUser.username, {
+      direction: FriendRequestDirection.Outgoing,
+      limit: 50,
+      skip: 20,
+      showAcknowledged: true,
     });
   });
 
