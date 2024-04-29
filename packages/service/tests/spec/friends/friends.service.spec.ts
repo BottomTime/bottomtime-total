@@ -9,6 +9,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
+import { faker } from '@faker-js/faker';
 import {
   BadRequestException,
   ConflictException,
@@ -29,6 +30,7 @@ import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestFriendshipData from '../../fixtures/friends.json';
 import TestFriendData from '../../fixtures/user-search-data.json';
 import { InsertableUser, createTestUser } from '../../utils';
+import { createTestFriendRequest } from '../../utils/create-test-friend-request';
 
 type InsertableFriendship = Omit<FriendshipEntity, 'user' | 'friend'> & {
   user: InsertableUser;
@@ -662,7 +664,7 @@ describe('Friends Service', () => {
       ).resolves.toBe(false);
     });
 
-    it('will not cancel a friend request that has already been accepted', async () => {
+    it('will delete a friend request that has already been accepted', async () => {
       const originUser = createTestUser();
       const destinationUser = createTestUser();
       const friendRequest = new FriendRequestEntity();
@@ -679,7 +681,14 @@ describe('Friends Service', () => {
 
       await expect(
         service.cancelFriendRequest(originUser.id, destinationUser.id),
-      ).rejects.toThrowError(BadRequestException);
+      ).resolves.toBe(true);
+
+      const request = await FriendRequests.findOneBy({
+        from: originUser,
+        to: destinationUser,
+      });
+
+      expect(request).toBeNull();
     });
 
     it('will reject a friend request with no reason given and extend the expiration', async () => {
@@ -815,5 +824,29 @@ describe('Friends Service', () => {
     });
   });
 
-  it.todo('Test purging expired friend requests');
+  it('will purge friend requests that have expired', async () => {
+    await Users.save([userData, ...friendData]);
+    const friendRequests = new Array<FriendRequestEntity>(4);
+    friendRequests[0] = createTestFriendRequest(userData.id, friendData[0].id, {
+      expires: faker.date.recent({ days: 20 }),
+    });
+    friendRequests[1] = createTestFriendRequest(userData.id, friendData[1].id, {
+      expires: faker.date.soon({ days: 10 }),
+    });
+    friendRequests[2] = createTestFriendRequest(friendData[2].id, userData.id, {
+      expires: faker.date.recent({ days: 5 }),
+    });
+    friendRequests[3] = createTestFriendRequest(friendData[3].id, userData.id, {
+      expires: faker.date.soon({ days: 15 }),
+    });
+    await FriendRequests.save(friendRequests);
+
+    await service.purgeExpiredFriendRequests();
+
+    const remaining = await FriendRequests.find();
+    expect(remaining).toHaveLength(2);
+    remaining.forEach((r) => {
+      expect(r.expires.valueOf()).toBeGreaterThanOrEqual(Date.now());
+    });
+  });
 });

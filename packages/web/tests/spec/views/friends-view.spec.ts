@@ -409,4 +409,81 @@ describe('Friends view', () => {
       true,
     );
   });
+
+  it('will load more friends when the load more button is clicked', async () => {
+    const spy = jest.spyOn(client.friends, 'listFriends').mockResolvedValue({
+      friends: friendsData.friends
+        .slice(20, 40)
+        .map((f) => new Friend(client.axios, f)),
+      totalCount: friendsData.totalCount,
+    });
+    initalState.friends!.friends = initalState.friends!.friends.slice(0, 20);
+
+    const wrapper = mount(FriendsView, opts);
+    await wrapper.get('[data-testid="friends-load-more"]').trigger('click');
+    await flushPromises();
+
+    const friends = wrapper.findAllComponents(FriendsListItem);
+    expect(friends).toHaveLength(40);
+
+    friends.forEach((friend, i) => {
+      expect(friend.text()).toContain(friendsData.friends[i].username);
+    });
+  });
+
+  it('will load more friend requests when the load more button is clicked', async () => {
+    const spy = jest
+      .spyOn(client.friends, 'listFriendRequests')
+      .mockResolvedValue({
+        friendRequests: friendRequestsData.friendRequests
+          .slice(20, 40)
+          .map((r) => new FriendRequest(client.axios, BasicUser.username, r)),
+        totalCount: friendRequestsData.totalCount,
+      });
+    initalState.friendRequests!.friendRequests =
+      initalState.friendRequests!.friendRequests.slice(0, 20);
+
+    const wrapper = mount(FriendsView, opts);
+    await wrapper
+      .get('[data-testid="friend-requests-load-more"]')
+      .trigger('click');
+    await flushPromises();
+
+    const requests = wrapper.findAllComponents(FriendRequestsListItem);
+    expect(requests).toHaveLength(40);
+
+    requests.forEach((request, i) => {
+      expect(request.text()).toContain(
+        friendRequestsData.friendRequests[i].friend.username,
+      );
+    });
+  });
+
+  it('will allow a user to dismiss an acknowledged friend request', async () => {
+    const requestDTO = friendRequestsData.friendRequests[0];
+    initalState.friendRequests = {
+      friendRequests: [requestDTO],
+      totalCount: 72,
+    };
+    initalState.friendRequests!.friendRequests[0].accepted = true;
+
+    const request = new FriendRequest(
+      client.axios,
+      BasicUser.username,
+      requestDTO,
+    );
+    jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
+    const spy = jest.spyOn(request, 'cancel').mockResolvedValue();
+
+    const wrapper = mount(FriendsView, opts);
+    await wrapper
+      .get(`[data-testid="dismiss-request-${request.friend.id}"]`)
+      .trigger('click');
+    await flushPromises();
+
+    expect(spy).toHaveBeenCalled();
+
+    expect(wrapper.find(RequestsCount).text()).toBe('Showing 0 of 71 requests');
+    expect(wrapper.findAllComponents(FriendRequestsListItem)).toHaveLength(0);
+  });
 });

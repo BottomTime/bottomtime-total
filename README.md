@@ -135,3 +135,16 @@ the changes right away.
 ```bash
 docker-compose watch
 ```
+
+## Other Notes to Developers
+
+### Upgrading Node Version
+
+When it comes time to upgrade to a newer version of Node.js updates will need to be made in the following places:
+
+- Update any instructions here in this README.md file.
+- Update the CircleCI config file at `.circleci/config.yml`. Update all references to Node Docker images so that the project is being built on the correct version.
+- Update the Dockerfiles (`Dockerfile.*`) in the project root - ensure that they are being built with images using the correct version of Node.js.
+- Don't forget to upgrade your own local Node.js runtime: `nvm install <version> && nvm use <version>`
+
+> **NOTE:** For stability please only use LTS versions of Node.js. (These are all even-numbered versions at the time of this writing.)

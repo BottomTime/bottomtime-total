@@ -97,10 +97,12 @@
         <!-- Friends list-->
         <FriendsList
           :friends="state.friends"
+          :is-loading-more="state.isLoadingMoreFriends"
           :sort-by="state.queryParams.sortBy"
           :sort-order="state.queryParams.sortOrder"
           @add-friend="onAddFriend"
           @change-sort-order="onChangeFriendsSortOrder"
+          @load-more="onLoadMoreFriends"
           @select="onSelectFriend"
           @unfriend="onUnfriend"
         />
@@ -111,9 +113,11 @@
           acknowledged.
         </p>
         <FriendRequestsList
+          :is-loading-more="state.isLoadingMoreRequests"
           :requests="state.pendingRequests"
           @cancel="onCancelRequest"
           @dismiss="onDismissRequest"
+          @load-more="onLoadMoreRequests"
           @select="onSelectFriendRequest"
         />
       </div>
@@ -160,6 +164,8 @@ interface FriendsViewState {
   friends: ListFriendsResponseDTO;
   isCancellingRequest: boolean;
   isLoadingProfile: boolean;
+  isLoadingMoreFriends: boolean;
+  isLoadingMoreRequests: boolean;
   isUnfriending: boolean;
   pendingRequests: ListFriendRequestsResponseDTO;
   queryParams: ListFriendsParams;
@@ -216,6 +222,8 @@ const state = reactive<FriendsViewState>({
   friends: initialState?.friends ?? { friends: [], totalCount: 0 },
   isCancellingRequest: false,
   isLoadingProfile: false,
+  isLoadingMoreFriends: false,
+  isLoadingMoreRequests: false,
   isUnfriending: false,
   pendingRequests: initialState?.friendRequests ?? {
     friendRequests: [],
@@ -265,6 +273,52 @@ async function refreshFriendRequests(): Promise<void> {
       totalCount: results.totalCount,
     };
   });
+}
+
+async function onLoadMoreFriends(): Promise<void> {
+  state.isLoadingMoreFriends = true;
+
+  await oops(async () => {
+    if (!currentUser.user) return;
+
+    const results = await client.friends.listFriends(
+      currentUser.user.username,
+      {
+        ...state.queryParams,
+        skip: state.friends.friends.length,
+      },
+    );
+
+    state.friends.friends.push(...results.friends.map((f) => f.toJSON()));
+    state.friends.totalCount = results.totalCount;
+  });
+
+  state.isLoadingMoreFriends = false;
+}
+
+async function onLoadMoreRequests(): Promise<void> {
+  state.isLoadingMoreRequests = true;
+
+  await oops(async () => {
+    if (!currentUser.user) return;
+
+    const results = await client.friends.listFriendRequests(
+      currentUser.user.username,
+      {
+        direction: FriendRequestDirection.Outgoing,
+        showAcknowledged: true,
+        limit: 50,
+        skip: state.pendingRequests.friendRequests.length,
+      },
+    );
+
+    state.pendingRequests.friendRequests.push(
+      ...results.friendRequests.map((r) => r.toJSON()),
+    );
+    state.pendingRequests.totalCount = results.totalCount;
+  });
+
+  state.isLoadingMoreRequests = false;
 }
 
 onServerPrefetch(async () => {

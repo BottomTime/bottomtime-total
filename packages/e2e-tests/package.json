@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "codegen": "playwright codegen http://127.0.0.1:4850",
+    "generate": "playwright codegen http://127.0.0.1:4850",
     "prepare": "playwright install",
     "test": "playwright test"
   },

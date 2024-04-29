@@ -430,22 +430,6 @@ export class FriendsService {
   }
 
   async cancelFriendRequest(from: string, to: string): Promise<boolean> {
-    const request = await this.FriendRequests.findOne({
-      where: {
-        from: { id: from },
-        to: { id: to },
-      },
-      select: ['id', 'accepted'],
-    });
-
-    if (!request) return false;
-
-    if (request.accepted) {
-      throw new BadRequestException(
-        'This friend request has already been accepted. You may need to unfriend the user instead.',
-      );
-    }
-
     const { affected } = await this.FriendRequests.delete({
       from: { id: from },
       to: { id: to },

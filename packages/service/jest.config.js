@@ -203,4 +203,8 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  // Work-around for memory issues. Should be fixed in Node v22 when we switch.
+  // See: https://jestjs.io/docs/configuration#workeridlememorylimit-numberstring
+  workerIdleMemoryLimit: '600MB',
 };

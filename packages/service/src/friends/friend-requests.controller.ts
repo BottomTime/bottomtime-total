@@ -406,16 +406,16 @@ export class FriendRequestsController {
    *     tags:
    *       - Friends
    *       - Users
-   *     summary: Cancel friend request
+   *     summary: Cancel/delete friend request
    *     operationId: cancelFriendRequest
    *     description: |
-   *       Cancels a friend request.
+   *       Cancels and deletes a request that has not yet been acknowledged or deletes a request that has already been acknowledged.
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/FriendUsername"
    *     responses:
    *       204:
-   *         description: The friend request was cancelled successfully.
+   *         description: The friend request was cancelled or deleted successfully.
    *       401:
    *         description: The request was rejected because the user is not authenticated.
    *         content:
@@ -423,7 +423,7 @@ export class FriendRequestsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    *       403:
-   *         description: The request was rejected because the user is not authorized to cancel friend requests to the target user.
+   *         description: The request was rejected because the user is not authorized to cancel/delete friend requests to the target user.
    *         content:
    *           application/json:
    *             schema:
