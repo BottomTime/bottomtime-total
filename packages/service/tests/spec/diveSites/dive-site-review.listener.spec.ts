@@ -95,7 +95,7 @@ describe('Dive Site Reviews Event Listeners', () => {
 
     await listener.handleReviewDeletedEvent({
       siteId: siteData.id,
-      reviewId: faker.datatype.uuid(),
+      reviewId: faker.string.uuid(),
     });
 
     const updatedSite = await DiveSites.findOneOrFail({
@@ -137,7 +137,7 @@ describe('Dive Site Reviews Event Listeners', () => {
 
     await listener.handleReviewDeletedEvent({
       siteId: siteData.id,
-      reviewId: faker.datatype.uuid(),
+      reviewId: faker.string.uuid(),
     });
 
     const updatedSite = await DiveSites.findOneOrFail({

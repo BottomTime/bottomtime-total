@@ -13,7 +13,6 @@ import {
   UserSchema,
 } from '../types';
 import { User } from './user';
-import { UserProfile } from './user-profile';
 
 export class UsersApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}

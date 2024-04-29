@@ -34,31 +34,31 @@ export function createTestDiveSite(
   creator: UserEntity,
   options?: Partial<DiveSiteEntity>,
 ): DiveSiteEntity {
-  const name = faker.random.words(2);
-  const location = faker.address.city();
+  const name = `${faker.word.adjective()} ${faker.word.adjective()} ${faker.word.noun()}`;
+  const location = faker.location.city();
 
   const data = new DiveSiteEntity();
 
-  data.id = options?.id ?? faker.datatype.uuid();
+  data.id = options?.id ?? faker.string.uuid();
   data.creator = creator;
-  data.createdOn = options?.createdOn ?? faker.date.past(1);
+  data.createdOn = options?.createdOn ?? faker.date.past({ years: 1 });
   data.updatedOn =
     options?.updatedOn ??
-    faker.helpers.maybe(() => faker.date.past(1), { probability: 0.5 }) ??
+    faker.helpers.maybe(() => faker.date.past({ years: 1 }), {
+      probability: 0.5,
+    }) ??
     null;
   data.name = name;
   data.description = options?.description ?? faker.lorem.paragraph();
-  data.depth = options?.depth ?? faker.datatype.number({ min: 10, max: 40 });
+  data.depth =
+    options?.depth ?? faker.number.float({ min: 10, max: 40, precision: 0.01 });
   data.depthUnit =
     options?.depthUnit ?? faker.helpers.arrayElement(Object.values(DepthUnit));
   data.location = location;
   data.directions = options?.directions ?? faker.lorem.paragraph();
   data.gps = options?.gps ?? {
     type: 'Point',
-    coordinates: [
-      parseFloat(faker.address.longitude()),
-      parseFloat(faker.address.latitude()),
-    ],
+    coordinates: [faker.location.longitude(), faker.location.latitude()],
   };
   data.shoreAccess =
     options?.shoreAccess ??
@@ -72,14 +72,14 @@ export function createTestDiveSite(
   data.averageRating =
     options?.averageRating ??
     faker.helpers.maybe(
-      () => faker.datatype.number({ min: 1, max: 5, precision: 0.01 }),
+      () => faker.number.float({ min: 1, max: 5, precision: 0.01 }),
       { probability: 0.9 },
     ) ??
     null;
   data.averageDifficulty =
     options?.averageDifficulty ??
     faker.helpers.maybe(
-      () => faker.datatype.number({ min: 1, max: 5, precision: 0.01 }),
+      () => faker.number.float({ min: 1, max: 5, precision: 0.01 }),
       { probability: 0.9 },
     ) ??
     null;

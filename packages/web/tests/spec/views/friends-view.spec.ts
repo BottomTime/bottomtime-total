@@ -30,6 +30,7 @@ import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser } from '../../../src/store';
 import FriendsView from '../../../src/views/friends-view.vue';
+import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestFriendsData from '../../fixtures/friends.json';
@@ -344,7 +345,28 @@ describe('Friends view', () => {
     );
   });
 
-  it('will show not found message if friend profile is not found', async () => {});
+  it('will show not found message if friend profile is not found', async () => {
+    jest.spyOn(client.users, 'getProfile').mockRejectedValue(
+      createAxiosError({
+        message: 'Could not find profile',
+        method: 'GET',
+        path: '/api/users/user',
+        status: 404,
+      }),
+    );
+
+    const wrapper = mount(FriendsView, opts);
+    const friend = friendsData.friends[9];
+
+    await wrapper
+      .get(`[data-testid="select-friend-${friend.username}"]`)
+      .trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="profile-not-found"]').isVisible()).toBe(
+      true,
+    );
+  });
 
   it('will show the profile of a friend request when clicked', async () => {
     const profileSpy = jest
@@ -365,5 +387,26 @@ describe('Friends view', () => {
     );
   });
 
-  it('will show not found message if friend request profile is not found', async () => {});
+  it('will show not found message if friend request profile is not found', async () => {
+    jest.spyOn(client.users, 'getProfile').mockRejectedValue(
+      createAxiosError({
+        message: 'Could not find profile',
+        method: 'GET',
+        path: '/api/users/user',
+        status: 404,
+      }),
+    );
+
+    const wrapper = mount(FriendsView, opts);
+    const request = friendRequestsData.friendRequests[9];
+
+    await wrapper
+      .get(`[data-testid="select-request-${request.friend.id}"]`)
+      .trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="profile-not-found"]').isVisible()).toBe(
+      true,
+    );
+  });
 });

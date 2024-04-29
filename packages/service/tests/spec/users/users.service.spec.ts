@@ -77,7 +77,7 @@ describe('Users Service', () => {
     });
 
     it('will return undefined if id is not found', async () => {
-      const result = await service.getUserById(faker.datatype.uuid());
+      const result = await service.getUserById(faker.string.uuid());
       expect(result).toBeUndefined();
     });
 

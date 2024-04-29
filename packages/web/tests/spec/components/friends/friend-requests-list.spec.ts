@@ -31,7 +31,7 @@ describe('Friend requests list component', () => {
       },
     });
 
-    expect(wrapper.get(RequestCounts).text()).toBe('Showing 0 of 0 results');
+    expect(wrapper.get(RequestCounts).text()).toBe('Showing 0 of 0 requests');
     expect(wrapper.get(NoResultsMessage).isVisible()).toBe(true);
     expect(wrapper.find(RequestsList).exists()).toBe(false);
     expect(wrapper.find(LoadMoreButton).exists()).toBe(false);
@@ -47,7 +47,7 @@ describe('Friend requests list component', () => {
       },
     });
 
-    expect(wrapper.get(RequestCounts).text()).toBe('Showing 12 of 68 results');
+    expect(wrapper.get(RequestCounts).text()).toBe('Showing 12 of 68 requests');
     expect(wrapper.find(NoResultsMessage).exists()).toBe(false);
     expect(wrapper.get(LoadMoreButton).isVisible()).toBe(true);
 
@@ -68,7 +68,7 @@ describe('Friend requests list component', () => {
       },
     });
 
-    expect(wrapper.get(RequestCounts).text()).toBe('Showing 68 of 68 results');
+    expect(wrapper.get(RequestCounts).text()).toBe('Showing 68 of 68 requests');
     expect(wrapper.find(NoResultsMessage).exists()).toBe(false);
     expect(wrapper.find(LoadMoreButton).exists()).toBe(false);
 

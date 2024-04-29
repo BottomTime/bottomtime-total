@@ -38,25 +38,28 @@ export function createTestLogEntry(
 
   data.owner = owner;
 
-  data.id = options?.id ?? faker.datatype.uuid();
+  data.id = options?.id ?? faker.string.uuid();
   data.logNumber =
     options?.logNumber ??
-    faker.helpers.maybe(() => faker.datatype.number(), { probability: 0.9 }) ??
+    faker.helpers.maybe(() => faker.number.int({ min: 1 }), {
+      probability: 0.9,
+    }) ??
     null;
   data.owner = owner;
 
-  data.timestamp = options?.timestamp ?? faker.date.past(3);
+  data.timestamp = options?.timestamp ?? faker.date.past({ years: 3 });
   data.entryTime =
     options?.entryTime ??
     dayjs(data.timestamp).tz(timezone).format('YYYY-MM-DDTHH:mm:ss');
   data.timezone = timezone;
 
   data.bottomTime =
-    options?.bottomTime ?? faker.datatype.number({ min: 12, max: 95 });
+    options?.bottomTime ?? faker.number.int({ min: 12, max: 95 });
   data.duration = options?.duration ?? Math.ceil(data.bottomTime * 1.1);
 
   data.maxDepth =
-    options?.maxDepth ?? faker.datatype.number({ min: 10, max: 40 });
+    options?.maxDepth ??
+    faker.number.float({ min: 10, max: 40, precision: 0.01 });
   data.maxDepthUnit =
     options?.maxDepthUnit ??
     faker.helpers.arrayElement(Object.values(DepthUnit));

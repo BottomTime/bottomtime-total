@@ -16,6 +16,7 @@ export type AppInitialState = {
   currentAlert?: AlertDTO;
   currentDiveSite?: DiveSiteDTO | null;
   currentUser: UserDTO | null;
+  error?: unknown;
   friends?: ListFriendsResponseDTO;
   friendRequests?: ListFriendRequestsResponseDTO;
   diveSites?: SearchDiveSitesResponseDTO;

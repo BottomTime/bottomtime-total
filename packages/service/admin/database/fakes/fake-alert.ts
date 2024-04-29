@@ -13,12 +13,12 @@ ${faker.lorem.paragraph()} :+1:
 export function fakeAlert(): AlertEntity {
   const data = new AlertEntity();
 
-  data.id = faker.datatype.uuid();
+  data.id = faker.string.uuid();
   data.icon = '';
   data.title = `${faker.word.verb()} ${faker.word.adjective()} ${faker.word.noun()}`;
   data.message = fakeMarkdown();
-  data.active = faker.date.recent(3);
-  data.expires = possibly(() => faker.date.soon(30), 0.85) ?? null;
+  data.active = faker.date.recent({ days: 3 });
+  data.expires = possibly(() => faker.date.soon({ days: 30 }), 0.85) ?? null;
 
   return data;
 }

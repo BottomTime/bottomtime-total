@@ -23,7 +23,7 @@ function generateTestFriendRequests(
   const requests = new Array<FriendRequestEntity>(users.length - 1);
   for (let i = 1; i < requests.length; i++) {
     requests[i] = new FriendRequestEntity();
-    requests[i].id = faker.datatype.uuid();
+    requests[i].id = faker.string.uuid();
 
     if (i % 2 === 0) {
       requests[i].from = users[i + 1];
@@ -33,11 +33,11 @@ function generateTestFriendRequests(
       requests[i].to = users[i + 1];
     }
 
-    requests[i].created = faker.date.recent(60, targetDate);
+    requests[i].created = faker.date.recent({ days: 60, refDate: targetDate });
     requests[i].expires =
       i < 8
-        ? faker.date.recent(20, targetDate)
-        : faker.date.soon(20, targetDate);
+        ? faker.date.recent({ days: 20, refDate: targetDate })
+        : faker.date.soon({ days: 20, refDate: targetDate });
   }
   return requests;
 }
@@ -124,7 +124,7 @@ describe('Admin friends E2E tests', () => {
     });
 
     it('will purge expired requests relative to a specific date', async () => {
-      const targetDate = faker.date.future(10);
+      const targetDate = faker.date.future({ years: 10 });
       const requests = generateTestFriendRequests(regularUsers, targetDate);
       await FriendRequests.save(requests);
 

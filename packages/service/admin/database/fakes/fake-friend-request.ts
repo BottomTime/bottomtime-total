@@ -10,12 +10,12 @@ export function fakeFriendRequest(
 ): FriendRequestEntity {
   const data = new FriendRequestEntity();
 
-  data.id = faker.datatype.uuid();
+  data.id = faker.string.uuid();
   data.from = { id: faker.helpers.arrayElement(userIds) } as UserEntity;
   data.to = { id: faker.helpers.arrayElement(friendIds) } as UserEntity;
 
-  data.created = faker.date.recent(7);
-  data.expires = faker.date.soon(180);
+  data.created = faker.date.recent({ days: 7 });
+  data.expires = faker.date.soon({ days: 180 });
   data.accepted = possibly(() => faker.datatype.boolean(), 0.1) ?? null;
   if (data.accepted === false) {
     data.reason = faker.lorem.sentence();

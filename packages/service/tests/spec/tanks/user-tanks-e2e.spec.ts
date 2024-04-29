@@ -205,7 +205,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will return a 404 response if the tank does not exist', async () => {
       await request(server)
-        .get(tankUrl(regularUser.username, faker.datatype.uuid()))
+        .get(tankUrl(regularUser.username, faker.string.uuid()))
         .set(...adminAuthHeader)
         .expect(404);
     });
@@ -506,7 +506,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will return a 404 response if the tank does not exist', async () => {
       await request(server)
-        .put(tankUrl(regularUser.username, faker.datatype.uuid()))
+        .put(tankUrl(regularUser.username, faker.string.uuid()))
         .set(...adminAuthHeader)
         .send({
           material: TankMaterial.Steel,
@@ -586,7 +586,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
 
     it('will return a 404 response if the tank does not exist', async () => {
       await request(server)
-        .delete(tankUrl(regularUser.username, faker.datatype.uuid()))
+        .delete(tankUrl(regularUser.username, faker.string.uuid()))
         .set(...adminAuthHeader)
         .expect(404);
     });

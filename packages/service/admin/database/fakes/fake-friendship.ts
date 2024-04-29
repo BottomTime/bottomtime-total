@@ -8,8 +8,8 @@ export function fakeFriendship(
 ): FriendshipEntity {
   const data = new FriendshipEntity();
 
-  data.id = faker.datatype.uuid();
-  data.friendsSince = faker.date.past(5);
+  data.id = faker.string.uuid();
+  data.friendsSince = faker.date.past({ years: 5 });
   data.user = { id: faker.helpers.arrayElement(userIds) } as UserEntity;
   data.friend = { id: faker.helpers.arrayElement(friendIds) } as UserEntity;
 

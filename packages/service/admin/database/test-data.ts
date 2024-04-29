@@ -106,7 +106,7 @@ async function createFriends(
     friends[i * 2] = fakeFriendship(userIds, friendIds);
 
     const reciprocal = new FriendshipEntity();
-    reciprocal.id = faker.datatype.uuid();
+    reciprocal.id = faker.string.uuid();
     reciprocal.friendsSince = friends[i * 2].friendsSince;
     reciprocal.user = friends[i * 2].friend;
     reciprocal.friend = friends[i * 2].user;
