@@ -30,6 +30,7 @@
     </div>
   </ConfirmDialog>
 
+  <!-- Cancel request dialog -->
   <ConfirmDialog
     :visible="state.showConfirmCancelRequest"
     title="Cancel Friend Request?"
@@ -59,20 +60,12 @@
   </ConfirmDialog>
 
   <!-- User proflie drawer -->
-  <DrawerPanel
-    :visible="state.showFriendPanel && !!state.selectedFriend"
-    :title="state.selectedFriend?.name || `@${state.selectedFriend?.username}`"
-    @close="onCloseFriendPanel"
-  >
-    <ViewProfile v-if="state.friendProfile" :profile="state.friendProfile" />
-
-    <div v-else class="text-lg italic flex space-x-3 justify-center my-20">
-      <span>
-        <i class="fa-solid fa-spinner fa-spin"></i>
-      </span>
-      <span>Loading profile...</span>
-    </div>
-  </DrawerPanel>
+  <ProfilePanel
+    :profile="state.friendProfile"
+    :is-loading="state.isLoadingProfile"
+    :visible="state.showFriendProfile"
+    @close="onCloseFriendProfile"
+  />
 
   <!-- Search users drawer -->
   <DrawerPanel
@@ -119,8 +112,9 @@
         </p>
         <FriendRequestsList
           :requests="state.pendingRequests"
-          @dismiss="onDismissRequest"
           @cancel="onCancelRequest"
+          @dismiss="onDismissRequest"
+          @select="onSelectFriendRequest"
         />
       </div>
     </div>
@@ -141,6 +135,7 @@ import {
   SortOrder,
 } from '@bottomtime/api';
 
+import { URLSearchParams } from 'url';
 import { onServerPrefetch, reactive, useSSRContext } from 'vue';
 
 import { useClient } from '../api-client';
@@ -153,7 +148,7 @@ import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import FriendRequestsList from '../components/friends/friend-requests-list.vue';
 import FriendsList from '../components/friends/friends-list.vue';
 import SearchFriendsForm from '../components/friends/search-friends-form.vue';
-import ViewProfile from '../components/users/view-profile.vue';
+import ProfilePanel from '../components/users/profile-panel.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useLocation } from '../location';
@@ -161,9 +156,10 @@ import { useOops } from '../oops';
 import { useCurrentUser, useToasts } from '../store';
 
 interface FriendsViewState {
-  friendProfile: ProfileDTO | null;
+  friendProfile?: ProfileDTO;
   friends: ListFriendsResponseDTO;
   isCancellingRequest: boolean;
+  isLoadingProfile: boolean;
   isUnfriending: boolean;
   pendingRequests: ListFriendRequestsResponseDTO;
   queryParams: ListFriendsParams;
@@ -171,10 +167,11 @@ interface FriendsViewState {
   selectedFriendRequest: FriendRequestDTO | null;
   showConfirmCancelRequest: boolean;
   showConfirmUnfriend: boolean;
-  showFriendPanel: boolean;
+  showFriendProfile: boolean;
   showSearchUsers: boolean;
 }
 
+// Dependencies
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const currentUser = useCurrentUser();
@@ -183,11 +180,13 @@ const location = useLocation();
 const oops = useOops();
 const toasts = useToasts();
 
+// State management
 function parseQueryString(): ListFriendsParams {
   const search = new URLSearchParams(location.search);
 
   let sortBy: FriendsSortBy | undefined;
   let sortOrder: SortOrder | undefined;
+  let limit: number = 50;
 
   if (search.has('sortBy')) {
     const parsed = ListFriendsParamsSchema.shape.sortBy.safeParse(
@@ -203,13 +202,20 @@ function parseQueryString(): ListFriendsParams {
     sortOrder = parsed.success ? parsed.data : undefined;
   }
 
-  return { sortBy, sortOrder };
+  if (search.has('limit')) {
+    const parsed = ListFriendsParamsSchema.shape.limit.safeParse(
+      search.get('limit'),
+    );
+    if (parsed.success && parsed.data) limit = parsed.data;
+  }
+
+  return { sortBy, sortOrder, limit };
 }
 
 const state = reactive<FriendsViewState>({
-  friendProfile: null,
   friends: initialState?.friends ?? { friends: [], totalCount: 0 },
   isCancellingRequest: false,
+  isLoadingProfile: false,
   isUnfriending: false,
   pendingRequests: initialState?.friendRequests ?? {
     friendRequests: [],
@@ -220,10 +226,11 @@ const state = reactive<FriendsViewState>({
   selectedFriendRequest: null,
   showConfirmCancelRequest: false,
   showConfirmUnfriend: false,
-  showFriendPanel: false,
+  showFriendProfile: false,
   showSearchUsers: false,
 });
 
+// Loading data from server
 async function refreshFriends(): Promise<void> {
   await oops(async () => {
     if (!currentUser.user) return;
@@ -268,13 +275,26 @@ onServerPrefetch(async () => {
   }
 });
 
+async function showProfile(username: string): Promise<void> {
+  state.friendProfile = undefined;
+  state.isLoadingProfile = true;
+  state.showFriendProfile = true;
+
+  await oops(async () => {
+    state.friendProfile = await client.users.getProfile(username);
+  });
+
+  state.isLoadingProfile = false;
+}
+
+// Event handlers
 async function onChangeFriendsSortOrder(
   sortBy: FriendsSortBy,
   sortOrder: SortOrder,
 ): Promise<void> {
-  state.queryParams.sortBy = sortBy;
-  state.queryParams.sortOrder = sortOrder;
-  location.assign(`/friends?sortBy=${sortBy}&sortOrder=${sortOrder}`);
+  location.assign(
+    `/friends?sortBy=${sortBy}&sortOrder=${sortOrder}&limit=${state.queryParams.limit}`,
+  );
 }
 
 function onAddFriend() {
@@ -289,21 +309,25 @@ function onRequestSent(request: FriendRequestDTO) {
 
 async function onSelectFriend(friend: FriendDTO): Promise<void> {
   state.selectedFriend = friend;
-  state.friendProfile = null;
-  state.showFriendPanel = true;
-
-  await oops(async () => {
-    state.friendProfile = await client.users.getProfile(friend.username);
-  });
+  await showProfile(friend.username);
 }
 
-function onCloseFriendPanel() {
-  state.showFriendPanel = false;
+async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
+  state.selectedFriendRequest = request;
+  await showProfile(request.friend.username);
+}
+
+function onCloseFriendProfile() {
+  state.showFriendProfile = false;
 }
 
 function onUnfriend(friend: FriendDTO) {
   state.selectedFriend = friend;
   state.showConfirmUnfriend = true;
+}
+
+function onCancelUnfriend() {
+  state.showConfirmUnfriend = false;
 }
 
 async function onConfirmUnfriend(): Promise<void> {
@@ -316,9 +340,9 @@ async function onConfirmUnfriend(): Promise<void> {
     await client.friends.unfriend(currentUser.user.username, friend.username);
 
     const index = state.friends.friends.findIndex((f) => f.id === friend.id);
-
     if (index > -1) {
       state.friends.friends.splice(index, 1);
+      state.friends.totalCount--;
     }
 
     toasts.toast({
@@ -332,10 +356,6 @@ async function onConfirmUnfriend(): Promise<void> {
 
   state.showConfirmUnfriend = false;
   state.isUnfriending = false;
-}
-
-function onCancelUnfriend() {
-  state.showConfirmUnfriend = false;
 }
 
 function onCancelSearchFriends() {

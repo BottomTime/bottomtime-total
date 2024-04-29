@@ -33,12 +33,13 @@ import FriendsView from '../../../src/views/friends-view.vue';
 import { createRouter } from '../../fixtures/create-router';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestFriendsData from '../../fixtures/friends.json';
-import { BasicUser } from '../../fixtures/users';
+import { BasicUser, UserWithFullProfile } from '../../fixtures/users';
 
 dayjs.extend(relativeTime);
 jest.mock('../../../src/initial-state');
 
 const FriendsCount = '[data-testid="friends-count"]';
+const RequestsCount = '[data-testid="request-counts"]';
 const SortOrderSelect = '[data-testid="sort-order"]';
 
 describe('Friends view', () => {
@@ -70,6 +71,11 @@ describe('Friends view', () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     location = new MockLocation();
+
+    friendsData = ListFriendsResposneSchema.parse(TestFriendsData);
+    friendRequestsData = ListFriendRequestsResponseSchema.parse(
+      TestFriendRequestData,
+    );
 
     currentUser.user = { ...BasicUser };
     initalState = {
@@ -131,7 +137,7 @@ describe('Friends view', () => {
 
     const html = await renderToString(FriendsView, { global: opts.global });
 
-    expect(friendsSpy).toHaveBeenCalledWith(BasicUser.username, {});
+    expect(friendsSpy).toHaveBeenCalledWith(BasicUser.username, { limit: 50 });
     expect(friendRequestsSpy).toHaveBeenCalledWith(BasicUser.username, {
       direction: FriendRequestDirection.Outgoing,
       limit: 50,
@@ -147,7 +153,7 @@ describe('Friends view', () => {
   });
 
   it('will interpret query string parameters before fetching friends and pending requests', async () => {
-    location.assign('/friends?sortBy=username&sortOrder=desc');
+    location.assign('/friends?sortBy=username&sortOrder=desc&limit=100');
     const friendsSpy = jest
       .spyOn(client.friends, 'listFriends')
       .mockResolvedValue({
@@ -172,6 +178,7 @@ describe('Friends view', () => {
     expect(friendsSpy).toHaveBeenCalledWith(BasicUser.username, {
       sortBy: FriendsSortBy.Username,
       sortOrder: SortOrder.Descending,
+      limit: 100,
     });
     expect(friendRequestsSpy).toHaveBeenCalledWith(BasicUser.username, {
       direction: FriendRequestDirection.Outgoing,
@@ -206,46 +213,157 @@ describe('Friends view', () => {
     );
   });
 
-  it.only('will allow changing the sort order', async () => {
-    const refreshSpy = jest
-      .spyOn(client.friends, 'listFriends')
-      .mockResolvedValue({
-        friends: friendsData.friends
-          .slice(10, 20)
-          .map((f) => new Friend(client.axios, f)),
-        totalCount: friendsData.totalCount,
-      });
+  it('will allow changing the sort order', async () => {
     const wrapper = mount(FriendsView, opts);
     await wrapper.get(SortOrderSelect).setValue('friendsSince-asc');
     await flushPromises();
-
-    expect(location.search).toBe('?sortBy=friendsSince&sortOrder=asc');
-    expect(refreshSpy).toHaveBeenCalledWith(BasicUser.username, {
-      sortBy: FriendsSortBy.FriendsSince,
-      sortOrder: SortOrder.Ascending,
-    });
-
-    expect(wrapper.find(FriendsCount).text()).toBe('Showing 10 of 59 friends');
-    const friends = wrapper.findAllComponents(FriendsListItem);
-    expect(friends).toHaveLength(10);
-    friends.forEach((friend, i) => {
-      expect(friend.text()).toContain(friendsData.friends[i + 10].username);
-    });
+    expect(location.search).toBe('?sortBy=friendsSince&sortOrder=asc&limit=50');
   });
 
-  it('will allow a user to unfriend someone', async () => {});
+  it('will allow a user to unfriend someone', async () => {
+    const wrapper = mount(FriendsView, opts);
+    const unfriendSpy = jest
+      .spyOn(client.friends, 'unfriend')
+      .mockResolvedValue();
+    const friend = friendsData.friends[3];
 
-  it('will allow a user to change their mind about unfriending someone', async () => {});
+    await wrapper
+      .get(`[data-testid="unfriend-${friend.username}"]`)
+      .trigger('click');
+    await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
+    await flushPromises();
 
-  it('will allow a user to cancel a friend request', async () => {});
+    expect(unfriendSpy).toHaveBeenCalledWith(
+      currentUser.user!.username,
+      friend.username,
+    );
 
-  it('will allow a user to change their mind about cancelling a friend request', async () => {});
+    expect(
+      wrapper.find(`[data-testid="select-friend-${friend.username}"]`).exists(),
+    ).toBe(false);
+    expect(wrapper.find(FriendsCount).text()).toBe('Showing 58 of 58 friends');
+  });
 
-  it('will show the profile of a friend when clicked', async () => {});
+  it('will allow a user to change their mind about unfriending someone', async () => {
+    const wrapper = mount(FriendsView, opts);
+    const unfriendSpy = jest
+      .spyOn(client.friends, 'unfriend')
+      .mockResolvedValue();
+    const friend = friendsData.friends[3];
+
+    await wrapper
+      .get(`[data-testid="unfriend-${friend.username}"]`)
+      .trigger('click');
+    await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
+    await flushPromises();
+
+    expect(unfriendSpy).not.toHaveBeenCalled();
+
+    expect(
+      wrapper
+        .find(`[data-testid="select-friend-${friend.username}"]`)
+        .isVisible(),
+    ).toBe(true);
+    expect(wrapper.find(FriendsCount).text()).toBe('Showing 59 of 59 friends');
+  });
+
+  it('will allow a user to cancel a friend request', async () => {
+    const wrapper = mount(FriendsView, opts);
+    const request = new FriendRequest(
+      client.axios,
+      currentUser.user!.username,
+      friendRequestsData.friendRequests[3],
+    );
+    jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
+
+    const cancelSpy = jest.spyOn(request, 'cancel').mockResolvedValue();
+
+    await wrapper
+      .get(`[data-testid="cancel-request-${request.friend.id}"]`)
+      .trigger('click');
+    await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
+    await flushPromises();
+
+    expect(cancelSpy).toHaveBeenCalled();
+
+    expect(
+      wrapper
+        .find(`[data-testid="select-request-${request.friend.id}"]`)
+        .exists(),
+    ).toBe(false);
+    expect(wrapper.find(RequestsCount).text()).toBe(
+      'Showing 67 of 67 requests',
+    );
+  });
+
+  it('will allow a user to change their mind about cancelling a friend request', async () => {
+    const wrapper = mount(FriendsView, opts);
+    const request = new FriendRequest(
+      client.axios,
+      currentUser.user!.username,
+      friendRequestsData.friendRequests[3],
+    );
+    jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
+
+    const cancelSpy = jest.spyOn(request, 'cancel').mockResolvedValue();
+
+    await wrapper
+      .get(`[data-testid="cancel-request-${request.friend.id}"]`)
+      .trigger('click');
+    await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
+    await flushPromises();
+
+    expect(cancelSpy).not.toHaveBeenCalled();
+
+    expect(
+      wrapper
+        .find(`[data-testid="select-request-${request.friend.id}"]`)
+        .isVisible(),
+    ).toBe(true);
+    expect(wrapper.find(RequestsCount).text()).toBe(
+      'Showing 68 of 68 requests',
+    );
+  });
+
+  it('will show the profile of a friend when clicked', async () => {
+    const profileSpy = jest
+      .spyOn(client.users, 'getProfile')
+      .mockResolvedValue(UserWithFullProfile.profile);
+    const wrapper = mount(FriendsView, opts);
+    const friend = friendsData.friends[9];
+
+    await wrapper
+      .get(`[data-testid="select-friend-${friend.username}"]`)
+      .trigger('click');
+    await flushPromises();
+
+    expect(profileSpy).toHaveBeenCalledWith(friend.username);
+    expect(wrapper.find('[data-testid="drawer-panel"]').isVisible()).toBe(true);
+    expect(wrapper.find('[data-testid="profile-name"').text()).toBe(
+      UserWithFullProfile.profile.name,
+    );
+  });
 
   it('will show not found message if friend profile is not found', async () => {});
 
-  it('will show the profile of a friend request when clicked', async () => {});
+  it('will show the profile of a friend request when clicked', async () => {
+    const profileSpy = jest
+      .spyOn(client.users, 'getProfile')
+      .mockResolvedValue(UserWithFullProfile.profile);
+    const wrapper = mount(FriendsView, opts);
+    const request = friendRequestsData.friendRequests[9];
+
+    await wrapper
+      .get(`[data-testid="select-request-${request.friend.id}"]`)
+      .trigger('click');
+    await flushPromises();
+
+    expect(profileSpy).toHaveBeenCalledWith(request.friend.username);
+    expect(wrapper.find('[data-testid="drawer-panel"]').isVisible()).toBe(true);
+    expect(wrapper.find('[data-testid="profile-name"').text()).toBe(
+      UserWithFullProfile.profile.name,
+    );
+  });
 
   it('will show not found message if friend request profile is not found', async () => {});
 });

@@ -6,7 +6,7 @@
         <span class="font-bold">{{ requests.friendRequests.length }}</span>
         <span> of </span>
         <span class="font-bold">{{ requests.totalCount }}</span>
-        <span> results</span>
+        <span> requests</span>
       </p>
     </FormBox>
 
