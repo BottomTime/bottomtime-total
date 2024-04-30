@@ -40,10 +40,11 @@ export class FriendRequest {
   }
 
   async accept(): Promise<void> {
-    await this.client.post(
-      `/api/users/${this.username}/friendRequests/${this.data.friend.username}/acknowledge`,
-      { accepted: true },
-    );
+    const path =
+      this.data.direction === FriendRequestDirection.Incoming
+        ? `/api/users/${this.username}/friendRequests/${this.data.friend.username}/acknowledge`
+        : `/api/users/${this.data.friend.username}/friendRequests/${this.username}/acknowledge`;
+    await this.client.post(path, { accepted: true });
   }
 
   async decline(reason?: string): Promise<void> {

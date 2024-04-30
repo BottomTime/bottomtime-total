@@ -63,7 +63,7 @@
       </li>
     </ul>
 
-    <p
+    <div
       v-else
       data-testid="no-friends"
       class="py-6 text-lg italic flex space-x-3 justify-center"
@@ -71,12 +71,14 @@
       <span>
         <i class="fa-solid fa-circle-info"></i>
       </span>
-      <span> You have not added any friends yet. You can click the </span>
-      <FormButton type="link" size="md" @click="$emit('add-friend')">
-        here
-      </FormButton>
-      <span> to search for your first dive buddy!</span>
-    </p>
+      <p>
+        <span> You have not added any friends yet. You can click </span>
+        <FormButton type="link" size="md" @click="$emit('add-friend')">
+          here
+        </FormButton>
+        <span> to search for your first dive buddy!</span>
+      </p>
+    </div>
   </div>
 </template>
 

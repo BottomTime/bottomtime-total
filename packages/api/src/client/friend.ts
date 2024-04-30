@@ -8,6 +8,14 @@ export class Friend {
     private readonly data: FriendDTO,
   ) {}
 
+  get id(): string {
+    return this.data.id;
+  }
+
+  get username(): string {
+    return this.data.username;
+  }
+
   toJSON(): FriendDTO {
     return { ...this.data };
   }

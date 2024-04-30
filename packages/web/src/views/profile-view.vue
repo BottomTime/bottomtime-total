@@ -77,5 +77,8 @@ onServerPrefetch(async () => {
 
 function onSave(updated: ProfileDTO) {
   profile.value = updated;
+  if (currentUser.user?.id === updated.userId) {
+    currentUser.user.profile = updated;
+  }
 }
 </script>
