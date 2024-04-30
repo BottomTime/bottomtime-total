@@ -8,6 +8,7 @@ import {
   DiveSiteEntity,
   FriendRequestEntity,
   FriendshipEntity,
+  LogEntryEntity,
   UserEntity,
 } from '../../src/data';
 import { getDataSource } from './data-source';
@@ -16,6 +17,7 @@ import {
   fakeDiveSite,
   fakeFriendRequest,
   fakeFriendship,
+  fakeLogEntry,
   fakeUser,
 } from './fakes';
 
@@ -24,6 +26,7 @@ export type EntityCounts = {
   diveSites: number;
   friendRequests: number;
   friends: number;
+  logEntries: number;
   users: number;
   targetUser?: string;
 };
@@ -164,6 +167,21 @@ async function createAlerts(
   );
 }
 
+async function createLogEntries(
+  LogEntries: Repository<LogEntryEntity>,
+  userIds: string[],
+  siteIds: string[],
+  count: number,
+) {
+  await batch(
+    () => fakeLogEntry(userIds, siteIds),
+    async (entries) => {
+      await LogEntries.save(entries);
+    },
+    count,
+  );
+}
+
 export async function createTestData(
   postgresUri: string,
   counts: EntityCounts,
@@ -175,6 +193,7 @@ export async function createTestData(
     const Alerts = ds.getRepository(AlertEntity);
     const FriendRequests = ds.getRepository(FriendRequestEntity);
     const Friends = ds.getRepository(FriendshipEntity);
+    const LogEntries = ds.getRepository(LogEntryEntity);
     const Users = ds.getRepository(UserEntity);
     const Sites = ds.getRepository(DiveSiteEntity);
 
@@ -249,6 +268,23 @@ export async function createTestData(
           counts.friendRequests,
         );
       }
+    }
+
+    if (counts.logEntries) {
+      console.log(`Creating ${counts.logEntries} dive log entries...`);
+      const siteIds = (
+        await Sites.find({
+          select: ['id'],
+          take: 1000,
+        })
+      ).map((site) => site.id);
+
+      await createLogEntries(
+        LogEntries,
+        targetUser ? [targetUser.id] : userIds,
+        siteIds,
+        counts.logEntries,
+      );
     }
 
     console.log('Finished inserting test data');

@@ -37,7 +37,7 @@ import { LogEntry } from './log-entry';
 
 const LogEntryIdParam = ':entryId';
 
-@Controller('api/users/:username/logs')
+@Controller('api/users/:username/logbook')
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
 export class UserLogEntriesController {
   constructor(
@@ -46,7 +46,7 @@ export class UserLogEntriesController {
 
   /**
    * @openapi
-   * /api/users/{username}/logs:
+   * /api/users/{username}/logbook:
    *   get:
    *     tags:
    *       - Dive Logs
@@ -183,7 +183,7 @@ export class UserLogEntriesController {
 
   /**
    * @openapi
-   * /api/users/{username}/logs:
+   * /api/users/{username}/logbook:
    *   post:
    *     tags:
    *       - Dive Logs
@@ -253,7 +253,7 @@ export class UserLogEntriesController {
 
   /**
    * @openapi
-   * /api/users/{username}/logs/{entryId}:
+   * /api/users/{username}/logbook/{entryId}:
    *   get:
    *     tags:
    *       - Dive Logs
@@ -304,7 +304,7 @@ export class UserLogEntriesController {
 
   /**
    * @openapi
-   * /api/users/{username}/logs/{entryId}:
+   * /api/users/{username}/logbook/{entryId}:
    *   put:
    *     tags:
    *       - Dive Logs
@@ -379,7 +379,7 @@ export class UserLogEntriesController {
 
   /**
    * @openapi
-   * /api/users/{username}/logs/{entryId}:
+   * /api/users/{username}/logbook/{entryId}:
    *   delete:
    *     tags:
    *       - Dive Logs

@@ -3,6 +3,7 @@ import axios, { AxiosHeaders, AxiosInstance } from 'axios';
 import { AlertsApiClient } from './alerts';
 import { DiveSitesApiClient } from './dive-sites';
 import { FriendsApiClient } from './friends';
+import { LogEntriesApiClient } from './log-entries';
 import { UsersApiClient } from './users';
 
 export type ApiClientOptions = {
@@ -16,6 +17,7 @@ export class ApiClient {
   readonly friends: FriendsApiClient;
   readonly users: UsersApiClient;
   readonly diveSites: DiveSitesApiClient;
+  readonly logEntries: LogEntriesApiClient;
 
   constructor(options?: ApiClientOptions) {
     const headers = new AxiosHeaders();
@@ -33,6 +35,7 @@ export class ApiClient {
     this.friends = new FriendsApiClient(this.client);
     this.users = new UsersApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
+    this.logEntries = new LogEntriesApiClient(this.client);
   }
 
   get axios(): AxiosInstance {
