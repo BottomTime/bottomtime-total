@@ -1,7 +1,8 @@
 <template>
   <DialogBase
+    :disabled="isLoading"
     :visible="visible"
-    size="sm"
+    :size="size"
     :title="title"
     @close="$emit('cancel')"
   >
@@ -12,6 +13,7 @@
     <template #buttons>
       <FormButton
         :type="dangerous ? 'danger' : 'primary'"
+        :is-loading="isLoading"
         test-id="dialog-confirm-button"
         @click="$emit('confirm')"
       >
@@ -32,6 +34,8 @@ type ConfirmDialogProps = {
   cancelText?: string;
   confirmText?: string;
   dangerous?: boolean;
+  isLoading?: boolean;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   title?: string;
   visible?: boolean;
 };
@@ -40,6 +44,8 @@ withDefaults(defineProps<ConfirmDialogProps>(), {
   cancelText: 'Cancel',
   confirmText: 'Confirm',
   dangerous: false,
+  isLoading: false,
+  size: 'sm',
   title: 'Confirm?',
   visible: false,
 });

@@ -7,6 +7,7 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import NavBar from '../../../../src/components/core/nav-bar.vue';
+import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
@@ -45,6 +46,7 @@ describe('Nav Bar component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: new MockLocation(),
         },
       },
     };

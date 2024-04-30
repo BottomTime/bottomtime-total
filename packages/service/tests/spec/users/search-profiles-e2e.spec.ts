@@ -5,10 +5,11 @@ import { HttpServer, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { UserEntity } from '../../../src/data';
+import { FriendshipEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
 import { createAuthHeader, createTestApp, parseUserJSON } from '../../utils';
+import { createTestFriendship } from '../../utils/create-test-friendship';
 
 const SearchUrl = '/api/users';
 
@@ -18,6 +19,7 @@ describe('Searching Profiles E2E Tests', () => {
   let authHeader: [string, string];
 
   let Users: Repository<UserEntity>;
+  let Friends: Repository<FriendshipEntity>;
   let users: UserEntity[];
 
   beforeAll(async () => {
@@ -27,6 +29,7 @@ describe('Searching Profiles E2E Tests', () => {
     server = app.getHttpServer();
 
     Users = dataSource.getRepository(UserEntity);
+    Friends = dataSource.getRepository(FriendshipEntity);
   });
 
   beforeEach(async () => {
@@ -61,6 +64,35 @@ describe('Searching Profiles E2E Tests', () => {
 
     expect(result.totalCount).toBe(28);
     expect(result.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
+  });
+
+  it('will allow filtering out profiles for the current user', async () => {
+    const friendRelations: FriendshipEntity[] = [
+      createTestFriendship(users[0].id, 'cbbdc55c-4f64-4fdf-ac63-5c42cfd80607'),
+      createTestFriendship('cbbdc55c-4f64-4fdf-ac63-5c42cfd80607', users[0].id),
+
+      createTestFriendship(users[0].id, 'a966e53e-0d66-4dff-8f7c-2c3658eea2e4'),
+      createTestFriendship('a966e53e-0d66-4dff-8f7c-2c3658eea2e4', users[0].id),
+    ];
+    await Friends.save(friendRelations);
+
+    const options = {
+      filterFriends: true,
+      limit: 15,
+    };
+    const { body: result } = await request(server)
+      .get(SearchUrl)
+      .set(...authHeader)
+      .query(options)
+      .expect(200);
+
+    expect(result.totalCount).toBe(97);
+    expect(
+      result.users.map((u: ProfileDTO) => ({
+        id: u.userId,
+        username: u.username,
+      })),
+    ).toMatchSnapshot();
   });
 
   [

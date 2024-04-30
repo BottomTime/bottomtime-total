@@ -85,14 +85,14 @@ export function createTestUser(
   options?: Partial<UserEntity>,
   password?: string | null,
 ): UserEntity {
-  const firstName = faker.name.firstName();
-  const lastName = faker.name.lastName();
-  const email = options?.email ?? faker.internet.email(firstName, lastName);
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const email = options?.email ?? faker.internet.email({ firstName, lastName });
   const username =
-    options?.username ?? faker.internet.userName(firstName, lastName);
+    options?.username ?? faker.internet.userName({ firstName, lastName });
 
   const data: Partial<UserEntity> = {
-    id: options?.id ?? faker.datatype.uuid(),
+    id: options?.id ?? faker.string.uuid(),
 
     email,
     emailLowered: options?.emailLowered ?? email.toLowerCase(),
@@ -101,23 +101,25 @@ export function createTestUser(
     emailVerificationTokenExpiration:
       options?.emailVerificationTokenExpiration ?? null,
     isLockedOut: options?.isLockedOut ?? false,
-    lastLogin: options?.lastLogin ?? faker.date.recent(21),
-    lastPasswordChange: options?.lastPasswordChange ?? faker.date.past(2),
-    memberSince: options?.memberSince ?? faker.date.past(6),
+    lastLogin: options?.lastLogin ?? faker.date.recent({ days: 21 }),
+    lastPasswordChange:
+      options?.lastPasswordChange ?? faker.date.past({ years: 2 }),
+    memberSince: options?.memberSince ?? faker.date.past({ years: 6 }),
     passwordResetToken: options?.passwordResetToken ?? null,
     passwordResetTokenExpiration: options?.passwordResetTokenExpiration ?? null,
 
-    avatar: options?.avatar ?? faker.internet.avatar(),
-    bio: options?.bio ?? faker.lorem.paragraph(5),
+    avatar: options?.avatar ?? faker.image.avatar(),
+    bio: options?.bio ?? faker.person.bio(),
     experienceLevel:
       options?.experienceLevel ?? faker.helpers.arrayElement(ExperienceLevels),
-    location: options?.location ?? faker.address.cityName(),
+    location: options?.location ?? faker.location.city(),
     logBookSharing:
       options?.logBookSharing ??
       faker.helpers.arrayElement(Object.values(LogBookSharing)),
-    name: options?.name ?? faker.name.fullName(),
+    name: options?.name ?? faker.person.fullName(),
     startedDiving:
-      options?.startedDiving ?? faker.date.past(40).getFullYear().toString(),
+      options?.startedDiving ??
+      faker.date.past({ years: 40 }).getFullYear().toString(),
 
     role: options?.role ?? UserRole.User,
     username,

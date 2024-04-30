@@ -5,9 +5,15 @@ import {
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
+  ProfileDTO,
+  ProfileSchema,
+  SearchProfilesResponseDTO,
+  SearchProfilesResponseSchema,
+  SearchUserProfilesParamsDTO,
   UserSchema,
 } from '../types';
 import { User } from './user';
+import { UserProfile } from './user-profile';
 
 export class UsersApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
@@ -50,6 +56,11 @@ export class UsersApiClient {
     return new User(this.apiClient, UserSchema.parse(data));
   }
 
+  async getProfile(username: string): Promise<ProfileDTO> {
+    const { data } = await this.apiClient.get(`/api/users/${username}`);
+    return ProfileSchema.parse(data);
+  }
+
   async login(usernameOrEmail: string, password: string): Promise<User> {
     const { data } = await this.apiClient.post('/api/auth/login', {
       usernameOrEmail,
@@ -87,7 +98,18 @@ export class UsersApiClient {
     };
   }
 
+  async searchProfiles(
+    query: SearchUserProfilesParamsDTO,
+  ): Promise<SearchProfilesResponseDTO> {
+    const { data } = await this.apiClient.get('/api/users', { params: query });
+    return SearchProfilesResponseSchema.parse(data);
+  }
+
   wrapDTO(dto: unknown): User {
     return new User(this.apiClient, UserSchema.parse(dto));
+  }
+
+  wrapProfileDTO(dto: unknown): UserProfile {
+    return new UserProfile(this.apiClient, ProfileSchema.parse(dto));
   }
 }

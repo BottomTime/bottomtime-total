@@ -61,7 +61,7 @@
           >
             <UserAvatar
               :avatar="state.avatar"
-              :display-name="user.profile.name || user.username"
+              :display-name="profile.name || profile.username"
               size="large"
               test-id="profile-avatar"
             />
@@ -170,7 +170,7 @@
 </template>
 
 <script setup lang="ts">
-import { LogBookSharing, ProfileDTO, UserDTO } from '@bottomtime/api';
+import { LogBookSharing, ProfileDTO } from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
 
@@ -191,7 +191,7 @@ import UserAvatar from './user-avatar.vue';
 
 type EditProfileProps = {
   responsive?: boolean;
-  user: UserDTO;
+  profile: ProfileDTO;
 };
 type EditProfileState = {
   avatar: string;
@@ -228,13 +228,13 @@ const props = withDefaults(defineProps<EditProfileProps>(), {
   responsive: true,
 });
 const state = reactive<EditProfileState>({
-  avatar: props.user.profile.avatar ?? '',
-  bio: props.user.profile.bio ?? '',
-  experienceLevel: props.user.profile.experienceLevel ?? '',
-  location: props.user.profile.location ?? '',
-  logBookSharing: props.user.profile.logBookSharing ?? LogBookSharing.Private,
-  name: props.user.profile.name ?? '',
-  startedDiving: props.user.profile.startedDiving ?? '',
+  avatar: props.profile.avatar ?? '',
+  bio: props.profile.bio ?? '',
+  experienceLevel: props.profile.experienceLevel ?? '',
+  location: props.profile.location ?? '',
+  logBookSharing: props.profile.logBookSharing ?? LogBookSharing.Private,
+  name: props.profile.name ?? '',
+  startedDiving: props.profile.startedDiving ?? '',
 });
 const showAvatarDialog = ref(false);
 const showConfirmResetDialog = ref(false);
@@ -261,12 +261,12 @@ async function onAvatarChanged(file: File, coords: Coordinates) {
   isSavingAvatar.value = true;
 
   await oops(async () => {
-    const { profile } = client.users.wrapDTO(props.user);
+    const profile = client.users.wrapProfileDTO(props.profile);
 
     const avatars = await profile.uploadAvatar(file, coords);
     state.avatar = avatars.root;
     emit('save-profile', {
-      ...props.user.profile,
+      ...props.profile,
       avatar: avatars.root,
     });
     toasts.toast({
@@ -284,7 +284,7 @@ async function onSave() {
   isSaving.value = true;
 
   await oops(async () => {
-    const { profile } = client.users.wrapDTO(props.user);
+    const profile = client.users.wrapProfileDTO(props.profile);
 
     profile.bio = state.bio || undefined;
     profile.experienceLevel = state.experienceLevel || undefined;
@@ -296,7 +296,7 @@ async function onSave() {
     await profile.save();
 
     emit('save-profile', {
-      ...props.user.profile,
+      ...props.profile,
       avatar: state.avatar || undefined,
       bio: state.bio || undefined,
       experienceLevel: state.experienceLevel || undefined,
@@ -320,13 +320,12 @@ function onReset() {
 }
 
 function onConfirmReset() {
-  state.bio = props.user.profile.bio ?? '';
-  state.experienceLevel = props.user.profile.experienceLevel ?? '';
-  state.location = props.user.profile.location ?? '';
-  state.logBookSharing =
-    props.user.profile.logBookSharing ?? LogBookSharing.Private;
-  state.name = props.user.profile.name ?? '';
-  state.startedDiving = props.user.profile.startedDiving ?? '';
+  state.bio = props.profile.bio ?? '';
+  state.experienceLevel = props.profile.experienceLevel ?? '';
+  state.location = props.profile.location ?? '';
+  state.logBookSharing = props.profile.logBookSharing ?? LogBookSharing.Private;
+  state.name = props.profile.name ?? '';
+  state.startedDiving = props.profile.startedDiving ?? '';
   showConfirmResetDialog.value = false;
 }
 
@@ -340,12 +339,12 @@ function onDeleteAvatar() {
 
 async function onConfirmDeleteAvatar(): Promise<void> {
   await oops(async () => {
-    const { profile } = client.users.wrapDTO(props.user);
+    const profile = client.users.wrapProfileDTO(props.profile);
     await profile.deleteAvatar();
 
     state.avatar = '';
     emit('save-profile', {
-      ...props.user.profile,
+      ...props.profile,
       avatar: undefined,
     });
     toasts.toast({

@@ -1,13 +1,11 @@
 import {
+  AdminSearchUsersParamsDTO,
   CreateUserParamsDTO,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
-  SearchUserProfilesParamsSchema,
-  SortOrder,
   TemperatureUnit,
   UserRole,
-  UsersSortBy,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -17,16 +15,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { z } from 'zod';
 
 import { Config } from '../config';
 import { UserEntity } from '../data';
 import { User } from './user';
+import { UsersQueryBuilder } from './users-query-builder';
 
-const SearchUsersOptionsSchema = SearchUserProfilesParamsSchema.extend({
-  role: z.nativeEnum(UserRole),
-}).partial();
-export type SearchUsersOptions = z.infer<typeof SearchUsersOptionsSchema>;
+export type SearchUsersOptions = AdminSearchUsersParamsDTO & {
+  filterFriendsFor?: string;
+};
 export type SearchUsersResult = {
   users: User[];
   totalCount: number;
@@ -133,37 +130,16 @@ export class UsersService {
   async searchUsers(
     options: SearchUsersOptions = {},
   ): Promise<SearchUsersResult> {
-    let query = this.Users.createQueryBuilder('users');
-
-    if (options.role) {
-      query = query.andWhere('users.role = :role', { role: options.role });
-    }
-
-    if (options.query) {
-      query = query.andWhere(
-        "users.fulltext @@ websearch_to_tsquery('english', :query)",
-        {
-          query: options.query,
-        },
-      );
-    }
-
-    query = query.offset(options.skip).limit(options.limit ?? 100);
-
-    const sortBy = `users.${options.sortBy || UsersSortBy.Username}`;
-    const sortOrder = options.sortOrder
-      ? options.sortOrder
-      : sortBy === UsersSortBy.MemberSince
-      ? SortOrder.Descending
-      : SortOrder.Ascending;
-
-    query = query.orderBy(
-      sortBy,
-      sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
-    );
+    const query = new UsersQueryBuilder(this.Users)
+      .filterFriendsForUser(options.filterFriendsFor)
+      .withQuery(options.query)
+      .withRole(options.role)
+      .withSortOrder(options.sortBy, options.sortOrder)
+      .withPagination(options.skip, options.limit)
+      .build();
 
     this.log.debug('Attempting search for users', options);
-    this.log.verbose('Performing user search with query', query.getQuery());
+    this.log.verbose('Performing user search with query', query.getSql());
 
     const [users, totalCount] = await query.getManyAndCount();
 

@@ -1,0 +1,78 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Outgoing friend request item will render accepted request correctly 1`] = `
+"<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
+  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="grow flex flex-col space-y-1">
+    <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+        <!--v-if-->Test User
+      </button><span class="text-lg font-bold">@testuser</span></p>
+    <p class="text-success flex space-x-1 items-baseline"><span><i class="fa-regular fa-circle-check"></i></span><span class="font-bold">Request accepted!</span></p>
+  </div>
+  <div class="min-w-16 h-full">
+    <div class="text-right my-6 mx-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+        <!--v-if--> Dismiss
+      </button></div>
+  </div>
+</li>"
+`;
+
+exports[`Outgoing friend request item will render correclty 1`] = `
+"<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
+  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="grow flex flex-col space-y-1">
+    <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+        <!--v-if-->Test User
+      </button><span class="text-lg font-bold">@testuser</span></p>
+    <div class="flex flex-col lg:flex-row text-grey-400 space-x-0 lg:space-x-8">
+      <p class="flex space-x-2"><span class="font-bold min-w-20 text-right">Requested:</span><span class="italic">lll</span></p>
+      <p class="flex space-x-2"><span class="font-bold min-w-20 text-right">Expires:</span><span class="italic">lll</span></p>
+    </div>
+  </div>
+  <div class="min-w-16 h-full">
+    <div class="texst-right my-6 mx-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="cancel-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+        <!--v-if--> Cancel
+      </button></div>
+  </div>
+</li>"
+`;
+
+exports[`Outgoing friend request item will render declined request with reason correctly 1`] = `
+"<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
+  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="grow flex flex-col space-y-1">
+    <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+        <!--v-if-->Test User
+      </button><span class="text-lg font-bold">@testuser</span></p>
+    <div class="text-danger">
+      <p class="flex space-x-1 items-baseline"><span><i class="fa-regular fa-circle-xmark"></i></span><span class="font-bold">Request declined.</span></p>
+      <p class="italic">"Nope. Denied!"</p>
+    </div>
+  </div>
+  <div class="min-w-16 h-full">
+    <div class="text-right my-6 mx-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+        <!--v-if--> Dismiss
+      </button></div>
+  </div>
+</li>"
+`;
+
+exports[`Outgoing friend request item will render declined request without reason correctly 1`] = `
+"<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
+  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="grow flex flex-col space-y-1">
+    <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+        <!--v-if-->Test User
+      </button><span class="text-lg font-bold">@testuser</span></p>
+    <div class="text-danger">
+      <p class="flex space-x-1 items-baseline"><span><i class="fa-regular fa-circle-xmark"></i></span><span class="font-bold">Request declined.</span></p>
+      <!--v-if-->
+    </div>
+  </div>
+  <div class="min-w-16 h-full">
+    <div class="text-right my-6 mx-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+        <!--v-if--> Dismiss
+      </button></div>
+  </div>
+</li>"
+`;

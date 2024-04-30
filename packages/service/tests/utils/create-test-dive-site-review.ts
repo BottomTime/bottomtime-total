@@ -30,22 +30,23 @@ export function createTestDiveSiteReview(
 
   const data = new DiveSiteReviewEntity();
 
-  data.id = options?.id ?? faker.datatype.uuid();
+  data.id = options?.id ?? faker.string.uuid();
   data.creator = creator;
   data.site = site;
-  data.createdOn = options?.createdOn ?? faker.date.past(5);
+  data.createdOn = options?.createdOn ?? faker.date.past({ years: 5 });
   data.updatedOn =
     options?.updatedOn ??
-    faker.helpers.maybe(() => faker.date.past(2), { probability: 0.85 }) ??
+    faker.helpers.maybe(() => faker.date.past({ years: 2 }), {
+      probability: 0.85,
+    }) ??
     null;
   data.title = options?.title || title;
   data.rating =
-    options?.rating ??
-    faker.datatype.number({ min: 1, max: 5, precision: 0.01 });
+    options?.rating ?? faker.number.float({ min: 1, max: 5, multipleOf: 0.01 });
   data.difficulty =
     options?.difficulty ??
     faker.helpers.maybe(
-      () => faker.datatype.number({ min: 1, max: 5, precision: 0.01 }),
+      () => faker.number.float({ min: 1, max: 5, multipleOf: 0.01 }),
       {
         probability: 0.7,
       },

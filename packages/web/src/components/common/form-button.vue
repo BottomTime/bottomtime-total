@@ -20,7 +20,7 @@ type FormButtonProps = {
   disabled?: boolean;
   isLoading?: boolean;
   rounded?: boolean | 'left' | 'right' | 'top' | 'bottom' | 'start' | 'end';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   stretch?: boolean;
   submit?: boolean;
   testId?: string;
@@ -71,7 +71,7 @@ const classes = computed(() => {
       break;
 
     case 'link':
-      classes = `text-link hover:text-link-hover py-2 mt-1 mb-1 text-${props.size}`;
+      classes = `text-link hover:text-link-hover text-${props.size}`;
       break;
 
     case 'danger':

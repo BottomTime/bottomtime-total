@@ -42,8 +42,7 @@ test.describe('Account and Profile Management', () => {
     api,
     page,
   }) => {
-    await page.getByTestId('user-menu-button').click();
-    await page.getByRole('link', { name: 'Profile' }).click();
+    await page.goto('/profile');
     await page.waitForURL('**/profile');
 
     await page.getByTestId('nameInput').fill(UserProfile.name!);

@@ -5,6 +5,7 @@ import { ComponentMountingOptions, shallowMount } from '@vue/test-utils';
 import AdminManageUser from '../../../../src/components/admin/manage-user.vue';
 import FormBox from '../../../../src/components/common/form-box.vue';
 import TabsPanel from '../../../../src/components/common/tabs-panel.vue';
+import EditProfile from '../../../../src/components/users/edit-profile.vue';
 import { BasicUser } from '../../../fixtures/users';
 import MockEditProfile from '../../../stubs/edit-profile.stub.vue';
 import MockEditSettings from '../../../stubs/edit-settings.stub.vue';
@@ -95,7 +96,9 @@ describe('Admin Manage User component', () => {
     const wrapper = shallowMount(AdminManageUser, opts);
     await wrapper.get('[data-testid="tab-profile"]').trigger('click');
 
-    wrapper.findComponent(MockEditProfile).vm.saveProfile();
+    wrapper
+      .findComponent(EditProfile)
+      .vm.$emit('save-profile', userData.profile);
     expect(wrapper.emitted('save-profile')).toEqual([
       [userData.id, userData.profile],
     ]);

@@ -69,6 +69,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/dive-site-view.vue'),
   },
   {
+    path: '/friends',
+    name: 'friends',
+    component: () => import('../views/friends-view.vue'),
+  },
+  {
+    path: '/friendRequests',
+    name: 'friend-requests',
+    component: () => import('../views/friend-requests-view.vue'),
+  },
+  {
     path: '/privacy',
     name: 'privacy',
     component: () => import('../views/privacy-view.vue'),
@@ -76,6 +86,11 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/profile',
     name: 'profile',
+    component: () => import('../views/profile-view.vue'),
+  },
+  {
+    path: '/profile/:username',
+    name: 'named-profile',
     component: () => import('../views/profile-view.vue'),
   },
   {

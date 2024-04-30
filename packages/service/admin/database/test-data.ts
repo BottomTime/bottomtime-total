@@ -1,14 +1,31 @@
 /* eslint-disable no-console */
+import { faker } from '@faker-js/faker';
+
 import { DataSource, Repository } from 'typeorm';
 
-import { AlertEntity, DiveSiteEntity, UserEntity } from '../../src/data';
+import {
+  AlertEntity,
+  DiveSiteEntity,
+  FriendRequestEntity,
+  FriendshipEntity,
+  UserEntity,
+} from '../../src/data';
 import { getDataSource } from './data-source';
-import { fakeAlert, fakeDiveSite, fakeUser } from './fakes';
+import {
+  fakeAlert,
+  fakeDiveSite,
+  fakeFriendRequest,
+  fakeFriendship,
+  fakeUser,
+} from './fakes';
 
 export type EntityCounts = {
   alerts: number;
   diveSites: number;
+  friendRequests: number;
+  friends: number;
   users: number;
+  targetUser?: string;
 };
 
 /**
@@ -78,6 +95,62 @@ async function createDiveSites(
   );
 }
 
+async function createFriends(
+  Friends: Repository<FriendshipEntity>,
+  userIds: string[],
+  friendIds: string[],
+  count: number,
+): Promise<void> {
+  const friends = new Array<FriendshipEntity>(count * 2);
+  for (let i = 0; i < count; i++) {
+    friends[i * 2] = fakeFriendship(userIds, friendIds);
+
+    const reciprocal = new FriendshipEntity();
+    reciprocal.id = faker.string.uuid();
+    reciprocal.friendsSince = friends[i * 2].friendsSince;
+    reciprocal.user = friends[i * 2].friend;
+    reciprocal.friend = friends[i * 2].user;
+
+    friends[i * 2 + 1] = reciprocal;
+  }
+
+  await batch(
+    (i) => friends[i],
+    async (relations) => {
+      await Friends.createQueryBuilder()
+        .insert()
+        .into(FriendshipEntity)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .values(relations as any)
+        .orIgnore()
+        .execute();
+    },
+    friends.length,
+    100,
+  );
+}
+
+async function createFriendRequests(
+  FriendRequests: Repository<FriendRequestEntity>,
+  userIds: string[],
+  friendIds: string[],
+  count: number,
+): Promise<void> {
+  await batch(
+    () => fakeFriendRequest(userIds, friendIds),
+    async (requests) => {
+      await FriendRequests.createQueryBuilder()
+        .insert()
+        .into(FriendRequestEntity)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .values(requests as any)
+        .orIgnore()
+        .execute();
+    },
+    count,
+  );
+}
+
 async function createAlerts(
   Alerts: Repository<AlertEntity>,
   count: number,
@@ -100,6 +173,8 @@ export async function createTestData(
   try {
     ds = await getDataSource(postgresUri);
     const Alerts = ds.getRepository(AlertEntity);
+    const FriendRequests = ds.getRepository(FriendRequestEntity);
+    const Friends = ds.getRepository(FriendshipEntity);
     const Users = ds.getRepository(UserEntity);
     const Sites = ds.getRepository(DiveSiteEntity);
 
@@ -125,6 +200,55 @@ export async function createTestData(
     if (counts.alerts > 0) {
       console.log(`Creating ${counts.alerts} home page alerts...`);
       await createAlerts(Alerts, counts.alerts);
+    }
+
+    let targetUser: UserEntity | undefined;
+    if (counts.targetUser) {
+      targetUser = await Users.findOneOrFail({
+        where: { usernameLowered: counts.targetUser.toLocaleLowerCase() },
+      });
+    }
+
+    if (counts.friends) {
+      console.log(
+        `Creating ${counts.friends} friend relations (and their inverses)...`,
+      );
+      await createFriends(
+        Friends,
+        targetUser ? [targetUser.id] : userIds,
+        userIds,
+        counts.friends,
+      );
+    }
+
+    if (counts.friendRequests) {
+      if (targetUser) {
+        const half = Math.ceil(counts.friendRequests / 2);
+
+        console.log(`Creating ${half} incoming friend requests...`);
+        await createFriendRequests(
+          FriendRequests,
+          targetUser ? [targetUser.id] : userIds,
+          userIds,
+          half,
+        );
+
+        console.log(`Creating ${half} outgoing friend requests...`);
+        await createFriendRequests(
+          FriendRequests,
+          userIds,
+          targetUser ? [targetUser.id] : userIds,
+          half,
+        );
+      } else {
+        console.log(`Creating ${counts.friendRequests} friend requests...`);
+        await createFriendRequests(
+          FriendRequests,
+          userIds,
+          userIds,
+          counts.friendRequests,
+        );
+      }
     }
 
     console.log('Finished inserting test data');

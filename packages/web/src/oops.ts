@@ -1,10 +1,12 @@
 import { ErrorResponseDTO, ErrorResponseSchema } from '@bottomtime/api';
 
 import { isAxiosError } from 'axios';
+import { useSSRContext } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Toast, ToastType } from './common';
 import { Config } from './config';
+import { AppInitialState } from './initial-state';
 import { useCurrentUser, useToasts } from './store';
 
 export function isErrorResponse(e: unknown): e is ErrorResponseDTO {
@@ -27,7 +29,7 @@ async function oops<T>(
     return await f();
   } catch (e) {
     /* eslint-disable-next-line no-console */
-    if (!Config.isProduction) console.error(e);
+    if (!Config.isProduction && Config.env !== 'test') console.error(e);
 
     if (isAxiosError(e)) {
       if (e.response) {
@@ -98,9 +100,10 @@ export type OopsFunction = <T>(
  * @returns An {@link OopsFunction} that can be used to safely invoke API requests and handle any errors that are returned.
  */
 export function useOops(): OopsFunction {
-  const toasts = useToasts();
+  const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
   const currentUser = useCurrentUser();
   const router = useRouter();
+  const toasts = useToasts();
 
   return async <T>(
     f: () => T | Promise<T>,
@@ -123,13 +126,15 @@ export function useOops(): OopsFunction {
         // Resource not found. By default we'll redirect to the 404 page.
         await router.push('notFound');
       },
-      networkError() {
+      networkError(error) {
         // Network error. Show a toast.
         toasts.toast(NetworkErrorToast);
+        if (ctx) ctx.error = error;
       },
-      default() {
+      default(error) {
         // By default, we'll just show a toast with a generic error message.
         toasts.toast(ServerErrorToast);
+        if (ctx) ctx.error = error;
       },
 
       // Allow the calling function to override the defaults and provide handlers for other error codes.

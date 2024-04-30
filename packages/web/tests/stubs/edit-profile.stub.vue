@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ProfileDTO, UserDTO } from '@bottomtime/api';
+import { ProfileDTO } from '@bottomtime/api';
 
 type EditProfileProps = {
-  user: UserDTO;
+  profile: ProfileDTO;
 };
 
 const props = defineProps<EditProfileProps>();
@@ -16,7 +16,7 @@ const emit = defineEmits<{
 }>();
 
 function saveProfile() {
-  emit('save-profile', props.user.profile);
+  emit('save-profile', props.profile);
 }
 
 defineExpose({ saveProfile });

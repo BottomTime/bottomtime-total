@@ -1,18 +1,4 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Logger,
-  NotFoundException,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { FriendsService } from './friends.service';
-import {
   AcknowledgeFriendRequestParamsDTO,
   AcknowledgeFriendRequestParamsSchema,
   FriendRequestDTO,
@@ -20,11 +6,28 @@ import {
   ListFriendRequestsParamsSchema,
   ListFriendRequestsResponseDTO,
 } from '@bottomtime/api';
-import { ZodValidator } from '../zod-validator';
+
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Inject,
+  Logger,
+  NotFoundException,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+
 import { AssertAuth } from '../auth';
 import { AssertTargetUser, TargetUser, User } from '../users';
-import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
+import { ZodValidator } from '../zod-validator';
 import { AssertFriend, TargetFriend } from './assert-friend.guard';
+import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
+import { FriendsService } from './friends.service';
 
 const UsernameParam = 'username';
 const FriendParam = 'friend';
@@ -34,7 +37,9 @@ const FriendParam = 'friend';
 export class FriendRequestsController {
   private readonly log: Logger = new Logger(FriendRequestsController.name);
 
-  constructor(private readonly friendsService: FriendsService) {}
+  constructor(
+    @Inject(FriendsService) private readonly friendsService: FriendsService,
+  ) {}
 
   /**
    * @openapi
@@ -63,6 +68,20 @@ export class FriendRequestsController {
    *             - incoming
    *             - outgoing
    *             - both
+   *       - name: showAcknowledged
+   *         in: query
+   *         description: Whether or not to return friend requests that have already been accepted/rejected.
+   *         schema:
+   *           type: boolean
+   *           default: false
+   *           example: true
+   *       - name: showExpired
+   *         in: query
+   *         description: Whether or not to return friend requests that have expired.
+   *         schema:
+   *           type: boolean
+   *           default: false
+   *           example: true
    *       - name: skip
    *         in: query
    *         description: The number of records to skip
@@ -221,14 +240,6 @@ export class FriendRequestsController {
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/FriendUsername"
-   *     requestBody:
-   *       description: |
-   *         The friend request to send.
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: "#/components/schemas/FriendRequest"
    *     responses:
    *       201:
    *         description: The friend request was sent successfully.
@@ -291,7 +302,8 @@ export class FriendRequestsController {
    *     summary: Acknowledge friend request
    *     operationId: acknowledgeFriendRequest
    *     description: |
-   *       Acknowledges a friend request.
+   *       Acknowledges (accepts or declines) a friend request. An optional reason can be provided on decline.
+   *       The request being acknowledged would need to have been made from `{friend}` to `{username}`.
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/FriendUsername"
@@ -302,7 +314,20 @@ export class FriendRequestsController {
    *       content:
    *         application/json:
    *           schema:
-   *             $ref: "#/components/schemas/AcknowledgeFriendRequestParams"
+   *             type: object
+   *             required:
+   *               - accepted
+   *             properties:
+   *               accepted:
+   *                 type: boolean
+   *                 description: Indicates whether the friend request is accepted (`true`) or declined (`false`).
+   *                 example: false
+   *               reason:
+   *                 type: string
+   *                 description: |
+   *                   A user-provided reason for declining the friend request. This value is only permitted in the case
+   *                   where `accepted` is `false`.
+   *                 example: "I don't know you, and you might be a jerk."
    *     responses:
    *       204:
    *         description: The friend request was acknowledged successfully.
@@ -348,21 +373,29 @@ export class FriendRequestsController {
   ): Promise<void> {
     let success: boolean;
 
+    this.log.log(
+      `Acknowledging friend request from ${friend.username} to ${
+        user.username
+      }: ${params.accepted ? 'accept' : 'reject'}.`,
+    );
+
     if (params.accepted) {
       success = await this.friendsService.acceptFriendRequest(
-        user.id,
         friend.id,
+        user.id,
       );
     } else {
       success = await this.friendsService.rejectFriendRequest(
-        user.id,
         friend.id,
+        user.id,
         params.reason,
       );
     }
 
     if (!success) {
-      throw new NotFoundException('Friend request was not found');
+      throw new NotFoundException(
+        'Unable to acknowledge friend request. Friend request was not found',
+      );
     }
   }
 
@@ -373,16 +406,16 @@ export class FriendRequestsController {
    *     tags:
    *       - Friends
    *       - Users
-   *     summary: Cancel friend request
+   *     summary: Cancel/delete friend request
    *     operationId: cancelFriendRequest
    *     description: |
-   *       Cancels a friend request.
+   *       Cancels and deletes a request that has not yet been acknowledged or deletes a request that has already been acknowledged.
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/FriendUsername"
    *     responses:
    *       204:
-   *         description: The friend request was cancelled successfully.
+   *         description: The friend request was cancelled or deleted successfully.
    *       401:
    *         description: The request was rejected because the user is not authenticated.
    *         content:
@@ -390,7 +423,7 @@ export class FriendRequestsController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    *       403:
-   *         description: The request was rejected because the user is not authorized to cancel friend requests to the target user.
+   *         description: The request was rejected because the user is not authorized to cancel/delete friend requests to the target user.
    *         content:
    *           application/json:
    *             schema:

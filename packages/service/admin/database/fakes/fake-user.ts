@@ -18,20 +18,20 @@ const PasswordHash =
   '$2b$04$KJMuCKJh.TTOGzp8PwqaDeNAZLEeP1PlcriTpoAYCAWxldk0oj6Ii';
 
 export function fakeUser(): UserEntity {
-  const firstName = faker.name.firstName();
-  const lastName = faker.name.lastName();
-  const username = faker.internet.userName(firstName, lastName);
-  const email = faker.internet.email(firstName, lastName);
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const username = faker.internet.userName({ firstName, lastName });
+  const email = faker.internet.email({ firstName, lastName });
 
   const data = new UserEntity();
-  data.id = faker.datatype.uuid();
+  data.id = faker.string.uuid();
   data.username = username;
   data.usernameLowered = username.toLowerCase();
   data.email = email;
   data.emailLowered = email.toLowerCase();
   data.emailVerified = faker.datatype.boolean();
   data.passwordHash = PasswordHash;
-  data.memberSince = faker.date.past(10);
+  data.memberSince = faker.date.past({ years: 10 });
   data.role =
     faker.helpers.maybe(() => UserRole.Admin, { probability: 0.005 }) ??
     UserRole.User;
@@ -39,11 +39,13 @@ export function fakeUser(): UserEntity {
     faker.helpers.maybe(() => true, { probability: 0.05 }) ?? false;
 
   // Profile
-  data.avatar = faker.internet.avatar();
-  data.bio = faker.lorem.paragraph();
+  data.avatar = faker.image.avatar();
+  data.bio = faker.person.bio();
   data.certifications = [];
   data.name = `${firstName} ${lastName}`;
-  data.location = `${faker.address.city()}, ${faker.address.stateAbbr()}, ${faker.address.countryCode()}`;
+  data.location = `${faker.location.city()}, ${faker.location.state({
+    abbreviated: true,
+  })}, ${faker.location.countryCode()}`;
   data.logBookSharing = faker.helpers.arrayElement(
     Object.values(LogBookSharing),
   );
@@ -53,7 +55,9 @@ export function fakeUser(): UserEntity {
     'Experienced',
     'Expert',
   ]);
-  data.startedDiving = dayjs(faker.date.past(20)).format('YYYY-MM-DD');
+  data.startedDiving = dayjs(faker.date.past({ years: 20 })).format(
+    'YYYY-MM-DD',
+  );
 
   // Settings
   data.depthUnit = faker.helpers.arrayElement(Object.values(DepthUnit));

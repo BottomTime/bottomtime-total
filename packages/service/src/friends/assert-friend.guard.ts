@@ -1,15 +1,19 @@
 import {
   CanActivate,
   ExecutionContext,
+  Inject,
   Injectable,
   NotFoundException,
   createParamDecorator,
 } from '@nestjs/common';
+
 import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AssertFriend implements CanActivate {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    @Inject(UsersService) private readonly usersService: UsersService,
+  ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const req = ctx.switchToHttp().getRequest();

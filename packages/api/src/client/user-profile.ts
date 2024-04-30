@@ -3,65 +3,65 @@ import { AxiosInstance } from 'axios';
 import {
   ListAvatarURLsResponseDTO,
   LogBookSharing,
+  ProfileDTO,
   SetProfileAvatarParamsDTO,
   UpdateProfileParamsSchema,
-  UserDTO,
 } from '../types';
 
 export class UserProfile {
   constructor(
     private readonly client: AxiosInstance,
-    private readonly data: UserDTO,
+    private readonly data: ProfileDTO,
   ) {}
 
   get avatar(): string | undefined {
-    return this.data.profile.avatar || undefined;
+    return this.data.avatar || undefined;
   }
 
   get bio(): string | undefined {
-    return this.data.profile.bio || undefined;
+    return this.data.bio || undefined;
   }
   set bio(value: string | undefined) {
-    this.data.profile.bio = value;
+    this.data.bio = value;
   }
 
   get experienceLevel(): string | undefined {
-    return this.data.profile.experienceLevel || undefined;
+    return this.data.experienceLevel || undefined;
   }
   set experienceLevel(value: string | undefined) {
-    this.data.profile.experienceLevel = value;
+    this.data.experienceLevel = value;
   }
 
   get location(): string | undefined {
-    return this.data.profile.location ?? undefined;
+    return this.data.location ?? undefined;
   }
   set location(value: string | undefined) {
-    this.data.profile.location = value;
+    this.data.location = value;
   }
 
   get logBookSharing(): LogBookSharing {
-    return this.data.profile.logBookSharing ?? LogBookSharing.Private;
+    return this.data.logBookSharing ?? LogBookSharing.Private;
   }
   set logBookSharing(value: LogBookSharing) {
-    this.data.profile.logBookSharing = value;
+    this.data.logBookSharing = value;
   }
 
   get name(): string | undefined {
-    return this.data.profile.name || undefined;
+    return this.data.name || undefined;
   }
   set name(value: string | undefined) {
-    this.data.profile.name = value;
+    this.data.name = value;
   }
 
   get startedDiving(): string | undefined {
-    return this.data.profile.startedDiving || undefined;
+    return this.data.startedDiving || undefined;
   }
   set startedDiving(value: string | undefined) {
-    this.data.profile.startedDiving = value;
+    this.data.startedDiving = value;
   }
 
   async save(): Promise<void> {
-    const params = UpdateProfileParamsSchema.parse(this.data.profile);
+    const params = UpdateProfileParamsSchema.parse(this.data);
     await this.client.put(`/api/users/${this.data.username}`, params);
   }
 

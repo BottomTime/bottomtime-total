@@ -17,6 +17,7 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import AlertsList from '../../../src/components/admin/alerts-list.vue';
 import { AppInitialState, useInitialState } from '../../../src/initial-state';
+import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser } from '../../../src/store';
 import AdminAlertsView from '../../../src/views/admin-alerts-view.vue';
 import AlertData from '../../fixtures/alerts.json';
@@ -59,6 +60,7 @@ describe('Admin Alerts View', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: new MockLocation(),
         },
       },
     };

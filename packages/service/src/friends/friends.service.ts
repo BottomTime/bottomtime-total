@@ -217,25 +217,35 @@ export class FriendsService {
       .select(FriendRequestSelectFields)
       .orderBy('requests.created', 'DESC')
       .offset(options.skip)
-      .limit(options.limit ?? 100);
+      .limit(options.limit || 100);
+
+    if (options.showAcknowledged !== true) {
+      query = query.andWhere('requests.accepted IS NULL');
+    }
+
+    if (!options.showExpired) {
+      query = query.andWhere('requests.expires > :now', {
+        now: new Date(),
+      });
+    }
 
     switch (options.direction) {
       case FriendRequestDirection.Incoming:
-        query = query.where('requests.to = :userId', {
+        query = query.andWhere('requests.to = :userId', {
           userId: options.userId,
         });
         break;
 
       case FriendRequestDirection.Outgoing:
-        query = query.where('requests.from = :userId', {
+        query = query.andWhere('requests.from = :userId', {
           userId: options.userId,
         });
         break;
 
       case FriendRequestDirection.Both:
       default:
-        query = query.where(
-          'requests.from = :userId OR requests.to = :userId',
+        query = query.andWhere(
+          '(requests.from = :userId OR requests.to = :userId)',
           { userId: options.userId },
         );
         break;
@@ -420,22 +430,6 @@ export class FriendsService {
   }
 
   async cancelFriendRequest(from: string, to: string): Promise<boolean> {
-    const request = await this.FriendRequests.findOne({
-      where: {
-        from: { id: from },
-        to: { id: to },
-      },
-      select: ['id', 'accepted'],
-    });
-
-    if (!request) return false;
-
-    if (request.accepted) {
-      throw new BadRequestException(
-        'This friend request has already been accepted. You may need to unfriend the user instead.',
-      );
-    }
-
     const { affected } = await this.FriendRequests.delete({
       from: { id: from },
       to: { id: to },
@@ -443,9 +437,9 @@ export class FriendsService {
     return typeof affected === 'number' && affected > 0;
   }
 
-  async purgeExpiredFriendRequests(): Promise<number> {
+  async purgeExpiredFriendRequests(date?: Date): Promise<number> {
     const { affected } = await this.FriendRequests.delete({
-      expires: LessThan(new Date()),
+      expires: LessThan(date ?? new Date()),
     });
     return typeof affected === 'number' ? affected : 0;
   }

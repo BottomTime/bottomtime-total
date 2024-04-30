@@ -5,7 +5,7 @@ exports[`Admin User List Item component will render correctly for user with full
   <!-- Avatar -->
   <div class="w-10 flex-initial mt-4"><img class="rounded-full" width="32px" height="32px" alt="" src="https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg"></div><!-- Info Panel -->
   <div class="grow">
-    <div class="text-xl font-bold font-title"><button class="text-link hover:text-link-hover py-2 mt-1 mb-1 text-sm m-0 p-0" data-testid="userslist-link-e7fdcf40-509e-49f1-85d2-24f35b0afe28" type="button">
+    <div class="text-xl font-bold font-title"><button class="text-link hover:text-link-hover text-sm m-0 p-0" data-testid="userslist-link-e7fdcf40-509e-49f1-85d2-24f35b0afe28" type="button">
         <!--v-if--><span class="text-xl font-bold">Abel_Koss49</span>
       </button><span class="ml-3">Abel Koss</span></div>
     <div class="flex flex-row">
@@ -26,7 +26,7 @@ exports[`Admin User List Item component will render correctly for user with mini
   <!-- Avatar -->
   <div class="w-10 flex-initial mt-4"><img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=Adolf19"></div><!-- Info Panel -->
   <div class="grow">
-    <div class="text-xl font-bold font-title"><button class="text-link hover:text-link-hover py-2 mt-1 mb-1 text-sm m-0 p-0" data-testid="userslist-link-8772f482-8bc1-4ae2-ab15-e0d4d741878d" type="button">
+    <div class="text-xl font-bold font-title"><button class="text-link hover:text-link-hover text-sm m-0 p-0" data-testid="userslist-link-8772f482-8bc1-4ae2-ab15-e0d4d741878d" type="button">
         <!--v-if--><span class="text-xl font-bold">Adolf19</span>
       </button>
       <!--v-if-->

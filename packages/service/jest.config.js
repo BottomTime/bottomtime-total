@@ -92,9 +92,9 @@ module.exports = {
   ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
+  // moduleNameMapper: {
+  //   '^@/(.*)$': '<rootDir>/src/$1',
+  // },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -180,6 +180,7 @@ module.exports = {
     '^.+\\.ts$': [
       'ts-jest',
       {
+        isolatedModules: true,
         tsconfig: '<rootDir>/tsconfig.test.json',
       },
     ],
@@ -202,4 +203,8 @@ module.exports = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+
+  // Work-around for memory issues. Should be fixed in Node v22 when we switch.
+  // See: https://jestjs.io/docs/configuration#workeridlememorylimit-numberstring
+  workerIdleMemoryLimit: '600MB',
 };

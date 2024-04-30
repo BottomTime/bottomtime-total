@@ -15,6 +15,7 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import LoginForm from '../../../../src/components/users/login-form.vue';
+import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser, useToasts } from '../../../../src/store';
 import { createAxiosError } from '../../../fixtures/create-axios-error';
 import { createRouter } from '../../../fixtures/create-router';
@@ -61,6 +62,7 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: new MockLocation(),
         },
       },
     });
@@ -84,6 +86,7 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: new MockLocation(),
         },
       },
     });
@@ -113,6 +116,7 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: new MockLocation(),
         },
       },
     });
@@ -143,6 +147,7 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: new MockLocation(),
         },
       },
     });

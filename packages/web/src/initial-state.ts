@@ -3,6 +3,9 @@ import {
   AlertDTO,
   DiveSiteDTO,
   ListAlertsResponseDTO,
+  ListFriendRequestsResponseDTO,
+  ListFriendsResponseDTO,
+  ProfileDTO,
   SearchDiveSitesResponseDTO,
   UserDTO,
 } from '@bottomtime/api';
@@ -14,6 +17,10 @@ export type AppInitialState = {
   currentAlert?: AlertDTO;
   currentDiveSite?: DiveSiteDTO | null;
   currentUser: UserDTO | null;
+  currentProfile?: ProfileDTO;
+  error?: unknown;
+  friends?: ListFriendsResponseDTO;
+  friendRequests?: ListFriendRequestsResponseDTO;
   diveSites?: SearchDiveSitesResponseDTO;
 };
 

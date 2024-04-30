@@ -27,7 +27,7 @@ export const BasicUser: UserDTO = {
   profile: {
     username: 'sam_smith',
     memberSince: new Date('2021-01-01T00:00:00.000Z'),
-    userId: '50A9504C-EE2C-485E-91E0-4D352409338E',
+    userId: '50a9504c-ee2c-485e-91e0-4d352409338e',
     name: 'Sam Smith',
   },
   username: 'sam_smith',
@@ -52,7 +52,7 @@ export const AdminUser: UserDTO = {
   profile: {
     username: 'andy_admin',
     memberSince: new Date('2021-01-01T00:00:00.000Z'),
-    userId: '50A9504C-EE2C-485E-91E0-4D352409338E',
+    userId: '50a9504c-ee2c-485e-91e0-4d352409338e',
     name: 'Andy Admin',
   },
   username: 'andy_admin',

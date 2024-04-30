@@ -59,6 +59,14 @@ export class UsersController {
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/UserQuerySearch"
+   *       - name: filterFriends
+   *         in: query
+   *         description: |
+   *           Indicates whether to filter out profiles that are already friends with the current user
+   *           (or have pending friend requests open).
+   *         type: boolean
+   *         default: false
+   *         example: true
    *       - $ref: "#/components/parameters/UserQuerySortBy"
    *       - $ref: "#/components/parameters/SortOrder"
    *       - $ref: "#/components/parameters/Skip"
@@ -110,10 +118,15 @@ export class UsersController {
   @Get()
   @UseGuards(AssertAuth)
   async searchProfiles(
+    @CurrentUser() currentUser: User,
     @Query(new ZodValidator(SearchUserProfilesParamsSchema))
     params: SearchUserProfilesParamsDTO,
   ): Promise<SearchProfilesResponseDTO> {
-    const result = await this.users.searchUsers(params);
+    const result = await this.users.searchUsers({
+      ...params,
+      filterFriendsFor:
+        params.filterFriends === true ? currentUser.id : undefined,
+    });
     return {
       users: result.users.map((u) => u.profile.toJSON()),
       totalCount: result.totalCount,

@@ -42,6 +42,16 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
               description: 'The number of home page alerts to generate',
               type: 'number',
             })
+            .option('friends', {
+              default: 0,
+              description: 'The number of friend relations to generate',
+              type: 'number',
+            })
+            .option('friendRequests', {
+              default: 0,
+              description: 'The number of friend requests to generate',
+              type: 'number',
+            })
             .option('users', {
               default: 0,
               description: 'The number of users to generate',
@@ -52,13 +62,21 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
               description: 'The number of dive sites to generate',
               type: 'number',
             })
+            .option('username', {
+              description:
+                'The username for which friend relations and friend requests will be generated for. (Defaults to everyone.)',
+              type: 'string',
+            })
             .help();
         },
         async (yargs) => {
           await createTestData(yargs.postgresUri, {
             alerts: yargs.alerts,
+            friends: yargs.friends,
+            friendRequests: yargs.friendRequests,
             diveSites: yargs.sites,
             users: yargs.users,
+            targetUser: yargs.username,
           });
         },
       )

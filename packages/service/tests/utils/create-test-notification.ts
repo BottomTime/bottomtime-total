@@ -19,17 +19,19 @@ export function createTestNotification(
   options?: Partial<NotificationEntity>,
 ): NotificationEntity {
   const notification = new NotificationEntity();
-  notification.id = options?.id ?? faker.datatype.uuid();
+  notification.id = options?.id ?? faker.string.uuid();
   notification.recipient = recipient;
 
   notification.icon = options?.icon ?? faker.word.noun();
   notification.title = options?.title ?? faker.lorem.sentence();
   notification.message = options?.message ?? faker.lorem.paragraph();
 
-  notification.active = options?.active ?? faker.date.recent(180);
+  notification.active = options?.active ?? faker.date.recent({ days: 180 });
   notification.expires =
     options?.expires ??
-    faker.helpers.maybe(() => faker.date.soon(30), { probability: 0.75 }) ??
+    faker.helpers.maybe(() => faker.date.soon({ days: 30 }), {
+      probability: 0.75,
+    }) ??
     null;
 
   notification.dismissed = options?.dismissed ?? faker.datatype.boolean();
