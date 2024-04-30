@@ -13,6 +13,7 @@ import {
   UserSchema,
 } from '../types';
 import { User } from './user';
+import { UserProfile } from './user-profile';
 
 export class UsersApiClient {
   constructor(private readonly apiClient: AxiosInstance) {}
@@ -106,5 +107,9 @@ export class UsersApiClient {
 
   wrapDTO(dto: unknown): User {
     return new User(this.apiClient, UserSchema.parse(dto));
+  }
+
+  wrapProfileDTO(dto: unknown): UserProfile {
+    return new UserProfile(this.apiClient, ProfileSchema.parse(dto));
   }
 }

@@ -1,54 +1,72 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`View profile component will render with a full profile 1`] = `
-"<div class="flex flex-col justify-center space-y-3">
-  <div class="w-[128px]"><img class="rounded-full" width="128px" height="128px" alt="" src="https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg"></div>
-  <div>
-    <p class="font-bold">Username:</p>
-    <p class="italic">@Abel_Koss49</p>
-  </div>
-  <div>
-    <p class="font-bold">Joined:</p>
-    <p class="italic">7 years ago</p>
-  </div>
-  <div>
-    <p class="font-bold">Name:</p>
-    <p class="italic" data-testid="profile-name">Abel Koss</p>
-  </div>
-  <div>
-    <p class="font-bold">Location:</p>
-    <p class="italic" data-testid="profile-location">Hamillside, CO, AZ</p>
-  </div>
-  <div>
-    <p class="font-bold">Started diving:</p>
-    <p class="italic" data-testid="profile-started-diving">2018-11-20</p>
-  </div>
-  <div>
-    <p class="font-bold">Experience level:</p>
-    <p class="italic" data-testid="profile-experience-level">Experienced</p>
+"<div class="flex flex-col space-y-4">
+  <div class="flex justify-center"><img class="rounded-full" width="128px" height="128px" alt="" src="https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg"></div>
+  <div class="grid grid-cols-2">
+    <div class="space-y-3">
+      <div>
+        <p class="font-bold">Username:</p>
+        <p class="italic">@Abel_Koss49</p>
+      </div>
+      <div>
+        <p class="font-bold">Joined:</p>
+        <p class="italic">7 years ago</p>
+      </div>
+      <div>
+        <p class="font-bold">Name:</p>
+        <p class="italic" data-testid="profile-name">Abel Koss</p>
+      </div>
+    </div>
+    <div class="space-y-3">
+      <div>
+        <p class="font-bold">Location:</p>
+        <p class="italic" data-testid="profile-location">Hamillside, CO, AZ</p>
+      </div>
+      <div>
+        <p class="font-bold">Started diving:</p>
+        <p class="italic" data-testid="profile-started-diving">2018-11-20</p>
+      </div>
+      <div>
+        <p class="font-bold">Experience level:</p>
+        <p class="italic" data-testid="profile-experience-level">Experienced</p>
+      </div>
+    </div>
   </div>
   <div>
     <p class="font-bold">Bio:</p>
     <p class="italic" data-testid="profile-bio">Facilis deleniti fugiat. Nesciunt architecto facilis consectetur laborum iusto doloribus. Minima nulla nemo unde quisquam quod suscipit deserunt blanditiis deserunt. Ipsa saepe quibusdam beatae tempora labore maxime odio. Labore debitis id doloribus voluptatibus ratione animi dolores.</p>
   </div>
+  <div class="flex justify-center space-x-3"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover space-x-2" type="button">
+      <!--v-if--><span><i class="fa-solid fa-book-open"></i></span><span>View Log Book</span>
+    </button></div>
 </div>"
 `;
 
 exports[`View profile component will render with a partial profile 1`] = `
-"<div class="flex flex-col justify-center space-y-3">
-  <div class="w-[128px]"><img class="rounded-full" width="128px" height="128px" alt="" src="https://ui-avatars.com/api/?name=%40Adolf19"></div>
-  <div>
-    <p class="font-bold">Username:</p>
-    <p class="italic">@Adolf19</p>
+"<div class="flex flex-col space-y-4">
+  <div class="flex justify-center"><img class="rounded-full" width="128px" height="128px" alt="" src="https://ui-avatars.com/api/?name=%40Adolf19"></div>
+  <div class="grid grid-cols-2">
+    <div class="space-y-3">
+      <div>
+        <p class="font-bold">Username:</p>
+        <p class="italic">@Adolf19</p>
+      </div>
+      <div>
+        <p class="font-bold">Joined:</p>
+        <p class="italic">3 years ago</p>
+      </div>
+      <!--v-if-->
+    </div>
+    <div class="space-y-3">
+      <!--v-if-->
+      <!--v-if-->
+      <!--v-if-->
+    </div>
   </div>
-  <div>
-    <p class="font-bold">Joined:</p>
-    <p class="italic">3 years ago</p>
-  </div>
   <!--v-if-->
-  <!--v-if-->
-  <!--v-if-->
-  <!--v-if-->
-  <!--v-if-->
+  <div class="flex justify-center space-x-3"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover space-x-2" type="button">
+      <!--v-if--><span><i class="fa-solid fa-book-open"></i></span><span>View Log Book</span>
+    </button></div>
 </div>"
 `;

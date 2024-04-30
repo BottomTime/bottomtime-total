@@ -10,6 +10,7 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
 import ManageAccount from '../../../src/components/users/manage-account.vue';
+import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser } from '../../../src/store';
 import AccountView from '../../../src/views/account-view.vue';
 import { createRouter } from '../../fixtures/create-router';
@@ -37,6 +38,7 @@ describe('Account View', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: new MockLocation(),
         },
       },
     };

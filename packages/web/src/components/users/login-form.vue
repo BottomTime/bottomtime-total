@@ -87,6 +87,7 @@ import { onMounted, reactive, ref } from 'vue';
 
 import { useClient } from '../../api-client';
 import { Toast, ToastType } from '../../common';
+import { useLocation } from '../../location';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
@@ -124,6 +125,7 @@ const oAuthProviders: Readonly<OAuthProvider[]> = [
 
 const currentUser = useCurrentUser();
 const client = useClient();
+const location = useLocation();
 const oops = useOops();
 const toasts = useToasts();
 

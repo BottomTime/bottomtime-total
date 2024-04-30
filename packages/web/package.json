@@ -79,6 +79,10 @@
   "nodemonConfig": {
     "execMap": {
       "ts": "tsx"
-    }
+    },
+    "legacyWatch": true,
+    "watch": [
+      "server/"
+    ]
   }
 }

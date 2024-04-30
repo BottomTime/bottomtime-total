@@ -51,7 +51,7 @@ describe('Edit Profile form', () => {
     const user = getUser(UserWithEmptyProfile);
     const wrapper = mount(EditProfile, {
       props: {
-        user,
+        profile: user.profile,
       },
       global: {
         plugins: [pinia, router],
@@ -85,7 +85,7 @@ describe('Edit Profile form', () => {
     const user = getUser(UserWithFullProfile);
     const wrapper = mount(EditProfile, {
       props: {
-        user,
+        profile: user.profile,
       },
       global: {
         plugins: [pinia, router],
@@ -133,7 +133,7 @@ describe('Edit Profile form', () => {
     const userData = getUser(UserWithFullProfile);
     const wrapper = mount(EditProfile, {
       props: {
-        user: userData,
+        profile: userData.profile,
       },
       global: {
         plugins: [pinia, router],
@@ -144,7 +144,7 @@ describe('Edit Profile form', () => {
     });
     const user = new User(axios.create(), userData);
     const spy = jest.spyOn(user.profile, 'save').mockResolvedValue();
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
+    jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(user.profile);
 
     const updatedProfile: UpdateProfileParamsDTO = {
       name: 'Updated Name',
@@ -183,7 +183,7 @@ describe('Edit Profile form', () => {
     const userData = getUser(UserWithFullProfile);
     const wrapper = mount(EditProfile, {
       props: {
-        user: userData,
+        profile: userData.profile,
       },
       global: {
         plugins: [pinia, router],
@@ -260,7 +260,7 @@ describe('Edit Profile form', () => {
     const userData = getUser(UserWithFullProfile);
     const wrapper = mount(EditProfile, {
       props: {
-        user: userData,
+        profile: userData.profile,
       },
       global: {
         plugins: [pinia, router],

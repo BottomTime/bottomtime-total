@@ -63,7 +63,7 @@ describe('UserProfile client object', () => {
       },
     };
 
-    profile = new UserProfile(client.axios, testUser);
+    profile = new UserProfile(client.axios, testUser.profile);
   });
 
   afterEach(() => {

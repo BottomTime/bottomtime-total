@@ -16,7 +16,7 @@
       <EditProfile
         v-else-if="activeTab === Tabs[1].key"
         ref="editProfileTab"
-        :user="user"
+        :profile="user.profile"
         :responsive="false"
         @save-profile="(profile) => $emit('save-profile', user.id, profile)"
       />

@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col justify-center space-y-3">
-    <div class="w-[128px]">
+  <div class="flex flex-col space-y-4">
+    <div class="flex justify-center">
       <UserAvatar
         :avatar="profile.avatar ?? undefined"
         :display-name="profile.name || `@${profile.username}`"
@@ -8,45 +8,60 @@
       />
     </div>
 
-    <div>
-      <p class="font-bold">Username:</p>
-      <p class="italic">@{{ profile.username }}</p>
-    </div>
+    <div class="grid grid-cols-2">
+      <div class="space-y-3">
+        <div>
+          <p class="font-bold">Username:</p>
+          <p class="italic">@{{ profile.username }}</p>
+        </div>
 
-    <div>
-      <p class="font-bold">Joined:</p>
-      <p class="italic">{{ dayjs(profile.memberSince).fromNow() }}</p>
-    </div>
+        <div>
+          <p class="font-bold">Joined:</p>
+          <p class="italic">{{ dayjs(profile.memberSince).fromNow() }}</p>
+        </div>
 
-    <div v-if="profile.name">
-      <p class="font-bold">Name:</p>
-      <p class="italic" data-testid="profile-name">{{ profile.name }}</p>
-    </div>
+        <div v-if="profile.name">
+          <p class="font-bold">Name:</p>
+          <p class="italic" data-testid="profile-name">{{ profile.name }}</p>
+        </div>
+      </div>
 
-    <div v-if="profile.location">
-      <p class="font-bold">Location:</p>
-      <p class="italic" data-testid="profile-location">
-        {{ profile.location }}
-      </p>
-    </div>
+      <div class="space-y-3">
+        <div v-if="profile.location">
+          <p class="font-bold">Location:</p>
+          <p class="italic" data-testid="profile-location">
+            {{ profile.location }}
+          </p>
+        </div>
 
-    <div v-if="profile.startedDiving">
-      <p class="font-bold">Started diving:</p>
-      <p class="italic" data-testid="profile-started-diving">
-        {{ profile.startedDiving }}
-      </p>
-    </div>
+        <div v-if="profile.startedDiving">
+          <p class="font-bold">Started diving:</p>
+          <p class="italic" data-testid="profile-started-diving">
+            {{ profile.startedDiving }}
+          </p>
+        </div>
 
-    <div v-if="profile.experienceLevel">
-      <p class="font-bold">Experience level:</p>
-      <p class="italic" data-testid="profile-experience-level">
-        {{ profile.experienceLevel }}
-      </p>
+        <div v-if="profile.experienceLevel">
+          <p class="font-bold">Experience level:</p>
+          <p class="italic" data-testid="profile-experience-level">
+            {{ profile.experienceLevel }}
+          </p>
+        </div>
+      </div>
     </div>
 
     <div v-if="profile.bio">
       <p class="font-bold">Bio:</p>
       <p class="italic" data-testid="profile-bio">{{ profile.bio }}</p>
+    </div>
+
+    <div class="flex justify-center space-x-3">
+      <FormButton class="space-x-2">
+        <span>
+          <i class="fa-solid fa-book-open"></i>
+        </span>
+        <span>View Log Book</span>
+      </FormButton>
     </div>
   </div>
 </template>
@@ -57,6 +72,7 @@ import { ProfileDTO } from '@bottomtime/api';
 import dayjs from 'dayjs';
 import 'dayjs/plugin/relativeTime';
 
+import FormButton from '../common/form-button.vue';
 import UserAvatar from './user-avatar.vue';
 
 interface ViewProfileProps {

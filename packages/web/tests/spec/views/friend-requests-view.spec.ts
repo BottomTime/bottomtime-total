@@ -26,6 +26,7 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import FriendRequestsListItem from '../../../src/components/friends/friend-requests-list-item.vue';
 import { useInitialState } from '../../../src/initial-state';
+import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useToasts } from '../../../src/store';
 import FriendRequestsView from '../../../src/views/friend-requests-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
@@ -100,6 +101,7 @@ describe('Friend requests view', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: new MockLocation(),
         },
       },
     };

@@ -68,7 +68,7 @@ export class User {
 
   get profile(): UserProfile {
     if (!this._profile) {
-      this._profile = new UserProfile(this.client, this.data);
+      this._profile = new UserProfile(this.client, this.data.profile);
     }
 
     return this._profile;
