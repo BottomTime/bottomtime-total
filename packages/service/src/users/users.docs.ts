@@ -85,6 +85,15 @@
  *           description: The user's location.
  *           example: Seattle, WA
  *           maxLength: 50
+ *         logBookSharing:
+ *           title: Log Book Sharing
+ *           type: string
+ *           enum:
+ *             - private
+ *             - friends
+ *             - public
+ *           description: The level at which the user's logbook will be shared with other users.
+ *           example: public
  *         name:
  *           title: Name
  *           type: string

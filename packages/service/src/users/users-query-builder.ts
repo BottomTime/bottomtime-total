@@ -15,6 +15,7 @@ export class UsersQueryBuilder {
         'users.avatar',
         'users.location',
         'users.memberSince',
+        'users.logBookSharing',
         'users.name',
         'users.role',
         'users.username',

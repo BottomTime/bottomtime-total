@@ -168,6 +168,7 @@ exports[`Dive Site Reviews End-to-End Tests when retrieving a single review will
   "creator": {
     "avatar": "https://testy.com/avatar.jpg",
     "location": "People's Democratic Republic of Testing",
+    "logBookSharing": "friends",
     "memberSince": "2024-03-20T13:12:03.449Z",
     "name": "Testy McTestface",
     "userId": "9dcf5f2e-db68-4061-aba4-6a3d6dc088bb",

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { BooleanString, SortOrder } from './constants';
+import { LogBookSharing } from './users';
 
 export enum FriendsSortBy {
   Username = 'username',
@@ -20,6 +21,7 @@ export const FriendSchema = z.object({
   friendsSince: z.coerce.date(),
   username: z.string(),
   memberSince: z.coerce.date(),
+  logBookSharing: z.nativeEnum(LogBookSharing),
   avatar: z.string().optional(),
   name: z.string().optional(),
   location: z.string().optional(),

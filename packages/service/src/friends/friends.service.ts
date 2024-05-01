@@ -43,6 +43,7 @@ const UserSelectFields: string[] = [
   'id',
   'username',
   'memberSince',
+  'logBookSharing',
   'avatar',
   'name',
   'location',
@@ -89,6 +90,7 @@ export class FriendsService {
       avatar: friend.friend.avatar ?? undefined,
       name: friend.friend.name ?? undefined,
       location: friend.friend.location ?? undefined,
+      logBookSharing: friend.friend.logBookSharing,
     };
   }
 
@@ -118,6 +120,7 @@ export class FriendsService {
         avatar: friend.avatar ?? undefined,
         name: friend.name ?? undefined,
         location: friend.location ?? undefined,
+        logBookSharing: friend.logBookSharing,
       },
     };
   }
@@ -168,6 +171,19 @@ export class FriendsService {
       friends: friends.map(FriendsService.toFriendDTO),
       totalCount,
     };
+  }
+
+  async areFriends(userId: string, friendId: string): Promise<boolean> {
+    this.log.debug(
+      `Checking if users with IDs "${userId}" and "${friendId}" are friends...`,
+    );
+
+    return await this.Friends.exists({
+      where: [
+        { user: { id: userId }, friend: { id: friendId } },
+        { user: { id: friendId }, friend: { id: userId } },
+      ],
+    });
   }
 
   async getFriend(

@@ -1,10 +1,11 @@
-import { DepthUnit, DiveSiteDTO } from '../../src/types';
+import { DepthUnit, DiveSiteDTO, LogBookSharing } from '../../src/types';
 
 export const BlankDiveSite: DiveSiteDTO = {
   id: '',
   creator: {
     userId: '',
     username: '',
+    logBookSharing: LogBookSharing.Private,
     memberSince: new Date(),
   },
   createdOn: new Date(),
@@ -17,6 +18,7 @@ export const DiveSiteWithMinimalProperties: DiveSiteDTO = {
   creator: {
     userId: '54dacd7d-ba85-4339-a39e-b82014bc5887',
     username: 'Grayson.Wolff58',
+    logBookSharing: LogBookSharing.FriendsOnly,
     memberSince: new Date('2015-05-23T05:25:37.103Z'),
   },
   createdOn: new Date('2020-03-28T00:12:21.615Z'),
@@ -29,6 +31,7 @@ export const DiveSiteWithFullProperties: DiveSiteDTO = {
   creator: {
     userId: '1a18494e-90a2-4018-a2ee-f97081107ab7',
     username: 'Constance_Walker19',
+    logBookSharing: LogBookSharing.FriendsOnly,
     memberSince: new Date('2017-03-01T18:37:06.705Z'),
   },
   createdOn: new Date('2020-03-28T04:01:45.574Z'),

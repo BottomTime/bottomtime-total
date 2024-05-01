@@ -1,8 +1,8 @@
-import ViewDiveSite from '@/components/diveSites/view-dive-site.vue';
 import { mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 
+import ViewDiveSite from '../../../../src/components/diveSites/view-dive-site.vue';
 import {
   DiveSiteWithFullProperties,
   DiveSiteWithMinimalProperties,

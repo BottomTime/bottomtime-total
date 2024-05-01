@@ -1,4 +1,8 @@
-import { FriendRequestDTO, FriendRequestDirection } from '@bottomtime/api';
+import {
+  FriendRequestDTO,
+  FriendRequestDirection,
+  LogBookSharing,
+} from '@bottomtime/api';
 
 import { mount } from '@vue/test-utils';
 
@@ -13,6 +17,7 @@ const TestRequestItem: FriendRequestDTO = {
     id: 'c0175aac-fe45-4a53-a3f7-41eb0f0f52b6',
     memberSince: new Date('2022-02-18T12:25:09.653Z'),
     username: 'testuser',
+    logBookSharing: LogBookSharing.FriendsOnly,
     avatar: 'https://example.com/avatar.jpg',
     location: 'Testville, USA',
     name: 'Test User',

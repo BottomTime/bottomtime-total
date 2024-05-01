@@ -1,6 +1,7 @@
 import {
   DepthDTO,
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   SuccinctProfileDTO,
   TemperatureUnit,
@@ -14,6 +15,7 @@ import { UserSettings } from './users';
 export const AnonymousUserProfile: SuccinctProfileDTO = {
   userId: '',
   username: '<anonymous>',
+  logBookSharing: LogBookSharing.Private,
   memberSince: new Date(0),
   name: 'Anonymous',
 };

@@ -1,5 +1,5 @@
 <template>
-  <div>log book</div>
+  <div>List</div>
 </template>
 
 <script lang="ts" setup></script>

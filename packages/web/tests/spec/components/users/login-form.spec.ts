@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
@@ -35,6 +36,7 @@ const UserData: UserDTO = {
     userId: 'B8D70E2C-BEA3-4F21-9EEB-42A4AA79F706',
     username: 'j.bard43',
     memberSince: new Date('2021-08-01T00:00:00.000Z'),
+    logBookSharing: LogBookSharing.FriendsOnly,
     name: 'John Bard',
   },
   settings: {

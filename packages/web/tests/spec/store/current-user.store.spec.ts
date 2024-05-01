@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
@@ -25,6 +26,7 @@ const AuthenticatedUser: UserDTO = {
     userId: '123',
     username: 'realuser',
     name: 'Real User',
+    logBookSharing: LogBookSharing.FriendsOnly,
   },
   settings: {
     depthUnit: DepthUnit.Meters,

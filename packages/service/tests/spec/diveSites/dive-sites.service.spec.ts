@@ -1,6 +1,7 @@
 import {
   DepthUnit,
   DiveSitesSortBy,
+  LogBookSharing,
   SortOrder,
   UserRole,
 } from '@bottomtime/api';
@@ -33,6 +34,7 @@ const RegularUserData: Partial<UserEntity> = {
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date('2024-01-08T13:24:58.620Z'),
+  logBookSharing: LogBookSharing.FriendsOnly,
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
@@ -45,6 +47,7 @@ const OtherUserData: Partial<UserEntity> = {
   id: '5a4699d8-48c4-4410-9886-b74b8b85cac2',
   memberSince: new Date('2024-01-08T13:24:58.620Z'),
   username: 'Other.User',
+  logBookSharing: LogBookSharing.Public,
   usernameLowered: 'other.user',
   role: UserRole.User,
   name: 'Other User',

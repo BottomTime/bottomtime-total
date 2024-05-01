@@ -135,6 +135,7 @@ exports[`Log entries E2E tests when retrieving single log entries will allow an 
   "creator": {
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
+    "logBookSharing": "private",
     "memberSince": "2020-02-24T22:30:50.944Z",
     "name": "Devin Ratke",
     "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -161,6 +162,7 @@ exports[`Log entries E2E tests when retrieving single log entries will return th
   "creator": {
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
+    "logBookSharing": "private",
     "memberSince": "2020-02-24T22:30:50.944Z",
     "name": "Devin Ratke",
     "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",

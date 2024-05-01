@@ -1,4 +1,9 @@
-import { ErrorResponseDTO, UserDTO, UserRole } from '@bottomtime/api';
+import {
+  ErrorResponseDTO,
+  LogBookSharing,
+  UserDTO,
+  UserRole,
+} from '@bottomtime/api';
 import { ApiClient, User } from '@bottomtime/api';
 
 import {
@@ -45,6 +50,7 @@ const NewUser: UserDTO = {
     memberSince: new Date(),
     username: 'john_doe32',
     name: 'John Doe',
+    logBookSharing: LogBookSharing.Public,
     location: 'Nowhereville, QC',
     userId: 'BA9E78C9-4B0F-4FAE-B011-96A91986ABCD',
   },

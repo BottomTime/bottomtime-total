@@ -98,6 +98,7 @@ export const UserWithEmptyProfile: UserDTO = {
   memberSince: new Date('2022-01-25T11:40:20.928Z'),
   profile: {
     memberSince: new Date('2022-01-25T11:40:20.928Z'),
+    logBookSharing: LogBookSharing.Private,
     userId: '8772f482-8bc1-4ae2-ab15-e0d4d741878d',
     username: 'Adolf19',
   },

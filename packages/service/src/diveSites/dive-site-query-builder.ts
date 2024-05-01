@@ -35,6 +35,7 @@ export class DiveSiteQueryBuilder {
         'creator.id',
         'creator.username',
         'creator.memberSince',
+        'creator.logBookSharing',
         'creator.avatar',
         'creator.location',
         'creator.name',

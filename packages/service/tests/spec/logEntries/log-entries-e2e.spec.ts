@@ -29,7 +29,7 @@ import {
 import { parseLogEntryJSON } from '../../utils/create-test-log-entry';
 
 function getUrl(entryId?: string, username?: string): string {
-  let url = `/api/users/${username ?? TestUserData[0].username}/logs`;
+  let url = `/api/users/${username ?? TestUserData[0].username}/logbook`;
   if (entryId) url = `${url}/${entryId}`;
   return url;
 }
