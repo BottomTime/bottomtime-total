@@ -1,4 +1,4 @@
-import { DepthUnit } from '@bottomtime/api';
+import { DepthUnit, LogBookSharing } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
@@ -17,6 +17,7 @@ const CreatorData: Partial<UserEntity> = {
   username: 'Diver.Dan',
   avatar:
     'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg',
+  logBookSharing: LogBookSharing.FriendsOnly,
   name: 'Dan Diver',
   location: 'Underwater',
 };
@@ -68,6 +69,7 @@ describe('Log Entry class', () => {
       userId: CreatorData.id,
       memberSince: CreatorData.memberSince,
       username: CreatorData.username,
+      logBookSharing: CreatorData.logBookSharing,
       avatar: CreatorData.avatar,
       name: CreatorData.name,
       location: CreatorData.location,
@@ -142,6 +144,7 @@ describe('Log Entry class', () => {
         userId: CreatorData.id,
         memberSince: CreatorData.memberSince,
         username: CreatorData.username,
+        logBookSharing: CreatorData.logBookSharing,
         avatar: CreatorData.avatar,
         name: CreatorData.name,
         location: CreatorData.location,

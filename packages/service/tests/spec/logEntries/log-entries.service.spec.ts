@@ -1,4 +1,9 @@
-import { DepthUnit, LogEntrySortBy, SortOrder } from '@bottomtime/api';
+import {
+  DepthUnit,
+  LogBookSharing,
+  LogEntrySortBy,
+  SortOrder,
+} from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
@@ -78,6 +83,7 @@ describe('Log entries service', () => {
         userId: ownerData[0].id,
         username: ownerData[0].username,
         memberSince: ownerData[0].memberSince,
+        logBookSharing: ownerData[0].logBookSharing,
         name: ownerData[0].name,
         location: ownerData[0].location,
         avatar: ownerData[0].avatar,
@@ -124,6 +130,7 @@ describe('Log entries service', () => {
         userId: ownerData[0].id,
         username: ownerData[0].username,
         memberSince: ownerData[0].memberSince,
+        logBookSharing: ownerData[0].logBookSharing,
         name: ownerData[0].name,
         location: ownerData[0].location,
         avatar: ownerData[0].avatar,
@@ -181,6 +188,7 @@ describe('Log entries service', () => {
         userId: data.owner.id,
         username: data.owner.username,
         memberSince: data.owner.memberSince,
+        logBookSharing: data.owner.logBookSharing,
         name: data.owner.name,
         location: data.owner.location,
         avatar: data.owner.avatar,
@@ -217,6 +225,7 @@ describe('Log entries service', () => {
         userId: data.owner.id,
         username: data.owner.username,
         memberSince: data.owner.memberSince,
+        logBookSharing: data.owner.logBookSharing,
         name: data.owner.name,
         location: data.owner.location,
         avatar: data.owner.avatar,

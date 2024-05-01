@@ -109,6 +109,7 @@ export class DiveSitesService {
       id: options.creator.id,
       username: options.creator.username,
       memberSince: options.creator.memberSince,
+      logBookSharing: options.creator.profile.logBookSharing,
       name: options.creator.profile.name,
       location: options.creator.profile.location,
       avatar: options.creator.profile.avatar,

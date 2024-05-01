@@ -8,6 +8,7 @@ exports[`Dive Site Service when retrieving a dive site will return the requested
   "creator": {
     "avatar": "https://example.com/avatar.jpg",
     "location": "San Diego, CA",
+    "logBookSharing": "friends",
     "memberSince": 2024-01-08T13:24:58.620Z,
     "name": "Joe Regular",
     "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",
@@ -185,6 +186,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/avatar.jpg",
       "location": "San Diego, CA",
+      "logBookSharing": "friends",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Joe Regular",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",
@@ -214,6 +216,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/other-avatar.jpg",
       "location": "Toronto, ON",
+      "logBookSharing": "public",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Other User",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac2",
@@ -243,6 +246,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/other-avatar.jpg",
       "location": "Toronto, ON",
+      "logBookSharing": "public",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Other User",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac2",
@@ -272,6 +276,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/avatar.jpg",
       "location": "San Diego, CA",
+      "logBookSharing": "friends",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Joe Regular",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",
@@ -301,6 +306,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/avatar.jpg",
       "location": "San Diego, CA",
+      "logBookSharing": "friends",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Joe Regular",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",
@@ -330,6 +336,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/avatar.jpg",
       "location": "San Diego, CA",
+      "logBookSharing": "friends",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Joe Regular",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",
@@ -359,6 +366,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/other-avatar.jpg",
       "location": "Toronto, ON",
+      "logBookSharing": "public",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Other User",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac2",
@@ -388,6 +396,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/avatar.jpg",
       "location": "San Diego, CA",
+      "logBookSharing": "friends",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Joe Regular",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",
@@ -417,6 +426,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/avatar.jpg",
       "location": "San Diego, CA",
+      "logBookSharing": "friends",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Joe Regular",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",
@@ -446,6 +456,7 @@ exports[`Dive Site Service when searching dive sites will perform text-based sea
     "creator": {
       "avatar": "https://example.com/other-avatar.jpg",
       "location": "Toronto, ON",
+      "logBookSharing": "public",
       "memberSince": 2024-01-08T13:24:58.620Z,
       "name": "Other User",
       "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac2",

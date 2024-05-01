@@ -9,13 +9,17 @@ import {
   Controller,
   Delete,
   Get,
+  Head,
   HttpCode,
   Inject,
   Logger,
   NotFoundException,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
+
+import { Response } from 'express';
 
 import { AssertAuth } from '../auth';
 import { AssertTargetUser, TargetUser, User } from '../users';
@@ -148,6 +152,55 @@ export class FriendsController {
       ...options,
       userId: user.id,
     });
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/friends/{friend}:
+   *   head:
+   *     tags:
+   *       - Friends
+   *       - Users
+   *     summary: Check if two users are friends
+   *     operationId: areFriends
+   *     description: |
+   *       Checks if two users are friends. Returns an HTTP 200 if they are friends, or a 404 if they are not friends.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/FriendUsername"
+   *     responses:
+   *       200:
+   *         description: The users are friends.
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not authorized to view the target user's friends.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The users are not friends.
+   *       500:
+   *         description: The request failed due to an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Head(`:${FriendParam}`)
+  @UseGuards(AssertFriend)
+  async areFriends(
+    @TargetUser() user: User,
+    @TargetFriend() friend: User,
+    @Res() res: Response,
+  ): Promise<void> {
+    const areFriends = await this.friendsService.areFriends(user.id, friend.id);
+    res.sendStatus(areFriends ? 200 : 404);
   }
 
   /**

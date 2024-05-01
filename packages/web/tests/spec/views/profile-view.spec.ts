@@ -1,4 +1,4 @@
-import { ApiClient } from '@bottomtime/api';
+import { ApiClient, LogBookSharing } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -173,6 +173,7 @@ describe('Profile View', () => {
       userId: BasicUser.id,
       memberSince: BasicUser.memberSince,
       username: BasicUser.username,
+      logBookSharing: LogBookSharing.FriendsOnly,
       name: 'New Name',
       bio: 'New Bio',
       location: 'London, UK',
@@ -205,6 +206,7 @@ describe('Profile View', () => {
       userId: UserWithFullProfile.id,
       memberSince: UserWithFullProfile.memberSince,
       username: UserWithFullProfile.username,
+      logBookSharing: LogBookSharing.Public,
       name: 'New Name',
       bio: 'New Bio',
       location: 'London, UK',

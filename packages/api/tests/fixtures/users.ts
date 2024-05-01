@@ -27,7 +27,7 @@ export const BasicUser: UserDTO = {
   profile: {
     username: 'sam_smith',
     memberSince: new Date('2021-01-01T00:00:00.000Z'),
-    userId: '50A9504C-EE2C-485E-91E0-4D352409338E',
+    userId: '50a9504c-ee2c-485e-91e0-4d352409338e',
     name: 'Sam Smith',
     logBookSharing: LogBookSharing.Public,
   },
@@ -98,6 +98,7 @@ export const UserWithEmptyProfile: UserDTO = {
   memberSince: new Date('2022-01-25T11:40:20.928Z'),
   profile: {
     memberSince: new Date('2022-01-25T11:40:20.928Z'),
+    logBookSharing: LogBookSharing.Private,
     userId: '8772f482-8bc1-4ae2-ab15-e0d4d741878d',
     username: 'Adolf19',
   },

@@ -1,0 +1,968 @@
+{
+  "logEntries": [
+    {
+      "id": "9d39ed0e-4aaa-4b4b-bc42-fced926341ce",
+      "logNumber": 651,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-04-19T06:09:35",
+        "timezone": "America/Lower_Princes"
+      },
+      "bottomTime": 39.6,
+      "duration": 47.2,
+      "maxDepth": { "depth": 130.7, "unit": "ft" }
+    },
+    {
+      "id": "e006924d-40f7-4d34-b3f4-9e91cc0d998b",
+      "logNumber": 383,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-04-16T23:37:14",
+        "timezone": "Atlantic/Stanley"
+      },
+      "duration": 43.4,
+      "notes": "Blandior vilis argumentum studio. Verto damnatio aduro. Sordeo odio tumultus provident assumenda eveniet cibo."
+    },
+    {
+      "id": "34d411c3-9a0c-4180-a624-fc6d29a64046",
+      "logNumber": 356,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-04-14T16:36:33",
+        "timezone": "Indian/Maldives"
+      },
+      "bottomTime": 97.3,
+      "duration": 104.3,
+      "maxDepth": { "depth": 105.4, "unit": "ft" }
+    },
+    {
+      "id": "21271a7a-bda8-48c6-a542-a409ce99812a",
+      "logNumber": 998,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-04-09T16:00:31",
+        "timezone": "Europe/Jersey"
+      },
+      "bottomTime": 106.19999999999999,
+      "duration": 113.6,
+      "maxDepth": { "depth": 12.07, "unit": "m" },
+      "notes": "Cognatus depopulo maxime tero defleo utor ancilla vita vulgaris. Pecto solum centum aestivus velum creta vilicus. Conitor adflicto crux coma."
+    },
+    {
+      "id": "a1d15172-ce76-470a-8a34-f72c00bcd5d0",
+      "logNumber": 778,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-03-21T23:35:14",
+        "timezone": "Africa/Ceuta"
+      },
+      "duration": 62.1,
+      "notes": "Capto aestivus addo tactus advoco iusto deleniti. Turba cibo virgo amoveo architecto ascit ustulo dolorum credo. Turpis alo voluptate apparatus stips."
+    },
+    {
+      "id": "879f4293-4539-42f2-9662-08269288a855",
+      "logNumber": 502,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-03-15T17:33:56",
+        "timezone": "Europe/Paris"
+      },
+      "bottomTime": 43.5,
+      "duration": 46.8,
+      "notes": "Urbs quibusdam carus decretum anser. Victus aegre calcar. Acquiro cerno argentum."
+    },
+    {
+      "id": "aff2e878-2258-41ef-8015-b9c49fa1e958",
+      "logNumber": 59,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-03-15T05:49:19",
+        "timezone": "America/Rio_Branco"
+      },
+      "duration": 78,
+      "maxDepth": { "depth": 91.5, "unit": "ft" },
+      "notes": "Compono bellum eaque deprecator vallum adduco vis truculenter vulgivagus summopere. Cohors tenax vado comedo ventus alveus vulgus. Vinco vulnus sollicito depulso convoco stips arx perferendis ancilla."
+    },
+    {
+      "id": "afd70edd-7041-4a87-9b6d-fe4434ba5070",
+      "logNumber": 106,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-03-13T10:50:57",
+        "timezone": "Asia/Kuching"
+      },
+      "bottomTime": 80.10000000000001,
+      "duration": 85.7,
+      "maxDepth": { "depth": 31.8, "unit": "ft" }
+    },
+    {
+      "id": "3a7c9abd-bd8b-419d-8679-c4750d6942e8",
+      "logNumber": 753,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-03-07T10:02:12",
+        "timezone": "America/St_Johns"
+      },
+      "bottomTime": 72.3,
+      "duration": 77.5,
+      "maxDepth": { "depth": 24.92, "unit": "m" },
+      "notes": "Tamisium atrocitas paulatim censura delectus crur supellex deleniti. Utroque teres sint absens delinquo totam sit celo demonstro bene. Vulgus patrocinor admoneo culpo virgo recusandae."
+    },
+    {
+      "id": "5afce6d6-4ff2-4507-83a3-7b8666459cc7",
+      "logNumber": 935,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-03-06T11:52:15",
+        "timezone": "Asia/Samarkand"
+      },
+      "duration": 114.2,
+      "notes": "Statua demitto depono provident altus talus. Eaque animadverto terminatio amiculum angulus. Vulgus conatus cuppedia tutamen incidunt vester."
+    },
+    {
+      "id": "ad5f2769-626c-4843-8d2e-37af71b8747f",
+      "logNumber": 820,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-03-06T06:54:03",
+        "timezone": "Pacific/Efate"
+      },
+      "duration": 49.9,
+      "maxDepth": { "depth": 58.7, "unit": "ft" },
+      "notes": "Utilis umquam odio versus benigne tametsi antea soluta. Aduro termes tardus reiciendis conduco. Decipio defungo celer voveo."
+    },
+    {
+      "id": "0ff97701-7e06-4377-8418-0b28f295f954",
+      "logNumber": 511,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-03-05T11:20:10",
+        "timezone": "Atlantic/Azores"
+      },
+      "duration": 96.2
+    },
+    {
+      "id": "705d4a69-9829-4ecd-abf3-f75d332b3718",
+      "logNumber": 357,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-02-29T07:38:18",
+        "timezone": "Asia/Khandyga"
+      },
+      "duration": 52.9,
+      "maxDepth": { "depth": 17.11, "unit": "m" },
+      "notes": "Amplitudo cornu theatrum tergo vinco sint capto. Adduco aequitas sui angelus appositus deprecator. Esse cilicium combibo tenus ago argumentum traho consuasor ipsa ultra."
+    },
+    {
+      "id": "0cf153c9-2198-46c3-84ba-cb7bb9ddd5bf",
+      "logNumber": 217,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-02-25T12:45:39",
+        "timezone": "America/Indiana/Knox"
+      },
+      "duration": 95.9,
+      "notes": "Reprehenderit accommodo toties. Cupressus vereor sunt adipisci deleo volaticus testimonium bibo. Recusandae canonicus verbum paens terga auctor antepono reprehenderit decumbo."
+    },
+    {
+      "id": "34511bff-497a-45c6-b5b3-caf66a521852",
+      "logNumber": 335,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-02-23T08:01:34",
+        "timezone": "Asia/Tashkent"
+      },
+      "bottomTime": 52.2,
+      "duration": 61.4,
+      "maxDepth": { "depth": 9.43, "unit": "m" }
+    },
+    {
+      "id": "1b87a4b5-48b5-4f54-9ccf-f32b67395d08",
+      "logNumber": 43,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-01-31T09:05:50",
+        "timezone": "America/Detroit"
+      },
+      "bottomTime": 39.6,
+      "duration": 42.9,
+      "maxDepth": { "depth": 29.2, "unit": "ft" },
+      "notes": "Aestas ambitus deripio stillicidium ago viriliter pauci. Suasoria volaticus voluptas aduro quod calamitas volubilis ultio suppono adipisci. Admitto perspiciatis audentia."
+    },
+    {
+      "id": "d49384e0-d212-4f7e-a59d-6e10f16d7184",
+      "logNumber": 998,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-01-29T02:05:19",
+        "timezone": "Asia/Tbilisi"
+      },
+      "bottomTime": 61.699999999999996,
+      "duration": 71.1,
+      "maxDepth": { "depth": 27.4, "unit": "ft" },
+      "notes": "Cruentus umquam expedita. Earum deludo somniculosus callide ara utrimque cupio. Aperio maiores sui cetera vicinus."
+    },
+    {
+      "id": "3e3cdc73-986c-4dd5-bc0c-41ad50943bf6",
+      "logNumber": 566,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-01-24T09:37:04",
+        "timezone": "Atlantic/South_Georgia"
+      },
+      "bottomTime": 113.9,
+      "duration": 119.4,
+      "maxDepth": { "depth": 142, "unit": "ft" },
+      "notes": "Benevolentia voluntarius atrocitas arma bellum celer dolore abduco. Vilitas deleo arbor audentia ustilo crudelis. Voveo iure illum."
+    },
+    {
+      "id": "3e87dd4b-f966-4e16-9e9a-428d626edc3a",
+      "logNumber": 421,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-01-16T23:56:55",
+        "timezone": "Asia/Phnom_Penh"
+      },
+      "bottomTime": 74.2,
+      "duration": 79.3,
+      "notes": "Urbanus suus triduana denego cohaero textilis. Iste ventito usque. Deleniti astrum usitas."
+    },
+    {
+      "id": "f6b26a2f-fba4-4279-818b-a3b177f717ed",
+      "logNumber": 264,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-01-14T23:17:40",
+        "timezone": "America/Guadeloupe"
+      },
+      "bottomTime": 103.5,
+      "duration": 109.7,
+      "maxDepth": { "depth": 28.41, "unit": "m" },
+      "notes": "Strenuus bellicus turpis harum canto vulariter. Centum ustulo adinventitias vitiosus acidus ratione dolore accusamus. Tonsor defaeco stipes conspergo defluo atavus beneficium vae calamitas."
+    },
+    {
+      "id": "f4bd3ad0-6840-41f9-9ae3-d004b27dbd2f",
+      "logNumber": 25,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-01-06T22:01:45",
+        "timezone": "Africa/Tunis"
+      },
+      "bottomTime": 102.30000000000001,
+      "duration": 105.9,
+      "maxDepth": { "depth": 137.2, "unit": "ft" },
+      "notes": "Theca uterque talus cultellus conturbo. Curtus pauper amitto traho soleo callide thorax provident cariosus circumvenio. Suasoria valeo congregatio casus tametsi absorbeo alter."
+    },
+    {
+      "id": "38059bdc-de24-40d2-bb7f-02d368175645",
+      "logNumber": 441,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-01-06T09:32:32",
+        "timezone": "Pacific/Port_Moresby"
+      },
+      "bottomTime": 81,
+      "duration": 89.2,
+      "maxDepth": { "depth": 39.92, "unit": "m" },
+      "notes": "Spiritus comes beatus vulgivagus argentum vomer. Infit altus confido sublime basium aperiam nulla. Vestrum villa vulgus audio cenaculum adversus cattus atrox."
+    },
+    {
+      "id": "9d0e7ff4-c389-4fd7-9dfa-a8ee2487090a",
+      "logNumber": 231,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2024-01-02T12:44:37",
+        "timezone": "America/Grand_Turk"
+      },
+      "bottomTime": 19.400000000000002,
+      "duration": 22.8,
+      "maxDepth": { "depth": 55.8, "unit": "ft" },
+      "notes": "Cunabula pecto sol vorax ventito denique voco votum appello. Quo subito aut non summisse. Congregatio quaerat tres totus sordeo comes tenax."
+    },
+    {
+      "id": "324b4e7f-c56e-4a45-a410-a5d02ee53dac",
+      "logNumber": 438,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-12-28T04:58:54",
+        "timezone": "America/Argentina/Rio_Gallegos"
+      },
+      "bottomTime": 97,
+      "duration": 104.4,
+      "maxDepth": { "depth": 40, "unit": "ft" }
+    },
+    {
+      "id": "2b4b2bec-3c2f-4898-85f5-d7a853f58d2e",
+      "logNumber": 858,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-12-25T19:06:25",
+        "timezone": "America/Guatemala"
+      },
+      "bottomTime": 34.400000000000006,
+      "duration": 42.6,
+      "maxDepth": { "depth": 49.5, "unit": "ft" },
+      "notes": "Capillus corrumpo tondeo basium varietas vapulus aiunt solitudo deserunt. Aestas cras ultra. Caterva communis delicate crebro cursim admoveo spoliatio addo."
+    },
+    {
+      "id": "770254ee-c691-43b0-92bb-08c83a0a5789",
+      "logNumber": 81,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-12-25T22:02:33",
+        "timezone": "Africa/Abidjan"
+      },
+      "bottomTime": 44.5,
+      "duration": 54.5,
+      "maxDepth": { "depth": 69.5, "unit": "ft" },
+      "notes": "Atque placeat dolores pauci beneficium ocer autem. Suppellex utor corporis alioqui quis delibero surgo. Thymum argentum absconditus verto supra tracto."
+    },
+    {
+      "id": "ff5c49cb-a54b-4795-91e2-8a47f726ff37",
+      "logNumber": 823,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-12-19T05:20:45",
+        "timezone": "Europe/Isle_of_Man"
+      },
+      "bottomTime": 31.199999999999996,
+      "duration": 36.8,
+      "notes": "Apostolus adipisci carpo. Bos repellendus thema vulgivagus cimentarius una compono virga suasoria statim. Adeo vere deleniti claro cornu delibero contego aegrus vulgaris alius."
+    },
+    {
+      "id": "c84759b6-8f9a-44a4-849b-de3ed5f2a902",
+      "logNumber": 986,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-12-14T21:16:06",
+        "timezone": "America/Argentina/Salta"
+      },
+      "bottomTime": 23.8,
+      "duration": 27.6,
+      "maxDepth": { "depth": 83.4, "unit": "ft" },
+      "notes": "Concedo unde suscipio alienus censura. Voluptatibus vinitor iusto. Tutamen carus pauci terga sperno spero brevis temeritas aranea."
+    },
+    {
+      "id": "7f6e3d22-1665-482f-8d07-a4051d14ae9a",
+      "logNumber": 86,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-12-11T01:58:21",
+        "timezone": "Australia/Eucla"
+      },
+      "bottomTime": 59,
+      "duration": 66,
+      "maxDepth": { "depth": 33.08, "unit": "m" },
+      "notes": "Audentia unde sophismata atrocitas asper molestiae copia bardus agnitio vomer. Super vereor tunc vomer tego tendo vorax. Cruciamentum speculum cenaculum clibanus conventus."
+    },
+    {
+      "id": "6364fc61-859e-4c10-bf39-a34de4147e2e",
+      "logNumber": 644,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-12-05T11:39:29",
+        "timezone": "Antarctica/Mawson"
+      },
+      "bottomTime": 31.200000000000003,
+      "duration": 38.7
+    },
+    {
+      "id": "17a26931-7c90-46ea-9819-1fb29cbab8d3",
+      "logNumber": 371,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-11-25T20:57:05",
+        "timezone": "Asia/Novokuznetsk"
+      },
+      "bottomTime": 71.4,
+      "duration": 75.9,
+      "maxDepth": { "depth": 73.6, "unit": "ft" },
+      "notes": "Vos auctor thorax cicuta aequus. Arx similique demens corroboro. Uberrime ago aeger sed."
+    },
+    {
+      "id": "9b294969-36fb-4b2b-bb0a-d31fa47eb2e6",
+      "logNumber": 319,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-11-19T05:45:33",
+        "timezone": "Europe/Vilnius"
+      },
+      "bottomTime": 48.1,
+      "duration": 53.9,
+      "notes": "Vae adicio dolore. Subvenio cotidie confugo velut vehemens vinitor dolores aegre. Peior textus baiulus arguo cuppedia casus agnitio vulgo ex vicinus."
+    },
+    {
+      "id": "a3516b58-2b7f-46ab-97d1-b8706afff7b6",
+      "logNumber": 992,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-11-13T15:32:02",
+        "timezone": "America/St_Lucia"
+      },
+      "bottomTime": 82.4,
+      "duration": 91.5,
+      "maxDepth": { "depth": 7.74, "unit": "m" },
+      "notes": "Cito terror cariosus cohaero tempora copiose aptus thema. Vae conqueror celer bestia quidem. Optio ullam comis virgo adipiscor subiungo ambitus decet careo."
+    },
+    {
+      "id": "d1d035a0-37a2-4244-a8a2-3781b3c571eb",
+      "logNumber": 7,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-11-02T21:39:46",
+        "timezone": "America/Merida"
+      },
+      "bottomTime": 76.39999999999999,
+      "duration": 80.1,
+      "maxDepth": { "depth": 98.9, "unit": "ft" }
+    },
+    {
+      "id": "80df9a40-b7f6-4901-aecc-7f555528ec65",
+      "logNumber": 263,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-10-31T04:39:58",
+        "timezone": "Antarctica/Syowa"
+      },
+      "bottomTime": 91.9,
+      "duration": 100.9,
+      "maxDepth": { "depth": 30.6, "unit": "ft" },
+      "notes": "Confero ambitus cultellus vallum cimentarius cuius amet. Cernuus teres ventito velum. Vicissitudo caute spiritus."
+    },
+    {
+      "id": "3ff1867a-43c5-4527-ad9a-574a4eb9b7b6",
+      "logNumber": 233,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": { "date": "2023-10-09T16:47:54", "timezone": "Asia/Oral" },
+      "bottomTime": 24.6,
+      "duration": 31.5,
+      "notes": "Officiis bonus animus arbitro. Accusator alienus tracto. Crur caecus cura."
+    },
+    {
+      "id": "6452fc14-5afc-4f5d-bb76-de72e7543611",
+      "logNumber": 56,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-10-08T11:10:10",
+        "timezone": "Africa/Bangui"
+      },
+      "duration": 36.8,
+      "maxDepth": { "depth": 100.3, "unit": "ft" },
+      "notes": "Ante aiunt creptio spero deleniti adfero alo patior commodo pauper. Angulus apud capto inflammatio abundans quaerat accusamus alo ventito. Venio carbo attollo auctor admitto."
+    },
+    {
+      "id": "fb36c922-2da9-46d9-974b-eaa1045b7733",
+      "logNumber": 740,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-09-22T18:30:28",
+        "timezone": "Africa/El_Aaiun"
+      },
+      "duration": 63.5,
+      "maxDepth": { "depth": 21.2, "unit": "ft" },
+      "notes": "Vesper deserunt tabgo suscipit adiuvo dolor conqueror conservo ad volva. Vulariter quia copiose cetera similique voco undique accommodo. Admoneo natus debeo tumultus comitatus antepono vetus amoveo."
+    },
+    {
+      "id": "a59765c7-1e2d-4c7e-b927-485cb2d40306",
+      "logNumber": 790,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-09-21T06:27:04",
+        "timezone": "America/Phoenix"
+      },
+      "bottomTime": 61.2,
+      "duration": 70.2,
+      "notes": "Ratione odit defungo porro provident color aegrotatio aeger. Theologus claustrum earum certus. Vere tabula constans tamisium."
+    },
+    {
+      "id": "9945f95e-bc2d-4493-8804-e775641fa0c8",
+      "logNumber": 926,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-09-20T05:41:32",
+        "timezone": "America/Edmonton"
+      },
+      "bottomTime": 105.3,
+      "duration": 115.1,
+      "notes": "Optio beatus ulterius adamo arcesso. Consequuntur sollers defaeco damno ago benigne suadeo. Adfectus arx creptio caelum stultus amitto titulus titulus conventus desidero."
+    },
+    {
+      "id": "20ee794b-6e8b-4cfd-815c-585742728222",
+      "logNumber": 689,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-08-18T06:31:51",
+        "timezone": "America/Guayaquil"
+      },
+      "duration": 116.1,
+      "maxDepth": { "depth": 42.2, "unit": "m" },
+      "notes": "Torrens supplanto amaritudo velit cruentus tametsi abscido. Complectus aptus temporibus. Tubineus sophismata solitudo alter agnitio cogo urbs."
+    },
+    {
+      "id": "1fe4770d-ffda-45b5-bc13-563390cf45b1",
+      "logNumber": 585,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-08-17T09:56:55",
+        "timezone": "Europe/Bratislava"
+      },
+      "bottomTime": 76.3,
+      "duration": 81.2,
+      "maxDepth": { "depth": 12.1, "unit": "m" },
+      "notes": "Adipisci condico trepide verbera cupiditas tenax ter vitiosus. Sol optio demum tergiversatio conduco bonus repellat aequitas atqui venia. Synagoga caelum sophismata conforto sub credo possimus."
+    },
+    {
+      "id": "ed11256f-afea-41ba-b233-bfde4fe1b96a",
+      "logNumber": 503,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-08-02T13:53:27",
+        "timezone": "America/Argentina/San_Luis"
+      },
+      "bottomTime": 110,
+      "duration": 115.1,
+      "maxDepth": { "depth": 115.9, "unit": "ft" },
+      "notes": "Balbus cimentarius denego tutis asporto. Balbus summa demoror ventosus alveus perferendis distinctio tener. Causa decor sto tactus absorbeo animi unde."
+    },
+    {
+      "id": "9dcc7d25-b88b-4272-af3d-d1ae8b97152d",
+      "logNumber": 749,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-08-01T22:45:15",
+        "timezone": "America/Panama"
+      },
+      "bottomTime": 87.8,
+      "duration": 94.5,
+      "maxDepth": { "depth": 24.98, "unit": "m" },
+      "notes": "Vito perferendis beatus argentum adaugeo depulso. Aliquam atavus veritas charisma infit usus synagoga quos aveho. Agnitio vinum spiritus viriliter arbitro."
+    },
+    {
+      "id": "4396b77c-1f00-4842-af5a-6ae93aafb257",
+      "logNumber": 374,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-07-26T09:27:20",
+        "timezone": "Pacific/Guam"
+      },
+      "bottomTime": 64.2,
+      "duration": 70.4,
+      "notes": "Paulatim atqui amplitudo ulterius eius reiciendis. Adicio volutabrum harum ipsa stella torqueo aeneus. Absconditus capillus aetas solio adamo vesper."
+    },
+    {
+      "id": "a5ba078f-cf1f-4a2d-8c58-d3674c0a87b7",
+      "logNumber": 296,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-07-24T04:54:27",
+        "timezone": "America/Santo_Domingo"
+      },
+      "bottomTime": 89,
+      "duration": 98.8,
+      "notes": "Corpus civis pecco assentator officiis terror suscipio eius causa cupio. Surculus reiciendis attollo uberrime. Toties culpo demum cauda villa laborum tergeo virtus."
+    },
+    {
+      "id": "56fbf849-9365-46dc-b418-e389fbe148dd",
+      "logNumber": 242,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-07-18T02:39:57",
+        "timezone": "Pacific/Palau"
+      },
+      "bottomTime": 108.3,
+      "duration": 113.2,
+      "maxDepth": { "depth": 8.23, "unit": "m" },
+      "notes": "Vulariter conculco laboriosam cumque theologus cedo video conforto benevolentia degusto. Suadeo arx itaque verto tutamen tabernus terebro. Contra tego audentia vulgo ustulo aut."
+    },
+    {
+      "id": "c921a3e5-d9a8-4f57-b237-98dcd9a2565e",
+      "logNumber": 263,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-07-15T00:27:47",
+        "timezone": "Asia/Ulaanbaatar"
+      },
+      "bottomTime": 61.8,
+      "duration": 70.3,
+      "maxDepth": { "depth": 36.35, "unit": "m" },
+      "notes": "Acervus tepesco sub sursum abundans. Trucido caveo suscipit testimonium adopto excepturi verbum thermae versus caterva. Careo vulgaris trans despecto patior terra."
+    },
+    {
+      "id": "fef0ed0d-8945-4ee1-9571-9d19b82529af",
+      "logNumber": 392,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-07-13T02:38:50",
+        "timezone": "America/Bahia_Banderas"
+      },
+      "bottomTime": 90.9,
+      "duration": 100.9,
+      "maxDepth": { "depth": 138.4, "unit": "ft" },
+      "notes": "Cohors vulgaris enim textilis conturbo vestigium suasoria ventosus temporibus curia. Teneo compono pectus crustulum. Talus commodo utilis averto deripio ratione viduo suppellex."
+    },
+    {
+      "id": "cc25acfe-ece8-4fd9-ba1d-1c696079dc81",
+      "logNumber": 100,
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "username": "Chris",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON"
+      },
+      "entryTime": {
+        "date": "2023-07-12T23:09:27",
+        "timezone": "Asia/Hong_Kong"
+      },
+      "bottomTime": 87.2,
+      "duration": 95.4,
+      "maxDepth": { "depth": 6.36, "unit": "m" },
+      "notes": "Vesica argumentum infit qui curis. Arx strenuus adversus spero. Debilito absconditus acidus ipsa comprehendo aspicio."
+    }
+  ],
+  "totalCount": 200
+}

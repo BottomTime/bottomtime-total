@@ -64,10 +64,13 @@ export const UpdateProfileParamsSchema = z
   .partial();
 export type UpdateProfileParamsDTO = z.infer<typeof UpdateProfileParamsSchema>;
 
-export const ProfileSchema = UpdateProfileParamsSchema.extend({
+export const ProfileSchema = UpdateProfileParamsSchema.omit({
+  logBookSharing: true,
+}).extend({
   userId: z.string(),
   username: UsernameSchema,
   memberSince: z.coerce.date(),
+  logBookSharing: z.nativeEnum(LogBookSharing).default(LogBookSharing.Private),
   avatar: z.string().nullable().optional(),
 });
 export type ProfileDTO = z.infer<typeof ProfileSchema>;

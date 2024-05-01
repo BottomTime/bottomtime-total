@@ -1,6 +1,7 @@
 import {
   DepthUnit,
   FriendsSortBy,
+  LogBookSharing,
   PressureUnit,
   SortOrder,
   TemperatureUnit,
@@ -45,6 +46,7 @@ const RegularUserData: Partial<UserEntity> = {
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date(),
+  logBookSharing: LogBookSharing.FriendsOnly,
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',

@@ -62,6 +62,7 @@ export class DiveSite {
       userId: this.data.creator.id,
       username: this.data.creator.username,
       memberSince: this.data.creator.memberSince,
+      logBookSharing: this.data.creator.logBookSharing,
       avatar: this.data.creator.avatar,
       location: this.data.creator.location,
       name: this.data.creator.name,

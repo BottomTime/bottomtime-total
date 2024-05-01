@@ -63,6 +63,9 @@ describe('Friend requests view', () => {
           username: faker.internet.userName(),
           memberSince: faker.date.past(),
           avatar: faker.image.avatar(),
+          logBookSharing: faker.helpers.arrayElement(
+            Object.values(LogBookSharing),
+          ),
           location: faker.location.city(),
           name: faker.person.fullName(),
         },

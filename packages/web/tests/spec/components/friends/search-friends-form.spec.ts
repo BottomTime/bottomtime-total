@@ -171,6 +171,7 @@ describe('Search friends form component', () => {
           id: friendo.userId,
           username: friendo.username,
           memberSince: friendo.memberSince,
+          logBookSharing: friendo.logBookSharing,
         },
         friendId: friendo.userId,
       },

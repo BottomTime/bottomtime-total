@@ -1,6 +1,7 @@
 import {
   DepthUnit,
   DiveSiteReviewsSortBy,
+  LogBookSharing,
   SortOrder,
   UserRole,
 } from '@bottomtime/api';
@@ -31,6 +32,7 @@ const RegularUserData: Partial<UserEntity> = {
   id: RegularUserId,
   emailVerified: false,
   isLockedOut: false,
+  logBookSharing: LogBookSharing.Public,
   memberSince: new Date('2024-01-08T13:24:58.620Z'),
   role: UserRole.User,
   username: 'Joe.Regular',
@@ -92,6 +94,7 @@ describe('Dive Site Class', () => {
       userId: RegularUserId,
       username: RegularUserData.username,
       memberSince: RegularUserData.memberSince,
+      logBookSharing: RegularUserData.logBookSharing,
       name: RegularUserData.name,
       avatar: RegularUserData.avatar,
       location: RegularUserData.location,
@@ -290,6 +293,7 @@ describe('Dive Site Class', () => {
         userId: regularUser.id,
         username: regularUser.username,
         memberSince: regularUser.memberSince,
+        logBookSharing: regularUser.logBookSharing,
         name: regularUser.name,
         avatar: regularUser.avatar,
         location: regularUser.location,
@@ -324,6 +328,7 @@ describe('Dive Site Class', () => {
       expect(review.creator).toEqual({
         userId: regularUser.id,
         username: regularUser.username,
+        logBookSharing: regularUser.logBookSharing,
         memberSince: regularUser.memberSince,
         name: regularUser.name,
         avatar: regularUser.avatar,

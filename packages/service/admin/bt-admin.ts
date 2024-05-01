@@ -1,11 +1,17 @@
 #!/usr/bin/env ts-node-script
 
 /* eslint-disable no-console, no-process-env */
+import dayjs from 'dayjs';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import 'dotenv/config';
 import yargs from 'yargs';
 
 import { dbModule } from './database';
 import { userModule } from './users';
+
+dayjs.extend(tz);
+dayjs.extend(utc);
 
 async function processCommand(cmd: string[]) {
   await yargs(cmd)

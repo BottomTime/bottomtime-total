@@ -1,4 +1,4 @@
-import { DepthUnit, UserRole } from '@bottomtime/api';
+import { DepthUnit, LogBookSharing, UserRole } from '@bottomtime/api';
 
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -17,6 +17,7 @@ const CreatorData: Partial<UserEntity> = {
   emailVerified: false,
   isLockedOut: false,
   memberSince: new Date('2024-01-08T13:24:58.620Z'),
+  logBookSharing: LogBookSharing.Public,
   role: UserRole.User,
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
@@ -90,6 +91,7 @@ describe('Dive Site Review Class', () => {
       userId: CreatorData.id,
       username: CreatorData.username,
       memberSince: CreatorData.memberSince,
+      logBookSharing: CreatorData.logBookSharing,
       avatar: CreatorData.avatar,
       location: CreatorData.location,
       name: CreatorData.name,
@@ -127,6 +129,7 @@ describe('Dive Site Review Class', () => {
         userId: CreatorData.id,
         username: CreatorData.username,
         memberSince: CreatorData.memberSince,
+        logBookSharing: CreatorData.logBookSharing,
         name: CreatorData.name,
         avatar: CreatorData.avatar,
         location: CreatorData.location,

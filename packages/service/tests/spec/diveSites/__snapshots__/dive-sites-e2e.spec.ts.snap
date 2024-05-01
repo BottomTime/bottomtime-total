@@ -94,6 +94,7 @@ exports[`Dive Sites End-to-End Tests when getting a dive site will return the di
   "creator": {
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
+    "logBookSharing": "private",
     "memberSince": "2020-02-24T22:30:50.944Z",
     "name": "Devin Ratke",
     "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -128,6 +129,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/85.jpg",
         "location": "Moore",
+        "logBookSharing": "private",
         "memberSince": "2018-06-25T23:18:47.167Z",
         "name": "Eileen Bartoletti DVM",
         "userId": "f9919636-4939-4975-90be-4854c5ed58b4",
@@ -156,6 +158,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -184,6 +187,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -212,6 +216,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/85.jpg",
         "location": "Moore",
+        "logBookSharing": "private",
         "memberSince": "2018-06-25T23:18:47.167Z",
         "name": "Eileen Bartoletti DVM",
         "userId": "f9919636-4939-4975-90be-4854c5ed58b4",
@@ -240,6 +245,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -269,6 +275,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/85.jpg",
         "location": "Moore",
+        "logBookSharing": "private",
         "memberSince": "2018-06-25T23:18:47.167Z",
         "name": "Eileen Bartoletti DVM",
         "userId": "f9919636-4939-4975-90be-4854c5ed58b4",
@@ -450,6 +457,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -478,6 +486,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -506,6 +515,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -534,6 +544,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -563,6 +574,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -592,6 +604,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -621,6 +634,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -648,6 +662,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
@@ -675,6 +690,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "creator": {
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
+        "logBookSharing": "private",
         "memberSince": "2020-02-24T22:30:50.944Z",
         "name": "Devin Ratke",
         "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",

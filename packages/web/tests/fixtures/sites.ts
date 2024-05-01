@@ -1,4 +1,4 @@
-import { DepthUnit, DiveSiteDTO } from '@bottomtime/api';
+import { DepthUnit, DiveSiteDTO, LogBookSharing } from '@bottomtime/api';
 
 export const BlankDiveSite: DiveSiteDTO = {
   id: '',
@@ -6,6 +6,7 @@ export const BlankDiveSite: DiveSiteDTO = {
     userId: '',
     username: '',
     memberSince: new Date(),
+    logBookSharing: LogBookSharing.Private,
   },
   createdOn: new Date(),
   name: '',
@@ -18,6 +19,7 @@ export const DiveSiteWithMinimalProperties: DiveSiteDTO = {
     userId: '54dacd7d-ba85-4339-a39e-b82014bc5887',
     username: 'Grayson.Wolff58',
     memberSince: new Date('2015-05-23T05:25:37.103Z'),
+    logBookSharing: LogBookSharing.Public,
   },
   createdOn: new Date('2020-03-28T00:12:21.615Z'),
   name: 'remorseful, spanish demon',
@@ -30,6 +32,7 @@ export const DiveSiteWithFullProperties: DiveSiteDTO = {
     userId: '1a18494e-90a2-4018-a2ee-f97081107ab7',
     username: 'Constance_Walker19',
     memberSince: new Date('2017-03-01T18:37:06.705Z'),
+    logBookSharing: LogBookSharing.FriendsOnly,
   },
   createdOn: new Date('2020-03-28T04:01:45.574Z'),
   updatedOn: new Date('2023-09-14T16:29:42.044Z'),

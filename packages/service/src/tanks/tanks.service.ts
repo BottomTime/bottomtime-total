@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid';
 
 import { TankEntity, UserEntity } from '../data';
 import { Tank } from './tank';
+import { TankQueryBuilder } from './tank-query-builder';
 
 export type CreateTankOptions = CreateOrUpdateTankParamsDTO & {
   userId?: string | null;
@@ -39,31 +40,15 @@ export class TanksService {
   ) {}
 
   async listTanks(options?: ListTanksOptions): Promise<ListTanksResponse> {
-    let query = this.Tanks.createQueryBuilder('tanks');
+    const queryBuilder = new TankQueryBuilder(this.Tanks);
 
     if (options?.userId) {
-      query = query.leftJoinAndMapOne(
-        'tanks.user',
-        UserEntity,
-        'owner',
-        'tanks.user = owner.id',
-      );
-
-      if (options?.includeSystem) {
-        query = query.where('tanks.user IS NULL OR tanks.user = :userId', {
-          userId: options.userId,
-        });
-      } else {
-        query = query.where('tanks.user = :userId', {
-          userId: options.userId,
-        });
-      }
+      queryBuilder.forUser(options.userId, options.includeSystem);
     } else {
-      query = query.where('tanks.user IS NULL');
+      queryBuilder.forSystem();
     }
 
-    query = query.orderBy(`tanks.name`, 'ASC');
-
+    const query = queryBuilder.build();
     this.log.debug('Attempting to retrieve list of tanks...');
     this.log.verbose('Listing tanks using query', query.getSql());
 
@@ -76,11 +61,12 @@ export class TanksService {
   }
 
   async getTank(tankId: string): Promise<Tank | undefined> {
+    const query = new TankQueryBuilder(this.Tanks).forTank(tankId).build();
     this.log.debug(`Attempting to retrieve tank with ID: ${tankId}`);
-    const tank = await this.Tanks.findOne({
-      relations: ['user'],
-      where: { id: tankId },
-    });
+    this.log.verbose('Retrieving tank using query', query.getSql());
+
+    const tank = await query.getOne();
+
     return tank ? new Tank(this.Tanks, tank) : undefined;
   }
 

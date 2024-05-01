@@ -345,6 +345,7 @@ exports[`Dive Site Class will render dive site data as JSON 1`] = `
   "creator": {
     "avatar": "https://example.com/avatar.png",
     "location": "San Diego, CA",
+    "logBookSharing": "public",
     "memberSince": 2024-01-08T13:24:58.620Z,
     "name": "Joe Regular",
     "userId": "5a4699d8-48c4-4410-9886-b74b8b85cac1",

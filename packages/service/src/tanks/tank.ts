@@ -52,7 +52,7 @@ export class Tank {
           memberSince: this.data.user.memberSince,
           userId: this.data.user.id,
           username: this.data.user.username,
-
+          logBookSharing: this.data.user.logBookSharing,
           avatar: this.data.user.avatar,
           name: this.data.user.name,
           location: this.data.user.location,

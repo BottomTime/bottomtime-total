@@ -3,7 +3,7 @@ FROM node:20 AS build
 WORKDIR /app
 
 COPY package.json yarn.lock nx.json lerna.json ./
-COPY packages/web/package.json packages/web/yarn.lock packages/web/tsconfig.json packages/web/vite.config.ts packages/web/tailwind.config.js packages/web/postcss.config.js packages/web/bootstrap-docker.sh packages/web/index.html ./packages/web/
+COPY packages/web/package.json packages/web/yarn.lock packages/web/tsconfig.json packages/web/nodemon.json packages/web/vite.config.ts packages/web/tailwind.config.js packages/web/postcss.config.js packages/web/bootstrap-docker.sh packages/web/index.html ./packages/web/
 COPY packages/common/package.json packages/common/yarn.lock packages/common/tsconfig.json ./packages/common/
 COPY packages/api/package.json packages/api/yarn.lock packages/api/tsconfig.json ./packages/api/
 

@@ -52,6 +52,11 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
               description: 'The number of friend requests to generate',
               type: 'number',
             })
+            .option('logEntries', {
+              default: 0,
+              description: 'The number of dive log entries to generate',
+              type: 'number',
+            })
             .option('users', {
               default: 0,
               description: 'The number of users to generate',
@@ -64,7 +69,7 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
             })
             .option('username', {
               description:
-                'The username for which friend relations and friend requests will be generated for. (Defaults to everyone.)',
+                'The username for which friend relations, friend requests, or log entries will be generated for. (Defaults to everyone.)',
               type: 'string',
             })
             .help();
@@ -75,6 +80,7 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
             friends: yargs.friends,
             friendRequests: yargs.friendRequests,
             diveSites: yargs.sites,
+            logEntries: yargs.logEntries,
             users: yargs.users,
             targetUser: yargs.username,
           });

@@ -1,4 +1,4 @@
-import { FriendDTO } from '@bottomtime/api';
+import { FriendDTO, LogBookSharing } from '@bottomtime/api';
 
 import { mount } from '@vue/test-utils';
 
@@ -13,6 +13,7 @@ const FullTestFriendData: FriendDTO = {
   id: '80fd5b82-e90d-4417-a8a5-51d8311e91a7',
   memberSince: new Date('2021-01-01T00:00:00Z'),
   friendsSince: new Date('2024-02-21T00:00:00Z'),
+  logBookSharing: LogBookSharing.FriendsOnly,
   username: 'bob32',
   avatar: 'https://example.com/avatar.jpg',
   location: 'San Francisco, CA',
@@ -23,6 +24,7 @@ const PartialTestFriendData: FriendDTO = {
   id: '80fd5b82-e90d-4417-a8a5-51d8311e91a7',
   memberSince: new Date('2021-01-01T00:00:00Z'),
   friendsSince: new Date('2024-02-21T00:00:00Z'),
+  logBookSharing: LogBookSharing.Public,
   username: 'bob32',
 };
 

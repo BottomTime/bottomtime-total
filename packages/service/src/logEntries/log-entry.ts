@@ -33,6 +33,7 @@ export class LogEntry {
       userId: this.data.owner.id,
       username: this.data.owner.username,
       memberSince: this.data.owner.memberSince,
+      logBookSharing: this.data.owner.logBookSharing,
       avatar: this.data.owner.avatar,
       name: this.data.owner.name,
       location: this.data.owner.location,

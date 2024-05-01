@@ -8,6 +8,7 @@
       "friend": {
         "id": "54e05752-8c84-42c0-b63f-567655b56dac",
         "username": "Nichole.Mills",
+        "logBookSharing": "public",
         "memberSince": "2014-10-11T19:56:54.970Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/940.jpg",
         "name": "Nichole Mills",
@@ -22,6 +23,7 @@
       "friend": {
         "id": "83b59ffd-e414-4566-8960-211535156ed5",
         "username": "Lauren.Reynolds",
+        "logBookSharing": "friends",
         "memberSince": "2020-05-29T09:24:12.589Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/15.jpg",
         "name": "Lauren Reynolds",
@@ -36,6 +38,7 @@
       "friend": {
         "id": "78cdcd67-f978-456b-af1c-a66b0d4fa820",
         "username": "Hassan.Pfeffer97",
+        "logBookSharing": "public",
         "memberSince": "2017-09-27T01:29:27.845Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1213.jpg",
         "name": "Hassan Pfeffer",
@@ -50,6 +53,7 @@
       "friend": {
         "id": "66817cd3-a3de-40e0-a4dd-044d9418c3e8",
         "username": "Camden_Block",
+        "logBookSharing": "private",
         "memberSince": "2021-12-17T07:53:34.922Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1201.jpg",
         "name": "Camden Block",
@@ -64,6 +68,7 @@
       "friend": {
         "id": "583987c0-25f3-4f5e-adbf-a54f0f83f16f",
         "username": "Gabrielle.Schumm",
+        "logBookSharing": "private",
         "memberSince": "2016-07-17T21:43:24.690Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/378.jpg",
         "name": "Gabrielle Schumm",
@@ -78,6 +83,7 @@
       "friend": {
         "id": "10507556-9b4a-4a73-90bb-c1de35613ed9",
         "username": "Vanessa_Yost89",
+        "logBookSharing": "friends",
         "memberSince": "2016-06-05T18:48:21.912Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/604.jpg",
         "name": "Vanessa Yost",
@@ -92,6 +98,7 @@
       "friend": {
         "id": "07c8674c-23d3-4857-a981-ad59518d0e77",
         "username": "Claudine32",
+        "logBookSharing": "public",
         "memberSince": "2016-10-05T16:18:51.262Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/572.jpg",
         "name": "Claudine Swaniawski",
@@ -106,6 +113,7 @@
       "friend": {
         "id": "c9b216d1-fcb4-4519-b0b2-8a4f8c35f18b",
         "username": "Alexys.Waelchi34",
+        "logBookSharing": "private",
         "memberSince": "2014-12-31T23:10:05.071Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/57.jpg",
         "name": "Alexys Waelchi",
@@ -120,6 +128,7 @@
       "friend": {
         "id": "7ac0666d-a9e2-408b-a1eb-1db0ad7ff4d4",
         "username": "Martine_Hilll61",
+        "logBookSharing": "friends",
         "memberSince": "2015-11-08T12:49:51.570Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/320.jpg",
         "name": "Martine Hilll",
@@ -134,6 +143,7 @@
       "friend": {
         "id": "10dec8b9-6ae5-4f43-802b-e41598ba09ca",
         "username": "Kelton.Carroll",
+        "logBookSharing": "friends",
         "memberSince": "2015-02-16T20:53:40.918Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1188.jpg",
         "name": "Kelton Carroll",
@@ -148,6 +158,7 @@
       "friend": {
         "id": "9af9864d-446b-41ea-a486-e296c9e03e33",
         "username": "Garfield26",
+        "logBookSharing": "private",
         "memberSince": "2016-02-26T06:16:42.809Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/244.jpg",
         "name": "Garfield Gibson",
@@ -162,6 +173,7 @@
       "friend": {
         "id": "9f5bad7b-1a1f-4857-b8cd-a2181b8c9264",
         "username": "Timmy.Heathcote55",
+        "logBookSharing": "public",
         "memberSince": "2014-08-06T09:12:04.292Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/960.jpg",
         "name": "Timmy Heathcote",
@@ -176,6 +188,7 @@
       "friend": {
         "id": "3df8cd8b-60fe-46ed-964a-d1713eb88144",
         "username": "Cindy_Beatty5",
+        "logBookSharing": "private",
         "memberSince": "2017-02-05T05:50:56.863Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/709.jpg",
         "name": "Cindy Beatty",
@@ -190,6 +203,7 @@
       "friend": {
         "id": "d6a1a432-378c-4475-adbd-5c9358dc8e34",
         "username": "Andrew_Weissnat",
+        "logBookSharing": "public",
         "memberSince": "2023-07-09T05:34:27.903Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/542.jpg",
         "name": "Andrew Weissnat",
@@ -204,6 +218,7 @@
       "friend": {
         "id": "ecb49ccf-2c81-4eeb-a301-0a089cb2319a",
         "username": "Belle_Anderson",
+        "logBookSharing": "public",
         "memberSince": "2016-03-03T22:57:41.354Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1007.jpg",
         "name": "Belle Anderson",
@@ -218,6 +233,7 @@
       "friend": {
         "id": "fd870c1d-3b00-4d12-85f0-9032d311888b",
         "username": "Augustine92",
+        "logBookSharing": "friends",
         "memberSince": "2022-09-20T13:44:37.516Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/183.jpg",
         "name": "Augustine Wehner",
@@ -232,6 +248,7 @@
       "friend": {
         "id": "a886477a-02d6-43d7-8d70-23279c697c74",
         "username": "Maribel.OConnell",
+        "logBookSharing": "private",
         "memberSince": "2024-02-15T14:13:55.973Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/450.jpg",
         "name": "Maribel O'Connell",
@@ -246,6 +263,7 @@
       "friend": {
         "id": "78ad94e8-e982-488f-93b8-6d6f5bae1359",
         "username": "Madelynn.Schinner84",
+        "logBookSharing": "public",
         "memberSince": "2017-11-10T08:34:46.185Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/163.jpg",
         "name": "Madelynn Schinner",
@@ -260,6 +278,7 @@
       "friend": {
         "id": "4cb99556-86cd-4d88-9511-1329d8e41f4d",
         "username": "Cleve_Zboncak19",
+        "logBookSharing": "friends",
         "memberSince": "2014-08-19T23:39:58.875Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/61.jpg",
         "name": "Cleve Zboncak",
@@ -274,6 +293,7 @@
       "friend": {
         "id": "6ce852b4-35b4-4444-b4b7-57077c546584",
         "username": "Bell91",
+        "logBookSharing": "private",
         "memberSince": "2023-01-29T19:16:57.462Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/636.jpg",
         "name": "Bell McDermott",
@@ -288,6 +308,7 @@
       "friend": {
         "id": "1b804913-bf83-44e4-8365-6f75596ec083",
         "username": "Erich_Will",
+        "logBookSharing": "friends",
         "memberSince": "2014-12-04T17:59:09.312Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1005.jpg",
         "name": "Erich Will",
@@ -302,6 +323,7 @@
       "friend": {
         "id": "1b804913-bf83-44e4-8365-6f75596ec083",
         "username": "Erich_Will",
+        "logBookSharing": "public",
         "memberSince": "2014-12-04T17:59:09.312Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1005.jpg",
         "name": "Erich Will",
@@ -317,6 +339,7 @@
       "friend": {
         "id": "e92b9d50-a67c-49cc-9207-15a2414cd7cf",
         "username": "Jerome_Balistreri82",
+        "logBookSharing": "friends",
         "memberSince": "2023-12-01T10:01:51.382Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/614.jpg",
         "name": "Jerome Balistreri",
@@ -331,6 +354,7 @@
       "friend": {
         "id": "419d2754-b6fe-4e76-879f-700df4c2ece6",
         "username": "Stephan57",
+        "logBookSharing": "private",
         "memberSince": "2016-01-12T17:47:57.235Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/625.jpg",
         "name": "Stephan Rowe",
@@ -345,6 +369,7 @@
       "friend": {
         "id": "e8194e21-6a5b-4ba0-acc0-777374bb8873",
         "username": "Bette_Hermiston",
+        "logBookSharing": "public",
         "memberSince": "2019-06-04T06:19:59.607Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/672.jpg",
         "name": "Bette Hermiston",
@@ -359,6 +384,7 @@
       "friend": {
         "id": "586f6de1-77e4-4689-9333-17bfec9fe814",
         "username": "Sid_Walsh",
+        "logBookSharing": "friends",
         "memberSince": "2021-04-20T18:44:24.870Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/241.jpg",
         "name": "Sid Walsh",
@@ -373,6 +399,7 @@
       "friend": {
         "id": "ba7eb922-2fa0-4364-92f7-bcec6919f8f4",
         "username": "Dejah.Predovic76",
+        "logBookSharing": "public",
         "memberSince": "2019-09-06T08:50:58.489Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/534.jpg",
         "name": "Dejah Predovic",
@@ -387,6 +414,7 @@
       "friend": {
         "id": "c844f760-5338-45bc-90b8-63b2864098a4",
         "username": "Kathryn_Hintz",
+        "logBookSharing": "private",
         "memberSince": "2018-05-26T00:05:11.363Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/376.jpg",
         "name": "Kathryn Hintz",
@@ -401,6 +429,7 @@
       "friend": {
         "id": "a284566c-a62a-415d-9a56-f2b94ccb6e89",
         "username": "Dudley_Adams",
+        "logBookSharing": "public",
         "memberSince": "2021-12-12T17:01:22.083Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/399.jpg",
         "name": "Dudley Adams",
@@ -415,6 +444,7 @@
       "friend": {
         "id": "2bc6c6ee-0050-4df6-b30b-c19328bd7f2a",
         "username": "Tyrell86",
+        "logBookSharing": "public",
         "memberSince": "2022-07-15T12:23:15.582Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/714.jpg",
         "name": "Tyrell Romaguera",
@@ -429,6 +459,7 @@
       "friend": {
         "id": "3fab0bff-3156-4d4e-8014-d8eb7bf9266f",
         "username": "Benton_Corwin33",
+        "logBookSharing": "private",
         "memberSince": "2020-11-25T15:46:18.747Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/493.jpg",
         "name": "Benton Corwin",
@@ -443,6 +474,7 @@
       "friend": {
         "id": "9f675abb-1b60-4b95-8053-07c2ab030949",
         "username": "admin",
+        "logBookSharing": "private",
         "memberSince": "2024-03-19T08:38:25.978Z",
         "name": "Administrator"
       }
@@ -455,6 +487,7 @@
       "friend": {
         "id": "d7032ae1-fc7d-4a1e-afaf-7b3963b4a743",
         "username": "Elvera6",
+        "logBookSharing": "public",
         "memberSince": "2016-06-11T06:50:51.140Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/680.jpg",
         "name": "Elvera Cole",
@@ -469,6 +502,7 @@
       "friend": {
         "id": "e434aca8-dc02-4579-a78c-664b58b096f1",
         "username": "Dudley.Fisher",
+        "logBookSharing": "private",
         "memberSince": "2019-01-03T16:34:55.963Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/965.jpg",
         "name": "Dudley Fisher",
@@ -483,6 +517,7 @@
       "friend": {
         "id": "577ada5a-482b-4c08-a22f-9cc27dc65512",
         "username": "Chester.Conn",
+        "logBookSharing": "friends",
         "memberSince": "2023-05-27T02:51:33.339Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1065.jpg",
         "name": "Chester Conn",
@@ -497,6 +532,7 @@
       "friend": {
         "id": "6eaef201-1f88-428f-bf1c-c22b4ff68be0",
         "username": "Pasquale.DAmore",
+        "logBookSharing": "public",
         "memberSince": "2019-09-12T11:25:15.609Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/406.jpg",
         "name": "Pasquale D'Amore",
@@ -511,6 +547,7 @@
       "friend": {
         "id": "fd1d415d-7024-40b5-8af1-5253cbe4a84a",
         "username": "Edgar66",
+        "logBookSharing": "public",
         "memberSince": "2014-11-19T00:34:57.289Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/98.jpg",
         "name": "Edgar Pagac",
@@ -526,6 +563,7 @@
       "friend": {
         "id": "d19d189a-e986-44dc-91fa-44b97852f228",
         "username": "Rogelio33",
+        "logBookSharing": "private",
         "memberSince": "2017-08-12T18:20:50.047Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/212.jpg",
         "name": "Rogelio Howe",
@@ -540,6 +578,7 @@
       "friend": {
         "id": "fca0adda-9dde-4023-85be-2f59ccfc011c",
         "username": "Elroy_Carter",
+        "logBookSharing": "public",
         "memberSince": "2018-12-14T02:53:44.401Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/794.jpg",
         "name": "Elroy Carter",
@@ -554,6 +593,7 @@
       "friend": {
         "id": "416a8ee8-0899-40f0-8371-02c19616d6c0",
         "username": "Eileen74",
+        "logBookSharing": "private",
         "memberSince": "2019-05-07T09:14:17.211Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1027.jpg",
         "name": "Eileen Wiegand",
@@ -569,6 +609,7 @@
       "friend": {
         "id": "ea567bf7-7e34-4027-9216-ee68879f123c",
         "username": "Alford_Hane71",
+        "logBookSharing": "public",
         "memberSince": "2018-04-02T23:29:22.109Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/692.jpg",
         "name": "Alford Hane",
@@ -583,6 +624,7 @@
       "friend": {
         "id": "9fa97683-5239-4a3d-94c0-94163015828f",
         "username": "Stefan_Dare87",
+        "logBookSharing": "friends",
         "memberSince": "2023-06-03T08:25:18.515Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/523.jpg",
         "name": "Stefan Dare",
@@ -597,6 +639,7 @@
       "friend": {
         "id": "63117ea8-4e5f-4a59-af13-1d4ffa53fa55",
         "username": "Mabelle80",
+        "logBookSharing": "public",
         "memberSince": "2017-03-26T07:54:03.062Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/222.jpg",
         "name": "Mabelle Conroy",
@@ -611,6 +654,7 @@
       "friend": {
         "id": "9836ca88-df9d-4092-b643-f47ba3a10e2a",
         "username": "Nedra.Terry5",
+        "logBookSharing": "private",
         "memberSince": "2020-09-18T19:41:41.123Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/231.jpg",
         "name": "Nedra Terry",
@@ -625,6 +669,7 @@
       "friend": {
         "id": "2987c6ca-a29a-4f5d-a673-d5aa04755cf3",
         "username": "Janae_Kozey44",
+        "logBookSharing": "public",
         "memberSince": "2015-10-03T14:21:30.149Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/354.jpg",
         "name": "Janae Kozey",
@@ -639,6 +684,7 @@
       "friend": {
         "id": "57aa2ba4-494a-441a-85a1-1db02a7e3347",
         "username": "Amy.Klocko76",
+        "logBookSharing": "public",
         "memberSince": "2016-11-14T18:06:12.550Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/988.jpg",
         "name": "Amy Klocko",
@@ -653,6 +699,7 @@
       "friend": {
         "id": "dccc1161-7916-4158-9e32-ed5036955c19",
         "username": "Karianne.Hoeger",
+        "logBookSharing": "private",
         "memberSince": "2020-07-11T10:56:02.377Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/813.jpg",
         "name": "Karianne Hoeger",
@@ -667,6 +714,7 @@
       "friend": {
         "id": "fc58eded-d58e-4a29-9941-8d5a41ad89b2",
         "username": "Doris_Oberbrunner",
+        "logBookSharing": "friends",
         "memberSince": "2016-08-23T07:11:45.615Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1084.jpg",
         "name": "Doris Oberbrunner",
@@ -682,6 +730,7 @@
       "friend": {
         "id": "dfb97c4e-e8c7-4198-b5d9-624c4a88d50a",
         "username": "Enola0",
+        "logBookSharing": "public",
         "memberSince": "2019-04-01T14:04:29.569Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/808.jpg",
         "name": "Enola Gibson",
@@ -696,6 +745,7 @@
       "friend": {
         "id": "a886477a-02d6-43d7-8d70-23279c697c74",
         "username": "Maribel.OConnell",
+        "logBookSharing": "public",
         "memberSince": "2024-02-15T14:13:55.973Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/450.jpg",
         "name": "Maribel O'Connell",
@@ -710,6 +760,7 @@
       "friend": {
         "id": "a6a17692-8bab-4c80-888a-024a0f937de7",
         "username": "Julie.Kassulke24",
+        "logBookSharing": "private",
         "memberSince": "2021-06-06T22:12:08.546Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/571.jpg",
         "name": "Julie Kassulke",
@@ -724,6 +775,7 @@
       "friend": {
         "id": "76117947-e3ff-4374-a451-633c1500724e",
         "username": "Clark.Casper",
+        "logBookSharing": "public",
         "memberSince": "2017-01-10T07:03:20.627Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/377.jpg",
         "name": "Clark Casper",
@@ -738,6 +790,7 @@
       "friend": {
         "id": "46673c7d-b5ec-472a-882f-cdcda0d92d51",
         "username": "Verona.Hagenes18",
+        "logBookSharing": "private",
         "memberSince": "2022-01-08T11:40:47.568Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/703.jpg",
         "name": "Verona Hagenes",
@@ -752,6 +805,7 @@
       "friend": {
         "id": "300ae34d-77f1-450a-a155-26a35530c322",
         "username": "Camylle.Krajcik",
+        "logBookSharing": "private",
         "memberSince": "2022-10-01T03:53:45.748Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/938.jpg",
         "name": "Camylle Krajcik",
@@ -766,6 +820,7 @@
       "friend": {
         "id": "eccd4734-3ef3-471d-8c2d-b99f067353f8",
         "username": "Callie59",
+        "logBookSharing": "friends",
         "memberSince": "2020-05-15T02:34:48.043Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1165.jpg",
         "name": "Callie Mueller",
@@ -780,6 +835,7 @@
       "friend": {
         "id": "0b438c4a-5103-451c-905c-728ef4f8d8d4",
         "username": "Crystal.Rath",
+        "logBookSharing": "public",
         "memberSince": "2019-01-29T19:40:13.706Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/553.jpg",
         "name": "Crystal Rath",
@@ -794,6 +850,7 @@
       "friend": {
         "id": "bdcc5c0e-df02-4f9f-8c10-0e05347c7205",
         "username": "Susanna.Ledner95",
+        "logBookSharing": "private",
         "memberSince": "2018-06-21T21:22:22.369Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1116.jpg",
         "name": "Susanna Ledner",
@@ -808,6 +865,7 @@
       "friend": {
         "id": "8fe2e514-a956-4bec-975a-bce5c436a31a",
         "username": "Max5",
+        "logBookSharing": "friends",
         "memberSince": "2018-03-06T01:44:24.570Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/215.jpg",
         "name": "Max Hansen",
@@ -822,6 +880,7 @@
       "friend": {
         "id": "ad7fa22c-914e-4b0f-a700-abd0806696d7",
         "username": "Dante_Nienow",
+        "logBookSharing": "public",
         "memberSince": "2017-03-06T08:06:58.780Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/280.jpg",
         "name": "Dante Nienow",
@@ -836,6 +895,7 @@
       "friend": {
         "id": "3d9c2951-b838-471d-88bf-08ecac85ba2b",
         "username": "Orville_Kunde1",
+        "logBookSharing": "private",
         "memberSince": "2019-03-28T09:29:17.812Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/423.jpg",
         "name": "Orville Kunde",
@@ -850,6 +910,7 @@
       "friend": {
         "id": "a42d8995-51bb-4796-b44e-df7dede41d3e",
         "username": "Aylin.Moen30",
+        "logBookSharing": "public",
         "memberSince": "2018-04-18T17:58:07.901Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/702.jpg",
         "name": "Aylin Moen",
@@ -864,6 +925,7 @@
       "friend": {
         "id": "854285a5-7e71-464f-a208-6aedf2d95956",
         "username": "Hal.Dicki29",
+        "logBookSharing": "public",
         "memberSince": "2017-03-17T06:42:17.732Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/189.jpg",
         "name": "Hal Dicki",
@@ -878,6 +940,7 @@
       "friend": {
         "id": "e5dabac0-dde7-4465-9a5b-c1efda819f81",
         "username": "Hailey.Emard53",
+        "logBookSharing": "private",
         "memberSince": "2017-07-07T16:19:08.525Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/500.jpg",
         "name": "Hailey Emard",
@@ -892,6 +955,7 @@
       "friend": {
         "id": "ff17e906-ec3e-4f50-9ea3-9baaff4b41ba",
         "username": "Gustave12",
+        "logBookSharing": "private",
         "memberSince": "2014-08-22T13:57:25.025Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/459.jpg",
         "name": "Gustave Graham",
@@ -906,6 +970,7 @@
       "friend": {
         "id": "6b6cde5f-9128-4f5d-a861-220c68199735",
         "username": "Waldo26",
+        "logBookSharing": "public",
         "memberSince": "2020-05-22T15:44:29.157Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/145.jpg",
         "name": "Waldo Hilll",
@@ -920,6 +985,7 @@
       "friend": {
         "id": "6d60326f-5a4e-4f2a-9135-b62d9d89dad4",
         "username": "Josiane_Schaden29",
+        "logBookSharing": "friends",
         "memberSince": "2017-11-04T06:29:46.009Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/3.jpg",
         "name": "Josiane Schaden",
@@ -934,6 +1000,7 @@
       "friend": {
         "id": "7c1d7252-f6f5-4e0c-9158-048fd5a03fb7",
         "username": "Larue2",
+        "logBookSharing": "public",
         "memberSince": "2014-05-05T19:42:03.769Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/675.jpg",
         "name": "Larue Mueller",
@@ -948,6 +1015,7 @@
       "friend": {
         "id": "208351aa-cbe1-444f-aec5-1fec7d3b729a",
         "username": "Dusty84",
+        "logBookSharing": "public",
         "memberSince": "2023-03-02T09:10:19.478Z",
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/51.jpg",
         "name": "Dusty Weimann",
