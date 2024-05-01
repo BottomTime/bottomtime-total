@@ -36,12 +36,13 @@ export class FriendsApiClient {
 
     return {
       friends: result.friends.map(
-        (friend) => new Friend(this.apiClient, friend),
+        (friend) => new Friend(this.apiClient, username, friend),
       ),
       totalCount: result.totalCount,
     };
   }
 
+  /** @deprecated Use the Friend.unfriend() method instead. Will remove this at some point. */
   async unfriend(username: string, friendUsername: string): Promise<void> {
     await this.apiClient.delete(
       `/api/users/${username}/friends/${friendUsername}`,
@@ -81,9 +82,9 @@ export class FriendsApiClient {
     );
   }
 
-  wrapFriendDTO(data: unknown): Friend {
+  wrapFriendDTO(username: string, data: unknown): Friend {
     const dto = FriendSchema.parse(data);
-    return new Friend(this.apiClient, dto);
+    return new Friend(this.apiClient, username, dto);
   }
 
   wrapFriendRequestDTO(username: string, data: unknown): FriendRequest {

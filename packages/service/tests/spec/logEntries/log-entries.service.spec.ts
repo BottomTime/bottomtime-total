@@ -1,9 +1,4 @@
-import {
-  DepthUnit,
-  LogBookSharing,
-  LogEntrySortBy,
-  SortOrder,
-} from '@bottomtime/api';
+import { DepthUnit, LogEntrySortBy, SortOrder } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
