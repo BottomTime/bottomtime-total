@@ -1,6 +1,7 @@
 import { AxiosInstance } from 'axios';
 
 import {
+  CreateOrUpdateLogEntryParamsDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
   LogEntrySchema,
@@ -27,6 +28,24 @@ export class LogEntriesApiClient {
       logEntries: [],
       totalCount: parsed.totalCount,
     };
+  }
+
+  async getLogEntry(username: string, entryId: string): Promise<LogEntry> {
+    const { data } = await this.apiClient.get(
+      `/api/users/${username}/logbook/${entryId}`,
+    );
+    return this.wrapDTO(data);
+  }
+
+  async createLogEntry(
+    username: string,
+    options: CreateOrUpdateLogEntryParamsDTO,
+  ): Promise<LogEntry> {
+    const { data } = await this.apiClient.post(
+      `/api/users/${username}/logbook`,
+      options,
+    );
+    return this.wrapDTO(data);
   }
 
   wrapDTO(data: unknown): LogEntry {

@@ -2,15 +2,19 @@ import axios, { AxiosInstance } from 'axios';
 import nock, { Scope } from 'nock';
 
 import {
+  CreateOrUpdateLogEntryParamsDTO,
+  DepthUnit,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseDTO,
   ListLogEntriesResponseSchema,
+  LogEntryDTO,
   LogEntrySortBy,
   SortOrder,
 } from '../../src';
 import { LogEntriesApiClient } from '../../src/client/log-entries';
 import LogEntryTestData from '../fixtures/log-entries-search-results.json';
 import { createScope } from '../fixtures/nock';
+import { BasicUser } from '../fixtures/users';
 
 describe('Log entries API client', () => {
   let axiosInstance: AxiosInstance;
@@ -33,7 +37,7 @@ describe('Log entries API client', () => {
     nock.restore();
   });
 
-  it('will return a list of log entries with no parameters', async () => {
+  it('will return a list of log entries', async () => {
     const username = 'greg';
     const params: ListLogEntriesParamsDTO = {
       query: 'sam',
@@ -57,6 +61,48 @@ describe('Log entries API client', () => {
     result.logEntries.forEach((entry, index) => {
       expect(entry.toJSON()).toEqual(logEntryData.logEntries[index]);
     });
+  });
+
+  it('will retrieve a single log entry', async () => {
+    const entryData = logEntryData.logEntries[0];
+    scope
+      .get(`/api/users/${entryData.creator.username}/logbook/${entryData.id}`)
+      .reply(200, entryData);
+
+    const entry = await client.getLogEntry(
+      entryData.creator.username,
+      entryData.id,
+    );
+
+    expect(scope.isDone()).toBe(true);
+    expect(entry.toJSON()).toEqual(entryData);
+  });
+
+  it('will create a new log entry', async () => {
+    const options: CreateOrUpdateLogEntryParamsDTO = {
+      duration: 50.5,
+      entryTime: {
+        date: '2024-04-30T20:48:16',
+        timezone: 'Pacific/Pohnpei',
+      },
+      bottomTime: 50.2,
+      logNumber: 555,
+      maxDepth: { depth: 95.3, unit: DepthUnit.Feet },
+      notes: 'Awesome dive!',
+    };
+    const expected: LogEntryDTO = {
+      ...options,
+      creator: BasicUser.profile,
+      id: '62389e6e-0332-4288-9d87-9bd94ba830da',
+    };
+    scope
+      .post(`/api/users/${BasicUser.username}/logbook`, options)
+      .reply(201, expected);
+
+    const entry = await client.createLogEntry(BasicUser.username, options);
+
+    expect(scope.isDone()).toBe(true);
+    expect(entry.toJSON()).toEqual(expected);
   });
 
   it('will parse a DTO and wrap it in a LogEntry object', () => {
