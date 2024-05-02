@@ -235,6 +235,63 @@ describe('Friends End-to-End Tests', () => {
     });
   });
 
+  describe('when determining if two users are friends', () => {
+    let friend: UserEntity;
+
+    beforeEach(async () => {
+      friend = friendUsers[0];
+      const relation = new FriendshipEntity();
+      relation.id = FriendRelationData[0].id;
+      relation.friendsSince = new Date(FriendRelationData[0].friendsSince);
+      relation.user = regularUser;
+      relation.friend = friend;
+
+      await Users.save(friend);
+      await Friends.save(relation);
+    });
+
+    it('will return a 401 error if user is not logged in', async () => {
+      await request(server)
+        .head(friendUrl(regularUser.username, friend.username))
+        .expect(401);
+    });
+
+    it("will return a 403 error if the current user is not authorized to view the target user's friends", async () => {
+      await request(server)
+        .head(friendUrl(adminUser.username, friend.username))
+        .set(...regularAuthHeader)
+        .expect(403);
+    });
+
+    it('will return a 404 error if the target user does not exist', async () => {
+      await request(server)
+        .head(friendUrl('not.a.user', friend.username))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+
+    it('will return a 404 error if the target friend does not exist', async () => {
+      await request(server)
+        .head(friendUrl(regularUser.username, 'not.a.user'))
+        .set(...regularAuthHeader)
+        .expect(404);
+    });
+
+    it('will return a 404 error if the target user and target friend are not actually friends', async () => {
+      await request(server)
+        .head(friendUrl(regularUser.username, adminUser.username))
+        .set(...regularAuthHeader)
+        .expect(404);
+    });
+
+    it('will return a 200 response if the two users are friends', async () => {
+      await request(server)
+        .head(friendUrl(regularUser.username, friend.username))
+        .set(...regularAuthHeader)
+        .expect(200);
+    });
+  });
+
   describe('when unfriending someone', () => {
     let friend: UserEntity;
 
