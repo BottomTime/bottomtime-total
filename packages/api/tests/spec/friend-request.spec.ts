@@ -29,14 +29,16 @@ const TestData: FriendRequestDTO = {
   reason: 'nope',
 };
 
-function getRequestPath(direction: FriendRequestDirection): string {
-  return direction === FriendRequestDirection.Incoming
+function getCancelPath(direction: FriendRequestDirection): string {
+  return direction === FriendRequestDirection.Outgoing
     ? `/api/users/${Username}/friendRequests/${TestData.friend.username}`
     : `/api/users/${TestData.friend.username}/friendRequests/${Username}`;
 }
 
 function getAcknowledgePath(direction: FriendRequestDirection): string {
-  return `${getRequestPath(direction)}/acknowledge`;
+  return direction === FriendRequestDirection.Incoming
+    ? `/api/users/${Username}/friendRequests/${TestData.friend.username}/acknowledge`
+    : `/api/users/${TestData.friend.username}/friendRequests/${Username}/acknowledge`;
 }
 
 describe('FriendRequest class', () => {
@@ -94,7 +96,7 @@ describe('FriendRequest class', () => {
         });
 
         it('will cancel/delete a friend request', async () => {
-          scope.delete(getRequestPath(direction)).reply(204);
+          scope.delete(getCancelPath(direction)).reply(204);
           await request.cancel();
           expect(scope.isDone()).toBe(true);
         });

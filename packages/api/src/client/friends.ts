@@ -64,13 +64,6 @@ export class FriendsApiClient {
     return new Friend(this.apiClient, username, FriendSchema.parse(data));
   }
 
-  /** @deprecated Use the Friend.unfriend() method instead. Will remove this at some point. */
-  async unfriend(username: string, friendUsername: string): Promise<void> {
-    await this.apiClient.delete(
-      `/api/users/${username}/friends/${friendUsername}`,
-    );
-  }
-
   async listFriendRequests(
     username: string,
     params?: ListFriendRequestsParams,

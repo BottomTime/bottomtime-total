@@ -9,14 +9,16 @@ export class FriendRequest {
     private readonly data: FriendRequestDTO,
   ) {}
 
-  private getRequestPath(): string {
-    return this.data.direction === FriendRequestDirection.Incoming
+  private getRequestCancelPath(): string {
+    return this.data.direction === FriendRequestDirection.Outgoing
       ? `/api/users/${this.username}/friendRequests/${this.data.friend.username}`
       : `/api/users/${this.data.friend.username}/friendRequests/${this.username}`;
   }
 
   private getRequestAcknowledgePath(): string {
-    return `${this.getRequestPath()}/acknowledge`;
+    return this.data.direction === FriendRequestDirection.Incoming
+      ? `/api/users/${this.username}/friendRequests/${this.data.friend.username}/acknowledge`
+      : `/api/users/${this.data.friend.username}/friendRequests/${this.username}/acknowledge`;
   }
 
   get friend(): FriendRequestDTO['friend'] {
@@ -44,7 +46,7 @@ export class FriendRequest {
   }
 
   async cancel(): Promise<void> {
-    await this.client.delete(this.getRequestPath());
+    await this.client.delete(this.getRequestCancelPath());
   }
 
   async accept(): Promise<void> {

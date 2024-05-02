@@ -405,10 +405,14 @@ async function onConfirmUnfriend(): Promise<void> {
 
   await oops(
     async () => {
-      const friend = state.selectedFriend;
-      if (!friend || !currentUser.user) return;
+      const dto = state.selectedFriend;
+      if (!dto || !currentUser.user) return;
 
-      await client.friends.unfriend(currentUser.user.username, friend.username);
+      const friend = client.friends.wrapFriendDTO(
+        currentUser.user.username,
+        dto,
+      );
+      await friend.unfriend();
 
       const index = state.friends.friends.findIndex((f) => f.id === friend.id);
       if (index > -1) {
