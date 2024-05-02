@@ -14,6 +14,7 @@ import {
   Get,
   HttpCode,
   Inject,
+  Logger,
   Post,
   Put,
   Query,
@@ -40,6 +41,8 @@ const LogEntryIdParam = ':entryId';
 @Controller('api/users/:username/logbook')
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
 export class UserLogEntriesController {
+  private readonly log = new Logger(UserLogEntriesController.name);
+
   constructor(
     @Inject(LogEntriesService) private readonly service: LogEntriesService,
   ) {}
@@ -170,10 +173,13 @@ export class UserLogEntriesController {
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
     options?: ListLogEntriesParamsDTO,
   ): Promise<ListLogEntriesResponseDTO> {
+    this.log.debug('Searching for log entries...', options);
     const { logEntries, totalCount } = await this.service.listLogEntries({
       ...options,
       ownerId: user.id,
     });
+
+    this.log.debug('Got some log entries', logEntries.length, user.username);
 
     return {
       logEntries: logEntries.map((entry) => entry.toJSON()),

@@ -5,7 +5,7 @@ import {
   ListAlertsResponseDTO,
   ListFriendRequestsResponseDTO,
   ListFriendsResponseDTO,
-  LogEntryDTO,
+  ListLogEntriesResponseDTO,
   ProfileDTO,
   SearchDiveSitesResponseDTO,
   UserDTO,
@@ -23,7 +23,7 @@ export type AppInitialState = {
   friends?: ListFriendsResponseDTO;
   friendRequests?: ListFriendRequestsResponseDTO;
   diveSites?: SearchDiveSitesResponseDTO;
-  logEntries?: LogEntryDTO;
+  logEntries?: ListLogEntriesResponseDTO;
 };
 
 export function useInitialState(): AppInitialState | null {

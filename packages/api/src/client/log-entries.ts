@@ -13,7 +13,7 @@ export class LogEntriesApiClient {
 
   async listLogEntries(
     username: string,
-    params: ListLogEntriesParamsDTO,
+    params?: ListLogEntriesParamsDTO,
   ): Promise<{
     logEntries: LogEntry[];
     totalCount: number;
@@ -25,7 +25,9 @@ export class LogEntriesApiClient {
 
     const parsed = ListLogEntriesResponseSchema.parse(data);
     return {
-      logEntries: [],
+      logEntries: parsed.logEntries.map(
+        (entry) => new LogEntry(this.apiClient, entry),
+      ),
       totalCount: parsed.totalCount,
     };
   }
