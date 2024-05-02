@@ -124,7 +124,7 @@ describe('Friends view', () => {
       .mockResolvedValue({
         friends: friendsData.friends
           .slice(0, 5)
-          .map((f) => new Friend(client.axios, f)),
+          .map((f) => new Friend(client.axios, currentUser.user!.username, f)),
         totalCount: friendsData.totalCount,
       });
     const friendRequestsSpy = jest
@@ -160,7 +160,7 @@ describe('Friends view', () => {
       .mockResolvedValue({
         friends: friendsData.friends
           .slice(0, 5)
-          .map((f) => new Friend(client.axios, f)),
+          .map((f) => new Friend(client.axios, currentUser.user!.username, f)),
         totalCount: friendsData.totalCount,
       });
     const friendRequestsSpy = jest
@@ -223,10 +223,13 @@ describe('Friends view', () => {
 
   it('will allow a user to unfriend someone', async () => {
     const wrapper = mount(FriendsView, opts);
-    const unfriendSpy = jest
-      .spyOn(client.friends, 'unfriend')
-      .mockResolvedValue();
-    const friend = friendsData.friends[3];
+    const friend = new Friend(
+      client.axios,
+      currentUser.user!.username,
+      friendsData.friends[3],
+    );
+    jest.spyOn(client.friends, 'wrapFriendDTO').mockReturnValue(friend);
+    const unfriendSpy = jest.spyOn(friend, 'unfriend').mockResolvedValue();
 
     await wrapper
       .get(`[data-testid="unfriend-${friend.username}"]`)
@@ -234,10 +237,7 @@ describe('Friends view', () => {
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
 
-    expect(unfriendSpy).toHaveBeenCalledWith(
-      currentUser.user!.username,
-      friend.username,
-    );
+    expect(unfriendSpy).toHaveBeenCalled();
 
     expect(
       wrapper.find(`[data-testid="select-friend-${friend.username}"]`).exists(),
@@ -247,10 +247,13 @@ describe('Friends view', () => {
 
   it('will allow a user to change their mind about unfriending someone', async () => {
     const wrapper = mount(FriendsView, opts);
-    const unfriendSpy = jest
-      .spyOn(client.friends, 'unfriend')
-      .mockResolvedValue();
-    const friend = friendsData.friends[3];
+    const friend = new Friend(
+      client.axios,
+      currentUser.user!.username,
+      friendsData.friends[3],
+    );
+    jest.spyOn(client.friends, 'wrapFriendDTO').mockReturnValue(friend);
+    const unfriendSpy = jest.spyOn(friend, 'unfriend').mockResolvedValue();
 
     await wrapper
       .get(`[data-testid="unfriend-${friend.username}"]`)
@@ -414,7 +417,7 @@ describe('Friends view', () => {
     const spy = jest.spyOn(client.friends, 'listFriends').mockResolvedValue({
       friends: friendsData.friends
         .slice(20, 40)
-        .map((f) => new Friend(client.axios, f)),
+        .map((f) => new Friend(client.axios, currentUser.user!.username, f)),
       totalCount: friendsData.totalCount,
     });
     initalState.friends!.friends = initalState.friends!.friends.slice(0, 20);

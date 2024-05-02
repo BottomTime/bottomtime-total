@@ -9,6 +9,18 @@ export class FriendRequest {
     private readonly data: FriendRequestDTO,
   ) {}
 
+  private getRequestCancelPath(): string {
+    return this.data.direction === FriendRequestDirection.Outgoing
+      ? `/api/users/${this.username}/friendRequests/${this.data.friend.username}`
+      : `/api/users/${this.data.friend.username}/friendRequests/${this.username}`;
+  }
+
+  private getRequestAcknowledgePath(): string {
+    return this.data.direction === FriendRequestDirection.Incoming
+      ? `/api/users/${this.username}/friendRequests/${this.data.friend.username}/acknowledge`
+      : `/api/users/${this.data.friend.username}/friendRequests/${this.username}/acknowledge`;
+  }
+
   get friend(): FriendRequestDTO['friend'] {
     return this.data.friend;
   }
@@ -34,24 +46,24 @@ export class FriendRequest {
   }
 
   async cancel(): Promise<void> {
-    await this.client.delete(
-      `/api/users/${this.username}/friendRequests/${this.data.friend.username}`,
-    );
+    await this.client.delete(this.getRequestCancelPath());
   }
 
   async accept(): Promise<void> {
-    const path =
-      this.data.direction === FriendRequestDirection.Incoming
-        ? `/api/users/${this.username}/friendRequests/${this.data.friend.username}/acknowledge`
-        : `/api/users/${this.data.friend.username}/friendRequests/${this.username}/acknowledge`;
-    await this.client.post(path, { accepted: true });
+    await this.client.post(this.getRequestAcknowledgePath(), {
+      accepted: true,
+    });
+    this.data.accepted = true;
+    this.data.reason = undefined;
   }
 
   async decline(reason?: string): Promise<void> {
-    await this.client.post(
-      `/api/users/${this.username}/friendRequests/${this.data.friend.username}/acknowledge`,
-      { accepted: false, reason },
-    );
+    await this.client.post(this.getRequestAcknowledgePath(), {
+      accepted: false,
+      reason,
+    });
+    this.data.accepted = false;
+    this.data.reason = reason;
   }
 
   toJSON(): FriendRequestDTO {

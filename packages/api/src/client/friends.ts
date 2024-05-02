@@ -1,4 +1,4 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance, isAxiosError } from 'axios';
 
 import {
   FriendRequestSchema,
@@ -36,16 +36,32 @@ export class FriendsApiClient {
 
     return {
       friends: result.friends.map(
-        (friend) => new Friend(this.apiClient, friend),
+        (friend) => new Friend(this.apiClient, username, friend),
       ),
       totalCount: result.totalCount,
     };
   }
 
-  async unfriend(username: string, friendUsername: string): Promise<void> {
-    await this.apiClient.delete(
+  async areFriends(username: string, friendUsername: string): Promise<boolean> {
+    try {
+      await this.apiClient.head(
+        `/api/users/${username}/friends/${friendUsername}`,
+      );
+      return true;
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 404) {
+        return false;
+      }
+
+      throw error;
+    }
+  }
+
+  async getFriend(username: string, friendUsername: string): Promise<Friend> {
+    const { data } = await this.apiClient.get(
       `/api/users/${username}/friends/${friendUsername}`,
     );
+    return new Friend(this.apiClient, username, FriendSchema.parse(data));
   }
 
   async listFriendRequests(
@@ -81,9 +97,9 @@ export class FriendsApiClient {
     );
   }
 
-  wrapFriendDTO(data: unknown): Friend {
+  wrapFriendDTO(username: string, data: unknown): Friend {
     const dto = FriendSchema.parse(data);
-    return new Friend(this.apiClient, dto);
+    return new Friend(this.apiClient, username, dto);
   }
 
   wrapFriendRequestDTO(username: string, data: unknown): FriendRequest {

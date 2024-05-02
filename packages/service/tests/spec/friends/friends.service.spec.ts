@@ -194,6 +194,32 @@ describe('Friends Service', () => {
     });
   });
 
+  describe('when testing to see if two users are friends', () => {
+    it('will return true if the users are friends', async () => {
+      const friend = friendData[0];
+
+      const friendRelation = new FriendshipEntity();
+      friendRelation.id = friend.id;
+      friendRelation.user = userData;
+      friendRelation.friend = friend;
+      friendRelation.friendsSince = new Date('2023-12-11T17:21:44.781Z');
+
+      await Users.save([userData, friend]);
+      await Friends.save(friendRelation);
+
+      await expect(service.areFriends(userData.id, friend.id)).resolves.toBe(
+        true,
+      );
+    });
+
+    it('will return false if the users are not friends', async () => {
+      await Users.save([userData, friendData[0]]);
+      await expect(
+        service.areFriends(userData.id, friendData[0].id),
+      ).resolves.toBe(false);
+    });
+  });
+
   describe('when removing a friend', () => {
     it('will remove the friend relationship and return true', async () => {
       const friendsSince = new Date('2023-12-11T17:21:44.781Z');

@@ -28,7 +28,8 @@ export async function getUserToken(postgresUri: string, username: string) {
             exp: Date.now() + 20 * 60 * 1000,
             sub: `user|${user.id}`,
           },
-          process.env.BT_SESSION_SECRET ?? '',
+          process.env.BT_SESSION_SECRET ||
+            'va20e0egr0aA/x2UFmckWDy1MYxoaZTaA2M4LGFli5k=',
           {},
           (error, token) => {
             if (error) reject(error);
