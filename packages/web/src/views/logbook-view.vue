@@ -1,23 +1,13 @@
 <template>
   <PageTitle title="Logbook" />
-  <!-- <div>
-    <p>
-      <span
-        >Showing {{ state.entries.logEntries.length }} of
-        {{ state.entries.totalCount }} log entries</span
-      >
-    </p>
-  </div> -->
 
-  <div>
-    {{ route.query }}
+  <div class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
+    <LogbookSearch />
+    <LogbookEntriesList
+      class="col-span-1 lg:col-span-3 xl:col-span-4"
+      :entries="state.entries"
+    />
   </div>
-
-  <!-- <ul>
-    <li v-for="entry in state.entries.logEntries" :key="entry.id">
-      {{ JSON.stringify(entry) }}
-    </li>
-  </ul> -->
 </template>
 
 <script lang="ts" setup>
@@ -32,6 +22,8 @@ import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
 import PageTitle from '../components/common/page-title.vue';
+import LogbookEntriesList from '../components/logbook/logbook-entries-list.vue';
+import LogbookSearch from '../components/logbook/logbook-search.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
