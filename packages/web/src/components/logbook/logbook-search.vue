@@ -1,5 +1,5 @@
 <template>
-  <FormBox>SEARCH!!!!</FormBox>
+  <FormBox class="sticky top-20">SEARCH!!!!</FormBox>
 </template>
 
 <script lang="ts" setup>
