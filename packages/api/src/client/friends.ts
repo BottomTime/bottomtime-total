@@ -1,4 +1,4 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance, isAxiosError } from 'axios';
 
 import {
   FriendRequestSchema,
@@ -40,6 +40,28 @@ export class FriendsApiClient {
       ),
       totalCount: result.totalCount,
     };
+  }
+
+  async areFriends(username: string, friendUsername: string): Promise<boolean> {
+    try {
+      await this.apiClient.head(
+        `/api/users/${username}/friends/${friendUsername}`,
+      );
+      return true;
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 404) {
+        return false;
+      }
+
+      throw error;
+    }
+  }
+
+  async getFriend(username: string, friendUsername: string): Promise<Friend> {
+    const { data } = await this.apiClient.get(
+      `/api/users/${username}/friends/${friendUsername}`,
+    );
+    return new Friend(this.apiClient, username, FriendSchema.parse(data));
   }
 
   /** @deprecated Use the Friend.unfriend() method instead. Will remove this at some point. */
