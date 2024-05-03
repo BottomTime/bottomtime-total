@@ -36,6 +36,7 @@
 
     <LogbookEntriesList
       class="col-span-1 lg:col-span-3 xl:col-span-4"
+      :edit-mode="editMode"
       :entries="state.entries"
       :is-loading-more="state.isLoadingMoreEntries"
       @load-more="onLoadMore"
@@ -50,6 +51,7 @@ import {
   ListLogEntriesParamsSchema,
   ListLogEntriesResponseDTO,
   LogEntryDTO,
+  UserRole,
 } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
@@ -82,6 +84,17 @@ const initialState = useInitialState();
 const oops = useOops();
 const route = useRoute();
 
+const editMode = computed(() => {
+  if (!currentUser.user) return false;
+
+  if (currentUser.user.role === UserRole.Admin) return true;
+
+  if (typeof route.params.username === 'string') {
+    return route.params.username === currentUser.user.username;
+  }
+
+  return true;
+});
 const queryParams = computed<ListLogEntriesParamsDTO>(() => {
   const parsed = ListLogEntriesParamsSchema.safeParse(route.query);
   return parsed.success

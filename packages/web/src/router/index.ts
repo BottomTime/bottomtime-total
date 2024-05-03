@@ -89,6 +89,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/logbook-view.vue'),
   },
   {
+    path: '/logbook/:username/new',
+    name: 'new-log-entry',
+    component: () => import('../views/new-log-entry-view.vue'),
+  },
+  {
     path: '/logbook/:username/:entryId',
     name: 'log-entry',
     component: () => import('../views/log-entry-view.vue'),

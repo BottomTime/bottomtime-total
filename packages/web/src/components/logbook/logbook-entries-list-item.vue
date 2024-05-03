@@ -3,7 +3,7 @@
     class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
   >
     <div class="min-w-16 flex">
-      <FormCheckbox />
+      <FormCheckbox v-if="editMode" />
       <p v-if="entry.logNumber" class="font-bold">#{{ entry.logNumber }}</p>
     </div>
 
@@ -64,10 +64,13 @@ import FormButton from '../common/form-button.vue';
 import FormCheckbox from '../common/form-checkbox.vue';
 
 interface LogbookEntriesListItemProps {
+  editMode?: boolean;
   entry: LogEntryDTO;
 }
 
-defineProps<LogbookEntriesListItemProps>();
+withDefaults(defineProps<LogbookEntriesListItemProps>(), {
+  editMode: false,
+});
 defineEmits<{
   (e: 'select', entry: LogEntryDTO): void;
 }>();

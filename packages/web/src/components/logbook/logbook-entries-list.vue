@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col space-y-3">
-    <FormBox class="sticky top-16">
+    <FormBox class="sticky top-16 flex justify-between items-center">
       <p>
         <span>Showing </span>
         <span class="font-bold">{{ entries.logEntries.length }}</span>
@@ -8,12 +8,25 @@
         <span class="font-bold">{{ entries.totalCount }}</span>
         <span> entries</span>
       </p>
+
+      <div v-if="editMode" class="space-x-2">
+        <a
+          v-if="currentUser.user"
+          :href="`/logbook/${currentUser.user.username}/new`"
+        >
+          <FormButton type="primary" test-id="create-entry">
+            Create Entry
+          </FormButton>
+        </a>
+        <FormButton test-id="import-entries">Import Entries...</FormButton>
+      </div>
     </FormBox>
 
     <ul class="px-2">
       <LogbookEntriesListItem
         v-for="entry in entries.logEntries"
         :key="entry.id"
+        :edit-mode="editMode"
         :entry="entry"
         @select="(entry) => $emit('select', entry)"
       />
@@ -40,16 +53,21 @@
 <script lang="ts" setup>
 import { ListLogEntriesResponseDTO, LogEntryDTO } from '@bottomtime/api';
 
+import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import LogbookEntriesListItem from './logbook-entries-list-item.vue';
 
+const currentUser = useCurrentUser();
+
 interface LogbookEntriesListProps {
+  editMode?: boolean;
   entries: ListLogEntriesResponseDTO;
   isLoadingMore?: boolean;
 }
 
 withDefaults(defineProps<LogbookEntriesListProps>(), {
+  editMode: false,
   isLoadingMore: false,
 });
 
