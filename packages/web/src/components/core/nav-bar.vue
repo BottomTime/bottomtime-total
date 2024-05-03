@@ -47,8 +47,15 @@
           </ul>
 
           <!-- Avatar for authenticated users -->
+          <button v-if="currentUser.user">
+            <span class="fa-layers fa-fw">
+              <i class="fa-solid fa-bell"></i>
+              <span class="fa-layers-counter fa-layers-bottom-right"> 1 </span>
+            </span>
+          </button>
+
           <button
-            v-else
+            v-if="currentUser.user"
             id="user-menu-button"
             v-click-outside="() => (showUserDropdown = false)"
             data-testid="user-menu-button"

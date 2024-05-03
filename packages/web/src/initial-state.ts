@@ -6,6 +6,7 @@ import {
   ListFriendRequestsResponseDTO,
   ListFriendsResponseDTO,
   ListLogEntriesResponseDTO,
+  LogEntryDTO,
   ProfileDTO,
   SearchDiveSitesResponseDTO,
   UserDTO,
@@ -17,6 +18,7 @@ export type AppInitialState = {
   alerts?: ListAlertsResponseDTO;
   currentAlert?: AlertDTO;
   currentDiveSite?: DiveSiteDTO | null;
+  currentLogEntry?: LogEntryDTO;
   currentUser: UserDTO | null;
   currentProfile?: ProfileDTO;
   error?: unknown;

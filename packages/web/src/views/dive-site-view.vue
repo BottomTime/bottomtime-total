@@ -49,7 +49,7 @@ const canEdit = computed(() => {
 
 const breadcrumbs: Breadcrumb[] = [
   { label: 'Dive Sites', to: '/diveSites' },
-  { label: () => title.value, active: true },
+  { label: title, active: true },
 ];
 
 onServerPrefetch(async () => {

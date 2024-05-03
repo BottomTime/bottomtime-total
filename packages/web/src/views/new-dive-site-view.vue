@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO } from '@bottomtime/api';
+import { DiveSiteDTO, LogBookSharing } from '@bottomtime/api';
 
 import { ref } from 'vue';
 
@@ -28,7 +28,12 @@ const location = useLocation();
 
 const site = ref<DiveSiteDTO>({
   createdOn: new Date(),
-  creator: { userId: '', username: '', memberSince: new Date() },
+  creator: {
+    userId: '',
+    username: '',
+    memberSince: new Date(),
+    logBookSharing: LogBookSharing.Private,
+  },
   id: '',
   name: '',
   location: '',

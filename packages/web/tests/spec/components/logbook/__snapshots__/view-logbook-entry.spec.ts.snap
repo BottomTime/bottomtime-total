@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ViewLogbookEntry component will render correctly for a full log entry 1`] = `
+"<div class="space-y-3" data-testid="logbook-entry">
+  <div class="flex flex-col"><label class="font-bold">Log #:</label><span class="italic" data-testid="entry-logNumber">12</span></div>
+  <div class="flex flex-col"><label class="font-bold">Entry time:</label><span class="italic">January 31, 2023 9:16 AM</span><span class="italic text-sm">(Europe/Dublin)</span></div>
+  <div class="flex flex-col"><label class="font-bold">Max depth:</label><span class="italic">33.3 ft</span></div>
+  <div class="flex flex-col"><label class="font-bold">Bottom time / Duration:</label><span class="italic">77.8 min / 88.3 min</span></div>
+</div>"
+`;
+
+exports[`ViewLogbookEntry component will render correctly for a minimal log entry 1`] = `
+"<div class="space-y-3" data-testid="logbook-entry">
+  <!--v-if-->
+  <div class="flex flex-col"><label class="font-bold">Entry time:</label><span class="italic">January 31, 2023 9:16 AM</span><span class="italic text-sm">(America/Los_Angeles)</span></div>
+  <!--v-if-->
+  <div class="flex flex-col"><label class="font-bold">Duration:</label><span class="italic">44.1 min</span></div>
+</div>"
+`;

@@ -58,7 +58,7 @@ const title = computed(() =>
 const Breadcrumbs: Breadcrumb[] = [
   { label: 'Admin', to: '/admin' },
   { label: 'Alerts', to: '/admin/alerts' },
-  { label: () => title.value, active: true },
+  { label: title, active: true },
 ];
 
 async function onSaveAlert(updated: AlertDTO) {
