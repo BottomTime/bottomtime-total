@@ -15,7 +15,12 @@
       <p
         class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"
       >
-        <FormButton type="link" size="2xl" @click="$emit('select', entry)">
+        <FormButton
+          type="link"
+          size="2xl"
+          :test-id="`select-${entry.id}`"
+          @click="$emit('select', entry)"
+        >
           {{ dayjs(entry.entryTime.date).format('LLL') }}
         </FormButton>
         <span class="italic text-sm">{{ entry.entryTime.timezone }}</span>

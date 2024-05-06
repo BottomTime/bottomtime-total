@@ -61,7 +61,7 @@ interface LogbookSearchState {
 
 const props = defineProps<LogbookSearchProps>();
 const state = reactive<LogbookSearchState>({
-  query: props.params.query ?? '',
+  query: props.params.query || '',
   startDate: props.params.startDate,
   endDate: props.params.endDate,
 });

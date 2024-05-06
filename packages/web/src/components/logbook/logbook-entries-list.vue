@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col space-y-3">
     <FormBox class="sticky top-16 flex justify-between items-center">
-      <p>
+      <p data-testid="entries-count">
         <span>Showing </span>
         <span class="font-bold">{{ entries.logEntries.length }}</span>
         <span> of </span>
@@ -21,7 +21,11 @@
       </div>
     </FormBox>
 
-    <ul class="px-2">
+    <ul
+      v-if="entries.logEntries.length"
+      class="px-2"
+      data-testid="logbook-list"
+    >
       <LogbookEntriesListItem
         v-for="entry in entries.logEntries"
         :key="entry.id"
@@ -41,11 +45,34 @@
           <span>Loading more logbook entries...</span>
         </p>
 
-        <FormButton v-else type="link" size="xl" @click="$emit('load-more')">
+        <FormButton
+          v-else
+          type="link"
+          size="xl"
+          test-id="logbook-load-more"
+          @click="$emit('load-more')"
+        >
           Load more entries...
         </FormButton>
       </li>
     </ul>
+
+    <div
+      v-else
+      class="flex h-16 justify-center items-center gap-2 text-lg italic"
+      data-testid="empty-logbook-message"
+    >
+      <span>
+        <i class="fa-solid fa-circle-exclamation"></i>
+      </span>
+      <p>
+        <span>Your logbook is currently empty! Click </span>
+        <NavLink :to="`/logbook/${currentUser.user?.username}/new`">
+          here
+        </NavLink>
+        <span> to log your first dive!</span>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -55,6 +82,7 @@ import { ListLogEntriesResponseDTO, LogEntryDTO } from '@bottomtime/api';
 import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
+import NavLink from '../common/nav-link.vue';
 import LogbookEntriesListItem from './logbook-entries-list-item.vue';
 
 const currentUser = useCurrentUser();
