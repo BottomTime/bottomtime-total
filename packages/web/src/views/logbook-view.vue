@@ -1,10 +1,11 @@
 <template>
   <PageTitle title="Logbook" />
+  <BreadCrumbs :items="[{ label: 'Logbook', active: true }]" />
 
   <DrawerPanel
     :full-screen="
-      state.selectedEntry && currentUsername
-        ? `/logbook/${currentUsername}/${state.selectedEntry.id}`
+      state.selectedEntry && username
+        ? `/logbook/${username}/${state.selectedEntry.id}`
         : undefined
     "
     :title="dayjs(state.selectedEntry?.entryTime.date).format('LLL')"
@@ -60,6 +61,7 @@ import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
+import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import PageTitle from '../components/common/page-title.vue';
 import LogbookEntriesList from '../components/logbook/logbook-entries-list.vue';
@@ -88,16 +90,18 @@ const location = useLocation();
 const oops = useOops();
 const route = useRoute();
 
-const editMode = computed(() => {
-  if (!currentUser.user) return false;
+const username = computed(() =>
+  typeof route.params.username === 'string' ? route.params.username : '',
+);
 
+const editMode = computed(() => {
+  if (!username.value || !currentUser.user) return false;
+
+  // Admins can edit any user's logbook
   if (currentUser.user.role === UserRole.Admin) return true;
 
-  if (typeof route.params.username === 'string') {
-    return route.params.username === currentUser.user.username;
-  }
-
-  return true;
+  // Users can edit their own logbook
+  return route.params.username === currentUser.user.username;
 });
 
 function parseQueryParams(): ListLogEntriesParamsDTO {
@@ -109,17 +113,6 @@ function parseQueryParams(): ListLogEntriesParamsDTO {
       }
     : {};
 }
-const currentUsername = computed<string | undefined>(() => {
-  let username: string | undefined;
-
-  if (typeof route.params.username === 'string') {
-    username = route.params.username;
-  } else if (currentUser.user) {
-    username = currentUser.user.username;
-  }
-
-  return username;
-});
 const state = reactive<LogbookViewState>({
   isLoadingLogEntry: false,
   isLoadingMoreEntries: false,
@@ -132,13 +125,11 @@ const state = reactive<LogbookViewState>({
 });
 
 async function refresh(): Promise<void> {
-  const username = currentUsername.value;
-
   await oops(async () => {
-    if (!username) return;
+    if (!username.value) return;
 
     const results = await client.logEntries.listLogEntries(
-      username,
+      username.value,
       state.queryParams,
     );
     state.entries = {
@@ -154,8 +145,7 @@ onServerPrefetch(async () => {
 });
 
 async function onLoadMore(): Promise<void> {
-  const username = currentUsername.value;
-  if (!username) return;
+  if (!username.value) return;
 
   state.isLoadingMoreEntries = true;
 
@@ -165,7 +155,10 @@ async function onLoadMore(): Promise<void> {
       skip: state.entries.logEntries.length,
     };
 
-    const results = await client.logEntries.listLogEntries(username, options);
+    const results = await client.logEntries.listLogEntries(
+      username.value,
+      options,
+    );
 
     state.entries.logEntries.push(
       ...results.logEntries.map((entry) => entry.toJSON()),
@@ -183,11 +176,8 @@ async function onSelectLogEntry(dto: LogEntryDTO): Promise<void> {
 
   await oops(
     async () => {
-      if (!currentUsername.value) return;
-      const entry = await client.logEntries.getLogEntry(
-        currentUsername.value,
-        dto.id,
-      );
+      if (!username.value) return;
+      const entry = await client.logEntries.getLogEntry(username.value, dto.id);
 
       state.selectedEntry = entry.toJSON();
     },

@@ -58,23 +58,21 @@ const state = reactive<DepthUnitState>({
 function onToggleUnit() {
   state.unit =
     state.unit === DepthUnit.Meters ? DepthUnit.Feet : DepthUnit.Meters;
-
-  if (typeof state.value === 'number') {
-    state.value =
-      state.unit === DepthUnit.Meters
-        ? state.value / 3.28084
-        : state.value * 3.28084;
-  }
 }
 
 watch(state, () => {
-  if (typeof state.value === 'number') {
+  if (!state.value) {
+    depth.value = undefined;
+  } else if (typeof state.value === 'number') {
     depth.value = {
       depth: state.value,
       unit: state.unit,
     };
   } else {
-    depth.value = undefined;
+    depth.value = {
+      depth: -1,
+      unit: state.unit,
+    };
   }
 });
 </script>

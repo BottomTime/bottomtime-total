@@ -9,16 +9,15 @@
         <span> entries</span>
       </p>
 
-      <div v-if="editMode" class="space-x-2">
-        <a
-          v-if="currentUser.user"
-          :href="`/logbook/${currentUser.user.username}/new`"
-        >
+      <div v-if="editMode && currentUser.user" class="space-x-2">
+        <a :href="`/logbook/${currentUser.user.username}/new`">
           <FormButton type="primary" test-id="create-entry">
             Create Entry
           </FormButton>
         </a>
-        <FormButton test-id="import-entries">Import Entries...</FormButton>
+        <a :href="`/importLogs/${currentUser.user.username}`">
+          <FormButton test-id="import-entries">Import Entries...</FormButton></a
+        >
       </div>
     </FormBox>
 

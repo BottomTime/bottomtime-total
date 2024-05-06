@@ -6,6 +6,7 @@
       </div>
     </div>
   </DrawerPanel>
+
   <section class="h-16">
     <nav
       class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30"
@@ -205,7 +206,7 @@ const navLinks = computed<NavLink[]>(() => {
     },
     {
       title: 'Log Book',
-      url: '/logbook',
+      url: `/logbook/${currentUser.user?.username}`,
       visible: !currentUser.anonymous,
     },
     {
