@@ -31,7 +31,7 @@
 
   <div class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
     <div>
-      <LogbookSearch />
+      <LogbookSearch :params="state.queryParams" @search="onSearch" />
     </div>
 
     <LogbookEntriesList
@@ -55,6 +55,7 @@ import {
 } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
+import qs from 'qs';
 import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -66,6 +67,7 @@ import LogbookSearch from '../components/logbook/logbook-search.vue';
 import ViewLogbookEntry from '../components/logbook/view-logbook-entry.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
+import { useLocation } from '../location';
 import { useOops } from '../oops';
 import { useCurrentUser } from '../store';
 
@@ -73,6 +75,7 @@ interface LogbookViewState {
   entries: ListLogEntriesResponseDTO;
   isLoadingLogEntry: boolean;
   isLoadingMoreEntries: boolean;
+  queryParams: ListLogEntriesParamsDTO;
   selectedEntry?: LogEntryDTO | null;
   showSelectedEntry: boolean;
 }
@@ -81,6 +84,7 @@ const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const currentUser = useCurrentUser();
 const initialState = useInitialState();
+const location = useLocation();
 const oops = useOops();
 const route = useRoute();
 
@@ -95,7 +99,8 @@ const editMode = computed(() => {
 
   return true;
 });
-const queryParams = computed<ListLogEntriesParamsDTO>(() => {
+
+function parseQueryParams(): ListLogEntriesParamsDTO {
   const parsed = ListLogEntriesParamsSchema.safeParse(route.query);
   return parsed.success
     ? {
@@ -103,7 +108,7 @@ const queryParams = computed<ListLogEntriesParamsDTO>(() => {
         skip: 0,
       }
     : {};
-});
+}
 const currentUsername = computed<string | undefined>(() => {
   let username: string | undefined;
 
@@ -122,10 +127,11 @@ const state = reactive<LogbookViewState>({
     logEntries: [],
     totalCount: 0,
   },
+  queryParams: parseQueryParams(),
   showSelectedEntry: false,
 });
 
-onServerPrefetch(async () => {
+async function refresh(): Promise<void> {
   const username = currentUsername.value;
 
   await oops(async () => {
@@ -133,15 +139,18 @@ onServerPrefetch(async () => {
 
     const results = await client.logEntries.listLogEntries(
       username,
-      queryParams.value,
+      state.queryParams,
     );
     state.entries = {
       logEntries: results.logEntries.map((entry) => entry.toJSON()),
       totalCount: results.totalCount,
     };
-
-    if (ctx) ctx.logEntries = state.entries;
   });
+}
+
+onServerPrefetch(async () => {
+  await refresh();
+  if (ctx) ctx.logEntries = state.entries;
 });
 
 async function onLoadMore(): Promise<void> {
@@ -152,7 +161,7 @@ async function onLoadMore(): Promise<void> {
 
   await oops(async () => {
     const options = {
-      ...queryParams.value,
+      ...state.queryParams,
       skip: state.entries.logEntries.length,
     };
 
@@ -195,5 +204,17 @@ async function onSelectLogEntry(dto: LogEntryDTO): Promise<void> {
 function onCloseLogEntry() {
   state.showSelectedEntry = false;
   state.selectedEntry = undefined;
+}
+
+async function onSearch(options: ListLogEntriesParamsDTO): Promise<void> {
+  state.queryParams.query = options.query || undefined;
+  state.queryParams.startDate = options.startDate || undefined;
+  state.queryParams.endDate = options.endDate || undefined;
+
+  const query = qs.stringify({
+    ...state.queryParams,
+    skip: undefined,
+  });
+  location.assign(`${route.path}?${query}`);
 }
 </script>

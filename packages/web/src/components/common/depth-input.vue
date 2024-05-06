@@ -9,7 +9,7 @@
       :test-id="testId"
     />
     <button
-      class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 bg-grey-400 dark:text-grey-200 dark:bg-grey-700 font-bold"
+      class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-10 flex justify-center items-center text-grey-950 bg-grey-400 dark:text-grey-200 dark:bg-grey-700 font-bold"
       @click="onToggleUnit"
     >
       <span class="sr-only">Toggle depth unit</span>
