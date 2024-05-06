@@ -56,22 +56,28 @@
     </div>
 
     <div class="flex justify-center space-x-3">
-      <FormButton class="space-x-2">
-        <span>
-          <i class="fa-solid fa-book-open"></i>
-        </span>
-        <span>View Log Book</span>
-      </FormButton>
+      <a v-if="showLogbookLink" :href="`/logbook/${profile.username}`">
+        <FormButton class="space-x-2">
+          <span>
+            <i class="fa-solid fa-book-open"></i>
+          </span>
+          <span>View Log Book</span>
+        </FormButton>
+      </a>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ProfileDTO } from '@bottomtime/api';
+import { LogBookSharing, ProfileDTO } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/relativeTime';
+import { ref, watch } from 'vue';
 
+import { useClient } from '../../api-client';
+import { useOops } from '../../oops';
+import { useCurrentUser } from '../../store';
 import FormButton from '../common/form-button.vue';
 import UserAvatar from './user-avatar.vue';
 
@@ -79,5 +85,36 @@ interface ViewProfileProps {
   profile: ProfileDTO;
 }
 
-defineProps<ViewProfileProps>();
+const client = useClient();
+const currentuser = useCurrentUser();
+const oops = useOops();
+
+const showLogbookLink = ref(false);
+
+const props = defineProps<ViewProfileProps>();
+
+watch(
+  props.profile,
+  async () => {
+    const username = currentuser.user?.username;
+    const friendUsername = props.profile.username;
+
+    if (props.profile.logBookSharing === LogBookSharing.Public) {
+      showLogbookLink.value = true;
+    } else if (props.profile.logBookSharing === LogBookSharing.FriendsOnly) {
+      showLogbookLink.value = false;
+      if (!username) return;
+
+      await oops(async () => {
+        showLogbookLink.value = await client.friends.areFriends(
+          username,
+          friendUsername,
+        );
+      });
+    } else {
+      showLogbookLink.value = false;
+    }
+  },
+  { immediate: true },
+);
 </script>
