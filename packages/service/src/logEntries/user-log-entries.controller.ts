@@ -29,6 +29,7 @@ import {
   User,
 } from '../users';
 import { ZodValidator } from '../zod-validator';
+import { AssertLogbookRead } from './assert-logbook-read.guard';
 import {
   AssertTargetLogEntry,
   TargetLogEntry,
@@ -39,7 +40,7 @@ import { LogEntry } from './log-entry';
 const LogEntryIdParam = ':entryId';
 
 @Controller('api/users/:username/logbook')
-@UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+@UseGuards(AssertTargetUser)
 export class UserLogEntriesController {
   private readonly log = new Logger(UserLogEntriesController.name);
 
@@ -168,6 +169,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get()
+  @UseGuards(AssertLogbookRead)
   async searchLogs(
     @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
@@ -244,6 +246,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post()
+  @UseGuards(AssertAuth, AssertAccountOwner)
   async createLog(
     @TargetUser() owner: User,
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
@@ -303,7 +306,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(LogEntryIdParam)
-  @UseGuards(AssertTargetLogEntry)
+  @UseGuards(AssertLogbookRead, AssertTargetLogEntry)
   getLog(@TargetLogEntry() logEntry: LogEntry): LogEntryDTO {
     return logEntry.toJSON();
   }
@@ -366,7 +369,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(LogEntryIdParam)
-  @UseGuards(AssertTargetLogEntry)
+  @UseGuards(AssertAuth, AssertAccountOwner, AssertTargetLogEntry)
   async updateLog(
     @TargetLogEntry() logEntry: LogEntry,
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
@@ -426,7 +429,7 @@ export class UserLogEntriesController {
    */
   @Delete(LogEntryIdParam)
   @HttpCode(204)
-  @UseGuards(AssertTargetLogEntry)
+  @UseGuards(AssertAuth, AssertAccountOwner, AssertTargetLogEntry)
   async deleteLog(@TargetLogEntry() logEntry: LogEntry): Promise<void> {
     await logEntry.delete();
   }
