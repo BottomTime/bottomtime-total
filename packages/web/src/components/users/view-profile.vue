@@ -57,7 +57,7 @@
 
     <div class="flex justify-center space-x-3">
       <a v-if="showLogbookLink" :href="`/logbook/${profile.username}`">
-        <FormButton class="space-x-2">
+        <FormButton class="space-x-2" test-id="view-logbook">
           <span>
             <i class="fa-solid fa-book-open"></i>
           </span>
@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import { LogBookSharing, ProfileDTO } from '@bottomtime/api';
+import { LogBookSharing, ProfileDTO, UserRole } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/relativeTime';
@@ -98,6 +98,14 @@ watch(
   async () => {
     const username = currentuser.user?.username;
     const friendUsername = props.profile.username;
+
+    if (
+      currentuser.user?.role === UserRole.Admin ||
+      username === friendUsername
+    ) {
+      showLogbookLink.value = true;
+      return;
+    }
 
     if (props.profile.logBookSharing === LogBookSharing.Public) {
       showLogbookLink.value = true;

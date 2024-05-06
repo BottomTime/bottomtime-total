@@ -1,14 +1,14 @@
 import { DepthUnit, UserDTO } from '@bottomtime/api';
 
-import DepthText from '@/components/common/depth-text.vue';
-import { useCurrentUser } from '@/store';
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 
+import DepthText from '../../../../src/components/common/depth-text.vue';
+import { useCurrentUser } from '../../../../src/store';
 import { BasicUser } from '../../../fixtures/users';
 
-describe('Depth Text component', () => {
+describe('DepthText component', () => {
   [
     { name: 'meters', unit: DepthUnit.Meters, depth: 21.385 },
     { name: 'feet', unit: DepthUnit.Feet, depth: 68.98 },

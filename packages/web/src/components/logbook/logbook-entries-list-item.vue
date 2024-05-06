@@ -3,7 +3,11 @@
     class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
   >
     <div class="min-w-16 flex">
-      <FormCheckbox v-if="editMode" />
+      <FormCheckbox
+        v-if="editMode"
+        :control-id="`select-${entry.id}`"
+        :test-id="`select-${entry.id}`"
+      />
       <p v-if="entry.logNumber" class="font-bold">#{{ entry.logNumber }}</p>
     </div>
 

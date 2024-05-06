@@ -33,6 +33,6 @@ const roundingStyle = computed(() => {
   }
 });
 const shadowStyle = computed(() =>
-  props.shadow ? 'shadow-sm shadow-grey-600 dark:shadow-blue-500' : '',
+  props.shadow ? 'shadow-sm shadow-grey-600' : '',
 );
 </script>
