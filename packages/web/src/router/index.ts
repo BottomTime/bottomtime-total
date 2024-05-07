@@ -6,143 +6,19 @@ import {
 } from 'vue-router';
 
 import { Config } from '../config';
+import { AdminRoutes } from './admin.routes';
+import { DiveSiteRoutes } from './dive-site.routes';
+import { StaticRoutes } from './static.routes';
+import { UserRoutes } from './user.routes';
 
 const routes: RouteRecordRaw[] = [
-  {
-    path: '/',
-    name: 'home',
-    component: () => import('../views/home-view.vue'),
-  },
-  {
-    path: '/account',
-    name: 'account',
-    component: () => import('../views/account-view.vue'),
-  },
-  {
-    path: '/admin',
-    name: 'admin-dashboard',
-    component: () => import('../views/admin-dashboard-view.vue'),
-  },
-  {
-    path: '/admin/alerts',
-    name: 'admin-alerts',
-    component: () => import('../views/admin-alerts-view.vue'),
-  },
-  {
-    path: '/admin/alerts/new',
-    name: 'new-alert',
-    component: () => import('../views/admin-alert-view.vue'),
-  },
-  {
-    path: '/admin/alerts/:alertId',
-    name: 'edit-alert',
-    component: () => import('../views/admin-alert-view.vue'),
-  },
-  {
-    path: '/admin/users',
-    name: 'admin-users',
-    component: () => import('../views/admin-users-view.vue'),
-  },
-  {
-    path: '/admin/users/:username',
-    name: 'admin-user',
-    component: () => import('../views/admin-user-view.vue'),
-  },
-  {
-    path: '/cookies',
-    name: 'cookies',
-    component: () => import('../views/cookies-view.vue'),
-  },
-  {
-    path: '/diveSites',
-    name: 'dive-sites',
-    component: () => import('../views/dive-sites-view.vue'),
-  },
-  {
-    path: '/diveSites/new',
-    name: 'new-dive-site',
-    component: () => import('../views/new-dive-site-view.vue'),
-  },
-  {
-    path: '/diveSites/:siteId',
-    name: 'dive-site',
-    component: () => import('../views/dive-site-view.vue'),
-  },
-  {
-    path: '/friends',
-    name: 'friends',
-    component: () => import('../views/friends-view.vue'),
-  },
-  {
-    path: '/friendRequests',
-    name: 'friend-requests',
-    component: () => import('../views/friend-requests-view.vue'),
-  },
-  {
-    path: '/importLogs/:username',
-    name: 'import-logs',
-    component: () => import('../views/import-logs-view.vue'),
-  },
-  {
-    path: '/logbook/:username',
-    name: 'named-logs',
-    component: () => import('../views/logbook-view.vue'),
-  },
-  {
-    path: '/logbook/:username/new',
-    name: 'new-log-entry',
-    component: () => import('../views/new-log-entry-view.vue'),
-  },
-  {
-    path: '/logbook/:username/:entryId',
-    name: 'log-entry',
-    component: () => import('../views/log-entry-view.vue'),
-  },
-  {
-    path: '/privacy',
-    name: 'privacy',
-    component: () => import('../views/privacy-view.vue'),
-  },
-  {
-    path: '/profile',
-    name: 'profile',
-    component: () => import('../views/profile-view.vue'),
-  },
-  {
-    path: '/profile/:username',
-    name: 'named-profile',
-    component: () => import('../views/profile-view.vue'),
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: () => import('../views/register-view.vue'),
-  },
-  {
-    path: '/resetPassword',
-    name: 'reset-password',
-    component: () => import('../views/reset-password-view.vue'),
-  },
-  {
-    path: '/serverError',
-    name: 'server-error',
-    component: () => import('../views/server-error-view.vue'),
-  },
-  {
-    path: '/settings',
-    name: 'settings',
-    component: () => import('../views/settings-view.vue'),
-  },
-  {
-    path: '/termsOfService',
-    name: 'terms-of-service',
-    component: () => import('../views/terms-of-service-view.vue'),
-  },
-  {
-    path: '/welcome',
-    name: 'welcome',
-    component: () => import('../views/welcome-view.vue'),
-  },
+  ...AdminRoutes,
+  ...UserRoutes,
+  ...DiveSiteRoutes,
+  ...StaticRoutes,
+
+  // Universal "not found" route to catch anything that doesn't match the pre-defined routees.
+  // IMPORTANT: This must be the last element in the array!!
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',

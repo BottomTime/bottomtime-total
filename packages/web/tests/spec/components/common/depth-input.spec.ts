@@ -1,6 +1,10 @@
 import { DepthUnit } from '@bottomtime/api';
 
-import { ComponentMountingOptions, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
@@ -72,13 +76,17 @@ describe('DepthInput component', () => {
     };
     const wrapper = mount(DepthInput, opts);
     await wrapper.get('input').setValue('');
-    expect(wrapper.emitted('update:modelValue')).toEqual([[undefined]]);
+    expect(wrapper.emitted('update:modelValue')).toEqual([
+      [undefined],
+      [undefined],
+    ]);
   });
 
   it('will return a depth of -1 if value is invalid', async () => {
     const wrapper = mount(DepthInput, opts);
     await wrapper.find('input').setValue('nope');
     expect(wrapper.emitted('update:modelValue')).toEqual([
+      [{ depth: -1, unit: DepthUnit.Meters }],
       [{ depth: -1, unit: DepthUnit.Meters }],
     ]);
   });
@@ -93,6 +101,7 @@ describe('DepthInput component', () => {
     };
     const wrapper = mount(DepthInput, opts);
     await wrapper.find('input').setValue('32');
+    await flushPromises();
     expect(wrapper.emitted('update:modelValue')).toEqual([
       [{ depth: 32, unit: DepthUnit.Feet }],
     ]);

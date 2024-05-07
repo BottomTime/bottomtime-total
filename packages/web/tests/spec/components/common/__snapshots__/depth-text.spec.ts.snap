@@ -1,17 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Depth Text component will display in natural units (feet) for unauthenticated users 1`] = `"69.0 ft"`;
-
-exports[`Depth Text component will display in natural units (meters) for unauthenticated users 1`] = `"21.39 m"`;
-
-exports[`Depth Text component will display in the user's preferred units (feet) without conversion if possible 1`] = `"69.0 ft"`;
-
-exports[`Depth Text component will display in the user's preferred units (meters) without conversion if possible 1`] = `"21.39 m"`;
-
-exports[`Depth Text component will display in the user's preferred units with conversion from feet if necessary 1`] = `"21.03 m"`;
-
-exports[`Depth Text component will display in the user's preferred units with conversion from meters if necessary 1`] = `"70.2 ft"`;
-
 exports[`DepthText component will display in natural units (feet) for unauthenticated users 1`] = `"69.0 ft"`;
 
 exports[`DepthText component will display in natural units (meters) for unauthenticated users 1`] = `"21.39 m"`;
