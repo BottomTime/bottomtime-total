@@ -1,5 +1,20 @@
 import { DepthUnit, LogBookSharing, LogEntryDTO } from '@bottomtime/api';
 
+export const BlankLogEntry: LogEntryDTO = {
+  creator: {
+    logBookSharing: LogBookSharing.FriendsOnly,
+    memberSince: new Date('2021-04-11T18:16:12'),
+    userId: 'd62607ba-67e6-4ef0-9cdf-c1fe3c0b2752',
+    username: 'jackie32',
+  },
+  duration: -1,
+  entryTime: {
+    date: '',
+    timezone: '',
+  },
+  id: '',
+};
+
 export const MinimalLogEntry: LogEntryDTO = {
   creator: {
     logBookSharing: LogBookSharing.FriendsOnly,

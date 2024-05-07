@@ -48,11 +48,8 @@ withDefaults(defineProps<DepthInputProps>(), {
 });
 
 const state = reactive<DepthUnitState>({
-  value: depth.value?.depth || '',
-  unit:
-    depth.value?.unit ??
-    currentUser.user?.settings.depthUnit ??
-    DepthUnit.Meters,
+  value: '',
+  unit: DepthUnit.Meters,
 });
 
 function onToggleUnit() {
@@ -75,4 +72,16 @@ watch(state, () => {
     };
   }
 });
+
+watch(
+  depth,
+  () => {
+    state.value = depth.value?.depth ?? '';
+    state.unit =
+      depth.value?.unit ??
+      currentUser.user?.settings.depthUnit ??
+      DepthUnit.Meters;
+  },
+  { immediate: true },
+);
 </script>

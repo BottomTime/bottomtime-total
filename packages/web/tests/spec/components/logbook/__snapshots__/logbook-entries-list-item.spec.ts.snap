@@ -7,7 +7,7 @@ exports[`LobbookEntriesListItem component will render correctly for partial logb
     <!--v-if-->
   </div>
   <div class="flex flex-col gap-3 grow">
-    <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><button class="text-link hover:text-link-hover text-2xl" type="button">
+    <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-1d3d41c9-794a-4280-8335-65f503a3bee7" type="button">
         <!--v-if-->January 31, 2023 9:16 AM
       </button><span class="italic text-sm">America/Los_Angeles</span></p>
     <div class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between">
@@ -27,7 +27,7 @@ exports[`LobbookEntriesListItem component will render correctly with full logboo
     <p class="font-bold">#12</p>
   </div>
   <div class="flex flex-col gap-3 grow">
-    <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><button class="text-link hover:text-link-hover text-2xl" type="button">
+    <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-4ca3e53c-1364-40b2-a6db-ce8e92380b1f" type="button">
         <!--v-if-->January 31, 2023 9:16 AM
       </button><span class="italic text-sm">Europe/Dublin</span></p>
     <div class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between">

@@ -1,5 +1,6 @@
 <template>
   <button
+    :id="controlId"
     :class="classes"
     :data-testid="testId"
     :type="submit ? 'submit' : 'button'"
@@ -17,6 +18,7 @@
 import { computed } from 'vue';
 
 type FormButtonProps = {
+  controlId?: string;
   disabled?: boolean;
   isLoading?: boolean;
   rounded?: boolean | 'left' | 'right' | 'top' | 'bottom' | 'start' | 'end';

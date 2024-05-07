@@ -111,4 +111,22 @@ describe('DepthInput component', () => {
       [{ depth: 32, unit: DepthUnit.Meters }],
     ]);
   });
+
+  it('will update the value if the modelValue prop changes', async () => {
+    opts.props = { modelValue: { depth: 22, unit: DepthUnit.Meters } };
+    const wrapper = mount(DepthInput, opts);
+
+    expect(wrapper.get<HTMLInputElement>('input').element.value).toBe('22');
+    expect(wrapper.get('button').text()).toBe('m');
+
+    await wrapper.setProps({
+      modelValue: {
+        depth: 10,
+        unit: DepthUnit.Feet,
+      },
+    });
+
+    expect(wrapper.get<HTMLInputElement>('input').element.value).toBe('10');
+    expect(wrapper.get('button').text()).toBe('ft');
+  });
 });

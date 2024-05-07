@@ -5,8 +5,8 @@
     <div class="min-w-16 flex">
       <FormCheckbox
         v-if="editMode"
-        :control-id="`select-${entry.id}`"
-        :test-id="`select-${entry.id}`"
+        :control-id="`toggle-${entry.id}`"
+        :test-id="`toggle-${entry.id}`"
       />
       <p v-if="entry.logNumber" class="font-bold">#{{ entry.logNumber }}</p>
     </div>

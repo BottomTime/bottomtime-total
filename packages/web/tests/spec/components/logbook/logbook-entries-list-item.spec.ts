@@ -11,7 +11,7 @@ import { BasicUser } from '../../../fixtures/users';
 
 dayjs.extend(localized);
 
-const Checkbox = `[data-testid="select-${FullLogEntry.id}"]`;
+const Checkbox = `[data-testid="toggle-${FullLogEntry.id}"]`;
 
 describe('LobbookEntriesListItem component', () => {
   let pinia: Pinia;
