@@ -42,6 +42,7 @@
       :is-loading-more="state.isLoadingMoreEntries"
       @load-more="onLoadMore"
       @select="onSelectLogEntry"
+      @sort-order-changed="onSortOrderChanged"
     />
   </div>
 </template>
@@ -52,6 +53,8 @@ import {
   ListLogEntriesParamsSchema,
   ListLogEntriesResponseDTO,
   LogEntryDTO,
+  LogEntrySortBy,
+  SortOrder,
   UserRole,
 } from '@bottomtime/api';
 
@@ -196,10 +199,21 @@ function onCloseLogEntry() {
   state.selectedEntry = undefined;
 }
 
-async function onSearch(options: ListLogEntriesParamsDTO): Promise<void> {
+function onSearch(options: ListLogEntriesParamsDTO) {
   state.queryParams.query = options.query || undefined;
   state.queryParams.startDate = options.startDate || undefined;
   state.queryParams.endDate = options.endDate || undefined;
+
+  const query = qs.stringify({
+    ...state.queryParams,
+    skip: undefined,
+  });
+  location.assign(`${route.path}?${query}`);
+}
+
+function onSortOrderChanged(sortBy: LogEntrySortBy, sortOrder: SortOrder) {
+  state.queryParams.sortBy = sortBy;
+  state.queryParams.sortOrder = sortOrder;
 
   const query = qs.stringify({
     ...state.queryParams,
