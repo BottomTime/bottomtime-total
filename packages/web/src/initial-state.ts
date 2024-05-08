@@ -25,7 +25,7 @@ export type AppInitialState = {
   friends?: ListFriendsResponseDTO;
   friendRequests?: ListFriendRequestsResponseDTO;
   diveSites?: SearchDiveSitesResponseDTO;
-  logEntries?: ListLogEntriesResponseDTO;
+  logEntries?: ListLogEntriesResponseDTO | null;
 };
 
 export function useInitialState(): AppInitialState | null {

@@ -30,7 +30,10 @@
     />
   </DrawerPanel>
 
-  <div class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
+  <div
+    v-if="state.entries"
+    class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5"
+  >
     <div>
       <LogbookSearch :params="state.queryParams" @search="onSearch" />
     </div>
@@ -45,6 +48,10 @@
       @sort-order-changed="onSortOrderChanged"
     />
   </div>
+
+  <ForbiddenMessage v-else-if="currentUser.user" />
+
+  <LoginForm v-else />
 </template>
 
 <script lang="ts" setup>
@@ -66,10 +73,12 @@ import { useRoute } from 'vue-router';
 import { useClient } from '../api-client';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import DrawerPanel from '../components/common/drawer-panel.vue';
+import ForbiddenMessage from '../components/common/forbidden-message.vue';
 import PageTitle from '../components/common/page-title.vue';
 import LogbookEntriesList from '../components/logbook/logbook-entries-list.vue';
 import LogbookSearch from '../components/logbook/logbook-search.vue';
 import ViewLogbookEntry from '../components/logbook/view-logbook-entry.vue';
+import LoginForm from '../components/users/login-form.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useLocation } from '../location';
@@ -77,7 +86,7 @@ import { useOops } from '../oops';
 import { useCurrentUser } from '../store';
 
 interface LogbookViewState {
-  entries: ListLogEntriesResponseDTO;
+  entries: ListLogEntriesResponseDTO | null;
   isLoadingLogEntry: boolean;
   isLoadingMoreEntries: boolean;
   queryParams: ListLogEntriesParamsDTO;
@@ -153,6 +162,8 @@ async function onLoadMore(): Promise<void> {
   state.isLoadingMoreEntries = true;
 
   await oops(async () => {
+    if (!state.entries) return;
+
     const options = {
       ...state.queryParams,
       skip: state.entries.logEntries.length,

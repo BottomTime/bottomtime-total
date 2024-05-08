@@ -171,5 +171,7 @@ watch(sortOrder, (value) => {
   emit('sort-order-changed', sortBy, sortOrder);
 });
 
-async function onBulkDelete(): Promise<void> {}
+async function onBulkDelete(): Promise<void> {
+  /* TODO: Implement bulk delete on the backend */
+}
 </script>
