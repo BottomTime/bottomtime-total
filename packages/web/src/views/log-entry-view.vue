@@ -106,6 +106,8 @@ async function onSave(data: LogEntryDTO): Promise<void> {
   await oops(async () => {
     const entry = client.logEntries.wrapDTO(data);
     await entry.save();
+
+    state.entry = entry.toJSON();
     toasts.toast({
       id: 'log-entry-saved',
       message: 'Log entry has been successfully saved',
