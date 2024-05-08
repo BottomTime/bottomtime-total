@@ -62,8 +62,18 @@ async function createApp(): Promise<INestApplication> {
 }
 
 createApp()
-  .then((app) => app.listen(Config.port))
-  .then(() => {
+  .then((app) => {
+    app.listen(Config.port);
+    return app;
+  })
+  .then((app) => {
+    // Add an event listener for SIGUSR2 so that nodemon can restart the server cleanly
+    process.once('SIGUSR2', () => {
+      app.close().then(() => {
+        process.kill(process.pid, 'SIGUSR2');
+      });
+    });
+
     log.info(
       `🎉 Service has successfully started and is listening on port ${Config.port}. 🎉`,
     );

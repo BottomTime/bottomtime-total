@@ -25,7 +25,7 @@ export type AppInitialState = {
   friends?: ListFriendsResponseDTO;
   friendRequests?: ListFriendRequestsResponseDTO;
   diveSites?: SearchDiveSitesResponseDTO;
-  logEntries?: ListLogEntriesResponseDTO | null;
+  logEntries?: ListLogEntriesResponseDTO | 'not-found' | 'forbidden';
 };
 
 export function useInitialState(): AppInitialState | null {

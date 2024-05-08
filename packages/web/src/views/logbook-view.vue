@@ -30,10 +30,65 @@
     />
   </DrawerPanel>
 
-  <div
-    v-if="state.entries"
-    class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5"
-  >
+  <div v-if="state.entries === 'forbidden'">
+    <div v-if="currentUser.user" class="text-center space-y-6">
+      <p class="text-xl font-bold flex items-baseline gap-3 justify-center">
+        <span>
+          <i class="fa-solid fa-circle-exclamation fa-lg"></i>
+        </span>
+        <span>This logbook has not been shared with you.</span>
+      </p>
+
+      <p
+        v-if="state.currentProfile?.logBookSharing === LogBookSharing.Private"
+        data-testid="private-logbook"
+      >
+        <span class="font-bold">
+          {{ state.currentProfile.name || `@${state.currentProfile.username}` }}
+        </span>
+        <span>
+          is not sharing their logbook. You will not be able to view their
+          entries.
+        </span>
+      </p>
+
+      <div
+        v-if="
+          state.currentProfile?.logBookSharing === LogBookSharing.FriendsOnly
+        "
+      >
+        <div
+          v-if="currentUser.user"
+          class="space-y-2"
+          data-testid="friends-only-logbook"
+        >
+          <p>
+            <span class="font-bold">
+              {{
+                state.currentProfile.name || `@${state.currentProfile.username}`
+              }}
+            </span>
+            <span>
+              is only sharing their logbook with friends. Would you like to send
+              them a friend request?
+            </span>
+          </p>
+
+          <p>
+            <span>You can do so <NavLink to="/friends">here</NavLink>.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="grid grid-cols-1 md:grid-cols-5">
+      <LoginForm class="md:col-span-3 md:col-start-2" />
+    </div>
+  </div>
+
+  <NotFound v-else-if="state.entries === 'not-found'" />
+
+  <div v-else class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
     <div>
       <LogbookSearch :params="state.queryParams" @search="onSearch" />
     </div>
@@ -48,10 +103,6 @@
       @sort-order-changed="onSortOrderChanged"
     />
   </div>
-
-  <ForbiddenMessage v-else-if="currentUser.user" />
-
-  <LoginForm v-else />
 </template>
 
 <script lang="ts" setup>
@@ -59,8 +110,10 @@ import {
   ListLogEntriesParamsDTO,
   ListLogEntriesParamsSchema,
   ListLogEntriesResponseDTO,
+  LogBookSharing,
   LogEntryDTO,
   LogEntrySortBy,
+  ProfileDTO,
   SortOrder,
   UserRole,
 } from '@bottomtime/api';
@@ -73,7 +126,8 @@ import { useRoute } from 'vue-router';
 import { useClient } from '../api-client';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import DrawerPanel from '../components/common/drawer-panel.vue';
-import ForbiddenMessage from '../components/common/forbidden-message.vue';
+import NavLink from '../components/common/nav-link.vue';
+import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import LogbookEntriesList from '../components/logbook/logbook-entries-list.vue';
 import LogbookSearch from '../components/logbook/logbook-search.vue';
@@ -86,7 +140,8 @@ import { useOops } from '../oops';
 import { useCurrentUser } from '../store';
 
 interface LogbookViewState {
-  entries: ListLogEntriesResponseDTO | null;
+  currentProfile?: ProfileDTO;
+  entries: ListLogEntriesResponseDTO | 'not-found' | 'forbidden';
   isLoadingLogEntry: boolean;
   isLoadingMoreEntries: boolean;
   queryParams: ListLogEntriesParamsDTO;
@@ -107,12 +162,13 @@ const username = computed(() =>
 );
 
 const editMode = computed(() => {
-  if (!username.value || !currentUser.user) return false;
+  // Anonymous users can never edit logbooks
+  if (!currentUser.user) return false;
 
   // Admins can edit any user's logbook
   if (currentUser.user.role === UserRole.Admin) return true;
 
-  // Users can edit their own logbook
+  // Regular users can edit their own logbook
   return route.params.username === currentUser.user.username;
 });
 
@@ -125,7 +181,9 @@ function parseQueryParams(): ListLogEntriesParamsDTO {
       }
     : {};
 }
+
 const state = reactive<LogbookViewState>({
+  currentProfile: initialState?.currentProfile,
   isLoadingLogEntry: false,
   isLoadingMoreEntries: false,
   entries: initialState?.logEntries ?? {
@@ -137,32 +195,59 @@ const state = reactive<LogbookViewState>({
 });
 
 async function refresh(): Promise<void> {
-  await oops(async () => {
-    if (!username.value) return;
-
-    const results = await client.logEntries.listLogEntries(
-      username.value,
-      state.queryParams,
-    );
-    state.entries = {
-      logEntries: results.logEntries.map((entry) => entry.toJSON()),
-      totalCount: results.totalCount,
-    };
-  });
+  await oops(
+    async () => {
+      const results = await client.logEntries.listLogEntries(
+        username.value,
+        state.queryParams,
+      );
+      state.entries = {
+        logEntries: results.logEntries.map((entry) => entry.toJSON()),
+        totalCount: results.totalCount,
+      };
+    },
+    {
+      [401]: () => {
+        // User _may_ have access to this logbook but they need to sign in.
+        state.entries = 'forbidden';
+      },
+      [403]: () => {
+        // User does not have access to this logbook.
+        state.entries = 'forbidden';
+      },
+      [404]: () => {
+        // Requested logbook does not exist.
+        state.entries = 'not-found';
+      },
+    },
+  );
 }
 
 onServerPrefetch(async () => {
   await refresh();
-  if (ctx) ctx.logEntries = state.entries;
+
+  if (state.entries === 'not-found') {
+    if (ctx) ctx.logEntries = state.entries;
+    return;
+  }
+
+  if (currentUser.user) {
+    await oops(async () => {
+      state.currentProfile = await client.users.getProfile(username.value);
+    });
+  }
+
+  if (ctx) {
+    ctx.logEntries = state.entries;
+    ctx.currentProfile = state.currentProfile;
+  }
 });
 
 async function onLoadMore(): Promise<void> {
-  if (!username.value) return;
-
   state.isLoadingMoreEntries = true;
 
   await oops(async () => {
-    if (!state.entries) return;
+    if (!state.entries || typeof state.entries === 'string') return;
 
     const options = {
       ...state.queryParams,

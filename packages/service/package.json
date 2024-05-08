@@ -93,5 +93,14 @@
     "tsx": "^4.7.0",
     "typescript": "^5.0.4",
     "yargs": "^17.7.2"
+  },
+  "nodemonConfig": {
+    "execMap": {
+      "ts": "tsx"
+    },
+    "watch": [
+      "src/"
+    ],
+    "ext": "ts,json"
   }
 }
