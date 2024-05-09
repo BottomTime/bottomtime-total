@@ -208,7 +208,7 @@ import { helpers, integer, required } from '@vuelidate/validators';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
-import { computed, onMounted, reactive } from 'vue';
+import { computed, onBeforeMount, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -364,7 +364,7 @@ async function getNextAvailableLogNumber(): Promise<void> {
   });
 }
 
-onMounted(async () => {
+onBeforeMount(async () => {
   if (formData.logNumber === '') {
     await getNextAvailableLogNumber();
   }

@@ -85,6 +85,9 @@ describe('Log Entry view', () => {
     };
 
     jest.mocked(useInitialState).mockImplementation(() => initialState);
+    jest
+      .spyOn(client.logEntries, 'getNextAvailableLogNumber')
+      .mockResolvedValue(12);
 
     await router.push(`/logbook/${TestData.creator.username}/${TestData.id}`);
 
