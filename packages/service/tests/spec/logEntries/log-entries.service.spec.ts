@@ -351,4 +351,29 @@ describe('Log entries service', () => {
       });
     });
   });
+
+  describe('when determining the next available log number for a user', () => {
+    it('will return the next available log number', async () => {
+      const owner = ownerData[0];
+      const entries = [
+        createTestLogEntry(owner, { logNumber: 12 }),
+        createTestLogEntry(owner, { logNumber: 56 }),
+        createTestLogEntry(owner, { logNumber: 34 }),
+        createTestLogEntry(owner, { logNumber: null }),
+        createTestLogEntry(owner, { logNumber: 1 }),
+        createTestLogEntry(ownerData[1], { logNumber: 999 }),
+      ];
+      entries[3].logNumber = null;
+      await Entries.save(entries);
+      await expect(service.getNextAvailableLogNumber(owner.id)).resolves.toBe(
+        57,
+      );
+    });
+
+    it('will return "1" as the next available log number if the user has no numbered logs', async () => {
+      await expect(
+        service.getNextAvailableLogNumber(ownerData[0].id),
+      ).resolves.toBe(1);
+    });
+  });
 });

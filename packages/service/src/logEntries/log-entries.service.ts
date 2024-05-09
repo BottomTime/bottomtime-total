@@ -116,4 +116,15 @@ export class LogEntriesService {
 
     return entry;
   }
+
+  async getNextAvailableLogNumber(ownerId: string): Promise<number> {
+    // Need to use "any" here because TypeORM won't support keys for fields that are nullable. 😡
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    const max = await this.Entries.maximum('logNumber' as any, {
+      owner: { id: ownerId },
+    });
+
+    if (max) return max + 1;
+    else return 1;
+  }
 }

@@ -5,6 +5,7 @@ import { SuccinctProfileSchema } from './users';
 
 export enum LogEntrySortBy {
   EntryTime = 'entryTime',
+  LogNumber = 'logNumber',
 }
 
 export const CreateOrUpdateLogEntryParamsSchema = z.object({
@@ -68,3 +69,7 @@ export const ListLogEntriesResponseSchema = z.object({
 export type ListLogEntriesResponseDTO = z.infer<
   typeof ListLogEntriesResponseSchema
 >;
+
+export type GetNextAvailableLogNumberResponseDTO = {
+  logNumber: number;
+};

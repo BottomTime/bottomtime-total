@@ -1,6 +1,7 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesParamsSchema,
   ListLogEntriesResponseDTO,
@@ -109,6 +110,7 @@ export class UserLogEntriesController {
    *           type: string
    *           enum:
    *             - entryTime
+   *             - logNumber
    *           default: entryTime
    *         required: false
    *       - in: query
@@ -258,6 +260,68 @@ export class UserLogEntriesController {
     });
 
     return logEntry.toJSON();
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/logbook/nextLogEntryNumber:
+   *   get:
+   *     tags:
+   *       - Dive Logs
+   *       - Users
+   *     summary: Get the next available log number in a user's logbook
+   *     operationId: getNextLogNumber
+   *     description: |
+   *       Retrieves the next available log number for the target user. Will return 1 if the user has no log entries
+   *       (or none with a log number set).
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the next available log number can be found in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - logNumber
+   *               properties:
+   *                 logNumber:
+   *                   type: integer
+   *                   format: int32
+   *                   example: 12
+   *       "401":
+   *         description: The request failed because the current user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user does not own the requested logbook and is not an admin.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target logbook could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get('nextLogEntryNumber')
+  @UseGuards(AssertAuth, AssertAccountOwner)
+  async getNextAvailableLogNumber(
+    @TargetUser() user: User,
+  ): Promise<GetNextAvailableLogNumberResponseDTO> {
+    const logNumber = await this.service.getNextAvailableLogNumber(user.id);
+    return { logNumber };
   }
 
   /**

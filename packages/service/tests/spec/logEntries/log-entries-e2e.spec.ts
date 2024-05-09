@@ -26,12 +26,19 @@ import {
   createTestUser,
   parseUserJSON,
 } from '../../utils';
-import { parseLogEntryJSON } from '../../utils/create-test-log-entry';
+import {
+  createTestLogEntry,
+  parseLogEntryJSON,
+} from '../../utils/create-test-log-entry';
 
 function getUrl(entryId?: string, username?: string): string {
   let url = `/api/users/${username ?? TestUserData[0].username}/logbook`;
   if (entryId) url = `${url}/${entryId}`;
   return url;
+}
+
+function getNextLogEntryUrl(username: string): string {
+  return `/api/users/${username}/logbook/nextLogEntryNumber`;
 }
 
 const AdminUserData: Partial<UserEntity> = {
@@ -647,6 +654,85 @@ describe('Log entries E2E tests', () => {
         .put(getUrl(entry.id, 'not_a_user'))
         .set(...adminAuthHeader)
         .send(updatedEntry)
+        .expect(404);
+    });
+  });
+
+  describe.only('when querying the next available log number', () => {
+    it('will return the next available log number for the user', async () => {
+      const owner = ownerData[0];
+      const entries = [
+        createTestLogEntry(owner, { logNumber: 12 }),
+        createTestLogEntry(owner, { logNumber: 56 }),
+        createTestLogEntry(owner, { logNumber: 34 }),
+        createTestLogEntry(owner, { logNumber: null }),
+        createTestLogEntry(owner, { logNumber: 1 }),
+        createTestLogEntry(ownerData[1], { logNumber: 999 }),
+      ];
+      entries[3].logNumber = null;
+      await Entries.save(entries);
+
+      const {
+        body: { logNumber },
+      } = await request(server)
+        .get(getNextLogEntryUrl(ownerData[0].username))
+        .set(...authHeader)
+        .expect(200);
+
+      expect(logNumber).toBe(57);
+    });
+
+    it('will return "1" if the user does not have any numbered logs', async () => {
+      const {
+        body: { logNumber },
+      } = await request(server)
+        .get(getNextLogEntryUrl(ownerData[0].username))
+        .set(...authHeader)
+        .expect(200);
+
+      expect(logNumber).toBe(1);
+    });
+
+    it('will allow admins to view the next available log number for any user', async () => {
+      const owner = ownerData[0];
+      const entries = [
+        createTestLogEntry(owner, { logNumber: 12 }),
+        createTestLogEntry(owner, { logNumber: 56 }),
+        createTestLogEntry(owner, { logNumber: 34 }),
+        createTestLogEntry(owner, { logNumber: null }),
+        createTestLogEntry(owner, { logNumber: 1 }),
+        createTestLogEntry(ownerData[1], { logNumber: 999 }),
+      ];
+      entries[3].logNumber = null;
+      await Entries.save(entries);
+
+      const {
+        body: { logNumber },
+      } = await request(server)
+        .get(getNextLogEntryUrl(ownerData[0].username))
+        .set(...adminAuthHeader)
+        .expect(200);
+
+      expect(logNumber).toBe(57);
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .get(getNextLogEntryUrl(ownerData[0].username))
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not authorized to view the next available log number', async () => {
+      await request(server)
+        .get(getNextLogEntryUrl(ownerData[0].username))
+        .set(...otherAuthHeader)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the target user does not exist', async () => {
+      await request(server)
+        .get(getNextLogEntryUrl('not_a_user'))
+        .set(...adminAuthHeader)
         .expect(404);
     });
   });
