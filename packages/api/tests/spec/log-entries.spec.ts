@@ -105,6 +105,19 @@ describe('Log entries API client', () => {
     expect(entry.toJSON()).toEqual(expected);
   });
 
+  it('will return the next available log number', async () => {
+    const username = 'greg';
+    const logNumber = 77;
+    scope
+      .get(`/api/users/${username}/logbook/nextLogEntryNumber`)
+      .reply(200, { logNumber });
+
+    const result = await client.getNextAvailableLogNumber(username);
+
+    expect(scope.isDone()).toBe(true);
+    expect(result).toBe(logNumber);
+  });
+
   it('will parse a DTO and wrap it in a LogEntry object', () => {
     const data = logEntryData.logEntries[0];
     const entry = client.wrapDTO(data);

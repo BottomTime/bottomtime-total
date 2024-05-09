@@ -13,7 +13,7 @@ exports[`Friends list item component will render correctly with full friend data
       <p class="flex space-x-2"><span class="font-bold min-w-20 text-right">Location:</span><span class="w-36">San Francisco, CA</span></p>
     </div>
   </div>
-  <div><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="unfriend-bob32" type="button">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="unfriend-bob32" type="button">
       <!--v-if--> Unfriend
     </button></div>
 </li>"
@@ -34,7 +34,7 @@ exports[`Friends list item component will render correctly with partial friend d
       <!--v-if-->
     </div>
   </div>
-  <div><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="unfriend-bob32" type="button">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="unfriend-bob32" type="button">
       <!--v-if--> Unfriend
     </button></div>
 </li>"

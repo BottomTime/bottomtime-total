@@ -2,6 +2,7 @@ import { AxiosInstance } from 'axios';
 
 import {
   CreateOrUpdateLogEntryParamsDTO,
+  GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
   LogEntrySchema,
@@ -48,6 +49,15 @@ export class LogEntriesApiClient {
       options,
     );
     return this.wrapDTO(data);
+  }
+
+  async getNextAvailableLogNumber(username: string): Promise<number> {
+    const {
+      data: { logNumber },
+    } = await this.apiClient.get<GetNextAvailableLogNumberResponseDTO>(
+      `/api/users/${username}/logbook/nextLogEntryNumber`,
+    );
+    return logNumber;
   }
 
   wrapDTO(data: unknown): LogEntry {

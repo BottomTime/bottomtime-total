@@ -12,9 +12,9 @@ exports[`Incoming friend request list item will render correctly 1`] = `
       <p class="flex space-x-2"><span class="font-bold min-w-20 text-right">Expires:</span><span class="italic">lll</span></p>
     </div>
   </div>
-  <div class="flex space-x-3 px-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="accept-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+  <div class="flex space-x-3 px-2"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="accept-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
       <!--v-if--> Accept
-    </button><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="decline-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+    </button><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="decline-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
       <!--v-if--> Decline
     </button></div>
 </li>"
@@ -35,7 +35,7 @@ exports[`Incoming friend request list item will render correctly for a declined 
       </div>
     </div>
   </div>
-  <div><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
       <!--v-if--> Dismiss
     </button></div>
 </li>"
@@ -56,7 +56,7 @@ exports[`Incoming friend request list item will render correctly for a declined 
       </div>
     </div>
   </div>
-  <div><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
       <!--v-if--> Dismiss
     </button></div>
 </li>"
@@ -71,7 +71,7 @@ exports[`Incoming friend request list item will render correctly for an accepted
       </button><span class="text-lg font-bold">@testuser</span></p>
     <div class="flex space-x-3 text-lg italic text-success"><span><i class="fa-regular fa-circle-check"></i></span><span>This friend request has been accepted.</span></div>
   </div>
-  <div><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
       <!--v-if--> Dismiss
     </button></div>
 </li>"

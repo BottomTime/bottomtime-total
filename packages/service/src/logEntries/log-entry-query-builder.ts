@@ -72,18 +72,21 @@ export class LogEntryQueryBuilder {
     sortBy ??= LogEntrySortBy.EntryTime;
     sortOrder ??= SortOrder.Descending;
 
-    let sortByField: string;
+    const sortOrderField = sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC';
 
     switch (sortBy) {
+      case LogEntrySortBy.LogNumber:
+        this.query = this.query
+          .orderBy('entries.logNumber', sortOrderField, 'NULLS LAST')
+          .addOrderBy('entries.timestamp', sortOrderField);
+        break;
+
       case LogEntrySortBy.EntryTime:
       default:
-        sortByField = 'entries.timestamp';
+        this.query = this.query.orderBy('entries.timestamp', sortOrderField);
         break;
     }
 
-    const sortOrderField = sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC';
-
-    this.query = this.query.orderBy(sortByField, sortOrderField);
     return this;
   }
 }

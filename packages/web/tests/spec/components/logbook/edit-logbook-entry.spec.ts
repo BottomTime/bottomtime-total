@@ -1,4 +1,4 @@
-import { DepthUnit } from '@bottomtime/api';
+import { ApiClient, DepthUnit } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -9,14 +9,18 @@ import {
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import { Pinia, createPinia } from 'pinia';
+import { Router } from 'vue-router';
 
+import { ApiClientKey } from '../../../../src/api-client';
 import FormDatePicker from '../../../../src/components/common/form-date-picker.vue';
 import EditLogbookEntry from '../../../../src/components/logbook/edit-logbook-entry.vue';
+import { createRouter } from '../../../fixtures/create-router';
 import {
   BlankLogEntry,
   FullLogEntry,
   MinimalLogEntry,
 } from '../../../fixtures/log-entries';
+import { BasicUser } from '../../../fixtures/users';
 
 dayjs.extend(tz);
 
@@ -30,27 +34,52 @@ const SaveButton = '#btnSave';
 const CancelButton = '#btnCancel';
 
 const Timezone = 'Pacific/Guam';
+const LogNumber = 99;
 
 describe('EditLogbookEntry component', () => {
+  let router: Router;
+  let client: ApiClient;
+
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof EditLogbookEntry>;
 
-  beforeEach(() => {
+  beforeAll(() => {
+    router = createRouter([
+      {
+        path: '/logbook/:username',
+        name: 'Logbook',
+        component: EditLogbookEntry,
+      },
+    ]);
+    client = new ApiClient();
+  });
+
+  beforeEach(async () => {
     jest.spyOn(dayjs.tz, 'guess').mockReturnValue(Timezone);
+    jest
+      .spyOn(client.logEntries, 'getNextAvailableLogNumber')
+      .mockResolvedValueOnce(LogNumber);
+
+    await router.push(`/logbook/${BasicUser.username}`);
 
     pinia = createPinia();
     opts = {
       global: {
-        plugins: [pinia],
+        plugins: [pinia, router],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
       },
       props: { entry: BlankLogEntry },
     };
   });
 
-  it('will render correctly for a new, blank entry', () => {
+  it('will render correctly for a new, blank entry', async () => {
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
+
     expect(wrapper.get<HTMLInputElement>(LogNumberInput).element.value).toBe(
-      '',
+      LogNumber.toString(),
     );
     expect(
       wrapper.getComponent(FormDatePicker).props().modelValue,
@@ -66,11 +95,13 @@ describe('EditLogbookEntry component', () => {
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe('');
   });
 
-  it('will load values for minimal log entry', () => {
+  it('will load values for minimal log entry', async () => {
     opts.props = { entry: MinimalLogEntry };
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
+
     expect(wrapper.get<HTMLInputElement>(LogNumberInput).element.value).toBe(
-      '',
+      LogNumber.toString(),
     );
     expect(wrapper.getComponent(FormDatePicker).props().modelValue).toEqual(
       new Date(FullLogEntry.entryTime.date),
@@ -88,9 +119,11 @@ describe('EditLogbookEntry component', () => {
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe('');
   });
 
-  it('will load values for full log entry', () => {
+  it('will load values for full log entry', async () => {
     opts.props = { entry: FullLogEntry };
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
+
     expect(wrapper.get<HTMLInputElement>(LogNumberInput).element.value).toBe(
       FullLogEntry.logNumber?.toString(),
     );
@@ -114,9 +147,11 @@ describe('EditLogbookEntry component', () => {
     );
   });
 
-  it('will disable form when isSaving is true', () => {
+  it('will disable form when isSaving is true', async () => {
     opts.props!.isSaving = true;
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
+
     expect(wrapper.find<HTMLFieldSetElement>('fieldset').element.disabled).toBe(
       true,
     );
@@ -127,6 +162,8 @@ describe('EditLogbookEntry component', () => {
 
   it('will validate missing fields', async () => {
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
+
     await wrapper.get(SaveButton).trigger('click');
 
     expect(
@@ -139,6 +176,7 @@ describe('EditLogbookEntry component', () => {
 
   it('will validate invalid fields', async () => {
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
 
     await wrapper.get(LogNumberInput).setValue('nope');
     await wrapper.get(DurationInput).setValue('-2.3');
@@ -171,6 +209,7 @@ describe('EditLogbookEntry component', () => {
     const notes = 'hello';
 
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
 
     await wrapper.get(LogNumberInput).setValue(logNumber.toString());
     await wrapper.getComponent(FormDatePicker).setValue(entryTime);
@@ -213,6 +252,7 @@ describe('EditLogbookEntry component', () => {
     const notes = 'hello';
 
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
 
     await wrapper.get(LogNumberInput).setValue(logNumber.toString());
     await wrapper.getComponent(FormDatePicker).setValue(entryTime);
@@ -252,6 +292,7 @@ describe('EditLogbookEntry component', () => {
     const notes = 'hello';
 
     const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
 
     await wrapper.get(LogNumberInput).setValue(logNumber.toString());
     await wrapper.getComponent(FormDatePicker).setValue(entryTime);
@@ -284,6 +325,21 @@ describe('EditLogbookEntry component', () => {
     );
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe(
       notes,
+    );
+  });
+
+  it('will fetch the next available log number when the button is clicked', async () => {
+    const spy = jest
+      .spyOn(client.logEntries, 'getNextAvailableLogNumber')
+      .mockResolvedValueOnce(123);
+
+    const wrapper = mount(EditLogbookEntry, opts);
+    await wrapper.get('[data-testid="get-next-log-number"]').trigger('click');
+    await flushPromises();
+
+    expect(spy).toHaveBeenCalledWith(BasicUser.username);
+    expect(wrapper.get<HTMLInputElement>(LogNumberInput).element.value).toBe(
+      '123',
     );
   });
 });

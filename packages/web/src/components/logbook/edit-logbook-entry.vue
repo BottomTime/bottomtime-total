@@ -30,13 +30,22 @@
         :invalid="v$.logNumber.$error"
         :error="v$.logNumber.$errors[0]?.$message"
       >
-        <FormTextBox
-          v-model.number="formData.logNumber"
-          control-id="logNumber"
-          test-id="log-number"
-          autofocus
-          :invalid="v$.logNumber.$error"
-        />
+        <div class="relative">
+          <FormTextBox
+            v-model.number="formData.logNumber"
+            control-id="logNumber"
+            test-id="log-number"
+            autofocus
+            :invalid="v$.logNumber.$error"
+          />
+          <button
+            class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 flex justify-center items-center px-2 text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
+            data-testid="get-next-log-number"
+            @click="getNextAvailableLogNumber"
+          >
+            Use Next Available Number
+          </button>
+        </div>
       </FormField>
 
       <FormField
@@ -199,9 +208,12 @@ import { helpers, integer, required } from '@vuelidate/validators';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
-import { computed, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
+import { useRoute } from 'vue-router';
 
+import { useClient } from '../../api-client';
 import { SelectOption } from '../../common';
+import { useOops } from '../../oops';
 import { depth, greaterThan, lessThan } from '../../validators';
 import DepthInput from '../common/depth-input.vue';
 import FormButton from '../common/form-button.vue';
@@ -244,6 +256,10 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
     notes: props.entry.notes ?? '',
   };
 }
+
+const client = useClient();
+const oops = useOops();
+const route = useRoute();
 
 const timezones = computed<SelectOption[]>(() =>
   Intl.supportedValuesOf('timeZone').map((tz) => ({
@@ -335,4 +351,22 @@ function onConfirmRevert() {
   Object.assign(formData, getFormDataFromProps(props));
   state.showConfirmRevert = false;
 }
+
+async function getNextAvailableLogNumber(): Promise<void> {
+  await oops(async () => {
+    const username = route.params.username;
+    if (!username || typeof username !== 'string') return;
+
+    const nextLogNumber = await client.logEntries.getNextAvailableLogNumber(
+      username,
+    );
+    formData.logNumber = nextLogNumber;
+  });
+}
+
+onMounted(async () => {
+  if (formData.logNumber === '') {
+    await getNextAvailableLogNumber();
+  }
+});
 </script>

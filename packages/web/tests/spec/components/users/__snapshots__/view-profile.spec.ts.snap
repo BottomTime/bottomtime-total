@@ -65,7 +65,7 @@ exports[`View profile component will render with a partial profile 1`] = `
     </div>
   </div>
   <!--v-if-->
-  <div class="flex justify-center space-x-3"><a href="/logbook/Adolf19"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover space-x-2" data-testid="view-logbook" type="button">
+  <div class="flex justify-center space-x-3"><a href="/logbook/Adolf19"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover space-x-2" data-testid="view-logbook" type="button">
         <!--v-if--><span><i class="fa-solid fa-book-open"></i></span><span>View Log Book</span>
       </button></a></div>
 </div>"

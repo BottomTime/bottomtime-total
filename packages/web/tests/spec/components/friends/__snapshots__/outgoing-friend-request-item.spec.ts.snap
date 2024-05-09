@@ -10,7 +10,7 @@ exports[`Outgoing friend request item will render accepted request correctly 1`]
     <p class="text-success flex space-x-1 items-baseline"><span><i class="fa-regular fa-circle-check"></i></span><span class="font-bold">Request accepted!</span></p>
   </div>
   <div class="min-w-16 h-full">
-    <div class="text-right my-6 mx-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+    <div class="text-right my-6 mx-2"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if--> Dismiss
       </button></div>
   </div>
@@ -30,7 +30,7 @@ exports[`Outgoing friend request item will render correclty 1`] = `
     </div>
   </div>
   <div class="min-w-16 h-full">
-    <div class="texst-right my-6 mx-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="cancel-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+    <div class="texst-right my-6 mx-2"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="cancel-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if--> Cancel
       </button></div>
   </div>
@@ -50,7 +50,7 @@ exports[`Outgoing friend request item will render declined request with reason c
     </div>
   </div>
   <div class="min-w-16 h-full">
-    <div class="text-right my-6 mx-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+    <div class="text-right my-6 mx-2"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if--> Dismiss
       </button></div>
   </div>
@@ -70,7 +70,7 @@ exports[`Outgoing friend request item will render declined request without reaso
     </div>
   </div>
   <div class="min-w-16 h-full">
-    <div class="text-right my-6 mx-2"><button class="text-black p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
+    <div class="text-right my-6 mx-2"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="dismiss-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if--> Dismiss
       </button></div>
   </div>

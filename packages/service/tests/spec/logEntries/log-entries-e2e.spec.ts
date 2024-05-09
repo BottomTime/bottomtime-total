@@ -658,7 +658,7 @@ describe('Log entries E2E tests', () => {
     });
   });
 
-  describe.only('when querying the next available log number', () => {
+  describe('when querying the next available log number', () => {
     it('will return the next available log number for the user', async () => {
       const owner = ownerData[0];
       const entries = [
