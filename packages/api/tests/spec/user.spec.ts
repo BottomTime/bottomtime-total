@@ -133,15 +133,6 @@ describe('User API client', () => {
     await user.requestEmailVerification();
   });
 
-  it('will request a password reset token', async () => {
-    user = getUser(axiosInstance);
-    scope
-      .post(`/api/users/${BasicUser.username}/requestPasswordReset`)
-      .reply(204);
-    await user.requestPasswordReset();
-    expect(scope.isDone()).toBe(true);
-  });
-
   it("will reset a user's password", async () => {
     user = getUser(axiosInstance, { hasPassword: false });
     const newPassword = 'new_password';
@@ -153,21 +144,6 @@ describe('User API client', () => {
 
     expect(user.hasPassword).toBe(true);
     expect(user.lastPasswordChange!.valueOf()).toBeCloseTo(Date.now(), -3);
-  });
-
-  it("will reset a user's password with a token", async () => {
-    user = getUser(axiosInstance);
-    const newPassword = 'new_password';
-    const token = 'tbTSqDIps0/QuDp9M1/2HJgrsa2TIN268+NRMKbw81U=';
-    scope
-      .post(`/api/users/${BasicUser.username}/resetPassword`, {
-        newPassword,
-        token,
-      })
-      .reply(200, { succeeded: true });
-
-    const success = await user.resetPassword(newPassword, token);
-    expect(success).toBe(true);
   });
 
   it("will allow access to the user's settings", () => {

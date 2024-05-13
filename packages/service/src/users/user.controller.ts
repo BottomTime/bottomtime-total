@@ -696,6 +696,32 @@ export class UserController {
     return { succeeded };
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/requestPasswordReset:
+   *   post:
+   *     summary: Request Password Reset Token
+   *     operationId: requestPasswordReset
+   *     description: |
+   *       Requests a password reset token for the user. This token can be used to reset the user's password.
+   *       The token will be delivered to the user via email at the address in their profile.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     responses:
+   *       "204":
+   *         description: |
+   *           The request was successfully received. If the user has an email address set on their account, then an email will
+   *           be sent to that address with a password reset token (and a link to use it!)
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Post('requestPasswordReset')
   @HttpCode(204)
   @UseGuards(AssertTargetUser)
@@ -715,6 +741,72 @@ export class UserController {
     await this.emailService.sendMail({ to: [user.email!] }, title, emailBody);
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/resetPassword:
+   *   post:
+   *     summary: Reset Password
+   *     operationId: resetPassword
+   *     description: |
+   *       Resets a user's password using a password reset token.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The new password.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - token
+   *               - newPassword
+   *             properties:
+   *               token:
+   *                 title: Reset Token
+   *                 type: string
+   *                 description: The password reset token. (This is provided to the user in an email upon request.)
+   *                 example: 1234567890abcdef
+   *               newPassword:
+   *                 title: New Password
+   *                 type: string
+   *                 format: password
+   *                 description: The user's new password.
+   *                 example: new_password
+   *     responses:
+   *       "200":
+   *         description: |
+   *           The request was received successfully and the request body will indicate whether the password was reset.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Success"
+   *       "400":
+   *         description: |
+   *           The request failed because of one of the following reasons:
+   *           * The request body was invalid or missing one or more parameters.
+   *           * The new password did not meet the minimum password requirements.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Post('resetPassword')
   @HttpCode(200)
   @UseGuards(AssertTargetUser)
@@ -726,6 +818,7 @@ export class UserController {
     const succeeded = await user.resetPassword(token, newPassword);
     return { succeeded };
   }
+
   /**
    * @openapi
    * /api/users/{username}/settings:

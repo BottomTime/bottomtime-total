@@ -123,6 +123,32 @@ describe('Users API client', () => {
     });
   });
 
+  describe('when resetting a password', () => {
+    it('will request a password reset token', async () => {
+      scope
+        .post(`/api/users/${BasicUser.username}/requestPasswordReset`)
+        .reply(204);
+      await client.requestPasswordResetToken(BasicUser.username);
+      expect(scope.isDone()).toBe(true);
+    });
+
+    it("will reset a user's password with a token", async () => {
+      const newPassword = 'new_password';
+      const token = 'tbTSqDIps0/QuDp9M1/2HJgrsa2TIN268+NRMKbw81U=';
+      scope
+        .post(`/api/users/${BasicUser.username}/resetPassword`, {
+          newPassword,
+          token,
+        })
+        .reply(200, { succeeded: true });
+
+      await expect(
+        client.resetPasswordWithToken(BasicUser.username, token, newPassword),
+      ).resolves.toBe(true);
+      expect(scope.isDone()).toBe(true);
+    });
+  });
+
   it('will perform a search for users', async () => {
     const params: AdminSearchUsersParamsDTO = {
       query: 'bob',

@@ -10,6 +10,7 @@ import {
   SearchProfilesResponseDTO,
   SearchProfilesResponseSchema,
   SearchUserProfilesParamsDTO,
+  SuccessFailResponseDTO,
   UserSchema,
 } from '../types';
 import { User } from './user';
@@ -69,20 +70,27 @@ export class UsersApiClient {
     return new User(this.apiClient, UserSchema.parse(data));
   }
 
-  // TODO: We need these endpoints on the backend first.
-  // async requestPasswordReset(usernameOrEmail: string): Promise<void> {
-  //   const url = `/api/users/${encodeURIComponent(
-  //     usernameOrEmail,
-  //   )}/resetPassword`;
-  // }
+  async requestPasswordResetToken(usernameOrEmail: string): Promise<void> {
+    await this.apiClient.post(
+      `/api/users/${usernameOrEmail}/requestPasswordReset`,
+    );
+  }
 
-  // async resetPasswordWithToken(
-  //   token: string,
-  //   newPassword: string,
-  // ): Promise<void> {
-  //   const url = `/api/users/resetPassword/${encodeURIComponent(token)}`;
-  //   await this.apiClient.post(url, { newPassword });
-  // }
+  async resetPasswordWithToken(
+    usernameOrEmail: string,
+    token: string,
+    newPassword: string,
+  ): Promise<boolean> {
+    const { data } = await this.apiClient.post<SuccessFailResponseDTO>(
+      `/api/users/${usernameOrEmail}/resetPassword`,
+      {
+        newPassword,
+        token,
+      },
+    );
+
+    return data.succeeded;
+  }
 
   async searchUsers(
     query: AdminSearchUsersParamsDTO,
