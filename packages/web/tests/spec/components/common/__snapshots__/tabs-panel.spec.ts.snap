@@ -7,7 +7,7 @@ exports[`Tabs panel component will render correctly when an invalid tab key is a
     <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-gray-500"><button id="tab-tab2" data-testid="tab-tab2" role="tab" aria-selected="false">Active Tab</button></li>
     <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-gray-500"><button id="tab-tab3" data-testid="tab-tab3" disabled="" role="tab" aria-selected="false">Disabled Tab</button></li>
   </ul>
-  <div class="bg-blue-300 dark:bg-blue-900 p-4 rounded-b-md  opacity-100" role="tabpanel" aria-labelledby="tab-invalid">
+  <div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-b-md  opacity-100" role="tabpanel" aria-labelledby="tab-invalid">
     <div>Panel Content</div>
   </div>
 </div>"
@@ -20,7 +20,7 @@ exports[`Tabs panel component will render correctly when no active tab is provid
     <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-gray-500"><button id="tab-tab2" data-testid="tab-tab2" role="tab" aria-selected="false">Active Tab</button></li>
     <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-gray-500"><button id="tab-tab3" data-testid="tab-tab3" disabled="" role="tab" aria-selected="false">Disabled Tab</button></li>
   </ul>
-  <div class="bg-blue-300 dark:bg-blue-900 p-4 rounded-b-md  opacity-100" role="tabpanel">
+  <div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-b-md  opacity-100" role="tabpanel">
     <div>Panel Content</div>
   </div>
 </div>"
@@ -29,7 +29,7 @@ exports[`Tabs panel component will render correctly when no active tab is provid
 exports[`Tabs panel component will render correctly when no tabs are provided 1`] = `
 "<div>
   <ul class="flex flex-row" role="tablist"></ul>
-  <div class="bg-blue-300 dark:bg-blue-900 p-4 rounded-b-md  opacity-100" role="tabpanel">
+  <div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-b-md  opacity-100" role="tabpanel">
     <div>Panel Content</div>
   </div>
 </div>"
@@ -42,7 +42,7 @@ exports[`Tabs panel component will render tabs correctly 1`] = `
     <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-blue-800 dark:text-blue-300 font-bold rounded-t-md bg-blue-300 dark:bg-blue-900"><button id="tab-tab2" data-testid="tab-tab2" disabled="" role="tab" aria-selected="true">Active Tab</button></li>
     <li class="font-title p-2 hover:text-blue-500 hover:dark:text-blue-500 text-gray-500"><button id="tab-tab3" data-testid="tab-tab3" disabled="" role="tab" aria-selected="false">Disabled Tab</button></li>
   </ul>
-  <div class="bg-blue-300 dark:bg-blue-900 p-4 rounded-b-md  opacity-100" role="tabpanel" aria-labelledby="tab-tab2">
+  <div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-b-md  opacity-100" role="tabpanel" aria-labelledby="tab-tab2">
     <div>Panel Content</div>
   </div>
 </div>"

@@ -1,7 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
 import dayjs from 'dayjs';
+import nock, { Scope } from 'nock';
 
-import { DepthUnit, LogEntry, LogEntryDTO } from '../../src';
+import {
+  CreateOrUpdateLogEntryParamsDTO,
+  DepthUnit,
+  LogEntry,
+  LogEntryDTO,
+} from '../../src';
+import { createScope } from '../fixtures/nock';
 import { BasicUser } from '../fixtures/users';
 
 const timestamp = new Date('2024-04-30T20:48:16.436Z');
@@ -27,14 +34,24 @@ const FullTestData: LogEntryDTO = {
 
 describe('Log entry API client', () => {
   let client: AxiosInstance;
+  let scope: Scope;
   let entry: LogEntry;
 
   beforeAll(() => {
     client = axios.create();
+    scope = createScope();
   });
 
   beforeEach(() => {
     entry = new LogEntry(client, { ...FullTestData });
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
+  afterAll(() => {
+    nock.restore();
   });
 
   it('will return properties correctly', () => {
@@ -84,5 +101,40 @@ describe('Log entry API client', () => {
 
   it('will render correctly as JSON', () => {
     expect(entry.toJSON()).toEqual(FullTestData);
+  });
+
+  it('will save changes to the log entry', async () => {
+    const options: CreateOrUpdateLogEntryParamsDTO = {
+      duration: 50.5,
+      entryTime: {
+        date: '2024-04-30T20:48:16',
+        timezone: 'Pacific/Pohnpei',
+      },
+      bottomTime: 50.2,
+      logNumber: 555,
+      maxDepth: { depth: 95.3, unit: DepthUnit.Feet },
+      notes: 'Awesome dive!',
+    };
+
+    entry.logNumber = options.logNumber;
+    entry.entryTime = options.entryTime;
+    entry.bottomTime = options.bottomTime;
+    entry.duration = options.duration;
+    entry.maxDepth = options.maxDepth;
+    entry.notes = options.notes;
+
+    scope
+      .put(`/api/users/${BasicUser.username}/logbook/${entry.id}`, options)
+      .reply(200, entry.toJSON());
+    await entry.save();
+    expect(scope.isDone()).toBe(true);
+  });
+
+  it('will delete a log entry', async () => {
+    scope
+      .delete(`/api/users/${BasicUser.username}/logbook/${entry.id}`)
+      .reply(204);
+    await entry.delete();
+    expect(scope.isDone()).toBe(true);
   });
 });

@@ -1,0 +1,976 @@
+{
+  "logEntries": [
+    {
+      "id": "9d39ed0e-4aaa-4b4b-bc42-fced926341ce",
+      "entryTime": {
+        "date": "2024-04-19T06:09:35",
+        "timezone": "America/Lower_Princes"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 651,
+      "maxDepth": { "depth": 130.7, "unit": "ft" },
+      "bottomTime": 39.6,
+      "duration": 47.2
+    },
+    {
+      "id": "e006924d-40f7-4d34-b3f4-9e91cc0d998b",
+      "entryTime": {
+        "date": "2024-04-16T23:37:14",
+        "timezone": "Atlantic/Stanley"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 383,
+      "duration": 43.4
+    },
+    {
+      "id": "34d411c3-9a0c-4180-a624-fc6d29a64046",
+      "entryTime": {
+        "date": "2024-04-14T16:36:33",
+        "timezone": "Indian/Maldives"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 356,
+      "maxDepth": { "depth": 105.4, "unit": "ft" },
+      "bottomTime": 97.3,
+      "duration": 104.3
+    },
+    {
+      "id": "21271a7a-bda8-48c6-a542-a409ce99812a",
+      "entryTime": {
+        "date": "2024-04-09T16:00:31",
+        "timezone": "Europe/Jersey"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 998,
+      "maxDepth": { "depth": 12.07, "unit": "m" },
+      "bottomTime": 106.19999999999999,
+      "duration": 113.6
+    },
+    {
+      "id": "a1d15172-ce76-470a-8a34-f72c00bcd5d0",
+      "entryTime": {
+        "date": "2024-03-21T23:35:14",
+        "timezone": "Africa/Ceuta"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 778,
+      "duration": 62.1
+    },
+    {
+      "id": "879f4293-4539-42f2-9662-08269288a855",
+      "entryTime": {
+        "date": "2024-03-15T17:33:56",
+        "timezone": "Europe/Paris"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 502,
+      "bottomTime": 43.5,
+      "duration": 46.8
+    },
+    {
+      "id": "aff2e878-2258-41ef-8015-b9c49fa1e958",
+      "entryTime": {
+        "date": "2024-03-15T05:49:19",
+        "timezone": "America/Rio_Branco"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 59,
+      "maxDepth": { "depth": 91.5, "unit": "ft" },
+      "duration": 78
+    },
+    {
+      "id": "afd70edd-7041-4a87-9b6d-fe4434ba5070",
+      "entryTime": {
+        "date": "2024-03-13T10:50:57",
+        "timezone": "Asia/Kuching"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 106,
+      "maxDepth": { "depth": 31.8, "unit": "ft" },
+      "bottomTime": 80.10000000000001,
+      "duration": 85.7
+    },
+    {
+      "id": "3a7c9abd-bd8b-419d-8679-c4750d6942e8",
+      "entryTime": {
+        "date": "2024-03-07T10:02:12",
+        "timezone": "America/St_Johns"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 753,
+      "maxDepth": { "depth": 24.92, "unit": "m" },
+      "bottomTime": 72.3,
+      "duration": 77.5
+    },
+    {
+      "id": "5afce6d6-4ff2-4507-83a3-7b8666459cc7",
+      "entryTime": {
+        "date": "2024-03-06T11:52:15",
+        "timezone": "Asia/Samarkand"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 935,
+      "duration": 114.2
+    },
+    {
+      "id": "ad5f2769-626c-4843-8d2e-37af71b8747f",
+      "entryTime": {
+        "date": "2024-03-06T06:54:03",
+        "timezone": "Pacific/Efate"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 820,
+      "maxDepth": { "depth": 58.7, "unit": "ft" },
+      "duration": 49.9
+    },
+    {
+      "id": "0ff97701-7e06-4377-8418-0b28f295f954",
+      "entryTime": {
+        "date": "2024-03-05T11:20:10",
+        "timezone": "Atlantic/Azores"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 511,
+      "duration": 96.2
+    },
+    {
+      "id": "705d4a69-9829-4ecd-abf3-f75d332b3718",
+      "entryTime": {
+        "date": "2024-02-29T07:38:18",
+        "timezone": "Asia/Khandyga"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 357,
+      "maxDepth": { "depth": 17.11, "unit": "m" },
+      "duration": 52.9
+    },
+    {
+      "id": "0cf153c9-2198-46c3-84ba-cb7bb9ddd5bf",
+      "entryTime": {
+        "date": "2024-02-25T12:45:39",
+        "timezone": "America/Indiana/Knox"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 217,
+      "duration": 95.9
+    },
+    {
+      "id": "34511bff-497a-45c6-b5b3-caf66a521852",
+      "entryTime": {
+        "date": "2024-02-23T08:01:34",
+        "timezone": "Asia/Tashkent"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 335,
+      "maxDepth": { "depth": 9.43, "unit": "m" },
+      "bottomTime": 52.2,
+      "duration": 61.4
+    },
+    {
+      "id": "1b87a4b5-48b5-4f54-9ccf-f32b67395d08",
+      "entryTime": {
+        "date": "2024-01-31T09:05:50",
+        "timezone": "America/Detroit"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 43,
+      "maxDepth": { "depth": 29.2, "unit": "ft" },
+      "bottomTime": 39.6,
+      "duration": 42.9
+    },
+    {
+      "id": "d49384e0-d212-4f7e-a59d-6e10f16d7184",
+      "entryTime": {
+        "date": "2024-01-29T02:05:19",
+        "timezone": "Asia/Tbilisi"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 998,
+      "maxDepth": { "depth": 27.4, "unit": "ft" },
+      "bottomTime": 61.699999999999996,
+      "duration": 71.1
+    },
+    {
+      "id": "3e3cdc73-986c-4dd5-bc0c-41ad50943bf6",
+      "entryTime": {
+        "date": "2024-01-24T09:37:04",
+        "timezone": "Atlantic/South_Georgia"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 566,
+      "maxDepth": { "depth": 142, "unit": "ft" },
+      "bottomTime": 113.9,
+      "duration": 119.4
+    },
+    {
+      "id": "3e87dd4b-f966-4e16-9e9a-428d626edc3a",
+      "entryTime": {
+        "date": "2024-01-16T23:56:55",
+        "timezone": "Asia/Phnom_Penh"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 421,
+      "bottomTime": 74.2,
+      "duration": 79.3
+    },
+    {
+      "id": "f6b26a2f-fba4-4279-818b-a3b177f717ed",
+      "entryTime": {
+        "date": "2024-01-14T23:17:40",
+        "timezone": "America/Guadeloupe"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 264,
+      "maxDepth": { "depth": 28.41, "unit": "m" },
+      "bottomTime": 103.5,
+      "duration": 109.7
+    },
+    {
+      "id": "f4bd3ad0-6840-41f9-9ae3-d004b27dbd2f",
+      "entryTime": {
+        "date": "2024-01-06T22:01:45",
+        "timezone": "Africa/Tunis"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 25,
+      "maxDepth": { "depth": 137.2, "unit": "ft" },
+      "bottomTime": 102.30000000000001,
+      "duration": 105.9
+    },
+    {
+      "id": "38059bdc-de24-40d2-bb7f-02d368175645",
+      "entryTime": {
+        "date": "2024-01-06T09:32:32",
+        "timezone": "Pacific/Port_Moresby"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 441,
+      "maxDepth": { "depth": 39.92, "unit": "m" },
+      "bottomTime": 81,
+      "duration": 89.2
+    },
+    {
+      "id": "9d0e7ff4-c389-4fd7-9dfa-a8ee2487090a",
+      "entryTime": {
+        "date": "2024-01-02T12:44:37",
+        "timezone": "America/Grand_Turk"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 231,
+      "maxDepth": { "depth": 55.8, "unit": "ft" },
+      "bottomTime": 19.400000000000002,
+      "duration": 22.8
+    },
+    {
+      "id": "324b4e7f-c56e-4a45-a410-a5d02ee53dac",
+      "entryTime": {
+        "date": "2023-12-28T04:58:54",
+        "timezone": "America/Argentina/Rio_Gallegos"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 438,
+      "maxDepth": { "depth": 40, "unit": "ft" },
+      "bottomTime": 97,
+      "duration": 104.4
+    },
+    {
+      "id": "2b4b2bec-3c2f-4898-85f5-d7a853f58d2e",
+      "entryTime": {
+        "date": "2023-12-25T19:06:25",
+        "timezone": "America/Guatemala"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 858,
+      "maxDepth": { "depth": 49.5, "unit": "ft" },
+      "bottomTime": 34.400000000000006,
+      "duration": 42.6
+    },
+    {
+      "id": "770254ee-c691-43b0-92bb-08c83a0a5789",
+      "entryTime": {
+        "date": "2023-12-25T22:02:33",
+        "timezone": "Africa/Abidjan"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 81,
+      "maxDepth": { "depth": 69.5, "unit": "ft" },
+      "bottomTime": 44.5,
+      "duration": 54.5
+    },
+    {
+      "id": "ff5c49cb-a54b-4795-91e2-8a47f726ff37",
+      "entryTime": {
+        "date": "2023-12-19T05:20:45",
+        "timezone": "Europe/Isle_of_Man"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 823,
+      "bottomTime": 31.199999999999996,
+      "duration": 36.8
+    },
+    {
+      "id": "c84759b6-8f9a-44a4-849b-de3ed5f2a902",
+      "entryTime": {
+        "date": "2023-12-14T21:16:06",
+        "timezone": "America/Argentina/Salta"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 986,
+      "maxDepth": { "depth": 83.4, "unit": "ft" },
+      "bottomTime": 23.8,
+      "duration": 27.6
+    },
+    {
+      "id": "7f6e3d22-1665-482f-8d07-a4051d14ae9a",
+      "entryTime": {
+        "date": "2023-12-11T01:58:21",
+        "timezone": "Australia/Eucla"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 86,
+      "maxDepth": { "depth": 33.08, "unit": "m" },
+      "bottomTime": 59,
+      "duration": 66
+    },
+    {
+      "id": "6364fc61-859e-4c10-bf39-a34de4147e2e",
+      "entryTime": {
+        "date": "2023-12-05T11:39:29",
+        "timezone": "Antarctica/Mawson"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 644,
+      "bottomTime": 31.200000000000003,
+      "duration": 38.7
+    },
+    {
+      "id": "17a26931-7c90-46ea-9819-1fb29cbab8d3",
+      "entryTime": {
+        "date": "2023-11-25T20:57:05",
+        "timezone": "Asia/Novokuznetsk"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 371,
+      "maxDepth": { "depth": 73.6, "unit": "ft" },
+      "bottomTime": 71.4,
+      "duration": 75.9
+    },
+    {
+      "id": "9b294969-36fb-4b2b-bb0a-d31fa47eb2e6",
+      "entryTime": {
+        "date": "2023-11-19T05:45:33",
+        "timezone": "Europe/Vilnius"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 319,
+      "bottomTime": 48.1,
+      "duration": 53.9
+    },
+    {
+      "id": "a3516b58-2b7f-46ab-97d1-b8706afff7b6",
+      "entryTime": {
+        "date": "2023-11-13T15:32:02",
+        "timezone": "America/St_Lucia"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 992,
+      "maxDepth": { "depth": 7.74, "unit": "m" },
+      "bottomTime": 82.4,
+      "duration": 91.5
+    },
+    {
+      "id": "d1d035a0-37a2-4244-a8a2-3781b3c571eb",
+      "entryTime": {
+        "date": "2023-11-02T21:39:46",
+        "timezone": "America/Merida"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 7,
+      "maxDepth": { "depth": 98.9, "unit": "ft" },
+      "bottomTime": 76.39999999999999,
+      "duration": 80.1
+    },
+    {
+      "id": "80df9a40-b7f6-4901-aecc-7f555528ec65",
+      "entryTime": {
+        "date": "2023-10-31T04:39:58",
+        "timezone": "Antarctica/Syowa"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 263,
+      "maxDepth": { "depth": 30.6, "unit": "ft" },
+      "bottomTime": 91.9,
+      "duration": 100.9
+    },
+    {
+      "id": "3ff1867a-43c5-4527-ad9a-574a4eb9b7b6",
+      "entryTime": { "date": "2023-10-09T16:47:54", "timezone": "Asia/Oral" },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 233,
+      "bottomTime": 24.6,
+      "duration": 31.5
+    },
+    {
+      "id": "6452fc14-5afc-4f5d-bb76-de72e7543611",
+      "entryTime": {
+        "date": "2023-10-08T11:10:10",
+        "timezone": "Africa/Bangui"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 56,
+      "maxDepth": { "depth": 100.3, "unit": "ft" },
+      "duration": 36.8
+    },
+    {
+      "id": "fb36c922-2da9-46d9-974b-eaa1045b7733",
+      "entryTime": {
+        "date": "2023-09-22T18:30:28",
+        "timezone": "Africa/El_Aaiun"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 740,
+      "maxDepth": { "depth": 21.2, "unit": "ft" },
+      "duration": 63.5
+    },
+    {
+      "id": "a59765c7-1e2d-4c7e-b927-485cb2d40306",
+      "entryTime": {
+        "date": "2023-09-21T06:27:04",
+        "timezone": "America/Phoenix"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 790,
+      "bottomTime": 61.2,
+      "duration": 70.2
+    },
+    {
+      "id": "9945f95e-bc2d-4493-8804-e775641fa0c8",
+      "entryTime": {
+        "date": "2023-09-20T05:41:32",
+        "timezone": "America/Edmonton"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 926,
+      "bottomTime": 105.3,
+      "duration": 115.1
+    },
+    {
+      "id": "20ee794b-6e8b-4cfd-815c-585742728222",
+      "entryTime": {
+        "date": "2023-08-18T06:31:51",
+        "timezone": "America/Guayaquil"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 689,
+      "maxDepth": { "depth": 42.2, "unit": "m" },
+      "duration": 116.1
+    },
+    {
+      "id": "1fe4770d-ffda-45b5-bc13-563390cf45b1",
+      "entryTime": {
+        "date": "2023-08-17T09:56:55",
+        "timezone": "Europe/Bratislava"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 585,
+      "maxDepth": { "depth": 12.1, "unit": "m" },
+      "bottomTime": 76.3,
+      "duration": 81.2
+    },
+    {
+      "id": "ed11256f-afea-41ba-b233-bfde4fe1b96a",
+      "entryTime": {
+        "date": "2023-08-02T13:53:27",
+        "timezone": "America/Argentina/San_Luis"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 503,
+      "maxDepth": { "depth": 115.9, "unit": "ft" },
+      "bottomTime": 110,
+      "duration": 115.1
+    },
+    {
+      "id": "9dcc7d25-b88b-4272-af3d-d1ae8b97152d",
+      "entryTime": {
+        "date": "2023-08-01T22:45:15",
+        "timezone": "America/Panama"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 749,
+      "maxDepth": { "depth": 24.98, "unit": "m" },
+      "bottomTime": 87.8,
+      "duration": 94.5
+    },
+    {
+      "id": "4396b77c-1f00-4842-af5a-6ae93aafb257",
+      "entryTime": {
+        "date": "2023-07-26T09:27:20",
+        "timezone": "Pacific/Guam"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 374,
+      "bottomTime": 64.2,
+      "duration": 70.4
+    },
+    {
+      "id": "a5ba078f-cf1f-4a2d-8c58-d3674c0a87b7",
+      "entryTime": {
+        "date": "2023-07-24T04:54:27",
+        "timezone": "America/Santo_Domingo"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 296,
+      "bottomTime": 89,
+      "duration": 98.8
+    },
+    {
+      "id": "56fbf849-9365-46dc-b418-e389fbe148dd",
+      "entryTime": {
+        "date": "2023-07-18T02:39:57",
+        "timezone": "Pacific/Palau"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 242,
+      "maxDepth": { "depth": 8.23, "unit": "m" },
+      "bottomTime": 108.3,
+      "duration": 113.2
+    },
+    {
+      "id": "c921a3e5-d9a8-4f57-b237-98dcd9a2565e",
+      "entryTime": {
+        "date": "2023-07-15T00:27:47",
+        "timezone": "Asia/Ulaanbaatar"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 263,
+      "maxDepth": { "depth": 36.35, "unit": "m" },
+      "bottomTime": 61.8,
+      "duration": 70.3
+    },
+    {
+      "id": "fef0ed0d-8945-4ee1-9571-9d19b82529af",
+      "entryTime": {
+        "date": "2023-07-13T02:38:50",
+        "timezone": "America/Bahia_Banderas"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 392,
+      "maxDepth": { "depth": 138.4, "unit": "ft" },
+      "bottomTime": 90.9,
+      "duration": 100.9
+    },
+    {
+      "id": "cc25acfe-ece8-4fd9-ba1d-1c696079dc81",
+      "entryTime": {
+        "date": "2023-07-12T23:09:27",
+        "timezone": "Asia/Hong_Kong"
+      },
+      "creator": {
+        "userId": "375172f1-4ea6-477b-9b15-03559f4cc966",
+        "memberSince": "2024-03-21T13:44:03.601Z",
+        "username": "Chris",
+        "avatar": "/api/users/Chris/avatar",
+        "name": "Chris Carleton",
+        "location": "Cambridge, ON",
+        "logBookSharing": "private"
+      },
+      "logNumber": 100,
+      "maxDepth": { "depth": 6.36, "unit": "m" },
+      "bottomTime": 87.2,
+      "duration": 95.4
+    }
+  ],
+  "totalCount": 200
+}

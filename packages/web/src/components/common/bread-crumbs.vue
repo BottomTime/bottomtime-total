@@ -14,7 +14,12 @@
       <span v-if="item.active" class="text-grey-800 dark:text-grey-200">
         {{ itemLabel(item) }}
       </span>
-      <NavLink v-else-if="item.to" :to="item.to">{{ itemLabel(item) }}</NavLink>
+      <NavLink
+        v-else-if="item.to"
+        :to="typeof item.to === 'string' ? item.to : item.to.value"
+      >
+        {{ itemLabel(item) }}
+      </NavLink>
       <span v-else>{{ itemLabel(item) }}</span>
     </li>
   </ul>
@@ -31,6 +36,6 @@ type BreadCrumbsProps = {
 defineProps<BreadCrumbsProps>();
 
 function itemLabel(item: Breadcrumb): string {
-  return typeof item.label === 'string' ? item.label : item.label();
+  return typeof item.label === 'string' ? item.label : item.label.value;
 }
 </script>

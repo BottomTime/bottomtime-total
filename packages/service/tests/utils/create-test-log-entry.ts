@@ -8,14 +8,6 @@ import { z } from 'zod';
 
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../src/data';
 
-const Timezones = [
-  'America/Los_Angeles',
-  'America/New_York',
-  'Europe/Amsterdam',
-  'Asia/Singapore',
-  'UTC',
-];
-
 const LogEntrySchema = z.object({
   id: z.string(),
   timestamp: z.coerce.date(),
@@ -34,14 +26,14 @@ export function createTestLogEntry(
   options?: Partial<LogEntryEntity>,
 ): LogEntryEntity {
   const data = new LogEntryEntity();
-  const timezone = options?.timezone ?? faker.helpers.arrayElement(Timezones);
+  const timezone = options?.timezone ?? faker.location.timeZone();
 
   data.owner = owner;
 
   data.id = options?.id ?? faker.string.uuid();
   data.logNumber =
     options?.logNumber ??
-    faker.helpers.maybe(() => faker.number.int({ min: 1 }), {
+    faker.helpers.maybe(() => faker.number.int({ min: 1, max: 999 }), {
       probability: 0.9,
     }) ??
     null;
@@ -50,7 +42,7 @@ export function createTestLogEntry(
   data.timestamp = options?.timestamp ?? faker.date.past({ years: 3 });
   data.entryTime =
     options?.entryTime ??
-    dayjs(data.timestamp).tz(timezone).format('YYYY-MM-DDTHH:mm:ss');
+    dayjs(data.timestamp).tz(timezone, true).format('YYYY-MM-DDTHH:mm:ss');
   data.timezone = timezone;
 
   data.bottomTime =

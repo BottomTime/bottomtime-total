@@ -55,7 +55,6 @@ const model = defineModel<string | number>();
 const input = ref<HTMLInputElement | null>();
 
 const inputClasses = computed(() => {
-  const highlightColour = props.invalid ? 'danger' : 'grey-600';
   const selectStyle = props.selectOnFocus ? 'select-all' : '';
   let roundingStyle: string;
 
@@ -69,7 +68,9 @@ const inputClasses = computed(() => {
     roundingStyle = 'rounded-lg';
   }
 
-  return `px-2 py-1 w-full ${selectStyle} bg-grey-200 dark:bg-grey-300 border border-${highlightColour} ring-0 ${roundingStyle} text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500`;
+  return `px-2 py-1 w-full ${selectStyle} bg-grey-200 dark:bg-grey-300 border ${
+    props.invalid ? 'border-danger' : 'border-grey-600'
+  } ring-0 ${roundingStyle} text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500`;
 });
 
 const rightSlotClasses = computed(() => {

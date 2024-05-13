@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HeroSection component will render correclty if user is authenticated 1`] = `
+"<section class="my-20 mx-4">
+  <div class="flex space-x-4 place-items-baseline">
+    <h1 class="grow font-bold text-6xl font-title">Bottom Time</h1>
+    <!--v-if-->
+  </div>
+</section>"
+`;
+
+exports[`HeroSection component will render correctly for anonymous users 1`] = `
+"<section class="my-20 mx-4">
+  <div class="flex space-x-4 place-items-baseline">
+    <h1 class="grow font-bold text-6xl font-title">Bottom Time</h1>
+    <div><button class="text-grey-950 p-2 m-0 text-lg border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary font-bold" type="button">
+        <!--v-if-->Sign Up Now!
+      </button></div>
+  </div>
+</section>"
+`;

@@ -6,6 +6,7 @@
       </div>
     </div>
   </DrawerPanel>
+
   <section class="h-16">
     <nav
       class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30"
@@ -47,8 +48,15 @@
           </ul>
 
           <!-- Avatar for authenticated users -->
+          <button v-if="currentUser.user">
+            <span class="fa-layers fa-fw">
+              <i class="fa-solid fa-bell"></i>
+              <span class="fa-layers-counter fa-layers-bottom-right"> 1 </span>
+            </span>
+          </button>
+
           <button
-            v-else
+            v-if="currentUser.user"
             id="user-menu-button"
             v-click-outside="() => (showUserDropdown = false)"
             data-testid="user-menu-button"
@@ -198,7 +206,7 @@ const navLinks = computed<NavLink[]>(() => {
     },
     {
       title: 'Log Book',
-      url: '/logbook',
+      url: `/logbook/${currentUser.user?.username}`,
       visible: !currentUser.anonymous,
     },
     {

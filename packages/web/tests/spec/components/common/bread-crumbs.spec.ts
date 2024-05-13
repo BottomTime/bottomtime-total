@@ -1,5 +1,7 @@
 import { mount } from '@vue/test-utils';
 
+import { computed } from 'vue';
+
 import { Breadcrumb } from '../../../../src/common';
 import BreadCrumbs from '../../../../src/components/common/bread-crumbs.vue';
 
@@ -8,7 +10,7 @@ describe('Breadcrumbs component', () => {
     const crumbs: Breadcrumb[] = [
       { label: 'Top level', to: '/top' },
       { label: 'Middle level', to: '/top/middle' },
-      { label: () => 'Inactive' },
+      { label: computed(() => 'Inactive') },
       { label: 'Current', active: true },
     ];
 

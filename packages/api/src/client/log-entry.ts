@@ -1,16 +1,18 @@
 import { AxiosInstance } from 'axios';
 
 import {
+  CreateOrUpdateLogEntryParamsSchema,
   DateWithTimezoneDTO,
   DepthDTO,
   LogEntryDTO,
+  LogEntrySchema,
   SuccinctProfileDTO,
 } from '../types';
 
 export class LogEntry {
   constructor(
     private readonly client: AxiosInstance,
-    private readonly data: LogEntryDTO,
+    private data: LogEntryDTO,
   ) {}
 
   get id(): string {
@@ -65,5 +67,19 @@ export class LogEntry {
 
   toJSON(): LogEntryDTO {
     return { ...this.data };
+  }
+
+  async save(): Promise<void> {
+    const { data } = await this.client.put(
+      `/api/users/${this.data.creator.username}/logbook/${this.data.id}`,
+      CreateOrUpdateLogEntryParamsSchema.parse(this),
+    );
+    this.data = LogEntrySchema.parse(data);
+  }
+
+  async delete(): Promise<void> {
+    await this.client.delete(
+      `/api/users/${this.data.creator.username}/logbook/${this.data.id}`,
+    );
   }
 }

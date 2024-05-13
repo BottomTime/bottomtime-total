@@ -32,6 +32,17 @@ const SelectLink = `[data-testid="select-friend-${FullTestFriendData.username}"]
 const UnfriendButton = `[data-testid="unfriend-${FullTestFriendData.username}"]`;
 
 describe('Friends list item component', () => {
+  beforeAll(() => {
+    jest.useFakeTimers({
+      now: new Date('2024-04-25T12:00:00Z'),
+      doNotFake: ['setImmediate', 'nextTick'],
+    });
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it('will render correctly with full friend data', () => {
     const wrapper = mount(FriendsListItem, {
       props: { friend: FullTestFriendData },

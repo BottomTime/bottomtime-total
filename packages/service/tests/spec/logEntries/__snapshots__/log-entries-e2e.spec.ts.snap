@@ -1183,9 +1183,10 @@ exports[`Log entries E2E tests when searching log entries will return a 400 resp
     },
     {
       "code": "invalid_enum_value",
-      "message": "Invalid enum value. Expected 'entryTime', received 'wetness'",
+      "message": "Invalid enum value. Expected 'entryTime' | 'logNumber', received 'wetness'",
       "options": [
         "entryTime",
+        "logNumber",
       ],
       "path": [
         "sortBy",

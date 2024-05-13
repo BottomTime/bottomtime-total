@@ -14,15 +14,18 @@
 <script setup lang="ts">
 import { onBeforeMount, onServerPrefetch, useSSRContext } from 'vue';
 
+import { ToastType } from './common';
 import NavBar from './components/core/nav-bar.vue';
 import PageFooter from './components/core/page-footer.vue';
 import SnackBar from './components/core/snack-bar.vue';
 import { Config } from './config';
 import { AppInitialState, useInitialState } from './initial-state';
-import { useCurrentUser } from './store';
+import { useCurrentUser, useToasts } from './store';
 
 const currentUser = useCurrentUser();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
+const initialState = useInitialState();
+const toasts = useToasts();
 
 onServerPrefetch(async () => {
   currentUser.user = ctx?.currentUser ?? null;
@@ -30,8 +33,17 @@ onServerPrefetch(async () => {
 
 onBeforeMount(() => {
   if (!Config.isSSR) {
-    const initialState = useInitialState();
     currentUser.user = initialState?.currentUser ?? null;
+
+    if (initialState?.error && initialState.error instanceof Error) {
+      toasts.toast({
+        id: 'server-error',
+        message: Config.isProduction
+          ? 'A server error has occurred.'
+          : initialState.error.message,
+        type: ToastType.Error,
+      });
+    }
   }
 });
 </script>

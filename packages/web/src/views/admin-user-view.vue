@@ -66,7 +66,7 @@ const subtitle = computed(() =>
 const breadcrumbs: Breadcrumb[] = [
   { label: 'Admin', to: '/admin' },
   { label: 'Users', to: '/admin/users' },
-  { label: () => title.value, active: true },
+  { label: title, active: true },
 ];
 
 // Fetch the user data

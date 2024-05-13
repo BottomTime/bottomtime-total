@@ -1,6 +1,8 @@
+import { ComputedRef } from 'vue';
+
 export type Breadcrumb = {
-  label: string | (() => string);
-  to?: string;
+  label: string | ComputedRef<string>;
+  to?: string | ComputedRef<string>;
   active?: boolean;
 };
 

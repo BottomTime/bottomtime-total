@@ -54,10 +54,10 @@ export class LogEntry {
     };
   }
   set entryTime(value: DateWithTimezoneDTO) {
-    const entryTime = dayjs(value.date).tz(value.timezone, true);
+    const entryTime = dayjs(value.date);
+    this.data.timestamp = entryTime.tz(value.timezone, true).utc().toDate();
     this.data.entryTime = entryTime.format(DateTimeFormat);
     this.data.timezone = value.timezone;
-    this.data.timestamp = entryTime.utc().toDate();
   }
 
   get bottomTime(): number | undefined {

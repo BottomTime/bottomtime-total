@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LobbookEntriesListItem component will render correctly for partial logbook entry data 1`] = `
+"<li class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
+  <div class="min-w-16 flex">
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <div class="flex flex-col gap-3 grow">
+    <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-1d3d41c9-794a-4280-8335-65f503a3bee7" type="button">
+        <!--v-if-->January 31, 2023 9:16 AM
+      </button><span class="italic text-sm">America/Los_Angeles</span></p>
+    <div class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between">
+      <div class="flex space-x-2">
+        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Duration: </p><span class="italic">44.1min</span>
+      </div>
+      <!--v-if-->
+    </div>
+  </div>
+</li>"
+`;
+
+exports[`LobbookEntriesListItem component will render correctly with full logbook entry data 1`] = `
+"<li class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
+  <div class="min-w-16 flex">
+    <!--v-if-->
+    <p class="font-bold">#12</p>
+  </div>
+  <div class="flex flex-col gap-3 grow">
+    <p class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-4ca3e53c-1364-40b2-a6db-ce8e92380b1f" type="button">
+        <!--v-if-->January 31, 2023 9:16 AM
+      </button><span class="italic text-sm">Europe/Dublin</span></p>
+    <div class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between">
+      <div class="flex space-x-2">
+        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Bottom time / Duration: </p><span class="italic">77.8min / 88.3min</span>
+      </div>
+      <div class="flex space-x-2">
+        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Max depth: </p><span class="italic">10.15 m</span>
+      </div>
+    </div>
+  </div>
+</li>"
+`;

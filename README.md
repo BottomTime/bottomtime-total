@@ -24,17 +24,17 @@ It will make installing the other dependencies much easier.
 
 ### Node.js
 
-You'll need the [Node.js](https://nodejs.org/en) runtime to run the platform. The platform is currently built on Node v20.
+You'll need the [Node.js](https://nodejs.org/en) runtime to run the platform. The platform is currently built on Node v22.
 
 It is recommended that you use Node Version Manager ([NVM](https://github.com/nvm-sh/nvm#readme)) to manage your
 Node installations. It will allow you to have multiple versions of Node.js installed at once and easily switch
 between them.
 
-Once NVM is installed, you can simply run the following to install and activate Node.js v20.x
+Once NVM is installed, you can simply run the following to install and activate Node.js v22.x
 
 ```bash
-nvm install 20
-nvm use 20
+nvm install 22
+nvm use 22
 ```
 
 ### Yarn

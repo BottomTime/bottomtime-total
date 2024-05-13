@@ -6,17 +6,28 @@
     :enable-time-picker="mode === 'datetime'"
     :format="DateTimeFormat"
     :input-class-name="inputClasses"
+    :max-date="maxDate"
     menu-class-name="rounded-lg bg-secondary text-sm text-grey-950 shadow-lg"
+    :minutes-grid-increment="1"
+    :text-input="{
+      enterSubmit: true,
+      tabSubmit: true,
+      openMenu: true,
+      format: (val) => dayjs(val).toDate(),
+    }"
     time-picker-inline
     :placeholder="placeholder"
     position="left"
+    :preview-format="(val: Date) => dayjs(val).format('LLL')"
     :uid="controlId"
+    vertical
   />
 </template>
 
 <script lang="ts" setup>
 import DatePicker from '@vuepic/vue-datepicker';
 
+import dayjs from 'dayjs';
 import { computed } from 'vue';
 
 import { DateTimeFormat } from '../../common';
@@ -25,8 +36,10 @@ interface FormDatePickerProps {
   disabled?: boolean;
   controlId?: string;
   invalid?: boolean;
+  maxDate?: Date;
   mode?: 'date' | 'datetime';
   placeholder?: string;
+  testId?: string;
 }
 
 const value = defineModel<string | Date>();
@@ -37,8 +50,9 @@ const props = withDefaults(defineProps<FormDatePickerProps>(), {
 });
 
 const inputClasses = computed(() => {
-  const highlightColour = props.invalid ? 'danger' : 'grey-600';
-  return `px-1 py-0 border border-${highlightColour} focus:ring-${highlightColour} focus:border-${highlightColour} dark:focus:ring-${highlightColour} dark:focus:border-${highlightColour} bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0`;
+  return `px-1 py-0 border ${
+    props.invalid ? 'border-danger' : 'border-grey-600'
+  } bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0`;
 });
 </script>
 

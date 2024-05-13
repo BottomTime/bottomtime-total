@@ -1,6 +1,7 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesParamsSchema,
   ListLogEntriesResponseDTO,
@@ -14,6 +15,7 @@ import {
   Get,
   HttpCode,
   Inject,
+  Logger,
   Post,
   Put,
   Query,
@@ -28,6 +30,7 @@ import {
   User,
 } from '../users';
 import { ZodValidator } from '../zod-validator';
+import { AssertLogbookRead } from './assert-logbook-read.guard';
 import {
   AssertTargetLogEntry,
   TargetLogEntry,
@@ -38,8 +41,10 @@ import { LogEntry } from './log-entry';
 const LogEntryIdParam = ':entryId';
 
 @Controller('api/users/:username/logbook')
-@UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+@UseGuards(AssertTargetUser)
 export class UserLogEntriesController {
+  private readonly log = new Logger(UserLogEntriesController.name);
+
   constructor(
     @Inject(LogEntriesService) private readonly service: LogEntriesService,
   ) {}
@@ -105,6 +110,7 @@ export class UserLogEntriesController {
    *           type: string
    *           enum:
    *             - entryTime
+   *             - logNumber
    *           default: entryTime
    *         required: false
    *       - in: query
@@ -165,15 +171,19 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get()
+  @UseGuards(AssertLogbookRead)
   async searchLogs(
     @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
     options?: ListLogEntriesParamsDTO,
   ): Promise<ListLogEntriesResponseDTO> {
+    this.log.debug('Searching for log entries...', options);
     const { logEntries, totalCount } = await this.service.listLogEntries({
       ...options,
       ownerId: user.id,
     });
+
+    this.log.debug('Got some log entries', logEntries.length, user.username);
 
     return {
       logEntries: logEntries.map((entry) => entry.toJSON()),
@@ -238,6 +248,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post()
+  @UseGuards(AssertAuth, AssertAccountOwner)
   async createLog(
     @TargetUser() owner: User,
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
@@ -249,6 +260,68 @@ export class UserLogEntriesController {
     });
 
     return logEntry.toJSON();
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/logbook/nextLogEntryNumber:
+   *   get:
+   *     tags:
+   *       - Dive Logs
+   *       - Users
+   *     summary: Get the next available log number in a user's logbook
+   *     operationId: getNextLogNumber
+   *     description: |
+   *       Retrieves the next available log number for the target user. Will return 1 if the user has no log entries
+   *       (or none with a log number set).
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the next available log number can be found in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - logNumber
+   *               properties:
+   *                 logNumber:
+   *                   type: integer
+   *                   format: int32
+   *                   example: 12
+   *       "401":
+   *         description: The request failed because the current user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user does not own the requested logbook and is not an admin.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target logbook could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get('nextLogEntryNumber')
+  @UseGuards(AssertAuth, AssertAccountOwner)
+  async getNextAvailableLogNumber(
+    @TargetUser() user: User,
+  ): Promise<GetNextAvailableLogNumberResponseDTO> {
+    const logNumber = await this.service.getNextAvailableLogNumber(user.id);
+    return { logNumber };
   }
 
   /**
@@ -297,7 +370,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(LogEntryIdParam)
-  @UseGuards(AssertTargetLogEntry)
+  @UseGuards(AssertLogbookRead, AssertTargetLogEntry)
   getLog(@TargetLogEntry() logEntry: LogEntry): LogEntryDTO {
     return logEntry.toJSON();
   }
@@ -360,7 +433,7 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(LogEntryIdParam)
-  @UseGuards(AssertTargetLogEntry)
+  @UseGuards(AssertAuth, AssertAccountOwner, AssertTargetLogEntry)
   async updateLog(
     @TargetLogEntry() logEntry: LogEntry,
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
@@ -420,7 +493,7 @@ export class UserLogEntriesController {
    */
   @Delete(LogEntryIdParam)
   @HttpCode(204)
-  @UseGuards(AssertTargetLogEntry)
+  @UseGuards(AssertAuth, AssertAccountOwner, AssertTargetLogEntry)
   async deleteLog(@TargetLogEntry() logEntry: LogEntry): Promise<void> {
     await logEntry.delete();
   }

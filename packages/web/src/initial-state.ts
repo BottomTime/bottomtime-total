@@ -5,6 +5,7 @@ import {
   ListAlertsResponseDTO,
   ListFriendRequestsResponseDTO,
   ListFriendsResponseDTO,
+  ListLogEntriesResponseDTO,
   LogEntryDTO,
   ProfileDTO,
   SearchDiveSitesResponseDTO,
@@ -17,13 +18,14 @@ export type AppInitialState = {
   alerts?: ListAlertsResponseDTO;
   currentAlert?: AlertDTO;
   currentDiveSite?: DiveSiteDTO | null;
+  currentLogEntry?: LogEntryDTO;
   currentUser: UserDTO | null;
   currentProfile?: ProfileDTO;
   error?: unknown;
   friends?: ListFriendsResponseDTO;
   friendRequests?: ListFriendRequestsResponseDTO;
   diveSites?: SearchDiveSitesResponseDTO;
-  logEntries?: LogEntryDTO;
+  logEntries?: ListLogEntriesResponseDTO | 'not-found' | 'forbidden';
 };
 
 export function useInitialState(): AppInitialState | null {
