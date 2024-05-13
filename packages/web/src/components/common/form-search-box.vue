@@ -36,7 +36,7 @@ interface FormSearchBoxProps {
   testId?: string;
 }
 
-const query = defineModel<string>({ required: true });
+const query = defineModel<string>({ required: false, default: '' });
 
 withDefaults(defineProps<FormSearchBoxProps>(), {
   autofocus: false,

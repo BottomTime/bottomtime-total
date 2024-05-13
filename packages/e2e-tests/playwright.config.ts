@@ -90,7 +90,7 @@ export default defineConfig({
       url: 'http://127.0.0.1:4801/',
       cwd: '../service',
       env: {
-        BT_LOG_LEVEL: 'info',
+        BT_LOG_LEVEL: 'debug',
         BT_POSTGRES_URI: PostgresFixture.postgresUri,
         BT_PORT: '4801',
         BT_SESSION_SECRET: getSessionSecret(),
@@ -98,6 +98,7 @@ export default defineConfig({
       },
       timeout: 10000,
       reuseExistingServer: true,
+      // stdout: 'pipe',
     },
     {
       command: 'npx tsx ./server/index.ts',

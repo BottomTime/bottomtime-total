@@ -9,6 +9,7 @@ import { AuthFixture } from './auth.fixture';
 import { DiveSitesFixture } from './dive-sites.fixture';
 import { FriendsFixture } from './friends.fixture';
 import { createAuthToken } from './jwt';
+import { LogEntriesFixture } from './log-entries.fixture';
 import { PostgresFixture } from './postgres.fixture';
 
 export const test = base.extend<{
@@ -17,6 +18,7 @@ export const test = base.extend<{
   db: PostgresFixture;
   diveSites: DiveSitesFixture;
   friends: FriendsFixture;
+  logEntries: LogEntriesFixture;
 }>({
   api: async ({ db }, use) => {
     // Create an admin user and matching auth token
@@ -61,6 +63,11 @@ export const test = base.extend<{
   friends: async ({ page }, use) => {
     const friends = new FriendsFixture(page);
     await use(friends);
+  },
+
+  logEntries: async ({ page }, use) => {
+    const logEntries = new LogEntriesFixture(page);
+    await use(logEntries);
   },
 });
 

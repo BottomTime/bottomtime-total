@@ -9,6 +9,12 @@
     :max-date="maxDate"
     menu-class-name="rounded-lg bg-secondary text-sm text-grey-950 shadow-lg"
     :minutes-grid-increment="1"
+    :text-input="{
+      enterSubmit: true,
+      tabSubmit: true,
+      openMenu: true,
+      format: (val) => dayjs(val).toDate(),
+    }"
     time-picker-inline
     :placeholder="placeholder"
     position="left"
@@ -33,6 +39,7 @@ interface FormDatePickerProps {
   maxDate?: Date;
   mode?: 'date' | 'datetime';
   placeholder?: string;
+  testId?: string;
 }
 
 const value = defineModel<string | Date>();
