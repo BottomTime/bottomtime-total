@@ -6,6 +6,7 @@ import {
   ChangeRoleParams,
   ChangeUsernameParamsDTO,
   ResetPasswordParams,
+  ResetPasswordWithTokenParamsDTO,
   SuccessFailResponseDTO,
   UserDTO,
   UserRole,
@@ -126,14 +127,34 @@ export class User {
     );
   }
 
-  async resetPassword(newPassword: string): Promise<void> {
-    const params: ResetPasswordParams = { newPassword };
-    await this.client.post(
-      `/api/admin/users/${this.username}/password`,
-      params,
-    );
-    this.data.hasPassword = true;
-    this.data.lastPasswordChange = new Date();
+  async requestPasswordReset(): Promise<void> {
+    await this.client.post(`/api/users/${this.username}/requestPasswordReset`);
+  }
+
+  async resetPassword(newPassword: string, token?: string): Promise<boolean> {
+    let succeeded: boolean;
+
+    if (token) {
+      const params: ResetPasswordWithTokenParamsDTO = { newPassword, token };
+      const { data } = await this.client.post<SuccessFailResponseDTO>(
+        `/api/users/${this.username}/resetPassword`,
+        params,
+      );
+      succeeded = data.succeeded;
+    } else {
+      const params: ResetPasswordParams = { newPassword };
+      await this.client.post(
+        `/api/admin/users/${this.username}/password`,
+        params,
+      );
+      succeeded = true;
+    }
+
+    if (succeeded) {
+      this.data.hasPassword = true;
+      this.data.lastPasswordChange = new Date();
+    }
+    return succeeded;
   }
 
   async toggleAccountLock(): Promise<void> {
