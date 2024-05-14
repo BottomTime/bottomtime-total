@@ -21,8 +21,12 @@ import { useCurrentUser, useToasts } from '../../../../src/store';
 import { createAxiosError } from '../../../fixtures/create-axios-error';
 import { createRouter } from '../../../fixtures/create-router';
 
+const UsernameInput = '[data-testid="login-username"]';
+const PasswordInput = '[data-testid="login-password"]';
+const LoginButton = '[data-testid="login-submit"]';
+
 const UserData: UserDTO = {
-  id: 'B8D70E2C-BEA3-4F21-9EEB-42A4AA79F706',
+  id: 'b8d70e2c-bea3-4f21-9eeb-42a4aa79f706',
   email: 'jbard_dives@gmail.com',
   emailVerified: true,
   hasPassword: true,
@@ -68,7 +72,7 @@ describe('Login Form component', () => {
         },
       },
     });
-    await wrapper.find('[data-testid="login-submit"]').trigger('click');
+    await wrapper.find(LoginButton).trigger('click');
     await flushPromises();
 
     expect(wrapper.find('[data-testid="username-error"]').isVisible()).toBe(
@@ -96,12 +100,9 @@ describe('Login Form component', () => {
       .spyOn(client.users, 'login')
       .mockResolvedValue(new User(client.axios, UserData));
 
-    await wrapper
-      .find('[data-testid="login-username"]')
-      .setValue(usernameOrEmail);
-    await wrapper.find('[data-testid="login-password"]').setValue(password);
-
-    await wrapper.find('[data-testid="login-submit"]').trigger('click');
+    await wrapper.find(UsernameInput).setValue(usernameOrEmail);
+    await wrapper.find(PasswordInput).setValue(password);
+    await wrapper.find(LoginButton).trigger('click');
     await flushPromises();
 
     expect(currentUser.displayName).toEqual(UserData.profile.name);
@@ -131,12 +132,9 @@ describe('Login Form component', () => {
       }),
     );
 
-    await wrapper
-      .find('[data-testid="login-username"]')
-      .setValue(usernameOrEmail);
-    await wrapper.find('[data-testid="login-password"]').setValue(password);
-
-    await wrapper.find('[data-testid="login-submit"]').trigger('click');
+    await wrapper.find(UsernameInput).setValue(usernameOrEmail);
+    await wrapper.find(PasswordInput).setValue(password);
+    await wrapper.find(LoginButton).trigger('click');
     await flushPromises();
 
     expect(currentUser.user).toBeNull();
@@ -154,22 +152,63 @@ describe('Login Form component', () => {
       },
     });
 
-    await wrapper.find('[data-testid="login-username"]').setValue('test');
-    await wrapper.find('[data-testid="login-password"]').setValue('test');
+    await wrapper.find(UsernameInput).setValue('test');
+    await wrapper.find(PasswordInput).setValue('test');
     wrapper.vm.reset(true);
     await flushPromises();
 
-    expect(
-      (
-        wrapper.find('[data-testid="login-username"]')
-          .element as HTMLInputElement
-      ).value,
-    ).toEqual('');
-    expect(
-      (
-        wrapper.find('[data-testid="login-password"]')
-          .element as HTMLInputElement
-      ).value,
-    ).toEqual('');
+    expect(wrapper.find<HTMLInputElement>(UsernameInput).element.value).toEqual(
+      '',
+    );
+    expect(wrapper.find<HTMLInputElement>(PasswordInput).element.value).toEqual(
+      '',
+    );
+  });
+
+  it('will redirect on successful login if "redirectTo" prop is set', async () => {
+    const location = new MockLocation();
+    const spy = jest
+      .spyOn(client.users, 'login')
+      .mockResolvedValue(new User(client.axios, UserData));
+    const wrapper = mount(LoginForm, {
+      props: {
+        redirectTo: '/profile',
+      },
+      global: {
+        plugins: [pinia, router],
+        provide: {
+          [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: location,
+        },
+      },
+    });
+
+    await wrapper.find(UsernameInput).setValue(UserData.username);
+    await wrapper.find(PasswordInput).setValue('S3cret!');
+    await wrapper.find(LoginButton).trigger('click');
+    await flushPromises();
+
+    expect(spy).toHaveBeenCalled();
+    expect(location.pathname).toEqual('/profile');
+  });
+
+  it('will prefill username if "username" prop is set', async () => {
+    const username = 'timmy3333';
+    const wrapper = mount(LoginForm, {
+      props: {
+        username,
+      },
+      global: {
+        plugins: [pinia, router],
+        provide: {
+          [ApiClientKey as symbol]: client,
+          [LocationKey as symbol]: location,
+        },
+      },
+    });
+
+    expect(wrapper.find<HTMLInputElement>(UsernameInput).element.value).toEqual(
+      username,
+    );
   });
 });
