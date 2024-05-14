@@ -1,4 +1,4 @@
-import { UserRole } from '@bottomtime/api';
+import { PasswordResetTokenStatus, UserRole } from '@bottomtime/api';
 
 import { ConflictException } from '@nestjs/common';
 
@@ -235,6 +235,58 @@ describe('User Class', () => {
         expect(compare(Password, data.passwordHash!)).resolves.toBe(true),
         expect(compare(Password, result!.passwordHash!)).resolves.toBe(true),
       ]);
+    });
+  });
+
+  describe('when validating a password reset token', () => {
+    const token = 'llen5RTYeaIf_emwsGb-B8BPVEbT4YsAbo5A580bsxo';
+
+    it('will return valid if the token is valid', () => {
+      const data = createTestUser({
+        ...TestUserData,
+        passwordResetToken: token,
+        passwordResetTokenExpiration: new Date(Date.now() + 20000),
+      });
+      const user = new User(Users, data);
+
+      expect(user.validatePasswordResetToken(token)).toBe(
+        PasswordResetTokenStatus.Valid,
+      );
+    });
+
+    it('will return invalid if the token is incorrect', () => {
+      const data = createTestUser({
+        ...TestUserData,
+        passwordResetToken: token,
+        passwordResetTokenExpiration: new Date(Date.now() + 20000),
+      });
+      const user = new User(Users, data);
+
+      expect(user.validatePasswordResetToken('nope')).toBe(
+        PasswordResetTokenStatus.Invalid,
+      );
+    });
+
+    it('wil return invalid if the user does not have a password reset token set', () => {
+      const data = createTestUser(TestUserData);
+      const user = new User(Users, data);
+
+      expect(user.validatePasswordResetToken('nope')).toBe(
+        PasswordResetTokenStatus.Invalid,
+      );
+    });
+
+    it('will return expired if the token is expired', () => {
+      const data = createTestUser({
+        ...TestUserData,
+        passwordResetToken: token,
+        passwordResetTokenExpiration: new Date(Date.now() - 20000),
+      });
+      const user = new User(Users, data);
+
+      expect(user.validatePasswordResetToken(token)).toBe(
+        PasswordResetTokenStatus.Expired,
+      );
     });
   });
 

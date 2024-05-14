@@ -29,6 +29,12 @@ export enum LogBookSharing {
   FriendsOnly = 'friends',
 }
 
+export enum PasswordResetTokenStatus {
+  Valid = 'valid',
+  Invalid = 'invalid',
+  Expired = 'expired',
+}
+
 const ListAvatarURLsResponseSchema = z.object({
   root: z.string(),
   sizes: z.record(z.nativeEnum(AvatarSize), z.string()),
@@ -200,4 +206,11 @@ export const SetProfileAvatarParamsSchema = z.union([
 ]);
 export type SetProfileAvatarParamsDTO = z.infer<
   typeof SetProfileAvatarParamsSchema
+>;
+
+export const ValidateResetPasswordTokenResponseSchema = z.object({
+  status: z.nativeEnum(PasswordResetTokenStatus),
+});
+export type ValidateResetPasswordTokenResponseDTO = z.infer<
+  typeof ValidateResetPasswordTokenResponseSchema
 >;

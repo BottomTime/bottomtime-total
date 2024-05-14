@@ -10,12 +10,14 @@
       <FormTextBox
         ref="usernameTextBox"
         v-model.trim="loginDetails.usernameOrEmail"
+        :autofocus="!username"
         control-id="username"
         :maxlength="50"
         :invalid="v$.usernameOrEmail.$error"
         test-id="login-username"
       />
     </FormField>
+
     <FormField
       control-id="password"
       label="Password"
@@ -26,6 +28,7 @@
       <FormTextBox
         ref="passwordTextBox"
         v-model="loginDetails.password"
+        :autofocus="!!username"
         control-id="password"
         :maxlength="50"
         :invalid="v$.password.$error"
@@ -33,6 +36,7 @@
         password
       />
     </FormField>
+
     <div class="flex flex-row justify-center gap-3 mt-2 mb-6">
       <FormButton
         type="primary"
@@ -96,7 +100,9 @@ import FormTextBox from '../common/form-text-box.vue';
 import NavLink from '../common/nav-link.vue';
 
 type LoginFormProps = {
+  redirectTo?: string;
   showCancel?: boolean;
+  username?: string;
 };
 
 type OAuthProvider = {
@@ -129,8 +135,11 @@ const location = useLocation();
 const oops = useOops();
 const toasts = useToasts();
 
+const props = withDefaults(defineProps<LoginFormProps>(), {
+  showCancel: true,
+});
 const loginDetails = reactive<LoginParamsDTO>({
-  usernameOrEmail: '',
+  usernameOrEmail: props.username || '',
   password: '',
 });
 const v$ = useVuelidate(
@@ -158,10 +167,6 @@ const LoginAttemptFailedToast: Toast = {
   type: ToastType.Error,
 };
 
-withDefaults(defineProps<LoginFormProps>(), {
-  showCancel: true,
-});
-
 /**
  * Resets the login form by clearing the text boxes.
  * @param fullForm
@@ -169,10 +174,12 @@ withDefaults(defineProps<LoginFormProps>(), {
  * Defaults to false.
  */
 function reset(fullForm = false): void {
-  if (fullForm) loginDetails.usernameOrEmail = '';
+  if (fullForm) loginDetails.usernameOrEmail = props.username || '';
   loginDetails.password = '';
   v$.value.$reset();
-  usernameTextBox.value?.focus();
+
+  if (props.username) passwordTextBox.value?.focus();
+  else usernameTextBox.value?.focus();
 }
 
 /**
@@ -213,13 +220,14 @@ async function login() {
     reset(true);
     emit('close');
     emit('login', user);
-    location.reload();
+
+    if (props.redirectTo) location.assign(props.redirectTo);
+    else location.reload();
   }
 }
 
 onMounted(() => {
-  reset(true);
-  focusUsername();
+  reset(!props.username);
 });
 
 defineExpose({ focusUsername, focusPassword, reset });

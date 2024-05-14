@@ -140,4 +140,48 @@ test.describe('Account and Profile Management', () => {
 
     await api.users.login(TestUser.username, newPassword);
   });
+
+  test('will allow user to reset a forgotten password', async ({
+    api,
+    auth,
+    db,
+    page,
+  }) => {
+    const username = 'bubbles7';
+    const newPassword = 'Sup3r__sTr0ng!!';
+    await api.users.createUser({
+      username,
+      email: 'bubbles@mail.org.com',
+      password: 'N0pe!!3333333',
+    });
+
+    // Uh oh! I've forgotten my password. I'll request a reset email...
+    await page.goto('/');
+    await auth.logout();
+    await page.getByTestId('login-button').click();
+    await page.getByRole('link', { name: 'Recover them here' }).click();
+    await page.waitForURL('**/resetPassword');
+
+    await page.getByLabel('Username or email:*').fill('Bubbles7');
+    await page.getByTestId('reset-password-submit').click();
+    await expect(page.getByTestId('email-sent-message')).toBeVisible();
+
+    // .... Email sent.... "check my Inbox"...
+    const token = await db.getPasswordResetToken(username);
+
+    // Click the link provided and fill in the form...
+    await page.goto(`/resetPassword?user=${username}&token=${token}`);
+    await page.getByLabel('New password:*').fill(newPassword);
+    await page.getByLabel('Confirm password:*').fill(newPassword);
+    await page.getByTestId('reset-password-submit').click();
+    await expect(page.getByTestId('login-form')).toBeVisible();
+
+    // Phew! Now I can login with my new password...
+    await page.getByTestId('login-username').fill(username);
+    await page.getByTestId('login-password').fill(newPassword);
+    await page.getByTestId('login-password').press('Enter');
+    await expect(page.getByTestId('user-menu-button')).toContainText(
+      'bubbles7',
+    );
+  });
 });

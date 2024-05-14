@@ -1,136 +1,145 @@
 <template>
   <PageTitle title="Reset Password" />
-  <div class="grid grid-cols-1 md:grid-cols-5">
-    <TransitionGroup name="fade" tag="div" class="md:col-start-2 md:col-span-3">
-      <FormBox
-        v-if="emailSent"
-        class="md:col-start-2 md:col-span-3 flex flex-row gap-6"
-      >
-        <span class="text-success">
-          <i class="fas fa-envelope fa-5x"></i>
-        </span>
-        <div>
-          <p class="font-bold text-lg text-success mb-6">
-            An email has been sent to the address associated with your account.
-          </p>
-          <p class="mb-6">
-            <strong>NOTE: </strong>It may take several minutes to arrive in your
-            inbox. If you don't receive an email, please check your spam folder
-            and, if you still cannot find the message, try refreshing this page
-            and requesting a new email.
-          </p>
-          <p>
-            If you continue to have trouble, please contact
-            <NavLink :to="adminEmail">support</NavLink> for help.
-          </p>
-        </div>
-      </FormBox>
 
-      <FormBox v-else class="md:col-start-2 md:col-span-3">
-        <p class="mb-6">
-          Enter your username or email address to reset your password. You will
-          be sent an email to the address associated with your account. It will
-          contain your username and a link to reset your password, if necessary.
-        </p>
+  <RequireAnon>
+    <div
+      v-if="state.isLoadingProfile"
+      class="text-center text-lg italic space-x-3 my-8"
+    >
+      <span>
+        <i class="fas fa-spinner fa-spin fa-lg"></i>
+      </span>
+      <span>Verifying token...</span>
+    </div>
 
-        <fieldset :disabled="isLoading">
-          <div class="flex flex-row gap-4 items-baseline">
-            <FormLabel
-              class="w-48 text-right"
-              for="username"
-              label="Username or email"
-            />
+    <ResetPassword
+      v-else-if="params.hasToken"
+      :is-loading="state.isResettingPassword"
+      :username="params.username"
+      :token="params.token"
+      :reset-state="state.resetState"
+      @reset-password="onResetPassword"
+    />
 
-            <div class="grow flex flex-col gap-2">
-              <FormTextBox
-                ref="usernameOrEmailInput"
-                v-model.trim="data.usernameOrEmail"
-                control-id="username"
-                :maxlength="50"
-                :invalid="v$.usernameOrEmail.$error"
-                autofocus
-              />
-              <span v-if="v$.usernameOrEmail.$error" class="text-danger">
-                {{ v$.usernameOrEmail.$errors[0]?.$message }}
-              </span>
-            </div>
-
-            <FormButton
-              class="w-40"
-              type="primary"
-              submit
-              test-id="reset-password-submit"
-              :is-loading="isLoading"
-              @click="onSubmit"
-            >
-              Send Recovery Email
-            </FormButton>
-          </div>
-        </fieldset>
-      </FormBox>
-    </TransitionGroup>
-  </div>
+    <RequestPasswordReset
+      v-else
+      :email-sent="state.emailSent"
+      :is-loading="state.isResettingPassword"
+      @request-email="onRequestEmail"
+    />
+  </RequireAnon>
 </template>
 
 <script setup lang="ts">
-import { useVuelidate } from '@vuelidate/core';
-import { helpers, required } from '@vuelidate/validators';
+import { PasswordResetTokenStatus } from '@bottomtime/api';
 
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
+import { useRoute } from 'vue-router';
 
-import FormBox from '../components/common/form-box.vue';
-import FormButton from '../components/common/form-button.vue';
-import FormLabel from '../components/common/form-label.vue';
-import FormTextBox from '../components/common/form-text-box.vue';
-import NavLink from '../components/common/nav-link.vue';
+import { useClient } from '../api-client';
 import PageTitle from '../components/common/page-title.vue';
-import { Config } from '../config';
+import RequireAnon from '../components/common/require-anon.vue';
+import RequestPasswordReset from '../components/users/request-password-reset.vue';
+import ResetPassword from '../components/users/reset-password.vue';
+import { useOops } from '../oops';
 
-const data = reactive<{ usernameOrEmail: string }>({
-  usernameOrEmail: '',
+interface ResetPasswordParams {
+  hasToken: boolean;
+  token: string;
+  username: string;
+}
+
+interface ResetPasswordViewState {
+  emailSent: boolean;
+  isLoadingProfile: boolean;
+  isResettingPassword: boolean;
+  resetState?: PasswordResetTokenStatus;
+}
+
+const client = useClient();
+const oops = useOops();
+const route = useRoute();
+
+const params = computed<ResetPasswordParams>(() => ({
+  hasToken:
+    typeof route.query.user === 'string' &&
+    typeof route.query.token === 'string',
+  token: typeof route.query.token === 'string' ? route.query.token : '',
+  username: typeof route.query.user === 'string' ? route.query.user : '',
+}));
+const state = reactive<ResetPasswordViewState>({
+  emailSent: false,
+  isLoadingProfile: params.value.hasToken,
+  isResettingPassword: false,
 });
-const usernameOrEmailInput = ref<InstanceType<typeof FormTextBox> | null>(null);
-const isLoading = ref(false);
-const emailSent = ref(false);
-const adminEmail = computed(() => `mailto:${Config.adminEmail}`);
 
-const v$ = useVuelidate(
-  {
-    usernameOrEmail: {
-      required: helpers.withMessage(
-        'Username or email is required to proceed',
-        required,
-      ),
+async function onRequestEmail(username: string): Promise<void> {
+  state.isResettingPassword = true;
+
+  await oops(
+    async () => {
+      await client.users.requestPasswordResetToken(username);
     },
-  },
-  data,
-);
+    {
+      [404]: () => {
+        // Unable to send the email because the user account does not exist. We'll pretend it did for security reasons.
+      },
+    },
+  );
 
-async function onSubmit(): Promise<void> {
-  const isValid = await v$.value.$validate();
-  if (!isValid) {
-    usernameOrEmailInput.value?.focus();
-    return;
-  }
-
-  isLoading.value = true;
-
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  data.usernameOrEmail = '';
-  v$.value.$reset();
-
-  emailSent.value = true;
-  isLoading.value = false;
+  state.emailSent = true;
+  state.isResettingPassword = false;
 }
+
+async function onResetPassword(newPassword: string): Promise<void> {
+  state.isResettingPassword = true;
+
+  await oops(
+    async () => {
+      const succeeded = await client.users.resetPasswordWithToken(
+        params.value.username,
+        params.value.token,
+        newPassword,
+      );
+
+      state.resetState = succeeded
+        ? PasswordResetTokenStatus.Valid
+        : PasswordResetTokenStatus.Invalid;
+    },
+    {
+      [404]: () => {
+        // User account does not exist... inidicate failure.
+        state.resetState = PasswordResetTokenStatus.Invalid;
+      },
+    },
+  );
+
+  state.isResettingPassword = false;
+}
+
+onMounted(async () => {
+  await oops(
+    async () => {
+      if (!params.value.hasToken) return;
+
+      const tokenStatus = await client.users.validatePasswordResetToken(
+        params.value.username,
+        params.value.token,
+      );
+
+      state.resetState =
+        tokenStatus === PasswordResetTokenStatus.Valid
+          ? undefined
+          : tokenStatus;
+    },
+    {
+      [404]: () => {
+        // Profile missing... indicate failure.
+        state.resetState = PasswordResetTokenStatus.Invalid;
+      },
+    },
+  );
+
+  state.isLoadingProfile = false;
+});
 </script>
-
-<style scoped>
-.fade-enter-active {
-  transition: all 0.75s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

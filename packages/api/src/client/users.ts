@@ -5,12 +5,15 @@ import {
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
+  PasswordResetTokenStatus,
   ProfileDTO,
   ProfileSchema,
   SearchProfilesResponseDTO,
   SearchProfilesResponseSchema,
   SearchUserProfilesParamsDTO,
+  SuccessFailResponseDTO,
   UserSchema,
+  ValidateResetPasswordTokenResponseDTO,
 } from '../types';
 import { User } from './user';
 import { UserProfile } from './user-profile';
@@ -69,20 +72,42 @@ export class UsersApiClient {
     return new User(this.apiClient, UserSchema.parse(data));
   }
 
-  // TODO: We need these endpoints on the backend first.
-  // async requestPasswordReset(usernameOrEmail: string): Promise<void> {
-  //   const url = `/api/users/${encodeURIComponent(
-  //     usernameOrEmail,
-  //   )}/resetPassword`;
-  // }
+  async requestPasswordResetToken(usernameOrEmail: string): Promise<void> {
+    await this.apiClient.post(
+      `/api/users/${usernameOrEmail}/requestPasswordReset`,
+    );
+  }
 
-  // async resetPasswordWithToken(
-  //   token: string,
-  //   newPassword: string,
-  // ): Promise<void> {
-  //   const url = `/api/users/resetPassword/${encodeURIComponent(token)}`;
-  //   await this.apiClient.post(url, { newPassword });
-  // }
+  async validatePasswordResetToken(
+    usernameOrEmail: string,
+    token: string,
+  ): Promise<PasswordResetTokenStatus> {
+    const { data } =
+      await this.apiClient.get<ValidateResetPasswordTokenResponseDTO>(
+        `/api/users/${usernameOrEmail}/resetPassword`,
+        {
+          params: { token },
+        },
+      );
+
+    return data.status;
+  }
+
+  async resetPasswordWithToken(
+    usernameOrEmail: string,
+    token: string,
+    newPassword: string,
+  ): Promise<boolean> {
+    const { data } = await this.apiClient.post<SuccessFailResponseDTO>(
+      `/api/users/${usernameOrEmail}/resetPassword`,
+      {
+        newPassword,
+        token,
+      },
+    );
+
+    return data.succeeded;
+  }
 
   async searchUsers(
     query: AdminSearchUsersParamsDTO,

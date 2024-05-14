@@ -6,6 +6,7 @@ import { UsersApiClient } from '../../src/client/users';
 import {
   AdminSearchUsersParamsDTO,
   CreateUserParamsDTO,
+  PasswordResetTokenStatus,
   SortOrder,
   UserRole,
   UsersSortBy,
@@ -120,6 +121,45 @@ describe('Users API client', () => {
       await expect(client.login('test', 'password')).rejects.toThrow(
         AxiosError,
       );
+    });
+  });
+
+  describe('when resetting a password', () => {
+    it('will request a password reset token', async () => {
+      scope
+        .post(`/api/users/${BasicUser.username}/requestPasswordReset`)
+        .reply(204);
+      await client.requestPasswordResetToken(BasicUser.username);
+      expect(scope.isDone()).toBe(true);
+    });
+
+    it('will validate a password reset token', async () => {
+      const token = 'abcd1234';
+      scope
+        .get(`/api/users/${BasicUser.username}/resetPassword`)
+        .query({ token })
+        .reply(200, { status: PasswordResetTokenStatus.Expired });
+
+      await expect(
+        client.validatePasswordResetToken(BasicUser.username, token),
+      ).resolves.toBe(PasswordResetTokenStatus.Expired);
+      expect(scope.isDone()).toBe(true);
+    });
+
+    it("will reset a user's password with a token", async () => {
+      const newPassword = 'new_password';
+      const token = 'tbTSqDIps0/QuDp9M1/2HJgrsa2TIN268+NRMKbw81U=';
+      scope
+        .post(`/api/users/${BasicUser.username}/resetPassword`, {
+          newPassword,
+          token,
+        })
+        .reply(200, { succeeded: true });
+
+      await expect(
+        client.resetPasswordWithToken(BasicUser.username, token, newPassword),
+      ).resolves.toBe(true);
+      expect(scope.isDone()).toBe(true);
     });
   });
 

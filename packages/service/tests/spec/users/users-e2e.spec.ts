@@ -2,6 +2,7 @@ import {
   CreateUserParamsDTO,
   DepthUnit,
   LogBookSharing,
+  PasswordResetTokenStatus,
   PressureUnit,
   TemperatureUnit,
   UpdateProfileParamsDTO,
@@ -754,6 +755,38 @@ describe('Users End-to-End Tests', () => {
       await request(server)
         .post(`${requestUrl('Not.A.User')}/resetPassword`)
         .send({ token: 'abcd1234' })
+        .expect(404);
+    });
+
+    it('will validate a password reset token', async () => {
+      const token = 'abcd1234';
+      regularUser.passwordResetToken = token;
+      regularUser.passwordResetTokenExpiration = new Date(Date.now() + 10000);
+      await Users.save(regularUser);
+
+      const { body } = await request(server)
+        .get(resetPasswordUrl)
+        .query({ token })
+        .expect(200);
+      expect(body).toEqual({ status: PasswordResetTokenStatus.Valid });
+    });
+
+    it('will return a 400 response if token is missing when validating password reset token', async () => {
+      const token = 'abcd1234';
+      regularUser.passwordResetToken = token;
+      regularUser.passwordResetTokenExpiration = new Date(Date.now() + 10000);
+      await Users.save(regularUser);
+      await request(server).get(resetPasswordUrl).expect(400);
+      await request(server)
+        .get(resetPasswordUrl)
+        .query({ token: '' })
+        .expect(400);
+    });
+
+    it('will return a 404 response if the requested user does not exist when validating password reset token', async () => {
+      await request(server)
+        .get(`${requestUrl('Not.A.User')}/resetPassword`)
+        .query({ token: 'abcd1234' })
         .expect(404);
     });
   });
