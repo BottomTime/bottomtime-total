@@ -1,4 +1,10 @@
-import { UserDTO, UserRole } from '@bottomtime/api';
+import {
+  PasswordResetTokenStatus,
+  SuccessFailResponseDTO,
+  UserDTO,
+  UserRole,
+  ValidateResetPasswordTokenResponseDTO,
+} from '@bottomtime/api';
 
 import { ConflictException, Logger } from '@nestjs/common';
 
@@ -226,6 +232,22 @@ export class User implements Express.User {
     await this.Users.save(this.data);
 
     return token;
+  }
+
+  validatePasswordResetToken(token: string): PasswordResetTokenStatus {
+    if (
+      !this.data.passwordResetToken ||
+      !this.data.passwordResetTokenExpiration ||
+      this.data.passwordResetToken !== token
+    ) {
+      return PasswordResetTokenStatus.Invalid;
+    }
+
+    if (this.data.passwordResetTokenExpiration < new Date()) {
+      return PasswordResetTokenStatus.Expired;
+    }
+
+    return PasswordResetTokenStatus.Valid;
   }
 
   async resetPassword(token: string, newPassword: string): Promise<boolean> {

@@ -13,6 +13,7 @@ import {
   UpdateProfileParamsSchema,
   UserSettingsDTO,
   UserSettingsSchema,
+  ValidateResetPasswordTokenResponseDTO,
   VerifyEmailParamsDTO,
   VerifyEmailParamsSchema,
 } from '@bottomtime/api';
@@ -27,8 +28,11 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
+
+import { z } from 'zod';
 
 import { AssertAuth } from '../auth';
 import { Config } from '../config';
@@ -739,6 +743,82 @@ export class UserController {
       resetPasswordUrl: resetPasswordUrl.toString(),
     });
     await this.emailService.sendMail({ to: [user.email!] }, title, emailBody);
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/resetPassword:
+   *   get:
+   *     summary: Validate Password Reset Token
+   *     operationId: validatePasswordResetToken
+   *     description: |
+   *       Validates a password reset token. Returns a success/fail response indicating whether the token is valid for the
+   *       indicated user.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - name: token
+   *         in: query
+   *         description: The password reset token.
+   *         required: true
+   *         schema:
+   *           type: string
+   *           example: 1234567890abcdef
+   *     responses:
+   *       "200":
+   *         description: |
+   *           The request suceeded and the response body will indicate whether the token is valid
+   *           (`succeeded: true`) or not (`succeeded: false`).
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - status
+   *               properties:
+   *                 status:
+   *                   title: Token Status
+   *                   description: |
+   *                     Inidicates the status of the provided reset token.
+   *                     * `valid` - The token is valid and can be used to reset the user's password.
+   *                     * `invalid` - The token is invalid or the user has not yet requested a password reset token.
+   *                     * `expired` - The token is correct but has expired and can no longer be used to reset the user's password.
+   *                   type: string
+   *                   enum:
+   *                     - valid
+   *                     - invalid
+   *                     - expired
+   *                   example: valid
+   *       "400":
+   *         description: |
+   *           The request failed because the token parameter was missing from the query string.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get('resetPassword')
+  @UseGuards(AssertTargetUser)
+  validatePasswordResetToken(
+    @TargetUser() user: User,
+    @Query('token', new ZodValidator(z.string().min(1))) token: string,
+  ): ValidateResetPasswordTokenResponseDTO {
+    return { status: user.validatePasswordResetToken(token) };
   }
 
   /**
