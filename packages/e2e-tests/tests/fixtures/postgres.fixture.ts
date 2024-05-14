@@ -1,6 +1,7 @@
 /* eslint-disable no-process-env */
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
@@ -34,6 +35,7 @@ export class PostgresFixture {
       username: 'admin',
       memberSince: MemberSince,
       name: 'Administrator',
+      logBookSharing: LogBookSharing.Private,
     },
     role: UserRole.Admin,
     settings: {
@@ -91,5 +93,24 @@ export class PostgresFixture {
         .filter(({ table }) => !ProtectedTables.has(table))
         .map(({ table }) => this.client.query(`DELETE FROM ${table}`)),
     );
+  }
+
+  async getPasswordResetToken(username: string): Promise<string> {
+    const result = await this.client.query<{
+      passwordResetToken: string | null;
+    }>(`SELECT "passwordResetToken" FROM users WHERE "usernameLowered" = $1`, [
+      username.toLowerCase(),
+    ]);
+
+    if (!result.rowCount) {
+      throw new Error(`User not found: ${username}`);
+    }
+
+    const { passwordResetToken } = result.rows[0];
+    if (!passwordResetToken) {
+      throw new Error(`Password reset token not found for user: ${username}`);
+    }
+
+    return passwordResetToken;
   }
 }
