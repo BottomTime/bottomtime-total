@@ -6,7 +6,6 @@ import {
   ChangeRoleParams,
   ChangeUsernameParamsDTO,
   ResetPasswordParams,
-  ResetPasswordWithTokenParamsDTO,
   SuccessFailResponseDTO,
   UserDTO,
   UserRole,

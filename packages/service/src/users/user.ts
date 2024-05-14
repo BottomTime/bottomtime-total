@@ -1,10 +1,4 @@
-import {
-  PasswordResetTokenStatus,
-  SuccessFailResponseDTO,
-  UserDTO,
-  UserRole,
-  ValidateResetPasswordTokenResponseDTO,
-} from '@bottomtime/api';
+import { PasswordResetTokenStatus, UserDTO, UserRole } from '@bottomtime/api';
 
 import { ConflictException, Logger } from '@nestjs/common';
 

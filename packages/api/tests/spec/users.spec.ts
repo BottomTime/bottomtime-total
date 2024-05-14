@@ -6,6 +6,7 @@ import { UsersApiClient } from '../../src/client/users';
 import {
   AdminSearchUsersParamsDTO,
   CreateUserParamsDTO,
+  PasswordResetTokenStatus,
   SortOrder,
   UserRole,
   UsersSortBy,
@@ -129,6 +130,19 @@ describe('Users API client', () => {
         .post(`/api/users/${BasicUser.username}/requestPasswordReset`)
         .reply(204);
       await client.requestPasswordResetToken(BasicUser.username);
+      expect(scope.isDone()).toBe(true);
+    });
+
+    it('will validate a password reset token', async () => {
+      const token = 'abcd1234';
+      scope
+        .get(`/api/users/${BasicUser.username}/resetPassword`)
+        .query({ token })
+        .reply(200, { status: PasswordResetTokenStatus.Expired });
+
+      await expect(
+        client.validatePasswordResetToken(BasicUser.username, token),
+      ).resolves.toBe(PasswordResetTokenStatus.Expired);
       expect(scope.isDone()).toBe(true);
     });
 

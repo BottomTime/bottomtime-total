@@ -5,6 +5,7 @@ import {
   AdminSearchUsersResponseSchema,
   CreateUserParamsDTO,
   CurrentUserSchema,
+  PasswordResetTokenStatus,
   ProfileDTO,
   ProfileSchema,
   SearchProfilesResponseDTO,
@@ -12,6 +13,7 @@ import {
   SearchUserProfilesParamsDTO,
   SuccessFailResponseDTO,
   UserSchema,
+  ValidateResetPasswordTokenResponseDTO,
 } from '../types';
 import { User } from './user';
 import { UserProfile } from './user-profile';
@@ -74,6 +76,21 @@ export class UsersApiClient {
     await this.apiClient.post(
       `/api/users/${usernameOrEmail}/requestPasswordReset`,
     );
+  }
+
+  async validatePasswordResetToken(
+    usernameOrEmail: string,
+    token: string,
+  ): Promise<PasswordResetTokenStatus> {
+    const { data } =
+      await this.apiClient.get<ValidateResetPasswordTokenResponseDTO>(
+        `/api/users/${usernameOrEmail}/resetPassword`,
+        {
+          params: { token },
+        },
+      );
+
+    return data.status;
   }
 
   async resetPasswordWithToken(
