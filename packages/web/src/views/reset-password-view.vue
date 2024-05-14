@@ -69,7 +69,7 @@ const params = computed<ResetPasswordParams>(() => ({
 }));
 const state = reactive<ResetPasswordViewState>({
   emailSent: false,
-  isLoadingProfile: true,
+  isLoadingProfile: params.value.hasToken,
   isResettingPassword: false,
 });
 
@@ -94,11 +94,8 @@ async function onRequestEmail(username: string): Promise<void> {
 async function onResetPassword(newPassword: string): Promise<void> {
   state.isResettingPassword = true;
 
-  await new Promise((r) => setTimeout(r, 3000));
-
   await oops(
     async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       const succeeded = await client.users.resetPasswordWithToken(
         params.value.username,
         params.value.token,

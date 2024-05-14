@@ -6,6 +6,7 @@
       <div
         v-if="resetState === PasswordResetTokenStatus.Valid"
         class="space-y-6"
+        data-testid="reset-success-message"
       >
         <div class="flex gap-4 text-success text-xl items-start justify-center">
           <div class="mt-3">
@@ -27,6 +28,7 @@
           resetState === PasswordResetTokenStatus.Expired
         "
         class="space-y-6"
+        data-testid="reset-failed-message"
       >
         <div class="flex gap-4 text-danger text-xl items-start justify-center">
           <div class="mt-3">
@@ -56,7 +58,12 @@
         </div>
       </div>
 
-      <form v-else class="space-y-6" @submit.prevent="onSubmit">
+      <form
+        v-else
+        class="space-y-6"
+        data-testid="reset-password-form"
+        @submit.prevent="onSubmit"
+      >
         <p class="text-lg text-center font-bold text-success space-x-3">
           <span>
             <i class="fa-regular fa-circle-check fa-lg"></i>
@@ -78,6 +85,7 @@
           >
             <FormTextBox
               v-model.trim="state.newPassword"
+              test-id="password"
               control-id="password"
               type="password"
               :maxlength="50"
@@ -97,6 +105,7 @@
             <FormTextBox
               v-model.trim="state.confirmPassword"
               control-id="confirmPassword"
+              test-id="confirm-password"
               type="password"
               :maxlength="50"
               :invalid="v$.confirmPassword.$error"
@@ -110,6 +119,7 @@
             <FormButton
               type="primary"
               submit
+              control-id="resetPassword"
               test-id="reset-password-submit"
               :is-loading="isLoading"
               @click="onSubmit"
@@ -144,7 +154,7 @@ import LoginForm from './login-form.vue';
 import PasswordRequirements from './password-requirements.vue';
 
 interface ResetPasswordProps {
-  isLoading: boolean;
+  isLoading?: boolean;
   resetState?: PasswordResetTokenStatus;
   token: string;
   username: string;
@@ -155,7 +165,7 @@ interface ResetPasswordState {
   confirmPassword: string;
 }
 
-defineProps<ResetPasswordProps>();
+withDefaults(defineProps<ResetPasswordProps>(), { isLoading: false });
 const emit = defineEmits<{
   (e: 'reset-password', newPassword: string): void;
 }>();

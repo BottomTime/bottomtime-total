@@ -21,7 +21,12 @@
       </div>
     </div>
   </ConfirmDialog>
-  <FormBox v-if="currentUser.user" class="flex gap-3">
+
+  <FormBox
+    v-if="currentUser.user"
+    class="flex gap-3"
+    data-testid="auth-content"
+  >
     <span class="mt-3">
       <i class="fa-solid fa-circle-exclamation fa-3x"></i>
     </span>
@@ -39,7 +44,14 @@
 
       <p>
         Alternatively, you can
-        <FormButton size="lg" type="link" @click="onLogout">log out</FormButton>
+        <FormButton
+          size="lg"
+          type="link"
+          test-id="logout-link"
+          @click="onLogout"
+        >
+          log out
+        </FormButton>
         if you really mean to view this page.
       </p>
     </div>
@@ -58,9 +70,14 @@ import FormBox from './form-box.vue';
 import FormButton from './form-button.vue';
 import NavLink from './nav-link.vue';
 
+interface RequireAnonProps {
+  redirectTo?: string;
+}
+
 const currentUser = useCurrentUser();
 const location = useLocation();
 
+const props = defineProps<RequireAnonProps>();
 const showConfirmLogout = ref(false);
 
 function onLogout() {
@@ -73,7 +90,9 @@ function onCancelLogout() {
 
 function onConfirmLogout() {
   location.assign(
-    `/api/auth/logout?redirectTo=${encodeURIComponent('/resetPassword')}`,
+    `/api/auth/logout?redirectTo=${encodeURIComponent(
+      props.redirectTo || location.pathname,
+    )}`,
   );
 }
 </script>

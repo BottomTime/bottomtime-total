@@ -7,6 +7,7 @@
     <FormBox
       v-if="emailSent"
       class="lg:col-start-2 lg:col-span-3 flex flex-row gap-6"
+      data-testid="email-sent-message"
     >
       <span class="text-success">
         <i class="fas fa-envelope fa-5x"></i>
@@ -48,9 +49,9 @@
             required
           >
             <FormTextBox
-              ref="usernameOrEmailInput"
               v-model.trim="data.usernameOrEmail"
               control-id="username"
+              test-id="username"
               :maxlength="50"
               :invalid="v$.usernameOrEmail.$error"
               autofocus
@@ -61,6 +62,7 @@
             <FormButton
               type="primary"
               submit
+              control-id="resetPassword"
               test-id="reset-password-submit"
               :is-loading="isLoading"
               @click="onSubmit"
@@ -75,6 +77,8 @@
 </template>
 
 <script lang="ts" setup>
+import { EmailSchema, UsernameSchema } from '@bottomtime/api';
+
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 
@@ -88,11 +92,20 @@ import FormTextBox from '../common/form-text-box.vue';
 import NavLink from '../common/nav-link.vue';
 
 interface RequestPasswordResetProps {
-  emailSent: boolean;
-  isLoading: boolean;
+  emailSent?: boolean;
+  isLoading?: boolean;
 }
 
-defineProps<RequestPasswordResetProps>();
+function validateUsernameOrEmail(value: string): boolean {
+  const { success: emailValid } = EmailSchema.safeParse(value);
+  const { success: usernameValid } = UsernameSchema.safeParse(value);
+  return emailValid || usernameValid;
+}
+
+withDefaults(defineProps<RequestPasswordResetProps>(), {
+  emailSent: false,
+  isLoading: false,
+});
 const emit = defineEmits<{
   (e: 'request-email', usernameOrEmail: string): void;
 }>();
@@ -107,6 +120,10 @@ const v$ = useVuelidate(
       required: helpers.withMessage(
         'Username or email is required to proceed',
         required,
+      ),
+      valid: helpers.withMessage(
+        'Must be a valid username or email address',
+        validateUsernameOrEmail,
       ),
     },
   },
