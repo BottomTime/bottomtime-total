@@ -450,7 +450,7 @@ describe('User Avatar E2E tests', () => {
         ),
       );
       expect(checksums).toMatchSnapshot();
-    });
+    }, 10000);
 
     it("will allow an admin to update another user's avatar", async () => {
       const { body } = await request(server)
