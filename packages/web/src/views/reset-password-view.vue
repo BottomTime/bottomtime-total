@@ -2,11 +2,21 @@
   <PageTitle title="Reset Password" />
 
   <RequireAnon>
+    <div
+      v-if="state.isLoadingProfile"
+      class="text-center text-lg italic space-x-3 my-8"
+    >
+      <span>
+        <i class="fas fa-spinner fa-spin fa-lg"></i>
+      </span>
+      <span>Verifying token...</span>
+    </div>
+
     <ResetPassword
-      v-if="state.hasToken"
-      :is-loading="state.isLoading"
-      :username="state.username"
-      :token="state.token"
+      v-else-if="params.hasToken"
+      :is-loading="state.isResettingPassword"
+      :username="params.username"
+      :token="params.token"
       :reset-state="state.resetState"
       @reset-password="onResetPassword"
     />
@@ -14,14 +24,16 @@
     <RequestPasswordReset
       v-else
       :email-sent="state.emailSent"
-      :is-loading="state.isLoading"
+      :is-loading="state.isResettingPassword"
       @request-email="onRequestEmail"
     />
   </RequireAnon>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { PasswordResetTokenStatus } from '@bottomtime/api';
+
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -31,32 +43,38 @@ import RequestPasswordReset from '../components/users/request-password-reset.vue
 import ResetPassword from '../components/users/reset-password.vue';
 import { useOops } from '../oops';
 
-interface ResetPasswordViewState {
-  emailSent: boolean;
+interface ResetPasswordParams {
   hasToken: boolean;
-  isLoading: boolean;
-  resetState: 'waiting' | 'success' | 'failed';
   token: string;
   username: string;
+}
+
+interface ResetPasswordViewState {
+  emailSent: boolean;
+  isLoadingProfile: boolean;
+  isResettingPassword: boolean;
+  resetState?: PasswordResetTokenStatus;
 }
 
 const client = useClient();
 const oops = useOops();
 const route = useRoute();
 
-const state = reactive<ResetPasswordViewState>({
-  emailSent: false,
+const params = computed<ResetPasswordParams>(() => ({
   hasToken:
     typeof route.query.user === 'string' &&
     typeof route.query.token === 'string',
-  isLoading: false,
-  resetState: 'waiting',
   token: typeof route.query.token === 'string' ? route.query.token : '',
   username: typeof route.query.user === 'string' ? route.query.user : '',
+}));
+const state = reactive<ResetPasswordViewState>({
+  emailSent: false,
+  isLoadingProfile: true,
+  isResettingPassword: false,
 });
 
 async function onRequestEmail(username: string): Promise<void> {
-  state.isLoading = true;
+  state.isResettingPassword = true;
 
   await oops(
     async () => {
@@ -70,32 +88,61 @@ async function onRequestEmail(username: string): Promise<void> {
   );
 
   state.emailSent = true;
-  state.isLoading = false;
+  state.isResettingPassword = false;
 }
 
 async function onResetPassword(newPassword: string): Promise<void> {
-  state.isLoading = true;
+  state.isResettingPassword = true;
+
+  await new Promise((r) => setTimeout(r, 3000));
 
   await oops(
     async () => {
-      // const succeeded = await client.users.resetPasswordWithToken(
-      //   state.username,
-      //   state.token,
-      //   newPassword,
-      // );
-      const succeeded = false;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const succeeded = await client.users.resetPasswordWithToken(
+        params.value.username,
+        params.value.token,
+        newPassword,
+      );
 
-      // TODO: WTF? Handle succeeded... token is invalid or expired.
-      state.resetState = succeeded ? 'success' : 'failed';
+      state.resetState = succeeded
+        ? PasswordResetTokenStatus.Valid
+        : PasswordResetTokenStatus.Invalid;
     },
     {
       [404]: () => {
         // User account does not exist... inidicate failure.
-        state.resetState = 'failed';
+        state.resetState = PasswordResetTokenStatus.Invalid;
       },
     },
   );
 
-  state.isLoading = false;
+  state.isResettingPassword = false;
 }
+
+onMounted(async () => {
+  await oops(
+    async () => {
+      if (!params.value.hasToken) return;
+
+      const tokenStatus = await client.users.validatePasswordResetToken(
+        params.value.username,
+        params.value.token,
+      );
+
+      state.resetState =
+        tokenStatus === PasswordResetTokenStatus.Valid
+          ? undefined
+          : tokenStatus;
+    },
+    {
+      [404]: () => {
+        // Profile missing... indicate failure.
+        state.resetState = PasswordResetTokenStatus.Invalid;
+      },
+    },
+  );
+
+  state.isLoadingProfile = false;
+});
 </script>

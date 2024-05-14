@@ -9,7 +9,6 @@ import cookieParser from 'cookie-parser';
 import { NextFunction, Request, Response } from 'express';
 import useragent from 'express-useragent';
 import helmet from 'helmet';
-import path from 'path';
 import requestStats from 'request-stats';
 
 import { AppModule, ServerDependencies } from './app.module';
@@ -66,10 +65,6 @@ export async function createApp(
 
     next();
   });
-
-  // Enable Pug as view engine for rendering web pages
-  app.setBaseViewsDir(path.resolve(__dirname, '../assets/templates'));
-  app.setViewEngine('pug');
 
   // Add JWT authentication
   app.useGlobalGuards(new JwtOrAnonAuthGuard());

@@ -100,6 +100,7 @@ import FormTextBox from '../common/form-text-box.vue';
 import NavLink from '../common/nav-link.vue';
 
 type LoginFormProps = {
+  redirectTo?: string;
   showCancel?: boolean;
   username?: string;
 };
@@ -219,7 +220,9 @@ async function login() {
     reset(true);
     emit('close');
     emit('login', user);
-    location.reload();
+
+    if (props.redirectTo) location.assign(props.redirectTo);
+    else location.reload();
   }
 }
 
