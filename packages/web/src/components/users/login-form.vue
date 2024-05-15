@@ -115,17 +115,17 @@ const oAuthProviders: Readonly<OAuthProvider[]> = [
   {
     name: 'Google',
     url: '/api/auth/google',
-    icon: 'fab fa-google',
+    icon: 'fa-brands fa-google',
   },
   {
     name: 'Discord',
     url: '/api/auth/discord',
-    icon: 'fab fa-discord',
+    icon: 'fa-brands fa-discord',
   },
   {
     name: 'Github',
     url: '/api/auth/github',
-    icon: 'fab fa-github',
+    icon: 'fa-brands fa-github',
   },
 ];
 

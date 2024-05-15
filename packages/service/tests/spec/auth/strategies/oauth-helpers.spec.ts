@@ -39,6 +39,7 @@ describe('OAuth helpers', () => {
       provider: Provider,
       providerId: ProviderId,
       username: 'mike1234',
+      email: 'mikey@email.com',
     };
 
     describe('when current user is not authenticated', () => {

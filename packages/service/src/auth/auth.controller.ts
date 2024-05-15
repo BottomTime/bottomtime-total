@@ -1,25 +1,36 @@
+import { CurrentUserDTO, SuccessFailResponseDTO } from '@bottomtime/api';
+
 import {
   Controller,
   Get,
+  HttpCode,
   Inject,
   Post,
   Redirect,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CurrentUserDTO, SuccessFailResponseDTO } from '@bottomtime/api';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser } from './current-user';
-import { User } from '../users/user';
-import { Response } from 'express';
+
+import { Request, Response } from 'express';
+import passport from 'passport';
+
 import { Config } from '../config';
-import { GoogleAuthGuard } from './strategies/google.strategy';
+import { User } from '../users/user';
+import { AuthService } from './auth.service';
+import { CurrentUser } from './current-user';
+import { AssertAuth } from './guards/assert-auth.guard';
+import { OAuthService } from './oauth.service';
 import { GithubAuthGuard } from './strategies/github.strategy';
+import { GoogleAuthGuard } from './strategies/google.strategy';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
+  constructor(
+    @Inject(AuthService) private readonly authService: AuthService,
+    @Inject(OAuthService) private readonly oauth: OAuthService,
+  ) {}
 
   /**
    * @openapi
@@ -275,7 +286,23 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<void> {
     await this.authService.issueSessionCookie(user, res);
+    await user.updateLastLogin();
   }
+
+  // TODO: Figure out how to do this in Nest.js land.
+  // @Post('google/authorize')
+  // @UseGuards(AssertAuth)
+  // @HttpCode(204)
+  // async linkGoogleAccount(@CurrentUser() user: User) {
+  //   await this.oauth.linkOAuthUser(user.id, 'google', '12345');
+  // }
+
+  // @Post('google/unauthorize')
+  // @UseGuards(AssertAuth)
+  // @HttpCode(204)
+  // async unlinkGoogleAccount(@CurrentUser() user: User): Promise<void> {
+  //   await this.oauth.unlinkOAuthUser(user.id, 'google');
+  // }
 
   /**
    * @openapi

@@ -140,6 +140,18 @@ describe('OAuth Service', () => {
     ).rejects.toThrow(ConflictException);
   });
 
+  it('will throw a ConflictException when linking a user to an OAuth provider when that user already has an existing link to the provider', async () => {
+    await OAuth.save({
+      id: 'dc1f8686-50d1-42b7-86f4-8b7a7247e230',
+      provider: Provider,
+      providerId: 'abra-cadabra',
+      user: userData,
+    });
+    await expect(
+      service.linkOAuthUser(userData.id, Provider, ProviderId),
+    ).rejects.toThrow(ConflictException);
+  });
+
   it('will unlink an OAuth provider from a user', async () => {
     await OAuth.save({
       id: '85d832a8-a6f2-404c-8373-6882b99842a8',
@@ -147,30 +159,17 @@ describe('OAuth Service', () => {
       providerId: ProviderId,
       user: userData,
     });
-    await service.unlinkOAuthUser(userData.id, Provider, ProviderId);
+    await service.unlinkOAuthUser(userData.id, Provider);
     await expect(
       OAuth.findOneBy({ provider: Provider, providerId: ProviderId }),
     ).resolves.toBeNull();
   });
 
   it('will fail silently when unlinking a user from an OAuth provider when the connection does not exist', async () => {
-    await service.unlinkOAuthUser(userData.id, Provider, ProviderId);
+    await service.unlinkOAuthUser(userData.id, Provider);
     await expect(
       OAuth.findOneBy({ provider: Provider, providerId: ProviderId }),
     ).resolves.toBeNull();
-  });
-
-  it('will fail silently if the OAuth account is linked to a different user', async () => {
-    const otherUser = createTestUser();
-    await Users.save(otherUser);
-    await OAuth.save({
-      id: '60e317d5-57e2-4e2c-8c3d-5c0182dc5171',
-      provider: Provider,
-      providerId: ProviderId,
-      user: otherUser,
-    });
-    await service.unlinkOAuthUser(userData.id, Provider, ProviderId);
-    await OAuth.findOneByOrFail({ provider: Provider, providerId: ProviderId });
   });
 
   it('will create a new account with minimal properties', async () => {

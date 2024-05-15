@@ -73,10 +73,13 @@ export class OAuthService {
     provider: string,
     providerId: string,
   ): Promise<void> {
-    const existing = await this.getOAuthUser(provider, providerId);
-    if (existing) {
+    const conflict = await this.oauth.existsBy([
+      { provider, providerId },
+      { user: { id: userId }, provider },
+    ]);
+    if (conflict) {
       throw new ConflictException(
-        `OAuth provider "${provider}" with ID "${providerId}" is already linked to a user account.`,
+        `OAuth provider "${provider}" with ID "${providerId}" is already linked to a user account or your account already has an existing link to the provider.`,
       );
     }
 
@@ -89,12 +92,8 @@ export class OAuthService {
     await this.oauth.save(oauth);
   }
 
-  async unlinkOAuthUser(
-    userId: string,
-    provider: string,
-    providerId: string,
-  ): Promise<void> {
-    await this.oauth.delete({ provider, providerId, user: { id: userId } });
+  async unlinkOAuthUser(userId: string, provider: string): Promise<void> {
+    await this.oauth.delete({ provider, user: { id: userId } });
   }
 
   async isUsernameTaken(username: string): Promise<boolean> {
