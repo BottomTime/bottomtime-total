@@ -1,9 +1,18 @@
+import {
+  DepthUnit,
+  LogBookSharing,
+  PressureUnit,
+  TemperatureUnit,
+  UserRole,
+  WeightUnit,
+} from '@bottomtime/api';
+
 import { ConflictException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 
+import { OAuthService } from '../../../src/auth/oauth.service';
 import { UserEntity, UserOAuthEntity } from '../../../src/data';
-import { OAuthService } from '../../../src/users/oauth.service';
 import { User } from '../../../src/users/user';
 import { dataSource } from '../../data-source';
 import { createTestUser } from '../../utils/create-test-user';
@@ -162,5 +171,110 @@ describe('OAuth Service', () => {
     });
     await service.unlinkOAuthUser(userData.id, Provider, ProviderId);
     await OAuth.findOneByOrFail({ provider: Provider, providerId: ProviderId });
+  });
+
+  it('will create a new account with minimal properties', async () => {
+    const user = await service.createAccountWithOAuthLink({
+      provider: Provider,
+      providerId: ProviderId,
+      username: 'shmoogleUser',
+    });
+    expect(user).toBeInstanceOf(User);
+    expect(user.username).toBe('shmoogleUser');
+    expect(user.hasPassword).toBe(false);
+    expect(user.isLockedOut).toBe(false);
+
+    const data = await Users.findOneByOrFail({ id: user.id });
+    expect(user.toJSON()).toEqual(new User(Users, data).toJSON());
+  });
+
+  it('will create a new account with all properties provided', async () => {
+    const user = await service.createAccountWithOAuthLink({
+      provider: Provider,
+      providerId: ProviderId,
+      username: 'shmoogleUser',
+      avatar: 'https://example.com/avatar.jpg',
+      email: 'shmoogler_23@Email.org',
+      password: 'Shmoogle123!',
+      profile: {
+        bio: 'I am a Shmoogle user',
+        experienceLevel: 'Advanced',
+        location: 'Shmoogleville',
+        logBookSharing: LogBookSharing.Public,
+        name: 'Shmoogle User',
+        startedDiving: '2010-01-01',
+      },
+      settings: {
+        depthUnit: DepthUnit.Feet,
+        pressureUnit: PressureUnit.PSI,
+        temperatureUnit: TemperatureUnit.Fahrenheit,
+        weightUnit: WeightUnit.Pounds,
+      },
+      role: UserRole.Admin,
+    });
+    expect(user).toBeInstanceOf(User);
+    expect(user.username).toBe('shmoogleUser');
+    expect(user.email).toBe('shmoogler_23@Email.org');
+    expect(user.hasPassword).toBe(true);
+    expect(user.role).toBe(UserRole.Admin);
+    expect(user.isLockedOut).toBe(false);
+    expect(user.profile.avatar).toBe('https://example.com/avatar.jpg');
+    expect(user.profile.bio).toBe('I am a Shmoogle user');
+    expect(user.profile.experienceLevel).toBe('Advanced');
+    expect(user.profile.location).toBe('Shmoogleville');
+    expect(user.profile.logBookSharing).toBe(LogBookSharing.Public);
+    expect(user.profile.name).toBe('Shmoogle User');
+    expect(user.profile.startedDiving).toBe('2010-01-01');
+    expect(user.settings.depthUnit).toBe(DepthUnit.Feet);
+    expect(user.settings.pressureUnit).toBe(PressureUnit.PSI);
+    expect(user.settings.temperatureUnit).toBe(TemperatureUnit.Fahrenheit);
+    expect(user.settings.weightUnit).toBe(WeightUnit.Pounds);
+
+    const data = await Users.findOneByOrFail({ id: user.id });
+    expect(user.toJSON()).toEqual(new User(Users, data).toJSON());
+  });
+
+  it('will determine if a username is taken', async () => {
+    const username = 'Mikey_23';
+    const user = createTestUser({
+      username,
+      usernameLowered: username.toLowerCase(),
+    });
+    await Users.save(user);
+    await expect(service.isUsernameTaken(username.toUpperCase())).resolves.toBe(
+      true,
+    );
+  });
+
+  it('will determine if a username is not taken', async () => {
+    const username = 'Mikey_23';
+    const user = createTestUser({
+      username,
+      usernameLowered: username.toLowerCase(),
+    });
+    await Users.save(user);
+    await expect(service.isUsernameTaken('no_such_user')).resolves.toBe(false);
+  });
+
+  it('will determine if an email is taken', async () => {
+    const email = 'EmailGuy48@email.org';
+    const user = createTestUser({
+      email,
+      emailLowered: email.toLowerCase(),
+    });
+    await Users.save(user);
+    await expect(service.isEmailTaken(email.toUpperCase())).resolves.toBe(true);
+  });
+
+  it('will determine if an email is not taken', async () => {
+    const email = 'EmailGuy48@email.org';
+    const user = createTestUser({
+      email,
+      emailLowered: email.toLowerCase(),
+    });
+    await Users.save(user);
+    await expect(service.isEmailTaken('no_such_email@gmail.com')).resolves.toBe(
+      false,
+    );
   });
 });

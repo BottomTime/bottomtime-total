@@ -1,0 +1,1 @@
+describe('Google Auth Strategy', () => {});
