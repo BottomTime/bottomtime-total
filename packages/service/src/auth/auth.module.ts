@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity, UserOAuthEntity } from '../data';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { GithubController } from './github.controller';
+import { GoogleController } from './google.controller';
 import { OAuthService } from './oauth.service';
 import { AnonymousStrategy } from './strategies/anon.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -22,7 +24,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtStrategy,
     AnonymousStrategy,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, GoogleController, GithubController],
   exports: [AuthService, OAuthService, JwtStrategy, AnonymousStrategy],
 })
 export class AuthModule {}
