@@ -7,7 +7,7 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
-import { User } from './user';
+import { User } from '../auth/user';
 import { UsersService } from './users.service';
 
 @Injectable()

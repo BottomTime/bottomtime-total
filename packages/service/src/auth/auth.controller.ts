@@ -6,10 +6,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 
 import { Config } from '../config';
-import { User } from '../users/user';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user';
 import { OAuthService } from './oauth.service';
+import { User } from './user';
 
 @Controller('api/auth')
 export class AuthController {
@@ -55,6 +55,11 @@ export class AuthController {
           ...user.toJSON(),
         }
       : { anonymous: true };
+  }
+
+  @Get('oauth/:username')
+  async getOAuthConnectionsForUser(): Promise<string[]> {
+    return [];
   }
 
   /**

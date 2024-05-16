@@ -35,12 +35,12 @@ import {
 import { z } from 'zod';
 
 import { AssertAuth } from '../auth';
+import { User } from '../auth/user';
 import { Config } from '../config';
 import { EmailService, EmailType } from '../email';
 import { ZodValidator } from '../zod-validator';
 import { AssertAccountOwner } from './assert-account-owner.guard';
 import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
-import { User } from './user';
 import { UsersService } from './users.service';
 
 @Controller('api/users/:username')

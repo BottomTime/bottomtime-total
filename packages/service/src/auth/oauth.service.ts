@@ -17,7 +17,7 @@ import { v4 as uuid } from 'uuid';
 
 import { Config } from '../config';
 import { UserEntity, UserOAuthEntity } from '../data';
-import { User } from '../users/user';
+import { User } from './user';
 
 export type OAuthAccount = {
   provider: string;

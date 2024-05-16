@@ -99,7 +99,7 @@
         </div>
 
         <span v-else data-testid="email-value">
-          {{ user.email }}
+          {{ user.email || 'No email address set' }}
         </span>
       </div>
 

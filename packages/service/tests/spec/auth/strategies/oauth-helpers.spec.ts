@@ -113,16 +113,20 @@ describe('OAuth helpers', () => {
     });
 
     describe('when current user is authenticated', () => {
-      it('will return the current user if the linked account matches', async () => {
+      it('will link user account to provider account and return the user', async () => {
         const expected = new User(Users, user);
-        const spy = jest
+        const getSpy = jest
           .spyOn(service, 'getOAuthUser')
           .mockResolvedValue(expected);
+        const linkSpy = jest
+          .spyOn(service, 'linkOAuthUser')
+          .mockResolvedValue();
 
         const actual = await verifyOAuth(service, options, expected);
 
         expect(actual).toBe(expected);
-        expect(spy).toHaveBeenCalledWith(Provider, ProviderId);
+        expect(getSpy).toHaveBeenCalledWith(Provider, ProviderId);
+        expect(linkSpy).toHaveBeenCalledWith(expected.id, Provider, ProviderId);
       });
 
       it('will throw an UnauthorizedException if the linked account does not match', async () => {

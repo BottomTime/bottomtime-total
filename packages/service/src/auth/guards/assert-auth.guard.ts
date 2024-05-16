@@ -5,9 +5,11 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { User } from '../../users/user';
+
+import { User } from '../user';
 
 @Injectable()
 export class AssertAuth implements CanActivate {

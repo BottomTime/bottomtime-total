@@ -9,8 +9,8 @@ import {
 
 import { Repository } from 'typeorm';
 
+import { Profile, UpdateProfileOptions } from '../../../src/auth/profile';
 import { UserEntity } from '../../../src/data';
-import { Profile, UpdateProfileOptions } from '../../../src/users/profile';
 import { dataSource } from '../../data-source';
 
 const TestUserData: UserEntity = {

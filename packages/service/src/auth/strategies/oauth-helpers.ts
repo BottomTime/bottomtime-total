@@ -2,8 +2,8 @@ import { UnauthorizedException } from '@nestjs/common';
 
 import { randomBytes } from 'crypto';
 
-import { User } from '../../users';
 import { CreateLinkedAccountOptions, OAuthService } from '../oauth.service';
+import { User } from '../user';
 
 export function generateUsername(provider: string): string {
   const suffix = randomBytes(6).toString('base64url');
@@ -11,11 +11,18 @@ export function generateUsername(provider: string): string {
 }
 
 async function verifyOAuthForAuthenticatedUser(
+  oauth: OAuthService,
+  profileOptions: CreateLinkedAccountOptions,
   currentUser: User,
   oauthUser?: User,
 ): Promise<User> {
   if (oauthUser) {
     if (currentUser.id === oauthUser.id) {
+      await oauth.linkOAuthUser(
+        oauthUser.id,
+        profileOptions.provider,
+        profileOptions.providerId,
+      );
       return currentUser;
     } else {
       throw new UnauthorizedException(
@@ -58,6 +65,11 @@ export async function verifyOAuth(
   );
 
   return currentUser
-    ? await verifyOAuthForAuthenticatedUser(currentUser, oauthUser)
+    ? await verifyOAuthForAuthenticatedUser(
+        oauth,
+        profileOptions,
+        currentUser,
+        oauthUser,
+      )
     : await verifyOAuthForUnauthenticatedUser(oauth, profileOptions, oauthUser);
 }

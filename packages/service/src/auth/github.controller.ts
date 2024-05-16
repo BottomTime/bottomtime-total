@@ -9,10 +9,10 @@ import {
 
 import { Response } from 'express';
 
-import { User } from '../users';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user';
 import { GithubAuthGuard } from './strategies/github.strategy';
+import { User } from './user';
 
 @Controller('api/auth/github')
 export class GithubController {

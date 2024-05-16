@@ -25,10 +25,10 @@ import { Response } from 'express';
 import { URL } from 'url';
 
 import { AssertAuth, AuthService, CurrentUser } from '../auth';
+import { User } from '../auth/user';
 import { Config } from '../config';
 import { EmailService, EmailType } from '../email';
 import { ZodValidator } from '../zod-validator';
-import { User } from './user';
 import { UsersService } from './users.service';
 
 @Controller('api/users')

@@ -37,12 +37,14 @@
             </span>
 
             <div class="flex-initial min-w-40 xl:min-w-48">
-              <FormButton stretch @click="onLinkAccount(provider.name)">
-                <span class="inline-block md:hidden mr-1">
-                  <i :class="provider.icon"></i>
-                </span>
-                <span>Link {{ provider.name }} account</span>
-              </FormButton>
+              <a :href="`${provider.url}/authorize`">
+                <FormButton stretch>
+                  <span class="inline-block md:hidden mr-1">
+                    <i :class="provider.icon"></i>
+                  </span>
+                  <span>Link {{ provider.name }} account</span>
+                </FormButton>
+              </a>
             </div>
           </div>
         </div>
@@ -97,9 +99,4 @@ defineEmits<{
   (e: 'change-email', email: string): void;
   (e: 'change-password'): void;
 }>();
-
-// EVENT HANDLERS
-function onLinkAccount(provider: string) {
-  // TODO
-}
 </script>

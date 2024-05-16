@@ -11,9 +11,9 @@ import { ConflictException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 
+import { User } from '../../../src/auth';
 import { OAuthService } from '../../../src/auth/oauth.service';
 import { UserEntity, UserOAuthEntity } from '../../../src/data';
-import { User } from '../../../src/users/user';
 import { dataSource } from '../../data-source';
 import { createTestUser } from '../../utils/create-test-user';
 

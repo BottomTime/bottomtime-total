@@ -4,6 +4,7 @@ import { UserEntity } from './user.entity';
 
 @Entity('user_oauth')
 @Index(['provider', 'providerId'], { unique: true })
+@Index(['provider', 'user'], { unique: true })
 export class UserOAuthEntity {
   @PrimaryColumn('uuid')
   id: string = '';

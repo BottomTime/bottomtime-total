@@ -12,7 +12,7 @@ import { Repository } from 'typeorm';
 
 import { Config } from '../config';
 import { UserEntity } from '../data';
-import { User } from '../users/user';
+import { User } from './user';
 
 @Injectable()
 export class AuthService {

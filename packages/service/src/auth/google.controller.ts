@@ -1,22 +1,32 @@
 import {
   Controller,
   Get,
+  HttpCode,
   Inject,
-  Redirect,
+  Logger,
+  Post,
   Res,
   UseGuards,
 } from '@nestjs/common';
 
 import { Response } from 'express';
 
-import { User } from '../users';
 import { AuthService } from './auth.service';
+import { CurrentAccount } from './current-account';
 import { CurrentUser } from './current-user';
-import { GoogleAuthGuard } from './strategies/google.strategy';
+import { AssertAuth } from './guards/assert-auth.guard';
+import { OAuthService } from './oauth.service';
+import { GoogleAuthGuard, GoogleLinkGuard } from './strategies/google.strategy';
+import { User } from './user';
 
 @Controller('api/auth/google')
 export class GoogleController {
-  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
+  private readonly log = new Logger(GoogleController.name);
+
+  constructor(
+    @Inject(AuthService) private readonly authService: AuthService,
+    @Inject(OAuthService) private readonly oauth: OAuthService,
+  ) {}
 
   /**
    * @openapi
@@ -87,38 +97,36 @@ export class GoogleController {
    */
   @Get('callback')
   @UseGuards(GoogleAuthGuard)
-  @Redirect('/')
   async loginWithGoogleCallback(
     @CurrentUser() user: User,
+    @CurrentAccount() account: User | undefined,
     @Res() res: Response,
   ): Promise<void> {
-    await this.authService.issueSessionCookie(user, res);
-    await user.updateLastLogin();
+    if (account) {
+      this.log.log(
+        `Linking Google account to user: @${account.username} (${account.id})`,
+      );
+      res.redirect('/account');
+    } else {
+      this.log.log(
+        `User authenticated using Google: @${user.username} (${user.id})`,
+      );
+      await this.authService.issueSessionCookie(user, res);
+      await user.updateLastLogin();
+      res.redirect('/');
+    }
   }
 
-  // TODO: Figure out how to do this in Nest.js land.
-  // @Get('authorize')
-  // @UseGuards(GoogleAuthGuard)
-  // async linkGoogleAccount(@CurrentUser() user: User) {
-  //   /*
-  //   Documentation on passport.authorize():
+  @Get('authorize')
+  @UseGuards(AssertAuth, GoogleLinkGuard)
+  linkGoogleAccount() {
+    /* No-op. Passport will handle this route as well. */
+  }
 
-  //   Create third-party service authorization middleware.
-
-  //   Returns middleware that will authorize a connection to a third-party service.
-
-  //   This middleware is identical to using authenticate() middleware with the assignProperty option set to 'account'. This is useful when a user is already authenticated (for example, using a username and password) and they want to connect their account with a third-party service.
-
-  //   In this scenario, the user's third-party account will be set at req.account, and the existing req.user and login session data will be be left unmodified. A route handler can then link the third-party account to the existing local account.
-
-  //   All arguments to this function behave identically to those accepted by Authenticator.authenticate.
-  //   */
-  // }
-
-  // @Post('unauthorize')
-  // @UseGuards(AssertAuth)
-  // @HttpCode(204)
-  // async unlinkGoogleAccount(@CurrentUser() user: User): Promise<void> {
-  //   await this.oauth.unlinkOAuthUser(user.id, 'google');
-  // }
+  @Post('unauthorize')
+  @UseGuards(AssertAuth)
+  @HttpCode(204)
+  async unlinkGoogleAccount(@CurrentUser() user: User): Promise<void> {
+    await this.oauth.unlinkOAuthUser(user.id, 'google');
+  }
 }
