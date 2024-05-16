@@ -117,7 +117,7 @@ describe('OAuth helpers', () => {
         const expected = new User(Users, user);
         const getSpy = jest
           .spyOn(service, 'getOAuthUser')
-          .mockResolvedValue(expected);
+          .mockResolvedValue(undefined);
         const linkSpy = jest
           .spyOn(service, 'linkOAuthUser')
           .mockResolvedValue();
@@ -129,7 +129,7 @@ describe('OAuth helpers', () => {
         expect(linkSpy).toHaveBeenCalledWith(expected.id, Provider, ProviderId);
       });
 
-      it('will throw an UnauthorizedException if the linked account does not match', async () => {
+      it("will throw an UnauthorizedException if the provider account is already linked to a different user's account", async () => {
         const currentUser = new User(Users, user);
         const spy = jest
           .spyOn(service, 'getOAuthUser')
@@ -142,16 +142,20 @@ describe('OAuth helpers', () => {
         expect(spy).toHaveBeenCalledWith(Provider, ProviderId);
       });
 
-      it('will return the current user if the linked account does not exist', async () => {
+      it('will link the accounts and return the current user if', async () => {
         const expected = new User(Users, user);
-        const spy = jest
+        const getSpy = jest
           .spyOn(service, 'getOAuthUser')
           .mockResolvedValue(undefined);
+        const linkSpy = jest
+          .spyOn(service, 'linkOAuthUser')
+          .mockResolvedValue();
 
         const actual = await verifyOAuth(service, options, expected);
 
         expect(actual).toBe(expected);
-        expect(spy).toHaveBeenCalledWith(Provider, ProviderId);
+        expect(getSpy).toHaveBeenCalledWith(Provider, ProviderId);
+        expect(linkSpy).toHaveBeenCalledWith(expected.id, Provider, ProviderId);
       });
     });
   });

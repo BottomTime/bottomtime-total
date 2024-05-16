@@ -9,10 +9,7 @@ import { GithubController } from './github.controller';
 import { GoogleController } from './google.controller';
 import { OAuthService } from './oauth.service';
 import { AnonymousStrategy } from './strategies/anon.strategy';
-import {
-  GoogleLinkStrategy,
-  GoogleStrategy,
-} from './strategies/google.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
@@ -30,7 +27,6 @@ import { LocalStrategy } from './strategies/local.strategy';
 
     // OAuth
     GoogleStrategy,
-    GoogleLinkStrategy,
   ],
   controllers: [AuthController, GoogleController, GithubController],
   exports: [AuthService, OAuthService, JwtStrategy, AnonymousStrategy],

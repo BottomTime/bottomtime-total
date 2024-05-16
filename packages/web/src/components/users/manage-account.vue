@@ -37,7 +37,7 @@
             </span>
 
             <div class="flex-initial min-w-40 xl:min-w-48">
-              <a :href="`${provider.url}/authorize`">
+              <a :href="provider.url">
                 <FormButton stretch>
                   <span class="inline-block md:hidden mr-1">
                     <i :class="provider.icon"></i>

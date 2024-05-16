@@ -12,11 +12,10 @@ import {
 import { Response } from 'express';
 
 import { AuthService } from './auth.service';
-import { CurrentAccount } from './current-account';
 import { CurrentUser } from './current-user';
 import { AssertAuth } from './guards/assert-auth.guard';
 import { OAuthService } from './oauth.service';
-import { GoogleAuthGuard, GoogleLinkGuard } from './strategies/google.strategy';
+import { GoogleAuthGuard } from './strategies/google.strategy';
 import { User } from './user';
 
 @Controller('api/auth/google')
@@ -99,28 +98,11 @@ export class GoogleController {
   @UseGuards(GoogleAuthGuard)
   async loginWithGoogleCallback(
     @CurrentUser() user: User,
-    @CurrentAccount() account: User | undefined,
     @Res() res: Response,
   ): Promise<void> {
-    if (account) {
-      this.log.log(
-        `Linking Google account to user: @${account.username} (${account.id})`,
-      );
-      res.redirect('/account');
-    } else {
-      this.log.log(
-        `User authenticated using Google: @${user.username} (${user.id})`,
-      );
-      await this.authService.issueSessionCookie(user, res);
-      await user.updateLastLogin();
-      res.redirect('/');
-    }
-  }
-
-  @Get('authorize')
-  @UseGuards(AssertAuth, GoogleLinkGuard)
-  linkGoogleAccount() {
-    /* No-op. Passport will handle this route as well. */
+    await this.authService.issueSessionCookie(user, res);
+    await user.updateLastLogin();
+    res.redirect('/');
   }
 
   @Post('unauthorize')

@@ -17,19 +17,18 @@ async function verifyOAuthForAuthenticatedUser(
   oauthUser?: User,
 ): Promise<User> {
   if (oauthUser) {
-    if (currentUser.id === oauthUser.id) {
-      await oauth.linkOAuthUser(
-        oauthUser.id,
-        profileOptions.provider,
-        profileOptions.providerId,
-      );
-      return currentUser;
-    } else {
-      throw new UnauthorizedException(
-        'This federated account is already linked to another user account. Please log out and log into that account instead.',
-      );
-    }
+    if (currentUser.id === oauthUser.id) return currentUser; // Already linked.
+
+    throw new UnauthorizedException(
+      'This federated account is already linked to another user account. Please log out and log into that account instead.',
+    );
   }
+
+  await oauth.linkOAuthUser(
+    currentUser.id,
+    profileOptions.provider,
+    profileOptions.providerId,
+  );
   return currentUser;
 }
 
