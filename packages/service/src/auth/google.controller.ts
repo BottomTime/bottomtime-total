@@ -1,28 +1,15 @@
-import {
-  Controller,
-  Get,
-  Inject,
-  Logger,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Inject, Res, UseGuards } from '@nestjs/common';
 
 import { Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user';
-import { OAuthService } from './oauth.service';
 import { GoogleAuthGuard } from './strategies/google.strategy';
 import { User } from './user';
 
 @Controller('api/auth/google')
 export class GoogleController {
-  private readonly log = new Logger(GoogleController.name);
-
-  constructor(
-    @Inject(AuthService) private readonly authService: AuthService,
-    @Inject(OAuthService) private readonly oauth: OAuthService,
-  ) {}
+  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
   /**
    * @openapi

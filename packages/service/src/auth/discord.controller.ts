@@ -4,49 +4,55 @@ import { Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user';
-import { GithubAuthGuard } from './strategies/github.strategy';
+import { DiscordAuthGuard } from './strategies/discord.strategy';
 import { User } from './user';
 
-@Controller('api/auth/github')
-export class GithubController {
+@Controller('api/auth/discord')
+export class DiscordController {
   constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
   /**
    * @openapi
-   * /api/auth/github:
+   * /api/auth/discord:
    *   get:
-   *     summary: Log in with GitHub
-   *     operationId: githubLogin
+   *     summary: Log in with Discord
+   *     operationId: discordLogin
    *     description: |
-   *       Redirects the user to GitHub to authenticate. If the authentication attempt is successful, the user will be redirected back to the application.
+   *       Redirects the user to Discord to authenticate. If the authentication attempt is successful, the user will be redirected back to the application.
    *     tags:
    *       - Auth
    *     responses:
    *       302:
-   *         description: The request succeeded and the user has been redirected to GitHub to authenticate.
+   *         description: The request succeeded and the user has been redirected to Discord to authenticate.
    *         headers:
    *           Location:
-   *             description: Redirects to GitHub to authenticate when the request completes.
+   *             description: Redirects to Discord to authenticate when the request completes.
    *             schema:
    *               type: string
    *               format: uri
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
    */
   @Get()
-  @UseGuards(GithubAuthGuard)
-  loginWithGithub() {
-    /* Nothing to do here. The Passport module will handle the redirect to GitHub. */
+  @UseGuards(DiscordAuthGuard)
+  loginWithDiscord() {
+    /* Nothing to do here. The Passport module will handle the redirect to Discord. */
   }
 
   /**
    * @openapi
-   * /api/auth/github/callback:
+   * /api/auth/discord/callback:
    *   get:
-   *     summary: Github OAuth2 callback
-   *     operationId: githubLoginCallback
+   *     summary: Discord OAuth2 callback
+   *     operationId: discordLoginCallback
    *     description: |
-   *       Handles the callback from GitHub after a user has authenticated. If the authentication attempt is successful, the user will be redirected back to the application.
+   *       Handles the callback from Discord after a user has authenticated. If the authentication attempt is successful, the user will be redirected back to the application.
    *
-   *       **NOTE:** This endpoint is not intended to be called directly. It is called by GitHub after a user has authenticated.
+   *       **NOTE:** This endpoint is not intended to be called directly. It is called by Discord after a user has authenticated.
    *     tags:
    *       - Auth
    *     responses:
@@ -73,8 +79,8 @@ export class GithubController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get('callback')
-  @UseGuards(GithubAuthGuard)
-  async loginWithGithubCallback(
+  @UseGuards(DiscordAuthGuard)
+  async loginWithDiscordCallback(
     @CurrentUser() user: User,
     @Res() res: Response,
   ): Promise<void> {
