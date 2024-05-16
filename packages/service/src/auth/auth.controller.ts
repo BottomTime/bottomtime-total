@@ -1,6 +1,20 @@
-import { CurrentUserDTO, SuccessFailResponseDTO } from '@bottomtime/api';
+import {
+  CurrentUserDTO,
+  SuccessFailResponseDTO,
+  UserRole,
+} from '@bottomtime/api';
 
-import { Controller, Get, Inject, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Get,
+  Inject,
+  NotFoundException,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { Response } from 'express';
@@ -8,6 +22,7 @@ import { Response } from 'express';
 import { Config } from '../config';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user';
+import { AssertAuth } from './guards/assert-auth.guard';
 import { OAuthService } from './oauth.service';
 import { User } from './user';
 
@@ -57,9 +72,82 @@ export class AuthController {
       : { anonymous: true };
   }
 
+  /**
+   * @openapi
+   * /api/auth/oauth/{username}:
+   *   get:
+   *     summary: Get OAuth connections for a user
+   *     operationId: getOAuthConnectionsForUser
+   *     tags:
+   *       - Auth
+   *       - Users
+   *     parameters:
+   *       - in: path
+   *         name: username
+   *         description: The username of the user to get OAuth connections for.
+   *         required: true
+   *         schema:
+   *           type: string
+   *           example: johndoe
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body contains an array of OAuth providers to which the user has linked their account.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: string
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not authorized to view the OAuth connections for the specified user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the specified user account does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get('oauth/:username')
-  async getOAuthConnectionsForUser(): Promise<string[]> {
-    return [];
+  @UseGuards(AssertAuth)
+  async getOAuthConnectionsForUser(
+    @CurrentUser() currentUser: User,
+    @Param('username') targetUser: string,
+  ): Promise<string[]> {
+    targetUser = targetUser.trim();
+    if (
+      currentUser.role !== UserRole.Admin &&
+      currentUser.username.toLowerCase() !== targetUser.toLowerCase()
+    ) {
+      throw new ForbiddenException(
+        'You are not authorized to view the OAuth connections for the specified user.',
+      );
+    }
+
+    const userExists = await this.oauth.isUsernameTaken(targetUser);
+    if (!userExists) {
+      throw new NotFoundException(
+        `Cannot find account for user "${targetUser}".`,
+      );
+    }
+
+    const connections = await this.oauth.listLinkedOAuthAccounts(targetUser);
+    return connections.map((connection) => connection.provider);
   }
 
   /**

@@ -68,20 +68,20 @@ describe('OAuth Service', () => {
     ];
     await OAuth.save(accounts);
 
-    const result = await service.listLinkedOAuthAccounts(userData.id);
+    const result = await service.listLinkedOAuthAccounts(
+      userData.username.toUpperCase(),
+    );
     expect(result).toHaveLength(3);
     expect(result).toMatchSnapshot();
   });
 
   it('will return an empty array when listing OAuth accounts for a user that does not have any', async () => {
-    const result = await service.listLinkedOAuthAccounts(userData.id);
+    const result = await service.listLinkedOAuthAccounts(userData.username);
     expect(result).toHaveLength(0);
   });
 
   it('will return an empty array when listing OAuth accounts for a user that does not exist', async () => {
-    const result = await service.listLinkedOAuthAccounts(
-      '3534ed02-d69e-417c-8380-57420aefef23',
-    );
+    const result = await service.listLinkedOAuthAccounts('not_a_user');
     expect(result).toHaveLength(0);
   });
 

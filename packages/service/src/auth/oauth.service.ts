@@ -55,11 +55,11 @@ export class OAuthService {
     return undefined;
   }
 
-  async listLinkedOAuthAccounts(userId: string): Promise<OAuthAccount[]> {
+  async listLinkedOAuthAccounts(username: string): Promise<OAuthAccount[]> {
     const accounts = await this.oauth.find({
-      where: { user: { id: userId } },
+      where: { user: { usernameLowered: username.trim().toLowerCase() } },
+      select: { provider: true, providerId: true },
       order: { provider: 'ASC' },
-      select: ['provider', 'providerId'],
     });
 
     return accounts.map((account) => ({
