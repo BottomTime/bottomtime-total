@@ -16,9 +16,9 @@ import { hash } from 'bcrypt';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+import { User } from '../auth/user';
 import { Config } from '../config';
 import { UserEntity } from '../data';
-import { User } from './user';
 import { UsersQueryBuilder } from './users-query-builder';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO & {

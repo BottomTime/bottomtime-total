@@ -144,6 +144,17 @@ export class User {
     this.data.isLockedOut = !this.data.isLockedOut;
   }
 
+  async getOAuthProviders(): Promise<Set<string>> {
+    const { data } = await this.client.get<string[]>(
+      `/api/auth/oauth/${this.username}`,
+    );
+    return new Set(data);
+  }
+
+  async unlinkOAuthProvider(provider: string): Promise<void> {
+    await this.client.delete(`/api/auth/oauth/${this.username}/${provider}`);
+  }
+
   toJSON(): UserDTO {
     return { ...this.data };
   }

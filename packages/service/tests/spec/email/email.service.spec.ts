@@ -1,7 +1,7 @@
+import { User } from '../../../src/auth';
 import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
 import { EmailOptions, EmailService, EmailType } from '../../../src/email';
-import { User } from '../../../src/users/user';
 import { dataSource } from '../../data-source';
 import { TestMailer } from '../../utils';
 

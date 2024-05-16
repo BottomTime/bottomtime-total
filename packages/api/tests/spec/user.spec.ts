@@ -172,4 +172,24 @@ describe('User API client', () => {
     user = getUser(axiosInstance);
     expect(user.toJSON()).toEqual(BasicUser);
   });
+
+  it('will list oauth providers for the user', async () => {
+    user = getUser(axiosInstance);
+    const providers = new Set(['google', 'discord']);
+    scope
+      .get(`/api/auth/oauth/${BasicUser.username}`)
+      .reply(200, [...providers]);
+    await expect(user.getOAuthProviders()).resolves.toEqual(providers);
+    expect(scope.isDone()).toBe(true);
+  });
+
+  it('will unlink an oauth provider', async () => {
+    user = getUser(axiosInstance);
+    const provider = 'google';
+    scope
+      .delete(`/api/auth/oauth/${BasicUser.username}/${provider}`)
+      .reply(204);
+    await user.unlinkOAuthProvider(provider);
+    expect(scope.isDone()).toBe(true);
+  });
 });

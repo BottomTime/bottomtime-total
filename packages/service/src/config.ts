@@ -23,6 +23,11 @@ export interface AppConfig {
     };
   };
 
+  discord: {
+    clientId?: string;
+    clientSecret?: string;
+  };
+
   github: {
     clientId?: string;
     clientSecret?: string;
@@ -69,6 +74,10 @@ const ConfigSchema = z
     AWS_REGION: z.string().default('us-east-1'),
     BT_AWS_S3_ENDPOINT: z.string().optional(),
     BT_AWS_MEDIA_BUCKET: z.string().default('bottomtime-media-local'),
+
+    // Discord
+    BT_DISCORD_CLIENT_ID: z.string().optional(),
+    BT_DISCORD_CLIENT_SECRET: z.string().optional(),
 
     // Github
     BT_GITHUB_CLIENT_ID: z.string().optional(),
@@ -132,6 +141,11 @@ const ConfigSchema = z
     google: {
       clientId: env.BT_GOOGLE_CLIENT_ID,
       clientSecret: env.BT_GOOGLE_CLIENT_SECRET,
+    },
+
+    discord: {
+      clientId: env.BT_DISCORD_CLIENT_ID,
+      clientSecret: env.BT_DISCORD_CLIENT_SECRET,
     },
 
     mail: {

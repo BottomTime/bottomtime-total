@@ -1,25 +1,39 @@
 import {
+  CurrentUserDTO,
+  SuccessFailResponseDTO,
+  UserRole,
+} from '@bottomtime/api';
+
+import {
   Controller,
+  Delete,
+  ForbiddenException,
   Get,
+  HttpCode,
   Inject,
+  NotFoundException,
+  Param,
   Post,
-  Redirect,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CurrentUserDTO, SuccessFailResponseDTO } from '@bottomtime/api';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser } from './current-user';
-import { User } from '../users/user';
+
 import { Response } from 'express';
+
 import { Config } from '../config';
-import { GoogleAuthGuard } from './strategies/google.strategy';
-import { GithubAuthGuard } from './strategies/github.strategy';
+import { AuthService } from './auth.service';
+import { CurrentUser } from './current-user';
+import { AssertAuth } from './guards/assert-auth.guard';
+import { OAuthService } from './oauth.service';
+import { User } from './user';
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
+  constructor(
+    @Inject(AuthService) private readonly authService: AuthService,
+    @Inject(OAuthService) private readonly oauth: OAuthService,
+  ) {}
 
   /**
    * @openapi
@@ -58,6 +72,165 @@ export class AuthController {
           ...user.toJSON(),
         }
       : { anonymous: true };
+  }
+
+  /**
+   * @openapi
+   * /api/auth/oauth/{username}:
+   *   get:
+   *     summary: Get OAuth connections for a user
+   *     operationId: getOAuthConnectionsForUser
+   *     tags:
+   *       - Auth
+   *       - Users
+   *     parameters:
+   *       - in: path
+   *         name: username
+   *         description: The username of the user to get OAuth connections for.
+   *         required: true
+   *         schema:
+   *           type: string
+   *           example: johndoe
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body contains an array of OAuth providers to which the user has linked their account.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: string
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not authorized to view the OAuth connections for the specified user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the specified user account does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get('oauth/:username')
+  @UseGuards(AssertAuth)
+  async getOAuthConnectionsForUser(
+    @CurrentUser() currentUser: User,
+    @Param('username') targetUser: string,
+  ): Promise<string[]> {
+    targetUser = targetUser.trim();
+    if (
+      currentUser.role !== UserRole.Admin &&
+      currentUser.username.toLowerCase() !== targetUser.toLowerCase()
+    ) {
+      throw new ForbiddenException(
+        'You are not authorized to view the OAuth connections for the specified user.',
+      );
+    }
+
+    const userExists = await this.oauth.isUsernameTaken(targetUser);
+    if (!userExists) {
+      throw new NotFoundException(
+        `Cannot find account for user "${targetUser}".`,
+      );
+    }
+
+    const connections = await this.oauth.listLinkedOAuthAccounts(targetUser);
+    return connections.map((connection) => connection.provider);
+  }
+
+  /**
+   * @openapi
+   * /api/auth/oauth/{username}/{provider}:
+   *   delete:
+   *     summary: Unlink an OAuth provider from a user's account
+   *     description: |
+   *       Unlink's a user's account from the indicated OAuth provider. This will prevent the user from logging in using the OAuth provider in the future.
+   *     operationId: unlinkOAuthProvider
+   *     tags:
+   *       - Auth
+   *       - Users
+   *     parameters:
+   *       - in: path
+   *         name: username
+   *         description: The username of the user to unlink the OAuth provider from.
+   *         required: true
+   *         schema:
+   *           type: string
+   *           example: johndoe
+   *       - in: path
+   *         name: provider
+   *         description: The name of the OAuth provider to unlink from the user.
+   *         required: true
+   *         schema:
+   *           type: string
+   *           example: google
+   *     responses:
+   *       204:
+   *         description: The request succeeded and the OAuth provider has been unlinked from the user.
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not authorized to unlink the OAuth provider from the specified user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the specified user account does not exist or the user does not have a connection to the specified OAuth provider.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Delete('oauth/:username/:provider')
+  @UseGuards(AssertAuth)
+  @HttpCode(204)
+  async unlinkOAuthProvider(
+    @CurrentUser() currentUser: User,
+    @Param('username') targetUser: string,
+    @Param('provider') provider: string,
+  ): Promise<void> {
+    targetUser = targetUser.trim();
+    if (
+      currentUser.role !== UserRole.Admin &&
+      currentUser.username.toLowerCase() !== targetUser.toLowerCase()
+    ) {
+      throw new ForbiddenException(
+        'You are not authorized to view the OAuth connections for the specified user.',
+      );
+    }
+
+    const result = await this.oauth.unlinkOAuthUser(targetUser, provider);
+
+    if (!result) {
+      throw new NotFoundException(
+        `Cannot find account for user "${targetUser}" or the user does not have a connection to provider "${provider}".`,
+      );
+    }
   }
 
   /**
@@ -198,153 +371,5 @@ export class AuthController {
     const response: SuccessFailResponseDTO = { succeeded: true };
     res.clearCookie(Config.sessions.cookieName);
     res.json(response);
-  }
-
-  /**
-   * @openapi
-   * /api/auth/google:
-   *   get:
-   *     summary: Log in with Google
-   *     operationId: googleLogin
-   *     description: |
-   *       Redirects the user to Google to authenticate. If the authentication attempt is successful, the user will be redirected back to the application.
-   *     tags:
-   *       - Auth
-   *     responses:
-   *       302:
-   *         description: The request succeeded and the user has been redirected to Google to authenticate.
-   *         headers:
-   *           Location:
-   *             description: Redirects to Google to authenticate when the request completes.
-   *             schema:
-   *               type: string
-   *               format: uri
-   *       500:
-   *         description: The request failed because of an internal server error.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   */
-  @Get('google')
-  @UseGuards(GoogleAuthGuard)
-  loginWithGoogle() {
-    /* Nothing to do here. The Passport module will handle the redirect to Google. */
-  }
-
-  /**
-   * @openapi
-   * /api/auth/google/callback:
-   *   get:
-   *     summary: Google OAuth2 callback
-   *     operationId: googleLoginCallback
-   *     description: |
-   *       Handles the callback from Google after a user has authenticated. If the authentication attempt is successful, the user will be redirected back to the application.
-   *
-   *       **NOTE:** This endpoint is not intended to be called directly. It is called by Google after a user has authenticated.
-   *     tags:
-   *       - Auth
-   *     responses:
-   *       302:
-   *         description: The request succeeded and the user has been redirected back to the application.
-   *         headers:
-   *           Location:
-   *             description: Redirects back to the application when the request completes.
-   *             schema:
-   *               type: string
-   *               format: uri
-   *             example: https://localhost:3000/
-   *           Set-Cookie:
-   *             description: |
-   *               Sets a session cookie in the user's browser to keep the user logged in.
-   *               The cookie value will be a JWT that identifies the user to the backend service.
-   *             schema:
-   *               type: string
-   *       500:
-   *         description: The request failed because of an internal server error.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   */
-  @Get('google/callback')
-  @UseGuards(GoogleAuthGuard)
-  @Redirect('/')
-  async loginWithGoogleCallback(
-    @CurrentUser() user: User,
-    @Res() res: Response,
-  ): Promise<void> {
-    await this.authService.issueSessionCookie(user, res);
-  }
-
-  /**
-   * @openapi
-   * /api/auth/github:
-   *   get:
-   *     summary: Log in with GitHub
-   *     operationId: githubLogin
-   *     description: |
-   *       Redirects the user to GitHub to authenticate. If the authentication attempt is successful, the user will be redirected back to the application.
-   *     tags:
-   *       - Auth
-   *     responses:
-   *       302:
-   *         description: The request succeeded and the user has been redirected to GitHub to authenticate.
-   *         headers:
-   *           Location:
-   *             description: Redirects to GitHub to authenticate when the request completes.
-   *             schema:
-   *               type: string
-   *               format: uri
-   */
-  @Get('github')
-  @UseGuards(GithubAuthGuard)
-  loginWithGithub() {
-    /* Nothing to do here. The Passport module will handle the redirect to GitHub. */
-  }
-
-  /**
-   * @openapi
-   * /api/auth/github/callback:
-   *   get:
-   *     summary: Github OAuth2 callback
-   *     operationId: githubLoginCallback
-   *     description: |
-   *       Handles the callback from GitHub after a user has authenticated. If the authentication attempt is successful, the user will be redirected back to the application.
-   *
-   *       **NOTE:** This endpoint is not intended to be called directly. It is called by GitHub after a user has authenticated.
-   *     tags:
-   *       - Auth
-   *     responses:
-   *       302:
-   *         description: The request succeeded and the user has been redirected back to the application.
-   *         headers:
-   *           Location:
-   *             description: Redirects back to the application when the request completes.
-   *             schema:
-   *               type: string
-   *               format: uri
-   *             example: https://localhost:3000/
-   *           Set-Cookie:
-   *             description: |
-   *               Sets a session cookie in the user's browser to keep the user logged in.
-   *               The cookie value will be a JWT that identifies the user to the backend service.
-   *             schema:
-   *               type: string
-   *       500:
-   *         description: The request failed because of an internal server error.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   */
-  @Get('github/callback')
-  @UseGuards(GithubAuthGuard)
-  @Redirect('/')
-  async loginWithGithubCallback(
-    @CurrentUser() user: User,
-    @Res() res: Response,
-  ): Promise<void> {
-    await this.authService.issueSessionCookie(user, res);
   }
 }

@@ -1,12 +1,15 @@
+import { UserRole } from '@bottomtime/api';
+
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+
 import { Observable } from 'rxjs';
-import { User } from '../users/user';
-import { UserRole } from '@bottomtime/api';
+
+import { User } from '../auth/user';
 
 @Injectable()
 export class AssertFriendshipOwner implements CanActivate {

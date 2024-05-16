@@ -1,11 +1,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-jwt';
-import { Config } from '../../config';
-import { ExtractJwt } from 'passport-jwt';
+
 import { JwtPayload } from 'jsonwebtoken';
-import { User } from '../../users/user';
+import { Strategy } from 'passport-jwt';
+import { ExtractJwt } from 'passport-jwt';
+
+import { Config } from '../../config';
 import { AuthService } from '../auth.service';
+import { User } from '../user';
 
 @Injectable()
 export class JwtOrAnonAuthGuard extends AuthGuard(['jwt', 'anon']) {}

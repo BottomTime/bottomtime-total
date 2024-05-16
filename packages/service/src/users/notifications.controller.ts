@@ -21,6 +21,7 @@ import {
 } from '@nestjs/common';
 
 import { AssertAdmin, AssertAuth } from '../auth';
+import { User } from '../auth/user';
 import { ZodValidator } from '../zod-validator';
 import { AssertAccountOwner } from './assert-account-owner.guard';
 import {
@@ -30,7 +31,6 @@ import {
 import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
 import { Notification } from './notification';
 import { NotificationsService } from './notifications.service';
-import { User } from './user';
 
 const UsernameParam = 'username';
 const NotificationIdParam = ':notificationId';

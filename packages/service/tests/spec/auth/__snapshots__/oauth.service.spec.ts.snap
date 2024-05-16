@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OAuth Service will list linked OAuth accounts 1`] = `
+[
+  {
+    "provider": "LinkedUp",
+    "providerId": "abcdef",
+  },
+  {
+    "provider": "Shmoogle",
+    "providerId": "12345",
+  },
+  {
+    "provider": "Twittish",
+    "providerId": "67890",
+  },
+]
+`;

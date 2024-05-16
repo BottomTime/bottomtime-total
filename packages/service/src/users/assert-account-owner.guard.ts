@@ -1,10 +1,12 @@
+import { UserRole } from '@bottomtime/api';
+
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import { User } from './user';
-import { UserRole } from '@bottomtime/api';
+
+import { User } from '../auth/user';
 
 export class AssertAccountOwner implements CanActivate {
   canActivate(ctx: ExecutionContext): boolean {

@@ -3,8 +3,8 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import path from 'path';
 import { Options, compileFile, compileTemplate } from 'pug';
 
+import { User } from '../auth/user';
 import { Config } from '../config';
-import { User } from '../users/user';
 import { IMailClient, MailClientService } from './interfaces';
 
 export enum EmailType {

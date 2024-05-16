@@ -4,30 +4,30 @@ import { Inject, Injectable } from '@nestjs/common';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 
 import { Request } from 'express';
-import { Profile, Strategy } from 'passport-github2';
+import { Profile, Strategy } from 'passport-discord';
 import { URL } from 'url';
 
-import { User } from '..';
 import { Config } from '../../config';
 import { CreateLinkedAccountOptions, OAuthService } from '../oauth.service';
+import { User } from '../user';
 import { generateUsername, verifyOAuth } from './oauth-helpers';
 
-export const Provider = 'github';
+export const Provider = 'discord';
 
 @Injectable()
-export class GithubAuthGuard extends AuthGuard('github') {}
+export class DiscordAuthGuard extends AuthGuard('discord') {}
 
 @Injectable()
-export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
+export class DiscordStrategy extends PassportStrategy(Strategy, 'discord') {
   constructor(@Inject(OAuthService) private readonly oauth: OAuthService) {
     super({
-      clientID: Config.github.clientId,
-      clientSecret: Config.github.clientSecret,
+      clientID: Config.discord.clientId,
+      clientSecret: Config.discord.clientSecret,
       callbackURL: new URL(
-        '/api/auth/github/callback',
+        '/api/auth/discord/callback',
         Config.baseUrl,
       ).toString(),
-      scope: ['user:email'],
+      scope: ['identify', 'email'],
       passReqToCallback: true,
     });
   }
@@ -37,7 +37,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     accessToken: string,
     refreshToken: string,
     profile: Profile,
-  ): Promise<User> {
+  ) {
     const currentUser = req.user instanceof User ? req.user : undefined;
     const options: CreateLinkedAccountOptions = {
       provider: Provider,

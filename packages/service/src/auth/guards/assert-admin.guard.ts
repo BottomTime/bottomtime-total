@@ -1,13 +1,16 @@
+import { UserRole } from '@bottomtime/api';
+
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { User } from '../../users/user';
-import { UserRole } from '@bottomtime/api';
+
+import { User } from '../user';
 import { AssertAuth } from './assert-auth.guard';
 
 @Injectable()
