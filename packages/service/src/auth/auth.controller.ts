@@ -6,8 +6,10 @@ import {
 
 import {
   Controller,
+  Delete,
   ForbiddenException,
   Get,
+  HttpCode,
   Inject,
   NotFoundException,
   Param,
@@ -148,6 +150,87 @@ export class AuthController {
 
     const connections = await this.oauth.listLinkedOAuthAccounts(targetUser);
     return connections.map((connection) => connection.provider);
+  }
+
+  /**
+   * @openapi
+   * /api/auth/oauth/{username}/{provider}:
+   *   delete:
+   *     summary: Unlink an OAuth provider from a user's account
+   *     description: |
+   *       Unlink's a user's account from the indicated OAuth provider. This will prevent the user from logging in using the OAuth provider in the future.
+   *     operationId: unlinkOAuthProvider
+   *     tags:
+   *       - Auth
+   *       - Users
+   *     parameters:
+   *       - in: path
+   *         name: username
+   *         description: The username of the user to unlink the OAuth provider from.
+   *         required: true
+   *         schema:
+   *           type: string
+   *           example: johndoe
+   *       - in: path
+   *         name: provider
+   *         description: The name of the OAuth provider to unlink from the user.
+   *         required: true
+   *         schema:
+   *           type: string
+   *           example: google
+   *     responses:
+   *       204:
+   *         description: The request succeeded and the OAuth provider has been unlinked from the user.
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not authorized to unlink the OAuth provider from the specified user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the specified user account does not exist or the user does not have a connection to the specified OAuth provider.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Delete('oauth/:username/:provider')
+  @UseGuards(AssertAuth)
+  @HttpCode(204)
+  async unlinkOAuthProvider(
+    @CurrentUser() currentUser: User,
+    @Param('username') targetUser: string,
+    @Param('provider') provider: string,
+  ): Promise<void> {
+    targetUser = targetUser.trim();
+    if (
+      currentUser.role !== UserRole.Admin &&
+      currentUser.username.toLowerCase() !== targetUser.toLowerCase()
+    ) {
+      throw new ForbiddenException(
+        'You are not authorized to view the OAuth connections for the specified user.',
+      );
+    }
+
+    const result = await this.oauth.unlinkOAuthUser(targetUser, provider);
+
+    if (!result) {
+      throw new NotFoundException(
+        `Cannot find account for user "${targetUser}" or the user does not have a connection to provider "${provider}".`,
+      );
+    }
   }
 
   /**

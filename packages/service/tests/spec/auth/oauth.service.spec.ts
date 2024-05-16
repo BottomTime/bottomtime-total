@@ -159,14 +159,18 @@ describe('OAuth Service', () => {
       providerId: ProviderId,
       user: userData,
     });
-    await service.unlinkOAuthUser(userData.id, Provider);
+    await expect(
+      service.unlinkOAuthUser(userData.username, Provider),
+    ).resolves.toBe(true);
     await expect(
       OAuth.findOneBy({ provider: Provider, providerId: ProviderId }),
     ).resolves.toBeNull();
   });
 
-  it('will fail silently when unlinking a user from an OAuth provider when the connection does not exist', async () => {
-    await service.unlinkOAuthUser(userData.id, Provider);
+  it('will return false when unlinking a user from an OAuth provider when the connection does not exist', async () => {
+    await expect(
+      service.unlinkOAuthUser(userData.username, Provider),
+    ).resolves.toBe(false);
     await expect(
       OAuth.findOneBy({ provider: Provider, providerId: ProviderId }),
     ).resolves.toBeNull();

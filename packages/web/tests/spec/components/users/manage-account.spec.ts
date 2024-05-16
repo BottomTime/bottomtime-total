@@ -1,6 +1,10 @@
-import { ApiClient, UserDTO } from '@bottomtime/api';
+import { ApiClient, User, UserDTO } from '@bottomtime/api';
 
-import { ComponentMountingOptions, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -82,5 +86,42 @@ describe('Manage Account component', () => {
     const managePassword = wrapper.getComponent(ManagePassword);
     managePassword.vm.$emit('change-password');
     expect(wrapper.emitted('change-password')).toBeDefined();
+  });
+
+  it('will load the OAuth connections when the component is mounted', async () => {
+    const user = new User(client.axios, userData);
+    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
+    jest
+      .spyOn(user, 'getOAuthProviders')
+      .mockResolvedValue(new Set(['github']));
+
+    const wrapper = mount(ManageAccount, opts);
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="link-google"]').isVisible()).toBe(true);
+    expect(wrapper.find('[data-testid="link-discord"]').isVisible()).toBe(true);
+    expect(wrapper.find('[data-testid="unlink-github"]').isVisible()).toBe(
+      true,
+    );
+  });
+
+  it('will allow users to unlink an OAuth account', async () => {
+    const user = new User(client.axios, userData);
+    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
+    jest
+      .spyOn(user, 'getOAuthProviders')
+      .mockResolvedValue(new Set(['github']));
+    const unlinkSpy = jest
+      .spyOn(user, 'unlinkOAuthProvider')
+      .mockResolvedValue();
+
+    const wrapper = mount(ManageAccount, opts);
+    await flushPromises();
+
+    await wrapper.get('[data-testid="unlink-github"]').trigger('click');
+    await flushPromises();
+
+    expect(unlinkSpy).toHaveBeenCalledWith('github');
+    expect(wrapper.find('[data-testid="unlink-github"]').exists()).toBe(false);
   });
 });

@@ -1,10 +1,8 @@
 import {
   Controller,
   Get,
-  HttpCode,
   Inject,
   Logger,
-  Post,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -13,7 +11,6 @@ import { Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user';
-import { AssertAuth } from './guards/assert-auth.guard';
 import { OAuthService } from './oauth.service';
 import { GoogleAuthGuard } from './strategies/google.strategy';
 import { User } from './user';
@@ -103,12 +100,5 @@ export class GoogleController {
     await this.authService.issueSessionCookie(user, res);
     await user.updateLastLogin();
     res.redirect('/');
-  }
-
-  @Post('unauthorize')
-  @UseGuards(AssertAuth)
-  @HttpCode(204)
-  async unlinkGoogleAccount(@CurrentUser() user: User): Promise<void> {
-    await this.oauth.unlinkOAuthUser(user.id, 'google');
   }
 }

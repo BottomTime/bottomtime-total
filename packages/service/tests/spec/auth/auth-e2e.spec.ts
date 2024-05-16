@@ -249,4 +249,118 @@ describe('Auth Module E2E Tests', () => {
         .expect(404);
     });
   });
+
+  describe.only('when unlinking an OAuth provider from a user account', () => {
+    let user: UserEntity;
+    let otherUser: UserEntity;
+    let adminUser: UserEntity;
+
+    let authHeader: [string, string];
+    let otherAuthHeader: [string, string];
+    let adminAuthHeader: [string, string];
+
+    let oauthConnections: UserOAuthEntity[];
+    let oauthUrl: string;
+
+    beforeAll(async () => {
+      user = createTestUser();
+      otherUser = createTestUser();
+      adminUser = createTestUser({ role: UserRole.Admin });
+      oauthConnections = [
+        {
+          id: '6e4a2edb-56f5-46dc-a525-6df55a288d34',
+          provider: 'Shmoogle',
+          providerId: '12345',
+          user: user,
+        },
+        {
+          id: '61297bec-e886-401e-b60d-815325afc391',
+          provider: 'Twittish',
+          providerId: '67890',
+          user: user,
+        },
+        {
+          id: '37b458fd-b0a7-40cd-811d-e1d6b86f43ab',
+          provider: 'LinkedUp',
+          providerId: 'abcdef',
+          user: user,
+        },
+        {
+          id: '0b06885d-e860-4489-a781-7a9c302ef4f7',
+          provider: 'Shmoogle',
+          providerId: '54321',
+          user: otherUser,
+        },
+        {
+          id: 'b4f78f2f-49e9-4d1e-84eb-dfef0c2ab6cb',
+          provider: 'Discard',
+          providerId: '98765',
+          user: otherUser,
+        },
+      ];
+      oauthUrl = `/api/auth/oauth/${user.username}`;
+
+      authHeader = await createAuthHeader(user.id);
+      otherAuthHeader = await createAuthHeader(otherUser.id);
+      adminAuthHeader = await createAuthHeader(adminUser.id);
+    });
+
+    beforeEach(async () => {
+      await Users.save([user, otherUser, adminUser]);
+      await OAuth.save(oauthConnections);
+    });
+
+    it('will unlink the indicated account', async () => {
+      await request(server)
+        .delete(`${oauthUrl}/Shmoogle`)
+        .set(...authHeader)
+        .expect(204);
+
+      const { body } = await request(server)
+        .get(oauthUrl)
+        .set(...authHeader)
+        .expect(200);
+
+      expect(body).toEqual(['LinkedUp', 'Twittish']);
+    });
+
+    it('will allow an admin to unlink the indicated account', async () => {
+      await request(server)
+        .delete(`${oauthUrl}/Shmoogle`)
+        .set(...adminAuthHeader)
+        .expect(204);
+
+      const { body } = await request(server)
+        .get(oauthUrl)
+        .set(...authHeader)
+        .expect(200);
+
+      expect(body).toEqual(['LinkedUp', 'Twittish']);
+    });
+
+    it('will return a 401 response if the user is not logged in', async () => {
+      await request(server).delete(`${oauthUrl}/Shmoogle`).expect(401);
+    });
+
+    it('will return a 403 response if the user is not the account owner', async () => {
+      await request(server)
+        .delete(`${oauthUrl}/Shmoogle`)
+        .set(...otherAuthHeader)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the target user account does not exist', async () => {
+      await request(server)
+        .delete(`/api/auth/oauth/NotARealUser/Shmoogle`)
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the target OAuth provider does not exist', async () => {
+      await request(server)
+        .delete(`${oauthUrl}/NotARealProvider`)
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+  });
 });

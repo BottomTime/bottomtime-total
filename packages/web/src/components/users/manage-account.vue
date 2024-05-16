@@ -23,22 +23,50 @@
           class="lg:min-w-40 xl:min-w-48 lg:text-right"
           label="Login providers"
         />
-        <div class="w-full flex flex-col gap-3">
+
+        <p v-if="state.isLoadingProviders" class="italic space-x-3">
+          <span>
+            <i class="fas fa-spinner fa-spin"></i>
+          </span>
+          <span>Checking for connected providers...</span>
+        </p>
+
+        <div v-else class="w-full flex flex-col gap-3">
           <div
-            v-for="provider in OAuthProviders"
+            v-for="provider in state.providers"
             :key="provider.name"
             class="flex flex-row gap-4 items-baseline"
           >
-            <span class="hidden md:inline-block md:grow text-sm">
-              <span class="mr-2">
-                <i :class="provider.icon"></i>
+            <p
+              v-if="provider.connected"
+              class="hidden md:inline-block md:grow text-sm space-x-3 text-success font-bold"
+            >
+              <span>
+                <i :class="`${provider.icon} fa-fw`"></i>
+              </span>
+              <span class="text-bold"> {{ provider.name }} is connected! </span>
+            </p>
+
+            <p v-else class="hidden md:inline-block md:grow text-sm space-x-3">
+              <span>
+                <i :class="`${provider.icon} fa-fw`"></i>
               </span>
               <span> Enable logging in with {{ provider.name }} </span>
-            </span>
+            </p>
 
             <div class="flex-initial min-w-40 xl:min-w-48">
-              <a :href="provider.url">
-                <FormButton stretch>
+              <FormButton
+                v-if="provider.connected"
+                :test-id="`unlink-${provider.key}`"
+                type="danger"
+                stretch
+                @click="() => onUnlinkAccount(provider.key)"
+              >
+                Unlink {{ provider.name }} account
+              </FormButton>
+
+              <a v-else :href="provider.url">
+                <FormButton :test-id="`link-${provider.key}`" stretch>
                   <span class="inline-block md:hidden mr-1">
                     <i :class="provider.icon"></i>
                   </span>
@@ -56,6 +84,12 @@
 <script lang="ts" setup>
 import { UserDTO } from '@bottomtime/api';
 
+import { onMounted, reactive } from 'vue';
+
+import { useClient } from '../../api-client';
+import { ToastType } from '../../common';
+import { useOops } from '../../oops';
+import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormLabel from '../common/form-label.vue';
 import TextHeading from '../common/text-heading.vue';
@@ -67,25 +101,39 @@ import UsernameAndEmail from './username-and-email.vue';
 type ManageAccountProps = {
   user: UserDTO;
 };
+
 type OAuthProvider = {
+  key: string;
   name: string;
   url: string;
   icon: string;
+  connected: boolean;
+};
+type ManageAccountState = {
+  isLoadingProviders: boolean;
+  providers: OAuthProvider[];
 };
 
+const client = useClient();
+const oops = useOops();
+const toasts = useToasts();
+
 // CONSTANTS
-const OAuthProviders: OAuthProvider[] = [
+const OAuthProviders: Omit<OAuthProvider, 'connected'>[] = [
   {
+    key: 'google',
     name: 'Google',
     url: '/api/auth/google',
     icon: 'fab fa-google',
   },
   {
+    key: 'discord',
     name: 'Discord',
     url: '/api/auth/discord',
     icon: 'fab fa-discord',
   },
   {
+    key: 'github',
     name: 'Github',
     url: '/api/auth/github',
     icon: 'fab fa-github',
@@ -93,10 +141,43 @@ const OAuthProviders: OAuthProvider[] = [
 ];
 
 // STATE MANAGEMENT
-defineProps<ManageAccountProps>();
+const props = defineProps<ManageAccountProps>();
 defineEmits<{
   (e: 'change-username', username: string): void;
   (e: 'change-email', email: string): void;
   (e: 'change-password'): void;
 }>();
+
+const state = reactive<ManageAccountState>({
+  isLoadingProviders: true,
+  providers: [],
+});
+
+onMounted(async () => {
+  await oops(async () => {
+    const user = client.users.wrapDTO(props.user);
+    const connectedProviders = await user.getOAuthProviders();
+
+    state.providers = OAuthProviders.map((provider) => ({
+      ...provider,
+      connected: connectedProviders.has(provider.key),
+    }));
+  });
+  state.isLoadingProviders = false;
+});
+
+// METHODS
+const onUnlinkAccount = async (providerKey: string) => {
+  await oops(async () => {
+    const user = client.users.wrapDTO(props.user);
+    await user.unlinkOAuthProvider(providerKey);
+    toasts.toast({
+      id: `account-unlinked-${providerKey}`,
+      message: 'Account unlinked successfully!',
+      type: ToastType.Success,
+    });
+    const provider = state.providers.find((p) => p.key === providerKey);
+    if (provider) provider.connected = false;
+  });
+};
 </script>

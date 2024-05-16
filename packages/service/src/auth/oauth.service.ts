@@ -92,8 +92,18 @@ export class OAuthService {
     await this.oauth.save(oauth);
   }
 
-  async unlinkOAuthUser(userId: string, provider: string): Promise<void> {
-    await this.oauth.delete({ provider, user: { id: userId } });
+  async unlinkOAuthUser(username: string, provider: string): Promise<boolean> {
+    const user = await this.users.findOne({
+      where: { usernameLowered: username.trim().toLowerCase() },
+      select: { id: true },
+    });
+    if (!user) return false;
+
+    const { affected } = await this.oauth.delete({
+      provider,
+      user: { id: user.id },
+    });
+    return typeof affected === 'number' && affected > 0;
   }
 
   async isUsernameTaken(username: string): Promise<boolean> {
