@@ -37,5 +37,6 @@
   ],
   "dependencies": {
     "eslint-plugin-deprecation": "^2.0.0"
-  }
+  },
+  "packageManager": "yarn@4.2.2"
 }
