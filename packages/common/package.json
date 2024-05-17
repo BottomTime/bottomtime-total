@@ -19,6 +19,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/bunyan": "^1.8.11",
     "typescript": "^5.4.2"
   }
 }

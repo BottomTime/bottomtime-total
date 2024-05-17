@@ -1,0 +1,5 @@
+src/bunyan-logger-service.ts(2,20): error TS7016: Could not find a declaration file for module 'bunyan'. '/Users/chris/.yarn/berry/cache/bunyan-npm-1.8.15-e130eb0235-10c0.zip/node_modules/bunyan/lib/bunyan.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bunyan` if it exists or add a new declaration (.d.ts) file containing `declare module 'bunyan';`
+src/logger.ts(1,20): error TS7016: Could not find a declaration file for module 'bunyan'. '/Users/chris/.yarn/berry/cache/bunyan-npm-1.8.15-e130eb0235-10c0.zip/node_modules/bunyan/lib/bunyan.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/bunyan` if it exists or add a new declaration (.d.ts) file containing `declare module 'bunyan';`
+src/logger.ts(18,13): error TS2580: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node`.

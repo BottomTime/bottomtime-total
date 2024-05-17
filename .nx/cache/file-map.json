@@ -1,0 +1,3094 @@
+{
+  "version": "6.0",
+  "nxVersion": "19.0.4",
+  "deps": {
+    "eslint-plugin-deprecation": "^2.0.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-vue": "^9.20.1",
+    "husky": "^8.0.3",
+    "lerna": "^8.1.3",
+    "lint-staged": "^13.1.1",
+    "prettier": "^2.8.4",
+    "typescript": "^5.0.4"
+  },
+  "pathMappings": {},
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": "tsconfig.json",
+        "hash": "6000003425991898823"
+      },
+      {
+        "file": "yarn.lock",
+        "hash": "4860334557211707168"
+      },
+      {
+        "file": "terraform/ecs.tf",
+        "hash": "9887426166777661340"
+      },
+      {
+        "file": "terraform/acm.tf",
+        "hash": "17241519620464676631"
+      },
+      {
+        "file": ".yarnrc.yml",
+        "hash": "2967799620501897988"
+      },
+      {
+        "file": "terraform/vars/dev.tfvars",
+        "hash": "18139961019406684083"
+      },
+      {
+        "file": ".pnp.loader.mjs",
+        "hash": "6680845508487648734"
+      },
+      {
+        "file": "Dockerfile.web",
+        "hash": "679735426679072097"
+      },
+      {
+        "file": "nx.json",
+        "hash": "17284083104810695666"
+      },
+      {
+        "file": "docker-compose.yml",
+        "hash": "15274742280575493562"
+      },
+      {
+        "file": "README.md",
+        "hash": "11048937110848336164"
+      },
+      {
+        "file": "lerna.json",
+        "hash": "15705415675500247955"
+      },
+      {
+        "file": ".vscode/settings.json",
+        "hash": "1292946749469329379"
+      },
+      {
+        "file": "Dockerfile.service",
+        "hash": "2965820673926049615"
+      },
+      {
+        "file": "terraform/security_groups.tf",
+        "hash": "7435275127260172570"
+      },
+      {
+        "file": ".circleci/config.yml",
+        "hash": "9185018611291633220"
+      },
+      {
+        "file": "terraform/ec2.tf",
+        "hash": "7416133253389805352"
+      },
+      {
+        "file": ".husky/pre-commit",
+        "hash": "13469207043343598078"
+      },
+      {
+        "file": "terraform/route53.tf",
+        "hash": "5571093656897954377"
+      },
+      {
+        "file": "terraform/variables.tf",
+        "hash": "11075696575271832164"
+      },
+      {
+        "file": ".eslintignore",
+        "hash": "16006061678108430347"
+      },
+      {
+        "file": ".prettierignore",
+        "hash": "4371023871706563332"
+      },
+      {
+        "file": "terraform/s3.tf",
+        "hash": "10609084082184350326"
+      },
+      {
+        "file": "terraform/vpc.tf",
+        "hash": "10876928832299531878"
+      },
+      {
+        "file": "package.json",
+        "hash": "324265958919036840"
+      },
+      {
+        "file": "terraform/iam.tf",
+        "hash": "4992162864895736959"
+      },
+      {
+        "file": ".vscode/extensions.json",
+        "hash": "6082205958163871693"
+      },
+      {
+        "file": "terraform/providers.tf",
+        "hash": "4700164170443782580"
+      },
+      {
+        "file": ".vscode/launch.json",
+        "hash": "14980978938519590618"
+      },
+      {
+        "file": ".pnp.cjs",
+        "hash": "10224327691849471196"
+      },
+      {
+        "file": ".eslintrc.js",
+        "hash": "15302025553905476284"
+      },
+      {
+        "file": "terraform/outputs.tf",
+        "hash": "10549023709898212849"
+      },
+      {
+        "file": "terraform/vars/sample.tfvars",
+        "hash": "6343856454875289691"
+      },
+      {
+        "file": "terraform/ecr.tf",
+        "hash": "9485655857322072462"
+      },
+      {
+        "file": "terraform/cloudwatch.tf",
+        "hash": "2709581408003397519"
+      },
+      {
+        "file": ".prettierrc",
+        "hash": "2150401653874427264"
+      },
+      {
+        "file": ".editorconfig",
+        "hash": "9833554460771039959"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "11839423034049070459"
+      },
+      {
+        "file": "terraform/README.md",
+        "hash": "1656345458873251880"
+      },
+      {
+        "file": "terraform/cloudfront.tf",
+        "hash": "8495927474017070499"
+      }
+    ],
+    "projectFileMap": {
+      "@bottomtime/e2e-tests": [
+        {
+          "file": "packages/e2e-tests/.gitignore",
+          "hash": "17956570622979849062"
+        },
+        {
+          "file": "packages/e2e-tests/package.json",
+          "hash": "1198146534780457288",
+          "deps": [
+            "@bottomtime/api",
+            "@bottomtime/web",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "packages/e2e-tests/playwright.config.ts",
+          "hash": "512010287218871429"
+        },
+        {
+          "file": "packages/e2e-tests/tests/fixtures/auth.fixture.ts",
+          "hash": "7496236906583823936"
+        },
+        {
+          "file": "packages/e2e-tests/tests/fixtures/dive-sites.fixture.ts",
+          "hash": "7921183913115247820"
+        },
+        {
+          "file": "packages/e2e-tests/tests/fixtures/friends.fixture.ts",
+          "hash": "2420327941039093825"
+        },
+        {
+          "file": "packages/e2e-tests/tests/fixtures/index.ts",
+          "hash": "12621563373950068152"
+        },
+        {
+          "file": "packages/e2e-tests/tests/fixtures/jwt.ts",
+          "hash": "8796341487655881493"
+        },
+        {
+          "file": "packages/e2e-tests/tests/fixtures/log-entries.fixture.ts",
+          "hash": "12862981925192878192"
+        },
+        {
+          "file": "packages/e2e-tests/tests/fixtures/postgres.fixture.ts",
+          "hash": "7262733365483925744"
+        },
+        {
+          "file": "packages/e2e-tests/tests/specs/account-management.spec.ts",
+          "hash": "13309369236700423248"
+        },
+        {
+          "file": "packages/e2e-tests/tests/specs/dive-sites.spec.ts",
+          "hash": "14357200975150744893"
+        },
+        {
+          "file": "packages/e2e-tests/tests/specs/friends-management.spec.ts",
+          "hash": "13450348521586681798"
+        },
+        {
+          "file": "packages/e2e-tests/tests/specs/log-entries.spec.ts",
+          "hash": "9077517425851990567"
+        },
+        {
+          "file": "packages/e2e-tests/tests/specs/registration-and-login.spec.ts",
+          "hash": "10981591878861030683"
+        },
+        {
+          "file": "packages/e2e-tests/tsconfig.eslint.json",
+          "hash": "9036504219471545531"
+        },
+        {
+          "file": "packages/e2e-tests/tsconfig.json",
+          "hash": "7580276935462249875"
+        }
+      ],
+      "@bottomtime/api": [
+        {
+          "file": "packages/api/jest.config.js",
+          "hash": "6321287921275906093"
+        },
+        {
+          "file": "packages/api/package.json",
+          "hash": "8612255499961604131",
+          "deps": [
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "packages/api/src/client/alert.ts",
+          "hash": "14257817131514549344"
+        },
+        {
+          "file": "packages/api/src/client/alerts.ts",
+          "hash": "4645132555723762707"
+        },
+        {
+          "file": "packages/api/src/client/client.ts",
+          "hash": "15204008200551344373"
+        },
+        {
+          "file": "packages/api/src/client/dive-site.ts",
+          "hash": "4156285421195773542"
+        },
+        {
+          "file": "packages/api/src/client/dive-sites.ts",
+          "hash": "18136941676514482693"
+        },
+        {
+          "file": "packages/api/src/client/friend-request.ts",
+          "hash": "13392473072379981234"
+        },
+        {
+          "file": "packages/api/src/client/friend.ts",
+          "hash": "4536975830094644687"
+        },
+        {
+          "file": "packages/api/src/client/friends.ts",
+          "hash": "2796908199107578688"
+        },
+        {
+          "file": "packages/api/src/client/index.ts",
+          "hash": "5737973085333034711"
+        },
+        {
+          "file": "packages/api/src/client/log-entries.ts",
+          "hash": "10628242288319312460"
+        },
+        {
+          "file": "packages/api/src/client/log-entry.ts",
+          "hash": "10926132582202613109"
+        },
+        {
+          "file": "packages/api/src/client/user-profile.ts",
+          "hash": "16007937572064756854"
+        },
+        {
+          "file": "packages/api/src/client/user-settings.ts",
+          "hash": "1898796663179266490"
+        },
+        {
+          "file": "packages/api/src/client/user.ts",
+          "hash": "7349521916890736259"
+        },
+        {
+          "file": "packages/api/src/client/users.ts",
+          "hash": "13786482664268988800"
+        },
+        {
+          "file": "packages/api/src/index.ts",
+          "hash": "11827232090477503180"
+        },
+        {
+          "file": "packages/api/src/types/admin.ts",
+          "hash": "8733319280419349017"
+        },
+        {
+          "file": "packages/api/src/types/alerts.ts",
+          "hash": "15286310309210184143"
+        },
+        {
+          "file": "packages/api/src/types/auth.ts",
+          "hash": "16340097111271192654"
+        },
+        {
+          "file": "packages/api/src/types/certifications.ts",
+          "hash": "3794261831034077990"
+        },
+        {
+          "file": "packages/api/src/types/constants.ts",
+          "hash": "2111950423640708271"
+        },
+        {
+          "file": "packages/api/src/types/dive-sites.ts",
+          "hash": "8971838996766900929"
+        },
+        {
+          "file": "packages/api/src/types/errors.ts",
+          "hash": "5851075494243205501"
+        },
+        {
+          "file": "packages/api/src/types/friends.ts",
+          "hash": "825236674995088660"
+        },
+        {
+          "file": "packages/api/src/types/index.ts",
+          "hash": "14448049325945656375"
+        },
+        {
+          "file": "packages/api/src/types/log-entries.ts",
+          "hash": "17909439929979580559"
+        },
+        {
+          "file": "packages/api/src/types/notifications.ts",
+          "hash": "2557182500790608861"
+        },
+        {
+          "file": "packages/api/src/types/tanks.ts",
+          "hash": "9213557696681355431"
+        },
+        {
+          "file": "packages/api/src/types/users.ts",
+          "hash": "1444697379733217731"
+        },
+        {
+          "file": "packages/api/tests/fixtures/dive-sites-search-results.json",
+          "hash": "17693421837135053381"
+        },
+        {
+          "file": "packages/api/tests/fixtures/friend-requests-search-results.json",
+          "hash": "690515919412402175"
+        },
+        {
+          "file": "packages/api/tests/fixtures/friends-search-results.json",
+          "hash": "8999324217358642933"
+        },
+        {
+          "file": "packages/api/tests/fixtures/log-entries-search-results.json",
+          "hash": "666493038923144756"
+        },
+        {
+          "file": "packages/api/tests/fixtures/nock.ts",
+          "hash": "8951080964791020906"
+        },
+        {
+          "file": "packages/api/tests/fixtures/sites.ts",
+          "hash": "10027055682151961309"
+        },
+        {
+          "file": "packages/api/tests/fixtures/user-search-results.json",
+          "hash": "10940322761028908692"
+        },
+        {
+          "file": "packages/api/tests/fixtures/users.ts",
+          "hash": "4306236458414927331"
+        },
+        {
+          "file": "packages/api/tests/fixtures/waltito.png",
+          "hash": "15829923094369795235"
+        },
+        {
+          "file": "packages/api/tests/spec/__snapshots__/dive-sites.spec.ts.snap",
+          "hash": "13135338953613150599"
+        },
+        {
+          "file": "packages/api/tests/spec/__snapshots__/friends.spec.ts.snap",
+          "hash": "1215225893247837739"
+        },
+        {
+          "file": "packages/api/tests/spec/__snapshots__/user-profile.spec.ts.snap",
+          "hash": "4372589291626818196"
+        },
+        {
+          "file": "packages/api/tests/spec/alert.spec.ts",
+          "hash": "14095381037157773740"
+        },
+        {
+          "file": "packages/api/tests/spec/alerts.spec.ts",
+          "hash": "4146221766092694269"
+        },
+        {
+          "file": "packages/api/tests/spec/dive-site.spec.ts",
+          "hash": "6209551704274030357"
+        },
+        {
+          "file": "packages/api/tests/spec/dive-sites.spec.ts",
+          "hash": "10812396316857741938"
+        },
+        {
+          "file": "packages/api/tests/spec/friend-request.spec.ts",
+          "hash": "11659454227618389371"
+        },
+        {
+          "file": "packages/api/tests/spec/friend.spec.ts",
+          "hash": "14411784667060119827"
+        },
+        {
+          "file": "packages/api/tests/spec/friends.spec.ts",
+          "hash": "5726901339631184675"
+        },
+        {
+          "file": "packages/api/tests/spec/log-entries.spec.ts",
+          "hash": "6018279777869354362"
+        },
+        {
+          "file": "packages/api/tests/spec/log-entry.spec.ts",
+          "hash": "6425651203231339771"
+        },
+        {
+          "file": "packages/api/tests/spec/user-profile.spec.ts",
+          "hash": "11051194628446406722"
+        },
+        {
+          "file": "packages/api/tests/spec/user-settings.spec.ts",
+          "hash": "1686405084997698106"
+        },
+        {
+          "file": "packages/api/tests/spec/user.spec.ts",
+          "hash": "12686861896875849614"
+        },
+        {
+          "file": "packages/api/tests/spec/users.spec.ts",
+          "hash": "13268909921878248322"
+        },
+        {
+          "file": "packages/api/tsconfig.eslint.json",
+          "hash": "9480718920750956062"
+        },
+        {
+          "file": "packages/api/tsconfig.json",
+          "hash": "5881802537942443344"
+        },
+        {
+          "file": "packages/api/tsconfig.test.json",
+          "hash": "8643363441224999996"
+        }
+      ],
+      "@bottomtime/common": [
+        {
+          "file": "packages/common/package.json",
+          "hash": "16192146210650548660",
+          "deps": [
+            "npm:eslint",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "packages/common/src/bunyan-logger-service.ts",
+          "hash": "4406623542346498021"
+        },
+        {
+          "file": "packages/common/src/index.ts",
+          "hash": "12517617500021139251"
+        },
+        {
+          "file": "packages/common/src/logger.ts",
+          "hash": "14991423645919349020"
+        },
+        {
+          "file": "packages/common/tsconfig.eslint.json",
+          "hash": "9480718920750956062"
+        },
+        {
+          "file": "packages/common/tsconfig.json",
+          "hash": "4994814080627297953"
+        }
+      ],
+      "@bottomtime/web": [
+        {
+          "file": "packages/web/.env.example",
+          "hash": "2682649005726702082"
+        },
+        {
+          "file": "packages/web/README.md",
+          "hash": "9143548480953545861"
+        },
+        {
+          "file": "packages/web/bootstrap-docker.sh",
+          "hash": "8798810703431324396"
+        },
+        {
+          "file": "packages/web/index.html",
+          "hash": "15068449743545883653"
+        },
+        {
+          "file": "packages/web/jest.config.mjs",
+          "hash": "9558921239108925302"
+        },
+        {
+          "file": "packages/web/package.json",
+          "hash": "15786848329766413536",
+          "deps": [
+            "@bottomtime/api",
+            "@bottomtime/common",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "packages/web/postcss.config.js",
+          "hash": "1886002347757770194"
+        },
+        {
+          "file": "packages/web/public/favicon.ico",
+          "hash": "5422027932428766931"
+        },
+        {
+          "file": "packages/web/public/img/diver_lost.jpeg",
+          "hash": "2286581651017079404"
+        },
+        {
+          "file": "packages/web/public/img/flag-logo.png",
+          "hash": "4348624721266229475"
+        },
+        {
+          "file": "packages/web/public/img/flag-marker.svg",
+          "hash": "14098848583006929617"
+        },
+        {
+          "file": "packages/web/public/img/lion-fish.webp",
+          "hash": "15772421333418181299"
+        },
+        {
+          "file": "packages/web/public/img/reef-tortuga.webp",
+          "hash": "5508575698850456857"
+        },
+        {
+          "file": "packages/web/server/app.module.ts",
+          "hash": "12588331410803709302"
+        },
+        {
+          "file": "packages/web/server/config.ts",
+          "hash": "11867159430596613168"
+        },
+        {
+          "file": "packages/web/server/constants.ts",
+          "hash": "10947640609114359559"
+        },
+        {
+          "file": "packages/web/server/dev/constants.ts",
+          "hash": "3562523021948051610"
+        },
+        {
+          "file": "packages/web/server/dev/dev.controller.ts",
+          "hash": "7454156125924291418"
+        },
+        {
+          "file": "packages/web/server/dev/dev.module.ts",
+          "hash": "15853270416183649958"
+        },
+        {
+          "file": "packages/web/server/dev/dev.service.ts",
+          "hash": "3955775907201575804"
+        },
+        {
+          "file": "packages/web/server/dev/error-page.ts",
+          "hash": "16271804822171603655"
+        },
+        {
+          "file": "packages/web/server/dev/index.ts",
+          "hash": "10124494966099398785"
+        },
+        {
+          "file": "packages/web/server/health.controller.ts",
+          "hash": "394813291224805555"
+        },
+        {
+          "file": "packages/web/server/index.ts",
+          "hash": "14280971821199500090"
+        },
+        {
+          "file": "packages/web/server/jwt/index.ts",
+          "hash": "13133087694256383620"
+        },
+        {
+          "file": "packages/web/server/jwt/jwt.module.ts",
+          "hash": "5746851649180645659"
+        },
+        {
+          "file": "packages/web/server/jwt/jwt.service.ts",
+          "hash": "8583921311982583659"
+        },
+        {
+          "file": "packages/web/server/original-url.decorator.ts",
+          "hash": "11793957004863621895"
+        },
+        {
+          "file": "packages/web/server/production/index.ts",
+          "hash": "3532312933982419544"
+        },
+        {
+          "file": "packages/web/server/production/production.module.ts",
+          "hash": "14406133102538389146"
+        },
+        {
+          "file": "packages/web/server/production/production.service.ts",
+          "hash": "1048904927995578909"
+        },
+        {
+          "file": "packages/web/server/production/web.controller.ts",
+          "hash": "10022419827307933429"
+        },
+        {
+          "file": "packages/web/src/api-client.ts",
+          "hash": "9361350525762348107"
+        },
+        {
+          "file": "packages/web/src/app-root.vue",
+          "hash": "18315815794800712819"
+        },
+        {
+          "file": "packages/web/src/avatars.ts",
+          "hash": "8799025883648642374"
+        },
+        {
+          "file": "packages/web/src/click-outside.ts",
+          "hash": "13734649949958742165"
+        },
+        {
+          "file": "packages/web/src/common.ts",
+          "hash": "11210447385684724262"
+        },
+        {
+          "file": "packages/web/src/components/admin/alerts-list-item.vue",
+          "hash": "16198292113872735769"
+        },
+        {
+          "file": "packages/web/src/components/admin/alerts-list.vue",
+          "hash": "12204634395169716720"
+        },
+        {
+          "file": "packages/web/src/components/admin/edit-alert.vue",
+          "hash": "10041154357422098679"
+        },
+        {
+          "file": "packages/web/src/components/admin/manage-user-account.vue",
+          "hash": "15138918689913609535"
+        },
+        {
+          "file": "packages/web/src/components/admin/manage-user.vue",
+          "hash": "10852108214928882748"
+        },
+        {
+          "file": "packages/web/src/components/admin/users-list-item.vue",
+          "hash": "1212278754176166081"
+        },
+        {
+          "file": "packages/web/src/components/admin/users-list.vue",
+          "hash": "1982370467159029825"
+        },
+        {
+          "file": "packages/web/src/components/common/bread-crumbs.vue",
+          "hash": "13246041459475463601"
+        },
+        {
+          "file": "packages/web/src/components/common/close-button.vue",
+          "hash": "16509331082033727203"
+        },
+        {
+          "file": "packages/web/src/components/common/depth-input.vue",
+          "hash": "1655820028799167021"
+        },
+        {
+          "file": "packages/web/src/components/common/depth-text.vue",
+          "hash": "9098055063250945023"
+        },
+        {
+          "file": "packages/web/src/components/common/drawer-panel.vue",
+          "hash": "13990785868556608226"
+        },
+        {
+          "file": "packages/web/src/components/common/file-upload.vue",
+          "hash": "1523569822264142432"
+        },
+        {
+          "file": "packages/web/src/components/common/forbidden-message.vue",
+          "hash": "4765735699701418954"
+        },
+        {
+          "file": "packages/web/src/components/common/form-box.vue",
+          "hash": "5169480352079498556"
+        },
+        {
+          "file": "packages/web/src/components/common/form-button.vue",
+          "hash": "13794808663761046842"
+        },
+        {
+          "file": "packages/web/src/components/common/form-checkbox.vue",
+          "hash": "1744516206662726138"
+        },
+        {
+          "file": "packages/web/src/components/common/form-date-picker.vue",
+          "hash": "1997973716221710046"
+        },
+        {
+          "file": "packages/web/src/components/common/form-field.vue",
+          "hash": "9265239781446049945"
+        },
+        {
+          "file": "packages/web/src/components/common/form-fuzzy-date.vue",
+          "hash": "1303508948812101460"
+        },
+        {
+          "file": "packages/web/src/components/common/form-label.vue",
+          "hash": "7956615507115007776"
+        },
+        {
+          "file": "packages/web/src/components/common/form-radio.vue",
+          "hash": "15487115689336790186"
+        },
+        {
+          "file": "packages/web/src/components/common/form-search-box.vue",
+          "hash": "37679581622796536"
+        },
+        {
+          "file": "packages/web/src/components/common/form-select.vue",
+          "hash": "1357002174834335849"
+        },
+        {
+          "file": "packages/web/src/components/common/form-slider.vue",
+          "hash": "17599429012290066622"
+        },
+        {
+          "file": "packages/web/src/components/common/form-text-area.vue",
+          "hash": "1884724196376838354"
+        },
+        {
+          "file": "packages/web/src/components/common/form-text-box.vue",
+          "hash": "18085339849557376360"
+        },
+        {
+          "file": "packages/web/src/components/common/form-toggle.vue",
+          "hash": "8647398555720087719"
+        },
+        {
+          "file": "packages/web/src/components/common/google-map.vue",
+          "hash": "733501602688375955"
+        },
+        {
+          "file": "packages/web/src/components/common/image-cropper.vue",
+          "hash": "10631419032702326557"
+        },
+        {
+          "file": "packages/web/src/components/common/markdown-viewer.vue",
+          "hash": "6923325635515956643"
+        },
+        {
+          "file": "packages/web/src/components/common/nav-link.vue",
+          "hash": "16534733103126320007"
+        },
+        {
+          "file": "packages/web/src/components/common/not-found.vue",
+          "hash": "8913573693371683174"
+        },
+        {
+          "file": "packages/web/src/components/common/page-title.vue",
+          "hash": "13765874798470339634"
+        },
+        {
+          "file": "packages/web/src/components/common/require-anon.vue",
+          "hash": "12994040558265409411"
+        },
+        {
+          "file": "packages/web/src/components/common/require-auth.vue",
+          "hash": "2024994286375687348"
+        },
+        {
+          "file": "packages/web/src/components/common/star-rating.vue",
+          "hash": "13209887890191751226"
+        },
+        {
+          "file": "packages/web/src/components/common/tabs-panel.vue",
+          "hash": "16351383335913230021"
+        },
+        {
+          "file": "packages/web/src/components/common/text-heading.vue",
+          "hash": "3924761962251810071"
+        },
+        {
+          "file": "packages/web/src/components/core/dark-mode-toggle.vue",
+          "hash": "10936287783879760578"
+        },
+        {
+          "file": "packages/web/src/components/core/nav-bar-link.vue",
+          "hash": "1916335983672420389"
+        },
+        {
+          "file": "packages/web/src/components/core/nav-bar.vue",
+          "hash": "5983764595150864688"
+        },
+        {
+          "file": "packages/web/src/components/core/page-footer.vue",
+          "hash": "10550672271785404299"
+        },
+        {
+          "file": "packages/web/src/components/core/snack-bar-toast.vue",
+          "hash": "1342840253609030348"
+        },
+        {
+          "file": "packages/web/src/components/core/snack-bar.vue",
+          "hash": "4613762873880059790"
+        },
+        {
+          "file": "packages/web/src/components/dialog/change-avatar-dialog.vue",
+          "hash": "770342402136989469"
+        },
+        {
+          "file": "packages/web/src/components/dialog/change-password-dialog.vue",
+          "hash": "4399454179745936410"
+        },
+        {
+          "file": "packages/web/src/components/dialog/confirm-dialog.vue",
+          "hash": "11874448908823365695"
+        },
+        {
+          "file": "packages/web/src/components/dialog/dialog-base.vue",
+          "hash": "611121706275852616"
+        },
+        {
+          "file": "packages/web/src/components/dialog/location-dialog.vue",
+          "hash": "9375329189486195276"
+        },
+        {
+          "file": "packages/web/src/components/diveSites/dive-sites-list-item.vue",
+          "hash": "9537725323860607033"
+        },
+        {
+          "file": "packages/web/src/components/diveSites/dive-sites-list.vue",
+          "hash": "9433359871848509147"
+        },
+        {
+          "file": "packages/web/src/components/diveSites/edit-dive-site.vue",
+          "hash": "17114375722454378464"
+        },
+        {
+          "file": "packages/web/src/components/diveSites/search-dive-sites-form.vue",
+          "hash": "11181719816499223027"
+        },
+        {
+          "file": "packages/web/src/components/diveSites/view-dive-site.vue",
+          "hash": "2635825100984532958"
+        },
+        {
+          "file": "packages/web/src/components/friends/friend-requests-list-item.vue",
+          "hash": "1403829791565590637"
+        },
+        {
+          "file": "packages/web/src/components/friends/friend-requests-list.vue",
+          "hash": "1725174296336744228"
+        },
+        {
+          "file": "packages/web/src/components/friends/friends-list-item.vue",
+          "hash": "1470611700106297775"
+        },
+        {
+          "file": "packages/web/src/components/friends/friends-list.vue",
+          "hash": "12852731560229406021"
+        },
+        {
+          "file": "packages/web/src/components/friends/incoming-friend-request-item.vue",
+          "hash": "9527740066167458318"
+        },
+        {
+          "file": "packages/web/src/components/friends/outgoing-friend-request-item.vue",
+          "hash": "5263466791753568457"
+        },
+        {
+          "file": "packages/web/src/components/friends/search-friends-form.vue",
+          "hash": "12046578196614276596"
+        },
+        {
+          "file": "packages/web/src/components/friends/search-friends-list-item.vue",
+          "hash": "17565217328790294168"
+        },
+        {
+          "file": "packages/web/src/components/friends/search-friends-list.vue",
+          "hash": "6995165146602467895"
+        },
+        {
+          "file": "packages/web/src/components/home/alerts-carousel-item.vue",
+          "hash": "2754115661983517549"
+        },
+        {
+          "file": "packages/web/src/components/home/alerts-carousel.vue",
+          "hash": "1382590962260154321"
+        },
+        {
+          "file": "packages/web/src/components/home/hero-section.vue",
+          "hash": "9371275366861196065"
+        },
+        {
+          "file": "packages/web/src/components/logbook/edit-logbook-entry.vue",
+          "hash": "12625105833030372837"
+        },
+        {
+          "file": "packages/web/src/components/logbook/logbook-entries-list-item.vue",
+          "hash": "7697606409702248274"
+        },
+        {
+          "file": "packages/web/src/components/logbook/logbook-entries-list.vue",
+          "hash": "17776115718281717151"
+        },
+        {
+          "file": "packages/web/src/components/logbook/logbook-search.vue",
+          "hash": "5000675018300369306"
+        },
+        {
+          "file": "packages/web/src/components/logbook/view-logbook-entry.vue",
+          "hash": "7896909263547753479"
+        },
+        {
+          "file": "packages/web/src/components/users/account-timestamps.vue",
+          "hash": "12723782435817620975"
+        },
+        {
+          "file": "packages/web/src/components/users/edit-profile.vue",
+          "hash": "14046634725686974471"
+        },
+        {
+          "file": "packages/web/src/components/users/edit-settings.vue",
+          "hash": "457210879350440871"
+        },
+        {
+          "file": "packages/web/src/components/users/login-form.vue",
+          "hash": "4846497561005705568"
+        },
+        {
+          "file": "packages/web/src/components/users/manage-account.vue",
+          "hash": "7787659528165692148"
+        },
+        {
+          "file": "packages/web/src/components/users/manage-password.vue",
+          "hash": "4412884231424904441"
+        },
+        {
+          "file": "packages/web/src/components/users/password-requirements.vue",
+          "hash": "11791487728091784347"
+        },
+        {
+          "file": "packages/web/src/components/users/profile-panel.vue",
+          "hash": "3410918398505411755"
+        },
+        {
+          "file": "packages/web/src/components/users/register-form.vue",
+          "hash": "16400759943820398405"
+        },
+        {
+          "file": "packages/web/src/components/users/request-password-reset.vue",
+          "hash": "9843747292655183111"
+        },
+        {
+          "file": "packages/web/src/components/users/reset-password.vue",
+          "hash": "6663217931620002858"
+        },
+        {
+          "file": "packages/web/src/components/users/user-avatar.vue",
+          "hash": "4842008047987028004"
+        },
+        {
+          "file": "packages/web/src/components/users/username-and-email.vue",
+          "hash": "17981083277304517986"
+        },
+        {
+          "file": "packages/web/src/components/users/view-profile.vue",
+          "hash": "17900657152504795786"
+        },
+        {
+          "file": "packages/web/src/config.ts",
+          "hash": "17777785177397149146"
+        },
+        {
+          "file": "packages/web/src/entry-client.ts",
+          "hash": "4825859947320201137"
+        },
+        {
+          "file": "packages/web/src/entry-server.ts",
+          "hash": "16876892944938366769"
+        },
+        {
+          "file": "packages/web/src/index.d.ts",
+          "hash": "9589339610264417794"
+        },
+        {
+          "file": "packages/web/src/initial-state.ts",
+          "hash": "3898202399664705072"
+        },
+        {
+          "file": "packages/web/src/location.ts",
+          "hash": "18106891768829993227"
+        },
+        {
+          "file": "packages/web/src/main.ts",
+          "hash": "1547885177628320168"
+        },
+        {
+          "file": "packages/web/src/oops.ts",
+          "hash": "3163988533330320630"
+        },
+        {
+          "file": "packages/web/src/router/admin.routes.ts",
+          "hash": "12892189600680257076"
+        },
+        {
+          "file": "packages/web/src/router/dive-site.routes.ts",
+          "hash": "12328273169810852"
+        },
+        {
+          "file": "packages/web/src/router/index.ts",
+          "hash": "17337330180734424529"
+        },
+        {
+          "file": "packages/web/src/router/logbook.routes.ts",
+          "hash": "3870310496204906512"
+        },
+        {
+          "file": "packages/web/src/router/static.routes.ts",
+          "hash": "18443577167976652349"
+        },
+        {
+          "file": "packages/web/src/router/user.routes.ts",
+          "hash": "6833523523036411044"
+        },
+        {
+          "file": "packages/web/src/store/current-user.store.ts",
+          "hash": "12772859103531893764"
+        },
+        {
+          "file": "packages/web/src/store/index.ts",
+          "hash": "2385743732623006349"
+        },
+        {
+          "file": "packages/web/src/store/toasts.store.ts",
+          "hash": "13011418548873497366"
+        },
+        {
+          "file": "packages/web/src/style.css",
+          "hash": "55429855015766623"
+        },
+        {
+          "file": "packages/web/src/types/dom-window/index.d.ts",
+          "hash": "16294515861392256499"
+        },
+        {
+          "file": "packages/web/src/types/vite-env/index.d.ts",
+          "hash": "9589339610264417794"
+        },
+        {
+          "file": "packages/web/src/validators.ts",
+          "hash": "15060337757975231716"
+        },
+        {
+          "file": "packages/web/src/views/account-view.vue",
+          "hash": "10288677355435682321"
+        },
+        {
+          "file": "packages/web/src/views/admin-alert-view.vue",
+          "hash": "3548117173245097256"
+        },
+        {
+          "file": "packages/web/src/views/admin-alerts-view.vue",
+          "hash": "2124023038081207930"
+        },
+        {
+          "file": "packages/web/src/views/admin-dashboard-view.vue",
+          "hash": "6094185474297729290"
+        },
+        {
+          "file": "packages/web/src/views/admin-user-view.vue",
+          "hash": "6130645031317723266"
+        },
+        {
+          "file": "packages/web/src/views/admin-users-view.vue",
+          "hash": "3161451460317947106"
+        },
+        {
+          "file": "packages/web/src/views/cookies-view.vue",
+          "hash": "7562207514879689486"
+        },
+        {
+          "file": "packages/web/src/views/dive-site-view.vue",
+          "hash": "9487265850482101194"
+        },
+        {
+          "file": "packages/web/src/views/dive-sites-view.vue",
+          "hash": "14909819162219908343"
+        },
+        {
+          "file": "packages/web/src/views/friend-requests-view.vue",
+          "hash": "7273431371247102568"
+        },
+        {
+          "file": "packages/web/src/views/friends-view.vue",
+          "hash": "17596889565999408903"
+        },
+        {
+          "file": "packages/web/src/views/home-view.vue",
+          "hash": "13782573906808257189"
+        },
+        {
+          "file": "packages/web/src/views/import-logs-view.vue",
+          "hash": "13196891269375345170"
+        },
+        {
+          "file": "packages/web/src/views/log-entry-view.vue",
+          "hash": "4047905597913489397"
+        },
+        {
+          "file": "packages/web/src/views/logbook-view.vue",
+          "hash": "9253010403035820186"
+        },
+        {
+          "file": "packages/web/src/views/new-dive-site-view.vue",
+          "hash": "14830590068842332835"
+        },
+        {
+          "file": "packages/web/src/views/new-log-entry-view.vue",
+          "hash": "1763146309170435841"
+        },
+        {
+          "file": "packages/web/src/views/not-found-view.vue",
+          "hash": "14158195499933415621"
+        },
+        {
+          "file": "packages/web/src/views/privacy-view.vue",
+          "hash": "3498900951028243082"
+        },
+        {
+          "file": "packages/web/src/views/profile-view.vue",
+          "hash": "17163924974705241611"
+        },
+        {
+          "file": "packages/web/src/views/register-view.vue",
+          "hash": "10498673069324598596"
+        },
+        {
+          "file": "packages/web/src/views/reset-password-view.vue",
+          "hash": "16330142376963810463"
+        },
+        {
+          "file": "packages/web/src/views/server-error-view.vue",
+          "hash": "1176564692782034280"
+        },
+        {
+          "file": "packages/web/src/views/settings-view.vue",
+          "hash": "5285993199819477395"
+        },
+        {
+          "file": "packages/web/src/views/terms-of-service-view.vue",
+          "hash": "11404502972987288966"
+        },
+        {
+          "file": "packages/web/src/views/welcome-view.vue",
+          "hash": "9819740390682162006"
+        },
+        {
+          "file": "packages/web/tailwind.config.js",
+          "hash": "8861691738277882088"
+        },
+        {
+          "file": "packages/web/tests/fixtures/alerts.json",
+          "hash": "16586882582177101854"
+        },
+        {
+          "file": "packages/web/tests/fixtures/create-axios-error.ts",
+          "hash": "14756769744034500312"
+        },
+        {
+          "file": "packages/web/tests/fixtures/create-router.ts",
+          "hash": "18387502128956961230"
+        },
+        {
+          "file": "packages/web/tests/fixtures/dive-sites-search-results.json",
+          "hash": "17693421837135053381"
+        },
+        {
+          "file": "packages/web/tests/fixtures/friend-requests.json",
+          "hash": "12384662669752329095"
+        },
+        {
+          "file": "packages/web/tests/fixtures/friends.json",
+          "hash": "11237334781407283882"
+        },
+        {
+          "file": "packages/web/tests/fixtures/log-entries.json",
+          "hash": "6012135563531469906"
+        },
+        {
+          "file": "packages/web/tests/fixtures/log-entries.ts",
+          "hash": "12831180905272291042"
+        },
+        {
+          "file": "packages/web/tests/fixtures/sites.ts",
+          "hash": "15425575856361354807"
+        },
+        {
+          "file": "packages/web/tests/fixtures/user-search-results.json",
+          "hash": "10940322761028908692"
+        },
+        {
+          "file": "packages/web/tests/fixtures/users.ts",
+          "hash": "16327387932632965367"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/__snapshots__/alerts-list-item.spec.ts.snap",
+          "hash": "3575881302329480482"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/__snapshots__/alerts-list.spec.ts.snap",
+          "hash": "14285462908535295364"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/__snapshots__/manage-user-account.spec.ts.snap",
+          "hash": "8560574433567615546"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/__snapshots__/users-list-item.spec.ts.snap",
+          "hash": "13987801320147943712"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/alerts-list-item.spec.ts",
+          "hash": "10603050806166706034"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/alerts-list.spec.ts",
+          "hash": "15954674717346124517"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/edit-alert.spec.ts",
+          "hash": "12789364104331373708"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/manage-user-account.spec.ts",
+          "hash": "255550108572026042"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/manage-user.spec.ts",
+          "hash": "6617588149378760868"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/users-list-item.spec.ts",
+          "hash": "17066553673507673111"
+        },
+        {
+          "file": "packages/web/tests/spec/components/admin/users-list.spec.ts",
+          "hash": "13113340103359885864"
+        },
+        {
+          "file": "packages/web/tests/spec/components/app-root-and-routing.spec.ts",
+          "hash": "4599646186959327076"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/bread-crumbs.spec.ts.snap",
+          "hash": "9031911028111322859"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/close-button.spec.ts.snap",
+          "hash": "8839811272716022126"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/depth-text.spec.ts.snap",
+          "hash": "7947079860204406679"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/drawer-panel.spec.ts.snap",
+          "hash": "14355905251507910372"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/form-fuzzy-date.spec.ts.snap",
+          "hash": "7799355562728694922"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/form-search-box.spec.ts.snap",
+          "hash": "15067597085829080903"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/markdown-viewer.spec.ts.snap",
+          "hash": "11532212069316393715"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/nav-link.spec.ts.snap",
+          "hash": "14692355888943431946"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/page-title.spec.ts.snap",
+          "hash": "5931813986381879428"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/star-rating.spec.ts.snap",
+          "hash": "5791846222803663165"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/__snapshots__/tabs-panel.spec.ts.snap",
+          "hash": "15851626022779262920"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/bread-crumbs.spec.ts",
+          "hash": "11437004194584690209"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/close-button.spec.ts",
+          "hash": "13929372699912197753"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/depth-input.spec.ts",
+          "hash": "577816158867848515"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/depth-text.spec.ts",
+          "hash": "1786881779414429333"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/drawer-panel.spec.ts",
+          "hash": "17078055603117731534"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/form-fuzzy-date.spec.ts",
+          "hash": "5022295339518379374"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/form-radio.spec.ts",
+          "hash": "12902379196321795514"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/form-search-box.spec.ts",
+          "hash": "15993944048635640012"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/markdown-viewer.spec.ts",
+          "hash": "10139754694735650728"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/nav-link.spec.ts",
+          "hash": "7355695362786026540"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/page-title.spec.ts",
+          "hash": "1736593383414799119"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/require-anon.spec.ts",
+          "hash": "1325257895047476113"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/require-auth.spec.ts",
+          "hash": "18380555503822072513"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/star-rating.spec.ts",
+          "hash": "9384164234356815604"
+        },
+        {
+          "file": "packages/web/tests/spec/components/common/tabs-panel.spec.ts",
+          "hash": "1559700938856194924"
+        },
+        {
+          "file": "packages/web/tests/spec/components/core/__snapshots__/nav-bar.spec.ts.snap",
+          "hash": "15475534403191179599"
+        },
+        {
+          "file": "packages/web/tests/spec/components/core/__snapshots__/page-footer.spec.ts.snap",
+          "hash": "16511118176223033998"
+        },
+        {
+          "file": "packages/web/tests/spec/components/core/__snapshots__/snack-bar.spec.ts.snap",
+          "hash": "10352326357355779462"
+        },
+        {
+          "file": "packages/web/tests/spec/components/core/dark-mode-toggle.spec.ts",
+          "hash": "11751012346614871397"
+        },
+        {
+          "file": "packages/web/tests/spec/components/core/nav-bar.spec.ts",
+          "hash": "15511269534976266098"
+        },
+        {
+          "file": "packages/web/tests/spec/components/core/page-footer.spec.ts",
+          "hash": "10382289462930811369"
+        },
+        {
+          "file": "packages/web/tests/spec/components/core/snack-bar.spec.ts",
+          "hash": "13069836355163937277"
+        },
+        {
+          "file": "packages/web/tests/spec/components/dialog/__snapshots__/location-dialog.spec.ts.snap",
+          "hash": "9635312713886101116"
+        },
+        {
+          "file": "packages/web/tests/spec/components/dialog/change-password-dialog.spec.ts",
+          "hash": "635483669449951373"
+        },
+        {
+          "file": "packages/web/tests/spec/components/dialog/confirm-dialog.spec.ts",
+          "hash": "16281624482949884285"
+        },
+        {
+          "file": "packages/web/tests/spec/components/dialog/location-dialog.spec.ts",
+          "hash": "15857086264806569267"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/__snapshots__/dive-sites-list-item.spec.ts.snap",
+          "hash": "3260174984811222435"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/__snapshots__/dive-sites-list.spec.ts.snap",
+          "hash": "4406575432248963349"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/__snapshots__/edit-dive-site.spec.ts.snap",
+          "hash": "9380623208533871470"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/__snapshots__/search-dive-sites-form.spec.ts.snap",
+          "hash": "15792127953427723892"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/__snapshots__/view-dive-site.spec.ts.snap",
+          "hash": "17130667204510157095"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/dive-sites-list-item.spec.ts",
+          "hash": "4616219896191572999"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/dive-sites-list.spec.ts",
+          "hash": "15972237135207865716"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/edit-dive-site.spec.ts",
+          "hash": "6459120135306839797"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/search-dive-sites-form.spec.ts",
+          "hash": "15626226811349763829"
+        },
+        {
+          "file": "packages/web/tests/spec/components/diveSites/view-dive-site.spec.ts",
+          "hash": "12101073136665775612"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/__snapshots__/friends-list-item.spec.ts.snap",
+          "hash": "2900075701976687749"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/__snapshots__/incoming-friend-request-item.spec.ts.snap",
+          "hash": "14734340700264302089"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/__snapshots__/outgoing-friend-request-item.spec.ts.snap",
+          "hash": "12315495845703999806"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/__snapshots__/search-friends-list-item.spec.ts.snap",
+          "hash": "13632498813745783786"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/friend-requests-list-item.spec.ts",
+          "hash": "4126906473555641769"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/friend-requests-list.spec.ts",
+          "hash": "15269511899416865266"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/friends-list-item.spec.ts",
+          "hash": "1635547798268212355"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/friends-list.spec.ts",
+          "hash": "12680093830179872977"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/incoming-friend-request-item.spec.ts",
+          "hash": "5968416131765140576"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/outgoing-friend-request-item.spec.ts",
+          "hash": "13299277807700013500"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/search-friends-form.spec.ts",
+          "hash": "14535752425121551769"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/search-friends-list-item.spec.ts",
+          "hash": "18072177909114276525"
+        },
+        {
+          "file": "packages/web/tests/spec/components/friends/search-friends-list.spec.ts",
+          "hash": "12192339522734419919"
+        },
+        {
+          "file": "packages/web/tests/spec/components/home/__snapshots__/hero-section.spec.ts.snap",
+          "hash": "3905673233721958357"
+        },
+        {
+          "file": "packages/web/tests/spec/components/home/alerts-carousel.spec.ts",
+          "hash": "12060804832677869318"
+        },
+        {
+          "file": "packages/web/tests/spec/components/home/hero-section.spec.ts",
+          "hash": "2521024657078634682"
+        },
+        {
+          "file": "packages/web/tests/spec/components/logbook/__snapshots__/logbook-entries-list-item.spec.ts.snap",
+          "hash": "15837746025578403530"
+        },
+        {
+          "file": "packages/web/tests/spec/components/logbook/__snapshots__/logbook-search.spec.ts.snap",
+          "hash": "13866712844821697272"
+        },
+        {
+          "file": "packages/web/tests/spec/components/logbook/__snapshots__/view-logbook-entry.spec.ts.snap",
+          "hash": "6417914837263691945"
+        },
+        {
+          "file": "packages/web/tests/spec/components/logbook/edit-logbook-entry.spec.ts",
+          "hash": "7567057457463342365"
+        },
+        {
+          "file": "packages/web/tests/spec/components/logbook/logbook-entries-list-item.spec.ts",
+          "hash": "12928299154382395437"
+        },
+        {
+          "file": "packages/web/tests/spec/components/logbook/logbook-entries-list.spec.ts",
+          "hash": "15410406909402934203"
+        },
+        {
+          "file": "packages/web/tests/spec/components/logbook/logbook-search.spec.ts",
+          "hash": "2992798211107535183"
+        },
+        {
+          "file": "packages/web/tests/spec/components/logbook/view-logbook-entry.spec.ts",
+          "hash": "16389811425413726587"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/__snapshots__/manage-account.spec.ts.snap",
+          "hash": "12128775201258595844"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/__snapshots__/manage-password.spec.ts.snap",
+          "hash": "16538984073829939303"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/__snapshots__/user-avatar.spec.ts.snap",
+          "hash": "11606180197166094906"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/__snapshots__/username-and-email.spec.ts.snap",
+          "hash": "17376313552032313551"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/__snapshots__/view-profile.spec.ts.snap",
+          "hash": "12179381556090817030"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/edit-profile.spec.ts",
+          "hash": "2307712746123452989"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/edit-settings.spec.ts",
+          "hash": "10545615941285407776"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/login-form.spec.ts",
+          "hash": "5129376756449437976"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/manage-account.spec.ts",
+          "hash": "4447315394002089260"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/manage-password.spec.ts",
+          "hash": "697292476743655872"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/profile-panel.spec.ts",
+          "hash": "163032630070140265"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/register-form.spec.ts",
+          "hash": "8531303375153021015"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/request-password-reset.spec.ts",
+          "hash": "2343788518681823756"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/reset-password.spec.ts",
+          "hash": "12516623764204733678"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/user-avatar.spec.ts",
+          "hash": "12538844787420839076"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/username-and-email.spec.ts",
+          "hash": "9736425815501147233"
+        },
+        {
+          "file": "packages/web/tests/spec/components/users/view-profile.spec.ts",
+          "hash": "13123820202277816446"
+        },
+        {
+          "file": "packages/web/tests/spec/oops.spec.ts",
+          "hash": "9436866232450042495"
+        },
+        {
+          "file": "packages/web/tests/spec/router/router.spec.ts",
+          "hash": "16027544085075289209"
+        },
+        {
+          "file": "packages/web/tests/spec/store/current-user.store.spec.ts",
+          "hash": "18412736990455839041"
+        },
+        {
+          "file": "packages/web/tests/spec/store/toasts.store.spec.ts",
+          "hash": "17598633398382180002"
+        },
+        {
+          "file": "packages/web/tests/spec/views/__snapshots__/admin-alert-view.spec.ts.snap",
+          "hash": "774824402509918537"
+        },
+        {
+          "file": "packages/web/tests/spec/views/__snapshots__/admin-alerts-view.spec.ts.snap",
+          "hash": "12370037177883314745"
+        },
+        {
+          "file": "packages/web/tests/spec/views/__snapshots__/admin-user-view.spec.ts.snap",
+          "hash": "1025100558469949700"
+        },
+        {
+          "file": "packages/web/tests/spec/views/__snapshots__/dive-site-view.spec.ts.snap",
+          "hash": "10047620934554378252"
+        },
+        {
+          "file": "packages/web/tests/spec/views/__snapshots__/new-dive-site-view.spec.ts.snap",
+          "hash": "9859356735848185755"
+        },
+        {
+          "file": "packages/web/tests/spec/views/__snapshots__/not-found-view.spec.ts.snap",
+          "hash": "2209193257388428406"
+        },
+        {
+          "file": "packages/web/tests/spec/views/__snapshots__/static-vies.spec.ts.snap",
+          "hash": "14330514069383521287"
+        },
+        {
+          "file": "packages/web/tests/spec/views/account-view.spec.ts",
+          "hash": "14329535578461936506"
+        },
+        {
+          "file": "packages/web/tests/spec/views/admin-alert-view.spec.ts",
+          "hash": "18268207826139375994"
+        },
+        {
+          "file": "packages/web/tests/spec/views/admin-alerts-view.spec.ts",
+          "hash": "14397530744938819281"
+        },
+        {
+          "file": "packages/web/tests/spec/views/admin-user-view.spec.ts",
+          "hash": "15915663927575718370"
+        },
+        {
+          "file": "packages/web/tests/spec/views/admin-users-view.spec.ts",
+          "hash": "17798699722579875021"
+        },
+        {
+          "file": "packages/web/tests/spec/views/dive-site-view.spec.ts",
+          "hash": "10262697268437627921"
+        },
+        {
+          "file": "packages/web/tests/spec/views/dive-sites-view.spec.ts",
+          "hash": "2146549713692701891"
+        },
+        {
+          "file": "packages/web/tests/spec/views/friend-requests-view.spec.ts",
+          "hash": "8228668093060782609"
+        },
+        {
+          "file": "packages/web/tests/spec/views/friends-view.spec.ts",
+          "hash": "14865519911027560772"
+        },
+        {
+          "file": "packages/web/tests/spec/views/log-entry-view.spec.ts",
+          "hash": "13791546477872200447"
+        },
+        {
+          "file": "packages/web/tests/spec/views/logbook-view.spec.ts",
+          "hash": "17007493191010087077"
+        },
+        {
+          "file": "packages/web/tests/spec/views/new-dive-site-view.spec.ts",
+          "hash": "6324756874371899551"
+        },
+        {
+          "file": "packages/web/tests/spec/views/new-log-entry-view.spec.ts",
+          "hash": "10756081720753829187"
+        },
+        {
+          "file": "packages/web/tests/spec/views/not-found-view.spec.ts",
+          "hash": "8962474137387021768"
+        },
+        {
+          "file": "packages/web/tests/spec/views/profile-view.spec.ts",
+          "hash": "12031511024125136541"
+        },
+        {
+          "file": "packages/web/tests/spec/views/register-view.spec.ts",
+          "hash": "11008937490583628883"
+        },
+        {
+          "file": "packages/web/tests/spec/views/reset-password-view.spec.ts",
+          "hash": "13769506043118944067"
+        },
+        {
+          "file": "packages/web/tests/spec/views/settings-view.spec.ts",
+          "hash": "14304047169697052208"
+        },
+        {
+          "file": "packages/web/tests/spec/views/static-vies.spec.ts",
+          "hash": "10197734727488766565"
+        },
+        {
+          "file": "packages/web/tests/stubs/edit-profile.stub.vue",
+          "hash": "15665416328358179145"
+        },
+        {
+          "file": "packages/web/tests/stubs/edit-settings.stub.vue",
+          "hash": "11489264462966512463"
+        },
+        {
+          "file": "packages/web/tests/stubs/manage-user-account.stub.vue",
+          "hash": "18283930431416933272"
+        },
+        {
+          "file": "packages/web/tsconfig.eslint.json",
+          "hash": "8889880585413852622"
+        },
+        {
+          "file": "packages/web/tsconfig.json",
+          "hash": "11343222650504259963"
+        },
+        {
+          "file": "packages/web/tsconfig.node.json",
+          "hash": "14702218063384506385"
+        },
+        {
+          "file": "packages/web/tsconfig.test.json",
+          "hash": "17672354553147068763"
+        },
+        {
+          "file": "packages/web/vite.config.ts",
+          "hash": "14152296796994265149"
+        }
+      ],
+      "@bottomtime/service": [
+        {
+          "file": "packages/service/.env.example",
+          "hash": "16502983865497245680"
+        },
+        {
+          "file": "packages/service/README.md",
+          "hash": "14939315355315006041"
+        },
+        {
+          "file": "packages/service/admin/bt-admin.ts",
+          "hash": "12654212390953847710"
+        },
+        {
+          "file": "packages/service/admin/database/data-source.ts",
+          "hash": "4893571292382654135"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/fake-alert.ts",
+          "hash": "15078516879086068175"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/fake-depth.ts",
+          "hash": "2811940728659963314"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/fake-friend-request.ts",
+          "hash": "4330719766178595302"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/fake-friendship.ts",
+          "hash": "18212042605567772883"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/fake-log-entry.ts",
+          "hash": "3248086365388220016"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/fake-site.ts",
+          "hash": "5060346349364218797"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/fake-user.ts",
+          "hash": "10333513210505795313"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/index.ts",
+          "hash": "6141994164542489170"
+        },
+        {
+          "file": "packages/service/admin/database/fakes/possibly.ts",
+          "hash": "2957697413513715212"
+        },
+        {
+          "file": "packages/service/admin/database/index.ts",
+          "hash": "17198116532456595717"
+        },
+        {
+          "file": "packages/service/admin/database/init-db.ts",
+          "hash": "6540897433165233604"
+        },
+        {
+          "file": "packages/service/admin/database/purge-db.ts",
+          "hash": "11426041980250019810"
+        },
+        {
+          "file": "packages/service/admin/database/seed-db.ts",
+          "hash": "1583351823972367690"
+        },
+        {
+          "file": "packages/service/admin/database/test-data.ts",
+          "hash": "10274773521996345516"
+        },
+        {
+          "file": "packages/service/admin/tsconfig.json",
+          "hash": "10682606165202370317"
+        },
+        {
+          "file": "packages/service/admin/users/create-admin.ts",
+          "hash": "8248343122686315053"
+        },
+        {
+          "file": "packages/service/admin/users/get-user-token.ts",
+          "hash": "8563713650361714516"
+        },
+        {
+          "file": "packages/service/admin/users/index.ts",
+          "hash": "10428778451480242489"
+        },
+        {
+          "file": "packages/service/assets/templates/index.pug",
+          "hash": "12735602345421367433"
+        },
+        {
+          "file": "packages/service/assets/templates/layout.pug",
+          "hash": "12986171017359853774"
+        },
+        {
+          "file": "packages/service/assets/templates/reset-email-template.pug",
+          "hash": "10168251908114690067"
+        },
+        {
+          "file": "packages/service/assets/templates/verify-email-template.pug",
+          "hash": "4093694613925012783"
+        },
+        {
+          "file": "packages/service/assets/templates/welcome-email-template.pug",
+          "hash": "9083748041050672754"
+        },
+        {
+          "file": "packages/service/bootstrap-docker.sh",
+          "hash": "4545118894623739941"
+        },
+        {
+          "file": "packages/service/data-source.ts",
+          "hash": "15500637072426801251"
+        },
+        {
+          "file": "packages/service/jest.config.js",
+          "hash": "4796587188230145084"
+        },
+        {
+          "file": "packages/service/migrations/1709656114380-init.ts",
+          "hash": "9189107219162063411"
+        },
+        {
+          "file": "packages/service/migrations/1709826967462-full-text.ts",
+          "hash": "13219724180912777988"
+        },
+        {
+          "file": "packages/service/migrations/1710188326196-gis.ts",
+          "hash": "5302404353510546975"
+        },
+        {
+          "file": "packages/service/migrations/1710258935312-dive-sites-aggregates.ts",
+          "hash": "1703257644147651728"
+        },
+        {
+          "file": "packages/service/migrations/1711024394210-cascade-delete-reviews.ts",
+          "hash": "15923469982865871578"
+        },
+        {
+          "file": "packages/service/migrations/1711140574054-remove-profile-visibility.ts",
+          "hash": "1839707245107008695"
+        },
+        {
+          "file": "packages/service/migrations/1711382916442-alerts-and-notifications.ts",
+          "hash": "10482155795877329551"
+        },
+        {
+          "file": "packages/service/migrations/1713195534764-log-entries.ts",
+          "hash": "17990156384659383240"
+        },
+        {
+          "file": "packages/service/migrations/1713803072848-log-book-sharing.ts",
+          "hash": "10779852967180924804"
+        },
+        {
+          "file": "packages/service/migrations/1713803186871-drop-profile-birthdate.ts",
+          "hash": "5297273226398977596"
+        },
+        {
+          "file": "packages/service/migrations/1715866301895-oauth-unique-index.ts",
+          "hash": "2372745329994277818"
+        },
+        {
+          "file": "packages/service/package.json",
+          "hash": "537683514424000589",
+          "deps": [
+            "@bottomtime/api",
+            "@bottomtime/common",
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "packages/service/public/docs/LICENSE",
+          "hash": "1742713622754055560"
+        },
+        {
+          "file": "packages/service/public/docs/NOTICE",
+          "hash": "12146350246956151989"
+        },
+        {
+          "file": "packages/service/public/docs/favicon.ico",
+          "hash": "5422027932428766931"
+        },
+        {
+          "file": "packages/service/public/docs/index.css",
+          "hash": "7475195359628496214"
+        },
+        {
+          "file": "packages/service/public/docs/index.html",
+          "hash": "2687462744618890098"
+        },
+        {
+          "file": "packages/service/public/docs/oauth2-redirect.html",
+          "hash": "10518716185744908028"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-bootstrap.js",
+          "hash": "11138327063932637850"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-initializer.js",
+          "hash": "3880492336090592319"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui-bundle.js",
+          "hash": "3439028416045908626"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui-bundle.js.map",
+          "hash": "4114599174783040918"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui-es-bundle-core.js",
+          "hash": "11082533327403233359"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui-es-bundle-core.js.map",
+          "hash": "6789812631414517897"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui-es-bundle.js",
+          "hash": "489110617777863558"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui-es-bundle.js.map",
+          "hash": "6529971876222459121"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui-standalone-preset.js",
+          "hash": "14748398271381645899"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui-standalone-preset.js.map",
+          "hash": "8368040795748672267"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui.css",
+          "hash": "11472599872167721874"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui.css.map",
+          "hash": "11918658479816121092"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui.js",
+          "hash": "7677824107025674559"
+        },
+        {
+          "file": "packages/service/public/docs/swagger-ui.js.map",
+          "hash": "13931238501401391006"
+        },
+        {
+          "file": "packages/service/public/favicon.ico",
+          "hash": "5422027932428766931"
+        },
+        {
+          "file": "packages/service/src/admin/admin-certifications.controller.ts",
+          "hash": "14670692485801168421"
+        },
+        {
+          "file": "packages/service/src/admin/admin-friends.controller.ts",
+          "hash": "2169255031693348378"
+        },
+        {
+          "file": "packages/service/src/admin/admin-tanks.controller.ts",
+          "hash": "3513355379717559952"
+        },
+        {
+          "file": "packages/service/src/admin/admin-users.controller.ts",
+          "hash": "16041688605184371367"
+        },
+        {
+          "file": "packages/service/src/admin/admin.decorators.ts",
+          "hash": "17452255227043737567"
+        },
+        {
+          "file": "packages/service/src/admin/admin.module.ts",
+          "hash": "6393164105712690409"
+        },
+        {
+          "file": "packages/service/src/admin/admin.service.ts",
+          "hash": "477014121706811271"
+        },
+        {
+          "file": "packages/service/src/admin/assert-certificaiton.guard.ts",
+          "hash": "6819441960368778475"
+        },
+        {
+          "file": "packages/service/src/admin/index.ts",
+          "hash": "13196918198751726484"
+        },
+        {
+          "file": "packages/service/src/alerts/alert.ts",
+          "hash": "3809023462548430193"
+        },
+        {
+          "file": "packages/service/src/alerts/alerts.controller.ts",
+          "hash": "15754149954187370983"
+        },
+        {
+          "file": "packages/service/src/alerts/alerts.docs.ts",
+          "hash": "15048852440978894233"
+        },
+        {
+          "file": "packages/service/src/alerts/alerts.module.ts",
+          "hash": "14019286976743994040"
+        },
+        {
+          "file": "packages/service/src/alerts/alerts.service.ts",
+          "hash": "1575852676733298863"
+        },
+        {
+          "file": "packages/service/src/alerts/assert-target-alert.guard.ts",
+          "hash": "8223260514530109388"
+        },
+        {
+          "file": "packages/service/src/alerts/index.ts",
+          "hash": "2369803372689999650"
+        },
+        {
+          "file": "packages/service/src/app.controller.ts",
+          "hash": "13015800046807092845"
+        },
+        {
+          "file": "packages/service/src/app.module.ts",
+          "hash": "6650071575006422405"
+        },
+        {
+          "file": "packages/service/src/auth/auth.controller.ts",
+          "hash": "3115130737777985712"
+        },
+        {
+          "file": "packages/service/src/auth/auth.module.ts",
+          "hash": "8703385162430607560"
+        },
+        {
+          "file": "packages/service/src/auth/auth.service.ts",
+          "hash": "15631090493316520569"
+        },
+        {
+          "file": "packages/service/src/auth/current-user.ts",
+          "hash": "9301253398938552916"
+        },
+        {
+          "file": "packages/service/src/auth/discord.controller.ts",
+          "hash": "16615600199195373876"
+        },
+        {
+          "file": "packages/service/src/auth/github.controller.ts",
+          "hash": "8623707080396180192"
+        },
+        {
+          "file": "packages/service/src/auth/google.controller.ts",
+          "hash": "5201970752757891644"
+        },
+        {
+          "file": "packages/service/src/auth/guards/assert-admin.guard.ts",
+          "hash": "831790873895916514"
+        },
+        {
+          "file": "packages/service/src/auth/guards/assert-auth.guard.ts",
+          "hash": "718933718810529868"
+        },
+        {
+          "file": "packages/service/src/auth/guards/assert-verified-auth.guard.ts",
+          "hash": "15644940950709651413"
+        },
+        {
+          "file": "packages/service/src/auth/index.ts",
+          "hash": "495735605195893296"
+        },
+        {
+          "file": "packages/service/src/auth/oauth.service.ts",
+          "hash": "500645395158425937"
+        },
+        {
+          "file": "packages/service/src/auth/profile.ts",
+          "hash": "15597567096228967369"
+        },
+        {
+          "file": "packages/service/src/auth/strategies/anon.strategy.ts",
+          "hash": "754339258343230252"
+        },
+        {
+          "file": "packages/service/src/auth/strategies/discord.strategy.ts",
+          "hash": "3026437730345927500"
+        },
+        {
+          "file": "packages/service/src/auth/strategies/github.strategy.ts",
+          "hash": "14459000395605293020"
+        },
+        {
+          "file": "packages/service/src/auth/strategies/google.strategy.ts",
+          "hash": "13870039506611934213"
+        },
+        {
+          "file": "packages/service/src/auth/strategies/jwt.strategy.ts",
+          "hash": "10972313910271917029"
+        },
+        {
+          "file": "packages/service/src/auth/strategies/local.strategy.ts",
+          "hash": "6722120654297456787"
+        },
+        {
+          "file": "packages/service/src/auth/strategies/oauth-helpers.ts",
+          "hash": "5187667080495605652"
+        },
+        {
+          "file": "packages/service/src/auth/user.ts",
+          "hash": "9667481122475198034"
+        },
+        {
+          "file": "packages/service/src/certifications/certification.ts",
+          "hash": "7689588096802769357"
+        },
+        {
+          "file": "packages/service/src/certifications/certifications.controller.ts",
+          "hash": "4162598538741213404"
+        },
+        {
+          "file": "packages/service/src/certifications/certifications.docs.ts",
+          "hash": "4559578508067264028"
+        },
+        {
+          "file": "packages/service/src/certifications/certifications.module.ts",
+          "hash": "8722415383985604340"
+        },
+        {
+          "file": "packages/service/src/certifications/certifications.service.ts",
+          "hash": "11914440145072227359"
+        },
+        {
+          "file": "packages/service/src/certifications/index.ts",
+          "hash": "17503163077478900910"
+        },
+        {
+          "file": "packages/service/src/common.ts",
+          "hash": "1702656152623004955"
+        },
+        {
+          "file": "packages/service/src/config.ts",
+          "hash": "4502612974782803496"
+        },
+        {
+          "file": "packages/service/src/create-app.ts",
+          "hash": "11183260630825988095"
+        },
+        {
+          "file": "packages/service/src/data/alert.entity.ts",
+          "hash": "8356616680821527100"
+        },
+        {
+          "file": "packages/service/src/data/certification.entity.ts",
+          "hash": "4532966103838994459"
+        },
+        {
+          "file": "packages/service/src/data/data-source.ts",
+          "hash": "8735951208188067705"
+        },
+        {
+          "file": "packages/service/src/data/dive-site-review.entity.ts",
+          "hash": "9884143157974344233"
+        },
+        {
+          "file": "packages/service/src/data/dive-site.entity.ts",
+          "hash": "5423321271944457451"
+        },
+        {
+          "file": "packages/service/src/data/friend-request.entity.ts",
+          "hash": "10867185354615261867"
+        },
+        {
+          "file": "packages/service/src/data/friendship.entity.ts",
+          "hash": "13070432125116954563"
+        },
+        {
+          "file": "packages/service/src/data/index.ts",
+          "hash": "7760924670609372801"
+        },
+        {
+          "file": "packages/service/src/data/log-entry.entity.ts",
+          "hash": "8216048278906666542"
+        },
+        {
+          "file": "packages/service/src/data/notification.entity.ts",
+          "hash": "5638032654780902111"
+        },
+        {
+          "file": "packages/service/src/data/tank.entity.ts",
+          "hash": "920842111517681947"
+        },
+        {
+          "file": "packages/service/src/data/user-certification.entity.ts",
+          "hash": "4771728040438690824"
+        },
+        {
+          "file": "packages/service/src/data/user-oauth.entity.ts",
+          "hash": "5474142230227743291"
+        },
+        {
+          "file": "packages/service/src/data/user.entity.ts",
+          "hash": "10782957600515292211"
+        },
+        {
+          "file": "packages/service/src/diveSites/assert-dive-site-review.guard.ts",
+          "hash": "6198390053379724264"
+        },
+        {
+          "file": "packages/service/src/diveSites/assert-dive-site-write.guard.ts",
+          "hash": "1886223321280785619"
+        },
+        {
+          "file": "packages/service/src/diveSites/assert-dive-site.guard.ts",
+          "hash": "8933668553753202803"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-site-query-builder.ts",
+          "hash": "8471423464296769185"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-site-review.event.ts",
+          "hash": "8899916298841768807"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-site-review.listener.ts",
+          "hash": "7517427813337116047"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-site-review.ts",
+          "hash": "11294823444039872096"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-site-reviews.controller.ts",
+          "hash": "10879615101638057721"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-site.ts",
+          "hash": "11033253162480765185"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-sites.controller.ts",
+          "hash": "8326606954593156653"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-sites.docs.ts",
+          "hash": "17581109420413315674"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-sites.module.ts",
+          "hash": "16332931259699185900"
+        },
+        {
+          "file": "packages/service/src/diveSites/dive-sites.service.ts",
+          "hash": "5483837025186541613"
+        },
+        {
+          "file": "packages/service/src/diveSites/index.ts",
+          "hash": "10465809423024686595"
+        },
+        {
+          "file": "packages/service/src/email/email.module.ts",
+          "hash": "17654604724210312692"
+        },
+        {
+          "file": "packages/service/src/email/email.service.ts",
+          "hash": "16691448092841453306"
+        },
+        {
+          "file": "packages/service/src/email/index.ts",
+          "hash": "6620964915813049651"
+        },
+        {
+          "file": "packages/service/src/email/interfaces.ts",
+          "hash": "7137716994291067045"
+        },
+        {
+          "file": "packages/service/src/email/nodemailer-client.ts",
+          "hash": "11948769197134462361"
+        },
+        {
+          "file": "packages/service/src/friends/assert-friend.guard.ts",
+          "hash": "6178172412414494974"
+        },
+        {
+          "file": "packages/service/src/friends/assert-friendship-owner.guard.ts",
+          "hash": "2111040941681892517"
+        },
+        {
+          "file": "packages/service/src/friends/friend-requests.controller.ts",
+          "hash": "3806350894190949263"
+        },
+        {
+          "file": "packages/service/src/friends/friends.controller.ts",
+          "hash": "3519992893830195102"
+        },
+        {
+          "file": "packages/service/src/friends/friends.docs.ts",
+          "hash": "15262982593471743168"
+        },
+        {
+          "file": "packages/service/src/friends/friends.module.ts",
+          "hash": "17847467572284382213"
+        },
+        {
+          "file": "packages/service/src/friends/friends.service.ts",
+          "hash": "83800293585503005"
+        },
+        {
+          "file": "packages/service/src/friends/index.ts",
+          "hash": "3841298175709345643"
+        },
+        {
+          "file": "packages/service/src/global-error-filter.ts",
+          "hash": "14939254712241940111"
+        },
+        {
+          "file": "packages/service/src/health/health.controller.ts",
+          "hash": "10317692680579733514"
+        },
+        {
+          "file": "packages/service/src/health/health.module.ts",
+          "hash": "15044126404900706687"
+        },
+        {
+          "file": "packages/service/src/health/index.ts",
+          "hash": "18428648521681512771"
+        },
+        {
+          "file": "packages/service/src/health/smtp-health-indicator.ts",
+          "hash": "18010685792851909527"
+        },
+        {
+          "file": "packages/service/src/image-builder.ts",
+          "hash": "3389646652698138111"
+        },
+        {
+          "file": "packages/service/src/index.ts",
+          "hash": "8962792355741193760"
+        },
+        {
+          "file": "packages/service/src/logEntries/assert-logbook-read.guard.ts",
+          "hash": "2386905515935933241"
+        },
+        {
+          "file": "packages/service/src/logEntries/assert-target-log-entry.guard.ts",
+          "hash": "4818284565007573449"
+        },
+        {
+          "file": "packages/service/src/logEntries/index.ts",
+          "hash": "3767999726238705522"
+        },
+        {
+          "file": "packages/service/src/logEntries/log-entries.docs.ts",
+          "hash": "5867403794453999256"
+        },
+        {
+          "file": "packages/service/src/logEntries/log-entries.module.ts",
+          "hash": "10638323874304874520"
+        },
+        {
+          "file": "packages/service/src/logEntries/log-entries.service.ts",
+          "hash": "12772718722345261556"
+        },
+        {
+          "file": "packages/service/src/logEntries/log-entry-query-builder.ts",
+          "hash": "3527664887357039076"
+        },
+        {
+          "file": "packages/service/src/logEntries/log-entry.ts",
+          "hash": "15974160635511839056"
+        },
+        {
+          "file": "packages/service/src/logEntries/user-log-entries.controller.ts",
+          "hash": "14947585542422883079"
+        },
+        {
+          "file": "packages/service/src/storage/index.ts",
+          "hash": "6817609400896095629"
+        },
+        {
+          "file": "packages/service/src/storage/storage.module.ts",
+          "hash": "13229538569661880581"
+        },
+        {
+          "file": "packages/service/src/storage/storage.service.ts",
+          "hash": "8659342789437751715"
+        },
+        {
+          "file": "packages/service/src/storage/types.ts",
+          "hash": "8015571974753258177"
+        },
+        {
+          "file": "packages/service/src/tanks/assert-tank-privilege.guard.ts",
+          "hash": "14920810193983681546"
+        },
+        {
+          "file": "packages/service/src/tanks/assert-tank.guard.ts",
+          "hash": "17988739781038069651"
+        },
+        {
+          "file": "packages/service/src/tanks/index.ts",
+          "hash": "15653680582225619948"
+        },
+        {
+          "file": "packages/service/src/tanks/tank-query-builder.ts",
+          "hash": "17302437307667178407"
+        },
+        {
+          "file": "packages/service/src/tanks/tank.ts",
+          "hash": "15504847347226285856"
+        },
+        {
+          "file": "packages/service/src/tanks/tanks.docs.ts",
+          "hash": "13824328571482488622"
+        },
+        {
+          "file": "packages/service/src/tanks/tanks.module.ts",
+          "hash": "12887566897335772183"
+        },
+        {
+          "file": "packages/service/src/tanks/tanks.service.ts",
+          "hash": "1137077626597957444"
+        },
+        {
+          "file": "packages/service/src/tanks/user-tanks.controller.ts",
+          "hash": "9884216525861606707"
+        },
+        {
+          "file": "packages/service/src/users/assert-account-owner.guard.ts",
+          "hash": "11740210882493320827"
+        },
+        {
+          "file": "packages/service/src/users/assert-target-notification.guard.ts",
+          "hash": "8254106306418601233"
+        },
+        {
+          "file": "packages/service/src/users/assert-target-user.guard.ts",
+          "hash": "14377698797637647466"
+        },
+        {
+          "file": "packages/service/src/users/index.ts",
+          "hash": "10765785947264636567"
+        },
+        {
+          "file": "packages/service/src/users/notification.ts",
+          "hash": "5855690002632633421"
+        },
+        {
+          "file": "packages/service/src/users/notifications.controller.ts",
+          "hash": "9446539403556078643"
+        },
+        {
+          "file": "packages/service/src/users/notifications.docs.ts",
+          "hash": "2704837240984803749"
+        },
+        {
+          "file": "packages/service/src/users/notifications.service.ts",
+          "hash": "13686833148316517442"
+        },
+        {
+          "file": "packages/service/src/users/user-avatar.controller.ts",
+          "hash": "11540865801379344140"
+        },
+        {
+          "file": "packages/service/src/users/user.controller.ts",
+          "hash": "16530976813454835493"
+        },
+        {
+          "file": "packages/service/src/users/users-query-builder.ts",
+          "hash": "616645245571849952"
+        },
+        {
+          "file": "packages/service/src/users/users.controller.ts",
+          "hash": "5588429862499965961"
+        },
+        {
+          "file": "packages/service/src/users/users.docs.ts",
+          "hash": "11914821915753321784"
+        },
+        {
+          "file": "packages/service/src/users/users.module.ts",
+          "hash": "18376022834242281248"
+        },
+        {
+          "file": "packages/service/src/users/users.service.ts",
+          "hash": "17222423908452842961"
+        },
+        {
+          "file": "packages/service/src/zod-validator.ts",
+          "hash": "4435761336621181166"
+        },
+        {
+          "file": "packages/service/swaggerDefinition.cjs",
+          "hash": "2890847645601362037"
+        },
+        {
+          "file": "packages/service/tests/data-source.ts",
+          "hash": "17475815863815779652"
+        },
+        {
+          "file": "packages/service/tests/fixtures/admin-user.json",
+          "hash": "17482985619571358514"
+        },
+        {
+          "file": "packages/service/tests/fixtures/alerts.json",
+          "hash": "11554156299699460085"
+        },
+        {
+          "file": "packages/service/tests/fixtures/application-search-data.json",
+          "hash": "3511871781246293896"
+        },
+        {
+          "file": "packages/service/tests/fixtures/certifications.json",
+          "hash": "157371883915135934"
+        },
+        {
+          "file": "packages/service/tests/fixtures/dive-site-reviews.json",
+          "hash": "10968175593533617671"
+        },
+        {
+          "file": "packages/service/tests/fixtures/dive-sites.json",
+          "hash": "17689670992696783614"
+        },
+        {
+          "file": "packages/service/tests/fixtures/friend-requests.json",
+          "hash": "4017121631947695451"
+        },
+        {
+          "file": "packages/service/tests/fixtures/friends.json",
+          "hash": "17507598055104523616"
+        },
+        {
+          "file": "packages/service/tests/fixtures/log-entries.json",
+          "hash": "5954577728112492144"
+        },
+        {
+          "file": "packages/service/tests/fixtures/notifications.json",
+          "hash": "812965569542166309"
+        },
+        {
+          "file": "packages/service/tests/fixtures/pre-defined-tanks.json",
+          "hash": "132782723323428521"
+        },
+        {
+          "file": "packages/service/tests/fixtures/test-image-128x128.jpg",
+          "hash": "13323150238360406230"
+        },
+        {
+          "file": "packages/service/tests/fixtures/test-image-256x256.jpg",
+          "hash": "13255111204840155005"
+        },
+        {
+          "file": "packages/service/tests/fixtures/test-image-32x32.jpg",
+          "hash": "6291594285629315633"
+        },
+        {
+          "file": "packages/service/tests/fixtures/test-image-64x64.jpg",
+          "hash": "10347550206216851967"
+        },
+        {
+          "file": "packages/service/tests/fixtures/test-image.jpg",
+          "hash": "4961898241615649962"
+        },
+        {
+          "file": "packages/service/tests/fixtures/text-file.txt",
+          "hash": "10400479540620470783"
+        },
+        {
+          "file": "packages/service/tests/fixtures/user-search-data.json",
+          "hash": "10267684160985913929"
+        },
+        {
+          "file": "packages/service/tests/postgres-uri.ts",
+          "hash": "14799886557122606069"
+        },
+        {
+          "file": "packages/service/tests/setup.ts",
+          "hash": "3105225764990118774"
+        },
+        {
+          "file": "packages/service/tests/spec/__snapshots__/image-builder.spec.ts.snap",
+          "hash": "5250877983978892898"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/__snapshots__/admin-certifications-e2e.spec.ts.snap",
+          "hash": "5761354445119526628"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/__snapshots__/admin-tanks-e2e.spec.ts.snap",
+          "hash": "10841872867211427277"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/__snapshots__/admin-users-e2e.spec.ts.snap",
+          "hash": "5292308290217655976"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/__snapshots__/admin.service.spec.ts.snap",
+          "hash": "13402021816534745103"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/admin-certifications-e2e.spec.ts",
+          "hash": "4166944833936514297"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/admin-friends-e2e.spec.ts",
+          "hash": "8415201123479956389"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/admin-tanks-e2e.spec.ts",
+          "hash": "7659124699936090334"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/admin-users-e2e.spec.ts",
+          "hash": "10834998131221120536"
+        },
+        {
+          "file": "packages/service/tests/spec/admin/admin.service.spec.ts",
+          "hash": "11643216968129828595"
+        },
+        {
+          "file": "packages/service/tests/spec/alerts/__snapshots__/alerts-e2e.spec.ts.snap",
+          "hash": "3243131052546012393"
+        },
+        {
+          "file": "packages/service/tests/spec/alerts/__snapshots__/alerts.service.spec.ts.snap",
+          "hash": "5996620615685746804"
+        },
+        {
+          "file": "packages/service/tests/spec/alerts/alert.spec.ts",
+          "hash": "6089702525591201488"
+        },
+        {
+          "file": "packages/service/tests/spec/alerts/alerts-e2e.spec.ts",
+          "hash": "7999825323089295072"
+        },
+        {
+          "file": "packages/service/tests/spec/alerts/alerts.service.spec.ts",
+          "hash": "8372433809060324419"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/__snapshots__/oauth.service.spec.ts.snap",
+          "hash": "17121060062496357326"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/auth-e2e.spec.ts",
+          "hash": "5488612029732091806"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/auth.service.spec.ts",
+          "hash": "2261580327389986361"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/oauth.service.spec.ts",
+          "hash": "15672139572320893020"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/profile.spec.ts",
+          "hash": "5058592942144491913"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/strategies/discord.strategy.spec.ts",
+          "hash": "1289221934910740099"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/strategies/github.strategy.spec.ts",
+          "hash": "8150371599183860061"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/strategies/google.strategy.spec.ts",
+          "hash": "11030698972621886150"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/strategies/oauth-helpers.spec.ts",
+          "hash": "12271676666493696617"
+        },
+        {
+          "file": "packages/service/tests/spec/auth/user.spec.ts",
+          "hash": "411491087202109679"
+        },
+        {
+          "file": "packages/service/tests/spec/certifications/__snapshots__/certification.spec.ts.snap",
+          "hash": "3960049849011212306"
+        },
+        {
+          "file": "packages/service/tests/spec/certifications/__snapshots__/certifications-e2e.spec.ts.snap",
+          "hash": "13824610400119031851"
+        },
+        {
+          "file": "packages/service/tests/spec/certifications/__snapshots__/certifications.service.spec.ts.snap",
+          "hash": "16936389406430746267"
+        },
+        {
+          "file": "packages/service/tests/spec/certifications/certification.spec.ts",
+          "hash": "7931961029853089794"
+        },
+        {
+          "file": "packages/service/tests/spec/certifications/certifications-e2e.spec.ts",
+          "hash": "10678215613152329977"
+        },
+        {
+          "file": "packages/service/tests/spec/certifications/certifications.service.spec.ts",
+          "hash": "3370825957177118515"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/__snapshots__/dive-site-reviews-e2e.spec.ts.snap",
+          "hash": "18191674344021403819"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/__snapshots__/dive-site.spec.ts.snap",
+          "hash": "14846422322407650567"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/__snapshots__/dive-sites-e2e.spec.ts.snap",
+          "hash": "15752468193480601211"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/__snapshots__/dive-sites.service.spec.ts.snap",
+          "hash": "8145630205654959266"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/dive-site-review.listener.spec.ts",
+          "hash": "17627817689324993416"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/dive-site-review.spec.ts",
+          "hash": "11646821454048583395"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/dive-site-reviews-e2e.spec.ts",
+          "hash": "2858391101917699521"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/dive-site.spec.ts",
+          "hash": "8490740438574426462"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/dive-sites-e2e.spec.ts",
+          "hash": "9481036123453965883"
+        },
+        {
+          "file": "packages/service/tests/spec/diveSites/dive-sites.service.spec.ts",
+          "hash": "15228180881339942735"
+        },
+        {
+          "file": "packages/service/tests/spec/email/__snapshots__/email.service.spec.ts.snap",
+          "hash": "5033703588737139001"
+        },
+        {
+          "file": "packages/service/tests/spec/email/email.service.spec.ts",
+          "hash": "1481179382248290951"
+        },
+        {
+          "file": "packages/service/tests/spec/email/nodemailer-client.spec.ts",
+          "hash": "14525464703514046772"
+        },
+        {
+          "file": "packages/service/tests/spec/friends/__snapshots__/friend-requests-e2e.spec.ts.snap",
+          "hash": "17451629930701562290"
+        },
+        {
+          "file": "packages/service/tests/spec/friends/__snapshots__/friends-e2e.spec.ts.snap",
+          "hash": "625798351317688937"
+        },
+        {
+          "file": "packages/service/tests/spec/friends/__snapshots__/friends.service.spec.ts.snap",
+          "hash": "15131625238008646627"
+        },
+        {
+          "file": "packages/service/tests/spec/friends/friend-requests-e2e.spec.ts",
+          "hash": "1112796246283637236"
+        },
+        {
+          "file": "packages/service/tests/spec/friends/friends-e2e.spec.ts",
+          "hash": "9597434664065631441"
+        },
+        {
+          "file": "packages/service/tests/spec/friends/friends.service.spec.ts",
+          "hash": "17441834758484743722"
+        },
+        {
+          "file": "packages/service/tests/spec/image-builder.spec.ts",
+          "hash": "13221177778224689666"
+        },
+        {
+          "file": "packages/service/tests/spec/logEntries/__snapshots__/log-entries-e2e.spec.ts.snap",
+          "hash": "9908853894901460480"
+        },
+        {
+          "file": "packages/service/tests/spec/logEntries/__snapshots__/log-entries.service.spec.ts.snap",
+          "hash": "15843928607302529663"
+        },
+        {
+          "file": "packages/service/tests/spec/logEntries/log-entries-e2e-security.spec.ts",
+          "hash": "6025117919932033956"
+        },
+        {
+          "file": "packages/service/tests/spec/logEntries/log-entries-e2e.spec.ts",
+          "hash": "11267431479693481657"
+        },
+        {
+          "file": "packages/service/tests/spec/logEntries/log-entries.service.spec.ts",
+          "hash": "17452878946877147282"
+        },
+        {
+          "file": "packages/service/tests/spec/logEntries/log-entry.spec.ts",
+          "hash": "4520180229428427289"
+        },
+        {
+          "file": "packages/service/tests/spec/logger.spec.ts",
+          "hash": "13537665023738305161"
+        },
+        {
+          "file": "packages/service/tests/spec/storage/__snapshots__/storage.service.spec.ts.snap",
+          "hash": "5318509511189399809"
+        },
+        {
+          "file": "packages/service/tests/spec/storage/storage.service.spec.ts",
+          "hash": "17853103707203861357"
+        },
+        {
+          "file": "packages/service/tests/spec/tanks/__snapshots__/tanks.service.spec.ts.snap",
+          "hash": "5724645934686641119"
+        },
+        {
+          "file": "packages/service/tests/spec/tanks/__snapshots__/user-tanks-e2e.spec.ts.snap",
+          "hash": "7803169103421306611"
+        },
+        {
+          "file": "packages/service/tests/spec/tanks/tank.spec.ts",
+          "hash": "10301934401947574576"
+        },
+        {
+          "file": "packages/service/tests/spec/tanks/tanks.service.spec.ts",
+          "hash": "3855229818888098718"
+        },
+        {
+          "file": "packages/service/tests/spec/tanks/user-tanks-e2e.spec.ts",
+          "hash": "11621126680690694044"
+        },
+        {
+          "file": "packages/service/tests/spec/users/__snapshots__/notification.spec.ts.snap",
+          "hash": "16097434604585600353"
+        },
+        {
+          "file": "packages/service/tests/spec/users/__snapshots__/notifications-e2e.spec.ts.snap",
+          "hash": "1988365841300197057"
+        },
+        {
+          "file": "packages/service/tests/spec/users/__snapshots__/notifications.service.spec.ts.snap",
+          "hash": "15225338510315668180"
+        },
+        {
+          "file": "packages/service/tests/spec/users/__snapshots__/search-profiles-e2e.spec.ts.snap",
+          "hash": "10991982349597009095"
+        },
+        {
+          "file": "packages/service/tests/spec/users/__snapshots__/user-avatar-e2e.spec.ts.snap",
+          "hash": "10550353841655936758"
+        },
+        {
+          "file": "packages/service/tests/spec/users/__snapshots__/users-e2e.spec.ts.snap",
+          "hash": "3220753082626179576"
+        },
+        {
+          "file": "packages/service/tests/spec/users/__snapshots__/users.service.spec.ts.snap",
+          "hash": "8161710095601124031"
+        },
+        {
+          "file": "packages/service/tests/spec/users/notification.spec.ts",
+          "hash": "12462401069284729195"
+        },
+        {
+          "file": "packages/service/tests/spec/users/notifications-e2e.spec.ts",
+          "hash": "718987741007564478"
+        },
+        {
+          "file": "packages/service/tests/spec/users/notifications.service.spec.ts",
+          "hash": "5697578944074593786"
+        },
+        {
+          "file": "packages/service/tests/spec/users/search-profiles-e2e.spec.ts",
+          "hash": "15701534666270989599"
+        },
+        {
+          "file": "packages/service/tests/spec/users/user-avatar-e2e.spec.ts",
+          "hash": "4651105367147453147"
+        },
+        {
+          "file": "packages/service/tests/spec/users/users-e2e.spec.ts",
+          "hash": "13296254829512564889"
+        },
+        {
+          "file": "packages/service/tests/spec/users/users.service.spec.ts",
+          "hash": "16184379350603479037"
+        },
+        {
+          "file": "packages/service/tests/teardown.ts",
+          "hash": "15772622500430802418"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-alert.ts",
+          "hash": "1691246803050828727"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-app.ts",
+          "hash": "5544403980562559790"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-dive-site-review.ts",
+          "hash": "1147656633681911665"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-dive-site.ts",
+          "hash": "12891777191306158967"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-friend-request.ts",
+          "hash": "8716109115066320587"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-friendship.ts",
+          "hash": "7289624085748437726"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-log-entry.ts",
+          "hash": "11828217762412287951"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-notification.ts",
+          "hash": "8652612310928122017"
+        },
+        {
+          "file": "packages/service/tests/utils/create-test-user.ts",
+          "hash": "4455235609474625338"
+        },
+        {
+          "file": "packages/service/tests/utils/default-user-settings.ts",
+          "hash": "18342955559034573288"
+        },
+        {
+          "file": "packages/service/tests/utils/index.ts",
+          "hash": "9705328434932225837"
+        },
+        {
+          "file": "packages/service/tests/utils/insertable-user.ts",
+          "hash": "4779699909613462620"
+        },
+        {
+          "file": "packages/service/tests/utils/jwt.ts",
+          "hash": "8623583577479868639"
+        },
+        {
+          "file": "packages/service/tests/utils/test-logger.ts",
+          "hash": "18298358021621598944"
+        },
+        {
+          "file": "packages/service/tests/utils/test-mailer.ts",
+          "hash": "1215815052245898269"
+        },
+        {
+          "file": "packages/service/tsconfig.eslint.json",
+          "hash": "5875197432175958626"
+        },
+        {
+          "file": "packages/service/tsconfig.json",
+          "hash": "3931395626233233123"
+        },
+        {
+          "file": "packages/service/tsconfig.test.json",
+          "hash": "8643363441224999996"
+        }
+      ]
+    }
+  }
+}

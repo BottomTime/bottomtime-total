@@ -8,5 +8,5 @@
     "tests/**/*.ts",
     "migrations/**/*.ts"
   ],
-  "exclude": ["node_modules/", "dist/", "coverage/"]
+  "exclude": ["../../.yarn/", "dist/", "coverage/"]
 }

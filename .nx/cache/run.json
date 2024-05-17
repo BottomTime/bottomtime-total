@@ -1,0 +1,54 @@
+{
+  "run": {
+    "command": "cli run build",
+    "startTime": "2024-05-17T17:24:52.484Z",
+    "endTime": "2024-05-17T17:24:58.907Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "@bottomtime/common:build",
+      "target": "build",
+      "projectName": "@bottomtime/common",
+      "hash": "8380636105063232698",
+      "startTime": "2024-05-17T17:24:52.489Z",
+      "endTime": "2024-05-17T17:24:54.231Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "@bottomtime/api:build",
+      "target": "build",
+      "projectName": "@bottomtime/api",
+      "hash": "17107134167858457203",
+      "startTime": "2024-05-17T17:24:52.489Z",
+      "endTime": "2024-05-17T17:24:54.598Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "@bottomtime/web:build",
+      "target": "build",
+      "projectName": "@bottomtime/web",
+      "hash": "16164373792338615329",
+      "startTime": "2024-05-17T17:24:54.600Z",
+      "endTime": "2024-05-17T17:24:57.020Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "@bottomtime/service:build",
+      "target": "build",
+      "projectName": "@bottomtime/service",
+      "hash": "17534372573321179145",
+      "startTime": "2024-05-17T17:24:54.600Z",
+      "endTime": "2024-05-17T17:24:58.831Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    }
+  ]
+}

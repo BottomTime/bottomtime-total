@@ -12,6 +12,8 @@
     "test": "playwright test"
   },
   "dependencies": {
+    "@bottomtime/api": "workspace:^1.0.0",
+    "@bottomtime/web": "workspace:^1.0.0",
     "@playwright/test": "^1.41.2",
     "bcrypt": "^5.1.0",
     "jsonwebtoken": "^9.0.2",

@@ -1,0 +1,414 @@
+tests/spec/alert.spec.ts(16,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alert.spec.ts(20,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/alert.spec.ts(24,3): error TS2304: Cannot find name 'beforeEach'.
+tests/spec/alert.spec.ts(28,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alert.spec.ts(29,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(30,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(31,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(32,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(33,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(34,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(37,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alert.spec.ts(38,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(41,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alert.spec.ts(53,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(54,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(55,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(56,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(57,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(60,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alert.spec.ts(61,17): error TS2304: Cannot find name 'jest'.
+tests/spec/alert.spec.ts(67,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alert.spec.ts(76,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alert.spec.ts(77,17): error TS2304: Cannot find name 'jest'.
+tests/spec/alert.spec.ts(79,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(38,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alerts.spec.ts(42,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/alerts.spec.ts(47,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alerts.spec.ts(53,17): error TS2304: Cannot find name 'jest'.
+tests/spec/alerts.spec.ts(63,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(64,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(66,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(69,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alerts.spec.ts(70,17): error TS2304: Cannot find name 'jest'.
+tests/spec/alerts.spec.ts(75,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(76,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(78,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(81,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alerts.spec.ts(89,17): error TS2304: Cannot find name 'jest'.
+tests/spec/alerts.spec.ts(99,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(100,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(101,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(106,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(109,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/alerts.spec.ts(111,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(112,5): error TS2304: Cannot find name 'expect'.
+tests/spec/alerts.spec.ts(113,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(10,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-site.spec.ts(13,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/dive-site.spec.ts(17,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-site.spec.ts(19,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(20,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(21,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(22,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(23,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(24,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(25,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(26,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(27,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(28,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(29,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(30,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(31,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(32,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(35,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-site.spec.ts(37,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(38,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(39,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(40,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(41,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(42,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(45,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(46,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(47,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(48,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(49,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(50,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(51,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(52,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(55,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-site.spec.ts(57,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(60,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-site.spec.ts(71,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(72,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(73,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(74,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(75,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(76,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(77,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(78,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-site.spec.ts(81,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-site.spec.ts(92,17): error TS2304: Cannot find name 'jest'.
+tests/spec/dive-site.spec.ts(108,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(14,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-sites.spec.ts(19,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/dive-sites.spec.ts(26,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-sites.spec.ts(27,17): error TS2304: Cannot find name 'jest'.
+tests/spec/dive-sites.spec.ts(33,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(36,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(39,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-sites.spec.ts(40,17): error TS2304: Cannot find name 'jest'.
+tests/spec/dive-sites.spec.ts(62,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(63,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(64,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(65,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(70,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-sites.spec.ts(71,17): error TS2304: Cannot find name 'jest'.
+tests/spec/dive-sites.spec.ts(77,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(78,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(79,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(80,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(85,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/dive-sites.spec.ts(87,5): error TS2304: Cannot find name 'expect'.
+tests/spec/dive-sites.spec.ts(88,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(44,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend-request.spec.ts(51,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/friend-request.spec.ts(56,3): error TS2304: Cannot find name 'beforeEach'.
+tests/spec/friend-request.spec.ts(61,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/friend-request.spec.ts(65,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/friend-request.spec.ts(69,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend-request.spec.ts(70,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(71,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(72,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(73,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(74,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(75,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(78,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend-request.spec.ts(81,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(82,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(85,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend-request.spec.ts(86,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(91,7): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend-request.spec.ts(92,9): error TS2304: Cannot find name 'beforeEach'.
+tests/spec/friend-request.spec.ts(98,9): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend-request.spec.ts(101,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(104,9): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend-request.spec.ts(109,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(110,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(113,9): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend-request.spec.ts(119,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(120,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friend-request.spec.ts(121,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(21,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend.spec.ts(28,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/friend.spec.ts(33,3): error TS2304: Cannot find name 'beforeEach'.
+tests/spec/friend.spec.ts(38,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/friend.spec.ts(42,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/friend.spec.ts(46,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend.spec.ts(47,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(48,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(49,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(50,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(51,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(52,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(53,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(54,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(57,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend.spec.ts(61,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(62,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(63,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(66,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend.spec.ts(67,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friend.spec.ts(70,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friend.spec.ts(75,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(24,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(31,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/friends.spec.ts(42,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/friends.spec.ts(46,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/friends.spec.ts(50,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(54,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(55,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(56,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(58,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(59,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(60,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(61,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(62,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(63,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(66,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(72,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(87,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(88,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(89,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(91,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(92,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(93,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(94,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(95,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(96,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(99,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(105,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(113,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(114,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(117,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(120,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(121,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(124,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(127,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(128,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(131,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(137,11): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(140,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(143,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(150,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(151,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(152,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(156,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(160,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(176,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(177,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(178,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(182,7): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(186,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(197,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(198,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(201,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(205,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(206,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(209,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/friends.spec.ts(213,5): error TS2304: Cannot find name 'expect'.
+tests/spec/friends.spec.ts(214,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(19,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entries.spec.ts(25,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/log-entries.spec.ts(32,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/log-entries.spec.ts(36,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/log-entries.spec.ts(40,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entries.spec.ts(58,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(59,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(62,7): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(66,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entries.spec.ts(77,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(78,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(81,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entries.spec.ts(104,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(105,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(108,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entries.spec.ts(117,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(118,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entries.spec.ts(121,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entries.spec.ts(124,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(35,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entry.spec.ts(40,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/log-entry.spec.ts(45,3): error TS2304: Cannot find name 'beforeEach'.
+tests/spec/log-entry.spec.ts(49,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/log-entry.spec.ts(53,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/log-entry.spec.ts(57,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entry.spec.ts(58,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(59,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(60,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(61,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(62,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(63,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(64,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(65,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(68,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entry.spec.ts(70,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(71,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(72,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(73,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(76,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entry.spec.ts(94,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(95,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(96,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(97,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(98,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(99,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(102,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entry.spec.ts(103,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(106,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entry.spec.ts(130,5): error TS2304: Cannot find name 'expect'.
+tests/spec/log-entry.spec.ts(133,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/log-entry.spec.ts(138,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(29,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-profile.spec.ts(38,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/user-profile.spec.ts(49,3): error TS2304: Cannot find name 'beforeEach'.
+tests/spec/user-profile.spec.ts(69,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/user-profile.spec.ts(73,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/user-profile.spec.ts(77,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-profile.spec.ts(78,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(79,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(80,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(81,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(82,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(83,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(86,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-profile.spec.ts(94,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(95,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(96,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(97,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(98,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(99,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(102,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-profile.spec.ts(117,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(120,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-profile.spec.ts(123,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(126,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-profile.spec.ts(139,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(140,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(143,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-profile.spec.ts(161,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-profile.spec.ts(162,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(15,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-settings.spec.ts(21,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/user-settings.spec.ts(38,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/user-settings.spec.ts(42,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/user-settings.spec.ts(46,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-settings.spec.ts(47,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(48,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(49,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(50,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(53,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-settings.spec.ts(59,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(60,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(61,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(62,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(64,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(65,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(66,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(67,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user-settings.spec.ts(70,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user-settings.spec.ts(81,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(14,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(19,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/user.spec.ts(24,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/user.spec.ts(28,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/user.spec.ts(32,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(34,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(35,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(36,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(37,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(38,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(39,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(40,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(41,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(42,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(43,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(46,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(48,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(51,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(55,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(58,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(67,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(70,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(72,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(73,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(76,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(87,11): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(91,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(94,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(105,11): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(110,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(119,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(128,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(136,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(145,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(146,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(149,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(151,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(152,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(155,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(159,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(162,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(168,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(171,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(173,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(176,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(182,11): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(183,5): error TS2304: Cannot find name 'expect'.
+tests/spec/user.spec.ts(186,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/user.spec.ts(193,5): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(18,1): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(23,3): error TS2304: Cannot find name 'beforeAll'.
+tests/spec/users.spec.ts(29,3): error TS2304: Cannot find name 'afterEach'.
+tests/spec/users.spec.ts(33,3): error TS2304: Cannot find name 'afterAll'.
+tests/spec/users.spec.ts(37,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(38,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(41,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(44,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(47,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(50,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(52,13): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(57,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(63,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(64,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(67,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(70,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(76,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(77,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(81,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(93,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(98,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(101,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(103,13): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(107,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(108,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(116,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(119,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(121,13): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(127,3): error TS2582: Cannot find name 'describe'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(128,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(133,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(136,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(143,13): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(146,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(149,5): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(159,13): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(162,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(166,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(179,5): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(180,5): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(182,7): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(184,5): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(187,3): error TS2582: Cannot find name 'it'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha`.
+tests/spec/users.spec.ts(189,5): error TS2304: Cannot find name 'expect'.
+tests/spec/users.spec.ts(190,5): error TS2304: Cannot find name 'expect'.
