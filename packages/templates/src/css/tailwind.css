@@ -2,6 +2,7 @@
 @import 'resets';
 
 /* Tailwind CSS components */
+@import 'tailwindcss/base';
 @import 'tailwindcss/components';
 
 /**
@@ -15,3 +16,7 @@
 
 /* Your custom utility classes */
 @import 'utilities';
+
+a {
+  @apply text-teal-600 hover:text-teal-500 font-bold;
+}

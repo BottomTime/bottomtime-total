@@ -41,9 +41,10 @@ export default {
         DEFAULT: colors.teal[600],
       },
     },
+
     fontFamily: {
       content: [
-        'Alegreya Sans',
+        '"Alegreya Sans"',
         'system-ui',
         'Avenir',
         'Helvetica',
@@ -53,6 +54,7 @@ export default {
       title: ['"Exo 2"', 'Lobster', 'Arial Narrow Bold', 'sans-serif'],
       mono: ['JetBrains Mono', 'monospace'],
     },
+
     extend: {
       backgroundImage: {
         tortuga: "url('/img/reef-tortuga.webp')",

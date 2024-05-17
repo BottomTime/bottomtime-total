@@ -1,0 +1,54 @@
+<x-main>
+  <div class="space-y-4">
+    <p class="text-lg font-bold">Welcome @{{ displayName }},</p>
+
+    <p>
+      Thanks for signing up with us! We're pleased to meet you! Here are a few
+      useful links to get you started with your new account...
+    </p>
+
+    <div>
+      <p class="space-x-3 font-bold font-title">
+        <span>✉️</span>
+        <span>Verify Your Email</span>
+      </p>
+      <p class="ml-10 text-sm">
+        First of all, please click
+        <a href="@{{ verifyEmailUrl }}">here</a>
+        to confirm your email address. If you did not sign up to use Bottom Time
+        and you think you are receiving this email in error, then please
+        disregard this message.
+      </p>
+    </div>
+
+    <div>
+      <p class="space-x-3 font-bold font-title">
+        <span>😎</span>
+        <span>Setup Your Profile</span>
+      </p>
+      <p class="ml-10 text-sm">
+        Next, take a minute to setup your user profile and set your preferences.
+        Click <a href="@{{ profileUrl }}">here</a> to begin!
+      </p>
+    </div>
+
+    <div>
+      <p class="space-x-3 font-bold font-title">
+        <span>📓</span>
+        <span>Log Your Dives!</span>
+      </p>
+      <p class="ml-10 text-sm">
+        Finally, head over to
+        <a href="@{{ logsUrl }}">here</a>
+        to start filling out your logbook! (You can even upload your dives from
+        other apps!)
+      </p>
+    </div>
+
+    <p class="content block">
+      Cheers,
+      <br />
+      The BottomTime Team
+    </p>
+  </div>
+</x-main>

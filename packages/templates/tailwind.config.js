@@ -1,6 +1,56 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   theme: {
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      black: colors.black,
+      white: colors.white,
+
+      grey: colors.stone,
+      blue: colors.blue,
+      red: colors.red[600],
+
+      primary: {
+        dark: colors.blue[600],
+        hover: colors.blue[300],
+        DEFAULT: colors.sky[500],
+      },
+      secondary: {
+        dark: colors.sky[400],
+        hover: colors.sky[100],
+        DEFAULT: colors.sky[200],
+      },
+      warn: {
+        dark: colors.amber[600],
+        hover: colors.amber[400],
+        DEFAULT: colors.amber[500],
+      },
+      danger: {
+        dark: colors.red[500],
+        hover: colors.red[300],
+        DEFAULT: colors.red[400],
+      },
+      success: colors.emerald[500],
+      link: {
+        hover: colors.teal[500],
+        DEFAULT: colors.teal[600],
+      },
+    },
+
+    fontFamily: {
+      content: [
+        '"Alegreya Sans"',
+        'system-ui',
+        'Avenir',
+        'Helvetica',
+        'Arial',
+        'sans-serif',
+      ],
+      title: ['"Exo 2"', 'Lobster', 'Arial Narrow Bold', 'sans-serif'],
+      mono: ['JetBrains Mono', 'monospace'],
+    },
+
     screens: {
       sm: { max: '600px' },
       xs: { max: '425px' },
@@ -70,24 +120,24 @@ module.exports = {
         '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
         inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
       },
-      fontFamily: {
-        sans: [
-          'ui-sans-serif',
-          'system-ui',
-          '-apple-system',
-          '"Segoe UI"',
-          'sans-serif',
-        ],
-        serif: [
-          'ui-serif',
-          'Georgia',
-          'Cambria',
-          '"Times New Roman"',
-          'Times',
-          'serif',
-        ],
-        mono: ['ui-monospace', 'Menlo', 'Consolas', 'monospace'],
-      },
+      // fontFamily: {
+      //   sans: [
+      //     'ui-sans-serif',
+      //     'system-ui',
+      //     '-apple-system',
+      //     '"Segoe UI"',
+      //     'sans-serif',
+      //   ],
+      //   serif: [
+      //     'ui-serif',
+      //     'Georgia',
+      //     'Cambria',
+      //     '"Times New Roman"',
+      //     'Times',
+      //     'serif',
+      //   ],
+      //   mono: ['ui-monospace', 'Menlo', 'Consolas', 'monospace'],
+      // },
       fontSize: {
         0: '0',
         xxs: '11px',

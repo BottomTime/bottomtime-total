@@ -13,6 +13,14 @@
     />
     <meta name="color-scheme" content="light dark" />
     <meta name="supported-color-schemes" content="light dark" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2&family=Lobster&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alegreya+Sans&display=swap"
+      rel="stylesheet"
+    />
     <!--[if mso]>
       <noscript>
         <xml>
@@ -40,32 +48,44 @@
         }
       </style>
     <![endif]-->
-    <if condition="page.title">
-      <title>{{{ page.title }}}</title>
-    </if>
+    <title>@{{ title }}</title>
     <style>
       {{{ page.css }}}
     </style>
     <stack name="head" />
   </head>
   <body
-    class="m-0 p-0 w-full [word-break:break-word] [-webkit-font-smoothing:antialiased] {{ page.bodyClass || '' }}"
+    class="m-0 p-0 w-full bg-blue-950 [word-break:break-word] [-webkit-font-smoothing:antialiased]"
   >
-    <if condition="page.preheader">
-      <div class="hidden">
-        {{{ page.preheader }}}
-        <each loop="item in Array.from(Array(150))"
-          >&#8199;&#65279;&#847;
-        </each>
-      </div>
-    </if>
     <div
       role="article"
       aria-roledescription="email"
-      aria-label="{{{ page.title || '' }}}"
+      aria-label="@{{ title }}"
       lang="{{ page.language || 'en' }}"
+      class="container mx-auto my-0 bg-blue-950"
     >
-      <content />
+      <section>
+        <div
+          class="font-title bg-sky-700 px-4 py-8 shadow shadow-xl space-y-3 rounded-b-lg"
+        >
+          <p class="text-6xl font-bold">@{{ title }}</p>
+          @{{#subtitle}}
+          <p class="text-3xl italic">@{{ subtitle }}</p>
+          @{{/subtitle}}
+        </div>
+      </section>
+
+      <section class="mx-2 px-3 py-5 bg-gray-200 text-gray-950">
+        <content />
+      </section>
+
+      <section>
+        <div
+          class="font-title bg-sky-700 px-4 py-6 shadow shadow-xl space-y-3 rounded-lg text-center text-sm italic"
+        >
+          Copyright &copy; Chris Carleton, 2024
+        </div>
+      </section>
     </div>
   </body>
 </html>

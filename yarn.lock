@@ -2717,7 +2717,7 @@
     ora "^5.1.0"
     resolve-cwd "^3.0.0"
 
-"@maizzle/framework@latest":
+"@maizzle/framework@^4.8.4":
   version "4.8.4"
   resolved "https://registry.yarnpkg.com/@maizzle/framework/-/framework-4.8.4.tgz#3042f61417e53b2d5ddaabd2e3ac4ebd5877d628"
   integrity sha512-wX2LQRomvvOIh+1odOq8u6EzHuvZubUb18ovMPixrtO4Cqrlb82KSjUXIbQ1mb/i6a8tkFpDl77LYj1RFqF/9Q==

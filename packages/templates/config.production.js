@@ -15,7 +15,7 @@ module.exports = {
   build: {
     templates: {
       destination: {
-        path: 'build_production',
+        path: '../service/assets/_templates', // Temporary destination so we don't overwrite the existing Pug templates
       },
     },
   },
