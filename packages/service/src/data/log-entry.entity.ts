@@ -54,7 +54,6 @@ export class LogEntryEntity {
   // Location
   @ManyToOne(() => DiveSiteEntity, (site) => site.logEntries, {
     nullable: true,
-    onDelete: 'CASCADE',
   })
   site: DiveSiteEntity | null = null;
 
