@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.28",
+    "dayjs": "^1.11.11",
     "jest": "^29.7.0",
     "jest-junit": "^16.0.0",
     "nock": "^13.5.4",

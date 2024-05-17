@@ -9,6 +9,12 @@ docker_base: &base_image
   - image: cimg/base:2023.04
 
 commands:
+  install_yarn:
+    steps:
+      - run:
+          name: Install Modern Yarn
+          command: corepack enable && corepack prepare yarn@4.2.2 --activate
+
   publish_distro:
     parameters:
       bucket:
@@ -39,13 +45,14 @@ jobs:
           POSTGRES_PASSWORD: bt_admin1234
     steps:
       - checkout
+      - install_yarn
       - restore_cache:
           keys:
             - bt-{{ checksum "yarn.lock" }}
             - bt-
       - run:
           name: Install dependencies
-          command: yarn install
+          command: yarn install --immutable
       - run:
           name: Download Code Climate coverage tool
           command: |
