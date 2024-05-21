@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App E2E tests will respond to a ping 1`] = `
+{
+  "api": "Bottom Time Service",
+  "apiVersion": "1.0.0",
+  "uptime": 1294,
+}
+`;
+
+exports[`App E2E tests will return metrics upon request 1`] = `
+{
+  "diveSites": {
+    "total": 0,
+  },
+  "logEntries": {
+    "addedLastMonth": 0,
+    "addedLastWeek": 0,
+    "total": 0,
+  },
+  "users": {
+    "active": 0,
+    "activeLastMonth": 0,
+    "total": 0,
+  },
+}
+`;

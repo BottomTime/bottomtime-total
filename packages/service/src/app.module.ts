@@ -11,7 +11,9 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AdminModule } from './admin';
 import { AlertsModule } from './alerts';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { DiveSiteEntity, LogEntryEntity, UserEntity } from './data';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
@@ -56,6 +58,8 @@ export class AppModule {
         StorageModule.forRoot(deps.s3Client),
         HealthModule,
 
+        TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
+
         AdminModule,
         AlertsModule,
         AuthModule,
@@ -66,6 +70,7 @@ export class AppModule {
         TanksModule,
       ],
 
+      providers: [AppService],
       controllers: [AppController],
     };
   }
