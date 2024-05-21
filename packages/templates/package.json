@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "maizzle build production",
     "dev": "maizzle serve",
-    "build": "maizzle build production"
+    "prepare": "yarn build"
   },
   "dependencies": {
     "@maizzle/framework": "^4.8.4",

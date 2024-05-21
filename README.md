@@ -81,8 +81,13 @@ yarn
 ```
 
 **Note:** This operation may take several minutes on the first run. This is because it will also perform a
-number of preparation steps like installing Git hooks and downloading/installing the Playwright runtime for
-running end-to-end tests.
+number of preparation steps including
+
+- installing Git hooks
+- downloading/installing the Playwright runtime for running end-to-end tests
+- generating email templates
+- creating `.env` files
+- etc...
 
 ### Formatting all files
 
