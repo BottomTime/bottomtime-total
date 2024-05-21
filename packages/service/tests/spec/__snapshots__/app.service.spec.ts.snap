@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppService will return metrics upon request 1`] = `
+{
+  "diveSites": {
+    "total": 0,
+  },
+  "logEntries": {
+    "addedLastMonth": 0,
+    "addedLastWeek": 0,
+    "total": 0,
+  },
+  "users": {
+    "active": 0,
+    "activeLastMonth": 0,
+    "total": 0,
+  },
+}
+`;

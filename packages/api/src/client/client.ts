@@ -1,5 +1,6 @@
 import axios, { AxiosHeaders, AxiosInstance } from 'axios';
 
+import { AppMetricsDTO } from '../types';
 import { AlertsApiClient } from './alerts';
 import { DiveSitesApiClient } from './dive-sites';
 import { FriendsApiClient } from './friends';
@@ -40,5 +41,10 @@ export class ApiClient {
 
   get axios(): AxiosInstance {
     return this.client;
+  }
+
+  async getAppMetrics(): Promise<AppMetricsDTO> {
+    const { data } = await this.client.get<AppMetricsDTO>('/api/metrics');
+    return data;
   }
 }

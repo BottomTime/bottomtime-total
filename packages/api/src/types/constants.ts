@@ -151,3 +151,25 @@ export const DateWithTimezoneSchema = z.object({
   timezone: z.string(),
 });
 export type DateWithTimezoneDTO = z.infer<typeof DateWithTimezoneSchema>;
+
+export type AppMetricsDTO = {
+  users: {
+    total: number;
+    active: number;
+    activeLastMonth: number;
+  };
+  diveSites: {
+    total: number;
+  };
+  logEntries: {
+    total: number;
+    addedLastWeek: number;
+    addedLastMonth: number;
+  };
+};
+
+export type PingResponseDTO = {
+  api: string;
+  apiVersion: string;
+  uptime: number;
+};

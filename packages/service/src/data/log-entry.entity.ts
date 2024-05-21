@@ -1,6 +1,14 @@
 import { DepthUnit } from '@bottomtime/api';
 
-import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 import { DiveSiteEntity } from './dive-site.entity';
 import { UserEntity } from './user.entity';
@@ -10,6 +18,13 @@ export class LogEntryEntity {
   // Identifiers
   @PrimaryColumn('uuid')
   id: string = '';
+
+  @CreateDateColumn({ type: 'timestamp' })
+  @Index()
+  createdAt: Date = new Date();
+
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
+  updatedAt: Date | null = null;
 
   @Column({ type: 'integer', nullable: true })
   @Index({ sparse: true })

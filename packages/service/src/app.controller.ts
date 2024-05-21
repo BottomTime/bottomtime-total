@@ -1,19 +1,24 @@
-import { Controller, Get } from '@nestjs/common';
+import { AppMetricsDTO, PingResponseDTO } from '@bottomtime/api';
 
-type PingResponse = {
-  api: string;
-  apiVersion: string;
-  uptime: number;
-};
+import { Controller, Get, Inject } from '@nestjs/common';
+
+import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
+  constructor(@Inject(AppService) private readonly service: AppService) {}
+
   @Get()
-  getPing(): PingResponse {
+  getPing(): PingResponseDTO {
     return {
       api: 'Bottom Time Service',
       apiVersion: '1.0.0',
       uptime: Math.ceil(process.uptime() * 1000),
     };
+  }
+
+  @Get('api/metrics')
+  async getMetrics(): Promise<AppMetricsDTO> {
+    return await this.service.getMetrics();
   }
 }

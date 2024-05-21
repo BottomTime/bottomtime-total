@@ -69,7 +69,7 @@ exports[`View Dive Site component will render site with full details 1`] = `
     </div>
   </div>
   <div class="space-y-3">
-    <h1 class="text-xl font-bold font-title mb-4">Location</h1>
+    <h1 class="text-2xl font-bold font-title">Location</h1>
     <div class="flex gap-2 items-baseline">
       <p class="text-lg">Waldorf, ME, JO</p>
       <p class="ml-2"><span class="mr-1 text-danger"><i class="fas fa-map-marker-alt fa-sm"></i></span><span>72.6789, -105.3306</span></p>
@@ -83,11 +83,11 @@ exports[`View Dive Site component will render site with full details 1`] = `
   </div>
   <div class="space-y-3">
     <div>
-      <h1 class="text-xl font-bold font-title mb-4">Directions</h1>
+      <h1 class="text-2xl font-bold font-title">Directions</h1>
       <p>Maiores natus doloribus laudantium at. Ducimus consectetur vitae quo deserunt doloremque consequuntur quibusdam quis. Beatae autem accusamus suscipit accusantium.</p>
     </div>
     <div>
-      <h1 class="text-xl font-bold font-title mb-4">Description</h1>
+      <h1 class="text-2xl font-bold font-title">Description</h1>
       <p>Possimus animi voluptate repellendus hic facilis dolorem. Animi natus perspiciatis ut voluptate velit eos vel nihil doloremque. Dolorem tenetur magnam maxime. Aut doloribus eveniet corporis.</p>
     </div>
     <div class="flex justify-evenly gap-6">
@@ -144,7 +144,7 @@ exports[`View Dive Site component will render site with minimal details 1`] = `
     </div>
   </div>
   <div class="space-y-3">
-    <h1 class="text-xl font-bold font-title mb-4">Location</h1>
+    <h1 class="text-2xl font-bold font-title">Location</h1>
     <div class="flex gap-2 items-baseline">
       <p class="text-lg">Hudsonstad, NV, HM</p>
       <p class="ml-2"><span class="mr-1 text-danger"><i class="fas fa-map-marker-alt fa-sm"></i></span>

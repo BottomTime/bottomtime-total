@@ -80,6 +80,7 @@ export class UserEntity {
   isLockedOut: boolean = false;
 
   @Column({ type: 'timestamp', nullable: true })
+  @Index({ sparse: true })
   lastLogin: Date | null = null;
 
   @Column({ type: 'timestamp', nullable: true })
