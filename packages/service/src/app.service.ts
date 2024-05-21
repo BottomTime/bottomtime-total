@@ -51,7 +51,7 @@ export class AppService {
     const [total, addedLastWeek, addedLastMonth] = await Promise.all([
       this.logEntries.count(),
       this.logEntries.countBy({
-        createdAt: MoreThan(dayjs().subtract(7, 'days').toDate()),
+        createdAt: MoreThan(dayjs().subtract(14, 'days').toDate()),
       }),
       this.logEntries.countBy({
         createdAt: MoreThan(dayjs().subtract(30, 'days').toDate()),
