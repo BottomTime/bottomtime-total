@@ -1,4 +1,5 @@
 /packages/service/public
+/packages/templates
 
 dist/
 coverage/

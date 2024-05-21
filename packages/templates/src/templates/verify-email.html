@@ -1,0 +1,29 @@
+<x-main>
+  <div class="space-y-4 text-jusify">
+    <p class="text-lg font-bold">Hi there @{{ displayName }},</p>
+
+    <p>
+      You are receiving this email because you requested a link to verify your
+      email address with the
+      <a href="@{{ baseUrl }}">Bottom Time</a> application Click the link below
+      to complete the request!
+    </p>
+
+    <div class="font-bold ml-10">
+      <a href="@{{ verifyEmailUrl }}">
+        <p>Verify Your Email Address</p>
+        <p class="text-sm italic">@{{ user.email }}</p>
+      </a>
+    </div>
+
+    <p>
+      Once your email address has been verified you will have full access to
+      your account.
+    </p>
+
+    <div>
+      <p>Cheers,</p>
+      <p>The Bottom Time Team!</p>
+    </div>
+  </div>
+</x-main>

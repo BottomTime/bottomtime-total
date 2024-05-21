@@ -257,7 +257,10 @@ export class UsersController {
       const emailContent = await this.emailService.generateMessageContent({
         type: EmailType.Welcome,
         title: 'Welcome to Bottom Time',
+        subtitle: 'Get ready to dive in!',
         user,
+        logsUrl: new URL('/logbook', Config.baseUrl).toString(),
+        profileUrl: new URL('/profile', Config.baseUrl).toString(),
         verifyEmailUrl: verificationUrl.toString(),
       });
       this.emailService.sendMail(

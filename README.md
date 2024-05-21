@@ -12,6 +12,7 @@ on first-time setup and running the platform locally.
 - [Backend Service](packages/service/README.md)
 - [Web Front-End](packages/web/README.md)
 - [Deployment (Terraform)](terraform/README.md)
+- [Managing Email Templates](packages/templates/README.md)
 
 ## Dependencies
 
@@ -80,8 +81,13 @@ yarn
 ```
 
 **Note:** This operation may take several minutes on the first run. This is because it will also perform a
-number of preparation steps like installing Git hooks and downloading/installing the Playwright runtime for
-running end-to-end tests.
+number of preparation steps including
+
+- installing Git hooks
+- downloading/installing the Playwright runtime for running end-to-end tests
+- generating email templates
+- creating `.env` files
+- etc...
 
 ### Formatting all files
 

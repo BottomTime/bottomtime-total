@@ -1,7 +1,8 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
+import { readFile } from 'fs/promises';
+import { render } from 'mustache';
 import path from 'path';
-import { Options, compileFile, compileTemplate } from 'pug';
 
 import { User } from '../auth/user';
 import { Config } from '../config';
@@ -16,11 +17,14 @@ export enum EmailType {
 type EmailGlobals = {
   adminEmail: string;
   baseUrl: string;
+  displayName: string;
   now: Date;
+  year: number;
 };
 
 type BaseEmailOptions = {
   title: string;
+  subtitle?: string;
   user: User;
 };
 
@@ -36,6 +40,8 @@ type VerifyEmailOptions = {
 
 type WelcomeEmailOptions = {
   type: EmailType.Welcome;
+  logsUrl: string;
+  profileUrl: string;
   verifyEmailUrl: string;
 };
 
@@ -52,53 +58,40 @@ export type Recipients = {
 
 @Injectable()
 export class EmailService implements OnModuleInit {
-  private static readonly pugOptions: Options = {
-    basedir: path.resolve(__dirname, '../../assets/templates'),
-  } as const;
-
-  private static readonly templatePaths: Record<EmailType, string> = {
-    [EmailType.ResetPassword]: 'reset-email-template.pug',
-    [EmailType.VerifyEmail]: 'verify-email-template.pug',
-    [EmailType.Welcome]: 'welcome-email-template.pug',
-  } as const;
-
   private readonly log: Logger = new Logger(EmailService.name);
-
-  private templates: Record<EmailType, compileTemplate> | undefined;
+  private templates?: Record<EmailType, string>;
 
   constructor(
     @Inject(MailClientService) private readonly mailClient: IMailClient,
   ) {}
 
-  private preCompileTemplate(type: EmailType): compileTemplate {
-    const basedir = path.resolve(__dirname, EmailService.pugOptions.basedir!);
-    const filename = path.resolve(basedir, EmailService.templatePaths[type]);
-
-    this.log.debug(`Pre-compiling email template for ${type} emails...`);
-    const compiledTemplate = compileFile(filename, {
-      basedir,
-      filename,
-    });
-
-    return compiledTemplate;
-  }
-
   private getFullEmailOptions(options: EmailOptions): EmailOptionsWithGlobals {
+    const now = new Date();
     return {
       adminEmail: Config.adminEmail,
       baseUrl: Config.baseUrl,
-      now: new Date(),
+      displayName: options.user.profile.name || `@${options.user.username}`,
+      now,
+      year: now.getFullYear(),
       ...options,
     };
   }
 
-  onModuleInit() {
+  async onModuleInit(): Promise<void> {
+    const basePath = path.resolve(__dirname, '../../assets/templates');
+    this.log.debug('Pre-loading email template files...');
+
+    const [resetPassword, verifyEmail, welcome] = await Promise.all([
+      readFile(path.resolve(basePath, 'reset-password.html'), 'utf8'),
+      readFile(path.resolve(basePath, 'verify-email.html'), 'utf8'),
+      readFile(path.resolve(basePath, 'welcome.html'), 'utf8'),
+    ]);
+
+    this.log.debug('Email templates have been cached.');
     this.templates = {
-      [EmailType.ResetPassword]: this.preCompileTemplate(
-        EmailType.ResetPassword,
-      ),
-      [EmailType.VerifyEmail]: this.preCompileTemplate(EmailType.VerifyEmail),
-      [EmailType.Welcome]: this.preCompileTemplate(EmailType.Welcome),
+      [EmailType.ResetPassword]: resetPassword,
+      [EmailType.VerifyEmail]: verifyEmail,
+      [EmailType.Welcome]: welcome,
     };
   }
 
@@ -107,9 +100,10 @@ export class EmailService implements OnModuleInit {
       throw new Error('Module has not yet been initialized.');
     }
 
+    this.log.debug(`Rendering email from template (${options.type})...`);
+    this.log.verbose('Email options:', options);
     const locals = this.getFullEmailOptions(options);
-    const html = this.templates[options.type](locals);
-    return html;
+    return render(this.templates[options.type], locals);
   }
 
   sendMail(recipients: Recipients, subject: string, body: string): void {
