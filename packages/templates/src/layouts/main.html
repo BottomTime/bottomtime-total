@@ -83,7 +83,13 @@
         <div
           class="font-title bg-sky-700 px-4 py-6 shadow shadow-xl space-y-3 rounded-lg text-center text-sm italic"
         >
-          Copyright &copy; Chris Carleton, 2024
+          <p>Copyright &copy; Chris Carleton, @{{ year }}</p>
+
+          <p class="italic text-gray-400 text-sm">
+            If you did not request this email and suspect something fishy is up
+            then you can report this email to
+            <a href="mailto:@{{ adminEmail }}">@{{ adminEmail }}</a>.
+          </p>
         </div>
       </section>
     </div>

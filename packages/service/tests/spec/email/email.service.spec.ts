@@ -3,13 +3,14 @@ import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
 import { EmailOptions, EmailService, EmailType } from '../../../src/email';
 import { dataSource } from '../../data-source';
-import { TestMailer } from '../../utils';
+import { TestMailer, createTestUser } from '../../utils';
 
 jest.mock('../../../src/config');
 
 const TestUserData: Partial<UserEntity> = {
   username: 'MostExcellentUser33',
   email: 'totally_legit_user@gmail.com',
+  name: 'John Diver',
 };
 
 describe('Email Service', () => {
@@ -33,29 +34,37 @@ describe('Email Service', () => {
     }),
     [EmailType.Welcome]: () => ({
       type: EmailType.Welcome,
-      title: 'Welcome',
+      title: 'Welcome to Bottom Time',
+      subtitle: 'Get ready to dive in!',
       user,
+      logsUrl: 'https://bottomti.me/logbook',
+      profileUrl: 'https://bottomti.me/profile',
       verifyEmailUrl: `https://bottomti.me/verifyEmail?user=${TestUserData.username}&token=abcd-1234`,
     }),
   } as const;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     Config.adminEmail = 'admin@bottomti.me';
     Config.baseUrl = 'https://bottomti.me/';
 
-    const userData = new UserEntity();
-    Object.assign(userData, TestUserData);
+    const userData = createTestUser(TestUserData);
     user = new User(dataSource.getRepository(UserEntity), userData);
+
+    mailClient = new TestMailer();
+    service = new EmailService(mailClient);
+    await service.onModuleInit();
   });
 
   beforeEach(() => {
-    mailClient = new TestMailer();
-    service = new EmailService(mailClient);
-    service.onModuleInit();
     jest.useFakeTimers({
       doNotFake: ['nextTick', 'setImmediate'],
       now: new Date('2023-07-20T11:47:36.692Z'),
     });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    mailClient.clearMessages();
   });
 
   Object.entries(generateEmailTestCases).forEach(([emailType, options]) => {
