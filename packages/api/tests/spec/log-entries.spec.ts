@@ -78,7 +78,7 @@ describe('Log entries API client', () => {
     expect(entry.toJSON()).toEqual(entryData);
   });
 
-  it('will create a new log entry', async () => {
+  it('will create a new log entry without a dive site', async () => {
     const options: CreateOrUpdateLogEntryParamsDTO = {
       duration: 50.5,
       entryTime: {
@@ -92,6 +92,7 @@ describe('Log entries API client', () => {
     };
     const expected: LogEntryDTO = {
       ...options,
+      site: undefined,
       creator: BasicUser.profile,
       id: '62389e6e-0332-4288-9d87-9bd94ba830da',
     };

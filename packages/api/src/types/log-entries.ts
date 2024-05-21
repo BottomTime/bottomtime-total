@@ -9,29 +9,29 @@ export enum LogEntrySortBy {
   LogNumber = 'logNumber',
 }
 
-export const CreateOrUpdateLogEntryParamsSchema = z.object({
+const LogEntryBaseSchema = z.object({
   logNumber: z.number().int().positive().optional(),
 
   entryTime: DateWithTimezoneSchema,
   bottomTime: z.number().positive().optional(),
   duration: z.number().positive(),
 
-  site: z.string().uuid().optional(),
-
   maxDepth: DepthSchema.optional(),
 
   notes: z.string().max(5000).optional(),
+});
+
+export const CreateOrUpdateLogEntryParamsSchema = LogEntryBaseSchema.extend({
+  site: z.string().uuid().optional(),
 });
 export type CreateOrUpdateLogEntryParamsDTO = z.infer<
   typeof CreateOrUpdateLogEntryParamsSchema
 >;
 
-export const LogEntrySchema = CreateOrUpdateLogEntryParamsSchema.omit({
-  site: true,
-}).extend({
+export const LogEntrySchema = LogEntryBaseSchema.extend({
   id: z.string(),
   creator: SuccinctProfileSchema,
-  site: DiveSiteSchema,
+  site: DiveSiteSchema.optional(),
 });
 export type LogEntryDTO = z.infer<typeof LogEntrySchema>;
 
@@ -43,13 +43,7 @@ export const SuccinctLogEntrySchema = LogEntrySchema.pick({
   maxDepth: true,
   bottomTime: true,
   duration: true,
-}).extend({
-  site: z
-    .object({
-      id: z.string(),
-      name: z.string(),
-    })
-    .optional(),
+  site: true,
 });
 export type SuccinctLogEntryDTO = z.infer<typeof SuccinctLogEntrySchema>;
 
