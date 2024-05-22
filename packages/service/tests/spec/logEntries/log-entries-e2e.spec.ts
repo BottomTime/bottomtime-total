@@ -16,8 +16,9 @@ import utc from 'dayjs/plugin/utc';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity, UserEntity } from '../../../src/data';
+import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
+import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
 import TestUserData from '../../fixtures/user-search-data.json';
 import {
@@ -26,6 +27,7 @@ import {
   createTestUser,
   parseUserJSON,
 } from '../../utils';
+import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
 import {
   createTestLogEntry,
   parseLogEntryJSON,
@@ -63,9 +65,11 @@ describe('Log entries E2E tests', () => {
   let ownerData: UserEntity[];
   let adminData: UserEntity;
   let logEntryData: LogEntryEntity[];
+  let diveSiteData: DiveSiteEntity[];
 
   let Users: Repository<UserEntity>;
   let Entries: Repository<LogEntryEntity>;
+  let DiveSites: Repository<DiveSiteEntity>;
 
   let authHeader: [string, string];
   let adminAuthHeader: [string, string];
@@ -77,11 +81,19 @@ describe('Log entries E2E tests', () => {
 
     Users = dataSource.getRepository(UserEntity);
     Entries = dataSource.getRepository(LogEntryEntity);
+    DiveSites = dataSource.getRepository(DiveSiteEntity);
 
     adminData = createTestUser(AdminUserData);
     ownerData = TestUserData.slice(0, 4).map((user) => parseUserJSON(user));
+    diveSiteData = TestDiveSiteData.map((site, i) =>
+      parseDiveSiteJSON(site, ownerData[i % ownerData.length]),
+    );
     logEntryData = TestLogEntryData.map((entry, i) =>
-      parseLogEntryJSON(entry, ownerData[i % ownerData.length]),
+      parseLogEntryJSON(
+        entry,
+        ownerData[i % ownerData.length],
+        diveSiteData[i % diveSiteData.length],
+      ),
     );
 
     authHeader = await createAuthHeader(ownerData[0].id);
@@ -91,6 +103,7 @@ describe('Log entries E2E tests', () => {
 
   beforeEach(async () => {
     await Users.save([...ownerData, AdminUserData]);
+    await DiveSites.save(diveSiteData);
   });
 
   afterAll(async () => {
@@ -165,6 +178,7 @@ describe('Log entries E2E tests', () => {
           id: entry.id,
           owner: entry.creator.username,
           entryTime: entry.entryTime,
+          site: entry.site?.name,
         })),
       ).toMatchSnapshot();
     });
@@ -194,6 +208,7 @@ describe('Log entries E2E tests', () => {
           id: entry.id,
           owner: entry.creator.username,
           entryTime: entry.entryTime,
+          site: entry.site?.name,
         })),
       ).toMatchSnapshot();
     });
@@ -212,6 +227,7 @@ describe('Log entries E2E tests', () => {
           id: entry.id,
           owner: entry.creator.username,
           entryTime: entry.entryTime,
+          site: entry.site?.name,
         })),
       ).toMatchSnapshot();
     });
@@ -290,7 +306,10 @@ describe('Log entries E2E tests', () => {
       const { body } = await request(server)
         .post(getUrl())
         .set(...authHeader)
-        .send(newEntry)
+        .send({
+          ...newEntry,
+          site: diveSiteData[8].id,
+        })
         .expect(201);
 
       expect(body.id).toBeDefined();
@@ -301,10 +320,11 @@ describe('Log entries E2E tests', () => {
       expect(body.duration).toBe(newEntry.duration);
       expect(body.maxDepth).toEqual(newEntry.maxDepth);
       expect(body.notes).toBe(newEntry.notes);
+      expect(body.site.name).toEqual(diveSiteData[8].name);
 
       const saved = await Entries.findOneOrFail({
         where: { id: body.id },
-        relations: ['owner'],
+        relations: ['owner', 'site'],
       });
       expect(saved.bottomTime).toBe(newEntry.bottomTime);
       expect(saved.duration).toBe(newEntry.duration);
@@ -319,6 +339,7 @@ describe('Log entries E2E tests', () => {
       expect(saved.maxDepth).toEqual(newEntry.maxDepth!.depth);
       expect(saved.maxDepthUnit).toBe(newEntry.maxDepth!.unit);
       expect(saved.notes).toBe(newEntry.notes);
+      expect(saved.site?.name).toEqual(diveSiteData[8].name);
     });
 
     it('will allow admins to create log entries for other users', async () => {
@@ -393,6 +414,21 @@ describe('Log entries E2E tests', () => {
       expect(details).toMatchSnapshot();
     });
 
+    it('will return a 400 response if the site ID cannot be found', async () => {
+      const {
+        body: { message },
+      } = await request(server)
+        .post(getUrl())
+        .set(...authHeader)
+        .send({
+          ...newEntry,
+          site: '37a214f6-6167-4468-947d-b3171a0425fd',
+        })
+        .expect(400);
+
+      expect(message).toMatchSnapshot();
+    });
+
     it('will return a 400 response if the request body is missing', async () => {
       const {
         body: { details },
@@ -429,7 +465,8 @@ describe('Log entries E2E tests', () => {
     let entry: LogEntryEntity;
 
     beforeAll(() => {
-      entry = logEntryData[0];
+      entry = { ...logEntryData[0] };
+      entry.site = diveSiteData[0];
     });
 
     beforeEach(async () => {
@@ -578,6 +615,49 @@ describe('Log entries E2E tests', () => {
       expect(saved.notes).toBe(updatedEntry.notes);
     });
 
+    it('will set site property', async () => {
+      await Entries.createQueryBuilder()
+        .update(LogEntryEntity)
+        .set({ site: null })
+        .where({ id: entry.id })
+        .execute();
+      const { body } = await request(server)
+        .put(getUrl(entry.id))
+        .set(...adminAuthHeader)
+        .send({
+          ...updatedEntry,
+          site: diveSiteData[11].id,
+        })
+        .expect(200);
+
+      expect(body.site.name).toBe(diveSiteData[11].name);
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: body.id },
+        relations: ['owner', 'site'],
+      });
+      expect(saved.site?.name).toBe(diveSiteData[11].name);
+    });
+
+    it('will unset site property', async () => {
+      const { body } = await request(server)
+        .put(getUrl(entry.id))
+        .set(...adminAuthHeader)
+        .send({
+          ...updatedEntry,
+          site: undefined,
+        })
+        .expect(200);
+
+      expect(body.site).toBeUndefined();
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: body.id },
+        relations: ['owner', 'site'],
+      });
+      expect(saved.site).toBeNull();
+    });
+
     it('will return a 400 response if the request body is invalid', async () => {
       const {
         body: { details },
@@ -624,6 +704,21 @@ describe('Log entries E2E tests', () => {
         .expect(400);
 
       expect(details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the site ID cannot be found', async () => {
+      const {
+        body: { message },
+      } = await request(server)
+        .put(getUrl(entry.id))
+        .set(...authHeader)
+        .send({
+          ...updatedEntry,
+          site: 'e637a808-90cb-4fba-823e-35cd1898ee4a',
+        })
+        .expect(400);
+
+      expect(message).toMatchSnapshot();
     });
 
     it('will return a 401 response if the user is not authenticated', async () => {

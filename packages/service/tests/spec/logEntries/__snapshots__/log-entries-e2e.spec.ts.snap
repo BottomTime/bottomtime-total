@@ -129,6 +129,8 @@ exports[`Log entries E2E tests when creating log entries will return a 400 respo
 }
 `;
 
+exports[`Log entries E2E tests when creating log entries will return a 400 response if the site ID cannot be found 1`] = `"Dive site with ID "37a214f6-6167-4468-947d-b3171a0425fd" not found."`;
+
 exports[`Log entries E2E tests when retrieving single log entries will allow an admin to view any log entry 1`] = `
 {
   "bottomTime": 60,
@@ -153,6 +155,36 @@ exports[`Log entries E2E tests when retrieving single log entries will allow an 
     "unit": "ft",
   },
   "notes": "Voluptates voluptatibus fuga accusamus voluptatibus ipsa nam. Eligendi iste repellat iste assumenda dolorem at odit beatae perspiciatis. Distinctio voluptatem eius quisquam.",
+  "site": {
+    "averageDifficulty": 2.73,
+    "averageRating": 3.28,
+    "createdOn": "2023-08-08T22:47:09.671Z",
+    "creator": {
+      "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
+      "location": "West Covina",
+      "logBookSharing": "private",
+      "memberSince": "2020-02-24T22:30:50.944Z",
+      "name": "Devin Ratke",
+      "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
+      "username": "Ayla.Rippin",
+    },
+    "depth": {
+      "depth": 12,
+      "unit": "ft",
+    },
+    "description": "Animi quae consequuntur nihil excepturi. Molestiae id deleniti. Animi dignissimos incidunt amet nostrum alias eius dolor placeat.",
+    "directions": "Aliquid aspernatur porro molestias quas modi pariatur. Aliquam quod tempore praesentium reiciendis occaecati dolorum omnis. Odit dolores ullam iure ex molestiae. Fugit reiciendis unde voluptatum minima cumque inventore. Nam eum incidunt ratione quis reprehenderit necessitatibus.",
+    "freeToDive": true,
+    "gps": {
+      "lat": -39.6975,
+      "lon": 96.5057,
+    },
+    "id": "c86e5460-b08a-407c-afd2-40280ea47758",
+    "location": "Lake Kenna",
+    "name": "Gasoline Generic",
+    "shoreAccess": true,
+    "updatedOn": "2024-01-29T00:43:46.682Z",
+  },
 }
 `;
 
@@ -180,6 +212,36 @@ exports[`Log entries E2E tests when retrieving single log entries will return th
     "unit": "ft",
   },
   "notes": "Voluptates voluptatibus fuga accusamus voluptatibus ipsa nam. Eligendi iste repellat iste assumenda dolorem at odit beatae perspiciatis. Distinctio voluptatem eius quisquam.",
+  "site": {
+    "averageDifficulty": 2.73,
+    "averageRating": 3.28,
+    "createdOn": "2023-08-08T22:47:09.671Z",
+    "creator": {
+      "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
+      "location": "West Covina",
+      "logBookSharing": "private",
+      "memberSince": "2020-02-24T22:30:50.944Z",
+      "name": "Devin Ratke",
+      "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
+      "username": "Ayla.Rippin",
+    },
+    "depth": {
+      "depth": 12,
+      "unit": "ft",
+    },
+    "description": "Animi quae consequuntur nihil excepturi. Molestiae id deleniti. Animi dignissimos incidunt amet nostrum alias eius dolor placeat.",
+    "directions": "Aliquid aspernatur porro molestias quas modi pariatur. Aliquam quod tempore praesentium reiciendis occaecati dolorum omnis. Odit dolores ullam iure ex molestiae. Fugit reiciendis unde voluptatum minima cumque inventore. Nam eum incidunt ratione quis reprehenderit necessitatibus.",
+    "freeToDive": true,
+    "gps": {
+      "lat": -39.6975,
+      "lon": 96.5057,
+    },
+    "id": "c86e5460-b08a-407c-afd2-40280ea47758",
+    "location": "Lake Kenna",
+    "name": "Gasoline Generic",
+    "shoreAccess": true,
+    "updatedOn": "2024-01-29T00:43:46.682Z",
+  },
 }
 `;
 
@@ -192,6 +254,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "cc8f47cc-3a72-441e-bd42-ef2a6b292207",
     "owner": "Ayla.Rippin",
+    "site": "aw qui",
   },
   {
     "entryTime": {
@@ -200,6 +263,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "01e544ff-3cee-46fd-a912-f7bcdaeae17c",
     "owner": "Ayla.Rippin",
+    "site": "reprieve Books",
   },
   {
     "entryTime": {
@@ -208,6 +272,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "a897c4e1-4323-4aab-a0e5-e18fa3c393fd",
     "owner": "Ayla.Rippin",
+    "site": "matrix female",
   },
   {
     "entryTime": {
@@ -216,6 +281,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "f3db1b15-8f8b-4ec6-982c-0564337ea720",
     "owner": "Ayla.Rippin",
+    "site": "South Country",
   },
   {
     "entryTime": {
@@ -224,6 +290,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "7ca9609b-a872-4f5b-a4dc-ad690fe0962b",
     "owner": "Ayla.Rippin",
+    "site": "FTP Hop",
   },
   {
     "entryTime": {
@@ -232,6 +299,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "07607a66-5e82-403b-a02f-802b8e814b90",
     "owner": "Ayla.Rippin",
+    "site": "solutions urgently",
   },
   {
     "entryTime": {
@@ -240,6 +308,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "9eddcb94-39d8-40dd-80ae-32ef7c9d2e88",
     "owner": "Ayla.Rippin",
+    "site": "once Los",
   },
   {
     "entryTime": {
@@ -248,6 +317,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "d786f6fe-b3a3-43d5-869f-f3837c5ed08e",
     "owner": "Ayla.Rippin",
+    "site": "whoa minima",
   },
   {
     "entryTime": {
@@ -256,6 +326,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "270f696e-328f-4a6c-be37-06ce38cf738a",
     "owner": "Ayla.Rippin",
+    "site": "Legacy SCSI",
   },
   {
     "entryTime": {
@@ -264,6 +335,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "eca8865b-f1fa-438b-a356-4f403c86887f",
     "owner": "Ayla.Rippin",
+    "site": "Gasoline Consultant",
   },
   {
     "entryTime": {
@@ -272,6 +344,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "adcd9af8-b1a1-4f04-882c-0702eb4e5ff2",
     "owner": "Ayla.Rippin",
+    "site": "Hip darling",
   },
   {
     "entryTime": {
@@ -280,6 +353,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "deaee628-5fa4-48e7-bd46-c3bc66ce9c4b",
     "owner": "Ayla.Rippin",
+    "site": "portals Ernser",
   },
   {
     "entryTime": {
@@ -288,6 +362,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "0723a198-1dd6-4292-acf8-47be234eb3ae",
     "owner": "Ayla.Rippin",
+    "site": "navigating Recycled",
   },
   {
     "entryTime": {
@@ -296,6 +371,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "76f18976-ed76-481e-a4c5-dc868bf8a5bc",
     "owner": "Ayla.Rippin",
+    "site": "portals Ernser",
   },
   {
     "entryTime": {
@@ -304,6 +380,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "d0f4ce77-90d8-46e7-a227-18a89e6f48d2",
     "owner": "Ayla.Rippin",
+    "site": "payment black",
   },
   {
     "entryTime": {
@@ -312,6 +389,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "ac536d66-7901-4596-8f38-06693dd1fa37",
     "owner": "Ayla.Rippin",
+    "site": "whoa minima",
   },
   {
     "entryTime": {
@@ -320,6 +398,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "22e6c87f-73f7-4091-8e31-2253be9acb28",
     "owner": "Ayla.Rippin",
+    "site": "below South",
   },
   {
     "entryTime": {
@@ -328,6 +407,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "52e6c975-ee97-4bee-955a-6eb06d4fcc1b",
     "owner": "Ayla.Rippin",
+    "site": "becquerel worst",
   },
 ]
 `;
@@ -341,6 +421,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "9f907460-96d3-4c9b-828e-ac4d057d9bfe",
     "owner": "Ayla.Rippin",
+    "site": "Music quantifying",
   },
   {
     "entryTime": {
@@ -349,6 +430,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "c75c55fe-436c-4167-a870-b3447f856ea4",
     "owner": "Ayla.Rippin",
+    "site": "revolutionary yuck",
   },
   {
     "entryTime": {
@@ -357,6 +439,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d1af5f9e-dda0-4de2-86fd-338d65b40518",
     "owner": "Ayla.Rippin",
+    "site": "deploy Electronic",
   },
   {
     "entryTime": {
@@ -365,6 +448,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "bbe40137-0a3e-4346-8118-9707ff0a2b6d",
     "owner": "Ayla.Rippin",
+    "site": "Sausages Alpharetta",
   },
   {
     "entryTime": {
@@ -373,6 +457,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "b07e5f28-c783-43f1-86e1-5fa8c69e1acc",
     "owner": "Ayla.Rippin",
+    "site": "radian BEAC",
   },
   {
     "entryTime": {
@@ -381,6 +466,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "e5d2f80c-822e-42b9-931d-9785e30fb875",
     "owner": "Ayla.Rippin",
+    "site": "to East",
   },
   {
     "entryTime": {
@@ -389,6 +475,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "52e6c975-ee97-4bee-955a-6eb06d4fcc1b",
     "owner": "Ayla.Rippin",
+    "site": "becquerel worst",
   },
   {
     "entryTime": {
@@ -397,6 +484,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "22e6c87f-73f7-4091-8e31-2253be9acb28",
     "owner": "Ayla.Rippin",
+    "site": "below South",
   },
   {
     "entryTime": {
@@ -405,6 +493,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "ac536d66-7901-4596-8f38-06693dd1fa37",
     "owner": "Ayla.Rippin",
+    "site": "whoa minima",
   },
   {
     "entryTime": {
@@ -413,6 +502,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d0f4ce77-90d8-46e7-a227-18a89e6f48d2",
     "owner": "Ayla.Rippin",
+    "site": "payment black",
   },
   {
     "entryTime": {
@@ -421,6 +511,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "76f18976-ed76-481e-a4c5-dc868bf8a5bc",
     "owner": "Ayla.Rippin",
+    "site": "portals Ernser",
   },
   {
     "entryTime": {
@@ -429,6 +520,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "0723a198-1dd6-4292-acf8-47be234eb3ae",
     "owner": "Ayla.Rippin",
+    "site": "navigating Recycled",
   },
   {
     "entryTime": {
@@ -437,6 +529,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "deaee628-5fa4-48e7-bd46-c3bc66ce9c4b",
     "owner": "Ayla.Rippin",
+    "site": "portals Ernser",
   },
   {
     "entryTime": {
@@ -445,6 +538,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "adcd9af8-b1a1-4f04-882c-0702eb4e5ff2",
     "owner": "Ayla.Rippin",
+    "site": "Hip darling",
   },
   {
     "entryTime": {
@@ -453,6 +547,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "eca8865b-f1fa-438b-a356-4f403c86887f",
     "owner": "Ayla.Rippin",
+    "site": "Gasoline Consultant",
   },
   {
     "entryTime": {
@@ -461,6 +556,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "270f696e-328f-4a6c-be37-06ce38cf738a",
     "owner": "Ayla.Rippin",
+    "site": "Legacy SCSI",
   },
   {
     "entryTime": {
@@ -469,6 +565,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d786f6fe-b3a3-43d5-869f-f3837c5ed08e",
     "owner": "Ayla.Rippin",
+    "site": "whoa minima",
   },
   {
     "entryTime": {
@@ -477,6 +574,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "9eddcb94-39d8-40dd-80ae-32ef7c9d2e88",
     "owner": "Ayla.Rippin",
+    "site": "once Los",
   },
   {
     "entryTime": {
@@ -485,6 +583,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "07607a66-5e82-403b-a02f-802b8e814b90",
     "owner": "Ayla.Rippin",
+    "site": "solutions urgently",
   },
   {
     "entryTime": {
@@ -493,6 +592,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "7ca9609b-a872-4f5b-a4dc-ad690fe0962b",
     "owner": "Ayla.Rippin",
+    "site": "FTP Hop",
   },
   {
     "entryTime": {
@@ -501,6 +601,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "f3db1b15-8f8b-4ec6-982c-0564337ea720",
     "owner": "Ayla.Rippin",
+    "site": "South Country",
   },
   {
     "entryTime": {
@@ -509,6 +610,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "a897c4e1-4323-4aab-a0e5-e18fa3c393fd",
     "owner": "Ayla.Rippin",
+    "site": "matrix female",
   },
   {
     "entryTime": {
@@ -517,6 +619,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "01e544ff-3cee-46fd-a912-f7bcdaeae17c",
     "owner": "Ayla.Rippin",
+    "site": "reprieve Books",
   },
   {
     "entryTime": {
@@ -525,6 +628,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "cc8f47cc-3a72-441e-bd42-ef2a6b292207",
     "owner": "Ayla.Rippin",
+    "site": "aw qui",
   },
   {
     "entryTime": {
@@ -533,6 +637,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "10061137-d0ea-45bb-b139-273eb8bf5d4a",
     "owner": "Ayla.Rippin",
+    "site": "Auto Moscovium",
   },
   {
     "entryTime": {
@@ -541,6 +646,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "0175a329-074a-4e11-9e7a-59c333421cb6",
     "owner": "Ayla.Rippin",
+    "site": "programming Movies",
   },
   {
     "entryTime": {
@@ -549,6 +655,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "24d63888-b693-4a4d-b428-3207af4f61bc",
     "owner": "Ayla.Rippin",
+    "site": "Architect innovative",
   },
   {
     "entryTime": {
@@ -557,6 +664,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "7faeebd9-e27f-42b5-ae47-f4de3d1f23b6",
     "owner": "Ayla.Rippin",
+    "site": "Electronics redundant",
   },
   {
     "entryTime": {
@@ -565,6 +673,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d078f9f1-e82f-4719-a264-5f8dc539cf53",
     "owner": "Ayla.Rippin",
+    "site": "Hybrid Frozen",
   },
   {
     "entryTime": {
@@ -573,6 +682,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "a8052274-d790-4fb2-9d94-b24f6adb56ba",
     "owner": "Ayla.Rippin",
+    "site": "Fresh Kia",
   },
   {
     "entryTime": {
@@ -581,6 +691,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "c8ba68a0-a5b3-4dea-846c-3620aaa8a619",
     "owner": "Ayla.Rippin",
+    "site": "Rwanda Operations",
   },
   {
     "entryTime": {
@@ -589,6 +700,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "e0f0bb8d-2f7d-4f2e-9582-6711d83d24b3",
     "owner": "Ayla.Rippin",
+    "site": "bah far",
   },
   {
     "entryTime": {
@@ -597,6 +709,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "a2ae20c3-e572-499f-aec6-4e82487f35ad",
     "owner": "Ayla.Rippin",
+    "site": "Gasoline Generic",
   },
   {
     "entryTime": {
@@ -605,6 +718,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d8783b60-6d52-4137-bd5b-94c7bae5b3cc",
     "owner": "Ayla.Rippin",
+    "site": "Mountain Manager",
   },
   {
     "entryTime": {
@@ -613,6 +727,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "2c5a8136-6143-482d-b5fe-1db88365137a",
     "owner": "Ayla.Rippin",
+    "site": "Cloned male",
   },
   {
     "entryTime": {
@@ -621,6 +736,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "8618d297-4613-4e83-8307-0973cab126c5",
     "owner": "Ayla.Rippin",
+    "site": "lavender Frozen",
   },
   {
     "entryTime": {
@@ -629,6 +745,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "7925c289-61bd-49fb-835e-7a7bdc743a56",
     "owner": "Ayla.Rippin",
+    "site": "Gasoline Generic",
   },
   {
     "entryTime": {
@@ -637,6 +754,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "254e9df0-7087-4566-b9ab-ad4703af0d6f",
     "owner": "Ayla.Rippin",
+    "site": "Chicken perspiciatis",
   },
   {
     "entryTime": {
@@ -645,6 +763,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "c8c96bf3-b90a-4fc5-9d96-0702f551090e",
     "owner": "Ayla.Rippin",
+    "site": "Cambridgeshire Nevada",
   },
   {
     "entryTime": {
@@ -653,6 +772,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "3f0d881d-3f4f-4898-ad26-41c793478f17",
     "owner": "Ayla.Rippin",
+    "site": "reprieve Books",
   },
   {
     "entryTime": {
@@ -661,6 +781,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "6b38ac71-c28a-418d-80c3-6a6e2e25a57c",
     "owner": "Ayla.Rippin",
+    "site": "Music quantifying",
   },
   {
     "entryTime": {
@@ -669,6 +790,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "7079448d-d586-4ad4-bcfd-b7d693578765",
     "owner": "Ayla.Rippin",
+    "site": "deploy Electronic",
   },
   {
     "entryTime": {
@@ -677,6 +799,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "f20da6be-8097-41b3-9edc-5cec41829b02",
     "owner": "Ayla.Rippin",
+    "site": "once Los",
   },
   {
     "entryTime": {
@@ -685,6 +808,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "363510b9-0daf-40ca-a55b-a834f4b646a3",
     "owner": "Ayla.Rippin",
+    "site": "stupendous Polonium",
   },
   {
     "entryTime": {
@@ -693,6 +817,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "dc5cc3f4-455d-450d-9c6d-18fcd94e809b",
     "owner": "Ayla.Rippin",
+    "site": "evolve female",
   },
   {
     "entryTime": {
@@ -701,6 +826,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "c6fb7cf0-237b-4c52-b974-9a0133fd2b40",
     "owner": "Ayla.Rippin",
+    "site": "solutions urgently",
   },
   {
     "entryTime": {
@@ -709,6 +835,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "083077bd-75ca-4530-b0a5-b61cf2da548d",
     "owner": "Ayla.Rippin",
+    "site": "Chicken perspiciatis",
   },
   {
     "entryTime": {
@@ -717,6 +844,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "a8e7741b-88d7-42ea-9b6b-56dd7beed9d3",
     "owner": "Ayla.Rippin",
+    "site": "ouch Southwest",
   },
   {
     "entryTime": {
@@ -725,6 +853,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "edfec324-a0c0-43a4-9110-88e9002407ce",
     "owner": "Ayla.Rippin",
+    "site": "solid Jaguar",
   },
   {
     "entryTime": {
@@ -733,6 +862,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "e92cbd23-b0e1-4960-927e-7f5927c2def8",
     "owner": "Ayla.Rippin",
+    "site": "Sausages Alpharetta",
   },
 ]
 `;
@@ -746,6 +876,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "9f907460-96d3-4c9b-828e-ac4d057d9bfe",
     "owner": "Ayla.Rippin",
+    "site": "Music quantifying",
   },
   {
     "entryTime": {
@@ -754,6 +885,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "c75c55fe-436c-4167-a870-b3447f856ea4",
     "owner": "Ayla.Rippin",
+    "site": "revolutionary yuck",
   },
   {
     "entryTime": {
@@ -762,6 +894,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d1af5f9e-dda0-4de2-86fd-338d65b40518",
     "owner": "Ayla.Rippin",
+    "site": "deploy Electronic",
   },
   {
     "entryTime": {
@@ -770,6 +903,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "bbe40137-0a3e-4346-8118-9707ff0a2b6d",
     "owner": "Ayla.Rippin",
+    "site": "Sausages Alpharetta",
   },
   {
     "entryTime": {
@@ -778,6 +912,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "b07e5f28-c783-43f1-86e1-5fa8c69e1acc",
     "owner": "Ayla.Rippin",
+    "site": "radian BEAC",
   },
   {
     "entryTime": {
@@ -786,6 +921,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "e5d2f80c-822e-42b9-931d-9785e30fb875",
     "owner": "Ayla.Rippin",
+    "site": "to East",
   },
   {
     "entryTime": {
@@ -794,6 +930,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "52e6c975-ee97-4bee-955a-6eb06d4fcc1b",
     "owner": "Ayla.Rippin",
+    "site": "becquerel worst",
   },
   {
     "entryTime": {
@@ -802,6 +939,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "22e6c87f-73f7-4091-8e31-2253be9acb28",
     "owner": "Ayla.Rippin",
+    "site": "below South",
   },
   {
     "entryTime": {
@@ -810,6 +948,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "ac536d66-7901-4596-8f38-06693dd1fa37",
     "owner": "Ayla.Rippin",
+    "site": "whoa minima",
   },
   {
     "entryTime": {
@@ -818,6 +957,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d0f4ce77-90d8-46e7-a227-18a89e6f48d2",
     "owner": "Ayla.Rippin",
+    "site": "payment black",
   },
   {
     "entryTime": {
@@ -826,6 +966,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "76f18976-ed76-481e-a4c5-dc868bf8a5bc",
     "owner": "Ayla.Rippin",
+    "site": "portals Ernser",
   },
   {
     "entryTime": {
@@ -834,6 +975,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "0723a198-1dd6-4292-acf8-47be234eb3ae",
     "owner": "Ayla.Rippin",
+    "site": "navigating Recycled",
   },
   {
     "entryTime": {
@@ -842,6 +984,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "deaee628-5fa4-48e7-bd46-c3bc66ce9c4b",
     "owner": "Ayla.Rippin",
+    "site": "portals Ernser",
   },
   {
     "entryTime": {
@@ -850,6 +993,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "adcd9af8-b1a1-4f04-882c-0702eb4e5ff2",
     "owner": "Ayla.Rippin",
+    "site": "Hip darling",
   },
   {
     "entryTime": {
@@ -858,6 +1002,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "eca8865b-f1fa-438b-a356-4f403c86887f",
     "owner": "Ayla.Rippin",
+    "site": "Gasoline Consultant",
   },
   {
     "entryTime": {
@@ -866,6 +1011,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "270f696e-328f-4a6c-be37-06ce38cf738a",
     "owner": "Ayla.Rippin",
+    "site": "Legacy SCSI",
   },
   {
     "entryTime": {
@@ -874,6 +1020,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d786f6fe-b3a3-43d5-869f-f3837c5ed08e",
     "owner": "Ayla.Rippin",
+    "site": "whoa minima",
   },
   {
     "entryTime": {
@@ -882,6 +1029,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "9eddcb94-39d8-40dd-80ae-32ef7c9d2e88",
     "owner": "Ayla.Rippin",
+    "site": "once Los",
   },
   {
     "entryTime": {
@@ -890,6 +1038,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "07607a66-5e82-403b-a02f-802b8e814b90",
     "owner": "Ayla.Rippin",
+    "site": "solutions urgently",
   },
   {
     "entryTime": {
@@ -898,6 +1047,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "7ca9609b-a872-4f5b-a4dc-ad690fe0962b",
     "owner": "Ayla.Rippin",
+    "site": "FTP Hop",
   },
   {
     "entryTime": {
@@ -906,6 +1056,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "f3db1b15-8f8b-4ec6-982c-0564337ea720",
     "owner": "Ayla.Rippin",
+    "site": "South Country",
   },
   {
     "entryTime": {
@@ -914,6 +1065,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "a897c4e1-4323-4aab-a0e5-e18fa3c393fd",
     "owner": "Ayla.Rippin",
+    "site": "matrix female",
   },
   {
     "entryTime": {
@@ -922,6 +1074,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "01e544ff-3cee-46fd-a912-f7bcdaeae17c",
     "owner": "Ayla.Rippin",
+    "site": "reprieve Books",
   },
   {
     "entryTime": {
@@ -930,6 +1083,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "cc8f47cc-3a72-441e-bd42-ef2a6b292207",
     "owner": "Ayla.Rippin",
+    "site": "aw qui",
   },
   {
     "entryTime": {
@@ -938,6 +1092,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "10061137-d0ea-45bb-b139-273eb8bf5d4a",
     "owner": "Ayla.Rippin",
+    "site": "Auto Moscovium",
   },
   {
     "entryTime": {
@@ -946,6 +1101,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "0175a329-074a-4e11-9e7a-59c333421cb6",
     "owner": "Ayla.Rippin",
+    "site": "programming Movies",
   },
   {
     "entryTime": {
@@ -954,6 +1110,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "24d63888-b693-4a4d-b428-3207af4f61bc",
     "owner": "Ayla.Rippin",
+    "site": "Architect innovative",
   },
   {
     "entryTime": {
@@ -962,6 +1119,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "7faeebd9-e27f-42b5-ae47-f4de3d1f23b6",
     "owner": "Ayla.Rippin",
+    "site": "Electronics redundant",
   },
   {
     "entryTime": {
@@ -970,6 +1128,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d078f9f1-e82f-4719-a264-5f8dc539cf53",
     "owner": "Ayla.Rippin",
+    "site": "Hybrid Frozen",
   },
   {
     "entryTime": {
@@ -978,6 +1137,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "a8052274-d790-4fb2-9d94-b24f6adb56ba",
     "owner": "Ayla.Rippin",
+    "site": "Fresh Kia",
   },
   {
     "entryTime": {
@@ -986,6 +1146,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "c8ba68a0-a5b3-4dea-846c-3620aaa8a619",
     "owner": "Ayla.Rippin",
+    "site": "Rwanda Operations",
   },
   {
     "entryTime": {
@@ -994,6 +1155,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "e0f0bb8d-2f7d-4f2e-9582-6711d83d24b3",
     "owner": "Ayla.Rippin",
+    "site": "bah far",
   },
   {
     "entryTime": {
@@ -1002,6 +1164,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "a2ae20c3-e572-499f-aec6-4e82487f35ad",
     "owner": "Ayla.Rippin",
+    "site": "Gasoline Generic",
   },
   {
     "entryTime": {
@@ -1010,6 +1173,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d8783b60-6d52-4137-bd5b-94c7bae5b3cc",
     "owner": "Ayla.Rippin",
+    "site": "Mountain Manager",
   },
   {
     "entryTime": {
@@ -1018,6 +1182,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "2c5a8136-6143-482d-b5fe-1db88365137a",
     "owner": "Ayla.Rippin",
+    "site": "Cloned male",
   },
   {
     "entryTime": {
@@ -1026,6 +1191,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "8618d297-4613-4e83-8307-0973cab126c5",
     "owner": "Ayla.Rippin",
+    "site": "lavender Frozen",
   },
   {
     "entryTime": {
@@ -1034,6 +1200,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "7925c289-61bd-49fb-835e-7a7bdc743a56",
     "owner": "Ayla.Rippin",
+    "site": "Gasoline Generic",
   },
   {
     "entryTime": {
@@ -1042,6 +1209,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "254e9df0-7087-4566-b9ab-ad4703af0d6f",
     "owner": "Ayla.Rippin",
+    "site": "Chicken perspiciatis",
   },
   {
     "entryTime": {
@@ -1050,6 +1218,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "c8c96bf3-b90a-4fc5-9d96-0702f551090e",
     "owner": "Ayla.Rippin",
+    "site": "Cambridgeshire Nevada",
   },
   {
     "entryTime": {
@@ -1058,6 +1227,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "3f0d881d-3f4f-4898-ad26-41c793478f17",
     "owner": "Ayla.Rippin",
+    "site": "reprieve Books",
   },
   {
     "entryTime": {
@@ -1066,6 +1236,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "6b38ac71-c28a-418d-80c3-6a6e2e25a57c",
     "owner": "Ayla.Rippin",
+    "site": "Music quantifying",
   },
   {
     "entryTime": {
@@ -1074,6 +1245,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "7079448d-d586-4ad4-bcfd-b7d693578765",
     "owner": "Ayla.Rippin",
+    "site": "deploy Electronic",
   },
   {
     "entryTime": {
@@ -1082,6 +1254,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "f20da6be-8097-41b3-9edc-5cec41829b02",
     "owner": "Ayla.Rippin",
+    "site": "once Los",
   },
   {
     "entryTime": {
@@ -1090,6 +1263,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "363510b9-0daf-40ca-a55b-a834f4b646a3",
     "owner": "Ayla.Rippin",
+    "site": "stupendous Polonium",
   },
   {
     "entryTime": {
@@ -1098,6 +1272,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "dc5cc3f4-455d-450d-9c6d-18fcd94e809b",
     "owner": "Ayla.Rippin",
+    "site": "evolve female",
   },
   {
     "entryTime": {
@@ -1106,6 +1281,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "c6fb7cf0-237b-4c52-b974-9a0133fd2b40",
     "owner": "Ayla.Rippin",
+    "site": "solutions urgently",
   },
   {
     "entryTime": {
@@ -1114,6 +1290,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "083077bd-75ca-4530-b0a5-b61cf2da548d",
     "owner": "Ayla.Rippin",
+    "site": "Chicken perspiciatis",
   },
   {
     "entryTime": {
@@ -1122,6 +1299,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "a8e7741b-88d7-42ea-9b6b-56dd7beed9d3",
     "owner": "Ayla.Rippin",
+    "site": "ouch Southwest",
   },
   {
     "entryTime": {
@@ -1130,6 +1308,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "edfec324-a0c0-43a4-9110-88e9002407ce",
     "owner": "Ayla.Rippin",
+    "site": "solid Jaguar",
   },
   {
     "entryTime": {
@@ -1138,6 +1317,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "e92cbd23-b0e1-4960-927e-7f5927c2def8",
     "owner": "Ayla.Rippin",
+    "site": "Sausages Alpharetta",
   },
 ]
 `;
@@ -1349,3 +1529,5 @@ exports[`Log entries E2E tests when updating an existing log entry will return a
   ],
 }
 `;
+
+exports[`Log entries E2E tests when updating an existing log entry will return a 400 response if the site ID cannot be found 1`] = `"Dive site with ID "e637a808-90cb-4fba-823e-35cd1898ee4a" not found."`;

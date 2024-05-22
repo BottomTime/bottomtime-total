@@ -9,6 +9,7 @@ import {
 } from '@bottomtime/api';
 
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -23,6 +24,7 @@ import {
 } from '@nestjs/common';
 
 import { AssertAuth } from '../auth';
+import { DiveSitesService } from '../diveSites';
 import {
   AssertAccountOwner,
   AssertTargetUser,
@@ -47,6 +49,7 @@ export class UserLogEntriesController {
 
   constructor(
     @Inject(LogEntriesService) private readonly service: LogEntriesService,
+    @Inject(DiveSitesService) private readonly diveSites: DiveSitesService,
   ) {}
 
   /**
@@ -445,6 +448,18 @@ export class UserLogEntriesController {
     logEntry.logNumber = options.logNumber;
     logEntry.maxDepth = options.maxDepth;
     logEntry.notes = options.notes;
+
+    if (options.site) {
+      const site = await this.diveSites.getDiveSite(options.site);
+      if (!site) {
+        throw new BadRequestException(
+          `Dive site with ID "${options.site}" not found.`,
+        );
+      }
+      logEntry.site = site;
+    } else {
+      logEntry.site = undefined;
+    }
 
     await logEntry.save();
     return logEntry.toJSON();
