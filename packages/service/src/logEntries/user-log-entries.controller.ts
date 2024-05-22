@@ -24,7 +24,7 @@ import {
 } from '@nestjs/common';
 
 import { AssertAuth } from '../auth';
-import { DiveSitesService } from '../diveSites';
+import { DiveSite, DiveSitesService } from '../diveSites';
 import {
   AssertAccountOwner,
   AssertTargetUser,
@@ -257,9 +257,21 @@ export class UserLogEntriesController {
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
     options: CreateOrUpdateLogEntryParamsDTO,
   ): Promise<LogEntryDTO> {
+    let site: DiveSite | undefined;
+
+    if (options.site) {
+      site = await this.diveSites.getDiveSite(options.site);
+      if (!site) {
+        throw new BadRequestException(
+          `Dive site with ID "${options.site}" not found.`,
+        );
+      }
+    }
+
     const logEntry = await this.service.createLogEntry({
       ...options,
       ownerId: owner.id,
+      site,
     });
 
     return logEntry.toJSON();

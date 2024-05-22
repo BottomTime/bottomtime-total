@@ -3,25 +3,24 @@ import {
   ListLogEntriesParamsDTO,
 } from '@bottomtime/api';
 
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { LogEntryEntity, UserEntity } from '../data';
-import { DiveSiteFactory, DiveSitesService } from '../diveSites';
+import { DiveSite, DiveSiteFactory } from '../diveSites';
 import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
 import { LogEntry } from './log-entry';
 import { LogEntryQueryBuilder } from './log-entry-query-builder';
 
-export type CreateLogEntryOptions = CreateOrUpdateLogEntryParamsDTO & {
+export type CreateLogEntryOptions = Omit<
+  CreateOrUpdateLogEntryParamsDTO,
+  'site'
+> & {
   ownerId: string;
+  site?: DiveSite;
 };
 
 export type ListLogEntriesOptions = ListLogEntriesParamsDTO & {
@@ -43,9 +42,6 @@ export class LogEntriesService {
 
     @InjectRepository(LogEntryEntity)
     private readonly Entries: Repository<LogEntryEntity>,
-
-    @Inject(DiveSitesService)
-    private readonly diveSites: DiveSitesService,
 
     @Inject(DiveSiteFactory)
     private readonly diveSiteFactory: DiveSiteFactory,
@@ -125,16 +121,6 @@ export class LogEntriesService {
       select: ['id', 'username', 'memberSince', 'name', 'location', 'avatar'],
     });
 
-    if (options.site) {
-      const site = await this.diveSites.getDiveSite(options.site);
-      if (!site) {
-        throw new BadRequestException(
-          `Dive site with ID "${options.site}" not found.`,
-        );
-      }
-      data.site = site.toEntity();
-    }
-
     const entry = new LogEntry(this.Entries, this.diveSiteFactory, data);
     entry.entryTime = options.entryTime;
     entry.bottomTime = options.bottomTime;
@@ -142,6 +128,7 @@ export class LogEntriesService {
     entry.maxDepth = options.maxDepth;
     entry.notes = options.notes;
     entry.logNumber = options.logNumber;
+    entry.site = options.site;
 
     await entry.save();
 

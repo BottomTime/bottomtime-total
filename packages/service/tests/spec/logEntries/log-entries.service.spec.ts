@@ -1,7 +1,5 @@
 import { DepthUnit, LogEntrySortBy, SortOrder } from '@bottomtime/api';
 
-import { BadRequestException } from '@nestjs/common';
-
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
@@ -9,7 +7,7 @@ import fs from 'fs/promises';
 import { Repository } from 'typeorm';
 
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
-import { DiveSiteFactory, DiveSitesService } from '../../../src/diveSites';
+import { DiveSiteFactory } from '../../../src/diveSites';
 import {
   CreateLogEntryOptions,
   LogEntriesService,
@@ -35,7 +33,6 @@ describe('Log entries service', () => {
   let DiveSites: Repository<DiveSiteEntity>;
   let siteFactory: DiveSiteFactory;
   let service: LogEntriesService;
-  let sitesService: DiveSitesService;
 
   let ownerData: UserEntity[];
   let logEntryData: LogEntryEntity[];
@@ -46,9 +43,8 @@ describe('Log entries service', () => {
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
     siteFactory = createDiveSiteFactory();
-    sitesService = new DiveSitesService(DiveSites, siteFactory);
 
-    service = new LogEntriesService(Users, Entries, sitesService, siteFactory);
+    service = new LogEntriesService(Users, Entries, siteFactory);
 
     ownerData = TestUserData.slice(0, 4).map((data) => parseUserJSON(data));
     diveSiteData = TestDiveSiteData.map((site, i) =>
@@ -186,7 +182,7 @@ describe('Log entries service', () => {
           date: '2024-03-28T13:45:00',
           timezone: 'Europe/Amsterdam',
         },
-        site: diveSiteData[2].id,
+        site: siteFactory.createDiveSite(diveSiteData[2]),
         duration: 52,
       };
 
@@ -218,22 +214,6 @@ describe('Log entries service', () => {
       expect(saved.owner.id).toEqual(ownerData[0].id);
       expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
       expect(saved.site?.id).toEqual(diveSiteData[2].id);
-    });
-
-    it('will throw a BadReqeustException if the dive site does not exist', async () => {
-      const options: CreateLogEntryOptions = {
-        ownerId: ownerData[0].id,
-        entryTime: {
-          date: '2024-03-28T13:45:00',
-          timezone: 'Europe/Amsterdam',
-        },
-        site: '830101b2-9447-48a5-bae7-db105aa11bc9',
-        duration: 52,
-      };
-
-      await expect(service.createLogEntry(options)).rejects.toThrowError(
-        BadRequestException,
-      );
     });
   });
 
