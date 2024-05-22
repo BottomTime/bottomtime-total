@@ -113,7 +113,10 @@ async function onSave(data: LogEntryDTO): Promise<void> {
 
     const entry = await client.logEntries.createLogEntry(
       state.currentProfile.username,
-      data,
+      {
+        ...data,
+        site: data.site?.id,
+      },
     );
 
     location.assign(`/logbook/${state.currentProfile.username}/${entry.id}`);

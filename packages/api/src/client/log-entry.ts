@@ -4,6 +4,7 @@ import {
   CreateOrUpdateLogEntryParamsSchema,
   DateWithTimezoneDTO,
   DepthDTO,
+  DiveSiteDTO,
   LogEntryDTO,
   LogEntrySchema,
   SuccinctProfileDTO,
@@ -21,6 +22,10 @@ export class LogEntry {
 
   get creator(): SuccinctProfileDTO {
     return { ...this.data.creator };
+  }
+
+  get site(): DiveSiteDTO | undefined {
+    return this.data.site ? { ...this.data.site } : undefined;
   }
 
   get logNumber(): number | undefined {

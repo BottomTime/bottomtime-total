@@ -3,6 +3,7 @@ import { LogEntrySortBy, SortOrder } from '@bottomtime/api';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { LogEntryEntity } from '../data';
+import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
 
 export class LogEntryQueryBuilder {
   private query: SelectQueryBuilder<LogEntryEntity>;
@@ -12,6 +13,8 @@ export class LogEntryQueryBuilder {
       .createQueryBuilder()
       .from(LogEntryEntity, 'entries')
       .innerJoin('entries.owner', 'owners')
+      .leftJoin('entries.site', 'sites')
+      .leftJoin('sites.creator', 'site_creators')
       .select([
         'entries.id',
         'entries.logNumber',
@@ -26,9 +29,11 @@ export class LogEntryQueryBuilder {
         'owners.id',
         'owners.username',
         'owners.memberSince',
+        'owners.logBookSharing',
         'owners.name',
         'owners.location',
         'owners.avatar',
+        ...DiveSiteSelectFields,
       ]);
   }
 

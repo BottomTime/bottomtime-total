@@ -271,4 +271,8 @@ export class DiveSite {
       averageDifficulty: this.averageDifficulty,
     };
   }
+
+  toEntity(): DiveSiteEntity {
+    return { ...this.data };
+  }
 }

@@ -3,18 +3,24 @@ import {
   ListLogEntriesParamsDTO,
 } from '@bottomtime/api';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { LogEntryEntity, UserEntity } from '../data';
+import { DiveSite, DiveSiteFactory } from '../diveSites';
+import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
 import { LogEntry } from './log-entry';
 import { LogEntryQueryBuilder } from './log-entry-query-builder';
 
-export type CreateLogEntryOptions = CreateOrUpdateLogEntryParamsDTO & {
+export type CreateLogEntryOptions = Omit<
+  CreateOrUpdateLogEntryParamsDTO,
+  'site'
+> & {
   ownerId: string;
+  site?: DiveSite;
 };
 
 export type ListLogEntriesOptions = ListLogEntriesParamsDTO & {
@@ -36,6 +42,9 @@ export class LogEntriesService {
 
     @InjectRepository(LogEntryEntity)
     private readonly Entries: Repository<LogEntryEntity>,
+
+    @Inject(DiveSiteFactory)
+    private readonly diveSiteFactory: DiveSiteFactory,
   ) {}
 
   async listLogEntries(
@@ -54,7 +63,9 @@ export class LogEntriesService {
     const [entries, totalCount] = await query.getManyAndCount();
 
     return {
-      logEntries: entries.map((entry) => new LogEntry(this.Entries, entry)),
+      logEntries: entries.map(
+        (entry) => new LogEntry(this.Entries, this.diveSiteFactory, entry),
+      ),
       totalCount,
     };
   }
@@ -66,6 +77,8 @@ export class LogEntriesService {
     const query = this.Entries.createQueryBuilder()
       .from(LogEntryEntity, 'entries')
       .innerJoin('entries.owner', 'owners')
+      .leftJoin('entries.site', 'sites')
+      .leftJoin('sites.creator', 'site_creators')
       .where('entries.id = :id', { id: entryId })
       .select([
         'entries.id',
@@ -84,6 +97,7 @@ export class LogEntriesService {
         'owners.name',
         'owners.location',
         'owners.avatar',
+        ...DiveSiteSelectFields,
       ]);
 
     if (ownerId) {
@@ -94,7 +108,9 @@ export class LogEntriesService {
     this.log.verbose(query.getSql());
 
     const data = await query.getOne();
-    return data ? new LogEntry(this.Entries, data) : undefined;
+    return data
+      ? new LogEntry(this.Entries, this.diveSiteFactory, data)
+      : undefined;
   }
 
   async createLogEntry(options: CreateLogEntryOptions): Promise<LogEntry> {
@@ -105,13 +121,15 @@ export class LogEntriesService {
       select: ['id', 'username', 'memberSince', 'name', 'location', 'avatar'],
     });
 
-    const entry = new LogEntry(this.Entries, data);
+    const entry = new LogEntry(this.Entries, this.diveSiteFactory, data);
     entry.entryTime = options.entryTime;
     entry.bottomTime = options.bottomTime;
     entry.duration = options.duration;
     entry.maxDepth = options.maxDepth;
     entry.notes = options.notes;
     entry.logNumber = options.logNumber;
+    entry.site = options.site;
+
     await entry.save();
 
     return entry;

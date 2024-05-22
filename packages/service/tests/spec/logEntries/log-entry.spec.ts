@@ -5,9 +5,12 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity, UserEntity } from '../../../src/data';
+import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
+import { DiveSiteFactory } from '../../../src/diveSites/dive-site-factory';
 import { LogEntry } from '../../../src/logEntries';
 import { dataSource } from '../../data-source';
+import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
+import { createTestDiveSite } from '../../utils/create-test-dive-site';
 import { createTestLogEntry } from '../../utils/create-test-log-entry';
 import { createTestUser } from '../../utils/create-test-user';
 
@@ -20,6 +23,27 @@ const CreatorData: Partial<UserEntity> = {
   logBookSharing: LogBookSharing.FriendsOnly,
   name: 'Dan Diver',
   location: 'Underwater',
+};
+
+const TestSiteData: DiveSiteEntity = {
+  id: 'b4afa428-eeb8-4bb3-935d-f124cc6c27f1',
+  averageDifficulty: 2.2,
+  averageRating: 3.8,
+  createdOn: new Date('2024-05-21T19:46:14.342Z'),
+  creator: createTestUser(CreatorData),
+  depth: 21.8,
+  depthUnit: DepthUnit.Meters,
+  description: 'A wet dive site',
+  directions: 'Drive, and then take a boat',
+  freeToDive: true,
+  gps: {
+    coordinates: [1.0, 1.0],
+    type: 'Point',
+  },
+  location: 'Ocean',
+  name: 'Dive Site of Awesomeness',
+  shoreAccess: false,
+  updatedOn: new Date('2024-05-21T19:46:14.342Z'),
 };
 
 const TestLogEntryData: Partial<LogEntryEntity> = {
@@ -44,25 +68,37 @@ dayjs.extend(utc);
 describe('Log Entry class', () => {
   let Users: Repository<UserEntity>;
   let Entries: Repository<LogEntryEntity>;
+  let Sites: Repository<DiveSiteEntity>;
 
   let user: UserEntity;
   let data: LogEntryEntity;
   let logEntry: LogEntry;
+  let diveSite: DiveSiteEntity;
+
+  let siteFactory: DiveSiteFactory;
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Users = dataSource.getRepository(UserEntity);
+    Sites = dataSource.getRepository(DiveSiteEntity);
+
     user = createTestUser(CreatorData);
+    diveSite = createTestDiveSite(user, TestSiteData);
+
+    siteFactory = createDiveSiteFactory();
   });
 
   beforeEach(async () => {
     data = createTestLogEntry(user, TestLogEntryData);
-    logEntry = new LogEntry(Entries, data);
+    logEntry = new LogEntry(Entries, siteFactory, data);
 
     await Users.save(user);
+    await Sites.save(diveSite);
   });
 
   it('will return properties correctly', () => {
+    data.site = diveSite;
+
     expect(logEntry.id).toBe(data.id);
     expect(logEntry.logNumber).toBe(data.logNumber);
     expect(logEntry.owner).toEqual({
@@ -85,6 +121,7 @@ describe('Log Entry class', () => {
       unit: data.maxDepthUnit,
     });
     expect(logEntry.notes).toBe(data.notes);
+    expect(logEntry.site?.toEntity()).toEqual(diveSite);
   });
 
   it('will update properties correctly', () => {
@@ -124,51 +161,47 @@ describe('Log Entry class', () => {
     expect(logEntry.notes).toBe(newNotes);
   });
 
+  it('will set site property', async () => {
+    const site = siteFactory.createDiveSite(diveSite);
+    logEntry.site = site;
+    expect(logEntry.site.toEntity()).toEqual(diveSite);
+  });
+
+  it('will unset site property', async () => {
+    data.site = diveSite;
+    logEntry.site = undefined;
+    expect(logEntry.site).toBeUndefined();
+    expect(data.site).toBeNull();
+  });
+
   it('will allow optional properties to be set to undefined', () => {
+    data.site = diveSite;
+
     logEntry.logNumber = undefined;
     logEntry.bottomTime = undefined;
     logEntry.maxDepth = undefined;
     logEntry.notes = undefined;
+    logEntry.site = undefined;
 
     expect(logEntry.logNumber).toBeUndefined();
     expect(logEntry.bottomTime).toBeUndefined();
     expect(logEntry.maxDepth).toBeUndefined();
     expect(logEntry.notes).toBeUndefined();
+    expect(logEntry.site).toBeUndefined();
   });
 
   it('will render a JSON object correctly', () => {
-    expect(logEntry.toJSON()).toEqual({
-      id: data.id,
-      logNumber: data.logNumber,
-      creator: {
-        userId: CreatorData.id,
-        memberSince: CreatorData.memberSince,
-        username: CreatorData.username,
-        logBookSharing: CreatorData.logBookSharing,
-        avatar: CreatorData.avatar,
-        name: CreatorData.name,
-        location: CreatorData.location,
-      },
-      entryTime: {
-        date: '2021-01-01T12:34:56',
-        timezone: data.timezone,
-      },
-      bottomTime: data.bottomTime,
-      duration: data.duration,
-      maxDepth: {
-        depth: data.maxDepth,
-        unit: data.maxDepthUnit,
-      },
-      notes: data.notes,
-    });
+    data.site = diveSite;
+    expect(logEntry.toJSON()).toMatchSnapshot();
   });
 
   it('will save a new log entry to the database', async () => {
+    data.site = diveSite;
     await logEntry.save();
 
     const saved = await Entries.findOneOrFail({
       where: { id: logEntry.id },
-      relations: ['owner'],
+      relations: ['owner', 'site'],
     });
     expect(saved.id).toBe(logEntry.id);
     expect(saved.logNumber).toBe(logEntry.logNumber);
@@ -181,6 +214,7 @@ describe('Log Entry class', () => {
     expect(saved.maxDepth).toBe(logEntry.maxDepth!.depth);
     expect(saved.maxDepthUnit).toBe(logEntry.maxDepth!.unit);
     expect(saved.notes).toBe(logEntry.notes);
+    expect(saved.site?.id).toEqual(diveSite.id);
   });
 
   it('will update an existing log entry in the database', async () => {
@@ -198,12 +232,13 @@ describe('Log Entry class', () => {
       unit: DepthUnit.Feet,
     };
     logEntry.notes = 'This was the best dive yet!';
+    logEntry.site = siteFactory.createDiveSite(diveSite);
 
     await logEntry.save();
 
     const saved = await Entries.findOneOrFail({
       where: { id: logEntry.id },
-      relations: ['owner'],
+      relations: ['owner', 'site'],
     });
     expect(saved.id).toBe(logEntry.id);
     expect(saved.logNumber).toBe(logEntry.logNumber);
@@ -216,9 +251,11 @@ describe('Log Entry class', () => {
     expect(saved.maxDepth).toBe(logEntry.maxDepth!.depth);
     expect(saved.maxDepthUnit).toBe(logEntry.maxDepth!.unit);
     expect(saved.notes).toBe(logEntry.notes);
+    expect(saved.site?.id).toEqual(diveSite.id);
   });
 
   it('will delete a log entry from the database', async () => {
+    data.site = diveSite;
     await Entries.save(data);
     await logEntry.delete();
     const savedEntry = await Entries.findOneBy({ id: logEntry.id });

@@ -250,7 +250,7 @@ describe('Auth Module E2E Tests', () => {
     });
   });
 
-  describe.only('when unlinking an OAuth provider from a user account', () => {
+  describe('when unlinking an OAuth provider from a user account', () => {
     let user: UserEntity;
     let otherUser: UserEntity;
     let adminUser: UserEntity;

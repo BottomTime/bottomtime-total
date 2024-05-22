@@ -11,7 +11,7 @@
  *         type: string
  *         format: uuid
  *   schemas:
- *     CreateOrUpdateLogEntry:
+ *     LogEntryBase:
  *       type: object
  *       required:
  *         - entryTime
@@ -74,6 +74,17 @@
  *           description: Any notes about the dive.
  *           example: Saw a sea turtle at 30 feet.
  *           maxLength: 2000
+ *     CreateOrUpdateLogEntry:
+ *       allOf:
+ *         - $ref: "#/components/schemas/LogEntryBase"
+ *         - type: object
+ *           properties:
+ *             site:
+ *               type: string
+ *               format: uuid
+ *               title: Location
+ *               description: A reference to the dive site where the dive took place. (Must be a valid ID.)
+ *               example: 2c33c9a8-66d8-4352-8d1e-6c12d9aa76ac
  *     LogEntry:
  *       allOf:
  *         - type: object
@@ -89,7 +100,9 @@
  *             creator:
  *               description: The diver to whom the log entry belongs.
  *               $ref: "#/components/schemas/Profile"
- *         - $ref: "#/components/schemas/CreateOrUpdateLogEntry"
+ *             site:
+ *               $ref: "#/components/schemas/DiveSite"
+ *         - $ref: "#/components/schemas/LogEntryBase"
  *     SuccinctLogEntry:
  *       type: object
  *       required:
@@ -124,7 +137,7 @@
  *               example: America/New_York
  *         creator:
  *           description: The diver to whom the log entry belongs.
- *           $ref: "#/components/schemas/Profile"
+ *           $ref: "#/components/schemas/SuccinctProfile"
  *         logNumber:
  *           type: number
  *           format: int32

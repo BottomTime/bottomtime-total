@@ -6,14 +6,18 @@ import utc from 'dayjs/plugin/utc';
 import fs from 'fs/promises';
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity, UserEntity } from '../../../src/data';
+import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
+import { DiveSiteFactory } from '../../../src/diveSites';
 import {
   CreateLogEntryOptions,
   LogEntriesService,
 } from '../../../src/logEntries';
 import { dataSource } from '../../data-source';
+import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
 import TestUserData from '../../fixtures/user-search-data.json';
+import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
+import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
 import {
   createTestLogEntry,
   parseLogEntryJSON,
@@ -26,25 +30,38 @@ dayjs.extend(utc);
 describe('Log entries service', () => {
   let Entries: Repository<LogEntryEntity>;
   let Users: Repository<UserEntity>;
+  let DiveSites: Repository<DiveSiteEntity>;
+  let siteFactory: DiveSiteFactory;
   let service: LogEntriesService;
 
   let ownerData: UserEntity[];
   let logEntryData: LogEntryEntity[];
+  let diveSiteData: DiveSiteEntity[];
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Users = dataSource.getRepository(UserEntity);
+    DiveSites = dataSource.getRepository(DiveSiteEntity);
+    siteFactory = createDiveSiteFactory();
 
-    service = new LogEntriesService(Users, Entries);
+    service = new LogEntriesService(Users, Entries, siteFactory);
 
     ownerData = TestUserData.slice(0, 4).map((data) => parseUserJSON(data));
+    diveSiteData = TestDiveSiteData.map((site, i) =>
+      parseDiveSiteJSON(site, ownerData[i % 4]),
+    );
     logEntryData = TestLogEntryData.map((data, i) =>
-      parseLogEntryJSON(data, ownerData[i % ownerData.length]),
+      parseLogEntryJSON(
+        data,
+        ownerData[i % ownerData.length],
+        diveSiteData[i % diveSiteData.length],
+      ),
     );
   });
 
   beforeEach(async () => {
     await Users.save(ownerData);
+    await DiveSites.save(diveSiteData);
   });
 
   it.skip('will generate some sweet, sweet test data', async () => {
@@ -157,11 +174,53 @@ describe('Log entries service', () => {
       expect(saved.maxDepthUnit).toEqual(options.maxDepth!.unit);
       expect(saved.notes).toEqual(options.notes);
     });
+
+    it('will create a new log entry with a dive site attached', async () => {
+      const options: CreateLogEntryOptions = {
+        ownerId: ownerData[0].id,
+        entryTime: {
+          date: '2024-03-28T13:45:00',
+          timezone: 'Europe/Amsterdam',
+        },
+        site: siteFactory.createDiveSite(diveSiteData[2]),
+        duration: 52,
+      };
+
+      const entry = await service.createLogEntry(options);
+      expect(entry.id).toBeDefined();
+      expect(entry.owner).toEqual({
+        userId: ownerData[0].id,
+        username: ownerData[0].username,
+        memberSince: ownerData[0].memberSince,
+        logBookSharing: ownerData[0].logBookSharing,
+        name: ownerData[0].name,
+        location: ownerData[0].location,
+        avatar: ownerData[0].avatar,
+      });
+      expect(entry.entryTime).toEqual({
+        date: '2024-03-28T13:45:00',
+        timezone: 'Europe/Amsterdam',
+      });
+      expect(entry.duration).toEqual(options.duration);
+      expect(entry.site?.id).toEqual(diveSiteData[2].id);
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: entry.id },
+        relations: ['owner', 'site'],
+      });
+      expect(saved.entryTime).toEqual(entry.entryTime.date);
+      expect(saved.timezone).toEqual(entry.entryTime.timezone);
+      expect(saved.duration).toEqual(options.duration);
+      expect(saved.owner.id).toEqual(ownerData[0].id);
+      expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
+      expect(saved.site?.id).toEqual(diveSiteData[2].id);
+    });
   });
 
   describe('when retrieving a single log entry', () => {
     it('will return the requested log entry', async () => {
       const data = logEntryData[0];
+      data.site = diveSiteData[5];
       await Entries.save(data);
       const result = (await service.getLogEntry(data.id))!;
 
@@ -188,6 +247,7 @@ describe('Log entries service', () => {
         location: data.owner.location,
         avatar: data.owner.avatar,
       });
+      expect(result.site?.name).toEqual(diveSiteData[5].name);
     });
 
     it('will return undefined if the log entry does not exist', async () => {
@@ -250,6 +310,7 @@ describe('Log entries service', () => {
         results.logEntries.map((entry) => ({
           id: entry.id,
           entryTime: entry.entryTime,
+          site: entry.site?.name,
         })),
       ).toMatchSnapshot();
     });
@@ -264,6 +325,7 @@ describe('Log entries service', () => {
         results.logEntries.map((entry) => ({
           id: entry.id,
           entryTime: entry.entryTime,
+          site: entry.site?.name,
         })),
       ).toMatchSnapshot();
     });
@@ -286,6 +348,7 @@ describe('Log entries service', () => {
           results.logEntries.map((entry) => ({
             id: entry.id,
             entryTime: entry.entryTime,
+            site: entry.site?.name,
           })),
         ).toMatchSnapshot();
       });
@@ -305,6 +368,7 @@ describe('Log entries service', () => {
           id: entry.id,
           owner: entry.owner.username,
           entryTime: entry.entryTime,
+          site: entry.site?.name,
         })),
       ).toMatchSnapshot();
     });
@@ -346,6 +410,7 @@ describe('Log entries service', () => {
           results.logEntries.map((entry) => ({
             id: entry.id,
             entryTime: entry.entryTime,
+            site: entry.site?.name,
           })),
         ).toMatchSnapshot();
       });

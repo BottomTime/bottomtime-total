@@ -7,7 +7,7 @@
       "request": "launch",
       "name": "Debug Jest tests in current file",
       "env": { "NODE_ENV": "test" },
-      "program": "${workspaceFolder}/packages/service/node_modules/.bin/jest",
+      "program": "node_modules/.bin/jest",
       "args": ["${fileBasenameNoExtension}", "--config", "jest.config.ts"],
       "console": "integratedTerminal",
       "windows": {
@@ -19,8 +19,9 @@
       "cwd": "${workspaceFolder}/packages/service/",
       "request": "launch",
       "name": "Debug all Jest tests",
-      "env": { "NODE_ENV": "test" },
-      "program": "${workspaceFolder}/packages/service/node_modules/.bin/jest",
+      // "env": { "NODE_ENV": "test" },
+      "envFile": "${workspaceFolder}/packages/service/.env",
+      "program": "node_modules/.bin/jest",
       "args": ["--config", "jest.config.ts"],
       "console": "integratedTerminal",
       "windows": {

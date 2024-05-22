@@ -249,6 +249,7 @@ describe('NewLogEntry view', () => {
         ...options,
         id: 'df9d71d7-5847-436a-97c9-1ea97d3f2c7d',
         creator: BasicUser.profile,
+        site: undefined,
       };
 
       const spy = jest
@@ -301,6 +302,7 @@ describe('NewLogEntry view', () => {
         ...options,
         id: 'df9d71d7-5847-436a-97c9-1ea97d3f2c7d',
         creator: BasicUser.profile,
+        site: undefined,
       };
 
       const spy = jest

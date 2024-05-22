@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { DateWithTimezoneSchema, DepthSchema, SortOrder } from './constants';
+import { DiveSiteSchema } from './dive-sites';
 import { SuccinctProfileSchema } from './users';
 
 export enum LogEntrySortBy {
@@ -8,7 +9,7 @@ export enum LogEntrySortBy {
   LogNumber = 'logNumber',
 }
 
-export const CreateOrUpdateLogEntryParamsSchema = z.object({
+const LogEntryBaseSchema = z.object({
   logNumber: z.number().int().positive().optional(),
 
   entryTime: DateWithTimezoneSchema,
@@ -19,13 +20,18 @@ export const CreateOrUpdateLogEntryParamsSchema = z.object({
 
   notes: z.string().max(5000).optional(),
 });
+
+export const CreateOrUpdateLogEntryParamsSchema = LogEntryBaseSchema.extend({
+  site: z.string().uuid().optional(),
+});
 export type CreateOrUpdateLogEntryParamsDTO = z.infer<
   typeof CreateOrUpdateLogEntryParamsSchema
 >;
 
-export const LogEntrySchema = CreateOrUpdateLogEntryParamsSchema.extend({
+export const LogEntrySchema = LogEntryBaseSchema.extend({
   id: z.string(),
   creator: SuccinctProfileSchema,
+  site: DiveSiteSchema.optional(),
 });
 export type LogEntryDTO = z.infer<typeof LogEntrySchema>;
 
@@ -37,6 +43,7 @@ export const SuccinctLogEntrySchema = LogEntrySchema.pick({
   maxDepth: true,
   bottomTime: true,
   duration: true,
+  site: true,
 });
 export type SuccinctLogEntryDTO = z.infer<typeof SuccinctLogEntrySchema>;
 

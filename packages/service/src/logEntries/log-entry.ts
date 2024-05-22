@@ -13,6 +13,7 @@ import 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
 import { LogEntryEntity } from '../data';
+import { DiveSite, DiveSiteFactory } from '../diveSites';
 
 const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 
@@ -21,6 +22,7 @@ export class LogEntry {
 
   constructor(
     private readonly Entries: Repository<LogEntryEntity>,
+    private readonly siteFactory: DiveSiteFactory,
     private readonly data: LogEntryEntity,
   ) {}
 
@@ -38,6 +40,15 @@ export class LogEntry {
       name: this.data.owner.name,
       location: this.data.owner.location,
     };
+  }
+
+  get site(): DiveSite | undefined {
+    return this.data.site
+      ? this.siteFactory.createDiveSite(this.data.site)
+      : undefined;
+  }
+  set site(value: DiveSite | undefined) {
+    this.data.site = value?.toEntity() ?? null;
   }
 
   get logNumber(): number | undefined {
@@ -106,7 +117,12 @@ export class LogEntry {
       duration: this.duration,
       maxDepth: this.maxDepth,
       notes: this.notes,
+      site: this.site?.toJSON(),
     };
+  }
+
+  toEntity(): LogEntryEntity {
+    return { ...this.data };
   }
 
   async save(): Promise<void> {
