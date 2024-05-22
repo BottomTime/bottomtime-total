@@ -13,8 +13,7 @@ import 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
 import { LogEntryEntity } from '../data';
-import { DiveSite } from '../diveSites';
-import { DiveSiteFactory } from '../diveSites/dive-site-factory';
+import { DiveSite, DiveSiteFactory } from '../diveSites';
 
 const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 

@@ -196,11 +196,12 @@ describe('Log Entry class', () => {
   });
 
   it('will save a new log entry to the database', async () => {
+    data.site = diveSite;
     await logEntry.save();
 
     const saved = await Entries.findOneOrFail({
       where: { id: logEntry.id },
-      relations: ['owner'],
+      relations: ['owner', 'site'],
     });
     expect(saved.id).toBe(logEntry.id);
     expect(saved.logNumber).toBe(logEntry.logNumber);
@@ -213,6 +214,7 @@ describe('Log Entry class', () => {
     expect(saved.maxDepth).toBe(logEntry.maxDepth!.depth);
     expect(saved.maxDepthUnit).toBe(logEntry.maxDepth!.unit);
     expect(saved.notes).toBe(logEntry.notes);
+    expect(saved.site?.id).toEqual(diveSite.id);
   });
 
   it('will update an existing log entry in the database', async () => {
@@ -230,12 +232,13 @@ describe('Log Entry class', () => {
       unit: DepthUnit.Feet,
     };
     logEntry.notes = 'This was the best dive yet!';
+    logEntry.site = siteFactory.createDiveSite(diveSite);
 
     await logEntry.save();
 
     const saved = await Entries.findOneOrFail({
       where: { id: logEntry.id },
-      relations: ['owner'],
+      relations: ['owner', 'site'],
     });
     expect(saved.id).toBe(logEntry.id);
     expect(saved.logNumber).toBe(logEntry.logNumber);
@@ -248,14 +251,14 @@ describe('Log Entry class', () => {
     expect(saved.maxDepth).toBe(logEntry.maxDepth!.depth);
     expect(saved.maxDepthUnit).toBe(logEntry.maxDepth!.unit);
     expect(saved.notes).toBe(logEntry.notes);
+    expect(saved.site?.id).toEqual(diveSite.id);
   });
 
   it('will delete a log entry from the database', async () => {
+    data.site = diveSite;
     await Entries.save(data);
     await logEntry.delete();
     const savedEntry = await Entries.findOneBy({ id: logEntry.id });
     expect(savedEntry).toBeNull();
   });
-
-  it.todo('Finish testing save function with dive site attached.');
 });

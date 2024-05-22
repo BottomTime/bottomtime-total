@@ -3,23 +3,25 @@ import {
   ListLogEntriesParamsDTO,
 } from '@bottomtime/api';
 
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../data';
-import { DiveSitesService } from '../diveSites';
+import { LogEntryEntity, UserEntity } from '../data';
+import { DiveSiteFactory, DiveSitesService } from '../diveSites';
+import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
 import { LogEntry } from './log-entry';
 import { LogEntryQueryBuilder } from './log-entry-query-builder';
 
-export type CreateLogEntryOptions = Omit<
-  CreateOrUpdateLogEntryParamsDTO,
-  'site'
-> & {
+export type CreateLogEntryOptions = CreateOrUpdateLogEntryParamsDTO & {
   ownerId: string;
-  site?: DiveSiteEntity;
 };
 
 export type ListLogEntriesOptions = ListLogEntriesParamsDTO & {
@@ -43,7 +45,10 @@ export class LogEntriesService {
     private readonly Entries: Repository<LogEntryEntity>,
 
     @Inject(DiveSitesService)
-    private readonly diveSitesService: DiveSitesService,
+    private readonly diveSites: DiveSitesService,
+
+    @Inject(DiveSiteFactory)
+    private readonly diveSiteFactory: DiveSiteFactory,
   ) {}
 
   async listLogEntries(
@@ -62,7 +67,9 @@ export class LogEntriesService {
     const [entries, totalCount] = await query.getManyAndCount();
 
     return {
-      logEntries: entries.map((entry) => new LogEntry(this.Entries, entry)),
+      logEntries: entries.map(
+        (entry) => new LogEntry(this.Entries, this.diveSiteFactory, entry),
+      ),
       totalCount,
     };
   }
@@ -74,6 +81,8 @@ export class LogEntriesService {
     const query = this.Entries.createQueryBuilder()
       .from(LogEntryEntity, 'entries')
       .innerJoin('entries.owner', 'owners')
+      .leftJoin('entries.site', 'sites')
+      .leftJoin('sites.creator', 'site_creators')
       .where('entries.id = :id', { id: entryId })
       .select([
         'entries.id',
@@ -92,6 +101,7 @@ export class LogEntriesService {
         'owners.name',
         'owners.location',
         'owners.avatar',
+        ...DiveSiteSelectFields,
       ]);
 
     if (ownerId) {
@@ -102,7 +112,9 @@ export class LogEntriesService {
     this.log.verbose(query.getSql());
 
     const data = await query.getOne();
-    return data ? new LogEntry(this.Entries, data) : undefined;
+    return data
+      ? new LogEntry(this.Entries, this.diveSiteFactory, data)
+      : undefined;
   }
 
   async createLogEntry(options: CreateLogEntryOptions): Promise<LogEntry> {
@@ -113,9 +125,17 @@ export class LogEntriesService {
       select: ['id', 'username', 'memberSince', 'name', 'location', 'avatar'],
     });
 
-    data.site = options.site ?? null;
+    if (options.site) {
+      const site = await this.diveSites.getDiveSite(options.site);
+      if (!site) {
+        throw new BadRequestException(
+          `Dive site with ID "${options.site}" not found.`,
+        );
+      }
+      data.site = site.toEntity();
+    }
 
-    const entry = new LogEntry(this.Entries, data);
+    const entry = new LogEntry(this.Entries, this.diveSiteFactory, data);
     entry.entryTime = options.entryTime;
     entry.bottomTime = options.bottomTime;
     entry.duration = options.duration;

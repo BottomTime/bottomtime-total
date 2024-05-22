@@ -9,6 +9,30 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { DiveSiteEntity } from '../data';
 
+export const DiveSiteSelectFields = [
+  'sites.id',
+  'sites.name',
+  'sites.description',
+  'sites.depth',
+  'sites.depthUnit',
+  'sites.location',
+  'sites.directions',
+  'sites.gps',
+  'sites.shoreAccess',
+  'sites.freeToDive',
+  'sites.createdOn',
+  'sites.updatedOn',
+  'sites.averageRating',
+  'sites.averageDifficulty',
+  'site_creators.id',
+  'site_creators.username',
+  'site_creators.memberSince',
+  'site_creators.logBookSharing',
+  'site_creators.avatar',
+  'site_creators.location',
+  'site_creators.name',
+] as const;
+
 export class DiveSiteQueryBuilder {
   private query: SelectQueryBuilder<DiveSiteEntity>;
 
@@ -16,30 +40,8 @@ export class DiveSiteQueryBuilder {
     this.query = diveSites
       .createQueryBuilder()
       .from(DiveSiteEntity, 'sites')
-      .innerJoin('sites.creator', 'creator')
-      .select([
-        'sites.id',
-        'sites.name',
-        'sites.description',
-        'sites.depth',
-        'sites.depthUnit',
-        'sites.location',
-        'sites.directions',
-        'sites.gps',
-        'sites.shoreAccess',
-        'sites.freeToDive',
-        'sites.createdOn',
-        'sites.updatedOn',
-        'sites.averageRating',
-        'sites.averageDifficulty',
-        'creator.id',
-        'creator.username',
-        'creator.memberSince',
-        'creator.logBookSharing',
-        'creator.avatar',
-        'creator.location',
-        'creator.name',
-      ]);
+      .innerJoin('sites.creator', 'site_creators')
+      .select([...DiveSiteSelectFields]);
   }
 
   build(): SelectQueryBuilder<DiveSiteEntity> {
@@ -48,7 +50,7 @@ export class DiveSiteQueryBuilder {
 
   withCreatorId(creatorId?: string): this {
     if (creatorId) {
-      this.query = this.query.andWhere('creator.id = :creatorId', {
+      this.query = this.query.andWhere('site_creators.id = :creatorId', {
         creatorId,
       });
     }

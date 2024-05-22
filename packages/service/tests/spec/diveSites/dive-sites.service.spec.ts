@@ -6,24 +6,20 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
-import { EventEmitter2 } from '@nestjs/event-emitter';
-
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import {
-  DiveSiteEntity,
-  DiveSiteReviewEntity,
-  UserEntity,
-} from '../../../src/data';
+import { DiveSiteEntity, UserEntity } from '../../../src/data';
 import {
   CreateDiveSiteOptions,
+  DiveSiteFactory,
   DiveSitesService,
 } from '../../../src/diveSites';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import DiveSiteTestData from '../../fixtures/dive-sites.json';
 import { createTestUser } from '../../utils';
+import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
 import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
 
 jest.mock('uuid');
@@ -58,23 +54,21 @@ const OtherUserData: Partial<UserEntity> = {
 describe('Dive Site Service', () => {
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
-  let Reviews: Repository<DiveSiteReviewEntity>;
+  let siteFactory: DiveSiteFactory;
 
   let service: DiveSitesService;
   let regularUser: UserEntity;
   let otherUser: UserEntity;
   let diveSiteData: DiveSiteEntity[];
-  let emitter: EventEmitter2;
 
   beforeAll(async () => {
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
-    Reviews = dataSource.getRepository(DiveSiteReviewEntity);
+    siteFactory = createDiveSiteFactory();
 
     regularUser = createTestUser(RegularUserData);
     otherUser = createTestUser(OtherUserData);
-    emitter = new EventEmitter2();
-    service = new DiveSitesService(Users, DiveSites, Reviews, emitter);
+    service = new DiveSitesService(DiveSites, siteFactory);
 
     diveSiteData = DiveSiteTestData.map((data, index) =>
       parseDiveSiteJSON(data, index % 2 === 0 ? regularUser : otherUser),
