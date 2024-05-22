@@ -22,6 +22,14 @@
     </div>
   </ConfirmDialog>
 
+  <DrawerPanel
+    title="Select Dive Site"
+    :visible="state.showSelectDiveSite"
+    @close="onCloseDiveSitePanel"
+  >
+    <SelectDiveSiteList />
+  </DrawerPanel>
+
   <form data-testid="edit-log-entry" @submit.prevent="">
     <fieldset class="space-y-4" :disabled="isSaving">
       <FormField
@@ -74,6 +82,10 @@
             :options="timezones"
           />
         </div>
+      </FormField>
+
+      <FormField label="Location">
+        <FormButton @click="onOpenDiveSitePanel">Select Location...</FormButton>
       </FormField>
 
       <div>
@@ -216,6 +228,7 @@ import { SelectOption } from '../../common';
 import { useOops } from '../../oops';
 import { depth, greaterThan, lessThan } from '../../validators';
 import DepthInput from '../common/depth-input.vue';
+import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
 import FormDatePicker from '../common/form-date-picker.vue';
 import FormField from '../common/form-field.vue';
@@ -223,6 +236,7 @@ import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import SelectDiveSiteList from '../diveSites/select-dive-site-list.vue';
 
 interface EditLogbookEntryProps {
   entry: LogEntryDTO;
@@ -231,6 +245,7 @@ interface EditLogbookEntryProps {
 
 interface EditLogbookEntryState {
   showConfirmRevert: boolean;
+  showSelectDiveSite: boolean;
 }
 
 interface LogEntryData {
@@ -277,6 +292,7 @@ const emit = defineEmits<{
 
 const state = reactive<EditLogbookEntryState>({
   showConfirmRevert: false,
+  showSelectDiveSite: true,
 });
 
 const formData = reactive<LogEntryData>(getFormDataFromProps(props));
@@ -369,4 +385,12 @@ onBeforeMount(async () => {
     await getNextAvailableLogNumber();
   }
 });
+
+function onCloseDiveSitePanel() {
+  state.showSelectDiveSite = false;
+}
+
+function onOpenDiveSitePanel() {
+  state.showSelectDiveSite = true;
+}
 </script>
