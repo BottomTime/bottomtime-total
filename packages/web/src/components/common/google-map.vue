@@ -33,7 +33,7 @@
           src="/img/flag-marker.svg"
           :alt="site.name"
         />
-        <span class="hidden group-hover:block text-grey-950 text-xs">
+        <span class="hidden group-hover:block text-grey-950 text-xs capitalize">
           {{ site.name }}
         </span>
       </a>

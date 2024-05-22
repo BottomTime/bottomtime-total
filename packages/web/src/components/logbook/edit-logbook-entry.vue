@@ -27,7 +27,7 @@
     :visible="state.showSelectDiveSite"
     @close="onCloseDiveSitePanel"
   >
-    <SelectDiveSiteList />
+    <SelectDiveSiteList @site-selected="onSiteSelected" />
   </DrawerPanel>
 
   <form data-testid="edit-log-entry" @submit.prevent="">
@@ -85,7 +85,12 @@
       </FormField>
 
       <FormField label="Location">
-        <FormButton @click="onOpenDiveSitePanel">Select Location...</FormButton>
+        <FormButton v-if="formData.site" class="mt-1.5" type="link" size="md">
+          <p class="capitalize">{{ formData.site.name }}</p>
+        </FormButton>
+        <FormButton v-else @click="onOpenDiveSitePanel">
+          Select Location...
+        </FormButton>
       </FormField>
 
       <div>
@@ -213,7 +218,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DepthDTO, LogEntryDTO } from '@bottomtime/api';
+import { DepthDTO, DiveSiteDTO, LogEntryDTO } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, integer, required } from '@vuelidate/validators';
@@ -256,6 +261,7 @@ interface LogEntryData {
   logNumber: string | number;
   maxDepth?: DepthDTO;
   notes: string;
+  site?: DiveSiteDTO;
 }
 
 function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
@@ -392,5 +398,10 @@ function onCloseDiveSitePanel() {
 
 function onOpenDiveSitePanel() {
   state.showSelectDiveSite = true;
+}
+
+function onSiteSelected(site: DiveSiteDTO) {
+  formData.site = site;
+  state.showSelectDiveSite = false;
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="space-y-4">
     <form class="space-y-4" @submit.prevent="onSearch">
       <FormSearchBox
         id="site-search"
@@ -10,7 +10,11 @@
       />
 
       <div class="px-16 space-y-1.5">
-        <GoogleMap :marker="state.location" @click="onLocationChange" />
+        <GoogleMap
+          :marker="state.location"
+          :sites="state.sites?.sites"
+          @click="onLocationChange"
+        />
         <p class="text-sm text-center text-grey-500" italic>
           Click a place on the map to center your search around that point.
         </p>
@@ -37,19 +41,36 @@
       </div>
     </form>
 
-    <div v-if="state.sites">
-      <p>Found {{ state.sites.totalCount }} sites</p>
+    <div v-if="state.isSearching" class="text-center">
+      <LoadingSpinner message="Searching..." />
+    </div>
+
+    <div v-else-if="state.sites">
+      <p class="text-center my-1.5">
+        <span>Showing </span>
+        <span class="font-bold">{{ state.sites.sites.length }}</span>
+        <span> of </span>
+        <span class="font-bold">{{ state.sites.totalCount }}</span>
+        <span> dive sites.</span>
+      </p>
       <ul>
-        <li v-for="site in state.sites.sites" :key="site.id">
-          {{ site.name }}
-        </li>
+        <SelectDiveSiteListItem
+          v-for="site in state.sites.sites"
+          :key="site.id"
+          :site="site"
+          @select="(site) => $emit('site-selected', site)"
+        />
       </ul>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { GPSCoordinates, SearchDiveSitesResponseDTO } from '@bottomtime/api';
+import {
+  DiveSiteDTO,
+  GPSCoordinates,
+  SearchDiveSitesResponseDTO,
+} from '@bottomtime/api';
 
 import { reactive } from 'vue';
 
@@ -60,8 +81,11 @@ import FormField from '../common/form-field.vue';
 import FormSearchBox from '../common/form-search-box.vue';
 import FormSlider from '../common/form-slider.vue';
 import GoogleMap from '../common/google-map.vue';
+import LoadingSpinner from '../common/loading-spinner.vue';
+import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
 interface SelectDiveSiteListState {
+  isSearching: boolean;
   location?: GPSCoordinates;
   radius: number;
   search: string;
@@ -71,7 +95,12 @@ interface SelectDiveSiteListState {
 const client = useClient();
 const oops = useOops();
 
+defineEmits<{
+  (e: 'site-selected', site: DiveSiteDTO): void;
+}>();
+
 const state = reactive<SelectDiveSiteListState>({
+  isSearching: false,
   radius: 100,
   search: '',
 });
@@ -81,6 +110,8 @@ function onLocationChange(location?: GPSCoordinates): void {
 }
 
 async function onSearch(): Promise<void> {
+  state.isSearching = true;
+
   await oops(async () => {
     const results = await client.diveSites.searchDiveSites({
       query: state.search || undefined,
@@ -92,5 +123,7 @@ async function onSearch(): Promise<void> {
       totalCount: results.totalCount,
     };
   });
+
+  state.isSearching = false;
 }
 </script>
