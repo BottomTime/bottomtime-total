@@ -1,12 +1,20 @@
 import { DepthUnit, LogEntrySortBy, SortOrder } from '@bottomtime/api';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import fs from 'fs/promises';
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity, UserEntity } from '../../../src/data';
+import {
+  DiveSiteEntity,
+  DiveSiteReviewEntity,
+  LogEntryEntity,
+  UserEntity,
+} from '../../../src/data';
+import { DiveSitesService } from '../../../src/diveSites';
 import {
   CreateLogEntryOptions,
   LogEntriesService,
@@ -14,6 +22,7 @@ import {
 import { dataSource } from '../../data-source';
 import TestLogEntryData from '../../fixtures/log-entries.json';
 import TestUserData from '../../fixtures/user-search-data.json';
+import { createTestDiveSite } from '../../utils/create-test-dive-site';
 import {
   createTestLogEntry,
   parseLogEntryJSON,
@@ -23,28 +32,63 @@ import { parseUserJSON } from '../../utils/create-test-user';
 dayjs.extend(tz);
 dayjs.extend(utc);
 
+const DiveSiteData: Partial<DiveSiteEntity> = {
+  id: '7f323ca8-6e79-4493-a07f-304f868ab87e',
+  averageDifficulty: 1.2,
+  averageRating: 4.2,
+  createdOn: new Date('2024-05-21T19:17:09.493Z'),
+  updatedOn: new Date('2024-05-21T19:17:09.493Z'),
+  name: 'Best Site',
+  depth: 99,
+  depthUnit: DepthUnit.Feet,
+  description: 'Bestest site in the world',
+  directions: 'Drive there',
+  freeToDive: true,
+  gps: {
+    coordinates: [1.0, 1.0],
+    type: 'Point',
+  },
+  location: 'Ocean',
+  shoreAccess: true,
+};
+
 describe('Log entries service', () => {
   let Entries: Repository<LogEntryEntity>;
   let Users: Repository<UserEntity>;
+  let DiveSites: Repository<DiveSiteEntity>;
+  let DiveSiteReviews: Repository<DiveSiteReviewEntity>;
+  let emitter: EventEmitter2;
   let service: LogEntriesService;
+  let diveSitesService: DiveSitesService;
 
   let ownerData: UserEntity[];
   let logEntryData: LogEntryEntity[];
+  let diveSiteData: DiveSiteEntity;
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Users = dataSource.getRepository(UserEntity);
+    DiveSites = dataSource.getRepository(DiveSiteEntity);
+    emitter = new EventEmitter2();
 
-    service = new LogEntriesService(Users, Entries);
+    diveSitesService = new DiveSitesService(
+      Users,
+      DiveSites,
+      DiveSiteReviews,
+      emitter,
+    );
+    service = new LogEntriesService(Users, Entries, diveSitesService);
 
     ownerData = TestUserData.slice(0, 4).map((data) => parseUserJSON(data));
     logEntryData = TestLogEntryData.map((data, i) =>
       parseLogEntryJSON(data, ownerData[i % ownerData.length]),
     );
+    diveSiteData = createTestDiveSite(ownerData[2], DiveSiteData);
   });
 
   beforeEach(async () => {
     await Users.save(ownerData);
+    await DiveSites.save(diveSiteData);
   });
 
   it.skip('will generate some sweet, sweet test data', async () => {
@@ -156,6 +200,61 @@ describe('Log entries service', () => {
       expect(saved.maxDepth).toEqual(options.maxDepth!.depth);
       expect(saved.maxDepthUnit).toEqual(options.maxDepth!.unit);
       expect(saved.notes).toEqual(options.notes);
+    });
+
+    it('will create a new log entry with a dive site attached', async () => {
+      const options: CreateLogEntryOptions = {
+        ownerId: ownerData[0].id,
+        entryTime: {
+          date: '2024-03-28T13:45:00',
+          timezone: 'Europe/Amsterdam',
+        },
+        site: diveSiteData,
+        duration: 52,
+      };
+
+      const entry = await service.createLogEntry(options);
+      expect(entry.id).toBeDefined();
+      expect(entry.owner).toEqual({
+        userId: ownerData[0].id,
+        username: ownerData[0].username,
+        memberSince: ownerData[0].memberSince,
+        logBookSharing: ownerData[0].logBookSharing,
+        name: ownerData[0].name,
+        location: ownerData[0].location,
+        avatar: ownerData[0].avatar,
+      });
+      expect(entry.entryTime).toEqual({
+        date: '2024-03-28T13:45:00',
+        timezone: 'Europe/Amsterdam',
+      });
+      expect(entry.duration).toEqual(options.duration);
+      expect(entry.site).toEqual({
+        id: diveSiteData.id,
+        createdOn: diveSiteData.createdOn,
+        location: diveSiteData.location,
+        name: diveSiteData.name,
+        creator: {
+          avatar: ownerData[2].avatar,
+          location: ownerData[2].location,
+          logBookSharing: ownerData[2].logBookSharing,
+          memberSince: ownerData[2].memberSince,
+          name: ownerData[2].name,
+          userId: ownerData[2].id,
+          username: ownerData[2].username,
+        },
+      });
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: entry.id },
+        relations: ['owner'],
+      });
+      expect(saved.entryTime).toEqual(entry.entryTime.date);
+      expect(saved.timezone).toEqual(entry.entryTime.timezone);
+      expect(saved.duration).toEqual(options.duration);
+      expect(saved.owner.id).toEqual(ownerData[0].id);
+      expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
+      expect(saved.site).toEqual({ id: diveSiteData.id });
     });
   });
 

@@ -3,18 +3,23 @@ import {
   ListLogEntriesParamsDTO,
 } from '@bottomtime/api';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { LogEntryEntity, UserEntity } from '../data';
+import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../data';
+import { DiveSitesService } from '../diveSites';
 import { LogEntry } from './log-entry';
 import { LogEntryQueryBuilder } from './log-entry-query-builder';
 
-export type CreateLogEntryOptions = CreateOrUpdateLogEntryParamsDTO & {
+export type CreateLogEntryOptions = Omit<
+  CreateOrUpdateLogEntryParamsDTO,
+  'site'
+> & {
   ownerId: string;
+  site?: DiveSiteEntity;
 };
 
 export type ListLogEntriesOptions = ListLogEntriesParamsDTO & {
@@ -36,6 +41,9 @@ export class LogEntriesService {
 
     @InjectRepository(LogEntryEntity)
     private readonly Entries: Repository<LogEntryEntity>,
+
+    @Inject(DiveSitesService)
+    private readonly diveSitesService: DiveSitesService,
   ) {}
 
   async listLogEntries(
@@ -105,6 +113,8 @@ export class LogEntriesService {
       select: ['id', 'username', 'memberSince', 'name', 'location', 'avatar'],
     });
 
+    data.site = options.site ?? null;
+
     const entry = new LogEntry(this.Entries, data);
     entry.entryTime = options.entryTime;
     entry.bottomTime = options.bottomTime;
@@ -112,6 +122,7 @@ export class LogEntriesService {
     entry.maxDepth = options.maxDepth;
     entry.notes = options.notes;
     entry.logNumber = options.logNumber;
+
     await entry.save();
 
     return entry;

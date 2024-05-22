@@ -5,9 +5,10 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity, UserEntity } from '../../../src/data';
+import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
 import { LogEntry } from '../../../src/logEntries';
 import { dataSource } from '../../data-source';
+import { createTestDiveSite } from '../../utils/create-test-dive-site';
 import { createTestLogEntry } from '../../utils/create-test-log-entry';
 import { createTestUser } from '../../utils/create-test-user';
 
@@ -20,6 +21,27 @@ const CreatorData: Partial<UserEntity> = {
   logBookSharing: LogBookSharing.FriendsOnly,
   name: 'Dan Diver',
   location: 'Underwater',
+};
+
+const TestSiteData: DiveSiteEntity = {
+  id: 'b4afa428-eeb8-4bb3-935d-f124cc6c27f1',
+  averageDifficulty: 2.2,
+  averageRating: 3.8,
+  createdOn: new Date('2024-05-21T19:46:14.342Z'),
+  creator: createTestUser(CreatorData),
+  depth: 21.8,
+  depthUnit: DepthUnit.Meters,
+  description: 'A wet dive site',
+  directions: 'Drive, and then take a boat',
+  freeToDive: true,
+  gps: {
+    coordinates: [1.0, 1.0],
+    type: 'Point',
+  },
+  location: 'Ocean',
+  name: 'Dive Site of Awesomeness',
+  shoreAccess: false,
+  updatedOn: new Date('2024-05-21T19:46:14.342Z'),
 };
 
 const TestLogEntryData: Partial<LogEntryEntity> = {
@@ -44,22 +66,29 @@ dayjs.extend(utc);
 describe('Log Entry class', () => {
   let Users: Repository<UserEntity>;
   let Entries: Repository<LogEntryEntity>;
+  let Sites: Repository<DiveSiteEntity>;
 
   let user: UserEntity;
   let data: LogEntryEntity;
   let logEntry: LogEntry;
+  let diveSite: DiveSiteEntity;
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Users = dataSource.getRepository(UserEntity);
+    Sites = dataSource.getRepository(DiveSiteEntity);
+
     user = createTestUser(CreatorData);
+    diveSite = createTestDiveSite(user, TestSiteData);
   });
 
   beforeEach(async () => {
     data = createTestLogEntry(user, TestLogEntryData);
+    data.site = TestSiteData;
     logEntry = new LogEntry(Entries, data);
 
     await Users.save(user);
+    await Sites.save(diveSite);
   });
 
   it('will return properties correctly', () => {
@@ -85,6 +114,21 @@ describe('Log Entry class', () => {
       unit: data.maxDepthUnit,
     });
     expect(logEntry.notes).toBe(data.notes);
+    expect(logEntry.site).toEqual({
+      id: TestSiteData.id,
+      createdOn: TestSiteData.createdOn,
+      location: TestSiteData.location,
+      name: TestSiteData.name,
+      creator: {
+        userId: CreatorData.id,
+        memberSince: CreatorData.memberSince,
+        username: CreatorData.username,
+        logBookSharing: CreatorData.logBookSharing,
+        avatar: CreatorData.avatar,
+        name: CreatorData.name,
+        location: CreatorData.location,
+      },
+    });
   });
 
   it('will update properties correctly', () => {
@@ -125,6 +169,8 @@ describe('Log Entry class', () => {
   });
 
   it('will allow optional properties to be set to undefined', () => {
+    data.site = null;
+
     logEntry.logNumber = undefined;
     logEntry.bottomTime = undefined;
     logEntry.maxDepth = undefined;
@@ -134,6 +180,7 @@ describe('Log Entry class', () => {
     expect(logEntry.bottomTime).toBeUndefined();
     expect(logEntry.maxDepth).toBeUndefined();
     expect(logEntry.notes).toBeUndefined();
+    expect(logEntry.site).toBeUndefined();
   });
 
   it('will render a JSON object correctly', () => {
@@ -160,6 +207,21 @@ describe('Log Entry class', () => {
         unit: data.maxDepthUnit,
       },
       notes: data.notes,
+      site: {
+        id: TestSiteData.id,
+        createdOn: TestSiteData.createdOn,
+        location: TestSiteData.location,
+        name: TestSiteData.name,
+        creator: {
+          userId: CreatorData.id,
+          memberSince: CreatorData.memberSince,
+          username: CreatorData.username,
+          logBookSharing: CreatorData.logBookSharing,
+          avatar: CreatorData.avatar,
+          name: CreatorData.name,
+          location: CreatorData.location,
+        },
+      },
     });
   });
 
@@ -224,4 +286,6 @@ describe('Log Entry class', () => {
     const savedEntry = await Entries.findOneBy({ id: logEntry.id });
     expect(savedEntry).toBeNull();
   });
+
+  it.todo('Finish testing save function with dive site attached.');
 });
