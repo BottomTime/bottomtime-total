@@ -1,7 +1,6 @@
 import {
   DateWithTimezoneDTO,
   DepthDTO,
-  DiveSiteDTO,
   LogEntryDTO,
   SuccinctProfileDTO,
 } from '@bottomtime/api';
@@ -14,6 +13,8 @@ import 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
 import { LogEntryEntity } from '../data';
+import { DiveSite } from '../diveSites';
+import { DiveSiteFactory } from '../diveSites/dive-site-factory';
 
 const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 
@@ -22,6 +23,7 @@ export class LogEntry {
 
   constructor(
     private readonly Entries: Repository<LogEntryEntity>,
+    private readonly siteFactory: DiveSiteFactory,
     private readonly data: LogEntryEntity,
   ) {}
 
@@ -41,24 +43,13 @@ export class LogEntry {
     };
   }
 
-  get site(): DiveSiteDTO | undefined {
+  get site(): DiveSite | undefined {
     return this.data.site
-      ? {
-          createdOn: this.data.site.createdOn,
-          creator: {
-            logBookSharing: this.data.site.creator.logBookSharing,
-            memberSince: this.data.site.creator.memberSince,
-            userId: this.data.site.creator.id,
-            username: this.data.site.creator.username,
-            avatar: this.data.site.creator.avatar,
-            name: this.data.site.creator.name,
-            location: this.data.site.creator.location,
-          },
-          id: this.data.site.id,
-          location: this.data.site.location,
-          name: this.data.site.name,
-        }
+      ? this.siteFactory.createDiveSite(this.data.site)
       : undefined;
+  }
+  set site(value: DiveSite | undefined) {
+    this.data.site = value?.toEntity() ?? null;
   }
 
   get logNumber(): number | undefined {
@@ -127,24 +118,12 @@ export class LogEntry {
       duration: this.duration,
       maxDepth: this.maxDepth,
       notes: this.notes,
-      site: this.site
-        ? {
-            createdOn: this.site.createdOn,
-            creator: {
-              userId: this.site.creator.userId,
-              username: this.site.creator.username,
-              memberSince: this.site.creator.memberSince,
-              logBookSharing: this.site.creator.logBookSharing,
-              avatar: this.site.creator.avatar,
-              name: this.site.creator.name,
-              location: this.site.creator.location,
-            },
-            id: this.site.id,
-            location: this.site.location,
-            name: this.site.name,
-          }
-        : undefined,
+      site: this.site?.toJSON(),
     };
+  }
+
+  toEntity(): LogEntryEntity {
+    return { ...this.data };
   }
 
   async save(): Promise<void> {

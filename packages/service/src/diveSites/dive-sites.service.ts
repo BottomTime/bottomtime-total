@@ -4,15 +4,15 @@ import {
 } from '@bottomtime/api';
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
+import { DiveSiteEntity, UserEntity } from '../data';
 import { User } from '../users';
 import { DiveSite } from './dive-site';
+import { DiveSiteFactory } from './dive-site-factory';
 import { DiveSiteQueryBuilder } from './dive-site-query-builder';
 
 export type CreateDiveSiteOptions = CreateOrUpdateDiveSiteDTO & {
@@ -30,17 +30,11 @@ export class DiveSitesService {
   private readonly log = new Logger(DiveSitesService.name);
 
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly Users: Repository<UserEntity>,
-
     @InjectRepository(DiveSiteEntity)
     private readonly DiveSites: Repository<DiveSiteEntity>,
 
-    @InjectRepository(DiveSiteReviewEntity)
-    private readonly Reviews: Repository<DiveSiteReviewEntity>,
-
-    @Inject(EventEmitter2)
-    private readonly emitter: EventEmitter2,
+    @Inject(DiveSiteFactory)
+    private readonly siteFactory: DiveSiteFactory,
   ) {}
 
   async searchDiveSites(
@@ -64,16 +58,7 @@ export class DiveSitesService {
     const [sites, totalCount] = await query.getManyAndCount();
 
     return {
-      sites: sites.map(
-        (site) =>
-          new DiveSite(
-            this.Users,
-            this.DiveSites,
-            this.Reviews,
-            this.emitter,
-            site,
-          ),
-      ),
+      sites: sites.map((site) => this.siteFactory.createDiveSite(site)),
       totalCount,
     };
   }
@@ -89,13 +74,7 @@ export class DiveSitesService {
     const result = await query.getOne();
 
     if (result) {
-      return new DiveSite(
-        this.Users,
-        this.DiveSites,
-        this.Reviews,
-        this.emitter,
-        result,
-      );
+      return this.siteFactory.createDiveSite(result);
     }
 
     return undefined;
@@ -131,13 +110,6 @@ export class DiveSitesService {
     }
 
     await this.DiveSites.save(data);
-
-    return new DiveSite(
-      this.Users,
-      this.DiveSites,
-      this.Reviews,
-      this.emitter,
-      data,
-    );
+    return this.siteFactory.createDiveSite(data);
   }
 }

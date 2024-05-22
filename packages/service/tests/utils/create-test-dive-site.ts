@@ -34,8 +34,10 @@ export function createTestDiveSite(
   creator: UserEntity,
   options?: Partial<DiveSiteEntity>,
 ): DiveSiteEntity {
-  const name = `${faker.word.adjective()} ${faker.word.adjective()} ${faker.word.noun()}`;
-  const location = faker.location.city();
+  const name =
+    options?.name ||
+    `${faker.word.adjective()} ${faker.word.adjective()} ${faker.word.noun()}`;
+  const location = options?.location || faker.location.city();
 
   const data = new DiveSiteEntity();
 

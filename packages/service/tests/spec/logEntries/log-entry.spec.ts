@@ -6,8 +6,10 @@ import utc from 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
+import { DiveSiteFactory } from '../../../src/diveSites/dive-site-factory';
 import { LogEntry } from '../../../src/logEntries';
 import { dataSource } from '../../data-source';
+import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
 import { createTestDiveSite } from '../../utils/create-test-dive-site';
 import { createTestLogEntry } from '../../utils/create-test-log-entry';
 import { createTestUser } from '../../utils/create-test-user';
@@ -73,6 +75,8 @@ describe('Log Entry class', () => {
   let logEntry: LogEntry;
   let diveSite: DiveSiteEntity;
 
+  let siteFactory: DiveSiteFactory;
+
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Users = dataSource.getRepository(UserEntity);
@@ -80,18 +84,21 @@ describe('Log Entry class', () => {
 
     user = createTestUser(CreatorData);
     diveSite = createTestDiveSite(user, TestSiteData);
+
+    siteFactory = createDiveSiteFactory();
   });
 
   beforeEach(async () => {
     data = createTestLogEntry(user, TestLogEntryData);
-    data.site = TestSiteData;
-    logEntry = new LogEntry(Entries, data);
+    logEntry = new LogEntry(Entries, siteFactory, data);
 
     await Users.save(user);
     await Sites.save(diveSite);
   });
 
   it('will return properties correctly', () => {
+    data.site = diveSite;
+
     expect(logEntry.id).toBe(data.id);
     expect(logEntry.logNumber).toBe(data.logNumber);
     expect(logEntry.owner).toEqual({
@@ -114,21 +121,7 @@ describe('Log Entry class', () => {
       unit: data.maxDepthUnit,
     });
     expect(logEntry.notes).toBe(data.notes);
-    expect(logEntry.site).toEqual({
-      id: TestSiteData.id,
-      createdOn: TestSiteData.createdOn,
-      location: TestSiteData.location,
-      name: TestSiteData.name,
-      creator: {
-        userId: CreatorData.id,
-        memberSince: CreatorData.memberSince,
-        username: CreatorData.username,
-        logBookSharing: CreatorData.logBookSharing,
-        avatar: CreatorData.avatar,
-        name: CreatorData.name,
-        location: CreatorData.location,
-      },
-    });
+    expect(logEntry.site?.toEntity()).toEqual(diveSite);
   });
 
   it('will update properties correctly', () => {
@@ -168,13 +161,27 @@ describe('Log Entry class', () => {
     expect(logEntry.notes).toBe(newNotes);
   });
 
+  it('will set site property', async () => {
+    const site = siteFactory.createDiveSite(diveSite);
+    logEntry.site = site;
+    expect(logEntry.site.toEntity()).toEqual(diveSite);
+  });
+
+  it('will unset site property', async () => {
+    data.site = diveSite;
+    logEntry.site = undefined;
+    expect(logEntry.site).toBeUndefined();
+    expect(data.site).toBeNull();
+  });
+
   it('will allow optional properties to be set to undefined', () => {
-    data.site = null;
+    data.site = diveSite;
 
     logEntry.logNumber = undefined;
     logEntry.bottomTime = undefined;
     logEntry.maxDepth = undefined;
     logEntry.notes = undefined;
+    logEntry.site = undefined;
 
     expect(logEntry.logNumber).toBeUndefined();
     expect(logEntry.bottomTime).toBeUndefined();
@@ -184,45 +191,8 @@ describe('Log Entry class', () => {
   });
 
   it('will render a JSON object correctly', () => {
-    expect(logEntry.toJSON()).toEqual({
-      id: data.id,
-      logNumber: data.logNumber,
-      creator: {
-        userId: CreatorData.id,
-        memberSince: CreatorData.memberSince,
-        username: CreatorData.username,
-        logBookSharing: CreatorData.logBookSharing,
-        avatar: CreatorData.avatar,
-        name: CreatorData.name,
-        location: CreatorData.location,
-      },
-      entryTime: {
-        date: '2021-01-01T12:34:56',
-        timezone: data.timezone,
-      },
-      bottomTime: data.bottomTime,
-      duration: data.duration,
-      maxDepth: {
-        depth: data.maxDepth,
-        unit: data.maxDepthUnit,
-      },
-      notes: data.notes,
-      site: {
-        id: TestSiteData.id,
-        createdOn: TestSiteData.createdOn,
-        location: TestSiteData.location,
-        name: TestSiteData.name,
-        creator: {
-          userId: CreatorData.id,
-          memberSince: CreatorData.memberSince,
-          username: CreatorData.username,
-          logBookSharing: CreatorData.logBookSharing,
-          avatar: CreatorData.avatar,
-          name: CreatorData.name,
-          location: CreatorData.location,
-        },
-      },
-    });
+    data.site = diveSite;
+    expect(logEntry.toJSON()).toMatchSnapshot();
   });
 
   it('will save a new log entry to the database', async () => {
