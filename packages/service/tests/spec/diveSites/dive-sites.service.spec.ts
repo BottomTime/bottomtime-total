@@ -100,6 +100,39 @@ describe('Dive Site Service', () => {
     });
   });
 
+  describe('when retrieving multiple dive sites', () => {
+    it('will retrieve several dive sites at once', async () => {
+      await DiveSites.save(diveSiteData);
+
+      const siteIds = [
+        diveSiteData[3].id,
+        diveSiteData[12].id,
+        diveSiteData[27].id,
+      ];
+
+      const results = await service.getDiveSites(siteIds);
+      expect(results).toHaveLength(3);
+      expect(
+        results.map((site) => ({ id: site.id, name: site.name })),
+      ).toMatchSnapshot();
+    });
+
+    it('will return an empty array if passed an empty list of dive site IDs', async () => {
+      await expect(service.getDiveSites([])).resolves.toEqual([]);
+    });
+
+    it('will return an empty array if no dive sites are found', async () => {
+      await expect(
+        service.getDiveSites([
+          '3e8944ae-317c-483b-802c-efc665af25fa',
+          '7ce3ad92-9c59-434f-b049-2829d75d0214',
+          '976c98a3-21f7-448e-b69e-1edb274de4ce',
+          'cfb5f6f1-f3d5-4f7e-96ff-f33c0c6ca425',
+        ]),
+      ).resolves.toEqual([]);
+    });
+  });
+
   describe('when creating a new dive site', () => {
     const GeneratedId = '00000000-0000-0000-0000-000000000000';
     const Now = new Date('2024-01-08T13:33:52.364Z');

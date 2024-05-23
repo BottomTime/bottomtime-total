@@ -77,7 +77,10 @@ export class LogEntry {
   async save(): Promise<void> {
     const { data } = await this.client.put(
       `/api/users/${this.data.creator.username}/logbook/${this.data.id}`,
-      CreateOrUpdateLogEntryParamsSchema.parse(this),
+      CreateOrUpdateLogEntryParamsSchema.parse({
+        ...this.data,
+        site: this.data.site ? this.data.site.id : undefined,
+      }),
     );
     this.data = LogEntrySchema.parse(data);
   }

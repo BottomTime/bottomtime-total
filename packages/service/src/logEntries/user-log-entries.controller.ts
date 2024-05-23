@@ -339,6 +339,9 @@ export class UserLogEntriesController {
     return { logNumber };
   }
 
+  @Get('recentDiveSites')
+  getRecentDiveSites() {}
+
   /**
    * @openapi
    * /api/users/{username}/logbook/{entryId}:

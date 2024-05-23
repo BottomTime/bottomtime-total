@@ -27,7 +27,7 @@
     :visible="state.showSelectDiveSite"
     @close="onCloseDiveSitePanel"
   >
-    <SelectSite @site-selected="onSiteSelected" />
+    <SelectSite :current-site="formData.site" @site-selected="onSiteSelected" />
   </DrawerPanel>
 
   <form data-testid="edit-log-entry" @submit.prevent="">
@@ -84,10 +84,14 @@
         </div>
       </FormField>
 
-      <FormField label="Location">
-        <FormButton v-if="formData.site" class="mt-1.5" type="link" size="md">
-          <p class="capitalize">{{ formData.site.name }}</p>
-        </FormButton>
+      <FormField label="Dive site">
+        <div v-if="formData.site" class="space-y-2">
+          <PreviewDiveSite :site="formData.site" />
+          <FormButton type="link" size="md" @click="onOpenDiveSitePanel">
+            Change site...
+          </FormButton>
+        </div>
+
         <FormButton v-else @click="onOpenDiveSitePanel">
           Select Location...
         </FormButton>
@@ -241,6 +245,7 @@ import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import PreviewDiveSite from '../diveSites/preview-dive-site.vue';
 import SelectSite from '../diveSites/selectSite/select-site.vue';
 
 interface EditLogbookEntryProps {
@@ -275,6 +280,7 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
     logNumber: props.entry.logNumber || '',
     maxDepth: props.entry.maxDepth ? { ...props.entry.maxDepth } : undefined,
     notes: props.entry.notes ?? '',
+    site: props.entry.site,
   };
 }
 
@@ -358,6 +364,7 @@ async function onSave(): Promise<void> {
       typeof formData.logNumber === 'number' ? formData.logNumber : undefined,
     maxDepth: formData.maxDepth,
     notes: formData.notes,
+    site: formData.site,
   });
 }
 

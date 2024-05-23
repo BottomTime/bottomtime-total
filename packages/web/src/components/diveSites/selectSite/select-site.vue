@@ -5,7 +5,10 @@
     @tab-changed="onTabChanged"
   >
     <KeepAlive>
-      <RecentSitesList v-if="state.activeTab === SelectSiteTabs.Recent" />
+      <RecentSitesList
+        v-if="state.activeTab === SelectSiteTabs.Recent"
+        :current-site="currentSite"
+      />
 
       <SearchDiveSitesForm
         v-else-if="state.activeTab === SelectSiteTabs.Search"
@@ -38,6 +41,11 @@ interface SelectSiteState {
   activeTab: SelectSiteTabs;
 }
 
+interface SelectSiteProps {
+  currentSite?: DiveSiteDTO;
+}
+
+defineProps<SelectSiteProps>();
 defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
 }>();

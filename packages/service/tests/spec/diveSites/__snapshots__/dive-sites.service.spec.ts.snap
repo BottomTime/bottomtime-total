@@ -33,6 +33,23 @@ exports[`Dive Site Service when retrieving a dive site will return the requested
 }
 `;
 
+exports[`Dive Site Service when retrieving multiple dive sites will retrieve several dive sites at once 1`] = `
+[
+  {
+    "id": "0f672534-0510-44ea-876c-43b67c479803",
+    "name": "becquerel worst",
+  },
+  {
+    "id": "97e3fa02-8fb8-4923-95f3-33fa8e74b29b",
+    "name": "Southeast and",
+  },
+  {
+    "id": "4f23bcb6-18be-4ff2-932c-234cb992bcb7",
+    "name": "SUV atop",
+  },
+]
+`;
+
 exports[`Dive Site Service when searching dive sites Will sort by name in asc order 1`] = `
 [
   {
