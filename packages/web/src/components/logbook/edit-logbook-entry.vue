@@ -93,7 +93,7 @@
         </div>
 
         <FormButton v-else @click="onOpenDiveSitePanel">
-          Select Location...
+          Select Dive Site...
         </FormButton>
       </FormField>
 

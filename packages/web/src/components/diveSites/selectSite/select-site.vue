@@ -8,6 +8,8 @@
       <RecentSitesList
         v-if="state.activeTab === SelectSiteTabs.Recent"
         :current-site="currentSite"
+        @site-selected="(site) => $emit('site-selected', site)"
+        @search="state.activeTab = SelectSiteTabs.Search"
       />
 
       <SearchDiveSitesForm

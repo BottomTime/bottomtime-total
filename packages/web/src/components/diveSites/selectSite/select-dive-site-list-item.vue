@@ -82,8 +82,10 @@ defineEmits<{
 
 const listItemElement = ref<HTMLLIElement | null>(null);
 const classes = computed(() => ({
-  'bg-blue-300/80': props.selected,
-  'dark:bg-blue-700/80': props.selected,
+  border: props.selected,
+  'odd:bg-blue-300/40': true,
+  'odd:dark:bg-blue-900/40': true,
+  'border-success': props.selected,
   'rounded-md': true,
   'p-2': true,
   'space-y-2': true,
