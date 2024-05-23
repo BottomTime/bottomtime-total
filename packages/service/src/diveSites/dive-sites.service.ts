@@ -1,8 +1,6 @@
 import {
   CreateOrUpdateDiveSiteDTO,
-  DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
-  SortOrder,
 } from '@bottomtime/api';
 
 import { Inject, Injectable, Logger } from '@nestjs/common';

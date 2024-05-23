@@ -26,8 +26,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { z } from 'zod';
-
 import { AssertAuth } from '../auth';
 import { DiveSite, DiveSitesService } from '../diveSites';
 import {
