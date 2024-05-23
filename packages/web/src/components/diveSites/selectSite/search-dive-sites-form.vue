@@ -63,6 +63,18 @@
           @highlight="onSiteHighlighted"
           @select="(site) => $emit('site-selected', site)"
         />
+        <li
+          v-if="state.sites.sites.length < state.sites.totalCount"
+          class="py-12 text-center"
+        >
+          <LoadingSpinner
+            v-if="state.isLoadingMore"
+            message="Loading more results..."
+          />
+          <FormButton v-else type="link" size="lg" @click="onLoadMore">
+            Load more...
+          </FormButton>
+        </li>
       </ul>
     </div>
   </div>
@@ -72,6 +84,7 @@
 import {
   DiveSiteDTO,
   GPSCoordinates,
+  SearchDiveSitesParamsDTO,
   SearchDiveSitesResponseDTO,
 } from '@bottomtime/api';
 
@@ -88,6 +101,7 @@ import LoadingSpinner from '../../common/loading-spinner.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
 interface SelectDiveSiteListState {
+  isLoadingMore: boolean;
   isSearching: boolean;
   location?: GPSCoordinates;
   radius: number;
@@ -99,11 +113,12 @@ interface SelectDiveSiteListState {
 const client = useClient();
 const oops = useOops();
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
 const state = reactive<SelectDiveSiteListState>({
+  isLoadingMore: false,
   isSearching: false,
   radius: 100,
   search: '',
@@ -113,15 +128,20 @@ function onLocationChange(location?: GPSCoordinates): void {
   state.location = location;
 }
 
+function getSearchParams(): SearchDiveSitesParamsDTO {
+  return {
+    query: state.search || undefined,
+    location: state.location,
+    radius: state.location ? state.radius : undefined,
+    limit: 30,
+  };
+}
+
 async function onSearch(): Promise<void> {
   state.isSearching = true;
 
   await oops(async () => {
-    const results = await client.diveSites.searchDiveSites({
-      query: state.search || undefined,
-      location: state.location,
-      radius: state.location ? state.radius : undefined,
-    });
+    const results = await client.diveSites.searchDiveSites(getSearchParams());
     state.sites = {
       sites: results.sites.map((site) => site.toJSON()),
       totalCount: results.totalCount,
@@ -129,6 +149,21 @@ async function onSearch(): Promise<void> {
   });
 
   state.isSearching = false;
+}
+
+async function onLoadMore(): Promise<void> {
+  state.isLoadingMore = true;
+
+  await oops(async () => {
+    const results = await client.diveSites.searchDiveSites({
+      ...getSearchParams(),
+      skip: state.sites?.sites.length,
+    });
+    state.sites!.sites.push(...results.sites.map((site) => site.toJSON()));
+    state.sites!.totalCount = results.totalCount;
+  });
+
+  state.isLoadingMore = false;
 }
 
 function onSiteHighlighted(site: DiveSiteDTO): void {
