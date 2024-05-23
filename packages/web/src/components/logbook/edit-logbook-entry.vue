@@ -27,7 +27,7 @@
     :visible="state.showSelectDiveSite"
     @close="onCloseDiveSitePanel"
   >
-    <SelectDiveSiteList @site-selected="onSiteSelected" />
+    <SelectSite @site-selected="onSiteSelected" />
   </DrawerPanel>
 
   <form data-testid="edit-log-entry" @submit.prevent="">
@@ -241,7 +241,7 @@ import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
-import SelectDiveSiteList from '../diveSites/select-dive-site-list.vue';
+import SelectSite from '../diveSites/selectSite/select-site.vue';
 
 interface EditLogbookEntryProps {
   entry: LogEntryDTO;
@@ -298,7 +298,7 @@ const emit = defineEmits<{
 
 const state = reactive<EditLogbookEntryState>({
   showConfirmRevert: false,
-  showSelectDiveSite: true,
+  showSelectDiveSite: false,
 });
 
 const formData = reactive<LogEntryData>(getFormDataFromProps(props));

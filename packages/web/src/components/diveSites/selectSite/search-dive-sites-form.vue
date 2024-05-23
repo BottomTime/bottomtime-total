@@ -14,6 +14,7 @@
           :marker="state.location"
           :sites="state.sites?.sites"
           @click="onLocationChange"
+          @site-selected="onSiteHighlighted"
         />
         <p class="text-sm text-center text-grey-500" italic>
           Click a place on the map to center your search around that point.
@@ -53,11 +54,13 @@
         <span class="font-bold">{{ state.sites.totalCount }}</span>
         <span> dive sites.</span>
       </p>
-      <ul>
+      <ul class="*:odd:bg-blue-300/40 *:odd:dark:bg-blue-900/40">
         <SelectDiveSiteListItem
           v-for="site in state.sites.sites"
           :key="site.id"
           :site="site"
+          :selected="site.id === state.selectedSite"
+          @highlight="onSiteHighlighted"
           @select="(site) => $emit('site-selected', site)"
         />
       </ul>
@@ -74,14 +77,14 @@ import {
 
 import { reactive } from 'vue';
 
-import { useClient } from '../../api-client';
-import { useOops } from '../../oops';
-import FormButton from '../common/form-button.vue';
-import FormField from '../common/form-field.vue';
-import FormSearchBox from '../common/form-search-box.vue';
-import FormSlider from '../common/form-slider.vue';
-import GoogleMap from '../common/google-map.vue';
-import LoadingSpinner from '../common/loading-spinner.vue';
+import { useClient } from '../../../api-client';
+import { useOops } from '../../../oops';
+import FormButton from '../../common/form-button.vue';
+import FormField from '../../common/form-field.vue';
+import FormSearchBox from '../../common/form-search-box.vue';
+import FormSlider from '../../common/form-slider.vue';
+import GoogleMap from '../../common/google-map.vue';
+import LoadingSpinner from '../../common/loading-spinner.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
 interface SelectDiveSiteListState {
@@ -89,13 +92,14 @@ interface SelectDiveSiteListState {
   location?: GPSCoordinates;
   radius: number;
   search: string;
+  selectedSite?: string;
   sites?: SearchDiveSitesResponseDTO;
 }
 
 const client = useClient();
 const oops = useOops();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
@@ -125,5 +129,9 @@ async function onSearch(): Promise<void> {
   });
 
   state.isSearching = false;
+}
+
+function onSiteHighlighted(site: DiveSiteDTO): void {
+  state.selectedSite = site.id;
 }
 </script>

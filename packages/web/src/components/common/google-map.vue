@@ -24,9 +24,8 @@
       }"
     >
       <a
-        :href="`#${site.id}`"
         class="flex items-center space-x-1 pr-0 z-10 hover:z-30 hover:pr-1 rounded-md h-[16px] shadow-sm bg-grey-200 group"
-        @click="$emit('site-selected', site)"
+        @click.prevent="$emit('site-selected', site)"
       >
         <img
           class="w-[16px] h-[16px] rounded-md shadow-sm shadow-danger-hover"
