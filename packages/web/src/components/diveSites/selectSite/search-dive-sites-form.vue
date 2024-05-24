@@ -16,7 +16,7 @@
           @click="onLocationChange"
           @site-selected="onSiteHighlighted"
         />
-        <p class="text-sm text-center text-grey-500" italic>
+        <p class="text-sm text-center italic" italic>
           Click a place on the map to center your search around that point.
         </p>
 

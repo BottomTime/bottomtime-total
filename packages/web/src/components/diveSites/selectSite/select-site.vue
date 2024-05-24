@@ -4,21 +4,19 @@
     :active-tab="state.activeTab"
     @tab-changed="onTabChanged"
   >
-    <KeepAlive>
-      <RecentSitesList
-        v-if="state.activeTab === SelectSiteTabs.Recent"
-        :current-site="currentSite"
-        @site-selected="(site) => $emit('site-selected', site)"
-        @search="state.activeTab = SelectSiteTabs.Search"
-      />
+    <RecentSitesList
+      v-if="state.activeTab === SelectSiteTabs.Recent"
+      :current-site="currentSite"
+      @site-selected="(site) => $emit('site-selected', site)"
+      @search="state.activeTab = SelectSiteTabs.Search"
+    />
 
-      <SearchDiveSitesForm
-        v-else-if="state.activeTab === SelectSiteTabs.Search"
-        @site-selected="(site) => $emit('site-selected', site)"
-      />
+    <SearchDiveSitesForm
+      v-else-if="state.activeTab === SelectSiteTabs.Search"
+      @site-selected="(site) => $emit('site-selected', site)"
+    />
 
-      <CreateSiteWizard v-else-if="state.activeTab === SelectSiteTabs.Create" />
-    </KeepAlive>
+    <CreateSiteWizard v-else-if="state.activeTab === SelectSiteTabs.Create" />
   </TabsPanel>
 </template>
 

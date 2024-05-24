@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
+import { DiveSiteDTO, GPSCoordinates, GpsCoordinates } from '@bottomtime/api';
 
 import { computed, onBeforeMount, ref } from 'vue';
 import { CustomMarker, GoogleMap, Marker } from 'vue3-google-map';
@@ -98,4 +98,10 @@ function onMapClick(event: globalThis.google.maps.MapMouseEvent) {
     });
   }
 }
+
+function moveCenter(newCenter: NonNullable<GPSCoordinates>) {
+  currentCenter.value = newCenter;
+}
+
+defineExpose({ moveCenter });
 </script>

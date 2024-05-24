@@ -1,12 +1,8 @@
 <template>
-  <div class="space-y-3">
+  <div class="space-y-4">
     <p class="text-sm text-center">
-      Here are your most recently used sites. If you do not see your site in the
-      list you can search for it
-      <FormButton type="link" size="sm" @click="$emit('search')">
-        here
-      </FormButton>
-      .
+      Here are your most recently used dive sites. These are the entries you've
+      used on your most recently created log entries.
     </p>
 
     <div v-if="currentSite">
@@ -26,17 +22,34 @@
       <div v-if="state.isLoading" class="py-3 text-center">
         <LoadingSpinner message="Fetching most recently logged sites..." />
       </div>
+
       <ul v-else-if="state.recentSites && state.recentSites.length">
         <SelectDiveSiteListItem
           v-for="site in state.recentSites"
           :key="site.id"
-          class="odd:bg-blue-300/40 odd:dark:bg-blue-900/40"
           :site="site"
           :selected="state.selectedSite === site.id"
           @highlight="onSiteHighlighted"
           @select="(site) => $emit('site-selected', site)"
         />
       </ul>
+
+      <p
+        v-else
+        class="text-center flex gap-3 items-baseline justify-center p-2 bg-blue-500/40 dark:bg-blue-600/40 border-l-2 border-grey-800 rounded-r-md"
+      >
+        <span>
+          <i class="fa-solid fa-circle-info"></i>
+        </span>
+        <span>
+          It seems you don't have any recent sites to display. You can search
+          for existing sites
+          <FormButton type="link" size="sm" @click="$emit('search')">
+            here
+          </FormButton>
+          .
+        </span>
+      </p>
     </div>
   </div>
 </template>
