@@ -6,6 +6,7 @@
     :test-id="testId"
     :placeholder="placeholder"
     :maxlength="maxlength"
+    :invalid="invalid"
   />
 </template>
 
@@ -23,6 +24,7 @@ interface PlacesAutoCompleteProps {
   autofocus?: boolean;
   center?: GPSCoordinates;
   controlId: string;
+  invalid?: boolean;
   placeholder?: string;
   maxlength?: number;
   testId?: string;

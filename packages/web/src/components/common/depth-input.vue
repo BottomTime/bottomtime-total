@@ -39,7 +39,7 @@ interface DepthUnitState {
 
 const currentUser = useCurrentUser();
 
-const depth = defineModel<DepthDTO>({
+const depth = defineModel<DepthDTO | string | null>({
   required: false,
 });
 withDefaults(defineProps<DepthInputProps>(), {
@@ -47,13 +47,20 @@ withDefaults(defineProps<DepthInputProps>(), {
   invalid: false,
 });
 
-const state = reactive<DepthUnitState>({
-  value: depth.value?.depth ?? '',
-  unit:
-    depth.value?.unit ??
-    currentUser.user?.settings.depthUnit ??
-    DepthUnit.Meters,
-});
+const state = reactive<DepthUnitState>(
+  typeof depth.value === 'string'
+    ? {
+        value: depth.value,
+        unit: currentUser.user?.settings.depthUnit ?? DepthUnit.Meters,
+      }
+    : {
+        value: depth.value?.depth ?? '',
+        unit:
+          depth.value?.unit ??
+          currentUser.user?.settings.depthUnit ??
+          DepthUnit.Meters,
+      },
+);
 
 function onToggleUnit() {
   state.unit =
@@ -62,21 +69,23 @@ function onToggleUnit() {
 
 watch(state, () => {
   if (!state.value) {
-    depth.value = undefined;
+    depth.value = null;
   } else if (typeof state.value === 'number') {
     depth.value = {
       depth: state.value,
       unit: state.unit,
     };
   } else {
-    depth.value = {
-      depth: -1,
-      unit: state.unit,
-    };
+    depth.value = state.value;
   }
 });
 
 watch(depth, () => {
+  if (typeof depth.value === 'string') {
+    state.value = depth.value;
+    return;
+  }
+
   state.value = depth.value?.depth ?? '';
   state.unit =
     depth.value?.unit ??
