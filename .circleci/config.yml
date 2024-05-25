@@ -263,6 +263,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+          version: docker24
       - run:
           name: Build Image
           command: |
@@ -282,6 +283,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+          version: docker24
       - aws-cli/install
       - run:
           name: Build and push Docker image
