@@ -1,4 +1,8 @@
-FROM node:22 AS build
+FROM node:22-alpine as base
+
+RUN apk add --no-cache bash python3 make g++
+
+FROM base AS build
 
 WORKDIR /app
 
@@ -18,7 +22,7 @@ COPY packages/web/src/ ./packages/web/src/
 
 RUN yarn build
 
-FROM node:22-slim AS release
+FROM base AS release
 COPY --from=build /app/ /app/
 WORKDIR /app/packages/web/
 
