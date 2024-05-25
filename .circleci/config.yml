@@ -253,6 +253,7 @@ jobs:
   build_web_image:
     docker:
       - image: cimg/base:2023.04
+    resource_class: arm.medium
     steps:
       - checkout
       - setup_remote_docker:
@@ -266,14 +267,16 @@ jobs:
             .
 
   deploy_service_image:
-    machine:
-      image: ubuntu-2004:current
+    docker:
+      - image: cimg/base:2023.04
     resource_class: arm.medium
     parameters:
       env:
         type: string
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - aws-cli/install
       - run:
           name: Build and push Docker image
