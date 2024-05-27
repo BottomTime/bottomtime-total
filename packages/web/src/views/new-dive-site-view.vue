@@ -4,7 +4,6 @@
   <RequireAuth>
     <CreateSiteWizard :is-saving="isSaving" offset-top @save="onSiteSaved" />
   </RequireAuth>
-  <div></div>
 </template>
 
 <script lang="ts" setup>
