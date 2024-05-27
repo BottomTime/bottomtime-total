@@ -1,13 +1,21 @@
 <template>
   <li ref="listItemElement" :class="classes">
     <div>
-      <FormButton ref="selectButton" size="sm" @click="$emit('select', site)">
+      <FormButton
+        ref="selectButton"
+        size="sm"
+        :test-id="`select-site-${site.id}`"
+        @click="$emit('select', site)"
+      >
         Select
       </FormButton>
     </div>
     <div>
       <div class="flex align-baseline justify-between">
-        <button @click="() => $emit('highlight', site)">
+        <button
+          :data-testid="`site-name-${site.id}`"
+          @click="() => $emit('highlight', site)"
+        >
           <p class="text-xl font-title capitalize hover:text-link-hover">
             {{ site.name }}
           </p>
