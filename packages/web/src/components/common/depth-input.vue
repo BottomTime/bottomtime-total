@@ -1,27 +1,30 @@
 <template>
   <div class="space-y-1.5">
-    <fieldset class="relative" :disabled="allowBottomless && state.bottomless">
+    <div class="relative">
       <FormTextBox
         v-model.number="state.value"
         :control-id="controlId"
         :invalid="invalid"
-        :disabled="disabled"
+        :disabled="disabled || state.bottomless"
         :maxlength="10"
         :test-id="testId"
       />
       <button
+        :id="controlId ? `${controlId}-unit` : undefined"
         class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-10 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
         :data-testid="testId ? `${testId}-unit` : undefined"
+        :disabled="disabled || state.bottomless"
         @click.prevent="onToggleUnit"
       >
         <span>{{ state.unit }}</span>
       </button>
-    </fieldset>
+    </div>
     <FormCheckbox
       v-if="allowBottomless"
       v-model="state.bottomless"
       :control-id="controlId ? `${controlId}-bottomless` : undefined"
       :test-id="testId ? `${testId}-bottomless` : undefined"
+      :disabled="disabled"
     >
       <p class="flex items-baseline text-justify">
         <span class="font-bold">Bottomless</span>
@@ -76,7 +79,7 @@ const state = reactive<DepthInputState>(
         unit: currentUser.user?.settings.depthUnit ?? DepthUnit.Meters,
       }
     : {
-        bottomless: depth.value?.depth === 0,
+        bottomless: props.allowBottomless && depth.value?.depth === 0,
         value: depth.value?.depth || '',
         unit:
           depth.value?.unit ??
