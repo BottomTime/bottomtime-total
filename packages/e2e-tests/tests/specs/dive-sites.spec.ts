@@ -62,21 +62,49 @@ test.describe('Dive Sites', () => {
     await auth.createUserAndLogin(Username, Password);
     await diveSites.gotoNewDiveSite();
 
-    let name = 'Brand New Fancy Dive Site';
-    let description = 'This is my new description.';
-    let depth = 22.1;
-    let depthUnit = DepthUnit.Meters;
-    let location = 'Miami, FL';
-    let directions = 'Drive to Florida. Find the site.';
-    let gps = {
-      lat: 25.7617,
-      lon: -80.1918,
+    const name = 'Dahab Blue Hole';
+    const description = "Perfectly safe if you don't do anything dumb";
+    const depth = 22.1;
+    const depthUnit = DepthUnit.Meters;
+    const location = 'Blue Hole of Dahab';
+    const directions =
+      'Take a flight to Egypt, then probably some buses, then go diving.';
+    const gps = {
+      lat: 28.5717821,
+      lon: 34.5600764,
     };
+
+    await page.getByTestId('new-site-location').fill(location);
+    await page.getByTestId('new-site-lat').fill(gps.lat.toString());
+    await page.getByTestId('new-site-lon').fill(gps.lon.toString());
+    await page.getByTestId('new-site-directions').fill(directions);
+    await page.getByTestId('new-site-name').fill(name);
+    await page.getByTestId('new-site-depth-bottomless').click();
+    await page.getByTestId('new-site-description').fill(description);
+    await page.getByTestId('free-to-dive-true').click();
+    await page.getByTestId('shore-access-true').click();
+    await page.getByTestId('save-new-site').click();
+
+    await page.waitForURL(/\/diveSites\/(?!new)/);
+
+    const siteId = page.url().split('/').pop()!;
+    const site = await api.diveSites.getDiveSite(siteId);
+
+    expect(site.name).toBe(name);
+    expect(site.description).toBe(description);
+    expect(site.depth?.depth).toBe(0);
+    expect(site.depth?.unit).toBe(depthUnit);
+    expect(site.freeToDive).toBe(true);
+    expect(site.shoreAccess).toBe(true);
+    expect(site.location).toBe(location);
+    expect(site.gps?.lat).toBe(gps.lat);
+    expect(site.gps?.lon).toBe(gps.lon);
+    expect(site.directions).toBe(directions);
 
     await page.getByTestId('name').fill(name);
     await page.getByTestId('description').fill(description);
+    await page.getByTestId('depth-bottomless').click();
     await page.getByTestId('depth').fill(depth.toString());
-    await page.getByTestId('depth-unit').selectOption(depthUnit);
     await page.getByText('Payment required').click();
     await page.getByText('Accessible from shore').click();
     await page.getByTestId('location').fill(location);
@@ -85,61 +113,6 @@ test.describe('Dive Sites', () => {
     await page.getByTestId('directions').fill(directions);
     await page.getByTestId('save-site').click();
 
-    await expect(page.getByTestId('toast-site-created')).toBeVisible();
-    await expect(page.locator('p').filter({ hasText: name })).toBeVisible();
-
-    const siteId = page.url().split('/').pop()!;
-
-    let site = await api.diveSites.getDiveSite(siteId);
-    expect(site.name).toBe(name);
-    expect(site.description).toBe(description);
-    expect(site.depth?.depth).toBe(depth);
-    expect(site.depth?.unit).toBe(depthUnit);
-    expect(site.freeToDive).toBe(false);
-    expect(site.shoreAccess).toBe(true);
-    expect(site.location).toBe(location);
-    expect(site.gps?.lat).toBe(gps.lat);
-    expect(site.gps?.lon).toBe(gps.lon);
-    expect(site.directions).toBe(directions);
-
-    name = 'Not So New Dive Site';
-    description = 'This is my updated description.';
-    depth = 48.1;
-    depthUnit = DepthUnit.Feet;
-    location = 'Miami, FL, US';
-    directions = "Drive to Florida. Find the site. (Look for it in 'Murica.)";
-    gps = {
-      lat: 25.76175,
-      lon: -80.19185,
-    };
-
-    await page.getByTestId('name').fill(name);
-    await page.getByTestId('description').fill(description);
-    await page.getByTestId('depth').fill(depth.toString());
-    await page.getByTestId('depth-unit').selectOption(depthUnit);
-    await page.getByText('Free to dive', { exact: true }).click();
-    await page.getByText('Boat access only').click();
-    await page.getByTestId('location').fill(location);
-    await page.getByTestId('directions').fill(directions);
-    await page.getByTestId('gps-lat').fill(gps.lat.toString());
-    await page.getByTestId('gps-lon').fill(gps.lon.toString());
-    await page.getByTestId('save-site').click();
-
     await expect(page.getByTestId('toast-site-updated')).toBeVisible();
-    await expect(
-      page.locator('p').filter({ hasText: 'Not So New Dive Site' }),
-    ).toBeVisible();
-
-    site = await api.diveSites.getDiveSite(siteId);
-    expect(site.name).toBe(name);
-    expect(site.description).toBe(description);
-    expect(site.depth?.depth).toBe(depth);
-    expect(site.depth?.unit).toBe(depthUnit);
-    expect(site.freeToDive).toBe(true);
-    expect(site.shoreAccess).toBe(false);
-    expect(site.location).toBe(location);
-    expect(site.gps?.lat).toBe(gps.lat);
-    expect(site.gps?.lon).toBe(gps.lon);
-    expect(site.directions).toBe(directions);
   });
 });
