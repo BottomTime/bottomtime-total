@@ -140,10 +140,16 @@ export const SuccessFailResponseSchema = z.object({
 });
 export type SuccessFailResponseDTO = z.infer<typeof SuccessFailResponseSchema>;
 
-export const DepthSchema = z.object({
-  depth: z.number().min(0),
-  unit: z.nativeEnum(DepthUnit),
-});
+export const DepthSchema = z
+  .object({
+    depth: z.number().min(0),
+    unit: z.nativeEnum(DepthUnit),
+  })
+  .refine(
+    ({ depth, unit }) =>
+      unit === DepthUnit.Meters ? depth <= 300 : depth <= 984.252,
+    { message: 'Depth may not exceed 300m (~984ft)' },
+  );
 export type DepthDTO = z.infer<typeof DepthSchema>;
 
 export const DateWithTimezoneSchema = z.object({

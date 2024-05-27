@@ -34,7 +34,7 @@ import { TabInfo, ToastType } from '../../../common';
 import { useOops } from '../../../oops';
 import { useToasts } from '../../../store';
 import TabsPanel from '../../common/tabs-panel.vue';
-import CreateSiteWizard from './create-site-wizard.vue';
+import CreateSiteWizard from '../create-site-wizard.vue';
 import RecentSitesList from './recent-sites-list.vue';
 import SearchDiveSitesForm from './search-dive-sites-form.vue';
 

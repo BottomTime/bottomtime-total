@@ -11,7 +11,7 @@
         :test-id="`select-site-${site.id}`"
         @click="$emit('site-selected', site)"
       >
-        <h1 class="text-2xl font-bold">{{ site.name }}</h1>
+        <h1 class="text-2xl font-bold capitalize py-1.5">{{ site.name }}</h1>
       </FormButton>
     </div>
 

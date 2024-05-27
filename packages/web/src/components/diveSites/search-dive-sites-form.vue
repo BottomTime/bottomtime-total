@@ -194,7 +194,6 @@ import FormField from '../common/form-field.vue';
 import FormRadio from '../common/form-radio.vue';
 import FormSearchBox from '../common/form-search-box.vue';
 import FormSlider from '../common/form-slider.vue';
-import FormTextBox from '../common/form-text-box.vue';
 import LocationDialog from '../dialog/location-dialog.vue';
 
 type SearchDiveSitesFormProps = {

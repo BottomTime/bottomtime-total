@@ -1,7 +1,9 @@
 <template>
   <!-- Nav panel -->
   <p
-    class="sticky -top-1 flex gap-2 text-sm font-title z-30 text-grey-700 bg-secondary rounded-md shadow-md p-2 -mx-1.5"
+    :class="`sticky ${
+      offsetTop ? 'top-16' : '-top-1'
+    } flex gap-2 text-sm font-title z-30 text-grey-700 bg-secondary rounded-md shadow-md p-2 -mx-1.5`"
   >
     <span>
       <button
@@ -174,6 +176,7 @@
             control-id="newSiteDepth"
             test-id="new-site-depth"
             :invalid="v$.depth.$error"
+            allow-bottomless
           />
         </FormField>
 
@@ -300,6 +303,7 @@
             </ul>
           </div>
         </div>
+
         <FormButton
           type="primary"
           test-id="save-new-site"
@@ -317,7 +321,6 @@
 import {
   CreateOrUpdateDiveSiteDTO,
   DepthDTO,
-  DepthUnit,
   GPSCoordinates,
 } from '@bottomtime/api';
 
@@ -326,16 +329,17 @@ import { helpers, required } from '@vuelidate/validators';
 
 import { Ref, computed, reactive, ref } from 'vue';
 
-import DepthInput from '../../common/depth-input.vue';
-import FormButton from '../../common/form-button.vue';
-import FormField from '../../common/form-field.vue';
-import FormLabel from '../../common/form-label.vue';
-import FormRadio from '../../common/form-radio.vue';
-import FormTextArea from '../../common/form-text-area.vue';
-import FormTextBox from '../../common/form-text-box.vue';
-import GoogleMap from '../../common/google-map.vue';
-import PlacesAutoComplete from '../../common/places-auto-complete.vue';
-import TextHeading from '../../common/text-heading.vue';
+import { depth } from '../../validators';
+import DepthInput from '../common/depth-input.vue';
+import FormButton from '../common/form-button.vue';
+import FormField from '../common/form-field.vue';
+import FormLabel from '../common/form-label.vue';
+import FormRadio from '../common/form-radio.vue';
+import FormTextArea from '../common/form-text-area.vue';
+import FormTextBox from '../common/form-text-box.vue';
+import GoogleMap from '../common/google-map.vue';
+import PlacesAutoComplete from '../common/places-auto-complete.vue';
+import TextHeading from '../common/text-heading.vue';
 
 enum WizardStep {
   Location = 'location',
@@ -346,10 +350,11 @@ enum WizardStep {
 
 interface CreateSiteWizardProps {
   isSaving?: boolean;
+  offsetTop: boolean;
 }
 
 interface CreateSiteWizardFormData {
-  depth: DepthDTO | null;
+  depth: DepthDTO | string;
   description: string;
   directions: string;
   freeToDive: string;
@@ -378,7 +383,7 @@ const HeadingRefs: Record<
 
 const formData = reactive<CreateSiteWizardFormData>({
   directions: '',
-  depth: null,
+  depth: '',
   description: '',
   freeToDive: '',
   gps: {
@@ -394,6 +399,7 @@ const emit = defineEmits<{
 }>();
 withDefaults(defineProps<CreateSiteWizardProps>(), {
   isSaving: false,
+  offsetTop: false,
 });
 
 const gps = computed<GPSCoordinates | undefined>(() => {
@@ -416,15 +422,7 @@ const v$ = useVuelidate(
     depth: {
       valid: helpers.withMessage(
         'Depth must be a positive number and no more than 300m (984ft)',
-        (value: DepthDTO | string | null) => {
-          if (!helpers.req(value)) return true;
-          if (!value || typeof value === 'string') return false;
-          if (value.depth <= 0) return false;
-
-          return value.unit === DepthUnit.Meters
-            ? value.depth <= 300
-            : value.depth <= 984.252;
-        },
+        depth,
       ),
     },
     gps: {
@@ -488,7 +486,7 @@ async function onSave(): Promise<void> {
   const diveStie: CreateOrUpdateDiveSiteDTO = {
     location: formData.location,
     name: formData.name,
-    depth: formData.depth ?? undefined,
+    depth: typeof formData.depth === 'string' ? undefined : formData.depth,
     description: formData.description || undefined,
     directions: formData.directions || undefined,
     freeToDive: formData.freeToDive.length
