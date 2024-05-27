@@ -2,8 +2,8 @@
 
 exports[`Not Found View will render correctly 1`] = `
 "<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
-  <p class="text-6xl mb-3">Page Not Found</p>
-  <p class="text-2xl">(404 Error)</p>
+  <p class="text-6xl mb-3 capitalize">Page Not Found</p>
+  <p class="text-2xl capitalize">(404 Error)</p>
 </div>
 <div class="text-center" data-testid="not-found-message">
   <p class="text-lg mb-5"> Uh oh! The page you are looking for could not be found. Check your URL or click <a class="font-bold text-link underline hover:text-link-hover" href="/">here</a> to go back to the home page. </p>

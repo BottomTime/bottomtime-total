@@ -16,6 +16,9 @@ exports[`LobbookEntriesListItem component will render correctly for partial logb
       </div>
       <!--v-if-->
     </div>
+    <div>
+      <!--v-if-->
+    </div>
   </div>
 </li>"
 `;
@@ -37,6 +40,9 @@ exports[`LobbookEntriesListItem component will render correctly with full logboo
       <div class="flex space-x-2">
         <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Max depth: </p><span class="italic">10.15 m</span>
       </div>
+    </div>
+    <div>
+      <!--v-if-->
     </div>
   </div>
 </li>"

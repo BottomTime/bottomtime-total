@@ -2,7 +2,7 @@
 
 exports[`Static Views will render Cookie Policy 1`] = `
 "<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
-  <p class="text-6xl mb-3">Cookie Policy</p>
+  <p class="text-6xl mb-3 capitalize">Cookie Policy</p>
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
@@ -41,7 +41,7 @@ exports[`Static Views will render Not Found Error page 1`] = `
 
 exports[`Static Views will render Privacy Policy 1`] = `
 "<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
-  <p class="text-6xl mb-3">Privacy Policy</p>
+  <p class="text-6xl mb-3 capitalize">Privacy Policy</p>
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
@@ -106,7 +106,7 @@ exports[`Static Views will render Privacy Policy 1`] = `
 
 exports[`Static Views will render Server Error page 1`] = `
 "<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
-  <p class="text-6xl mb-3">Server Error</p>
+  <p class="text-6xl mb-3 capitalize">Server Error</p>
   <!--v-if-->
 </div>
 <div></div>"
@@ -114,7 +114,7 @@ exports[`Static Views will render Server Error page 1`] = `
 
 exports[`Static Views will render Terms of Service 1`] = `
 "<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
-  <p class="text-6xl mb-3">Terms of Service</p>
+  <p class="text-6xl mb-3 capitalize">Terms of Service</p>
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
