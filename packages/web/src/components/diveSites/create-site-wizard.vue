@@ -104,6 +104,7 @@
               <p
                 v-if="v$.gps.lat.$error"
                 class="text-sm text-danger dark:text-danger-dark"
+                data-testid="latitude-error"
               >
                 {{ v$.gps.lat.$errors[0]?.$message }}
               </p>
@@ -123,6 +124,7 @@
               <p
                 v-if="v$.gps.lon.$error"
                 class="text-sm text-danger dark:text-danger-dark"
+                data-testid="longitude-error"
               >
                 {{ v$.gps.lon.$errors[0]?.$message }}
               </p>
@@ -283,6 +285,7 @@
         <div
           v-if="v$.$error"
           class="flex gap-3 text-danger dark:text-danger-dark"
+          data-testid="form-errors"
         >
           <div>
             <span>
@@ -308,7 +311,7 @@
           type="primary"
           test-id="save-new-site"
           :is-loading="isSaving"
-          submit
+          @click="onSave"
         >
           Save New Dive Site
         </FormButton>
@@ -350,7 +353,7 @@ enum WizardStep {
 
 interface CreateSiteWizardProps {
   isSaving?: boolean;
-  offsetTop: boolean;
+  offsetTop?: boolean;
 }
 
 interface CreateSiteWizardFormData {
@@ -483,7 +486,7 @@ async function onSave(): Promise<void> {
   const isValid = await v$.value.$validate();
   if (!isValid) return;
 
-  const diveStie: CreateOrUpdateDiveSiteDTO = {
+  const diveSite: CreateOrUpdateDiveSiteDTO = {
     location: formData.location,
     name: formData.name,
     depth: typeof formData.depth === 'string' ? undefined : formData.depth,
@@ -498,6 +501,6 @@ async function onSave(): Promise<void> {
       : undefined,
   };
 
-  emit('save', diveStie);
+  emit('save', diveSite);
 }
 </script>
