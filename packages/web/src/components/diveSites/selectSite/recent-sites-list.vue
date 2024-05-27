@@ -23,12 +23,16 @@
         <LoadingSpinner message="Fetching most recently logged sites..." />
       </div>
 
-      <ul v-else-if="state.recentSites && state.recentSites.length">
+      <ul
+        v-else-if="state.recentSites && state.recentSites.length"
+        data-testid="recent-sites-list"
+      >
         <SelectDiveSiteListItem
           v-for="site in state.recentSites"
           :key="site.id"
           :site="site"
           :selected="state.selectedSite === site.id"
+          :data-testid="`recent-site-${site.id}`"
           @highlight="onSiteHighlighted"
           @select="(site) => $emit('site-selected', site)"
         />
@@ -44,7 +48,12 @@
         <span>
           It seems you don't have any recent sites to display. You can search
           for existing sites
-          <FormButton type="link" size="sm" @click="$emit('search')">
+          <FormButton
+            type="link"
+            size="sm"
+            test-id="switch-to-search"
+            @click="$emit('search')"
+          >
             here
           </FormButton>
           .
@@ -72,7 +81,7 @@ interface RecentSitesListProps {
 }
 
 interface RecetSitesState {
-  isLoading: boolean;
+  isLoading?: boolean;
   selectedSite?: string;
   recentSites: DiveSiteDTO[];
 }

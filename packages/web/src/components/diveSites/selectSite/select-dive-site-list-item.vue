@@ -105,11 +105,18 @@ const classes = computed(() => ({
 watch(
   () => props.selected,
   (val) => {
-    if (val)
-      listItemElement.value?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
+    // The scrollIntoView method ought to work in most browsers but will blow up in tests.
+    try {
+      if (val) {
+        listItemElement.value?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      }
+    } catch (error) {
+      /* eslint-disable-next-line no-console */
+      console.warn(error);
+    }
   },
 );
 </script>
