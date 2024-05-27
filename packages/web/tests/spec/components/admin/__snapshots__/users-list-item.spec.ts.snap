@@ -11,7 +11,7 @@ exports[`Admin User List Item component will render correctly for user with full
     <div class="flex flex-row">
       <div class="grow">
         <!-- Email -->
-        <p><a class="font-bold text-link underline hover:text-link-hover" href="mailto:Abel5@yahoo.com"><span class="mr-1"><i class="fas fa-envelope fa-xs"></i></span><span>Abel5@yahoo.com</span></a></p><!-- Location -->
+        <p><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="mailto:Abel5@yahoo.com"><span class="mr-1"><i class="fas fa-envelope fa-xs"></i></span><span>Abel5@yahoo.com</span></a></p><!-- Location -->
         <p><span class="mr-1"><i class="fas fa-map-marker-alt fa-xs"></i></span><span>Hamillside, CO, AZ</span></p><!-- Member since -->
         <p><span class="mr-1"><i class="fas fa-calendar-alt fa-xs"></i></span><span> Joined 6 years ago</span></p>
       </div>
@@ -34,7 +34,7 @@ exports[`Admin User List Item component will render correctly for user with mini
     <div class="flex flex-row">
       <div class="grow">
         <!-- Email -->
-        <p><a class="font-bold text-link underline hover:text-link-hover" href="mailto:Adolf.DAmore33@hotmail.com"><span class="mr-1"><i class="fas fa-envelope fa-xs"></i></span><span>Adolf.DAmore33@hotmail.com</span></a></p><!-- Location -->
+        <p><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="mailto:Adolf.DAmore33@hotmail.com"><span class="mr-1"><i class="fas fa-envelope fa-xs"></i></span><span>Adolf.DAmore33@hotmail.com</span></a></p><!-- Location -->
         <!--v-if-->
         <!-- Member since -->
         <p><span class="mr-1"><i class="fas fa-calendar-alt fa-xs"></i></span><span> Joined 2 years ago</span></p>
