@@ -16,16 +16,23 @@
       @site-selected="(site) => $emit('site-selected', site)"
     />
 
-    <CreateSiteWizard v-else-if="state.activeTab === SelectSiteTabs.Create" />
+    <CreateSiteWizard
+      v-else-if="state.activeTab === SelectSiteTabs.Create"
+      :is-saving="state.isSavingNewSite"
+      @save="onSaveNewSite"
+    />
   </TabsPanel>
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO } from '@bottomtime/api';
+import { CreateOrUpdateDiveSiteDTO, DiveSiteDTO } from '@bottomtime/api';
 
 import { computed, reactive } from 'vue';
 
-import { TabInfo } from '../../../common';
+import { useClient } from '../../../api-client';
+import { TabInfo, ToastType } from '../../../common';
+import { useOops } from '../../../oops';
+import { useToasts } from '../../../store';
 import TabsPanel from '../../common/tabs-panel.vue';
 import CreateSiteWizard from './create-site-wizard.vue';
 import RecentSitesList from './recent-sites-list.vue';
@@ -39,14 +46,19 @@ enum SelectSiteTabs {
 
 interface SelectSiteState {
   activeTab: SelectSiteTabs;
+  isSavingNewSite: boolean;
 }
 
 interface SelectSiteProps {
   currentSite?: DiveSiteDTO;
 }
 
+const client = useClient();
+const oops = useOops();
+const toasts = useToasts();
+
 defineProps<SelectSiteProps>();
-defineEmits<{
+const emit = defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
@@ -58,9 +70,27 @@ const tabs = computed<TabInfo[]>(() => [
 
 const state = reactive<SelectSiteState>({
   activeTab: SelectSiteTabs.Recent,
+  isSavingNewSite: false,
 });
 
 function onTabChanged(key: string) {
   state.activeTab = key as SelectSiteTabs;
+}
+
+async function onSaveNewSite(dto: CreateOrUpdateDiveSiteDTO): Promise<void> {
+  state.isSavingNewSite = true;
+
+  await oops(async () => {
+    const site = await client.diveSites.createDiveSite(dto);
+    emit('site-selected', site.toJSON());
+
+    toasts.toast({
+      id: 'dive-site-created',
+      message: 'Dive site created successfully',
+      type: ToastType.Success,
+    });
+  });
+
+  state.isSavingNewSite = false;
 }
 </script>

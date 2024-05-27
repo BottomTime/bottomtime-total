@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { GPSCoordinates } from '@bottomtime/api';
 
-import { Loader } from '@googlemaps/js-api-loader';
+import * as google from '@googlemaps/js-api-loader';
 
 import { onMounted, ref } from 'vue';
 
@@ -53,7 +53,7 @@ function onPlaceChanged() {
 }
 
 onMounted(async () => {
-  const loader = new Loader({
+  const loader = new google.Loader({
     apiKey: Config.googleApiKey,
     version: 'weekly',
   });

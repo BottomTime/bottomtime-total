@@ -277,7 +277,10 @@
         4. Save
       </TextHeading>
       <div class="space-y-2 px-0 lg:px-16">
-        <div class="flex gap-3 text-danger dark:text-danger-dark">
+        <div
+          v-if="v$.$error"
+          class="flex gap-3 text-danger dark:text-danger-dark"
+        >
           <div>
             <span>
               <i class="fa-solid fa-circle-exclamation"></i>
