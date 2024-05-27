@@ -53,6 +53,8 @@ function onPlaceChanged() {
 }
 
 onMounted(async () => {
+  if (!Config.enablePlacesApi) return;
+
   const loader = new google.Loader({
     apiKey: Config.googleApiKey,
     version: 'weekly',

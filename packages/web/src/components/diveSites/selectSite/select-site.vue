@@ -13,6 +13,7 @@
 
     <SearchDiveSitesForm
       v-else-if="state.activeTab === SelectSiteTabs.Search"
+      @create="state.activeTab = SelectSiteTabs.Create"
       @site-selected="(site) => $emit('site-selected', site)"
     />
 

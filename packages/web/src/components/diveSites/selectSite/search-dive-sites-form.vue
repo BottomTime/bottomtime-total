@@ -2,8 +2,9 @@
   <div class="space-y-4">
     <form class="space-y-4" @submit.prevent="onSearch">
       <FormSearchBox
-        id="site-search"
         v-model="state.search"
+        control-id="siteSearchQuery"
+        test-id="site-search-query"
         placeholder="Search for a dive site..."
         autofocus
         @search="onSearch"
@@ -38,7 +39,14 @@
       </div>
 
       <div class="text-center">
-        <FormButton type="primary" submit>Search</FormButton>
+        <FormButton
+          type="primary"
+          control-id="searchSites"
+          test-id="search-sites"
+          @click="onSearch"
+        >
+          Search
+        </FormButton>
       </div>
     </form>
 
@@ -47,14 +55,19 @@
     </div>
 
     <div v-else-if="state.sites">
-      <p class="text-center my-1.5">
+      <p class="text-center my-1.5" data-testid="search-sites-counts">
         <span>Showing </span>
         <span class="font-bold">{{ state.sites.sites.length }}</span>
         <span> of </span>
         <span class="font-bold">{{ state.sites.totalCount }}</span>
         <span> dive sites.</span>
       </p>
-      <ul class="*:odd:bg-blue-300/40 *:odd:dark:bg-blue-900/40">
+
+      <ul
+        v-if="state.sites.totalCount"
+        class="*:odd:bg-blue-300/40 *:odd:dark:bg-blue-900/40"
+        data-testid="search-sites-results-list"
+      >
         <SelectDiveSiteListItem
           v-for="site in state.sites.sites"
           :key="site.id"
@@ -63,6 +76,7 @@
           @highlight="onSiteHighlighted"
           @select="(site) => $emit('site-selected', site)"
         />
+
         <li
           v-if="state.sites.sites.length < state.sites.totalCount"
           class="py-12 text-center"
@@ -71,11 +85,36 @@
             v-if="state.isLoadingMore"
             message="Loading more results..."
           />
-          <FormButton v-else type="link" size="lg" @click="onLoadMore">
+          <FormButton
+            v-else
+            type="link"
+            size="lg"
+            control-id="searchSitesLoadMore"
+            test-id="search-sites-load-more"
+            @click="onLoadMore"
+          >
             Load more...
           </FormButton>
         </li>
       </ul>
+
+      <div
+        v-else
+        class="my-6 text-lg italic flex gap-2 justify-center"
+        data-testid="search-sites-no-results"
+      >
+        <span class="mt-1">
+          <i class="fa-solid fa-circle-info"></i>
+        </span>
+        <div class="italic">
+          <p>No sites were found that match your search criteria.</p>
+          <p>
+            Try widening your search preferences, or if you can't find the site
+            you're looking for, try
+            <NavLink @click="$emit('create')">creating it</NavLink>!
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -98,6 +137,7 @@ import FormSearchBox from '../../common/form-search-box.vue';
 import FormSlider from '../../common/form-slider.vue';
 import GoogleMap from '../../common/google-map.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
+import NavLink from '../../common/nav-link.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
 interface SelectDiveSiteListState {
@@ -114,6 +154,7 @@ const client = useClient();
 const oops = useOops();
 
 defineEmits<{
+  (e: 'create'): void;
   (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
