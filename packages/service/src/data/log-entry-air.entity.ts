@@ -24,6 +24,9 @@ export class LogEntryAirEntity {
   @Column({ type: 'float' })
   volume: number = 0;
 
+  @Column({ type: 'integer' })
+  count: number = 1;
+
   @Column({ type: 'float' })
   startPressure: number = 0;
 
