@@ -48,6 +48,7 @@ export class DiveSitesService {
       .withGeoLocation(options.location, options.radius)
       .withRating(options.rating)
       .withShoreAccesss(options.shoreAccess)
+      .withWaterType(options.waterType)
       .withSortOrder(options.sortBy, options.sortOrder)
       .withPagination(options.skip, options.limit)
       .build();
@@ -101,6 +102,7 @@ export class DiveSitesService {
     data.directions = options.directions ?? null;
     data.freeToDive = options.freeToDive ?? null;
     data.shoreAccess = options.shoreAccess ?? null;
+    data.waterType = options.waterType ?? null;
 
     if (options.gps) {
       data.gps = {
