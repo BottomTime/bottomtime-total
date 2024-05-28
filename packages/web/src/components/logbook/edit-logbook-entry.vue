@@ -87,12 +87,21 @@
       <FormField label="Dive site">
         <div v-if="formData.site" class="space-y-2">
           <PreviewDiveSite :site="formData.site" />
-          <FormButton type="link" size="md" @click="onOpenDiveSitePanel">
+          <FormButton
+            type="link"
+            size="md"
+            test-id="btn-change-site"
+            @click="onOpenDiveSitePanel"
+          >
             Change site...
           </FormButton>
         </div>
 
-        <FormButton v-else @click="onOpenDiveSitePanel">
+        <FormButton
+          v-else
+          test-id="btn-select-site"
+          @click="onOpenDiveSitePanel"
+        >
           Select Dive Site...
         </FormButton>
       </FormField>

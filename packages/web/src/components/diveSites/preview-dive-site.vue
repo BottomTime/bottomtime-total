@@ -4,6 +4,7 @@
       <div class="flex gap-2 items-baseline">
         <button
           class="text-lg font-title capitalize hover:text-link-hover"
+          data-testid="btn-site-name"
           @click="$emit('select')"
         >
           {{ site.name }}
