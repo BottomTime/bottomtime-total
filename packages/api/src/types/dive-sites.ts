@@ -9,6 +9,12 @@ import {
 } from './constants';
 import { ProfileSchema, UsernameSchema } from './users';
 
+export enum WaterType {
+  Salt = 'salt',
+  Fresh = 'fresh',
+  Mixed = 'mixed',
+}
+
 export enum DiveSitesSortBy {
   Name = 'name',
   Rating = 'rating',
