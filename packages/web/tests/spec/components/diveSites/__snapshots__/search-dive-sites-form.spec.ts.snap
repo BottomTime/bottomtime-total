@@ -13,6 +13,7 @@ exports[`Search Dive Sites Form will allow a user to clear the location 2`] = `
       "radius": 50,
       "rating": undefined,
       "shoreAccess": undefined,
+      "waterType": undefined,
     },
   ],
 ]
@@ -38,6 +39,7 @@ exports[`Search Dive Sites Form will allow a user to filter their search results
         "min": 4,
       },
       "shoreAccess": true,
+      "waterType": "fresh",
     },
   ],
 ]
@@ -54,6 +56,7 @@ exports[`Search Dive Sites Form will allow a user to refresh with minimal search
       "radius": 50,
       "rating": undefined,
       "shoreAccess": undefined,
+      "waterType": undefined,
     },
   ],
 ]

@@ -81,7 +81,7 @@ describe('Edit Dive Site component', () => {
   });
 
   it('will mount with existing dive site with all properties set', () => {
-    opts.props!.site = DiveSiteWithFullProperties;
+    opts.props = { site: DiveSiteWithFullProperties };
     const wrapper = mount(EditDiveSite, opts);
 
     expect(wrapper.get<HTMLInputElement>(NameInput).element.value).toBe(
@@ -146,7 +146,7 @@ describe('Edit Dive Site component', () => {
   });
 
   it('will validate missing fields', async () => {
-    opts.props!.site = BlankDiveSite;
+    opts.props = { site: BlankDiveSite };
     const wrapper = mount(EditDiveSite, opts);
     const spy = jest.spyOn(client.diveSites, 'createDiveSite');
 
@@ -161,7 +161,7 @@ describe('Edit Dive Site component', () => {
   });
 
   it('will validate invalid fields', async () => {
-    opts.props!.site = BlankDiveSite;
+    opts.props = { site: BlankDiveSite };
     const wrapper = mount(EditDiveSite, opts);
     const spy = jest.spyOn(client.diveSites, 'createDiveSite');
 
@@ -186,7 +186,7 @@ describe('Edit Dive Site component', () => {
       ...BlankDiveSite,
       id: 'CBC457DB-9A4F-4D93-A0B1-A02D36945395',
     };
-    opts.props!.site = BlankDiveSiteWithId;
+    opts.props = { site: BlankDiveSiteWithId };
     const wrapper = mount(EditDiveSite, opts);
 
     const expected: DiveSiteDTO = {
@@ -235,7 +235,7 @@ describe('Edit Dive Site component', () => {
   });
 
   it('will allow a user to save a new dive site', async () => {
-    opts.props!.site = BlankDiveSite;
+    opts.props = { site: BlankDiveSite };
     const wrapper = mount(EditDiveSite, opts);
 
     const expected: DiveSiteDTO = {
@@ -284,7 +284,7 @@ describe('Edit Dive Site component', () => {
   });
 
   it('will allow a user to reset changes made to a dive site', async () => {
-    opts.props!.site = DiveSiteWithFullProperties;
+    opts.props = { site: DiveSiteWithFullProperties };
     const wrapper = mount(EditDiveSite, opts);
 
     const expected: DiveSiteDTO = {
@@ -353,7 +353,7 @@ describe('Edit Dive Site component', () => {
   });
 
   it('will allow a user to change their mind about resetting changes made to a dive site', async () => {
-    opts.props!.site = DiveSiteWithFullProperties;
+    opts.props = { site: DiveSiteWithFullProperties };
     const wrapper = mount(EditDiveSite, opts);
 
     const expected: DiveSiteDTO = {
