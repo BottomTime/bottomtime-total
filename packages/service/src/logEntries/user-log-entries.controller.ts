@@ -270,7 +270,7 @@ export class UserLogEntriesController {
 
     const logEntry = await this.service.createLogEntry({
       ...options,
-      ownerId: owner.id,
+      owner,
       site,
     });
 

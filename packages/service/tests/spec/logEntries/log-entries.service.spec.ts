@@ -1,17 +1,32 @@
-import { DepthUnit, LogEntrySortBy, SortOrder } from '@bottomtime/api';
+import {
+  DepthUnit,
+  LogEntrySortBy,
+  PressureUnit,
+  SortOrder,
+  TankMaterial,
+} from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import fs from 'fs/promises';
+import path from 'path';
 import { Repository } from 'typeorm';
 
-import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
+import { User } from '../../../src/auth';
+import {
+  DiveSiteEntity,
+  LogEntryAirEntity,
+  LogEntryEntity,
+  UserEntity,
+} from '../../../src/data';
 import { DiveSiteFactory } from '../../../src/diveSites';
 import {
   CreateLogEntryOptions,
   LogEntriesService,
 } from '../../../src/logEntries';
+import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
+import { LogEntryFactory } from '../../../src/logEntries/log-entry-factory';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
@@ -29,22 +44,27 @@ dayjs.extend(utc);
 
 describe('Log entries service', () => {
   let Entries: Repository<LogEntryEntity>;
+  let EntriesAir: Repository<LogEntryAirEntity>;
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
   let siteFactory: DiveSiteFactory;
+  let entryFactory: LogEntryFactory;
   let service: LogEntriesService;
 
   let ownerData: UserEntity[];
   let logEntryData: LogEntryEntity[];
+  let airData: LogEntryAirEntity[];
   let diveSiteData: DiveSiteEntity[];
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
+    EntriesAir = dataSource.getRepository(LogEntryAirEntity);
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
     siteFactory = createDiveSiteFactory();
+    entryFactory = new LogEntryFactory(Entries, EntriesAir, siteFactory);
 
-    service = new LogEntriesService(Users, Entries, siteFactory);
+    service = new LogEntriesService(Entries, entryFactory);
 
     ownerData = TestUserData.slice(0, 4).map((data) => parseUserJSON(data));
     diveSiteData = TestDiveSiteData.map((site, i) =>
@@ -57,6 +77,18 @@ describe('Log entries service', () => {
         diveSiteData[i % diveSiteData.length],
       ),
     );
+
+    airData = [];
+    for (const entry of logEntryData) {
+      if (entry.air) {
+        for (let i = 0; i < entry.air.length; i++) {
+          airData.push({
+            ...entry.air[i],
+            logEntry: { id: entry.id } as LogEntryEntity,
+          });
+        }
+      }
+    }
   });
 
   beforeEach(async () => {
@@ -72,7 +104,7 @@ describe('Log entries service', () => {
     }
 
     await fs.writeFile(
-      './log-entries.json',
+      path.resolve(__dirname, '../../fixtures/log-entries.json'),
       JSON.stringify(data, null, 2),
       'utf-8',
     );
@@ -81,7 +113,7 @@ describe('Log entries service', () => {
   describe('when creating a new log entry', () => {
     it('will create a new log entry with minimal options', async () => {
       const options: CreateLogEntryOptions = {
-        ownerId: ownerData[0].id,
+        owner: new User(Users, ownerData[0]),
         entryTime: {
           date: '2024-03-28T13:45:00',
           timezone: 'Europe/Amsterdam',
@@ -108,18 +140,19 @@ describe('Log entries service', () => {
 
       const saved = await Entries.findOneOrFail({
         where: { id: entry.id },
-        relations: ['owner'],
+        relations: ['air', 'owner'],
       });
       expect(saved.entryTime).toEqual(entry.entryTime.date);
       expect(saved.timezone).toEqual(entry.entryTime.timezone);
       expect(saved.duration).toEqual(options.duration);
       expect(saved.owner.id).toEqual(ownerData[0].id);
       expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
+      expect(saved.air).toHaveLength(0);
     });
 
     it('will create a new log entry with all options', async () => {
       const options: CreateLogEntryOptions = {
-        ownerId: ownerData[0].id,
+        owner: new User(Users, ownerData[0]),
         entryTime: {
           date: '2024-03-28T13:45:00',
           timezone: 'Europe/Amsterdam',
@@ -133,6 +166,20 @@ describe('Log entries service', () => {
           unit: DepthUnit.Feet,
         },
         notes: 'Great dive! Saw fish.',
+
+        air: [
+          {
+            name: 'ornate parcel',
+            material: TankMaterial.Steel,
+            workingPressure: 3000,
+            volume: 12,
+            count: 1,
+            startPressure: 3470,
+            endPressure: 1210,
+            pressureUnit: PressureUnit.PSI,
+            o2Percent: 25.6,
+          },
+        ],
       };
 
       const entry = await service.createLogEntry(options);
@@ -158,10 +205,11 @@ describe('Log entries service', () => {
         unit: DepthUnit.Feet,
       });
       expect(entry.notes).toEqual(options.notes);
+      expect(entry.air).toEqual(options.air);
 
       const saved = await Entries.findOneOrFail({
         where: { id: entry.id },
-        relations: ['owner'],
+        relations: ['air', 'owner'],
       });
       expect(saved.logNumber).toEqual(options.logNumber);
       expect(saved.entryTime).toEqual(options.entryTime.date);
@@ -173,11 +221,18 @@ describe('Log entries service', () => {
       expect(saved.maxDepth).toEqual(options.maxDepth!.depth);
       expect(saved.maxDepthUnit).toEqual(options.maxDepth!.unit);
       expect(saved.notes).toEqual(options.notes);
+      expect(saved.air).toEqual(
+        options.air!.map((tank, index) => ({
+          ...LogEntryAirUtils.dtoToEntity(tank),
+          id: saved.air![index].id,
+          ordinal: index,
+        })),
+      );
     });
 
     it('will create a new log entry with a dive site attached', async () => {
       const options: CreateLogEntryOptions = {
-        ownerId: ownerData[0].id,
+        owner: new User(Users, ownerData[0]),
         entryTime: {
           date: '2024-03-28T13:45:00',
           timezone: 'Europe/Amsterdam',
@@ -219,9 +274,15 @@ describe('Log entries service', () => {
 
   describe('when retrieving a single log entry', () => {
     it('will return the requested log entry', async () => {
-      const data = logEntryData[0];
+      const data = logEntryData[1];
       data.site = diveSiteData[5];
       await Entries.save(data);
+      await EntriesAir.save(
+        data.air!.map((tank) => ({
+          ...tank,
+          logEntry: { id: data.id } as LogEntryEntity,
+        })),
+      );
       const result = (await service.getLogEntry(data.id))!;
 
       expect(result).toBeDefined();
@@ -248,6 +309,7 @@ describe('Log entries service', () => {
         avatar: data.owner.avatar,
       });
       expect(result.site?.name).toEqual(diveSiteData[5].name);
+      expect(result.air).toEqual(data.air?.map(LogEntryAirUtils.entityToDTO));
     });
 
     it('will return undefined if the log entry does not exist', async () => {
@@ -258,9 +320,15 @@ describe('Log entries service', () => {
     });
 
     it('will retrieve a log entry belonging to a specific user', async () => {
-      const data = logEntryData[0];
+      const data = logEntryData[1];
       await Entries.save(data);
-      const result = (await service.getLogEntry(data.id, ownerData[0].id))!;
+      await EntriesAir.save(
+        data.air!.map((tank) => ({
+          ...tank,
+          logEntry: { id: data.id } as LogEntryEntity,
+        })),
+      );
+      const result = (await service.getLogEntry(data.id, ownerData[1].id))!;
 
       expect(result).toBeDefined();
       expect(result.id).toEqual(data.id);
@@ -285,6 +353,7 @@ describe('Log entries service', () => {
         location: data.owner.location,
         avatar: data.owner.avatar,
       });
+      expect(result.air).toEqual(data.air?.map(LogEntryAirUtils.entityToDTO));
     });
 
     it('will return undefined if the indicated log entry does not belong to the specified user', async () => {
@@ -298,6 +367,7 @@ describe('Log entries service', () => {
   describe('when listing log entries', () => {
     beforeEach(async () => {
       await Entries.save(logEntryData);
+      await EntriesAir.save(airData);
     });
 
     it('will perform a basic search', async () => {
@@ -311,6 +381,7 @@ describe('Log entries service', () => {
           id: entry.id,
           entryTime: entry.entryTime,
           site: entry.site?.name,
+          air: entry.air,
         })),
       ).toMatchSnapshot();
     });
@@ -385,14 +456,14 @@ describe('Log entries service', () => {
         name: 'after a start date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: undefined,
-        expectedTotal: 69,
+        expectedTotal: 84,
         expectedLength: 15,
       },
       {
         name: 'before an end date',
         start: undefined,
         end: new Date('2023-10-01T00:00:00.000Z'),
-        expectedTotal: 239,
+        expectedTotal: 224,
         expectedLength: 15,
       },
     ].forEach(({ name, start, end, expectedTotal, expectedLength }) => {

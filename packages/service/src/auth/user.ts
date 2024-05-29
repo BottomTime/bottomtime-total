@@ -293,4 +293,8 @@ export class User implements Express.User {
       settings: this.settings,
     };
   }
+
+  toEntity(): UserEntity {
+    return { ...this.data };
+  }
 }
