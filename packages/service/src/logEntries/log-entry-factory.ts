@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
@@ -9,8 +10,13 @@ import { LogEntry } from './log-entry';
 @Injectable()
 export class LogEntryFactory {
   constructor(
+    @InjectRepository(LogEntryEntity)
     private readonly Entries: Repository<LogEntryEntity>,
+
+    @InjectRepository(LogEntryAirEntity)
     private readonly EntriesAir: Repository<LogEntryAirEntity>,
+
+    @Inject(DiveSiteFactory)
     private readonly siteFactory: DiveSiteFactory,
   ) {}
 

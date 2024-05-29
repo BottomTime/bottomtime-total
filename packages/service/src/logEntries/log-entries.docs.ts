@@ -75,16 +75,16 @@
  *           example: psi
  *         o2Percent:
  *           type: number
- *           description: The percentage of oxygen in the gas blend. Format as a decimal from 0.0 to 1.0.
- *           example: 0.32
+ *           description: The percentage of oxygen in the gas blend.
+ *           example: 32.2
  *           minimum: 0.0
- *           maximum: 1.0
+ *           maximum: 100.0
  *         hePercent:
  *           type: number
- *           description: The percentage of helium in the gas blend. Format as a decimal from 0.0 to 1.0.
- *           example: 0.41
+ *           description: The percentage of helium in the gas blend.
+ *           example: 41.5
  *           minimum: 0.0
- *           maximum: 1.0
+ *           maximum: 100.0
  *     LogEntryBase:
  *       type: object
  *       required:

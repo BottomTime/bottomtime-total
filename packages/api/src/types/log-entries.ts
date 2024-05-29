@@ -20,8 +20,8 @@ export const LogEntryAirSchema = CreateOrUpdateTankParamsSchema.extend({
   startPressure: z.number().min(0.0),
   endPressure: z.number().min(0.0),
   pressureUnit: z.nativeEnum(PressureUnit),
-  o2Percent: z.number().min(0.0).max(1.0).optional(),
-  hePercent: z.number().min(0.0).max(1.0).optional(),
+  o2Percent: z.number().min(0.0).max(100.0).optional(),
+  hePercent: z.number().min(0.0).max(100.0).optional(),
 });
 export type LogEntryAirDTO = z.infer<typeof LogEntryAirSchema>;
 

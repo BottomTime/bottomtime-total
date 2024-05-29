@@ -58,7 +58,9 @@ export function createTestLogEntryAir(
   data.material =
     options?.material ??
     faker.helpers.arrayElement(Object.values(TankMaterial));
-  data.workingPressure = options?.workingPressure ?? 3000;
+  data.workingPressure =
+    options?.workingPressure ??
+    faker.helpers.arrayElement([182, 207, 237, 300]);
   data.volume =
     options?.volume ?? faker.helpers.arrayElement([4, 11, 12, 15, 18]);
 

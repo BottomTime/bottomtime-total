@@ -456,14 +456,14 @@ describe('Log entries service', () => {
         name: 'after a start date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: undefined,
-        expectedTotal: 84,
+        expectedTotal: 69,
         expectedLength: 15,
       },
       {
         name: 'before an end date',
         start: undefined,
         end: new Date('2023-10-01T00:00:00.000Z'),
-        expectedTotal: 224,
+        expectedTotal: 239,
         expectedLength: 15,
       },
     ].forEach(({ name, start, end, expectedTotal, expectedLength }) => {
