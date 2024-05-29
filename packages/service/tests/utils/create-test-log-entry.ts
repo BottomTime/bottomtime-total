@@ -10,6 +10,8 @@ import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../src/data';
 
 const LogEntrySchema = z.object({
   id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date().nullable().default(null),
   timestamp: z.coerce.date(),
   entryTime: z.string(),
   timezone: z.string(),

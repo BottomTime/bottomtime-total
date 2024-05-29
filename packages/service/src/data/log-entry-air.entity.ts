@@ -10,7 +10,7 @@ export class LogEntryAirEntity {
   id: string = '';
 
   @ManyToOne(() => LogEntryEntity, (logEntry) => logEntry.air)
-  logEntry: LogEntryEntity = new LogEntryEntity();
+  logEntry?: LogEntryEntity;
 
   @Column({ type: 'varchar', length: 100 })
   name: string = '';

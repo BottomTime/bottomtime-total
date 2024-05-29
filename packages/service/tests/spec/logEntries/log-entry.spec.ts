@@ -1,17 +1,30 @@
-import { DepthUnit, LogBookSharing } from '@bottomtime/api';
+import {
+  DepthUnit,
+  LogBookSharing,
+  LogEntryAirDTO,
+  PressureUnit,
+  TankMaterial,
+} from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
-import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
+import {
+  DiveSiteEntity,
+  LogEntryAirEntity,
+  LogEntryEntity,
+  UserEntity,
+} from '../../../src/data';
 import { DiveSiteFactory } from '../../../src/diveSites/dive-site-factory';
 import { LogEntry } from '../../../src/logEntries';
+import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { dataSource } from '../../data-source';
 import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
 import { createTestDiveSite } from '../../utils/create-test-dive-site';
 import { createTestLogEntry } from '../../utils/create-test-log-entry';
+import { createTestlogEntryAir } from '../../utils/create-test-log-entry-air';
 import { createTestUser } from '../../utils/create-test-user';
 
 const CreatorData: Partial<UserEntity> = {
@@ -260,5 +273,94 @@ describe('Log Entry class', () => {
     await logEntry.delete();
     const savedEntry = await Entries.findOneBy({ id: logEntry.id });
     expect(savedEntry).toBeNull();
+  });
+
+  describe.only('when working with air tank entries', () => {
+    let air: LogEntryAirEntity[];
+
+    beforeEach(() => {
+      air = [
+        {
+          id: 'cf3d9ae2-8ebc-4941-b6a8-4ce1c1fa475c',
+          count: 2,
+          material: TankMaterial.Steel,
+          name: 'HP100',
+          workingPressure: 3442,
+          volume: 100,
+          startPressure: 3000,
+          endPressure: 500,
+          pressureUnit: PressureUnit.PSI,
+          o2Percent: 0.21,
+          hePercent: 0.4,
+        },
+        {
+          id: 'ad4de203-a3c6-49e0-8bb8-c6b2851ee1f6',
+          count: 1,
+          material: TankMaterial.Aluminum,
+          name: 'AL80',
+          workingPressure: 3000,
+          volume: 80,
+          startPressure: 3000,
+          endPressure: 500,
+          pressureUnit: PressureUnit.PSI,
+          o2Percent: 0.32,
+          hePercent: 0.0,
+        },
+        {
+          id: '8a65be87-303c-4aa8-8031-f3c3b8e074e3',
+          count: 1,
+          material: TankMaterial.Aluminum,
+          name: 'AL80',
+          workingPressure: 3000,
+          volume: 80,
+          startPressure: 2800,
+          endPressure: 1200,
+          pressureUnit: PressureUnit.PSI,
+          o2Percent: 0.5,
+          hePercent: null,
+        },
+      ];
+
+      data.air = air;
+      logEntry = new LogEntry(Entries, siteFactory, data);
+    });
+
+    it('will return an empty array if no airTanks does not exist', () => {
+      data.air = undefined;
+      logEntry = new LogEntry(Entries, siteFactory, data);
+      expect(logEntry.air).toHaveLength(0);
+    });
+
+    it('will return an array of air tank entries', () => {
+      expect(logEntry.air).toEqual(air.map(LogEntryAirUtils.entityToDTO));
+    });
+
+    it('will allow air array to be set to an empty array', () => {
+      logEntry.air = [];
+      expect(logEntry.air).toHaveLength(0);
+    });
+
+    it('will allow air array to be set to a new array', () => {
+      const newValues: LogEntryAirDTO[] = [
+        createTestlogEntryAir(),
+        createTestlogEntryAir(),
+        createTestlogEntryAir(),
+        createTestlogEntryAir(),
+      ].map(LogEntryAirUtils.entityToDTO);
+
+      logEntry.air = newValues;
+      expect(logEntry.air).toEqual(newValues);
+    });
+
+    it('will save changes to air tank entries', async () => {
+      // TODO: Save logic should add new values, update existing values, and remove missing values
+      logEntry.air = [
+        logEntry.air[0],
+        {
+          ...logEntry.air[1],
+          endPressure: 1000,
+        },
+      ];
+    });
   });
 });

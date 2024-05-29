@@ -1,6 +1,7 @@
 import {
   DateWithTimezoneDTO,
   DepthDTO,
+  LogEntryAirDTO,
   LogEntryDTO,
   SuccinctProfileDTO,
 } from '@bottomtime/api';
@@ -14,17 +15,21 @@ import { Repository } from 'typeorm';
 
 import { LogEntryEntity } from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
+import { LogEntryAirUtils } from './log-entry-air-utils';
 
 const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 
 export class LogEntry {
   private readonly log = new Logger(LogEntry.name);
+  private airTanks: LogEntryAirDTO[];
 
   constructor(
     private readonly Entries: Repository<LogEntryEntity>,
     private readonly siteFactory: DiveSiteFactory,
     private readonly data: LogEntryEntity,
-  ) {}
+  ) {
+    this.airTanks = data.air?.map(LogEntryAirUtils.entityToDTO) ?? [];
+  }
 
   get id(): string {
     return this.data.id;
@@ -107,6 +112,13 @@ export class LogEntry {
     this.data.notes = value ?? null;
   }
 
+  get air(): LogEntryAirDTO[] {
+    return this.airTanks;
+  }
+  set air(values: LogEntryAirDTO[]) {
+    this.airTanks = values;
+  }
+
   toJSON(): LogEntryDTO {
     return {
       id: this.id,
@@ -118,6 +130,7 @@ export class LogEntry {
       maxDepth: this.maxDepth,
       notes: this.notes,
       site: this.site?.toJSON(),
+      air: this.air,
     };
   }
 
