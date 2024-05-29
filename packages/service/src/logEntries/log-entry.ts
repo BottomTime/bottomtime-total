@@ -13,7 +13,7 @@ import 'dayjs/plugin/timezone';
 import 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity } from '../data';
+import { LogEntryAirEntity, LogEntryEntity } from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
 import { LogEntryAirUtils } from './log-entry-air-utils';
 
@@ -25,6 +25,7 @@ export class LogEntry {
 
   constructor(
     private readonly Entries: Repository<LogEntryEntity>,
+    private readonly EntriesAir: Repository<LogEntryAirEntity>,
     private readonly siteFactory: DiveSiteFactory,
     private readonly data: LogEntryEntity,
   ) {
@@ -140,7 +141,19 @@ export class LogEntry {
 
   async save(): Promise<void> {
     this.log.debug(`Attempting to save log entry "${this.id}"...`);
+
+    this.data.air = this.airTanks.map((tank, index) => ({
+      ...LogEntryAirUtils.dtoToEntity(tank),
+      ordinal: index,
+    }));
+    await this.EntriesAir.delete({ logEntry: { id: this.data.id } });
     await this.Entries.save(this.data);
+    await this.EntriesAir.save(
+      this.data.air.map((tank) => ({
+        ...tank,
+        logEntry: { id: this.data.id },
+      })),
+    );
   }
 
   async delete(): Promise<void> {

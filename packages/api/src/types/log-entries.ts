@@ -16,7 +16,6 @@ export enum LogEntrySortBy {
 }
 
 export const LogEntryAirSchema = CreateOrUpdateTankParamsSchema.extend({
-  id: z.string().uuid().optional(),
   count: z.number().int().min(1).max(10),
   startPressure: z.number().min(0.0),
   endPressure: z.number().min(0.0),

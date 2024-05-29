@@ -58,6 +58,8 @@ export function createTestLogEntry(
     options?.maxDepthUnit ??
     faker.helpers.arrayElement(Object.values(DepthUnit));
 
+  data.air = options?.air;
+
   data.notes = options?.notes ?? faker.lorem.paragraph();
 
   return data;

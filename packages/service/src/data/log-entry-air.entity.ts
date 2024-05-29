@@ -1,16 +1,23 @@
 import { PressureUnit, TankMaterial } from '@bottomtime/api';
 
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { LogEntryEntity } from './log-entry.entity';
 
 @Entity('log_entry_air')
+@Index(['logEntry', 'ordinal'], { unique: true })
 export class LogEntryAirEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
-  @ManyToOne(() => LogEntryEntity, (logEntry) => logEntry.air)
+  @ManyToOne(() => LogEntryEntity, (logEntry) => logEntry.air, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
   logEntry?: LogEntryEntity;
+
+  @Column({ type: 'integer' })
+  ordinal: number = 0;
 
   @Column({ type: 'varchar', length: 100 })
   name: string = '';
