@@ -569,7 +569,7 @@ describe('Log entries E2E tests', () => {
     });
   });
 
-  describe.only('when updating an existing log entry', () => {
+  describe('when updating an existing log entry', () => {
     const updatedEntry: CreateOrUpdateLogEntryParamsDTO = {
       duration: 58.32,
       bottomTime: 46,

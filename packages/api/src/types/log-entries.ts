@@ -34,7 +34,7 @@ const LogEntryBaseSchema = z.object({
 
   maxDepth: DepthSchema.optional(),
 
-  air: LogEntryAirSchema.array().min(1).optional(),
+  air: LogEntryAirSchema.array().optional(),
 
   notes: z.string().max(5000).optional(),
 });

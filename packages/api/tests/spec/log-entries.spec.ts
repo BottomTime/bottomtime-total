@@ -9,7 +9,9 @@ import {
   ListLogEntriesResponseSchema,
   LogEntryDTO,
   LogEntrySortBy,
+  PressureUnit,
   SortOrder,
+  TankMaterial,
 } from '../../src';
 import { LogEntriesApiClient } from '../../src/client/log-entries';
 import LogEntryTestData from '../fixtures/log-entries-search-results.json';
@@ -89,6 +91,19 @@ describe('Log entries API client', () => {
       logNumber: 555,
       maxDepth: { depth: 95.3, unit: DepthUnit.Feet },
       notes: 'Awesome dive!',
+      air: [
+        {
+          count: 1,
+          endPressure: 500,
+          material: TankMaterial.Aluminum,
+          name: 'AL80',
+          pressureUnit: PressureUnit.PSI,
+          startPressure: 3000,
+          volume: 11.1,
+          workingPressure: 207,
+          o2Percent: 32,
+        },
+      ],
     };
     const expected: LogEntryDTO = {
       ...options,

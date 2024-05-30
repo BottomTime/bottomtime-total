@@ -5,6 +5,7 @@ import {
   DateWithTimezoneDTO,
   DepthDTO,
   DiveSiteDTO,
+  LogEntryAirDTO,
   LogEntryDTO,
   LogEntrySchema,
   SuccinctProfileDTO,
@@ -68,6 +69,13 @@ export class LogEntry {
   }
   set notes(value: string | undefined) {
     this.data.notes = value;
+  }
+
+  get air(): LogEntryAirDTO[] | undefined {
+    return this.data.air;
+  }
+  set air(value: LogEntryAirDTO[] | undefined) {
+    this.data.air = value;
   }
 
   toJSON(): LogEntryDTO {

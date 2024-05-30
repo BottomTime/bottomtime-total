@@ -461,6 +461,8 @@ export class UserLogEntriesController {
     logEntry.maxDepth = options.maxDepth;
     logEntry.notes = options.notes;
 
+    logEntry.air = options.air ?? [];
+
     if (options.site) {
       const site = await this.diveSites.getDiveSite(options.site);
       if (!site) {
