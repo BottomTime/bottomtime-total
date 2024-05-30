@@ -25,7 +25,6 @@ import {
   LogBookSharing,
   LogEntryDTO,
   ProfileDTO,
-  Tank,
   TankDTO,
   UserRole,
 } from '@bottomtime/api';

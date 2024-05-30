@@ -1,14 +1,39 @@
 <template>
   <FormBox class="space-y-2">
-    <FormField label="Tank" :responsive="false">
-      <FormSelect
-        v-model="formData.tankId"
-        control-id="tanks-select"
-        :options="tankOptions"
-      />
-    </FormField>
+    <div class="space-y-2">
+      <div class="flex gap-3 items-baseline justify-between">
+        <FormField label="Tank" :responsive="false">
+          <FormSelect
+            v-model="formData.tankId"
+            control-id="tanks-select"
+            :options="tankOptions"
+          />
+        </FormField>
 
-    <div class="flex gap-3 items-baseline">
+        <FormField label="Count">
+          <FormTextBox v-model.number="formData.count" />
+        </FormField>
+      </div>
+
+      <div v-if="formData.tankInfo" class="flex justify-evenly">
+        <div class="text-center">
+          <p class="font-bold">Working Pressure</p>
+          <p class="font-mono text-sm">
+            {{ formData.tankInfo.workingPressure }}bar
+          </p>
+        </div>
+        <div class="text-center">
+          <p class="font-bold">Volume</p>
+          <p class="font-mono text-sm">{{ formData.tankInfo.volume }}L</p>
+        </div>
+        <div class="text-center">
+          <p class="font-bold">Material</p>
+          <p class="font-mono text-sm">{{ tankMaterial }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex gap-3 items-baseline justify-between">
       <FormField
         label="Start Pressure"
         control-id="start-pressure"
@@ -42,7 +67,7 @@
       </FormField>
     </div>
 
-    <div class="flex gap-3 items-baseline">
+    <div class="flex gap-3 items-baseline justify-between">
       <FormField label="O₂ %" control-id="o2" :responsive="false">
         <div class="relative">
           <FormTextBox v-model.number="formData.o2Percentage" />
@@ -71,9 +96,9 @@
 </template>
 
 <script lang="ts" setup>
-import { PressureUnit, TankDTO } from '@bottomtime/api';
+import { PressureUnit, TankDTO, TankMaterial } from '@bottomtime/api';
 
-import { computed, reactive } from 'vue';
+import { computed, reactive, watch } from 'vue';
 
 import { SelectOption } from '../../common';
 import FormBox from '../common/form-box.vue';
@@ -87,6 +112,8 @@ interface EditEntryAirProps {
 
 interface EditEntryAirFormData {
   tankId: string;
+  tankInfo?: TankDTO;
+  count: string | number;
   startPressure: string | number;
   endPressure: string | number;
   pressureUnit: PressureUnit;
@@ -106,10 +133,19 @@ const tankOptions = computed<SelectOption[]>(() => [
 const formData = reactive<EditEntryAirFormData>({
   startPressure: '',
   endPressure: '',
+  count: '',
   pressureUnit: PressureUnit.Bar,
   hePercentage: '',
   o2Percentage: '',
   tankId: '',
+});
+
+const tankMaterial = computed<string>(() => {
+  if (!formData.tankInfo) return '';
+
+  return formData.tankInfo.material === TankMaterial.Aluminum
+    ? 'Aluminum'
+    : 'Steel';
 });
 
 function onTogglePressureUnit() {
@@ -118,4 +154,11 @@ function onTogglePressureUnit() {
       ? PressureUnit.PSI
       : PressureUnit.Bar;
 }
+
+watch(
+  () => formData.tankId,
+  (val) => {
+    formData.tankInfo = props.tanks.find((tank) => tank.id === val);
+  },
+);
 </script>
