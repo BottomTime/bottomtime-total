@@ -12,6 +12,7 @@
       v-if="state.currentProfile"
       :entry="state.entry"
       :is-saving="state.isSaving"
+      :tanks="state.tanks"
       @save="onSave"
     />
 
@@ -24,6 +25,8 @@ import {
   LogBookSharing,
   LogEntryDTO,
   ProfileDTO,
+  Tank,
+  TankDTO,
   UserRole,
 } from '@bottomtime/api';
 
@@ -47,6 +50,7 @@ interface NewLogEntryViewState {
   currentProfile?: ProfileDTO;
   entry: LogEntryDTO;
   isSaving: boolean;
+  tanks: TankDTO[];
 }
 
 const client = useClient();
@@ -85,25 +89,43 @@ const state = reactive<NewLogEntryViewState>({
     id: '',
   },
   isSaving: false,
+  tanks: initialState?.tanks ?? [],
 });
 
 onServerPrefetch(async () => {
   let profile: ProfileDTO | undefined;
+  let tanks: TankDTO[] = [];
 
-  await oops(
-    async () => {
-      if (!currentUser.user) return;
-      profile = await client.users.getProfile(route.params.username as string);
-    },
-    {
-      [404]: () => {
-        profile = undefined;
+  await Promise.all([
+    oops(
+      async () => {
+        if (!currentUser.user) return;
+        profile = await client.users.getProfile(
+          route.params.username as string,
+        );
       },
-    },
-  );
+      {
+        [404]: () => {
+          profile = undefined;
+        },
+      },
+    ),
+    oops(async () => {
+      if (!currentUser.user) return;
+      const tankResults = await client
+        .tanks(currentUser.user.username)
+        .listTanks(true);
+      tanks = tankResults.tanks.map((tank) => tank.toJSON());
+    }),
+  ]);
 
   state.currentProfile = profile;
-  if (ctx) ctx.currentProfile = profile;
+  state.tanks = tanks;
+
+  if (ctx) {
+    ctx.currentProfile = profile;
+    ctx.tanks = tanks;
+  }
 });
 
 async function onSave(data: LogEntryDTO): Promise<void> {

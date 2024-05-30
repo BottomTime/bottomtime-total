@@ -165,6 +165,10 @@
         />
       </FormField>
 
+      <FormField label="Gas">
+        <EditEntryAir v-model="formData.air" :tanks="tanks" />
+      </FormField>
+
       <FormField label="Notes" control-id="notes">
         <FormTextArea
           v-model="formData.notes"
@@ -201,7 +205,12 @@
 </template>
 
 <script lang="ts" setup>
-import { DepthDTO, LogEntryDTO } from '@bottomtime/api';
+import {
+  DepthDTO,
+  LogEntryAirDTO,
+  LogEntryDTO,
+  TankDTO,
+} from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, integer, required } from '@vuelidate/validators';
@@ -223,10 +232,12 @@ import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import EditEntryAir from './edit-entry-air.vue';
 
 interface EditLogbookEntryProps {
   entry: LogEntryDTO;
   isSaving?: boolean;
+  tanks: TankDTO[];
 }
 
 interface EditLogbookEntryState {
@@ -241,6 +252,7 @@ interface LogEntryData {
   logNumber: string | number;
   maxDepth?: DepthDTO;
   notes: string;
+  air: LogEntryAirDTO[];
 }
 
 function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
@@ -254,6 +266,7 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
     logNumber: props.entry.logNumber || '',
     maxDepth: props.entry.maxDepth ? { ...props.entry.maxDepth } : undefined,
     notes: props.entry.notes ?? '',
+    air: props.entry.air ?? [],
   };
 }
 

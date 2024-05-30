@@ -7,6 +7,7 @@
       v-if="editMode"
       :entry="state.entry"
       :is-saving="state.isSaving"
+      :tanks="state.tanks"
       @save="onSave"
     />
     <ViewLogbookEntry v-else :entry="state.entry" />
@@ -15,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { LogEntryDTO, UserRole } from '@bottomtime/api';
+import { LogEntryDTO, TankDTO, UserRole } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
@@ -36,6 +37,7 @@ import { useCurrentUser, useToasts } from '../store';
 interface LogEntryViewState {
   entry?: LogEntryDTO;
   isSaving: boolean;
+  tanks: TankDTO[];
 }
 
 const client = useClient();
@@ -49,6 +51,7 @@ const toasts = useToasts();
 const state = reactive<LogEntryViewState>({
   entry: initialState?.currentLogEntry,
   isSaving: false,
+  tanks: initialState?.tanks ?? [],
 });
 
 const title = computed(() =>
@@ -71,33 +74,47 @@ const items: Breadcrumb[] = [
 ];
 
 onServerPrefetch(async () => {
-  await oops(
-    async () => {
-      if (
-        typeof route.params.entryId !== 'string' ||
-        typeof route.params.username !== 'string'
-      ) {
-        return;
-      }
+  await Promise.all([
+    oops(
+      async () => {
+        if (
+          typeof route.params.entryId !== 'string' ||
+          typeof route.params.username !== 'string'
+        ) {
+          return;
+        }
 
-      const entry = await client.logEntries.getLogEntry(
-        route.params.username,
-        route.params.entryId,
-      );
+        const entry = await client.logEntries.getLogEntry(
+          route.params.username,
+          route.params.entryId,
+        );
 
-      state.entry = entry.toJSON();
-    },
-    {
-      [403]: () => {
-        state.entry = undefined;
+        state.entry = entry.toJSON();
       },
-      [404]: () => {
-        state.entry = undefined;
+      {
+        [403]: () => {
+          state.entry = undefined;
+        },
+        [404]: () => {
+          state.entry = undefined;
+        },
       },
-    },
-  );
+    ),
+    oops(async () => {
+      if (typeof route.params.username !== 'string') return;
 
-  if (ctx) ctx.currentLogEntry = state.entry;
+      const tanksResult = await client
+        .tanks(route.params.username)
+        .listTanks(true);
+
+      state.tanks = tanksResult.tanks.map((tank) => tank.toJSON());
+    }),
+  ]);
+
+  if (ctx) {
+    ctx.currentLogEntry = state.entry;
+    ctx.tanks = state.tanks;
+  }
 });
 
 async function onSave(data: LogEntryDTO): Promise<void> {

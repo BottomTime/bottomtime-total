@@ -9,6 +9,7 @@ import {
   LogEntryDTO,
   ProfileDTO,
   SearchDiveSitesResponseDTO,
+  TankDTO,
   UserDTO,
 } from '@bottomtime/api';
 
@@ -26,6 +27,7 @@ export type AppInitialState = {
   friendRequests?: ListFriendRequestsResponseDTO;
   diveSites?: SearchDiveSitesResponseDTO;
   logEntries?: ListLogEntriesResponseDTO | 'not-found' | 'forbidden';
+  tanks?: TankDTO[];
 };
 
 export function useInitialState(): AppInitialState | null {

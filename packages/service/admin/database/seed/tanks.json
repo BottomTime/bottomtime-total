@@ -1,0 +1,31 @@
+[
+  {
+    "id": "c9f02ee3-4f79-4095-97a8-266cd45dc041",
+    "name": "AL6: Aluminum XS-6",
+    "material": "al",
+    "workingPressure": 207,
+    "volume": 0.8
+  },
+  {
+    "id": "4bc63a29-8695-4254-891c-756fd4a2b57a",
+    "name": "AL8 (Inflation): Aluminum XS-8",
+    "material": "al",
+    "workingPressure": 139,
+    "volume": 1.6
+  },
+
+  {
+    "id": "d1bb5518-e571-4f4d-8aca-e521fd6dca9f",
+    "name": "AL80: Aluminum S80",
+    "material": "al",
+    "workingPressure": 207,
+    "volume": 11.1
+  },
+  {
+    "id": "",
+    "name": "",
+    "material": "",
+    "workingPressure": 0,
+    "volume": 0
+  }
+]
