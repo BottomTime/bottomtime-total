@@ -5,6 +5,7 @@ import { AlertsApiClient } from './alerts';
 import { DiveSitesApiClient } from './dive-sites';
 import { FriendsApiClient } from './friends';
 import { LogEntriesApiClient } from './log-entries';
+import { TanksApiClient } from './tanks';
 import { UsersApiClient } from './users';
 
 export type ApiClientOptions = {
@@ -19,6 +20,7 @@ export class ApiClient {
   readonly users: UsersApiClient;
   readonly diveSites: DiveSitesApiClient;
   readonly logEntries: LogEntriesApiClient;
+  readonly tanks: TanksApiClient;
 
   constructor(options?: ApiClientOptions) {
     const headers = new AxiosHeaders();
@@ -37,6 +39,7 @@ export class ApiClient {
     this.users = new UsersApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
+    this.tanks = new TanksApiClient(this.client, () => undefined);
   }
 
   get axios(): AxiosInstance {
