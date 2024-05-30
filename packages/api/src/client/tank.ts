@@ -5,14 +5,13 @@ import { TankDTO, TankMaterial } from '../types';
 export class Tank {
   constructor(
     private readonly client: AxiosInstance,
-    private readonly username: () => string | undefined,
+    private readonly username: string | undefined,
     private readonly data: TankDTO,
   ) {}
 
   private getUrl(): string {
-    const username = this.username();
-    return username
-      ? `/api/users/${username}/tanks/${this.id}`
+    return this.username
+      ? `/api/users/${this.username}/tanks/${this.id}`
       : `/api/admin/tanks/${this.id}`;
   }
 

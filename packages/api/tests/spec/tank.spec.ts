@@ -21,7 +21,7 @@ describe('Tank class', () => {
   });
 
   it('will return properties correctly', () => {
-    const tank = new Tank(client, () => Username, TestData);
+    const tank = new Tank(client, Username, TestData);
     expect(tank.id).toBe(TestData.id);
     expect(tank.isSystem).toBe(TestData.isSystem);
     expect(tank.material).toBe(TestData.material);
@@ -31,7 +31,7 @@ describe('Tank class', () => {
   });
 
   it('will allow properties to be updated', () => {
-    const tank = new Tank(client, () => Username, TestData);
+    const tank = new Tank(client, Username, TestData);
     tank.name = 'LP85';
     tank.material = TankMaterial.Aluminum;
     tank.workingPressure = 189;
@@ -44,7 +44,7 @@ describe('Tank class', () => {
   });
 
   it('will render as JSON', () => {
-    const tank = new Tank(client, () => Username, TestData);
+    const tank = new Tank(client, Username, TestData);
     expect(tank.toJSON()).toEqual(TestData);
   });
 
@@ -59,7 +59,7 @@ describe('Tank class', () => {
           volume: 8.5,
         },
       });
-      const tank = new Tank(client, () => undefined, TestData);
+      const tank = new Tank(client, undefined, TestData);
 
       tank.name = 'LP85';
       tank.material = TankMaterial.Aluminum;
@@ -79,7 +79,7 @@ describe('Tank class', () => {
 
     it('will delete a tank', async () => {
       const spy = jest.spyOn(client, 'delete').mockResolvedValue({});
-      const tank = new Tank(client, () => undefined, TestData);
+      const tank = new Tank(client, undefined, TestData);
 
       await tank.delete();
 
@@ -98,7 +98,7 @@ describe('Tank class', () => {
           volume: 8.5,
         },
       });
-      const tank = new Tank(client, () => Username, TestData);
+      const tank = new Tank(client, Username, TestData);
 
       tank.name = 'LP85';
       tank.material = TankMaterial.Aluminum;
@@ -121,7 +121,7 @@ describe('Tank class', () => {
 
     it('will delete a tank', async () => {
       const spy = jest.spyOn(client, 'delete').mockResolvedValue({});
-      const tank = new Tank(client, () => Username, TestData);
+      const tank = new Tank(client, Username, TestData);
 
       await tank.delete();
 

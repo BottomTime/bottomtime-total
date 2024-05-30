@@ -34,7 +34,7 @@ describe('Tanks API client', () => {
     let client: TanksApiClient;
 
     beforeAll(() => {
-      client = new TanksApiClient(axiosClient, () => Username);
+      client = new TanksApiClient(axiosClient, Username);
     });
 
     it('will return a single tank', async () => {
@@ -111,7 +111,7 @@ describe('Tanks API client', () => {
     let client: TanksApiClient;
 
     beforeAll(() => {
-      client = new TanksApiClient(axiosClient, () => undefined);
+      client = new TanksApiClient(axiosClient);
     });
 
     it('will return a single tank', async () => {

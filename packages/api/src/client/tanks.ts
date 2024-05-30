@@ -11,12 +11,13 @@ import { Tank } from './tank';
 export class TanksApiClient {
   constructor(
     private readonly apiClient: AxiosInstance,
-    private readonly username: () => string | undefined,
+    private readonly username?: string,
   ) {}
 
   private getUrl(): string {
-    const username = this.username();
-    return username ? `/api/users/${username}/tanks` : `/api/admin/tanks`;
+    return this.username
+      ? `/api/users/${this.username}/tanks`
+      : `/api/admin/tanks`;
   }
 
   async listTanks(
@@ -25,7 +26,7 @@ export class TanksApiClient {
     const url = this.getUrl();
     const { data } = await this.apiClient.get<ListTanksResponseDTO>(url, {
       params: {
-        includeSystem: this.username() ? includeSystem : undefined,
+        includeSystem: this.username ? includeSystem : undefined,
       },
     });
 

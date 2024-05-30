@@ -10,7 +10,6 @@ import {
   UserDTO,
   UserRole,
 } from '../types';
-import { TanksApiClient } from './tanks';
 import { UserProfile } from './user-profile';
 import { UserSettings } from './user-settings';
 
@@ -18,14 +17,10 @@ export class User {
   private _profile: UserProfile | undefined;
   private _settings: UserSettings | undefined;
 
-  readonly tanks: TanksApiClient;
-
   constructor(
     private readonly client: AxiosInstance,
     private readonly data: UserDTO,
-  ) {
-    this.tanks = new TanksApiClient(client, () => this.username);
-  }
+  ) {}
 
   get id(): string {
     return this.data.id;

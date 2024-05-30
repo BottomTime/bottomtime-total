@@ -20,7 +20,6 @@ export class ApiClient {
   readonly users: UsersApiClient;
   readonly diveSites: DiveSitesApiClient;
   readonly logEntries: LogEntriesApiClient;
-  readonly tanks: TanksApiClient;
 
   constructor(options?: ApiClientOptions) {
     const headers = new AxiosHeaders();
@@ -39,11 +38,14 @@ export class ApiClient {
     this.users = new UsersApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
-    this.tanks = new TanksApiClient(this.client, () => undefined);
   }
 
   get axios(): AxiosInstance {
     return this.client;
+  }
+
+  tanks(username?: string): TanksApiClient {
+    return new TanksApiClient(this.client, username);
   }
 
   async getAppMetrics(): Promise<AppMetricsDTO> {
