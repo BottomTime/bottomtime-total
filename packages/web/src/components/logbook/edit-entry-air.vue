@@ -2,15 +2,25 @@
   <FormBox class="space-y-2">
     <div class="space-y-2">
       <div class="flex gap-3 items-baseline justify-between">
-        <FormField label="Tank" :responsive="false">
+        <FormField
+          label="Tank"
+          :responsive="false"
+          :invalid="v$.tankId.$error"
+          :error="v$.tankId.$errors[0]?.$message"
+        >
           <FormSelect
             v-model="formData.tankId"
             control-id="tanks-select"
             :options="tankOptions"
+            :invalid="v$.tankId.$error"
           />
         </FormField>
 
-        <FormField label="Count">
+        <FormField
+          label="Count"
+          :invalid="v$.count.$error"
+          :error="v$.count.$errors[0]?.$message"
+        >
           <FormTextBox v-model.number="formData.count" />
         </FormField>
       </div>
@@ -98,6 +108,9 @@
 <script lang="ts" setup>
 import { PressureUnit, TankDTO, TankMaterial } from '@bottomtime/api';
 
+import { useVuelidate } from '@vuelidate/core';
+import { helpers, integer, required } from '@vuelidate/validators';
+
 import { computed, reactive, watch } from 'vue';
 
 import { SelectOption } from '../../common';
@@ -147,6 +160,29 @@ const tankMaterial = computed<string>(() => {
     ? 'Aluminum'
     : 'Steel';
 });
+
+const v$ = useVuelidate(
+  {
+    tankId: {
+      required: helpers.withMessage('Please select a tank', required),
+    },
+    count: {
+      int: helpers.withMessage(
+        'Number of tanks must be a whole number (e.g. 1, 2, 3, etc.)',
+        integer,
+      ),
+      valid: helpers.withMessage(
+        'Number of tanks must be between 1 and 4',
+        (val) => {
+          if (!helpers.req(val)) return true;
+          if (typeof val !== 'number') return true;
+          return val >= 1 && val <= 4;
+        },
+      ),
+    },
+  },
+  formData,
+);
 
 function onTogglePressureUnit() {
   formData.pressureUnit =
