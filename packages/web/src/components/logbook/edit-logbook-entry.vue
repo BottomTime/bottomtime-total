@@ -166,7 +166,11 @@
       </FormField>
 
       <FormField label="Gas">
-        <EditEntryAir v-model="formData.air" :tanks="tanks" />
+        <EditEntryAirCollection
+          :air="formData.air"
+          :tanks="tanks"
+          @update="onUpdateAirEntry"
+        />
       </FormField>
 
       <FormField label="Notes" control-id="notes">
@@ -205,12 +209,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  DepthDTO,
-  LogEntryAirDTO,
-  LogEntryDTO,
-  TankDTO,
-} from '@bottomtime/api';
+import { DepthDTO, LogEntryDTO, TankDTO } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, integer, required } from '@vuelidate/validators';
@@ -232,7 +231,8 @@ import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
-import EditEntryAir from './edit-entry-air.vue';
+import EditEntryAirCollection from './edit-entry-air-collection.vue';
+import { EditEntryAirFormData } from './edit-entry-air-form-data';
 
 interface EditLogbookEntryProps {
   entry: LogEntryDTO;
@@ -252,7 +252,7 @@ interface LogEntryData {
   logNumber: string | number;
   maxDepth?: DepthDTO;
   notes: string;
-  air: LogEntryAirDTO[];
+  air: EditEntryAirFormData[];
 }
 
 function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
@@ -266,7 +266,26 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
     logNumber: props.entry.logNumber || '',
     maxDepth: props.entry.maxDepth ? { ...props.entry.maxDepth } : undefined,
     notes: props.entry.notes ?? '',
-    air: props.entry.air ?? [],
+    air:
+      props.entry.air?.map((air) => ({
+        startPressure: air.startPressure,
+        endPressure: air.endPressure,
+        count: air.count,
+        pressureUnit: air.pressureUnit,
+        hePercentage: air.hePercent ?? '',
+        o2Percentage: air.o2Percent ?? '',
+        tankId: air.name ? '(selected)' : '',
+        tankInfo: air.name
+          ? {
+              id: '(selected)',
+              material: air.material,
+              name: air.name,
+              volume: air.volume,
+              isSystem: false,
+              workingPressure: air.workingPressure,
+            }
+          : undefined,
+      })) ?? [],
   };
 }
 
@@ -382,4 +401,8 @@ onBeforeMount(async () => {
     await getNextAvailableLogNumber();
   }
 });
+
+function onUpdateAirEntry(update: EditEntryAirFormData, index: number) {
+  formData.air[index] = update;
+}
 </script>
