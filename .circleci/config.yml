@@ -37,6 +37,7 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -71,6 +72,7 @@ jobs:
   test_api:
     docker:
       - image: cimg/node:22.0
+    resource_class: medium
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -116,6 +118,7 @@ jobs:
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
       - image: lphoward/fake-s3
+    resource_class: medium+
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -155,6 +158,7 @@ jobs:
   test_web:
     docker:
       - image: cimg/node:22.0-browsers
+    resource_class: medium+
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -223,6 +227,7 @@ jobs:
   report_coverage:
     docker:
       - image: cimg/node:22.0
+    resource_class: medium+
     steps:
       - attach_workspace:
           at: .
