@@ -112,6 +112,15 @@ export class DiveSitesController {
    *         schema:
    *           type: boolean
    *       - in: query
+   *         name: waterType
+   *         description: Filter by the type of water at the dive site.
+   *         schema:
+   *           type: string
+   *           enum:
+   *             - salt
+   *             - fresh
+   *             - mixed
+   *       - in: query
    *         name: sortBy
    *         description: The field to sort the search results by.
    *         schema:
@@ -355,6 +364,7 @@ export class DiveSitesController {
     site.gps = options.gps;
     site.freeToDive = options.freeToDive;
     site.shoreAccess = options.shoreAccess;
+    site.waterType = options.waterType;
 
     await site.save();
 

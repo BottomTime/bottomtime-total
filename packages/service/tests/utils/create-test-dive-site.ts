@@ -1,4 +1,4 @@
-import { DepthUnit } from '@bottomtime/api';
+import { DepthUnit, WaterType } from '@bottomtime/api';
 
 import { faker } from '@faker-js/faker';
 
@@ -25,6 +25,7 @@ const DiveSiteSchema = z.object({
     .default(null),
   freeToDive: z.boolean().nullable().default(null),
   shoreAccess: z.boolean().nullable().default(null),
+  waterType: z.nativeEnum(WaterType).nullable().default(null),
 
   averageRating: z.number().nullable().default(null),
   averageDifficulty: z.number().nullable().default(null),
@@ -43,7 +44,7 @@ export function createTestDiveSite(
 
   data.id = options?.id ?? faker.string.uuid();
   data.creator = creator;
-  data.createdOn = options?.createdOn ?? faker.date.past({ years: 1 });
+  data.createdOn = options?.createdOn ?? faker.date.past({ years: 2 });
   data.updatedOn =
     options?.updatedOn ??
     faker.helpers.maybe(() => faker.date.past({ years: 1 }), {
@@ -70,6 +71,13 @@ export function createTestDiveSite(
   data.freeToDive =
     options?.freeToDive ??
     faker.helpers.maybe(() => faker.datatype.boolean(), { probability: 0.8 }) ??
+    null;
+  data.waterType =
+    options?.waterType ??
+    faker.helpers.maybe(
+      () => faker.helpers.arrayElement(Object.values(WaterType)),
+      { probability: 0.85 },
+    ) ??
     null;
 
   data.averageRating =

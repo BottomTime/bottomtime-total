@@ -5,6 +5,7 @@ import {
   DepthDTO,
   DiveSiteDTO,
   ProfileDTO,
+  WaterType,
 } from '../types';
 
 export type GPSCoordinates = DiveSiteDTO['gps'];
@@ -95,6 +96,13 @@ export class DiveSite {
   }
   set shoreAccess(value: boolean | undefined) {
     this.data.shoreAccess = value;
+  }
+
+  get waterType(): WaterType | undefined {
+    return this.data.waterType;
+  }
+  set waterType(value: WaterType | undefined) {
+    this.data.waterType = value;
   }
 
   async save(): Promise<void> {

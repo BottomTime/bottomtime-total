@@ -31,6 +31,7 @@ export class DiveSitesApiClient {
     if (params.skip) query.set('skip', params.skip.toString());
     if (params.sortBy) query.set('sortBy', params.sortBy);
     if (params.sortOrder) query.set('sortOrder', params.sortOrder);
+    if (params.waterType) query.set('waterType', params.waterType);
 
     if (typeof params.freeToDive === 'boolean') {
       query.set('freeToDive', params.freeToDive.toString());

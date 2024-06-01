@@ -175,6 +175,47 @@
         </div>
       </FormField>
 
+      <FormField label="Water Type" :responsive="false">
+        <div class="flex flex-col gap-1 pl-2">
+          <FormRadio
+            v-model="state.waterType"
+            control-id="water-type-all"
+            test-id="water-type-all"
+            group="water-type"
+            value=""
+          >
+            Any
+          </FormRadio>
+          <FormRadio
+            v-model="state.waterType"
+            control-id="water-type-salt"
+            test-id="water-type-salt"
+            group="water-type"
+            :value="WaterType.Salt"
+          >
+            Salt water
+          </FormRadio>
+          <FormRadio
+            v-model="state.waterType"
+            control-id="water-type-fresh"
+            test-id="water-type-fresh"
+            group="water-type"
+            :value="WaterType.Fresh"
+          >
+            Fresh water
+          </FormRadio>
+          <FormRadio
+            v-model="state.waterType"
+            control-id="water-type-mixed"
+            test-id="water-type-mixed"
+            group="water-type"
+            :value="WaterType.Mixed"
+          >
+            Mixed
+          </FormRadio>
+        </div>
+      </FormField>
+
       <div class="text-center">
         <FormButton test-id="refresh-dive-sites" submit @click="onRefresh">
           Refresh
@@ -185,7 +226,11 @@
 </template>
 
 <script setup lang="ts">
-import { GpsCoordinates, SearchDiveSitesParamsDTO } from '@bottomtime/api';
+import {
+  GpsCoordinates,
+  SearchDiveSitesParamsDTO,
+  WaterType,
+} from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
 
@@ -208,6 +253,7 @@ type SearchDiveSitesFormState = {
   range: number;
   shoreAccess: string;
   freeToDive: string;
+  waterType: WaterType | '';
   showAdvancedSearch: boolean;
   showLocationDialog: boolean;
 };
@@ -230,6 +276,7 @@ const state = reactive<SearchDiveSitesFormState>({
     typeof props.params.freeToDive === 'boolean'
       ? props.params.freeToDive.toString()
       : '',
+  waterType: props.params.waterType || '',
 
   showAdvancedSearch: false,
   showLocationDialog: false,
@@ -257,6 +304,8 @@ function onRefresh() {
       state.shoreAccess === '' ? undefined : state.shoreAccess === 'true',
     freeToDive:
       state.freeToDive === '' ? undefined : state.freeToDive === 'true',
+    waterType:
+      state.waterType === '' ? undefined : (state.waterType as WaterType),
     location: state.gps,
     radius: state.range,
   };

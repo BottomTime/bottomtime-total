@@ -91,7 +91,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/api --stream # --since=master
+          command: |
+            yarn --cwd packages/api build
+            yarn --cwd packages/api test
       - store_test_results:
           path: packages/api/reports/
       - run:

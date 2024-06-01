@@ -1,4 +1,9 @@
-import { DepthUnit, DiveSiteDTO, LogBookSharing } from '@bottomtime/api';
+import {
+  DepthUnit,
+  DiveSiteDTO,
+  LogBookSharing,
+  WaterType,
+} from '@bottomtime/api';
 
 export const BlankDiveSite: DiveSiteDTO = {
   id: '',
@@ -46,6 +51,7 @@ export const DiveSiteWithFullProperties: DiveSiteDTO = {
   gps: { lon: -105.3306, lat: 72.6789 },
   freeToDive: true,
   shoreAccess: true,
+  waterType: WaterType.Fresh,
   averageRating: 5,
   averageDifficulty: 4.4,
 };

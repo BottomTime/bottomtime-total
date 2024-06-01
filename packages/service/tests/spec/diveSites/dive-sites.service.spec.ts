@@ -4,8 +4,11 @@ import {
   LogBookSharing,
   SortOrder,
   UserRole,
+  WaterType,
 } from '@bottomtime/api';
 
+import { writeFile } from 'fs/promises';
+import path from 'path';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
@@ -20,7 +23,10 @@ import { dataSource } from '../../data-source';
 import DiveSiteTestData from '../../fixtures/dive-sites.json';
 import { createTestUser } from '../../utils';
 import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
-import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
+import {
+  createTestDiveSite,
+  parseDiveSiteJSON,
+} from '../../utils/create-test-dive-site';
 
 jest.mock('uuid');
 
@@ -77,6 +83,20 @@ describe('Dive Site Service', () => {
 
   beforeEach(async () => {
     await Users.save([regularUser, otherUser]);
+  });
+
+  it.skip('Generate some dive sites', async () => {
+    expect(DiveSiteTestData).toHaveLength(200);
+    const data = new Array<DiveSiteEntity>(200);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = createTestDiveSite(regularUser);
+    }
+
+    await writeFile(
+      path.resolve(__dirname, '../../fixtures/dive-sites.json'),
+      JSON.stringify(data, null, 2),
+      { encoding: 'utf-8' },
+    );
   });
 
   describe('when retrieving a dive site', () => {
@@ -163,6 +183,7 @@ describe('Dive Site Service', () => {
         freeToDive: true,
         directions: 'Go to San Diego and then go to the beach.',
         shoreAccess: true,
+        waterType: WaterType.Salt,
         gps: {
           lat: 32.7157,
           lon: -117.1611,
@@ -182,6 +203,7 @@ describe('Dive Site Service', () => {
         freeToDive: options.freeToDive,
         directions: options.directions,
         shoreAccess: options.shoreAccess,
+        waterType: options.waterType,
         gps: options.gps,
       });
 
@@ -199,6 +221,7 @@ describe('Dive Site Service', () => {
       expect(savedSite.freeToDive).toEqual(options.freeToDive);
       expect(savedSite.directions).toEqual(options.directions);
       expect(savedSite.shoreAccess).toEqual(options.shoreAccess);
+      expect(savedSite.waterType).toEqual(options.waterType);
       expect(savedSite.gps).toEqual({
         type: 'Point',
         coordinates: [options.gps!.lon, options.gps!.lat],
@@ -292,7 +315,7 @@ describe('Dive Site Service', () => {
 
     it('will perform text-based searches', async () => {
       const results = await service.searchDiveSites({
-        query: 'lake dolore',
+        query: 'lake',
         skip: 0,
         limit: 50,
         radius: 50,
@@ -301,7 +324,7 @@ describe('Dive Site Service', () => {
       });
 
       const sites = results.sites.map((site) => site.toJSON());
-      expect(results.totalCount).toEqual(10);
+      expect(results.totalCount).toEqual(13);
       expect(sites).toMatchSnapshot();
     });
 
@@ -322,10 +345,13 @@ describe('Dive Site Service', () => {
     });
 
     [
-      { name: 'freeToDive', value: true, expectedCount: 89 },
-      { name: 'freeToDive', value: false, expectedCount: 59 },
-      { name: 'shoreAccess', value: true, expectedCount: 78 },
+      { name: 'freeToDive', value: true, expectedCount: 73 },
+      { name: 'freeToDive', value: false, expectedCount: 88 },
+      { name: 'shoreAccess', value: true, expectedCount: 73 },
       { name: 'shoreAccess', value: false, expectedCount: 78 },
+      { name: 'waterType', value: WaterType.Fresh, expectedCount: 46 },
+      { name: 'waterType', value: WaterType.Salt, expectedCount: 55 },
+      { name: 'waterType', value: WaterType.Mixed, expectedCount: 65 },
     ].forEach((testCase) => {
       it(`will filter results when ${testCase.name} is ${testCase.value}`, async () => {
         const results = await service.searchDiveSites({
@@ -341,8 +367,10 @@ describe('Dive Site Service', () => {
         results.sites.forEach((site) => {
           if (testCase.name === 'freeToDive') {
             expect(site.freeToDive).toBe(testCase.value);
-          } else {
+          } else if (testCase.name === 'shoreAccess') {
             expect(site.shoreAccess).toBe(testCase.value);
+          } else {
+            expect(site.waterType).toBe(testCase.value);
           }
         });
       });
@@ -351,7 +379,7 @@ describe('Dive Site Service', () => {
     [
       { name: 'short', distance: 20, expectedCount: 1 },
       { name: 'medium', distance: 200, expectedCount: 1 },
-      { name: 'long', distance: 900, expectedCount: 2 },
+      { name: 'long', distance: 900, expectedCount: 5 },
     ].forEach((testCase) => {
       it(`will filter results by distance using ${testCase.name} distance`, async () => {
         const results = await service.searchDiveSites({
@@ -382,7 +410,7 @@ describe('Dive Site Service', () => {
         sortOrder: SortOrder.Descending,
       });
 
-      expect(results.totalCount).toBe(23);
+      expect(results.totalCount).toBe(25);
       results.sites.forEach((site) => {
         expect(site.averageRating).toBeGreaterThanOrEqual(3.1);
         expect(site.averageRating).toBeLessThanOrEqual(3.5);
@@ -399,7 +427,7 @@ describe('Dive Site Service', () => {
         sortOrder: SortOrder.Descending,
       });
 
-      expect(results.totalCount).toBe(18);
+      expect(results.totalCount).toBe(22);
       results.sites.forEach((site) => {
         expect(site.averageDifficulty).toBeGreaterThanOrEqual(2.2);
         expect(site.averageDifficulty).toBeLessThanOrEqual(2.7);

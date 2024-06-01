@@ -1,4 +1,9 @@
-import { DepthUnit, DiveSiteDTO, LogBookSharing } from '../../src/types';
+import {
+  DepthUnit,
+  DiveSiteDTO,
+  LogBookSharing,
+  WaterType,
+} from '../../src/types';
 
 export const BlankDiveSite: DiveSiteDTO = {
   id: '',
@@ -46,6 +51,7 @@ export const DiveSiteWithFullProperties: DiveSiteDTO = {
   gps: { lon: -105.3306, lat: 72.6789 },
   freeToDive: true,
   shoreAccess: true,
+  waterType: WaterType.Salt,
   averageRating: 5,
   averageDifficulty: 4.4,
 };

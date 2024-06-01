@@ -3,6 +3,7 @@ import {
   GpsCoordinates,
   RatingRange,
   SortOrder,
+  WaterType,
 } from '@bottomtime/api';
 
 import { Repository, SelectQueryBuilder } from 'typeorm';
@@ -20,6 +21,7 @@ export const DiveSiteSelectFields = [
   'sites.gps',
   'sites.shoreAccess',
   'sites.freeToDive',
+  'sites.waterType',
   'sites.createdOn',
   'sites.updatedOn',
   'sites.averageRating',
@@ -162,7 +164,20 @@ export class DiveSiteQueryBuilder {
   }
 
   withSiteIds(siteIds: string[]): this {
-    this.query = this.query.andWhere('sites.id IN (:...siteIds)', { siteIds });
+    if (siteIds.length) {
+      this.query = this.query.andWhere('sites.id IN (:...siteIds)', {
+        siteIds,
+      });
+    }
+    return this;
+  }
+
+  withWaterType(waterType?: WaterType): this {
+    if (waterType) {
+      this.query = this.query.andWhere('sites.waterType = :waterType', {
+        waterType,
+      });
+    }
     return this;
   }
 }

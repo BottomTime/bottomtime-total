@@ -4,6 +4,7 @@ import {
   LogBookSharing,
   SortOrder,
   UserRole,
+  WaterType,
 } from '@bottomtime/api';
 
 import { HttpException } from '@nestjs/common';
@@ -53,6 +54,7 @@ const DiveSiteData: Partial<DiveSiteEntity> = {
   directions: 'Fly to Cozumel and then take a boat out there.',
   freeToDive: true,
   shoreAccess: false,
+  waterType: WaterType.Fresh,
   gps: {
     type: 'Point',
     coordinates: [-86.933333, 20.433333],
@@ -115,6 +117,7 @@ describe('Dive Site Class', () => {
     expect(site.location).toEqual(DiveSiteData.location);
     expect(site.name).toEqual(DiveSiteData.name);
     expect(site.shoreAccess).toEqual(DiveSiteData.shoreAccess);
+    expect(site.waterType).toEqual(DiveSiteData.waterType);
   });
 
   it('will return undefined for missing properties', () => {
@@ -134,6 +137,7 @@ describe('Dive Site Class', () => {
     expect(site.shoreAccess).toBeUndefined();
     expect(site.averageDifficulty).toBeUndefined();
     expect(site.averageRating).toBeUndefined();
+    expect(site.waterType).toBeUndefined();
   });
 
   it('will update properties', () => {
@@ -152,6 +156,10 @@ describe('Dive Site Class', () => {
     const newShoreAccess = true;
     site.shoreAccess = newShoreAccess;
     expect(site.shoreAccess).toEqual(newShoreAccess);
+
+    const newWaterType = WaterType.Salt;
+    site.waterType = newWaterType;
+    expect(site.waterType).toEqual(newWaterType);
 
     const newGps = {
       lat: 20.433333,
@@ -189,6 +197,7 @@ describe('Dive Site Class', () => {
     site.location = 'Cozumel, Mexico (West Side)';
     site.name = 'Palancar Reef';
     site.freeToDive = false;
+    site.waterType = WaterType.Mixed;
 
     await site.save();
 
@@ -204,6 +213,7 @@ describe('Dive Site Class', () => {
     expect(savedSite.location).toEqual('Cozumel, Mexico (West Side)');
     expect(savedSite.freeToDive).toEqual(false);
     expect(savedSite.name).toEqual('Palancar Reef');
+    expect(savedSite.waterType).toEqual(WaterType.Mixed);
   });
 
   it('will delete a dive site', async () => {

@@ -141,6 +141,52 @@
             </FormRadio>
           </div>
         </FormField>
+
+        <FormField label="Water type" required>
+          <div
+            class="flex flex-col lg:flex-row flex-wrap ml-2 lg:ml-0 mt-1.5 gap-4 lg:items-center"
+          >
+            <FormRadio
+              v-model="state.waterType"
+              control-id="water-type-salt"
+              group="water-type"
+              test-id="water-type-salt"
+              :value="WaterType.Salt"
+            >
+              Salt
+            </FormRadio>
+
+            <FormRadio
+              v-model="state.waterType"
+              control-id="water-type-fresh"
+              group="water-type"
+              test-id="water-type-fresh"
+              :value="WaterType.Fresh"
+            >
+              Fresh
+            </FormRadio>
+
+            <FormRadio
+              v-model="state.waterType"
+              control-id="water-type-mixed"
+              group="water-type"
+              test-id="water-type-mixed"
+              :value="WaterType.Mixed"
+            >
+              Mixed
+            </FormRadio>
+
+            <FormRadio
+              v-model="state.waterType"
+              control-id="water-type-null"
+              group="water-type"
+              test-id="water-type-null"
+              value=""
+            >
+              Unknown
+            </FormRadio>
+          </div>
+        </FormField>
       </div>
 
       <FormBox class="col-span-1 lg:col-span-2 flex flex-col gap-3">
@@ -250,6 +296,7 @@ import {
   DepthDTO,
   DiveSiteDTO,
   GpsCoordinates,
+  WaterType,
 } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
@@ -289,6 +336,7 @@ type EditDiveSiteFormState = {
   };
   freeToDive: string;
   shoreAccess: string;
+  waterType: WaterType | '';
 };
 
 const client = useClient();
@@ -380,6 +428,7 @@ function loadFromProps(): EditDiveSiteFormState {
       : { lat: '', lon: '' },
     freeToDive: props.site.freeToDive?.toString() || '',
     shoreAccess: props.site.shoreAccess?.toString() || '',
+    waterType: props.site.waterType || '',
   };
 }
 
@@ -400,6 +449,7 @@ async function createSite(): Promise<void> {
       state.freeToDive === '' ? undefined : state.freeToDive === 'true',
     shoreAccess:
       state.shoreAccess === '' ? undefined : state.shoreAccess === 'true',
+    waterType: state.waterType || undefined,
   };
 
   const newSite = await client.diveSites.createDiveSite(data);
@@ -424,6 +474,7 @@ async function updateSite(): Promise<void> {
     state.freeToDive === '' ? undefined : state.freeToDive === 'true';
   dto.shoreAccess =
     state.shoreAccess === '' ? undefined : state.shoreAccess === 'true';
+  dto.waterType = state.waterType || undefined;
 
   await dto.save();
 

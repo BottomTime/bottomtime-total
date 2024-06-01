@@ -2,7 +2,7 @@
 
 exports[`Dive Site API client will perform a search for dive sites 1`] = `
 [
-  "/api/diveSites?creator=bob&limit=200&query=Puget+Sound&skip=100&sortBy=rating&sortOrder=desc&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250",
+  "/api/diveSites?creator=bob&limit=200&query=Puget+Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250",
 ]
 `;
 
