@@ -60,29 +60,13 @@
           :error="v$.depth.$errors[0]?.$message"
         >
           <div class="flex flex-wrap gap-3">
-            <FormTextBox
-              v-model.trim="state.depth.depth"
-              class="w-32"
+            <DepthInput
+              v-model="state.depth"
               control-id="depth"
               test-id="depth"
               :invalid="v$.depth.$error"
-              :maxlength="6"
-              :disabled="state.depth.bottomless"
+              allow-bottomless
             />
-            <FormSelect
-              v-model="state.depth.unit"
-              control-id="depth-unit"
-              test-id="depth-unit"
-              :options="DepthOptions"
-              :disabled="state.depth.bottomless"
-            />
-            <FormCheckbox
-              v-model="state.depth.bottomless"
-              control-id="depth-bottomless"
-              test-id="depth-bottomless"
-            >
-              bottomless
-            </FormCheckbox>
           </div>
         </FormField>
 
@@ -309,7 +293,7 @@
 <script lang="ts" setup>
 import {
   CreateOrUpdateDiveSiteDTO,
-  DepthUnit,
+  DepthDTO,
   DiveSiteDTO,
   GpsCoordinates,
   WaterType,
@@ -321,15 +305,15 @@ import { helpers, required, requiredIf } from '@vuelidate/validators';
 import { computed, reactive, ref } from 'vue';
 
 import { useClient } from '../../api-client';
-import { SelectOption, ToastType } from '../../common';
+import { ToastType } from '../../common';
 import { useOops } from '../../oops';
-import { useCurrentUser, useToasts } from '../../store';
+import { useToasts } from '../../store';
+import { depth } from '../../validators';
+import DepthInput from '../common/depth-input.vue';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
-import FormCheckbox from '../common/form-checkbox.vue';
 import FormField from '../common/form-field.vue';
 import FormRadio from '../common/form-radio.vue';
-import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import GoogleMap from '../common/google-map.vue';
@@ -343,11 +327,7 @@ type EditDiveSiteProps = {
 type EditDiveSiteFormState = {
   name: string;
   description: string;
-  depth: {
-    depth: string;
-    unit: DepthUnit;
-    bottomless: boolean;
-  };
+  depth: DepthDTO | string;
   location: string;
   directions: string;
   gps: {
@@ -359,13 +339,7 @@ type EditDiveSiteFormState = {
   waterType: WaterType | '';
 };
 
-const DepthOptions: SelectOption[] = [
-  { label: 'Meters', value: DepthUnit.Meters },
-  { label: 'Feet', value: DepthUnit.Feet },
-];
-
 const client = useClient();
-const currentUser = useCurrentUser();
 const oops = useOops();
 const toasts = useToasts();
 
@@ -393,12 +367,10 @@ const v$ = useVuelidate(
   {
     name: { required: helpers.withMessage('Name is required', required) },
     depth: {
-      depth: {
-        minValue: helpers.withMessage(
-          'Depth must be a positive value',
-          (value: string) => validateNumber(value, 0),
-        ),
-      },
+      valid: helpers.withMessage(
+        'Depth must be a positive number and cannot exceed 300m (~984ft)',
+        depth,
+      ),
     },
     location: {
       required: helpers.withMessage('Location is required', required),
@@ -445,14 +417,7 @@ function loadFromProps(): EditDiveSiteFormState {
   return {
     name: props.site.name,
     description: props.site.description || '',
-    depth: {
-      depth: props.site.depth?.depth?.toString() || '',
-      unit:
-        props.site.depth?.unit ||
-        currentUser.user?.settings.depthUnit ||
-        DepthUnit.Meters,
-      bottomless: false,
-    },
+    depth: props.site.depth ?? '',
     location: props.site.location,
     directions: props.site.directions || '',
     gps: props.site.gps
@@ -473,12 +438,10 @@ function onLocationChanged(location: GpsCoordinates) {
 }
 
 async function createSite(): Promise<void> {
-  const depth = parseFloat(state.depth.depth);
-
   const data: CreateOrUpdateDiveSiteDTO = {
     name: state.name,
     description: state.description || undefined,
-    depth: isNaN(depth) ? undefined : { depth, unit: state.depth.unit },
+    depth: typeof state.depth === 'string' ? undefined : state.depth,
     location: state.location,
     directions: state.directions || undefined,
     gps: gps.value ?? undefined,
@@ -500,18 +463,10 @@ async function createSite(): Promise<void> {
 }
 
 async function updateSite(): Promise<void> {
-  const depth = parseFloat(state.depth.depth);
-
   const dto = client.diveSites.wrapDTO(props.site);
   dto.name = state.name;
   dto.description = state.description || undefined;
-  dto.depth = isNaN(depth)
-    ? undefined
-    : {
-        depth,
-        unit: state.depth.unit,
-        // bottomless: state.depth.bottomless,
-      };
+  dto.depth = typeof state.depth === 'string' ? undefined : state.depth;
   dto.location = state.location;
   dto.directions = state.directions || undefined;
   dto.gps = gps.value ?? undefined;

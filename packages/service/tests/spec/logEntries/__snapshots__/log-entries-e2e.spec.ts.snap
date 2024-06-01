@@ -131,6 +131,132 @@ exports[`Log entries E2E tests when creating log entries will return a 400 respo
 
 exports[`Log entries E2E tests when creating log entries will return a 400 response if the site ID cannot be found 1`] = `"Dive site with ID "37a214f6-6167-4468-947d-b3171a0425fd" not found."`;
 
+exports[`Log entries E2E tests when fetching recent dive sites will allow admins to query the most recent dive sites for any user 1`] = `
+[
+  {
+    "id": "d80a65f2-1984-4090-8c0c-82a0472315c7",
+    "name": "bold staid lode",
+  },
+  {
+    "id": "74aa1202-9d61-443b-b8f5-44dde5ef18d5",
+    "name": "exotic warmhearted aside",
+  },
+  {
+    "id": "b9cd677a-d240-403d-9dab-620dec47451d",
+    "name": "giant broken meat",
+  },
+  {
+    "id": "5f799498-2730-452f-b78b-933510c1174c",
+    "name": "good-natured bountiful relay",
+  },
+  {
+    "id": "7737963a-bf8b-44ee-955f-066a098ef80b",
+    "name": "ideal blond spume",
+  },
+  {
+    "id": "0272ce1a-5715-4a42-a05a-86fdf63cc6ed",
+    "name": "modern sorrowful girdle",
+  },
+  {
+    "id": "90bcafd4-90b6-41d5-9b70-db36b470dcaf",
+    "name": "shameful glorious noodles",
+  },
+  {
+    "id": "3b9bdf22-0b5b-4f6b-9ec4-f5dfdb0bebe1",
+    "name": "specific dead ramen",
+  },
+  {
+    "id": "31564910-9f3d-45dc-b0c8-f836e7ff7b8d",
+    "name": "spotless gifted gallon",
+  },
+  {
+    "id": "b5a31451-0d07-42ad-9e86-de5d63bbf582",
+    "name": "wry boring examiner",
+  },
+]
+`;
+
+exports[`Log entries E2E tests when fetching recent dive sites will return a 400 response if query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "count",
+      ],
+      "received": "nan",
+    },
+  ],
+}
+`;
+
+exports[`Log entries E2E tests when fetching recent dive sites will return the most recently visited dive sites 1`] = `
+[
+  {
+    "id": "d80a65f2-1984-4090-8c0c-82a0472315c7",
+    "name": "bold staid lode",
+  },
+  {
+    "id": "3c5286b8-3428-4d21-9847-fce371ec1175",
+    "name": "bustling normal convert",
+  },
+  {
+    "id": "74aa1202-9d61-443b-b8f5-44dde5ef18d5",
+    "name": "exotic warmhearted aside",
+  },
+  {
+    "id": "b9cd677a-d240-403d-9dab-620dec47451d",
+    "name": "giant broken meat",
+  },
+  {
+    "id": "5f799498-2730-452f-b78b-933510c1174c",
+    "name": "good-natured bountiful relay",
+  },
+  {
+    "id": "7737963a-bf8b-44ee-955f-066a098ef80b",
+    "name": "ideal blond spume",
+  },
+  {
+    "id": "0272ce1a-5715-4a42-a05a-86fdf63cc6ed",
+    "name": "modern sorrowful girdle",
+  },
+  {
+    "id": "ca7960d0-cd3e-4dd3-80d8-f738369dbae6",
+    "name": "rundown joyous put",
+  },
+  {
+    "id": "90bcafd4-90b6-41d5-9b70-db36b470dcaf",
+    "name": "shameful glorious noodles",
+  },
+  {
+    "id": "1561e4a5-8777-433a-9e9d-e8a07452ce88",
+    "name": "silky sharp brilliant",
+  },
+  {
+    "id": "3b9bdf22-0b5b-4f6b-9ec4-f5dfdb0bebe1",
+    "name": "specific dead ramen",
+  },
+  {
+    "id": "31564910-9f3d-45dc-b0c8-f836e7ff7b8d",
+    "name": "spotless gifted gallon",
+  },
+  {
+    "id": "92c546b4-b354-4435-a233-ff3ed2c311a9",
+    "name": "squeaky scaly sled",
+  },
+  {
+    "id": "e2462b14-a141-492f-b284-ba613bc44b06",
+    "name": "vicious difficult skean",
+  },
+  {
+    "id": "b5a31451-0d07-42ad-9e86-de5d63bbf582",
+    "name": "wry boring examiner",
+  },
+]
+`;
+
 exports[`Log entries E2E tests when retrieving single log entries will allow an admin to view any log entry 1`] = `
 {
   "bottomTime": 60,

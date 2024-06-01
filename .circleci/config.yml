@@ -37,6 +37,7 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -71,6 +72,7 @@ jobs:
   test_api:
     docker:
       - image: cimg/node:22.0
+    resource_class: medium
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -89,7 +91,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/api --stream # --since=master
+          command: |
+            yarn --cwd packages/api build
+            yarn --cwd packages/api test
       - store_test_results:
           path: packages/api/reports/
       - run:
@@ -116,6 +120,7 @@ jobs:
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
       - image: lphoward/fake-s3
+    resource_class: medium+
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -134,7 +139,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/service --stream # --since=master
+          command: |
+            yarn --cwd packages/service build
+            yarn --cwd packages/service test
       - store_test_results:
           path: packages/service/reports/
       - run:
@@ -155,6 +162,7 @@ jobs:
   test_web:
     docker:
       - image: cimg/node:22.0-browsers
+    resource_class: medium+
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
@@ -173,7 +181,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/web --stream # --since=master
+          command: |
+            yarn --cwd packages/web build
+            yarn --cwd packages/web test
       - store_test_results:
           path: packages/web/reports/
       - run:
@@ -223,6 +233,7 @@ jobs:
   report_coverage:
     docker:
       - image: cimg/node:22.0
+    resource_class: medium
     steps:
       - attach_workspace:
           at: .
@@ -258,6 +269,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+          version: docker24
       - run:
           name: Build Image
           command: |
@@ -277,6 +289,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+          version: docker24
       - aws-cli/install
       - run:
           name: Build and push Docker image

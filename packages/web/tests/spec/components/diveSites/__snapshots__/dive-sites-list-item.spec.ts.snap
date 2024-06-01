@@ -4,7 +4,7 @@ exports[`Dive Sites List Item component will render a dive site with full proper
 "<div class="flex flex-col gap-0 bg-gradient-to-b from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-950 shadow-xl rounded-md border-blue-900 border-opacity-75 border-2 relative"><a class="absolute -top-32" name="e25add45-3bf3-4be5-9859-7ea516f63f00"></a><!-- Site Name -->
   <div class="text-center bg-blue-200 rounded-t-md"><button class="text-link hover:text-link-hover text-sm" data-testid="select-site-e25add45-3bf3-4be5-9859-7ea516f63f00" type="button">
       <!--v-if-->
-      <h1 class="text-2xl font-bold">webbed, defiant polyester</h1>
+      <h1 class="text-2xl font-bold capitalize py-1.5">webbed, defiant polyester</h1>
     </button></div>
   <div class="flex flex-col gap-3 p-3 grow">
     <!-- Location and creator -->
@@ -71,7 +71,7 @@ exports[`Dive Sites List Item component will render a dive site with minimal pro
 "<div class="flex flex-col gap-0 bg-gradient-to-b from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-950 shadow-xl rounded-md border-blue-900 border-opacity-75 border-2 relative"><a class="absolute -top-32" name="90b06d4a-605c-49d0-8738-cf557cf34b0a"></a><!-- Site Name -->
   <div class="text-center bg-blue-200 rounded-t-md"><button class="text-link hover:text-link-hover text-sm" data-testid="select-site-90b06d4a-605c-49d0-8738-cf557cf34b0a" type="button">
       <!--v-if-->
-      <h1 class="text-2xl font-bold">remorseful, spanish demon</h1>
+      <h1 class="text-2xl font-bold capitalize py-1.5">remorseful, spanish demon</h1>
     </button></div>
   <div class="flex flex-col gap-3 p-3 grow">
     <!-- Location and creator -->

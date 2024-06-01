@@ -9,36 +9,15 @@
 
   <form class="flex flex-col sticky top-20" @submit.prevent="">
     <FormField :responsive="false">
-      <FormTextBox
-        v-model="state.query"
+      <FormSearchBox
+        v-model.trim="state.query"
         control-id="search"
         :maxlength="200"
         placeholder="Search dive sites"
         test-id="search-dive-sites"
-        show-right
         autofocus
-        @right-button-click="onRefresh"
-      >
-        <template #right>
-          <i class="fas fa-search"></i>
-        </template>
-      </FormTextBox>
-      <FormButton
-        class="block lg:hidden"
-        type="link"
-        test-id="toggle-advanced-search"
-        @click="state.showAdvancedSearch = !state.showAdvancedSearch"
-      >
-        <span v-if="state.showAdvancedSearch">
-          <i class="fas fa-chevron-up"></i>
-        </span>
-        <span v-else>
-          <i class="fas fa-chevron-down"></i>
-        </span>
-        <span class="ml-2">
-          {{ state.showAdvancedSearch ? 'Hide' : 'Show' }} Search Filters
-        </span>
-      </FormButton>
+        @search="onRefresh"
+      />
     </FormField>
 
     <div :class="state.showAdvancedSearch ? '' : 'hidden lg:block'">
@@ -258,8 +237,8 @@ import { reactive, ref } from 'vue';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormRadio from '../common/form-radio.vue';
+import FormSearchBox from '../common/form-search-box.vue';
 import FormSlider from '../common/form-slider.vue';
-import FormTextBox from '../common/form-text-box.vue';
 import LocationDialog from '../dialog/location-dialog.vue';
 
 type SearchDiveSitesFormProps = {

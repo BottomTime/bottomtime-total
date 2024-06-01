@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectDiveSiteListItem component will render with full site data 1`] = `
+"<li class="odd:bg-blue-500/40 odd:dark:bg-blue-600/40 rounded-md p-2 space-y-2 flex gap-2 items-center">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="select-site-4f5fd49f-734a-4bb7-9912-d58b0f4d61ef" type="button">
+      <!--v-if--> Select
+    </button></div>
+  <div>
+    <div class="flex align-baseline justify-between"><button data-testid="site-name-4f5fd49f-734a-4bb7-9912-d58b0f4d61ef">
+        <p class="text-xl font-title capitalize hover:text-link-hover">Awesome Site 7</p>
+      </button>
+      <p class="flex gap-2">
+      <div class="flex gap-1.5 text-sm place-items-baseline">
+        <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
+        <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
+        <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
+        <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
+        <div><span class="fa-layers text-grey-500"><i class="far fa-star"></i></span></div><span>4.20</span>
+      </div>
+      </p>
+    </div>
+    <div class="flex ml-2 justify-between">
+      <p class="text-sm text-justify italic">This site is blue.</p>
+    </div>
+    <div class="flex justify-evenly text-sm">
+      <div class="text-center">
+        <p class="font-bold">Location</p>
+        <p>Somewhere</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Max depth</p>
+        <p><span>10.00 m</span></p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Free to dive</p>
+        <p>Yes</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Shore access</p>
+        <p>Yes</p>
+      </div>
+    </div>
+  </div>
+</li>"
+`;
+
+exports[`SelectDiveSiteListItem component will render with partial dive site 1`] = `
+"<li class="odd:bg-blue-500/40 odd:dark:bg-blue-600/40 rounded-md p-2 space-y-2 flex gap-2 items-center">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="select-site-4f5fd49f-734a-4bb7-9912-d58b0f4d61ef" type="button">
+      <!--v-if--> Select
+    </button></div>
+  <div>
+    <div class="flex align-baseline justify-between"><button data-testid="site-name-4f5fd49f-734a-4bb7-9912-d58b0f4d61ef">
+        <p class="text-xl font-title capitalize hover:text-link-hover">Awesome Site 7</p>
+      </button>
+      <!--v-if-->
+    </div>
+    <div class="flex ml-2 justify-between">
+      <!--v-if-->
+    </div>
+    <div class="flex justify-evenly text-sm">
+      <div class="text-center">
+        <p class="font-bold">Location</p>
+        <p>Somewhere</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Max depth</p>
+        <p>(unspecified)</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Free to dive</p>
+        <p>(unspecified)</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Shore access</p>
+        <p>(unspecified)</p>
+      </div>
+    </div>
+  </div>
+</li>"
+`;
+
+exports[`SelectDiveSiteListItem component will show as highlighted when selected property is true 1`] = `
+"<li class="border odd:bg-blue-500/40 odd:dark:bg-blue-600/40 border-success rounded-md p-2 space-y-2 flex gap-2 items-center">
+  <div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="select-site-4f5fd49f-734a-4bb7-9912-d58b0f4d61ef" type="button">
+      <!--v-if--> Select
+    </button></div>
+  <div>
+    <div class="flex align-baseline justify-between"><button data-testid="site-name-4f5fd49f-734a-4bb7-9912-d58b0f4d61ef">
+        <p class="text-xl font-title capitalize hover:text-link-hover">Awesome Site 7</p>
+      </button>
+      <!--v-if-->
+    </div>
+    <div class="flex ml-2 justify-between">
+      <!--v-if-->
+    </div>
+    <div class="flex justify-evenly text-sm">
+      <div class="text-center">
+        <p class="font-bold">Location</p>
+        <p>Somewhere</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Max depth</p>
+        <p>(unspecified)</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Free to dive</p>
+        <p>(unspecified)</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Shore access</p>
+        <p>(unspecified)</p>
+      </div>
+    </div>
+  </div>
+</li>"
+`;

@@ -16,6 +16,11 @@ export class Config {
     return process.env.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';
   }
 
+  /** Whether or not to invoke Google's Places APIs. (This needs to be set to true to enable autocomplete in location boxes.) */
+  static get enablePlacesApi(): boolean {
+    return Boolean(process.env.BTWEB_VITE_ENABLE_PLACES_API);
+  }
+
   /** The value of the `NODE_ENV` environment variable. */
   static get env(): string {
     return process.env.NODE_ENV || 'development';

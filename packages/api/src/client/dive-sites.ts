@@ -64,7 +64,7 @@ export class DiveSitesApiClient {
     sites: DiveSite[];
     totalCount: number;
   }> {
-    const url = `api/diveSites?${this.searchQueryString(query)}`;
+    const url = `/api/diveSites?${this.searchQueryString(query)}`;
     const { data } = await this.apiClient.get(url);
 
     const result = SearchDiveSitesResponseSchema.parse(data);

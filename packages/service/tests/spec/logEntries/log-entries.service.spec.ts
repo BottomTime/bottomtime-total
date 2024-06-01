@@ -7,7 +7,7 @@ import fs from 'fs/promises';
 import { Repository } from 'typeorm';
 
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
-import { DiveSiteFactory } from '../../../src/diveSites';
+import { DiveSiteFactory, DiveSitesService } from '../../../src/diveSites';
 import {
   CreateLogEntryOptions,
   LogEntriesService,
@@ -32,6 +32,7 @@ describe('Log entries service', () => {
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
   let siteFactory: DiveSiteFactory;
+  let diveSitesService: DiveSitesService;
   let service: LogEntriesService;
 
   let ownerData: UserEntity[];
@@ -42,17 +43,27 @@ describe('Log entries service', () => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
+
     siteFactory = createDiveSiteFactory();
 
-    service = new LogEntriesService(Users, Entries, siteFactory);
+    diveSitesService = new DiveSitesService(DiveSites, siteFactory);
+    service = new LogEntriesService(
+      Users,
+      Entries,
+      diveSitesService,
+      siteFactory,
+    );
 
     ownerData = TestUserData.slice(0, 4).map((data) => parseUserJSON(data));
     diveSiteData = TestDiveSiteData.map((site, i) =>
-      parseDiveSiteJSON(site, ownerData[i % 4]),
+      parseDiveSiteJSON(site, ownerData[i % ownerData.length]),
     );
     logEntryData = TestLogEntryData.map((data, i) =>
       parseLogEntryJSON(
-        data,
+        {
+          ...data,
+          createdAt: dayjs(data.entryTime).utc().toDate(),
+        },
         ownerData[i % ownerData.length],
         diveSiteData[i % diveSiteData.length],
       ),
@@ -439,6 +450,23 @@ describe('Log entries service', () => {
       await expect(
         service.getNextAvailableLogNumber(ownerData[0].id),
       ).resolves.toBe(1);
+    });
+  });
+
+  describe('when listing recent dive sites', () => {
+    it('will return an empty list if user has no entries', async () => {
+      await expect(
+        service.getRecentDiveSites(ownerData[0].id),
+      ).resolves.toHaveLength(0);
+    });
+
+    it('will return a distinct list of the most recently used dive sites', async () => {
+      await Entries.save(logEntryData);
+      const results = await service.getRecentDiveSites(ownerData[0].id, 12);
+      expect(results).toHaveLength(12);
+      expect(
+        results.map((site) => ({ id: site.id, name: site.name })),
+      ).toMatchSnapshot();
     });
   });
 });

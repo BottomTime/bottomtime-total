@@ -1,6 +1,7 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   DepthUnit,
+  DiveSiteSchema,
   ListLogEntriesParamsDTO,
   LogEntryDTO,
   LogEntrySortBy,
@@ -41,6 +42,10 @@ function getUrl(entryId?: string, username?: string): string {
 
 function getNextLogEntryUrl(username: string): string {
   return `/api/users/${username}/logbook/nextLogEntryNumber`;
+}
+
+function getRecentDiveSitesUrl(username: string): string {
+  return `/api/users/${username}/logbook/recentDiveSites`;
 }
 
 const AdminUserData: Partial<UserEntity> = {
@@ -90,7 +95,10 @@ describe('Log entries E2E tests', () => {
     );
     logEntryData = TestLogEntryData.map((entry, i) =>
       parseLogEntryJSON(
-        entry,
+        {
+          ...entry,
+          createdAt: dayjs(entry.entryTime).utc().toDate(),
+        },
         ownerData[i % ownerData.length],
         diveSiteData[i % diveSiteData.length],
       ),
@@ -827,6 +835,79 @@ describe('Log entries E2E tests', () => {
     it('will return a 404 response if the target user does not exist', async () => {
       await request(server)
         .get(getNextLogEntryUrl('not_a_user'))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+  });
+
+  describe('when fetching recent dive sites', () => {
+    beforeEach(async () => {
+      await Entries.save(logEntryData);
+    });
+
+    it('will return the most recently visited dive sites', async () => {
+      const { body } = await request(server)
+        .get(getRecentDiveSitesUrl(ownerData[0].username))
+        .set(...authHeader)
+        .query({ count: 15 })
+        .expect(200);
+
+      const result = DiveSiteSchema.array().parse(body);
+      expect(result).toHaveLength(15);
+      expect(
+        result.map((site) => ({
+          id: site.id,
+          name: site.name,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    it('will allow admins to query the most recent dive sites for any user', async () => {
+      const { body } = await request(server)
+        .get(getRecentDiveSitesUrl(ownerData[0].username))
+        .set(...adminAuthHeader)
+        .expect(200);
+
+      const result = DiveSiteSchema.array().parse(body);
+      expect(result).toHaveLength(10);
+      expect(
+        result.map((site) => ({
+          id: site.id,
+          name: site.name,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if query string is invalid', async () => {
+      const {
+        body: { details },
+      } = await request(server)
+        .get(getRecentDiveSitesUrl(ownerData[0].username))
+        .set(...authHeader)
+        .query({
+          count: 'all',
+        })
+        .expect(400);
+
+      expect(details).toMatchSnapshot();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .get(getRecentDiveSitesUrl(ownerData[0].username))
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not authorized to query recent dive sites', async () => {
+      await request(server)
+        .get(getRecentDiveSitesUrl(ownerData[0].username))
+        .set(...otherAuthHeader)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the target user does not exist', async () => {
+      await request(server)
+        .get(getRecentDiveSitesUrl('not_a_user'))
         .set(...adminAuthHeader)
         .expect(404);
     });
