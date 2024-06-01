@@ -5,6 +5,20 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { LogEntryEntity } from '../data';
 import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
 
+export const LogEntryAirSelectFields = [
+  'site_air.ordinal',
+  'site_air.name',
+  'site_air.material',
+  'site_air.workingPressure',
+  'site_air.volume',
+  'site_air.count',
+  'site_air.startPressure',
+  'site_air.endPressure',
+  'site_air.pressureUnit',
+  'site_air.o2Percent',
+  'site_air.hePercent',
+] as const;
+
 export class LogEntryQueryBuilder {
   private query: SelectQueryBuilder<LogEntryEntity>;
 
@@ -15,6 +29,7 @@ export class LogEntryQueryBuilder {
       .innerJoin('entries.owner', 'owners')
       .leftJoin('entries.site', 'sites')
       .leftJoin('sites.creator', 'site_creators')
+      .leftJoin('entries.air', 'site_air')
       .select([
         'entries.id',
         'entries.logNumber',
@@ -34,6 +49,7 @@ export class LogEntryQueryBuilder {
         'owners.location',
         'owners.avatar',
         ...DiveSiteSelectFields,
+        ...LogEntryAirSelectFields,
       ]);
   }
 

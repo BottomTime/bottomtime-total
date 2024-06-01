@@ -9,17 +9,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+import { User } from '../auth';
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../data';
-import { DiveSite, DiveSiteFactory, DiveSitesService } from '../diveSites';
+import { DiveSite, DiveSitesService } from '../diveSites';
 import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
 import { LogEntry } from './log-entry';
-import { LogEntryQueryBuilder } from './log-entry-query-builder';
+import { LogEntryFactory } from './log-entry-factory';
+import {
+  LogEntryAirSelectFields,
+  LogEntryQueryBuilder,
+} from './log-entry-query-builder';
 
 export type CreateLogEntryOptions = Omit<
   CreateOrUpdateLogEntryParamsDTO,
   'site'
 > & {
-  ownerId: string;
+  owner: User;
   site?: DiveSite;
 };
 
@@ -37,17 +42,14 @@ export class LogEntriesService {
   private readonly log = new Logger(LogEntriesService.name);
 
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly Users: Repository<UserEntity>,
-
     @InjectRepository(LogEntryEntity)
     private readonly Entries: Repository<LogEntryEntity>,
 
+    @Inject(LogEntryFactory)
+    private readonly logEntryFactory: LogEntryFactory,
+
     @Inject(DiveSitesService)
     private readonly diveSitesService: DiveSitesService,
-
-    @Inject(DiveSiteFactory)
-    private readonly diveSiteFactory: DiveSiteFactory,
   ) {}
 
   async listLogEntries(
@@ -66,8 +68,8 @@ export class LogEntriesService {
     const [entries, totalCount] = await query.getManyAndCount();
 
     return {
-      logEntries: entries.map(
-        (entry) => new LogEntry(this.Entries, this.diveSiteFactory, entry),
+      logEntries: entries.map((entry) =>
+        this.logEntryFactory.createLogEntry(entry),
       ),
       totalCount,
     };
@@ -82,6 +84,7 @@ export class LogEntriesService {
       .innerJoin('entries.owner', 'owners')
       .leftJoin('entries.site', 'sites')
       .leftJoin('sites.creator', 'site_creators')
+      .leftJoin('entries.air', 'site_air')
       .where('entries.id = :id', { id: entryId })
       .select([
         'entries.id',
@@ -101,6 +104,7 @@ export class LogEntriesService {
         'owners.location',
         'owners.avatar',
         ...DiveSiteSelectFields,
+        ...LogEntryAirSelectFields,
       ]);
 
     if (ownerId) {
@@ -111,20 +115,15 @@ export class LogEntriesService {
     this.log.verbose(query.getSql());
 
     const data = await query.getOne();
-    return data
-      ? new LogEntry(this.Entries, this.diveSiteFactory, data)
-      : undefined;
+    return data ? this.logEntryFactory.createLogEntry(data) : undefined;
   }
 
   async createLogEntry(options: CreateLogEntryOptions): Promise<LogEntry> {
     const data: LogEntryEntity = new LogEntryEntity();
     data.id = uuid();
-    data.owner = await this.Users.findOneOrFail({
-      where: { id: options.ownerId },
-      select: ['id', 'username', 'memberSince', 'name', 'location', 'avatar'],
-    });
+    data.owner = options.owner.toEntity();
 
-    const entry = new LogEntry(this.Entries, this.diveSiteFactory, data);
+    const entry = this.logEntryFactory.createLogEntry(data);
     entry.entryTime = options.entryTime;
     entry.bottomTime = options.bottomTime;
     entry.duration = options.duration;
@@ -132,7 +131,7 @@ export class LogEntriesService {
     entry.notes = options.notes;
     entry.logNumber = options.logNumber;
     entry.site = options.site;
-
+    if (options.air) entry.air = options.air;
     await entry.save();
 
     return entry;

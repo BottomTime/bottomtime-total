@@ -2,6 +2,44 @@
 
 exports[`Log Entry class will render a JSON object correctly 1`] = `
 {
+  "air": [
+    {
+      "count": 2,
+      "endPressure": 500,
+      "hePercent": 0.4,
+      "material": "fe",
+      "name": "HP100",
+      "o2Percent": 0.21,
+      "pressureUnit": "psi",
+      "startPressure": 3000,
+      "volume": 100,
+      "workingPressure": 3442,
+    },
+    {
+      "count": 1,
+      "endPressure": 500,
+      "hePercent": 0,
+      "material": "al",
+      "name": "AL80",
+      "o2Percent": 0.32,
+      "pressureUnit": "psi",
+      "startPressure": 3000,
+      "volume": 80,
+      "workingPressure": 3000,
+    },
+    {
+      "count": 1,
+      "endPressure": 1200,
+      "hePercent": undefined,
+      "material": "al",
+      "name": "AL80",
+      "o2Percent": 0.5,
+      "pressureUnit": "psi",
+      "startPressure": 2800,
+      "volume": 80,
+      "workingPressure": 3000,
+    },
+  ],
   "bottomTime": 45,
   "creator": {
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",

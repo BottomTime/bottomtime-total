@@ -273,7 +273,7 @@ export class UserLogEntriesController {
 
     const logEntry = await this.service.createLogEntry({
       ...options,
-      ownerId: owner.id,
+      owner,
       site,
     });
 
@@ -533,6 +533,8 @@ export class UserLogEntriesController {
     logEntry.logNumber = options.logNumber;
     logEntry.maxDepth = options.maxDepth;
     logEntry.notes = options.notes;
+
+    logEntry.air = options.air ?? [];
 
     if (options.site) {
       const site = await this.diveSites.getDiveSite(options.site);

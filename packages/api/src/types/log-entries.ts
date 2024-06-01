@@ -1,13 +1,29 @@
 import { z } from 'zod';
 
-import { DateWithTimezoneSchema, DepthSchema, SortOrder } from './constants';
+import {
+  DateWithTimezoneSchema,
+  DepthSchema,
+  PressureUnit,
+  SortOrder,
+} from './constants';
 import { DiveSiteSchema } from './dive-sites';
+import { CreateOrUpdateTankParamsSchema } from './tanks';
 import { SuccinctProfileSchema } from './users';
 
 export enum LogEntrySortBy {
   EntryTime = 'entryTime',
   LogNumber = 'logNumber',
 }
+
+export const LogEntryAirSchema = CreateOrUpdateTankParamsSchema.extend({
+  count: z.number().int().min(1).max(10),
+  startPressure: z.number().min(0.0),
+  endPressure: z.number().min(0.0),
+  pressureUnit: z.nativeEnum(PressureUnit),
+  o2Percent: z.number().min(0.0).max(100.0).optional(),
+  hePercent: z.number().min(0.0).max(100.0).optional(),
+});
+export type LogEntryAirDTO = z.infer<typeof LogEntryAirSchema>;
 
 const LogEntryBaseSchema = z.object({
   logNumber: z.number().int().positive().optional(),
@@ -17,6 +33,8 @@ const LogEntryBaseSchema = z.object({
   duration: z.number().positive(),
 
   maxDepth: DepthSchema.optional(),
+
+  air: LogEntryAirSchema.array().optional(),
 
   notes: z.string().max(5000).optional(),
 });

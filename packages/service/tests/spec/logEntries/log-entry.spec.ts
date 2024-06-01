@@ -1,17 +1,32 @@
-import { DepthUnit, LogBookSharing, WaterType } from '@bottomtime/api';
+import {
+  DepthUnit,
+  LogBookSharing,
+  LogEntryAirDTO,
+  PressureUnit,
+  TankMaterial,
+  WaterType,
+} from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
+import { v4 as uuid } from 'uuid';
 
-import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
+import {
+  DiveSiteEntity,
+  LogEntryAirEntity,
+  LogEntryEntity,
+  UserEntity,
+} from '../../../src/data';
 import { DiveSiteFactory } from '../../../src/diveSites/dive-site-factory';
 import { LogEntry } from '../../../src/logEntries';
+import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { dataSource } from '../../data-source';
 import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
 import { createTestDiveSite } from '../../utils/create-test-dive-site';
 import { createTestLogEntry } from '../../utils/create-test-log-entry';
+import { createTestlogEntryAir } from '../../utils/create-test-log-entry-air';
 import { createTestUser } from '../../utils/create-test-user';
 
 const CreatorData: Partial<UserEntity> = {
@@ -60,6 +75,51 @@ const TestLogEntryData: Partial<LogEntryEntity> = {
   maxDepth: 30,
   maxDepthUnit: DepthUnit.Feet,
 
+  air: [
+    {
+      id: 'cf3d9ae2-8ebc-4941-b6a8-4ce1c1fa475c',
+      count: 2,
+      ordinal: 0,
+      material: TankMaterial.Steel,
+      name: 'HP100',
+      workingPressure: 3442,
+      volume: 100,
+      startPressure: 3000,
+      endPressure: 500,
+      pressureUnit: PressureUnit.PSI,
+      o2Percent: 0.21,
+      hePercent: 0.4,
+    },
+    {
+      id: 'ad4de203-a3c6-49e0-8bb8-c6b2851ee1f6',
+      count: 1,
+      ordinal: 1,
+      material: TankMaterial.Aluminum,
+      name: 'AL80',
+      workingPressure: 3000,
+      volume: 80,
+      startPressure: 3000,
+      endPressure: 500,
+      pressureUnit: PressureUnit.PSI,
+      o2Percent: 0.32,
+      hePercent: 0.0,
+    },
+    {
+      id: '8a65be87-303c-4aa8-8031-f3c3b8e074e3',
+      count: 1,
+      ordinal: 2,
+      material: TankMaterial.Aluminum,
+      name: 'AL80',
+      workingPressure: 3000,
+      volume: 80,
+      startPressure: 2800,
+      endPressure: 1200,
+      pressureUnit: PressureUnit.PSI,
+      o2Percent: 0.5,
+      hePercent: null,
+    },
+  ],
+
   notes: 'This was a great dive!',
 };
 
@@ -69,6 +129,7 @@ dayjs.extend(utc);
 describe('Log Entry class', () => {
   let Users: Repository<UserEntity>;
   let Entries: Repository<LogEntryEntity>;
+  let EntriesAir: Repository<LogEntryAirEntity>;
   let Sites: Repository<DiveSiteEntity>;
 
   let user: UserEntity;
@@ -80,6 +141,7 @@ describe('Log Entry class', () => {
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
+    EntriesAir = dataSource.getRepository(LogEntryAirEntity);
     Users = dataSource.getRepository(UserEntity);
     Sites = dataSource.getRepository(DiveSiteEntity);
 
@@ -91,7 +153,7 @@ describe('Log Entry class', () => {
 
   beforeEach(async () => {
     data = createTestLogEntry(user, TestLogEntryData);
-    logEntry = new LogEntry(Entries, siteFactory, data);
+    logEntry = new LogEntry(Entries, EntriesAir, siteFactory, data);
 
     await Users.save(user);
     await Sites.save(diveSite);
@@ -261,5 +323,162 @@ describe('Log Entry class', () => {
     await logEntry.delete();
     const savedEntry = await Entries.findOneBy({ id: logEntry.id });
     expect(savedEntry).toBeNull();
+  });
+
+  describe('when working with air tank entries', () => {
+    let otherEntry: LogEntryEntity;
+    let otherAir: LogEntryAirEntity[];
+
+    beforeEach(async () => {
+      // Add some additional dummy data so we can be sure we're not overwriting/destroying unrelated data
+      otherEntry = createTestLogEntry(user);
+      otherAir = data.air!.map((tank) => ({
+        ...tank,
+        logEntry: otherEntry,
+        id: uuid(),
+      }));
+      await Entries.save(otherEntry);
+      await EntriesAir.save(otherAir);
+    });
+
+    it('will return an empty array if no airTanks does not exist', () => {
+      data.air = undefined;
+      logEntry = new LogEntry(Entries, EntriesAir, siteFactory, data);
+      expect(logEntry.air).toHaveLength(0);
+    });
+
+    it('will return an array of air tank entries', () => {
+      expect(logEntry.air).toEqual(data.air!.map(LogEntryAirUtils.entityToDTO));
+    });
+
+    it('will allow air array to be set to an empty array', () => {
+      logEntry.air = [];
+      expect(logEntry.air).toHaveLength(0);
+    });
+
+    it('will allow air array to be set to a new array', () => {
+      const newValues: LogEntryAirDTO[] = [
+        createTestlogEntryAir(),
+        createTestlogEntryAir(),
+        createTestlogEntryAir(),
+        createTestlogEntryAir(),
+      ].map(LogEntryAirUtils.entityToDTO);
+
+      logEntry.air = newValues;
+      expect(logEntry.air).toEqual(newValues);
+    });
+
+    it('will save air tank entries for new log entries', async () => {
+      await logEntry.save();
+      const saved = await Entries.findOneOrFail({
+        where: { id: logEntry.id },
+        relations: ['air'],
+      });
+      expect(saved.air).toHaveLength(3);
+      expect(saved.air).toEqual(
+        data.air!.map((tank, index) => ({
+          ...tank,
+          ordinal: index,
+          id: saved.air![index].id,
+        })),
+      );
+
+      await expect(EntriesAir.count()).resolves.toBe(6);
+    });
+
+    it('will save changes to air tank entries', async () => {
+      await logEntry.save();
+
+      const updated: LogEntryAirDTO[] = [
+        // 1. Unmodified tank
+        logEntry.air[0],
+
+        // 2. Modified tank
+        {
+          ...logEntry.air[1],
+          endPressure: 1000,
+        },
+
+        // 3. New tank added
+        {
+          count: 1,
+          material: TankMaterial.Aluminum,
+          name: 'AL120',
+          workingPressure: 3000,
+          volume: 120,
+          startPressure: 2700,
+          endPressure: 1800,
+          pressureUnit: PressureUnit.PSI,
+          o2Percent: 0.26,
+        },
+
+        // 4. Final tank is removed
+      ];
+      logEntry.air = updated;
+
+      await logEntry.save();
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: logEntry.id },
+        relations: ['air'],
+      });
+      expect(saved.air).toHaveLength(3);
+      expect(saved.air).toEqual(
+        updated.map((tank, index) => ({
+          ...LogEntryAirUtils.dtoToEntity(tank),
+          ordinal: index,
+          id: saved.air![index].id,
+        })),
+      );
+
+      await expect(EntriesAir.count()).resolves.toBe(6);
+    });
+
+    it('will save changes made directly to the air tanks array', async () => {
+      await logEntry.save();
+      logEntry.air[1].endPressure = 888;
+      logEntry.air.push({
+        count: 1,
+        endPressure: 1111,
+        material: TankMaterial.Steel,
+        name: 'HP120',
+        o2Percent: 0.32,
+        hePercent: 0.5,
+        pressureUnit: PressureUnit.PSI,
+        startPressure: 3500,
+        volume: 120,
+        workingPressure: 3442,
+      });
+      await logEntry.save();
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: logEntry.id },
+        relations: ['air'],
+      });
+      expect(saved.air).toHaveLength(4);
+      expect(saved.air).toEqual(
+        logEntry.air.map((tank, index) => ({
+          ...LogEntryAirUtils.dtoToEntity(tank),
+          ordinal: index,
+          id: saved.air![index].id,
+        })),
+      );
+
+      await expect(EntriesAir.count()).resolves.toBe(7);
+    });
+
+    it('will remove all air tanks if the array is cleared', async () => {
+      await logEntry.save();
+      logEntry.air = [];
+      await logEntry.save();
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: logEntry.id },
+        relations: ['air'],
+      });
+      expect(saved.air).toHaveLength(0);
+
+      await expect(EntriesAir.count()).resolves.toBe(3);
+    });
   });
 });

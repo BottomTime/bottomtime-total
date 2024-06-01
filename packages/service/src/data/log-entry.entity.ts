@@ -6,11 +6,13 @@ import {
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { DiveSiteEntity } from './dive-site.entity';
+import { LogEntryAirEntity } from './log-entry-air.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entries')
@@ -56,6 +58,12 @@ export class LogEntryEntity {
     nullable: true,
   })
   site: DiveSiteEntity | null = null;
+
+  // Dive characteristics
+  @OneToMany(() => LogEntryAirEntity, (air) => air.logEntry, {
+    onDelete: 'CASCADE',
+  })
+  air?: LogEntryAirEntity[];
 
   @Column({ type: 'float', nullable: true })
   maxDepth: number | null = null;

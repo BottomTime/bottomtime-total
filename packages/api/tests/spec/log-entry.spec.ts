@@ -7,6 +7,8 @@ import {
   DepthUnit,
   LogEntry,
   LogEntryDTO,
+  PressureUnit,
+  TankMaterial,
 } from '../../src';
 import { createScope } from '../fixtures/nock';
 import { BasicUser } from '../fixtures/users';
@@ -30,6 +32,19 @@ const FullTestData: LogEntryDTO = {
     unit: DepthUnit.Feet,
   },
   notes: 'Sick shipwreck!',
+  air: [
+    {
+      name: 'lean photographer',
+      material: TankMaterial.Aluminum,
+      workingPressure: 300,
+      volume: 4,
+      count: 1,
+      startPressure: 227.7898846170865,
+      endPressure: 69.807624156354,
+      pressureUnit: PressureUnit.Bar,
+      o2Percent: 27.6,
+    },
+  ],
 };
 
 describe('Log entry API client', () => {
@@ -63,6 +78,7 @@ describe('Log entry API client', () => {
     expect(entry.logNumber).toBe(FullTestData.logNumber);
     expect(entry.maxDepth).toEqual(FullTestData.maxDepth);
     expect(entry.notes).toBe(FullTestData.notes);
+    expect(entry.air).toEqual(FullTestData.air);
   });
 
   it('will return missing properties as undefined', () => {
@@ -71,6 +87,7 @@ describe('Log entry API client', () => {
     expect(entry.logNumber).toBeUndefined();
     expect(entry.maxDepth).toBeUndefined();
     expect(entry.notes).toBeUndefined();
+    expect(entry.air).toBeUndefined();
   });
 
   it('will allow properties to be updated', () => {
@@ -83,6 +100,19 @@ describe('Log entry API client', () => {
       date: '2024-04-30T20:48:16',
       timezone: 'Pacific/Pohnpei',
     };
+    const newAir = [
+      {
+        name: 'robust spokesman',
+        material: TankMaterial.Steel,
+        workingPressure: 207,
+        volume: 4,
+        count: 1,
+        startPressure: 213.0432935175486,
+        endPressure: 62.67623910983093,
+        pressureUnit: PressureUnit.Bar,
+        o2Percent: 21.6,
+      },
+    ];
 
     entry.logNumber = newLogNumber;
     entry.entryTime = newEntryTime;
@@ -90,6 +120,7 @@ describe('Log entry API client', () => {
     entry.duration = newDuration;
     entry.maxDepth = newMaxDepth;
     entry.notes = newNotes;
+    entry.air = newAir;
 
     expect(entry.logNumber).toBe(newLogNumber);
     expect(entry.entryTime).toEqual(newEntryTime);
@@ -97,6 +128,7 @@ describe('Log entry API client', () => {
     expect(entry.duration).toBe(newDuration);
     expect(entry.maxDepth).toEqual(newMaxDepth);
     expect(entry.notes).toBe(newNotes);
+    expect(entry.air).toEqual(newAir);
   });
 
   it('will render correctly as JSON', () => {
@@ -114,6 +146,19 @@ describe('Log entry API client', () => {
       logNumber: 555,
       maxDepth: { depth: 95.3, unit: DepthUnit.Feet },
       notes: 'Awesome dive!',
+      air: [
+        {
+          name: 'robust spokesman',
+          material: TankMaterial.Steel,
+          workingPressure: 207,
+          volume: 4,
+          count: 1,
+          startPressure: 213.0432935175486,
+          endPressure: 62.67623910983093,
+          pressureUnit: PressureUnit.Bar,
+          o2Percent: 21.6,
+        },
+      ],
     };
 
     entry.logNumber = options.logNumber;
@@ -122,6 +167,7 @@ describe('Log entry API client', () => {
     entry.duration = options.duration;
     entry.maxDepth = options.maxDepth;
     entry.notes = options.notes;
+    entry.air = options.air!;
 
     scope
       .put(`/api/users/${BasicUser.username}/logbook/${entry.id}`, options)

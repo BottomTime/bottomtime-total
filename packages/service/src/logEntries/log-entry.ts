@@ -1,6 +1,7 @@
 import {
   DateWithTimezoneDTO,
   DepthDTO,
+  LogEntryAirDTO,
   LogEntryDTO,
   SuccinctProfileDTO,
 } from '@bottomtime/api';
@@ -12,19 +13,24 @@ import 'dayjs/plugin/timezone';
 import 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity } from '../data';
+import { LogEntryAirEntity, LogEntryEntity } from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
+import { LogEntryAirUtils } from './log-entry-air-utils';
 
 const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 
 export class LogEntry {
   private readonly log = new Logger(LogEntry.name);
+  private airTanks: LogEntryAirDTO[];
 
   constructor(
     private readonly Entries: Repository<LogEntryEntity>,
+    private readonly EntriesAir: Repository<LogEntryAirEntity>,
     private readonly siteFactory: DiveSiteFactory,
     private readonly data: LogEntryEntity,
-  ) {}
+  ) {
+    this.airTanks = data.air?.map(LogEntryAirUtils.entityToDTO) ?? [];
+  }
 
   get id(): string {
     return this.data.id;
@@ -107,6 +113,13 @@ export class LogEntry {
     this.data.notes = value ?? null;
   }
 
+  get air(): LogEntryAirDTO[] {
+    return this.airTanks;
+  }
+  set air(values: LogEntryAirDTO[]) {
+    this.airTanks = values;
+  }
+
   toJSON(): LogEntryDTO {
     return {
       id: this.id,
@@ -118,6 +131,7 @@ export class LogEntry {
       maxDepth: this.maxDepth,
       notes: this.notes,
       site: this.site?.toJSON(),
+      air: this.air,
     };
   }
 
@@ -127,7 +141,19 @@ export class LogEntry {
 
   async save(): Promise<void> {
     this.log.debug(`Attempting to save log entry "${this.id}"...`);
+
+    this.data.air = this.airTanks.map((tank, index) => ({
+      ...LogEntryAirUtils.dtoToEntity(tank),
+      ordinal: index,
+    }));
+    await this.EntriesAir.delete({ logEntry: { id: this.data.id } });
     await this.Entries.save(this.data);
+    await this.EntriesAir.save(
+      this.data.air.map((tank) => ({
+        ...tank,
+        logEntry: { id: this.data.id },
+      })),
+    );
   }
 
   async delete(): Promise<void> {

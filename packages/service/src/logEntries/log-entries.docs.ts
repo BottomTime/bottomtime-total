@@ -11,6 +11,80 @@
  *         type: string
  *         format: uuid
  *   schemas:
+ *     LogEntryAir:
+ *       type: object
+ *       required:
+ *         - name
+ *         - material
+ *         - workingPressure
+ *         - volume
+ *         - count
+ *         - startPressure
+ *         - endPressure
+ *         - pressureUnit
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: The name of the tank. (E.g. AL80, HP100, etc.)
+ *           example: AL80
+ *           maxLength: 100
+ *         material:
+ *           type: string
+ *           description: |
+ *             The material that the tank is made of. One of `al` (aluminum) or `fe` (steel).
+ *           enum:
+ *             - al
+ *             - fe
+ *           example: al
+ *         workingPressure:
+ *           type: number
+ *           description: |
+ *             The working pressure of the tank. **NOTE:** This value is always listed in Bar.
+ *           example: 207
+ *           minimum: 0
+ *         volume:
+ *           type: number
+ *           description: |
+ *             The volume of the tank. **NOTE:** This value is always listed in liters.
+ *           example: 11.1
+ *           minimum: 0
+ *         count:
+ *           type: number
+ *           format: int32
+ *           description: The number of tanks of this type. Use this to indicate when diving doubles, etc.
+ *           example: 2
+ *           minimum: 1
+ *         startPressure:
+ *           type: number
+ *           description: |
+ *             The pressure in the tank at the beginning of the dive. (In the same units as `pressureUnit`.)
+ *           example: 3000
+ *           minimum: 0
+ *         endPressure:
+ *           type: number
+ *           description: |
+ *             The pressure remaining in the tank at the end of the dive. (In the same units as `pressureUnit`.)
+ *           example: 500
+ *           minimum: 0
+ *         pressureUnit:
+ *           type: string
+ *           description: The unit of measure for the pressure in the tank before and after the dive.
+ *           enum:
+ *             - bar
+ *             - psi
+ *           example: psi
+ *         o2Percent:
+ *           type: number
+ *           description: The percentage of oxygen in the gas blend.
+ *           example: 32.2
+ *           minimum: 0.0
+ *           maximum: 100.0
+ *         hePercent:
+ *           type: number
+ *           description: The percentage of helium in the gas blend.
+ *           example: 41.5
+ *           minimum: 0.0
+ *           maximum: 100.0
  *     LogEntryBase:
  *       type: object
  *       required:
@@ -69,6 +143,12 @@
  *                 - ft
  *                 - m
  *               example: m
+ *         air:
+ *           type: array
+ *           description: |
+ *             An array listing tanks used during the dive as well as their contents and starting/ending pressures.
+ *           items:
+ *             $ref: "#/components/schemas/LogEntryAir"
  *         notes:
  *           type: string
  *           description: Any notes about the dive.

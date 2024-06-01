@@ -5,7 +5,9 @@ import {
   ListLogEntriesParamsDTO,
   LogEntryDTO,
   LogEntrySortBy,
+  PressureUnit,
   SortOrder,
+  TankMaterial,
   UserRole,
 } from '@bottomtime/api';
 
@@ -17,7 +19,13 @@ import utc from 'dayjs/plugin/utc';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../../src/data';
+import {
+  DiveSiteEntity,
+  LogEntryAirEntity,
+  LogEntryEntity,
+  UserEntity,
+} from '../../../src/data';
+import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
@@ -70,10 +78,12 @@ describe('Log entries E2E tests', () => {
   let ownerData: UserEntity[];
   let adminData: UserEntity;
   let logEntryData: LogEntryEntity[];
+  let airData: LogEntryAirEntity[];
   let diveSiteData: DiveSiteEntity[];
 
   let Users: Repository<UserEntity>;
   let Entries: Repository<LogEntryEntity>;
+  let EntriesAir: Repository<LogEntryAirEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
 
   let authHeader: [string, string];
@@ -86,6 +96,7 @@ describe('Log entries E2E tests', () => {
 
     Users = dataSource.getRepository(UserEntity);
     Entries = dataSource.getRepository(LogEntryEntity);
+    EntriesAir = dataSource.getRepository(LogEntryAirEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
 
     adminData = createTestUser(AdminUserData);
@@ -104,6 +115,18 @@ describe('Log entries E2E tests', () => {
       ),
     );
 
+    airData = [];
+    for (const entry of logEntryData) {
+      if (entry.air) {
+        for (let i = 0; i < entry.air.length; i++) {
+          airData.push({
+            ...entry.air[i],
+            logEntry: { id: entry.id } as LogEntryEntity,
+          });
+        }
+      }
+    }
+
     authHeader = await createAuthHeader(ownerData[0].id);
     adminAuthHeader = await createAuthHeader(adminData.id);
     otherAuthHeader = await createAuthHeader(ownerData[1].id);
@@ -119,13 +142,22 @@ describe('Log entries E2E tests', () => {
   });
 
   describe('when retrieving single log entries', () => {
+    let data: LogEntryEntity;
+
     beforeEach(async () => {
-      await Entries.save(logEntryData[0]);
+      data = { ...logEntryData[0] };
+      await Entries.save(data);
+      await EntriesAir.save(
+        data.air!.map((tank) => ({
+          ...tank,
+          logEntry: { id: data.id } as LogEntryEntity,
+        })),
+      );
     });
 
     it('will return the requested log entry', async () => {
       const { body } = await request(server)
-        .get(getUrl(logEntryData[0].id))
+        .get(getUrl(data.id))
         .set(...authHeader)
         .expect(200);
 
@@ -134,7 +166,7 @@ describe('Log entries E2E tests', () => {
 
     it('will allow an admin to view any log entry', async () => {
       const { body } = await request(server)
-        .get(getUrl(logEntryData[0].id))
+        .get(getUrl(data.id))
         .set(...adminAuthHeader)
         .expect(200);
 
@@ -142,12 +174,12 @@ describe('Log entries E2E tests', () => {
     });
 
     it('will return a 401 response if the user is not authenticated', async () => {
-      await request(server).get(getUrl(logEntryData[0].id)).expect(401);
+      await request(server).get(getUrl(data.id)).expect(401);
     });
 
     it('will return a 403 response if the user is not authorized to view the log entry', async () => {
       await request(server)
-        .get(getUrl(logEntryData[0].id))
+        .get(getUrl(data.id))
         .set(...otherAuthHeader)
         .expect(403);
     });
@@ -161,7 +193,7 @@ describe('Log entries E2E tests', () => {
 
     it('will return a 404 response if the target user does not own the log entry', async () => {
       await request(server)
-        .get(getUrl(logEntryData[0].id, ownerData[1].username))
+        .get(getUrl(data.id, ownerData[1].username))
         .set(...otherAuthHeader)
         .expect(404);
     });
@@ -170,6 +202,7 @@ describe('Log entries E2E tests', () => {
   describe('when searching log entries', () => {
     beforeEach(async () => {
       await Entries.save(logEntryData);
+      await EntriesAir.save(airData);
     });
 
     it('will perform a basic search for log entries', async () => {
@@ -199,7 +232,7 @@ describe('Log entries E2E tests', () => {
         sortBy: LogEntrySortBy.EntryTime,
         sortOrder: SortOrder.Ascending,
         skip: 5,
-        limit: 50,
+        limit: 8,
       };
 
       const { body } = await request(server)
@@ -208,8 +241,8 @@ describe('Log entries E2E tests', () => {
         .set(...authHeader)
         .expect(200);
 
-      expect(body.totalCount).toBe(23);
-      expect(body.logEntries).toHaveLength(18);
+      expect(body.totalCount).toBe(24);
+      expect(body.logEntries).toHaveLength(8);
 
       expect(
         body.logEntries.map((entry: LogEntryDTO) => ({
@@ -217,6 +250,7 @@ describe('Log entries E2E tests', () => {
           owner: entry.creator.username,
           entryTime: entry.entryTime,
           site: entry.site?.name,
+          air: entry.air,
         })),
       ).toMatchSnapshot();
     });
@@ -308,6 +342,19 @@ describe('Log entries E2E tests', () => {
         unit: DepthUnit.Meters,
       },
       notes: 'I did a dive!',
+      air: [
+        {
+          name: 'golden minimalism',
+          material: TankMaterial.Steel,
+          workingPressure: 207,
+          volume: 18,
+          count: 2,
+          startPressure: 3210,
+          endPressure: 1140,
+          pressureUnit: PressureUnit.PSI,
+          o2Percent: 26.9,
+        },
+      ],
     };
 
     it('will create and return a new log entry', async () => {
@@ -329,10 +376,11 @@ describe('Log entries E2E tests', () => {
       expect(body.maxDepth).toEqual(newEntry.maxDepth);
       expect(body.notes).toBe(newEntry.notes);
       expect(body.site.name).toEqual(diveSiteData[8].name);
+      expect(body.air).toEqual(newEntry.air);
 
       const saved = await Entries.findOneOrFail({
         where: { id: body.id },
-        relations: ['owner', 'site'],
+        relations: ['air', 'owner', 'site'],
       });
       expect(saved.bottomTime).toBe(newEntry.bottomTime);
       expect(saved.duration).toBe(newEntry.duration);
@@ -348,6 +396,8 @@ describe('Log entries E2E tests', () => {
       expect(saved.maxDepthUnit).toBe(newEntry.maxDepth!.unit);
       expect(saved.notes).toBe(newEntry.notes);
       expect(saved.site?.name).toEqual(diveSiteData[8].name);
+      expect(saved.air).toHaveLength(1);
+      expect(saved.air![0].name).toBe(newEntry.air![0].name);
     });
 
     it('will allow admins to create log entries for other users', async () => {
@@ -541,6 +591,30 @@ describe('Log entries E2E tests', () => {
         unit: DepthUnit.Meters,
       },
       notes: 'I did a dive!',
+      air: [
+        {
+          name: 'raw cushion',
+          material: TankMaterial.Aluminum,
+          workingPressure: 300,
+          volume: 4,
+          count: 1,
+          startPressure: 2940,
+          endPressure: 1040,
+          pressureUnit: PressureUnit.PSI,
+          o2Percent: 28.8,
+        },
+        {
+          name: 'caring poem',
+          material: TankMaterial.Steel,
+          workingPressure: 300,
+          volume: 18,
+          count: 1,
+          startPressure: 191.41511167166755,
+          endPressure: 52.188035525381565,
+          pressureUnit: PressureUnit.Bar,
+          o2Percent: 39.4,
+        },
+      ],
     };
 
     let entry: LogEntryEntity;
@@ -568,10 +642,11 @@ describe('Log entries E2E tests', () => {
       expect(body.duration).toBe(updatedEntry.duration);
       expect(body.maxDepth).toEqual(updatedEntry.maxDepth);
       expect(body.notes).toBe(updatedEntry.notes);
+      expect(body.air).toEqual(updatedEntry.air);
 
       const saved = await Entries.findOneOrFail({
         where: { id: body.id },
-        relations: ['owner'],
+        relations: ['air', 'owner'],
       });
       expect(saved.bottomTime).toBe(updatedEntry.bottomTime);
       expect(saved.duration).toBe(updatedEntry.duration);
@@ -586,6 +661,13 @@ describe('Log entries E2E tests', () => {
       expect(saved.maxDepth).toEqual(updatedEntry.maxDepth!.depth);
       expect(saved.maxDepthUnit).toBe(updatedEntry.maxDepth!.unit);
       expect(saved.notes).toBe(updatedEntry.notes);
+      expect(saved.air).toEqual(
+        updatedEntry.air?.map((tank, index) => ({
+          ...LogEntryAirUtils.dtoToEntity(tank),
+          id: saved.air![index].id,
+          ordinal: index,
+        })),
+      );
     });
 
     it('will allow an admin to update any log entry', async () => {

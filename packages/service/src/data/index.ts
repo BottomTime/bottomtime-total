@@ -7,6 +7,7 @@ export * from './dive-site.entity';
 export * from './friend-request.entity';
 export * from './friendship.entity';
 export * from './log-entry.entity';
+export * from './log-entry-air.entity';
 export * from './notification.entity';
 export * from './tank.entity';
 export * from './user-certification.entity';
