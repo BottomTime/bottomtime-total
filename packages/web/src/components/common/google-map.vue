@@ -24,16 +24,15 @@
       }"
     >
       <a
-        :href="`#${site.id}`"
         class="flex items-center space-x-1 pr-0 z-10 hover:z-30 hover:pr-1 rounded-md h-[16px] shadow-sm bg-grey-200 group"
-        @click="$emit('site-selected', site)"
+        @click.prevent="$emit('site-selected', site)"
       >
         <img
           class="w-[16px] h-[16px] rounded-md shadow-sm shadow-danger-hover"
           src="/img/flag-marker.svg"
           :alt="site.name"
         />
-        <span class="hidden group-hover:block text-grey-950 text-xs">
+        <span class="hidden group-hover:block text-grey-950 text-xs capitalize">
           {{ site.name }}
         </span>
       </a>
@@ -42,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
+import { DiveSiteDTO, GPSCoordinates, GpsCoordinates } from '@bottomtime/api';
 
 import { computed, onBeforeMount, ref } from 'vue';
 import { CustomMarker, GoogleMap, Marker } from 'vue3-google-map';
@@ -99,4 +98,10 @@ function onMapClick(event: globalThis.google.maps.MapMouseEvent) {
     });
   }
 }
+
+function moveCenter(newCenter: NonNullable<GPSCoordinates>) {
+  currentCenter.value = newCenter;
+}
+
+defineExpose({ moveCenter });
 </script>

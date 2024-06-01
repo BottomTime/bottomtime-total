@@ -137,7 +137,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/service --stream # --since=master
+          command: |
+            yarn --cwd packages/service build
+            yarn --cwd packages/service test
       - store_test_results:
           path: packages/service/reports/
       - run:
@@ -177,7 +179,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Build and Test
-          command: npx lerna run build,test --scope @bottomtime/web --stream # --since=master
+          command: |
+            yarn --cwd packages/web build
+            yarn --cwd packages/web test
       - store_test_results:
           path: packages/web/reports/
       - run:
@@ -227,7 +231,7 @@ jobs:
   report_coverage:
     docker:
       - image: cimg/node:22.0
-    resource_class: medium+
+    resource_class: medium
     steps:
       - attach_workspace:
           at: .
@@ -263,6 +267,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+          version: docker24
       - run:
           name: Build Image
           command: |
@@ -282,6 +287,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+          version: docker24
       - aws-cli/install
       - run:
           name: Build and push Docker image

@@ -131,6 +131,132 @@ exports[`Log entries E2E tests when creating log entries will return a 400 respo
 
 exports[`Log entries E2E tests when creating log entries will return a 400 response if the site ID cannot be found 1`] = `"Dive site with ID "37a214f6-6167-4468-947d-b3171a0425fd" not found."`;
 
+exports[`Log entries E2E tests when fetching recent dive sites will allow admins to query the most recent dive sites for any user 1`] = `
+[
+  {
+    "id": "0f672534-0510-44ea-876c-43b67c479803",
+    "name": "becquerel worst",
+  },
+  {
+    "id": "90411709-f9b3-4c93-acb7-78a1f18e5230",
+    "name": "below South",
+  },
+  {
+    "id": "0e17960d-f6b7-46db-92c8-ba2f9d35aeb9",
+    "name": "deploy Electronic",
+  },
+  {
+    "id": "41a1cfe6-a707-48de-ab63-1c4884626ef6",
+    "name": "Music quantifying",
+  },
+  {
+    "id": "7ee779a0-409b-4f8b-b2e8-bbf27fb795d4",
+    "name": "payment black",
+  },
+  {
+    "id": "05fed034-b2b9-4015-98da-d8cc2e23c537",
+    "name": "radian BEAC",
+  },
+  {
+    "id": "ed26d72e-fa20-4f5d-8daf-387565371b5b",
+    "name": "revolutionary yuck",
+  },
+  {
+    "id": "bf4d4991-b2c5-4a72-b899-a149717ff125",
+    "name": "Sausages Alpharetta",
+  },
+  {
+    "id": "83374cb6-446a-4ad0-b1dd-bc75ec8d8eea",
+    "name": "to East",
+  },
+  {
+    "id": "5232b070-017f-43ff-baef-1cf85adbb6fa",
+    "name": "whoa minima",
+  },
+]
+`;
+
+exports[`Log entries E2E tests when fetching recent dive sites will return a 400 response if query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "count",
+      ],
+      "received": "nan",
+    },
+  ],
+}
+`;
+
+exports[`Log entries E2E tests when fetching recent dive sites will return the most recently visited dive sites 1`] = `
+[
+  {
+    "id": "0f672534-0510-44ea-876c-43b67c479803",
+    "name": "becquerel worst",
+  },
+  {
+    "id": "90411709-f9b3-4c93-acb7-78a1f18e5230",
+    "name": "below South",
+  },
+  {
+    "id": "0e17960d-f6b7-46db-92c8-ba2f9d35aeb9",
+    "name": "deploy Electronic",
+  },
+  {
+    "id": "8aae849a-d2b5-4923-8ce3-95a0c3ff196b",
+    "name": "Gasoline Consultant",
+  },
+  {
+    "id": "541a5722-e7b9-4de0-9197-55d73d81b9f5",
+    "name": "Hip darling",
+  },
+  {
+    "id": "98fff89f-124c-4bbd-a762-22bb8a89d868",
+    "name": "Legacy SCSI",
+  },
+  {
+    "id": "41a1cfe6-a707-48de-ab63-1c4884626ef6",
+    "name": "Music quantifying",
+  },
+  {
+    "id": "121532ce-90e5-447a-b346-8bead7ab7945",
+    "name": "navigating Recycled",
+  },
+  {
+    "id": "7ee779a0-409b-4f8b-b2e8-bbf27fb795d4",
+    "name": "payment black",
+  },
+  {
+    "id": "684a0a18-2725-4663-b04c-48f4f7741c21",
+    "name": "portals Ernser",
+  },
+  {
+    "id": "05fed034-b2b9-4015-98da-d8cc2e23c537",
+    "name": "radian BEAC",
+  },
+  {
+    "id": "ed26d72e-fa20-4f5d-8daf-387565371b5b",
+    "name": "revolutionary yuck",
+  },
+  {
+    "id": "bf4d4991-b2c5-4a72-b899-a149717ff125",
+    "name": "Sausages Alpharetta",
+  },
+  {
+    "id": "83374cb6-446a-4ad0-b1dd-bc75ec8d8eea",
+    "name": "to East",
+  },
+  {
+    "id": "5232b070-017f-43ff-baef-1cf85adbb6fa",
+    "name": "whoa minima",
+  },
+]
+`;
+
 exports[`Log entries E2E tests when retrieving single log entries will allow an admin to view any log entry 1`] = `
 {
   "bottomTime": 60,

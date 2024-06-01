@@ -22,6 +22,14 @@
     </div>
   </ConfirmDialog>
 
+  <DrawerPanel
+    title="Select Dive Site"
+    :visible="state.showSelectDiveSite"
+    @close="onCloseDiveSitePanel"
+  >
+    <SelectSite :current-site="formData.site" @site-selected="onSiteSelected" />
+  </DrawerPanel>
+
   <form data-testid="edit-log-entry" @submit.prevent="">
     <fieldset class="space-y-4" :disabled="isSaving">
       <FormField
@@ -74,6 +82,28 @@
             :options="timezones"
           />
         </div>
+      </FormField>
+
+      <FormField label="Dive site">
+        <div v-if="formData.site" class="space-y-2">
+          <PreviewDiveSite :site="formData.site" />
+          <FormButton
+            type="link"
+            size="md"
+            test-id="btn-change-site"
+            @click="onOpenDiveSitePanel"
+          >
+            Change site...
+          </FormButton>
+        </div>
+
+        <FormButton
+          v-else
+          test-id="btn-select-site"
+          @click="onOpenDiveSitePanel"
+        >
+          Select Dive Site...
+        </FormButton>
       </FormField>
 
       <div>
@@ -201,7 +231,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DepthDTO, LogEntryDTO } from '@bottomtime/api';
+import { DepthDTO, DiveSiteDTO, LogEntryDTO } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, integer, required } from '@vuelidate/validators';
@@ -216,6 +246,7 @@ import { SelectOption } from '../../common';
 import { useOops } from '../../oops';
 import { depth, greaterThan, lessThan } from '../../validators';
 import DepthInput from '../common/depth-input.vue';
+import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
 import FormDatePicker from '../common/form-date-picker.vue';
 import FormField from '../common/form-field.vue';
@@ -223,6 +254,8 @@ import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import PreviewDiveSite from '../diveSites/preview-dive-site.vue';
+import SelectSite from '../diveSites/selectSite/select-site.vue';
 
 interface EditLogbookEntryProps {
   entry: LogEntryDTO;
@@ -231,6 +264,7 @@ interface EditLogbookEntryProps {
 
 interface EditLogbookEntryState {
   showConfirmRevert: boolean;
+  showSelectDiveSite: boolean;
 }
 
 interface LogEntryData {
@@ -241,6 +275,7 @@ interface LogEntryData {
   logNumber: string | number;
   maxDepth?: DepthDTO;
   notes: string;
+  site?: DiveSiteDTO;
 }
 
 function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
@@ -254,6 +289,7 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
     logNumber: props.entry.logNumber || '',
     maxDepth: props.entry.maxDepth ? { ...props.entry.maxDepth } : undefined,
     notes: props.entry.notes ?? '',
+    site: props.entry.site,
   };
 }
 
@@ -277,6 +313,7 @@ const emit = defineEmits<{
 
 const state = reactive<EditLogbookEntryState>({
   showConfirmRevert: false,
+  showSelectDiveSite: false,
 });
 
 const formData = reactive<LogEntryData>(getFormDataFromProps(props));
@@ -336,6 +373,7 @@ async function onSave(): Promise<void> {
       typeof formData.logNumber === 'number' ? formData.logNumber : undefined,
     maxDepth: formData.maxDepth,
     notes: formData.notes,
+    site: formData.site,
   });
 }
 
@@ -369,4 +407,17 @@ onBeforeMount(async () => {
     await getNextAvailableLogNumber();
   }
 });
+
+function onCloseDiveSitePanel() {
+  state.showSelectDiveSite = false;
+}
+
+function onOpenDiveSitePanel() {
+  state.showSelectDiveSite = true;
+}
+
+function onSiteSelected(site: DiveSiteDTO) {
+  formData.site = site;
+  state.showSelectDiveSite = false;
+}
 </script>

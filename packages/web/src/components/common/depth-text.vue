@@ -18,6 +18,10 @@ const props = defineProps<DepthTextProps>();
 const currentUser = useCurrentUser();
 
 const text = computed(() => {
+  if (props.depth === 0) {
+    return 'Bottomless';
+  }
+
   if (!currentUser.user) {
     return props.unit === DepthUnit.Meters
       ? `${props.depth.toFixed(2)} m`

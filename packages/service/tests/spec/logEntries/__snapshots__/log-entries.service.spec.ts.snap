@@ -1163,3 +1163,56 @@ exports[`Log entries service when listing log entries will sort log entries by "
   },
 ]
 `;
+
+exports[`Log entries service when listing recent dive sites will return a distinct list of the most recently used dive sites 1`] = `
+[
+  {
+    "id": "0f672534-0510-44ea-876c-43b67c479803",
+    "name": "becquerel worst",
+  },
+  {
+    "id": "90411709-f9b3-4c93-acb7-78a1f18e5230",
+    "name": "below South",
+  },
+  {
+    "id": "0e17960d-f6b7-46db-92c8-ba2f9d35aeb9",
+    "name": "deploy Electronic",
+  },
+  {
+    "id": "41a1cfe6-a707-48de-ab63-1c4884626ef6",
+    "name": "Music quantifying",
+  },
+  {
+    "id": "121532ce-90e5-447a-b346-8bead7ab7945",
+    "name": "navigating Recycled",
+  },
+  {
+    "id": "7ee779a0-409b-4f8b-b2e8-bbf27fb795d4",
+    "name": "payment black",
+  },
+  {
+    "id": "684a0a18-2725-4663-b04c-48f4f7741c21",
+    "name": "portals Ernser",
+  },
+  {
+    "id": "05fed034-b2b9-4015-98da-d8cc2e23c537",
+    "name": "radian BEAC",
+  },
+  {
+    "id": "ed26d72e-fa20-4f5d-8daf-387565371b5b",
+    "name": "revolutionary yuck",
+  },
+  {
+    "id": "bf4d4991-b2c5-4a72-b899-a149717ff125",
+    "name": "Sausages Alpharetta",
+  },
+  {
+    "id": "83374cb6-446a-4ad0-b1dd-bc75ec8d8eea",
+    "name": "to East",
+  },
+  {
+    "id": "5232b070-017f-43ff-baef-1cf85adbb6fa",
+    "name": "whoa minima",
+  },
+]
+`;

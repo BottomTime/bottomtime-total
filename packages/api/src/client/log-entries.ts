@@ -2,11 +2,13 @@ import { AxiosInstance } from 'axios';
 
 import {
   CreateOrUpdateLogEntryParamsDTO,
+  DiveSiteSchema,
   GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
   LogEntrySchema,
 } from '../types';
+import { DiveSite } from './dive-site';
 import { LogEntry } from './log-entry';
 
 export class LogEntriesApiClient {
@@ -58,6 +60,20 @@ export class LogEntriesApiClient {
       `/api/users/${username}/logbook/nextLogEntryNumber`,
     );
     return logNumber;
+  }
+
+  async getMostRecentDiveSites(
+    username: string,
+    count?: number,
+  ): Promise<DiveSite[]> {
+    const { data } = await this.apiClient.get(
+      `/api/users/${username}/logbook/recentDiveSites`,
+      { params: { count } },
+    );
+
+    return DiveSiteSchema.array()
+      .parse(data)
+      .map((site) => new DiveSite(this.apiClient, site));
   }
 
   wrapDTO(data: unknown): LogEntry {

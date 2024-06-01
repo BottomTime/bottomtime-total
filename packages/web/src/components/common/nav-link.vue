@@ -1,6 +1,6 @@
 <template>
   <a
-    class="font-bold text-link underline hover:text-link-hover"
+    class="font-bold text-link underline hover:text-link-hover cursor-pointer"
     :href="to"
     :target="target"
     :aria-label="label"
@@ -14,7 +14,7 @@
 import { computed } from 'vue';
 
 type NavLinkProps = {
-  to: string;
+  to?: string;
   label?: string;
   newTab?: boolean;
 };

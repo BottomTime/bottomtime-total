@@ -19,6 +19,8 @@ const LogEntrySchema = z.object({
   maxDepth: z.number().nullable(),
   maxDepthUnit: z.nativeEnum(DepthUnit).nullable(),
   notes: z.string().nullable(),
+  createdAt: z.date().default(new Date()),
+  updatedAt: z.date().default(new Date()),
 });
 
 export function createTestLogEntry(

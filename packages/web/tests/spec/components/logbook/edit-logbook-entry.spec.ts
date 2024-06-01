@@ -1,4 +1,9 @@
-import { ApiClient, DepthUnit } from '@bottomtime/api';
+import {
+  ApiClient,
+  DepthUnit,
+  DiveSiteDTO,
+  LogBookSharing,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -13,6 +18,7 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import FormDatePicker from '../../../../src/components/common/form-date-picker.vue';
+import SelectSite from '../../../../src/components/diveSites/selectSite/select-site.vue';
 import EditLogbookEntry from '../../../../src/components/logbook/edit-logbook-entry.vue';
 import { createRouter } from '../../../fixtures/create-router';
 import {
@@ -20,6 +26,7 @@ import {
   FullLogEntry,
   MinimalLogEntry,
 } from '../../../fixtures/log-entries';
+import { DiveSiteWithMinimalProperties } from '../../../fixtures/sites';
 import { BasicUser } from '../../../fixtures/users';
 
 dayjs.extend(tz);
@@ -32,6 +39,19 @@ const MaxDepthInput = '#maxDepth';
 const NotesInput = '#notes';
 const SaveButton = '#btnSave';
 const CancelButton = '#btnCancel';
+
+const DiveSite: DiveSiteDTO = {
+  createdOn: new Date(),
+  creator: {
+    logBookSharing: LogBookSharing.FriendsOnly,
+    memberSince: new Date(),
+    userId: '7ba2eebd-9747-4adb-a820-f268cb6c84f3',
+    username: 'diver_dan',
+  },
+  id: '31c28b81-d859-4de6-a716-3e01f3aab6ab',
+  location: 'Australia',
+  name: 'Test Dive Site',
+};
 
 const Timezone = 'Pacific/Guam';
 const LogNumber = 99;
@@ -340,6 +360,41 @@ describe('EditLogbookEntry component', () => {
     expect(spy).toHaveBeenCalledWith(BasicUser.username);
     expect(wrapper.get<HTMLInputElement>(LogNumberInput).element.value).toBe(
       '123',
+    );
+  });
+
+  it('will allow user to select a dive site', async () => {
+    const wrapper = mount(EditLogbookEntry, opts);
+    await flushPromises();
+
+    await wrapper.get('[data-testid="btn-select-site"]').trigger('click');
+    const selectSite = wrapper.findComponent(SelectSite);
+    expect(selectSite.isVisible()).toBe(true);
+    selectSite.vm.$emit('site-selected', DiveSite);
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="btn-site-name"]').text()).toBe(
+      DiveSite.name,
+    );
+  });
+
+  it('will allow a user to change the selected dive site', async () => {
+    opts.props = {
+      entry: {
+        ...BlankLogEntry,
+        site: { ...DiveSiteWithMinimalProperties },
+      },
+    };
+    const wrapper = mount(EditLogbookEntry, opts);
+    await wrapper.get('[data-testid="btn-change-site"]').trigger('click');
+
+    const selectSite = wrapper.findComponent(SelectSite);
+    expect(selectSite.isVisible()).toBe(true);
+    selectSite.vm.$emit('site-selected', DiveSite);
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="btn-site-name"]').text()).toBe(
+      DiveSite.name,
     );
   });
 });

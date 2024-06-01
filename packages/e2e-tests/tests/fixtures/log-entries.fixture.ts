@@ -52,4 +52,10 @@ export class LogEntriesFixture {
       .getByTestId('entries-sort-order')
       .selectOption(`${sortBy}-${sortOrder}`);
   }
+
+  async selectSiteFromList(id: string): Promise<void> {
+    await this.page.getByTestId(`site-name-${id}`).click();
+    await this.page.getByTestId(`select-site-${id}`).click();
+    await this.page.getByTestId('drawer-panel').waitFor({ state: 'hidden' });
+  }
 }
