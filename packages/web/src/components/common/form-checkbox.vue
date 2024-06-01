@@ -5,6 +5,7 @@
       v-model="checked"
       type="checkbox"
       :data-testid="testId"
+      :disabled="disabled"
       class="form-checkbox h-4 w-4 text-primary rounded-md"
     />
     <div>
@@ -17,8 +18,11 @@
 type FormCheckBoxProps = {
   controlId?: string;
   testId?: string;
+  disabled?: boolean;
 };
 
 const checked = defineModel<boolean>();
-defineProps<FormCheckBoxProps>();
+withDefaults(defineProps<FormCheckBoxProps>(), {
+  disabled: false,
+});
 </script>

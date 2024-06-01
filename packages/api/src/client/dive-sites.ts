@@ -31,6 +31,7 @@ export class DiveSitesApiClient {
     if (params.skip) query.set('skip', params.skip.toString());
     if (params.sortBy) query.set('sortBy', params.sortBy);
     if (params.sortOrder) query.set('sortOrder', params.sortOrder);
+    if (params.waterType) query.set('waterType', params.waterType);
 
     if (typeof params.freeToDive === 'boolean') {
       query.set('freeToDive', params.freeToDive.toString());
@@ -63,7 +64,7 @@ export class DiveSitesApiClient {
     sites: DiveSite[];
     totalCount: number;
   }> {
-    const url = `api/diveSites?${this.searchQueryString(query)}`;
+    const url = `/api/diveSites?${this.searchQueryString(query)}`;
     const { data } = await this.apiClient.get(url);
 
     const result = SearchDiveSitesResponseSchema.parse(data);

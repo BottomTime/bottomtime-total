@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Nav Link component will render a link 1`] = `"<a class="font-bold text-link underline hover:text-link-hover" href="/login" aria-label="Login">Click to Login</a>"`;
+exports[`Nav Link component will render a link 1`] = `"<a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/login" aria-label="Login">Click to Login</a>"`;

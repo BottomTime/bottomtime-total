@@ -98,3 +98,10 @@ export type ListLogEntriesResponseDTO = z.infer<
 export type GetNextAvailableLogNumberResponseDTO = {
   logNumber: number;
 };
+
+export const GetMostRecentDiveSitesRequestParamsSchema = z.object({
+  count: z.coerce.number().int().positive().max(200).optional(),
+});
+export type GetMostRecentDiveSitesRequestParamsDTO = z.infer<
+  typeof GetMostRecentDiveSitesRequestParamsSchema
+>;

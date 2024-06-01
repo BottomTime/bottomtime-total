@@ -3,5 +3,6 @@
   "editor.formatOnSave": true,
   "prettier.configPath": ".prettierrc",
   "prettier.ignorePath": ".prettierignore",
-  "circleci.persistedProjectSelection": []
+  "circleci.persistedProjectSelection": ["gh/BottomTime/bottomtime-total"],
+  "circleci.filters.branchFilter": "allBranches"
 }

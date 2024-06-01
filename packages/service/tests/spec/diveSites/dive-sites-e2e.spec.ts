@@ -4,6 +4,7 @@ import {
   PressureUnit,
   TemperatureUnit,
   UserRole,
+  WaterType,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -102,6 +103,7 @@ describe('Dive Sites End-to-End Tests', () => {
         .query({
           shoreAccess: true,
           freeToDive: true,
+          waterType: WaterType.Salt,
           creator: creators[0].username,
         })
         .expect(200);
@@ -141,6 +143,7 @@ describe('Dive Sites End-to-End Tests', () => {
           rating: 6,
           difficulty: 0.5,
           creator: true,
+          waterType: 'brackish',
           sortBy: 'depth',
           sortOrder: 'up',
           skip: -1,
@@ -209,6 +212,7 @@ describe('Dive Sites End-to-End Tests', () => {
         directions: 'Just drive there.',
         freeToDive: true,
         shoreAccess: true,
+        waterType: WaterType.Fresh,
       };
 
       jest.spyOn(uuid, 'v4').mockReturnValue(siteId);
@@ -232,6 +236,7 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(body.directions).toBe(createOptions.directions);
       expect(body.freeToDive).toBe(createOptions.freeToDive);
       expect(body.shoreAccess).toBe(createOptions.shoreAccess);
+      expect(body.waterType).toBe(createOptions.waterType);
 
       const savedSite = await Sites.findOneOrFail({
         relations: ['creator'],
@@ -251,6 +256,7 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(savedSite.freeToDive).toBe(createOptions.freeToDive);
       expect(savedSite.shoreAccess).toBe(createOptions.shoreAccess);
       expect(savedSite.createdOn.valueOf()).toBeCloseTo(Date.now(), -3);
+      expect(savedSite.waterType).toBe(createOptions.waterType);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -270,6 +276,7 @@ describe('Dive Sites End-to-End Tests', () => {
           directions: 'Just drive there.',
           freeToDive: 'yup',
           shoreAccess: -1,
+          waterType: 'brackish',
         })
         .expect(400);
 
@@ -324,6 +331,7 @@ describe('Dive Sites End-to-End Tests', () => {
         directions: 'Just drive there.',
         freeToDive: true,
         shoreAccess: true,
+        waterType: WaterType.Fresh,
       };
     });
 
@@ -340,6 +348,7 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(body.directions).toBe(updateOptions.directions);
       expect(body.freeToDive).toBe(updateOptions.freeToDive);
       expect(body.shoreAccess).toBe(updateOptions.shoreAccess);
+      expect(body.waterType).toBe(updateOptions.waterType);
       expect(new Date(body.updatedOn).valueOf()).toBeCloseTo(
         Date.now().valueOf(),
         -3,
@@ -356,6 +365,7 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(updated.directions).toBe(updateOptions.directions);
       expect(updated.freeToDive).toBe(updateOptions.freeToDive);
       expect(updated.shoreAccess).toBe(updateOptions.shoreAccess);
+      expect(updated.waterType).toBe(updateOptions.waterType);
       expect(updated.updatedOn?.valueOf()).toBeCloseTo(
         Date.now().valueOf(),
         -3,
@@ -375,6 +385,7 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(body.directions).toBe(updateOptions.directions);
       expect(body.freeToDive).toBe(updateOptions.freeToDive);
       expect(body.shoreAccess).toBe(updateOptions.shoreAccess);
+      expect(body.waterType).toBe(updateOptions.waterType);
       expect(new Date(body.updatedOn).valueOf()).toBeCloseTo(
         Date.now().valueOf(),
         -3,
@@ -391,6 +402,7 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(updated.directions).toBe(updateOptions.directions);
       expect(updated.freeToDive).toBe(updateOptions.freeToDive);
       expect(updated.shoreAccess).toBe(updateOptions.shoreAccess);
+      expect(updated.waterType).toBe(updateOptions.waterType);
       expect(updated.updatedOn?.valueOf()).toBeCloseTo(
         Date.now().valueOf(),
         -3,

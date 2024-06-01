@@ -3,10 +3,12 @@ import axios, { AxiosInstance } from 'axios';
 import { DiveSite } from '../../src/client';
 import { DiveSitesApiClient } from '../../src/client/dive-sites';
 import {
+  CreateOrUpdateDiveSiteSchema,
   DiveSitesSortBy,
   SearchDiveSitesResponseDTO,
   SearchDiveSitesResponseSchema,
   SortOrder,
+  WaterType,
 } from '../../src/types';
 import SearchResults from '../fixtures/dive-sites-search-results.json';
 import { DiveSiteWithFullProperties } from '../fixtures/sites';
@@ -36,6 +38,19 @@ describe('Dive Site API client', () => {
     expect(result.toJSON()).toEqual(DiveSiteWithFullProperties);
   });
 
+  it('will create a new dive site', async () => {
+    const options = CreateOrUpdateDiveSiteSchema.parse(
+      DiveSiteWithFullProperties,
+    );
+    const spy = jest
+      .spyOn(axiosClient, 'post')
+      .mockResolvedValue({ data: DiveSiteWithFullProperties });
+
+    const result = await apiClient.createDiveSite(options);
+    expect(result.toJSON()).toEqual(DiveSiteWithFullProperties);
+    expect(spy).toHaveBeenCalledWith('/api/diveSites', options);
+  });
+
   it('will perform a search for dive sites', async () => {
     const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
       data: searchResults,
@@ -45,6 +60,7 @@ describe('Dive Site API client', () => {
       query: 'Puget Sound',
       freeToDive: true,
       shoreAccess: true,
+      waterType: WaterType.Salt,
       difficulty: { min: 1, max: 3 },
       location: {
         lat: 47.6,

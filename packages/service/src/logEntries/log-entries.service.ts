@@ -10,8 +10,8 @@ import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 import { User } from '../auth';
-import { LogEntryEntity } from '../data';
-import { DiveSite } from '../diveSites';
+import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../data';
+import { DiveSite, DiveSitesService } from '../diveSites';
 import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
 import { LogEntry } from './log-entry';
 import { LogEntryFactory } from './log-entry-factory';
@@ -47,6 +47,9 @@ export class LogEntriesService {
 
     @Inject(LogEntryFactory)
     private readonly logEntryFactory: LogEntryFactory,
+
+    @Inject(DiveSitesService)
+    private readonly diveSitesService: DiveSitesService,
   ) {}
 
   async listLogEntries(
@@ -143,5 +146,45 @@ export class LogEntriesService {
 
     if (max) return max + 1;
     else return 1;
+  }
+
+  async getRecentDiveSites(ownerId: string, count = 10): Promise<DiveSite[]> {
+    const query = this.Entries.createQueryBuilder('entries')
+      .innerJoinAndMapOne(
+        'entries.site',
+        DiveSiteEntity,
+        'sites',
+        'entries.siteId = sites.id',
+      )
+      .innerJoinAndMapOne(
+        'sites.creator',
+        UserEntity,
+        'site_creators',
+        'sites.creatorId = site_creators.id',
+      )
+      .where({
+        owner: { id: ownerId },
+      })
+      .select(['sites.id AS "siteId"'])
+      .orderBy('entries.createdAt', 'DESC')
+      .limit(200);
+
+    this.log.debug('Querying for most recently used dive site IDs...');
+    this.log.verbose(query.getSql());
+
+    const rawSiteIds = await query.getRawMany<{
+      siteId: string;
+    }>();
+
+    const recentSiteIds = new Set<string>();
+    for (const { siteId } of rawSiteIds) {
+      recentSiteIds.add(siteId);
+      if (recentSiteIds.size >= count) break;
+    }
+
+    const recentSites = await this.diveSitesService.getDiveSites(
+      Array.from(recentSiteIds),
+    );
+    return recentSites;
   }
 }

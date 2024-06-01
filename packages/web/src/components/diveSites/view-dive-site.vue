@@ -37,6 +37,15 @@
           <span>{{ freeToDive }}</span>
         </div>
       </FormField>
+
+      <FormField label="Water type" control-id="waterType">
+        <div class="mt-1.5">
+          <span class="mr-1">
+            <i class="fa-solid fa-droplet"></i>
+          </span>
+          <span>{{ waterType }}</span>
+        </div>
+      </FormField>
     </div>
 
     <div class="space-y-3">
@@ -71,7 +80,7 @@
           <a href="#" class="flex space-x-2 items-center">
             <UserAvatar
               size="x-small"
-              :avatar="site.creator.avatar"
+              :avatar="site.creator.avatar ?? undefined"
               :display-name="site.creator.name || site.creator.username"
             />
             <span>{{ site.creator.name || `@${site.creator.username}` }}</span>
@@ -87,7 +96,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO } from '@bottomtime/api';
+import { DiveSiteDTO, WaterType } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -133,5 +142,18 @@ const shoreAccess = computed(() => {
   }
 
   return 'Unknown';
+});
+
+const waterType = computed(() => {
+  switch (props.site.waterType) {
+    case WaterType.Salt:
+      return 'Salt water';
+    case WaterType.Fresh:
+      return 'Fresh water';
+    case WaterType.Mixed:
+      return 'Mixed';
+    default:
+      return 'Unknown';
+  }
 });
 </script>
