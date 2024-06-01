@@ -165,6 +165,7 @@ jobs:
     resource_class: medium+
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
+      NODE_OPTIONS: '--max-old-space-size=8192'
     steps:
       - checkout
       - restore_cache:
