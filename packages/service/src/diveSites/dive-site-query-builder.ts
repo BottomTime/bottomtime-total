@@ -3,6 +3,7 @@ import {
   GpsCoordinates,
   RatingRange,
   SortOrder,
+  WaterType,
 } from '@bottomtime/api';
 
 import { Repository, SelectQueryBuilder } from 'typeorm';
@@ -20,6 +21,7 @@ export const DiveSiteSelectFields = [
   'sites.gps',
   'sites.shoreAccess',
   'sites.freeToDive',
+  'sites.waterType',
   'sites.createdOn',
   'sites.updatedOn',
   'sites.averageRating',
@@ -38,8 +40,7 @@ export class DiveSiteQueryBuilder {
 
   constructor(diveSites: Repository<DiveSiteEntity>) {
     this.query = diveSites
-      .createQueryBuilder()
-      .from(DiveSiteEntity, 'sites')
+      .createQueryBuilder('sites')
       .innerJoin('sites.creator', 'site_creators')
       .select([...DiveSiteSelectFields]);
   }
@@ -133,6 +134,7 @@ export class DiveSiteQueryBuilder {
   withSortOrder(sortBy?: DiveSitesSortBy, sortOrder?: SortOrder): this {
     let sortByField: string;
     let sortOrderString: 'ASC' | 'DESC';
+    let nulls: 'NULLS FIRST' | 'NULLS LAST' | undefined;
 
     if (sortOrder) {
       sortOrderString = sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC';
@@ -148,15 +150,34 @@ export class DiveSiteQueryBuilder {
       default:
         sortByField = 'sites.averageRating';
         sortOrderString ||= 'DESC';
+        nulls = 'NULLS LAST';
         break;
     }
 
-    this.query = this.query.orderBy(sortByField, sortOrderString, 'NULLS LAST');
+    this.query = this.query.orderBy(sortByField, sortOrderString, nulls);
     return this;
   }
 
   withSiteId(siteId: string): this {
     this.query = this.query.andWhere('sites.id = :siteId', { siteId });
+    return this;
+  }
+
+  withSiteIds(siteIds: string[]): this {
+    if (siteIds.length) {
+      this.query = this.query.andWhere('sites.id IN (:...siteIds)', {
+        siteIds,
+      });
+    }
+    return this;
+  }
+
+  withWaterType(waterType?: WaterType): this {
+    if (waterType) {
+      this.query = this.query.andWhere('sites.waterType = :waterType', {
+        waterType,
+      });
+    }
     return this;
   }
 }

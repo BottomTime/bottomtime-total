@@ -2,48 +2,43 @@
   <PageTitle title="Create Dive Site" />
   <BreadCrumbs :items="Breadcrumbs" />
   <RequireAuth>
-    <EditDiveSite :site="site" @site-updated="onSiteCreated" />
+    <CreateSiteWizard :is-saving="isSaving" offset-top @save="onSiteSaved" />
   </RequireAuth>
-  <div></div>
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO, LogBookSharing } from '@bottomtime/api';
+import { CreateOrUpdateDiveSiteDTO } from '@bottomtime/api';
 
 import { ref } from 'vue';
 
+import { useClient } from '../api-client';
 import { Breadcrumb } from '../common';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
-import EditDiveSite from '../components/diveSites/edit-dive-site.vue';
+import CreateSiteWizard from '../components/diveSites/create-site-wizard.vue';
 import { useLocation } from '../location';
+import { useOops } from '../oops';
 
 const Breadcrumbs: Breadcrumb[] = [
   { label: 'Dive Sites', to: '/diveSites' },
   { label: 'Create Dive Site', active: true },
 ];
 
+const client = useClient();
+const oops = useOops();
 const location = useLocation();
 
-const site = ref<DiveSiteDTO>({
-  createdOn: new Date(),
-  creator: {
-    userId: '',
-    username: '',
-    memberSince: new Date(),
-    logBookSharing: LogBookSharing.Private,
-  },
-  id: '',
-  name: '',
-  location: '',
-});
+const isSaving = ref(false);
 
-function onSiteCreated(newSite: DiveSiteDTO) {
-  site.value = newSite;
-  // Redirect after two seconds... this gives the user a chance to see the success toast.
-  setTimeout(() => {
-    location.assign(`/diveSites/${newSite.id}`);
-  }, 2000);
+async function onSiteSaved(dto: CreateOrUpdateDiveSiteDTO): Promise<void> {
+  isSaving.value = true;
+
+  await oops(async () => {
+    const site = await client.diveSites.createDiveSite(dto);
+    location.assign(`/diveSites/${site.id}`);
+  });
+
+  isSaving.value = false;
 }
 </script>

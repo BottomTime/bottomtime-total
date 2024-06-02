@@ -6,6 +6,7 @@
     :rows="rows"
     :cols="cols"
     :maxlength="maxlength"
+    :placeholder="placeholder"
     :data-testid="testId"
   >
   </textarea>
@@ -19,6 +20,7 @@ type FormTextAreaProps = {
   cols?: number;
   invalid?: boolean;
   maxlength?: number;
+  placeholder?: string;
   resize?: 'none' | 'vertical' | 'horizontal' | 'both';
   rows?: number;
   testId?: string;

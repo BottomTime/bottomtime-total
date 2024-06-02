@@ -10,10 +10,13 @@ import {
   LogEntryDTO,
   LogEntrySortBy,
   PressureUnit,
+  SearchDiveSitesResponseDTO,
+  SearchDiveSitesResponseSchema,
   SortOrder,
   TankMaterial,
 } from '../../src';
 import { LogEntriesApiClient } from '../../src/client/log-entries';
+import DiveSiteTestData from '../fixtures/dive-sites-search-results.json';
 import LogEntryTestData from '../fixtures/log-entries-search-results.json';
 import { createScope } from '../fixtures/nock';
 import { BasicUser } from '../fixtures/users';
@@ -22,12 +25,14 @@ describe('Log entries API client', () => {
   let axiosInstance: AxiosInstance;
   let client: LogEntriesApiClient;
   let logEntryData: ListLogEntriesResponseDTO;
+  let diveSiteData: SearchDiveSitesResponseDTO;
   let scope: Scope;
 
   beforeAll(() => {
     axiosInstance = axios.create();
     client = new LogEntriesApiClient(axiosInstance);
     logEntryData = ListLogEntriesResponseSchema.parse(LogEntryTestData);
+    diveSiteData = SearchDiveSitesResponseSchema.parse(DiveSiteTestData);
     scope = createScope();
   });
 
@@ -138,5 +143,23 @@ describe('Log entries API client', () => {
     const data = logEntryData.logEntries[0];
     const entry = client.wrapDTO(data);
     expect(entry.toJSON()).toEqual(data);
+  });
+
+  it('will request most recently logged dive sites', async () => {
+    const username = 'carl';
+    scope
+      .get(`/api/users/${username}/logbook/recentDiveSites`)
+      .query({ count: 15 })
+      .reply(200, diveSiteData.sites.slice(0, 8));
+
+    const result = await client.getMostRecentDiveSites(username, 15);
+
+    expect(scope.isDone()).toBe(true);
+    expect(result.length).toBe(8);
+    expect(result.map((site) => ({ id: site.id, name: site.name }))).toEqual(
+      diveSiteData.sites
+        .slice(0, 8)
+        .map((site) => ({ id: site.id, name: site.name })),
+    );
   });
 });

@@ -90,6 +90,15 @@
  *           type: boolean
  *           description: Whether or not the dive site is accessible from shore.
  *           example: true
+ *         waterType:
+ *           type: string
+ *           description: |
+ *             The type of water at the dive site. Options are salt, fresh, or mixed (for sites with a halocline).
+ *           enum:
+ *             - salt
+ *             - fresh
+ *             - mixed
+ *           example: salt
  *     DiveSite:
  *       allOf:
  *         - type: object

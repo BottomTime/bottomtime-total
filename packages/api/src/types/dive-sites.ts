@@ -9,6 +9,12 @@ import {
 } from './constants';
 import { ProfileSchema, UsernameSchema } from './users';
 
+export enum WaterType {
+  Salt = 'salt',
+  Fresh = 'fresh',
+  Mixed = 'mixed',
+}
+
 export enum DiveSitesSortBy {
   Name = 'name',
   Rating = 'rating',
@@ -74,6 +80,7 @@ export const CreateOrUpdateDiveSiteSchema = z.object({
 
   freeToDive: z.boolean().optional(),
   shoreAccess: z.boolean().optional(),
+  waterType: z.nativeEnum(WaterType).optional(),
 });
 export type CreateOrUpdateDiveSiteDTO = z.infer<
   typeof CreateOrUpdateDiveSiteSchema
@@ -96,6 +103,7 @@ export const SearchDiveSitesParamsSchema = z
     radius: z.coerce.number().gt(0).max(500).default(50),
     freeToDive: BooleanString,
     shoreAccess: BooleanString,
+    waterType: z.nativeEnum(WaterType),
     rating: RatingRangeSchema,
     difficulty: RatingRangeSchema,
     creator: UsernameSchema,

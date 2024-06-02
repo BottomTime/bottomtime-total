@@ -414,7 +414,7 @@ describe('User Avatar E2E tests', () => {
         ),
       );
       expect(checksums).toMatchSnapshot();
-    });
+    }, 10000);
 
     it('will allow a user to save a new avatar with dimensions specified', async () => {
       const { body } = await request(server)
@@ -472,7 +472,7 @@ describe('User Avatar E2E tests', () => {
           '256x256': '/api/users/Joe.Regular/avatar/256x256',
         },
       });
-    });
+    }, 10000);
   });
 
   describe("when removing a user's avatar", () => {

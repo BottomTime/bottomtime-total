@@ -1,11 +1,12 @@
 import { SearchDiveSitesParamsDTO } from '@bottomtime/api';
 
-import SearchDiveSitesForm from '@/components/diveSites/search-dive-sites-form.vue';
 import {
   ComponentMountingOptions,
   flushPromises,
   mount,
 } from '@vue/test-utils';
+
+import SearchDiveSitesForm from '../../../../src/components/diveSites/search-dive-sites-form.vue';
 
 const SearchInput = '[data-testid="search-dive-sites"]';
 const SelectLocation = '[data-testid="select-location"]';
@@ -47,6 +48,7 @@ describe('Search Dive Sites Form', () => {
 
     await wrapper.get('[data-testid="shore-access-true"]').setValue(true);
     await wrapper.get('[data-testid="free-to-dive-true"]').setValue(true);
+    await wrapper.get('[data-testid="water-type-fresh"]').setValue(true);
 
     await wrapper.get(RefreshButton).trigger('click');
 

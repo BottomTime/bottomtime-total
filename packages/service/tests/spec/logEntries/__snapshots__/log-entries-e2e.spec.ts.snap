@@ -131,6 +131,132 @@ exports[`Log entries E2E tests when creating log entries will return a 400 respo
 
 exports[`Log entries E2E tests when creating log entries will return a 400 response if the site ID cannot be found 1`] = `"Dive site with ID "37a214f6-6167-4468-947d-b3171a0425fd" not found."`;
 
+exports[`Log entries E2E tests when fetching recent dive sites will allow admins to query the most recent dive sites for any user 1`] = `
+[
+  {
+    "id": "5b125836-5b5b-4ccc-a56e-58891f8bebfc",
+    "name": "alert awesome intuition",
+  },
+  {
+    "id": "4e87dc06-4d51-4d11-ba93-37e51924ff44",
+    "name": "deadly lean mobile",
+  },
+  {
+    "id": "f92f8727-7c36-46bf-b282-8f02f9ebe968",
+    "name": "gloomy acceptable hummus",
+  },
+  {
+    "id": "f991d081-5092-4a31-a256-c1a1bd55aab5",
+    "name": "humming past mathematics",
+  },
+  {
+    "id": "7737963a-bf8b-44ee-955f-066a098ef80b",
+    "name": "ideal blond spume",
+  },
+  {
+    "id": "2c8f33c5-8775-4a84-906b-bbf218b176fd",
+    "name": "lost profuse garlic",
+  },
+  {
+    "id": "3f760648-6dd0-4fa9-a023-7bc393a1ac44",
+    "name": "ringed regal temporary",
+  },
+  {
+    "id": "90bcafd4-90b6-41d5-9b70-db36b470dcaf",
+    "name": "shameful glorious noodles",
+  },
+  {
+    "id": "92c546b4-b354-4435-a233-ff3ed2c311a9",
+    "name": "squeaky scaly sled",
+  },
+  {
+    "id": "58f628bf-dc5e-449e-8ee0-7248d1abff26",
+    "name": "utter extraneous calm",
+  },
+]
+`;
+
+exports[`Log entries E2E tests when fetching recent dive sites will return a 400 response if query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "count",
+      ],
+      "received": "nan",
+    },
+  ],
+}
+`;
+
+exports[`Log entries E2E tests when fetching recent dive sites will return the most recently visited dive sites 1`] = `
+[
+  {
+    "id": "5b125836-5b5b-4ccc-a56e-58891f8bebfc",
+    "name": "alert awesome intuition",
+  },
+  {
+    "id": "f2026af7-0f73-4fc0-b29b-491dc2846842",
+    "name": "caring nutty grub",
+  },
+  {
+    "id": "4e87dc06-4d51-4d11-ba93-37e51924ff44",
+    "name": "deadly lean mobile",
+  },
+  {
+    "id": "74aa1202-9d61-443b-b8f5-44dde5ef18d5",
+    "name": "exotic warmhearted aside",
+  },
+  {
+    "id": "f92f8727-7c36-46bf-b282-8f02f9ebe968",
+    "name": "gloomy acceptable hummus",
+  },
+  {
+    "id": "f991d081-5092-4a31-a256-c1a1bd55aab5",
+    "name": "humming past mathematics",
+  },
+  {
+    "id": "7737963a-bf8b-44ee-955f-066a098ef80b",
+    "name": "ideal blond spume",
+  },
+  {
+    "id": "15494b71-0aa7-4b90-bdf3-5770aa74a69e",
+    "name": "joint bogus exit",
+  },
+  {
+    "id": "2c8f33c5-8775-4a84-906b-bbf218b176fd",
+    "name": "lost profuse garlic",
+  },
+  {
+    "id": "3f760648-6dd0-4fa9-a023-7bc393a1ac44",
+    "name": "ringed regal temporary",
+  },
+  {
+    "id": "fac282b1-e048-4534-857c-dfef02ee9889",
+    "name": "rude ajar aggradation",
+  },
+  {
+    "id": "ca7960d0-cd3e-4dd3-80d8-f738369dbae6",
+    "name": "rundown joyous put",
+  },
+  {
+    "id": "90bcafd4-90b6-41d5-9b70-db36b470dcaf",
+    "name": "shameful glorious noodles",
+  },
+  {
+    "id": "92c546b4-b354-4435-a233-ff3ed2c311a9",
+    "name": "squeaky scaly sled",
+  },
+  {
+    "id": "58f628bf-dc5e-449e-8ee0-7248d1abff26",
+    "name": "utter extraneous calm",
+  },
+]
+`;
+
 exports[`Log entries E2E tests when retrieving single log entries will allow an admin to view any log entry 1`] = `
 {
   "air": [
@@ -169,9 +295,8 @@ exports[`Log entries E2E tests when retrieving single log entries will allow an 
   },
   "notes": "Tabesco deprimo comburo aeger cinis tepidus possimus trans cibo advenio. Vulgivagus corona adversus voco cultellus. Animadverto aestivus conservo cavus defessus vos sumo.",
   "site": {
-    "averageDifficulty": 2.73,
-    "averageRating": 3.28,
-    "createdOn": "2023-08-08T22:47:09.671Z",
+    "averageRating": 1.43,
+    "createdOn": "2024-04-10T03:49:32.952Z",
     "creator": {
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
       "location": "West Covina",
@@ -182,21 +307,22 @@ exports[`Log entries E2E tests when retrieving single log entries will allow an 
       "username": "Ayla.Rippin",
     },
     "depth": {
-      "depth": 12,
+      "depth": 36.14,
       "unit": "ft",
     },
-    "description": "Animi quae consequuntur nihil excepturi. Molestiae id deleniti. Animi dignissimos incidunt amet nostrum alias eius dolor placeat.",
-    "directions": "Aliquid aspernatur porro molestias quas modi pariatur. Aliquam quod tempore praesentium reiciendis occaecati dolorum omnis. Odit dolores ullam iure ex molestiae. Fugit reiciendis unde voluptatum minima cumque inventore. Nam eum incidunt ratione quis reprehenderit necessitatibus.",
+    "description": "Mollitia crebro solutio comedo velit theca cresco. Tardus una attonbitus aurum versus confero triumphus canto sumptus. Asporto dolore adaugeo censura amplus synagoga unde demoror ara commodo.",
+    "directions": "Vinitor cura dapifer trado aperte statua vestigium valens. Acies consequatur quia carus. Cotidie dedico solium contigo tredecim claustrum convoco ut varietas.",
     "freeToDive": true,
     "gps": {
-      "lat": -39.6975,
-      "lon": 96.5057,
+      "lat": 27.2481,
+      "lon": -174.3613,
     },
-    "id": "c86e5460-b08a-407c-afd2-40280ea47758",
-    "location": "Lake Kenna",
-    "name": "Gasoline Generic",
-    "shoreAccess": true,
-    "updatedOn": "2024-01-29T00:43:46.682Z",
+    "id": "b51c9d49-2df1-4c9f-96bf-73a252036880",
+    "location": "East Shawnhaven",
+    "name": "original pitiful resource",
+    "shoreAccess": false,
+    "updatedOn": "2023-12-26T03:21:37.584Z",
+    "waterType": "salt",
   },
 }
 `;
@@ -239,9 +365,8 @@ exports[`Log entries E2E tests when retrieving single log entries will return th
   },
   "notes": "Tabesco deprimo comburo aeger cinis tepidus possimus trans cibo advenio. Vulgivagus corona adversus voco cultellus. Animadverto aestivus conservo cavus defessus vos sumo.",
   "site": {
-    "averageDifficulty": 2.73,
-    "averageRating": 3.28,
-    "createdOn": "2023-08-08T22:47:09.671Z",
+    "averageRating": 1.43,
+    "createdOn": "2024-04-10T03:49:32.952Z",
     "creator": {
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
       "location": "West Covina",
@@ -252,21 +377,22 @@ exports[`Log entries E2E tests when retrieving single log entries will return th
       "username": "Ayla.Rippin",
     },
     "depth": {
-      "depth": 12,
+      "depth": 36.14,
       "unit": "ft",
     },
-    "description": "Animi quae consequuntur nihil excepturi. Molestiae id deleniti. Animi dignissimos incidunt amet nostrum alias eius dolor placeat.",
-    "directions": "Aliquid aspernatur porro molestias quas modi pariatur. Aliquam quod tempore praesentium reiciendis occaecati dolorum omnis. Odit dolores ullam iure ex molestiae. Fugit reiciendis unde voluptatum minima cumque inventore. Nam eum incidunt ratione quis reprehenderit necessitatibus.",
+    "description": "Mollitia crebro solutio comedo velit theca cresco. Tardus una attonbitus aurum versus confero triumphus canto sumptus. Asporto dolore adaugeo censura amplus synagoga unde demoror ara commodo.",
+    "directions": "Vinitor cura dapifer trado aperte statua vestigium valens. Acies consequatur quia carus. Cotidie dedico solium contigo tredecim claustrum convoco ut varietas.",
     "freeToDive": true,
     "gps": {
-      "lat": -39.6975,
-      "lon": 96.5057,
+      "lat": 27.2481,
+      "lon": -174.3613,
     },
-    "id": "c86e5460-b08a-407c-afd2-40280ea47758",
-    "location": "Lake Kenna",
-    "name": "Gasoline Generic",
-    "shoreAccess": true,
-    "updatedOn": "2024-01-29T00:43:46.682Z",
+    "id": "b51c9d49-2df1-4c9f-96bf-73a252036880",
+    "location": "East Shawnhaven",
+    "name": "original pitiful resource",
+    "shoreAccess": false,
+    "updatedOn": "2023-12-26T03:21:37.584Z",
+    "waterType": "salt",
   },
 }
 `;
@@ -292,7 +418,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "25a110b8-95bf-4bf5-9f1b-7cb9b29efd67",
     "owner": "Ayla.Rippin",
-    "site": "program Strategist",
+    "site": "steep aromatic broccoli",
   },
   {
     "air": [
@@ -314,7 +440,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "4a4e4494-e9b2-4654-9049-ba50c97aa491",
     "owner": "Ayla.Rippin",
-    "site": "reprieve Books",
+    "site": "voluminous heartfelt imprisonment",
   },
   {
     "air": [
@@ -336,7 +462,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "d1a3741c-a922-4b44-994d-e1503612fa6c",
     "owner": "Ayla.Rippin",
-    "site": "evolve female",
+    "site": "meaty weird good",
   },
   {
     "air": [
@@ -358,7 +484,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "ce89f672-3b7e-4df7-aa6e-6b6a622fc90c",
     "owner": "Ayla.Rippin",
-    "site": "Gasoline Generic",
+    "site": "original pitiful resource",
   },
   {
     "air": [
@@ -380,7 +506,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "4ee6c79c-8114-4abb-95b3-81d1f50bde91",
     "owner": "Ayla.Rippin",
-    "site": "reprieve Books",
+    "site": "voluminous heartfelt imprisonment",
   },
   {
     "air": [
@@ -401,7 +527,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "47a62b28-fc10-4cf8-8d80-91012be86e66",
     "owner": "Ayla.Rippin",
-    "site": "motivating Customer",
+    "site": "funny substantial strength",
   },
   {
     "air": [
@@ -423,7 +549,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "fcc765a3-bbc9-41ea-b062-40655c171bbe",
     "owner": "Ayla.Rippin",
-    "site": "aw qui",
+    "site": "monumental wild standardization",
   },
   {
     "air": [
@@ -445,7 +571,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     },
     "id": "efcbb303-df81-42cd-930a-85878a8581a8",
     "owner": "Ayla.Rippin",
-    "site": "Legacy SCSI",
+    "site": "bustling normal convert",
   },
 ]
 `;
@@ -459,7 +585,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "b3942d4f-f3e5-4379-9b2e-b512876fa66d",
     "owner": "Ayla.Rippin",
-    "site": "below South",
+    "site": "shameful glorious noodles",
   },
   {
     "entryTime": {
@@ -468,7 +594,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d52b28b8-b466-4dc3-9694-de617bca8fe6",
     "owner": "Ayla.Rippin",
-    "site": "Cloned male",
+    "site": "gloomy acceptable hummus",
   },
   {
     "entryTime": {
@@ -477,7 +603,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "722e61cb-9861-482a-9b4c-c82051a73e4b",
     "owner": "Ayla.Rippin",
-    "site": "deploy Electronic",
+    "site": "ideal blond spume",
   },
   {
     "entryTime": {
@@ -486,7 +612,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "f693ff53-8011-4727-88ff-a2cef4cc8145",
     "owner": "Ayla.Rippin",
-    "site": "Rustic blue",
+    "site": "utter extraneous calm",
   },
   {
     "entryTime": {
@@ -495,7 +621,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d67f8da5-456b-45f2-b7ba-c04b56a94672",
     "owner": "Ayla.Rippin",
-    "site": "Fresh Kia",
+    "site": "humming past mathematics",
   },
   {
     "entryTime": {
@@ -504,7 +630,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "f084784f-4186-4fa9-8ab6-ac6ac0328902",
     "owner": "Ayla.Rippin",
-    "site": "Gasoline Consultant",
+    "site": "squeaky scaly sled",
   },
   {
     "entryTime": {
@@ -513,7 +639,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "ac2204b3-8297-41e7-b33d-98256e7a1f8c",
     "owner": "Ayla.Rippin",
-    "site": "South Country",
+    "site": "lost profuse garlic",
   },
   {
     "entryTime": {
@@ -522,7 +648,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "dd55f8c2-de08-4bb1-ab36-84f35809323a",
     "owner": "Ayla.Rippin",
-    "site": "Auto Moscovium",
+    "site": "deadly lean mobile",
   },
   {
     "entryTime": {
@@ -531,7 +657,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "cc80b995-5475-42f7-85e0-addbf8433bc7",
     "owner": "Ayla.Rippin",
-    "site": "FTP Hop",
+    "site": "ringed regal temporary",
   },
   {
     "entryTime": {
@@ -540,7 +666,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "cbed40d8-a412-4082-873b-d299ea1cc14f",
     "owner": "Ayla.Rippin",
-    "site": "Country yet",
+    "site": "alert awesome intuition",
   },
   {
     "entryTime": {
@@ -549,7 +675,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "76860124-94a4-4efe-a1a1-a265ca1f58c2",
     "owner": "Ayla.Rippin",
-    "site": "Mountain Manager",
+    "site": "rude ajar aggradation",
   },
   {
     "entryTime": {
@@ -558,7 +684,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "869aa785-99c5-4eea-9654-6820f5f496b5",
     "owner": "Ayla.Rippin",
-    "site": "solutions urgently",
+    "site": "caring nutty grub",
   },
   {
     "entryTime": {
@@ -567,7 +693,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "328125c5-5dd7-4697-b7af-47d93ded2ad1",
     "owner": "Ayla.Rippin",
-    "site": "Cambridgeshire Nevada",
+    "site": "joint bogus exit",
   },
   {
     "entryTime": {
@@ -576,7 +702,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "cbea8e84-bc25-4eb2-9390-15ca95028f2c",
     "owner": "Ayla.Rippin",
-    "site": "payment black",
+    "site": "exotic warmhearted aside",
   },
   {
     "entryTime": {
@@ -585,7 +711,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "73b26cf2-56a9-4ef2-bdcf-853790117993",
     "owner": "Ayla.Rippin",
-    "site": "Hip darling",
+    "site": "rundown joyous put",
   },
   {
     "entryTime": {
@@ -594,7 +720,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "8e90ef4e-4edd-4833-aa3b-c2e84a87b122",
     "owner": "Ayla.Rippin",
-    "site": "payment black",
+    "site": "exotic warmhearted aside",
   },
   {
     "entryTime": {
@@ -603,7 +729,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d9e75d9d-c04e-4394-8b2b-cfdb6b182664",
     "owner": "Ayla.Rippin",
-    "site": "revolutionary yuck",
+    "site": "bold staid lode",
   },
   {
     "entryTime": {
@@ -612,7 +738,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "efcbb303-df81-42cd-930a-85878a8581a8",
     "owner": "Ayla.Rippin",
-    "site": "Legacy SCSI",
+    "site": "bustling normal convert",
   },
   {
     "entryTime": {
@@ -621,7 +747,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "fcc765a3-bbc9-41ea-b062-40655c171bbe",
     "owner": "Ayla.Rippin",
-    "site": "aw qui",
+    "site": "monumental wild standardization",
   },
   {
     "entryTime": {
@@ -630,7 +756,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "47a62b28-fc10-4cf8-8d80-91012be86e66",
     "owner": "Ayla.Rippin",
-    "site": "motivating Customer",
+    "site": "funny substantial strength",
   },
   {
     "entryTime": {
@@ -639,7 +765,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "4ee6c79c-8114-4abb-95b3-81d1f50bde91",
     "owner": "Ayla.Rippin",
-    "site": "reprieve Books",
+    "site": "voluminous heartfelt imprisonment",
   },
   {
     "entryTime": {
@@ -648,7 +774,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "ce89f672-3b7e-4df7-aa6e-6b6a622fc90c",
     "owner": "Ayla.Rippin",
-    "site": "Gasoline Generic",
+    "site": "original pitiful resource",
   },
   {
     "entryTime": {
@@ -657,7 +783,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d1a3741c-a922-4b44-994d-e1503612fa6c",
     "owner": "Ayla.Rippin",
-    "site": "evolve female",
+    "site": "meaty weird good",
   },
   {
     "entryTime": {
@@ -666,7 +792,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "4a4e4494-e9b2-4654-9049-ba50c97aa491",
     "owner": "Ayla.Rippin",
-    "site": "reprieve Books",
+    "site": "voluminous heartfelt imprisonment",
   },
   {
     "entryTime": {
@@ -675,7 +801,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "25a110b8-95bf-4bf5-9f1b-7cb9b29efd67",
     "owner": "Ayla.Rippin",
-    "site": "program Strategist",
+    "site": "steep aromatic broccoli",
   },
   {
     "entryTime": {
@@ -684,7 +810,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "3a3037dc-7262-461d-9155-af5991371d11",
     "owner": "Ayla.Rippin",
-    "site": "Sausages Alpharetta",
+    "site": "giant broken meat",
   },
   {
     "entryTime": {
@@ -693,7 +819,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d400755b-7077-4bb1-8900-fba51464a4f9",
     "owner": "Ayla.Rippin",
-    "site": "lavender South",
+    "site": "legal incomplete trachoma",
   },
   {
     "entryTime": {
@@ -702,7 +828,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "3741d273-4c27-4ddd-8829-fe7d3acd6b30",
     "owner": "Ayla.Rippin",
-    "site": "Hybrid Frozen",
+    "site": "scornful well-worn baggage",
   },
   {
     "entryTime": {
@@ -711,7 +837,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "8408f6e3-e043-48b1-b076-fe341651d999",
     "owner": "Ayla.Rippin",
-    "site": "lavender Frozen",
+    "site": "specific infinite chalice",
   },
   {
     "entryTime": {
@@ -720,7 +846,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "6cd1b748-1fc6-4d5e-a5ff-e95241526945",
     "owner": "Ayla.Rippin",
-    "site": "becquerel worst",
+    "site": "wry boring examiner",
   },
   {
     "entryTime": {
@@ -729,7 +855,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "760c081d-c1ee-4481-b477-2df9d880ff08",
     "owner": "Ayla.Rippin",
-    "site": "Legacy SCSI",
+    "site": "bustling normal convert",
   },
   {
     "entryTime": {
@@ -738,7 +864,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "10883506-9d31-44da-8b67-d1c683dc3aa8",
     "owner": "Ayla.Rippin",
-    "site": "stupendous Polonium",
+    "site": "damp forsaken chapter",
   },
   {
     "entryTime": {
@@ -747,7 +873,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "e4eb1beb-c8b0-4530-88f4-b40aaf1c9afe",
     "owner": "Ayla.Rippin",
-    "site": "Auto Moscovium",
+    "site": "deadly lean mobile",
   },
   {
     "entryTime": {
@@ -756,7 +882,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "e7e6faf3-2cb5-4b84-829b-8f3d0015d332",
     "owner": "Ayla.Rippin",
-    "site": "Sausages Alpharetta",
+    "site": "giant broken meat",
   },
   {
     "entryTime": {
@@ -765,7 +891,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "7aea482e-43d5-4e76-9941-6d91a035cbb7",
     "owner": "Ayla.Rippin",
-    "site": "that Electronic",
+    "site": "steel monthly hypothesis",
   },
   {
     "entryTime": {
@@ -774,7 +900,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "1b547229-7bf2-475f-8998-146added74a5",
     "owner": "Ayla.Rippin",
-    "site": "once Los",
+    "site": "far-off critical machine",
   },
   {
     "entryTime": {
@@ -783,7 +909,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "170e7a94-9332-4262-a99a-2eaaf2e3c2ee",
     "owner": "Ayla.Rippin",
-    "site": "ouch Southwest",
+    "site": "superior rotten pigpen",
   },
   {
     "entryTime": {
@@ -792,7 +918,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "2aed3e54-aaf4-4b05-8831-225a1f78239b",
     "owner": "Ayla.Rippin",
-    "site": "Toyota synergistic",
+    "site": "yummy fitting waterwheel",
   },
   {
     "entryTime": {
@@ -801,7 +927,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "27622d9d-222b-4bc7-b574-74c0ed2cba96",
     "owner": "Ayla.Rippin",
-    "site": "Rwanda Operations",
+    "site": "whirlwind measly subset",
   },
   {
     "entryTime": {
@@ -810,7 +936,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "054c5c1e-446d-4c34-a4a3-b9bbd519b786",
     "owner": "Ayla.Rippin",
-    "site": "to East",
+    "site": "specific dead ramen",
   },
   {
     "entryTime": {
@@ -819,7 +945,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "08ed8cd2-96ee-495a-ae94-56c74f8bb4e7",
     "owner": "Ayla.Rippin",
-    "site": "program Strategist",
+    "site": "steep aromatic broccoli",
   },
   {
     "entryTime": {
@@ -828,7 +954,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "acbdee9c-19ec-4f9a-af46-60bfca53935e",
     "owner": "Ayla.Rippin",
-    "site": "whoa minima",
+    "site": "good-natured bountiful relay",
   },
   {
     "entryTime": {
@@ -837,7 +963,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "ba40a9ab-2a34-4e79-9d89-3e0a033e6730",
     "owner": "Ayla.Rippin",
-    "site": "Music quantifying",
+    "site": "spotless gifted gallon",
   },
   {
     "entryTime": {
@@ -846,7 +972,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "1133048d-e523-4a00-af32-0cf91d6ae9e0",
     "owner": "Ayla.Rippin",
-    "site": "Music quantifying",
+    "site": "spotless gifted gallon",
   },
   {
     "entryTime": {
@@ -855,7 +981,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "d4776027-8fff-46c9-bacb-0fedeb6c5612",
     "owner": "Ayla.Rippin",
-    "site": "solid Jaguar",
+    "site": "apt colossal initial",
   },
   {
     "entryTime": {
@@ -864,7 +990,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "3451180c-0ca7-4fc8-aba7-383f684ff8f2",
     "owner": "Ayla.Rippin",
-    "site": "bah far",
+    "site": "humble crazy cockpit",
   },
   {
     "entryTime": {
@@ -873,7 +999,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "aae4f4b6-23df-4a64-a7f5-a06a639f26b7",
     "owner": "Ayla.Rippin",
-    "site": "plum meh",
+    "site": "old-fashioned unwieldy cartridge",
   },
   {
     "entryTime": {
@@ -882,7 +1008,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "a2e6c3d8-2b66-4897-b0f5-f03d9dc0decc",
     "owner": "Ayla.Rippin",
-    "site": "Architect innovative",
+    "site": "remarkable unique shoelace",
   },
   {
     "entryTime": {
@@ -891,7 +1017,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "c779310e-3433-4c01-af7d-07f1934a0fb7",
     "owner": "Ayla.Rippin",
-    "site": "Chicken perspiciatis",
+    "site": "simplistic key cupcake",
   },
   {
     "entryTime": {
@@ -900,7 +1026,7 @@ exports[`Log entries E2E tests when searching log entries will allow admins to s
     },
     "id": "751d71fb-bfc5-43b4-a8d2-66e42b2982c0",
     "owner": "Ayla.Rippin",
-    "site": "Country yet",
+    "site": "alert awesome intuition",
   },
 ]
 `;
@@ -914,7 +1040,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "b3942d4f-f3e5-4379-9b2e-b512876fa66d",
     "owner": "Ayla.Rippin",
-    "site": "below South",
+    "site": "shameful glorious noodles",
   },
   {
     "entryTime": {
@@ -923,7 +1049,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d52b28b8-b466-4dc3-9694-de617bca8fe6",
     "owner": "Ayla.Rippin",
-    "site": "Cloned male",
+    "site": "gloomy acceptable hummus",
   },
   {
     "entryTime": {
@@ -932,7 +1058,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "722e61cb-9861-482a-9b4c-c82051a73e4b",
     "owner": "Ayla.Rippin",
-    "site": "deploy Electronic",
+    "site": "ideal blond spume",
   },
   {
     "entryTime": {
@@ -941,7 +1067,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "f693ff53-8011-4727-88ff-a2cef4cc8145",
     "owner": "Ayla.Rippin",
-    "site": "Rustic blue",
+    "site": "utter extraneous calm",
   },
   {
     "entryTime": {
@@ -950,7 +1076,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d67f8da5-456b-45f2-b7ba-c04b56a94672",
     "owner": "Ayla.Rippin",
-    "site": "Fresh Kia",
+    "site": "humming past mathematics",
   },
   {
     "entryTime": {
@@ -959,7 +1085,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "f084784f-4186-4fa9-8ab6-ac6ac0328902",
     "owner": "Ayla.Rippin",
-    "site": "Gasoline Consultant",
+    "site": "squeaky scaly sled",
   },
   {
     "entryTime": {
@@ -968,7 +1094,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "ac2204b3-8297-41e7-b33d-98256e7a1f8c",
     "owner": "Ayla.Rippin",
-    "site": "South Country",
+    "site": "lost profuse garlic",
   },
   {
     "entryTime": {
@@ -977,7 +1103,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "dd55f8c2-de08-4bb1-ab36-84f35809323a",
     "owner": "Ayla.Rippin",
-    "site": "Auto Moscovium",
+    "site": "deadly lean mobile",
   },
   {
     "entryTime": {
@@ -986,7 +1112,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "cc80b995-5475-42f7-85e0-addbf8433bc7",
     "owner": "Ayla.Rippin",
-    "site": "FTP Hop",
+    "site": "ringed regal temporary",
   },
   {
     "entryTime": {
@@ -995,7 +1121,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "cbed40d8-a412-4082-873b-d299ea1cc14f",
     "owner": "Ayla.Rippin",
-    "site": "Country yet",
+    "site": "alert awesome intuition",
   },
   {
     "entryTime": {
@@ -1004,7 +1130,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "76860124-94a4-4efe-a1a1-a265ca1f58c2",
     "owner": "Ayla.Rippin",
-    "site": "Mountain Manager",
+    "site": "rude ajar aggradation",
   },
   {
     "entryTime": {
@@ -1013,7 +1139,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "869aa785-99c5-4eea-9654-6820f5f496b5",
     "owner": "Ayla.Rippin",
-    "site": "solutions urgently",
+    "site": "caring nutty grub",
   },
   {
     "entryTime": {
@@ -1022,7 +1148,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "328125c5-5dd7-4697-b7af-47d93ded2ad1",
     "owner": "Ayla.Rippin",
-    "site": "Cambridgeshire Nevada",
+    "site": "joint bogus exit",
   },
   {
     "entryTime": {
@@ -1031,7 +1157,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "cbea8e84-bc25-4eb2-9390-15ca95028f2c",
     "owner": "Ayla.Rippin",
-    "site": "payment black",
+    "site": "exotic warmhearted aside",
   },
   {
     "entryTime": {
@@ -1040,7 +1166,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "73b26cf2-56a9-4ef2-bdcf-853790117993",
     "owner": "Ayla.Rippin",
-    "site": "Hip darling",
+    "site": "rundown joyous put",
   },
   {
     "entryTime": {
@@ -1049,7 +1175,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "8e90ef4e-4edd-4833-aa3b-c2e84a87b122",
     "owner": "Ayla.Rippin",
-    "site": "payment black",
+    "site": "exotic warmhearted aside",
   },
   {
     "entryTime": {
@@ -1058,7 +1184,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d9e75d9d-c04e-4394-8b2b-cfdb6b182664",
     "owner": "Ayla.Rippin",
-    "site": "revolutionary yuck",
+    "site": "bold staid lode",
   },
   {
     "entryTime": {
@@ -1067,7 +1193,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "efcbb303-df81-42cd-930a-85878a8581a8",
     "owner": "Ayla.Rippin",
-    "site": "Legacy SCSI",
+    "site": "bustling normal convert",
   },
   {
     "entryTime": {
@@ -1076,7 +1202,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "fcc765a3-bbc9-41ea-b062-40655c171bbe",
     "owner": "Ayla.Rippin",
-    "site": "aw qui",
+    "site": "monumental wild standardization",
   },
   {
     "entryTime": {
@@ -1085,7 +1211,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "47a62b28-fc10-4cf8-8d80-91012be86e66",
     "owner": "Ayla.Rippin",
-    "site": "motivating Customer",
+    "site": "funny substantial strength",
   },
   {
     "entryTime": {
@@ -1094,7 +1220,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "4ee6c79c-8114-4abb-95b3-81d1f50bde91",
     "owner": "Ayla.Rippin",
-    "site": "reprieve Books",
+    "site": "voluminous heartfelt imprisonment",
   },
   {
     "entryTime": {
@@ -1103,7 +1229,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "ce89f672-3b7e-4df7-aa6e-6b6a622fc90c",
     "owner": "Ayla.Rippin",
-    "site": "Gasoline Generic",
+    "site": "original pitiful resource",
   },
   {
     "entryTime": {
@@ -1112,7 +1238,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d1a3741c-a922-4b44-994d-e1503612fa6c",
     "owner": "Ayla.Rippin",
-    "site": "evolve female",
+    "site": "meaty weird good",
   },
   {
     "entryTime": {
@@ -1121,7 +1247,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "4a4e4494-e9b2-4654-9049-ba50c97aa491",
     "owner": "Ayla.Rippin",
-    "site": "reprieve Books",
+    "site": "voluminous heartfelt imprisonment",
   },
   {
     "entryTime": {
@@ -1130,7 +1256,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "25a110b8-95bf-4bf5-9f1b-7cb9b29efd67",
     "owner": "Ayla.Rippin",
-    "site": "program Strategist",
+    "site": "steep aromatic broccoli",
   },
   {
     "entryTime": {
@@ -1139,7 +1265,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "3a3037dc-7262-461d-9155-af5991371d11",
     "owner": "Ayla.Rippin",
-    "site": "Sausages Alpharetta",
+    "site": "giant broken meat",
   },
   {
     "entryTime": {
@@ -1148,7 +1274,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d400755b-7077-4bb1-8900-fba51464a4f9",
     "owner": "Ayla.Rippin",
-    "site": "lavender South",
+    "site": "legal incomplete trachoma",
   },
   {
     "entryTime": {
@@ -1157,7 +1283,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "3741d273-4c27-4ddd-8829-fe7d3acd6b30",
     "owner": "Ayla.Rippin",
-    "site": "Hybrid Frozen",
+    "site": "scornful well-worn baggage",
   },
   {
     "entryTime": {
@@ -1166,7 +1292,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "8408f6e3-e043-48b1-b076-fe341651d999",
     "owner": "Ayla.Rippin",
-    "site": "lavender Frozen",
+    "site": "specific infinite chalice",
   },
   {
     "entryTime": {
@@ -1175,7 +1301,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "6cd1b748-1fc6-4d5e-a5ff-e95241526945",
     "owner": "Ayla.Rippin",
-    "site": "becquerel worst",
+    "site": "wry boring examiner",
   },
   {
     "entryTime": {
@@ -1184,7 +1310,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "760c081d-c1ee-4481-b477-2df9d880ff08",
     "owner": "Ayla.Rippin",
-    "site": "Legacy SCSI",
+    "site": "bustling normal convert",
   },
   {
     "entryTime": {
@@ -1193,7 +1319,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "10883506-9d31-44da-8b67-d1c683dc3aa8",
     "owner": "Ayla.Rippin",
-    "site": "stupendous Polonium",
+    "site": "damp forsaken chapter",
   },
   {
     "entryTime": {
@@ -1202,7 +1328,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "e4eb1beb-c8b0-4530-88f4-b40aaf1c9afe",
     "owner": "Ayla.Rippin",
-    "site": "Auto Moscovium",
+    "site": "deadly lean mobile",
   },
   {
     "entryTime": {
@@ -1211,7 +1337,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "e7e6faf3-2cb5-4b84-829b-8f3d0015d332",
     "owner": "Ayla.Rippin",
-    "site": "Sausages Alpharetta",
+    "site": "giant broken meat",
   },
   {
     "entryTime": {
@@ -1220,7 +1346,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "7aea482e-43d5-4e76-9941-6d91a035cbb7",
     "owner": "Ayla.Rippin",
-    "site": "that Electronic",
+    "site": "steel monthly hypothesis",
   },
   {
     "entryTime": {
@@ -1229,7 +1355,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "1b547229-7bf2-475f-8998-146added74a5",
     "owner": "Ayla.Rippin",
-    "site": "once Los",
+    "site": "far-off critical machine",
   },
   {
     "entryTime": {
@@ -1238,7 +1364,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "170e7a94-9332-4262-a99a-2eaaf2e3c2ee",
     "owner": "Ayla.Rippin",
-    "site": "ouch Southwest",
+    "site": "superior rotten pigpen",
   },
   {
     "entryTime": {
@@ -1247,7 +1373,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "2aed3e54-aaf4-4b05-8831-225a1f78239b",
     "owner": "Ayla.Rippin",
-    "site": "Toyota synergistic",
+    "site": "yummy fitting waterwheel",
   },
   {
     "entryTime": {
@@ -1256,7 +1382,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "27622d9d-222b-4bc7-b574-74c0ed2cba96",
     "owner": "Ayla.Rippin",
-    "site": "Rwanda Operations",
+    "site": "whirlwind measly subset",
   },
   {
     "entryTime": {
@@ -1265,7 +1391,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "054c5c1e-446d-4c34-a4a3-b9bbd519b786",
     "owner": "Ayla.Rippin",
-    "site": "to East",
+    "site": "specific dead ramen",
   },
   {
     "entryTime": {
@@ -1274,7 +1400,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "08ed8cd2-96ee-495a-ae94-56c74f8bb4e7",
     "owner": "Ayla.Rippin",
-    "site": "program Strategist",
+    "site": "steep aromatic broccoli",
   },
   {
     "entryTime": {
@@ -1283,7 +1409,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "acbdee9c-19ec-4f9a-af46-60bfca53935e",
     "owner": "Ayla.Rippin",
-    "site": "whoa minima",
+    "site": "good-natured bountiful relay",
   },
   {
     "entryTime": {
@@ -1292,7 +1418,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "ba40a9ab-2a34-4e79-9d89-3e0a033e6730",
     "owner": "Ayla.Rippin",
-    "site": "Music quantifying",
+    "site": "spotless gifted gallon",
   },
   {
     "entryTime": {
@@ -1301,7 +1427,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "1133048d-e523-4a00-af32-0cf91d6ae9e0",
     "owner": "Ayla.Rippin",
-    "site": "Music quantifying",
+    "site": "spotless gifted gallon",
   },
   {
     "entryTime": {
@@ -1310,7 +1436,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "d4776027-8fff-46c9-bacb-0fedeb6c5612",
     "owner": "Ayla.Rippin",
-    "site": "solid Jaguar",
+    "site": "apt colossal initial",
   },
   {
     "entryTime": {
@@ -1319,7 +1445,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "3451180c-0ca7-4fc8-aba7-383f684ff8f2",
     "owner": "Ayla.Rippin",
-    "site": "bah far",
+    "site": "humble crazy cockpit",
   },
   {
     "entryTime": {
@@ -1328,7 +1454,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "aae4f4b6-23df-4a64-a7f5-a06a639f26b7",
     "owner": "Ayla.Rippin",
-    "site": "plum meh",
+    "site": "old-fashioned unwieldy cartridge",
   },
   {
     "entryTime": {
@@ -1337,7 +1463,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "a2e6c3d8-2b66-4897-b0f5-f03d9dc0decc",
     "owner": "Ayla.Rippin",
-    "site": "Architect innovative",
+    "site": "remarkable unique shoelace",
   },
   {
     "entryTime": {
@@ -1346,7 +1472,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "c779310e-3433-4c01-af7d-07f1934a0fb7",
     "owner": "Ayla.Rippin",
-    "site": "Chicken perspiciatis",
+    "site": "simplistic key cupcake",
   },
   {
     "entryTime": {
@@ -1355,7 +1481,7 @@ exports[`Log entries E2E tests when searching log entries will perform a basic s
     },
     "id": "751d71fb-bfc5-43b4-a8d2-66e42b2982c0",
     "owner": "Ayla.Rippin",
-    "site": "Country yet",
+    "site": "alert awesome intuition",
   },
 ]
 `;

@@ -1,6 +1,9 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  DiveSiteDTO,
+  GetMostRecentDiveSitesRequestParamsDTO,
+  GetMostRecentDiveSitesRequestParamsSchema,
   GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesParamsSchema,
@@ -337,6 +340,76 @@ export class UserLogEntriesController {
   ): Promise<GetNextAvailableLogNumberResponseDTO> {
     const logNumber = await this.service.getNextAvailableLogNumber(user.id);
     return { logNumber };
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/logbook/recentDiveSites:
+   *   get:
+   *     tags:
+   *       - Dive Logs
+   *       - Users
+   *     summary: Get the most recent dive sites referenced in log entries by a user
+   *     operationId: getRecentDiveSites
+   *     description: |
+   *       Retrieves a list of the dive sites referenced in the most recent log entries for a user. The `count` parameter will
+   *       set an upper limit on the number of results returned but the actual number of results may be less if the user has not
+   *       logged dives with that many distinct dive sites in their last 200 log entries.
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - in: query
+   *         name: count
+   *         description: The maximum number of distinct dive sites to return.
+   *         schema:
+   *           type: integer
+   *           format: int32
+   *           minimum: 1
+   *           maximum: 200
+   *           default: 10
+   *         required: false
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the most recent dive sites can be found in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: "#/components/schemas/DiveSite"
+   *       "401":
+   *         description: The request failed because the current user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to view the target user's dive sites.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get('recentDiveSites')
+  @UseGuards(AssertAuth, AssertAccountOwner)
+  async getRecentDiveSites(
+    @TargetUser() user: User,
+    @Query(new ZodValidator(GetMostRecentDiveSitesRequestParamsSchema))
+    { count }: GetMostRecentDiveSitesRequestParamsDTO,
+  ): Promise<DiveSiteDTO[]> {
+    const sites = await this.service.getRecentDiveSites(user.id, count);
+    return sites.map((site) => site.toJSON());
   }
 
   /**

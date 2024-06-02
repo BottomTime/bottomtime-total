@@ -4,6 +4,7 @@ import {
   ListDiveSiteReviewsParamsDTO,
   SortOrder,
   SuccinctProfileDTO,
+  WaterType,
 } from '@bottomtime/api';
 
 import { HttpException, Logger, NotFoundException } from '@nestjs/common';
@@ -122,6 +123,13 @@ export class DiveSite {
   }
   set shoreAccess(val: boolean | undefined) {
     this.data.shoreAccess = typeof val === 'boolean' ? val : null;
+  }
+
+  get waterType(): WaterType | undefined {
+    return this.data.waterType ?? undefined;
+  }
+  set waterType(val: WaterType | undefined) {
+    this.data.waterType = val || null;
   }
 
   // LOCATION INFO
@@ -267,6 +275,7 @@ export class DiveSite {
       gps: this.gps,
       freeToDive: this.freeToDive,
       shoreAccess: this.shoreAccess,
+      waterType: this.waterType,
       averageRating: this.averageRating,
       averageDifficulty: this.averageDifficulty,
     };

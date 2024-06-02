@@ -367,5 +367,6 @@ exports[`Dive Site Class will render dive site data as JSON 1`] = `
   "name": "Palancar Horseshoe",
   "shoreAccess": false,
   "updatedOn": undefined,
+  "waterType": "fresh",
 }
 `;

@@ -48,6 +48,7 @@ export class DiveSitesService {
       .withGeoLocation(options.location, options.radius)
       .withRating(options.rating)
       .withShoreAccesss(options.shoreAccess)
+      .withWaterType(options.waterType)
       .withSortOrder(options.sortBy, options.sortOrder)
       .withPagination(options.skip, options.limit)
       .build();
@@ -80,6 +81,22 @@ export class DiveSitesService {
     return undefined;
   }
 
+  async getDiveSites(siteIds: string[]): Promise<DiveSite[]> {
+    if (!siteIds.length) return [];
+
+    const query = new DiveSiteQueryBuilder(this.DiveSites)
+      .withSiteIds(siteIds)
+      .build();
+
+    this.log.debug(`Attempting to retrieve ${siteIds.length} dive sites...`);
+    this.log.verbose(query.getSql());
+
+    const result = await query.getMany();
+    return result
+      .map((site) => this.siteFactory.createDiveSite(site))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
   async createDiveSite(options: CreateDiveSiteOptions): Promise<DiveSite> {
     const data = new DiveSiteEntity();
 
@@ -101,6 +118,7 @@ export class DiveSitesService {
     data.directions = options.directions ?? null;
     data.freeToDive = options.freeToDive ?? null;
     data.shoreAccess = options.shoreAccess ?? null;
+    data.waterType = options.waterType ?? null;
 
     if (options.gps) {
       data.gps = {

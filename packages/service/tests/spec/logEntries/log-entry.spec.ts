@@ -4,6 +4,7 @@ import {
   LogEntryAirDTO,
   PressureUnit,
   TankMaterial,
+  WaterType,
 } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
@@ -57,6 +58,7 @@ const TestSiteData: DiveSiteEntity = {
   location: 'Ocean',
   name: 'Dive Site of Awesomeness',
   shoreAccess: false,
+  waterType: WaterType.Salt,
   updatedOn: new Date('2024-05-21T19:46:14.342Z'),
 };
 

@@ -59,6 +59,18 @@
           />
         </div>
       </div>
+
+      <div>
+        <p v-if="entry.site" class="flex space-x-2">
+          <span class="text-danger">
+            <i class="fa-solid fa-location-dot"></i>
+          </span>
+          <span class="capitalize">
+            {{ entry.site.name }}
+          </span>
+          <span>({{ entry.site.location }})</span>
+        </p>
+      </div>
     </div>
   </li>
 </template>

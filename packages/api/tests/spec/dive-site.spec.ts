@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
 import { DiveSite } from '../../src/client';
-import { DepthUnit } from '../../src/types';
+import { DepthUnit, WaterType } from '../../src/types';
 import {
   DiveSiteWithFullProperties,
   DiveSiteWithMinimalProperties,
@@ -30,6 +30,7 @@ describe('Dive Site API class', () => {
     expect(site.gps).toBeUndefined();
     expect(site.freeToDive).toBeUndefined();
     expect(site.shoreAccess).toBeUndefined();
+    expect(site.waterType).toBeUndefined();
   });
 
   it('will represent a dive site with all properties set', () => {
@@ -50,6 +51,7 @@ describe('Dive Site API class', () => {
     expect(site.gps).toBe(DiveSiteWithFullProperties.gps);
     expect(site.freeToDive).toBe(DiveSiteWithFullProperties.freeToDive);
     expect(site.shoreAccess).toBe(DiveSiteWithFullProperties.shoreAccess);
+    expect(site.waterType).toBe(DiveSiteWithFullProperties.waterType);
   });
 
   it('will return dive site as a JSON DTO', () => {
@@ -67,6 +69,7 @@ describe('Dive Site API class', () => {
     site.gps = { lat: 0, lon: 0 };
     site.freeToDive = true;
     site.shoreAccess = true;
+    site.waterType = WaterType.Fresh;
 
     expect(site.name).toBe('new name');
     expect(site.description).toBe('new description');
@@ -76,6 +79,7 @@ describe('Dive Site API class', () => {
     expect(site.gps).toEqual({ lat: 0, lon: 0 });
     expect(site.freeToDive).toBe(true);
     expect(site.shoreAccess).toBe(true);
+    expect(site.waterType).toBe(WaterType.Fresh);
   });
 
   it('will save changes to the dive site', async () => {
@@ -88,6 +92,7 @@ describe('Dive Site API class', () => {
     site.gps = { lat: 0, lon: 0 };
     site.freeToDive = true;
     site.shoreAccess = true;
+    site.waterType = WaterType.Mixed;
 
     const spy = jest.spyOn(client, 'put').mockResolvedValue({
       data: {
@@ -100,6 +105,7 @@ describe('Dive Site API class', () => {
         gps: { lat: 0, lon: 0 },
         freeToDive: true,
         shoreAccess: true,
+        waterType: WaterType.Mixed,
       },
     });
 
@@ -116,6 +122,7 @@ describe('Dive Site API class', () => {
         gps: { lat: 0, lon: 0 },
         freeToDive: true,
         shoreAccess: true,
+        waterType: WaterType.Mixed,
       },
     );
   });

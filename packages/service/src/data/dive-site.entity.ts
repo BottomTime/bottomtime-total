@@ -1,4 +1,4 @@
-import { DepthUnit } from '@bottomtime/api';
+import { DepthUnit, WaterType } from '@bottomtime/api';
 
 import {
   Column,
@@ -63,6 +63,9 @@ export class DiveSiteEntity {
   @Column('boolean', { nullable: true })
   @Index()
   shoreAccess: boolean | null = null;
+
+  @Column('enum', { enum: WaterType, nullable: true })
+  waterType: WaterType | null = null;
 
   @Column({
     type: 'tsvector',

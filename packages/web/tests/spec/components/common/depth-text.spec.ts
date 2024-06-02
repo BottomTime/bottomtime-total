@@ -63,5 +63,12 @@ describe('DepthText component', () => {
       const wrapper = mount(DepthText, opts);
       expect(wrapper.text()).toMatchSnapshot();
     });
+
+    it(`will indicate "bottomless" if the depth is zero ${unit}`, () => {
+      currentUser.user = null;
+      opts.props = { depth: 0, unit };
+      const wrapper = mount(DepthText, opts);
+      expect(wrapper.text()).toBe('Bottomless');
+    });
   });
 });
