@@ -1,4 +1,20 @@
 <template>
+  <ConfirmDialog
+    :visible="state.showConfirmRemoveDialog"
+    title="Remove Air Tank?"
+    confirm-text="Remove"
+    @confirm="onConfirmRemoveEntry"
+    @cancel="onCancelRemoveEntry"
+  >
+    <div class="flex gap-3">
+      <span class="mt-1">
+        <i class="fa-regular fa-circle-question fa-2xl"></i>
+      </span>
+
+      <p>Are you sure you want to remove the selected air tank?</p>
+    </div>
+  </ConfirmDialog>
+
   <div class="space-y-2">
     <TransitionGroup name="list" tag="ul">
       <EditEntryAir
@@ -7,7 +23,7 @@
         :air="airEntry"
         :tanks="tanks"
         :ordinal="index"
-        @remove="(id) => $emit('remove', id)"
+        @remove="onRemoveEntry"
         @update="(update) => $emit('update', update)"
       />
     </TransitionGroup>
@@ -27,14 +43,21 @@
 import { PressureUnit, TankDTO } from '@bottomtime/api';
 
 import { v4 as uuid } from 'uuid';
+import { reactive } from 'vue';
 
 import FormButton from '../common/form-button.vue';
+import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import { EditEntryAirFormData } from './edit-entry-air-form-data';
 import EditEntryAir from './edit-entry-air.vue';
 
 interface EditEntryAirCollectionProps {
   tanks: TankDTO[];
   air: EditEntryAirFormData[];
+}
+
+interface EditEntryAirCollectionState {
+  showConfirmRemoveDialog: boolean;
+  entryToRemove?: EditEntryAirFormData;
 }
 
 const BlankAirForm: EditEntryAirFormData = {
@@ -48,15 +71,35 @@ const BlankAirForm: EditEntryAirFormData = {
   tankId: '',
 } as const;
 
-defineProps<EditEntryAirCollectionProps>();
+const props = defineProps<EditEntryAirCollectionProps>();
 const emit = defineEmits<{
   (e: 'add', air: EditEntryAirFormData): void;
   (e: 'remove', id: string): void;
   (e: 'update', air: EditEntryAirFormData): void;
 }>();
+const state = reactive<EditEntryAirCollectionState>({
+  showConfirmRemoveDialog: false,
+});
 
 function onAddTank() {
   emit('add', { ...BlankAirForm, id: uuid() });
+}
+
+function onRemoveEntry(id: string) {
+  state.entryToRemove = props.air.find((entry) => entry.id === id);
+  if (state.entryToRemove) state.showConfirmRemoveDialog = true;
+}
+
+function onCancelRemoveEntry() {
+  state.entryToRemove = undefined;
+  state.showConfirmRemoveDialog = false;
+}
+
+function onConfirmRemoveEntry() {
+  if (state.entryToRemove) {
+    emit('remove', state.entryToRemove.id);
+  }
+  state.showConfirmRemoveDialog = false;
 }
 </script>
 

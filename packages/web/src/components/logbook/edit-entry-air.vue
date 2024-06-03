@@ -14,7 +14,7 @@
       </button>
     </div>
 
-    <FormBox class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 ml-4">
+    <FormBox class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
       <FormField
         class="order-1 col-span-1 lg:col-span-3"
         label="Tank"
