@@ -27,11 +27,90 @@ export class UserCustomDataController {
     private readonly service: UserCustomDataService,
   ) {}
 
+  /**
+   * @openapi
+   * /api/users/{username}/customData:
+   *   get:
+   *     summary: Retrieve a list of custom data keys for the user
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and an array of keys will be returned in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: string
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to view or modify custom data for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get()
   async listKeys(@TargetUser() user: User): Promise<string[]> {
     return await this.service.listKeys(user.id);
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/customData/{key}:
+   *   get:
+   *     summary: Retrieve a custom data blob for the user
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - in: path
+   *         name: key
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: The key of the custom data blob to retrieve
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the custom data blob will be returned in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               additionalProperties: true
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to view or modify custom data for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user or the indicated key could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get(':key')
   async getItem(
     @TargetUser() user: User,
@@ -45,6 +124,72 @@ export class UserCustomDataController {
     return data;
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/customData/{key}:
+   *   put:
+   *     summary: Set or create a custom data blob for the user
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - in: path
+   *         name: key
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: The key of the custom data blob to set
+   *     requestBody:
+   *       required: true
+   *       description: The custom data blob to set any generic JSON data will be accepted. Size is limited to 2Mb.
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             additionalProperties: true
+   *           example: |
+   *             {
+   *               acceptedCookies: true,
+   *               preferences: {
+   *                 theme: 'dark',
+   *                 language: 'en',
+   *               },
+   *             }
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the custom data blob will be returned in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               additionalProperties: true
+   *       "201":
+   *         description: The request succeeded and the custom data blob was created.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               additionalProperties: true
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was not valid. (The JSON may be malformed or the payload may be too large.)
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to view or modify custom data for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Put(':key')
   async setItem(
     @TargetUser() user: User,
@@ -55,6 +200,43 @@ export class UserCustomDataController {
     return value;
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/customData/{key}:
+   *   delete:
+   *     summary: Remove a custom data blob for the user
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - in: path
+   *         name: key
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: The key of the custom data blob to remove
+   *     responses:
+   *       "204":
+   *         description: The request succeeded and the custom data blob was removed.
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to view or modify custom data for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user or the indicated key could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Delete(':key')
   @HttpCode(204)
   async deleteItem(
