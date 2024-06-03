@@ -2,33 +2,31 @@
   <div class="space-y-2">
     <TransitionGroup name="list" tag="ul">
       <EditEntryAir
-        v-for="(airEntry, index) in airEntries"
-        :key="index"
+        v-for="(airEntry, index) in air"
+        :key="airEntry.id"
         :air="airEntry"
         :tanks="tanks"
         :ordinal="index"
-        @remove="(index) => $emit('remove', index)"
-        @update="(update, index) => $emit('update', update, index)"
+        @remove="(id) => $emit('remove', id)"
+        @update="(update) => $emit('update', update)"
       />
     </TransitionGroup>
 
-    <FormButton type="link" size="sm" @click="onAddTank">
-      <p class="text-sm space-x-1">
+    <FormButton type="link" @click="onAddTank">
+      <p class="space-x-1">
         <span>
-          <i class="fa-solid fa-plus fa-sm"></i>
+          <i class="fa-solid fa-plus"></i>
         </span>
         <span>Add tank</span>
       </p>
     </FormButton>
-
-    <p>{{ JSON.stringify(airEntries) }}</p>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { PressureUnit, TankDTO } from '@bottomtime/api';
 
-import { reactive } from 'vue';
+import { v4 as uuid } from 'uuid';
 
 import FormButton from '../common/form-button.vue';
 import { EditEntryAirFormData } from './edit-entry-air-form-data';
@@ -40,6 +38,7 @@ interface EditEntryAirCollectionProps {
 }
 
 const BlankAirForm: EditEntryAirFormData = {
+  id: '',
   startPressure: '',
   endPressure: '',
   count: '',
@@ -49,15 +48,15 @@ const BlankAirForm: EditEntryAirFormData = {
   tankId: '',
 } as const;
 
-const props = defineProps<EditEntryAirCollectionProps>();
-const airEntries = reactive<EditEntryAirFormData[]>([...props.air]);
-defineEmits<{
-  (e: 'remove', index: number): void;
-  (e: 'update', air: EditEntryAirFormData, index: number): void;
+defineProps<EditEntryAirCollectionProps>();
+const emit = defineEmits<{
+  (e: 'add', air: EditEntryAirFormData): void;
+  (e: 'remove', id: string): void;
+  (e: 'update', air: EditEntryAirFormData): void;
 }>();
 
 function onAddTank() {
-  airEntries.push({ ...BlankAirForm });
+  emit('add', { ...BlankAirForm, id: uuid() });
 }
 </script>
 

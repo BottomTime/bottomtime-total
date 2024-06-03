@@ -1,9 +1,12 @@
 <template>
-  <li class="my-1.5">
+  <li class="my-1.5 space-y-1.5">
     <div class="flex justify-between">
       <TextHeading level="h4">#{{ ordinal + 1 }}</TextHeading>
 
-      <button class="text-danger" @click="$emit('remove', ordinal)">
+      <button
+        class="text-danger hover:text-danger-hover"
+        @click="$emit('remove', formData.id)"
+      >
         <span class="sr-only">Remove air entry #{{ ordinal + 1 }}</span>
         <span>
           <i class="fa-solid fa-x"></i>
@@ -11,7 +14,7 @@
       </button>
     </div>
 
-    <FormBox class="grid grid-cols-2 lg:grid-cols-4 gap-2 ml-4">
+    <FormBox class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 ml-4">
       <FormField
         class="order-1 col-span-1 lg:col-span-3"
         label="Tank"
@@ -30,7 +33,7 @@
 
       <div
         v-if="formData.tankInfo"
-        class="flex justify-evenly col-span-2 lg:col-span-4 order-3 mb-2"
+        class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-2 md:order-3 mb-2"
       >
         <div class="text-center">
           <p class="font-bold">Working Pressure</p>
@@ -51,7 +54,7 @@
       </div>
 
       <FormField
-        class="order-2"
+        class="order-3 md:order-2"
         label="Count"
         :responsive="false"
         :invalid="v$.count.$error"
@@ -185,8 +188,8 @@ interface EditEntryAirProps {
 
 const props = defineProps<EditEntryAirProps>();
 const emit = defineEmits<{
-  (e: 'remove', index: number): void;
-  (e: 'update', air: EditEntryAirFormData, index: number): void;
+  (e: 'remove', id: string): void;
+  (e: 'update', air: EditEntryAirFormData): void;
 }>();
 
 const tankOptions = computed<SelectOption[]>(() => [
@@ -282,10 +285,10 @@ function onTogglePressureUnit() {
       : PressureUnit.Bar;
 }
 
-watch(formData, (newData, oldData) => {
+watch(formData, (newData) => {
   // if (newData.tankId !== oldData.tankId) {
   newData.tankInfo = props.tanks.find((tank) => tank.id === newData.tankId);
   // }
-  emit('update', newData, props.ordinal);
+  emit('update', newData);
 });
 </script>
