@@ -45,6 +45,7 @@ import { PressureUnit, TankDTO } from '@bottomtime/api';
 import { v4 as uuid } from 'uuid';
 import { reactive } from 'vue';
 
+import { useCurrentUser } from '../../store';
 import FormButton from '../common/form-button.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import { EditEntryAirFormData } from './edit-entry-air-form-data';
@@ -71,6 +72,8 @@ const BlankAirForm: EditEntryAirFormData = {
   tankId: '',
 } as const;
 
+const currentUser = useCurrentUser();
+
 const props = defineProps<EditEntryAirCollectionProps>();
 const emit = defineEmits<{
   (e: 'add', air: EditEntryAirFormData): void;
@@ -82,7 +85,11 @@ const state = reactive<EditEntryAirCollectionState>({
 });
 
 function onAddTank() {
-  emit('add', { ...BlankAirForm, id: uuid() });
+  emit('add', {
+    ...BlankAirForm,
+    id: uuid(),
+    pressureUnit: currentUser.user?.settings.pressureUnit ?? PressureUnit.Bar,
+  });
 }
 
 function onRemoveEntry(id: string) {
