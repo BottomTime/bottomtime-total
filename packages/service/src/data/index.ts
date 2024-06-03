@@ -6,6 +6,7 @@ export * from './dive-site-review.entity';
 export * from './dive-site.entity';
 export * from './friend-request.entity';
 export * from './friendship.entity';
+export * from './user-json-data.entity';
 export * from './log-entry.entity';
 export * from './log-entry-air.entity';
 export * from './notification.entity';
