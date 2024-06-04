@@ -193,14 +193,19 @@ const emit = defineEmits<{
 }>();
 
 const tankOptions = computed<SelectOption[]>(() => [
-  { value: '', label: '(select tank)' },
+  props.air.tankId === '' && props.air.tankInfo
+    ? { value: 'current', label: '(current tank)' }
+    : { value: '', label: '(select tank)' },
   ...props.tanks.map((tank) => ({
     value: tank.id,
     label: tank.name,
   })),
 ]);
 
-const formData = reactive<EditEntryAirFormData>({ ...props.air });
+const formData = reactive<EditEntryAirFormData>({
+  ...props.air,
+  tankId: props.air.tankId || (props.air.tankInfo ? 'current' : ''),
+});
 
 const tankMaterialString = computed(() => {
   if (!formData.tankInfo) return '';
@@ -286,9 +291,7 @@ function onTogglePressureUnit() {
 }
 
 watch(formData, (newData) => {
-  // if (newData.tankId !== oldData.tankId) {
   newData.tankInfo = props.tanks.find((tank) => tank.id === newData.tankId);
-  // }
   emit('update', newData);
 });
 </script>

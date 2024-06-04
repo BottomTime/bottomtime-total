@@ -262,7 +262,14 @@
 </template>
 
 <script lang="ts" setup>
-import { DepthDTO, DiveSiteDTO, LogEntryDTO, TankDTO } from '@bottomtime/api';
+import {
+  DepthDTO,
+  DiveSiteDTO,
+  LogEntryAirDTO,
+  LogEntryDTO,
+  TankDTO,
+  TankMaterial,
+} from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, integer, required } from '@vuelidate/validators';
@@ -335,10 +342,10 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
         pressureUnit: air.pressureUnit,
         hePercentage: air.hePercent ?? '',
         o2Percentage: air.o2Percent ?? '',
-        tankId: air.name ? '(selected)' : '',
+        tankId: '',
         tankInfo: air.name
           ? {
-              id: '(selected)',
+              id: '',
               material: air.material,
               name: air.name,
               volume: air.volume,
@@ -414,6 +421,24 @@ const v$ = useVuelidate<LogEntryData>(
   formData,
 );
 
+function airFormDataToDto(air: EditEntryAirFormData): LogEntryAirDTO {
+  return {
+    count: typeof air.count === 'number' ? air.count : 1,
+    endPressure: typeof air.endPressure === 'number' ? air.endPressure : 0,
+    material: air.tankInfo?.material || TankMaterial.Aluminum,
+    name: air.tankInfo?.name || '',
+    pressureUnit: air.pressureUnit,
+    startPressure:
+      typeof air.startPressure === 'number' ? air.startPressure : 0,
+    volume: air.tankInfo?.volume || 0,
+    workingPressure: air.tankInfo?.workingPressure || 0,
+    hePercent:
+      typeof air.hePercentage === 'number' ? air.hePercentage : undefined,
+    o2Percent:
+      typeof air.o2Percentage === 'number' ? air.o2Percentage : undefined,
+  };
+}
+
 async function onSave(): Promise<void> {
   const isValid = await v$.value.$validate();
   if (!isValid) return;
@@ -432,6 +457,7 @@ async function onSave(): Promise<void> {
     maxDepth: formData.maxDepth,
     notes: formData.notes,
     site: formData.site,
+    air: formData.air.map(airFormDataToDto),
   });
 }
 
