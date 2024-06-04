@@ -72,7 +72,7 @@ describe('Tank class', () => {
     tank.volume = options.volume;
     tank.workingPressure = options.workingPressure;
 
-    await tank.update();
+    await tank.save();
 
     expect(spy).toHaveBeenCalledWith(`/api/admin/tanks/${tank.id}`, options);
   });
@@ -100,7 +100,7 @@ describe('Tank class', () => {
     tank.volume = options.volume;
     tank.workingPressure = options.workingPressure;
 
-    await tank.update();
+    await tank.save();
 
     expect(spy).toHaveBeenCalledWith(
       `/api/users/${Username}/tanks/${tank.id}`,

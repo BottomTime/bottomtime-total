@@ -53,4 +53,8 @@ export class TanksApiClient {
       totalCount: result.totalCount,
     };
   }
+
+  wrapDTO(tank: unknown, username?: string): Tank {
+    return new Tank(this.apiClient, TankSchema.parse(tank), username);
+  }
 }

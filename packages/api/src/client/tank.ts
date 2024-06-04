@@ -59,7 +59,7 @@ export class Tank {
     return { ...this.data };
   }
 
-  async update(): Promise<void> {
+  async save(): Promise<void> {
     const { data } = await this.apiClient.put(
       this.getUrl(),
       CreateOrUpdateTankParamsSchema.parse(this.data),

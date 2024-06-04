@@ -41,10 +41,11 @@
             <span>
               <i class="fas fa-fish fa-lg"></i>
             </span>
-            <span>Manage Tanks</span>
+            <span>Manage Tank Profiles</span>
           </TextHeading>
           <p class="text-sm italic">
-            Manage dive tanks including adding, editing or deleting tanks.
+            Add, edit, or delete default tank profiles for users to use in their
+            log entries.
           </p>
         </FormBox>
       </a>
