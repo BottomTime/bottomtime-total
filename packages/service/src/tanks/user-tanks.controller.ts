@@ -1,4 +1,13 @@
 import {
+  CreateOrUpdateTankParamsDTO,
+  CreateOrUpdateTankParamsSchema,
+  ListTanksResponseDTO,
+  ListUserTanksParamsDTO,
+  ListUserTanksParamsSchema,
+  TankDTO,
+} from '@bottomtime/api';
+
+import {
   Body,
   Controller,
   Delete,
@@ -9,21 +18,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { TanksService } from './tanks.service';
-import { AssertTank, SelectedTank } from './assert-tank.guard';
-import {
-  CreateOrUpdateTankParamsDTO,
-  CreateOrUpdateTankParamsSchema,
-  ListTanksResponseDTO,
-  ListUserTanksParamsDTO,
-  ListUserTanksParamsSchema,
-  TankDTO,
-} from '@bottomtime/api';
+
 import { AssertAuth, CurrentUser } from '../auth';
-import { Tank } from './tank';
 import { AssertTargetUser, TargetUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { AssertTankPrivilege } from './assert-tank-privilege.guard';
+import { AssertTank, SelectedTank } from './assert-tank.guard';
+import { Tank } from './tank';
+import { TanksService } from './tanks.service';
 
 const UsernameParam = 'username';
 const TankIdParam = 'tankId';
@@ -45,10 +47,10 @@ export class UserTanksController {
    *     description: List the tanks belonging to a user.
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
-   *       - name: includeSystem
+   *       - in: query
+   *         name: includeSystem
    *         schema:
    *           type: boolean
-   *         in: query
    *         description: Whether to include pre-defined system tanks in the results.
    *         required: false
    *     responses:

@@ -22,6 +22,11 @@ export const AdminRoutes: RouteRecordRaw[] = [
     component: () => import('../views/admin-alert-view.vue'),
   },
   {
+    path: '/admin/tanks',
+    name: 'admin-tanks',
+    component: () => import('../views/admin-tanks-view.vue'),
+  },
+  {
     path: '/admin/users',
     name: 'admin-users',
     component: () => import('../views/admin-users-view.vue'),

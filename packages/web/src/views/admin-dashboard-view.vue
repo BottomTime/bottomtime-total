@@ -2,6 +2,7 @@
   <PageTitle title="Admin Dashboard" />
   <RequireAuth :role="RequiredRole">
     <BreadCrumbs :items="breadcrumbs" />
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <a href="/admin/users">
         <FormBox>
@@ -17,6 +18,7 @@
           </p>
         </FormBox>
       </a>
+
       <a href="/admin/alerts">
         <FormBox>
           <TextHeading class="space-x-3">
@@ -29,6 +31,20 @@
             Manage alerts that appear on the home page. Add, edit or delete
             alerts as well as update the date and times at which they become
             visible or expire.
+          </p>
+        </FormBox>
+      </a>
+
+      <a href="/admin/tanks">
+        <FormBox>
+          <TextHeading class="space-x-3">
+            <span>
+              <i class="fas fa-fish fa-lg"></i>
+            </span>
+            <span>Manage Tanks</span>
+          </TextHeading>
+          <p class="text-sm italic">
+            Manage dive tanks including adding, editing or deleting tanks.
           </p>
         </FormBox>
       </a>
