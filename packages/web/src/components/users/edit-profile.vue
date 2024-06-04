@@ -150,7 +150,21 @@
             />
           </FormField>
 
-          <TextHeading>Personal Tank Profiles</TextHeading>
+          <div v-if="tanks && currentUser.user">
+            <TextHeading>Personal Tank Profiles</TextHeading>
+            <div v-if="tanks.totalCount">
+              <p>
+                You have {{ tanks.totalCount }} personal tank profiles defined:
+              </p>
+            </div>
+            <div v-else class="text-lg italic my-4">
+              <span>You haven't created any personal tank profiles yet. </span>
+              <NavLink :to="`/profile/${currentUser.user.username}/tanks`">
+                Click here
+              </NavLink>
+              <span> to create one.</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -164,6 +178,7 @@
         >
           Save Changes
         </FormButton>
+
         <FormButton test-id="cancel-profile" @click="onReset">
           Cancel
         </FormButton>
@@ -173,30 +188,37 @@
 </template>
 
 <script setup lang="ts">
-import { LogBookSharing, ProfileDTO } from '@bottomtime/api';
+import {
+  ListTanksResponseDTO,
+  LogBookSharing,
+  ProfileDTO,
+} from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
 
 import { useClient } from '../../api-client';
 import { Coordinates, SelectOption, ToastType } from '../../common';
 import { useOops } from '../../oops';
-import { useToasts } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormFuzzyDate from '../common/form-fuzzy-date.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
+import NavLink from '../common/nav-link.vue';
 import TextHeading from '../common/text-heading.vue';
 import ChangeAvatarDialog from '../dialog/change-avatar-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UserAvatar from './user-avatar.vue';
 
-type EditProfileProps = {
+interface EditProfileProps {
   responsive?: boolean;
   profile: ProfileDTO;
-};
-type EditProfileState = {
+  tanks?: ListTanksResponseDTO;
+}
+
+interface EditProfileState {
   avatar: string;
   bio: string;
   experienceLevel: string;
@@ -204,7 +226,7 @@ type EditProfileState = {
   logBookSharing: LogBookSharing;
   name: string;
   startedDiving: string;
-};
+}
 
 const LogbookSharingHelp =
   'This will determine who can view your log book records. You can keep your log book private by ("Just me"), make it visible to only your friends ("Me and my friends"), or make it public ("Everyone"). Only you will be able to modify your log book.';
@@ -224,12 +246,14 @@ const LogbookSharingOptions: SelectOption[] = [
 ];
 
 const client = useClient();
+const currentUser = useCurrentUser();
 const toasts = useToasts();
 const oops = useOops();
 
 const props = withDefaults(defineProps<EditProfileProps>(), {
   responsive: true,
 });
+
 const state = reactive<EditProfileState>({
   avatar: props.profile.avatar ?? '',
   bio: props.profile.bio ?? '',

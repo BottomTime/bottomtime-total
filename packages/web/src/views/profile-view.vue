@@ -1,11 +1,13 @@
 <template>
   <PageTitle :title="title" />
   <RequireAuth>
+    <BreadCrumbs :items="Breadcrumbs" />
     <FormBox>
       <NotFound v-if="!state.profile" />
       <EditProfile
         v-else-if="canEdit"
         :profile="state.profile"
+        :tanks="state.tanks"
         @save-profile="onSave"
       />
       <ViewProfile v-else :profile="state.profile" />
@@ -20,6 +22,8 @@ import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
+import { Breadcrumb } from '../common';
+import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import FormBox from '../components/common/form-box.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
@@ -35,6 +39,13 @@ interface ProfileViewState {
   profile?: ProfileDTO;
   tanks: ListTanksResponseDTO;
 }
+
+const Breadcrumbs: Breadcrumb[] = [
+  {
+    label: 'Profile',
+    active: true,
+  },
+];
 
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
@@ -71,18 +82,34 @@ const title = computed(() => {
 });
 
 onServerPrefetch(async () => {
-  if (!currentUser.user) return;
-
-  const username = route.params.username;
-  if (typeof username !== 'string') {
-    state.profile = currentUser.user.profile;
-    if (ctx) ctx.currentProfile = state.profile;
+  let username: string | undefined;
+  if (typeof route.params.username === 'string') {
+    username = route.params.username;
+  } else if (currentUser.user?.username) {
+    username = currentUser.user.username;
+  } else {
     return;
   }
 
+  // TODO: Fix this.
+  state.profile = currentUser.user.profile;
+  if (ctx) ctx.currentProfile = state.profile;
+
   await oops(async () => {
-    state.profile = await client.users.getProfile(username);
-    if (ctx) ctx.currentProfile = state.profile;
+    const [profile, tanks] = await Promise.all([
+      client.users.getProfile(username),
+      client.tanks.listTanks({ username, includeSystem: false }),
+    ]);
+    state.profile = profile;
+    state.tanks = {
+      tanks: tanks.tanks.map((tank) => tank.toJSON()),
+      totalCount: tanks.totalCount,
+    };
+
+    if (ctx) {
+      ctx.currentProfile = state.profile;
+      ctx.tanks = state.tanks;
+    }
   });
 });
 

@@ -3,7 +3,7 @@
     <FormBox class="flex justify-between items-baseline">
       <p class="text-lg">
         <span>Showing </span>
-        <span class="font-bold">{{ tanks.totalCount }}</span>
+        <span class="font-bold">{{ tanks.tanks.length }}</span>
         <span> tank profiles</span>
       </p>
 
@@ -24,6 +24,22 @@
         @select="$emit('select', tank)"
         @delete="$emit('delete', tank)"
       />
+
+      <li
+        v-if="tanks.tanks.length === 0"
+        class="justify-center my-6 text-lg italic flex gap-3"
+      >
+        <p>
+          <i class="fa-solid fa-circle-info"></i>
+        </p>
+        <p>
+          <span>You have not created any tank profiles yet. Click </span>
+          <FormButton size="lg" type="link" @click="$emit('add')">
+            here
+          </FormButton>
+          <span> to create your first tank profile.</span>
+        </p>
+      </li>
     </TransitionGroup>
   </div>
 </template>

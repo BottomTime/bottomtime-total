@@ -13,6 +13,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Inject,
   Post,
   Put,
   Query,
@@ -33,7 +34,9 @@ const TankIdParam = 'tankId';
 @Controller(`api/users/:${UsernameParam}/tanks`)
 @UseGuards(AssertAuth, AssertTargetUser, AssertTankPrivilege)
 export class UserTanksController {
-  constructor(private readonly tanksService: TanksService) {}
+  constructor(
+    @Inject(TanksService) private readonly tanksService: TanksService,
+  ) {}
 
   /**
    * @openapi

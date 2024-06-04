@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { TankMaterial } from './constants';
+import { BooleanString, TankMaterial } from './constants';
 
 export const TankSchema = z.object({
   id: z.string().uuid(),
@@ -21,7 +21,7 @@ export type CreateOrUpdateTankParamsDTO = z.infer<
 >;
 
 export const ListUserTanksParamsSchema = z.object({
-  includeSystem: z.coerce.boolean().default(false),
+  includeSystem: BooleanString.optional(),
 });
 export type ListUserTanksParamsDTO = z.infer<typeof ListUserTanksParamsSchema>;
 
