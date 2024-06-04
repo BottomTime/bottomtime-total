@@ -18,10 +18,10 @@ import { reactive } from 'vue';
 
 import { useClient } from '../api-client';
 import { Breadcrumb } from '../common';
-import EditTank from '../components/admin/edit-tank.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
+import EditTank from '../components/tanks/edit-tank.vue';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
 

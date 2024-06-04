@@ -82,7 +82,8 @@
           </button>
         </div>
 
-        <div class="grow">
+        <div class="grow space-y-3">
+          <TextHeading>Personal Info</TextHeading>
           <FormField label="Name" control-id="name">
             <FormTextBox
               v-model.trim="state.name"
@@ -117,18 +118,6 @@
             />
           </FormField>
 
-          <TextHeading class="mt-5">Bio</TextHeading>
-          <FormField control-id="bio">
-            <FormTextArea
-              v-model.trim="state.bio"
-              control-id="bio"
-              test-id="bioInput"
-              :maxlength="500"
-              :rows="6"
-              resize="none"
-            />
-          </FormField>
-
           <TextHeading class="mt-5">Dive Experience</TextHeading>
           <FormField label="Experience level" control-id="experience-level">
             <FormSelect
@@ -148,6 +137,20 @@
               :min-year="new Date().getFullYear() - 80"
             />
           </FormField>
+
+          <TextHeading class="mt-5">Bio</TextHeading>
+          <FormField control-id="bio">
+            <FormTextArea
+              v-model.trim="state.bio"
+              control-id="bio"
+              test-id="bioInput"
+              :maxlength="500"
+              :rows="6"
+              resize="none"
+            />
+          </FormField>
+
+          <TextHeading>Personal Tank Profiles</TextHeading>
         </div>
       </div>
 

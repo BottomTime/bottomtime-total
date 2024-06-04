@@ -69,13 +69,13 @@ import { onServerPrefetch, reactive, useSSRContext } from 'vue';
 
 import { useClient } from '../api-client';
 import { Breadcrumb, ToastType } from '../common';
-import EditTank from '../components/admin/edit-tank.vue';
-import TanksList from '../components/admin/tanks-list.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
 import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
+import EditTank from '../components/tanks/edit-tank.vue';
+import TanksList from '../components/tanks/tanks-list.vue';
 import { Config } from '../config';
 import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
