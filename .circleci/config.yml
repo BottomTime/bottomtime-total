@@ -93,7 +93,7 @@ jobs:
           name: Build and Test
           command: |
             yarn --cwd packages/api build
-            yarn --cwd packages/api test
+            yarn --cwd packages/api test --ci
       - store_test_results:
           path: packages/api/reports/
       - run:
@@ -141,7 +141,7 @@ jobs:
           name: Build and Test
           command: |
             yarn --cwd packages/service build
-            yarn --cwd packages/service test
+            yarn --cwd packages/service test --ci
       - store_test_results:
           path: packages/service/reports/
       - run:
@@ -184,7 +184,7 @@ jobs:
           name: Build and Test
           command: |
             yarn --cwd packages/web build
-            yarn --cwd packages/web test
+            yarn --cwd packages/web test --ci
       - store_test_results:
           path: packages/web/reports/
       - run:
