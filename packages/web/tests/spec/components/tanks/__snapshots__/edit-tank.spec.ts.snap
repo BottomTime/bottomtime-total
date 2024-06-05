@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditTank component will emit save when the form is updated correctly 1`] = `"Tank Capacity:133.3ft3/3775.0L"`;
+
+exports[`EditTank component will render with existing values 1`] = `"Tank Capacity:86.4ft3/2447.6L"`;
+
+exports[`EditTank component will validate invalid fields 1`] = `"There are errors in the form above. Please fix them and then try again. Name of tank profile is requiredVolume must be between 1 and 30 litresMax pressure must be between 100 and 300 bar"`;
+
+exports[`EditTank component will validate missing fields 1`] = `"There are errors in the form above. Please fix them and then try again. Name of tank profile is requiredVolume is requiredMax pressure is required"`;

@@ -1,7 +1,7 @@
 <template>
   <FormBox class="sticky top-20 flex flex-col gap-3" shadow>
     <form @submit.prevent="onSearch">
-      <FormField>
+      <FormField :responsive="false">
         <FormSearchBox
           v-model="state.query"
           control-id="searchQuery"

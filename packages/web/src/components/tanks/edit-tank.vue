@@ -115,7 +115,10 @@
         </FormField>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3">
+      <div
+        class="grid grid-cols-1 md:grid-cols-3"
+        data-testid="edit-tank-capacity"
+      >
         <div
           v-if="capacity"
           :class="`col-start-1 ${
@@ -141,8 +144,13 @@
           </div>
         </div>
       </div>
+
       <div class="mt-6 space-y-2">
-        <div v-if="v$.$error" class="text-lg text-danger">
+        <div
+          v-if="v$.$error"
+          class="text-lg text-danger"
+          data-testid="edit-tank-form-errors"
+        >
           <p>
             There are errors in the form above. Please fix them and then try
             again.
@@ -159,6 +167,8 @@
             type="primary"
             submit
             :is-loading="isSaving"
+            control-id="save-tank"
+            test-id="save-tank"
             @click="onSave"
           >
             Save Changes

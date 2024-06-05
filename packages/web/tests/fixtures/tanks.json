@@ -1,0 +1,181 @@
+{
+  "tanks": [
+    {
+      "id": "363abc77-295a-4c7e-9e7a-60d79bca3f36",
+      "material": "al",
+      "name": "AL13 (CCR 2L): Aluminum XS-13",
+      "volume": 1.8,
+      "workingPressure": 207,
+      "isSystem": true
+    },
+    {
+      "id": "152264f8-2b9d-4f6a-8eb6-0c3ae15330ef",
+      "material": "al",
+      "name": "AL19 (CCR 3L): Aluminum XS-19",
+      "volume": 2.6,
+      "workingPressure": 207,
+      "isSystem": true
+    },
+    {
+      "id": "1f6fe3dc-6191-4caa-9918-6e8a60c2807a",
+      "material": "al",
+      "name": "AL20 (CCR 3L short): Aluminum S20",
+      "volume": 2.7,
+      "workingPressure": 207,
+      "isSystem": true
+    },
+    {
+      "id": "d9e22779-449f-45c8-a201-09ce4c655bf7",
+      "material": "al",
+      "name": "AL30: Aluminum XS-30",
+      "volume": 4.2,
+      "workingPressure": 207,
+      "isSystem": true
+    },
+    {
+      "id": "e472ea0d-8cf8-437d-9ddd-5b1bc23dc747",
+      "material": "al",
+      "name": "AL40: Aluminum S40",
+      "volume": 5.7,
+      "workingPressure": 207,
+      "isSystem": true
+    },
+    {
+      "id": "c9f02ee3-4f79-4095-97a8-266cd45dc041",
+      "material": "al",
+      "name": "AL6: Aluminum XS-6",
+      "volume": 0.8,
+      "workingPressure": 207,
+      "isSystem": true
+    },
+    {
+      "id": "23b19515-87fb-44d4-bee4-9c02f425dac8",
+      "material": "al",
+      "name": "AL72: Aluminum XS-72",
+      "volume": 10,
+      "workingPressure": 207,
+      "isSystem": true
+    },
+    {
+      "id": "d1bb5518-e571-4f4d-8aca-e521fd6dca9f",
+      "material": "al",
+      "name": "AL80: Aluminum S80",
+      "volume": 11.1,
+      "workingPressure": 207,
+      "isSystem": true
+    },
+    {
+      "id": "3cfb4ce0-8b28-470c-bbfd-17f7ff5d8e40",
+      "material": "fe",
+      "name": "HP100: Steel X7-100 HDG",
+      "volume": 12.9,
+      "workingPressure": 237,
+      "isSystem": true
+    },
+    {
+      "id": "83619d8c-627a-46ab-9d04-c53ddcad4995",
+      "material": "fe",
+      "name": "HP100: Steel X7-100 HDG",
+      "volume": 12.9,
+      "workingPressure": 237,
+      "isSystem": true
+    },
+    {
+      "id": "da112d22-1d47-4660-a9b7-5e2aed81ca2d",
+      "material": "fe",
+      "name": "HP117: Steel X8-117 HDG",
+      "volume": 15,
+      "workingPressure": 237,
+      "isSystem": true
+    },
+    {
+      "id": "4aeb3c01-7b67-4c00-9da9-fdae2cea6968",
+      "material": "fe",
+      "name": "HP120: Steel X7-120 HDG",
+      "volume": 15.3,
+      "workingPressure": 237,
+      "isSystem": true
+    },
+    {
+      "id": "e34fb515-d812-46d3-8641-859d41d61dae",
+      "material": "fe",
+      "name": "HP133: Steel X8-133 HDG",
+      "volume": 17,
+      "workingPressure": 237,
+      "isSystem": true
+    },
+    {
+      "id": "e77f011b-a885-4ced-8e02-3bd3e4eceeec",
+      "material": "fe",
+      "name": "HP15 (CCR 2L): Steel BSE15",
+      "volume": 2,
+      "workingPressure": 237,
+      "isSystem": true
+    },
+    {
+      "id": "f880f6db-1728-48e2-b17b-4dc8bfa39730",
+      "material": "fe",
+      "name": "HP23 (CCR 3L): Steel BSE23",
+      "volume": 3,
+      "workingPressure": 237,
+      "isSystem": true
+    },
+    {
+      "id": "0b83ea4d-44e7-4a89-8cb3-2b08986e4b83",
+      "material": "fe",
+      "name": "HP80: Steel X7-80 HDG",
+      "volume": 10.2,
+      "workingPressure": 237,
+      "isSystem": true
+    },
+    {
+      "id": "d057fc6a-90cb-464e-900d-fd896086e114",
+      "material": "fe",
+      "name": "LP27 (CCR 4L): Steel BS27",
+      "volume": 4,
+      "workingPressure": 182,
+      "isSystem": true
+    },
+    {
+      "id": "df1947ae-d754-42f7-8e15-3be444ef4580",
+      "material": "fe",
+      "name": "LP50: Steel BS50",
+      "volume": 7.8,
+      "workingPressure": 182,
+      "isSystem": true
+    },
+    {
+      "id": "bdda918c-a686-40dc-a37c-c86981c6bdef",
+      "material": "fe",
+      "name": "LP85: Steel BS85",
+      "volume": 13,
+      "workingPressure": 182,
+      "isSystem": true
+    },
+    {
+      "id": "ecdb31aa-9fa4-4706-9306-151335ed2700",
+      "material": "fe",
+      "name": "New Awesome Tank",
+      "volume": 13.1,
+      "workingPressure": 207,
+      "isSystem": false
+    },
+    {
+      "id": "a7d158a8-6a3d-40ca-a8fd-7c13286d257b",
+      "material": "fe",
+      "name": "Extra Secret Tank",
+      "volume": 13,
+      "workingPressure": 240,
+      "isSystem": false
+    },
+    {
+      "id": "d23e6c89-a6fb-4844-99f2-be7f0b2f424a",
+      "material": "al",
+      "name": "Tank of Testification",
+      "volume": 18.1,
+      "workingPressure": 200,
+      "isSystem": false
+    }
+  ],
+  "totalCount": 22
+}

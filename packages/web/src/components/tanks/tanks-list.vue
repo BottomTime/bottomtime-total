@@ -1,13 +1,18 @@
 <template>
   <div class="space-y-2">
     <FormBox class="flex justify-between items-baseline">
-      <p class="text-lg">
+      <p class="text-lg" data-testid="tanks-list-counts">
         <span>Showing </span>
         <span class="font-bold">{{ tanks.tanks.length }}</span>
-        <span> tank profiles</span>
+        <span> tank profile(s)</span>
       </p>
 
-      <FormButton type="primary" @click="$emit('add')">
+      <FormButton
+        type="primary"
+        control-id="tanks-list-add"
+        test-id="tanks-list-add"
+        @click="$emit('add')"
+      >
         <p class="space-x-1.5">
           <span>
             <i class="fa-solid fa-plus"></i>
@@ -28,6 +33,7 @@
       <li
         v-if="tanks.tanks.length === 0"
         class="justify-center my-6 text-lg italic flex gap-3"
+        data-testid="tanks-list-empty"
       >
         <p>
           <i class="fa-solid fa-circle-info"></i>
