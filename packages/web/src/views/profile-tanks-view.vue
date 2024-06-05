@@ -2,6 +2,11 @@
   <DrawerPanel
     title="Add Tank Profile"
     :visible="state.showEditTank && !!state.currentTank"
+    :full-screen="
+      state.currentTank?.id
+        ? `/profile/${route.params.username}/tanks/${state.currentTank.id}`
+        : `/profile/${route.params.username}/tanks/new`
+    "
     @close="oncloseEditTank"
   >
     <EditTank
@@ -86,23 +91,23 @@ interface ProfileTanksViewState {
   tanks?: ListTanksResponseDTO;
 }
 
-const Breadcrumbs: Breadcrumb[] = [
-  {
-    label: 'Profile',
-    to: '/profile',
-  },
-  {
-    label: 'Tank Profiles',
-    active: true,
-  },
-];
-
 const client = useClient();
 const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const initialState = useInitialState();
 const oops = useOops();
 const toasts = useToasts();
 const route = useRoute();
+
+const Breadcrumbs: Breadcrumb[] = [
+  {
+    label: 'Profile',
+    to: `/profile/${route.params.username}`,
+  },
+  {
+    label: 'Tank Profiles',
+    active: true,
+  },
+];
 
 const state = reactive<ProfileTanksViewState>({
   isDeleting: false,

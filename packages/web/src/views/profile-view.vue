@@ -82,22 +82,20 @@ const title = computed(() => {
 });
 
 onServerPrefetch(async () => {
-  let username: string | undefined;
-  if (typeof route.params.username === 'string') {
-    username = route.params.username;
-  } else if (currentUser.user?.username) {
-    username = currentUser.user.username;
-  } else {
-    return;
-  }
+  if (!currentUser.user) return;
 
-  // TODO: Fix this.
-  state.profile = currentUser.user.profile;
-  if (ctx) ctx.currentProfile = state.profile;
+  const username =
+    typeof route.params.username === 'string'
+      ? route.params.username
+      : currentUser.user.username;
 
   await oops(async () => {
+    if (!currentUser.user) return;
+
     const [profile, tanks] = await Promise.all([
-      client.users.getProfile(username),
+      route.params.username === currentUser.user.username
+        ? Promise.resolve(currentUser.user.profile)
+        : client.users.getProfile(username),
       client.tanks.listTanks({ username, includeSystem: false }),
     ]);
     state.profile = profile;

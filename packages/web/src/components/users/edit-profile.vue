@@ -150,16 +150,26 @@
             />
           </FormField>
 
-          <div v-if="tanks && currentUser.user">
+          <div v-if="tanks">
             <TextHeading>Personal Tank Profiles</TextHeading>
-            <div v-if="tanks.totalCount">
+            <div v-if="tanks.totalCount" class="space-y-5">
               <p>
-                You have {{ tanks.totalCount }} personal tank profiles defined:
+                <span>You currently have </span>
+                <span class="font-bold">{{ tanks.totalCount }}</span>
+                <span> personal tank profile(s) defined:</span>
               </p>
+
+              <p class="m-4 text-lg italic">
+                {{ tanks.tanks.map((tank) => `"${tank.name}"`).join(', ') }}
+              </p>
+
+              <NavLink :to="`/profile/${profile.username}/tanks`">
+                Manage Tank Profiles...
+              </NavLink>
             </div>
             <div v-else class="text-lg italic my-4">
               <span>You haven't created any personal tank profiles yet. </span>
-              <NavLink :to="`/profile/${currentUser.user.username}/tanks`">
+              <NavLink :to="`/profile/${props.profile.username}/tanks`">
                 Click here
               </NavLink>
               <span> to create one.</span>
@@ -199,7 +209,7 @@ import { reactive, ref } from 'vue';
 import { useClient } from '../../api-client';
 import { Coordinates, SelectOption, ToastType } from '../../common';
 import { useOops } from '../../oops';
-import { useCurrentUser, useToasts } from '../../store';
+import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormFuzzyDate from '../common/form-fuzzy-date.vue';
@@ -246,7 +256,6 @@ const LogbookSharingOptions: SelectOption[] = [
 ];
 
 const client = useClient();
-const currentUser = useCurrentUser();
 const toasts = useToasts();
 const oops = useOops();
 

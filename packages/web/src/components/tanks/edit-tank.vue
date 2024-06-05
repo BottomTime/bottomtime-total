@@ -154,7 +154,7 @@
           </ul>
         </div>
 
-        <div class="text-center">
+        <div class="text-center space-x-3">
           <FormButton
             type="primary"
             submit
@@ -162,6 +162,21 @@
             @click="onSave"
           >
             Save Changes
+          </FormButton>
+
+          <FormButton
+            v-if="showDelete"
+            type="danger"
+            control-id="delete-tank"
+            test-id="delete-tank"
+            @click="$emit('delete', props.tank.id)"
+          >
+            <p class="space-x-2">
+              <span>
+                <i class="fas fa-trash-alt"></i>
+              </span>
+              <span>Delete</span>
+            </p>
           </FormButton>
         </div>
       </div>
@@ -187,6 +202,7 @@ interface EditTankProps {
   tank: TankDTO;
   isSaving?: boolean;
   responsive?: boolean;
+  showDelete?: boolean;
 }
 
 interface EditTankFormData {
@@ -199,9 +215,11 @@ interface EditTankFormData {
 const props = withDefaults(defineProps<EditTankProps>(), {
   isSaving: false,
   responsive: true,
+  showDelete: false,
 });
 const emit = defineEmits<{
   (e: 'save', dto: TankDTO): void;
+  (e: 'delete', tankId: string): void;
 }>();
 
 const formData = reactive<EditTankFormData>({
