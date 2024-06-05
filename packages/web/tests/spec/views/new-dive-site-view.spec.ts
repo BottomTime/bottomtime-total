@@ -20,7 +20,6 @@ import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser } from '../../../src/store';
 import NewDiveSiteView from '../../../src/views/new-dive-site-view.vue';
 import { createRouter } from '../../fixtures/create-router';
-import { DiveSiteWithFullProperties } from '../../fixtures/sites';
 import { BasicUser } from '../../fixtures/users';
 
 describe('New Dive Site View', () => {

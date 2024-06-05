@@ -166,6 +166,10 @@ describe('Alerts End-to-End Tests', () => {
       expect(result.expires).toBe(alert.expires!.toISOString());
     });
 
+    it('will return a 404 response if the alert ID is invalid', async () => {
+      await request(server).get(getUrl('not-a-real-id')).expect(404);
+    });
+
     it('will return a 404 if the alert does not exist', async () => {
       await request(server)
         .get(getUrl('0d641fca-41f5-46e5-a8da-b6e97680a9ff'))
@@ -292,6 +296,13 @@ describe('Alerts End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the alert ID is invalid', async () => {
+      await request(server)
+        .delete(getUrl('not-a-real-id'))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+
     it('will return a 404 response if the alert does not exist', async () => {
       await request(server)
         .delete(getUrl('0d641fca-41f5-46e5-a8da-b6e97680a9ff'))
@@ -397,6 +408,20 @@ describe('Alerts End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the alert ID is invalid', async () => {
+      await request(server)
+        .put(getUrl('not-a-real-id'))
+        .set(...adminAuthHeader)
+        .send({
+          icon: 'icon',
+          title: 'title',
+          message: 'message',
+          active: new Date(),
+          expires: new Date(),
+        })
+        .expect(404);
+    });
+
     it('will return a 404 response if the alert does not exist', async () => {
       await request(server)
         .put(getUrl('0d641fca-41f5-46e5-a8da-b6e97680a9ff'))
@@ -442,6 +467,13 @@ describe('Alerts End-to-End Tests', () => {
       await request(server)
         .post(`${getUrl(alert.id)}/dismiss`)
         .expect(401);
+    });
+
+    it('will return a 404 response if the alert ID is invalid', async () => {
+      await request(server)
+        .post(`${getUrl('nopers')}/dismiss`)
+        .set(...authHeader)
+        .expect(404);
     });
 
     it('will return a 404 response if the alert does not exist', async () => {

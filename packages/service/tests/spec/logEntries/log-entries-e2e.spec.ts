@@ -184,6 +184,13 @@ describe('Log entries E2E tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the log entry ID is invalid', async () => {
+      await request(server)
+        .get(getUrl('invalid-id'))
+        .set(...authHeader)
+        .expect(404);
+    });
+
     it('will return a 404 response if the log entry does not exist', async () => {
       await request(server)
         .get(getUrl('308023b5-df12-4e48-88e9-3e8fe88756d3'))
@@ -562,6 +569,13 @@ describe('Log entries E2E tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the log entry ID is invalid', async () => {
+      await request(server)
+        .delete(getUrl('invalid-id'))
+        .set(...authHeader)
+        .expect(404);
+    });
+
     it('will return a 404 response if the log entry does not exist', async () => {
       await request(server)
         .delete(getUrl('308023b5-df12-4e48-88e9-3e8fe88756d3'))
@@ -824,6 +838,14 @@ describe('Log entries E2E tests', () => {
         .set(...otherAuthHeader)
         .send(updatedEntry)
         .expect(403);
+    });
+
+    it('will return a 404 response if the log entry ID is invalid', async () => {
+      await request(server)
+        .put(getUrl('invalid-id'))
+        .set(...authHeader)
+        .send(updatedEntry)
+        .expect(404);
     });
 
     it('will return a 404 response if the log entry does not exist', async () => {

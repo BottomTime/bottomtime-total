@@ -1,4 +1,13 @@
 import {
+  CreateOrUpdateTankParamsDTO,
+  CreateOrUpdateTankParamsSchema,
+  ListTanksResponseDTO,
+  ListUserTanksParamsDTO,
+  ListUserTanksParamsSchema,
+  TankDTO,
+} from '@bottomtime/api';
+
+import {
   Body,
   Controller,
   Delete,
@@ -9,21 +18,15 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { TanksService } from './tanks.service';
-import { AssertTank, SelectedTank } from './assert-tank.guard';
-import {
-  CreateOrUpdateTankParamsDTO,
-  CreateOrUpdateTankParamsSchema,
-  ListTanksResponseDTO,
-  ListUserTanksParamsDTO,
-  ListUserTanksParamsSchema,
-  TankDTO,
-} from '@bottomtime/api';
+
 import { AssertAuth, CurrentUser } from '../auth';
-import { Tank } from './tank';
 import { AssertTargetUser, TargetUser, User } from '../users';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertTankPrivilege } from './assert-tank-privilege.guard';
+import { AssertTank, SelectedTank } from './assert-tank.guard';
+import { Tank } from './tank';
+import { TanksService } from './tanks.service';
 
 const UsernameParam = 'username';
 const TankIdParam = 'tankId';
@@ -139,7 +142,7 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(`:${TankIdParam}`)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   getTank(@SelectedTank() tank: Tank): TankDTO {
     return tank.toJSON();
   }
@@ -275,7 +278,7 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(`:${TankIdParam}`)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   async updateTank(
     @SelectedTank() tank: Tank,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
@@ -333,7 +336,7 @@ export class UserTanksController {
    */
   @Delete(`:${TankIdParam}`)
   @HttpCode(204)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   async deleteTank(@SelectedTank() tank: Tank): Promise<void> {
     await tank.delete();
   }

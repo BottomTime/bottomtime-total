@@ -34,6 +34,7 @@ import {
   TargetUser,
   User,
 } from '../users';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertLogbookRead } from './assert-logbook-read.guard';
 import {
@@ -43,7 +44,8 @@ import {
 import { LogEntriesService } from './log-entries.service';
 import { LogEntry } from './log-entry';
 
-const LogEntryIdParam = ':entryId';
+const LogEntryIdParamName = 'entryId';
+const LogEntryIdParam = `:${LogEntryIdParamName}`;
 
 @Controller('api/users/:username/logbook')
 @UseGuards(AssertTargetUser)
@@ -458,7 +460,11 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(LogEntryIdParam)
-  @UseGuards(AssertLogbookRead, AssertTargetLogEntry)
+  @UseGuards(
+    ValidateIds(LogEntryIdParamName),
+    AssertLogbookRead,
+    AssertTargetLogEntry,
+  )
   getLog(@TargetLogEntry() logEntry: LogEntry): LogEntryDTO {
     return logEntry.toJSON();
   }
@@ -521,7 +527,12 @@ export class UserLogEntriesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(LogEntryIdParam)
-  @UseGuards(AssertAuth, AssertAccountOwner, AssertTargetLogEntry)
+  @UseGuards(
+    ValidateIds(LogEntryIdParamName),
+    AssertAuth,
+    AssertAccountOwner,
+    AssertTargetLogEntry,
+  )
   async updateLog(
     @TargetLogEntry() logEntry: LogEntry,
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
@@ -595,7 +606,12 @@ export class UserLogEntriesController {
    */
   @Delete(LogEntryIdParam)
   @HttpCode(204)
-  @UseGuards(AssertAuth, AssertAccountOwner, AssertTargetLogEntry)
+  @UseGuards(
+    ValidateIds(LogEntryIdParamName),
+    AssertAuth,
+    AssertAccountOwner,
+    AssertTargetLogEntry,
+  )
   async deleteLog(@TargetLogEntry() logEntry: LogEntry): Promise<void> {
     await logEntry.delete();
   }
