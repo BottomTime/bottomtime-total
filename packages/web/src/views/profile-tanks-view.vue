@@ -1,6 +1,6 @@
 <template>
   <DrawerPanel
-    title="Add Tank Profile"
+    :title="state.currentTank?.id ? 'Edit Tank Profile' : 'Add Tank Profile'"
     :visible="state.showEditTank && !!state.currentTank"
     :full-screen="
       state.currentTank?.id
@@ -14,7 +14,9 @@
       :tank="state.currentTank"
       :responsive="false"
       :is-saving="state.isSaving"
+      :show-delete="!!state.currentTank?.id"
       @save="onSaveTank"
+      @delete="onDeleteTank"
     />
   </DrawerPanel>
 
@@ -164,7 +166,6 @@ function onDeleteTank(tank: TankDTO) {
 
 function onCancelDeleteTank() {
   state.showConfirmDelete = false;
-  state.currentTank = undefined;
 }
 
 async function onConfirmDeleteTank(): Promise<void> {
@@ -195,6 +196,7 @@ async function onConfirmDeleteTank(): Promise<void> {
   state.isDeleting = false;
   state.currentTank = undefined;
   state.showConfirmDelete = false;
+  state.showEditTank = false;
 }
 
 async function onSaveTank(dto: TankDTO): Promise<void> {

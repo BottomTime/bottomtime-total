@@ -169,7 +169,7 @@
             type="danger"
             control-id="delete-tank"
             test-id="delete-tank"
-            @click="$emit('delete', props.tank.id)"
+            @click="$emit('delete', props.tank)"
           >
             <p class="space-x-2">
               <span>
@@ -219,7 +219,7 @@ const props = withDefaults(defineProps<EditTankProps>(), {
 });
 const emit = defineEmits<{
   (e: 'save', dto: TankDTO): void;
-  (e: 'delete', tankId: string): void;
+  (e: 'delete', tank: TankDTO): void;
 }>();
 
 const formData = reactive<EditTankFormData>({

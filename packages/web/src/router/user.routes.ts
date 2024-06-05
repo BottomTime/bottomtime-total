@@ -32,6 +32,11 @@ export const UserRoutes: RouteRecordRaw[] = [
     component: () => import('../views/profile-tanks-view.vue'),
   },
   {
+    path: '/profile/:username/tanks/new',
+    name: 'profile-new-tank',
+    component: () => import('../views/profile-new-tank-view.vue'),
+  },
+  {
     path: '/profile/:username/tanks/:tankId',
     name: 'profile-tank',
     component: () => import('../views/profile-tank-view.vue'),

@@ -159,13 +159,14 @@
                 <span> personal tank profile(s) defined:</span>
               </p>
 
-              <p class="m-4 text-lg italic">
-                {{ tanks.tanks.map((tank) => `"${tank.name}"`).join(', ') }}
-              </p>
-
-              <NavLink :to="`/profile/${profile.username}/tanks`">
-                Manage Tank Profiles...
-              </NavLink>
+              <div class="m-4 space-y-4">
+                <p class="text-lg italic">
+                  {{ tanks.tanks.map((tank) => `"${tank.name}"`).join(', ') }}
+                </p>
+                <NavLink :to="`/profile/${profile.username}/tanks`">
+                  Manage Tank Profiles...
+                </NavLink>
+              </div>
             </div>
             <div v-else class="text-lg italic my-4">
               <span>You haven't created any personal tank profiles yet. </span>
