@@ -173,6 +173,13 @@ describe('Certifications End-to-End', () => {
         .expect(403);
     });
 
+    it('will return a 404 if the certification id is invalid', async () => {
+      await request(server)
+        .get(requestUrl('nope'))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+
     it('will return a 404 if the certification is not found', async () => {
       await request(server)
         .get(requestUrl('666e07ba-1716-4726-ba33-ab23baf74cd9'))
@@ -299,6 +306,14 @@ describe('Certifications End-to-End', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the certification id is invalid', async () => {
+      await request(server)
+        .put(requestUrl('nope'))
+        .set(...adminAuthHeader)
+        .send(updateData)
+        .expect(404);
+    });
+
     it('will return a 404 response if the certification is not found', async () => {
       await request(server)
         .put(requestUrl('666e07ba-1716-4726-ba33-ab23baf74cd9'))
@@ -338,6 +353,13 @@ describe('Certifications End-to-End', () => {
         .delete(deleteUrl)
         .set(...regularAuthHeader)
         .expect(403);
+    });
+
+    it('will return a 404 response if the certification id is invalid', async () => {
+      await request(server)
+        .delete(requestUrl('nope'))
+        .set(...adminAuthHeader)
+        .expect(404);
     });
 
     it('will return a 404 response if the certirfication does not exist', async () => {

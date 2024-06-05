@@ -133,6 +133,13 @@ describe('Tanks End-to-End Tests', () => {
       await request(server).get(tanksUrl(tank.id)).expect(401);
     });
 
+    it('will return a 404 response if the tank ID is invalid', async () => {
+      await request(server)
+        .get(tanksUrl('invalid-id'))
+        .set(...regularAuthHeader)
+        .expect(404);
+    });
+
     it('will return 404 if the tank cannot be found', async () => {
       await request(server)
         .get(tanksUrl(tankData[7].id))
@@ -287,6 +294,14 @@ describe('Tanks End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the indicated tank ID is invalid', async () => {
+      await request(server)
+        .put(tanksUrl('invalid-id'))
+        .set(...adminAuthHeader)
+        .send(update)
+        .expect(404);
+    });
+
     it('will return a 404 response if the indicated tank ID does not exist', async () => {
       await request(server)
         .put(tanksUrl(TankTestData[4].id))
@@ -326,6 +341,13 @@ describe('Tanks End-to-End Tests', () => {
         .delete(tankUrl)
         .set(...regularAuthHeader)
         .expect(403);
+    });
+
+    it('will return a 404 response if the indicated tank ID is invalid', async () => {
+      await request(server)
+        .delete(tanksUrl('invalid-id'))
+        .set(...adminAuthHeader)
+        .expect(404);
     });
 
     it('will return a 404 response if the indicated tank ID does not exist', async () => {

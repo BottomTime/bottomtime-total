@@ -22,6 +22,7 @@ import {
 
 import { AssertAdmin } from '../auth';
 import { Certification, CertificationsService } from '../certifications';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { TargetCertification } from './admin.decorators';
 import { AssertCertification } from './assert-certificaiton.guard';
@@ -149,7 +150,7 @@ export class AdminCertificationsController {
    *               $ref: "#/components/schemas/ErrorResponse"
    */
   @Get(`:${CertificationIdParam}`)
-  @UseGuards(AssertCertification)
+  @UseGuards(ValidateIds(CertificationIdParam), AssertCertification)
   getCertification(
     @TargetCertification() cert: Certification,
   ): CertificationDTO {
@@ -272,7 +273,7 @@ export class AdminCertificationsController {
    *               $ref: "#/components/schemas/ErrorResponse"
    */
   @Put(`:${CertificationIdParam}`)
-  @UseGuards(AssertCertification)
+  @UseGuards(ValidateIds(CertificationIdParam), AssertCertification)
   async updateCertification(
     @TargetCertification() cert: Certification,
     @Body(new ZodValidator(CreateOrUpdateCertificationParamsSchema))
@@ -332,7 +333,7 @@ export class AdminCertificationsController {
    */
   @Delete(`:${CertificationIdParam}`)
   @HttpCode(204)
-  @UseGuards(AssertCertification)
+  @UseGuards(ValidateIds(CertificationIdParam), AssertCertification)
   async deleteCertification(
     @TargetCertification() cert: Certification,
   ): Promise<void> {

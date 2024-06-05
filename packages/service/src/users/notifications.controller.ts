@@ -22,6 +22,7 @@ import {
 
 import { AssertAdmin, AssertAuth } from '../auth';
 import { User } from '../auth/user';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertAccountOwner } from './assert-account-owner.guard';
 import {
@@ -33,7 +34,8 @@ import { Notification } from './notification';
 import { NotificationsService } from './notifications.service';
 
 const UsernameParam = 'username';
-const NotificationIdParam = ':notificationId';
+const NotificationIdParamName = 'notificationId';
+const NotificationIdParam = `:${NotificationIdParamName}`;
 
 @Controller(`api/users/:${UsernameParam}/notifications`)
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
@@ -263,7 +265,7 @@ export class NotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(NotificationIdParam)
-  @UseGuards(AssertTargetNotification)
+  @UseGuards(ValidateIds(NotificationIdParamName), AssertTargetNotification)
   async getNotification(
     @TargetNotification() notification: Notification,
   ): Promise<NotificationDTO> {
@@ -329,7 +331,11 @@ export class NotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(NotificationIdParam)
-  @UseGuards(AssertAdmin, AssertTargetNotification)
+  @UseGuards(
+    ValidateIds(NotificationIdParamName),
+    AssertAdmin,
+    AssertTargetNotification,
+  )
   async updateNotification(
     @TargetNotification() notification: Notification,
     @Body(new ZodValidator(CreateOrUpdateNotificationParamsSchema))
@@ -391,7 +397,11 @@ export class NotificationsController {
    */
   @Delete(NotificationIdParam)
   @HttpCode(204)
-  @UseGuards(AssertAdmin, AssertTargetNotification)
+  @UseGuards(
+    ValidateIds(NotificationIdParamName),
+    AssertAdmin,
+    AssertTargetNotification,
+  )
   async deleteNotification(
     @TargetNotification() notification: Notification,
   ): Promise<void> {
@@ -444,7 +454,11 @@ export class NotificationsController {
    */
   @Post(`${NotificationIdParam}/dismiss`)
   @HttpCode(204)
-  @UseGuards(AssertAdmin, AssertTargetNotification)
+  @UseGuards(
+    ValidateIds(NotificationIdParamName),
+    AssertAdmin,
+    AssertTargetNotification,
+  )
   async dismissNotification(
     @TargetNotification() notification: Notification,
   ): Promise<void> {
@@ -495,7 +509,11 @@ export class NotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`${NotificationIdParam}/undismiss`)
-  @UseGuards(AssertAdmin, AssertTargetNotification)
+  @UseGuards(
+    ValidateIds(NotificationIdParamName),
+    AssertAdmin,
+    AssertTargetNotification,
+  )
   @HttpCode(204)
   async undismissNotification(
     @TargetNotification() notifification: Notification,
