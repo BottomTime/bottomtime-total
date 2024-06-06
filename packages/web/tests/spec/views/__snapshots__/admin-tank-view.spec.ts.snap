@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin Tank View when rendering on the client side will allow a user to update a tank profile 1`] = `"Tank profile saved successfully"`;
+
+exports[`Admin Tank View when rendering on the client side will prevent users form saving tanks if there are validation errors 1`] = `"Volume must be between 1 and 30 litres"`;

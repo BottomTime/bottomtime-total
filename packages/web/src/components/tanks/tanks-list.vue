@@ -8,6 +8,7 @@
       </p>
 
       <FormButton
+        v-if="showAddTank"
         type="primary"
         control-id="tanks-list-add"
         test-id="tanks-list-add"
@@ -21,6 +22,7 @@
         </p>
       </FormButton>
     </FormBox>
+
     <TransitionGroup name="list" tag="ul">
       <TanksListItem
         v-for="tank in tanks.tanks"
@@ -59,9 +61,12 @@ import TanksListItem from './tanks-list-item.vue';
 
 interface TanksListProps {
   tanks: ListTanksResponseDTO;
+  showAddTank?: boolean;
 }
 
-defineProps<TanksListProps>();
+withDefaults(defineProps<TanksListProps>(), {
+  showAddTank: true,
+});
 defineEmits<{
   (e: 'add'): void;
   (e: 'delete', tank: TankDTO): void;

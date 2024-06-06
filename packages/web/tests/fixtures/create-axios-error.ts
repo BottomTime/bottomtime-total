@@ -7,15 +7,38 @@ const Config = {
 };
 
 export function createAxiosError(
-  message: string | ErrorResponseDTO,
+  messageOrStatus: string | number | ErrorResponseDTO,
 ): AxiosError {
-  if (typeof message === 'string') {
-    return new AxiosError(message, 'ECONNECT', Config, undefined, undefined);
+  if (typeof messageOrStatus === 'string') {
+    return new AxiosError(
+      messageOrStatus,
+      'ECONNECT',
+      Config,
+      undefined,
+      undefined,
+    );
   }
 
-  return new AxiosError(message.message, undefined, Config, undefined, {
-    data: message,
-    status: message.status ?? 500,
+  if (typeof messageOrStatus === 'number') {
+    const data: ErrorResponseDTO = {
+      message: 'Nope',
+      method: 'GET',
+      path: '/api/route',
+      status: messageOrStatus,
+    };
+    return new AxiosError('Error', undefined, Config, undefined, {
+      data,
+      status: messageOrStatus,
+      statusText: '',
+      headers: {},
+      config: Config,
+      request: {},
+    });
+  }
+
+  return new AxiosError(messageOrStatus.message, undefined, Config, undefined, {
+    data: messageOrStatus,
+    status: messageOrStatus.status ?? 500,
     statusText: '',
     headers: {},
     config: Config,

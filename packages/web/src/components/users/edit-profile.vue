@@ -150,7 +150,7 @@
             />
           </FormField>
 
-          <div v-if="tanks">
+          <div v-if="tanks" data-testid="tank-profiles">
             <TextHeading>Personal Tank Profiles</TextHeading>
             <div v-if="tanks.totalCount" class="space-y-5">
               <p>
@@ -168,6 +168,7 @@
                 </NavLink>
               </div>
             </div>
+
             <div v-else class="text-lg italic my-4">
               <span>You haven't created any personal tank profiles yet. </span>
               <NavLink :to="`/profile/${props.profile.username}/tanks`">
