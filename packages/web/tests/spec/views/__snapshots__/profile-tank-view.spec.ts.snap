@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile Tank View when navigating on the client side will not submit a save request if validation fails 1`] = `"There are errors in the form above. Please fix them and then try again. Volume must be between 1 and 30 litres"`;

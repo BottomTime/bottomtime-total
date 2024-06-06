@@ -199,6 +199,14 @@ export class UserTanksController {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/Error"
+   *       405:
+   *         description: |
+   *           The request failed because the user has reached the maximum number of tanks allowed. The method will not be
+   *           allowed again until the user deletes one of their existing tanks.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
    *       500:
    *         description: The request failed because an unexpected internal server error occurred.
    *         content:
@@ -208,7 +216,6 @@ export class UserTanksController {
    */
   @Post()
   async createTank(
-    @CurrentUser() currentUser: User,
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
     options: CreateOrUpdateTankParamsDTO,
