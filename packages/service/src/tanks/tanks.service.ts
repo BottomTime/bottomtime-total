@@ -1,11 +1,6 @@
 import { CreateOrUpdateTankParamsDTO } from '@bottomtime/api';
 
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  MethodNotAllowedException,
-} from '@nestjs/common';
+import { Injectable, Logger, MethodNotAllowedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';

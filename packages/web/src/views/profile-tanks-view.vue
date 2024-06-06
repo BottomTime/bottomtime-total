@@ -4,8 +4,8 @@
     :visible="state.showEditTank && !!state.currentTank"
     :full-screen="
       state.currentTank?.id
-        ? `/profile/${route.params.username}/tanks/${state.currentTank.id}`
-        : `/profile/${route.params.username}/tanks/new`
+        ? `/profile/${username}/tanks/${state.currentTank.id}`
+        : `/profile/${username}/tanks/new`
     "
     @close="oncloseEditTank"
   >
@@ -48,7 +48,13 @@
   </ConfirmDialog>
 
   <PageTitle title="Manage Tank Profiles" />
-  <RequireAuth>
+  <RequireAuth
+    :auth-check="
+      (currentUser) =>
+        currentUser.role === UserRole.Admin ||
+        currentUser.username.toLowerCase() === username.toLowerCase()
+    "
+  >
     <div v-if="state.tanks">
       <BreadCrumbs :items="Breadcrumbs" />
       <TanksList
@@ -64,9 +70,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ListTanksResponseDTO, TankDTO, TankMaterial } from '@bottomtime/api';
+import {
+  ListTanksResponseDTO,
+  TankDTO,
+  TankMaterial,
+  UserRole,
+} from '@bottomtime/api';
 
-import { onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -119,21 +130,28 @@ const state = reactive<ProfileTanksViewState>({
   tanks: initialState?.tanks,
 });
 
+const username = computed(() => route.params.username as string);
+
 onServerPrefetch(async () => {
-  await oops(async () => {
-    const username = route.params.username;
-    if (typeof username !== 'string') return;
+  await oops(
+    async () => {
+      const result = await client.tanks.listTanks({
+        username: username.value,
+        includeSystem: false,
+      });
 
-    const result = await client.tanks.listTanks({
-      username,
-      includeSystem: false,
-    });
-
-    state.tanks = {
-      tanks: result.tanks.map((tank) => tank.toJSON()),
-      totalCount: result.totalCount,
-    };
-  });
+      state.tanks = {
+        tanks: result.tanks.map((tank) => tank.toJSON()),
+        totalCount: result.totalCount,
+      };
+    },
+    {
+      [404]: () => {
+        // User profile not found!
+        state.tanks = undefined;
+      },
+    },
+  );
 
   if (ctx) ctx.tanks = state.tanks;
 });
@@ -172,11 +190,9 @@ async function onConfirmDeleteTank(): Promise<void> {
   state.isDeleting = true;
 
   await oops(async () => {
-    const username = route.params.username;
-    if (!state.currentTank || !state.tanks || typeof username !== 'string')
-      return;
+    if (!state.currentTank || !state.tanks) return;
 
-    const tank = client.tanks.wrapDTO(state.currentTank, username);
+    const tank = client.tanks.wrapDTO(state.currentTank, username.value);
     await tank.delete();
 
     const index = state.tanks.tanks.findIndex(
@@ -203,11 +219,10 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
   state.isSaving = true;
 
   await oops(async () => {
-    const username = route.params.username;
-    if (!state.tanks || typeof username !== 'string') return;
+    if (!state.tanks) return;
 
     if (dto.id) {
-      const tank = client.tanks.wrapDTO(dto, username);
+      const tank = client.tanks.wrapDTO(dto, username.value);
       await tank.save();
 
       const index = state.tanks.tanks.findIndex((t) => t.id === dto.id);
@@ -215,7 +230,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
         state.tanks.tanks.splice(index, 1, dto);
       }
     } else {
-      const tank = await client.tanks.createTank(dto, username);
+      const tank = await client.tanks.createTank(dto, username.value);
       state.tanks.tanks.splice(0, 0, tank.toJSON());
     }
 

@@ -20,7 +20,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth, CurrentUser } from '../auth';
+import { AssertAuth } from '../auth';
 import { AssertTargetUser, TargetUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { AssertTankPrivilege } from './assert-tank-privilege.guard';

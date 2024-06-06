@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile Tanks View when fetching on the client side will render list for admin 1`] = `"Showing 9 tank profile(s)"`;
+
+exports[`Profile Tanks View when fetching on the client side will render list for profile owner 1`] = `"Showing 9 tank profile(s)"`;
+
+exports[`Profile Tanks View when prefetching on the server side will render correctly for an admin 1`] = `"<span>Showing </span><span class="font-bold">9</span><span> tank profile(s)</span>"`;
+
+exports[`Profile Tanks View when prefetching on the server side will render the form correctly for the profile owner 1`] = `"<span>Showing </span><span class="font-bold">9</span><span> tank profile(s)</span>"`;
