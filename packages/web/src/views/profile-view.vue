@@ -1,17 +1,15 @@
 <template>
   <PageTitle :title="title" />
+  <BreadCrumbs :items="Breadcrumbs" />
   <RequireAuth>
-    <BreadCrumbs :items="Breadcrumbs" />
-    <FormBox>
-      <NotFound v-if="!state.profile" />
-      <EditProfile
-        v-else-if="canEdit"
-        :profile="state.profile"
-        :tanks="state.tanks"
-        @save-profile="onSave"
-      />
-      <ViewProfile v-else :profile="state.profile" />
-    </FormBox>
+    <NotFound v-if="!state.profile" />
+    <EditProfile
+      v-else-if="canEdit"
+      :profile="state.profile"
+      :tanks="state.tanks"
+      @save-profile="onSave"
+    />
+    <ViewProfile v-else :profile="state.profile" />
   </RequireAuth>
 </template>
 
@@ -24,7 +22,6 @@ import { useRoute } from 'vue-router';
 import { useClient } from '../api-client';
 import { Breadcrumb } from '../common';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
-import FormBox from '../components/common/form-box.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
@@ -37,7 +34,7 @@ import { useCurrentUser } from '../store';
 
 interface ProfileViewState {
   profile?: ProfileDTO;
-  tanks: ListTanksResponseDTO;
+  tanks?: ListTanksResponseDTO;
 }
 
 const Breadcrumbs: Breadcrumb[] = [
@@ -92,17 +89,27 @@ onServerPrefetch(async () => {
   await oops(async () => {
     if (!currentUser.user) return;
 
-    const [profile, tanks] = await Promise.all([
-      route.params.username === currentUser.user.username
-        ? Promise.resolve(currentUser.user.profile)
-        : client.users.getProfile(username),
-      client.tanks.listTanks({ username, includeSystem: false }),
-    ]);
-    state.profile = profile;
-    state.tanks = {
-      tanks: tanks.tanks.map((tank) => tank.toJSON()),
-      totalCount: tanks.totalCount,
-    };
+    // Determine if we need to fetch the requested profile or whether we are just displaying the current
+    // user's profile.
+    const currentUserRequested =
+      username.toLowerCase() === currentUser.user.username.toLowerCase();
+    state.profile = currentUserRequested
+      ? currentUser.user.profile
+      : await client.users.getProfile(username);
+
+    // Only Fetch custom tank profiles if the user is viewing their own profile or an admin is.
+    if (currentUserRequested || currentUser.user.role === UserRole.Admin) {
+      const tanks = await client.tanks.listTanks({
+        username,
+        includeSystem: false,
+      });
+      state.tanks = {
+        tanks: tanks.tanks.map((tank) => tank.toJSON()),
+        totalCount: tanks.totalCount,
+      };
+    } else {
+      state.tanks = undefined;
+    }
 
     if (ctx) {
       ctx.currentProfile = state.profile;
