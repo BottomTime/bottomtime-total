@@ -117,7 +117,7 @@ async function onSave(dto: TankDTO) {
   state.isSaving = true;
 
   await oops(async () => {
-    const tank = client.tanks.wrapDTO(dto);
+    const tank = client.tanks.wrapDTO(dto, username.value);
     await tank.save();
     state.tank = dto;
     toasts.toast({
@@ -139,7 +139,7 @@ async function onConfirmDelete(): Promise<void> {
 
   await oops(async () => {
     if (!state.tank) return;
-    const tank = client.tanks.wrapDTO(state.tank);
+    const tank = client.tanks.wrapDTO(state.tank, username.value);
     await tank.delete();
     location.assign(`/profile/${username.value}/tanks`);
   });

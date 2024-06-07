@@ -230,16 +230,22 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       if (index > -1) {
         state.tanks.tanks.splice(index, 1, dto);
       }
+
+      toasts.toast({
+        id: 'tank-saved',
+        type: ToastType.Success,
+        message: 'Tank profile saved',
+      });
     } else {
       const tank = await client.tanks.createTank(dto, username.value);
       state.tanks.tanks.splice(0, 0, tank.toJSON());
-    }
 
-    toasts.toast({
-      id: 'tank-saved',
-      type: ToastType.Success,
-      message: 'Tank profile saved',
-    });
+      toasts.toast({
+        id: 'tank-created',
+        type: ToastType.Success,
+        message: 'Tank profile has been created',
+      });
+    }
   });
 
   state.isSaving = false;

@@ -94,6 +94,34 @@ test.describe('Admin Tank Profile Management', () => {
     });
   });
 
+  test('will allow an admin to navigate to the new tank page and create a new tank profile', async ({
+    api,
+    page,
+    tankProfiles,
+  }) => {
+    await tankProfiles.gotoNewTank();
+    await tankProfiles.updateTankProfile(TankData);
+    await page.waitForURL(new RegExp('.*/admin/tanks/(?!new).*'));
+
+    const result = await api.tanks.listTanks();
+    const tank = result.tanks.find((t) => t.name === TankData.name);
+
+    expect(tank).toBeDefined();
+    expect(tank?.name).toBe(TankData.name);
+    expect(tank?.material).toBe(TankData.material);
+    expect(tank?.volume).toBe(TankData.volume);
+    expect(tank?.workingPressure).toBe(TankData.workingPressure);
+
+    await expect(page.getByTestId('name')).toHaveValue(TankData.name);
+    await expect(page.getByTestId('material-al')).toBeChecked();
+    await expect(page.getByTestId('volume')).toHaveValue(
+      TankData.volume.toString(),
+    );
+    await expect(page.getByTestId('pressure')).toHaveValue(
+      TankData.workingPressure.toString(),
+    );
+  });
+
   test('will allow an admin to delete a tank profile', async ({
     api,
     page,
@@ -105,5 +133,6 @@ test.describe('Admin Tank Profile Management', () => {
     await page.getByTestId('dialog-confirm-button').click();
     await page.waitForSelector('[data-testid="toast-tank-deleted"]');
     await expect(page.getByTestId(`tank-${tank.id}`)).not.toBeVisible();
+    await expect(api.tanks.getTank(tank.id)).rejects.toThrowError();
   });
 });

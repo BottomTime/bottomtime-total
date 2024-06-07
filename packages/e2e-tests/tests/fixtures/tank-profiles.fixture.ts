@@ -15,6 +15,14 @@ export class TankProfilesFixture {
     await this.page.waitForURL(`**/profile/${username}/tanks`);
   }
 
+  async gotoNewTank(username?: string): Promise<void> {
+    const url = username
+      ? `/profile/${username}/tanks/new`
+      : '/admin/tanks/new';
+    await this.page.goto(url);
+    await this.page.waitForURL(`**${url}`);
+  }
+
   async updateTankProfile(options: CreateOrUpdateTankParamsDTO): Promise<void> {
     await this.page.getByTestId('name').fill(options.name);
     switch (options.material) {
