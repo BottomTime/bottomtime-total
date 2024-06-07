@@ -171,6 +171,12 @@ async function onConfirmDelete(): Promise<void> {
 
     const index = state.tanks.tanks.findIndex((t) => t.id === tank.id);
     if (index > -1) state.tanks.tanks.splice(index, 1);
+
+    toasts.toast({
+      id: 'tank-deleted',
+      type: ToastType.Success,
+      message: 'Tank profile deleted successfully',
+    });
   });
 
   state.showConfirmDelete = false;
