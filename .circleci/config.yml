@@ -94,7 +94,7 @@ jobs:
           command: yarn --cwd packages/api build
       - run:
           name: Run tests
-          command: yarn --cwd packages/api test --ci
+          command: yarn --cwd packages/api test --runInBand --ci
       - store_test_results:
           path: packages/api/reports/
       - run:
