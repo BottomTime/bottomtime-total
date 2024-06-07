@@ -25,6 +25,7 @@ import {
 
 import { AssertAuth, CurrentUser } from '../auth';
 import { User } from '../users';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import {
   AssertDiveSiteReview,
@@ -38,7 +39,7 @@ const DiveSiteIdParam = 'siteId';
 const DiveSiteReviewIdParam = 'reviewId';
 
 @Controller(`api/diveSites/:${DiveSiteIdParam}/reviews`)
-@UseGuards(AssertDiveSite)
+@UseGuards(ValidateIds(DiveSiteIdParam), AssertDiveSite)
 export class DiveSiteReviewsController {
   private readonly log = new Logger(DiveSiteReviewsController.name);
 
@@ -236,7 +237,7 @@ export class DiveSiteReviewsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(`:${DiveSiteReviewIdParam}`)
-  @UseGuards(AssertDiveSiteReview)
+  @UseGuards(ValidateIds(DiveSiteReviewIdParam), AssertDiveSiteReview)
   async getReview(
     @TargetDiveSiteReview() review: DiveSiteReview,
   ): Promise<DiveSiteReviewDTO> {
@@ -300,7 +301,11 @@ export class DiveSiteReviewsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(`:${DiveSiteReviewIdParam}`)
-  @UseGuards(AssertAuth, AssertDiveSiteReview)
+  @UseGuards(
+    ValidateIds(DiveSiteReviewIdParam),
+    AssertAuth,
+    AssertDiveSiteReview,
+  )
   async updateReview(
     @CurrentUser() currentUser: User,
     @TargetDiveSiteReview() review: DiveSiteReview,
@@ -370,7 +375,7 @@ export class DiveSiteReviewsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Delete(`:${DiveSiteReviewIdParam}`)
-  @UseGuards(AssertAuth)
+  @UseGuards(ValidateIds(DiveSiteReviewIdParam), AssertAuth)
   async deleteReview(
     @CurrentUser() currentUser: User,
     @TargetDiveSite() diveSite: DiveSite,

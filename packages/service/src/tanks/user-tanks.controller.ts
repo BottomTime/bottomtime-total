@@ -22,6 +22,7 @@ import {
 
 import { AssertAuth } from '../auth';
 import { AssertTargetUser, TargetUser, User } from '../users';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertTankPrivilege } from './assert-tank-privilege.guard';
 import { AssertTank, SelectedTank } from './assert-tank.guard';
@@ -144,7 +145,7 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(`:${TankIdParam}`)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   getTank(@SelectedTank() tank: Tank): TankDTO {
     return tank.toJSON();
   }
@@ -287,7 +288,7 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(`:${TankIdParam}`)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   async updateTank(
     @SelectedTank() tank: Tank,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
@@ -345,7 +346,7 @@ export class UserTanksController {
    */
   @Delete(`:${TankIdParam}`)
   @HttpCode(204)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   async deleteTank(@SelectedTank() tank: Tank): Promise<void> {
     await tank.delete();
   }

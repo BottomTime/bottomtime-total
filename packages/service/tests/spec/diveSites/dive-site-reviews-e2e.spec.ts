@@ -148,6 +148,10 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       expect(body.details).toMatchSnapshot();
     });
 
+    it('will return a 404 response if the dive site ID is invalid', async () => {
+      await request(server).get(getUrl(undefined, 'nope')).expect(404);
+    });
+
     it('will return a 404 response if the dive site cannot be found', async () => {
       await request(server)
         .get(getUrl(undefined, '49f82168-bf4b-4b73-84f9-078d2e7c6154'))
@@ -167,6 +171,16 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       await request(server)
         .get(getUrl(reviewData[7].id, '49f82168-bf4b-4b73-84f9-078d2e7c6154'))
         .expect(404);
+    });
+
+    it('will return a 404 if the dive site ID is invalid', async () => {
+      await request(server)
+        .get(getUrl(reviewData[7].id, 'not-a-real-id'))
+        .expect(404);
+    });
+
+    it('will return a 404 response if the review ID is invalid', async () => {
+      await request(server).get(getUrl('not-a-real-id')).expect(404);
     });
 
     it('will return a 404 if the review cannot be found', async () => {
@@ -241,6 +255,19 @@ describe('Dive Site Reviews End-to-End Tests', () => {
           comments: 'This is a great dive site!',
         })
         .expect(401);
+    });
+
+    it('will return a 404 response if the dive site ID is invalid', async () => {
+      await request(server)
+        .post(getUrl(undefined, 'not-a-real-id'))
+        .set(...authHeader)
+        .send({
+          title: 'A Pretty Good Dive Site',
+          rating: 4.8,
+          difficulty: 1.5,
+          comments: 'This is a great dive site!',
+        })
+        .expect(404);
     });
 
     it('will return a 404 response if the dive site cannot be found', async () => {
@@ -401,6 +428,32 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the site ID is invalid', async () => {
+      await request(server)
+        .put(getUrl(reviewData[5].id, 'not-a-real-id'))
+        .set(...authHeader)
+        .send({
+          title: 'Changed My Mind',
+          rating: 3.8,
+          difficulty: 1.5,
+          comments: 'This site is just ok.',
+        })
+        .expect(404);
+    });
+
+    it('will return a 404 response if the review ID is invalid', async () => {
+      await request(server)
+        .put(getUrl('not-a-real-id'))
+        .set(...authHeader)
+        .send({
+          title: 'Changed My Mind',
+          rating: 3.8,
+          difficulty: 1.5,
+          comments: 'This site is just ok.',
+        })
+        .expect(404);
+    });
+
     it('will return a 404 response if the dive site cannot be found', async () => {
       await request(server)
         .put(getUrl(reviewData[5].id, '49f82168-bf4b-4b73-84f9-078d2e7c6154'))
@@ -476,6 +529,20 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         .expect(403);
 
       await Reviews.findOneByOrFail({ id: review.id });
+    });
+
+    it('will return a 404 response if the site ID is invalid', async () => {
+      await request(server)
+        .delete(getUrl(reviewData[5].id, 'not-a-real-id'))
+        .set(...authHeader)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the review ID is invalid', async () => {
+      await request(server)
+        .delete(getUrl('not-a-real-id'))
+        .set(...authHeader)
+        .expect(404);
     });
 
     it('will return a 404 error if the dive site cannot be found', async () => {

@@ -262,6 +262,13 @@ describe('Notifications End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the notification ID is invalid', async () => {
+      await request(server)
+        .get(getUrl('invalid-id'))
+        .set(...authHeader)
+        .expect(404);
+    });
+
     it('will return a 404 response if the notification does not exist', async () => {
       await request(server)
         .get(getUrl('f3669787-82e5-458f-a8ad-98d3f57dda6e'))
@@ -537,6 +544,21 @@ describe('Notifications End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the notification ID is invalid', async () => {
+      const newOptions: CreateOrUpdateNotificationParamsDTO = {
+        icon: 'fas fa-exclamation-triangle',
+        title: 'Warning!',
+        message: 'The bleep-blorps are still blarping.',
+        active: new Date('2024-03-28T12:39:38.187Z'),
+        expires: new Date('2024-04-28T12:39:38.187Z'),
+      };
+      await request(server)
+        .put(getUrl('invalid-id'))
+        .set(...adminAuthHeader)
+        .send(newOptions)
+        .expect(404);
+    });
+
     it('will return a 404 response if the target user does not exist', async () => {
       const newOptions: CreateOrUpdateNotificationParamsDTO = {
         icon: 'fas fa-exclamation-triangle',
@@ -601,6 +623,13 @@ describe('Notifications End-to-End Tests', () => {
         .delete(getUrl(notificationData.id))
         .set(...authHeader)
         .expect(403);
+    });
+
+    it('will return a 404 response if the notification ID is invalid', async () => {
+      await request(server)
+        .delete(getUrl('invalid-id'))
+        .set(...adminAuthHeader)
+        .expect(404);
     });
 
     it('will return a 404 response if the target user does not exist', async () => {
@@ -699,6 +728,19 @@ describe('Notifications End-to-End Tests', () => {
           )
           .set(...authHeader)
           .expect(403);
+      });
+
+      it('will return a 404 response if the notification ID is invalid', async () => {
+        await request(server)
+          .post(
+            getUrl(
+              'invalid-id',
+              undefined,
+              dismissed ? 'undismiss' : 'dismiss',
+            ),
+          )
+          .set(...adminAuthHeader)
+          .expect(404);
       });
 
       it('will return a 404 response if the target user does not exist', async () => {

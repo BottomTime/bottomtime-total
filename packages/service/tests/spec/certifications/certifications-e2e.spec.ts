@@ -142,6 +142,13 @@ describe('Certifications End-to-End', () => {
         .expect(401);
     });
 
+    it('will return a 404 response if the certification ID is invalid', async () => {
+      await request(server)
+        .get('/api/certifications/invalid-id')
+        .set(...regularAuthHeader)
+        .expect(404);
+    });
+
     it('will return a 404 response if the certification does not exist', async () => {
       await request(server)
         .get('/api/certifications/184ee397-3ee4-4a3d-a790-0b8fede230e2')

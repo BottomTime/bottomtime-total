@@ -25,6 +25,7 @@ import {
 
 import { AssertAuth, CurrentUser } from '../auth';
 import { User, UsersService } from '../users';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertDiveSiteWrite } from './assert-dive-site-write.guard';
 import { AssertDiveSite, TargetDiveSite } from './assert-dive-site.guard';
@@ -289,7 +290,7 @@ export class DiveSitesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(`:${DiveSiteIdParam}`)
-  @UseGuards(AssertDiveSite)
+  @UseGuards(ValidateIds(DiveSiteIdParam), AssertDiveSite)
   getDiveSite(@TargetDiveSite() site: DiveSite): DiveSiteDTO {
     return site.toJSON();
   }
@@ -350,7 +351,12 @@ export class DiveSitesController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(`:${DiveSiteIdParam}`)
-  @UseGuards(AssertAuth, AssertDiveSite, AssertDiveSiteWrite)
+  @UseGuards(
+    ValidateIds(DiveSiteIdParam),
+    AssertAuth,
+    AssertDiveSite,
+    AssertDiveSiteWrite,
+  )
   async updateDiveSite(
     @TargetDiveSite() site: DiveSite,
     @Body(new ZodValidator(CreateOrUpdateDiveSiteSchema))
@@ -412,7 +418,12 @@ export class DiveSitesController {
    */
   @Delete(`:${DiveSiteIdParam}`)
   @HttpCode(204)
-  @UseGuards(AssertAuth, AssertDiveSite, AssertDiveSiteWrite)
+  @UseGuards(
+    ValidateIds(DiveSiteIdParam),
+    AssertAuth,
+    AssertDiveSite,
+    AssertDiveSiteWrite,
+  )
   async deleteDiveSite(@TargetDiveSite() site: DiveSite): Promise<void> {
     await site.delete();
   }
