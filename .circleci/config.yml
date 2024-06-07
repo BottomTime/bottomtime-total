@@ -186,7 +186,7 @@ jobs:
           command: yarn --cwd packages/web build
       - run:
           name: Run Tests
-          command: yarn --cwd packages/web test --ci
+          command: yarn --cwd packages/web test --runInBand --ci
       - store_test_results:
           path: packages/web/reports/
       - run:
