@@ -162,7 +162,7 @@ jobs:
   test_web:
     docker:
       - image: cimg/node:22.0-browsers
-    resource_class: medium+
+    # resource_class: medium+
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
       # NODE_OPTIONS: '--max-old-space-size=8192'

@@ -4,13 +4,13 @@ import {
   ListTanksResponseSchema,
   TankDTO,
   TankMaterial,
-  TankSchema,
   UserRole,
 } from '@bottomtime/api';
 import { Tank } from '@bottomtime/api/src/client/tank';
 
 import {
   ComponentMountingOptions,
+  flushPromises,
   mount,
   renderToString,
 } from '@vue/test-utils';
@@ -56,11 +56,13 @@ describe('Profile Tanks View', () => {
         component: ProfileTanksView,
       },
     ]);
-    tankData = ListTanksResponseSchema.parse(TestTankData);
-    tankData.tanks = tankData.tanks.slice(0, 9);
   });
 
   beforeEach(async () => {
+    tankData = ListTanksResponseSchema.parse(TestTankData);
+    tankData.tanks = tankData.tanks.slice(0, 9);
+    tankData.totalCount = tankData.tanks.length;
+
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     currentUser.user = BasicUser;
@@ -283,30 +285,192 @@ describe('Profile Tanks View', () => {
           tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
           totalCount: tankData.totalCount,
         });
-        // const spy = jest.spyOn()
-        // const spy = jest.spyOn(tank, );
+        const spy = jest
+          .spyOn(client.tanks, 'createTank')
+          .mockResolvedValue(new Tank(client.axios, expected));
 
         const wrapper = mount(ProfileTanksView, opts);
         await wrapper.get('#tanks-list-add').trigger('click');
-        await wrapper.get('#name').setValue('New Tank');
+        await wrapper.get('#name').setValue(expected.name);
+        await wrapper.get('#material-al').setValue(true);
+        await wrapper.get('#volume').setValue(expected.volume.toString());
+        await wrapper
+          .get('#pressure')
+          .setValue(expected.workingPressure.toString());
+        await wrapper.get('#save-tank').trigger('click');
+        await flushPromises();
 
-        // expect(spy).toHaveBeenCalledWith(BasicUser.username);
-        expect(location.pathname).toBe('/tanks/add');
+        expect(wrapper.find('#save-tank').exists()).toBe(false);
+        expect(
+          wrapper.find(`[data-testid="select-tank-${expected.id}"]`).text(),
+        ).toBe(expected.name);
+
+        expect(spy).toHaveBeenCalledWith(
+          {
+            ...expected,
+            id: '',
+          },
+          BasicUser.username,
+        );
       });
 
       it(`will allow ${
         role === UserRole.Admin ? 'an admin' : 'profile owner'
-      } a user to delete a tank`, async () => {});
+      } a user to delete a tank`, async () => {
+        currentUser.user = role === UserRole.Admin ? AdminUser : BasicUser;
+        const dto = tankData.tanks[4];
+        const tank = new Tank(client.axios, dto);
+
+        jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
+          tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+          totalCount: tankData.totalCount,
+        });
+        jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((data) => {
+          expect(data).toEqual(dto);
+          return tank;
+        });
+        const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
+
+        const wrapper = mount(ProfileTanksView, opts);
+        await wrapper
+          .get(`[data-testid="delete-tank-${dto.id}"]`)
+          .trigger('click');
+        await wrapper
+          .get('[data-testid="dialog-confirm-button"]')
+          .trigger('click');
+        await flushPromises();
+
+        expect(spy).toHaveBeenCalled();
+        expect(
+          wrapper.find(`[data-testid="select-tank-${dto.id}"]`).exists(),
+        ).toBe(false);
+        expect(
+          wrapper.find('[data-testid="dialog-confirm-button"]').exists(),
+        ).toBe(false);
+      });
 
       it(`will allow ${
         role === UserRole.Admin ? 'an admin' : 'profile owner'
-      } to change their mind about deleting a tank`, async () => {});
+      } to change their mind about deleting a tank`, async () => {
+        currentUser.user = role === UserRole.Admin ? AdminUser : BasicUser;
+        const dto = tankData.tanks[6];
+
+        jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
+          tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+          totalCount: tankData.totalCount,
+        });
+        const spy = jest.spyOn(client.tanks, 'wrapDTO');
+
+        const wrapper = mount(ProfileTanksView, opts);
+        await wrapper
+          .get(`[data-testid="delete-tank-${dto.id}"]`)
+          .trigger('click');
+        await wrapper
+          .get('[data-testid="dialog-cancel-button"]')
+          .trigger('click');
+
+        expect(spy).not.toHaveBeenCalled();
+        expect(
+          wrapper.find(`[data-testid="select-tank-${dto.id}"]`).isVisible(),
+        ).toBe(true);
+        expect(
+          wrapper.find('[data-testid="dialog-cancel-button"]').exists(),
+        ).toBe(false);
+      });
 
       it(`will allow ${
         role === UserRole.Admin ? 'an admin' : 'profile owner'
-      } to delete a tank from the drawer panel`, async () => {});
+      } to delete a tank from the drawer panel`, async () => {
+        currentUser.user = role === UserRole.Admin ? AdminUser : BasicUser;
+        const dto = tankData.tanks[4];
+        const tank = new Tank(client.axios, dto);
+
+        jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
+          tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+          totalCount: tankData.totalCount,
+        });
+        jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((data) => {
+          expect(data).toEqual(dto);
+          return tank;
+        });
+        const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
+
+        const wrapper = mount(ProfileTanksView, opts);
+        await wrapper
+          .get(`[data-testid="select-tank-${dto.id}"]`)
+          .trigger('click');
+        await wrapper.get('#delete-tank').trigger('click');
+        await wrapper
+          .get('[data-testid="dialog-confirm-button"]')
+          .trigger('click');
+        await flushPromises();
+
+        expect(spy).toHaveBeenCalled();
+        expect(
+          wrapper.find(`[data-testid="select-tank-${dto.id}"]`).exists(),
+        ).toBe(false);
+        expect(
+          wrapper.find('[data-testid="dialog-confirm-button"]').exists(),
+        ).toBe(false);
+        expect(wrapper.find('#save-tank').exists()).toBe(false);
+      });
+
+      it(`will allow ${
+        role === UserRole.Admin ? 'an admin' : 'profile owner'
+      } to edit an existing tank profile`, async () => {
+        const original = tankData.tanks[3];
+        const updated: TankDTO = {
+          ...original,
+          name: 'Modernized Tank',
+          material: TankMaterial.Steel,
+          volume: 7.7,
+          workingPressure: 255,
+        };
+        const tank = new Tank(client.axios, updated);
+
+        jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
+          tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+          totalCount: tankData.totalCount,
+        });
+        jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((data) => {
+          expect(data).toEqual(updated);
+          return tank;
+        });
+        const spy = jest.spyOn(tank, 'save').mockResolvedValue();
+
+        const wrapper = mount(ProfileTanksView, opts);
+        await wrapper
+          .get(`[data-testid="select-tank-${original.id}"]`)
+          .trigger('click');
+        await wrapper.get('#name').setValue(updated.name);
+        await wrapper.get('#material-fe').setValue(true);
+        await wrapper.get('#volume').setValue(updated.volume.toString());
+        await wrapper
+          .get('#pressure')
+          .setValue(updated.workingPressure.toString());
+        await wrapper.get('#save-tank').trigger('click');
+        await flushPromises();
+
+        expect(spy).toHaveBeenCalled();
+        expect(wrapper.find('#save-tank').exists()).toBe(false);
+        expect(
+          wrapper.find(`[data-testid="tank-${original.id}"]`).html(),
+        ).toMatchSnapshot();
+      });
     });
 
-    it('will not show Add button if user is at their custom tank profile limit', async () => {});
+    it('will not show Add button if user is at their custom tank profile limit', async () => {
+      initialState.tanks!.tanks.push({
+        id: '04efab49-cbb3-4741-9b15-f0774f52118b',
+        name: 'Final Tank',
+        isSystem: false,
+        material: TankMaterial.Steel,
+        volume: 12.5,
+        workingPressure: 240,
+      });
+      initialState.tanks!.totalCount = 10;
+      const wrapper = mount(ProfileTanksView, opts);
+      expect(wrapper.find('#tanks-list-add').exists()).toBe(false);
+    });
   });
 });

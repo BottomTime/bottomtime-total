@@ -59,6 +59,7 @@
       <BreadCrumbs :items="Breadcrumbs" />
       <TanksList
         :tanks="state.tanks"
+        :show-add-tank="(state.tanks?.totalCount || 0) < 10"
         @add="onAddTank"
         @select="onSelectTank"
         @delete="onDeleteTank"
