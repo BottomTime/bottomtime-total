@@ -270,7 +270,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       });
     });
 
-    it('will return a 400 response if the user has exceeded their tank limit', async () => {
+    it('will return a 405 response if the user has exceeded their tank limit', async () => {
       const tankData = TestTankData.slice(0, 10).map((tank) => {
         const entity = new TankEntity();
         Object.assign(entity, tank);
@@ -288,7 +288,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
           volume: 14.5,
           workingPressure: 219,
         })
-        .expect(400);
+        .expect(405);
     });
 
     it('will return a 400 response if the tank parameters are invalid', async () => {
