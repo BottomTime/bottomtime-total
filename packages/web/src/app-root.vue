@@ -35,12 +35,15 @@ onBeforeMount(() => {
   if (!Config.isSSR) {
     currentUser.user = initialState?.currentUser ?? null;
 
-    if (initialState?.error && initialState.error instanceof Error) {
+    if (initialState?.error) {
+      if (!Config.isProduction) {
+        /* eslint-disable-next-line no-console */
+        console.error(initialState.error);
+      }
       toasts.toast({
-        id: 'server-error',
-        message: Config.isProduction
-          ? 'A server error has occurred.'
-          : initialState.error.message,
+        id: 'server-prerender-error',
+        message:
+          'A server error has occurred and the page may not have loaded correctly. We apologize for the inconvenience. Please try again later as we investigate the issue.',
         type: ToastType.Error,
       });
     }

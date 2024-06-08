@@ -1,6 +1,6 @@
 import { CreateOrUpdateTankParamsDTO } from '@bottomtime/api';
 
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, MethodNotAllowedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -80,8 +80,8 @@ export class TanksService {
       });
 
       if (count >= UserTankLimit) {
-        throw new BadRequestException(
-          `User has reached the maximum number of custom tanks: ${UserTankLimit}.`,
+        throw new MethodNotAllowedException(
+          `User has reached the maximum number of custom tanks: ${UserTankLimit}. Further requests to create tanks cannot be accepted. Please delete an existing tank before trying again.`,
         );
       }
     }

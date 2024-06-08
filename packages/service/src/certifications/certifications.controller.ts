@@ -4,6 +4,7 @@ import {
   SearchCertificationsParamsSchema,
   SearchCertificationsResponseDTO,
 } from '@bottomtime/api';
+
 import {
   Controller,
   Get,
@@ -12,9 +13,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CertificationsService } from './certifications.service';
-import { ZodValidator } from '../zod-validator';
+
 import { AssertAuth } from '../auth';
+import { ValidateIds } from '../validate-ids.guard';
+import { ZodValidator } from '../zod-validator';
+import { CertificationsService } from './certifications.service';
 
 const CertificationIdParam = 'certificationId';
 
@@ -114,6 +117,7 @@ export class CertificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(`:${CertificationIdParam}`)
+  @UseGuards(ValidateIds(CertificationIdParam))
   async getCertification(
     @Param(CertificationIdParam) certId: string,
   ): Promise<CertificationDTO> {

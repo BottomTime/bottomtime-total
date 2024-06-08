@@ -21,6 +21,7 @@ import {
 
 import { AssertAdmin, AssertAuth } from '../auth';
 import { TanksService } from '../tanks/tanks.service';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 
 const TankIdParam = 'tankId';
@@ -114,7 +115,7 @@ export class AdminTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(`:${TankIdParam}`)
-  @UseGuards(AssertAuth)
+  @UseGuards(ValidateIds(TankIdParam), AssertAuth)
   async getTank(@Param(TankIdParam) tankId: string): Promise<TankDTO> {
     const tank = await this.tanksService.getTank(tankId);
 
@@ -247,7 +248,7 @@ export class AdminTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(`:${TankIdParam}`)
-  @UseGuards(AssertAdmin)
+  @UseGuards(ValidateIds(TankIdParam), AssertAdmin)
   async updateTank(
     @Param(TankIdParam) tankId: string,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
@@ -310,9 +311,9 @@ export class AdminTanksController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
-  @Delete(':tankId')
+  @Delete(`:${TankIdParam}`)
   @HttpCode(204)
-  @UseGuards(AssertAdmin)
+  @UseGuards(ValidateIds(TankIdParam), AssertAdmin)
   async deleteTank(@Param('tankId') tankId: string): Promise<void> {
     const tank = await this.tanksService.getTank(tankId);
 

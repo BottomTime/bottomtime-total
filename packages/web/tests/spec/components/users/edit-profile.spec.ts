@@ -1,11 +1,17 @@
 import {
+  ListTanksResponseDTO,
+  ListTanksResponseSchema,
   LogBookSharing,
   UpdateProfileParamsDTO,
   UserDTO,
 } from '@bottomtime/api';
 import { ApiClient, User } from '@bottomtime/api';
 
-import { flushPromises, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
 import axios from 'axios';
 import { Pinia, createPinia } from 'pinia';
@@ -14,6 +20,7 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../../src/api-client';
 import EditProfile from '../../../../src/components/users/edit-profile.vue';
 import { createRouter } from '../../../fixtures/create-router';
+import TestTankData from '../../../fixtures/tanks.json';
 import {
   BasicUser,
   UserWithEmptyProfile,
@@ -37,29 +44,32 @@ describe('Edit Profile form', () => {
   let client: ApiClient;
   let pinia: Pinia;
   let router: Router;
+  let tankData: ListTanksResponseDTO;
+
+  let opts: ComponentMountingOptions<typeof EditProfile>;
 
   beforeAll(() => {
     client = new ApiClient();
     router = createRouter();
+    tankData = ListTanksResponseSchema.parse(TestTankData);
   });
 
   beforeEach(() => {
     pinia = createPinia();
-  });
-
-  it('will load form with empty profile', () => {
-    const user = getUser(UserWithEmptyProfile);
-    const wrapper = mount(EditProfile, {
-      props: {
-        profile: user.profile,
-      },
+    opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
         },
       },
-    });
+    };
+  });
+
+  it('will load form with empty profile', () => {
+    const user = getUser(UserWithEmptyProfile);
+    opts.props = { profile: user.profile };
+    const wrapper = mount(EditProfile, opts);
 
     expect(
       wrapper.get<HTMLImageElement>('[data-testid="profile-avatar"]').element
@@ -83,17 +93,8 @@ describe('Edit Profile form', () => {
 
   it('will load form with all profile fields set', async () => {
     const user = getUser(UserWithFullProfile);
-    const wrapper = mount(EditProfile, {
-      props: {
-        profile: user.profile,
-      },
-      global: {
-        plugins: [pinia, router],
-        provide: {
-          [ApiClientKey as symbol]: client,
-        },
-      },
-    });
+    opts.props = { profile: user.profile };
+    const wrapper = mount(EditProfile, opts);
 
     const startedDiving =
       UserWithFullProfile.profile.startedDiving?.split('-') ?? [];
@@ -127,21 +128,14 @@ describe('Edit Profile form', () => {
     expect(
       wrapper.get<HTMLSelectElement>('select#started-diving-day').element.value,
     ).toBe(startedDiving[2]);
+
+    expect(wrapper.find('[data-testid="tank-profiles"]').exists()).toBe(false);
   });
 
   it('will allow users to update their profile', async () => {
     const userData = getUser(UserWithFullProfile);
-    const wrapper = mount(EditProfile, {
-      props: {
-        profile: userData.profile,
-      },
-      global: {
-        plugins: [pinia, router],
-        provide: {
-          [ApiClientKey as symbol]: client,
-        },
-      },
-    });
+    opts.props = { profile: userData.profile };
+    const wrapper = mount(EditProfile, opts);
     const user = new User(axios.create(), userData);
     const spy = jest.spyOn(user.profile, 'save').mockResolvedValue();
     jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(user.profile);
@@ -181,17 +175,8 @@ describe('Edit Profile form', () => {
 
   it('will allow a user to cancel editing their profile', async () => {
     const userData = getUser(UserWithFullProfile);
-    const wrapper = mount(EditProfile, {
-      props: {
-        profile: userData.profile,
-      },
-      global: {
-        plugins: [pinia, router],
-        provide: {
-          [ApiClientKey as symbol]: client,
-        },
-      },
-    });
+    opts.props = { profile: userData.profile };
+    const wrapper = mount(EditProfile, opts);
 
     const updatedProfile: UpdateProfileParamsDTO = {
       name: 'Updated Name',
@@ -258,17 +243,8 @@ describe('Edit Profile form', () => {
 
   it('will allow a user to change their mind about cancelling editing their profile', async () => {
     const userData = getUser(UserWithFullProfile);
-    const wrapper = mount(EditProfile, {
-      props: {
-        profile: userData.profile,
-      },
-      global: {
-        plugins: [pinia, router],
-        provide: {
-          [ApiClientKey as symbol]: client,
-        },
-      },
-    });
+    opts.props = { profile: userData.profile };
+    const wrapper = mount(EditProfile, opts);
 
     const updatedProfile: UpdateProfileParamsDTO = {
       name: 'Updated Name',
@@ -325,5 +301,31 @@ describe('Edit Profile form', () => {
     ).toBe('01');
 
     expect(wrapper.find('[data-testid="dialog-modal"]').exists()).toBe(false);
+  });
+
+  it('will render list of user tanks', async () => {
+    const userData = getUser(UserWithFullProfile);
+    opts.props = { profile: userData.profile, tanks: tankData };
+    const wrapper = mount(EditProfile, opts);
+
+    expect(
+      wrapper.get('[data-testid="tank-profiles"]').html(),
+    ).toMatchSnapshot();
+  });
+
+  it('will render a helpful message if user has no tank profiles', async () => {
+    const userData = getUser(UserWithFullProfile);
+    opts.props = {
+      profile: userData.profile,
+      tanks: {
+        tanks: [],
+        totalCount: 0,
+      },
+    };
+    const wrapper = mount(EditProfile, opts);
+
+    expect(
+      wrapper.get('[data-testid="tank-profiles"]').html(),
+    ).toMatchSnapshot();
   });
 });

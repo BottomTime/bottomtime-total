@@ -176,6 +176,10 @@ describe('Dive Sites End-to-End Tests', () => {
       expect(body).toMatchSnapshot();
     });
 
+    it('will return a 404 response if the dive site ID is invalid', async () => {
+      await request(server).get(requestUrl('invalid-id')).expect(404);
+    });
+
     it('will return a 404 response if the dive site cannot be found', async () => {
       await request(server)
         .get(requestUrl('88f7f288-cbfe-4879-a6b9-cbc26dddcee1'))
@@ -458,6 +462,14 @@ describe('Dive Sites End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the dive site ID is invalid', async () => {
+      await request(server)
+        .put(requestUrl('invalid-id'))
+        .set(...creatorAuthHeader)
+        .send(updateOptions)
+        .expect(404);
+    });
+
     it('will return a 404 response if the dive site cannot be found', async () => {
       await request(server)
         .put(requestUrl('62f9e8ed-f9df-4f31-9915-62e8e4970448'))
@@ -521,6 +533,13 @@ describe('Dive Sites End-to-End Tests', () => {
         .delete(requestUrl(site.id))
         .set(...otherAuthHeader)
         .expect(403);
+    });
+
+    it('will return a 404 response if the dive site ID is invalid', async () => {
+      await request(server)
+        .delete(requestUrl('invalid-id'))
+        .set(...creatorAuthHeader)
+        .expect(404);
     });
 
     it('will return a 404 response if the dive site cannot be found', async () => {

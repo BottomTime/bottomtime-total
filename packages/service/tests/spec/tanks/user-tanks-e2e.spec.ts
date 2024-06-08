@@ -191,6 +191,13 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the tank ID is invalid', async () => {
+      await request(server)
+        .get(tankUrl(regularUser.username, 'invalid-id'))
+        .set(...regularAuthHeader)
+        .expect(404);
+    });
+
     it('will return a 404 response if the user does not exist', async () => {
       const tankData = new TankEntity();
       Object.assign(tankData, TestTankData[0]);
@@ -270,7 +277,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
       });
     });
 
-    it('will return a 400 response if the user has exceeded their tank limit', async () => {
+    it('will return a 405 response if the user has exceeded their tank limit', async () => {
       const tankData = TestTankData.slice(0, 10).map((tank) => {
         const entity = new TankEntity();
         Object.assign(entity, tank);
@@ -288,7 +295,7 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
           volume: 14.5,
           workingPressure: 219,
         })
-        .expect(400);
+        .expect(405);
     });
 
     it('will return a 400 response if the tank parameters are invalid', async () => {
@@ -486,6 +493,19 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         .expect(403);
     });
 
+    it('will return a 404 response if the tank ID is invalid', async () => {
+      await request(server)
+        .put(tankUrl(regularUser.username, 'invalid-id'))
+        .set(...regularAuthHeader)
+        .send({
+          material: TankMaterial.Steel,
+          name: 'My Tank',
+          volume: 14.5,
+          workingPressure: 219,
+        })
+        .expect(404);
+    });
+
     it('will return a 404 response if the user does not exist', async () => {
       const tankData = new TankEntity();
       Object.assign(tankData, TestTankData[0]);
@@ -570,6 +590,13 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
         .delete(tankUrl(adminUser.username, tankData.id))
         .set(...regularAuthHeader)
         .expect(403);
+    });
+
+    it('will return a 404 response if the tank ID is invalid', async () => {
+      await request(server)
+        .delete(tankUrl(regularUser.username, 'invalid-id'))
+        .set(...regularAuthHeader)
+        .expect(404);
     });
 
     it('will return a 404 response if the user does not exist', async () => {

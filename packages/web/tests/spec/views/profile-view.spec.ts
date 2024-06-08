@@ -1,4 +1,10 @@
-import { ApiClient, LogBookSharing } from '@bottomtime/api';
+import {
+  ApiClient,
+  ListTanksResponseDTO,
+  ListTanksResponseSchema,
+  LogBookSharing,
+} from '@bottomtime/api';
+import { Tank } from '@bottomtime/api/src/client/tank';
 
 import {
   ComponentMountingOptions,
@@ -22,6 +28,7 @@ import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser } from '../../../src/store';
 import ProfileView from '../../../src/views/profile-view.vue';
 import { createRouter } from '../../fixtures/create-router';
+import TestTankData from '../../fixtures/tanks.json';
 import {
   AdminUser,
   BasicUser,
@@ -31,9 +38,15 @@ import {
 dayjs.extend(relativeTime);
 jest.mock('../../../src/initial-state');
 
+const EmptyTankResults: { tanks: Tank[]; totalCount: number } = {
+  tanks: [],
+  totalCount: 0,
+};
+
 describe('Profile View', () => {
   let client: ApiClient;
   let router: Router;
+  let tankData: ListTanksResponseDTO;
 
   let pinia: Pinia;
   let initialState: AppInitialState;
@@ -53,6 +66,7 @@ describe('Profile View', () => {
         component,
       },
     ]);
+    tankData = ListTanksResponseSchema.parse(TestTankData);
   });
 
   beforeEach(() => {
@@ -97,6 +111,7 @@ describe('Profile View', () => {
     const spy = jest
       .spyOn(client.users, 'getProfile')
       .mockResolvedValue(BasicUser.profile);
+    jest.spyOn(client.tanks, 'listTanks').mockResolvedValue(EmptyTankResults);
 
     const html = await renderToString(ProfileView, {
       global: opts.global,
@@ -107,6 +122,76 @@ describe('Profile View', () => {
 
     expect(spy).not.toHaveBeenCalled();
     expect(div.querySelector('[data-testid="nameInput"]')).not.toBeNull();
+  });
+
+  it('will prefetch tank profiles if the current user is viewing their own profile', async () => {
+    currentUser.user = BasicUser;
+    await router.push(`/profile/${BasicUser.username.toUpperCase()}`);
+    const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
+      tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+      totalCount: tankData.totalCount,
+    });
+
+    const html = await renderToString(ProfileView, {
+      global: opts.global,
+    });
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+
+    expect(
+      div.querySelector('[data-testid="tank-profiles"]')?.innerHTML,
+    ).toMatchSnapshot();
+
+    expect(spy).toHaveBeenCalledWith({
+      username: BasicUser.username.toUpperCase(),
+      includeSystem: false,
+    });
+  });
+
+  it('will prefetch tank profiles if an admin is viewing the profile', async () => {
+    currentUser.user = AdminUser;
+    await router.push(`/profile/${BasicUser.username}`);
+    jest.spyOn(client.users, 'getProfile').mockResolvedValue(BasicUser.profile);
+    const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
+      tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+      totalCount: tankData.totalCount,
+    });
+
+    const html = await renderToString(ProfileView, {
+      global: opts.global,
+    });
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+
+    expect(
+      div.querySelector('[data-testid="tank-profiles"]')?.innerHTML,
+    ).toMatchSnapshot();
+
+    expect(spy).toHaveBeenCalledWith({
+      username: BasicUser.username,
+      includeSystem: false,
+    });
+  });
+
+  it('will not prefetch tanks if the current user does not own the requested profile', async () => {
+    currentUser.user = BasicUser;
+    await router.push(`/profile/${UserWithFullProfile.username}`);
+    jest
+      .spyOn(client.users, 'getProfile')
+      .mockResolvedValue(UserWithFullProfile.profile);
+    const spy = jest.spyOn(client.tanks, 'listTanks');
+
+    const html = await renderToString(ProfileView, {
+      global: opts.global,
+    });
+
+    const div = document.createElement('div');
+    div.innerHTML = html;
+
+    expect(spy).not.toHaveBeenCalled();
+    expect(div.querySelector('[data-testid="tank-profiles"]')).toBeNull();
   });
 
   it('will not attempt to prefetch a profile if the current user is not authenticated', async () => {

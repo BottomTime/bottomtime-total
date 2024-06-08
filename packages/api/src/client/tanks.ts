@@ -2,54 +2,59 @@ import { AxiosInstance } from 'axios';
 
 import {
   CreateOrUpdateTankParamsDTO,
-  ListTanksResponseDTO,
-  TankDTO,
+  ListTanksResponseSchema,
   TankSchema,
 } from '../types';
 import { Tank } from './tank';
 
-export class TanksApiClient {
-  constructor(
-    private readonly apiClient: AxiosInstance,
-    private readonly username?: string,
-  ) {}
+type ListTanksOptions = { username?: string; includeSystem?: boolean };
 
-  private getUrl(): string {
-    return this.username
-      ? `/api/users/${this.username}/tanks`
-      : `/api/admin/tanks`;
+export class TanksApiClient {
+  constructor(private readonly apiClient: AxiosInstance) {}
+
+  private getUrl(username?: string): string {
+    return username ? `/api/users/${username}/tanks` : '/api/admin/tanks';
+  }
+
+  async createTank(
+    options: CreateOrUpdateTankParamsDTO,
+    username?: string,
+  ): Promise<Tank> {
+    const { data } = await this.apiClient.post(this.getUrl(username), options);
+    return new Tank(this.apiClient, TankSchema.parse(data), username);
+  }
+
+  async getTank(tankId: string, username?: string): Promise<Tank> {
+    const { data } = await this.apiClient.get(
+      `${this.getUrl(username)}/${tankId}`,
+    );
+    return new Tank(this.apiClient, TankSchema.parse(data), username);
   }
 
   async listTanks(
-    includeSystem = true,
+    options?: ListTanksOptions,
   ): Promise<{ tanks: Tank[]; totalCount: number }> {
-    const url = this.getUrl();
-    const { data } = await this.apiClient.get<ListTanksResponseDTO>(url, {
-      params: {
-        includeSystem: this.username ? includeSystem : undefined,
-      },
+    const { data } = await this.apiClient.get(this.getUrl(options?.username), {
+      params: options?.username
+        ? { includeSystem: options?.includeSystem }
+        : undefined,
     });
 
+    const result = ListTanksResponseSchema.parse(data);
     return {
-      tanks: data.tanks.map(
-        (dto) => new Tank(this.apiClient, this.username, dto),
+      tanks: result.tanks.map(
+        (tank) =>
+          new Tank(
+            this.apiClient,
+            tank,
+            tank.isSystem ? undefined : options?.username,
+          ),
       ),
-      totalCount: data.totalCount,
+      totalCount: result.totalCount,
     };
   }
 
-  async getTank(id: string): Promise<Tank> {
-    const url = `${this.getUrl()}/${id}`;
-    const { data } = await this.apiClient.get<TankDTO>(url);
-    return this.wrapDTO(data);
-  }
-
-  async createTank(options: CreateOrUpdateTankParamsDTO): Promise<Tank> {
-    const { data } = await this.apiClient.post<TankDTO>(this.getUrl(), options);
-    return this.wrapDTO(data);
-  }
-
-  wrapDTO(data: unknown): Tank {
-    return new Tank(this.apiClient, this.username, TankSchema.parse(data));
+  wrapDTO(tank: unknown, username?: string): Tank {
+    return new Tank(this.apiClient, TankSchema.parse(tank), username);
   }
 }

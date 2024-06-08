@@ -43,7 +43,7 @@ export type ListAvatarURLsResponseDTO = z.infer<
   typeof ListAvatarURLsResponseSchema
 >;
 
-export const UsernameRegex = /^[a-z0-9]+([_.-][a-z0-9]+)*$/i;
+export const UsernameRegex = /^[a-z0-9_.-]+$/i;
 export const PasswordStrengthRegex =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#$%^&*()-_+=}{}[\]<>,./?|\\/]).{8,50}$/;
 

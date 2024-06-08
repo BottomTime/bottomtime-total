@@ -1,26 +1,30 @@
 import { AxiosInstance } from 'axios';
 
-import { TankDTO, TankMaterial } from '../types';
+import {
+  CreateOrUpdateTankParamsSchema,
+  TankDTO,
+  TankMaterial,
+} from '../types';
 
 export class Tank {
   constructor(
-    private readonly client: AxiosInstance,
-    private readonly username: string | undefined,
-    private readonly data: TankDTO,
+    private readonly apiClient: AxiosInstance,
+    private data: TankDTO,
+    private readonly ownerUsername?: string,
   ) {}
 
   private getUrl(): string {
-    return this.username
-      ? `/api/users/${this.username}/tanks/${this.id}`
-      : `/api/admin/tanks/${this.id}`;
+    return this.ownerUsername
+      ? `/api/users/${this.ownerUsername}/tanks/${this.data.id}`
+      : `/api/admin/tanks/${this.data.id}`;
   }
 
   get id(): string {
     return this.data.id;
   }
 
-  get isSystem(): boolean {
-    return this.data.isSystem;
+  get owner(): string | undefined {
+    return this.ownerUsername;
   }
 
   get name(): string {
@@ -37,13 +41,6 @@ export class Tank {
     this.data.material = value;
   }
 
-  get workingPressure(): number {
-    return this.data.workingPressure;
-  }
-  set workingPressure(value: number) {
-    this.data.workingPressure = value;
-  }
-
   get volume(): number {
     return this.data.volume;
   }
@@ -51,15 +48,26 @@ export class Tank {
     this.data.volume = value;
   }
 
+  get workingPressure(): number {
+    return this.data.workingPressure;
+  }
+  set workingPressure(value: number) {
+    this.data.workingPressure = value;
+  }
+
   toJSON(): TankDTO {
     return { ...this.data };
   }
 
   async save(): Promise<void> {
-    await this.client.put(this.getUrl(), this.data);
+    const { data } = await this.apiClient.put(
+      this.getUrl(),
+      CreateOrUpdateTankParamsSchema.parse(this.data),
+    );
+    this.data = data;
   }
 
   async delete(): Promise<void> {
-    await this.client.delete(this.getUrl());
+    await this.apiClient.delete(this.getUrl());
   }
 }

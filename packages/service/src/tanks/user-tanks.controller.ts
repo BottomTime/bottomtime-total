@@ -22,6 +22,7 @@ import {
 
 import { AssertAuth } from '../auth';
 import { AssertTargetUser, TargetUser, User } from '../users';
+import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertTankPrivilege } from './assert-tank-privilege.guard';
 import { AssertTank, SelectedTank } from './assert-tank.guard';
@@ -50,10 +51,10 @@ export class UserTanksController {
    *     description: List the tanks belonging to a user.
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
-   *       - name: includeSystem
+   *       - in: query
+   *         name: includeSystem
    *         schema:
    *           type: boolean
-   *         in: query
    *         description: Whether to include pre-defined system tanks in the results.
    *         required: false
    *     responses:
@@ -144,7 +145,7 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(`:${TankIdParam}`)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   getTank(@SelectedTank() tank: Tank): TankDTO {
     return tank.toJSON();
   }
@@ -195,6 +196,14 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    *       404:
    *         description: The request failed because the requested user does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       405:
+   *         description: |
+   *           The request failed because the user has reached the maximum number of tanks allowed. The method will not be
+   *           allowed again until the user deletes one of their existing tanks.
    *         content:
    *           application/json:
    *             schema:
@@ -279,7 +288,7 @@ export class UserTanksController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(`:${TankIdParam}`)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   async updateTank(
     @SelectedTank() tank: Tank,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
@@ -337,7 +346,7 @@ export class UserTanksController {
    */
   @Delete(`:${TankIdParam}`)
   @HttpCode(204)
-  @UseGuards(AssertTank)
+  @UseGuards(ValidateIds(TankIdParam), AssertTank)
   async deleteTank(@SelectedTank() tank: Tank): Promise<void> {
     await tank.delete();
   }

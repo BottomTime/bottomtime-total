@@ -1,167 +1,119 @@
 import axios, { AxiosInstance } from 'axios';
 
-import { CreateOrUpdateTankParamsDTO, TankDTO, TankMaterial } from '../../src';
-import { TanksApiClient } from '../../src//client/tanks';
+import {
+  CreateOrUpdateTankParamsSchema,
+  ListTanksResponseDTO,
+  ListTanksResponseSchema,
+} from '../../src';
+import { TanksApiClient } from '../../src/client/tanks';
+import TestData from '../fixtures/tanks-search-results.json';
 
-const Username = 'CharlotteDives37';
-const TestData: TankDTO[] = [
-  {
-    id: 'bd7588d8-d8ce-434b-ba3b-154fab03188c',
-    isSystem: true,
-    material: TankMaterial.Steel,
-    name: 'HP100',
-    workingPressure: 232,
-    volume: 12.2,
-  },
-  {
-    id: 'd1bb5518-e571-4f4d-8aca-e521fd6dca9f',
-    isSystem: true,
-    name: 'AL80: Aluminum S80',
-    material: TankMaterial.Aluminum,
-    workingPressure: 207,
-    volume: 11.1,
-  },
-];
+const Username = 'testuser';
 
 describe('Tanks API client', () => {
   let axiosClient: AxiosInstance;
+  let client: TanksApiClient;
+  let tanks: ListTanksResponseDTO;
 
   beforeAll(() => {
     axiosClient = axios.create();
+    client = new TanksApiClient(axiosClient);
+    tanks = ListTanksResponseSchema.parse(TestData);
   });
 
-  describe('for users', () => {
-    let client: TanksApiClient;
+  describe('for user tanks', () => {
+    it('will create a tank', async () => {
+      const spy = jest
+        .spyOn(axiosClient, 'post')
+        .mockResolvedValue({ data: tanks.tanks[0] });
+      const options = CreateOrUpdateTankParamsSchema.parse(tanks.tanks[0]);
 
-    beforeAll(() => {
-      client = new TanksApiClient(axiosClient, Username);
-    });
+      const newTank = await client.createTank(options, Username);
 
-    it('will return a single tank', async () => {
-      const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
-        data: TestData[0],
-      });
-
-      const result = await client.getTank(TestData[0].id);
-
-      expect(spy).toHaveBeenCalledWith(
-        `/api/users/${Username}/tanks/${TestData[0].id}`,
-      );
-      expect(result.toJSON()).toEqual(TestData[0]);
-    });
-
-    it('will create a new tank', async () => {
-      const options: CreateOrUpdateTankParamsDTO = {
-        material: TankMaterial.Aluminum,
-        name: 'LP85',
-        volume: 8.5,
-        workingPressure: 189,
-      };
-      const response: TankDTO = {
-        ...options,
-        id: '592bcf2b-17da-4422-8e4a-a29a6bae305b',
-        isSystem: false,
-      };
-      const spy = jest.spyOn(axiosClient, 'post').mockResolvedValue({
-        data: response,
-      });
-
-      const result = await client.createTank(options);
-
+      expect(newTank.toJSON()).toEqual(tanks.tanks[0]);
+      expect(newTank.owner).toBe(Username);
       expect(spy).toHaveBeenCalledWith(`/api/users/${Username}/tanks`, options);
-      expect(result.toJSON()).toEqual(response);
+    });
+
+    it('will retrieve a single tank', async () => {
+      const spy = jest
+        .spyOn(axiosClient, 'get')
+        .mockResolvedValue({ data: tanks.tanks[1] });
+
+      const tank = await client.getTank(tanks.tanks[1].id, Username);
+
+      expect(tank.toJSON()).toEqual(tanks.tanks[1]);
+      expect(tank.owner).toBe(Username);
+      expect(spy).toHaveBeenCalledWith(
+        `/api/users/${Username}/tanks/${tanks.tanks[1].id}`,
+      );
     });
 
     it('will list tanks', async () => {
       const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
-        data: {
-          tanks: TestData,
-          totalCount: TestData.length,
-        },
+        data: tanks,
       });
 
-      const result = await client.listTanks();
+      const result = await client.listTanks({
+        username: Username,
+        includeSystem: true,
+      });
 
+      result.tanks.forEach((tank, index) => {
+        const json = tank.toJSON();
+        expect(json).toEqual(tanks.tanks[index]);
+        expect(tank.owner).toBe(json.isSystem ? undefined : Username);
+      });
+      expect(result.totalCount).toBe(tanks.totalCount);
       expect(spy).toHaveBeenCalledWith(`/api/users/${Username}/tanks`, {
         params: { includeSystem: true },
       });
-      expect(result.tanks.map((tank) => tank.toJSON())).toEqual(TestData);
-      expect(result.totalCount).toBe(TestData.length);
-    });
-
-    it("will list only the user's tanks", async () => {
-      const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
-        data: {
-          tanks: [TestData[0]],
-          totalCount: 1,
-        },
-      });
-
-      const result = await client.listTanks(false);
-
-      expect(spy).toHaveBeenCalledWith(`/api/users/${Username}/tanks`, {
-        params: { includeSystem: false },
-      });
-      expect(result.tanks.map((tank) => tank.toJSON())).toEqual([TestData[0]]);
-      expect(result.totalCount).toBe(1);
     });
   });
 
-  describe('for admins', () => {
-    let client: TanksApiClient;
+  describe('for system tanks', () => {
+    it('will create a tank', async () => {
+      const spy = jest
+        .spyOn(axiosClient, 'post')
+        .mockResolvedValue({ data: tanks.tanks[3] });
+      const options = CreateOrUpdateTankParamsSchema.parse(tanks.tanks[3]);
 
-    beforeAll(() => {
-      client = new TanksApiClient(axiosClient);
+      const newTank = await client.createTank(options);
+
+      expect(newTank.toJSON()).toEqual(tanks.tanks[3]);
+      expect(newTank.owner).toBeUndefined();
+      expect(spy).toHaveBeenCalledWith('/api/admin/tanks', options);
     });
 
-    it('will return a single tank', async () => {
-      const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
-        data: TestData[1],
-      });
+    it('will retrieve a single tank', async () => {
+      const spy = jest
+        .spyOn(axiosClient, 'get')
+        .mockResolvedValue({ data: tanks.tanks[4] });
 
-      const result = await client.getTank(TestData[1].id);
+      const tank = await client.getTank(tanks.tanks[4].id);
 
-      expect(spy).toHaveBeenCalledWith(`/api/admin/tanks/${TestData[1].id}`);
-      expect(result.toJSON()).toEqual(TestData[1]);
-    });
-
-    it('will create a new tank', async () => {
-      const options: CreateOrUpdateTankParamsDTO = {
-        material: TankMaterial.Aluminum,
-        name: 'LP85',
-        volume: 8.5,
-        workingPressure: 189,
-      };
-      const response: TankDTO = {
-        ...options,
-        id: '592bcf2b-17da-4422-8e4a-a29a6bae305b',
-        isSystem: false,
-      };
-      const spy = jest.spyOn(axiosClient, 'post').mockResolvedValue({
-        data: response,
-      });
-
-      const result = await client.createTank(options);
-
-      expect(spy).toHaveBeenCalledWith(`/api/admin/tanks`, options);
-      expect(result.toJSON()).toEqual(response);
+      expect(tank.toJSON()).toEqual(tanks.tanks[4]);
+      expect(tank.owner).toBeUndefined();
+      expect(spy).toHaveBeenCalledWith(`/api/admin/tanks/${tanks.tanks[4].id}`);
     });
 
     it('will list tanks', async () => {
+      const expected: ListTanksResponseDTO = {
+        tanks: tanks.tanks.filter((dto) => dto.isSystem),
+        totalCount: tanks.totalCount,
+      };
       const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
-        data: {
-          tanks: TestData,
-          totalCount: TestData.length,
-        },
+        data: expected,
       });
 
       const result = await client.listTanks();
 
-      expect(spy).toHaveBeenCalledWith(`/api/admin/tanks`, {
-        params: { includeSystem: undefined },
+      result.tanks.forEach((tank, index) => {
+        expect(tank.toJSON()).toEqual(expected.tanks[index]);
+        expect(tank.owner).toBeUndefined();
       });
-      expect(result.tanks.map((tank) => tank.toJSON())).toEqual(TestData);
-      expect(result.totalCount).toBe(TestData.length);
+      expect(result.totalCount).toBe(tanks.totalCount);
+      expect(spy).toHaveBeenCalledWith('/api/admin/tanks', {});
     });
   });
 });
