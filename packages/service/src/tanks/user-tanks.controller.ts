@@ -13,13 +13,14 @@ import {
   Delete,
   Get,
   HttpCode,
+  Inject,
   Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth, CurrentUser } from '../auth';
+import { AssertAuth } from '../auth';
 import { AssertTargetUser, TargetUser, User } from '../users';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
@@ -34,7 +35,9 @@ const TankIdParam = 'tankId';
 @Controller(`api/users/:${UsernameParam}/tanks`)
 @UseGuards(AssertAuth, AssertTargetUser, AssertTankPrivilege)
 export class UserTanksController {
-  constructor(private readonly tanksService: TanksService) {}
+  constructor(
+    @Inject(TanksService) private readonly tanksService: TanksService,
+  ) {}
 
   /**
    * @openapi
@@ -48,10 +51,10 @@ export class UserTanksController {
    *     description: List the tanks belonging to a user.
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
-   *       - name: includeSystem
+   *       - in: query
+   *         name: includeSystem
    *         schema:
    *           type: boolean
-   *         in: query
    *         description: Whether to include pre-defined system tanks in the results.
    *         required: false
    *     responses:
@@ -197,6 +200,14 @@ export class UserTanksController {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/Error"
+   *       405:
+   *         description: |
+   *           The request failed because the user has reached the maximum number of tanks allowed. The method will not be
+   *           allowed again until the user deletes one of their existing tanks.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
    *       500:
    *         description: The request failed because an unexpected internal server error occurred.
    *         content:
@@ -206,7 +217,6 @@ export class UserTanksController {
    */
   @Post()
   async createTank(
-    @CurrentUser() currentUser: User,
     @TargetUser() targetUser: User,
     @Body(new ZodValidator(CreateOrUpdateTankParamsSchema))
     options: CreateOrUpdateTankParamsDTO,

@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin Tanks View when performing server prefetch will fetch the system tanks and render them 1`] = `"<span>Showing </span><span class="font-bold">22</span><span> tank profile(s)</span>"`;
+
+exports[`Admin Tanks View when rendering on client side will render the tanks list 1`] = `"Showing 22 tank profile(s)"`;

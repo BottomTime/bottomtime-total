@@ -7,12 +7,16 @@
     } mb-3`"
   >
     <div
-      v-if="label"
       :class="`${
         responsive ? 'lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5' : ''
       }`"
     >
-      <FormLabel :label="label" :control-id="controlId" :required="required" />
+      <FormLabel
+        v-if="label"
+        :label="label"
+        :control-id="controlId"
+        :required="required"
+      />
     </div>
     <div class="grow w-full">
       <slot></slot>

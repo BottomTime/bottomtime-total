@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  Inject,
   Injectable,
   NotFoundException,
   createParamDecorator,
@@ -12,7 +13,9 @@ import { TanksService } from './tanks.service';
 
 @Injectable()
 export class AssertTank implements CanActivate {
-  constructor(private readonly tanksService: TanksService) {}
+  constructor(
+    @Inject(TanksService) private readonly tanksService: TanksService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();

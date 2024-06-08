@@ -82,7 +82,8 @@
           </button>
         </div>
 
-        <div class="grow">
+        <div class="grow space-y-3">
+          <TextHeading>Personal Info</TextHeading>
           <FormField label="Name" control-id="name">
             <FormTextBox
               v-model.trim="state.name"
@@ -117,18 +118,6 @@
             />
           </FormField>
 
-          <TextHeading class="mt-5">Bio</TextHeading>
-          <FormField control-id="bio">
-            <FormTextArea
-              v-model.trim="state.bio"
-              control-id="bio"
-              test-id="bioInput"
-              :maxlength="500"
-              :rows="6"
-              resize="none"
-            />
-          </FormField>
-
           <TextHeading class="mt-5">Dive Experience</TextHeading>
           <FormField label="Experience level" control-id="experience-level">
             <FormSelect
@@ -148,6 +137,46 @@
               :min-year="new Date().getFullYear() - 80"
             />
           </FormField>
+
+          <TextHeading class="mt-5">Bio</TextHeading>
+          <FormField control-id="bio">
+            <FormTextArea
+              v-model.trim="state.bio"
+              control-id="bio"
+              test-id="bioInput"
+              :maxlength="500"
+              :rows="6"
+              resize="none"
+            />
+          </FormField>
+
+          <div v-if="tanks" data-testid="tank-profiles">
+            <TextHeading>Personal Tank Profiles</TextHeading>
+            <div v-if="tanks.totalCount" class="space-y-5">
+              <p>
+                <span>You currently have </span>
+                <span class="font-bold">{{ tanks.totalCount }}</span>
+                <span> personal tank profile(s) defined:</span>
+              </p>
+
+              <div class="m-4 space-y-4">
+                <p class="text-lg italic">
+                  {{ tanks.tanks.map((tank) => `"${tank.name}"`).join(', ') }}
+                </p>
+                <NavLink :to="`/profile/${profile.username}/tanks`">
+                  Manage Tank Profiles...
+                </NavLink>
+              </div>
+            </div>
+
+            <div v-else class="text-lg italic my-4">
+              <span>You haven't created any personal tank profiles yet. </span>
+              <NavLink :to="`/profile/${props.profile.username}/tanks`">
+                Click here
+              </NavLink>
+              <span> to create one.</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -161,6 +190,7 @@
         >
           Save Changes
         </FormButton>
+
         <FormButton test-id="cancel-profile" @click="onReset">
           Cancel
         </FormButton>
@@ -170,7 +200,11 @@
 </template>
 
 <script setup lang="ts">
-import { LogBookSharing, ProfileDTO } from '@bottomtime/api';
+import {
+  ListTanksResponseDTO,
+  LogBookSharing,
+  ProfileDTO,
+} from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
 
@@ -184,16 +218,19 @@ import FormFuzzyDate from '../common/form-fuzzy-date.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
+import NavLink from '../common/nav-link.vue';
 import TextHeading from '../common/text-heading.vue';
 import ChangeAvatarDialog from '../dialog/change-avatar-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UserAvatar from './user-avatar.vue';
 
-type EditProfileProps = {
+interface EditProfileProps {
   responsive?: boolean;
   profile: ProfileDTO;
-};
-type EditProfileState = {
+  tanks?: ListTanksResponseDTO;
+}
+
+interface EditProfileState {
   avatar: string;
   bio: string;
   experienceLevel: string;
@@ -201,7 +238,7 @@ type EditProfileState = {
   logBookSharing: LogBookSharing;
   name: string;
   startedDiving: string;
-};
+}
 
 const LogbookSharingHelp =
   'This will determine who can view your log book records. You can keep your log book private by ("Just me"), make it visible to only your friends ("Me and my friends"), or make it public ("Everyone"). Only you will be able to modify your log book.';
@@ -227,6 +264,7 @@ const oops = useOops();
 const props = withDefaults(defineProps<EditProfileProps>(), {
   responsive: true,
 });
+
 const state = reactive<EditProfileState>({
   avatar: props.profile.avatar ?? '',
   bio: props.profile.bio ?? '',

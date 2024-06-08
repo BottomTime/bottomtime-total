@@ -11,6 +11,7 @@ import { FriendsFixture } from './friends.fixture';
 import { createAuthToken } from './jwt';
 import { LogEntriesFixture } from './log-entries.fixture';
 import { PostgresFixture } from './postgres.fixture';
+import { TankProfilesFixture } from './tank-profiles.fixture';
 
 export const test = base.extend<{
   api: ApiClient;
@@ -19,6 +20,7 @@ export const test = base.extend<{
   diveSites: DiveSitesFixture;
   friends: FriendsFixture;
   logEntries: LogEntriesFixture;
+  tankProfiles: TankProfilesFixture;
 }>({
   api: async ({ db }, use) => {
     // Create an admin user and matching auth token
@@ -68,6 +70,11 @@ export const test = base.extend<{
   logEntries: async ({ page }, use) => {
     const logEntries = new LogEntriesFixture(page);
     await use(logEntries);
+  },
+
+  tankProfiles: async ({ page }, use) => {
+    const tankProfiles = new TankProfilesFixture(page);
+    await use(tankProfiles);
   },
 });
 

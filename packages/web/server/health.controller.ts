@@ -30,7 +30,6 @@ export class HealthController {
   @HealthCheck()
   async check(): Promise<HealthCheckResult> {
     return await this.health.check([
-      // TODO: Ping backend
       () => this.http.pingCheck('api', this.apiPingUrl),
       () => this.memory.checkHeap('memory', MemoryCheckThreshold),
     ]);

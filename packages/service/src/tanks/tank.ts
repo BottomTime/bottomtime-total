@@ -1,14 +1,11 @@
 import { SuccinctProfileDTO, TankDTO, TankMaterial } from '@bottomtime/api';
 
-import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
 
 import { TankEntity } from '../data';
 
 export class Tank {
   constructor(
-    @InjectRepository(TankEntity)
     private readonly Tanks: Repository<TankEntity>,
 
     private readonly data: TankEntity,

@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`New Profile Tank view will not attempt to create a tank if validation fails 1`] = `"There are errors in the form above. Please fix them and then try again. Name of tank profile is requiredVolume must be between 1 and 30 litresMax pressure is required"`;
+
+exports[`New Profile Tank view will render a toast message if the request fails because the user is at their tank limit 1`] = `"Uh oh! It seems you have reached your limit for custom tank profiles. (Each user is limited to 10 custom tank profiles.) You can either edit an existing profile, or delete one and then create a new profile."`;

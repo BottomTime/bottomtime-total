@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Edit Profile form will render a helpful message if user has no tank profiles 1`] = `
+"<div data-testid="tank-profiles">
+  <h1 class="text-2xl font-bold font-title">Personal Tank Profiles</h1>
+  <div class="text-lg italic my-4"><span>You haven't created any personal tank profiles yet. </span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/profile/Abel_Koss49/tanks"> Click here </a><span> to create one.</span></div>
+</div>"
+`;
+
+exports[`Edit Profile form will render list of user tanks 1`] = `
+"<div data-testid="tank-profiles">
+  <h1 class="text-2xl font-bold font-title">Personal Tank Profiles</h1>
+  <div class="space-y-5">
+    <p><span>You currently have </span><span class="font-bold">22</span><span> personal tank profile(s) defined:</span></p>
+    <div class="m-4 space-y-4">
+      <p class="text-lg italic">"AL13 (CCR 2L): Aluminum XS-13", "AL19 (CCR 3L): Aluminum XS-19", "AL20 (CCR 3L short): Aluminum S20", "AL30: Aluminum XS-30", "AL40: Aluminum S40", "AL6: Aluminum XS-6", "AL72: Aluminum XS-72", "AL80: Aluminum S80", "HP100: Steel X7-100 HDG", "HP100: Steel X7-100 HDG", "HP117: Steel X8-117 HDG", "HP120: Steel X7-120 HDG", "HP133: Steel X8-133 HDG", "HP15 (CCR 2L): Steel BSE15", "HP23 (CCR 3L): Steel BSE23", "HP80: Steel X7-80 HDG", "LP27 (CCR 4L): Steel BS27", "LP50: Steel BS50", "LP85: Steel BS85", "New Awesome Tank", "Extra Secret Tank", "Tank of Testification"</p><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/profile/Abel_Koss49/tanks"> Manage Tank Profiles... </a>
+    </div>
+  </div>
+</div>"
+`;

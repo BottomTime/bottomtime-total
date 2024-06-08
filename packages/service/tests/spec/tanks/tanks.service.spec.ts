@@ -1,6 +1,6 @@
 import { TankMaterial } from '@bottomtime/api';
 
-import { BadRequestException } from '@nestjs/common';
+import { MethodNotAllowedException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 
@@ -204,7 +204,7 @@ describe('Tanks Service', () => {
       };
 
       await expect(service.createTank(options)).rejects.toThrow(
-        BadRequestException,
+        MethodNotAllowedException,
       );
     });
   });

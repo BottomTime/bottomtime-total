@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin New Tank view will not attempt to create a tank if the validation fails 1`] = `"There are errors in the form above. Please fix them and then try again. Name of tank profile is requiredVolume must be between 1 and 30 litresMax pressure is required"`;

@@ -10,7 +10,7 @@
     "serve": "nodemon server/index.ts",
     "prepare": "cp -n .env.example .env || true",
     "preview": "cross-env NODE_ENV=production nodemon server/index.ts",
-    "test": "jest --runInBand"
+    "test": "jest"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.6",

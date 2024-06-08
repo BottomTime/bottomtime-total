@@ -1,0 +1,158 @@
+{
+  "tanks": [
+    {
+      "id": "d1bb5518-e571-4f4d-8aca-e521fd6dca9f",
+      "name": "AL80: Aluminum S80",
+      "material": "al",
+      "workingPressure": 207,
+      "volume": 11.1,
+      "isSystem": true
+    },
+    {
+      "id": "83619d8c-627a-46ab-9d04-c53ddcad4995",
+      "name": "HP100: Steel X7-100 HDG",
+      "material": "fe",
+      "workingPressure": 237,
+      "volume": 12.9,
+      "isSystem": true
+    },
+
+    {
+      "id": "c9f02ee3-4f79-4095-97a8-266cd45dc041",
+      "name": "AL6: Aluminum XS-6",
+      "material": "al",
+      "workingPressure": 207,
+      "volume": 0.8,
+      "isSystem": true
+    },
+    {
+      "id": "363abc77-295a-4c7e-9e7a-60d79bca3f36",
+      "name": "AL13 (CCR 2L): Aluminum XS-13",
+      "material": "al",
+      "workingPressure": 207,
+      "volume": 1.8,
+      "isSystem": true
+    },
+    {
+      "id": "e77f011b-a885-4ced-8e02-3bd3e4eceeec",
+      "name": "HP15 (CCR 2L): Steel BSE15",
+      "material": "fe",
+      "workingPressure": 237,
+      "volume": 2.0,
+      "isSystem": true
+    },
+    {
+      "id": "152264f8-2b9d-4f6a-8eb6-0c3ae15330ef",
+      "name": "AL19 (CCR 3L): Aluminum XS-19",
+      "material": "al",
+      "workingPressure": 207,
+      "volume": 2.6,
+      "isSystem": true
+    },
+    {
+      "id": "1f6fe3dc-6191-4caa-9918-6e8a60c2807a",
+      "name": "AL20 (CCR 3L short): Aluminum S20",
+      "material": "al",
+      "workingPressure": 207,
+      "volume": 2.7,
+      "isSystem": true
+    },
+    {
+      "id": "f880f6db-1728-48e2-b17b-4dc8bfa39730",
+      "name": "HP23 (CCR 3L): Steel BSE23",
+      "material": "fe",
+      "workingPressure": 237,
+      "volume": 3.0,
+      "isSystem": true
+    },
+    {
+      "id": "d057fc6a-90cb-464e-900d-fd896086e114",
+      "name": "LP27 (CCR 4L): Steel BS27",
+      "material": "fe",
+      "workingPressure": 182,
+      "volume": 4.0,
+      "isSystem": true
+    },
+    {
+      "id": "d9e22779-449f-45c8-a201-09ce4c655bf7",
+      "name": "AL30: Aluminum XS-30",
+      "material": "al",
+      "workingPressure": 207,
+      "volume": 4.2,
+      "isSystem": true
+    },
+    {
+      "id": "e472ea0d-8cf8-437d-9ddd-5b1bc23dc747",
+      "name": "AL40: Aluminum S40",
+      "material": "al",
+      "workingPressure": 207,
+      "volume": 5.7,
+      "isSystem": true
+    },
+    {
+      "id": "df1947ae-d754-42f7-8e15-3be444ef4580",
+      "name": "LP50: Steel BS50",
+      "material": "fe",
+      "workingPressure": 182,
+      "volume": 7.8,
+      "isSystem": true
+    },
+    {
+      "id": "23b19515-87fb-44d4-bee4-9c02f425dac8",
+      "name": "AL72: Aluminum XS-72",
+      "material": "al",
+      "workingPressure": 207,
+      "volume": 10.0,
+      "isSystem": true
+    },
+    {
+      "id": "bdda918c-a686-40dc-a37c-c86981c6bdef",
+      "name": "LP85: Steel BS85",
+      "material": "fe",
+      "workingPressure": 182,
+      "volume": 13.0,
+      "isSystem": true
+    },
+    {
+      "id": "0b83ea4d-44e7-4a89-8cb3-2b08986e4b83",
+      "name": "HP80: Steel X7-80 HDG",
+      "material": "fe",
+      "workingPressure": 237,
+      "volume": 10.2,
+      "isSystem": true
+    },
+    {
+      "id": "3cfb4ce0-8b28-470c-bbfd-17f7ff5d8e40",
+      "name": "HP100: Steel X7-100 HDG",
+      "material": "fe",
+      "workingPressure": 237,
+      "volume": 12.9,
+      "isSystem": true
+    },
+    {
+      "id": "da112d22-1d47-4660-a9b7-5e2aed81ca2d",
+      "name": "HP117: Steel X8-117 HDG",
+      "material": "fe",
+      "workingPressure": 237,
+      "volume": 15.0,
+      "isSystem": false
+    },
+    {
+      "id": "4aeb3c01-7b67-4c00-9da9-fdae2cea6968",
+      "name": "HP120: Steel X7-120 HDG",
+      "material": "fe",
+      "workingPressure": 237,
+      "volume": 15.3,
+      "isSystem": false
+    },
+    {
+      "id": "e34fb515-d812-46d3-8641-859d41d61dae",
+      "name": "HP133: Steel X8-133 HDG",
+      "material": "fe",
+      "workingPressure": 237,
+      "volume": 17.0,
+      "isSystem": false
+    }
+  ],
+  "totalCount": 19
+}

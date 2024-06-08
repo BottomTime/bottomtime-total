@@ -3,8 +3,10 @@
 exports[`LogbookSearch component will render correctly with no params 1`] = `
 "<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-sm shadow-grey-600 opacity-100 sticky top-20 flex flex-col gap-3">
   <form>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <!--v-if-->
+    <div class="flex flex-col gap-2  mb-3">
+      <div class="">
+        <!--v-if-->
+      </div>
       <div class="grow w-full">
         <div class="relative">
           <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
@@ -89,8 +91,10 @@ exports[`LogbookSearch component will render correctly with no params 1`] = `
 exports[`LogbookSearch component will render correctly with params 1`] = `
 "<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-sm shadow-grey-600 opacity-100 sticky top-20 flex flex-col gap-3">
   <form>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <!--v-if-->
+    <div class="flex flex-col gap-2  mb-3">
+      <div class="">
+        <!--v-if-->
+      </div>
       <div class="grow w-full">
         <div class="relative">
           <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
