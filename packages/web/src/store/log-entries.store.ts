@@ -3,6 +3,12 @@ import { ListLogEntriesResponseDTO, LogEntryDTO } from '@bottomtime/api';
 import { defineStore } from 'pinia';
 import { reactive, ref } from 'vue';
 
+export enum ListEntriesState {
+  Success,
+  NotFound,
+  Forbidden,
+}
+
 export const useLogEntries = defineStore('logEntries', () => {
   const currentEntry = ref<LogEntryDTO | null>(null);
 
@@ -11,5 +17,7 @@ export const useLogEntries = defineStore('logEntries', () => {
     totalCount: 0,
   });
 
-  return { currentEntry, results };
+  const listEntriesState = ref<ListEntriesState>(ListEntriesState.Success);
+
+  return { currentEntry, listEntriesState, results };
 });

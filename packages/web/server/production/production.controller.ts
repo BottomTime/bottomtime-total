@@ -33,7 +33,7 @@ export class ProductionController {
     const jwtToken = this.jwt.extractJwtFromRequest(req);
     const initialState: Record<string, StateTree> = {
       currentUser: {
-        currentUser: null,
+        user: null,
       },
     };
 
@@ -45,7 +45,7 @@ export class ProductionController {
             headers: { Authorization: `Bearer ${jwtToken}` },
           },
         );
-        initialState.currentUser.currentUser = response.data;
+        initialState.currentUser.user = response.data;
       } catch (error) {
         if (isAxiosError(error) && error.response?.status === 401) {
           this.log.warn(

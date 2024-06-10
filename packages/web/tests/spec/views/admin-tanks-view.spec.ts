@@ -20,17 +20,13 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
 import TanksListItem from '../../../src/components/tanks/tanks-list-item.vue';
-import { AppInitialState } from '../../../src/initial-state';
-import { useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import { useCurrentUser, useTanks } from '../../../src/store';
 import AdminTanksView from '../../../src/views/admin-tanks-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
 import TestTankData from '../../fixtures/tanks.json';
 import { AdminUser, BasicUser } from '../../fixtures/users';
-
-jest.mock('../../../src/initial-state');
 
 const AddButton = 'button#tanks-list-add';
 const MaterialRadio = {
@@ -51,7 +47,7 @@ describe('Admin Tanks View', () => {
   let location: MockLocation;
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let initialState: AppInitialState;
+  let tanksStore: ReturnType<typeof useTanks>;
   let opts: ComponentMountingOptions<typeof AdminTanksView>;
 
   beforeAll(() => {
@@ -64,13 +60,10 @@ describe('Admin Tanks View', () => {
 
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    tanksStore = useTanks(pinia);
     currentUser.user = AdminUser;
+    tanksStore.results = tankData;
 
-    initialState = {
-      currentUser: AdminUser,
-      tanks: tankData,
-    };
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
     location = new MockLocation();
 
     opts = {
@@ -114,7 +107,6 @@ describe('Admin Tanks View', () => {
       const spy = jest
         .spyOn(client.tanks, 'listTanks')
         .mockRejectedValue(createAxiosError(401));
-      initialState.currentUser = null;
       currentUser.user = null;
 
       const raw = await renderToString(AdminTanksView, { global: opts.global });
@@ -129,7 +121,6 @@ describe('Admin Tanks View', () => {
       const spy = jest
         .spyOn(client.tanks, 'listTanks')
         .mockRejectedValue(createAxiosError(403));
-      initialState.currentUser = BasicUser;
       currentUser.user = BasicUser;
 
       const raw = await renderToString(AdminTanksView, { global: opts.global });
@@ -155,7 +146,6 @@ describe('Admin Tanks View', () => {
     });
 
     it('will render login form if user is not authenticated', async () => {
-      initialState.currentUser = null;
       currentUser.user = null;
 
       const wrapper = mount(AdminTanksView, opts);
@@ -166,7 +156,6 @@ describe('Admin Tanks View', () => {
     });
 
     it('will render forbidden message if user is not an admin', async () => {
-      initialState.currentUser = BasicUser;
       currentUser.user = BasicUser;
 
       const wrapper = mount(AdminTanksView, opts);

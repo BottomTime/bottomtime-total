@@ -90,12 +90,9 @@
       </FormBox>
 
       <!-- Loading message -->
-      <p v-if="isLoading" class="mt-6 text-lg text-info">
-        <span class="pr-2">
-          <i class="fas fa-spinner fa-spin"></i>
-        </span>
-        <span>Loading users...</span>
-      </p>
+      <div v-if="isLoading" class="mt-6 text-lg text-center text-info">
+        <LoadingSpinner v-if="isLoading" message="Loading users..." />
+      </div>
 
       <!-- No results found message -->
       <p
@@ -150,6 +147,7 @@
 <script setup lang="ts">
 import {
   AdminSearchUsersParamsDTO,
+  AdminSearchUsersResponseSchema,
   ProfileDTO,
   SortOrder,
   UserDTO,
@@ -158,7 +156,7 @@ import {
   UsersSortBy,
 } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive, ref } from 'vue';
+import { onBeforeMount, onServerPrefetch, reactive, ref } from 'vue';
 
 import { useClient } from '../../api-client';
 import { SelectOption } from '../../common';
@@ -170,6 +168,7 @@ import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
+import LoadingSpinner from '../common/loading-spinner.vue';
 import ManageUser from './manage-user.vue';
 import UsersListItem from './users-list-item.vue';
 
@@ -213,7 +212,7 @@ const searchParams = reactive<{
   role: '',
   sortOrder: SortOrderOptions[0].value,
 });
-const isLoading = ref(true);
+const isLoading = ref(false);
 const isLoadingMore = ref(false);
 const noMoreResults = ref(false);
 const selectedUser = ref<UserDTO | null>(null);
@@ -262,7 +261,14 @@ async function onLoadMore(): Promise<void> {
 }
 
 onServerPrefetch(async () => {
-  await refreshUsers();
+  const params = getSearchParameters();
+  const response = await client.users.searchUsers(params);
+  admin.users.users = response.users.map((u) => u.toJSON());
+  admin.users.totalCount = response.totalCount;
+});
+
+onBeforeMount(() => {
+  admin.users = AdminSearchUsersResponseSchema.parse(admin.users);
 });
 
 function onUserClick(user: UserDTO): void {

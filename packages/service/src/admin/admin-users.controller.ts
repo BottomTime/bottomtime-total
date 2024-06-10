@@ -14,6 +14,7 @@ import {
   Get,
   HttpCode,
   Inject,
+  Logger,
   NotFoundException,
   Param,
   Post,
@@ -31,6 +32,8 @@ const UsernameParam = 'username';
 @Controller('api/admin/users')
 @UseGuards(AssertAdmin)
 export class AdminUsersController {
+  private readonly log = new Logger(AdminUsersController.name);
+
   constructor(
     @Inject(AdminService)
     private readonly adminService: AdminService,
@@ -113,6 +116,7 @@ export class AdminUsersController {
     @Query(new ZodValidator(AdminSearchUsersParamsSchema))
     params: AdminSearchUsersParamsDTO,
   ): Promise<AdminSearchUsersResponseDTO> {
+    this.log.debug('Search users...', params);
     const results = await this.adminService.searchUsers(params);
     return {
       users: results.users.map((user) => user.toJSON()),

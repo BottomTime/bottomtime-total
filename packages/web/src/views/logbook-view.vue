@@ -30,7 +30,7 @@
     />
   </DrawerPanel>
 
-  <div v-if="state.listEntriesState === ListEntriesState.Forbidden">
+  <div v-if="logEntries.listEntriesState === ListEntriesState.Forbidden">
     <div v-if="currentUser.user" class="text-center space-y-6">
       <p class="text-xl font-bold flex items-baseline gap-3 justify-center">
         <span>
@@ -92,7 +92,9 @@
     </div>
   </div>
 
-  <NotFound v-else-if="state.listEntriesState === ListEntriesState.NotFound" />
+  <NotFound
+    v-else-if="logEntries.listEntriesState === ListEntriesState.NotFound"
+  />
 
   <div v-else class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
     <div>
@@ -139,18 +141,16 @@ import ViewLogbookEntry from '../components/logbook/view-logbook-entry.vue';
 import LoginForm from '../components/users/login-form.vue';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
-import { useCurrentUser, useLogEntries, useProfiles } from '../store';
-
-enum ListEntriesState {
-  Success,
-  NotFound,
-  Forbidden,
-}
+import {
+  ListEntriesState,
+  useCurrentUser,
+  useLogEntries,
+  useProfiles,
+} from '../store';
 
 interface LogbookViewState {
   isLoadingLogEntry: boolean;
   isLoadingMoreEntries: boolean;
-  listEntriesState: ListEntriesState;
   queryParams: ListLogEntriesParamsDTO;
   selectedEntry?: LogEntryDTO | null;
   showSelectedEntry: boolean;
@@ -192,7 +192,6 @@ function parseQueryParams(): ListLogEntriesParamsDTO {
 const state = reactive<LogbookViewState>({
   isLoadingLogEntry: false,
   isLoadingMoreEntries: false,
-  listEntriesState: ListEntriesState.Success,
   queryParams: parseQueryParams(),
   showSelectedEntry: false,
 });
@@ -208,20 +207,20 @@ async function refresh(): Promise<void> {
         logEntries: results.logEntries.map((entry) => entry.toJSON()),
         totalCount: results.totalCount,
       };
-      state.listEntriesState = ListEntriesState.Success;
+      logEntries.listEntriesState = ListEntriesState.Success;
     },
     {
       [401]: () => {
         // User _may_ have access to this logbook but they need to sign in.
-        state.listEntriesState = ListEntriesState.Forbidden;
+        logEntries.listEntriesState = ListEntriesState.Forbidden;
       },
       [403]: () => {
         // User does not have access to this logbook.
-        state.listEntriesState = ListEntriesState.Forbidden;
+        logEntries.listEntriesState = ListEntriesState.Forbidden;
       },
       [404]: () => {
         // Requested logbook does not exist.
-        state.listEntriesState = ListEntriesState.NotFound;
+        logEntries.listEntriesState = ListEntriesState.NotFound;
       },
     },
   );

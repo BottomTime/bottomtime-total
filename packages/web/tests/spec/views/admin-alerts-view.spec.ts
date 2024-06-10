@@ -16,17 +16,14 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
 import AlertsList from '../../../src/components/admin/alerts-list.vue';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import { useAlerts, useCurrentUser } from '../../../src/store';
 import AdminAlertsView from '../../../src/views/admin-alerts-view.vue';
 import AlertData from '../../fixtures/alerts.json';
 import { createRouter } from '../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../fixtures/users';
 
 const AlertsCount = '[data-testid="alerts-count"]';
-
-jest.mock('../../../src/initial-state');
 
 describe('Admin Alerts View', () => {
   let client: ApiClient;
@@ -35,7 +32,7 @@ describe('Admin Alerts View', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let initialState: AppInitialState;
+  let alertsStore: ReturnType<typeof useAlerts>;
   let options: ComponentMountingOptions<typeof AdminAlertsView>;
 
   beforeAll(() => {
@@ -47,14 +44,14 @@ describe('Admin Alerts View', () => {
   beforeEach(() => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    alertsStore = useAlerts(pinia);
+
     currentUser.user = AdminUser;
-    initialState = {
-      currentUser: AdminUser,
-      alerts: {
-        alerts: alertData.alerts.slice(0, 10),
-        totalCount: alertData.totalCount,
-      },
+    alertsStore.results = {
+      alerts: alertData.alerts.slice(0, 10),
+      totalCount: alertData.totalCount,
     };
+
     options = {
       global: {
         plugins: [pinia, router],
@@ -64,8 +61,6 @@ describe('Admin Alerts View', () => {
         },
       },
     };
-
-    jest.mocked(useInitialState).mockReturnValue(initialState);
   });
 
   it('will not render if user is not logged in', async () => {
@@ -145,9 +140,9 @@ describe('Admin Alerts View', () => {
       totalCount: alertData.totalCount,
     });
     const wrapper = mount(AdminAlertsView, options);
-    const listItem = wrapper.getComponent(AlertsList);
+    const listItem = wrapper.getComponent<typeof AlertsList>(AlertsList);
 
-    listItem.vm.$emit('loadMore');
+    listItem.vm.$emit('load-more');
     await flushPromises();
 
     expect(spy).toHaveBeenCalledWith({ showDismissed: true, skip: 10 });

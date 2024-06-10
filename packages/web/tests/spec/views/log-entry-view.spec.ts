@@ -21,15 +21,13 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import EditLogbookEntry from '../../../src/components/logbook/edit-logbook-entry.vue';
 import ViewLogbookEntry from '../../../src/components/logbook/view-logbook-entry.vue';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
-import { useCurrentUser } from '../../../src/store';
+import { useCurrentUser, useLogEntries } from '../../../src/store';
 import { useToasts } from '../../../src/store';
 import LogEntryView from '../../../src/views/log-entry-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../fixtures/users';
 
-jest.mock('../../../src/initial-state');
 dayjs.extend(localized);
 
 const TestData: LogEntryDTO = {
@@ -60,8 +58,8 @@ describe('Log Entry view', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let logEntryStore: ReturnType<typeof useLogEntries>;
   let toasts: ReturnType<typeof useToasts>;
-  let initialState: AppInitialState;
   let opts: ComponentMountingOptions<typeof LogEntryView>;
 
   beforeAll(() => {
@@ -77,14 +75,12 @@ describe('Log Entry view', () => {
   beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    logEntryStore = useLogEntries(pinia);
     toasts = useToasts(pinia);
-    currentUser.user = BasicUser;
-    initialState = {
-      currentUser: BasicUser,
-      currentLogEntry: { ...TestData },
-    };
 
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
+    currentUser.user = BasicUser;
+    logEntryStore.currentEntry = { ...TestData };
+
     jest
       .spyOn(client.logEntries, 'getNextAvailableLogNumber')
       .mockResolvedValue(12);
@@ -172,7 +168,7 @@ describe('Log Entry view', () => {
   });
 
   it('will render in edit mode if the user owns the log entry', async () => {
-    initialState.currentLogEntry!.creator = BasicUser.profile;
+    logEntryStore.currentEntry!.creator = BasicUser.profile;
     await router.push(`/logbook/${BasicUser.username}/${TestData.id}`);
     const wrapper = mount(LogEntryView, opts);
     const editEntry = wrapper.findComponent(EditLogbookEntry);
@@ -206,7 +202,7 @@ describe('Log Entry view', () => {
       .spyOn(client.logEntries, 'wrapDTO')
       .mockReturnValue(entry);
 
-    initialState.currentLogEntry!.creator = BasicUser.profile;
+    logEntryStore.currentEntry!.creator = BasicUser.profile;
     await router.push(`/logbook/${BasicUser.username}/${TestData.id}`);
 
     const wrapper = mount(LogEntryView, opts);

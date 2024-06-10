@@ -20,9 +20,8 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
 import FormDatePicker from '../../../src/components/common/form-date-picker.vue';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import { useCurrentUser, useProfiles } from '../../../src/store';
 import NewLogEntryView from '../../../src/views/new-log-entry-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
@@ -44,15 +43,14 @@ const Timezone = 'Pacific/Guam';
 const LogNumber = 43;
 
 dayjs.extend(tz);
-jest.mock('../../../src/initial-state');
 
 describe('NewLogEntry view', () => {
   let router: Router;
   let client: ApiClient;
 
   let pinia: Pinia;
-  let initialState: AppInitialState;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let profiles: ReturnType<typeof useProfiles>;
   let location: MockLocation;
   let opts: ComponentMountingOptions<typeof NewLogEntryView>;
 
@@ -72,17 +70,14 @@ describe('NewLogEntry view', () => {
 
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    profiles = useProfiles(pinia);
     currentUser.user = BasicUser;
-    initialState = {
-      currentUser: BasicUser,
-      currentProfile: BasicUser.profile,
-    };
+    profiles.currentProfile = BasicUser.profile;
 
     jest
       .spyOn(client.logEntries, 'getNextAvailableLogNumber')
       .mockResolvedValue(LogNumber);
     jest.spyOn(dayjs.tz, 'guess').mockReturnValue(Timezone);
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
 
     await router.push(`/logbook/${BasicUser.username}/new`);
 
@@ -173,7 +168,7 @@ describe('NewLogEntry view', () => {
   describe('when rendering on the client side', () => {
     it('will render "not found" message if requested logbook does not exist', async () => {
       await router.push('/logbook/unknown-user/new');
-      initialState.currentProfile = undefined;
+      profiles.currentProfile = null;
       currentUser.user = AdminUser;
       const wrapper = mount(NewLogEntryView, opts);
       await flushPromises();

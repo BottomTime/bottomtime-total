@@ -23,9 +23,8 @@ import { ProfileDTO } from '../../../../api/src';
 import { ApiClientKey } from '../../../src/api-client';
 import EditProfile from '../../../src/components/users/edit-profile.vue';
 import ViewProfile from '../../../src/components/users/view-profile.vue';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import { useCurrentUser, useProfiles } from '../../../src/store';
 import ProfileView from '../../../src/views/profile-view.vue';
 import { createRouter } from '../../fixtures/create-router';
 import TestTankData from '../../fixtures/tanks.json';
@@ -36,7 +35,6 @@ import {
 } from '../../fixtures/users';
 
 dayjs.extend(relativeTime);
-jest.mock('../../../src/initial-state');
 
 const EmptyTankResults: { tanks: Tank[]; totalCount: number } = {
   tanks: [],
@@ -49,8 +47,8 @@ describe('Profile View', () => {
   let tankData: ListTanksResponseDTO;
 
   let pinia: Pinia;
-  let initialState: AppInitialState;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let profiles: ReturnType<typeof useProfiles>;
   let opts: ComponentMountingOptions<typeof ProfileView>;
 
   beforeAll(() => {
@@ -70,12 +68,9 @@ describe('Profile View', () => {
   });
 
   beforeEach(() => {
-    initialState = {
-      currentUser: null,
-    };
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    profiles = useProfiles(pinia);
     opts = {
       global: {
         plugins: [pinia, router],
@@ -224,7 +219,7 @@ describe('Profile View', () => {
 
   it("will show the current user's profile if no username is in the path", async () => {
     currentUser.user = BasicUser;
-    initialState.currentProfile = BasicUser.profile;
+    profiles.currentProfile = BasicUser.profile;
     await router.push('/profile');
 
     const wrapper = mount(ProfileView, opts);
@@ -239,7 +234,7 @@ describe('Profile View', () => {
 
   it("will show another user's profile in read-only mode", async () => {
     currentUser.user = BasicUser;
-    initialState.currentProfile = UserWithFullProfile.profile;
+    profiles.currentProfile = UserWithFullProfile.profile;
     await router.push(`/profile/${UserWithFullProfile.username}`);
 
     const wrapper = mount(ProfileView, opts);
@@ -253,7 +248,7 @@ describe('Profile View', () => {
 
   it('will allow the user to modify their profile', async () => {
     currentUser.user = { ...BasicUser };
-    initialState.currentProfile = { ...BasicUser.profile };
+    profiles.currentProfile = { ...BasicUser.profile };
     const newProfile: ProfileDTO = {
       userId: BasicUser.id,
       memberSince: BasicUser.memberSince,
@@ -286,7 +281,7 @@ describe('Profile View', () => {
 
   it("will allow admins to edit other user's profiles", async () => {
     currentUser.user = { ...AdminUser };
-    initialState.currentProfile = { ...UserWithFullProfile.profile };
+    profiles.currentProfile = { ...UserWithFullProfile.profile };
     const newProfile: ProfileDTO = {
       userId: UserWithFullProfile.id,
       memberSince: UserWithFullProfile.memberSince,

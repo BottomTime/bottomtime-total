@@ -75,6 +75,12 @@ onServerPrefetch(async () => {
     // No Alert ID in the URL!
     // This means we are creating a new alert from scratch.
     // Proceed without requesting information from the backend.
+    alerts.currentAlert = {
+      icon: '',
+      title: '',
+      message: '',
+      id: '',
+    };
     return;
   }
 

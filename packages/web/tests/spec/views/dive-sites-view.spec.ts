@@ -19,6 +19,7 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import DiveSitesListItem from '../../../src/components/diveSites/dive-sites-list-item.vue';
 import { LocationKey, MockLocation } from '../../../src/location';
+import { useCurrentUser, useDiveSites } from '../../../src/store';
 import DiveSitesView from '../../../src/views/dive-sites-view.vue';
 import { createRouter } from '../../fixtures/create-router';
 import SearchResults from '../../fixtures/dive-sites-search-results.json';
@@ -31,6 +32,8 @@ describe('Dive Sites View', () => {
   let router: Router;
 
   let pinia: Pinia;
+  let currentUser: ReturnType<typeof useCurrentUser>;
+  let diveSites: ReturnType<typeof useDiveSites>;
   let opts: ComponentMountingOptions<typeof DiveSitesView>;
   let location: MockLocation;
 
@@ -48,14 +51,16 @@ describe('Dive Sites View', () => {
 
   beforeEach(async () => {
     await router.push('/diveSites');
-    window.__INITIAL_STATE__ = {
-      currentUser: null,
-      diveSites: {
-        sites: searchResults.sites.slice(0, 10),
-        totalCount: searchResults.totalCount,
-      },
-    };
     pinia = createPinia();
+    currentUser = useCurrentUser(pinia);
+    diveSites = useDiveSites(pinia);
+
+    currentUser.user = null;
+    diveSites.results = {
+      sites: searchResults.sites.slice(0, 10),
+      totalCount: searchResults.totalCount,
+    };
+
     location = new MockLocation('http://localhost/diveSites');
     opts = {
       global: {

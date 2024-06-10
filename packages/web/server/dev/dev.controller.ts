@@ -82,7 +82,7 @@ export class DevController {
 
     const initialState: Record<string, StateTree> = {
       currentUser: {
-        currentUser: currentUser.anonymous ? null : currentUser,
+        user: currentUser.anonymous ? null : currentUser,
       },
     };
 
@@ -92,6 +92,7 @@ export class DevController {
         baseURL: Config.apiUrl,
       });
       this.log.verbose('Rendered Vue Content:', rendered.html);
+      this.log.debug('Initial State:', rendered.initialState);
 
       const opts: PageOptions = {
         appTitle: Config.appTitle,
