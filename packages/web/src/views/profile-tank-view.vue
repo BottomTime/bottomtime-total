@@ -20,9 +20,9 @@
         currentUser.username.toLowerCase() === username.toLowerCase()
     "
   >
-    <div v-if="state.tank">
+    <div v-if="tanks.currentTank">
       <EditTank
-        :tank="state.tank"
+        :tank="tanks.currentTank"
         :is-saving="state.isSaving"
         show-delete
         @save="onSave"
@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { TankDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { computed, onServerPrefetch, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -48,29 +48,25 @@ import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
 import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import EditTank from '../components/tanks/edit-tank.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
-import { useToasts } from '../store';
+import { useTanks, useToasts } from '../store';
 
 interface ProfileTankViewState {
   isDeleting: boolean;
   isSaving: boolean;
   showConfirmDelete: boolean;
-  tank?: TankDTO;
 }
 
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const client = useClient();
-const initialState = useInitialState();
 const location = useLocation();
 const oops = useOops();
 const route = useRoute();
+const tanks = useTanks();
 const toasts = useToasts();
 
 const username = computed(() => route.params.username as string);
-const title = computed(() => state.tank?.name || 'Edit Tank Profile');
+const title = computed(() => tanks.currentTank?.name || 'Edit Tank Profile');
 const breadcrumbs: Breadcrumb[] = [
   {
     label: 'Profile',
@@ -90,7 +86,6 @@ const state = reactive<ProfileTankViewState>({
   isDeleting: false,
   isSaving: false,
   showConfirmDelete: false,
-  tank: initialState?.currentTank,
 });
 
 onServerPrefetch(async () => {
@@ -99,18 +94,14 @@ onServerPrefetch(async () => {
   await oops(
     async () => {
       const tank = await client.tanks.getTank(tankId, username.value);
-      state.tank = tank.toJSON();
+      tanks.currentTank = tank.toJSON();
     },
     {
       [404]: () => {
-        state.tank = undefined;
+        tanks.currentTank = null;
       },
     },
   );
-
-  if (ctx) {
-    ctx.currentTank = state.tank;
-  }
 });
 
 async function onSave(dto: TankDTO) {
@@ -119,7 +110,7 @@ async function onSave(dto: TankDTO) {
   await oops(async () => {
     const tank = client.tanks.wrapDTO(dto, username.value);
     await tank.save();
-    state.tank = dto;
+    tanks.currentTank = dto;
     toasts.toast({
       id: 'tank-saved',
       message: 'Tank profile saved successfully',
@@ -138,8 +129,8 @@ async function onConfirmDelete(): Promise<void> {
   state.isDeleting = true;
 
   await oops(async () => {
-    if (!state.tank) return;
-    const tank = client.tanks.wrapDTO(state.tank, username.value);
+    if (!tanks.currentTank) return;
+    const tank = client.tanks.wrapDTO(tanks.currentTank, username.value);
     await tank.delete();
     location.assign(`/profile/${username.value}/tanks`);
   });

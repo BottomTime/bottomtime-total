@@ -1,6 +1,5 @@
 import { CurrentUserDTO } from '@bottomtime/api';
 
-import { AppInitialState } from '@/initial-state';
 import { HttpService } from '@nestjs/axios';
 import { Controller, Get, Inject, Logger, Req, Res } from '@nestjs/common';
 
@@ -9,6 +8,7 @@ import { Request, Response } from 'express';
 import { readFile } from 'fs/promises';
 import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
+import { StateTree } from 'pinia';
 import { fileURLToPath } from 'url';
 
 import { DevService } from '.';
@@ -80,8 +80,10 @@ export class DevController {
       }
     }
 
-    const initialState: AppInitialState = {
-      currentUser: currentUser.anonymous ? null : currentUser,
+    const initialState: Record<string, StateTree> = {
+      currentUser: {
+        currentUser: currentUser.anonymous ? null : currentUser,
+      },
     };
 
     try {
@@ -96,7 +98,7 @@ export class DevController {
         pageTitle: 'Home',
         head: rendered.head ?? '',
         content: rendered.html,
-        initialState: JSON.stringify(rendered.ctx),
+        initialState: rendered.initialState,
       };
 
       const content = Mustache.render(html, opts);

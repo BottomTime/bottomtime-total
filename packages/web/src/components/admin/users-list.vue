@@ -76,9 +76,9 @@
       <!-- Summary bar and sort order select -->
       <FormBox class="flex flex-row gap-2 items-baseline sticky top-16">
         <span class="font-bold">Showing Users:</span>
-        <span>{{ data.users.length }}</span>
+        <span>{{ admin.users.users.length }}</span>
         <span>of</span>
-        <span class="grow">{{ data.totalCount }}</span>
+        <span class="grow">{{ admin.users.totalCount }}</span>
         <label for="sort-order" class="font-bold">Sort order:</label>
         <FormSelect
           v-model="searchParams.sortOrder"
@@ -99,7 +99,7 @@
 
       <!-- No results found message -->
       <p
-        v-else-if="data.users.length === 0"
+        v-else-if="admin.users.users.length === 0"
         class="mt-6 text-lg text-warn"
         data-testid="users-list-no-users"
       >
@@ -111,7 +111,7 @@
 
       <ul v-else data-testid="users-list">
         <UsersListItem
-          v-for="user in data.users"
+          v-for="user in admin.users.users"
           :key="user.id"
           :user="user"
           @user-click="onUserClick"
@@ -150,7 +150,6 @@
 <script setup lang="ts">
 import {
   AdminSearchUsersParamsDTO,
-  AdminSearchUsersResponseDTO,
   ProfileDTO,
   SortOrder,
   UserDTO,
@@ -159,19 +158,12 @@ import {
   UsersSortBy,
 } from '@bottomtime/api';
 
-import {
-  onBeforeMount,
-  onServerPrefetch,
-  reactive,
-  ref,
-  useSSRContext,
-} from 'vue';
+import { onServerPrefetch, reactive, ref } from 'vue';
 
 import { useClient } from '../../api-client';
 import { SelectOption } from '../../common';
-import { Config } from '../../config';
-import { AppInitialState, useInitialState } from '../../initial-state';
 import { useOops } from '../../oops';
+import { useAdmin } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
@@ -206,9 +198,9 @@ const AccountStatusOptions: SelectOption[] = [
   { label: 'Suspended', value: 'suspended' },
 ];
 
+const admin = useAdmin();
 const client = useClient();
 const oops = useOops();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 
 const searchParams = reactive<{
   isLockedOut: string;
@@ -220,10 +212,6 @@ const searchParams = reactive<{
   query: '',
   role: '',
   sortOrder: SortOrderOptions[0].value,
-});
-const data = reactive<AdminSearchUsersResponseDTO>({
-  users: [],
-  totalCount: 0,
 });
 const isLoading = ref(true);
 const isLoadingMore = ref(false);
@@ -248,50 +236,33 @@ async function refreshUsers(): Promise<void> {
   isLoading.value = true;
   await oops(async () => {
     const response = await client.users.searchUsers(params);
-    data.users = response.users.map((u) => u.toJSON());
-    data.totalCount = response.totalCount;
+    admin.users = {
+      users: response.users.map((u) => u.toJSON()),
+      totalCount: response.totalCount,
+    };
   });
-  noMoreResults.value = data.users.length < params.limit;
+  noMoreResults.value = admin.users.users.length < (params.limit || 50);
   isLoading.value = false;
 }
 
 async function onLoadMore(): Promise<void> {
   const params = getSearchParameters();
-  params.skip = data.users.length;
+  params.skip = admin.users.users.length;
 
   isLoadingMore.value = true;
   let resultCount = params.limit;
   await oops(async () => {
     const response = await client.users.searchUsers(params);
     resultCount = response.users.length;
-    data.users.push(...response.users.map((u) => u.toJSON()));
-    data.totalCount = response.totalCount;
+    admin.users.users.push(...response.users.map((u) => u.toJSON()));
+    admin.users.totalCount = response.totalCount;
   });
-  noMoreResults.value = resultCount < params.limit;
+  noMoreResults.value = resultCount ? resultCount < (params.limit || 50) : true;
   isLoadingMore.value = false;
 }
 
-onBeforeMount(async () => {
-  if (Config.isSSR) return;
-
-  const ctx = useInitialState();
-  if (ctx?.adminUsersList) {
-    data.users = ctx.adminUsersList.users;
-    data.totalCount = ctx.adminUsersList.totalCount;
-    isLoading.value = false;
-  } else {
-    await refreshUsers();
-  }
-});
-
 onServerPrefetch(async () => {
   await refreshUsers();
-
-  if (ctx) {
-    ctx.adminUsersList = {
-      ...data,
-    };
-  }
 });
 
 function onUserClick(user: UserDTO): void {

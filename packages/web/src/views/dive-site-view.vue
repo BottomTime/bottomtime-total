@@ -2,18 +2,21 @@
   <PageTitle :title="title" />
   <BreadCrumbs :items="breadcrumbs" />
   <EditDiveSite
-    v-if="site && canEdit"
-    :site="site"
+    v-if="diveSites.currentSite && canEdit"
+    :site="diveSites.currentSite"
     @site-updated="onSiteUpdated"
   />
-  <ViewDiveSite v-else-if="site" :site="site" />
+  <ViewDiveSite
+    v-else-if="diveSites.currentSite"
+    :site="diveSites.currentSite"
+  />
   <NotFound v-else />
 </template>
 
 <script setup lang="ts">
 import { DiveSiteDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch, ref, useSSRContext } from 'vue';
+import { computed, onServerPrefetch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -23,28 +26,22 @@ import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import EditDiveSite from '../components/diveSites/edit-dive-site.vue';
 import ViewDiveSite from '../components/diveSites/view-dive-site.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
-import { useCurrentUser } from '../store';
+import { useCurrentUser, useDiveSites } from '../store';
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const currentUser = useCurrentUser();
-const initialState = useInitialState();
+const diveSites = useDiveSites();
 const oops = useOops();
 const route = useRoute();
 
-const site = ref<DiveSiteDTO | null>(
-  Config.isSSR ? null : initialState?.currentDiveSite ?? null,
-);
-const title = computed(() => site.value?.name || 'Dive Site');
+const title = computed(() => diveSites.currentSite?.name || 'Dive Site');
 const canEdit = computed(() => {
   if (!currentUser.user) return false;
 
   if (currentUser.user.role === UserRole.Admin) return true;
 
-  return currentUser.user.id === site.value?.creator.userId;
+  return currentUser.user.id === diveSites.currentSite?.creator.userId;
 });
 
 const breadcrumbs: Breadcrumb[] = [
@@ -60,19 +57,17 @@ onServerPrefetch(async () => {
           ? route.params.siteId
           : route.params.siteId[0];
       const result = await client.diveSites.getDiveSite(siteId);
-      site.value = result.toJSON();
+      diveSites.currentSite = result.toJSON();
     },
     {
       404: () => {
-        site.value = null;
+        diveSites.currentSite = null;
       },
     },
   );
-
-  if (ctx) ctx.currentDiveSite = site.value;
 });
 
 function onSiteUpdated(updated: DiveSiteDTO) {
-  site.value = updated;
+  diveSites.currentSite = updated;
 }
 </script>

@@ -1,17 +1,17 @@
 <template>
   <DrawerPanel
-    :title="state.currentTank?.id ? 'Edit Tank Profile' : 'Create New Tank'"
+    :title="tanks.currentTank?.id ? 'Edit Tank Profile' : 'Create New Tank'"
     :full-screen="
-      state.currentTank?.id
-        ? `/admin/tanks/${state.currentTank.id}`
+      tanks.currentTank?.id
+        ? `/admin/tanks/${tanks.currentTank.id}`
         : '/admin/tanks/new'
     "
-    :visible="state.showTankEditor && !!state.currentTank"
+    :visible="state.showTankEditor && !!tanks.currentTank"
     @close="onCloseTankEditor"
   >
     <EditTank
-      v-if="state.currentTank"
-      :tank="state.currentTank"
+      v-if="tanks.currentTank"
+      :tank="tanks.currentTank"
       :responsive="false"
       :is-saving="state.isSaving"
       @save="onSaveTank"
@@ -36,7 +36,7 @@
       <div class="space-y-2">
         <p>
           <span>Are you sure you want to delete tank profile "</span>
-          <span class="font-bold">{{ state.currentTank?.name }}</span>
+          <span class="font-bold">{{ tanks.currentTank?.name }}</span>
           <span>"?</span>
         </p>
 
@@ -49,7 +49,7 @@
   <RequireAuth :role="UserRole.Admin">
     <BreadCrumbs :items="Breadcrumbs" />
     <TanksList
-      :tanks="state.tanks"
+      :tanks="tanks.results"
       @add="onAddTank"
       @delete="onDeleteTank"
       @select="onSelectTank"
@@ -58,14 +58,9 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ListTanksResponseDTO,
-  TankDTO,
-  TankMaterial,
-  UserRole,
-} from '@bottomtime/api';
+import { TankDTO, TankMaterial, UserRole } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { onServerPrefetch, reactive } from 'vue';
 
 import { useClient } from '../api-client';
 import { Breadcrumb, ToastType } from '../common';
@@ -76,19 +71,15 @@ import RequireAuth from '../components/common/require-auth.vue';
 import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import EditTank from '../components/tanks/edit-tank.vue';
 import TanksList from '../components/tanks/tanks-list.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
-import { useToasts } from '../store';
+import { useTanks, useToasts } from '../store';
 
 interface AdminTanksState {
-  currentTank: TankDTO | null;
   isDeleting: boolean;
   isLoading: boolean;
   isSaving: boolean;
   showConfirmDelete: boolean;
   showTankEditor: boolean;
-  tanks: ListTanksResponseDTO;
 }
 
 const Breadcrumbs: Breadcrumb[] = [
@@ -103,40 +94,30 @@ const Breadcrumbs: Breadcrumb[] = [
 ];
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
-const initialState = useInitialState();
 const oops = useOops();
+const tanks = useTanks();
 const toasts = useToasts();
 
 const state = reactive<AdminTanksState>({
-  currentTank: null,
   isDeleting: false,
   isLoading: false,
   isSaving: false,
   showConfirmDelete: false,
   showTankEditor: false,
-  tanks: initialState?.tanks ?? {
-    tanks: [],
-    totalCount: 0,
-  },
 });
 
 onServerPrefetch(async () => {
   await oops(async () => {
     const results = await client.tanks.listTanks();
-    state.tanks = {
+    tanks.results = {
       tanks: results.tanks.map((tank) => tank.toJSON()),
       totalCount: results.totalCount,
     };
   });
-
-  if (ctx) {
-    ctx.tanks = state.tanks;
-  }
 });
 
 function onAddTank() {
-  state.currentTank = {
+  tanks.currentTank = {
     id: '',
     isSystem: true,
     material: TankMaterial.Aluminum,
@@ -148,12 +129,12 @@ function onAddTank() {
 }
 
 function onSelectTank(tank: TankDTO) {
-  state.currentTank = tank;
+  tanks.currentTank = tank;
   state.showTankEditor = true;
 }
 
 function onDeleteTank(tank: TankDTO) {
-  state.currentTank = tank;
+  tanks.currentTank = tank;
   state.showConfirmDelete = true;
 }
 
@@ -165,12 +146,12 @@ async function onConfirmDelete(): Promise<void> {
   state.isDeleting = true;
 
   await oops(async () => {
-    if (!state.currentTank) return;
-    const tank = client.tanks.wrapDTO(state.currentTank);
+    if (!tanks.currentTank) return;
+    const tank = client.tanks.wrapDTO(tanks.currentTank);
     await tank.delete();
 
-    const index = state.tanks.tanks.findIndex((t) => t.id === tank.id);
-    if (index > -1) state.tanks.tanks.splice(index, 1);
+    const index = tanks.results.tanks.findIndex((t) => t.id === tank.id);
+    if (index > -1) tanks.results.tanks.splice(index, 1);
 
     toasts.toast({
       id: 'tank-deleted',
@@ -181,7 +162,7 @@ async function onConfirmDelete(): Promise<void> {
 
   state.showConfirmDelete = false;
   state.isDeleting = false;
-  state.currentTank = null;
+  tanks.currentTank = null;
 }
 
 function onCloseTankEditor() {
@@ -196,8 +177,8 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       const tank = client.tanks.wrapDTO(dto);
       await tank.save();
 
-      const index = state.tanks.tanks.findIndex((t) => t.id === tank.id);
-      if (index > -1) state.tanks.tanks.splice(index, 1, tank.toJSON());
+      const index = tanks.results.tanks.findIndex((t) => t.id === tank.id);
+      if (index > -1) tanks.results.tanks.splice(index, 1, tank.toJSON());
 
       toasts.toast({
         id: 'tank-saved',
@@ -206,7 +187,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       });
     } else {
       const tank = await client.tanks.createTank(dto);
-      state.tanks.tanks.splice(0, 0, tank.toJSON());
+      tanks.results.tanks.splice(0, 0, tank.toJSON());
 
       toasts.toast({
         id: 'tank-created',
@@ -216,7 +197,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
     }
   });
 
-  state.currentTank = null;
+  tanks.currentTank = null;
   state.showTankEditor = false;
   state.isSaving = false;
 }

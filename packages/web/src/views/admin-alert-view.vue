@@ -5,8 +5,8 @@
   <div class="grid grid-cols-1 xl:grid-cols-5">
     <div class="xl:col-start-2 xl:col-span-3">
       <RequireAuth :role="UserRole.Admin">
-        <FormBox v-if="alert">
-          <EditAlert :alert="alert" @save="onSaveAlert" />
+        <FormBox v-if="alerts.currentAlert">
+          <EditAlert :alert="alerts.currentAlert" @save="onSaveAlert" />
         </FormBox>
         <NotFound v-else />
       </RequireAuth>
@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { AlertDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch, ref, useSSRContext } from 'vue';
+import { computed, onServerPrefetch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -28,32 +28,19 @@ import FormBox from '../components/common/form-box.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
-import { useToasts } from '../store';
+import { useAlerts, useToasts } from '../store';
 
+const alerts = useAlerts();
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
-const initialSate = useInitialState();
 const location = useLocation();
 const oops = useOops();
 const route = useRoute();
 const toasts = useToasts();
 
-const alert = ref<AlertDTO | undefined>(
-  route.params.alertId
-    ? initialSate?.currentAlert
-    : {
-        id: '',
-        icon: '',
-        title: '',
-        message: '',
-      },
-);
 const title = computed(() =>
-  alert.value ? alert.value.title || 'New Alert' : 'Edit Alert',
+  alerts.currentAlert ? alerts.currentAlert.title || 'New Alert' : 'Edit Alert',
 );
 const Breadcrumbs: Breadcrumb[] = [
   { label: 'Admin', to: '/admin' },
@@ -63,7 +50,7 @@ const Breadcrumbs: Breadcrumb[] = [
 
 async function onSaveAlert(updated: AlertDTO) {
   await oops(async () => {
-    if (alert.value?.id) {
+    if (alerts.currentAlert?.id) {
       // Alert already exists, update it.
       const alert = client.alerts.wrapDTO(updated);
       await alert.save();
@@ -72,15 +59,14 @@ async function onSaveAlert(updated: AlertDTO) {
         message: 'Alert successfully saved',
         type: ToastType.Success,
       });
+      alerts.currentAlert = updated;
     } else {
       // Alert is new, create it.
       const result = await client.alerts.createAlert(updated);
-      alert.value = result.toJSON();
+      alerts.currentAlert = updated;
       location.assign(`/admin/alerts/${result.id}`);
     }
   });
-
-  alert.value = updated;
 }
 
 onServerPrefetch(async () => {
@@ -95,15 +81,13 @@ onServerPrefetch(async () => {
   await oops(
     async () => {
       const result = await client.alerts.getAlert(alertId);
-      alert.value = result.toJSON();
+      alerts.currentAlert = result.toJSON();
     },
     {
       404: () => {
-        alert.value = undefined;
+        alerts.currentAlert = null;
       },
     },
   );
-
-  if (ctx) ctx.currentAlert = alert.value;
 });
 </script>
