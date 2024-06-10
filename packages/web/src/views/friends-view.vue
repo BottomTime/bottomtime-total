@@ -232,10 +232,8 @@ async function refreshFriends(): Promise<void> {
       state.queryParams,
     );
 
-    friends.friends = {
-      friends: results.friends.map((f) => f.toJSON()),
-      totalCount: results.totalCount,
-    };
+    friends.friends.friends = results.friends.map((f) => f.toJSON());
+    friends.friends.totalCount = results.totalCount;
   });
 }
 
@@ -252,10 +250,10 @@ async function refreshFriendRequests(): Promise<void> {
       },
     );
 
-    friends.requests = {
-      friendRequests: results.friendRequests.map((r) => r.toJSON()),
-      totalCount: results.totalCount,
-    };
+    friends.requests.friendRequests = results.friendRequests.map((r) =>
+      r.toJSON(),
+    );
+    friends.requests.totalCount = results.totalCount;
   });
 }
 

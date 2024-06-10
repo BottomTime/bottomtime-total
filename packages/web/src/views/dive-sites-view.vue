@@ -16,28 +16,34 @@
 
     <div class="lg:col-span-2 xl:col-span-4">
       <FormBox
-        class="flex flex-row gap-2 sticky top-16 items-baseline shadow-lg z-30"
+        class="flex flex-row gap-2 sticky top-16 items-baseline justify-between shadow-lg z-30"
       >
-        <span class="font-bold">Showing Dive Sites:</span>
-        <span>{{ diveSites.results.sites.length }}</span>
-        <span>of</span>
-        <span class="grow">{{ diveSites.results.sites }}</span>
-        <label for="sort-order" class="font-bold">Sort order:</label>
-        <FormSelect
-          v-model="selectedSortOrder"
-          control-id="sort-order"
-          test-id="sort-order"
-          :options="SortOrderOptions"
-          @change="onChangeSortOrder"
-        />
-        <FormButton
-          v-if="!currentUser.anonymous"
-          type="primary"
-          test-id="create-dive-site"
-          @click="onCreateSite"
-        >
-          Create Site
-        </FormButton>
+        <p>
+          <span>Showing </span>
+          <span class="font-bold">{{ diveSites.results.sites.length }}</span>
+          <span> of </span>
+          <span class="font-bold">{{ diveSites.results.totalCount }}</span>
+          <span> dive sites</span>
+        </p>
+
+        <div class="flex gap-2 items-baseline">
+          <label for="sort-order" class="font-bold">Sort order:</label>
+          <FormSelect
+            v-model="selectedSortOrder"
+            control-id="sort-order"
+            test-id="sort-order"
+            :options="SortOrderOptions"
+            @change="onChangeSortOrder"
+          />
+          <FormButton
+            v-if="!currentUser.anonymous"
+            type="primary"
+            test-id="create-dive-site"
+            @click="onCreateSite"
+          >
+            Create Site
+          </FormButton>
+        </div>
       </FormBox>
 
       <DiveSitesList
@@ -56,10 +62,11 @@ import {
   DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesParamsSchema,
+  SearchDiveSitesResponseSchema,
   SortOrder,
 } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive, ref } from 'vue';
+import { onBeforeMount, onServerPrefetch, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -169,12 +176,12 @@ function onCreateSite(): void {
 }
 
 onServerPrefetch(async () => {
-  await oops(async () => {
-    const results = await client.diveSites.searchDiveSites(searchParams);
-    diveSites.results = {
-      sites: results.sites.map((site) => site.toJSON()),
-      totalCount: results.totalCount,
-    };
-  });
+  const results = await client.diveSites.searchDiveSites(searchParams);
+  diveSites.results.sites = results.sites.map((site) => site.toJSON());
+  diveSites.results.totalCount = results.totalCount;
+});
+
+onBeforeMount(() => {
+  diveSites.results = SearchDiveSitesResponseSchema.parse(diveSites.results);
 });
 </script>

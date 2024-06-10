@@ -92,7 +92,7 @@ export class DevController {
         baseURL: Config.apiUrl,
       });
       this.log.verbose('Rendered Vue Content:', rendered.html);
-      this.log.debug('Initial State:', rendered.initialState);
+      this.log.verbose('Initial State:', rendered.initialState);
 
       const opts: PageOptions = {
         appTitle: Config.appTitle,

@@ -165,12 +165,10 @@ onServerPrefetch(async () => {
       },
     );
 
-    friends.requests = {
-      friendRequests: friendRequestsResults.friendRequests.map((friend) =>
-        friend.toJSON(),
-      ),
-      totalCount: friendRequestsResults.totalCount,
-    };
+    friends.requests.friendRequests = friendRequestsResults.friendRequests.map(
+      (friend) => friend.toJSON(),
+    );
+    friends.requests.totalCount = friendRequestsResults.totalCount;
   });
 });
 

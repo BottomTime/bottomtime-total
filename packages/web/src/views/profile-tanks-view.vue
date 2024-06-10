@@ -130,10 +130,8 @@ onServerPrefetch(async () => {
         includeSystem: false,
       });
 
-      tanks.results = {
-        tanks: result.tanks.map((tank) => tank.toJSON()),
-        totalCount: result.totalCount,
-      };
+      tanks.results.tanks = result.tanks.map((tank) => tank.toJSON());
+      tanks.results.totalCount = result.totalCount;
     },
     {
       [404]: () => {

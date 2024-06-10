@@ -203,10 +203,10 @@ async function refresh(): Promise<void> {
         username.value,
         state.queryParams,
       );
-      logEntries.results = {
-        logEntries: results.logEntries.map((entry) => entry.toJSON()),
-        totalCount: results.totalCount,
-      };
+      logEntries.results.logEntries = results.logEntries.map((entry) =>
+        entry.toJSON(),
+      );
+      logEntries.results.totalCount = results.totalCount;
       logEntries.listEntriesState = ListEntriesState.Success;
     },
     {

@@ -70,9 +70,7 @@ test.describe('Account and Profile Management', () => {
   });
 
   test('will allow users to update their settings', async ({ api, page }) => {
-    await page.getByTestId('user-menu-button').click();
-    await page.getByRole('link', { name: 'Settings' }).click();
-    await page.waitForURL('**/settings');
+    await page.goto('/settings');
 
     await page.getByText('Feet (ft)').click();
     await page.getByText('PSI').click();
@@ -91,9 +89,7 @@ test.describe('Account and Profile Management', () => {
 
   test('will allow users to change their username', async ({ api, page }) => {
     const newUsername = 'Julian_23';
-    await page.getByTestId('user-menu-button').click();
-    await page.getByRole('link', { name: 'Account' }).click();
-    await page.waitForURL('**/account');
+    await page.goto('/account');
 
     await page.getByTestId('edit-username').click();
     await page.getByTestId('username').fill('Julian_23');
@@ -110,9 +106,7 @@ test.describe('Account and Profile Management', () => {
     page,
   }) => {
     const newEmail = 'julian@gmail.com';
-    await page.getByTestId('user-menu-button').click();
-    await page.getByRole('link', { name: 'Account' }).click();
-    await page.waitForURL('**/account');
+    await page.goto('/account');
 
     await page.getByTestId('edit-email').click();
     await page.getByTestId('email').fill(newEmail);
@@ -126,9 +120,7 @@ test.describe('Account and Profile Management', () => {
 
   test('will allow users to change their password', async ({ api, page }) => {
     const newPassword = 'S!ckN3wP@ssw0rd__';
-    await page.getByTestId('user-menu-button').click();
-    await page.getByRole('link', { name: 'Account' }).click();
-    await page.waitForURL('**/account');
+    await page.goto('/account');
 
     await page.getByTestId('change-password').click();
     await page.getByTestId('oldPassword').fill(TestPassword);
