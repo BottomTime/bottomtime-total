@@ -2,21 +2,21 @@
   <PageTitle :title="title" />
   <BreadCrumbs :items="Breadcrumbs" />
   <RequireAuth>
-    <NotFound v-if="!state.profile" />
+    <NotFound v-if="!profiles.currentProfile" />
     <EditProfile
       v-else-if="canEdit"
-      :profile="state.profile"
-      :tanks="state.tanks"
+      :profile="profiles.currentProfile"
+      :tanks="tanks.results.totalCount > -1 ? tanks.results : undefined"
       @save-profile="onSave"
     />
-    <ViewProfile v-else :profile="state.profile" />
+    <ViewProfile v-else :profile="profiles.currentProfile" />
   </RequireAuth>
 </template>
 
 <script setup lang="ts">
-import { ListTanksResponseDTO, ProfileDTO, UserRole } from '@bottomtime/api';
+import { ProfileDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { computed, onServerPrefetch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -27,15 +27,8 @@ import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
 import EditProfile from '../components/users/edit-profile.vue';
 import ViewProfile from '../components/users/view-profile.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
-import { useCurrentUser } from '../store';
-
-interface ProfileViewState {
-  profile?: ProfileDTO;
-  tanks?: ListTanksResponseDTO;
-}
+import { useCurrentUser, useProfiles, useTanks } from '../store';
 
 const Breadcrumbs: Breadcrumb[] = [
   {
@@ -45,34 +38,28 @@ const Breadcrumbs: Breadcrumb[] = [
 ];
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const currentUser = useCurrentUser();
-const initialState = useInitialState();
 const oops = useOops();
+const profiles = useProfiles();
 const route = useRoute();
-
-const state = reactive<ProfileViewState>({
-  profile: initialState?.currentProfile,
-  tanks: initialState?.tanks ?? {
-    tanks: [],
-    totalCount: 0,
-  },
-});
+const tanks = useTanks();
 
 const canEdit = computed(() => {
   if (!currentUser.user) return false;
 
   return (
     currentUser.user.role === UserRole.Admin ||
-    currentUser.user.id === state.profile?.userId
+    currentUser.user.id === profiles.currentProfile?.userId
   );
 });
 
 const title = computed(() => {
   if (canEdit.value) {
     return 'Manage Profile';
-  } else if (state.profile) {
-    return state.profile.name || `@${state.profile.username}`;
+  } else if (profiles.currentProfile) {
+    return (
+      profiles.currentProfile.name || `@${profiles.currentProfile.username}`
+    );
   } else {
     return '';
   }
@@ -93,33 +80,31 @@ onServerPrefetch(async () => {
     // user's profile.
     const currentUserRequested =
       username.toLowerCase() === currentUser.user.username.toLowerCase();
-    state.profile = currentUserRequested
+    profiles.currentProfile = currentUserRequested
       ? currentUser.user.profile
       : await client.users.getProfile(username);
 
     // Only Fetch custom tank profiles if the user is viewing their own profile or an admin is.
     if (currentUserRequested || currentUser.user.role === UserRole.Admin) {
-      const tanks = await client.tanks.listTanks({
+      const results = await client.tanks.listTanks({
         username,
         includeSystem: false,
       });
-      state.tanks = {
-        tanks: tanks.tanks.map((tank) => tank.toJSON()),
-        totalCount: tanks.totalCount,
+      tanks.results = {
+        tanks: results.tanks.map((tank) => tank.toJSON()),
+        totalCount: results.totalCount,
       };
     } else {
-      state.tanks = undefined;
-    }
-
-    if (ctx) {
-      ctx.currentProfile = state.profile;
-      ctx.tanks = state.tanks;
+      tanks.results = {
+        tanks: [],
+        totalCount: -1,
+      };
     }
   });
 });
 
 function onSave(updated: ProfileDTO) {
-  state.profile = updated;
+  profiles.currentProfile = updated;
   if (currentUser.user?.id === updated.userId) {
     currentUser.user.profile = updated;
   }

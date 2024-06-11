@@ -5,7 +5,7 @@ import localizedFormat from 'dayjs/plugin/localizedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { createPinia } from 'pinia';
+import { Pinia, StateTree, createPinia } from 'pinia';
 import { App, createSSRApp } from 'vue';
 import { Router } from 'vue-router';
 
@@ -20,9 +20,13 @@ dayjs.extend(relativeTime);
 dayjs.extend(tz);
 dayjs.extend(utc);
 
-export function createApp(clientOptions?: ApiClientOptions): {
+export function createApp(
+  clientOptions?: ApiClientOptions,
+  initialState?: Record<string, StateTree>,
+): {
   app: App;
   router: Router;
+  store: Pinia;
 } {
   // API Client
   const client = new ApiClient(clientOptions);
@@ -41,5 +45,13 @@ export function createApp(clientOptions?: ApiClientOptions): {
       typeof window === 'undefined' ? new MockLocation() : window.location,
     );
 
-  return { app, router };
+  if (typeof window !== 'undefined' && window.__INITIAL_STATE__) {
+    // On the client-side the initial state will be serialized as window.__INITIAL_STATE__
+    pinia.state.value = window.__INITIAL_STATE__;
+  } else if (initialState) {
+    // On the server-side we use the initial state to hydrate the store
+    pinia.state.value = initialState;
+  }
+
+  return { app, router, store: pinia };
 }

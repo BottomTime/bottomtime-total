@@ -16,7 +16,7 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import ManageUser from '../../../src/components/admin/manage-user.vue';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import { useAdmin, useCurrentUser } from '../../../src/store';
 import AdminUserView from '../../../src/views/admin-user-view.vue';
 import { createRouter } from '../../fixtures/create-router';
 import {
@@ -33,6 +33,8 @@ describe('Account View', () => {
   let router: Router;
 
   let pinia: Pinia;
+  let currentUser: ReturnType<typeof useCurrentUser>;
+  let admin: ReturnType<typeof useAdmin>;
   let opts: ComponentMountingOptions<typeof AdminUserView>;
 
   beforeAll(() => {
@@ -48,6 +50,8 @@ describe('Account View', () => {
 
   beforeEach(() => {
     pinia = createPinia();
+    currentUser = useCurrentUser(pinia);
+    admin = useAdmin(pinia);
     opts = {
       global: {
         plugins: [pinia, router],
@@ -60,7 +64,6 @@ describe('Account View', () => {
   });
 
   it('will query for the target user on SSR', async () => {
-    const currentUser = useCurrentUser(pinia);
     currentUser.user = AdminUser;
     const spy = jest
       .spyOn(client.users, 'getUser')
@@ -76,7 +79,6 @@ describe('Account View', () => {
   });
 
   it('will display the login form if the user is not athenticated', () => {
-    const currentUser = useCurrentUser(pinia);
     currentUser.user = null;
     const wrapper = mount(AdminUserView, opts);
     expect(
@@ -86,7 +88,6 @@ describe('Account View', () => {
   });
 
   it('will display a forbidden message if the user is not an admin', () => {
-    const currentUser = useCurrentUser(pinia);
     currentUser.user = BasicUser;
     const wrapper = mount(AdminUserView, opts);
     expect(
@@ -96,11 +97,7 @@ describe('Account View', () => {
   });
 
   it('will display a not found message if the target user does not exist', () => {
-    const currentUser = useCurrentUser(pinia);
     currentUser.user = AdminUser;
-    window.__INITIAL_STATE__ = {
-      currentUser: AdminUser,
-    };
     const wrapper = mount(AdminUserView, opts);
     expect(wrapper.get('[data-testid="not-found-message"]').isVisible()).toBe(
       true,
@@ -111,18 +108,14 @@ describe('Account View', () => {
   it("will allow an admin to manage the target user's account", () => {
     const newUsername = 'joe123';
     const newEmail = 'eviljoe@yahoo.com';
-    const currentUser = useCurrentUser(pinia);
     currentUser.user = AdminUser;
-    window.__INITIAL_STATE__ = {
-      currentUser: AdminUser,
-      adminCurrentUser: {
-        ...BasicUser,
-        emailVerified: true,
-        hasPassword: false,
-        isLockedOut: false,
-        profile: { ...BasicUser.profile },
-        settings: { ...BasicUser.settings },
-      },
+    admin.currentUser = {
+      ...BasicUser,
+      emailVerified: true,
+      hasPassword: false,
+      isLockedOut: false,
+      profile: { ...BasicUser.profile },
+      settings: { ...BasicUser.settings },
     };
     const userId = BasicUser.id;
     const wrapper = mount(AdminUserView, opts);

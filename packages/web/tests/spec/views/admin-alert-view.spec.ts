@@ -14,16 +14,13 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import { ToastType } from '../../../src/common';
 import EditAlert from '../../../src/components/admin/edit-alert.vue';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import { useAlerts, useCurrentUser } from '../../../src/store';
 import { useToasts } from '../../../src/store';
 import AdminAlertView from '../../../src/views/admin-alert-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../fixtures/users';
-
-jest.mock('../../../src/initial-state');
 
 const TestAlertData: AlertDTO = {
   id: '8bd0b331-36e9-4e3b-afa2-2e020bedaa60',
@@ -41,8 +38,8 @@ describe('Admin Alert View', () => {
   let pinia: Pinia;
   let location: Location;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let alerts: ReturnType<typeof useAlerts>;
   let options: ComponentMountingOptions<typeof AdminAlertView>;
-  let initialState: AppInitialState;
 
   beforeAll(() => {
     client = new ApiClient();
@@ -52,6 +49,11 @@ describe('Admin Alert View', () => {
     location = new MockLocation();
     router = createRouter([
       {
+        path: '/admin/alerts/new',
+        name: 'NewAlert',
+        component: AdminAlertView,
+      },
+      {
         path: '/admin/alerts/:alertId',
         name: 'AdminAlert',
         component: AdminAlertView,
@@ -59,11 +61,11 @@ describe('Admin Alert View', () => {
     ]);
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    alerts = useAlerts(pinia);
+
     currentUser.user = AdminUser;
-    initialState = {
-      currentUser: AdminUser,
-      currentAlert: { ...TestAlertData },
-    };
+    alerts.currentAlert = { ...TestAlertData };
+
     options = {
       global: {
         plugins: [pinia, router],
@@ -73,7 +75,6 @@ describe('Admin Alert View', () => {
         },
       },
     };
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
   });
 
   it('will not render if the user is not logged in', async () => {
@@ -108,7 +109,7 @@ describe('Admin Alert View', () => {
   });
 
   it('will render a not found message if alert is not supplied', async () => {
-    initialState.currentAlert = undefined;
+    alerts.currentAlert = null;
     await router.push(`/admin/alerts/${TestAlertData.id}`);
     const wrapper = mount(AdminAlertView, options);
     expect(wrapper.find('[data-testid="edit-alert-form"]').exists()).toBe(
@@ -131,6 +132,17 @@ describe('Admin Alert View', () => {
 
     expect(spy).toHaveBeenCalledWith(TestAlertData.id);
     expect(html).toMatchSnapshot();
+  });
+
+  it('will render in new alert mode if non alert ID is provided in the URL', async () => {
+    await router.push('/admin/alerts/new');
+    await renderToString(AdminAlertView, { global: options.global });
+    expect(alerts.currentAlert).toEqual({
+      id: '',
+      icon: '',
+      title: '',
+      message: '',
+    });
   });
 
   it('will render a not found message if the prefetch returns a 404 response', async () => {
@@ -182,6 +194,13 @@ describe('Admin Alert View', () => {
     const spy = jest
       .spyOn(client.alerts, 'createAlert')
       .mockResolvedValueOnce(new Alert(client.axios, TestAlertData));
+
+    alerts.currentAlert = {
+      id: '',
+      icon: '',
+      title: '',
+      message: '',
+    };
 
     const wrapper = mount(AdminAlertView, options);
     const editAlert = wrapper.getComponent(EditAlert);

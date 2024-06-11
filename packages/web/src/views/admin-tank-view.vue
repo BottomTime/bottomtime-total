@@ -3,8 +3,12 @@
   <RequireAuth :role="UserRole.Admin">
     <BreadCrumbs :items="Breadcrumbs" />
 
-    <div v-if="state.tank">
-      <EditTank :tank="state.tank" :is-saving="state.isSaving" @save="onSave" />
+    <div v-if="tanks.currentTank">
+      <EditTank
+        :tank="tanks.currentTank"
+        :is-saving="state.isSaving"
+        @save="onSave"
+      />
     </div>
 
     <NotFound v-else />
@@ -14,7 +18,7 @@
 <script lang="ts" setup>
 import { TankDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { computed, onServerPrefetch, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -24,29 +28,24 @@ import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
 import EditTank from '../components/tanks/edit-tank.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
-import { useToasts } from '../store';
+import { useTanks, useToasts } from '../store';
 
 interface AdminTankViewState {
   isSaving: boolean;
-  tank?: TankDTO;
 }
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
-const initialState = useInitialState();
 const oops = useOops();
 const route = useRoute();
+const tanks = useTanks();
 const toasts = useToasts();
 
 const state = reactive<AdminTankViewState>({
   isSaving: false,
-  tank: initialState?.currentTank,
 });
 
-const title = computed(() => state.tank?.name || 'Edit Tank Profile');
+const title = computed(() => tanks.currentTank?.name || 'Edit Tank Profile');
 const Breadcrumbs: Breadcrumb[] = [
   {
     label: 'Admin',
@@ -68,18 +67,14 @@ onServerPrefetch(async () => {
       if (typeof route.params.tankId !== 'string') return;
 
       const tank = await client.tanks.getTank(route.params.tankId);
-      state.tank = tank.toJSON();
+      tanks.currentTank = tank.toJSON();
     },
     {
       [404]: () => {
-        state.tank = undefined;
+        tanks.currentTank = null;
       },
     },
   );
-
-  if (ctx) {
-    ctx.currentTank = state.tank;
-  }
 });
 
 async function onSave(dto: TankDTO): Promise<void> {
@@ -88,7 +83,7 @@ async function onSave(dto: TankDTO): Promise<void> {
   await oops(async () => {
     const tank = client.tanks.wrapDTO(dto);
     await tank.save();
-    state.tank = dto;
+    tanks.currentTank = dto;
 
     toasts.toast({
       id: 'tank-saved',

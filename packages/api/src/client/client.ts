@@ -46,10 +46,6 @@ export class ApiClient {
     return this.client;
   }
 
-  tanks(username?: string): TanksApiClient {
-    return new TanksApiClient(this.client, username);
-  }
-
   async getAppMetrics(): Promise<AppMetricsDTO> {
     const { data } = await this.client.get<AppMetricsDTO>('/api/metrics');
     return data;

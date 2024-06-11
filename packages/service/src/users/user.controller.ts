@@ -25,6 +25,7 @@ import {
   Head,
   HttpCode,
   Inject,
+  Param,
   Patch,
   Post,
   Put,
@@ -673,13 +674,6 @@ export class UserController {
    *           application/json:
    *             schema:
    *               $ref: "#/components/schemas/Error"
-   *       "404":
-   *         description: |
-   *           The request failed because the username or email address could not be found.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
    *       "500":
    *         description: |
    *           The request failed because of an internal server error.
@@ -692,12 +686,27 @@ export class UserController {
   @HttpCode(200)
   @UseGuards(AssertTargetUser)
   async verifyEmail(
-    @TargetUser() user: User,
+    @Param('username') usernameOrEmail: string,
     @Body(new ZodValidator(VerifyEmailParamsSchema))
     { token }: VerifyEmailParamsDTO,
   ): Promise<SuccessFailResponseDTO> {
-    const succeeded = await user.verifyEmail(token);
-    return { succeeded };
+    const user = await this.users.getUserByUsernameOrEmail(usernameOrEmail);
+    if (!user) {
+      return {
+        succeeded: false,
+        reason: 'The provided verification token could not be found.',
+      };
+    }
+
+    const result = await user.verifyEmail(token);
+    if (result) {
+      return { succeeded: true };
+    }
+
+    return {
+      succeeded: false,
+      reason: 'The provided verification token is invalid or expired.',
+    };
   }
 
   /**

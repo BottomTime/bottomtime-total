@@ -16,32 +16,38 @@
 
     <div class="lg:col-span-2 xl:col-span-4">
       <FormBox
-        class="flex flex-row gap-2 sticky top-16 items-baseline shadow-lg z-30"
+        class="flex flex-row gap-2 sticky top-16 items-baseline justify-between shadow-lg z-30"
       >
-        <span class="font-bold">Showing Dive Sites:</span>
-        <span>{{ data.sites.length }}</span>
-        <span>of</span>
-        <span class="grow">{{ data.totalCount }}</span>
-        <label for="sort-order" class="font-bold">Sort order:</label>
-        <FormSelect
-          v-model="selectedSortOrder"
-          control-id="sort-order"
-          test-id="sort-order"
-          :options="SortOrderOptions"
-          @change="onChangeSortOrder"
-        />
-        <FormButton
-          v-if="!currentUser.anonymous"
-          type="primary"
-          test-id="create-dive-site"
-          @click="onCreateSite"
-        >
-          Create Site
-        </FormButton>
+        <p>
+          <span>Showing </span>
+          <span class="font-bold">{{ diveSites.results.sites.length }}</span>
+          <span> of </span>
+          <span class="font-bold">{{ diveSites.results.totalCount }}</span>
+          <span> dive sites</span>
+        </p>
+
+        <div class="flex gap-2 items-baseline">
+          <label for="sort-order" class="font-bold">Sort order:</label>
+          <FormSelect
+            v-model="selectedSortOrder"
+            control-id="sort-order"
+            test-id="sort-order"
+            :options="SortOrderOptions"
+            @change="onChangeSortOrder"
+          />
+          <FormButton
+            v-if="!currentUser.anonymous"
+            type="primary"
+            test-id="create-dive-site"
+            @click="onCreateSite"
+          >
+            Create Site
+          </FormButton>
+        </div>
       </FormBox>
 
       <DiveSitesList
-        :data="data"
+        :data="diveSites.results"
         :is-loading-more="isLoadingMore"
         @site-selected="(site) => (selectedSite = site)"
         @load-more="onLoadMore"
@@ -56,11 +62,11 @@ import {
   DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesParamsSchema,
-  SearchDiveSitesResponseDTO,
+  SearchDiveSitesResponseSchema,
   SortOrder,
 } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
+import { onBeforeMount, onServerPrefetch, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -73,11 +79,9 @@ import PageTitle from '../components/common/page-title.vue';
 import DiveSitesList from '../components/diveSites/dive-sites-list.vue';
 import SearchDiveSitesForm from '../components/diveSites/search-dive-sites-form.vue';
 import ViewDiveSite from '../components/diveSites/view-dive-site.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
-import { useCurrentUser } from '../store';
+import { useCurrentUser, useDiveSites } from '../store';
 
 const SortOrderOptions: SelectOption[] = [
   {
@@ -99,9 +103,8 @@ const SortOrderOptions: SelectOption[] = [
 ];
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const currentUser = useCurrentUser();
-const initialState = useInitialState();
+const diveSites = useDiveSites();
 const location = useLocation();
 const oops = useOops();
 const router = useRouter();
@@ -122,15 +125,6 @@ const selectedSortOrder = ref(
 );
 const selectedSite = ref<DiveSiteDTO | null>(null);
 const isLoadingMore = ref(false);
-
-const data = ref<SearchDiveSitesResponseDTO>(
-  !Config.isSSR && initialState?.diveSites
-    ? initialState.diveSites
-    : {
-        sites: [],
-        totalCount: 0,
-      },
-);
 
 async function onChangeSortOrder(): Promise<void> {
   const [sortBy, sortOrder] = selectedSortOrder.value.split('-');
@@ -164,12 +158,14 @@ async function onLoadMore(): Promise<void> {
   await oops(async () => {
     const params = {
       ...searchParams,
-      skip: data.value.sites.length,
+      skip: diveSites.results.sites.length,
     };
     const newResults = await client.diveSites.searchDiveSites(params);
 
-    data.value.sites.push(...newResults.sites.map((site) => site.toJSON()));
-    data.value.totalCount = newResults.totalCount;
+    diveSites.results.sites.push(
+      ...newResults.sites.map((site) => site.toJSON()),
+    );
+    diveSites.results.totalCount = newResults.totalCount;
   });
 
   isLoadingMore.value = false;
@@ -180,13 +176,12 @@ function onCreateSite(): void {
 }
 
 onServerPrefetch(async () => {
-  await oops(async () => {
-    const results = await client.diveSites.searchDiveSites(searchParams);
-    data.value = {
-      sites: results.sites.map((site) => site.toJSON()),
-      totalCount: results.totalCount,
-    };
-    if (ctx) ctx.diveSites = data.value;
-  });
+  const results = await client.diveSites.searchDiveSites(searchParams);
+  diveSites.results.sites = results.sites.map((site) => site.toJSON());
+  diveSites.results.totalCount = results.totalCount;
+});
+
+onBeforeMount(() => {
+  diveSites.results = SearchDiveSitesResponseSchema.parse(diveSites.results);
 });
 </script>

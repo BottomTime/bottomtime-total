@@ -26,6 +26,7 @@ import { ApiClientKey } from '../../../../src/api-client';
 import ManageUser from '../../../../src/components/admin/manage-user.vue';
 import UsersListItem from '../../../../src/components/admin/users-list-item.vue';
 import UsersList from '../../../../src/components/admin/users-list.vue';
+import { useAdmin } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import SearchResults from '../../../fixtures/user-search-results.json';
 
@@ -46,6 +47,7 @@ describe('Users List component', () => {
   let searchResults: AdminSearchUsersResponseDTO;
 
   let pinia: Pinia;
+  let adminStore: ReturnType<typeof useAdmin>;
   let global: ComponentMountingOptions<typeof UsersList>['global'];
 
   beforeAll(() => {
@@ -58,11 +60,11 @@ describe('Users List component', () => {
       users: SearchResults.users.slice(0, 10).map((u) => UserSchema.parse(u)),
       totalCount: SearchResults.totalCount,
     };
-    window.__INITIAL_STATE__ = {
-      currentUser: null,
-      adminUsersList: searchResults,
-    };
     pinia = createPinia();
+    adminStore = useAdmin(pinia);
+
+    adminStore.users = searchResults;
+
     global = {
       plugins: [pinia, router],
       provide: {

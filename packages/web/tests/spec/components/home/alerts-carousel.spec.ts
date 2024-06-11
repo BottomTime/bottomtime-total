@@ -16,11 +16,9 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../../src/api-client';
 import AlertsCarouselItem from '../../../../src/components/home/alerts-carousel-item.vue';
 import AlertsCarousel from '../../../../src/components/home/alerts-carousel.vue';
-import { useInitialState } from '../../../../src/initial-state';
+import { useAlerts, useCurrentUser } from '../../../../src/store';
 import AlertData from '../../../fixtures/alerts.json';
 import { createRouter } from '../../../fixtures/create-router';
-
-jest.mock('../../../../src/initial-state');
 
 const NextButton = 'button[data-testid="carousel-next"]';
 const PreviousButton = 'button[data-testid="carousel-prev"]';
@@ -31,6 +29,8 @@ describe('Alerts Carousel component', () => {
   let router: Router;
 
   let pinia: Pinia;
+  let currentUser: ReturnType<typeof useCurrentUser>;
+  let alerts: ReturnType<typeof useAlerts>;
   let alertData: ListAlertsResponseDTO;
   let options: ComponentMountingOptions<typeof AlertsCarousel>;
 
@@ -41,12 +41,13 @@ describe('Alerts Carousel component', () => {
 
   beforeEach(() => {
     pinia = createPinia();
+    currentUser = useCurrentUser(pinia);
+    alerts = useAlerts(pinia);
+
     alertData = ListAlertsResponseSchema.parse(AlertData);
     alertData.alerts = alertData.alerts.slice(0, 10);
-    jest.mocked(useInitialState).mockImplementation(() => ({
-      currentUser: null,
-      alerts: alertData,
-    }));
+    alerts.results = alertData;
+    currentUser.user = null;
 
     options = {
       global: {

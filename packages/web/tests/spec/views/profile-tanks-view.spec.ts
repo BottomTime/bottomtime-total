@@ -20,9 +20,8 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
 import TanksListItem from '../../../src/components/tanks/tanks-list-item.vue';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import { useCurrentUser, useTanks } from '../../../src/store';
 import ProfileTanksView from '../../../src/views/profile-tanks-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
@@ -35,17 +34,15 @@ import {
 
 const DefaultUrl = `/profile/${BasicUser.username}/tanks`;
 
-jest.mock('../../../src/initial-state');
-
 describe('Profile Tanks View', () => {
   let client: ApiClient;
   let router: Router;
   let tankData: ListTanksResponseDTO;
 
-  let initialState: AppInitialState;
   let location: MockLocation;
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let tanks: ReturnType<typeof useTanks>;
   let opts: ComponentMountingOptions<typeof ProfileTanksView>;
 
   beforeAll(() => {
@@ -65,9 +62,8 @@ describe('Profile Tanks View', () => {
 
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    tanks = useTanks(pinia);
     currentUser.user = BasicUser;
-
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
 
     location = new MockLocation();
     location.assign(DefaultUrl);
@@ -86,16 +82,11 @@ describe('Profile Tanks View', () => {
   });
 
   describe('when prefetching on the server side', () => {
-    beforeEach(() => {
-      initialState = { currentUser: null };
-    });
-
     it('will render the login form if the user is not logged in', async () => {
       jest
         .spyOn(client.tanks, 'listTanks')
         .mockRejectedValue(createAxiosError(401));
       currentUser.user = null;
-      initialState.currentUser = null;
 
       const html = document.createElement('div');
       html.innerHTML = await renderToString(ProfileTanksView, {
@@ -194,10 +185,8 @@ describe('Profile Tanks View', () => {
 
   describe('when fetching on the client side', () => {
     beforeEach(() => {
-      initialState = {
-        currentUser: BasicUser,
-        tanks: tankData,
-      };
+      currentUser.user = BasicUser;
+      tanks.results = tankData;
     });
 
     it('will render list for profile owner', async () => {
@@ -256,7 +245,10 @@ describe('Profile Tanks View', () => {
     });
 
     it('will render not found message if the target user does not exist', async () => {
-      initialState.tanks = undefined;
+      tanks.results = {
+        tanks: [],
+        totalCount: -1,
+      };
       const wrapper = mount(ProfileTanksView, opts);
       expect(wrapper.find('[data-testid="tanks-list-counts"]').exists()).toBe(
         false,
@@ -460,7 +452,7 @@ describe('Profile Tanks View', () => {
     });
 
     it('will not show Add button if user is at their custom tank profile limit', async () => {
-      initialState.tanks!.tanks.push({
+      tanks.results.tanks.push({
         id: '04efab49-cbb3-4741-9b15-f0774f52118b',
         name: 'Final Tank',
         isSystem: false,
@@ -468,7 +460,7 @@ describe('Profile Tanks View', () => {
         volume: 12.5,
         workingPressure: 240,
       });
-      initialState.tanks!.totalCount = 10;
+      tanks.results.totalCount = 10;
       const wrapper = mount(ProfileTanksView, opts);
       expect(wrapper.find('#tanks-list-add').exists()).toBe(false);
     });

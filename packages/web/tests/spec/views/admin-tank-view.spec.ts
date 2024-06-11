@@ -12,15 +12,12 @@ import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser, useToasts } from '../../../src/store';
+import { useCurrentUser, useTanks, useToasts } from '../../../src/store';
 import AdminTankView from '../../../src/views/admin-tank-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../fixtures/users';
-
-jest.mock('../../../src/initial-state');
 
 const TestData: TankDTO = {
   id: '776c6a29-faf0-4577-9092-90fcf8e5c9c4',
@@ -38,8 +35,8 @@ describe('Admin Tank View', () => {
   let pinia: Pinia;
   let location: MockLocation;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let tanks: ReturnType<typeof useTanks>;
   let toasts: ReturnType<typeof useToasts>;
-  let initialState: AppInitialState;
   let opts: ComponentMountingOptions<typeof AdminTankView>;
 
   beforeAll(() => {
@@ -55,17 +52,14 @@ describe('Admin Tank View', () => {
   beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    tanks = useTanks(pinia);
     toasts = useToasts(pinia);
 
-    initialState = {
-      currentUser: AdminUser,
-      currentTank: TestData,
-    };
     currentUser.user = AdminUser;
+    tanks.currentTank = TestData;
 
     location = new MockLocation();
 
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
     await router.push(`/admin/tanks/${TestData.id}`);
 
     opts = {
@@ -126,7 +120,6 @@ describe('Admin Tank View', () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
         .mockRejectedValue(createAxiosError(401));
-      initialState.currentUser = null;
       currentUser.user = null;
 
       const raw = await renderToString(AdminTankView, { global: opts.global });
@@ -142,7 +135,6 @@ describe('Admin Tank View', () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
         .mockRejectedValue(createAxiosError(403));
-      initialState.currentUser = BasicUser;
       currentUser.user = BasicUser;
 
       const raw = await renderToString(AdminTankView, { global: opts.global });
@@ -206,7 +198,7 @@ describe('Admin Tank View', () => {
     });
 
     it('will show a not found message if the tank does not exist', async () => {
-      initialState.currentTank = undefined;
+      tanks.currentTank = null;
       const wrapper = mount(AdminTankView, opts);
       expect(
         wrapper.find('[data-testid="not-found-message"]').isVisible(),
@@ -215,7 +207,6 @@ describe('Admin Tank View', () => {
     });
 
     it('will show login form if user is not authenticated', async () => {
-      initialState.currentUser = null;
       currentUser.user = null;
       const wrapper = mount(AdminTankView, opts);
       expect(wrapper.find('[data-testid="login-form"]').isVisible()).toBe(true);
@@ -223,7 +214,6 @@ describe('Admin Tank View', () => {
     });
 
     it('will show forbidden message if user is not an admin', async () => {
-      initialState.currentUser = BasicUser;
       currentUser.user = BasicUser;
       const wrapper = mount(AdminTankView, opts);
       expect(
