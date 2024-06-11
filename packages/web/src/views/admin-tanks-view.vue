@@ -107,9 +107,11 @@ const state = reactive<AdminTanksState>({
 });
 
 onServerPrefetch(async () => {
-  const results = await client.tanks.listTanks();
-  tanks.results.tanks = results.tanks.map((tank) => tank.toJSON());
-  tanks.results.totalCount = results.totalCount;
+  await oops(async () => {
+    const results = await client.tanks.listTanks();
+    tanks.results.tanks = results.tanks.map((tank) => tank.toJSON());
+    tanks.results.totalCount = results.totalCount;
+  });
 });
 
 function onAddTank() {

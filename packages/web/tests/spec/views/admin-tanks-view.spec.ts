@@ -89,9 +89,7 @@ describe('Admin Tanks View', () => {
 
       expect(spy).toHaveBeenCalledWith();
       expect(
-        html.querySelector<HTMLParagraphElement>(
-          '[data-testid="tanks-list-counts"]',
-        )?.innerHTML,
+        html.querySelector('[data-testid="tanks-list-counts"]')?.innerHTML,
       ).toMatchSnapshot();
 
       tankData.tanks.forEach((tank) => {
