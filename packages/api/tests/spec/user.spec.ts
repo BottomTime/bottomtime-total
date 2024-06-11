@@ -11,6 +11,7 @@ import { BasicUser } from '../fixtures/users';
 function getUser(axios: AxiosInstance, data?: Partial<UserDTO>): User {
   return new User(axios, { ...BasicUser, ...data });
 }
+
 describe('User API client', () => {
   let axiosInstance: AxiosInstance;
   let user: User;

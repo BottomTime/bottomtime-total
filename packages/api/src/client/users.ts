@@ -109,6 +109,17 @@ export class UsersApiClient {
     return data.succeeded;
   }
 
+  async verifyEmail(
+    username: string,
+    token: string,
+  ): Promise<SuccessFailResponseDTO> {
+    const { data } = await this.apiClient.post<SuccessFailResponseDTO>(
+      `/api/users/${username}/verifyEmail`,
+      { token },
+    );
+    return data;
+  }
+
   async searchUsers(
     query: AdminSearchUsersParamsDTO,
   ): Promise<{ users: User[]; totalCount: number }> {

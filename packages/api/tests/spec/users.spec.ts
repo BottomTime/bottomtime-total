@@ -8,6 +8,7 @@ import {
   CreateUserParamsDTO,
   PasswordResetTokenStatus,
   SortOrder,
+  SuccessFailResponseDTO,
   UserRole,
   UsersSortBy,
 } from '../../src/types';
@@ -182,6 +183,33 @@ describe('Users API client', () => {
       expect(user.id).toEqual(SearchResults.users[index].id);
     });
     expect(scope.isDone()).toBe(true);
+  });
+
+  describe('when verifying an email address', () => {
+    it('will return success if the request succeeds', async () => {
+      const expected: SuccessFailResponseDTO = { succeeded: true };
+      scope
+        .post(`/api/users/${BasicUser.username}/verifyEmail`)
+        .reply(200, expected);
+      const actual = await client.verifyEmail(BasicUser.username, 'token');
+
+      expect(actual).toEqual(expected);
+      expect(scope.isDone()).toBe(true);
+    });
+
+    it('will return failure with a reason if the request fails', async () => {
+      const expected: SuccessFailResponseDTO = {
+        succeeded: false,
+        reason: 'Your token does not rhyme.',
+      };
+      scope
+        .post(`/api/users/${BasicUser.username}/verifyEmail`)
+        .reply(200, expected);
+      const actual = await client.verifyEmail(BasicUser.username, 'token');
+
+      expect(actual).toEqual(expected);
+      expect(scope.isDone()).toBe(true);
+    });
   });
 
   it('will wrap a user DTO in a User instance', () => {

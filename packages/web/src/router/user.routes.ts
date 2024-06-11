@@ -57,6 +57,11 @@ export const UserRoutes: RouteRecordRaw[] = [
     component: () => import('../views/settings-view.vue'),
   },
   {
+    path: '/verifyEmail',
+    name: 'verify-email',
+    component: () => import('../views/verify-email-view.vue'),
+  },
+  {
     path: '/welcome',
     name: 'welcome',
     component: () => import('../views/welcome-view.vue'),

@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Verify Email View will display a success message if successful 1`] = `
+"<div data-testid="msg-success" class="ml-2 px-4 py-2 border-l-4 border-blue-400 bg-blue-300 dark:bg-blue-800 rounded-r-lg w-full text-lg text-success flex items-center gap-3">
+  <div><i class="fa-regular fa-circle-check fa-2x"></i></div>
+  <div class="space-y-3">
+    <h1 class="text-2xl font-bold font-title">Success!</h1>
+    <p>Your email address has been successfully verified!</p>
+    <p> You can click <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">here</a> to return to the home page. </p>
+  </div>
+</div>"
+`;
+
+exports[`Verify Email View will show an error message if the query string is missing 1`] = `
+"<div class="ml-2 px-4 py-2 border-l-4 border-blue-400 bg-blue-300 dark:bg-blue-800 text-danger-dark rounded-r-lg text-lg w-full flex items-center gap-3" data-testid="msg-failed">
+  <div><i class="fa-regular fa-circle-xmark fa-2x"></i></div>
+  <div class="space-y-3">
+    <h1 class="text-2xl font-bold font-title">Failed!</h1>
+    <p>Your email address could not be verified. Reason given:</p>
+    <p class="font-bold">A valid token was not provided. Please check your email and use the link provided.</p>
+    <p> You can try again later or you can request a new verification email from your <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/account">account page</a>. Alternatively, you can return to the <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">home page</a>. </p>
+  </div>
+</div>"
+`;
+
+exports[`Verify Email View will show an error message if the server responds with a 500 1`] = `
+"<div class="ml-2 px-4 py-2 border-l-4 border-blue-400 bg-blue-300 dark:bg-blue-800 text-danger-dark rounded-r-lg text-lg w-full flex items-center gap-3" data-testid="msg-failed">
+  <div><i class="fa-regular fa-circle-xmark fa-2x"></i></div>
+  <div class="space-y-3">
+    <h1 class="text-2xl font-bold font-title">Failed!</h1>
+    <p>Your email address could not be verified. Reason given:</p>
+    <p class="font-bold">An unexpected server error occurred while verifying your email. This is a problem on our end and we are looking into it. Please try again later.</p>
+    <p> You can try again later or you can request a new verification email from your <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/account">account page</a>. Alternatively, you can return to the <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">home page</a>. </p>
+  </div>
+</div>"
+`;
+
+exports[`Verify Email View will show an error message if the token is invalid 1`] = `
+"<div class="ml-2 px-4 py-2 border-l-4 border-blue-400 bg-blue-300 dark:bg-blue-800 text-danger-dark rounded-r-lg text-lg w-full flex items-center gap-3" data-testid="msg-failed">
+  <div><i class="fa-regular fa-circle-xmark fa-2x"></i></div>
+  <div class="space-y-3">
+    <h1 class="text-2xl font-bold font-title">Failed!</h1>
+    <p>Your email address could not be verified. Reason given:</p>
+    <p class="font-bold">Your token is hella-expired!</p>
+    <p> You can try again later or you can request a new verification email from your <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/account">account page</a>. Alternatively, you can return to the <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">home page</a>. </p>
+  </div>
+</div>"
+`;
