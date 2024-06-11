@@ -1,5 +1,5 @@
 <template>
-  <li class="my-1.5 space-y-1.5">
+  <li class="space-y-1.5">
     <div class="flex justify-between">
       <TextHeading level="h4">#{{ ordinal + 1 }}</TextHeading>
 
@@ -9,31 +9,50 @@
       >
         <span class="sr-only">Remove air entry #{{ ordinal + 1 }}</span>
         <span>
-          <i class="fa-solid fa-x"></i>
+          <i class="fa-solid fa-x fa-xs"></i>
         </span>
       </button>
     </div>
 
     <FormBox class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
       <FormField
-        class="order-1 col-span-1 lg:col-span-3"
+        class="order-1 col-span-1 md:col-span-2 lg:col-span-4"
         label="Tank"
         :responsive="false"
         :invalid="v$.tankId.$error"
         :error="v$.tankId.$errors[0]?.$message"
       >
-        <FormSelect
-          v-model="formData.tankId"
-          control-id="tanks-select"
-          :options="tankOptions"
-          :invalid="v$.tankId.$error"
-          stretch
-        />
+        <div class="flex items-center gap-3">
+          <FormSelect
+            v-model="formData.tankId"
+            class="grow"
+            control-id="tanks-select"
+            :options="tankOptions"
+            :invalid="v$.tankId.$error"
+            stretch
+          />
+
+          <FormCheckbox v-model="doubles" class="mx-3">Doubles</FormCheckbox>
+        </div>
       </FormField>
+
+      <TipBox
+        v-if="ordinal === 0"
+        class="order-2 grid-cols-1 md:col-span-2 lg:col-span-4 text-sm text-justify"
+      >
+        <span class="font-bold">Hint: </span>
+        <span class="italic">
+          Check "Doubles" if you are diving with two tanks of the same size that
+          are connected by a manifold. (I.e. the start and end pressures will be
+          the same.) If you are diving sidemount with two independent tanks that
+          are not connected, leave "Doubles" unchecked and log the tanks
+          individually.
+        </span>
+      </TipBox>
 
       <div
         v-if="formData.tankInfo"
-        class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-2 md:order-3 mb-2"
+        class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3 mb-2"
       >
         <div class="text-center">
           <p class="font-bold">Working Pressure</p>
@@ -52,16 +71,6 @@
           </p>
         </div>
       </div>
-
-      <FormField
-        class="order-3 md:order-2"
-        label="Count"
-        :responsive="false"
-        :invalid="v$.count.$error"
-        :error="v$.count.$errors[0]?.$message"
-      >
-        <FormTextBox v-model.number="formData.count" />
-      </FormField>
 
       <FormField
         class="order-4"
@@ -170,14 +179,16 @@ import { PressureUnit, TankDTO, TankMaterial } from '@bottomtime/api';
 import { useVuelidate } from '@vuelidate/core';
 import { between, helpers, integer, required } from '@vuelidate/validators';
 
-import { computed, reactive, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
 import { SelectOption } from '../../common';
 import FormBox from '../common/form-box.vue';
+import FormCheckbox from '../common/form-checkbox.vue';
 import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import TextHeading from '../common/text-heading.vue';
+import TipBox from '../common/tip-box.vue';
 import { EditEntryAirFormData } from './edit-entry-air-form-data';
 
 interface EditEntryAirProps {
@@ -206,6 +217,7 @@ const formData = reactive<EditEntryAirFormData>({
   ...props.air,
   tankId: props.air.tankId || (props.air.tankInfo ? 'current' : ''),
 });
+const doubles = ref(typeof formData.count === 'number' && formData.count > 1);
 
 const tankMaterialString = computed(() => {
   if (!formData.tankInfo) return '';
@@ -293,5 +305,9 @@ function onTogglePressureUnit() {
 watch(formData, (newData) => {
   newData.tankInfo = props.tanks.find((tank) => tank.id === newData.tankId);
   emit('update', newData);
+});
+
+watch(doubles, (isDoubles) => {
+  formData.count = isDoubles ? 2 : 1;
 });
 </script>

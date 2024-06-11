@@ -178,8 +178,8 @@
       </section>
 
       <!-- Dive Site -->
-      <TextHeading>Dive Site</TextHeading>
-      <section class="ml-3 lg:ml-0">
+      <TextHeading>Location</TextHeading>
+      <FormField>
         <div v-if="formData.site" class="space-y-2">
           <PreviewDiveSite :site="formData.site" />
           <FormButton
@@ -199,11 +199,11 @@
         >
           Select Dive Site...
         </FormButton>
-      </section>
+      </FormField>
 
       <!-- Gas -->
       <TextHeading>Gas</TextHeading>
-      <section class="ml-3 lg:ml-0">
+      <FormField>
         <EditEntryAirCollection
           :air="formData.air"
           :tanks="tanks"
@@ -211,7 +211,7 @@
           @update="onUpdateAirEntry"
           @remove="onRemoveAirEntry"
         />
-      </section>
+      </FormField>
 
       <TextHeading>Other Info</TextHeading>
       <FormField label="Notes" control-id="notes">
