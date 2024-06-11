@@ -10,6 +10,7 @@ import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
+import { useCurrentUser, useDiveSites } from '../../../src/store';
 import DiveSiteView from '../../../src/views/dive-site-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
@@ -20,6 +21,8 @@ describe('Dive Site View', () => {
   let router: Router;
 
   let pinia: Pinia;
+  let currentUser: ReturnType<typeof useCurrentUser>;
+  let diveSites: ReturnType<typeof useDiveSites>;
   let opts: ComponentMountingOptions<typeof DiveSiteView>;
 
   beforeAll(() => {
@@ -35,11 +38,13 @@ describe('Dive Site View', () => {
 
   beforeEach(async () => {
     await router.push(`/diveSites/${DiveSiteWithFullProperties.id}`);
-    window.__INITIAL_STATE__ = {
-      currentUser: null,
-      currentDiveSite: DiveSiteWithFullProperties,
-    };
     pinia = createPinia();
+    currentUser = useCurrentUser(pinia);
+    diveSites = useDiveSites(pinia);
+
+    currentUser.user = null;
+    diveSites.currentSite = DiveSiteWithFullProperties;
+
     opts = {
       global: {
         plugins: [pinia, router],
@@ -62,7 +67,7 @@ describe('Dive Site View', () => {
   });
 
   it('will show not found message if prefetch cannot find the site on the server side', async () => {
-    window.__INITIAL_STATE__.currentDiveSite = null;
+    diveSites.currentSite = null;
     const error = createAxiosError({
       status: 404,
       message: 'Not Found',
@@ -78,7 +83,7 @@ describe('Dive Site View', () => {
   });
 
   it('will show not found message if site cannot be found', () => {
-    window.__INITIAL_STATE__.currentDiveSite = null;
+    diveSites.currentSite = null;
     const wrapper = mount(DiveSiteView, opts);
     expect(wrapper.get('[data-testid="not-found-message"]').isVisible()).toBe(
       true,

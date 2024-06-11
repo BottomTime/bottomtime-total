@@ -12,6 +12,7 @@ import {
   Get,
   HttpCode,
   Inject,
+  Logger,
   NotFoundException,
   Param,
   Post,
@@ -28,6 +29,8 @@ const TankIdParam = 'tankId';
 
 @Controller('api/admin/tanks')
 export class AdminTanksController {
+  private readonly log = new Logger(AdminTanksController.name);
+
   constructor(
     @Inject(TanksService) private readonly tanksService: TanksService,
   ) {}
@@ -67,7 +70,9 @@ export class AdminTanksController {
   @Get()
   @UseGuards(AssertAuth)
   async listTanks(): Promise<ListTanksResponseDTO> {
+    this.log.debug('Querying for tanks...');
     const tankData = await this.tanksService.listTanks();
+
     return {
       tanks: tankData.tanks.map((tank) => tank.toJSON()),
       totalCount: tankData.totalCount,

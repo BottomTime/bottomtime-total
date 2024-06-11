@@ -23,16 +23,18 @@ import { ApiClientKey } from '../../../src/api-client';
 import LogbookEntriesListItem from '../../../src/components/logbook/logbook-entries-list-item.vue';
 import LogbookEntriesList from '../../../src/components/logbook/logbook-entries-list.vue';
 import LogbookSearch from '../../../src/components/logbook/logbook-search.vue';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import {
+  ListEntriesState,
+  useCurrentUser,
+  useLogEntries,
+  useProfiles,
+} from '../../../src/store';
 import LogbookView from '../../../src/views/logbook-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
 import LogEntryTestData from '../../fixtures/log-entries.json';
 import { AdminUser, BasicUser } from '../../fixtures/users';
-
-jest.mock('../../../src/initial-state');
 
 const ProfileData: ProfileDTO = {
   logBookSharing: LogBookSharing.Public,
@@ -49,8 +51,9 @@ describe('Logbook view', () => {
 
   let pinia: Pinia;
   let location: MockLocation;
-  let initialState: AppInitialState;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let logEntries: ReturnType<typeof useLogEntries>;
+  let profiles: ReturnType<typeof useProfiles>;
   let opts: ComponentMountingOptions<typeof LogbookView>;
 
   beforeAll(() => {
@@ -68,18 +71,15 @@ describe('Logbook view', () => {
   beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    logEntries = useLogEntries(pinia);
+    profiles = useProfiles(pinia);
     location = new MockLocation();
 
     await router.push(`/logbook/${ProfileData.username}`);
 
     currentUser.user = BasicUser;
-    initialState = {
-      currentUser: BasicUser,
-      logEntries: entryData,
-      currentProfile: ProfileData,
-    };
-
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
+    profiles.currentProfile = ProfileData;
+    logEntries.results = entryData;
 
     opts = {
       global: {
@@ -284,8 +284,12 @@ describe('Logbook view', () => {
 
   describe('when client-side rendering', () => {
     it('will render a "not found" message if the logbook does not exist', () => {
-      initialState.logEntries = 'not-found';
-      initialState.currentProfile = undefined;
+      logEntries.results = {
+        logEntries: [],
+        totalCount: 0,
+      };
+      logEntries.listEntriesState = ListEntriesState.NotFound;
+      profiles.currentProfile = null;
       const wrapper = mount(LogbookView, opts);
 
       expect(
@@ -295,8 +299,12 @@ describe('Logbook view', () => {
     });
 
     it('will render a "forbidden" message if the logbook is private', () => {
-      initialState.logEntries = 'forbidden';
-      initialState.currentProfile = {
+      logEntries.results = {
+        logEntries: [],
+        totalCount: 0,
+      };
+      logEntries.listEntriesState = ListEntriesState.Forbidden;
+      profiles.currentProfile = {
         ...ProfileData,
         logBookSharing: LogBookSharing.Private,
       };
@@ -309,8 +317,12 @@ describe('Logbook view', () => {
     });
 
     it('will render a "friend request" message if the logbook is friends-only', () => {
-      initialState.logEntries = 'forbidden';
-      initialState.currentProfile = {
+      logEntries.results = {
+        logEntries: [],
+        totalCount: 0,
+      };
+      logEntries.listEntriesState = ListEntriesState.Forbidden;
+      profiles.currentProfile = {
         ...ProfileData,
         logBookSharing: LogBookSharing.FriendsOnly,
       };
@@ -324,8 +336,12 @@ describe('Logbook view', () => {
 
     it('will render a login form if the user is not logged in and the logbook is friends-only', () => {
       currentUser.user = null;
-      initialState.logEntries = 'forbidden';
-      initialState.currentProfile = {
+      logEntries.results = {
+        logEntries: [],
+        totalCount: 0,
+      };
+      logEntries.listEntriesState = ListEntriesState.Forbidden;
+      profiles.currentProfile = {
         ...ProfileData,
         logBookSharing: LogBookSharing.FriendsOnly,
       };
@@ -403,7 +419,7 @@ describe('Logbook view', () => {
     });
 
     it('will load more results when Load More button is clicked', async () => {
-      initialState.logEntries = {
+      logEntries.results = {
         logEntries: entryData.logEntries.slice(0, 10),
         totalCount: 200,
       };

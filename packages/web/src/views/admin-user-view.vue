@@ -5,8 +5,8 @@
     <div class="grid grid-cols-1 lg:grid-cols-6">
       <div class="lg:col-start-2 lg:col-span-4">
         <ManageUser
-          v-if="user"
-          :user="user"
+          v-if="admin.currentUser"
+          :user="admin.currentUser"
           @account-lock-toggled="onAccountLockToggled"
           @email-changed="onEmailChanged"
           @password-reset="onPasswordReset"
@@ -29,13 +29,7 @@ import {
   UserSettingsDTO,
 } from '@bottomtime/api';
 
-import {
-  computed,
-  onBeforeMount,
-  onServerPrefetch,
-  ref,
-  useSSRContext,
-} from 'vue';
+import { computed, onServerPrefetch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -45,22 +39,20 @@ import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
+import { useAdmin } from '../store';
 
 // Dependencies
+const admin = useAdmin();
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const currentRoute = useRoute();
 const oops = useOops();
 
 // Component state
-const user = ref<UserDTO | null>(null);
 const role = computed(() => UserRole.Admin);
-const title = computed(() => user.value?.username || 'Manage User');
+const title = computed(() => admin.currentUser?.username || 'Manage User');
 const subtitle = computed(() =>
-  user.value?.profile.name ? `(${user.value?.profile.name})` : '',
+  admin.currentUser?.profile.name ? `(${admin.currentUser?.profile.name})` : '',
 );
 
 const breadcrumbs: Breadcrumb[] = [
@@ -85,61 +77,52 @@ async function fetchUser(): Promise<UserDTO | null> {
   );
 }
 
-onBeforeMount(async () => {
-  if (!Config.isSSR) {
-    const ctx = useInitialState();
-    user.value = ctx?.adminCurrentUser ?? null;
-  }
-});
-
 onServerPrefetch(async () => {
-  const userData = await fetchUser();
-  user.value = userData;
-  if (ctx) ctx.adminCurrentUser = user.value ?? undefined;
+  admin.currentUser = await fetchUser();
 });
 
 // Event handlers
 function onAccountLockToggled() {
-  if (user.value) {
-    user.value.isLockedOut = !user.value.isLockedOut;
+  if (admin.currentUser) {
+    admin.currentUser.isLockedOut = !admin.currentUser.isLockedOut;
   }
 }
 
 function onEmailChanged(_: string, email: string) {
-  if (user.value) {
-    user.value.email = email;
-    user.value.emailVerified = false;
+  if (admin.currentUser) {
+    admin.currentUser.email = email;
+    admin.currentUser.emailVerified = false;
   }
 }
 
 function onPasswordReset() {
-  if (user.value) {
-    user.value.hasPassword = true;
-    user.value.lastPasswordChange = new Date();
+  if (admin.currentUser) {
+    admin.currentUser.hasPassword = true;
+    admin.currentUser.lastPasswordChange = new Date();
   }
 }
 
 function onRoleChanged(_: string, newRole: UserRole) {
-  if (user.value) {
-    user.value.role = newRole;
+  if (admin.currentUser) {
+    admin.currentUser.role = newRole;
   }
 }
 
 function onUsernameChanged(_: string, username: string) {
-  if (user.value) {
-    user.value.username = username;
+  if (admin.currentUser) {
+    admin.currentUser.username = username;
   }
 }
 
 function onSaveProfile(_: string, profile: ProfileDTO) {
-  if (user.value) {
-    user.value.profile = profile;
+  if (admin.currentUser) {
+    admin.currentUser.profile = profile;
   }
 }
 
 function onSaveSettings(_: string, settings: UserSettingsDTO) {
-  if (user.value) {
-    user.value.settings = settings;
+  if (admin.currentUser) {
+    admin.currentUser.settings = settings;
   }
 }
 </script>

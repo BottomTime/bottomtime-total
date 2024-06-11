@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  LogBookSharing,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
@@ -25,6 +26,7 @@ const TestUser: UserDTO = {
     memberSince: new Date(),
     name: 'Randy Randerson',
     location: 'Sunnyvale, CA',
+    logBookSharing: LogBookSharing.FriendsOnly,
   },
   settings: {
     depthUnit: DepthUnit.Meters,

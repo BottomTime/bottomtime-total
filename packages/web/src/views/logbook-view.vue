@@ -30,7 +30,7 @@
     />
   </DrawerPanel>
 
-  <div v-if="state.entries === 'forbidden'">
+  <div v-if="logEntries.listEntriesState === ListEntriesState.Forbidden">
     <div v-if="currentUser.user" class="text-center space-y-6">
       <p class="text-xl font-bold flex items-baseline gap-3 justify-center">
         <span>
@@ -40,11 +40,16 @@
       </p>
 
       <p
-        v-if="state.currentProfile?.logBookSharing === LogBookSharing.Private"
+        v-if="
+          profiles.currentProfile?.logBookSharing === LogBookSharing.Private
+        "
         data-testid="private-logbook"
       >
         <span class="font-bold">
-          {{ state.currentProfile.name || `@${state.currentProfile.username}` }}
+          {{
+            profiles.currentProfile.name ||
+            `@${profiles.currentProfile.username}`
+          }}
         </span>
         <span>
           is not sharing their logbook. You will not be able to view their
@@ -54,7 +59,7 @@
 
       <div
         v-if="
-          state.currentProfile?.logBookSharing === LogBookSharing.FriendsOnly
+          profiles.currentProfile?.logBookSharing === LogBookSharing.FriendsOnly
         "
       >
         <div
@@ -65,7 +70,8 @@
           <p>
             <span class="font-bold">
               {{
-                state.currentProfile.name || `@${state.currentProfile.username}`
+                profiles.currentProfile.name ||
+                `@${profiles.currentProfile.username}`
               }}
             </span>
             <span>
@@ -86,7 +92,9 @@
     </div>
   </div>
 
-  <NotFound v-else-if="state.entries === 'not-found'" />
+  <NotFound
+    v-else-if="logEntries.listEntriesState === ListEntriesState.NotFound"
+  />
 
   <div v-else class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5">
     <div>
@@ -96,7 +104,7 @@
     <LogbookEntriesList
       class="col-span-1 lg:col-span-3 xl:col-span-4"
       :edit-mode="editMode"
-      :entries="state.entries"
+      :entries="logEntries.results"
       :is-loading-more="state.isLoadingMoreEntries"
       @load-more="onLoadMore"
       @select="onSelectLogEntry"
@@ -109,18 +117,16 @@
 import {
   ListLogEntriesParamsDTO,
   ListLogEntriesParamsSchema,
-  ListLogEntriesResponseDTO,
   LogBookSharing,
   LogEntryDTO,
   LogEntrySortBy,
-  ProfileDTO,
   SortOrder,
   UserRole,
 } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import qs from 'qs';
-import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { computed, onServerPrefetch, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -133,15 +139,16 @@ import LogbookEntriesList from '../components/logbook/logbook-entries-list.vue';
 import LogbookSearch from '../components/logbook/logbook-search.vue';
 import ViewLogbookEntry from '../components/logbook/view-logbook-entry.vue';
 import LoginForm from '../components/users/login-form.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
-import { useCurrentUser } from '../store';
+import {
+  ListEntriesState,
+  useCurrentUser,
+  useLogEntries,
+  useProfiles,
+} from '../store';
 
 interface LogbookViewState {
-  currentProfile?: ProfileDTO;
-  entries: ListLogEntriesResponseDTO | 'not-found' | 'forbidden';
   isLoadingLogEntry: boolean;
   isLoadingMoreEntries: boolean;
   queryParams: ListLogEntriesParamsDTO;
@@ -150,11 +157,11 @@ interface LogbookViewState {
 }
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : null;
 const currentUser = useCurrentUser();
-const initialState = useInitialState();
 const location = useLocation();
+const logEntries = useLogEntries();
 const oops = useOops();
+const profiles = useProfiles();
 const route = useRoute();
 
 const username = computed(() =>
@@ -183,13 +190,8 @@ function parseQueryParams(): ListLogEntriesParamsDTO {
 }
 
 const state = reactive<LogbookViewState>({
-  currentProfile: initialState?.currentProfile,
   isLoadingLogEntry: false,
   isLoadingMoreEntries: false,
-  entries: initialState?.logEntries ?? {
-    logEntries: [],
-    totalCount: 0,
-  },
   queryParams: parseQueryParams(),
   showSelectedEntry: false,
 });
@@ -201,23 +203,24 @@ async function refresh(): Promise<void> {
         username.value,
         state.queryParams,
       );
-      state.entries = {
-        logEntries: results.logEntries.map((entry) => entry.toJSON()),
-        totalCount: results.totalCount,
-      };
+      logEntries.results.logEntries = results.logEntries.map((entry) =>
+        entry.toJSON(),
+      );
+      logEntries.results.totalCount = results.totalCount;
+      logEntries.listEntriesState = ListEntriesState.Success;
     },
     {
       [401]: () => {
         // User _may_ have access to this logbook but they need to sign in.
-        state.entries = 'forbidden';
+        logEntries.listEntriesState = ListEntriesState.Forbidden;
       },
       [403]: () => {
         // User does not have access to this logbook.
-        state.entries = 'forbidden';
+        logEntries.listEntriesState = ListEntriesState.Forbidden;
       },
       [404]: () => {
         // Requested logbook does not exist.
-        state.entries = 'not-found';
+        logEntries.listEntriesState = ListEntriesState.NotFound;
       },
     },
   );
@@ -226,20 +229,10 @@ async function refresh(): Promise<void> {
 onServerPrefetch(async () => {
   await refresh();
 
-  if (state.entries === 'not-found') {
-    if (ctx) ctx.logEntries = state.entries;
-    return;
-  }
-
   if (currentUser.user) {
     await oops(async () => {
-      state.currentProfile = await client.users.getProfile(username.value);
+      profiles.currentProfile = await client.users.getProfile(username.value);
     });
-  }
-
-  if (ctx) {
-    ctx.logEntries = state.entries;
-    ctx.currentProfile = state.currentProfile;
   }
 });
 
@@ -247,11 +240,9 @@ async function onLoadMore(): Promise<void> {
   state.isLoadingMoreEntries = true;
 
   await oops(async () => {
-    if (!state.entries || typeof state.entries === 'string') return;
-
     const options = {
       ...state.queryParams,
-      skip: state.entries.logEntries.length,
+      skip: logEntries.results.logEntries.length,
     };
 
     const results = await client.logEntries.listLogEntries(
@@ -259,10 +250,10 @@ async function onLoadMore(): Promise<void> {
       options,
     );
 
-    state.entries.logEntries.push(
+    logEntries.results.logEntries.push(
       ...results.logEntries.map((entry) => entry.toJSON()),
     );
-    state.entries.totalCount = results.totalCount;
+    logEntries.results.totalCount = results.totalCount;
   });
 
   state.isLoadingMoreEntries = false;

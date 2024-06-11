@@ -1,13 +1,11 @@
 import { ErrorResponseDTO, ErrorResponseSchema } from '@bottomtime/api';
 
 import { isAxiosError } from 'axios';
-import { useSSRContext } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { Toast, ToastType } from './common';
 import { Config } from './config';
-import { AppInitialState } from './initial-state';
-import { useCurrentUser, useToasts } from './store';
+import { useCurrentUser, useErrors, useToasts } from './store';
 
 export function isErrorResponse(e: unknown): e is ErrorResponseDTO {
   const validation = ErrorResponseSchema.safeParse(e);
@@ -100,8 +98,8 @@ export type OopsFunction = <T>(
  * @returns An {@link OopsFunction} that can be used to safely invoke API requests and handle any errors that are returned.
  */
 export function useOops(): OopsFunction {
-  const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
   const currentUser = useCurrentUser();
+  const errors = useErrors();
   const router = useRouter();
   const toasts = useToasts();
 
@@ -129,12 +127,12 @@ export function useOops(): OopsFunction {
       networkError(error) {
         // Network error. Show a toast.
         toasts.toast(NetworkErrorToast);
-        if (ctx) ctx.error = error;
+        errors.renderError = error;
       },
       default(error) {
         // By default, we'll just show a toast with a generic error message.
         toasts.toast(ServerErrorToast);
-        if (ctx) ctx.error = error;
+        errors.renderError = error;
       },
 
       // Allow the calling function to override the defaults and provide handlers for other error codes.

@@ -26,9 +26,8 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import FriendRequestsListItem from '../../../src/components/friends/friend-requests-list-item.vue';
 import FriendsListItem from '../../../src/components/friends/friends-list-item.vue';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
+import { useCurrentUser, useFriends } from '../../../src/store';
 import FriendsView from '../../../src/views/friends-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
@@ -37,7 +36,6 @@ import TestFriendsData from '../../fixtures/friends.json';
 import { BasicUser, UserWithFullProfile } from '../../fixtures/users';
 
 dayjs.extend(relativeTime);
-jest.mock('../../../src/initial-state');
 
 const FriendsCount = '[data-testid="friends-count"]';
 const RequestsCount = '[data-testid="request-counts"]';
@@ -50,10 +48,10 @@ describe('Friends view', () => {
   let friendsData: ListFriendsResponseDTO;
   let friendRequestsData: ListFriendRequestsResponseDTO;
 
-  let initalState: AppInitialState;
   let location: MockLocation;
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let friendsStore: ReturnType<typeof useFriends>;
   let opts: ComponentMountingOptions<typeof FriendsView>;
 
   beforeAll(() => {
@@ -64,13 +62,12 @@ describe('Friends view', () => {
     friendRequestsData = ListFriendRequestsResponseSchema.parse(
       TestFriendRequestData,
     );
-
-    jest.mocked(useInitialState).mockImplementation(() => initalState);
   });
 
   beforeEach(() => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    friendsStore = useFriends(pinia);
     location = new MockLocation();
 
     friendsData = ListFriendsResposneSchema.parse(TestFriendsData);
@@ -79,11 +76,8 @@ describe('Friends view', () => {
     );
 
     currentUser.user = { ...BasicUser };
-    initalState = {
-      currentUser: currentUser.user,
-      friends: friendsData,
-      friendRequests: friendRequestsData,
-    };
+    friendsStore.friends = friendsData;
+    friendsStore.requests = friendRequestsData;
 
     opts = {
       global: {
@@ -420,7 +414,7 @@ describe('Friends view', () => {
         .map((f) => new Friend(client.axios, currentUser.user!.username, f)),
       totalCount: friendsData.totalCount,
     });
-    initalState.friends!.friends = initalState.friends!.friends.slice(0, 20);
+    friendsStore.friends.friends = friendsData.friends.slice(0, 20);
 
     const wrapper = mount(FriendsView, opts);
     await wrapper.get('[data-testid="friends-load-more"]').trigger('click');
@@ -448,8 +442,8 @@ describe('Friends view', () => {
           .map((r) => new FriendRequest(client.axios, BasicUser.username, r)),
         totalCount: friendRequestsData.totalCount,
       });
-    initalState.friendRequests!.friendRequests =
-      initalState.friendRequests!.friendRequests.slice(0, 20);
+    friendsStore.requests.friendRequests =
+      friendRequestsData.friendRequests.slice(0, 20);
 
     const wrapper = mount(FriendsView, opts);
     await wrapper
@@ -476,11 +470,11 @@ describe('Friends view', () => {
 
   it('will allow a user to dismiss an acknowledged friend request', async () => {
     const requestDTO = friendRequestsData.friendRequests[0];
-    initalState.friendRequests = {
+    friendsStore.requests = {
       friendRequests: [requestDTO],
       totalCount: 72,
     };
-    initalState.friendRequests!.friendRequests[0].accepted = true;
+    friendsStore.requests.friendRequests[0].accepted = true;
 
     const request = new FriendRequest(
       client.axios,

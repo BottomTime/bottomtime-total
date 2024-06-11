@@ -2,14 +2,14 @@
   <PageTitle :title="title" />
   <BreadCrumbs :items="items" />
 
-  <div v-if="state.entry">
+  <div v-if="logEntries.currentEntry">
     <EditLogbookEntry
       v-if="editMode"
-      :entry="state.entry"
+      :entry="logEntries.currentEntry"
       :is-saving="state.isSaving"
       @save="onSave"
     />
-    <ViewLogbookEntry v-else :entry="state.entry" />
+    <ViewLogbookEntry v-else :entry="logEntries.currentEntry" />
   </div>
   <NotFound v-else />
 </template>
@@ -18,7 +18,7 @@
 import { LogEntryDTO, UserRole } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
-import { computed, onServerPrefetch, reactive, useSSRContext } from 'vue';
+import { computed, onServerPrefetch, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -28,31 +28,28 @@ import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import EditLogbookEntry from '../components/logbook/edit-logbook-entry.vue';
 import ViewLogbookEntry from '../components/logbook/view-logbook-entry.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
-import { useCurrentUser, useToasts } from '../store';
+import { useCurrentUser, useLogEntries, useToasts } from '../store';
 
 interface LogEntryViewState {
-  entry?: LogEntryDTO;
   isSaving: boolean;
 }
 
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
 const currentUser = useCurrentUser();
-const initialState = useInitialState();
+const logEntries = useLogEntries();
 const oops = useOops();
 const route = useRoute();
 const toasts = useToasts();
 
 const state = reactive<LogEntryViewState>({
-  entry: initialState?.currentLogEntry,
   isSaving: false,
 });
 
 const title = computed(() =>
-  state.entry ? dayjs(state.entry.entryTime.date).format('LLL') : 'Log Entry',
+  logEntries.currentEntry
+    ? dayjs(logEntries.currentEntry.entryTime.date).format('LLL')
+    : 'Log Entry',
 );
 const logbookPath = computed(() =>
   typeof route.params.username === 'string'
@@ -85,19 +82,17 @@ onServerPrefetch(async () => {
         route.params.entryId,
       );
 
-      state.entry = entry.toJSON();
+      logEntries.currentEntry = entry.toJSON();
     },
     {
       [403]: () => {
-        state.entry = undefined;
+        logEntries.currentEntry = null;
       },
       [404]: () => {
-        state.entry = undefined;
+        logEntries.currentEntry = null;
       },
     },
   );
-
-  if (ctx) ctx.currentLogEntry = state.entry;
 });
 
 async function onSave(data: LogEntryDTO): Promise<void> {
@@ -107,7 +102,7 @@ async function onSave(data: LogEntryDTO): Promise<void> {
     const entry = client.logEntries.wrapDTO(data);
     await entry.save();
 
-    state.entry = entry.toJSON();
+    logEntries.currentEntry = entry.toJSON();
     toasts.toast({
       id: 'log-entry-saved',
       message: 'Log entry has been successfully saved',

@@ -4,7 +4,7 @@
 
   <RequireAuth :role="UserRole.Admin">
     <AlertsList
-      :alerts="data"
+      :alerts="alerts.results"
       :is-loading-more="isLoadingMore"
       @load-more="onLoadMore"
       @delete="onDeleteAlert"
@@ -13,14 +13,9 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  AlertDTO,
-  ListAlertsResponseDTO,
-  ListAlertsResponseSchema,
-  UserRole,
-} from '@bottomtime/api';
+import { AlertDTO, UserRole } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive, ref, useSSRContext } from 'vue';
+import { onServerPrefetch, ref } from 'vue';
 
 import { useClient } from '../../src/api-client';
 import { Breadcrumb, ToastType } from '../common';
@@ -28,25 +23,14 @@ import AlertsList from '../components/admin/alerts-list.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
-import { Config } from '../config';
-import { AppInitialState, useInitialState } from '../initial-state';
 import { useOops } from '../oops';
-import { useToasts } from '../store';
+import { useAlerts, useToasts } from '../store';
 
+const alerts = useAlerts();
 const client = useClient();
-const ctx = Config.isSSR ? useSSRContext<AppInitialState>() : undefined;
-const initialState = useInitialState();
 const oops = useOops();
 const toasts = useToasts();
 
-const data = reactive<ListAlertsResponseDTO>(
-  initialState?.alerts
-    ? ListAlertsResponseSchema.parse(initialState.alerts)
-    : {
-        alerts: [],
-        totalCount: 0,
-      },
-);
 const isLoadingMore = ref(false);
 
 const Breadcrumbs: Breadcrumb[] = [
@@ -56,14 +40,12 @@ const Breadcrumbs: Breadcrumb[] = [
 
 onServerPrefetch(async () => {
   await oops(async () => {
-    const { alerts, totalCount } = await client.alerts.listAlerts({
+    const { alerts: results, totalCount } = await client.alerts.listAlerts({
       showDismissed: true,
     });
-    data.alerts = alerts.map((alert) => alert.toJSON());
-    data.totalCount = totalCount;
+    alerts.results.alerts = results.map((alert) => alert.toJSON());
+    alerts.results.totalCount = totalCount;
   });
-
-  if (ctx) ctx.alerts = data;
 });
 
 async function onDeleteAlert(dto: AlertDTO): Promise<void> {
@@ -71,10 +53,10 @@ async function onDeleteAlert(dto: AlertDTO): Promise<void> {
     const alert = client.alerts.wrapDTO(dto);
     await alert.delete();
 
-    const index = data.alerts.findIndex((a) => a.id === alert.id);
+    const index = alerts.results.alerts.findIndex((a) => a.id === alert.id);
     if (index >= 0) {
-      data.alerts.splice(index, 1);
-      data.totalCount--;
+      alerts.results.alerts.splice(index, 1);
+      alerts.results.totalCount--;
 
       toasts.toast({
         id: 'alert-deleted',
@@ -90,11 +72,11 @@ async function onLoadMore(): Promise<void> {
   await oops(async () => {
     const results = await client.alerts.listAlerts({
       showDismissed: true,
-      skip: data.alerts.length,
+      skip: alerts.results.alerts.length,
     });
 
-    data.totalCount = results.totalCount;
-    data.alerts.push(...results.alerts.map((a) => a.toJSON()));
+    alerts.results.totalCount = results.totalCount;
+    alerts.results.alerts.push(...results.alerts.map((a) => a.toJSON()));
   });
   isLoadingMore.value = false;
 }

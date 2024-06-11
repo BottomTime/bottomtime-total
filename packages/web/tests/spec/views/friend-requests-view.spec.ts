@@ -25,9 +25,8 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
 import FriendRequestsListItem from '../../../src/components/friends/friend-requests-list-item.vue';
-import { useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser, useToasts } from '../../../src/store';
+import { useCurrentUser, useFriends, useToasts } from '../../../src/store';
 import FriendRequestsView from '../../../src/views/friend-requests-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
@@ -35,14 +34,13 @@ import { BasicUser } from '../../fixtures/users';
 
 dayjs.extend(relativeTime);
 
-jest.mock('../../../src/initial-state.ts');
-
 describe('Friend requests view', () => {
   let client: ApiClient;
   let router: Router;
   let friendRequestData: ListFriendRequestsResponseDTO;
 
   let pinia: Pinia;
+  let friendsStore: ReturnType<typeof useFriends>;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let toasts: ReturnType<typeof useToasts>;
   let opts: ComponentMountingOptions<typeof FriendRequestsView>;
@@ -89,15 +87,14 @@ describe('Friend requests view', () => {
 
   beforeEach(() => {
     const userDto: UserDTO = { ...BasicUser };
-    jest.mocked(useInitialState).mockImplementation(() => ({
-      currentUser: userDto,
-      friendRequests: friendRequestData,
-    }));
 
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    friendsStore = useFriends(pinia);
+
     toasts = useToasts(pinia);
     currentUser.user = userDto;
+    friendsStore.requests = friendRequestData;
 
     opts = {
       global: {

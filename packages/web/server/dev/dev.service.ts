@@ -1,22 +1,11 @@
 import { ApiClientOptions } from '@bottomtime/api';
 
-import { AppInitialState } from '@/initial-state';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
+import { StateTree } from 'pinia';
 import { ViteDevServer, createServer } from 'vite';
-import { SSRContext } from 'vue/server-renderer';
 
-export type RenderResult = {
-  head?: string;
-  html: string;
-  ctx: SSRContext;
-};
-
-type RenderFunc = (
-  url: string,
-  initialState: AppInitialState,
-  clientOptions: ApiClientOptions,
-) => Promise<RenderResult>;
+import { RenderFunc, RenderResult } from '../constants';
 
 const NotInitializedError = new Error('Vite dev server not initialized');
 
@@ -42,7 +31,7 @@ export class DevService implements OnModuleInit {
 
   async render(
     url: string,
-    initialState: AppInitialState,
+    initialState: Record<string, StateTree>,
     clientOptions: ApiClientOptions,
   ): Promise<RenderResult> {
     if (!this.renderFunc) {

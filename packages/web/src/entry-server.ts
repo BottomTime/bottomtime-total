@@ -1,19 +1,19 @@
 import { ApiClientOptions } from '@bottomtime/api';
 
-import { SSRContext, renderToString } from 'vue/server-renderer';
+import { StateTree } from 'pinia';
+import { renderToString } from 'vue/server-renderer';
 
 import { createApp } from './main';
 
 export async function render(
   url: string,
-  initialState: SSRContext,
+  initialState: Record<string, StateTree>,
   clientOptions?: ApiClientOptions,
-): Promise<{ html: string; ctx: SSRContext }> {
-  const { app, router } = createApp(clientOptions);
+): Promise<{ html: string; initialState: string }> {
+  const { app, router, store } = createApp(clientOptions, initialState);
   await router.push(url);
 
-  const ctx = initialState;
-  const html = await renderToString(app, ctx);
+  const html = await renderToString(app);
 
-  return { html, ctx };
+  return { html, initialState: JSON.stringify(store.state.value) };
 }

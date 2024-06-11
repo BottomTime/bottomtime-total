@@ -12,9 +12,8 @@ import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
-import { AppInitialState, useInitialState } from '../../../src/initial-state';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser, useToasts } from '../../../src/store';
+import { useCurrentUser, useTanks, useToasts } from '../../../src/store';
 import ProfileTankView from '../../../src/views/profile-tank-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
@@ -35,16 +34,14 @@ const TestData: TankDTO = {
 
 const DefaultUrl = `/profile/${BasicUser.username}/tanks/${TestData.id}`;
 
-jest.mock('../../../src/initial-state');
-
 describe('Profile Tank View', () => {
   let client: ApiClient;
   let router: Router;
 
   let location: MockLocation;
-  let initialState: AppInitialState;
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
+  let tanks: ReturnType<typeof useTanks>;
   let toasts: ReturnType<typeof useToasts>;
   let opts: ComponentMountingOptions<typeof ProfileTankView>;
 
@@ -59,21 +56,17 @@ describe('Profile Tank View', () => {
   });
 
   beforeEach(async () => {
-    initialState = {
-      currentUser: BasicUser,
-      currentTank: TestData,
-    };
     location = new MockLocation();
     location.assign(DefaultUrl);
 
     await router.push(DefaultUrl);
 
-    jest.mocked(useInitialState).mockImplementation(() => initialState);
-
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    tanks = useTanks(pinia);
     toasts = useToasts(pinia);
     currentUser.user = BasicUser;
+    tanks.currentTank = TestData;
 
     opts = {
       global: {
@@ -118,7 +111,6 @@ describe('Profile Tank View', () => {
         .spyOn(client.tanks, 'getTank')
         .mockResolvedValue(new Tank(client.axios, TestData));
       currentUser.user = AdminUser;
-      initialState.currentUser = AdminUser;
       const raw = await renderToString(ProfileTankView, {
         global: opts.global,
       });
@@ -143,7 +135,6 @@ describe('Profile Tank View', () => {
 
     it('will show the login form if the user is not authenticated', async () => {
       currentUser.user = null;
-      initialState.currentUser = null;
       jest
         .spyOn(client.tanks, 'getTank')
         .mockRejectedValue(createAxiosError(401));
@@ -159,7 +150,6 @@ describe('Profile Tank View', () => {
 
     it("will show a forbidden message if the current user is not authorized to edit the target user's profile", async () => {
       currentUser.user = UserWithFullProfile;
-      initialState.currentUser = UserWithFullProfile;
       jest
         .spyOn(client.tanks, 'getTank')
         .mockRejectedValue(createAxiosError(403));
@@ -195,7 +185,6 @@ describe('Profile Tank View', () => {
   describe('when navigating on the client side', () => {
     it('will show the login form if the user is not authenticated', async () => {
       currentUser.user = null;
-      initialState.currentUser = null;
       const wrapper = mount(ProfileTankView, opts);
       expect(wrapper.find('[data-testid="login-form"]').exists()).toBe(true);
       expect(wrapper.find('#name').exists()).toBe(false);
@@ -203,7 +192,6 @@ describe('Profile Tank View', () => {
 
     it("will show a forbidden message if the current user is not authorized to edit the target user's profile", async () => {
       currentUser.user = UserWithFullProfile;
-      initialState.currentUser = UserWithFullProfile;
       const wrapper = mount(ProfileTankView, opts);
       expect(wrapper.find('[data-testid="forbidden-message"]').exists()).toBe(
         true,
@@ -212,7 +200,7 @@ describe('Profile Tank View', () => {
     });
 
     it('will show a not found message if the tank does not exist', async () => {
-      initialState.currentTank = undefined;
+      tanks.currentTank = null;
       const wrapper = mount(ProfileTankView, opts);
       expect(wrapper.find('[data-testid="not-found-message"]').exists()).toBe(
         true,
@@ -286,7 +274,6 @@ describe('Profile Tank View', () => {
     });
 
     it('will allow an admin to update a tank', async () => {
-      initialState.currentUser = AdminUser;
       currentUser.user = AdminUser;
       const expected: TankDTO = {
         ...TestData,
@@ -334,7 +321,6 @@ describe('Profile Tank View', () => {
     });
 
     it('will allow an admin to delete a tank', async () => {
-      initialState.currentUser = AdminUser;
       currentUser.user = AdminUser;
       const tank = new Tank(client.axios, TestData);
       jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
