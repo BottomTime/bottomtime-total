@@ -327,4 +327,6 @@ describe('NewLogEntry view', () => {
       );
     });
   });
+
+  it.todo('Extend tests to cover air tank entries');
 });

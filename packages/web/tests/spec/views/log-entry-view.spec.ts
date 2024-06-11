@@ -227,4 +227,6 @@ describe('Log Entry view', () => {
       'New notes',
     );
   });
+
+  it.todo('Extend tests to cover air tank entries');
 });

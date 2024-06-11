@@ -404,4 +404,14 @@ describe('EditLogbookEntry component', () => {
       DiveSite.name,
     );
   });
+
+  describe('when working with air tank entries', () => {
+    it.todo('Write tests to validate air tank entries');
+
+    it('will allow the user to save a logbook entry with air tanks', async () => {});
+
+    it('will validate missing fields for air tank entries', async () => {});
+
+    it('will validate invalid fields for air tank entries', async () => {});
+  });
 });

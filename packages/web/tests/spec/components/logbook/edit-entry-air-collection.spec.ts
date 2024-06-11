@@ -13,7 +13,6 @@ import * as uuid from 'uuid';
 import EditEntryAirCollection from '../../../../src/components/logbook/edit-entry-air-collection.vue';
 import { EditEntryAirFormData } from '../../../../src/components/logbook/edit-entry-air-form-data';
 import EditEntryAir from '../../../../src/components/logbook/edit-entry-air.vue';
-import { useCurrentUser } from '../../../../src/store';
 import TestTanks from '../../../fixtures/tanks.json';
 
 jest.mock('uuid');
@@ -62,15 +61,11 @@ const TestEntries: EditEntryAirFormData[] = [
 describe('EditEntryAirCollection component', () => {
   let tankData: ListTanksResponseDTO;
   let pinia: Pinia;
-  let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof EditEntryAirCollection>;
-
-  beforeAll(() => {});
 
   beforeEach(() => {
     tankData = ListTanksResponseSchema.parse(TestTanks);
     pinia = createPinia();
-    currentUser = useCurrentUser(pinia);
     opts = {
       props: {
         tanks: tankData.tanks,
