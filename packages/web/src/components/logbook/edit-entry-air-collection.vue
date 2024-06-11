@@ -29,7 +29,11 @@
     </TransitionGroup>
 
     <div class="flex space-x-3">
-      <FormButton @click="onAddTank">
+      <FormButton
+        control-id="btn-add-tank"
+        test-id="btn-add-tank"
+        @click="onAddTank"
+      >
         <p class="space-x-1">
           <span>
             <i class="fa-solid fa-plus"></i>

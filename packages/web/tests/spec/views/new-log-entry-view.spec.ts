@@ -265,6 +265,7 @@ describe('NewLogEntry view', () => {
 
       expect(spy).toHaveBeenCalledWith(BasicUser.username, {
         ...expected,
+        air: [],
         id: '',
       });
       expect(location.pathname).toBe(
@@ -318,6 +319,7 @@ describe('NewLogEntry view', () => {
 
       expect(spy).toHaveBeenCalledWith(BasicUser.username, {
         ...expected,
+        air: [],
         id: '',
       });
       expect(location.pathname).toBe(

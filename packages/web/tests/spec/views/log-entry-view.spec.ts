@@ -191,6 +191,7 @@ describe('Log Entry view', () => {
   it('will allow a user to save changes to a log entry', async () => {
     const expected: LogEntryDTO = {
       ...TestData,
+      air: [],
       creator: BasicUser.profile,
       logNumber: 13,
       duration: 66,

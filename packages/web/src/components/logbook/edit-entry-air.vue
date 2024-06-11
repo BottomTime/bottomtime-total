@@ -5,6 +5,7 @@
 
       <button
         class="text-danger hover:text-danger-hover"
+        :data-testid="`remove-tank-${formData.id}`"
         @click="$emit('remove', formData.id)"
       >
         <span class="sr-only">Remove air entry #{{ ordinal + 1 }}</span>
@@ -18,6 +19,7 @@
       <FormField
         class="order-1 col-span-1 md:col-span-2 lg:col-span-4"
         label="Tank"
+        :control-id="`tanks-select-${formData.id}`"
         :responsive="false"
         :invalid="v$.tankId.$error"
         :error="v$.tankId.$errors[0]?.$message"
@@ -26,13 +28,21 @@
           <FormSelect
             v-model="formData.tankId"
             class="grow"
-            control-id="tanks-select"
+            :control-id="`tanks-select-${formData.id}`"
+            :test-id="`tanks-select-${formData.id}`"
             :options="tankOptions"
             :invalid="v$.tankId.$error"
             stretch
           />
 
-          <FormCheckbox v-model="doubles" class="mx-3">Doubles</FormCheckbox>
+          <FormCheckbox
+            v-model="doubles"
+            :control-id="`doubles-${formData.id}`"
+            :test-id="`doubles-${formData.id}`"
+            class="mx-3"
+          >
+            Doubles
+          </FormCheckbox>
         </div>
       </FormField>
 
@@ -53,6 +63,7 @@
       <div
         v-if="formData.tankInfo"
         class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3 mb-2"
+        :data-testid="`tank-summary-${formData.id}`"
       >
         <div class="text-center">
           <p class="font-bold">Working Pressure</p>
@@ -75,7 +86,7 @@
       <FormField
         class="order-4"
         label="Start Pressure"
-        control-id="start-pressure"
+        :control-id="`start-pressure-${formData.id}`"
         :invalid="v$.startPressure.$error"
         :error="v$.startPressure.$errors[0]?.$message"
         :responsive="false"
@@ -83,6 +94,8 @@
         <div class="relative">
           <FormTextBox
             v-model.number="formData.startPressure"
+            :control-id="`start-pressure-${formData.id}`"
+            :test-id="`start-pressure-${formData.id}`"
             :invalid="v$.startPressure.$error"
           />
           <button
@@ -99,7 +112,7 @@
       <FormField
         class="order-5"
         label="End Pressure"
-        control-id="end-pressure"
+        :control-id="`end-pressure-${formData.id}`"
         :responsive="false"
         :invalid="v$.endPressure.$error"
         :error="v$.endPressure.$errors[0]?.$message"
@@ -107,6 +120,8 @@
         <div class="relative">
           <FormTextBox
             v-model.number="formData.endPressure"
+            :control-id="`end-pressure-${formData.id}`"
+            :test-id="`end-pressure-${formData.id}`"
             :invalid="v$.endPressure.$error"
           />
           <button
@@ -123,7 +138,7 @@
       <FormField
         class="order-6"
         label="O₂ %"
-        control-id="o2"
+        :control-id="`o2-${formData.id}`"
         :responsive="false"
         :invalid="v$.o2Percentage.$error"
         :error="v$.o2Percentage.$errors[0]?.$message"
@@ -131,6 +146,8 @@
         <div class="relative">
           <FormTextBox
             v-model.number="formData.o2Percentage"
+            :control-id="`o2-${formData.id}`"
+            :test-id="`o2-${formData.id}`"
             :invalid="v$.o2Percentage.$error"
           />
           <span
@@ -148,7 +165,7 @@
       <FormField
         class="order-7"
         label="He %"
-        control-id="he"
+        :control-id="`he-${formData.id}`"
         :responsive="false"
         :invalid="v$.hePercentage.$error"
         :error="v$.hePercentage.$errors[0]?.$message"
@@ -156,6 +173,8 @@
         <div class="relative">
           <FormTextBox
             v-model.number="formData.hePercentage"
+            :control-id="`he-${formData.id}`"
+            :test-id="`he-${formData.id}`"
             :invalid="v$.hePercentage.$error"
           />
           <span

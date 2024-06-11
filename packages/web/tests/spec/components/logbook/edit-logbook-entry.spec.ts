@@ -2,6 +2,8 @@ import {
   ApiClient,
   DepthUnit,
   DiveSiteDTO,
+  ListTanksResponseDTO,
+  ListTanksResponseSchema,
   LogBookSharing,
 } from '@bottomtime/api';
 
@@ -27,6 +29,7 @@ import {
   MinimalLogEntry,
 } from '../../../fixtures/log-entries';
 import { DiveSiteWithMinimalProperties } from '../../../fixtures/sites';
+import TankData from '../../../fixtures/tanks.json';
 import { BasicUser } from '../../../fixtures/users';
 
 dayjs.extend(tz);
@@ -59,6 +62,7 @@ const LogNumber = 99;
 describe('EditLogbookEntry component', () => {
   let router: Router;
   let client: ApiClient;
+  let tankData: ListTanksResponseDTO;
 
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof EditLogbookEntry>;
@@ -72,6 +76,7 @@ describe('EditLogbookEntry component', () => {
       },
     ]);
     client = new ApiClient();
+    tankData = ListTanksResponseSchema.parse(TankData);
   });
 
   beforeEach(async () => {
@@ -90,7 +95,7 @@ describe('EditLogbookEntry component', () => {
           [ApiClientKey as symbol]: client,
         },
       },
-      props: { entry: BlankLogEntry },
+      props: { entry: BlankLogEntry, tanks: tankData.tanks },
     };
   });
 
@@ -116,7 +121,7 @@ describe('EditLogbookEntry component', () => {
   });
 
   it('will load values for minimal log entry', async () => {
-    opts.props = { entry: MinimalLogEntry };
+    opts.props = { entry: MinimalLogEntry, tanks: tankData.tanks };
     const wrapper = mount(EditLogbookEntry, opts);
     await flushPromises();
 
@@ -140,7 +145,7 @@ describe('EditLogbookEntry component', () => {
   });
 
   it('will load values for full log entry', async () => {
-    opts.props = { entry: FullLogEntry };
+    opts.props = { entry: FullLogEntry, tanks: tankData.tanks };
     const wrapper = mount(EditLogbookEntry, opts);
     await flushPromises();
 
@@ -245,6 +250,7 @@ describe('EditLogbookEntry component', () => {
       [
         {
           ...BlankLogEntry,
+          air: [],
           bottomTime,
           duration,
           logNumber,
@@ -384,6 +390,7 @@ describe('EditLogbookEntry component', () => {
         ...BlankLogEntry,
         site: { ...DiveSiteWithMinimalProperties },
       },
+      tanks: tankData.tanks,
     };
     const wrapper = mount(EditLogbookEntry, opts);
     await wrapper.get('[data-testid="btn-change-site"]').trigger('click');
