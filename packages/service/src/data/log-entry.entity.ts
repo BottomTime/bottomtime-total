@@ -1,4 +1,4 @@
-import { DepthUnit } from '@bottomtime/api';
+import { DepthUnit, WeightUnit } from '@bottomtime/api';
 
 import {
   Column,
@@ -70,6 +70,13 @@ export class LogEntryEntity {
 
   @Column({ type: 'enum', enum: DepthUnit, nullable: true })
   maxDepthUnit: DepthUnit | null = null;
+
+  // Equipment
+  @Column({ type: 'float', nullable: true })
+  weight: number | null = null;
+
+  @Column({ type: 'enum', enum: WeightUnit, nullable: true })
+  weightUnit: WeightUnit | null = null;
 
   // Miscellaneous data
   @Column({ type: 'text', nullable: true })
