@@ -11,10 +11,10 @@ import EditEntryAir from '../../../../src/components/logbook/edit-entry-air.vue'
 import TankData from '../../../fixtures/tanks.json';
 
 const TestId = '42eee38a-5579-4e9d-b738-7126b7682b97';
-const RemoveButton = `[data-testid="remove-tank-${TestId}"]`;
+const RemoveButton = '[data-testid="remove-tank"]';
 const TankSelect = `#tanks-select-${TestId}`;
 const Doubles = `#doubles-${TestId}`;
-const TankSummary = `[data-testid="tank-summary-${TestId}"]`;
+const TankSummary = '[data-testid="tank-summary"]';
 const StartPressure = `#start-pressure-${TestId}`;
 const EndPressure = `#end-pressure-${TestId}`;
 const OxygenPercentage = `#o2-${TestId}`;
@@ -33,9 +33,9 @@ describe('EditEntryAir component', () => {
     air = {
       count: 1,
       endPressure: 800,
-      hePercentage: 12,
+      hePercent: 12,
       id: TestId,
-      o2Percentage: 32,
+      o2Percent: 32,
       pressureUnit: PressureUnit.PSI,
       startPressure: 3000,
       tankId: tankData.tanks[0].id,
@@ -67,10 +67,10 @@ describe('EditEntryAir component', () => {
       air.endPressure.toString(),
     );
     expect(wrapper.get<HTMLInputElement>(OxygenPercentage).element.value).toBe(
-      air.o2Percentage.toString(),
+      air.o2Percent.toString(),
     );
     expect(wrapper.get<HTMLInputElement>(HeliumPercentage).element.value).toBe(
-      air.hePercentage.toString(),
+      air.hePercent.toString(),
     );
   });
 
@@ -78,9 +78,9 @@ describe('EditEntryAir component', () => {
     const blank: EditEntryAirFormData = {
       count: '',
       endPressure: '',
-      hePercentage: '',
+      hePercent: '',
       id: TestId,
-      o2Percentage: '',
+      o2Percent: '',
       pressureUnit: PressureUnit.Bar,
       startPressure: '',
       tankId: '',
@@ -127,10 +127,10 @@ describe('EditEntryAir component', () => {
       air.endPressure.toString(),
     );
     expect(wrapper.get<HTMLInputElement>(OxygenPercentage).element.value).toBe(
-      air.o2Percentage.toString(),
+      air.o2Percent.toString(),
     );
     expect(wrapper.get<HTMLInputElement>(HeliumPercentage).element.value).toBe(
-      air.hePercentage.toString(),
+      air.hePercent.toString(),
     );
   });
 

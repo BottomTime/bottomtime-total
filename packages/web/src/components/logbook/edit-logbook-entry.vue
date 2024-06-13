@@ -226,7 +226,11 @@
       </FormField>
 
       <TextHeading>Save</TextHeading>
-      <div v-if="v$.$error" class="text-danger text-lg">
+      <div
+        v-if="v$.$error"
+        class="text-danger text-lg"
+        data-testid="form-errors"
+      >
         <p class="font-bold">
           Unable to save dive log entry. Please correct the following errors and
           then try again:
@@ -237,6 +241,7 @@
           </li>
         </ul>
       </div>
+
       <div class="flex justify-center gap-3">
         <FormButton
           type="primary"
@@ -340,8 +345,8 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
         endPressure: air.endPressure,
         count: air.count,
         pressureUnit: air.pressureUnit,
-        hePercentage: air.hePercent ?? '',
-        o2Percentage: air.o2Percent ?? '',
+        hePercent: air.hePercent ?? '',
+        o2Percent: air.o2Percent ?? '',
         tankId: '',
         tankInfo: air.name
           ? {
@@ -432,10 +437,8 @@ function airFormDataToDto(air: EditEntryAirFormData): LogEntryAirDTO {
       typeof air.startPressure === 'number' ? air.startPressure : 0,
     volume: air.tankInfo?.volume || 0,
     workingPressure: air.tankInfo?.workingPressure || 0,
-    hePercent:
-      typeof air.hePercentage === 'number' ? air.hePercentage : undefined,
-    o2Percent:
-      typeof air.o2Percentage === 'number' ? air.o2Percentage : undefined,
+    hePercent: typeof air.hePercent === 'number' ? air.hePercent : undefined,
+    o2Percent: typeof air.o2Percent === 'number' ? air.o2Percent : undefined,
   };
 }
 

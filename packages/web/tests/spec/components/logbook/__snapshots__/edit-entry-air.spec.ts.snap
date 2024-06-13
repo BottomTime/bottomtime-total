@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EditEntryAir component will render correctly 1`] = `
-"<div class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3 mb-2" data-testid="tank-summary-42eee38a-5579-4e9d-b738-7126b7682b97">
+"<div class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3 mb-2" data-testid="tank-summary">
   <div class="text-center">
     <p class="font-bold">Working Pressure</p>
     <p class="font-mono text-sm">207bar </p>
@@ -18,7 +18,7 @@ exports[`EditEntryAir component will render correctly 1`] = `
 `;
 
 exports[`EditEntryAir component will render correctly if saved tank info does not match an item in the list 1`] = `
-"<div class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3 mb-2" data-testid="tank-summary-42eee38a-5579-4e9d-b738-7126b7682b97">
+"<div class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3 mb-2" data-testid="tank-summary">
   <div class="text-center">
     <p class="font-bold">Working Pressure</p>
     <p class="font-mono text-sm">207bar </p>

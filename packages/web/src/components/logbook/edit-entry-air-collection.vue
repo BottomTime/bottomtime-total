@@ -73,8 +73,8 @@ const BlankAirForm: EditEntryAirFormData = {
   endPressure: '',
   count: '',
   pressureUnit: PressureUnit.Bar,
-  hePercentage: '',
-  o2Percentage: '',
+  hePercent: '',
+  o2Percent: '',
   tankId: '',
 } as const;
 

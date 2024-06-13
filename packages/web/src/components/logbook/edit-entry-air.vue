@@ -5,7 +5,7 @@
 
       <button
         class="text-danger hover:text-danger-hover"
-        :data-testid="`remove-tank-${formData.id}`"
+        data-testid="remove-tank"
         @click="$emit('remove', formData.id)"
       >
         <span class="sr-only">Remove air entry #{{ ordinal + 1 }}</span>
@@ -29,7 +29,7 @@
             v-model="formData.tankId"
             class="grow"
             :control-id="`tanks-select-${formData.id}`"
-            :test-id="`tanks-select-${formData.id}`"
+            test-id="tanks-select"
             :options="tankOptions"
             :invalid="v$.tankId.$error"
             stretch
@@ -38,7 +38,7 @@
           <FormCheckbox
             v-model="doubles"
             :control-id="`doubles-${formData.id}`"
-            :test-id="`doubles-${formData.id}`"
+            test-id="doubles"
             class="mx-3"
           >
             Doubles
@@ -63,7 +63,7 @@
       <div
         v-if="formData.tankInfo"
         class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3 mb-2"
-        :data-testid="`tank-summary-${formData.id}`"
+        data-testid="tank-summary"
       >
         <div class="text-center">
           <p class="font-bold">Working Pressure</p>
@@ -95,7 +95,7 @@
           <FormTextBox
             v-model.number="formData.startPressure"
             :control-id="`start-pressure-${formData.id}`"
-            :test-id="`start-pressure-${formData.id}`"
+            test-id="start-pressure"
             :invalid="v$.startPressure.$error"
           />
           <button
@@ -121,7 +121,7 @@
           <FormTextBox
             v-model.number="formData.endPressure"
             :control-id="`end-pressure-${formData.id}`"
-            :test-id="`end-pressure-${formData.id}`"
+            test-id="end-pressure"
             :invalid="v$.endPressure.$error"
           />
           <button
@@ -140,19 +140,19 @@
         label="O₂ %"
         :control-id="`o2-${formData.id}`"
         :responsive="false"
-        :invalid="v$.o2Percentage.$error"
-        :error="v$.o2Percentage.$errors[0]?.$message"
+        :invalid="v$.o2Percent.$error"
+        :error="v$.o2Percent.$errors[0]?.$message"
       >
         <div class="relative">
           <FormTextBox
-            v-model.number="formData.o2Percentage"
+            v-model.number="formData.o2Percent"
             :control-id="`o2-${formData.id}`"
-            :test-id="`o2-${formData.id}`"
-            :invalid="v$.o2Percentage.$error"
+            test-id="o2"
+            :invalid="v$.o2Percent.$error"
           />
           <span
             :class="`absolute end-0 inset-y-0 font-bold text-grey-200 bg-grey-700 border dark:text-grey-200 ${
-              v$.o2Percentage.$error
+              v$.o2Percent.$error
                 ? 'border-danger'
                 : 'border-grey-950 dark:bg-grey-700'
             } rounded-r-lg flex justify-center items-center w-10 pointer-events-none`"
@@ -167,19 +167,19 @@
         label="He %"
         :control-id="`he-${formData.id}`"
         :responsive="false"
-        :invalid="v$.hePercentage.$error"
-        :error="v$.hePercentage.$errors[0]?.$message"
+        :invalid="v$.hePercent.$error"
+        :error="v$.hePercent.$errors[0]?.$message"
       >
         <div class="relative">
           <FormTextBox
-            v-model.number="formData.hePercentage"
+            v-model.number="formData.hePercent"
             :control-id="`he-${formData.id}`"
-            :test-id="`he-${formData.id}`"
-            :invalid="v$.hePercentage.$error"
+            test-id="he"
+            :invalid="v$.hePercent.$error"
           />
           <span
             :class="`absolute end-0 inset-y-0 font-bold text-grey-200 bg-grey-700 border dark:text-grey-200 ${
-              v$.hePercentage.$error
+              v$.hePercent.$error
                 ? 'border-danger'
                 : 'border-grey-950 dark:bg-grey-700'
             } rounded-r-lg flex justify-center items-center w-10 pointer-events-none`"
@@ -196,7 +196,7 @@
 import { PressureUnit, TankDTO, TankMaterial } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
-import { between, helpers, integer, required } from '@vuelidate/validators';
+import { between, helpers, required } from '@vuelidate/validators';
 
 import { computed, reactive, ref, watch } from 'vue';
 
@@ -250,16 +250,6 @@ const v$ = useVuelidate(
     tankId: {
       required: helpers.withMessage('Please select a tank', required),
     },
-    count: {
-      int: helpers.withMessage(
-        'Number of tanks must be a whole number (e.g. 1, 2, 3, etc.)',
-        integer,
-      ),
-      between: helpers.withMessage(
-        'Number of tanks must be between 1 and 4',
-        between(1, 4),
-      ),
-    },
     startPressure: {
       required: helpers.withMessage('Start pressure is required', required),
       valid: helpers.withMessage(
@@ -285,26 +275,23 @@ const v$ = useVuelidate(
         },
       ),
     },
-    o2Percentage: {
+    o2Percent: {
       between: helpers.withMessage(
         'O₂ percentage must be between 0 and 100',
         between(0, 100),
       ),
       gasMixLimits: helpers.withMessage(
         'O₂ and helium content cannot add to more than 100% of the gas mix',
-        (o2Percentage, { hePercentage }) => {
-          if (
-            typeof o2Percentage === 'number' &&
-            typeof hePercentage === 'number'
-          ) {
-            return o2Percentage + hePercentage <= 100;
+        (o2Percent, { hePercent }) => {
+          if (typeof o2Percent === 'number' && typeof hePercent === 'number') {
+            return o2Percent + hePercent <= 100;
           }
 
           return true;
         },
       ),
     },
-    hePercentage: {
+    hePercent: {
       between: helpers.withMessage(
         'Helium percentage must be between 0 and 100',
         between(0, 100),

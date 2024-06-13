@@ -5,7 +5,7 @@
       "type": "node",
       "cwd": "${workspaceFolder}/packages/service/",
       "request": "launch",
-      "name": "Debug Jest tests in current file",
+      "name": "Debug service Jest tests in current file",
       "env": { "NODE_ENV": "test" },
       "program": "node_modules/.bin/jest",
       "args": ["${fileBasenameNoExtension}", "--config", "jest.config.ts"],
@@ -18,8 +18,8 @@
       "type": "node",
       "cwd": "${workspaceFolder}/packages/service/",
       "request": "launch",
-      "name": "Debug all Jest tests",
-      // "env": { "NODE_ENV": "test" },
+      "name": "Debug all service Jest tests",
+      "env": { "NODE_ENV": "test" },
       "envFile": "${workspaceFolder}/packages/service/.env",
       "program": "node_modules/.bin/jest",
       "args": ["--config", "jest.config.ts"],
@@ -28,19 +28,35 @@
         "program": "${workspaceFolder}/packages/service/node_modules/jest/bin/jest"
       }
     },
+
     {
-      "name": "Debug Vue tests",
       "type": "node",
+      "cwd": "${workspaceFolder}/packages/web/",
       "request": "launch",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceFolder}/packages/web/node_modules/.bin/vue-cli-service",
-        "test:unit",
-        "--runInBand"
-      ],
+      "name": "Debug Vue/Vite Jest tests in current file",
+      "env": { "NODE_ENV": "test" },
+      "program": "node_modules/.bin/jest",
+      "args": ["${fileBasenameNoExtension}", "--config", "jest.config.ts"],
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}/packages/web/"
+      "windows": {
+        "program": "${workspaceFolder}/packages/web/node_modules/jest/bin/jest"
+      }
     },
+    {
+      "type": "node",
+      "cwd": "${workspaceFolder}/packages/web/",
+      "request": "launch",
+      "name": "Debug all Vue/Vite Jest tests",
+      "env": { "NODE_ENV": "test" },
+      "envFile": "${workspaceFolder}/packages/web/.env",
+      "program": "node_modules/.bin/jest",
+      "args": ["--config", "jest.config.ts"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/packages/web/node_modules/jest/bin/jest"
+      }
+    },
+
     {
       "name": "Debug Vite/Vue Server",
       "type": "node",

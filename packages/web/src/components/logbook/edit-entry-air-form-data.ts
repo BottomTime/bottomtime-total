@@ -8,6 +8,6 @@ export interface EditEntryAirFormData {
   startPressure: string | number;
   endPressure: string | number;
   pressureUnit: PressureUnit;
-  hePercentage: string | number;
-  o2Percentage: string | number;
+  hePercent: string | number;
+  o2Percent: string | number;
 }
