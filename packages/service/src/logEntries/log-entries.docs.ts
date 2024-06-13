@@ -149,6 +149,25 @@
  *             An array listing tanks used during the dive as well as their contents and starting/ending pressures.
  *           items:
  *             $ref: "#/components/schemas/LogEntryAir"
+ *         weights:
+ *           type: object
+ *           description: Indicates the amount of weight worn by the diver on this particular dive.
+ *           required:
+ *             - weight
+ *             - unit
+ *           properties:
+ *             weight:
+ *               type: number
+ *               description: The amount of weight worn by the diver.
+ *               example: 2.2
+ *               minimum: 0
+ *             unit:
+ *               type: string
+ *               description: The unit in which the weight is being recorded. Either kilograms or pounds.
+ *               enum:
+ *                 - kg
+ *                 - lbs
+ *               example: kg
  *         notes:
  *           type: string
  *           description: Any notes about the dive.
