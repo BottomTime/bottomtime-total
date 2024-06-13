@@ -4,6 +4,7 @@ import {
   LogEntryAirDTO,
   LogEntryDTO,
   SuccinctProfileDTO,
+  WeightDTO,
 } from '@bottomtime/api';
 
 import { Logger } from '@nestjs/common';
@@ -120,6 +121,21 @@ export class LogEntry {
     this.airTanks = values;
   }
 
+  get weights(): WeightDTO | undefined {
+    if (typeof this.data.weight !== 'number' || !this.data.weightUnit) {
+      return undefined;
+    }
+
+    return {
+      weight: this.data.weight,
+      unit: this.data.weightUnit,
+    };
+  }
+  set weights(value: WeightDTO | undefined) {
+    this.data.weight = value?.weight ?? null;
+    this.data.weightUnit = value?.unit ?? null;
+  }
+
   toJSON(): LogEntryDTO {
     return {
       id: this.id,
@@ -129,6 +145,7 @@ export class LogEntry {
       bottomTime: this.bottomTime,
       duration: this.duration,
       maxDepth: this.maxDepth,
+      weights: this.weights,
       notes: this.notes,
       site: this.site?.toJSON(),
       air: this.air,

@@ -1,3 +1,5 @@
+import { WeightDTO, WeightUnit } from '@bottomtime/api';
+
 import { faker } from '@faker-js/faker';
 
 import dayjs from 'dayjs';
@@ -18,6 +20,15 @@ export function fakeLogEntry(
   const timezone = faker.location.timeZone();
   const timestamp = dayjs(entryTime).tz(timezone, true).utc().toDate();
 
+  const weight: WeightDTO | null =
+    possibly(
+      () => ({
+        weight: faker.number.float({ min: 0, max: 8, multipleOf: 0.1 }),
+        unit: faker.helpers.enumValue(WeightUnit),
+      }),
+      0.5,
+    ) ?? null;
+
   data.id = faker.string.uuid();
   data.owner = { id: faker.helpers.arrayElement(userIds) } as UserEntity;
   data.logNumber = faker.number.int({ min: 1, max: 1000 });
@@ -36,6 +47,9 @@ export function fakeLogEntry(
 
   data.maxDepth = depth?.depth ?? null;
   data.maxDepthUnit = depth?.unit ?? null;
+
+  data.weight = weight?.weight ?? null;
+  data.weightUnit = weight?.unit ?? null;
 
   data.notes = possibly(() => faker.lorem.paragraph(), 0.85) ?? null;
 

@@ -5,6 +5,7 @@ import {
   DepthSchema,
   PressureUnit,
   SortOrder,
+  WeightSchema,
 } from './constants';
 import { DiveSiteSchema } from './dive-sites';
 import { CreateOrUpdateTankParamsSchema } from './tanks';
@@ -58,6 +59,7 @@ const LogEntryBaseSchema = z.object({
   duration: z.number().positive(),
 
   maxDepth: DepthSchema.optional(),
+  weights: WeightSchema.optional(),
 
   air: LogEntryAirSchema.array().optional(),
 

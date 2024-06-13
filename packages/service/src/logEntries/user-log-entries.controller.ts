@@ -543,6 +543,7 @@ export class UserLogEntriesController {
     logEntry.entryTime = options.entryTime;
     logEntry.logNumber = options.logNumber;
     logEntry.maxDepth = options.maxDepth;
+    logEntry.weights = options.weights;
     logEntry.notes = options.notes;
 
     logEntry.air = options.air ?? [];

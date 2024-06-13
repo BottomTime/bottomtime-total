@@ -152,6 +152,12 @@ export const DepthSchema = z
   );
 export type DepthDTO = z.infer<typeof DepthSchema>;
 
+export const WeightSchema = z.object({
+  weight: z.number().min(0),
+  unit: z.nativeEnum(WeightUnit),
+});
+export type WeightDTO = z.infer<typeof WeightSchema>;
+
 export const PressureSchema = z.object({
   pressure: z.number().min(0),
   unit: z.nativeEnum(PressureUnit),

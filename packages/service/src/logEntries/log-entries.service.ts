@@ -96,6 +96,8 @@ export class LogEntriesService {
         'entries.duration',
         'entries.maxDepth',
         'entries.maxDepthUnit',
+        'entries.weight',
+        'entries.weightUnit',
         'entries.notes',
         'owners.id',
         'owners.username',
@@ -131,6 +133,7 @@ export class LogEntriesService {
     entry.notes = options.notes;
     entry.logNumber = options.logNumber;
     entry.site = options.site;
+    entry.weights = options.weights;
     if (options.air) entry.air = options.air;
     await entry.save();
 
