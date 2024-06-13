@@ -7,7 +7,7 @@ then
   npx pm2 start --no-daemon src/index.ts
 else
   echo "Starting in development mode..."
-  yarn admin db init
+  yarn admin db init && yarn admin db seed
   yarn migrate:up
   yarn serve
 fi

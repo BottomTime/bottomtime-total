@@ -22,7 +22,32 @@ export const LogEntryAirSchema = CreateOrUpdateTankParamsSchema.extend({
   pressureUnit: z.nativeEnum(PressureUnit),
   o2Percent: z.number().min(0.0).max(100.0).optional(),
   hePercent: z.number().min(0.0).max(100.0).optional(),
-});
+})
+  .refine(
+    ({ startPressure, pressureUnit }) =>
+      startPressure <= (pressureUnit === PressureUnit.Bar ? 300 : 4400),
+    {
+      path: ['startPressure'],
+      message: 'Start pressure cannot be more than 300bar / 4400psi.',
+    },
+  )
+  .refine(({ startPressure, endPressure }) => endPressure < startPressure, {
+    path: ['endPressure'],
+    message: 'End pressure cannot be greater than start pressure.',
+  })
+  .refine(
+    ({ o2Percent, hePercent }) => {
+      if (o2Percent && hePercent) {
+        return o2Percent + hePercent <= 100;
+      }
+
+      return true;
+    },
+    {
+      path: ['o2Percent', 'hePercent'],
+      message: 'O2 and He percentages cannot add to more than 100%',
+    },
+  );
 export type LogEntryAirDTO = z.infer<typeof LogEntryAirSchema>;
 
 const LogEntryBaseSchema = z.object({

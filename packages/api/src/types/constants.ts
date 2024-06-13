@@ -152,6 +152,12 @@ export const DepthSchema = z
   );
 export type DepthDTO = z.infer<typeof DepthSchema>;
 
+export const PressureSchema = z.object({
+  pressure: z.number().min(0),
+  unit: z.nativeEnum(PressureUnit),
+});
+export type PressureDTO = z.infer<typeof PressureSchema>;
+
 export const DateWithTimezoneSchema = z.object({
   date: z.string().regex(DateTimeRegex),
   timezone: z.string(),

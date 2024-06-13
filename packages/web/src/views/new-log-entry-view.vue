@@ -12,6 +12,7 @@
       v-if="profiles.currentProfile"
       :entry="state.entry"
       :is-saving="state.isSaving"
+      :tanks="tanks.results.tanks"
       @save="onSave"
     />
 
@@ -34,7 +35,7 @@ import RequireAuth from '../components/common/require-auth.vue';
 import EditLogbookEntry from '../components/logbook/edit-logbook-entry.vue';
 import { useLocation } from '../location';
 import { useOops } from '../oops';
-import { useCurrentUser, useProfiles } from '../store';
+import { useCurrentUser, useProfiles, useTanks } from '../store';
 
 interface NewLogEntryViewState {
   entry: LogEntryDTO;
@@ -47,6 +48,7 @@ const location = useLocation();
 const oops = useOops();
 const profiles = useProfiles();
 const route = useRoute();
+const tanks = useTanks();
 
 const Breadcrumbs: Breadcrumb[] = [
   {
@@ -78,19 +80,30 @@ const state = reactive<NewLogEntryViewState>({
 });
 
 onServerPrefetch(async () => {
-  await oops(
-    async () => {
-      if (!currentUser.user) return;
-      profiles.currentProfile = await client.users.getProfile(
-        route.params.username as string,
-      );
-    },
-    {
-      [404]: () => {
-        profiles.currentProfile = null;
+  await Promise.all([
+    oops(
+      async () => {
+        if (!currentUser.user) return;
+        profiles.currentProfile = await client.users.getProfile(
+          route.params.username as string,
+        );
       },
-    },
-  );
+      {
+        [404]: () => {
+          profiles.currentProfile = null;
+        },
+      },
+    ),
+    oops(async () => {
+      if (!currentUser.user) return;
+      const tankResults = await client.tanks.listTanks({
+        username: route.params.username as string,
+        includeSystem: true,
+      });
+      tanks.results.tanks = tankResults.tanks.map((tank) => tank.toJSON());
+      tanks.results.totalCount = tankResults.totalCount;
+    }),
+  ]);
 });
 
 async function onSave(data: LogEntryDTO): Promise<void> {

@@ -2,7 +2,10 @@ import {
   ApiClient,
   DepthUnit,
   DiveSiteDTO,
+  ListTanksResponseDTO,
+  ListTanksResponseSchema,
   LogBookSharing,
+  PressureUnit,
 } from '@bottomtime/api';
 
 import {
@@ -19,6 +22,7 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../../src/api-client';
 import FormDatePicker from '../../../../src/components/common/form-date-picker.vue';
 import SelectSite from '../../../../src/components/diveSites/selectSite/select-site.vue';
+import EditEntryAir from '../../../../src/components/logbook/edit-entry-air.vue';
 import EditLogbookEntry from '../../../../src/components/logbook/edit-logbook-entry.vue';
 import { createRouter } from '../../../fixtures/create-router';
 import {
@@ -27,9 +31,11 @@ import {
   MinimalLogEntry,
 } from '../../../fixtures/log-entries';
 import { DiveSiteWithMinimalProperties } from '../../../fixtures/sites';
+import TankData from '../../../fixtures/tanks.json';
 import { BasicUser } from '../../../fixtures/users';
 
 dayjs.extend(tz);
+jest.mock('uuid');
 
 const LogNumberInput = '#logNumber';
 const TimezoneSelect = '#entryTimeTimezone';
@@ -39,6 +45,7 @@ const MaxDepthInput = '#maxDepth';
 const NotesInput = '#notes';
 const SaveButton = '#btnSave';
 const CancelButton = '#btnCancel';
+const AddTankButton = '#btn-add-tank';
 
 const DiveSite: DiveSiteDTO = {
   createdOn: new Date(),
@@ -59,6 +66,7 @@ const LogNumber = 99;
 describe('EditLogbookEntry component', () => {
   let router: Router;
   let client: ApiClient;
+  let tankData: ListTanksResponseDTO;
 
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof EditLogbookEntry>;
@@ -72,6 +80,7 @@ describe('EditLogbookEntry component', () => {
       },
     ]);
     client = new ApiClient();
+    tankData = ListTanksResponseSchema.parse(TankData);
   });
 
   beforeEach(async () => {
@@ -90,7 +99,7 @@ describe('EditLogbookEntry component', () => {
           [ApiClientKey as symbol]: client,
         },
       },
-      props: { entry: BlankLogEntry },
+      props: { entry: BlankLogEntry, tanks: tankData.tanks },
     };
   });
 
@@ -116,7 +125,7 @@ describe('EditLogbookEntry component', () => {
   });
 
   it('will load values for minimal log entry', async () => {
-    opts.props = { entry: MinimalLogEntry };
+    opts.props = { entry: MinimalLogEntry, tanks: tankData.tanks };
     const wrapper = mount(EditLogbookEntry, opts);
     await flushPromises();
 
@@ -140,7 +149,7 @@ describe('EditLogbookEntry component', () => {
   });
 
   it('will load values for full log entry', async () => {
-    opts.props = { entry: FullLogEntry };
+    opts.props = { entry: FullLogEntry, tanks: tankData.tanks };
     const wrapper = mount(EditLogbookEntry, opts);
     await flushPromises();
 
@@ -245,6 +254,7 @@ describe('EditLogbookEntry component', () => {
       [
         {
           ...BlankLogEntry,
+          air: [],
           bottomTime,
           duration,
           logNumber,
@@ -384,6 +394,7 @@ describe('EditLogbookEntry component', () => {
         ...BlankLogEntry,
         site: { ...DiveSiteWithMinimalProperties },
       },
+      tanks: tankData.tanks,
     };
     const wrapper = mount(EditLogbookEntry, opts);
     await wrapper.get('[data-testid="btn-change-site"]').trigger('click');
@@ -396,5 +407,127 @@ describe('EditLogbookEntry component', () => {
     expect(wrapper.get('[data-testid="btn-site-name"]').text()).toBe(
       DiveSite.name,
     );
+  });
+
+  describe('when working with air tank entries', () => {
+    it('will allow the user to save a logbook entry with air tanks', async () => {
+      const entryTime = new Date('2024-05-07T14:41:06');
+      const timezone = 'America/Vancouver';
+      const duration = 44.1;
+      const bottomTime = 41.8;
+      const maxDepth = 33.3;
+      const notes = 'hello';
+      const air = {
+        startPressure: 207,
+        count: 2,
+        endPressure: 50,
+        o2Percent: 21,
+        hePercent: 40,
+        tankId: tankData.tanks[0].id,
+      };
+
+      const wrapper = mount(EditLogbookEntry, opts);
+      await flushPromises();
+
+      await wrapper.get(LogNumberInput).setValue('88');
+      await wrapper.getComponent(FormDatePicker).setValue(entryTime);
+      await wrapper.get(TimezoneSelect).setValue(timezone);
+      await wrapper.get(DurationInput).setValue(duration.toString());
+      await wrapper.get(BottomTimeInput).setValue(bottomTime.toString());
+      await wrapper.get(MaxDepthInput).setValue(maxDepth);
+      await wrapper.get(NotesInput).setValue(notes);
+
+      await wrapper.get(AddTankButton).trigger('click');
+      await wrapper
+        .get('[data-testid="tanks-select"]')
+        .setValue(tankData.tanks[0].id);
+      await wrapper.get('[data-testid="doubles"]').setValue(true);
+      await wrapper
+        .get('[data-testid="start-pressure"]')
+        .setValue(air.startPressure.toString());
+      await wrapper
+        .get('[data-testid="end-pressure"]')
+        .setValue(air.endPressure.toString());
+      await wrapper
+        .get('[data-testid="o2"]')
+        .setValue(air.o2Percent.toString());
+      await wrapper
+        .get('[data-testid="he"]')
+        .setValue(air.hePercent.toString());
+
+      await wrapper.get(SaveButton).trigger('click');
+      await flushPromises();
+
+      expect(wrapper.emitted('save')).toEqual([
+        [
+          {
+            ...BlankLogEntry,
+            air: [
+              {
+                count: air.count,
+                endPressure: air.endPressure,
+                hePercent: air.hePercent,
+                material: tankData.tanks[0].material,
+                name: tankData.tanks[0].name,
+                o2Percent: air.o2Percent,
+                pressureUnit: PressureUnit.Bar,
+                startPressure: air.startPressure,
+                volume: tankData.tanks[0].volume,
+                workingPressure: tankData.tanks[0].workingPressure,
+              },
+            ],
+            bottomTime,
+            duration,
+            logNumber: 88,
+            maxDepth: {
+              depth: maxDepth,
+              unit: DepthUnit.Meters,
+            },
+            notes,
+            entryTime: {
+              date: dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss'),
+              timezone: 'America/Vancouver',
+            },
+          },
+        ],
+      ]);
+    });
+
+    it('will validate missing fields for air tank entries', async () => {
+      const wrapper = mount(EditLogbookEntry, opts);
+      await flushPromises();
+
+      await wrapper.get(AddTankButton).trigger('click');
+      await wrapper.get(SaveButton).trigger('click');
+      await flushPromises();
+
+      expect(
+        wrapper.find('[data-testid="form-errors"]').text(),
+      ).toMatchSnapshot();
+
+      const airEntry = wrapper.getComponent(EditEntryAir);
+      expect(airEntry.text()).toMatchSnapshot();
+    });
+
+    it('will validate invalid fields for air tank entries', async () => {
+      const wrapper = mount(EditLogbookEntry, opts);
+      await flushPromises();
+
+      await wrapper.get(AddTankButton).trigger('click');
+      await wrapper.get('[data-testid="tanks-select"]').setValue('');
+      await wrapper.get('[data-testid="start-pressure"]').setValue('nope');
+      await wrapper.get('[data-testid="end-pressure"]').setValue('lol');
+      await wrapper.get('[data-testid="o2"]').setValue('-1');
+      await wrapper.get('[data-testid="he"]').setValue('101');
+      await wrapper.get(SaveButton).trigger('click');
+      await flushPromises();
+
+      expect(
+        wrapper.find('[data-testid="form-errors"]').text(),
+      ).toMatchSnapshot();
+
+      const airEntry = wrapper.getComponent(EditEntryAir);
+      expect(airEntry.text()).toMatchSnapshot();
+    });
   });
 });

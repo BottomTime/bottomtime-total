@@ -2,8 +2,12 @@ import {
   ApiClient,
   CreateOrUpdateLogEntryParamsDTO,
   DepthUnit,
+  ListTanksResponseDTO,
+  ListTanksResponseSchema,
   LogEntry,
   LogEntryDTO,
+  PressureUnit,
+  TankMaterial,
 } from '@bottomtime/api';
 
 import {
@@ -21,10 +25,11 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import FormDatePicker from '../../../src/components/common/form-date-picker.vue';
 import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser, useProfiles } from '../../../src/store';
+import { useCurrentUser, useProfiles, useTanks } from '../../../src/store';
 import NewLogEntryView from '../../../src/views/new-log-entry-view.vue';
 import { createAxiosError } from '../../fixtures/create-axios-error';
 import { createRouter } from '../../fixtures/create-router';
+import TestTankData from '../../fixtures/tanks.json';
 import {
   AdminUser,
   BasicUser,
@@ -32,6 +37,7 @@ import {
 } from '../../fixtures/users';
 
 const LogNumberInput = '#logNumber';
+const EntryTimezoneInput = '#entryTimeTimezone';
 const TimezoneSelect = '#entryTimeTimezone';
 const DurationInput = '#duration';
 const BottomTimeInput = '#bottomTime';
@@ -51,7 +57,9 @@ describe('NewLogEntry view', () => {
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let profiles: ReturnType<typeof useProfiles>;
+  let tanksStore: ReturnType<typeof useTanks>;
   let location: MockLocation;
+  let tankData: ListTanksResponseDTO;
   let opts: ComponentMountingOptions<typeof NewLogEntryView>;
 
   beforeAll(() => {
@@ -63,6 +71,7 @@ describe('NewLogEntry view', () => {
       },
     ]);
     client = new ApiClient();
+    tankData = ListTanksResponseSchema.parse(TestTankData);
   });
 
   beforeEach(async () => {
@@ -71,8 +80,8 @@ describe('NewLogEntry view', () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     profiles = useProfiles(pinia);
+    tanksStore = useTanks(pinia);
     currentUser.user = BasicUser;
-    profiles.currentProfile = BasicUser.profile;
 
     jest
       .spyOn(client.logEntries, 'getNextAvailableLogNumber')
@@ -93,6 +102,13 @@ describe('NewLogEntry view', () => {
   });
 
   describe('when rendering on the server side', () => {
+    beforeEach(() => {
+      jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
+        tanks: [],
+        totalCount: 0,
+      });
+    });
+
     it('will render "not found" message if requested logbook does not exist', async () => {
       currentUser.user = AdminUser;
       jest.spyOn(client.users, 'getProfile').mockRejectedValue(
@@ -166,6 +182,11 @@ describe('NewLogEntry view', () => {
   });
 
   describe('when rendering on the client side', () => {
+    beforeEach(() => {
+      profiles.currentProfile = BasicUser.profile;
+      tanksStore.results = tankData;
+    });
+
     it('will render "not found" message if requested logbook does not exist', async () => {
       await router.push('/logbook/unknown-user/new');
       profiles.currentProfile = null;
@@ -265,6 +286,7 @@ describe('NewLogEntry view', () => {
 
       expect(spy).toHaveBeenCalledWith(BasicUser.username, {
         ...expected,
+        air: [],
         id: '',
       });
       expect(location.pathname).toBe(
@@ -318,8 +340,94 @@ describe('NewLogEntry view', () => {
 
       expect(spy).toHaveBeenCalledWith(BasicUser.username, {
         ...expected,
+        air: [],
         id: '',
       });
+      expect(location.pathname).toBe(
+        `/logbook/${BasicUser.username}/${expected.id}`,
+      );
+    });
+
+    it('will allow users to save information on breathing gas', async () => {
+      currentUser.user = BasicUser;
+
+      const expected: LogEntryDTO = {
+        creator: BasicUser.profile,
+        entryTime: {
+          date: '2021-01-01T12:00:00',
+          timezone: 'America/Los_Angeles',
+        },
+        id: '1f3c6568-d63c-4e52-8679-2a85d6f6b1f4',
+        air: [
+          {
+            count: 2,
+            endPressure: 50,
+            hePercent: 40,
+            material: TankMaterial.Aluminum,
+            name: 'AL13 (CCR 2L): Aluminum XS-13',
+            o2Percent: 21,
+            pressureUnit: PressureUnit.Bar,
+            startPressure: 207,
+            volume: 1.8,
+            workingPressure: 207,
+          },
+        ],
+        logNumber: 13,
+        duration: 66,
+        notes: 'New notes',
+      };
+      const air = {
+        startPressure: 207,
+        count: 2,
+        endPressure: 50,
+        o2Percent: 21,
+        hePercent: 40,
+        tankId: tankData.tanks[0].id,
+      };
+
+      const saveSpy = jest
+        .spyOn(client.logEntries, 'createLogEntry')
+        .mockResolvedValue(new LogEntry(client.axios, expected));
+
+      await router.push(`/logbook/${BasicUser.username}/new`);
+
+      const wrapper = mount(NewLogEntryView, opts);
+      await flushPromises();
+
+      await wrapper.get(LogNumberInput).setValue('13');
+      await wrapper
+        .getComponent(FormDatePicker)
+        .setValue(new Date(expected.entryTime.date));
+      await wrapper.get(EntryTimezoneInput).setValue('America/Los_Angeles');
+      await wrapper.get(DurationInput).setValue('66');
+      await wrapper.get(NotesInput).setValue('New notes');
+
+      await wrapper.get('#btn-add-tank').trigger('click');
+      await wrapper
+        .get('[data-testid="tanks-select"]')
+        .setValue(tankData.tanks[0].id);
+      await wrapper.get('[data-testid="doubles"]').setValue(true);
+      await wrapper
+        .get('[data-testid="start-pressure"]')
+        .setValue(air.startPressure.toString());
+      await wrapper
+        .get('[data-testid="end-pressure"]')
+        .setValue(air.endPressure.toString());
+      await wrapper
+        .get('[data-testid="o2"]')
+        .setValue(air.o2Percent.toString());
+      await wrapper
+        .get('[data-testid="he"]')
+        .setValue(air.hePercent.toString());
+
+      await wrapper.get('#btnSave').trigger('click');
+      await flushPromises();
+
+      expect(saveSpy).toHaveBeenCalledWith(BasicUser.username, {
+        ...expected,
+        id: '',
+      });
+
       expect(location.pathname).toBe(
         `/logbook/${BasicUser.username}/${expected.id}`,
       );

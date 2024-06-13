@@ -7,6 +7,7 @@
       v-if="editMode"
       :entry="logEntries.currentEntry"
       :is-saving="state.isSaving"
+      :tanks="tanks.results.tanks"
       @save="onSave"
     />
     <ViewLogbookEntry v-else :entry="logEntries.currentEntry" />
@@ -29,7 +30,7 @@ import PageTitle from '../components/common/page-title.vue';
 import EditLogbookEntry from '../components/logbook/edit-logbook-entry.vue';
 import ViewLogbookEntry from '../components/logbook/view-logbook-entry.vue';
 import { useOops } from '../oops';
-import { useCurrentUser, useLogEntries, useToasts } from '../store';
+import { useCurrentUser, useLogEntries, useTanks, useToasts } from '../store';
 
 interface LogEntryViewState {
   isSaving: boolean;
@@ -40,6 +41,7 @@ const currentUser = useCurrentUser();
 const logEntries = useLogEntries();
 const oops = useOops();
 const route = useRoute();
+const tanks = useTanks();
 const toasts = useToasts();
 
 const state = reactive<LogEntryViewState>({
@@ -68,31 +70,44 @@ const items: Breadcrumb[] = [
 ];
 
 onServerPrefetch(async () => {
-  await oops(
-    async () => {
-      if (
-        typeof route.params.entryId !== 'string' ||
-        typeof route.params.username !== 'string'
-      ) {
-        return;
-      }
+  await Promise.all([
+    oops(
+      async () => {
+        if (
+          typeof route.params.entryId !== 'string' ||
+          typeof route.params.username !== 'string'
+        ) {
+          return;
+        }
 
-      const entry = await client.logEntries.getLogEntry(
-        route.params.username,
-        route.params.entryId,
-      );
+        const entry = await client.logEntries.getLogEntry(
+          route.params.username,
+          route.params.entryId,
+        );
 
-      logEntries.currentEntry = entry.toJSON();
-    },
-    {
-      [403]: () => {
-        logEntries.currentEntry = null;
+        logEntries.currentEntry = entry.toJSON();
       },
-      [404]: () => {
-        logEntries.currentEntry = null;
+      {
+        [403]: () => {
+          logEntries.currentEntry = null;
+        },
+        [404]: () => {
+          logEntries.currentEntry = null;
+        },
       },
-    },
-  );
+    ),
+    oops(async () => {
+      if (typeof route.params.username !== 'string') return;
+
+      const tanksResult = await client.tanks.listTanks({
+        username: route.params.username,
+        includeSystem: true,
+      });
+
+      tanks.results.tanks = tanksResult.tanks.map((tank) => tank.toJSON());
+      tanks.results.totalCount = tanksResult.totalCount;
+    }),
+  ]);
 });
 
 async function onSave(data: LogEntryDTO): Promise<void> {

@@ -9,7 +9,7 @@ exports[`LogbookSearch component will render correctly with no params 1`] = `
       </div>
       <div class="grow w-full">
         <div class="relative">
-          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
+          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
             <!--v-if-->
           </div><button class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"><span><i class="fa-solid fa-magnifying-glass"></i></span></button>
         </div>
@@ -97,7 +97,7 @@ exports[`LogbookSearch component will render correctly with params 1`] = `
       </div>
       <div class="grow w-full">
         <div class="relative">
-          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950  placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
+          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
             <!--v-if-->
           </div><button class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"><span><i class="fa-solid fa-magnifying-glass"></i></span></button>
         </div>
