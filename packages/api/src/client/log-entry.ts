@@ -9,6 +9,7 @@ import {
   LogEntryDTO,
   LogEntrySchema,
   SuccinctProfileDTO,
+  WeightDTO,
 } from '../types';
 
 export class LogEntry {
@@ -76,6 +77,13 @@ export class LogEntry {
   }
   set air(value: LogEntryAirDTO[] | undefined) {
     this.data.air = value;
+  }
+
+  get weights(): WeightDTO | undefined {
+    return this.data.weights ? { ...this.data.weights } : undefined;
+  }
+  set weights(value: WeightDTO | undefined) {
+    this.data.weights = value;
   }
 
   toJSON(): LogEntryDTO {

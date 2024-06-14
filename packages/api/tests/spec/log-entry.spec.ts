@@ -9,6 +9,7 @@ import {
   LogEntryDTO,
   PressureUnit,
   TankMaterial,
+  WeightUnit,
 } from '../../src';
 import { createScope } from '../fixtures/nock';
 import { BasicUser } from '../fixtures/users';
@@ -30,6 +31,10 @@ const FullTestData: LogEntryDTO = {
   maxDepth: {
     depth: 92.3,
     unit: DepthUnit.Feet,
+  },
+  weights: {
+    weight: 10,
+    unit: WeightUnit.Pounds,
   },
   notes: 'Sick shipwreck!',
   air: [
@@ -79,6 +84,7 @@ describe('Log entry API client', () => {
     expect(entry.maxDepth).toEqual(FullTestData.maxDepth);
     expect(entry.notes).toBe(FullTestData.notes);
     expect(entry.air).toEqual(FullTestData.air);
+    expect(entry.weights).toEqual(FullTestData.weights);
   });
 
   it('will return missing properties as undefined', () => {
@@ -88,6 +94,7 @@ describe('Log entry API client', () => {
     expect(entry.maxDepth).toBeUndefined();
     expect(entry.notes).toBeUndefined();
     expect(entry.air).toBeUndefined();
+    expect(entry.weights).toBeUndefined();
   });
 
   it('will allow properties to be updated', () => {
@@ -146,6 +153,10 @@ describe('Log entry API client', () => {
       logNumber: 555,
       maxDepth: { depth: 95.3, unit: DepthUnit.Feet },
       notes: 'Awesome dive!',
+      weights: {
+        weight: 5.2,
+        unit: WeightUnit.Pounds,
+      },
       air: [
         {
           name: 'robust spokesman',
@@ -167,6 +178,7 @@ describe('Log entry API client', () => {
     entry.duration = options.duration;
     entry.maxDepth = options.maxDepth;
     entry.notes = options.notes;
+    entry.weights = options.weights;
     entry.air = options.air!;
 
     scope

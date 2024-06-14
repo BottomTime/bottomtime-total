@@ -1,4 +1,9 @@
-import { DepthUnit, PressureUnit, TankMaterial } from '@bottomtime/api';
+import {
+  DepthUnit,
+  PressureUnit,
+  TankMaterial,
+  WeightUnit,
+} from '@bottomtime/api';
 
 import { faker } from '@faker-js/faker';
 
@@ -25,6 +30,8 @@ const LogEntrySchema = z.object({
   duration: z.number(),
   maxDepth: z.number().nullable(),
   maxDepthUnit: z.nativeEnum(DepthUnit).nullable(),
+  weight: z.number().nullable(),
+  weightUnit: z.nativeEnum(WeightUnit).nullable(),
   notes: z.string().nullable(),
 
   air: z
@@ -107,6 +114,13 @@ export function createTestLogEntry(
 ): LogEntryEntity {
   const data = new LogEntryEntity();
   const timezone = options?.timezone ?? faker.location.timeZone();
+  const weight = faker.helpers.maybe(
+    () => ({
+      weight: faker.number.float({ min: 0, max: 8, multipleOf: 0.1 }),
+      unit: faker.helpers.enumValue(WeightUnit),
+    }),
+    { probability: 0.5 },
+  );
 
   data.owner = owner;
 
@@ -151,6 +165,9 @@ export function createTestLogEntry(
       }),
     );
   }
+
+  data.weight = options?.weight ?? weight?.weight ?? null;
+  data.weightUnit = options?.weightUnit ?? weight?.unit ?? null;
 
   data.notes = options?.notes ?? faker.lorem.paragraph();
 

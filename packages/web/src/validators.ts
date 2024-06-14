@@ -1,10 +1,16 @@
-import { DepthSchema } from '@bottomtime/api';
+import { DepthSchema, WeightSchema } from '@bottomtime/api';
 
 import { helpers } from '@vuelidate/validators';
 
 export function depth(val: unknown): boolean {
   if (!helpers.req(val)) return true;
   const { success } = DepthSchema.safeParse(val);
+  return success;
+}
+
+export function weight(val: unknown): boolean {
+  if (!helpers.req(val)) return true;
+  const { success } = WeightSchema.safeParse(val);
   return success;
 }
 

@@ -40,6 +40,8 @@ export class LogEntryQueryBuilder {
         'entries.duration',
         'entries.maxDepth',
         'entries.maxDepthUnit',
+        'entries.weight',
+        'entries.weightUnit',
         'entries.notes',
         'owners.id',
         'owners.username',

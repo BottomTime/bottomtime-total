@@ -9,6 +9,7 @@ import {
   SortOrder,
   TankMaterial,
   UserRole,
+  WeightUnit,
 } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
@@ -248,7 +249,7 @@ describe('Log entries E2E tests', () => {
         .set(...authHeader)
         .expect(200);
 
-      expect(body.totalCount).toBe(24);
+      expect(body.totalCount).toBe(26);
       expect(body.logEntries).toHaveLength(8);
 
       expect(
@@ -348,6 +349,10 @@ describe('Log entries E2E tests', () => {
         depth: 28.2,
         unit: DepthUnit.Meters,
       },
+      weights: {
+        weight: 4.8,
+        unit: WeightUnit.Pounds,
+      },
       notes: 'I did a dive!',
       air: [
         {
@@ -383,6 +388,7 @@ describe('Log entries E2E tests', () => {
       expect(body.maxDepth).toEqual(newEntry.maxDepth);
       expect(body.notes).toBe(newEntry.notes);
       expect(body.site.name).toEqual(diveSiteData[8].name);
+      expect(body.weights).toEqual(newEntry.weights);
       expect(body.air).toEqual(newEntry.air);
 
       const saved = await Entries.findOneOrFail({
@@ -421,6 +427,7 @@ describe('Log entries E2E tests', () => {
       expect(body.bottomTime).toBe(newEntry.bottomTime);
       expect(body.duration).toBe(newEntry.duration);
       expect(body.maxDepth).toEqual(newEntry.maxDepth);
+      expect(body.weights).toEqual(newEntry.weights);
       expect(body.notes).toBe(newEntry.notes);
 
       const saved = await Entries.findOneOrFail({
@@ -604,6 +611,10 @@ describe('Log entries E2E tests', () => {
         depth: 28.2,
         unit: DepthUnit.Meters,
       },
+      weights: {
+        weight: 2.77,
+        unit: WeightUnit.Kilograms,
+      },
       notes: 'I did a dive!',
       air: [
         {
@@ -655,6 +666,7 @@ describe('Log entries E2E tests', () => {
       expect(body.bottomTime).toBe(updatedEntry.bottomTime);
       expect(body.duration).toBe(updatedEntry.duration);
       expect(body.maxDepth).toEqual(updatedEntry.maxDepth);
+      expect(body.weights).toEqual(updatedEntry.weights);
       expect(body.notes).toBe(updatedEntry.notes);
       expect(body.air).toEqual(updatedEntry.air);
 
@@ -674,6 +686,8 @@ describe('Log entries E2E tests', () => {
       expect(saved.logNumber).toBe(updatedEntry.logNumber);
       expect(saved.maxDepth).toEqual(updatedEntry.maxDepth!.depth);
       expect(saved.maxDepthUnit).toBe(updatedEntry.maxDepth!.unit);
+      expect(saved.weight).toBe(updatedEntry.weights?.weight);
+      expect(saved.weightUnit).toBe(updatedEntry.weights?.unit);
       expect(saved.notes).toBe(updatedEntry.notes);
       expect(saved.air).toEqual(
         updatedEntry.air?.map((tank, index) => ({
@@ -698,6 +712,7 @@ describe('Log entries E2E tests', () => {
       expect(body.bottomTime).toBe(updatedEntry.bottomTime);
       expect(body.duration).toBe(updatedEntry.duration);
       expect(body.maxDepth).toEqual(updatedEntry.maxDepth);
+      expect(body.weights).toEqual(updatedEntry.weights);
       expect(body.notes).toBe(updatedEntry.notes);
 
       const saved = await Entries.findOneOrFail({
@@ -716,6 +731,8 @@ describe('Log entries E2E tests', () => {
       expect(saved.logNumber).toBe(updatedEntry.logNumber);
       expect(saved.maxDepth).toEqual(updatedEntry.maxDepth!.depth);
       expect(saved.maxDepthUnit).toBe(updatedEntry.maxDepth!.unit);
+      expect(saved.weight).toBe(updatedEntry.weights?.weight);
+      expect(saved.weightUnit).toBe(updatedEntry.weights?.unit);
       expect(saved.notes).toBe(updatedEntry.notes);
     });
 

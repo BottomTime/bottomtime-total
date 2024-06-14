@@ -93,5 +93,9 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
     "updatedOn": 2024-05-21T19:46:14.342Z,
     "waterType": "salt",
   },
+  "weights": {
+    "unit": "lbs",
+    "weight": 5.5,
+  },
 }
 `;

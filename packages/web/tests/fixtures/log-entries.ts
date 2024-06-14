@@ -1,4 +1,9 @@
-import { DepthUnit, LogBookSharing, LogEntryDTO } from '@bottomtime/api';
+import {
+  DepthUnit,
+  LogBookSharing,
+  LogEntryDTO,
+  WeightUnit,
+} from '@bottomtime/api';
 
 export const BlankLogEntry: LogEntryDTO = {
   creator: {
@@ -51,6 +56,10 @@ export const FullLogEntry: LogEntryDTO = {
   maxDepth: {
     depth: 33.3,
     unit: DepthUnit.Feet,
+  },
+  weights: {
+    weight: 6.5,
+    unit: WeightUnit.Pounds,
   },
   notes: 'This was a great dive!',
 };

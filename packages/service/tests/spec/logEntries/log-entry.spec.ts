@@ -5,6 +5,7 @@ import {
   PressureUnit,
   TankMaterial,
   WaterType,
+  WeightUnit,
 } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
@@ -120,6 +121,9 @@ const TestLogEntryData: Partial<LogEntryEntity> = {
     },
   ],
 
+  weight: 5.5,
+  weightUnit: WeightUnit.Pounds,
+
   notes: 'This was a great dive!',
 };
 
@@ -185,6 +189,10 @@ describe('Log Entry class', () => {
     });
     expect(logEntry.notes).toBe(data.notes);
     expect(logEntry.site?.toEntity()).toEqual(diveSite);
+    expect(logEntry.weights).toEqual({
+      weight: data.weight,
+      unit: data.weightUnit,
+    });
   });
 
   it('will update properties correctly', () => {
@@ -196,6 +204,8 @@ describe('Log Entry class', () => {
     const newMaxDepth = 35;
     const newMaxDepthUnit = DepthUnit.Meters;
     const newNotes = 'This was an even better dive!';
+    const newWeight = 3.3;
+    const newWeightUnit = WeightUnit.Kilograms;
 
     logEntry.logNumber = newLogNumber;
     logEntry.entryTime = {
@@ -207,6 +217,10 @@ describe('Log Entry class', () => {
     logEntry.maxDepth = {
       depth: newMaxDepth,
       unit: newMaxDepthUnit,
+    };
+    logEntry.weights = {
+      weight: newWeight,
+      unit: newWeightUnit,
     };
     logEntry.notes = newNotes;
 
@@ -222,6 +236,10 @@ describe('Log Entry class', () => {
       unit: newMaxDepthUnit,
     });
     expect(logEntry.notes).toBe(newNotes);
+    expect(logEntry.weights).toEqual({
+      weight: newWeight,
+      unit: newWeightUnit,
+    });
   });
 
   it('will set site property', async () => {
@@ -245,12 +263,14 @@ describe('Log Entry class', () => {
     logEntry.maxDepth = undefined;
     logEntry.notes = undefined;
     logEntry.site = undefined;
+    logEntry.weights = undefined;
 
     expect(logEntry.logNumber).toBeUndefined();
     expect(logEntry.bottomTime).toBeUndefined();
     expect(logEntry.maxDepth).toBeUndefined();
     expect(logEntry.notes).toBeUndefined();
     expect(logEntry.site).toBeUndefined();
+    expect(logEntry.weights).toBeUndefined();
   });
 
   it('will render a JSON object correctly', () => {
@@ -278,6 +298,8 @@ describe('Log Entry class', () => {
     expect(saved.maxDepthUnit).toBe(logEntry.maxDepth!.unit);
     expect(saved.notes).toBe(logEntry.notes);
     expect(saved.site?.id).toEqual(diveSite.id);
+    expect(saved.weight).toBe(logEntry.weights?.weight);
+    expect(saved.weightUnit).toBe(logEntry.weights?.unit);
   });
 
   it('will update an existing log entry in the database', async () => {
@@ -296,6 +318,10 @@ describe('Log Entry class', () => {
     };
     logEntry.notes = 'This was the best dive yet!';
     logEntry.site = siteFactory.createDiveSite(diveSite);
+    logEntry.weights = {
+      weight: 3.8,
+      unit: WeightUnit.Kilograms,
+    };
 
     await logEntry.save();
 
@@ -315,6 +341,8 @@ describe('Log Entry class', () => {
     expect(saved.maxDepthUnit).toBe(logEntry.maxDepth!.unit);
     expect(saved.notes).toBe(logEntry.notes);
     expect(saved.site?.id).toEqual(diveSite.id);
+    expect(saved.weight).toBe(logEntry.weights?.weight);
+    expect(saved.weightUnit).toBe(logEntry.weights?.unit);
   });
 
   it('will delete a log entry from the database', async () => {

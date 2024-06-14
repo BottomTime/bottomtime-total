@@ -4,6 +4,7 @@ import {
   PressureUnit,
   SortOrder,
   TankMaterial,
+  WeightUnit,
 } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
@@ -171,6 +172,10 @@ describe('Log entries service', () => {
           depth: 67,
           unit: DepthUnit.Feet,
         },
+        weights: {
+          weight: 4.4,
+          unit: WeightUnit.Kilograms,
+        },
         notes: 'Great dive! Saw fish.',
 
         air: [
@@ -210,6 +215,10 @@ describe('Log entries service', () => {
         depth: 67,
         unit: DepthUnit.Feet,
       });
+      expect(entry.weights).toEqual({
+        weight: 4.4,
+        unit: WeightUnit.Kilograms,
+      });
       expect(entry.notes).toEqual(options.notes);
       expect(entry.air).toEqual(options.air);
 
@@ -226,6 +235,8 @@ describe('Log entries service', () => {
       expect(saved.duration).toEqual(options.duration);
       expect(saved.maxDepth).toEqual(options.maxDepth!.depth);
       expect(saved.maxDepthUnit).toEqual(options.maxDepth!.unit);
+      expect(saved.weight).toEqual(options.weights!.weight);
+      expect(saved.weightUnit).toEqual(options.weights!.unit);
       expect(saved.notes).toEqual(options.notes);
       expect(saved.air).toEqual(
         options.air!.map((tank, index) => ({
@@ -299,6 +310,10 @@ describe('Log entries service', () => {
       expect(result.maxDepth).toEqual({
         depth: data.maxDepth!,
         unit: data.maxDepthUnit!,
+      });
+      expect(result.weights).toEqual({
+        weight: data.weight!,
+        unit: data.weightUnit!,
       });
       expect(result.notes).toEqual(data.notes);
       expect(result.entryTime).toEqual({
@@ -455,21 +470,21 @@ describe('Log entries service', () => {
         name: 'between a start date and end date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: new Date('2023-10-01T00:00:00.000Z'),
-        expectedTotal: 8,
-        expectedLength: 8,
+        expectedTotal: 6,
+        expectedLength: 6,
       },
       {
         name: 'after a start date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: undefined,
-        expectedTotal: 69,
+        expectedTotal: 75,
         expectedLength: 15,
       },
       {
         name: 'before an end date',
         start: undefined,
         end: new Date('2023-10-01T00:00:00.000Z'),
-        expectedTotal: 239,
+        expectedTotal: 231,
         expectedLength: 15,
       },
     ].forEach(({ name, start, end, expectedTotal, expectedLength }) => {
