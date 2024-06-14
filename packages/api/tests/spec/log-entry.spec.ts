@@ -153,6 +153,10 @@ describe('Log entry API client', () => {
       logNumber: 555,
       maxDepth: { depth: 95.3, unit: DepthUnit.Feet },
       notes: 'Awesome dive!',
+      weights: {
+        weight: 5.2,
+        unit: WeightUnit.Pounds,
+      },
       air: [
         {
           name: 'robust spokesman',
@@ -174,6 +178,7 @@ describe('Log entry API client', () => {
     entry.duration = options.duration;
     entry.maxDepth = options.maxDepth;
     entry.notes = options.notes;
+    entry.weights = options.weights;
     entry.air = options.air!;
 
     scope

@@ -440,10 +440,16 @@ const v$ = useVuelidate<LogEntryData>(
       ),
     },
     maxDepth: {
-      positive: helpers.withMessage('Must be a valid depth', depth),
+      positive: helpers.withMessage(
+        'Depth must be numeric and greater than zero',
+        depth,
+      ),
     },
     weights: {
-      positive: helpers.withMessage('Must be a valid weight', weight),
+      valid: helpers.withMessage(
+        'Weight must be numeric and cannot be less than zero',
+        weight,
+      ),
     },
   },
   formData,

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WeightText component will display in natural units (kilograms) for unauthenticated users 1`] = `"2.3 kg"`;
+
+exports[`WeightText component will display in natural units (pounds) for unauthenticated users 1`] = `"5.5 lb"`;
+
+exports[`WeightText component will display in the user's preferred units (kilograms) without conversion if possible 1`] = `"2.3 kg"`;
+
+exports[`WeightText component will display in the user's preferred units (pounds) without conversion if possible 1`] = `"5.5 lb"`;
+
+exports[`WeightText component will display in the user's preferred units with conversion from kilograms if necessary 1`] = `"5.0 lb"`;
+
+exports[`WeightText component will display in the user's preferred units with conversion from pounds if necessary 1`] = `"2.5 kg"`;

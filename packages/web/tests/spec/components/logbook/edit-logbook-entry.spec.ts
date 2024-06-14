@@ -6,6 +6,7 @@ import {
   ListTanksResponseSchema,
   LogBookSharing,
   PressureUnit,
+  WeightUnit,
 } from '@bottomtime/api';
 
 import {
@@ -42,6 +43,8 @@ const TimezoneSelect = '#entryTimeTimezone';
 const DurationInput = '#duration';
 const BottomTimeInput = '#bottomTime';
 const MaxDepthInput = '#maxDepth';
+const WeightInput = '#weights';
+const WeightUnitButton = '#weights-unit';
 const NotesInput = '#notes';
 const SaveButton = '#btnSave';
 const CancelButton = '#btnCancel';
@@ -121,6 +124,7 @@ describe('EditLogbookEntry component', () => {
       '',
     );
     expect(wrapper.get<HTMLInputElement>(MaxDepthInput).element.value).toBe('');
+    expect(wrapper.get<HTMLInputElement>(WeightInput).element.value).toBe('');
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe('');
   });
 
@@ -145,6 +149,7 @@ describe('EditLogbookEntry component', () => {
       '',
     );
     expect(wrapper.get<HTMLInputElement>(MaxDepthInput).element.value).toBe('');
+    expect(wrapper.get<HTMLInputElement>(WeightInput).element.value).toBe('');
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe('');
   });
 
@@ -170,6 +175,12 @@ describe('EditLogbookEntry component', () => {
     );
     expect(wrapper.get<HTMLInputElement>(MaxDepthInput).element.value).toBe(
       FullLogEntry.maxDepth?.depth.toString(),
+    );
+    expect(wrapper.get<HTMLInputElement>(WeightInput).element.value).toBe(
+      FullLogEntry.weights!.weight.toString(),
+    );
+    expect(wrapper.get(WeightUnitButton).text()).toBe(
+      FullLogEntry.weights!.unit,
     );
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe(
       FullLogEntry.notes,
@@ -211,6 +222,7 @@ describe('EditLogbookEntry component', () => {
     await wrapper.get(DurationInput).setValue('-2.3');
     await wrapper.get(BottomTimeInput).setValue('lol');
     await wrapper.get(MaxDepthInput).setValue('wat');
+    await wrapper.get(WeightInput).setValue('a few pounds');
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
@@ -224,7 +236,10 @@ describe('EditLogbookEntry component', () => {
       'Bottom time must be a positive number',
     );
     expect(wrapper.find('[data-testid="maxDepth-error"]').text()).toBe(
-      'Must be a valid depth',
+      'Depth must be numeric and greater than zero',
+    );
+    expect(wrapper.find('[data-testid="weights-error"]').text()).toBe(
+      'Weight must be numeric and cannot be less than zero',
     );
   });
 
@@ -235,6 +250,7 @@ describe('EditLogbookEntry component', () => {
     const duration = 44.1;
     const bottomTime = 41.8;
     const maxDepth = 33.3;
+    const weight = 4.8;
     const notes = 'hello';
 
     const wrapper = mount(EditLogbookEntry, opts);
@@ -246,6 +262,7 @@ describe('EditLogbookEntry component', () => {
     await wrapper.get(DurationInput).setValue(duration.toString());
     await wrapper.get(BottomTimeInput).setValue(bottomTime.toString());
     await wrapper.get(MaxDepthInput).setValue(maxDepth);
+    await wrapper.get(WeightInput).setValue(weight.toString());
     await wrapper.get(NotesInput).setValue(notes);
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
@@ -267,6 +284,10 @@ describe('EditLogbookEntry component', () => {
             date: dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss'),
             timezone: 'America/Vancouver',
           },
+          weights: {
+            unit: WeightUnit.Kilograms,
+            weight,
+          },
         },
       ],
     ]);
@@ -279,6 +300,7 @@ describe('EditLogbookEntry component', () => {
     const duration = 44.1;
     const bottomTime = 41.8;
     const maxDepth = 33.3;
+    const weight = 4.8;
     const notes = 'hello';
 
     const wrapper = mount(EditLogbookEntry, opts);
@@ -290,6 +312,7 @@ describe('EditLogbookEntry component', () => {
     await wrapper.get(DurationInput).setValue(duration.toString());
     await wrapper.get(BottomTimeInput).setValue(bottomTime.toString());
     await wrapper.get(MaxDepthInput).setValue(maxDepth);
+    await wrapper.get(WeightInput).setValue(weight);
     await wrapper.get(NotesInput).setValue(notes);
     await wrapper.get(CancelButton).trigger('click');
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
@@ -309,6 +332,7 @@ describe('EditLogbookEntry component', () => {
       '',
     );
     expect(wrapper.get<HTMLInputElement>(MaxDepthInput).element.value).toBe('');
+    expect(wrapper.get<HTMLInputElement>(WeightInput).element.value).toBe('');
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe('');
   });
 
@@ -319,6 +343,7 @@ describe('EditLogbookEntry component', () => {
     const duration = 44.1;
     const bottomTime = 41.8;
     const maxDepth = 33.3;
+    const weight = 4.8;
     const notes = 'hello';
 
     const wrapper = mount(EditLogbookEntry, opts);
@@ -330,6 +355,7 @@ describe('EditLogbookEntry component', () => {
     await wrapper.get(DurationInput).setValue(duration.toString());
     await wrapper.get(BottomTimeInput).setValue(bottomTime.toString());
     await wrapper.get(MaxDepthInput).setValue(maxDepth);
+    await wrapper.get(WeightInput).setValue(weight);
     await wrapper.get(NotesInput).setValue(notes);
     await wrapper.get(CancelButton).trigger('click');
     await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
@@ -352,6 +378,9 @@ describe('EditLogbookEntry component', () => {
     );
     expect(wrapper.get<HTMLInputElement>(MaxDepthInput).element.value).toBe(
       maxDepth.toString(),
+    );
+    expect(wrapper.get<HTMLInputElement>(WeightInput).element.value).toBe(
+      weight.toString(),
     );
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe(
       notes,
