@@ -213,6 +213,22 @@
         />
       </FormField>
 
+      <!-- Equipment -->
+      <TextHeading>Equipment</TextHeading>
+      <FormField
+        label="Weights"
+        control-id="weights"
+        :invalid="v$.weights.$error"
+        :error="v$.weights.$errors[0]?.$message"
+      >
+        <WeightInput
+          v-model="formData.weights"
+          control-id="weights"
+          test-id="weights"
+          :invalid="v$.weights.$error"
+        />
+      </FormField>
+
       <TextHeading>Other Info</TextHeading>
       <FormField label="Notes" control-id="notes">
         <FormTextArea
@@ -274,6 +290,7 @@ import {
   LogEntryDTO,
   TankDTO,
   TankMaterial,
+  WeightDTO,
 } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
@@ -288,7 +305,7 @@ import { useRoute } from 'vue-router';
 import { useClient } from '../../api-client';
 import { SelectOption } from '../../common';
 import { useOops } from '../../oops';
-import { depth, greaterThan, lessThan } from '../../validators';
+import { depth, greaterThan, lessThan, weight } from '../../validators';
 import DepthInput from '../common/depth-input.vue';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
@@ -298,6 +315,7 @@ import FormSelect from '../common/form-select.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import TextHeading from '../common/text-heading.vue';
+import WeightInput from '../common/weight-input.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import PreviewDiveSite from '../diveSites/preview-dive-site.vue';
 import SelectSite from '../diveSites/selectSite/select-site.vue';
@@ -321,10 +339,11 @@ interface LogEntryData {
   entryTime?: Date;
   entryTimezone: string;
   logNumber: string | number;
-  maxDepth?: DepthDTO;
+  maxDepth: DepthDTO | string;
   notes: string;
   air: EditEntryAirFormData[];
   site?: DiveSiteDTO;
+  weights: WeightDTO | string;
 }
 
 function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
@@ -336,7 +355,7 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
       : undefined,
     entryTimezone: props.entry.entryTime.timezone || dayjs.tz.guess(),
     logNumber: props.entry.logNumber || '',
-    maxDepth: props.entry.maxDepth ? { ...props.entry.maxDepth } : undefined,
+    maxDepth: props.entry.maxDepth ? { ...props.entry.maxDepth } : '',
     notes: props.entry.notes ?? '',
     air:
       props.entry.air?.map((air) => ({
@@ -360,6 +379,7 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
           : undefined,
       })) ?? [],
     site: props.entry.site,
+    weights: props.entry.weights ? { ...props.entry.weights } : '',
   };
 }
 
@@ -422,6 +442,9 @@ const v$ = useVuelidate<LogEntryData>(
     maxDepth: {
       positive: helpers.withMessage('Must be a valid depth', depth),
     },
+    weights: {
+      positive: helpers.withMessage('Must be a valid weight', weight),
+    },
   },
   formData,
 );
@@ -457,10 +480,13 @@ async function onSave(): Promise<void> {
     },
     logNumber:
       typeof formData.logNumber === 'number' ? formData.logNumber : undefined,
-    maxDepth: formData.maxDepth,
+    maxDepth:
+      typeof formData.maxDepth === 'object' ? formData.maxDepth : undefined,
     notes: formData.notes,
     site: formData.site,
     air: formData.air.map(airFormDataToDto),
+    weights:
+      typeof formData.weights === 'object' ? formData.weights : undefined,
   });
 }
 
