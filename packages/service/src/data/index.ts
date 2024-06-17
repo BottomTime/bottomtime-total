@@ -1,5 +1,3 @@
-export * from './data-source';
-
 export * from './alert.entity';
 export * from './certification.entity';
 export * from './dive-site-review.entity';

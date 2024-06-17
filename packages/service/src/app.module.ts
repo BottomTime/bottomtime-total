@@ -2,10 +2,8 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { DynamicModule, Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import path from 'path';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { AdminModule } from './admin';
@@ -36,14 +34,6 @@ export class AppModule {
       module: AppModule,
       imports: [
         EventEmitterModule.forRoot(),
-        // Serve statically-generated API documentation.
-        ServeStaticModule.forRoot({
-          rootPath: path.join(__dirname, '../public/docs'),
-          serveRoot: '/docs',
-          serveStaticOptions: {
-            index: 'index.html',
-          },
-        }),
         TypeOrmModule.forRootAsync({
           useFactory: () => deps.dataSource,
           dataSourceFactory: async (options?: DataSourceOptions) => {

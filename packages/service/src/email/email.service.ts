@@ -1,9 +1,10 @@
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
-import { readFile } from 'fs/promises';
 import { render } from 'mustache';
-import path from 'path';
 
+import ResetPasswordTemplate from '../../assets/templates/reset-password.html';
+import VerifyEmailTemplate from '../../assets/templates/verify-email.html';
+import WelcomeTemplate from '../../assets/templates/welcome.html';
 import { User } from '../auth/user';
 import { Config } from '../config';
 import { IMailClient, MailClientService } from './interfaces';
@@ -57,9 +58,13 @@ export type Recipients = {
 };
 
 @Injectable()
-export class EmailService implements OnModuleInit {
+export class EmailService {
+  private readonly templates: Record<EmailType, string> = {
+    [EmailType.ResetPassword]: ResetPasswordTemplate,
+    [EmailType.VerifyEmail]: VerifyEmailTemplate,
+    [EmailType.Welcome]: WelcomeTemplate,
+  };
   private readonly log: Logger = new Logger(EmailService.name);
-  private templates?: Record<EmailType, string>;
 
   constructor(
     @Inject(MailClientService) private readonly mailClient: IMailClient,
@@ -77,29 +82,7 @@ export class EmailService implements OnModuleInit {
     };
   }
 
-  async onModuleInit(): Promise<void> {
-    const basePath = path.resolve(__dirname, '../../assets/templates');
-    this.log.debug('Pre-loading email template files...');
-
-    const [resetPassword, verifyEmail, welcome] = await Promise.all([
-      readFile(path.resolve(basePath, 'reset-password.html'), 'utf8'),
-      readFile(path.resolve(basePath, 'verify-email.html'), 'utf8'),
-      readFile(path.resolve(basePath, 'welcome.html'), 'utf8'),
-    ]);
-
-    this.log.debug('Email templates have been cached.');
-    this.templates = {
-      [EmailType.ResetPassword]: resetPassword,
-      [EmailType.VerifyEmail]: verifyEmail,
-      [EmailType.Welcome]: welcome,
-    };
-  }
-
   async generateMessageContent(options: EmailOptions): Promise<string> {
-    if (!this.templates) {
-      throw new Error('Module has not yet been initialized.');
-    }
-
     this.log.debug(`Rendering email from template (${options.type})...`);
     this.log.verbose('Email options:', options);
     const locals = this.getFullEmailOptions(options);

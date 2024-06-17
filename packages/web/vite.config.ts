@@ -30,6 +30,9 @@ export default defineConfig(({ mode }) => {
         include: ['url'],
       }),
     ],
+    resolve: {
+      preserveSymlinks: true,
+    },
     define,
   };
 });

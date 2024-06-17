@@ -13,7 +13,7 @@ COPY packages/api/package.json packages/api/yarn.lock packages/api/tsconfig.json
 
 RUN yarn install --frozen-lockfile
 
-COPY packages/service/bootstrap-docker.sh packages/service/swaggerDefinition.cjs packages/service/data-source.ts ./packages/service/
+COPY packages/service/bootstrap-docker.sh packages/service/swaggerDefinition.cjs packages/service/data-source.ts packages/service/webpack.config.js ./packages/service/
 COPY packages/service/admin/ ./packages/service/admin/
 COPY packages/service/public/ ./packages/service/public/
 COPY packages/service/migrations/ ./packages/service/migrations/
@@ -23,8 +23,7 @@ COPY packages/common/src/ ./packages/common/src/
 COPY packages/api/src/ ./packages/api/src/
 COPY packages/service/src/ ./packages/service/src/
 
-RUN yarn build
-RUN yarn --cwd packages/service/ docs
+RUN yarn --cwd packages/api build && yarn --cwd packages/common build && yarn --cwd packages/service build && yarn --cwd packages/service/ docs
 
 FROM base AS release
 COPY --from=build /app/ /app/

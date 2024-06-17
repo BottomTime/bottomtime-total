@@ -11,7 +11,7 @@ import 'reflect-metadata';
 import { ServerDependencies } from './app.module';
 import { Config } from './config';
 import { createApp } from './create-app';
-import { PostgresDataSourceOptions } from './data';
+import { PostgresDataSourceOptions } from './data-source';
 import { NodemailerClient } from './email';
 
 dayjs.extend(tz);

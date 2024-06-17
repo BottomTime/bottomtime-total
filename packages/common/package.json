@@ -2,11 +2,10 @@
   "name": "@bottomtime/common",
   "version": "1.0.0",
   "description": "Reusable components that can be exported to both front- and back-end libraries.",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "author": "Chris Carleton",
   "license": "MIT",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "tsc"
   },

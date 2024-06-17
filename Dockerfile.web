@@ -20,7 +20,7 @@ COPY packages/web/public/ ./packages/web/public/
 COPY packages/web/server/ ./packages/web/server/
 COPY packages/web/src/ ./packages/web/src/
 
-RUN yarn build
+RUN yarn --cwd packages/common build && yarn --cwd packages/api build && yarn --cwd packages/web build
 
 FROM base AS release
 COPY --from=build /app/ /app/
