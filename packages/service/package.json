@@ -15,6 +15,7 @@
     "migrate:generate": "typeorm-ts-node-commonjs migration:generate -d data-source.ts",
     "migrate:up": "typeorm-ts-node-commonjs migration:run -d data-source.ts",
     "prepare": "cp -n .env.example .env || true",
+    "preview": "yarn build && nodemon dist/main.js",
     "serve": "webpack --watch",
     "test": "jest"
   },

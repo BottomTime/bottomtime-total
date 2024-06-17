@@ -86,7 +86,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `yarn admin db init -f -d "${PostgresFixture.postgresUri}" && npx tsx ./src/index.ts`,
+      command: `yarn admin db init -f -d "${PostgresFixture.postgresUri}" && yarn preview`,
       url: 'http://127.0.0.1:4801/',
       cwd: '../service',
       env: {
