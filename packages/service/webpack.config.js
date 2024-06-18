@@ -1,7 +1,7 @@
 /* eslint-disable no-process-env, @typescript-eslint/no-var-requires */
-const nodeExternals = require('webpack-node-externals');
 const NodemonPlugin = require('nodemon-webpack-plugin');
 const path = require('path');
+const webpack = require('webpack');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -27,6 +27,13 @@ module.exports = {
         test: /\.(html)$/,
         type: 'asset/resource',
       },
+
+      // "Fix" for issues while bundling @nestjs/terminus package.
+      // See https://github.com/nestjs/terminus/issues/1423
+      {
+        test: /@nestjs\/terminus\/dist\/utils\/.*(\.js\.map|\.d\.ts)$/,
+        loader: 'null-loader',
+      },
     ],
   },
   resolve: {
@@ -39,20 +46,16 @@ module.exports = {
     filename: '[name].js',
     path: path.resolve(__dirname, './dist'),
     clean: true,
-    publicPath: '',
+    libraryTarget: 'commonjs2',
   },
   plugins: [
     new NodemonPlugin({
       script: './dist/main.js',
       watch: path.resolve(__dirname, './dist'),
     }),
-  ],
-  externals: [
-    nodeExternals({
-      modulesDir: path.resolve(__dirname, '../../node_modules'),
-    }),
-    nodeExternals({
-      modulesDir: path.resolve(__dirname, './node_modules'),
+    new webpack.IgnorePlugin({
+      resourceRegExp:
+        /(aws-lambda|@mikro-orm\/core|@nestjs\/(microservices|mongoose|sequelize|websockets)|class-(validator|transformer))/,
     }),
   ],
   optimization: {

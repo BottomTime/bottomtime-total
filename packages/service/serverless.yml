@@ -20,15 +20,12 @@ provider:
     cors: true
 
 plugins:
-  - serverless-plugin-include-dependencies
-  - serverless-offline
+  # - serverless-plugin-include-dependencies
 
 package:
   individually: true
 
 custom:
-  serverless-offline:
-    httpPort: 8402
   secrets: ${ssm(us-east-1):/aws/reference/secretsmanager/${opt:secrets, 'bt-service-dev'}}
 
 functions:
@@ -39,7 +36,7 @@ functions:
     environment:
       BT_AWS_MEDIA_BUCKET: bottomtime-media-${self:provider.stage} # TODO: This should come from Terraform
       BT_BASE_URL: 'http://localhost:8402' # TODO: This should come from Terraform
-      BT_LOG_LEVEL: ${env:BT_LOG_LEVEL, 'info'}
+      BT_LOG_LEVEL: ${env:BT_LOG_LEVEL, 'debug'}
       BT_DISCORD_CLIENT_ID: ${self:custom.secrets.discordClientId}
       BT_DISCORD_CLIENT_SECRET: ${self:custom.secrets.discordClientSecret}
       BT_GITHUB_CLIENT_ID: ${self:custom.secrets.githubClientId}
