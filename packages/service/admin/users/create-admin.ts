@@ -4,7 +4,7 @@ import {
   UsernameSchema,
 } from '@bottomtime/api';
 
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import prompts from 'prompts';
 import { UserEntity } from 'src/data';
 import { DataSource } from 'typeorm';

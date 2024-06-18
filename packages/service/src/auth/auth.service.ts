@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { Response } from 'express';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import { Repository } from 'typeorm';

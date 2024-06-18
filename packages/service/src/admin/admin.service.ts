@@ -8,7 +8,7 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { Repository } from 'typeorm';
 
 import { User } from '../auth/user';

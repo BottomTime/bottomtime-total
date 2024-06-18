@@ -18,10 +18,10 @@ import { GlobalErrorFilter } from './global-error-filter';
 
 export async function createApp(
   logger: Logger,
-  createDeps: () => Promise<ServerDependencies>,
+  createDeps: (log: Logger) => Promise<ServerDependencies>,
 ): Promise<INestApplication> {
   const logService = new BunyanLoggerService(logger);
-  const deps = await createDeps();
+  const deps = await createDeps(logger);
 
   // Initialize the app with CORS settings and our provided logger.
   const app = await NestFactory.create<NestExpressApplication>(

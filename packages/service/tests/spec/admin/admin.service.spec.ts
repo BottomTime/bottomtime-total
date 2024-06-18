@@ -1,6 +1,6 @@
 import { SortOrder, UserRole, UsersSortBy } from '@bottomtime/api';
 
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { Repository } from 'typeorm';
 
 import { AdminService } from '../../../src/admin';

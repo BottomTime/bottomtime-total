@@ -9,7 +9,7 @@ import {
 import { faker } from '@faker-js/faker';
 import { ConflictException } from '@nestjs/common';
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
@@ -29,7 +29,7 @@ const TestUserData: Partial<UserEntity> = {
 };
 
 jest.mock('uuid');
-jest.mock('bcrypt');
+jest.mock('bcryptjs');
 
 describe('Users Service', () => {
   let Users: Repository<UserEntity>;

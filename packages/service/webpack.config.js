@@ -8,7 +8,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 module.exports = {
   entry: {
     main: './src/index.ts',
-    // sls: './src/serverless-entry.ts',
+    sls: './src/sls-entry.ts',
   },
   stats: {
     warningsFilter: [/node_modules/],

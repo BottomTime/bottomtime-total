@@ -9,7 +9,7 @@ import {
 
 import { faker } from '@faker-js/faker';
 
-import { hashSync } from 'bcrypt';
+import { hashSync } from 'bcryptjs';
 import { generate } from 'generate-password';
 import { z } from 'zod';
 
