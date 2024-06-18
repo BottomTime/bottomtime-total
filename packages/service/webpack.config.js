@@ -6,9 +6,15 @@ const path = require('path');
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  entry: './src/index.ts',
-  devtool: 'inline-source-map',
+  entry: {
+    main: './src/index.ts',
+    // sls: './src/serverless-entry.ts',
+  },
+  stats: {
+    warningsFilter: [/node_modules/],
+  },
   target: 'node',
+  devtool: isProduction ? 'source-map' : 'eval-source-map',
   mode: isProduction ? 'production' : 'development',
   module: {
     rules: [
@@ -44,6 +50,9 @@ module.exports = {
   externals: [
     nodeExternals({
       modulesDir: path.resolve(__dirname, '../../node_modules'),
+    }),
+    nodeExternals({
+      modulesDir: path.resolve(__dirname, './node_modules'),
     }),
   ],
   optimization: {

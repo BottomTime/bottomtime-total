@@ -1,17 +1,19 @@
-FROM node:22.2 AS base
+FROM node:20.14 AS base
 
 # RUN apk add --no-cache bash python3 make g++ gcc libgcc libstdc++ git linux-headers fts-dev
+RUN corepack enable
 
 FROM base AS build
 
 WORKDIR /app
 
-COPY package.json yarn.lock nx.json lerna.json ./
-COPY packages/service/package.json packages/service/yarn.lock packages/service/tsconfig.json ./packages/service/
-COPY packages/common/package.json packages/common/yarn.lock packages/common/tsconfig.json ./packages/common/
-COPY packages/api/package.json packages/api/yarn.lock packages/api/tsconfig.json ./packages/api/
+COPY package.json yarn.lock .yarnrc.yml nx.json lerna.json ./
+COPY packages/service/package.json packages/service/tsconfig.json ./packages/service/
+COPY packages/common/package.json packages/common/tsconfig.json ./packages/common/
+COPY packages/api/package.json packages/api/tsconfig.json ./packages/api/
+COPY packages/templates/package.json packages/templates/config.js packages/templates/config.production.js packages/templates/tailwind.config.js ./packages/templates/
 
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 COPY packages/service/bootstrap-docker.sh packages/service/swaggerDefinition.cjs packages/service/data-source.ts packages/service/webpack.config.js ./packages/service/
 COPY packages/service/admin/ ./packages/service/admin/
@@ -21,9 +23,10 @@ COPY packages/service/assets/ ./packages/service/assets/
 
 COPY packages/common/src/ ./packages/common/src/
 COPY packages/api/src/ ./packages/api/src/
+COPY packages/templates/src/ ./packages/templates/src/
 COPY packages/service/src/ ./packages/service/src/
 
-RUN yarn --cwd packages/api build && yarn --cwd packages/common build && yarn --cwd packages/service build && yarn --cwd packages/service/ docs
+RUN yarn build && yarn --cwd packages/service docs
 
 FROM base AS release
 COPY --from=build /app/ /app/

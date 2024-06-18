@@ -31,7 +31,7 @@ commands:
 jobs:
   init_and_lint:
     docker:
-      - image: cimg/node:22.2
+      - image: cimg/node:20.14
       - image: postgis/postgis:14-3.4
         environment:
           POSTGRES_DB: postgres
@@ -71,7 +71,7 @@ jobs:
 
   test_api:
     docker:
-      - image: cimg/node:22.2
+      - image: cimg/node:20.14
     resource_class: medium
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
@@ -114,7 +114,7 @@ jobs:
 
   test_service:
     docker:
-      - image: cimg/node:22.2
+      - image: cimg/node:20.14
       - image: postgis/postgis:14-3.4-alpine
         environment:
           POSTGRES_DB: postgres
@@ -163,7 +163,7 @@ jobs:
 
   test_web:
     docker:
-      - image: cimg/node:22.2-browsers
+      - image: cimg/node:20.14-browsers
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
       NODE_OPTIONS: '--max-old-space-size=8192'
@@ -206,7 +206,7 @@ jobs:
 
   test_e2e:
     docker:
-      - image: cimg/node:22.2-browsers
+      - image: cimg/node:20.14-browsers
       - image: postgis/postgis:14-3.4
         environment:
           POSTGRES_DB: postgres
@@ -235,7 +235,7 @@ jobs:
 
   report_coverage:
     docker:
-      - image: cimg/node:22.2
+      - image: cimg/node:20.14
     resource_class: medium
     steps:
       - attach_workspace:

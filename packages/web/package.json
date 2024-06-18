@@ -7,12 +7,15 @@
     "build": "tsc && yarn build:client && yarn build:server",
     "build:client": "vite build --ssrManifest --minify --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.ts --minify --outDir dist/server",
+    "clean": "rimraf dist/",
     "serve": "nodemon server/index.ts",
     "prepare": "cp -n .env.example .env || true",
     "preview": "cross-env NODE_ENV=production nodemon server/index.ts",
     "test": "jest"
   },
   "dependencies": {
+    "@bottomtime/api": "*",
+    "@bottomtime/common": "*",
     "@googlemaps/js-api-loader": "^1.16.6",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^10.2.10",
@@ -73,6 +76,7 @@
     "jest-junit": "^16.0.0",
     "jest-transform-css": "^6.0.1",
     "nodemon": "^2.0.22",
+    "rimraf": "^5.0.7",
     "ts-jest": "^29.1.2",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",

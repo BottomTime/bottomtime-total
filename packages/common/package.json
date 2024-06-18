@@ -7,7 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "clean": "rimraf dist/"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",
@@ -18,6 +19,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "rimraf": "^5.0.7",
     "typescript": "^5.4.2"
   }
 }
