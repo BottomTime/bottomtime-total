@@ -1,6 +1,6 @@
 org: bottomtime
 app: bottomtime
-service: bottomtime-service
+service: bottomtime-web
 
 provider:
   name: aws
@@ -32,7 +32,7 @@ functions:
   main:
     name: ${self:service}-${self:provider.stage}-main
     description: Bottomtime backend service
-    handler: dist/sls.handler
+    handler: dist/nestjs/sls.handler
     environment:
       BT_AWS_MEDIA_BUCKET: bottomtime-media-${self:provider.stage} # TODO: This should come from Terraform
       BT_BASE_URL: 'http://localhost:8402' # TODO: This should come from Terraform
@@ -59,7 +59,8 @@ functions:
     package:
       patterns:
         - '!**'
-        - dist/**
+        - dist/nestjs/**
+        - dist/server/**
     events:
       - httpApi:
           method: ANY

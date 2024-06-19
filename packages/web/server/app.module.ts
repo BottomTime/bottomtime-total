@@ -1,12 +1,10 @@
 import { HttpModule } from '@nestjs/axios';
 import { DynamicModule, Logger, Module } from '@nestjs/common';
-import { TerminusModule } from '@nestjs/terminus';
 
 import { ViteDevServer } from 'vite';
 
 import { Config } from './config';
 import { DevModule } from './dev';
-import { HealthController } from './health.controller';
 import { ProductionModule } from './production';
 
 export type ServerDependencies = {
@@ -19,7 +17,7 @@ type Imports = NonNullable<DynamicModule['imports']>;
 export class AppModule {
   static forRoot(): DynamicModule {
     const log = new Logger(AppModule.name);
-    const imports: Imports = [HttpModule, TerminusModule];
+    const imports: Imports = [HttpModule];
 
     if (Config.isProduction) {
       log.log('Initializing application in production mode...');
@@ -34,7 +32,6 @@ export class AppModule {
     return {
       module: AppModule,
       imports,
-      controllers: [HealthController],
     };
   }
 }

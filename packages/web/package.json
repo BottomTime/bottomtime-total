@@ -4,10 +4,11 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc && yarn build:client && yarn build:server",
+    "build": "yarn build:client && yarn build:server",
     "build:client": "vite build --ssrManifest --minify --outDir dist/client",
-    "build:server": "vite build --ssr src/entry-server.ts --minify --outDir dist/server",
+    "build:server": "tsc -p tsconfig.server.json && vite build --ssr src/entry-server.ts --minify --outDir dist/server",
     "clean": "rimraf dist/",
+    "dev": "nodemon server/index.ts",
     "serve": "nodemon server/index.ts",
     "prepare": "cp -n .env.example .env || true",
     "preview": "cross-env NODE_ENV=production nodemon server/index.ts",
@@ -16,6 +17,7 @@
   "dependencies": {
     "@bottomtime/api": "*",
     "@bottomtime/common": "*",
+    "@codegenie/serverless-express": "^4.14.1",
     "@googlemaps/js-api-loader": "^1.16.6",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^10.2.10",
@@ -27,6 +29,7 @@
     "@vuelidate/validators": "^2.0.4",
     "@vuepic/vue-datepicker": "^8.3.1",
     "autoprefixer": "^10.4.17",
+    "aws-lambda": "^1.0.7",
     "axios": "^1.6.8",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
@@ -56,6 +59,7 @@
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "@faker-js/faker": "^8.4.1",
+    "@types/aws-lambda": "^8.10.140",
     "@types/bunyan": "^1.8.11",
     "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.6",
@@ -76,12 +80,19 @@
     "jest-junit": "^16.0.0",
     "jest-transform-css": "^6.0.1",
     "nodemon": "^2.0.22",
+    "nodemon-webpack-plugin": "^4.8.2",
     "rimraf": "^5.0.7",
+    "serverless": "^4.1.0",
+    "serverless-offline": "^13.6.0",
     "ts-jest": "^29.1.2",
+    "ts-loader": "^9.5.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
-    "vue-tsc": "^1.8.26"
+    "vue-tsc": "^1.8.26",
+    "webpack": "^5.92.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
   },
   "nodemonConfig": {
     "execMap": {
