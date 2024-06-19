@@ -19,6 +19,7 @@
     "prepare": "cp -n .env.example .env || true",
     "serve": "pm2 start --no-daemon dist/main.js",
     "sls:deploy": "NODE_ENV=production yarn build && sls deploy",
+    "sls:offline": "yarn build && sls offline",
     "sls:package": "NODE_ENV=production yarn build && sls package",
     "test": "jest"
   },
@@ -64,6 +65,7 @@
     "request-stats": "^3.0.0",
     "rxjs": "^7.8.1",
     "serverless": "^4.1.0",
+    "serverless-offline": "^13.6.0",
     "ts-loader": "^9.5.1",
     "typeorm": "^0.3.20",
     "uuid": "^9.0.0",

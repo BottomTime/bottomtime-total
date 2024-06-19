@@ -20,6 +20,7 @@ provider:
     cors: true
 
 plugins:
+  - serverless-offline
   # - serverless-plugin-include-dependencies
 
 package:
@@ -44,6 +45,7 @@ functions:
       BT_GOOGLE_CLIENT_ID: ${self:custom.secrets.googleClientId}
       BT_GOOGLE_CLIENT_SECRET: ${self:custom.secrets.googleClientSecret}
       BT_PASSWORD_SALT_ROUNDS: 15
+      BT_POSTGRES_REQUIRE_SSL: 'true'
       BT_POSTGRES_URI: ${self:custom.secrets.postgresUri}
       BT_SESSION_SECRET: ${self:custom.secrets.sessionSecret}
       BT_SMTP_REPLY_TO: donotreply@bottomti.me
@@ -62,4 +64,4 @@ functions:
     events:
       - httpApi:
           method: ANY
-          path: /{proxy+}
+          path: '/{proxy+}'

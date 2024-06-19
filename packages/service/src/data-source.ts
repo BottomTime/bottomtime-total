@@ -9,4 +9,5 @@ export const PostgresDataSourceOptions: DataSourceOptions = {
   url: Config.postgresUri,
   entities: Object.values(Entities),
   synchronize: false,
+  ssl: Config.postgresRequireSsl,
 };

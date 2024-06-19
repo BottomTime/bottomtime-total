@@ -7,7 +7,10 @@ import { purgeDatabase } from './purge-db';
 import { seedDatabase } from './seed-db';
 import { createTestData } from './test-data';
 
-export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
+export const dbModule: CommandModule<{
+  'postgres-uri': string;
+  'require-ssl': boolean;
+}> = {
   command: 'db',
 
   describe: 'Commands for working with the database',
@@ -75,7 +78,7 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
             .help();
         },
         async (yargs) => {
-          await createTestData(yargs.postgresUri, {
+          await createTestData(yargs.postgresUri, yargs.requireSsl, {
             alerts: yargs.alerts,
             friends: yargs.friends,
             friendRequests: yargs.friendRequests,
@@ -113,7 +116,7 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
               ).confirmed;
 
           if (confirmed) {
-            await purgeDatabase(yargs.postgresUri);
+            await purgeDatabase(yargs.postgresUri, yargs.requireSsl);
           } else {
             console.log('Aborted.');
           }
@@ -126,7 +129,7 @@ export const dbModule: CommandModule<{ 'postgres-uri': string }> = {
           return yargs.help();
         },
         async (yargs) => {
-          await seedDatabase(yargs.postgresUri);
+          await seedDatabase(yargs.postgresUri, yargs.requireSsl);
         },
       );
   },

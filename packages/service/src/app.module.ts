@@ -15,7 +15,7 @@ import { DiveSiteEntity, LogEntryEntity, UserEntity } from './data';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
-import { HealthModule } from './health';
+// import { HealthModule } from './health';
 import { LogEntriesModule } from './logEntries';
 import { StorageModule } from './storage';
 import { TanksModule } from './tanks/tanks.module';
@@ -46,7 +46,7 @@ export class AppModule {
         }),
         EmailModule.forRoot(deps.mailClient),
         StorageModule.forRoot(deps.s3Client),
-        HealthModule,
+        // HealthModule,
 
         TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
 

@@ -63,6 +63,7 @@ export interface AppConfig {
   logLevel: LogLevel;
   passwordSaltRounds: number;
   port: number;
+  postgresRequireSsl: boolean;
   postgresUri: string;
 }
 
@@ -115,6 +116,7 @@ const ConfigSchema = z
     BT_LOG_LEVEL: LogLevelSchema.default('debug'),
     BT_PASSWORD_SALT_ROUNDS: z.coerce.number().int().min(1).default(15),
     BT_PORT: z.coerce.number().int().min(1).max(65535).default(4800),
+    BT_POSTGRES_REQUIRE_SSL: z.coerce.boolean().default(false),
     BT_POSTGRES_URI: z
       .string()
       .default(
@@ -173,6 +175,7 @@ const ConfigSchema = z
     logLevel: env.BT_LOG_LEVEL,
     passwordSaltRounds: env.BT_PASSWORD_SALT_ROUNDS,
     port: env.BT_PORT,
+    postgresRequireSsl: env.BT_POSTGRES_REQUIRE_SSL,
     postgresUri: env.BT_POSTGRES_URI,
   }));
 

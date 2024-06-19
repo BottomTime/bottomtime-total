@@ -3,11 +3,11 @@ import { DataSource } from 'typeorm';
 
 import { getDataSource } from './data-source';
 
-export async function purgeDatabase(postgresUri: string) {
+export async function purgeDatabase(postgresUri: string, requireSsl: boolean) {
   let ds: DataSource | undefined;
 
   try {
-    ds = await getDataSource(postgresUri);
+    ds = await getDataSource(postgresUri, requireSsl);
 
     console.log('Purging database...');
 

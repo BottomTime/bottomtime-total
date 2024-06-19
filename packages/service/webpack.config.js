@@ -10,9 +10,6 @@ module.exports = {
     main: './src/index.ts',
     sls: './src/sls-entry.ts',
   },
-  stats: {
-    warningsFilter: [/node_modules/],
-  },
   target: 'node',
   devtool: isProduction ? 'source-map' : 'eval-source-map',
   mode: isProduction ? 'production' : 'development',
@@ -52,13 +49,20 @@ module.exports = {
     new NodemonPlugin({
       script: './dist/main.js',
       watch: path.resolve(__dirname, './dist'),
+      ext: 'js,html',
     }),
     new webpack.IgnorePlugin({
       resourceRegExp:
         /(aws-lambda|@mikro-orm\/core|@nestjs\/(microservices|mongoose|sequelize|websockets)|class-(validator|transformer))/,
     }),
+    new webpack.ProgressPlugin(),
   ],
   optimization: {
     runtimeChunk: 'single',
   },
+  ignoreWarnings: [
+    {
+      module: /node_modules/,
+    },
+  ],
 };
