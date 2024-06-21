@@ -3,7 +3,11 @@
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "types": ["jest", "vite/client", "vite-env"],
-    "typeRoots": ["node_modules/@types", "src/types"]
+    "typeRoots": [
+      "../../node_modules/@types",
+      "node_modules/@types",
+      "src/types"
+    ]
   },
   "extends": "./tsconfig.json",
   "include": ["../src/**/*.ts", "../src/**/*.vue", "./**/*.ts", "./**/*.vue"]

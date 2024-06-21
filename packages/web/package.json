@@ -6,25 +6,18 @@
   "scripts": {
     "build": "yarn build:client && yarn build:server",
     "build:client": "vite build --ssrManifest --minify --outDir dist/client",
-    "build:server": "tsc -p tsconfig.server.json && vite build --ssr src/entry-server.ts --minify --outDir dist/server",
+    "build:server": "vite build --ssr src/entry-server.ts --minify --outDir dist/server",
     "clean": "rimraf dist/",
-    "dev": "nodemon server/index.ts",
-    "serve": "nodemon server/index.ts",
+    "dev": "nodemon server/index.mjs",
+    "serve": "yarn build && nodemon server/index.mjs",
     "prepare": "cp -n .env.example .env || true",
     "preview": "cross-env NODE_ENV=production nodemon server/index.ts",
     "test": "jest"
   },
   "dependencies": {
-    "@bottomtime/api": "*",
-    "@bottomtime/common": "*",
+    "@bottomtime/api": "workspace:*",
     "@codegenie/serverless-express": "^4.14.1",
     "@googlemaps/js-api-loader": "^1.16.6",
-    "@nestjs/axios": "^3.0.1",
-    "@nestjs/common": "^10.2.10",
-    "@nestjs/core": "^10.2.10",
-    "@nestjs/platform-express": "^10.3.0",
-    "@nestjs/terminus": "^10.2.0",
-    "@nestjs/throttler": "^5.1.1",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
     "@vuepic/vue-datepicker": "^8.3.1",
@@ -33,6 +26,7 @@
     "axios": "^1.6.8",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -60,13 +54,13 @@
     "@babel/preset-env": "^7.23.9",
     "@faker-js/faker": "^8.4.1",
     "@types/aws-lambda": "^8.10.140",
-    "@types/bunyan": "^1.8.11",
     "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.6",
+    "@types/cors": "^2",
     "@types/express": "^4.17.21",
     "@types/google.maps": "^3.55.3",
     "@types/http-proxy-middleware": "^1.0.0",
-    "@types/jest": "^29.5.11",
+    "@types/jest": "^29.5.12",
     "@types/mustache": "^4.2.5",
     "@types/node": "^20.10.5",
     "@types/showdown": "^2.0.6",
@@ -80,28 +74,18 @@
     "jest-junit": "^16.0.0",
     "jest-transform-css": "^6.0.1",
     "nodemon": "^2.0.22",
-    "nodemon-webpack-plugin": "^4.8.2",
     "rimraf": "^5.0.7",
     "serverless": "^4.1.0",
     "serverless-offline": "^13.6.0",
     "ts-jest": "^29.1.2",
-    "ts-loader": "^9.5.1",
-    "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
-    "vue-tsc": "^1.8.26",
-    "webpack": "^5.92.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-node-externals": "^3.0.0"
+    "vue-tsc": "^1.8.26"
   },
   "nodemonConfig": {
-    "execMap": {
-      "ts": "tsx"
-    },
     "watch": [
-      "src/views/",
       "server/"
     ],
-    "ext": "ts,vue,json"
+    "ext": "mjs"
   }
 }

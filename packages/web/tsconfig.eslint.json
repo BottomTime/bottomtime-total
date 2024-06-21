@@ -6,6 +6,7 @@
     "src/**/*.ts",
     "src/**/*.vue",
     "server/**/*.ts",
+    "server/**/*.mjs",
     "tests/**/*.ts",
     "tests/**/*.vue"
   ],
