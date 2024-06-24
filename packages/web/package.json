@@ -46,7 +46,6 @@
     "vue": "^3.3.13",
     "vue-advanced-cropper": "^2.8.8",
     "vue-router": "^4.2.5",
-    "vue3-google-map": "^0.19.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
@@ -58,7 +57,7 @@
     "@types/cookie-parser": "^1.4.6",
     "@types/cors": "^2",
     "@types/express": "^4.17.21",
-    "@types/google.maps": "^3.55.3",
+    "@types/google.maps": "^3.55.10",
     "@types/http-proxy-middleware": "^1.0.0",
     "@types/jest": "^29.5.12",
     "@types/mustache": "^4.2.5",
