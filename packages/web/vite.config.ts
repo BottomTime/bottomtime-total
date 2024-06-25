@@ -1,3 +1,5 @@
+/** @type {import('vite').UserConfig} */
+
 /* eslint-disable no-process-env */
 import vue from '@vitejs/plugin-vue';
 
@@ -34,5 +36,8 @@ export default defineConfig(({ mode }) => {
       preserveSymlinks: true,
     },
     define,
+    ssr: {
+      noExternal: true,
+    },
   };
 });
