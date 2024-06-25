@@ -72,7 +72,6 @@ export async function initDevServer(app) {
       middlewareMode: true,
     },
     appType: 'custom',
-    base: '/',
   });
 
   app.use(vite.middlewares);

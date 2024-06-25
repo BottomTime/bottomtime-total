@@ -9,7 +9,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { Client } from 'pg';
 
 const InsertUserQuery = `INSERT INTO users (

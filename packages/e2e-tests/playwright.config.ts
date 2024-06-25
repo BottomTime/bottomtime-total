@@ -86,12 +86,13 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `yarn admin db init -f -d "${PostgresFixture.postgresUri}" && yarn preview`,
+      command: `yarn admin db init -f -d "${PostgresFixture.postgresUri}" && yarn serve`,
       url: 'http://127.0.0.1:4801/',
       cwd: '../service',
       env: {
         BT_LOG_LEVEL: 'debug',
         BT_POSTGRES_URI: PostgresFixture.postgresUri,
+        BT_POSTGRES_REQUIRE_SSL: 'false',
         BT_PORT: '4801',
         BT_SESSION_SECRET: getSessionSecret(),
         NODE_ENV: 'production',
@@ -101,14 +102,14 @@ export default defineConfig({
       // stdout: 'pipe',
     },
     {
-      command: 'npx tsx ./server/index.ts',
+      command: 'yarn serve',
       url: 'http://127.0.0.1:4851/',
       cwd: '../web',
       env: {
         BTWEB_API_URL: 'http://localhost:4801/',
-        BTWEB_BASE_URL: 'http://localhost:4851/',
+        BTWEB_VITE_BASE_URL: 'http://localhost:4851/',
         BTWEB_PORT: '4851',
-        // NODE_ENV: 'production',
+        NODE_ENV: 'production',
       },
       timeout: 10000,
       reuseExistingServer: true,

@@ -2369,6 +2369,8 @@ __metadata:
   resolution: "@bottomtime/e2e-tests@workspace:packages/e2e-tests"
   dependencies:
     "@playwright/test": "npm:^1.41.2"
+    "@types/bcryptjs": "npm:^2.4.6"
+    bcryptjs: "npm:^2.4.3"
     jsonwebtoken: "npm:^9.0.2"
     pg: "npm:^8.11.3"
     typescript: "npm:^5.4.2"

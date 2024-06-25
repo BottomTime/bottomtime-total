@@ -9,7 +9,7 @@ function toNumber(value, defaultValue) {
 
 export class Config {
   static get appTitle() {
-    return process.env.BTWEB_APP_TITLE ?? 'Bottom Time';
+    return process.env.BTWEB_VITE_APP_TITLE ?? 'Bottom Time';
   }
 
   static get apiUrl() {
@@ -17,11 +17,11 @@ export class Config {
   }
 
   static get baseUrl() {
-    return process.env.BTWEB_BASE_URL ?? 'http://localhost:4850/';
+    return process.env.BTWEB_VITE_BASE_URL ?? 'http://localhost:4850/';
   }
 
   static get cookieName() {
-    return process.env.BT_COOKIE_NAME ?? 'bottomtime.local';
+    return process.env.BTWEB_COOKIE_NAME ?? 'bottomtime.local';
   }
 
   static get env() {
@@ -32,7 +32,11 @@ export class Config {
     return this.env === 'production';
   }
 
+  static get logLevel() {
+    return process.env.BTWEB_LOG_LEVEL ?? 'info';
+  }
+
   static get port() {
-    return toNumber(process.env.BT_WEB_PORT, 4850);
+    return toNumber(process.env.BTWEB_PORT, 4850);
   }
 }

@@ -32,7 +32,7 @@ export const dbModule: CommandModule<{
             .help();
         },
         async (yargs) => {
-          await initDatabase(yargs.postgresUri, yargs.force);
+          await initDatabase(yargs.postgresUri, yargs.requireSsl, yargs.force);
         },
       )
       .command(

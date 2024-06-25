@@ -36,8 +36,12 @@ export default defineConfig(({ mode }) => {
       preserveSymlinks: true,
     },
     define,
-    ssr: {
-      noExternal: true,
-    },
+    ...(mode === 'production'
+      ? {
+          ssr: {
+            noExternal: true,
+          },
+        }
+      : {}),
   };
 });

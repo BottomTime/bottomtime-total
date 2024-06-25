@@ -40,8 +40,8 @@ export enum WeightUnit {
 }
 
 export const BooleanString = z
-  .enum(['true', 'false'])
-  .transform((value) => value === 'true');
+  .string()
+  .transform((value) => /^(true|1)$/i.test(value));
 
 /**
  * Parses, validates, and transforms a string in the format "<lat>,<lon>" into a {@link GpsCoordinates} object.

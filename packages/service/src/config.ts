@@ -1,4 +1,6 @@
 /* eslint-disable no-process-env */
+import { BooleanString } from '@bottomtime/api';
+
 import 'dotenv/config';
 import { z } from 'zod';
 
@@ -111,12 +113,12 @@ const ConfigSchema = z
     // Misc.
     BT_ADMIN_EMAIL: z.string().default('admin@bottomti.me'),
     BT_BASE_URL: z.string().url().default('http://localhost:4850'),
-    BT_FAST_IMAGE_RESIZE: z.coerce.boolean().default(false),
+    BT_FAST_IMAGE_RESIZE: BooleanString.default('false'),
     BT_FRIENDS_LIMIT: z.coerce.number().int().min(1).max(5000).default(1000),
     BT_LOG_LEVEL: LogLevelSchema.default('debug'),
     BT_PASSWORD_SALT_ROUNDS: z.coerce.number().int().min(1).default(15),
     BT_PORT: z.coerce.number().int().min(1).max(65535).default(4800),
-    BT_POSTGRES_REQUIRE_SSL: z.coerce.boolean().default(false),
+    BT_POSTGRES_REQUIRE_SSL: BooleanString.default('false'),
     BT_POSTGRES_URI: z
       .string()
       .default(
