@@ -85,10 +85,7 @@ exports[`View Dive Site component will render site with full details 1`] = `
       <p class="ml-2"><span class="mr-1 text-danger"><i class="fas fa-map-marker-alt fa-sm"></i></span><span>72.6789, -105.3306</span></p>
     </div>
     <div class="mx-auto">
-      <div data-v-f29e129b="" class="w-full aspect-video">
-        <div data-v-f29e129b="" class="mapdiv"></div>
-        <!---->
-      </div>
+      <div class="w-full aspect-video"></div>
     </div>
   </div>
   <div class="space-y-3">

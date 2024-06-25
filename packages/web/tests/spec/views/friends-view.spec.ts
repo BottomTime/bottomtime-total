@@ -1,5 +1,7 @@
 import {
   ApiClient,
+  Friend,
+  FriendRequest,
   FriendRequestDirection,
   FriendsSortBy,
   ListFriendRequestsResponseDTO,
@@ -8,8 +10,6 @@ import {
   ListFriendsResposneSchema,
   SortOrder,
 } from '@bottomtime/api';
-import { Friend } from '@bottomtime/api/src/client/friend';
-import { FriendRequest } from '@bottomtime/api/src/client/friend-request';
 
 import {
   ComponentMountingOptions,

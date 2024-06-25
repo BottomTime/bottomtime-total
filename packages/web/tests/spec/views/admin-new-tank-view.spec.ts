@@ -1,5 +1,4 @@
-import { ApiClient, TankDTO, TankMaterial } from '@bottomtime/api';
-import { Tank } from '@bottomtime/api/src/client/tank';
+import { ApiClient, Tank, TankDTO, TankMaterial } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,

@@ -1,11 +1,12 @@
 import {
+  ApiClient,
   ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
   UpdateProfileParamsDTO,
+  User,
   UserDTO,
 } from '@bottomtime/api';
-import { ApiClient, User } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -13,7 +14,6 @@ import {
   mount,
 } from '@vue/test-utils';
 
-import axios from 'axios';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
@@ -136,7 +136,7 @@ describe('Edit Profile form', () => {
     const userData = getUser(UserWithFullProfile);
     opts.props = { profile: userData.profile };
     const wrapper = mount(EditProfile, opts);
-    const user = new User(axios.create(), userData);
+    const user = new User(client.axios, userData);
     const spy = jest.spyOn(user.profile, 'save').mockResolvedValue();
     jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(user.profile);
 

@@ -1,10 +1,10 @@
 import {
   ApiClient,
+  FriendRequest,
   FriendRequestDirection,
   SearchProfilesResponseDTO,
   SearchUsersResponseSchema,
 } from '@bottomtime/api';
-import { FriendRequest } from '@bottomtime/api/src/client/friend-request';
 
 import {
   ComponentMountingOptions,

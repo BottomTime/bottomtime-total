@@ -3,8 +3,8 @@ import {
   ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
+  Tank,
 } from '@bottomtime/api';
-import { Tank } from '@bottomtime/api/src/client/tank';
 
 import {
   ComponentMountingOptions,

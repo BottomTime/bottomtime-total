@@ -9,7 +9,6 @@ import { ApiClient, User } from '@bottomtime/api';
 
 import { flushPromises, mount } from '@vue/test-utils';
 
-import axios from 'axios';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
@@ -89,7 +88,7 @@ describe('Edit Settings form', () => {
         },
       },
     });
-    const user = new User(axios.create(), userData);
+    const user = new User(client.axios, userData);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     const spy = jest.spyOn(user.settings, 'save').mockResolvedValueOnce();
 
