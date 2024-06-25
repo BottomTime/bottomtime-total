@@ -31,8 +31,8 @@ custom:
 functions:
   main:
     name: ${self:service}-${self:provider.stage}-main
-    description: Bottomtime backend service
-    handler: server/sls-entry.handler
+    description: Bottomtime front-end Vue application
+    handler: dist/sls-entry.handler
     environment:
       BTWEB_APP_TITLE: Bottom Time
       BTWEB_API_URL: 'http://localhost:4800' # TODO: This needs to come from Terraform
@@ -45,7 +45,7 @@ functions:
     package:
       patterns:
         - dist/**
-        - server/**
+        - package.json
     events:
       - httpApi:
           method: ANY
