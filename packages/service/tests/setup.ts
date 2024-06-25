@@ -3,7 +3,7 @@ import { mkdir } from 'fs/promises';
 import path from 'path';
 
 import { initDatabase } from '../admin/database/init-db';
-import { PostgresUri } from './postgres-uri';
+import { PostgresRequireSsl, PostgresUri } from './postgres-uri';
 
 export default async function (): Promise<void> {
   // Create a directory for logs
@@ -14,5 +14,5 @@ export default async function (): Promise<void> {
   process.env.BT_PASSWORD_SALT_ROUNDS = '1';
 
   // Now create the test database
-  await initDatabase(PostgresUri, true);
+  await initDatabase(PostgresUri, PostgresRequireSsl, true);
 }

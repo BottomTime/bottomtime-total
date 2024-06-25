@@ -1,7 +1,7 @@
 import path from 'path';
 import { DataSource } from 'typeorm';
 
-import { PostgresUri } from './postgres-uri';
+import { PostgresRequireSsl, PostgresUri } from './postgres-uri';
 
 let dataSource: DataSource;
 
@@ -18,6 +18,7 @@ beforeAll(async () => {
     url: PostgresUri,
     entities: [path.resolve(__dirname, '../src/data/**/*.entity.ts')],
     migrations: [path.resolve(__dirname, '../migrations/*.ts')],
+    ssl: PostgresRequireSsl,
   });
   await dataSource.initialize();
   await purgeDatabase();
