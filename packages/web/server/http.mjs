@@ -1,8 +1,9 @@
-/* eslint-disable no-console */
 import axios, { isAxiosError } from 'axios';
 
 import { Config } from './config.mjs';
+import { getLogger } from './logger.mjs';
 
+const log = getLogger();
 const apiClient = axios.create({
   baseURL: Config.apiUrl,
 });
@@ -19,18 +20,18 @@ export function extractJwtFromRequest(req) {
   if (req.headers.authorization) {
     token = parseAuthHeader(req.headers.authorization);
     if (token) {
-      console.debug('Found JWT in Authorization header');
+      log.debug('Found JWT in Authorization header');
       return token;
     }
   }
 
   token = req.cookies[Config.cookieName];
   if (token) {
-    console.debug('Found JWT in session cookie');
+    log.debug('Found JWT in session cookie');
     return token;
   }
 
-  console.debug('No JWT found in request');
+  log.debug('No JWT found in request');
   return undefined;
 }
 
@@ -43,9 +44,9 @@ export async function getCurrentUser(jwt, res) {
   } catch (err) {
     if (isAxiosError(err) && err.response.status === 401) {
       res.clearCookie(Config.cookieName);
-      console.warn('JWT was rejected; clearing session cookie.');
+      log.warn('JWT was rejected; clearing session cookie.');
     } else {
-      console.error(err);
+      log.error(err);
     }
   }
 }

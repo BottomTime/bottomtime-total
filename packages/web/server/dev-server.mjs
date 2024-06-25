@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { readFile } from 'fs/promises';
 import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
@@ -6,12 +5,14 @@ import { fileURLToPath } from 'url';
 
 import { Config } from './config.mjs';
 import { extractJwtFromRequest, getCurrentUser } from './http.mjs';
+import { getLogger } from './logger.mjs';
 
+const log = getLogger();
 let vite;
 let htmlTemplatePath;
 
 async function loadHtmlTemplate(url) {
-  console.debug(`Loading index.html template from "${htmlTemplatePath}"...`);
+  log.debug(`Loading index.html template from "${htmlTemplatePath}"...`);
   const rawTemplate = await readFile(htmlTemplatePath, 'utf-8');
   const template = await vite.transformIndexHtml(url, rawTemplate);
   return template;
@@ -20,7 +21,7 @@ async function loadHtmlTemplate(url) {
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 function errorHandler(err, _req, res, _next) {
   vite.ssrFixStacktrace(err);
-  console.error(err);
+  log.error(err);
   res.status(500).json(err);
 }
 
@@ -45,7 +46,7 @@ async function requestHandler(req, res, next) {
       clientOptions,
     );
 
-    console.debug('Rendering HTML page...');
+    log.debug('Rendering HTML page...');
     const rendered = Mustache.render(htmlTemplate, {
       head: '',
       content: html,
@@ -60,7 +61,7 @@ async function requestHandler(req, res, next) {
 }
 
 export async function initDevServer(app) {
-  console.log('🚀 Starting server in dev mode...');
+  log.info('🚀 Starting server in dev mode...');
   htmlTemplatePath = resolve(
     dirname(fileURLToPath(import.meta.url)),
     '../index.html',

@@ -23,5 +23,5 @@ export default {
       preferBuiltins: true,
     }),
   ],
-  external: ['vite'],
+  external: ['vite', 'dtrace-provider', 'fs', 'mv', 'os', 'source-map-support'],
 };
