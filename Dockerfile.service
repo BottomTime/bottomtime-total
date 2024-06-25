@@ -9,7 +9,6 @@ WORKDIR /app
 
 COPY package.json yarn.lock .yarnrc.yml nx.json lerna.json ./
 COPY packages/service/package.json packages/service/tsconfig.json ./packages/service/
-COPY packages/common/package.json packages/common/tsconfig.json ./packages/common/
 COPY packages/api/package.json packages/api/tsconfig.json ./packages/api/
 COPY packages/templates/package.json packages/templates/config.js packages/templates/config.production.js packages/templates/tailwind.config.js ./packages/templates/
 
@@ -21,7 +20,6 @@ COPY packages/service/public/ ./packages/service/public/
 COPY packages/service/migrations/ ./packages/service/migrations/
 COPY packages/service/assets/ ./packages/service/assets/
 
-COPY packages/common/src/ ./packages/common/src/
 COPY packages/api/src/ ./packages/api/src/
 COPY packages/templates/src/ ./packages/templates/src/
 COPY packages/service/src/ ./packages/service/src/

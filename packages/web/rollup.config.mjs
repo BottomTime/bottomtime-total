@@ -8,7 +8,7 @@ import terser from '@rollup/plugin-terser';
 // const outputPlugins = isProduction ? [terser()] : [];
 
 export default {
-  input: 'server/sls-entry.mjs',
+  input: ['server/index.mjs', 'server/sls-entry.mjs'],
   output: {
     format: 'es',
     dir: 'dist',
