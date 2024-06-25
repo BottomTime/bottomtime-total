@@ -26,5 +26,5 @@ COPY --from=build /app/ /app/
 WORKDIR /app/packages/web/
 
 EXPOSE 4850 24678
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "curl", "http://localhost:4850/health" ]
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "curl", "http://localhost:4850/health" ]
 ENTRYPOINT ["./bootstrap-docker.sh"]
