@@ -46,13 +46,15 @@ functions:
       BT_PASSWORD_SALT_ROUNDS: 15
       BT_POSTGRES_REQUIRE_SSL: 'true'
       BT_POSTGRES_URI: ${self:custom.secrets.postgresUri}
+      BT_SESSION_COOKIE_DOMAIN: '' # TODO: This should come from Terraform
+      BT_SESSION_COOKIE_NAME: ${self:custom.secrets.cookieName}
       BT_SESSION_SECRET: ${self:custom.secrets.sessionSecret}
       BT_SMTP_REPLY_TO: donotreply@bottomti.me
       BT_SMTP_FROM: '"Bottom Time Admin" <admin@bottomti.me>'
       BT_SMTP_HOST: ${self:custom.secrets.smtpHost}
       BT_SMTP_PASSWORD: ${self:custom.secrets.smtpPassword}
       BT_SMTP_USERNAME: ${self:custom.secrets.smtpUsername}
-      NODE_ENV: ${self:provider.stage}
+      NODE_ENV: production
     logRetentionInDays: 7
     url:
       cors: true

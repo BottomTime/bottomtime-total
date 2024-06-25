@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "maizzle build production",
-    "clean": "rimraf build_local/ && rimraf ../service/assets/templates/",
+    "clean": "rm -rf build_local/ && rm -rf ../service/assets/templates/",
     "dev": "maizzle serve",
     "prepare": "yarn build"
   },
@@ -14,8 +14,5 @@
     "tailwindcss-box-shadow": "^2.0.0",
     "tailwindcss-email-variants": "^2.0.0",
     "tailwindcss-mso": "^1.4.1"
-  },
-  "devDependencies": {
-    "rimraf": "^5.0.7"
   }
 }

@@ -21,15 +21,11 @@ export class Config {
   }
 
   static get cookieName() {
-    return process.env.BTWEB_COOKIE_NAME ?? 'bottomtime.local';
+    return process.env.BT_COOKIE_NAME ?? 'bottomtime.local';
   }
 
   static get env() {
     return process.env.NODE_ENV ?? 'development';
-  }
-
-  static get logLevel() {
-    return process.env.BTWEB_LOG_LEVEL ?? 'debug';
   }
 
   static get isProduction() {
@@ -37,6 +33,6 @@ export class Config {
   }
 
   static get port() {
-    return toNumber(process.env.BTWEB_PORT, 4850);
+    return toNumber(process.env.BT_WEB_PORT, 4850);
   }
 }
