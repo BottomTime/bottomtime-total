@@ -7,6 +7,7 @@ import path from 'path';
 import { PostgresFixture } from '../fixtures/postgres.fixture';
 
 setup('Initialize Database', async () => {
+  setup.setTimeout(60000);
   await new Promise<void>((resolve, reject) => {
     exec(
       `yarn admin db init -f -d "${PostgresFixture.postgresUri}"`,
