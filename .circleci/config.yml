@@ -41,6 +41,7 @@ jobs:
           paths:
             - packages/api/dist/
             - packages/service/dist/
+            - packages/service/assets/templates/
             - packages/web/dist/
             - cc-test-reporter
 
