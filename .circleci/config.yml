@@ -9,6 +9,7 @@ commands:
       - node/install:
           install-yarn: true
           node-version: '20.14'
+      - run: corepack enable
       - node/install-packages:
           pkg-manager: yarn
           check-cache: detect
