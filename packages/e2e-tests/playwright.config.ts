@@ -45,13 +45,17 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
-  globalSetup: require.resolve('./tests/init-db.ts'),
-
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'init db',
+      testMatch: '**/*.setup.ts',
+    },
+
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      dependencies: ['init db'],
     },
 
     // {
@@ -99,9 +103,9 @@ export default defineConfig({
         BT_SESSION_SECRET: getSessionSecret(),
         NODE_ENV: 'production',
       },
-      timeout: 30000,
+      timeout: 10000,
       reuseExistingServer: true,
-      stdout: 'pipe',
+      // stdout: 'pipe',
     },
     {
       command: 'yarn serve',
@@ -113,9 +117,9 @@ export default defineConfig({
         BTWEB_PORT: '4851',
         NODE_ENV: 'production',
       },
-      timeout: 30000,
+      timeout: 10000,
       reuseExistingServer: true,
-      stdout: 'pipe',
+      // stdout: 'pipe',
     },
   ],
 });
