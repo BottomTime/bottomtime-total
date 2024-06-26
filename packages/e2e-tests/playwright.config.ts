@@ -45,6 +45,8 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  globalSetup: require.resolve('./tests/init-db.ts'),
+
   /* Configure projects for major browsers */
   projects: [
     {
@@ -86,7 +88,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: `yarn admin db init -f -d "${PostgresFixture.postgresUri}" && yarn serve`,
+      command: 'yarn serve',
       url: 'http://127.0.0.1:4801/',
       cwd: '../service',
       env: {
@@ -97,8 +99,8 @@ export default defineConfig({
         BT_SESSION_SECRET: getSessionSecret(),
         NODE_ENV: 'production',
       },
-      timeout: 10000,
-      reuseExistingServer: true,
+      timeout: 5000,
+      // reuseExistingServer: true,
       // stdout: 'pipe',
     },
     {
@@ -111,8 +113,8 @@ export default defineConfig({
         BTWEB_PORT: '4851',
         NODE_ENV: 'production',
       },
-      timeout: 10000,
-      reuseExistingServer: true,
+      timeout: 5000,
+      // reuseExistingServer: true,
     },
   ],
 });
