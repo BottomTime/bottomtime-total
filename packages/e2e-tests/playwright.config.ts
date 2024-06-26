@@ -100,7 +100,7 @@ export default defineConfig({
         NODE_ENV: 'production',
       },
       timeout: 5000,
-      // reuseExistingServer: true,
+      reuseExistingServer: true,
       // stdout: 'pipe',
     },
     {
@@ -114,7 +114,8 @@ export default defineConfig({
         NODE_ENV: 'production',
       },
       timeout: 5000,
-      // reuseExistingServer: true,
+      reuseExistingServer: true,
+      // stdout: 'pipe',
     },
   ],
 });

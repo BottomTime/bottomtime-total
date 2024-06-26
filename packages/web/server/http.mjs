@@ -42,7 +42,7 @@ export async function getCurrentUser(jwt, res) {
     });
     return data;
   } catch (err) {
-    if (isAxiosError(err) && err.response.status === 401) {
+    if (isAxiosError(err) && err.response && err.response.status === 401) {
       res.clearCookie(Config.cookieName);
       log.warn('JWT was rejected; clearing session cookie.');
     } else {

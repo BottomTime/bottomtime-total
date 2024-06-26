@@ -41,6 +41,10 @@ export enum WeightUnit {
 
 export const BooleanString = z
   .string()
+  .regex(
+    /^(true|false|1|0)$/i,
+    'Value must be one of "true", "false", "1", or "0"',
+  )
   .transform((value) => /^(true|1)$/i.test(value));
 
 /**

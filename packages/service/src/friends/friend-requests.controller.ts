@@ -285,10 +285,10 @@ export class FriendRequestsController {
     @TargetUser() user: User,
     @TargetFriend() friend: User,
   ): Promise<FriendRequestDTO> {
-    const result = await this.friendsService.createFriendRequest(
-      user.id,
-      friend.id,
+    this.log.debug(
+      `Sending friend request from ${user.username} to ${friend.username}...`,
     );
+    const result = await this.friendsService.createFriendRequest(user, friend);
     return result;
   }
 
