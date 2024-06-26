@@ -12,7 +12,6 @@ commands:
       - run: corepack enable
       - node/install-packages:
           pkg-manager: yarn
-          check-cache: detect
 
 jobs:
   init_and_lint:

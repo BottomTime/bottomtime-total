@@ -99,9 +99,9 @@ export default defineConfig({
         BT_SESSION_SECRET: getSessionSecret(),
         NODE_ENV: 'production',
       },
-      timeout: 10000,
+      timeout: 30000,
       reuseExistingServer: true,
-      // stdout: 'pipe',
+      stdout: 'pipe',
     },
     {
       command: 'yarn serve',
@@ -113,9 +113,9 @@ export default defineConfig({
         BTWEB_PORT: '4851',
         NODE_ENV: 'production',
       },
-      timeout: 10000,
+      timeout: 30000,
       reuseExistingServer: true,
-      // stdout: 'pipe',
+      stdout: 'pipe',
     },
   ],
 });
