@@ -158,12 +158,19 @@ jobs:
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
     environment:
-      BT_MONGO_URI: mongodb://localhost:27017/ci
+      BT_POSTGRES_URI: 'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_e2e'
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - yarn_install
       - attach_workspace:
           at: ./
+      - run:
+          name: Install Playwright
+          command: npx playwright install
+      - run:
+          name: Initialize Database
+          working_directory: packages/service
+          command: yarn admin db init -f
       - run:
           name: Run end-to-end tests
           working_directory: packages/e2e-tests/

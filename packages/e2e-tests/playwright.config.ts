@@ -48,14 +48,8 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'init db',
-      testMatch: '**/*.setup.ts',
-    },
-
-    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      dependencies: ['init db'],
     },
 
     // {
@@ -92,7 +86,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'yarn serve',
+      command: 'yarn --cwd ../service admin db init -f && yarn serve',
       url: 'http://127.0.0.1:4801/',
       cwd: '../service',
       env: {
@@ -101,9 +95,15 @@ export default defineConfig({
         BT_POSTGRES_REQUIRE_SSL: 'false',
         BT_PORT: '4801',
         BT_SESSION_SECRET: getSessionSecret(),
+        BT_DISCORD_CLIENT_ID: 'discord_client',
+        BT_DISCORD_CLIENT_SECRET: 'discord_secret',
+        BT_GOOGLE_CLIENT_ID: 'google_client',
+        BT_GOOGLE_CLIENT_SECRET: 'google_secret',
+        BT_GITHUB_CLIENT_ID: 'github_client',
+        BT_GITHUB_CLIENT_SECRET: 'github_secret',
         NODE_ENV: 'production',
       },
-      timeout: 30000,
+      timeout: 10000,
       reuseExistingServer: true,
       // stdout: 'pipe',
     },
@@ -117,7 +117,7 @@ export default defineConfig({
         BTWEB_PORT: '4851',
         NODE_ENV: 'production',
       },
-      timeout: 30000,
+      timeout: 10000,
       reuseExistingServer: true,
       // stdout: 'pipe',
     },
