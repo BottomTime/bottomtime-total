@@ -1,67 +1,43 @@
-resource "aws_s3_bucket" "web" {
-  bucket        = "${var.service_name_short}-${data.aws_region.current.name}-${var.env}-web-distro"
+resource "aws_s3_bucket" "media" {
+  bucket        = "bottomtime-media-${var.env}"
   force_destroy = true
-
   tags = {
-    Name        = "${var.service_name} Web Distro Bucket"
     Environment = var.env
   }
 }
 
-resource "aws_s3_bucket" "docs" {
-  bucket        = "${var.service_name_short}-${data.aws_region.current.name}-${var.env}-docs-distro"
-  force_destroy = true
-
-  tags = {
-    Name        = "${var.service_name} Docs Distro Bucket"
-    Environment = var.env
+resource "aws_s3_bucket_ownership_controls" "media" {
+  bucket = aws_s3_bucket.media.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
   }
 }
 
-resource "aws_s3_bucket_policy" "web" {
-  bucket = aws_s3_bucket.web.id
-  policy = jsonencode({
-    Id      = "PolicyForCloudFrontPrivateContent"
-    Version = "2008-10-17"
-    Statement = [
-      {
-        Sid = "AllowCloudFrontServicePrincipal"
-        Condition = {
-          StringEquals = {
-            "AWS:SourceArn" = aws_cloudfront_distribution.web.arn
-          }
-        }
-        Effect   = "Allow"
-        Action   = "s3:GetObject"
-        Resource = "${aws_s3_bucket.web.arn}/*"
-        Principal = {
-          Service = "cloudfront.amazonaws.com"
-        }
-      }
-    ]
-  })
+resource "aws_s3_bucket_acl" "media" {
+  depends_on = [aws_s3_bucket_ownership_controls.media]
+  bucket     = aws_s3_bucket.media.id
+  acl        = "private"
 }
 
-resource "aws_s3_bucket_policy" "docs" {
-  bucket = aws_s3_bucket.docs.id
-  policy = jsonencode({
-    Id      = "PolicyForCloudFrontPrivateContent"
-    Version = "2008-10-17"
-    Statement = [
-      {
-        Sid = "AllowCloudFrontServicePrincipal"
-        Condition = {
-          StringEquals = {
-            "AWS:SourceArn" = aws_cloudfront_distribution.docs.arn
-          }
-        }
-        Effect   = "Allow"
-        Action   = "s3:GetObject"
-        Resource = "${aws_s3_bucket.docs.arn}/*"
-        Principal = {
-          Service = "cloudfront.amazonaws.com"
-        }
-      }
-    ]
-  })
+resource "aws_s3_bucket" "cf" {
+  bucket        = "bottomtime-web-${var.env}-${data.aws_region.current.name}"
+  force_destroy = true
+
+  tags = {
+    Environment = var.env
+    Region      = data.aws_region.current.name
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "cf" {
+  bucket = aws_s3_bucket.cf.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "cf" {
+  depends_on = [aws_s3_bucket_ownership_controls.cf]
+  bucket     = aws_s3_bucket.cf.id
+  acl        = "private"
 }

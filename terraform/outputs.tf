@@ -1,19 +1,4 @@
-output "service_endpoint" {
-  value = aws_route53_record.service.fqdn
-}
-
-output "site_endpoint" {
-  value = aws_route53_record.site.fqdn
-}
-
-output "docs_endpoint" {
-  value = aws_route53_record.docs.fqdn
-}
-
-output "site_distribution" {
-  value = aws_cloudfront_distribution.web.id
-}
-
-output "docs_distribution" {
-  value = aws_cloudfront_distribution.docs.id
+output "media_bucket" {
+  value       = aws_s3_bucket.media.id
+  description = "Name of the S3 bucket where media files (pictures, videos, etc.) are stored."
 }
