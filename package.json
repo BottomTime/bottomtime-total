@@ -9,6 +9,7 @@
   "private": true,
   "scripts": {
     "build": "lerna run build",
+    "clean": "lerna run clean",
     "format": "prettier --write --ignore-unknown .",
     "lint": "eslint .",
     "prepare": "husky install && lerna run prepare",
@@ -17,7 +18,7 @@
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@typescript-eslint/parser": "^6.19.1",
+    "@typescript-eslint/parser": "^7.14.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.20.1",
@@ -37,5 +38,6 @@
   ],
   "dependencies": {
     "eslint-plugin-deprecation": "^2.0.0"
-  }
+  },
+  "packageManager": "yarn@4.3.0"
 }

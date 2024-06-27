@@ -1,5 +1,3 @@
-import { BunyanLoggerService } from '@bottomtime/common';
-
 import { INestApplication } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -14,14 +12,15 @@ import requestStats from 'request-stats';
 import { AppModule, ServerDependencies } from './app.module';
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 import { User } from './auth/user';
+import { BunyanLoggerService } from './bunyan-logger-service';
 import { GlobalErrorFilter } from './global-error-filter';
 
 export async function createApp(
   logger: Logger,
-  createDeps: () => Promise<ServerDependencies>,
+  createDeps: (log: Logger) => Promise<ServerDependencies>,
 ): Promise<INestApplication> {
   const logService = new BunyanLoggerService(logger);
-  const deps = await createDeps();
+  const deps = await createDeps(logger);
 
   // Initialize the app with CORS settings and our provided logger.
   const app = await NestFactory.create<NestExpressApplication>(

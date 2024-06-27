@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "maizzle build production",
+    "clean": "rm -rf build_local/ && rm -rf ../service/assets/templates/",
     "dev": "maizzle serve",
     "prepare": "yarn build"
   },

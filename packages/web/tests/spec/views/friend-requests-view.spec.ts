@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  FriendRequest,
   FriendRequestDTO,
   FriendRequestDirection,
   ListFriendRequestsResponseDTO,
@@ -7,7 +8,6 @@ import {
   ProfileDTO,
   UserDTO,
 } from '@bottomtime/api';
-import { FriendRequest } from '@bottomtime/api/src/client/friend-request';
 
 import { faker } from '@faker-js/faker';
 import {

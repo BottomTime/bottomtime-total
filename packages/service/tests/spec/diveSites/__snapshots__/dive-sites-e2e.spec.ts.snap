@@ -359,28 +359,20 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return a 400
       "received": "nan",
     },
     {
-      "code": "invalid_enum_value",
-      "message": "Invalid enum value. Expected 'true' | 'false', received 'sure'",
-      "options": [
-        "true",
-        "false",
-      ],
+      "code": "invalid_string",
+      "message": "Value must be one of "true", "false", "1", or "0"",
       "path": [
         "freeToDive",
       ],
-      "received": "sure",
+      "validation": "regex",
     },
     {
-      "code": "invalid_enum_value",
-      "message": "Invalid enum value. Expected 'true' | 'false', received '13'",
-      "options": [
-        "true",
-        "false",
-      ],
+      "code": "invalid_string",
+      "message": "Value must be one of "true", "false", "1", or "0"",
       "path": [
         "shoreAccess",
       ],
-      "received": "13",
+      "validation": "regex",
     },
     {
       "code": "invalid_enum_value",

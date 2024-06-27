@@ -5,11 +5,15 @@ import { DataSource } from 'typeorm';
 import { UserEntity } from '../../src/data';
 import { getDataSource } from '../database/data-source';
 
-export async function getUserToken(postgresUri: string, username: string) {
+export async function getUserToken(
+  postgresUri: string,
+  requireSsl: boolean,
+  username: string,
+) {
   let ds: DataSource | undefined;
 
   try {
-    ds = await getDataSource(postgresUri);
+    ds = await getDataSource(postgresUri, requireSsl);
 
     const lowered = username.trim().toLowerCase();
     const users = ds.getRepository(UserEntity);

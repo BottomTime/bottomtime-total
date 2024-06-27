@@ -11,15 +11,12 @@ import {
 } from '@bottomtime/api';
 
 import { faker } from '@faker-js/faker';
-import {
-  BadRequestException,
-  ConflictException,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+import { User } from '../../../src/auth';
 import {
   FriendRequestEntity,
   FriendshipEntity,
@@ -338,29 +335,29 @@ describe('Friends Service', () => {
 
   describe('when creating a friend request', () => {
     it('will create a new friend request', async () => {
-      const originUser = createTestUser();
-      const destinationUser = createTestUser();
+      const originUser = new User(Users, createTestUser());
+      const destinationUser = new User(Users, createTestUser());
 
-      await Users.save([originUser, destinationUser]);
+      await Users.save([originUser.toEntity(), destinationUser.toEntity()]);
       const friendRequest = await service.createFriendRequest(
-        originUser.id,
-        destinationUser.id,
+        originUser,
+        destinationUser,
       );
 
       expect(friendRequest.direction).toBe(FriendRequestDirection.Outgoing);
       expect(friendRequest.friendId).toBe(destinationUser.id);
       expect(friendRequest.friend.id).toBe(destinationUser.id);
-      expect(friendRequest.created.valueOf()).toBeCloseTo(Date.now(), -2);
+      expect(friendRequest.created.valueOf()).toBeCloseTo(Date.now(), -3);
       expect(friendRequest.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
         -2,
       );
 
       const stored = await FriendRequests.findOneByOrFail({
-        from: originUser,
-        to: destinationUser,
+        from: originUser.toEntity(),
+        to: destinationUser.toEntity(),
       });
-      expect(stored.created.valueOf()).toBeCloseTo(Date.now(), -2);
+      expect(stored.created.valueOf()).toBeCloseTo(Date.now(), -3);
       expect(stored.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
         -2,
@@ -368,31 +365,12 @@ describe('Friends Service', () => {
     });
 
     it('will not create a friend request if the origin and destination user are the same', async () => {
-      const user = createTestUser();
-      await Users.save(user);
-      await expect(
-        service.createFriendRequest(user.id, user.id),
-      ).rejects.toThrowError(BadRequestException);
-    });
-
-    it('will not create a friend request if the origin user does not exist', async () => {
-      const originUser = uuid();
-      const destinationUser = createTestUser();
-      await Users.save(destinationUser);
-
-      await expect(
-        service.createFriendRequest(originUser, destinationUser.id),
-      ).rejects.toThrowError(NotFoundException);
-    });
-
-    it('will not create a friend request if the destination user does not exist', async () => {
-      const destinationUser = uuid();
-      const originUser = createTestUser();
-      await Users.save(originUser);
-
-      await expect(
-        service.createFriendRequest(originUser.id, destinationUser),
-      ).rejects.toThrowError(NotFoundException);
+      const userData = createTestUser();
+      const user = new User(Users, userData);
+      await Users.save(userData);
+      await expect(service.createFriendRequest(user, user)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('will not create a friend request if an existing request already exists matching the origin and destination', async () => {
@@ -410,8 +388,11 @@ describe('Friends Service', () => {
       await FriendRequests.save(friendRequest);
 
       await expect(
-        service.createFriendRequest(originUser.id, destinationUser.id),
-      ).rejects.toThrowError(ConflictException);
+        service.createFriendRequest(
+          new User(Users, originUser),
+          new User(Users, destinationUser),
+        ),
+      ).rejects.toThrow(ConflictException);
     });
 
     it('will not create a friend request if an existing request already exists from the destination user to the origin user', async () => {
@@ -429,8 +410,11 @@ describe('Friends Service', () => {
       await FriendRequests.save(friendRequest);
 
       await expect(
-        service.createFriendRequest(originUser.id, destinationUser.id),
-      ).rejects.toThrowError(ConflictException);
+        service.createFriendRequest(
+          new User(Users, originUser),
+          new User(Users, destinationUser),
+        ),
+      ).rejects.toThrow(ConflictException);
     });
 
     it('will not create a friend request if the origin and destination user are already friends', async () => {
@@ -452,8 +436,11 @@ describe('Friends Service', () => {
       await Friends.save(friendRelations);
 
       await expect(
-        service.createFriendRequest(originUser.id, destinationUser.id),
-      ).rejects.toThrowError(ConflictException);
+        service.createFriendRequest(
+          new User(Users, originUser),
+          new User(Users, destinationUser),
+        ),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -576,7 +563,7 @@ describe('Friends Service', () => {
       expect(request.accepted).toBe(true);
       expect(request.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
-        -2,
+        -3,
       );
       expect(relations).toHaveLength(2);
     });

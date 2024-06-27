@@ -1,4 +1,5 @@
 import { LoggerService } from '@nestjs/common';
+
 import Logger from 'bunyan';
 
 export class BunyanLoggerService implements LoggerService {

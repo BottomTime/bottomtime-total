@@ -1,12 +1,13 @@
 {
   "name": "@bottomtime/api",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "author": "Chris Carleton",
   "license": "MIT",
   "private": true,
   "scripts": {
     "build": "tsc",
+    "clean": "rm -rf dist/",
     "test": "jest"
   },
   "dependencies": {

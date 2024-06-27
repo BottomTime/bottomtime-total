@@ -4,7 +4,7 @@ import {
   UsernameSchema,
 } from '@bottomtime/api';
 
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import prompts from 'prompts';
 import { UserEntity } from 'src/data';
 import { DataSource } from 'typeorm';
@@ -16,6 +16,7 @@ import { getDataSource } from '../database/data-source';
 /* eslint-disable no-console */
 export type CreateAdminOptions = {
   potgresUri: string;
+  postgresRequireSsl: boolean;
   username?: string;
   password?: string;
   email?: string;
@@ -92,6 +93,7 @@ async function completeOptions(
     password,
     email,
     potgresUri: options.potgresUri,
+    postgresRequireSsl: options.postgresRequireSsl,
   };
 }
 
@@ -101,7 +103,10 @@ export async function createAdmin(options: CreateAdminOptions): Promise<void> {
 
   try {
     console.log('Connecting to database...');
-    dataSource = await getDataSource(options.potgresUri);
+    dataSource = await getDataSource(
+      options.potgresUri,
+      options.postgresRequireSsl,
+    );
 
     console.log('Creating admin account...');
     const admin = new UserEntity();

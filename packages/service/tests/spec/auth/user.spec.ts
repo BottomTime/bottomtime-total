@@ -2,7 +2,7 @@ import { PasswordResetTokenStatus, UserRole } from '@bottomtime/api';
 
 import { ConflictException } from '@nestjs/common';
 
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 

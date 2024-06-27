@@ -52,7 +52,6 @@ describe('Email Service', () => {
 
     mailClient = new TestMailer();
     service = new EmailService(mailClient);
-    await service.onModuleInit();
   });
 
   beforeEach(() => {

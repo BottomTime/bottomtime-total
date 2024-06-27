@@ -2,11 +2,11 @@ import {
   ApiClient,
   ListTanksResponseDTO,
   ListTanksResponseSchema,
+  Tank,
   TankDTO,
   TankMaterial,
   TankSchema,
 } from '@bottomtime/api';
-import { Tank } from '@bottomtime/api/src/client/tank';
 
 import {
   ComponentMountingOptions,

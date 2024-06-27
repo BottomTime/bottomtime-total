@@ -24,6 +24,13 @@ async function processCommand(cmd: string[]) {
       description: 'Set the PostgresSQL connection string',
       type: 'string',
     })
+    .option('require-ssl', {
+      alias: 's',
+      default: process.env.BT_POSTGRES_REQUIRE_SSL === 'true',
+      description:
+        'Indicates that SSL is required for the PostgresSQL connection',
+      type: 'boolean',
+    })
     .command(dbModule)
     .command(userModule)
     .help().argv;

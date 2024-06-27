@@ -22,6 +22,7 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, LessThan, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
+import { User } from '../auth';
 import { FriendRequestEntity, FriendshipEntity, UserEntity } from '../data';
 
 // List Friends Types
@@ -310,21 +311,19 @@ export class FriendsService {
       : undefined;
   }
 
-  async createFriendRequest(from: string, to: string): Promise<FriendRequest> {
-    if (from === to) {
+  async createFriendRequest(user: User, friend: User): Promise<FriendRequest> {
+    if (user.id === friend.id) {
       throw new BadRequestException('You cannot friend yourself.');
     }
 
-    const [user, friend, requestExists, friendshipExists] = await Promise.all([
-      this.Users.findOneBy({ id: from }),
-      this.Users.findOneBy({ id: to }),
+    const [requestExists, friendshipExists] = await Promise.all([
       this.FriendRequests.existsBy([
-        { from: { id: from }, to: { id: to } },
-        { from: { id: to }, to: { id: from } },
+        { from: { id: user.id }, to: { id: friend.id } },
+        { from: { id: friend.id }, to: { id: user.id } },
       ]),
       this.Friends.existsBy([
-        { user: { id: from }, friend: { id: to } },
-        { user: { id: to }, friend: { id: from } },
+        { user: { id: user.id }, friend: { id: friend.id } },
+        { user: { id: friend.id }, friend: { id: user.id } },
       ]),
     ]);
 
@@ -344,11 +343,11 @@ export class FriendsService {
     request.id = uuid();
     request.created = new Date();
     request.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
-    request.to = friend;
-    request.from = user;
+    request.to = friend.toEntity();
+    request.from = user.toEntity();
     await this.FriendRequests.save(request);
 
-    return FriendsService.toFriendRequestDTO(request, from);
+    return FriendsService.toFriendRequestDTO(request, user.id);
   }
 
   async acceptFriendRequest(from: string, to: string): Promise<boolean> {

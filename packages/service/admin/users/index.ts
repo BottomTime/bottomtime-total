@@ -3,7 +3,10 @@ import { CommandModule } from 'yargs';
 import { createAdmin } from './create-admin';
 import { getUserToken } from './get-user-token';
 
-export const userModule: CommandModule<{ 'postgres-uri': string }> = {
+export const userModule: CommandModule<{
+  'postgres-uri': string;
+  'require-ssl': boolean;
+}> = {
   command: 'user',
 
   describe: 'Commands for managing a user account',
@@ -29,6 +32,7 @@ export const userModule: CommandModule<{ 'postgres-uri': string }> = {
         },
         async (yargs) => {
           await createAdmin({
+            postgresRequireSsl: yargs.requireSsl,
             potgresUri: yargs.postgresUri,
             username: yargs.username,
             password: yargs.password,
@@ -48,7 +52,7 @@ export const userModule: CommandModule<{ 'postgres-uri': string }> = {
             .help();
         },
         async (yargs) => {
-          await getUserToken(yargs.postgresUri, yargs.user);
+          await getUserToken(yargs.postgresUri, yargs.requireSsl, yargs.user);
         },
       )
       .help();

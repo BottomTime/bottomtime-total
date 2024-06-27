@@ -5,6 +5,7 @@ import { DataSource } from 'typeorm';
 
 export async function initDatabase(
   postgresUri: string,
+  requireSsl: boolean,
   force = false,
 ): Promise<void> {
   const url = new URL(postgresUri);
@@ -21,6 +22,7 @@ export async function initDatabase(
       user: url.username,
       password: url.password,
       database: 'postgres',
+      ssl: requireSsl,
     });
     await pgClient.connect();
 

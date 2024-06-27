@@ -12,7 +12,7 @@ import {
 
 import { INestApplication } from '@nestjs/common';
 
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';

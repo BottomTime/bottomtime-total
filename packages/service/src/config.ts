@@ -1,4 +1,6 @@
 /* eslint-disable no-process-env */
+import { BooleanString } from '@bottomtime/api';
+
 import 'dotenv/config';
 import { z } from 'zod';
 
@@ -63,6 +65,7 @@ export interface AppConfig {
   logLevel: LogLevel;
   passwordSaltRounds: number;
   port: number;
+  postgresRequireSsl: boolean;
   postgresUri: string;
 }
 
@@ -110,11 +113,12 @@ const ConfigSchema = z
     // Misc.
     BT_ADMIN_EMAIL: z.string().default('admin@bottomti.me'),
     BT_BASE_URL: z.string().url().default('http://localhost:4850'),
-    BT_FAST_IMAGE_RESIZE: z.coerce.boolean().default(false),
+    BT_FAST_IMAGE_RESIZE: BooleanString.default('false'),
     BT_FRIENDS_LIMIT: z.coerce.number().int().min(1).max(5000).default(1000),
     BT_LOG_LEVEL: LogLevelSchema.default('debug'),
     BT_PASSWORD_SALT_ROUNDS: z.coerce.number().int().min(1).default(15),
     BT_PORT: z.coerce.number().int().min(1).max(65535).default(4800),
+    BT_POSTGRES_REQUIRE_SSL: BooleanString.default('false'),
     BT_POSTGRES_URI: z
       .string()
       .default(
@@ -173,6 +177,7 @@ const ConfigSchema = z
     logLevel: env.BT_LOG_LEVEL,
     passwordSaltRounds: env.BT_PASSWORD_SALT_ROUNDS,
     port: env.BT_PORT,
+    postgresRequireSsl: env.BT_POSTGRES_REQUIRE_SSL,
     postgresUri: env.BT_POSTGRES_URI,
   }));
 

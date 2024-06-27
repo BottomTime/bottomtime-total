@@ -11,7 +11,7 @@ import {
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 

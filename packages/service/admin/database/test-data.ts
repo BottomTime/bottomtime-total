@@ -184,12 +184,13 @@ async function createLogEntries(
 
 export async function createTestData(
   postgresUri: string,
+  requireSsl: boolean,
   counts: EntityCounts,
 ) {
   let ds: DataSource | undefined;
 
   try {
-    ds = await getDataSource(postgresUri);
+    ds = await getDataSource(postgresUri, requireSsl);
     const Alerts = ds.getRepository(AlertEntity);
     const FriendRequests = ds.getRepository(FriendRequestEntity);
     const Friends = ds.getRepository(FriendshipEntity);

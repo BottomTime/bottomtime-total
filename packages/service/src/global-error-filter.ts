@@ -1,5 +1,4 @@
 import { ErrorResponseDTO, ValidationErrorDetails } from '@bottomtime/api';
-import { BunyanLoggerService } from '@bottomtime/common';
 
 import {
   ArgumentsHost,
@@ -12,6 +11,7 @@ import { HttpAdapterHost } from '@nestjs/core';
 
 import { ZodError } from 'zod';
 
+import { BunyanLoggerService } from './bunyan-logger-service';
 import { Config } from './config';
 
 @Catch()

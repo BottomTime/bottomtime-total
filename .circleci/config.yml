@@ -1,37 +1,22 @@
 version: 2.1
-
 orbs:
-  aws-cli: circleci/aws-cli@4.0.0
-  aws-s3: circleci/aws-s3@3.1.1
-  terraform: circleci/terraform@3.2.1
-
-docker_base: &base_image
-  - image: cimg/base:2023.04
+  node: circleci/node@5.2.0
 
 commands:
-  publish_distro:
-    parameters:
-      bucket:
-        type: string
-      distribution_id:
-        type: string
-      env:
-        type: string
-      path:
-        type: string
+  yarn_install:
     steps:
-      - aws-s3/sync:
-          install-aws-cli: false
-          from: <<parameters.path>>
-          to: 's3://bt-$AWS_REGION-<<parameters.env>>-<<parameters.bucket>>-distro'
-      - run:
-          name: Invalidate distribution cache
-          command: aws cloudfront create-invalidation --distribution-id <<parameters.distribution_id>> --paths "/*"
+      - checkout
+      - node/install:
+          install-yarn: true
+          node-version: '20.14'
+      - run: corepack enable
+      - node/install-packages:
+          pkg-manager: yarn
 
 jobs:
   init_and_lint:
     docker:
-      - image: cimg/node:22.2
+      - image: cimg/base:2024.06
       - image: postgis/postgis:14-3.4
         environment:
           POSTGRES_DB: postgres
@@ -39,51 +24,34 @@ jobs:
           POSTGRES_PASSWORD: bt_admin1234
     resource_class: medium
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - bt-{{ checksum "yarn.lock" }}
-            - bt-
-      - run:
-          name: Install dependencies
-          command: yarn install
+      - yarn_install
       - run:
           name: Download Code Climate coverage tool
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
-      - save_cache:
-          key: bt-{{ checksum "yarn.lock" }}
-          paths:
-            - node_modules
-            - packages/api/node_modules
-            - packages/common/node_modules
-            - packages/e2e-tests/node_modules
-            - packages/service/node_modules
-            - packages/web/node_modules
       - run:
-          name: Lint
-          command: yarn lint
+          name: Lint and Build
+          command: |
+            yarn lint
+            yarn build
       - persist_to_workspace:
           root: ./
           paths:
+            - packages/api/dist/
+            - packages/service/dist/
+            - packages/service/assets/templates/
+            - packages/web/dist/
             - cc-test-reporter
 
   test_api:
     docker:
-      - image: cimg/node:22.2
+      - image: cimg/base:2024.06
     resource_class: medium
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - bt-{{ checksum "yarn.lock" }}
-            - bt-
-      - run:
-          name: Install dependencies
-          command: yarn
+      - yarn_install
       - attach_workspace:
           at: ./
       - run:
@@ -108,13 +76,12 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - packages/api/dist/
             - packages/api/coverage/
             - api.coverage.json
 
   test_service:
     docker:
-      - image: cimg/node:22.2
+      - image: cimg/base:2024.06
       - image: postgis/postgis:14-3.4-alpine
         environment:
           POSTGRES_DB: postgres
@@ -125,25 +92,16 @@ jobs:
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - bt-{{ checksum "yarn.lock" }}
-            - bt-
-      - run:
-          name: Install dependencies
-          command: yarn
+      - yarn_install
       - attach_workspace:
           at: ./
       - run:
           name: Initialize Code Climate
           command: ./cc-test-reporter before-build
       - run:
-          name: Build
-          command: yarn --cwd packages/service build
-      - run:
           name: Run Tests
-          command: yarn --cwd packages/service test --ci
+          working_directory: packages/service/
+          command: yarn prepare && yarn test --ci
       - store_test_results:
           path: packages/service/reports/
       - run:
@@ -157,33 +115,22 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - packages/service/dist/
             - packages/service/coverage/
             - service.coverage.json
 
   test_web:
     docker:
-      - image: cimg/node:22.2-browsers
+      - image: cimg/node:20.14-browsers
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
       NODE_OPTIONS: '--max-old-space-size=8192'
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - bt-{{ checksum "yarn.lock" }}
-            - bt-
-      - run:
-          name: Install dependencies
-          command: yarn
+      - yarn_install
       - attach_workspace:
           at: ./
       - run:
           name: Initialize Code Climate
           command: ./cc-test-reporter before-build
-      - run:
-          name: Build
-          command: yarn --cwd packages/web build
       - run:
           name: Run Tests
           command: yarn --cwd packages/web test --runInBand --ci
@@ -200,32 +147,31 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
-            - packages/web/dist/
             - packages/web/coverage/
             - web.coverage.json
 
   test_e2e:
     docker:
-      - image: cimg/node:22.2-browsers
+      - image: cimg/node:20.14-browsers
       - image: postgis/postgis:14-3.4
         environment:
           POSTGRES_DB: postgres
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
     environment:
-      BT_MONGO_URI: mongodb://localhost:27017/ci
+      BT_POSTGRES_URI: 'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_e2e'
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - bt-{{ checksum "yarn.lock" }}
-            - bt-
-      - run:
-          name: Install dependencies
-          command: yarn
+      - yarn_install
       - attach_workspace:
           at: ./
+      - run:
+          name: Install Playwright
+          command: npx playwright install
+      - run:
+          name: Initialize Database
+          working_directory: packages/service
+          command: yarn admin db init -f
       - run:
           name: Run end-to-end tests
           working_directory: packages/e2e-tests/
@@ -235,7 +181,7 @@ jobs:
 
   report_coverage:
     docker:
-      - image: cimg/node:22.2
+      - image: cimg/node:20.14
     resource_class: medium
     steps:
       - attach_workspace:
@@ -248,140 +194,6 @@ jobs:
           command: |
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 3 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
-
-  build_service_image:
-    docker:
-      - image: cimg/base:2023.04
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build Image
-          command: |
-            docker build \
-            -f ./Dockerfile.service \
-            -t bt/service:latest -t bt/service:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM  \
-            .
-
-  build_web_image:
-    docker:
-      - image: cimg/base:2023.04
-    resource_class: arm.medium
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-          version: docker24
-      - run:
-          name: Build Image
-          command: |
-            docker build \
-            -f ./Dockerfile.web \
-            -t bt/web:latest -t bt/web:$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM \
-            .
-
-  deploy_service_image:
-    docker:
-      - image: cimg/base:2023.04
-    resource_class: arm.medium
-    parameters:
-      env:
-        type: string
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-          version: docker24
-      - aws-cli/install
-      - run:
-          name: Build and push Docker image
-          working_directory: ./packages/service/
-          command: |
-            docker build -t bt/<<parameters.env>>/service .
-
-            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-
-            docker tag bt/<<parameters.env>>/service:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/service:latest
-            docker tag bt/<<parameters.env>>/service:latest $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/service:build$CIRCLE_BUILD_NUM
-
-            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/service:latest
-            docker push $AWS_ECR_REGISTRY_ID.dkr.ecr.$AWS_REGION.amazonaws.com/bt/<<parameters.env>>/service:build$CIRCLE_BUILD_NUM
-      - run:
-          name: Save build number
-          command: |
-            echo 'image_tag = "'build$CIRCLE_BUILD_NUM'"' >> build.tfvars
-            echo "" >> build.tfvars
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build.tfvars
-
-  terraform:
-    docker: *base_image
-    parameters:
-      env:
-        type: string
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./terraform/vars
-      - terraform/install:
-          terraform_version: '1.4.5'
-      - terraform/validate:
-          path: ./terraform/
-      - terraform/apply:
-          backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
-          path: ./terraform/
-          var_file: vars/<<parameters.env>>.tfvars,vars/build.tfvars
-      - run:
-          name: Store distribution names
-          working_directory: ./terraform/
-          command: |
-            terraform output -raw site_distribution > site_distribution
-            terraform output -raw docs_distribution > docs_distribution
-      - persist_to_workspace:
-          root: ./terraform/
-          paths:
-            - site_distribution
-            - docs_distribution
-
-  publish_distros:
-    docker: *base_image
-    parameters:
-      env:
-        type: string
-    steps:
-      - aws-cli/install
-      - attach_workspace:
-          at: .
-      - publish_distro:
-          bucket: docs
-          distribution_id: $(cat docs_distribution)
-          env: <<parameters.env>>
-          path: ./packages/docs/public/
-      - publish_distro:
-          bucket: web
-          distribution_id: $(cat site_distribution)
-          env: <<parameters.env>>
-          path: ./packages/web/dist/
-
-  # Temporary tear down step to save money in AWS...
-  teardown:
-    docker: *base_image
-    parameters:
-      env:
-        type: string
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./terraform/vars
-      - terraform/install:
-          terraform_version: '1.4.5'
-      - terraform/destroy:
-          backend_config: 'bucket=bottomtime-tfstate,key=$AWS_REGION.<<parameters.env>>.tfstate'
-          path: ./terraform/
-          var_file: vars/<<parameters.env>>.tfvars,vars/build.tfvars
 
 workflows:
   test_and_deploy:
@@ -401,80 +213,15 @@ workflows:
       - test_web:
           requires:
             - init_and_lint
-      - test_e2e:
-          requires:
-            - init_and_lint
-          context:
-            - bt-aws-dev
-            - bt-smtp-dev
+      # - test_e2e:
+      #     requires:
+      #       - init_and_lint
+      #     context:
+      #       - bt-aws-dev
+      #       - bt-smtp-dev
 
       - report_coverage:
           requires:
             - test_api
             - test_service
             - test_web
-
-      # Build
-      # - build_service_image:
-      #     requires:
-      #       - init_and_lint
-      # - build_web_image:
-      #     requires:
-      #       - init_and_lint
-
-      # - lint_and_build
-      # - test_core:
-      #     requires:
-      #       - lint_and_build
-      # - test_web:
-      #     requires:
-      #       - lint_and_build
-      # - test_e2e:
-      #     requires:
-      #       - lint_and_build
-      # - report_coverage:
-      #     requires:
-      #       - test_core
-      #       - test_web
-
-      # Deploy dev environment
-      # - deploy_core_image:
-      #     name: deploy_dev_image
-      #     env: dev
-      #     context:
-      #       - bt-aws-dev
-      #     requires:
-      #       - test_core
-      #       - test_web
-      #       - test_e2e
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
-      # - migrate_database:
-      #     name: migrate_dev_database
-      #     context:
-      #       - bt-mongo-dev
-      #     requires:
-      #       - deploy_dev_image
-      # - terraform:
-      #     name: terraform_dev
-      #     env: dev
-      #     context:
-      #       - bt-aws-dev
-      #     requires:
-      #       - deploy_dev_image
-      # - publish_distros:
-      #     name: publish_dev_distros
-      #     env: dev
-      #     context:
-      #       - bt-aws-dev
-      #     requires:
-      #       - terraform_dev
-      # - teardown:
-      #     name: teardown_dev
-      #     env: dev
-      #     context:
-      #       - bt-aws-dev
-      #     requires:
-      #       - publish_dev_distros

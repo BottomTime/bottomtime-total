@@ -5,12 +5,12 @@ import { TankEntity } from '../../src/data';
 import { getDataSource } from './data-source';
 import TankData from './seed/tanks.json';
 
-export async function seedDatabase(postgresUri: string) {
+export async function seedDatabase(postgresUri: string, requireSsl: boolean) {
   let ds: DataSource | undefined;
 
   try {
     console.log('Connecting to MongoDb...');
-    ds = await getDataSource(postgresUri);
+    ds = await getDataSource(postgresUri, requireSsl);
 
     console.log('Generating system tank profiles...');
     const tanks = ds.getRepository(TankEntity);
