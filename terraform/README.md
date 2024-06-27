@@ -3,12 +3,29 @@
 Here are the steps needed to deploy a new environment. These steps need to be completed manually through the AWS console
 or using the AWS APIs.
 
-## Initializing Terraform to Run Locally
+## Creating a New Terraformed Environment
 
 ### Ensure AWS Access
 
 You will need to have the AWS CLI installed and it will have to be configured with access to an AWS account with sufficient privileges
 to perform the deployment. (See below for necessary permissions.)
+
+### Define Environment Secrets
+
+For a new environment you will need to create a new secret in AWS Secrets Manager. It will need to be a key/value-pair secret with the following
+values specified:
+
+- `discordClientId` - Client ID for Discord OAuth.
+- `discordClientSecret` - Client secret for Discord OAuth.
+- `githubClientId` - Client ID for Github OAuth.
+- `githubClientSecret` - Client secret for Github OAuth.
+- `googleClientId` - Client ID for Google OAuth.
+- `googleClientSecret` - Client secret for Google OAuth.
+- `postgresUri` - The connection string needed to connect to the Postgres database.
+- `sessionSecret` - A string used to encrypt the JWT authentication token. This should, ideally, be a long, randomly-generated string.
+- `smtpHost` - Domain name of the SMTP server that will be used to send emails to users.
+- `smtpPassword` - Password used to authenticate with the SMTP server.
+- `smtpUsername` - Username used to authenticate with the SMTP server.
 
 ### Initialize Terraform State Provider
 
