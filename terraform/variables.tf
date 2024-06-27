@@ -33,5 +33,5 @@ variable "secret_name" {
 data "aws_region" "current" {}
 
 locals {
-  cookie_name = var.cookie_name == null ? var.cookie_name : "bottomtime.${var.env}"
+  cookie_name = var.cookie_name == null ? "bottomtime.${var.env}" : var.cookie_name
 }
