@@ -100,7 +100,8 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Run Tests
-          command: yarn --cwd packages/service test --ci
+          working_directory: packages/service/
+          command: yarn prepare && yarn test --ci
       - store_test_results:
           path: packages/service/reports/
       - run:

@@ -105,7 +105,7 @@ export default defineConfig({
       },
       timeout: 10000,
       reuseExistingServer: true,
-      // stdout: 'pipe',
+      stdout: 'pipe',
     },
     {
       command: 'yarn serve',
