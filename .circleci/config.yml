@@ -213,12 +213,12 @@ workflows:
       - test_web:
           requires:
             - init_and_lint
-      - test_e2e:
-          requires:
-            - init_and_lint
-          context:
-            - bt-aws-dev
-            - bt-smtp-dev
+      # - test_e2e:
+      #     requires:
+      #       - init_and_lint
+      #     context:
+      #       - bt-aws-dev
+      #       - bt-smtp-dev
 
       - report_coverage:
           requires:

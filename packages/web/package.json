@@ -11,7 +11,7 @@
     "clean": "rm -rf dist/",
     "dev": "nodemon server/index.mjs",
     "prepare": "cp -n .env.example .env || true",
-    "serve": "NODE_ENV=production node server/index.mjs",
+    "serve": "NODE_ENV=production node dist/index.js",
     "sls:deploy": "NODE_ENV=production yarn build && sls deploy",
     "sls:offline": "yarn build && sls offline",
     "sls:package": "NODE_ENV=production yarn build && sls package",

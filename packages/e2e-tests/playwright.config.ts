@@ -86,14 +86,17 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'yarn --cwd ../service admin db init -f && yarn serve',
+      command:
+        'yarn --cwd ../service admin db init -f && yarn build && yarn serve',
       url: 'http://127.0.0.1:4801/',
       cwd: '../service',
       env: {
+        BT_BASE_URL: 'http://127.0.0.1:4851/',
         BT_LOG_LEVEL: 'debug',
         BT_POSTGRES_URI: PostgresFixture.postgresUri,
         BT_POSTGRES_REQUIRE_SSL: 'false',
         BT_PORT: '4801',
+        BT_SESSION_COOKIE_NAME: 'bottomtime.e2e',
         BT_SESSION_SECRET: getSessionSecret(),
         BT_DISCORD_CLIENT_ID: 'discord_client',
         BT_DISCORD_CLIENT_SECRET: 'discord_secret',
@@ -103,23 +106,27 @@ export default defineConfig({
         BT_GITHUB_CLIENT_SECRET: 'github_secret',
         NODE_ENV: 'production',
       },
-      timeout: 10000,
+      timeout: 30000,
       reuseExistingServer: true,
-      stdout: 'pipe',
+      // stdout: 'pipe',
+      // stderr: 'pipe',
     },
     {
-      command: 'yarn serve',
+      command: 'yarn dev',
+      // command: 'yarn build && yarn serve',
       url: 'http://127.0.0.1:4851/',
       cwd: '../web',
       env: {
         BTWEB_API_URL: 'http://localhost:4801/',
         BTWEB_VITE_BASE_URL: 'http://localhost:4851/',
+        BTWEB_LOG_LEVEL: 'trace',
         BTWEB_PORT: '4851',
+        BTWEB_COOKIE_NAME: 'bottomtime.e2e',
         NODE_ENV: 'production',
       },
-      timeout: 10000,
+      timeout: 30000,
       reuseExistingServer: true,
-      // stdout: 'pipe',
+      stdout: 'pipe',
     },
   ],
 });
