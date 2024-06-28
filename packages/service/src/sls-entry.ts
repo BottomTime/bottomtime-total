@@ -12,8 +12,10 @@ let cachedServer: Handler;
 
 async function init(): Promise<void> {
   if (!cachedServer) {
+    logger.info('🚀 Initializing service...');
     const app = await createApp(logger, createDependencies);
     await app.init();
+    logger.info('🎉 Service is online! 🎉');
     cachedServer = serverless({ app: app.getHttpAdapter().getInstance() });
   }
 }
@@ -23,6 +25,11 @@ export const handler: Handler = async (
   context: Context,
   cb: Callback,
 ): Promise<unknown> => {
-  await init();
-  return cachedServer(event, context, cb);
+  try {
+    await init();
+    return cachedServer(event, context, cb);
+  } catch (error) {
+    logger.fatal(error);
+    cb(error as Error);
+  }
 };

@@ -27,6 +27,7 @@ resource "aws_lambda_function" "service" {
 
   handler = "dist/sls.handler"
   runtime = "nodejs20.x"
+  timeout = 30
 
   environment {
     variables = {
@@ -42,7 +43,7 @@ resource "aws_lambda_function" "service" {
       BT_PASSWORD_SALT_ROUNDS  = "${var.password_salt_rounds}"
       BT_POSTGRES_REQUIRE_SSL  = "true"
       BT_POSTGRES_URI          = local.secrets.postgresUri
-      BT_SESSION_COOKIE_DOMAIN = "" # TODO: This should come from Route53
+      BT_SESSION_COOKIE_DOMAIN = var.root_domain
       BT_SESSION_COOKIE_NAME   = local.cookie_name
       BT_SESSION_SECRET        = local.secrets.sessionSecret
       BT_SMTP_REPLY_TO         = "donotreply@bottomti.me"

@@ -1,4 +1,5 @@
 resource "aws_iam_role" "service_lambda_fn" {
+  name = "bt_service_${data.aws_region.current.name}_${var.env}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -27,7 +28,7 @@ resource "aws_iam_policy" "lambda_logging" {
           "logs:PutLogEvents",
         ]
         Effect   = "Allow"
-        Resource = ["arn:aws:logs:*:*:*"]
+        Resource = ["${aws_cloudwatch_log_group.service_logs.arn}:*"]
       },
     ]
   })
