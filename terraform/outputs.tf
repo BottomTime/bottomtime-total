@@ -4,6 +4,6 @@ output "media_bucket" {
 }
 
 output "service_endpoint" {
-  value       = aws_apigatewayv2_api.service.api_endpoint
+  value       = "https://${aws_route53_record.api.fqdn}/"
   description = "The URL of the API Gateway service for the backend."
 }

@@ -1,3 +1,7 @@
+variable "api_domain" {
+  description = "The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)"
+  type        = string
+}
 variable "cookie_name" {
   description = "Name of the session cookie as it will appear in the browser."
   type        = string
@@ -23,6 +27,12 @@ variable "password_salt_rounds" {
   description = "Number of rounds to use when computing a salted password hash. More will be more secure but slower. Default is 15."
   type        = number
   default     = 15
+}
+
+variable "root_domain" {
+  description = "The root domain for the service. Other domains will be under this domain."
+  type        = string
+  default     = "bottomti.me"
 }
 
 variable "secret_name" {

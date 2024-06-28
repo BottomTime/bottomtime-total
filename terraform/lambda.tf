@@ -13,6 +13,13 @@ resource "aws_lambda_function" "service" {
 
   description = "BottomTime Backend Service Lambda Function"
 
+  logging_config {
+    log_group             = aws_cloudwatch_log_group.service_logs.name
+    application_log_level = "DEBUG"
+    system_log_level      = "DEBUG"
+    log_format            = "JSON"
+  }
+
   tags = {
     Environment = var.env
     Region      = data.aws_region.current.name
@@ -46,4 +53,15 @@ resource "aws_lambda_function" "service" {
       NODE_ENV                 = "production"
     }
   }
+
+  depends_on = [aws_cloudwatch_log_group.service_logs, aws_iam_role_policy_attachment.lambda_logging]
+}
+
+resource "aws_lambda_permission" "allow_service_api_call" {
+  statement_id  = "allow_apigateway_${var.env}"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.service.arn
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_apigatewayv2_api.service.execution_arn}/*/*/{proxy+}"
 }
