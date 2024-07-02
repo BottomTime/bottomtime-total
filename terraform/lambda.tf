@@ -1,3 +1,4 @@
+### BACKEND API
 data "archive_file" "service" {
   type        = "zip"
   output_path = "${path.module}/archive/service.zip"
@@ -52,7 +53,7 @@ resource "aws_lambda_function" "service" {
     }
   }
 
-  depends_on = [aws_cloudwatch_log_group.service_logs, aws_iam_role_policy_attachment.lambda_logging]
+  depends_on = [aws_cloudwatch_log_group.service_logs, aws_iam_role_policy_attachment.service_lambda_logging]
 }
 
 resource "aws_lambda_permission" "allow_service_api_call" {
@@ -62,4 +63,48 @@ resource "aws_lambda_permission" "allow_service_api_call" {
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.service.execution_arn}/*/*"
+}
+
+### FRONTEND SSR
+data "archive_file" "ssr" {
+  type        = "zip"
+  output_path = "${path.module}/archive/ssr.zip"
+  source_dir  = "${path.module}/../packages/web/dist/"
+}
+
+resource "aws_lambda_function" "ssr" {
+  function_name = "bottomtime-ssr-${var.env}"
+  role          = aws_iam_role.ssr_lambda_fn.arn
+
+  filename         = data.archive_file.ssr.output_path
+  source_code_hash = data.archive_file.ssr.output_base64sha256
+
+  description = "BottomTime Server-Side Render Lambda Function"
+  handler     = "dist/sls-entry.handler"
+  runtime     = "nodejs20.x"
+  timeout     = 30
+
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.ssr_logs.id
+    log_format = "JSON"
+  }
+
+  tags = {
+    Environment = var.env
+    Region      = data.aws_region.current.name
+  }
+
+  environment {
+    variables = {
+      BTWEB_API_URL                = "https://${var.api_domain}.${var.root_domain}/"
+      BTWEB_COOKIE_NAME            = var.cookie_name
+      BTWEB_LOG_LEVEL              = var.log_level
+      BTWEB_VITE_BASE_URL          = "https://${var.web_domain}.${var.root_domain}/"
+      BTWEB_VITE_ENABLE_PLACES_API = "${var.enable_places_api}"
+      BTWEB_VITE_GOOGLE_API_KEY    = local.secrets.googleApiKey
+      NODE_ENV                     = "production"
+    }
+  }
+
+  depends_on = [aws_cloudwatch_log_group.ssr_logs, aws_iam_role_policy_attachment.ssr_lambda_logging]
 }

@@ -10,12 +10,13 @@ to be configured with access to an AWS account with sufficient privileges to per
 
 Terraform will need to run as an IAM user with sufficient permission to deploy the platform. Create an IAM role with the following permissions:
 
-- `AmazonEC2FullAccess`
+- `AmazonAPIGatewayAdministrator`
 - `AmazonEC2ContainerRegistryFullAccess`
-- `AmazonECS_FullAccess`
 - `AmazonRoute53FullAccess`
+- `AmazonS3FullAccess`
 - `AmazonVPCFullAccess`
 - `AWSCertificateManagerReadOnly`
+- `AWSLambda_FullAccess`
 - `CloudFrontFullAccess`
 - `CloudWatchLogsFullAccess`
 - `SecretsManagerReadWrite`
@@ -37,10 +38,15 @@ Additionally, attach the following inline policies:
         "iam:ListRolePolicies",
         "iam:GetRolePolicy",
         "iam:CreatePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:DeletePolicyVersion",
         "iam:GetRole",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
         "iam:ListRoleTags",
         "iam:ListAttachedRolePolicies",
         "iam:ListInstanceProfilesForRole",
+        "iam:ListPolicyVersions",
         "iam:UpdateRoleDescription",
         "iam:DeletePolicy",
         "iam:CreateRole",
@@ -50,7 +56,8 @@ Additionally, attach the following inline policies:
         "iam:UpdateRole",
         "iam:PutRolePolicy",
         "iam:ListRolePolicies",
-        "iam:GetRolePolicy"
+        "iam:GetRolePolicy",
+        "iam:UpdateAssumeRolePolicy"
       ],
       "Resource": ["*"]
     }
@@ -116,6 +123,7 @@ values specified:
 - `discordClientSecret` - Client secret for Discord OAuth.
 - `githubClientId` - Client ID for Github OAuth.
 - `githubClientSecret` - Client secret for Github OAuth.
+- `googleApiKey` - Google API key for accessing Maps and Places APIs.
 - `googleClientId` - Client ID for Google OAuth.
 - `googleClientSecret` - Client secret for Google OAuth.
 - `postgresUri` - The connection string needed to connect to the Postgres database.
@@ -135,10 +143,13 @@ Edit the file to set the values of the variables to match your environment's nee
 
 | Variable               | Description                                                                                                                                                                                                                                                     | Default      | Required |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | :------: |
+| `admin_email`          | Email address of the site administrator.                                                                                                                                                                                                                        |              |   Yes    |
 | `api_domain`           | The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)                                                                                                                                                                  |              |   Yes    |
 | `cookie_name`          | Name of the session cookie as it will appear in the browser. **IMPORTANT:** This needs to be unique per environment but the same per region. I.e. all "staging" environments should use the same cookie name regardless of which AWS regions it is deployed to. | `bottomtime` |    No    |
+| `enable_places_api`    | Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed.                                                                                                             | `false`      |    No    |
 | `env`                  | The environment in which the resources are being created. E.g. dev, stage, prod, etc.                                                                                                                                                                           |              |   Yes    |
 | `log_level`            | The level of verbosity at which events will be written to the log stream. One of `trace`, `debug`, `info`, `warn`, `error`, or `fatal`.                                                                                                                         | `info`       |    No    |
+| `log_retention_days`   | The number of days to retain log events in the Cloudwatch log groups.                                                                                                                                                                                           | `7`          |    No    |
 | `media_bucket`         | Name of the AWS S3 bucket where user-generated media (video, pictures, etc.) will be stored. This needs to be set to the name of the S3 bucket from step 1.                                                                                                     |              |   Yes    |
 | `password_salt_rounds` | Number of rounds to use when computing a salted password hash. More will be more secure but slower.                                                                                                                                                             | `15`         |    No    |
 | `root_domain`          | The root domain for the service. Other domains will be created under this domain. This needs to be set to the FQDN of the Route53 hosted zone that was created for the platform. (See above.)                                                                   |              |   Yes    |
@@ -174,6 +185,9 @@ Make the following substitutions in the command:
 
 ### 5. Deploy Your New Environment
 
+> **First!** You must build the platform if you haven't done so already. Run `yarn build` from the root directory of the repository to do so.
+> This step is required to ensure that the Lambda function for the backend is deployed with the latest build.
+
 To deploy your new environment run the following command from the `terraform/` directory in the repository root:
 
 ```bash
@@ -184,4 +198,18 @@ To tear down an environment that you are finished with (to clean up resources an
 
 ```bash
 terraform destroy -var-file=vars/your_env.tfvars
+```
+
+### 6. Deploy Static Assets To S3
+
+Finally, you'll need to deploy the front-end static files and the API documentation to their appropriate buckets so that the CloudFront
+distributions can serve them. There is a convenience script located in the `terraform/` directory that will sync the files with their
+corresponding S3 buckets and invalidate the Cloudfront caches.
+
+> :exclamation: Remember to build the platform first if it is not up to date! You likely already did this in the previous step!
+
+When ready, run:
+
+```bash
+./deploy-files.sh
 ```

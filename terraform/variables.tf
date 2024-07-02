@@ -1,3 +1,8 @@
+variable "admin_email" {
+  description = "Email address of the site administrator."
+  type        = string
+}
+
 variable "api_domain" {
   description = "The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)"
   type        = string
@@ -7,6 +12,12 @@ variable "cookie_name" {
   description = "Name of the session cookie as it will appear in the browser."
   type        = string
   default     = "bottomtime"
+}
+
+variable "enable_places_api" {
+  description = "Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed."
+  type        = bool
+  default     = false
 }
 
 variable "env" {
@@ -22,6 +33,12 @@ variable "log_level" {
     condition     = can(regex("^(trace|debug|info|warn|error|fatal)$", var.log_level))
     error_message = "The log_level must be one of trace, debug, info, warn, error, or fatal."
   }
+}
+
+variable "log_retention_days" {
+  description = "The number of days to retain log events in the Cloudwatch log groups."
+  type        = number
+  default     = 7
 }
 
 variable "media_bucket" {

@@ -1,4 +1,5 @@
 /* eslint-disable no-process-env */
+import { BooleanString } from '@bottomtime/api';
 
 export class Config {
   /** Email address for contacting support/admin. */
@@ -18,7 +19,10 @@ export class Config {
 
   /** Whether or not to invoke Google's Places APIs. (This needs to be set to true to enable autocomplete in location boxes.) */
   static get enablePlacesApi(): boolean {
-    return Boolean(process.env.BTWEB_VITE_ENABLE_PLACES_API);
+    const parsed = BooleanString.safeParse(
+      process.env.BTWEB_VITE_ENABLE_PLACES_API,
+    );
+    return parsed.success ? parsed.data : false;
   }
 
   /** The value of the `NODE_ENV` environment variable. */
