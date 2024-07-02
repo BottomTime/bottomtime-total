@@ -12,22 +12,14 @@ resource "aws_lambda_function" "service" {
   source_code_hash = data.archive_file.service.output_base64sha256
 
   description = "BottomTime Backend Service Lambda Function"
-
-  logging_config {
-    log_group             = aws_cloudwatch_log_group.service_logs.name
-    application_log_level = "DEBUG"
-    system_log_level      = "DEBUG"
-    log_format            = "JSON"
-  }
+  handler     = "dist/sls.handler"
+  runtime     = "nodejs20.x"
+  timeout     = 30
 
   tags = {
     Environment = var.env
     Region      = data.aws_region.current.name
   }
-
-  handler = "dist/sls.handler"
-  runtime = "nodejs20.x"
-  timeout = 30
 
   environment {
     variables = {
@@ -61,8 +53,8 @@ resource "aws_lambda_function" "service" {
 resource "aws_lambda_permission" "allow_service_api_call" {
   statement_id  = "allow_apigateway_${var.env}"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.service.arn
+  function_name = aws_lambda_function.service.function_name
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_apigatewayv2_api.service.execution_arn}/*/*/{proxy+}"
+  source_arn = "${aws_apigatewayv2_api.service.execution_arn}/*/*"
 }
