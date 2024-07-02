@@ -2,10 +2,11 @@ variable "api_domain" {
   description = "The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)"
   type        = string
 }
+
 variable "cookie_name" {
   description = "Name of the session cookie as it will appear in the browser."
   type        = string
-  nullable    = true
+  default     = "bottomtime"
 }
 
 variable "env" {
@@ -23,6 +24,11 @@ variable "log_level" {
   }
 }
 
+variable "media_bucket" {
+  description = "Name of the AWS S3 bucket where user-generated media (video, pictures, etc.) will be stored. This will be shared between regions and needs to be created manually, outside of Terraform."
+  type        = string
+}
+
 variable "password_salt_rounds" {
   description = "Number of rounds to use when computing a salted password hash. More will be more secure but slower. Default is 15."
   type        = number
@@ -30,13 +36,18 @@ variable "password_salt_rounds" {
 }
 
 variable "root_domain" {
-  description = "The root domain for the service. Other domains will be under this domain."
+  description = "The root domain for the service. Other domains will be under this domain. (E.g. bottomtime.com)"
   type        = string
   default     = "bottomti.me"
 }
 
 variable "secret_name" {
   description = "The name of the AWS Secrets Manager secret that contains the sensitive configuration values."
+  type        = string
+}
+
+variable "web_domain" {
+  description = "Partial domain name at which the front-end web application will respond to requests. (E.g. 'staging')"
   type        = string
 }
 

@@ -23,8 +23,8 @@ resource "aws_lambda_function" "service" {
 
   environment {
     variables = {
-      BT_AWS_MEDIA_BUCKET      = aws_s3_bucket.media.id
-      BT_BASE_URL              = "http://localhost:8402" # TODO: This needs to come from Route53
+      BT_AWS_MEDIA_BUCKET      = data.aws_s3_bucket.media.id
+      BT_BASE_URL              = "https://${var.web_domain}.${var.root_domain}/"
       BT_LOG_LEVEL             = var.log_level
       BT_DISCORD_CLIENT_ID     = local.secrets.discordClientId
       BT_DISCORD_CLIENT_SECRET = local.secrets.discordClientSecret

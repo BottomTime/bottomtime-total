@@ -1,9 +1,14 @@
-output "media_bucket" {
-  value       = aws_s3_bucket.media.id
-  description = "Name of the S3 bucket where media files (pictures, videos, etc.) are stored."
+output "web_cf_bucket" {
+  value       = aws_s3_bucket.web.id
+  description = "Name of the S3 bucket that will hold the front-end assets."
 }
 
 output "service_endpoint" {
   value       = "https://${aws_route53_record.api.fqdn}/"
   description = "The URL of the API Gateway service for the backend."
+}
+
+output "web_endpoint" {
+  value       = "https://${aws_route53_record.web.fqdn}/"
+  description = "The URL at which the front-end will respond to requests."
 }
