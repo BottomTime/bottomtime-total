@@ -16,6 +16,11 @@ resource "aws_lambda_function" "service" {
   runtime     = "nodejs20.x"
   timeout     = 30
 
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.service_logs.id
+    log_format = "JSON"
+  }
+
   tags = {
     Environment = var.env
     Region      = data.aws_region.current.name
