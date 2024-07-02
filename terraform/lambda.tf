@@ -80,7 +80,7 @@ resource "aws_lambda_function" "ssr" {
   source_code_hash = data.archive_file.ssr.output_base64sha256
 
   description = "BottomTime Server-Side Render Lambda Function"
-  handler     = "dist/sls-entry.handler"
+  handler     = "sls-entry.handler"
   runtime     = "nodejs20.x"
   timeout     = 30
 
@@ -107,4 +107,13 @@ resource "aws_lambda_function" "ssr" {
   }
 
   depends_on = [aws_cloudwatch_log_group.ssr_logs, aws_iam_role_policy_attachment.ssr_lambda_logging]
+}
+
+resource "aws_lambda_permission" "allow_ssr_call" {
+  statement_id  = "allow_apigateway_${var.env}"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.ssr.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_apigatewayv2_api.ssr.execution_arn}/*/*"
 }
