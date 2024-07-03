@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "yarn build:client && yarn build:server && yarn build:sls",
+    "build": "yarn build:client && yarn build:server && yarn build:sls && cp -f package.json dist/",
     "build:client": "vite build --ssrManifest --minify --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.ts --minify --outDir dist/server",
     "build:sls": "rollup -c",
