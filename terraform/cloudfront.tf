@@ -1,6 +1,8 @@
 locals {
-  web_s3_origin_id  = "web-s3-origin"
-  web_api_origin_id = "web-api-origin"
+  web_origin_group_id = "web-origin-group"
+  web_s3_origin_id    = "web-s3-origin"
+  web_ssr_origin_id   = "web-ssr-origin"
+  web_api_origin_id   = "web-api-origin"
 }
 
 resource "aws_cloudfront_cache_policy" "web_static" {
@@ -62,19 +64,31 @@ resource "aws_cloudfront_distribution" "web" {
 
   # S3 bucket origin for static assets
   origin {
-    domain_name = aws_s3_bucket.web.bucket_regional_domain_name
     origin_id   = local.web_s3_origin_id
+    domain_name = aws_s3_bucket.web.bucket_regional_domain_name
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.web.cloudfront_access_identity_path
     }
   }
 
-  # API Gateway origin for backend service APIsconnection
+  # API Gateway origin for processing API requests to the backend
   origin {
-    domain_name = "${var.api_domain}.${var.root_domain}"
-    # origin_access_control_id = aws_cloudfront_origin_access_control.web.id
-    origin_id = local.web_api_origin_id
+    origin_id   = local.web_api_origin_id
+    domain_name = "${aws_apigatewayv2_api.service.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  # API Gateway origin for server-side rendering
+  origin {
+    origin_id   = local.web_ssr_origin_id
+    domain_name = "${aws_apigatewayv2_api.ssr.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
 
     custom_origin_config {
       http_port              = 80
@@ -97,16 +111,6 @@ resource "aws_cloudfront_distribution" "web" {
     minimum_protocol_version = "TLSv1.2_2019"
   }
 
-  # Default to serving static files
-  default_cache_behavior {
-    target_origin_id       = local.web_s3_origin_id
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-    cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    cache_policy_id        = aws_cloudfront_cache_policy.web_static.id
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
   # For requests to /api, invoke the Lambda function for the backend service
   ordered_cache_behavior {
     target_origin_id       = local.web_api_origin_id
@@ -117,22 +121,29 @@ resource "aws_cloudfront_distribution" "web" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
-  # For all other requests, invoke the Lambda function for SSR
-  # ordered_cache_behavior {
-  #   allowed_methods = ["GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
-  #   cached_methods = ["GET", "HEAD", "OPTIONS"]
+  # Static files are served from S3
+  ordered_cache_behavior {
+    target_origin_id       = local.web_s3_origin_id
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    path_pattern           = "*.*"
+    cache_policy_id        = aws_cloudfront_cache_policy.web_static.id
+    viewer_protocol_policy = "redirect-to-https"
+  }
 
-  #   min_ttl                = 0
-  #   default_ttl            = 120
-  #   max_ttl                = 3600
-  #   viewer_protocol_policy = "redirect-to-https"
-  # }
+  # Default cache behaviour performs server-side rendering
+  default_cache_behavior {
+    target_origin_id       = local.web_ssr_origin_id
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    cache_policy_id        = aws_cloudfront_cache_policy.web_lambda.id
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
 
   tags = {
     Region      = data.aws_region.current.name
     Environment = var.env
     Purpose     = "Web front-end application"
   }
-
-  depends_on = [aws_apigatewayv2_api.service]
 }

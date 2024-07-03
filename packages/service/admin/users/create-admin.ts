@@ -115,7 +115,7 @@ export async function createAdmin(options: CreateAdminOptions): Promise<void> {
     admin.emailVerified = true;
     admin.id = uuid();
     admin.name = 'Administrator';
-    admin.passwordHash = await hash(completedOptions.password, 16);
+    admin.passwordHash = await hash(completedOptions.password, 12);
     admin.role = UserRole.Admin;
     admin.username = completedOptions.username;
     admin.usernameLowered = admin.username.toLowerCase();

@@ -34,7 +34,7 @@ jobs:
           name: Lint and Build
           command: |
             yarn lint
-            yarn build
+            yarn build --stream
       - persist_to_workspace:
           root: ./
           paths:

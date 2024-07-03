@@ -13,9 +13,10 @@ resource "aws_lambda_function" "service" {
   source_code_hash = data.archive_file.service.output_base64sha256
 
   description = "BottomTime Backend Service Lambda Function"
-  handler     = "dist/sls.handler"
+  handler     = "sls.handler"
   runtime     = "nodejs20.x"
   timeout     = 30
+  memory_size = 256
 
   logging_config {
     log_group  = aws_cloudwatch_log_group.service_logs.id

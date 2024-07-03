@@ -49,7 +49,7 @@ variable "media_bucket" {
 variable "password_salt_rounds" {
   description = "Number of rounds to use when computing a salted password hash. More will be more secure but slower. Default is 15."
   type        = number
-  default     = 15
+  default     = 12
 }
 
 variable "root_domain" {
