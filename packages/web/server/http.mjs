@@ -1,12 +1,9 @@
-import axios, { isAxiosError } from 'axios';
+import { URL } from 'url';
 
 import { Config } from './config.mjs';
 import { getLogger } from './logger.mjs';
 
 const log = getLogger();
-const apiClient = axios.create({
-  baseURL: Config.apiUrl,
-});
 
 function parseAuthHeader(header) {
   if (!/^Bearer\s+\S+$/i.test(header)) return undefined;
@@ -37,16 +34,27 @@ export function extractJwtFromRequest(req) {
 
 export async function getCurrentUser(jwt, res) {
   try {
-    const { data } = await apiClient.get('/api/auth/me', {
+    let data = { anonymous: true };
+
+    const response = await fetch(new URL('/api/auth/me', Config.apiUrl), {
       headers: { Authorization: `Bearer ${jwt}` },
+      method: 'GET',
     });
-    return data;
-  } catch (err) {
-    if (isAxiosError(err) && err.response && err.response.status === 401) {
+
+    if (response.ok) {
+      data = await response.json();
+    } else if (response.status === 401) {
       res.clearCookie(Config.cookieName);
       log.warn('JWT was rejected; clearing session cookie.');
     } else {
-      log.error(err);
+      log.error(`Failed to fetch user data: ${response.status}`, response.body);
     }
+
+    return data;
+  } catch (err) {
+    log.error(
+      'An error occurred while attempting to reach the backend service:',
+      err,
+    );
   }
 }
