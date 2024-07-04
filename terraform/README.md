@@ -136,10 +136,11 @@ values specified:
 
 ### 3. Create a .tfvars File
 
-In the `terraform/vars/` directory, you will need to make a copy of the `sample.tfvars` file and name the copy after the environment
+In the `terraform/vars/` directory, you will need to make a copy of the `example.tfvars` file and name the copy after the new environment
 (e.g. `staging.tfvars`).
 
-Edit the file to set the values of the variables to match your environment's needs. Here are the variables needed to
+Now edit the new `.tfvars` file to set the values of the variables to match your environment's needs. Here are the variables needed to
+configure your new environment:
 
 | Variable               | Description                                                                                                                                                                                                                                                     | Default      | Required |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | :------: |

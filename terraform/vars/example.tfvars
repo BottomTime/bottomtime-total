@@ -16,5 +16,4 @@ web_domain        = "dev"
 secret_name = "bt-service-dev-us-east-1-secrets"
 
 # Optional variables
-# cookie_name = "bottomtime.local"
 # password_salt_rounds = 12
