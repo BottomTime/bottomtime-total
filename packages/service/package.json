@@ -18,9 +18,6 @@
     "migrate:up": "typeorm-ts-node-commonjs migration:run -d data-source.ts",
     "prepare": "cp -n .env.example .env || true",
     "serve": "NODE_ENV=production node dist/main.js",
-    "sls:deploy": "NODE_ENV=production yarn build && sls deploy",
-    "sls:offline": "yarn build && sls offline",
-    "sls:package": "NODE_ENV=production yarn build && sls package",
     "test": "jest"
   },
   "dependencies": {
@@ -100,8 +97,6 @@
     "jest-text-transformer": "^1.0.4",
     "nodemon": "^2.0.22",
     "nodemon-webpack-plugin": "^4.8.2",
-    "serverless": "^4.1.0",
-    "serverless-offline": "^13.6.0",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "ts-jest": "^29.0.5",

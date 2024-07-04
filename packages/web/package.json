@@ -12,9 +12,6 @@
     "dev": "nodemon server/index.mjs",
     "prepare": "cp -n .env.example .env || true",
     "serve": "NODE_ENV=production node dist/index.js",
-    "sls:deploy": "NODE_ENV=production yarn build && sls deploy",
-    "sls:offline": "yarn build && sls offline",
-    "sls:package": "NODE_ENV=production yarn build && sls package",
     "test": "jest"
   },
   "dependencies": {
@@ -84,8 +81,6 @@
     "node-loader": "^2.0.0",
     "nodemon": "^2.0.22",
     "rollup": "^4.18.0",
-    "serverless": "^4.1.0",
-    "serverless-offline": "^13.6.0",
     "ts-jest": "^29.1.2",
     "typescript": "^5.3.3",
     "vite": "^5.0.10",
