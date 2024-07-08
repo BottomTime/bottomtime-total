@@ -1,4 +1,5 @@
 import {
+  Fetcher,
   SearchDiveSitesResponseDTO,
   SearchDiveSitesResponseSchema,
 } from '@bottomtime/api';
@@ -28,6 +29,7 @@ dayjs.extend(relativeTime);
 
 describe('Dive Sites View', () => {
   let searchResults: SearchDiveSitesResponseDTO;
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -39,7 +41,8 @@ describe('Dive Sites View', () => {
 
   beforeAll(() => {
     searchResults = SearchDiveSitesResponseSchema.parse(SearchResults);
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/diveSites',
@@ -79,7 +82,7 @@ describe('Dive Sites View', () => {
       .mockResolvedValue({
         sites: searchResults.sites
           .slice(0, 10)
-          .map((site) => new DiveSite(client.axios, site)),
+          .map((site) => new DiveSite(fetcher, site)),
         totalCount: searchResults.totalCount,
       });
 
@@ -114,7 +117,7 @@ describe('Dive Sites View', () => {
       .mockResolvedValue({
         sites: searchResults.sites
           .slice(0, 10)
-          .map((site) => new DiveSite(client.axios, site)),
+          .map((site) => new DiveSite(fetcher, site)),
         totalCount: searchResults.totalCount,
       });
 
@@ -192,7 +195,7 @@ describe('Dive Sites View', () => {
       .mockResolvedValue({
         sites: searchResults.sites
           .slice(10, 20)
-          .map((site) => new DiveSite(client.axios, site)),
+          .map((site) => new DiveSite(fetcher, site)),
         totalCount: searchResults.totalCount,
       });
     const wrapper = mount(DiveSitesView, opts);
@@ -219,7 +222,7 @@ describe('Dive Sites View', () => {
       .mockResolvedValue({
         sites: searchResults.sites
           .slice(10, 20)
-          .map((site) => new DiveSite(client.axios, site)),
+          .map((site) => new DiveSite(fetcher, site)),
         totalCount: searchResults.totalCount,
       });
     const wrapper = mount(DiveSitesView, opts);

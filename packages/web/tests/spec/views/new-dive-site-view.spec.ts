@@ -4,6 +4,7 @@ import {
   DepthUnit,
   DiveSite,
 } from '@bottomtime/api';
+import { Fetcher } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -23,6 +24,7 @@ import { createRouter } from '../../fixtures/create-router';
 import { BasicUser } from '../../fixtures/users';
 
 describe('New Dive Site View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -32,7 +34,8 @@ describe('New Dive Site View', () => {
   let opts: ComponentMountingOptions<typeof NewDiveSiteView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
 
     jest.useFakeTimers({
@@ -84,7 +87,7 @@ describe('New Dive Site View', () => {
     const spy = jest
       .spyOn(client.diveSites, 'createDiveSite')
       .mockResolvedValue(
-        new DiveSite(client.axios, {
+        new DiveSite(fetcher, {
           ...options,
           id: siteId,
           createdOn: new Date('2024-05-27T19:34:55.786Z'),

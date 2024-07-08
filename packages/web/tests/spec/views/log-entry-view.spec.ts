@@ -1,6 +1,7 @@
 import {
   ApiClient,
   DepthUnit,
+  Fetcher,
   ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
@@ -59,6 +60,7 @@ const TestData: LogEntryDTO = {
 };
 
 describe('Log Entry view', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let tankData: ListTanksResponseDTO;
@@ -71,7 +73,8 @@ describe('Log Entry view', () => {
   let opts: ComponentMountingOptions<typeof LogEntryView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/logbook/:username/:entryId',
@@ -111,7 +114,7 @@ describe('Log Entry view', () => {
         .spyOn(client.logEntries, 'getMostRecentDiveSites')
         .mockResolvedValue([]);
       jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-        tanks: tankData.tanks.map((t) => new Tank(client.axios, t)),
+        tanks: tankData.tanks.map((t) => new Tank(fetcher, t)),
         totalCount: tankData.totalCount,
       });
     });
@@ -119,7 +122,7 @@ describe('Log Entry view', () => {
     it('will prefetch the log entry on the server side', async () => {
       const spy = jest
         .spyOn(client.logEntries, 'getLogEntry')
-        .mockResolvedValue(new LogEntry(client.axios, TestData));
+        .mockResolvedValue(new LogEntry(fetcher, TestData));
 
       const div = document.createElement('div');
       div.innerHTML = await renderToString(LogEntryView, {
@@ -233,7 +236,7 @@ describe('Log Entry view', () => {
         duration: 66,
         notes: 'New notes',
       };
-      const entry = new LogEntry(client.axios, { ...TestData });
+      const entry = new LogEntry(fetcher, { ...TestData });
       const saveSpy = jest.spyOn(entry, 'save').mockResolvedValue();
       const wrapSpy = jest
         .spyOn(client.logEntries, 'wrapDTO')
@@ -295,7 +298,7 @@ describe('Log Entry view', () => {
         tankId: tankData.tanks[0].id,
       };
 
-      const entry = new LogEntry(client.axios, { ...TestData });
+      const entry = new LogEntry(fetcher, { ...TestData });
       const saveSpy = jest.spyOn(entry, 'save').mockResolvedValue();
       const wrapSpy = jest
         .spyOn(client.logEntries, 'wrapDTO')

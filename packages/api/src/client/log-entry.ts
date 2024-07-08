@@ -1,5 +1,3 @@
-import { AxiosInstance } from 'axios';
-
 import {
   CreateOrUpdateLogEntryParamsSchema,
   DateWithTimezoneDTO,
@@ -11,12 +9,10 @@ import {
   SuccinctProfileDTO,
   WeightDTO,
 } from '../types';
+import { Fetcher } from './fetcher';
 
 export class LogEntry {
-  constructor(
-    private readonly client: AxiosInstance,
-    private data: LogEntryDTO,
-  ) {}
+  constructor(private readonly client: Fetcher, private data: LogEntryDTO) {}
 
   get id(): string {
     return this.data.id;
@@ -97,8 +93,9 @@ export class LogEntry {
         ...this.data,
         site: this.data.site ? this.data.site.id : undefined,
       }),
+      LogEntrySchema,
     );
-    this.data = LogEntrySchema.parse(data);
+    this.data = data;
   }
 
   async delete(): Promise<void> {

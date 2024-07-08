@@ -2,6 +2,7 @@ import {
   CreateOrUpdateDiveSiteSchema,
   DepthUnit,
   DiveSiteDTO,
+  Fetcher,
 } from '@bottomtime/api';
 import { ApiClient, DiveSite } from '@bottomtime/api';
 
@@ -52,6 +53,7 @@ enum ShoreAccessInput {
 }
 
 describe('Edit Dive Site component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -60,7 +62,8 @@ describe('Edit Dive Site component', () => {
 
   beforeAll(() => {
     router = createRouter();
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
   });
 
   beforeEach(() => {
@@ -204,7 +207,7 @@ describe('Edit Dive Site component', () => {
       directions: 'new site directions',
     };
 
-    const site = new DiveSite(client.axios, { ...BlankDiveSiteWithId });
+    const site = new DiveSite(fetcher, { ...BlankDiveSiteWithId });
     const wrapSpy = jest
       .spyOn(client.diveSites, 'wrapDTO')
       .mockReturnValue(site);
@@ -254,7 +257,7 @@ describe('Edit Dive Site component', () => {
       directions: 'new site directions',
     };
 
-    const site = new DiveSite(client.axios, expected);
+    const site = new DiveSite(fetcher, expected);
     const createSpy = jest
       .spyOn(client.diveSites, 'createDiveSite')
       .mockResolvedValue(site);

@@ -1,6 +1,7 @@
-import axios, { AxiosInstance } from 'axios';
+import mockFetch from 'fetch-mock-jest';
 
 import { DiveSite } from '../../src/client';
+import { Fetcher } from '../../src/client/fetcher';
 import { DepthUnit, WaterType } from '../../src/types';
 import {
   DiveSiteWithFullProperties,
@@ -8,10 +9,10 @@ import {
 } from '../fixtures/sites';
 
 describe('Dive Site API class', () => {
-  let client: AxiosInstance;
+  let client: Fetcher;
 
   beforeAll(() => {
-    client = axios.create();
+    client = new Fetcher();
   });
 
   it('will represent a dive site with minimal properties set', () => {
@@ -93,37 +94,40 @@ describe('Dive Site API class', () => {
     site.freeToDive = true;
     site.shoreAccess = true;
     site.waterType = WaterType.Mixed;
-
-    const spy = jest.spyOn(client, 'put').mockResolvedValue({
-      data: {
-        ...DiveSiteWithMinimalProperties,
-        name: 'new name',
-        description: 'new description',
-        depth: { depth: 10, unit: DepthUnit.Meters },
-        location: 'new location',
-        directions: 'new directions',
-        gps: { lat: 0, lon: 0 },
-        freeToDive: true,
-        shoreAccess: true,
-        waterType: WaterType.Mixed,
+    mockFetch.put(
+      {
+        url: `/api/diveSites/${DiveSiteWithMinimalProperties.id}`,
+        body: {
+          name: site.name,
+          description: site.description,
+          depth: site.depth,
+          location: site.location,
+          directions: site.directions,
+          gps: site.gps,
+          freeToDive: site.freeToDive,
+          shoreAccess: site.shoreAccess,
+          waterType: site.waterType,
+        },
       },
-    });
+      {
+        status: 200,
+        body: {
+          ...DiveSiteWithMinimalProperties,
+          name: 'new name',
+          description: 'new description',
+          depth: { depth: 10, unit: DepthUnit.Meters },
+          location: 'new location',
+          directions: 'new directions',
+          gps: { lat: 0, lon: 0 },
+          freeToDive: true,
+          shoreAccess: true,
+          waterType: WaterType.Mixed,
+        },
+      },
+    );
 
     await site.save();
 
-    expect(spy).toHaveBeenCalledWith(
-      `/api/diveSites/${DiveSiteWithMinimalProperties.id}`,
-      {
-        name: 'new name',
-        description: 'new description',
-        depth: { depth: 10, unit: DepthUnit.Meters },
-        location: 'new location',
-        directions: 'new directions',
-        gps: { lat: 0, lon: 0 },
-        freeToDive: true,
-        shoreAccess: true,
-        waterType: WaterType.Mixed,
-      },
-    );
+    expect(mockFetch.done()).toBe(true);
   });
 });

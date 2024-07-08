@@ -1,5 +1,3 @@
-import { AxiosInstance, isAxiosError } from 'axios';
-
 import {
   FriendRequestSchema,
   FriendSchema,
@@ -8,6 +6,7 @@ import {
   ListFriendsParams,
   ListFriendsResposneSchema,
 } from '../types';
+import { Fetcher } from './fetcher';
 import { Friend } from './friend';
 import { FriendRequest } from './friend-request';
 
@@ -22,7 +21,7 @@ export type ListFriendRequestsResults = {
 };
 
 export class FriendsApiClient {
-  constructor(private readonly apiClient: AxiosInstance) {}
+  constructor(private readonly apiClient: Fetcher) {}
 
   async listFriends(
     username: string,
@@ -30,7 +29,7 @@ export class FriendsApiClient {
   ): Promise<ListFriendsResults> {
     const { data } = await this.apiClient.get(
       `/api/users/${username}/friends`,
-      { params },
+      params,
     );
     const result = ListFriendsResposneSchema.parse(data);
 
@@ -43,36 +42,30 @@ export class FriendsApiClient {
   }
 
   async areFriends(username: string, friendUsername: string): Promise<boolean> {
-    try {
-      await this.apiClient.head(
-        `/api/users/${username}/friends/${friendUsername}`,
-      );
-      return true;
-    } catch (error) {
-      if (isAxiosError(error) && error.response?.status === 404) {
-        return false;
-      }
-
-      throw error;
-    }
+    const status = await this.apiClient.head(
+      `/api/users/${username}/friends/${friendUsername}`,
+    );
+    return status === 200;
   }
 
   async getFriend(username: string, friendUsername: string): Promise<Friend> {
     const { data } = await this.apiClient.get(
       `/api/users/${username}/friends/${friendUsername}`,
+      undefined,
+      FriendSchema,
     );
-    return new Friend(this.apiClient, username, FriendSchema.parse(data));
+    return new Friend(this.apiClient, username, data);
   }
 
   async listFriendRequests(
     username: string,
     params?: ListFriendRequestsParams,
   ): Promise<ListFriendRequestsResults> {
-    const { data } = await this.apiClient.get(
+    const { data: result } = await this.apiClient.get(
       `/api/users/${username}/friendRequests`,
-      { params },
+      params,
+      ListFriendRequestsResponseSchema,
     );
-    const result = ListFriendRequestsResponseSchema.parse(data);
 
     return {
       friendRequests: result.friendRequests.map(
@@ -88,13 +81,11 @@ export class FriendsApiClient {
   ): Promise<FriendRequest> {
     const { data } = await this.apiClient.put(
       `/api/users/${username}/friendRequests/${friendUsername}`,
+      undefined,
+      FriendRequestSchema,
     );
 
-    return new FriendRequest(
-      this.apiClient,
-      username,
-      FriendRequestSchema.parse(data),
-    );
+    return new FriendRequest(this.apiClient, username, data);
   }
 
   wrapFriendDTO(username: string, data: unknown): Friend {

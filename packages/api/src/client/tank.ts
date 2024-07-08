@@ -1,14 +1,13 @@
-import { AxiosInstance } from 'axios';
-
 import {
   CreateOrUpdateTankParamsSchema,
   TankDTO,
   TankMaterial,
 } from '../types';
+import { Fetcher } from './fetcher';
 
 export class Tank {
   constructor(
-    private readonly apiClient: AxiosInstance,
+    private readonly apiClient: Fetcher,
     private data: TankDTO,
     private readonly ownerUsername?: string,
   ) {}
@@ -60,7 +59,7 @@ export class Tank {
   }
 
   async save(): Promise<void> {
-    const { data } = await this.apiClient.put(
+    const { data } = await this.apiClient.put<TankDTO>(
       this.getUrl(),
       CreateOrUpdateTankParamsSchema.parse(this.data),
     );

@@ -1,4 +1,4 @@
-import { UserDTO, UserRole } from '@bottomtime/api';
+import { Fetcher, UserDTO, UserRole } from '@bottomtime/api';
 import { ApiClient, User } from '@bottomtime/api';
 
 import {
@@ -29,6 +29,7 @@ dayjs.extend(relativeTime);
 dayjs.extend(utc);
 
 describe('Account View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -38,7 +39,8 @@ describe('Account View', () => {
   let opts: ComponentMountingOptions<typeof AdminUserView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/admin/users/:username',
@@ -67,7 +69,7 @@ describe('Account View', () => {
     currentUser.user = AdminUser;
     const spy = jest
       .spyOn(client.users, 'getUser')
-      .mockResolvedValue(new User(client.axios, BasicUser));
+      .mockResolvedValue(new User(fetcher, BasicUser));
     await router.push(`/admin/users/${BasicUser.username}`);
 
     const rendered = await renderToString(AdminUserView, {

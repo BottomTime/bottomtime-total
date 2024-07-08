@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  Fetcher,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
@@ -18,12 +19,14 @@ import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
 
 describe('Edit Settings form', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let pinia: Pinia;
   let router: Router;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
   });
 
@@ -88,7 +91,7 @@ describe('Edit Settings form', () => {
         },
       },
     });
-    const user = new User(client.axios, userData);
+    const user = new User(fetcher, userData);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     const spy = jest.spyOn(user.settings, 'save').mockResolvedValueOnce();
 

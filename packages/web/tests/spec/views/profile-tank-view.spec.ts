@@ -1,4 +1,10 @@
-import { ApiClient, Tank, TankDTO, TankMaterial } from '@bottomtime/api';
+import {
+  ApiClient,
+  Fetcher,
+  Tank,
+  TankDTO,
+  TankMaterial,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -34,6 +40,7 @@ const TestData: TankDTO = {
 const DefaultUrl = `/profile/${BasicUser.username}/tanks/${TestData.id}`;
 
 describe('Profile Tank View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -45,7 +52,8 @@ describe('Profile Tank View', () => {
   let opts: ComponentMountingOptions<typeof ProfileTankView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/profile/:username/tanks/:tankId',
@@ -82,7 +90,7 @@ describe('Profile Tank View', () => {
     it('will render the form correctly for the profile owner', async () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
-        .mockResolvedValue(new Tank(client.axios, TestData));
+        .mockResolvedValue(new Tank(fetcher, TestData));
       const raw = await renderToString(ProfileTankView, {
         global: opts.global,
       });
@@ -108,7 +116,7 @@ describe('Profile Tank View', () => {
     it('will render the form correctly for an admin', async () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
-        .mockResolvedValue(new Tank(client.axios, TestData));
+        .mockResolvedValue(new Tank(fetcher, TestData));
       currentUser.user = AdminUser;
       const raw = await renderToString(ProfileTankView, {
         global: opts.global,
@@ -215,7 +223,7 @@ describe('Profile Tank View', () => {
         workingPressure: 180,
         material: TankMaterial.Steel,
       };
-      const tank = new Tank(client.axios, expected);
+      const tank = new Tank(fetcher, expected);
       jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((actual) => {
         expect(actual).toEqual(expected);
         return tank;
@@ -239,7 +247,7 @@ describe('Profile Tank View', () => {
     });
 
     it('will allow a user to delete a tank', async () => {
-      const tank = new Tank(client.axios, TestData);
+      const tank = new Tank(fetcher, TestData);
       jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
       const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
 
@@ -281,7 +289,7 @@ describe('Profile Tank View', () => {
         workingPressure: 180,
         material: TankMaterial.Steel,
       };
-      const tank = new Tank(client.axios, expected);
+      const tank = new Tank(fetcher, expected);
       jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((actual) => {
         expect(actual).toEqual(expected);
         return tank;
@@ -321,7 +329,7 @@ describe('Profile Tank View', () => {
 
     it('will allow an admin to delete a tank', async () => {
       currentUser.user = AdminUser;
-      const tank = new Tank(client.axios, TestData);
+      const tank = new Tank(fetcher, TestData);
       jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
       const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
 

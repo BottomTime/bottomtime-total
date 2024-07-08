@@ -1,6 +1,7 @@
-import axios, { AxiosInstance } from 'axios';
+import mockFetch from 'fetch-mock-jest';
 
 import { CreateOrUpdateTankParamsDTO, TankDTO, TankMaterial } from '../../src';
+import { Fetcher } from '../../src/client/fetcher';
 import { Tank } from '../../src/client/tank';
 
 const Username = 'testuser';
@@ -14,15 +15,19 @@ const TestData: TankDTO = {
 };
 
 describe('Tank class', () => {
-  let axiosClient: AxiosInstance;
+  let fetcher: Fetcher;
   let tank: Tank;
 
   beforeAll(() => {
-    axiosClient = axios.create();
+    fetcher = new Fetcher();
   });
 
   beforeEach(() => {
-    tank = new Tank(axiosClient, TestData, Username);
+    tank = new Tank(fetcher, TestData, Username);
+  });
+
+  afterEach(() => {
+    mockFetch.restore();
   });
 
   it('will return properties correctly', () => {
@@ -56,16 +61,23 @@ describe('Tank class', () => {
   });
 
   it('will save changes to a system tank', async () => {
-    tank = new Tank(axiosClient, { ...TestData, isSystem: true });
+    tank = new Tank(fetcher, { ...TestData, isSystem: true });
     const options: CreateOrUpdateTankParamsDTO = {
       name: 'HP100: Steel X7-100 HDG',
       material: TankMaterial.Steel,
       volume: 12.9,
       workingPressure: 237,
     };
-    const spy = jest
-      .spyOn(axiosClient, 'put')
-      .mockResolvedValue({ data: { ...TestData, ...options, isSystem: true } });
+    mockFetch.put(
+      {
+        url: `/api/admin/tanks/${tank.id}`,
+        body: options,
+      },
+      {
+        status: 200,
+        body: { ...TestData, ...options, isSystem: true },
+      },
+    );
 
     tank.name = options.name;
     tank.material = options.material;
@@ -74,14 +86,14 @@ describe('Tank class', () => {
 
     await tank.save();
 
-    expect(spy).toHaveBeenCalledWith(`/api/admin/tanks/${tank.id}`, options);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will delete a system tank', async () => {
-    tank = new Tank(axiosClient, { ...TestData, isSystem: true });
-    const spy = jest.spyOn(axiosClient, 'delete').mockResolvedValue({});
+    tank = new Tank(fetcher, { ...TestData, isSystem: true });
+    mockFetch.delete(`/api/admin/tanks/${tank.id}`, 204);
     await tank.delete();
-    expect(spy).toHaveBeenCalledWith(`/api/admin/tanks/${tank.id}`);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will save changes to a user tank', async () => {
@@ -91,9 +103,16 @@ describe('Tank class', () => {
       volume: 12.9,
       workingPressure: 237,
     };
-    const spy = jest
-      .spyOn(axiosClient, 'put')
-      .mockResolvedValue({ data: { ...TestData, ...options } });
+    mockFetch.put(
+      {
+        url: `/api/users/${Username}/tanks/${tank.id}`,
+        body: options,
+      },
+      {
+        status: 200,
+        body: { ...TestData, ...options },
+      },
+    );
 
     tank.name = options.name;
     tank.material = options.material;
@@ -102,15 +121,12 @@ describe('Tank class', () => {
 
     await tank.save();
 
-    expect(spy).toHaveBeenCalledWith(
-      `/api/users/${Username}/tanks/${tank.id}`,
-      options,
-    );
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will delete a user tank', async () => {
-    const spy = jest.spyOn(axiosClient, 'delete').mockResolvedValue({});
+    mockFetch.delete(`/api/users/${Username}/tanks/${tank.id}`, 204);
     await tank.delete();
-    expect(spy).toHaveBeenCalledWith(`/api/users/${Username}/tanks/${tank.id}`);
+    expect(mockFetch.done());
   });
 });

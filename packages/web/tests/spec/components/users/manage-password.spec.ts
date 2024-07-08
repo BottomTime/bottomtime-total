@@ -1,4 +1,4 @@
-import { UserDTO } from '@bottomtime/api';
+import { Fetcher, UserDTO } from '@bottomtime/api';
 import { ApiClient, User } from '@bottomtime/api';
 
 import {
@@ -30,6 +30,7 @@ describe('Manage Password component', () => {
   const OldPassword = '0ldP@ssw0rd';
   const StrongPassword = 'N3wP@ssw0rd!';
 
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -39,7 +40,8 @@ describe('Manage Password component', () => {
 
   beforeAll(() => {
     router = createRouter();
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
   });
 
   beforeEach(() => {
@@ -75,7 +77,7 @@ describe('Manage Password component', () => {
 
   it('will allow users to change their password', async () => {
     const wrapper = mount(ManagePassword, opts);
-    const userObj = new User(client.axios, user);
+    const userObj = new User(fetcher, user);
     const spy = jest.spyOn(userObj, 'changePassword').mockResolvedValue(true);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObj);
 
@@ -93,7 +95,7 @@ describe('Manage Password component', () => {
 
   it('will alert the user if their old password was incorrect', async () => {
     const wrapper = mount(ManagePassword, opts);
-    const userObj = new User(client.axios, user);
+    const userObj = new User(fetcher, user);
     const spy = jest.spyOn(userObj, 'changePassword').mockResolvedValue(false);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObj);
     const toasts = useToasts(pinia);
@@ -124,7 +126,7 @@ describe('Manage Password component', () => {
   it('will allow admins to reset a password', async () => {
     opts.props!.admin = true;
     const wrapper = mount(ManagePassword, opts);
-    const userObj = new User(client.axios, user);
+    const userObj = new User(fetcher, user);
     const spy = jest.spyOn(userObj, 'resetPassword').mockResolvedValue();
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObj);
 

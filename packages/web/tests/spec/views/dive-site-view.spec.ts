@@ -1,4 +1,5 @@
 import { ApiClient, DiveSite } from '@bottomtime/api';
+import { Fetcher } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -17,6 +18,7 @@ import { createRouter } from '../../fixtures/create-router';
 import { DiveSiteWithFullProperties } from '../../fixtures/sites';
 
 describe('Dive Site View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -26,7 +28,8 @@ describe('Dive Site View', () => {
   let opts: ComponentMountingOptions<typeof DiveSiteView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/diveSites/:siteId',
@@ -58,9 +61,7 @@ describe('Dive Site View', () => {
   it('will prefetch the site data on the server side', async () => {
     const spy = jest
       .spyOn(client.diveSites, 'getDiveSite')
-      .mockResolvedValue(
-        new DiveSite(client.axios, DiveSiteWithFullProperties),
-      );
+      .mockResolvedValue(new DiveSite(fetcher, DiveSiteWithFullProperties));
     const html = await renderToString(DiveSiteView, { global: opts.global });
     expect(spy).toHaveBeenCalledWith(DiveSiteWithFullProperties.id);
     expect(html).toMatchSnapshot();

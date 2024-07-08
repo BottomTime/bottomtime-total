@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   FriendRequest,
   FriendRequestDTO,
   FriendRequestDirection,
@@ -35,6 +36,7 @@ import { BasicUser } from '../../fixtures/users';
 dayjs.extend(relativeTime);
 
 describe('Friend requests view', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let friendRequestData: ListFriendRequestsResponseDTO;
@@ -75,7 +77,8 @@ describe('Friend requests view', () => {
     friendRequestData.friendRequests = friendRequestData.friendRequests.filter(
       (req) => req.direction === FriendRequestDirection.Incoming,
     );
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/friendRequests',
@@ -122,11 +125,7 @@ describe('Friend requests view', () => {
       .mockResolvedValue({
         friendRequests: friendRequestData.friendRequests.map(
           (request) =>
-            new FriendRequest(
-              client.axios,
-              currentUser.user!.username,
-              request,
-            ),
+            new FriendRequest(fetcher, currentUser.user!.username, request),
         ),
         totalCount: friendRequestData.totalCount,
       });
@@ -158,7 +157,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       request,
     );
@@ -195,7 +194,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       request,
     );
@@ -226,7 +225,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       request,
     );
@@ -269,7 +268,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       request,
     );
@@ -306,7 +305,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       request,
     );
@@ -337,7 +336,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       request,
     );
@@ -361,7 +360,7 @@ describe('Friend requests view', () => {
     await flushPromises();
 
     // Check that the API was called correctly and look for the confirmation toast.
-    expect(declineSpy).toBeCalled();
+    expect(declineSpy).toHaveBeenCalled();
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('friend-request-not-found');
     expect(wrapper.find('[data-testid="dialog-confirm-button"]').exists()).toBe(

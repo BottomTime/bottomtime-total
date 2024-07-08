@@ -1,5 +1,6 @@
 import {
   ErrorResponseDTO,
+  Fetcher,
   LogBookSharing,
   UserDTO,
   UserRole,
@@ -60,13 +61,15 @@ const NewUser: UserDTO = {
 } as const;
 
 describe('Registration form', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let pinia: Pinia;
   let global: ComponentMountingOptions<unknown>['global'];
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/welcome',
@@ -259,7 +262,7 @@ describe('Registration form', () => {
       .mockResolvedValue(true);
     const clientSpy = jest
       .spyOn(client.users, 'createUser')
-      .mockResolvedValue(new User(client.axios, NewUser));
+      .mockResolvedValue(new User(fetcher, NewUser));
 
     const wrapper = mount(RegisterForm, { global });
     const currentUser = useCurrentUser(pinia);

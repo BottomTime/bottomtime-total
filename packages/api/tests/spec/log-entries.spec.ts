@@ -1,5 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
-import nock, { Scope } from 'nock';
+import mockFetch from 'fetch-mock-jest';
 
 import {
   CreateOrUpdateLogEntryParamsDTO,
@@ -15,33 +14,27 @@ import {
   SortOrder,
   TankMaterial,
 } from '../../src';
+import { Fetcher } from '../../src/client/fetcher';
 import { LogEntriesApiClient } from '../../src/client/log-entries';
 import DiveSiteTestData from '../fixtures/dive-sites-search-results.json';
 import LogEntryTestData from '../fixtures/log-entries-search-results.json';
-import { createScope } from '../fixtures/nock';
 import { BasicUser } from '../fixtures/users';
 
 describe('Log entries API client', () => {
-  let axiosInstance: AxiosInstance;
+  let fetcher: Fetcher;
   let client: LogEntriesApiClient;
   let logEntryData: ListLogEntriesResponseDTO;
   let diveSiteData: SearchDiveSitesResponseDTO;
-  let scope: Scope;
 
   beforeAll(() => {
-    axiosInstance = axios.create();
-    client = new LogEntriesApiClient(axiosInstance);
+    fetcher = new Fetcher();
+    client = new LogEntriesApiClient(fetcher);
     logEntryData = ListLogEntriesResponseSchema.parse(LogEntryTestData);
     diveSiteData = SearchDiveSitesResponseSchema.parse(DiveSiteTestData);
-    scope = createScope();
   });
 
   afterEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.restore();
+    mockFetch.restore();
   });
 
   it('will return a list of log entries', async () => {
@@ -55,14 +48,17 @@ describe('Log entries API client', () => {
       sortBy: LogEntrySortBy.EntryTime,
       sortOrder: SortOrder.Ascending,
     };
-    scope
-      .get(`/api/users/${username}/logbook`)
-      .query(JSON.parse(JSON.stringify(params)))
-      .reply(200, logEntryData);
+    mockFetch.get(
+      `/api/users/${username}/logbook?query=sam&startDate=2021-01-01T00%3A00%3A00.000Z&endDate=2021-12-31T00%3A00%3A00.000Z&limit=800&skip=20&sortBy=entryTime&sortOrder=asc`,
+      {
+        status: 200,
+        body: logEntryData,
+      },
+    );
 
     const result = await client.listLogEntries(username, params);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(logEntryData.totalCount);
 
     result.logEntries.forEach((entry, index) => {
@@ -72,16 +68,22 @@ describe('Log entries API client', () => {
 
   it('will retrieve a single log entry', async () => {
     const entryData = logEntryData.logEntries[0];
-    scope
-      .get(`/api/users/${entryData.creator.username}/logbook/${entryData.id}`)
-      .reply(200, entryData);
+    mockFetch.get(
+      {
+        url: `/api/users/${entryData.creator.username}/logbook/${entryData.id}`,
+      },
+      {
+        status: 200,
+        body: entryData,
+      },
+    );
 
     const entry = await client.getLogEntry(
       entryData.creator.username,
       entryData.id,
     );
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(entry.toJSON()).toEqual(entryData);
   });
 
@@ -116,26 +118,28 @@ describe('Log entries API client', () => {
       creator: BasicUser.profile,
       id: '62389e6e-0332-4288-9d87-9bd94ba830da',
     };
-    scope
-      .post(`/api/users/${BasicUser.username}/logbook`, options)
-      .reply(201, expected);
+    mockFetch.post(`/api/users/${BasicUser.username}/logbook`, {
+      status: 201,
+      body: expected,
+    });
 
     const entry = await client.createLogEntry(BasicUser.username, options);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(entry.toJSON()).toEqual(expected);
   });
 
   it('will return the next available log number', async () => {
     const username = 'greg';
     const logNumber = 77;
-    scope
-      .get(`/api/users/${username}/logbook/nextLogEntryNumber`)
-      .reply(200, { logNumber });
+    mockFetch.get(`/api/users/${username}/logbook/nextLogEntryNumber`, {
+      status: 200,
+      body: { logNumber },
+    });
 
     const result = await client.getNextAvailableLogNumber(username);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(result).toBe(logNumber);
   });
 
@@ -147,14 +151,20 @@ describe('Log entries API client', () => {
 
   it('will request most recently logged dive sites', async () => {
     const username = 'carl';
-    scope
-      .get(`/api/users/${username}/logbook/recentDiveSites`)
-      .query({ count: 15 })
-      .reply(200, diveSiteData.sites.slice(0, 8));
+    mockFetch.get(
+      {
+        url: `/api/users/${username}/logbook/recentDiveSites?count=15`,
+        // query: { count: 15 },
+      },
+      {
+        status: 200,
+        body: diveSiteData.sites.slice(0, 8),
+      },
+    );
 
     const result = await client.getMostRecentDiveSites(username, 15);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(result.length).toBe(8);
     expect(result.map((site) => ({ id: site.id, name: site.name }))).toEqual(
       diveSiteData.sites

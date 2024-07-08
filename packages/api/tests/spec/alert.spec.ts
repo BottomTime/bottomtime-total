@@ -1,8 +1,9 @@
 import { AlertDTO } from '@bottomtime/api';
 
-import axios, { AxiosInstance } from 'axios';
+import mockFetch from 'fetch-mock-jest';
 
 import { Alert } from '../../src/client';
+import { Fetcher } from '../../src/client/fetcher';
 
 const AlertData: AlertDTO = {
   id: 'b80cad85-108d-4113-92db-be9ec9fe0aae',
@@ -14,15 +15,19 @@ const AlertData: AlertDTO = {
 };
 
 describe('Alert API class', () => {
-  let client: AxiosInstance;
+  let client: Fetcher;
   let alert: Alert;
 
   beforeAll(() => {
-    client = axios.create();
+    client = new Fetcher();
   });
 
   beforeEach(() => {
     alert = new Alert(client, { ...AlertData });
+  });
+
+  afterEach(() => {
+    mockFetch.restore();
   });
 
   it('will return properties correctly', () => {
@@ -58,24 +63,28 @@ describe('Alert API class', () => {
   });
 
   it('will save changes to an alert', async () => {
-    const spy = jest
-      .spyOn(client, 'put')
-      .mockResolvedValueOnce({ data: { ...AlertData } });
+    mockFetch.put(`/api/alerts/${alert.id}`, {
+      status: 200,
+      body: alert.toJSON(),
+    });
 
     await alert.save();
 
-    expect(spy).toHaveBeenCalledWith(`/api/alerts/${AlertData.id}`, {
-      icon: AlertData.icon,
-      title: AlertData.title,
-      message: AlertData.message,
-      active: AlertData.active,
-      expires: AlertData.expires,
-    });
+    expect(mockFetch.done()).toBe(true);
+    expect(mockFetch.lastCall()?.[1]?.body).toBe(
+      JSON.stringify({
+        icon: alert.icon,
+        title: alert.title,
+        message: alert.message,
+        active: alert.active,
+        expires: alert.expires,
+      }),
+    );
   });
 
   it('will delete an alert', async () => {
-    const spy = jest.spyOn(client, 'delete').mockResolvedValueOnce({});
+    mockFetch.delete(`/api/alerts/${alert.id}`, 200);
     await alert.delete();
-    expect(spy).toHaveBeenCalledWith(`/api/alerts/${AlertData.id}`);
+    expect(mockFetch.done()).toBe(true);
   });
 });

@@ -1,9 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
-import nock, { Scope } from 'nock';
+import mockFetch from 'fetch-mock-jest';
 
 import { FriendDTO, LogBookSharing } from '../../src';
 import { Friend } from '../../src/client';
-import { createScope } from '../fixtures/nock';
+import { Fetcher } from '../../src/client/fetcher';
 
 const Username = 'mega_user32';
 const FriendId = '5e83b728-c7ba-4d9f-aaf4-5341640dd974';
@@ -19,15 +18,13 @@ const TestData: FriendDTO = {
 };
 
 describe('Friend class', () => {
-  let client: AxiosInstance;
-  let scope: Scope;
+  let client: Fetcher;
 
   let data: FriendDTO;
   let friend: Friend;
 
   beforeAll(() => {
-    client = axios.create();
-    scope = createScope();
+    client = new Fetcher();
   });
 
   beforeEach(() => {
@@ -36,11 +33,7 @@ describe('Friend class', () => {
   });
 
   afterEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.restore();
+    mockFetch.restore();
   });
 
   it('will return properties correctly', () => {
@@ -68,10 +61,11 @@ describe('Friend class', () => {
   });
 
   it('will unfriend a user', async () => {
-    scope
-      .delete(`/api/users/${Username}/friends/${TestData.username}`)
-      .reply(204);
+    mockFetch.delete(
+      `/api/users/${Username}/friends/${TestData.username}`,
+      204,
+    );
     await friend.unfriend();
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 });

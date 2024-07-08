@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
@@ -42,6 +43,7 @@ const EmptyTankResults: { tanks: Tank[]; totalCount: number } = {
 };
 
 describe('Profile View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let tankData: ListTanksResponseDTO;
@@ -53,7 +55,8 @@ describe('Profile View', () => {
 
   beforeAll(() => {
     const component = defineComponent({});
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/profile/:username',
@@ -123,7 +126,7 @@ describe('Profile View', () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${BasicUser.username.toUpperCase()}`);
     const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+      tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
       totalCount: tankData.totalCount,
     });
 
@@ -149,7 +152,7 @@ describe('Profile View', () => {
     await router.push(`/profile/${BasicUser.username}`);
     jest.spyOn(client.users, 'getProfile').mockResolvedValue(BasicUser.profile);
     const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+      tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
       totalCount: tankData.totalCount,
     });
 

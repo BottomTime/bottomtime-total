@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   Friend,
   FriendRequest,
   FriendRequestDirection,
@@ -42,6 +43,7 @@ const RequestsCount = '[data-testid="request-counts"]';
 const SortOrderSelect = '[data-testid="sort-order"]';
 
 describe('Friends view', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -55,7 +57,8 @@ describe('Friends view', () => {
   let opts: ComponentMountingOptions<typeof FriendsView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
 
     friendsData = ListFriendsResposneSchema.parse(TestFriendsData);
@@ -118,7 +121,7 @@ describe('Friends view', () => {
       .mockResolvedValue({
         friends: friendsData.friends
           .slice(0, 5)
-          .map((f) => new Friend(client.axios, currentUser.user!.username, f)),
+          .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
         totalCount: friendsData.totalCount,
       });
     const friendRequestsSpy = jest
@@ -126,7 +129,7 @@ describe('Friends view', () => {
       .mockResolvedValue({
         friendRequests: friendRequestsData.friendRequests
           .slice(0, 5)
-          .map((r) => new FriendRequest(client.axios, BasicUser.username, r)),
+          .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
         totalCount: friendRequestsData.totalCount,
       });
 
@@ -154,7 +157,7 @@ describe('Friends view', () => {
       .mockResolvedValue({
         friends: friendsData.friends
           .slice(0, 5)
-          .map((f) => new Friend(client.axios, currentUser.user!.username, f)),
+          .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
         totalCount: friendsData.totalCount,
       });
     const friendRequestsSpy = jest
@@ -162,7 +165,7 @@ describe('Friends view', () => {
       .mockResolvedValue({
         friendRequests: friendRequestsData.friendRequests
           .slice(0, 5)
-          .map((r) => new FriendRequest(client.axios, BasicUser.username, r)),
+          .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
         totalCount: friendRequestsData.totalCount,
       });
 
@@ -218,7 +221,7 @@ describe('Friends view', () => {
   it('will allow a user to unfriend someone', async () => {
     const wrapper = mount(FriendsView, opts);
     const friend = new Friend(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       friendsData.friends[3],
     );
@@ -242,7 +245,7 @@ describe('Friends view', () => {
   it('will allow a user to change their mind about unfriending someone', async () => {
     const wrapper = mount(FriendsView, opts);
     const friend = new Friend(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       friendsData.friends[3],
     );
@@ -268,7 +271,7 @@ describe('Friends view', () => {
   it('will allow a user to cancel a friend request', async () => {
     const wrapper = mount(FriendsView, opts);
     const request = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       friendRequestsData.friendRequests[3],
     );
@@ -297,7 +300,7 @@ describe('Friends view', () => {
   it('will allow a user to change their mind about cancelling a friend request', async () => {
     const wrapper = mount(FriendsView, opts);
     const request = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       friendRequestsData.friendRequests[3],
     );
@@ -411,7 +414,7 @@ describe('Friends view', () => {
     const spy = jest.spyOn(client.friends, 'listFriends').mockResolvedValue({
       friends: friendsData.friends
         .slice(20, 40)
-        .map((f) => new Friend(client.axios, currentUser.user!.username, f)),
+        .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
       totalCount: friendsData.totalCount,
     });
     friendsStore.friends.friends = friendsData.friends.slice(0, 20);
@@ -439,7 +442,7 @@ describe('Friends view', () => {
       .mockResolvedValue({
         friendRequests: friendRequestsData.friendRequests
           .slice(20, 40)
-          .map((r) => new FriendRequest(client.axios, BasicUser.username, r)),
+          .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
         totalCount: friendRequestsData.totalCount,
       });
     friendsStore.requests.friendRequests =
@@ -476,11 +479,7 @@ describe('Friends view', () => {
     };
     friendsStore.requests.friendRequests[0].accepted = true;
 
-    const request = new FriendRequest(
-      client.axios,
-      BasicUser.username,
-      requestDTO,
-    );
+    const request = new FriendRequest(fetcher, BasicUser.username, requestDTO);
     jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
     const spy = jest.spyOn(request, 'cancel').mockResolvedValue();
 

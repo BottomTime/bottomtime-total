@@ -1,7 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
+import mockFetch from 'fetch-mock-jest';
 
 import { Alert } from '../../src/client';
 import { AlertsApiClient } from '../../src/client/alerts';
+import { Fetcher } from '../../src/client/fetcher';
 import {
   AlertDTO,
   CreateOrUpdateAlertParamsDTO,
@@ -36,12 +37,16 @@ const AlertData: AlertDTO[] = [
 ];
 
 describe('Alerts API client', () => {
-  let axiosClient: AxiosInstance;
+  let fetcher: Fetcher;
   let apiClient: AlertsApiClient;
 
   beforeAll(() => {
-    axiosClient = axios.create();
-    apiClient = new AlertsApiClient(axiosClient);
+    fetcher = new Fetcher();
+    apiClient = new AlertsApiClient(fetcher);
+  });
+
+  afterEach(() => {
+    mockFetch.restore();
   });
 
   it('will perform searches for alerts', async () => {
@@ -50,8 +55,9 @@ describe('Alerts API client', () => {
       skip: 4,
       limit: 10,
     };
-    const spy = jest.spyOn(axiosClient, 'get').mockResolvedValueOnce({
-      data: JSON.parse(
+    mockFetch.get('/api/alerts?showDismissed=true&skip=4&limit=10', {
+      status: 200,
+      body: JSON.parse(
         JSON.stringify({
           alerts: AlertData,
           totalCount: 13,
@@ -63,19 +69,20 @@ describe('Alerts API client', () => {
     expect(result.alerts).toHaveLength(AlertData.length);
     expect(result.totalCount).toBe(13);
 
-    expect(spy).toHaveBeenCalledWith('/api/alerts', { params: options });
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will retrieve a single alert', async () => {
-    const spy = jest.spyOn(axiosClient, 'get').mockResolvedValueOnce({
-      data: JSON.parse(JSON.stringify(AlertData[1])),
+    mockFetch.get(`/api/alerts/${AlertData[1].id}`, {
+      status: 200,
+      body: JSON.stringify(AlertData[1]),
     });
 
     const result = await apiClient.getAlert(AlertData[1].id);
+
     expect(result.active).toEqual(AlertData[1].active);
     expect(result.toJSON()).toEqual(AlertData[1]);
-
-    expect(spy).toHaveBeenCalledWith(`/api/alerts/${AlertData[1].id}`);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will create a new alert', async () => {
@@ -86,14 +93,19 @@ describe('Alerts API client', () => {
       message: 'Alert body goes here.',
       active: new Date('2024-03-27T14:56:09.288Z'),
     };
-    const spy = jest.spyOn(axiosClient, 'post').mockResolvedValueOnce({
-      data: JSON.parse(
-        JSON.stringify({
+    mockFetch.post(
+      {
+        url: '/api/alerts',
+        body: JSON.parse(JSON.stringify(options)),
+      },
+      {
+        status: 200,
+        body: JSON.stringify({
           id: alertId,
           ...options,
         }),
-      ),
-    });
+      },
+    );
 
     const result = await apiClient.createAlert(options);
     expect(result).toBeInstanceOf(Alert);
@@ -103,7 +115,7 @@ describe('Alerts API client', () => {
       ...options,
     });
 
-    expect(spy).toHaveBeenCalledWith('/api/alerts', options);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will wrap a DTO in an alert object', () => {

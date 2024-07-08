@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   ListLogEntriesResponseDTO,
   ListLogEntriesResponseSchema,
   LogBookSharing,
@@ -45,6 +46,7 @@ const ProfileData: ProfileDTO = {
 };
 
 describe('Logbook view', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let entryData: ListLogEntriesResponseDTO;
@@ -57,7 +59,8 @@ describe('Logbook view', () => {
   let opts: ComponentMountingOptions<typeof LogbookView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/logbook/:username',
@@ -99,7 +102,7 @@ describe('Logbook view', () => {
         .spyOn(client.logEntries, 'listLogEntries')
         .mockResolvedValue({
           logEntries: entryData.logEntries.map(
-            (entry) => new LogEntry(client.axios, entry),
+            (entry) => new LogEntry(fetcher, entry),
           ),
           totalCount: entryData.totalCount,
         });
@@ -124,7 +127,7 @@ describe('Logbook view', () => {
         .spyOn(client.logEntries, 'listLogEntries')
         .mockResolvedValue({
           logEntries: entryData.logEntries.map(
-            (entry) => new LogEntry(client.axios, entry),
+            (entry) => new LogEntry(fetcher, entry),
           ),
           totalCount: entryData.totalCount,
         });
@@ -158,7 +161,7 @@ describe('Logbook view', () => {
         .spyOn(client.logEntries, 'listLogEntries')
         .mockResolvedValue({
           logEntries: entryData.logEntries.map(
-            (entry) => new LogEntry(client.axios, entry),
+            (entry) => new LogEntry(fetcher, entry),
           ),
           totalCount: entryData.totalCount,
         });
@@ -431,7 +434,7 @@ describe('Logbook view', () => {
         .mockResolvedValue({
           logEntries: entryData.logEntries
             .slice(10, 20)
-            .map((e) => new LogEntry(client.axios, e)),
+            .map((e) => new LogEntry(fetcher, e)),
           totalCount: 200,
         });
 
@@ -476,7 +479,7 @@ describe('Logbook view', () => {
   });
 
   it('will preview a selected log entry in the drawer panel', async () => {
-    const entry = new LogEntry(client.axios, entryData.logEntries[0]);
+    const entry = new LogEntry(fetcher, entryData.logEntries[0]);
     const spy = jest
       .spyOn(client.logEntries, 'getLogEntry')
       .mockResolvedValue(entry);

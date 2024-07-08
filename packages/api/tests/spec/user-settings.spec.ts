@@ -1,6 +1,6 @@
-import axios, { AxiosInstance } from 'axios';
-import nock, { Scope } from 'nock';
+import mockFetch from 'fetch-mock-jest';
 
+import { Fetcher } from '../../src/client/fetcher';
 import { UserSettings } from '../../src/client/user-settings';
 import {
   DepthUnit,
@@ -9,18 +9,15 @@ import {
   UserDTO,
   WeightUnit,
 } from '../../src/types';
-import { createScope } from '../fixtures/nock';
 import { BasicUser } from '../fixtures/users';
 
 describe('User Settings client object', () => {
-  let axiosInstance: AxiosInstance;
+  let fetcher: Fetcher;
   let settings: UserSettings;
   let testUser: UserDTO;
-  let scope: Scope;
 
   beforeAll(() => {
-    axiosInstance = axios.create();
-    scope = createScope();
+    fetcher = new Fetcher();
 
     testUser = {
       ...BasicUser,
@@ -32,15 +29,11 @@ describe('User Settings client object', () => {
       },
     };
 
-    settings = new UserSettings(axiosInstance, testUser);
+    settings = new UserSettings(fetcher, testUser);
   });
 
   afterEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.restore();
+    mockFetch.restore();
   });
 
   it('will return properties correctly', () => {
@@ -72,12 +65,14 @@ describe('User Settings client object', () => {
     settings.pressureUnit = PressureUnit.PSI;
     settings.temperatureUnit = TemperatureUnit.Fahrenheit;
     settings.weightUnit = WeightUnit.Pounds;
-    scope
-      .put(`/api/users/${testUser.username}/settings`, testUser.settings)
-      .reply(204);
+
+    mockFetch.put(
+      `/api/users/${testUser.username}/settings`,
+      testUser.settings,
+    );
 
     await settings.save();
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 });

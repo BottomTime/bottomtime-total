@@ -1,5 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
-import nock, { Scope } from 'nock';
+import mockFetch from 'fetch-mock-jest';
 
 import {
   FriendRequestDTO,
@@ -7,7 +6,7 @@ import {
   LogBookSharing,
 } from '../../src';
 import { FriendRequest } from '../../src/client';
-import { createScope } from '../fixtures/nock';
+import { Fetcher } from '../../src/client/fetcher';
 
 const Username = 'mega_user32';
 const FriendId = '5e83b728-c7ba-4d9f-aaf4-5341640dd974';
@@ -42,15 +41,13 @@ function getAcknowledgePath(direction: FriendRequestDirection): string {
 }
 
 describe('FriendRequest class', () => {
-  let client: AxiosInstance;
-  let scope: Scope;
+  let client: Fetcher;
 
   let data: FriendRequestDTO;
   let request: FriendRequest;
 
   beforeAll(() => {
-    client = axios.create();
-    scope = createScope();
+    client = new Fetcher();
   });
 
   beforeEach(() => {
@@ -59,11 +56,7 @@ describe('FriendRequest class', () => {
   });
 
   afterEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.restore();
+    mockFetch.restore();
   });
 
   it('will return properties correctly', () => {
@@ -96,27 +89,35 @@ describe('FriendRequest class', () => {
         });
 
         it('will cancel/delete a friend request', async () => {
-          scope.delete(getCancelPath(direction)).reply(204);
+          mockFetch.delete(getCancelPath(direction), 204);
           await request.cancel();
-          expect(scope.isDone()).toBe(true);
+          expect(mockFetch.done()).toBe(true);
         });
 
         it('will accept a friend request', async () => {
-          scope
-            .post(getAcknowledgePath(direction), { accepted: true })
-            .reply(204);
+          mockFetch.post(
+            {
+              url: getAcknowledgePath(direction),
+              body: { accepted: true },
+            },
+            204,
+          );
           await request.accept();
-          expect(scope.isDone()).toBe(true);
+          expect(mockFetch.done()).toBe(true);
           expect(request.accepted).toBe(true);
         });
 
         it('will decline a friend request', async () => {
           const reason = 'hella nope';
-          scope
-            .post(getAcknowledgePath(direction), { accepted: false, reason })
-            .reply(204);
+          mockFetch.post(
+            {
+              url: getAcknowledgePath(direction),
+              body: { accepted: false, reason },
+            },
+            204,
+          );
           await request.decline(reason);
-          expect(scope.isDone()).toBe(true);
+          expect(mockFetch.done()).toBe(true);
           expect(request.accepted).toBe(false);
           expect(request.declineReason).toBe(reason);
         });

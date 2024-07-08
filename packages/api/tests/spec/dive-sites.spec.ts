@@ -1,7 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
+import mockFetch from 'fetch-mock-jest';
 
 import { DiveSite } from '../../src/client';
 import { DiveSitesApiClient } from '../../src/client/dive-sites';
+import { Fetcher } from '../../src/client/fetcher';
 import {
   CreateOrUpdateDiveSiteSchema,
   DiveSitesSortBy,
@@ -14,47 +15,61 @@ import SearchResults from '../fixtures/dive-sites-search-results.json';
 import { DiveSiteWithFullProperties } from '../fixtures/sites';
 
 describe('Dive Site API client', () => {
-  let axiosClient: AxiosInstance;
+  let fetcher: Fetcher;
   let apiClient: DiveSitesApiClient;
   let searchResults: SearchDiveSitesResponseDTO;
 
   beforeAll(() => {
-    axiosClient = axios.create();
-    apiClient = new DiveSitesApiClient(axiosClient);
+    fetcher = new Fetcher();
+    apiClient = new DiveSitesApiClient(fetcher);
 
     searchResults = SearchDiveSitesResponseSchema.parse(SearchResults);
   });
 
+  afterEach(() => {
+    mockFetch.restore();
+  });
+
   it('will retrieve a single dive site', async () => {
-    const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
-      data: DiveSiteWithFullProperties,
+    mockFetch.get(`/api/diveSites/${DiveSiteWithFullProperties.id}`, {
+      status: 200,
+      body: DiveSiteWithFullProperties,
     });
 
     const result = await apiClient.getDiveSite(DiveSiteWithFullProperties.id);
 
-    expect(spy).toHaveBeenCalledWith(
-      `/api/diveSites/${DiveSiteWithFullProperties.id}`,
-    );
     expect(result.toJSON()).toEqual(DiveSiteWithFullProperties);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will create a new dive site', async () => {
     const options = CreateOrUpdateDiveSiteSchema.parse(
       DiveSiteWithFullProperties,
     );
-    const spy = jest
-      .spyOn(axiosClient, 'post')
-      .mockResolvedValue({ data: DiveSiteWithFullProperties });
+    mockFetch.post(
+      {
+        url: '/api/diveSites',
+        body: options,
+      },
+      {
+        status: 201,
+        body: DiveSiteWithFullProperties,
+      },
+    );
 
     const result = await apiClient.createDiveSite(options);
     expect(result.toJSON()).toEqual(DiveSiteWithFullProperties);
-    expect(spy).toHaveBeenCalledWith('/api/diveSites', options);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will perform a search for dive sites', async () => {
-    const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
-      data: searchResults,
-    });
+    mockFetch.get(
+      '/api/diveSites?creator=bob&limit=200&query=Puget+Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250',
+      {
+        status: 200,
+        body: searchResults,
+      },
+    );
 
     const result = await apiClient.searchDiveSites({
       query: 'Puget Sound',
@@ -75,7 +90,7 @@ describe('Dive Site API client', () => {
       creator: 'bob',
     });
 
-    expect(spy.mock.lastCall).toMatchSnapshot();
+    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(searchResults.totalCount);
     expect(result.sites).toHaveLength(searchResults.sites.length);
     expect(result.sites.map((site: DiveSite) => site.toJSON())).toEqual(
@@ -84,13 +99,11 @@ describe('Dive Site API client', () => {
   });
 
   it('will perform a search with minimal options', async () => {
-    const spy = jest.spyOn(axiosClient, 'get').mockResolvedValue({
-      data: searchResults,
-    });
+    mockFetch.get('/api/diveSites', { status: 200, body: searchResults });
 
     const result = await apiClient.searchDiveSites();
 
-    expect(spy.mock.lastCall).toMatchSnapshot();
+    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(searchResults.totalCount);
     expect(result.sites).toHaveLength(searchResults.sites.length);
     expect(result.sites.map((site: DiveSite) => site.toJSON())).toEqual(

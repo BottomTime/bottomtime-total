@@ -1,5 +1,3 @@
-import { AxiosInstance, isAxiosError } from 'axios';
-
 import {
   AdminSearchUsersParamsDTO,
   AdminSearchUsersResponseSchema,
@@ -15,61 +13,71 @@ import {
   UserSchema,
   ValidateResetPasswordTokenResponseDTO,
 } from '../types';
+import { Fetcher } from './fetcher';
 import { User } from './user';
 import { UserProfile } from './user-profile';
 
 export class UsersApiClient {
-  constructor(private readonly apiClient: AxiosInstance) {}
+  constructor(private readonly apiClient: Fetcher) {}
 
   async isUsernameOrEmailAvailable(usernameOrEmail: string): Promise<boolean> {
-    try {
-      await this.apiClient.head(
-        `/api/users/${encodeURIComponent(usernameOrEmail)}`,
-      );
-      return false;
-    } catch (error) {
-      if (isAxiosError(error) && error.response?.status === 404) {
-        return true;
-      }
-
-      throw error;
-    }
+    const status = await this.apiClient.head(
+      `/api/users/${encodeURIComponent(usernameOrEmail)}`,
+    );
+    return status === 404;
   }
 
   async createUser(options: CreateUserParamsDTO): Promise<User> {
-    const { data } = await this.apiClient.post('/api/users', options);
-    return new User(this.apiClient, UserSchema.parse(data));
+    const { data } = await this.apiClient.post(
+      '/api/users',
+      options,
+      UserSchema,
+    );
+    return new User(this.apiClient, data);
   }
 
   async getCurrentUser(): Promise<User | null> {
-    const { data } = await this.apiClient.get('/api/auth/me');
+    const { data: currentUser } = await this.apiClient.get(
+      '/api/auth/me',
+      undefined,
+      CurrentUserSchema,
+    );
 
-    const currentUser = CurrentUserSchema.parse(data);
     if (currentUser.anonymous) {
       return null;
     } else {
-      return new User(this.apiClient, UserSchema.parse(data));
+      return new User(this.apiClient, UserSchema.parse(currentUser));
     }
   }
 
   async getUser(usernameOrEmail: string): Promise<User> {
     const { data } = await this.apiClient.get(
       `/api/admin/users/${encodeURIComponent(usernameOrEmail)}`,
+      undefined,
+      UserSchema,
     );
-    return new User(this.apiClient, UserSchema.parse(data));
+    return new User(this.apiClient, data);
   }
 
   async getProfile(username: string): Promise<ProfileDTO> {
-    const { data } = await this.apiClient.get(`/api/users/${username}`);
-    return ProfileSchema.parse(data);
+    const { data } = await this.apiClient.get(
+      `/api/users/${username}`,
+      undefined,
+      ProfileSchema,
+    );
+    return data;
   }
 
   async login(usernameOrEmail: string, password: string): Promise<User> {
-    const { data } = await this.apiClient.post('/api/auth/login', {
-      usernameOrEmail,
-      password,
-    });
-    return new User(this.apiClient, UserSchema.parse(data));
+    const { data } = await this.apiClient.post(
+      '/api/auth/login',
+      {
+        usernameOrEmail,
+        password,
+      },
+      UserSchema,
+    );
+    return new User(this.apiClient, data);
   }
 
   async requestPasswordResetToken(usernameOrEmail: string): Promise<void> {
@@ -85,9 +93,7 @@ export class UsersApiClient {
     const { data } =
       await this.apiClient.get<ValidateResetPasswordTokenResponseDTO>(
         `/api/users/${usernameOrEmail}/resetPassword`,
-        {
-          params: { token },
-        },
+        { token },
       );
 
     return data.status;
@@ -123,10 +129,11 @@ export class UsersApiClient {
   async searchUsers(
     query: AdminSearchUsersParamsDTO,
   ): Promise<{ users: User[]; totalCount: number }> {
-    const { data } = await this.apiClient.get('/api/admin/users', {
-      params: query,
-    });
-    const response = AdminSearchUsersResponseSchema.parse(data);
+    const { data: response } = await this.apiClient.get(
+      '/api/admin/users',
+      query,
+      AdminSearchUsersResponseSchema,
+    );
 
     return {
       users: response.users.map((user) => new User(this.apiClient, user)),
@@ -137,8 +144,12 @@ export class UsersApiClient {
   async searchProfiles(
     query: SearchUserProfilesParamsDTO,
   ): Promise<SearchProfilesResponseDTO> {
-    const { data } = await this.apiClient.get('/api/users', { params: query });
-    return SearchProfilesResponseSchema.parse(data);
+    const { data } = await this.apiClient.get(
+      '/api/users',
+      query,
+      SearchProfilesResponseSchema,
+    );
+    return data;
   }
 
   wrapDTO(dto: unknown): User {

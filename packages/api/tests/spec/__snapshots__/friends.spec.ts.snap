@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Friends API client will allow an error to bubble up if areFriends is called and something goes wrong 1`] = `"nope"`;

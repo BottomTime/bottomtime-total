@@ -1,4 +1,10 @@
-import { ApiClient, Tank, TankDTO, TankMaterial } from '@bottomtime/api';
+import {
+  ApiClient,
+  Fetcher,
+  Tank,
+  TankDTO,
+  TankMaterial,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -33,6 +39,7 @@ const TestData: TankDTO = {
 };
 
 describe('New Profile Tank view', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -43,7 +50,8 @@ describe('New Profile Tank view', () => {
   let opts: ComponentMountingOptions<typeof ProfileNewTankView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/profile/:username/tanks/new',
@@ -93,7 +101,7 @@ describe('New Profile Tank view', () => {
   it('will allow a user to create a tank', async () => {
     const spy = jest
       .spyOn(client.tanks, 'createTank')
-      .mockResolvedValue(new Tank(client.axios, TestData));
+      .mockResolvedValue(new Tank(fetcher, TestData));
 
     const wrapper = mount(ProfileNewTankView, opts);
     await wrapper.get('#name').setValue(TestData.name);
@@ -119,7 +127,7 @@ describe('New Profile Tank view', () => {
     currentUser.user = AdminUser;
     const spy = jest
       .spyOn(client.tanks, 'createTank')
-      .mockResolvedValue(new Tank(client.axios, TestData));
+      .mockResolvedValue(new Tank(fetcher, TestData));
 
     const wrapper = mount(ProfileNewTankView, opts);
     await wrapper.get('#name').setValue(TestData.name);

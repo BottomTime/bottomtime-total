@@ -1,4 +1,4 @@
-import { UserDTO } from '@bottomtime/api';
+import { Fetcher, UserDTO } from '@bottomtime/api';
 import { ApiClient, User } from '@bottomtime/api';
 
 import {
@@ -36,6 +36,7 @@ const EmailVerificationStatus = '[data-testid="email-verification-status"]';
 const SendVerificationEmail = '[data-testid="send-verification-email"]';
 
 describe('Username and Email component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -44,7 +45,8 @@ describe('Username and Email component', () => {
   let user: UserDTO;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
   });
 
@@ -70,7 +72,7 @@ describe('Username and Email component', () => {
   it('will allow editing username', async () => {
     const username = 'new.user123';
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(client.axios, user);
+    const userObject = new User(fetcher, user);
     const spy = jest.spyOn(userObject, 'changeUsername').mockResolvedValue();
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObject);
 
@@ -138,7 +140,7 @@ describe('Username and Email component', () => {
     const username = 'new.user123';
     const message = 'Username is already taken';
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(client.axios, user);
+    const userObject = new User(fetcher, user);
     const spy = jest.spyOn(userObject, 'changeUsername').mockRejectedValue(
       createAxiosError({
         status: 409,
@@ -167,7 +169,7 @@ describe('Username and Email component', () => {
   it('will allow editing email', async () => {
     const email = 'new_email@whodis.org';
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(client.axios, user);
+    const userObject = new User(fetcher, user);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObject);
     const spy = jest.spyOn(userObject, 'changeEmail').mockResolvedValue();
 
@@ -237,7 +239,7 @@ describe('Username and Email component', () => {
     const email = 'greg@greg.net';
     const message = 'Email is already taken';
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(client.axios, user);
+    const userObject = new User(fetcher, user);
     const spy = jest.spyOn(userObject, 'changeEmail').mockRejectedValue(
       createAxiosError({
         status: 409,
@@ -280,7 +282,7 @@ describe('Username and Email component', () => {
   it('will send a verification email upon request', async () => {
     user.emailVerified = false;
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(client.axios, user);
+    const userObject = new User(fetcher, user);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObject);
     const spy = jest
       .spyOn(userObject, 'requestEmailVerification')

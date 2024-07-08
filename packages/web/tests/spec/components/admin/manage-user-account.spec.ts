@@ -1,5 +1,5 @@
 /* eslint-disable vue/one-component-per-file */
-import { ApiClient, User, UserDTO, UserRole } from '@bottomtime/api';
+import { ApiClient, Fetcher, User, UserDTO, UserRole } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -55,6 +55,7 @@ const MockManagePassword = defineComponent({
 });
 
 describe('Manage User Account component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -64,7 +65,8 @@ describe('Manage User Account component', () => {
 
   beforeAll(() => {
     router = createRouter();
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
 
     jest.useFakeTimers({
       now: new Date('2024-02-14T16:27:57.383Z'),
@@ -107,7 +109,7 @@ describe('Manage User Account component', () => {
   });
 
   it('will allow an admin to toggle an account lock', async () => {
-    const user = new User(client.axios, userData);
+    const user = new User(fetcher, userData);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     const spy = jest.spyOn(user, 'toggleAccountLock').mockResolvedValue();
     const wrapper = mount(ManageUserAccount, opts);
@@ -121,7 +123,7 @@ describe('Manage User Account component', () => {
   });
 
   it('will allow an admin to cancel an account lock toggle', async () => {
-    const user = new User(client.axios, userData);
+    const user = new User(fetcher, userData);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     const spy = jest.spyOn(user, 'toggleAccountLock').mockResolvedValue();
     const wrapper = mount(ManageUserAccount, opts);
@@ -149,7 +151,7 @@ describe('Manage User Account component', () => {
   [UserRole.User, UserRole.Admin].forEach((role) => {
     it(`will allow an admin to change a user's role to "${role}"`, async () => {
       userData.role = role === UserRole.User ? UserRole.Admin : UserRole.User;
-      const user = new User(client.axios, userData);
+      const user = new User(fetcher, userData);
       jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
       const spy = jest.spyOn(user, 'changeRole').mockResolvedValue();
       const wrapper = mount(ManageUserAccount, opts);
@@ -165,7 +167,7 @@ describe('Manage User Account component', () => {
   });
 
   it('will allow an admin to cancel a role change', async () => {
-    const user = new User(client.axios, userData);
+    const user = new User(fetcher, userData);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     const spy = jest.spyOn(user, 'changeRole').mockResolvedValue();
     const wrapper = mount(ManageUserAccount, opts);

@@ -1,6 +1,7 @@
 import {
   ApiClient,
   DiveSite,
+  Fetcher,
   SearchDiveSitesResponseDTO,
   SearchDiveSitesResponseSchema,
 } from '@bottomtime/api';
@@ -30,6 +31,7 @@ const NoResultsMessage = '[data-testid="search-sites-no-results"]';
 const LoadMoreButton = '[data-testid="search-sites-load-more"]';
 
 describe('SearchDiveSitesForm component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let results: SearchDiveSitesResponseDTO;
@@ -38,6 +40,7 @@ describe('SearchDiveSitesForm component', () => {
   let opts: ComponentMountingOptions<typeof SearchDiveSitesForm>;
 
   beforeAll(() => {
+    fetcher = new Fetcher();
     client = new ApiClient();
     router = createRouter();
     results = SearchDiveSitesResponseSchema.parse(TestDiveSiteData);
@@ -121,7 +124,7 @@ describe('SearchDiveSitesForm component', () => {
 
   it('will display results when they are returned', async () => {
     jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue({
-      sites: results.sites.map((site) => new DiveSite(client.axios, site)),
+      sites: results.sites.map((site) => new DiveSite(fetcher, site)),
       totalCount: results.totalCount,
     });
 
@@ -149,13 +152,13 @@ describe('SearchDiveSitesForm component', () => {
       .mockResolvedValueOnce({
         sites: results.sites
           .slice(0, 5)
-          .map((site) => new DiveSite(client.axios, site)),
+          .map((site) => new DiveSite(fetcher, site)),
         totalCount: results.totalCount,
       })
       .mockResolvedValueOnce({
         sites: results.sites
           .slice(5, 10)
-          .map((site) => new DiveSite(client.axios, site)),
+          .map((site) => new DiveSite(fetcher, site)),
         totalCount: results.totalCount,
       });
 
@@ -189,7 +192,7 @@ describe('SearchDiveSitesForm component', () => {
 
   it('will not show load more button if all results are loaded', async () => {
     jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue({
-      sites: results.sites.map((site) => new DiveSite(client.axios, site)),
+      sites: results.sites.map((site) => new DiveSite(fetcher, site)),
       totalCount: results.sites.length,
     });
 
@@ -202,7 +205,7 @@ describe('SearchDiveSitesForm component', () => {
 
   it('will re-emit event when dive site is selected', async () => {
     jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue({
-      sites: results.sites.map((site) => new DiveSite(client.axios, site)),
+      sites: results.sites.map((site) => new DiveSite(fetcher, site)),
       totalCount: results.sites.length,
     });
 
@@ -219,7 +222,7 @@ describe('SearchDiveSitesForm component', () => {
 
   it('will highlight the selected site when it is clicked', async () => {
     jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue({
-      sites: results.sites.map((site) => new DiveSite(client.axios, site)),
+      sites: results.sites.map((site) => new DiveSite(fetcher, site)),
       totalCount: results.sites.length,
     });
 

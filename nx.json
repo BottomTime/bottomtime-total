@@ -16,17 +16,16 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["{projectRoot}/dist/"]
+      "inputs": ["{projectRoot}/src/**/*.ts", "{projectRoot}/src/**/*.vue"],
+      "outputs": ["{projectRoot}/dist/**/*"]
     },
     "test": {
-      "outputs": ["{projectRoot}/coverage/"]
-    },
-    "build:client": {
-      "outputs": ["{projectRoot}/dist/client/"]
-    },
-    "build:server": {
-      "outputs": ["{projectRoot}/dist/server/"]
+      "inputs": [
+        "{projectRoot}/src/**/*.ts",
+        "{projectRoot}/src/**/*.vue",
+        "{projectRoot}/tests/**/*.ts"
+      ],
+      "outputs": ["{projectRoot}/coverage/**/*"]
     }
   }
 }

@@ -1,5 +1,3 @@
-import { AxiosInstance } from 'axios';
-
 import {
   CreateOrUpdateDiveSiteSchema,
   DepthDTO,
@@ -7,12 +5,13 @@ import {
   ProfileDTO,
   WaterType,
 } from '../types';
+import { Fetcher } from './fetcher';
 
 export type GPSCoordinates = DiveSiteDTO['gps'];
 
 export class DiveSite {
   constructor(
-    private readonly client: AxiosInstance,
+    private readonly client: Fetcher,
     private readonly data: DiveSiteDTO,
   ) {}
 

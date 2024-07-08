@@ -1,4 +1,5 @@
 import {
+  Fetcher,
   ListAlertsResponseDTO,
   ListAlertsResponseSchema,
 } from '@bottomtime/api';
@@ -25,6 +26,7 @@ const PreviousButton = 'button[data-testid="carousel-prev"]';
 const CarouselIndicators = 'div[data-testid="carousel-indicators"]';
 
 describe('Alerts Carousel component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -35,7 +37,8 @@ describe('Alerts Carousel component', () => {
   let options: ComponentMountingOptions<typeof AlertsCarousel>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
   });
 
@@ -63,7 +66,7 @@ describe('Alerts Carousel component', () => {
     const spy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValue({
       alerts: alertData.alerts
         .slice(0, 10)
-        .map((dto) => new Alert(client.axios, dto)),
+        .map((dto) => new Alert(fetcher, dto)),
       totalCount: alertData.totalCount,
     });
 

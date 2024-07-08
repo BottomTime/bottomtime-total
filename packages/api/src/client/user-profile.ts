@@ -1,5 +1,3 @@
-import { AxiosInstance } from 'axios';
-
 import {
   ListAvatarURLsResponseDTO,
   LogBookSharing,
@@ -7,10 +5,11 @@ import {
   SetProfileAvatarParamsDTO,
   UpdateProfileParamsSchema,
 } from '../types';
+import { Fetcher } from './fetcher';
 
 export class UserProfile {
   constructor(
-    private readonly client: AxiosInstance,
+    private readonly client: Fetcher,
     private readonly data: ProfileDTO,
   ) {}
 
@@ -79,14 +78,9 @@ export class UserProfile {
       formData.append('height', region.height.toString());
     }
 
-    const { data } = await this.client.post<ListAvatarURLsResponseDTO>(
+    const { data } = await this.client.postFormData<ListAvatarURLsResponseDTO>(
       `/api/users/${this.data.username}/avatar`,
       formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
     );
 
     return data;

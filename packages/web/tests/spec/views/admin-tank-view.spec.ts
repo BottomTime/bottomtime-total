@@ -1,4 +1,10 @@
-import { ApiClient, Tank, TankDTO, TankMaterial } from '@bottomtime/api';
+import {
+  ApiClient,
+  Fetcher,
+  Tank,
+  TankDTO,
+  TankMaterial,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -28,6 +34,7 @@ const TestData: TankDTO = {
 };
 
 describe('Admin Tank View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -39,7 +46,8 @@ describe('Admin Tank View', () => {
   let opts: ComponentMountingOptions<typeof AdminTankView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/admin/tanks/:tankId',
@@ -76,7 +84,7 @@ describe('Admin Tank View', () => {
     it('will retrieve the tank profile and render the form correctly', async () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
-        .mockResolvedValue(new Tank(client.axios, TestData));
+        .mockResolvedValue(new Tank(fetcher, TestData));
 
       const raw = await renderToString(AdminTankView, { global: opts.global });
       const html = document.createElement('div');
@@ -158,7 +166,7 @@ describe('Admin Tank View', () => {
         material: TankMaterial.Aluminum,
       };
 
-      const tank = new Tank(client.axios, expected);
+      const tank = new Tank(fetcher, expected);
       jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((dto) => {
         expect(dto).toEqual(expected);
         return tank;

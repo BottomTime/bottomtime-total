@@ -1,10 +1,9 @@
-import { AxiosInstance } from 'axios';
-
 import { FriendRequestDTO, FriendRequestDirection } from '../types';
+import { Fetcher } from './fetcher';
 
 export class FriendRequest {
   constructor(
-    private readonly client: AxiosInstance,
+    private readonly client: Fetcher,
     private readonly username: string,
     private readonly data: FriendRequestDTO,
   ) {}

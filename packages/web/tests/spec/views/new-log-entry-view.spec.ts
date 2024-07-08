@@ -2,6 +2,7 @@ import {
   ApiClient,
   CreateOrUpdateLogEntryParamsDTO,
   DepthUnit,
+  Fetcher,
   ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogEntry,
@@ -52,6 +53,7 @@ dayjs.extend(tz);
 
 describe('NewLogEntry view', () => {
   let router: Router;
+  let fetcher: Fetcher;
   let client: ApiClient;
 
   let pinia: Pinia;
@@ -70,7 +72,8 @@ describe('NewLogEntry view', () => {
         component: NewLogEntryView,
       },
     ]);
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     tankData = ListTanksResponseSchema.parse(TestTankData);
   });
 
@@ -270,7 +273,7 @@ describe('NewLogEntry view', () => {
 
       const spy = jest
         .spyOn(client.logEntries, 'createLogEntry')
-        .mockResolvedValue(new LogEntry(client.axios, expected));
+        .mockResolvedValue(new LogEntry(fetcher, expected));
       const wrapper = mount(NewLogEntryView, opts);
       await flushPromises();
 
@@ -324,7 +327,7 @@ describe('NewLogEntry view', () => {
 
       const spy = jest
         .spyOn(client.logEntries, 'createLogEntry')
-        .mockResolvedValue(new LogEntry(client.axios, expected));
+        .mockResolvedValue(new LogEntry(fetcher, expected));
       const wrapper = mount(NewLogEntryView, opts);
       await flushPromises();
 
@@ -387,7 +390,7 @@ describe('NewLogEntry view', () => {
 
       const saveSpy = jest
         .spyOn(client.logEntries, 'createLogEntry')
-        .mockResolvedValue(new LogEntry(client.axios, expected));
+        .mockResolvedValue(new LogEntry(fetcher, expected));
 
       await router.push(`/logbook/${BasicUser.username}/new`);
 
