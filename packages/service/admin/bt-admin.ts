@@ -9,6 +9,7 @@ import yargs from 'yargs';
 
 import { dbModule } from './database';
 import { userModule } from './users';
+import { utilModule } from './util';
 
 dayjs.extend(tz);
 dayjs.extend(utc);
@@ -33,6 +34,7 @@ async function processCommand(cmd: string[]) {
     })
     .command(dbModule)
     .command(userModule)
+    .command(utilModule)
     .help().argv;
 }
 

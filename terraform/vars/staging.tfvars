@@ -14,7 +14,7 @@ secure_cookie     = true
 web_domain        = "staging"
 
 # This needs to match the name of the AWS Secrets Manager secret created for the current environment.
-secret_name = "bt-service-dev-us-east-1-secrets"
+secret_name = "bt-service-staging"
 
 # Optional variables
 # password_salt_rounds = 12
