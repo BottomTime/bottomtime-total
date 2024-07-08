@@ -5,7 +5,7 @@ orbs:
 commands:
   yarn_install:
     steps:
-      - run: corepack enable
+      - run: corepack enable --install-directory ~/bin
       - restore_cache:
           keys:
             - bt-modules-{{ checksum "yarn.lock" }}
