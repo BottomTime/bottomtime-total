@@ -9,6 +9,7 @@ enable_places_api = false
 env               = "dev"
 log_level         = "debug"
 media_bucket      = "bottomtime-media-dev"
+secure_cookie     = true
 web_domain        = "dev"
 
 secret_name = "bt-service-dev"

@@ -97,6 +97,7 @@ export class AuthService {
       domain: Config.sessions.cookieDomain,
       maxAge: Config.sessions.cookieTTL,
       httpOnly: true,
+      secure: Config.sessions.secureCookie,
     });
   }
 }

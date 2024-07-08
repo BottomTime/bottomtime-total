@@ -46,6 +46,12 @@ variable "media_bucket" {
   type        = string
 }
 
+variable "secure_cookie" {
+  description = "Indicates whether the session cookie should be secured. If false, the cookie will work over HTTP or HTTPS. If true, the cookie will only work over HTTPS."
+  type        = bool
+  default     = true
+}
+
 variable "password_salt_rounds" {
   description = "Number of rounds to use when computing a salted password hash. More will be more secure but slower. Default is 15."
   type        = number

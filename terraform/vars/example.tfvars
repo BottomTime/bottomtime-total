@@ -9,6 +9,7 @@ enable_places_api = false
 env               = "dev"
 log_level         = "info"
 media_bucket      = "bottomtime-media-dev"
+secure_cookie     = true
 root_domain       = "bottomti.me"
 web_domain        = "dev"
 

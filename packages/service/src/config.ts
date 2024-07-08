@@ -54,6 +54,7 @@ export interface AppConfig {
     cookieName: string;
     sessionSecret: string;
     cookieTTL: number;
+    secureCookie: boolean;
   };
 
   adminEmail: string;
@@ -104,6 +105,7 @@ const ConfigSchema = z
     BT_SESSION_SECRET: z
       .string()
       .default('va20e0egr0aA/x2UFmckWDy1MYxoaZTaA2M4LGFli5k='),
+    BT_SESSION_SECURE_COOKIE: BooleanString.default('false'),
     BT_SESSION_COOKIE_TTL: z.coerce
       .number()
       .int()
@@ -166,6 +168,7 @@ const ConfigSchema = z
       cookieName: env.BT_SESSION_COOKIE_NAME,
       sessionSecret: env.BT_SESSION_SECRET,
       cookieTTL: env.BT_SESSION_COOKIE_TTL,
+      secureCookie: env.BT_SESSION_SECURE_COOKIE,
     },
 
     adminEmail: env.BT_ADMIN_EMAIL,

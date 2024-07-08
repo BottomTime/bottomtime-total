@@ -10,6 +10,7 @@ env               = "staging"
 log_level         = "info"
 media_bucket      = "bottomtime-media-staging"
 root_domain       = "bottomti.me"
+secure_cookie     = true
 web_domain        = "staging"
 
 # This needs to match the name of the AWS Secrets Manager secret created for the current environment.

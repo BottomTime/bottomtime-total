@@ -45,6 +45,7 @@ resource "aws_lambda_function" "service" {
       BT_SESSION_COOKIE_DOMAIN = var.root_domain
       BT_SESSION_COOKIE_NAME   = local.cookie_name
       BT_SESSION_SECRET        = local.secrets.sessionSecret
+      BT_SESSION_SECURE_COOKIE = "${var.secure_cookie}"
       BT_SMTP_REPLY_TO         = "donotreply@bottomti.me"
       BT_SMTP_FROM             = "\"Bottom Time Admin\" <admin@bottomti.me>"
       BT_SMTP_HOST             = local.secrets.smtpHost
