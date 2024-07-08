@@ -43,7 +43,7 @@ resource "aws_cloudfront_cache_policy" "web_lambda" {
     headers_config {
       header_behavior = "whitelist"
       headers {
-        items = ["Authorization"]
+        items = ["Authorization", "Set-Cookie"]
       }
     }
 

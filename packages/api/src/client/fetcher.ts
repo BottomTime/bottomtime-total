@@ -74,9 +74,8 @@ export class Fetcher {
   ): Promise<Response> {
     const response = await fetch(this.getFullUrl(url, options?.params), {
       body: options?.body ? JSON.stringify(options.body) : undefined,
-      credentials: 'same-origin',
+      credentials: 'include',
       method,
-      mode: 'cors',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -159,9 +158,8 @@ export class Fetcher {
   ): Promise<ApiResponse<T>> {
     const response = await fetch(this.getFullUrl(url), {
       body: formData,
-      credentials: 'same-origin',
+      credentials: 'include',
       method: 'POST',
-      mode: 'cors',
       headers: {
         'Content-Type': 'multipart/form-data',
         ...(this.options.authToken

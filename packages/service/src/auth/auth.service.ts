@@ -94,10 +94,19 @@ export class AuthService {
   async issueSessionCookie(user: User, res: Response): Promise<void> {
     const token = await this.signJWT(`user|${user.id}`);
     res.cookie(Config.sessions.cookieName, token, {
+      path: '/',
       domain: Config.sessions.cookieDomain,
       maxAge: Config.sessions.cookieTTL,
       httpOnly: true,
       secure: Config.sessions.secureCookie,
+      sameSite: 'none',
+    });
+  }
+
+  revokeSessionCookie(res: Response) {
+    res.clearCookie(Config.sessions.cookieName, {
+      path: '/',
+      domain: Config.sessions.cookieDomain,
     });
   }
 }

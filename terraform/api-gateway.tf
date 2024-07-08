@@ -8,6 +8,7 @@ resource "aws_apigatewayv2_api" "service" {
     allow_headers     = ["*"]
     allow_methods     = ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"]
     allow_origins     = ["https://*"]
+    expose_headers    = ["set-cookie"]
     max_age           = 300
   }
 
