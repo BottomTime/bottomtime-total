@@ -16,10 +16,12 @@
   },
   "targetDefaults": {
     "build": {
+      "dependsOn": ["^build"],
       "inputs": ["{projectRoot}/src/**/*.ts", "{projectRoot}/src/**/*.vue"],
       "outputs": ["{projectRoot}/dist/**/*"]
     },
     "test": {
+      "dependsOn": ["^test"],
       "inputs": [
         "{projectRoot}/src/**/*.ts",
         "{projectRoot}/src/**/*.vue",
