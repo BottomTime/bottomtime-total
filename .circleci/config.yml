@@ -62,7 +62,7 @@ jobs:
           name: Lint and Build
           command: |
             yarn lint
-            yarn build --stream --skip-nx-cache
+            yarn build --stream
       - persist_to_workspace:
           root: ./
           paths:
@@ -266,7 +266,7 @@ workflows:
           requires:
             - init_and_lint
           context:
-            - bt_aws_dev
+            - bt-aws-dev
           # filters:
           #   branches:
           #     only:
