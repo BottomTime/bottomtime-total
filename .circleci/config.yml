@@ -1,23 +1,18 @@
 version: 2.1
 orbs:
-  node: circleci/node@5.2.0
   terraform: circleci/terraform@3.2.1
 
 commands:
   yarn_install:
     steps:
-      - checkout
-      - node/install:
-          install-yarn: true
-          node-version: '20.14'
       - run: corepack enable
       - restore_cache:
           keys:
             - bt-modules-{{ checksum "yarn.lock" }}
             - bt-modules-
-      - node/install-packages:
-          pkg-manager: yarn
-          with-cache: false
+      - run:
+          name: Install Dependencies
+          command: yarn install
       - save_cache:
           key: bt-modules-{{ checksum "yarn.lock" }}
           paths:
@@ -58,7 +53,7 @@ commands:
 jobs:
   init_and_lint:
     docker:
-      - image: cimg/base:2024.06
+      - image: cimg/node:20.14
       # - image: postgis/postgis:14-3.4
       #   environment:
       #     POSTGRES_DB: postgres
@@ -66,6 +61,7 @@ jobs:
       #     POSTGRES_PASSWORD: bt_admin1234
     resource_class: medium
     steps:
+      - checkout
       - yarn_install
       - run:
           name: Download Code Climate coverage tool
