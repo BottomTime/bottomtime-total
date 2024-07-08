@@ -59,11 +59,11 @@ jobs:
   init_and_lint:
     docker:
       - image: cimg/base:2024.06
-      - image: postgis/postgis:14-3.4
-        environment:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: bt_user
-          POSTGRES_PASSWORD: bt_admin1234
+      # - image: postgis/postgis:14-3.4
+      #   environment:
+      #     POSTGRES_DB: postgres
+      #     POSTGRES_USER: bt_user
+      #     POSTGRES_PASSWORD: bt_admin1234
     resource_class: medium
     steps:
       - yarn_install
