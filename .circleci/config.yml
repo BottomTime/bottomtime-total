@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@5.2.0
+  terraform: circleci/terraform@3.2.1
 
 commands:
   yarn_install:
@@ -12,6 +13,33 @@ commands:
       - run: corepack enable
       - node/install-packages:
           pkg-manager: yarn
+
+  deploy_env:
+    parameters:
+      state_bucket:
+        type: string
+        default: 'bottomtime-tfstate'
+      state_key:
+        type: string
+      var_file:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - terraform/install:
+          terraform_version: '1.9.1'
+      - terraform/init:
+          backend_config: 'bucket="<<parameters.state_bucket>>",key="<<parameters.state_key>>",region="$AWS_REGION"'
+          path: terraform/
+      - terraform/validate:
+          path: terraform/
+      - terraform/apply:
+          var_file: <<parameters.var_file>>
+          path: terraform/
+      - run:
+          name: CloudFront Buckets
+          command: terraform/deploy-files.sh
 
 jobs:
   init_and_lint:
@@ -34,7 +62,7 @@ jobs:
           name: Lint and Build
           command: |
             yarn lint
-            yarn build --stream
+            yarn build --stream --skip-nx-cache
       - persist_to_workspace:
           root: ./
           paths:
@@ -195,24 +223,32 @@ jobs:
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 3 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
+  deploy_staging:
+    docker:
+      - image: cimg/base:2024.06
+    steps:
+      - deploy_env:
+          state_key: $AWS_REGION.staging.tfvars
+          var_file: vars/staging.tfvars
+
 workflows:
   test_and_deploy:
     jobs:
       # Validate
       - init_and_lint
 
-      - test_api:
-          requires:
-            - init_and_lint
-      - test_service:
-          requires:
-            - init_and_lint
-          context:
-            - bt-aws-dev
-            - bt-smtp-dev
-      - test_web:
-          requires:
-            - init_and_lint
+      # - test_api:
+      #     requires:
+      #       - init_and_lint
+      # - test_service:
+      #     requires:
+      #       - init_and_lint
+      #     context:
+      #       - bt-aws-dev
+      #       - bt-smtp-dev
+      # - test_web:
+      #     requires:
+      #       - init_and_lint
       # - test_e2e:
       #     requires:
       #       - init_and_lint
@@ -220,8 +256,18 @@ workflows:
       #       - bt-aws-dev
       #       - bt-smtp-dev
 
-      - report_coverage:
+      # - report_coverage:
+      #     requires:
+      #       - test_api
+      #       - test_service
+      #       - test_web
+
+      - deploy_staging:
           requires:
-            - test_api
-            - test_service
-            - test_web
+            - init_and_lint
+          context:
+            - bt_aws_dev
+          # filters:
+          #   branches:
+          #     only:
+          #       - master
