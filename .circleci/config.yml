@@ -10,7 +10,6 @@ commands:
       - node/install:
           install-yarn: true
           node-version: '20.14'
-          yarn-version: '4.3.0'
       - run: corepack enable
       - restore_cache:
           keys:
