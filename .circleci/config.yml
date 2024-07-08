@@ -50,7 +50,8 @@ commands:
           path: terraform/
       - run:
           name: CloudFront Buckets
-          command: terraform/deploy-files.sh
+          cwd: terraform/
+          command: ./deploy-files.sh
 
 jobs:
   init_and_lint:
