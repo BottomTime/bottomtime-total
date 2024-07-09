@@ -32,7 +32,7 @@ import {
   useProfiles,
 } from '../../../src/store';
 import LogbookView from '../../../src/views/logbook-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import LogEntryTestData from '../../fixtures/log-entries.json';
 import { AdminUser, BasicUser } from '../../fixtures/users';
@@ -186,7 +186,7 @@ describe('Logbook view', () => {
         logBookSharing: LogBookSharing.FriendsOnly,
       });
       jest.spyOn(client.logEntries, 'listLogEntries').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/logbook/testy_mcgee',
           status: 401,
@@ -207,7 +207,7 @@ describe('Logbook view', () => {
 
     it('will render a "not found" message if the target user does not exist', async () => {
       jest.spyOn(client.users, 'getProfile').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/users/testy_mcgee',
           status: 404,
@@ -215,7 +215,7 @@ describe('Logbook view', () => {
         }),
       );
       jest.spyOn(client.logEntries, 'listLogEntries').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/logbook/testy_mcgee',
           status: 404,
@@ -240,7 +240,7 @@ describe('Logbook view', () => {
         logBookSharing: LogBookSharing.FriendsOnly,
       });
       jest.spyOn(client.logEntries, 'listLogEntries').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/logbook/testy_mcgee',
           status: 403,
@@ -265,7 +265,7 @@ describe('Logbook view', () => {
         logBookSharing: LogBookSharing.Private,
       });
       jest.spyOn(client.logEntries, 'listLogEntries').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/logbook/testy_mcgee',
           status: 403,

@@ -14,7 +14,7 @@ import { ApiClientKey } from '../../../../src/api-client';
 import { ToastType } from '../../../../src/common';
 import UsernameAndEmail from '../../../../src/components/users/username-and-email.vue';
 import { useToasts } from '../../../../src/store';
-import { createAxiosError } from '../../../fixtures/create-axios-error';
+import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
 
@@ -142,7 +142,7 @@ describe('Username and Email component', () => {
     const wrapper = mount(UsernameAndEmail, opts);
     const userObject = new User(fetcher, user);
     const spy = jest.spyOn(userObject, 'changeUsername').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         status: 409,
         message,
         path: '/api/users/',
@@ -241,7 +241,7 @@ describe('Username and Email component', () => {
     const wrapper = mount(UsernameAndEmail, opts);
     const userObject = new User(fetcher, user);
     const spy = jest.spyOn(userObject, 'changeEmail').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         status: 409,
         message,
         path: '/api/users/',

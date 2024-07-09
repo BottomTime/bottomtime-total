@@ -24,7 +24,7 @@ import TanksListItem from '../../../src/components/tanks/tanks-list-item.vue';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useTanks } from '../../../src/store';
 import AdminTanksView from '../../../src/views/admin-tanks-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import TestTankData from '../../fixtures/tanks.json';
 import { AdminUser, BasicUser } from '../../fixtures/users';
@@ -107,7 +107,7 @@ describe('Admin Tanks View', () => {
     it('will render login form if user is not authenticated', async () => {
       const spy = jest
         .spyOn(client.tanks, 'listTanks')
-        .mockRejectedValue(createAxiosError(401));
+        .mockRejectedValue(createHttpError(401));
       currentUser.user = null;
 
       const raw = await renderToString(AdminTanksView, { global: opts.global });
@@ -121,7 +121,7 @@ describe('Admin Tanks View', () => {
     it('will render forbidden message if user is not an admin', async () => {
       const spy = jest
         .spyOn(client.tanks, 'listTanks')
-        .mockRejectedValue(createAxiosError(403));
+        .mockRejectedValue(createHttpError(403));
       currentUser.user = BasicUser;
 
       const raw = await renderToString(AdminTanksView, { global: opts.global });

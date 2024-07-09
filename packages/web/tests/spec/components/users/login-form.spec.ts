@@ -19,7 +19,7 @@ import { ApiClientKey } from '../../../../src/api-client';
 import LoginForm from '../../../../src/components/users/login-form.vue';
 import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser, useToasts } from '../../../../src/store';
-import { createAxiosError } from '../../../fixtures/create-axios-error';
+import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 
 const UsernameInput = '[data-testid="login-username"]';
@@ -127,7 +127,7 @@ describe('Login Form component', () => {
       },
     });
     jest.spyOn(client.users, 'login').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         status: 401,
         message: 'Nope',
         method: 'POST',

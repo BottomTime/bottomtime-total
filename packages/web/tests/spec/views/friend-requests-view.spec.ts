@@ -29,7 +29,7 @@ import FriendRequestsListItem from '../../../src/components/friends/friend-reque
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useFriends, useToasts } from '../../../src/store';
 import FriendRequestsView from '../../../src/views/friend-requests-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import { BasicUser } from '../../fixtures/users';
 
@@ -230,7 +230,7 @@ describe('Friend requests view', () => {
       request,
     );
     const acceptSpy = jest.spyOn(requestClient, 'accept').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         message: 'Friend request no longer exists',
         method: 'POST',
         status: 404,
@@ -341,7 +341,7 @@ describe('Friend requests view', () => {
       request,
     );
     const declineSpy = jest.spyOn(requestClient, 'decline').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         message: 'Friend request no longer exists',
         method: 'POST',
         status: 404,
@@ -410,7 +410,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     const request = friendRequestData.friendRequests[0];
     const spy = jest.spyOn(client.users, 'getProfile').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         message: 'Could not find profile',
         method: 'GET',
         path: '/api/users/user',

@@ -20,7 +20,7 @@ import { ApiClientKey } from '../../../src/api-client';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useTanks, useToasts } from '../../../src/store';
 import ProfileTankView from '../../../src/views/profile-tank-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import {
   AdminUser,
@@ -144,7 +144,7 @@ describe('Profile Tank View', () => {
       currentUser.user = null;
       jest
         .spyOn(client.tanks, 'getTank')
-        .mockRejectedValue(createAxiosError(401));
+        .mockRejectedValue(createHttpError(401));
       const raw = await renderToString(ProfileTankView, {
         global: opts.global,
       });
@@ -159,7 +159,7 @@ describe('Profile Tank View', () => {
       currentUser.user = UserWithFullProfile;
       jest
         .spyOn(client.tanks, 'getTank')
-        .mockRejectedValue(createAxiosError(403));
+        .mockRejectedValue(createHttpError(403));
       const raw = await renderToString(ProfileTankView, {
         global: opts.global,
       });
@@ -175,7 +175,7 @@ describe('Profile Tank View', () => {
     it('will show a not found message if the tank does not exist', async () => {
       jest
         .spyOn(client.tanks, 'getTank')
-        .mockRejectedValue(createAxiosError(404));
+        .mockRejectedValue(createHttpError(404));
       const raw = await renderToString(ProfileTankView, {
         global: opts.global,
       });

@@ -18,7 +18,7 @@ import { LocationKey, MockLocation } from '../../../src/location';
 import { useAlerts, useCurrentUser } from '../../../src/store';
 import { useToasts } from '../../../src/store';
 import AdminAlertView from '../../../src/views/admin-alert-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../fixtures/users';
 
@@ -149,7 +149,7 @@ describe('Admin Alert View', () => {
 
   it('will render a not found message if the prefetch returns a 404 response', async () => {
     const spy = jest.spyOn(client.alerts, 'getAlert').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         status: 404,
         message: 'Not Found',
         method: 'GET',

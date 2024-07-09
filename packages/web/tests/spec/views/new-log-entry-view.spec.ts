@@ -28,7 +28,7 @@ import FormDatePicker from '../../../src/components/common/form-date-picker.vue'
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useProfiles, useTanks } from '../../../src/store';
 import NewLogEntryView from '../../../src/views/new-log-entry-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import TestTankData from '../../fixtures/tanks.json';
 import {
@@ -115,7 +115,7 @@ describe('NewLogEntry view', () => {
     it('will render "not found" message if requested logbook does not exist', async () => {
       currentUser.user = AdminUser;
       jest.spyOn(client.users, 'getProfile').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           message: 'No such user',
           method: 'GET',
           path: '/api/users/unknown-user',
@@ -137,7 +137,7 @@ describe('NewLogEntry view', () => {
     it('will render login form if user is not authenticated', async () => {
       currentUser.user = null;
       const spy = jest.spyOn(client.users, 'getProfile').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           message: 'Not logged in',
           method: 'GET',
           path: '/api/users/unknown-user',

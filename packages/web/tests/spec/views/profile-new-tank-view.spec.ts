@@ -19,7 +19,7 @@ import { ApiClientKey } from '../../../src/api-client';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useToasts } from '../../../src/store';
 import ProfileNewTankView from '../../../src/views/profile-new-tank-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import {
   AdminUser,
@@ -165,7 +165,7 @@ describe('New Profile Tank view', () => {
   it('will render a toast message if the request fails because the user is at their tank limit', async () => {
     jest
       .spyOn(client.tanks, 'createTank')
-      .mockRejectedValue(createAxiosError(405));
+      .mockRejectedValue(createHttpError(405));
     const wrapper = mount(ProfileNewTankView, opts);
 
     await wrapper.get('#name').setValue(TestData.name);

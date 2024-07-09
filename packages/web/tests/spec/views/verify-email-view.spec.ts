@@ -11,7 +11,7 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
 import VerifyEmailView from '../../../src/views/verify-email-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 
 const Username = 'ricky_bobby44';
@@ -87,7 +87,7 @@ describe('Verify Email View', () => {
   it('will show an error message if the server responds with a 500', async () => {
     const spy = jest
       .spyOn(client.users, 'verifyEmail')
-      .mockRejectedValue(createAxiosError(500));
+      .mockRejectedValue(createHttpError(500));
     const wrapper = mount(VerifyEmailView, opts);
     await flushPromises();
 

@@ -13,7 +13,7 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../src/api-client';
 import { useCurrentUser, useDiveSites } from '../../../src/store';
 import DiveSiteView from '../../../src/views/dive-site-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import { DiveSiteWithFullProperties } from '../../fixtures/sites';
 
@@ -69,7 +69,7 @@ describe('Dive Site View', () => {
 
   it('will show not found message if prefetch cannot find the site on the server side', async () => {
     diveSites.currentSite = null;
-    const error = createAxiosError({
+    const error = createHttpError({
       status: 404,
       message: 'Not Found',
       method: 'GET',

@@ -1,7 +1,8 @@
 /* eslint-disable vue/one-component-per-file */
+import { HttpException } from '@bottomtime/api';
+
 import { mount } from '@vue/test-utils';
 
-import { AxiosError } from 'axios';
 import { Pinia, createPinia } from 'pinia';
 import { defineComponent, onMounted } from 'vue';
 import { Router, createMemoryHistory, createRouter } from 'vue-router';
@@ -9,22 +10,17 @@ import { Router, createMemoryHistory, createRouter } from 'vue-router';
 import {
   ErrorHandlers,
   ForbiddenErrorToast,
-  NetworkErrorToast,
   ServerErrorToast,
   useOops,
 } from '../../src/oops';
 import { useCurrentUser, useToasts } from '../../src/store';
-import {
-  createAxiosError,
-  createNetworkError,
-} from '../fixtures/create-axios-error';
 import { BasicUser } from '../fixtures/users';
 
 let pinia: Pinia;
 let router: Router;
 
-function getErrorResponse(status: number, method = 'GET'): AxiosError {
-  return createAxiosError({
+function getErrorResponse(status: number, method = 'GET'): HttpException {
+  return new HttpException(status, '', 'Nope!', {
     status,
     message: 'Nope!',
     method,
@@ -95,18 +91,6 @@ describe('"Oops" error handler', () => {
       expect(handler).toHaveBeenCalledWith(error);
     });
 
-    it('will invoke the network error handler for network errors', async () => {
-      const handler = jest.fn();
-      const result = await testOops(
-        jest.fn().mockRejectedValue(createAxiosError('nope')),
-        {
-          networkError: handler,
-        },
-      );
-      expect(result).toBeNull();
-      expect(handler).toHaveBeenCalled();
-    });
-
     it('will invoke the handler for the status code of the error', async () => {
       const handler = jest.fn();
       const result = await testOops(
@@ -127,15 +111,6 @@ describe('"Oops" error handler', () => {
       const toasts = useToasts(pinia);
       expect(result).toBeNull();
       expect(toasts.toasts[0]).toMatchObject(ServerErrorToast);
-    });
-
-    it('will invoke default network error handler for network errors', async () => {
-      const result = await testOops(
-        jest.fn().mockRejectedValue(createNetworkError('Network error')),
-      );
-      expect(result).toBeNull();
-      const toasts = useToasts(pinia);
-      expect(toasts.toasts[0]).toMatchObject(NetworkErrorToast);
     });
 
     it('will logout users if their session expires', async () => {

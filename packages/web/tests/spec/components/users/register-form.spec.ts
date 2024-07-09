@@ -22,7 +22,7 @@ import { ToastType } from '../../../../src/common';
 import RegisterForm from '../../../../src/components/users/register-form.vue';
 import { useToasts } from '../../../../src/store';
 import { useCurrentUser } from '../../../../src/store/current-user.store';
-import { createAxiosError } from '../../../fixtures/create-axios-error';
+import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
 
@@ -228,7 +228,7 @@ describe('Registration form', () => {
       .mockResolvedValue(true);
     const spy = jest
       .spyOn(client.users, 'createUser')
-      .mockRejectedValue(createAxiosError(errorResponse));
+      .mockRejectedValue(createHttpError(errorResponse));
 
     const wrapper = mount(RegisterForm, { global });
 

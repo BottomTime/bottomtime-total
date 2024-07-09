@@ -24,7 +24,7 @@ import TanksListItem from '../../../src/components/tanks/tanks-list-item.vue';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useTanks } from '../../../src/store';
 import ProfileTanksView from '../../../src/views/profile-tanks-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import TestTankData from '../../fixtures/tanks.json';
 import {
@@ -88,7 +88,7 @@ describe('Profile Tanks View', () => {
     it('will render the login form if the user is not logged in', async () => {
       jest
         .spyOn(client.tanks, 'listTanks')
-        .mockRejectedValue(createAxiosError(401));
+        .mockRejectedValue(createHttpError(401));
       currentUser.user = null;
 
       const html = document.createElement('div');
@@ -105,7 +105,7 @@ describe('Profile Tanks View', () => {
     it('will render a forbidden message if the current user is not authorized to manage tanks for the target user', async () => {
       jest
         .spyOn(client.tanks, 'listTanks')
-        .mockRejectedValue(createAxiosError(403));
+        .mockRejectedValue(createHttpError(403));
 
       currentUser.user = UserWithFullProfile;
       const html = document.createElement('div');
@@ -121,7 +121,7 @@ describe('Profile Tanks View', () => {
     it('will render a not found message if the target user does not exist', async () => {
       jest
         .spyOn(client.tanks, 'listTanks')
-        .mockRejectedValue(createAxiosError(404));
+        .mockRejectedValue(createHttpError(404));
 
       const html = document.createElement('div');
       html.innerHTML = await renderToString(ProfileTanksView, {

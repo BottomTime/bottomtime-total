@@ -30,7 +30,7 @@ import ViewLogbookEntry from '../../../src/components/logbook/view-logbook-entry
 import { useCurrentUser, useLogEntries, useTanks } from '../../../src/store';
 import { useToasts } from '../../../src/store';
 import LogEntryView from '../../../src/views/log-entry-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import TankTestData from '../../fixtures/tanks.json';
 import { AdminUser, BasicUser } from '../../fixtures/users';
@@ -141,7 +141,7 @@ describe('Log Entry view', () => {
       const spy = jest
         .spyOn(client.logEntries, 'getLogEntry')
         .mockRejectedValue(
-          createAxiosError({
+          createHttpError({
             method: 'GET',
             path: router.currentRoute.value.fullPath,
             status: 404,
@@ -166,7 +166,7 @@ describe('Log Entry view', () => {
       const spy = jest
         .spyOn(client.logEntries, 'getLogEntry')
         .mockRejectedValue(
-          createAxiosError({
+          createHttpError({
             method: 'GET',
             path: router.currentRoute.value.fullPath,
             status: 403,

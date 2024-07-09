@@ -30,7 +30,7 @@ import FriendsListItem from '../../../src/components/friends/friends-list-item.v
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useFriends } from '../../../src/store';
 import FriendsView from '../../../src/views/friends-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestFriendsData from '../../fixtures/friends.json';
@@ -347,7 +347,7 @@ describe('Friends view', () => {
 
   it('will show not found message if friend profile is not found', async () => {
     jest.spyOn(client.users, 'getProfile').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         message: 'Could not find profile',
         method: 'GET',
         path: '/api/users/user',
@@ -389,7 +389,7 @@ describe('Friends view', () => {
 
   it('will show not found message if friend request profile is not found', async () => {
     jest.spyOn(client.users, 'getProfile').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         message: 'Could not find profile',
         method: 'GET',
         path: '/api/users/user',

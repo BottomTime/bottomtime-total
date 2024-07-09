@@ -9,7 +9,7 @@
     "build:server": "vite build --ssr src/entry-server.ts --minify --outDir dist/server",
     "build:sls": "rollup -c",
     "clean": "rm -rf dist/",
-    "dev": "nodemon server/index.mjs",
+    "dev": "NODE_ENV=development nodemon server/index.mjs",
     "prepare": "cp -n .env.example .env || true",
     "serve": "NODE_ENV=production node dist/index.js",
     "test": "jest"
