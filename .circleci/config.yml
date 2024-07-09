@@ -198,7 +198,7 @@ jobs:
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
     environment:
-      BT_POSTGRES_URI: 'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_e2e'
+      BT_POSTGRES_TEST_URI: 'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_e2e'
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
@@ -272,12 +272,12 @@ workflows:
       - test_web:
           requires:
             - build
-      # - test_e2e:
-      #     requires:
-      #       - init_and_lint
-      #     context:
-      #       - bt-aws-dev
-      #       - bt-smtp-dev
+      - test_e2e:
+          requires:
+            - build
+          context:
+            - bt-aws-dev
+            - bt-smtp-dev
 
       # 3) Report test coverage
       - report_coverage:
