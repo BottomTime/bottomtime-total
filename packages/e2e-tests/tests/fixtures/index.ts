@@ -31,7 +31,7 @@ export const test = base.extend<{
 
     const client = new ApiClient({
       authToken,
-      baseURL: 'http://127.0.0.1:4851/',
+      baseURL: 'http://localhost:4851/',
     });
 
     await use(client);
@@ -44,7 +44,7 @@ export const test = base.extend<{
 
   db: async ({}, use) => {
     // Initialize the Postgres client
-    const client = new Client(PostgresFixture.postgresUri);
+    const client = new Client(PostgresFixture.postgresURI);
     await client.connect();
 
     const postgres = new PostgresFixture(client);

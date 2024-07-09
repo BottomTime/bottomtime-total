@@ -39,7 +39,9 @@ export class AuthFixture {
     await this.page.getByTestId('login-username').fill(username);
     await this.page.getByTestId('login-password').fill(password);
     await this.page.getByTestId('login-submit').click();
-    await this.page.waitForSelector('[data-testid="user-menu-button"]');
+    await this.page.waitForSelector('[data-testid="user-menu-button"]', {
+      timeout: 8000,
+    });
   }
 
   async logout(): Promise<void> {

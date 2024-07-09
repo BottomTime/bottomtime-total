@@ -50,7 +50,7 @@ export interface AppConfig {
   };
 
   sessions: {
-    cookieDomain?: string;
+    cookieDomain: string;
     cookieName: string;
     sessionSecret: string;
     cookieTTL: number;
@@ -100,7 +100,7 @@ const ConfigSchema = z
     BT_SMTP_FROM: z.string().default('"Bottom Time Admin" <admin@bottomti.me>'),
 
     // Sessions
-    BT_SESSION_COOKIE_DOMAIN: z.string().optional(),
+    BT_SESSION_COOKIE_DOMAIN: z.string().default('localhost'),
     BT_SESSION_COOKIE_NAME: z.string().default('bottomtime.local'),
     BT_SESSION_SECRET: z
       .string()
