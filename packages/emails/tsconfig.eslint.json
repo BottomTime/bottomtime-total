@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/service/**/*.ts",
+    "config.js",
+    "config.production.js",
+    "tailwind.config.js"
+  ]
+}

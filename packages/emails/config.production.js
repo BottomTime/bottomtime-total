@@ -15,7 +15,7 @@ module.exports = {
   build: {
     templates: {
       destination: {
-        path: '../service/assets/templates',
+        path: './dist/templates',
       },
     },
   },

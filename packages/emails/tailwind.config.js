@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+/* eslint-disable no-undef */
+
 module.exports = {
   theme: {
     colors: {

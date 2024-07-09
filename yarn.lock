@@ -2206,6 +2206,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bottomtime/emails@workspace:packages/emails":
+  version: 0.0.0-use.local
+  resolution: "@bottomtime/emails@workspace:packages/emails"
+  dependencies:
+    "@maizzle/framework": "npm:^4.8.4"
+    tailwindcss: "npm:^3.4.3"
+    tailwindcss-box-shadow: "npm:^2.0.0"
+    tailwindcss-email-variants: "npm:^2.0.0"
+    tailwindcss-mso: "npm:^1.4.1"
+    typescript: "npm:^5.0.4"
+  languageName: unknown
+  linkType: soft
+
 "@bottomtime/service@workspace:packages/service":
   version: 0.0.0-use.local
   resolution: "@bottomtime/service@workspace:packages/service"
@@ -2213,7 +2226,6 @@ __metadata:
     "@aws-sdk/client-s3": "npm:^3.515.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.515.0"
     "@bottomtime/api": "workspace:*"
-    "@bottomtime/templates": "workspace:*"
     "@codegenie/serverless-express": "npm:^4.14.1"
     "@faker-js/faker": "npm:^8.4.1"
     "@nestjs/common": "npm:^10.2.10"
@@ -2295,18 +2307,6 @@ __metadata:
     webpack-node-externals: "npm:^3.0.0"
     yargs: "npm:^17.7.2"
     zod: "npm:3.22.4"
-  languageName: unknown
-  linkType: soft
-
-"@bottomtime/templates@workspace:*, @bottomtime/templates@workspace:packages/templates":
-  version: 0.0.0-use.local
-  resolution: "@bottomtime/templates@workspace:packages/templates"
-  dependencies:
-    "@maizzle/framework": "npm:^4.8.4"
-    tailwindcss: "npm:^3.4.3"
-    tailwindcss-box-shadow: "npm:^2.0.0"
-    tailwindcss-email-variants: "npm:^2.0.0"
-    tailwindcss-mso: "npm:^1.4.1"
   languageName: unknown
   linkType: soft
 
