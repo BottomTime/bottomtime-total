@@ -1,0 +1,21 @@
+{
+  "name": "@bottomtime/common",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "author": "Chris Carleton",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "yarn@4.3.0",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist/"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.15",
+    "zod": "3.22.4"
+  },
+  "devDependencies": {
+    "@types/bunyan": "^1.8.8",
+    "typescript": "^5.0.4"
+  }
+}
