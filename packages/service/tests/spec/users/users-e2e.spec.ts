@@ -28,6 +28,7 @@ import {
 } from '../../utils';
 
 jest.mock('uuid');
+jest.mock('../../../src/config');
 
 function requestUrl(username?: string): string {
   return username ? `/api/users/${username}` : '/api/users';
