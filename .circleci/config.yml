@@ -54,7 +54,7 @@ commands:
           command: ./deploy-files.sh
 
 jobs:
-  init_and_lint:
+  build:
     docker:
       - image: cimg/node:20.14
     resource_class: medium
@@ -82,11 +82,12 @@ jobs:
 
   test_api:
     docker:
-      - image: cimg/base:2024.06
+      - image: cimg/node:20.14
     resource_class: medium
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
+      - checkout
       - yarn_install
       - attach_workspace:
           at: ./
@@ -117,7 +118,7 @@ jobs:
 
   test_service:
     docker:
-      - image: cimg/base:2024.06
+      - image: cimg/node:20.14
       - image: postgis/postgis:14-3.4-alpine
         environment:
           POSTGRES_DB: postgres
@@ -128,6 +129,7 @@ jobs:
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
+      - checkout
       - yarn_install
       - attach_workspace:
           at: ./
@@ -161,6 +163,7 @@ jobs:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
       NODE_OPTIONS: '--max-old-space-size=8192'
     steps:
+      - checkout
       - yarn_install
       - attach_workspace:
           at: ./
@@ -198,6 +201,7 @@ jobs:
       BT_POSTGRES_URI: 'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_e2e'
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
+      - checkout
       - yarn_install
       - attach_workspace:
           at: ./
@@ -234,29 +238,40 @@ jobs:
   deploy_staging:
     docker:
       - image: cimg/base:2024.06
+    resource_class: medium
     steps:
       - deploy_env:
           state_key: $AWS_REGION.staging.tfvars
           var_file: vars/staging.tfvars
 
+  deploy_production:
+    docker:
+      - image: cimg/base:2024.06
+    resource_class: medium
+    steps:
+      - deploy_env:
+          state_key: $AWS_REGION.production.tfvars
+          var_file: vars/production.tfvars
+
 workflows:
   test_and_deploy:
     jobs:
-      # Validate
-      - init_and_lint
+      # 1) Iniitialize and build
+      - build
 
-      # - test_api:
-      #     requires:
-      #       - init_and_lint
-      # - test_service:
-      #     requires:
-      #       - init_and_lint
-      #     context:
-      #       - bt-aws-dev
-      #       - bt-smtp-dev
-      # - test_web:
-      #     requires:
-      #       - init_and_lint
+      # 2) Run tests
+      - test_api:
+          requires:
+            - build
+      - test_service:
+          requires:
+            - build
+          context:
+            - bt-aws-dev
+            - bt-smtp-dev
+      - test_web:
+          requires:
+            - build
       # - test_e2e:
       #     requires:
       #       - init_and_lint
@@ -264,18 +279,34 @@ workflows:
       #       - bt-aws-dev
       #       - bt-smtp-dev
 
-      # - report_coverage:
-      #     requires:
-      #       - test_api
-      #       - test_service
-      #       - test_web
+      # 3) Report test coverage
+      - report_coverage:
+          requires:
+            - test_api
+            - test_service
+            - test_web
 
+      # 4) Deployment (branch dependent)
       - deploy_staging:
           requires:
-            - init_and_lint
+            - test_api
+            - test_service
+            - test_web
           context:
             - bt-aws-dev
-          # filters:
-          #   branches:
-          #     only:
-          #       - master
+          filters:
+            branches:
+              only:
+                - master
+
+      - deploy_production:
+          requires:
+            - test_api
+            - test_service
+            - test_web
+          context:
+            - bt-aws-dev
+          filters:
+            branches:
+              only:
+                - production
