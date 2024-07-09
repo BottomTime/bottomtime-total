@@ -2193,6 +2193,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bottomtime/common@workspace:*, @bottomtime/common@workspace:packages/common":
+  version: 0.0.0-use.local
+  resolution: "@bottomtime/common@workspace:packages/common"
+  dependencies:
+    "@types/bunyan": "npm:^1.8.8"
+    bunyan: "npm:^1.8.15"
+    typescript: "npm:^5.0.4"
+    zod: "npm:3.22.4"
+  languageName: unknown
+  linkType: soft
+
 "@bottomtime/e2e-tests@workspace:packages/e2e-tests":
   version: 0.0.0-use.local
   resolution: "@bottomtime/e2e-tests@workspace:packages/e2e-tests"
@@ -2210,12 +2221,23 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bottomtime/emails@workspace:packages/emails"
   dependencies:
+    "@bottomtime/common": "workspace:*"
     "@maizzle/framework": "npm:^4.8.4"
+    "@types/aws-lambda": "npm:^8.10.140"
+    "@types/bunyan": "npm:^1.8.8"
+    "@types/mustache": "npm:^4.2.5"
+    "@types/nodemailer": "npm:^6.4.15"
+    aws-lambda: "npm:^1.0.7"
+    bunyan: "npm:^1.8.15"
+    dotenv: "npm:^16.3.1"
+    mustache: "npm:^4.2.0"
+    nodemailer: "npm:^6.9.14"
     tailwindcss: "npm:^3.4.3"
     tailwindcss-box-shadow: "npm:^2.0.0"
     tailwindcss-email-variants: "npm:^2.0.0"
     tailwindcss-mso: "npm:^1.4.1"
     typescript: "npm:^5.0.4"
+    zod: "npm:^3.22.4"
   languageName: unknown
   linkType: soft
 
@@ -2226,6 +2248,7 @@ __metadata:
     "@aws-sdk/client-s3": "npm:^3.515.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.515.0"
     "@bottomtime/api": "workspace:*"
+    "@bottomtime/common": "workspace:*"
     "@codegenie/serverless-express": "npm:^4.14.1"
     "@faker-js/faker": "npm:^8.4.1"
     "@nestjs/common": "npm:^10.2.10"
@@ -2247,7 +2270,6 @@ __metadata:
     "@types/multer": "npm:^1.4.11"
     "@types/mustache": "npm:^4.2.5"
     "@types/node": "npm:^18.13.0"
-    "@types/nodemailer": "npm:^6.4.7"
     "@types/passport": "npm:^1.0.12"
     "@types/passport-anonymous": "npm:^1.0.5"
     "@types/passport-discord": "npm:^0.1.13"
@@ -2277,7 +2299,6 @@ __metadata:
     jimp: "npm:^0.22.12"
     jsonwebtoken: "npm:^9.0.1"
     mustache: "npm:^4.2.0"
-    nodemailer: "npm:^6.9.1"
     nodemon: "npm:^2.0.22"
     nodemon-webpack-plugin: "npm:^4.8.2"
     passport: "npm:^0.6.0"
@@ -5653,7 +5674,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:^6.4.7":
+"@types/nodemailer@npm:^6.4.15":
   version: 6.4.15
   resolution: "@types/nodemailer@npm:6.4.15"
   dependencies:
@@ -15724,10 +15745,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^6.9.1":
-  version: 6.9.13
-  resolution: "nodemailer@npm:6.9.13"
-  checksum: 10c0/4d6899f45abb7760a7d3b4d1046de7e08e80a471b84d1f09065a25941ded482e7f9877be248550e681e0270383cb9299f6caded507cbc0e917341bb137cc94a4
+"nodemailer@npm:^6.9.14":
+  version: 6.9.14
+  resolution: "nodemailer@npm:6.9.14"
+  checksum: 10c0/2542986849bc6ec2bf12fb7b72226da0ce9c6a0946216dea020d9eedee3ac1a4eb2413f59772a3ddd4bb9188d5ce859167a030c065719473f71319e052a319dc
   languageName: node
   linkType: hard
 

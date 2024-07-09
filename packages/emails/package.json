@@ -3,19 +3,30 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "maizzle build production",
-    "clean": "rm -rf build_local/ && rm -rf ../service/assets/templates/",
+    "build": "maizzle build production && tsc",
+    "clean": "rm -rf dist/",
     "dev": "maizzle serve",
-    "prepare": "yarn build"
+    "prepare": "cp -n .env.example .env || true"
   },
   "dependencies": {
+    "@bottomtime/common": "workspace:*",
+    "aws-lambda": "^1.0.7",
+    "bunyan": "^1.8.15",
+    "dotenv": "^16.3.1",
+    "mustache": "^4.2.0",
+    "nodemailer": "^6.9.14",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
     "@maizzle/framework": "^4.8.4",
+    "@types/aws-lambda": "^8.10.140",
+    "@types/bunyan": "^1.8.8",
+    "@types/mustache": "^4.2.5",
+    "@types/nodemailer": "^6.4.15",
     "tailwindcss": "^3.4.3",
     "tailwindcss-box-shadow": "^2.0.0",
     "tailwindcss-email-variants": "^2.0.0",
-    "tailwindcss-mso": "^1.4.1"
-  },
-  "devDependencies": {
+    "tailwindcss-mso": "^1.4.1",
     "typescript": "^5.0.4"
   }
 }
