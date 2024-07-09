@@ -1,3 +1,5 @@
+import { createLogger } from '@bottomtime/common';
+
 import serverless from '@codegenie/serverless-express';
 
 import { Callback, Context, Handler } from 'aws-lambda';
@@ -5,7 +7,6 @@ import { Callback, Context, Handler } from 'aws-lambda';
 import { Config } from './config';
 import { createApp } from './create-app';
 import { createDependencies } from './create-dependencies';
-import { createLogger } from './logger';
 
 const logger = createLogger(Config.logLevel);
 let cachedServer: Handler;

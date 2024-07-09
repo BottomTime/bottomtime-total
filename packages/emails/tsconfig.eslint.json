@@ -2,8 +2,11 @@
   "extends": "./tsconfig.json",
   "include": [
     "src/service/**/*.ts",
+    "tests/**/*.ts",
     "config.js",
     "config.production.js",
-    "tailwind.config.js"
+    "jest.config.js",
+    "tailwind.config.js",
+    "webpack.config.js"
   ]
 }
