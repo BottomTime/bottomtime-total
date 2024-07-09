@@ -1,4 +1,4 @@
-import { ApiClient, User, UserDTO } from '@bottomtime/api';
+import { ApiClient, Fetcher, User, UserDTO } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -23,6 +23,7 @@ dayjs.extend(relativeTime);
 dayjs.extend(utc);
 
 describe('Manage Account component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -35,7 +36,8 @@ describe('Manage Account component', () => {
       now: new Date('2024-02-16T16:56:39.939Z'),
       doNotFake: ['setImmediate', 'nextTick'],
     });
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
   });
 
@@ -89,7 +91,7 @@ describe('Manage Account component', () => {
   });
 
   it('will load the OAuth connections when the component is mounted', async () => {
-    const user = new User(client.axios, userData);
+    const user = new User(fetcher, userData);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     jest
       .spyOn(user, 'getOAuthProviders')
@@ -106,7 +108,7 @@ describe('Manage Account component', () => {
   });
 
   it('will allow users to unlink an OAuth account', async () => {
-    const user = new User(client.axios, userData);
+    const user = new User(fetcher, userData);
     jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     jest
       .spyOn(user, 'getOAuthProviders')

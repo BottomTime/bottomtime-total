@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   ListTanksResponseDTO,
   ListTanksResponseSchema,
   Tank,
@@ -23,7 +24,7 @@ import TanksListItem from '../../../src/components/tanks/tanks-list-item.vue';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useTanks } from '../../../src/store';
 import AdminTanksView from '../../../src/views/admin-tanks-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import TestTankData from '../../fixtures/tanks.json';
 import { AdminUser, BasicUser } from '../../fixtures/users';
@@ -40,6 +41,7 @@ const PressureInput = '#pressure';
 const SaveButton = 'button#save-tank';
 
 describe('Admin Tanks View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let tankData: ListTanksResponseDTO;
@@ -51,7 +53,8 @@ describe('Admin Tanks View', () => {
   let opts: ComponentMountingOptions<typeof AdminTanksView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
   });
 
@@ -80,7 +83,7 @@ describe('Admin Tanks View', () => {
   describe('when performing server prefetch', () => {
     it('will fetch the system tanks and render them', async () => {
       const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-        tanks: tankData.tanks.map((tank) => new Tank(client.axios, tank)),
+        tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
         totalCount: tankData.tanks.length,
       });
       const raw = await renderToString(AdminTanksView, { global: opts.global });
@@ -104,7 +107,7 @@ describe('Admin Tanks View', () => {
     it('will render login form if user is not authenticated', async () => {
       const spy = jest
         .spyOn(client.tanks, 'listTanks')
-        .mockRejectedValue(createAxiosError(401));
+        .mockRejectedValue(createHttpError(401));
       currentUser.user = null;
 
       const raw = await renderToString(AdminTanksView, { global: opts.global });
@@ -118,7 +121,7 @@ describe('Admin Tanks View', () => {
     it('will render forbidden message if user is not an admin', async () => {
       const spy = jest
         .spyOn(client.tanks, 'listTanks')
-        .mockRejectedValue(createAxiosError(403));
+        .mockRejectedValue(createHttpError(403));
       currentUser.user = BasicUser;
 
       const raw = await renderToString(AdminTanksView, { global: opts.global });
@@ -167,7 +170,7 @@ describe('Admin Tanks View', () => {
 
     it('will allow a user to delete a tank', async () => {
       const dto = tankData.tanks[3];
-      const tank = new Tank(client.axios, dto);
+      const tank = new Tank(fetcher, dto);
       const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
       jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
 
@@ -191,7 +194,7 @@ describe('Admin Tanks View', () => {
 
     it('will allow a user to change their mind about deleting a tank', async () => {
       const dto = tankData.tanks[5];
-      const tank = new Tank(client.axios, dto);
+      const tank = new Tank(fetcher, dto);
       const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
       jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
 
@@ -225,7 +228,7 @@ describe('Admin Tanks View', () => {
 
       const spy = jest
         .spyOn(client.tanks, 'createTank')
-        .mockResolvedValue(new Tank(client.axios, data));
+        .mockResolvedValue(new Tank(fetcher, data));
 
       const wrapper = mount(AdminTanksView, opts);
       await wrapper.get(AddButton).trigger('click');
@@ -257,7 +260,7 @@ describe('Admin Tanks View', () => {
         workingPressure,
         material: TankMaterial.Steel,
       };
-      const tank = new Tank(client.axios, expected);
+      const tank = new Tank(fetcher, expected);
       const spy = jest.spyOn(tank, 'save').mockResolvedValue();
       let savedDTO: TankDTO | undefined;
 

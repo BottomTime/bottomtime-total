@@ -1,5 +1,6 @@
 import {
   DepthUnit,
+  Fetcher,
   LogBookSharing,
   PressureUnit,
   TemperatureUnit,
@@ -18,7 +19,7 @@ import { ApiClientKey } from '../../../../src/api-client';
 import LoginForm from '../../../../src/components/users/login-form.vue';
 import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser, useToasts } from '../../../../src/store';
-import { createAxiosError } from '../../../fixtures/create-axios-error';
+import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 
 const UsernameInput = '[data-testid="login-username"]';
@@ -54,12 +55,14 @@ const UserData: UserDTO = {
 describe('Login Form component', () => {
   let pinia: Pinia;
   let router: Router;
+  let fetcher: Fetcher;
   let client: ApiClient;
 
   beforeEach(() => {
     pinia = createPinia();
     router = createRouter();
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
   });
 
   it('will validate missing fields', async () => {
@@ -98,7 +101,7 @@ describe('Login Form component', () => {
     });
     const spy = jest
       .spyOn(client.users, 'login')
-      .mockResolvedValue(new User(client.axios, UserData));
+      .mockResolvedValue(new User(fetcher, UserData));
 
     await wrapper.find(UsernameInput).setValue(usernameOrEmail);
     await wrapper.find(PasswordInput).setValue(password);
@@ -124,7 +127,7 @@ describe('Login Form component', () => {
       },
     });
     jest.spyOn(client.users, 'login').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         status: 401,
         message: 'Nope',
         method: 'POST',
@@ -169,7 +172,7 @@ describe('Login Form component', () => {
     const location = new MockLocation();
     const spy = jest
       .spyOn(client.users, 'login')
-      .mockResolvedValue(new User(client.axios, UserData));
+      .mockResolvedValue(new User(fetcher, UserData));
     const wrapper = mount(LoginForm, {
       props: {
         redirectTo: '/profile',

@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   SortOrder,
   User,
   UserRole,
@@ -42,6 +43,7 @@ const Refresh = '[data-testid="refresh"]';
 const LoadMore = '[data-testid="users-list-load-more"]';
 
 describe('Users List component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let searchResults: AdminSearchUsersResponseDTO;
@@ -51,7 +53,8 @@ describe('Users List component', () => {
   let global: ComponentMountingOptions<typeof UsersList>['global'];
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
   });
 
@@ -77,7 +80,7 @@ describe('Users List component', () => {
     const results = {
       users: SearchResults.users
         .slice(0, 10)
-        .map((u) => new User(client.axios, UserSchema.parse(u))),
+        .map((u) => new User(fetcher, UserSchema.parse(u))),
       totalCount: SearchResults.totalCount,
     };
     jest.spyOn(client.users, 'searchUsers').mockResolvedValue(results);
@@ -90,7 +93,7 @@ describe('Users List component', () => {
     const results = {
       users: SearchResults.users
         .slice(0, 10)
-        .map((u) => new User(client.axios, UserSchema.parse(u))),
+        .map((u) => new User(fetcher, UserSchema.parse(u))),
       totalCount: SearchResults.totalCount,
     };
     jest.spyOn(client.users, 'searchUsers').mockResolvedValue(results);
@@ -117,7 +120,7 @@ describe('Users List component', () => {
     const refreshResults = {
       users: SearchResults.users
         .slice(20, 5)
-        .map((u) => new User(client.axios, UserSchema.parse(u))),
+        .map((u) => new User(fetcher, UserSchema.parse(u))),
       totalCount: 5,
     };
     const wrapper = mount(UsersList, { global });
@@ -150,7 +153,7 @@ describe('Users List component', () => {
     const refreshResults = {
       users: SearchResults.users
         .slice(20, 5)
-        .map((u) => new User(client.axios, UserSchema.parse(u))),
+        .map((u) => new User(fetcher, UserSchema.parse(u))),
       totalCount: 5,
     };
     const wrapper = mount(UsersList, { global });
@@ -178,7 +181,7 @@ describe('Users List component', () => {
     const refreshResults = {
       users: SearchResults.users
         .slice(20, 5)
-        .map((u) => new User(client.axios, UserSchema.parse(u))),
+        .map((u) => new User(fetcher, UserSchema.parse(u))),
       totalCount: 5,
     };
     const wrapper = mount(UsersList, { global });

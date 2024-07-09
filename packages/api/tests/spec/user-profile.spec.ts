@@ -1,10 +1,9 @@
 import { createHash } from 'crypto';
+import mockFetch from 'fetch-mock-jest';
 import fs from 'fs/promises';
-import nock, { Scope } from 'nock';
-import { File } from 'node:buffer';
 import path from 'path';
 
-import { ApiClient } from '../../src/client/client';
+import { Fetcher } from '../../src/client/fetcher';
 import { UserProfile } from '../../src/client/user-profile';
 import {
   AvatarSize,
@@ -13,7 +12,6 @@ import {
   UpdateProfileParamsSchema,
   UserDTO,
 } from '../../src/types';
-import { createScope } from '../fixtures/nock';
 import { BasicUser } from '../fixtures/users';
 
 const TestURLs: ListAvatarURLsResponseDTO = {
@@ -27,17 +25,15 @@ const TestURLs: ListAvatarURLsResponseDTO = {
 } as const;
 
 describe('UserProfile client object', () => {
-  let client: ApiClient;
+  let fetcher: Fetcher;
   let profile: UserProfile;
   let testUser: UserDTO;
-  let scope: Scope;
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   let testFile: any; // Need to use "any" type here to avoid mismatch with JSDOM File type.
 
   beforeAll(async () => {
-    client = new ApiClient();
-    scope = createScope();
+    fetcher = new Fetcher();
 
     const img = await fs.readFile(
       path.resolve(__dirname, '../fixtures/waltito.png'),
@@ -63,15 +59,11 @@ describe('UserProfile client object', () => {
       },
     };
 
-    profile = new UserProfile(client.axios, testUser.profile);
+    profile = new UserProfile(fetcher, testUser.profile);
   });
 
   afterEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.restore();
+    mockFetch.restore();
   });
 
   it('will return properties correctly', () => {
@@ -109,48 +101,58 @@ describe('UserProfile client object', () => {
 
     const expected = UpdateProfileParamsSchema.parse(profile);
 
-    scope
-      .put(`/api/users/${testUser.username}`, JSON.stringify(expected))
-      .reply(200, testUser.profile);
+    mockFetch.put(
+      {
+        url: `/api/users/${testUser.username}`,
+        body: expected,
+      },
+      {
+        status: 200,
+        body: testUser.profile,
+      },
+    );
     await profile.save();
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will allow users to delete their avatar', async () => {
-    scope.delete(`/api/users/${testUser.username}/avatar`).reply(204);
+    mockFetch.delete(`/api/users/${testUser.username}/avatar`, 204);
     await profile.deleteAvatar();
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will allow users to upload a new avatar without bounding region', async () => {
-    let md5: string | undefined;
-    scope
-      .post(`/api/users/${testUser.username}/avatar`, (body: string) => {
-        const decoded = Buffer.from(body, 'hex')
-          .toString('utf-8')
-          .replaceAll(/-boundary-\S+/g, '');
-        md5 = createHash('md5').update(decoded).digest('hex');
-        return true;
-      })
-      .reply(201, TestURLs);
+    mockFetch.post(`/api/users/${testUser.username}/avatar`, {
+      status: 201,
+      body: TestURLs,
+    });
+
     const urls = await profile.uploadAvatar(testFile);
 
+    expect(mockFetch.done()).toBe(true);
     expect(urls).toEqual(TestURLs);
-    expect(md5).toMatchSnapshot();
+
+    await new Promise<void>((resolve) => {
+      const body = mockFetch.calls()[0]![1]!.body as FormData;
+      const file = body.get('avatar') as File;
+      const fileReader = new FileReader();
+      fileReader.readAsArrayBuffer(file);
+      fileReader.onloadend = () => {
+        const md5 = createHash('md5')
+          .update(Buffer.from(fileReader.result as ArrayBuffer))
+          .digest('hex');
+        expect(md5).toMatchSnapshot();
+        resolve();
+      };
+    });
   });
 
   it('will allow users to upload a new avatar with bounding region', async () => {
-    let md5: string | undefined;
-    scope
-      .post(`/api/users/${testUser.username}/avatar`, (body: string) => {
-        const decoded = Buffer.from(body, 'hex')
-          .toString('utf-8')
-          .replaceAll(/--axios-\d+\.\d+\.\d+-boundary-\S+/g, '');
-        md5 = createHash('md5').update(decoded).digest('hex');
-        return true;
-      })
-      .reply(201, TestURLs);
+    mockFetch.post(`/api/users/${testUser.username}/avatar`, {
+      status: 201,
+      body: TestURLs,
+    });
     const urls = await profile.uploadAvatar(testFile, {
       left: 230,
       top: 410,
@@ -159,6 +161,24 @@ describe('UserProfile client object', () => {
     });
 
     expect(urls).toEqual(TestURLs);
-    expect(md5).toMatchSnapshot();
+
+    const body = mockFetch.calls()[0]![1]!.body as FormData;
+    expect(body.get('left')).toBe('230');
+    expect(body.get('top')).toBe('410');
+    expect(body.get('width')).toBe('312');
+    expect(body.get('height')).toBe('312');
+
+    await new Promise<void>((resolve) => {
+      const file = body.get('avatar') as File;
+      const fileReader = new FileReader();
+      fileReader.readAsArrayBuffer(file);
+      fileReader.onloadend = () => {
+        const md5 = createHash('md5')
+          .update(Buffer.from(fileReader.result as ArrayBuffer))
+          .digest('hex');
+        expect(md5).toMatchSnapshot();
+        resolve();
+      };
+    });
   });
 });

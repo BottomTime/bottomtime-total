@@ -1,5 +1,3 @@
-import { AxiosInstance } from 'axios';
-
 import {
   DepthUnit,
   PressureUnit,
@@ -7,10 +5,11 @@ import {
   UserDTO,
   WeightUnit,
 } from '../types';
+import { Fetcher } from './fetcher';
 
 export class UserSettings {
   constructor(
-    private readonly client: AxiosInstance,
+    private readonly client: Fetcher,
     private readonly data: UserDTO,
   ) {}
 

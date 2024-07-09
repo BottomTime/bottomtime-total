@@ -1,5 +1,6 @@
 import {
   ErrorResponseDTO,
+  Fetcher,
   LogBookSharing,
   UserDTO,
   UserRole,
@@ -21,7 +22,7 @@ import { ToastType } from '../../../../src/common';
 import RegisterForm from '../../../../src/components/users/register-form.vue';
 import { useToasts } from '../../../../src/store';
 import { useCurrentUser } from '../../../../src/store/current-user.store';
-import { createAxiosError } from '../../../fixtures/create-axios-error';
+import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
 
@@ -60,13 +61,15 @@ const NewUser: UserDTO = {
 } as const;
 
 describe('Registration form', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let pinia: Pinia;
   let global: ComponentMountingOptions<unknown>['global'];
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/welcome',
@@ -225,7 +228,7 @@ describe('Registration form', () => {
       .mockResolvedValue(true);
     const spy = jest
       .spyOn(client.users, 'createUser')
-      .mockRejectedValue(createAxiosError(errorResponse));
+      .mockRejectedValue(createHttpError(errorResponse));
 
     const wrapper = mount(RegisterForm, { global });
 
@@ -259,7 +262,7 @@ describe('Registration form', () => {
       .mockResolvedValue(true);
     const clientSpy = jest
       .spyOn(client.users, 'createUser')
-      .mockResolvedValue(new User(client.axios, NewUser));
+      .mockResolvedValue(new User(fetcher, NewUser));
 
     const wrapper = mount(RegisterForm, { global });
     const currentUser = useCurrentUser(pinia);

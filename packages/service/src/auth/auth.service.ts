@@ -1,12 +1,13 @@
 import {
   ForbiddenException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { compare } from 'bcryptjs';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import { Repository } from 'typeorm';
 
@@ -16,6 +17,8 @@ import { User } from './user';
 
 @Injectable()
 export class AuthService {
+  private readonly log = new Logger(AuthService.name);
+
   constructor(
     @InjectRepository(UserEntity)
     private readonly Users: Repository<UserEntity>,
@@ -93,10 +96,22 @@ export class AuthService {
 
   async issueSessionCookie(user: User, res: Response): Promise<void> {
     const token = await this.signJWT(`user|${user.id}`);
-    res.cookie(Config.sessions.cookieName, token, {
+    this.log.debug('Generaed JWT.');
+    const options: CookieOptions = {
+      path: '/',
       domain: Config.sessions.cookieDomain,
       maxAge: Config.sessions.cookieTTL,
       httpOnly: true,
+      secure: Config.sessions.secureCookie,
+    };
+    this.log.debug(`Issuing cookie "${Config.sessions.cookieName}":`, options);
+    res.cookie(Config.sessions.cookieName, token, options);
+  }
+
+  revokeSessionCookie(res: Response) {
+    res.clearCookie(Config.sessions.cookieName, {
+      path: '/',
+      domain: Config.sessions.cookieDomain,
     });
   }
 }

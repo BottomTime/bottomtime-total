@@ -2,6 +2,7 @@ import {
   ApiClient,
   DiveSite,
   DiveSiteDTO,
+  Fetcher,
   SearchDiveSitesResponseSchema,
 } from '@bottomtime/api';
 
@@ -23,6 +24,7 @@ import TestDiveSites from '../../../../fixtures/dive-sites-search-results.json';
 import { BasicUser } from '../../../../fixtures/users';
 
 describe('RecentSitesList component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let recentSites: DiveSiteDTO[];
@@ -33,7 +35,8 @@ describe('RecentSitesList component', () => {
   let opts: ComponentMountingOptions<typeof RecentSitesList>;
 
   beforeAll(async () => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/logbook/:username/:entryId',
@@ -84,7 +87,7 @@ describe('RecentSitesList component', () => {
     const spy = jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
       .mockResolvedValue(
-        recentSites.map((site) => new DiveSite(client.axios, site)),
+        recentSites.map((site) => new DiveSite(fetcher, site)),
       );
 
     const wrapper = mount(RecentSitesList, opts);
@@ -104,7 +107,7 @@ describe('RecentSitesList component', () => {
     const spy = jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
       .mockResolvedValue(
-        recentSites.map((site) => new DiveSite(client.axios, site)),
+        recentSites.map((site) => new DiveSite(fetcher, site)),
       );
 
     opts.props = {
@@ -133,7 +136,7 @@ describe('RecentSitesList component', () => {
     jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
       .mockResolvedValue(
-        recentSites.map((site) => new DiveSite(client.axios, site)),
+        recentSites.map((site) => new DiveSite(fetcher, site)),
       );
 
     const wrapper = mount(RecentSitesList, opts);
@@ -150,7 +153,7 @@ describe('RecentSitesList component', () => {
     jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
       .mockResolvedValue(
-        recentSites.map((site) => new DiveSite(client.axios, site)),
+        recentSites.map((site) => new DiveSite(fetcher, site)),
       );
 
     const wrapper = mount(RecentSitesList, opts);

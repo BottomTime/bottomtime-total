@@ -1,5 +1,3 @@
-import { AxiosInstance } from 'axios';
-
 import {
   ChangeEmailParamsDTO,
   ChangePasswordParamsDTO,
@@ -10,6 +8,7 @@ import {
   UserDTO,
   UserRole,
 } from '../types';
+import { Fetcher } from './fetcher';
 import { UserProfile } from './user-profile';
 import { UserSettings } from './user-settings';
 
@@ -18,7 +17,7 @@ export class User {
   private _settings: UserSettings | undefined;
 
   constructor(
-    private readonly client: AxiosInstance,
+    private readonly client: Fetcher,
     private readonly data: UserDTO,
   ) {}
 

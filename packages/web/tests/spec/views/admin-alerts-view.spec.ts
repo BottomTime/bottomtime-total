@@ -1,4 +1,5 @@
 import {
+  Fetcher,
   ListAlertsResponseDTO,
   ListAlertsResponseSchema,
 } from '@bottomtime/api';
@@ -26,6 +27,7 @@ import { AdminUser, BasicUser } from '../../fixtures/users';
 const AlertsCount = '[data-testid="alerts-count"]';
 
 describe('Admin Alerts View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let alertData: ListAlertsResponseDTO;
@@ -36,7 +38,8 @@ describe('Admin Alerts View', () => {
   let options: ComponentMountingOptions<typeof AdminAlertsView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
     alertData = ListAlertsResponseSchema.parse(AlertData);
   });
@@ -96,7 +99,7 @@ describe('Admin Alerts View', () => {
     const spy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValueOnce({
       alerts: alertData.alerts
         .slice(0, 10)
-        .map((dto) => new Alert(client.axios, dto)),
+        .map((dto) => new Alert(fetcher, dto)),
       totalCount: alertData.totalCount,
     });
 
@@ -119,7 +122,7 @@ describe('Admin Alerts View', () => {
   });
 
   it('will delete an alert', async () => {
-    const alert = new Alert(client.axios, alertData.alerts[0]);
+    const alert = new Alert(fetcher, alertData.alerts[0]);
     const spy = jest.spyOn(alert, 'delete').mockResolvedValueOnce();
     jest.spyOn(client.alerts, 'wrapDTO').mockReturnValueOnce(alert);
 
@@ -136,7 +139,7 @@ describe('Admin Alerts View', () => {
     const spy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValueOnce({
       alerts: alertData.alerts
         .slice(10, 20)
-        .map((dto) => new Alert(client.axios, dto)),
+        .map((dto) => new Alert(fetcher, dto)),
       totalCount: alertData.totalCount,
     });
     const wrapper = mount(AdminAlertsView, options);

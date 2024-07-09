@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   ListLogEntriesResponseDTO,
   ListLogEntriesResponseSchema,
   LogBookSharing,
@@ -31,7 +32,7 @@ import {
   useProfiles,
 } from '../../../src/store';
 import LogbookView from '../../../src/views/logbook-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import LogEntryTestData from '../../fixtures/log-entries.json';
 import { AdminUser, BasicUser } from '../../fixtures/users';
@@ -45,6 +46,7 @@ const ProfileData: ProfileDTO = {
 };
 
 describe('Logbook view', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let entryData: ListLogEntriesResponseDTO;
@@ -57,7 +59,8 @@ describe('Logbook view', () => {
   let opts: ComponentMountingOptions<typeof LogbookView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/logbook/:username',
@@ -99,7 +102,7 @@ describe('Logbook view', () => {
         .spyOn(client.logEntries, 'listLogEntries')
         .mockResolvedValue({
           logEntries: entryData.logEntries.map(
-            (entry) => new LogEntry(client.axios, entry),
+            (entry) => new LogEntry(fetcher, entry),
           ),
           totalCount: entryData.totalCount,
         });
@@ -124,7 +127,7 @@ describe('Logbook view', () => {
         .spyOn(client.logEntries, 'listLogEntries')
         .mockResolvedValue({
           logEntries: entryData.logEntries.map(
-            (entry) => new LogEntry(client.axios, entry),
+            (entry) => new LogEntry(fetcher, entry),
           ),
           totalCount: entryData.totalCount,
         });
@@ -158,7 +161,7 @@ describe('Logbook view', () => {
         .spyOn(client.logEntries, 'listLogEntries')
         .mockResolvedValue({
           logEntries: entryData.logEntries.map(
-            (entry) => new LogEntry(client.axios, entry),
+            (entry) => new LogEntry(fetcher, entry),
           ),
           totalCount: entryData.totalCount,
         });
@@ -183,7 +186,7 @@ describe('Logbook view', () => {
         logBookSharing: LogBookSharing.FriendsOnly,
       });
       jest.spyOn(client.logEntries, 'listLogEntries').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/logbook/testy_mcgee',
           status: 401,
@@ -204,7 +207,7 @@ describe('Logbook view', () => {
 
     it('will render a "not found" message if the target user does not exist', async () => {
       jest.spyOn(client.users, 'getProfile').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/users/testy_mcgee',
           status: 404,
@@ -212,7 +215,7 @@ describe('Logbook view', () => {
         }),
       );
       jest.spyOn(client.logEntries, 'listLogEntries').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/logbook/testy_mcgee',
           status: 404,
@@ -237,7 +240,7 @@ describe('Logbook view', () => {
         logBookSharing: LogBookSharing.FriendsOnly,
       });
       jest.spyOn(client.logEntries, 'listLogEntries').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/logbook/testy_mcgee',
           status: 403,
@@ -262,7 +265,7 @@ describe('Logbook view', () => {
         logBookSharing: LogBookSharing.Private,
       });
       jest.spyOn(client.logEntries, 'listLogEntries').mockRejectedValue(
-        createAxiosError({
+        createHttpError({
           method: 'GET',
           path: '/logbook/testy_mcgee',
           status: 403,
@@ -431,7 +434,7 @@ describe('Logbook view', () => {
         .mockResolvedValue({
           logEntries: entryData.logEntries
             .slice(10, 20)
-            .map((e) => new LogEntry(client.axios, e)),
+            .map((e) => new LogEntry(fetcher, e)),
           totalCount: 200,
         });
 
@@ -476,7 +479,7 @@ describe('Logbook view', () => {
   });
 
   it('will preview a selected log entry in the drawer panel', async () => {
-    const entry = new LogEntry(client.axios, entryData.logEntries[0]);
+    const entry = new LogEntry(fetcher, entryData.logEntries[0]);
     const spy = jest
       .spyOn(client.logEntries, 'getLogEntry')
       .mockResolvedValue(entry);

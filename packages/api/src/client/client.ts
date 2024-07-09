@@ -1,20 +1,15 @@
-import axios, { AxiosHeaders, AxiosInstance } from 'axios';
-
 import { AppMetricsDTO } from '../types';
 import { AlertsApiClient } from './alerts';
+import { ApiClientOptions } from './api-client-options';
 import { DiveSitesApiClient } from './dive-sites';
+import { Fetcher } from './fetcher';
 import { FriendsApiClient } from './friends';
 import { LogEntriesApiClient } from './log-entries';
 import { TanksApiClient } from './tanks';
 import { UsersApiClient } from './users';
 
-export type ApiClientOptions = {
-  authToken?: string;
-  baseURL?: string;
-};
-
 export class ApiClient {
-  private readonly client: AxiosInstance;
+  private readonly client: Fetcher;
   readonly alerts: AlertsApiClient;
   readonly friends: FriendsApiClient;
   readonly users: UsersApiClient;
@@ -23,27 +18,13 @@ export class ApiClient {
   readonly tanks: TanksApiClient;
 
   constructor(options?: ApiClientOptions) {
-    const headers = new AxiosHeaders();
-    if (options?.authToken) {
-      headers.Authorization = `Bearer ${options.authToken}`;
-    }
-
-    this.client = axios.create({
-      baseURL: options?.baseURL,
-      headers,
-      withCredentials: true,
-    });
-
+    this.client = options?.fetcher ?? new Fetcher(options);
     this.alerts = new AlertsApiClient(this.client);
     this.friends = new FriendsApiClient(this.client);
     this.users = new UsersApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
     this.tanks = new TanksApiClient(this.client);
-  }
-
-  get axios(): AxiosInstance {
-    return this.client;
   }
 
   async getAppMetrics(): Promise<AppMetricsDTO> {

@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   FriendRequest,
   FriendRequestDirection,
   SearchProfilesResponseDTO,
@@ -31,6 +32,7 @@ const LoadMoreButton = '[data-testid="search-friends-load-more"]';
 const SearchBox = '[data-testid="search-users"]';
 
 describe('Search friends form component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let searchData: SearchProfilesResponseDTO;
@@ -40,7 +42,8 @@ describe('Search friends form component', () => {
   let opts: ComponentMountingOptions<typeof SearchFriendsForm>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
 
     const userData = SearchUsersResponseSchema.parse(UserTestData);
@@ -161,7 +164,7 @@ describe('Search friends form component', () => {
     const wrapper = mount(SearchFriendsForm, opts);
     const friendo = searchData.users[2];
     const friendRequest = new FriendRequest(
-      client.axios,
+      fetcher,
       currentUser.user!.username,
       {
         created: dayjs().toDate(),

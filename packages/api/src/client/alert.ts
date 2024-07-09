@@ -1,10 +1,9 @@
-import { AxiosInstance } from 'axios';
-
 import { AlertDTO, CreateOrUpdateAlertParamsSchema } from '../types';
+import { Fetcher } from './fetcher';
 
 export class Alert {
   constructor(
-    private readonly client: AxiosInstance,
+    private readonly client: Fetcher,
     private readonly data: AlertDTO,
   ) {}
 

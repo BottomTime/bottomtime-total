@@ -1,4 +1,4 @@
-data "aws_acm_certificate" "alb" {
-  domain   = var.certificate_domain
-  statuses = ["ISSUED"]
+data "aws_acm_certificate" "main" {
+  domain      = var.root_domain
+  most_recent = true
 }

@@ -59,26 +59,20 @@ export async function initProdServer(app) {
 
   log.debug('Loading index.html template...');
   htmlTemplate = await readFile(
-    resolve(
-      dirname(fileURLToPath(import.meta.url)),
-      '../dist/client/index.html',
-    ),
+    resolve(dirname(fileURLToPath(import.meta.url)), './client/index.html'),
     'utf-8',
   );
 
   log.debug('Loading Vite SSR function...');
   const { render } = await import(
-    resolve(
-      dirname(fileURLToPath(import.meta.url)),
-      '../dist/server/entry-server.js',
-    )
+    resolve(dirname(fileURLToPath(import.meta.url)), './server/entry-server.js')
   );
   ssr = render;
 
   log.debug('Serving static assets...');
   const staticAssetsPath = resolve(
     dirname(fileURLToPath(import.meta.url)),
-    '../dist/client',
+    './client',
   );
   const { default: sirv } = await import('sirv');
   app.use('/', sirv(staticAssetsPath, { extensions: [] }));

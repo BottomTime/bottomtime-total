@@ -21,7 +21,6 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { Response } from 'express';
 
-import { Config } from '../config';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user';
 import { AssertAuth } from './guards/assert-auth.guard';
@@ -342,7 +341,7 @@ export class AuthController {
    */
   @Get('logout')
   logoutWithRedirect(@Res() res: Response) {
-    res.clearCookie(Config.sessions.cookieName);
+    this.authService.revokeSessionCookie(res);
     res.redirect('/');
   }
 
@@ -369,7 +368,7 @@ export class AuthController {
   @Post('logout')
   logout(@Res() res: Response) {
     const response: SuccessFailResponseDTO = { succeeded: true };
-    res.clearCookie(Config.sessions.cookieName);
+    this.authService.revokeSessionCookie(res);
     res.json(response);
   }
 }

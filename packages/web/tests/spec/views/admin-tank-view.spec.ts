@@ -1,4 +1,10 @@
-import { ApiClient, Tank, TankDTO, TankMaterial } from '@bottomtime/api';
+import {
+  ApiClient,
+  Fetcher,
+  Tank,
+  TankDTO,
+  TankMaterial,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -14,7 +20,7 @@ import { ApiClientKey } from '../../../src/api-client';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser, useTanks, useToasts } from '../../../src/store';
 import AdminTankView from '../../../src/views/admin-tank-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../fixtures/users';
 
@@ -28,6 +34,7 @@ const TestData: TankDTO = {
 };
 
 describe('Admin Tank View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -39,7 +46,8 @@ describe('Admin Tank View', () => {
   let opts: ComponentMountingOptions<typeof AdminTankView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter([
       {
         path: '/admin/tanks/:tankId',
@@ -76,7 +84,7 @@ describe('Admin Tank View', () => {
     it('will retrieve the tank profile and render the form correctly', async () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
-        .mockResolvedValue(new Tank(client.axios, TestData));
+        .mockResolvedValue(new Tank(fetcher, TestData));
 
       const raw = await renderToString(AdminTankView, { global: opts.global });
       const html = document.createElement('div');
@@ -100,7 +108,7 @@ describe('Admin Tank View', () => {
     it('will show a not found message if the tank does not exist', async () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
-        .mockRejectedValue(createAxiosError(404));
+        .mockRejectedValue(createHttpError(404));
 
       const raw = await renderToString(AdminTankView, { global: opts.global });
       const html = document.createElement('div');
@@ -118,7 +126,7 @@ describe('Admin Tank View', () => {
     it('will show login form if user is not authenticated', async () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
-        .mockRejectedValue(createAxiosError(401));
+        .mockRejectedValue(createHttpError(401));
       currentUser.user = null;
 
       const raw = await renderToString(AdminTankView, { global: opts.global });
@@ -133,7 +141,7 @@ describe('Admin Tank View', () => {
     it('will show forbidden message if user is not an admin', async () => {
       const spy = jest
         .spyOn(client.tanks, 'getTank')
-        .mockRejectedValue(createAxiosError(403));
+        .mockRejectedValue(createHttpError(403));
       currentUser.user = BasicUser;
 
       const raw = await renderToString(AdminTankView, { global: opts.global });
@@ -158,7 +166,7 @@ describe('Admin Tank View', () => {
         material: TankMaterial.Aluminum,
       };
 
-      const tank = new Tank(client.axios, expected);
+      const tank = new Tank(fetcher, expected);
       jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((dto) => {
         expect(dto).toEqual(expected);
         return tank;

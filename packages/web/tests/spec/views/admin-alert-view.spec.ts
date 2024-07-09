@@ -1,4 +1,4 @@
-import { AlertDTO } from '@bottomtime/api';
+import { AlertDTO, Fetcher } from '@bottomtime/api';
 import { Alert, ApiClient } from '@bottomtime/api';
 
 import {
@@ -18,7 +18,7 @@ import { LocationKey, MockLocation } from '../../../src/location';
 import { useAlerts, useCurrentUser } from '../../../src/store';
 import { useToasts } from '../../../src/store';
 import AdminAlertView from '../../../src/views/admin-alert-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../fixtures/users';
 
@@ -32,6 +32,7 @@ const TestAlertData: AlertDTO = {
 };
 
 describe('Admin Alert View', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -42,7 +43,8 @@ describe('Admin Alert View', () => {
   let options: ComponentMountingOptions<typeof AdminAlertView>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
   });
 
   beforeEach(() => {
@@ -123,7 +125,7 @@ describe('Admin Alert View', () => {
   it('will prefetch the alert data on SSR', async () => {
     const spy = jest
       .spyOn(client.alerts, 'getAlert')
-      .mockResolvedValue(new Alert(client.axios, TestAlertData));
+      .mockResolvedValue(new Alert(fetcher, TestAlertData));
     await router.push(`/admin/alerts/${TestAlertData.id}`);
 
     const html = await renderToString(AdminAlertView, {
@@ -147,7 +149,7 @@ describe('Admin Alert View', () => {
 
   it('will render a not found message if the prefetch returns a 404 response', async () => {
     const spy = jest.spyOn(client.alerts, 'getAlert').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         status: 404,
         message: 'Not Found',
         method: 'GET',
@@ -174,7 +176,7 @@ describe('Admin Alert View', () => {
       expires: new Date('2028-02-01T00:00:00.000Z'),
     };
     const toasts = useToasts();
-    const alert = new Alert(client.axios, TestAlertData);
+    const alert = new Alert(fetcher, TestAlertData);
     const saveSpy = jest.spyOn(alert, 'save').mockResolvedValueOnce();
     jest.spyOn(client.alerts, 'wrapDTO').mockReturnValueOnce(alert);
     await router.push(`/admin/alerts/${TestAlertData.id}`);
@@ -193,7 +195,7 @@ describe('Admin Alert View', () => {
   it('will create a new alert', async () => {
     const spy = jest
       .spyOn(client.alerts, 'createAlert')
-      .mockResolvedValueOnce(new Alert(client.axios, TestAlertData));
+      .mockResolvedValueOnce(new Alert(fetcher, TestAlertData));
 
     alerts.currentAlert = {
       id: '',

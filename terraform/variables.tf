@@ -1,133 +1,81 @@
 variable "admin_email" {
+  description = "Email address of the site administrator."
   type        = string
-  description = "Email address for contacting the site admin. (This appears in a few spots on the site as well as email templates.)"
-  default     = "admin@bottomti.me"
 }
 
-variable "availability_zone_count" {
-  type        = number
-  description = "Number of availability zones to deploy to for redundancy. (Default is 2.)"
-  default     = 2
-  validation {
-    condition     = var.availability_zone_count > 0
-    error_message = "Availability zone count must be at least 1."
-  }
+variable "api_domain" {
+  description = "The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)"
+  type        = string
 }
 
-variable "certificate_domain" {
+variable "cookie_name" {
+  description = "Name of the session cookie as it will appear in the browser."
   type        = string
-  description = "The domain for which the TLS certificate for the site was issued. (Certificate must be registered in AWS ACM.)"
-  default     = "*.bottomti.me"
+  default     = "bottomtime"
 }
 
-variable "docs_domain" {
-  type        = string
-  description = "The domain in the hosted zone at which the API documentation should be hosted."
-  default     = "devs"
+variable "enable_places_api" {
+  description = "Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed."
+  type        = bool
+  default     = false
 }
 
 variable "env" {
+  description = "The environment in which the resources are being created. E.g. dev, stage, prod, etc."
   type        = string
-  description = "The name of the environment that is being deployed. (This is to distinguish multiple environments running in the same AWS region.)"
-  default     = "dev"
-}
-
-variable "hosted_zone" {
-  type        = string
-  description = "The domain name of the hosted zone at which the service will respond to requests."
-  default     = "bottomti.me"
-}
-
-variable "image_tag" {
-  type        = string
-  description = "ECR image tag to request when deploying the Docker image. (Defaults to 'latest'.)"
-  default     = "latest"
 }
 
 variable "log_level" {
+  description = "The level of verbosity at which events will be written to the log stream."
   type        = string
-  description = "The level of log detail that will be written to the event log. (Default is 'info'.)"
   default     = "info"
   validation {
-    condition     = contains(["trace", "debug", "info", "warn", "error", "fatal"], var.log_level)
-    error_message = "Log level must be one of 'trace', 'debug', 'info', 'warn', 'error', or 'fatal'."
+    condition     = can(regex("^(trace|debug|info|warn|error|fatal)$", var.log_level))
+    error_message = "The log_level must be one of trace, debug, info, warn, error, or fatal."
   }
 }
 
-variable "secret_id" {
-  type        = string
-  description = "The ID of the AWS Secrets Manager secret where the application secret values are held."
-}
-
-variable "service_domain" {
-  type        = string
-  description = "The domain in the hosted zone at which the backend service should be available."
-  default     = "api"
-}
-
-variable "service_name" {
-  type        = string
-  description = "Name of the service as it should appear in resource names and tags"
-  default     = "Bottom Time"
-}
-
-variable "service_name_short" {
-  type        = string
-  description = "Shortened name of the service that eliminates whitespace and special characters - safe for use where 'service_name' cannot be used."
-  default     = "bt"
-}
-
-variable "site_domain" {
-  type        = string
-  description = "The domain in the hosted zone at which the web frontend should be available."
-  default     = "www"
-}
-
-variable "smtp_from" {
-  type        = string
-  description = "The email address to use in the 'reply to' field when sending emails."
-  default     = "\"Bottom Time Admin\" <admin@bottomti.me>"
-}
-
-variable "smtp_host" {
-  type        = string
-  description = "The hostname of the SMTP server that will be used to send emails."
-}
-
-variable "smtp_port" {
+variable "log_retention_days" {
+  description = "The number of days to retain log events in the Cloudwatch log groups."
   type        = number
-  description = "The port number on which to connect to the SMTP host when sending emails."
-  default     = 465
+  default     = 7
 }
 
-variable "smtp_reply_to" {
+variable "media_bucket" {
+  description = "Name of the AWS S3 bucket where user-generated media (video, pictures, etc.) will be stored. This will be shared between regions and needs to be created manually, outside of Terraform."
   type        = string
-  description = "The email address to use in the 'reply to' field when sending emails."
-  default     = "donotreply@bottomti.me"
 }
 
-variable "smtp_username" {
+variable "secure_cookie" {
+  description = "Indicates whether the session cookie should be secured. If false, the cookie will work over HTTP or HTTPS. If true, the cookie will only work over HTTPS."
+  type        = bool
+  default     = true
+}
+
+variable "password_salt_rounds" {
+  description = "Number of rounds to use when computing a salted password hash. More will be more secure but slower. Default is 15."
+  type        = number
+  default     = 12
+}
+
+variable "root_domain" {
+  description = "The root domain for the service. Other domains will be under this domain. (E.g. bottomtime.com)"
   type        = string
-  description = "The username to use when logging into the SMTP server to send emails."
+  default     = "bottomti.me"
+}
+
+variable "secret_name" {
+  description = "The name of the AWS Secrets Manager secret that contains the sensitive configuration values."
+  type        = string
+}
+
+variable "web_domain" {
+  description = "Partial domain name at which the front-end web application will respond to requests. (E.g. 'staging')"
+  type        = string
 }
 
 data "aws_region" "current" {}
 
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
-data "aws_secretsmanager_secret_version" "secrets" {
-  secret_id = var.secret_id
-}
-
-data "aws_route53_zone" "main" {
-  name = var.hosted_zone
-}
-
 locals {
-  base_url            = "https://${var.site_domain}.${var.hosted_zone}/"
-  container_port      = 4800
-  image_name          = "${var.service_name_short}/${var.env}/core"
-  session_cookie_name = "${var.service_name_short}.${var.env}"
+  cookie_name = var.cookie_name == null ? "bottomtime.${var.env}" : var.cookie_name
 }

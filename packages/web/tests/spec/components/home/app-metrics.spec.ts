@@ -11,7 +11,7 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import AppMetrics from '../../../../src/components/home/app-metrics.vue';
-import { createAxiosError } from '../../../fixtures/create-axios-error';
+import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 
 describe('AppMetrics component', () => {
@@ -63,7 +63,7 @@ describe('AppMetrics component', () => {
 
   it('will render error message if request for metrics fails', async () => {
     jest.spyOn(client, 'getAppMetrics').mockRejectedValue(
-      createAxiosError({
+      createHttpError({
         message: 'splode!',
         method: 'GET',
         path: '/api/metrics',

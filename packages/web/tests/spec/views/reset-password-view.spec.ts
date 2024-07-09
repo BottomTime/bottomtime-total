@@ -15,7 +15,7 @@ import ResetPassword from '../../../src/components/users/reset-password.vue';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser } from '../../../src/store';
 import ResetPasswordView from '../../../src/views/reset-password-view.vue';
-import { createAxiosError } from '../../fixtures/create-axios-error';
+import { createHttpError } from '../../fixtures/create-http-error';
 import { createRouter } from '../../fixtures/create-router';
 import { BasicUser } from '../../fixtures/users';
 
@@ -126,7 +126,7 @@ describe('ResetPassword view', () => {
       const spy = jest
         .spyOn(client.users, 'requestPasswordResetToken')
         .mockRejectedValue(
-          createAxiosError({
+          createHttpError({
             status: 404,
             message: 'Not found',
             method: 'GET',
@@ -257,7 +257,7 @@ describe('ResetPassword view', () => {
       const spy = jest
         .spyOn(client.users, 'resetPasswordWithToken')
         .mockRejectedValue(
-          createAxiosError({
+          createHttpError({
             status: 404,
             message: 'Not found',
             method: 'POST',

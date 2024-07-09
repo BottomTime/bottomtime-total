@@ -1,5 +1,3 @@
-import { AxiosInstance } from 'axios';
-
 import {
   CreateOrUpdateLogEntryParamsDTO,
   DiveSiteSchema,
@@ -9,10 +7,11 @@ import {
   LogEntrySchema,
 } from '../types';
 import { DiveSite } from './dive-site';
+import { Fetcher } from './fetcher';
 import { LogEntry } from './log-entry';
 
 export class LogEntriesApiClient {
-  constructor(private readonly apiClient: AxiosInstance) {}
+  constructor(private readonly apiClient: Fetcher) {}
 
   async listLogEntries(
     username: string,
@@ -23,15 +22,15 @@ export class LogEntriesApiClient {
   }> {
     const { data } = await this.apiClient.get(
       `/api/users/${username}/logbook`,
-      { params },
+      params,
+      ListLogEntriesResponseSchema,
     );
 
-    const parsed = ListLogEntriesResponseSchema.parse(data);
     return {
-      logEntries: parsed.logEntries.map(
+      logEntries: data.logEntries.map(
         (entry) => new LogEntry(this.apiClient, entry),
       ),
-      totalCount: parsed.totalCount,
+      totalCount: data.totalCount,
     };
   }
 
@@ -68,12 +67,11 @@ export class LogEntriesApiClient {
   ): Promise<DiveSite[]> {
     const { data } = await this.apiClient.get(
       `/api/users/${username}/logbook/recentDiveSites`,
-      { params: { count } },
+      { count },
+      DiveSiteSchema.array(),
     );
 
-    return DiveSiteSchema.array()
-      .parse(data)
-      .map((site) => new DiveSite(this.apiClient, site));
+    return data.map((site) => new DiveSite(this.apiClient, site));
   }
 
   wrapDTO(data: unknown): LogEntry {

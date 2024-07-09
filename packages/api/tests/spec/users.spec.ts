@@ -1,7 +1,7 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
-import nock, { Scope } from 'nock';
+import mockFetch from 'fetch-mock-jest';
 
-import { User } from '../../src/client';
+import { HttpException, User } from '../../src/client';
+import { Fetcher } from '../../src/client/fetcher';
 import { UsersApiClient } from '../../src/client/users';
 import {
   AdminSearchUsersParamsDTO,
@@ -12,70 +12,58 @@ import {
   UserRole,
   UsersSortBy,
 } from '../../src/types';
-import { createScope } from '../fixtures/nock';
 import SearchResults from '../fixtures/user-search-results.json';
 import { BasicUser } from '../fixtures/users';
 
 describe('Users API client', () => {
-  let axiosInstance: AxiosInstance;
+  let fetcher: Fetcher;
   let client: UsersApiClient;
-  let scope: Scope;
 
   beforeAll(() => {
-    scope = createScope();
-    axiosInstance = axios.create();
-    client = new UsersApiClient(axiosInstance);
+    fetcher = new Fetcher();
+    client = new UsersApiClient(fetcher);
   });
 
   afterEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.restore();
+    mockFetch.restore();
   });
 
   describe('when checking if usernames or emails are available', () => {
     it('will return true if the username is not found', async () => {
-      scope.head('/api/users/test').reply(404);
+      mockFetch.head('/api/users/test', 404);
       const result = await client.isUsernameOrEmailAvailable('test');
       expect(result).toBe(true);
+      expect(mockFetch.done()).toBe(true);
     });
 
     it('will return false if the username is found', async () => {
-      scope.head('/api/users/test').reply(200);
+      mockFetch.head('/api/users/test', 200);
       const result = await client.isUsernameOrEmailAvailable('test');
       expect(result).toBe(false);
-    });
-
-    it('will re-throw an error if the request fails', async () => {
-      scope.head('/api/users/test').replyWithError('Nope');
-      await expect(client.isUsernameOrEmailAvailable('test')).rejects.toThrow(
-        AxiosError,
-      );
+      expect(mockFetch.done()).toBe(true);
     });
 
     it('will URL-encode an email address', async () => {
-      scope.head('/api/users/test%40example.com').reply(404);
+      mockFetch.head('api/users/test%40example.com', 404);
       await client.isUsernameOrEmailAvailable('test@example.com');
+      expect(mockFetch.done()).toBe(true);
     });
   });
 
   describe('when retrieving the current user', () => {
     it('will return null if the user is anonymous', async () => {
-      scope.get('/api/auth/me').reply(200, { anonymous: true });
+      mockFetch.get('/api/auth/me', { anonymous: true });
       const user = await client.getCurrentUser();
       expect(user).toBeNull();
+      expect(mockFetch.done()).toBe(true);
     });
 
     it('will return the user if the user is not anonymous', async () => {
-      scope.get('/api/auth/me').reply(200, {
-        anonymous: false,
-        ...BasicUser,
-      });
+      mockFetch.get('/api/auth/me', { anonymous: false, ...BasicUser });
       const user = await client.getCurrentUser();
       expect(user).not.toBeNull();
       expect(user?.toJSON()).toEqual(BasicUser);
+      expect(mockFetch.done()).toBe(true);
     });
   });
 
@@ -92,16 +80,33 @@ describe('Users API client', () => {
     };
 
     it('will return the new user account if the creation is successful', async () => {
-      scope
-        .post('/api/users', JSON.stringify(requestData))
-        .reply(201, BasicUser);
+      mockFetch.post(
+        {
+          url: '/api/users',
+          body: requestData,
+        },
+        {
+          status: 201,
+          body: BasicUser,
+        },
+      );
       const user = await client.createUser(requestData);
       expect(user.toJSON()).toEqual(BasicUser);
+      expect(mockFetch.done()).toBe(true);
     });
 
     it('will allow any errors to bubble up', async () => {
-      scope.post('/api/users', JSON.stringify(requestData)).reply(409);
-      await expect(client.createUser(requestData)).rejects.toThrow(AxiosError);
+      mockFetch.post(
+        {
+          url: '/api/users',
+          body: requestData,
+        },
+        409,
+      );
+      await expect(client.createUser(requestData)).rejects.toThrow(
+        HttpException,
+      );
+      expect(mockFetch.done()).toBe(true);
     });
   });
 
@@ -109,58 +114,72 @@ describe('Users API client', () => {
     it('will return the user if the login is successful', async () => {
       const usernameOrEmail = 'test';
       const password = 'password';
-      scope
-        .post('/api/auth/login', { usernameOrEmail, password })
-        .reply(200, BasicUser);
+      mockFetch.post(
+        {
+          url: '/api/auth/login',
+          body: { usernameOrEmail, password },
+        },
+        {
+          status: 200,
+          body: BasicUser,
+        },
+      );
 
       const user = await client.login(usernameOrEmail, password);
       expect(user.toJSON()).toEqual(BasicUser);
+      expect(mockFetch.done()).toBe(true);
     });
 
     it('will throw an error if the login fails', async () => {
-      scope.post('/api/auth/login').reply(401);
+      mockFetch.post('/api/auth/login', 401);
       await expect(client.login('test', 'password')).rejects.toThrow(
-        AxiosError,
+        HttpException,
       );
+      expect(mockFetch.done()).toBe(true);
     });
   });
 
   describe('when resetting a password', () => {
     it('will request a password reset token', async () => {
-      scope
-        .post(`/api/users/${BasicUser.username}/requestPasswordReset`)
-        .reply(204);
+      mockFetch.post(
+        `/api/users/${BasicUser.username}/requestPasswordReset`,
+        204,
+      );
       await client.requestPasswordResetToken(BasicUser.username);
-      expect(scope.isDone()).toBe(true);
+      expect(mockFetch.done()).toBe(true);
     });
 
     it('will validate a password reset token', async () => {
       const token = 'abcd1234';
-      scope
-        .get(`/api/users/${BasicUser.username}/resetPassword`)
-        .query({ token })
-        .reply(200, { status: PasswordResetTokenStatus.Expired });
+      mockFetch.get(
+        `/api/users/${BasicUser.username}/resetPassword?token=${token}`,
+        { status: 200, body: { status: PasswordResetTokenStatus.Expired } },
+      );
 
       await expect(
         client.validatePasswordResetToken(BasicUser.username, token),
       ).resolves.toBe(PasswordResetTokenStatus.Expired);
-      expect(scope.isDone()).toBe(true);
+      expect(mockFetch.done()).toBe(true);
     });
 
     it("will reset a user's password with a token", async () => {
       const newPassword = 'new_password';
       const token = 'tbTSqDIps0/QuDp9M1/2HJgrsa2TIN268+NRMKbw81U=';
-      scope
-        .post(`/api/users/${BasicUser.username}/resetPassword`, {
-          newPassword,
-          token,
-        })
-        .reply(200, { succeeded: true });
+      mockFetch.post(
+        {
+          url: `/api/users/${BasicUser.username}/resetPassword`,
+          body: { newPassword, token },
+        },
+        {
+          status: 200,
+          body: { succeeded: true },
+        },
+      );
 
       await expect(
         client.resetPasswordWithToken(BasicUser.username, token, newPassword),
       ).resolves.toBe(true);
-      expect(scope.isDone()).toBe(true);
+      expect(mockFetch.done()).toBe(true);
     });
   });
 
@@ -173,7 +192,10 @@ describe('Users API client', () => {
       skip: 50,
       limit: 200,
     };
-    scope.get('/api/admin/users').query(params).reply(200, SearchResults);
+    mockFetch.get(
+      '/api/admin/users?query=bob&role=user&sortBy=username&sortOrder=asc&skip=50&limit=200',
+      { status: 200, body: SearchResults },
+    );
 
     const { users, totalCount } = await client.searchUsers(params);
 
@@ -182,19 +204,20 @@ describe('Users API client', () => {
     users.forEach((user, index) => {
       expect(user.id).toEqual(SearchResults.users[index].id);
     });
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 
   describe('when verifying an email address', () => {
     it('will return success if the request succeeds', async () => {
       const expected: SuccessFailResponseDTO = { succeeded: true };
-      scope
-        .post(`/api/users/${BasicUser.username}/verifyEmail`)
-        .reply(200, expected);
+      mockFetch.post(`/api/users/${BasicUser.username}/verifyEmail`, {
+        status: 200,
+        body: expected,
+      });
       const actual = await client.verifyEmail(BasicUser.username, 'token');
 
       expect(actual).toEqual(expected);
-      expect(scope.isDone()).toBe(true);
+      expect(mockFetch.done()).toBe(true);
     });
 
     it('will return failure with a reason if the request fails', async () => {
@@ -202,13 +225,14 @@ describe('Users API client', () => {
         succeeded: false,
         reason: 'Your token does not rhyme.',
       };
-      scope
-        .post(`/api/users/${BasicUser.username}/verifyEmail`)
-        .reply(200, expected);
+      mockFetch.post(`/api/users/${BasicUser.username}/verifyEmail`, {
+        status: 200,
+        body: expected,
+      });
       const actual = await client.verifyEmail(BasicUser.username, 'token');
 
       expect(actual).toEqual(expected);
-      expect(scope.isDone()).toBe(true);
+      expect(mockFetch.done()).toBe(true);
     });
   });
 

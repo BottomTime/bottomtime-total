@@ -1,6 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
 import dayjs from 'dayjs';
-import nock, { Scope } from 'nock';
+import mockFetch from 'fetch-mock-jest';
 
 import {
   CreateOrUpdateLogEntryParamsDTO,
@@ -11,7 +10,7 @@ import {
   TankMaterial,
   WeightUnit,
 } from '../../src';
-import { createScope } from '../fixtures/nock';
+import { Fetcher } from '../../src/client/fetcher';
 import { BasicUser } from '../fixtures/users';
 
 const timestamp = new Date('2024-04-30T20:48:16.436Z');
@@ -53,13 +52,11 @@ const FullTestData: LogEntryDTO = {
 };
 
 describe('Log entry API client', () => {
-  let client: AxiosInstance;
-  let scope: Scope;
+  let client: Fetcher;
   let entry: LogEntry;
 
   beforeAll(() => {
-    client = axios.create();
-    scope = createScope();
+    client = new Fetcher();
   });
 
   beforeEach(() => {
@@ -67,11 +64,7 @@ describe('Log entry API client', () => {
   });
 
   afterEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.restore();
+    mockFetch.restore();
   });
 
   it('will return properties correctly', () => {
@@ -181,18 +174,26 @@ describe('Log entry API client', () => {
     entry.weights = options.weights;
     entry.air = options.air!;
 
-    scope
-      .put(`/api/users/${BasicUser.username}/logbook/${entry.id}`, options)
-      .reply(200, entry.toJSON());
+    mockFetch.put(
+      {
+        url: `/api/users/${BasicUser.username}/logbook/${entry.id}`,
+        body: options,
+      },
+      {
+        status: 200,
+        body: entry.toJSON(),
+      },
+    );
     await entry.save();
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will delete a log entry', async () => {
-    scope
-      .delete(`/api/users/${BasicUser.username}/logbook/${entry.id}`)
-      .reply(204);
+    mockFetch.delete(
+      `/api/users/${BasicUser.username}/logbook/${entry.id}`,
+      204,
+    );
     await entry.delete();
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 });

@@ -1,10 +1,9 @@
-import { AxiosInstance } from 'axios';
-
 import { FriendDTO } from '../types';
+import { Fetcher } from './fetcher';
 
 export class Friend {
   constructor(
-    private readonly client: AxiosInstance,
+    private readonly client: Fetcher,
     private readonly ownerUsername: string,
     private readonly data: FriendDTO,
   ) {}

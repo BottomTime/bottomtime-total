@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  Fetcher,
   ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
@@ -41,6 +42,7 @@ function getUser(
 }
 
 describe('Edit Profile form', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let pinia: Pinia;
   let router: Router;
@@ -49,7 +51,8 @@ describe('Edit Profile form', () => {
   let opts: ComponentMountingOptions<typeof EditProfile>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
     tankData = ListTanksResponseSchema.parse(TestTankData);
   });
@@ -136,7 +139,7 @@ describe('Edit Profile form', () => {
     const userData = getUser(UserWithFullProfile);
     opts.props = { profile: userData.profile };
     const wrapper = mount(EditProfile, opts);
-    const user = new User(client.axios, userData);
+    const user = new User(fetcher, userData);
     const spy = jest.spyOn(user.profile, 'save').mockResolvedValue();
     jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(user.profile);
 

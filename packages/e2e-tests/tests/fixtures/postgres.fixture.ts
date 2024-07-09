@@ -47,7 +47,7 @@ export class PostgresFixture {
     username: 'admin',
   } as const;
 
-  static get postgresUri(): string {
+  static get postgresURI(): string {
     return (
       process.env.BT_POSTGRES_TEST_URI ||
       'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_e2e'

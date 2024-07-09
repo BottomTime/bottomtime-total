@@ -1,6 +1,9 @@
-import { ErrorResponseDTO, ErrorResponseSchema } from '@bottomtime/api';
+import {
+  ErrorResponseDTO,
+  ErrorResponseSchema,
+  HttpException,
+} from '@bottomtime/api';
 
-import { isAxiosError } from 'axios';
 import { useRouter } from 'vue-router';
 
 import { Toast, ToastType } from './common';
@@ -25,22 +28,17 @@ async function oops<T>(
 ): Promise<T | null> {
   try {
     return await f();
-  } catch (e) {
+  } catch (error) {
     /* eslint-disable-next-line no-console */
-    if (!Config.isProduction && Config.env !== 'test') console.error(e);
+    if (!Config.isProduction && Config.env !== 'test') console.error(error);
 
-    if (isAxiosError(e)) {
-      if (e.response) {
-        // Server responded with an error
-        const handler = handlers[e.response.status] ?? handlers.default;
-        await handler(e.response.data);
-      } else {
-        // Request was made but no response received
-        await handlers.networkError(e);
-      }
+    if (error instanceof HttpException) {
+      // Server responded with an error
+      const handler = handlers[error.status] ?? handlers.default;
+      await handler(error.body);
     } else {
       // Something terrible and unexpected has happened! Not a network or HTTP error!
-      await handlers.default(e);
+      await handlers.default(error);
     }
     return null;
   }

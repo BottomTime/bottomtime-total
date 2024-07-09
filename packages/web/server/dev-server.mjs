@@ -12,7 +12,7 @@ let vite;
 let htmlTemplatePath;
 
 async function loadHtmlTemplate(url) {
-  log.debug(`Loading index.html template from "${htmlTemplatePath}"...`);
+  log.debug('Loading index.html template...');
   const rawTemplate = await readFile(htmlTemplatePath, 'utf-8');
   const template = await vite.transformIndexHtml(url, rawTemplate);
   return template;
@@ -62,10 +62,11 @@ async function requestHandler(req, res, next) {
 
 export async function initDevServer(app) {
   log.info('🚀 Starting server in dev mode...');
-  htmlTemplatePath = resolve(
-    dirname(fileURLToPath(import.meta.url)),
-    '../index.html',
-  );
+  const compiled = !/.*\.mjs$/.test(import.meta.url);
+  htmlTemplatePath = compiled
+    ? resolve(dirname(fileURLToPath(import.meta.url)), './client/index.html')
+    : resolve(dirname(fileURLToPath(import.meta.url)), '../index.html');
+  log.debug('Using HTML template at:', htmlTemplatePath);
 
   const { createServer } = await import('vite');
   vite = await createServer({

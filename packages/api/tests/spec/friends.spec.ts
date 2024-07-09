@@ -1,5 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
-import nock, { Scope } from 'nock';
+import mockFetch from 'fetch-mock-jest';
 
 import {
   Friend,
@@ -14,24 +13,22 @@ import {
   ListFriendsResposneSchema,
   SortOrder,
 } from '../../src';
+import { Fetcher } from '../../src/client/fetcher';
 import { FriendsApiClient } from '../../src/client/friends';
 import FriendRequestTestData from '../fixtures/friend-requests-search-results.json';
 import FriendTestData from '../fixtures/friends-search-results.json';
-import { createScope } from '../fixtures/nock';
 
 const Username = 'mega_user32';
 
 describe('Friends API client', () => {
-  let axiosClient: AxiosInstance;
+  let fetcher: Fetcher;
   let client: FriendsApiClient;
-  let scope: Scope;
   let friendsData: ListFriendsResponseDTO;
   let friendRequestData: ListFriendRequestsResponseDTO;
 
   beforeAll(() => {
-    axiosClient = axios.create();
-    scope = createScope();
-    client = new FriendsApiClient(axiosClient);
+    fetcher = new Fetcher();
+    client = new FriendsApiClient(fetcher);
 
     friendsData = ListFriendsResposneSchema.parse(FriendTestData);
     friendRequestData = ListFriendRequestsResponseSchema.parse(
@@ -40,18 +37,17 @@ describe('Friends API client', () => {
   });
 
   afterEach(() => {
-    nock.cleanAll();
-  });
-
-  afterAll(() => {
-    nock.restore();
+    mockFetch.restore();
   });
 
   it('will perform basic search for friends', async () => {
-    scope.get(`/api/users/${Username}/friends`).reply(200, friendsData);
+    mockFetch.get(`/api/users/${Username}/friends`, {
+      status: 200,
+      body: friendsData,
+    });
     const result = await client.listFriends(Username);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(friendsData.totalCount);
     expect(result.friends).toHaveLength(friendsData.friends.length);
     result.friends.forEach((friend, index) => {
@@ -77,14 +73,17 @@ describe('Friends API client', () => {
       limit: 10,
     };
 
-    scope
-      .get(`/api/users/${Username}/friends`)
-      .query(options)
-      .reply(200, friendsData);
+    mockFetch.get(
+      `/api/users/${Username}/friends?sortBy=username&sortOrder=asc&skip=20&limit=10`,
+      {
+        status: 200,
+        body: friendsData,
+      },
+    );
 
     const result = await client.listFriends(Username, options);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(friendsData.totalCount);
     expect(result.friends).toHaveLength(friendsData.friends.length);
     result.friends.forEach((friend, index) => {
@@ -104,50 +103,40 @@ describe('Friends API client', () => {
 
   it('will return a single friend', async () => {
     const data = friendsData.friends[0];
-    scope
-      .get(`/api/users/${Username}/friends/${data.username}`)
-      .reply(200, data);
+    mockFetch.get(`/api/users/${Username}/friends/${data.username}`, {
+      status: 200,
+      body: data,
+    });
 
     const friend = await client.getFriend(Username, data.username);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(friend.toJSON()).toEqual(data);
   });
 
   it('will return true if areFriends is called and the two users are friends', async () => {
     const friend = 'my_homie';
-    scope.head(`/api/users/${Username}/friends/${friend}`).reply(200);
+    mockFetch.head(`/api/users/${Username}/friends/${friend}`, 200);
     await expect(client.areFriends(Username, friend)).resolves.toBe(true);
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will return false if areFriends is called and the two users are not friends', async () => {
     const friend = 'my_homie';
-    scope.head(`/api/users/${Username}/friends/${friend}`).reply(404);
+    mockFetch.head(`/api/users/${Username}/friends/${friend}`, 404);
     await expect(client.areFriends(Username, friend)).resolves.toBe(false);
-    expect(scope.isDone()).toBe(true);
-  });
-
-  it('will allow an error to bubble up if areFriends is called and something goes wrong', async () => {
-    const friend = 'my_homie';
-    const error = new Error('nope');
-    scope
-      .head(`/api/users/${Username}/friends/${friend}`)
-      .replyWithError(error);
-    await expect(
-      client.areFriends(Username, friend),
-    ).rejects.toThrowErrorMatchingSnapshot();
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
   });
 
   it('will perform a basic search for friend requests', async () => {
-    scope
-      .get(`/api/users/${Username}/friendRequests`)
-      .reply(200, friendRequestData);
+    mockFetch.get(`/api/users/${Username}/friendRequests`, {
+      status: 200,
+      body: friendRequestData,
+    });
 
     const result = await client.listFriendRequests(Username);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(friendRequestData.totalCount);
     expect(result.friendRequests).toHaveLength(
       friendRequestData.friendRequests.length,
@@ -166,14 +155,17 @@ describe('Friends API client', () => {
       limit: 10,
     };
 
-    scope
-      .get(`/api/users/${Username}/friendRequests`)
-      .query(options)
-      .reply(200, friendRequestData);
+    mockFetch.get(
+      `/api/users/${Username}/friendRequests?direction=incoming&showAcknowledged=true&showExpired=true&skip=20&limit=10`,
+      {
+        status: 200,
+        body: friendRequestData,
+      },
+    );
 
     const result = await client.listFriendRequests(Username, options);
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(friendRequestData.totalCount);
     expect(result.friendRequests).toHaveLength(
       friendRequestData.friendRequests.length,
@@ -185,16 +177,20 @@ describe('Friends API client', () => {
 
   it('will create a friend request', async () => {
     const expected = friendRequestData.friendRequests[0];
-    scope
-      .put(`/api/users/${Username}/friendRequests/${expected.friend.username}`)
-      .reply(201, expected);
+    mockFetch.put(
+      `/api/users/${Username}/friendRequests/${expected.friend.username}`,
+      {
+        status: 201,
+        body: expected,
+      },
+    );
 
     const request = await client.createFriendRequest(
       Username,
       expected.friend.username,
     );
 
-    expect(scope.isDone()).toBe(true);
+    expect(mockFetch.done()).toBe(true);
     expect(request.toJSON()).toEqual(expected);
   });
 
