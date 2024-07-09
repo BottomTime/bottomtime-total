@@ -292,6 +292,7 @@ workflows:
             - test_api
             - test_service
             - test_web
+            - test_e2e
           context:
             - bt-aws-dev
           filters:
@@ -304,6 +305,7 @@ workflows:
             - test_api
             - test_service
             - test_web
+            - test_e2e
           context:
             - bt-aws-dev
           filters:
