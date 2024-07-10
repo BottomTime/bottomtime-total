@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "maizzle build production && webpack",
+    "build": "yarn build:templates && yarn build:service",
+    "build:templates": "maizzle build production",
+    "build:service": "webpack",
     "clean": "rm -rf dist/",
     "dev": "maizzle serve",
     "prepare": "cp -n .env.example .env || true",
