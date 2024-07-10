@@ -19,8 +19,9 @@ commands:
           paths:
             - node_modules/
             - packages/api/node_modules/
+            - packages/common/node_modules/
             - packages/e2e-tests/node_modules/
-            - packages/templates/node_modules/
+            - packages/emails/node_modules/
             - packages/service/node_modules/
             - packages/web/node_modules/
 
@@ -75,12 +76,13 @@ jobs:
           root: ./
           paths:
             - packages/api/dist/
+            - packages/common/dist/
+            - packages/emails/dist/
             - packages/service/dist/
-            - packages/service/assets/templates/
             - packages/web/dist/
             - cc-test-reporter
 
-  test_api:
+  test_packages:
     docker:
       - image: cimg/node:20.14
     resource_class: medium
@@ -95,26 +97,54 @@ jobs:
           name: Initialize Code Climate
           command: ./cc-test-reporter before-build
       - run:
-          name: Build
-          command: yarn --cwd packages/api build
-      - run:
-          name: Run tests
+          name: Test API Lib
           command: yarn --cwd packages/api test --runInBand --ci
+      - run:
+          name: Test Common Lib
+          command: yarn --cwd packages/common test --runInBand --ci
+      - run:
+          name: Test Email Service
+          command: yarn --cwd packages/emails test --runInBand --ci
+
       - store_test_results:
           path: packages/api/reports/
+      - store_test_results:
+          path: packages/common/reports/
+      - store_test_results:
+          path: packages/emails/reports/
+
       - run:
-          name: Report test coverage
+          name: Report API coverage
           working_directory: packages/api/
           command: |
             ../../cc-test-reporter format-coverage "coverage/lcov.info" \
               --add-prefix "packages/api/" \
               -t lcov \
-              -o "../../api.coverage.json" \
+              -o "../../api.coverage.json"
+      - run:
+          name: Report Common Lib coverage
+          working_directory: packages/common/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/common/" \
+              -t lcov \
+              -o "../../common.coverage.json"
+      - run:
+          name: Report Email Service coverage
+          working_directory: packages/emails/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/emails/" \
+              -t lcov \
+              -o "../../emails.coverage.json"
+
       - persist_to_workspace:
           root: ./
           paths:
             - packages/api/coverage/
             - api.coverage.json
+            - common.coverage.json
+            - emails.coverage.json
 
   test_service:
     docker:
@@ -260,7 +290,7 @@ workflows:
       - build
 
       # 2) Run tests
-      - test_api:
+      - test_packages:
           requires:
             - build
       - test_service:
@@ -282,14 +312,14 @@ workflows:
       # 3) Report test coverage
       - report_coverage:
           requires:
-            - test_api
+            - test_packages
             - test_service
             - test_web
 
       # 4) Deployment (branch dependent)
       - deploy_staging:
           requires:
-            - test_api
+            - test_packages
             - test_service
             - test_web
             - test_e2e
@@ -302,7 +332,7 @@ workflows:
 
       - deploy_production:
           requires:
-            - test_api
+            - test_packages
             - test_service
             - test_web
             - test_e2e
