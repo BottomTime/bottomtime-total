@@ -1,9 +1,11 @@
+import { MailRecipients } from '@bottomtime/common';
+
 import { Transporter } from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-import { IMailClient, MailRecipients } from './types';
+import { IMailClient } from './types';
 
-export class NodemailerClient implements IMailClient {
+class NodemailerClient implements IMailClient {
   constructor(
     private readonly transporter: Transporter<SMTPTransport.SentMessageInfo>,
     private readonly fromAddress: string,
@@ -29,4 +31,12 @@ export class NodemailerClient implements IMailClient {
       html: body,
     });
   }
+}
+
+export function createMailClient(
+  transporter: Transporter<SMTPTransport.SentMessageInfo>,
+  fromAddress: string,
+  replyToAddress: string,
+): IMailClient {
+  return new NodemailerClient(transporter, fromAddress, replyToAddress);
 }

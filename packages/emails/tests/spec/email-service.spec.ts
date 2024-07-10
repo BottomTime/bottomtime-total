@@ -85,4 +85,10 @@ describe('Email Service', () => {
       body,
     });
   });
+
+  it('will invoke the client to ping the SMTP host', async () => {
+    const spy = jest.spyOn(mailClient, 'ping');
+    await service.ping();
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 });

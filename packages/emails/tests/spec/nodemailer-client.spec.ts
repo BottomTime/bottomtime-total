@@ -1,6 +1,6 @@
 import { SentMessageInfo, createTransport } from 'nodemailer';
 
-import { NodemailerClient } from '../../src/service/email';
+import { createMailClient } from '../../src/service/email';
 
 describe('Nodemailer Client', () => {
   it('Will send an email message correctly', async () => {
@@ -20,7 +20,7 @@ describe('Nodemailer Client', () => {
       .spyOn(transport, 'sendMail')
       .mockResolvedValue({} as SentMessageInfo);
 
-    const client = new NodemailerClient(transport, from, replyTo);
+    const client = createMailClient(transport, from, replyTo);
     await client.sendMail({ to, cc, bcc }, subject, body);
 
     expect(spy).toHaveBeenCalledWith({
@@ -32,5 +32,19 @@ describe('Nodemailer Client', () => {
       subject: 'Important Email',
       to: ['greg@email.net', 'Brad <brad@email.org>'],
     });
+  });
+
+  it('will ping the SMTP host', async () => {
+    const from = 'us@bottomti.me';
+    const replyTo = 'donotreply@bottomti.me';
+    const transport = createTransport({
+      host: 'smtp.mail.org',
+    });
+    const spy = jest.spyOn(transport, 'verify').mockResolvedValue(true);
+    const client = createMailClient(transport, from, replyTo);
+
+    await client.ping();
+
+    expect(spy).toHaveBeenCalled();
   });
 });

@@ -52,6 +52,7 @@ export class EmailService {
 
   private async loadTemplate(type: EmailType): Promise<string> {
     const path = resolve(this.templatesPath, this.templates[type]);
+    this.log.debug(`Loading email template from ${path}...`);
     return await readFile(path, 'utf8');
   }
 
@@ -64,18 +65,13 @@ export class EmailService {
     return render(template, locals);
   }
 
-  sendMail(recipients: Recipients, subject: string, body: string): void {
-    this.mailClient
-      .sendMail(recipients, subject, body)
-      .then(() => {
-        this.log.info('Email has been sent', {
-          recipients,
-          subject,
-        });
-      })
-      .catch((error) => {
-        this.log.error(error);
-      });
+  async sendMail(
+    recipients: Recipients,
+    subject: string,
+    body: string,
+  ): Promise<void> {
+    this.log.info('Sending email...', recipients);
+    await this.mailClient.sendMail(recipients, subject, body);
   }
 
   async ping(): Promise<void> {

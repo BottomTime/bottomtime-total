@@ -45,3 +45,15 @@ export type EmailOptions = BaseEmailOptions &
   (ResetPasswordEmailOptions | VerifyEmailOptions | WelcomeEmailOptions);
 
 export type EmailOptionsWithGlobals = EmailOptions & EmailGlobals;
+
+export type MailRecipients = {
+  to: string | string[];
+  cc?: string | string[];
+  bcc?: string | string[];
+};
+
+export type EmailQueueMessage = {
+  to: MailRecipients;
+  subject: string;
+  options: EmailOptions;
+};

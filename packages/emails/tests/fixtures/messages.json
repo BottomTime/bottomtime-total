@@ -1,0 +1,54 @@
+{
+  "Records": [
+    {
+      "messageId": "1d0d7cdc-7e91-4939-898a-62a7bb37b00c",
+      "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...",
+      "body": "{\"to\":{\"to\":\"jake@email.org\",\"bcc\":\"admin@bottomti.me\"},\"subject\":\"Reset Your Password\",\"options\":{\"type\":\"resetPassword\",\"title\":\"Reset Password\",\"user\":{\"username\":\"MostExcellentUser33\",\"email\":\"totally_legit_user@gmail.com\",\"profile\":{\"name\":\"John Diver\"}},\"resetPasswordUrl\":\"https://bottomti.me/resetPassword?user=MostExcellentUser33&token=abcd-1234\"}}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1545082649183",
+        "SenderId": "AIDAIENQZJOLO23YVJ4VO",
+        "ApproximateFirstReceiveTimestamp": "1545082649185"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "098f6bcd4621d373cade4e832627b4f6",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:111122223333:my-queue",
+      "awsRegion": "us-east-1"
+    },
+
+    {
+      "messageId": "7f19129a-c36d-4c6c-8bfa-a2f1dc6ba0fd",
+      "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...",
+      "body": "{\"to\":{\"to\":\"sally@email.org\",\"bcc\":\"admin@bottomti.me\"},\"subject\":\"Verify Your Email\",\"options\":{\"type\":\"verifyEmail\",\"title\":\"Verify Email\",\"user\":{\"username\":\"MostExcellentUser33\",\"email\":\"totally_legit_user@gmail.com\",\"profile\":{\"name\":\"John Diver\"}},\"verifyEmailUrl\":\"https://bottomti.me/verifyEmail?user=MostExcellentUser33&token=abcd-1234\"}}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1545082649183",
+        "SenderId": "AIDAIENQZJOLO23YVJ4VO",
+        "ApproximateFirstReceiveTimestamp": "1545082649185"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "098f6bcd4621d373cade4e832627b4f6",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:111122223333:my-queue",
+      "awsRegion": "us-east-1"
+    },
+
+    {
+      "messageId": "633c9d44-9af6-44a2-b864-05370600dd9b",
+      "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...",
+      "body": "{\"to\":{\"to\":\"ben@gmail.org\",\"bcc\":\"admin@bottomti.me\"},\"subject\":\"This is a Welcome Email\",\"options\":{\"type\":\"welcome\",\"title\":\"Welcome to Bottom Time\",\"subtitle\":\"Get ready to dive in!\",\"user\":{\"username\":\"MostExcellentUser33\",\"email\":\"totally_legit_user@gmail.com\",\"profile\":{\"name\":\"John Diver\"}},\"logsUrl\":\"https://bottomti.me/logbook\",\"profileUrl\":\"https://bottomti.me/profile\",\"verifyEmailUrl\":\"https://bottomti.me/verifyEmail?user=MostExcellentUser33&token=abcd-1234\"}}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1545082649183",
+        "SenderId": "AIDAIENQZJOLO23YVJ4VO",
+        "ApproximateFirstReceiveTimestamp": "1545082649185"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "098f6bcd4621d373cade4e832627b4f6",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:111122223333:my-queue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

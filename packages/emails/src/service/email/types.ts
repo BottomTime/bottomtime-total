@@ -1,8 +1,4 @@
-export type MailRecipients = {
-  to: string | string[];
-  cc?: string | string[];
-  bcc?: string | string[];
-};
+import { MailRecipients } from '@bottomtime/common';
 
 export interface IMailClient {
   ping(): Promise<void>;

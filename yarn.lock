@@ -2199,6 +2199,9 @@ __metadata:
   dependencies:
     "@types/bunyan": "npm:^1.8.8"
     bunyan: "npm:^1.8.15"
+    jest: "npm:^29.7.0"
+    jest-junit: "npm:^16.0.0"
+    ts-jest: "npm:^29.0.5"
     typescript: "npm:^5.0.4"
     zod: "npm:3.22.4"
   languageName: unknown
@@ -2232,7 +2235,6 @@ __metadata:
     dotenv: "npm:^16.3.1"
     jest: "npm:^29.7.0"
     jest-junit: "npm:^16.0.0"
-    jest-text-transformer: "npm:^1.0.4"
     mustache: "npm:^4.2.0"
     nodemailer: "npm:^6.9.14"
     tailwindcss: "npm:^3.4.3"
