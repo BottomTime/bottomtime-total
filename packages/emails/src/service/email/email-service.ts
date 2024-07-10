@@ -5,11 +5,10 @@ import {
 } from '@bottomtime/common';
 
 import Logger from 'bunyan';
+import { readFile } from 'fs/promises';
 import { render } from 'mustache';
+import { resolve } from 'path';
 
-import ResetPasswordTemplate from '../../../dist/templates/reset-password.html';
-import VerifyEmailTemplate from '../../../dist/templates/verify-email.html';
-import WelcomeTemplate from '../../../dist/templates/welcome.html';
 import { Config } from '../config';
 import { IMailClient } from './types';
 
@@ -20,15 +19,24 @@ export type Recipients = {
 };
 
 export class EmailService {
+  private readonly templatesPath: string;
+
   private readonly templates: Record<EmailType, string> = {
-    [EmailType.ResetPassword]: ResetPasswordTemplate,
-    [EmailType.VerifyEmail]: VerifyEmailTemplate,
-    [EmailType.Welcome]: WelcomeTemplate,
+    [EmailType.ResetPassword]: './reset-password.html',
+    [EmailType.VerifyEmail]: './verify-email.html',
+    [EmailType.Welcome]: './welcome.html',
   };
+
   constructor(
     private readonly mailClient: IMailClient,
     private readonly log: Logger,
-  ) {}
+  ) {
+    const compiled = /.*\.js$/.test(__filename);
+    this.templatesPath = resolve(
+      __dirname,
+      compiled ? '../templates' : '../../../dist/templates',
+    );
+  }
 
   private getFullEmailOptions(options: EmailOptions): EmailOptionsWithGlobals {
     const now = new Date();
@@ -42,11 +50,18 @@ export class EmailService {
     };
   }
 
+  private async loadTemplate(type: EmailType): Promise<string> {
+    const path = resolve(this.templatesPath, this.templates[type]);
+    return await readFile(path, 'utf8');
+  }
+
   async generateMessageContent(options: EmailOptions): Promise<string> {
     this.log.info(`Rendering email from template (${options.type})...`);
     this.log.debug('Email options:', options);
     const locals = this.getFullEmailOptions(options);
-    return render(this.templates[options.type], locals);
+
+    const template = await this.loadTemplate(options.type);
+    return render(template, locals);
   }
 
   sendMail(recipients: Recipients, subject: string, body: string): void {
