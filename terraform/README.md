@@ -11,12 +11,11 @@ to be configured with access to an AWS account with sufficient privileges to per
 Terraform will need to run as an IAM user with sufficient permission to deploy the platform. Create an IAM role with the following permissions:
 
 - `AmazonAPIGatewayAdministrator`
-- `AmazonEC2ContainerRegistryFullAccess`
 - `AmazonRoute53FullAccess`
 - `AmazonS3FullAccess`
-- `AmazonVPCFullAccess`
 - `AWSCertificateManagerReadOnly`
 - `AWSLambda_FullAccess`
+- `AmazonSQSFullAccess`
 - `CloudFrontFullAccess`
 - `CloudWatchLogsFullAccess`
 - `SecretsManagerReadWrite`

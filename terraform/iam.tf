@@ -60,3 +60,31 @@ resource "aws_iam_role_policy_attachment" "ssr_lambda_logging" {
   role       = aws_iam_role.ssr_lambda_fn.name
   policy_arn = local.lambda_exec_policy_arn
 }
+
+resource "aws_iam_role" "emails_lambda_fn" {
+  name               = "bt_emails_${var.env}_${data.aws_region.current.name}"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+}
+
+data "aws_iam_policy_document" "emails_sqs_access" {
+  statement {
+    sid    = "0"
+    effect = "Allow"
+    actions = [
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:ReceiveMessage",
+    ]
+    resources = [aws_sqs_queue.email.arn]
+  }
+}
+
+resource "aws_iam_policy" "emails_sqs_access" {
+  name   = "bt_emails_sqs_access_${var.env}_${data.aws_region.current.name}"
+  policy = data.aws_iam_policy_document.emails_sqs_access.json
+}
+
+resource "aws_iam_role_policy_attachment" "email_service_queue_access" {
+  role       = aws_iam_role.emails_lambda_fn.name
+  policy_arn = aws_iam_policy.emails_sqs_access.arn
+}
