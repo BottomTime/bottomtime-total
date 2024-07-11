@@ -8,7 +8,6 @@ import {
   UserEntity,
   UserJsonDataEntity,
 } from '../data';
-import { EmailModule } from '../email';
 import { StorageModule } from '../storage';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
@@ -27,7 +26,6 @@ import { UsersService } from './users.service';
       FriendshipEntity,
       NotificationEntity,
     ]),
-    EmailModule.forFeature(),
     StorageModule.forFeature(),
     AuthModule,
   ],

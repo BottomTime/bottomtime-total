@@ -9,7 +9,9 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
+import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { INestApplication } from '@nestjs/common';
 
 import { compare } from 'bcryptjs';
@@ -17,15 +19,11 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
+import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
-import {
-  TestMailer,
-  createAuthHeader,
-  createTestApp,
-  createTestUser,
-} from '../../utils';
+import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
 
 jest.mock('uuid');
 jest.mock('../../../src/config');
@@ -34,6 +32,8 @@ function requestUrl(username?: string): string {
   return username ? `/api/users/${username}` : '/api/users';
 }
 
+const EmailQueueUrl =
+  'https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue';
 const TwoDaysInMs = 1000 * 60 * 60 * 24 * 2;
 
 const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
@@ -80,7 +80,7 @@ describe('Users End-to-End Tests', () => {
   let server: unknown;
   let adminAuthHeader: [string, string];
   let regualarAuthHeader: [string, string];
-  let mailClient: TestMailer;
+  let sqsClient: SQSClient;
 
   let Users: Repository<UserEntity>;
 
@@ -88,9 +88,11 @@ describe('Users End-to-End Tests', () => {
   let regularUser: UserEntity;
 
   beforeAll(async () => {
-    mailClient = new TestMailer();
+    Config.aws.sqs.emailQueueUrl = EmailQueueUrl;
+
+    sqsClient = new SQSClient();
     app = await createTestApp({
-      mailClient,
+      sqsClient,
     });
     server = app.getHttpServer();
 
@@ -104,10 +106,6 @@ describe('Users End-to-End Tests', () => {
     adminUser = createTestUser(AdminUserData);
     regularUser = createTestUser(RegularUserData);
     await Users.save([adminUser, regularUser]);
-  });
-
-  afterEach(() => {
-    mailClient.clearMessages();
   });
 
   afterAll(async () => {
@@ -158,6 +156,10 @@ describe('Users End-to-End Tests', () => {
     });
 
     it('will create a new account and sign in user', async () => {
+      const queueSpy = jest
+        .spyOn(sqsClient, 'send')
+        .mockResolvedValue({} as never);
+
       const agent = request.agent(server);
       const options: CreateUserParamsDTO = {
         username: 'User.McUserface',
@@ -194,6 +196,21 @@ describe('Users End-to-End Tests', () => {
 
       const { body: currentUser } = await agent.get('/api/auth/me').expect(200);
       expect(currentUser).toMatchSnapshot();
+
+      expect(queueSpy).toHaveBeenCalled();
+
+      const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
+      expect(command.input.QueueUrl).toBe(EmailQueueUrl);
+      expect(command.input.MessageDeduplicationId).toBe(
+        'a99a1193-3ef4-4816-85ce-e717a42dc99f',
+      );
+
+      const message = JSON.parse(
+        command.input.MessageBody!,
+      ) as EmailQueueMessage;
+
+      expect(message.to).toEqual({ to: options.email });
+      expect(message.options.type).toEqual(EmailType.Welcome);
     });
 
     it('will create a new account with minimal properties', async () => {
@@ -532,6 +549,12 @@ describe('Users End-to-End Tests', () => {
     const verifyUrl = `${requestUrl(RegularUserData.username)}/verifyEmail`;
 
     it('will request a verification token', async () => {
+      const dedupId = '0bb4a815-109b-4b73-9511-baf66c64a93b';
+      const queueSpy = jest
+        .spyOn(sqsClient, 'send')
+        .mockResolvedValue({} as never);
+      jest.spyOn(uuid, 'v4').mockReturnValue(dedupId);
+
       const {
         body: { succeeded },
       } = await request(server)
@@ -546,16 +569,24 @@ describe('Users End-to-End Tests', () => {
         savedUser?.emailVerificationTokenExpiration?.valueOf(),
       ).toBeCloseTo(Date.now() + TwoDaysInMs, -2);
 
-      expect(mailClient.sentMail).toHaveLength(1);
-      expect(mailClient.sentMail[0].recipients.to).toContain(
-        RegularUserData.email,
-      );
-      expect(mailClient.sentMail[0].body).toContain(
-        savedUser?.emailVerificationToken,
-      );
+      expect(queueSpy).toHaveBeenCalled();
+
+      const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
+      expect(command.input.QueueUrl).toBe(EmailQueueUrl);
+      expect(command.input.MessageDeduplicationId).toBe(dedupId);
+
+      const message = JSON.parse(
+        command.input.MessageBody!,
+      ) as EmailQueueMessage;
+      expect(message.to).toEqual({ to: RegularUserData.email });
+      expect(message.options.type).toEqual(EmailType.VerifyEmail);
     });
 
     it('will do nothing if email address is already verified', async () => {
+      const queueSpy = jest
+        .spyOn(sqsClient, 'send')
+        .mockResolvedValue({} as never);
+
       regularUser.emailVerified = true;
       await Users.save(regularUser);
 
@@ -569,10 +600,14 @@ describe('Users End-to-End Tests', () => {
 
       const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.emailVerificationToken).toBeNull();
-      expect(mailClient.sentMail).toHaveLength(0);
+      expect(queueSpy).not.toHaveBeenCalled();
     });
 
     it('will do nothing if user does not have an email address on their account', async () => {
+      const queueSpy = jest
+        .spyOn(sqsClient, 'send')
+        .mockResolvedValue({} as never);
+
       regularUser.email = null;
       regularUser.emailLowered = null;
       await Users.save(regularUser);
@@ -587,7 +622,7 @@ describe('Users End-to-End Tests', () => {
 
       const savedUser = await Users.findOneBy({ id: RegularUserId });
       expect(savedUser?.emailVerificationToken).toBeNull();
-      expect(mailClient.sentMail).toHaveLength(0);
+      expect(queueSpy).not.toHaveBeenCalled();
     });
 
     it('will return a 401 response when requesting a verificaiton token if user is unauthenticated', async () => {
@@ -671,6 +706,12 @@ describe('Users End-to-End Tests', () => {
     )}/resetPassword`;
 
     it('will request a password token', async () => {
+      const dedupId = '5f5f93b6-da70-49ff-bca1-efadd80c6fc4';
+      const queueSpy = jest
+        .spyOn(sqsClient, 'send')
+        .mockResolvedValue({} as never);
+      jest.spyOn(uuid, 'v4').mockReturnValue(dedupId);
+
       await request(server).post(requestTokenUrl).expect(204);
 
       const savedUser = await Users.findOneBy({ id: RegularUserId });
@@ -680,13 +721,15 @@ describe('Users End-to-End Tests', () => {
         -2,
       );
 
-      expect(mailClient.sentMail).toHaveLength(1);
-      expect(mailClient.sentMail[0].recipients.to).toContain(
-        RegularUserData.email,
-      );
-      expect(mailClient.sentMail[0].body).toContain(
-        savedUser?.passwordResetToken,
-      );
+      expect(queueSpy).toHaveBeenCalled();
+
+      const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
+      expect(command.input.QueueUrl).toBe(EmailQueueUrl);
+      expect(command.input.MessageDeduplicationId).toBe(dedupId);
+
+      const message: EmailQueueMessage = JSON.parse(command.input.MessageBody!);
+      expect(message.to).toEqual({ to: RegularUserData.email });
+      expect(message.options.type).toEqual(EmailType.ResetPassword);
     });
 
     it('will return a 404 response if the indicated user does not exist', async () => {
