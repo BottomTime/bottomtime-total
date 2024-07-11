@@ -2730,7 +2730,6 @@ __metadata:
     "@nestjs/event-emitter": "npm:^2.0.4"
     "@nestjs/passport": "npm:^10.0.2"
     "@nestjs/platform-express": "npm:^10.2.10"
-    "@nestjs/terminus": "npm:^10.2.0"
     "@nestjs/testing": "npm:^10.3.10"
     "@nestjs/throttler": "npm:^5.1.1"
     "@nestjs/typeorm": "npm:^10.0.2"
@@ -4141,61 +4140,6 @@ __metadata:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
   checksum: 10c0/02a1f39f23d354799c561de9d454099ac119a26592639bd31de62f8cb88388eef5651355031ce4fcc3aa1499c51274986a0361eb0fcedeeb2e9bfe4c05be431c
-  languageName: node
-  linkType: hard
-
-"@nestjs/terminus@npm:^10.2.0":
-  version: 10.2.3
-  resolution: "@nestjs/terminus@npm:10.2.3"
-  dependencies:
-    boxen: "npm:5.1.2"
-    check-disk-space: "npm:3.4.0"
-  peerDependencies:
-    "@grpc/grpc-js": "*"
-    "@grpc/proto-loader": "*"
-    "@mikro-orm/core": "*"
-    "@mikro-orm/nestjs": "*"
-    "@nestjs/axios": ^1.0.0 || ^2.0.0 || ^3.0.0
-    "@nestjs/common": ^9.0.0 || ^10.0.0
-    "@nestjs/core": ^9.0.0 || ^10.0.0
-    "@nestjs/microservices": ^9.0.0 || ^10.0.0
-    "@nestjs/mongoose": ^9.0.0 || ^10.0.0
-    "@nestjs/sequelize": ^9.0.0 || ^10.0.0
-    "@nestjs/typeorm": ^9.0.0 || ^10.0.0
-    "@prisma/client": "*"
-    mongoose: "*"
-    reflect-metadata: 0.1.x || 0.2.x
-    rxjs: 7.x
-    sequelize: "*"
-    typeorm: "*"
-  peerDependenciesMeta:
-    "@grpc/grpc-js":
-      optional: true
-    "@grpc/proto-loader":
-      optional: true
-    "@mikro-orm/core":
-      optional: true
-    "@mikro-orm/nestjs":
-      optional: true
-    "@nestjs/axios":
-      optional: true
-    "@nestjs/microservices":
-      optional: true
-    "@nestjs/mongoose":
-      optional: true
-    "@nestjs/sequelize":
-      optional: true
-    "@nestjs/typeorm":
-      optional: true
-    "@prisma/client":
-      optional: true
-    mongoose:
-      optional: true
-    sequelize:
-      optional: true
-    typeorm:
-      optional: true
-  checksum: 10c0/94fd425990249297177aca573704737b89b162a6df342cf73bd2a248bf4a3cb705eb53b0d1a94c21345c37d67be57295bf2e3d9c834047424ba67c372ff11fa8
   languageName: node
   linkType: hard
 
@@ -7693,7 +7637,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-align@npm:^3.0.0, ansi-align@npm:^3.0.1":
+"ansi-align@npm:^3.0.1":
   version: 3.0.1
   resolution: "ansi-align@npm:3.0.1"
   dependencies:
@@ -8374,22 +8318,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"boxen@npm:5.1.2":
-  version: 5.1.2
-  resolution: "boxen@npm:5.1.2"
-  dependencies:
-    ansi-align: "npm:^3.0.0"
-    camelcase: "npm:^6.2.0"
-    chalk: "npm:^4.1.0"
-    cli-boxes: "npm:^2.2.1"
-    string-width: "npm:^4.2.2"
-    type-fest: "npm:^0.20.2"
-    widest-line: "npm:^3.1.0"
-    wrap-ansi: "npm:^7.0.0"
-  checksum: 10c0/71f31c2eb3dcacd5fce524ae509e0cc90421752e0bfbd0281fd3352871d106c462a0f810c85f2fdb02f3a9fab2d7a84e9718b4999384d651b76104ebe5d2c024
-  languageName: node
-  linkType: hard
-
 "boxen@npm:^7.1.1":
   version: 7.1.1
   resolution: "boxen@npm:7.1.1"
@@ -9052,13 +8980,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"check-disk-space@npm:3.4.0":
-  version: 3.4.0
-  resolution: "check-disk-space@npm:3.4.0"
-  checksum: 10c0/cc39c91e1337e974fb5069c2fbd9eb92aceca6e35f3da6863a4eada58f15c1bf6970055bffed1e41c15cde1fd0ad2580bb99bef8275791ed56d69947f8657aa5
-  languageName: node
-  linkType: hard
-
 "cheerio-select@npm:^2.1.0":
   version: 2.1.0
   resolution: "cheerio-select@npm:2.1.0"
@@ -9165,13 +9086,6 @@ __metadata:
   dependencies:
     escape-string-regexp: "npm:5.0.0"
   checksum: 10c0/2bdf981a0fef0a23c14255df693b30eb9ae27eedf212470d8c400a0c0b6fb82fbf1ff8c5216ccd5721e3670b700389c886b1dce5070776dc9fbcc040957758c0
-  languageName: node
-  linkType: hard
-
-"cli-boxes@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "cli-boxes@npm:2.2.1"
-  checksum: 10c0/6111352edbb2f62dbc7bfd58f2d534de507afed7f189f13fa894ce5a48badd94b2aa502fda28f1d7dd5f1eb456e7d4033d09a76660013ef50c7f66e7a034f050
   languageName: node
   linkType: hard
 
@@ -20927,7 +20841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-width-cjs@npm:string-width@^4.2.0, string-width@npm:^1.0.2 || 2 || 3 || 4, string-width@npm:^4.0.0, string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.2, string-width@npm:^4.2.3":
+"string-width-cjs@npm:string-width@^4.2.0, string-width@npm:^1.0.2 || 2 || 3 || 4, string-width@npm:^4.1.0, string-width@npm:^4.2.0, string-width@npm:^4.2.3":
   version: 4.2.3
   resolution: "string-width@npm:4.2.3"
   dependencies:
@@ -23004,15 +22918,6 @@ __metadata:
   dependencies:
     string-width: "npm:^1.0.2 || 2 || 3 || 4"
   checksum: 10c0/1d9c2a3e36dfb09832f38e2e699c367ef190f96b82c71f809bc0822c306f5379df87bab47bed27ea99106d86447e50eb972d3c516c2f95782807a9d082fbea95
-  languageName: node
-  linkType: hard
-
-"widest-line@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "widest-line@npm:3.1.0"
-  dependencies:
-    string-width: "npm:^4.0.0"
-  checksum: 10c0/b1e623adcfb9df35350dd7fc61295d6d4a1eaa65a406ba39c4b8360045b614af95ad10e05abf704936ed022569be438c4bfa02d6d031863c4166a238c301119f
   languageName: node
   linkType: hard
 

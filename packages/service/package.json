@@ -32,7 +32,6 @@
     "@nestjs/event-emitter": "^2.0.4",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.2.10",
-    "@nestjs/terminus": "^10.2.0",
     "@nestjs/throttler": "^5.1.1",
     "@nestjs/typeorm": "^10.0.2",
     "aws-lambda": "^1.0.7",
