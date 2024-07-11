@@ -41,23 +41,6 @@ the files at `<repositoryRoot>/.s3/`.
 
 TODO
 
-### Sending and Receiving Emails
-
-In order to transmit email messages, the platform needs to be configured to talk to an SMTP host. This external host will
-be responsible for relaying emails to their destination.
-
-See the section on [Configuration](#configuration) below for details on how to configure the platform to access your SMTP host.
-The relevant environment variables you will need to set are
-
-- `BT_SMTP_FROM`
-- `BT_SMTP_HOST`
-- `BT_SMTP_PASSWORD`
-- `BT_SMTP_PORT`
-- `BT_SMTP_REPLY_TO`
-- `BT_SMTP_USERNAME`
-
-For local development it is recommended to use something simple like Amazon's [Simple Email Service](https://us-east-1.console.aws.amazon.com/ses/home?region=us-east-1#/homepage) (SES).
-
 ## Development
 
 ### Yarn commands
@@ -136,12 +119,6 @@ Here is the comprehensive list of environment variables used by the service.
 | `BT_SESSION_COOKIE_NAME`     | The name to be given to the application's session cookie when setting it in the browser.                                                                                                                  | `string`  |                    | `bottomtime.local`                                                  |
 | `BT_SESSION_SECRET`          | The secret string to use when signing JWT tokens for users. This should be a long, random, hard-to-guess string.                                                                                          | `string`  |                    | `va20e0egr0aA/x2UFmckWDy1MYxoaZTaA2M4LGFli5k=`                      |
 | `BT_SESSION_SECURE_COOKIE`   | Indicates whether the session cookie should be secure. If true, the cookie will only work over HTTPS connetions. If false, the cookie will work over HTTP or HTTPS.                                       | `boolean` |                    | `false`                                                             |
-| `BT_SMTP_FROM`               | Default email address to use in the "from" field when the application sends an email.                                                                                                                     | `string`  |                    | `"Bottom Time Admin" <admin@bottomti.me>`                           |
-| `BT_SMTP_HOST`               | Hostname of the SMTP server that will handle email transmission.                                                                                                                                          | `string`  |                    | `email-smtp.us-east-1.amazonaws.com`                                |
-| `BT_SMTP_PASSWORD`           | The password for authenticating with the SMTP host.                                                                                                                                                       | `string`  | :white_check_mark: |                                                                     |
-| `BT_SMTP_PORT`               | Port number on which to connect to the SMTP host.                                                                                                                                                         | `number`  |                    | `465`                                                               |
-| `BT_SMTP_REPLY_TO`           | Default reply-to address to include in emails sent by the application.                                                                                                                                    | `string`  |                    | `donotreply@bottomti.me`                                            |
-| `BT_SMTP_USERNAME`           | Username for authenticating with the SMTP host.                                                                                                                                                           | `string`  | :white_check_mark: |                                                                     |
 | `NODE_ENV`                   | Indicates the environment in which the service is running. A value of `production` will have certain implications for security and performance.                                                           | `string`  |                    | `local`                                                             |
 
 ## Admin CLI
