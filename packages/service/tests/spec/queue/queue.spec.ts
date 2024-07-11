@@ -2,11 +2,12 @@ import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 
 import * as uuid from 'uuid';
 
+import { Queue } from '../../../src/queue/queue';
 import { QueueService } from '../../../src/queue/queue.service';
 
 jest.mock('uuid');
 
-describe('Queue Service', () => {
+describe('Queue Class', () => {
   let client: SQSClient;
   let service: QueueService;
 
@@ -23,7 +24,9 @@ describe('Queue Service', () => {
     const queueUrl = 'https://example.com/queue';
     const payload = 'payload';
 
-    await service.addMessage(queueUrl, payload);
+    const queue = new Queue(service, queueUrl);
+
+    await queue.add(payload);
 
     expect(spy).toHaveBeenCalled();
     const command = spy.mock.lastCall![0] as SendMessageCommand;
