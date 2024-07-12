@@ -1,10 +1,10 @@
 {
+  "cacheDirectory": ".nx/",
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "test"],
-        "cacheDirectory": ".nx/"
+        "cacheableOperations": ["build", "test"]
       }
     }
   },
@@ -18,7 +18,7 @@
   "targetDefaults": {
     "build": {
       "cache": true,
-      "dependsOn": ["prepare", "^build"],
+      "dependsOn": ["^build"],
       "inputs": ["default"],
       "outputs": ["{projectRoot}/dist/**/*"]
     },
