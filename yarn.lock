@@ -2674,6 +2674,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bottomtime/e2e-tests@workspace:packages/e2e-tests"
   dependencies:
+    "@bottomtime/service": "workspace:*"
+    "@bottomtime/web": "workspace:*"
     "@playwright/test": "npm:^1.41.2"
     "@types/bcryptjs": "npm:^2.4.6"
     bcryptjs: "npm:^2.4.3"
@@ -2714,7 +2716,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bottomtime/service@workspace:packages/service":
+"@bottomtime/service@workspace:*, @bottomtime/service@workspace:packages/service":
   version: 0.0.0-use.local
   resolution: "@bottomtime/service@workspace:packages/service"
   dependencies:
@@ -2805,7 +2807,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bottomtime/web@workspace:packages/web":
+"@bottomtime/web@workspace:*, @bottomtime/web@workspace:packages/web":
   version: 0.0.0-use.local
   resolution: "@bottomtime/web@workspace:packages/web"
   dependencies:

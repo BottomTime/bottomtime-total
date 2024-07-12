@@ -75,6 +75,7 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
+            - .nx/
             - packages/api/dist/
             - packages/common/dist/
             - packages/emails/dist/
@@ -96,15 +97,12 @@ jobs:
       - run:
           name: Initialize Code Climate
           command: ./cc-test-reporter before-build
+
       - run:
-          name: Test API Lib
-          command: yarn --cwd packages/api test --runInBand --ci
-      - run:
-          name: Test Common Lib
-          command: yarn --cwd packages/common test --runInBand --ci
-      - run:
-          name: Test Email Service
-          command: yarn --cwd packages/emails test --runInBand --ci
+          name: Run Tests
+          command: |
+            yarn prepare
+            yarn test --scope=@bottomtime/{api,common,emails} -- --runInBand --ci
 
       - store_test_results:
           path: packages/api/reports/
@@ -168,8 +166,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Run Tests
-          working_directory: packages/service/
-          command: yarn prepare && yarn test --ci
+          command: |
+            yarn prepare
+            yarn test --scope=@bottomtime=service --stream -- --ci
       - store_test_results:
           path: packages/service/reports/
       - run:
@@ -202,7 +201,9 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Run Tests
-          command: yarn --cwd packages/web test --runInBand --ci
+          command: |
+            yarn prepare
+            yarn test --scope=@bottomtime/web --stream -- --runInBand --ci
       - store_test_results:
           path: packages/web/reports/
       - run:
@@ -244,8 +245,9 @@ jobs:
           command: yarn admin db init -f
       - run:
           name: Run end-to-end tests
-          working_directory: packages/e2e-tests/
-          command: yarn test
+          command: |
+            yarn prepare
+            yarn test --scope=@bottomtime/e2e-tests --stream -- --runInBand --ci
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
 
