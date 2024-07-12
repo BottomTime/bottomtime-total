@@ -101,7 +101,6 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            yarn prepare
             yarn test --scope=@bottomtime/{api,common,emails} -- --runInBand --ci
 
       - store_test_results:
@@ -167,7 +166,6 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            yarn prepare
             yarn test --scope=@bottomtime=service --stream -- --ci
       - store_test_results:
           path: packages/service/reports/
@@ -202,7 +200,6 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            yarn prepare
             yarn test --scope=@bottomtime/web --stream -- --runInBand --ci
       - store_test_results:
           path: packages/web/reports/
@@ -237,17 +234,13 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Install Playwright
-          command: npx playwright install
-      - run:
           name: Initialize Database
           working_directory: packages/service
           command: yarn admin db init -f
       - run:
           name: Run end-to-end tests
           command: |
-            yarn prepare
-            yarn test --scope=@bottomtime/e2e-tests --stream -- --runInBand --ci
+            yarn test --scope=@bottomtime/e2e-tests --stream
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
 
