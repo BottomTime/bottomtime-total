@@ -14,8 +14,9 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
-# Grant backend access to read/write/delete objects in the media bucket
+# Grant backend access to read/write/delete objects in the media bucket and SQS queues
 data "aws_iam_policy_document" "media_bucket_access" {
+  # List objects in media bucket
   statement {
     sid       = "1"
     effect    = "Allow"
@@ -23,11 +24,20 @@ data "aws_iam_policy_document" "media_bucket_access" {
     resources = [data.aws_s3_bucket.media.arn]
   }
 
+  # Read, write, and delete objects in media bucket
   statement {
     sid       = "2"
     effect    = "Allow"
     actions   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
     resources = ["${data.aws_s3_bucket.media.arn}/*"]
+  }
+
+  # Send messages to SQS queues
+  statement {
+    sid       = "3"
+    effect    = "Allow"
+    actions   = ["sqs:SendMessage"]
+    resources = [aws_sqs_queue.email.arn]
   }
 }
 

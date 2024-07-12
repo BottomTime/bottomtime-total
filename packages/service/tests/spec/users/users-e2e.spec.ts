@@ -201,9 +201,6 @@ describe('Users End-to-End Tests', () => {
 
       const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
       expect(command.input.QueueUrl).toBe(EmailQueueUrl);
-      expect(command.input.MessageDeduplicationId).toBe(
-        'a99a1193-3ef4-4816-85ce-e717a42dc99f',
-      );
 
       const message = JSON.parse(
         command.input.MessageBody!,
@@ -549,11 +546,9 @@ describe('Users End-to-End Tests', () => {
     const verifyUrl = `${requestUrl(RegularUserData.username)}/verifyEmail`;
 
     it('will request a verification token', async () => {
-      const dedupId = '0bb4a815-109b-4b73-9511-baf66c64a93b';
       const queueSpy = jest
         .spyOn(sqsClient, 'send')
         .mockResolvedValue({} as never);
-      jest.spyOn(uuid, 'v4').mockReturnValue(dedupId);
 
       const {
         body: { succeeded },
@@ -573,7 +568,6 @@ describe('Users End-to-End Tests', () => {
 
       const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
       expect(command.input.QueueUrl).toBe(EmailQueueUrl);
-      expect(command.input.MessageDeduplicationId).toBe(dedupId);
 
       const message = JSON.parse(
         command.input.MessageBody!,
@@ -706,11 +700,9 @@ describe('Users End-to-End Tests', () => {
     )}/resetPassword`;
 
     it('will request a password token', async () => {
-      const dedupId = '5f5f93b6-da70-49ff-bca1-efadd80c6fc4';
       const queueSpy = jest
         .spyOn(sqsClient, 'send')
         .mockResolvedValue({} as never);
-      jest.spyOn(uuid, 'v4').mockReturnValue(dedupId);
 
       await request(server).post(requestTokenUrl).expect(204);
 
@@ -725,7 +717,6 @@ describe('Users End-to-End Tests', () => {
 
       const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
       expect(command.input.QueueUrl).toBe(EmailQueueUrl);
-      expect(command.input.MessageDeduplicationId).toBe(dedupId);
 
       const message: EmailQueueMessage = JSON.parse(command.input.MessageBody!);
       expect(message.to).toEqual({ to: RegularUserData.email });
