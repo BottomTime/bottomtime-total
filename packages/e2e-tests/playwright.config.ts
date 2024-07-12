@@ -92,6 +92,8 @@ export default defineConfig({
       url: 'http://localhost:4801/',
       cwd: '../service',
       env: {
+        BT_AWS_SQS_EMAIL_QUEUE_URL:
+          'https://sqs.us-east-1.amazonaws.com/000000000000/bt-email-e2e',
         BT_BASE_URL: 'http://localhost:4851/',
         BT_LOG_LEVEL: 'debug',
         BT_PASSWORD_SALT_ROUNDS: '1',

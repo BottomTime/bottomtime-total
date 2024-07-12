@@ -166,7 +166,7 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            yarn test --scope=@bottomtime=service --stream -- --ci
+            yarn test --scope=@bottomtime/service --stream -- --ci
       - store_test_results:
           path: packages/service/reports/
       - run:
