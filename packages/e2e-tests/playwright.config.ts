@@ -94,6 +94,8 @@ export default defineConfig({
       env: {
         ...(process.env.CIRCLECI === 'true'
           ? {
+              AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
+              AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
               BT_AWS_MEDIA_BUCKET: 'bottomtime-media-e2e',
               BT_AWS_SQS_EMAIL_QUEUE_URL:
                 'https://sqs.us-east-1.amazonaws.com/961445962603/bt-emails-e2e',
