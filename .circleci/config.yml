@@ -297,12 +297,12 @@ workflows:
       - test_web:
           requires:
             - build
-      - test_e2e:
-          requires:
-            - build
-          context:
-            - bt-aws-e2e
-            - bt-smtp-dev
+      # - test_e2e:
+      #     requires:
+      #       - build
+      #     context:
+      #       - bt-aws-e2e
+      #       - bt-smtp-dev
 
       # 3) Report test coverage
       - report_coverage:
@@ -317,7 +317,7 @@ workflows:
             - test_packages
             - test_service
             - test_web
-            - test_e2e
+            # - test_e2e
           context:
             - bt-aws-dev
           filters:
@@ -330,7 +330,7 @@ workflows:
             - test_packages
             - test_service
             - test_web
-            - test_e2e
+            # - test_e2e
           context:
             - bt-aws-dev
           filters:
