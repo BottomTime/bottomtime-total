@@ -25,6 +25,7 @@ export interface AppConfig {
     };
     sqs: {
       emailQueueUrl: string;
+      endpoint?: string;
     };
   };
 
@@ -82,6 +83,7 @@ const ConfigSchema = z
     BT_AWS_S3_ENDPOINT: z.string().optional(),
     BT_AWS_MEDIA_BUCKET: z.string().default('bottomtime-media-local'),
     BT_AWS_SQS_EMAIL_QUEUE_URL: z.string().min(1),
+    BT_AWS_SQS_ENDPOINT: z.string().optional(),
 
     // Discord
     BT_DISCORD_CLIENT_ID: z.string().optional(),
@@ -143,6 +145,7 @@ const ConfigSchema = z
       },
       sqs: {
         emailQueueUrl: env.BT_AWS_SQS_EMAIL_QUEUE_URL,
+        endpoint: env.BT_AWS_SQS_ENDPOINT,
       },
     },
 

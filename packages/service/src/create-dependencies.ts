@@ -10,7 +10,10 @@ import { PostgresDataSourceOptions } from './data-source';
 export async function createDependencies(
   log: Logger,
 ): Promise<ServerDependencies> {
-  log.debug('Initializing AWS SQS client...');
+  log.debug('Initializing AWS SQS client...', {
+    endpoint: Config.aws.sqs.endpoint || '<default>',
+    region: Config.aws.region,
+  });
   const sqsClient = new SQSClient({
     region: Config.aws.region,
   });
