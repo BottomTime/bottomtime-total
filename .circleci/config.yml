@@ -301,7 +301,7 @@ workflows:
           requires:
             - build
           context:
-            - bt-aws-dev
+            - bt-aws-e2e
             - bt-smtp-dev
 
       # 3) Report test coverage

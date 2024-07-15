@@ -82,7 +82,9 @@ const ConfigSchema = z
     AWS_REGION: z.string().default('us-east-1'),
     BT_AWS_S3_ENDPOINT: z.string().optional(),
     BT_AWS_MEDIA_BUCKET: z.string().default('bottomtime-media-local'),
-    BT_AWS_SQS_EMAIL_QUEUE_URL: z.string().min(1),
+    BT_AWS_SQS_EMAIL_QUEUE_URL: z
+      .string()
+      .default('http://localhost:9324/000000000000/emails'),
     BT_AWS_SQS_ENDPOINT: z.string().optional(),
 
     // Discord

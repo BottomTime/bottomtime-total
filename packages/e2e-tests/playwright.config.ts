@@ -92,8 +92,17 @@ export default defineConfig({
       url: 'http://localhost:4801/',
       cwd: '../service',
       env: {
-        BT_AWS_SQS_EMAIL_QUEUE_URL:
-          'https://sqs.us-east-1.amazonaws.com/000000000000/bt-email-e2e',
+        ...(process.env.CIRCLECI === 'true'
+          ? {
+              BT_AWS_MEDIA_BUCKET: 'bottomtime-media-e2e',
+              BT_AWS_SQS_EMAIL_QUEUE_URL:
+                'https://sqs.us-east-1.amazonaws.com/961445962603/bt-emails-e2e',
+            }
+          : {
+              BT_AWS_SQS_ENDPOINT: 'http://localhost:4566',
+              BT_AWS_SQS_EMAIL_QUEUE_URL:
+                'http://localhost:9324/000000000000/emails',
+            }),
         BT_BASE_URL: 'http://localhost:4851/',
         BT_LOG_LEVEL: 'debug',
         BT_PASSWORD_SALT_ROUNDS: '1',
@@ -113,7 +122,7 @@ export default defineConfig({
       },
       timeout: 30000,
       reuseExistingServer: true,
-      stdout: 'pipe',
+      // stdout: 'pipe',
     },
     {
       command: 'yarn dev',
@@ -128,7 +137,7 @@ export default defineConfig({
       },
       timeout: 30000,
       reuseExistingServer: true,
-      stdout: 'pipe',
+      // stdout: 'pipe',
     },
   ],
 });
