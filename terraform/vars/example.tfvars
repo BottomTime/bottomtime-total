@@ -5,6 +5,7 @@
 admin_email       = "admin@bottomti.me"
 api_domain        = "api-dev"
 cookie_name       = "bottomtime.example"
+docs_domain       = "docs-dev"
 enable_places_api = false
 env               = "dev"
 log_level         = "info"

@@ -5,6 +5,7 @@
 admin_email       = "admin@bottomti.me"
 api_domain        = "api-staging"
 cookie_name       = "bottomtime.staging"
+docs_domain       = "docs-staging"
 enable_places_api = false
 env               = "staging"
 log_level         = "info"

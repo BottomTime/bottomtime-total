@@ -1,3 +1,13 @@
+output "docs_cf_bucket" {
+  value       = aws_s3_bucket.docs.id
+  description = "Name of the S3 bucket that will hold the statically-generated API documentation."
+}
+
+output "docs_cf_distribution" {
+  value       = aws_cloudfront_distribution.docs.id
+  description = "ID of the CloudFront distribution for the API documentation."
+}
+
 output "web_cf_bucket" {
   value       = aws_s3_bucket.web.id
   description = "Name of the S3 bucket that will hold the front-end assets."

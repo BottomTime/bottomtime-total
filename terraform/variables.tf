@@ -14,6 +14,11 @@ variable "cookie_name" {
   default     = "bottomtime"
 }
 
+variable "docs_domain" {
+  description = "The partial domain name at which the backend API documentation can be accessed."
+  type        = string
+}
+
 variable "enable_places_api" {
   description = "Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed."
   type        = bool
