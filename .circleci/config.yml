@@ -316,9 +316,7 @@ workflows:
       # 4) Deployment (branch dependent)
       - deploy_staging:
           requires:
-            - test_packages
-            - test_service
-            - test_web
+            - report_coverage
             # - test_e2e
           context:
             - bt-aws-dev
@@ -329,9 +327,7 @@ workflows:
 
       - deploy_production:
           requires:
-            - test_packages
-            - test_service
-            - test_web
+            - report_coverage
             # - test_e2e
           context:
             - bt-aws-dev

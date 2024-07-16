@@ -16,14 +16,13 @@ RUN yarn install
 
 COPY packages/service/bootstrap-docker.sh packages/service/swaggerDefinition.cjs packages/service/data-source.ts packages/service/webpack.config.js ./packages/service/
 COPY packages/service/admin/ ./packages/service/admin/
-COPY packages/service/public/ ./packages/service/public/
 COPY packages/service/migrations/ ./packages/service/migrations/
 
 COPY packages/api/src/ ./packages/api/src/
 COPY packages/common/src/ ./packages/common/src/
 COPY packages/service/src/ ./packages/service/src/
 
-RUN yarn build --stream && yarn --cwd packages/service docs
+RUN yarn build --stream
 
 FROM base AS release
 COPY --from=build /app/ /app/
