@@ -1,0 +1,19 @@
+FROM node:20.14 AS build
+
+WORKDIR /app
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY packages/service/package.json packages/service/tsconfig.json packages/service/swaggerDefinition.cjs ./packages/service/
+COPY packages/service/public/docs/ ./packages/service/public/docs/
+COPY packages/service/src/ ./packages/service/src/
+
+COPY packages/api/package.json packages/api/tsconfig.json ./packages/api/
+COPY packages/api/src/ ./packages/api/src/
+
+COPY packages/common/package.json packages/common/tsconfig.json ./packages/common/
+COPY packages/common/src/ ./packages/common/src/
+
+RUN corepack enable && yarn install && yarn --cwd packages/service/ docs
+
+FROM nginx:1.27.0-alpine
+COPY --from=build /app/packages/service/public/docs/ /usr/share/nginx/html/
+EXPOSE 4890
