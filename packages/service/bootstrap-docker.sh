@@ -9,6 +9,5 @@ else
   echo "Starting in development mode..."
   yarn admin db init
   yarn admin db seed
-  yarn migrate:up
   yarn dev
 fi

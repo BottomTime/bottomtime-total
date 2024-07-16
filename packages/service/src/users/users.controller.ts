@@ -6,6 +6,7 @@ import {
   SearchUserProfilesParamsSchema,
   UserRole,
 } from '@bottomtime/api';
+import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import {
   Body,
@@ -26,8 +27,9 @@ import { URL } from 'url';
 
 import { AssertAuth, AuthService, CurrentUser } from '../auth';
 import { User } from '../auth/user';
+import { Queues } from '../common';
 import { Config } from '../config';
-import { EmailService, EmailType } from '../email';
+import { InjectQueue, Queue } from '../queue';
 import { ZodValidator } from '../zod-validator';
 import { UsersService } from './users.service';
 
@@ -42,8 +44,8 @@ export class UsersController {
     @Inject(AuthService)
     private readonly authService: AuthService,
 
-    @Inject(EmailService)
-    private readonly emailService: EmailService,
+    @InjectQueue(Queues.email)
+    private readonly emailQueue: Queue,
   ) {}
 
   /**
@@ -254,20 +256,26 @@ export class UsersController {
       const verificationUrl = new URL('/verifyEmail', Config.baseUrl);
       verificationUrl.searchParams.append('email', user.email);
       verificationUrl.searchParams.append('token', verifyEmailToken);
-      const emailContent = await this.emailService.generateMessageContent({
-        type: EmailType.Welcome,
-        title: 'Welcome to Bottom Time',
-        subtitle: 'Get ready to dive in!',
-        user,
-        logsUrl: new URL('/logbook', Config.baseUrl).toString(),
-        profileUrl: new URL('/profile', Config.baseUrl).toString(),
-        verifyEmailUrl: verificationUrl.toString(),
-      });
-      this.emailService.sendMail(
-        { to: user.email },
-        'Welcome to Bottom Time',
-        emailContent,
-      );
+      const queueMessage: EmailQueueMessage = {
+        to: { to: user.email },
+        subject: 'Welcome to Bottom Time',
+        options: {
+          type: EmailType.Welcome,
+          title: 'Welcome to Bottom Time',
+          subtitle: 'Get ready to dive in!',
+          user: {
+            username: user.username,
+            email: user.email,
+            profile: {
+              name: user.profile.name || `@${user.username}`,
+            },
+          },
+          logsUrl: new URL('/logbook', Config.baseUrl).toString(),
+          profileUrl: new URL('/profile', Config.baseUrl).toString(),
+          verifyEmailUrl: verificationUrl.toString(),
+        },
+      };
+      await this.emailQueue.add(JSON.stringify(queueMessage));
     }
 
     // If the user is not currently signed in, sign them in as the new user.

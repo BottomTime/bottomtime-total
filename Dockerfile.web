@@ -1,4 +1,4 @@
-FROM node:20.14 as base
+FROM node:20.14 AS base
 
 # RUN apk add --no-cache bash python3 make g++
 RUN corepack enable

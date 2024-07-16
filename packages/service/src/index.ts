@@ -1,3 +1,5 @@
+import { createLogger } from '@bottomtime/common';
+
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
@@ -6,7 +8,6 @@ import 'reflect-metadata';
 import { Config } from './config';
 import { createApp } from './create-app';
 import { createDependencies } from './create-dependencies';
-import { createLogger } from './logger';
 
 dayjs.extend(tz);
 dayjs.extend(utc);

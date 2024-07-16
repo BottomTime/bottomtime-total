@@ -1,4 +1,5 @@
 import { S3Client } from '@aws-sdk/client-s3';
+import { SQSClient } from '@aws-sdk/client-sqs';
 import { DynamicModule, Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
@@ -11,20 +12,21 @@ import { AlertsModule } from './alerts';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { Queues } from './common';
+import { Config } from './config';
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from './data';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
-import { EmailModule, IMailClient } from './email';
 import { FriendsModule } from './friends';
-// import { HealthModule } from './health';
 import { LogEntriesModule } from './logEntries';
+import { QueueModule } from './queue';
 import { StorageModule } from './storage';
 import { TanksModule } from './tanks/tanks.module';
 import { UsersModule } from './users';
 
 export type ServerDependencies = {
   dataSource: DataSourceOptions;
-  mailClient: IMailClient;
   s3Client: S3Client;
+  sqsClient: SQSClient;
 };
 
 @Module({})
@@ -44,9 +46,11 @@ export class AppModule {
         PassportModule.register({
           session: false,
         }),
-        EmailModule.forRoot(deps.mailClient),
         StorageModule.forRoot(deps.s3Client),
-        // HealthModule,
+        QueueModule.forRoot(deps.sqsClient, {
+          key: Queues.email,
+          queueUrl: Config.aws.sqs.emailQueueUrl,
+        }),
 
         TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
 

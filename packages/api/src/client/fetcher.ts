@@ -161,7 +161,6 @@ export class Fetcher {
       credentials: 'include',
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
         ...(this.options.authToken
           ? { Authorization: `Bearer ${this.options.authToken}` }
           : {}),

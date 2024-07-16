@@ -7,6 +7,14 @@ services:
     volumes:
       - ./.s3/:/fakes3_root/
 
+  elasticmq:
+    container_name: bottomtime-elasticmq
+    build:
+      context: ./
+      dockerfile: Dockerfile.elasticmq
+    ports:
+      - '9324:9324'
+
   postgres:
     image: postgis/postgis:14-3.4-alpine
     restart: always
@@ -36,10 +44,14 @@ services:
     env_file:
       - packages/service/.env
     environment:
-      - BT_AWS_S3_ENDPOINT=http://s3:4569
+      - BT_AWS_S3_ENDPOINT=http://s3:4569/
+      - BT_AWS_SQS_EMAIL_QUEUE_URL=http://elasticmq:9324/000000000000/emails
+      - BT_AWS_SQS_ENDPOINT=http://elasticmq:9324/
       - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
     depends_on:
       s3:
+        condition: service_started
+      elasticmq:
         condition: service_started
       postgres:
         condition: service_healthy

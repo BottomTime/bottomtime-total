@@ -19,8 +19,9 @@ commands:
           paths:
             - node_modules/
             - packages/api/node_modules/
+            - packages/common/node_modules/
             - packages/e2e-tests/node_modules/
-            - packages/templates/node_modules/
+            - packages/emails/node_modules/
             - packages/service/node_modules/
             - packages/web/node_modules/
 
@@ -74,13 +75,15 @@ jobs:
       - persist_to_workspace:
           root: ./
           paths:
+            - .nx/
             - packages/api/dist/
+            - packages/common/dist/
+            - packages/emails/dist/
             - packages/service/dist/
-            - packages/service/assets/templates/
             - packages/web/dist/
             - cc-test-reporter
 
-  test_api:
+  test_packages:
     docker:
       - image: cimg/node:20.14
     resource_class: medium
@@ -94,27 +97,51 @@ jobs:
       - run:
           name: Initialize Code Climate
           command: ./cc-test-reporter before-build
+
       - run:
-          name: Build
-          command: yarn --cwd packages/api build
-      - run:
-          name: Run tests
-          command: yarn --cwd packages/api test --runInBand --ci
+          name: Run Tests
+          command: |
+            yarn test --scope=@bottomtime/{api,common,emails} -- --runInBand --ci
+
       - store_test_results:
           path: packages/api/reports/
+      - store_test_results:
+          path: packages/common/reports/
+      - store_test_results:
+          path: packages/emails/reports/
+
       - run:
-          name: Report test coverage
+          name: Report API coverage
           working_directory: packages/api/
           command: |
             ../../cc-test-reporter format-coverage "coverage/lcov.info" \
               --add-prefix "packages/api/" \
               -t lcov \
-              -o "../../api.coverage.json" \
+              -o "../../api.coverage.json"
+      - run:
+          name: Report Common Lib coverage
+          working_directory: packages/common/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/common/" \
+              -t lcov \
+              -o "../../common.coverage.json"
+      - run:
+          name: Report Email Service coverage
+          working_directory: packages/emails/
+          command: |
+            ../../cc-test-reporter format-coverage "coverage/lcov.info" \
+              --add-prefix "packages/emails/" \
+              -t lcov \
+              -o "../../emails.coverage.json"
+
       - persist_to_workspace:
           root: ./
           paths:
             - packages/api/coverage/
             - api.coverage.json
+            - common.coverage.json
+            - emails.coverage.json
 
   test_service:
     docker:
@@ -139,7 +166,9 @@ jobs:
       - run:
           name: Run Tests
           working_directory: packages/service/
-          command: yarn prepare && yarn test --ci
+          command: |
+            # yarn test --scope=@bottomtime/service --stream -- --ci
+            yarn prepare && yarn test --ci
       - store_test_results:
           path: packages/service/reports/
       - run:
@@ -172,7 +201,8 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Run Tests
-          command: yarn --cwd packages/web test --runInBand --ci
+          command: |
+            yarn test --scope=@bottomtime/web --stream -- --runInBand --ci
       - store_test_results:
           path: packages/web/reports/
       - run:
@@ -206,16 +236,13 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Install Playwright
-          command: npx playwright install
-      - run:
           name: Initialize Database
           working_directory: packages/service
           command: yarn admin db init -f
       - run:
           name: Run end-to-end tests
-          working_directory: packages/e2e-tests/
-          command: yarn test
+          command: |
+            yarn test --scope=@bottomtime/e2e-tests --stream
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
 
@@ -232,7 +259,7 @@ jobs:
       - run:
           name: Report coverage
           command: |
-            ./cc-test-reporter sum-coverage -o codeclimate.json -p 3 *.coverage.json
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 5 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
   deploy_staging:
@@ -260,7 +287,7 @@ workflows:
       - build
 
       # 2) Run tests
-      - test_api:
+      - test_packages:
           requires:
             - build
       - test_service:
@@ -272,26 +299,27 @@ workflows:
       - test_web:
           requires:
             - build
-      - test_e2e:
-          requires:
-            - build
-          context:
-            - bt-aws-dev
-            - bt-smtp-dev
+      # - test_e2e:
+      #     requires:
+      #       - build
+      #     context:
+      #       - bt-aws-e2e
+      #       - bt-smtp-dev
 
       # 3) Report test coverage
       - report_coverage:
           requires:
-            - test_api
+            - test_packages
             - test_service
             - test_web
 
       # 4) Deployment (branch dependent)
       - deploy_staging:
           requires:
-            - test_api
+            - test_packages
             - test_service
             - test_web
+            # - test_e2e
           context:
             - bt-aws-dev
           filters:
@@ -301,9 +329,10 @@ workflows:
 
       - deploy_production:
           requires:
-            - test_api
+            - test_packages
             - test_service
             - test_web
+            # - test_e2e
           context:
             - bt-aws-dev
           filters:

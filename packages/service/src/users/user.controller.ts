@@ -17,8 +17,10 @@ import {
   VerifyEmailParamsDTO,
   VerifyEmailParamsSchema,
 } from '@bottomtime/api';
+import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -37,8 +39,9 @@ import { z } from 'zod';
 
 import { AssertAuth } from '../auth';
 import { User } from '../auth/user';
+import { Queues } from '../common';
 import { Config } from '../config';
-import { EmailService, EmailType } from '../email';
+import { InjectQueue, Queue } from '../queue';
 import { ZodValidator } from '../zod-validator';
 import { AssertAccountOwner } from './assert-account-owner.guard';
 import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
@@ -50,8 +53,8 @@ export class UserController {
     @Inject(UsersService)
     private readonly users: UsersService,
 
-    @Inject(EmailService)
-    private readonly emailService: EmailService,
+    @InjectQueue(Queues.email)
+    private readonly emailQueue: Queue,
   ) {}
 
   /**
@@ -621,13 +624,23 @@ export class UserController {
     const verifyEmailUrl = new URL('/verifyEmail', Config.baseUrl);
     verifyEmailUrl.search = search.toString();
 
-    const emailBody = await this.emailService.generateMessageContent({
-      type: EmailType.VerifyEmail,
-      title,
-      user,
-      verifyEmailUrl: verifyEmailUrl.toString(),
-    });
-    await this.emailService.sendMail({ to: [user.email!] }, title, emailBody);
+    const emailMessage: EmailQueueMessage = {
+      to: { to: user.email },
+      subject: title,
+      options: {
+        type: EmailType.VerifyEmail,
+        title,
+        user: {
+          username: user.username,
+          email: user.email,
+          profile: {
+            name: user.profile.name || `@${user.username}`,
+          },
+        },
+        verifyEmailUrl: verifyEmailUrl.toString(),
+      },
+    };
+    await this.emailQueue.add(JSON.stringify(emailMessage));
 
     return { succeeded: true };
   }
@@ -727,6 +740,14 @@ export class UserController {
    *         description: |
    *           The request was successfully received. If the user has an email address set on their account, then an email will
    *           be sent to that address with a password reset token (and a link to use it!)
+   *       "400":
+   *         description: |
+   *           The request failed because the user does not have an email address set on their account. The service would not be
+   *           able to deliver the password reset token to the user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
    *       "500":
    *         description: |
    *           The request failed because of an internal server error.
@@ -739,19 +760,35 @@ export class UserController {
   @HttpCode(204)
   @UseGuards(AssertTargetUser)
   async requestPasswordReset(@TargetUser() user: User): Promise<void> {
+    if (!user.email) {
+      throw new BadRequestException(
+        'Unable to process request. User does not have an email address set on their account.',
+      );
+    }
+
     const title = 'Reset Your Password';
     const token = await user.requestPasswordResetToken();
 
     const search = new URLSearchParams({ user: user.username, token });
     const resetPasswordUrl = new URL('/resetPassword', Config.baseUrl);
     resetPasswordUrl.search = search.toString();
-    const emailBody = await this.emailService.generateMessageContent({
-      type: EmailType.ResetPassword,
-      title,
-      user,
-      resetPasswordUrl: resetPasswordUrl.toString(),
-    });
-    await this.emailService.sendMail({ to: [user.email!] }, title, emailBody);
+    const queueMessage: EmailQueueMessage = {
+      to: { to: user.email },
+      subject: title,
+      options: {
+        type: EmailType.ResetPassword,
+        title,
+        user: {
+          username: user.username,
+          email: user.email,
+          profile: {
+            name: user.profile.name || `@${user.username}`,
+          },
+        },
+        resetPasswordUrl: resetPasswordUrl.toString(),
+      },
+    };
+    await this.emailQueue.add(JSON.stringify(queueMessage));
   }
 
   /**

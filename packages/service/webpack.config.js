@@ -20,17 +20,6 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
-      {
-        test: /\.(html)$/,
-        type: 'asset/resource',
-      },
-
-      // "Fix" for issues while bundling @nestjs/terminus package.
-      // See https://github.com/nestjs/terminus/issues/1423
-      {
-        test: /@nestjs\/terminus\/dist\/utils\/.*(\.js\.map|\.d\.ts)$/,
-        loader: 'null-loader',
-      },
     ],
   },
   resolve: {
