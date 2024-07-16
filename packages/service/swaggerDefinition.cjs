@@ -19,6 +19,14 @@ module.exports = {
       url: 'http://localhost:4800',
       description: 'Local development server',
     },
+    {
+      url: 'https://api-staging.bottomti.me/',
+      description: 'Staging server',
+    },
+    {
+      url: 'https://api.bottomti.me/',
+      description: 'Production server',
+    },
   ],
   tags: [
     {

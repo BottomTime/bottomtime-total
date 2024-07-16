@@ -72,3 +72,14 @@ data "aws_iam_policy_document" "s3_cf_docs_policy" {
     }
   }
 }
+
+resource "aws_s3_bucket_acl" "docs" {
+  depends_on = [aws_s3_bucket_ownership_controls.docs]
+  bucket     = aws_s3_bucket.docs.id
+  acl        = "private"
+}
+
+resource "aws_s3_bucket_policy" "docs" {
+  bucket = aws_s3_bucket.docs.id
+  policy = data.aws_iam_policy_document.s3_cf_docs_policy.json
+}
