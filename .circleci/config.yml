@@ -259,7 +259,7 @@ jobs:
       - run:
           name: Report coverage
           command: |
-            ./cc-test-reporter sum-coverage -o codeclimate.json -p 3 *.coverage.json
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 5 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
   deploy_staging:
