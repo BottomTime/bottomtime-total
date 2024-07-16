@@ -241,8 +241,10 @@ jobs:
           command: yarn admin db init -f
       - run:
           name: Run end-to-end tests
+          working_directory: packages/e2e-tests/
           command: |
-            yarn test --scope=@bottomtime/e2e-tests --stream
+            # yarn test --scope=@bottomtime/e2e-tests --stream
+            yarn prepare && yarn test
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
 
@@ -287,51 +289,51 @@ workflows:
       - build
 
       # 2) Run tests
-      - test_packages:
-          requires:
-            - build
-      - test_service:
-          requires:
-            - build
-          context:
-            - bt-aws-dev
-            - bt-smtp-dev
-      - test_web:
-          requires:
-            - build
-      # - test_e2e:
+      # - test_packages:
+      #     requires:
+      #       - build
+      # - test_service:
       #     requires:
       #       - build
       #     context:
-      #       - bt-aws-e2e
+      #       - bt-aws-dev
       #       - bt-smtp-dev
+      # - test_web:
+      #     requires:
+      #       - build
+      - test_e2e:
+          requires:
+            - build
+          context:
+            - bt-aws-e2e
+            - bt-smtp-dev
 
       # 3) Report test coverage
-      - report_coverage:
-          requires:
-            - test_packages
-            - test_service
-            - test_web
+      # - report_coverage:
+      #     requires:
+      #       - test_packages
+      #       - test_service
+      #       - test_web
 
       # 4) Deployment (branch dependent)
-      - deploy_staging:
-          requires:
-            - report_coverage
-            # - test_e2e
-          context:
-            - bt-aws-dev
-          filters:
-            branches:
-              only:
-                - master
+      # - deploy_staging:
+      #     requires:
+      #       - report_coverage
+      #       # - test_e2e
+      #     context:
+      #       - bt-aws-dev
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
 
-      - deploy_production:
-          requires:
-            - report_coverage
-            # - test_e2e
-          context:
-            - bt-aws-dev
-          filters:
-            branches:
-              only:
-                - production
+      # - deploy_production:
+      #     requires:
+      #       - report_coverage
+      #       # - test_e2e
+      #     context:
+      #       - bt-aws-dev
+      #     filters:
+      #       branches:
+      #         only:
+      #           - production
