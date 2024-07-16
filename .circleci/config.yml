@@ -165,8 +165,10 @@ jobs:
           command: ./cc-test-reporter before-build
       - run:
           name: Run Tests
+          working_directory: packages/service/
           command: |
-            yarn test --scope=@bottomtime/service --stream -- --ci
+            # yarn test --scope=@bottomtime/service --stream -- --ci
+            yarn prepare && yarn test --ci
       - store_test_results:
           path: packages/service/reports/
       - run:
@@ -257,7 +259,7 @@ jobs:
       - run:
           name: Report coverage
           command: |
-            ./cc-test-reporter sum-coverage -o codeclimate.json -p 3 *.coverage.json
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 5 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
   deploy_staging:
@@ -314,9 +316,7 @@ workflows:
       # 4) Deployment (branch dependent)
       - deploy_staging:
           requires:
-            - test_packages
-            - test_service
-            - test_web
+            - report_coverage
             # - test_e2e
           context:
             - bt-aws-dev
@@ -327,9 +327,7 @@ workflows:
 
       - deploy_production:
           requires:
-            - test_packages
-            - test_service
-            - test_web
+            - report_coverage
             # - test_e2e
           context:
             - bt-aws-dev
