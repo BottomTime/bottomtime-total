@@ -60,12 +60,12 @@ services:
         - action: rebuild
           path: packages/service/yarn.lock
           target: /app/packages/service/yarn.lock
-        - action: sync
-          path: packages/service/public/docs/swagger.json
-          target: /app/packages/service/public/docs/swagger.json
         - action: rebuild
           path: packages/api/src
           target: /app/packages/api/src
+        - action: rebuild
+          path: packages/common/src
+          target: /app/packages/common/src
         - action: sync
           path: packages/service/src
           target: /app/packages/service/src
@@ -122,15 +122,6 @@ services:
       - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
     develop:
       watch:
-        - action: rebuild
-          path: packages/service/yarn.lock
-          target: /app/packages/service/yarn.lock
         - action: sync
           path: packages/service/public/docs/swagger.json
-          target: /app/packages/service/public/docs/swagger.json
-        - action: rebuild
-          path: packages/api/src
-          target: /app/packages/api/src
-        - action: sync
-          path: packages/service/src
-          target: /app/packages/service/src
+          target: /usr/share/nginx/html/swagger.json
