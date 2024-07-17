@@ -1,5 +1,6 @@
 services:
   s3:
+    container_name: bottomtime-s3
     image: lphoward/fake-s3
     restart: always
     ports:
@@ -16,6 +17,7 @@ services:
       - '9324:9324'
 
   postgres:
+    container_name: bottomtime-postgres
     image: postgis/postgis:14-3.4-alpine
     restart: always
     environment:

@@ -124,7 +124,7 @@ export default defineConfig({
       },
       timeout: 30000,
       reuseExistingServer: true,
-      stdout: 'pipe',
+      // stdout: 'pipe',
     },
     {
       command: 'yarn dev',
@@ -139,7 +139,7 @@ export default defineConfig({
       },
       timeout: 30000,
       reuseExistingServer: true,
-      stdout: 'pipe',
+      // stdout: 'pipe',
     },
   ],
 });

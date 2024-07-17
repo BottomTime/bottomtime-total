@@ -236,10 +236,6 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Initialize Database
-          working_directory: packages/service
-          command: yarn admin db init -f
-      - run:
           name: Run end-to-end tests
           working_directory: packages/e2e-tests/
           command: |
