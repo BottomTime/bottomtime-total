@@ -227,13 +227,8 @@ jobs:
   test_e2e:
     docker:
       - image: cimg/node:20.14-browsers
-      - image: postgis/postgis:14-3.4
-        environment:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: bt_user
-          POSTGRES_PASSWORD: bt_admin1234
     environment:
-      BT_POSTGRES_TEST_URI: 'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_e2e'
+      BT_POSTGRES_TEST_URI: $BT_POSTGRES_URI
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
