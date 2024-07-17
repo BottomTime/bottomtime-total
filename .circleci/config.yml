@@ -236,14 +236,14 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Initialize Database
-          working_directory: packages/service
-          command: yarn admin db init -f
-      - run:
           name: Run end-to-end tests
+          working_directory: packages/e2e-tests/
           command: |
-            yarn test --scope=@bottomtime/e2e-tests --stream
+            # yarn test --scope=@bottomtime/e2e-tests --stream
+            yarn prepare && yarn test
       - store_test_results:
+          path: ./packages/e2e-tests/test-results/
+      - store_artifacts:
           path: ./packages/e2e-tests/test-results/
 
   report_coverage:
@@ -299,12 +299,12 @@ workflows:
       - test_web:
           requires:
             - build
-      # - test_e2e:
-      #     requires:
-      #       - build
-      #     context:
-      #       - bt-aws-e2e
-      #       - bt-smtp-dev
+      - test_e2e:
+          requires:
+            - build
+          context:
+            - bt-aws-e2e
+            - bt-smtp-dev
 
       # 3) Report test coverage
       - report_coverage:
@@ -317,7 +317,7 @@ workflows:
       - deploy_staging:
           requires:
             - report_coverage
-            # - test_e2e
+            - test_e2e
           context:
             - bt-aws-dev
           filters:
@@ -328,7 +328,7 @@ workflows:
       - deploy_production:
           requires:
             - report_coverage
-            # - test_e2e
+            - test_e2e
           context:
             - bt-aws-dev
           filters:

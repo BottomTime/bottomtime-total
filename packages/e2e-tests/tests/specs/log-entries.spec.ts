@@ -1,5 +1,7 @@
 import { CreateOrUpdateLogEntryParamsDTO, DepthUnit } from '@bottomtime/api';
 
+import dayjs from 'dayjs';
+
 import { expect, test } from '../fixtures';
 
 const Username = 'Johnny_Diver';
@@ -30,6 +32,7 @@ test.describe('Log Entries', () => {
   });
 
   test('will allow a user to create a log entry', async ({
+    api,
     page,
     logEntries,
   }) => {
@@ -39,7 +42,10 @@ test.describe('Log Entries', () => {
 
     await page.getByTestId('log-number').clear();
     await page.getByTestId('log-number').fill(TestData.logNumber!.toString());
-    await page.getByLabel('Datepicker input').fill(TestData.entryTime.date);
+    await page
+      .getByPlaceholder('Select entry time')
+      .fill(dayjs(TestData.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'));
+    await page.getByPlaceholder('Select entry time').press('Tab');
     await page
       .getByTestId('entry-time-timezone')
       .selectOption(TestData.entryTime.timezone);
@@ -52,14 +58,25 @@ test.describe('Log Entries', () => {
     await page.getByTestId('notes').fill(TestData.notes!);
     await page.getByTestId('save-entry').click();
 
-    await page.waitForURL(`**/logbook/${Username}/*`);
+    await page.waitForURL(new RegExp(`.*/logbook/${Username}/(?!new).*`));
+
+    const logEntryId = page.url().split('/').pop()!;
+    const entry = await api.logEntries.getLogEntry(Username, logEntryId);
+    expect(entry.logNumber).toBe(TestData.logNumber);
+    expect(entry.entryTime.date).toBe(TestData.entryTime.date);
+    expect(entry.entryTime.timezone).toBe(TestData.entryTime.timezone);
+    expect(entry.duration).toBe(TestData.duration);
+    expect(entry.bottomTime).toBe(TestData.bottomTime);
+    expect(entry.maxDepth?.depth).toBe(TestData.maxDepth!.depth);
+    expect(entry.maxDepth?.unit).toBe(TestData.maxDepth!.unit);
+    expect(entry.notes).toBe(TestData.notes);
 
     await expect(page.getByTestId('log-number')).toHaveValue(
       TestData.logNumber!.toString(),
     );
-    // await expect(page.getByLabel('Datepicker input')).toHaveValue(
-    //   TestData.entryTime.date,
-    // );
+    await expect(page.getByPlaceholder('Select entry time')).toHaveValue(
+      dayjs(TestData.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
+    );
     await expect(page.getByTestId('entry-time-timezone')).toHaveValue(
       TestData.entryTime.timezone,
     );
@@ -98,9 +115,9 @@ test.describe('Log Entries', () => {
     await expect(page.getByTestId('log-number')).toHaveValue(
       TestData.logNumber!.toString(),
     );
-    // await expect(page.getByLabel('Datepicker input')).toHaveValue(
-    //   TestData.entryTime.date,
-    // );
+    await expect(page.getByPlaceholder('Select entry time')).toHaveValue(
+      dayjs(TestData.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
+    );
     await expect(page.getByTestId('entry-time-timezone')).toHaveValue(
       TestData.entryTime.timezone,
     );

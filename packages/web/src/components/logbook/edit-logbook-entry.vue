@@ -81,7 +81,7 @@
               control-id="entryTimeTimezone"
               test-id="entry-time-timezone"
               mode="datetime"
-              placeholder="Select entry time"
+              placeholder="Select timezone"
               :options="timezones"
             />
           </div>

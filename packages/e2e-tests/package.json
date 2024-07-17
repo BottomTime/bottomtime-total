@@ -8,15 +8,17 @@
   "private": true,
   "scripts": {
     "generate": "playwright codegen http://localhost:4850",
-    "prepare": "playwright install",
+    "prepare": "playwright install --with-deps",
     "test": "playwright test"
   },
   "dependencies": {
     "@bottomtime/service": "workspace:*",
     "@bottomtime/web": "workspace:*",
-    "@playwright/test": "^1.41.2",
+    "@playwright/test": "^1.45.2",
     "bcryptjs": "^2.4.3",
+    "dayjs": "^1.11.10",
     "jsonwebtoken": "^9.0.2",
+    "lru-cache": "^6.0.0",
     "pg": "^8.11.3",
     "typescript": "^5.4.2"
   },
