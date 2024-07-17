@@ -3,10 +3,17 @@ import { createLogger } from '@bottomtime/common';
 import serverless from '@codegenie/serverless-express';
 
 import { Callback, Context, Handler } from 'aws-lambda';
+import dayjs from 'dayjs';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import 'reflect-metadata';
 
 import { Config } from './config';
 import { createApp } from './create-app';
 import { createDependencies } from './create-dependencies';
+
+dayjs.extend(tz);
+dayjs.extend(utc);
 
 const logger = createLogger(Config.logLevel);
 let cachedServer: Handler;
