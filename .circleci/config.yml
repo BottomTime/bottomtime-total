@@ -229,7 +229,7 @@ jobs:
       - image: cimg/node:20.14-browsers
     resource_class: medium
     environment:
-      BT_POSTGRES_TEST_URI: $BT_POSTGRES_URI
+      BT_POSTGRES_REQUIRE_SSL: 'true'
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
