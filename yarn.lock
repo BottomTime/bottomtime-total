@@ -2679,6 +2679,7 @@ __metadata:
     "@playwright/test": "npm:^1.45.2"
     "@types/bcryptjs": "npm:^2.4.6"
     bcryptjs: "npm:^2.4.3"
+    dayjs: "npm:^1.11.10"
     jsonwebtoken: "npm:^9.0.2"
     lru-cache: "npm:^6.0.0"
     pg: "npm:^8.11.3"

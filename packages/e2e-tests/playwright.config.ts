@@ -46,6 +46,9 @@ export default defineConfig({
 
     /* Capture screenshots on failed tests. */
     screenshot: 'only-on-failure',
+
+    /* Retain videos on failed tests. */
+    video: 'retain-on-failure',
   },
 
   /* Configure projects for major browsers */

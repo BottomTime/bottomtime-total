@@ -38,19 +38,22 @@
         :error="v$.newPassword.$errors[0]?.$message"
         required
       >
-        <FormTextBox
-          ref="newPasswordInput"
-          v-model="data.newPassword"
-          control-id="newPassword"
-          :maxlength="50"
-          test-id="newPassword"
-          :invalid="v$.newPassword.$error"
-          :autofocus="!requireOldPassword"
-          :password="!state.showPassword"
-          show-right
-          @right-button-click="onToggleShowPassword"
-        >
-          <template #right>
+        <div class="relative">
+          <FormTextBox
+            ref="newPasswordInput"
+            v-model="data.newPassword"
+            control-id="newPassword"
+            :maxlength="50"
+            test-id="newPassword"
+            :invalid="v$.newPassword.$error"
+            :autofocus="!requireOldPassword"
+            :password="!state.showPassword"
+          />
+
+          <button
+            class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
+            @click.prevent="onToggleShowPassword"
+          >
             <div
               class="dark:text-grey-950"
               :aria-label="
@@ -65,8 +68,8 @@
                 <i class="fas fa-eye"></i>
               </span>
             </div>
-          </template>
-        </FormTextBox>
+          </button>
+        </div>
       </FormField>
 
       <FormField

@@ -16,6 +16,7 @@
     "@bottomtime/web": "workspace:*",
     "@playwright/test": "^1.45.2",
     "bcryptjs": "^2.4.3",
+    "dayjs": "^1.11.10",
     "jsonwebtoken": "^9.0.2",
     "lru-cache": "^6.0.0",
     "pg": "^8.11.3",
