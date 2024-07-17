@@ -37,8 +37,13 @@ commands:
     steps:
       - aws-cli/install
       - checkout
+      - yarn_install
       - attach_workspace:
           at: ./
+      - run:
+          name: Migrate Database
+          working_directory: packages/service/
+          command: yarn migrate:up
       - terraform/install:
           terraform_version: '1.9.1'
       - terraform/init:
@@ -264,7 +269,9 @@ jobs:
 
   deploy_staging:
     docker:
-      - image: cimg/base:2024.06
+      - image: cimg/node:20.14
+    environment:
+      BT_POSTGRES_REQUIRE_SSL: 'true'
     resource_class: medium
     steps:
       - deploy_env:
@@ -273,7 +280,9 @@ jobs:
 
   deploy_production:
     docker:
-      - image: cimg/base:2024.06
+      - image: cimg/node:20.14
+    environment:
+      BT_POSTGRES_REQUIRE_SSL: 'true'
     resource_class: medium
     steps:
       - deploy_env:
@@ -285,6 +294,12 @@ workflows:
     jobs:
       # 1) Iniitialize and build
       - build
+      # - deploy_e2e:
+      #     requires:
+      #       - build
+      #     context:
+      #       - bt-aws-e2e
+      #       - bt-smtp-dev
 
       # 2) Run tests
       - test_packages:
@@ -320,6 +335,7 @@ workflows:
             - test_e2e
           context:
             - bt-aws-dev
+            - bt-postgres-staging
           filters:
             branches:
               only:
@@ -331,6 +347,7 @@ workflows:
             - test_e2e
           context:
             - bt-aws-dev
+            - bt-postgres-prod
           filters:
             branches:
               only:
