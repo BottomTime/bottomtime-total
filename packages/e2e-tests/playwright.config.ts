@@ -5,6 +5,7 @@ import { getSessionSecret } from './tests/fixtures/jwt';
 import { PostgresFixture } from './tests/fixtures/postgres.fixture';
 
 const CookieName = 'bottomtime.e2e';
+const IsCI = !!process.env.CI;
 
 /**
  * Read environment variables from file.
@@ -24,10 +25,10 @@ export default defineConfig({
   fullyParallel: false,
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  forbidOnly: IsCI,
 
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: IsCI ? 2 : 0,
 
   /* Use a single worker process. */
   workers: 1,
@@ -92,7 +93,7 @@ export default defineConfig({
       url: 'http://localhost:4801/',
       cwd: '../service',
       env: {
-        ...(process.env.CIRCLECI === 'true'
+        ...(IsCI
           ? {
               AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
               AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',

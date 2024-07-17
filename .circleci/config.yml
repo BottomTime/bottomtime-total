@@ -243,6 +243,8 @@ jobs:
             yarn prepare && yarn test
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
+      - store_artifacts:
+          path: ./packages/e2e-tests/test-results/
 
   report_coverage:
     docker:

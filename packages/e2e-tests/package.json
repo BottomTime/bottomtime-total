@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "generate": "playwright codegen http://localhost:4850",
-    "prepare": "playwright install",
+    "prepare": "playwright install --with-deps",
     "test": "playwright test"
   },
   "dependencies": {
