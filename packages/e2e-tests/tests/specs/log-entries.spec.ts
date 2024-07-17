@@ -43,6 +43,7 @@ test.describe('Log Entries', () => {
     await page
       .getByTestId('entry-time-timezone')
       .selectOption(TestData.entryTime.timezone);
+    await page.screenshot();
     await page.getByTestId('duration').fill(TestData.duration!.toString());
     await page.getByTestId('bottomTime').fill(TestData.bottomTime!.toString());
     await page

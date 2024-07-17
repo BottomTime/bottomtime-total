@@ -28,7 +28,7 @@ export default defineConfig({
   forbidOnly: IsCI,
 
   /* Retry on CI only */
-  retries: IsCI ? 2 : 0,
+  retries: 0, // IsCI ? 2 : 0,
 
   /* Use a single worker process. */
   workers: 1,
