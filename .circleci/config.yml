@@ -267,6 +267,17 @@ jobs:
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 5 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
+  deploy_e2e:
+    docker:
+      - image: cimg/node:20.14
+    environment:
+      BT_POSTGRES_REQUIRE_SSL: 'true'
+    resource_class: medium
+    steps:
+      - deploy_env:
+          state_key: $AWS_REGION.e2e.tfvars
+          var_file: vars/e2e.tfvars
+
   deploy_staging:
     docker:
       - image: cimg/node:20.14
@@ -294,12 +305,12 @@ workflows:
     jobs:
       # 1) Iniitialize and build
       - build
-      # - deploy_e2e:
-      #     requires:
-      #       - build
-      #     context:
-      #       - bt-aws-e2e
-      #       - bt-smtp-dev
+      - deploy_e2e:
+          requires:
+            - build
+          context:
+            - bt-aws-dev
+            - bt-postgres-e2e
 
       # 2) Run tests
       - test_packages:
@@ -317,6 +328,7 @@ workflows:
       - test_e2e:
           requires:
             - build
+            - deploy_e2e
           context:
             - bt-aws-e2e
             - bt-smtp-dev
