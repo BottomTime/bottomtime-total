@@ -311,6 +311,7 @@ workflows:
           context:
             - bt-aws-dev
             - bt-postgres-e2e
+            - bt-smtp-dev
 
       # 2) Run tests
       - test_packages:
@@ -327,7 +328,6 @@ workflows:
             - build
       - test_e2e:
           requires:
-            - build
             - deploy_e2e
           context:
             - bt-aws-e2e
@@ -348,6 +348,7 @@ workflows:
           context:
             - bt-aws-dev
             - bt-postgres-staging
+            - bt-smtp-dev
           filters:
             branches:
               only:
@@ -360,6 +361,7 @@ workflows:
           context:
             - bt-aws-dev
             - bt-postgres-prod
+            - bt-smtp-dev
           filters:
             branches:
               only:
