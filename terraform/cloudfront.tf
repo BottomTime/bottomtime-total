@@ -218,3 +218,10 @@ resource "aws_cloudfront_distribution" "docs" {
     Purpose     = "API documentation for Bottom Time platform"
   }
 }
+
+resource "aws_cloudfront_public_key" "secure_site" {
+  count = var.allow_public_access ? 0 : 1
+
+  encoded_key = tls_private_key.web_rsa_key.public_key_pem
+  name        = "bt-web-${var.env}-public-key"
+}

@@ -18,5 +18,8 @@ web_domain        = "dev"
 # This needs to match the name of the AWS Secrets Manager secret created for the current environment.
 secret_name = "bt-service-dev-us-east-1-secrets"
 
+# Uncomment the following variable if you want the environment to be publicly accessible. Otherwise, a signed cookie will be required for all requests.
+# allow_public_access = true
+
 # Optional variables
 # password_salt_rounds = 12

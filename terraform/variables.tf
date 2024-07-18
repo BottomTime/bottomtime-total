@@ -3,6 +3,12 @@ variable "admin_email" {
   type        = string
 }
 
+variable "allow_public_access" {
+  description = "Indicates whether the environment should be publicly accessible using the endpoint URLs. If this is false, then a signed cookie will be required for all requests."
+  type        = bool
+  default     = false
+}
+
 variable "api_domain" {
   description = "The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)"
   type        = string
