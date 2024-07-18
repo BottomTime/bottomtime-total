@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthModule } from '../auth';
 import {
   FriendshipEntity,
   NotificationEntity,
@@ -14,6 +13,7 @@ import { NotificationsService } from './notifications.service';
 import { UserAvatarController } from './user-avatar.controller';
 import { UserCustomDataController } from './user-custom-data.controller';
 import { UserCustomDataService } from './user-custom-data.service';
+import { UserFactory } from './user-factory';
 import { UserController } from './user.controller';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -27,9 +27,13 @@ import { UsersService } from './users.service';
       NotificationEntity,
     ]),
     StorageModule.forFeature(),
-    AuthModule,
   ],
-  providers: [UsersService, NotificationsService, UserCustomDataService],
+  providers: [
+    UsersService,
+    UserFactory,
+    NotificationsService,
+    UserCustomDataService,
+  ],
   controllers: [
     UsersController,
     UserController,
@@ -37,6 +41,6 @@ import { UsersService } from './users.service';
     NotificationsController,
     UserAvatarController,
   ],
-  exports: [UsersService, NotificationsService],
+  exports: [UsersService, UserFactory, NotificationsService],
 })
 export class UsersModule {}

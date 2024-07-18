@@ -2,8 +2,8 @@ import { UnauthorizedException } from '@nestjs/common';
 
 import { randomBytes } from 'crypto';
 
+import { User } from '../../users';
 import { CreateLinkedAccountOptions, OAuthService } from '../oauth.service';
-import { User } from '../user';
 
 export function generateUsername(provider: string): string {
   const suffix = randomBytes(6).toString('base64url');

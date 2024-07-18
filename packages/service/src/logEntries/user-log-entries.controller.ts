@@ -26,10 +26,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth } from '../auth';
 import { DiveSite, DiveSitesService } from '../diveSites';
 import {
   AssertAccountOwner,
+  AssertAuth,
   AssertTargetUser,
   TargetUser,
   User,

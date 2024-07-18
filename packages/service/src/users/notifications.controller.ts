@@ -20,18 +20,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAdmin, AssertAuth } from '../auth';
-import { User } from '../auth/user';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
-import { AssertAccountOwner } from './assert-account-owner.guard';
 import {
+  AssertAdmin,
+  AssertAuth,
   AssertTargetNotification,
+  AssertTargetUser,
   TargetNotification,
-} from './assert-target-notification.guard';
-import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+  TargetUser,
+} from './guards';
+import { AssertAccountOwner } from './guards/assert-account-owner.guard';
 import { Notification } from './notification';
 import { NotificationsService } from './notifications.service';
+import { User } from './user';
 
 const UsernameParam = 'username';
 const NotificationIdParamName = 'notificationId';

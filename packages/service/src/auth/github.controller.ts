@@ -2,10 +2,10 @@ import { Controller, Get, Inject, Res, UseGuards } from '@nestjs/common';
 
 import { Response } from 'express';
 
+import { User } from '../users';
+import { CurrentUser } from '../users/current-user';
 import { AuthService } from './auth.service';
-import { CurrentUser } from './current-user';
 import { GithubAuthGuard } from './strategies/github.strategy';
-import { User } from './user';
 
 @Controller('api/auth/github')
 export class GithubController {

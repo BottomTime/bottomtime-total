@@ -13,10 +13,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth, User } from '../auth';
 import { ZodValidator } from '../zod-validator';
-import { AssertAccountOwner } from './assert-account-owner.guard';
-import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+import {
+  AssertAccountOwner,
+  AssertAuth,
+  AssertTargetUser,
+  TargetUser,
+} from './guards';
+import { User } from './user';
 import { UserCustomDataService } from './user-custom-data.service';
 
 @Controller('/api/users/:username/customData')

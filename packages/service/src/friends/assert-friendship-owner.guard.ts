@@ -9,7 +9,7 @@ import {
 
 import { Observable } from 'rxjs';
 
-import { User } from '../auth/user';
+import { User } from '../users';
 
 @Injectable()
 export class AssertFriendshipOwner implements CanActivate {

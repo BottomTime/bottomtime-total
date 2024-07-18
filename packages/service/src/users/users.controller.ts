@@ -4,6 +4,7 @@ import {
   SearchProfilesResponseDTO,
   SearchUserProfilesParamsDTO,
   SearchUserProfilesParamsSchema,
+  UserDTO,
   UserRole,
 } from '@bottomtime/api';
 import { EmailQueueMessage, EmailType } from '@bottomtime/common';
@@ -17,20 +18,19 @@ import {
   Logger,
   Post,
   Query,
-  Res,
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 
-import { Response } from 'express';
 import { URL } from 'url';
 
-import { AssertAuth, AuthService, CurrentUser } from '../auth';
-import { User } from '../auth/user';
+import { CurrentUser } from '.';
 import { Queues } from '../common';
 import { Config } from '../config';
 import { InjectQueue, Queue } from '../queue';
 import { ZodValidator } from '../zod-validator';
+import { AssertAuth } from './guards';
+import { User } from './user';
 import { UsersService } from './users.service';
 
 @Controller('api/users')
@@ -40,9 +40,6 @@ export class UsersController {
   constructor(
     @Inject(UsersService)
     private readonly users: UsersService,
-
-    @Inject(AuthService)
-    private readonly authService: AuthService,
 
     @InjectQueue(Queues.email)
     private readonly emailQueue: Queue,
@@ -142,7 +139,7 @@ export class UsersController {
    *     summary: Create a New User
    *     operationId: createUser
    *     description: |
-   *       Creates a new user account and signs in the new user.
+   *       Creates a new user account.
    *     tags:
    *       - Users
    *     requestBody:
@@ -229,11 +226,10 @@ export class UsersController {
    */
   @Post()
   async createUser(
-    @Res() res: Response,
     @CurrentUser() currentUser: User | undefined,
     @Body(new ZodValidator<CreateUserParamsDTO>(CreateUserOptionsSchema))
     options: CreateUserParamsDTO,
-  ): Promise<void> {
+  ): Promise<UserDTO> {
     if (options.role && options.role !== UserRole.User) {
       if (!currentUser) {
         throw new UnauthorizedException(
@@ -278,15 +274,6 @@ export class UsersController {
       await this.emailQueue.add(JSON.stringify(queueMessage));
     }
 
-    // If the user is not currently signed in, sign them in as the new user.
-    // Exception: Don't do this for admins since they may just be provisioning new accounts for other users.
-    if (!currentUser || currentUser.role !== UserRole.Admin) {
-      await Promise.all([
-        this.authService.issueSessionCookie(user, res),
-        user.updateLastLogin(),
-      ]);
-    }
-
-    res.status(201).send(user.toJSON());
+    return user.toJSON();
   }
 }

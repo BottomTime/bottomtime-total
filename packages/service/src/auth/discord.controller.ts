@@ -2,10 +2,10 @@ import { Controller, Get, Inject, Res, UseGuards } from '@nestjs/common';
 
 import { Response } from 'express';
 
+import { User } from '../users';
+import { CurrentUser } from '../users/current-user';
 import { AuthService } from './auth.service';
-import { CurrentUser } from './current-user';
 import { DiscordAuthGuard } from './strategies/discord.strategy';
-import { User } from './user';
 
 @Controller('api/auth/discord')
 export class DiscordController {

@@ -228,6 +228,11 @@ export class User implements Express.User {
     return token;
   }
 
+  async checkPassword(password: string): Promise<boolean> {
+    if (!this.data.passwordHash) return false;
+    return await compare(password, this.data.passwordHash);
+  }
+
   validatePasswordResetToken(token: string): PasswordResetTokenStatus {
     if (
       !this.data.passwordResetToken ||

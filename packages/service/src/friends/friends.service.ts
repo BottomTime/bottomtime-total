@@ -22,8 +22,8 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, LessThan, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { User } from '../auth';
 import { FriendRequestEntity, FriendshipEntity, UserEntity } from '../data';
+import { User } from '../users';
 
 // List Friends Types
 export type Friend = FriendDTO;

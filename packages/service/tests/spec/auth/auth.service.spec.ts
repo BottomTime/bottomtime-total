@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { AuthService } from '../../../src/auth';
 import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
-import { User } from '../../../src/users';
+import { User, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createTestUser } from '../../utils';
 
@@ -32,11 +32,13 @@ function createJwtPayload(subject?: string, expired = false): JwtPayload {
 
 describe('Auth Service', () => {
   let Users: Repository<UserEntity>;
+  let usersService: UsersService;
   let service: AuthService;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
-    service = new AuthService(Users);
+    usersService = new UsersService(Users);
+    service = new AuthService(usersService);
   });
 
   describe('when validating a JWT', () => {

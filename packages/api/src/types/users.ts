@@ -60,6 +60,7 @@ export const PasswordStrengthSchema = z
 
 export const UpdateProfileParamsSchema = z
   .object({
+    avatar: z.string().trim().url().nullable(),
     bio: z.string().trim().max(1000).nullable(),
     experienceLevel: z.string().trim().max(50).nullable(),
     location: z.string().trim().max(50).nullable(),

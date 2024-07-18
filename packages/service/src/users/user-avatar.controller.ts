@@ -28,13 +28,16 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import 'multer';
 
-import { AssertAuth } from '../auth';
-import { User } from '../auth/user';
 import { ImageBuilder } from '../image-builder';
 import { StorageService } from '../storage';
 import { ZodValidator } from '../zod-validator';
-import { AssertAccountOwner } from './assert-account-owner.guard';
-import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+import {
+  AssertAccountOwner,
+  AssertAuth,
+  AssertTargetUser,
+  TargetUser,
+} from './guards';
+import { User } from './user';
 
 const AvatarSizes: ReadonlyArray<string> = ['32', '64', '128', '256'];
 const SizeParams = new Set(AvatarSizes.map((size) => `${size}x${size}`));

@@ -13,8 +13,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAdmin } from '../auth';
 import { FriendsService } from '../friends';
+import { AssertAdmin } from '../users';
 import { ZodValidator } from '../zod-validator';
 
 @Controller('api/admin/friendRequests')

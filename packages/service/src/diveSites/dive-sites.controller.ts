@@ -23,8 +23,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth, CurrentUser } from '../auth';
-import { User, UsersService } from '../users';
+import { AssertAuth, CurrentUser, User, UsersService } from '../users';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertDiveSiteWrite } from './assert-dive-site-write.guard';

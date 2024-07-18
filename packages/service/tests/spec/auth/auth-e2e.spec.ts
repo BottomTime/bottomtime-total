@@ -5,8 +5,8 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { User } from '../../../src/auth';
 import { UserEntity, UserOAuthEntity } from '../../../src/data';
+import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestUser } from '../../utils';
 import { createTestApp } from '../../utils/create-test-app';

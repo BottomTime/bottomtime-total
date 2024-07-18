@@ -16,6 +16,9 @@ export class UserProfile {
   get avatar(): string | undefined {
     return this.data.avatar || undefined;
   }
+  set avatar(value: string | undefined) {
+    this.data.avatar = value;
+  }
 
   get bio(): string | undefined {
     return this.data.bio || undefined;

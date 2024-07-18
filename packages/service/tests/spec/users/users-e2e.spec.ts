@@ -155,7 +155,7 @@ describe('Users End-to-End Tests', () => {
       jest.useRealTimers();
     });
 
-    it('will create a new account and sign in user', async () => {
+    it('will create a new account and send welcome email', async () => {
       const queueSpy = jest
         .spyOn(sqsClient, 'send')
         .mockResolvedValue({} as never);
@@ -193,10 +193,6 @@ describe('Users End-to-End Tests', () => {
       savedUser!.emailVerificationToken =
         'oqh6qlk1wQsFvYiGO__KK0ZlQcMc6CW6I08zPbsgLtM';
       expect(savedUser).toMatchSnapshot();
-
-      const { body: currentUser } = await agent.get('/api/auth/me').expect(200);
-      expect(currentUser).toMatchSnapshot();
-
       expect(queueSpy).toHaveBeenCalled();
 
       const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
@@ -225,9 +221,6 @@ describe('Users End-to-End Tests', () => {
       const savedUser = await Users.findOneBy({ id: user.id });
       expect(savedUser).not.toBeNull();
       expect(savedUser).toMatchSnapshot();
-
-      const { body: currentUser } = await agent.get('/api/auth/me').expect(200);
-      expect(currentUser).toMatchSnapshot();
     });
 
     it('will return a 400 response if the request body is invalid', async () => {

@@ -2749,7 +2749,6 @@ __metadata:
     "@types/mustache": "npm:^4.2.5"
     "@types/node": "npm:^18.13.0"
     "@types/passport": "npm:^1.0.12"
-    "@types/passport-anonymous": "npm:^1.0.5"
     "@types/passport-discord": "npm:^0.1.13"
     "@types/passport-github2": "npm:^1.2.5"
     "@types/passport-google-oauth20": "npm:^2.0.11"
@@ -2780,7 +2779,6 @@ __metadata:
     nodemon: "npm:^2.0.22"
     nodemon-webpack-plugin: "npm:^4.8.2"
     passport: "npm:^0.6.0"
-    passport-anonymous: "npm:^1.0.1"
     passport-discord: "npm:^0.1.4"
     passport-github2: "npm:^0.1.12"
     passport-google-oauth20: "npm:^2.0.0"
@@ -6641,15 +6639,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10c0/af42f19125e46fc0e9063e5560095aca5445895399c5073a6a28335d4b658dbed4975b470673cb61edf1a5eb79ba245a1f1d53f70a3e51645cfbbd93900cfbdd
-  languageName: node
-  linkType: hard
-
-"@types/passport-anonymous@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@types/passport-anonymous@npm:1.0.5"
-  dependencies:
-    "@types/passport": "npm:*"
-  checksum: 10c0/73e64318858020ee6c2b380fb828283de9fe537cc173103380882d85415f72aabc71ae9e8f0dba1b44fc491d7754712207d1bde55f9f15746f4bb9fecd59d3bc
   languageName: node
   linkType: hard
 
@@ -17592,15 +17581,6 @@ __metadata:
   version: 1.3.3
   resolution: "parseurl@npm:1.3.3"
   checksum: 10c0/90dd4760d6f6174adb9f20cf0965ae12e23879b5f5464f38e92fce8073354341e4b3b76fa3d878351efe7d01e617121955284cfd002ab087fba1a0726ec0b4f5
-  languageName: node
-  linkType: hard
-
-"passport-anonymous@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "passport-anonymous@npm:1.0.1"
-  dependencies:
-    passport-strategy: "npm:1.x.x"
-  checksum: 10c0/05ea59a3b379672eace4de7a0ca7834f816b74fb9edf5e9d751a682df0cfe90391aa564bfc9ec18d6bf3d469af337c600345823b8dc932107fe4160f5a20b563
   languageName: node
   linkType: hard
 

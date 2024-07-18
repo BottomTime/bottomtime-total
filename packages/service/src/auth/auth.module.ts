@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UserEntity, UserOAuthEntity } from '../data';
+import { UserOAuthEntity } from '../data';
+import { UsersModule } from '../users';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { DiscordController } from './discord.controller';
 import { GithubController } from './github.controller';
 import { GoogleController } from './google.controller';
 import { OAuthService } from './oauth.service';
-import { AnonymousStrategy } from './strategies/anon.strategy';
 import { DiscordStrategy } from './strategies/discord.strategy';
 import { GithubStrategy } from './strategies/github.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
@@ -18,15 +18,15 @@ import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, UserOAuthEntity]),
+    TypeOrmModule.forFeature([UserOAuthEntity]),
     PassportModule,
+    UsersModule,
   ],
   providers: [
     AuthService,
     OAuthService,
     LocalStrategy,
     JwtStrategy,
-    AnonymousStrategy,
 
     // OAuth
     DiscordStrategy,
@@ -41,6 +41,6 @@ import { LocalStrategy } from './strategies/local.strategy';
     GoogleController,
     GithubController,
   ],
-  exports: [AuthService, OAuthService, JwtStrategy, AnonymousStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

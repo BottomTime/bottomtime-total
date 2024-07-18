@@ -16,9 +16,9 @@ import { hash } from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { User } from '../auth/user';
 import { Config } from '../config';
 import { UserEntity } from '../data';
+import { User } from './user';
 import { UsersQueryBuilder } from './users-query-builder';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO & {
@@ -91,6 +91,7 @@ export class UsersService {
     data.username = options.username;
     data.usernameLowered = usernameLowered;
 
+    data.avatar = options.profile?.avatar ?? null;
     data.bio = options.profile?.bio ?? null;
     data.experienceLevel = options.profile?.experienceLevel ?? null;
     data.location = options.profile?.location ?? null;
@@ -147,5 +148,17 @@ export class UsersService {
       users: users.map((d) => new User(this.Users, d)),
       totalCount,
     };
+  }
+
+  async isUsernameTaken(username: string): Promise<boolean> {
+    return await this.Users.existsBy({
+      usernameLowered: username.toLowerCase(),
+    });
+  }
+
+  async isEmailTaken(email: string): Promise<boolean> {
+    return await this.Users.existsBy({
+      emailLowered: email.toLowerCase(),
+    });
   }
 }

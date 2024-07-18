@@ -37,14 +37,17 @@ import {
 
 import { z } from 'zod';
 
-import { AssertAuth } from '../auth';
-import { User } from '../auth/user';
 import { Queues } from '../common';
 import { Config } from '../config';
 import { InjectQueue, Queue } from '../queue';
 import { ZodValidator } from '../zod-validator';
-import { AssertAccountOwner } from './assert-account-owner.guard';
-import { AssertTargetUser, TargetUser } from './assert-target-user.guard';
+import {
+  AssertAccountOwner,
+  AssertAuth,
+  AssertTargetUser,
+  TargetUser,
+} from './guards';
+import { User } from './user';
 import { UsersService } from './users.service';
 
 @Controller('api/users/:username')

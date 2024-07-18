@@ -1,28 +1,22 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 
-import { compare } from 'bcryptjs';
 import { CookieOptions, Response } from 'express';
 import { JwtPayload, sign } from 'jsonwebtoken';
-import { Repository } from 'typeorm';
 
 import { Config } from '../config';
-import { UserEntity } from '../data';
-import { User } from './user';
+import { User, UsersService } from '../users';
 
 @Injectable()
 export class AuthService {
   private readonly log = new Logger(AuthService.name);
 
-  constructor(
-    @InjectRepository(UserEntity)
-    private readonly Users: Repository<UserEntity>,
-  ) {}
+  constructor(@Inject(UsersService) private readonly users: UsersService) {}
 
   async validateJwt(payload: JwtPayload): Promise<User> {
     if (!payload.sub) {
@@ -34,7 +28,7 @@ export class AuthService {
     }
 
     const userId = payload.sub.substring(5);
-    const user = await this.Users.findOneBy({ id: userId });
+    const user = await this.users.getUserById(userId);
 
     if (!user) {
       throw new UnauthorizedException(
@@ -48,32 +42,26 @@ export class AuthService {
       );
     }
 
-    return new User(this.Users, user);
+    return user;
   }
 
   async authenticateUser(
     usernameOrEmail: string,
     password: string,
   ): Promise<User | undefined> {
-    const lowered = usernameOrEmail.toLowerCase();
-    const data = await this.Users.findOneBy([
-      { usernameLowered: lowered },
-      { emailLowered: lowered },
-    ]);
+    const user = await this.users.getUserByUsernameOrEmail(usernameOrEmail);
 
-    if (!data || !data.passwordHash || data.isLockedOut) {
+    if (!user || !user.hasPassword || user.isLockedOut) {
       return undefined;
     }
 
-    const passwordMatches = await compare(password, data.passwordHash);
+    const passwordMatches = await user.checkPassword(password);
     if (!passwordMatches) {
       return undefined;
     }
 
-    data.lastLogin = new Date();
-    await this.Users.save(data);
-
-    return new User(this.Users, data);
+    await user.updateLastLogin();
+    return user;
   }
 
   async signJWT(subject: string): Promise<string> {

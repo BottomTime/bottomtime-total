@@ -1,23 +1,13 @@
-import {
-  CreateUserParamsDTO,
-  DepthUnit,
-  LogBookSharing,
-  PressureUnit,
-  TemperatureUnit,
-  UserRole,
-  WeightUnit,
-} from '@bottomtime/api';
+import { CreateUserParamsDTO } from '@bottomtime/api';
 
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { hash } from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { Config } from '../config';
 import { UserEntity, UserOAuthEntity } from '../data';
-import { User } from './user';
+import { User, UserFactory, UsersService } from '../users';
 
 export type OAuthAccount = {
   provider: string;
@@ -27,14 +17,13 @@ export type OAuthAccount = {
 export type CreateLinkedAccountOptions = CreateUserParamsDTO & {
   provider: string;
   providerId: string;
-  avatar?: string;
 };
 
 @Injectable()
 export class OAuthService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly users: Repository<UserEntity>,
+    @Inject(UsersService) private readonly users: UsersService,
+    @Inject(UserFactory) private readonly userFactory: UserFactory,
     @InjectRepository(UserOAuthEntity)
     private readonly oauth: Repository<UserOAuthEntity>,
   ) {}
@@ -49,7 +38,7 @@ export class OAuthService {
     });
 
     if (result) {
-      return new User(this.users, result.user);
+      return this.userFactory.createUser(result.user);
     }
 
     return undefined;
@@ -93,10 +82,7 @@ export class OAuthService {
   }
 
   async unlinkOAuthUser(username: string, provider: string): Promise<boolean> {
-    const user = await this.users.findOne({
-      where: { usernameLowered: username.trim().toLowerCase() },
-      select: { id: true },
-    });
+    const user = await this.users.getUserByUsernameOrEmail(username);
     if (!user) return false;
 
     const { affected } = await this.oauth.delete({
@@ -107,57 +93,26 @@ export class OAuthService {
   }
 
   async isUsernameTaken(username: string): Promise<boolean> {
-    return await this.users.existsBy({
-      usernameLowered: username.toLowerCase(),
-    });
+    return await this.users.isUsernameTaken(username);
   }
 
   async isEmailTaken(email: string): Promise<boolean> {
-    return await this.users.existsBy({
-      emailLowered: email.toLowerCase(),
-    });
+    return await this.users.isEmailTaken(email);
   }
 
   async createAccountWithOAuthLink(
     options: CreateLinkedAccountOptions,
   ): Promise<User> {
-    const user = new UserEntity();
     const oauthLink = new UserOAuthEntity();
 
-    user.id = uuid();
-    user.avatar = options.avatar ?? null;
-    user.bio = options.profile?.bio ?? null;
-    user.depthUnit = options.settings?.depthUnit ?? DepthUnit.Meters;
-    user.email = options.email ?? null;
-    user.emailLowered = options.email?.toLowerCase() ?? null;
-    user.emailVerified = false;
-    user.experienceLevel = options.profile?.experienceLevel ?? null;
-    user.isLockedOut = false;
-    user.location = options.profile?.location ?? null;
-    user.logBookSharing =
-      options.profile?.logBookSharing ?? LogBookSharing.Private;
-    user.memberSince = new Date();
-    user.name = options.profile?.name ?? null;
-    user.passwordHash = options.password
-      ? await hash(options.password, Config.passwordSaltRounds)
-      : null;
-    user.pressureUnit = options.settings?.pressureUnit ?? PressureUnit.Bar;
-    user.role = options.role ?? UserRole.User;
-    user.startedDiving = options.profile?.startedDiving ?? null;
-    user.temperatureUnit =
-      options.settings?.temperatureUnit ?? TemperatureUnit.Celsius;
-    user.username = options.username;
-    user.usernameLowered = options.username.toLowerCase();
-    user.weightUnit = options.settings?.weightUnit ?? WeightUnit.Kilograms;
+    const user = await this.users.createUser(options);
 
     oauthLink.id = uuid();
     oauthLink.provider = options.provider;
     oauthLink.providerId = options.providerId;
-    oauthLink.user = user;
+    oauthLink.user = user.toEntity();
 
-    await this.users.save(user);
     await this.oauth.save(oauthLink);
-
-    return new User(this.users, user);
+    return user;
   }
 }

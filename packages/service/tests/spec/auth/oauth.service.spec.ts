@@ -11,9 +11,9 @@ import { ConflictException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 
-import { User } from '../../../src/auth';
 import { OAuthService } from '../../../src/auth/oauth.service';
 import { UserEntity, UserOAuthEntity } from '../../../src/data';
+import { User, UserFactory, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createTestUser } from '../../utils/create-test-user';
 
@@ -24,13 +24,17 @@ describe('OAuth Service', () => {
   let userData: UserEntity;
   let Users: Repository<UserEntity>;
   let OAuth: Repository<UserOAuthEntity>;
+  let usersService: UsersService;
+  let userFactory: UserFactory;
   let service: OAuthService;
 
   beforeAll(() => {
     userData = createTestUser();
     Users = dataSource.getRepository(UserEntity);
     OAuth = dataSource.getRepository(UserOAuthEntity);
-    service = new OAuthService(Users, OAuth);
+    usersService = new UsersService(Users);
+    userFactory = new UserFactory(Users);
+    service = new OAuthService(usersService, userFactory, OAuth);
   });
 
   beforeEach(async () => {
@@ -196,10 +200,10 @@ describe('OAuth Service', () => {
       provider: Provider,
       providerId: ProviderId,
       username: 'shmoogleUser',
-      avatar: 'https://example.com/avatar.jpg',
       email: 'shmoogler_23@Email.org',
       password: 'Shmoogle123!',
       profile: {
+        avatar: 'https://example.com/avatar.jpg',
         bio: 'I am a Shmoogle user',
         experienceLevel: 'Advanced',
         location: 'Shmoogleville',

@@ -59,6 +59,13 @@
  *     UpdateProfile:
  *       type: object
  *       properties:
+ *         avatar:
+ *           title: Avatar
+ *           description: A URL to an image that can be displayed as the diver's avatar.
+ *           type: string
+ *           format: url
+ *           maxlength: 150
+ *           example: https://example.com/avatar.png
  *         bio:
  *           title: Bio
  *           type: string
@@ -135,13 +142,6 @@
  *               format: date-time
  *               description: The date and time the user joined Bottom Time.
  *               example: 2021-01-01T00:00:00.000Z
- *             avatar:
- *               title: Avatar
- *               description: A URL to an image that can be displayed as the diver's avatar.
- *               type: string
- *               format: url
- *               maxlength: 150
- *               example: https://example.com/avatar.png
  *
  *     UserSettings:
  *       type: object
