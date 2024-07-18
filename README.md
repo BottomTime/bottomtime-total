@@ -9,10 +9,13 @@ This is the monorepo for the Bottom Time platform.
 Documentation for the individual components can be found in their respective README files. Keep reading for instructions
 on first-time setup and running the platform locally.
 
-- [Backend Service](packages/service/README.md)
-- [Web Front-End](packages/web/README.md)
-- [Deployment (Terraform)](terraform/README.md)
-- [Managing Email Templates](packages/templates/README.md)
+- [Backend Service](packages/service/README.md) - The platform's backend API service.
+- [Web Front-End](packages/web/README.md) - Vite/Vue web front-end.
+- [Email Service](packages/emails/README.md) - Service that handles the generation and transmission of emails to users.
+- [Deployment](terraform/README.md) - Deployment files (Terraform).
+- [API Client](packages/api/README.md) - The API client used by the front-end to request data from the backend.
+  Also defines types and data structures used in communication.
+- [Common Lib](packages/common/README.md) - A small library of resources shared between multiple services.
 
 ## Dependencies
 
@@ -76,17 +79,24 @@ The commands in this section must be run from the root directory of the reposito
 
 ### Installing all Node modules for the entire platform
 
+Occasionally, you will need to update the project dependencies. This can easily done by running the `yarn` command in the project root:
+
 ```bash
 yarn
 ```
 
-**Note:** This operation may take several minutes on the first run. This is because it will also perform a
-number of preparation steps including
+If you have just checked out the repository you will also want to run
+
+```bash
+yarn prepare
+```
+
+> **Note:** This operation may take several minutes on the first run. This is because it will also perform a
+> number of preparation steps including
 
 - installing Git hooks
 - downloading/installing the Playwright runtime for running end-to-end tests
-- generating email templates
-- creating `.env` files
+- creating initial `.env` files
 - etc...
 
 ### Formatting all files
@@ -109,8 +119,17 @@ Eslint and Prettier will be used for linting and formatting most files.
 yarn test
 ```
 
-**NOTE:** Testing is dependent on a Postgres database instance. The easiest way to achieve this is by running the
-platform locally using Docker Compose (see below) while running the tests.
+> **NOTE:** Testing is dependent on a Postgres database instance. The easiest way to achieve this is by running the
+> platform locally using Docker Compose (see below) while running the tests.
+
+> **NOTE:** Running the entire test suite at the same time may be very memory/CPU-intensive depending on your machine. You
+> might want to avoid this and instead scope your test run to the part of the project you are working on and its dependencies.
+
+**Example:**
+
+```bash
+yarn test --scope=@bottomtime/web
+```
 
 ### Compiling all packages
 
@@ -136,7 +155,7 @@ docker-compose build
 
 And, of course, for local development you can run Docker Compose in watch mode. It will automatically monitor changes
 to source files and sync the files with the running containers so you can make live updates to the platform and see
-the changes right away.
+the changes right away. With the front-end, you will also benefit from Vue hot reloading!
 
 ```bash
 docker-compose watch
@@ -148,9 +167,11 @@ docker-compose watch
 
 When it comes time to upgrade to a newer version of Node.js updates will need to be made in the following places:
 
-- Update any instructions here in this README.md file.
-- Update the CircleCI config file at `.circleci/config.yml`. Update all references to Node Docker images so that the project is being built on the correct version.
+- Update any instructions here in this and any other README.md files.
+- Update the CircleCI config file at `.circleci/config.yml`. Update all references to Node Docker images so that the project is being built on the correct version. Try to be precise with your version number. (I.e. `20.14` instead of just `20`).
 - Update the Dockerfiles (`Dockerfile.*`) in the project root - ensure that they are being built with images using the correct version of Node.js.
 - Don't forget to upgrade your own local Node.js runtime: `nvm install <version> && nvm use <version>`
 
-> **NOTE:** For stability please only use LTS versions of Node.js. (These are all even-numbered versions at the time of this writing.)
+> **IMPORTANT:** The libraries in the repositories are built to run in AWS' serverless environment (Lambda). The version of Node you are using
+> must have a supported runtime. You can check which versions of Node.js AWS Lambda supports
+> [here](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported).
