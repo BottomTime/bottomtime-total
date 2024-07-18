@@ -14,7 +14,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth } from '../auth';
+import { AssertAuth } from '../users';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { CertificationsService } from './certifications.service';

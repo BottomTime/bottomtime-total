@@ -4,9 +4,9 @@ import { compare } from 'bcryptjs';
 import { Repository } from 'typeorm';
 
 import { AdminService } from '../../../src/admin';
-import { User } from '../../../src/auth';
 import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
+import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
 import { InsertableUser, createTestUser } from '../../utils';

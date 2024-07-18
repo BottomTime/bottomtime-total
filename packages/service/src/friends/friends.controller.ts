@@ -21,8 +21,7 @@ import {
 
 import { Response } from 'express';
 
-import { AssertAuth } from '../auth';
-import { AssertTargetUser, TargetUser, User } from '../users';
+import { AssertAuth, AssertTargetUser, TargetUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { AssertFriend, TargetFriend } from './assert-friend.guard';
 import { AssertFriendshipOwner } from './assert-friendship-owner.guard';

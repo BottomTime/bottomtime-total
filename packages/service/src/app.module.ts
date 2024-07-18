@@ -54,10 +54,11 @@ export class AppModule {
 
         TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
 
-        AdminModule,
-        AlertsModule,
-        AuthModule,
         UsersModule,
+        AuthModule,
+
+        AlertsModule,
+        AdminModule,
         FriendsModule,
         DiveSitesModule,
         LogEntriesModule,

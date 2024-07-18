@@ -11,9 +11,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcryptjs';
 import { Repository } from 'typeorm';
 
-import { User } from '../auth/user';
 import { Config } from '../config';
 import { UserEntity } from '../data';
+import { User } from '../users';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO;
 export type SearchUsersResults = {

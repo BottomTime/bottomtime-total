@@ -9,10 +9,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { User } from '../auth';
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../data';
 import { DiveSite, DiveSitesService } from '../diveSites';
 import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
+import { User } from '../users';
 import { LogEntry } from './log-entry';
 import { LogEntryFactory } from './log-entry-factory';
 import {

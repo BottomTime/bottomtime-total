@@ -7,8 +7,8 @@ import { Request } from 'express';
 import { Profile, Strategy } from 'passport-github2';
 import { URL } from 'url';
 
-import { User } from '..';
 import { Config } from '../../config';
+import { User } from '../../users';
 import { CreateLinkedAccountOptions, OAuthService } from '../oauth.service';
 import { generateUsername, verifyOAuth } from './oauth-helpers';
 
@@ -43,10 +43,10 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
       provider: Provider,
       providerId: profile.id,
       username: profile.username || generateUsername(Provider),
-      avatar: profile.photos?.[0]?.value.trim(),
       email: profile.emails?.[0]?.value,
       role: UserRole.User,
       profile: {
+        avatar: profile.photos?.[0]?.value.trim(),
         name: profile.displayName,
         logBookSharing: LogBookSharing.FriendsOnly,
       },

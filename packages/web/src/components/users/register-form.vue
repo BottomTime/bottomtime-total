@@ -216,7 +216,7 @@ async function register() {
   isLoading.value = true;
   await oops(
     async () => {
-      const user = await client.users.createUser({
+      await client.users.createUser({
         username: data.username,
         email: data.email,
         password: data.password,
@@ -225,6 +225,7 @@ async function register() {
           location: data.location,
         },
       });
+      const user = await client.users.login(data.username, data.password);
       currentUser.user = user.toJSON();
       router.push('/welcome');
     },

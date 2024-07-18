@@ -21,11 +21,11 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { Response } from 'express';
 
+import { User } from '../users';
+import { CurrentUser } from '../users/current-user';
+import { AssertAuth } from '../users/guards/assert-auth.guard';
 import { AuthService } from './auth.service';
-import { CurrentUser } from './current-user';
-import { AssertAuth } from './guards/assert-auth.guard';
 import { OAuthService } from './oauth.service';
-import { User } from './user';
 
 @Controller('api/auth')
 export class AuthController {

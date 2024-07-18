@@ -9,7 +9,7 @@ import {
 import { Request } from 'express';
 import { Observable } from 'rxjs';
 
-import { User } from '../user';
+import { User } from '..';
 
 @Injectable()
 export class AssertAuth implements CanActivate {
@@ -17,7 +17,8 @@ export class AssertAuth implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
-    if (!(req.user instanceof User)) {
+    const user = req.user instanceof User ? req.user : undefined;
+    if (!user) {
       throw new UnauthorizedException(
         'You must be logged in to take this action.',
       );
@@ -25,7 +26,6 @@ export class AssertAuth implements CanActivate {
 
     // Check that the user's account is not suspended. Invalidating JWTs is hard so it's possible a user
     // presents a JWT that's technically valid even though the account has subsequently been locked.
-    const user = req.user as unknown as User;
     if (user.isLockedOut) {
       throw new ForbiddenException(
         'Your account is currently suspended. You are not permitted to perform this action.',

@@ -6,7 +6,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 
-import { User } from '../auth/user';
+import { User } from '../user';
 
 export class AssertAccountOwner implements CanActivate {
   canActivate(ctx: ExecutionContext): boolean {

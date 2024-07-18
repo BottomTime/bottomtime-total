@@ -257,12 +257,14 @@ describe('Registration form', () => {
 
   it('will create a new user and sign them in', async () => {
     const password = 'StrongP@ssword123';
+    const user = new User(fetcher, NewUser);
     jest
       .spyOn(client.users, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(true);
-    const clientSpy = jest
+    const createSpy = jest
       .spyOn(client.users, 'createUser')
-      .mockResolvedValue(new User(fetcher, NewUser));
+      .mockResolvedValue(user);
+    const loginSpy = jest.spyOn(client.users, 'login').mockResolvedValue(user);
 
     const wrapper = mount(RegisterForm, { global });
     const currentUser = useCurrentUser(pinia);
@@ -277,7 +279,7 @@ describe('Registration form', () => {
     await wrapper.get(SubmitButton).trigger('click');
     await flushPromises();
 
-    expect(clientSpy).toHaveBeenCalledWith({
+    expect(createSpy).toHaveBeenCalledWith({
       email: NewUser.email,
       password,
       profile: {
@@ -286,6 +288,7 @@ describe('Registration form', () => {
       },
       username: NewUser.username,
     });
+    expect(loginSpy).toHaveBeenCalledWith(NewUser.username, password);
     expect(currentUser.user).toEqual(NewUser);
     expect(router.currentRoute.value.fullPath).toBe('/welcome');
   });

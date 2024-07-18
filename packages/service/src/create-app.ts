@@ -11,9 +11,9 @@ import requestStats from 'request-stats';
 
 import { AppModule, ServerDependencies } from './app.module';
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
-import { User } from './auth/user';
 import { BunyanLoggerService } from './bunyan-logger-service';
 import { GlobalErrorFilter } from './global-error-filter';
+import { User } from './users';
 
 export async function createApp(
   logger: Logger,

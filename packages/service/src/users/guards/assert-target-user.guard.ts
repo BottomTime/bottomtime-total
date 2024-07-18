@@ -7,8 +7,8 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
-import { User } from '../auth/user';
-import { UsersService } from './users.service';
+import { User } from '../user';
+import { UsersService } from '../users.service';
 
 @Injectable()
 export class AssertTargetUser implements CanActivate {

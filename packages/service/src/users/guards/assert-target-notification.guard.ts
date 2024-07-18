@@ -8,9 +8,9 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
-import { User } from '../auth/user';
-import { Notification } from './notification';
-import { NotificationsService } from './notifications.service';
+import { Notification } from '../notification';
+import { NotificationsService } from '../notifications.service';
+import { User } from '../user';
 
 @Injectable()
 export class AssertTargetNotification implements CanActivate {

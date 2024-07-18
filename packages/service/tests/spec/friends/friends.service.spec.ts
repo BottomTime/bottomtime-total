@@ -16,13 +16,13 @@ import { BadRequestException, ConflictException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
-import { User } from '../../../src/auth';
 import {
   FriendRequestEntity,
   FriendshipEntity,
   UserEntity,
 } from '../../../src/data';
 import { FriendsService } from '../../../src/friends';
+import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestFriendshipData from '../../fixtures/friends.json';

@@ -8,8 +8,8 @@ import { Profile, Strategy } from 'passport-discord';
 import { URL } from 'url';
 
 import { Config } from '../../config';
+import { User } from '../../users';
 import { CreateLinkedAccountOptions, OAuthService } from '../oauth.service';
-import { User } from '../user';
 import { generateUsername, verifyOAuth } from './oauth-helpers';
 
 export const Provider = 'discord';
@@ -43,10 +43,10 @@ export class DiscordStrategy extends PassportStrategy(Strategy, 'discord') {
       provider: Provider,
       providerId: profile.id,
       username: profile.username || generateUsername(Provider),
-      avatar: profile.photos?.[0]?.value.trim(),
       email: profile.emails?.[0]?.value,
       role: UserRole.User,
       profile: {
+        avatar: profile.photos?.[0]?.value.trim(),
         name: profile.displayName,
         logBookSharing: LogBookSharing.FriendsOnly,
       },

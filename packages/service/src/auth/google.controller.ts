@@ -2,10 +2,10 @@ import { Controller, Get, Inject, Res, UseGuards } from '@nestjs/common';
 
 import { Response } from 'express';
 
+import { User } from '../users';
+import { CurrentUser } from '../users/current-user';
 import { AuthService } from './auth.service';
-import { CurrentUser } from './current-user';
 import { GoogleAuthGuard } from './strategies/google.strategy';
-import { User } from './user';
 
 @Controller('api/auth/google')
 export class GoogleController {

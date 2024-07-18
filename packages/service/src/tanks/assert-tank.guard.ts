@@ -7,7 +7,7 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
-import { User } from '../auth/user';
+import { User } from '../users';
 import { Tank } from './tank';
 import { TanksService } from './tanks.service';
 

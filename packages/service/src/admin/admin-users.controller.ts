@@ -22,7 +22,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAdmin } from '../auth';
+import { AssertAdmin } from '../users';
 import { UsersService } from '../users/users.service';
 import { ZodValidator } from '../zod-validator';
 import { AdminService } from './admin.service';

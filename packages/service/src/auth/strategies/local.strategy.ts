@@ -8,8 +8,8 @@ import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 
 import { Strategy } from 'passport-local';
 
+import { User } from '../../users';
 import { AuthService } from '../auth.service';
-import { User } from '../user';
 
 @Injectable()
 export class LocalStrategyGuard extends AuthGuard('local') {}

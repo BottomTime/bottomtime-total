@@ -14,7 +14,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { Repository } from 'typeorm';
 
-import { User } from '../../../src/auth';
 import {
   DiveSiteEntity,
   LogEntryAirEntity,
@@ -28,6 +27,7 @@ import {
 } from '../../../src/logEntries';
 import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { LogEntryFactory } from '../../../src/logEntries/log-entry-factory';
+import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
