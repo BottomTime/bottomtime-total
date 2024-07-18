@@ -37,8 +37,13 @@ commands:
     steps:
       - aws-cli/install
       - checkout
+      - yarn_install
       - attach_workspace:
           at: ./
+      - run:
+          name: Migrate Database
+          working_directory: packages/service/
+          command: yarn migrate:up
       - terraform/install:
           terraform_version: '1.9.1'
       - terraform/init:
@@ -222,13 +227,9 @@ jobs:
   test_e2e:
     docker:
       - image: cimg/node:20.14-browsers
-      - image: postgis/postgis:14-3.4
-        environment:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: bt_user
-          POSTGRES_PASSWORD: bt_admin1234
+    resource_class: medium
     environment:
-      BT_POSTGRES_TEST_URI: 'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_e2e'
+      BT_POSTGRES_REQUIRE_SSL: 'true'
       JEST_JUNIT_OUTPUT_DIR: ./reports/
     steps:
       - checkout
@@ -262,9 +263,22 @@ jobs:
             ./cc-test-reporter sum-coverage -o codeclimate.json -p 5 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
+  deploy_e2e:
+    docker:
+      - image: cimg/node:20.14
+    environment:
+      BT_POSTGRES_REQUIRE_SSL: 'true'
+    resource_class: medium
+    steps:
+      - deploy_env:
+          state_key: $AWS_REGION.e2e.tfvars
+          var_file: vars/e2e.tfvars
+
   deploy_staging:
     docker:
-      - image: cimg/base:2024.06
+      - image: cimg/node:20.14
+    environment:
+      BT_POSTGRES_REQUIRE_SSL: 'true'
     resource_class: medium
     steps:
       - deploy_env:
@@ -273,7 +287,9 @@ jobs:
 
   deploy_production:
     docker:
-      - image: cimg/base:2024.06
+      - image: cimg/node:20.14
+    environment:
+      BT_POSTGRES_REQUIRE_SSL: 'true'
     resource_class: medium
     steps:
       - deploy_env:
@@ -285,6 +301,13 @@ workflows:
     jobs:
       # 1) Iniitialize and build
       - build
+      - deploy_e2e:
+          requires:
+            - build
+          context:
+            - bt-aws-dev
+            - bt-postgres-e2e
+            - bt-smtp-dev
 
       # 2) Run tests
       - test_packages:
@@ -301,10 +324,11 @@ workflows:
             - build
       - test_e2e:
           requires:
-            - build
+            - deploy_e2e
           context:
             - bt-aws-e2e
             - bt-smtp-dev
+            - bt-postgres-e2e
 
       # 3) Report test coverage
       - report_coverage:
@@ -320,6 +344,8 @@ workflows:
             - test_e2e
           context:
             - bt-aws-dev
+            - bt-postgres-staging
+            - bt-smtp-dev
           filters:
             branches:
               only:
@@ -331,6 +357,8 @@ workflows:
             - test_e2e
           context:
             - bt-aws-dev
+            - bt-postgres-prod
+            - bt-smtp-dev
           filters:
             branches:
               only:

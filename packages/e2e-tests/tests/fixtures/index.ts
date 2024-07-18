@@ -22,7 +22,7 @@ export const test = base.extend<{
   logEntries: LogEntriesFixture;
   tankProfiles: TankProfilesFixture;
 }>({
-  api: async ({ db }, use) => {
+  api: async ({ baseURL, db }, use) => {
     // Create an admin user and matching auth token
     const [, authToken] = await Promise.all([
       db.createAdmin(),
@@ -31,7 +31,7 @@ export const test = base.extend<{
 
     const client = new ApiClient({
       authToken,
-      baseURL: 'http://localhost:4851/',
+      baseURL,
     });
 
     await use(client);

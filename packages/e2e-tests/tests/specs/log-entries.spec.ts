@@ -40,6 +40,7 @@ test.describe('Log Entries', () => {
     await page.getByRole('button', { name: 'Create Entry' }).click();
     await page.waitForURL(`**/logbook/${Username}/new`);
 
+    await expect(page.getByTestId('log-number')).toHaveValue('1');
     await page.getByTestId('log-number').clear();
     await page.getByTestId('log-number').fill(TestData.logNumber!.toString());
     await page

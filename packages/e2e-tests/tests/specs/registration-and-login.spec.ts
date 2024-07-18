@@ -68,6 +68,7 @@ test.describe('Registration', () => {
     });
 
     await page.goto('/register');
+    await page.getByTestId('register-submit').click();
     await page.getByLabel('Username:*').fill('randy_randerson');
     await page
       .getByLabel('Email address:*')
