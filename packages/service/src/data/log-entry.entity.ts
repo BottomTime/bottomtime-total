@@ -1,4 +1,9 @@
-import { DepthUnit, WeightUnit } from '@bottomtime/api';
+import {
+  DepthUnit,
+  TemperatureUnit,
+  WeightCorrectness,
+  WeightUnit,
+} from '@bottomtime/api';
 
 import {
   Column,
@@ -13,6 +18,9 @@ import {
 
 import { DiveSiteEntity } from './dive-site.entity';
 import { LogEntryAirEntity } from './log-entry-air.entity';
+import { LogEntryMediaEntity } from './log-entry-media.entity';
+import { LogEntrySampleEntity } from './log-entry-samples.entity';
+import { LogEntrySignatureEntity } from './log-entry-signature.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entries')
@@ -53,6 +61,9 @@ export class LogEntryEntity {
   @Column({ type: 'float', nullable: false })
   duration: number = 0;
 
+  @Column({ type: 'float', nullable: true })
+  safetyStop: number | null = null;
+
   // Location
   @ManyToOne(() => DiveSiteEntity, (site) => site.logEntries, {
     nullable: true,
@@ -64,6 +75,9 @@ export class LogEntryEntity {
     onDelete: 'CASCADE',
   })
   air?: LogEntryAirEntity[];
+
+  @Column({ type: 'float', nullable: true })
+  averageDepth: number | null = null;
 
   @Column({ type: 'float', nullable: true })
   maxDepth: number | null = null;
@@ -78,7 +92,61 @@ export class LogEntryEntity {
   @Column({ type: 'enum', enum: WeightUnit, nullable: true })
   weightUnit: WeightUnit | null = null;
 
+  @Column({ type: 'enum', enum: WeightCorrectness, nullable: true })
+  weightCorrectness: WeightCorrectness | null = null;
+
+  // Conditions
+  @Column({ type: 'float', nullable: true })
+  airTemperature: number | null = null;
+
+  @Column({ type: 'float', nullable: true })
+  surfaceTemperature: number | null = null;
+
+  @Column({ type: 'float', nullable: true })
+  bottomTemperature: number | null = null;
+
+  @Column({ type: 'enum', enum: TemperatureUnit, nullable: true })
+  temperatureUnit: TemperatureUnit | null = null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  current: string | null = null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  weather: string | null = null;
+
+  @Column({ type: 'float', nullable: true })
+  visibility: number | null = null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  chop: string | null = null;
+
   // Miscellaneous data
   @Column({ type: 'text', nullable: true })
   notes: string | null = null;
+
+  @Column({
+    type: 'jsonb',
+    array: false,
+    default: () => "'[]'",
+    nullable: false,
+  })
+  tags: string[] = [];
+
+  // Signatures
+  @OneToMany(() => LogEntrySignatureEntity, (signature) => signature.logEntry, {
+    onDelete: 'CASCADE',
+  })
+  signatures?: LogEntrySignatureEntity[];
+
+  // Media
+  @OneToMany(() => LogEntryMediaEntity, (media) => media.logEntry, {
+    onDelete: 'CASCADE',
+  })
+  media?: LogEntryMediaEntity[];
+
+  // Samples from dive computer
+  @OneToMany(() => LogEntrySampleEntity, (sample) => sample.logEntry, {
+    onDelete: 'CASCADE',
+  })
+  samples?: LogEntrySampleEntity[];
 }

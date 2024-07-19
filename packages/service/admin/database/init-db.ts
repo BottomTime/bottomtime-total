@@ -15,7 +15,7 @@ export async function initDatabase(
   let dataSource: DataSource | undefined;
 
   try {
-    console.log('Initializing database...');
+    console.log('Connecting to Postgres server...');
     pgClient = new Client({
       host: url.hostname,
       port: parseInt(url.port, 10),
@@ -28,7 +28,9 @@ export async function initDatabase(
 
     if (force) {
       console.log('Dropping existing database...');
-      await pgClient.query(`DROP DATABASE IF EXISTS ${database} WITH (FORCE)`);
+      await pgClient.query(
+        `DROP DATABASE IF EXISTS "${database}" WITH (FORCE)`,
+      );
     } else {
       const { rowCount } = await pgClient.query(
         `SELECT 1 FROM pg_database WHERE datname='${database}'`,
@@ -42,8 +44,9 @@ export async function initDatabase(
       }
     }
 
+    console.log('Creating new database...');
     await pgClient.query(
-      `CREATE DATABASE ${database} WITH OWNER ${url.username} ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8' TEMPLATE = 'template0'`,
+      `CREATE DATABASE "${database}" WITH OWNER "${url.username}" ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8' TEMPLATE = 'template0'`,
     );
     await pgClient.end();
 
@@ -53,6 +56,7 @@ export async function initDatabase(
       user: url.username,
       password: url.password,
       database,
+      ssl: requireSsl,
     });
     await pgClient.connect();
     await pgClient.query(`CREATE EXTENSION "postgis"`);

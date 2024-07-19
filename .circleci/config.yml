@@ -27,6 +27,9 @@ commands:
 
   deploy_env:
     parameters:
+      fresh_db:
+        type: boolean
+        default: false
       state_bucket:
         type: string
         default: 'bottomtime-tfstate'
@@ -43,7 +46,12 @@ commands:
       - run:
           name: Migrate Database
           working_directory: packages/service/
-          command: yarn migrate:up
+          command: |
+            if [[ "<<parameters.fresh_db>>" = "true" ]]; then
+              yarn admin db init -d $BT_POSTGRES_URI -sf
+            else
+              yarn migrate:up
+            fi
       - terraform/install:
           terraform_version: '1.9.1'
       - terraform/init:
@@ -271,6 +279,7 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
+          fresh_db: true
           state_key: $AWS_REGION.e2e.tfvars
           var_file: vars/e2e.tfvars
 

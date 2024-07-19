@@ -4,6 +4,12 @@ export const DateRegex = /^\d{4}-\d{2}-\d{2}$/;
 export const DateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?$/;
 export const FuzzyDateRegex = /^\d{4}(-\d{2}(-\d{2})?)?$/;
 
+export enum BuddyType {
+  Buddy = 'buddy',
+  Divemaster = 'divemaster',
+  Instructor = 'instructor',
+}
+
 export enum DepthUnit {
   Meters = 'm',
   Feet = 'ft',
@@ -32,6 +38,12 @@ export enum TemperatureUnit {
 export enum UserRole {
   User = 'user',
   Admin = 'admin',
+}
+
+export enum WeightCorrectness {
+  Good = 'good',
+  Over = 'over',
+  Under = 'under',
 }
 
 export enum WeightUnit {
