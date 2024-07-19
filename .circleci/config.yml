@@ -279,6 +279,7 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
+          fresh_db: true
           state_key: $AWS_REGION.e2e.tfvars
           var_file: vars/e2e.tfvars
 
