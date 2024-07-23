@@ -194,7 +194,7 @@ export class UserLogEntriesController {
     this.log.debug('Got some log entries', logEntries.length, user.username);
 
     return {
-      logEntries: logEntries.map((entry) => entry.toJSON()),
+      logEntries: logEntries.map((entry) => entry.toSuccinctJSON()),
       totalCount,
     };
   }

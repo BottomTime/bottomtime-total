@@ -8,6 +8,7 @@ import {
   LogEntryDepthsDTO,
   LogEntryEquipmentDTO,
   LogEntryTimingDTO,
+  SuccinctLogEntryDTO,
   SuccinctProfileDTO,
   TemperatureUnit,
   TrimCorrectness,
@@ -379,6 +380,19 @@ export class LogEntry {
 
       notes: this.notes,
       tags: this.tags,
+    };
+  }
+
+  toSuccinctJSON(): SuccinctLogEntryDTO {
+    return {
+      createdAt: this.createdAt,
+      creator: this.owner,
+      id: this.id,
+      depths: this.depths.toJSON(),
+      timing: this.timing.toJSON(),
+      logNumber: this.logNumber,
+      site: this.site?.toJSON(),
+      updatedAt: this.updatedAt,
     };
   }
 

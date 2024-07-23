@@ -537,18 +537,7 @@ exports[`Log entries E2E tests when retrieving single log entries will return th
 exports[`Log entries E2E tests when searching log entries will allow a search with parameters 1`] = `
 [
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 74.18234822712839,
-        "material": "al",
-        "name": "forsaken mentor",
-        "pressureUnit": "bar",
-        "startPressure": 197.2148130275309,
-        "volume": 4,
-        "workingPressure": 182,
-      },
-    ],
+    "air": undefined,
     "entryTime": {
       "date": "2023-02-06T14:57:13",
       "timezone": "America/Aruba",
@@ -558,19 +547,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     "site": "specific dead ramen",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 51.52880270173773,
-        "material": "fe",
-        "name": "broken molasses",
-        "o2Percent": 29.6,
-        "pressureUnit": "bar",
-        "startPressure": 205.91492255683988,
-        "volume": 18,
-        "workingPressure": 207,
-      },
-    ],
+    "air": undefined,
     "entryTime": {
       "date": "2023-02-08T14:30:23",
       "timezone": "America/Sao_Paulo",
@@ -580,19 +557,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     "site": "yummy fitting waterwheel",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 59.79956022556871,
-        "material": "fe",
-        "name": "unconscious retrospect",
-        "o2Percent": 24.5,
-        "pressureUnit": "bar",
-        "startPressure": 205.48624956049025,
-        "volume": 15,
-        "workingPressure": 300,
-      },
-    ],
+    "air": undefined,
     "entryTime": {
       "date": "2023-03-30T02:15:10",
       "timezone": "Africa/Nairobi",
@@ -602,18 +567,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     "site": "apt colossal initial",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 66.09034274402075,
-        "material": "fe",
-        "name": "demanding manatee",
-        "pressureUnit": "bar",
-        "startPressure": 228.67908690590411,
-        "volume": 18,
-        "workingPressure": 207,
-      },
-    ],
+    "air": undefined,
     "entryTime": {
       "date": "2023-04-15T02:52:57",
       "timezone": "America/Miquelon",
@@ -623,19 +577,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     "site": "well-worn upbeat trillion",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 1130,
-        "material": "al",
-        "name": "chilly evolution",
-        "o2Percent": 29.3,
-        "pressureUnit": "psi",
-        "startPressure": 3150,
-        "volume": 18,
-        "workingPressure": 300,
-      },
-    ],
+    "air": undefined,
     "entryTime": {
       "date": "2023-04-20T14:30:04",
       "timezone": "America/Havana",
@@ -645,19 +587,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     "site": "humming past mathematics",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 49.710264321183786,
-        "material": "fe",
-        "name": "agonizing letter",
-        "o2Percent": 28.6,
-        "pressureUnit": "bar",
-        "startPressure": 235.1761017786339,
-        "volume": 11,
-        "workingPressure": 237,
-      },
-    ],
+    "air": undefined,
     "entryTime": {
       "date": "2023-06-05T01:22:13",
       "timezone": "America/Belem",
@@ -667,19 +597,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     "site": "giant broken meat",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 67.28757407912053,
-        "material": "al",
-        "name": "frequent matter",
-        "o2Percent": 35.5,
-        "pressureUnit": "bar",
-        "startPressure": 194.87620261264965,
-        "volume": 12,
-        "workingPressure": 207,
-      },
-    ],
+    "air": undefined,
     "entryTime": {
       "date": "2023-06-08T06:30:12",
       "timezone": "Africa/Accra",
@@ -689,19 +607,7 @@ exports[`Log entries E2E tests when searching log entries will allow a search wi
     "site": "remarkable unique shoelace",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 38.44881556346081,
-        "material": "fe",
-        "name": "shadowy legend",
-        "o2Percent": 22.4,
-        "pressureUnit": "bar",
-        "startPressure": 209.5933276321739,
-        "volume": 11,
-        "workingPressure": 182,
-      },
-    ],
+    "air": undefined,
     "entryTime": {
       "date": "2023-07-08T01:28:53",
       "timezone": "America/Kentucky/Louisville",

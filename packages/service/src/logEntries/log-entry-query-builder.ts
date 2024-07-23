@@ -32,17 +32,21 @@ export class LogEntryQueryBuilder {
       .leftJoin('entries.air', 'site_air')
       .select([
         'entries.id',
+        'entries.createdAt',
+        'entries.updatedAt',
         'entries.logNumber',
+        'entries.tags',
+
         'entries.timestamp',
         'entries.entryTime',
         'entries.timezone',
         'entries.bottomTime',
         'entries.duration',
+
+        'entries.averageDepth',
         'entries.maxDepth',
         'entries.depthUnit',
-        'entries.weight',
-        'entries.weightUnit',
-        'entries.notes',
+
         'owners.id',
         'owners.username',
         'owners.memberSince',
@@ -50,6 +54,7 @@ export class LogEntryQueryBuilder {
         'owners.name',
         'owners.location',
         'owners.avatar',
+
         ...DiveSiteSelectFields,
         ...LogEntryAirSelectFields,
       ]);
