@@ -161,6 +161,17 @@ the changes right away. With the front-end, you will also benefit from Vue hot r
 docker-compose watch
 ```
 
+### Accessing the Containers
+
+The containers each expose one or more ports on your `localhost` that you can use to connect to and interact with.
+
+| Service              | URI                                                                 |
+| -------------------- | ------------------------------------------------------------------- |
+| Backend service      | `http://localhost:4800`                                             |
+| Frontend application | `http://localhost:4850`                                             |
+| API documentation    | `http://loclahost:4890`                                             |
+| Postgres database    | `postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_local` |
+
 ## Other Notes to Developers
 
 ### Upgrading Node Version
