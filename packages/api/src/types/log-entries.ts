@@ -132,15 +132,15 @@ export type LogEntryEquipmentDTO = NonNullable<LogEntryDTO['equipment']>;
 export type LogEntryTimingDTO = LogEntryDTO['timing'];
 
 export const SuccinctLogEntrySchema = LogEntrySchema.pick({
-  id: true,
-  entryTime: true,
-  creator: true,
   createdAt: true,
-  updatedAt: true,
-  logNumber: true,
+  creator: true,
+  id: true,
   depths: true,
-  timing: true,
+  logNumber: true,
   site: true,
+  tags: true,
+  timing: true,
+  updatedAt: true,
 });
 export type SuccinctLogEntryDTO = z.infer<typeof SuccinctLogEntrySchema>;
 
