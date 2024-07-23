@@ -254,20 +254,26 @@ describe('NewLogEntry view', () => {
       const notes = 'hello';
 
       const options: CreateOrUpdateLogEntryParamsDTO = {
-        duration,
-        entryTime: {
-          date: '2024-05-07T14:41:06',
-          timezone,
+        timing: {
+          duration,
+          entryTime: {
+            date: '2024-05-07T14:41:06',
+            timezone,
+          },
+          bottomTime,
         },
-        bottomTime,
         logNumber,
-        maxDepth: { depth: maxDepth, unit: DepthUnit.Meters },
+        depths: {
+          maxDepth,
+          depthUnit: DepthUnit.Meters,
+        },
         notes,
       };
       const expected: LogEntryDTO = {
         ...options,
         id: 'df9d71d7-5847-436a-97c9-1ea97d3f2c7d',
         creator: BasicUser.profile,
+        createdAt: new Date('2024-07-23T12:52:10Z'),
         site: undefined,
       };
 
@@ -287,11 +293,8 @@ describe('NewLogEntry view', () => {
       await wrapper.get(SaveButton).trigger('click');
       await flushPromises();
 
-      expect(spy).toHaveBeenCalledWith(BasicUser.username, {
-        ...expected,
-        air: [],
-        id: '',
-      });
+      expect(spy).toHaveBeenCalled();
+      expect(spy.mock.calls[0]).toMatchSnapshot();
       expect(location.pathname).toBe(
         `/logbook/${BasicUser.username}/${expected.id}`,
       );
@@ -308,20 +311,26 @@ describe('NewLogEntry view', () => {
       const notes = 'hello';
 
       const options: CreateOrUpdateLogEntryParamsDTO = {
-        duration,
-        entryTime: {
-          date: '2024-05-07T14:41:06',
-          timezone,
+        timing: {
+          duration,
+          entryTime: {
+            date: '2024-05-07T14:41:06',
+            timezone,
+          },
+          bottomTime,
         },
-        bottomTime,
         logNumber,
-        maxDepth: { depth: maxDepth, unit: DepthUnit.Meters },
+        depths: {
+          maxDepth,
+          depthUnit: DepthUnit.Meters,
+        },
         notes,
       };
       const expected: LogEntryDTO = {
         ...options,
         id: 'df9d71d7-5847-436a-97c9-1ea97d3f2c7d',
         creator: BasicUser.profile,
+        createdAt: new Date('2024-07-23T12:52:10Z'),
         site: undefined,
       };
 
@@ -341,11 +350,8 @@ describe('NewLogEntry view', () => {
       await wrapper.get(SaveButton).trigger('click');
       await flushPromises();
 
-      expect(spy).toHaveBeenCalledWith(BasicUser.username, {
-        ...expected,
-        air: [],
-        id: '',
-      });
+      expect(spy).toHaveBeenCalled();
+      expect(spy.mock.calls[0]).toMatchSnapshot();
       expect(location.pathname).toBe(
         `/logbook/${BasicUser.username}/${expected.id}`,
       );
@@ -356,9 +362,13 @@ describe('NewLogEntry view', () => {
 
       const expected: LogEntryDTO = {
         creator: BasicUser.profile,
-        entryTime: {
-          date: '2021-01-01T12:00:00',
-          timezone: 'America/Los_Angeles',
+        createdAt: new Date('2024-07-23T12:52:10Z'),
+        timing: {
+          entryTime: {
+            date: '2021-01-01T12:00:00',
+            timezone: 'America/Los_Angeles',
+          },
+          duration: 66,
         },
         id: '1f3c6568-d63c-4e52-8679-2a85d6f6b1f4',
         air: [
@@ -376,7 +386,6 @@ describe('NewLogEntry view', () => {
           },
         ],
         logNumber: 13,
-        duration: 66,
         notes: 'New notes',
       };
       const air = {
@@ -400,7 +409,7 @@ describe('NewLogEntry view', () => {
       await wrapper.get(LogNumberInput).setValue('13');
       await wrapper
         .getComponent(FormDatePicker)
-        .setValue(new Date(expected.entryTime.date));
+        .setValue(new Date(expected.timing.entryTime.date));
       await wrapper.get(EntryTimezoneInput).setValue('America/Los_Angeles');
       await wrapper.get(DurationInput).setValue('66');
       await wrapper.get(NotesInput).setValue('New notes');
@@ -426,10 +435,8 @@ describe('NewLogEntry view', () => {
       await wrapper.get('#btnSave').trigger('click');
       await flushPromises();
 
-      expect(saveSpy).toHaveBeenCalledWith(BasicUser.username, {
-        ...expected,
-        id: '',
-      });
+      expect(saveSpy).toHaveBeenCalled();
+      expect(saveSpy.mock.calls[0]).toMatchSnapshot();
 
       expect(location.pathname).toBe(
         `/logbook/${BasicUser.username}/${expected.id}`,

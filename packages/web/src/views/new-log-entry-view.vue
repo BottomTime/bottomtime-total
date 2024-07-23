@@ -69,10 +69,13 @@ const state = reactive<NewLogEntryViewState>({
       userId: '',
       username: '',
     },
-    duration: -1,
-    entryTime: {
-      date: '',
-      timezone: '',
+    createdAt: new Date(0),
+    timing: {
+      duration: -1,
+      entryTime: {
+        date: '',
+        timezone: '',
+      },
     },
     id: '',
   },

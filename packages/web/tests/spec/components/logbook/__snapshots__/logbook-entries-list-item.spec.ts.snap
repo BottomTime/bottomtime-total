@@ -42,7 +42,7 @@ exports[`LobbookEntriesListItem component will render correctly with full logboo
       </div>
     </div>
     <div>
-      <!--v-if-->
+      <p class="flex space-x-2"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span class="capitalize">Catalina Island</span><span>(California)</span></p>
     </div>
   </div>
 </li>"

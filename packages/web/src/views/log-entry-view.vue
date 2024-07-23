@@ -50,7 +50,7 @@ const state = reactive<LogEntryViewState>({
 
 const title = computed(() =>
   logEntries.currentEntry
-    ? dayjs(logEntries.currentEntry.entryTime.date).format('LLL')
+    ? dayjs(logEntries.currentEntry.timing.entryTime.date).format('LLL')
     : 'Log Entry',
 );
 const logbookPath = computed(() =>

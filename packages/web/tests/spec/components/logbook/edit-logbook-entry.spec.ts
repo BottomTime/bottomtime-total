@@ -137,13 +137,13 @@ describe('EditLogbookEntry component', () => {
       LogNumber.toString(),
     );
     expect(wrapper.getComponent(FormDatePicker).props().modelValue).toEqual(
-      new Date(FullLogEntry.entryTime.date),
+      new Date(FullLogEntry.timing.entryTime.date),
     );
     expect(wrapper.get<HTMLSelectElement>(TimezoneSelect).element.value).toBe(
-      MinimalLogEntry.entryTime.timezone,
+      MinimalLogEntry.timing.entryTime.timezone,
     );
     expect(wrapper.get<HTMLInputElement>(DurationInput).element.value).toBe(
-      MinimalLogEntry.duration.toString(),
+      MinimalLogEntry.timing.duration.toString(),
     );
     expect(wrapper.get<HTMLInputElement>(BottomTimeInput).element.value).toBe(
       '',
@@ -162,25 +162,25 @@ describe('EditLogbookEntry component', () => {
       FullLogEntry.logNumber?.toString(),
     );
     expect(wrapper.getComponent(FormDatePicker).props().modelValue).toEqual(
-      new Date(FullLogEntry.entryTime.date),
+      new Date(FullLogEntry.timing.entryTime.date),
     );
     expect(wrapper.get<HTMLSelectElement>(TimezoneSelect).element.value).toBe(
-      FullLogEntry.entryTime.timezone,
+      FullLogEntry.timing.entryTime.timezone,
     );
     expect(wrapper.get<HTMLInputElement>(DurationInput).element.value).toBe(
-      FullLogEntry.duration.toString(),
+      FullLogEntry.timing.duration.toString(),
     );
     expect(wrapper.get<HTMLInputElement>(BottomTimeInput).element.value).toBe(
-      FullLogEntry.bottomTime?.toString(),
+      FullLogEntry.timing.bottomTime?.toString(),
     );
     expect(wrapper.get<HTMLInputElement>(MaxDepthInput).element.value).toBe(
-      FullLogEntry.maxDepth?.depth.toString(),
+      FullLogEntry.depths!.maxDepth!.toString(),
     );
     expect(wrapper.get<HTMLInputElement>(WeightInput).element.value).toBe(
-      FullLogEntry.weights!.weight.toString(),
+      FullLogEntry.equipment!.weight!.toString(),
     );
     expect(wrapper.get(WeightUnitButton).text()).toBe(
-      FullLogEntry.weights!.unit,
+      FullLogEntry.equipment!.weightUnit!,
     );
     expect(wrapper.get<HTMLTextAreaElement>(NotesInput).element.value).toBe(
       FullLogEntry.notes,
@@ -272,20 +272,22 @@ describe('EditLogbookEntry component', () => {
         {
           ...BlankLogEntry,
           air: [],
-          bottomTime,
-          duration,
+          timing: {
+            bottomTime,
+            duration,
+            entryTime: {
+              date: dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss'),
+              timezone: 'America/Vancouver',
+            },
+          },
           logNumber,
-          maxDepth: {
-            depth: maxDepth,
-            unit: DepthUnit.Meters,
+          depths: {
+            maxDepth: maxDepth,
+            depthUnit: DepthUnit.Meters,
           },
           notes,
-          entryTime: {
-            date: dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss'),
-            timezone: 'America/Vancouver',
-          },
-          weights: {
-            unit: WeightUnit.Kilograms,
+          equipment: {
+            weightUnit: WeightUnit.Kilograms,
             weight,
           },
         },
@@ -505,18 +507,20 @@ describe('EditLogbookEntry component', () => {
                 workingPressure: tankData.tanks[0].workingPressure,
               },
             ],
-            bottomTime,
-            duration,
+            timing: {
+              bottomTime,
+              duration,
+              entryTime: {
+                date: dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss'),
+                timezone: 'America/Vancouver',
+              },
+            },
+            depths: {
+              maxDepth,
+              depthUnit: DepthUnit.Meters,
+            },
             logNumber: 88,
-            maxDepth: {
-              depth: maxDepth,
-              unit: DepthUnit.Meters,
-            },
             notes,
-            entryTime: {
-              date: dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss'),
-              timezone: 'America/Vancouver',
-            },
           },
         ],
       ]);
