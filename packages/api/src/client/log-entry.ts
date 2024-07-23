@@ -1,6 +1,7 @@
 import {
   CreateOrUpdateLogEntryParamsSchema,
   DiveSiteDTO,
+  LogEntryAirDTO,
   LogEntryConditionsDTO,
   LogEntryDTO,
   LogEntryDepthsDTO,
@@ -65,6 +66,20 @@ export class LogEntry {
   }
   set notes(value: string | undefined) {
     this.data.notes = value;
+  }
+
+  get air(): LogEntryAirDTO[] | undefined {
+    return this.data.air;
+  }
+  set air(value: LogEntryAirDTO[] | undefined) {
+    this.data.air = value;
+  }
+
+  get tags(): string[] | undefined {
+    return this.data.tags;
+  }
+  set tags(value: string[] | undefined) {
+    this.data.tags = value;
   }
 
   toJSON(): LogEntryDTO {
