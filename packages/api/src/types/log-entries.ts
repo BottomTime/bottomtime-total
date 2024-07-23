@@ -2,10 +2,14 @@ import { z } from 'zod';
 
 import {
   DateWithTimezoneSchema,
-  DepthSchema,
+  DepthUnit,
+  ExposureSuit,
   PressureUnit,
   SortOrder,
-  WeightSchema,
+  TemperatureUnit,
+  TrimCorrectness,
+  WeightCorrectness,
+  WeightUnit,
 } from './constants';
 import { DiveSiteSchema } from './dive-sites';
 import { CreateOrUpdateTankParamsSchema } from './tanks';
@@ -54,16 +58,56 @@ export type LogEntryAirDTO = z.infer<typeof LogEntryAirSchema>;
 const LogEntryBaseSchema = z.object({
   logNumber: z.number().int().positive().optional(),
 
-  entryTime: DateWithTimezoneSchema,
-  bottomTime: z.number().positive().optional(),
-  duration: z.number().positive(),
+  timing: z.object({
+    entryTime: DateWithTimezoneSchema,
+    bottomTime: z.number().positive().optional(),
+    duration: z.number().positive(),
+  }),
 
-  maxDepth: DepthSchema.optional(),
-  weights: WeightSchema.optional(),
+  depths: z
+    .object({
+      depthUnit: z.nativeEnum(DepthUnit).optional(),
+      averageDepth: z.number().positive().optional(),
+      maxDepth: z.number().positive().optional(),
+    })
+    .optional(),
+
+  equipment: z
+    .object({
+      weight: z.number().min(0).optional(),
+      weightUnit: z.nativeEnum(WeightUnit).optional(),
+      weightCorrectness: z.nativeEnum(WeightCorrectness).optional(),
+      trimCorrectness: z.nativeEnum(TrimCorrectness).optional(),
+
+      exposureSuit: z.nativeEnum(ExposureSuit).optional(),
+      hood: z.boolean().optional(),
+      gloves: z.boolean().optional(),
+      boots: z.boolean().optional(),
+
+      camera: z.boolean().optional(),
+      torch: z.boolean().optional(),
+      scooter: z.boolean().optional(),
+    })
+    .optional(),
 
   air: LogEntryAirSchema.array().optional(),
 
+  conditions: z
+    .object({
+      airTemperature: z.number().optional(),
+      surfaceTemperature: z.number().optional(),
+      bottomTemperature: z.number().optional(),
+      temperatureUnit: z.nativeEnum(TemperatureUnit).optional(),
+
+      chop: z.number().min(1).max(5).optional(),
+      current: z.number().min(1).max(5).optional(),
+      weather: z.string().max(100).optional(),
+      visibility: z.number().min(0).optional(),
+    })
+    .optional(),
+
   notes: z.string().max(5000).optional(),
+  tags: z.string().max(100).array().optional(),
 });
 
 export const CreateOrUpdateLogEntryParamsSchema = LogEntryBaseSchema.extend({
@@ -75,20 +119,28 @@ export type CreateOrUpdateLogEntryParamsDTO = z.infer<
 
 export const LogEntrySchema = LogEntryBaseSchema.extend({
   id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date().optional(),
   creator: SuccinctProfileSchema,
   site: DiveSiteSchema.optional(),
 });
 export type LogEntryDTO = z.infer<typeof LogEntrySchema>;
 
+export type LogEntryConditionsDTO = NonNullable<LogEntryDTO['conditions']>;
+export type LogEntryDepthsDTO = NonNullable<LogEntryDTO['depths']>;
+export type LogEntryEquipmentDTO = NonNullable<LogEntryDTO['equipment']>;
+export type LogEntryTimingDTO = LogEntryDTO['timing'];
+
 export const SuccinctLogEntrySchema = LogEntrySchema.pick({
-  id: true,
-  entryTime: true,
+  createdAt: true,
   creator: true,
+  id: true,
+  depths: true,
   logNumber: true,
-  maxDepth: true,
-  bottomTime: true,
-  duration: true,
   site: true,
+  tags: true,
+  timing: true,
+  updatedAt: true,
 });
 export type SuccinctLogEntryDTO = z.infer<typeof SuccinctLogEntrySchema>;
 

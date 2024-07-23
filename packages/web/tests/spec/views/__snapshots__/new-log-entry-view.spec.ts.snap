@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NewLogEntry view when rendering on the client side will allow admins to create new entries on behalf of other users 1`] = `
+[
+  "sam_smith",
+  {
+    "air": [],
+    "createdAt": 1970-01-01T00:00:00.000Z,
+    "creator": {
+      "logBookSharing": "friends",
+      "memberSince": 2021-01-01T00:00:00.000Z,
+      "name": "Sam Smith",
+      "userId": "50a9504c-ee2c-485e-91e0-4d352409338e",
+      "username": "sam_smith",
+    },
+    "depths": {
+      "depthUnit": "m",
+      "maxDepth": 33.3,
+    },
+    "equipment": undefined,
+    "id": "",
+    "logNumber": 88,
+    "notes": "hello",
+    "site": undefined,
+    "timing": {
+      "bottomTime": 41.8,
+      "duration": 44.1,
+      "entryTime": {
+        "date": "2024-05-07T14:41:06",
+        "timezone": "America/Vancouver",
+      },
+    },
+  },
+]
+`;
+
+exports[`NewLogEntry view when rendering on the client side will allow users to save information on breathing gas 1`] = `
+[
+  "sam_smith",
+  {
+    "air": [
+      {
+        "count": 2,
+        "endPressure": 50,
+        "hePercent": 40,
+        "material": "al",
+        "name": "AL13 (CCR 2L): Aluminum XS-13",
+        "o2Percent": 21,
+        "pressureUnit": "bar",
+        "startPressure": 207,
+        "volume": 1.8,
+        "workingPressure": 207,
+      },
+    ],
+    "createdAt": 1970-01-01T00:00:00.000Z,
+    "creator": {
+      "logBookSharing": "friends",
+      "memberSince": 2021-01-01T00:00:00.000Z,
+      "name": "Sam Smith",
+      "userId": "50a9504c-ee2c-485e-91e0-4d352409338e",
+      "username": "sam_smith",
+    },
+    "depths": undefined,
+    "equipment": undefined,
+    "id": "",
+    "logNumber": 13,
+    "notes": "New notes",
+    "site": undefined,
+    "timing": {
+      "bottomTime": undefined,
+      "duration": 66,
+      "entryTime": {
+        "date": "2021-01-01T12:00:00",
+        "timezone": "America/Los_Angeles",
+      },
+    },
+  },
+]
+`;
+
+exports[`NewLogEntry view when rendering on the client side will save a valid entry and redirect to the entry page 1`] = `
+[
+  "sam_smith",
+  {
+    "air": [],
+    "createdAt": 1970-01-01T00:00:00.000Z,
+    "creator": {
+      "logBookSharing": "friends",
+      "memberSince": 2021-01-01T00:00:00.000Z,
+      "name": "Sam Smith",
+      "userId": "50a9504c-ee2c-485e-91e0-4d352409338e",
+      "username": "sam_smith",
+    },
+    "depths": {
+      "depthUnit": "m",
+      "maxDepth": 33.3,
+    },
+    "equipment": undefined,
+    "id": "",
+    "logNumber": 88,
+    "notes": "hello",
+    "site": undefined,
+    "timing": {
+      "bottomTime": 41.8,
+      "duration": 44.1,
+      "entryTime": {
+        "date": "2024-05-07T14:41:06",
+        "timezone": "America/Vancouver",
+      },
+    },
+  },
+]
+`;

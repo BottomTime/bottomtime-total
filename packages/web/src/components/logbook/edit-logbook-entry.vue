@@ -285,12 +285,14 @@
 <script lang="ts" setup>
 import {
   DepthDTO,
+  DepthUnit,
   DiveSiteDTO,
   LogEntryAirDTO,
   LogEntryDTO,
   TankDTO,
   TankMaterial,
   WeightDTO,
+  WeightUnit,
 } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
@@ -348,14 +350,20 @@ interface LogEntryData {
 
 function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
   return {
-    bottomTime: props.entry.bottomTime ?? '',
-    duration: props.entry.duration === -1 ? '' : props.entry.duration,
-    entryTime: props.entry.entryTime.date
-      ? new Date(props.entry.entryTime.date)
+    bottomTime: props.entry.timing.bottomTime ?? '',
+    duration:
+      props.entry.timing.duration === -1 ? '' : props.entry.timing.duration,
+    entryTime: props.entry.timing.entryTime.date
+      ? new Date(props.entry.timing.entryTime.date)
       : undefined,
-    entryTimezone: props.entry.entryTime.timezone || dayjs.tz.guess(),
+    entryTimezone: props.entry.timing.entryTime.timezone || dayjs.tz.guess(),
     logNumber: props.entry.logNumber || '',
-    maxDepth: props.entry.maxDepth ? { ...props.entry.maxDepth } : '',
+    maxDepth: props.entry.depths?.maxDepth
+      ? {
+          depth: props.entry.depths.maxDepth,
+          unit: props.entry.depths.depthUnit || DepthUnit.Meters,
+        }
+      : '',
     notes: props.entry.notes ?? '',
     air:
       props.entry.air?.map((air) => ({
@@ -379,7 +387,12 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
           : undefined,
       })) ?? [],
     site: props.entry.site,
-    weights: props.entry.weights ? { ...props.entry.weights } : '',
+    weights: props.entry.equipment?.weight
+      ? {
+          weight: props.entry.equipment.weight,
+          unit: props.entry.equipment.weightUnit || WeightUnit.Kilograms,
+        }
+      : '',
   };
 }
 
@@ -477,22 +490,36 @@ async function onSave(): Promise<void> {
 
   emit('save', {
     ...props.entry,
-    bottomTime:
-      typeof formData.bottomTime === 'number' ? formData.bottomTime : undefined,
-    duration: formData.duration as number,
-    entryTime: {
-      date: dayjs(formData.entryTime).format('YYYY-MM-DDTHH:mm:ss'),
-      timezone: formData.entryTimezone,
+    timing: {
+      bottomTime:
+        typeof formData.bottomTime === 'number'
+          ? formData.bottomTime
+          : undefined,
+      duration: formData.duration as number,
+      entryTime: {
+        date: dayjs(formData.entryTime).format('YYYY-MM-DDTHH:mm:ss'),
+        timezone: formData.entryTimezone,
+      },
     },
     logNumber:
       typeof formData.logNumber === 'number' ? formData.logNumber : undefined,
-    maxDepth:
-      typeof formData.maxDepth === 'object' ? formData.maxDepth : undefined,
+    depths:
+      typeof formData.maxDepth === 'object'
+        ? {
+            maxDepth: formData.maxDepth.depth,
+            depthUnit: formData.maxDepth.unit,
+          }
+        : undefined,
     notes: formData.notes,
     site: formData.site,
     air: formData.air.map(airFormDataToDto),
-    weights:
-      typeof formData.weights === 'object' ? formData.weights : undefined,
+    equipment:
+      typeof formData.weights === 'object'
+        ? {
+            weight: formData.weights.weight,
+            weightUnit: formData.weights.unit,
+          }
+        : undefined,
   });
 }
 

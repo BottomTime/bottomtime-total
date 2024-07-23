@@ -4,10 +4,14 @@ import mockFetch from 'fetch-mock-jest';
 import {
   CreateOrUpdateLogEntryParamsDTO,
   DepthUnit,
+  ExposureSuit,
   LogEntry,
   LogEntryDTO,
   PressureUnit,
   TankMaterial,
+  TemperatureUnit,
+  TrimCorrectness,
+  WeightCorrectness,
   WeightUnit,
 } from '../../src';
 import { Fetcher } from '../../src/client/fetcher';
@@ -16,24 +20,59 @@ import { BasicUser } from '../fixtures/users';
 const timestamp = new Date('2024-04-30T20:48:16.436Z');
 const PartialTestData: LogEntryDTO = {
   id: 'bf1d4299-0c0b-47d4-bde1-d51f3573139b',
-  entryTime: {
-    date: dayjs(timestamp).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
-    timezone: 'Pacific/Pohnpei',
+  createdAt: new Date('2024-07-23T12:09:55Z'),
+  timing: {
+    entryTime: {
+      date: dayjs(timestamp).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      timezone: 'Pacific/Pohnpei',
+    },
+    duration: 45.5,
   },
   creator: BasicUser.profile,
-  duration: 45.5,
 };
 const FullTestData: LogEntryDTO = {
   ...PartialTestData,
-  bottomTime: 40.2,
-  logNumber: 444,
-  maxDepth: {
-    depth: 92.3,
-    unit: DepthUnit.Feet,
+  conditions: {
+    airTemperature: 80,
+    surfaceTemperature: 78,
+    bottomTemperature: 72,
+    temperatureUnit: TemperatureUnit.Fahrenheit,
+    chop: 2,
+    current: 3,
+    weather: 'Sunny',
+    visibility: 4,
   },
-  weights: {
+  createdAt: new Date('2024-07-23T12:09:55Z'),
+  updatedAt: new Date('2024-07-23T12:09:55Z'),
+  site: {
+    id: 'f0c5b4d4-2d1d-4b5d-8e7d-9b7a4d4b8f1d',
+    createdOn: new Date('2024-07-23T12:09:55Z'),
+    name: 'The Wreck of the RMS Titanic',
+    location: 'Atlantic Ocean',
+    creator: BasicUser.profile,
+  },
+  timing: {
+    ...PartialTestData.timing,
+    bottomTime: 40.2,
+  },
+  logNumber: 444,
+  depths: {
+    averageDepth: 55.3,
+    maxDepth: 92.3,
+    depthUnit: DepthUnit.Feet,
+  },
+  equipment: {
     weight: 10,
-    unit: WeightUnit.Pounds,
+    weightUnit: WeightUnit.Pounds,
+    weightCorrectness: WeightCorrectness.Good,
+    trimCorrectness: TrimCorrectness.Good,
+    exposureSuit: ExposureSuit.Wetsuit5mm,
+    hood: true,
+    gloves: true,
+    boots: true,
+    camera: true,
+    torch: true,
+    scooter: true,
   },
   notes: 'Sick shipwreck!',
   air: [
@@ -49,6 +88,7 @@ const FullTestData: LogEntryDTO = {
       o2Percent: 27.6,
     },
   ],
+  tags: ['wreck', 'deep', 'cold'],
 };
 
 describe('Log entry API client', () => {
@@ -69,37 +109,41 @@ describe('Log entry API client', () => {
 
   it('will return properties correctly', () => {
     expect(entry.id).toBe(FullTestData.id);
-    expect(entry.entryTime).toEqual(FullTestData.entryTime);
+    expect(entry.conditions).toEqual(FullTestData.conditions);
     expect(entry.creator.userId).toBe(BasicUser.id);
-    expect(entry.duration).toBe(FullTestData.duration);
-    expect(entry.bottomTime).toBe(FullTestData.bottomTime);
-    expect(entry.logNumber).toBe(FullTestData.logNumber);
-    expect(entry.maxDepth).toEqual(FullTestData.maxDepth);
-    expect(entry.notes).toBe(FullTestData.notes);
-    expect(entry.air).toEqual(FullTestData.air);
-    expect(entry.weights).toEqual(FullTestData.weights);
+    expect(entry.depths).toEqual(FullTestData.depths);
+    expect(entry.equipment).toBe(FullTestData.equipment);
+    expect(entry.site).toEqual(FullTestData.site);
+    expect(entry.timing).toEqual(FullTestData.timing);
+    expect(entry.updatedAt).toEqual(FullTestData.updatedAt);
   });
 
   it('will return missing properties as undefined', () => {
     entry = new LogEntry(client, { ...PartialTestData });
-    expect(entry.bottomTime).toBeUndefined();
+    expect(entry.timing.bottomTime).toBeUndefined();
     expect(entry.logNumber).toBeUndefined();
-    expect(entry.maxDepth).toBeUndefined();
+    expect(entry.depths).toEqual({});
     expect(entry.notes).toBeUndefined();
+    expect(entry.conditions).toEqual({});
+    expect(entry.equipment).toEqual({});
+    expect(entry.site).toBeUndefined();
+    expect(entry.tags).toBeUndefined();
     expect(entry.air).toBeUndefined();
-    expect(entry.weights).toBeUndefined();
   });
 
   it('will allow properties to be updated', () => {
     const newLogNumber = 555;
     const newBottomTime = 50.2;
     const newDuration = 60.5;
-    const newMaxDepth = { depth: 95.3, unit: DepthUnit.Feet };
+    const newMaxDepth = 95.3;
+    const newDepthUnit = DepthUnit.Feet;
     const newNotes = 'Awesome dive!';
     const newEntryTime = {
       date: '2024-04-30T20:48:16',
       timezone: 'Pacific/Pohnpei',
     };
+    const newWeather = 'Cloudy and chilly';
+    const newExposureSuit = ExposureSuit.Drysuit;
     const newAir = [
       {
         name: 'robust spokesman',
@@ -115,18 +159,24 @@ describe('Log entry API client', () => {
     ];
 
     entry.logNumber = newLogNumber;
-    entry.entryTime = newEntryTime;
-    entry.bottomTime = newBottomTime;
-    entry.duration = newDuration;
-    entry.maxDepth = newMaxDepth;
+    entry.timing.entryTime = newEntryTime;
+    entry.timing.bottomTime = newBottomTime;
+    entry.timing.duration = newDuration;
+    entry.depths.maxDepth = newMaxDepth;
+    entry.depths.depthUnit = newDepthUnit;
+    entry.conditions.weather = newWeather;
+    entry.equipment.exposureSuit = newExposureSuit;
     entry.notes = newNotes;
     entry.air = newAir;
 
     expect(entry.logNumber).toBe(newLogNumber);
-    expect(entry.entryTime).toEqual(newEntryTime);
-    expect(entry.bottomTime).toBe(newBottomTime);
-    expect(entry.duration).toBe(newDuration);
-    expect(entry.maxDepth).toEqual(newMaxDepth);
+    expect(entry.timing.entryTime).toEqual(newEntryTime);
+    expect(entry.timing.bottomTime).toBe(newBottomTime);
+    expect(entry.timing.duration).toBe(newDuration);
+    expect(entry.equipment.exposureSuit).toBe(newExposureSuit);
+    expect(entry.conditions.weather).toBe(newWeather);
+    expect(entry.depths.maxDepth).toEqual(newMaxDepth);
+    expect(entry.depths.depthUnit).toBe(newDepthUnit);
     expect(entry.notes).toBe(newNotes);
     expect(entry.air).toEqual(newAir);
   });
@@ -137,18 +187,26 @@ describe('Log entry API client', () => {
 
   it('will save changes to the log entry', async () => {
     const options: CreateOrUpdateLogEntryParamsDTO = {
-      duration: 50.5,
-      entryTime: {
-        date: '2024-04-30T20:48:16',
-        timezone: 'Pacific/Pohnpei',
+      timing: {
+        duration: 50.5,
+        entryTime: {
+          date: '2024-04-30T20:48:16',
+          timezone: 'Pacific/Pohnpei',
+        },
+        bottomTime: 50.2,
       },
-      bottomTime: 50.2,
+      conditions: { ...FullTestData.conditions },
       logNumber: 555,
-      maxDepth: { depth: 95.3, unit: DepthUnit.Feet },
+      depths: {
+        ...FullTestData.depths,
+        maxDepth: 95.3,
+        depthUnit: DepthUnit.Feet,
+      },
       notes: 'Awesome dive!',
-      weights: {
+      equipment: {
+        ...FullTestData.equipment,
         weight: 5.2,
-        unit: WeightUnit.Pounds,
+        weightUnit: WeightUnit.Pounds,
       },
       air: [
         {
@@ -163,15 +221,19 @@ describe('Log entry API client', () => {
           o2Percent: 21.6,
         },
       ],
+      tags: FullTestData.tags,
+      site: FullTestData.site!.id,
     };
 
     entry.logNumber = options.logNumber;
-    entry.entryTime = options.entryTime;
-    entry.bottomTime = options.bottomTime;
-    entry.duration = options.duration;
-    entry.maxDepth = options.maxDepth;
+    entry.timing.entryTime = options.timing.entryTime;
+    entry.timing.bottomTime = options.timing.bottomTime;
+    entry.timing.duration = options.timing.duration;
+    entry.depths.maxDepth = options.depths!.maxDepth;
+    entry.depths.depthUnit = options.depths!.depthUnit;
     entry.notes = options.notes;
-    entry.weights = options.weights;
+    entry.equipment.weight = options.equipment!.weight;
+    entry.equipment.weightUnit = options.equipment!.weightUnit;
     entry.air = options.air!;
 
     mockFetch.put(

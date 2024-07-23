@@ -1,6 +1,8 @@
 import {
   DepthUnit,
+  ExposureSuit,
   TemperatureUnit,
+  TrimCorrectness,
   WeightCorrectness,
   WeightUnit,
 } from '@bottomtime/api';
@@ -61,9 +63,6 @@ export class LogEntryEntity {
   @Column({ type: 'float', nullable: false })
   duration: number = 0;
 
-  @Column({ type: 'float', nullable: true })
-  safetyStop: number | null = null;
-
   // Location
   @ManyToOne(() => DiveSiteEntity, (site) => site.logEntries, {
     nullable: true,
@@ -83,7 +82,7 @@ export class LogEntryEntity {
   maxDepth: number | null = null;
 
   @Column({ type: 'enum', enum: DepthUnit, nullable: true })
-  maxDepthUnit: DepthUnit | null = null;
+  depthUnit: DepthUnit | null = null;
 
   // Equipment
   @Column({ type: 'float', nullable: true })
@@ -94,6 +93,30 @@ export class LogEntryEntity {
 
   @Column({ type: 'enum', enum: WeightCorrectness, nullable: true })
   weightCorrectness: WeightCorrectness | null = null;
+
+  @Column({ type: 'enum', enum: TrimCorrectness, nullable: true })
+  trimCorrectness: TrimCorrectness | null = null;
+
+  @Column({ type: 'enum', enum: ExposureSuit, nullable: true })
+  exposureSuit: ExposureSuit | null = null;
+
+  @Column({ type: 'boolean', nullable: true })
+  hood: boolean | null = null;
+
+  @Column({ type: 'boolean', nullable: true })
+  gloves: boolean | null = null;
+
+  @Column({ type: 'boolean', nullable: true })
+  boots: boolean | null = null;
+
+  @Column({ type: 'boolean', nullable: true })
+  camera: boolean | null = null;
+
+  @Column({ type: 'boolean', nullable: true })
+  torch: boolean | null = null;
+
+  @Column({ type: 'boolean', nullable: true })
+  scooter: boolean | null = null;
 
   // Conditions
   @Column({ type: 'float', nullable: true })
@@ -108,17 +131,17 @@ export class LogEntryEntity {
   @Column({ type: 'enum', enum: TemperatureUnit, nullable: true })
   temperatureUnit: TemperatureUnit | null = null;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  current: string | null = null;
+  @Column({ type: 'float', nullable: true })
+  chop: number | null = null;
+
+  @Column({ type: 'float', nullable: true })
+  current: number | null = null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   weather: string | null = null;
 
   @Column({ type: 'float', nullable: true })
   visibility: number | null = null;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  chop: string | null = null;
 
   // Miscellaneous data
   @Column({ type: 'text', nullable: true })

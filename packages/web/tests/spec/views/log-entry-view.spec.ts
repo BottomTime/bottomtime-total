@@ -44,17 +44,20 @@ const TestData: LogEntryDTO = {
     memberSince: new Date('2021-01-01T12:00'),
     userId: 'bfb8f31f-8ac0-427e-84a5-f17111855727',
   },
-  duration: 48.2,
-  entryTime: {
-    date: '2021-01-01T12:00:00',
-    timezone: 'America/Los_Angeles',
+  createdAt: new Date('2021-01-01T12:00'),
+  timing: {
+    duration: 48.2,
+    entryTime: {
+      date: '2021-01-01T12:00:00',
+      timezone: 'America/Los_Angeles',
+    },
+    bottomTime: 44.1,
   },
   id: '1f3c6568-d63c-4e52-8679-2a85d6f6b1f4',
   logNumber: 12,
-  bottomTime: 44.1,
-  maxDepth: {
-    depth: 26.2,
-    unit: DepthUnit.Meters,
+  depths: {
+    maxDepth: 26.2,
+    depthUnit: DepthUnit.Meters,
   },
   notes: 'Oooooo weeeeeee!!!',
 };
@@ -233,7 +236,10 @@ describe('Log Entry view', () => {
         air: [],
         creator: BasicUser.profile,
         logNumber: 13,
-        duration: 66,
+        timing: {
+          ...TestData.timing,
+          duration: 66,
+        },
         notes: 'New notes',
       };
       const entry = new LogEntry(fetcher, { ...TestData });
@@ -286,7 +292,10 @@ describe('Log Entry view', () => {
         ],
         creator: BasicUser.profile,
         logNumber: 13,
-        duration: 66,
+        timing: {
+          ...TestData.timing,
+          duration: 66,
+        },
         notes: 'New notes',
       };
       const air = {

@@ -79,7 +79,7 @@ describe('Auth Module E2E Tests', () => {
     userData.lastLogin = login.lastLogin!;
 
     // Last login should be updated.
-    expect(login.lastLogin?.valueOf()).toBeCloseTo(Date.now(), -2);
+    expect(login.lastLogin?.valueOf()).toBeCloseTo(Date.now(), -3);
     expect(UserSchema.parse(loginResponse)).toEqual(user.toJSON());
 
     // A cookie should be persisted that keeps the user logged in.

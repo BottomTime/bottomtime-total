@@ -1,13 +1,14 @@
 import {
   CreateOrUpdateLogEntryParamsSchema,
-  DateWithTimezoneDTO,
-  DepthDTO,
   DiveSiteDTO,
   LogEntryAirDTO,
+  LogEntryConditionsDTO,
   LogEntryDTO,
+  LogEntryDepthsDTO,
+  LogEntryEquipmentDTO,
   LogEntrySchema,
+  LogEntryTimingDTO,
   SuccinctProfileDTO,
-  WeightDTO,
 } from '../types';
 import { Fetcher } from './fetcher';
 
@@ -22,6 +23,14 @@ export class LogEntry {
     return { ...this.data.creator };
   }
 
+  get createdAt(): Date {
+    return this.data.createdAt;
+  }
+
+  get updatedAt(): Date | undefined {
+    return this.data.updatedAt;
+  }
+
   get site(): DiveSiteDTO | undefined {
     return this.data.site ? { ...this.data.site } : undefined;
   }
@@ -33,32 +42,23 @@ export class LogEntry {
     this.data.logNumber = value;
   }
 
-  get entryTime(): DateWithTimezoneDTO {
-    return { ...this.data.entryTime };
-  }
-  set entryTime(value: DateWithTimezoneDTO) {
-    this.data.entryTime = value;
+  get timing(): LogEntryTimingDTO {
+    return this.data.timing;
   }
 
-  get duration(): number {
-    return this.data.duration;
-  }
-  set duration(value: number) {
-    this.data.duration = value;
+  get conditions(): LogEntryConditionsDTO {
+    if (!this.data.conditions) this.data.conditions = {};
+    return this.data.conditions;
   }
 
-  get bottomTime(): number | undefined {
-    return this.data.bottomTime;
-  }
-  set bottomTime(value: number | undefined) {
-    this.data.bottomTime = value;
+  get depths(): LogEntryDepthsDTO {
+    if (!this.data.depths) this.data.depths = {};
+    return this.data.depths;
   }
 
-  get maxDepth(): DepthDTO | undefined {
-    return this.data.maxDepth ? { ...this.data.maxDepth } : undefined;
-  }
-  set maxDepth(value: DepthDTO | undefined) {
-    this.data.maxDepth = value;
+  get equipment(): LogEntryEquipmentDTO {
+    if (!this.data.equipment) this.data.equipment = {};
+    return this.data.equipment;
   }
 
   get notes(): string | undefined {
@@ -75,11 +75,11 @@ export class LogEntry {
     this.data.air = value;
   }
 
-  get weights(): WeightDTO | undefined {
-    return this.data.weights ? { ...this.data.weights } : undefined;
+  get tags(): string[] | undefined {
+    return this.data.tags;
   }
-  set weights(value: WeightDTO | undefined) {
-    this.data.weights = value;
+  set tags(value: string[] | undefined) {
+    this.data.tags = value;
   }
 
   toJSON(): LogEntryDTO {

@@ -21,21 +21,23 @@
           :test-id="`select-${entry.id}`"
           @click="$emit('select', entry)"
         >
-          {{ dayjs(entry.entryTime.date).format('LLL') }}
+          {{ dayjs(entry.timing.entryTime.date).format('LLL') }}
         </FormButton>
-        <span class="italic text-sm">{{ entry.entryTime.timezone }}</span>
+        <span class="italic text-sm">{{
+          entry.timing.entryTime.timezone
+        }}</span>
       </p>
 
       <div
         class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between"
       >
-        <div v-if="entry.bottomTime" class="flex space-x-2">
+        <div v-if="entry.timing.bottomTime" class="flex space-x-2">
           <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left">
             Bottom time / Duration:
           </p>
           <span class="italic">
-            {{ `${entry.bottomTime.toFixed(1)}min` }} /
-            {{ `${entry.duration.toFixed(1)}min` }}
+            {{ `${entry.timing.bottomTime.toFixed(1)}min` }} /
+            {{ `${entry.timing.duration.toFixed(1)}min` }}
           </span>
         </div>
 
@@ -44,18 +46,18 @@
             Duration:
           </p>
           <span class="italic">
-            {{ `${entry.duration.toFixed(1)}min` }}
+            {{ `${entry.timing.duration.toFixed(1)}min` }}
           </span>
         </div>
 
-        <div v-if="entry.maxDepth" class="flex space-x-2">
+        <div v-if="entry.depths?.maxDepth" class="flex space-x-2">
           <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left">
             Max depth:
           </p>
           <DepthText
             class="italic"
-            :depth="entry.maxDepth.depth"
-            :unit="entry.maxDepth.unit"
+            :depth="entry.depths.maxDepth"
+            :unit="entry.depths.depthUnit || DepthUnit.Meters"
           />
         </div>
       </div>
@@ -76,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { LogEntryDTO } from '@bottomtime/api';
+import { DepthUnit, LogEntryDTO } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 

@@ -8,7 +8,7 @@
         ? `/logbook/${username}/${state.selectedEntry.id}`
         : undefined
     "
-    :title="dayjs(state.selectedEntry?.entryTime.date).format('LLL')"
+    :title="dayjs(state.selectedEntry?.timing.entryTime.date).format('LLL')"
     :visible="state.showSelectedEntry"
     @close="onCloseLogEntry"
   >

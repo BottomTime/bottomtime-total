@@ -2,6 +2,9 @@ import {
   DepthUnit,
   LogBookSharing,
   LogEntryDTO,
+  PressureUnit,
+  TankMaterial,
+  TemperatureUnit,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -12,10 +15,13 @@ export const BlankLogEntry: LogEntryDTO = {
     userId: 'd62607ba-67e6-4ef0-9cdf-c1fe3c0b2752',
     username: 'jackie32',
   },
-  duration: -1,
-  entryTime: {
-    date: '',
-    timezone: '',
+  createdAt: new Date(0),
+  timing: {
+    duration: -1,
+    entryTime: {
+      date: '',
+      timezone: '',
+    },
   },
   id: '',
 };
@@ -27,15 +33,32 @@ export const MinimalLogEntry: LogEntryDTO = {
     userId: 'eda44e68-1df1-44ce-87ca-3a0e2061808c',
     username: 'logbook_guy',
   },
-  duration: 44.1,
-  entryTime: {
-    date: '2023-01-31T09:16:12',
-    timezone: 'America/Los_Angeles',
+  createdAt: new Date('2024-07-23T12:52:10Z'),
+  timing: {
+    duration: 44.1,
+    entryTime: {
+      date: '2023-01-31T09:16:12',
+      timezone: 'America/Los_Angeles',
+    },
   },
   id: '1d3d41c9-794a-4280-8335-65f503a3bee7',
 };
 
 export const FullLogEntry: LogEntryDTO = {
+  createdAt: new Date('2024-07-23T12:52:10Z'),
+  air: [
+    {
+      count: 1,
+      endPressure: 1000,
+      material: TankMaterial.Aluminum,
+      name: 'My tank',
+      pressureUnit: PressureUnit.PSI,
+      startPressure: 3000,
+      volume: 12,
+      workingPressure: 207,
+      o2Percent: 32,
+    },
+  ],
   creator: {
     logBookSharing: LogBookSharing.Public,
     memberSince: new Date('2021-04-11T18:16:12'),
@@ -45,21 +68,47 @@ export const FullLogEntry: LogEntryDTO = {
     location: 'Dublin, Ireland',
     name: 'Jake',
   },
-  duration: 88.34,
-  entryTime: {
-    date: '2023-01-31T09:16:12',
-    timezone: 'Europe/Dublin',
+  conditions: {
+    airTemperature: 72,
+    surfaceTemperature: 70,
+    bottomTemperature: 50,
+    temperatureUnit: TemperatureUnit.Fahrenheit,
+    current: 4,
+    chop: 2,
+    visibility: 2,
+    weather: 'Sunny',
   },
+  site: {
+    createdOn: new Date('2021-04-11T18:16:12'),
+    creator: {
+      logBookSharing: LogBookSharing.FriendsOnly,
+      memberSince: new Date('2021-04-11T18:16:12'),
+      userId: '7e2a8d3b-ae2e-48f5-a476-4bfce3993b33',
+      username: 'scuba_steve',
+    },
+    id: '3dcf256f-9e75-44bc-9177-ff5f5f281aac',
+    name: 'Catalina Island',
+    location: 'California',
+  },
+  timing: {
+    duration: 88.34,
+    entryTime: {
+      date: '2023-01-31T09:16:12',
+      timezone: 'Europe/Dublin',
+    },
+    bottomTime: 77.77,
+  },
+  tags: ['wreck', 'night'],
+  updatedAt: new Date('2024-07-23T12:52:10Z'),
   id: '4ca3e53c-1364-40b2-a6db-ce8e92380b1f',
-  bottomTime: 77.77,
   logNumber: 12,
-  maxDepth: {
-    depth: 33.3,
-    unit: DepthUnit.Feet,
+  depths: {
+    maxDepth: 33.3,
+    depthUnit: DepthUnit.Feet,
   },
-  weights: {
+  equipment: {
     weight: 6.5,
-    unit: WeightUnit.Pounds,
+    weightUnit: WeightUnit.Pounds,
   },
   notes: 'This was a great dive!',
 };

@@ -1,10 +1,14 @@
 import {
   DepthUnit,
+  ExposureSuit,
   LogBookSharing,
   LogEntryAirDTO,
   PressureUnit,
   TankMaterial,
+  TemperatureUnit,
+  TrimCorrectness,
   WaterType,
+  WeightCorrectness,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -65,16 +69,18 @@ const TestSiteData: DiveSiteEntity = {
 
 const TestLogEntryData: Partial<LogEntryEntity> = {
   id: 'd02158b5-bcee-4923-93bb-35b5853b1e5d',
+  createdAt: new Date('2014-10-27T01:35:36.540Z'),
   logNumber: 42,
 
   timestamp: new Date('2021-01-01T04:34:56'),
   entryTime: '2021-01-01T12:34:56',
   timezone: 'America/Los_Angeles',
 
-  bottomTime: 45,
-  duration: 50,
+  bottomTime: 2700,
+  duration: 3000,
+  averageDepth: 21.2,
   maxDepth: 30,
-  maxDepthUnit: DepthUnit.Feet,
+  depthUnit: DepthUnit.Feet,
 
   air: [
     {
@@ -123,8 +129,28 @@ const TestLogEntryData: Partial<LogEntryEntity> = {
 
   weight: 5.5,
   weightUnit: WeightUnit.Pounds,
+  weightCorrectness: WeightCorrectness.Good,
+  trimCorrectness: TrimCorrectness.KneesDown,
+
+  exposureSuit: ExposureSuit.Wetsuit7mm,
+  hood: true,
+  gloves: true,
+  boots: true,
+  camera: true,
+  torch: false,
+  scooter: false,
+
+  airTemperature: 22.5,
+  surfaceTemperature: 12.8,
+  bottomTemperature: 7.3,
+  temperatureUnit: TemperatureUnit.Celsius,
+  chop: 2.5,
+  current: 1.5,
+  weather: 'Sunny',
+  visibility: 4.2,
 
   notes: 'This was a great dive!',
+  tags: [],
 };
 
 dayjs.extend(tz);
@@ -168,78 +194,110 @@ describe('Log Entry class', () => {
 
     expect(logEntry.id).toBe(data.id);
     expect(logEntry.logNumber).toBe(data.logNumber);
-    expect(logEntry.owner).toEqual({
-      userId: CreatorData.id,
-      memberSince: CreatorData.memberSince,
-      username: CreatorData.username,
-      logBookSharing: CreatorData.logBookSharing,
-      avatar: CreatorData.avatar,
-      name: CreatorData.name,
-      location: CreatorData.location,
-    });
-    expect(logEntry.entryTime).toEqual({
-      date: '2021-01-01T12:34:56',
-      timezone: data.timezone,
-    });
-    expect(logEntry.bottomTime).toBe(data.bottomTime);
-    expect(logEntry.duration).toBe(data.duration);
-    expect(logEntry.maxDepth).toEqual({
-      depth: data.maxDepth,
-      unit: data.maxDepthUnit,
-    });
+    expect(logEntry.owner).toMatchSnapshot();
+    expect(logEntry.conditions).toMatchSnapshot();
+    expect(logEntry.depths).toMatchSnapshot();
+    expect(logEntry.equipment).toMatchSnapshot();
+
+    expect(logEntry.timing).toMatchSnapshot();
+
     expect(logEntry.notes).toBe(data.notes);
     expect(logEntry.site?.toEntity()).toEqual(diveSite);
-    expect(logEntry.weights).toEqual({
-      weight: data.weight,
-      unit: data.weightUnit,
-    });
   });
 
   it('will update properties correctly', () => {
     const newLogNumber = 43;
+
     const newEntryTime = '2021-01-01T13:34:56';
     const newTimezone = 'America/Toronto';
     const newBottomTime = 50;
     const newDuration = 55;
+
+    const newAirTemp = 77;
+    const newSurfaceTemp = 52;
+    const newBottomTemp = 37;
+    const newTempUnit = TemperatureUnit.Fahrenheit;
+
+    const newChop = 3;
+    const newCurrent = 2.6;
+    const newWeather = 'Chilly';
+    const newVisibility = 6.3;
+
+    const newAverageDepth = 27.5;
     const newMaxDepth = 35;
-    const newMaxDepthUnit = DepthUnit.Meters;
-    const newNotes = 'This was an even better dive!';
+    const newDepthUnit = DepthUnit.Meters;
+
     const newWeight = 3.3;
     const newWeightUnit = WeightUnit.Kilograms;
+    const newWeightCorrectness = WeightCorrectness.Under;
+    const newTrimCorrectness = TrimCorrectness.HeadDown;
+    const newExposureSuit = ExposureSuit.Drysuit;
+    const newHood = false;
+    const newGloves = false;
+    const newBoots = false;
+    const newCamera = false;
+    const newTorch = true;
+    const newScooter = true;
+
+    const newNotes = 'This was an even better dive!';
 
     logEntry.logNumber = newLogNumber;
-    logEntry.entryTime = {
+    logEntry.timing.entryTime = {
       date: newEntryTime,
       timezone: newTimezone,
     };
-    logEntry.bottomTime = newBottomTime;
-    logEntry.duration = newDuration;
-    logEntry.maxDepth = {
-      depth: newMaxDepth,
-      unit: newMaxDepthUnit,
-    };
-    logEntry.weights = {
-      weight: newWeight,
-      unit: newWeightUnit,
-    };
+    logEntry.timing.bottomTime = newBottomTime;
+    logEntry.timing.duration = newDuration;
+
+    logEntry.conditions.airTemperature = newAirTemp;
+    logEntry.conditions.surfaceTemperature = newSurfaceTemp;
+    logEntry.conditions.bottomTemperature = newBottomTemp;
+    logEntry.conditions.temperatureUnit = newTempUnit;
+    logEntry.conditions.chop = newChop;
+    logEntry.conditions.current = newCurrent;
+    logEntry.conditions.weather = newWeather;
+    logEntry.conditions.visibility = newVisibility;
+
+    logEntry.depths.averageDepth = newAverageDepth;
+    logEntry.depths.maxDepth = newMaxDepth;
+    logEntry.depths.depthUnit = newDepthUnit;
+
+    logEntry.equipment.weight = newWeight;
+    logEntry.equipment.weightUnit = newWeightUnit;
+    logEntry.equipment.weightCorrectness = newWeightCorrectness;
+    logEntry.equipment.trimCorrectness = newTrimCorrectness;
+    logEntry.equipment.exposureSuit = newExposureSuit;
+    logEntry.equipment.hood = newHood;
+    logEntry.equipment.gloves = newGloves;
+    logEntry.equipment.boots = newBoots;
+    logEntry.equipment.camera = newCamera;
+    logEntry.equipment.torch = newTorch;
+    logEntry.equipment.scooter = newScooter;
+
     logEntry.notes = newNotes;
 
     expect(logEntry.logNumber).toBe(newLogNumber);
-    expect(logEntry.entryTime).toEqual({
+    expect(logEntry.timing.entryTime).toEqual({
       date: newEntryTime,
       timezone: newTimezone,
     });
-    expect(logEntry.bottomTime).toBe(newBottomTime);
-    expect(logEntry.duration).toBe(newDuration);
-    expect(logEntry.maxDepth).toEqual({
-      depth: newMaxDepth,
-      unit: newMaxDepthUnit,
-    });
+    expect(logEntry.timing.bottomTime).toBe(newBottomTime);
+    expect(logEntry.timing.duration).toBe(newDuration);
+
+    expect(logEntry.conditions.airTemperature).toBe(newAirTemp);
+    expect(logEntry.conditions.surfaceTemperature).toBe(newSurfaceTemp);
+    expect(logEntry.conditions.bottomTemperature).toBe(newBottomTemp);
+    expect(logEntry.conditions.temperatureUnit).toBe(newTempUnit);
+    expect(logEntry.conditions.chop).toBe(newChop);
+    expect(logEntry.conditions.current).toBe(newCurrent);
+    expect(logEntry.conditions.weather).toBe(newWeather);
+    expect(logEntry.conditions.visibility).toBe(newVisibility);
+
+    expect(logEntry.depths.averageDepth).toBe(newAverageDepth);
+    expect(logEntry.depths.maxDepth).toBe(newMaxDepth);
+    expect(logEntry.depths.depthUnit).toBe(newDepthUnit);
+
     expect(logEntry.notes).toBe(newNotes);
-    expect(logEntry.weights).toEqual({
-      weight: newWeight,
-      unit: newWeightUnit,
-    });
   });
 
   it('will set site property', async () => {
@@ -253,24 +311,6 @@ describe('Log Entry class', () => {
     logEntry.site = undefined;
     expect(logEntry.site).toBeUndefined();
     expect(data.site).toBeNull();
-  });
-
-  it('will allow optional properties to be set to undefined', () => {
-    data.site = diveSite;
-
-    logEntry.logNumber = undefined;
-    logEntry.bottomTime = undefined;
-    logEntry.maxDepth = undefined;
-    logEntry.notes = undefined;
-    logEntry.site = undefined;
-    logEntry.weights = undefined;
-
-    expect(logEntry.logNumber).toBeUndefined();
-    expect(logEntry.bottomTime).toBeUndefined();
-    expect(logEntry.maxDepth).toBeUndefined();
-    expect(logEntry.notes).toBeUndefined();
-    expect(logEntry.site).toBeUndefined();
-    expect(logEntry.weights).toBeUndefined();
   });
 
   it('will render a JSON object correctly', () => {
@@ -292,36 +332,72 @@ describe('Log Entry class', () => {
     expect(saved.timestamp).toEqual(data.timestamp);
     expect(saved.entryTime).toBe(data.entryTime);
     expect(saved.timezone).toBe(data.timezone);
-    expect(saved.bottomTime).toBe(logEntry.bottomTime);
-    expect(saved.duration).toBe(logEntry.duration);
-    expect(saved.maxDepth).toBe(logEntry.maxDepth!.depth);
-    expect(saved.maxDepthUnit).toBe(logEntry.maxDepth!.unit);
+    expect(saved.bottomTime).toBe(data.bottomTime);
+    expect(saved.duration).toBe(data.duration);
+    expect(saved.averageDepth).toBe(data.averageDepth);
+    expect(saved.maxDepth).toBe(data.maxDepth);
+    expect(saved.depthUnit).toBe(data.depthUnit);
+    expect(saved.weight).toBe(data.weight);
+    expect(saved.weightUnit).toBe(data.weightUnit);
+    expect(saved.weightCorrectness).toBe(data.weightCorrectness);
+    expect(saved.trimCorrectness).toBe(data.trimCorrectness);
+    expect(saved.exposureSuit).toBe(data.exposureSuit);
+    expect(saved.hood).toBe(data.hood);
+    expect(saved.gloves).toBe(data.gloves);
+    expect(saved.boots).toBe(data.boots);
+    expect(saved.camera).toBe(data.camera);
+    expect(saved.torch).toBe(data.torch);
+    expect(saved.scooter).toBe(data.scooter);
+    expect(saved.airTemperature).toBe(data.airTemperature);
+    expect(saved.surfaceTemperature).toBe(data.surfaceTemperature);
+    expect(saved.bottomTemperature).toBe(data.bottomTemperature);
+    expect(saved.temperatureUnit).toBe(data.temperatureUnit);
+    expect(saved.chop).toBe(data.chop);
+    expect(saved.current).toBe(data.current);
+    expect(saved.weather).toBe(data.weather);
+    expect(saved.visibility).toBe(data.visibility);
     expect(saved.notes).toBe(logEntry.notes);
     expect(saved.site?.id).toEqual(diveSite.id);
-    expect(saved.weight).toBe(logEntry.weights?.weight);
-    expect(saved.weightUnit).toBe(logEntry.weights?.unit);
   });
 
   it('will update an existing log entry in the database', async () => {
     await Entries.save(data);
 
     logEntry.logNumber = 44;
-    logEntry.entryTime = {
+    logEntry.timing.entryTime = {
       date: '2024-05-08T08:34:56',
       timezone: 'Asia/Singapore',
     };
-    logEntry.bottomTime = 55;
-    logEntry.duration = 60;
-    logEntry.maxDepth = {
-      depth: 40,
-      unit: DepthUnit.Feet,
-    };
+    logEntry.timing.bottomTime = 55;
+    logEntry.timing.duration = 60;
+
+    logEntry.conditions.airTemperature = 25;
+    logEntry.conditions.surfaceTemperature = 15;
+    logEntry.conditions.bottomTemperature = 10;
+    logEntry.conditions.temperatureUnit = TemperatureUnit.Celsius;
+    logEntry.conditions.chop = 3;
+    logEntry.conditions.current = 2;
+    logEntry.conditions.weather = 'Rainy';
+    logEntry.conditions.visibility = 5;
+
+    logEntry.depths.averageDepth = 25;
+    logEntry.depths.maxDepth = 40;
+    logEntry.depths.depthUnit = DepthUnit.Feet;
+
+    logEntry.equipment.weight = 4;
+    logEntry.equipment.weightUnit = WeightUnit.Kilograms;
+    logEntry.equipment.weightCorrectness = WeightCorrectness.Over;
+    logEntry.equipment.trimCorrectness = TrimCorrectness.Good;
+    logEntry.equipment.exposureSuit = ExposureSuit.Drysuit;
+    logEntry.equipment.hood = false;
+    logEntry.equipment.gloves = false;
+    logEntry.equipment.boots = false;
+    logEntry.equipment.camera = false;
+    logEntry.equipment.torch = true;
+    logEntry.equipment.scooter = true;
+
     logEntry.notes = 'This was the best dive yet!';
     logEntry.site = siteFactory.createDiveSite(diveSite);
-    logEntry.weights = {
-      weight: 3.8,
-      unit: WeightUnit.Kilograms,
-    };
 
     await logEntry.save();
 
@@ -335,14 +411,38 @@ describe('Log Entry class', () => {
     expect(saved.entryTime).toBe('2024-05-08T08:34:56');
     expect(saved.timezone).toBe('Asia/Singapore');
     expect(saved.timestamp).toEqual(new Date('2024-05-08T00:34:56.000Z'));
-    expect(saved.bottomTime).toBe(logEntry.bottomTime);
-    expect(saved.duration).toBe(logEntry.duration);
-    expect(saved.maxDepth).toBe(logEntry.maxDepth!.depth);
-    expect(saved.maxDepthUnit).toBe(logEntry.maxDepth!.unit);
+    expect(saved.bottomTime).toBe(logEntry.timing.bottomTime);
+    expect(saved.duration).toBe(logEntry.timing.duration);
+
+    expect(saved.airTemperature).toBe(logEntry.conditions.airTemperature);
+    expect(saved.surfaceTemperature).toBe(
+      logEntry.conditions.surfaceTemperature,
+    );
+    expect(saved.bottomTemperature).toBe(logEntry.conditions.bottomTemperature);
+    expect(saved.temperatureUnit).toBe(logEntry.conditions.temperatureUnit);
+    expect(saved.chop).toBe(logEntry.conditions.chop);
+    expect(saved.current).toBe(logEntry.conditions.current);
+    expect(saved.weather).toBe(logEntry.conditions.weather);
+    expect(saved.visibility).toBe(logEntry.conditions.visibility);
+
+    expect(saved.averageDepth).toBe(logEntry.depths.averageDepth);
+    expect(saved.maxDepth).toBe(logEntry.depths.maxDepth);
+    expect(saved.depthUnit).toBe(logEntry.depths.depthUnit);
+
+    expect(saved.weight).toBe(logEntry.equipment.weight);
+    expect(saved.weightUnit).toBe(logEntry.equipment.weightUnit);
+    expect(saved.weightCorrectness).toBe(logEntry.equipment.weightCorrectness);
+    expect(saved.trimCorrectness).toBe(logEntry.equipment.trimCorrectness);
+    expect(saved.exposureSuit).toBe(logEntry.equipment.exposureSuit);
+    expect(saved.hood).toBe(logEntry.equipment.hood);
+    expect(saved.gloves).toBe(logEntry.equipment.gloves);
+    expect(saved.boots).toBe(logEntry.equipment.boots);
+    expect(saved.camera).toBe(logEntry.equipment.camera);
+    expect(saved.torch).toBe(logEntry.equipment.torch);
+    expect(saved.scooter).toBe(logEntry.equipment.scooter);
+
     expect(saved.notes).toBe(logEntry.notes);
     expect(saved.site?.id).toEqual(diveSite.id);
-    expect(saved.weight).toBe(logEntry.weights?.weight);
-    expect(saved.weightUnit).toBe(logEntry.weights?.unit);
   });
 
   it('will delete a log entry from the database', async () => {

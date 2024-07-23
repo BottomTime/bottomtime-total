@@ -1,6 +1,9 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
+  DepthUnit,
   ListLogEntriesParamsDTO,
+  TemperatureUnit,
+  WeightUnit,
 } from '@bottomtime/api';
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
@@ -88,16 +91,35 @@ export class LogEntriesService {
       .where('entries.id = :id', { id: entryId })
       .select([
         'entries.id',
+        'entries.createdAt',
+        'entries.updatedAt',
         'entries.logNumber',
         'entries.timestamp',
         'entries.entryTime',
         'entries.timezone',
         'entries.bottomTime',
         'entries.duration',
+        'entries.averageDepth',
         'entries.maxDepth',
-        'entries.maxDepthUnit',
+        'entries.depthUnit',
         'entries.weight',
         'entries.weightUnit',
+        'entries.weightCorrectness',
+        'entries.trimCorrectness',
+        'entries.exposureSuit',
+        'entries.hood',
+        'entries.gloves',
+        'entries.boots',
+        'entries.camera',
+        'entries.torch',
+        'entries.scooter',
+        'entries.airTemperature',
+        'entries.surfaceTemperature',
+        'entries.bottomTemperature',
+        'entries.temperatureUnit',
+        'entries.chop',
+        'entries.current',
+        'entries.visibility',
         'entries.notes',
         'owners.id',
         'owners.username',
@@ -123,18 +145,49 @@ export class LogEntriesService {
   async createLogEntry(options: CreateLogEntryOptions): Promise<LogEntry> {
     const data: LogEntryEntity = new LogEntryEntity();
     data.id = uuid();
+    data.createdAt = new Date();
     data.owner = options.owner.toEntity();
 
     const entry = this.logEntryFactory.createLogEntry(data);
-    entry.entryTime = options.entryTime;
-    entry.bottomTime = options.bottomTime;
-    entry.duration = options.duration;
-    entry.maxDepth = options.maxDepth;
-    entry.notes = options.notes;
+    entry.conditions.airTemperature = options.conditions?.airTemperature;
+    entry.conditions.surfaceTemperature =
+      options.conditions?.surfaceTemperature;
+    entry.conditions.bottomTemperature = options.conditions?.bottomTemperature;
+    entry.conditions.temperatureUnit =
+      options.conditions?.temperatureUnit ?? TemperatureUnit.Celsius;
+    entry.conditions.chop = options.conditions?.chop;
+    entry.conditions.current = options.conditions?.current;
+    entry.conditions.visibility = options.conditions?.visibility;
+    entry.conditions.weather = options.conditions?.weather;
+
+    entry.depths.averageDepth = options.depths?.averageDepth;
+    entry.depths.maxDepth = options.depths?.maxDepth;
+    entry.depths.depthUnit = options.depths?.depthUnit ?? DepthUnit.Meters;
+
+    entry.equipment.weight = options.equipment?.weight;
+    entry.equipment.weightUnit =
+      options.equipment?.weightUnit ?? WeightUnit.Kilograms;
+    entry.equipment.weightCorrectness = options.equipment?.weightCorrectness;
+    entry.equipment.trimCorrectness = options.equipment?.trimCorrectness;
+    entry.equipment.exposureSuit = options.equipment?.exposureSuit;
+    entry.equipment.hood = options.equipment?.hood;
+    entry.equipment.gloves = options.equipment?.gloves;
+    entry.equipment.boots = options.equipment?.boots;
+    entry.equipment.camera = options.equipment?.camera;
+    entry.equipment.torch = options.equipment?.torch;
+    entry.equipment.scooter = options.equipment?.scooter;
+
+    entry.timing.entryTime = options.timing.entryTime;
+    entry.timing.bottomTime = options.timing.bottomTime;
+    entry.timing.duration = options.timing.duration;
+
     entry.logNumber = options.logNumber;
     entry.site = options.site;
-    entry.weights = options.weights;
+    entry.notes = options.notes;
+    // entry.tags = options.tags;
+
     if (options.air) entry.air = options.air;
+
     await entry.save();
 
     return entry;

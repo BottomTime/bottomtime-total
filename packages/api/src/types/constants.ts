@@ -15,6 +15,18 @@ export enum DepthUnit {
   Feet = 'ft',
 }
 
+export enum ExposureSuit {
+  Drysuit = 'drysuit',
+  None = 'none',
+  Other = 'other',
+  Rashguard = 'rashguard',
+  Shorty = 'shorty',
+  Wetsuit3mm = '3mm',
+  Wetsuit5mm = '5mm',
+  Wetsuit7mm = '7mm',
+  Wetsuit9mm = '9mm',
+}
+
 export enum PressureUnit {
   Bar = 'bar',
   PSI = 'psi',
@@ -33,6 +45,12 @@ export enum TankMaterial {
 export enum TemperatureUnit {
   Celsius = 'C',
   Fahrenheit = 'F',
+}
+
+export enum TrimCorrectness {
+  Good = 'good',
+  HeadDown = 'headDown',
+  KneesDown = 'kneesDown',
 }
 
 export enum UserRole {

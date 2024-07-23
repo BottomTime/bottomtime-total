@@ -8,15 +8,17 @@ const Username = 'Johnny_Diver';
 const Password = 'P@ssw0rd__';
 
 const TestData: CreateOrUpdateLogEntryParamsDTO = {
-  duration: 99,
-  bottomTime: 82,
-  maxDepth: {
-    depth: 93,
-    unit: DepthUnit.Feet,
+  timing: {
+    duration: 99,
+    bottomTime: 82,
+    entryTime: {
+      date: '2022-04-23T09:18:13',
+      timezone: 'Asia/Bangkok',
+    },
   },
-  entryTime: {
-    date: '2022-04-23T09:18:13',
-    timezone: 'Asia/Bangkok',
+  depths: {
+    maxDepth: 93,
+    depthUnit: DepthUnit.Feet,
   },
   logNumber: 22,
   notes: 'Yipeeee!!',
@@ -45,16 +47,22 @@ test.describe('Log Entries', () => {
     await page.getByTestId('log-number').fill(TestData.logNumber!.toString());
     await page
       .getByPlaceholder('Select entry time')
-      .fill(dayjs(TestData.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'));
+      .fill(
+        dayjs(TestData.timing.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
+      );
     await page.getByPlaceholder('Select entry time').press('Tab');
     await page
       .getByTestId('entry-time-timezone')
-      .selectOption(TestData.entryTime.timezone);
-    await page.getByTestId('duration').fill(TestData.duration!.toString());
-    await page.getByTestId('bottomTime').fill(TestData.bottomTime!.toString());
+      .selectOption(TestData.timing.entryTime.timezone);
+    await page
+      .getByTestId('duration')
+      .fill(TestData.timing.duration!.toString());
+    await page
+      .getByTestId('bottomTime')
+      .fill(TestData.timing.bottomTime!.toString());
     await page
       .getByTestId('max-depth')
-      .fill(TestData.maxDepth!.depth!.toString());
+      .fill(TestData.depths!.maxDepth!.toString());
     await page.getByTestId('max-depth-unit').click();
     await page.getByTestId('notes').fill(TestData.notes!);
     await page.getByTestId('save-entry').click();
@@ -64,31 +72,33 @@ test.describe('Log Entries', () => {
     const logEntryId = page.url().split('/').pop()!;
     const entry = await api.logEntries.getLogEntry(Username, logEntryId);
     expect(entry.logNumber).toBe(TestData.logNumber);
-    expect(entry.entryTime.date).toBe(TestData.entryTime.date);
-    expect(entry.entryTime.timezone).toBe(TestData.entryTime.timezone);
-    expect(entry.duration).toBe(TestData.duration);
-    expect(entry.bottomTime).toBe(TestData.bottomTime);
-    expect(entry.maxDepth?.depth).toBe(TestData.maxDepth!.depth);
-    expect(entry.maxDepth?.unit).toBe(TestData.maxDepth!.unit);
+    expect(entry.timing.entryTime.date).toBe(TestData.timing.entryTime.date);
+    expect(entry.timing.entryTime.timezone).toBe(
+      TestData.timing.entryTime.timezone,
+    );
+    expect(entry.timing.duration).toBe(TestData.timing.duration);
+    expect(entry.timing.bottomTime).toBe(TestData.timing.bottomTime);
+    expect(entry.depths?.maxDepth).toBe(TestData.depths!.maxDepth!);
+    expect(entry.depths?.depthUnit).toBe(TestData.depths!.depthUnit);
     expect(entry.notes).toBe(TestData.notes);
 
     await expect(page.getByTestId('log-number')).toHaveValue(
       TestData.logNumber!.toString(),
     );
     await expect(page.getByPlaceholder('Select entry time')).toHaveValue(
-      dayjs(TestData.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
+      dayjs(TestData.timing.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
     );
     await expect(page.getByTestId('entry-time-timezone')).toHaveValue(
-      TestData.entryTime.timezone,
+      TestData.timing.entryTime.timezone,
     );
     await expect(page.getByTestId('duration')).toHaveValue(
-      TestData.duration!.toString(),
+      TestData.timing.duration!.toString(),
     );
     await expect(page.getByTestId('bottomTime')).toHaveValue(
-      TestData.bottomTime!.toString(),
+      TestData.timing.bottomTime!.toString(),
     );
     await expect(page.getByTestId('max-depth')).toHaveValue(
-      TestData.maxDepth!.depth.toString(),
+      TestData.depths!.maxDepth!.toString(),
     );
     await expect(page.getByTestId('max-depth-unit')).toContainText('ft');
     await expect(page.getByTestId('notes')).toHaveValue(TestData.notes!);
@@ -117,19 +127,19 @@ test.describe('Log Entries', () => {
       TestData.logNumber!.toString(),
     );
     await expect(page.getByPlaceholder('Select entry time')).toHaveValue(
-      dayjs(TestData.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
+      dayjs(TestData.timing.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
     );
     await expect(page.getByTestId('entry-time-timezone')).toHaveValue(
-      TestData.entryTime.timezone,
+      TestData.timing.entryTime.timezone,
     );
     await expect(page.getByTestId('duration')).toHaveValue(
-      TestData.duration!.toString(),
+      TestData.timing.duration!.toString(),
     );
     await expect(page.getByTestId('bottomTime')).toHaveValue(
-      TestData.bottomTime!.toString(),
+      TestData.timing.bottomTime!.toString(),
     );
     await expect(page.getByTestId('max-depth')).toHaveValue(
-      TestData.maxDepth!.depth.toString(),
+      TestData.depths!.maxDepth!.toString(),
     );
     await expect(page.getByTestId('max-depth-unit')).toContainText('ft');
     await expect(page.getByTestId('notes')).toHaveValue(TestData.notes!);
@@ -165,13 +175,13 @@ test.describe('Log Entries', () => {
     await page.waitForSelector('[data-testid="toast-log-entry-saved"]');
 
     const updated = await api.logEntries.getLogEntry(Username, entry.id);
-    expect(updated.bottomTime).toBe(newBottomTime);
-    expect(updated.duration).toBe(newDuration);
-    expect(updated.entryTime.date).toBe(newEntryTime);
-    expect(updated.entryTime.timezone).toBe(newTimezone);
+    expect(updated.timing.bottomTime).toBe(newBottomTime);
+    expect(updated.timing.duration).toBe(newDuration);
+    expect(updated.timing.entryTime.date).toBe(newEntryTime);
+    expect(updated.timing.entryTime.timezone).toBe(newTimezone);
     expect(updated.logNumber).toBe(newLogNumber);
-    expect(updated.maxDepth?.depth).toBe(newMaxDepth);
-    expect(updated.maxDepth?.unit).toBe(DepthUnit.Meters);
+    expect(updated.depths!.maxDepth).toBe(newMaxDepth);
+    expect(updated.depths!.depthUnit).toBe(DepthUnit.Meters);
     expect(updated.notes).toBe(newNotes);
   });
 
@@ -185,10 +195,12 @@ test.describe('Log Entries', () => {
       name: 'Epic Dive Site',
     });
     await api.logEntries.createLogEntry(Username, {
-      duration: 99,
-      entryTime: {
-        date: '2022-04-23T09:18:13',
-        timezone: 'Asia/Bangkok',
+      timing: {
+        duration: 99,
+        entryTime: {
+          date: '2022-04-23T09:18:13',
+          timezone: 'Asia/Bangkok',
+        },
       },
       site: site.id,
     });

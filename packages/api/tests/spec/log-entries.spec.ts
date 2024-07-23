@@ -89,14 +89,19 @@ describe('Log entries API client', () => {
 
   it('will create a new log entry without a dive site', async () => {
     const options: CreateOrUpdateLogEntryParamsDTO = {
-      duration: 50.5,
-      entryTime: {
-        date: '2024-04-30T20:48:16',
-        timezone: 'Pacific/Pohnpei',
+      timing: {
+        duration: 50.5,
+        entryTime: {
+          date: '2024-04-30T20:48:16',
+          timezone: 'Pacific/Pohnpei',
+        },
+        bottomTime: 50.2,
       },
-      bottomTime: 50.2,
       logNumber: 555,
-      maxDepth: { depth: 95.3, unit: DepthUnit.Feet },
+      depths: {
+        maxDepth: 95.3,
+        depthUnit: DepthUnit.Feet,
+      },
       notes: 'Awesome dive!',
       air: [
         {
@@ -116,6 +121,7 @@ describe('Log entries API client', () => {
       ...options,
       site: undefined,
       creator: BasicUser.profile,
+      createdAt: new Date('2024-04-30T20:48:16'),
       id: '62389e6e-0332-4288-9d87-9bd94ba830da',
     };
     mockFetch.post(`/api/users/${BasicUser.username}/logbook`, {
