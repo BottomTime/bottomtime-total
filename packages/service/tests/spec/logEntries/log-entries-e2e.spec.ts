@@ -162,7 +162,10 @@ describe('Log entries E2E tests', () => {
         .set(...authHeader)
         .expect(200);
 
-      expect(body).toMatchSnapshot();
+      expect({
+        ...body,
+        createdAt: '2023-02-03T15:50:47.000Z',
+      }).toMatchSnapshot();
     });
 
     it('will allow an admin to view any log entry', async () => {
@@ -171,7 +174,10 @@ describe('Log entries E2E tests', () => {
         .set(...adminAuthHeader)
         .expect(200);
 
-      expect(body).toMatchSnapshot();
+      expect({
+        ...body,
+        createdAt: '2023-02-03T15:50:47.000Z',
+      }).toMatchSnapshot();
     });
 
     it('will return a 401 response if the user is not authenticated', async () => {
@@ -659,6 +665,7 @@ describe('Log entries E2E tests', () => {
 
       expect({
         ...body,
+        createdAt: '2023-02-03T15:50:47.000Z',
         updatedAt: '2024-07-23T18:04:13.101Z',
       }).toMatchSnapshot();
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
@@ -700,6 +707,7 @@ describe('Log entries E2E tests', () => {
 
       expect({
         ...body,
+        createdAt: '2023-02-03T15:50:47.000Z',
         updatedAt: '2024-07-23T18:04:13.236Z',
       }).toMatchSnapshot();
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);

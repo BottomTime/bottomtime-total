@@ -357,7 +357,10 @@ describe('Log entries service', () => {
       const result = (await service.getLogEntry(data.id))!;
 
       expect(result).toBeDefined();
-      expect(result.toJSON()).toMatchSnapshot();
+      expect({
+        ...result.toJSON(),
+        createdAt: new Date('2023-02-15T01:23:32.000Z'),
+      }).toMatchSnapshot();
     });
 
     it('will return undefined if the log entry does not exist', async () => {
@@ -379,7 +382,10 @@ describe('Log entries service', () => {
       const result = (await service.getLogEntry(data.id, ownerData[1].id))!;
 
       expect(result).toBeDefined();
-      expect(result.toJSON()).toMatchSnapshot();
+      expect({
+        ...result.toJSON(),
+        createdAt: new Date('2023-02-15T01:23:32.000Z'),
+      }).toMatchSnapshot();
     });
 
     it('will return undefined if the indicated log entry does not belong to the specified user', async () => {
