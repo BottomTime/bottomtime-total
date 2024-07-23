@@ -39,7 +39,7 @@ export class LogEntryQueryBuilder {
         'entries.bottomTime',
         'entries.duration',
         'entries.maxDepth',
-        'entries.maxDepthUnit',
+        'entries.depthUnit',
         'entries.weight',
         'entries.weightUnit',
         'entries.notes',

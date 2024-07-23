@@ -40,7 +40,17 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
       "workingPressure": 3000,
     },
   ],
-  "bottomTime": 45,
+  "conditions": {
+    "airTemperature": 22.5,
+    "bottomTemperature": 7.3,
+    "chop": 2.5,
+    "current": 1.5,
+    "surfaceTemperature": 12.8,
+    "temperatureUnit": "C",
+    "visibility": 4.2,
+    "weather": "Sunny",
+  },
+  "createdAt": 2014-10-27T01:35:36.540Z,
   "creator": {
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",
     "location": "Underwater",
@@ -50,17 +60,26 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
     "userId": "5ac8b2c0-c9b7-4293-989c-13c2aa4e4dd5",
     "username": "Diver.Dan",
   },
-  "duration": 50,
-  "entryTime": {
-    "date": "2021-01-01T12:34:56",
-    "timezone": "America/Los_Angeles",
+  "depths": {
+    "averageDepth": 21.2,
+    "depthUnit": "ft",
+    "maxDepth": 30,
+  },
+  "equipment": {
+    "boots": true,
+    "camera": true,
+    "exposureSuit": "7mm",
+    "gloves": true,
+    "hood": true,
+    "scooter": false,
+    "torch": false,
+    "trimCorrectness": "kneesDown",
+    "weight": 5.5,
+    "weightCorrectness": "good",
+    "weightUnit": "lbs",
   },
   "id": "d02158b5-bcee-4923-93bb-35b5853b1e5d",
   "logNumber": 42,
-  "maxDepth": {
-    "depth": 30,
-    "unit": "ft",
-  },
   "notes": "This was a great dive!",
   "site": {
     "averageDifficulty": 2.2,
@@ -93,9 +112,75 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
     "updatedOn": 2024-05-21T19:46:14.342Z,
     "waterType": "salt",
   },
-  "weights": {
-    "unit": "lbs",
-    "weight": 5.5,
+  "tags": [],
+  "timing": {
+    "bottomTime": 2700,
+    "duration": 3000,
+    "entryTime": {
+      "date": "2021-01-01T12:34:56",
+      "timezone": "America/Los_Angeles",
+    },
+  },
+  "updatedAt": undefined,
+}
+`;
+
+exports[`Log Entry class will return properties correctly 1`] = `
+{
+  "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",
+  "location": "Underwater",
+  "logBookSharing": "friends",
+  "memberSince": 2021-01-01T00:00:00.000Z,
+  "name": "Dan Diver",
+  "userId": "5ac8b2c0-c9b7-4293-989c-13c2aa4e4dd5",
+  "username": "Diver.Dan",
+}
+`;
+
+exports[`Log Entry class will return properties correctly 2`] = `
+{
+  "airTemperature": 22.5,
+  "bottomTemperature": 7.3,
+  "chop": 2.5,
+  "current": 1.5,
+  "surfaceTemperature": 12.8,
+  "temperatureUnit": "C",
+  "visibility": 4.2,
+  "weather": "Sunny",
+}
+`;
+
+exports[`Log Entry class will return properties correctly 3`] = `
+{
+  "averageDepth": 21.2,
+  "depthUnit": "ft",
+  "maxDepth": 30,
+}
+`;
+
+exports[`Log Entry class will return properties correctly 4`] = `
+{
+  "boots": true,
+  "camera": true,
+  "exposureSuit": "7mm",
+  "gloves": true,
+  "hood": true,
+  "scooter": false,
+  "torch": false,
+  "trimCorrectness": "kneesDown",
+  "weight": 5.5,
+  "weightCorrectness": "good",
+  "weightUnit": "lbs",
+}
+`;
+
+exports[`Log Entry class will return properties correctly 5`] = `
+{
+  "bottomTime": 2700,
+  "duration": 3000,
+  "entryTime": {
+    "date": "2021-01-01T12:34:56",
+    "timezone": "America/Los_Angeles",
   },
 }
 `;

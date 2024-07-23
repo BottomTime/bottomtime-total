@@ -538,15 +538,46 @@ export class UserLogEntriesController {
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema))
     options: CreateOrUpdateLogEntryParamsDTO,
   ): Promise<LogEntryDTO> {
-    logEntry.bottomTime = options.bottomTime;
-    logEntry.duration = options.duration;
-    logEntry.entryTime = options.entryTime;
-    logEntry.logNumber = options.logNumber;
-    logEntry.maxDepth = options.maxDepth;
-    logEntry.weights = options.weights;
-    logEntry.notes = options.notes;
-
     logEntry.air = options.air ?? [];
+
+    logEntry.conditions.airTemperature = options.conditions?.airTemperature;
+    logEntry.conditions.surfaceTemperature =
+      options.conditions?.surfaceTemperature;
+    logEntry.conditions.bottomTemperature =
+      options.conditions?.bottomTemperature;
+    logEntry.conditions.temperatureUnit =
+      options.conditions?.temperatureUnit ??
+      logEntry.conditions.temperatureUnit;
+    logEntry.conditions.chop = options.conditions?.chop;
+    logEntry.conditions.current = options.conditions?.current;
+    logEntry.conditions.visibility = options.conditions?.visibility;
+    logEntry.conditions.weather = options.conditions?.weather;
+
+    logEntry.depths.averageDepth = options.depths?.averageDepth;
+    if (options.depths?.depthUnit)
+      logEntry.depths.depthUnit = options.depths.depthUnit;
+    logEntry.depths.maxDepth = options.depths?.maxDepth;
+
+    logEntry.equipment.weight = options.equipment?.weight;
+    if (options.equipment?.weightUnit)
+      logEntry.equipment.weightUnit = options.equipment.weightUnit;
+    logEntry.equipment.weightCorrectness = options.equipment?.weightCorrectness;
+    logEntry.equipment.trimCorrectness = options.equipment?.trimCorrectness;
+    logEntry.equipment.exposureSuit = options.equipment?.exposureSuit;
+    logEntry.equipment.hood = options.equipment?.hood;
+    logEntry.equipment.gloves = options.equipment?.gloves;
+    logEntry.equipment.boots = options.equipment?.boots;
+    logEntry.equipment.camera = options.equipment?.camera;
+    logEntry.equipment.torch = options.equipment?.torch;
+    logEntry.equipment.scooter = options.equipment?.scooter;
+
+    logEntry.logNumber = options.logNumber;
+    logEntry.notes = options.notes;
+    logEntry.tags = options.tags ?? [];
+
+    logEntry.timing.entryTime = options.timing.entryTime;
+    logEntry.timing.bottomTime = options.timing.bottomTime;
+    logEntry.timing.duration = options.timing.duration;
 
     if (options.site) {
       const site = await this.diveSites.getDiveSite(options.site);

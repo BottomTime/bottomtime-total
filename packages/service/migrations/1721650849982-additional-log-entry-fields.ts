@@ -25,7 +25,7 @@ export class LogEntryDepth1721650849982 implements MigrationInterface {
       `ALTER TABLE "log_entries" ADD "chop" double precision`,
     );
     await queryRunner.query(
-      `CREATE TYPE "public"."log_entries_exposuresuit_enum" AS ENUM('drysuit', 'none', 'other', 'rashguard', 'wetsuit', '3mm', '5mm', '7mm')`,
+      `CREATE TYPE "public"."log_entries_exposuresuit_enum" AS ENUM('drysuit', 'none', 'other', 'rashguard', 'shorty', '3mm', '5mm', '7mm', '9mm')`,
     );
     await queryRunner.query(
       `ALTER TABLE "log_entries" ADD "exposureSuit" "public"."log_entries_exposuresuit_enum"`,
@@ -36,9 +36,15 @@ export class LogEntryDepth1721650849982 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "log_entries" ADD "camera" boolean`);
     await queryRunner.query(`ALTER TABLE "log_entries" ADD "torch" boolean`);
     await queryRunner.query(`ALTER TABLE "log_entries" ADD "scooter" boolean`);
+    await queryRunner.query(
+      `ALTER TABLE "log_entries" DROP COLUMN "safetyStop"`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `ALTER TABLE "log_entries" ADD "safetyStop" double precision`,
+    );
     await queryRunner.query(`ALTER TABLE "log_entries" DROP COLUMN "scooter"`);
     await queryRunner.query(`ALTER TABLE "log_entries" DROP COLUMN "torch"`);
     await queryRunner.query(`ALTER TABLE "log_entries" DROP COLUMN "camera"`);

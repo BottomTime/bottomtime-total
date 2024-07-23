@@ -1,9 +1,13 @@
 import {
   DepthUnit,
+  ExposureSuit,
   LogEntrySortBy,
   PressureUnit,
   SortOrder,
   TankMaterial,
+  TemperatureUnit,
+  TrimCorrectness,
+  WeightCorrectness,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -108,6 +112,9 @@ describe('Log entries service', () => {
     for (let i = 0; i < data.length; i++) {
       data[i] = createTestLogEntry(ownerData[i % 4]);
       data[i].owner = { id: data[i].owner.id } as UserEntity;
+      data[i].site = {
+        id: diveSiteData[i % diveSiteData.length].id,
+      } as DiveSiteEntity;
     }
 
     await fs.writeFile(
@@ -121,11 +128,13 @@ describe('Log entries service', () => {
     it('will create a new log entry with minimal options', async () => {
       const options: CreateLogEntryOptions = {
         owner: new User(Users, ownerData[0]),
-        entryTime: {
-          date: '2024-03-28T13:45:00',
-          timezone: 'Europe/Amsterdam',
+        timing: {
+          entryTime: {
+            date: '2024-03-28T13:45:00',
+            timezone: 'Europe/Amsterdam',
+          },
+          duration: 3120,
         },
-        duration: 52,
       };
 
       const entry = await service.createLogEntry(options);
@@ -139,19 +148,22 @@ describe('Log entries service', () => {
         location: ownerData[0].location,
         avatar: ownerData[0].avatar,
       });
-      expect(entry.entryTime).toEqual({
-        date: '2024-03-28T13:45:00',
-        timezone: 'Europe/Amsterdam',
+      expect(entry.timing.toJSON()).toEqual({
+        entryTime: {
+          date: '2024-03-28T13:45:00',
+          timezone: 'Europe/Amsterdam',
+        },
+        duration: 3120,
+        bottomTime: undefined,
       });
-      expect(entry.duration).toEqual(options.duration);
 
       const saved = await Entries.findOneOrFail({
         where: { id: entry.id },
         relations: ['air', 'owner'],
       });
-      expect(saved.entryTime).toEqual(entry.entryTime.date);
-      expect(saved.timezone).toEqual(entry.entryTime.timezone);
-      expect(saved.duration).toEqual(options.duration);
+      expect(saved.entryTime).toEqual(entry.timing.entryTime.date);
+      expect(saved.timezone).toEqual(entry.timing.entryTime.timezone);
+      expect(saved.duration).toEqual(options.timing.duration);
       expect(saved.owner.id).toEqual(ownerData[0].id);
       expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
       expect(saved.air).toHaveLength(0);
@@ -160,23 +172,52 @@ describe('Log entries service', () => {
     it('will create a new log entry with all options', async () => {
       const options: CreateLogEntryOptions = {
         owner: new User(Users, ownerData[0]),
-        entryTime: {
-          date: '2024-03-28T13:45:00',
-          timezone: 'Europe/Amsterdam',
+        logNumber: 123,
+
+        timing: {
+          entryTime: {
+            date: '2024-03-28T13:45:00',
+            timezone: 'Europe/Amsterdam',
+          },
+          bottomTime: 2880,
+          duration: 3120,
         },
 
-        logNumber: 123,
-        bottomTime: 48,
-        duration: 52,
-        maxDepth: {
-          depth: 67,
-          unit: DepthUnit.Feet,
+        depths: {
+          depthUnit: DepthUnit.Feet,
+          maxDepth: 67,
+          averageDepth: 45,
         },
-        weights: {
+
+        conditions: {
+          airTemperature: 28,
+          surfaceTemperature: 26,
+          bottomTemperature: 24,
+          temperatureUnit: TemperatureUnit.Celsius,
+
+          chop: 2,
+          current: 3,
+          weather: 'Sunny with some clouds',
+          visibility: 4.8,
+        },
+
+        equipment: {
           weight: 4.4,
-          unit: WeightUnit.Kilograms,
+          weightUnit: WeightUnit.Kilograms,
+          weightCorrectness: WeightCorrectness.Over,
+          trimCorrectness: TrimCorrectness.Good,
+
+          exposureSuit: ExposureSuit.Drysuit,
+          boots: true,
+          gloves: true,
+          hood: true,
+          camera: false,
+          torch: false,
+          scooter: false,
         },
+
         notes: 'Great dive! Saw fish.',
+        tags: [],
 
         air: [
           {
@@ -194,49 +235,60 @@ describe('Log entries service', () => {
       };
 
       const entry = await service.createLogEntry(options);
-      expect(entry.id).toBeDefined();
-      expect(entry.logNumber).toEqual(options.logNumber);
-      expect(entry.owner).toEqual({
-        userId: ownerData[0].id,
-        username: ownerData[0].username,
-        memberSince: ownerData[0].memberSince,
-        logBookSharing: ownerData[0].logBookSharing,
-        name: ownerData[0].name,
-        location: ownerData[0].location,
-        avatar: ownerData[0].avatar,
-      });
-      expect(entry.entryTime).toEqual({
-        date: '2024-03-28T13:45:00',
-        timezone: 'Europe/Amsterdam',
-      });
-      expect(entry.bottomTime).toEqual(options.bottomTime);
-      expect(entry.duration).toEqual(options.duration);
-      expect(entry.maxDepth).toEqual({
-        depth: 67,
-        unit: DepthUnit.Feet,
-      });
-      expect(entry.weights).toEqual({
-        weight: 4.4,
-        unit: WeightUnit.Kilograms,
-      });
-      expect(entry.notes).toEqual(options.notes);
-      expect(entry.air).toEqual(options.air);
+      expect({
+        ...entry.toJSON(),
+        id: '3e238287-519a-4a65-bc57-afe0c6cd9ced',
+        createdAt: new Date('2024-07-23T11:39:57.073Z'),
+        updatedAt: new Date('2024-07-23T14:22:09.372Z'),
+      }).toMatchSnapshot();
+      expect(entry.id).toHaveLength(36);
+      expect(entry.createdAt.valueOf()).toBeCloseTo(Date.now(), -3);
 
       const saved = await Entries.findOneOrFail({
         where: { id: entry.id },
         relations: ['air', 'owner'],
       });
       expect(saved.logNumber).toEqual(options.logNumber);
-      expect(saved.entryTime).toEqual(options.entryTime.date);
-      expect(saved.timezone).toEqual(options.entryTime.timezone);
+      expect(saved.entryTime).toEqual(options.timing.entryTime.date);
+      expect(saved.timezone).toEqual(options.timing.entryTime.timezone);
       expect(saved.owner.id).toEqual(ownerData[0].id);
       expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
-      expect(saved.bottomTime).toEqual(options.bottomTime);
-      expect(saved.duration).toEqual(options.duration);
-      expect(saved.maxDepth).toEqual(options.maxDepth!.depth);
-      expect(saved.maxDepthUnit).toEqual(options.maxDepth!.unit);
-      expect(saved.weight).toEqual(options.weights!.weight);
-      expect(saved.weightUnit).toEqual(options.weights!.unit);
+      expect(saved.bottomTime).toEqual(options.timing.bottomTime);
+      expect(saved.duration).toEqual(options.timing.duration);
+      expect(saved.maxDepth).toEqual(options.depths!.maxDepth);
+      expect(saved.averageDepth).toEqual(options.depths!.averageDepth);
+      expect(saved.depthUnit).toEqual(options.depths!.depthUnit);
+
+      expect(saved.weight).toEqual(options.equipment!.weight);
+      expect(saved.weightUnit).toEqual(options.equipment!.weightUnit);
+      expect(saved.weightCorrectness).toEqual(
+        options.equipment!.weightCorrectness,
+      );
+      expect(saved.trimCorrectness).toEqual(options.equipment!.trimCorrectness);
+
+      expect(saved.exposureSuit).toEqual(options.equipment!.exposureSuit);
+      expect(saved.boots).toEqual(options.equipment!.boots);
+      expect(saved.gloves).toEqual(options.equipment!.gloves);
+      expect(saved.hood).toEqual(options.equipment!.hood);
+      expect(saved.camera).toEqual(options.equipment!.camera);
+      expect(saved.torch).toEqual(options.equipment!.torch);
+      expect(saved.scooter).toEqual(options.equipment!.scooter);
+
+      expect(saved.airTemperature).toEqual(options.conditions!.airTemperature);
+      expect(saved.surfaceTemperature).toEqual(
+        options.conditions!.surfaceTemperature,
+      );
+      expect(saved.bottomTemperature).toEqual(
+        options.conditions!.bottomTemperature,
+      );
+      expect(saved.temperatureUnit).toEqual(
+        options.conditions!.temperatureUnit,
+      );
+      expect(saved.chop).toEqual(options.conditions!.chop);
+      expect(saved.current).toEqual(options.conditions!.current);
+      expect(saved.weather).toEqual(options.conditions!.weather);
+      expect(saved.visibility).toEqual(options.conditions!.visibility);
+
       expect(saved.notes).toEqual(options.notes);
       expect(saved.air).toEqual(
         options.air!.map((tank, index) => ({
@@ -250,12 +302,14 @@ describe('Log entries service', () => {
     it('will create a new log entry with a dive site attached', async () => {
       const options: CreateLogEntryOptions = {
         owner: new User(Users, ownerData[0]),
-        entryTime: {
-          date: '2024-03-28T13:45:00',
-          timezone: 'Europe/Amsterdam',
+        timing: {
+          entryTime: {
+            date: '2024-03-28T13:45:00',
+            timezone: 'Europe/Amsterdam',
+          },
+          duration: 52,
         },
         site: siteFactory.createDiveSite(diveSiteData[2]),
-        duration: 52,
       };
 
       const entry = await service.createLogEntry(options);
@@ -269,20 +323,20 @@ describe('Log entries service', () => {
         location: ownerData[0].location,
         avatar: ownerData[0].avatar,
       });
-      expect(entry.entryTime).toEqual({
+      expect(entry.timing.entryTime).toEqual({
         date: '2024-03-28T13:45:00',
         timezone: 'Europe/Amsterdam',
       });
-      expect(entry.duration).toEqual(options.duration);
+      expect(entry.timing.duration).toEqual(options.timing.duration);
       expect(entry.site?.id).toEqual(diveSiteData[2].id);
 
       const saved = await Entries.findOneOrFail({
         where: { id: entry.id },
         relations: ['owner', 'site'],
       });
-      expect(saved.entryTime).toEqual(entry.entryTime.date);
-      expect(saved.timezone).toEqual(entry.entryTime.timezone);
-      expect(saved.duration).toEqual(options.duration);
+      expect(saved.entryTime).toEqual(entry.timing.entryTime.date);
+      expect(saved.timezone).toEqual(entry.timing.entryTime.timezone);
+      expect(saved.duration).toEqual(options.timing.duration);
       expect(saved.owner.id).toEqual(ownerData[0].id);
       expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
       expect(saved.site?.id).toEqual(diveSiteData[2].id);
@@ -303,34 +357,7 @@ describe('Log entries service', () => {
       const result = (await service.getLogEntry(data.id))!;
 
       expect(result).toBeDefined();
-      expect(result.id).toEqual(data.id);
-      expect(result.logNumber).toEqual(data.logNumber);
-      expect(result.bottomTime).toEqual(data.bottomTime);
-      expect(result.duration).toEqual(data.duration);
-      expect(result.maxDepth).toEqual({
-        depth: data.maxDepth!,
-        unit: data.maxDepthUnit!,
-      });
-      expect(result.weights).toEqual({
-        weight: data.weight!,
-        unit: data.weightUnit!,
-      });
-      expect(result.notes).toEqual(data.notes);
-      expect(result.entryTime).toEqual({
-        date: data.entryTime,
-        timezone: data.timezone,
-      });
-      expect(result.owner).toEqual({
-        userId: data.owner.id,
-        username: data.owner.username,
-        memberSince: data.owner.memberSince,
-        logBookSharing: data.owner.logBookSharing,
-        name: data.owner.name,
-        location: data.owner.location,
-        avatar: data.owner.avatar,
-      });
-      expect(result.site?.name).toEqual(diveSiteData[5].name);
-      expect(result.air).toEqual(data.air?.map(LogEntryAirUtils.entityToDTO));
+      expect(result.toJSON()).toMatchSnapshot();
     });
 
     it('will return undefined if the log entry does not exist', async () => {
@@ -352,29 +379,7 @@ describe('Log entries service', () => {
       const result = (await service.getLogEntry(data.id, ownerData[1].id))!;
 
       expect(result).toBeDefined();
-      expect(result.id).toEqual(data.id);
-      expect(result.logNumber).toEqual(data.logNumber);
-      expect(result.bottomTime).toEqual(data.bottomTime);
-      expect(result.duration).toEqual(data.duration);
-      expect(result.maxDepth).toEqual({
-        depth: data.maxDepth!,
-        unit: data.maxDepthUnit!,
-      });
-      expect(result.notes).toEqual(data.notes);
-      expect(result.entryTime).toEqual({
-        date: data.entryTime,
-        timezone: data.timezone,
-      });
-      expect(result.owner).toEqual({
-        userId: data.owner.id,
-        username: data.owner.username,
-        memberSince: data.owner.memberSince,
-        logBookSharing: data.owner.logBookSharing,
-        name: data.owner.name,
-        location: data.owner.location,
-        avatar: data.owner.avatar,
-      });
-      expect(result.air).toEqual(data.air?.map(LogEntryAirUtils.entityToDTO));
+      expect(result.toJSON()).toMatchSnapshot();
     });
 
     it('will return undefined if the indicated log entry does not belong to the specified user', async () => {
@@ -400,7 +405,7 @@ describe('Log entries service', () => {
       expect(
         results.logEntries.map((entry) => ({
           id: entry.id,
-          entryTime: entry.entryTime,
+          entryTime: entry.timing.entryTime,
           site: entry.site?.name,
           air: entry.air,
         })),
@@ -416,7 +421,7 @@ describe('Log entries service', () => {
       expect(
         results.logEntries.map((entry) => ({
           id: entry.id,
-          entryTime: entry.entryTime,
+          entryTime: entry.timing.entryTime,
           site: entry.site?.name,
         })),
       ).toMatchSnapshot();
@@ -439,7 +444,7 @@ describe('Log entries service', () => {
         expect(
           results.logEntries.map((entry) => ({
             id: entry.id,
-            entryTime: entry.entryTime,
+            entryTime: entry.timing.entryTime,
             site: entry.site?.name,
           })),
         ).toMatchSnapshot();
@@ -459,7 +464,7 @@ describe('Log entries service', () => {
         results.logEntries.map((entry) => ({
           id: entry.id,
           owner: entry.owner.username,
-          entryTime: entry.entryTime,
+          entryTime: entry.timing.entryTime,
           site: entry.site?.name,
         })),
       ).toMatchSnapshot();
@@ -470,21 +475,21 @@ describe('Log entries service', () => {
         name: 'between a start date and end date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: new Date('2023-10-01T00:00:00.000Z'),
-        expectedTotal: 6,
-        expectedLength: 6,
+        expectedTotal: 5,
+        expectedLength: 5,
       },
       {
         name: 'after a start date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: undefined,
-        expectedTotal: 75,
+        expectedTotal: 86,
         expectedLength: 15,
       },
       {
         name: 'before an end date',
         start: undefined,
         end: new Date('2023-10-01T00:00:00.000Z'),
-        expectedTotal: 231,
+        expectedTotal: 219,
         expectedLength: 15,
       },
     ].forEach(({ name, start, end, expectedTotal, expectedLength }) => {
@@ -501,7 +506,7 @@ describe('Log entries service', () => {
         expect(
           results.logEntries.map((entry) => ({
             id: entry.id,
-            entryTime: entry.entryTime,
+            entryTime: entry.timing.entryTime,
             site: entry.site?.name,
           })),
         ).toMatchSnapshot();
