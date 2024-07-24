@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
 import { FeatureEntity } from '../../../src/data';
 import { Feature, FeaturesModule, InjectFeature } from '../../../src/features';
-import { dataSource, postgresConfig } from '../../data-source';
+import { dataSource } from '../../data-source';
+import { PostgresUri } from '../../postgres-uri';
 
 const Key = 'test_flag';
 
@@ -31,6 +32,7 @@ const TestData: FeatureEntity = {
 
 describe('Feature consumption', () => {
   let features: Repository<FeatureEntity>;
+  let moduleRef: TestingModule;
 
   beforeAll(() => {
     features = dataSource.getRepository(FeatureEntity);
@@ -38,15 +40,21 @@ describe('Feature consumption', () => {
 
   beforeEach(async () => {
     await features.save(TestData);
-    const blah = await features.findOneByOrFail({ key: Key });
-    console.log('inserted', blah);
+  });
+
+  afterEach(() => {
+    if (moduleRef) moduleRef.close();
   });
 
   it('will inject a feature flag', async () => {
-    const moduleRef = await Test.createTestingModule({
+    moduleRef = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRootAsync({
-          useFactory: () => postgresConfig,
+          useFactory: () => ({
+            type: 'postgres',
+            url: PostgresUri,
+            entities: [FeatureEntity],
+          }),
         }),
         FeaturesModule.forFeature(Key),
       ],

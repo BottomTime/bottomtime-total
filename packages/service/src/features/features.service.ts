@@ -22,7 +22,6 @@ export class FeaturesService {
 
   async getFeature(key: string): Promise<Feature | undefined> {
     const data = await this.features.findOneBy({ key });
-    console.log(key, data);
     return data ? new Feature(this.features, data) : undefined;
   }
 
