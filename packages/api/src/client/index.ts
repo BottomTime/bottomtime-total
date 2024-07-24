@@ -1,6 +1,7 @@
 export * from './errors';
 
 export * from './alert';
+export * from './feature';
 export * from './friend';
 export * from './friend-request';
 export * from './user-profile';
