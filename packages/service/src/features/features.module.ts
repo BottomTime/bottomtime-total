@@ -2,6 +2,7 @@ import { DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FeatureEntity } from '../data';
+import { FeaturesController } from './features.controller';
 import { FeaturesService } from './features.service';
 
 export class FeaturesModule {
@@ -9,6 +10,7 @@ export class FeaturesModule {
     return {
       module: FeaturesModule,
       imports: [TypeOrmModule.forFeature([FeatureEntity])],
+      controllers: [FeaturesController],
       providers: [FeaturesService],
     };
   }
@@ -16,9 +18,9 @@ export class FeaturesModule {
   static forFeature(...keys: string[]): DynamicModule {
     const providers = [
       FeaturesService,
-      ...keys.map((feature) => ({
-        provide: `feature_${feature}`,
-        useFactory: (service: FeaturesService) => service.getFeature(feature),
+      ...keys.map((key) => ({
+        provide: `bt_feature_${key}`,
+        useFactory: (service: FeaturesService) => service.getFeature(key),
         inject: [FeaturesService],
       })),
     ];

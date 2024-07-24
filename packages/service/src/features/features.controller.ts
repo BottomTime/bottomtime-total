@@ -1,4 +1,11 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
+
+import { FeaturesService } from './features.service';
 
 @Controller('api/features')
-export class FeaturesController {}
+export class FeaturesController {
+  constructor(
+    @Inject(FeaturesService)
+    private readonly service: FeaturesService,
+  ) {}
+}
