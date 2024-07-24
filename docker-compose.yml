@@ -124,6 +124,6 @@ services:
       - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
     develop:
       watch:
-        - action: rebuild
-          path: packages/service/src
-          target: /app/packages/service/src
+        - action: sync+restart
+          path: packages/service/public/docs/
+          target: /usr/share/nginx/html

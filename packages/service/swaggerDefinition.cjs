@@ -56,6 +56,10 @@ module.exports = {
       description: 'Endpoints pertaining to the management of dive sites.',
     },
     {
+      name: 'Features',
+      description: 'Endpoints pertaining to the management of feature flags.',
+    },
+    {
       name: 'Friends',
       description:
         'Endpoints pertaining to the management of friends and friend requests.',
