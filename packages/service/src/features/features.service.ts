@@ -1,3 +1,5 @@
+import { CreateOrUpdateFeatureDTO } from '@bottomtime/api';
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -6,7 +8,10 @@ import { v4 as uuid } from 'uuid';
 
 import { FeatureEntity } from '../data';
 import { Feature } from './feature';
-import { CreateFeatureOptions } from './types';
+
+export type CreateFeatureOptions = CreateOrUpdateFeatureDTO & {
+  key: string;
+};
 
 @Injectable()
 export class FeaturesService {

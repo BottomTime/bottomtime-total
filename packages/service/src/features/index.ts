@@ -1,4 +1,3 @@
-export * from './types';
 export * from './inject-feature.decorator';
 
 export * from './feature';

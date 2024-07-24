@@ -1,10 +1,11 @@
-import { DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FeatureEntity } from '../data';
 import { FeaturesController } from './features.controller';
 import { FeaturesService } from './features.service';
 
+@Module({})
 export class FeaturesModule {
   static forRoot(): DynamicModule {
     return {

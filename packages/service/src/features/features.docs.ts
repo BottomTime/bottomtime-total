@@ -23,6 +23,7 @@
  *           type: string
  *           name: Name
  *           description: The human-readable name for the feature flag.
+ *           minLength: 1
  *           maxLength: 100
  *           example: New Feature 01
  *         description:

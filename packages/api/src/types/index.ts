@@ -5,6 +5,7 @@ export * from './certifications';
 export * from './admin';
 export * from './auth';
 export * from './errors';
+export * from './features';
 export * from './friends';
 export * from './json-data';
 export * from './notifications';

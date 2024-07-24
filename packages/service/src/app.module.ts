@@ -16,6 +16,7 @@ import { Queues } from './common';
 import { Config } from './config';
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from './data';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
+import { FeaturesModule } from './features';
 import { FriendsModule } from './friends';
 import { LogEntriesModule } from './logEntries';
 import { QueueModule } from './queue';
@@ -53,6 +54,7 @@ export class AppModule {
         }),
 
         TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
+        FeaturesModule.forRoot(),
 
         UsersModule,
         AuthModule,
