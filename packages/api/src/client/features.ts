@@ -1,9 +1,14 @@
-import { CreateOrUpdateFeatureDTO, FeatureDTO, FeatureSchema } from '../types';
+import { CreateOrUpdateFeatureDTO, FeatureSchema } from '../types';
 import { Feature } from './feature';
 import { Fetcher } from './fetcher';
 
 export class FeaturesApiClient {
   constructor(private readonly apiClient: Fetcher) {}
+
+  async featureExists(key: string): Promise<boolean> {
+    const status = await this.apiClient.head(`/api/features/${key}`);
+    return status === 200;
+  }
 
   async getFeature(key: string): Promise<Feature> {
     const { data } = await this.apiClient.get(

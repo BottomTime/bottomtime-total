@@ -49,6 +49,20 @@ describe('Features API client', () => {
     mockFetch.restore();
   });
 
+  it('will return true when checking the existence of a feature flag', async () => {
+    const key = 'test_key';
+    mockFetch.head(`/api/features/${key}`, 200);
+    await expect(client.featureExists(key)).resolves.toBe(true);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will return false when checking the existence of a non-existent feature flag', async () => {
+    const key = 'test_key';
+    mockFetch.head(`/api/features/${key}`, 404);
+    await expect(client.featureExists(key)).resolves.toBe(false);
+    expect(mockFetch.done()).toBe(true);
+  });
+
   it('will retrieve a single feature flag', async () => {
     const key = TestData[1].key;
     mockFetch.get(`/api/features/${key}`, {

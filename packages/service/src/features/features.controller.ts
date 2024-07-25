@@ -12,6 +12,7 @@ import {
   Controller,
   Delete,
   Get,
+  Head,
   HttpCode,
   HttpStatus,
   Inject,
@@ -71,6 +72,35 @@ export class FeaturesController {
   async listFeatures(): Promise<FeatureDTO[]> {
     const features = await this.service.listFeatures();
     return features.map((feature) => feature.toJSON());
+  }
+
+  /**
+   * @openapi
+   * /api/features/{featureKey}:
+   *   head:
+   *     tags:
+   *       - Features
+   *     summary: Check if a feature flag exists
+   *     operationId: featureExists
+   *     description: |
+   *       Checks if a single feature flag exists.
+   *     parameters:
+   *       - $ref: "#/components/parameters/FeatureKey"
+   *     responses:
+   *       200:
+   *         description: The feature flag exists.
+   *       404:
+   *         description: The feature flag does not exist.
+   *       500:
+   *         description: The request failed because of an internal server error.
+   */
+  @Head(FeatureKeyParam)
+  async featureExists(
+    @Param(FeatureKeyName) key: string,
+    @Res() res: Response,
+  ): Promise<void> {
+    const exists = await this.service.featureExists(key);
+    res.sendStatus(exists ? 200 : 404);
   }
 
   /**

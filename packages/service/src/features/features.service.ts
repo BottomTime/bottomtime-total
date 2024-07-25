@@ -30,6 +30,10 @@ export class FeaturesService {
     return data ? new Feature(this.features, data) : undefined;
   }
 
+  async featureExists(key: string): Promise<boolean> {
+    return await this.features.existsBy({ key });
+  }
+
   async createFeature(options: CreateFeatureOptions): Promise<Feature> {
     const data = new FeatureEntity();
     data.id = uuid();
