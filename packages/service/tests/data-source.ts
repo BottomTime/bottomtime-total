@@ -1,9 +1,10 @@
 import path from 'path';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { PostgresRequireSsl, PostgresUri } from './postgres-uri';
 
 let dataSource: DataSource;
+let postgresConfig: DataSourceOptions;
 
 async function purgeDatabase(): Promise<void> {
   for (const entity of dataSource.entityMetadatas) {
@@ -13,13 +14,14 @@ async function purgeDatabase(): Promise<void> {
 }
 
 beforeAll(async () => {
-  dataSource = new DataSource({
+  postgresConfig = {
     type: 'postgres',
     url: PostgresUri,
     entities: [path.resolve(__dirname, '../src/data/**/*.entity.ts')],
     migrations: [path.resolve(__dirname, '../migrations/*.ts')],
     ssl: PostgresRequireSsl,
-  });
+  };
+  dataSource = new DataSource(postgresConfig);
   await dataSource.initialize();
   await purgeDatabase();
 });
@@ -30,4 +32,4 @@ afterAll(async () => {
   await dataSource.destroy();
 });
 
-export { dataSource };
+export { dataSource, postgresConfig };

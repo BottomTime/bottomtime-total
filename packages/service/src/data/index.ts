@@ -2,6 +2,7 @@ export * from './alert.entity';
 export * from './certification.entity';
 export * from './dive-site-review.entity';
 export * from './dive-site.entity';
+export * from './feature.entity';
 export * from './friend-request.entity';
 export * from './friendship.entity';
 export * from './user-json-data.entity';
