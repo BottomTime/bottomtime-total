@@ -36,6 +36,7 @@ export async function getCurrentUser(jwt, res) {
   try {
     let data = { anonymous: true };
 
+    log.debug('Attempting to fetch current user...');
     const response = await fetch(new URL('/api/auth/me', Config.apiUrl), {
       headers: { Authorization: `Bearer ${jwt}` },
       method: 'GET',
@@ -54,6 +55,31 @@ export async function getCurrentUser(jwt, res) {
   } catch (err) {
     log.error(
       'An error occurred while attempting to reach the backend service:',
+      err,
+    );
+  }
+}
+
+export async function getFeatureFlags() {
+  try {
+    let features = [];
+
+    log.debug('Attempting to fetch feature flags...');
+    const response = await fetch(new URL('/api/features', Config.apiUrl));
+
+    if (response.ok) {
+      features = await response.json();
+    } else {
+      log.error(
+        `Failed to fetch feature flags: ${response.status}`,
+        response.body,
+      );
+    }
+
+    return features;
+  } catch (err) {
+    log.error(
+      'An error occurred while attempting to retrieve feature flags',
       err,
     );
   }

@@ -7,7 +7,7 @@
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-items-stretch"
     >
       <a href="/admin/users">
-        <FormBox>
+        <FormBox class="space-y-3">
           <TextHeading class="space-x-3">
             <span>
               <i class="fas fa-users fa-lg"></i>
@@ -22,7 +22,7 @@
       </a>
 
       <a href="/admin/alerts">
-        <FormBox>
+        <FormBox class="space-y-3">
           <TextHeading class="space-x-3">
             <span>
               <i class="fas fa-bell fa-lg"></i>
@@ -38,7 +38,7 @@
       </a>
 
       <a href="/admin/tanks">
-        <FormBox>
+        <FormBox class="space-y-3">
           <TextHeading class="space-x-3">
             <span>
               <i class="fas fa-fish fa-lg"></i>
@@ -48,6 +48,20 @@
           <p class="text-sm italic">
             Add, edit, or delete default tank profiles for users to use in their
             log entries.
+          </p>
+        </FormBox>
+      </a>
+
+      <a href="/admin/features">
+        <FormBox class="space-y-3">
+          <TextHeading class="space-x-3">
+            <span>
+              <i class="fa-solid fa-flag fa-lg"></i>
+            </span>
+            <span>Manage Feature Flags</span>
+          </TextHeading>
+          <p class="text-sm italic">
+            Create, edit, remove, or toggle feature flags for the platform.
           </p>
         </FormBox>
       </a>

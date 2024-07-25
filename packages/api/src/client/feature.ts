@@ -58,6 +58,12 @@ export class Feature {
     await this.client.delete(`/api/features/${this.data.key}`);
   }
 
+  async toggle(): Promise<void> {
+    await this.client.post(`/api/features/${this.data.key}/toggle`);
+    this.data.enabled = !this.data.enabled;
+    this.data.updatedAt = new Date();
+  }
+
   toJSON(): FeatureDTO {
     return { ...this.data };
   }

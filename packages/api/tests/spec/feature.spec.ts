@@ -92,6 +92,14 @@ describe('Feature class', () => {
     expect(feature.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
   });
 
+  it('will toggle a feature', async () => {
+    mockFetch.post(`/api/features/${TestData.key}/toggle`, 204);
+    await feature.toggle();
+    expect(mockFetch.done()).toBe(true);
+    expect(feature.enabled).toBe(!TestData.enabled);
+    expect(feature.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+  });
+
   it('will delete a feature', async () => {
     mockFetch.delete(`/api/features/${TestData.key}`, 204);
     await feature.delete();
