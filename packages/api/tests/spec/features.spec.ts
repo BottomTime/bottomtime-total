@@ -95,6 +95,7 @@ describe('Features API client', () => {
       updatedAt: new Date('2024-07-25T07:42:48Z'),
       ...options,
     };
+    mockFetch.head(`/api/features/${key}`, 404);
     mockFetch.put(
       {
         url: `/api/features/${key}`,
@@ -109,6 +110,22 @@ describe('Features API client', () => {
     const feature = await client.createFeature(key, options);
 
     expect(feature.toJSON()).toEqual(expected);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will throw an HttpException when creating a flag with a key that is already taken', async () => {
+    const key = TestData[0].key;
+    const options: CreateOrUpdateFeatureDTO = {
+      name: 'Newish Flag',
+      description: 'This is a flag',
+      enabled: true,
+    };
+    mockFetch.head(`/api/features/${key}`, 200);
+
+    await expect(client.createFeature(key, options)).rejects.toThrow(
+      HttpException,
+    );
+
     expect(mockFetch.done()).toBe(true);
   });
 

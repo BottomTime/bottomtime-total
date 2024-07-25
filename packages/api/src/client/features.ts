@@ -1,4 +1,5 @@
 import { CreateOrUpdateFeatureDTO, FeatureSchema } from '../types';
+import { HttpException } from './errors';
 import { Feature } from './feature';
 import { Fetcher } from './fetcher';
 
@@ -21,6 +22,16 @@ export class FeaturesApiClient {
   }
 
   async createFeature(key: string, options: CreateOrUpdateFeatureDTO) {
+    const exists = await this.featureExists(key);
+    if (exists) {
+      throw new HttpException(409, 'Conflict', 'Feature flag already exists', {
+        message: 'Feature flag already exists',
+        method: 'PUT',
+        path: `/api/features/${key}`,
+        status: 409,
+      });
+    }
+
     const { data } = await this.apiClient.put(
       `/api/features/${key}`,
       options,
