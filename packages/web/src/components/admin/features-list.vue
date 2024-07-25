@@ -1,13 +1,18 @@
 <template>
   <div class="space-y-3">
     <FormBox class="flex justify-between items-baseline">
-      <p>
+      <p data-testid="features-count">
         <span>Showing </span>
         <span class="font-bold font-mono">{{ features.length }}</span>
         <span> feature flags</span>
       </p>
 
-      <FormButton type="primary" @click="$emit('create')">
+      <FormButton
+        control-id="create-feature"
+        data-testid="create-feature"
+        type="primary"
+        @click="$emit('create')"
+      >
         Create New Flag
       </FormButton>
     </FormBox>
@@ -25,7 +30,11 @@
       />
     </ul>
 
-    <div v-else class="flex gap-3 justify-center py-6">
+    <div
+      v-else
+      class="flex gap-3 justify-center py-6"
+      data-testid="no-features-message"
+    >
       <span>
         <i class="fa-solid fa-circle-exclamation"></i>
       </span>
