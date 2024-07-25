@@ -20,6 +20,7 @@
         :is-toggling="togglingKey === feature.key"
         @delete="(key) => $emit('delete', key)"
         @edit="(feature) => $emit('edit', feature)"
+        @select="(feature) => $emit('edit', feature)"
         @toggle="(feature) => $emit('toggle', feature)"
       />
     </ul>

@@ -6,9 +6,10 @@
       <!-- Header -->
       <div class="flex items-baseline gap-3">
         <FormButton
+          :control-id="`select-${feature.key}`"
+          :test-id="`select-${feature.key}`"
           type="link"
           size="2xl"
-          :test-id="`select-${feature.key}`"
           @click="$emit('select', feature)"
         >
           {{ feature.name }}
@@ -39,24 +40,39 @@
         <!-- Buttons -->
         <div class="flex items-center gap-2">
           <div class="pt-2 pr-3">
-            <p v-if="isToggling" class="px-8">
+            <p
+              v-if="isToggling"
+              :data-testid="`toggling-${feature.key}`"
+              class="px-8"
+            >
               <i class="fa-solid fa-spinner fa-spin"></i>
             </p>
             <FormToggle
               v-else
+              :control-id="`toggle-${feature.key}`"
+              :test-id="`toggle-${feature.key}`"
               :model-value="feature.enabled"
               :label="feature.enabled ? 'On' : 'Off'"
               @update:model-value="$emit('toggle', feature)"
             />
           </div>
 
-          <FormButton @click="$emit('edit', feature)">
+          <FormButton
+            :control-id="`edit-${feature.key}`"
+            :test-id="`edit-${feature.key}`"
+            @click="$emit('edit', feature)"
+          >
             <span class="sr-only">Edit flag: {{ feature.name }}</span>
             <span>
               <i class="fa-solid fa-pencil"></i>
             </span>
           </FormButton>
-          <FormButton type="danger" @click="$emit('delete', feature.key)">
+          <FormButton
+            :control-id="`delete-${feature.key}`"
+            :test-id="`delete-${feature.key}`"
+            type="danger"
+            @click="$emit('delete', feature.key)"
+          >
             <span class="sr-only">Delete flag: {{ feature.name }}</span>
             <span>
               <i class="fa-solid fa-trash"></i>
