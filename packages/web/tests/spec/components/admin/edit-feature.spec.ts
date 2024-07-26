@@ -101,5 +101,39 @@ describe('EditFeature component', () => {
     expect(wrapper.emitted('save')).toBeUndefined();
   });
 
-  it.todo('finish!');
+  [false, true].forEach((isNew) => {
+    it(`will emit the save event with the feature data for ${
+      isNew ? 'new' : 'existing'
+    } features`, async () => {
+      const wrapper = mount(EditFeature, {
+        ...opts,
+        props: {
+          isNew,
+          feature: isNew ? { ...BlankFeature } : { ...TestFeature },
+        },
+      });
+
+      if (isNew) await wrapper.get(KeyInput).setValue('test_key');
+      await wrapper.get(NameInput).setValue('Really Cool Feature');
+      await wrapper
+        .get(DescriptionInput)
+        .setValue('This is a really cool feature.');
+      await wrapper.get(EnabledInput).setValue(true);
+      await wrapper.get(SaveButton).trigger('click');
+
+      await flushPromises();
+      expect(wrapper.emitted('save')).toEqual([
+        [
+          {
+            ...(isNew ? BlankFeature : TestFeature),
+            key: 'test_key',
+            name: 'Really Cool Feature',
+            description: 'This is a really cool feature.',
+            enabled: true,
+          },
+          isNew,
+        ],
+      ]);
+    });
+  });
 });
