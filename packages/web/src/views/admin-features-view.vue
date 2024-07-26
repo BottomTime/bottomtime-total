@@ -198,7 +198,7 @@ async function onToggleFeature(dto: FeatureDTO): Promise<void> {
     await feature.toggle();
 
     toasts.toast({
-      id: feature.enabled ? 'feature-eneabled' : 'feature-disabled',
+      id: feature.enabled ? 'feature-enabled' : 'feature-disabled',
       message: `Feature flag ${
         feature.enabled ? 'enabled' : 'disabled'
       } successfully`,

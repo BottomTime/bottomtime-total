@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 export class FeatureFlagsFixture {
   constructor(private readonly page: Page) {}
@@ -8,10 +8,15 @@ export class FeatureFlagsFixture {
   }
 
   async toggleFeatureFlag(key: string): Promise<void> {
-    await this.page
+    const text = await this.page
       .getByTestId(`feature-flag-${key}`)
-      .locator('label div')
-      .click();
-    await this.page.waitForResponse(`/api/features/${key}/toggle`);
+      .locator('label')
+      .textContent();
+    await this.page.getByTestId(`feature-flag-${key}`).locator('label').click();
+    await this.page.waitForSelector(
+      `[data-testid="toast-feature-${
+        text === 'Off' ? 'enabled' : 'disabled'
+      }"]`,
+    );
   }
 }
