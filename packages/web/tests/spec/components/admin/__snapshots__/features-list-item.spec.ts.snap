@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FeaturesListItem component will render the component 1`] = `
-"<li class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
+"<li class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4" data-testid="feature-flag-test_key">
   <div class="flex flex-col gap-2 w-full">
     <!-- Header -->
     <div class="flex items-baseline gap-3"><button id="select-test_key" class="text-link hover:text-link-hover text-2xl" data-testid="select-test_key" type="button">

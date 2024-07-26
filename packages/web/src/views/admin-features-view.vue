@@ -1,65 +1,69 @@
 <template>
-  <DrawerPanel
-    :visible="state.showEditFeature && !!state.selectedFeature"
-    :title="
-      state.isNew ? 'Create New Flag' : `Edit '${state.selectedFeature?.name}'`
-    "
-    :show-close="!state.isSaving"
-    @close="state.showEditFeature = false"
-  >
-    <EditFeature
-      v-if="state.selectedFeature"
-      :feature="state.selectedFeature"
-      :is-new="state.isNew"
-      :is-saving="state.isSaving"
-      :responsive="false"
-      @save="onSaveFeature"
+  <RequireAuth :role="UserRole.Admin">
+    <DrawerPanel
+      :visible="state.showEditFeature && !!state.selectedFeature"
+      :title="
+        state.isNew
+          ? 'Create New Flag'
+          : `Edit '${state.selectedFeature?.name}'`
+      "
+      :show-close="!state.isSaving"
+      @close="state.showEditFeature = false"
+    >
+      <EditFeature
+        v-if="state.selectedFeature"
+        :feature="state.selectedFeature"
+        :is-new="state.isNew"
+        :is-saving="state.isSaving"
+        :responsive="false"
+        @save="onSaveFeature"
+      />
+    </DrawerPanel>
+
+    <ConfirmDialog
+      title="Delete feature flag?"
+      confirm-text="Delete"
+      :is-loading="state.isDeleting"
+      :visible="state.showDeleteFeature"
+      dangerous
+      @confirm="onConfirmDelete"
+      @cancel="onCancelDelete"
+    >
+      <div class="flex space-x-4">
+        <div>
+          <i class="fa-regular fa-circle-question fa-2x"></i>
+        </div>
+
+        <div class="flex flex-col space-y-2">
+          <p>
+            <span>Are you sure you want to permanently delete </span>
+            <span class="font-bold">
+              {{ state.selectedFeature?.name }}
+            </span>
+            <span>?</span>
+          </p>
+
+          <p>This action cannot be undone.</p>
+        </div>
+      </div>
+    </ConfirmDialog>
+
+    <PageTitle title="Feature Flags" />
+    <BreadCrumbs :items="Breadcrumbs" />
+
+    <FeaturesList
+      :features="features.features"
+      :toggling-key="state.togglingKey"
+      @create="onCreateFeature"
+      @delete="onDeleteFeature"
+      @edit="onEditFeature"
+      @toggle="onToggleFeature"
     />
-  </DrawerPanel>
-
-  <ConfirmDialog
-    title="Delete feature flag?"
-    confirm-text="Delete"
-    :is-loading="state.isDeleting"
-    :visible="state.showDeleteFeature"
-    dangerous
-    @confirm="onConfirmDelete"
-    @cancel="onCancelDelete"
-  >
-    <div class="flex space-x-4">
-      <div>
-        <i class="fa-regular fa-circle-question fa-2x"></i>
-      </div>
-
-      <div class="flex flex-col space-y-2">
-        <p>
-          <span>Are you sure you want to permanently delete </span>
-          <span class="font-bold">
-            {{ state.selectedFeature?.name }}
-          </span>
-          <span>?</span>
-        </p>
-
-        <p>This action cannot be undone.</p>
-      </div>
-    </div>
-  </ConfirmDialog>
-
-  <PageTitle title="Feature Flags" />
-  <BreadCrumbs :items="Breadcrumbs" />
-
-  <FeaturesList
-    :features="features.features"
-    :toggling-key="state.togglingKey"
-    @create="onCreateFeature"
-    @delete="onDeleteFeature"
-    @edit="onEditFeature"
-    @toggle="onToggleFeature"
-  />
+  </RequireAuth>
 </template>
 
 <script lang="ts" setup>
-import { FeatureDTO } from '@bottomtime/api';
+import { FeatureDTO, UserRole } from '@bottomtime/api';
 
 import { reactive } from 'vue';
 
@@ -70,6 +74,7 @@ import FeaturesList from '../components/admin/features-list.vue';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import PageTitle from '../components/common/page-title.vue';
+import RequireAuth from '../components/common/require-auth.vue';
 import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import { useOops } from '../oops';
 import { useFeatures, useToasts } from '../store';

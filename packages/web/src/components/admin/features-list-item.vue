@@ -1,6 +1,7 @@
 <template>
   <li
     class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
+    :data-testid="`feature-flag-${feature.key}`"
   >
     <div class="flex flex-col gap-2 w-full">
       <!-- Header -->
