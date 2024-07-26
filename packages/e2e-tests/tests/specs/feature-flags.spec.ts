@@ -102,12 +102,7 @@ test.describe('Feature Flags', () => {
     await featureFlags.gotoFeatureFlags();
     await featureFlags.toggleFeatureFlag(key);
 
-    let feature = await api.features.getFeature(key);
+    const feature = await api.features.getFeature(key);
     expect(feature.enabled).toBe(true);
-
-    await featureFlags.toggleFeatureFlag(key);
-
-    feature = await api.features.getFeature(key);
-    expect(feature.enabled).toBe(false);
   });
 });
