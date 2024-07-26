@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="onSave">
+  <form @submit.prevent="">
     <fieldset class="space-y-3" :disabled="isSaving">
       <FormField
         label="Key"
@@ -24,7 +24,9 @@
             underscores.
           </p>
         </div>
-        <p v-else class="font-mono">{{ feature.key }}</p>
+        <p v-else class="font-mono" data-testid="key-static">
+          {{ feature.key }}
+        </p>
       </FormField>
 
       <FormField
@@ -78,7 +80,14 @@
       </FormField>
 
       <div class="flex justify-center gap-3">
-        <FormButton type="primary" :is-loading="isSaving" submit>
+        <FormButton
+          control-id="save-feature"
+          test-id="save-feature"
+          type="primary"
+          :is-loading="isSaving"
+          submit
+          @click="onSave"
+        >
           Save Changes
         </FormButton>
       </div>
