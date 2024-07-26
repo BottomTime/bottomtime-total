@@ -7,6 +7,7 @@ import { Client } from 'pg';
 
 import { AuthFixture } from './auth.fixture';
 import { DiveSitesFixture } from './dive-sites.fixture';
+import { FeatureFlagsFixture } from './feature-flags.fixture';
 import { FriendsFixture } from './friends.fixture';
 import { createAuthToken } from './jwt';
 import { LogEntriesFixture } from './log-entries.fixture';
@@ -18,6 +19,7 @@ export const test = base.extend<{
   auth: AuthFixture;
   db: PostgresFixture;
   diveSites: DiveSitesFixture;
+  featureFlags: FeatureFlagsFixture;
   friends: FriendsFixture;
   logEntries: LogEntriesFixture;
   tankProfiles: TankProfilesFixture;
@@ -60,6 +62,11 @@ export const test = base.extend<{
   diveSites: async ({ page }, use) => {
     const diveSites = new DiveSitesFixture(page);
     await use(diveSites);
+  },
+
+  featureFlags: async ({ page }, use) => {
+    const featureFlags = new FeatureFlagsFixture(page);
+    await use(featureFlags);
   },
 
   friends: async ({ page }, use) => {

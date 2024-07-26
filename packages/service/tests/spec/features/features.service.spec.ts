@@ -47,6 +47,14 @@ describe('Features service', () => {
     await features.save(TestData);
   });
 
+  it('will indicate if a feature exists', async () => {
+    await expect(service.featureExists(TestData[0].key)).resolves.toBe(true);
+  });
+
+  it('will indicate if a feature does not exist', async () => {
+    await expect(service.featureExists('not_a_feature')).resolves.toBe(false);
+  });
+
   it('will list all features', async () => {
     const list = await service.listFeatures();
     expect(list).toHaveLength(TestData.length);
@@ -98,6 +106,7 @@ describe('Features service', () => {
     const options: CreateFeatureOptions = {
       key: 'new_bestest_feature',
       name: 'Brand New Feature',
+      enabled: false,
     };
 
     const feature = await service.createFeature(options);

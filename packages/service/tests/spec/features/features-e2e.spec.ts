@@ -96,6 +96,16 @@ describe('Features E2E tests', () => {
     });
   });
 
+  describe('when checking the existence of a flag', () => {
+    it('will return a 200 response if the flag exists', async () => {
+      await request(server).head(getUrl(TestData[0].key)).expect(200);
+    });
+
+    it('will return a 404 response if the flag does not exist', async () => {
+      await request(server).head(getUrl('not_a_flag')).expect(404);
+    });
+  });
+
   describe('when retrieving a single flag', () => {
     it('will return the flag if it exists', async () => {
       const { body } = await request(server)

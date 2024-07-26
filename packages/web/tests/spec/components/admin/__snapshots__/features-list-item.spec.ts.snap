@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FeaturesListItem component will render the component 1`] = `
+"<li class="flex space-x-3 min-h-24 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4" data-testid="feature-flag-test_key">
+  <div class="flex flex-col gap-2 w-full">
+    <!-- Header -->
+    <div class="flex items-baseline gap-3"><button id="select-test_key" class="text-link hover:text-link-hover text-2xl" data-testid="select-test_key" type="button">
+        <!--v-if-->Really Cool Feature
+      </button><span class="text-sm font-mono">(test_key)</span></div>
+    <div class="flex justify-between">
+      <!-- Metadata -->
+      <div>
+        <p>This is a really cool feature.</p>
+        <div class="flex gap-12">
+          <div>
+            <p class="font-bold">Created:</p>
+            <p class="italic">LLL</p>
+          </div>
+          <div>
+            <p class="font-bold">Last updated:</p>
+            <p class="italic">LLL</p>
+          </div>
+        </div>
+      </div><!-- Buttons -->
+      <div class="flex items-center gap-2">
+        <div class="pt-2 pr-3"><label class="relative inline-flex items-center cursor-pointer"><input id="toggle-test_key" type="checkbox" class="sr-only peer" data-testid="toggle-test_key" value="">
+            <div class="w-11 h-6 bg-grey-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-700 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 dark:bg-blue-600 peer-checked:bg-blue-400"></div><span class="ms-3">On</span>
+          </label></div><button id="edit-test_key" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="edit-test_key" type="button">
+          <!--v-if--><span class="sr-only">Edit flag: Really Cool Feature</span><span><i class="fa-solid fa-pencil"></i></span>
+        </button><button id="delete-test_key" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-test_key" type="button">
+          <!--v-if--><span class="sr-only">Delete flag: Really Cool Feature</span><span><i class="fa-solid fa-trash"></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</li>"
+`;
