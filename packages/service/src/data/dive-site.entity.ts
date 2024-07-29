@@ -53,7 +53,7 @@ export class DiveSiteEntity {
   directions: string | null = null;
 
   @Column('geography', { nullable: true })
-  @Index({ spatial: true })
+  @Index({ spatial: true, sparse: true })
   gps: Point | null = null;
 
   @Column('boolean', { nullable: true })
@@ -70,7 +70,7 @@ export class DiveSiteEntity {
   @Column({
     type: 'tsvector',
     select: false,
-    nullable: true,
+    nullable: false,
     insert: false,
     update: false,
     asExpression: `setweight(to_tsvector('english', coalesce(name, '')), 'A') || setweight(to_tsvector('english', coalesce(description, '') || ' ' || location), 'B') || setweight(to_tsvector('english', coalesce(directions, '')), 'C')`,

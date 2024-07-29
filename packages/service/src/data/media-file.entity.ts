@@ -7,18 +7,26 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
+import { DiveOperatorEntity } from './dive-operators.entity';
 import { LogEntryEntity } from './log-entry.entity';
 import { MediaType } from './types';
 
-@Entity('log_entry_media')
-export class LogEntryMediaEntity {
+@Entity('media_files')
+export class MediaFileEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
-  @ManyToOne(() => LogEntryEntity, (logEntry) => logEntry.media, {
+  @ManyToOne(() => LogEntryEntity, (entry) => entry.media, {
+    nullable: true,
     onDelete: 'CASCADE',
   })
-  logEntry: LogEntryEntity = new LogEntryEntity();
+  logEntry?: LogEntryEntity;
+
+  @ManyToOne(() => DiveOperatorEntity, (operator) => operator.media, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  diveOperator?: DiveOperatorEntity;
 
   @Column({ type: 'enum', enum: MediaType })
   type: MediaType = MediaType.Image;
