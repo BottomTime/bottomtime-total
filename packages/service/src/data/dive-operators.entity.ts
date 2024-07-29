@@ -64,13 +64,13 @@ export class DiveOperatorEntity {
   facebook: string | null = null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  twitter: string | null = null;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
   instagram: string | null = null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   tiktok: string | null = null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  twitter: string | null = null;
 
   // Media
   @Column({ type: 'varchar', length: 200, nullable: true })

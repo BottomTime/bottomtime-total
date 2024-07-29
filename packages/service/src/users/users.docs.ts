@@ -30,7 +30,6 @@
  *           - memberSince
  *       default: username
  *       example: username
- *
  *   schemas:
  *     UserCertification:
  *       type: object
@@ -55,7 +54,6 @@
  *           pattern: ^\d{4}(-\d{2}(-\d{2})?)?$
  *           description: The date the certification was issued.
  *           example: 2000-01-01
- *
  *     UpdateProfile:
  *       type: object
  *       properties:
@@ -113,7 +111,6 @@
  *           pattern: ^\d{4}(-\d{2}(-\d{2})?)?$
  *           description: The year the user started diving.
  *           example: 2000-01-01
- *
  *     Profile:
  *       type: object
  *       allOf:
@@ -142,7 +139,59 @@
  *               format: date-time
  *               description: The date and time the user joined Bottom Time.
  *               example: 2021-01-01T00:00:00.000Z
- *
+ *     SuccinctProfile:
+ *       type: object
+ *       required:
+ *         - userId
+ *         - username
+ *         - memberSince
+ *       properties:
+ *         userId:
+ *           title: User ID
+ *           type: string
+ *           format: uuid
+ *           description: The user's unique ID.
+ *           example: 00000000-0000-0000-0000-000000000000
+ *         username:
+ *           title: Username
+ *           type: string
+ *           pattern: ^[a-z0-9]+([_.-][a-z0-9]+)*$
+ *           description: The user's username. May only contain letters, numbers, dashes, periods, and underscores. Must be unique per user.
+ *           example: johndoe
+ *         memberSince:
+ *           title: Member Since
+ *           type: string
+ *           format: date-time
+ *           description: The date and time the user joined Bottom Time.
+ *           example: 2021-01-01T00:00:00.000Z
+ *         avatar:
+ *           title: Avatar
+ *           description: A URL to an image that can be displayed as the diver's avatar.
+ *           type: string
+ *           format: url
+ *           maxlength: 150
+ *           example: https://example.com/avatar.png
+ *         location:
+ *           title: Location
+ *           type: string
+ *           description: The user's location.
+ *           example: Seattle, WA
+ *           maxLength: 50
+ *         logBookSharing:
+ *           title: Log Book Sharing
+ *           type: string
+ *           enum:
+ *             - private
+ *             - friends
+ *             - public
+ *           description: The level at which the user's logbook will be shared with other users.
+ *           example: public
+ *         name:
+ *           title: Name
+ *           type: string
+ *           description: The user's name.
+ *           example: John Doe
+ *           maxLength: 100
  *     UserSettings:
  *       type: object
  *       properties:
@@ -183,7 +232,6 @@
  *             - friends
  *             - private
  *           example: public
- *
  *     User:
  *       type: object
  *       required:
@@ -254,7 +302,6 @@
  *           type: string
  *           description: The user's role.
  *           example: user
- *
  *     AnonymousStatus:
  *       type: object
  *       required:
@@ -267,7 +314,6 @@
  *             * `true` - User is not authenticated.
  *             * `false` - User is authenticated.
  *           example: false
- *
  *     CurrentUser:
  *       oneOf:
  *         - allOf:

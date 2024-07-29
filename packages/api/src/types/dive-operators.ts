@@ -52,6 +52,7 @@ const SuccinctDiveOperatorSchema = DiveOperatorSchema.pick({
   name: true,
   phone: true,
   socials: true,
+  website: true,
 });
 export type SuccinctDiveOperatorDTO = z.infer<
   typeof SuccinctDiveOperatorSchema
