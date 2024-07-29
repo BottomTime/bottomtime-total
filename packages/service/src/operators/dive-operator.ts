@@ -123,6 +123,7 @@ export class DiveOperator {
   }
 
   async save(): Promise<void> {
+    this.data.updatedAt = new Date();
     await this.operators.save(this.data);
   }
 

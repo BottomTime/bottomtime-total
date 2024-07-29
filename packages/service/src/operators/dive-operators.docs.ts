@@ -128,17 +128,35 @@
  *               description: The date and time at which the dive operator was last updated.
  *             owner:
  *               $ref: "#/components/schemas/SuccinctProfile"
+ *             logo:
+ *               type: string
+ *               format: uri
+ *               name: Logo
+ *               description: The URL of the dive operator's logo.
+ *               example: "https://www.oceandivers.com/logo.png"
+ *               maxLength: 200
+ *             banner:
+ *               type: string
+ *               format: uri
+ *               name: Banner
+ *               description: The URL of the dive operator's banner image.
+ *               example: "https://www.oceandivers.com/banner.png"
+ *               maxLength: 200
  *         - $ref: "#/components/schemas/CreateOrUpdateDiveOperator"
  *     SuccinctDiveOperator:
  *       type: object
  *       required:
  *         - id
+ *         - owner
+ *         - name
  *       properties:
  *         id:
  *           type: string
  *           format: uuid
  *           name: ID
  *           description: The unique identifier for the dive operator.
+ *         owner:
+ *           $ref: "#/components/schemas/SuccinctProfile"
  *         name:
  *           type: string
  *           name: Name
@@ -171,6 +189,13 @@
  *           name: Website
  *           description: The URL of the dive operator's website.
  *           example: https://www.oceandivers.com
+ *           maxLength: 200
+ *         logo:
+ *           type: string
+ *           format: uri
+ *           name: Logo
+ *           description: The URL of the dive operator's logo.
+ *           example: https://www.oceandivers.com/logo.png
  *           maxLength: 200
  *         gps:
  *           type: object

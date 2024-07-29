@@ -11,9 +11,6 @@ export const CreateOrUpdateDiveOperatorSchema = z.object({
   email: z.string().email().max(100).optional(),
   website: z.string().url().max(200).optional(),
 
-  logo: z.string().url().max(200).optional(),
-  banner: z.string().url().max(200).optional(),
-
   gps: z
     .object({
       lat: z.number().min(-90).max(90),
@@ -28,7 +25,8 @@ export const CreateOrUpdateDiveOperatorSchema = z.object({
       instagram: z.string().max(100),
       tiktok: z.string().max(100),
     })
-    .partial(),
+    .partial()
+    .optional(),
 });
 export type CreateOrUpdateDiveOperatorDTO = z.infer<
   typeof CreateOrUpdateDiveOperatorSchema
@@ -39,6 +37,9 @@ export const DiveOperatorSchema = CreateOrUpdateDiveOperatorSchema.extend({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   owner: SuccinctProfileSchema,
+
+  logo: z.string().optional(),
+  banner: z.string().optional(),
 });
 export type DiveOperatorDTO = z.infer<typeof DiveOperatorSchema>;
 
@@ -69,4 +70,12 @@ export const SearchDiveOperatorsSchema = z
   .partial();
 export type SearchDiveOperatorsParams = z.infer<
   typeof SearchDiveOperatorsSchema
+>;
+
+export const SearchDiveOperatorsResponseSchema = z.object({
+  operators: SuccinctDiveOperatorSchema.array(),
+  totalCount: z.number().int(),
+});
+export type SearchDiveOperatorsResponseDTO = z.infer<
+  typeof SearchDiveOperatorsResponseSchema
 >;

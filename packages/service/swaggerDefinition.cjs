@@ -52,6 +52,10 @@ module.exports = {
       description: 'Endpoints pertaining to the management of dive logs.',
     },
     {
+      name: 'Dive Operators',
+      description: 'Endpoints pertaining to the management of dive operators.',
+    },
+    {
       name: 'Dive Sites',
       description: 'Endpoints pertaining to the management of dive sites.',
     },

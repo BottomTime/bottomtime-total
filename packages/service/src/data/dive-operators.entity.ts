@@ -46,7 +46,7 @@ export class DiveOperatorEntity {
   @Column({ type: 'varchar', length: 500, nullable: true })
   address: string | null = null;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   phone: string | null = null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })

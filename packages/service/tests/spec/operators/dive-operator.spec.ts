@@ -175,7 +175,7 @@ describe('DiveOperator class', () => {
     expect(savedOperator.owner!.id).toEqual(owner.id);
     expect(savedOperator.id).toBe(operator.id);
     expect(savedOperator.createdAt).toEqual(operator.createdAt);
-    expect(savedOperator.updatedAt).toEqual(operator.updatedAt);
+    expect(savedOperator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
   });
 
   it('will update an existing dive operator', async () => {
@@ -226,6 +226,7 @@ describe('DiveOperator class', () => {
     expect(savedOperator.instagram).toBe(newInstagram);
     expect(savedOperator.tiktok).toBe(newTiktok);
     expect(savedOperator.twitter).toBe(newTwitter);
+    expect(savedOperator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
   });
 
   it('will delete an operator', async () => {
