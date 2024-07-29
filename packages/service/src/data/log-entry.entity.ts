@@ -20,9 +20,9 @@ import {
 
 import { DiveSiteEntity } from './dive-site.entity';
 import { LogEntryAirEntity } from './log-entry-air.entity';
-import { LogEntryMediaEntity } from './log-entry-media.entity';
 import { LogEntrySampleEntity } from './log-entry-samples.entity';
 import { LogEntrySignatureEntity } from './log-entry-signature.entity';
+import { MediaFileEntity } from './media-file.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entries')
@@ -162,10 +162,10 @@ export class LogEntryEntity {
   signatures?: LogEntrySignatureEntity[];
 
   // Media
-  @OneToMany(() => LogEntryMediaEntity, (media) => media.logEntry, {
+  @OneToMany(() => MediaFileEntity, (file) => file.logEntry, {
     onDelete: 'CASCADE',
   })
-  media?: LogEntryMediaEntity[];
+  media?: MediaFileEntity[];
 
   // Samples from dive computer
   @OneToMany(() => LogEntrySampleEntity, (sample) => sample.logEntry, {
