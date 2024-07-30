@@ -10,7 +10,10 @@ import {
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Inject,
   Logger,
   Post,
@@ -20,6 +23,12 @@ import {
 
 import { AssertAuth, CurrentUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
+import { AssertDiveOperatorOwner } from './assert-dive-operator-owner.guard';
+import {
+  AssertDiveOperator,
+  CurrentDiveOperator,
+} from './assert-dive-operator.guard';
+import { DiveOperator } from './dive-operator';
 import { DiveOperatorsService } from './dive-operators.service';
 
 const OperatorKeyName = 'operatorKey';
@@ -222,11 +231,96 @@ export class DiveOperatorsController {
     return operator.toJSON();
   }
 
-  getDiveOperator() {}
+  /**
+   * @openapi
+   * /api/operators/{operatorKey}:
+   *   get:
+   *     summary: Get a dive operator
+   *     operationId: getDiveOperator
+   *     description: |
+   *       Retrieves a dive operator by its unique key (slug).
+   *     tags:
+   *       - Dive Operators
+   *     parameters:
+   *       - $ref: "#/components/parameters/DiveOperatorKey"
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/DiveOperator"
+   *       404:
+   *         description: The request failed because the dive operator was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get(OperatorKeyParam)
+  @UseGuards(AssertDiveOperator)
+  getDiveOperator(
+    @CurrentDiveOperator() operator: DiveOperator,
+  ): DiveOperatorDTO {
+    return operator.toJSON();
+  }
 
   updateDiveOperator() {}
 
-  deleteDiveOperator() {}
+  /**
+   * @openapi
+   * /api/operators/{operatorKey}:
+   *   delete:
+   *     summary: Delete a dive operator
+   *     operationId: deleteDiveOperator
+   *     description: |
+   *       Deletes a dive operator by its unique key (slug).
+   *     tags:
+   *       - Dive Operators
+   *     parameters:
+   *       - $ref: "#/components/parameters/DiveOperatorKey"
+   *     responses:
+   *       204:
+   *         description: The dive operator was successfully deleted.
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user is not authorized to delete the dive operator.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the dive operator was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Delete(OperatorKeyParam)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AssertAuth, AssertDiveOperator, AssertDiveOperatorOwner)
+  async deleteDiveOperator(
+    @CurrentDiveOperator() operator: DiveOperator,
+  ): Promise<void> {
+    await operator.delete();
+  }
 
   transferDiveOperatorOwnership() {}
 

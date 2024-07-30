@@ -22,6 +22,42 @@ Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse a
     "username": "",
   },
   "phone": "1-318-605-7083 x884",
+  "slug": "shameful-dutiful-bower",
+  "socials": {
+    "facebook": "Torrance.OKeefe",
+    "instagram": "Amari.Sauer91",
+    "tiktok": "Retta15",
+    "twitter": "Nels.Champlin",
+  },
+  "updatedAt": 2024-05-23T23:37:28.262Z,
+  "verified": false,
+  "website": "https://dimpled-format.net",
+}
+`;
+
+exports[`DiveOperatorService when retrieving an operator by its slug will return the indicated operator 1`] = `
+{
+  "address": "298 Krajcik Springs Apt. 609, Port Dominique, NY, 36743-3620",
+  "banner": "https://picsum.photos/seed/G7IWZU/1024/256",
+  "createdAt": 2023-09-08T01:43:49.264Z,
+  "description": "Arbitro utor acceptus. Comedo comedo arcesso alias eligendi arcesso. Defungo possimus vomica stillicidium.
+Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse angustus curriculum cupiditas pecto suffoco unus sophismata.",
+  "email": "Gaetano_Koepp@yahoo.com",
+  "gps": {
+    "lat": -89.5995,
+    "lon": 162.7726,
+  },
+  "id": "89c68565-8d5d-4cfa-a374-80e3a6ad0a9c",
+  "logo": "https://picsum.photos/seed/SjzU40wm/128/128",
+  "name": "shameful, dutiful bower",
+  "owner": {
+    "logBookSharing": "private",
+    "memberSince": 1970-01-01T00:00:00.000Z,
+    "userId": "",
+    "username": "",
+  },
+  "phone": "1-318-605-7083 x884",
+  "slug": "shameful-dutiful-bower",
   "socials": {
     "facebook": "Torrance.OKeefe",
     "instagram": "Amari.Sauer91",
@@ -59,6 +95,7 @@ Vilitas videlicet atque artificiose. Tenuis subnecto asporto uredo. Suscipit acc
     "username": "Danielle56",
   },
   "phone": "(644) 879-2885 x0599",
+  "slug": "",
   "socials": {
     "facebook": "Amya29",
     "instagram": "Marion82",

@@ -56,7 +56,18 @@ export class DiveOperatorsService {
   }
 
   async getOperator(id: string): Promise<DiveOperator | undefined> {
-    const data = await this.operators.findOneBy({ id });
+    const data = await this.operators.findOne({
+      where: { id },
+      relations: ['owner'],
+    });
+    return data ? new DiveOperator(this.operators, data) : undefined;
+  }
+
+  async getOperatorBySlug(slug: string): Promise<DiveOperator | undefined> {
+    const data = await this.operators.findOne({
+      where: { slug: slug.toLowerCase() },
+      relations: ['owner'],
+    });
     return data ? new DiveOperator(this.operators, data) : undefined;
   }
 

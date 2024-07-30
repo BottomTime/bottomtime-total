@@ -87,6 +87,6 @@ export function parseOperatorJSON(
   owner?: UserEntity,
 ): DiveOperatorEntity {
   const operator: DiveOperatorEntity = OperatorSchema.parse(data);
-  operator.owner = owner;
+  operator.owner ??= owner;
   return operator;
 }

@@ -163,6 +163,24 @@ describe('DiveOperatorService', () => {
     });
   });
 
+  describe('when retrieving an operator by its slug', () => {
+    it('will return the indicated operator', async () => {
+      const data = parseOperatorJSON(TestData[0]);
+      data.owner = owner.toEntity();
+      await Operators.save(data);
+
+      const operator = await service.getOperatorBySlug(data.slug.toUpperCase());
+      expect(operator).toBeDefined();
+      expect(operator?.toJSON()).toMatchSnapshot();
+    });
+
+    it('will return undefined if the operator does not exist', async () => {
+      await expect(
+        service.getOperatorBySlug('no-such-operator'),
+      ).resolves.toBeUndefined();
+    });
+  });
+
   describe('when searching for operators', () => {
     let owners: UserEntity[];
     let searchData: DiveOperatorEntity[];

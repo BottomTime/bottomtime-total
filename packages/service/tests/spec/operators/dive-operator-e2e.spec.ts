@@ -1,9 +1,11 @@
-import { CreateOrUpdateDiveOperatorDTO, LogBookSharing } from '@bottomtime/api';
+import {
+  CreateOrUpdateDiveOperatorDTO,
+  LogBookSharing,
+  UserRole,
+} from '@bottomtime/api';
 
-import { fa } from '@faker-js/faker';
 import { HttpServer, INestApplication } from '@nestjs/common';
 
-import slugify from 'slugify';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
@@ -22,6 +24,7 @@ import {
 const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
 const RegularUserData: Partial<UserEntity> = {
   id: RegularUserId,
+  role: UserRole.User,
   memberSince: new Date(),
   username: 'Joe.Regular',
   usernameLowered: 'joe.regular',
@@ -31,8 +34,20 @@ const RegularUserData: Partial<UserEntity> = {
   name: 'Joe Regular',
 };
 
-function getUrl() {
-  return '/api/operators';
+const OtherUserId = 'ca5f6ec9-b9a5-4e9a-8a34-9c27a44d94f8';
+const OtherUserData: Partial<UserEntity> = {
+  id: OtherUserId,
+  role: UserRole.User,
+};
+
+const AdminUserId = '8e8027d0-4b04-405c-9a3d-d2e135bb4020';
+const AdminUserData: Partial<UserEntity> = {
+  id: AdminUserId,
+  role: UserRole.Admin,
+};
+
+function getUrl(key?: string): string {
+  return `/api/operators${key ? `/${key}` : ''}`;
 }
 
 describe('Dive Operators E2E tests', () => {
@@ -42,13 +57,19 @@ describe('Dive Operators E2E tests', () => {
   let Operators: Repository<DiveOperatorEntity>;
   let Users: Repository<UserEntity>;
   let regularUser: UserEntity;
+  let otherUser: UserEntity;
+  let adminUser: UserEntity;
   let regularUserAuthHeader: [string, string];
+  let otherUserAuthHeader: [string, string];
+  let adminUserAuthHeader: [string, string];
 
   beforeAll(async () => {
     app = await createTestApp();
     server = app.getHttpServer();
 
     regularUserAuthHeader = await createAuthHeader(RegularUserId);
+    otherUserAuthHeader = await createAuthHeader(OtherUserId);
+    adminUserAuthHeader = await createAuthHeader(AdminUserId);
 
     Operators = dataSource.getRepository(DiveOperatorEntity);
     Users = dataSource.getRepository(UserEntity);
@@ -56,7 +77,9 @@ describe('Dive Operators E2E tests', () => {
 
   beforeEach(async () => {
     regularUser = createTestUser(RegularUserData);
-    await Users.save(regularUser);
+    otherUser = createTestUser(OtherUserData);
+    adminUser = createTestUser(AdminUserData);
+    await Users.save([regularUser, otherUser, adminUser]);
   });
 
   afterAll(async () => {
@@ -267,6 +290,79 @@ describe('Dive Operators E2E tests', () => {
           name: 'Groundhog Divers',
         })
         .expect(409);
+    });
+  });
+
+  describe('when retrieving a single dive operator', () => {
+    it('will retrieve the indicated dive operator', async () => {
+      const owner = parseUserJSON(Owners[0]);
+      const operator = parseOperatorJSON(TestData[0], owner);
+      await Users.save(owner);
+      await Operators.save(operator);
+
+      const { body } = await request(server)
+        .get(getUrl(operator.slug.toUpperCase()))
+        .expect(200);
+
+      expect(body).toMatchSnapshot();
+    });
+
+    it('will return a 404 response if the operator key cannot be found', async () => {
+      await request(server).get(getUrl('not-a-real-operator')).expect(404);
+    });
+  });
+
+  describe('when deleting a dive operator', () => {
+    let operator: DiveOperatorEntity;
+
+    beforeAll(() => {
+      operator = parseOperatorJSON(TestData[0], regularUser);
+    });
+
+    beforeEach(async () => {
+      await Operators.save(operator);
+    });
+
+    it('will allow the operator owner to delete the operator', async () => {
+      await request(server)
+        .delete(getUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .expect(204);
+
+      await expect(Operators.existsBy({ id: operator.id })).resolves.toBe(
+        false,
+      );
+    });
+
+    it('will allow an admin to delete an operator', async () => {
+      await request(server)
+        .delete(getUrl(operator.slug))
+        .set(...adminUserAuthHeader)
+        .expect(204);
+
+      await expect(Operators.existsBy({ id: operator.id })).resolves.toBe(
+        false,
+      );
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server).delete(getUrl(operator.slug)).expect(401);
+      await expect(Operators.existsBy({ id: operator.id })).resolves.toBe(true);
+    });
+
+    it('will return a 403 response if the user is not the operator owner or an admin', async () => {
+      await request(server)
+        .delete(getUrl(operator.slug))
+        .set(...otherUserAuthHeader)
+        .expect(403);
+      await expect(Operators.existsBy({ id: operator.id })).resolves.toBe(true);
+    });
+
+    it('will return a 404 response if the operator key cannot be found', async () => {
+      await request(server)
+        .delete(getUrl('not-a-real-operator'))
+        .set(...adminUserAuthHeader)
+        .expect(404);
     });
   });
 });

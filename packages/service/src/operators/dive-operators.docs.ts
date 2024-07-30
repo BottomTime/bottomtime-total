@@ -2,7 +2,7 @@
  * @openapi
  * components:
  *   parameters:
- *     DiveOperatorSlug:
+ *     DiveOperatorKey:
  *       name: operatorKey
  *       in: path
  *       description: The unique slug that identifies the dive operator being requested or operated upon.
@@ -33,6 +33,10 @@
  *           description: |
  *             A short, URL-friendly version of the dive operator's name. Will be used to construct URLs for requesting
  *             the dive operator. May only contain alphanumeric characters as well as `-$_.!*`()`.
+ *
+ *             If omitted when creating a new dive operator, the slug will be automatically generated from the name.
+ *
+ *             If omitted when updating an existing dive operator, the slug will be left unchanged.
  *           example: ocean-divers
  *           minLength: 1
  *           maxLength: 200

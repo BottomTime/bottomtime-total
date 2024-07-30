@@ -135,6 +135,44 @@ exports[`Dive Operators E2E tests when creating a new dive operator will return 
 }
 `;
 
+exports[`Dive Operators E2E tests when retrieving a single dive operator will retrieve the indicated dive operator 1`] = `
+{
+  "address": "298 Krajcik Springs Apt. 609, Port Dominique, NY, 36743-3620",
+  "banner": "https://picsum.photos/seed/G7IWZU/1024/256",
+  "createdAt": "2023-09-08T01:43:49.264Z",
+  "description": "Arbitro utor acceptus. Comedo comedo arcesso alias eligendi arcesso. Defungo possimus vomica stillicidium.
+Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse angustus curriculum cupiditas pecto suffoco unus sophismata.",
+  "email": "Gaetano_Koepp@yahoo.com",
+  "gps": {
+    "lat": -89.5995,
+    "lon": 162.7726,
+  },
+  "id": "89c68565-8d5d-4cfa-a374-80e3a6ad0a9c",
+  "logo": "https://picsum.photos/seed/SjzU40wm/128/128",
+  "name": "shameful, dutiful bower",
+  "owner": {
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
+    "location": "West Covina",
+    "logBookSharing": "private",
+    "memberSince": "2020-02-24T22:30:50.944Z",
+    "name": "Devin Ratke",
+    "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
+    "username": "Ayla.Rippin",
+  },
+  "phone": "1-318-605-7083 x884",
+  "slug": "shameful-dutiful-bower",
+  "socials": {
+    "facebook": "Torrance.OKeefe",
+    "instagram": "Amari.Sauer91",
+    "tiktok": "Retta15",
+    "twitter": "Nels.Champlin",
+  },
+  "updatedAt": "2024-05-23T23:37:28.262Z",
+  "verified": false,
+  "website": "https://dimpled-format.net",
+}
+`;
+
 exports[`Dive Operators E2E tests when searching dive operators will perform a basic search with default parameters 1`] = `
 {
   "address": "57460 Joy Isle Suite 450, O'Reillybury, MT, 88197-2575",
