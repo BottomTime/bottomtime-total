@@ -336,3 +336,138 @@ exports[`Dive Operators E2E tests when searching dive operators will return a 40
   ],
 }
 `;
+
+exports[`Dive Operators E2E tests when updating a dive operator will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "name",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "description",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "address",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "phone",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid email",
+      "path": [
+        "email",
+      ],
+      "validation": "email",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid url",
+      "path": [
+        "website",
+      ],
+      "validation": "url",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "gps",
+        "lat",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "gps",
+        "lon",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "facebook",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "twitter",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "socials",
+        "instagram",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "socials",
+        "tiktok",
+      ],
+      "received": "boolean",
+    },
+  ],
+}
+`;
+
+exports[`Dive Operators E2E tests when updating a dive operator will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "name",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;

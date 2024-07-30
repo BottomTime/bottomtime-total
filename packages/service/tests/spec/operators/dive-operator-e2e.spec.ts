@@ -312,6 +312,218 @@ describe('Dive Operators E2E tests', () => {
     });
   });
 
+  describe('when updating a dive operator', () => {
+    let operator: DiveOperatorEntity;
+
+    beforeAll(() => {
+      operator = parseOperatorJSON(TestData[0], regularUser);
+    });
+
+    beforeEach(async () => {
+      await Operators.save(operator);
+    });
+
+    it('will allow a user to update an existing dive operator', async () => {
+      const options: CreateOrUpdateDiveOperatorDTO = {
+        name: 'Groundhog Divers',
+        address: '123 Main St',
+        description: 'We dive deep',
+        email: 'info@groundhogdivers.ca',
+        gps: {
+          lat: 33.1234,
+          lon: -122.4567,
+        },
+        phone: '555-555-5555',
+        socials: {
+          facebook: 'groundhogdivers',
+          instagram: 'groundhogdivers',
+          twitter: 'groundhogdivers',
+          tiktok: '@groundhogdivers',
+        },
+        slug: 'groundhogdivers',
+        website: 'https://groundhogdivers.ca',
+      };
+
+      const { body } = await request(server)
+        .put(getUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .send(options)
+        .expect(200);
+
+      expect(body.id).toHaveLength(36);
+      expect(body.name).toBe(options.name);
+      expect(body.description).toBe(options.description);
+      expect(body.email).toBe(options.email);
+      expect(body.gps).toEqual(options.gps);
+      expect(body.phone).toBe(options.phone);
+      expect(body.socials).toEqual(options.socials);
+      expect(body.website).toBe(options.website);
+      expect(body.slug).toBe(options.slug);
+      expect(body.verified).toBe(false);
+      expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const saved = await Operators.findOneByOrFail({ id: body.id });
+      expect(saved.updatedAt).toEqual(new Date(body.updatedAt));
+      expect(saved.name).toBe(options.name);
+      expect(saved.description).toBe(options.description);
+      expect(saved.email).toBe(options.email);
+      expect(saved.gps).toEqual({
+        type: 'Point',
+        coordinates: [options.gps!.lon, options.gps!.lat],
+      });
+      expect(saved.phone).toBe(options.phone);
+      expect(saved.facebook).toEqual(options.socials!.facebook);
+      expect(saved.instagram).toEqual(options.socials!.instagram);
+      expect(saved.twitter).toEqual(options.socials!.twitter);
+      expect(saved.tiktok).toEqual(options.socials!.tiktok);
+      expect(saved.website).toBe(options.website);
+      expect(saved.slug).toBe(options.slug);
+      expect(saved.verified).toBe(false);
+    });
+
+    it('will allow an admin to update an existing dive operator', async () => {
+      const options: CreateOrUpdateDiveOperatorDTO = {
+        name: 'Groundhog Divers',
+        address: '123 Main St',
+        description: 'We dive deep',
+        email: 'info@groundhogdivers.ca',
+        gps: {
+          lat: 33.1234,
+          lon: -122.4567,
+        },
+        phone: '555-555-5555',
+        socials: {
+          facebook: 'groundhogdivers',
+          instagram: 'groundhogdivers',
+          twitter: 'groundhogdivers',
+          tiktok: '@groundhogdivers',
+        },
+        slug: 'groundhogdivers',
+        website: 'https://groundhogdivers.ca',
+      };
+
+      const { body } = await request(server)
+        .put(getUrl(operator.slug))
+        .set(...adminUserAuthHeader)
+        .send(options)
+        .expect(200);
+
+      expect(body.id).toHaveLength(36);
+      expect(body.name).toBe(options.name);
+      expect(body.description).toBe(options.description);
+      expect(body.email).toBe(options.email);
+      expect(body.gps).toEqual(options.gps);
+      expect(body.phone).toBe(options.phone);
+      expect(body.socials).toEqual(options.socials);
+      expect(body.website).toBe(options.website);
+      expect(body.slug).toBe(options.slug);
+      expect(body.verified).toBe(false);
+      expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const saved = await Operators.findOneByOrFail({ id: body.id });
+      expect(saved.updatedAt).toEqual(new Date(body.updatedAt));
+      expect(saved.name).toBe(options.name);
+      expect(saved.description).toBe(options.description);
+      expect(saved.email).toBe(options.email);
+      expect(saved.gps).toEqual({
+        type: 'Point',
+        coordinates: [options.gps!.lon, options.gps!.lat],
+      });
+      expect(saved.phone).toBe(options.phone);
+      expect(saved.facebook).toEqual(options.socials!.facebook);
+      expect(saved.instagram).toEqual(options.socials!.instagram);
+      expect(saved.twitter).toEqual(options.socials!.twitter);
+      expect(saved.tiktok).toEqual(options.socials!.tiktok);
+      expect(saved.website).toBe(options.website);
+      expect(saved.slug).toBe(options.slug);
+      expect(saved.verified).toBe(false);
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      const { body } = await request(server)
+        .put(getUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .send({
+          name: 33,
+          description: false,
+          address: 44,
+          phone: true,
+          email: 'not an email',
+          website: 'not a url',
+          gps: {
+            lat: 'north',
+            lon: 'east',
+          },
+          socials: {
+            facebook: 33,
+            instagram: false,
+            twitter: 44,
+            tiktok: true,
+          },
+        })
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      const operator = parseOperatorJSON(TestData[0], regularUser);
+      await Operators.save(operator);
+
+      const { body } = await request(server)
+        .put(getUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .put(getUrl(operator.slug))
+        .send({
+          name: 'Groundhog Divers',
+        })
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not the operator owner or an admin', async () => {
+      await request(server)
+        .put(getUrl(operator.slug))
+        .set(...otherUserAuthHeader)
+        .send({
+          name: 'Groundhog Divers',
+        })
+        .expect(403);
+    });
+
+    it('will return a 404 response if the operator key cannot be found', async () => {
+      await request(server)
+        .put(getUrl('not-a-real-operator'))
+        .set(...adminUserAuthHeader)
+        .send({
+          name: 'Groundhog Divers',
+        })
+        .expect(404);
+    });
+
+    it('will return 409 response if the new slug is already in use', async () => {
+      const existing = new DiveOperatorEntity();
+      existing.id = '898ae1ca-87ae-4d4b-8803-01aaaf1dceec';
+      existing.name = 'Other Operator';
+      existing.slug = 'taken-slug';
+      existing.owner = regularUser;
+      await Operators.save(existing);
+
+      await request(server)
+        .put(getUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .send({
+          name: 'Groundhog Divers',
+          slug: 'taken-slug',
+        })
+        .expect(409);
+    });
+  });
+
   describe('when deleting a dive operator', () => {
     let operator: DiveOperatorEntity;
 

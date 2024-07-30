@@ -17,9 +17,12 @@ import {
   Inject,
   Logger,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
+
+import slugify from 'slugify';
 
 import { AssertAuth, CurrentUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
@@ -271,7 +274,32 @@ export class DiveOperatorsController {
     return operator.toJSON();
   }
 
-  updateDiveOperator() {}
+  @Put(OperatorKeyParam)
+  @UseGuards(AssertAuth, AssertDiveOperator, AssertDiveOperatorOwner)
+  async updateDiveOperator(
+    @CurrentDiveOperator() operator: DiveOperator,
+    @Body(new ZodValidator(CreateOrUpdateDiveOperatorSchema))
+    options: CreateOrUpdateDiveOperatorDTO,
+  ): Promise<DiveOperatorDTO> {
+    operator.address = options.address;
+    operator.description = options.description;
+    operator.email = options.email;
+    operator.gps = options.gps;
+    operator.name = options.name;
+    operator.phone = options.phone;
+    operator.socials.facebook = options.socials?.facebook;
+    operator.socials.instagram = options.socials?.instagram;
+    operator.socials.tiktok = options.socials?.tiktok;
+    operator.socials.twitter = options.socials?.twitter;
+    operator.website = options.website;
+
+    operator.slug =
+      options.slug || slugify(options.name, { lower: true, trim: true });
+
+    await operator.save();
+
+    return operator.toJSON();
+  }
 
   /**
    * @openapi
