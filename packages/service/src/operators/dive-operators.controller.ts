@@ -5,9 +5,14 @@ import {
   SearchDiveOperatorsParams,
   SearchDiveOperatorsResponseDTO,
   SearchDiveOperatorsSchema,
+  TransferDiveOperatorOwnershipDTO,
+  TransferDiveOperatorOwnershipSchema,
+  VerifyDiveOperatorDTO,
+  VerifyDiveOperatorSchema,
 } from '@bottomtime/api';
 
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -24,7 +29,13 @@ import {
 
 import slugify from 'slugify';
 
-import { AssertAuth, CurrentUser, User } from '../users';
+import {
+  AssertAdmin,
+  AssertAuth,
+  CurrentUser,
+  User,
+  UsersService,
+} from '../users';
 import { ZodValidator } from '../zod-validator';
 import { AssertDiveOperatorOwner } from './assert-dive-operator-owner.guard';
 import {
@@ -44,6 +55,9 @@ export class DiveOperatorsController {
   constructor(
     @Inject(DiveOperatorsService)
     private readonly service: DiveOperatorsService,
+
+    @Inject(UsersService)
+    private readonly users: UsersService,
   ) {}
 
   /**
@@ -274,6 +288,62 @@ export class DiveOperatorsController {
     return operator.toJSON();
   }
 
+  /**
+   * @openapi
+   * /api/operators/{operatorKey}:
+   *   put:
+   *     summary: Update a dive operator
+   *     operationId: updateDiveOperator
+   *     description: |
+   *       Updates a dive operator by its unique key (slug).
+   *     tags:
+   *       - Dive Operators
+   *     parameters:
+   *       - $ref: "#/components/parameters/DiveOperatorKey"
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: "#/components/schemas/CreateOrUpdateDiveOperator"
+   *     responses:
+   *       200:
+   *         description: The dive operator was successfully updated and the details will be returned in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/DiveOperator"
+   *       400:
+   *         description: The request failed because the request body was invalid or missing.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user is not authorized to update the dive operator.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the dive operator was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Put(OperatorKeyParam)
   @UseGuards(AssertAuth, AssertDiveOperator, AssertDiveOperatorOwner)
   async updateDiveOperator(
@@ -350,7 +420,159 @@ export class DiveOperatorsController {
     await operator.delete();
   }
 
-  transferDiveOperatorOwnership() {}
+  /**
+   * @openapi
+   * /api/operators/{operatorKey}/transfer:
+   *   post:
+   *     summary: Transfer ownership of a dive operator
+   *     operationId: transferDiveOperatorOwnership
+   *     description: |
+   *       Transfers ownership of a dive operator to another user.
+   *     tags:
+   *       - Dive Operators
+   *     parameters:
+   *       - $ref: "#/components/parameters/DiveOperatorKey"
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - newOwner
+   *             properties:
+   *               newOwner:
+   *                 type: string
+   *                 pattern: ^[a-z0-9_.-]+$
+   *                 name: New Owner's Username
+   *                 description: The username of the new owner to transfer ownership to.
+   *                 example: SamSamuelson_23
+   *                 minLength: 3
+   *                 maxLength: 50
+   *     responses:
+   *       204:
+   *         description: The ownership of the dive operator was successfully transferred.
+   *       400:
+   *         description: The request failed because the new owner could not be found, or the request body was invalid or missing.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user is not authorized to transfer ownership of the dive operator.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the dive operator was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post(`${OperatorKeyParam}/transfer`)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AssertAuth, AssertDiveOperator, AssertDiveOperatorOwner)
+  async transferDiveOperatorOwnership(
+    @CurrentDiveOperator() operator: DiveOperator,
+    @Body(new ZodValidator(TransferDiveOperatorOwnershipSchema))
+    { newOwner: username }: TransferDiveOperatorOwnershipDTO,
+  ): Promise<void> {
+    const newOwner = await this.users.getUserByUsernameOrEmail(username);
+    if (!newOwner) {
+      throw new BadRequestException(
+        `Unable to transfer ownership to user "${username}". Username cannot be found.`,
+      );
+    }
 
-  verifyDiveOperator() {}
+    await operator.transferOwnership(newOwner);
+  }
+
+  /**
+   * @openapi
+   * /api/operators/{operatorKey}/verify:
+   *   post:
+   *     summary: Verify or unverify a dive operator
+   *     operationId: verifyDiveOperator
+   *     description: |
+   *       Verifies a dive operator, marking them as a verified dive operator.
+   *     tags:
+   *       - Dive Operators
+   *     parameters:
+   *       - $ref: "#/components/parameters/DiveOperatorKey"
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - verified
+   *             properties:
+   *               verified:
+   *                 type: boolean
+   *                 name: Verified
+   *                 description: Whether the dive operator is verified or not.
+   *                 example: true
+   *     responses:
+   *       204:
+   *         description: The dive operator was successfully verified/unverified.
+   *       400:
+   *         description: The request failed because the request body was invalid or missing.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user is not an administrator.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the dive operator was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post(`${OperatorKeyParam}/verify`)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AssertAdmin, AssertDiveOperator)
+  async verifyDiveOperator(
+    @CurrentDiveOperator() operator: DiveOperator,
+    @Body(new ZodValidator(VerifyDiveOperatorSchema))
+    { verified }: VerifyDiveOperatorDTO,
+  ): Promise<void> {
+    if (verified) {
+      await operator.verify();
+    } else {
+      await operator.unverify();
+    }
+  }
 }

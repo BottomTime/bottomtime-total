@@ -50,6 +50,14 @@ function getUrl(key?: string): string {
   return `/api/operators${key ? `/${key}` : ''}`;
 }
 
+function getTransferUrl(key: string): string {
+  return `${getUrl(key)}/transfer`;
+}
+
+function getVerifyUrl(key: string): string {
+  return `${getUrl(key)}/verify`;
+}
+
 describe('Dive Operators E2E tests', () => {
   let app: INestApplication;
   let server: HttpServer;
@@ -574,6 +582,182 @@ describe('Dive Operators E2E tests', () => {
       await request(server)
         .delete(getUrl('not-a-real-operator'))
         .set(...adminUserAuthHeader)
+        .expect(404);
+    });
+  });
+
+  describe('when transferring ownership of a dive operator', () => {
+    let operator: DiveOperatorEntity;
+
+    beforeEach(async () => {
+      operator = parseOperatorJSON(TestData[0], regularUser);
+      await Operators.save(operator);
+    });
+
+    it('will allow the operator owner to transfer ownership', async () => {
+      await request(server)
+        .post(getTransferUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .send({ newOwner: otherUser.username })
+        .expect(204);
+
+      const saved = await Operators.findOneOrFail({
+        where: { id: operator.id },
+        relations: ['owner'],
+      });
+      expect(saved.owner!.id).toBe(otherUser.id);
+    });
+
+    it('will allow an admin to transfer ownership', async () => {
+      await request(server)
+        .post(getTransferUrl(operator.slug))
+        .set(...adminUserAuthHeader)
+        .send({ newOwner: otherUser.username })
+        .expect(204);
+
+      const saved = await Operators.findOneOrFail({
+        where: { id: operator.id },
+        relations: ['owner'],
+      });
+      expect(saved.owner!.id).toBe(otherUser.id);
+    });
+
+    it('will return a 400 response if the new owner is not a user', async () => {
+      await request(server)
+        .post(getTransferUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .send({ newOwner: 'DefinitelyNotAUser' })
+        .expect(400);
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      await request(server)
+        .post(getTransferUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .send({ newOwner: 33 })
+        .expect(400);
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      await request(server)
+        .post(getTransferUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .expect(400);
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .post(getTransferUrl(operator.slug))
+        .send({ newOwner: otherUser.username })
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not the operator owner or an admin', async () => {
+      await request(server)
+        .post(getTransferUrl(operator.slug))
+        .set(...otherUserAuthHeader)
+        .send({ newOwner: otherUser.username })
+        .expect(403);
+    });
+
+    it('will return a 404 response if the operator key cannot be found', async () => {
+      await request(server)
+        .post(getTransferUrl('not-a-real-operator'))
+        .set(...adminUserAuthHeader)
+        .send({ newOwner: otherUser.username })
+        .expect(404);
+    });
+  });
+
+  describe('when verifying/unverifying a dive operator', () => {
+    let operator: DiveOperatorEntity;
+
+    beforeEach(async () => {
+      operator = parseOperatorJSON(TestData[0], regularUser);
+      await Operators.save(operator);
+    });
+
+    [false, true].forEach((verified) => {
+      it(`will ${
+        verified ? 'verify' : 'unverify'
+      } a dive operator`, async () => {
+        operator.verified = !verified;
+        await Operators.save(operator);
+
+        await request(server)
+          .post(getVerifyUrl(operator.slug))
+          .set(...adminUserAuthHeader)
+          .send({
+            verified,
+          })
+          .expect(204);
+
+        const saved = await Operators.findOneByOrFail({ id: operator.id });
+        expect(saved.verified).toBe(verified);
+      });
+
+      it(`will perform a no-op if the dive operator is already ${
+        verified ? 'verified' : 'unverified'
+      }`, async () => {
+        operator.verified = verified;
+        await Operators.save(operator);
+
+        await request(server)
+          .post(getVerifyUrl(operator.slug))
+          .set(...adminUserAuthHeader)
+          .send({
+            verified,
+          })
+          .expect(204);
+
+        const saved = await Operators.findOneByOrFail({ id: operator.id });
+        expect(saved.verified).toBe(verified);
+      });
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      await request(server)
+        .post(getVerifyUrl(operator.slug))
+        .set(...adminUserAuthHeader)
+        .send({
+          verified: 'sure',
+        })
+        .expect(400);
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      await request(server)
+        .post(getVerifyUrl(operator.slug))
+        .set(...adminUserAuthHeader)
+        .expect(400);
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .post(getVerifyUrl(operator.slug))
+        .send({
+          verified: true,
+        })
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not an admin', async () => {
+      await request(server)
+        .post(getVerifyUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .send({
+          verified: true,
+        })
+        .expect(403);
+    });
+
+    it('will return a 404 response if the operator key cannot be found', async () => {
+      await request(server)
+        .post(getVerifyUrl('not-a-real-operator'))
+        .set(...adminUserAuthHeader)
+        .send({
+          verified: true,
+        })
         .expect(404);
     });
   });

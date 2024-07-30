@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { GpsCoordinatesSchema, SlugRegex } from './constants';
-import { SuccinctProfileSchema } from './users';
+import { SuccinctProfileSchema, UsernameSchema } from './users';
 
 export const CreateOrUpdateDiveOperatorSchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -81,4 +81,16 @@ export const SearchDiveOperatorsResponseSchema = z.object({
 });
 export type SearchDiveOperatorsResponseDTO = z.infer<
   typeof SearchDiveOperatorsResponseSchema
+>;
+
+export const VerifyDiveOperatorSchema = z.object({
+  verified: z.boolean(),
+});
+export type VerifyDiveOperatorDTO = z.infer<typeof VerifyDiveOperatorSchema>;
+
+export const TransferDiveOperatorOwnershipSchema = z.object({
+  newOwner: UsernameSchema,
+});
+export type TransferDiveOperatorOwnershipDTO = z.infer<
+  typeof TransferDiveOperatorOwnershipSchema
 >;

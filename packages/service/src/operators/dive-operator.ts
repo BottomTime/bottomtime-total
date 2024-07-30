@@ -11,6 +11,7 @@ import { ConflictException } from '@nestjs/common';
 import { DiveOperatorEntity } from 'src/data';
 import { Not, Repository } from 'typeorm';
 
+import { User } from '../users';
 import { DiveOperatorSocials } from './dive-operator-socials';
 
 export class DiveOperator {
@@ -153,6 +154,21 @@ export class DiveOperator {
   async delete(): Promise<boolean> {
     const { affected } = await this.operators.delete(this.data.id);
     return affected === 1;
+  }
+
+  async verify(): Promise<void> {
+    this.data.verified = true;
+    await this.save();
+  }
+
+  async unverify(): Promise<void> {
+    this.data.verified = false;
+    await this.save();
+  }
+
+  async transferOwnership(newOwner: User): Promise<void> {
+    this.data.owner = newOwner.toEntity();
+    await this.save();
   }
 
   toJSON(): DiveOperatorDTO {

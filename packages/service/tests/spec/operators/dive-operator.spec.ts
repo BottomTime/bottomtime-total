@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 
 import { DiveOperatorEntity, UserEntity } from '../../../src/data';
 import { DiveOperator } from '../../../src/operators';
+import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createTestUser } from '../../utils/create-test-user';
 
@@ -42,6 +43,7 @@ describe('DiveOperator class', () => {
   let Operators: Repository<DiveOperatorEntity>;
 
   let owner: UserEntity;
+  let otherUser: UserEntity;
   let data: DiveOperatorEntity;
   let operator: DiveOperator;
 
@@ -58,10 +60,20 @@ describe('DiveOperator class', () => {
       location: 'Toronto, ON, Canada',
       name: 'Test User',
     });
+
+    otherUser = createTestUser({
+      id: '1938f360-9842-498a-ab0e-f42d3b0b495a',
+      username: 'other_dude',
+      memberSince: new Date('2024-07-30T12:25:45Z'),
+      logBookSharing: LogBookSharing.FriendsOnly,
+      avatar: 'https://example.com/other_avatar.png',
+      location: 'Vancouver, BC, Canada',
+      name: 'Other Dude',
+    });
   });
 
   beforeEach(async () => {
-    await Users.save(owner);
+    await Users.save([owner, otherUser]);
     data = {
       ...TestData,
       owner,
@@ -287,5 +299,64 @@ describe('DiveOperator class', () => {
   it('will return a succinct JSON representation of the dive operator', () => {
     const json = operator.toSuccinctJSON();
     expect(json).toMatchSnapshot();
+  });
+
+  it('will transfer ownership to a new user', async () => {
+    const newOwner = new User(Users, otherUser);
+    await operator.transferOwnership(newOwner);
+
+    expect(operator.owner.userId).toEqual(newOwner.id);
+    expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+
+    const saved = await Operators.findOneOrFail({
+      where: { id: operator.id },
+      relations: ['owner'],
+    });
+    expect(saved.owner!.id).toEqual(newOwner.id);
+    expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+  });
+
+  it('will verify a dive operator', async () => {
+    await operator.verify();
+
+    expect(operator.verified).toBe(true);
+    expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+
+    const saved = await Operators.findOneByOrFail({
+      id: operator.id,
+    });
+    expect(saved.verified).toBe(true);
+    expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+  });
+
+  it('will do nothing when verifying an already verified dive operator', async () => {
+    data.verified = true;
+    await operator.verify();
+
+    const saved = await Operators.findOneByOrFail({ id: operator.id });
+    expect(saved.verified).toBe(true);
+  });
+
+  it('will unverify a dive operator', async () => {
+    data.verified = true;
+    await Operators.save(data);
+
+    await operator.unverify();
+
+    expect(operator.verified).toBe(false);
+    expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+
+    const saved = await Operators.findOneByOrFail({
+      id: operator.id,
+    });
+    expect(saved.verified).toBe(false);
+    expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+  });
+
+  it('will do nothing when unverifying an already unverified dive operator', async () => {
+    await operator.unverify();
+
+    const saved = await Operators.findOneByOrFail({ id: operator.id });
+    expect(saved.verified).toBe(false);
   });
 });
