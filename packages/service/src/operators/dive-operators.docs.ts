@@ -2,14 +2,17 @@
  * @openapi
  * components:
  *   parameters:
- *     DiveOperatorId:
- *       name: operatorId
+ *     DiveOperatorSlug:
+ *       name: operatorKey
  *       in: path
- *       description: The ID that uniquely identifies the dive operator being requested or operated upon.
+ *       description: The unique slug that identifies the dive operator being requested or operated upon.
  *       required: true
+ *       example: ocean-divers
  *       schema:
  *         type: string
- *         format: uuid
+ *         pattern: ^[a-zA-Z0-9\-$_.+!*'()]+$
+ *         minLength: 1
+ *         maxLength: 200
  *   schemas:
  *     CreateOrUpdateDiveOperator:
  *       type: object
@@ -21,6 +24,16 @@
  *           name: Name
  *           description: The name of the dive operator.
  *           example: Ocean Divers
+ *           minLength: 1
+ *           maxLength: 200
+ *         slug:
+ *           type: string
+ *           pattern: ^[a-zA-Z0-9\-$_.+!*'()]+$
+ *           name: URL Slug
+ *           description: |
+ *             A short, URL-friendly version of the dive operator's name. Will be used to construct URLs for requesting
+ *             the dive operator. May only contain alphanumeric characters as well as `-$_.!*`()`.
+ *           example: ocean-divers
  *           minLength: 1
  *           maxLength: 200
  *         description:
@@ -126,6 +139,10 @@
  *               format: date-time
  *               name: Last Updated
  *               description: The date and time at which the dive operator was last updated.
+ *             verified:
+ *               type: boolean
+ *               name: Verified
+ *               description: Indicates whether the dive operator's identity has been verified by an admin.
  *             owner:
  *               $ref: "#/components/schemas/SuccinctProfile"
  *             logo:
@@ -164,6 +181,10 @@
  *           example: Ocean Divers
  *           minLength: 1
  *           maxLength: 200
+ *         verified:
+ *           type: boolean
+ *           name: Verified
+ *           description: Indicates whether the dive operator's identity has been verified by an admin.
  *         address:
  *           type: string
  *           name: Street Address

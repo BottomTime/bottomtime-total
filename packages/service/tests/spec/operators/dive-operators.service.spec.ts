@@ -199,21 +199,21 @@ describe('DiveOperatorService', () => {
     it('will perform a search for dive sites near a given location', async () => {
       const results = await service.searchOperators({
         location: {
-          lat: 16.5563,
-          lon: -144.9654,
+          lon: -55.6353,
+          lat: -68.9415,
         },
         radius: 1000,
       });
 
-      expect(results.operators).toHaveLength(3);
-      expect(results.totalCount).toBe(3);
+      expect(results.operators).toHaveLength(1);
+      expect(results.totalCount).toBe(1);
       expect(results.operators.map((op) => op.name)).toMatchSnapshot();
     });
 
     it('will perform a search with a query string', async () => {
       const results = await service.searchOperators({ query: 'urbanus' });
-      expect(results.operators).toHaveLength(9);
-      expect(results.totalCount).toBe(9);
+      expect(results.operators).toHaveLength(8);
+      expect(results.totalCount).toBe(8);
       expect(results.operators.map((op) => op.name)).toMatchSnapshot();
     });
   });

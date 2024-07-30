@@ -34,6 +34,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     "twitter": "diversden",
   },
   "updatedAt": 2024-07-29T11:45:21.000Z,
+  "verified": true,
   "website": "https://diversden.ca",
 }
 `;
@@ -60,6 +61,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     "tiktok": "@diversden",
     "twitter": "diversden",
   },
+  "verified": true,
   "website": "https://diversden.ca",
 }
 `;

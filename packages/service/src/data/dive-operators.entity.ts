@@ -40,6 +40,13 @@ export class DiveOperatorEntity {
   @Index()
   name: string = '';
 
+  @Column({ type: 'varchar', length: 200 })
+  @Index({ unique: true })
+  slug: string = '';
+
+  @Column({ type: 'boolean', nullable: false })
+  verified: boolean = false;
+
   @Column({ type: 'text', nullable: true })
   description: string | null = null;
 

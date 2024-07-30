@@ -1,15 +1,20 @@
 import { faker } from '@faker-js/faker';
 
+import slugify from 'slugify';
+
 import { DiveOperatorEntity, UserEntity } from '../../../src/data';
 
 export function fakeDiveOperator(userIds: string[]): DiveOperatorEntity {
+  const name = `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`;
   const operator: DiveOperatorEntity = {
     id: faker.string.uuid(),
     createdAt: faker.date.past({ years: 5 }),
     updatedAt: faker.date.recent({ days: 180 }),
     owner: { id: faker.helpers.arrayElement(userIds) } as UserEntity,
 
-    name: faker.company.name(),
+    name,
+    slug: slugify(name),
+    verified: faker.datatype.boolean(),
     description: faker.lorem.paragraphs(2),
 
     address: `${faker.location.streetAddress({

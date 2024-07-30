@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 
+import slugify from 'slugify';
 import { z } from 'zod';
 
 import { DiveOperatorEntity, UserEntity } from '../../src/data';
@@ -10,6 +11,8 @@ const OperatorSchema = z.object({
   updatedAt: z.coerce.date(),
 
   name: z.string(),
+  slug: z.string(),
+  verified: z.boolean(),
   description: z.string().nullable(),
 
   address: z.string().nullable(),
@@ -37,13 +40,18 @@ export function createTestDiveOperator(
   owner?: UserEntity,
   options?: Partial<DiveOperatorEntity>,
 ): DiveOperatorEntity {
+  const name =
+    options?.name ||
+    `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`;
   const operator: DiveOperatorEntity = {
     id: options?.id ?? faker.string.uuid(),
     createdAt: options?.createdAt ?? faker.date.past({ years: 5 }),
     updatedAt: options?.updatedAt ?? faker.date.recent({ days: 180 }),
     owner,
 
-    name: options?.name ?? faker.company.name(),
+    name,
+    slug: options?.slug ?? slugify(name),
+    verified: options?.verified ?? faker.datatype.boolean(),
     description: options?.description ?? faker.lorem.paragraphs(2),
 
     address:

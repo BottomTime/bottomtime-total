@@ -1,91 +1,300 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dive Operators E2E tests when searching dive operators will perform a search 1`] = `
+exports[`Dive Operators E2E tests when creating a new dive operator will return a 400 response if the request body is invalid 1`] = `
 {
-  "address": "824 Nakia Neck Apt. 824, South Rowland, WV, 10452",
-  "createdAt": "2023-09-10T10:16:31.272Z",
-  "description": "Vis libero defleo administratio teneo est catena inflammatio ulciscor maxime. Sublime eaque commemoro animus. Libero auctus rem temptatio taceo subiungo tempore.
-Pecco admoneo cena corrigo texo theca adicio alo tantillus vado. Vespillo certus vilicus cauda. Sui quo vociferor depereo una.",
-  "email": "Kelli.Ebert@gmail.com",
-  "gps": {
-    "lat": 61.6177,
-    "lon": -41.7225,
-  },
-  "id": "02cb3c18-12d7-49ce-a392-b85489537c16",
-  "logo": "https://picsum.photos/seed/ZoNeHyGVS/128/128",
-  "name": "Abernathy - Davis",
-  "owner": {
-    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/826.jpg",
-    "location": "Rancho Cucamonga",
-    "logBookSharing": "private",
-    "memberSince": "2019-08-11T20:25:07.035Z",
-    "name": "Sarah Okuneva",
-    "userId": "d8026268-6625-4c2f-acdc-577aa8edb98d",
-    "username": "Jacey_Bernier",
-  },
-  "phone": "275-980-5475 x8406",
-  "socials": {
-    "facebook": "Elouise95",
-    "instagram": "Leonardo.Carter56",
-    "tiktok": "Gerhard.Miller26",
-    "twitter": "Britney47",
-  },
-  "updatedAt": "2024-02-20T04:54:25.169Z",
-  "website": "https://united-spring.biz",
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "name",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "description",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "address",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "phone",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid email",
+      "path": [
+        "email",
+      ],
+      "validation": "email",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid url",
+      "path": [
+        "website",
+      ],
+      "validation": "url",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "gps",
+        "lat",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "gps",
+        "lon",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "facebook",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "twitter",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "socials",
+        "instagram",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "socials",
+        "tiktok",
+      ],
+      "received": "boolean",
+    },
+  ],
 }
 `;
 
-exports[`Dive Operators E2E tests when searching dive operators will perform a search 2`] = `
+exports[`Dive Operators E2E tests when creating a new dive operator will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "name",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`Dive Operators E2E tests when searching dive operators will perform a basic search with default parameters 1`] = `
+{
+  "address": "57460 Joy Isle Suite 450, O'Reillybury, MT, 88197-2575",
+  "description": "Conitor comedo uxor. Crebro caries angelus apparatus illum voluptate tyrannus bis vociferor. Tardus speculum defaeco tergum arcus combibo argumentum beneficium peccatus.
+Vilitas videlicet atque artificiose. Tenuis subnecto asporto uredo. Suscipit acceptus despecto adopto bis vel titulus angustus audio.",
+  "email": "Boyd74@yahoo.com",
+  "gps": {
+    "lat": 9.3258,
+    "lon": 11.3944,
+  },
+  "id": "45e8d829-473b-405a-a870-56ea85f22ae8",
+  "logo": "https://picsum.photos/seed/hjunPvssjO/128/128",
+  "name": "abandoned, monstrous implication",
+  "phone": "(644) 879-2885 x0599",
+  "socials": {
+    "facebook": "Amya29",
+    "instagram": "Marion82",
+    "tiktok": "Lizzie.Harvey20",
+    "twitter": "Marietta.Jakubowski",
+  },
+  "verified": false,
+  "website": "https://worried-paintwork.org",
+}
+`;
+
+exports[`Dive Operators E2E tests when searching dive operators will perform a basic search with default parameters 2`] = `
 [
-  "Abernathy - Davis",
-  "Armstrong - Nader",
-  "Barton Group",
-  "Bauch, Kling and Huel",
-  "Bayer Inc",
-  "Bednar - Goldner",
-  "Beer, Simonis and Hartmann",
-  "Beier - Hoppe",
-  "Bernier - Kunde",
-  "Bernier, Hoppe and Stehr",
-  "Blanda - Dare",
-  "Blanda - Leffler",
-  "Boehm and Sons",
-  "Boehm, Gislason and Nolan",
-  "Borer - Davis",
-  "Bosco - Ankunding",
-  "Boyle - West",
-  "Brekke, Thompson and Mueller",
-  "Brown LLC",
-  "Carroll, Pacocha and Schamberger",
-  "Casper - Heaney",
-  "Champlin Inc",
-  "Cole - Bahringer",
-  "Conn - Bogisich",
-  "Connelly LLC",
-  "Conroy, Harris and Lakin",
-  "Considine Inc",
-  "Cormier Group",
-  "Corwin, Skiles and Kris",
-  "Crist Group",
-  "Cummerata and Sons",
-  "Dare LLC",
-  "Deckow - Koch",
-  "Deckow LLC",
-  "Deckow and Sons",
-  "Denesik Inc",
-  "Dicki - Lueilwitz",
-  "Dicki LLC",
-  "Dietrich LLC",
-  "Dietrich, Bahringer and O'Keefe",
-  "Dooley - Bergnaum",
-  "Douglas - Dach",
-  "Emard, Rogahn and Crooks",
-  "Fahey - Predovic",
-  "Fay, Schiller and Krajcik",
-  "Feeney - Lindgren",
-  "Fisher - Grant",
-  "Franey Group",
-  "Franey Group",
-  "Friesen - Mante",
+  "abandoned, monstrous implication",
+  "agreeable, elated platelet",
+  "alert, closed legislator",
+  "amazing, canine yard",
+  "anxious, harsh partnership",
+  "any, foolhardy ton",
+  "artistic, upright documentation",
+  "assured, miniature oatmeal",
+  "aware, frequent wish",
+  "bare, cultivated kingfish",
+  "blue, ecstatic hostess",
+  "bossy, shy kick",
+  "bouncy, wonderful tag",
+  "brave, lopsided broom",
+  "bright, acidic spasm",
+  "brilliant, forthright trait",
+  "buoyant, limited mule",
+  "cautious, bony spelling",
+  "charming, alive smith",
+  "cheery, regal wren",
+  "chilly, private well",
+  "cluttered, expensive industrialization",
+  "colorful, quizzical force",
+  "colorless, skeletal pavement",
+  "complex, healthy arrival",
+  "cool, carefree criticism",
+  "crazy, normal bacon",
+  "crooked, novel dew",
+  "deep, annual fill",
+  "delirious, aged basics",
+  "dim, zealous orchestra",
+  "direct, wise cherry",
+  "disgusting, harsh glockenspiel",
+  "dismal, leading preservation",
+  "distorted, dual day",
+  "double, energetic charset",
+  "drab, villainous automation",
+  "ecstatic, gregarious dimension",
+  "elated, burdensome pastor",
+  "elliptical, altruistic chairman",
+  "embarrassed, spotted pay",
+  "empty, annual helium",
+  "envious, fluffy burro",
+  "euphoric, admired netball",
+  "every, caring yacht",
+  "exalted, ornery yew",
+  "exemplary, ready spawn",
+  "failing, wise design",
+  "faithful, separate advantage",
+  "fake, stylish team",
 ]
+`;
+
+exports[`Dive Operators E2E tests when searching dive operators will perform a more complex search with query parameters 1`] = `
+{
+  "operators": [
+    {
+      "address": "9224 Bosco Mountains Suite 837, Simonisville, MA, 40170",
+      "description": "Nam adicio pecus. Catena carus sed similique cernuus alter. Conforto congregatio cunctatio.
+Conitor audentia inventore advoco. Ago tendo adsum commodi cur defendo autem. Ciminatio thermae aliqua vobis adfero amplexus adficio truculenter.",
+      "email": "Selina38@hotmail.com",
+      "gps": {
+        "lat": -14.7605,
+        "lon": 54.6887,
+      },
+      "id": "55eef599-f798-4e39-8858-2171b97d5add",
+      "logo": "https://loremflickr.com/128/128?lock=5483695446163456",
+      "name": "well-made, doting wafer",
+      "phone": "(369) 500-6519 x8451",
+      "socials": {
+        "facebook": "Karson62",
+        "instagram": "Elias40",
+        "tiktok": "Anika.Lang21",
+        "twitter": "Cole.Quitzon85",
+      },
+      "verified": false,
+      "website": "https://scientific-belt.org/",
+    },
+  ],
+  "totalCount": 1,
+}
+`;
+
+exports[`Dive Operators E2E tests when searching dive operators will return a 400 response if the query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "custom",
+      "message": "Must be in the format "<lat>,<lon>"",
+      "path": [
+        "location",
+        "location",
+      ],
+    },
+    {
+      "code": "custom",
+      "message": "Array must contain at least 2 element(s)",
+      "path": [
+        "location",
+        "location",
+      ],
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "radius",
+      ],
+      "received": "nan",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 0",
+      "minimum": 0,
+      "path": [
+        "skip",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 500,
+      "message": "Number must be less than or equal to 500",
+      "path": [
+        "limit",
+      ],
+      "type": "number",
+    },
+  ],
+}
 `;

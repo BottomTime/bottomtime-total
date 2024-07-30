@@ -1,5 +1,7 @@
 import { LogBookSharing } from '@bottomtime/api';
 
+import { ConflictException } from '@nestjs/common';
+
 import { Repository } from 'typeorm';
 
 import { DiveOperatorEntity, UserEntity } from '../../../src/data';
@@ -12,6 +14,8 @@ const TestData: DiveOperatorEntity = {
   createdAt: new Date('2022-06-20T11:45:21Z'),
   updatedAt: new Date('2024-07-29T11:45:21Z'),
   name: "Diver's Den",
+  slug: 'divers-den',
+  verified: true,
   description: `Welcome to Tobermory, the Scuba Diving Capital of Canada!
 Discover the world below the waves of the Fathom Five National Marine Park, home to more than 20 shipwrecks.
 Immerse yourself in the captivating history of century old ships and catch a glimpse of their haunting beauty.
@@ -79,6 +83,8 @@ describe('DiveOperator class', () => {
       name: owner.name,
     });
     expect(operator.name).toBe(TestData.name);
+    expect(operator.slug).toBe(TestData.slug);
+    expect(operator.verified).toBe(TestData.verified);
     expect(operator.description).toBe(TestData.description);
     expect(operator.address).toBe(TestData.address);
     expect(operator.phone).toBe(TestData.phone);
@@ -108,6 +114,7 @@ describe('DiveOperator class', () => {
 
   it('will allow properties to be updated', () => {
     const newName = "Dive 'n' Dive";
+    const newSlug = 'dive-n-dive';
     const newDescription = 'A new description';
     const newAddress = '123 Main St, Anytown, USA';
     const newPhone = '+1 555-555-5555';
@@ -122,6 +129,7 @@ describe('DiveOperator class', () => {
     const newBanner = 'https://example.com/banner.jpg';
 
     operator.name = newName;
+    operator.slug = newSlug;
     operator.description = newDescription;
     operator.address = newAddress;
     operator.phone = newPhone;
@@ -136,6 +144,7 @@ describe('DiveOperator class', () => {
     operator.banner = newBanner;
 
     expect(operator.name).toBe(newName);
+    expect(operator.slug).toBe(newSlug);
     expect(operator.description).toBe(newDescription);
     expect(operator.address).toBe(newAddress);
     expect(operator.phone).toBe(newPhone);
@@ -148,6 +157,11 @@ describe('DiveOperator class', () => {
     expect(operator.socials.twitter).toBe(newTwitter);
     expect(operator.logo).toBe(newLogo);
     expect(operator.banner).toBe(newBanner);
+  });
+
+  it('will convert new slugs to lowercase', () => {
+    operator.slug = 'Slammin-Dive-Shop';
+    expect(operator.slug).toBe('slammin-dive-shop');
   });
 
   it('will save a new dive operator', async () => {
@@ -166,6 +180,7 @@ describe('DiveOperator class', () => {
       coordinates: [data.gps!.coordinates[0], data.gps!.coordinates[1]],
     });
     expect(savedOperator.name).toBe(data.name);
+    expect(savedOperator.slug).toBe(data.slug);
     expect(savedOperator.phone).toBe(data.phone);
     expect(savedOperator.website).toBe(data.website);
     expect(savedOperator.facebook).toBe(data.facebook);
@@ -182,6 +197,7 @@ describe('DiveOperator class', () => {
     await Operators.save(data);
 
     const newName = "Dive 'n' Dive";
+    const newSlug = 'dive-n-dive';
     const newDescription = 'A new description';
     const newAddress = '123 Main St, Anytown, USA';
     const newPhone = '+1 555-555-5555';
@@ -194,6 +210,7 @@ describe('DiveOperator class', () => {
     const newTwitter = 'twitter';
 
     operator.name = newName;
+    operator.slug = newSlug;
     operator.description = newDescription;
     operator.address = newAddress;
     operator.phone = newPhone;
@@ -220,6 +237,7 @@ describe('DiveOperator class', () => {
       coordinates: [newGps.lon, newGps.lat],
     });
     expect(savedOperator.name).toBe(newName);
+    expect(savedOperator.slug).toBe(newSlug);
     expect(savedOperator.phone).toBe(newPhone);
     expect(savedOperator.website).toBe(newWebsite);
     expect(savedOperator.facebook).toBe(newFacebook);
@@ -227,6 +245,18 @@ describe('DiveOperator class', () => {
     expect(savedOperator.tiktok).toBe(newTiktok);
     expect(savedOperator.twitter).toBe(newTwitter);
     expect(savedOperator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+  });
+
+  it('will throw a ConflictException if the slug is taken by another dive operator', async () => {
+    const newData = new DiveOperatorEntity();
+    newData.id = '5769178f-c2ab-4b68-a166-d87e76339b2d';
+    newData.name = 'Different Operator';
+    newData.slug = TestData.slug;
+    newData.owner = owner;
+    const newOperator = new DiveOperator(Operators, newData);
+    await Operators.save(data);
+
+    await expect(newOperator.save()).rejects.toThrow(ConflictException);
   });
 
   it('will delete an operator', async () => {

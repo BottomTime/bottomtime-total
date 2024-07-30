@@ -1,7 +1,9 @@
-import { LogBookSharing } from '@bottomtime/api';
+import { CreateOrUpdateDiveOperatorDTO, LogBookSharing } from '@bottomtime/api';
 
+import { fa } from '@faker-js/faker';
 import { HttpServer, INestApplication } from '@nestjs/common';
 
+import slugify from 'slugify';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
@@ -78,20 +80,193 @@ describe('Dive Operators E2E tests', () => {
     });
 
     it('will perform a basic search with default parameters', async () => {
-      const { body } = await request(server)
-        .get(getUrl())
-        .set(...regularUserAuthHeader)
-        .expect(200);
+      const { body } = await request(server).get(getUrl()).expect(200);
       expect(body.totalCount).toBe(testData.length);
       expect(body.operators).toHaveLength(50);
       expect(body.operators[0]).toMatchSnapshot();
       expect(body.operators.map((op) => op.name)).toMatchSnapshot();
     });
 
-    it('will perform a more complex search with query parameters', async () => {});
+    it('will perform a more complex search with query parameters', async () => {
+      const { body } = await request(server).get(getUrl()).query({
+        query: 'Wafer',
+        location: '-14.7605,54.6887',
+        radius: 450,
+        skip: 0,
+        limit: 10,
+      });
+      expect(body).toMatchSnapshot();
+    });
 
-    it('will return an empty result set if no operators match the search criteria', async () => {});
+    it('will return an empty result set if no operators match the search criteria', async () => {
+      const { body } = await request(server)
+        .get(getUrl())
+        .query({ query: 'will not match' })
+        .expect(200);
+      expect(body).toEqual({
+        operators: [],
+        totalCount: 0,
+      });
+    });
 
-    it('will return a 400 response if the query string is invalid', async () => {});
+    it('will return a 400 response if the query string is invalid', async () => {
+      const { body } = await request(server)
+        .get(getUrl())
+        .query({
+          query: 33,
+          location: 'north of my house',
+          radius: '14km',
+          skip: -1,
+          limit: 80000,
+        })
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+  });
+
+  describe('when creating a new dive operator', () => {
+    it('will create a new dive operator with minimal options', async () => {
+      const options: CreateOrUpdateDiveOperatorDTO = {
+        name: 'Groundhog Divers',
+      };
+      const { body } = await request(server)
+        .post(getUrl())
+        .set(...regularUserAuthHeader)
+        .send(options)
+        .expect(201);
+
+      expect(body.id).toHaveLength(36);
+      expect(body.name).toBe(options.name);
+      expect(body.slug).toBe('groundhog-divers');
+      expect(body.verified).toBe(false);
+      expect(new Date(body.createdAt).valueOf()).toBeCloseTo(Date.now(), -3);
+      expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const saved = await Operators.findOneByOrFail({ id: body.id });
+      expect(saved.createdAt).toEqual(new Date(body.createdAt));
+      expect(saved.updatedAt).toEqual(new Date(body.updatedAt));
+      expect(saved.name).toBe(options.name);
+      expect(saved.verified).toBe(false);
+    });
+
+    it('will create a new dive operator with all options', async () => {
+      const options: CreateOrUpdateDiveOperatorDTO = {
+        name: 'Groundhog Divers',
+        address: '123 Main St',
+        description: 'We dive deep',
+        email: 'info@groundhogdivers.ca',
+        gps: {
+          lat: 33.1234,
+          lon: -122.4567,
+        },
+        phone: '555-555-5555',
+        socials: {
+          facebook: 'groundhogdivers',
+          instagram: 'groundhogdivers',
+          twitter: 'groundhogdivers',
+          tiktok: '@groundhogdivers',
+        },
+        slug: 'groundhogdivers',
+        website: 'https://groundhogdivers.ca',
+      };
+
+      const { body } = await request(server)
+        .post(getUrl())
+        .set(...regularUserAuthHeader)
+        .send(options)
+        .expect(201);
+
+      expect(body.id).toHaveLength(36);
+      expect(body.name).toBe(options.name);
+      expect(body.description).toBe(options.description);
+      expect(body.email).toBe(options.email);
+      expect(body.gps).toEqual(options.gps);
+      expect(body.phone).toBe(options.phone);
+      expect(body.socials).toEqual(options.socials);
+      expect(body.website).toBe(options.website);
+      expect(body.slug).toBe(options.slug);
+      expect(body.verified).toBe(false);
+      expect(new Date(body.createdAt).valueOf()).toBeCloseTo(Date.now(), -3);
+      expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const saved = await Operators.findOneByOrFail({ id: body.id });
+      expect(saved.createdAt).toEqual(new Date(body.createdAt));
+      expect(saved.updatedAt).toEqual(new Date(body.updatedAt));
+      expect(saved.name).toBe(options.name);
+      expect(saved.description).toBe(options.description);
+      expect(saved.email).toBe(options.email);
+      expect(saved.gps).toEqual({
+        type: 'Point',
+        coordinates: [options.gps!.lon, options.gps!.lat],
+      });
+      expect(saved.phone).toBe(options.phone);
+      expect(saved.facebook).toEqual(options.socials!.facebook);
+      expect(saved.instagram).toEqual(options.socials!.instagram);
+      expect(saved.twitter).toEqual(options.socials!.twitter);
+      expect(saved.tiktok).toEqual(options.socials!.tiktok);
+      expect(saved.website).toBe(options.website);
+      expect(saved.slug).toBe(options.slug);
+      expect(saved.verified).toBe(false);
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      const { body } = await request(server)
+        .post(getUrl())
+        .set(...regularUserAuthHeader)
+        .send({
+          name: 33,
+          description: false,
+          address: 44,
+          phone: true,
+          email: 'not an email',
+          website: 'not a url',
+          gps: {
+            lat: 'north',
+            lon: 'east',
+          },
+          socials: {
+            facebook: 33,
+            instagram: false,
+            twitter: 44,
+            tiktok: true,
+          },
+        })
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      const { body } = await request(server)
+        .post(getUrl())
+        .set(...regularUserAuthHeader)
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .post(getUrl())
+        .send({
+          name: 'Groundhog Divers',
+        })
+        .expect(401);
+    });
+
+    it('will return a 409 response if the slug is already in use', async () => {
+      const existing = new DiveOperatorEntity();
+      existing.id = '898ae1ca-87ae-4d4b-8803-01aaaf1dceec';
+      existing.name = 'Other Operator';
+      existing.slug = 'groundhog-divers';
+      existing.owner = regularUser;
+      await Operators.save(existing);
+
+      await request(server)
+        .post(getUrl())
+        .set(...regularUserAuthHeader)
+        .send({
+          name: 'Groundhog Divers',
+        })
+        .expect(409);
+    });
   });
 });

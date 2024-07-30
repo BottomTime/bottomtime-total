@@ -6,6 +6,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import slugify from 'slugify';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -45,6 +46,9 @@ export class DiveOperatorsService {
     operator.socials.tiktok = options.socials?.tiktok;
     operator.socials.twitter = options.socials?.twitter;
     operator.website = options.website;
+
+    operator.slug =
+      options.slug || slugify(options.name, { lower: true, trim: true });
 
     await operator.save();
 

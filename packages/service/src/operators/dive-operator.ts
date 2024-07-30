@@ -6,8 +6,10 @@ import {
   SuccinctProfileDTO,
 } from '@bottomtime/api';
 
+import { ConflictException } from '@nestjs/common';
+
 import { DiveOperatorEntity } from 'src/data';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 
 import { DiveOperatorSocials } from './dive-operator-socials';
 
@@ -52,6 +54,10 @@ export class DiveOperator {
         };
   }
 
+  get verified(): boolean {
+    return this.data.verified;
+  }
+
   get logo(): string | undefined {
     return this.data.logo ?? undefined;
   }
@@ -71,6 +77,13 @@ export class DiveOperator {
   }
   set name(value: string) {
     this.data.name = value;
+  }
+
+  get slug(): string {
+    return this.data.slug;
+  }
+  set slug(value: string) {
+    this.data.slug = value.toLowerCase();
   }
 
   get description(): string | undefined {
@@ -123,6 +136,16 @@ export class DiveOperator {
   }
 
   async save(): Promise<void> {
+    const conflict = await this.operators.existsBy({
+      id: Not(this.id),
+      slug: this.slug,
+    });
+    if (conflict) {
+      throw new ConflictException(
+        `Unable to save "${this.name}". Slug is already in use (${this.slug}).`,
+      );
+    }
+
     this.data.updatedAt = new Date();
     await this.operators.save(this.data);
   }
@@ -147,6 +170,8 @@ export class DiveOperator {
       banner: this.banner,
       logo: this.logo,
       phone: this.phone,
+      slug: this.slug,
+      verified: this.verified,
       website: this.website,
     };
   }
@@ -162,6 +187,7 @@ export class DiveOperator {
       name: this.name,
       phone: this.phone,
       socials: this.socials.toJSON(),
+      verified: this.verified,
       website: this.website,
     };
   }

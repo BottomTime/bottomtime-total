@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
-import { GpsCoordinatesSchema } from './constants';
+import { GpsCoordinatesSchema, SlugRegex } from './constants';
 import { SuccinctProfileSchema } from './users';
 
 export const CreateOrUpdateDiveOperatorSchema = z.object({
   name: z.string().trim().min(1).max(200),
+  slug: z.string().trim().regex(SlugRegex).min(1).max(200).optional(),
   description: z.string().trim().max(2000).optional(),
   address: z.string().trim().max(500).optional(),
   phone: z.string().trim().max(20).optional(),
@@ -37,6 +38,7 @@ export const DiveOperatorSchema = CreateOrUpdateDiveOperatorSchema.extend({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   owner: SuccinctProfileSchema,
+  verified: z.boolean(),
 
   logo: z.string().optional(),
   banner: z.string().optional(),
@@ -53,6 +55,7 @@ const SuccinctDiveOperatorSchema = DiveOperatorSchema.pick({
   name: true,
   phone: true,
   socials: true,
+  verified: true,
   website: true,
 });
 export type SuccinctDiveOperatorDTO = z.infer<
