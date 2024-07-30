@@ -129,3 +129,20 @@ For the full list of commands, run
 ```bash
 yarn admin --help
 ```
+
+## API Documentation
+
+API documentation is written inline alongside the code. It is found mostly in the controllers (`*.controller.ts` files) and dedicated documentation
+files (`*.docs.ts`). There is also a `swaggerDefinition.cjs` file in the root of the backend service package.
+
+The standard used is the [Swagger (OpenAPI)](https://swagger.io/docs/specification/about/) standard. See the documentation for specifications and
+how-tos. As stated above, compiling the documentation can be done by running `yarn docs` in your terminal. Documentation is compiled to `public/docs/`,
+specifically, the `swagger.json` file is written whenever you compile the documentation.
+
+If you are running the platform locally using Docker Compose, then the documentation is hosted in a Docker container behind an nginx reverse proxy.
+You can view the documentation at [http://localhost:4890/](http://localhost:4890/). If you are running Docker Compose in watch mode
+(`docker compose watch`) then the Docker image will be updated automatically whenever you compile the documentation.
+
+> **NOTE:** Sorry, there is no hot-reloading at this time! You will need to refresh the browser page to view the changes.
+
+> **NOTE:** The swagger-jsdoc Comment Formatter VS Code extension is _highly_ recommended for editing the API documenation.

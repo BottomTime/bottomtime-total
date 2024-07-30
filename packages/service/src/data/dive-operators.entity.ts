@@ -40,13 +40,20 @@ export class DiveOperatorEntity {
   @Index()
   name: string = '';
 
+  @Column({ type: 'varchar', length: 200 })
+  @Index({ unique: true })
+  slug: string = '';
+
+  @Column({ type: 'boolean', nullable: false })
+  verified: boolean = false;
+
   @Column({ type: 'text', nullable: true })
   description: string | null = null;
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   address: string | null = null;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   phone: string | null = null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
@@ -64,13 +71,13 @@ export class DiveOperatorEntity {
   facebook: string | null = null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
-  twitter: string | null = null;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
   instagram: string | null = null;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   tiktok: string | null = null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  twitter: string | null = null;
 
   // Media
   @Column({ type: 'varchar', length: 200, nullable: true })

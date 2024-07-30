@@ -4,6 +4,7 @@ export * from './alerts';
 export * from './certifications';
 export * from './admin';
 export * from './auth';
+export * from './dive-operators';
 export * from './errors';
 export * from './features';
 export * from './friends';

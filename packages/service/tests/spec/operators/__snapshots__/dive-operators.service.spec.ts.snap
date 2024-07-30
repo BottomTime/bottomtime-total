@@ -1,0 +1,214 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DiveOperatorService when retrieving a single operator will return the operator if it exists 1`] = `
+{
+  "address": "298 Krajcik Springs Apt. 609, Port Dominique, NY, 36743-3620",
+  "banner": "https://picsum.photos/seed/G7IWZU/1024/256",
+  "createdAt": 2023-09-08T01:43:49.264Z,
+  "description": "Arbitro utor acceptus. Comedo comedo arcesso alias eligendi arcesso. Defungo possimus vomica stillicidium.
+Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse angustus curriculum cupiditas pecto suffoco unus sophismata.",
+  "email": "Gaetano_Koepp@yahoo.com",
+  "gps": {
+    "lat": -89.5995,
+    "lon": 162.7726,
+  },
+  "id": "89c68565-8d5d-4cfa-a374-80e3a6ad0a9c",
+  "logo": "https://picsum.photos/seed/SjzU40wm/128/128",
+  "name": "shameful, dutiful bower",
+  "owner": {
+    "avatar": "https://example.com/avatar.png",
+    "location": "Toronto, ON, Canada",
+    "logBookSharing": "public",
+    "memberSince": 2021-06-10T03:00:00.000Z,
+    "name": "Test User",
+    "userId": "54ca5e54-de92-4e15-a523-4087c52b40eb",
+    "username": "testuser",
+  },
+  "phone": "1-318-605-7083 x884",
+  "slug": "shameful-dutiful-bower",
+  "socials": {
+    "facebook": "Torrance.OKeefe",
+    "instagram": "Amari.Sauer91",
+    "tiktok": "Retta15",
+    "twitter": "Nels.Champlin",
+  },
+  "updatedAt": 2024-05-23T23:37:28.262Z,
+  "verified": false,
+  "website": "https://dimpled-format.net",
+}
+`;
+
+exports[`DiveOperatorService when retrieving an operator by its slug will return the indicated operator 1`] = `
+{
+  "address": "298 Krajcik Springs Apt. 609, Port Dominique, NY, 36743-3620",
+  "banner": "https://picsum.photos/seed/G7IWZU/1024/256",
+  "createdAt": 2023-09-08T01:43:49.264Z,
+  "description": "Arbitro utor acceptus. Comedo comedo arcesso alias eligendi arcesso. Defungo possimus vomica stillicidium.
+Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse angustus curriculum cupiditas pecto suffoco unus sophismata.",
+  "email": "Gaetano_Koepp@yahoo.com",
+  "gps": {
+    "lat": -89.5995,
+    "lon": 162.7726,
+  },
+  "id": "89c68565-8d5d-4cfa-a374-80e3a6ad0a9c",
+  "logo": "https://picsum.photos/seed/SjzU40wm/128/128",
+  "name": "shameful, dutiful bower",
+  "owner": {
+    "avatar": "https://example.com/avatar.png",
+    "location": "Toronto, ON, Canada",
+    "logBookSharing": "public",
+    "memberSince": 2021-06-10T03:00:00.000Z,
+    "name": "Test User",
+    "userId": "54ca5e54-de92-4e15-a523-4087c52b40eb",
+    "username": "testuser",
+  },
+  "phone": "1-318-605-7083 x884",
+  "slug": "shameful-dutiful-bower",
+  "socials": {
+    "facebook": "Torrance.OKeefe",
+    "instagram": "Amari.Sauer91",
+    "tiktok": "Retta15",
+    "twitter": "Nels.Champlin",
+  },
+  "updatedAt": 2024-05-23T23:37:28.262Z,
+  "verified": false,
+  "website": "https://dimpled-format.net",
+}
+`;
+
+exports[`DiveOperatorService when searching for operators will perform a basic search with no parameters 1`] = `
+{
+  "address": "57460 Joy Isle Suite 450, O'Reillybury, MT, 88197-2575",
+  "banner": undefined,
+  "createdAt": 2020-12-11T23:39:51.364Z,
+  "description": "Conitor comedo uxor. Crebro caries angelus apparatus illum voluptate tyrannus bis vociferor. Tardus speculum defaeco tergum arcus combibo argumentum beneficium peccatus.
+Vilitas videlicet atque artificiose. Tenuis subnecto asporto uredo. Suscipit acceptus despecto adopto bis vel titulus angustus audio.",
+  "email": "Boyd74@yahoo.com",
+  "gps": {
+    "lat": 9.3258,
+    "lon": 11.3944,
+  },
+  "id": "45e8d829-473b-405a-a870-56ea85f22ae8",
+  "logo": "https://picsum.photos/seed/hjunPvssjO/128/128",
+  "name": "abandoned, monstrous implication",
+  "owner": {
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1031.jpg",
+    "location": "Bonita Springs",
+    "logBookSharing": "private",
+    "memberSince": 2019-07-12T02:08:37.969Z,
+    "name": "Wallace Treutel",
+    "userId": "b8983fd6-de0e-46cc-84ff-de78f2589c17",
+    "username": "Danielle56",
+  },
+  "phone": "(644) 879-2885 x0599",
+  "slug": "",
+  "socials": {
+    "facebook": "Amya29",
+    "instagram": "Marion82",
+    "tiktok": "Lizzie.Harvey20",
+    "twitter": "Marietta.Jakubowski",
+  },
+  "updatedAt": 2024-05-14T12:26:04.340Z,
+  "verified": false,
+  "website": "https://worried-paintwork.org",
+}
+`;
+
+exports[`DiveOperatorService when searching for operators will perform a basic search with no parameters 2`] = `
+[
+  "abandoned, monstrous implication",
+  "agreeable, elated platelet",
+  "alert, closed legislator",
+  "amazing, canine yard",
+  "anxious, harsh partnership",
+  "any, foolhardy ton",
+  "artistic, upright documentation",
+  "assured, miniature oatmeal",
+  "aware, frequent wish",
+  "bare, cultivated kingfish",
+  "blue, ecstatic hostess",
+  "bossy, shy kick",
+  "bouncy, wonderful tag",
+  "brave, lopsided broom",
+  "bright, acidic spasm",
+  "brilliant, forthright trait",
+  "buoyant, limited mule",
+  "cautious, bony spelling",
+  "charming, alive smith",
+  "cheery, regal wren",
+  "chilly, private well",
+  "cluttered, expensive industrialization",
+  "colorful, quizzical force",
+  "colorless, skeletal pavement",
+  "complex, healthy arrival",
+  "cool, carefree criticism",
+  "crazy, normal bacon",
+  "crooked, novel dew",
+  "deep, annual fill",
+  "delirious, aged basics",
+  "dim, zealous orchestra",
+  "direct, wise cherry",
+  "disgusting, harsh glockenspiel",
+  "dismal, leading preservation",
+  "distorted, dual day",
+  "double, energetic charset",
+  "drab, villainous automation",
+  "ecstatic, gregarious dimension",
+  "elated, burdensome pastor",
+  "elliptical, altruistic chairman",
+  "embarrassed, spotted pay",
+  "empty, annual helium",
+  "envious, fluffy burro",
+  "euphoric, admired netball",
+  "every, caring yacht",
+  "exalted, ornery yew",
+  "exemplary, ready spawn",
+  "failing, wise design",
+  "faithful, separate advantage",
+  "fake, stylish team",
+]
+`;
+
+exports[`DiveOperatorService when searching for operators will perform a search for dive sites near a given location 1`] = `
+[
+  "treasured, responsible twilight",
+]
+`;
+
+exports[`DiveOperatorService when searching for operators will perform a search with a query string 1`] = `
+[
+  "double, energetic charset",
+  "knotty, trivial disregard",
+  "repulsive, closed rowing",
+  "secret, oily outcome",
+  "shocked, strict row",
+  "trivial, lonely hardcover",
+  "used, dreary cowbell",
+  "woeful, radiant mansard",
+]
+`;
+
+exports[`DiveOperatorService when searching for operators will perform a search with pagination 1`] = `
+[
+  "embarrassed, spotted pay",
+  "empty, annual helium",
+  "envious, fluffy burro",
+  "euphoric, admired netball",
+  "every, caring yacht",
+  "exalted, ornery yew",
+  "exemplary, ready spawn",
+  "failing, wise design",
+  "faithful, separate advantage",
+  "fake, stylish team",
+  "fast, pertinent freezing",
+  "favorite, rapid pharmacist",
+  "fearful, paltry peen",
+  "flamboyant, tiny contingency",
+  "flimsy, thin shingle",
+  "flowery, far toothpick",
+  "flowery, puny brochure",
+  "foolhardy, linear sin",
+  "forsaken, similar volume",
+  "french, deep nursing",
+]
+`;

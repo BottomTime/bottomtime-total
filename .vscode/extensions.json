@@ -4,6 +4,7 @@
     "ajmnz.swagger-jsdoc-indent",
     "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
-    "ms-playwright.playwright"
+    "ms-playwright.playwright",
+    "ajmnz.swagger-jsdoc-indent"
   ]
 }

@@ -168,6 +168,8 @@ export const RatingRangeSchema = z
   });
 export type RatingRange = z.infer<typeof RatingRangeSchema>;
 
+export const SlugRegex = /^[a-z0-9\-$_.+!*'()]+$/i;
+
 export const SuccessFailResponseSchema = z.object({
   succeeded: z.boolean(),
   reason: z.string().optional(),
