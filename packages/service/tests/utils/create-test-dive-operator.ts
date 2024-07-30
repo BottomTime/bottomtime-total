@@ -74,6 +74,11 @@ export function createTestDiveOperator(
   return operator;
 }
 
-export function parseOperatorJSON(data: unknown): DiveOperatorEntity {
-  return OperatorSchema.parse(data);
+export function parseOperatorJSON(
+  data: unknown,
+  owner?: UserEntity,
+): DiveOperatorEntity {
+  const operator: DiveOperatorEntity = OperatorSchema.parse(data);
+  operator.owner = owner;
+  return operator;
 }

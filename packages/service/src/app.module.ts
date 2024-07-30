@@ -19,6 +19,7 @@ import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { FeaturesModule } from './features';
 import { FriendsModule } from './friends';
 import { LogEntriesModule } from './logEntries';
+import { DiveOperatorsModule } from './operators';
 import { QueueModule } from './queue';
 import { StorageModule } from './storage';
 import { TanksModule } from './tanks/tanks.module';
@@ -63,6 +64,7 @@ export class AppModule {
         AdminModule,
         FriendsModule,
         DiveSitesModule,
+        DiveOperatorsModule,
         LogEntriesModule,
         TanksModule,
       ],

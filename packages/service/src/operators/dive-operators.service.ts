@@ -1,7 +1,6 @@
 import {
   CreateOrUpdateDiveOperatorDTO,
   SearchDiveOperatorsParams,
-  SearchDiveOperatorsResponseDTO,
 } from '@bottomtime/api';
 
 import { Injectable } from '@nestjs/common';
@@ -57,9 +56,10 @@ export class DiveOperatorsService {
     return data ? new DiveOperator(this.operators, data) : undefined;
   }
 
-  async searchOperators(
-    options?: SearchDiveOperatorsParams,
-  ): Promise<SearchDiveOperatorsResponseDTO> {
+  async searchOperators(options?: SearchDiveOperatorsParams): Promise<{
+    operators: DiveOperator[];
+    totalCount: number;
+  }> {
     const query = new DiveOperatorQueryBuilder(this.operators)
       .withGeoLocation(options?.location, options?.radius)
       .withPagination(options?.skip, options?.limit)
