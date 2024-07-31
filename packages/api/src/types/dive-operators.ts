@@ -51,6 +51,7 @@ const SuccinctDiveOperatorSchema = DiveOperatorSchema.pick({
   description: true,
   email: true,
   gps: true,
+  owner: true,
   logo: true,
   name: true,
   phone: true,
@@ -67,6 +68,7 @@ export const SearchDiveOperatorsSchema = z
     query: z.string().max(200),
     location: GpsCoordinatesSchema,
     radius: z.coerce.number().gt(0).max(500),
+    owner: UsernameSchema,
     skip: z.coerce.number().int().min(0),
     limit: z.coerce.number().int().min(1).max(500),
   })

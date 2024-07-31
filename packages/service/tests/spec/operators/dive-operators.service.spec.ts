@@ -214,7 +214,7 @@ describe('DiveOperatorService', () => {
       expect(results.operators.map((op) => op.name)).toMatchSnapshot();
     });
 
-    it('will perform a search for dive sites near a given location', async () => {
+    it('will perform a search for dive operators near a given location', async () => {
       const results = await service.searchOperators({
         location: {
           lon: -55.6353,
@@ -226,6 +226,21 @@ describe('DiveOperatorService', () => {
       expect(results.operators).toHaveLength(1);
       expect(results.totalCount).toBe(1);
       expect(results.operators.map((op) => op.name)).toMatchSnapshot();
+    });
+
+    it('will perform a search for dive operators with a specific owner', async () => {
+      const results = await service.searchOperators({
+        owner: new User(Users, owners[2]),
+      });
+
+      expect(results.operators).toHaveLength(3);
+      expect(results.totalCount).toBe(3);
+      expect(
+        results.operators.map((op) => ({
+          name: op.name,
+          owner: op.owner.username,
+        })),
+      ).toMatchSnapshot();
     });
 
     it('will perform a search with a query string', async () => {

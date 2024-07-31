@@ -126,13 +126,17 @@ describe('Dive Operators E2E tests', () => {
     });
 
     it('will perform a more complex search with query parameters', async () => {
-      const { body } = await request(server).get(getUrl()).query({
-        query: 'Wafer',
-        location: '-14.7605,54.6887',
-        radius: 450,
-        skip: 0,
-        limit: 10,
-      });
+      const { body } = await request(server)
+        .get(getUrl())
+        .query({
+          query: 'Wafer',
+          location: '-14.7605,54.6887',
+          radius: 450,
+          owner: 'joesph_morar',
+          skip: 0,
+          limit: 10,
+        })
+        .expect(200);
       expect(body).toMatchSnapshot();
     });
 

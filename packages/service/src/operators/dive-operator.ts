@@ -201,6 +201,7 @@ export class DiveOperator {
       id: this.id,
       logo: this.logo,
       name: this.name,
+      owner: this.owner,
       phone: this.phone,
       socials: this.socials.toJSON(),
       verified: this.verified,

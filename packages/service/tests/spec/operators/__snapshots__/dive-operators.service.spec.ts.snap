@@ -169,9 +169,26 @@ exports[`DiveOperatorService when searching for operators will perform a basic s
 ]
 `;
 
-exports[`DiveOperatorService when searching for operators will perform a search for dive sites near a given location 1`] = `
+exports[`DiveOperatorService when searching for operators will perform a search for dive operators near a given location 1`] = `
 [
   "treasured, responsible twilight",
+]
+`;
+
+exports[`DiveOperatorService when searching for operators will perform a search for dive operators with a specific owner 1`] = `
+[
+  {
+    "name": "giddy, fluffy testimony",
+    "owner": "Lucy55",
+  },
+  {
+    "name": "imaginative, naughty stack",
+    "owner": "Lucy55",
+  },
+  {
+    "name": "worthy, piercing smelting",
+    "owner": "Lucy55",
+  },
 ]
 `;
 

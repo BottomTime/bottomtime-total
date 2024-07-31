@@ -3,7 +3,7 @@
 exports[`Operators API client will perform a search with search parameters 1`] = `
 [
   [
-    "/api/operators?limit=100&skip=0&location=-10.23%2C45.67&radius=120&query=test",
+    "/api/operators?limit=100&skip=0&location=-10.23%2C45.67&owner=razmataz82&radius=120&query=test",
     {
       "body": undefined,
       "credentials": "include",

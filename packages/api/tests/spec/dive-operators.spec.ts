@@ -86,6 +86,7 @@ describe('Operators API client', () => {
         lat: -10.23,
         lon: 45.67,
       },
+      owner: 'razmataz82',
       radius: 120,
       query: 'test',
     };

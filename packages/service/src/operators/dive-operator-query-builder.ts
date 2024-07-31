@@ -3,6 +3,8 @@ import { GPSCoordinates } from '@bottomtime/api';
 import { DiveOperatorEntity } from 'src/data';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
+import { User } from '../users';
+
 export const DiveOperatorSuccinctSelectFields = [
   'operators.id',
   'operators.createdAt',
@@ -57,6 +59,15 @@ export class DiveOperatorQueryBuilder {
           distance: distance * 1000, // Distance must be converted from km to meters
         },
       );
+    }
+    return this;
+  }
+
+  withOwner(owner?: User): this {
+    if (owner) {
+      this.query = this.query.andWhere('owner.id = :ownerId', {
+        ownerId: owner.id,
+      });
     }
     return this;
   }
