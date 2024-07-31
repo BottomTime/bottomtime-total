@@ -128,7 +128,16 @@ export class DiveOperator {
     await this.client.delete(`/api/operators/${this.slug}`);
   }
 
-  async transferOwnership(newOwner: string): Promise<void> {}
+  async transferOwnership(newOwner: string): Promise<void> {
+    const { data } = await this.client.post(
+      `/api/operators/${this.slug}/transfer`,
+      { newOwner },
+      DiveOperatorSchema,
+    );
+
+    this.data.updatedAt = data.updatedAt;
+    this.data.owner = data.owner;
+  }
 
   async setVerified(verified: boolean): Promise<void> {
     await this.client.post(`/api/operators/${this.slug}/verify`, { verified });

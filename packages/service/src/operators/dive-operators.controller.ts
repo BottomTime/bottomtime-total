@@ -421,76 +421,81 @@ export class DiveOperatorsController {
   }
 
   /**
-   * @openapi
-   * /api/operators/{operatorKey}/transfer:
-   *   post:
-   *     summary: Transfer ownership of a dive operator
-   *     operationId: transferDiveOperatorOwnership
-   *     description: |
-   *       Transfers ownership of a dive operator to another user.
-   *     tags:
-   *       - Dive Operators
-   *     parameters:
-   *       - $ref: "#/components/parameters/DiveOperatorKey"
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required:
-   *               - newOwner
-   *             properties:
-   *               newOwner:
-   *                 type: string
-   *                 pattern: ^[a-z0-9_.-]+$
-   *                 name: New Owner's Username
-   *                 description: The username of the new owner to transfer ownership to.
-   *                 example: SamSamuelson_23
-   *                 minLength: 3
-   *                 maxLength: 50
-   *     responses:
-   *       204:
-   *         description: The ownership of the dive operator was successfully transferred.
-   *       400:
-   *         description: The request failed because the new owner could not be found, or the request body was invalid or missing.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       401:
-   *         description: The request failed because the user is not authenticated.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       403:
-   *         description: The request failed because the user is not authorized to transfer ownership of the dive operator.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       404:
-   *         description: The request failed because the dive operator was not found.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
-   *       500:
-   *         description: The request failed because of an internal server error.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
+  @openapi
+/api/operators/{operatorKey}/transfer:
+  post:
+    summary: Transfer ownership of a dive operator
+    operationId: transferDiveOperatorOwnership
+    description: |
+      Transfers ownership of a dive operator to another user.
+    tags:
+      - Dive Operators
+    parameters:
+      - $ref: "#/components/parameters/DiveOperatorKey"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - newOwner
+            properties:
+              newOwner:
+                type: string
+                pattern: ^[a-z0-9_.-]+$
+                name: New Owner's Username
+                description: The username of the new owner to transfer ownership to.
+                example: SamSamuelson_23
+                minLength: 3
+                maxLength: 50
+    responses:
+      200:
+        description: |
+          The ownership of the dive operator was successfully transferred. The updated dive operator will be returned in the response body.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DiveOperator"
+      400:
+        description: The request failed because the new owner could not be found, or the request body was invalid or missing.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+      401:
+        description: The request failed because the user is not authenticated.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+      403:
+        description: The request failed because the user is not authorized to transfer ownership of the dive operator.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+      404:
+        description: The request failed because the dive operator was not found.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+      500:
+        description: The request failed because of an internal server error.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Error"
    */
   @Post(`${OperatorKeyParam}/transfer`)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @UseGuards(AssertAuth, AssertDiveOperator, AssertDiveOperatorOwner)
   async transferDiveOperatorOwnership(
     @CurrentDiveOperator() operator: DiveOperator,
     @Body(new ZodValidator(TransferDiveOperatorOwnershipSchema))
     { newOwner: username }: TransferDiveOperatorOwnershipDTO,
-  ): Promise<void> {
+  ): Promise<DiveOperatorDTO> {
     const newOwner = await this.users.getUserByUsernameOrEmail(username);
     if (!newOwner) {
       throw new BadRequestException(
@@ -499,6 +504,8 @@ export class DiveOperatorsController {
     }
 
     await operator.transferOwnership(newOwner);
+
+    return operator.toJSON();
   }
 
   /**

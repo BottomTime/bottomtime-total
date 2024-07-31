@@ -595,31 +595,33 @@ describe('Dive Operators E2E tests', () => {
     });
 
     it('will allow the operator owner to transfer ownership', async () => {
-      await request(server)
+      const { body } = await request(server)
         .post(getTransferUrl(operator.slug))
         .set(...regularUserAuthHeader)
         .send({ newOwner: otherUser.username })
-        .expect(204);
+        .expect(200);
 
       const saved = await Operators.findOneOrFail({
         where: { id: operator.id },
         relations: ['owner'],
       });
       expect(saved.owner!.id).toBe(otherUser.id);
+      expect(body).toMatchSnapshot();
     });
 
     it('will allow an admin to transfer ownership', async () => {
-      await request(server)
+      const { body } = await request(server)
         .post(getTransferUrl(operator.slug))
         .set(...adminUserAuthHeader)
         .send({ newOwner: otherUser.username })
-        .expect(204);
+        .expect(200);
 
       const saved = await Operators.findOneOrFail({
         where: { id: operator.id },
         relations: ['owner'],
       });
       expect(saved.owner!.id).toBe(otherUser.id);
+      expect(body).toMatchSnapshot();
     });
 
     it('will return a 400 response if the new owner is not a user', async () => {

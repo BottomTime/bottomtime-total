@@ -209,22 +209,32 @@ describe('Dive Operator API class', () => {
     expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
   });
 
-  it.skip('will transfer ownership to another user', async () => {
+  it('will transfer ownership to another user', async () => {
     const newOwner = 'EmilyDives69';
 
-    mockFetch.put(
+    mockFetch.post(
       {
         url: `/api/operators/${operator.slug}/transfer`,
         body: {
           newOwner,
         },
       },
-      204,
+      {
+        status: 200,
+        body: {
+          ...TestData,
+          owner: {
+            userId: '42da3369-0843-4a72-8222-c7e06ea886c8',
+            username: newOwner,
+            memberSince: new Date('2024-07-30T15:36:34Z'),
+          },
+        },
+      },
     );
 
     await operator.transferOwnership(newOwner);
 
-    expect(operator.owner).toEqual(newOwner);
+    expect(operator.owner.username).toEqual(newOwner);
     expect(mockFetch.done()).toBe(true);
   });
 
