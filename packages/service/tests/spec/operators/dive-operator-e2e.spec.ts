@@ -38,6 +38,13 @@ const OtherUserId = 'ca5f6ec9-b9a5-4e9a-8a34-9c27a44d94f8';
 const OtherUserData: Partial<UserEntity> = {
   id: OtherUserId,
   role: UserRole.User,
+  memberSince: new Date('2024-07-31T13:00:45Z'),
+  username: 'Jane.Other',
+  usernameLowered: 'jane.other',
+  avatar: 'https://example.com/avatar.png',
+  location: 'Vancouver, BC',
+  logBookSharing: LogBookSharing.Public,
+  name: 'Jane Other',
 };
 
 const AdminUserId = '8e8027d0-4b04-405c-9a3d-d2e135bb4020';
@@ -595,31 +602,43 @@ describe('Dive Operators E2E tests', () => {
     });
 
     it('will allow the operator owner to transfer ownership', async () => {
-      await request(server)
+      const { body } = await request(server)
         .post(getTransferUrl(operator.slug))
         .set(...regularUserAuthHeader)
         .send({ newOwner: otherUser.username })
-        .expect(204);
+        .expect(200);
 
       const saved = await Operators.findOneOrFail({
         where: { id: operator.id },
         relations: ['owner'],
       });
       expect(saved.owner!.id).toBe(otherUser.id);
+      expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
+      expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+      expect({
+        ...body,
+        updatedAt: new Date(0),
+      }).toMatchSnapshot();
     });
 
     it('will allow an admin to transfer ownership', async () => {
-      await request(server)
+      const { body } = await request(server)
         .post(getTransferUrl(operator.slug))
         .set(...adminUserAuthHeader)
         .send({ newOwner: otherUser.username })
-        .expect(204);
+        .expect(200);
 
       const saved = await Operators.findOneOrFail({
         where: { id: operator.id },
         relations: ['owner'],
       });
       expect(saved.owner!.id).toBe(otherUser.id);
+      expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
+      expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+      expect({
+        ...body,
+        updatedAt: new Date(0),
+      }).toMatchSnapshot();
     });
 
     it('will return a 400 response if the new owner is not a user', async () => {

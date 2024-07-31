@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 
 import {
   AlertEntity,
+  DiveOperatorEntity,
   DiveSiteEntity,
   FriendRequestEntity,
   FriendshipEntity,
@@ -14,6 +15,7 @@ import {
 import { getDataSource } from './data-source';
 import {
   fakeAlert,
+  fakeDiveOperator,
   fakeDiveSite,
   fakeFriendRequest,
   fakeFriendship,
@@ -23,6 +25,7 @@ import {
 
 export type EntityCounts = {
   alerts: number;
+  diveOperators: number;
   diveSites: number;
   friendRequests: number;
   friends: number;
@@ -79,6 +82,20 @@ async function createUsers(
     fakeUser,
     async (users) => {
       await Users.save(users);
+    },
+    count,
+  );
+}
+
+async function createDiveOperators(
+  Operators: Repository<DiveOperatorEntity>,
+  userIds: string[],
+  count: number,
+): Promise<void> {
+  await batch(
+    () => fakeDiveOperator(userIds),
+    async (operators) => {
+      await Operators.save(operators);
     },
     count,
   );
@@ -194,6 +211,7 @@ export async function createTestData(
     const Alerts = ds.getRepository(AlertEntity);
     const FriendRequests = ds.getRepository(FriendRequestEntity);
     const Friends = ds.getRepository(FriendshipEntity);
+    const Operators = ds.getRepository(DiveOperatorEntity);
     const LogEntries = ds.getRepository(LogEntryEntity);
     const Users = ds.getRepository(UserEntity);
     const Sites = ds.getRepository(DiveSiteEntity);
@@ -286,6 +304,11 @@ export async function createTestData(
         siteIds,
         counts.logEntries,
       );
+    }
+
+    if (counts.diveOperators > 0) {
+      console.log(`Creating ${counts.diveOperators} dive operators...`);
+      await createDiveOperators(Operators, userIds, counts.diveOperators);
     }
 
     console.log('Finished inserting test data');
