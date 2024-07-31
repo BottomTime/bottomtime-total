@@ -337,6 +337,82 @@ exports[`Dive Operators E2E tests when searching dive operators will return a 40
 }
 `;
 
+exports[`Dive Operators E2E tests when transferring ownership of a dive operator will allow an admin to transfer ownership 1`] = `
+{
+  "address": "298 Krajcik Springs Apt. 609, Port Dominique, NY, 36743-3620",
+  "banner": "https://picsum.photos/seed/G7IWZU/1024/256",
+  "createdAt": "2023-09-08T01:43:49.264Z",
+  "description": "Arbitro utor acceptus. Comedo comedo arcesso alias eligendi arcesso. Defungo possimus vomica stillicidium.
+Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse angustus curriculum cupiditas pecto suffoco unus sophismata.",
+  "email": "Gaetano_Koepp@yahoo.com",
+  "gps": {
+    "lat": -89.5995,
+    "lon": 162.7726,
+  },
+  "id": "89c68565-8d5d-4cfa-a374-80e3a6ad0a9c",
+  "logo": "https://picsum.photos/seed/SjzU40wm/128/128",
+  "name": "shameful, dutiful bower",
+  "owner": {
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/464.jpg",
+    "location": "North Port",
+    "logBookSharing": "private",
+    "memberSince": "2022-09-23T12:47:17.549Z",
+    "name": "Mrs. Rosa Yost",
+    "userId": "ca5f6ec9-b9a5-4e9a-8a34-9c27a44d94f8",
+    "username": "Alexane_Lehner",
+  },
+  "phone": "1-318-605-7083 x884",
+  "slug": "shameful-dutiful-bower",
+  "socials": {
+    "facebook": "Torrance.OKeefe",
+    "instagram": "Amari.Sauer91",
+    "tiktok": "Retta15",
+    "twitter": "Nels.Champlin",
+  },
+  "updatedAt": "2024-07-31T16:53:34.155Z",
+  "verified": false,
+  "website": "https://dimpled-format.net",
+}
+`;
+
+exports[`Dive Operators E2E tests when transferring ownership of a dive operator will allow the operator owner to transfer ownership 1`] = `
+{
+  "address": "298 Krajcik Springs Apt. 609, Port Dominique, NY, 36743-3620",
+  "banner": "https://picsum.photos/seed/G7IWZU/1024/256",
+  "createdAt": "2023-09-08T01:43:49.264Z",
+  "description": "Arbitro utor acceptus. Comedo comedo arcesso alias eligendi arcesso. Defungo possimus vomica stillicidium.
+Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse angustus curriculum cupiditas pecto suffoco unus sophismata.",
+  "email": "Gaetano_Koepp@yahoo.com",
+  "gps": {
+    "lat": -89.5995,
+    "lon": 162.7726,
+  },
+  "id": "89c68565-8d5d-4cfa-a374-80e3a6ad0a9c",
+  "logo": "https://picsum.photos/seed/SjzU40wm/128/128",
+  "name": "shameful, dutiful bower",
+  "owner": {
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/495.jpg",
+    "location": "Warner Robins",
+    "logBookSharing": "public",
+    "memberSince": "2022-09-21T01:21:18.846Z",
+    "name": "Ellis Beier",
+    "userId": "ca5f6ec9-b9a5-4e9a-8a34-9c27a44d94f8",
+    "username": "Dereck_Kirlin",
+  },
+  "phone": "1-318-605-7083 x884",
+  "slug": "shameful-dutiful-bower",
+  "socials": {
+    "facebook": "Torrance.OKeefe",
+    "instagram": "Amari.Sauer91",
+    "tiktok": "Retta15",
+    "twitter": "Nels.Champlin",
+  },
+  "updatedAt": "2024-07-31T16:53:34.118Z",
+  "verified": false,
+  "website": "https://dimpled-format.net",
+}
+`;
+
 exports[`Dive Operators E2E tests when updating a dive operator will return a 400 response if the request body is invalid 1`] = `
 {
   "issues": [

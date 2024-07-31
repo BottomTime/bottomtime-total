@@ -57,7 +57,7 @@
  *           name: Phone Number
  *           description: The phone number at which the dive operator can be reached.
  *           example: (305) 451-6300
- *           maxLength: 20
+ *           maxLength: 50
  *         email:
  *           type: string
  *           format: email
