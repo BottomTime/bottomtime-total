@@ -5,11 +5,12 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { User } from '../users';
 
-export const DiveOperatorSuccinctSelectFields = [
+export const DiveOperatorSelectFields = [
   'operators.id',
   'operators.createdAt',
   'operators.updatedAt',
   'operators.address',
+  'operators.banner',
   'operators.description',
   'operators.email',
   'operators.gps',
@@ -18,8 +19,10 @@ export const DiveOperatorSuccinctSelectFields = [
   'operators.phone',
   'operators.facebook',
   'operators.instagram',
+  'operators.slug',
   'operators.tiktok',
   'operators.twitter',
+  'operators.verified',
   'operators.website',
   'owner.id',
   'owner.username',
@@ -30,10 +33,6 @@ export const DiveOperatorSuccinctSelectFields = [
   'owner.name',
 ];
 
-export const DiveOperatorFullSelectFields = [
-  ...DiveOperatorSuccinctSelectFields,
-];
-
 export class DiveOperatorQueryBuilder {
   private query: SelectQueryBuilder<DiveOperatorEntity>;
 
@@ -41,7 +40,7 @@ export class DiveOperatorQueryBuilder {
     this.query = operators
       .createQueryBuilder('operators')
       .innerJoin('operators.owner', 'owner')
-      .select(DiveOperatorSuccinctSelectFields)
+      .select(DiveOperatorSelectFields)
       .orderBy('operators.name', 'ASC');
   }
 

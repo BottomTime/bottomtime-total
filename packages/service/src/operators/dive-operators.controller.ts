@@ -155,7 +155,7 @@ export class DiveOperatorsController {
    *                   name: Dive Operators
    *                   description: A list of dive operators that matched the search criteria.
    *                   items:
-   *                     $ref: "#/components/schemas/SuccinctDiveOperator"
+   *                     $ref: "#/components/schemas/DiveOperator"
    *                 totalCount:
    *                   type: integer
    *                   name: Total Count
@@ -193,7 +193,7 @@ export class DiveOperatorsController {
       owner,
     });
     return {
-      operators: results.operators.map((op) => op.toSuccinctJSON()),
+      operators: results.operators.map((op) => op.toJSON()),
       totalCount: results.totalCount,
     };
   }

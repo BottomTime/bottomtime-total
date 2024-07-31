@@ -79,7 +79,7 @@ Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse a
 exports[`DiveOperatorService when searching for operators will perform a basic search with no parameters 1`] = `
 {
   "address": "57460 Joy Isle Suite 450, O'Reillybury, MT, 88197-2575",
-  "banner": undefined,
+  "banner": "https://loremflickr.com/1024/256?lock=8852956472410112",
   "createdAt": 2020-12-11T23:39:51.364Z,
   "description": "Conitor comedo uxor. Crebro caries angelus apparatus illum voluptate tyrannus bis vociferor. Tardus speculum defaeco tergum arcus combibo argumentum beneficium peccatus.
 Vilitas videlicet atque artificiose. Tenuis subnecto asporto uredo. Suscipit acceptus despecto adopto bis vel titulus angustus audio.",
@@ -101,7 +101,7 @@ Vilitas videlicet atque artificiose. Tenuis subnecto asporto uredo. Suscipit acc
     "username": "Danielle56",
   },
   "phone": "(644) 879-2885 x0599",
-  "slug": "",
+  "slug": "abandoned-monstrous-implication",
   "socials": {
     "facebook": "Amya29",
     "instagram": "Marion82",
@@ -109,7 +109,7 @@ Vilitas videlicet atque artificiose. Tenuis subnecto asporto uredo. Suscipit acc
     "twitter": "Marietta.Jakubowski",
   },
   "updatedAt": 2024-05-14T12:26:04.340Z,
-  "verified": false,
+  "verified": true,
   "website": "https://worried-paintwork.org",
 }
 `;

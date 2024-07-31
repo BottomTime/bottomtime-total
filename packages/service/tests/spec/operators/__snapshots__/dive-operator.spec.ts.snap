@@ -43,6 +43,8 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
 exports[`DiveOperator class will return a succinct JSON representation of the dive operator 1`] = `
 {
   "address": "3 Bay St, Tobermory, ON N0H 2R0, Canada",
+  "banner": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg",
+  "createdAt": 2022-06-20T11:45:21.000Z,
   "description": "Welcome to Tobermory, the Scuba Diving Capital of Canada!
 Discover the world below the waves of the Fathom Five National Marine Park, home to more than 20 shipwrecks.
 Immerse yourself in the captivating history of century old ships and catch a glimpse of their haunting beauty.
@@ -65,12 +67,14 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     "username": "testuser",
   },
   "phone": "+1 519-596-2363",
+  "slug": "divers-den",
   "socials": {
     "facebook": "diversdentobermory",
     "instagram": "diversden",
     "tiktok": "@diversden",
     "twitter": "diversden",
   },
+  "updatedAt": 2024-07-29T11:45:21.000Z,
   "verified": true,
   "website": "https://diversden.ca",
 }

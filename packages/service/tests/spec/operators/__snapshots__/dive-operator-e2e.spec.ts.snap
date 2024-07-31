@@ -176,6 +176,8 @@ Sit tendo sumo solvo compono constans. Contabesco cras damno minus. Ultio esse a
 exports[`Dive Operators E2E tests when searching dive operators will perform a basic search with default parameters 1`] = `
 {
   "address": "57460 Joy Isle Suite 450, O'Reillybury, MT, 88197-2575",
+  "banner": "https://loremflickr.com/1024/256?lock=8852956472410112",
+  "createdAt": "2020-12-11T23:39:51.364Z",
   "description": "Conitor comedo uxor. Crebro caries angelus apparatus illum voluptate tyrannus bis vociferor. Tardus speculum defaeco tergum arcus combibo argumentum beneficium peccatus.
 Vilitas videlicet atque artificiose. Tenuis subnecto asporto uredo. Suscipit acceptus despecto adopto bis vel titulus angustus audio.",
   "email": "Boyd74@yahoo.com",
@@ -196,13 +198,15 @@ Vilitas videlicet atque artificiose. Tenuis subnecto asporto uredo. Suscipit acc
     "username": "Danielle56",
   },
   "phone": "(644) 879-2885 x0599",
+  "slug": "abandoned-monstrous-implication",
   "socials": {
     "facebook": "Amya29",
     "instagram": "Marion82",
     "tiktok": "Lizzie.Harvey20",
     "twitter": "Marietta.Jakubowski",
   },
-  "verified": false,
+  "updatedAt": "2024-05-14T12:26:04.340Z",
+  "verified": true,
   "website": "https://worried-paintwork.org",
 }
 `;
@@ -267,6 +271,8 @@ exports[`Dive Operators E2E tests when searching dive operators will perform a m
   "operators": [
     {
       "address": "9224 Bosco Mountains Suite 837, Simonisville, MA, 40170",
+      "banner": "https://loremflickr.com/1024/256?lock=910165425520640",
+      "createdAt": "2023-05-23T16:48:39.329Z",
       "description": "Nam adicio pecus. Catena carus sed similique cernuus alter. Conforto congregatio cunctatio.
 Conitor audentia inventore advoco. Ago tendo adsum commodi cur defendo autem. Ciminatio thermae aliqua vobis adfero amplexus adficio truculenter.",
       "email": "Selina38@hotmail.com",
@@ -287,13 +293,15 @@ Conitor audentia inventore advoco. Ago tendo adsum commodi cur defendo autem. Ci
         "username": "Joesph_Morar",
       },
       "phone": "(369) 500-6519 x8451",
+      "slug": "well-made-doting-wafer",
       "socials": {
         "facebook": "Karson62",
         "instagram": "Elias40",
         "tiktok": "Anika.Lang21",
         "twitter": "Cole.Quitzon85",
       },
-      "verified": false,
+      "updatedAt": "2024-04-04T08:55:10.665Z",
+      "verified": true,
       "website": "https://scientific-belt.org/",
     },
   ],

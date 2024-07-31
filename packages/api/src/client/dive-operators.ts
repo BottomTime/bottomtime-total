@@ -2,7 +2,6 @@ import {
   CreateOrUpdateDiveOperatorDTO,
   DiveOperatorSchema,
   SearchDiveOperatorsParams,
-  SearchDiveOperatorsResponseDTO,
   SearchDiveOperatorsResponseSchema,
 } from '../types';
 import { DiveOperator } from './dive-operator';
@@ -31,9 +30,10 @@ export class DiveOperatorsApiClient {
     return new DiveOperator(this.apiClient, data);
   }
 
-  async searchDiveOperators(
-    options?: SearchDiveOperatorsParams,
-  ): Promise<SearchDiveOperatorsResponseDTO> {
+  async searchDiveOperators(options?: SearchDiveOperatorsParams): Promise<{
+    operators: DiveOperator[];
+    totalCount: number;
+  }> {
     const { data } = await this.apiClient.get(
       '/api/operators',
       {
@@ -47,7 +47,12 @@ export class DiveOperatorsApiClient {
       SearchDiveOperatorsResponseSchema,
     );
 
-    return data;
+    return {
+      operators: data.operators.map(
+        (dto) => new DiveOperator(this.apiClient, dto),
+      ),
+      totalCount: data.totalCount,
+    };
   }
 
   wrapDTO(dto: unknown): DiveOperator {

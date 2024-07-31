@@ -297,7 +297,7 @@ describe('DiveOperator class', () => {
   });
 
   it('will return a succinct JSON representation of the dive operator', () => {
-    const json = operator.toSuccinctJSON();
+    const json = operator.toJSON();
     expect(json).toMatchSnapshot();
   });
 
