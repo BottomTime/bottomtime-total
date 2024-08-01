@@ -77,6 +77,32 @@
           </div>
         </div>
       </div>
+
+      <TextHeading>Account Type</TextHeading>
+
+      <FormField label="Account type">
+        <div class="pt-1.5">
+          <FormRadio
+            v-model="state.accountType"
+            control-id="acct-personal"
+            test-id="acct-personal"
+            group="acct-type"
+            value="personal"
+          >
+            Personal
+          </FormRadio>
+
+          <FormRadio
+            v-model="state.accountType"
+            control-id="acct-shopOwner"
+            test-id="acct-shopOwner"
+            group="acct-type"
+            value="shopOwner"
+          >
+            Shop Owner
+          </FormRadio>
+        </div>
+      </FormField>
     </div>
   </form>
 </template>
@@ -91,7 +117,9 @@ import { ToastType } from '../../common';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
+import FormField from '../common/form-field.vue';
 import FormLabel from '../common/form-label.vue';
+import FormRadio from '../common/form-radio.vue';
 import TextHeading from '../common/text-heading.vue';
 import AccountTimestamps from './account-timestamps.vue';
 import ManagePassword from './manage-password.vue';
@@ -112,6 +140,7 @@ type OAuthProvider = {
 type ManageAccountState = {
   isLoadingProviders: boolean;
   providers: OAuthProvider[];
+  accountType: 'personal' | 'shopOwner';
 };
 
 const client = useClient();
@@ -149,6 +178,7 @@ defineEmits<{
 }>();
 
 const state = reactive<ManageAccountState>({
+  accountType: 'personal',
   isLoadingProviders: true,
   providers: [],
 });
