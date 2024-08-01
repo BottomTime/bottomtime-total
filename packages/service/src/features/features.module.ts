@@ -1,34 +1,36 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { FeatureEntity } from '../data';
-import { FeaturesController } from './features.controller';
+import { IConfigCatClient } from 'configcat-node';
+
 import { FeaturesService } from './features.service';
 
 @Module({})
 export class FeaturesModule {
-  static forRoot(): DynamicModule {
+  private static client: IConfigCatClient | undefined;
+
+  static forFeature(): DynamicModule {
     return {
       module: FeaturesModule,
-      imports: [TypeOrmModule.forFeature([FeatureEntity])],
-      controllers: [FeaturesController],
-      providers: [FeaturesService],
+      providers: [
+        {
+          provide: FeaturesService,
+          useFactory: () => {
+            if (!FeaturesModule.client) {
+              throw new Error(
+                'FeaturesModule must be initialized with a ConfigCat client. Have you called FeaturesModule.forRoot()?',
+              );
+            }
+
+            return new FeaturesService(FeaturesModule.client);
+          },
+        },
+      ],
+      exports: [FeaturesService],
     };
   }
 
-  static forFeature(...keys: string[]): DynamicModule {
-    const providers = [
-      FeaturesService,
-      ...keys.map((key) => ({
-        provide: `bt_feature_${key}`,
-        useFactory: (service: FeaturesService) => service.getFeature(key),
-        inject: [FeaturesService],
-      })),
-    ];
-    return {
-      ...FeaturesModule.forRoot(),
-      providers,
-      exports: providers,
-    };
+  static forRoot(client: IConfigCatClient): DynamicModule {
+    FeaturesModule.client = client;
+    return FeaturesModule.forFeature();
   }
 }

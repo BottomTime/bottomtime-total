@@ -5,6 +5,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { IConfigCatClient } from 'configcat-node';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { AdminModule } from './admin';
@@ -26,6 +27,7 @@ import { TanksModule } from './tanks/tanks.module';
 import { UsersModule } from './users';
 
 export type ServerDependencies = {
+  configCatClient: IConfigCatClient;
   dataSource: DataSourceOptions;
   s3Client: S3Client;
   sqsClient: SQSClient;
@@ -55,7 +57,7 @@ export class AppModule {
         }),
 
         TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
-        FeaturesModule.forRoot(),
+        FeaturesModule.forRoot(deps.configCatClient),
 
         UsersModule,
         AuthModule,

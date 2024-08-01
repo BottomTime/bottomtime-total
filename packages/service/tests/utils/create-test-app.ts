@@ -7,6 +7,7 @@ import path from 'path';
 import { ServerDependencies } from '../../src/app.module';
 import { createApp } from '../../src/create-app';
 import { PostgresUri } from '../postgres-uri';
+import { ConfigCatClientMock } from './config-cat-client-mock';
 import { Log } from './test-logger';
 
 export async function createTestApp(
@@ -27,6 +28,7 @@ export async function createTestApp(
         url: PostgresUri,
         entities: [path.resolve(__dirname, '../../src/data/**/*.entity.ts')],
       },
+      configCatClient: deps.configCatClient ?? new ConfigCatClientMock(),
     };
   });
 

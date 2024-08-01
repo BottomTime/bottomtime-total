@@ -3,7 +3,6 @@ import { AlertsApiClient } from './alerts';
 import { ApiClientOptions } from './api-client-options';
 import { DiveOperatorsApiClient } from './dive-operators';
 import { DiveSitesApiClient } from './dive-sites';
-import { FeaturesApiClient } from './features';
 import { Fetcher } from './fetcher';
 import { FriendsApiClient } from './friends';
 import { LogEntriesApiClient } from './log-entries';
@@ -13,7 +12,6 @@ import { UsersApiClient } from './users';
 export class ApiClient {
   private readonly client: Fetcher;
   readonly alerts: AlertsApiClient;
-  readonly features: FeaturesApiClient;
   readonly friends: FriendsApiClient;
   readonly users: UsersApiClient;
   readonly diveOperators: DiveOperatorsApiClient;
@@ -24,7 +22,6 @@ export class ApiClient {
   constructor(options?: ApiClientOptions) {
     this.client = options?.fetcher ?? new Fetcher(options);
     this.alerts = new AlertsApiClient(this.client);
-    this.features = new FeaturesApiClient(this.client);
     this.friends = new FriendsApiClient(this.client);
     this.users = new UsersApiClient(this.client);
     this.diveOperators = new DiveOperatorsApiClient(this.client);
