@@ -63,6 +63,7 @@ export interface AppConfig {
 
   adminEmail: string;
   baseUrl: string;
+  configCatSdkKey: string;
   fastImageResize: boolean;
   friendsLimit: number;
   isProduction: boolean;
@@ -123,6 +124,7 @@ const ConfigSchema = z
     // Misc.
     BT_ADMIN_EMAIL: z.string().default('admin@bottomti.me'),
     BT_BASE_URL: z.string().url().default('http://localhost:4850'),
+    BT_CONFIGCAT_SDK_KEY: z.string().default(''),
     BT_FAST_IMAGE_RESIZE: BooleanString.default('false'),
     BT_FRIENDS_LIMIT: z.coerce.number().int().min(1).max(5000).default(1000),
     BT_LOG_LEVEL: LogLevelSchema.default('debug'),
@@ -185,6 +187,7 @@ const ConfigSchema = z
 
     adminEmail: env.BT_ADMIN_EMAIL,
     baseUrl: env.BT_BASE_URL,
+    configCatSdkKey: env.BT_CONFIGCAT_SDK_KEY,
     fastImageResize: env.BT_FAST_IMAGE_RESIZE,
     friendsLimit: env.BT_FRIENDS_LIMIT,
     isProduction: env.NODE_ENV === 'production',

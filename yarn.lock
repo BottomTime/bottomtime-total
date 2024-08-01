@@ -2762,6 +2762,7 @@ __metadata:
     aws-lambda: "npm:^1.0.7"
     bcryptjs: "npm:^2.4.3"
     bunyan: "npm:^1.8.15"
+    configcat-node: "npm:^11.3.0"
     cookie-parser: "npm:^1.4.6"
     crypto-browserify: "npm:^3.12.0"
     dayjs: "npm:^1.11.7"
@@ -9596,6 +9597,26 @@ __metadata:
     ini: "npm:^1.3.4"
     proto-list: "npm:~1.2.1"
   checksum: 10c0/39d1df18739d7088736cc75695e98d7087aea43646351b028dfabd5508d79cf6ef4c5bcd90471f52cd87ae470d1c5490c0a8c1a292fbe6ee9ff688061ea0963e
+  languageName: node
+  linkType: hard
+
+"configcat-common@npm:9.3.0":
+  version: 9.3.0
+  resolution: "configcat-common@npm:9.3.0"
+  dependencies:
+    tslib: "npm:^2.4.1"
+  checksum: 10c0/03f260eafea184fd96ffe89938d6f46823311edb075c9963bd33a213df3645e5143381f178dd5b80f0900fce1f1067fb0b5d41cdbbbf59c3edf9a1b6194aebdd
+  languageName: node
+  linkType: hard
+
+"configcat-node@npm:^11.3.0":
+  version: 11.3.0
+  resolution: "configcat-node@npm:11.3.0"
+  dependencies:
+    configcat-common: "npm:9.3.0"
+    tslib: "npm:^2.4.1"
+    tunnel: "npm:0.0.6"
+  checksum: 10c0/e5a6dc63fa7d69ffa732d2a86b0a88ad4dad178b5f3465c1fbba2d8ab09a247e80ae486f2628cd7acd9bac0d1b7dec93bbc2b47b7f4d6654137adbada93f4deb
   languageName: node
   linkType: hard
 
@@ -21527,7 +21548,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.6.3, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0, tslib@npm:^2.5.0, tslib@npm:^2.6.2":
+"tslib@npm:2.6.3, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:^2.4.0, tslib@npm:^2.4.1, tslib@npm:^2.5.0, tslib@npm:^2.6.2":
   version: 2.6.3
   resolution: "tslib@npm:2.6.3"
   checksum: 10c0/2598aef53d9dbe711af75522464b2104724d6467b26a60f2bdac8297d2b5f1f6b86a71f61717384aa8fd897240467aaa7bcc36a0700a0faf751293d1331db39a
@@ -21583,6 +21604,13 @@ __metadata:
     debug: "npm:^4.3.4"
     make-fetch-happen: "npm:^13.0.1"
   checksum: 10c0/7c17b097571f001730d7be0aeaec6bec46ed2f25bf73990b1133c383d511a1ce65f831e5d6d78770940a85b67664576ff0e4c98e5421bab6d33ff36e4be500c8
+  languageName: node
+  linkType: hard
+
+"tunnel@npm:0.0.6":
+  version: 0.0.6
+  resolution: "tunnel@npm:0.0.6"
+  checksum: 10c0/e27e7e896f2426c1c747325b5f54efebc1a004647d853fad892b46d64e37591ccd0b97439470795e5262b5c0748d22beb4489a04a0a448029636670bfd801b75
   languageName: node
   linkType: hard
 
