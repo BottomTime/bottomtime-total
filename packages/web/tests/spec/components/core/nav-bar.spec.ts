@@ -2,13 +2,16 @@ import { ApiClient } from '@bottomtime/api';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
+import { IConfigCatClient } from 'configcat-common';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import NavBar from '../../../../src/components/core/nav-bar.vue';
+import { FeaturesServiceKey } from '../../../../src/featrues';
 import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser } from '../../../../src/store';
+import { ConfigCatClientMock } from '../../../config-cat-client-mock';
 import { createRouter } from '../../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
 
@@ -24,12 +27,14 @@ const LoginLink = '[data-testid="login-link"]';
 describe('Nav Bar component', () => {
   let client: ApiClient;
   let router: Router;
+  let features: IConfigCatClient;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof NavBar>;
 
   beforeAll(() => {
+    features = new ConfigCatClientMock();
     client = new ApiClient();
     router = createRouter();
     localStorage.setItem('darkMode', 'true');
@@ -46,6 +51,7 @@ describe('Nav Bar component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [FeaturesServiceKey as symbol]: features,
           [LocationKey as symbol]: new MockLocation(),
         },
       },
