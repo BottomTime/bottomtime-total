@@ -34,6 +34,8 @@ export async function createApp() {
     res.status(500).json(err);
   });
 
+  log.debug('Starting server using ConfigCat SDK key:', Config.configCatSdkKey);
+
   if (Config.isProduction) {
     await initProdServer(app);
   } else {

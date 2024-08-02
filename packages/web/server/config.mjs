@@ -20,6 +20,10 @@ export class Config {
     return process.env.BTWEB_VITE_BASE_URL ?? 'http://localhost:4850/';
   }
 
+  static get configCatSdkKey() {
+    return process.env.BTWEB_VITE_CONFIGCAT_API_KEY || '';
+  }
+
   static get cookieName() {
     return process.env.BTWEB_COOKIE_NAME ?? 'bottomtime.local';
   }
