@@ -8,6 +8,11 @@ variable "api_domain" {
   type        = string
 }
 
+variable "configcat_sdk_key" {
+  description = "ConfigCat SDK key for the environment. Used to access feature flags."
+  type        = string
+}
+
 variable "cookie_name" {
   description = "Name of the session cookie as it will appear in the browser."
   type        = string

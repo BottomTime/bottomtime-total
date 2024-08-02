@@ -4,6 +4,7 @@
 
 admin_email       = "admin@bottomti.me"
 api_domain        = "api-dev"
+configcat_sdk_key = "configcat-sdk-1/L7LcCHeN9EiJIg19Uj9Fgw/qUo-JQp0d0qBb85NqkKIPw"
 cookie_name       = "bottomtime.dev"
 docs_domain       = "docs-dev"
 enable_places_api = false
