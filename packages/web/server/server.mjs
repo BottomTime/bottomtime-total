@@ -6,7 +6,10 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import { Config } from './config.mjs';
 import { initDevServer } from './dev-server.mjs';
+import { getLogger } from './logger.mjs';
 import { initProdServer } from './prod-server.mjs';
+
+const log = getLogger();
 
 export async function createApp() {
   const app = express();
@@ -23,10 +26,13 @@ export async function createApp() {
   );
   app.use('/api', createProxyMiddleware({ target: Config.apiUrl }));
 
-  // TODO: Global error handler needs to return something meaningful.
-  // app.use((err, _req, res, _next) => {
-  //   res.status(500).send(err);
-  // });
+  // Global error handler needs to return something meaningful.
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+  app.use((err, _req, res, _next) => {
+    // TODO: Return a static error page instead.
+    log.error(err);
+    res.status(500).json(err);
+  });
 
   if (Config.isProduction) {
     await initProdServer(app);
