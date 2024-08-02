@@ -2816,6 +2816,7 @@ __metadata:
     "@babel/core": "npm:^7.23.9"
     "@babel/preset-env": "npm:^7.23.9"
     "@bottomtime/api": "workspace:*"
+    "@bottomtime/common": "workspace:*"
     "@codegenie/serverless-express": "npm:^4.14.1"
     "@faker-js/faker": "npm:^8.4.1"
     "@googlemaps/js-api-loader": "npm:^1.16.6"
@@ -2847,6 +2848,9 @@ __metadata:
     babel-jest: "npm:^29.7.0"
     bunyan: "npm:^1.8.15"
     compression: "npm:^1.7.4"
+    configcat-common: "npm:^9.3.0"
+    configcat-js: "npm:^9.5.0"
+    configcat-node: "npm:^11.3.0"
     cookie-parser: "npm:^1.4.6"
     cors: "npm:^2.8.5"
     dayjs: "npm:^1.11.10"
@@ -9600,12 +9604,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"configcat-common@npm:9.3.0":
+"configcat-common@npm:9.3.0, configcat-common@npm:^9.3.0":
   version: 9.3.0
   resolution: "configcat-common@npm:9.3.0"
   dependencies:
     tslib: "npm:^2.4.1"
   checksum: 10c0/03f260eafea184fd96ffe89938d6f46823311edb075c9963bd33a213df3645e5143381f178dd5b80f0900fce1f1067fb0b5d41cdbbbf59c3edf9a1b6194aebdd
+  languageName: node
+  linkType: hard
+
+"configcat-js@npm:^9.5.0":
+  version: 9.5.0
+  resolution: "configcat-js@npm:9.5.0"
+  dependencies:
+    configcat-common: "npm:9.3.0"
+    tslib: "npm:^2.4.1"
+  checksum: 10c0/a5fe2499eed4af2fd3aa548aedd0717dbc7d05ec57b6169a56153b0c390a7801a16abbad025a870a13c456e3dc25c8835bc00a797d051496c167989bdff9683c
   languageName: node
   linkType: hard
 

@@ -59,28 +59,3 @@ export async function getCurrentUser(jwt, res) {
     );
   }
 }
-
-export async function getFeatureFlags() {
-  try {
-    let features = [];
-
-    log.debug('Attempting to fetch feature flags...');
-    const response = await fetch(new URL('/api/features', Config.apiUrl));
-
-    if (response.ok) {
-      features = await response.json();
-    } else {
-      log.error(
-        `Failed to fetch feature flags: ${response.status}`,
-        response.body,
-      );
-    }
-
-    return features;
-  } catch (err) {
-    log.error(
-      'An error occurred while attempting to retrieve feature flags',
-      err,
-    );
-  }
-}

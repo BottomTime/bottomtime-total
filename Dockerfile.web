@@ -8,12 +8,14 @@ FROM base AS build
 WORKDIR /app
 
 COPY package.json yarn.lock .yarnrc.yml nx.json lerna.json ./
-COPY packages/web/package.json packages/web/tsconfig.json packages/web/vite.config.ts packages/web/tailwind.config.js packages/web/postcss.config.js packages/web/bootstrap-docker.sh packages/web/index.html packages/web/rollup.config.mjs ./packages/web/
 COPY packages/api/package.json packages/api/tsconfig.json ./packages/api/
+COPY packages/common/package.json packages/common/tsconfig.json ./packages/common/
+COPY packages/web/package.json packages/web/tsconfig.json packages/web/vite.config.ts packages/web/tailwind.config.js packages/web/postcss.config.js packages/web/bootstrap-docker.sh packages/web/index.html packages/web/rollup.config.mjs ./packages/web/
 
 RUN yarn install
 
 COPY packages/api/src/ ./packages/api/src/
+COPY packages/common/src/ ./packages/common/src/
 
 COPY packages/web/public/ ./packages/web/public/
 COPY packages/web/server/ ./packages/web/server/

@@ -4,11 +4,7 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 import { Config } from './config.mjs';
-import {
-  extractJwtFromRequest,
-  getCurrentUser,
-  getFeatureFlags,
-} from './http.mjs';
+import { extractJwtFromRequest, getCurrentUser } from './http.mjs';
 import { getLogger } from './logger.mjs';
 
 const log = getLogger();
@@ -37,9 +33,6 @@ async function requestHandler(req, res, next) {
       currentUser: {
         user: jwt ? await getCurrentUser(jwt, res) : null,
       },
-      features: {
-        features: await getFeatureFlags(),
-      },
     };
     const clientOptions = {
       authToken: jwt,
@@ -63,6 +56,7 @@ async function requestHandler(req, res, next) {
     });
     res.set('Content-Type', 'text/html').send(rendered);
   } catch (error) {
+    log.error(error);
     next(error);
   }
 }

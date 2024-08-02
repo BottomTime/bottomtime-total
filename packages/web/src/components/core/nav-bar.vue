@@ -47,14 +47,15 @@
             </li>
           </ul>
 
-          <!-- Avatar for authenticated users -->
-          <button v-if="currentUser.user">
+          <!-- Notifications alert -->
+          <button v-if="notificationsEnabled.value.value && currentUser.user">
             <span class="fa-layers fa-fw">
               <i class="fa-solid fa-bell"></i>
               <span class="fa-layers-counter fa-layers-bottom-right"> 1 </span>
             </span>
           </button>
 
+          <!-- Avatar for authenticated users -->
           <button
             v-if="currentUser.user"
             id="user-menu-button"
@@ -167,10 +168,12 @@
 
 <script setup lang="ts">
 import { UserRole } from '@bottomtime/api';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import { computed, nextTick, ref } from 'vue';
 
 import { Config } from '../../config';
+import { useFeature } from '../../featrues';
 import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
@@ -186,6 +189,7 @@ type NavLink = {
 };
 
 const currentUser = useCurrentUser();
+const notificationsEnabled = useFeature(NotificationsFeature);
 
 const showLogin = ref(false);
 const showHamburger = ref(false);

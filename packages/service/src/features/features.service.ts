@@ -1,9 +1,10 @@
+import { Feature } from '@bottomtime/common';
+
 import { Injectable, Logger } from '@nestjs/common';
 
 import { User as ConfigCatUser, IConfigCatClient } from 'configcat-node';
 
 import { User } from '../users';
-import { Feature } from './features';
 
 @Injectable()
 export class FeaturesService {

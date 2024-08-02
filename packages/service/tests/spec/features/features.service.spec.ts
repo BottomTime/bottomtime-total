@@ -1,6 +1,8 @@
+import { Feature } from '@bottomtime/common';
+
 import { IConfigCatClient } from 'configcat-node';
 
-import { Feature, FeaturesService } from '../../../src/features';
+import { FeaturesService } from '../../../src/features';
 import { ConfigCatClientMock } from '../../utils/config-cat-client-mock';
 
 const TestFeatureEnabled: Feature<boolean> = {
@@ -10,6 +12,10 @@ const TestFeatureEnabled: Feature<boolean> = {
 const TestFeatureDisabled: Feature<boolean> = {
   key: 'disabled',
   defaultValue: false,
+} as const;
+const TestDisabledButDefaultEnabledFeature: Feature<boolean> = {
+  key: 'disabled_but_default_enabled',
+  defaultValue: true,
 } as const;
 const MissingFeature: Feature<number> = {
   key: 'no_such_feature',
@@ -32,6 +38,7 @@ describe('Features service', () => {
     client = new ConfigCatClientMock({
       [TestFeatureEnabled.key]: true,
       [TestFeatureDisabled.key]: false,
+      [TestDisabledButDefaultEnabledFeature.key]: false,
       [TestStringFeature.key]: 'yup',
       [TestNumericFeature.key]: 999,
     });
@@ -41,6 +48,9 @@ describe('Features service', () => {
   it('will get the values of feature flags from the underlying client', async () => {
     await expect(service.getFeature(TestFeatureEnabled)).resolves.toBe(true);
     await expect(service.getFeature(TestFeatureDisabled)).resolves.toBe(false);
+    await expect(
+      service.getFeature(TestDisabledButDefaultEnabledFeature),
+    ).resolves.toBe(false);
     await expect(service.getFeature(TestStringFeature)).resolves.toBe('yup');
     await expect(service.getFeature(TestNumericFeature)).resolves.toBe(999);
   });

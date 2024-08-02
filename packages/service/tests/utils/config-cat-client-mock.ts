@@ -32,7 +32,7 @@ export class ConfigCatClientMock implements IConfigCatClient {
   ): Promise<SettingTypeOf<T>> {
     const flag = this._flags[key];
 
-    if (flag) {
+    if (flag !== undefined) {
       return Promise.resolve(flag as SettingTypeOf<T>);
     }
 

@@ -23,6 +23,11 @@ export async function createApp() {
   );
   app.use('/api', createProxyMiddleware({ target: Config.apiUrl }));
 
+  // TODO: Global error handler needs to return something meaningful.
+  app.use((err, _req, res, _next) => {
+    res.status(500).send(err);
+  });
+
   if (Config.isProduction) {
     await initProdServer(app);
   } else {

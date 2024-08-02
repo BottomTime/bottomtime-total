@@ -17,6 +17,14 @@ export class Config {
     return process.env.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';
   }
 
+  /**
+   * API SDK key for accessing ConfigCat feature flag values.
+   * (Feature flags can be managed at https://app.configcat.com/)
+   */
+  static get configCatSdkKey(): string {
+    return process.env.BTWEB_VITE_CONFIGCAT_API_KEY || '';
+  }
+
   /** Whether or not to invoke Google's Places APIs. (This needs to be set to true to enable autocomplete in location boxes.) */
   static get enablePlacesApi(): boolean {
     const parsed = BooleanString.safeParse(
