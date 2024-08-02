@@ -1,18 +1,23 @@
-import { Feature, FlagValue } from '@bottomtime/common';
+import { Feature } from '@bottomtime/common';
 
 import { User as ConfigCatUser, IConfigCatClient } from 'configcat-common';
-import { InjectionKey, Ref, UnwrapRef, inject, ref } from 'vue';
+import { InjectionKey, Ref, inject, ref } from 'vue';
 
 import { useCurrentUser } from './store';
 
 export const FeaturesServiceKey: InjectionKey<IConfigCatClient> =
   Symbol('FeaturesService');
 
-export function useFeature<T extends FlagValue>(
-  feature: Feature<T>,
-): { isLoading: Ref<boolean>; value: Ref<T> } {
+export type FeatureValue<T> = {
+  isLoading: Ref<boolean>;
+  value: Ref<T>;
+};
+
+export function useFeatureToggle(
+  feature: Feature<boolean>,
+): FeatureValue<boolean> {
   const isLoading = ref(true);
-  const value = ref<T>(feature.defaultValue);
+  const value = ref(feature.defaultValue);
 
   const currentUser = useCurrentUser();
   const client = inject(FeaturesServiceKey);
@@ -27,9 +32,9 @@ export function useFeature<T extends FlagValue>(
     : undefined;
 
   client
-    .getValueAsync<T>(feature.key, feature.defaultValue, user)
+    .getValueAsync<boolean>(feature.key, feature.defaultValue, user)
     .then((flag) => {
-      value.value = flag as UnwrapRef<T>;
+      value.value = flag;
     })
     .catch((err) => {
       /* eslint-disable-next-line no-console */
@@ -39,5 +44,10 @@ export function useFeature<T extends FlagValue>(
       isLoading.value = false;
     });
 
-  return { isLoading, value: value as Ref<T> };
+  client.on('configChanged', (newConfig) => {
+    const newValue = newConfig.settings[feature.key]?.value;
+    if (typeof newValue === 'boolean') value.value = newValue;
+  });
+
+  return { isLoading, value };
 }

@@ -51,20 +51,6 @@
           </p>
         </FormBox>
       </a>
-
-      <a href="/admin/features">
-        <FormBox class="space-y-3">
-          <TextHeading class="space-x-3">
-            <span>
-              <i class="fa-solid fa-flag fa-lg"></i>
-            </span>
-            <span>Manage Feature Flags</span>
-          </TextHeading>
-          <p class="text-sm italic">
-            Create, edit, remove, or toggle feature flags for the platform.
-          </p>
-        </FormBox>
-      </a>
     </div>
   </RequireAuth>
 </template>

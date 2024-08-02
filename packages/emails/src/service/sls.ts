@@ -1,4 +1,4 @@
-import { EmailQueueMessage, createLogger } from '@bottomtime/common';
+import { EmailQueueMessage } from '@bottomtime/common';
 
 import { SQSBatchResponse, SQSHandler } from 'aws-lambda';
 import Logger from 'bunyan';
@@ -6,6 +6,7 @@ import { createTransport } from 'nodemailer';
 
 import { Config } from './config';
 import { EmailService, createMailClient } from './email';
+import { createLogger } from './logger';
 
 let log: Logger;
 let service: EmailService;

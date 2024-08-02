@@ -173,7 +173,7 @@ import { NotificationsFeature } from '@bottomtime/common';
 import { computed, nextTick, ref } from 'vue';
 
 import { Config } from '../../config';
-import { useFeature } from '../../featrues';
+import { useFeatureToggle } from '../../featrues';
 import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
@@ -189,7 +189,7 @@ type NavLink = {
 };
 
 const currentUser = useCurrentUser();
-const notificationsEnabled = useFeature(NotificationsFeature);
+const notificationsEnabled = useFeatureToggle(NotificationsFeature);
 
 const showLogin = ref(false);
 const showHamburger = ref(false);
