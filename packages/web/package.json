@@ -28,7 +28,7 @@
     "compression": "^1.7.4",
     "configcat-common": "^9.3.0",
     "configcat-js": "^9.5.0",
-    "configcat-node": "^11.3.0",
+    "configcat-js-ssr": "^8.4.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",

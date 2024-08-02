@@ -1,6 +1,6 @@
 import { ApiClientOptions } from '@bottomtime/api';
 
-import { PollingMode, getClient } from 'configcat-node';
+import { PollingMode, getClient } from 'configcat-js-ssr';
 import { StateTree } from 'pinia';
 import { renderToString } from 'vue/server-renderer';
 

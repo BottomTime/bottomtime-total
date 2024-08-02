@@ -2848,7 +2848,7 @@ __metadata:
     compression: "npm:^1.7.4"
     configcat-common: "npm:^9.3.0"
     configcat-js: "npm:^9.5.0"
-    configcat-node: "npm:^11.3.0"
+    configcat-js-ssr: "npm:^8.4.1"
     cookie-parser: "npm:^1.4.6"
     cors: "npm:^2.8.5"
     dayjs: "npm:^1.11.10"
@@ -8103,6 +8103,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.6.8":
+  version: 1.7.3
+  resolution: "axios@npm:1.7.3"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10c0/a18cbe559203efa05fb1fec2d1898e23bf6329bd2575784ee32aa11b5bbe1d54b9f472c49a261294125519cf62aa4fe5ef6e647bb7482eafc15bffe15ab314ce
+  languageName: node
+  linkType: hard
+
 "babel-jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "babel-jest@npm:29.7.0"
@@ -9608,6 +9619,17 @@ __metadata:
   dependencies:
     tslib: "npm:^2.4.1"
   checksum: 10c0/03f260eafea184fd96ffe89938d6f46823311edb075c9963bd33a213df3645e5143381f178dd5b80f0900fce1f1067fb0b5d41cdbbbf59c3edf9a1b6194aebdd
+  languageName: node
+  linkType: hard
+
+"configcat-js-ssr@npm:^8.4.1":
+  version: 8.4.1
+  resolution: "configcat-js-ssr@npm:8.4.1"
+  dependencies:
+    axios: "npm:^1.6.8"
+    configcat-common: "npm:9.3.0"
+    tslib: "npm:^2.4.1"
+  checksum: 10c0/7d4cf275271ae60e62d552593f4f2a7e4a33deaae4ef5b57004e51733fdfe0688fefadb414d3316b061b2bb3fa7191ef9b1487754930fdf884199a4611490a7c
   languageName: node
   linkType: hard
 
