@@ -3,7 +3,7 @@ import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
-import { Config } from './config.mjs';
+import { Config, getEnv } from './config.mjs';
 import { extractJwtFromRequest, getCurrentUser } from './http.mjs';
 import { getLogger } from './logger.mjs';
 
@@ -29,6 +29,7 @@ async function requestHandler(req, res, next) {
   try {
     const htmlTemplate = await loadHtmlTemplate(req.originalUrl);
     const jwt = extractJwtFromRequest(req);
+    const env = getEnv();
     const state = {
       currentUser: {
         user: jwt ? await getCurrentUser(jwt, res) : null,
@@ -48,6 +49,7 @@ async function requestHandler(req, res, next) {
 
     log.debug('Rendering HTML page...');
     const rendered = Mustache.render(htmlTemplate, {
+      env: JSON.stringify(env),
       head: '',
       content: html,
       initialState,

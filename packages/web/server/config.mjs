@@ -44,3 +44,14 @@ export class Config {
     return toNumber(process.env.BTWEB_PORT, 4850);
   }
 }
+
+export function getEnv() {
+  const env = Object.entries(process.env)
+    .filter(([key]) => key.startsWith('BTWEB_VITE_') || key === 'NODE_ENV')
+    .reduce((acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {});
+  Object.assign(env, import.meta.env);
+  return env;
+}
