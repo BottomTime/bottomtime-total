@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
@@ -25,6 +26,9 @@ import { UserOAuthEntity } from './user-oauth.entity';
 export class UserEntity {
   @PrimaryColumn('uuid')
   id: string = '';
+
+  @Column({ type: 'int', default: AccountTier.Basic })
+  accountTier: AccountTier = AccountTier.Basic;
 
   @Column({ type: 'varchar', length: 150, nullable: true })
   avatar: string | null = null;

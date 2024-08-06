@@ -16,6 +16,11 @@ export enum UsersSortBy {
   MemberSince = 'memberSince',
 }
 
+export enum AccountTier {
+  Basic = 0,
+  ShopOwner = 100,
+}
+
 export enum AvatarSize {
   Small = '32x32',
   Medium = '64x64',
