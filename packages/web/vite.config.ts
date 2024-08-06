@@ -10,6 +10,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 export default defineConfig(({ mode }) => {
   return {
     envPrefix: 'BTWEB_VITE_',
+    mode: process.env.NODE_ENV || 'development',
     plugins: [
       vue(),
       nodePolyfills({

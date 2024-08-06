@@ -47,10 +47,9 @@ commands:
           at: ./
       - run:
           name: Rebuild Web w/ Environment Variables
-          working_directory: packages/web/
           command: |
-            yarn build:server --mode <<parameters.vite_mode>>
-            yarn build:client --mode <<parameters.vite_mode>>
+            yarn --cwd packages/web/ clean
+            NODE_ENV=<<parameters.vite_mode>> yarn build --scope=@bottomtime/web --stream
       - run:
           name: Migrate Database
           working_directory: packages/service/
