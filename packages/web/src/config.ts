@@ -64,6 +64,6 @@ export class Config {
    * Will be true if we are currently executing on the server-side or false if we are running in the browser.
    */
   static get isSSR(): boolean {
-    return window === undefined;
+    return typeof window === 'undefined';
   }
 }
