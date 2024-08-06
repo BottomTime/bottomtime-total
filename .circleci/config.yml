@@ -37,12 +37,20 @@ commands:
         type: string
       var_file:
         type: string
+      vite_mode:
+        type: string
     steps:
       - aws-cli/install
       - checkout
       - yarn_install
       - attach_workspace:
           at: ./
+      - run:
+          name: Rebuild Web w/ Environment Variables
+          working_directory: packages/web/
+          command: |
+            yarn build:server --mode <<parameters.vite_mode>>
+            yarn build:client --mode <<parameters.vite_mode>>
       - run:
           name: Migrate Database
           working_directory: packages/service/
@@ -282,6 +290,7 @@ jobs:
           fresh_db: true
           state_key: $AWS_REGION.e2e.tfvars
           var_file: vars/e2e.tfvars
+          vite_mode: e2e
 
   deploy_staging:
     docker:
@@ -293,6 +302,7 @@ jobs:
       - deploy_env:
           state_key: $AWS_REGION.staging.tfvars
           var_file: vars/staging.tfvars
+          vite_mode: staging
 
   deploy_production:
     docker:
@@ -304,6 +314,7 @@ jobs:
       - deploy_env:
           state_key: $AWS_REGION.production.tfvars
           var_file: vars/production.tfvars
+          vite_mode: production
 
 workflows:
   test_and_deploy:

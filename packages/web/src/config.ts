@@ -2,23 +2,19 @@
 import { BooleanString } from '@bottomtime/api';
 
 export class Config {
-  private static get source(): Record<string, string | undefined> {
-    return Config.isSSR ? process.env : window.__ENV__;
-  }
-
   /** Email address for contacting support/admin. */
   static get adminEmail(): string {
-    return Config.source.BTWEB_VITE_ADMIN_EMAIL || 'admin@bottomti.me';
+    return import.meta.env.BTWEB_VITE_ADMIN_EMAIL || 'admin@bottomti.me';
   }
 
   /** The application title as it should appear in the browser tab, etc. */
   static get appTitle(): string {
-    return Config.source.BTWEB_VITE_APP_TITLE || 'Bottom Time';
+    return import.meta.env.BTWEB_VITE_APP_TITLE || 'Bottom Time';
   }
 
   /** Base URL at which the app is listening for requests. */
   static get baseUrl(): string {
-    return Config.source.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';
+    return import.meta.env.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';
   }
 
   /**
@@ -26,25 +22,25 @@ export class Config {
    * (Feature flags can be managed at https://app.configcat.com/)
    */
   static get configCatSdkKey(): string {
-    return Config.source.BTWEB_VITE_CONFIGCAT_API_KEY || '';
+    return import.meta.env.BTWEB_VITE_CONFIGCAT_API_KEY || '';
   }
 
   /** Whether or not to invoke Google's Places APIs. (This needs to be set to true to enable autocomplete in location boxes.) */
   static get enablePlacesApi(): boolean {
     const parsed = BooleanString.safeParse(
-      Config.source.BTWEB_VITE_ENABLE_PLACES_API,
+      import.meta.env.BTWEB_VITE_ENABLE_PLACES_API,
     );
     return parsed.success ? parsed.data : false;
   }
 
   /** The value of the `NODE_ENV` environment variable. */
   static get env(): string {
-    return Config.source.NODE_ENV || 'development';
+    return import.meta.env.NODE_ENV || 'development';
   }
 
   /** Google API key for accessing the Google Maps API. */
   static get googleApiKey(): string {
-    return Config.source.BTWEB_VITE_GOOGLE_API_KEY || '';
+    return import.meta.env.BTWEB_VITE_GOOGLE_API_KEY || '';
   }
 
   /**

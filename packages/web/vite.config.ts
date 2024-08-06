@@ -8,8 +8,8 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // const define = loadDefine(mode);
   return {
+    envPrefix: 'BTWEB_VITE_',
     plugins: [
       vue(),
       nodePolyfills({

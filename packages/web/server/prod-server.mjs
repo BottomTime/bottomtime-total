@@ -3,14 +3,13 @@ import Mustache from 'mustache';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
-import { Config, getEnv } from './config.mjs';
+import { Config } from './config.mjs';
 import { extractJwtFromRequest, getCurrentUser } from './http.mjs';
 import { getLogger } from './logger.mjs';
 
 const log = getLogger();
 let htmlTemplate;
 let ssr;
-let env;
 
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 async function errorHandler(err, _req, res, _next) {
@@ -41,7 +40,6 @@ async function requestHandler(req, res, next) {
 
     log.debug('Rendering HTML page...');
     const rendered = Mustache.render(htmlTemplate, {
-      env: JSON.stringify(env),
       head: '',
       content: html,
       initialState,
@@ -59,9 +57,6 @@ async function requestHandler(req, res, next) {
 
 export async function initProdServer(app) {
   log.info('🚀 Starting server in production mode...');
-
-  log.debug('Loading environment variables...');
-  env = getEnv();
 
   log.debug('Loading index.html template...');
   htmlTemplate = await readFile(
