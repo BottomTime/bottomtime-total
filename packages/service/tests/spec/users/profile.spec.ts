@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
@@ -15,6 +16,7 @@ import { dataSource } from '../../data-source';
 
 const TestUserData: UserEntity = {
   id: 'bdb62177-2086-4d45-a46b-3120b33dab7a',
+  accountTier: AccountTier.Basic,
   emailVerified: true,
   isLockedOut: false,
   memberSince: new Date('2020-01-01T00:00:00.000Z'),

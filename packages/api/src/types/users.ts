@@ -146,6 +146,7 @@ export type ResetPasswordWithTokenParamsDTO = z.infer<
 
 export const UserSchema = z.object({
   id: z.string(),
+  accountTier: z.nativeEnum(AccountTier),
   username: z.string(),
   email: EmailSchema.optional(),
   emailVerified: z.boolean(),

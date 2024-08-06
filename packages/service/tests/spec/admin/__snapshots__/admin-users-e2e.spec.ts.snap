@@ -5,6 +5,7 @@ exports[`Admin End-to-End Tests when searching users will filter results based o
   "totalCount": 4,
   "users": [
     {
+      "accountTier": 0,
       "email": "Rhianna16@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -35,6 +36,7 @@ exports[`Admin End-to-End Tests when searching users will filter results based o
       "username": "Rhianna.Terry",
     },
     {
+      "accountTier": 0,
       "email": "Felton.Renner36@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -65,6 +67,7 @@ exports[`Admin End-to-End Tests when searching users will filter results based o
       "username": "Felton36",
     },
     {
+      "accountTier": 0,
       "email": "Barrett.Stracke@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -95,6 +98,7 @@ exports[`Admin End-to-End Tests when searching users will filter results based o
       "username": "Barrett_Stracke77",
     },
     {
+      "accountTier": 0,
       "email": "Aliyah72@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -133,6 +137,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
   "totalCount": 102,
   "users": [
     {
+      "accountTier": 0,
       "email": "Winona_Doyle@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -163,6 +168,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Winona.Doyle",
     },
     {
+      "accountTier": 0,
       "email": "Tyler.Sipes90@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -193,6 +199,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Tyler30",
     },
     {
+      "accountTier": 0,
       "email": "Trey_Langosh98@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -223,6 +230,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Trey.Langosh",
     },
     {
+      "accountTier": 0,
       "email": "Tomasa.Lebsack@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -253,6 +261,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Tomasa33",
     },
     {
+      "accountTier": 0,
       "email": "Sven70@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -283,6 +292,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Sven_White",
     },
     {
+      "accountTier": 0,
       "email": "Steve_Abernathy44@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -313,6 +323,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Steve54",
     },
     {
+      "accountTier": 0,
       "email": "Stephany4@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -343,6 +354,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Stephany76",
     },
     {
+      "accountTier": 0,
       "email": "Sonya_Hintz80@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -373,6 +385,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Sonya.Hintz0",
     },
     {
+      "accountTier": 0,
       "email": "Sigurd63@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -403,6 +416,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Sigurd_Reinger55",
     },
     {
+      "accountTier": 0,
       "email": "Sean.Ruecker33@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -433,6 +447,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Sean_Ruecker",
     },
     {
+      "accountTier": 0,
       "email": "Rhianna16@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -463,6 +478,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Rhianna.Terry",
     },
     {
+      "accountTier": 0,
       "email": "Rene35@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -493,6 +509,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Rene47",
     },
     {
+      "accountTier": 0,
       "email": "Reina.Orn75@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -523,6 +540,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Reina54",
     },
     {
+      "accountTier": 0,
       "email": "Oscar62@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -553,6 +571,7 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Oscar.Kling5",
     },
     {
+      "accountTier": 0,
       "email": "Okey_Cummerata@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
