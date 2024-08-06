@@ -10,7 +10,7 @@
       </p>
     </FormBox>
 
-    <ul>
+    <ul class="px-2">
       <DiveOperatorsListItem
         v-for="operator in operators.operators"
         :key="operator.slug"

@@ -168,7 +168,10 @@
 
 <script setup lang="ts">
 import { UserRole } from '@bottomtime/api';
-import { NotificationsFeature } from '@bottomtime/common';
+import {
+  ManageDiveOperatorsFeature,
+  NotificationsFeature,
+} from '@bottomtime/common';
 
 import { computed, nextTick, ref } from 'vue';
 
@@ -188,6 +191,7 @@ type NavLink = {
   visible: boolean;
 };
 
+const diveOperatorsEnabled = useFeatureToggle(ManageDiveOperatorsFeature);
 const currentUser = useCurrentUser();
 const notificationsEnabled = useFeatureToggle(NotificationsFeature);
 
@@ -212,6 +216,11 @@ const navLinks = computed<NavLink[]>(() => {
       title: 'Log Book',
       url: `/logbook/${currentUser.user?.username}`,
       visible: !currentUser.anonymous,
+    },
+    {
+      title: 'Manage Dive Shops',
+      url: `/shops/${currentUser.user?.username}`,
+      visible: diveOperatorsEnabled.value.value && !currentUser.anonymous,
     },
     {
       title: 'Admin',
