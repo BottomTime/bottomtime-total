@@ -380,6 +380,7 @@ export class DiveOperatorsController {
     operator.socials.instagram = options.socials?.instagram;
     operator.socials.tiktok = options.socials?.tiktok;
     operator.socials.twitter = options.socials?.twitter;
+    operator.socials.youtube = options.socials?.youtube;
     operator.website = options.website;
 
     operator.slug =

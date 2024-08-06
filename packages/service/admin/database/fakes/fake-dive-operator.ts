@@ -35,6 +35,7 @@ export function fakeDiveOperator(userIds: string[]): DiveOperatorEntity {
     instagram: faker.internet.userName(),
     tiktok: faker.internet.userName(),
     twitter: faker.internet.userName(),
+    youtube: faker.internet.userName(),
 
     logo: faker.image.url({ width: 128, height: 128 }),
     banner: faker.image.url({ width: 1024, height: 256 }),

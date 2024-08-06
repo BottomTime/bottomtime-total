@@ -31,6 +31,7 @@ const OperatorSchema = z.object({
   instagram: z.string().nullable(),
   tiktok: z.string().nullable(),
   twitter: z.string().nullable(),
+  youtube: z.string().nullable(),
 
   logo: z.string().nullable(),
   banner: z.string().nullable(),
@@ -74,6 +75,7 @@ export function createTestDiveOperator(
     instagram: options?.instagram ?? faker.internet.userName(),
     tiktok: options?.tiktok ?? faker.internet.userName(),
     twitter: options?.twitter ?? faker.internet.userName(),
+    youtube: options?.youtube ?? faker.internet.userName(),
 
     logo: options?.logo ?? faker.image.url({ width: 128, height: 128 }),
     banner: options?.banner ?? faker.image.url({ width: 1024, height: 256 }),

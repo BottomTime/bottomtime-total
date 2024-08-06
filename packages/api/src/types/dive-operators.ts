@@ -25,6 +25,7 @@ export const CreateOrUpdateDiveOperatorSchema = z.object({
       twitter: z.string().max(100),
       instagram: z.string().max(100),
       tiktok: z.string().max(100),
+      youtube: z.string().max(100),
     })
     .partial()
     .optional(),

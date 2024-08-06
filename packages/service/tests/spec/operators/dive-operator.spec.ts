@@ -36,6 +36,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     'https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg',
   tiktok: '@diversden',
   twitter: 'diversden',
+  youtube: 'diversden',
 };
 
 describe('DiveOperator class', () => {
@@ -110,6 +111,7 @@ describe('DiveOperator class', () => {
     expect(operator.socials.instagram).toBe(TestData.instagram);
     expect(operator.socials.tiktok).toBe(TestData.tiktok);
     expect(operator.socials.twitter).toBe(TestData.twitter);
+    expect(operator.socials.youtube).toBe(TestData.youtube);
     expect(operator.logo).toBe(TestData.logo);
     expect(operator.banner).toBe(TestData.banner);
   });
@@ -137,6 +139,7 @@ describe('DiveOperator class', () => {
     const newInstagram = 'instagram';
     const newTiktok = 'tiktok';
     const newTwitter = 'twitter';
+    const newYoutube = 'youtube';
     const newLogo = 'https://example.com/logo.png';
     const newBanner = 'https://example.com/banner.jpg';
 
@@ -152,6 +155,7 @@ describe('DiveOperator class', () => {
     operator.socials.instagram = newInstagram;
     operator.socials.tiktok = newTiktok;
     operator.socials.twitter = newTwitter;
+    operator.socials.youtube = newYoutube;
     operator.logo = newLogo;
     operator.banner = newBanner;
 
@@ -167,6 +171,7 @@ describe('DiveOperator class', () => {
     expect(operator.socials.instagram).toBe(newInstagram);
     expect(operator.socials.tiktok).toBe(newTiktok);
     expect(operator.socials.twitter).toBe(newTwitter);
+    expect(operator.socials.youtube).toBe(newYoutube);
     expect(operator.logo).toBe(newLogo);
     expect(operator.banner).toBe(newBanner);
   });
@@ -199,6 +204,7 @@ describe('DiveOperator class', () => {
     expect(savedOperator.instagram).toBe(data.instagram);
     expect(savedOperator.tiktok).toBe(data.tiktok);
     expect(savedOperator.twitter).toBe(data.twitter);
+    expect(savedOperator.youtube).toBe(data.youtube);
     expect(savedOperator.owner!.id).toEqual(owner.id);
     expect(savedOperator.id).toBe(operator.id);
     expect(savedOperator.createdAt).toEqual(operator.createdAt);
@@ -220,6 +226,7 @@ describe('DiveOperator class', () => {
     const newInstagram = 'instagram';
     const newTiktok = 'tiktok';
     const newTwitter = 'twitter';
+    const newYoutube = 'youtube';
 
     operator.name = newName;
     operator.slug = newSlug;
@@ -233,6 +240,7 @@ describe('DiveOperator class', () => {
     operator.socials.instagram = newInstagram;
     operator.socials.tiktok = newTiktok;
     operator.socials.twitter = newTwitter;
+    operator.socials.youtube = newYoutube;
 
     await operator.save();
 
@@ -256,6 +264,7 @@ describe('DiveOperator class', () => {
     expect(savedOperator.instagram).toBe(newInstagram);
     expect(savedOperator.tiktok).toBe(newTiktok);
     expect(savedOperator.twitter).toBe(newTwitter);
+    expect(savedOperator.youtube).toBe(newYoutube);
     expect(savedOperator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
   });
 

@@ -119,6 +119,12 @@
  *               description: The Twitter/X username of the dive operator.
  *               example: oceandivers
  *               maxLength: 100
+ *             youtube:
+ *               type: string
+ *               name: YouTube
+ *               description: The YouTube username of the dive operator.
+ *               example: OceanDivers
+ *               maxLength: 100
  *     DiveOperator:
  *       allOf:
  *         - type: object

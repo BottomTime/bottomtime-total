@@ -22,6 +22,7 @@ export const DiveOperatorSelectFields = [
   'operators.slug',
   'operators.tiktok',
   'operators.twitter',
+  'operators.youtube',
   'operators.verified',
   'operators.website',
   'owner.id',
