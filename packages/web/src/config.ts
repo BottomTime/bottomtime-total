@@ -4,17 +4,17 @@ import { BooleanString } from '@bottomtime/api';
 export class Config {
   /** Email address for contacting support/admin. */
   static get adminEmail(): string {
-    return import.meta.env.BTWEB_VITE_ADMIN_EMAIL || 'admin@bottomti.me';
+    return process.env.BTWEB_VITE_ADMIN_EMAIL || 'admin@bottomti.me';
   }
 
   /** The application title as it should appear in the browser tab, etc. */
   static get appTitle(): string {
-    return import.meta.env.BTWEB_VITE_APP_TITLE || 'Bottom Time';
+    return process.env.BTWEB_VITE_APP_TITLE || 'Bottom Time';
   }
 
   /** Base URL at which the app is listening for requests. */
   static get baseUrl(): string {
-    return import.meta.env.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';
+    return process.env.BTWEB_VITE_BASE_URL || 'http://localhost:4850/';
   }
 
   /**
@@ -22,25 +22,25 @@ export class Config {
    * (Feature flags can be managed at https://app.configcat.com/)
    */
   static get configCatSdkKey(): string {
-    return import.meta.env.BTWEB_VITE_CONFIGCAT_API_KEY || '';
+    return process.env.BTWEB_VITE_CONFIGCAT_API_KEY || '';
   }
 
   /** Whether or not to invoke Google's Places APIs. (This needs to be set to true to enable autocomplete in location boxes.) */
   static get enablePlacesApi(): boolean {
     const parsed = BooleanString.safeParse(
-      import.meta.env.BTWEB_VITE_ENABLE_PLACES_API,
+      process.env.BTWEB_VITE_ENABLE_PLACES_API,
     );
     return parsed.success ? parsed.data : false;
   }
 
   /** The value of the `NODE_ENV` environment variable. */
   static get env(): string {
-    return import.meta.env.NODE_ENV || 'development';
+    return process.env.NODE_ENV || 'development';
   }
 
   /** Google API key for accessing the Google Maps API. */
   static get googleApiKey(): string {
-    return import.meta.env.BTWEB_VITE_GOOGLE_API_KEY || '';
+    return process.env.BTWEB_VITE_GOOGLE_API_KEY || '';
   }
 
   /**
@@ -48,7 +48,7 @@ export class Config {
    * See documentation here https://vitejs.dev/guide/env-and-mode.html#node-env-and-modes
    */
   static get mode(): string {
-    return import.meta.env.MODE || 'development';
+    return process.env.MODE || 'development';
   }
 
   /**
@@ -64,6 +64,6 @@ export class Config {
    * Will be true if we are currently executing on the server-side or false if we are running in the browser.
    */
   static get isSSR(): boolean {
-    return import.meta.env.SSR;
+    return window === undefined;
   }
 }
