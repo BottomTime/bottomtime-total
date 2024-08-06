@@ -136,6 +136,13 @@ export type ChangePasswordParamsDTO = z.infer<
   typeof ChangePasswordParamsSchema
 >;
 
+export const ChangeMembershipParamsSchema = z.object({
+  accountTier: z.nativeEnum(AccountTier),
+});
+export type ChangeMembershipParamsDTO = z.infer<
+  typeof ChangeMembershipParamsSchema
+>;
+
 export const ResetPasswordWithTokenParamsSchema = z.object({
   token: z.string().min(1),
   newPassword: PasswordStrengthSchema,

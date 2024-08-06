@@ -1,4 +1,8 @@
-import { PasswordResetTokenStatus, UserRole } from '@bottomtime/api';
+import {
+  AccountTier,
+  PasswordResetTokenStatus,
+  UserRole,
+} from '@bottomtime/api';
 
 import { ConflictException } from '@nestjs/common';
 
@@ -17,6 +21,7 @@ jest.mock('../../../src/config');
 const Password = '%HBc..`9Cbt]3/S';
 const TestUserData: Partial<UserEntity> = {
   id: '0050bf4c-faf4-4b06-be96-26954c983764',
+  accountTier: AccountTier.Basic,
   email: 'Emerson69@yahoo.com',
   emailLowered: 'emerson69@yahoo.com',
   emailVerified: false,
@@ -235,6 +240,19 @@ describe('User Class', () => {
         expect(compare(Password, data.passwordHash!)).resolves.toBe(true),
         expect(compare(Password, result!.passwordHash!)).resolves.toBe(true),
       ]);
+    });
+  });
+
+  describe('when changing membership', () => {
+    it('will change the account tier', async () => {
+      const newTier = AccountTier.ShopOwner;
+      await Users.save(data);
+
+      await expect(user.changeMembership(newTier)).resolves.toBe(true);
+
+      const stored = await Users.findOneByOrFail({ id: user.id });
+      expect(user.accountTier).toEqual(newTier);
+      expect(stored.accountTier).toEqual(newTier);
     });
   });
 

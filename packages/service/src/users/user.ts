@@ -227,7 +227,11 @@ export class User implements Express.User {
     return true;
   }
 
-  async changeMembership(accountTier: AccountTier): Promise<void> {}
+  async changeMembership(accountTier: AccountTier): Promise<boolean> {
+    const { affected } = await this.Users.update(this.id, { accountTier });
+    this.data.accountTier = accountTier;
+    return affected === 1;
+  }
 
   async requestPasswordResetToken(): Promise<string> {
     const token = randomBytes(32).toString('base64url');
