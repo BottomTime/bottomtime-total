@@ -227,6 +227,8 @@ export class User implements Express.User {
     return true;
   }
 
+  async changeMembership(accountTier: AccountTier): Promise<void> {}
+
   async requestPasswordResetToken(): Promise<string> {
     const token = randomBytes(32).toString('base64url');
     this.data.passwordResetToken = token;
