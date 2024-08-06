@@ -1,14 +1,13 @@
-import * as common from '@bottomtime/common';
-
 import { Context, SQSEvent } from 'aws-lambda';
 
 import * as mailClient from '../../src/service/email/nodemailer-client';
+import * as logger from '../../src/service/logger';
 import { handler } from '../../src/service/sls';
 import Messages from '../fixtures/messages.json';
 import { Log } from '../utils';
 import { MockMailClient } from '../utils/mock-mail-client';
 
-jest.mock('@bottomtime/common');
+jest.mock('../../src/service/logger');
 jest.mock('../../src/service/email/nodemailer-client');
 
 describe('Servless Handler', () => {
@@ -18,7 +17,7 @@ describe('Servless Handler', () => {
   beforeAll(() => {
     messages = Messages;
     client = new MockMailClient();
-    jest.mocked(common.createLogger).mockImplementation(() => Log);
+    jest.mocked(logger.createLogger).mockImplementation(() => Log);
     jest.mocked(mailClient.createMailClient).mockReturnValueOnce(client);
   });
 

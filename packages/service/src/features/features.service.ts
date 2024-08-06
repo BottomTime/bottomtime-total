@@ -1,50 +1,30 @@
-import { CreateOrUpdateFeatureDTO } from '@bottomtime/api';
+import { Feature } from '@bottomtime/common';
 
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, Logger } from '@nestjs/common';
 
-import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { User as ConfigCatUser, IConfigCatClient } from 'configcat-node';
 
-import { FeatureEntity } from '../data';
-import { Feature } from './feature';
-
-export type CreateFeatureOptions = CreateOrUpdateFeatureDTO & {
-  key: string;
-};
+import { User } from '../users';
 
 @Injectable()
 export class FeaturesService {
-  constructor(
-    @InjectRepository(FeatureEntity)
-    private readonly features: Repository<FeatureEntity>,
-  ) {}
+  private readonly log = new Logger(FeaturesService.name);
 
-  async listFeatures(): Promise<Feature[]> {
-    const data = await this.features.find({ order: { name: 'ASC' } });
-    return data.map((feature) => new Feature(this.features, feature));
-  }
+  constructor(private readonly client: IConfigCatClient) {}
 
-  async getFeature(key: string): Promise<Feature | undefined> {
-    const data = await this.features.findOneBy({ key });
-    return data ? new Feature(this.features, data) : undefined;
-  }
+  async getFeature<T extends boolean | string | number>(
+    feature: Feature<T>,
+    user?: User,
+  ): Promise<T> {
+    const configCatUser = user
+      ? new ConfigCatUser(user.id, user.email ?? undefined)
+      : undefined;
+    const value = await this.client.getValueAsync<T>(
+      feature.key,
+      feature.defaultValue,
+      configCatUser,
+    );
 
-  async featureExists(key: string): Promise<boolean> {
-    return await this.features.existsBy({ key });
-  }
-
-  async createFeature(options: CreateFeatureOptions): Promise<Feature> {
-    const data = new FeatureEntity();
-    data.id = uuid();
-    data.key = options.key;
-
-    const feature = new Feature(this.features, data);
-    feature.name = options.name;
-    feature.description = options.description;
-    feature.enabled = options.enabled ?? false;
-
-    await feature.save();
-    return feature;
+    return value as T;
   }
 }

@@ -6,7 +6,6 @@ export * from './admin';
 export * from './auth';
 export * from './dive-operators';
 export * from './errors';
-export * from './features';
 export * from './friends';
 export * from './json-data';
 export * from './notifications';

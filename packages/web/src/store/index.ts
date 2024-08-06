@@ -3,7 +3,6 @@ export * from './alerts.store';
 export * from './current-user.store';
 export * from './dive-sites.store';
 export * from './error.store';
-export * from './features.store';
 export * from './friends.store';
 export * from './log-entries.store';
 export * from './profiles.store';

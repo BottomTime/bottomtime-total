@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@bottomtime/api": "workspace:*",
+    "@bottomtime/common": "workspace:*",
     "@codegenie/serverless-express": "^4.14.1",
     "@googlemaps/js-api-loader": "^1.16.6",
     "@vuelidate/core": "^2.0.3",
@@ -25,6 +26,9 @@
     "aws-lambda": "^1.0.7",
     "bunyan": "^1.8.15",
     "compression": "^1.7.4",
+    "configcat-common": "^9.3.0",
+    "configcat-js": "^9.5.0",
+    "configcat-js-ssr": "^8.4.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dayjs": "^1.11.10",

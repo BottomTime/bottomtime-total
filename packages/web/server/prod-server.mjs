@@ -4,11 +4,7 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 import { Config } from './config.mjs';
-import {
-  extractJwtFromRequest,
-  getCurrentUser,
-  getFeatureFlags,
-} from './http.mjs';
+import { extractJwtFromRequest, getCurrentUser } from './http.mjs';
 import { getLogger } from './logger.mjs';
 
 const log = getLogger();
@@ -28,9 +24,6 @@ async function requestHandler(req, res, next) {
     const state = {
       currentUser: {
         user: jwt ? await getCurrentUser(jwt, res) : null,
-      },
-      features: {
-        features: await getFeatureFlags(),
       },
     };
     const clientOptions = {
@@ -57,6 +50,7 @@ async function requestHandler(req, res, next) {
     log.trace('Rendered HTML:', rendered);
     res.set('Content-Type', 'text/html').send(rendered);
   } catch (err) {
+    log.error(err);
     next(err);
   }
 }

@@ -1,2 +1,2 @@
-export * from './logger';
+export * from './features';
 export * from './mail';

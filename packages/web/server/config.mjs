@@ -20,6 +20,10 @@ export class Config {
     return process.env.BTWEB_VITE_BASE_URL ?? 'http://localhost:4850/';
   }
 
+  static get configCatSdkKey() {
+    return process.env.BTWEB_VITE_CONFIGCAT_API_KEY || '';
+  }
+
   static get cookieName() {
     return process.env.BTWEB_COOKIE_NAME ?? 'bottomtime.local';
   }
@@ -39,4 +43,15 @@ export class Config {
   static get port() {
     return toNumber(process.env.BTWEB_PORT, 4850);
   }
+}
+
+export function getEnv() {
+  const env = Object.entries(process.env)
+    .filter(([key]) => key.startsWith('BTWEB_VITE_') || key === 'NODE_ENV')
+    .reduce((acc, [key, value]) => {
+      acc[key] = value;
+      return acc;
+    }, {});
+  Object.assign(env, import.meta.env);
+  return env;
 }
