@@ -115,14 +115,17 @@
             type="primary"
             :is-loading="state.isSaving"
             :disabled="state.accountTier === props.user.accountTier.toString()"
-            test-id="btn-change-account-type"
+            control-id="confirm-account-change"
+            test-id="confirm-account-change"
             submit
             @click="onConfirmChangeAccountType"
           >
             Change account type
           </FormButton>
+
           <FormButton
-            test-id="btn-cancel-account-type"
+            control-id="cancel-account-change"
+            test-id="cancel-account-change"
             @click="onCancelChangeAccountType"
           >
             Cancel
@@ -145,6 +148,7 @@
 
       <div class="min-w-36 lg:min-w-40 xl:min-w-48">
         <FormButton
+          control-id="change-account-type"
           test-id="change-account-type"
           stretch
           @click="onChangeAccountType"
@@ -207,6 +211,7 @@ const accountTier = computed<string>(() => {
 });
 
 function onChangeAccountType() {
+  state.accountTier = props.user.accountTier.toString();
   state.showChangeAccountType = true;
 }
 
