@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
@@ -10,6 +11,7 @@ import {
 
 export const BasicUser: UserDTO = {
   id: '50a9504c-ee2c-485e-91e0-4d352409338e',
+  accountTier: AccountTier.Basic,
   email: 'sam_smith@gmail.com',
   emailVerified: true,
   hasPassword: true,
@@ -36,6 +38,7 @@ export const BasicUser: UserDTO = {
 
 export const AdminUser: UserDTO = {
   id: '50a9504c-ee2c-485e-91e0-4d352409338e',
+  accountTier: AccountTier.Basic,
   email: 'andy_admin@bottomti.me',
   emailVerified: true,
   hasPassword: true,
@@ -61,6 +64,7 @@ export const AdminUser: UserDTO = {
 };
 
 export const UserWithFullProfile: UserDTO = {
+  accountTier: AccountTier.Basic,
   emailVerified: false,
   hasPassword: true,
   id: 'e7fdcf40-509e-49f1-85d2-24f35b0afe28',
@@ -91,6 +95,7 @@ export const UserWithFullProfile: UserDTO = {
 };
 
 export const UserWithEmptyProfile: UserDTO = {
+  accountTier: AccountTier.Basic,
   emailVerified: false,
   hasPassword: true,
   id: '8772f482-8bc1-4ae2-ab15-e0d4d741878d',
