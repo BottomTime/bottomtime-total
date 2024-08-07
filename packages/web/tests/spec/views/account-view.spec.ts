@@ -1,4 +1,5 @@
 import { ApiClient } from '@bottomtime/api';
+import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
@@ -10,9 +11,11 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../src/api-client';
 import ManageAccount from '../../../src/components/users/manage-account.vue';
+import { FeaturesServiceKey } from '../../../src/featrues';
 import { LocationKey, MockLocation } from '../../../src/location';
 import { useCurrentUser } from '../../../src/store';
 import AccountView from '../../../src/views/account-view.vue';
+import { ConfigCatClientMock } from '../../config-cat-client-mock';
 import { createRouter } from '../../fixtures/create-router';
 import { BasicUser } from '../../fixtures/users';
 
@@ -22,6 +25,7 @@ dayjs.extend(utc);
 describe('Account View', () => {
   let client: ApiClient;
   let router: Router;
+  let features: ConfigCatClientMock;
 
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof AccountView>;
@@ -29,6 +33,9 @@ describe('Account View', () => {
   beforeAll(() => {
     client = new ApiClient();
     router = createRouter();
+    features = new ConfigCatClientMock({
+      [ManageDiveOperatorsFeature.key]: true,
+    });
   });
 
   beforeEach(() => {
@@ -38,6 +45,7 @@ describe('Account View', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [FeaturesServiceKey as symbol]: features,
           [LocationKey as symbol]: new MockLocation(),
         },
       },

@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   Fetcher,
   LogBookSharing,
@@ -28,6 +29,7 @@ const LoginButton = '[data-testid="login-submit"]';
 
 const UserData: UserDTO = {
   id: 'b8d70e2c-bea3-4f21-9eeb-42a4aa79f706',
+  accountTier: AccountTier.Basic,
   email: 'jbard_dives@gmail.com',
   emailVerified: true,
   hasPassword: true,

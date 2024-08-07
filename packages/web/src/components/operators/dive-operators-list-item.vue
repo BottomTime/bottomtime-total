@@ -7,34 +7,49 @@
     </div>
 
     <article class="space-y-1">
-      <FormButton
-        type="link"
-        size="2xl"
-        :test-id="`select-${operator.slug || operator.id}`"
-      >
-        <span class="capitalize">{{ operator.name }}</span>
-      </FormButton>
+      <div class="flex gap-2 align-top">
+        <FormButton
+          type="link"
+          size="2xl"
+          :test-id="`select-${operator.slug || operator.id}`"
+        >
+          <span class="capitalize">{{ operator.name }}</span>
+        </FormButton>
+
+        <div class="relative group">
+          <p v-if="operator.verified" class="text-sm text-success space-x-1">
+            <span>
+              <i class="fa-solid fa-circle-check fa-sm"></i>
+            </span>
+            <span
+              class="absolute invisible group-hover:visible transition-opacity left-[105%] top-0 bg-success text-grey-950 px-2 rounded-md"
+            >
+              Verified!
+            </span>
+          </p>
+        </div>
+      </div>
 
       <p v-if="operator.description">
         {{ operator.description }}
       </p>
 
-      <address class="flex justify-between px-2 text-sm">
-        <div class="flex flex-col gap-2">
-          <div class="flex gap-2">
+      <address class="grid grid-cols-2 px-2 gap-3 text-sm">
+        <div class="space-y-1.5">
+          <div v-if="operator.address || operator.gps" class="flex gap-2">
             <span>
               <i class="fa-solid fa-map-marker-alt"></i>
             </span>
             <label class="sr-only">Address</label>
             <p class="flex flex-col">
-              <span>{{ operator.address }}</span>
+              <span v-if="operator.address">{{ operator.address }}</span>
               <span v-if="operator.gps">
                 {{ `${operator.gps.lat}, ${operator.gps.lon}` }}
               </span>
             </p>
           </div>
 
-          <div class="flex gap-2">
+          <div v-if="operator.phone" class="flex gap-2">
             <span>
               <i class="fa-solid fa-phone"></i>
             </span>
@@ -44,7 +59,7 @@
             </NavLink>
           </div>
 
-          <div class="flex gap-2">
+          <div v-if="operator.email" class="flex gap-2">
             <span>
               <i class="fa-solid fa-envelope"></i>
             </span>
@@ -54,7 +69,7 @@
             </NavLink>
           </div>
 
-          <div class="flex gap-2">
+          <div v-if="operator.website" class="flex gap-2">
             <span>
               <i class="fa-solid fa-globe"></i>
             </span>
@@ -65,8 +80,8 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <div class="flex gap-2">
+        <div class="space-y-1.5">
+          <div v-if="operator.socials?.facebook" class="flex gap-2">
             <span>
               <i class="fa-brands fa-facebook"></i>
             </span>
@@ -79,7 +94,7 @@
             </NavLink>
           </div>
 
-          <div class="flex gap-2">
+          <div v-if="operator.socials?.instagram" class="flex gap-2">
             <span>
               <i class="fa-brands fa-instagram"></i>
             </span>
@@ -92,7 +107,7 @@
             </NavLink>
           </div>
 
-          <div class="flex gap-2">
+          <div v-if="operator.socials?.tiktok" class="flex gap-2">
             <span>
               <i class="fa-brands fa-tiktok"></i>
             </span>
@@ -105,7 +120,7 @@
             </NavLink>
           </div>
 
-          <div class="flex gap-2">
+          <div v-if="operator.socials?.twitter" class="flex gap-2">
             <span>
               <i class="fa-brands fa-x-twitter"></i>
             </span>
@@ -117,12 +132,25 @@
               {{ operator.socials?.twitter }}
             </NavLink>
           </div>
+
+          <div v-if="operator.socials?.youtube" class="flex gap-2">
+            <span>
+              <i class="fa-brands fa-youtube"></i>
+            </span>
+            <label class="sr-only">Youtube</label>
+            <NavLink
+              :to="`https://youtube.com/@${operator.socials?.youtube}/`"
+              new-tab
+            >
+              {{ operator.socials?.youtube }}
+            </NavLink>
+          </div>
         </div>
       </address>
     </article>
 
-    <div class="flex">
-      <FormButton rounded="left" size="sm">
+    <div class="flex min-w-32">
+      <FormButton v-if="false" rounded="left" size="sm">
         <p>
           <span class="sr-only">Edit {{ operator.name }}</span>
           <span>
@@ -130,7 +158,7 @@
           </span>
         </p>
       </FormButton>
-      <FormButton rounded="right" size="sm" type="danger">
+      <FormButton v-if="false" rounded="right" size="sm" type="danger">
         <p>
           <span class="sr-only">Delete {{ operator.name }}</span>
           <span>

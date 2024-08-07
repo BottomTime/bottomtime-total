@@ -88,6 +88,16 @@
                 <a class="w-full p-2 hover:bg-blue-700" href="/friends">
                   Friends
                 </a>
+                <a
+                  v-if="
+                    diveOperatorsEnabled.value &&
+                    currentUser.user?.accountTier >= AccountTier.ShopOwner
+                  "
+                  class="w-full p-2 hover:bg-blue-700"
+                  :href="`/shops/${currentUser.user?.username}`"
+                >
+                  My Dive Shops
+                </a>
                 <hr />
                 <a class="w-full p-2 hover:bg-blue-700" href="/profile">
                   Profile
@@ -167,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import { UserRole } from '@bottomtime/api';
+import { AccountTier, UserRole } from '@bottomtime/api';
 import {
   ManageDiveOperatorsFeature,
   NotificationsFeature,
@@ -208,19 +218,19 @@ const navLinks = computed<NavLink[]>(() => {
       visible: true,
     },
     {
-      title: 'Dive Sites',
-      url: '/diveSites',
-      visible: true,
-    },
-    {
       title: 'Log Book',
       url: `/logbook/${currentUser.user?.username}`,
       visible: !currentUser.anonymous,
     },
     {
-      title: 'Manage Dive Shops',
-      url: `/shops/${currentUser.user?.username}`,
-      visible: diveOperatorsEnabled.value.value && !currentUser.anonymous,
+      title: 'Dive Sites',
+      url: '/diveSites',
+      visible: true,
+    },
+    {
+      title: 'Dive Shops',
+      url: '/shops',
+      visible: diveOperatorsEnabled.value.value,
     },
     {
       title: 'Admin',

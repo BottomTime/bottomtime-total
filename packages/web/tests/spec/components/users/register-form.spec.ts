@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   ErrorResponseDTO,
   Fetcher,
   LogBookSharing,
@@ -40,6 +41,7 @@ const SubmitButton = '[data-testid="register-submit"]';
 
 const NewUser: UserDTO = {
   id: 'BA9E78C9-4B0F-4FAE-B011-96A91986ABCD',
+  accountTier: AccountTier.Basic,
   username: 'john_doe32',
   email: 'user_mcuserson@yahoo.com',
   emailVerified: false,
