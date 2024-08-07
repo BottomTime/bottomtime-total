@@ -40,6 +40,40 @@
         <div>
           <FormRadio
             v-model="state.accountTier"
+            control-id="account-tier-pro"
+            test-id="account-tier-pro"
+            group="account-tier"
+            :value="AccountTier.Pro.toString()"
+          >
+            <p class="flex items-baseline gap-3">
+              <span class="font-bold text-lg">Pro account</span>
+              <span class="font-mono text-xs">( $40 / year )</span>
+            </p>
+          </FormRadio>
+
+          <div class="space-y-3 pl-8 text-justify">
+            <p>
+              Get all of the features of a free account plus some added
+              benefits:
+            </p>
+
+            <ul class="list-outside list-disc ml-6">
+              <li>Add videos to your dive logs</li>
+              <li>
+                Get advanced metrics with our enhanced dashboard for pro users
+              </li>
+              <li>
+                Get a <span class="font-bold">Pro Diver</span> badge next to
+                your username
+              </li>
+              <li>Earn XP faster than with a free account</li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <FormRadio
+            v-model="state.accountTier"
             control-id="account-tier-shop-owner"
             test-id="account-tier-shop-owner"
             group="account-tier"
@@ -47,13 +81,13 @@
           >
             <p class="flex items-baseline gap-3">
               <span class="font-bold text-lg">Dive shop owner</span>
-              <span class="font-mono text-xs">( $40 / year )</span>
+              <span class="font-mono text-xs">( $100 / year )</span>
             </p>
           </FormRadio>
 
           <div class="space-y-3 pl-8 text-justify">
             <p>
-              Get all of the benefits of a free account, plus the ability to
+              Get all of the benefits of a pro account, plus the ability to
               register and manage your dive shop on our site.
             </p>
 
@@ -165,6 +199,8 @@ const accountTier = computed<string>(() => {
     default:
     case AccountTier.Basic:
       return 'Free account';
+    case AccountTier.Pro:
+      return 'Pro account';
     case AccountTier.ShopOwner:
       return 'Dive shop owner';
   }

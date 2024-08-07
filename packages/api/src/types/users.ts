@@ -18,7 +18,8 @@ export enum UsersSortBy {
 
 export enum AccountTier {
   Basic = 0,
-  ShopOwner = 100,
+  Pro = 100,
+  ShopOwner = 200,
 }
 
 export enum AvatarSize {
