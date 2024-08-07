@@ -1,4 +1,4 @@
-import { ApiClient } from '@bottomtime/api';
+import { AccountTier, ApiClient } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
@@ -83,6 +83,7 @@ describe('Account View', () => {
     manageAccount.vm.$emit('change-username', newUsername);
     manageAccount.vm.$emit('change-email', newEmail);
     manageAccount.vm.$emit('change-password');
+    manageAccount.vm.$emit('change-account-type', AccountTier.Pro);
 
     expect(currentUser.user.username).toBe(newUsername);
     expect(currentUser.user.email).toBe(newEmail);
@@ -92,5 +93,6 @@ describe('Account View', () => {
       Date.now(),
       -3,
     );
+    expect(currentUser.user.accountTier).toBe(AccountTier.Pro);
   });
 });

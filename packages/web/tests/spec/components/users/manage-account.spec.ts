@@ -1,4 +1,10 @@
-import { ApiClient, Fetcher, User, UserDTO } from '@bottomtime/api';
+import {
+  AccountTier,
+  ApiClient,
+  Fetcher,
+  User,
+  UserDTO,
+} from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import {
@@ -15,6 +21,7 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import ManageAccount from '../../../../src/components/users/manage-account.vue';
+import ManageMembership from '../../../../src/components/users/manage-membership.vue';
 import ManagePassword from '../../../../src/components/users/manage-password.vue';
 import UsernameAndEmail from '../../../../src/components/users/username-and-email.vue';
 import { FeaturesServiceKey } from '../../../../src/featrues';
@@ -96,6 +103,15 @@ describe('Manage Account component', () => {
     const managePassword = wrapper.getComponent(ManagePassword);
     managePassword.vm.$emit('change-password');
     expect(wrapper.emitted('change-password')).toBeDefined();
+  });
+
+  it('will propagate events when user membership is changed', () => {
+    const wrapper = mount(ManageAccount, opts);
+    const manageMembership = wrapper.getComponent(ManageMembership);
+    manageMembership.vm.$emit('account-type-changed', AccountTier.ShopOwner);
+    expect(wrapper.emitted('change-account-type')).toEqual([
+      [AccountTier.ShopOwner],
+    ]);
   });
 
   it('will load the OAuth connections when the component is mounted', async () => {
