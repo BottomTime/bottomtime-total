@@ -19,6 +19,13 @@ export type CreateDiveOperatorOptions = CreateOrUpdateDiveOperatorDTO & {
   owner: User;
 };
 
+export type SearchDiveOperatorOptions = Omit<
+  SearchDiveOperatorsParams,
+  'owner'
+> & {
+  owner?: User;
+};
+
 @Injectable()
 export class DiveOperatorsService {
   constructor(
@@ -45,6 +52,7 @@ export class DiveOperatorsService {
     operator.socials.instagram = options.socials?.instagram;
     operator.socials.tiktok = options.socials?.tiktok;
     operator.socials.twitter = options.socials?.twitter;
+    operator.socials.youtube = options.socials?.youtube;
     operator.website = options.website;
 
     operator.slug =
@@ -71,12 +79,13 @@ export class DiveOperatorsService {
     return data ? new DiveOperator(this.operators, data) : undefined;
   }
 
-  async searchOperators(options?: SearchDiveOperatorsParams): Promise<{
+  async searchOperators(options?: SearchDiveOperatorOptions): Promise<{
     operators: DiveOperator[];
     totalCount: number;
   }> {
     const query = new DiveOperatorQueryBuilder(this.operators)
       .withGeoLocation(options?.location, options?.radius)
+      .withOwner(options?.owner)
       .withPagination(options?.skip, options?.limit)
       .withTextSearch(options?.query)
       .build();

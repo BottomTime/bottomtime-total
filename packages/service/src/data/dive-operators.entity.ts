@@ -79,6 +79,9 @@ export class DiveOperatorEntity {
   @Column({ type: 'varchar', length: 100, nullable: true })
   twitter: string | null = null;
 
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  youtube: string | null = null;
+
   // Media
   @Column({ type: 'varchar', length: 200, nullable: true })
   logo: string | null = null;

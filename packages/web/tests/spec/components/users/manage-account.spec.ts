@@ -1,4 +1,11 @@
-import { ApiClient, Fetcher, User, UserDTO } from '@bottomtime/api';
+import {
+  AccountTier,
+  ApiClient,
+  Fetcher,
+  User,
+  UserDTO,
+} from '@bottomtime/api';
+import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import {
   ComponentMountingOptions,
@@ -14,8 +21,11 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import ManageAccount from '../../../../src/components/users/manage-account.vue';
+import ManageMembership from '../../../../src/components/users/manage-membership.vue';
 import ManagePassword from '../../../../src/components/users/manage-password.vue';
 import UsernameAndEmail from '../../../../src/components/users/username-and-email.vue';
+import { FeaturesServiceKey } from '../../../../src/featrues';
+import { ConfigCatClientMock } from '../../../config-cat-client-mock';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
 
@@ -23,6 +33,7 @@ dayjs.extend(relativeTime);
 dayjs.extend(utc);
 
 describe('Manage Account component', () => {
+  let features: ConfigCatClientMock;
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
@@ -39,6 +50,9 @@ describe('Manage Account component', () => {
     fetcher = new Fetcher();
     client = new ApiClient({ fetcher });
     router = createRouter();
+    features = new ConfigCatClientMock({
+      [ManageDiveOperatorsFeature.key]: true,
+    });
   });
 
   beforeEach(() => {
@@ -58,6 +72,7 @@ describe('Manage Account component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [FeaturesServiceKey as symbol]: features,
         },
       },
     };
@@ -88,6 +103,15 @@ describe('Manage Account component', () => {
     const managePassword = wrapper.getComponent(ManagePassword);
     managePassword.vm.$emit('change-password');
     expect(wrapper.emitted('change-password')).toBeDefined();
+  });
+
+  it('will propagate events when user membership is changed', () => {
+    const wrapper = mount(ManageAccount, opts);
+    const manageMembership = wrapper.getComponent(ManageMembership);
+    manageMembership.vm.$emit('account-type-changed', AccountTier.ShopOwner);
+    expect(wrapper.emitted('change-account-type')).toEqual([
+      [AccountTier.ShopOwner],
+    ]);
   });
 
   it('will load the OAuth connections when the component is mounted', async () => {

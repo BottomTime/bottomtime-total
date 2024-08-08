@@ -33,12 +33,20 @@ export class DiveOperatorSocials {
     this.data.twitter = value ?? null;
   }
 
+  get youtube(): string | undefined {
+    return this.data.youtube ?? undefined;
+  }
+  set youtube(value: string | undefined) {
+    this.data.youtube = value ?? null;
+  }
+
   toJSON(): DiveOperatorDTO['socials'] {
     return {
       facebook: this.facebook,
       instagram: this.instagram,
       tiktok: this.tiktok,
       twitter: this.twitter,
+      youtube: this.youtube,
     };
   }
 }

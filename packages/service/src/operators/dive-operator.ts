@@ -2,7 +2,6 @@ import {
   DiveOperatorDTO,
   GpsCoordinates,
   LogBookSharing,
-  SuccinctDiveOperatorDTO,
   SuccinctProfileDTO,
 } from '@bottomtime/api';
 
@@ -187,22 +186,6 @@ export class DiveOperator {
       logo: this.logo,
       phone: this.phone,
       slug: this.slug,
-      verified: this.verified,
-      website: this.website,
-    };
-  }
-
-  toSuccinctJSON(): SuccinctDiveOperatorDTO {
-    return {
-      address: this.address,
-      description: this.description,
-      email: this.email,
-      gps: this.gps,
-      id: this.id,
-      logo: this.logo,
-      name: this.name,
-      phone: this.phone,
-      socials: this.socials.toJSON(),
       verified: this.verified,
       website: this.website,
     };

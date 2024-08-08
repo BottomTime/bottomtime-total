@@ -1,4 +1,9 @@
-import { PasswordResetTokenStatus, UserDTO, UserRole } from '@bottomtime/api';
+import {
+  AccountTier,
+  PasswordResetTokenStatus,
+  UserDTO,
+  UserRole,
+} from '@bottomtime/api';
 
 import { ConflictException, Logger } from '@nestjs/common';
 
@@ -46,6 +51,10 @@ export class User implements Express.User {
 
   get id(): string {
     return this.data.id;
+  }
+
+  get accountTier(): AccountTier {
+    return this.data.accountTier;
   }
 
   get hasPassword(): boolean {
@@ -218,6 +227,12 @@ export class User implements Express.User {
     return true;
   }
 
+  async changeMembership(accountTier: AccountTier): Promise<boolean> {
+    const { affected } = await this.Users.update(this.id, { accountTier });
+    this.data.accountTier = accountTier;
+    return affected === 1;
+  }
+
   async requestPasswordResetToken(): Promise<string> {
     const token = randomBytes(32).toString('base64url');
     this.data.passwordResetToken = token;
@@ -284,6 +299,7 @@ export class User implements Express.User {
 
   toJSON(): UserDTO {
     return {
+      accountTier: this.accountTier,
       emailVerified: this.emailVerified,
       hasPassword: this.hasPassword,
       id: this.id,

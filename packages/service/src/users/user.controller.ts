@@ -1,6 +1,8 @@
 import {
   ChangeEmailParamsDTO,
   ChangeEmailParamsSchema,
+  ChangeMembershipParamsDTO,
+  ChangeMembershipParamsSchema,
   ChangePasswordParamsDTO,
   ChangePasswordParamsSchema,
   ChangeUsernameParamsDTO,
@@ -544,6 +546,96 @@ export class UserController {
     { oldPassword, newPassword }: ChangePasswordParamsDTO,
   ): Promise<SuccessFailResponseDTO> {
     const succeeded = await user.changePassword(oldPassword, newPassword);
+    return { succeeded };
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/membership:
+   *   post:
+   *     summary: Change Membership Tier
+   *     operationId: changeMembership
+   *     description: |
+   *       Changes a user's account membership tier.
+   *     tags:
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The new membership tier.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - accountTier
+   *             properties:
+   *               accountTier:
+   *                 title: Account Tier
+   *                 type: number
+   *                 enum:
+   *                   - 0
+   *                   - 100
+   *                 description: |
+   *                   The user's new account membership tier.
+   *
+   *                   * `0` - Basic
+   *                   * `100` - Shop Owner
+   *                 example: 100
+   *     responses:
+   *       "200":
+   *         description: |
+   *           The membership tier was changed successfully.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Success"
+   *       "400":
+   *         description: |
+   *           The request failed because the request body was invalid. See the error details for more information.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: |
+   *           The request failed because the user was not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: |
+   *           The request failed because the user is not authorized to change the membership tier.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: |
+   *           The request failed because the username or email address could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: |
+   *           The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post('membership')
+  @HttpCode(200)
+  @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+  async changeMembership(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(ChangeMembershipParamsSchema))
+    { accountTier }: ChangeMembershipParamsDTO,
+  ): Promise<SuccessFailResponseDTO> {
+    const succeeded = await user.changeMembership(accountTier);
     return { succeeded };
   }
 

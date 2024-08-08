@@ -236,6 +236,7 @@
  *       type: object
  *       required:
  *         - id
+ *         - accountTier
  *         - username
  *         - emailVerified
  *         - hasPassword
@@ -250,6 +251,19 @@
  *           format: uuid
  *           description: The user's unique ID.
  *           example: 222f0f03-3e1c-40e7-8582-05f5875b7174
+ *         accountTier:
+ *           title: Account Tier
+ *           type: number
+ *           enum:
+ *             - 0
+ *             - 100
+ *           description: |
+ *             The user's account tier (membership level). It is a numeric value that corresponds to a specific tier.
+ *             The higher the number, the higher the tier.
+ *
+ *               * `0` - Basic
+ *               * `100` - Dive shop operator
+ *           example: 0
  *         username:
  *           title: Username
  *           type: string

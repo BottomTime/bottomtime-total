@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   CreateUserParamsDTO,
   DepthUnit,
   LogBookSharing,
@@ -528,6 +529,93 @@ describe('Users End-to-End Tests', () => {
         .post(`${requestUrl('Not.A.User')}/password`)
         .send({ oldPassword: RegularUserPassword, newPassword })
         .set(...adminAuthHeader)
+        .expect(404);
+    });
+  });
+
+  describe('when changing account membership', () => {
+    it('will allow a user to change their account tier', async () => {
+      const { body } = await request(server)
+        .post(`${requestUrl(RegularUserData.username)}/membership`)
+        .set(...regualarAuthHeader)
+        .send({
+          accountTier: AccountTier.ShopOwner,
+        })
+        .expect(200);
+      expect(body.succeeded).toBe(true);
+
+      const saved = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(saved.accountTier).toBe(AccountTier.ShopOwner);
+    });
+
+    it("will allow an admin to change another users' account tier", async () => {
+      const { body } = await request(server)
+        .post(`${requestUrl(RegularUserData.username)}/membership`)
+        .set(...adminAuthHeader)
+        .send({
+          accountTier: AccountTier.ShopOwner,
+        })
+        .expect(200);
+      expect(body.succeeded).toBe(true);
+
+      const saved = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(saved.accountTier).toBe(AccountTier.ShopOwner);
+    });
+
+    it('will return a 400 response if the new account tier is invalid', async () => {
+      await request(server)
+        .post(`${requestUrl(RegularUserData.username)}/membership`)
+        .set(...regualarAuthHeader)
+        .send({
+          accountTier: 666,
+        })
+        .expect(400);
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      await request(server)
+        .post(`${requestUrl(RegularUserData.username)}/membership`)
+        .set(...regualarAuthHeader)
+        .send({
+          accountTier: 'pro',
+          derp: 'derp',
+        })
+        .expect(400);
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      await request(server)
+        .post(`${requestUrl(RegularUserData.username)}/membership`)
+        .set(...regualarAuthHeader)
+        .expect(400);
+    });
+
+    it('will return a 401 response if the calling user is not authenticated', async () => {
+      await request(server)
+        .post(`${requestUrl(RegularUserData.username)}/membership`)
+        .send({
+          accountTier: AccountTier.ShopOwner,
+        })
+        .expect(401);
+    });
+
+    it('will return a 403 response if the calling user is not authorized to modify the target account', async () => {
+      await request(server)
+        .post(`${requestUrl(AdminUserData.username)}/membership`)
+        .set(...regualarAuthHeader)
+        .send({
+          accountTier: AccountTier.ShopOwner,
+        })
+        .expect(403);
+    });
+
+    it('will return a 404 response if the indicated user does not exist', async () => {
+      await request(server)
+        .post(`${requestUrl('Not.A.User')}/membership`)
+        .set(...adminAuthHeader)
+        .send({
+          accountTier: AccountTier.ShopOwner,
+        })
         .expect(404);
     });
   });

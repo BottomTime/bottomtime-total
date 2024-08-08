@@ -2,6 +2,7 @@
 
 exports[`Users Service when creating new user accounts will create a new user with all options set 1`] = `
 {
+  "accountTier": 0,
   "email": "rule1@diveclub.ca",
   "emailVerified": false,
   "hasPassword": true,
@@ -35,6 +36,7 @@ exports[`Users Service when creating new user accounts will create a new user wi
 
 exports[`Users Service when creating new user accounts will create a new user with all options set 2`] = `
 UserEntity {
+  "accountTier": 0,
   "avatar": null,
   "bio": "I don't talk about my dive clug",
   "certifications": undefined,
@@ -73,6 +75,7 @@ UserEntity {
 
 exports[`Users Service when creating new user accounts will create new users with minimal options 1`] = `
 {
+  "accountTier": 0,
   "email": undefined,
   "emailVerified": false,
   "hasPassword": false,
@@ -106,6 +109,7 @@ exports[`Users Service when creating new user accounts will create new users wit
 
 exports[`Users Service when creating new user accounts will create new users with minimal options 2`] = `
 UserEntity {
+  "accountTier": 0,
   "avatar": null,
   "bio": null,
   "certifications": undefined,

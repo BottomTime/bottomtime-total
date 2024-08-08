@@ -126,13 +126,16 @@ describe('Dive Operators E2E tests', () => {
     });
 
     it('will perform a more complex search with query parameters', async () => {
-      const { body } = await request(server).get(getUrl()).query({
-        query: 'Wafer',
-        location: '-14.7605,54.6887',
-        radius: 450,
-        skip: 0,
-        limit: 10,
-      });
+      const { body } = await request(server)
+        .get(getUrl())
+        .query({
+          query: 'Pump',
+          location: '63.53,16.19',
+          radius: 100,
+          skip: 0,
+          limit: 10,
+        })
+        .expect(200);
       expect(body).toMatchSnapshot();
     });
 
@@ -203,6 +206,7 @@ describe('Dive Operators E2E tests', () => {
           instagram: 'groundhogdivers',
           twitter: 'groundhogdivers',
           tiktok: '@groundhogdivers',
+          youtube: 'groundhogdivers',
         },
         slug: 'groundhogdivers',
         website: 'https://groundhogdivers.ca',
@@ -242,6 +246,7 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.instagram).toEqual(options.socials!.instagram);
       expect(saved.twitter).toEqual(options.socials!.twitter);
       expect(saved.tiktok).toEqual(options.socials!.tiktok);
+      expect(saved.youtube).toEqual(options.socials!.youtube);
       expect(saved.website).toBe(options.website);
       expect(saved.slug).toBe(options.slug);
       expect(saved.verified).toBe(false);
@@ -354,6 +359,7 @@ describe('Dive Operators E2E tests', () => {
           instagram: 'groundhogdivers',
           twitter: 'groundhogdivers',
           tiktok: '@groundhogdivers',
+          youtube: 'groundhogdivers',
         },
         slug: 'groundhogdivers',
         website: 'https://groundhogdivers.ca',
@@ -391,6 +397,7 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.instagram).toEqual(options.socials!.instagram);
       expect(saved.twitter).toEqual(options.socials!.twitter);
       expect(saved.tiktok).toEqual(options.socials!.tiktok);
+      expect(saved.youtube).toEqual(options.socials!.youtube);
       expect(saved.website).toBe(options.website);
       expect(saved.slug).toBe(options.slug);
       expect(saved.verified).toBe(false);
@@ -412,6 +419,7 @@ describe('Dive Operators E2E tests', () => {
           instagram: 'groundhogdivers',
           twitter: 'groundhogdivers',
           tiktok: '@groundhogdivers',
+          youtube: 'groundhogdivers',
         },
         slug: 'groundhogdivers',
         website: 'https://groundhogdivers.ca',
@@ -449,6 +457,7 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.instagram).toEqual(options.socials!.instagram);
       expect(saved.twitter).toEqual(options.socials!.twitter);
       expect(saved.tiktok).toEqual(options.socials!.tiktok);
+      expect(saved.youtube).toEqual(options.socials!.youtube);
       expect(saved.website).toBe(options.website);
       expect(saved.slug).toBe(options.slug);
       expect(saved.verified).toBe(false);

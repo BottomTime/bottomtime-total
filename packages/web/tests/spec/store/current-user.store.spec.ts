@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
@@ -14,6 +15,7 @@ import { useCurrentUser } from '../../../src/store';
 
 const AuthenticatedUser: UserDTO = {
   id: '123',
+  accountTier: AccountTier.Basic,
   email: 'realuser@gmail.com',
   username: 'realuser',
   emailVerified: true,

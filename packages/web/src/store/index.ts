@@ -1,6 +1,7 @@
 export * from './admin.store';
 export * from './alerts.store';
 export * from './current-user.store';
+export * from './dive-operators.store';
 export * from './dive-sites.store';
 export * from './error.store';
 export * from './friends.store';

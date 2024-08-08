@@ -25,6 +25,7 @@ export const CreateOrUpdateDiveOperatorSchema = z.object({
       twitter: z.string().max(100),
       instagram: z.string().max(100),
       tiktok: z.string().max(100),
+      youtube: z.string().max(100),
     })
     .partial()
     .optional(),
@@ -45,28 +46,12 @@ export const DiveOperatorSchema = CreateOrUpdateDiveOperatorSchema.extend({
 });
 export type DiveOperatorDTO = z.infer<typeof DiveOperatorSchema>;
 
-const SuccinctDiveOperatorSchema = DiveOperatorSchema.pick({
-  id: true,
-  address: true,
-  description: true,
-  email: true,
-  gps: true,
-  logo: true,
-  name: true,
-  phone: true,
-  socials: true,
-  verified: true,
-  website: true,
-});
-export type SuccinctDiveOperatorDTO = z.infer<
-  typeof SuccinctDiveOperatorSchema
->;
-
 export const SearchDiveOperatorsSchema = z
   .object({
     query: z.string().max(200),
     location: GpsCoordinatesSchema,
     radius: z.coerce.number().gt(0).max(500),
+    owner: UsernameSchema,
     skip: z.coerce.number().int().min(0),
     limit: z.coerce.number().int().min(1).max(500),
   })
@@ -76,7 +61,7 @@ export type SearchDiveOperatorsParams = z.infer<
 >;
 
 export const SearchDiveOperatorsResponseSchema = z.object({
-  operators: SuccinctDiveOperatorSchema.array(),
+  operators: DiveOperatorSchema.array(),
   totalCount: z.number().int(),
 });
 export type SearchDiveOperatorsResponseDTO = z.infer<

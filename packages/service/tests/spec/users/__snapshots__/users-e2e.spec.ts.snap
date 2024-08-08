@@ -2,6 +2,7 @@
 
 exports[`Users End-to-End Tests when creating a new user account will create a new account and send welcome email 1`] = `
 {
+  "accountTier": 0,
   "email": "newuser@gmail.com",
   "emailVerified": false,
   "hasPassword": true,
@@ -32,6 +33,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 
 exports[`Users End-to-End Tests when creating a new user account will create a new account and send welcome email 2`] = `
 UserEntity {
+  "accountTier": 0,
   "avatar": null,
   "bio": "This is a test user.",
   "certifications": undefined,
@@ -70,6 +72,7 @@ UserEntity {
 
 exports[`Users End-to-End Tests when creating a new user account will create a new account with minimal properties 1`] = `
 {
+  "accountTier": 0,
   "emailVerified": false,
   "hasPassword": false,
   "id": "a99a1193-3ef4-4816-85ce-e717a42dc99f",
@@ -94,6 +97,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 
 exports[`Users End-to-End Tests when creating a new user account will create a new account with minimal properties 2`] = `
 UserEntity {
+  "accountTier": 0,
   "avatar": null,
   "bio": null,
   "certifications": undefined,

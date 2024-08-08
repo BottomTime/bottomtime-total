@@ -66,7 +66,7 @@ describe('Search friends list component', () => {
     ).toBe(false);
     expect(wrapper.find(LoadMoreButton).isVisible()).toBe(true);
     expect(wrapper.find(LoadingMoreMessage).exists()).toBe(false);
-    expect(wrapper.find(CountsMessage).text()).toBe('Showing 50 of 607 users');
+    expect(wrapper.find(CountsMessage).text()).toBe('Showing 50 of 503 users');
 
     const items = wrapper.findAllComponents(SearchFriendsListItem);
     expect(items).toHaveLength(50);

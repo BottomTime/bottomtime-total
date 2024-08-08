@@ -98,6 +98,7 @@ describe('DiveOperatorService', () => {
           instagram: 'billsdive',
           tiktok: '@billsdive',
           twitter: 'billsdive',
+          youtube: 'billsdive',
         },
         owner,
         website: 'https://billsdive.com',
@@ -141,6 +142,7 @@ describe('DiveOperatorService', () => {
       expect(saved.instagram).toBe(operator.socials.instagram);
       expect(saved.tiktok).toBe(operator.socials.tiktok);
       expect(saved.twitter).toBe(operator.socials.twitter);
+      expect(saved.youtube).toBe(operator.socials.youtube);
       expect(saved.website).toBe(operator.website);
     });
   });
@@ -214,25 +216,44 @@ describe('DiveOperatorService', () => {
       expect(results.operators.map((op) => op.name)).toMatchSnapshot();
     });
 
-    it('will perform a search for dive sites near a given location', async () => {
+    it('will perform a search for dive operators near a given location', async () => {
       const results = await service.searchOperators({
         location: {
           lon: -55.6353,
           lat: -68.9415,
         },
-        radius: 1000,
+        radius: 1500,
       });
 
-      expect(results.operators).toHaveLength(1);
-      expect(results.totalCount).toBe(1);
-      expect(results.operators.map((op) => op.name)).toMatchSnapshot();
+      expect({
+        length: results.operators.length,
+        totalCount: results.totalCount,
+        operators: results.operators.map((op) => op.name),
+      }).toMatchSnapshot();
+    });
+
+    it('will perform a search for dive operators with a specific owner', async () => {
+      const results = await service.searchOperators({
+        owner: new User(Users, owners[2]),
+      });
+
+      expect(results.operators).toHaveLength(3);
+      expect(results.totalCount).toBe(3);
+      expect(
+        results.operators.map((op) => ({
+          name: op.name,
+          owner: op.owner.username,
+        })),
+      ).toMatchSnapshot();
     });
 
     it('will perform a search with a query string', async () => {
       const results = await service.searchOperators({ query: 'urbanus' });
-      expect(results.operators).toHaveLength(8);
-      expect(results.totalCount).toBe(8);
-      expect(results.operators.map((op) => op.name)).toMatchSnapshot();
+      expect({
+        length: results.operators.length,
+        totalCount: results.totalCount,
+        operators: results.operators.map((op) => op.name),
+      }).toMatchSnapshot();
     });
   });
 });

@@ -178,6 +178,7 @@ exports[`Admin Service when searching user accounts will perform a text-based se
   "totalCount": 2,
   "users": [
     {
+      "accountTier": 0,
       "email": "Bryce_Thompson47@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -208,6 +209,7 @@ exports[`Admin Service when searching user accounts will perform a text-based se
       "username": "Bryce_Thompson97",
     },
     {
+      "accountTier": 0,
       "email": "Lurline.Abshire53@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -246,6 +248,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
   "totalCount": 100,
   "users": [
     {
+      "accountTier": 0,
       "email": "Aaron_Wehner14@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -276,6 +279,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Aaron_Wehner28",
     },
     {
+      "accountTier": 0,
       "email": "Aiyana.McCullough@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -306,6 +310,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Aiyana.McCullough",
     },
     {
+      "accountTier": 0,
       "email": "Alessia_Upton@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -336,6 +341,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Alessia.Upton8",
     },
     {
+      "accountTier": 0,
       "email": "Aliyah72@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -366,6 +372,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Aliyah.Kunde4",
     },
     {
+      "accountTier": 0,
       "email": "Amara.Cummings@gmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -396,6 +403,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Amara.Cummings13",
     },
     {
+      "accountTier": 0,
       "email": "Ashly.Daugherty@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -426,6 +434,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Ashly71",
     },
     {
+      "accountTier": 0,
       "email": "Ashlynn_Kreiger50@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -456,6 +465,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Ashlynn_Kreiger86",
     },
     {
+      "accountTier": 0,
       "email": "Audreanne41@hotmail.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -486,6 +496,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Audreanne.Larkin79",
     },
     {
+      "accountTier": 0,
       "email": "Ayla43@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,
@@ -516,6 +527,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Ayla.Rippin",
     },
     {
+      "accountTier": 0,
       "email": "Barrett.Stracke@yahoo.com",
       "emailVerified": true,
       "hasPassword": true,

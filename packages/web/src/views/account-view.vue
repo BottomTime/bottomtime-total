@@ -8,6 +8,7 @@
           @change-username="onChangeUsername"
           @change-email="onChangeEmail"
           @change-password="onChangePassword"
+          @change-account-type="onChangeAccountType"
         />
       </FormBox>
     </div>
@@ -15,6 +16,8 @@
 </template>
 
 <script setup lang="ts">
+import { AccountTier } from '@bottomtime/api';
+
 import FormBox from '../components/common/form-box.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth.vue';
@@ -40,6 +43,12 @@ function onChangePassword() {
   if (currentUser.user) {
     currentUser.user.hasPassword = true;
     currentUser.user.lastPasswordChange = new Date();
+  }
+}
+
+function onChangeAccountType(accountTier: AccountTier) {
+  if (currentUser.user) {
+    currentUser.user.accountTier = accountTier;
   }
 }
 </script>

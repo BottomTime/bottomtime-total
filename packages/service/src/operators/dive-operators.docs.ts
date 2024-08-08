@@ -119,6 +119,12 @@
  *               description: The Twitter/X username of the dive operator.
  *               example: oceandivers
  *               maxLength: 100
+ *             youtube:
+ *               type: string
+ *               name: YouTube
+ *               description: The YouTube username of the dive operator.
+ *               example: OceanDivers
+ *               maxLength: 100
  *     DiveOperator:
  *       allOf:
  *         - type: object
@@ -164,109 +170,4 @@
  *               example: "https://www.oceandivers.com/banner.png"
  *               maxLength: 200
  *         - $ref: "#/components/schemas/CreateOrUpdateDiveOperator"
- *     SuccinctDiveOperator:
- *       type: object
- *       required:
- *         - id
- *         - owner
- *         - name
- *       properties:
- *         id:
- *           type: string
- *           format: uuid
- *           name: ID
- *           description: The unique identifier for the dive operator.
- *         owner:
- *           $ref: "#/components/schemas/SuccinctProfile"
- *         name:
- *           type: string
- *           name: Name
- *           description: The name of the dive operator.
- *           example: Ocean Divers
- *           minLength: 1
- *           maxLength: 200
- *         verified:
- *           type: boolean
- *           name: Verified
- *           description: Indicates whether the dive operator's identity has been verified by an admin.
- *         address:
- *           type: string
- *           name: Street Address
- *           description: The full street address of the dive operator.
- *           example: 522 Caribbean Drive, Key Largo, FL 33037
- *           maxLength: 500
- *         phone:
- *           type: string
- *           name: Phone Number
- *           description: The phone number at which the dive operator can be reached.
- *           example: (305) 451-6300
- *           maxLength: 20
- *         email:
- *           type: string
- *           format: email
- *           name: Email Address
- *           description: The email address of the dive operator.
- *           example: shop@oceandivers.com
- *           maxLength: 100
- *         website:
- *           type: string
- *           format: uri
- *           name: Website
- *           description: The URL of the dive operator's website.
- *           example: https://www.oceandivers.com
- *           maxLength: 200
- *         logo:
- *           type: string
- *           format: uri
- *           name: Logo
- *           description: The URL of the dive operator's logo.
- *           example: https://www.oceandivers.com/logo.png
- *           maxLength: 200
- *         gps:
- *           type: object
- *           required:
- *             - lat
- *             - lon
- *           properties:
- *             lat:
- *               type: number
- *               name: Latitude
- *               description: The latitude of the dive operator's location.
- *               example: 25.0865
- *               minimum: -90
- *               maximum: 90
- *             lon:
- *               type: number
- *               name: Longitude
- *               description: The longitude of the dive operator's location.
- *               example: -80.4473
- *               minimum: -180
- *               maximum: 180
- *         socials:
- *           type: object
- *           properties:
- *             facebook:
- *               type: string
- *               name: Facebook
- *               description: The Facebook username of the dive operator.
- *               example: OceanDivers
- *               maxLength: 100
- *             instagram:
- *               type: string
- *               name: Instagram
- *               description: The Instagram username of the dive operator.
- *               example: oceandivers
- *               maxLength: 100
- *             tiktok:
- *               type: string
- *               name: TikTok
- *               description: The TikTok username of the dive operator.
- *               example: "@oceandivers"
- *               maxLength: 100
- *             twitter:
- *               type: string
- *               name: Twitter / X
- *               description: The Twitter/X username of the dive operator.
- *               example: oceandivers
- *               maxLength: 100
  */

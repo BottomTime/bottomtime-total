@@ -75,7 +75,12 @@ describe('Operators API client', () => {
     const results = await client.searchDiveOperators();
 
     expect(mockFetch.done()).toBe(true);
-    expect(results).toEqual(testData);
+    expect(results.operators).toHaveLength(50);
+    expect(results.totalCount).toBe(650);
+    results.operators.forEach((operator, index) => {
+      expect(operator).toBeInstanceOf(DiveOperator);
+      expect(operator.toJSON()).toEqual(testData.operators[index]);
+    });
   });
 
   it('will perform a search with search parameters', async () => {
@@ -86,6 +91,7 @@ describe('Operators API client', () => {
         lat: -10.23,
         lon: 45.67,
       },
+      owner: 'razmataz82',
       radius: 120,
       query: 'test',
     };
@@ -107,7 +113,12 @@ describe('Operators API client', () => {
     const results = await client.searchDiveOperators(options);
 
     expect(mockFetch.calls()).toMatchSnapshot();
-    expect(results).toEqual(testData);
+    expect(results.operators).toHaveLength(50);
+    expect(results.totalCount).toBe(650);
+    results.operators.forEach((operator, index) => {
+      expect(operator).toBeInstanceOf(DiveOperator);
+      expect(operator.toJSON()).toEqual(testData.operators[index]);
+    });
   });
 
   it('will create a new operator', async () => {

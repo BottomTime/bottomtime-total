@@ -77,23 +77,34 @@
           </div>
         </div>
       </div>
+
+      <TextHeading v-if="enableShopManagement.value">Account Type</TextHeading>
+
+      <ManageMembership
+        v-if="enableShopManagement.value"
+        :user="user"
+        @account-type-changed="(type) => $emit('change-account-type', type)"
+      />
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
-import { UserDTO } from '@bottomtime/api';
+import { AccountTier, UserDTO } from '@bottomtime/api';
+import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
+import { useFeatureToggle } from '../../featrues';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormLabel from '../common/form-label.vue';
 import TextHeading from '../common/text-heading.vue';
 import AccountTimestamps from './account-timestamps.vue';
+import ManageMembership from './manage-membership.vue';
 import ManagePassword from './manage-password.vue';
 import UsernameAndEmail from './username-and-email.vue';
 
@@ -113,6 +124,8 @@ type ManageAccountState = {
   isLoadingProviders: boolean;
   providers: OAuthProvider[];
 };
+
+const enableShopManagement = useFeatureToggle(ManageDiveOperatorsFeature);
 
 const client = useClient();
 const oops = useOops();
@@ -143,6 +156,7 @@ const OAuthProviders: Omit<OAuthProvider, 'connected'>[] = [
 // STATE MANAGEMENT
 const props = defineProps<ManageAccountProps>();
 defineEmits<{
+  (e: 'change-account-type', accountTier: AccountTier): void;
   (e: 'change-username', username: string): void;
   (e: 'change-email', email: string): void;
   (e: 'change-password'): void;

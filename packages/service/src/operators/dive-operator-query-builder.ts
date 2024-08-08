@@ -3,11 +3,14 @@ import { GPSCoordinates } from '@bottomtime/api';
 import { DiveOperatorEntity } from 'src/data';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-export const DiveOperatorSuccinctSelectFields = [
+import { User } from '../users';
+
+export const DiveOperatorSelectFields = [
   'operators.id',
   'operators.createdAt',
   'operators.updatedAt',
   'operators.address',
+  'operators.banner',
   'operators.description',
   'operators.email',
   'operators.gps',
@@ -16,8 +19,11 @@ export const DiveOperatorSuccinctSelectFields = [
   'operators.phone',
   'operators.facebook',
   'operators.instagram',
+  'operators.slug',
   'operators.tiktok',
   'operators.twitter',
+  'operators.youtube',
+  'operators.verified',
   'operators.website',
   'owner.id',
   'owner.username',
@@ -28,10 +34,6 @@ export const DiveOperatorSuccinctSelectFields = [
   'owner.name',
 ];
 
-export const DiveOperatorFullSelectFields = [
-  ...DiveOperatorSuccinctSelectFields,
-];
-
 export class DiveOperatorQueryBuilder {
   private query: SelectQueryBuilder<DiveOperatorEntity>;
 
@@ -39,7 +41,7 @@ export class DiveOperatorQueryBuilder {
     this.query = operators
       .createQueryBuilder('operators')
       .innerJoin('operators.owner', 'owner')
-      .select(DiveOperatorSuccinctSelectFields)
+      .select(DiveOperatorSelectFields)
       .orderBy('operators.name', 'ASC');
   }
 
@@ -57,6 +59,15 @@ export class DiveOperatorQueryBuilder {
           distance: distance * 1000, // Distance must be converted from km to meters
         },
       );
+    }
+    return this;
+  }
+
+  withOwner(owner?: User): this {
+    if (owner) {
+      this.query = this.query.andWhere('owner.id = :ownerId', {
+        ownerId: owner.id,
+      });
     }
     return this;
   }
