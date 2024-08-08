@@ -2822,6 +2822,7 @@ __metadata:
     "@rollup/plugin-json": "npm:^6.1.0"
     "@rollup/plugin-node-resolve": "npm:^15.2.3"
     "@rollup/plugin-terser": "npm:^0.4.4"
+    "@stripe/stripe-js": "npm:^4.2.0"
     "@types/aws-lambda": "npm:^8.10.140"
     "@types/bunyan": "npm:^1.8.8"
     "@types/compression": "npm:^1.7.5"
@@ -6096,6 +6097,13 @@ __metadata:
   version: 1.2.5
   resolution: "@sqltools/formatter@npm:1.2.5"
   checksum: 10c0/4b4fa62b8cd4880784b71cc5edd4a13da04fda0a915c14282765a8ec1a900a495e69b322704413e2052d221b5646d9fb0e20e87911f9a8f438f33180eecb11a4
+  languageName: node
+  linkType: hard
+
+"@stripe/stripe-js@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@stripe/stripe-js@npm:4.2.0"
+  checksum: 10c0/e4030d8d49f55c5daf01f0a1492f75a48f16974cd792419b59fa37fc976d62b086e07863a80a6eca9d59d2b9a5552523eddba6b8175fb3035e367a9bca29fe70
   languageName: node
   linkType: hard
 

@@ -1,5 +1,7 @@
 import { ApiClient, ApiClientOptions } from '@bottomtime/api';
 
+import '@stripe/stripe-js';
+
 import { IConfigCatClient, PollingMode } from 'configcat-common';
 import { getClient } from 'configcat-js-ssr';
 import dayjs from 'dayjs';
