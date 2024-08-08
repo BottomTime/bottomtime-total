@@ -1,5 +1,6 @@
 /* eslint-disable no-process-env */
 import {
+  AccountTier,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
@@ -25,6 +26,7 @@ export class PostgresFixture {
   static readonly adminPassword = 'admin1234';
   static readonly adminUser: UserDTO = {
     id: AdminUserId,
+    accountTier: AccountTier.ShopOwner,
     email: 'admin@bottomti.me',
     emailVerified: true,
     isLockedOut: false,
@@ -88,11 +90,12 @@ export class PostgresFixture {
       `SELECT table_name AS table FROM information_schema.tables WHERE table_schema = 'public'`,
     );
 
-    await Promise.all(
-      tables.rows
-        .filter(({ table }) => !ProtectedTables.has(table))
-        .map(({ table }) => this.client.query(`DELETE FROM ${table}`)),
-    );
+    const tableNames = tables.rows
+      .filter((row) => !ProtectedTables.has(row.table))
+      .map((row) => `"${row.table}"`)
+      .join(', ');
+
+    await this.client.query(`TRUNCATE ${tableNames} CASCADE;`);
   }
 
   async getPasswordResetToken(username: string): Promise<string> {
