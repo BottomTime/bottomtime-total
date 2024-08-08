@@ -6,6 +6,7 @@ import { DiveSitesApiClient } from './dive-sites';
 import { Fetcher } from './fetcher';
 import { FriendsApiClient } from './friends';
 import { LogEntriesApiClient } from './log-entries';
+import { PaymentsApiClient } from './payments';
 import { TanksApiClient } from './tanks';
 import { UsersApiClient } from './users';
 
@@ -17,6 +18,7 @@ export class ApiClient {
   readonly diveOperators: DiveOperatorsApiClient;
   readonly diveSites: DiveSitesApiClient;
   readonly logEntries: LogEntriesApiClient;
+  readonly payments: PaymentsApiClient;
   readonly tanks: TanksApiClient;
 
   constructor(options?: ApiClientOptions) {
@@ -27,6 +29,7 @@ export class ApiClient {
     this.diveOperators = new DiveOperatorsApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
+    this.payments = new PaymentsApiClient(this.client);
     this.tanks = new TanksApiClient(this.client);
   }
 

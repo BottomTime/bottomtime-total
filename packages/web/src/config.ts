@@ -66,4 +66,11 @@ export class Config {
   static get isSSR(): boolean {
     return typeof window === 'undefined';
   }
+
+  /**
+   * Stripe SDK key (publishable key) for accessing the Stripe APIs.
+   */
+  static get stripeSdkKey(): string {
+    return process.env.BTWEB_VITE_STRIPE_API_KEY || '';
+  }
 }

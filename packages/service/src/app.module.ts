@@ -21,6 +21,7 @@ import { FeaturesModule } from './features';
 import { FriendsModule } from './friends';
 import { LogEntriesModule } from './logEntries';
 import { DiveOperatorsModule } from './operators';
+import { PaymentsModule } from './payments';
 import { QueueModule } from './queue';
 import { StorageModule } from './storage';
 import { TanksModule } from './tanks/tanks.module';
@@ -58,6 +59,7 @@ export class AppModule {
 
         TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
         FeaturesModule.forRoot(deps.configCatClient),
+        PaymentsModule,
 
         UsersModule,
         AuthModule,

@@ -130,6 +130,7 @@ values specified:
 - `smtpHost` - Domain name of the SMTP server that will be used to send emails to users.
 - `smtpPassword` - Password used to authenticate with the SMTP server.
 - `smtpUsername` - Username used to authenticate with the SMTP server.
+- `stripeSdkKey` - Stripe SDK key (secret key) used to access Stripe APIs.
 
 > :exclamation: Make a note of the name of the secret. You will need to provide it in your environment's configuration later.
 
