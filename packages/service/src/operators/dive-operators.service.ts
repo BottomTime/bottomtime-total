@@ -79,6 +79,10 @@ export class DiveOperatorsService {
     return data ? new DiveOperator(this.operators, data) : undefined;
   }
 
+  async isSlugInUse(slug: string): Promise<boolean> {
+    return await this.operators.existsBy({ slug: slug.trim().toLowerCase() });
+  }
+
   async searchOperators(options?: SearchDiveOperatorOptions): Promise<{
     operators: DiveOperator[];
     totalCount: number;

@@ -119,6 +119,12 @@ export class DiveOperator {
       }),
       DiveOperatorSchema,
     );
+
+    if (this.newSlug) {
+      this.data.slug = this.newSlug;
+      this.newSlug = undefined;
+    }
+
     this.data.slug = this.newSlug || this.data.slug;
     this.data.updatedAt = new Date();
     this.newSlug = undefined;

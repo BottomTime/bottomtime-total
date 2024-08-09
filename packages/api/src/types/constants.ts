@@ -1,3 +1,4 @@
+import { isPossiblePhoneNumber } from 'libphonenumber-js';
 import { z } from 'zod';
 
 export const DateRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -123,6 +124,17 @@ export const GpsCoordinatesSchema = z
       .parse(values);
   });
 export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
+
+/**
+ * Uses libphonenumber-js to parse, validate, and transform a string into a proper phone number.
+ * https://www.npmjs.com/package/libphonenumber-js
+ */
+export const PhoneNumber = z
+  .string()
+  .refine(
+    (val) => isPossiblePhoneNumber(val, 'US'),
+    'Must be a valid phone number',
+  );
 
 /**
  * Parses, validates, and transforms a string in the format "<min-rating>,<max-rating>" into a {@link RatingRange} object.

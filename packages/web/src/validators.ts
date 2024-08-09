@@ -1,4 +1,4 @@
-import { DepthSchema, WeightSchema } from '@bottomtime/api';
+import { DepthSchema, PhoneNumber, WeightSchema } from '@bottomtime/api';
 
 import { helpers } from '@vuelidate/validators';
 
@@ -25,4 +25,8 @@ export function lessThan(max: number): (val: unknown) => boolean {
 export function maxDate(date?: Date): (val: unknown) => boolean {
   return (val) =>
     !helpers.req(val) || (val instanceof Date && val <= (date ?? new Date()));
+}
+
+export function phone(val: unknown): boolean {
+  return !helpers.req(val) || PhoneNumber.safeParse(val).success;
 }

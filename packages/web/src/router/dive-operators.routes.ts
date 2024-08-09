@@ -7,8 +7,13 @@ export const DiveOperatorsRoutes: RouteRecordRaw[] = [
     component: () => import('../views/dive-operators-view.vue'),
   },
   {
-    path: '/shops/:username',
-    name: 'user-dive-operators',
-    component: () => import('../views/dive-operators-view.vue'),
+    path: '/shops/:shopKey',
+    name: 'dive-operator',
+    component: () => import('../views/dive-operator-view.vue'),
+  },
+  {
+    path: '/createShop',
+    name: 'create-dive-operator',
+    component: () => import('../views/create-dive-operator-view.vue'),
   },
 ];

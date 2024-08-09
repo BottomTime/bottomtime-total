@@ -1,5 +1,6 @@
 <template>
   <FormTextBox
+    ref="input"
     v-model="value"
     :autofocus="autofocus"
     :control-id="controlId"
@@ -13,11 +14,10 @@
 <script lang="ts" setup>
 import { GPSCoordinates } from '@bottomtime/api';
 
-import * as google from '@googlemaps/js-api-loader';
-
 import { onMounted, ref } from 'vue';
 
 import { Config } from '../../config';
+import { useGoogle } from '../../google-loader';
 import FormTextBox from './form-text-box.vue';
 
 interface PlacesAutoCompleteProps {
@@ -30,6 +30,7 @@ interface PlacesAutoCompleteProps {
   testId?: string;
 }
 
+const input = ref<InstanceType<typeof FormTextBox> | null>(null);
 const value = defineModel<string>({ default: '' });
 const props = defineProps<PlacesAutoCompleteProps>();
 const emit = defineEmits<{
@@ -55,15 +56,9 @@ function onPlaceChanged() {
 onMounted(async () => {
   if (!Config.enablePlacesApi) return;
 
-  const loader = new google.Loader({
-    apiKey: Config.googleApiKey,
-    version: 'weekly',
-  });
-
+  const loader = useGoogle();
   const Places = await loader.importLibrary('places');
-
   const input = document.getElementById(props.controlId) as HTMLInputElement;
-
   const opts: globalThis.google.maps.places.AutocompleteOptions = {
     bounds: props.center
       ? {
@@ -79,4 +74,10 @@ onMounted(async () => {
   autocomplete.value = new Places.Autocomplete(input, opts);
   autocomplete.value.addListener('place_changed', onPlaceChanged);
 });
+
+function focus() {
+  input.value?.focus();
+}
+
+defineExpose({ focus });
 </script>

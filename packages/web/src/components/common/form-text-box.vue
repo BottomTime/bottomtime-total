@@ -70,7 +70,7 @@ const inputClasses = computed(() => {
 
   return `px-2 py-1 w-full ${selectStyle} bg-grey-200 dark:bg-grey-300 border ${
     props.invalid ? 'border-danger' : 'border-grey-600'
-  } ring-0 ${roundingStyle} text-grey-950 h-8 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500`;
+  } ring-0 ${roundingStyle} text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500`;
 });
 
 const rightSlotClasses = computed(() => {
