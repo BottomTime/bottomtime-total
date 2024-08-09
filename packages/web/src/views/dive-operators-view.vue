@@ -11,8 +11,7 @@
 <script lang="ts" setup>
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
-import { computed, onServerPrefetch } from 'vue';
-import { useRoute } from 'vue-router';
+import { onServerPrefetch } from 'vue';
 
 import { useClient } from '../api-client';
 import { Breadcrumb } from '../common';
@@ -32,23 +31,10 @@ const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const client = useClient();
 const oops = useOops();
 const operators = useDiveOperators();
-const route = useRoute();
-
-const username = computed<string | null>(() => {
-  if (route.params.username) {
-    return typeof route.params.username === 'string'
-      ? route.params.username
-      : route.params.username[0];
-  }
-
-  return null;
-});
 
 async function search(): Promise<void> {
   await oops(async () => {
-    const results = await client.diveOperators.searchDiveOperators({
-      owner: username.value ?? undefined,
-    });
+    const results = await client.diveOperators.searchDiveOperators();
 
     operators.results.operators = results.operators;
     operators.results.totalCount = results.totalCount;

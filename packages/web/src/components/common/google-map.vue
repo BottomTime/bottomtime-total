@@ -10,12 +10,11 @@
 <script setup lang="ts">
 import { DiveSiteDTO, GPSCoordinates, GpsCoordinates } from '@bottomtime/api';
 
-import * as google from '@googlemaps/js-api-loader';
-
 import { v4 as uuid } from 'uuid';
 import { onBeforeMount, ref, watch } from 'vue';
 
 import { Config } from '../../config';
+import { useGoogle } from '../../google-loader';
 
 type GoogleMapProps = {
   id?: string;
@@ -115,15 +114,12 @@ function createSiteMarkers(sites: DiveSiteDTO[]) {
 }
 
 onBeforeMount(async () => {
+  const loader = useGoogle();
+
   // Only load the Google Maps API if we're not server-side rendering.
   // No need to pay Google $ for requests that the user will never see!
   if (!Config.isSSR) {
     // Initialize the map...
-    const loader = new google.Loader({
-      apiKey: Config.googleApiKey,
-      version: 'weekly',
-      libraries: ['maps'],
-    });
     [mapsLib, markersLib] = await Promise.all([
       loader.importLibrary('maps'),
       loader.importLibrary('marker'),

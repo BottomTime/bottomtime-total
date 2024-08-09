@@ -8,13 +8,15 @@
 
     <article class="space-y-1">
       <div class="flex gap-2 align-top">
-        <FormButton
-          type="link"
-          size="2xl"
-          :test-id="`select-${operator.slug || operator.id}`"
-        >
-          <span class="capitalize">{{ operator.name }}</span>
-        </FormButton>
+        <a :href="`/shops/${operator.slug}`">
+          <FormButton
+            type="link"
+            size="2xl"
+            :test-id="`select-${operator.slug || operator.id}`"
+          >
+            <span class="capitalize">{{ operator.name }}</span>
+          </FormButton>
+        </a>
 
         <div class="relative group">
           <p v-if="operator.verified" class="text-sm text-success space-x-1">

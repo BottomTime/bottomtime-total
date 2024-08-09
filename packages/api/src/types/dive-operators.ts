@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { GpsCoordinatesSchema, SlugRegex } from './constants';
+import { GpsCoordinatesSchema, PhoneNumber, SlugRegex } from './constants';
 import { SuccinctProfileSchema, UsernameSchema } from './users';
 
 export const CreateOrUpdateDiveOperatorSchema = z.object({
@@ -8,8 +8,8 @@ export const CreateOrUpdateDiveOperatorSchema = z.object({
   slug: z.string().trim().regex(SlugRegex).min(1).max(200).optional(),
   description: z.string().trim().max(2000).optional(),
   address: z.string().trim().max(500).optional(),
-  phone: z.string().trim().max(50).optional(),
-  email: z.string().email().max(100).optional(),
+  phone: PhoneNumber.optional(),
+  email: z.string().trim().email().max(100).optional(),
   website: z.string().url().max(200).optional(),
 
   gps: z

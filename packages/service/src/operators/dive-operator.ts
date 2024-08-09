@@ -16,6 +16,7 @@ import { DiveOperatorSocials } from './dive-operator-socials';
 
 export class DiveOperator {
   readonly socials: DiveOperatorSocials;
+  private newSlug: string | undefined;
 
   constructor(
     private readonly operators: Repository<DiveOperatorEntity>,
@@ -83,10 +84,10 @@ export class DiveOperator {
   }
 
   get slug(): string {
-    return this.data.slug;
+    return this.newSlug || this.data.slug;
   }
   set slug(value: string) {
-    this.data.slug = value.toLowerCase();
+    this.newSlug = value.trim().toLowerCase();
   }
 
   get description(): string | undefined {
@@ -150,7 +151,15 @@ export class DiveOperator {
     }
 
     this.data.updatedAt = new Date();
-    await this.operators.save(this.data);
+    await this.operators.save({
+      ...this.data,
+      slug: this.newSlug || this.data.slug,
+    });
+
+    if (this.newSlug) {
+      this.data.slug = this.newSlug;
+      this.newSlug = undefined;
+    }
   }
 
   async delete(): Promise<boolean> {
