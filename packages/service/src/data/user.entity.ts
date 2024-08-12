@@ -13,10 +13,13 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryColumn,
 } from 'typeorm';
 
+import { BadgeEntity } from './badge.entity';
 import { FriendshipEntity } from './friendship.entity';
 import { TankEntity } from './tank.entity';
 import { UserCertificationEntity } from './user-certification.entity';
@@ -32,6 +35,10 @@ export class UserEntity {
 
   @Column({ type: 'varchar', length: 150, nullable: true })
   avatar: string | null = null;
+
+  @ManyToMany(() => BadgeEntity, (badge) => badge.users)
+  @JoinTable({ name: 'user_badges' })
+  badges?: BadgeEntity[];
 
   @Column({ type: 'varchar', length: 1000, nullable: true })
   bio: string | null = null;
@@ -166,6 +173,9 @@ export class UserEntity {
     nullable: false,
   })
   weightUnit: WeightUnit = WeightUnit.Kilograms;
+
+  @Column({ type: 'int', default: 0 })
+  xp: number = 0;
 
   @Column({
     type: 'tsvector',

@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
@@ -17,6 +18,7 @@ import { UserEntity } from '../../src/data';
 
 const UserJsonSchema = z.object({
   id: z.string(),
+  accountTier: z.nativeEnum(AccountTier).default(AccountTier.Basic),
   avatar: z.string().nullable().default(null),
   bio: z.string().nullable().default(null),
   customData: z.record(z.unknown()).nullable(),
@@ -46,6 +48,7 @@ const UserJsonSchema = z.object({
   username: z.string(),
   usernameLowered: z.string(),
   weightUnit: z.nativeEnum(WeightUnit).default(WeightUnit.Kilograms),
+  xp: z.number().int().default(0),
 });
 
 const ExperienceLevels: readonly string[] = [
@@ -129,6 +132,7 @@ export function createTestUser(
     pressureUnit: options?.pressureUnit ?? PressureUnit.Bar,
     temperatureUnit: options?.temperatureUnit ?? TemperatureUnit.Celsius,
     weightUnit: options?.weightUnit ?? WeightUnit.Kilograms,
+    xp: options?.xp ?? faker.number.int({ min: 0, max: 10000 }),
   };
 
   if (typeof password === 'string') {

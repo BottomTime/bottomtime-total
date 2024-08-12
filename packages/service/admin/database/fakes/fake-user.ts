@@ -66,6 +66,7 @@ export function fakeUser(): UserEntity {
     Object.values(TemperatureUnit),
   );
   data.weightUnit = faker.helpers.arrayElement(Object.values(WeightUnit));
+  data.xp = faker.number.int({ min: 0, max: 10000 });
 
   return data;
 }
