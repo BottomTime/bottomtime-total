@@ -4,6 +4,7 @@
 import vue from '@vitejs/plugin-vue';
 
 import { defineConfig, loadEnv } from 'vite';
+import viteCompression from 'vite-plugin-compression';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 const envPrefix = 'BTWEB_VITE_';
@@ -31,6 +32,7 @@ export default defineConfig(({ mode }) => {
       nodePolyfills({
         include: ['url'],
       }),
+      viteCompression(),
     ],
     resolve: {
       preserveSymlinks: true,
