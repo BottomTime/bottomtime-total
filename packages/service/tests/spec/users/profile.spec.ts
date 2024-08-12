@@ -48,6 +48,7 @@ const TestUserData: UserEntity = {
   weightUnit: WeightUnit.Kilograms,
   oauth: undefined,
   tanks: undefined,
+  xp: 0,
 } as const;
 
 describe('Profile Class', () => {

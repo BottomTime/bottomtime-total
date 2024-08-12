@@ -35,6 +35,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 UserEntity {
   "accountTier": 0,
   "avatar": null,
+  "badges": undefined,
   "bio": "This is a test user.",
   "certifications": undefined,
   "customData": null,
@@ -67,6 +68,7 @@ UserEntity {
   "username": "User.McUserface",
   "usernameLowered": "user.mcuserface",
   "weightUnit": "kg",
+  "xp": 0,
 }
 `;
 
@@ -99,6 +101,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
 UserEntity {
   "accountTier": 0,
   "avatar": null,
+  "badges": undefined,
   "bio": null,
   "certifications": undefined,
   "customData": null,
@@ -131,6 +134,7 @@ UserEntity {
   "username": "User.McUserface",
   "usernameLowered": "user.mcuserface",
   "weightUnit": "kg",
+  "xp": 0,
 }
 `;
 

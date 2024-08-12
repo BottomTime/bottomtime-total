@@ -38,6 +38,7 @@ exports[`Users Service when creating new user accounts will create a new user wi
 UserEntity {
   "accountTier": 0,
   "avatar": null,
+  "badges": undefined,
   "bio": "I don't talk about my dive clug",
   "certifications": undefined,
   "customData": null,
@@ -70,6 +71,7 @@ UserEntity {
   "username": "Tyler.Durden",
   "usernameLowered": "tyler.durden",
   "weightUnit": "kg",
+  "xp": 0,
 }
 `;
 
@@ -111,6 +113,7 @@ exports[`Users Service when creating new user accounts will create new users wit
 UserEntity {
   "accountTier": 0,
   "avatar": null,
+  "badges": undefined,
   "bio": null,
   "certifications": undefined,
   "customData": null,
@@ -143,6 +146,7 @@ UserEntity {
   "username": "Roger69_83",
   "usernameLowered": "roger69_83",
   "weightUnit": "kg",
+  "xp": 0,
 }
 `;
 
