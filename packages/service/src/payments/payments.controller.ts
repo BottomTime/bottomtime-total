@@ -1,7 +1,13 @@
-import { CreatePaymentSessionResponseDTO } from '@bottomtime/api';
+import {
+  CreatePaymentSessionDTO,
+  CreatePaymentSessionResponseDTO,
+  CreatePaymentSessionSchema,
+} from '@bottomtime/api';
 
-import { Controller, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 
+import { CurrentUser, User } from '../users';
+import { ZodValidator } from '../zod-validator';
 import { PaymentsService } from './payments.service';
 
 @Controller('api/payments')
@@ -12,8 +18,15 @@ export class PaymentsController {
   ) {}
 
   @Post('session')
-  async createSession(): Promise<CreatePaymentSessionResponseDTO> {
-    const clientSecret = await this.service.createSession();
+  async createSession(
+    @CurrentUser() user: User,
+    @Body(new ZodValidator(CreatePaymentSessionSchema))
+    options: CreatePaymentSessionDTO,
+  ): Promise<CreatePaymentSessionResponseDTO> {
+    const clientSecret = await this.service.createSession(
+      user,
+      options.accountTier,
+    );
     return { clientSecret };
   }
 }
