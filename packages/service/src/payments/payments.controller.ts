@@ -29,4 +29,7 @@ export class PaymentsController {
     );
     return { clientSecret };
   }
+
+  @Post('callback')
+  async callback(): Promise<void> {}
 }
