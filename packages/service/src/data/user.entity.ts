@@ -159,6 +159,9 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 10, nullable: true })
   startedDiving: string | null = null;
 
+  @Column({ type: 'text', nullable: true })
+  stripeCustomerId: string | null = null;
+
   @Column({ type: 'varchar', length: 50 })
   username: string = '';
 

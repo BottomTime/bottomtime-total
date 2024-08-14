@@ -421,4 +421,16 @@ describe('User Class', () => {
       ]);
     });
   });
+
+  it('will attach a Stripe customer ID', async () => {
+    const stripeCustomerId = 'cus_1234';
+    const user = new User(Users, data);
+    await Users.save(data);
+
+    await user.attachStripeCustomerId(stripeCustomerId);
+
+    expect(user.stripeCustomerId).toEqual(stripeCustomerId);
+    const stored = await Users.findOneByOrFail({ id: user.id });
+    expect(stored.stripeCustomerId).toEqual(stripeCustomerId);
+  });
 });

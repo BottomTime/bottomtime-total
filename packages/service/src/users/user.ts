@@ -98,6 +98,15 @@ export class User implements Express.User {
     };
   }
 
+  get stripeCustomerId(): string | undefined {
+    return this.data.stripeCustomerId ?? undefined;
+  }
+
+  async attachStripeCustomerId(customerId: string): Promise<void> {
+    await this.Users.update(this.id, { stripeCustomerId: customerId });
+    this.data.stripeCustomerId = customerId;
+  }
+
   async changeSettings(settings: Partial<UserSettings>): Promise<void> {
     if (settings.depthUnit) this.data.depthUnit = settings.depthUnit;
 
