@@ -42,6 +42,7 @@ const TestUserData: UserEntity = {
   location: 'Testville, USA',
   name: 'Test User',
   startedDiving: '2019-01-01',
+  stripeCustomerId: null,
   depthUnit: DepthUnit.Meters,
   pressureUnit: PressureUnit.Bar,
   temperatureUnit: TemperatureUnit.Celsius,
