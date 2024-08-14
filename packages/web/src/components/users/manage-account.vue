@@ -104,8 +104,8 @@ import FormButton from '../common/form-button.vue';
 import FormLabel from '../common/form-label.vue';
 import TextHeading from '../common/text-heading.vue';
 import AccountTimestamps from './account-timestamps.vue';
-import ManageMembership from './manage-membership.vue';
 import ManagePassword from './manage-password.vue';
+import ManageMembership from './membership/manage-membership.vue';
 import UsernameAndEmail from './username-and-email.vue';
 
 // TYPE DEFS

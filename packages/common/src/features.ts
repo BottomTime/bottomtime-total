@@ -16,3 +16,8 @@ export const ManageDiveOperatorsFeature: Feature<boolean> = {
   key: 'manageDiveOperators',
   defaultValue: false,
 };
+
+export const PaymentsFeature: Feature<boolean> = {
+  key: 'payments',
+  defaultValue: false,
+};
