@@ -7,6 +7,11 @@ export const UserRoutes: RouteRecordRaw[] = [
     component: () => import('../views/account-view.vue'),
   },
   {
+    path: '/account/checkout',
+    name: 'account-checkout',
+    component: () => import('../views/checkout-view.vue'),
+  },
+  {
     path: '/friends',
     name: 'friends',
     component: () => import('../views/friends-view.vue'),

@@ -5,14 +5,11 @@
     @close="onCancelChangeAccountType"
   >
     <MembershipForm
-      v-if="state.mode === ManageMembershipMode.Manage"
       :user="props.user"
       :is-saving="state.isSaving"
       @cancel="onCancelChangeAccountType"
       @change-membership="onConfirmChangeAccountType"
     />
-
-    <MembershipCheckout v-else :user="user" :account-tier="state.accountTier" />
   </DrawerPanel>
 
   <FormField label="Account type">
@@ -47,18 +44,13 @@ import { computed, reactive } from 'vue';
 
 import { useClient } from '../../../api-client';
 import { ToastType } from '../../../common';
+import { useLocation } from '../../../location';
 import { useOops } from '../../../oops';
 import { useToasts } from '../../../store';
 import DrawerPanel from '../../common/drawer-panel.vue';
 import FormButton from '../../common/form-button.vue';
 import FormField from '../../common/form-field.vue';
-import MembershipCheckout from './membership-checkout.vue';
 import MembershipForm from './membership-form.vue';
-
-enum ManageMembershipMode {
-  Manage,
-  Checkout,
-}
 
 interface ManageMembershipProps {
   user: UserDTO;
@@ -69,10 +61,10 @@ interface ManageMembershipState {
   isCreatingSession: boolean;
   isSaving: boolean;
   showChangeAccountType: boolean;
-  mode: ManageMembershipMode;
 }
 
 const client = useClient();
+const location = useLocation();
 const oops = useOops();
 const toasts = useToasts();
 
@@ -82,7 +74,6 @@ const state = reactive<ManageMembershipState>({
   isCreatingSession: false,
   isSaving: false,
   showChangeAccountType: false,
-  mode: ManageMembershipMode.Manage,
 });
 const emit = defineEmits<{
   (e: 'account-type-changed', accountTier: AccountTier): void;
@@ -107,19 +98,19 @@ function onChangeAccountType() {
 
 function onCancelChangeAccountType() {
   state.showChangeAccountType = false;
+  state.accountTier = props.user.accountTier;
 }
 
 async function onConfirmChangeAccountType(
   newAccountTier: AccountTier,
 ): Promise<void> {
-  state.isSaving = true;
-
   if (newAccountTier > props.user.accountTier) {
     // User is upgrading their account... need to go through the checkout process
-    state.accountTier = newAccountTier;
-    state.mode = ManageMembershipMode.Checkout;
+    location.assign(`/account/checkout?accountTier=${newAccountTier}`);
     return;
   }
+
+  state.isSaving = true;
 
   await oops(async () => {
     const user = client.users.wrapDTO(props.user);
