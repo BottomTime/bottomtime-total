@@ -31,13 +31,6 @@ export enum MembershipStatus {
   Paused = 'paused',
 }
 
-export const CreatePaymentSessionSchema = z.object({
-  accountTier: z.nativeEnum(AccountTier),
-});
-export type CreatePaymentSessionDTO = z.infer<
-  typeof CreatePaymentSessionSchema
->;
-
 export const CreatePaymentSessionResponseSchema = z.object({
   clientSecret: z.string(),
 });
@@ -48,6 +41,7 @@ export type CreatePaymentSessionResponseDTO = z.infer<
 export const MembershipStatusSchema = z.object({
   accountTier: z.nativeEnum(AccountTier).default(AccountTier.Basic),
   cancellationDate: z.coerce.date().optional(),
+  entitlements: z.string().array(),
   nextBillingDate: z.coerce.date().optional(),
   status: z.nativeEnum(MembershipStatus),
   trialEndDate: z.coerce.date().optional(),
@@ -66,3 +60,10 @@ export const PaymentSessionSchema = z.object({
   total: z.number().optional(),
 });
 export type PaymentSessionDTO = z.infer<typeof PaymentSessionSchema>;
+
+export const UpdateMembershipParamsSchema = z.object({
+  newAccountTier: z.nativeEnum(AccountTier),
+});
+export type UpdateMembershipParamsDTO = z.infer<
+  typeof UpdateMembershipParamsSchema
+>;

@@ -103,29 +103,5 @@ function onCancelChangeAccountType() {
 
 async function onConfirmChangeAccountType(
   newAccountTier: AccountTier,
-): Promise<void> {
-  if (newAccountTier > props.user.accountTier) {
-    // User is upgrading their account... need to go through the checkout process
-    location.assign(`/account/checkout?accountTier=${newAccountTier}`);
-    return;
-  }
-
-  state.isSaving = true;
-
-  await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
-
-    await user.changeMembership(newAccountTier);
-
-    toasts.toast({
-      id: 'account-type-changed',
-      message: 'Account type changed successfully!',
-      type: ToastType.Success,
-    });
-    emit('account-type-changed', newAccountTier);
-    state.showChangeAccountType = false;
-  });
-
-  state.isSaving = false;
-}
+): Promise<void> {}
 </script>

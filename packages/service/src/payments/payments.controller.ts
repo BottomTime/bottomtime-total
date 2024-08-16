@@ -1,27 +1,24 @@
 import {
-  CreatePaymentSessionDTO,
   CreatePaymentSessionResponseDTO,
-  CreatePaymentSessionSchema,
+  UpdateMembershipParamsDTO,
+  UpdateMembershipParamsSchema,
 } from '@bottomtime/api';
 
 import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Inject,
   Logger,
   NotFoundException,
   Param,
   Post,
-  Query,
-  Redirect,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 
-import { Config } from '../config';
 import { AssertAuth, CurrentUser, User, UsersService } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { PaymentsService } from './payments.service';
@@ -51,28 +48,34 @@ export class PaymentsController {
     await this.service.getMembershipStatus(user);
   }
 
+  @Put('membershp/:username')
+  async createOrUpdateMembership(
+    @CurrentUser() user: User,
+    @Body(new ZodValidator(UpdateMembershipParamsSchema))
+    { newAccountTier }: UpdateMembershipParamsDTO,
+  ): Promise<void> {
+    await this.service.updateMembership(user, newAccountTier);
+  }
+
+  @Delete('membershp/:username')
+  async cancelMembership(@CurrentUser() user: User): Promise<void> {
+    await this.service.cancelMembership(user);
+  }
+
   @Post('session')
   async createSession(
     @CurrentUser() user: User,
-    @Body(new ZodValidator(CreatePaymentSessionSchema))
-    options: CreatePaymentSessionDTO,
   ): Promise<CreatePaymentSessionResponseDTO> {
     this.log.debug('Creating payment session for user:', user.username);
-    const clientSecret = await this.service.createSession(
-      user,
-      options.accountTier,
-    );
-    return { clientSecret };
-  }
+    const clientSecret = await this.service.getPaymentSecret(user);
 
-  @Get('callback')
-  @Redirect(new URL('/account', Config.baseUrl).toString())
-  async checkoutCallback(
-    @CurrentUser() user: User,
-    @Query('sessionId') sessionId: string,
-  ): Promise<void> {
-    this.log.debug('Received Stripe checkout session callback:', sessionId);
-    await this.service.fulfillSessionOrder(user, sessionId);
+    if (!clientSecret) {
+      throw new BadRequestException(
+        'Unable to get session secret. User does not have a subscription yet.',
+      );
+    }
+
+    return { clientSecret };
   }
 
   // @Post('webhook')

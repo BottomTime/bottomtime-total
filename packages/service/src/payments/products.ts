@@ -1,9 +1,10 @@
 import { AccountTier } from '@bottomtime/api';
 
 // TODO: Make this configurable.
-export const Prices = {
-  proSubscription: 'price_1PlZURI1ADsIvyhFO0hjSMcD',
-  shopOwnerSubscription: 'price_1PlZVGI1ADsIvyhFVjRgclNp',
+export const Prices: Record<AccountTier, string> = {
+  [AccountTier.Basic]: '',
+  [AccountTier.Pro]: 'price_1PlZURI1ADsIvyhFO0hjSMcD',
+  [AccountTier.ShopOwner]: 'price_1PlZVGI1ADsIvyhFVjRgclNp',
 } as const;
 
 export const Products = {

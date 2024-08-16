@@ -12,6 +12,10 @@
         >, to upgrade your account.
       </p>
 
+      <div v-if="state.isLoading" class="text-center">
+        <LoadingSpinner message="Loading Stripe checkout form..." />
+      </div>
+
       <div id="checkout"></div>
     </FormBox>
   </div>
@@ -28,6 +32,7 @@ import { z } from 'zod';
 
 import { useClient } from '../api-client';
 import FormBox from '../components/common/form-box.vue';
+import LoadingSpinner from '../components/common/loading-spinner.vue';
 import NavLink from '../components/common/nav-link.vue';
 import PageTitle from '../components/common/page-title.vue';
 import { Config } from '../config';

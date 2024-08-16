@@ -9,7 +9,7 @@ import { ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
 import Stripe from 'stripe';
 
 import { Config } from '../config';
-import { User, UsersService } from '../users';
+import { User } from '../users';
 import { Prices, Products } from './products';
 
 const SubscriptionStatusMap: Record<
@@ -29,15 +29,87 @@ const SubscriptionStatusMap: Record<
 const DefaultMembershipStatus: MembershipStatusDTO = {
   accountTier: AccountTier.Basic,
   status: MembershipStatus.None,
+  entitlements: [],
 };
 
 @Injectable()
 export class PaymentsService {
   private readonly log = new Logger(PaymentsService.name);
-  private readonly stripe: Stripe;
 
-  constructor(@Inject(UsersService) private readonly users: UsersService) {
-    this.stripe = new Stripe(Config.stripeSdkKey);
+  constructor(@Inject(Stripe) private readonly stripe: Stripe) {}
+
+  private async ensureStripeCustomer(user: User): Promise<Stripe.Customer> {
+    if (!user.email || !user.emailVerified) {
+      throw new ForbiddenException('User must have a verified email address');
+    }
+
+    let customer: Stripe.Customer;
+
+    if (user.stripeCustomerId) {
+      const returnedCustomer = await this.stripe.customers.retrieve(
+        user.stripeCustomerId,
+        { expand: ['subscriptions'] },
+      );
+
+      if (returnedCustomer.deleted) {
+        throw new Error(
+          `Stripe customer with ID ${user.stripeCustomerId} was deleted and cannot be retrieved.`,
+        );
+      }
+
+      customer = returnedCustomer;
+    } else {
+      this.log.debug(
+        `No Stripe customer associated with user "${user.username}". Creating one...`,
+      );
+      customer = await this.stripe.customers.create({
+        email: user.email,
+        name: user.profile.name,
+      });
+      await user.attachStripeCustomerId(customer.id);
+    }
+
+    return customer;
+  }
+
+  private async createNewSubscription(
+    customer: Stripe.Customer,
+    accountTier: AccountTier,
+  ): Promise<Stripe.Subscription> {
+    const price = Prices[accountTier];
+
+    const subscription = await this.stripe.subscriptions.create({
+      customer: customer.id,
+      items: [{ price, quantity: 1 }],
+      payment_behavior: 'default_incomplete',
+      payment_settings: {
+        save_default_payment_method: 'on_subscription',
+      },
+      expand: ['latest_invoice.payment_intent'],
+    });
+
+    return subscription;
+  }
+
+  private async changeSubscription(
+    customer: Stripe.Customer,
+    newAccountTier: AccountTier,
+  ): Promise<Stripe.Subscription> {
+    const price = Prices[newAccountTier];
+
+    const subscription = customer.subscriptions?.data[0];
+    if (!subscription) {
+      throw new Error(
+        'No subscription found to update. Did you mean to create a subscription?',
+      );
+    }
+
+    const updated = await this.stripe.subscriptions.update(subscription.id, {
+      cancel_at_period_end: false,
+      items: [{ id: subscription.items.data[0].id, price }],
+    });
+
+    return updated;
   }
 
   async getMembershipStatus(user: User): Promise<MembershipStatusDTO> {
@@ -76,6 +148,7 @@ export class PaymentsService {
       cancellationDate: subscription.canceled_at
         ? new Date(subscription.canceled_at * 1000)
         : undefined,
+      entitlements: [],
       nextBillingDate: subscription.current_period_end
         ? new Date(subscription.current_period_end * 1000)
         : undefined,
@@ -86,96 +159,90 @@ export class PaymentsService {
     };
   }
 
-  async createSession(user: User, accountTier: AccountTier): Promise<string> {
-    if (!user.email || !user.emailVerified) {
-      throw new ForbiddenException(
-        'User must have a verified email address before creating a subscription',
-      );
-    }
-    // TODO: Is the user already subscribed? If so, throw an error.
-
-    let price: string;
-
-    switch (accountTier) {
-      case AccountTier.Pro:
-        price = Prices.proSubscription;
-        break;
-
-      case AccountTier.ShopOwner:
-        price = Prices.shopOwnerSubscription;
-        break;
-
-      default:
-        throw new Error('lol?');
-    }
-
-    if (!user.stripeCustomerId) {
-      this.log.debug(
-        `No Stripe customer associated with user "${user.username}". Creating one...`,
-      );
-      const customer = await this.stripe.customers.create({
-        email: user.email,
-        name: user.profile.name,
-      });
-      await user.attachStripeCustomerId(customer.id);
-    }
-
-    const session = await this.stripe.checkout.sessions.create({
-      customer: user.stripeCustomerId,
-      customer_email: user.email,
-      line_items: [
-        {
-          quantity: 1,
-          price,
-        },
-      ],
-      mode: 'subscription',
-      ui_mode: 'embedded',
-    });
-
-    this.log.log('Payment session created with customer ID:', session.customer);
-
-    if (!session.client_secret) {
-      throw new Error('Client secret was not returned.');
-    }
-
-    return session.client_secret;
-  }
-
-  async fulfillSessionOrder(user: User, sessionId: string): Promise<void> {
-    this.log.debug('Retrieving Stripe session:', sessionId);
-    const session = await this.stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['line_items'],
-    });
-
-    this.log.debug('Session payment status:', session.payment_status);
-
-    if (session.payment_status === 'unpaid') {
-      // TODO: What do I do here?
-      throw new Error('Payment is still unpaid.');
-    }
-
-    if (!user.stripeCustomerId) {
-      // If this user is new to Stripe we'll attach their Stripe customer ID to their user account
-      // for future transactions.
-      await user.attachStripeCustomerId(session.customer as string);
-    } else if (user.stripeCustomerId !== session.customer) {
-      // If the customer ID doesn't match what we have on file then there could be an issue here.
-      // TODO: Need to figure out how to proceed.
-
-      throw new Error('Uh oh!');
-    }
-
-    this.log.debug('Subscription ID:', session.subscription);
-
-    const lineItem = session.line_items?.data[0];
-    this.log.log(session.line_items?.data[0]);
-
+  async updateMembership(
+    user: User,
+    newAccountTier: AccountTier,
+  ): Promise<MembershipStatusDTO> {
     // TODO: Perform fulfillment.
     // TODO: Provision new account tier.
     // TODO: Log fulfillment status / payment status. (Database?)
     // TODO: Send an email to the user to confirm thier account status change.
     // TODO: Record/save fulfillment status for this Checkout Session
+
+    if (user.accountTier === newAccountTier) {
+      // No-op. User is not changing their membership status.
+      return await this.getMembershipStatus(user);
+    }
+
+    if (newAccountTier === AccountTier.Basic) {
+      // Cancel an existing membership.
+      await this.cancelMembership(user);
+    }
+
+    const customer = await this.ensureStripeCustomer(user);
+
+    if (customer.subscriptions?.data.length) {
+      // Update the existing subscription.
+      await this.changeSubscription(customer, newAccountTier);
+    } else {
+      // Create a new subscription.
+      await this.createNewSubscription(customer, newAccountTier);
+    }
+
+    await user.changeMembership(newAccountTier);
+    return await this.getMembershipStatus(user);
+  }
+
+  async getPaymentSecret(user: User): Promise<string | undefined> {
+    if (!user.stripeCustomerId) return undefined;
+
+    const customer = await this.stripe.customers.retrieve(
+      user.stripeCustomerId,
+      {
+        expand: ['subscriptions.latest_invoice.payment_intent'],
+      },
+    );
+
+    if (customer.deleted) return undefined;
+
+    const subscription = customer.subscriptions?.data[0];
+    if (!subscription) return undefined;
+
+    const invoice = subscription.latest_invoice;
+    if (!invoice || typeof invoice === 'string') return undefined;
+
+    const paymentIntent = invoice.payment_intent;
+    if (!paymentIntent || typeof paymentIntent === 'string') return undefined;
+
+    if (!paymentIntent.client_secret) return undefined;
+
+    return paymentIntent.client_secret;
+  }
+
+  async cancelMembership(user: User): Promise<boolean> {
+    if (!user.stripeCustomerId) {
+      // User has no Stripe customer ID. Nothing to cancel.
+      return false;
+    }
+
+    const customer = await this.stripe.customers.retrieve(
+      user.stripeCustomerId,
+      { expand: ['subscriptions'] },
+    );
+    if (customer.deleted) {
+      // Customer was deleted. Nothing to cancel.
+      return false;
+    }
+
+    const subscription = customer.subscriptions?.data[0];
+    if (!subscription) {
+      // No subscriptions to cancel.
+      return false;
+    }
+
+    await this.stripe.subscriptions.cancel(subscription.id);
+
+    return true;
   }
 
   parseWebhookEvent(payload: string, signature: string): Stripe.Event {
