@@ -71,9 +71,9 @@
       :disabled="state.isSaving"
     >
       <div class="grow w-full">
-        <span data-testid="account-tier-value">
+        <p data-testid="account-tier-value">
           {{ accountTier }}
-        </span>
+        </p>
       </div>
 
       <div class="min-w-36 lg:min-w-40 xl:min-w-48">
@@ -88,10 +88,19 @@
       </div>
     </fieldset>
   </FormField>
+
+  <FormField v-if="props.membership.nextBillingDate" label="Next billing date">
+    <p>{{ membership.nextBillingDate }}</p>
+  </FormField>
 </template>
 
 <script lang="ts" setup>
-import { AccountTier, MembershipStatus, UserDTO } from '@bottomtime/api';
+import {
+  AccountTier,
+  MembershipStatus,
+  MembershipStatusDTO,
+  UserDTO,
+} from '@bottomtime/api';
 
 import { computed, reactive } from 'vue';
 
@@ -109,6 +118,7 @@ import MembershipPayment from './membership-payment.vue';
 
 interface ManageMembershipProps {
   user: UserDTO;
+  membership: MembershipStatusDTO;
 }
 
 interface ManageMembershipState {
@@ -128,7 +138,7 @@ const toasts = useToasts();
 
 const props = defineProps<ManageMembershipProps>();
 const state = reactive<ManageMembershipState>({
-  accountTier: props.user.accountTier,
+  accountTier: props.membership.accountTier,
   isCanceling: false,
   isSaving: false,
   requirePayment: false,
@@ -136,11 +146,11 @@ const state = reactive<ManageMembershipState>({
   showChangeAccountType: false,
 });
 const emit = defineEmits<{
-  (e: 'account-type-changed', accountTier: AccountTier): void;
+  (e: 'membership-changed', membershipStatus: MembershipStatusDTO): void;
 }>();
 
 const accountTier = computed<string>(() => {
-  switch (props.user.accountTier) {
+  switch (props.membership.accountTier) {
     default:
     case AccountTier.Basic:
       return 'Free account';
@@ -152,54 +162,57 @@ const accountTier = computed<string>(() => {
 });
 
 function onChangeAccountType() {
-  state.accountTier = props.user.accountTier;
+  state.accountTier = props.membership.accountTier;
   state.showChangeAccountType = true;
 }
 
 function onCancelChangeAccountType() {
   state.showChangeAccountType = false;
-  state.accountTier = props.user.accountTier;
+  state.accountTier = props.membership.accountTier;
 }
 
 async function onConfirmChangeAccountType(
   newAccountTier: AccountTier,
 ): Promise<void> {
   await oops(async () => {
-    if (!currentUser.user || currentUser.user.accountTier === newAccountTier)
+    if (
+      !currentUser.user ||
+      currentUser.membership.accountTier === newAccountTier
+    ) {
       return;
+    }
 
     /*
     TODO: Determine workflow from state change:
       - Free to paid tier: Need to get payment info? Checkout.
-      - Paid to free tier: Cancel subscription.
       - Paid to paid tier: Update subscription and display new price.
     */
 
+    let membership = props.membership;
+
+    // User is canceling membership and returning to free tier.
+    // Ask for their confirmation before proceeding.
     if (newAccountTier === AccountTier.Basic) {
-      // User is canceling membership and returning to free tier.
-      // Ask for their confirmation before proceeding.
       state.showCancelMembership = true;
       return;
     }
 
-    let status = await client.payments.getMembershipStatus(
+    membership = await client.memberships.updateMembership(
       currentUser.user.username,
+      newAccountTier,
     );
+    emit('membership-changed', membership);
 
-    switch (status.status) {
-      case MembershipStatus.None:
-        state.isSaving = true;
-        // User has no subscription or is not yet registered as a customer in Stripe.
-        status = await client.payments.createMemberhsip(
-          currentUser.user.username,
-          newAccountTier,
-        );
-
-      /* eslint-disable-next-line no-fallthrough */
-      case MembershipStatus.Incomplete:
-        state.requirePayment = true;
-        break;
+    // User now has an active subscription. We can navigate to a confirmation page.
+    if (
+      membership.status === MembershipStatus.Active ||
+      membership.status === MembershipStatus.Trialing
+    ) {
+      return;
     }
+
+    // Otherwise, We need to get/update payment info for the user.
+    state.requirePayment = true;
   });
 
   state.isSaving = false;
@@ -211,7 +224,7 @@ async function onConfirmCancelMembership(): Promise<void> {
   await oops(async () => {
     if (!currentUser.user) return;
 
-    await client.payments.cancelMembership(currentUser.user.username);
+    await client.memberships.cancelMembership(currentUser.user.username);
 
     toasts.toast({
       id: 'membership-canceled',
@@ -227,6 +240,6 @@ async function onConfirmCancelMembership(): Promise<void> {
 
 function onAbortCancelMembership() {
   state.showCancelMembership = false;
-  state.accountTier = props.user.accountTier;
+  state.accountTier = props.membership.accountTier;
 }
 </script>

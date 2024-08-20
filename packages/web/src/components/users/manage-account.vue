@@ -83,14 +83,17 @@
       <ManageMembership
         v-if="enableShopManagement.value"
         :user="user"
-        @account-type-changed="(type) => $emit('change-account-type', type)"
+        :membership="membership"
+        @membership-changed="
+          (membership) => $emit('change-membership', membership)
+        "
       />
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
-import { AccountTier, UserDTO } from '@bottomtime/api';
+import { MembershipStatusDTO, UserDTO } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { onMounted, reactive } from 'vue';
@@ -111,6 +114,7 @@ import UsernameAndEmail from './username-and-email.vue';
 // TYPE DEFS
 type ManageAccountProps = {
   user: UserDTO;
+  membership: MembershipStatusDTO;
 };
 
 type OAuthProvider = {
@@ -156,7 +160,7 @@ const OAuthProviders: Omit<OAuthProvider, 'connected'>[] = [
 // STATE MANAGEMENT
 const props = defineProps<ManageAccountProps>();
 defineEmits<{
-  (e: 'change-account-type', accountTier: AccountTier): void;
+  (e: 'change-membership', membershipStatus: MembershipStatusDTO): void;
   (e: 'change-username', username: string): void;
   (e: 'change-email', email: string): void;
   (e: 'change-password'): void;

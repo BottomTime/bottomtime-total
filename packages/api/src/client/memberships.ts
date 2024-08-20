@@ -14,7 +14,7 @@ export class MembershipsApiClient {
     await this.fetcher.delete(`/api/membership/${username}`);
   }
 
-  async createMemberhsip(
+  async updateMembership(
     username: string,
     newAccountTier: AccountTier,
   ): Promise<MembershipStatusDTO> {

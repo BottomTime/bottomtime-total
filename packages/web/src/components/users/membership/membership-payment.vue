@@ -30,6 +30,7 @@ import { onMounted, reactive, ref } from 'vue';
 import { useClient } from '../../../api-client';
 import { Config } from '../../../config';
 import { useOops } from '../../../oops';
+import { useCurrentUser } from '../../../store';
 import { useStripe } from '../../../stripe-loader';
 import FormButton from '../../common/form-button.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
@@ -40,6 +41,7 @@ interface MembershipPaymentState {
 }
 
 const client = useClient();
+const currentUser = useCurrentUser();
 const oops = useOops();
 
 const stripe = ref<Stripe | null>(null);
@@ -51,8 +53,12 @@ const state = reactive<MembershipPaymentState>({
 onMounted(async () => {
   // Mount Stripe Payment element.
   await oops(async () => {
+    if (!currentUser.user) return;
+
     stripe.value = await useStripe();
-    const { clientSecret } = await client.payments.createSession();
+    const { clientSecret } = await client.memberships.createSession(
+      currentUser.user.username,
+    );
 
     elements.value = stripe.value.elements({
       clientSecret,
@@ -67,7 +73,7 @@ onMounted(async () => {
 async function onPaymentDetailsEntered(): Promise<void> {
   if (!stripe.value || !elements.value) return;
 
-  const returnUrl = new URL('/account', Config.baseUrl).toString();
+  const returnUrl = new URL('/membership/checkout', Config.baseUrl);
   const { error } = await stripe.value.confirmPayment({
     elements: elements.value,
     confirmParams: {
@@ -77,7 +83,5 @@ async function onPaymentDetailsEntered(): Promise<void> {
 
   if (error) state.error = error.message;
   else state.error = undefined;
-
-  // TODO: Redirec to a confirmation page.
 }
 </script>

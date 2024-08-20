@@ -5,10 +5,11 @@
       <FormBox class="md:col-start-2 md:col-span-3">
         <ManageAccount
           :user="currentUser.user!"
+          :membership="currentUser.membership"
           @change-username="onChangeUsername"
           @change-email="onChangeEmail"
           @change-password="onChangePassword"
-          @change-account-type="onChangeAccountType"
+          @change-membership="onChangeMembership"
         />
       </FormBox>
     </div>
@@ -16,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { AccountTier } from '@bottomtime/api';
+import { MembershipStatusDTO } from '@bottomtime/api';
 
 import FormBox from '../components/common/form-box.vue';
 import PageTitle from '../components/common/page-title.vue';
@@ -46,9 +47,7 @@ function onChangePassword() {
   }
 }
 
-function onChangeAccountType(accountTier: AccountTier) {
-  if (currentUser.user) {
-    currentUser.user.accountTier = accountTier;
-  }
+function onChangeMembership(membership: MembershipStatusDTO) {
+  currentUser.membership = membership;
 }
 </script>

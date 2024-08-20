@@ -180,11 +180,6 @@ export class MembershipService {
     // TODO: Send an email to the user to confirm thier account status change.
     // TODO: Record/save fulfillment status for this Checkout Session
 
-    if (user.accountTier === newAccountTier) {
-      // No-op. User is not changing their membership status.
-      return await this.getMembershipStatus(user);
-    }
-
     if (newAccountTier === AccountTier.Basic) {
       // Cancel an existing membership.
       await this.cancelMembership(user);
@@ -200,7 +195,6 @@ export class MembershipService {
       await this.createNewSubscription(customer, newAccountTier);
     }
 
-    await user.changeMembership(newAccountTier);
     return await this.getMembershipStatus(user);
   }
 
@@ -235,7 +229,6 @@ export class MembershipService {
       this.log.debug(
         'User has no Stripe customer ID. No subscription to cancel.',
       );
-      await user.changeMembership(AccountTier.Basic);
       return false;
     }
 
@@ -245,14 +238,12 @@ export class MembershipService {
     );
     if (customer.deleted) {
       this.log.debug('Stripe customer was deleted. No subscription to cancel.');
-      await user.changeMembership(AccountTier.Basic);
       return false;
     }
 
     const subscription = customer.subscriptions?.data[0];
     if (!subscription) {
       this.log.debug('Stripe customer has no subscriptions to cancel.');
-      await user.changeMembership(AccountTier.Basic);
       return false;
     }
 
@@ -260,7 +251,6 @@ export class MembershipService {
       `Cancelling subscription "${subscription.id}" for user "${user.username}"`,
     );
     await this.stripe.subscriptions.cancel(subscription.id);
-    await user.changeMembership(AccountTier.Basic);
 
     this.log.log(
       `Subscription (${subscription.id}) has been cancelled for user "${user.username}".`,

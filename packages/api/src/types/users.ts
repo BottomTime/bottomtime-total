@@ -16,12 +16,6 @@ export enum UsersSortBy {
   MemberSince = 'memberSince',
 }
 
-export enum AccountTier {
-  Basic = 0,
-  Pro = 100,
-  ShopOwner = 200,
-}
-
 export enum AvatarSize {
   Small = '32x32',
   Medium = '64x64',
@@ -137,13 +131,6 @@ export type ChangePasswordParamsDTO = z.infer<
   typeof ChangePasswordParamsSchema
 >;
 
-export const ChangeMembershipParamsSchema = z.object({
-  accountTier: z.nativeEnum(AccountTier),
-});
-export type ChangeMembershipParamsDTO = z.infer<
-  typeof ChangeMembershipParamsSchema
->;
-
 export const ResetPasswordWithTokenParamsSchema = z.object({
   token: z.string().min(1),
   newPassword: PasswordStrengthSchema,
@@ -154,7 +141,6 @@ export type ResetPasswordWithTokenParamsDTO = z.infer<
 
 export const UserSchema = z.object({
   id: z.string(),
-  accountTier: z.nativeEnum(AccountTier),
   username: z.string(),
   email: EmailSchema.optional(),
   emailVerified: z.boolean(),

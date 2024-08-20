@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-import { AccountTier } from './users';
+export enum AccountTier {
+  Basic = 0,
+  Pro = 100,
+  ShopOwner = 200,
+}
 
 export enum MembershipStatus {
   /** User has not signed up for a paid membership yet: free tier only */
