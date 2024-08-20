@@ -4,7 +4,12 @@ import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 import { Config } from './config.mjs';
-import { extractJwtFromRequest, getCurrentUser } from './http.mjs';
+import {
+  DefaultMembership,
+  extractJwtFromRequest,
+  getCurrentUser,
+  getUserMembership,
+} from './http.mjs';
 import { getLogger } from './logger.mjs';
 
 const log = getLogger();
@@ -21,9 +26,15 @@ async function errorHandler(err, _req, res, _next) {
 async function requestHandler(req, res, next) {
   try {
     const jwt = extractJwtFromRequest(req);
+    const user = jwt ? await getCurrentUser(jwt, res) : null;
+    const membership = user?.username
+      ? await getUserMembership(user.username, jwt)
+      : DefaultMembership;
+
     const state = {
       currentUser: {
-        user: jwt ? await getCurrentUser(jwt, res) : null,
+        user,
+        membership,
       },
     };
     const clientOptions = {

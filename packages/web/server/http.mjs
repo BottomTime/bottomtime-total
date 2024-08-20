@@ -11,6 +11,8 @@ function parseAuthHeader(header) {
   return token;
 }
 
+export const DefaultMembership = {};
+
 export function extractJwtFromRequest(req) {
   let token;
 
@@ -57,5 +59,35 @@ export async function getCurrentUser(jwt, res) {
       'An error occurred while attempting to reach the backend service:',
       err,
     );
+    return { anonymous: true };
+  }
+}
+
+export async function getUserMembership(username, jwt) {
+  try {
+    log.debug(`Attempting to fetch membership data for ${username}...`);
+    const response = await fetch(
+      new URL(`/api/membership/${username}`, Config.apiUrl),
+      {
+        headers: { Authorization: `Bearer ${jwt}` },
+        method: 'GET',
+      },
+    );
+
+    if (response.ok) {
+      return await response.json();
+    }
+
+    log.error(
+      `Failed to fetch membership data for ${username}: ${response.status}`,
+      response.body,
+    );
+    return DefaultMembership;
+  } catch (err) {
+    log.error(
+      'An error occurred while attempting to reach the backend service:',
+      err,
+    );
+    return DefaultMembership;
   }
 }
