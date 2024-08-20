@@ -4,13 +4,66 @@
     :visible="state.showChangeAccountType"
     @close="onCancelChangeAccountType"
   >
+    <MembershipPayment v-if="state.requirePayment" />
+
     <MembershipForm
-      :user="props.user"
+      v-else
+      :account-tier="state.accountTier"
       :is-saving="state.isSaving"
       @cancel="onCancelChangeAccountType"
       @change-membership="onConfirmChangeAccountType"
     />
   </DrawerPanel>
+
+  <ConfirmDialog
+    title="Cancel Membership?"
+    confirm-text="Yes, cancel my membership"
+    size="lg"
+    dangerous
+    :is-loading="state.isCanceling"
+    :visible="state.showCancelMembership"
+    @confirm="onConfirmCancelMembership"
+    @cancel="onAbortCancelMembership"
+  >
+    <div class="flex gap-4">
+      <div class="my-4">
+        <i class="fas fa-exclamation-triangle text-danger text-4xl"></i>
+      </div>
+
+      <div class="space-y-3">
+        <p>
+          You are about to cancel your current membership. This will immediately
+          revert your account back to a free account. You will no longer have
+          access to the benefits of your current membership. Please make note of
+          the following:
+        </p>
+
+        <ul class="list-disc list-outside px-6 text-sm">
+          <li>
+            You will receive a prorated refund for the remaining time on your
+            current membership.
+          </li>
+          <li>
+            Any data you have provided or uploaded using the features of your
+            current membership will <span class="font-bold">not</span> be
+            deleted and you will still have access to it. However, you may not
+            be able to edit, delete, or modify that data without the features of
+            your current membership.
+          </li>
+          <li>
+            You will keep all of the XP and badges you have earned while on your
+            current membership.
+          </li>
+          <li>
+            You can re-enable your membership at any time by visiting your
+            account page and selecting a new membership tier.
+          </li>
+        </ul>
+
+        <p class="font-bold text-lg">Are you sure you want to proceed?</p>
+      </div>
+    </div>
+  </ConfirmDialog>
 
   <FormField label="Account type">
     <fieldset
@@ -38,7 +91,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AccountTier, UserDTO } from '@bottomtime/api';
+import { AccountTier, MembershipStatus, UserDTO } from '@bottomtime/api';
 
 import { computed, reactive } from 'vue';
 
@@ -46,11 +99,13 @@ import { useClient } from '../../../api-client';
 import { ToastType } from '../../../common';
 import { useLocation } from '../../../location';
 import { useOops } from '../../../oops';
-import { useToasts } from '../../../store';
+import { useCurrentUser, useToasts } from '../../../store';
 import DrawerPanel from '../../common/drawer-panel.vue';
 import FormButton from '../../common/form-button.vue';
 import FormField from '../../common/form-field.vue';
+import ConfirmDialog from '../../dialog/confirm-dialog.vue';
 import MembershipForm from './membership-form.vue';
+import MembershipPayment from './membership-payment.vue';
 
 interface ManageMembershipProps {
   user: UserDTO;
@@ -58,12 +113,15 @@ interface ManageMembershipProps {
 
 interface ManageMembershipState {
   accountTier: AccountTier;
-  isCreatingSession: boolean;
+  isCanceling: boolean;
   isSaving: boolean;
+  requirePayment: boolean;
+  showCancelMembership: boolean;
   showChangeAccountType: boolean;
 }
 
 const client = useClient();
+const currentUser = useCurrentUser();
 const location = useLocation();
 const oops = useOops();
 const toasts = useToasts();
@@ -71,8 +129,10 @@ const toasts = useToasts();
 const props = defineProps<ManageMembershipProps>();
 const state = reactive<ManageMembershipState>({
   accountTier: props.user.accountTier,
-  isCreatingSession: false,
+  isCanceling: false,
   isSaving: false,
+  requirePayment: false,
+  showCancelMembership: false,
   showChangeAccountType: false,
 });
 const emit = defineEmits<{
@@ -103,5 +163,70 @@ function onCancelChangeAccountType() {
 
 async function onConfirmChangeAccountType(
   newAccountTier: AccountTier,
-): Promise<void> {}
+): Promise<void> {
+  await oops(async () => {
+    if (!currentUser.user || currentUser.user.accountTier === newAccountTier)
+      return;
+
+    /*
+    TODO: Determine workflow from state change:
+      - Free to paid tier: Need to get payment info? Checkout.
+      - Paid to free tier: Cancel subscription.
+      - Paid to paid tier: Update subscription and display new price.
+    */
+
+    if (newAccountTier === AccountTier.Basic) {
+      // User is canceling membership and returning to free tier.
+      // Ask for their confirmation before proceeding.
+      state.showCancelMembership = true;
+      return;
+    }
+
+    let status = await client.payments.getMembershipStatus(
+      currentUser.user.username,
+    );
+
+    switch (status.status) {
+      case MembershipStatus.None:
+        state.isSaving = true;
+        // User has no subscription or is not yet registered as a customer in Stripe.
+        status = await client.payments.createMemberhsip(
+          currentUser.user.username,
+          newAccountTier,
+        );
+
+      /* eslint-disable-next-line no-fallthrough */
+      case MembershipStatus.Incomplete:
+        state.requirePayment = true;
+        break;
+    }
+  });
+
+  state.isSaving = false;
+}
+
+async function onConfirmCancelMembership(): Promise<void> {
+  state.isCanceling = true;
+
+  await oops(async () => {
+    if (!currentUser.user) return;
+
+    await client.payments.cancelMembership(currentUser.user.username);
+
+    toasts.toast({
+      id: 'membership-canceled',
+      message: 'Your membership has been canceled.',
+      type: ToastType.Success,
+    });
+    state.showCancelMembership = false;
+    location.assign('/membership/canceled');
+  });
+
+  state.isCanceling = false;
+}
+
+function onAbortCancelMembership() {
+  state.showCancelMembership = false;
+  state.accountTier = props.user.accountTier;
+}
 </script>

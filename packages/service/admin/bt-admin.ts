@@ -8,6 +8,7 @@ import 'dotenv/config';
 import yargs from 'yargs';
 
 import { dbModule } from './database';
+import { stripeModule } from './stripe';
 import { userModule } from './users';
 import { utilModule } from './util';
 
@@ -33,6 +34,7 @@ async function processCommand(cmd: string[]) {
       type: 'boolean',
     })
     .command(dbModule)
+    .command(stripeModule)
     .command(userModule)
     .command(utilModule)
     .help().argv;

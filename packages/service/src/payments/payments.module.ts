@@ -1,4 +1,4 @@
-import { Module, Scope } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import Stripe from 'stripe';
 

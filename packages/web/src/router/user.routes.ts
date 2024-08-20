@@ -22,6 +22,11 @@ export const UserRoutes: RouteRecordRaw[] = [
     component: () => import('../views/friend-requests-view.vue'),
   },
   {
+    path: '/membership/canceled',
+    name: 'membership-canceled',
+    component: () => import('../views/membership-canceled-view.vue'),
+  },
+  {
     path: '/profile',
     name: 'profile',
     component: () => import('../views/profile-view.vue'),

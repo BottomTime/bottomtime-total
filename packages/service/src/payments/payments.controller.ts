@@ -1,5 +1,6 @@
 import {
   CreatePaymentSessionResponseDTO,
+  MembershipStatusDTO,
   UpdateMembershipParamsDTO,
   UpdateMembershipParamsSchema,
 } from '@bottomtime/api';
@@ -19,12 +20,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { AssertAuth, CurrentUser, User, UsersService } from '../users';
+import {
+  AssertAccountOwner,
+  AssertAuth,
+  AssertTargetUser,
+  CurrentUser,
+  TargetUser,
+  User,
+  UsersService,
+} from '../users';
 import { ZodValidator } from '../zod-validator';
 import { PaymentsService } from './payments.service';
 
 @Controller('api/payments')
-@UseGuards(AssertAuth)
+@UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
 export class PaymentsController {
   private readonly log = new Logger(PaymentsController.name);
 
@@ -36,35 +45,30 @@ export class PaymentsController {
     private readonly users: UsersService,
   ) {}
 
-  @Get('membershp/:username')
+  @Get('membership/:username')
   async getMembershipStatus(
-    @Param('username') username: string,
-  ): Promise<void> {
-    const user = await this.users.getUserByUsernameOrEmail(username);
-    if (!user) {
-      throw new NotFoundException(`Memberhsip not found: "${username}"`);
-    }
-
-    await this.service.getMembershipStatus(user);
+    @TargetUser() user: User,
+  ): Promise<MembershipStatusDTO> {
+    return await this.service.getMembershipStatus(user);
   }
 
-  @Put('membershp/:username')
+  @Put('membership/:username')
   async createOrUpdateMembership(
-    @CurrentUser() user: User,
+    @TargetUser() user: User,
     @Body(new ZodValidator(UpdateMembershipParamsSchema))
     { newAccountTier }: UpdateMembershipParamsDTO,
-  ): Promise<void> {
-    await this.service.updateMembership(user, newAccountTier);
+  ): Promise<MembershipStatusDTO> {
+    return await this.service.updateMembership(user, newAccountTier);
   }
 
-  @Delete('membershp/:username')
-  async cancelMembership(@CurrentUser() user: User): Promise<void> {
+  @Delete('membership/:username')
+  async cancelMembership(@TargetUser() user: User): Promise<void> {
     await this.service.cancelMembership(user);
   }
 
-  @Post('session')
+  @Post('session/:username')
   async createSession(
-    @CurrentUser() user: User,
+    @TargetUser() user: User,
   ): Promise<CreatePaymentSessionResponseDTO> {
     this.log.debug('Creating payment session for user:', user.username);
     const clientSecret = await this.service.getPaymentSecret(user);

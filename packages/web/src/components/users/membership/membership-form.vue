@@ -108,7 +108,7 @@
         <FormButton
           type="primary"
           :is-loading="isSaving"
-          :disabled="state.accountTier === props.user.accountTier.toString()"
+          :disabled="state.accountTier === props.accountTier.toString()"
           control-id="confirm-account-change"
           test-id="confirm-account-change"
           submit
@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AccountTier, UserDTO } from '@bottomtime/api';
+import { AccountTier } from '@bottomtime/api';
 
 import { reactive } from 'vue';
 
@@ -138,8 +138,8 @@ import FormButton from '../../common/form-button.vue';
 import FormRadio from '../../common/form-radio.vue';
 
 interface MembershipFormProps {
+  accountTier: AccountTier;
   isSaving?: boolean;
-  user: UserDTO;
 }
 
 interface MembershipFormState {
@@ -150,7 +150,7 @@ const props = withDefaults(defineProps<MembershipFormProps>(), {
   isSaving: false,
 });
 const state = reactive<MembershipFormState>({
-  accountTier: props.user.accountTier.toString(),
+  accountTier: props.accountTier.toString(),
 });
 
 const emit = defineEmits<{

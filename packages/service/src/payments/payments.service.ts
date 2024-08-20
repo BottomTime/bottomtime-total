@@ -120,14 +120,30 @@ export class PaymentsService {
 
     const customer = await this.stripe.customers.retrieve(
       user.stripeCustomerId,
-      {
-        expand: ['subscriptions'],
-      },
     );
 
     if (customer.deleted) {
       // Customer was deleted. Default to free tier.
       return DefaultMembershipStatus;
+    }
+
+    const entitlementsData =
+      await this.stripe.entitlements.activeEntitlements.list({
+        customer: user.stripeCustomerId,
+      });
+
+    const entitlements: string[] = [];
+    let accountTier: AccountTier = AccountTier.Basic;
+    for (const entitlement of entitlementsData.data) {
+      entitlements.push(entitlement.lookup_key);
+      if (entitlement.lookup_key === 'shop-owner-features') {
+        accountTier = AccountTier.ShopOwner;
+        break;
+      }
+
+      if (entitlement.lookup_key === 'pro-features') {
+        accountTier = AccountTier.Pro;
+      }
     }
 
     if (!customer.subscriptions?.data.length) {
@@ -136,19 +152,14 @@ export class PaymentsService {
     }
 
     const subscription = customer.subscriptions.data[0];
-
     const status = SubscriptionStatusMap[subscription.status];
-
-    const productId = subscription.items.data[0].price.product;
-    const accountTier: AccountTier =
-      Products[productId as keyof typeof Products] ?? AccountTier.Basic;
 
     return {
       accountTier,
       cancellationDate: subscription.canceled_at
         ? new Date(subscription.canceled_at * 1000)
         : undefined,
-      entitlements: [],
+      entitlements,
       nextBillingDate: subscription.current_period_end
         ? new Date(subscription.current_period_end * 1000)
         : undefined,
@@ -199,7 +210,7 @@ export class PaymentsService {
     const customer = await this.stripe.customers.retrieve(
       user.stripeCustomerId,
       {
-        expand: ['subscriptions.latest_invoice.payment_intent'],
+        expand: ['subscriptions.data.latest_invoice.payment_intent'],
       },
     );
 
@@ -241,6 +252,7 @@ export class PaymentsService {
     }
 
     await this.stripe.subscriptions.cancel(subscription.id);
+    await user.changeMembership(AccountTier.Basic);
 
     return true;
   }

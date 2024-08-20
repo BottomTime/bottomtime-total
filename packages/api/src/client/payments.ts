@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   CreatePaymentSessionResponseDTO,
   CreatePaymentSessionResponseSchema,
   MembershipStatusDTO,
@@ -8,6 +9,24 @@ import { Fetcher } from './fetcher';
 
 export class PaymentsApiClient {
   constructor(private readonly fetcher: Fetcher) {}
+
+  async cancelMembership(username: string): Promise<void> {
+    await this.fetcher.delete(`/api/payments/membership/${username}`);
+  }
+
+  async createMemberhsip(
+    username: string,
+    newAccountTier: AccountTier,
+  ): Promise<MembershipStatusDTO> {
+    const { data } = await this.fetcher.put(
+      `/api/payments/membership/${username}`,
+      {
+        newAccountTier,
+      },
+      MembershipStatusSchema,
+    );
+    return data;
+  }
 
   async createSession(): Promise<CreatePaymentSessionResponseDTO> {
     const { data } = await this.fetcher.post(
