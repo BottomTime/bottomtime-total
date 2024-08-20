@@ -13,8 +13,6 @@ import {
   Get,
   Inject,
   Logger,
-  NotFoundException,
-  Param,
   Post,
   Put,
   UseGuards,
@@ -24,35 +22,34 @@ import {
   AssertAccountOwner,
   AssertAuth,
   AssertTargetUser,
-  CurrentUser,
   TargetUser,
   User,
   UsersService,
 } from '../users';
 import { ZodValidator } from '../zod-validator';
-import { PaymentsService } from './payments.service';
+import { MembershipService } from './membership.service';
 
-@Controller('api/payments')
+@Controller('api/membership/:username')
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
-export class PaymentsController {
-  private readonly log = new Logger(PaymentsController.name);
+export class MembershipController {
+  private readonly log = new Logger(MembershipController.name);
 
   constructor(
-    @Inject(PaymentsService)
-    private readonly service: PaymentsService,
+    @Inject(MembershipService)
+    private readonly service: MembershipService,
 
     @Inject(UsersService)
     private readonly users: UsersService,
   ) {}
 
-  @Get('membership/:username')
+  @Get()
   async getMembershipStatus(
     @TargetUser() user: User,
   ): Promise<MembershipStatusDTO> {
     return await this.service.getMembershipStatus(user);
   }
 
-  @Put('membership/:username')
+  @Put()
   async createOrUpdateMembership(
     @TargetUser() user: User,
     @Body(new ZodValidator(UpdateMembershipParamsSchema))
@@ -61,12 +58,13 @@ export class PaymentsController {
     return await this.service.updateMembership(user, newAccountTier);
   }
 
-  @Delete('membership/:username')
+  @Delete()
   async cancelMembership(@TargetUser() user: User): Promise<void> {
+    this.log.debug('Cancelling membership for user:', user.username);
     await this.service.cancelMembership(user);
   }
 
-  @Post('session/:username')
+  @Post('session')
   async createSession(
     @TargetUser() user: User,
   ): Promise<CreatePaymentSessionResponseDTO> {
@@ -82,7 +80,7 @@ export class PaymentsController {
     return { clientSecret };
   }
 
-  // @Post('webhook')
+  // @Post('membershipWebhook')
   // async callback(
   //   @Headers('stripe-signature') signature: string,
   //   @Body() payload: unknown,

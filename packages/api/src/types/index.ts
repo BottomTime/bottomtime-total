@@ -12,5 +12,5 @@ export * from './notifications';
 export * from './tanks';
 export * from './dive-sites';
 export * from './log-entries';
-export * from './payments';
+export * from './memberships';
 export * from './users';

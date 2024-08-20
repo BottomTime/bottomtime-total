@@ -10,7 +10,7 @@ import Stripe from 'stripe';
 
 import { Config } from '../config';
 import { User } from '../users';
-import { Prices, Products } from './products';
+import { Prices } from './products';
 
 const SubscriptionStatusMap: Record<
   Stripe.Subscription.Status,
@@ -33,8 +33,8 @@ const DefaultMembershipStatus: MembershipStatusDTO = {
 };
 
 @Injectable()
-export class PaymentsService {
-  private readonly log = new Logger(PaymentsService.name);
+export class MembershipService {
+  private readonly log = new Logger(MembershipService.name);
 
   constructor(@Inject(Stripe) private readonly stripe: Stripe) {}
 
@@ -232,7 +232,10 @@ export class PaymentsService {
 
   async cancelMembership(user: User): Promise<boolean> {
     if (!user.stripeCustomerId) {
-      // User has no Stripe customer ID. Nothing to cancel.
+      this.log.debug(
+        'User has no Stripe customer ID. No subscription to cancel.',
+      );
+      await user.changeMembership(AccountTier.Basic);
       return false;
     }
 
@@ -241,18 +244,29 @@ export class PaymentsService {
       { expand: ['subscriptions'] },
     );
     if (customer.deleted) {
-      // Customer was deleted. Nothing to cancel.
+      this.log.debug('Stripe customer was deleted. No subscription to cancel.');
+      await user.changeMembership(AccountTier.Basic);
       return false;
     }
 
     const subscription = customer.subscriptions?.data[0];
     if (!subscription) {
-      // No subscriptions to cancel.
+      this.log.debug('Stripe customer has no subscriptions to cancel.');
+      await user.changeMembership(AccountTier.Basic);
       return false;
     }
 
+    this.log.debug(
+      `Cancelling subscription "${subscription.id}" for user "${user.username}"`,
+    );
     await this.stripe.subscriptions.cancel(subscription.id);
     await user.changeMembership(AccountTier.Basic);
+
+    this.log.log(
+      `Subscription (${subscription.id}) has been cancelled for user "${user.username}".`,
+    );
+
+    // TODO: Send a confirmation email to the user.
 
     return true;
   }
