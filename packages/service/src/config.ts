@@ -61,6 +61,12 @@ export interface AppConfig {
     secureCookie: boolean;
   };
 
+  stripe: {
+    sdkKey: string;
+    proMembershipPrice: string;
+    shopOwnerMembershipPrice: string;
+  };
+
   adminEmail: string;
   baseUrl: string;
   configCatSdkKey: string;
@@ -73,7 +79,6 @@ export interface AppConfig {
   port: number;
   postgresRequireSsl: boolean;
   postgresUri: string;
-  stripeSdkKey: string;
 }
 
 const ConfigSchema = z
@@ -122,6 +127,11 @@ const ConfigSchema = z
       .min(1)
       .default(14 * 24 * 60 * 60 * 1000),
 
+    // Stripe
+    BT_STRIPE_SDK_KEY: z.string().default(''),
+    BT_STRIPE_PRO_MEMBERSHIP_PRICE: z.string().default(''),
+    BT_STRIPE_SHOP_OWNER_MEMBERSHIP_PRICE: z.string().default(''),
+
     // Misc.
     BT_ADMIN_EMAIL: z.string().default('admin@bottomti.me'),
     BT_BASE_URL: z.string().url().default('http://localhost:4850'),
@@ -137,7 +147,6 @@ const ConfigSchema = z
       .default(
         'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_local',
       ),
-    BT_STRIPE_SDK_KEY: z.string().default(''),
     NODE_ENV: z.string().default('local'),
   })
   .transform<AppConfig>((env) => ({
@@ -187,6 +196,12 @@ const ConfigSchema = z
       secureCookie: env.BT_SESSION_SECURE_COOKIE,
     },
 
+    stripe: {
+      sdkKey: env.BT_STRIPE_SDK_KEY,
+      proMembershipPrice: env.BT_STRIPE_PRO_MEMBERSHIP_PRICE,
+      shopOwnerMembershipPrice: env.BT_STRIPE_SHOP_OWNER_MEMBERSHIP_PRICE,
+    },
+
     adminEmail: env.BT_ADMIN_EMAIL,
     baseUrl: env.BT_BASE_URL,
     configCatSdkKey: env.BT_CONFIGCAT_SDK_KEY,
@@ -199,7 +214,6 @@ const ConfigSchema = z
     port: env.BT_PORT,
     postgresRequireSsl: env.BT_POSTGRES_REQUIRE_SSL,
     postgresUri: env.BT_POSTGRES_URI,
-    stripeSdkKey: env.BT_STRIPE_SDK_KEY,
   }));
 
 export const Config = ConfigSchema.parse(process.env);

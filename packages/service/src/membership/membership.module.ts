@@ -13,7 +13,7 @@ import { StripeWebhookController } from './webhook.controller';
   providers: [
     {
       provide: Stripe,
-      useFactory: () => new Stripe(Config.stripeSdkKey),
+      useFactory: () => new Stripe(Config.stripe.sdkKey),
     },
     MembershipService,
   ],

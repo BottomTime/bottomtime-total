@@ -4,13 +4,18 @@ import {
   MembershipStatusDTO,
 } from '@bottomtime/api';
 
-import { ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 
 import Stripe from 'stripe';
 
 import { Config } from '../config';
 import { User } from '../users';
-import { Prices } from './products';
 
 const SubscriptionStatusMap: Record<
   Stripe.Subscription.Status,
@@ -30,13 +35,28 @@ const DefaultMembershipStatus: MembershipStatusDTO = {
   accountTier: AccountTier.Basic,
   status: MembershipStatus.None,
   entitlements: [],
-};
+} as const;
 
 @Injectable()
 export class MembershipService {
   private readonly log = new Logger(MembershipService.name);
 
   constructor(@Inject(Stripe) private readonly stripe: Stripe) {}
+
+  private getPriceForAccountTier(accountTier: AccountTier): string {
+    switch (accountTier) {
+      case AccountTier.Pro:
+        return Config.stripe.proMembershipPrice;
+
+      case AccountTier.ShopOwner:
+        return Config.stripe.shopOwnerMembershipPrice;
+
+      default:
+        throw new BadRequestException(
+          `No price registered for account tier: ${accountTier}`,
+        );
+    }
+  }
 
   private async ensureStripeCustomer(user: User): Promise<Stripe.Customer> {
     if (!user.email || !user.emailVerified) {
@@ -76,7 +96,7 @@ export class MembershipService {
     customer: Stripe.Customer,
     accountTier: AccountTier,
   ): Promise<Stripe.Subscription> {
-    const price = Prices[accountTier];
+    const price = this.getPriceForAccountTier(accountTier);
 
     const subscription = await this.stripe.subscriptions.create({
       customer: customer.id,
@@ -95,7 +115,7 @@ export class MembershipService {
     customer: Stripe.Customer,
     newAccountTier: AccountTier,
   ): Promise<Stripe.Subscription> {
-    const price = Prices[newAccountTier];
+    const price = this.getPriceForAccountTier(newAccountTier);
 
     const subscription = customer.subscriptions?.data[0];
     if (!subscription) {
@@ -265,7 +285,7 @@ export class MembershipService {
     return this.stripe.webhooks.constructEvent(
       payload,
       signature,
-      Config.stripeSdkKey,
+      Config.stripe.sdkKey,
     );
   }
 }
