@@ -36,6 +36,10 @@ async function requestHandler(req, res, next) {
     const jwt = extractJwtFromRequest(req);
 
     const user = jwt ? await getCurrentUser(jwt, res) : null;
+
+    if (user?.username) {
+      log.debug('Got user, attempting to retrieve membership details...');
+    }
     const membership = user?.username
       ? await getUserMembership(user.username, jwt)
       : DefaultMembership;

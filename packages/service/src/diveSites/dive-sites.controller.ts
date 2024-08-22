@@ -47,7 +47,7 @@ export class DiveSitesController {
 
   /**
    * @openapi
-   * /diveSites:
+   * /api/diveSites:
    *   get:
    *     summary: Search dive sites
    *     operationId: searchDiveSites
@@ -199,7 +199,7 @@ export class DiveSitesController {
 
   /**
    * @openapi
-   * /diveSites:
+   * /api/diveSites:
    *   post:
    *     summary: Create a dive site
    *     operationId: createDiveSite
@@ -259,7 +259,7 @@ export class DiveSitesController {
 
   /**
    * @openapi
-   * /diveSites/{siteId}:
+   * /api/diveSites/{siteId}:
    *   get:
    *     summary: Get a dive site
    *     operationId: getDiveSite
@@ -296,7 +296,7 @@ export class DiveSitesController {
 
   /**
    * @openapi
-   * /diveSites/{siteId}:
+   * /api/diveSites/{siteId}:
    *   put:
    *     summary: Update a dive site
    *     operationId: updateDiveSite
@@ -378,7 +378,7 @@ export class DiveSitesController {
 
   /**
    * @openapi
-   * /diveSites/{siteId}:
+   * /api/diveSites/{siteId}:
    *   delete:
    *     summary: Delete a dive site
    *     operationId: deleteDiveSite

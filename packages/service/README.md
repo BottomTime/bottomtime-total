@@ -39,7 +39,83 @@ the files at `<repositoryRoot>/.s3/`.
 
 ### Enabling OAuth Authentication
 
-TODO
+To enable OAuth authentication you will need to do some setup with the target providers. (E.g. Google, Facebook,
+Discord, etc.)
+
+#### 1) Configure OAuth Provider
+
+> **NOTE:** If the OAuth provider you are looking to work with has already been configured for you and you have
+> the OAuth Client ID and Client Secret pair then you can skip ahead to the next step.
+
+Each provider is different and will have a slightly different setup experience but the OAuth standard works the
+same everywhere so the same checklist of setup steps should be followed.
+
+- [x] Create an account with the provider (if you don't already have one) and access the developer console/dashboard.
+- [x] Enable OAuth authentication and generate Client ID and Client Secret. Make note of these for later but keep them safe!
+      **DO NOT** check them into Github or put them anywhere where they are publicly accessible.
+- [x] Configure authorized callback URLs. You will need one for each environment that will authenticate with the provider.
+      These URLs will take the form of `<base_url>/api/auth/<provider_key>/callback` where
+  - `<base_url>` is the base URL for the environment (e.g. `https://staging.bottomti.me/`) and
+  - `<provider_key>` is a string that identifies the provider (e.g. `google` or `discord`).
+- [x] Perform any additional configuration permitted by the provider (branding, customizing the login page, etc.)
+
+#### 2) Configure the Service
+
+Now that things are setup on the provider-side, all you need to do is configure our backend service with the
+client ID/secret pair from before. To do this you only need to set the related environment variables. E.g. for
+Google you would set `BT_GOOGLE_CLIENT_ID` and `BT_GOOGLE_CLIENT_SECRET`.
+
+See the [Configuration](#configuration) section below for the full list of environment variables.
+
+### Setting Up Stripe to Handle Membership Subscriptions
+
+#### 1) Setup Account and Get API Keys
+
+If you plan on doing development or testing with accounts with paid tiers then you'll need to configure the service to
+access [Stripe](https://stripe.com) to manage subscriptions.
+
+First, you will need access to a Stripe account. Once it is created you will need both the secret key (for use here in the backend service) and the publishable key (for use in front-end services).
+
+Set the `BT_STRIPE_SDK_KEY` environment variable to the value of the secret key in your environment. For local development
+you can update your `.env` file.
+
+Update your front-end environments' configuration with the publishable API key.
+(See the Configuration sections of the relevant README.md files).
+
+#### 2) Provision Products and Features
+
+If you are using an existing Stripe account with the products, prices, and features already provisioned then you
+can skip ahead. Otherwise, you'll need to provision these elements yourself.
+
+Once you have ensured that your `BT_STRIPE_SDK_KEY` environment variable is set correctly you can run:
+
+```bash
+yarn admin stripe init-products
+```
+
+This will create the initial subscription products, prices, and features. When the operation succeeds you will see output
+similar to this:
+
+```
+Operation completed successfully!
+{
+  "proMembership": {
+    "productId": "prod_QgyiQUepP0o0ZL",
+    "priceId": "price_1PpalEI1ADsIvyhFvyORwfuS"
+  },
+  "shopOwnerMembership": {
+    "productId": "prod_Qgyid4DQ07lwb7",
+    "priceId": "price_1PpalEI1ADsIvyhFWyOrY4fX"
+  }
+}
+```
+
+#### 3) Configure Price IDs
+
+Once you have the products and prices created for the Pro and Shop Owner membership tiers, you need to configure the
+service with the Price IDs for each of them so that users can be signed up correctly.
+
+TODO....
 
 ## Development
 
@@ -85,6 +161,27 @@ To run the Jest tests for the backend service you can run
 yarn test
 ```
 
+## Admin CLI
+
+The included Admin CLI is useful for running one-off tasks like seeding the database or generating an auth token for a user.
+For the full list of commands, run
+
+```bash
+yarn admin --help
+```
+
+The sub-commands also have their own documentation. For example:
+
+```bash
+yarn admin db --help
+```
+
+## Testing APIs Using Postman
+
+[Postman](https://www.postman.com/) is a very handy tool for doing API development and testing.
+
+TODO
+
 ## Configuration
 
 Environment variables can be defined in your shell or the environment itself, however, in development it may be easier to
@@ -125,15 +222,6 @@ Here is the comprehensive list of environment variables used by the service.
 | `BT_STRIPE_SHOP_OWNER_MEMBERSHIP_PRICE` | The Stripe price ID for the Shop Owner-level membership subscription. (E.g. `price_xxx`)                                                                                                                  | `string`  | :white_check_mark: |                                                                     |
 | `NODE_ENV`                              | Indicates the environment in which the service is running. A value of `production` will have certain implications for security and performance.                                                           | `string`  |                    | `local`                                                             |
 
-## Admin CLI
-
-The included Admin CLI is useful for running one-off tasks like seeding the database or generating an auth token for a user.
-For the full list of commands, run
-
-```bash
-yarn admin --help
-```
-
 ## API Documentation
 
 API documentation is written inline alongside the code. It is found mostly in the controllers (`*.controller.ts` files) and dedicated documentation
@@ -150,3 +238,7 @@ You can view the documentation at [http://localhost:4890/](http://localhost:4890
 > **NOTE:** Sorry, there is no hot-reloading at this time! You will need to refresh the browser page to view the changes.
 
 > **NOTE:** The swagger-jsdoc Comment Formatter VS Code extension is _highly_ recommended for editing the API documenation.
+
+```
+
+```

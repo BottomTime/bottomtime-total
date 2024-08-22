@@ -1,5 +1,8 @@
 import {
   AccountTier,
+  BillingFrequency,
+  ListMembershipsResponseDTO,
+  MembershipDTO,
   MembershipStatus,
   MembershipStatusDTO,
 } from '@bottomtime/api';
@@ -16,6 +19,9 @@ import Stripe from 'stripe';
 
 import { Config } from '../config';
 import { User } from '../users';
+
+const ProFeature = 'pro-features';
+const ShopOwnerFeature = 'shop-owner-features';
 
 const SubscriptionStatusMap: Record<
   Stripe.Subscription.Status,
@@ -37,6 +43,11 @@ const DefaultMembershipStatus: MembershipStatusDTO = {
   entitlements: [],
 } as const;
 
+type ProductsList = {
+  product: Stripe.Product;
+  features: Stripe.ProductFeature[];
+}[];
+
 @Injectable()
 export class MembershipService {
   private readonly log = new Logger(MembershipService.name);
@@ -56,6 +67,32 @@ export class MembershipService {
           `No price registered for account tier: ${accountTier}`,
         );
     }
+  }
+
+  // TODO: Is this cache-worthy? Probably.. but is it safe? Will IDs change?
+  private async listMembershipProducts(): Promise<ProductsList> {
+    this.log.debug('Retrieving membership products...');
+    const products = await this.stripe.products.list({
+      active: true,
+      type: 'service',
+      expand: ['data.default_price', 'data.default_price.recurring'],
+    });
+
+    this.log.debug(
+      'Retrieved',
+      products.data.length,
+      'products. Attempting to list features...',
+    );
+    const features = await Promise.all(
+      products.data.map((product) =>
+        this.stripe.products.listFeatures(product.id),
+      ),
+    );
+
+    return products.data.map((product, index) => ({
+      product,
+      features: features[index].data,
+    }));
   }
 
   private async ensureStripeCustomer(user: User): Promise<Stripe.Customer> {
@@ -132,21 +169,96 @@ export class MembershipService {
     return updated;
   }
 
+  async listMemberships(): Promise<ListMembershipsResponseDTO> {
+    const products = await this.listMembershipProducts();
+    const memberships = [
+      {
+        accountTier: AccountTier.Basic,
+        name: 'Free Account',
+        description:
+          'Get all of the features of BottomTime for personal use - for free!',
+        marketingFeatures: [
+          'Upload and log your dives',
+          'Track your dive metrics and history in your personal dashboard',
+          'Find dive sites and dive shops',
+          'Follow your dive buddies and',
+          'Earn XP and level up',
+        ],
+        price: 0,
+        currency: 'cad',
+        frequency: BillingFrequency.Year,
+      },
+      ...products
+        .map((product) => {
+          const price = product.product.default_price! as Stripe.Price;
+          let accountTier: AccountTier = AccountTier.Basic;
+
+          for (const feature of product.features) {
+            if (
+              feature.entitlement_feature.lookup_key === ShopOwnerFeature &&
+              accountTier < AccountTier.ShopOwner
+            ) {
+              accountTier = AccountTier.ShopOwner;
+            }
+
+            if (
+              feature.entitlement_feature.lookup_key === ProFeature &&
+              accountTier < AccountTier.Pro
+            ) {
+              accountTier = AccountTier.Pro;
+            }
+          }
+
+          const membership: MembershipDTO = {
+            accountTier,
+            name: product.product.name,
+            description: product.product.description ?? undefined,
+            marketingFeatures: product.product.marketing_features
+              .filter((feature) => !!feature.name)
+              .map((feature) => feature.name!),
+            price: (price.unit_amount ?? 0) / 100,
+            currency: price.currency,
+            frequency:
+              (price.recurring?.interval as BillingFrequency) ??
+              BillingFrequency.Year,
+          };
+
+          return membership;
+        })
+        .sort((a, b) => a.accountTier - b.accountTier),
+    ];
+
+    return memberships;
+  }
+
   async getMembershipStatus(user: User): Promise<MembershipStatusDTO> {
+    this.log.debug(
+      'Attempting to retrieve membership for user: ',
+      user.username,
+    );
+
     if (!user.stripeCustomerId) {
       // No Stripe customer. Default to free tier.
+      this.log.debug(
+        'User has no Stripe customer ID. Defaulting to free tier.',
+      );
       return DefaultMembershipStatus;
     }
 
     const customer = await this.stripe.customers.retrieve(
       user.stripeCustomerId,
+      { expand: ['subscriptions', 'subscriptions.data.latest_invoice'] },
     );
+
+    this.log.debug('Retrieved customer: ', customer.id);
 
     if (customer.deleted) {
       // Customer was deleted. Default to free tier.
+      this.log.debug('Stripe customer was deleted. Defaulting to free tier.');
       return DefaultMembershipStatus;
     }
 
+    this.log.debug('Retrieving customers active entitlements...');
     const entitlementsData =
       await this.stripe.entitlements.activeEntitlements.list({
         customer: user.stripeCustomerId,
@@ -156,23 +268,50 @@ export class MembershipService {
     let accountTier: AccountTier = AccountTier.Basic;
     for (const entitlement of entitlementsData.data) {
       entitlements.push(entitlement.lookup_key);
-      if (entitlement.lookup_key === 'shop-owner-features') {
+      if (
+        entitlement.lookup_key === ShopOwnerFeature &&
+        accountTier < AccountTier.ShopOwner
+      ) {
         accountTier = AccountTier.ShopOwner;
-        break;
       }
 
-      if (entitlement.lookup_key === 'pro-features') {
+      if (
+        entitlement.lookup_key === ProFeature &&
+        accountTier < AccountTier.Pro
+      ) {
         accountTier = AccountTier.Pro;
       }
     }
 
+    this.log.debug(
+      'Retrieved active entitlements: ',
+      entitlements,
+      'Determined account tier: ',
+      accountTier,
+    );
+
     if (!customer.subscriptions?.data.length) {
       // No subscriptions. Default to free tier.
-      return DefaultMembershipStatus;
+      this.log.warn(
+        'Customer has no subscription data. Returning account tier from entitlements but unable to get subscription info.',
+      );
+      return {
+        accountTier,
+        entitlements,
+        status: MembershipStatus.None,
+      };
     }
 
     const subscription = customer.subscriptions.data[0];
     const status = SubscriptionStatusMap[subscription.status];
+    this.log.debug(
+      'Retrieved subscription status: ',
+      subscription.status,
+      'from subscription: ',
+      subscription.id,
+    );
+    const latestInvoice = subscription.latest_invoice as Stripe.Invoice;
+    latestInvoice;
 
     return {
       accountTier,

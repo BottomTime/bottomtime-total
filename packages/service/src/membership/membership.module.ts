@@ -6,6 +6,7 @@ import { Config } from '../config';
 import { UsersModule } from '../users';
 import { MembershipController } from './membership.controller';
 import { MembershipService } from './membership.service';
+import { MembershipsController } from './memberships.controller';
 import { StripeWebhookController } from './webhook.controller';
 
 @Module({
@@ -17,7 +18,11 @@ import { StripeWebhookController } from './webhook.controller';
     },
     MembershipService,
   ],
-  controllers: [MembershipController, StripeWebhookController],
+  controllers: [
+    MembershipsController,
+    MembershipController,
+    StripeWebhookController,
+  ],
   exports: [MembershipService],
 })
 export class MembershipModule {}

@@ -144,13 +144,13 @@ You can work on individual components separately. (See their respective README f
 Alternatively, you can quickly stand up the whole platform by using Docker Compose.
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 If you need to rebuild any of the images you can run
 
 ```bash
-docker-compose build
+docker compose build
 ```
 
 And, of course, for local development you can run Docker Compose in watch mode. It will automatically monitor changes
@@ -158,8 +158,18 @@ to source files and sync the files with the running containers so you can make l
 the changes right away. With the front-end, you will also benefit from Vue hot reloading!
 
 ```bash
-docker-compose watch
+docker compose watch
 ```
+
+Finally, when developing and debugging the platform its useful to be have access to the log data being generated. All
+services log to `stdout` which Docker will capture for you. You can run
+
+```bash
+docker compose logs -f
+```
+
+to follow the log output from the containers in real time. You can even run `docker compose watch` in one terminal and
+have a second terminal running to capture the log output.
 
 ### Accessing the Containers
 
