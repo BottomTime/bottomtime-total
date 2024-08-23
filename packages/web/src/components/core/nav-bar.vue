@@ -9,7 +9,7 @@
 
   <section class="h-16">
     <nav
-      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30"
+      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-20"
     >
       <div
         class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between"

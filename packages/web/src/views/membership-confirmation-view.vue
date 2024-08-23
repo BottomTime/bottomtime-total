@@ -71,7 +71,7 @@ const route = useRoute();
 
 const stripe = ref<Stripe | null>(null);
 const state = reactive<MembershipCheckoutViewState>({
-  countdown: 3,
+  countdown: 10,
   view: CheckoutView.Loading,
 });
 

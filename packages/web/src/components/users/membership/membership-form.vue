@@ -13,10 +13,10 @@
             <p class="flex items-baseline gap-3">
               <span class="font-bold text-lg">{{ membership.name }}</span>
 
-              <span class="font-mono text-xs"
-                >( {{ formatCurrency(membership.price, membership.currency) }} /
-                {{ membership.frequency }} )</span
-              >
+              <span v-if="membership.price > 0" class="font-mono text-xs">
+                ( {{ formatCurrency(membership.price, membership.currency) }} /
+                {{ membership.frequency }} )
+              </span>
 
               <span
                 v-if="props.accountTier === membership.accountTier"

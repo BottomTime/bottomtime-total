@@ -2,17 +2,14 @@
   <DrawerPanel
     title="Change Account Type"
     :visible="state.showChangeAccountType"
-    @close="onCancelChangeAccountType"
+    @close="onCancelUpdateAccountType"
   >
-    <MembershipPayment v-if="state.requirePayment" />
-
     <MembershipForm
-      v-else
       :account-tier="state.accountTier"
       :is-saving="state.isSaving"
       :options="state.membershipOptions ?? []"
-      @cancel="onCancelChangeAccountType"
-      @change-membership="onConfirmChangeAccountType"
+      @cancel="onCancelUpdateAccountType"
+      @change-membership="onGetFinalConfirmation"
     />
   </DrawerPanel>
 
@@ -21,6 +18,15 @@
     :is-canceling="state.isCanceling"
     @confirm="onConfirmCancelMembership"
     @cancel="onAbortCancelMembership"
+  />
+
+  <ConfirmChangeDialog
+    :visible="state.showConfirmChangeDialog"
+    :is-changing="state.isSaving"
+    :old-membership="state.currentMembershipOption ?? ErrorMembership"
+    :new-membership="state.desiredMembershipOption ?? ErrorMembership"
+    @confirm="onConfirmChangeMembership"
+    @cancel="onAbortChangeMembership"
   />
 
   <LoadingSpinner v-if="state.isLoading" message="Please wait..." />
@@ -45,7 +51,7 @@
             control-id="change-account-type"
             test-id="change-account-type"
             stretch
-            @click="onChangeAccountType"
+            @click="onUpdateAccountType"
           >
             {{
               props.membership.accountTier === AccountTier.Basic
@@ -81,8 +87,9 @@
 <script lang="ts" setup>
 import {
   AccountTier,
+  BillingFrequency,
   ListMembershipsResponseDTO,
-  MembershipStatus,
+  MembershipDTO,
   MembershipStatusDTO,
   UserDTO,
 } from '@bottomtime/api';
@@ -100,8 +107,8 @@ import FormButton from '../../common/form-button.vue';
 import FormField from '../../common/form-field.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
 import ConfirmCancelDialog from './confirm-cancel-dialog.vue';
+import ConfirmChangeDialog from './confirm-change-dialog.vue';
 import MembershipForm from './membership-form.vue';
-import MembershipPayment from './membership-payment.vue';
 
 interface ManageMembershipProps {
   user: UserDTO;
@@ -110,14 +117,24 @@ interface ManageMembershipProps {
 
 interface ManageMembershipState {
   accountTier: AccountTier;
+  currentMembershipOption?: MembershipDTO;
+  desiredMembershipOption?: MembershipDTO;
   membershipOptions?: ListMembershipsResponseDTO;
   isCanceling: boolean;
   isLoading: boolean;
   isSaving: boolean;
-  requirePayment: boolean;
   showCancelMembership: boolean;
   showChangeAccountType: boolean;
+  showConfirmChangeDialog: boolean;
 }
+
+const ErrorMembership: MembershipDTO = {
+  accountTier: AccountTier.Basic,
+  currency: 'cad',
+  frequency: BillingFrequency.Year,
+  price: 0,
+  name: 'Error retrieving membership data',
+} as const;
 
 const client = useClient();
 const currentUser = useCurrentUser();
@@ -131,13 +148,10 @@ const state = reactive<ManageMembershipState>({
   isCanceling: false,
   isLoading: true,
   isSaving: false,
-  requirePayment: false,
   showCancelMembership: false,
   showChangeAccountType: false,
+  showConfirmChangeDialog: false,
 });
-const emit = defineEmits<{
-  (e: 'membership-changed', membershipStatus: MembershipStatusDTO): void;
-}>();
 
 function formatCurrency(amount: number, currency: string): string {
   return new Intl.NumberFormat('en-US', {
@@ -166,60 +180,36 @@ const tierPrice = computed<string>(() => {
   return '';
 });
 
-function onChangeAccountType() {
+function onUpdateAccountType() {
   state.accountTier = props.membership.accountTier;
   state.showChangeAccountType = true;
 }
 
-function onCancelChangeAccountType() {
+function onCancelUpdateAccountType() {
   state.showChangeAccountType = false;
   state.accountTier = props.membership.accountTier;
 }
 
-async function onConfirmChangeAccountType(
-  newAccountTier: AccountTier,
-): Promise<void> {
-  await oops(async () => {
-    if (
-      !currentUser.user ||
-      currentUser.membership.accountTier === newAccountTier
-    ) {
-      return;
-    }
+function onGetFinalConfirmation(newAccountTier: AccountTier) {
+  if (currentUser.membership.accountTier === newAccountTier) {
+    // No change. Return without doing anything.
+    return;
+  }
 
-    /*
-    TODO: Determine workflow from state change:
-      - Paid to paid tier: Update subscription and display new price?
-    */
+  state.desiredMembershipOption = state.membershipOptions?.find(
+    (m) => m.accountTier === newAccountTier,
+  );
+  if (!state.desiredMembershipOption) return;
 
-    let membership = props.membership;
-
+  if (newAccountTier === AccountTier.Basic) {
     // User is canceling membership and returning to free tier.
     // Ask for their confirmation before proceeding.
-    if (newAccountTier === AccountTier.Basic) {
-      state.showCancelMembership = true;
-      return;
-    }
-
-    membership = await client.memberships.updateMembership(
-      currentUser.user.username,
-      newAccountTier,
-    );
-    emit('membership-changed', membership);
-
-    // User now has an active subscription. We can navigate to a confirmation page.
-    if (
-      membership.status === MembershipStatus.Active ||
-      membership.status === MembershipStatus.Trialing
-    ) {
-      return;
-    }
-
-    // Otherwise, We need to get/update payment info for the user.
-    state.requirePayment = true;
-  });
-
-  state.isSaving = false;
+    state.showCancelMembership = true;
+  } else {
+    // Otherwise, the user is upgrading/downgrading their membership.
+    // Ask them to confirm.
+    state.showConfirmChangeDialog = true;
+  }
 }
 
 async function onConfirmCancelMembership(): Promise<void> {
@@ -247,14 +237,41 @@ function onAbortCancelMembership() {
   state.accountTier = props.membership.accountTier;
 }
 
+async function onConfirmChangeMembership(): Promise<void> {
+  const newAccountTier = state.desiredMembershipOption?.accountTier;
+  if (!newAccountTier) return;
+
+  await oops(async () => {
+    if (!currentUser.user) return;
+
+    state.isSaving = true;
+    currentUser.membership = await client.memberships.updateMembership(
+      currentUser.user.username,
+      newAccountTier,
+    );
+
+    location.assign('/membership/confirmation');
+  });
+
+  state.isSaving = false;
+}
+
+function onAbortChangeMembership() {
+  state.showConfirmChangeDialog = false;
+}
+
 onMounted(async () => {
   await oops(
     async () => {
       state.membershipOptions = await client.memberships.listMemberships();
+      state.currentMembershipOption = state.membershipOptions?.find(
+        (m) => m.accountTier === props.membership.accountTier,
+      );
     },
     {
-      default: () => {
-        // No-op: error message will be displayed automatically.
+      default: (err: unknown) => {
+        // eslint-disable-next-line no-console
+        console.error(err);
       },
     },
   );

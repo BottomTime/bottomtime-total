@@ -2,7 +2,7 @@
   <Transition name="backdrop">
     <div
       v-if="visible"
-      class="fixed block top-0 left-0 w-full h-full backdrop-blur-sm z-30"
+      class="fixed block top-0 left-0 w-full h-full backdrop-blur-sm z-40"
       data-testid="dialog-backdrop"
       @click="onClose"
     ></div>
@@ -10,7 +10,7 @@
   <div
     v-if="visible"
     data-testid="dialog-modal"
-    :class="`flex flex-col fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] ${sizeClass} bg-grey-200 dark:bg-grey-800 opacity-100 shadow-lg rounded-lg z-50`"
+    :class="`flex flex-col fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] ${sizeClass} bg-grey-200 dark:bg-grey-800 opacity-100 shadow-lg rounded-lg z-[45]`"
   >
     <!-- Title bar -->
     <div

@@ -245,14 +245,12 @@ export class MembershipService {
       return DefaultMembershipStatus;
     }
 
-    const [customer, nextInvoice] = await Promise.all([
-      this.stripe.customers.retrieve(user.stripeCustomerId, {
+    const customer = await this.stripe.customers.retrieve(
+      user.stripeCustomerId,
+      {
         expand: ['subscriptions'],
-      }),
-      this.stripe.invoices.retrieveUpcoming({
-        customer: user.stripeCustomerId,
-      }),
-    ]);
+      },
+    );
 
     this.log.debug('Retrieved customer: ', customer.id);
 
@@ -327,14 +325,6 @@ export class MembershipService {
       status,
       trialEndDate: subscription.trial_end
         ? new Date(subscription.trial_end * 1000)
-        : undefined,
-      payment: nextInvoice
-        ? {
-            currency: nextInvoice.currency,
-            subtotal: nextInvoice.subtotal / 100,
-            tax: (nextInvoice.tax ?? 0) / 100,
-            total: nextInvoice.total / 100,
-          }
         : undefined,
     };
   }
