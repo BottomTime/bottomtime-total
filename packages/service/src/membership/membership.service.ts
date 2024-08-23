@@ -245,10 +245,14 @@ export class MembershipService {
       return DefaultMembershipStatus;
     }
 
-    const customer = await this.stripe.customers.retrieve(
-      user.stripeCustomerId,
-      { expand: ['subscriptions', 'subscriptions.data.latest_invoice'] },
-    );
+    const [customer, nextInvoice] = await Promise.all([
+      this.stripe.customers.retrieve(user.stripeCustomerId, {
+        expand: ['subscriptions'],
+      }),
+      this.stripe.invoices.retrieveUpcoming({
+        customer: user.stripeCustomerId,
+      }),
+    ]);
 
     this.log.debug('Retrieved customer: ', customer.id);
 
@@ -310,8 +314,6 @@ export class MembershipService {
       'from subscription: ',
       subscription.id,
     );
-    const latestInvoice = subscription.latest_invoice as Stripe.Invoice;
-    latestInvoice;
 
     return {
       accountTier,
@@ -325,6 +327,14 @@ export class MembershipService {
       status,
       trialEndDate: subscription.trial_end
         ? new Date(subscription.trial_end * 1000)
+        : undefined,
+      payment: nextInvoice
+        ? {
+            currency: nextInvoice.currency,
+            subtotal: nextInvoice.subtotal / 100,
+            tax: (nextInvoice.tax ?? 0) / 100,
+            total: nextInvoice.total / 100,
+          }
         : undefined,
     };
   }

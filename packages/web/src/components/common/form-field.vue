@@ -1,24 +1,10 @@
 <template>
-  <div
-    :class="`flex flex-col gap-2 ${
-      responsive
-        ? 'lg:flex-row lg:gap-4 lg:align-center lg:place-items-top'
-        : ''
-    } mb-3`"
-  >
-    <div
-      :class="`${
-        responsive ? 'lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5' : ''
-      }`"
-    >
-      <FormLabel
-        v-if="label"
-        :label="label"
-        :control-id="controlId"
-        :required="required"
-      />
+  <div class="space-y-0 mb-2 last:mb-4">
+    <div v-if="label">
+      <FormLabel :label="label" :control-id="controlId" :required="required" />
     </div>
-    <div class="grow w-full">
+
+    <div class="grow w-full pl-2">
       <slot></slot>
       <span v-if="help && !invalid" class="text-sm italic">{{ help }}</span>
       <span
@@ -44,12 +30,10 @@ type FormFieldProps = {
   label?: string;
   invalid?: boolean;
   required?: boolean;
-  responsive?: boolean;
 };
 
 withDefaults(defineProps<FormFieldProps>(), {
   invalid: false,
   required: false,
-  responsive: true,
 });
 </script>

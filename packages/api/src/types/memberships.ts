@@ -74,6 +74,7 @@ export const MembershipStatusSchema = z.object({
   trialEndDate: z.coerce.date().optional(),
   payment: z
     .object({
+      currency: z.string(),
       subtotal: z.number(),
       tax: z.number(),
       total: z.number(),

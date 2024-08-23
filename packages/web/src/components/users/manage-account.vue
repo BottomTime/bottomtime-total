@@ -78,7 +78,7 @@
         </div>
       </div>
 
-      <TextHeading v-if="enableShopManagement.value">Account Type</TextHeading>
+      <TextHeading v-if="enableShopManagement.value">Membership</TextHeading>
 
       <ManageMembership
         v-if="enableShopManagement.value"
