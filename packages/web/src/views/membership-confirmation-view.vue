@@ -4,32 +4,29 @@
   <div class="grid grid-cols-1 md:grid-cols-5">
     <div class="col-start-1 col-span-1 md:col-start-2 md:col-span-3">
       <FormBox class="text-center">
+        <!-- Loading Spinner -->
         <LoadingSpinner
           v-if="state.view === CheckoutView.Loading"
-          :message="state.loadingMessage || 'Please wait...'"
+          message="Please wait while we retrieve your membership information..."
         />
 
-        <div
-          v-else-if="state.view === CheckoutView.Success"
-          class="text-success space-y-3"
-        >
-          <p>
-            <i class="fas fa-check-circle text-5xl text-green-500"></i>
-          </p>
+        <!-- Active Membership -->
+        <ActiveMembership
+          v-else-if="state.view === CheckoutView.Active"
+          :membership="currentMembership"
+          :membership-status="currentUser.membership"
+        />
 
-          <TextHeading>Membership Update Succeeded!</TextHeading>
-
-          <p>
-            Your membership has been successfully updated and will take effect
-            in a few seconds.
-          </p>
-
-          <p>
-            <FormButton type="primary" @click="doRedirect">
-              Redirecting back to account page in
-              {{ state.countdown }} seconds...
-            </FormButton>
-          </p>
+        <!-- Payment Required-->
+        <MembershipPayment
+          v-else-if="state.view === CheckoutView.PaymentRequired"
+          :membership-status="currentUser.membership"
+          :user="currentUser.user!"
+        />
+        <div class="space-y-6">
+          <div class="flex justify-between">
+            <!-- TODO: Show what the user is actually paying for. -->
+          </div>
         </div>
       </FormBox>
     </div>
@@ -37,84 +34,101 @@
 </template>
 
 <script setup lang="ts">
+import {
+  AccountTier,
+  BillingFrequency,
+  ListMembershipsResponseDTO,
+  MembershipDTO,
+  MembershipStatus,
+} from '@bottomtime/api';
+
 import { Stripe } from '@stripe/stripe-js';
 
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { useClient } from '../api-client';
 import FormBox from '../components/common/form-box.vue';
-import FormButton from '../components/common/form-button.vue';
 import LoadingSpinner from '../components/common/loading-spinner.vue';
 import PageTitle from '../components/common/page-title.vue';
-import TextHeading from '../components/common/text-heading.vue';
-import { useLocation } from '../location';
+import ActiveMembership from '../components/users/membership/active-membership.vue';
+import MembershipPayment from '../components/users/membership/membership-payment.vue';
 import { useOops } from '../oops';
+import { useCurrentUser } from '../store';
 import { useStripe } from '../stripe-loader';
 
 enum CheckoutView {
-  Error = 'error',
+  Active = 'active',
   Loading = 'loading',
-  PaymentFailed = 'paymentFailed',
-  Success = 'success',
-  TimedOut = 'timedOut',
+  PaymentRequired = 'paymentRequired',
+  TimeOut = 'timeout',
 }
 
 interface MembershipCheckoutViewState {
+  backoffIndex: number;
   countdown: number;
   loadingMessage?: string;
+  memberships?: ListMembershipsResponseDTO;
   view: CheckoutView;
 }
 
-const location = useLocation();
+// 1, 3, 5, 10, and then 30 seconds
+const IncrementalBackoff = [1000, 3000, 5000, 10000, 30000];
+
+const client = useClient();
+const currentUser = useCurrentUser();
 const oops = useOops();
 const route = useRoute();
 
 const stripe = ref<Stripe | null>(null);
 const state = reactive<MembershipCheckoutViewState>({
+  backoffIndex: 0,
   countdown: 10,
   view: CheckoutView.Loading,
 });
+const currentMembership = computed<MembershipDTO>(
+  () =>
+    state.memberships?.find(
+      (m) => m.accountTier === currentUser.membership.accountTier,
+    ) ?? {
+      accountTier: AccountTier.Basic,
+      frequency: BillingFrequency.Year,
+      name: 'Free Account',
+      currency: 'cad',
+      price: 0,
+    },
+);
 
-function getClientSecret(): string {
+function getClientSecret(): string | null {
   const value = route.query.payment_intent_client_secret;
-  return (Array.isArray(value) ? value[0] : value) ?? '';
+  return Array.isArray(value) ? value[0] : value;
 }
 
-function startRedirectTimer() {
-  const countdown = () => {
-    state.countdown -= 1;
-    if (state.countdown > 0) {
-      setTimeout(countdown, 1000);
-    } else {
-      doRedirect();
-    }
-  };
-  setTimeout(countdown, 1000);
-}
-
-function doRedirect() {
-  location.assign('/account');
-}
-
-onMounted(async (): Promise<void> => {
-  const clientSecret = getClientSecret();
-
+async function getPaymentIntent(clientSecret: string): Promise<void> {
   await oops(async () => {
-    stripe.value = await useStripe();
-    const paymentIntent = await stripe.value.retrievePaymentIntent(
+    const paymentIntent = await stripe.value!.retrievePaymentIntent(
       clientSecret,
     );
 
-    // TODO: Assess state and handle accordingly...
     switch (paymentIntent.paymentIntent?.status) {
       case 'succeeded':
-        state.view = CheckoutView.Success;
-        startRedirectTimer();
+        // Payment succeeded! W00T!
+        state.view = CheckoutView.Active;
         break;
 
       case 'processing':
-        state.view = CheckoutView.Loading;
-        // Payment still processing... Incremental backoff?
+        // Payment still processing... Check again with incremental back-off?
+        // This needs more work. Not sure how this works yet.
+        state.loadingMessage =
+          'Waiting for payment provider... Please do not close the browser tab or refresh.';
+        if (state.backoffIndex < IncrementalBackoff.length) {
+          setTimeout(
+            getPaymentIntent, // TODO: What about error handling here?
+            IncrementalBackoff[state.backoffIndex++],
+          );
+        } else {
+          state.view = CheckoutView.TimeOut;
+        }
         break;
 
       case 'requires_payment_method':
@@ -126,5 +140,32 @@ onMounted(async (): Promise<void> => {
         break;
     }
   });
+}
+
+onMounted(async (): Promise<void> => {
+  const clientSecret = getClientSecret();
+  const currentStatus = currentUser.membership.status;
+
+  stripe.value = await useStripe();
+
+  await oops(async () => {
+    state.memberships = await client.memberships.listMemberships();
+  });
+
+  if (clientSecret) {
+    await getPaymentIntent(clientSecret);
+    return;
+  }
+
+  if (
+    currentStatus === MembershipStatus.Active ||
+    currentStatus === MembershipStatus.Trialing
+  ) {
+    // Membershi is active. W00T!
+    state.view = CheckoutView.Active;
+  } else {
+    // Need to update payment information before membership can be activated.
+    state.view = CheckoutView.PaymentRequired;
+  }
 });
 </script>

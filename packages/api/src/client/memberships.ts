@@ -1,11 +1,11 @@
 import {
   AccountTier,
-  CreatePaymentSessionResponseDTO,
-  CreatePaymentSessionResponseSchema,
   ListMembershipsResponseDTO,
   ListMembershipsResponseSchema,
   MembershipStatusDTO,
   MembershipStatusSchema,
+  PaymentSessionDTO,
+  PaymentSessionSchema,
 } from '../types';
 import { Fetcher } from './fetcher';
 
@@ -39,13 +39,11 @@ export class MembershipsApiClient {
     return data;
   }
 
-  async createSession(
-    username: string,
-  ): Promise<CreatePaymentSessionResponseDTO> {
+  async createSession(username: string): Promise<PaymentSessionDTO> {
     const { data } = await this.fetcher.post(
       `/api/membership/${username}/session`,
       undefined,
-      CreatePaymentSessionResponseSchema,
+      PaymentSessionSchema,
     );
     return data;
   }

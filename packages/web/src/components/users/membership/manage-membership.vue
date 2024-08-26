@@ -190,7 +190,9 @@ function onCancelUpdateAccountType() {
   state.accountTier = props.membership.accountTier;
 }
 
-function onGetFinalConfirmation(newAccountTier: AccountTier) {
+async function onGetFinalConfirmation(
+  newAccountTier: AccountTier,
+): Promise<void> {
   if (currentUser.membership.accountTier === newAccountTier) {
     // No change. Return without doing anything.
     return;
@@ -201,7 +203,11 @@ function onGetFinalConfirmation(newAccountTier: AccountTier) {
   );
   if (!state.desiredMembershipOption) return;
 
-  if (newAccountTier === AccountTier.Basic) {
+  if (currentUser.membership.accountTier === AccountTier.Basic) {
+    // User is creating a new membership from a free account. No need to confirm a change.
+    // Instead, proceed to checkout/payment page.
+    await onConfirmChangeMembership();
+  } else if (newAccountTier === AccountTier.Basic) {
     // User is canceling membership and returning to free tier.
     // Ask for their confirmation before proceeding.
     state.showCancelMembership = true;

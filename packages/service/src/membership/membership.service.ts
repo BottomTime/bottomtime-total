@@ -5,6 +5,7 @@ import {
   MembershipDTO,
   MembershipStatus,
   MembershipStatusDTO,
+  PaymentSessionDTO,
 } from '@bottomtime/api';
 
 import {
@@ -69,7 +70,6 @@ export class MembershipService {
     }
   }
 
-  // TODO: Is this cache-worthy? Probably.. but is it safe? Will IDs change?
   private async listMembershipProducts(): Promise<ProductsList> {
     this.log.debug('Retrieving membership products...');
     const products = await this.stripe.products.list({
@@ -266,24 +266,12 @@ export class MembershipService {
         customer: user.stripeCustomerId,
       });
 
-    const entitlements: string[] = [];
+    const entitlements = new Set<string>(
+      entitlementsData.data.map((e) => e.lookup_key),
+    );
     let accountTier: AccountTier = AccountTier.Basic;
-    for (const entitlement of entitlementsData.data) {
-      entitlements.push(entitlement.lookup_key);
-      if (
-        entitlement.lookup_key === ShopOwnerFeature &&
-        accountTier < AccountTier.ShopOwner
-      ) {
-        accountTier = AccountTier.ShopOwner;
-      }
-
-      if (
-        entitlement.lookup_key === ProFeature &&
-        accountTier < AccountTier.Pro
-      ) {
-        accountTier = AccountTier.Pro;
-      }
-    }
+    if (entitlements.has(ProFeature)) accountTier = AccountTier.Pro;
+    if (entitlements.has(ShopOwnerFeature)) accountTier = AccountTier.ShopOwner;
 
     this.log.debug(
       'Retrieved active entitlements: ',
@@ -299,7 +287,7 @@ export class MembershipService {
       );
       return {
         accountTier,
-        entitlements,
+        entitlements: entitlementsData.data.map((e) => e.lookup_key),
         status: MembershipStatus.None,
       };
     }
@@ -318,7 +306,7 @@ export class MembershipService {
       cancellationDate: subscription.canceled_at
         ? new Date(subscription.canceled_at * 1000)
         : undefined,
-      entitlements,
+      entitlements: entitlementsData.data.map((e) => e.lookup_key),
       nextBillingDate: subscription.current_period_end
         ? new Date(subscription.current_period_end * 1000)
         : undefined,
@@ -357,13 +345,19 @@ export class MembershipService {
     return await this.getMembershipStatus(user);
   }
 
-  async getPaymentSecret(user: User): Promise<string | undefined> {
+  async createPaymentSession(
+    user: User,
+  ): Promise<PaymentSessionDTO | undefined> {
     if (!user.stripeCustomerId) return undefined;
 
     const customer = await this.stripe.customers.retrieve(
       user.stripeCustomerId,
       {
-        expand: ['subscriptions.data.latest_invoice.payment_intent'],
+        expand: [
+          'subscriptions.data.latest_invoice.payment_intent',
+          'subscriptions.data.latest_invoice.total_discount_amounts',
+          'subscriptions.data.items',
+        ],
       },
     );
 
@@ -371,6 +365,11 @@ export class MembershipService {
 
     const subscription = customer.subscriptions?.data[0];
     if (!subscription) return undefined;
+
+    const item = subscription.items.data[0];
+    const product = await this.stripe.products.retrieve(
+      item.price.product as string,
+    );
 
     const invoice = subscription.latest_invoice;
     if (!invoice || typeof invoice === 'string') return undefined;
@@ -380,7 +379,24 @@ export class MembershipService {
 
     if (!paymentIntent.client_secret) return undefined;
 
-    return paymentIntent.client_secret;
+    return {
+      clientSecret: paymentIntent.client_secret,
+      currency: invoice.currency,
+      frequency: item.price.recurring?.interval as BillingFrequency,
+      products: [
+        {
+          price: (item.price.unit_amount ?? 0) / 100,
+          product: product.name,
+        },
+      ],
+      discounts:
+        invoice.total_discount_amounts?.reduce(
+          (acc, discount) => acc + discount.amount / 100,
+          0,
+        ) || undefined,
+      tax: invoice.tax ? invoice.tax / 100 : undefined,
+      total: invoice.total / 100,
+    };
   }
 
   async cancelMembership(user: User): Promise<boolean> {

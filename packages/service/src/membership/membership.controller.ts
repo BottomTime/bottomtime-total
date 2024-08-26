@@ -1,6 +1,6 @@
 import {
-  CreatePaymentSessionResponseDTO,
   MembershipStatusDTO,
+  PaymentSessionDTO,
   UpdateMembershipParamsDTO,
   UpdateMembershipParamsSchema,
 } from '@bottomtime/api';
@@ -65,19 +65,17 @@ export class MembershipController {
   }
 
   @Post('session')
-  async createSession(
-    @TargetUser() user: User,
-  ): Promise<CreatePaymentSessionResponseDTO> {
+  async createSession(@TargetUser() user: User): Promise<PaymentSessionDTO> {
     this.log.debug('Creating payment session for user:', user.username);
-    const clientSecret = await this.service.getPaymentSecret(user);
+    const session = await this.service.createPaymentSession(user);
 
-    if (!clientSecret) {
+    if (!session) {
       throw new BadRequestException(
         'Unable to get session secret. User does not have a subscription yet.',
       );
     }
 
-    return { clientSecret };
+    return session;
   }
 
   // @Post('membershipWebhook')
