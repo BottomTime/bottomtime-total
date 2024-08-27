@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DiveOperatorDTO,
   GpsCoordinates,
   LogBookSharing,
@@ -38,6 +39,7 @@ export class DiveOperator {
   get owner(): SuccinctProfileDTO {
     return this.data.owner
       ? {
+          accountTier: this.data.owner.accountTier,
           userId: this.data.owner.id,
           username: this.data.owner.username,
           memberSince: this.data.owner.memberSince,
@@ -47,6 +49,7 @@ export class DiveOperator {
           name: this.data.owner.name,
         }
       : {
+          accountTier: AccountTier.Basic,
           userId: '',
           username: '',
           memberSince: new Date(0),

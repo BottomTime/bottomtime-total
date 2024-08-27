@@ -19,6 +19,15 @@ describe('Email Service', () => {
   let mailClient: TestMailer;
 
   const generateEmailTestCases: Record<EmailType, () => EmailOptions> = {
+    [EmailType.PaymentFailed]: () => ({
+      type: EmailType.PaymentFailed,
+      title: 'Payment Failed',
+      subtitle: 'Please update your payment information',
+      user: TestUserData,
+      paymentAmount: 'CAD$45.00',
+      paymentDue: 'July 20, 2026',
+      paymentUrl: 'https://bottomti.me/membership/confirmation',
+    }),
     [EmailType.ResetPassword]: () => ({
       type: EmailType.ResetPassword,
       title: 'Reset Password',

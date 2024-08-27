@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthDTO,
   DepthUnit,
   LogBookSharing,
@@ -15,6 +16,7 @@ import { UserSettings } from './users';
 export const AnonymousUserProfile: SuccinctProfileDTO = {
   userId: '',
   username: '<anonymous>',
+  accountTier: AccountTier.Basic,
   logBookSharing: LogBookSharing.Private,
   memberSince: new Date(0),
   name: 'Anonymous',

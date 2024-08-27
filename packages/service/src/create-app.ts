@@ -34,6 +34,7 @@ export async function createApp(
         credentials: true,
       },
       logger: logService,
+      rawBody: true,
     },
   );
 

@@ -10,6 +10,7 @@ import {
   UserRole,
   WeightUnit,
 } from './constants';
+import { AccountTier } from './memberships';
 
 export enum UsersSortBy {
   Username = 'username',
@@ -75,6 +76,7 @@ export const ProfileSchema = UpdateProfileParamsSchema.omit({
   logBookSharing: true,
 }).extend({
   userId: z.string(),
+  accountTier: z.nativeEnum(AccountTier),
   username: UsernameSchema,
   memberSince: z.coerce.date(),
   logBookSharing: z.nativeEnum(LogBookSharing).default(LogBookSharing.Private),
@@ -84,6 +86,7 @@ export type ProfileDTO = z.infer<typeof ProfileSchema>;
 
 export const SuccinctProfileSchema = ProfileSchema.pick({
   userId: true,
+  accountTier: true,
   memberSince: true,
   username: true,
   avatar: true,
@@ -141,6 +144,7 @@ export type ResetPasswordWithTokenParamsDTO = z.infer<
 
 export const UserSchema = z.object({
   id: z.string(),
+  accountTier: z.nativeEnum(AccountTier),
   username: z.string(),
   email: EmailSchema.optional(),
   emailVerified: z.boolean(),

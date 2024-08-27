@@ -128,6 +128,11 @@ export class UsersService {
     return data ? new User(this.Users, data) : undefined;
   }
 
+  async getUserByStripeId(stripeCustomerId: string): Promise<User | undefined> {
+    const data = await this.Users.findOneBy({ stripeCustomerId });
+    return data ? new User(this.Users, data) : undefined;
+  }
+
   async searchUsers(
     options: SearchUsersOptions = {},
   ): Promise<SearchUsersResult> {

@@ -1,4 +1,5 @@
 export enum EmailType {
+  PaymentFailed = 'paymentFailed',
   ResetPassword = 'resetPassword',
   VerifyEmail = 'verifyEmail',
   Welcome = 'welcome',
@@ -24,6 +25,13 @@ export type BaseEmailOptions = {
   };
 };
 
+export type PaymentFailedEmailOptions = {
+  type: EmailType.PaymentFailed;
+  paymentAmount: string;
+  paymentDue: string;
+  paymentUrl: string;
+};
+
 export type ResetPasswordEmailOptions = {
   type: EmailType.ResetPassword;
   resetPasswordUrl: string;
@@ -42,7 +50,12 @@ export type WelcomeEmailOptions = {
 };
 
 export type EmailOptions = BaseEmailOptions &
-  (ResetPasswordEmailOptions | VerifyEmailOptions | WelcomeEmailOptions);
+  (
+    | PaymentFailedEmailOptions
+    | ResetPasswordEmailOptions
+    | VerifyEmailOptions
+    | WelcomeEmailOptions
+  );
 
 export type EmailOptionsWithGlobals = EmailOptions & EmailGlobals;
 

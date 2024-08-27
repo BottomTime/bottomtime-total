@@ -46,6 +46,7 @@ export class Tank {
   get user(): SuccinctProfileDTO | null {
     return this.data.user
       ? {
+          accountTier: this.data.user.accountTier,
           memberSince: this.data.user.memberSince,
           userId: this.data.user.id,
           username: this.data.user.username,

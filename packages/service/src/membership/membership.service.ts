@@ -20,9 +20,7 @@ import Stripe from 'stripe';
 
 import { Config } from '../config';
 import { User } from '../users';
-
-const ProFeature = 'pro-features';
-const ShopOwnerFeature = 'shop-owner-features';
+import { ProFeature, ShopOwnerFeature } from './constants';
 
 const SubscriptionStatusMap: Record<
   Stripe.Subscription.Status,

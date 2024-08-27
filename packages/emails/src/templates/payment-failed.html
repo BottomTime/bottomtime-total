@@ -1,0 +1,32 @@
+<x-main>
+  <div class="space-y-6">
+    <p>Hi there @{{ user.profile.name }},</p>
+
+    <p>
+      We're sorry to bother you with this but we were unable to process your
+      payment in order to renew your membership with us. 😢
+    </p>
+
+    <div class="bg-blue-300 rounded-lg mx-8 p-4 grid grid-cols-2 gap-6">
+      <label class="font-bold text-right">Amount due:</label>
+      <span>@{{ paymentAmount }}</span>
+
+      <label class="font-bold text-right">Due by:</label>
+      <span>@{{ paymentDue }}</span>
+    </div>
+
+    <p>
+      Please navigate to
+      <a href="@{{ &paymentUrl }}">this page</a> to update your payment
+      information as soon as possible. If you have any questions or concerns you
+      can contact us at
+      <a href="mailto:@{{ adminEmail }}">@{{ adminEmail }}</a>. Thank you for
+      your continued support! 🙏
+    </p>
+
+    <div>
+      <p>Cheers,</p>
+      <p>The Bottom Time Team</p>
+    </div>
+  </div>
+</x-main>

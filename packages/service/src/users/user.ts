@@ -41,6 +41,10 @@ export class User implements Express.User {
     return this.data.username;
   }
 
+  get accountTier(): AccountTier {
+    return this.data.accountTier;
+  }
+
   get email(): string | null {
     return this.data.email;
   }
@@ -232,6 +236,11 @@ export class User implements Express.User {
     return true;
   }
 
+  async changeMembership(newTier: AccountTier): Promise<void> {
+    await this.Users.update(this.id, { accountTier: newTier });
+    this.data.accountTier = newTier;
+  }
+
   async requestPasswordResetToken(): Promise<string> {
     const token = randomBytes(32).toString('base64url');
     this.data.passwordResetToken = token;
@@ -298,6 +307,7 @@ export class User implements Express.User {
 
   toJSON(): UserDTO {
     return {
+      accountTier: this.accountTier,
       emailVerified: this.emailVerified,
       hasPassword: this.hasPassword,
       id: this.id,
