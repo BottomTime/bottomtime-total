@@ -435,12 +435,4 @@ export class MembershipService {
 
     return true;
   }
-
-  parseWebhookEvent(payload: string, signature: string): Stripe.Event {
-    return this.stripe.webhooks.constructEvent(
-      payload,
-      signature,
-      Config.stripe.sdkKey,
-    );
-  }
 }
