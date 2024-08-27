@@ -17,8 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { Breadcrumb } from '@/common';
-
+import { Breadcrumb } from '../common';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import FormBox from '../components/common/form-box.vue';
 import PageTitle from '../components/common/page-title.vue';

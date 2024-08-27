@@ -319,8 +319,6 @@ export class MembershipService {
     user: User,
     newAccountTier: AccountTier,
   ): Promise<MembershipStatusDTO> {
-    // TODO: Perform fulfillment.
-    // TODO: Provision new account tier.
     // TODO: Log fulfillment status / payment status. (Database?)
     // TODO: Send an email to the user to confirm thier account status change.
     // TODO: Record/save fulfillment status for this Checkout Session
@@ -339,6 +337,12 @@ export class MembershipService {
       // Create a new subscription.
       await this.createNewSubscription(customer, newAccountTier);
     }
+
+    await user.changeMembership(newAccountTier);
+
+    this.log.log(
+      `Updated membership for user "${user.username}". New account tier is: ${newAccountTier}`,
+    );
 
     return await this.getMembershipStatus(user);
   }
@@ -424,6 +428,7 @@ export class MembershipService {
       `Cancelling subscription "${subscription.id}" for user "${user.username}"`,
     );
     await this.stripe.subscriptions.cancel(subscription.id);
+    await user.changeMembership(AccountTier.Basic);
 
     this.log.log(
       `Subscription (${subscription.id}) has been cancelled for user "${user.username}".`,

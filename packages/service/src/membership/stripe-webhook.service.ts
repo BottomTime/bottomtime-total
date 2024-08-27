@@ -52,7 +52,7 @@ export class StripeWebhookService {
     const event = this.stripe.webhooks.constructEvent(
       payload,
       signature,
-      Config.stripe.sdkKey,
+      Config.stripe.webhookSigningSecret,
     );
 
     if (this.EventMap[event.type]) {
@@ -191,15 +191,37 @@ export class StripeWebhookService {
   }
 
   /* INVOICES */
-  private async onInvoiceCreated(e: Stripe.Event): Promise<void> {}
-  private async onInvoiceFinalized(e: Stripe.Event): Promise<void> {}
-  private async onInvoiceFinalizationFailed(e: Stripe.Event): Promise<void> {}
-  private async onInvoiceUpcoming(e: Stripe.Event): Promise<void> {}
-  private async onInvoiceUpdated(e: Stripe.Event): Promise<void> {}
+  private async onInvoiceCreated(e: Stripe.Event): Promise<void> {
+    if (e.type !== 'invoice.created') return;
+    /* TODO */
+  }
+
+  private async onInvoiceFinalized(e: Stripe.Event): Promise<void> {
+    if (e.type !== 'invoice.finalized') return;
+    /* TODO */
+  }
+  private async onInvoiceFinalizationFailed(e: Stripe.Event): Promise<void> {
+    if (e.type !== 'invoice.finalization_failed') return;
+    /* TODO */
+  }
+  private async onInvoiceUpcoming(e: Stripe.Event): Promise<void> {
+    if (e.type !== 'invoice.upcoming') return;
+    /* TODO */
+  }
+  private async onInvoiceUpdated(e: Stripe.Event): Promise<void> {
+    if (e.type !== 'invoice.updated') return;
+    /* TODO */
+  }
 
   /* PAYMENTS */
-  private async onInvoicePaid(e: Stripe.Event): Promise<void> {}
-  private async onPaymentActionRequired(e: Stripe.Event): Promise<void> {}
+  private async onInvoicePaid(e: Stripe.Event): Promise<void> {
+    if (e.type !== 'invoice.paid') return;
+    /* TODO */
+  }
+  private async onPaymentActionRequired(e: Stripe.Event): Promise<void> {
+    if (e.type !== 'invoice.payment_action_required') return;
+    /* TODO */
+  }
 
   /**
    * Stripe has notified us of a failed payment. The user's membership may be suspended if they don't update

@@ -65,6 +65,7 @@ export interface AppConfig {
     sdkKey: string;
     proMembershipPrice: string;
     shopOwnerMembershipPrice: string;
+    webhookSigningSecret: string;
   };
 
   adminEmail: string;
@@ -131,6 +132,7 @@ const ConfigSchema = z
     BT_STRIPE_SDK_KEY: z.string().default(''),
     BT_STRIPE_PRO_MEMBERSHIP_PRICE: z.string().default(''),
     BT_STRIPE_SHOP_OWNER_MEMBERSHIP_PRICE: z.string().default(''),
+    BT_STRIPE_WEBHOOK_SECRET: z.string().default(''),
 
     // Misc.
     BT_ADMIN_EMAIL: z.string().default('admin@bottomti.me'),
@@ -200,6 +202,7 @@ const ConfigSchema = z
       sdkKey: env.BT_STRIPE_SDK_KEY,
       proMembershipPrice: env.BT_STRIPE_PRO_MEMBERSHIP_PRICE,
       shopOwnerMembershipPrice: env.BT_STRIPE_SHOP_OWNER_MEMBERSHIP_PRICE,
+      webhookSigningSecret: env.BT_STRIPE_WEBHOOK_SECRET,
     },
 
     adminEmail: env.BT_ADMIN_EMAIL,
