@@ -56,8 +56,7 @@ export class StripeWebhookService {
     );
 
     if (this.EventMap[event.type]) {
-      this.log.debug('Received Stripe event:', event.type);
-      await this.EventMap[event.type](event);
+      await this.EventMap[event.type].bind(this)(event);
     } else {
       this.log.warn('Received Stripe event with no handler:', event.type);
     }
@@ -157,17 +156,41 @@ export class StripeWebhookService {
     );
   }
 
+  /**
+   * Subscription status has changed. We may need to update the user's account accordingly.
+   */
   private async onSubscriptionUpdated(e: Stripe.Event): Promise<void> {
     if (e.type !== 'customer.subscription.updated') return;
 
-    // TODO: May not need to do anything here. Other event handlers will handle important cases.
-
     const user = await this.getUserFromStripeCustomer(e.data.object.customer);
+
+    const status = e.data.object.status;
+    let newTier: AccountTier = AccountTier.Basic;
+
+    if (status === 'active' || status === 'trialing') {
+      // Subscription is active. Check to see if the user's account tier has changed.
+      const entitlements =
+        await this.stripe.entitlements.activeEntitlements.list({
+          customer: user.stripeCustomerId!,
+        });
+      newTier = this.getAccountTierFromEntitlements(entitlements);
+      await user.changeMembership(newTier);
+    }
+
     this.log.log(
-      `Received notification from Stripe about update to subscription for user "${user.username}"`,
+      `Received notification from Stripe about update to subscription for user "${user.username}".`,
+      {
+        status,
+        accountTier: newTier,
+      },
     );
+    await user.changeMembership(newTier);
   }
 
+  /**
+   * Free trial period is ending in 3 days. Send the user a notification... if we don't
+   * have payment details ask the user to update them.
+   */
   private async onTrialEnding(e: Stripe.Event): Promise<void> {
     if (e.type !== 'customer.subscription.trial_will_end') return;
 

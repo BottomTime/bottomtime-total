@@ -63,8 +63,6 @@ export interface AppConfig {
 
   stripe: {
     sdkKey: string;
-    proMembershipPrice: string;
-    shopOwnerMembershipPrice: string;
     webhookSigningSecret: string;
   };
 
@@ -130,8 +128,6 @@ const ConfigSchema = z
 
     // Stripe
     BT_STRIPE_SDK_KEY: z.string().default(''),
-    BT_STRIPE_PRO_MEMBERSHIP_PRICE: z.string().default(''),
-    BT_STRIPE_SHOP_OWNER_MEMBERSHIP_PRICE: z.string().default(''),
     BT_STRIPE_WEBHOOK_SECRET: z.string().default(''),
 
     // Misc.
@@ -200,8 +196,6 @@ const ConfigSchema = z
 
     stripe: {
       sdkKey: env.BT_STRIPE_SDK_KEY,
-      proMembershipPrice: env.BT_STRIPE_PRO_MEMBERSHIP_PRICE,
-      shopOwnerMembershipPrice: env.BT_STRIPE_SHOP_OWNER_MEMBERSHIP_PRICE,
       webhookSigningSecret: env.BT_STRIPE_WEBHOOK_SECRET,
     },
 

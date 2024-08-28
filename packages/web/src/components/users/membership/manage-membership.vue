@@ -98,10 +98,9 @@ import dayjs from 'dayjs';
 import { computed, onMounted, reactive } from 'vue';
 
 import { useClient } from '../../../api-client';
-import { ToastType } from '../../../common';
 import { useLocation } from '../../../location';
 import { useOops } from '../../../oops';
-import { useCurrentUser, useToasts } from '../../../store';
+import { useCurrentUser } from '../../../store';
 import DrawerPanel from '../../common/drawer-panel.vue';
 import FormButton from '../../common/form-button.vue';
 import FormField from '../../common/form-field.vue';
@@ -140,7 +139,6 @@ const client = useClient();
 const currentUser = useCurrentUser();
 const location = useLocation();
 const oops = useOops();
-const toasts = useToasts();
 
 const props = defineProps<ManageMembershipProps>();
 const state = reactive<ManageMembershipState>({
@@ -226,11 +224,6 @@ async function onConfirmCancelMembership(): Promise<void> {
 
     await client.memberships.cancelMembership(currentUser.user.username);
 
-    toasts.toast({
-      id: 'membership-canceled',
-      message: 'Your membership has been canceled.',
-      type: ToastType.Success,
-    });
     state.showCancelMembership = false;
     location.assign('/membership/canceled');
   });

@@ -33,11 +33,9 @@ export class StripeWebhookController {
       throw new BadRequestException('No payload provided in request body.');
     }
 
-    this.log.debug(payload.toString('utf-8'));
+    const payloadString = payload.toString('utf-8');
+    this.log.verbose('Received webhook event:', payloadString);
 
-    await this.webhooks.handleWebhookEvent(
-      payload.toString('utf-8'),
-      signature,
-    );
+    await this.webhooks.handleWebhookEvent(payloadString, signature);
   }
 }

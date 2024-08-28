@@ -14,13 +14,18 @@ import {
   Inject,
   Injectable,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
 
 import Stripe from 'stripe';
 
-import { Config } from '../config';
 import { User } from '../users';
-import { ProFeature, ShopOwnerFeature } from './constants';
+import {
+  ProFeature,
+  ProMembershipYearlyPrice,
+  ShopOwnerFeature,
+  ShopOwnerMembershipYearlyPrice,
+} from './constants';
 
 const SubscriptionStatusMap: Record<
   Stripe.Subscription.Status,
@@ -44,53 +49,76 @@ const DefaultMembershipStatus: MembershipStatusDTO = {
 
 type ProductsList = {
   product: Stripe.Product;
-  features: Stripe.ProductFeature[];
+  price: Stripe.Price;
+  features: Set<string>;
 }[];
 
 @Injectable()
-export class MembershipService {
+export class MembershipService implements OnModuleInit {
   private readonly log = new Logger(MembershipService.name);
+
+  private proMemberhsip: Stripe.Product | undefined;
+  private proMembershipPrice: Stripe.Price | undefined;
+
+  private shopOwnerMembership: Stripe.Product | undefined;
+  private shopOwnerMembershipPrice: Stripe.Price | undefined;
 
   constructor(@Inject(Stripe) private readonly stripe: Stripe) {}
 
-  private getPriceForAccountTier(accountTier: AccountTier): string {
-    switch (accountTier) {
-      case AccountTier.Pro:
-        return Config.stripe.proMembershipPrice;
-
-      case AccountTier.ShopOwner:
-        return Config.stripe.shopOwnerMembershipPrice;
-
-      default:
-        throw new BadRequestException(
-          `No price registered for account tier: ${accountTier}`,
-        );
-    }
-  }
-
-  private async listMembershipProducts(): Promise<ProductsList> {
-    this.log.debug('Retrieving membership products...');
-    const products = await this.stripe.products.list({
-      active: true,
-      type: 'service',
-      expand: ['data.default_price', 'data.default_price.recurring'],
+  async onModuleInit(): Promise<void> {
+    this.log.debug('Retrieving prices and products from Stripe...');
+    const prices = await this.stripe.prices.list({
+      lookup_keys: [ProMembershipYearlyPrice, ShopOwnerMembershipYearlyPrice],
+      expand: ['data.product'],
     });
 
-    this.log.debug(
-      'Retrieved',
-      products.data.length,
-      'products. Attempting to list features...',
-    );
-    const features = await Promise.all(
-      products.data.map((product) =>
-        this.stripe.products.listFeatures(product.id),
-      ),
-    );
+    prices.data.forEach((price) => {
+      if (price.lookup_key === ProMembershipYearlyPrice) {
+        this.proMembershipPrice = price;
+        this.proMemberhsip = price.product as Stripe.Product;
+      }
 
-    return products.data.map((product, index) => ({
-      product,
-      features: features[index].data,
-    }));
+      if (price.lookup_key === ShopOwnerMembershipYearlyPrice) {
+        this.shopOwnerMembershipPrice = price;
+        this.shopOwnerMembership = price.product as Stripe.Product;
+      }
+    });
+  }
+
+  private listMembershipProducts(): ProductsList {
+    return [
+      {
+        product: this.proMemberhsip!,
+        price: this.proMembershipPrice!,
+        features: new Set([ProFeature]),
+      },
+      {
+        product: this.shopOwnerMembership!,
+        price: this.shopOwnerMembershipPrice!,
+        features: new Set([ProFeature, ShopOwnerFeature]),
+      },
+    ];
+  }
+
+  private getPriceForAccountTier(accountTier: AccountTier): Stripe.Price {
+    let price: Stripe.Price | undefined;
+
+    switch (accountTier) {
+      case AccountTier.Pro:
+        price = this.proMembershipPrice;
+        break;
+      case AccountTier.ShopOwner:
+        price = this.shopOwnerMembershipPrice;
+        break;
+    }
+
+    if (!price) {
+      throw new BadRequestException(
+        'Unable to retrieve price information for account tier',
+      );
+    }
+
+    return price;
   }
 
   private async ensureStripeCustomer(user: User): Promise<Stripe.Customer> {
@@ -132,10 +160,9 @@ export class MembershipService {
     accountTier: AccountTier,
   ): Promise<Stripe.Subscription> {
     const price = this.getPriceForAccountTier(accountTier);
-
     const subscription = await this.stripe.subscriptions.create({
       customer: customer.id,
-      items: [{ price, quantity: 1 }],
+      items: [{ price: price.id, quantity: 1 }],
       payment_behavior: 'default_incomplete',
       payment_settings: {
         save_default_payment_method: 'on_subscription',
@@ -151,7 +178,6 @@ export class MembershipService {
     newAccountTier: AccountTier,
   ): Promise<Stripe.Subscription> {
     const price = this.getPriceForAccountTier(newAccountTier);
-
     const subscription = customer.subscriptions?.data[0];
     if (!subscription) {
       throw new Error(
@@ -161,7 +187,7 @@ export class MembershipService {
 
     const updated = await this.stripe.subscriptions.update(subscription.id, {
       cancel_at_period_end: false,
-      items: [{ id: subscription.items.data[0].id, price }],
+      items: [{ id: subscription.items.data[0].id, price: price.id }],
     });
 
     return updated;
@@ -186,44 +212,28 @@ export class MembershipService {
         currency: 'cad',
         frequency: BillingFrequency.Year,
       },
-      ...products
-        .map((product) => {
-          const price = product.product.default_price! as Stripe.Price;
-          let accountTier: AccountTier = AccountTier.Basic;
+      ...products.map((entry) => {
+        let accountTier: AccountTier = AccountTier.Basic;
+        if (entry.features.has(ProFeature)) accountTier = AccountTier.Pro;
+        if (entry.features.has(ShopOwnerFeature))
+          accountTier = AccountTier.ShopOwner;
 
-          for (const feature of product.features) {
-            if (
-              feature.entitlement_feature.lookup_key === ShopOwnerFeature &&
-              accountTier < AccountTier.ShopOwner
-            ) {
-              accountTier = AccountTier.ShopOwner;
-            }
+        const membership: MembershipDTO = {
+          accountTier,
+          name: entry.product.name,
+          description: entry.product.description ?? undefined,
+          marketingFeatures: entry.product.marketing_features
+            .filter((feature) => !!feature.name)
+            .map((feature) => feature.name!),
+          price: (entry.price.unit_amount ?? 0) / 100,
+          currency: entry.price.currency,
+          frequency:
+            (entry.price.recurring?.interval as BillingFrequency) ??
+            BillingFrequency.Year,
+        };
 
-            if (
-              feature.entitlement_feature.lookup_key === ProFeature &&
-              accountTier < AccountTier.Pro
-            ) {
-              accountTier = AccountTier.Pro;
-            }
-          }
-
-          const membership: MembershipDTO = {
-            accountTier,
-            name: product.product.name,
-            description: product.product.description ?? undefined,
-            marketingFeatures: product.product.marketing_features
-              .filter((feature) => !!feature.name)
-              .map((feature) => feature.name!),
-            price: (price.unit_amount ?? 0) / 100,
-            currency: price.currency,
-            frequency:
-              (price.recurring?.interval as BillingFrequency) ??
-              BillingFrequency.Year,
-          };
-
-          return membership;
-        })
-        .sort((a, b) => a.accountTier - b.accountTier),
+        return membership;
+      }),
     ];
 
     return memberships;
@@ -319,10 +329,6 @@ export class MembershipService {
     user: User,
     newAccountTier: AccountTier,
   ): Promise<MembershipStatusDTO> {
-    // TODO: Log fulfillment status / payment status. (Database?)
-    // TODO: Send an email to the user to confirm thier account status change.
-    // TODO: Record/save fulfillment status for this Checkout Session
-
     if (newAccountTier === AccountTier.Basic) {
       // Cancel an existing membership.
       await this.cancelMembership(user);
@@ -343,6 +349,8 @@ export class MembershipService {
     this.log.log(
       `Updated membership for user "${user.username}". New account tier is: ${newAccountTier}`,
     );
+
+    // TODO: Send an email to the user to confirm thier account status change.
 
     return await this.getMembershipStatus(user);
   }
@@ -369,9 +377,14 @@ export class MembershipService {
     if (!subscription) return undefined;
 
     const item = subscription.items.data[0];
-    const product = await this.stripe.products.retrieve(
-      item.price.product as string,
-    );
+    let product: Stripe.Product | undefined;
+    if (item.price.id === this.proMembershipPrice!.id) {
+      product = this.proMemberhsip;
+    } else if (item.price.id === this.shopOwnerMembershipPrice!.id) {
+      product = this.shopOwnerMembership;
+    }
+
+    if (!product) return undefined;
 
     const invoice = subscription.latest_invoice;
     if (!invoice || typeof invoice === 'string') return undefined;

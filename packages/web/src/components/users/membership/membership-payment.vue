@@ -139,6 +139,7 @@ import NavLink from '../../common/nav-link.vue';
 import TextHeading from '../../common/text-heading.vue';
 
 interface MembershipPaymentProps {
+  failure?: boolean;
   membershipStatus: MembershipStatusDTO;
   user: UserDTO;
 }
@@ -152,7 +153,9 @@ interface MembershipPaymentState {
 const client = useClient();
 const oops = useOops();
 
-const props = defineProps<MembershipPaymentProps>();
+const props = withDefaults(defineProps<MembershipPaymentProps>(), {
+  failure: false,
+});
 
 const stripe = ref<Stripe | null>(null);
 const elements = ref<StripeElements | null>(null);

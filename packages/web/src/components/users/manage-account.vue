@@ -84,9 +84,6 @@
         v-if="enableShopManagement.value"
         :user="user"
         :membership="membership"
-        @membership-changed="
-          (membership) => $emit('change-membership', membership)
-        "
       />
     </div>
   </form>
@@ -160,7 +157,6 @@ const OAuthProviders: Omit<OAuthProvider, 'connected'>[] = [
 // STATE MANAGEMENT
 const props = defineProps<ManageAccountProps>();
 defineEmits<{
-  (e: 'change-membership', membershipStatus: MembershipStatusDTO): void;
   (e: 'change-username', username: string): void;
   (e: 'change-email', email: string): void;
   (e: 'change-password'): void;

@@ -5,24 +5,15 @@ export async function initProducts(sdkKey: string) {
   try {
     const stripe = new Stripe(sdkKey);
 
-    // Create products and features
     console.log('Creating products and features...');
     const [proMembership, shopOwnerMembership, proFeatures, shopOwnerFeatures] =
       await Promise.all([
+        // Products...
         stripe.products.create({
           name: 'Pro Membership',
           description:
             'Get all of the features of a free account plus some added benefits:',
           active: true,
-          default_price_data: {
-            currency: 'cad',
-            unit_amount: 4000, // $40.00
-            recurring: {
-              interval: 'year',
-              interval_count: 1,
-            },
-            tax_behavior: 'exclusive',
-          },
           marketing_features: [
             {
               name: 'Add images and videos to your dive log entries',
@@ -44,15 +35,6 @@ export async function initProducts(sdkKey: string) {
           description:
             'Get all of the benefits of a pro account, plus the ability to register and manage your dive shop on our site.',
           active: true,
-          default_price_data: {
-            currency: 'cad',
-            unit_amount: 10000, // $100.00
-            recurring: {
-              interval: 'year',
-              interval_count: 1,
-            },
-            tax_behavior: 'exclusive',
-          },
           marketing_features: [
             {
               name: "Register and manage your shop's profile",
@@ -67,6 +49,7 @@ export async function initProducts(sdkKey: string) {
           tax_code: 'txcd_10103001', // SaaS - business use
         }),
 
+        // Features...
         stripe.entitlements.features.create({
           name: 'Pro Membership Features',
           lookup_key: 'pro-features',
@@ -77,9 +60,33 @@ export async function initProducts(sdkKey: string) {
         }),
       ]);
 
-    // Bind features to products
-    console.log('Binding features to products...');
+    console.log('Binding features and prices to products...');
     await Promise.all([
+      // Prices...
+      stripe.prices.create({
+        product: proMembership.id,
+        currency: 'cad',
+        unit_amount: 4000, // $40.00
+        recurring: {
+          interval: 'year',
+          interval_count: 1,
+        },
+        tax_behavior: 'exclusive',
+        lookup_key: 'pro-membership-yearly',
+      }),
+      stripe.prices.create({
+        product: shopOwnerMembership.id,
+        currency: 'cad',
+        unit_amount: 10000, // $100.00
+        recurring: {
+          interval: 'year',
+          interval_count: 1,
+        },
+        tax_behavior: 'exclusive',
+        lookup_key: 'shop-owner-membership-yearly',
+      }),
+
+      // Features...
       stripe.products.createFeature(proMembership.id, {
         entitlement_feature: proFeatures.id,
       }),
@@ -91,19 +98,7 @@ export async function initProducts(sdkKey: string) {
       }),
     ]);
 
-    const result = {
-      proMembership: {
-        productId: proMembership.id,
-        priceId: proMembership.default_price,
-      },
-      shopOwnerMembership: {
-        productId: shopOwnerMembership.id,
-        priceId: shopOwnerMembership.default_price,
-      },
-    };
-
     console.log('Operation completed successfully!');
-    console.log(JSON.stringify(result, null, 2));
   } catch (error) {
     console.error(error);
     process.exit(1);

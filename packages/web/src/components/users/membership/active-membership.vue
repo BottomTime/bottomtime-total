@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-8">
-    <p class="text-success">
-      <i class="fas fa-check-circle text-5xl text-green-500"></i>
+    <p class="text-success text-5xl">
+      <i class="fas fa-check-circle"></i>
     </p>
 
     <TextHeading>Success!</TextHeading>

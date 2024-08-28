@@ -1,5 +1,4 @@
 import {
-  AccountTier,
   LogBookSharing,
   ProfileDTO,
   SuccinctProfileDTO,
