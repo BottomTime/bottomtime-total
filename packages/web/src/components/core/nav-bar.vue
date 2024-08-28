@@ -186,7 +186,7 @@ import {
 import { computed, nextTick, ref } from 'vue';
 
 import { Config } from '../../config';
-import { useFeatureToggle } from '../../featrues';
+import { useFeature } from '../../featrues';
 import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
@@ -201,9 +201,9 @@ type NavLink = {
   visible: boolean;
 };
 
-const diveOperatorsEnabled = useFeatureToggle(ManageDiveOperatorsFeature);
+const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const currentUser = useCurrentUser();
-const notificationsEnabled = useFeatureToggle(NotificationsFeature);
+const notificationsEnabled = useFeature(NotificationsFeature);
 
 const showLogin = ref(false);
 const showHamburger = ref(false);

@@ -78,26 +78,27 @@
         </div>
       </div>
 
-      <TextHeading v-if="enableShopManagement.value">Membership</TextHeading>
+      <template v-if="enableMemberships.value">
+        <TextHeading>Membership</TextHeading>
 
-      <ManageMembership
-        v-if="enableShopManagement.value"
-        :user="user"
-        :membership="membership"
-      />
+        <ManageMembership :user="user" :membership="membership" />
+      </template>
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
 import { MembershipStatusDTO, UserDTO } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
+import {
+  ManageDiveOperatorsFeature,
+  PaymentsFeature,
+} from '@bottomtime/common';
 
 import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
-import { useFeatureToggle } from '../../featrues';
+import { useFeature } from '../../featrues';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
@@ -126,7 +127,7 @@ type ManageAccountState = {
   providers: OAuthProvider[];
 };
 
-const enableShopManagement = useFeatureToggle(ManageDiveOperatorsFeature);
+const enableMemberships = useFeature(PaymentsFeature);
 
 const client = useClient();
 const oops = useOops();

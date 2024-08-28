@@ -20,7 +20,7 @@ import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import DiveOperatorsList from '../components/operators/dive-operators-list.vue';
-import { useFeatureToggle } from '../featrues';
+import { useFeature } from '../featrues';
 import { useOops } from '../oops';
 import { useDiveOperators } from '../store';
 
@@ -28,7 +28,7 @@ const Breadcrumbs: Breadcrumb[] = [
   { label: 'Dive Shops', to: '/shops', active: true },
 ] as const;
 
-const diveOperatorsEnabled = useFeatureToggle(ManageDiveOperatorsFeature);
+const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const client = useClient();
 const oops = useOops();
 const operators = useDiveOperators();
