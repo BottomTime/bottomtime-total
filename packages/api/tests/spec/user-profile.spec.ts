@@ -46,6 +46,7 @@ describe('UserProfile client object', () => {
     testUser = {
       ...BasicUser,
       profile: {
+        accountTier: BasicUser.accountTier,
         bio: 'This is a test bio',
         location: 'Testville, Testland',
         avatar: 'https://example.com/avatars/test_user',

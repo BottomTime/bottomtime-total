@@ -78,7 +78,7 @@ describe('Operators API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(results.operators).toHaveLength(50);
-    expect(results.totalCount).toBe(650);
+    expect(results.totalCount).toBe(651);
     results.operators.forEach((operator, index) => {
       expect(operator).toBeInstanceOf(DiveOperator);
       expect(operator.toJSON()).toEqual(testData.operators[index]);
@@ -116,7 +116,7 @@ describe('Operators API client', () => {
 
     expect(mockFetch.calls()).toMatchSnapshot();
     expect(results.operators).toHaveLength(50);
-    expect(results.totalCount).toBe(650);
+    expect(results.totalCount).toBe(651);
     results.operators.forEach((operator, index) => {
       expect(operator).toBeInstanceOf(DiveOperator);
       expect(operator.toJSON()).toEqual(testData.operators[index]);
