@@ -1,4 +1,9 @@
-import { DepthUnit, LogBookSharing, UserRole } from '@bottomtime/api';
+import {
+  AccountTier,
+  DepthUnit,
+  LogBookSharing,
+  UserRole,
+} from '@bottomtime/api';
 
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -13,6 +18,7 @@ import { DiveSiteReview } from '../../../src/diveSites/dive-site-review';
 import { dataSource } from '../../data-source';
 
 const CreatorData: Partial<UserEntity> = {
+  accountTier: AccountTier.Basic,
   id: '5a4699d8-48c4-4410-9886-b74b8b85cac1',
   emailVerified: false,
   isLockedOut: false,
@@ -88,6 +94,7 @@ describe('Dive Site Review Class', () => {
     expect(review.difficulty).toEqual(FullReviewData.difficulty);
     expect(review.comments).toEqual(FullReviewData.comments);
     expect(review.creator).toEqual({
+      accountTier: CreatorData.accountTier,
       userId: CreatorData.id,
       username: CreatorData.username,
       memberSince: CreatorData.memberSince,
@@ -126,6 +133,7 @@ describe('Dive Site Review Class', () => {
     expect(review.toJSON()).toEqual({
       id: FullReviewData.id,
       creator: {
+        accountTier: CreatorData.accountTier,
         userId: CreatorData.id,
         username: CreatorData.username,
         memberSince: CreatorData.memberSince,

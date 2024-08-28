@@ -20,6 +20,7 @@ exports[`Log entries E2E tests when creating log entries will allow admins to cr
   },
   "createdAt": "2024-07-23T13:17:17.900Z",
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
@@ -72,6 +73,7 @@ exports[`Log entries E2E tests when creating log entries will create and return 
   },
   "createdAt": "2024-07-23T13:17:17.799Z",
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
@@ -96,6 +98,7 @@ exports[`Log entries E2E tests when creating log entries will create and return 
     "averageRating": 3.09,
     "createdOn": "2023-04-11T15:52:27.157Z",
     "creator": {
+      "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
       "location": "West Covina",
       "logBookSharing": "private",
@@ -364,6 +367,7 @@ exports[`Log entries E2E tests when retrieving single log entries will allow an 
   },
   "createdAt": "2023-02-03T15:50:47.000Z",
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
@@ -394,6 +398,7 @@ exports[`Log entries E2E tests when retrieving single log entries will allow an 
     "averageRating": 1.43,
     "createdOn": "2024-04-10T03:49:32.952Z",
     "creator": {
+      "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
       "location": "West Covina",
       "logBookSharing": "private",
@@ -466,6 +471,7 @@ exports[`Log entries E2E tests when retrieving single log entries will return th
   },
   "createdAt": "2023-02-03T15:50:47.000Z",
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
@@ -496,6 +502,7 @@ exports[`Log entries E2E tests when retrieving single log entries will return th
     "averageRating": 1.43,
     "createdOn": "2024-04-10T03:49:32.952Z",
     "creator": {
+      "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
       "location": "West Covina",
       "logBookSharing": "private",
@@ -1639,6 +1646,7 @@ exports[`Log entries E2E tests when updating an existing log entry will allow an
   },
   "createdAt": "2023-02-03T15:50:47.000Z",
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
@@ -1772,6 +1780,7 @@ exports[`Log entries E2E tests when updating an existing log entry will update t
   },
   "createdAt": "2023-02-03T15:50:47.000Z",
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",

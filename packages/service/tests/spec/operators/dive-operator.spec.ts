@@ -1,4 +1,4 @@
-import { LogBookSharing } from '@bottomtime/api';
+import { AccountTier, LogBookSharing } from '@bottomtime/api';
 
 import { ConflictException } from '@nestjs/common';
 
@@ -53,6 +53,7 @@ describe('DiveOperator class', () => {
     Operators = dataSource.getRepository(DiveOperatorEntity);
 
     owner = createTestUser({
+      accountTier: AccountTier.Basic,
       id: '54ca5e54-de92-4e15-a523-4087c52b40eb',
       username: 'testuser',
       memberSince: new Date('2021-06-10T03:00:00Z'),
@@ -63,6 +64,7 @@ describe('DiveOperator class', () => {
     });
 
     otherUser = createTestUser({
+      accountTier: AccountTier.Basic,
       id: '1938f360-9842-498a-ab0e-f42d3b0b495a',
       username: 'other_dude',
       memberSince: new Date('2024-07-30T12:25:45Z'),
@@ -87,6 +89,7 @@ describe('DiveOperator class', () => {
     expect(operator.createdAt).toEqual(TestData.createdAt);
     expect(operator.updatedAt).toEqual(TestData.updatedAt);
     expect(operator.owner).toEqual({
+      accountTier: owner.accountTier,
       userId: owner.id,
       username: owner.username,
       memberSince: owner.memberSince,
@@ -119,6 +122,7 @@ describe('DiveOperator class', () => {
   it('will return a blank owner object if owner is not returned on entity', () => {
     data.owner = undefined;
     expect(operator.owner).toEqual({
+      accountTier: AccountTier.Basic,
       userId: '',
       username: '',
       memberSince: new Date(0),

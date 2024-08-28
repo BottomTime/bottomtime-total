@@ -148,6 +148,7 @@ describe('Profile Class', () => {
   it('will render to JSON correctly', () => {
     const json = profile.toJSON();
     expect(json).toEqual({
+      accountTier: TestUserData.accountTier,
       avatar: TestUserData.avatar,
       bio: TestUserData.bio,
       certifications: TestUserData.certifications,

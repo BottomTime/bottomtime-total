@@ -27,6 +27,7 @@ exports[`Log entries service when creating a new log entry will create a new log
   },
   "createdAt": 2024-07-23T11:39:57.073Z,
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
@@ -1991,6 +1992,7 @@ exports[`Log entries service when retrieving a single log entry will retrieve a 
   },
   "createdAt": 2023-02-15T01:23:32.000Z,
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/725.jpg",
     "location": "Cape Coral",
     "logBookSharing": "private",
@@ -2025,6 +2027,7 @@ exports[`Log entries service when retrieving a single log entry will retrieve a 
     "averageRating": 1.48,
     "createdOn": 2024-01-23T09:42:26.453Z,
     "creator": {
+      "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/725.jpg",
       "location": "Cape Coral",
       "logBookSharing": "private",
@@ -2092,6 +2095,7 @@ exports[`Log entries service when retrieving a single log entry will return the 
   },
   "createdAt": 2023-02-15T01:23:32.000Z,
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/725.jpg",
     "location": "Cape Coral",
     "logBookSharing": "private",
@@ -2126,6 +2130,7 @@ exports[`Log entries service when retrieving a single log entry will return the 
     "averageRating": 1.48,
     "createdOn": 2024-01-23T09:42:26.453Z,
     "creator": {
+      "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/725.jpg",
       "location": "Cape Coral",
       "logBookSharing": "private",

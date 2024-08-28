@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   DiveSiteReviewsSortBy,
   LogBookSharing,
@@ -31,6 +32,7 @@ import { createTestUser } from '../../utils/create-test-user';
 const RegularUserId = '5a4699d8-48c4-4410-9886-b74b8b85cac1';
 const RegularUserData: Partial<UserEntity> = {
   id: RegularUserId,
+  accountTier: AccountTier.Basic,
   emailVerified: false,
   isLockedOut: false,
   logBookSharing: LogBookSharing.Public,
@@ -93,6 +95,7 @@ describe('Dive Site Class', () => {
     expect(site.createdOn).toEqual(DiveSiteData.createdOn);
     expect(site.updatedOn).toBeUndefined();
     expect(site.creator).toEqual({
+      accountTier: RegularUserData.accountTier,
       userId: RegularUserId,
       username: RegularUserData.username,
       memberSince: RegularUserData.memberSince,
@@ -300,6 +303,7 @@ describe('Dive Site Class', () => {
       const review = await site.createReview(options);
       expect(review.comments).toEqual(options.comments);
       expect(review.creator).toEqual({
+        accountTier: regularUser.accountTier,
         userId: regularUser.id,
         username: regularUser.username,
         memberSince: regularUser.memberSince,
@@ -336,6 +340,7 @@ describe('Dive Site Class', () => {
       const review = await site.createReview(options);
       expect(review.comments).toBeUndefined();
       expect(review.creator).toEqual({
+        accountTier: regularUser.accountTier,
         userId: regularUser.id,
         username: regularUser.username,
         logBookSharing: regularUser.logBookSharing,

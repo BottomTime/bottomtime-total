@@ -89,10 +89,7 @@
 
 <script lang="ts" setup>
 import { MembershipStatusDTO, UserDTO } from '@bottomtime/api';
-import {
-  ManageDiveOperatorsFeature,
-  PaymentsFeature,
-} from '@bottomtime/common';
+import { PaymentsFeature } from '@bottomtime/common';
 
 import { onMounted, reactive } from 'vue';
 

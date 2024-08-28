@@ -248,7 +248,7 @@ describe('User Class', () => {
       const newTier = AccountTier.ShopOwner;
       await Users.save(data);
 
-      await expect(user.changeMembership(newTier)).resolves.toBe(true);
+      await user.changeMembership(newTier);
 
       const stored = await Users.findOneByOrFail({ id: user.id });
       expect(user.accountTier).toEqual(newTier);

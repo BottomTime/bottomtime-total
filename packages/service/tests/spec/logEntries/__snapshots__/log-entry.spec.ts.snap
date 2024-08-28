@@ -52,6 +52,7 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
   },
   "createdAt": 2014-10-27T01:35:36.540Z,
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",
     "location": "Underwater",
     "logBookSharing": "friends",
@@ -86,6 +87,7 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
     "averageRating": 3.8,
     "createdOn": 2024-05-21T19:46:14.342Z,
     "creator": {
+      "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",
       "location": "Underwater",
       "logBookSharing": "friends",
@@ -127,6 +129,7 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
 
 exports[`Log Entry class will return properties correctly 1`] = `
 {
+  "accountTier": 0,
   "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",
   "location": "Underwater",
   "logBookSharing": "friends",

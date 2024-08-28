@@ -140,6 +140,7 @@ describe('Log entries service', () => {
       const entry = await service.createLogEntry(options);
       expect(entry.id).toBeDefined();
       expect(entry.owner).toEqual({
+        accountTier: ownerData[0].accountTier,
         userId: ownerData[0].id,
         username: ownerData[0].username,
         memberSince: ownerData[0].memberSince,
@@ -315,6 +316,7 @@ describe('Log entries service', () => {
       const entry = await service.createLogEntry(options);
       expect(entry.id).toBeDefined();
       expect(entry.owner).toEqual({
+        accountTier: ownerData[0].accountTier,
         userId: ownerData[0].id,
         username: ownerData[0].username,
         memberSince: ownerData[0].memberSince,
