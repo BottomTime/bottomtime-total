@@ -6,6 +6,7 @@ import { UsersApiClient } from '../../src/client/users';
 import {
   AdminSearchUsersParamsDTO,
   CreateUserParamsDTO,
+  ErrorResponseDTO,
   PasswordResetTokenStatus,
   SortOrder,
   SuccessFailResponseDTO,
@@ -96,12 +97,21 @@ describe('Users API client', () => {
     });
 
     it('will allow any errors to bubble up', async () => {
+      const error: ErrorResponseDTO = {
+        status: 409,
+        message: 'Username already exists',
+        method: 'POST',
+        path: '/api/users',
+      };
       mockFetch.post(
         {
           url: '/api/users',
           body: requestData,
         },
-        409,
+        {
+          status: 409,
+          body: error,
+        },
       );
       await expect(client.createUser(requestData)).rejects.toThrow(
         HttpException,
@@ -131,7 +141,16 @@ describe('Users API client', () => {
     });
 
     it('will throw an error if the login fails', async () => {
-      mockFetch.post('/api/auth/login', 401);
+      const error: ErrorResponseDTO = {
+        message: 'Nope',
+        method: 'POST',
+        path: '/api/auth/login',
+        status: 401,
+      };
+      mockFetch.post('/api/auth/login', {
+        status: 401,
+        body: error,
+      });
       await expect(client.login('test', 'password')).rejects.toThrow(
         HttpException,
       );

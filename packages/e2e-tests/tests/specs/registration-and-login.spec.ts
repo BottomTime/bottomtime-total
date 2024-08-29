@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   LogBookSharing,
   PressureUnit,
@@ -13,6 +14,7 @@ import { expect, test } from '../fixtures';
 const TestPassword = 'Sn@ke_Eyes_77';
 const TestUser: UserDTO = {
   id: 'cec01cb6-9832-4854-adc1-72493563afea',
+  accountTier: AccountTier.Basic,
   email: 'randy-bobandy@microsoft.com',
   emailVerified: true,
   hasPassword: true,
@@ -21,6 +23,7 @@ const TestUser: UserDTO = {
   role: UserRole.User,
   username: 'randy_randerson',
   profile: {
+    accountTier: AccountTier.Basic,
     userId: 'cec01cb6-9832-4854-adc1-72493563afea',
     username: 'randy_randerson',
     memberSince: new Date(),

@@ -49,6 +49,10 @@ export default defineConfig({
 
     /* Retain videos on failed tests. */
     video: 'retain-on-failure',
+
+    /* Allow location APIs in the browser. */
+    geolocation: { longitude: 12.492507, latitude: 41.889938 },
+    permissions: ['geolocation'],
   },
 
   /* Configure projects for major browsers */

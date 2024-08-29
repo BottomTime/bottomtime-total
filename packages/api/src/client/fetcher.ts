@@ -48,11 +48,15 @@ export class Fetcher {
     res: Response,
     parser?: ZodType<T, ZodTypeDef, unknown>,
   ): Promise<T> {
+    let json: unknown;
+
     try {
-      return parser ? parser.parse(await res.json()) : await res.json();
+      json = await res.json();
     } catch (error) {
-      return {} as unknown as T;
+      json = {};
     }
+
+    return parser ? parser.parse(json) : (json as T);
   }
 
   private async checkResponseForErrors(response: Response): Promise<void> {

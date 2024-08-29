@@ -2672,6 +2672,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@bottomtime/e2e-tests@workspace:packages/e2e-tests"
   dependencies:
+    "@bottomtime/api": "workspace:*"
     "@bottomtime/service": "workspace:*"
     "@bottomtime/web": "workspace:*"
     "@playwright/test": "npm:^1.45.2"

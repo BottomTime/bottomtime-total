@@ -34,19 +34,18 @@ export class AuthFixture {
   }
 
   async login(username: string, password: string): Promise<void> {
-    await this.page.goto('/');
-    await this.page.getByTestId('login-button').click();
-    await this.page.getByTestId('login-username').fill(username);
-    await this.page.getByTestId('login-password').fill(password);
-    await this.page.getByTestId('login-submit').click();
-    await this.page.waitForSelector('[data-testid="user-menu-button"]', {
-      timeout: 8000,
+    await this.page.request.post('/api/auth/login', {
+      data: {
+        usernameOrEmail: username,
+        password,
+      },
+      failOnStatusCode: true,
     });
   }
 
   async logout(): Promise<void> {
-    await this.page.getByTestId('user-menu-button').click();
-    await this.page.getByRole('link', { name: 'Logout' }).click();
-    await this.page.waitForURL('**/');
+    await this.page.request.post('/api/auth/logout', {
+      failOnStatusCode: true,
+    });
   }
 }

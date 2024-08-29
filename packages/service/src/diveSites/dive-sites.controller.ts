@@ -254,6 +254,7 @@ export class DiveSitesController {
       creator: user,
       ...options,
     });
+    this.log.log(`New dive site "${site.name}" created by "${user.username}".`);
     return site.toJSON();
   }
 
