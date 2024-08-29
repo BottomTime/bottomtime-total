@@ -1,9 +1,11 @@
 import {
+  AccountTier,
   ApiClient,
   Fetcher,
   ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
+  ProfileDTO,
   Tank,
 } from '@bottomtime/api';
 
@@ -20,7 +22,6 @@ import { Pinia, createPinia } from 'pinia';
 import { defineComponent } from 'vue';
 import { Router } from 'vue-router';
 
-import { ProfileDTO } from '../../../../api/src';
 import { ApiClientKey } from '../../../src/api-client';
 import EditProfile from '../../../src/components/users/edit-profile.vue';
 import ViewProfile from '../../../src/components/users/view-profile.vue';
@@ -253,6 +254,7 @@ describe('Profile View', () => {
     currentUser.user = { ...BasicUser };
     profiles.currentProfile = { ...BasicUser.profile };
     const newProfile: ProfileDTO = {
+      accountTier: AccountTier.Basic,
       userId: BasicUser.id,
       memberSince: BasicUser.memberSince,
       username: BasicUser.username,
@@ -286,6 +288,7 @@ describe('Profile View', () => {
     currentUser.user = { ...AdminUser };
     profiles.currentProfile = { ...UserWithFullProfile.profile };
     const newProfile: ProfileDTO = {
+      accountTier: AccountTier.Basic,
       userId: UserWithFullProfile.id,
       memberSince: UserWithFullProfile.memberSince,
       username: UserWithFullProfile.username,

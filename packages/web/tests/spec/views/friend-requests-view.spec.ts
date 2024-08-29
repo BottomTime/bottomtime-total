@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   ApiClient,
   Fetcher,
   FriendRequest,
@@ -379,6 +380,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     const request = friendRequestData.friendRequests[0];
     const profile: ProfileDTO = {
+      accountTier: AccountTier.Basic,
       userId: request.friendId,
       memberSince: new Date(),
       username: request.friend.username,

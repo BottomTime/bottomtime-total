@@ -1,15 +1,16 @@
 import {
   AccountTier,
+  ApiClient,
   DepthUnit,
   Fetcher,
   LogBookSharing,
   PressureUnit,
   TemperatureUnit,
+  User,
   UserDTO,
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
-import { ApiClient, User } from '@bottomtime/api';
 
 import { flushPromises, mount } from '@vue/test-utils';
 
@@ -40,6 +41,7 @@ const UserData: UserDTO = {
   role: UserRole.User,
   username: 'j.bard43',
   profile: {
+    accountTier: AccountTier.Basic,
     userId: 'B8D70E2C-BEA3-4F21-9EEB-42A4AA79F706',
     username: 'j.bard43',
     memberSince: new Date('2021-08-01T00:00:00.000Z'),

@@ -50,6 +50,7 @@ const NewUser: UserDTO = {
   memberSince: new Date(),
   role: UserRole.User,
   profile: {
+    accountTier: AccountTier.Basic,
     memberSince: new Date(),
     username: 'john_doe32',
     name: 'John Doe',

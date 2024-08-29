@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   LogBookSharing,
   LogEntryDTO,
@@ -10,6 +11,7 @@ import {
 
 export const BlankLogEntry: LogEntryDTO = {
   creator: {
+    accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.FriendsOnly,
     memberSince: new Date('2021-04-11T18:16:12'),
     userId: 'd62607ba-67e6-4ef0-9cdf-c1fe3c0b2752',
@@ -28,6 +30,7 @@ export const BlankLogEntry: LogEntryDTO = {
 
 export const MinimalLogEntry: LogEntryDTO = {
   creator: {
+    accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.FriendsOnly,
     memberSince: new Date('2021-04-11T18:16:12'),
     userId: 'eda44e68-1df1-44ce-87ca-3a0e2061808c',
@@ -60,6 +63,7 @@ export const FullLogEntry: LogEntryDTO = {
     },
   ],
   creator: {
+    accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.Public,
     memberSince: new Date('2021-04-11T18:16:12'),
     userId: '60b2238b-06c8-4333-9675-f5d6d0912f59',
@@ -81,6 +85,7 @@ export const FullLogEntry: LogEntryDTO = {
   site: {
     createdOn: new Date('2021-04-11T18:16:12'),
     creator: {
+      accountTier: AccountTier.Basic,
       logBookSharing: LogBookSharing.FriendsOnly,
       memberSince: new Date('2021-04-11T18:16:12'),
       userId: '7e2a8d3b-ae2e-48f5-a476-4bfce3993b33',

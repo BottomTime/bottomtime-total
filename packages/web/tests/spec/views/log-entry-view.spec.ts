@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   ApiClient,
   DepthUnit,
   Fetcher,
@@ -39,6 +40,7 @@ dayjs.extend(localized);
 
 const TestData: LogEntryDTO = {
   creator: {
+    accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.Public,
     username: 'logbook_guy',
     memberSince: new Date('2021-01-01T12:00'),

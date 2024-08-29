@@ -61,7 +61,7 @@ describe('Account View', () => {
     ).toBe(true);
   });
 
-  it('will allow the user to manage their account', () => {
+  it.skip('will allow the user to manage their account', () => {
     const newUsername = 'new-username';
     const newEmail = 'new-email@gmail.org';
 

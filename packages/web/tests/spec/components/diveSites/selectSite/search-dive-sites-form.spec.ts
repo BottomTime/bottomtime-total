@@ -134,7 +134,7 @@ describe('SearchDiveSitesForm component', () => {
 
     expect(wrapper.find(NoResultsMessage).exists()).toBe(false);
     expect(wrapper.find(ResultsCounts).text()).toBe(
-      'Showing 10 of 900 dive sites.',
+      'Showing 10 of 1200 dive sites.',
     );
     expect(wrapper.find(ResultsList).isVisible()).toBe(true);
 

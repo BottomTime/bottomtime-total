@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   ApiClient,
   DepthUnit,
   DiveSiteDTO,
@@ -53,6 +54,7 @@ const AddTankButton = '#btn-add-tank';
 const DiveSite: DiveSiteDTO = {
   createdOn: new Date(),
   creator: {
+    accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.FriendsOnly,
     memberSince: new Date(),
     userId: '7ba2eebd-9747-4adb-a820-f268cb6c84f3',

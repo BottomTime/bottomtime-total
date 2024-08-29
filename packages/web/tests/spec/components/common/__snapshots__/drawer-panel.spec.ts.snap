@@ -9,7 +9,7 @@ exports[`Drawer Panel component will render correctly with content 1`] = `
 </transition-stub>
 <!-- Drawer panel. Right half of the screen on most displays; full screen on mobile. -->
 <transition-stub name="drawer" appear="false" persisted="false" css="true">
-  <div class="fixed box-border right-0 top-16 pb-20 md:w-1/2 w-full h-full font-content flex flex-col gap-6 bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-40 p-4" data-testid="drawer-panel">
+  <div class="fixed box-border right-0 top-16 pb-20 md:w-1/2 w-full h-full font-content flex flex-col gap-6 bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-[35] p-4" data-testid="drawer-panel">
     <!-- Title and close button. -->
     <div class="flex flex-initial flex-row gap-3 items-center" data-testid="drawer-title">
       <p class="font-title dark:text-blue-200 text-4xl grow">Test</p>

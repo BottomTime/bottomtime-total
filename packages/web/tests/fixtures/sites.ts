@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   DiveSiteDTO,
   LogBookSharing,
@@ -8,6 +9,7 @@ import {
 export const BlankDiveSite: DiveSiteDTO = {
   id: '',
   creator: {
+    accountTier: AccountTier.Basic,
     userId: '',
     username: '',
     memberSince: new Date(),
@@ -21,6 +23,7 @@ export const BlankDiveSite: DiveSiteDTO = {
 export const DiveSiteWithMinimalProperties: DiveSiteDTO = {
   id: '90b06d4a-605c-49d0-8738-cf557cf34b0a',
   creator: {
+    accountTier: AccountTier.Basic,
     userId: '54dacd7d-ba85-4339-a39e-b82014bc5887',
     username: 'Grayson.Wolff58',
     memberSince: new Date('2015-05-23T05:25:37.103Z'),
@@ -34,6 +37,7 @@ export const DiveSiteWithMinimalProperties: DiveSiteDTO = {
 export const DiveSiteWithFullProperties: DiveSiteDTO = {
   id: 'e25add45-3bf3-4be5-9859-7ea516f63f00',
   creator: {
+    accountTier: AccountTier.Basic,
     userId: '1a18494e-90a2-4018-a2ee-f97081107ab7',
     username: 'Constance_Walker19',
     memberSince: new Date('2017-03-01T18:37:06.705Z'),
