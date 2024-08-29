@@ -256,7 +256,3 @@ You can view the documentation at [http://localhost:4890/](http://localhost:4890
 > **NOTE:** Sorry, there is no hot-reloading at this time! You will need to refresh the browser page to view the changes.
 
 > **NOTE:** The swagger-jsdoc Comment Formatter VS Code extension is _highly_ recommended for editing the API documenation.
-
-```
-
-```

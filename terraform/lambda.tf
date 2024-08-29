@@ -54,6 +54,7 @@ resource "aws_lambda_function" "service" {
       BT_SMTP_PASSWORD           = local.secrets.smtpPassword
       BT_SMTP_USERNAME           = local.secrets.smtpUsername
       BT_STRIPE_SDK_KEY          = local.secrets.stripeSdkKey
+      BT_STRIPE_WEBHOOK_SECRET   = local.secrets.stripeWebhookSecret
       NODE_ENV                   = "production"
     }
   }
