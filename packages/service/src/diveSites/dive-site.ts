@@ -60,6 +60,7 @@ export class DiveSite {
     }
 
     return {
+      accountTier: this.data.creator.accountTier,
       userId: this.data.creator.id,
       username: this.data.creator.username,
       memberSince: this.data.creator.memberSince,

@@ -20,6 +20,7 @@ import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { FeaturesModule } from './features';
 import { FriendsModule } from './friends';
 import { LogEntriesModule } from './logEntries';
+import { MembershipModule } from './membership';
 import { DiveOperatorsModule } from './operators';
 import { QueueModule } from './queue';
 import { StorageModule } from './storage';
@@ -58,6 +59,7 @@ export class AppModule {
 
         TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
         FeaturesModule.forRoot(deps.configCatClient),
+        MembershipModule,
 
         UsersModule,
         AuthModule,

@@ -1,6 +1,7 @@
 import {
   LogBookSharing,
   ProfileDTO,
+  SuccinctProfileDTO,
   UpdateProfileParamsDTO,
 } from '@bottomtime/api';
 
@@ -75,6 +76,7 @@ export class Profile {
 
   toJSON(): ProfileDTO {
     return {
+      accountTier: this.data.accountTier,
       avatar: this.avatar ?? undefined,
       bio: this.bio ?? undefined,
       experienceLevel: this.experienceLevel ?? undefined,
@@ -83,6 +85,18 @@ export class Profile {
       memberSince: this.data.memberSince,
       name: this.name ?? undefined,
       startedDiving: this.startedDiving ?? undefined,
+      userId: this.data.id,
+      username: this.data.username,
+    };
+  }
+
+  toSuccinctJSON(): SuccinctProfileDTO {
+    return {
+      accountTier: this.data.accountTier,
+      avatar: this.avatar ?? undefined,
+      logBookSharing: this.logBookSharing,
+      memberSince: this.data.memberSince,
+      name: this.name ?? undefined,
       userId: this.data.id,
       username: this.data.username,
     };

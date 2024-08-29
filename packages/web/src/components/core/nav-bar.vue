@@ -9,7 +9,7 @@
 
   <section class="h-16">
     <nav
-      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-30"
+      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-20"
     >
       <div
         class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between"
@@ -186,7 +186,7 @@ import {
 import { computed, nextTick, ref } from 'vue';
 
 import { Config } from '../../config';
-import { useFeatureToggle } from '../../featrues';
+import { useFeature } from '../../featrues';
 import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
@@ -201,9 +201,9 @@ type NavLink = {
   visible: boolean;
 };
 
-const diveOperatorsEnabled = useFeatureToggle(ManageDiveOperatorsFeature);
+const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const currentUser = useCurrentUser();
-const notificationsEnabled = useFeatureToggle(NotificationsFeature);
+const notificationsEnabled = useFeature(NotificationsFeature);
 
 const showLogin = ref(false);
 const showHamburger = ref(false);

@@ -104,6 +104,7 @@ exports[`Dive Sites End-to-End Tests when getting a dive site will return the di
   "averageRating": 1.43,
   "createdOn": "2024-04-10T03:49:32.952Z",
   "creator": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
@@ -140,6 +141,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "averageRating": 4.9832,
       "createdOn": "2022-06-19T00:08:34.934Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
         "logBookSharing": "private",
@@ -170,6 +172,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "averageRating": 4.97244555665,
       "createdOn": "2022-10-07T07:21:13.641Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1184.jpg",
         "location": "Chino Hills",
         "logBookSharing": "private",
@@ -200,6 +203,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "averageRating": 4.939903,
       "createdOn": "2022-07-06T08:48:04.602Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/85.jpg",
         "location": "Moore",
         "logBookSharing": "private",
@@ -230,6 +234,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "averageRating": 4.92324,
       "createdOn": "2023-03-20T08:36:54.341Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1184.jpg",
         "location": "Chino Hills",
         "logBookSharing": "private",
@@ -259,6 +264,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "averageRating": 4.915537,
       "createdOn": "2023-05-13T12:02:10.974Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
         "logBookSharing": "private",
@@ -288,6 +294,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will list results
       "averageRating": 4.89,
       "createdOn": "2023-03-15T03:29:03.884Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1184.jpg",
         "location": "Chino Hills",
         "logBookSharing": "private",
@@ -477,6 +484,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "averageRating": 4.75,
       "createdOn": "2022-07-08T12:53:53.633Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
         "logBookSharing": "private",
@@ -508,6 +516,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "averageRating": 3.56,
       "createdOn": "2022-12-17T03:24:11.520Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
         "logBookSharing": "private",
@@ -539,6 +548,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "averageRating": 2.16,
       "createdOn": "2024-05-11T23:04:58.247Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
         "logBookSharing": "private",
@@ -569,6 +579,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return the r
       "averageRating": 1.63,
       "createdOn": "2022-06-08T06:04:14.368Z",
       "creator": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "location": "West Covina",
         "logBookSharing": "private",

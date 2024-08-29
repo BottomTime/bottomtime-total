@@ -41,6 +41,10 @@ export class User implements Express.User {
     return this.data.username;
   }
 
+  get accountTier(): AccountTier {
+    return this.data.accountTier;
+  }
+
   get email(): string | null {
     return this.data.email;
   }
@@ -51,10 +55,6 @@ export class User implements Express.User {
 
   get id(): string {
     return this.data.id;
-  }
-
-  get accountTier(): AccountTier {
-    return this.data.accountTier;
   }
 
   get hasPassword(): boolean {
@@ -236,10 +236,9 @@ export class User implements Express.User {
     return true;
   }
 
-  async changeMembership(accountTier: AccountTier): Promise<boolean> {
-    const { affected } = await this.Users.update(this.id, { accountTier });
-    this.data.accountTier = accountTier;
-    return affected === 1;
+  async changeMembership(newTier: AccountTier): Promise<void> {
+    await this.Users.update(this.id, { accountTier: newTier });
+    this.data.accountTier = newTier;
   }
 
   async requestPasswordResetToken(): Promise<string> {

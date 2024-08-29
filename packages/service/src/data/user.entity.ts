@@ -160,6 +160,7 @@ export class UserEntity {
   startedDiving: string | null = null;
 
   @Column({ type: 'text', nullable: true })
+  @Index({ unique: true, sparse: true })
   stripeCustomerId: string | null = null;
 
   @Column({ type: 'varchar', length: 50 })

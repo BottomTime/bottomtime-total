@@ -188,6 +188,7 @@ exports[`Admin Service when searching user accounts will perform a text-based se
       "lastPasswordChange": 2023-10-29T14:58:58.205Z,
       "memberSince": 2021-01-14T11:24:43.236Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/108.jpg",
         "bio": "Quasi dolores aperiam saepe deserunt recusandae illum voluptatem. Quae sapiente aut corrupti debitis. Nam animi soluta fugit illum illum laborum debitis numquam. Rem modi modi aliquam. Error eligendi doloremque est iure. Voluptatibus recusandae fugiat dicta vero consequatur reiciendis. Incidunt porro culpa nisi ad inventore est perspiciatis fugiat laboriosam.",
         "experienceLevel": "Beginner",
@@ -219,6 +220,7 @@ exports[`Admin Service when searching user accounts will perform a text-based se
       "lastPasswordChange": 2024-03-04T17:32:22.422Z,
       "memberSince": 2022-05-13T00:37:52.945Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/682.jpg",
         "bio": "Illo eligendi voluptate reiciendis magni nam perferendis dolor molestiae. Totam odio quia sequi. Nulla aspernatur atque similique corporis adipisci itaque necessitatibus voluptate ea. Rerum occaecati perspiciatis placeat ducimus nostrum perferendis. Voluptate vitae enim voluptates. Tenetur ut perspiciatis tenetur cupiditate. Iste blanditiis corrupti nulla.",
         "experienceLevel": "Expert",
@@ -258,6 +260,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2023-12-13T01:14:50.426Z,
       "memberSince": 2022-01-03T11:06:19.499Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/92.jpg",
         "bio": "Ipsum debitis totam cum et commodi impedit atque beatae hic. Nobis praesentium praesentium minima doloribus. Hic ea velit repellendus adipisci ea labore animi. Blanditiis vero quis assumenda non accusamus impedit ullam. Consequuntur unde similique.",
         "experienceLevel": "Beginner",
@@ -289,6 +292,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2022-12-22T04:17:35.528Z,
       "memberSince": 2021-02-13T04:26:21.255Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1160.jpg",
         "bio": "Expedita reprehenderit inventore. Ratione nostrum soluta voluptates nulla. Ducimus cupiditate maxime nesciunt libero quam tenetur. Quibusdam vitae saepe sit dolore alias magni hic. Doloremque aut aliquam quidem. Tempore esse asperiores quasi at ipsam eum eos adipisci.",
         "experienceLevel": "Experience",
@@ -320,6 +324,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2022-03-10T10:43:44.501Z,
       "memberSince": 2018-10-20T04:40:09.678Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/390.jpg",
         "bio": "Veritatis harum numquam fugit. Ullam laborum corporis assumenda voluptatibus ipsum iusto suscipit delectus. Eligendi cumque vitae nisi voluptatibus et. Ullam fuga animi. Ullam minima veritatis fugiat adipisci corporis. Molestias pariatur error.",
         "experienceLevel": "Professional",
@@ -351,6 +356,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2022-11-13T05:09:16.944Z,
       "memberSince": 2022-08-31T08:43:02.480Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/535.jpg",
         "bio": "Explicabo molestias sed quam eaque deleniti. Eius quibusdam ipsam reprehenderit provident sit voluptates occaecati dignissimos sit. Enim quibusdam repellat quo odit modi. Molestias accusantium vero ea magnam perspiciatis corrupti. Eius id accusamus ipsa sunt exercitationem voluptatum possimus.",
         "experienceLevel": "Novice",
@@ -382,6 +388,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2023-12-27T06:10:38.079Z,
       "memberSince": 2019-06-29T09:03:36.186Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1109.jpg",
         "bio": "Voluptatem tempora dolorum ipsa occaecati similique. Et reiciendis sapiente libero vitae aperiam expedita atque. Voluptatum vero et maxime corporis vero eligendi quod facilis dolorum. Nisi officia officia fugiat quasi. Iusto possimus quos vel magni et. Ipsam esse ut laudantium.",
         "experienceLevel": "Experience",
@@ -413,6 +420,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2023-12-21T00:13:22.352Z,
       "memberSince": 2022-12-01T21:41:35.894Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1184.jpg",
         "bio": "Totam temporibus quaerat vel voluptates vel rem nisi cupiditate repellendus. Minus quod consectetur totam sapiente maiores deleniti. Cupiditate quaerat mollitia ipsa ullam placeat quod ut incidunt. Vero saepe reiciendis laborum reprehenderit quis non mollitia. Voluptates commodi facere exercitationem assumenda qui blanditiis quia laboriosam. Fugiat voluptates atque voluptate commodi cumque rem fugiat perspiciatis. Pariatur similique similique. Veniam veritatis mollitia distinctio repudiandae dolorum libero quia rerum.",
         "experienceLevel": "Expert",
@@ -444,6 +452,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2024-01-27T02:05:49.054Z,
       "memberSince": 2019-05-28T07:18:27.652Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1099.jpg",
         "bio": "Dolore molestiae architecto repellendus. Doloribus veritatis omnis. Accusantium maxime iure id in deserunt consequatur. Quidem optio provident quaerat ex. Culpa impedit minima quia repellendus ratione sapiente odit non praesentium. Cupiditate nobis magni aut autem soluta.",
         "experienceLevel": "Novice",
@@ -475,6 +484,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2022-03-30T19:07:14.944Z,
       "memberSince": 2019-02-17T21:57:07.852Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1182.jpg",
         "bio": "Corporis dolor atque. Hic similique earum deleniti optio repellat consequatur eaque cum. Facere id ducimus adipisci eum ducimus voluptatem odio voluptatem deleniti. Sint maiores officia temporibus labore. Officia perspiciatis at eveniet sapiente. Assumenda pariatur veniam officiis dolorem corrupti. Quis similique aut voluptatum fugiat ipsam nam.",
         "experienceLevel": "Novice",
@@ -506,6 +516,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2022-12-26T02:36:38.003Z,
       "memberSince": 2020-02-24T22:30:50.944Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
         "bio": "Reiciendis debitis voluptatem veritatis dolore. Recusandae aspernatur quas molestiae in tempore eligendi distinctio ipsa cupiditate. Voluptatibus commodi eum nulla sint. Aperiam culpa blanditiis cumque provident asperiores magni ea mollitia. Quos velit id. Earum dolorum velit eveniet ipsa doloremque. Omnis dignissimos ea qui rerum soluta explicabo deserunt veniam.",
         "experienceLevel": "Expert",
@@ -537,6 +548,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "lastPasswordChange": 2022-06-30T05:09:04.006Z,
       "memberSince": 2023-05-22T08:27:23.626Z,
       "profile": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1096.jpg",
         "bio": "Consequatur consequatur quos ipsa inventore minima ducimus. Amet voluptas maxime quod placeat accusantium iste temporibus occaecati nostrum. Deleniti accusamus doloremque est voluptas quaerat quod. Illo autem nam quidem ipsa iusto. Ipsum reprehenderit eius veniam dolorem.",
         "experienceLevel": "Professional",

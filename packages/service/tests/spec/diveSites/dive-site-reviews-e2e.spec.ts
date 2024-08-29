@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DiveSiteReviewDTO,
   DiveSiteReviewsSortBy,
   LogBookSharing,
@@ -28,6 +29,7 @@ import {
 const DiveSiteId = '49f82168-bf4b-4b73-84f9-078d2e7c6153';
 const CreatorTestData: Partial<UserEntity> = {
   id: '9dcf5f2e-db68-4061-aba4-6a3d6dc088bb',
+  accountTier: AccountTier.Basic,
   username: 'testy_mctestface',
   usernameLowered: 'testy_mctestface',
   email: 'testy@testing.com',
@@ -208,6 +210,7 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       expect(new Date(body.createdOn).valueOf()).toBeCloseTo(Date.now(), -3);
       expect(body.creator).toEqual({
         userId: user.id,
+        accountTier: user.accountTier,
         username: user.username,
         memberSince: user.memberSince.toISOString(),
         logBookSharing: user.logBookSharing,
@@ -323,6 +326,7 @@ describe('Dive Site Reviews End-to-End Tests', () => {
 
       expect(new Date(body.updatedOn).valueOf()).toBeCloseTo(Date.now(), -3);
       expect(body.creator).toEqual({
+        accountTier: user.accountTier,
         userId: user.id,
         username: user.username,
         memberSince: user.memberSince.toISOString(),
@@ -362,6 +366,7 @@ describe('Dive Site Reviews End-to-End Tests', () => {
 
       expect(new Date(body.updatedOn).valueOf()).toBeCloseTo(Date.now(), -3);
       expect(body.creator).toEqual({
+        accountTier: user.accountTier,
         userId: user.id,
         username: user.username,
         memberSince: user.memberSince.toISOString(),

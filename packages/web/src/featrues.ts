@@ -1,23 +1,25 @@
 import { Feature } from '@bottomtime/common';
 
 import { User as ConfigCatUser, IConfigCatClient } from 'configcat-common';
-import { InjectionKey, Ref, inject, ref } from 'vue';
+import { InjectionKey, Reactive, UnwrapRef, inject, reactive } from 'vue';
 
 import { useCurrentUser } from './store';
 
 export const FeaturesServiceKey: InjectionKey<IConfigCatClient> =
   Symbol('FeaturesService');
 
-export type FeatureValue<T> = {
-  isLoading: Ref<boolean>;
-  value: Ref<T>;
-};
+export type FeatureValue<T extends string | number | boolean> = Reactive<{
+  isLoading: boolean;
+  value: T;
+}>;
 
-export function useFeatureToggle(
-  feature: Feature<boolean>,
-): FeatureValue<boolean> {
-  const isLoading = ref(true);
-  const value = ref(feature.defaultValue);
+export function useFeature<T extends string | number | boolean>(
+  feature: Feature<T>,
+): FeatureValue<T> {
+  const instance = reactive<FeatureValue<T>>({
+    isLoading: true,
+    value: feature.defaultValue as UnwrapRef<T>,
+  });
 
   const currentUser = useCurrentUser();
   const client = inject(FeaturesServiceKey);
@@ -32,22 +34,24 @@ export function useFeatureToggle(
     : undefined;
 
   client
-    .getValueAsync<boolean>(feature.key, feature.defaultValue, user)
+    .getValueAsync<T>(feature.key, feature.defaultValue, user)
     .then((flag) => {
-      value.value = flag;
+      instance.value = flag as UnwrapRef<UnwrapRef<T>>;
     })
     .catch((err) => {
       /* eslint-disable-next-line no-console */
       console.error(err);
     })
     .finally(() => {
-      isLoading.value = false;
+      instance.isLoading = false;
     });
 
   client.on('configChanged', (newConfig) => {
     const newValue = newConfig.settings[feature.key]?.value;
-    if (typeof newValue === 'boolean') value.value = newValue;
+    if (newValue !== undefined) {
+      instance.value = newValue as UnwrapRef<UnwrapRef<T>>;
+    }
   });
 
-  return { isLoading, value };
+  return instance as FeatureValue<T>;
 }

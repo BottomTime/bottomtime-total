@@ -338,6 +338,7 @@ workflows:
           context:
             - bt-aws-dev
             - bt-smtp-dev
+            - bt-stripe-staging
       - test_web:
           requires:
             - build

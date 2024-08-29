@@ -148,8 +148,8 @@ test.describe('Account and Profile Management', () => {
     });
 
     // Uh oh! I've forgotten my password. I'll request a reset email...
-    await page.goto('/');
     await auth.logout();
+    await page.goto('/');
     await page.getByTestId('login-button').click();
     await page.getByRole('link', { name: 'Recover them here' }).click();
     await page.waitForURL('**/resetPassword');

@@ -57,6 +57,12 @@ services:
         condition: service_started
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:4800 || exit 1
+      interval: 5s
+      retries: 10
+      start_period: 15s
+      timeout: 5s
     develop:
       watch:
         - action: rebuild
@@ -89,7 +95,13 @@ services:
       - BTWEB_API_URL=http://bottomtime-service:4800/
     depends_on:
       service:
-        condition: service_started
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://localhost:4850 || exit 1
+      interval: 5s
+      retries: 10
+      start_period: 15s
+      timeout: 5s
     develop:
       watch:
         - action: rebuild

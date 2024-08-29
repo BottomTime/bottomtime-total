@@ -2,6 +2,7 @@ import mockFetch from 'fetch-mock-jest';
 
 import { DiveOperator, Fetcher } from '../../src/client';
 import {
+  AccountTier,
   CreateOrUpdateDiveOperatorDTO,
   DiveOperatorDTO,
   LogBookSharing,
@@ -25,6 +26,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
   logo: 'https://diversden.ca/wp-content/uploads/2021/06/divers-den-logo.png',
   name: "Diver's Den",
   owner: {
+    accountTier: AccountTier.Basic,
     avatar: 'https://example.com/avatar.png',
     location: 'Toronto, ON, Canada',
     logBookSharing: LogBookSharing.Public,
@@ -225,6 +227,7 @@ describe('Dive Operator API class', () => {
           ...TestData,
           owner: {
             userId: '42da3369-0843-4a72-8222-c7e06ea886c8',
+            accountTier: AccountTier.ShopOwner,
             username: newOwner,
             memberSince: new Date('2024-07-30T15:36:34Z'),
           },

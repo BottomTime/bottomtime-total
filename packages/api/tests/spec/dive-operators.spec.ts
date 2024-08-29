@@ -3,6 +3,7 @@ import mockFetch from 'fetch-mock-jest';
 import { DiveOperator, Fetcher } from '../../src/client';
 import { DiveOperatorsApiClient } from '../../src/client/dive-operators';
 import {
+  AccountTier,
   CreateOrUpdateDiveOperatorDTO,
   DiveOperatorDTO,
   LogBookSharing,
@@ -35,6 +36,7 @@ describe('Operators API client', () => {
       name: 'Test Operator',
       updatedAt: new Date(),
       owner: {
+        accountTier: AccountTier.Basic,
         userId: '16dc9384-82bf-4ac3-bad2-b46456ed786e',
         username: 'test-user',
         memberSince: new Date(),
@@ -76,7 +78,7 @@ describe('Operators API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(results.operators).toHaveLength(50);
-    expect(results.totalCount).toBe(650);
+    expect(results.totalCount).toBe(651);
     results.operators.forEach((operator, index) => {
       expect(operator).toBeInstanceOf(DiveOperator);
       expect(operator.toJSON()).toEqual(testData.operators[index]);
@@ -114,7 +116,7 @@ describe('Operators API client', () => {
 
     expect(mockFetch.calls()).toMatchSnapshot();
     expect(results.operators).toHaveLength(50);
-    expect(results.totalCount).toBe(650);
+    expect(results.totalCount).toBe(651);
     results.operators.forEach((operator, index) => {
       expect(operator).toBeInstanceOf(DiveOperator);
       expect(operator.toJSON()).toEqual(testData.operators[index]);
@@ -142,6 +144,7 @@ describe('Operators API client', () => {
       createdAt: new Date(),
       updatedAt: new Date(),
       owner: {
+        accountTier: AccountTier.Basic,
         userId: '16dc9384-82bf-4ac3-bad2-b46456ed786e',
         username: 'test-user',
         memberSince: new Date(),
@@ -177,6 +180,7 @@ describe('Operators API client', () => {
       name: 'Test Operator',
       updatedAt: new Date(),
       owner: {
+        accountTier: AccountTier.Basic,
         userId: '16dc9384-82bf-4ac3-bad2-b46456ed786e',
         username: 'test-user',
         memberSince: new Date(),

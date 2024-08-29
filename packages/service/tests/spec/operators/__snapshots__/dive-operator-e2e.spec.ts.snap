@@ -151,6 +151,7 @@ Ustilo bos bellum somniculosus apto. Caecus vulpes aggredior decretum. Alioqui b
   "logo": "https://loremflickr.com/128/128?lock=3255818159915008",
   "name": "kaleidoscopic, gruesome raven",
   "owner": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
@@ -190,6 +191,7 @@ Thesis absconditus coniecto pectus. Dignissimos accusamus debeo caecus tamquam t
   "logo": "https://picsum.photos/seed/4S4T5rU/128/128",
   "name": "accurate, shocking troop",
   "owner": {
+    "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/29.jpg",
     "location": "El Centro",
     "logBookSharing": "private",
@@ -286,6 +288,7 @@ Suscipio adulatio nihil deripio debeo deserunt agnosco. Crebro torqueo tui stult
       "logo": "https://loremflickr.com/128/128?lock=3294779878146048",
       "name": "loving, burdensome pump",
       "owner": {
+        "accountTier": 0,
         "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1003.jpg",
         "location": "Milford",
         "logBookSharing": "private",
@@ -382,6 +385,7 @@ Ustilo bos bellum somniculosus apto. Caecus vulpes aggredior decretum. Alioqui b
   "logo": "https://loremflickr.com/128/128?lock=3255818159915008",
   "name": "kaleidoscopic, gruesome raven",
   "owner": {
+    "accountTier": 0,
     "avatar": "https://example.com/avatar.png",
     "location": "Vancouver, BC",
     "logBookSharing": "public",
@@ -421,6 +425,7 @@ Ustilo bos bellum somniculosus apto. Caecus vulpes aggredior decretum. Alioqui b
   "logo": "https://loremflickr.com/128/128?lock=3255818159915008",
   "name": "kaleidoscopic, gruesome raven",
   "owner": {
+    "accountTier": 0,
     "avatar": "https://example.com/avatar.png",
     "location": "Vancouver, BC",
     "logBookSharing": "public",

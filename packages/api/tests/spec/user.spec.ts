@@ -1,6 +1,5 @@
 import mockFetch from 'fetch-mock-jest';
 
-import { AccountTier } from '../../dist';
 import { UserProfile } from '../../src/client';
 import { Fetcher } from '../../src/client/fetcher';
 import { User } from '../../src/client/user';
@@ -148,23 +147,6 @@ describe('User API client', () => {
       204,
     );
     await user.changeUsername(newUsername);
-    expect(mockFetch.done()).toBe(true);
-  });
-
-  it("will change a user's membership", async () => {
-    user = getUser(fetcher);
-    const newAccountTier = AccountTier.ShopOwner;
-    mockFetch.post(
-      {
-        url: `/api/users/${BasicUser.username}/membership`,
-        body: { accountTier: newAccountTier },
-      },
-      {
-        status: 200,
-        body: { succeeded: true },
-      },
-    );
-    await user.changeMembership(newAccountTier);
     expect(mockFetch.done()).toBe(true);
   });
 

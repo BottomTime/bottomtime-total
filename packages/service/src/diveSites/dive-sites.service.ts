@@ -99,10 +99,10 @@ export class DiveSitesService {
 
   async createDiveSite(options: CreateDiveSiteOptions): Promise<DiveSite> {
     const data = new DiveSiteEntity();
-
     data.id = uuid();
     data.creator = {
       id: options.creator.id,
+      accountTier: options.creator.accountTier,
       username: options.creator.username,
       memberSince: options.creator.memberSince,
       logBookSharing: options.creator.profile.logBookSharing,
@@ -110,24 +110,19 @@ export class DiveSitesService {
       location: options.creator.profile.location,
       avatar: options.creator.profile.avatar,
     } as UserEntity;
-    data.name = options.name;
-    data.location = options.location;
-    data.description = options.description ?? null;
-    data.depth = options.depth?.depth ?? null;
-    data.depthUnit = options.depth?.unit ?? null;
-    data.directions = options.directions ?? null;
-    data.freeToDive = options.freeToDive ?? null;
-    data.shoreAccess = options.shoreAccess ?? null;
-    data.waterType = options.waterType ?? null;
 
-    if (options.gps) {
-      data.gps = {
-        type: 'Point',
-        coordinates: [options.gps.lon, options.gps.lat],
-      };
-    }
+    const site = this.siteFactory.createDiveSite(data);
+    site.name = options.name;
+    site.location = options.location;
+    site.description = options.description;
+    site.depth = options.depth;
+    site.directions = options.directions;
+    site.freeToDive = options.freeToDive;
+    site.shoreAccess = options.shoreAccess;
+    site.waterType = options.waterType;
+    site.gps = options.gps;
+    await site.save();
 
-    await this.DiveSites.save(data);
-    return this.siteFactory.createDiveSite(data);
+    return site;
   }
 }

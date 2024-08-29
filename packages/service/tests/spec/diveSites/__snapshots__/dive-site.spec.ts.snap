@@ -343,6 +343,7 @@ exports[`Dive Site Class will render dive site data as JSON 1`] = `
   "averageRating": 3.8,
   "createdOn": 2024-01-08T13:33:52.364Z,
   "creator": {
+    "accountTier": 0,
     "avatar": "https://example.com/avatar.png",
     "location": "San Diego, CA",
     "logBookSharing": "public",

@@ -3,11 +3,11 @@
 exports[`View Dive Site component will render site with full details 1`] = `
 "<div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
   <div>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label><span class="font-bold">Average rating:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label><span class="font-bold">Average rating:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="flex gap-1.5 text-sm place-items-baseline mt-2">
           <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
           <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
@@ -19,11 +19,11 @@ exports[`View Dive Site component will render site with full details 1`] = `
         <!--v-if-->
       </div>
     </div>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label><span class="font-bold">Difficulty rating:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label><span class="font-bold">Difficulty rating:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="flex gap-1.5 text-sm place-items-baseline mt-2">
           <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
           <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
@@ -37,41 +37,41 @@ exports[`View Dive Site component will render site with full details 1`] = `
     </div>
   </div>
   <div>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label><span class="font-bold">Depth:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label><span class="font-bold">Depth:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="mt-1.5"><span class="mr-1"><i class="fas fa-tachometer-alt fa-sm"></i></span><span>21.62 m</span></div>
         <!--v-if-->
         <!--v-if-->
       </div>
     </div>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label><span class="font-bold">Shore access:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label><span class="font-bold">Shore access:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="mt-1.5"><span class="mr-1"><i class="fas fa-anchor fa-sm"></i></span><span>Accessible from shore</span></div>
         <!--v-if-->
         <!--v-if-->
       </div>
     </div>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label><span class="font-bold">Free to dive:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label><span class="font-bold">Free to dive:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="mt-1.5"><span class="mr-1"><i class="far fa-money-bill-alt fa-sm"></i></span><span>Free to dive</span></div>
         <!--v-if-->
         <!--v-if-->
       </div>
     </div>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label for="waterType"><span class="font-bold">Water type:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label for="waterType"><span class="font-bold">Water type:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="mt-1.5"><span class="mr-1"><i class="fa-solid fa-droplet"></i></span><span>Fresh water</span></div>
         <!--v-if-->
         <!--v-if-->
@@ -98,20 +98,20 @@ exports[`View Dive Site component will render site with full details 1`] = `
       <p>Possimus animi voluptate repellendus hic facilis dolorem. Animi natus perspiciatis ut voluptate velit eos vel nihil doloremque. Dolorem tenetur magnam maxime. Aut doloribus eveniet corporis.</p>
     </div>
     <div class="flex justify-evenly gap-6">
-      <div class="flex flex-col gap-2  mb-3">
-        <div class=""><label><span class="font-bold">Created by:</span>
+      <div class="space-y-0 mb-2 last:mb-4" responsive="false">
+        <div><label><span class="font-bold">Created by:</span>
             <!--v-if-->
           </label></div>
-        <div class="grow w-full"><a href="#" class="flex space-x-2 items-center"><img class="rounded-full" width="24px" height="24px" alt="" src="https://ui-avatars.com/api/?name=Constance_Walker19"><span>@Constance_Walker19</span></a>
+        <div class="grow w-full pl-2"><a href="#" class="flex space-x-2 items-center"><img class="rounded-full" width="24px" height="24px" alt="" src="https://ui-avatars.com/api/?name=Constance_Walker19"><span>@Constance_Walker19</span></a>
           <!--v-if-->
           <!--v-if-->
         </div>
       </div>
-      <div class="flex flex-col gap-2  mb-3">
-        <div class=""><label><span class="font-bold">Created:</span>
+      <div class="space-y-0 mb-2 last:mb-4" responsive="false">
+        <div><label><span class="font-bold">Created:</span>
             <!--v-if-->
           </label></div>
-        <div class="grow w-full"><span>4 years ago</span>
+        <div class="grow w-full pl-2"><span>4 years ago</span>
           <!--v-if-->
           <!--v-if-->
         </div>
@@ -129,31 +129,31 @@ exports[`View Dive Site component will render site with minimal details 1`] = `
   </div>
   <div>
     <!--v-if-->
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label><span class="font-bold">Shore access:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label><span class="font-bold">Shore access:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="mt-1.5"><span class="mr-1"><i class="fas fa-anchor fa-sm"></i></span><span>Unknown</span></div>
         <!--v-if-->
         <!--v-if-->
       </div>
     </div>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label><span class="font-bold">Free to dive:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label><span class="font-bold">Free to dive:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="mt-1.5"><span class="mr-1"><i class="far fa-money-bill-alt fa-sm"></i></span><span>Unknown</span></div>
         <!--v-if-->
         <!--v-if-->
       </div>
     </div>
-    <div class="flex flex-col gap-2 lg:flex-row lg:gap-4 lg:align-center lg:place-items-top mb-3">
-      <div class="lg:min-w-40 xl:min-w-48 lg:text-right lg:mt-1.5"><label for="waterType"><span class="font-bold">Water type:</span>
+    <div class="space-y-0 mb-2 last:mb-4">
+      <div><label for="waterType"><span class="font-bold">Water type:</span>
           <!--v-if-->
         </label></div>
-      <div class="grow w-full">
+      <div class="grow w-full pl-2">
         <div class="mt-1.5"><span class="mr-1"><i class="fa-solid fa-droplet"></i></span><span>Unknown</span></div>
         <!--v-if-->
         <!--v-if-->

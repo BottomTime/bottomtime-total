@@ -62,7 +62,7 @@ describe('LogbookEntriesList component', () => {
       entries: entryData,
     };
     const wrapper = mount(LogbookEntriesList, opts);
-    expect(wrapper.get(EntriesCount).text()).toBe('Showing 50 of 200 entries');
+    expect(wrapper.get(EntriesCount).text()).toBe('Showing 50 of 1400 entries');
     expect(wrapper.find(EmptyListMessage).exists()).toBe(false);
     expect(wrapper.find(LoadMoreButton).isVisible()).toBe(true);
 

@@ -78,39 +78,38 @@
         </div>
       </div>
 
-      <TextHeading v-if="enableShopManagement.value">Account Type</TextHeading>
+      <template v-if="enableMemberships.value">
+        <TextHeading>Membership</TextHeading>
 
-      <ManageMembership
-        v-if="enableShopManagement.value"
-        :user="user"
-        @account-type-changed="(type) => $emit('change-account-type', type)"
-      />
+        <ManageMembership :user="user" :membership="membership" />
+      </template>
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
-import { AccountTier, UserDTO } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
+import { MembershipStatusDTO, UserDTO } from '@bottomtime/api';
+import { PaymentsFeature } from '@bottomtime/common';
 
 import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
-import { useFeatureToggle } from '../../featrues';
+import { useFeature } from '../../featrues';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormLabel from '../common/form-label.vue';
 import TextHeading from '../common/text-heading.vue';
 import AccountTimestamps from './account-timestamps.vue';
-import ManageMembership from './manage-membership.vue';
 import ManagePassword from './manage-password.vue';
+import ManageMembership from './membership/manage-membership.vue';
 import UsernameAndEmail from './username-and-email.vue';
 
 // TYPE DEFS
 type ManageAccountProps = {
   user: UserDTO;
+  membership: MembershipStatusDTO;
 };
 
 type OAuthProvider = {
@@ -125,7 +124,7 @@ type ManageAccountState = {
   providers: OAuthProvider[];
 };
 
-const enableShopManagement = useFeatureToggle(ManageDiveOperatorsFeature);
+const enableMemberships = useFeature(PaymentsFeature);
 
 const client = useClient();
 const oops = useOops();
@@ -156,7 +155,6 @@ const OAuthProviders: Omit<OAuthProvider, 'connected'>[] = [
 // STATE MANAGEMENT
 const props = defineProps<ManageAccountProps>();
 defineEmits<{
-  (e: 'change-account-type', accountTier: AccountTier): void;
   (e: 'change-username', username: string): void;
   (e: 'change-email', email: string): void;
   (e: 'change-password'): void;

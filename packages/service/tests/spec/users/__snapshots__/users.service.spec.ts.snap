@@ -12,6 +12,7 @@ exports[`Users Service when creating new user accounts will create a new user wi
   "lastPasswordChange": undefined,
   "memberSince": 2023-10-02T10:23:02.003Z,
   "profile": {
+    "accountTier": 0,
     "avatar": undefined,
     "bio": "I don't talk about my dive clug",
     "experienceLevel": "Experienced",
@@ -88,6 +89,7 @@ exports[`Users Service when creating new user accounts will create new users wit
   "lastPasswordChange": undefined,
   "memberSince": 2023-10-02T10:23:02.003Z,
   "profile": {
+    "accountTier": 0,
     "avatar": undefined,
     "bio": undefined,
     "experienceLevel": undefined,

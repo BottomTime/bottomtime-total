@@ -61,6 +61,11 @@ export interface AppConfig {
     secureCookie: boolean;
   };
 
+  stripe: {
+    sdkKey: string;
+    webhookSigningSecret: string;
+  };
+
   adminEmail: string;
   baseUrl: string;
   configCatSdkKey: string;
@@ -120,6 +125,10 @@ const ConfigSchema = z
       .int()
       .min(1)
       .default(14 * 24 * 60 * 60 * 1000),
+
+    // Stripe
+    BT_STRIPE_SDK_KEY: z.string().default(''),
+    BT_STRIPE_WEBHOOK_SECRET: z.string().default(''),
 
     // Misc.
     BT_ADMIN_EMAIL: z.string().default('admin@bottomti.me'),
@@ -183,6 +192,11 @@ const ConfigSchema = z
       sessionSecret: env.BT_SESSION_SECRET,
       cookieTTL: env.BT_SESSION_COOKIE_TTL,
       secureCookie: env.BT_SESSION_SECURE_COOKIE,
+    },
+
+    stripe: {
+      sdkKey: env.BT_STRIPE_SDK_KEY,
+      webhookSigningSecret: env.BT_STRIPE_WEBHOOK_SECRET,
     },
 
     adminEmail: env.BT_ADMIN_EMAIL,

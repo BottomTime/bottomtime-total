@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   ApiClient,
   Fetcher,
   ListLogEntriesResponseDTO,
@@ -38,6 +39,7 @@ import LogEntryTestData from '../../fixtures/log-entries.json';
 import { AdminUser, BasicUser } from '../../fixtures/users';
 
 const ProfileData: ProfileDTO = {
+  accountTier: AccountTier.Basic,
   logBookSharing: LogBookSharing.Public,
   memberSince: new Date('2021-01-01T00:00:00.000Z'),
   userId: '5550f3c1-c6e3-415d-9760-578fb5e9306b',

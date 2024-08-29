@@ -26,6 +26,7 @@ export class DiveSiteReview {
 
   get creator(): SuccinctProfileDTO {
     return {
+      accountTier: this.data.creator.accountTier,
       memberSince: this.data.creator.memberSince,
       userId: this.data.creator.id,
       username: this.data.creator.username,

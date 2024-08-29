@@ -18,6 +18,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
   "logo": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-logo.png",
   "name": "Diver's Den",
   "owner": {
+    "accountTier": 0,
     "avatar": "https://example.com/avatar.png",
     "location": "Toronto, ON, Canada",
     "logBookSharing": "public",
@@ -59,6 +60,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
   "logo": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-logo.png",
   "name": "Diver's Den",
   "owner": {
+    "accountTier": 0,
     "avatar": "https://example.com/avatar.png",
     "location": "Toronto, ON, Canada",
     "logBookSharing": "public",

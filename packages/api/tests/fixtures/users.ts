@@ -27,6 +27,7 @@ export const BasicUser: UserDTO = {
     weightUnit: WeightUnit.Kilograms,
   },
   profile: {
+    accountTier: AccountTier.Basic,
     username: 'sam_smith',
     memberSince: new Date('2021-01-01T00:00:00.000Z'),
     userId: '50a9504c-ee2c-485e-91e0-4d352409338e',
@@ -54,6 +55,7 @@ export const AdminUser: UserDTO = {
     weightUnit: WeightUnit.Kilograms,
   },
   profile: {
+    accountTier: AccountTier.Basic,
     username: 'andy_admin',
     memberSince: new Date('2021-01-01T00:00:00.000Z'),
     userId: '50A9504C-EE2C-485E-91E0-4D352409338E',
@@ -71,6 +73,7 @@ export const UserWithFullProfile: UserDTO = {
   isLockedOut: false,
   memberSince: new Date('2017-12-29T17:03:07.671Z'),
   profile: {
+    accountTier: AccountTier.Basic,
     avatar:
       'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg',
     bio: 'Facilis deleniti fugiat. Nesciunt architecto facilis consectetur laborum iusto doloribus. Minima nulla nemo unde quisquam quod suscipit deserunt blanditiis deserunt. Ipsa saepe quibusdam beatae tempora labore maxime odio. Labore debitis id doloribus voluptatibus ratione animi dolores.',
@@ -102,6 +105,7 @@ export const UserWithEmptyProfile: UserDTO = {
   isLockedOut: false,
   memberSince: new Date('2022-01-25T11:40:20.928Z'),
   profile: {
+    accountTier: AccountTier.Basic,
     memberSince: new Date('2022-01-25T11:40:20.928Z'),
     logBookSharing: LogBookSharing.Private,
     userId: '8772f482-8bc1-4ae2-ab15-e0d4d741878d',

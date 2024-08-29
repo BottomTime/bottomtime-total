@@ -10,6 +10,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "isLockedOut": false,
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
+    "accountTier": 0,
     "bio": "This is a test user.",
     "experienceLevel": "Advanced",
     "location": "Seattle, WA",
@@ -82,6 +83,7 @@ exports[`Users End-to-End Tests when creating a new user account will create a n
   "isLockedOut": false,
   "memberSince": "2024-01-15T12:40:18.319Z",
   "profile": {
+    "accountTier": 0,
     "logBookSharing": "private",
     "memberSince": "2024-01-15T12:40:18.319Z",
     "userId": "a99a1193-3ef4-4816-85ce-e717a42dc99f",

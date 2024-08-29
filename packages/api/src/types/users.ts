@@ -10,16 +10,11 @@ import {
   UserRole,
   WeightUnit,
 } from './constants';
+import { AccountTier } from './memberships';
 
 export enum UsersSortBy {
   Username = 'username',
   MemberSince = 'memberSince',
-}
-
-export enum AccountTier {
-  Basic = 0,
-  Pro = 100,
-  ShopOwner = 200,
 }
 
 export enum AvatarSize {
@@ -81,6 +76,7 @@ export const ProfileSchema = UpdateProfileParamsSchema.omit({
   logBookSharing: true,
 }).extend({
   userId: z.string(),
+  accountTier: z.nativeEnum(AccountTier),
   username: UsernameSchema,
   memberSince: z.coerce.date(),
   logBookSharing: z.nativeEnum(LogBookSharing).default(LogBookSharing.Private),
@@ -90,6 +86,7 @@ export type ProfileDTO = z.infer<typeof ProfileSchema>;
 
 export const SuccinctProfileSchema = ProfileSchema.pick({
   userId: true,
+  accountTier: true,
   memberSince: true,
   username: true,
   avatar: true,
@@ -135,13 +132,6 @@ export const ChangePasswordParamsSchema = z.object({
 });
 export type ChangePasswordParamsDTO = z.infer<
   typeof ChangePasswordParamsSchema
->;
-
-export const ChangeMembershipParamsSchema = z.object({
-  accountTier: z.nativeEnum(AccountTier),
-});
-export type ChangeMembershipParamsDTO = z.infer<
-  typeof ChangeMembershipParamsSchema
 >;
 
 export const ResetPasswordWithTokenParamsSchema = z.object({

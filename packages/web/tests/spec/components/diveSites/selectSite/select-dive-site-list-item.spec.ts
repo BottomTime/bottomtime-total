@@ -1,4 +1,9 @@
-import { DepthUnit, DiveSiteDTO, LogBookSharing } from '@bottomtime/api';
+import {
+  AccountTier,
+  DepthUnit,
+  DiveSiteDTO,
+  LogBookSharing,
+} from '@bottomtime/api';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
@@ -11,6 +16,7 @@ const PartialDiveSite: DiveSiteDTO = {
   id: '4f5fd49f-734a-4bb7-9912-d58b0f4d61ef',
   name: 'Awesome Site 7',
   creator: {
+    accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.Private,
     memberSince: new Date('2024-05-27T14:51:25.767Z'),
     userId: 'c24863fb-0692-4b17-b8f3-a2adcda6f7c9',

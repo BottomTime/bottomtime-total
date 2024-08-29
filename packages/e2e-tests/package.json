@@ -12,6 +12,7 @@
     "test": "playwright test"
   },
   "dependencies": {
+    "@bottomtime/api": "workspace:*",
     "@bottomtime/service": "workspace:*",
     "@bottomtime/web": "workspace:*",
     "@playwright/test": "^1.45.2",

@@ -312,6 +312,7 @@ export class LogEntry {
 
   get owner(): SuccinctProfileDTO {
     return {
+      accountTier: this.data.owner.accountTier,
       userId: this.data.owner.id,
       username: this.data.owner.username,
       memberSince: this.data.owner.memberSince,

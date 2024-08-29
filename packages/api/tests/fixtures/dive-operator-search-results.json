@@ -1,6 +1,37 @@
 {
   "operators": [
     {
+      "createdAt": "2024-08-09T16:58:54.112Z",
+      "description": "A place to dive",
+      "email": "mrchriscarleton@gmail.com",
+      "gps": { "lat": 43.157571742, "lon": -80.888467969 },
+      "id": "29af8b49-9424-48d3-a6f5-09dd1a8307cf",
+      "name": "Chris' Dive Shop",
+      "owner": {
+        "accountTier": 0,
+        "userId": "664dae71-71f8-4c0f-b5b5-bb5ae6d4f39e",
+        "username": "GoogleChris",
+        "memberSince": "2024-06-05T20:00:36.816Z",
+        "logBookSharing": "friends",
+        "avatar": "https://lh3.googleusercontent.com/a/ACg8ocJE64KPYVS4NLgGqf2zQE-FnlVs1v1yW0xel_1vfHjHbtuL9hRc=s96-c",
+        "location": null,
+        "name": "Chris Carleton"
+      },
+      "socials": {
+        "facebook": "",
+        "instagram": "",
+        "tiktok": "",
+        "twitter": "",
+        "youtube": ""
+      },
+      "updatedAt": "2024-08-13T18:51:31.624Z",
+      "address": "194 Victoria St N, Kitchener, ON N2H 5C6, Canada",
+      "phone": "1 519 835 8122",
+      "slug": "chris-dive-shop",
+      "verified": false,
+      "website": "https://chris.com"
+    },
+    {
       "createdAt": "2024-01-10T10:54:08.909Z",
       "description": "Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.\nDolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.",
       "email": "Elizabeth_Ernser@hotmail.com",
@@ -8,6 +39,7 @@
       "id": "06ba87ee-290b-4967-946e-43ccbb69a712",
       "name": "academic, squeaky osmosis",
       "owner": {
+        "accountTier": 0,
         "userId": "40991fd7-89a4-4e82-9e4d-e020bc654aaf",
         "username": "Clementine.Mann",
         "memberSince": "2019-02-21T08:13:47.222Z",
@@ -39,6 +71,7 @@
       "id": "d84f80d5-097e-4ea7-a592-8f61eab688c1",
       "name": "accomplished, entire turnover",
       "owner": {
+        "accountTier": 0,
         "userId": "2d39a3af-dbe1-49d1-8cd3-312796c60fac",
         "username": "Santino34",
         "memberSince": "2020-06-09T02:02:48.842Z",
@@ -70,6 +103,7 @@
       "id": "903ff710-b88a-4698-8c90-e217e5aa55d9",
       "name": "adept, dramatic cappuccino",
       "owner": {
+        "accountTier": 0,
         "userId": "10aac0c5-7bf0-4668-9ea3-5ba657802499",
         "username": "Brett9",
         "memberSince": "2017-02-25T22:48:21.869Z",
@@ -101,6 +135,7 @@
       "id": "1157c734-3ca1-41ef-8a1d-86600509bc97",
       "name": "adept, rowdy elixir",
       "owner": {
+        "accountTier": 0,
         "userId": "3e5e5113-91a4-43e5-8e3a-309127ba7425",
         "username": "Ceasar_Runolfsdottir",
         "memberSince": "2019-11-12T20:57:26.528Z",
@@ -132,6 +167,7 @@
       "id": "c64986cf-fcfe-4d93-ad05-2c7ab3fc9fe1",
       "name": "admirable, masculine stamina",
       "owner": {
+        "accountTier": 0,
         "userId": "c6b0f227-8c3b-4765-887e-7f21610384e1",
         "username": "Kennedy.Hane",
         "memberSince": "2016-08-01T13:38:32.194Z",
@@ -163,6 +199,7 @@
       "id": "2a2942bc-bebf-4079-b2b2-96827ca9803b",
       "name": "admirable, second-hand analytics",
       "owner": {
+        "accountTier": 0,
         "userId": "18e209ff-3a16-43c4-8775-d2c355668979",
         "username": "Kelsi.Ebert21",
         "memberSince": "2024-01-02T03:04:46.367Z",
@@ -194,6 +231,7 @@
       "id": "c9c14adb-ef5d-4baa-bbb4-0550a4f0f5b6",
       "name": "adored, ill-informed block",
       "owner": {
+        "accountTier": 0,
         "userId": "c3b1229d-1ada-4c6d-8bef-cba46f3d058e",
         "username": "Mavis_Lubowitz52",
         "memberSince": "2023-09-09T17:29:27.453Z",
@@ -225,6 +263,7 @@
       "id": "0525dc9a-f0d9-4af6-bf5e-4c2f433e7549",
       "name": "advanced, trifling pathway",
       "owner": {
+        "accountTier": 0,
         "userId": "49832cf0-eae6-4209-819a-3747d4d20f91",
         "username": "Maybelle88",
         "memberSince": "2016-08-07T17:08:10.949Z",
@@ -256,6 +295,7 @@
       "id": "d72e0548-8c49-4f58-81ec-b488391bb888",
       "name": "aged, burdensome screwdriver",
       "owner": {
+        "accountTier": 0,
         "userId": "b256f55b-f325-4128-aa8d-b97cdd280db4",
         "username": "Joanie85",
         "memberSince": "2022-08-06T18:05:36.310Z",
@@ -287,6 +327,7 @@
       "id": "69aee046-6ed4-4467-9eed-c8b5ceb9ca10",
       "name": "aged, unsung charger",
       "owner": {
+        "accountTier": 0,
         "userId": "f5093a9c-4851-4a59-9106-30d90af9528e",
         "username": "Shaina.Daugherty43",
         "memberSince": "2016-03-22T23:23:59.057Z",
@@ -318,6 +359,7 @@
       "id": "507cf53c-0340-4bc3-bdc3-533b6213f24d",
       "name": "aggravating, rubbery lightscreen",
       "owner": {
+        "accountTier": 0,
         "userId": "0085843c-93fd-428e-a41f-3907d6481dab",
         "username": "Sven_Ullrich",
         "memberSince": "2023-03-06T21:25:05.144Z",
@@ -349,6 +391,7 @@
       "id": "45ddde56-f631-4ce2-be97-7baf062e36e2",
       "name": "aggressive, chubby shanty",
       "owner": {
+        "accountTier": 0,
         "userId": "fb50e297-7934-4452-8382-bd77f7f95b44",
         "username": "Houston_Murazik",
         "memberSince": "2022-10-08T04:16:02.706Z",
@@ -380,6 +423,7 @@
       "id": "0d252b4d-526a-435b-8ab7-36c05933206d",
       "name": "aggressive, internal coral",
       "owner": {
+        "accountTier": 0,
         "userId": "7377b379-3692-4920-8c33-2b0e77625201",
         "username": "Dashawn.Metz",
         "memberSince": "2022-04-12T21:15:06.280Z",
@@ -411,6 +455,7 @@
       "id": "f2437476-4fcd-4a3b-9409-26d584c181fb",
       "name": "agile, angelic trellis",
       "owner": {
+        "accountTier": 0,
         "userId": "571b7228-44c1-49d7-92cd-4784630e0256",
         "username": "Dahlia_Padberg38",
         "memberSince": "2018-07-25T17:45:55.592Z",
@@ -442,6 +487,7 @@
       "id": "1b9197f9-b839-4e1a-99e4-560e0d986358",
       "name": "agitated, amused preference",
       "owner": {
+        "accountTier": 0,
         "userId": "b256f55b-f325-4128-aa8d-b97cdd280db4",
         "username": "Joanie85",
         "memberSince": "2022-08-06T18:05:36.310Z",
@@ -473,6 +519,7 @@
       "id": "2afbaccd-08e6-424f-9f27-a353db7e0865",
       "name": "ajar, harmonious pad",
       "owner": {
+        "accountTier": 0,
         "userId": "262b49ad-7ee2-4aaf-80e4-a5451edb68d2",
         "username": "Michele13",
         "memberSince": "2017-03-04T01:18:03.169Z",
@@ -504,6 +551,7 @@
       "id": "f7a8a8f1-2f94-4cae-89be-1deb9aefcd42",
       "name": "ajar, woeful registration",
       "owner": {
+        "accountTier": 0,
         "userId": "7cc3fbea-41d3-4958-af3c-4bd3554656e7",
         "username": "Ladarius43",
         "memberSince": "2020-04-06T12:55:26.796Z",
@@ -535,6 +583,7 @@
       "id": "a6b4a5e8-1050-4663-9029-c3cf49408551",
       "name": "alive, major housewife",
       "owner": {
+        "accountTier": 0,
         "userId": "c016372d-6811-4174-a41f-812382e1ee24",
         "username": "Annabel_Stamm",
         "memberSince": "2019-05-18T00:26:01.576Z",
@@ -566,6 +615,7 @@
       "id": "65b762a1-af9e-4fc3-ba15-102d19315094",
       "name": "alive, unwilling dependent",
       "owner": {
+        "accountTier": 0,
         "userId": "044f2266-3894-44da-b419-b843a99468c2",
         "username": "Hal85",
         "memberSince": "2021-11-04T00:22:32.751Z",
@@ -597,6 +647,7 @@
       "id": "e80cbe42-f21c-4da3-9a33-d579ca7ee78b",
       "name": "all, itchy valance",
       "owner": {
+        "accountTier": 0,
         "userId": "89e45f8d-3ae1-4de3-be87-c7324dbca68d",
         "username": "Jannie.Hoppe60",
         "memberSince": "2016-08-27T11:08:32.513Z",
@@ -628,6 +679,7 @@
       "id": "13506e87-a8e6-4569-8378-6597735b27b2",
       "name": "altruistic, blissful cloudburst",
       "owner": {
+        "accountTier": 0,
         "userId": "181a9727-38a5-4a2a-9ce6-fdede0679203",
         "username": "Tate.Kerluke",
         "memberSince": "2021-07-05T12:07:39.485Z",
@@ -659,6 +711,7 @@
       "id": "097ccef1-f41f-40a8-8bb8-2fab232f184c",
       "name": "altruistic, surprised sting",
       "owner": {
+        "accountTier": 0,
         "userId": "82f41127-0066-44b8-aed8-1c53f56f024c",
         "username": "Rodrick60",
         "memberSince": "2017-12-06T10:05:57.788Z",
@@ -690,6 +743,7 @@
       "id": "c44e0cff-e964-4bf3-8ccc-733d96df82a5",
       "name": "ambitious, agonizing fail",
       "owner": {
+        "accountTier": 0,
         "userId": "e8d4f03f-6efe-467d-b40c-f23cff52f03f",
         "username": "Gwen_Hessel",
         "memberSince": "2015-03-13T19:12:48.092Z",
@@ -721,6 +775,7 @@
       "id": "445da96d-c653-49d2-bf4d-56d835e7f437",
       "name": "ancient, lanky egg",
       "owner": {
+        "accountTier": 0,
         "userId": "6521ccf0-6048-4163-8b66-efa267c1da43",
         "username": "Dale_Kohler16",
         "memberSince": "2014-11-22T23:23:05.145Z",
@@ -752,6 +807,7 @@
       "id": "a5ed3ef5-3eea-4983-8d13-01a2f981bd6d",
       "name": "ancient, trained dandelion",
       "owner": {
+        "accountTier": 0,
         "userId": "40694768-4f41-4693-878e-5ce2dd743d71",
         "username": "Jane3",
         "memberSince": "2022-07-16T10:34:29.799Z",
@@ -783,6 +839,7 @@
       "id": "614f24d9-5df4-4de1-950a-04b9a8b8d321",
       "name": "angelic, old campanile",
       "owner": {
+        "accountTier": 0,
         "userId": "9a2abfd0-1343-4f5b-9199-43b875509b89",
         "username": "Brant_Bechtelar",
         "memberSince": "2016-04-16T06:53:53.000Z",
@@ -814,6 +871,7 @@
       "id": "07817f4a-0d15-4c4c-9552-527cb22fb618",
       "name": "animated, wordy cover",
       "owner": {
+        "accountTier": 0,
         "userId": "0de86efc-f52a-4f58-ae1a-1d71f6f19a1e",
         "username": "Melody51",
         "memberSince": "2019-03-14T18:36:54.758Z",
@@ -845,6 +903,7 @@
       "id": "ab3f4317-1457-447a-ad7c-96f654bdbcaf",
       "name": "another, frozen high",
       "owner": {
+        "accountTier": 0,
         "userId": "b0b8609e-8574-43b5-b8ad-28294c052d9b",
         "username": "Dana_Schoen34",
         "memberSince": "2022-03-09T18:55:56.839Z",
@@ -876,6 +935,7 @@
       "id": "d4054177-66fe-4c37-a97a-706a75bda38a",
       "name": "antique, imaginative species",
       "owner": {
+        "accountTier": 0,
         "userId": "6c81d1e6-d471-4170-9fb9-b78c9c0a24ba",
         "username": "Jerrod.Ratke",
         "memberSince": "2015-05-15T19:53:50.131Z",
@@ -907,6 +967,7 @@
       "id": "75534a4a-ce30-4d20-9f28-c7578433794b",
       "name": "anxious, used casket",
       "owner": {
+        "accountTier": 0,
         "userId": "40991fd7-89a4-4e82-9e4d-e020bc654aaf",
         "username": "Clementine.Mann",
         "memberSince": "2019-02-21T08:13:47.222Z",
@@ -938,6 +999,7 @@
       "id": "76dfbf07-3f2c-4285-a36c-18c5337fcfe2",
       "name": "arctic, mean omelet",
       "owner": {
+        "accountTier": 0,
         "userId": "e3b8048e-d8f0-489a-bca7-6b4880c88078",
         "username": "Camryn36",
         "memberSince": "2019-09-28T19:04:41.639Z",
@@ -969,6 +1031,7 @@
       "id": "2e6e6b37-45bc-477f-9742-5708da04d23c",
       "name": "aromatic, superb injunction",
       "owner": {
+        "accountTier": 0,
         "userId": "ae871aa4-c882-41e6-853b-54fe6b683d7b",
         "username": "Aleen.Bogisich36",
         "memberSince": "2016-12-28T20:31:47.918Z",
@@ -1000,6 +1063,7 @@
       "id": "ee727414-e3ca-4938-8f38-4fc22473b32b",
       "name": "artistic, cooked tent",
       "owner": {
+        "accountTier": 0,
         "userId": "d395ee5d-81b3-4916-aa4b-c5134b038a53",
         "username": "Leann36",
         "memberSince": "2015-05-29T01:10:16.813Z",
@@ -1031,6 +1095,7 @@
       "id": "fc3cecf2-5050-412d-9af6-67af6e627086",
       "name": "attentive, neat effectiveness",
       "owner": {
+        "accountTier": 0,
         "userId": "9ecc7bd0-ab2e-4642-a32b-2a40dab7ae9e",
         "username": "Dashawn.Luettgen",
         "memberSince": "2024-02-28T01:40:16.073Z",
@@ -1062,6 +1127,7 @@
       "id": "8b43185d-5d70-4de3-b86d-29bee0b800a4",
       "name": "attractive, mundane somebody",
       "owner": {
+        "accountTier": 0,
         "userId": "7ae77d91-ac94-4307-b58a-c2ee3416033a",
         "username": "Hazel9",
         "memberSince": "2016-09-23T02:27:31.808Z",
@@ -1093,6 +1159,7 @@
       "id": "72c2caf3-3d5d-487d-a719-b386337f943d",
       "name": "austere, meager judge",
       "owner": {
+        "accountTier": 0,
         "userId": "32a348a4-9641-41b0-a19d-4386d66c7682",
         "username": "Myrtie75",
         "memberSince": "2023-06-02T18:27:36.245Z",
@@ -1124,6 +1191,7 @@
       "id": "31d206d4-6059-46bd-911c-4d5ccfe33e0e",
       "name": "authorized, knobby bird",
       "owner": {
+        "accountTier": 0,
         "userId": "e40141fa-5fec-48f4-a4d2-7cb27d9ec66e",
         "username": "Gudrun95",
         "memberSince": "2023-04-30T03:31:13.221Z",
@@ -1155,6 +1223,7 @@
       "id": "7a101811-9f8d-4105-a8d4-164c109477ec",
       "name": "aware, voluminous mushroom",
       "owner": {
+        "accountTier": 0,
         "userId": "cad471a3-2c63-482d-a238-51985625f8f4",
         "username": "Joaquin.Powlowski34",
         "memberSince": "2017-03-02T18:39:49.784Z",
@@ -1186,6 +1255,7 @@
       "id": "a56fbb4e-842f-49fc-92a4-9b219366c0aa",
       "name": "awesome, capital journalist",
       "owner": {
+        "accountTier": 0,
         "userId": "6d1fa096-eb69-473f-9d17-76704c020296",
         "username": "Antwan1",
         "memberSince": "2021-06-14T07:14:50.847Z",
@@ -1217,6 +1287,7 @@
       "id": "b274c744-31af-4851-b23b-52d4e5dc0834",
       "name": "awesome, loving sampan",
       "owner": {
+        "accountTier": 0,
         "userId": "1d708bdf-8f20-45f4-8319-52b896b2b67c",
         "username": "Easter.Batz",
         "memberSince": "2022-07-13T17:22:17.236Z",
@@ -1248,6 +1319,7 @@
       "id": "288f3e73-311f-4ee6-9cb6-43a76c6a9f41",
       "name": "awesome, yellowish tweezers",
       "owner": {
+        "accountTier": 0,
         "userId": "b0b8609e-8574-43b5-b8ad-28294c052d9b",
         "username": "Dana_Schoen34",
         "memberSince": "2022-03-09T18:55:56.839Z",
@@ -1279,6 +1351,7 @@
       "id": "d78ece82-2502-420b-ac05-aa9c799466ab",
       "name": "awkward, fair step-sister",
       "owner": {
+        "accountTier": 0,
         "userId": "5c947d73-1146-487d-9f3a-b895ea4c4f1d",
         "username": "Wilfredo.Wuckert0",
         "memberSince": "2016-08-25T11:34:08.460Z",
@@ -1310,6 +1383,7 @@
       "id": "078d3a37-38b7-4105-99a0-edc602289ae0",
       "name": "awkward, short surname",
       "owner": {
+        "accountTier": 0,
         "userId": "3f696406-6902-464e-81b5-401dd15d3fad",
         "username": "Jadon22",
         "memberSince": "2014-11-26T02:47:55.299Z",
@@ -1341,6 +1415,7 @@
       "id": "d651b8d3-e1df-4ca6-9c89-8f5bd40c8593",
       "name": "babyish, unlined world",
       "owner": {
+        "accountTier": 0,
         "userId": "c27ed23e-bd55-4598-a7a0-9878da06ce3f",
         "username": "Demario_Beier",
         "memberSince": "2016-10-30T01:39:04.196Z",
@@ -1372,6 +1447,7 @@
       "id": "a2ba4b3a-1315-4ed4-8cca-80c98b3f5aa5",
       "name": "bad, quick-witted vinegar",
       "owner": {
+        "accountTier": 0,
         "userId": "c6b0f227-8c3b-4765-887e-7f21610384e1",
         "username": "Kennedy.Hane",
         "memberSince": "2016-08-01T13:38:32.194Z",
@@ -1403,6 +1479,7 @@
       "id": "665a8f8b-6a3c-40f4-9104-7d54056e2b26",
       "name": "baggy, awful runner",
       "owner": {
+        "accountTier": 0,
         "userId": "b816381c-7859-4bef-a3b7-fdbd5d3a9f4f",
         "username": "Marianne.Jast",
         "memberSince": "2020-02-20T16:17:36.425Z",
@@ -1434,6 +1511,7 @@
       "id": "f4462473-21d9-4179-9323-657eb97645b3",
       "name": "bare, exotic latency",
       "owner": {
+        "accountTier": 0,
         "userId": "e2bc25db-edd8-43ff-9cbc-651194777941",
         "username": "Janie_Bosco",
         "memberSince": "2022-02-14T03:15:56.955Z",
@@ -1465,6 +1543,7 @@
       "id": "645a7d6f-849c-4e55-b5dd-959287630afe",
       "name": "bare, giddy square",
       "owner": {
+        "accountTier": 0,
         "userId": "ea8adafe-c6a7-4838-9749-51cfd0c70aa5",
         "username": "Daniela_Murray",
         "memberSince": "2022-06-09T18:35:45.851Z",
@@ -1496,6 +1575,7 @@
       "id": "07172cf1-125a-4642-b5a3-23ea58897490",
       "name": "barren, hollow cholesterol",
       "owner": {
+        "accountTier": 0,
         "userId": "25711161-5f17-4915-90ec-3d70e75961ef",
         "username": "Keanu29",
         "memberSince": "2022-08-24T04:18:08.129Z",
@@ -1518,38 +1598,7 @@
       "slug": "barren-hollow-cholesterol",
       "verified": true,
       "website": "https://dark-tangerine.name"
-    },
-    {
-      "createdAt": "2021-05-06T15:55:08.004Z",
-      "description": "Virga asper verbera autem minus concido distinctio ad. Summa cometes conforto volubilis animus nobis urbs porro inflammatio fuga. Subiungo appello eos quod utrum casus unde laudantium.\nVehemens neque conculco agnitio stabilis compono defero delicate. Supra contra avaritia audeo pecco crapula non chirographum demitto consequatur. Auxilium molestiae aggredior curatio cribro substantia deleniti crur.",
-      "email": "Bulah51@yahoo.com",
-      "gps": { "lat": 65.6978, "lon": -140.3698 },
-      "id": "e09ca057-db86-4482-ba4f-fe6891e308d5",
-      "name": "beautiful, considerate mocha",
-      "owner": {
-        "userId": "e2bc25db-edd8-43ff-9cbc-651194777941",
-        "username": "Janie_Bosco",
-        "memberSince": "2022-02-14T03:15:56.955Z",
-        "logBookSharing": "private",
-        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/315.jpg",
-        "location": "Melyssaborough, AR, IN",
-        "name": "Janie Bosco"
-      },
-      "socials": {
-        "facebook": "Jackeline.Zboncak1",
-        "instagram": "Eduardo.Barton47",
-        "tiktok": "Dale.Mitchell37",
-        "twitter": "Corine_Wyman89"
-      },
-      "updatedAt": "2024-04-01T22:13:11.234Z",
-      "address": "607 Birch Avenue Apt. 148, Surprise, KS, 65766",
-      "banner": "https://loremflickr.com/1024/256?lock=720644534697984",
-      "logo": "https://loremflickr.com/128/128?lock=5228619007787008",
-      "phone": "(301) 479-5178 x9799",
-      "slug": "beautiful-considerate-mocha",
-      "verified": true,
-      "website": "https://knowing-blister.com/"
     }
   ],
-  "totalCount": 650
+  "totalCount": 651
 }

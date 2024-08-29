@@ -7,6 +7,11 @@ export const UserRoutes: RouteRecordRaw[] = [
     component: () => import('../views/account-view.vue'),
   },
   {
+    path: '/account/checkout',
+    name: 'account-checkout',
+    component: () => import('../views/checkout-view.vue'),
+  },
+  {
     path: '/friends',
     name: 'friends',
     component: () => import('../views/friends-view.vue'),
@@ -15,6 +20,16 @@ export const UserRoutes: RouteRecordRaw[] = [
     path: '/friendRequests',
     name: 'friend-requests',
     component: () => import('../views/friend-requests-view.vue'),
+  },
+  {
+    path: '/membership/canceled',
+    name: 'membership-canceled',
+    component: () => import('../views/membership-canceled-view.vue'),
+  },
+  {
+    path: '/membership/confirmation',
+    name: 'membership-confirmation',
+    component: () => import('../views/membership-confirmation-view.vue'),
   },
   {
     path: '/profile',
