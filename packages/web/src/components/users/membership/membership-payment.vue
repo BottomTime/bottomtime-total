@@ -71,7 +71,7 @@
         </div>
       </div>
 
-      <div class="bg-secondary rounded-r-lg p-2 border-l-warn border-l-4">
+      <div>
         <LoadingSpinner
           v-if="state.isLoading"
           message="Loading Stripe payment platform..."
@@ -202,6 +202,8 @@ function formatPrice(amount: number, currency: string): string {
 }
 
 onMounted(async () => {
+  const darkMode = localStorage.getItem('darkMode');
+
   // Mount Stripe Payment element.
   await oops(async () => {
     stripe.value = await useStripe();
@@ -209,8 +211,11 @@ onMounted(async () => {
 
     elements.value = stripe.value.elements({
       clientSecret: session.clientSecret,
+      appearance: { theme: darkMode === 'true' ? 'night' : 'stripe' },
     });
-    const payment = elements.value.create('payment');
+    const payment = elements.value.create('payment', {
+      layout: 'accordion',
+    });
 
     state.checkout = session;
     state.isLoading = false;
