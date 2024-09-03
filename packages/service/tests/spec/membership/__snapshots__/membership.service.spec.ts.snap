@@ -1,5 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`MembershipService class when creating a payment session for a new memberhsip will return a client secret for a payment session for a user with a subscription 1`] = `
+{
+  "clientSecret": "pi_3PuyAkI1ADsIvyhF1fcohTWk_secret_ykKOAqkyzclpvYZd756qIOIuN",
+  "currency": "cad",
+  "discounts": undefined,
+  "frequency": "year",
+  "products": [
+    {
+      "price": 40,
+      "product": "Pro Membership",
+    },
+  ],
+  "tax": undefined,
+  "total": 40,
+}
+`;
+
+exports[`MembershipService class when creating a payment session for a new memberhsip will return a client secret if user already has an active subscription 1`] = `
+{
+  "clientSecret": "pi_3PuyAkI1ADsIvyhF1fcohTWk_secret_ykKOAqkyzclpvYZd756qIOIuN",
+  "currency": "cad",
+  "discounts": undefined,
+  "frequency": "year",
+  "products": [
+    {
+      "price": 40,
+      "product": "Pro Membership",
+    },
+  ],
+  "tax": undefined,
+  "total": 40,
+}
+`;
+
 exports[`MembershipService class when retrieving membership status for a user will return a non-membership response if user does not have a customer ID 1`] = `
 {
   "accountTier": 0,
@@ -29,6 +63,35 @@ exports[`MembershipService class when retrieving membership status for a user wi
 }
 `;
 
+exports[`MembershipService class when retrieving membership status for a user will return membership status for a deleted Stripe customer 1`] = `
+{
+  "accountTier": 0,
+  "entitlements": [],
+  "status": "none",
+}
+`;
+
+exports[`MembershipService class when updating a membership will cancel a subscription if downgrading do a free account 1`] = `
+{
+  "accountTier": 0,
+  "entitlements": [],
+  "status": "none",
+}
+`;
+
+exports[`MembershipService class when updating a membership will perform a no-op if the user is already at the requested account tier 1`] = `
+{
+  "accountTier": 100,
+  "cancellationDate": undefined,
+  "entitlements": [
+    "pro-features",
+  ],
+  "nextBillingDate": 2025-10-28T14:04:00.000Z,
+  "status": "active",
+  "trialEndDate": undefined,
+}
+`;
+
 exports[`MembershipService class when updating a membership will provision Stripe for a new customer and create a membership 1`] = `
 {
   "accountTier": 100,
@@ -38,6 +101,33 @@ exports[`MembershipService class when updating a membership will provision Strip
   ],
   "nextBillingDate": 2025-10-28T14:04:00.000Z,
   "status": "active",
+  "trialEndDate": undefined,
+}
+`;
+
+exports[`MembershipService class when updating a membership will provision a new membership for a user with an existing Stripe customer ID 1`] = `
+{
+  "accountTier": 100,
+  "cancellationDate": undefined,
+  "entitlements": [
+    "pro-features",
+  ],
+  "nextBillingDate": 2025-10-28T14:04:00.000Z,
+  "status": "active",
+  "trialEndDate": undefined,
+}
+`;
+
+exports[`MembershipService class when updating a membership will upgrade/downgrade a user to a different membership tier 1`] = `
+{
+  "accountTier": 200,
+  "cancellationDate": undefined,
+  "entitlements": [
+    "shop-owner-features",
+    "pro-features",
+  ],
+  "nextBillingDate": 2025-09-03T12:23:19.000Z,
+  "status": "trialing",
   "trialEndDate": undefined,
 }
 `;

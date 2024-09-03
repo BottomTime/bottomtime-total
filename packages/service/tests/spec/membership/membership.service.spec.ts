@@ -1,6 +1,9 @@
 import { AccountTier, UserRole } from '@bottomtime/api';
 
-import { ForbiddenException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 import Stripe from 'stripe';
 import { Repository } from 'typeorm';
@@ -10,10 +13,15 @@ import { MembershipService } from '../../../src/membership/membership.service';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import {
+  StripeCustomerCompleteMembership,
+  StripeCustomerDeleted,
+  StripeCustomerIncompleteMembership,
   StripeCustomerNonMember,
   StripeCustomerProMember,
+  StripeCustomerShopOwnerMember,
   StripeEntitlementsNone,
   StripeEntitlementsPro,
+  StripeEntitlementsShopOwner,
   StripePriceData,
 } from '../../fixtures/stripe';
 import { createTestUser } from '../../utils/create-test-user';
@@ -43,21 +51,9 @@ describe('MembershipService class', () => {
     Users = dataSource.getRepository(UserEntity);
 
     /* eslint-disable-next-line no-process-env */
-    stripe = new Stripe(
-      'sk_test_51PktwnI1ADsIvyhFSnAbMv2qbbqNjmU8NUS5EG3Gk1qvICgmWLgfeQiQRitwpI942PMbenA2X09W00QP7lUxztnx00dxXmdIw5',
-    );
+    stripe = new Stripe('sk_test_xxxxx');
     service = new MembershipService(stripe);
     jest.spyOn(stripe.prices, 'list').mockResolvedValue(StripePriceData);
-
-    // const customer = await stripe.customers.retrieve('cus_QguMZ6wdt2TTlK', {
-    //   expand: ['subscriptions'],
-    // });
-    // console.log(JSON.stringify(customer, null, 2));
-
-    // const entitlements = await stripe.entitlements.activeEntitlements.list({
-    //   customer: 'cus_QguMZ6wdt2TTlK',
-    // });
-    // console.log(JSON.stringify(entitlements, null, 2));
 
     await service.onModuleInit();
   });
@@ -115,6 +111,23 @@ describe('MembershipService class', () => {
       expect(entitlementsSpy).toHaveBeenCalledWith({
         customer: userData.stripeCustomerId,
       });
+    });
+
+    it('will return membership status for a deleted Stripe customer', async () => {
+      const customerSpy = jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValue(StripeCustomerDeleted);
+      const entitlementsSpy = jest
+        .spyOn(stripe.entitlements.activeEntitlements, 'list')
+        .mockResolvedValue(StripeEntitlementsNone);
+
+      const status = await service.getMembershipStatus(user);
+      expect(status).toMatchSnapshot();
+
+      expect(customerSpy).toHaveBeenCalledWith(userData.stripeCustomerId, {
+        expand: ['subscriptions'],
+      });
+      expect(entitlementsSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -179,22 +192,27 @@ describe('MembershipService class', () => {
       });
     });
 
-    it.skip('will provision a new membership for a user with an existing Stripe customer ID', async () => {
+    it('will provision a new membership for a user with an existing Stripe customer ID', async () => {
+      const getCustomerSpy = jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValueOnce(StripeCustomerNonMember);
+      getCustomerSpy.mockResolvedValueOnce(StripeCustomerProMember);
       const createSubscriptionSpy = jest
         .spyOn(stripe.subscriptions, 'create')
         .mockResolvedValue(
           StripeCustomerProMember.subscriptions!
             .data[0] as Stripe.Response<Stripe.Subscription>,
         );
-      const getCustomerSpy = jest
-        .spyOn(stripe.customers, 'retrieve')
-        .mockResolvedValue(StripeCustomerNonMember);
-      jest
-        .spyOn(user, 'attachStripeCustomerId')
-        .mockImplementation(async (customerId: string): Promise<void> => {
-          userData.stripeCustomerId = customerId;
+      const changeMembershipSpy = jest
+        .spyOn(user, 'changeMembership')
+        .mockImplementation(async (tier) => {
+          userData.accountTier = tier;
         });
+      const attachCustomerSpy = jest
+        .spyOn(user, 'attachStripeCustomerId')
+        .mockResolvedValue();
       jest
+
         .spyOn(stripe.customers, 'retrieve')
         .mockResolvedValue(StripeCustomerProMember);
       jest
@@ -203,8 +221,11 @@ describe('MembershipService class', () => {
 
       const membership = await service.updateMembership(user, AccountTier.Pro);
       expect(membership).toMatchSnapshot();
+      expect(user.accountTier).toBe(AccountTier.Pro);
 
-      expect(getCustomerSpy).toHaveBeenCalledWith(StripeCustomerNonMember.id);
+      expect(attachCustomerSpy).not.toHaveBeenCalled();
+      expect(changeMembershipSpy).toHaveBeenCalledWith(AccountTier.Pro);
+      expect(getCustomerSpy).toHaveBeenCalledTimes(2);
       expect(createSubscriptionSpy).toHaveBeenCalledWith({
         customer: StripeCustomerNonMember.id,
         items: [
@@ -221,6 +242,153 @@ describe('MembershipService class', () => {
         proration_behavior: 'create_prorations',
         expand: ['latest_invoice.payment_intent'],
       });
+    });
+
+    it('will upgrade/downgrade a user to a different membership tier', async () => {
+      userData.accountTier = AccountTier.Pro;
+      const getCustomerSpy = jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValueOnce(StripeCustomerProMember);
+      getCustomerSpy.mockResolvedValueOnce(StripeCustomerShopOwnerMember);
+      const changeSubscriptionSpy = jest
+        .spyOn(stripe.subscriptions, 'update')
+        .mockResolvedValue(
+          StripeCustomerShopOwnerMember.subscriptions!
+            .data[0] as Stripe.Response<Stripe.Subscription>,
+        );
+      const changeMembershipSpy = jest
+        .spyOn(user, 'changeMembership')
+        .mockResolvedValue();
+      jest
+        .spyOn(stripe.entitlements.activeEntitlements, 'list')
+        .mockResolvedValue(StripeEntitlementsShopOwner);
+
+      const result = await service.updateMembership(
+        user,
+        AccountTier.ShopOwner,
+      );
+      expect(result).toMatchSnapshot();
+
+      expect(changeMembershipSpy).toHaveBeenCalledWith(AccountTier.ShopOwner);
+      expect(getCustomerSpy).toHaveBeenCalledTimes(2);
+      expect(changeSubscriptionSpy).toHaveBeenCalledWith(
+        'sub_1PtVMMI1ADsIvyhF61EcWHlG',
+        {
+          cancel_at_period_end: false,
+          proration_behavior: 'create_prorations',
+          items: [
+            {
+              id: 'si_Ql1PdoN67ZpOpB',
+              price: 'price_1PsovKI1ADsIvyhFKcf9UONp',
+            },
+          ],
+        },
+      );
+    });
+
+    it('will cancel a subscription if downgrading do a free account', async () => {
+      userData.accountTier = AccountTier.Pro;
+      const getCustomerSpy = jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValueOnce(StripeCustomerProMember);
+      getCustomerSpy.mockResolvedValueOnce(StripeCustomerNonMember);
+      const cancelSubscriptionSpy = jest
+        .spyOn(stripe.subscriptions, 'cancel')
+        .mockResolvedValue(
+          {} as unknown as Stripe.Response<Stripe.Subscription>,
+        );
+      const changeMembershipSpy = jest
+        .spyOn(user, 'changeMembership')
+        .mockImplementation(async (tier) => {
+          userData.accountTier = tier;
+        });
+      jest
+        .spyOn(stripe.entitlements.activeEntitlements, 'list')
+        .mockResolvedValue(StripeEntitlementsNone);
+
+      const result = await service.updateMembership(user, AccountTier.Basic);
+      expect(result).toMatchSnapshot();
+      expect(user.accountTier).toBe(AccountTier.Basic);
+
+      expect(getCustomerSpy).toHaveBeenCalled();
+      expect(cancelSubscriptionSpy).toHaveBeenCalledWith(
+        StripeCustomerProMember.subscriptions!.data[0].id,
+        {
+          prorate: true,
+          invoice_now: true,
+        },
+      );
+      expect(changeMembershipSpy).toHaveBeenCalledWith(AccountTier.Basic);
+    });
+
+    it('will throw an exception if the Stripe customer was deleted', async () => {
+      userData.accountTier = AccountTier.Pro;
+      jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValue(StripeCustomerDeleted);
+
+      await expect(
+        service.updateMembership(user, AccountTier.ShopOwner),
+      ).rejects.toThrow(InternalServerErrorException);
+    });
+
+    it('will perform a no-op if the user is already at the requested account tier', async () => {
+      userData.accountTier = AccountTier.Pro;
+      const getCustomerSpy = jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValue(StripeCustomerProMember);
+      const changeMembershipSpy = jest.spyOn(user, 'changeMembership');
+      const updateSubscriptionSpy = jest.spyOn(stripe.subscriptions, 'update');
+      jest
+        .spyOn(stripe.entitlements.activeEntitlements, 'list')
+        .mockResolvedValue(StripeEntitlementsPro);
+
+      const result = await service.updateMembership(user, AccountTier.Pro);
+      expect(result).toMatchSnapshot();
+
+      expect(getCustomerSpy).toHaveBeenCalled();
+      expect(changeMembershipSpy).not.toHaveBeenCalled();
+      expect(updateSubscriptionSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when creating a payment session for a new memberhsip', () => {
+    it('will return undefined if the user does not yet have an attached Stripe customer', async () => {
+      userData.stripeCustomerId = null;
+      await expect(service.createPaymentSession(user)).resolves.toBeUndefined();
+    });
+
+    it('will throw an exception if Stripe customer is deleted', async () => {
+      jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValue(StripeCustomerDeleted);
+      await expect(service.createPaymentSession(user)).rejects.toThrow(
+        InternalServerErrorException,
+      );
+    });
+
+    it('will return undefined if user does not have a subscription', async () => {
+      jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValue(StripeCustomerNonMember);
+      await expect(service.createPaymentSession(user)).resolves.toBeUndefined();
+    });
+
+    it('will return a client secret if user already has an active subscription', async () => {
+      jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValue(StripeCustomerCompleteMembership);
+      const session = await service.createPaymentSession(user);
+      expect(session).toMatchSnapshot();
+    });
+
+    it('will return a client secret for a payment session for a user with a subscription', async () => {
+      jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValue(StripeCustomerIncompleteMembership);
+
+      const session = await service.createPaymentSession(user);
+      expect(session).toMatchSnapshot();
     });
   });
 
@@ -268,6 +436,17 @@ describe('MembershipService class', () => {
         },
       );
       expect(accountTierSpy).toHaveBeenCalledWith(AccountTier.Basic);
+    });
+
+    it('will throw an exception if the Stripe customer was deleted', async () => {
+      userData.accountTier = AccountTier.ShopOwner;
+      jest
+        .spyOn(stripe.customers, 'retrieve')
+        .mockResolvedValue(StripeCustomerDeleted);
+
+      await expect(service.cancelMembership(user)).rejects.toThrow(
+        InternalServerErrorException,
+      );
     });
   });
 });

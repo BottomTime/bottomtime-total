@@ -13,6 +13,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
@@ -67,7 +68,15 @@ export class MembershipService implements OnModuleInit {
   private _shopOwnerMembership: Stripe.Product | undefined;
   private _shopOwnerMembershipPrice: Stripe.Price | undefined;
 
-  constructor(@Inject(Stripe) private readonly stripe: Stripe) {}
+  private readonly priceMap: Record<AccountTier, Stripe.Price | null>;
+
+  constructor(@Inject(Stripe) private readonly stripe: Stripe) {
+    this.priceMap = {
+      [AccountTier.Basic]: null,
+      [AccountTier.Pro]: null,
+      [AccountTier.ShopOwner]: null,
+    };
+  }
 
   /** Request and cache price/product information on our membership tiers from Stripe. */
   async onModuleInit(): Promise<void> {
@@ -88,6 +97,9 @@ export class MembershipService implements OnModuleInit {
         this._shopOwnerMembership = price.product as Stripe.Product;
       }
     });
+
+    this.priceMap[AccountTier.Pro] = this.proMembershipPrice;
+    this.priceMap[AccountTier.ShopOwner] = this.shopOwnerMembershipPrice;
   }
 
   private get proMemberhsip(): Stripe.Product {
@@ -126,18 +138,14 @@ export class MembershipService implements OnModuleInit {
   }
 
   private getPriceForAccountTier(accountTier: AccountTier): Stripe.Price {
-    switch (accountTier) {
-      case AccountTier.Pro:
-        return this.proMembershipPrice;
-
-      case AccountTier.ShopOwner:
-        return this.shopOwnerMembershipPrice;
-
-      default:
-        throw new BadRequestException(
-          `No price information available for account tier: ${accountTier}`,
-        );
+    const price = this.priceMap[accountTier];
+    if (!price) {
+      throw new BadRequestException(
+        `No price information available for account tier: ${accountTier}`,
+      );
     }
+
+    return price;
   }
 
   private async ensureStripeCustomer(user: User): Promise<Stripe.Customer> {
@@ -150,7 +158,8 @@ export class MembershipService implements OnModuleInit {
       );
 
       if (returnedCustomer.deleted) {
-        throw new Error(
+        // TODO: Should we provision a new Stripe customer here?? Might not be the safest thing to do.
+        throw new InternalServerErrorException(
           `Stripe customer with ID ${user.stripeCustomerId} was deleted and cannot be retrieved.`,
         );
       }
@@ -199,15 +208,10 @@ export class MembershipService implements OnModuleInit {
     newAccountTier: AccountTier,
   ): Promise<Stripe.Subscription> {
     const price = this.getPriceForAccountTier(newAccountTier);
-    const subscription = customer.subscriptions?.data[0];
-    if (!subscription) {
-      throw new Error(
-        'No subscription found to update. Did you mean to create a subscription?',
-      );
-    }
-
+    const subscription = customer.subscriptions!.data[0];
     const updated = await this.stripe.subscriptions.update(subscription.id, {
       cancel_at_period_end: false,
+      proration_behavior: 'create_prorations',
       items: [{ id: subscription.items.data[0].id, price: price.id }],
     });
 
@@ -359,6 +363,8 @@ export class MembershipService implements OnModuleInit {
     if (newAccountTier === AccountTier.Basic) {
       // Cancel an existing membership.
       await this.cancelMembership(user);
+      await user.changeMembership(AccountTier.Basic);
+      return await this.getMembershipStatus(user);
     }
 
     const customer = await this.ensureStripeCustomer(user);
@@ -371,13 +377,19 @@ export class MembershipService implements OnModuleInit {
       await this.createNewSubscription(customer, newAccountTier);
     }
 
-    await user.changeMembership(newAccountTier);
+    const updated = await this.getMembershipStatus(user);
+    if (
+      updated.status === MembershipStatus.Active ||
+      updated.status === MembershipStatus.Trialing
+    ) {
+      await user.changeMembership(newAccountTier);
+    }
 
     this.log.log(
       `Updated membership for user "${user.username}". New account tier is: ${newAccountTier}`,
     );
 
-    return await this.getMembershipStatus(user);
+    return updated;
   }
 
   async createPaymentSession(
@@ -396,7 +408,11 @@ export class MembershipService implements OnModuleInit {
       },
     );
 
-    if (customer.deleted) return undefined;
+    if (customer.deleted) {
+      throw new InternalServerErrorException(
+        `Stripe customer "${user.stripeCustomerId}" was deleted. Associated with user "${user.username}".`,
+      );
+    }
 
     const subscription = customer.subscriptions?.data[0];
     if (!subscription) return undefined;
@@ -451,9 +467,12 @@ export class MembershipService implements OnModuleInit {
       user.stripeCustomerId,
       { expand: ['subscriptions'] },
     );
+
     if (customer.deleted) {
       this.log.debug('Stripe customer was deleted. No subscription to cancel.');
-      return false;
+      throw new InternalServerErrorException(
+        `Stripe customer was deleted: "${user.stripeCustomerId}". Associated with user account "${user.username}".`,
+      );
     }
 
     const subscription = customer.subscriptions?.data[0];
