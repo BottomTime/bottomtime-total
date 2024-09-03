@@ -214,23 +214,42 @@ export class StripeWebhookService {
   }
 
   /* INVOICES */
+  /**
+   * New invoice has been created. It will need to be finalized.
+   */
   private async onInvoiceCreated(e: Stripe.Event): Promise<void> {
     if (e.type !== 'invoice.created') return;
     /* TODO */
   }
 
+  /**
+   * Invoice has been finailized and can be forwarded to the user.
+   */
   private async onInvoiceFinalized(e: Stripe.Event): Promise<void> {
     if (e.type !== 'invoice.finalized') return;
     /* TODO */
   }
+
+  /**
+   * Ruh-roh! Invoice finalization failed. We may need to take action here... not sure how yet.
+   * TODO: Figure this out.
+   */
   private async onInvoiceFinalizationFailed(e: Stripe.Event): Promise<void> {
     if (e.type !== 'invoice.finalization_failed') return;
     /* TODO */
   }
+
+  /**
+   * User has an invoice coming up in the near future. Optional: Alert them via email.
+   */
   private async onInvoiceUpcoming(e: Stripe.Event): Promise<void> {
     if (e.type !== 'invoice.upcoming') return;
     /* TODO */
   }
+
+  /**
+   * Invoice has been updated. (E.g. discount applied) Alert the user to the changes.
+   */
   private async onInvoiceUpdated(e: Stripe.Event): Promise<void> {
     if (e.type !== 'invoice.updated') return;
     /* TODO */

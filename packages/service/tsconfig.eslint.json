@@ -6,7 +6,8 @@
     "admin/**/*.ts",
     "src/**/*.ts",
     "tests/**/*.ts",
-    "migrations/**/*.ts"
+    "migrations/**/*.ts",
+    "swaggerDefinition.cjs"
   ],
   "exclude": ["node_modules/", "dist/", "coverage/"]
 }

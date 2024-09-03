@@ -45,6 +45,7 @@ const UserJsonSchema = z.object({
     .default(TemperatureUnit.Celsius),
   role: z.nativeEnum(UserRole),
   startedDiving: z.string().nullable().default(null),
+  stripeCustomerId: z.string().nullable().default(null),
   username: z.string(),
   usernameLowered: z.string(),
   weightUnit: z.nativeEnum(WeightUnit).default(WeightUnit.Kilograms),
@@ -133,6 +134,8 @@ export function createTestUser(
     temperatureUnit: options?.temperatureUnit ?? TemperatureUnit.Celsius,
     weightUnit: options?.weightUnit ?? WeightUnit.Kilograms,
     xp: options?.xp ?? faker.number.int({ min: 0, max: 10000 }),
+
+    stripeCustomerId: options?.stripeCustomerId ?? null,
   };
 
   if (typeof password === 'string') {

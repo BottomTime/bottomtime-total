@@ -75,20 +75,12 @@ export type ListMembershipsResponseDTO = z.infer<
 >;
 
 export const MembershipStatusSchema = z.object({
-  accountTier: z.nativeEnum(AccountTier).default(AccountTier.Basic),
-  cancellationDate: z.coerce.date().optional(),
+  accountTier: z.nativeEnum(AccountTier),
   entitlements: z.string().array(),
-  nextBillingDate: z.coerce.date().optional(),
   status: z.nativeEnum(MembershipStatus),
+  cancellationDate: z.coerce.date().optional(),
+  nextBillingDate: z.coerce.date().optional(),
   trialEndDate: z.coerce.date().optional(),
-  payment: z
-    .object({
-      currency: z.string(),
-      subtotal: z.number(),
-      tax: z.number(),
-      total: z.number(),
-    })
-    .optional(),
 });
 export type MembershipStatusDTO = z.infer<typeof MembershipStatusSchema>;
 
