@@ -9,34 +9,29 @@ import useragent from 'express-useragent';
 import helmet from 'helmet';
 import requestStats from 'request-stats';
 
-import { AppModule, ServerDependencies } from './app.module';
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 import { BunyanLoggerService } from './bunyan-logger-service';
 import { GlobalErrorFilter } from './global-error-filter';
 import { User } from './users';
 
 export async function createApp(
+  rootModule: unknown,
   logger: Logger,
-  createDeps: (log: Logger) => Promise<ServerDependencies>,
 ): Promise<INestApplication> {
   const logService = new BunyanLoggerService(logger);
-  const deps = await createDeps(logger);
 
   // Initialize the app with CORS settings and our provided logger.
-  const app = await NestFactory.create<NestExpressApplication>(
-    AppModule.forRoot(deps),
-    {
-      cors: {
-        // TODO: Limit domains.
-        origin: (_origin, cb) => {
-          cb(null, true);
-        },
-        credentials: true,
+  const app = await NestFactory.create<NestExpressApplication>(rootModule, {
+    cors: {
+      // TODO: Limit domains.
+      origin: (_origin, cb) => {
+        cb(null, true);
       },
-      logger: logService,
-      rawBody: true,
+      credentials: true,
     },
-  );
+    logger: logService,
+    rawBody: true,
+  });
 
   // Add Express middleware.
   app.use(helmet());

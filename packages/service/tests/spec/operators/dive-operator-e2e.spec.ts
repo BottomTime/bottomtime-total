@@ -5,11 +5,15 @@ import {
 } from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import { DiveOperatorEntity, UserEntity } from '../../../src/data';
+import { DiveOperatorsController } from '../../../src/operators/dive-operators.controller';
+import { DiveOperatorsService } from '../../../src/operators/dive-operators.service';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestData from '../../fixtures/operators.json';
 import Owners from '../../fixtures/user-search-data.json';
@@ -79,7 +83,11 @@ describe('Dive Operators E2E tests', () => {
   let adminUserAuthHeader: [string, string];
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [TypeOrmModule.forFeature([DiveOperatorEntity]), UsersModule],
+      providers: [DiveOperatorsService],
+      controllers: [DiveOperatorsController],
+    });
     server = app.getHttpServer();
 
     regularUserAuthHeader = await createAuthHeader(RegularUserId);

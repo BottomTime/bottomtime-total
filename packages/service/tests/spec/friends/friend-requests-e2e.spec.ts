@@ -10,6 +10,7 @@ import {
 } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
@@ -20,6 +21,8 @@ import {
   FriendshipEntity,
   UserEntity,
 } from '../../../src/data';
+import { FriendRequestsController, FriendsService } from '../../../src/friends';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestUserData from '../../fixtures/user-search-data.json';
@@ -97,7 +100,18 @@ describe('Friend Requests End-to-End Tests', () => {
 
     friends = TestUserData.map((data) => parseUserJSON(data));
 
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [
+        TypeOrmModule.forFeature([
+          UserEntity,
+          FriendshipEntity,
+          FriendRequestEntity,
+        ]),
+        UsersModule,
+      ],
+      providers: [FriendsService],
+      controllers: [FriendRequestsController],
+    });
     server = app.getHttpServer();
     adminAuthHeader = await createAuthHeader(AdminUserId);
     regularAuthHeader = await createAuthHeader(RegularUserId);

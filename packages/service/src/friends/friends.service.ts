@@ -75,7 +75,7 @@ export class FriendsService {
     @InjectDataSource()
     private readonly dataSource: DataSource,
     @InjectRepository(UserEntity)
-    private readonly Users: Repository<UserEntity>,
+    private readonly Users: Repository<UserEntity>, // Do not delete. This is needed for TypeORM to work correctly.
     @InjectRepository(FriendshipEntity)
     private readonly Friends: Repository<FriendshipEntity>,
     @InjectRepository(FriendRequestEntity)

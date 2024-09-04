@@ -23,6 +23,9 @@ import { resolve } from 'url';
 
 import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
+import { StorageModule } from '../../../src/storage';
+import { UsersModule } from '../../../src/users';
+import { UserAvatarController } from '../../../src/users/user-avatar.controller';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
 
@@ -150,7 +153,16 @@ describe('User Avatar E2E tests', () => {
       region: 'us-east-1',
     });
 
-    app = await createTestApp({ s3Client });
+    app = await createTestApp(
+      {
+        imports: [StorageModule, UsersModule],
+        controllers: [UserAvatarController],
+      },
+      {
+        provide: S3Client,
+        use: s3Client,
+      },
+    );
     server = app.getHttpServer();
     Users = dataSource.getRepository(UserEntity);
     authHeader = await createAuthHeader(RegularUserId);

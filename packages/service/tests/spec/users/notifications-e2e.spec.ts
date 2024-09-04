@@ -5,11 +5,14 @@ import {
 } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import { NotificationEntity, UserEntity } from '../../../src/data';
+import { NotificationsService, UsersModule } from '../../../src/users';
+import { NotificationsController } from '../../../src/users/notifications.controller';
 import { dataSource } from '../../data-source';
 import NotificationTestData from '../../fixtures/notifications.json';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
@@ -93,7 +96,11 @@ describe('Notifications End-to-End Tests', () => {
   let adminAuthHeader: [string, string];
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [TypeOrmModule.forFeature([NotificationEntity]), UsersModule],
+      providers: [NotificationsService],
+      controllers: [NotificationsController],
+    });
     server = app.getHttpServer();
     Users = dataSource.getRepository(UserEntity);
     Notifications = dataSource.getRepository(NotificationEntity);

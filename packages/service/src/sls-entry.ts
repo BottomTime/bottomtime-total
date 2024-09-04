@@ -6,9 +6,9 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import 'reflect-metadata';
 
+import { AppModule } from './app.module';
 import { Config } from './config';
 import { createApp } from './create-app';
-import { createDependencies } from './create-dependencies';
 import { createLogger } from './logger';
 
 dayjs.extend(tz);
@@ -20,7 +20,7 @@ let cachedServer: Handler;
 async function init(): Promise<void> {
   if (!cachedServer) {
     logger.info('🚀 Initializing service...');
-    const app = await createApp(logger, createDependencies);
+    const app = await createApp(AppModule, logger);
     await app.init();
     logger.info('🎉 Service is online! 🎉');
     cachedServer = serverless({ app: app.getHttpAdapter().getInstance() });

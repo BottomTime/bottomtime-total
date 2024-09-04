@@ -5,6 +5,7 @@ import { HttpServer, INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
+import { CertificationsModule } from '../../../src/certifications';
 import { CertificationEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import CertificationTestData from '../../fixtures/certifications.json';
@@ -35,7 +36,9 @@ describe('Certifications End-to-End', () => {
     Users = dataSource.getRepository(UserEntity);
     Certifications = dataSource.getRepository(CertificationEntity);
 
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [CertificationsModule],
+    });
     server = app.getHttpServer();
     certData = CertificationTestData.map((data) => {
       const cert = new CertificationEntity();

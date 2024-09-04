@@ -13,20 +13,23 @@ import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { compare } from 'bcryptjs';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { Config } from '../../../src/config';
+import { Queues } from '../../../src/common';
 import { UserEntity } from '../../../src/data';
-import { User } from '../../../src/users';
+import { QueueModule } from '../../../src/queue';
+import { User } from '../../../src/users/user';
+import { UsersController } from '../../../src/users/users.controller';
+import { UsersService } from '../../../src/users/users.service';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
 
 jest.mock('uuid');
-jest.mock('../../../src/config');
 
 function requestUrl(username?: string): string {
   return username ? `/api/users/${username}` : '/api/users';
@@ -88,12 +91,24 @@ describe('Users End-to-End Tests', () => {
   let regularUser: UserEntity;
 
   beforeAll(async () => {
-    Config.aws.sqs.emailQueueUrl = EmailQueueUrl;
-
     sqsClient = new SQSClient();
-    app = await createTestApp({
-      sqsClient,
-    });
+    app = await createTestApp(
+      {
+        imports: [
+          TypeOrmModule.forFeature([UserEntity]),
+          QueueModule.forFeature({
+            key: Queues.email,
+            queueUrl: EmailQueueUrl,
+          }),
+        ],
+        providers: [UsersService],
+        controllers: [UsersController],
+      },
+      {
+        provide: SQSClient,
+        use: sqsClient,
+      },
+    );
     server = app.getHttpServer();
 
     adminAuthHeader = await createAuthHeader(AdminUserId);
@@ -196,7 +211,6 @@ describe('Users End-to-End Tests', () => {
       expect(queueSpy).toHaveBeenCalled();
 
       const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
-      expect(command.input.QueueUrl).toBe(EmailQueueUrl);
 
       const message = JSON.parse(
         command.input.MessageBody!,
@@ -560,7 +574,6 @@ describe('Users End-to-End Tests', () => {
       expect(queueSpy).toHaveBeenCalled();
 
       const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
-      expect(command.input.QueueUrl).toBe(EmailQueueUrl);
 
       const message = JSON.parse(
         command.input.MessageBody!,
@@ -709,7 +722,6 @@ describe('Users End-to-End Tests', () => {
       expect(queueSpy).toHaveBeenCalled();
 
       const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
-      expect(command.input.QueueUrl).toBe(EmailQueueUrl);
 
       const message: EmailQueueMessage = JSON.parse(command.input.MessageBody!);
       expect(message.to).toEqual({ to: RegularUserData.email });

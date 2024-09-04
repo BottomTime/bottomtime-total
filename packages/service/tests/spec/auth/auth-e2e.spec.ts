@@ -1,12 +1,15 @@
 import { CurrentUserSchema, UserRole, UserSchema } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
+import { AuthController, AuthService } from '../../../src/auth';
+import { OAuthService } from '../../../src/auth/oauth.service';
 import { UserEntity, UserOAuthEntity } from '../../../src/data';
-import { User } from '../../../src/users';
+import { User, UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestUser } from '../../utils';
 import { createTestApp } from '../../utils/create-test-app';
@@ -32,7 +35,11 @@ describe('Auth Module E2E Tests', () => {
     Users = dataSource.getRepository(UserEntity);
     OAuth = dataSource.getRepository(UserOAuthEntity);
 
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [TypeOrmModule.forFeature([UserOAuthEntity]), UsersModule],
+      providers: [AuthService, OAuthService],
+      controllers: [AuthController],
+    });
     server = app.getHttpServer();
   });
 

@@ -7,15 +7,12 @@ import {
 } from '@nestjs/common';
 
 import { Request } from 'express';
-import { Observable } from 'rxjs';
 
-import { User } from '..';
+import { User } from '../user';
 
 @Injectable()
 export class AssertAuth implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest<Request>();
     const user = req.user instanceof User ? req.user : undefined;
     if (!user) {

@@ -1,10 +1,13 @@
 import { UserRole } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
+import { AlertsController } from '../../../src/alerts/alerts.controller';
+import { AlertsService } from '../../../src/alerts/alerts.service';
 import { AlertEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import AlertTestData from '../../fixtures/alerts.json';
@@ -64,7 +67,11 @@ describe('Alerts End-to-End Tests', () => {
   let adminAuthHeader: [string, string];
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [TypeOrmModule.forFeature([AlertEntity])],
+      providers: [AlertsService],
+      controllers: [AlertsController],
+    });
     server = app.getHttpServer();
 
     Alerts = dataSource.getRepository(AlertEntity);
