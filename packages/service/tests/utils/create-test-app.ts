@@ -3,6 +3,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
 import { INestApplication } from '@nestjs/common';
 
 import path from 'path';
+import Stripe from 'stripe';
 
 import { ServerDependencies } from '../../src/app.module';
 import { createApp } from '../../src/create-app';
@@ -23,6 +24,7 @@ export async function createTestApp(
           region: 'us-east-1',
         }),
       sqsClient: deps.sqsClient ?? new SQSClient({ region: 'us-east-1' }),
+      stripe: deps.stripe ?? new Stripe('sk_test_xxxxxx'),
       dataSource: deps.dataSource ?? {
         type: 'postgres',
         url: PostgresUri,

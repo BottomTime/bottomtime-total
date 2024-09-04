@@ -4,6 +4,7 @@ import {
   UpdateMembershipParamsDTO,
   UpdateMembershipParamsSchema,
 } from '@bottomtime/api';
+import { EmailOptions, EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import {
   BadRequestException,
@@ -20,6 +21,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { Queues } from '../common';
+import { InjectQueue, Queue } from '../queue';
 import {
   AssertAccountOwner,
   AssertAuth,
@@ -38,6 +41,9 @@ export class MembershipController {
   constructor(
     @Inject(MembershipService)
     private readonly service: MembershipService,
+
+    @InjectQueue(Queues.email)
+    private readonly emailQueue: Queue,
   ) {}
 
   /**
@@ -234,9 +240,29 @@ export class MembershipController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancelMembership(@TargetUser() user: User): Promise<void> {
-    // TODO: Ensure that an email notification gets sent out
     this.log.debug('Cancelling membership for user:', user.username);
-    await this.service.cancelMembership(user);
+    const result = await this.service.cancelMembership(user);
+
+    if (result && user.email) {
+      this.log.log(`Membership canceled for user: ${user.username}`);
+
+      const email: EmailQueueMessage = {
+        to: { to: user.email },
+        subject: 'Membership Canceled',
+        options: {
+          type: EmailType.MembershipCanceled,
+          title: 'Membership Canceled',
+          user: {
+            username: user.username,
+            email: user.email,
+            profile: {
+              name: user.profile.name || user.username,
+            },
+          },
+        },
+      };
+      this.emailQueue.add(JSON.stringify(email));
+    }
   }
 
   /**

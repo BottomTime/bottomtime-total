@@ -3,6 +3,7 @@ import { SQSClient } from '@aws-sdk/client-sqs';
 
 import Logger from 'bunyan';
 import { PollingMode, getClient } from 'configcat-node';
+import Stripe from 'stripe';
 
 import { ServerDependencies } from './app.module';
 import { BunyanLoggerService } from './bunyan-logger-service';
@@ -43,10 +44,14 @@ export async function createDependencies(
     },
   );
 
+  log.debug('Initializing Stripe client...');
+  const stripe = new Stripe(Config.stripe.sdkKey);
+
   return {
     configCatClient,
     dataSource: PostgresDataSourceOptions,
-    sqsClient,
     s3Client,
+    sqsClient,
+    stripe,
   };
 }

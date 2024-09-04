@@ -6,6 +6,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { IConfigCatClient } from 'configcat-node';
+import Stripe from 'stripe';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { AdminModule } from './admin';
@@ -32,6 +33,7 @@ export type ServerDependencies = {
   dataSource: DataSourceOptions;
   s3Client: S3Client;
   sqsClient: SQSClient;
+  stripe: Stripe;
 };
 
 @Module({})
@@ -59,7 +61,7 @@ export class AppModule {
 
         TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
         FeaturesModule.forRoot(deps.configCatClient),
-        MembershipModule,
+        MembershipModule.forRoot(deps.stripe),
 
         UsersModule,
         AuthModule,

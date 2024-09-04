@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Memberships E2E tests when retrieving membership status will return membership status for a user 1`] = `
+{
+  "accountTier": 100,
+  "entitlements": [
+    "pro-features",
+  ],
+  "nextBillingDate": "2025-10-28T14:04:00.000Z",
+  "status": "active",
+}
+`;
+
+exports[`Memberships E2E tests will request a list of memberships 1`] = `
+[
+  {
+    "accountTier": 0,
+    "currency": "cad",
+    "description": "Get all of the features of BottomTime for personal use - for free!",
+    "frequency": "year",
+    "marketingFeatures": [
+      "Upload and log your dives",
+      "Track your dive metrics and history in your personal dashboard",
+      "Find dive sites and dive shops",
+      "Follow your dive buddies and",
+      "Earn XP and level up",
+    ],
+    "name": "Free Account",
+    "price": 0,
+  },
+  {
+    "accountTier": 100,
+    "currency": "cad",
+    "description": "Get all of the features of a free account plus some added benefits:",
+    "frequency": "year",
+    "marketingFeatures": [
+      "Add images and videos to your dive log entries",
+      "Get advanced metrics with our enhanced dashboard for pro users",
+      "Get a "Pro Diver" badge next to your username",
+      "Earn XP faster than with a free account",
+    ],
+    "name": "Pro Membership",
+    "price": 40,
+  },
+  {
+    "accountTier": 200,
+    "currency": "cad",
+    "description": "Get all of the benefits of a pro account, plus the ability to register and manage your dive shop on our site.",
+    "frequency": "year",
+    "marketingFeatures": [
+      "Register and manage your shop's profile",
+      "Reach new divers by having your shop appear in search results",
+      "Tag dive sites that your shop services to attract more customers",
+    ],
+    "name": "Shop Owner Membership",
+    "price": 100,
+  },
+]
+`;

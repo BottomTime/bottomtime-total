@@ -1,4 +1,5 @@
 export enum EmailType {
+  MembershipCanceled = 'membershipCanceled',
   PaymentFailed = 'paymentFailed',
   ResetPassword = 'resetPassword',
   VerifyEmail = 'verifyEmail',
@@ -23,6 +24,10 @@ export type BaseEmailOptions = {
       name: string;
     };
   };
+};
+
+export type MembershipCancelledEmailOptions = {
+  type: EmailType.MembershipCanceled;
 };
 
 export type PaymentFailedEmailOptions = {
@@ -51,6 +56,7 @@ export type WelcomeEmailOptions = {
 
 export type EmailOptions = BaseEmailOptions &
   (
+    | MembershipCancelledEmailOptions
     | PaymentFailedEmailOptions
     | ResetPasswordEmailOptions
     | VerifyEmailOptions
