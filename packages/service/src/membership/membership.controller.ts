@@ -1,10 +1,11 @@
 import {
+  AccountTier,
   MembershipStatusDTO,
   PaymentSessionDTO,
   UpdateMembershipParamsDTO,
   UpdateMembershipParamsSchema,
 } from '@bottomtime/api';
-import { EmailOptions, EmailQueueMessage, EmailType } from '@bottomtime/common';
+import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import {
   BadRequestException,
@@ -195,7 +196,53 @@ export class MembershipController {
       oldTier: user.accountTier,
       newTier: newAccountTier,
     });
-    return await this.service.updateMembership(user, newAccountTier);
+
+    const previousTier = user.accountTier;
+    const membershipInfo = await this.service.updateMembership(
+      user,
+      newAccountTier,
+    );
+    const newTier = user.accountTier;
+
+    if (previousTier !== newTier && user.email) {
+      const emailOptions: EmailQueueMessage =
+        newTier === AccountTier.Basic
+          ? {
+              to: { to: user.email },
+              subject: 'Membership Canceled',
+              options: {
+                type: EmailType.MembershipCanceled,
+                title: 'Membership Canceled',
+                user: {
+                  username: user.username,
+                  email: user.email,
+                  profile: {
+                    name: user.profile.name || user.username,
+                  },
+                },
+              },
+            }
+          : {
+              to: { to: user.email },
+              subject: 'Membership Updated',
+              options: {
+                type: EmailType.MembershipChanged,
+                title: 'Membership Updated',
+                user: {
+                  email: user.email,
+                  profile: {
+                    name: user.profile.name || user.username,
+                  },
+                  username: user.username,
+                },
+                newTier: this.service.getAccountTierName(newTier),
+                previousTier: this.service.getAccountTierName(previousTier),
+              },
+            };
+      await this.emailQueue.add(JSON.stringify(emailOptions));
+    }
+
+    return membershipInfo;
   }
 
   /**
@@ -261,7 +308,7 @@ export class MembershipController {
           },
         },
       };
-      this.emailQueue.add(JSON.stringify(email));
+      await this.emailQueue.add(JSON.stringify(email));
     }
   }
 

@@ -22,6 +22,8 @@ export class EmailService {
   private readonly templatesPath: string;
 
   private readonly templates: Record<EmailType, string> = {
+    [EmailType.MembershipCanceled]: './membership-canceled.html',
+    [EmailType.MembershipChanged]: './membership-changed.html',
     [EmailType.PaymentFailed]: './payment-failed.html',
     [EmailType.ResetPassword]: './reset-password.html',
     [EmailType.VerifyEmail]: './verify-email.html',

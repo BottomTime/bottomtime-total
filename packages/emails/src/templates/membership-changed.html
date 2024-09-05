@@ -1,0 +1,37 @@
+<x-main>
+  <div class="space-y-6">
+    <p>Hi there @{{ user.profile.name }},</p>
+
+    <p>Your request to change your membership has been processed:</p>
+
+    <div
+      class="flex justify-evenly items-center mx-4 p-4 rounded-lg bg-blue-200"
+    >
+      <p class="text-center flex flex-col gap-1.5">
+        <span class="font-title text-sm font-bold">
+          Previous Membership Tier
+        </span>
+        <span>@{{ previousTier }}</span>
+      </p>
+
+      <span>➡</span>
+
+      <p class="text-center flex flex-col gap-1.5">
+        <span class="font-title text-sm font-bold">New Membership Tier</span>
+        <span>@{{ newTier }}</span>
+      </p>
+    </div>
+
+    <p>
+      You will receive a separate email soon with an invoice detailing any
+      refunds/charges that were made as a result.
+    </p>
+
+    <p>Thank you for your continued support!</p>
+
+    <div>
+      <p>Cheers,</p>
+      <p>The Bottom Time Team</p>
+    </div>
+  </div>
+</x-main>

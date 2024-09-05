@@ -268,6 +268,17 @@ export class MembershipService implements OnModuleInit {
     return memberships;
   }
 
+  getAccountTierName(accountTier: AccountTier): string {
+    switch (accountTier) {
+      case AccountTier.Basic:
+        return 'Free Account';
+      case AccountTier.Pro:
+        return this._proMemberhsip?.name || 'Pro Membership';
+      case AccountTier.ShopOwner:
+        return this._shopOwnerMembership?.name || 'Shop Owner Account';
+    }
+  }
+
   async getMembershipStatus(user: User): Promise<MembershipStatusDTO> {
     this.log.debug(
       'Attempting to retrieve membership for user: ',
