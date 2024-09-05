@@ -2,14 +2,24 @@ import { UserRole } from '@bottomtime/api';
 
 import { faker } from '@faker-js/faker';
 import { INestApplication } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { Test } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Server } from 'http';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
+import { AdminFriendsController } from '../../../src/admin/admin-friends.controller';
+import { AuthModule } from '../../../src/auth';
+import { createApp } from '../../../src/create-app';
 import { FriendRequestEntity, UserEntity } from '../../../src/data';
+import { FriendsModule, FriendsService } from '../../../src/friends';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import UsersTestData from '../../fixtures/user-search-data.json';
 import {
+  Log,
   createAuthHeader,
   createTestApp,
   createTestUser,
@@ -57,7 +67,7 @@ const AdminUserData: Partial<UserEntity> = {
 
 describe('Admin friends E2E tests', () => {
   let app: INestApplication;
-  let server: unknown;
+  let server: Server;
   let Users: Repository<UserEntity>;
   let FriendRequests: Repository<FriendRequestEntity>;
 
@@ -68,7 +78,10 @@ describe('Admin friends E2E tests', () => {
   let regularUsers: UserEntity[];
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [AuthModule, FriendsModule],
+      controllers: [AdminFriendsController],
+    });
     server = app.getHttpServer();
 
     Users = dataSource.getRepository(UserEntity);

@@ -3,9 +3,9 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import 'reflect-metadata';
 
+import { AppModule } from './app.module';
 import { Config } from './config';
 import { createApp } from './create-app';
-import { createDependencies } from './create-dependencies';
 import { createLogger } from './logger';
 
 dayjs.extend(tz);
@@ -13,7 +13,7 @@ dayjs.extend(utc);
 
 const log = createLogger(Config.logLevel);
 
-createApp(log, createDependencies)
+createApp(AppModule, log)
   .then((app) => app.listen(Config.port))
   .then(() => {
     log.info(

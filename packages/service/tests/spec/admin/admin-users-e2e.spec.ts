@@ -7,12 +7,15 @@ import {
 } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { compare } from 'bcryptjs';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
+import { AdminService, AdminUsersController } from '../../../src/admin';
 import { UserEntity } from '../../../src/data';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
@@ -58,7 +61,11 @@ describe('Admin End-to-End Tests', () => {
 
   beforeAll(async () => {
     Users = dataSource.getRepository(UserEntity);
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [TypeOrmModule.forFeature([UserEntity]), UsersModule],
+      providers: [AdminService],
+      controllers: [AdminUsersController],
+    });
     server = app.getHttpServer();
     adminAuthHeader = await createAuthHeader(AdminUserId);
     regualarAuthHeader = await createAuthHeader(RegularUserId);

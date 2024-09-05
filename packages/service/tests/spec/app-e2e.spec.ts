@@ -1,8 +1,12 @@
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Server } from 'http';
 import request from 'supertest';
 
+import { AppController } from '../../src/app.controller';
+import { AppService } from '../../src/app.service';
+import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../../src/data';
 import { createTestApp } from '../utils/create-test-app';
 
 describe('App E2E tests', () => {
@@ -10,7 +14,13 @@ describe('App E2E tests', () => {
   let server: Server;
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [
+        TypeOrmModule.forFeature([DiveSiteEntity, LogEntryEntity, UserEntity]),
+      ],
+      providers: [AppService],
+      controllers: [AppController],
+    });
     server = app.getHttpServer();
   });
 

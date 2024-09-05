@@ -10,7 +10,7 @@ import {
 
 import { Request } from 'express';
 
-import { User } from '..';
+import { User } from '../user';
 
 @Injectable()
 export class AssertAdmin implements CanActivate {

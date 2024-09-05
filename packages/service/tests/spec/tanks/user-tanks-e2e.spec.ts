@@ -10,11 +10,14 @@ import {
 
 import { faker } from '@faker-js/faker';
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import { TankEntity, UserEntity } from '../../../src/data';
+import { TanksService, UserTanksController } from '../../../src/tanks';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestTankData from '../../fixtures/pre-defined-tanks.json';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
@@ -68,7 +71,14 @@ describe('User-defined Tank Profiles End-to-End Tests', () => {
   let Users: Repository<UserEntity>;
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [
+        TypeOrmModule.forFeature([TankEntity, UserEntity]),
+        UsersModule,
+      ],
+      providers: [TanksService],
+      controllers: [UserTanksController],
+    });
     server = app.getHttpServer();
     adminAuthHeader = await createAuthHeader(AdminUserId);
     regularAuthHeader = await createAuthHeader(RegularUserId);

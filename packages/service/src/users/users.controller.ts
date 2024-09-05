@@ -24,11 +24,11 @@ import {
 
 import { URL } from 'url';
 
-import { CurrentUser } from '.';
 import { Queues } from '../common';
 import { Config } from '../config';
 import { InjectQueue, Queue } from '../queue';
 import { ZodValidator } from '../zod-validator';
+import { CurrentUser } from './current-user';
 import { AssertAuth } from './guards';
 import { User } from './user';
 import { UsersService } from './users.service';
