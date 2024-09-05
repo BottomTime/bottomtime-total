@@ -19,6 +19,18 @@ describe('Email Service', () => {
   let mailClient: TestMailer;
 
   const generateEmailTestCases: Record<EmailType, () => EmailOptions> = {
+    [EmailType.MembershipCanceled]: () => ({
+      type: EmailType.MembershipCanceled,
+      title: 'Membership Canceled',
+      user: TestUserData,
+    }),
+    [EmailType.MembershipChanged]: () => ({
+      type: EmailType.MembershipChanged,
+      title: 'Membership Changed',
+      user: TestUserData,
+      previousTier: 'Gold',
+      newTier: 'Platinum',
+    }),
     [EmailType.PaymentFailed]: () => ({
       type: EmailType.PaymentFailed,
       title: 'Payment Failed',

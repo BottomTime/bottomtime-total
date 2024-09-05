@@ -1,5 +1,889 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Email Service will generate membershipCanceled email 1`] = `
+"<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" style="box-sizing: border-box; border: 0 solid #e5e7eb; line-height: 1.5; -webkit-text-size-adjust: 100%; -moz-tab-size: 4; tab-size: 4; font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; font-feature-settings: normal; font-variation-settings: normal; -webkit-tap-highlight-color: transparent">
+<head>
+  <meta charset="utf-8">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2&family=Lobster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans&display=swap" rel="stylesheet">
+  <!--[if mso]>
+      <noscript>
+        <xml>
+          <o:OfficeDocumentSettings
+            xmlns:o="urn:schemas-microsoft-com:office:office"
+          >
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+          </o:OfficeDocumentSettings>
+        </xml>
+      </noscript>
+      <style>
+        td,
+        th,
+        div,
+        p,
+        a,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          font-family: 'Segoe UI', sans-serif;
+          mso-line-height-rule: exactly;
+        }
+      </style>
+    <![endif]-->
+  <title>Membership Canceled</title>
+  <style>
+    img {
+      max-width: 100%;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+      border: 0 solid #e5e7eb;
+    }
+    ::before,
+    ::after {
+      --tw-content: '';
+    }
+    hr {
+      height: 0;
+      color: inherit;
+      border-top-width: 1px;
+    }
+    abbr:where([title]) {
+      text-decoration: underline dotted;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: inherit;
+      font-weight: inherit;
+    }
+    b,
+    strong {
+      font-weight: bolder;
+    }
+    code,
+    kbd,
+    samp,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-feature-settings: normal;
+      font-variation-settings: normal;
+      font-size: 1em;
+    }
+    small {
+      font-size: 80%;
+    }
+    sub,
+    sup {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+    }
+    sub {
+      bottom: -0.25em;
+    }
+    sup {
+      top: -0.5em;
+    }
+    table {
+      text-indent: 0;
+      border-color: inherit;
+      border-collapse: collapse;
+    }
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+      font-family: inherit;
+      font-feature-settings: inherit;
+      font-variation-settings: inherit;
+      font-size: 100%;
+      font-weight: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      color: inherit;
+      margin: 0;
+      padding: 0;
+    }
+    button,
+    select {
+      text-transform: none;
+    }
+    button,
+    input:where([type='button']),
+    input:where([type='reset']),
+    input:where([type='submit']) {
+      -webkit-appearance: button;
+      background-color: transparent;
+      background-image: none;
+    }
+    :-moz-focusring {
+      outline: auto;
+    }
+    :-moz-ui-invalid {
+      box-shadow: none;
+    }
+    progress {
+      vertical-align: baseline;
+    }
+    ::-webkit-inner-spin-button,
+    ::-webkit-outer-spin-button {
+      height: auto;
+    }
+    [type='search'] {
+      -webkit-appearance: textfield;
+      outline-offset: -2px;
+    }
+    ::-webkit-search-decoration {
+      -webkit-appearance: none;
+    }
+    ::-webkit-file-upload-button {
+      -webkit-appearance: button;
+      font: inherit;
+    }
+    summary {
+      display: list-item;
+    }
+    fieldset {
+      margin: 0;
+      padding: 0;
+    }
+    legend {
+      padding: 0;
+    }
+    ol,
+    ul,
+    menu {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    dialog {
+      padding: 0;
+    }
+    textarea {
+      resize: vertical;
+    }
+    input::placeholder,
+    textarea::placeholder {
+      opacity: 1;
+      color: #9ca3af;
+    }
+    button,
+    [role="button"] {
+      cursor: pointer;
+    }
+    :disabled {
+      cursor: default;
+    }
+    img,
+    svg,
+    video,
+    canvas,
+    audio,
+    iframe,
+    embed,
+    object {
+      display: block;
+      vertical-align: middle;
+    }
+    img,
+    video {
+      max-width: 100%;
+      height: auto;
+    }
+    [hidden] {
+      display: none;
+    }
+    *,
+    ::before,
+    ::after {
+      --tw-border-spacing-x: 0;
+      --tw-border-spacing-y: 0;
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-rotate: 0;
+      --tw-skew-x: 0;
+      --tw-skew-y: 0;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-pan-x: ;
+      --tw-pan-y: ;
+      --tw-pinch-zoom: ;
+      --tw-scroll-snap-strictness: proximity;
+      --tw-gradient-from-position: ;
+      --tw-gradient-via-position: ;
+      --tw-gradient-to-position: ;
+      --tw-ordinal: ;
+      --tw-slashed-zero: ;
+      --tw-numeric-figure: ;
+      --tw-numeric-spacing: ;
+      --tw-numeric-fraction: ;
+      --tw-ring-inset: ;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-color: rgb(59 130 246 / 0.5);
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-colored: 0 0 #0000;
+      --tw-blur: ;
+      --tw-brightness: ;
+      --tw-contrast: ;
+      --tw-grayscale: ;
+      --tw-hue-rotate: ;
+      --tw-invert: ;
+      --tw-saturate: ;
+      --tw-sepia: ;
+      --tw-drop-shadow: ;
+      --tw-backdrop-blur: ;
+      --tw-backdrop-brightness: ;
+      --tw-backdrop-contrast: ;
+      --tw-backdrop-grayscale: ;
+      --tw-backdrop-hue-rotate: ;
+      --tw-backdrop-invert: ;
+      --tw-backdrop-opacity: ;
+      --tw-backdrop-saturate: ;
+      --tw-backdrop-sepia: ;
+      --tw-contain-size: ;
+      --tw-contain-layout: ;
+      --tw-contain-paint: ;
+      --tw-contain-style: ;
+    }
+    ::backdrop {
+      --tw-border-spacing-x: 0;
+      --tw-border-spacing-y: 0;
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-rotate: 0;
+      --tw-skew-x: 0;
+      --tw-skew-y: 0;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-pan-x: ;
+      --tw-pan-y: ;
+      --tw-pinch-zoom: ;
+      --tw-scroll-snap-strictness: proximity;
+      --tw-gradient-from-position: ;
+      --tw-gradient-via-position: ;
+      --tw-gradient-to-position: ;
+      --tw-ordinal: ;
+      --tw-slashed-zero: ;
+      --tw-numeric-figure: ;
+      --tw-numeric-spacing: ;
+      --tw-numeric-fraction: ;
+      --tw-ring-inset: ;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-color: rgb(59 130 246 / 0.5);
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-colored: 0 0 #0000;
+      --tw-blur: ;
+      --tw-brightness: ;
+      --tw-contrast: ;
+      --tw-grayscale: ;
+      --tw-hue-rotate: ;
+      --tw-invert: ;
+      --tw-saturate: ;
+      --tw-sepia: ;
+      --tw-drop-shadow: ;
+      --tw-backdrop-blur: ;
+      --tw-backdrop-brightness: ;
+      --tw-backdrop-contrast: ;
+      --tw-backdrop-grayscale: ;
+      --tw-backdrop-hue-rotate: ;
+      --tw-backdrop-invert: ;
+      --tw-backdrop-opacity: ;
+      --tw-backdrop-saturate: ;
+      --tw-backdrop-sepia: ;
+      --tw-contain-size: ;
+      --tw-contain-layout: ;
+      --tw-contain-paint: ;
+      --tw-contain-style: ;
+    }
+    @media (min-width: 640px) {
+      .container {
+        max-width: 640px !important;
+      }
+    }
+    @media (min-width: 768px) {
+      .container {
+        max-width: 768px !important;
+      }
+    }
+    @media (min-width: 1024px) {
+      .container {
+        max-width: 1024px !important;
+      }
+    }
+    @media (min-width: 1280px) {
+      .container {
+        max-width: 1280px !important;
+      }
+    }
+    @media (min-width: 1536px) {
+      .container {
+        max-width: 1536px !important;
+      }
+    }
+    .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+      --tw-space-y-reverse: 0;
+      margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+      margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+    }
+    .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+      --tw-space-y-reverse: 0;
+      margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+      margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+    }
+    .bg-blue-950 {
+      --tw-bg-opacity: 1;
+      background-color: rgb(23 37 84 / var(--tw-bg-opacity));
+    }
+    .bg-gray-200 {
+      --tw-bg-opacity: 1;
+      background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+    }
+    .bg-sky-700 {
+      --tw-bg-opacity: 1;
+      background-color: rgb(3 105 161 / var(--tw-bg-opacity));
+    }
+    .text-gray-400 {
+      --tw-text-opacity: 1;
+      color: rgb(156 163 175 / var(--tw-text-opacity));
+    }
+    .text-gray-950 {
+      --tw-text-opacity: 1;
+      color: rgb(3 7 18 / var(--tw-text-opacity));
+    }
+    .shadow {
+      --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+      box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    }
+    .shadow-xl {
+      --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
+      box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    }
+    a:hover {
+      --tw-text-opacity: 1;
+      color: rgb(20 184 166 / var(--tw-text-opacity));
+    }
+  </style>
+</head>
+<body class="bg-blue-950" style="box-sizing: border-box; border: 0 solid #e5e7eb; line-height: inherit; margin: 0px; width: 100%; background-color: rgb(23 37 84 / 1); padding: 0px; -webkit-font-smoothing: antialiased; word-break: break-word">
+  <div role="article" aria-roledescription="email" aria-label="Membership Canceled" lang="en" class="container bg-blue-950" style="box-sizing: border-box; border: 0 solid #e5e7eb; width: 100%; margin: 0px auto; background-color: rgb(23 37 84 / 1)">
+    <section style="box-sizing: border-box; border: 0 solid #e5e7eb;">
+      <div class="bg-sky-700 shadow shadow-xl space-y-3" style="box-sizing: border-box; border: 0 solid #e5e7eb; border-bottom-right-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: rgb(3 105 161 / 1); padding: 2rem 1rem; box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-shadow)">
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0; font-size: 3.75rem; line-height: 1; font-weight: 700">Membership Canceled</p>
+      </div>
+    </section>
+    <section class="bg-gray-200 text-gray-950" style="box-sizing: border-box; border: 0 solid #e5e7eb; margin-left: 0.5rem; margin-right: 0.5rem; background-color: rgb(229 231 235 / 1); padding: 1.25rem; text-align: justify; color: rgb(3 7 18 / 1)">
+      <div class="space-y-6" style="box-sizing: border-box; border: 0 solid #e5e7eb;">
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0;">Hi there John Diver,</p>
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: calc(1.5rem * calc(1 - 0)) 0 calc(1.5rem * 0);">
+          Your request to cancel your membership has been processed. You will be
+          refunded for the time remaining. A separate invoice will be emailed to you
+          with the details of the refund.
+        </p>
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: calc(1.5rem * calc(1 - 0)) 0 calc(1.5rem * 0);">
+          As a reminder, any data such as images or videos that you have shared with
+          your paid membership features will be retained. You will still have access
+          to them but you may not be able to modify them or add new ones.
+        </p>
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: calc(1.5rem * calc(1 - 0)) 0 calc(1.5rem * 0);">
+          We hope you continue using Bottom Time at the free tier and, should you
+          choose to reactive your paid membership in the future, we'll be here to
+          welcome you! ❤️
+        </p>
+        <div style="box-sizing: border-box; border: 0 solid #e5e7eb; margin-top: calc(1.5rem * calc(1 - 0)); margin-bottom: calc(1.5rem * 0);">
+          <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0;">Cheers,</p>
+          <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0;">The Bottom Time Team</p>
+        </div>
+      </div>
+    </section>
+    <section style="box-sizing: border-box; border: 0 solid #e5e7eb;">
+      <div class="bg-sky-700 shadow shadow-xl space-y-3" style="box-sizing: border-box; border: 0 solid #e5e7eb; border-radius: 0.5rem; background-color: rgb(3 105 161 / 1); padding: 1.5rem 1rem; text-align: center; font-size: 0.875rem; line-height: 1.25rem; font-style: italic; box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-shadow)">
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0;">Copyright &copy; Chris Carleton, 2023</p>
+        <p class="text-gray-400" style="box-sizing: border-box; border: 0 solid #e5e7eb; font-size: 0.875rem; line-height: 1.25rem; font-style: italic; color: rgb(156 163 175 / 1); margin: calc(0.75rem * calc(1 - 0)) 0 calc(0.75rem * 0)">
+          If you did not request this email and suspect something fishy is up
+          then you can report this email to
+          <a href="mailto:admin@bottomti.me" style="box-sizing: border-box; border: 0 solid #e5e7eb; text-decoration: inherit; font-weight: 700; color: rgb(13 148 136 / 1)">admin@bottomti.me</a>.
+        </p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>"
+`;
+
+exports[`Email Service will generate membershipChanged email 1`] = `
+"<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" style="box-sizing: border-box; border: 0 solid #e5e7eb; line-height: 1.5; -webkit-text-size-adjust: 100%; -moz-tab-size: 4; tab-size: 4; font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; font-feature-settings: normal; font-variation-settings: normal; -webkit-tap-highlight-color: transparent">
+<head>
+  <meta charset="utf-8">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2&family=Lobster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans&display=swap" rel="stylesheet">
+  <!--[if mso]>
+      <noscript>
+        <xml>
+          <o:OfficeDocumentSettings
+            xmlns:o="urn:schemas-microsoft-com:office:office"
+          >
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+          </o:OfficeDocumentSettings>
+        </xml>
+      </noscript>
+      <style>
+        td,
+        th,
+        div,
+        p,
+        a,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          font-family: 'Segoe UI', sans-serif;
+          mso-line-height-rule: exactly;
+        }
+      </style>
+    <![endif]-->
+  <title>Membership Changed</title>
+  <style>
+    img {
+      max-width: 100%;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+      border: 0 solid #e5e7eb;
+    }
+    ::before,
+    ::after {
+      --tw-content: '';
+    }
+    hr {
+      height: 0;
+      color: inherit;
+      border-top-width: 1px;
+    }
+    abbr:where([title]) {
+      text-decoration: underline dotted;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: inherit;
+      font-weight: inherit;
+    }
+    b,
+    strong {
+      font-weight: bolder;
+    }
+    code,
+    kbd,
+    samp,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-feature-settings: normal;
+      font-variation-settings: normal;
+      font-size: 1em;
+    }
+    small {
+      font-size: 80%;
+    }
+    sub,
+    sup {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+    }
+    sub {
+      bottom: -0.25em;
+    }
+    sup {
+      top: -0.5em;
+    }
+    table {
+      text-indent: 0;
+      border-color: inherit;
+      border-collapse: collapse;
+    }
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+      font-family: inherit;
+      font-feature-settings: inherit;
+      font-variation-settings: inherit;
+      font-size: 100%;
+      font-weight: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+      color: inherit;
+      margin: 0;
+      padding: 0;
+    }
+    button,
+    select {
+      text-transform: none;
+    }
+    button,
+    input:where([type='button']),
+    input:where([type='reset']),
+    input:where([type='submit']) {
+      -webkit-appearance: button;
+      background-color: transparent;
+      background-image: none;
+    }
+    :-moz-focusring {
+      outline: auto;
+    }
+    :-moz-ui-invalid {
+      box-shadow: none;
+    }
+    progress {
+      vertical-align: baseline;
+    }
+    ::-webkit-inner-spin-button,
+    ::-webkit-outer-spin-button {
+      height: auto;
+    }
+    [type='search'] {
+      -webkit-appearance: textfield;
+      outline-offset: -2px;
+    }
+    ::-webkit-search-decoration {
+      -webkit-appearance: none;
+    }
+    ::-webkit-file-upload-button {
+      -webkit-appearance: button;
+      font: inherit;
+    }
+    summary {
+      display: list-item;
+    }
+    fieldset {
+      margin: 0;
+      padding: 0;
+    }
+    legend {
+      padding: 0;
+    }
+    ol,
+    ul,
+    menu {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    dialog {
+      padding: 0;
+    }
+    textarea {
+      resize: vertical;
+    }
+    input::placeholder,
+    textarea::placeholder {
+      opacity: 1;
+      color: #9ca3af;
+    }
+    button,
+    [role="button"] {
+      cursor: pointer;
+    }
+    :disabled {
+      cursor: default;
+    }
+    img,
+    svg,
+    video,
+    canvas,
+    audio,
+    iframe,
+    embed,
+    object {
+      display: block;
+      vertical-align: middle;
+    }
+    img,
+    video {
+      max-width: 100%;
+      height: auto;
+    }
+    [hidden] {
+      display: none;
+    }
+    *,
+    ::before,
+    ::after {
+      --tw-border-spacing-x: 0;
+      --tw-border-spacing-y: 0;
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-rotate: 0;
+      --tw-skew-x: 0;
+      --tw-skew-y: 0;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-pan-x: ;
+      --tw-pan-y: ;
+      --tw-pinch-zoom: ;
+      --tw-scroll-snap-strictness: proximity;
+      --tw-gradient-from-position: ;
+      --tw-gradient-via-position: ;
+      --tw-gradient-to-position: ;
+      --tw-ordinal: ;
+      --tw-slashed-zero: ;
+      --tw-numeric-figure: ;
+      --tw-numeric-spacing: ;
+      --tw-numeric-fraction: ;
+      --tw-ring-inset: ;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-color: rgb(59 130 246 / 0.5);
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-colored: 0 0 #0000;
+      --tw-blur: ;
+      --tw-brightness: ;
+      --tw-contrast: ;
+      --tw-grayscale: ;
+      --tw-hue-rotate: ;
+      --tw-invert: ;
+      --tw-saturate: ;
+      --tw-sepia: ;
+      --tw-drop-shadow: ;
+      --tw-backdrop-blur: ;
+      --tw-backdrop-brightness: ;
+      --tw-backdrop-contrast: ;
+      --tw-backdrop-grayscale: ;
+      --tw-backdrop-hue-rotate: ;
+      --tw-backdrop-invert: ;
+      --tw-backdrop-opacity: ;
+      --tw-backdrop-saturate: ;
+      --tw-backdrop-sepia: ;
+      --tw-contain-size: ;
+      --tw-contain-layout: ;
+      --tw-contain-paint: ;
+      --tw-contain-style: ;
+    }
+    ::backdrop {
+      --tw-border-spacing-x: 0;
+      --tw-border-spacing-y: 0;
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-rotate: 0;
+      --tw-skew-x: 0;
+      --tw-skew-y: 0;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-pan-x: ;
+      --tw-pan-y: ;
+      --tw-pinch-zoom: ;
+      --tw-scroll-snap-strictness: proximity;
+      --tw-gradient-from-position: ;
+      --tw-gradient-via-position: ;
+      --tw-gradient-to-position: ;
+      --tw-ordinal: ;
+      --tw-slashed-zero: ;
+      --tw-numeric-figure: ;
+      --tw-numeric-spacing: ;
+      --tw-numeric-fraction: ;
+      --tw-ring-inset: ;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-color: rgb(59 130 246 / 0.5);
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-colored: 0 0 #0000;
+      --tw-blur: ;
+      --tw-brightness: ;
+      --tw-contrast: ;
+      --tw-grayscale: ;
+      --tw-hue-rotate: ;
+      --tw-invert: ;
+      --tw-saturate: ;
+      --tw-sepia: ;
+      --tw-drop-shadow: ;
+      --tw-backdrop-blur: ;
+      --tw-backdrop-brightness: ;
+      --tw-backdrop-contrast: ;
+      --tw-backdrop-grayscale: ;
+      --tw-backdrop-hue-rotate: ;
+      --tw-backdrop-invert: ;
+      --tw-backdrop-opacity: ;
+      --tw-backdrop-saturate: ;
+      --tw-backdrop-sepia: ;
+      --tw-contain-size: ;
+      --tw-contain-layout: ;
+      --tw-contain-paint: ;
+      --tw-contain-style: ;
+    }
+    @media (min-width: 640px) {
+      .container {
+        max-width: 640px !important;
+      }
+    }
+    @media (min-width: 768px) {
+      .container {
+        max-width: 768px !important;
+      }
+    }
+    @media (min-width: 1024px) {
+      .container {
+        max-width: 1024px !important;
+      }
+    }
+    @media (min-width: 1280px) {
+      .container {
+        max-width: 1280px !important;
+      }
+    }
+    @media (min-width: 1536px) {
+      .container {
+        max-width: 1536px !important;
+      }
+    }
+    .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+      --tw-space-y-reverse: 0;
+      margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+      margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+    }
+    .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+      --tw-space-y-reverse: 0;
+      margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+      margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+    }
+    .bg-blue-200 {
+      --tw-bg-opacity: 1;
+      background-color: rgb(191 219 254 / var(--tw-bg-opacity));
+    }
+    .bg-blue-950 {
+      --tw-bg-opacity: 1;
+      background-color: rgb(23 37 84 / var(--tw-bg-opacity));
+    }
+    .bg-gray-200 {
+      --tw-bg-opacity: 1;
+      background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+    }
+    .bg-sky-700 {
+      --tw-bg-opacity: 1;
+      background-color: rgb(3 105 161 / var(--tw-bg-opacity));
+    }
+    .text-gray-400 {
+      --tw-text-opacity: 1;
+      color: rgb(156 163 175 / var(--tw-text-opacity));
+    }
+    .text-gray-950 {
+      --tw-text-opacity: 1;
+      color: rgb(3 7 18 / var(--tw-text-opacity));
+    }
+    .shadow {
+      --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+      box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    }
+    .shadow-xl {
+      --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
+      box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    }
+    a:hover {
+      --tw-text-opacity: 1;
+      color: rgb(20 184 166 / var(--tw-text-opacity));
+    }
+  </style>
+</head>
+<body class="bg-blue-950" style="box-sizing: border-box; border: 0 solid #e5e7eb; line-height: inherit; margin: 0px; width: 100%; background-color: rgb(23 37 84 / 1); padding: 0px; -webkit-font-smoothing: antialiased; word-break: break-word">
+  <div role="article" aria-roledescription="email" aria-label="Membership Changed" lang="en" class="container bg-blue-950" style="box-sizing: border-box; border: 0 solid #e5e7eb; width: 100%; margin: 0px auto; background-color: rgb(23 37 84 / 1)">
+    <section style="box-sizing: border-box; border: 0 solid #e5e7eb;">
+      <div class="bg-sky-700 shadow shadow-xl space-y-3" style="box-sizing: border-box; border: 0 solid #e5e7eb; border-bottom-right-radius: 0.5rem; border-bottom-left-radius: 0.5rem; background-color: rgb(3 105 161 / 1); padding: 2rem 1rem; box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-shadow)">
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0; font-size: 3.75rem; line-height: 1; font-weight: 700">Membership Changed</p>
+      </div>
+    </section>
+    <section class="bg-gray-200 text-gray-950" style="box-sizing: border-box; border: 0 solid #e5e7eb; margin-left: 0.5rem; margin-right: 0.5rem; background-color: rgb(229 231 235 / 1); padding: 1.25rem; text-align: justify; color: rgb(3 7 18 / 1)">
+      <div class="space-y-6" style="box-sizing: border-box; border: 0 solid #e5e7eb;">
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0;">Hi there John Diver,</p>
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: calc(1.5rem * calc(1 - 0)) 0 calc(1.5rem * 0);">Your request to change your membership has been processed:</p>
+        <div class="bg-blue-200" style="box-sizing: border-box; border: 0 solid #e5e7eb; display: flex; align-items: center; justify-content: space-evenly; border-radius: 0.5rem; background-color: rgb(191 219 254 / 1); padding: 1rem; margin: calc(1.5rem * calc(1 - 0)) 1rem calc(1.5rem * 0)">
+          <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0; display: flex; flex-direction: column; gap: 0.375rem; text-align: center">
+            <span style="box-sizing: border-box; border: 0 solid #e5e7eb; font-size: 0.875rem; line-height: 1.25rem; font-weight: 700">
+          Previous Membership Tier
+        </span>
+            <span style="box-sizing: border-box; border: 0 solid #e5e7eb;">Gold</span>
+          </p>
+          <span style="box-sizing: border-box; border: 0 solid #e5e7eb;">➡</span>
+          <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0; display: flex; flex-direction: column; gap: 0.375rem; text-align: center;">
+            <span style="box-sizing: border-box; border: 0 solid #e5e7eb; font-size: 0.875rem; line-height: 1.25rem; font-weight: 700;">New Membership Tier</span>
+            <span style="box-sizing: border-box; border: 0 solid #e5e7eb;">Platinum</span>
+          </p>
+        </div>
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: calc(1.5rem * calc(1 - 0)) 0 calc(1.5rem * 0);">
+          You will receive a separate email soon with an invoice detailing any
+          refunds/charges that were made as a result.
+        </p>
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: calc(1.5rem * calc(1 - 0)) 0 calc(1.5rem * 0);">Thank you for your continued support!</p>
+        <div style="box-sizing: border-box; border: 0 solid #e5e7eb; margin-top: calc(1.5rem * calc(1 - 0)); margin-bottom: calc(1.5rem * 0);">
+          <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0;">Cheers,</p>
+          <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0;">The Bottom Time Team</p>
+        </div>
+      </div>
+    </section>
+    <section style="box-sizing: border-box; border: 0 solid #e5e7eb;">
+      <div class="bg-sky-700 shadow shadow-xl space-y-3" style="box-sizing: border-box; border: 0 solid #e5e7eb; border-radius: 0.5rem; background-color: rgb(3 105 161 / 1); padding: 1.5rem 1rem; text-align: center; font-size: 0.875rem; line-height: 1.25rem; font-style: italic; box-shadow: 0 0 #0000, 0 0 #0000, var(--tw-shadow)">
+        <p style="box-sizing: border-box; border: 0 solid #e5e7eb; margin: 0;">Copyright &copy; Chris Carleton, 2023</p>
+        <p class="text-gray-400" style="box-sizing: border-box; border: 0 solid #e5e7eb; font-size: 0.875rem; line-height: 1.25rem; font-style: italic; color: rgb(156 163 175 / 1); margin: calc(0.75rem * calc(1 - 0)) 0 calc(0.75rem * 0)">
+          If you did not request this email and suspect something fishy is up
+          then you can report this email to
+          <a href="mailto:admin@bottomti.me" style="box-sizing: border-box; border: 0 solid #e5e7eb; text-decoration: inherit; font-weight: 700; color: rgb(13 148 136 / 1)">admin@bottomti.me</a>.
+        </p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>"
+`;
+
 exports[`Email Service will generate paymentFailed email 1`] = `
 "<!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" style="box-sizing: border-box; border: 0 solid #e5e7eb; line-height: 1.5; -webkit-text-size-adjust: 100%; -moz-tab-size: 4; tab-size: 4; font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; font-feature-settings: normal; font-variation-settings: normal; -webkit-tap-highlight-color: transparent">
