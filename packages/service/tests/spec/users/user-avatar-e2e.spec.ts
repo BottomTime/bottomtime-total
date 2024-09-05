@@ -355,9 +355,11 @@ describe('User Avatar E2E tests', () => {
           width: 100,
           height: 100,
         })
-        .attach('avatar', Buffer.alloc(1024 * 1024 * 10.1), {
-          contentType: 'image/jpeg',
-        })
+        .attach(
+          'avatar',
+          path.resolve(__dirname, '../../fixtures/test-image.jpg'),
+          { contentType: 'image/jpeg' },
+        )
         .expect(401);
     });
 
@@ -371,9 +373,11 @@ describe('User Avatar E2E tests', () => {
           width: 100,
           height: 100,
         })
-        .attach('avatar', Buffer.alloc(1024 * 1024 * 10.1), {
-          contentType: 'image/jpeg',
-        })
+        .attach(
+          'avatar',
+          path.resolve(__dirname, '../../fixtures/test-image.jpg'),
+          { contentType: 'image/jpeg' },
+        )
         .expect(403);
     });
 
@@ -387,9 +391,11 @@ describe('User Avatar E2E tests', () => {
           width: 100,
           height: 100,
         })
-        .attach('avatar', Buffer.alloc(1024 * 1024 * 10.1), {
-          contentType: 'image/jpeg',
-        })
+        .attach(
+          'avatar',
+          path.resolve(__dirname, '../../fixtures/test-image.jpg'),
+          { contentType: 'image/jpeg' },
+        )
         .expect(404);
     });
 
