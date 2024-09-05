@@ -67,22 +67,26 @@ export class MembershipService implements OnModuleInit {
 
   async onModuleInit(): Promise<void> {
     this.log.debug('Retrieving prices and products from Stripe...');
-    const prices = await this.stripe.prices.list({
-      lookup_keys: [ProMembershipYearlyPrice, ShopOwnerMembershipYearlyPrice],
-      expand: ['data.product'],
-    });
+    try {
+      const prices = await this.stripe.prices.list({
+        lookup_keys: [ProMembershipYearlyPrice, ShopOwnerMembershipYearlyPrice],
+        expand: ['data.product'],
+      });
 
-    prices.data.forEach((price) => {
-      if (price.lookup_key === ProMembershipYearlyPrice) {
-        this.proMembershipPrice = price;
-        this.proMemberhsip = price.product as Stripe.Product;
-      }
+      prices.data.forEach((price) => {
+        if (price.lookup_key === ProMembershipYearlyPrice) {
+          this.proMembershipPrice = price;
+          this.proMemberhsip = price.product as Stripe.Product;
+        }
 
-      if (price.lookup_key === ShopOwnerMembershipYearlyPrice) {
-        this.shopOwnerMembershipPrice = price;
-        this.shopOwnerMembership = price.product as Stripe.Product;
-      }
-    });
+        if (price.lookup_key === ShopOwnerMembershipYearlyPrice) {
+          this.shopOwnerMembershipPrice = price;
+          this.shopOwnerMembership = price.product as Stripe.Product;
+        }
+      });
+    } catch (error) {
+      this.log.error(error);
+    }
   }
 
   private listMembershipProducts(): ProductsList {

@@ -6,7 +6,7 @@ export class Queue {
     private readonly queueUrl: string,
   ) {}
 
-  async add(payload: string): Promise<string> {
+  async add(payload: string): Promise<string | undefined> {
     return await this.service.addMessage(this.queueUrl, payload);
   }
 }
