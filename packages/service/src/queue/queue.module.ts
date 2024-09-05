@@ -1,35 +1,37 @@
-import { SQSClient } from '@aws-sdk/client-sqs';
 import { DynamicModule, Module } from '@nestjs/common';
 
+import { AWSModule } from '../dependencies';
 import { Queue } from './queue';
 import { QueueOptions } from './queue-options';
 import { QueueService } from './queue.service';
 
-@Module({
-  providers: [QueueService],
-  exports: [QueueService],
-})
+@Module({})
 export class QueueModule {
-  static forRoot(client?: SQSClient, ...queues: QueueOptions[]): DynamicModule {
-    client = client ?? new SQSClient();
-
-    const service = new QueueService(client);
-    const providers = queues.map((queue) => ({
-      provide: queue.key,
-      useFactory: () => new Queue(service, queue.queueUrl),
-    }));
-
+  static forRoot(): DynamicModule {
     return {
       module: QueueModule,
-      global: true,
+      imports: [AWSModule],
+      providers: [QueueService],
+      exports: [QueueService],
+    };
+  }
+
+  static forFeature(...queues: QueueOptions[]): DynamicModule {
+    const root = QueueModule.forRoot();
+
+    return {
+      ...root,
       providers: [
-        {
-          provide: QueueService,
-          useValue: service,
-        },
-        ...providers,
+        QueueService,
+        ...queues.map((queue) => ({
+          provide: queue.key,
+          inject: [QueueService],
+          useFactory(service: QueueService) {
+            return new Queue(service, queue.queueUrl);
+          },
+        })),
       ],
-      exports: providers,
+      exports: [QueueService, ...queues.map((queue) => queue.key)],
     };
   }
 }

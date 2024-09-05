@@ -17,13 +17,11 @@ import { ReadableStream } from 'stream/web';
 import { Config } from '../config';
 import { File, FileMetadata, ListFilesOptions, ListFilesResult } from './types';
 
-export const S3ClientKey = Symbol('S3Client');
-
 @Injectable()
 export class StorageService {
   private readonly log = new Logger(StorageService.name);
 
-  constructor(@Inject(S3ClientKey) private readonly client: S3Client) {}
+  constructor(@Inject(S3Client) private readonly client: S3Client) {}
 
   // Requires s3:getObject
   async getFileMetadata(key: string): Promise<FileMetadata | null> {

@@ -121,6 +121,7 @@ export default defineConfig({
             BT_GOOGLE_CLIENT_SECRET: 'google_secret',
             BT_GITHUB_CLIENT_ID: 'github_client',
             BT_GITHUB_CLIENT_SECRET: 'github_secret',
+            BT_STRIPE_SDK_KEY: 'sk_test_xxxx',
           },
           timeout: 30000,
           reuseExistingServer: true,
@@ -133,6 +134,8 @@ export default defineConfig({
           env: {
             BTWEB_API_URL: 'http://localhost:4801/',
             BTWEB_VITE_BASE_URL: 'http://localhost:4851/',
+            BTWEB_VITE_STRIPE_API_KEY:
+              'pk_test_51PktwnI1ADsIvyhFBiMxntz2E4VQYFOTgHfuJBiR3H3ZQBLDx96cDVGcp1AZA5Le0uXUw0msCs63lbdofgR54dzs00h1P6bHfN',
             BTWEB_LOG_LEVEL: 'debug',
             BTWEB_PORT: '4851',
             BTWEB_COOKIE_NAME: CookieName,

@@ -12,6 +12,8 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
+import { AdminCertificationsController } from '../../../src/admin/admin-certifications.controller';
+import { CertificationsModule } from '../../../src/certifications';
 import { CertificationEntity, UserEntity } from '../../../src/data';
 import { dataSource } from '../../data-source';
 import CertificationTestData from '../../fixtures/certifications.json';
@@ -77,7 +79,10 @@ describe('Certifications End-to-End', () => {
     Certifications = dataSource.getRepository(CertificationEntity);
 
     [app, regularAuthHeader, adminAuthHeader] = await Promise.all([
-      createTestApp(),
+      createTestApp({
+        imports: [CertificationsModule],
+        controllers: [AdminCertificationsController],
+      }),
       createAuthHeader(RegularUserId),
       createAuthHeader(AdminUserId),
     ]);

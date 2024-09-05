@@ -1,16 +1,20 @@
 import { Feature } from '@bottomtime/common';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import { User as ConfigCatUser, IConfigCatClient } from 'configcat-node';
 
+import { ConfigCatClient } from '../dependencies';
 import { User } from '../users';
 
 @Injectable()
 export class FeaturesService {
   private readonly log = new Logger(FeaturesService.name);
 
-  constructor(private readonly client: IConfigCatClient) {}
+  constructor(
+    @Inject(ConfigCatClient)
+    private readonly client: IConfigCatClient,
+  ) {}
 
   async getFeature<T extends boolean | string | number>(
     feature: Feature<T>,

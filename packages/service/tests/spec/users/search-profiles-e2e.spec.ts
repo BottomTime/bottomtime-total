@@ -1,11 +1,17 @@
 import { ProfileDTO, SortOrder, UsersSortBy } from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
+import { Queues } from '../../../src/common';
 import { FriendshipEntity, UserEntity } from '../../../src/data';
+import { QueueModule } from '../../../src/queue';
+import { UsersService } from '../../../src/users';
+import { UserController } from '../../../src/users/user.controller';
+import { UsersController } from '../../../src/users/users.controller';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
 import { createAuthHeader, createTestApp, parseUserJSON } from '../../utils';
@@ -25,7 +31,17 @@ describe('Searching Profiles E2E Tests', () => {
   beforeAll(async () => {
     users = TestUserData.map((data) => parseUserJSON(data));
     authHeader = await createAuthHeader(users[0].id);
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [
+        TypeOrmModule.forFeature([UserEntity]),
+        QueueModule.forFeature({
+          key: Queues.email,
+          queueUrl: 'http://localhost:4566/000000000000/email-queue',
+        }),
+      ],
+      providers: [UsersService],
+      controllers: [UsersController],
+    });
     server = app.getHttpServer();
 
     Users = dataSource.getRepository(UserEntity);

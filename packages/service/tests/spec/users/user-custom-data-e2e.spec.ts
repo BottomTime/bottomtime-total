@@ -1,12 +1,16 @@
 import { UserRole } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Server } from 'http';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import { UserEntity, UserJsonDataEntity } from '../../../src/data';
+import { UsersModule } from '../../../src/users';
+import { UserCustomDataController } from '../../../src/users/user-custom-data.controller';
+import { UserCustomDataService } from '../../../src/users/user-custom-data.service';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
 
@@ -84,7 +88,11 @@ describe('User custom data E2E tests', () => {
     adminAuthToken = await createAuthHeader(adminUser.id);
     otherAuthToken = await createAuthHeader(otherUser.id);
 
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [TypeOrmModule.forFeature([UserJsonDataEntity]), UsersModule],
+      providers: [UserCustomDataService],
+      controllers: [UserCustomDataController],
+    });
     server = app.getHttpServer();
     await app.init();
   });

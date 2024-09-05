@@ -13,7 +13,9 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
+import { AdminTanksController } from '../../../src/admin/admin-tanks.controller';
 import { TankEntity, UserEntity } from '../../../src/data';
+import { TanksModule } from '../../../src/tanks';
 import { dataSource } from '../../data-source';
 import TankTestData from '../../fixtures/pre-defined-tanks.json';
 import { createAuthHeader, createTestApp } from '../../utils';
@@ -64,7 +66,10 @@ describe('Tanks End-to-End Tests', () => {
   let adminUser: UserEntity;
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [TanksModule],
+      controllers: [AdminTanksController],
+    });
     server = app.getHttpServer();
     adminAuthHeader = await createAuthHeader(AdminUserId);
     regularAuthHeader = await createAuthHeader(RegularUserId);

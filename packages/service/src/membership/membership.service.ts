@@ -81,25 +81,29 @@ export class MembershipService implements OnModuleInit {
   /** Request and cache price/product information on our membership tiers from Stripe. */
   async onModuleInit(): Promise<void> {
     this.log.debug('Retrieving prices and products from Stripe...');
-    const { data: prices } = await this.stripe.prices.list({
-      lookup_keys: [ProMembershipYearlyPrice, ShopOwnerMembershipYearlyPrice],
-      expand: ['data.product'],
-    });
+    try {
+      const { data: prices } = await this.stripe.prices.list({
+        lookup_keys: [ProMembershipYearlyPrice, ShopOwnerMembershipYearlyPrice],
+        expand: ['data.product'],
+      });
 
-    prices.forEach((price) => {
-      if (price.lookup_key === ProMembershipYearlyPrice) {
-        this._proMembershipPrice = price;
-        this._proMemberhsip = price.product as Stripe.Product;
-      }
+      prices.forEach((price) => {
+        if (price.lookup_key === ProMembershipYearlyPrice) {
+          this._proMembershipPrice = price;
+          this._proMemberhsip = price.product as Stripe.Product;
+        }
 
-      if (price.lookup_key === ShopOwnerMembershipYearlyPrice) {
-        this._shopOwnerMembershipPrice = price;
-        this._shopOwnerMembership = price.product as Stripe.Product;
-      }
-    });
+        if (price.lookup_key === ShopOwnerMembershipYearlyPrice) {
+          this._shopOwnerMembershipPrice = price;
+          this._shopOwnerMembership = price.product as Stripe.Product;
+        }
+      });
 
-    this.priceMap[AccountTier.Pro] = this.proMembershipPrice;
-    this.priceMap[AccountTier.ShopOwner] = this.shopOwnerMembershipPrice;
+      this.priceMap[AccountTier.Pro] = this.proMembershipPrice;
+      this.priceMap[AccountTier.ShopOwner] = this.shopOwnerMembershipPrice;
+    } catch (error) {
+      this.log.error(error);
+    }
   }
 
   private get proMemberhsip(): Stripe.Product {

@@ -8,6 +8,7 @@ import {
 } from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
@@ -17,6 +18,8 @@ import {
   DiveSiteReviewEntity,
   UserEntity,
 } from '../../../src/data';
+import { DiveSiteFactory, DiveSitesService } from '../../../src/diveSites';
+import { DiveSiteReviewsController } from '../../../src/diveSites/dive-site-reviews.controller';
 import { dataSource } from '../../data-source';
 import ReviewTestData from '../../fixtures/dive-site-reviews.json';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
@@ -80,7 +83,17 @@ describe('Dive Site Reviews End-to-End Tests', () => {
   let adminAuthHeader: [string, string];
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [
+        TypeOrmModule.forFeature([
+          DiveSiteEntity,
+          DiveSiteReviewEntity,
+          UserEntity,
+        ]),
+      ],
+      providers: [DiveSitesService, DiveSiteFactory],
+      controllers: [DiveSiteReviewsController],
+    });
     server = app.getHttpServer();
 
     Users = dataSource.getRepository(UserEntity);

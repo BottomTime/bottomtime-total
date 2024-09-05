@@ -2,7 +2,7 @@ import { ExecutionContext, createParamDecorator } from '@nestjs/common';
 
 import { Request } from 'express';
 
-import { User } from '.';
+import { User } from './user';
 
 export const CurrentUser = createParamDecorator(
   (_: unknown, ctx: ExecutionContext): User | undefined => {

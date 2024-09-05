@@ -1,6 +1,7 @@
 import { LogBookSharing, UserRole } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
@@ -10,9 +11,16 @@ import { Repository } from 'typeorm';
 
 import {
   FriendshipEntity,
+  LogEntryAirEntity,
   LogEntryEntity,
   UserEntity,
 } from '../../../src/data';
+import { DiveSitesModule } from '../../../src/diveSites';
+import { FriendsModule } from '../../../src/friends';
+import { LogEntriesService } from '../../../src/logEntries/log-entries.service';
+import { LogEntryFactory } from '../../../src/logEntries/log-entry-factory';
+import { UserLogEntriesController } from '../../../src/logEntries/user-log-entries.controller';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import {
   createAuthHeader,
@@ -73,7 +81,16 @@ describe('Log entries E2E security', () => {
   let adminAuthToken: [string, string];
 
   beforeAll(async () => {
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [
+        TypeOrmModule.forFeature([LogEntryEntity, LogEntryAirEntity]),
+        DiveSitesModule,
+        FriendsModule,
+        UsersModule,
+      ],
+      providers: [LogEntriesService, LogEntryFactory],
+      controllers: [UserLogEntriesController],
+    });
     server = app.getHttpServer();
 
     regularUser = createTestUser({

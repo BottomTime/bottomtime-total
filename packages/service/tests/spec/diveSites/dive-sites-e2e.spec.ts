@@ -9,12 +9,23 @@ import {
 } from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { DiveSiteEntity, UserEntity } from '../../../src/data';
+import {
+  DiveSiteEntity,
+  DiveSiteReviewEntity,
+  UserEntity,
+} from '../../../src/data';
+import {
+  DiveSiteFactory,
+  DiveSitesController,
+  DiveSitesService,
+} from '../../../src/diveSites';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestDiveSiteCreatorData from '../../fixtures/user-search-data.json';
@@ -58,7 +69,18 @@ describe('Dive Sites End-to-End Tests', () => {
     Users = dataSource.getRepository(UserEntity);
     Sites = dataSource.getRepository(DiveSiteEntity);
 
-    app = await createTestApp();
+    app = await createTestApp({
+      imports: [
+        TypeOrmModule.forFeature([
+          DiveSiteEntity,
+          DiveSiteReviewEntity,
+          UserEntity,
+        ]),
+        UsersModule,
+      ],
+      providers: [DiveSitesService, DiveSiteFactory],
+      controllers: [DiveSitesController],
+    });
     server = app.getHttpServer();
   });
 

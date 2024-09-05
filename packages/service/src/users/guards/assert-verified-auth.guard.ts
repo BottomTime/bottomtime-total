@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { User } from '..';
+import { User } from '../user';
 
 @Injectable()
 export class AssertVerifiedAuth implements CanActivate {
