@@ -55,6 +55,8 @@ export class StripeWebhookService {
       Config.stripe.webhookSigningSecret,
     );
 
+    this.log.debug({ event });
+
     if (this.EventMap[event.type]) {
       await this.EventMap[event.type].bind(this)(event);
     } else {
@@ -102,7 +104,7 @@ export class StripeWebhookService {
    * The user's subscription has been canceled in Stripe. (Either manually or for non-payment.)
    * Revoke their membership priveleges.
    */
-  private async onSubscriptionCanceled(e: Stripe.Event): Promise<void> {
+  async onSubscriptionCanceled(e: Stripe.Event): Promise<void> {
     if (e.type !== 'customer.subscription.deleted') return;
 
     const user = await this.getUserFromStripeCustomer(e.data.object.customer);
@@ -112,7 +114,24 @@ export class StripeWebhookService {
       `Membership subscription was canceled for user "${user.username}". This occurred via Stripe.`,
     );
 
-    // TODO: Send an email notification.
+    if (user.email) {
+      const emailOptions: EmailQueueMessage = {
+        to: { to: user.email, cc: Config.adminEmail },
+        subject: 'Important! Your membership has been canceled',
+        options: {
+          type: EmailType.MembershipCanceled,
+          title: 'Subscription Canceled',
+          user: {
+            email: user.email,
+            username: user.username,
+            profile: {
+              name: user.profile?.name || user.username,
+            },
+          },
+        },
+      };
+      await this.emailQueue.add(JSON.stringify(emailOptions));
+    }
   }
 
   /**
