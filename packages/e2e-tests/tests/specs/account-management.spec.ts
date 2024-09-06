@@ -71,7 +71,7 @@ test.describe('Account and Profile Management', () => {
     expect(user.profile.startedDiving).toBe(UserProfile.startedDiving);
   });
 
-  test.only('will allow users to upload an avatar', async ({ page }) => {
+  test('will allow users to upload an avatar', async ({ page }) => {
     await page.goto('/profile');
 
     await page.getByTestId('btn-change-avatar').click();
