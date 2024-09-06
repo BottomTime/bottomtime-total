@@ -1,10 +1,7 @@
-FROM node:20.14 AS base
-
-# RUN apk add --no-cache bash python3 make g++ gcc libgcc libstdc++ git linux-headers fts-dev
-RUN corepack enable
+FROM node:20-alpine AS base
+RUN apk add --no-cache bash curl && corepack enable
 
 FROM base AS build
-
 WORKDIR /app
 
 COPY package.json yarn.lock .yarnrc.yml nx.json lerna.json ./

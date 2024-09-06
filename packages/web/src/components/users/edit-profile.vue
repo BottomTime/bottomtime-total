@@ -56,6 +56,7 @@
           }`"
         >
           <button
+            data-testid="btn-change-avatar"
             class="flex flex-col space-y-3 items-center w-full"
             @click="onEditAvatar"
           >
@@ -73,6 +74,7 @@
 
           <button
             v-if="state.avatar"
+            data-testid="btn-delete-avatar"
             class="flex flex-col space-y-3 items-center w-full"
             @click="onDeleteAvatar"
           >

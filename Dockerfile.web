@@ -1,10 +1,7 @@
-FROM node:20.14 AS base
-
-# RUN apk add --no-cache bash python3 make g++
-RUN corepack enable
+FROM node:20-alpine AS base
+RUN apk add --no-cache bash curl && corepack enable
 
 FROM base AS build
-
 WORKDIR /app
 
 COPY package.json yarn.lock .yarnrc.yml nx.json lerna.json ./
@@ -28,5 +25,4 @@ COPY --from=build /app/ /app/
 WORKDIR /app/packages/web/
 
 EXPOSE 4850 24678
-# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "curl", "http://localhost:4850/health" ]
 ENTRYPOINT ["./bootstrap-docker.sh"]

@@ -34,6 +34,9 @@ module.exports = {
     clean: true,
     libraryTarget: 'commonjs2',
   },
+  externals: {
+    sharp: 'commonjs sharp',
+  },
   plugins: [
     new NodemonPlugin({
       script: './dist/main.js',

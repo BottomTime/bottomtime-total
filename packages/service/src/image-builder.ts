@@ -1,79 +1,82 @@
-import Jimp from 'jimp';
+import { BadRequestException } from '@nestjs/common';
 
-import { Config } from './config';
+import exif, { Exif } from 'exif-reader';
+import sharp, { Sharp } from 'sharp';
+
+const BoundingError = new BadRequestException(
+  'Invalid bounding rectangle provided for cropping.',
+);
 
 export type ImageMetadata = {
+  exif?: Exif;
   format: string;
-  width: number;
   height: number;
+  width: number;
+  size: number;
 };
 
-type JimpInterface = Awaited<ReturnType<typeof Jimp.read>>;
-
 export class ImageBuilder {
-  private image: JimpInterface;
+  private image: Sharp;
 
-  private constructor(image: JimpInterface) {
-    this.image = image;
+  constructor(image: Buffer) {
+    this.image = sharp(image);
   }
 
-  getMetadata(): ImageMetadata {
+  async getMetadata(): Promise<ImageMetadata> {
+    const metadata = await this.image.metadata();
     return {
-      format: this.image.getMIME(),
-      width: this.image.getWidth(),
-      height: this.image.getHeight(),
+      exif: metadata.exif ? exif(metadata.exif) : undefined,
+      format: metadata.format ? `image/${metadata.format}` : '',
+      height: metadata.height ?? 0,
+      width: metadata.width ?? 0,
+      size: metadata.size ?? 0,
     };
   }
 
-  crop(
+  async crop(
     left: number,
     top: number,
     width: number,
     height: number,
-  ): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.image.crop(left, top, width, height, (err, value) => {
-        if (err) {
-          reject(err);
-        } else {
-          this.image = value;
-          resolve();
-        }
-      });
-    });
+  ): Promise<this> {
+    if (left < 0 || top < 0) throw BoundingError;
+
+    const { width: maxWidth, height: maxHeight } = await this.image.metadata();
+    if (
+      maxWidth &&
+      maxHeight &&
+      (left + width > maxWidth || top + height > maxHeight)
+    ) {
+      throw BoundingError;
+    }
+
+    this.image = this.image.extract({ left, top, width, height });
+    return this;
   }
 
-  resize(width: number, height?: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      // TODO: Yeesh! This operation is slow.  Gotta find a faster library.
-      this.image.resize(
-        width,
-        height || width,
-        Config.fastImageResize
-          ? Jimp.RESIZE_NEAREST_NEIGHBOR
-          : Jimp.RESIZE_HERMITE,
-        (err, value) => {
-          if (err) {
-            reject(err);
-          } else {
-            this.image = value;
-            resolve();
-          }
-        },
+  async resize(width: number, height?: number): Promise<this> {
+    if (width < 1 || (typeof height === 'number' && height < 1)) {
+      throw new BadRequestException(
+        'Invalid resize dimensions provided. Width and height must be greater than 0.',
       );
+    }
+
+    this.image.resize({
+      width,
+      height,
+      fit: 'cover',
+      position: 'centre',
+      kernel: 'lanczos3',
     });
+
+    return this;
   }
 
-  toBuffer(): Promise<Buffer> {
-    return this.image.getBufferAsync(this.image.getMIME());
+  async toBuffer(): Promise<Buffer> {
+    return await this.image.keepMetadata().toBuffer();
   }
 
-  static async fromBuffer(buffer: Buffer): Promise<ImageBuilder> {
-    const image = await Jimp.read(buffer);
-    return new ImageBuilder(image);
-  }
-
-  clone(): ImageBuilder {
-    return new ImageBuilder(this.image.clone());
+  async clone(): Promise<ImageBuilder> {
+    return new ImageBuilder(await this.toBuffer());
   }
 }
