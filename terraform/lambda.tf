@@ -9,12 +9,11 @@ resource "aws_lambda_function" "service" {
   function_name = "bottomtime-service-${var.env}"
   role          = aws_iam_role.service_lambda_fn.arn
 
-  filename         = data.archive_file.service.output_path
-  source_code_hash = data.archive_file.service.output_base64sha256
+  image_uri     = data.aws_ecr_image.service.image_uri
+  architectures = ["arm64"]
+  package_type  = "Image"
 
   description = "BottomTime Backend Service Lambda Function"
-  handler     = "sls.handler"
-  runtime     = "nodejs20.x"
   timeout     = 30
   memory_size = 256
 
@@ -44,6 +43,7 @@ resource "aws_lambda_function" "service" {
       BT_PASSWORD_SALT_ROUNDS    = "${var.password_salt_rounds}"
       BT_POSTGRES_REQUIRE_SSL    = "true"
       BT_POSTGRES_URI            = local.secrets.postgresUri
+      BT_SERVERLESS              = "true"
       BT_SESSION_COOKIE_DOMAIN   = "${var.web_domain}.${var.root_domain}"
       BT_SESSION_COOKIE_NAME     = local.cookie_name
       BT_SESSION_SECRET          = local.secrets.sessionSecret

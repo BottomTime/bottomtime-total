@@ -1,7 +1,10 @@
-FROM node:20-alpine AS base
-RUN apk add --no-cache bash curl && corepack enable
+# Base image running AWS Lambda Runtime Interface Client (RIC)
+FROM public.ecr.aws/lambda/nodejs:20 AS base
+RUN corepack enable
+RUN npm i -g --build-from-source sharp
 
 FROM base AS build
+# ENV NODE_ENV=production
 WORKDIR /app
 
 COPY package.json yarn.lock .yarnrc.yml nx.json lerna.json ./
@@ -22,8 +25,8 @@ COPY packages/service/src/ ./packages/service/src/
 RUN yarn build --stream
 
 FROM base AS release
-COPY --from=build /app/ /app/
-WORKDIR /app/packages/service/
+ENV NPM_CONFIG_CACHE=/tmp/.npm
 
-EXPOSE 4800
-ENTRYPOINT ["./bootstrap-docker.sh"]
+COPY --from=build /app/ /app/
+
+CMD [ "/app/packages/service/dist/sls.handler" ]

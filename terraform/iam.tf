@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
-# Grant backend access to read/write/delete objects in the media bucket and SQS queues
+# Grant backend access to read/write/delete objects in the media bucket
 data "aws_iam_policy_document" "media_bucket_access" {
   # List objects in media bucket
   statement {
@@ -31,7 +31,10 @@ data "aws_iam_policy_document" "media_bucket_access" {
     actions   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
     resources = ["${data.aws_s3_bucket.media.arn}/*"]
   }
+}
 
+# Grant access to send messages to the email SQS queue
+data "aws_iam_policy_document" "sqs_queue_access" {
   # Send messages to SQS queues
   statement {
     sid       = "3"
@@ -44,6 +47,11 @@ data "aws_iam_policy_document" "media_bucket_access" {
 resource "aws_iam_policy" "media_bucket_access" {
   name   = "bt_media_bucket_access_${var.env}_${data.aws_region.current.name}"
   policy = data.aws_iam_policy_document.media_bucket_access.json
+}
+
+resource "aws_iam_policy" "sqs_queue_access" {
+  name   = "bt_sqs_queue_access_${var.env}_${data.aws_region.current.name}"
+  policy = data.aws_iam_policy_document.sqs_queue_access.json
 }
 
 resource "aws_iam_role" "service_lambda_fn" {
@@ -59,6 +67,11 @@ resource "aws_iam_role_policy_attachment" "service_lambda_logging" {
 resource "aws_iam_role_policy_attachment" "service_media_bucket_access" {
   role       = aws_iam_role.service_lambda_fn.name
   policy_arn = aws_iam_policy.media_bucket_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "service_sqs_queue_access" {
+  role       = aws_iam_role.service_lambda_fn.name
+  policy_arn = aws_iam_policy.sqs_queue_access.arn
 }
 
 resource "aws_iam_role" "ssr_lambda_fn" {

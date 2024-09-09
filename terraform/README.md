@@ -11,6 +11,7 @@ to be configured with access to an AWS account with sufficient privileges to per
 Terraform will need to run as an IAM user with sufficient permission to deploy the platform. Create an IAM role with the following permissions:
 
 - `AmazonAPIGatewayAdministrator`
+- `AmazonEC2ContainerRegistryFullAccess`
 - `AmazonRoute53FullAccess`
 - `AmazonS3FullAccess`
 - `AWSCertificateManagerReadOnly`
@@ -83,6 +84,16 @@ When configuring a new environment the `root_domain` variable in the correspondi
 An ACM certificate will need to be created for the previously-created hosted zone. The certificate will need to be for `<domain_name>` and
 `*.<domain_name>` - in that order - where `<domain_name>` is the FQDN for the hosted zone. This certificate will be used to facilitate secure,
 TLS-based communication with the platform services.
+
+### ECR Repositories
+
+A couple of ECR repositories need to be created to publish/retrieve the service and front-end Docker conatiners to and from. In ECR create two
+repositories called
+
+- `bottomtime/service` and
+- `bottomtime/web`
+
+> **NOTE:** Tag mutability must be enabled since deployment will continuously overwrite the `{env}-latest` tag.
 
 ## Creating a New Terraformed Environment
 
