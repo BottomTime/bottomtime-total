@@ -300,7 +300,7 @@ jobs:
   docker_e2e:
     docker:
       - image: cimg/base:2022.09
-    resource_class: arm.medium
+    resource_class: arm.large
     steps:
       - deploy_docker:
           env: e2e
