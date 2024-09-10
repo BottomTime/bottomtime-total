@@ -15,7 +15,7 @@ resource "aws_lambda_function" "service" {
 
   description = "BottomTime Backend Service Lambda Function"
   timeout     = 30
-  memory_size = 256
+  memory_size = 1024
 
   logging_config {
     log_group  = aws_cloudwatch_log_group.service_logs.id

@@ -4,8 +4,7 @@ data "aws_ecr_repository" "service" {
 
 data "aws_ecr_image" "service" {
   repository_name = "bottomtime/service"
-  # image_tag = "${var.env}-latest"
-  image_tag = "latest"
+  image_tag       = "${var.env}-latest"
 }
 
 data "aws_iam_policy_document" "service_lambda_policy" {

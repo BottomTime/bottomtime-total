@@ -1,7 +1,7 @@
 # Base image running AWS Lambda Runtime Interface Client (RIC)
 FROM public.ecr.aws/lambda/nodejs:20 AS base
 RUN corepack enable
-RUN npm i -g --build-from-source sharp
+# RUN npm i -g --build-from-source sharp
 
 FROM base AS build
 # ENV NODE_ENV=production
