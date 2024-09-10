@@ -38,7 +38,7 @@ commands:
           name: Deploy service image
           command: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com
-            docker compose build service
+            docker build -t bottomtime-service -f Dockerfile.service .
             docker tag bottomtime-service:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:<<parameters.env>>-latest
             docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:<<parameters.env>>-latest
 
