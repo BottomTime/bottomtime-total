@@ -378,7 +378,7 @@ workflows:
           requires:
             - deploy_e2e
           context:
-            - bt-aws-e2e
+            - bt-aws-dev
             - bt-smtp-dev
             - bt-postgres-e2e
 
