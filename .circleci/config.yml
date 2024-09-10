@@ -95,7 +95,7 @@ jobs:
   build:
     docker:
       - image: cimg/node:20.14
-    resource_class: medium
+    resource_class: medium+
     environment:
       NODE_ENV: production # Build for production for minified bundles
     steps:
