@@ -351,7 +351,7 @@ workflows:
           requires:
             - build
           context:
-            - bt-aws-e2e
+            - bt-aws-dev
       - deploy_e2e:
           requires:
             - docker_e2e
@@ -378,7 +378,7 @@ workflows:
           requires:
             - deploy_e2e
           context:
-            - bt-aws-dev
+            - bt-aws-e2e
             - bt-smtp-dev
             - bt-postgres-e2e
 
