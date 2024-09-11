@@ -16,8 +16,6 @@ type LogLevel = z.infer<typeof LogLevelSchema>;
 
 export interface AppConfig {
   aws: {
-    accessKeyId: string;
-    secretAccessKey: string;
     region: string;
     s3: {
       mediaBucket: string;
@@ -82,8 +80,6 @@ export interface AppConfig {
 const ConfigSchema = z
   .object({
     // AWS
-    AWS_ACCESS_KEY_ID: z.string().min(1),
-    AWS_SECRET_ACCESS_KEY: z.string().min(1),
     AWS_REGION: z.string().default('us-east-1'),
     BT_AWS_S3_ENDPOINT: z.string().optional(),
     BT_AWS_MEDIA_BUCKET: z.string().default('bottomtime-media-local'),
@@ -147,8 +143,6 @@ const ConfigSchema = z
   })
   .transform<AppConfig>((env) => ({
     aws: {
-      accessKeyId: env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
       region: env.AWS_REGION,
       s3: {
         mediaBucket: env.BT_AWS_MEDIA_BUCKET,
