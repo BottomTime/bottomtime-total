@@ -17,23 +17,30 @@
       </div>
 
       <!-- Show image cropper if we have a URL -->
-      <ImageCropper
-        v-else-if="imageUrl"
-        class="w-full h-[400px]"
-        default-boundaries="fill"
-        :image="imageUrl"
-        :target-width="512"
-        circle
-        @change="onImageCropperChange"
-      />
+      <div v-else-if="imageUrl" class="flex justify-center">
+        <ImageCropper
+          class="w-[600px] aspect-video"
+          default-boundaries="fill"
+          :image="imageUrl"
+          :target-width="512"
+          circle
+          @change="onImageCropperChange"
+        />
+      </div>
 
       <!-- Otherwise, show a drag-and-drop target -->
-      <FileUpload v-else accept="image/*" @change="onFileSelect" />
+      <FileUpload
+        v-else
+        accept="image/*"
+        test-id="upload-avatar"
+        @change="onFileSelect"
+      />
     </template>
 
     <template #buttons>
       <FormButton
         v-if="file && coordinates"
+        test-id="btn-save-avatar"
         type="primary"
         :is-loading="isSaving"
         @click="onSave"
@@ -43,13 +50,18 @@
 
       <FormButton
         v-if="file && coordinates"
+        test-id="btn-change-image"
         :disabled="isSaving"
         @click="reset"
       >
         Change Image
       </FormButton>
 
-      <FormButton :disabled="isSaving" @click="$emit('cancel')">
+      <FormButton
+        :disabled="isSaving"
+        test-id="btn-cancel-avatar"
+        @click="$emit('cancel')"
+      >
         Cancel
       </FormButton>
     </template>

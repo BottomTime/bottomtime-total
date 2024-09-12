@@ -44,6 +44,7 @@
         class="text-grey-300 text-sm file:text-black file:p-2 file:mx-3 file:border-1 file:border-grey-800 file:shadow-sm file:shadow-grey-800 file:rounded-md file:bg-secondary file:hover:bg-secondary-hover"
         :accept="accept"
         :multiple="multiple"
+        :data-testid="testId"
         @change="onFileUploadChange"
       />
     </div>
@@ -56,6 +57,7 @@ import { computed, reactive, ref } from 'vue';
 interface FileUploadProps {
   accept?: string;
   multiple?: boolean;
+  testId?: string;
   validateFile?: (file: File) => boolean | string;
 }
 

@@ -10,18 +10,18 @@ exports[`User Avatar E2E tests when downloading an avatar will return the avatar
 
 exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with dimensions specified 1`] = `
 [
-  "060379c162e9c57e8bba8b2c9db6e47e",
-  "6371fa8891d1650abe66c98c3a5d0f50",
-  "9aeb0eee7f81d70512d28590ee2a2646",
-  "62aa2a9cac9efb0d2242b7956ca945f4",
+  "89a42f0b5b4b8daa29e30b7e4ab2209f",
+  "af25eb4f4fd12328cc3d107c0163a1b5",
+  "832052710e8aa47d889cf318a7fc6f1c",
+  "316ec7ff6381348a3717a897fede1497",
 ]
 `;
 
 exports[`User Avatar E2E tests when saving a new avatar will allow a user to save a new avatar with no dimensions specified 1`] = `
 [
-  "d7d88b07932197d1b93c778b4ee40ba0",
-  "fab38dc578d3f17e9f8d6cd72f7302bf",
-  "7df79524382978f79fbfbd3f6adbaede",
-  "1de857c20da0f91063727dad396aaf30",
+  "153de6f27a5428c8d4a00d981715fcf2",
+  "ce0ccd4507e9141543b7544fd7b074f3",
+  "9cfbb90430aec096d405fdb2fd6c71ec",
+  "2c8ac7385c8f0d04ef7903b2cf468ecd",
 ]
 `;

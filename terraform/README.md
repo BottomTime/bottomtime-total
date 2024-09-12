@@ -11,6 +11,8 @@ to be configured with access to an AWS account with sufficient privileges to per
 Terraform will need to run as an IAM user with sufficient permission to deploy the platform. Create an IAM role with the following permissions:
 
 - `AmazonAPIGatewayAdministrator`
+- `AmazonEC2ContainerRegistryFullAccess`
+- `AmazonEventBridgeSchedulerFullAccess`
 - `AmazonRoute53FullAccess`
 - `AmazonS3FullAccess`
 - `AWSCertificateManagerReadOnly`
@@ -84,6 +86,16 @@ An ACM certificate will need to be created for the previously-created hosted zon
 `*.<domain_name>` - in that order - where `<domain_name>` is the FQDN for the hosted zone. This certificate will be used to facilitate secure,
 TLS-based communication with the platform services.
 
+### ECR Repositories
+
+A couple of ECR repositories need to be created to publish/retrieve the service and front-end Docker conatiners to and from. In ECR create two
+repositories called
+
+- `bottomtime/service` and
+- `bottomtime/web`
+
+> **NOTE:** Tag mutability must be enabled since deployment will continuously overwrite the `{env}-latest` tag.
+
 ## Creating a New Terraformed Environment
 
 Follow these steps to deploy the platform to a new environment.
@@ -150,6 +162,7 @@ configure your new environment:
 | `cookie_name`          | Name of the session cookie as it will appear in the browser. **IMPORTANT:** This needs to be unique per environment but the same per region. I.e. all "staging" environments should use the same cookie name regardless of which AWS regions it is deployed to. | `bottomtime` |    No    |
 | `enable_places_api`    | Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed.                                                                                                             | `false`      |    No    |
 | `env`                  | The environment in which the resources are being created. E.g. dev, stage, prod, etc.                                                                                                                                                                           |              |   Yes    |
+| `keepalive_interval`   | The interval (in minutes) at which the keep-alive Lambda function should be run. It will ping the site homepage to keep the lambdas warmed up to avoid cold starts.                                                                                             | `30`         |          |
 | `log_level`            | The level of verbosity at which events will be written to the log stream. One of `trace`, `debug`, `info`, `warn`, `error`, or `fatal`.                                                                                                                         | `info`       |    No    |
 | `log_retention_days`   | The number of days to retain log events in the Cloudwatch log groups.                                                                                                                                                                                           | `7`          |    No    |
 | `media_bucket`         | Name of the AWS S3 bucket where user-generated media (video, pictures, etc.) will be stored. This needs to be set to the name of the S3 bucket from step 1.                                                                                                     |              |   Yes    |

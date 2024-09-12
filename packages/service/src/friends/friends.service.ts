@@ -2,12 +2,10 @@ import {
   FriendDTO,
   FriendRequestDTO,
   FriendRequestDirection,
-  FriendsSortBy,
   ListFriendRequestsParams,
   ListFriendRequestsResponseDTO,
   ListFriendsParams,
   ListFriendsResponseDTO,
-  SortOrder,
 } from '@bottomtime/api';
 
 import {
@@ -24,6 +22,8 @@ import { v4 as uuid } from 'uuid';
 
 import { FriendRequestEntity, FriendshipEntity, UserEntity } from '../data';
 import { User } from '../users';
+import { FriendQueryBuilder } from './friend-query-builder';
+import { FriendRequestQueryBuilder } from './friend-request-query-builder';
 
 // List Friends Types
 export type Friend = FriendDTO;
@@ -40,42 +40,14 @@ export type ListFriendRequestOptions = ListFriendRequestsParams & {
 export type ListFriendRequestsResults = ListFriendRequestsResponseDTO;
 
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
-const UserSelectFields: string[] = [
-  'id',
-  'username',
-  'memberSince',
-  'logBookSharing',
-  'avatar',
-  'name',
-  'location',
-];
-const FriendSelectFields = [
-  ...UserSelectFields.map((field) => `friend.${field}`),
-  'friendships.friendsSince',
-];
-const FriendRequestSelectFields = [
-  'requests.created',
-  'requests.expires',
-  'requests.accepted',
-  'requests.reason',
-  ...UserSelectFields.map((field) => `from.${field}`),
-  ...UserSelectFields.map((field) => `to.${field}`),
-];
+
 @Injectable()
 export class FriendsService {
-  private static DefaultListFriendsOptions: Partial<ListFriendsOptions> = {
-    skip: 0,
-    limit: 100,
-    sortBy: FriendsSortBy.FriendsSince,
-  };
-
   private readonly log: Logger = new Logger(FriendsService.name);
 
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
-    @InjectRepository(UserEntity)
-    private readonly Users: Repository<UserEntity>, // Do not delete. This is needed for TypeORM to work correctly.
     @InjectRepository(FriendshipEntity)
     private readonly Friends: Repository<FriendshipEntity>,
     @InjectRepository(FriendRequestEntity)
@@ -127,39 +99,11 @@ export class FriendsService {
   }
 
   async listFriends(options: ListFriendsOptions): Promise<ListFriendsResults> {
-    options = {
-      ...FriendsService.DefaultListFriendsOptions,
-      ...options,
-    };
-
-    let sortBy: string;
-    let sortOrder: SortOrder | undefined = options.sortOrder;
-
-    switch (options.sortBy) {
-      case FriendsSortBy.FriendsSince:
-        sortBy = 'friendships.friendsSince';
-        sortOrder ||= SortOrder.Descending;
-        break;
-
-      case FriendsSortBy.MemberSince:
-        sortBy = 'friend.memberSince';
-        sortOrder ||= SortOrder.Descending;
-        break;
-
-      case FriendsSortBy.Username:
-      default:
-        sortBy = 'friend.username';
-        sortOrder ||= SortOrder.Ascending;
-        break;
-    }
-
-    const query = this.Friends.createQueryBuilder('friendships')
-      .innerJoin('friendships.friend', 'friend')
-      .where('friendships.user = :userId', { userId: options.userId })
-      .select(FriendSelectFields)
-      .orderBy(sortBy, sortOrder === SortOrder.Descending ? 'DESC' : 'ASC')
-      .offset(options.skip)
-      .limit(options.limit ?? 100);
+    const query = new FriendQueryBuilder(this.Friends)
+      .withUserId(options.userId)
+      .withSortOrder(options.sortBy, options.sortOrder)
+      .withPagination(options.skip, options.limit)
+      .build();
 
     this.log.debug(
       `Attempting to retrieve friends for user with ID "${options.userId}"...`,
@@ -191,11 +135,10 @@ export class FriendsService {
     userId: string,
     friendId: string,
   ): Promise<Friend | undefined> {
-    const query = this.Friends.createQueryBuilder('friendships')
-      .innerJoin('friendships.friend', 'friend')
-      .where('friendships.user = :userId', { userId })
-      .andWhere('friendships.friend = :friendId', { friendId })
-      .select(FriendSelectFields);
+    const query = new FriendQueryBuilder(this.Friends)
+      .withUserId(userId)
+      .withFriendId(friendId)
+      .build();
 
     this.log.debug(`Attempting to retrieve friend with ID "${friendId}"...`);
     this.log.verbose(query.getSql());
@@ -228,45 +171,12 @@ export class FriendsService {
   async listFriendRequests(
     options: ListFriendRequestOptions,
   ): Promise<ListFriendRequestsResults> {
-    let query = this.FriendRequests.createQueryBuilder('requests')
-      .innerJoin('requests.from', 'from')
-      .innerJoin('requests.to', 'to')
-      .select(FriendRequestSelectFields)
-      .orderBy('requests.created', 'DESC')
-      .offset(options.skip)
-      .limit(options.limit || 100);
-
-    if (options.showAcknowledged !== true) {
-      query = query.andWhere('requests.accepted IS NULL');
-    }
-
-    if (!options.showExpired) {
-      query = query.andWhere('requests.expires > :now', {
-        now: new Date(),
-      });
-    }
-
-    switch (options.direction) {
-      case FriendRequestDirection.Incoming:
-        query = query.andWhere('requests.to = :userId', {
-          userId: options.userId,
-        });
-        break;
-
-      case FriendRequestDirection.Outgoing:
-        query = query.andWhere('requests.from = :userId', {
-          userId: options.userId,
-        });
-        break;
-
-      case FriendRequestDirection.Both:
-      default:
-        query = query.andWhere(
-          '(requests.from = :userId OR requests.to = :userId)',
-          { userId: options.userId },
-        );
-        break;
-    }
+    const query = new FriendRequestQueryBuilder(this.FriendRequests)
+      .withAcknowledged(options.showAcknowledged)
+      .withExpired(options.showExpired)
+      .withUser(options.userId, options.direction)
+      .withPagination(options.skip, options.limit)
+      .build();
 
     this.log.debug(
       `Listing friend requests for user with ID "${options.userId}"...`,
@@ -287,18 +197,9 @@ export class FriendsService {
     userId: string,
     friendId: string,
   ): Promise<FriendRequest | undefined> {
-    const query = this.FriendRequests.createQueryBuilder('requests')
-      .innerJoin('requests.from', 'from')
-      .innerJoin('requests.to', 'to')
-      .select(FriendRequestSelectFields)
-      .where('requests.from = :userId AND requests.to = :friendId', {
-        userId,
-        friendId,
-      })
-      .orWhere('requests.from = :friendId AND requests.to = :userId', {
-        userId,
-        friendId,
-      });
+    const query = new FriendRequestQueryBuilder(this.FriendRequests)
+      .withRequest(userId, friendId)
+      .build();
 
     this.log.debug(
       `Attempting to retrieve friend request between users "${userId}" and "${friendId}"...`,

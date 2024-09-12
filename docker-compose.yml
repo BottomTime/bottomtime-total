@@ -50,6 +50,9 @@ services:
       - BT_AWS_SQS_EMAIL_QUEUE_URL=http://elasticmq:9324/000000000000/emails
       - BT_AWS_SQS_ENDPOINT=http://elasticmq:9324/
       - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
+    entrypoint: /app/packages/service/bootstrap-docker.sh
+    command: []
+    working_dir: /app/packages/service
     depends_on:
       s3:
         condition: service_started
@@ -93,6 +96,9 @@ services:
       - packages/web/.env
     environment:
       - BTWEB_API_URL=http://bottomtime-service:4800/
+    entrypoint: /app/packages/web/bootstrap-docker.sh
+    command: []
+    working_dir: /app/packages/web
     depends_on:
       service:
         condition: service_healthy

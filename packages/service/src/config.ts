@@ -16,8 +16,6 @@ type LogLevel = z.infer<typeof LogLevelSchema>;
 
 export interface AppConfig {
   aws: {
-    accessKeyId: string;
-    secretAccessKey: string;
     region: string;
     s3: {
       mediaBucket: string;
@@ -69,7 +67,6 @@ export interface AppConfig {
   adminEmail: string;
   baseUrl: string;
   configCatSdkKey: string;
-  fastImageResize: boolean;
   friendsLimit: number;
   isProduction: boolean;
   env: string;
@@ -83,8 +80,6 @@ export interface AppConfig {
 const ConfigSchema = z
   .object({
     // AWS
-    AWS_ACCESS_KEY_ID: z.string().min(1),
-    AWS_SECRET_ACCESS_KEY: z.string().min(1),
     AWS_REGION: z.string().default('us-east-1'),
     BT_AWS_S3_ENDPOINT: z.string().optional(),
     BT_AWS_MEDIA_BUCKET: z.string().default('bottomtime-media-local'),
@@ -134,7 +129,6 @@ const ConfigSchema = z
     BT_ADMIN_EMAIL: z.string().default('admin@bottomti.me'),
     BT_BASE_URL: z.string().url().default('http://localhost:4850'),
     BT_CONFIGCAT_SDK_KEY: z.string().default(''),
-    BT_FAST_IMAGE_RESIZE: BooleanString.default('false'),
     BT_FRIENDS_LIMIT: z.coerce.number().int().min(1).max(5000).default(1000),
     BT_LOG_LEVEL: LogLevelSchema.default('debug'),
     BT_PASSWORD_SALT_ROUNDS: z.coerce.number().int().min(1).default(15),
@@ -149,8 +143,6 @@ const ConfigSchema = z
   })
   .transform<AppConfig>((env) => ({
     aws: {
-      accessKeyId: env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
       region: env.AWS_REGION,
       s3: {
         mediaBucket: env.BT_AWS_MEDIA_BUCKET,
@@ -202,7 +194,6 @@ const ConfigSchema = z
     adminEmail: env.BT_ADMIN_EMAIL,
     baseUrl: env.BT_BASE_URL,
     configCatSdkKey: env.BT_CONFIGCAT_SDK_KEY,
-    fastImageResize: env.BT_FAST_IMAGE_RESIZE,
     friendsLimit: env.BT_FRIENDS_LIMIT,
     isProduction: env.NODE_ENV === 'production',
     env: env.NODE_ENV,
