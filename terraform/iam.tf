@@ -124,3 +124,21 @@ resource "aws_iam_role_policy_attachment" "keepalive_lambda_logging" {
   role       = aws_iam_role.keepalive_lambda_fn.name
   policy_arn = local.lambda_exec_policy_arn
 }
+
+### Scheduler
+data "aws_iam_policy_document" "scheduler_assume_role" {
+  statement {
+    sid     = "1"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["scheduler.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "scheduler_role" {
+  name               = "bt_scheduler_${var.env}_${data.aws_region.current.name}"
+  assume_role_policy = data.aws_iam_policy_document.scheduler_assume_role.json
+}
