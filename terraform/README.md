@@ -12,6 +12,7 @@ Terraform will need to run as an IAM user with sufficient permission to deploy t
 
 - `AmazonAPIGatewayAdministrator`
 - `AmazonEC2ContainerRegistryFullAccess`
+- `AmazonEventBridgeSchedulerFullAccess`
 - `AmazonRoute53FullAccess`
 - `AmazonS3FullAccess`
 - `AWSCertificateManagerReadOnly`
