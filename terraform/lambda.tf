@@ -74,8 +74,6 @@ resource "aws_lambda_function" "ssr" {
   package_type  = "Image"
 
   description = "BottomTime Server-Side Render Lambda Function"
-  handler     = "sls-entry.handler"
-  runtime     = "nodejs20.x"
   timeout     = 30
 
   logging_config {

@@ -15,7 +15,7 @@ resource "aws_scheduler_schedule" "keepalive" {
   }
 
   schedule_expression_timezone = "UTC"
-  schedule_expression          = "rate(x minutes)"
+  schedule_expression          = "rate(${var.keepalive_interval} minutes)"
 
   target {
     arn      = aws_lambda_function.keepalive.arn
