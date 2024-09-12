@@ -39,7 +39,7 @@ commands:
           command: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com
             docker build -t bottomtime-service -f Dockerfile.service .
-            docker build -t bottomtime-web -f Dockerfile.web .
+            NODE_ENV=<<parameters.env>> docker build -t bottomtime-web -f Dockerfile.web .
             docker tag bottomtime-service:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:<<parameters.env>>-latest
             docker tag bottomtime-web:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:<<parameters.env>>-latest
             docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:<<parameters.env>>-latest
