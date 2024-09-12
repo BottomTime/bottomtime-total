@@ -39,8 +39,11 @@ commands:
           command: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com
             docker build -t bottomtime-service -f Dockerfile.service .
+            docker build -t bottomtime-web -f Dockerfile.web .
             docker tag bottomtime-service:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:<<parameters.env>>-latest
+            docker tag bottomtime-web:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:<<parameters.env>>-latest
             docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:<<parameters.env>>-latest
+            docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:<<parameters.env>>-latest
 
   deploy_env:
     parameters:
@@ -318,6 +321,14 @@ jobs:
           var_file: vars/e2e.tfvars
           vite_mode: e2e
 
+  docker_staging:
+    docker:
+      - image: cimg/base:2023.06
+    resource_class: arm.medium
+    steps:
+      - deploy_docker:
+          env: staging
+
   deploy_staging:
     docker:
       - image: cimg/node:20.14
@@ -329,6 +340,14 @@ jobs:
           state_key: $AWS_REGION.staging.tfvars
           var_file: vars/staging.tfvars
           vite_mode: staging
+
+  docker_production:
+    docker:
+      - image: cimg/base:2023.06
+    resource_class: arm.medium
+    steps:
+      - deploy_docker:
+          env: production
 
   deploy_production:
     docker:
@@ -390,28 +409,38 @@ workflows:
             - test_web
 
       # 4) Deployment (branch dependent)
-      - deploy_staging:
+      - docker_staging:
           requires:
             - report_coverage
             - test_e2e
           context:
             - bt-aws-dev
-            - bt-postgres-staging
-            - bt-smtp-dev
           filters:
             branches:
               only:
                 - master
+      - deploy_staging:
+          requires:
+            - docker_staging
+          context:
+            - bt-aws-dev
+            - bt-postgres-staging
+            - bt-smtp-dev
 
-      - deploy_production:
+      - docker_production:
           requires:
             - report_coverage
             - test_e2e
           context:
             - bt-aws-dev
-            - bt-postgres-prod
-            - bt-smtp-dev
           filters:
             branches:
               only:
                 - production
+      - deploy_production:
+          requires:
+            - docker_production
+          context:
+            - bt-aws-dev
+            - bt-postgres-prod
+            - bt-smtp-dev

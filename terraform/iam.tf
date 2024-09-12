@@ -74,6 +74,7 @@ resource "aws_iam_role_policy_attachment" "service_sqs_queue_access" {
   policy_arn = aws_iam_policy.sqs_queue_access.arn
 }
 
+## FRONT-END SSR
 resource "aws_iam_role" "ssr_lambda_fn" {
   name               = "bt_ssr_${data.aws_region.current.name}_${var.env}"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
@@ -84,6 +85,7 @@ resource "aws_iam_role_policy_attachment" "ssr_lambda_logging" {
   policy_arn = local.lambda_exec_policy_arn
 }
 
+### EMAIL SERVICE
 resource "aws_iam_role" "emails_lambda_fn" {
   name               = "bt_emails_${var.env}_${data.aws_region.current.name}"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
@@ -110,4 +112,15 @@ resource "aws_iam_policy" "emails_sqs_access" {
 resource "aws_iam_role_policy_attachment" "email_service_queue_access" {
   role       = aws_iam_role.emails_lambda_fn.name
   policy_arn = aws_iam_policy.emails_sqs_access.arn
+}
+
+### KEEPALIVE FUNCTION
+resource "aws_iam_role" "keepalive_lambda_fn" {
+  name               = "bt_keepalive_${var.env}_${data.aws_region.current.name}"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "keepalive_lambda_logging" {
+  role       = aws_iam_role.keepalive_lambda_fn.name
+  policy_arn = local.lambda_exec_policy_arn
 }

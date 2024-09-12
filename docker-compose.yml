@@ -96,6 +96,9 @@ services:
       - packages/web/.env
     environment:
       - BTWEB_API_URL=http://bottomtime-service:4800/
+    entrypoint: /app/packages/web/bootstrap-docker.sh
+    command: []
+    working_dir: /app/packages/web
     depends_on:
       service:
         condition: service_healthy

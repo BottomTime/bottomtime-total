@@ -1,0 +1,10 @@
+{
+  "name": "@bottomtime/keepalive",
+  "version": "1.0.0",
+  "description": "BottomTime Keep-Alive Lambda Function",
+  "main": "index.js",
+  "author": "Chris Carleton <mrchriscarleton@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "yarn@4.3.0"
+}

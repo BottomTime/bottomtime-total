@@ -1,10 +1,4 @@
 ### BACKEND API
-data "archive_file" "service" {
-  type        = "zip"
-  output_path = "${path.module}/archive/service.zip"
-  source_dir  = "${path.module}/../packages/service/dist/"
-}
-
 resource "aws_lambda_function" "service" {
   function_name = "bottomtime-service-${var.env}"
   role          = aws_iam_role.service_lambda_fn.arn
@@ -71,18 +65,13 @@ resource "aws_lambda_permission" "allow_service_api_call" {
 }
 
 ### FRONTEND SSR
-data "archive_file" "ssr" {
-  type        = "zip"
-  output_path = "${path.module}/archive/ssr.zip"
-  source_dir  = "${path.module}/../packages/web/dist/"
-}
-
 resource "aws_lambda_function" "ssr" {
   function_name = "bottomtime-ssr-${var.env}"
   role          = aws_iam_role.ssr_lambda_fn.arn
 
-  filename         = data.archive_file.ssr.output_path
-  source_code_hash = data.archive_file.ssr.output_base64sha256
+  image_uri     = data.aws_ecr_image.web.image_uri
+  architectures = ["arm64"]
+  package_type  = "Image"
 
   description = "BottomTime Server-Side Render Lambda Function"
   handler     = "sls-entry.handler"
@@ -175,4 +164,42 @@ resource "aws_lambda_event_source_mapping" "email_queue" {
   event_source_arn = aws_sqs_queue.email.arn
   enabled          = true
   function_name    = aws_lambda_function.email_service.arn
+}
+
+### KEEP-ALIVE FUNCTION
+data "archive_file" "keepalive" {
+  type        = "zip"
+  output_path = "${path.module}/archive/keepalive.zip"
+  source_dir  = "${path.module}/../packages/keepalive/"
+}
+
+resource "aws_lambda_function" "keepalive" {
+  function_name = "bottomtime-keepalive-${var.env}"
+  role          = aws_iam_role.keepalive_lambda_fn.arn
+
+  filename         = data.archive_file.keepalive.output_path
+  source_code_hash = data.archive_file.keepalive.output_base64sha256
+
+  description = "BottomTime Keep-Alive Lambda Function"
+  handler     = "index.handler"
+  runtime     = "nodejs20.x"
+  timeout     = 60
+
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.keepalive_logs.id
+    log_format = "JSON"
+  }
+
+  tags = {
+    Environment = var.env
+    Region      = data.aws_region.current.name
+  }
+
+  environment {
+    variables = {
+      BT_PING_URL = "https://${var.web_domain}.${var.root_domain}/"
+    }
+  }
+
+  depends_on = [aws_cloudwatch_log_group.keepalive_logs, aws_iam_role_policy_attachment.keepalive_lambda_logging]
 }
