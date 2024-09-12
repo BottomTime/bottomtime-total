@@ -28,4 +28,4 @@ ENV NPM_CONFIG_CACHE=/tmp/.npm
 
 COPY --from=build /app/ /app/
 
-CMD [ "/app/packages/web/dist/sls-entry.js" ]
+CMD [ "/app/packages/web/dist/sls-entry.handler" ]
