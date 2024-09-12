@@ -2,7 +2,7 @@
   "name": "@bottomtime/keepalive",
   "version": "1.0.0",
   "description": "BottomTime Keep-Alive Lambda Function",
-  "main": "index.js",
+  "main": "index.mjs",
   "author": "Chris Carleton <mrchriscarleton@gmail.com>",
   "license": "MIT",
   "private": true,
