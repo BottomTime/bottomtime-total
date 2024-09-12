@@ -2717,6 +2717,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@bottomtime/keepalive@workspace:packages/keepalive":
+  version: 0.0.0-use.local
+  resolution: "@bottomtime/keepalive@workspace:packages/keepalive"
+  languageName: unknown
+  linkType: soft
+
 "@bottomtime/service@workspace:*, @bottomtime/service@workspace:packages/service":
   version: 0.0.0-use.local
   resolution: "@bottomtime/service@workspace:packages/service"
