@@ -91,8 +91,8 @@ resource "aws_lambda_function" "ssr" {
       BTWEB_API_URL                = "https://${var.api_domain}.${var.root_domain}/"
       BTWEB_COOKIE_NAME            = var.cookie_name
       BTWEB_LOG_LEVEL              = var.log_level
-      BTWEB_VITE_CONFIGCAT_API_KEY = var.configcat_sdk_key
       BTWEB_VITE_BASE_URL          = "https://${var.web_domain}.${var.root_domain}/"
+      BTWEB_VITE_CONFIGCAT_API_KEY = var.configcat_sdk_key
       BTWEB_VITE_ENABLE_PLACES_API = "${var.enable_places_api}"
       BTWEB_VITE_GOOGLE_API_KEY    = local.secrets.googleApiKey
       NODE_ENV                     = "production"

@@ -4,7 +4,6 @@ RUN corepack enable
 FROM base AS build
 
 ENV NPM_CONFIG_CACHE=/tmp/.npm
-ENV NODE_ENV=production
 WORKDIR /app
 
 COPY package.json yarn.lock .yarnrc.yml nx.json lerna.json ./
