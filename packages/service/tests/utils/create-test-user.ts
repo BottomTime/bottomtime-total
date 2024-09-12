@@ -45,6 +45,7 @@ const UserJsonSchema = z.object({
     .default(TemperatureUnit.Celsius),
   role: z.nativeEnum(UserRole),
   startedDiving: z.string().nullable().default(null),
+  stripeCustomerId: z.string().nullable().default(null),
   username: z.string(),
   usernameLowered: z.string(),
   weightUnit: z.nativeEnum(WeightUnit).default(WeightUnit.Kilograms),

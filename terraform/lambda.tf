@@ -15,7 +15,7 @@ resource "aws_lambda_function" "service" {
 
   description = "BottomTime Backend Service Lambda Function"
   timeout     = 30
-  memory_size = 1024
+  memory_size = 512
 
   logging_config {
     log_group  = aws_cloudwatch_log_group.service_logs.id
@@ -43,7 +43,6 @@ resource "aws_lambda_function" "service" {
       BT_PASSWORD_SALT_ROUNDS    = "${var.password_salt_rounds}"
       BT_POSTGRES_REQUIRE_SSL    = "true"
       BT_POSTGRES_URI            = local.secrets.postgresUri
-      BT_SERVERLESS              = "true"
       BT_SESSION_COOKIE_DOMAIN   = "${var.web_domain}.${var.root_domain}"
       BT_SESSION_COOKIE_NAME     = local.cookie_name
       BT_SESSION_SECRET          = local.secrets.sessionSecret
@@ -55,7 +54,7 @@ resource "aws_lambda_function" "service" {
       BT_SMTP_USERNAME           = local.secrets.smtpUsername
       BT_STRIPE_SDK_KEY          = local.secrets.stripeSdkKey
       BT_STRIPE_WEBHOOK_SECRET   = local.secrets.stripeWebhookSecret
-      NODE_ENV                   = "production"
+      NODE_ENV                   = var.env
     }
   }
 

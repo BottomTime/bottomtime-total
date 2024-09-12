@@ -12,7 +12,7 @@ module.exports = {
   },
   target: 'node',
   devtool: isProduction ? 'source-map' : 'eval-source-map',
-  mode: isProduction ? 'production' : 'development',
+  mode: 'development', // This cannot be set to production. >:( The minification breaks TypeORM.
   module: {
     rules: [
       {
