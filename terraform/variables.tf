@@ -35,6 +35,12 @@ variable "env" {
   type        = string
 }
 
+variable "keepalive_interval" {
+  description = "Interval (in minutes) in which the keepalive function should be called."
+  type        = number
+  default     = 30
+}
+
 variable "log_level" {
   description = "The level of verbosity at which events will be written to the log stream."
   type        = string

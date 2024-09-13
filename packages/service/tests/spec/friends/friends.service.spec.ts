@@ -27,13 +27,8 @@ import { dataSource } from '../../data-source';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestFriendshipData from '../../fixtures/friends.json';
 import TestFriendData from '../../fixtures/user-search-data.json';
-import { InsertableUser, createTestUser } from '../../utils';
+import { createTestUser, parseUserJSON } from '../../utils';
 import { createTestFriendRequest } from '../../utils/create-test-friend-request';
-
-type InsertableFriendship = Omit<FriendshipEntity, 'user' | 'friend'> & {
-  user: InsertableUser;
-  friend: InsertableUser;
-};
 
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
 
@@ -78,16 +73,9 @@ describe('Friends Service', () => {
     Friends = dataSource.getRepository(FriendshipEntity);
     FriendRequests = dataSource.getRepository(FriendRequestEntity);
 
-    service = new FriendsService(dataSource, Users, Friends, FriendRequests);
-
-    userData = new UserEntity();
-    Object.assign(userData, TestUserData);
-
-    friendData = TestFriendData.map((data) => {
-      const user = new UserEntity();
-      Object.assign(user, data);
-      return user;
-    });
+    service = new FriendsService(dataSource, Friends, FriendRequests);
+    userData = createTestUser(TestUserData);
+    friendData = TestFriendData.map(parseUserJSON);
   });
 
   describe('when listing friends', () => {
@@ -104,17 +92,8 @@ describe('Friends Service', () => {
     });
 
     beforeEach(async () => {
-      await Users.save(userData);
-      await Users.createQueryBuilder()
-        .insert()
-        .into(UserEntity)
-        .values(friendData as InsertableUser[])
-        .execute();
-      await Friends.createQueryBuilder()
-        .insert()
-        .into(FriendshipEntity)
-        .values(friendships as InsertableFriendship[])
-        .execute();
+      await Users.save([userData, ...friendData]);
+      await Friends.save(friendships);
     });
 
     it('will list friends with default options', async () => {

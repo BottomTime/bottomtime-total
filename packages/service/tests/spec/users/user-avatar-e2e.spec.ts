@@ -170,7 +170,6 @@ describe('User Avatar E2E tests', () => {
     otherAuthHeader = await createAuthHeader(OtherUserId);
 
     Config.baseUrl = 'http://bottomti.me';
-    Config.fastImageResize = true;
     Config.aws.s3.mediaBucket = BucketName;
   });
 

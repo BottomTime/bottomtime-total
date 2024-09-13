@@ -11,10 +11,6 @@ import { Config } from '../config';
       useFactory() {
         return new S3Client({
           region: Config.aws.region,
-          credentials: {
-            accessKeyId: Config.aws.accessKeyId,
-            secretAccessKey: Config.aws.secretAccessKey,
-          },
           endpoint: Config.aws.s3.endpoint,
           forcePathStyle: !!Config.aws.s3.endpoint,
         });
@@ -24,10 +20,6 @@ import { Config } from '../config';
       provide: SQSClient,
       useFactory() {
         return new SQSClient({
-          credentials: {
-            accessKeyId: Config.aws.accessKeyId,
-            secretAccessKey: Config.aws.secretAccessKey,
-          },
           endpoint: Config.aws.sqs.endpoint,
           region: Config.aws.region,
         });

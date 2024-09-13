@@ -384,7 +384,7 @@ export class UserAvatarController {
     }
 
     this.log.debug('Processing uploaded avatar image...');
-    const imageBuilder256 = await ImageBuilder.fromBuffer(avatar.buffer);
+    const imageBuilder256 = new ImageBuilder(avatar.buffer);
 
     if ('left' in params) {
       this.log.debug('Cropping uploaded image to specified region...');
@@ -396,9 +396,13 @@ export class UserAvatarController {
       );
     }
 
-    const imageBuilder128 = imageBuilder256.clone();
-    const imageBuilder64 = imageBuilder256.clone();
-    const imageBuilder32 = imageBuilder256.clone();
+    const [imageBuilder128, imageBuilder64, imageBuilder32] = await Promise.all(
+      [
+        imageBuilder256.clone(),
+        imageBuilder256.clone(),
+        imageBuilder256.clone(),
+      ],
+    );
 
     this.log.debug(
       'Resizing uploaded avatar to 256x256, 128x128, 64x64, and 32x32...',

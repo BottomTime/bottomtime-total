@@ -8,6 +8,8 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
+import { resolve } from 'path';
+
 import { expect, test } from '../fixtures';
 
 const TestPassword = '(*Hkho8)*H)JJh989';
@@ -67,6 +69,35 @@ test.describe('Account and Profile Management', () => {
     expect(user.profile.location).toBe(UserProfile.location);
     expect(user.profile.name).toBe(UserProfile.name);
     expect(user.profile.startedDiving).toBe(UserProfile.startedDiving);
+  });
+
+  test('will allow users to upload an avatar', async ({ page }) => {
+    await page.goto('/profile');
+
+    await page.getByTestId('btn-change-avatar').click();
+    await page
+      .getByTestId('dialog-content')
+      .getByTestId('upload-avatar')
+      .setInputFiles(resolve(__dirname, '../fixtures/test-image.jpg'));
+    await page
+      .getByTestId('dialog-modal')
+      .getByTestId('btn-save-avatar')
+      .click();
+
+    await expect(page.getByTestId('dialog-content')).not.toBeVisible();
+    await expect(page.getByTestId('profile-avatar')).toHaveAttribute(
+      'src',
+      `/api/users/${TestUser.username}/avatar/128x128`,
+    );
+
+    await page.getByTestId('btn-delete-avatar').click();
+    await page.getByTestId('dialog-confirm-button').click();
+
+    await expect(page.getByTestId('dialog-content')).not.toBeVisible();
+    await expect(page.getByTestId('profile-avatar')).toHaveAttribute(
+      'src',
+      `https://ui-avatars.com/api/?name=${TestUser.username}`,
+    );
   });
 
   test('will allow users to update their settings', async ({ api, page }) => {
