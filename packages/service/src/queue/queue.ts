@@ -1,6 +1,10 @@
 import { QueueService } from './queue.service';
 
-export class Queue {
+export interface IQueue {
+  add(payload: string): Promise<string | undefined>;
+}
+
+export class Queue implements IQueue {
   constructor(
     private readonly service: QueueService,
     private readonly queueUrl: string,

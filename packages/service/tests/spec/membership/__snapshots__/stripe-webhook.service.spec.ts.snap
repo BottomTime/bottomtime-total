@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Stripe webhook handler service will handle a subscription cancelation 1`] = `
+{
+  "options": {
+    "title": "Subscription Canceled",
+    "type": "membershipCanceled",
+    "user": {
+      "email": "user@email.com",
+      "profile": {
+        "name": "User Man",
+      },
+      "username": "userman.32",
+    },
+  },
+  "subject": "Important! Your membership has been canceled",
+  "to": {
+    "cc": "admin@bottomti.me",
+    "to": "user@email.com",
+  },
+}
+`;

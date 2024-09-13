@@ -1,7 +1,13 @@
 import { AccountTier } from '@bottomtime/api';
 import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 
 import dayjs from 'dayjs';
 import Stripe from 'stripe';
@@ -9,7 +15,7 @@ import { URL } from 'url';
 
 import { Queues } from '../common';
 import { Config } from '../config';
-import { InjectQueue, Queue } from '../queue';
+import { IQueue, InjectQueue } from '../queue';
 import { User, UsersService } from '../users';
 import { ProFeature, ShopOwnerFeature } from './constants';
 
@@ -40,7 +46,7 @@ export class StripeWebhookService {
   constructor(
     @Inject(Stripe) private readonly stripe: Stripe,
     @Inject(UsersService) private readonly users: UsersService,
-    @InjectQueue(Queues.email) private readonly emailQueue: Queue,
+    @InjectQueue(Queues.email) private readonly emailQueue: IQueue,
   ) {}
 
   /**
@@ -49,11 +55,17 @@ export class StripeWebhookService {
    * @param signature The contents of the `Stripe-Signature` header.
    */
   async handleWebhookEvent(payload: string, signature: string): Promise<void> {
-    const event = this.stripe.webhooks.constructEvent(
-      payload,
-      signature,
-      Config.stripe.webhookSigningSecret,
-    );
+    let event: Stripe.Event;
+    try {
+      event = this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        Config.stripe.webhookSigningSecret,
+      );
+    } catch (error) {
+      this.log.error(error);
+      throw new BadRequestException('Invalid Stripe webhook signature.');
+    }
 
     this.log.debug({ event });
 
@@ -100,10 +112,7 @@ export class StripeWebhookService {
   }
 
   /* SUBSCRIPTIONS */
-  /**
-   * The user's subscription has been canceled in Stripe. (Either manually or for non-payment.)
-   * Revoke their membership priveleges.
-   */
+  /** Occurs whenever a customer’s subscription ends. */
   async onSubscriptionCanceled(e: Stripe.Event): Promise<void> {
     if (e.type !== 'customer.subscription.deleted') return;
 
@@ -135,22 +144,23 @@ export class StripeWebhookService {
   }
 
   /**
-   * Customer's subscription (and payments) were paused in Stripe. It may be resumed at a later date but
-   * for now we need to revoke their paid membership priveleges.
+   * Occurs whenever a customer’s subscription is paused. Only applies when subscriptions enter `status=paused`,
+   * not when payment collection is paused.
    */
-  private async onSubscriptionPaused(e: Stripe.Event): Promise<void> {
+  async onSubscriptionPaused(e: Stripe.Event): Promise<void> {
     if (e.type !== 'customer.subscription.paused') return;
 
     const user = await this.getUserFromStripeCustomer(e.data.object.customer);
     await user.changeMembership(AccountTier.Basic);
 
     this.log.log(
-      `Membership subscription was paused for user "${user.username}". This occurred via Stripe.`,
+      `Membership subscription was paused for user "${user.username}". Payment info is likely missing after a trial period ended.`,
     );
   }
 
   /**
-   * A paused subscription was resumed via Stripe. We need to reinstate the user's paid membership privileges.
+   * Occurs whenever a customer’s subscription is no longer paused. Only applies when a `status=paused` subscription is
+   * resumed, not when payment collection is resumed.
    */
   private async onSubscriptionResumed(e: Stripe.Event): Promise<void> {
     if (e.type !== 'customer.subscription.resumed') return;
@@ -217,10 +227,7 @@ export class StripeWebhookService {
   }
 
   /* ENTITLEMENTS */
-  /**
-   * User entitlements have changed. This will correspond to a change in account tier.
-   * Look up the user by their Stripe customer ID and update their account tier accordingly.
-   */
+  /** Occurs whenever a customer’s entitlements change. */
   private async onEntitlementsChanged(e: Stripe.Event): Promise<void> {
     if (e.type !== 'entitlements.active_entitlement_summary.updated') return;
     const customer = e.data.object.customer;
