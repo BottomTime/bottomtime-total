@@ -1,10 +1,4 @@
-import {
-  AccountTier,
-  ApiClient,
-  Fetcher,
-  User,
-  UserDTO,
-} from '@bottomtime/api';
+import { ApiClient, Fetcher, User, UserDTO } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import {
@@ -22,7 +16,6 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../../src/api-client';
 import ManageAccount from '../../../../src/components/users/manage-account.vue';
 import ManagePassword from '../../../../src/components/users/manage-password.vue';
-import ManageMembership from '../../../../src/components/users/membership/manage-membership.vue';
 import UsernameAndEmail from '../../../../src/components/users/username-and-email.vue';
 import { FeaturesServiceKey } from '../../../../src/featrues';
 import { ConfigCatClientMock } from '../../../config-cat-client-mock';

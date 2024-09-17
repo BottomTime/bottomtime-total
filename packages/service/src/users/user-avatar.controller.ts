@@ -324,7 +324,7 @@ export class UserAvatarController {
    *         description: |
    *           The request could not be completed because there was an issue with the request body. Please check the the response for more information.
    *           Likely causes:
-   *             * The image was missing, too large, or not a valid image format.
+   *             * The image was missing or was not a valid image format.
    *             * The coordinates of the region to crop were invalid (e.g. negative values, too large, etc.)
    *             * The bounding box formed by the coordinates would not be fully contained in the image.
    *         content:
@@ -345,6 +345,12 @@ export class UserAvatarController {
    *               $ref: "#/components/schemas/Error"
    *       "404":
    *         description: The request failed because the target user does not exist.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "413":
+   *         description: The request failed because the uploaded image was too large. The maximum size is 10Mb.
    *         content:
    *           application/json:
    *             schema:

@@ -1,3 +1,2 @@
-export * from './payment-required-exception';
-
 export * from './membership.module';
+export * from './membership.service';

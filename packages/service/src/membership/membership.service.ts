@@ -13,6 +13,7 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
@@ -53,72 +54,98 @@ type ProductsList = {
   features: Set<string>;
 }[];
 
+const InitError = new Error(
+  'Price or product information is not available. Did you call onModuleInit()? Are the prices and products correctly registered in Stripe?',
+);
+
 @Injectable()
 export class MembershipService implements OnModuleInit {
   private readonly log = new Logger(MembershipService.name);
 
-  private proMemberhsip: Stripe.Product | undefined;
-  private proMembershipPrice: Stripe.Price | undefined;
+  private _proMemberhsip: Stripe.Product | undefined;
+  private _proMembershipPrice: Stripe.Price | undefined;
 
-  private shopOwnerMembership: Stripe.Product | undefined;
-  private shopOwnerMembershipPrice: Stripe.Price | undefined;
+  private _shopOwnerMembership: Stripe.Product | undefined;
+  private _shopOwnerMembershipPrice: Stripe.Price | undefined;
 
-  constructor(@Inject(Stripe) private readonly stripe: Stripe) {}
+  private readonly priceMap: Record<AccountTier, Stripe.Price | null>;
 
+  constructor(@Inject(Stripe) private readonly stripe: Stripe) {
+    this.priceMap = {
+      [AccountTier.Basic]: null,
+      [AccountTier.Pro]: null,
+      [AccountTier.ShopOwner]: null,
+    };
+  }
+
+  /** Request and cache price/product information on our membership tiers from Stripe. */
   async onModuleInit(): Promise<void> {
     this.log.debug('Retrieving prices and products from Stripe...');
     try {
-      const prices = await this.stripe.prices.list({
+      const { data: prices } = await this.stripe.prices.list({
         lookup_keys: [ProMembershipYearlyPrice, ShopOwnerMembershipYearlyPrice],
         expand: ['data.product'],
       });
 
-      prices.data.forEach((price) => {
+      prices.forEach((price) => {
         if (price.lookup_key === ProMembershipYearlyPrice) {
-          this.proMembershipPrice = price;
-          this.proMemberhsip = price.product as Stripe.Product;
+          this._proMembershipPrice = price;
+          this._proMemberhsip = price.product as Stripe.Product;
         }
 
         if (price.lookup_key === ShopOwnerMembershipYearlyPrice) {
-          this.shopOwnerMembershipPrice = price;
-          this.shopOwnerMembership = price.product as Stripe.Product;
+          this._shopOwnerMembershipPrice = price;
+          this._shopOwnerMembership = price.product as Stripe.Product;
         }
       });
+
+      this.priceMap[AccountTier.Pro] = this.proMembershipPrice;
+      this.priceMap[AccountTier.ShopOwner] = this.shopOwnerMembershipPrice;
     } catch (error) {
       this.log.error(error);
     }
   }
 
+  private get proMemberhsip(): Stripe.Product {
+    if (!this._proMemberhsip) throw InitError;
+    return this._proMemberhsip;
+  }
+
+  private get proMembershipPrice(): Stripe.Price {
+    if (!this._proMembershipPrice) throw InitError;
+    return this._proMembershipPrice;
+  }
+
+  private get shopOwnerMembership(): Stripe.Product {
+    if (!this._shopOwnerMembership) throw InitError;
+    return this._shopOwnerMembership;
+  }
+
+  private get shopOwnerMembershipPrice(): Stripe.Price {
+    if (!this._shopOwnerMembershipPrice) throw InitError;
+    return this._shopOwnerMembershipPrice;
+  }
+
   private listMembershipProducts(): ProductsList {
     return [
       {
-        product: this.proMemberhsip!,
-        price: this.proMembershipPrice!,
+        product: this.proMemberhsip,
+        price: this.proMembershipPrice,
         features: new Set([ProFeature]),
       },
       {
-        product: this.shopOwnerMembership!,
-        price: this.shopOwnerMembershipPrice!,
+        product: this.shopOwnerMembership,
+        price: this.shopOwnerMembershipPrice,
         features: new Set([ProFeature, ShopOwnerFeature]),
       },
     ];
   }
 
   private getPriceForAccountTier(accountTier: AccountTier): Stripe.Price {
-    let price: Stripe.Price | undefined;
-
-    switch (accountTier) {
-      case AccountTier.Pro:
-        price = this.proMembershipPrice;
-        break;
-      case AccountTier.ShopOwner:
-        price = this.shopOwnerMembershipPrice;
-        break;
-    }
-
+    const price = this.priceMap[accountTier];
     if (!price) {
       throw new BadRequestException(
-        'Unable to retrieve price information for account tier',
+        `No price information available for account tier: ${accountTier}`,
       );
     }
 
@@ -126,10 +153,6 @@ export class MembershipService implements OnModuleInit {
   }
 
   private async ensureStripeCustomer(user: User): Promise<Stripe.Customer> {
-    if (!user.email || !user.emailVerified) {
-      throw new ForbiddenException('User must have a verified email address');
-    }
-
     let customer: Stripe.Customer;
 
     if (user.stripeCustomerId) {
@@ -139,13 +162,18 @@ export class MembershipService implements OnModuleInit {
       );
 
       if (returnedCustomer.deleted) {
-        throw new Error(
+        // TODO: Should we provision a new Stripe customer here?? Might not be the safest thing to do.
+        throw new InternalServerErrorException(
           `Stripe customer with ID ${user.stripeCustomerId} was deleted and cannot be retrieved.`,
         );
       }
 
       customer = returnedCustomer;
     } else {
+      if (!user.email || !user.emailVerified) {
+        throw new ForbiddenException('User must have a verified email address');
+      }
+
       this.log.debug(
         `No Stripe customer associated with user "${user.username}". Creating one...`,
       );
@@ -171,6 +199,8 @@ export class MembershipService implements OnModuleInit {
       payment_settings: {
         save_default_payment_method: 'on_subscription',
       },
+      collection_method: 'charge_automatically',
+      proration_behavior: 'create_prorations',
       expand: ['latest_invoice.payment_intent'],
     });
 
@@ -182,15 +212,10 @@ export class MembershipService implements OnModuleInit {
     newAccountTier: AccountTier,
   ): Promise<Stripe.Subscription> {
     const price = this.getPriceForAccountTier(newAccountTier);
-    const subscription = customer.subscriptions?.data[0];
-    if (!subscription) {
-      throw new Error(
-        'No subscription found to update. Did you mean to create a subscription?',
-      );
-    }
-
+    const subscription = customer.subscriptions!.data[0];
     const updated = await this.stripe.subscriptions.update(subscription.id, {
       cancel_at_period_end: false,
+      proration_behavior: 'create_prorations',
       items: [{ id: subscription.items.data[0].id, price: price.id }],
     });
 
@@ -243,6 +268,17 @@ export class MembershipService implements OnModuleInit {
     return memberships;
   }
 
+  getAccountTierName(accountTier: AccountTier): string {
+    switch (accountTier) {
+      case AccountTier.Basic:
+        return 'Free Account';
+      case AccountTier.Pro:
+        return this._proMemberhsip?.name || 'Pro Membership';
+      case AccountTier.ShopOwner:
+        return this._shopOwnerMembership?.name || 'Shop Owner Account';
+    }
+  }
+
   async getMembershipStatus(user: User): Promise<MembershipStatusDTO> {
     this.log.debug(
       'Attempting to retrieve membership for user: ',
@@ -267,7 +303,8 @@ export class MembershipService implements OnModuleInit {
     this.log.debug('Retrieved customer: ', customer.id);
 
     if (customer.deleted) {
-      // Customer was deleted. Default to free tier.
+      // Customer was deleted. Default to free tier. (Ideally, customers should only be deleted from Stripe if
+      // the corresponding user is also removed from our database!)
       this.log.debug('Stripe customer was deleted. Defaulting to free tier.');
       return DefaultMembershipStatus;
     }
@@ -333,9 +370,16 @@ export class MembershipService implements OnModuleInit {
     user: User,
     newAccountTier: AccountTier,
   ): Promise<MembershipStatusDTO> {
+    if (user.accountTier === newAccountTier) {
+      // No change needed. This is a no-op.
+      return await this.getMembershipStatus(user);
+    }
+
     if (newAccountTier === AccountTier.Basic) {
       // Cancel an existing membership.
       await this.cancelMembership(user);
+      await user.changeMembership(AccountTier.Basic);
+      return await this.getMembershipStatus(user);
     }
 
     const customer = await this.ensureStripeCustomer(user);
@@ -348,15 +392,19 @@ export class MembershipService implements OnModuleInit {
       await this.createNewSubscription(customer, newAccountTier);
     }
 
-    await user.changeMembership(newAccountTier);
+    const updated = await this.getMembershipStatus(user);
+    if (
+      updated.status === MembershipStatus.Active ||
+      updated.status === MembershipStatus.Trialing
+    ) {
+      await user.changeMembership(newAccountTier);
+    }
 
     this.log.log(
       `Updated membership for user "${user.username}". New account tier is: ${newAccountTier}`,
     );
 
-    // TODO: Send an email to the user to confirm thier account status change.
-
-    return await this.getMembershipStatus(user);
+    return updated;
   }
 
   async createPaymentSession(
@@ -375,16 +423,20 @@ export class MembershipService implements OnModuleInit {
       },
     );
 
-    if (customer.deleted) return undefined;
+    if (customer.deleted) {
+      throw new InternalServerErrorException(
+        `Stripe customer "${user.stripeCustomerId}" was deleted. Associated with user "${user.username}".`,
+      );
+    }
 
     const subscription = customer.subscriptions?.data[0];
     if (!subscription) return undefined;
 
     const item = subscription.items.data[0];
     let product: Stripe.Product | undefined;
-    if (item.price.id === this.proMembershipPrice!.id) {
+    if (item.price.id === this.proMembershipPrice.id) {
       product = this.proMemberhsip;
-    } else if (item.price.id === this.shopOwnerMembershipPrice!.id) {
+    } else if (item.price.id === this.shopOwnerMembershipPrice.id) {
       product = this.shopOwnerMembership;
     }
 
@@ -430,9 +482,12 @@ export class MembershipService implements OnModuleInit {
       user.stripeCustomerId,
       { expand: ['subscriptions'] },
     );
+
     if (customer.deleted) {
       this.log.debug('Stripe customer was deleted. No subscription to cancel.');
-      return false;
+      throw new InternalServerErrorException(
+        `Stripe customer was deleted: "${user.stripeCustomerId}". Associated with user account "${user.username}".`,
+      );
     }
 
     const subscription = customer.subscriptions?.data[0];
@@ -444,14 +499,15 @@ export class MembershipService implements OnModuleInit {
     this.log.debug(
       `Cancelling subscription "${subscription.id}" for user "${user.username}"`,
     );
-    await this.stripe.subscriptions.cancel(subscription.id);
+    await this.stripe.subscriptions.cancel(subscription.id, {
+      prorate: true, // Make sure the user is refunded for the portion of the subscription they did not use.
+      invoice_now: true,
+    });
     await user.changeMembership(AccountTier.Basic);
 
     this.log.log(
       `Subscription (${subscription.id}) has been cancelled for user "${user.username}".`,
     );
-
-    // TODO: Send a confirmation email to the user.
 
     return true;
   }

@@ -19,6 +19,55 @@ describe('Email Service', () => {
   let mailClient: TestMailer;
 
   const generateEmailTestCases: Record<EmailType, () => EmailOptions> = {
+    [EmailType.Invoice]: () => ({
+      type: EmailType.Invoice,
+      title: 'New Invoice',
+      subtitle: 'W00T!',
+      user: TestUserData,
+      amounts: {
+        due: 'CAD$45.00',
+        paid: 'CAD$0.00',
+        remaining: 'CAD$45.00',
+      },
+      currency: 'CAD',
+      invoiceDate: 'July 20, 2026 4:25pm',
+      items: [
+        {
+          description: 'Membership',
+          quantity: 1,
+          unitPrice: 'CAD$45.00',
+          total: 'CAD$45.00',
+        },
+      ],
+      totals: {
+        subtotal: 'CAD$45.00',
+        taxes: 'CAD$2.75',
+        total: 'CAD$47.75',
+      },
+      period: {
+        start: 'July 20, 2026',
+        end: 'July 20, 2027',
+      },
+      downloadUrl: 'https://bottomti.me/invoices/1',
+    }),
+    [EmailType.MembershipCanceled]: () => ({
+      type: EmailType.MembershipCanceled,
+      title: 'Membership Canceled',
+      user: TestUserData,
+    }),
+    [EmailType.MembershipChanged]: () => ({
+      type: EmailType.MembershipChanged,
+      title: 'Membership Changed',
+      user: TestUserData,
+      previousTier: 'Gold',
+      newTier: 'Platinum',
+    }),
+    [EmailType.NewMembership]: () => ({
+      type: EmailType.NewMembership,
+      newTier: 'Pro Membership',
+      title: 'Membership Created',
+      user: TestUserData,
+    }),
     [EmailType.PaymentFailed]: () => ({
       type: EmailType.PaymentFailed,
       title: 'Payment Failed',
@@ -33,6 +82,12 @@ describe('Email Service', () => {
       title: 'Reset Password',
       user: TestUserData,
       resetPasswordUrl: `https://bottomti.me/resetPassword?user=${TestUserData.username}&token=abcd-1234`,
+    }),
+    [EmailType.TrialEnding]: () => ({
+      type: EmailType.TrialEnding,
+      title: 'Your Free Trial Is About To End',
+      user: TestUserData,
+      endDate: 'July 20, 2026',
     }),
     [EmailType.VerifyEmail]: () => ({
       type: EmailType.VerifyEmail,

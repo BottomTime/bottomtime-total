@@ -98,6 +98,7 @@ export function createTestUser(
   const data: Partial<UserEntity> = {
     id: options?.id ?? faker.string.uuid(),
 
+    accountTier: options?.accountTier ?? AccountTier.Basic,
     email,
     emailLowered: options?.emailLowered ?? email.toLowerCase(),
     emailVerified: options?.emailVerified ?? true,
@@ -134,6 +135,8 @@ export function createTestUser(
     temperatureUnit: options?.temperatureUnit ?? TemperatureUnit.Celsius,
     weightUnit: options?.weightUnit ?? WeightUnit.Kilograms,
     xp: options?.xp ?? faker.number.int({ min: 0, max: 10000 }),
+
+    stripeCustomerId: options?.stripeCustomerId ?? null,
   };
 
   if (typeof password === 'string') {

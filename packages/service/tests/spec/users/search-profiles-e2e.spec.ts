@@ -10,7 +10,6 @@ import { Queues } from '../../../src/common';
 import { FriendshipEntity, UserEntity } from '../../../src/data';
 import { QueueModule } from '../../../src/queue';
 import { UsersService } from '../../../src/users';
-import { UserController } from '../../../src/users/user.controller';
 import { UsersController } from '../../../src/users/users.controller';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';

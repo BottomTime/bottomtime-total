@@ -141,12 +141,17 @@ describe('User Avatar E2E tests', () => {
   let adminUser: UserEntity;
   let otherUser: UserEntity;
   let s3Client: S3Client;
+  let testImage: Buffer;
 
   let authHeader: [string, string];
   let adminAuthHeader: [string, string];
   let otherAuthHeader: [string, string];
 
   beforeAll(async () => {
+    testImage = await fs.readFile(
+      path.resolve(__dirname, '../../fixtures/test-image.jpg'),
+    );
+
     s3Client = new S3Client({
       forcePathStyle: true,
       endpoint: 'http://localhost:4569',
@@ -338,11 +343,12 @@ describe('User Avatar E2E tests', () => {
           height: 100,
         })
         .attach('avatar', Buffer.alloc(1024 * 1024 * 10.1), {
+          filename: 'big.jpg',
           contentType: 'image/jpeg',
         })
-        .expect(400);
+        .expect(413);
 
-      expect(body.message).toBe('Field value too long');
+      expect(body.message).toBe('File too large');
     });
 
     it('will return a 401 response if the user is not authenticated', async () => {
@@ -354,7 +360,8 @@ describe('User Avatar E2E tests', () => {
           width: 100,
           height: 100,
         })
-        .attach('avatar', Buffer.alloc(1024 * 1024 * 10.1), {
+        .attach('avatar', testImage, {
+          filename: 'test.jpg',
           contentType: 'image/jpeg',
         })
         .expect(401);
@@ -370,7 +377,8 @@ describe('User Avatar E2E tests', () => {
           width: 100,
           height: 100,
         })
-        .attach('avatar', Buffer.alloc(1024 * 1024 * 10.1), {
+        .attach('avatar', testImage, {
+          filename: 'test.jpg',
           contentType: 'image/jpeg',
         })
         .expect(403);
@@ -386,7 +394,8 @@ describe('User Avatar E2E tests', () => {
           width: 100,
           height: 100,
         })
-        .attach('avatar', Buffer.alloc(1024 * 1024 * 10.1), {
+        .attach('avatar', testImage, {
+          filename: 'test.jpg',
           contentType: 'image/jpeg',
         })
         .expect(404);
@@ -396,11 +405,10 @@ describe('User Avatar E2E tests', () => {
       const { body } = await request(server)
         .post(getUrl())
         .set(...authHeader)
-        .attach(
-          'avatar',
-          path.resolve(__dirname, '../../fixtures/test-image.jpg'),
-          { contentType: 'image/jpeg' },
-        )
+        .attach('avatar', testImage, {
+          filename: 'test.jpg',
+          contentType: 'image/jpeg',
+        })
         .expect(201);
 
       expect(body).toEqual({
@@ -431,11 +439,10 @@ describe('User Avatar E2E tests', () => {
       const { body } = await request(server)
         .post(getUrl())
         .set(...authHeader)
-        .attach(
-          'avatar',
-          path.resolve(__dirname, '../../fixtures/test-image.jpg'),
-          { contentType: 'image/jpeg' },
-        )
+        .attach('avatar', testImage, {
+          filename: 'test.jpg',
+          contentType: 'image/jpeg',
+        })
         .field({ width: 1440, height: 1440, left: 270, top: 1070 })
         .expect(201);
 
@@ -467,11 +474,10 @@ describe('User Avatar E2E tests', () => {
       const { body } = await request(server)
         .post(getUrl())
         .set(...adminAuthHeader)
-        .attach(
-          'avatar',
-          path.resolve(__dirname, '../../fixtures/test-image.jpg'),
-          { contentType: 'image/jpeg' },
-        )
+        .attach('avatar', testImage, {
+          filename: 'test.jpg',
+          contentType: 'image/jpeg',
+        })
         .expect(201);
 
       expect(body).toEqual({

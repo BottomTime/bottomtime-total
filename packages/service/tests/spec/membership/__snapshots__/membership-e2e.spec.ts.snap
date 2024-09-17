@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Memberships E2E tests when cancelling a membership will cancel a membership and send an email 1`] = `"{"to":{"to":"gil@email.org"},"subject":"Membership Canceled","options":{"type":"membershipCanceled","title":"Membership Canceled","user":{"username":"gil","email":"gil@email.org","profile":{"name":"Gil McGoo"}}}}"`;
+
+exports[`Memberships E2E tests when creating a payment session will allow a user to create a payment session 1`] = `
+{
+  "clientSecret": "pi_3PuyAkI1ADsIvyhF1fcohTWk_secret_ykKOAqkyzclpvYZd756qIOIuN",
+  "currency": "cad",
+  "frequency": "year",
+  "products": [
+    {
+      "price": 40,
+      "product": "Pro Membership",
+    },
+  ],
+  "total": 40,
+}
+`;
+
+exports[`Memberships E2E tests when retrieving membership status will allow an admin to retrieve a user's membership status 1`] = `
+{
+  "accountTier": 200,
+  "entitlements": [
+    "shop-owner-features",
+    "pro-features",
+  ],
+  "nextBillingDate": "2025-09-03T12:23:19.000Z",
+  "status": "trialing",
+}
+`;
+
+exports[`Memberships E2E tests when retrieving membership status will return membership status for a user 1`] = `
+{
+  "accountTier": 100,
+  "entitlements": [
+    "pro-features",
+  ],
+  "nextBillingDate": "2025-10-28T14:04:00.000Z",
+  "status": "active",
+}
+`;
+
+exports[`Memberships E2E tests when updating a membership will allow a user to cancel a membership by way of update 1`] = `
+{
+  "accountTier": 200,
+  "entitlements": [
+    "shop-owner-features",
+    "pro-features",
+  ],
+  "status": "none",
+}
+`;
+
+exports[`Memberships E2E tests when updating a membership will allow a user to cancel a membership by way of update 2`] = `"{"to":{"to":"gil@email.org"},"subject":"Membership Canceled","options":{"type":"membershipCanceled","title":"Membership Canceled","user":{"username":"gil","email":"gil@email.org","profile":{"name":"Gil McGoo"}}}}"`;
+
+exports[`Memberships E2E tests when updating a membership will allow a user to update their membership 1`] = `
+{
+  "accountTier": 200,
+  "entitlements": [
+    "shop-owner-features",
+    "pro-features",
+  ],
+  "nextBillingDate": "2025-09-03T12:23:19.000Z",
+  "status": "trialing",
+}
+`;
+
+exports[`Memberships E2E tests when updating a membership will allow a user to update their membership 2`] = `"{"to":{"to":"gil@email.org"},"subject":"Membership Updated","options":{"type":"membershipChanged","title":"Membership Updated","user":{"email":"gil@email.org","profile":{"name":"Gil McGoo"},"username":"gil"},"newTier":"Shop Owner Membership","previousTier":"Pro Membership"}}"`;
+
+exports[`Memberships E2E tests when updating a membership will allow an admin to update a user's membership 1`] = `
+{
+  "accountTier": 200,
+  "entitlements": [
+    "shop-owner-features",
+    "pro-features",
+  ],
+  "nextBillingDate": "2025-09-03T12:23:19.000Z",
+  "status": "trialing",
+}
+`;
+
+exports[`Memberships E2E tests when updating a membership will allow an admin to update a user's membership 2`] = `"{"to":{"to":"gil@email.org"},"subject":"Membership Updated","options":{"type":"membershipChanged","title":"Membership Updated","user":{"email":"gil@email.org","profile":{"name":"Gil McGoo"},"username":"gil"},"newTier":"Shop Owner Membership","previousTier":"Pro Membership"}}"`;
+
+exports[`Memberships E2E tests will request a list of memberships 1`] = `
+[
+  {
+    "accountTier": 0,
+    "currency": "cad",
+    "description": "Get all of the features of BottomTime for personal use - for free!",
+    "frequency": "year",
+    "marketingFeatures": [
+      "Upload and log your dives",
+      "Track your dive metrics and history in your personal dashboard",
+      "Find dive sites and dive shops",
+      "Follow your dive buddies and",
+      "Earn XP and level up",
+    ],
+    "name": "Free Account",
+    "price": 0,
+  },
+  {
+    "accountTier": 100,
+    "currency": "cad",
+    "description": "Get all of the features of a free account plus some added benefits:",
+    "frequency": "year",
+    "marketingFeatures": [
+      "Add images and videos to your dive log entries",
+      "Get advanced metrics with our enhanced dashboard for pro users",
+      "Get a "Pro Diver" badge next to your username",
+      "Earn XP faster than with a free account",
+    ],
+    "name": "Pro Membership",
+    "price": 40,
+  },
+  {
+    "accountTier": 200,
+    "currency": "cad",
+    "description": "Get all of the benefits of a pro account, plus the ability to register and manage your dive shop on our site.",
+    "frequency": "year",
+    "marketingFeatures": [
+      "Register and manage your shop's profile",
+      "Reach new divers by having your shop appear in search results",
+      "Tag dive sites that your shop services to attract more customers",
+    ],
+    "name": "Shop Owner Membership",
+    "price": 100,
+  },
+]
+`;
