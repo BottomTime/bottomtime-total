@@ -98,6 +98,7 @@ export function createTestUser(
   const data: Partial<UserEntity> = {
     id: options?.id ?? faker.string.uuid(),
 
+    accountTier: options?.accountTier ?? AccountTier.Basic,
     email,
     emailLowered: options?.emailLowered ?? email.toLowerCase(),
     emailVerified: options?.emailVerified ?? true,

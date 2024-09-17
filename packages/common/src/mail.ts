@@ -1,8 +1,11 @@
 export enum EmailType {
+  Invoice = 'invoice',
   MembershipCanceled = 'membershipCanceled',
   MembershipChanged = 'membershipChanged',
+  NewMembership = 'newMembership',
   PaymentFailed = 'paymentFailed',
   ResetPassword = 'resetPassword',
+  TrialEnding = 'trialEnding',
   VerifyEmail = 'verifyEmail',
   Welcome = 'welcome',
 }
@@ -27,6 +30,34 @@ export type BaseEmailOptions = {
   };
 };
 
+export type InvoiceEmailOptions = {
+  type: EmailType.Invoice;
+  currency: string;
+  invoiceDate: string;
+  items: {
+    description: string;
+    quantity: number;
+    unitPrice: string;
+    total: string;
+  }[];
+  totals: {
+    discounts?: string;
+    taxes?: string;
+    subtotal: string;
+    total: string;
+  };
+  amounts: {
+    due: string;
+    paid: string;
+    remaining: string;
+  };
+  period?: {
+    start: string;
+    end: string;
+  };
+  downloadUrl?: string;
+};
+
 export type MembershipCancelledEmailOptions = {
   type: EmailType.MembershipCanceled;
 };
@@ -34,6 +65,11 @@ export type MembershipCancelledEmailOptions = {
 export type MembershipChangedEmailOptions = {
   type: EmailType.MembershipChanged;
   previousTier: string;
+  newTier: string;
+};
+
+export type NewMembershipEmailOptions = {
+  type: EmailType.NewMembership;
   newTier: string;
 };
 
@@ -47,6 +83,11 @@ export type PaymentFailedEmailOptions = {
 export type ResetPasswordEmailOptions = {
   type: EmailType.ResetPassword;
   resetPasswordUrl: string;
+};
+
+export type TrialEndingEmailOptions = {
+  type: EmailType.TrialEnding;
+  endDate: string;
 };
 
 export type VerifyEmailOptions = {
@@ -63,10 +104,13 @@ export type WelcomeEmailOptions = {
 
 export type EmailOptions = BaseEmailOptions &
   (
+    | InvoiceEmailOptions
     | MembershipCancelledEmailOptions
     | MembershipChangedEmailOptions
+    | NewMembershipEmailOptions
     | PaymentFailedEmailOptions
     | ResetPasswordEmailOptions
+    | TrialEndingEmailOptions
     | VerifyEmailOptions
     | WelcomeEmailOptions
   );

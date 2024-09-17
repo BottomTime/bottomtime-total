@@ -11,7 +11,7 @@
         </span>
 
         <div class="space-y-3">
-          <p>
+          <p class="pb-3">
             {{ paymentMessage }}
           </p>
 
@@ -83,17 +83,14 @@
         {{ state.error }}
       </p>
 
-      <div class="text-success text-sm flex gap-2">
-        <span class="text-4xl my-3">
+      <div class="text-sm flex flex-col text-center">
+        <span class="text-4xl text-success">
           <i class="fa-brands fa-stripe"></i>
         </span>
         <p class="">
           Our secure payment system is provided by
           <NavLink class="space-x-0.5" to="https://stripe.com" new-tab>
-            <span class="text-xs">
-              <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i>
-            </span>
-            <span>Stripe</span>
+            Stripe
           </NavLink>
           . At no point do we (Bottom Time) store or have access to your payment
           information. We take your privacy and security very seriously. For

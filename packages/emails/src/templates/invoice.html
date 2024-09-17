@@ -1,1 +1,117 @@
-<x-main></x-main>
+<x-main>
+  <div class="space-y-6">
+    <p>Hi there @{{ user.profile.name }},</p>
+
+    <p>
+      A new invoice for your Bottom Time account has been generated for your
+      review.
+    </p>
+
+    <div class="bg-blue-200 rounded-lg p-4">
+      <p class="text-xl font-bold">Invoice Details</p>
+      <p class="space-x-3">
+        <span class="font-bold">Issued:</span>
+        <span>@{{ invoiceDate }}</span>
+      </p>
+
+      @{{ #period }}
+      <p class="space-x-3">
+        <span class="font-bold">Billing Period:</span>
+        <span>@{{ period.start }} - @{{ period.end }}</span>
+      </p>
+      @{{ /period }}
+
+      <div class="grid grid-cols-2 py-3 px-4">
+        @{{ #items }}
+
+        <div class="flex gap-2 justify-start items-baseline">
+          <p>@{{ description }}</p>
+          <p class="text-sm">x @{{ quantity }} @ @{{ unitPrice }}</p>
+        </div>
+
+        <div class="flex gap-2 justify-end">
+          <p>@{{ total }}</p>
+        </div>
+
+        @{{ /items }}
+
+        <hr
+          class="col-span-2 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"
+        />
+
+        <div>
+          <p>Subtotal</p>
+        </div>
+        <div class="text-right">
+          <p>@{{ totals.subtotal }}</p>
+        </div>
+
+        @{{ #totals.discounts }}
+        <div>
+          <p>Discounts</p>
+        </div>
+        <div class="text-right">
+          <p>@{{ totals.discounts }}</p>
+        </div>
+        @{{ /totals.discounts }} @{{ #totals.taxes }}
+        <div>
+          <p>Tax</p>
+        </div>
+        <div class="text-right">
+          <p>@{{ totals.taxes }}</p>
+        </div>
+        @{{ /totals.taxes }}
+
+        <div class="text-lg font-bold">
+          <p>Total</p>
+        </div>
+        <div class="text-lg font-bold text-right">
+          <p>@{{ totals.total }}</p>
+        </div>
+
+        <hr
+          class="col-span-2 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"
+        />
+
+        <div>
+          <p>Amount Due:</p>
+        </div>
+        <div class="text-right">
+          <p>@{{ amounts.due }}</p>
+        </div>
+
+        <div>
+          <p>Amount Paid:</p>
+        </div>
+        <div class="text-right">
+          <p>@{{ amounts.paid }}</p>
+        </div>
+
+        <div class="text-lg font-bold">
+          <p>Remaining Balance:</p>
+        </div>
+        <div class="text-lg font-bold text-right">
+          <p>@{{ amounts.remaining }}</p>
+        </div>
+      </div>
+    </div>
+
+    @{{ #downloadUrl }}
+    <p>
+      You can download the full invoice as a PDF
+      <a href="@{{ downloadUrl }}">here</a>.
+    </p>
+    @{{ /downloadUrl }}
+
+    <p>
+      If you have any questions or concerns about this invoice, please don't
+      hesitate to reach out to us at
+      <a href="mailto:@{{ adminEmail }}">@{{ adminEmail }}</a>.
+    </p>
+
+    <div>
+      <p>Cheers,</p>
+      <p>The Bottom Time Team</p>
+    </div>
+  </div>
+</x-main>
