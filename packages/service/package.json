@@ -98,7 +98,7 @@
     "jest-text-transformer": "^1.0.4",
     "nodemon": "^2.0.22",
     "nodemon-webpack-plugin": "^4.8.2",
-    "supertest": "^6.3.3",
+    "supertest": "^7.0.0",
     "swagger-jsdoc": "^6.2.8",
     "ts-jest": "^29.0.5",
     "ts-loader": "^9.5.1",

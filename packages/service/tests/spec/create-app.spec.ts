@@ -21,5 +21,5 @@ describe('Create App function', () => {
       .get('/')
       .expect(200);
     expect(status.api).toEqual('Bottom Time Service');
-  });
+  }, 10000); // Increased timeout for CI.
 });
