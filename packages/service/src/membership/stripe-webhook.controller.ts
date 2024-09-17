@@ -10,7 +10,6 @@ import {
   RawBody,
 } from '@nestjs/common';
 
-import { MembershipService } from './membership.service';
 import { StripeWebhookService } from './stripe-webhook.service';
 
 @Controller('api/stripe')
@@ -18,7 +17,6 @@ export class StripeWebhookController {
   private readonly log = new Logger(StripeWebhookController.name);
 
   constructor(
-    @Inject(MembershipService) private readonly service: MembershipService,
     @Inject(StripeWebhookService)
     private readonly webhooks: StripeWebhookService,
   ) {}

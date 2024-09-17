@@ -55,6 +55,9 @@ export class StripeWebhookService {
   async handleWebhookEvent(payload: string, signature: string): Promise<void> {
     let event: Stripe.Event;
     try {
+      this.log.debug(
+        'Received webhook event from Stripe. Attempting to parse...',
+      );
       event = await this.stripe.webhooks.constructEventAsync(
         payload,
         signature,
@@ -65,7 +68,7 @@ export class StripeWebhookService {
       throw new BadRequestException('Invalid Stripe webhook signature.');
     }
 
-    this.log.debug({ event });
+    this.log.verbose({ event });
 
     if (this.EventMap[event.type]) {
       await this.EventMap[event.type].bind(this)(event);
