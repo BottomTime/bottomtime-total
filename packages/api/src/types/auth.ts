@@ -5,3 +5,21 @@ export const LoginParamsSchema = z.object({
   password: z.string(),
 });
 export type LoginParamsDTO = z.infer<typeof LoginParamsSchema>;
+
+export const PurgeJwtInvalidationsRequestSchema = z
+  .object({
+    invalidatedBefore: z.coerce.date(),
+  })
+  .refine(({ invalidatedBefore }) => invalidatedBefore < new Date(), {
+    message: 'invalidatedBefore must be in the past',
+  });
+export type PurgeJwtInvalidationsRequestDTO = z.infer<
+  typeof PurgeJwtInvalidationsRequestSchema
+>;
+
+export const PurgeJwtInvalidationsResultSchema = z.object({
+  purged: z.number(),
+});
+export type PurgeJwtInvalidationsResultDTO = z.infer<
+  typeof PurgeJwtInvalidationsResultSchema
+>;

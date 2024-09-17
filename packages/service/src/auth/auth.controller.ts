@@ -1,10 +1,14 @@
 import {
   CurrentUserDTO,
+  PurgeJwtInvalidationsRequestDTO,
+  PurgeJwtInvalidationsRequestSchema,
+  PurgeJwtInvalidationsResultDTO,
   SuccessFailResponseDTO,
   UserRole,
 } from '@bottomtime/api';
 
 import {
+  Body,
   Controller,
   Delete,
   ForbiddenException,
@@ -14,16 +18,18 @@ import {
   NotFoundException,
   Param,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
-import { User } from '../users';
+import { AssertAdmin, User } from '../users';
 import { CurrentUser } from '../users/current-user';
 import { AssertAuth } from '../users/guards/assert-auth.guard';
+import { ZodValidator } from '../zod-validator';
 import { AuthService } from './auth.service';
 import { OAuthService } from './oauth.service';
 
@@ -340,8 +346,8 @@ export class AuthController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get('logout')
-  logoutWithRedirect(@Res() res: Response) {
-    this.authService.revokeSessionCookie(res);
+  logoutWithRedirect(@Req() req: Request, @Res() res: Response) {
+    this.authService.revokeSession(req, res);
     res.redirect('/');
   }
 
@@ -366,9 +372,91 @@ export class AuthController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post('logout')
-  logout(@Res() res: Response) {
+  logout(@Req() req: Request, @Res() res: Response) {
     const response: SuccessFailResponseDTO = { succeeded: true };
-    this.authService.revokeSessionCookie(res);
+    this.authService.revokeSession(req, res);
     res.json(response);
+  }
+
+  /**
+   * @openapi
+   * /api/auth/invalidations:
+   *   delete:
+   *     summary: Purge expired JWT invalidations
+   *     operationId: purgeExpiredInvalidations
+   *     description: |
+   *       Purges all expired JWT invalidations from the database from before the specified date.
+   *     tags:
+   *       - Auth
+   *       - Admin
+   *     requestBody:
+   *       description: The date before which invalidations should be purged.
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - invalidatedBefore
+   *             properties:
+   *               invalidatedBefore:
+   *                 title: Invalidated Before
+   *                 type: string
+   *                 format: date-time
+   *                 description: |
+   *                   The date before which invalidations should be purged. All invalidations with timestamps before this date will be
+   *                   removed. This date must be in the past or the request will fail.
+   *                 example: 2021-01-01T00:00:00Z
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body contains the number of invalidations purged.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - purged
+   *               properties:
+   *                 purged:
+   *                   title: Purged Entries
+   *                   type: integer
+   *                   description: The number of invalidations that were purged from the database by this operation.
+   *                   example: 14
+   *       400:
+   *         description: |
+   *           The request failed because the request body was invalid or missing, or because the `invalidatedBefore` parameter
+   *           was not in the past.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the current user is not authorized to purge invalidations.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the current user is not an administrator.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Delete('invalidations')
+  @UseGuards(AssertAdmin)
+  async purgeExpiredInvalidations(
+    @Body(new ZodValidator(PurgeJwtInvalidationsRequestSchema))
+    { invalidatedBefore }: PurgeJwtInvalidationsRequestDTO,
+  ): Promise<PurgeJwtInvalidationsResultDTO> {
+    const purged = await this.authService.purgeExpiredInvalidations(
+      invalidatedBefore,
+    );
+    return { purged };
   }
 }
