@@ -14,10 +14,13 @@ import {
   ForbiddenException,
   Get,
   HttpCode,
+  HttpStatus,
   Inject,
+  Logger,
   NotFoundException,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -33,8 +36,12 @@ import { ZodValidator } from '../zod-validator';
 import { AuthService } from './auth.service';
 import { OAuthService } from './oauth.service';
 
+const UrlPathRegex = /^\/(?!.*\/\/)([a-zA-Z0-9-_/]+)$/gim;
+
 @Controller('api/auth')
 export class AuthController {
+  private readonly log = new Logger(AuthController.name);
+
   constructor(
     @Inject(AuthService) private readonly authService: AuthService,
     @Inject(OAuthService) private readonly oauth: OAuthService,
@@ -310,7 +317,7 @@ export class AuthController {
       this.authService.issueSessionCookie(user, res),
       user.updateLastLogin(),
     ]);
-    res.status(200).send(user.toJSON());
+    res.status(HttpStatus.OK).send(user.toJSON());
   }
 
   /**
@@ -321,6 +328,17 @@ export class AuthController {
    *     operationId: logoutWithRedirect
    *     description: |
    *       Logs out the current user. This will invalidate the user's session cookie and redirect them back to the home page.
+   *     parameters:
+   *       - in: query
+   *         name: redirectTo
+   *         description: |
+   *           The path to redirect the user to after logging out. It cannot be a full URL. Only paths on the current domain
+   *           will be accepted for security reasons. If an invalid path is provided, the user will be redirected to the home
+   *           page (`/`).
+   *         schema:
+   *           type: string
+   *           example: /logbook
+   *           default: /
    *     tags:
    *       - Auth
    *     responses:
@@ -346,9 +364,18 @@ export class AuthController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get('logout')
-  logoutWithRedirect(@Req() req: Request, @Res() res: Response) {
-    this.authService.revokeSession(req, res);
-    res.redirect('/');
+  async logoutWithRedirect(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Query('redirectTo') redirectTo: string | undefined,
+  ): Promise<void> {
+    redirectTo ||= '/';
+    if (!UrlPathRegex.test(redirectTo)) redirectTo = '/';
+
+    this.log.debug(`Logging out and redirecting to: ${redirectTo}`);
+
+    await this.authService.revokeSession(req, res);
+    res.redirect(redirectTo);
   }
 
   /**
@@ -372,9 +399,10 @@ export class AuthController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post('logout')
-  logout(@Req() req: Request, @Res() res: Response) {
+  @HttpCode(HttpStatus.OK)
+  async logout(@Req() req: Request, @Res() res: Response): Promise<void> {
     const response: SuccessFailResponseDTO = { succeeded: true };
-    this.authService.revokeSession(req, res);
+    await this.authService.revokeSession(req, res);
     res.json(response);
   }
 

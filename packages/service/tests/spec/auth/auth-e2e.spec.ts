@@ -3,17 +3,24 @@ import { CurrentUserSchema, UserRole, UserSchema } from '@bottomtime/api';
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { sign } from 'jsonwebtoken';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import { AuthController, AuthService } from '../../../src/auth';
 import { OAuthService } from '../../../src/auth/oauth.service';
-import { UserEntity, UserOAuthEntity } from '../../../src/data';
+import { Config } from '../../../src/config';
+import {
+  InvalidTokenEntity,
+  UserEntity,
+  UserOAuthEntity,
+} from '../../../src/data';
 import { User, UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestUser } from '../../utils';
 import { createTestApp } from '../../utils/create-test-app';
 
+const JwtId = 'a1b2c3d4e5f6g7h8i9j0';
 const Password = 'XTdc4LG,+5R/QTgb';
 const TestUserData: Partial<UserEntity> = {
   id: '4e64038d-0abf-4c1a-b678-55f8afcb6b2d',
@@ -26,6 +33,7 @@ const TestUserData: Partial<UserEntity> = {
 
 describe('Auth Module E2E Tests', () => {
   let Users: Repository<UserEntity>;
+  let InvalidatedTokens: Repository<InvalidTokenEntity>;
   let OAuth: Repository<UserOAuthEntity>;
 
   let app: INestApplication;
@@ -34,9 +42,13 @@ describe('Auth Module E2E Tests', () => {
   beforeAll(async () => {
     Users = dataSource.getRepository(UserEntity);
     OAuth = dataSource.getRepository(UserOAuthEntity);
+    InvalidatedTokens = dataSource.getRepository(InvalidTokenEntity);
 
     app = await createTestApp({
-      imports: [TypeOrmModule.forFeature([UserOAuthEntity]), UsersModule],
+      imports: [
+        TypeOrmModule.forFeature([InvalidTokenEntity, UserOAuthEntity]),
+        UsersModule,
+      ],
       providers: [AuthService, OAuthService],
       controllers: [AuthController],
     });
@@ -368,6 +380,209 @@ describe('Auth Module E2E Tests', () => {
         .delete(`${oauthUrl}/NotARealProvider`)
         .set(...adminAuthHeader)
         .expect(404);
+    });
+  });
+
+  describe('when logging out', () => {
+    let user: UserEntity;
+    let jwt: string;
+
+    beforeAll(() => {
+      user = createTestUser(TestUserData);
+      jwt = sign(
+        {
+          exp: Date.now() + 200000,
+          iat: Date.now(),
+          iss: 'bottomti.me',
+          jti: JwtId,
+          sub: `user|${user.id}`,
+        },
+        Config.sessions.sessionSecret,
+      );
+    });
+
+    beforeEach(async () => {
+      await Users.save(user);
+    });
+
+    it('will log a user out and invalidate their token', async () => {
+      const { headers } = await request(server)
+        .post('/api/auth/logout')
+        .set('Authorization', `Bearer ${jwt}`)
+        .expect(200);
+
+      const invalidation = await InvalidatedTokens.findOneByOrFail({
+        token: JwtId,
+      });
+      expect(invalidation.invalidated.valueOf()).toBeCloseTo(Date.now(), -3);
+
+      expect(headers['set-cookie'][0]).toContain(
+        `${Config.sessions.cookieName}=;`,
+      );
+    });
+
+    it('will do nothing if the user is not logged in', async () => {
+      await request(server).post('/api/auth/logout').expect(200);
+    });
+
+    it('will redirect to the indicated page if the redirectTo parameter is valid and safe', async () => {
+      const { headers } = await request(server)
+        .get(
+          `/api/auth/logout?redirectTo=${encodeURIComponent('/logbook/mike')}`,
+        )
+        .set('Authorization', `Bearer ${jwt}`)
+        .expect(302);
+
+      await InvalidatedTokens.findOneByOrFail({ token: JwtId });
+      expect(headers['set-cookie'][0]).toContain(
+        `${Config.sessions.cookieName}=;`,
+      );
+      expect(headers['location']).toBe('/logbook/mike');
+    });
+
+    it('will redirect to the home page if the redirectTo parameter is invalid', async () => {
+      const { headers } = await request(server)
+        .get('/api/auth/logout?redirectTo=o!hai!')
+        .set('Authorization', `Bearer ${jwt}`)
+        .expect(302);
+
+      await InvalidatedTokens.findOneByOrFail({ token: JwtId });
+      expect(headers['set-cookie'][0]).toContain(
+        `${Config.sessions.cookieName}=;`,
+      );
+      expect(headers['location']).toBe('/');
+    });
+
+    it('will redirect to the home page if the redirectTo parameter attempts to go to another domain', async () => {
+      const { headers } = await request(server)
+        .get(
+          `/api/auth/logout?redirectTo=${encodeURIComponent(
+            'https://evil.com/steal-my-cookies',
+          )}`,
+        )
+        .set('Authorization', `Bearer ${jwt}`)
+        .expect(302);
+
+      await InvalidatedTokens.findOneByOrFail({ token: JwtId });
+      expect(headers['set-cookie'][0]).toContain(
+        `${Config.sessions.cookieName}=;`,
+      );
+      expect(headers['location']).toBe('/');
+    });
+
+    it('will redirect to the homepage if the redirectTo parameter is not provided', async () => {
+      const { headers } = await request(server)
+        .get('/api/auth/logout')
+        .set('Authorization', `Bearer ${jwt}`)
+        .expect(302);
+
+      await InvalidatedTokens.findOneByOrFail({ token: JwtId });
+      expect(headers['set-cookie'][0]).toContain(
+        `${Config.sessions.cookieName}=;`,
+      );
+      expect(headers['location']).toBe('/');
+    });
+  });
+
+  describe('when purging invalidated tokens', () => {
+    let regularUser: UserEntity;
+    let adminUser: UserEntity;
+    let authHeader: [string, string];
+    let adminAuthHeader: [string, string];
+
+    beforeAll(async () => {
+      regularUser = createTestUser();
+      adminUser = createTestUser({ role: UserRole.Admin });
+
+      [authHeader, adminAuthHeader] = await Promise.all([
+        createAuthHeader(regularUser.id),
+        createAuthHeader(adminUser.id),
+      ]);
+    });
+
+    beforeEach(async () => {
+      await Promise.all([
+        InvalidatedTokens.save([
+          {
+            token: '40c71d11-46ca-455b-b264-5c61af7ad26c',
+            invalidated: new Date('2021-04-18'),
+          },
+          {
+            token: 'fdbb2ad4-0536-4ece-a82d-3a123dc2cc56',
+            invalidated: new Date('2023-08-21'),
+          },
+          {
+            token: 'cc43e379-c30d-4939-94c5-66793646cf99',
+            invalidated: new Date('2025-12-24'),
+          },
+        ]),
+        Users.save([regularUser, adminUser]),
+      ]);
+    });
+
+    it('will purge invalidated tokens that have expired', async () => {
+      const { body } = await request(server)
+        .delete('/api/auth/invalidations')
+        .set(...adminAuthHeader)
+        .send({
+          invalidatedBefore: '2024-09-18T15:46:44Z',
+        })
+        .expect(200);
+
+      expect(body).toEqual({ purged: 2 });
+
+      const remaining = await InvalidatedTokens.find();
+      expect(remaining).toEqual([
+        {
+          token: 'cc43e379-c30d-4939-94c5-66793646cf99',
+          invalidated: new Date('2025-12-24'),
+        },
+      ]);
+    });
+
+    it('will return a 400 response if request body is missing', async () => {
+      await request(server)
+        .delete('/api/auth/invalidations')
+        .set(...adminAuthHeader)
+        .expect(400);
+
+      await expect(InvalidatedTokens.count()).resolves.toBe(3);
+    });
+
+    it('will return a 400 response if request body is invalid', async () => {
+      await request(server)
+        .delete('/api/auth/invalidations')
+        .set(...adminAuthHeader)
+        .send({
+          wat: 'nope',
+          invalidatedBefore: 'yup',
+        })
+        .expect(400);
+
+      await expect(InvalidatedTokens.count()).resolves.toBe(3);
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .delete('/api/auth/invalidations')
+        .send({
+          invalidatedBefore: '2024-09-18T15:46:44Z',
+        })
+        .expect(401);
+
+      await expect(InvalidatedTokens.count()).resolves.toBe(3);
+    });
+
+    it('will return a 403 response if the user is not an admin', async () => {
+      await request(server)
+        .delete('/api/auth/invalidations')
+        .set(...authHeader)
+        .send({
+          invalidatedBefore: '2024-09-18T15:46:44Z',
+        })
+        .expect(403);
+
+      await expect(InvalidatedTokens.count()).resolves.toBe(3);
     });
   });
 });

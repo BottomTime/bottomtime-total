@@ -1,7 +1,7 @@
 import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
 
-import { JwtPayload, verify } from 'jsonwebtoken';
-import { createRequest, createResponse } from 'node-mocks-http';
+import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { createMocks, createResponse } from 'node-mocks-http';
 import { Repository } from 'typeorm';
 
 import { AuthService } from '../../../src/auth';
@@ -34,6 +34,8 @@ function createJwtPayload(subject?: string, expired = false): JwtPayload {
   return payload;
 }
 
+jest.mock('../../../src/config');
+
 describe('Auth Service', () => {
   let Users: Repository<UserEntity>;
   let InvalidatedTokens: Repository<InvalidTokenEntity>;
@@ -53,6 +55,12 @@ describe('Auth Service', () => {
       now: new Date('2021-01-01T00:00:00Z'),
       doNotFake: ['setImmediate', 'nextTick'],
     });
+
+    const configMock = jest.mocked(Config);
+    configMock.sessions.cookieName = 'bt-session';
+    configMock.sessions.sessionSecret =
+      'hdrh5XMCvsK6cuC3gjRvFBc7wKp6zY_7gRO-NxghW6Q';
+    configMock.sessions.cookieDomain = 'localhost';
   });
 
   afterEach(() => {
@@ -186,13 +194,95 @@ describe('Auth Service', () => {
   });
 
   describe('when revoking a session', () => {
-    it('will invalidate the token and clear the session cookie', async () => {});
+    it('will invalidate the token and clear the session cookie', async () => {
+      const jwt = sign(
+        {
+          exp: Date.now() + 200000,
+          iat: Date.now(),
+          iss: 'bottomti.me',
+          jti: JwtId,
+          sub: 'user|cac361c5-d08e-4b67-b8f9-9c7ae5e66c4e',
+        },
+        Config.sessions.sessionSecret,
+      );
+      const { req, res } = createMocks({
+        cookies: {
+          [Config.sessions.cookieName]: jwt,
+        },
+      });
 
-    it('will do nothing if a JWT or session cookie cannot be found', async () => {});
+      await service.revokeSession(req, res);
 
-    it('will remove cookie if JWT is invalid', async () => {});
+      const invalidation = await InvalidatedTokens.findOneByOrFail({
+        token: JwtId,
+      });
+      expect(invalidation.invalidated.valueOf()).toBeCloseTo(Date.now(), -3);
+      expect(res.cookies[Config.sessions.cookieName].value).toBe('');
+    });
 
-    it('will remove cookie if JWT is missing token ID', async () => {});
+    it('will invalidate a JWT if it appears in the authorization header', async () => {
+      const jwt = sign(
+        {
+          exp: Date.now() + 200000,
+          iat: Date.now(),
+          iss: 'bottomti.me',
+          jti: JwtId,
+          sub: 'user|cac361c5-d08e-4b67-b8f9-9c7ae5e66c4e',
+        },
+        Config.sessions.sessionSecret,
+      );
+
+      const { req, res } = createMocks({
+        headers: {
+          authorization: `Bearer ${jwt}`,
+        },
+      });
+
+      await service.revokeSession(req, res);
+
+      const invalidation = await InvalidatedTokens.findOneByOrFail({
+        token: JwtId,
+      });
+      expect(invalidation.invalidated.valueOf()).toBeCloseTo(Date.now(), -3);
+    });
+
+    it('will do nothing if a JWT or session cookie cannot be found', async () => {
+      const { req, res } = createMocks();
+      await service.revokeSession(req, res);
+    });
+
+    it('will remove cookie if JWT is invalid', async () => {
+      const { req, res } = createMocks({
+        cookies: {
+          [Config.sessions.cookieName]: 'nope',
+        },
+      });
+
+      await service.revokeSession(req, res);
+
+      expect(res.cookies[Config.sessions.cookieName].value).toBe('');
+    });
+
+    it('will remove cookie if JWT is missing token ID', async () => {
+      const jwt = sign(
+        {
+          exp: Date.now() + 200000,
+          iat: Date.now(),
+          iss: 'bottomti.me',
+          sub: 'user|cac361c5-d08e-4b67-b8f9-9c7ae5e66c4e',
+        },
+        Config.sessions.sessionSecret,
+      );
+      const { req, res } = createMocks({
+        cookies: {
+          [Config.sessions.cookieName]: jwt,
+        },
+      });
+
+      await service.revokeSession(req, res);
+
+      expect(res.cookies[Config.sessions.cookieName].value).toBe('');
+    });
   });
 
   it('will correctly sign a JWT', async () => {
@@ -219,11 +309,10 @@ describe('Auth Service', () => {
     const res = createResponse();
     const userData = createTestUser(TestUserData);
     const user = new User(Users, userData);
-    jest.mocked(Config).sessions.cookieName = 'session_cookie';
 
     await service.issueSessionCookie(user, res);
 
-    expect(res.cookies.session_cookie.value).toBeDefined();
+    expect(res.cookies[Config.sessions.cookieName].value).toBeDefined();
   });
 
   it('will purge expired tokens', async () => {

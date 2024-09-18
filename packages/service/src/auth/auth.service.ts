@@ -26,6 +26,7 @@ export class AuthService {
     @InjectRepository(InvalidTokenEntity)
     private readonly invalidTokens: Repository<InvalidTokenEntity>,
   ) {}
+
   async authenticateUser(
     usernameOrEmail: string,
     password: string,
@@ -92,7 +93,7 @@ export class AuthService {
       exp: expires,
       iat: now,
       iss: Config.baseUrl,
-      jti: randomBytes(10).toString('base64url'),
+      jti: randomBytes(32).toString('base64url'),
       sub: subject,
     };
 
@@ -116,7 +117,9 @@ export class AuthService {
     const userId = payload.sub.substring(5);
     const [user, tokenInvalidated] = await Promise.all([
       this.users.getUserById(userId),
-      this.invalidTokens.existsBy({ token: payload.jti }),
+      payload.jti
+        ? this.invalidTokens.existsBy({ token: payload.jti })
+        : Promise.resolve(false),
     ]);
 
     if (tokenInvalidated) {
