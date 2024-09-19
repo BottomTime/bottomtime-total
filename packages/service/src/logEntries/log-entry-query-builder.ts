@@ -28,8 +28,7 @@ export class LogEntryQueryBuilder {
       .from(LogEntryEntity, 'entries')
       .innerJoin('entries.owner', 'owners')
       .leftJoin('entries.site', 'sites')
-      .leftJoin('sites.creator', 'site_creators')
-      .leftJoin('entries.air', 'site_air')
+      .innerJoin('sites.creator', 'site_creators')
       .select([
         'entries.id',
         'entries.createdAt',
@@ -57,7 +56,6 @@ export class LogEntryQueryBuilder {
         'owners.avatar',
 
         ...DiveSiteSelectFields,
-        ...LogEntryAirSelectFields,
       ]);
   }
 

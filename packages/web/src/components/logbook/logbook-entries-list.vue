@@ -53,8 +53,15 @@
       </div>
     </FormBox>
 
+    <div
+      v-if="isLoading"
+      class="flex h-16 justify-center items-center gap-2 text-lg italic"
+    >
+      <LoadingSpinner message="Fetching logbook entries..." />
+    </div>
+
     <ul
-      v-if="entries.logEntries.length"
+      v-else-if="entries.logEntries.length"
       class="px-2"
       data-testid="logbook-list"
     >
@@ -127,6 +134,7 @@ import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormSelect from '../common/form-select.vue';
+import LoadingSpinner from '../common/loading-spinner.vue';
 import NavLink from '../common/nav-link.vue';
 import LogbookEntriesListItem from './logbook-entries-list-item.vue';
 
@@ -152,6 +160,7 @@ const currentUser = useCurrentUser();
 interface LogbookEntriesListProps {
   editMode?: boolean;
   entries: ListLogEntriesResponseDTO;
+  isLoading?: boolean;
   isLoadingMore?: boolean;
   sortBy?: LogEntrySortBy;
   sortOrder?: SortOrder;
@@ -159,6 +168,7 @@ interface LogbookEntriesListProps {
 
 const props = withDefaults(defineProps<LogbookEntriesListProps>(), {
   editMode: false,
+  isLoading: false,
   isLoadingMore: false,
   sortBy: LogEntrySortBy.EntryTime,
   sortOrder: SortOrder.Descending,
