@@ -48,6 +48,7 @@ export class LogEntryQueryBuilder {
         'entries.depthUnit',
 
         'owners.id',
+        'owners.accountTier',
         'owners.username',
         'owners.memberSince',
         'owners.logBookSharing',

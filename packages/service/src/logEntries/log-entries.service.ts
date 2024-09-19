@@ -122,6 +122,8 @@ export class LogEntriesService {
         'entries.visibility',
         'entries.notes',
         'owners.id',
+        'owners.accountTier',
+        'owners.logBookSharing',
         'owners.username',
         'owners.memberSince',
         'owners.name',
