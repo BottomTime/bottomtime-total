@@ -1,2 +1,5 @@
+# TODO: Write this (and ideally include a generated sitemap.)
+# Here's a good article on robots.txt: https://yoast.com/ultimate-guide-robots-txt/
+
 User-Agent: *
 Disallow: /
