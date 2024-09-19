@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { UserOAuthEntity } from '../data';
+import { InvalidTokenEntity, UserOAuthEntity } from '../data';
 import { UsersModule } from '../users';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -18,7 +18,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserOAuthEntity]),
+    TypeOrmModule.forFeature([InvalidTokenEntity, UserOAuthEntity]),
     PassportModule,
     UsersModule,
   ],

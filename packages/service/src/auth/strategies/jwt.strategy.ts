@@ -3,20 +3,13 @@ import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 
 import { Request } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-jwt';
 import { Observable } from 'rxjs';
 
 import { Config } from '../../config';
 import { User } from '../../users';
 import { AuthService } from '../auth.service';
-
-const ExtractJwtFromRequest = ExtractJwt.fromExtractors([
-  ExtractJwt.fromAuthHeaderAsBearerToken(),
-  (req) => {
-    if (req.cookies) return req.cookies[Config.sessions.cookieName];
-    else return undefined;
-  },
-]);
+import { extractJwtFromRequest } from '../extract-jwt';
 
 @Injectable()
 export class JwtOrAnonAuthGuard extends AuthGuard('jwt') {
@@ -24,7 +17,7 @@ export class JwtOrAnonAuthGuard extends AuthGuard('jwt') {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
-    const jwt = ExtractJwtFromRequest(req);
+    const jwt = extractJwtFromRequest(req);
 
     // If there's no JWT in the request, allow the request to proceed as an anonymous user.
     if (!jwt) return true;
@@ -40,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   constructor(@Inject(AuthService) private readonly authService: AuthService) {
     super({
-      jwtFromRequest: ExtractJwtFromRequest,
+      jwtFromRequest: extractJwtFromRequest,
       ignoreExpiration: false,
       // issuer: Config.baseUrl,
       secretOrKey: Config.sessions.sessionSecret,
