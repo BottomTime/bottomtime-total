@@ -30,6 +30,11 @@ variable "docs_domain" {
   type        = string
 }
 
+variable "edgeauth_config_secret" {
+  description = "Name of the AWS Secret Manager secret that contains the configuration for the edge authentication service."
+  type        = string
+}
+
 variable "enable_places_api" {
   description = "Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed."
   type        = bool

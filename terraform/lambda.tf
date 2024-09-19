@@ -201,3 +201,45 @@ resource "aws_lambda_function" "keepalive" {
 
   depends_on = [aws_cloudwatch_log_group.keepalive_logs, aws_iam_role_policy_attachment.keepalive_lambda_logging]
 }
+
+### EDGE AUTHENTICATION SERVICE FOR TEST ENVIRONMENTS
+data "archive_file" "edgeauth" {
+  type        = "zip"
+  output_path = "${path.module}/archive/edge-auth.zip"
+  source_dir  = "${path.module}/../packages/edge/dist/"
+}
+
+resource "aws_lambda_function" "edgeauth" {
+  function_name = "bottomtime-edgeauth-${var.env}"
+  role          = aws_iam_role.edgeauth_lambda_fn.arn
+
+  filename         = data.archive_file.edgeauth.output_path
+  source_code_hash = data.archive_file.edgeauth.output_base64sha256
+
+  description = "BottomTime Lambda@Edge Authentication Function for protecting test environments"
+  handler     = "index.handler"
+  runtime     = "nodejs20.x"
+  timeout     = 15
+
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.edgeauth_logs.id
+    log_format = "JSON"
+  }
+
+  tags = {
+    Environment = var.env
+    Region      = data.aws_region.current.name
+  }
+
+  environment {
+    variables = {
+      BT_AUTH_DOMAIN          = local.edgeauth_config.authDomain
+      BT_COOKIE_DOMAIN        = var.root_domain
+      BT_USER_POOL_ID         = local.edgeauth_config.userPoolId
+      BT_USER_POOL_APP_ID     = local.edgeauth_config.userPoolAppId
+      BT_USER_POOL_APP_SECRET = local.edgeauth_config.userPoolAppSecret
+    }
+  }
+
+  depends_on = [aws_cloudwatch_log_group.edgeauth_logs, aws_iam_role_policy_attachment.edgeauth_lambda_logging]
+}

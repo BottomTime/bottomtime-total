@@ -317,7 +317,7 @@ jobs:
     steps:
       - deploy_env:
           fresh_db: true
-          state_key: $AWS_REGION.e2e.tfvars
+          state_key: $AWS_REGION.e2e.tfstate
           var_file: vars/e2e.tfvars
           vite_mode: e2e
 
@@ -337,7 +337,7 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
-          state_key: $AWS_REGION.staging.tfvars
+          state_key: $AWS_REGION.staging.tfstate
           var_file: vars/staging.tfvars
           vite_mode: staging
 
@@ -357,7 +357,7 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
-          state_key: $AWS_REGION.production.tfvars
+          state_key: $AWS_REGION.production.tfstate
           var_file: vars/production.tfvars
           vite_mode: production
 

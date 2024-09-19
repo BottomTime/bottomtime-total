@@ -1,0 +1,22 @@
+{
+  "name": "@bottomtime/edge",
+  "version": "1.0.0",
+  "description": "BottomTime Edge Lambda@Edge function to restrict access to test environments",
+  "main": "dist/index.js",
+  "author": "Chris Carleton <mrchriscarleton@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "packageManager": "yarn@4.3.0",
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "cognito-at-edge": "^1.5.3"
+  },
+  "devDependencies": {
+    "webpack": "^5.92.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

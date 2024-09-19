@@ -228,3 +228,8 @@ When ready, run:
 ```bash
 ./deploy-files.sh
 ```
+
+## Protecting an Environment
+
+It may be necessary to limit access to an environment to private users. (Think test environments that should not be publicly visible.)
+In this case you'll want to enable Edge Authentication to ensure that only authorized users are accessing the environment.

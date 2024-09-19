@@ -125,6 +125,17 @@ resource "aws_iam_role_policy_attachment" "keepalive_lambda_logging" {
   policy_arn = local.lambda_exec_policy_arn
 }
 
+### EDGE AUTHENTICATION SERVICE
+resource "aws_iam_role" "edgeauth_lambda_fn" {
+  name               = "bt_edgeauth_${var.env}_${data.aws_region.current.name}"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "edgeauth_lambda_logging" {
+  role       = aws_iam_role.edgeauth_lambda_fn.name
+  policy_arn = local.lambda_exec_policy_arn
+}
+
 ### Scheduler
 data "aws_iam_policy_document" "scheduler_assume_role" {
   statement {
