@@ -2,9 +2,6 @@ import { UserRole } from '@bottomtime/api';
 
 import { faker } from '@faker-js/faker';
 import { INestApplication } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { Test } from '@nestjs/testing';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Server } from 'http';
 import request from 'supertest';
@@ -12,14 +9,11 @@ import { Repository } from 'typeorm';
 
 import { AdminFriendsController } from '../../../src/admin/admin-friends.controller';
 import { AuthModule } from '../../../src/auth';
-import { createApp } from '../../../src/create-app';
 import { FriendRequestEntity, UserEntity } from '../../../src/data';
-import { FriendsModule, FriendsService } from '../../../src/friends';
-import { UsersModule } from '../../../src/users';
+import { FriendsModule } from '../../../src/friends';
 import { dataSource } from '../../data-source';
 import UsersTestData from '../../fixtures/user-search-data.json';
 import {
-  Log,
   createAuthHeader,
   createTestApp,
   createTestUser,
