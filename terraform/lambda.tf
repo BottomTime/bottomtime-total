@@ -220,6 +220,7 @@ resource "aws_lambda_function" "edgeauth" {
   handler     = "index.handler"
   runtime     = "nodejs20.x"
   timeout     = 15
+  publish     = true
 
   logging_config {
     log_group  = aws_cloudwatch_log_group.edgeauth_logs.id
@@ -229,16 +230,6 @@ resource "aws_lambda_function" "edgeauth" {
   tags = {
     Environment = var.env
     Region      = data.aws_region.current.name
-  }
-
-  environment {
-    variables = {
-      BT_AUTH_DOMAIN          = local.edgeauth_config.authDomain
-      BT_COOKIE_DOMAIN        = var.root_domain
-      BT_USER_POOL_ID         = local.edgeauth_config.userPoolId
-      BT_USER_POOL_APP_ID     = local.edgeauth_config.userPoolAppId
-      BT_USER_POOL_APP_SECRET = local.edgeauth_config.userPoolAppSecret
-    }
   }
 
   depends_on = [aws_cloudwatch_log_group.edgeauth_logs, aws_iam_role_policy_attachment.edgeauth_lambda_logging]

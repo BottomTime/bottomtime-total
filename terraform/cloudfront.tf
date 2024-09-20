@@ -114,6 +114,36 @@ resource "aws_cloudfront_distribution" "web" {
     origin_id   = local.web_ssr_origin_id
     domain_name = "${aws_apigatewayv2_api.ssr.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
 
+    custom_header {
+      name  = "x-auth-domain"
+      value = local.edgeauth_config.authDomain
+    }
+
+    custom_header {
+      name  = "x-aws-region"
+      value = data.aws_region.current.name
+    }
+
+    custom_header {
+      name  = "x-cookie-domain"
+      value = var.root_domain
+    }
+
+    custom_header {
+      name  = "x-user-pool-id"
+      value = local.edgeauth_config.userPoolId
+    }
+
+    custom_header {
+      name  = "x-user-pool-app-id"
+      value = local.edgeauth_config.userPoolAppId
+    }
+
+    custom_header {
+      name  = "x-user-pool-app-secret"
+      value = local.edgeauth_config.userPoolAppSecret
+    }
+
     custom_origin_config {
       http_port              = 80
       https_port             = 443
@@ -163,6 +193,11 @@ resource "aws_cloudfront_distribution" "web" {
     cache_policy_id        = aws_cloudfront_cache_policy.web_lambda.id
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
+
+    lambda_function_association {
+      event_type = "origin-request"
+      lambda_arn = aws_lambda_function.edgeauth.qualified_arn
+    }
   }
 
   tags = {

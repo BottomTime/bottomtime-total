@@ -40,6 +40,7 @@ Additionally, attach the following inline policies:
         "iam:GetRolePolicy",
         "iam:CreatePolicy",
         "iam:CreatePolicyVersion",
+        "iam:CreateServiceLinkedRole",
         "iam:DeletePolicyVersion",
         "iam:GetRole",
         "iam:GetPolicy",

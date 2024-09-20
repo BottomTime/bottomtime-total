@@ -1,23 +1,24 @@
 /* eslint-disable no-process-env */
 import { Authenticator } from 'cognito-at-edge';
 
-const authDomain = process.env.BT_AUTH_DOMAIN || 'https://bottomti.me';
-const cookieDomain = process.env.BT_COOKIE_DOMAIN || 'bottomti.me';
-const region = process.env.AWS_REGION || 'us-east-1';
-const userPoolId = process.env.BT_USER_POOL_ID || '';
-const userPoolAppId = process.env.BT_USER_POOL_APP_ID || '';
-const userPoolAppSecret = process.env.BT_USER_POOL_APP_SECRET || '';
+export const handler = async (request) => {
+  console.log('Trying really hard...');
 
-const authenticator = new Authenticator({
-  cookieDomain,
-  cookieExpirationDays: 7,
-  httpOnly: true,
-  region,
-  userPoolDomain: authDomain,
-  userPoolId,
-  userPoolAppId,
-  userPoolAppSecret,
-  logLevel: 'info',
-});
+  const headers = request.origin.custom.customHeaders;
+  const config = {
+    cookieDomain: headers['x-cookie-domain'][0] || 'bottomti.me',
+    cookieExpirationDays: 7,
+    httpOnly: true,
+    region: headers['x-aws-region'][0] || 'us-east-1',
+    userPoolDomain: headers['x-auth-domain'][0] || 'https://bottomti.me',
+    userPoolId: headers['x-user-pool-id'][0] || '',
+    userPoolAppId: headers['x-user-pool-app-id'][0] || '',
+    userPoolAppSecret: headers['x-user-pool-app-secret'][0] || '',
+    logLevel: 'info',
+  };
 
-export const handler = async (request) => authenticator.handle(request);
+  console.log('Omg! Config', config);
+
+  const authenticator = new Authenticator(config);
+  return authenticator.handle(request);
+};
