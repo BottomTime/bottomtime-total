@@ -14,8 +14,18 @@ variable "api_domain" {
   type        = string
 }
 
+variable "authentication_domain" {
+  description = "The partial domain name at which the Edge Authentication service will respond to requests."
+  type        = string
+}
+
 variable "configcat_sdk_key" {
   description = "ConfigCat SDK key for the environment. Used to access feature flags."
+  type        = string
+}
+
+variable "cognito_user_pool" {
+  description = "ID of the AWS Congito user pool that will be used to authenticate authorized users in protected environments."
   type        = string
 }
 
@@ -33,6 +43,12 @@ variable "docs_domain" {
 variable "edgeauth_config_secret" {
   description = "Name of the AWS Secret Manager secret that contains the configuration for the edge authentication service."
   type        = string
+}
+
+variable "edgeauth_cookie_name" {
+  description = "Name of the session cookie for the edge authentication service."
+  type        = string
+  default     = "bottomtime.auth"
 }
 
 variable "enable_places_api" {

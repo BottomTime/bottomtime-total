@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App Initialization will initialize the app and handle a request 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Bottom Time Platform Authenticator</title>
+  </head>
+  <body>
+    <div>
+      <p>Hi</p>
+
+      <p>
+        It seems you are not logged in yet. Please
+        <a href="/login">click here</a> to proceed to login.
+      </p>
+    </div>
+  </body>
+</html>
+"
+`;

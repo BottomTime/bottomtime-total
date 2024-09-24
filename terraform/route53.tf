@@ -37,3 +37,15 @@ resource "aws_route53_record" "docs" {
     evaluate_target_health = false
   }
 }
+
+resource "aws_route53_record" "authentication" {
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = var.authentication_domain
+  type    = "A"
+
+  alias {
+    name                   = aws_apigatewayv2_domain_name.edge_authenticator.domain_name_configuration[0].target_domain_name
+    zone_id                = aws_apigatewayv2_domain_name.edge_authenticator.domain_name_configuration[0].hosted_zone_id
+    evaluate_target_health = false
+  }
+}

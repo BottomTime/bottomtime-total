@@ -203,28 +203,40 @@ resource "aws_lambda_function" "keepalive" {
 }
 
 ### EDGE AUTHENTICATION SERVICE FOR TEST ENVIRONMENTS
-data "archive_file" "edgeauth" {
+data "archive_file" "edge_authenticator" {
   type        = "zip"
-  output_path = "${path.module}/archive/edge-auth.zip"
+  output_path = "${path.module}/archive/edge_auth.zip"
   source_dir  = "${path.module}/../packages/edge/dist/"
 }
 
-resource "aws_lambda_function" "edgeauth" {
-  function_name = "bottomtime-edgeauth-${var.env}"
-  role          = aws_iam_role.edgeauth_lambda_fn.arn
+resource "aws_lambda_function" "edge_authenticator" {
+  function_name = "bottomtime-edge-authenticator-${var.env}"
+  role          = aws_iam_role.edge_authenticator_lambda_fn.arn
 
-  filename         = data.archive_file.edgeauth.output_path
-  source_code_hash = data.archive_file.edgeauth.output_base64sha256
+  filename         = data.archive_file.edge_authenticator.output_path
+  source_code_hash = data.archive_file.edge_authenticator.output_base64sha256
 
-  description = "BottomTime Lambda@Edge Authentication Function for protecting test environments"
+  description = "Bottom Time platform authenticator. Allows users to log into protected environements using AWS Cognito."
   handler     = "index.handler"
   runtime     = "nodejs20.x"
   timeout     = 15
-  publish     = true
 
   logging_config {
-    log_group  = aws_cloudwatch_log_group.edgeauth_logs.id
+    log_group  = aws_cloudwatch_log_group.edge_authenticator_logs.id
     log_format = "JSON"
+  }
+
+  environment {
+    variables = {
+      BT_EDGE_BASE_URL       = "https://${aws_route53_record.authentication.fqdn}"
+      BT_EDGE_CLIENT_ID      = aws_cognito_user_pool_client.user_pool_client.id
+      BT_EDGE_CLIENT_SECRET  = aws_cognito_user_pool_client.user_pool_client.client_secret
+      BT_EDGE_COGNITO_DOMAIN = "https://${data.aws_cognito_user_pool.user_pool.domain}"
+      BT_EDGE_COOKIE_NAME    = var.edgeauth_cookie_name
+      BT_EDGE_SESSION_SECRET = local.edgeauth_config.sessionSecret
+      BT_LOG_LEVEL           = var.log_level
+      NODE_ENV               = "production"
+    }
   }
 
   tags = {
@@ -232,5 +244,14 @@ resource "aws_lambda_function" "edgeauth" {
     Region      = data.aws_region.current.name
   }
 
-  depends_on = [aws_cloudwatch_log_group.edgeauth_logs, aws_iam_role_policy_attachment.edgeauth_lambda_logging]
+  depends_on = [aws_cloudwatch_log_group.edge_authenticator_logs, aws_iam_role_policy_attachment.edge_authenticator_lambda_logging]
+}
+
+resource "aws_lambda_permission" "allow_edge_authenticator_api_call" {
+  statement_id  = "allow_apigateway_${var.env}"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.edge_authenticator.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_apigatewayv2_api.edge_authenticator.execution_arn}/*/*"
 }

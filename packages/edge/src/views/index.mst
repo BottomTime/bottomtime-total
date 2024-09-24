@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2&family=Lobster&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alegreya+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <link rel="stylesheet" href="/index.css" />
+    <title>Bottom Time Platform Authenticator</title>
+  </head>
+
+  <body class="bg-gray-700">
+    <div class="container mx-auto font-content text-gray-200">
+      <div class="grid grid-cols-1 md:grid-cols-5">
+        <div
+          class="col-span-1 col-start-1 md:col-span-3 md:col-start-2 bg-blue-600 my-16 rounded-xl shadow-lg shadow-blue-300 p-8 space-y-4 text-center"
+        >
+          <h1 class="pb-3">Bottom Time Platform Authenticator</h1>
+
+          {{ #user }}
+          <p>
+            You are logged in as
+            <span class="font-bold">{{ user }}</span> . Click
+            <a href="/logout">here</a> to logout.
+          </p>
+          {{ /user }} {{ ^user }}
+          <p>
+            It seems you are not logged in yet. Please proceed to AWS Cognito to
+            authenticate.
+          </p>
+
+          <div>
+            <a href="/login">
+              <button>
+                <p class="space-x-3">
+                  <span>
+                    <i class="fa-solid fa-check"></i>
+                  </span>
+                  <span>Login with AWS Cognito</span>
+                </p>
+              </button>
+            </a>
+          </div>
+          {{ /user }}
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://kit.fontawesome.com/0abec2fadd.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

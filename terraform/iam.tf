@@ -4,12 +4,12 @@ locals {
 
 data "aws_iam_policy_document" "lambda_assume_role" {
   statement {
-    sid     = "1"
+    sid     = "LambdaAssumeRole"
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
-      identifiers = ["lambda.amazonaws.com", "edgelambda.amazonaws.com"]
+      identifiers = ["lambda.amazonaws.com"]
     }
   }
 }
@@ -54,6 +54,7 @@ resource "aws_iam_policy" "sqs_queue_access" {
   policy = data.aws_iam_policy_document.sqs_queue_access.json
 }
 
+### BACKEND SERVICE
 resource "aws_iam_role" "service_lambda_fn" {
   name               = "bt_service_${var.env}_${data.aws_region.current.name}"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
@@ -126,13 +127,13 @@ resource "aws_iam_role_policy_attachment" "keepalive_lambda_logging" {
 }
 
 ### EDGE AUTHENTICATION SERVICE
-resource "aws_iam_role" "edgeauth_lambda_fn" {
-  name               = "bt_edgeauth_${var.env}_${data.aws_region.current.name}"
+resource "aws_iam_role" "edge_authenticator_lambda_fn" {
+  name               = "bt_edge_authenticator_${var.env}_${data.aws_region.current.name}"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "edgeauth_lambda_logging" {
-  role       = aws_iam_role.edgeauth_lambda_fn.name
+resource "aws_iam_role_policy_attachment" "edge_authenticator_lambda_logging" {
+  role       = aws_iam_role.edge_authenticator_lambda_fn.name
   policy_arn = local.lambda_exec_policy_arn
 }
 
