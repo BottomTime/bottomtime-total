@@ -1,5 +1,5 @@
 {
-  "name": "@bottomtime/edge",
+  "name": "@bottomtime/edge-authenticator",
   "version": "1.0.0",
   "description": "BottomTime Edge Lambda@Edge function to restrict access to test environments",
   "main": "dist/index.js",

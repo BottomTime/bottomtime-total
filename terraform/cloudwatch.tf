@@ -17,8 +17,3 @@ resource "aws_cloudwatch_log_group" "keepalive_logs" {
   name              = "/bt/keepalive/${var.env}/${data.aws_region.current.name}"
   retention_in_days = var.log_retention_days
 }
-
-resource "aws_cloudwatch_log_group" "edge_authenticator_logs" {
-  name              = "/bt/edge-authenticator/${var.env}/${data.aws_region.current.name}"
-  retention_in_days = var.log_retention_days
-}

@@ -2686,22 +2686,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@bottomtime/edge-authorizer@workspace:packages/edge-authorizer":
+"@bottomtime/edge-authenticator@workspace:packages/edge-authenticator":
   version: 0.0.0-use.local
-  resolution: "@bottomtime/edge-authorizer@workspace:packages/edge-authorizer"
-  dependencies:
-    "@codegenie/serverless-express": "npm:^4.14.1"
-    aws-lambda: "npm:^1.0.7"
-    jsonwebtoken: "npm:^9.0.1"
-    ts-loader: "npm:^9.5.1"
-    webpack: "npm:^5.92.0"
-    webpack-cli: "npm:^5.1.4"
-  languageName: unknown
-  linkType: soft
-
-"@bottomtime/edge@workspace:packages/edge":
-  version: 0.0.0-use.local
-  resolution: "@bottomtime/edge@workspace:packages/edge"
+  resolution: "@bottomtime/edge-authenticator@workspace:packages/edge-authenticator"
   dependencies:
     "@codegenie/serverless-express": "npm:^4.14.1"
     "@nestjs/common": "npm:^10.4.1"
@@ -2746,6 +2733,19 @@ __metadata:
     webpack: "npm:^5.92.0"
     webpack-cli: "npm:^5.1.4"
     zod: "npm:^3.22.4"
+  languageName: unknown
+  linkType: soft
+
+"@bottomtime/edge-authorizer@workspace:packages/edge-authorizer":
+  version: 0.0.0-use.local
+  resolution: "@bottomtime/edge-authorizer@workspace:packages/edge-authorizer"
+  dependencies:
+    "@codegenie/serverless-express": "npm:^4.14.1"
+    aws-lambda: "npm:^1.0.7"
+    jsonwebtoken: "npm:^9.0.1"
+    ts-loader: "npm:^9.5.1"
+    webpack: "npm:^5.92.0"
+    webpack-cli: "npm:^5.1.4"
   languageName: unknown
   linkType: soft
 

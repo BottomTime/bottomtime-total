@@ -48,7 +48,6 @@ resource "aws_cloudfront_cache_policy" "docs_static" {
   }
 }
 
-
 resource "aws_cloudfront_cache_policy" "web_lambda" {
   name        = "bt-web-lambda-${var.env}-cache-policy"
   min_ttl     = 0
@@ -75,7 +74,6 @@ resource "aws_cloudfront_cache_policy" "web_lambda" {
     }
   }
 }
-
 
 resource "aws_cloudfront_origin_access_identity" "web" {}
 resource "aws_cloudfront_origin_access_identity" "docs" {}
