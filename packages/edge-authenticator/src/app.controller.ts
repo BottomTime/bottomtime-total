@@ -31,7 +31,7 @@ export class AppController {
     this.log.debug(
       `Received request for home page from <${user?.email || 'anonymous'}>.`,
     );
-    return { user: user?.email, domain: Config.protectedDomain };
+    return { user: user?.email };
   }
 
   @Get('login')
@@ -43,7 +43,6 @@ export class AppController {
 
   @Get('callback')
   @UseGuards(GoogleAuthGuard)
-  @Render('authorized')
   callback(@CurrentUser() user: User, @Res() res: Response) {
     this.log.debug('Received callback from Google.');
 
@@ -56,14 +55,20 @@ export class AppController {
       domain: Config.cookie.domain,
       httpOnly: true,
       maxAge: Config.cookie.ttl * 1000,
+      secure: true,
     });
 
-    return { user: user.email, domain: Config.protectedDomain };
+    res.redirect('/');
   }
 
   @Get('logout')
-  @Redirect('/')
   logout(@Res() res: Response) {
-    res.clearCookie(Config.cookie.name);
+    res.cookie(Config.cookie.name, '', {
+      domain: Config.cookie.domain,
+      httpOnly: true,
+      maxAge: Config.cookie.ttl * 1000,
+      secure: true,
+    });
+    res.redirect('/');
   }
 }

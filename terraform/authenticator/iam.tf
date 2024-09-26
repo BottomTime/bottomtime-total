@@ -14,6 +14,15 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
+data "aws_iam_policy_document" "dynamodb_access" {
+  statement {
+    sid       = "DynamoDBGetItem"
+    effect    = "Allow"
+    actions   = ["dynamodb:GetItem"]
+    resources = [aws_dynamodb_table.auth.arn]
+  }
+}
+
 data "aws_iam_policy_document" "s3_cf_policy" {
   statement {
     actions   = ["s3:GetObject"]
@@ -31,8 +40,18 @@ resource "aws_iam_role" "authenticator_lambda_fn" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
 }
 
+resource "aws_iam_policy" "dynamodb_access" {
+  name   = "bt_dynamodb_access"
+  policy = data.aws_iam_policy_document.dynamodb_access.json
+}
+
 resource "aws_iam_role_policy_attachment" "authenticator_lambda_logging" {
   role       = aws_iam_role.authenticator_lambda_fn.name
   policy_arn = local.lambda_exec_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "authenticator_dynamodb_access" {
+  role       = aws_iam_role.authenticator_lambda_fn.name
+  policy_arn = aws_iam_policy.dynamodb_access.arn
 }
 

@@ -27,17 +27,17 @@
         >
           <h1 class="pb-3">Bottom Time Platform Authenticator</h1>
 
-          <p class="text-4xl text-green-400">
-            <i class="fa-solid fa-circle-check"></i>
+          <p class="text-4xl text-red-400">
+            <i class="fa-solid fa-hand"></i>
           </p>
 
           <p>
-            You are now logged in as
-            <span class="font-bold">{{ user }}</span>!
+            <span class="font-bold">Stop!</span> You are not authorized to proceed! The JWT you provided is invalid or expired!
+            You can try returning to the home page to try to login again.
           </p>
 
           <p>
-            <a href="https://{{ domain }}">Proceed to Site</a>
+            <a href="/">Return to Home</a>
           </p>
         </div>
       </div>

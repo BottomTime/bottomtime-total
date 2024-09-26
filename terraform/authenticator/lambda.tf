@@ -23,14 +23,15 @@ resource "aws_lambda_function" "authenticator" {
 
   environment {
     variables = {
-      BT_EDGE_BASE_URL       = "https://${local.authentication_domain}.${var.root_domain}"
-      BT_EDGE_CLIENT_ID      = aws_cognito_user_pool_client.user_pool_client.id
-      BT_EDGE_CLIENT_SECRET  = aws_cognito_user_pool_client.user_pool_client.client_secret
-      BT_EDGE_COGNITO_DOMAIN = "https://${aws_route53_record.cognito.fqdn}"
-      BT_EDGE_COOKIE_NAME    = var.cookie_name
-      BT_EDGE_SESSION_SECRET = aws_cognito_user_pool_client.user_pool_client.client_secret
-      BT_LOG_LEVEL           = var.log_level
-      NODE_ENV               = "production"
+      BT_EDGE_BASE_URL             = "https://${local.authentication_domain}.${var.root_domain}"
+      BT_EDGE_COOKIE_NAME          = var.cookie_name
+      BT_EDGE_COOKIE_DOMAIN        = var.root_domain
+      BT_EDGE_DYNAMODB_USERS_TABLE = var.auth_table_name
+      BT_EDGE_GOOGLE_CLIENT_ID     = local.auth_config.googleClientId
+      BT_EDGE_GOOGLE_CLIENT_SECRET = local.auth_config.googleClientSecret
+      BT_EDGE_SESSION_SECRET       = local.auth_config.sessionSecret
+      BT_LOG_LEVEL                 = var.log_level
+      NODE_ENV                     = "production"
     }
   }
 

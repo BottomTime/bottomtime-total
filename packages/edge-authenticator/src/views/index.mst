@@ -33,13 +33,11 @@
             <span class="font-bold">{{ user }}</span>.
           </p>
 
-          <p class="flex gap-4 justify-center items-center">
-            <a href="https://{{ domain }}">
-              Proceed to Site
-            </a>
-            |
+          <p>
             <a href="/logout">
-              Logout
+              <button>
+                Logout
+              </button>
             </a>
           </p>
           {{ /user }} {{ ^user }}

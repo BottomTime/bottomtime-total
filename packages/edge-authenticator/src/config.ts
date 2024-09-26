@@ -21,6 +21,7 @@ export interface AppConfig {
     name: string;
     ttl: number;
   };
+  dynamoDbUsersTable: string;
   google: {
     clientId: string;
     clientSecret: string;
@@ -28,7 +29,6 @@ export interface AppConfig {
   isProduction: boolean;
   env: string;
   logLevel: LogLevel;
-  protectedDomain: string;
   sessionSecret: string;
 }
 
@@ -44,7 +44,7 @@ const ConfigSchema = z
       .number()
       .int()
       .default(OneWeekInSeconds),
-    BT_EDGE_PROTECTED_DOMAIN: z.string().default('bottomti.me'),
+    BT_EDGE_DYNAMODB_USERS_TABLE: z.string().default('bt-authorized-devs'),
     BT_EDGE_SESSION_SECRET: z
       .string()
       .default(
@@ -61,6 +61,7 @@ const ConfigSchema = z
       name: env.BT_EDGE_COOKIE_NAME,
       ttl: env.BT_EDGE_COOKIE_TTL_SECONDS,
     },
+    dynamoDbUsersTable: env.BT_EDGE_DYNAMODB_USERS_TABLE,
     google: {
       clientId: env.BT_EDGE_GOOGLE_CLIENT_ID,
       clientSecret: env.BT_EDGE_GOOGLE_CLIENT_SECRET,
@@ -68,7 +69,6 @@ const ConfigSchema = z
     isProduction: env.NODE_ENV === 'production',
     env: env.NODE_ENV,
     logLevel: env.BT_LOG_LEVEL,
-    protectedDomain: env.BT_EDGE_PROTECTED_DOMAIN,
     sessionSecret: env.BT_EDGE_SESSION_SECRET,
   }));
 

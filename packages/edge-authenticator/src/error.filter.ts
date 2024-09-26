@@ -3,10 +3,12 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 
 import { Response } from 'express';
 
+import { Config } from './config';
 import { BunyanLoggerService } from './logger';
 
 @Catch()
@@ -16,6 +18,13 @@ export class GlobalErrorFilter implements ExceptionFilter {
   private handleHttpException(exception: HttpException, res: Response) {
     const status = exception.getStatus();
     const response = exception.getResponse();
+
+    if (status === HttpStatus.UNAUTHORIZED) {
+      // If the JWT is rejected then clear the cookie and render the unauthorized page.
+      res.clearCookie(Config.cookie.name);
+      res.render('unauthorized');
+      return;
+    }
 
     res.status(status).json(
       typeof response === 'string'
