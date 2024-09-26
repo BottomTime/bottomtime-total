@@ -14,6 +14,18 @@ data "aws_iam_policy_document" "lambda_assume_role" {
   }
 }
 
+data "aws_iam_policy_document" "apigateway_authorizer_assume_role" {
+  statement {
+    sid     = "AllowApiGatewayInvoke"
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["apigateway.amazonaws.com"]
+    }
+  }
+}
+
 # Grant backend access to read/write/delete objects in the media bucket
 data "aws_iam_policy_document" "media_bucket_access" {
   # List objects in media bucket
@@ -52,6 +64,18 @@ resource "aws_iam_policy" "media_bucket_access" {
 resource "aws_iam_policy" "sqs_queue_access" {
   name   = "bt_sqs_queue_access_${var.env}_${data.aws_region.current.name}"
   policy = data.aws_iam_policy_document.sqs_queue_access.json
+}
+
+### EDGE AUTHORIZER FOR PROTECTED ENVIRONMENTS
+resource "aws_iam_role" "auth_lambda_fn" {
+  name               = "bt_auth_${var.env}_${data.aws_region.current.name}"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.apigateway_authorizer_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "auth_lambda_logging" {
+  role       = aws_iam_role.auth_lambda_fn.name
+  policy_arn = local.lambda_exec_policy_arn
 }
 
 ### BACKEND SERVICE

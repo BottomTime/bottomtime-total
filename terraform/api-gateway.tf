@@ -126,3 +126,11 @@ resource "aws_apigatewayv2_stage" "ssr" {
     })
   }
 }
+
+resource "aws_apigatewayv2_authorizer" "auth" {
+  name                              = "bt-auth-${var.env}"
+  api_id                            = aws_apigatewayv2_api.ssr.id
+  authorizer_uri                    = aws_lambda_function.edge_authorizer.invoke_arn
+  authorizer_type                   = "REQUEST"
+  authorizer_payload_format_version = "2.0"
+}

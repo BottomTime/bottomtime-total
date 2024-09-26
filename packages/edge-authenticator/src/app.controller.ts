@@ -3,7 +3,6 @@ import {
   Get,
   Inject,
   Logger,
-  Redirect,
   Render,
   Res,
   UseGuards,
