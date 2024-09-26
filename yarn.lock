@@ -2704,6 +2704,7 @@ __metadata:
     "@types/mustache-express": "npm:^1"
     "@types/passport": "npm:^1.0.12"
     "@types/passport-cognito": "npm:^0"
+    "@types/passport-google-oauth20": "npm:^2.0.11"
     "@types/passport-jwt": "npm:^3.0.9"
     aws-lambda: "npm:^1.0.7"
     bunyan: "npm:^1.8.15"
@@ -2721,7 +2722,7 @@ __metadata:
     nodemon: "npm:^2.0.22"
     nodemon-webpack-plugin: "npm:^4.8.2"
     passport: "npm:^0.6.0"
-    passport-cognito-oauth2: "npm:^0.1.1"
+    passport-google-oauth20: "npm:^2.0.0"
     passport-jwt: "npm:^4.0.1"
     postcss-loader: "npm:^8.1.1"
     postcss-preset-env: "npm:^10.0.5"
@@ -8496,24 +8497,6 @@ __metadata:
   bin:
     lambda: bin/lambda
   checksum: 10c0/cf017d4a0b92e14c7361afde48f40a77523fd8f9d911bbd951b65a453bc0aa54219a03d95c11fcad0f707994b67f691c6764215497f13178688e9efd17212b91
-  languageName: node
-  linkType: hard
-
-"aws-sdk@npm:^2.303.0":
-  version: 2.1691.0
-  resolution: "aws-sdk@npm:2.1691.0"
-  dependencies:
-    buffer: "npm:4.9.2"
-    events: "npm:1.1.1"
-    ieee754: "npm:1.1.13"
-    jmespath: "npm:0.16.0"
-    querystring: "npm:0.2.0"
-    sax: "npm:1.2.1"
-    url: "npm:0.10.3"
-    util: "npm:^0.12.4"
-    uuid: "npm:8.0.0"
-    xml2js: "npm:0.6.2"
-  checksum: 10c0/f08b279bb875ac6becc882ecde41dfd8c3766a1c836cc8e472ea62ae3e2d0316f73fc1eab6514391dedc0bb266a289f45db0ba5087178f63a78ffd2ef4edc38a
   languageName: node
   linkType: hard
 
@@ -18197,17 +18180,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport-cognito-oauth2@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "passport-cognito-oauth2@npm:0.1.1"
-  dependencies:
-    aws-sdk: "npm:^2.303.0"
-    passport-oauth2: "npm:^1.4.0"
-    util: "npm:^0.10.4"
-  checksum: 10c0/539a6240710dece85ba34f2f4d89c40cc66daf1bd2668169d7bcdf6e5bf4f07db06bf9f9e4c2377f75eeb89974c7d44a10296619c0fb41c31106f69605ad7cd3
-  languageName: node
-  linkType: hard
-
 "passport-discord@npm:^0.1.4":
   version: 0.1.4
   resolution: "passport-discord@npm:0.1.4"
@@ -18254,7 +18226,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport-oauth2@npm:1.x.x, passport-oauth2@npm:^1.4.0, passport-oauth2@npm:^1.5.0":
+"passport-oauth2@npm:1.x.x, passport-oauth2@npm:^1.5.0":
   version: 1.8.0
   resolution: "passport-oauth2@npm:1.8.0"
   dependencies:
@@ -23167,15 +23139,6 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 10c0/41a5bdd214df2f6c3ecf8622745e4a366c4adced864bc3c833739791aeeeb1838119af7daed4ba36428114b5c67dcda034a79c882e97e43c03e66a4dd7389942
-  languageName: node
-  linkType: hard
-
-"util@npm:^0.10.4":
-  version: 0.10.4
-  resolution: "util@npm:0.10.4"
-  dependencies:
-    inherits: "npm:2.0.3"
-  checksum: 10c0/d29f6893e406b63b088ce9924da03201df89b31490d4d011f1c07a386ea4b3dbe907464c274023c237da470258e1805d806c7e4009a5974cd6b1d474b675852a
   languageName: node
   linkType: hard
 

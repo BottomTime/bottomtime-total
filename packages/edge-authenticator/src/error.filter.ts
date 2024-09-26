@@ -1,4 +1,11 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+} from '@nestjs/common';
+
+import { Response } from 'express';
 
 import { BunyanLoggerService } from './logger';
 
@@ -6,7 +13,44 @@ import { BunyanLoggerService } from './logger';
 export class GlobalErrorFilter implements ExceptionFilter {
   constructor(private readonly log: BunyanLoggerService) {}
 
+  private handleHttpException(exception: HttpException, res: Response) {
+    const status = exception.getStatus();
+    const response = exception.getResponse();
+
+    res.status(status).json(
+      typeof response === 'string'
+        ? {
+            message: response,
+            stack: exception.stack,
+          }
+        : response,
+    );
+  }
+
+  private handleError(error: Error, res: Response) {
+    if (error instanceof HttpException) {
+      this.handleHttpException(error, res);
+      return;
+    }
+
+    res.status(500).json({
+      message: error.message,
+      stack: error.stack,
+    });
+  }
+
   catch(exception: unknown, host: ArgumentsHost) {
+    const res = host.switchToHttp().getResponse<Response>();
+
     this.log.error(exception);
+
+    if (exception instanceof Error) {
+      this.handleError(exception, res);
+      return;
+    }
+
+    res.status(500).json({
+      message: 'Internal server error',
+    });
   }
 }

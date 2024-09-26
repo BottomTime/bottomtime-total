@@ -25,7 +25,16 @@ export async function createApp(log: Logger): Promise<INestApplication> {
     logger,
   });
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          'connect-src': ["'self'", '*.fontawesome.com'],
+          'script-src': ["'self'", "'unsafe-inline'", 'kit.fontawesome.com'],
+        },
+      },
+    }),
+  );
   app.use(cookieParser());
   app.useGlobalFilters(new GlobalErrorFilter(logger));
 

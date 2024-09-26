@@ -27,40 +27,18 @@
         >
           <h1 class="pb-3">Bottom Time Platform Authenticator</h1>
 
-          {{ #user }}
-          <p>
-            You are currently logged in as
-            <span class="font-bold">{{ user }}</span>.
+          <p class="text-4xl text-green-400">
+            <i class="fa-solid fa-circle-check"></i>
           </p>
 
-          <p class="flex gap-4 justify-center items-center">
-            <a href="https://{{ domain }}">
-              Proceed to Site
-            </a>
-            |
-            <a href="/logout">
-              Logout
-            </a>
-          </p>
-          {{ /user }} {{ ^user }}
           <p>
-            It seems you are not logged in yet. Please proceed to AWS Cognito to
-            authenticate.
+            You are now logged in as
+            <span class="font-bold">{{ user }}</span>!
           </p>
 
-          <div>
-            <a href="/login">
-              <button>
-                <p class="flex gap-3 items-center">
-                  <span>
-                    <i class="fa-brands fa-google"></i>
-                  </span>
-                  <span>Login with Google</span>
-                </p>
-              </button>
-            </a>
-          </div>
-          {{ /user }}
+          <p>
+            <a href="https://{{ domain }}">Proceed to Site</a>
+          </p>
         </div>
       </div>
     </div>
