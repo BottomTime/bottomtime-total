@@ -1,11 +1,18 @@
 /* eslint-disable no-process-env */
+import { z } from 'zod';
 
-export class Config {
-  private constructor() {
-    /* singleton */
-  }
+import { LogLevel } from './logger';
 
-  static get sessionSecret(): string {
-    return process.env.BT_EDGE_SESSION_SECRET || '';
-  }
+export interface AppConfig {
+  logLevel: string;
 }
+
+const config = z
+  .object({
+    BT_LOG_LEVEL: LogLevel.default('info'),
+  })
+  .transform<AppConfig>((env) => ({
+    logLevel: env.BT_LOG_LEVEL,
+  }));
+
+export const Config = config.parse(process.env);

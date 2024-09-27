@@ -103,6 +103,9 @@ resource "aws_apigatewayv2_route" "ssr" {
   api_id    = aws_apigatewayv2_api.ssr.id
   route_key = "ANY /{proxy+}"
   target    = "integrations/${aws_apigatewayv2_integration.ssr_lambda.id}"
+
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.auth.id
 }
 
 resource "aws_apigatewayv2_stage" "ssr" {

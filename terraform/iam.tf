@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "apigateway_authorizer_assume_role" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
-      identifiers = ["apigateway.amazonaws.com"]
+      identifiers = ["apigateway.amazonaws.com", "lambda.amazonaws.com"]
     }
   }
 }

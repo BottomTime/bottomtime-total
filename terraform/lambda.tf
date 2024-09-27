@@ -13,7 +13,7 @@ resource "aws_lambda_function" "edge_authorizer" {
   source_code_hash = data.archive_file.edge_authorizer.output_base64sha256
 
   description = "BottomTime Email Service Lambda Function"
-  handler     = "service/sls.handler"
+  handler     = "index.handler"
   runtime     = "nodejs20.x"
   timeout     = 5
 
