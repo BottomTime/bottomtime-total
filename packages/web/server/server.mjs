@@ -1,3 +1,5 @@
+import { edgeAuthorizer } from '@bottomtime/common';
+
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -25,6 +27,7 @@ export async function createApp() {
     }),
   );
   app.use('/api', createProxyMiddleware({ target: Config.apiUrl }));
+  app.use(edgeAuthorizer(Config.edgeAuth));
 
   // Global error handler needs to return something meaningful.
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */

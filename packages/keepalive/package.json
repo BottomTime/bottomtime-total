@@ -2,9 +2,24 @@
   "name": "@bottomtime/keepalive",
   "version": "1.0.0",
   "description": "BottomTime Keep-Alive Lambda Function",
-  "main": "index.mjs",
+  "main": "dist/index.js",
   "author": "Chris Carleton <mrchriscarleton@gmail.com>",
   "license": "MIT",
   "private": true,
-  "packageManager": "yarn@4.3.0"
+  "type": "module",
+  "packageManager": "yarn@4.3.0",
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "aws-lambda": "^1.0.7",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.140",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.92.0",
+    "webpack-cli": "^5.1.4"
+  }
 }

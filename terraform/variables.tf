@@ -14,9 +14,10 @@ variable "api_domain" {
   type        = string
 }
 
-variable "authentication_domain" {
-  description = "The partial domain name at which the Edge Authentication service will respond to requests."
+variable "auth_cookie_name" {
+  description = "The name of the cookie used to store the edge authorization JWT."
   type        = string
+  default     = "bt.auth"
 }
 
 variable "configcat_sdk_key" {

@@ -88,6 +88,11 @@ resource "aws_lambda_function" "ssr" {
 
   environment {
     variables = {
+      BT_EDGEAUTH_ENABLED        = true
+      BT_EDGEAUTH_AUDIENCE       = "${var.web_domain}.${var.root_domain}"
+      BT_EDGEAUTH_COOKIE_NAME    = var.auth_cookie_name
+      BT_EDGEAUTH_SESSION_SECRET = local.auth_config.sessionSecret
+
       BTWEB_API_URL                = "https://${var.api_domain}.${var.root_domain}/"
       BTWEB_COOKIE_NAME            = var.cookie_name
       BTWEB_LOG_LEVEL              = var.log_level
@@ -168,7 +173,7 @@ resource "aws_lambda_event_source_mapping" "email_queue" {
 data "archive_file" "keepalive" {
   type        = "zip"
   output_path = "${path.module}/archive/keepalive.zip"
-  source_dir  = "${path.module}/../packages/keepalive/"
+  source_dir  = "${path.module}/../packages/keepalive/dist/"
 }
 
 resource "aws_lambda_function" "keepalive" {
@@ -200,4 +205,12 @@ resource "aws_lambda_function" "keepalive" {
   }
 
   depends_on = [aws_cloudwatch_log_group.keepalive_logs, aws_iam_role_policy_attachment.keepalive_lambda_logging]
+}
+
+resource "aws_lambda_permission" "allow_eventbridge" {
+  statement_id  = "AllowEventBridgeInvocation"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.keepalive.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_scheduler_schedule.keepalive.arn
 }
