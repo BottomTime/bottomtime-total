@@ -1,39 +1,3 @@
-### EDGE AUTHORIZATION FOR PROTECTED ENVIRONMENTS
-data "archive_file" "edge_authorizer" {
-  type        = "zip"
-  output_path = "${path.module}/archive/authorizer.zip"
-  source_dir  = "${path.module}/../packages/edge-authorizer/dist/"
-}
-
-resource "aws_lambda_function" "edge_authorizer" {
-  function_name = "bottomtime-authorizer-${var.env}"
-  role          = aws_iam_role.auth_lambda_fn.arn
-
-  filename         = data.archive_file.edge_authorizer.output_path
-  source_code_hash = data.archive_file.edge_authorizer.output_base64sha256
-
-  description = "BottomTime Email Service Lambda Function"
-  handler     = "index.handler"
-  runtime     = "nodejs20.x"
-  timeout     = 5
-
-  logging_config {
-    log_group  = aws_cloudwatch_log_group.auth_logs.id
-    log_format = "JSON"
-  }
-
-  tags = {
-    Environment = var.env
-    Region      = data.aws_region.current.name
-  }
-
-  environment {
-
-  }
-
-  depends_on = [aws_cloudwatch_log_group.auth_logs, aws_iam_role_policy_attachment.auth_lambda_logging]
-}
-
 ### BACKEND API
 resource "aws_lambda_function" "service" {
   function_name = "bottomtime-service-${var.env}"

@@ -103,9 +103,6 @@ resource "aws_apigatewayv2_route" "ssr" {
   api_id    = aws_apigatewayv2_api.ssr.id
   route_key = "ANY /{proxy+}"
   target    = "integrations/${aws_apigatewayv2_integration.ssr_lambda.id}"
-
-  authorization_type = "CUSTOM"
-  authorizer_id      = aws_apigatewayv2_authorizer.auth.id
 }
 
 resource "aws_apigatewayv2_stage" "ssr" {
@@ -128,12 +125,4 @@ resource "aws_apigatewayv2_stage" "ssr" {
       integrationErrorMessage = "$context.integrationErrorMessage"
     })
   }
-}
-
-resource "aws_apigatewayv2_authorizer" "auth" {
-  name                              = "bt-auth-${var.env}"
-  api_id                            = aws_apigatewayv2_api.ssr.id
-  authorizer_uri                    = aws_lambda_function.edge_authorizer.invoke_arn
-  authorizer_type                   = "REQUEST"
-  authorizer_payload_format_version = "2.0"
 }

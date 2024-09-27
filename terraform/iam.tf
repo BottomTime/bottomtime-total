@@ -66,18 +66,6 @@ resource "aws_iam_policy" "sqs_queue_access" {
   policy = data.aws_iam_policy_document.sqs_queue_access.json
 }
 
-### EDGE AUTHORIZER FOR PROTECTED ENVIRONMENTS
-resource "aws_iam_role" "auth_lambda_fn" {
-  name               = "bt_auth_${var.env}_${data.aws_region.current.name}"
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.apigateway_authorizer_assume_role.json
-}
-
-resource "aws_iam_role_policy_attachment" "auth_lambda_logging" {
-  role       = aws_iam_role.auth_lambda_fn.name
-  policy_arn = local.lambda_exec_policy_arn
-}
-
 ### BACKEND SERVICE
 resource "aws_iam_role" "service_lambda_fn" {
   name               = "bt_service_${var.env}_${data.aws_region.current.name}"
