@@ -25,11 +25,6 @@ variable "configcat_sdk_key" {
   type        = string
 }
 
-variable "cognito_user_pool" {
-  description = "ID of the AWS Congito user pool that will be used to authenticate authorized users in protected environments."
-  type        = string
-}
-
 variable "cookie_name" {
   description = "Name of the session cookie as it will appear in the browser."
   type        = string

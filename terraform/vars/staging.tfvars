@@ -6,7 +6,6 @@ edgeauth_enabled = true
 admin_email            = "admin@bottomti.me"
 api_domain             = "api-staging"
 configcat_sdk_key      = "configcat-sdk-1/L7LcCHeN9EiJIg19Uj9Fgw/qUo-JQp0d0qBb85NqkKIPw"
-cognito_user_pool      = "us-east-1_2DonuUmcC"
 cookie_name            = "bottomtime.staging"
 docs_domain            = "docs-staging"
 edgeauth_cookie_name   = "bottomtime.staging.auth"
