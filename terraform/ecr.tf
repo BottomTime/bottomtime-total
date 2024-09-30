@@ -9,11 +9,13 @@ data "aws_ecr_repository" "web" {
 data "aws_ecr_image" "service" {
   repository_name = "bottomtime/service"
   image_tag       = "${var.env}-latest"
+  most_recent     = true
 }
 
 data "aws_ecr_image" "web" {
   repository_name = "bottomtime/web"
   image_tag       = "${var.env}-latest"
+  most_recent     = true
 }
 
 data "aws_iam_policy_document" "service_lambda_policy" {
