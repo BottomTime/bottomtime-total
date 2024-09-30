@@ -1,9 +1,17 @@
+/* eslint-disable no-process-env, no-console */
 import { Handler } from 'aws-lambda';
-import fetch from 'node-fetch';
+import axios from 'axios';
+import { URL } from 'url';
 
-/* eslint-disable no-process-env */
 const pingUrl = process.env.BT_PING_URL || 'http://localhost:4500/';
 
 export const handler: Handler = async () => {
-  await fetch(pingUrl, { method: 'GET' });
+  try {
+    await Promise.all([
+      axios.get(new URL('/api', pingUrl).toString()),
+      axios.get(pingUrl),
+    ]);
+  } catch (error) {
+    console.error(error);
+  }
 };
