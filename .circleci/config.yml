@@ -120,7 +120,7 @@ jobs:
             - .nx/
             - packages/api/dist/
             - packages/common/dist/
-            - packages/edge/dist/
+            - packages/edge-authenticator/dist/
             - packages/emails/dist/
             - packages/service/dist/
             - packages/web/dist/
