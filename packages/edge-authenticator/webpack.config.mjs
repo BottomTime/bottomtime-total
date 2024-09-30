@@ -46,7 +46,7 @@ export default {
     }),
     new NodemonPlugin({
       script: './dist/dev-server.js',
-      watch: resolve(import.meta.dirname, 'dist/'),
+      watch: resolve(cwd, 'dist/'),
       ext: 'js,css',
     }),
     new CopyPlugin({

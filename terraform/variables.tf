@@ -41,9 +41,16 @@ variable "docs_domain" {
   type        = string
 }
 
+variable "edgeauth_enabled" {
+  description = "Indicates whether this is a protected environment and should require an edge authorization JWT for all requests."
+  type        = bool
+  default     = false
+}
+
 variable "edgeauth_config_secret" {
   description = "Name of the AWS Secret Manager secret that contains the configuration for the edge authentication service."
   type        = string
+  default     = "bt-edgeauth-config"
 }
 
 variable "edgeauth_cookie_name" {

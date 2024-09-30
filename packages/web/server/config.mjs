@@ -16,9 +16,11 @@ export class Config {
   static get edgeAuth() {
     return {
       enabled: toBoolean(process.env.BT_EDGEAUTH_ENABLED, false),
-      audience: process.env.BT_EDGEAUTH_AUDIENCE || '',
-      cookieName: process.env.BT_EDGEAUTH_COOKIE_NAME || '',
-      secret: process.env.BT_EDGEAUTH_SESSION_SECRET || '',
+      audience: process.env.BT_EDGEAUTH_AUDIENCE || 'dev.bottomti.me',
+      cookieName: process.env.BT_EDGEAUTH_COOKIE_NAME || 'bottomtime.auth',
+      secret:
+        process.env.BT_EDGEAUTH_SESSION_SECRET ||
+        'nxS0JJ04kNjiZpJxQz5iq6OFoN6bAvsQxO2eVLGaSQyslZU8ltxqYlmKUIon9B8scg89VBg3eFZAs6umkWUYWQ',
     };
   }
 

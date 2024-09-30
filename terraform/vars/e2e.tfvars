@@ -1,6 +1,7 @@
 ### Config Variables
 ###   Set these variables to configure your environment.
 ###   The commented variables are optional. Uncomment them to override the default values.
+edgeauth_enabled = true
 
 admin_email            = "admin@bottomti.me"
 api_domain             = "api-e2e"
