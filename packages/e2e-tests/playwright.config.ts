@@ -42,6 +42,10 @@ export default defineConfig({
     baseURL: IsCI ? 'https://e2e.bottomti.me' : 'http://localhost:4851',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    extraHTTPHeaders: {
+      'x-bt-auth': '', // TODO: Need to generate the auth token.
+    },
+
     trace: 'on-first-retry',
 
     /* Capture screenshots on failed tests. */

@@ -13,9 +13,15 @@ import { Response } from 'express';
 import { Config } from './config';
 import { CurrentUser } from './current-user.decorator';
 import { GoogleAuthGuard } from './google/google.guard';
+import { Jwt } from './jwt/jwt.decorator';
 import { JwtAuthGuard } from './jwt/jwt.guard';
 import { JwtService } from './jwt/jwt.service';
 import { User } from './user';
+
+type HomePageViewData = {
+  user?: string;
+  jwt?: string;
+};
 
 @Controller('/')
 @UseGuards(JwtAuthGuard)
@@ -26,11 +32,18 @@ export class AppController {
 
   @Get()
   @Render('index')
-  async index(@CurrentUser() user: User | undefined) {
+  async index(
+    @CurrentUser() user: User | undefined,
+    @Jwt() jwt: string | undefined,
+  ): Promise<HomePageViewData> {
     this.log.debug(
       `Received request for home page from <${user?.email || 'anonymous'}>.`,
     );
-    return { user: user?.email };
+
+    return {
+      user: user?.email,
+      jwt,
+    };
   }
 
   @Get('login')

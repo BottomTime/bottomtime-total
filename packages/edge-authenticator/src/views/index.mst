@@ -31,7 +31,30 @@
           <p>
             You are currently logged in as
             <span class="font-bold">{{ user }}</span>.
+            You can use the following authorization header to access the environment.
           </p>
+
+          <div class="flex flex-col gap-3 justify-center">
+            <p class="font-bold text-xl">x-bt-auth</p>
+
+            <div class="flex gap-2 items-start">
+              <div class="group relative">
+                <a id="btnCopy" class="cursor-pointer text-3xl">
+                  <i class="fa-solid fa-copy"></i>
+                </a>
+                <span
+                  id="msgCopied"
+                  class="absolute -top-7 -left-7 bg-gray-900 text-gray-100 rounded-full w-24 px-3 invisible"
+                >
+                  Copied!
+                </span>
+              </div>
+
+              <p id="jwt" class="break-all font-mono text-sm">
+                {{ jwt }}
+              </p>
+            </div>
+          </div>
 
           <p>
             <a href="/logout">
@@ -63,6 +86,7 @@
       </div>
     </div>
 
+    <script src="/main.js"></script>
     <script
       src="https://kit.fontawesome.com/0abec2fadd.js"
       crossorigin="anonymous"
