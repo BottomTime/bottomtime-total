@@ -6,14 +6,18 @@ const log = getLogger();
 const AuthHeaderName = 'x-bt-auth';
 
 function extractJwt(req, cookieName) {
+  log.debug(`Looking for edge auth header: ${AuthHeaderName}`);
   if (req.headers[AuthHeaderName]) {
-    log.debug(`Found edge auth header: ${AuthHeaderName}`);
+    log.debug('Found edge auth header');
     return req.headers[AuthHeaderName].trim();
   }
 
-  if (cookieName && req.cookies && req.cookies[cookieName]) {
-    log.debug(`Found edge auth cookie: ${cookieName}`);
-    return req.cookies[cookieName];
+  if (cookieName) {
+    log.debug(`Looking for edge auth cookie: ${cookieName}`);
+    if (req.cookies && req.cookies[cookieName]) {
+      log.debug('Found edge auth cookie');
+      return req.cookies[cookieName];
+    }
   }
 
   return undefined;

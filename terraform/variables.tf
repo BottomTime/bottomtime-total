@@ -14,12 +14,6 @@ variable "api_domain" {
   type        = string
 }
 
-variable "auth_cookie_name" {
-  description = "The name of the cookie used to store the edge authorization JWT."
-  type        = string
-  default     = "bt.auth"
-}
-
 variable "configcat_sdk_key" {
   description = "ConfigCat SDK key for the environment. Used to access feature flags."
   type        = string

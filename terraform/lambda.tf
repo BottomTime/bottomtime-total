@@ -92,7 +92,7 @@ resource "aws_lambda_function" "ssr" {
     variables = {
       BT_EDGEAUTH_ENABLED        = "${var.edgeauth_enabled}"
       BT_EDGEAUTH_AUDIENCE       = "${var.web_domain}.${var.root_domain}"
-      BT_EDGEAUTH_COOKIE_NAME    = var.auth_cookie_name
+      BT_EDGEAUTH_COOKIE_NAME    = var.edgeauth_cookie_name
       BT_EDGEAUTH_SESSION_SECRET = local.auth_config.sessionSecret
 
       BTWEB_API_URL                = "https://${var.api_domain}.${var.root_domain}/"

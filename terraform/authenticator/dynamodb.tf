@@ -19,7 +19,7 @@ resource "aws_dynamodb_table_item" "admin" {
   item = <<ITEM
   {
     "email": { "S": "mrchriscarleton@gmail.com" },
-    "domains": { "S": "bottomti.me,dev.bottomti.me,staging.bottomti.me" }
+    "domains": { "S": "bottomti.me,dev.bottomti.me,staging.bottomti.me,e2e.bottomti.me" }
   }
   ITEM
 }

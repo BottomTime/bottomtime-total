@@ -9,7 +9,7 @@ variable "auth_table_name" {
 variable "cookie_name" {
   description = "The name of the cookie used to store the JWT."
   type        = string
-  default     = "bt.auth"
+  default     = "bottomtime.auth"
 }
 
 variable "log_level" {
