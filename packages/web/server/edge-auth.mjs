@@ -13,7 +13,11 @@ function extractJwt(req, cookieName) {
   }
 
   if (cookieName) {
-    log.debug(`Looking for edge auth cookie: ${cookieName}`);
+    log.debug(
+      `Looking for edge auth cookie: ${cookieName}`,
+      req.cookies,
+      req.headers,
+    );
     if (req.cookies && req.cookies[cookieName]) {
       log.debug('Found edge auth cookie');
       return req.cookies[cookieName];
@@ -43,7 +47,9 @@ function rejectRequest(req, res, message) {
 
 export function edgeAuthorizer(config) {
   return async (req, res, next) => {
-    log.debug('Extracting edge auth JWT from request...');
+    log.debug(
+      `Extracting edge auth JWT from request... Audience: ${config.audience}`,
+    );
     const jwt = extractJwt(req, config.cookieName);
     if (!jwt) {
       return rejectRequest(
