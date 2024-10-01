@@ -9,15 +9,13 @@ function extractJwt(req, cookieName) {
   log.debug(`Looking for edge auth header: ${AuthHeaderName}`);
   if (req.headers[AuthHeaderName]) {
     log.debug('Found edge auth header');
+    log.trace('Headers:', req.headers);
     return req.headers[AuthHeaderName].trim();
   }
 
   if (cookieName) {
-    log.debug(
-      `Looking for edge auth cookie: ${cookieName}`,
-      req.cookies,
-      req.headers,
-    );
+    log.debug(`Looking for edge auth cookie: ${cookieName}`);
+    log.trace('Cookies:', req.cookies);
     if (req.cookies && req.cookies[cookieName]) {
       log.debug('Found edge auth cookie');
       return req.cookies[cookieName];

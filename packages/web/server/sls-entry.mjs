@@ -1,7 +1,9 @@
 import serverless from '@codegenie/serverless-express';
 
+import { getLogger } from './logger.mjs';
 import { createApp } from './server.mjs';
 
+const log = getLogger();
 let cachedServer;
 
 async function init() {
@@ -11,7 +13,8 @@ async function init() {
   }
 }
 
-export const handler = async (event, context, cb) => {
+export const handler = async (event, context) => {
   await init();
-  return cachedServer(event, context, cb);
+  log.trace('Raw request:', event);
+  return await cachedServer(event, context);
 };
