@@ -54,6 +54,12 @@ variable "edgeauth_cookie_name" {
   default     = "bottomtime.auth"
 }
 
+variable "enable_keep_alive" {
+  description = "Boolean value indicating whether the keep alive Lambda function should be run periodically to prevent the front- and back-end Lambdas from cold starts."
+  type        = bool
+  default     = true
+}
+
 variable "enable_places_api" {
   description = "Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed."
   type        = bool

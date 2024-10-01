@@ -3,9 +3,10 @@ resource "aws_lambda_function" "service" {
   function_name = "bottomtime-service-${var.env}"
   role          = aws_iam_role.service_lambda_fn.arn
 
-  image_uri     = data.aws_ecr_image.service.image_uri
-  architectures = ["arm64"]
-  package_type  = "Image"
+  image_uri        = data.aws_ecr_image.service.image_uri
+  source_code_hash = trimprefix(data.aws_ecr_image.service.image_digest, "sha256:")
+  architectures    = ["arm64"]
+  package_type     = "Image"
 
   description = "BottomTime Backend Service Lambda Function"
   timeout     = 30
@@ -69,9 +70,10 @@ resource "aws_lambda_function" "ssr" {
   function_name = "bottomtime-ssr-${var.env}"
   role          = aws_iam_role.ssr_lambda_fn.arn
 
-  image_uri     = data.aws_ecr_image.web.image_uri
-  architectures = ["arm64"]
-  package_type  = "Image"
+  image_uri        = data.aws_ecr_image.web.image_uri
+  source_code_hash = trimprefix(data.aws_ecr_image.web.image_digest, "sha256:")
+  architectures    = ["arm64"]
+  package_type     = "Image"
 
   description = "BottomTime Server-Side Render Lambda Function"
   timeout     = 30
