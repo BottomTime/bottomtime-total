@@ -139,8 +139,14 @@ resource "aws_cloudfront_distribution" "web" {
     allowed_methods        = ["GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     path_pattern           = "api/*"
-    cache_policy_id        = aws_cloudfront_cache_policy.web_lambda.id
     viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"
+      }
+    }
   }
 
   # Static files are served from S3
@@ -158,9 +164,15 @@ resource "aws_cloudfront_distribution" "web" {
     target_origin_id       = local.web_ssr_origin_id
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    cache_policy_id        = aws_cloudfront_cache_policy.web_lambda.id
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
+
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"
+      }
+    }
   }
 
   tags = {

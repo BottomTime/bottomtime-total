@@ -402,6 +402,7 @@ workflows:
             - bt-aws-e2e
             - bt-smtp-dev
             - bt-postgres-e2e
+            - bt-edge-auth
 
       # 3) Report test coverage
       - report_coverage:

@@ -69,7 +69,11 @@ export function edgeAuthorizer(config) {
       );
     } catch (error) {
       log.error(error);
-      next(error);
+      rejectRequest(
+        req,
+        res,
+        'JWT verification failed. There was a problem with the token provided.',
+      );
     }
   };
 }

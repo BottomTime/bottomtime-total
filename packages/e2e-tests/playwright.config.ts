@@ -1,11 +1,15 @@
 /* eslint-disable no-process-env */
 import { defineConfig, devices } from '@playwright/test';
 
+import { sign } from 'jsonwebtoken';
+
 import { getSessionSecret } from './tests/fixtures/jwt';
 import { PostgresFixture } from './tests/fixtures/postgres.fixture';
 
 const CookieName = 'bottomtime.e2e';
 const IsCI = !!process.env.CI;
+const EdgeAuthSecret = process.env.BT_EDGEAUTH_SESSION_SECRET;
+const TwoHoursInSeconds = 60 * 60 * 2;
 
 /**
  * Read environment variables from file.
@@ -43,7 +47,16 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     extraHTTPHeaders: {
-      'x-bt-auth': '', // TODO: Need to generate the auth token.
+      'x-bt-auth': EdgeAuthSecret
+        ? sign(
+            {
+              aud: 'e2e.bottomti.me',
+              exp: Date.now() / 1000 + TwoHoursInSeconds,
+              sub: 'e2etests@bottomti.me',
+            },
+            EdgeAuthSecret,
+          )
+        : '',
     },
 
     trace: 'on-first-retry',

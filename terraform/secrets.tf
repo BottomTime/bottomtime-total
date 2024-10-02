@@ -7,7 +7,7 @@ data "aws_secretsmanager_secret_version" "secrets" {
 }
 
 data "aws_secretsmanager_secret" "auth" {
-  name = var.secret_name
+  name = var.edgeauth_config_secret
 }
 
 data "aws_secretsmanager_secret_version" "auth" {
