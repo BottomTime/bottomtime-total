@@ -51,14 +51,14 @@ resource "aws_cloudfront_cache_policy" "docs_static" {
 resource "aws_cloudfront_cache_policy" "web_lambda" {
   name        = "bt-web-lambda-${var.env}-cache-policy"
   min_ttl     = 0
-  default_ttl = 120
-  max_ttl     = 3600
+  default_ttl = 5
+  max_ttl     = 5
 
   parameters_in_cache_key_and_forwarded_to_origin {
     cookies_config {
       cookie_behavior = "whitelist"
       cookies {
-        items = [var.cookie_name]
+        items = [var.cookie_name, var.edgeauth_cookie_name]
       }
     }
 
