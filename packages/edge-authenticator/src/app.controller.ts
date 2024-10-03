@@ -49,8 +49,7 @@ export class AppController {
   @Get('login')
   @UseGuards(GoogleAuthGuard)
   login() {
-    /* Nothing to do here. Passport will redirect to AWS Cognito client. */
-    this.log.debug('Redirecting to Google for authentication.');
+    /* No-op. GoogleAuthGuard will redirect the user to Google to login. */
   }
 
   @Get('callback')

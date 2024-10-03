@@ -5,7 +5,7 @@ function createTestLogger(): Logger {
   return Logger.createLogger({
     name: 'bt-tests',
     serializers: { err: Logger.stdSerializers.err },
-    level: 'debug',
+    level: 'trace',
     streams: [
       {
         type: 'rotating-file',

@@ -65,8 +65,8 @@
           </p>
           {{ /user }} {{ ^user }}
           <p>
-            It seems you are not logged in yet. Please proceed to AWS Cognito to
-            authenticate.
+            It seems you are not logged in yet. Please proceed to Google to
+            authenticate. (Your Google account will need to be registered with the platform!)
           </p>
 
           <div>

@@ -34,10 +34,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   ): Promise<User> {
     this.log.debug('Received response from Google.');
 
-    const email = profile.emails?.[0].value;
-    if (!email) {
+    if (!profile.emails || !profile.emails.length) {
       throw new UnauthorizedException('No email address provided by Google');
     }
+    const email = profile.emails[0].value;
 
     const user = await this.users.findUser(email);
     if (!user) {

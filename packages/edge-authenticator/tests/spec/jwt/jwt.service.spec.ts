@@ -1,4 +1,4 @@
-import { JwtPayload, decode, verify } from 'jsonwebtoken';
+import { JwtPayload, verify } from 'jsonwebtoken';
 
 import { Config } from '../../../src/config';
 import { JwtService } from '../../../src/jwt/jwt.service';

@@ -31,8 +31,8 @@ exports[`App Initialization will initialize the app and handle a request 1`] = `
           <h1 class="pb-3">Bottom Time Platform Authenticator</h1>
 
           <p>
-            It seems you are not logged in yet. Please proceed to AWS Cognito to
-            authenticate.
+            It seems you are not logged in yet. Please proceed to Google to
+            authenticate. (Your Google account will need to be registered with the platform!)
           </p>
 
           <div>

@@ -1,4 +1,9 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 
 import { JwtPayload } from 'jsonwebtoken';
@@ -11,6 +16,8 @@ import { extractJwt } from './extract-jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  private readonly log = new Logger(JwtStrategy.name);
+
   constructor(@Inject(UserService) private readonly users: UserService) {
     const options: StrategyOptions = {
       jwtFromRequest: extractJwt,
@@ -21,6 +28,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload): Promise<User> {
+    this.log.debug('Received JWT payload for validation');
+    this.log.verbose('JWT payload:', payload);
+
     if (!payload.sub) {
       throw new UnauthorizedException(
         'No email address provided in JWT subject',
