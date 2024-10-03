@@ -45,7 +45,7 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: IsCI ? 'https://e2e.bottomti.me' : 'http://localhost:4851',
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    /* For testing against an AWS environment in CI, we need to include the edge authentication header with each request. */
     extraHTTPHeaders: {
       'x-bt-auth': EdgeAuthSecret
         ? sign(
@@ -59,6 +59,7 @@ export default defineConfig({
         : '',
     },
 
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
     /* Capture screenshots on failed tests. */
@@ -76,7 +77,10 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        bypassCSP: true, // Bypass CORS restrictions for testing locally.
+      },
     },
 
     // {
