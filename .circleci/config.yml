@@ -111,14 +111,15 @@ jobs:
             chmod +x ./cc-test-reporter
       - restore_cache:
           keys:
-            - bt-nx-build
+            - bt-nx-build-{{ .Branch }}
+            - bt-nx-build-master
       - run:
           name: Lint and Build
           command: |
             yarn lint
             yarn build --stream
       - save_cache:
-          key: bt-nx-build
+          key: bt-nx-build-{{ .Branch }}
           paths:
             - .nx/
       - persist_to_workspace:
