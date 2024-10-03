@@ -79,7 +79,12 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        bypassCSP: true, // Bypass CORS restrictions for testing locally.
+
+        // Bypass CORS restrictions for testing locally.
+        bypassCSP: true,
+        launchOptions: {
+          args: ['--disable-web-security'],
+        },
       },
     },
 
