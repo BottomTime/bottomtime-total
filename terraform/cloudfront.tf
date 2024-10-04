@@ -146,6 +146,7 @@ resource "aws_cloudfront_distribution" "web" {
       cookies {
         forward = "all"
       }
+      headers = ["*"]
     }
   }
 
@@ -172,6 +173,7 @@ resource "aws_cloudfront_distribution" "web" {
       cookies {
         forward = "all"
       }
+      headers = ["*"]
     }
   }
 

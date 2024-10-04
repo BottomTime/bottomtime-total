@@ -33,6 +33,7 @@ export class PostgresFixture {
     memberSince: MemberSince,
     hasPassword: true,
     profile: {
+      accountTier: AccountTier.ShopOwner,
       userId: AdminUserId,
       username: 'admin',
       memberSince: MemberSince,
