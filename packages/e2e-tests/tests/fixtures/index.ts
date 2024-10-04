@@ -7,6 +7,7 @@ import { Client } from 'pg';
 
 import { AuthFixture } from './auth.fixture';
 import { DiveSitesFixture } from './dive-sites.fixture';
+import { EdgeAuthFixture } from './edge-auth.fixture';
 import { FriendsFixture } from './friends.fixture';
 import { createAuthToken } from './jwt';
 import { LogEntriesFixture } from './log-entries.fixture';
@@ -18,11 +19,12 @@ export const test = base.extend<{
   auth: AuthFixture;
   db: PostgresFixture;
   diveSites: DiveSitesFixture;
+  edgeAuth: EdgeAuthFixture;
   friends: FriendsFixture;
   logEntries: LogEntriesFixture;
   tankProfiles: TankProfilesFixture;
 }>({
-  api: async ({ baseURL, db }, use) => {
+  api: async ({ baseURL, db, edgeAuth }, use) => {
     // Create an admin user and matching auth token
     const [, authToken] = await Promise.all([
       db.createAdmin(),
@@ -32,6 +34,7 @@ export const test = base.extend<{
     const client = new ApiClient({
       authToken,
       baseURL,
+      edgeAuthToken: edgeAuth.authToken,
     });
 
     await use(client);
@@ -60,6 +63,11 @@ export const test = base.extend<{
   diveSites: async ({ page }, use) => {
     const diveSites = new DiveSitesFixture(page);
     await use(diveSites);
+  },
+
+  edgeAuth: async ({}, use) => {
+    const edgeAuth = new EdgeAuthFixture();
+    await use(edgeAuth);
   },
 
   friends: async ({ page }, use) => {
