@@ -119,7 +119,7 @@ resource "aws_cloudfront_origin_access_identity" "docs" {}
 resource "aws_cloudfront_distribution" "web" {
   enabled     = true
   comment     = "Web front-end distribution"
-  aliases     = ["${var.web_domain}.${var.root_domain}"]
+  aliases     = var.web_domain == "" ? ["${var.root_domain}"] : ["${var.web_domain}.${var.root_domain}"]
   price_class = "PriceClass_100"
 
   # S3 bucket origin for static assets
