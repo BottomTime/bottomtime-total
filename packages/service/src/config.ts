@@ -27,6 +27,13 @@ export interface AppConfig {
     };
   };
 
+  edgeAuth: {
+    audience: string;
+    cookieName: string;
+    enabled: boolean;
+    sessionSecret: string;
+  };
+
   discord: {
     clientId?: string;
     clientSecret?: string;
@@ -87,6 +94,16 @@ const ConfigSchema = z
       .string()
       .default('http://localhost:9324/000000000000/emails'),
     BT_AWS_SQS_ENDPOINT: z.string().optional(),
+
+    // Edge authorization
+    BT_EDGEAUTH_AUDIENCE: z.string().default('dev.bottomti.me'),
+    BT_EDGEAUTH_ENABLED: BooleanString.default('false'),
+    BT_EDGEAUTH_COOKIE_NAME: z.string().default('bottomtime.auth'),
+    BT_EDGEAUTH_SESSION_SECRET: z
+      .string()
+      .default(
+        'nxS0JJ04kNjiZpJxQz5iq6OFoN6bAvsQxO2eVLGaSQyslZU8ltxqYlmKUIon9B8scg89VBg3eFZAs6umkWUYWQ',
+      ),
 
     // Discord
     BT_DISCORD_CLIENT_ID: z.string().optional(),
@@ -152,6 +169,13 @@ const ConfigSchema = z
         emailQueueUrl: env.BT_AWS_SQS_EMAIL_QUEUE_URL,
         endpoint: env.BT_AWS_SQS_ENDPOINT,
       },
+    },
+
+    edgeAuth: {
+      audience: env.BT_EDGEAUTH_AUDIENCE,
+      cookieName: env.BT_EDGEAUTH_COOKIE_NAME,
+      enabled: env.BT_EDGEAUTH_ENABLED,
+      sessionSecret: env.BT_EDGEAUTH_SESSION_SECRET,
     },
 
     github: {

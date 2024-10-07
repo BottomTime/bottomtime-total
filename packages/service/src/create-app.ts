@@ -11,6 +11,8 @@ import requestStats from 'request-stats';
 
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 import { BunyanLoggerService } from './bunyan-logger-service';
+import { Config } from './config';
+import { edgeAuth } from './edge-auth';
 import { GlobalErrorFilter } from './global-error-filter';
 import { User } from './users';
 
@@ -37,6 +39,7 @@ export async function createApp(
   app.use(helmet());
   app.use(cookieParser());
   app.use(useragent.express());
+  app.use(edgeAuth(Config.edgeAuth, logger));
   app.use((req: Request, res: Response, next: NextFunction) => {
     requestStats(req, res, (stats) => {
       const user = req.user ? (req.user as User) : undefined;

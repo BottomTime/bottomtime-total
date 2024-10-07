@@ -24,6 +24,11 @@ resource "aws_lambda_function" "service" {
 
   environment {
     variables = {
+      BT_EDGEAUTH_ENABLED        = "${var.edgeauth_enabled}"
+      BT_EDGEAUTH_AUDIENCE       = "${var.web_domain}.${var.root_domain}"
+      BT_EDGEAUTH_COOKIE_NAME    = var.edgeauth_cookie_name
+      BT_EDGEAUTH_SESSION_SECRET = local.auth_config.sessionSecret
+
       BT_AWS_MEDIA_BUCKET        = data.aws_s3_bucket.media.id
       BT_AWS_SQS_EMAIL_QUEUE_URL = aws_sqs_queue.email.id
       BT_BASE_URL                = "https://${var.web_domain}.${var.root_domain}/"
