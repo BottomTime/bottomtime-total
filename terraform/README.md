@@ -1,5 +1,78 @@
 # Terraform Deployment
 
+This directory contains all of the Terraform files necessary for deploying new environments.
+
+## Protected Environments
+
+Most environments will be for development/testing and should not be accessible to the general public. For this,
+the Edge Authorization mechanism exists. This is configured and deployed as a global asset, serving all environments.
+
+When enabled on an environment - see the `edgeauth_enabled` variable, described below - an additional authorization JWT will need to be
+provided in requests to both the front- and back-end services. Requests to protected environments must provide the JWT in one of two places
+in every request:
+
+1. In the `x-bt-auth` header or
+2. In the `bottomtime.auth` session cookie.
+
+A utility exists to authenticate users and provide the JWT. The steps for deploying that service follow:
+
+### Deploying the Edge Authenticator Service
+
+> **IMPORTANT:** This service is meant to exist globally and serve all environments and so only needs to be deployed _once_!
+
+#### Create a Google OAuth2.0 Client
+
+Google's OAuth2.0 federated authentication service is used for logging in because storing passwords is lame. Go to the
+[Google Dev Console](https://console.cloud.google.com/apis/credentials) and create a new OAuth2.0 Client ID. Make note
+of the client ID and secret for later.
+
+#### Create Configuration in AWS Secrets Manager
+
+First, you'll need to create a Secrets Manager secret with the following values:
+
+- `sessionSecret` - The secret used to sign the JWT. This should be set to a long, random, hard-to-guess string.
+- `googleClientId` / `googleClientSecret` - Add the OAuth client ID/secret pair from the previous step.
+
+You can name the secret whatever you like but, by default, `bt-edgeauth-config` is used across the platform. If you want to
+avoid a bunch of additional configuration, just use that.
+
+#### Build the Authenticator Package
+
+From the repository root directory run
+
+```bash
+NODE_ENV=production yarn build --scope @bottomtime/edge-authenticator
+```
+
+#### Deploy the Authenticator
+
+Finally, you can use Terraform to deploy the authenticator app. The authenticator app has its own Terraform files. They are under
+`terraform/authenticator/`. You'll want to `cd` into that directory before you begin.
+
+Next, you'll want to look at the `variables.tf` file so that you understand the default configuration. The default configuration is
+recommended, but you may need to modify some of the variables.
+
+Next initialize the Terraform backend. Terraform will store the state (`.tfstate` file) to an S3 bucket so that it is preserved for
+the future. If you have not done so already, create an S3 bucket for storing Terraform state files. Now run
+
+```bash
+terraform init \
+  -backend-config="bucket=<aws_bucket>" \
+  -backend-config="key=authenticator.tfstate" \
+  -backend-config="region=<aws_region>"
+```
+
+where `<aws_bucket>` is the name of the S3 bucket you created and `<aws_region>` is the name of the AWS region in which you want the
+authenticator deployed to. (E.g. `us-east-1`.)
+
+Finally, deploy the authenticator:
+
+```bash
+terraform apply
+```
+
+## Deployment Steps
+
 Here are the steps needed to deploy a new environment. These steps need to be completed manually through the AWS console
 or using the AWS APIs.
 
@@ -24,7 +97,7 @@ Terraform will need to run as an IAM user with sufficient permission to deploy t
 
 Additionally, attach the following inline policies:
 
-### IAMManageRoles
+#### IAMManageRoles
 
 ```json
 {
@@ -156,21 +229,28 @@ In the `terraform/vars/` directory, you will need to make a copy of the `example
 Now edit the new `.tfvars` file to set the values of the variables to match your environment's needs. Here are the variables needed to
 configure your new environment:
 
-| Variable               | Description                                                                                                                                                                                                                                                     | Default      | Required |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | :------: |
-| `admin_email`          | Email address of the site administrator.                                                                                                                                                                                                                        |              |   Yes    |
-| `api_domain`           | The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)                                                                                                                                                                  |              |   Yes    |
-| `cookie_name`          | Name of the session cookie as it will appear in the browser. **IMPORTANT:** This needs to be unique per environment but the same per region. I.e. all "staging" environments should use the same cookie name regardless of which AWS regions it is deployed to. | `bottomtime` |    No    |
-| `enable_places_api`    | Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed.                                                                                                             | `false`      |    No    |
-| `env`                  | The environment in which the resources are being created. E.g. dev, stage, prod, etc.                                                                                                                                                                           |              |   Yes    |
-| `keepalive_interval`   | The interval (in minutes) at which the keep-alive Lambda function should be run. It will ping the site homepage to keep the lambdas warmed up to avoid cold starts.                                                                                             | `30`         |          |
-| `log_level`            | The level of verbosity at which events will be written to the log stream. One of `trace`, `debug`, `info`, `warn`, `error`, or `fatal`.                                                                                                                         | `info`       |    No    |
-| `log_retention_days`   | The number of days to retain log events in the Cloudwatch log groups.                                                                                                                                                                                           | `7`          |    No    |
-| `media_bucket`         | Name of the AWS S3 bucket where user-generated media (video, pictures, etc.) will be stored. This needs to be set to the name of the S3 bucket from step 1.                                                                                                     |              |   Yes    |
-| `password_salt_rounds` | Number of rounds to use when computing a salted password hash. More will be more secure but slower.                                                                                                                                                             | `12`         |    No    |
-| `root_domain`          | The root domain for the service. Other domains will be created under this domain. This needs to be set to the FQDN of the Route53 hosted zone that was created for the platform. (See above.)                                                                   |              |   Yes    |
-| `secret_name`          | The name of the AWS Secrets Manager secret that contains the sensitive configuration values. This needs to be set to the name of the secret you created in step 2.                                                                                              |              |   Yes    |
-| `web_domain`           | Partial domain name at which the front-end web application will respond to requests. (E.g. 'staging', 'www', etc.)                                                                                                                                              |              |   Yes    |
+| Variable                 | Description                                                                                                                                                                                                                                                     | Default              | Required |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | :------: |
+| `admin_email`            | Email address of the site administrator.                                                                                                                                                                                                                        |                      |   Yes    |
+| `api_domain`             | The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)                                                                                                                                                                  |                      |   Yes    |
+| `config_cat_sdk_key`     | The SDK key for accessing the ConfigCat feature flags.                                                                                                                                                                                                          |                      |   Yes    |
+| `cookie_name`            | Name of the session cookie as it will appear in the browser. **IMPORTANT:** This needs to be unique per environment but the same per region. I.e. all "staging" environments should use the same cookie name regardless of which AWS regions it is deployed to. | `bottomtime`         |    No    |
+| `docs_domain`            | The sub domain at which the API documentation can be accessed.                                                                                                                                                                                                  |                      |   Yes    |
+| `edgeauth_enabled`       | Indicates whether this is a protected environment. Protected environments require an additional JWT in the request header/cookie to access the site. (Used for non-public development environments.)                                                            | `false`              |    No    |
+| `edgeauth_config_secret` | The name of the AWS Secrets Manager secret where the edge authorization configuration is stored.                                                                                                                                                                | `bt-edgeauth-config` |    No    |
+| `edgeauth_cookie_name`   | Name of the session cookie to look for when retrieving the edge authorization JWT                                                                                                                                                                               | `bottomtime.auth`    |    No    |
+| `enable_keep_alive`      | Indicates whether an EventBridge scheduled task will be enabled to occasionally ping the front-/back-end services to keep the Lambdas in memory and avoid cold starts.                                                                                          | `false`              |    No    |
+| `enable_places_api`      | Indicates whether calls should be made to Google Places API. Default is false because this can be expensive and should only be enabled when needed.                                                                                                             | `false`              |    No    |
+| `env`                    | The environment in which the resources are being created. E.g. dev, stage, prod, etc.                                                                                                                                                                           |                      |   Yes    |
+| `keepalive_interval`     | The interval (in minutes) at which the keep-alive Lambda function should be run. It will ping the site homepage to keep the lambdas warmed up to avoid cold starts.                                                                                             | `30`                 |          |
+| `log_level`              | The level of verbosity at which events will be written to the log stream. One of `trace`, `debug`, `info`, `warn`, `error`, or `fatal`.                                                                                                                         | `info`               |    No    |
+| `log_retention_days`     | The number of days to retain log events in the Cloudwatch log groups.                                                                                                                                                                                           | `7`                  |    No    |
+| `media_bucket`           | Name of the AWS S3 bucket where user-generated media (video, pictures, etc.) will be stored. This needs to be set to the name of the S3 bucket from step 1.                                                                                                     |                      |   Yes    |
+| `password_salt_rounds`   | Number of rounds to use when computing a salted password hash. More will be more secure but slower.                                                                                                                                                             | `12`                 |    No    |
+| `root_domain`            | The root domain for the service. Other domains will be created under this domain. This needs to be set to the FQDN of the Route53 hosted zone that was created for the platform. (See above.)                                                                   |                      |   Yes    |
+| `secret_name`            | The name of the AWS Secrets Manager secret that contains the sensitive configuration values. This needs to be set to the name of the secret you created in step 2.                                                                                              |                      |   Yes    |
+| `secure_cookie`          | Indicates whether the session cookie should be issued with the "secure" flag on. (I.e. the cookie will only be valid over HTTPS, not HTTP.)                                                                                                                     | `true`               |    No    |
+| `web_domain`             | Partial domain name at which the front-end web application will respond to requests. (E.g. 'staging', 'www', etc.)                                                                                                                                              |                      |   Yes    |
 
 ### 4. Initialize Terraform State Provider
 
@@ -229,8 +309,3 @@ When ready, run:
 ```bash
 ./deploy-files.sh
 ```
-
-## Protecting an Environment
-
-It may be necessary to limit access to an environment to private users. (Think test environments that should not be publicly visible.)
-In this case you'll want to enable Edge Authentication to ensure that only authorized users are accessing the environment.

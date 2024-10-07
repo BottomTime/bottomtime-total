@@ -54,12 +54,16 @@ There are a number of `.env` files with configuration for the various environmen
 
 #### Server-Side Only
 
-| Variable            | Description                                                                                                                                                         |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BTWEB_API_URL`     | The URL at which the backend service can be reached. This is needed for making API calls.                                                                           |
-| `BTWEB_COOKIE_NAME` | The name of the session cookie used to identify the current user when making API calls. This needs to match the corresponding configuration in the backend service. |
-| `BTWEB_LOG_LEVEL`   | The amount of detail written to the logs. Valid values (in order of increasing verbosity) are `fatal`, `error`, `warn`, `info`, `debug`, and `verbose`.             |
-| `BTWEB_PORT`        | The TCP port on which the service will listen for requests.                                                                                                         |
+| Variable                     | Description                                                                                                                                                         | Default                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `BTWEB_API_URL`              | The URL at which the backend service can be reached. This is needed for making API calls.                                                                           | `http://localhost:4800`                                                                  |
+| `BTWEB_COOKIE_NAME`          | The name of the session cookie used to identify the current user when making API calls. This needs to match the corresponding configuration in the backend service. | `bottomtime.local`                                                                       |
+| `BT_EDGEAUTH_AUDIENCE`       | The audience grant to look for in the edge authorization JWT. This should be the domain name of the environment.                                                    | `dev.bottomti.me`                                                                        |
+| `BT_EDGEAUTH_COOKIE_NAME`    | Name of the session cookie to look for when attempting to find an Edge Authorization JWT.                                                                           | `bottomtime.auth`                                                                        |
+| `BT_EDGEAUTH_ENABLED`        | A boolean value indicating whether the Edge Authorization mechanism is enabled for this environment. (An additional JWT will be required in each request.)          | `false`                                                                                  |
+| `BT_EDGEAUTH_SESSION_SECRET` | The secret string used to sign the Edge Authrorization JWTs. This is used in verifying the token.                                                                   | `nxS0JJ04kNjiZpJxQz5iq6OFoN6bAvsQxO2eVLGaSQyslZU8ltxqYlmKUIon9B8scg89VBg3eFZAs6umkWUYWQ` |
+| `BTWEB_LOG_LEVEL`            | The amount of detail written to the logs. Valid values (in order of increasing verbosity) are `fatal`, `error`, `warn`, `info`, `debug`, and `verbose`.             | `info`                                                                                   |
+| `BTWEB_PORT`                 | The TCP port on which the service will listen for requests.                                                                                                         | `4850`                                                                                   |
 
 #### Client- and Server-Side
 

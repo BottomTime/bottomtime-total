@@ -3,12 +3,6 @@ variable "admin_email" {
   type        = string
 }
 
-variable "allow_public_access" {
-  description = "Indicates whether the environment should be publicly accessible using the endpoint URLs. If this is false, then a signed cookie will be required for all requests."
-  type        = bool
-  default     = false
-}
-
 variable "api_domain" {
   description = "The partial domain name at which the backend APIs will respond to requests. (e.g. api-staging)"
   type        = string
@@ -51,7 +45,7 @@ variable "edgeauth_cookie_name" {
 variable "enable_keep_alive" {
   description = "Boolean value indicating whether the keep alive Lambda function should be run periodically to prevent the front- and back-end Lambdas from cold starts."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "enable_places_api" {
@@ -92,12 +86,6 @@ variable "media_bucket" {
   type        = string
 }
 
-variable "secure_cookie" {
-  description = "Indicates whether the session cookie should be secured. If false, the cookie will work over HTTP or HTTPS. If true, the cookie will only work over HTTPS."
-  type        = bool
-  default     = true
-}
-
 variable "password_salt_rounds" {
   description = "Number of rounds to use when computing a salted password hash. More will be more secure but slower. Default is 15."
   type        = number
@@ -113,6 +101,12 @@ variable "root_domain" {
 variable "secret_name" {
   description = "The name of the AWS Secrets Manager secret that contains the sensitive configuration values."
   type        = string
+}
+
+variable "secure_cookie" {
+  description = "Indicates whether the session cookie should be secured. If false, the cookie will work over HTTP or HTTPS. If true, the cookie will only work over HTTPS."
+  type        = bool
+  default     = true
 }
 
 variable "web_domain" {
