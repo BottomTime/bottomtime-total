@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { Config } from './config.mjs';
 import {
   DefaultMembership,
+  extractEdgeAuthorizationTokenFromRequest,
   extractJwtFromRequest,
   getCurrentUser,
   getUserMembership,
@@ -34,14 +35,15 @@ async function requestHandler(req, res, next) {
   try {
     const htmlTemplate = await loadHtmlTemplate(req.originalUrl);
     const jwt = extractJwtFromRequest(req);
+    const edgeAuthToken = extractEdgeAuthorizationTokenFromRequest(req);
 
-    const user = jwt ? await getCurrentUser(jwt, res) : null;
+    const user = jwt ? await getCurrentUser(jwt, edgeAuthToken, res) : null;
 
     if (user?.username) {
       log.debug('Got user, attempting to retrieve membership details...');
     }
     const membership = user?.username
-      ? await getUserMembership(user.username, jwt)
+      ? await getUserMembership(user.username, jwt, edgeAuthToken)
       : DefaultMembership;
 
     const state = {
@@ -53,6 +55,7 @@ async function requestHandler(req, res, next) {
     const clientOptions = {
       authToken: jwt,
       baseURL: Config.apiUrl,
+      edgeAuthToken,
     };
 
     const { render } = await vite.ssrLoadModule('/src/entry-server.ts');

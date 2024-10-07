@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { Config } from './config.mjs';
 import {
   DefaultMembership,
+  extractEdgeAuthorizationTokenFromRequest,
   extractJwtFromRequest,
   getCurrentUser,
   getUserMembership,
@@ -26,9 +27,10 @@ async function errorHandler(err, _req, res, _next) {
 async function requestHandler(req, res, next) {
   try {
     const jwt = extractJwtFromRequest(req);
-    const user = jwt ? await getCurrentUser(jwt, res) : null;
+    const edgeAuthToken = extractEdgeAuthorizationTokenFromRequest(req);
+    const user = jwt ? await getCurrentUser(jwt, edgeAuthToken, res) : null;
     const membership = user?.username
-      ? await getUserMembership(user.username, jwt)
+      ? await getUserMembership(user.username, jwt, edgeAuthToken)
       : DefaultMembership;
 
     const state = {
@@ -40,6 +42,7 @@ async function requestHandler(req, res, next) {
     const clientOptions = {
       authToken: jwt,
       baseURL: Config.apiUrl,
+      edgeAuthToken,
     };
 
     log.debug('Rendering Vue app...');
