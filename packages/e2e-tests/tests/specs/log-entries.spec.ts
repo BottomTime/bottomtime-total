@@ -113,9 +113,7 @@ test.describe('Log Entries', () => {
 
     await logEntries.gotoLogEntries(Username);
     await logEntries.performSearch({
-      query: '', // TODO: Update this once we have full text indexing on logs table.
-      startDate: new Date('2022-04-01'),
-      endDate: new Date('2022-05-01'),
+      // TODO: Update this once we have full text indexing on logs table.
     });
 
     await page.getByTestId(`select-${entry.id}`).click();

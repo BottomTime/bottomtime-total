@@ -24,11 +24,10 @@ export class LogEntryQueryBuilder {
 
   constructor(entries: Repository<LogEntryEntity>) {
     this.query = entries
-      .createQueryBuilder()
-      .from(LogEntryEntity, 'entries')
+      .createQueryBuilder('entries')
       .innerJoin('entries.owner', 'owners')
       .leftJoin('entries.site', 'sites')
-      .innerJoin('sites.creator', 'site_creators')
+      .leftJoin('sites.creator', 'site_creators')
       .select([
         'entries.id',
         'entries.createdAt',

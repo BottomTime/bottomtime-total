@@ -47,7 +47,7 @@ const ProfileData: ProfileDTO = {
   name: 'Testy McGee',
 };
 
-describe.skip('Logbook view', () => {
+describe('Logbook view', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;

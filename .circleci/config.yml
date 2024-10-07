@@ -66,6 +66,7 @@ commands:
     steps:
       - aws-cli/install
       - checkout
+      - yarn_install
       - attach_workspace:
           at: ./
       - run:

@@ -127,7 +127,7 @@ import {
 
 import dayjs from 'dayjs';
 import qs from 'qs';
-import { computed, onMounted, reactive } from 'vue';
+import { computed, onServerPrefetch, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -192,7 +192,7 @@ function parseQueryParams(): ListLogEntriesParamsDTO {
 }
 
 const state = reactive<LogbookViewState>({
-  isLoading: true,
+  isLoading: false,
   isLoadingLogEntry: false,
   isLoadingMoreEntries: false,
   queryParams: parseQueryParams(),
@@ -232,7 +232,7 @@ async function refresh(): Promise<void> {
   state.isLoading = false;
 }
 
-onMounted(async () => {
+onServerPrefetch(async () => {
   await refresh();
 
   if (currentUser.user) {
