@@ -44,7 +44,8 @@ commands:
       - run:
           name: Extract Compiled Web Files
           command: |
-            docker cp $(docker image ls -qf "reference=bottomtime-web:$NODE_ENV-latest"):/app/packages/web/dist ./packages/web/dist
+            docker run -d --name bottomtime-web bottomtime-web:latest
+            docker cp $(docker ps -qf "name=bottomtime-web"):/app/packages/web/dist ./packages/web/dist
       - persist_to_workspace:
           root: ./
           paths:
