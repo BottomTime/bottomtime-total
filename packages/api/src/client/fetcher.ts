@@ -86,6 +86,9 @@ export class Fetcher {
         ...(this.options.authToken
           ? { Authorization: `Bearer ${this.options.authToken}` }
           : {}),
+        ...(this.options.edgeAuthToken
+          ? { 'x-bt-auth': this.options.edgeAuthToken }
+          : {}),
       },
     });
 

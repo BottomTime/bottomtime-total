@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2&family=Lobster&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alegreya+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <link rel="stylesheet" href="/index.css" />
+    <title>Bottom Time Platform Authenticator</title>
+  </head>
+
+  <body class="bg-gray-700">
+    <div class="container mx-auto font-content text-gray-200">
+      <div class="grid grid-cols-1 md:grid-cols-5">
+        <div
+          class="col-span-1 col-start-1 md:col-span-3 md:col-start-2 bg-blue-600 my-16 rounded-xl shadow-lg shadow-blue-300 p-8 space-y-4 text-center"
+        >
+          <h1 class="pb-3">Bottom Time Platform Authenticator</h1>
+
+          {{ #user }}
+          <p>
+            You are currently logged in as
+            <span class="font-bold">{{ user }}</span>.
+            You can use the following authorization header to access the environment.
+          </p>
+
+          <div class="flex flex-col gap-3 justify-center">
+            <p class="font-bold text-xl">x-bt-auth</p>
+
+            <div class="flex gap-2 items-start">
+              <div class="group relative">
+                <a id="btnCopy" class="cursor-pointer text-3xl">
+                  <i class="fa-solid fa-copy"></i>
+                </a>
+                <span
+                  id="msgCopied"
+                  class="absolute -top-7 -left-7 bg-gray-900 text-gray-100 rounded-full w-24 px-3 invisible"
+                >
+                  Copied!
+                </span>
+              </div>
+
+              <p id="jwt" class="break-all font-mono text-sm">
+                {{ jwt }}
+              </p>
+            </div>
+          </div>
+
+          <p>
+            <a href="/logout">
+              <button>
+                Logout
+              </button>
+            </a>
+          </p>
+          {{ /user }} {{ ^user }}
+          <p>
+            It seems you are not logged in yet. Please proceed to Google to
+            authenticate. (Your Google account will need to be registered with the platform!)
+          </p>
+
+          <div>
+            <a href="/login">
+              <button>
+                <p class="flex gap-3 items-center">
+                  <span>
+                    <i class="fa-brands fa-google"></i>
+                  </span>
+                  <span>Login with Google</span>
+                </p>
+              </button>
+            </a>
+          </div>
+          {{ /user }}
+        </div>
+      </div>
+    </div>
+
+    <script src="/main.js"></script>
+    <script
+      src="https://kit.fontawesome.com/0abec2fadd.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Global error filter will return a basic 500 error for an unknown exception 1`] = `
+{
+  "message": "Internal server error",
+  "method": "GET",
+  "path": "/path/to/resource",
+  "status": 500,
+}
+`;
+
+exports[`Global error filter will return even more details if the exception is an HttpException 1`] = `
+{
+  "message": "This is a bad request exception",
+  "method": "GET",
+  "path": "/path/to/resource",
+  "status": 400,
+}
+`;
+
+exports[`Global error filter will return more details if the exception is an Error object 1`] = `
+{
+  "message": "An error object",
+  "method": "GET",
+  "path": "/path/to/resource",
+  "status": 500,
+}
+`;

@@ -3,9 +3,10 @@ resource "aws_lambda_function" "service" {
   function_name = "bottomtime-service-${var.env}"
   role          = aws_iam_role.service_lambda_fn.arn
 
-  image_uri     = data.aws_ecr_image.service.image_uri
-  architectures = ["arm64"]
-  package_type  = "Image"
+  image_uri        = data.aws_ecr_image.service.image_uri
+  source_code_hash = trimprefix(data.aws_ecr_image.service.image_digest, "sha256:")
+  architectures    = ["arm64"]
+  package_type     = "Image"
 
   description = "BottomTime Backend Service Lambda Function"
   timeout     = 30
@@ -23,6 +24,11 @@ resource "aws_lambda_function" "service" {
 
   environment {
     variables = {
+      BT_EDGEAUTH_ENABLED        = "${var.edgeauth_enabled}"
+      BT_EDGEAUTH_AUDIENCE       = "${var.web_domain}.${var.root_domain}"
+      BT_EDGEAUTH_COOKIE_NAME    = var.edgeauth_cookie_name
+      BT_EDGEAUTH_SESSION_SECRET = local.auth_config.sessionSecret
+
       BT_AWS_MEDIA_BUCKET        = data.aws_s3_bucket.media.id
       BT_AWS_SQS_EMAIL_QUEUE_URL = aws_sqs_queue.email.id
       BT_BASE_URL                = "https://${var.web_domain}.${var.root_domain}/"
@@ -69,9 +75,10 @@ resource "aws_lambda_function" "ssr" {
   function_name = "bottomtime-ssr-${var.env}"
   role          = aws_iam_role.ssr_lambda_fn.arn
 
-  image_uri     = data.aws_ecr_image.web.image_uri
-  architectures = ["arm64"]
-  package_type  = "Image"
+  image_uri        = data.aws_ecr_image.web.image_uri
+  source_code_hash = trimprefix(data.aws_ecr_image.web.image_digest, "sha256:")
+  architectures    = ["arm64"]
+  package_type     = "Image"
 
   description = "BottomTime Server-Side Render Lambda Function"
   timeout     = 30
@@ -88,6 +95,11 @@ resource "aws_lambda_function" "ssr" {
 
   environment {
     variables = {
+      BT_EDGEAUTH_ENABLED        = "${var.edgeauth_enabled}"
+      BT_EDGEAUTH_AUDIENCE       = "${var.web_domain}.${var.root_domain}"
+      BT_EDGEAUTH_COOKIE_NAME    = var.edgeauth_cookie_name
+      BT_EDGEAUTH_SESSION_SECRET = local.auth_config.sessionSecret
+
       BTWEB_API_URL                = "https://${var.api_domain}.${var.root_domain}/"
       BTWEB_COOKIE_NAME            = var.cookie_name
       BTWEB_LOG_LEVEL              = var.log_level
@@ -168,7 +180,7 @@ resource "aws_lambda_event_source_mapping" "email_queue" {
 data "archive_file" "keepalive" {
   type        = "zip"
   output_path = "${path.module}/archive/keepalive.zip"
-  source_dir  = "${path.module}/../packages/keepalive/"
+  source_dir  = "${path.module}/../packages/keepalive/dist/"
 }
 
 resource "aws_lambda_function" "keepalive" {
@@ -200,4 +212,12 @@ resource "aws_lambda_function" "keepalive" {
   }
 
   depends_on = [aws_cloudwatch_log_group.keepalive_logs, aws_iam_role_policy_attachment.keepalive_lambda_logging]
+}
+
+resource "aws_lambda_permission" "allow_eventbridge" {
+  statement_id  = "AllowEventBridgeInvocation"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.keepalive.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_scheduler_schedule.keepalive.arn
 }

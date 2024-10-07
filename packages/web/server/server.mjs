@@ -1,3 +1,4 @@
+// import { edgeAuthorizer } from '@bottomtime/common';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -6,6 +7,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import { Config } from './config.mjs';
 import { initDevServer } from './dev-server.mjs';
+import { edgeAuthorizer } from './edge-auth.mjs';
 import { getLogger } from './logger.mjs';
 import { initProdServer } from './prod-server.mjs';
 
@@ -25,6 +27,15 @@ export async function createApp() {
     }),
   );
   app.use('/api', createProxyMiddleware({ target: Config.apiUrl }));
+
+  if (Config.edgeAuth.enabled) {
+    log.debug(
+      'Edge authorization enabled. Adding edge authorizer middleware...',
+    );
+    app.use(edgeAuthorizer(Config.edgeAuth));
+  } else {
+    log.debug('Edge authorization disabled. Skipping initilaization...');
+  }
 
   // Global error handler needs to return something meaningful.
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */

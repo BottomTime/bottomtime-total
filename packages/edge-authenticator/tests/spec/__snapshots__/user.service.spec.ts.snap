@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User service will return a user record from DynamoDb 1`] = `"{"TableName":"SomeUsers","Key":{"email":{"S":"mike@email.org"}},"AttributesToGet":["email","domains"]}"`;
+
+exports[`User service will return undefined if the user is not found 1`] = `"{"TableName":"SomeUsers","Key":{"email":{"S":"user@email.com"}},"AttributesToGet":["email","domains"]}"`;

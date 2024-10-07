@@ -1,11 +1,15 @@
 /* eslint-disable no-process-env */
 import { defineConfig, devices } from '@playwright/test';
 
+import { sign } from 'jsonwebtoken';
+
 import { getSessionSecret } from './tests/fixtures/jwt';
 import { PostgresFixture } from './tests/fixtures/postgres.fixture';
 
 const CookieName = 'bottomtime.e2e';
 const IsCI = !!process.env.CI;
+const EdgeAuthSecret = process.env.BT_EDGEAUTH_SESSION_SECRET;
+const TwoHoursInSeconds = 60 * 60 * 2;
 
 /**
  * Read environment variables from file.
@@ -41,6 +45,20 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: IsCI ? 'https://e2e.bottomti.me' : 'http://localhost:4851',
 
+    /* For testing against an AWS environment in CI, we need to include the edge authentication header with each request. */
+    extraHTTPHeaders: {
+      'x-bt-auth': EdgeAuthSecret
+        ? sign(
+            {
+              aud: 'e2e.bottomti.me',
+              exp: Date.now() / 1000 + TwoHoursInSeconds,
+              sub: 'e2etests@bottomti.me',
+            },
+            EdgeAuthSecret,
+          )
+        : '',
+    },
+
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
 
@@ -59,7 +77,15 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+
+        // Bypass CORS restrictions for testing locally.
+        bypassCSP: true,
+        launchOptions: {
+          args: ['--disable-web-security'],
+        },
+      },
     },
 
     // {

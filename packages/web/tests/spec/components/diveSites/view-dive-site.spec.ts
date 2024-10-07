@@ -13,6 +13,14 @@ describe('View Dive Site component', () => {
 
   beforeEach(() => {
     pinia = createPinia();
+    jest.useFakeTimers({
+      now: new Date('2024-08-01T00:00:00Z'),
+      doNotFake: ['nextTick', 'setImmediate'],
+    });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('will render site with full details', () => {

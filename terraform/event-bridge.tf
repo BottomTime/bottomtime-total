@@ -9,9 +9,11 @@ resource "aws_scheduler_schedule_group" "cron_group" {
 resource "aws_scheduler_schedule" "keepalive" {
   name       = "bt-keepalive-${var.env}"
   group_name = aws_scheduler_schedule_group.cron_group.name
+  state      = var.enable_keep_alive ? "ENABLED" : "DISABLED"
 
   flexible_time_window {
-    mode = "OFF"
+    mode                      = "FLEXIBLE"
+    maximum_window_in_minutes = 5
   }
 
   schedule_expression_timezone = "UTC"

@@ -24,6 +24,9 @@ resource "aws_cloudfront_cache_policy" "web_static" {
     query_strings_config {
       query_string_behavior = "all"
     }
+
+    enable_accept_encoding_brotli = true
+    enable_accept_encoding_gzip   = true
   }
 }
 
@@ -48,34 +51,67 @@ resource "aws_cloudfront_cache_policy" "docs_static" {
   }
 }
 
-
-resource "aws_cloudfront_cache_policy" "web_lambda" {
-  name        = "bt-web-lambda-${var.env}-cache-policy"
+resource "aws_cloudfront_cache_policy" "api_lambda" {
+  name        = "bt-apis-${var.env}-cache-policy"
+  comment     = "Cache policy for forwarding requests to '/api' the bakckend"
   min_ttl     = 0
-  default_ttl = 120
-  max_ttl     = 3600
+  max_ttl     = 5
+  default_ttl = 5
 
   parameters_in_cache_key_and_forwarded_to_origin {
     cookies_config {
       cookie_behavior = "whitelist"
       cookies {
-        items = [var.cookie_name]
+        items = [var.cookie_name, var.edgeauth_cookie_name]
       }
     }
 
     headers_config {
       header_behavior = "whitelist"
+
       headers {
-        items = ["Authorization", "Set-Cookie"]
+        items = ["Authorization", "x-bt-auth", "User-Agent"]
       }
     }
 
     query_strings_config {
       query_string_behavior = "all"
     }
+
+    enable_accept_encoding_gzip   = true
+    enable_accept_encoding_brotli = true
   }
 }
 
+resource "aws_cloudfront_cache_policy" "web_lambda" {
+  name        = "bt-web-lambda-${var.env}-cache-policy"
+  min_ttl     = 0
+  default_ttl = 5
+  max_ttl     = 5
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "whitelist"
+      cookies {
+        items = [var.cookie_name, var.edgeauth_cookie_name]
+      }
+    }
+
+    headers_config {
+      header_behavior = "whitelist"
+      headers {
+        items = ["Authorization", "x-bt-auth", "User-Agent"]
+      }
+    }
+
+    query_strings_config {
+      query_string_behavior = "all"
+    }
+
+    enable_accept_encoding_brotli = true
+    enable_accept_encoding_gzip   = true
+  }
+}
 
 resource "aws_cloudfront_origin_access_identity" "web" {}
 resource "aws_cloudfront_origin_access_identity" "docs" {}
@@ -141,8 +177,9 @@ resource "aws_cloudfront_distribution" "web" {
     allowed_methods        = ["GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     path_pattern           = "api/*"
-    cache_policy_id        = aws_cloudfront_cache_policy.web_lambda.id
     viewer_protocol_policy = "redirect-to-https"
+
+    cache_policy_id = aws_cloudfront_cache_policy.api_lambda.id
   }
 
   # Static files are served from S3
@@ -150,9 +187,11 @@ resource "aws_cloudfront_distribution" "web" {
     target_origin_id       = local.web_s3_origin_id
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    compress               = true
     path_pattern           = "*.*"
-    cache_policy_id        = aws_cloudfront_cache_policy.web_static.id
     viewer_protocol_policy = "redirect-to-https"
+
+    cache_policy_id = aws_cloudfront_cache_policy.web_static.id
   }
 
   # Default cache behaviour performs server-side rendering
@@ -160,9 +199,10 @@ resource "aws_cloudfront_distribution" "web" {
     target_origin_id       = local.web_ssr_origin_id
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    cache_policy_id        = aws_cloudfront_cache_policy.web_lambda.id
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
+
+    cache_policy_id = aws_cloudfront_cache_policy.web_lambda.id
   }
 
   tags = {

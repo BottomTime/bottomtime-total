@@ -40,6 +40,7 @@ Additionally, attach the following inline policies:
         "iam:GetRolePolicy",
         "iam:CreatePolicy",
         "iam:CreatePolicyVersion",
+        "iam:CreateServiceLinkedRole",
         "iam:DeletePolicyVersion",
         "iam:GetRole",
         "iam:GetPolicy",
@@ -228,3 +229,8 @@ When ready, run:
 ```bash
 ./deploy-files.sh
 ```
+
+## Protecting an Environment
+
+It may be necessary to limit access to an environment to private users. (Think test environments that should not be publicly visible.)
+In this case you'll want to enable Edge Authentication to ensure that only authorized users are accessing the environment.

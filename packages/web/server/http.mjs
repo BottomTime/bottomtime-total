@@ -11,6 +11,23 @@ function parseAuthHeader(header) {
   return token;
 }
 
+export function extractEdgeAuthorizationTokenFromRequest(req) {
+  let token = req.headers['x-bt-auth'];
+  if (token) {
+    log.debug('Edge authorization token in header.');
+    return token;
+  }
+
+  token = req.cookies[Config.edgeAuth.cookieName];
+  if (token) {
+    log.debug('Found edge authorization token in session cookie');
+    return token;
+  }
+
+  log.debug('No edge authorization token found in request');
+  return undefined;
+}
+
 export const DefaultMembership = {};
 
 export function extractJwtFromRequest(req) {
@@ -34,13 +51,16 @@ export function extractJwtFromRequest(req) {
   return undefined;
 }
 
-export async function getCurrentUser(jwt, res) {
+export async function getCurrentUser(jwt, edgeAuthToken, res) {
   try {
     let data = { anonymous: true };
 
     log.debug('Attempting to fetch current user...');
     const response = await fetch(new URL('/api/auth/me', Config.apiUrl), {
-      headers: { Authorization: `Bearer ${jwt}` },
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        ...(edgeAuthToken ? { 'x-bt-auth': edgeAuthToken } : {}),
+      },
       method: 'GET',
     });
 
@@ -63,13 +83,16 @@ export async function getCurrentUser(jwt, res) {
   }
 }
 
-export async function getUserMembership(username, jwt) {
+export async function getUserMembership(username, jwt, edgeAuthToken) {
   try {
     log.debug(`Attempting to fetch membership data for ${username}...`);
     const response = await fetch(
       new URL(`/api/membership/${username}`, Config.apiUrl),
       {
-        headers: { Authorization: `Bearer ${jwt}` },
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          ...(edgeAuthToken ? { 'x-bt-auth': edgeAuthToken } : {}),
+        },
         method: 'GET',
       },
     );

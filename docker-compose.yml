@@ -60,12 +60,6 @@ services:
         condition: service_started
       postgres:
         condition: service_healthy
-    healthcheck:
-      test: curl --fail http://localhost:4800 || exit 1
-      interval: 5s
-      retries: 10
-      start_period: 15s
-      timeout: 5s
     develop:
       watch:
         - action: rebuild
@@ -101,13 +95,7 @@ services:
     working_dir: /app/packages/web
     depends_on:
       service:
-        condition: service_healthy
-    healthcheck:
-      test: curl --fail http://localhost:4850 || exit 1
-      interval: 5s
-      retries: 10
-      start_period: 15s
-      timeout: 5s
+        condition: service_started
     develop:
       watch:
         - action: rebuild

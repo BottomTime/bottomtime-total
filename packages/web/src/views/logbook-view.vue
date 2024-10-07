@@ -105,6 +105,7 @@
       class="col-span-1 lg:col-span-3 xl:col-span-4"
       :edit-mode="editMode"
       :entries="logEntries.results"
+      :is-loading="state.isLoading"
       :is-loading-more="state.isLoadingMoreEntries"
       @load-more="onLoadMore"
       @select="onSelectLogEntry"
@@ -149,6 +150,7 @@ import {
 } from '../store';
 
 interface LogbookViewState {
+  isLoading: boolean;
   isLoadingLogEntry: boolean;
   isLoadingMoreEntries: boolean;
   queryParams: ListLogEntriesParamsDTO;
@@ -190,6 +192,7 @@ function parseQueryParams(): ListLogEntriesParamsDTO {
 }
 
 const state = reactive<LogbookViewState>({
+  isLoading: false,
   isLoadingLogEntry: false,
   isLoadingMoreEntries: false,
   queryParams: parseQueryParams(),
@@ -197,6 +200,8 @@ const state = reactive<LogbookViewState>({
 });
 
 async function refresh(): Promise<void> {
+  state.isLoading = true;
+
   await oops(
     async () => {
       const results = await client.logEntries.listLogEntries(
@@ -224,6 +229,7 @@ async function refresh(): Promise<void> {
       },
     },
   );
+  state.isLoading = false;
 }
 
 onServerPrefetch(async () => {

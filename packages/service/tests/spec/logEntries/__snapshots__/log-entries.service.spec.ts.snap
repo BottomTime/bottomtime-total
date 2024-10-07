@@ -74,20 +74,7 @@ exports[`Log entries service when creating a new log entry will create a new log
 exports[`Log entries service when listing log entries will perform a basic search 1`] = `
 [
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 1120,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "kaleidoscopic velvet",
-        "o2Percent": 30.8,
-        "pressureUnit": "psi",
-        "startPressure": 3260,
-        "volume": 4,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-07-22T14:35:19",
       "timezone": "Asia/Yakutsk",
@@ -96,20 +83,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "good-natured bountiful relay",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 47.38580221938901,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "notable gerbil",
-        "o2Percent": 24.8,
-        "pressureUnit": "bar",
-        "startPressure": 200.7809395994991,
-        "volume": 18,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-07-21T05:17:29",
       "timezone": "Atlantic/South_Georgia",
@@ -118,20 +92,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "tattered worn graffiti",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 680,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "serpentine radar",
-        "o2Percent": 35.5,
-        "pressureUnit": "psi",
-        "startPressure": 3290,
-        "volume": 11,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-07-21T02:48:32",
       "timezone": "Africa/Ndjamena",
@@ -140,20 +101,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "deadly idealistic gerbil",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 1250,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "white folk",
-        "o2Percent": 38.8,
-        "pressureUnit": "psi",
-        "startPressure": 3230,
-        "volume": 15,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-07-17T00:54:29",
       "timezone": "Africa/Bangui",
@@ -162,20 +110,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "piercing joyful hospitality",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 1030,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "roasted nightingale",
-        "o2Percent": undefined,
-        "pressureUnit": "psi",
-        "startPressure": 3270,
-        "volume": 4,
-        "workingPressure": 300,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-30T16:43:52",
       "timezone": "America/Winnipeg",
@@ -184,20 +119,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "silky sharp brilliant",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 44.10109142609872,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "monumental silkworm",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 208.0926007218659,
-        "volume": 15,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-30T10:07:41",
       "timezone": "America/Asuncion",
@@ -206,20 +128,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "gloomy acceptable hummus",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 73.16783416364342,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "nice object",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 215.43750203913078,
-        "volume": 15,
-        "workingPressure": 300,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-29T11:12:20",
       "timezone": "Asia/Bishkek",
@@ -228,20 +137,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "spotless gifted gallon",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 870,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "high-level integer",
-        "o2Percent": 39.4,
-        "pressureUnit": "psi",
-        "startPressure": 3250,
-        "volume": 11,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-25T05:38:18",
       "timezone": "Australia/Adelaide",
@@ -250,20 +146,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "graceful rich contrail",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 63.41231760336086,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "greedy ukulele",
-        "o2Percent": 23.8,
-        "pressureUnit": "bar",
-        "startPressure": 233.91503985971212,
-        "volume": 12,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-22T17:24:30",
       "timezone": "Atlantic/Reykjavik",
@@ -272,20 +155,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "tall trivial clause",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 910,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "jaunty den",
-        "o2Percent": 40,
-        "pressureUnit": "psi",
-        "startPressure": 3210,
-        "volume": 4,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-20T23:22:14",
       "timezone": "America/Hermosillo",
@@ -294,20 +164,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "scornful well-worn baggage",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 730,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "vigorous accordion",
-        "o2Percent": 22.3,
-        "pressureUnit": "psi",
-        "startPressure": 2940,
-        "volume": 4,
-        "workingPressure": 300,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-20T16:26:31",
       "timezone": "America/Argentina/La_Rioja",
@@ -316,20 +173,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "major limping airbag",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 38.59707579668611,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "dismal influx",
-        "o2Percent": 33.5,
-        "pressureUnit": "bar",
-        "startPressure": 198.49404132459313,
-        "volume": 4,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-16T15:58:20",
       "timezone": "Asia/Singapore",
@@ -338,20 +182,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "frizzy excited outback",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 74.58544510020874,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "solid headquarters",
-        "o2Percent": 26,
-        "pressureUnit": "bar",
-        "startPressure": 233.35795944789425,
-        "volume": 4,
-        "workingPressure": 300,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-15T13:24:04",
       "timezone": "Antarctica/Palmer",
@@ -360,20 +191,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "tattered worn graffiti",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 660,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "near hook",
-        "o2Percent": 36,
-        "pressureUnit": "psi",
-        "startPressure": 2900,
-        "volume": 11,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-14T00:22:34",
       "timezone": "Asia/Sakhalin",
@@ -382,20 +200,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "giant broken meat",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 970,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "tight pulley",
-        "o2Percent": 32.7,
-        "pressureUnit": "psi",
-        "startPressure": 3180,
-        "volume": 4,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-12T06:35:21",
       "timezone": "Asia/Kamchatka",
@@ -404,20 +209,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "intelligent greedy monster",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 34.747852419968694,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "incomplete indigence",
-        "o2Percent": 34.5,
-        "pressureUnit": "bar",
-        "startPressure": 221.71918356092647,
-        "volume": 18,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-12T05:16:30",
       "timezone": "Europe/Vatican",
@@ -426,20 +218,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "gruesome welcome expense",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 70.55460163601674,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "submissive porcelain",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 223.1566923763603,
-        "volume": 4,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-08T11:19:32",
       "timezone": "Europe/Simferopol",
@@ -448,20 +227,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "steep aromatic broccoli",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 680,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "queasy venture",
-        "o2Percent": 32.3,
-        "pressureUnit": "psi",
-        "startPressure": 3270,
-        "volume": 18,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-06-06T06:27:56",
       "timezone": "Asia/Ust-Nera",
@@ -470,20 +236,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "grounded lost vendor",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 59.806879602139816,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "high-level fit",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 211.99013038771227,
-        "volume": 11,
-        "workingPressure": 300,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-05-30T07:21:24",
       "timezone": "America/New_York",
@@ -492,20 +245,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "stormy strict fries",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 53.09510890068486,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "enraged raft",
-        "o2Percent": 26.8,
-        "pressureUnit": "bar",
-        "startPressure": 198.4402987617068,
-        "volume": 15,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-05-25T18:42:23",
       "timezone": "Pacific/Kiritimati",
@@ -514,20 +254,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "untidy puzzled birth",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 1100,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "firm forehead",
-        "o2Percent": undefined,
-        "pressureUnit": "psi",
-        "startPressure": 3310,
-        "volume": 18,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-05-23T11:21:32",
       "timezone": "America/Rio_Branco",
@@ -536,20 +263,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "unruly angry suppression",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 830,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "automatic marathon",
-        "o2Percent": 28.3,
-        "pressureUnit": "psi",
-        "startPressure": 3210,
-        "volume": 18,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-05-12T06:40:31",
       "timezone": "America/Juneau",
@@ -558,20 +272,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "wise gullible administrator",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 900,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "upbeat jewelry",
-        "o2Percent": undefined,
-        "pressureUnit": "psi",
-        "startPressure": 3100,
-        "volume": 15,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-05-06T12:07:16",
       "timezone": "Africa/Nouakchott",
@@ -580,20 +281,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "apt colossal initial",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 36.627741284901276,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "young gesture",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 203.64629907766357,
-        "volume": 15,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-05-06T07:55:57",
       "timezone": "America/Halifax",
@@ -602,20 +290,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "lost profuse garlic",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 1030,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "memorable civilization",
-        "o2Percent": 36.6,
-        "pressureUnit": "psi",
-        "startPressure": 2890,
-        "volume": 12,
-        "workingPressure": 300,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-05-01T17:41:56",
       "timezone": "Africa/Kigali",
@@ -624,20 +299,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "jumpy canine antechamber",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 1120,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "strange phenotype",
-        "o2Percent": undefined,
-        "pressureUnit": "psi",
-        "startPressure": 2970,
-        "volume": 11,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-04-23T15:24:20",
       "timezone": "Asia/Phnom_Penh",
@@ -646,20 +308,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "good-natured bountiful relay",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 61.06836801348254,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "worst ceramic",
-        "o2Percent": 39.1,
-        "pressureUnit": "bar",
-        "startPressure": 215.2390364999883,
-        "volume": 4,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-04-19T23:24:15",
       "timezone": "Pacific/Galapagos",
@@ -668,20 +317,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "friendly criminal waffle",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 35.62533416133374,
-        "hePercent": 45.9,
-        "material": "fe",
-        "name": "haunting pronunciation",
-        "o2Percent": 31.6,
-        "pressureUnit": "bar",
-        "startPressure": 220.52834775298834,
-        "volume": 4,
-        "workingPressure": 300,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-04-19T00:30:49",
       "timezone": "Europe/Oslo",
@@ -690,20 +326,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "thoughtful lumpy quotation",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 74.6895233229734,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "concerned keyboard",
-        "o2Percent": 33.6,
-        "pressureUnit": "bar",
-        "startPressure": 211.30398399895057,
-        "volume": 12,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-04-15T21:44:58",
       "timezone": "Arctic/Longyearbyen",
@@ -712,20 +335,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "cultured pointless glass",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 980,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "whole compulsion",
-        "o2Percent": 28.5,
-        "pressureUnit": "psi",
-        "startPressure": 3180,
-        "volume": 11,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-04-12T06:08:04",
       "timezone": "Europe/Monaco",
@@ -734,20 +344,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "rude ajar aggradation",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 650,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "miserly chord",
-        "o2Percent": undefined,
-        "pressureUnit": "psi",
-        "startPressure": 3300,
-        "volume": 12,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-04-10T17:36:28",
       "timezone": "Asia/Brunei",
@@ -756,20 +353,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "dark heavy boss",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 1270,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "bulky volume",
-        "o2Percent": 24.3,
-        "pressureUnit": "psi",
-        "startPressure": 3370,
-        "volume": 4,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-04-01T22:51:21",
       "timezone": "Africa/Algiers",
@@ -778,20 +362,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "mundane known blocker",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 34.516679846448824,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "creepy dispute",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 214.07235793070868,
-        "volume": 18,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-04-01T14:11:06",
       "timezone": "Asia/Khandyga",
@@ -800,20 +371,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "definitive tart hierarchy",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 1160,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "pristine outset",
-        "o2Percent": 40,
-        "pressureUnit": "psi",
-        "startPressure": 3320,
-        "volume": 12,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-03-29T19:46:17",
       "timezone": "Asia/Baku",
@@ -822,20 +380,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "shameful glorious noodles",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 64.4767355741933,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "striped mother-in-law",
-        "o2Percent": 27.1,
-        "pressureUnit": "bar",
-        "startPressure": 208.21404957445338,
-        "volume": 11,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-03-24T16:42:13",
       "timezone": "America/Winnipeg",
@@ -844,20 +389,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "quiet complete current",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 640,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "whirlwind stone",
-        "o2Percent": 35,
-        "pressureUnit": "psi",
-        "startPressure": 2980,
-        "volume": 12,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-03-24T15:35:28",
       "timezone": "America/Grenada",
@@ -866,20 +398,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "phony even pass",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 51.34801788185723,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "grave cummerbund",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 195.36281982203946,
-        "volume": 18,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-03-24T00:50:37",
       "timezone": "Antarctica/Davis",
@@ -888,20 +407,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "legal incomplete trachoma",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 37.884220683714375,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "smug bonsai",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 220.77246731845662,
-        "volume": 15,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-03-15T16:17:20",
       "timezone": "America/Santiago",
@@ -910,20 +416,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "keen specific comedy",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 1150,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "favorite count",
-        "o2Percent": 38.1,
-        "pressureUnit": "psi",
-        "startPressure": 2890,
-        "volume": 12,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-03-12T06:19:08",
       "timezone": "Pacific/Chatham",
@@ -932,20 +425,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "awkward limping hard-hat",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 1040,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "cuddly diploma",
-        "o2Percent": 33,
-        "pressureUnit": "psi",
-        "startPressure": 2800,
-        "volume": 11,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-03-10T15:39:44",
       "timezone": "America/Bahia",
@@ -954,20 +434,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "reflecting handsome chalk",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 600,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "sympathetic bellows",
-        "o2Percent": 26.4,
-        "pressureUnit": "psi",
-        "startPressure": 3180,
-        "volume": 11,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-03-04T11:15:33",
       "timezone": "Europe/Amsterdam",
@@ -976,20 +443,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "cultured pointless glass",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 1060,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "familiar lever",
-        "o2Percent": 30.5,
-        "pressureUnit": "psi",
-        "startPressure": 3220,
-        "volume": 11,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-29T21:38:04",
       "timezone": "America/Havana",
@@ -998,20 +452,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "apt pastel moai",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 44.57124584307894,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "irresponsible fibrosis",
-        "o2Percent": undefined,
-        "pressureUnit": "bar",
-        "startPressure": 236.43209704663604,
-        "volume": 18,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-27T21:57:44",
       "timezone": "America/Grenada",
@@ -1020,20 +461,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "concerned specific printing",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 530,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "starchy yawl",
-        "o2Percent": 36.9,
-        "pressureUnit": "psi",
-        "startPressure": 3140,
-        "volume": 4,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-27T12:40:17",
       "timezone": "Australia/Sydney",
@@ -1042,20 +470,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "bustling normal convert",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 36.99371745204553,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "useless potty",
-        "o2Percent": 33.3,
-        "pressureUnit": "bar",
-        "startPressure": 236.77854131441563,
-        "volume": 15,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-25T22:55:28",
       "timezone": "Asia/Gaza",
@@ -1064,20 +479,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "phony even pass",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 520,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "agile debt",
-        "o2Percent": 31.9,
-        "pressureUnit": "psi",
-        "startPressure": 3390,
-        "volume": 15,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-22T19:17:20",
       "timezone": "America/Port-au-Prince",
@@ -1086,20 +488,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "humble crazy cockpit",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 910,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "cylindrical corruption",
-        "o2Percent": undefined,
-        "pressureUnit": "psi",
-        "startPressure": 3170,
-        "volume": 12,
-        "workingPressure": 182,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-22T16:25:14",
       "timezone": "Asia/Yakutsk",
@@ -1108,20 +497,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "sympathetic mortified taxicab",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 1180,
-        "hePercent": undefined,
-        "material": "al",
-        "name": "key gel",
-        "o2Percent": 26.6,
-        "pressureUnit": "psi",
-        "startPressure": 3350,
-        "volume": 11,
-        "workingPressure": 207,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-22T11:44:06",
       "timezone": "Africa/Abidjan",
@@ -1130,20 +506,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "cultured illiterate acid",
   },
   {
-    "air": [
-      {
-        "count": 2,
-        "endPressure": 850,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "another watermelon",
-        "o2Percent": undefined,
-        "pressureUnit": "psi",
-        "startPressure": 3170,
-        "volume": 4,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-18T16:10:08",
       "timezone": "Asia/Dili",
@@ -1152,20 +515,7 @@ exports[`Log entries service when listing log entries will perform a basic searc
     "site": "specific dead ramen",
   },
   {
-    "air": [
-      {
-        "count": 1,
-        "endPressure": 46.22110569290817,
-        "hePercent": undefined,
-        "material": "fe",
-        "name": "jubilant boxspring",
-        "o2Percent": 36.4,
-        "pressureUnit": "bar",
-        "startPressure": 220.17346470151097,
-        "volume": 15,
-        "workingPressure": 237,
-      },
-    ],
+    "air": [],
     "entryTime": {
       "date": "2024-02-15T01:17:49",
       "timezone": "America/Nassau",

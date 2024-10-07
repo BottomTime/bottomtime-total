@@ -22,6 +22,7 @@ async function init(): Promise<void> {
     logger.info('🚀 Initializing service...');
     const app = await createApp(AppModule, logger);
     await app.init();
+
     logger.info('🎉 Service is online! 🎉');
     cachedServer = serverless({ app: app.getHttpAdapter().getInstance() });
   }

@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@5.1.0
-  terraform: circleci/terraform@3.2.1
+  terraform: circleci/terraform@3.3.0
 
 commands:
   yarn_install:
@@ -26,9 +26,6 @@ commands:
             - packages/web/node_modules/
 
   deploy_docker:
-    parameters:
-      env:
-        type: string
     steps:
       - aws-cli/install
       - checkout
@@ -39,11 +36,20 @@ commands:
           command: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com
             docker build -t bottomtime-service -f Dockerfile.service .
-            NODE_ENV=<<parameters.env>> docker build -t bottomtime-web -f Dockerfile.web .
-            docker tag bottomtime-service:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:<<parameters.env>>-latest
-            docker tag bottomtime-web:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:<<parameters.env>>-latest
-            docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:<<parameters.env>>-latest
-            docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:<<parameters.env>>-latest
+            docker build -t bottomtime-web -f Dockerfile.web .
+            docker tag bottomtime-service:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:$NODE_ENV-latest
+            docker tag bottomtime-web:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:$NODE_ENV-latest
+            docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:$NODE_ENV-latest
+            docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:$NODE_ENV-latest
+      - run:
+          name: Extract Compiled Web Files
+          command: |
+            docker run -d --name bottomtime-web bottomtime-web:latest
+            docker cp $(docker ps -qf "name=bottomtime-web"):/app/packages/web/dist ./packages/web/dist
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - packages/web/dist/
 
   deploy_env:
     parameters:
@@ -57,19 +63,12 @@ commands:
         type: string
       var_file:
         type: string
-      vite_mode:
-        type: string
     steps:
       - aws-cli/install
       - checkout
       - yarn_install
       - attach_workspace:
           at: ./
-      - run:
-          name: Rebuild Web w/ Environment Variables
-          command: |
-            yarn --cwd packages/web/ clean
-            NODE_ENV=<<parameters.vite_mode>> yarn build --scope=@bottomtime/web --stream
       - run:
           name: Migrate Database
           working_directory: packages/service/
@@ -80,7 +79,7 @@ commands:
               yarn migrate:up
             fi
       - terraform/install:
-          terraform_version: '1.9.1'
+          terraform_version: '1.9.7'
       - terraform/init:
           backend_config: 'bucket="<<parameters.state_bucket>>",key="<<parameters.state_key>>",region="$AWS_REGION"'
           path: terraform/
@@ -109,18 +108,28 @@ jobs:
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
+      - restore_cache:
+          keys:
+            - bt-nx-build-{{ .Branch }}
+            - bt-nx-build-master
       - run:
           name: Lint and Build
           command: |
             yarn lint
             yarn build --stream
+      - save_cache:
+          key: bt-nx-build-{{ .Branch }}
+          paths:
+            - .nx/
       - persist_to_workspace:
           root: ./
           paths:
             - .nx/
             - packages/api/dist/
             - packages/common/dist/
+            - packages/edge-authenticator/dist/
             - packages/emails/dist/
+            - packages/keepalive/dist/
             - packages/service/dist/
             - packages/web/dist/
             - cc-test-reporter
@@ -304,9 +313,10 @@ jobs:
     docker:
       - image: cimg/base:2023.06
     resource_class: arm.medium
+    environment:
+      NODE_ENV: e2e
     steps:
-      - deploy_docker:
-          env: e2e
+      - deploy_docker
 
   deploy_e2e:
     docker:
@@ -317,17 +327,17 @@ jobs:
     steps:
       - deploy_env:
           fresh_db: true
-          state_key: $AWS_REGION.e2e.tfvars
+          state_key: $AWS_REGION.e2e.tfstate
           var_file: vars/e2e.tfvars
-          vite_mode: e2e
 
   docker_staging:
     docker:
       - image: cimg/base:2023.06
     resource_class: arm.medium
+    environment:
+      NODE_ENV: staging
     steps:
-      - deploy_docker:
-          env: staging
+      - deploy_docker
 
   deploy_staging:
     docker:
@@ -337,17 +347,17 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
-          state_key: $AWS_REGION.staging.tfvars
+          state_key: $AWS_REGION.staging.tfstate
           var_file: vars/staging.tfvars
-          vite_mode: staging
 
   docker_production:
     docker:
       - image: cimg/base:2023.06
     resource_class: arm.medium
+    environment:
+      NODE_ENV: production
     steps:
-      - deploy_docker:
-          env: production
+      - deploy_docker
 
   deploy_production:
     docker:
@@ -357,9 +367,8 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
-          state_key: $AWS_REGION.production.tfvars
+          state_key: $AWS_REGION.production.tfstate
           var_file: vars/production.tfvars
-          vite_mode: production
 
 workflows:
   test_and_deploy:
@@ -400,6 +409,7 @@ workflows:
             - bt-aws-e2e
             - bt-smtp-dev
             - bt-postgres-e2e
+            - bt-edge-auth
 
       # 3) Report test coverage
       - report_coverage:

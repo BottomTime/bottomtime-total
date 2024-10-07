@@ -24,12 +24,10 @@ export class LogEntryQueryBuilder {
 
   constructor(entries: Repository<LogEntryEntity>) {
     this.query = entries
-      .createQueryBuilder()
-      .from(LogEntryEntity, 'entries')
+      .createQueryBuilder('entries')
       .innerJoin('entries.owner', 'owners')
       .leftJoin('entries.site', 'sites')
       .leftJoin('sites.creator', 'site_creators')
-      .leftJoin('entries.air', 'site_air')
       .select([
         'entries.id',
         'entries.createdAt',
@@ -48,6 +46,7 @@ export class LogEntryQueryBuilder {
         'entries.depthUnit',
 
         'owners.id',
+        'owners.accountTier',
         'owners.username',
         'owners.memberSince',
         'owners.logBookSharing',
@@ -56,7 +55,6 @@ export class LogEntryQueryBuilder {
         'owners.avatar',
 
         ...DiveSiteSelectFields,
-        ...LogEntryAirSelectFields,
       ]);
   }
 

@@ -1,6 +1,11 @@
 /* eslint-disable no-process-env */
 import 'dotenv/config';
 
+function toBoolean(value, defaultValue) {
+  if (typeof value !== 'string') return defaultValue;
+  return /(true|1)/i.test(value);
+}
+
 function toNumber(value, defaultValue) {
   if (!value) return defaultValue;
   const parsed = parseInt(value);
@@ -8,6 +13,17 @@ function toNumber(value, defaultValue) {
 }
 
 export class Config {
+  static get edgeAuth() {
+    return {
+      enabled: toBoolean(process.env.BT_EDGEAUTH_ENABLED, false),
+      audience: process.env.BT_EDGEAUTH_AUDIENCE || 'dev.bottomti.me',
+      cookieName: process.env.BT_EDGEAUTH_COOKIE_NAME || 'bottomtime.auth',
+      secret:
+        process.env.BT_EDGEAUTH_SESSION_SECRET ||
+        'nxS0JJ04kNjiZpJxQz5iq6OFoN6bAvsQxO2eVLGaSQyslZU8ltxqYlmKUIon9B8scg89VBg3eFZAs6umkWUYWQ',
+    };
+  }
+
   static get appTitle() {
     return process.env.BTWEB_VITE_APP_TITLE ?? 'Bottom Time';
   }

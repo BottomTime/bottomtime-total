@@ -3,6 +3,7 @@
   "include": [
     "*.ts",
     "*.js",
+    "*.mjs",
     "src/**/*.ts",
     "src/**/*.vue",
     "server/**/*.mjs",

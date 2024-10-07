@@ -124,7 +124,7 @@ dist
 
 # Terraform files
 .terraform/
-terraform/archive/
+terraform/**/archive/
 .terraform.lock.hcl
 terraform.tfstate*
 

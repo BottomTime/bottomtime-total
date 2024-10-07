@@ -1,4 +1,4 @@
-import { ExecutionContext, Inject, Injectable, Logger } from '@nestjs/common';
+import { ExecutionContext, Inject, Injectable } from '@nestjs/common';
 import { AuthGuard, PassportStrategy } from '@nestjs/passport';
 
 import { Request } from 'express';
@@ -29,8 +29,6 @@ export class JwtOrAnonAuthGuard extends AuthGuard('jwt') {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  private readonly log = new Logger(JwtStrategy.name);
-
   constructor(@Inject(AuthService) private readonly authService: AuthService) {
     super({
       jwtFromRequest: extractJwtFromRequest,
