@@ -22,7 +22,7 @@
         class="flex flex-initial flex-row gap-3 items-center"
         data-testid="drawer-title"
       >
-        <p class="font-title dark:text-blue-200 text-4xl grow">
+        <p class="font-title dark:text-blue-200 text-4xl grow capitalize">
           {{ title }}
         </p>
         <a

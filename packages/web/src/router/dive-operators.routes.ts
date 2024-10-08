@@ -12,7 +12,7 @@ export const DiveOperatorsRoutes: RouteRecordRaw[] = [
     component: () => import('../views/dive-operator-view.vue'),
   },
   {
-    path: '/createShop',
+    path: '/newDiveShop',
     name: 'create-dive-operator',
     component: () => import('../views/create-dive-operator-view.vue'),
   },
