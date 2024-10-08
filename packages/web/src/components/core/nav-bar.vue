@@ -230,7 +230,7 @@ const navLinks = computed<NavLink[]>(() => {
     {
       title: 'Dive Shops',
       url: '/shops',
-      visible: diveOperatorsEnabled.value,
+      visible: true,
     },
     {
       title: 'Admin',

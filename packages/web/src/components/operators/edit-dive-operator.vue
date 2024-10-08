@@ -28,6 +28,7 @@
               placeholder="Name of dive shop"
               :maxlength="200"
               :invalid="v$.name.$error"
+              :autofocus="true"
             />
           </FormField>
 
@@ -296,7 +297,6 @@ interface EditDiveOperatorFormData {
 }
 
 interface EditDiveOperatorProps {
-  conflict?: boolean;
   isSaving?: boolean;
   operator?: DiveOperatorDTO;
 }
@@ -322,7 +322,6 @@ function formDataFromDto(dto?: DiveOperatorDTO): EditDiveOperatorFormData {
 const addressDialog = ref<InstanceType<typeof AddressDialog> | null>(null);
 
 const props = withDefaults(defineProps<EditDiveOperatorProps>(), {
-  conflict: false,
   isSaving: false,
 });
 const emit = defineEmits<{
@@ -330,12 +329,13 @@ const emit = defineEmits<{
 }>();
 const autoUpdateSlug = ref(!props.operator);
 const showAddressDialog = ref(false);
+const slugConflict = ref(false);
 const formData = reactive<EditDiveOperatorFormData>(
   formDataFromDto(props.operator),
 );
 
 const $externalResults = computed(() => ({
-  slug: props.conflict ? ['URL shortcut is already taken'] : [],
+  slug: slugConflict.value ? ['URL shortcut is already taken'] : [],
 }));
 const v$ = useVuelidate(
   {
@@ -385,6 +385,13 @@ watch(
   },
 );
 
+watch(
+  () => formData.slug,
+  () => {
+    slugConflict.value = false;
+  },
+);
+
 function onChangeAddress() {
   addressDialog.value?.reset();
   showAddressDialog.value = true;
@@ -408,20 +415,26 @@ async function onSave(): Promise<void> {
     name: formData.name,
     address: formData.address,
     description: formData.description,
-    email: formData.email,
+    email: formData.email || undefined,
     gps: formData.gps ?? undefined,
-    phone: formData.phone,
-    website: formData.website,
+    phone: formData.phone || undefined,
+    website: formData.website || undefined,
     slug: formData.slug,
     socials: {
-      facebook: formData.facebook,
-      instagram: formData.instagram,
-      tiktok: formData.tiktok,
-      twitter: formData.twitter,
-      youtube: formData.youtube,
+      facebook: formData.facebook || undefined,
+      instagram: formData.instagram || undefined,
+      tiktok: formData.tiktok || undefined,
+      twitter: formData.twitter || undefined,
+      youtube: formData.youtube || undefined,
     },
   };
 
   emit('save', dto);
 }
+
+defineExpose({
+  markConflict() {
+    slugConflict.value = true;
+  },
+});
 </script>

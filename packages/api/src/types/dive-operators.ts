@@ -5,9 +5,9 @@ import { SuccinctProfileSchema, UsernameSchema } from './users';
 
 export const CreateOrUpdateDiveOperatorSchema = z.object({
   name: z.string().trim().min(1).max(200),
-  slug: z.string().trim().regex(SlugRegex).min(1).max(200).optional(),
-  description: z.string().trim().max(2000).optional(),
-  address: z.string().trim().max(500).optional(),
+  slug: z.string().trim().regex(SlugRegex).min(1).max(200),
+  description: z.string().trim().max(2000),
+  address: z.string().trim().max(500),
   phone: PhoneNumber.optional(),
   email: z.string().trim().email().max(100).optional(),
   website: z.string().url().max(200).optional(),
@@ -27,8 +27,7 @@ export const CreateOrUpdateDiveOperatorSchema = z.object({
       tiktok: z.string().max(100),
       youtube: z.string().max(100),
     })
-    .partial()
-    .optional(),
+    .partial(),
 });
 export type CreateOrUpdateDiveOperatorDTO = z.infer<
   typeof CreateOrUpdateDiveOperatorSchema

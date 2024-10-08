@@ -8,15 +8,14 @@
 
     <article class="space-y-1">
       <div class="flex gap-2 align-top">
-        <a :href="`/shops/${operator.slug}`">
-          <FormButton
-            type="link"
-            size="2xl"
-            :test-id="`select-${operator.slug || operator.id}`"
-          >
-            <span class="capitalize">{{ operator.name }}</span>
-          </FormButton>
-        </a>
+        <FormButton
+          type="link"
+          size="2xl"
+          :test-id="`select-${operator.slug || operator.id}`"
+          @click="$emit('select', operator)"
+        >
+          <span class="capitalize">{{ operator.name }}</span>
+        </FormButton>
 
         <div class="relative group">
           <p v-if="operator.verified" class="text-sm text-success space-x-1">
@@ -183,4 +182,7 @@ interface DiveOperatorsListItemProps {
 }
 
 defineProps<DiveOperatorsListItemProps>();
+defineEmits<{
+  (e: 'select', operator: DiveOperatorDTO): void;
+}>();
 </script>

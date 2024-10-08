@@ -72,7 +72,7 @@ const operatorKey = computed(() => {
 });
 const title = computed(() =>
   canEdit.value
-    ? `Manage ${operators.currentDiveOperator?.name}`
+    ? `Edit "${operators.currentDiveOperator?.name}"`
     : operators.currentDiveOperator?.name || 'View Dive Operator',
 );
 
