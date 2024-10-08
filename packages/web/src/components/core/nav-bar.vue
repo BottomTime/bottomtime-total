@@ -48,7 +48,7 @@
           </ul>
 
           <!-- Notifications alert -->
-          <button v-if="notificationsEnabled.value.value && currentUser.user">
+          <button v-if="notificationsEnabled.value && currentUser.user">
             <span class="fa-layers fa-fw">
               <i class="fa-solid fa-bell"></i>
               <span class="fa-layers-counter fa-layers-bottom-right"> 1 </span>
@@ -230,7 +230,7 @@ const navLinks = computed<NavLink[]>(() => {
     {
       title: 'Dive Shops',
       url: '/shops',
-      visible: diveOperatorsEnabled.value.value,
+      visible: diveOperatorsEnabled.value,
     },
     {
       title: 'Admin',

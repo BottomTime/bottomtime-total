@@ -78,24 +78,20 @@
         </div>
       </div>
 
-      <template v-if="enableMemberships.value">
-        <TextHeading>Membership</TextHeading>
+      <TextHeading>Membership</TextHeading>
 
-        <ManageMembership :user="user" :membership="membership" />
-      </template>
+      <ManageMembership :user="user" :membership="membership" />
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
 import { MembershipStatusDTO, UserDTO } from '@bottomtime/api';
-import { PaymentsFeature } from '@bottomtime/common';
 
 import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
-import { useFeature } from '../../featrues';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
@@ -123,8 +119,6 @@ type ManageAccountState = {
   isLoadingProviders: boolean;
   providers: OAuthProvider[];
 };
-
-const enableMemberships = useFeature(PaymentsFeature);
 
 const client = useClient();
 const oops = useOops();
