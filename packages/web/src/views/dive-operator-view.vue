@@ -31,13 +31,13 @@ import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import EditDiveOperator from '../components/operators/edit-dive-operator.vue';
 import ViewDiveOperator from '../components/operators/view-dive-operator.vue';
-import { useFeatureToggle } from '../featrues';
+import { useFeature } from '../featrues';
 import { useOops } from '../oops';
 import { useCurrentUser, useDiveOperators, useToasts } from '../store';
 
 const client = useClient();
 const currentUser = useCurrentUser();
-const enableDiveOperators = useFeatureToggle(ManageDiveOperatorsFeature);
+const enableDiveOperators = useFeature(ManageDiveOperatorsFeature);
 const oops = useOops();
 const operators = useDiveOperators();
 const route = useRoute();
