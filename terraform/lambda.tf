@@ -25,13 +25,13 @@ resource "aws_lambda_function" "service" {
   environment {
     variables = {
       BT_EDGEAUTH_ENABLED        = "${var.edgeauth_enabled}"
-      BT_EDGEAUTH_AUDIENCE       = "${var.web_domain}.${var.root_domain}"
+      BT_EDGEAUTH_AUDIENCE       = local.web_fqdn
       BT_EDGEAUTH_COOKIE_NAME    = var.edgeauth_cookie_name
       BT_EDGEAUTH_SESSION_SECRET = local.auth_config.sessionSecret
 
       BT_AWS_MEDIA_BUCKET        = data.aws_s3_bucket.media.id
       BT_AWS_SQS_EMAIL_QUEUE_URL = aws_sqs_queue.email.id
-      BT_BASE_URL                = "https://${var.web_domain}.${var.root_domain}/"
+      BT_BASE_URL                = "https://${local.web_fqdn}/"
       BT_LOG_LEVEL               = var.log_level
       BT_CONFIGCAT_SDK_KEY       = var.configcat_sdk_key
       BT_DISCORD_CLIENT_ID       = local.secrets.discordClientId
@@ -43,7 +43,7 @@ resource "aws_lambda_function" "service" {
       BT_PASSWORD_SALT_ROUNDS    = "${var.password_salt_rounds}"
       BT_POSTGRES_REQUIRE_SSL    = "true"
       BT_POSTGRES_URI            = local.secrets.postgresUri
-      BT_SESSION_COOKIE_DOMAIN   = "${var.web_domain}.${var.root_domain}"
+      BT_SESSION_COOKIE_DOMAIN   = local.web_fqdn
       BT_SESSION_COOKIE_NAME     = local.cookie_name
       BT_SESSION_SECRET          = local.secrets.sessionSecret
       BT_SESSION_SECURE_COOKIE   = "${var.secure_cookie}"
@@ -96,14 +96,14 @@ resource "aws_lambda_function" "ssr" {
   environment {
     variables = {
       BT_EDGEAUTH_ENABLED        = "${var.edgeauth_enabled}"
-      BT_EDGEAUTH_AUDIENCE       = "${var.web_domain}.${var.root_domain}"
+      BT_EDGEAUTH_AUDIENCE       = local.web_fqdn
       BT_EDGEAUTH_COOKIE_NAME    = var.edgeauth_cookie_name
       BT_EDGEAUTH_SESSION_SECRET = local.auth_config.sessionSecret
 
       BTWEB_API_URL                = "https://${var.api_domain}.${var.root_domain}/"
-      BTWEB_COOKIE_NAME            = var.cookie_name
+      BTWEB_COOKIE_NAME            = local.cookie_name
       BTWEB_LOG_LEVEL              = var.log_level
-      BTWEB_VITE_BASE_URL          = "https://${var.web_domain}.${var.root_domain}/"
+      BTWEB_VITE_BASE_URL          = "https://${local.web_fqdn}/"
       BTWEB_VITE_CONFIGCAT_API_KEY = var.configcat_sdk_key
       BTWEB_VITE_ENABLE_PLACES_API = "${var.enable_places_api}"
       BTWEB_VITE_GOOGLE_API_KEY    = local.secrets.googleApiKey
@@ -156,7 +156,7 @@ resource "aws_lambda_function" "email_service" {
   environment {
     variables = {
       BT_ADMIN_EMAIL   = var.admin_email
-      BT_BASE_URL      = "https://${var.web_domain}.${var.root_domain}/"
+      BT_BASE_URL      = "https://${local.web_fqdn}/"
       BT_LOG_LEVEL     = var.log_level
       BT_SMTP_FROM     = "\"Bottom Time Admin\" <admin@bottomti.me>"
       BT_SMTP_HOST     = local.secrets.smtpHost
@@ -207,7 +207,7 @@ resource "aws_lambda_function" "keepalive" {
 
   environment {
     variables = {
-      BT_PING_URL = "https://${var.web_domain}.${var.root_domain}/"
+      BT_PING_URL = "https://${local.web_fqdn}/"
     }
   }
 

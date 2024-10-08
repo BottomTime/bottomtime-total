@@ -37,3 +37,18 @@ resource "aws_route53_record" "docs" {
     evaluate_target_health = false
   }
 }
+
+resource "aws_route53_record" "www_alias" {
+  # Make a "www" alias for the root domain in production
+  count = var.web_domain == "" ? 1 : 0
+
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = "www"
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.web.domain_name
+    zone_id                = aws_cloudfront_distribution.web.hosted_zone_id
+    evaluate_target_health = false
+  }
+}

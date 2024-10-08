@@ -62,7 +62,7 @@ resource "aws_cloudfront_cache_policy" "api_lambda" {
     cookies_config {
       cookie_behavior = "whitelist"
       cookies {
-        items = [var.cookie_name, var.edgeauth_cookie_name]
+        items = [local.cookie_name, var.edgeauth_cookie_name]
       }
     }
 
@@ -93,7 +93,7 @@ resource "aws_cloudfront_cache_policy" "web_lambda" {
     cookies_config {
       cookie_behavior = "whitelist"
       cookies {
-        items = [var.cookie_name, var.edgeauth_cookie_name]
+        items = [local.cookie_name, var.edgeauth_cookie_name]
       }
     }
 
@@ -119,7 +119,7 @@ resource "aws_cloudfront_origin_access_identity" "docs" {}
 resource "aws_cloudfront_distribution" "web" {
   enabled     = true
   comment     = "Web front-end distribution"
-  aliases     = var.web_domain == "" ? ["${var.root_domain}"] : ["${var.web_domain}.${var.root_domain}"]
+  aliases     = var.web_domain == "" ? [local.web_fqdn, "www.${var.root_domain}"] : [local.web_fqdn]
   price_class = "PriceClass_100"
 
   # S3 bucket origin for static assets

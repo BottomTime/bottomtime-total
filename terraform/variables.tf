@@ -118,4 +118,5 @@ data "aws_region" "current" {}
 
 locals {
   cookie_name = var.cookie_name == null ? "bottomtime.${var.env}" : var.cookie_name
+  web_fqdn    = var.web_domain == "" ? var.root_domain : "${var.web_domain}.${var.root_domain}"
 }

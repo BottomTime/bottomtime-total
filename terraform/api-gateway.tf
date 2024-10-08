@@ -7,7 +7,7 @@ resource "aws_apigatewayv2_api" "service" {
     allow_credentials = true
     allow_headers     = ["*"]
     allow_methods     = ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"]
-    allow_origins     = ["https://${var.web_domain}.${var.root_domain}", "https://${var.api_domain}.${var.root_domain}"]
+    allow_origins     = ["https://${local.web_fqdn}", "https://${var.api_domain}.${var.root_domain}"]
     expose_headers    = ["set-cookie"]
     max_age           = 300
   }
@@ -80,7 +80,7 @@ resource "aws_apigatewayv2_api" "ssr" {
     allow_credentials = true
     allow_headers     = ["*"]
     allow_methods     = ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"]
-    allow_origins     = ["https://${var.web_domain}.${var.root_domain}"]
+    allow_origins     = ["https://${local.web_fqdn}"]
     max_age           = 300
   }
 
