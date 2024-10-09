@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -11,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { DiveSiteEntity } from './dive-site.entity';
 import { MediaFileEntity } from './media-file.entity';
 import { UserEntity } from './user.entity';
 
@@ -93,6 +95,15 @@ export class DiveOperatorEntity {
   media?: MediaFileEntity[];
 
   // Other
+  @ManyToMany(() => DiveSiteEntity, {
+    onDelete: 'CASCADE',
+    createForeignKeyConstraints: true,
+  })
+  @JoinTable({
+    name: 'dive_operator_sites',
+  })
+  diveSites?: DiveSiteEntity[];
+
   @Column({
     type: 'tsvector',
     select: false,
