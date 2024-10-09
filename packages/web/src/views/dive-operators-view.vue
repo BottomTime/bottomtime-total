@@ -150,7 +150,16 @@ onServerPrefetch(async () => {
 });
 
 function onSearch(params: SearchDiveOperatorsParams) {
-  const qs = stringify(params);
+  const qs = stringify({
+    query: params.query || undefined,
+    location: params.location
+      ? `${params.location.lat},${params.location.lon}`
+      : undefined,
+    radius: params.radius || undefined,
+    owner: params.owner || undefined,
+    skip: searchParams.skip,
+    limit: searchParams.limit,
+  });
   location.assign(`${location.pathname}?${qs}`);
 }
 

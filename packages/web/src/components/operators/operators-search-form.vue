@@ -16,7 +16,7 @@
       </FormField>
 
       <FormField label="Location">
-        <FormLocationSelect :gps="state.gps" />
+        <FormLocationSelect v-model="state.gps" show-radius />
       </FormField>
 
       <FormField>
@@ -40,7 +40,11 @@
 </template>
 
 <script lang="ts" setup>
-import { GpsCoordinates, SearchDiveOperatorsParams } from '@bottomtime/api';
+import {
+  GpsCoordinates,
+  GpsCoordinatesWithRadius,
+  SearchDiveOperatorsParams,
+} from '@bottomtime/api';
 
 import { reactive } from 'vue';
 
@@ -58,7 +62,7 @@ interface OperatorsSearchProps {
 }
 
 interface OperatorsSearchFormState {
-  gps: GpsCoordinates | null;
+  gps?: GpsCoordinates | GpsCoordinatesWithRadius;
   query: string;
   onlyOwnedShops: boolean;
 }
@@ -67,7 +71,12 @@ const currentUser = useCurrentUser();
 const props = defineProps<OperatorsSearchProps>();
 
 const state = reactive<OperatorsSearchFormState>({
-  gps: props.searchParams.location ?? null,
+  gps: props.searchParams.location
+    ? {
+        ...props.searchParams.location,
+        radius: props.searchParams.radius,
+      }
+    : undefined,
   query: props.searchParams.query || '',
   onlyOwnedShops: props.searchParams.owner === currentUser.user?.username,
 });
@@ -80,6 +89,10 @@ function onSearch() {
     ...props.searchParams,
     query: state.query || undefined,
     owner: state.onlyOwnedShops ? currentUser.user?.username : undefined,
+    location: state.gps
+      ? { lat: state.gps.lat, lon: state.gps.lon }
+      : undefined,
+    radius: state.gps && 'radius' in state.gps ? state.gps.radius : undefined,
   });
 }
 </script>
