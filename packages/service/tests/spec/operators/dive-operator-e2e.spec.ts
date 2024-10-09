@@ -177,6 +177,10 @@ describe('Dive Operators E2E tests', () => {
     it('will create a new dive operator with minimal options', async () => {
       const options: CreateOrUpdateDiveOperatorDTO = {
         name: 'Groundhog Divers',
+        description: 'A sweet dive shop!',
+        address: '111 Street St, Toronto, ON',
+        slug: 'groundhog-divers',
+        socials: {},
       };
       const { body } = await request(server)
         .post(getUrl())

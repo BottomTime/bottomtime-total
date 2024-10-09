@@ -23,7 +23,12 @@
 
     <div class="grid gap-3 grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
       <div class="col-span-1">
-        <OperatorsSearch :search-params="searchParams" @search="onSearch" />
+        <div class="sticky top-24">
+          <OperatorsSearchForm
+            :search-params="searchParams"
+            @search="onSearch"
+          />
+        </div>
       </div>
       <div class="col-span-1 lg:col-span-2 xl:col-span-3">
         <DiveOperatorsList
@@ -62,7 +67,7 @@ import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import DiveOperatorsList from '../components/operators/dive-operators-list.vue';
 import EditDiveOperator from '../components/operators/edit-dive-operator.vue';
-import OperatorsSearch from '../components/operators/operators-search.vue';
+import OperatorsSearchForm from '../components/operators/operators-search-form.vue';
 import ViewDiveOperator from '../components/operators/view-dive-operator.vue';
 import { useFeature } from '../featrues';
 import { useLocation } from '../location';

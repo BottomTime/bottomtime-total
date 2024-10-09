@@ -4,7 +4,19 @@
       <TextHeading level="h3">Search</TextHeading>
 
       <FormField label="Search query">
-        <FormTextBox v-model="state.query" :autofocus="true" />
+        <FormSearchBox
+          v-model.trim="state.query"
+          control-id="search"
+          :maxlength="200"
+          placeholder="Search dive shops"
+          test-id="search-dive-shops"
+          autofocus
+          @search="onSearch"
+        />
+      </FormField>
+
+      <FormField label="Location">
+        <FormLocationSelect :gps="state.gps" />
       </FormField>
 
       <FormField>
@@ -28,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { SearchDiveOperatorsParams } from '@bottomtime/api';
+import { GpsCoordinates, SearchDiveOperatorsParams } from '@bottomtime/api';
 
 import { reactive } from 'vue';
 
@@ -37,14 +49,16 @@ import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormCheckbox from '../common/form-checkbox.vue';
 import FormField from '../common/form-field.vue';
-import FormTextBox from '../common/form-text-box.vue';
+import FormLocationSelect from '../common/form-location-select.vue';
+import FormSearchBox from '../common/form-search-box.vue';
 import TextHeading from '../common/text-heading.vue';
 
 interface OperatorsSearchProps {
   searchParams: SearchDiveOperatorsParams;
 }
 
-interface OperatorsSearchState {
+interface OperatorsSearchFormState {
+  gps: GpsCoordinates | null;
   query: string;
   onlyOwnedShops: boolean;
 }
@@ -52,7 +66,8 @@ interface OperatorsSearchState {
 const currentUser = useCurrentUser();
 const props = defineProps<OperatorsSearchProps>();
 
-const state = reactive<OperatorsSearchState>({
+const state = reactive<OperatorsSearchFormState>({
+  gps: props.searchParams.location ?? null,
   query: props.searchParams.query || '',
   onlyOwnedShops: props.searchParams.owner === currentUser.user?.username,
 });

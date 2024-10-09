@@ -1,24 +1,26 @@
 <template>
   <div class="space-y-3">
-    <FormBox class="flex justify-between items-baseline">
-      <p>
-        <span>Showing </span>
-        <span>{{ operators.operators.length }}</span>
-        <span> of </span>
-        <span>{{ operators.totalCount }}</span>
-        <span> dive operators</span>
-      </p>
+    <div class="sticky top-16">
+      <FormBox class="flex justify-between items-baseline">
+        <p>
+          <span>Showing </span>
+          <span class="font-bold">{{ operators.operators.length }}</span>
+          <span> of </span>
+          <span class="font-bold">{{ operators.totalCount }}</span>
+          <span> dive operators</span>
+        </p>
 
-      <div>
-        <FormButton
-          v-if="isShopOwner"
-          type="primary"
-          @click="$emit('create-shop')"
-        >
-          Add a Dive Shop
-        </FormButton>
-      </div>
-    </FormBox>
+        <div>
+          <FormButton
+            v-if="isShopOwner"
+            type="primary"
+            @click="$emit('create-shop')"
+          >
+            Add a Dive Shop
+          </FormButton>
+        </div>
+      </FormBox>
+    </div>
 
     <ul class="px-2">
       <DiveOperatorsListItem
