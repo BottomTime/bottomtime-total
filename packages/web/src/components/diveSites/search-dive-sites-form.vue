@@ -62,8 +62,9 @@
             size="sm"
             @click="onSelectLocation"
           >
-            {{ state.gps ? 'Change' : 'Select' }} Location
+            {{ state.gps ? 'Change' : 'Select' }} Location...
           </FormButton>
+
           <FormButton
             v-if="state.gps"
             size="sm"
