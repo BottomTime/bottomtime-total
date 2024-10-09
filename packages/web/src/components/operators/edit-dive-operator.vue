@@ -11,6 +11,8 @@
   <form @submit.prevent="onSave">
     <fieldset :disabled="isSaving">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
+        <!-- TODO: Logo? Other fields? -->
+
         <div>
           <TextHeading>Basic Info</TextHeading>
 

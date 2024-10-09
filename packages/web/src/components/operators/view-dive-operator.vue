@@ -17,28 +17,29 @@
         {{ operator.description }}
       </p>
 
-      <div class="grid grid-cols-3 gap-4 text-center">
-        <FormBox class="space-y-2">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-2 px-3">
           <TextHeading level="h3">Contact Info</TextHeading>
-          <p>{{ operator.address }}</p>
 
-          <p
-            v-if="operator.phone"
-            class="flex justify-center items-center gap-2"
-          >
+          <p class="space-x-2">
             <span>
-              <i class="fa-solid fa-phone fa-xs"></i>
+              <i class="fa-solid fa-map-marker-alt fa-xs fa-fw"></i>
+            </span>
+            <span class="sr-only">Address</span>
+            <span>{{ operator.address }}</span>
+          </p>
+
+          <p v-if="operator.phone" class="space-x-2">
+            <span>
+              <i class="fa-solid fa-phone fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">Phone Number</span>
             <NavLink :to="phoneUri">{{ formattedPhone }}</NavLink>
           </p>
 
-          <p
-            v-if="operator.email"
-            class="flex justify-center items-center gap-2"
-          >
+          <p v-if="operator.email" class="space-x-2">
             <span>
-              <i class="fa-solid fa-envelope fa-xs"></i>
+              <i class="fa-solid fa-envelope fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">Email</span>
             <NavLink :to="`mailto:${operator.email}`">
@@ -46,19 +47,82 @@
             </NavLink>
           </p>
 
-          <p
-            v-if="operator.website"
-            class="flex justify-center items-center gap-2"
-          >
+          <p v-if="operator.website" class="space-x-2">
             <span>
-              <i class="fa-solid fa-globe fa-xs"></i>
+              <i class="fa-solid fa-globe fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">Website</span>
             <NavLink :to="operator.website" new-tab>
               {{ operator.website }}
             </NavLink>
           </p>
-        </FormBox>
+        </div>
+
+        <div class="space-y-2 px-3">
+          <TextHeading level="h3">Socials</TextHeading>
+
+          <p v-if="operator.socials.facebook" class="space-x-2">
+            <span>
+              <i class="fa-brands fa-facebook fa-xs fa-fw"></i>
+            </span>
+            <span class="sr-only">Facebook</span>
+            <NavLink
+              :to="`https://facebook.com/${operator.socials.facebook}/`"
+              new-tab
+            >
+              {{ operator.socials.facebook }}
+            </NavLink>
+          </p>
+
+          <p v-if="operator.socials.instagram" class="space-x-2">
+            <span>
+              <i class="fa-brands fa-instagram fa-xs fa-fw"></i>
+            </span>
+            <span class="sr-only">Instagram</span>
+            <NavLink
+              :to="`https://instagram.com/${operator.socials.instagram}/`"
+              new-tab
+            >
+              {{ operator.socials.instagram }}
+            </NavLink>
+          </p>
+
+          <p v-if="operator.socials.tiktok" class="space-x-2">
+            <span>
+              <i class="fa-brands fa-tiktok fa-xs fa-fw"></i>
+            </span>
+            <span class="sr-only">TikTok</span>
+            <NavLink
+              :to="`https://tiktok.com/@${operator.socials.tiktok}/`"
+              new-tab
+            >
+              {{ operator.socials.tiktok }}
+            </NavLink>
+          </p>
+
+          <p v-if="operator.socials.twitter" class="space-x-2">
+            <span>
+              <i class="fa-brands fa-x-twitter fa-xs fa-fw"></i>
+            </span>
+            <span class="sr-only">X</span>
+            <NavLink :to="`https://x.com/${operator.socials.twitter}/`" new-tab>
+              {{ operator.socials.twitter }}
+            </NavLink>
+          </p>
+
+          <p v-if="operator.socials.youtube" class="space-x-2">
+            <span>
+              <i class="fa-brands fa-youtube fa-xs fa-fw"></i>
+            </span>
+            <span class="sr-only">YouTube</span>
+            <NavLink
+              :to="`https://youtube.com/channel/${operator.socials.youtube}/`"
+              new-tab
+            >
+              {{ operator.socials.youtube }}
+            </NavLink>
+          </p>
+        </div>
       </div>
     </article>
   </div>
@@ -70,7 +134,6 @@ import { DiveOperatorDTO } from '@bottomtime/api';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { computed } from 'vue';
 
-import FormBox from '../common/form-box.vue';
 import NavLink from '../common/nav-link.vue';
 import TextHeading from '../common/text-heading.vue';
 
