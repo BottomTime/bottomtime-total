@@ -124,6 +124,7 @@ export const GpsCoordinatesSchema = z
       .parse(values);
   });
 export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
+export type GpsCoordinatesWithRadius = GpsCoordinates & { radius: number };
 
 /**
  * Uses libphonenumber-js to parse, validate, and transform a string into a proper phone number.
