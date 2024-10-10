@@ -51,6 +51,9 @@ describe('Edit Alert form component', () => {
       props: {
         alert: { ...TestAlertData, ...alert },
       },
+      global: {
+        stubs: { teleport: true },
+      },
     };
   }
 

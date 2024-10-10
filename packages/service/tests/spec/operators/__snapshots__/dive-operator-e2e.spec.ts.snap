@@ -15,6 +15,15 @@ exports[`Dive Operators E2E tests when creating a new dive operator will return 
     {
       "code": "invalid_type",
       "expected": "string",
+      "message": "Required",
+      "path": [
+        "slug",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
       "message": "Expected string, received boolean",
       "path": [
         "description",
@@ -128,6 +137,33 @@ exports[`Dive Operators E2E tests when creating a new dive operator will return 
       "message": "Required",
       "path": [
         "name",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "slug",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "description",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "address",
       ],
       "received": "undefined",
     },
@@ -464,6 +500,15 @@ exports[`Dive Operators E2E tests when updating a dive operator will return a 40
     {
       "code": "invalid_type",
       "expected": "string",
+      "message": "Required",
+      "path": [
+        "slug",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
       "message": "Expected string, received boolean",
       "path": [
         "description",
@@ -577,6 +622,33 @@ exports[`Dive Operators E2E tests when updating a dive operator will return a 40
       "message": "Required",
       "path": [
         "name",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "slug",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "description",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "address",
       ],
       "received": "undefined",
     },

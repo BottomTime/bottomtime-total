@@ -109,6 +109,7 @@ describe('Log Entry view', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: { teleport: true },
       },
     };
   });

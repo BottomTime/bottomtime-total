@@ -103,6 +103,9 @@ describe('EditLogbookEntry component', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: {
+          teleport: true,
+        },
       },
       props: { entry: BlankLogEntry, tanks: tankData.tanks },
     };

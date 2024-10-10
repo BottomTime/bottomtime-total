@@ -16,7 +16,11 @@
       </FormField>
 
       <FormField label="Location">
-        <FormLocationSelect v-model="state.gps" show-radius />
+        <FormLocationSelect
+          v-model="state.gps"
+          test-id="operator-location"
+          show-radius
+        />
       </FormField>
 
       <FormField>

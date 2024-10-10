@@ -3,9 +3,9 @@
 exports[`Breadcrumbs component will render correctly 1`] = `
 "<ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
   <li><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">Home</a></li>
-  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/top">Top level</a></li>
-  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/top/middle">Middle level</a></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer capitalize" href="/top">Top level</a></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer capitalize" href="/top/middle">Middle level</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span>Inactive</span></li>
-  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="text-grey-800 dark:text-grey-200">Current</span></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Current</span></li>
 </ul>"
 `;

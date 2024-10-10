@@ -107,6 +107,9 @@ describe('Friend requests view', () => {
           [ApiClientKey as symbol]: client,
           [LocationKey as symbol]: new MockLocation(),
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

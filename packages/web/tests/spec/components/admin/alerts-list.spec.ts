@@ -3,7 +3,11 @@ import {
   ListAlertsResponseSchema,
 } from '@bottomtime/api';
 
-import { flushPromises, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
 import AlertsListItem from '../../../../src/components/admin/alerts-list-item.vue';
 import AlertsList from '../../../../src/components/admin/alerts-list.vue';
@@ -20,14 +24,21 @@ const LoadMoreButton = 'button[data-testid="btn-load-more"]';
 
 describe('Alerts list component', () => {
   let alertData: ListAlertsResponseDTO;
+  let opts: ComponentMountingOptions<typeof AlertsList>;
 
   beforeEach(() => {
     alertData = ListAlertsResponseSchema.parse(AlertData);
+    opts = {
+      global: {
+        stubs: { teleport: true },
+      },
+    };
   });
 
   it('will render an empty list', async () => {
     const wrapper = mount(AlertsList, {
       props: { alerts: EmptyResultSet },
+      ...opts,
     });
 
     expect(wrapper.get(AlertsCountText).text()).toBe('Showing 0 of 0 alerts');
@@ -41,6 +52,7 @@ describe('Alerts list component', () => {
     alertData.alerts = alertData.alerts.slice(0, 10);
     const wrapper = mount(AlertsList, {
       props: { alerts: alertData },
+      ...opts,
     });
 
     expect(wrapper.get(AlertsCountText).text()).toBe('Showing 10 of 30 alerts');
@@ -61,6 +73,7 @@ describe('Alerts list component', () => {
     alertData.alerts = alertData.alerts.slice(0, 10);
     const wrapper = mount(AlertsList, {
       props: { alerts: alertData, isLoadingMore: true },
+      ...opts,
     });
 
     expect(wrapper.get('[data-testid="loading-more-alerts"]').isVisible()).toBe(
@@ -72,6 +85,7 @@ describe('Alerts list component', () => {
   it('will allow a user to confirm a deletion', async () => {
     const wrapper = mount(AlertsList, {
       props: { alerts: alertData },
+      ...opts,
     });
 
     const listItem = wrapper.getComponent(AlertsListItem);
@@ -93,6 +107,7 @@ describe('Alerts list component', () => {
   it('will allow a user to cancel a deletion', async () => {
     const wrapper = mount(AlertsList, {
       props: { alerts: alertData },
+      ...opts,
     });
 
     const listItem = wrapper.getComponent(AlertsListItem);

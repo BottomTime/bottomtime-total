@@ -27,7 +27,8 @@ export const CreateOrUpdateDiveOperatorSchema = z.object({
       tiktok: z.string().max(100),
       youtube: z.string().max(100),
     })
-    .partial(),
+    .partial()
+    .optional(),
 });
 export type CreateOrUpdateDiveOperatorDTO = z.infer<
   typeof CreateOrUpdateDiveOperatorSchema

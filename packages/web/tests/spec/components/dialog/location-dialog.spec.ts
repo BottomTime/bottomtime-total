@@ -1,5 +1,10 @@
-import LocationDialog from '@/components/dialog/location-dialog.vue';
-import { flushPromises, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
+
+import LocationDialog from '../../../../src/components/dialog/location-dialog.vue';
 
 const LatitudeInput = '[data-testid="latitude"]';
 const LongitudeInput = '[data-testid="longitude"]';
@@ -11,13 +16,29 @@ const Latitude = 20.422207555692225;
 const Longitude = -87.015536937484;
 
 describe('Location Dialog', () => {
+  let opts: ComponentMountingOptions<typeof LocationDialog>;
+
+  beforeAll(() => {
+    opts = {
+      global: {
+        stubs: { teleport: true },
+      },
+    };
+  });
+
   it('will not render if visible is set to false', () => {
-    const wrapper = mount(LocationDialog, { props: { visible: false } });
+    const wrapper = mount(LocationDialog, {
+      props: { visible: false },
+      ...opts,
+    });
     expect(wrapper.find('[data-testid="dialog-modal"]').exists()).toBe(false);
   });
 
   it('will allow the user to select a location', async () => {
-    const wrapper = mount(LocationDialog, { props: { visible: true } });
+    const wrapper = mount(LocationDialog, {
+      props: { visible: true },
+      ...opts,
+    });
 
     await wrapper.get(LatitudeInput).setValue(Latitude);
     await wrapper.get(LongitudeInput).setValue(Longitude);
@@ -30,7 +51,10 @@ describe('Location Dialog', () => {
   });
 
   it('will allow the user to cancel out of the dialog', async () => {
-    const wrapper = mount(LocationDialog, { props: { visible: true } });
+    const wrapper = mount(LocationDialog, {
+      props: { visible: true },
+      ...opts,
+    });
 
     await wrapper.get(LatitudeInput).setValue(Latitude);
     await wrapper.get(LongitudeInput).setValue(Longitude);
@@ -44,6 +68,7 @@ describe('Location Dialog', () => {
   it('will render with pre-populated location', () => {
     const wrapper = mount(LocationDialog, {
       props: { visible: true, location: { lat: Latitude, lon: Longitude } },
+      ...opts,
     });
 
     expect(wrapper.get<HTMLInputElement>(LatitudeInput).element.value).toBe(
@@ -55,7 +80,10 @@ describe('Location Dialog', () => {
   });
 
   it('will validate for missing fields', async () => {
-    const wrapper = mount(LocationDialog, { props: { visible: true } });
+    const wrapper = mount(LocationDialog, {
+      props: { visible: true },
+      ...opts,
+    });
 
     await wrapper.get(SelectButton).trigger('click');
     await flushPromises();
@@ -68,7 +96,10 @@ describe('Location Dialog', () => {
 
   ['north', '-91', '91'].forEach((latitude) => {
     it(`will validate for invalid latitude: ${latitude}`, async () => {
-      const wrapper = mount(LocationDialog, { props: { visible: true } });
+      const wrapper = mount(LocationDialog, {
+        props: { visible: true },
+        ...opts,
+      });
 
       await wrapper.get(LatitudeInput).setValue(latitude);
       await wrapper.get(LongitudeInput).setValue(Longitude);
@@ -84,7 +115,10 @@ describe('Location Dialog', () => {
 
   ['west', '-181', '181'].forEach((longitude) => {
     it(`will validate for invalid longitude: ${longitude}`, async () => {
-      const wrapper = mount(LocationDialog, { props: { visible: true } });
+      const wrapper = mount(LocationDialog, {
+        props: { visible: true },
+        ...opts,
+      });
 
       await wrapper.get(LatitudeInput).setValue(Latitude);
       await wrapper.get(LongitudeInput).setValue(longitude);
@@ -99,7 +133,10 @@ describe('Location Dialog', () => {
   });
 
   it('will allow for the dialog to be reset programmatically', async () => {
-    const wrapper = mount(LocationDialog, { props: { visible: true } });
+    const wrapper = mount(LocationDialog, {
+      props: { visible: true },
+      ...opts,
+    });
 
     await wrapper.get(LatitudeInput).setValue(Latitude);
     await wrapper.get(LongitudeInput).setValue('invalid');

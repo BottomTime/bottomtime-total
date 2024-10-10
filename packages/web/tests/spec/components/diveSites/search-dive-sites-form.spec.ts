@@ -28,6 +28,9 @@ describe('Search Dive Sites Form', () => {
     params = {};
     opts = {
       props: { params },
+      global: {
+        stubs: { teleport: true },
+      },
     };
   });
 
