@@ -8,6 +8,7 @@
     <template #default>
       <FormField
         label="Address"
+        control-id="address-dlg-address"
         :responsive="false"
         required
         :invalid="v$.address.$error"
@@ -17,8 +18,8 @@
           ref="addressInput"
           v-model="formData.address"
           autofocus
-          control-id="address"
-          test-id="address"
+          control-id="address-dlg-address"
+          test-id="address-dlg-address"
           :maxlength="500"
           :invalid="v$.address.$error"
           @place-changed="onPlaceChanged"
@@ -36,6 +37,7 @@
       <div class="grid grid-cols-2 gap-3">
         <FormField
           label="Latitude"
+          control-id="address-dlg-lat"
           required
           :responsive="false"
           :invalid="v$.gps.lat.$error"
@@ -43,6 +45,8 @@
         >
           <FormTextBox
             v-model.number="formData.gps.lat"
+            control-id="address-dlg-lat"
+            test-id="address-dlg-lat"
             :invalid="v$.gps.lat.$error"
             :maxlength="15"
           />
@@ -50,6 +54,7 @@
 
         <FormField
           label="Longitude"
+          control-id="address-dlg-lon"
           required
           :responsive="false"
           :invalid="v$.gps.lon.$error"
@@ -57,6 +62,8 @@
         >
           <FormTextBox
             v-model.number="formData.gps.lon"
+            control-id="address-dlg-lon"
+            test-id="address-dlg-lon"
             :invalid="v$.gps.lon.$error"
             :maxlength="15"
           />
@@ -65,8 +72,16 @@
     </template>
 
     <template #buttons>
-      <FormButton type="primary" submit @click="onSave">Save</FormButton>
-      <FormButton @click="$emit('cancel')">Cancel</FormButton>
+      <FormButton
+        type="primary"
+        test-id="address-dlg-confirm"
+        submit
+        @click="onSave"
+        >Save</FormButton
+      >
+      <FormButton test-id="address-dlg-cancel" @click="$emit('cancel')"
+        >Cancel</FormButton
+      >
     </template>
   </DialogBase>
 </template>
@@ -88,7 +103,9 @@ import DialogBase from './dialog-base.vue';
 
 interface AddressDialogProps {
   address?: string;
+  controlId?: string;
   gps?: GPSCoordinates | null;
+  testId?: string;
   title?: string;
   visible?: boolean;
 }
@@ -165,14 +182,6 @@ const emit = defineEmits<{
   (e: 'save', address: string, coordinates: GPSCoordinates | null): void;
 }>();
 
-function reset() {
-  formData.address = props.address;
-  formData.gps.lat = props.gps?.lat ?? '';
-  formData.gps.lon = props.gps?.lon ?? '';
-  v$.value.$reset();
-  addressInput.value?.focus();
-}
-
 function onPlaceChanged(coordinates?: GPSCoordinates) {
   if (coordinates) {
     formData.gps.lat = coordinates.lat;
@@ -198,6 +207,12 @@ async function onSave(): Promise<void> {
 }
 
 defineExpose({
-  reset,
+  reset() {
+    formData.address = props.address;
+    formData.gps.lat = props.gps?.lat ?? '';
+    formData.gps.lon = props.gps?.lon ?? '';
+    v$.value.$reset();
+    addressInput.value?.focus();
+  },
 });
 </script>
