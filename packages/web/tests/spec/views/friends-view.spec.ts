@@ -89,6 +89,9 @@ describe('Friends view', () => {
           [ApiClientKey as symbol]: client,
           [LocationKey as symbol]: location,
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

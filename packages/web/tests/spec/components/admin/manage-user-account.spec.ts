@@ -84,6 +84,7 @@ describe('Manage User Account component', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: { teleport: true },
       },
     };
   });

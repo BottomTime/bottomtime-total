@@ -46,12 +46,18 @@
   </div>
 
   <div class="flex gap-2 ml-6">
-    <FormButton test-id="select-location" @click="onSelectLocation">
+    <FormButton
+      :test-id="testId && `${testId}-select-btn`"
+      @click="onSelectLocation"
+    >
       <span class="text-xs">
         {{ value ? 'Change' : 'Select' }} location...
       </span>
     </FormButton>
-    <FormButton test-id="clear-location" @click="onClearLocation">
+    <FormButton
+      :test-id="testId && `${testId}-clear-btn`"
+      @click="onClearLocation"
+    >
       <span class="text-xs">Clear location</span>
     </FormButton>
   </div>
@@ -68,6 +74,7 @@ import FormSlider from './form-slider.vue';
 
 interface FormLocationSelectProps {
   showRadius?: boolean;
+  testId?: string;
 }
 
 interface FormLocationSelectState {

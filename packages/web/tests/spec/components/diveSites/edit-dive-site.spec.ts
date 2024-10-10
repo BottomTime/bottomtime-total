@@ -78,6 +78,7 @@ describe('Edit Dive Site component', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: { teleport: true },
       },
     };
   });

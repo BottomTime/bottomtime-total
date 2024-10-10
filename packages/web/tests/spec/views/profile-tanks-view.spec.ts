@@ -80,6 +80,7 @@ describe('Profile Tanks View', () => {
           [ApiClientKey as symbol]: client,
           [LocationKey as symbol]: location,
         },
+        stubs: { teleport: true },
       },
     };
   });

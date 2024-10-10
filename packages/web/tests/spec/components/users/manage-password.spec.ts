@@ -54,6 +54,9 @@ describe('Manage Password component', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: {
+          teleport: true,
+        },
       },
       props: { user },
     };
