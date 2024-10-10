@@ -2,12 +2,12 @@
   <LocationDialog
     ref="locationDialog"
     :visible="state.showLocationDialog"
-    :location="value ?? undefined"
+    :location="value"
     @cancel="onCancelSelectLocation"
     @confirm="onConfirmSelectLocation"
   />
 
-  <div v-if="value" class="text-sm mb-2">
+  <div v-if="value" class="text-sm my-2">
     <p class="space-x-2">
       <span class="text-danger">
         <i class="fa-solid fa-map-marker-alt fa-fw"></i>
@@ -16,7 +16,9 @@
     </p>
 
     <p class="ml-6">
-      <span> {{ value.lat }}, {{ value.lon }} </span>
+      <span :data-testid="testId && `${testId}-coords`">
+        {{ value.lat }}, {{ value.lon }}
+      </span>
     </p>
 
     <template v-if="showRadius">
@@ -30,8 +32,7 @@
       <p class="ml-6 flex gap-2 items-center">
         <FormSlider
           v-model="state.radius"
-          control-id="search-range"
-          test-id="search-range"
+          :test-id="testId && `${testId}-radius`"
           :min="10"
           :max="500"
           :step="10"
@@ -55,6 +56,7 @@
       </span>
     </FormButton>
     <FormButton
+      v-if="value"
       :test-id="testId && `${testId}-clear-btn`"
       @click="onClearLocation"
     >
