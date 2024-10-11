@@ -28,5 +28,6 @@ FROM base AS release
 ENV NPM_CONFIG_CACHE=/tmp/.npm
 
 COPY --from=build /app/ /app/
+EXPOSE 4800 9230
 
 CMD [ "/app/packages/service/dist/sls.handler" ]

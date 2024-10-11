@@ -2,71 +2,18 @@
   "version": "1.0.0",
   "configurations": [
     {
+      "name": "Attach to backend service (Docker)",
       "type": "node",
-      "cwd": "${workspaceFolder}/packages/service/",
-      "request": "launch",
-      "name": "Debug service Jest tests in current file",
-      "env": { "NODE_ENV": "test" },
-      "program": "node_modules/.bin/jest",
-      "args": ["${fileBasenameNoExtension}", "--config", "jest.config.ts"],
-      "console": "integratedTerminal",
-      "windows": {
-        "program": "${workspaceFolder}/packages/service/node_modules/jest/bin/jest"
+      "request": "attach",
+      "port": 9230,
+      "restart": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+        "webpack://?:*/*": "${workspaceFolder}/packages/*"
       }
-    },
-    {
-      "type": "node",
-      "cwd": "${workspaceFolder}/packages/service/",
-      "request": "launch",
-      "name": "Debug all service Jest tests",
-      "env": { "NODE_ENV": "test" },
-      "envFile": "${workspaceFolder}/packages/service/.env",
-      "program": "node_modules/.bin/jest",
-      "args": ["--config", "jest.config.ts"],
-      "console": "integratedTerminal",
-      "windows": {
-        "program": "${workspaceFolder}/packages/service/node_modules/jest/bin/jest"
-      }
-    },
-
-    {
-      "type": "node",
-      "cwd": "${workspaceFolder}/packages/web/",
-      "request": "launch",
-      "name": "Debug Vue/Vite Jest tests in current file",
-      "env": { "NODE_ENV": "test" },
-      "program": "node_modules/.bin/jest",
-      "args": ["${fileBasenameNoExtension}", "--config", "jest.config.ts"],
-      "console": "integratedTerminal",
-      "windows": {
-        "program": "${workspaceFolder}/packages/web/node_modules/jest/bin/jest"
-      }
-    },
-    {
-      "type": "node",
-      "cwd": "${workspaceFolder}/packages/web/",
-      "request": "launch",
-      "name": "Debug all Vue/Vite Jest tests",
-      "env": { "NODE_ENV": "test" },
-      "envFile": "${workspaceFolder}/packages/web/.env",
-      "program": "node_modules/.bin/jest",
-      "args": ["--config", "jest.config.ts"],
-      "console": "integratedTerminal",
-      "windows": {
-        "program": "${workspaceFolder}/packages/web/node_modules/jest/bin/jest"
-      }
-    },
-
-    {
-      "name": "Debug Vite/Vue Server",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/packages/web/",
-      "program": "${workspaceRoot}/packages/web/server/index.ts",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/tsx",
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
     }
   ]
 }
