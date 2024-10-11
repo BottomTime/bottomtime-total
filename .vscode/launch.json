@@ -14,6 +14,20 @@
         "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
         "webpack://?:*/*": "${workspaceFolder}/packages/*"
       }
+    },
+    {
+      "name": "Attach to web frontend (Docker)",
+      "type": "node",
+      "request": "attach",
+      "port": 9231,
+      "restart": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+        "webpack://?:*/*": "${workspaceFolder}/packages/*"
+      }
     }
   ]
 }
