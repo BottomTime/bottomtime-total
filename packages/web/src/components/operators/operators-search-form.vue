@@ -1,15 +1,15 @@
 <template>
   <FormBox>
-    <form class="flex flex-col gap-4" @submit.prevent="onSearch">
+    <form class="flex flex-col gap-4" @submit.prevent="">
       <TextHeading level="h3">Search</TextHeading>
 
       <FormField label="Search query">
         <FormSearchBox
           v-model.trim="state.query"
-          control-id="search"
+          control-id="operator-search"
           :maxlength="200"
           placeholder="Search dive shops"
-          test-id="search-dive-shops"
+          test-id="operator-search"
           autofocus
           @search="onSearch"
         />
@@ -23,14 +23,23 @@
         />
       </FormField>
 
-      <FormField>
-        <FormCheckbox v-if="currentUser.user" v-model="state.onlyOwnedShops">
+      <FormField v-if="allowFilterMyShops">
+        <FormCheckbox
+          v-model="state.onlyOwnedShops"
+          control-id="operator-show-mine"
+          test-id="operator-show-mine"
+        >
           Show only my shops
         </FormCheckbox>
       </FormField>
 
       <div class="text-center">
-        <FormButton :submit="true">
+        <FormButton
+          control-id="btn-operator-search"
+          test-id="btn-operator-search"
+          :submit="true"
+          @click="onSearch"
+        >
           <div class="space-x-2">
             <span>
               <i class="fa-solid fa-magnifying-glass"></i>
@@ -45,12 +54,14 @@
 
 <script lang="ts" setup>
 import {
+  AccountTier,
   GpsCoordinates,
   GpsCoordinatesWithRadius,
   SearchDiveOperatorsParams,
+  UserRole,
 } from '@bottomtime/api';
 
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 
 import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
@@ -87,6 +98,13 @@ const state = reactive<OperatorsSearchFormState>({
 const emit = defineEmits<{
   (e: 'search', params: SearchDiveOperatorsParams): void;
 }>();
+
+const allowFilterMyShops = computed(
+  () =>
+    !!currentUser.user &&
+    (currentUser.user.role === UserRole.Admin ||
+      currentUser.user.accountTier >= AccountTier.ShopOwner),
+);
 
 function onSearch() {
   emit('search', {

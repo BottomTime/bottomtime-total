@@ -58,10 +58,10 @@
           </p>
         </div>
 
-        <div class="space-y-2 px-3">
+        <div v-if="showSocials" class="space-y-2 px-3">
           <TextHeading level="h3">Socials</TextHeading>
 
-          <p v-if="operator.socials.facebook" class="space-x-2">
+          <p v-if="operator.socials?.facebook" class="space-x-2">
             <span>
               <i class="fa-brands fa-facebook fa-xs fa-fw"></i>
             </span>
@@ -74,7 +74,7 @@
             </NavLink>
           </p>
 
-          <p v-if="operator.socials.instagram" class="space-x-2">
+          <p v-if="operator.socials?.instagram" class="space-x-2">
             <span>
               <i class="fa-brands fa-instagram fa-xs fa-fw"></i>
             </span>
@@ -87,7 +87,7 @@
             </NavLink>
           </p>
 
-          <p v-if="operator.socials.tiktok" class="space-x-2">
+          <p v-if="operator.socials?.tiktok" class="space-x-2">
             <span>
               <i class="fa-brands fa-tiktok fa-xs fa-fw"></i>
             </span>
@@ -100,7 +100,7 @@
             </NavLink>
           </p>
 
-          <p v-if="operator.socials.twitter" class="space-x-2">
+          <p v-if="operator.socials?.twitter" class="space-x-2">
             <span>
               <i class="fa-brands fa-x-twitter fa-xs fa-fw"></i>
             </span>
@@ -110,7 +110,7 @@
             </NavLink>
           </p>
 
-          <p v-if="operator.socials.youtube" class="space-x-2">
+          <p v-if="operator.socials?.youtube" class="space-x-2">
             <span>
               <i class="fa-brands fa-youtube fa-xs fa-fw"></i>
             </span>
@@ -152,5 +152,13 @@ const formattedPhone = computed(() =>
   props.operator.phone
     ? parsePhoneNumber(props.operator.phone, 'US').formatInternational()
     : '',
+);
+const showSocials = computed(
+  () =>
+    props.operator.socials?.facebook ||
+    props.operator.socials?.instagram ||
+    props.operator.socials?.tiktok ||
+    props.operator.socials?.twitter ||
+    props.operator.socials?.youtube,
 );
 </script>

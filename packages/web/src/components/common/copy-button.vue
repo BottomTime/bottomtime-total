@@ -3,7 +3,7 @@
     <button @click.prevent="onCopy">
       <i class="fa-solid fa-copy"></i>
     </button>
-    <span :class="toolTipClasses"> Copied! </span>
+    <span :class="toolTipClasses">Copied!</span>
   </p>
 </template>
 
@@ -12,11 +12,11 @@ import { computed, ref } from 'vue';
 
 interface CopyButtonProps {
   value?: string;
-  position: 'top' | 'left' | 'bottom' | 'right';
+  tooltipPosition?: 'top' | 'left' | 'bottom' | 'right';
 }
 
 const props = withDefaults(defineProps<CopyButtonProps>(), {
-  position: 'top',
+  tooltipPosition: 'top',
 });
 const emit = defineEmits<{
   (e: 'copied', value: string): void;
@@ -24,7 +24,7 @@ const emit = defineEmits<{
 const showCopied = ref(false);
 
 function getPositionClasses(): Record<string, true> {
-  switch (props.position) {
+  switch (props.tooltipPosition) {
     case 'left':
       return {
         'top-0': true,
@@ -73,7 +73,7 @@ const toolTipClasses = computed(() => {
 
 function onCopy() {
   if (props.value) {
-    navigator.clipboard.writeText(props.value);
+    window.navigator.clipboard.writeText(props.value);
     showCopied.value = true;
     setTimeout(() => {
       showCopied.value = false;

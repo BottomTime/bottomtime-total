@@ -28,6 +28,34 @@
         "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
         "webpack://?:*/*": "${workspaceFolder}/packages/*"
       }
+    },
+    {
+      "name": "Debug backend-end (Nest.js) tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      "args": [
+        "--runInBand",
+        "--config",
+        "${workspaceFolder}/packages/service/jest.config.js",
+        "${fileBasenameNoExtension}"
+      ],
+      "cwd": "${workspaceFolder}/packages/service",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug front-end (Vue) tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      "args": [
+        "--runInBand",
+        "--config",
+        "${workspaceFolder}/packages/web/jest.config.mjs",
+        "${fileBasenameNoExtension}"
+      ],
+      "cwd": "${workspaceFolder}/packages/web",
+      "console": "integratedTerminal"
     }
   ]
 }

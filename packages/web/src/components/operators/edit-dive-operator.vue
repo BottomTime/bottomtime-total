@@ -54,7 +54,7 @@
                 @change="autoUpdateSlug = false"
               />
               <p v-if="formData.slug" class="space-x-2 text-center">
-                <CopyButton position="right" :value="shopUrl" />
+                <CopyButton tooltip-position="right" :value="shopUrl" />
                 <span class="underline">
                   {{ shopUrl }}
                 </span>

@@ -31,7 +31,7 @@
 
       <p class="ml-6 flex gap-2 items-center">
         <FormSlider
-          v-model="state.radius"
+          v-model.number="state.radius"
           :test-id="testId && `${testId}-radius`"
           :min="10"
           :max="500"
