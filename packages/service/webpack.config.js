@@ -11,7 +11,7 @@ module.exports = {
     sls: './src/sls-entry.ts',
   },
   target: 'node',
-  devtool: isProduction ? 'source-map' : 'eval-source-map',
+  devtool: isProduction ? 'source-map' : 'inline-source-map',
   mode: 'development', // This cannot be set to production. >:( The minification breaks TypeORM.
   module: {
     rules: [
@@ -42,6 +42,8 @@ module.exports = {
       script: './dist/main.js',
       watch: path.resolve(__dirname, './dist'),
       ext: 'js,html',
+      exec: 'node',
+      nodeArgs: ['--inspect=0.0.0.0:9230', '--no-lazy'],
     }),
     new webpack.IgnorePlugin({
       resourceRegExp:

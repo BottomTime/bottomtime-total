@@ -2,21 +2,22 @@
   <div class="space-y-3">
     <div class="sticky top-16">
       <FormBox class="flex justify-between items-baseline">
-        <p>
+        <p data-testid="operators-count">
           <span>Showing </span>
           <span class="font-bold">{{ operators.operators.length }}</span>
           <span> of </span>
           <span class="font-bold">{{ operators.totalCount }}</span>
-          <span> dive operators</span>
+          <span> dive shop(s)</span>
         </p>
 
         <div>
           <FormButton
             v-if="isShopOwner"
             type="primary"
+            test-id="operators-create-shop"
             @click="$emit('create-shop')"
           >
-            Add a Dive Shop
+            Create a Dive Shop
           </FormButton>
         </div>
       </FormBox>
@@ -31,8 +32,24 @@
       />
 
       <li
+        v-if="!operators.operators.length"
+        class="my-8"
+        data-testid="operators-no-results"
+      >
+        <p class="text-xl text-center space-x-3">
+          <span>
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+          <span class="italic">
+            There are no dive shops that match your search criteria.
+          </span>
+        </p>
+      </li>
+
+      <li
         v-if="isLoadingMore"
         class="flex justify-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
+        data-testid="operators-loading"
       >
         <LoadingSpinner message="Loading more results..." />
       </li>
@@ -41,7 +58,11 @@
         v-else-if="operators.operators.length < operators.totalCount"
         class="flex justify-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
       >
-        <FormButton type="link" @click="$emit('load-more')">
+        <FormButton
+          type="link"
+          test-id="operators-load-more"
+          @click="$emit('load-more')"
+        >
           <p class="text-lg italic">Load more results...</p>
         </FormButton>
       </li>
@@ -54,6 +75,7 @@ import {
   AccountTier,
   DiveOperatorDTO,
   SearchDiveOperatorsResponseDTO,
+  UserRole,
 } from '@bottomtime/api';
 
 import { computed } from 'vue';
@@ -71,7 +93,9 @@ interface DiveOperatorsListProps {
 
 const currentUser = useCurrentUser();
 const isShopOwner = computed(
-  () => (currentUser.user?.accountTier || 0) >= AccountTier.ShopOwner,
+  () =>
+    (currentUser.user?.accountTier || 0) >= AccountTier.ShopOwner ||
+    currentUser.user?.role === UserRole.Admin,
 );
 
 withDefaults(defineProps<DiveOperatorsListProps>(), {

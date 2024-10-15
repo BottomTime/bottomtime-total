@@ -19,13 +19,14 @@
           <FormField
             label="Name"
             required
+            control-id="operator-name"
             :error="v$.name.$errors[0]?.$message"
             :invalid="v$.name.$error"
             :responsive="false"
           >
             <FormTextBox
               v-model.trim="formData.name"
-              control-id="name"
+              control-id="operator-name"
               test-id="name"
               placeholder="Name of dive shop"
               :maxlength="200"
@@ -37,6 +38,7 @@
           <FormField
             label="URL Shortcut"
             required
+            control-id="operator-slug"
             :error="v$.slug.$errors[0]?.$message"
             :invalid="v$.slug.$error"
             :responsive="false"
@@ -46,7 +48,7 @@
           >
             <FormTextBox
               v-model.trim="formData.slug"
-              control-id="slug"
+              control-id="operator-slug"
               test-id="slug"
               placeholder="my-dive-shop"
               :maxlength="200"
@@ -58,13 +60,14 @@
           <FormField
             label="Description"
             required
+            control-id="operator-description"
             :error="v$.description.$errors[0]?.$message"
             :invalid="v$.description.$error"
             :responsive="false"
           >
             <FormTextArea
               v-model.trim="formData.description"
-              control-id="description"
+              control-id="operator-description"
               test-id="description"
               :maxlength="2000"
               :rows="5"
@@ -87,14 +90,18 @@
           >
             <div class="space-y-1.5 px-4">
               <p v-if="formData.address">
-                <span>{{ formData.address }}</span>
+                <span data-testid="operator-address">
+                  {{ formData.address }}
+                </span>
               </p>
 
               <p v-if="formData.gps" class="space-x-2">
                 <span class="text-danger">
                   <i class="fa-solid fa-location-dot"></i>
                 </span>
-                <span>{{ formData.gps.lat }}, {{ formData.gps.lon }}</span>
+                <span data-testid="operator-gps">
+                  {{ formData.gps.lat }}, {{ formData.gps.lon }}
+                </span>
               </p>
 
               <FormButton size="sm" @click="onChangeAddress">
@@ -106,13 +113,14 @@
           <FormField
             label="Phone"
             required
+            control-id="operator-phone"
             :error="v$.phone.$errors[0]?.$message"
             :invalid="v$.phone.$error"
             :responsive="false"
           >
             <FormTextBox
               v-model.trim="formData.phone"
-              control-id="phone"
+              control-id="operator-phone"
               test-id="phone"
               :maxlength="50"
               :invalid="v$.phone.$error"
@@ -123,13 +131,14 @@
           <FormField
             label="Email"
             required
+            control-id="operator-email"
             :error="v$.email.$errors[0]?.$message"
             :invalid="v$.email.$error"
             :responsive="false"
           >
             <FormTextBox
               v-model.trim="formData.email"
-              control-id="email"
+              control-id="operator-email"
               test-id="email"
               :maxlength="100"
               :invalid="v$.email.$error"
@@ -139,13 +148,14 @@
 
           <FormField
             label="Website"
+            control-id="operator-website"
             :error="v$.website.$errors[0]?.$message"
             :invalid="v$.website.$error"
             :responsive="false"
           >
             <FormTextBox
               v-model.trim="formData.website"
-              control-id="website"
+              control-id="operator-website"
               test-id="website"
               :maxlength="200"
               :invalid="v$.website.$error"
@@ -168,12 +178,12 @@
               <span>
                 <i class="fab fa-facebook fa-fw"></i>
               </span>
-              <label class="sr-only" for="facebook">Facebook</label>
+              <label class="sr-only" for="operator-facebook">Facebook</label>
             </p>
             <FormTextBox
               v-model.trim="formData.facebook"
               class="w-full"
-              control-id="facebook"
+              control-id="operator-facebook"
               test-id="facebook"
               :maxlength="100"
             />
@@ -184,12 +194,12 @@
               <span>
                 <i class="fab fa-instagram fa-fw"></i>
               </span>
-              <label class="sr-only" for="instagram">Instagram</label>
+              <label class="sr-only" for="operator-instagram">Instagram</label>
             </p>
             <FormTextBox
               v-model.trim="formData.instagram"
               class="w-full"
-              control-id="instagram"
+              control-id="operator-instagram"
               test-id="instagram"
               :maxlength="100"
             />
@@ -200,12 +210,12 @@
               <span>
                 <i class="fab fa-tiktok fa-fw"></i>
               </span>
-              <label class="sr-only" for="tiktok">TikTok</label>
+              <label class="sr-only" for="operator-tiktok">TikTok</label>
             </p>
             <FormTextBox
               v-model.trim="formData.tiktok"
               class="w-full"
-              control-id="tiktok"
+              control-id="operator-tiktok"
               test-id="tiktok"
               :maxlength="100"
             />
@@ -216,12 +226,12 @@
               <span>
                 <i class="fa-brands fa-x-twitter fa-fw"></i>
               </span>
-              <label class="sr-only" for="twitter">Twitter / X</label>
+              <label class="sr-only" for="operator-twitter">Twitter / X</label>
             </p>
             <FormTextBox
               v-model.trim="formData.twitter"
               class="w-full"
-              control-id="twitter"
+              control-id="operator-twitter"
               test-id="twitter"
               :maxlength="100"
             />
@@ -232,12 +242,12 @@
               <span>
                 <i class="fab fa-youtube fa-fw"></i>
               </span>
-              <label class="sr-only" for="youtube">Youtube</label>
+              <label class="sr-only" for="operator-youtube">Youtube</label>
             </p>
             <FormTextBox
               v-model.trim="formData.youtube"
               class="w-full"
-              control-id="youtube"
+              control-id="operator-youtube"
               test-id="youtube"
               :maxlength="100"
             />
@@ -249,6 +259,7 @@
         <FormButton
           type="primary"
           :is-loading="isSaving"
+          test-id="btn-save-operator"
           submit
           @click="onSave"
         >

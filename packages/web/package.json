@@ -108,6 +108,11 @@
     "watch": [
       "server/"
     ],
-    "ext": "mjs"
+    "ext": "mjs",
+    "exec": "node",
+    "nodeArgs": [
+      "--inspect=0.0.0.0:9231",
+      "--no-lazy"
+    ]
   }
 }

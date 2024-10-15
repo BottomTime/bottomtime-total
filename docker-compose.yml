@@ -41,8 +41,7 @@ services:
       dockerfile: Dockerfile.service
     ports:
       - '4800:4800'
-    expose:
-      - '4800'
+      - '9230:9230'
     env_file:
       - packages/service/.env
     environment:
@@ -82,10 +81,8 @@ services:
       dockerfile: Dockerfile.web
     ports:
       - '4850:4850'
+      - '9231:9231'
       - '24678:24678'
-    expose:
-      - '4850'
-      - '24678'
     env_file:
       - packages/web/.env
     environment:
