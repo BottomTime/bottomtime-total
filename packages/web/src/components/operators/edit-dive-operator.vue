@@ -8,6 +8,42 @@
     @cancel="onCancelChangeAddress"
   />
 
+  <ConfirmDialog
+    title="Change URL Shortcut?"
+    confirm-text="Save Changes"
+    :is-loading="isSaving"
+    :visible="showConfirmChangeSlugDialog"
+    size="md"
+    dangerous
+    @confirm="onConfirmSave"
+    @cancel="onCancelSave"
+  >
+    <div class="space-y-3 text-center">
+      <p>
+        You are about to change your dive shop's URL shortcut. This change will
+        take effect immediately and the old URL will no longer work. Users who
+        have bookmarked your dive shop's page will need to update their
+        bookmarks.
+      </p>
+
+      <div
+        class="border border-secondary-hover rounded-md py-4 bg-grey-400 dark:bg-grey-600"
+      >
+        <p class="font-bold underline text-lg">
+          {{ oldShopUrl }}
+        </p>
+        <p>
+          <i class="fa-solid fa-arrow-down"></i>
+        </p>
+        <p class="font-bold underline text-lg">
+          {{ newShopUrl }}
+        </p>
+      </div>
+
+      <p>Are you sure you want to proceed?</p>
+    </div>
+  </ConfirmDialog>
+
   <form @submit.prevent="onSave">
     <fieldset :disabled="isSaving">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
@@ -54,9 +90,9 @@
                 @change="autoUpdateSlug = false"
               />
               <p v-if="formData.slug" class="space-x-2 text-center">
-                <CopyButton tooltip-position="right" :value="shopUrl" />
+                <CopyButton tooltip-position="right" :value="newShopUrl" />
                 <span class="underline">
-                  {{ shopUrl }}
+                  {{ newShopUrl }}
                 </span>
               </p>
 
@@ -321,6 +357,7 @@ import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import TextHeading from '../common/text-heading.vue';
 import AddressDialog from '../dialog/address-dialog.vue';
+import ConfirmDialog from '../dialog/confirm-dialog.vue';
 
 interface EditDiveOperatorFormData {
   address: string;
@@ -374,10 +411,16 @@ const emit = defineEmits<{
 }>();
 const autoUpdateSlug = ref(!props.operator);
 const showAddressDialog = ref(false);
+const showConfirmChangeSlugDialog = ref(false);
 const formData = reactive<EditDiveOperatorFormData>(
   formDataFromDto(props.operator),
 );
-const shopUrl = computed(() =>
+const oldShopUrl = computed(() =>
+  props.operator?.slug
+    ? new URL(`/shops/${props.operator.slug}`, Config.baseUrl).toString()
+    : '',
+);
+const newShopUrl = computed(() =>
   formData.slug
     ? new URL(`/shops/${formData.slug}`, Config.baseUrl).toString()
     : '',
@@ -470,6 +513,15 @@ async function onSave(): Promise<void> {
   const isValid = await v$.value.$validate();
   if (!isValid) return;
 
+  if (props.operator?.id && props.operator?.slug !== formData.slug) {
+    showConfirmChangeSlugDialog.value = true;
+  } else {
+    onConfirmSave();
+  }
+}
+
+function onConfirmSave() {
+  showConfirmChangeSlugDialog.value = false;
   const dto: CreateOrUpdateDiveOperatorDTO = {
     name: formData.name,
     address: formData.address,
@@ -489,5 +541,9 @@ async function onSave(): Promise<void> {
   };
 
   emit('save', dto);
+}
+
+function onCancelSave() {
+  showConfirmChangeSlugDialog.value = false;
 }
 </script>

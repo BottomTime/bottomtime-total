@@ -50,6 +50,11 @@ describe('EditEntryAir component', () => {
         ordinal: 2,
         air,
       },
+      global: {
+        stubs: {
+          teleport: true,
+        },
+      },
     };
   });
 

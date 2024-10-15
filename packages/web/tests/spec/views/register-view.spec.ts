@@ -31,6 +31,9 @@ describe('Account View', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

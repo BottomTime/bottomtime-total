@@ -21,6 +21,11 @@ describe('TanksListItem component', () => {
       props: {
         tank: { ...TestData },
       },
+      global: {
+        stubs: {
+          teleport: true,
+        },
+      },
     };
   });
 

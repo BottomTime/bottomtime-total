@@ -310,4 +310,40 @@ describe('EditDiveOperator component', () => {
       ],
     ]);
   });
+
+  it('will save changes to slug if user confirms it', async () => {
+    const newSlug = 'new-slug';
+    jest.spyOn(client.diveOperators, 'isSlugAvailable').mockResolvedValue(true);
+    const wrapper = mount(EditDiveOperator, {
+      ...opts,
+      props: { operator: FullDiveOperator },
+    });
+    await wrapper.get(SlugInput).setValue(newSlug);
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="dialog-modal"]').isVisible()).toBe(true);
+    await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.emitted('save')).toBeDefined();
+  });
+
+  it('will allow user to change their mind about saving changes to their slug', async () => {
+    const newSlug = 'new-slug';
+    jest.spyOn(client.diveOperators, 'isSlugAvailable').mockResolvedValue(true);
+    const wrapper = mount(EditDiveOperator, {
+      ...opts,
+      props: { operator: FullDiveOperator },
+    });
+    await wrapper.get(SlugInput).setValue(newSlug);
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="dialog-modal"]').isVisible()).toBe(true);
+    await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.emitted('save')).toBeUndefined();
+  });
 });
