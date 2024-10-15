@@ -21,6 +21,11 @@ export class DiveOperatorsApiClient {
     return new DiveOperator(this.apiClient, data);
   }
 
+  async isSlugAvailable(key: string): Promise<boolean> {
+    const status = await this.apiClient.head(`/api/operators/${key}`);
+    return status === 404;
+  }
+
   async getDiveOperator(key: string): Promise<DiveOperator> {
     const { data } = await this.apiClient.get(
       `/api/operators/${key}`,

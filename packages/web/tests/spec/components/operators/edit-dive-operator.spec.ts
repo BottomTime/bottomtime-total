@@ -1,8 +1,17 @@
-import { DiveOperatorDTO, LogBookSharing } from '@bottomtime/api';
+import { ApiClient, DiveOperatorDTO, LogBookSharing } from '@bottomtime/api';
 
-import { ComponentMountingOptions, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
+import { Pinia, createPinia } from 'pinia';
+import { Router } from 'vue-router';
+
+import { ApiClientKey } from '../../../../src/api-client';
 import EditDiveOperator from '../../../../src/components/operators/edit-dive-operator.vue';
+import { createRouter } from '../../../fixtures/create-router';
 
 const PartialDiveOperator: DiveOperatorDTO = {
   createdAt: new Date('2024-01-10T10:54:08.909Z'),
@@ -76,14 +85,37 @@ const InstagramInput = 'input#operator-instagram';
 const TikTokInput = 'input#operator-tiktok';
 const TwitterInput = 'input#operator-twitter';
 const YoutubeInput = 'input#operator-youtube';
+const ChangeLocationButton = '[data-testid="btn-operator-location"]';
 const SaveButton = '[data-testid="btn-save-operator"]';
 
+const NameError = '[data-testid="operator-name-error"]';
+const SlugError = '[data-testid="operator-slug-error"]';
+const DescriptionError = '[data-testid="operator-description-error"]';
+const LocationError = '[data-testid="operator-location-error"]';
+const PhoneError = '[data-testid="operator-phone-error"]';
+const EmailError = '[data-testid="operator-email-error"]';
+const WebsiteError = '[data-testid="operator-website-error"]';
+
 describe('EditDiveOperator component', () => {
+  let client: ApiClient;
+  let router: Router;
+
+  let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof EditDiveOperator>;
 
+  beforeAll(() => {
+    client = new ApiClient();
+    router = createRouter();
+  });
+
   beforeEach(() => {
+    pinia = createPinia();
     opts = {
       global: {
+        plugins: [pinia, router],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
         stubs: {
           teleport: true,
         },
@@ -199,6 +231,138 @@ describe('EditDiveOperator component', () => {
     expect(wrapper.find(SaveButton).isVisible()).toBe(true);
   });
 
-  // TODO: Test validation
-  // TODO: Test editing/saving
+  it('will validate for missing fields', async () => {
+    jest.spyOn(client.diveOperators, 'isSlugAvailable').mockResolvedValue(true);
+    const wrapper = mount(EditDiveOperator, opts);
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get(NameError).text()).toBe('Name of dive shop is required');
+    expect(wrapper.get(SlugError).text()).toBe('URL shortcut is required');
+    expect(wrapper.get(DescriptionError).text()).toBe(
+      'Shop description is required',
+    );
+    expect(wrapper.get(LocationError).text()).toBe('Shop address is required');
+    expect(wrapper.get(PhoneError).text()).toBe(
+      'Shop phone number is required',
+    );
+    expect(wrapper.get(EmailError).text()).toBe('Shop email is required');
+    expect(wrapper.emitted('save')).toBeUndefined();
+  });
+
+  it('will validate for invalid fields', async () => {
+    jest.spyOn(client.diveOperators, 'isSlugAvailable').mockResolvedValue(true);
+    const wrapper = mount(EditDiveOperator, opts);
+    await wrapper.get(EmailInput).setValue('not an email');
+    await wrapper.get(PhoneInput).setValue('not a phone #');
+    await wrapper.get(SlugInput).setValue('not?valid/at#all');
+    await wrapper.get(WebsiteInput).setValue('not a URL');
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get(EmailError).text()).toBe(
+      'Must be a valid email address',
+    );
+    expect(wrapper.get(PhoneError).text()).toBe(
+      'Must be a valid phone number, including country code and area code',
+    );
+    expect(wrapper.get(SlugError).text()).toBe(
+      'Only letters, numbers, and URL-safe characters are allowed',
+    );
+    expect(wrapper.get(WebsiteError).text()).toBe('Must be a valid URL');
+    expect(wrapper.emitted('save')).toBeUndefined();
+  });
+
+  it('will validate for slug conflicts', async () => {
+    jest
+      .spyOn(client.diveOperators, 'isSlugAvailable')
+      .mockResolvedValue(false);
+    const wrapper = mount(EditDiveOperator, {
+      ...opts,
+      props: {
+        operator: PartialDiveOperator,
+      },
+    });
+    await wrapper.get(SlugInput).setValue('new-slug-that-is-taken');
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.get(SlugError).text()).toBe('Website URL is already taken');
+    expect(wrapper.emitted('save')).toBeUndefined();
+  });
+
+  it('will not block on slug validation if it is not changed', async () => {
+    jest
+      .spyOn(client.diveOperators, 'isSlugAvailable')
+      .mockResolvedValue(false);
+    const wrapper = mount(EditDiveOperator, {
+      ...opts,
+      props: {
+        operator: FullDiveOperator,
+      },
+    });
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.emitted('save')).toBeDefined();
+  });
+
+  it('will emit "save" event when validation passes', async () => {
+    jest.spyOn(client.diveOperators, 'isSlugAvailable').mockResolvedValue(true);
+    const wrapper = mount(EditDiveOperator, opts);
+
+    await wrapper.get(NameInput).setValue(FullDiveOperator.name);
+    await wrapper.get(SlugInput).setValue(FullDiveOperator.slug);
+    await wrapper.get(DescriptionInput).setValue(FullDiveOperator.description);
+    await wrapper.get(ChangeLocationButton).trigger('click');
+    await wrapper
+      .get('[data-testid="address-dlg-address"]')
+      .setValue(FullDiveOperator.address);
+    await wrapper
+      .get('[data-testid="address-dlg-lat"]')
+      .setValue(FullDiveOperator.gps!.lat.toString());
+    await wrapper
+      .get('[data-testid="address-dlg-lon"]')
+      .setValue(FullDiveOperator.gps!.lon.toString());
+    await wrapper.get('[data-testid="address-dlg-confirm"]').trigger('click');
+    await wrapper.get(PhoneInput).setValue(FullDiveOperator.phone);
+    await wrapper.get(EmailInput).setValue(FullDiveOperator.email);
+    await wrapper.get(WebsiteInput).setValue(FullDiveOperator.website);
+    await wrapper
+      .get(FacebookInput)
+      .setValue(FullDiveOperator.socials!.facebook);
+    await wrapper
+      .get(InstagramInput)
+      .setValue(FullDiveOperator.socials!.instagram);
+    await wrapper.get(TikTokInput).setValue(FullDiveOperator.socials!.tiktok);
+    await wrapper.get(TwitterInput).setValue(FullDiveOperator.socials!.twitter);
+    await wrapper.get(YoutubeInput).setValue(FullDiveOperator.socials!.youtube);
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.emitted('save')).toEqual([
+      [
+        {
+          address: FullDiveOperator.address,
+          description: FullDiveOperator.description,
+          email: FullDiveOperator.email,
+          gps: {
+            lat: FullDiveOperator.gps!.lat,
+            lon: FullDiveOperator.gps!.lon,
+          },
+          name: FullDiveOperator.name,
+          phone: FullDiveOperator.phone,
+          slug: FullDiveOperator.slug,
+          socials: {
+            facebook: FullDiveOperator.socials!.facebook,
+            instagram: FullDiveOperator.socials!.instagram,
+            tiktok: FullDiveOperator.socials!.tiktok,
+            twitter: FullDiveOperator.socials!.twitter,
+            youtube: FullDiveOperator.socials!.youtube,
+          },
+          website: FullDiveOperator.website,
+        },
+      ],
+    ]);
+  });
 });

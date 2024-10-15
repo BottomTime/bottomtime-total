@@ -12,7 +12,6 @@
       <template v-if="state.currentOperator">
         <EditDiveOperator
           v-if="isOperatorOwner"
-          ref="editDiveOperator"
           :is-saving="state.isSaving"
           :operator="state.currentOperator"
           @save="onSaveOperator"
@@ -56,7 +55,7 @@ import {
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { stringify } from 'qs';
-import { computed, onServerPrefetch, reactive, ref } from 'vue';
+import { computed, onServerPrefetch, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -105,7 +104,6 @@ function parseQueryString(): SearchDiveOperatorsParams {
   return { limit: 50 };
 }
 
-const editDiveOperator = ref<InstanceType<typeof EditDiveOperator> | null>();
 const searchParams = reactive<SearchDiveOperatorsParams>(parseQueryString());
 const state = reactive<DiveOperatorsViewState>({
   isLoadingMore: false,
@@ -242,7 +240,6 @@ async function onSaveOperator(
     },
     {
       [409]: () => {
-        editDiveOperator.value?.markConflict();
         toasts.toast({
           id: OperatorSavedToastId,
           message:

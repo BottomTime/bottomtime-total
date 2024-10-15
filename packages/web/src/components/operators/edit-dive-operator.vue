@@ -42,19 +42,38 @@
             :error="v$.slug.$errors[0]?.$message"
             :invalid="v$.slug.$error"
             :responsive="false"
-            help="This will be used to construct the URL to your dive shop. The text may
-          contain lower-case letters, numbers, as well as URL-safe characters: -
-          $ . + ! * ' ( )"
           >
-            <FormTextBox
-              v-model.trim="formData.slug"
-              control-id="operator-slug"
-              test-id="slug"
-              placeholder="my-dive-shop"
-              :maxlength="200"
-              :invalid="v$.slug.$error"
-              @change="autoUpdateSlug = false"
-            />
+            <div class="space-y-2">
+              <FormTextBox
+                v-model.trim="formData.slug"
+                control-id="operator-slug"
+                test-id="slug"
+                placeholder="my-dive-shop"
+                :maxlength="200"
+                :invalid="v$.slug.$error"
+                @change="autoUpdateSlug = false"
+              />
+              <p v-if="formData.slug" class="space-x-2 text-center">
+                <CopyButton position="right" :value="shopUrl" />
+                <span class="underline">
+                  {{ shopUrl }}
+                </span>
+              </p>
+
+              <p v-if="operator?.id" class="text-sm">
+                <span class="font-bold">NOTE: </span>
+                <span class="italic">
+                  Avoid changing this unless you need to. Changing this value
+                  will change the URL to your dive shop's page. Users' bookmarks
+                  may be broken.
+                </span>
+              </p>
+              <p v-else class="text-sm italic">
+                This will be used to construct the URL to your dive shop. The
+                text may contain lower-case letters, numbers, as well as
+                URL-safe characters: - $ . + ! * ' ( )
+              </p>
+            </div>
           </FormField>
 
           <FormField
@@ -87,6 +106,7 @@
             :error="v$.address.$errors[0]?.$message"
             :invalid="v$.address.$error"
             :responsive="false"
+            test-id="operator-location"
           >
             <div class="space-y-1.5 px-4">
               <p v-if="formData.address">
@@ -104,7 +124,11 @@
                 </span>
               </p>
 
-              <FormButton size="sm" @click="onChangeAddress">
+              <FormButton
+                size="sm"
+                test-id="btn-operator-location"
+                @click="onChangeAddress"
+              >
                 {{ formData.address ? 'Change' : 'Set' }} Address...
               </FormButton>
             </div>
@@ -283,9 +307,14 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required, url } from '@vuelidate/validators';
 
 import slugify from 'slugify';
+import { URL } from 'url';
 import { computed, reactive, ref, watch } from 'vue';
 
+import { useClient } from '../../api-client';
+import { Config } from '../../config';
+import { useOops } from '../../oops';
 import { phone } from '../../validators';
+import CopyButton from '../common/copy-button.vue';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextArea from '../common/form-text-area.vue';
@@ -332,6 +361,9 @@ function formDataFromDto(dto?: DiveOperatorDTO): EditDiveOperatorFormData {
   };
 }
 
+const client = useClient();
+const oops = useOops();
+
 const addressDialog = ref<InstanceType<typeof AddressDialog> | null>(null);
 
 const props = withDefaults(defineProps<EditDiveOperatorProps>(), {
@@ -342,14 +374,34 @@ const emit = defineEmits<{
 }>();
 const autoUpdateSlug = ref(!props.operator);
 const showAddressDialog = ref(false);
-const slugConflict = ref(false);
 const formData = reactive<EditDiveOperatorFormData>(
   formDataFromDto(props.operator),
 );
+const shopUrl = computed(() =>
+  formData.slug
+    ? new URL(`/shops/${formData.slug}`, Config.baseUrl).toString()
+    : '',
+);
 
-const $externalResults = computed(() => ({
-  slug: slugConflict.value ? ['URL shortcut is already taken'] : [],
-}));
+async function isSlugAvailable(slug: string): Promise<boolean> {
+  if (!helpers.req(slug)) return true;
+  if (slug === props.operator?.slug) return true;
+
+  let available = true;
+  await oops(
+    async () => {
+      available = await client.diveOperators.isSlugAvailable(slug);
+    },
+    {
+      default: (error) => {
+        /* eslint-disable-next-line no-console */
+        console.error(error);
+      },
+    },
+  );
+  return available;
+}
+
 const v$ = useVuelidate(
   {
     address: {
@@ -366,7 +418,7 @@ const v$ = useVuelidate(
       required: helpers.withMessage('Name of dive shop is required', required),
     },
     phone: {
-      required: helpers.withMessage('Phone number is required', required),
+      required: helpers.withMessage('Shop phone number is required', required),
       phone: helpers.withMessage(
         'Must be a valid phone number, including country code and area code',
         phone,
@@ -375,8 +427,12 @@ const v$ = useVuelidate(
     slug: {
       required: helpers.withMessage('URL shortcut is required', required),
       regex: helpers.withMessage(
-        'Only letters, numbers, and dashes are allowed',
+        'Only letters, numbers, and URL-safe characters are allowed',
         helpers.regex(SlugRegex),
+      ),
+      conflict: helpers.withMessage(
+        'Website URL is already taken',
+        helpers.withAsync(isSlugAvailable),
       ),
     },
     website: {
@@ -384,9 +440,6 @@ const v$ = useVuelidate(
     },
   },
   formData,
-  {
-    $externalResults,
-  },
 );
 
 watch(
@@ -395,13 +448,6 @@ watch(
     if (autoUpdateSlug.value) {
       formData.slug = slugify(name, { lower: true, strict: true });
     }
-  },
-);
-
-watch(
-  () => formData.slug,
-  () => {
-    slugConflict.value = false;
   },
 );
 
@@ -444,10 +490,4 @@ async function onSave(): Promise<void> {
 
   emit('save', dto);
 }
-
-defineExpose({
-  markConflict() {
-    slugConflict.value = true;
-  },
-});
 </script>

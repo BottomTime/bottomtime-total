@@ -10,7 +10,9 @@
       <span
         v-if="invalid"
         class="text-sm text-danger-dark"
-        :data-testid="`${controlId}-error`"
+        :data-testid="
+          testId || controlId ? `${testId || controlId}-error` : undefined
+        "
       >
         {{ error }}
       </span>
@@ -30,6 +32,7 @@ type FormFieldProps = {
   label?: string;
   invalid?: boolean;
   required?: boolean;
+  testId?: string;
 };
 
 withDefaults(defineProps<FormFieldProps>(), {
