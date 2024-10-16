@@ -1,5 +1,5 @@
 <template>
-  <div v-if="diveOperatorsEnabled.value">
+  <template v-if="diveOperatorsEnabled.value">
     <PageTitle title="Dive Shops" />
     <BreadCrumbs :items="Breadcrumbs" />
 
@@ -31,6 +31,7 @@
       </div>
       <div class="col-span-1 lg:col-span-2 xl:col-span-3">
         <DiveOperatorsList
+          :is-loading="state.isLoading"
           :is-loading-more="state.isLoadingMore"
           :operators="operators.results"
           @create-shop="onCreateShop"
@@ -39,7 +40,7 @@
         />
       </div>
     </div>
-  </div>
+  </template>
 
   <NotFound v-else />
 </template>
@@ -54,9 +55,8 @@ import {
 } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
-import { stringify } from 'qs';
 import { computed, onServerPrefetch, reactive } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../api-client';
 import { Breadcrumb, ToastType } from '../common';
@@ -69,12 +69,12 @@ import EditDiveOperator from '../components/operators/edit-dive-operator.vue';
 import OperatorsSearchForm from '../components/operators/operators-search-form.vue';
 import ViewDiveOperator from '../components/operators/view-dive-operator.vue';
 import { useFeature } from '../featrues';
-import { useLocation } from '../location';
 import { useOops } from '../oops';
 import { useCurrentUser, useDiveOperators, useToasts } from '../store';
 
 interface DiveOperatorsViewState {
   currentOperator?: DiveOperatorDTO;
+  isLoading: boolean;
   isLoadingMore: boolean;
   isSaving: boolean;
   showPanel: boolean;
@@ -88,10 +88,10 @@ const Breadcrumbs: Breadcrumb[] = [
 const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const client = useClient();
 const currentUser = useCurrentUser();
-const location = useLocation();
 const oops = useOops();
 const operators = useDiveOperators();
 const route = useRoute();
+const router = useRouter();
 const toasts = useToasts();
 
 function parseQueryString(): SearchDiveOperatorsParams {
@@ -106,6 +106,7 @@ function parseQueryString(): SearchDiveOperatorsParams {
 
 const searchParams = reactive<SearchDiveOperatorsParams>(parseQueryString());
 const state = reactive<DiveOperatorsViewState>({
+  isLoading: false,
   isLoadingMore: false,
   isSaving: false,
   showPanel: false,
@@ -133,32 +134,44 @@ const fullScreenUrl = computed(() =>
 );
 
 async function refresh(): Promise<void> {
+  state.isLoading = true;
   await oops(async () => {
     const results = await client.diveOperators.searchDiveOperators({
       ...searchParams,
     });
 
-    operators.results.operators = results.operators;
+    operators.results.operators = results.operators.map((op) => op.toJSON());
     operators.results.totalCount = results.totalCount;
   });
+  state.isLoading = false;
 }
 
-onServerPrefetch(async () => {
+onServerPrefetch(async (): Promise<void> => {
   await refresh();
 });
 
-function onSearch(params: SearchDiveOperatorsParams) {
-  const qs = stringify({
-    query: params.query || undefined,
-    location: params.location
-      ? `${params.location.lat},${params.location.lon}`
-      : undefined,
-    radius: params.radius || undefined,
-    owner: params.owner || undefined,
-    skip: searchParams.skip,
-    limit: searchParams.limit,
+async function onSearch(params: SearchDiveOperatorsParams): Promise<void> {
+  await router.push({
+    path: route.path,
+    query: {
+      query: params.query || undefined,
+      location: params.location
+        ? `${params.location.lat},${params.location.lon}`
+        : undefined,
+      radius: params.radius || undefined,
+      owner: params.owner || undefined,
+      skip: searchParams.skip,
+      limit: searchParams.limit,
+    },
   });
-  location.assign(`${location.pathname}?${qs}`);
+
+  searchParams.query = params.query;
+  searchParams.location = params.location;
+  searchParams.limit = params.limit;
+  searchParams.owner = params.owner;
+  searchParams.radius = params.radius;
+  searchParams.skip = params.skip;
+  await refresh();
 }
 
 function onCloseDrawer() {

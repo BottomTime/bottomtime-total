@@ -23,7 +23,7 @@
       </FormBox>
     </div>
 
-    <ul class="px-2">
+    <ul class="px-2" data-testid="operators-list">
       <DiveOperatorsListItem
         v-for="operator in operators.operators"
         :key="operator.slug"
@@ -31,41 +31,47 @@
         @select="(dto) => $emit('select', dto)"
       />
 
-      <li
-        v-if="!operators.operators.length"
-        class="my-8"
-        data-testid="operators-no-results"
-      >
-        <p class="text-xl text-center space-x-3">
-          <span>
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </span>
-          <span class="italic">
-            There are no dive shops that match your search criteria.
-          </span>
-        </p>
+      <li v-if="isLoading" class="my-8 text-xl text-center">
+        <LoadingSpinner message="Loading dive shops..." />
       </li>
 
-      <li
-        v-if="isLoadingMore"
-        class="flex justify-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
-        data-testid="operators-loading"
-      >
-        <LoadingSpinner message="Loading more results..." />
-      </li>
-
-      <li
-        v-else-if="operators.operators.length < operators.totalCount"
-        class="flex justify-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
-      >
-        <FormButton
-          type="link"
-          test-id="operators-load-more"
-          @click="$emit('load-more')"
+      <template v-else>
+        <li
+          v-if="!operators.operators.length"
+          class="my-8"
+          data-testid="operators-no-results"
         >
-          <p class="text-lg italic">Load more results...</p>
-        </FormButton>
-      </li>
+          <p class="text-xl text-center space-x-3">
+            <span>
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <span class="italic">
+              There are no dive shops that match your search criteria.
+            </span>
+          </p>
+        </li>
+
+        <li
+          v-if="isLoadingMore"
+          class="flex justify-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
+          data-testid="operators-loading"
+        >
+          <LoadingSpinner message="Loading more results..." />
+        </li>
+
+        <li
+          v-else-if="operators.operators.length < operators.totalCount"
+          class="flex justify-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
+        >
+          <FormButton
+            type="link"
+            test-id="operators-load-more"
+            @click="$emit('load-more')"
+          >
+            <p class="text-lg italic">Load more results...</p>
+          </FormButton>
+        </li>
+      </template>
     </ul>
   </div>
 </template>
@@ -87,6 +93,7 @@ import LoadingSpinner from '../common/loading-spinner.vue';
 import DiveOperatorsListItem from './dive-operators-list-item.vue';
 
 interface DiveOperatorsListProps {
+  isLoading?: boolean;
   isLoadingMore?: boolean;
   operators: SearchDiveOperatorsResponseDTO;
 }
@@ -99,6 +106,7 @@ const isShopOwner = computed(
 );
 
 withDefaults(defineProps<DiveOperatorsListProps>(), {
+  isLoading: false,
   isLoadingMore: false,
 });
 

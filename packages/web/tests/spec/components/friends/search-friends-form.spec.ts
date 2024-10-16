@@ -63,6 +63,9 @@ describe('Search friends form component', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

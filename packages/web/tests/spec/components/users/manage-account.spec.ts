@@ -82,6 +82,9 @@ describe('Manage Account component', () => {
           [FeaturesServiceKey as symbol]: features,
           [LocationKey as symbol]: location,
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });
