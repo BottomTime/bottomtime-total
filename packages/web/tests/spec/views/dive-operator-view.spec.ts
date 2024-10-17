@@ -298,14 +298,6 @@ describe('Dive Operator view', () => {
     });
 
     it('will show an error if there is a slug conflict when saving a new operator', async () => {
-      const expected: DiveOperatorDTO = {
-        id: '31a6723a-88de-460c-af33-b2363b7aec47',
-        createdAt: new Date('2024-01-10T10:54:08.909Z'),
-        updatedAt: new Date('2024-10-09T18:44:28.447Z'),
-        owner: ShopOwner.profile,
-        verified: false,
-        ...create,
-      };
       const spy = jest
         .spyOn(client.diveOperators, 'createDiveOperator')
         .mockRejectedValue(
