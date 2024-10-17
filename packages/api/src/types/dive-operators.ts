@@ -4,6 +4,7 @@ import { GpsCoordinatesSchema, PhoneNumber, SlugRegex } from './constants';
 import { SuccinctProfileSchema, UsernameSchema } from './users';
 
 export const CreateOrUpdateDiveOperatorSchema = z.object({
+  active: z.boolean(),
   name: z.string().trim().min(1).max(200),
   slug: z.string().trim().toLowerCase().regex(SlugRegex).min(1).max(200),
   description: z.string().trim().max(2000),

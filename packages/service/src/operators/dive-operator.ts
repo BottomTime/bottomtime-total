@@ -62,6 +62,13 @@ export class DiveOperator {
     return this.data.verified;
   }
 
+  get active(): boolean {
+    return this.data.active;
+  }
+  set active(value: boolean) {
+    this.data.active = value;
+  }
+
   get logo(): string | undefined {
     return this.data.logo ?? undefined;
   }
@@ -184,6 +191,7 @@ export class DiveOperator {
 
   toJSON(): DiveOperatorDTO {
     return {
+      active: this.active,
       createdAt: this.createdAt,
       description: this.description,
       email: this.email,

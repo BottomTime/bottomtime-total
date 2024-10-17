@@ -61,6 +61,9 @@ describe('DiveOperatorService', () => {
     it('will create a new operator with minimal properties', async () => {
       const options: CreateDiveOperatorOptions = {
         name: "Bill's Dive Shop",
+        address: '123 Main St',
+        description: 'The best dive shop in town!',
+        slug: 'bills-dive-shop',
         owner,
       };
 
@@ -85,6 +88,7 @@ describe('DiveOperatorService', () => {
     it('will create a new operator with full properties', async () => {
       const options: CreateDiveOperatorOptions = {
         name: "Bill's Dive Shop",
+        slug: 'bills-dive-shop',
         address: '123 Main St',
         description: 'The best dive shop in town!',
         email: 'shop@bill.edu',

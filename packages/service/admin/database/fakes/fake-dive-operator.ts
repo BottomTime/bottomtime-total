@@ -11,6 +11,7 @@ export function fakeDiveOperator(userIds: string[]): DiveOperatorEntity {
     createdAt: faker.date.past({ years: 5 }),
     updatedAt: faker.date.recent({ days: 180 }),
     owner: { id: faker.helpers.arrayElement(userIds) } as UserEntity,
+    active: faker.helpers.maybe(() => true, { probability: 0.95 }) ?? false,
 
     name,
     slug: slugify(name),

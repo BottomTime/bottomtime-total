@@ -14,6 +14,7 @@ const OperatorSchema = z.object({
   slug: z.string(),
   verified: z.boolean(),
   description: z.string().nullable(),
+  active: z.boolean().default(true),
 
   address: z.string().nullable(),
   phone: z.string().nullable(),
@@ -49,6 +50,10 @@ export function createTestDiveOperator(
     createdAt: options?.createdAt ?? faker.date.past({ years: 5 }),
     updatedAt: options?.updatedAt ?? faker.date.recent({ days: 180 }),
     owner,
+    active:
+      typeof options?.active === 'boolean'
+        ? options.active
+        : faker.helpers.maybe(() => true, { probability: 0.95 }) ?? false,
 
     name,
     slug: options?.slug ?? slugify(name),

@@ -31,6 +31,7 @@ describe('Operators API client', () => {
   it('will retrieve a single operator', async () => {
     const key = 'test-operator';
     const expected: DiveOperatorDTO = {
+      active: true,
       createdAt: new Date(),
       id: 'fd5b16ef-0693-469f-a9f3-57d8885029b9',
       name: 'Test Operator',
@@ -77,8 +78,8 @@ describe('Operators API client', () => {
     const results = await client.searchDiveOperators();
 
     expect(mockFetch.done()).toBe(true);
-    expect(results.operators).toHaveLength(50);
-    expect(results.totalCount).toBe(651);
+    expect(results.operators).toHaveLength(testData.operators.length);
+    expect(results.totalCount).toBe(testData.totalCount);
     results.operators.forEach((operator, index) => {
       expect(operator).toBeInstanceOf(DiveOperator);
       expect(operator.toJSON()).toEqual(testData.operators[index]);
@@ -115,8 +116,8 @@ describe('Operators API client', () => {
     const results = await client.searchDiveOperators(options);
 
     expect(mockFetch.calls()).toMatchSnapshot();
-    expect(results.operators).toHaveLength(50);
-    expect(results.totalCount).toBe(651);
+    expect(results.operators).toHaveLength(testData.operators.length);
+    expect(results.totalCount).toBe(testData.totalCount);
     results.operators.forEach((operator, index) => {
       expect(operator).toBeInstanceOf(DiveOperator);
       expect(operator.toJSON()).toEqual(testData.operators[index]);
@@ -126,6 +127,7 @@ describe('Operators API client', () => {
   it('will create a new operator', async () => {
     const key = 'test-operator';
     const options: CreateOrUpdateDiveOperatorDTO = {
+      active: false,
       name: 'Test Operator',
       address: '123 Test St',
       description: 'This is a test operator.',
@@ -175,6 +177,7 @@ describe('Operators API client', () => {
   it('will wrap an existing DTO in a DiveOperator instance', () => {
     const key = 'test-operator';
     const expected: DiveOperatorDTO = {
+      active: true,
       createdAt: new Date(),
       id: 'fd5b16ef-0693-469f-a9f3-57d8885029b9',
       name: 'Test Operator',
