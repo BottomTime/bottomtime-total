@@ -97,6 +97,7 @@ describe('Operators API client', () => {
       owner: 'razmataz82',
       radius: 120,
       query: 'test',
+      showInactive: false,
     };
 
     mockFetch.get(

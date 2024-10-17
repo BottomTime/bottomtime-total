@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-import { GpsCoordinatesSchema, PhoneNumber, SlugRegex } from './constants';
+import {
+  BooleanString,
+  GpsCoordinatesSchema,
+  PhoneNumber,
+  SlugRegex,
+} from './constants';
 import { SuccinctProfileSchema, UsernameSchema } from './users';
 
 export const CreateOrUpdateDiveOperatorSchema = z.object({
@@ -53,6 +58,7 @@ export const SearchDiveOperatorsSchema = z
     location: GpsCoordinatesSchema,
     radius: z.coerce.number().gt(0).max(500),
     owner: UsernameSchema,
+    showInactive: BooleanString,
     skip: z.coerce.number().int().min(0),
     limit: z.coerce.number().int().min(1).max(500),
   })
