@@ -3306,7 +3306,7 @@ __metadata:
     "@types/prompts": "npm:^2.4.4"
     "@types/request-stats": "npm:^3.0.3"
     "@types/supertest": "npm:^2.0.12"
-    "@types/uuid": "npm:^9.0.1"
+    "@types/uuid": "npm:^10.0.0"
     aws-lambda: "npm:^1.0.7"
     bcryptjs: "npm:^2.4.3"
     bunyan: "npm:^1.8.15"
@@ -3351,7 +3351,7 @@ __metadata:
     tsx: "npm:^4.7.0"
     typeorm: "npm:^0.3.20"
     typescript: "npm:^5.0.4"
-    uuid: "npm:^9.0.0"
+    uuid: "npm:^10.0.0"
     webpack: "npm:^5.92.0"
     webpack-cli: "npm:^5.1.4"
     webpack-node-externals: "npm:^3.0.0"
@@ -3389,6 +3389,7 @@ __metadata:
     "@types/mustache": "npm:^4.2.5"
     "@types/node": "npm:^20.10.5"
     "@types/showdown": "npm:^2.0.6"
+    "@types/uuid": "npm:^10.0.0"
     "@types/webpack-node-externals": "npm:^3"
     "@vitejs/plugin-vue": "npm:^4.5.2"
     "@vue/test-utils": "npm:^2.4.3"
@@ -3433,7 +3434,7 @@ __metadata:
     tailwindcss: "npm:^3.4.1"
     ts-jest: "npm:^29.1.2"
     typescript: "npm:^5.3.3"
-    uuid: "npm:^9.0.1"
+    uuid: "npm:^10.0.0"
     vite: "npm:^5.0.10"
     vite-plugin-compression: "npm:^0.5.1"
     vite-plugin-node-polyfills: "npm:^0.21.0"
@@ -8108,10 +8109,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^9.0.1":
-  version: 9.0.8
-  resolution: "@types/uuid@npm:9.0.8"
-  checksum: 10c0/b411b93054cb1d4361919579ef3508a1f12bf15b5fdd97337d3d351bece6c921b52b6daeef89b62340fd73fd60da407878432a1af777f40648cbe53a01723489
+"@types/uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@types/uuid@npm:10.0.0"
+  checksum: 10c0/9a1404bf287164481cb9b97f6bb638f78f955be57c40c6513b7655160beb29df6f84c915aaf4089a1559c216557dc4d2f79b48d978742d3ae10b937420ddac60
   languageName: node
   linkType: hard
 
