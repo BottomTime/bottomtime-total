@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ViewDiveOperator component will render with all properties 1`] = `
-"<div class="flex gap-6">
+"<div class="flex gap-6" data-testid="view-operator-section">
   <div>(logo)</div>
   <article class="space-y-3">
     <p class="bg-success rounded-full px-2 text-xl font-title flex items-baseline gap-2 w-fit"><span><i class="fa-solid fa-check"></i></span><span>Verified!</span></p>
@@ -29,7 +29,7 @@ exports[`ViewDiveOperator component will render with all properties 1`] = `
 `;
 
 exports[`ViewDiveOperator component will render with partial properties 1`] = `
-"<div class="flex gap-6">
+"<div class="flex gap-6" data-testid="view-operator-section">
   <div>(logo)</div>
   <article class="space-y-3">
     <!--v-if-->

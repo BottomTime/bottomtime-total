@@ -10,7 +10,7 @@ exports[`Nav Bar component will render correctly for admins 1`] = `
   <!--v-if-->
 </transition-stub>
 <section class="h-16">
-  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-20">
+  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-[40]">
     <div class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between">
       <!-- Brand Logo --><a href="/" class="flex flex-initial items-center space-x-3"><img src="/img/flag-logo.png" alt="logo" class="w-12 h-8 rounded-md shadow-sm shadow-danger"><span class="font-bold text-red text-2xl">Bottom Time</span></a><!-- Right-Hand Dropdown (always visible) -->
       <div class="flex items-center space-x-0 md:order-2 md:space-x-3"><label class="relative cursor-pointer" aria-label="Toggle dark mode"><input type="checkbox" class="sr-only peer">
@@ -56,7 +56,7 @@ exports[`Nav Bar component will render correctly for anonymous users 1`] = `
   <!--v-if-->
 </transition-stub>
 <section class="h-16">
-  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-20">
+  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-[40]">
     <div class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between">
       <!-- Brand Logo --><a href="/" class="flex flex-initial items-center space-x-3"><img src="/img/flag-logo.png" alt="logo" class="w-12 h-8 rounded-md shadow-sm shadow-danger"><span class="font-bold text-red text-2xl">Bottom Time</span></a><!-- Right-Hand Dropdown (always visible) -->
       <div class="flex items-center space-x-0 md:order-2 md:space-x-3"><label class="relative cursor-pointer" aria-label="Toggle dark mode"><input type="checkbox" class="sr-only peer">
@@ -97,7 +97,7 @@ exports[`Nav Bar component will render correctly for authenticated users 1`] = `
   <!--v-if-->
 </transition-stub>
 <section class="h-16">
-  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-20">
+  <nav class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-[40]">
     <div class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between">
       <!-- Brand Logo --><a href="/" class="flex flex-initial items-center space-x-3"><img src="/img/flag-logo.png" alt="logo" class="w-12 h-8 rounded-md shadow-sm shadow-danger"><span class="font-bold text-red text-2xl">Bottom Time</span></a><!-- Right-Hand Dropdown (always visible) -->
       <div class="flex items-center space-x-0 md:order-2 md:space-x-3"><label class="relative cursor-pointer" aria-label="Toggle dark mode"><input type="checkbox" class="sr-only peer">

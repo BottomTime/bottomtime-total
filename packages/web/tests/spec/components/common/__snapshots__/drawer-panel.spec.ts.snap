@@ -5,7 +5,7 @@ exports[`Drawer Panel component will display a link button to a full screen view
 exports[`Drawer Panel component will render correctly with content 1`] = `
 "<!-- Blurred backgroud - covers entire viewport. -->
 <transition-stub name="backdrop" appear="false" persisted="false" css="true">
-  <div class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-30" data-testid="drawer-backdrop"></div>
+  <div class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-[30]" data-testid="drawer-backdrop"></div>
 </transition-stub>
 <!-- Drawer panel. Right half of the screen on most displays; full screen on mobile. -->
 <transition-stub name="drawer" appear="false" persisted="false" css="true">
