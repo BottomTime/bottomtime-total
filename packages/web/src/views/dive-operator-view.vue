@@ -2,17 +2,16 @@
   <PageTitle :title="title" />
   <BreadCrumbs :items="Breadcrumbs" />
 
-  <div v-if="enableDiveOperators.value && operators.currentDiveOperator">
+  <template v-if="enableDiveOperators.value && operators.currentDiveOperator">
     <EditDiveOperator
       v-if="canEdit"
       :operator="operators.currentDiveOperator"
       :is-saving="isSaving"
-      :conflict="conflictError"
       @save="saveChanges"
     />
 
     <ViewDiveOperator v-else :operator="operators.currentDiveOperator" />
-  </div>
+  </template>
 
   <NotFound v-else />
 </template>
@@ -52,17 +51,13 @@ const canEdit = computed(() => {
   if (currentUser.user.role === UserRole.Admin) return true;
 
   // Dive operator owners can edit their own entries as long as their shops have not already been verified.
-  if (
-    operators.currentDiveOperator.owner.userId === currentUser.user.id &&
-    !operators.currentDiveOperator.verified
-  ) {
+  if (operators.currentDiveOperator.owner.userId === currentUser.user.id) {
     return true;
   }
 
   // Default to false in all other cases.
   return false;
 });
-const conflictError = ref(false);
 const isSaving = ref(false);
 
 const operatorKey = computed(() => {
@@ -108,13 +103,12 @@ async function saveChanges(
 ): Promise<void> {
   const slugChanged = operators.currentDiveOperator?.slug !== update.slug;
   isSaving.value = true;
-  conflictError.value = false;
 
   await oops(
     async () => {
-      const operator = client.diveOperators.wrapDTO(
-        operators.currentDiveOperator,
-      );
+      const operator = client.diveOperators.wrapDTO({
+        ...operators.currentDiveOperator,
+      });
 
       operator.address = update.address;
       operator.description = update.description;
@@ -146,7 +140,6 @@ async function saveChanges(
     {
       [409]: () => {
         // Slug is already taken.
-        conflictError.value = true;
         toasts.toast({
           id: 'dive-operator-slug-taken',
           message:

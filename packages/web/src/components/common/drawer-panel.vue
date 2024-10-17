@@ -3,7 +3,7 @@
   <Transition name="backdrop">
     <div
       v-if="visible"
-      class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-30"
+      class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-[30]"
       data-testid="drawer-backdrop"
       @click="onClose"
     ></div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-6">
+  <div class="flex gap-6" data-testid="view-operator-section">
     <div>(logo)</div>
 
     <article class="space-y-3">

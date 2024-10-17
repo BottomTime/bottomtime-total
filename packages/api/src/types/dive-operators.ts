@@ -5,7 +5,7 @@ import { SuccinctProfileSchema, UsernameSchema } from './users';
 
 export const CreateOrUpdateDiveOperatorSchema = z.object({
   name: z.string().trim().min(1).max(200),
-  slug: z.string().trim().regex(SlugRegex).min(1).max(200),
+  slug: z.string().trim().toLowerCase().regex(SlugRegex).min(1).max(200),
   description: z.string().trim().max(2000),
   address: z.string().trim().max(500),
   phone: PhoneNumber.optional(),
