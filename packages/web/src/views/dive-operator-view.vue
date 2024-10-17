@@ -61,15 +61,16 @@ const canEdit = computed(() => {
 const isSaving = ref(false);
 
 const operatorKey = computed(() => {
+  if (!route.params.shopKey) return null;
   return typeof route.params.shopKey === 'string'
     ? route.params.shopKey
     : route.params.shopKey[0];
 });
-const title = computed(() =>
-  canEdit.value
-    ? `Edit "${operators.currentDiveOperator?.name}"`
-    : operators.currentDiveOperator?.name || 'View Dive Operator',
-);
+const title = computed(() => {
+  if (!operatorKey.value) return 'Create New Dive Shop';
+  if (canEdit.value) return `Edit "${operators.currentDiveOperator?.name}"`;
+  return operators.currentDiveOperator?.name || 'View Dive Operator';
+});
 
 const Breadcrumbs: Breadcrumb[] = [
   {
@@ -85,6 +86,22 @@ const Breadcrumbs: Breadcrumb[] = [
 onServerPrefetch(async () => {
   await oops(
     async () => {
+      // If no key is present then we are on the "Create New Dive Shop" page. No need to fetch anything.
+      if (!operatorKey.value) {
+        operators.currentDiveOperator = {
+          address: '',
+          description: '',
+          createdAt: new Date(),
+          id: '',
+          name: '',
+          owner: currentUser.user!.profile,
+          slug: '',
+          updatedAt: new Date(),
+          verified: false,
+        };
+        return;
+      }
+
       const operator = await client.diveOperators.getDiveOperator(
         operatorKey.value,
       );
@@ -98,44 +115,66 @@ onServerPrefetch(async () => {
   );
 });
 
-async function saveChanges(
+async function createNewOperator(
+  update: CreateOrUpdateDiveOperatorDTO,
+): Promise<void> {
+  const operator = await client.diveOperators.createDiveOperator(update);
+  operators.currentDiveOperator = operator.toJSON();
+  await router.push(`/shops/${operator.slug}`);
+
+  toasts.toast({
+    id: 'dive-operator-saved',
+    message: 'Dive operator saved successfully',
+    type: ToastType.Success,
+  });
+}
+
+async function updateExistingOperator(
   update: CreateOrUpdateDiveOperatorDTO,
 ): Promise<void> {
   const slugChanged = operators.currentDiveOperator?.slug !== update.slug;
+  const operator = client.diveOperators.wrapDTO({
+    ...operators.currentDiveOperator,
+  });
+
+  operator.address = update.address;
+  operator.description = update.description;
+  operator.email = update.email;
+  operator.gps = update.gps;
+  operator.name = update.name;
+  operator.phone = update.phone;
+  operator.slug = update.slug || operator.slug;
+  operator.socials = update.socials;
+  operator.website = update.website;
+
+  await operator.save();
+
+  toasts.toast({
+    id: 'dive-operator-saved',
+    message: 'Dive operator saved successfully',
+    type: ToastType.Success,
+  });
+  operators.currentDiveOperator = operator.toJSON();
+
+  if (slugChanged) {
+    // Redirect to the new slug if it has changed.
+    await router.replace({
+      name: 'dive-operator',
+      params: { shopKey: operator.slug },
+    });
+  }
+}
+
+async function saveChanges(
+  update: CreateOrUpdateDiveOperatorDTO,
+): Promise<void> {
   isSaving.value = true;
 
   await oops(
     async () => {
-      const operator = client.diveOperators.wrapDTO({
-        ...operators.currentDiveOperator,
-      });
-
-      operator.address = update.address;
-      operator.description = update.description;
-      operator.email = update.email;
-      operator.gps = update.gps;
-      operator.name = update.name;
-      operator.phone = update.phone;
-      operator.slug = update.slug || operator.slug;
-      operator.socials = update.socials;
-      operator.website = update.website;
-
-      await operator.save();
-
-      toasts.toast({
-        id: 'dive-operator-saved',
-        message: 'Dive operator saved successfully',
-        type: ToastType.Success,
-      });
-      operators.currentDiveOperator = operator.toJSON();
-
-      if (slugChanged) {
-        // Redirect to the new slug if it has changed.
-        await router.replace({
-          name: 'dive-operator',
-          params: { shopKey: operator.slug },
-        });
-      }
+      // Create new operator if this is a brand new entry.
+      if (!operatorKey.value) await createNewOperator(update);
+      else await updateExistingOperator(update);
     },
     {
       [409]: () => {

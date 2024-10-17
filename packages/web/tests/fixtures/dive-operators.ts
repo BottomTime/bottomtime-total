@@ -1,5 +1,27 @@
 import { DiveOperatorDTO, LogBookSharing } from '@bottomtime/api';
 
+export const BlankDiveOperator: DiveOperatorDTO = {
+  address: '',
+  description: '',
+  createdAt: new Date(),
+  id: '',
+  name: '',
+  owner: {
+    accountTier: 0,
+    userId: '40991fd7-89a4-4e82-9e4d-e020bc654aaf',
+    username: 'Clementine.Mann',
+    memberSince: new Date('2019-02-21T08:13:47.222Z'),
+    logBookSharing: LogBookSharing.Private,
+    avatar:
+      'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1184.jpg',
+    location: 'Farmington Hills, IL, DK',
+    name: 'Clementine Mann',
+  },
+  slug: '',
+  updatedAt: new Date(),
+  verified: false,
+};
+
 export const PartialDiveOperator: DiveOperatorDTO = {
   createdAt: new Date('2024-01-10T10:54:08.909Z'),
   description:

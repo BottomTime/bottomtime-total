@@ -34,6 +34,7 @@ import DiveOperatorView from '../../../src/views/dive-operator-view.vue';
 import { ConfigCatClientMock } from '../../config-cat-client-mock';
 import { createRouter } from '../../fixtures/create-router';
 import {
+  BlankDiveOperator,
   FullDiveOperator,
   PartialDiveOperator,
 } from '../../fixtures/dive-operators';
@@ -65,6 +66,10 @@ describe('Dive Operator view', () => {
     client = new ApiClient({ fetcher });
     features = new ConfigCatClientMock();
     router = createRouter([
+      {
+        path: '/shops/createNew',
+        component: DiveOperatorView,
+      },
       {
         path: '/shops/:shopKey',
         component: DiveOperatorView,
@@ -193,11 +198,21 @@ describe('Dive Operator view', () => {
       website: FullDiveOperator.website,
     };
 
+    const create: CreateOrUpdateDiveOperatorDTO = {
+      address: '74 Main St',
+      description: 'We do scuba stuff',
+      name: 'Scuba Mega Shop',
+      slug: 'scuba-mega-shop',
+      phone: '555-555-5555',
+      email: 'admin@scubamegashop.com',
+      website: 'https://scubamegashop.com',
+    };
+
     it('will allow user to view a dive operator', async () => {
       diveOperators.currentDiveOperator = { ...PartialDiveOperator };
       await router.push(`/shops/${PartialDiveOperator.slug}`);
 
-      const wrapper = await mount(DiveOperatorView, opts);
+      const wrapper = mount(DiveOperatorView, opts);
       await flushPromises();
 
       const viewer = wrapper.getComponent(ViewDiveOperator);
@@ -209,7 +224,7 @@ describe('Dive Operator view', () => {
       diveOperators.currentDiveOperator = null;
       await router.push('/shops/unknown-operator');
 
-      const wrapper = await mount(DiveOperatorView, opts);
+      const wrapper = mount(DiveOperatorView, opts);
       await flushPromises();
 
       expect(
@@ -218,22 +233,114 @@ describe('Dive Operator view', () => {
       expect(wrapper.findComponent(ViewDiveOperator).exists()).toBe(false);
     });
 
-    it.skip('will allow a shop owner to create a new dive operator', async () => {
+    // TODO: Only shop owners and admins can access the /shops/createNew page
+
+    it('will allow a shop owner to create a new dive operator', async () => {
+      const expected: DiveOperatorDTO = {
+        id: '31a6723a-88de-460c-af33-b2363b7aec47',
+        createdAt: new Date('2024-01-10T10:54:08.909Z'),
+        updatedAt: new Date('2024-10-09T18:44:28.447Z'),
+        owner: ShopOwner.profile,
+        verified: false,
+        ...create,
+      };
+      const spy = jest
+        .spyOn(client.diveOperators, 'createDiveOperator')
+        .mockResolvedValue(new DiveOperator(fetcher, expected));
+
       currentUser.user = ShopOwner;
-      diveOperators.currentDiveOperator = null;
+      diveOperators.currentDiveOperator = {
+        ...BlankDiveOperator,
+        owner: ShopOwner.profile,
+      };
       await router.push('/shops/createNew');
 
-      const wrapper = await mount(DiveOperatorView, opts);
+      const wrapper = mount(DiveOperatorView, opts);
       await flushPromises();
 
-      const viewer = wrapper.getComponent(ViewDiveOperator);
-      expect(viewer.isVisible()).toBe(true);
-      expect(viewer.props('operator')).toBeNull();
+      wrapper.getComponent(EditDiveOperator).vm.$emit('save', create);
+      await flushPromises();
+
+      expect(spy).toHaveBeenCalledWith(create);
+      expect(router.currentRoute.value.path).toBe(`/shops/${expected.slug}`);
+      expect(diveOperators.currentDiveOperator).toEqual(expected);
     });
 
-    it.skip('will allow an admin to create a new dive operator', async () => {});
+    it('will allow an admin to create a new dive operator', async () => {
+      const expected: DiveOperatorDTO = {
+        id: '31a6723a-88de-460c-af33-b2363b7aec47',
+        createdAt: new Date('2024-01-10T10:54:08.909Z'),
+        updatedAt: new Date('2024-10-09T18:44:28.447Z'),
+        owner: AdminUser.profile,
+        verified: false,
+        ...create,
+      };
+      const spy = jest
+        .spyOn(client.diveOperators, 'createDiveOperator')
+        .mockResolvedValue(new DiveOperator(fetcher, expected));
 
-    it.skip('will show an error if there is a slug conflict when saving a new operator', () => {});
+      currentUser.user = AdminUser;
+      diveOperators.currentDiveOperator = {
+        ...BlankDiveOperator,
+        owner: AdminUser.profile,
+      };
+      await router.push('/shops/createNew');
+
+      const wrapper = mount(DiveOperatorView, opts);
+      await flushPromises();
+
+      wrapper.getComponent(EditDiveOperator).vm.$emit('save', create);
+      await flushPromises();
+
+      expect(spy).toHaveBeenCalledWith(create);
+      expect(router.currentRoute.value.path).toBe(`/shops/${expected.slug}`);
+      expect(diveOperators.currentDiveOperator).toEqual(expected);
+    });
+
+    it('will show an error if there is a slug conflict when saving a new operator', async () => {
+      const expected: DiveOperatorDTO = {
+        id: '31a6723a-88de-460c-af33-b2363b7aec47',
+        createdAt: new Date('2024-01-10T10:54:08.909Z'),
+        updatedAt: new Date('2024-10-09T18:44:28.447Z'),
+        owner: ShopOwner.profile,
+        verified: false,
+        ...create,
+      };
+      const spy = jest
+        .spyOn(client.diveOperators, 'createDiveOperator')
+        .mockRejectedValue(
+          new HttpException(409, 'Conflict', 'Conflict', {
+            message: 'Conflict',
+            method: 'POST',
+            path: '/shops/createNew',
+            status: 409,
+          }),
+        );
+
+      currentUser.user = ShopOwner;
+      diveOperators.currentDiveOperator = {
+        ...BlankDiveOperator,
+        owner: ShopOwner.profile,
+      };
+      await router.push('/shops/createNew');
+
+      const wrapper = mount(DiveOperatorView, opts);
+      await flushPromises();
+
+      wrapper.getComponent(EditDiveOperator).vm.$emit('save', create);
+      await flushPromises();
+
+      expect(toasts.toasts).toHaveLength(1);
+      expect(toasts.toasts[0].id).toBe('dive-operator-slug-taken');
+      expect(toasts.toasts[0].type).toBe(ToastType.Warning);
+
+      expect(spy).toHaveBeenCalledWith(create);
+      expect(router.currentRoute.value.path).toBe('/shops/createNew');
+      expect(diveOperators.currentDiveOperator).toEqual({
+        ...BlankDiveOperator,
+        owner: ShopOwner.profile,
+      });
+    });
 
     it('will allow a shop owner to update a dive operator', async () => {
       const operator = new DiveOperator(fetcher, { ...FullDiveOperator });
@@ -247,7 +354,7 @@ describe('Dive Operator view', () => {
       };
       await router.push(`/shops/${FullDiveOperator.slug}`);
 
-      const wrapper = await mount(DiveOperatorView, opts);
+      const wrapper = mount(DiveOperatorView, opts);
       await flushPromises();
 
       const editor = wrapper.getComponent(EditDiveOperator);
@@ -279,7 +386,7 @@ describe('Dive Operator view', () => {
       };
       await router.push(`/shops/${FullDiveOperator.slug}`);
 
-      const wrapper = await mount(DiveOperatorView, opts);
+      const wrapper = mount(DiveOperatorView, opts);
       await flushPromises();
 
       const editor = wrapper.findComponent(EditDiveOperator);
@@ -319,7 +426,7 @@ describe('Dive Operator view', () => {
       diveOperators.currentDiveOperator = { ...operatorData };
       await router.push(`/shops/${FullDiveOperator.slug}`);
 
-      const wrapper = await mount(DiveOperatorView, opts);
+      const wrapper = mount(DiveOperatorView, opts);
       await flushPromises();
 
       const editor = wrapper.getComponent(EditDiveOperator);

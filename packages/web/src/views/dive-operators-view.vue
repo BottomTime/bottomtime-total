@@ -130,7 +130,7 @@ const drawerPanelTitle = computed(() => {
 const fullScreenUrl = computed(() =>
   state.currentOperator?.id
     ? `/shops/${state.currentOperator.slug}`
-    : '/newDiveShop',
+    : '/shops/createNew',
 );
 
 async function refresh(): Promise<void> {
