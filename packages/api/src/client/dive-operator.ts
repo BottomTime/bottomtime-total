@@ -20,7 +20,7 @@ export class DiveOperator {
   }
 
   get slug(): string {
-    return this.newSlug || this.data.slug || '';
+    return this.newSlug || this.data.slug;
   }
   set slug(value: string) {
     this.newSlug = value;
@@ -57,17 +57,17 @@ export class DiveOperator {
     this.data.name = value;
   }
 
-  get description(): string | undefined {
+  get description(): string {
     return this.data.description;
   }
-  set description(value: string | undefined) {
+  set description(value: string) {
     this.data.description = value;
   }
 
-  get address(): string | undefined {
+  get address(): string {
     return this.data.address;
   }
-  set address(value: string | undefined) {
+  set address(value: string) {
     this.data.address = value;
   }
 
@@ -99,10 +99,10 @@ export class DiveOperator {
     this.data.gps = value;
   }
 
-  get socials(): DiveOperatorDTO['socials'] | undefined {
+  get socials(): DiveOperatorDTO['socials'] {
     return this.data.socials;
   }
-  set socials(value: DiveOperatorDTO['socials'] | undefined) {
+  set socials(value: DiveOperatorDTO['socials']) {
     this.data.socials = value;
   }
 
@@ -119,6 +119,12 @@ export class DiveOperator {
       }),
       DiveOperatorSchema,
     );
+
+    if (this.newSlug) {
+      this.data.slug = this.newSlug;
+      this.newSlug = undefined;
+    }
+
     this.data.slug = this.newSlug || this.data.slug;
     this.data.updatedAt = new Date();
     this.newSlug = undefined;

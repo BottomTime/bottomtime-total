@@ -28,6 +28,9 @@ describe('Confirm Dialog', () => {
       slots: {
         default: dialogContent,
       },
+      global: {
+        stubs: { teleport: true },
+      },
     });
 
     expect(wrapper.find(Locators.backdrop).isVisible()).toBe(true);
@@ -41,7 +44,9 @@ describe('Confirm Dialog', () => {
   });
 
   it('will not render the dialog when visible is false', () => {
-    const wrapper = mount(ConfirmDialog);
+    const wrapper = mount(ConfirmDialog, {
+      global: { stubs: { teleport: true } },
+    });
     expect(wrapper.find(Locators.modal).exists()).toBe(false);
     expect(wrapper.find(Locators.backdrop).exists()).toBe(false);
   });
@@ -50,6 +55,9 @@ describe('Confirm Dialog', () => {
     const wrapper = mount(ConfirmDialog, {
       props: {
         visible: true,
+      },
+      global: {
+        stubs: { teleport: true },
       },
     });
 
@@ -62,6 +70,9 @@ describe('Confirm Dialog', () => {
       props: {
         visible: true,
       },
+      global: {
+        stubs: { teleport: true },
+      },
     });
 
     await wrapper.find(Locators.cancelButton).trigger('click');
@@ -72,6 +83,9 @@ describe('Confirm Dialog', () => {
     const wrapper = mount(ConfirmDialog, {
       props: {
         visible: true,
+      },
+      global: {
+        stubs: { teleport: true },
       },
     });
 
@@ -84,6 +98,9 @@ describe('Confirm Dialog', () => {
       props: {
         visible: true,
       },
+      global: {
+        stubs: { teleport: true },
+      },
     });
 
     await wrapper.find(Locators.confirmButton).trigger('click');
@@ -95,6 +112,9 @@ describe('Confirm Dialog', () => {
       props: {
         visible: true,
         dangerous: true,
+      },
+      global: {
+        stubs: { teleport: true },
       },
     });
 

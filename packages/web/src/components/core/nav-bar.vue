@@ -9,7 +9,7 @@
 
   <section class="h-16">
     <nav
-      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-20"
+      class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-[40]"
     >
       <div
         class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between"
@@ -48,7 +48,7 @@
           </ul>
 
           <!-- Notifications alert -->
-          <button v-if="notificationsEnabled.value.value && currentUser.user">
+          <button v-if="notificationsEnabled.value && currentUser.user">
             <span class="fa-layers fa-fw">
               <i class="fa-solid fa-bell"></i>
               <span class="fa-layers-counter fa-layers-bottom-right"> 1 </span>
@@ -230,7 +230,7 @@ const navLinks = computed<NavLink[]>(() => {
     {
       title: 'Dive Shops',
       url: '/shops',
-      visible: diveOperatorsEnabled.value.value,
+      visible: true,
     },
     {
       title: 'Admin',

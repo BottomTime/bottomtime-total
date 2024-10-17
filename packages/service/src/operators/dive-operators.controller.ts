@@ -17,10 +17,13 @@ import {
   Controller,
   Delete,
   Get,
+  Head,
   HttpCode,
   HttpStatus,
   Inject,
   Logger,
+  NotFoundException,
+  Param,
   Post,
   Put,
   Query,
@@ -265,6 +268,36 @@ export class DiveOperatorsController {
     );
 
     return operator.toJSON();
+  }
+
+  /**
+   * @openapi
+   * /api/operators/{operatorKey}:
+   *   head:
+   *     summary: Check if a dive operator exists
+   *     operationId: diveOperatorExists
+   *     description: |
+   *       Checks if a dive operator with the specified key (slug) exists.
+   *     tags:
+   *       - Dive Operators
+   *     parameters:
+   *       - $ref: "#/components/parameters/DiveOperatorKey"
+   *     responses:
+   *       200:
+   *         description: The dive operator exists.
+   *       404:
+   *         description: The dive operator does not exist.
+   *       500:
+   *         description: The request failed because of an internal server error.
+   */
+  @Head(OperatorKeyName)
+  async diveOperatorExists(@Param(OperatorKeyName) key: string): Promise<void> {
+    const exists = await this.service.isSlugInUse(key);
+    if (!exists) {
+      throw new NotFoundException(
+        `Dive operator with URL slug "${key}" does not exist.`,
+      );
+    }
   }
 
   /**

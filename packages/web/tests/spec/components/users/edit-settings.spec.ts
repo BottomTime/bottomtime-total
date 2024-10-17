@@ -52,6 +52,9 @@ describe('Edit Settings form', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: {
+          teleport: true,
+        },
       },
     });
 
@@ -89,6 +92,7 @@ describe('Edit Settings form', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: { teleport: true },
       },
     });
     const user = new User(fetcher, userData);
@@ -139,6 +143,7 @@ describe('Edit Settings form', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: { teleport: true },
       },
     });
 
@@ -178,6 +183,7 @@ describe('Edit Settings form', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: { teleport: true },
       },
     });
 
@@ -217,6 +223,7 @@ describe('Edit Settings form', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: { teleport: true },
       },
     });
 
@@ -265,6 +272,7 @@ describe('Edit Settings form', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: { teleport: true },
       },
     });
 

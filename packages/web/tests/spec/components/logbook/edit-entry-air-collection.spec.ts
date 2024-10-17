@@ -73,6 +73,9 @@ describe('EditEntryAirCollection component', () => {
       },
       global: {
         plugins: [pinia],
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

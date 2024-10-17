@@ -18,6 +18,11 @@ describe('Radio button component', () => {
       slots: {
         default: Content,
       },
+      global: {
+        stubs: {
+          teleport: true,
+        },
+      },
     });
 
     const radio = wrapper.get<HTMLInputElement>(InputSelector);

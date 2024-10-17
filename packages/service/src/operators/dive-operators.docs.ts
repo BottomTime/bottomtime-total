@@ -18,6 +18,9 @@
  *       type: object
  *       required:
  *         - name
+ *         - slug
+ *         - address
+ *         - description
  *       properties:
  *         name:
  *           type: string

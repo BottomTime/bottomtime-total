@@ -65,6 +65,9 @@ describe('Edit Profile form', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

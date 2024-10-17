@@ -5,14 +5,14 @@ exports[`Drawer Panel component will display a link button to a full screen view
 exports[`Drawer Panel component will render correctly with content 1`] = `
 "<!-- Blurred backgroud - covers entire viewport. -->
 <transition-stub name="backdrop" appear="false" persisted="false" css="true">
-  <div class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-30" data-testid="drawer-backdrop"></div>
+  <div class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-[30]" data-testid="drawer-backdrop"></div>
 </transition-stub>
 <!-- Drawer panel. Right half of the screen on most displays; full screen on mobile. -->
 <transition-stub name="drawer" appear="false" persisted="false" css="true">
   <div class="fixed box-border right-0 top-16 pb-20 md:w-1/2 w-full h-full font-content flex flex-col gap-6 bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-[35] p-4" data-testid="drawer-panel">
     <!-- Title and close button. -->
     <div class="flex flex-initial flex-row gap-3 items-center" data-testid="drawer-title">
-      <p class="font-title dark:text-blue-200 text-4xl grow">Test</p>
+      <p class="font-title dark:text-blue-200 text-4xl grow capitalize">Test</p>
       <!--v-if--><button data-testid="drawer-close" aria-label="Close"><span class="text-grey-800 hover:text-grey-100 dark:text-grey-200 hover:dark:text-grey-500 hover:drop-shadow-lg"><i class="fas fa-times-circle"></i></span></button>
     </div><!-- Content. -->
     <div class="grow overflow-y-auto overflow-x-hidden" data-testid="drawer-content">

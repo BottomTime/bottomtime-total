@@ -16,6 +16,7 @@ import { DiveOperatorSocials } from './dive-operator-socials';
 
 export class DiveOperator {
   readonly socials: DiveOperatorSocials;
+  private newSlug: string | undefined;
 
   constructor(
     private readonly operators: Repository<DiveOperatorEntity>,
@@ -83,24 +84,24 @@ export class DiveOperator {
   }
 
   get slug(): string {
-    return this.data.slug;
+    return this.newSlug || this.data.slug;
   }
   set slug(value: string) {
-    this.data.slug = value.toLowerCase();
+    this.newSlug = value.trim().toLowerCase();
   }
 
-  get description(): string | undefined {
-    return this.data.description ?? undefined;
+  get description(): string {
+    return this.data.description ?? '';
   }
-  set description(value: string | undefined) {
-    this.data.description = value ?? null;
+  set description(value: string) {
+    this.data.description = value;
   }
 
-  get address(): string | undefined {
-    return this.data.address ?? undefined;
+  get address(): string {
+    return this.data.address ?? '';
   }
-  set address(value: string | undefined) {
-    this.data.address = value ?? null;
+  set address(value: string) {
+    this.data.address = value;
   }
 
   get phone(): string | undefined {
@@ -150,7 +151,15 @@ export class DiveOperator {
     }
 
     this.data.updatedAt = new Date();
-    await this.operators.save(this.data);
+    await this.operators.save({
+      ...this.data,
+      slug: this.newSlug || this.data.slug,
+    });
+
+    if (this.newSlug) {
+      this.data.slug = this.newSlug;
+      this.newSlug = undefined;
+    }
   }
 
   async delete(): Promise<boolean> {

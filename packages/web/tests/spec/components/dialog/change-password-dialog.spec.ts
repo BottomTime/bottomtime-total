@@ -1,4 +1,8 @@
-import { flushPromises, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
 import { nextTick } from 'vue';
 
@@ -15,8 +19,18 @@ const CancelSelector = '[data-testid="cancel-change-password"]';
 const ToggleShowPasswordSelector = '[data-testid="toggle-show-password"]';
 
 describe('Change Password dialog', () => {
+  let opts: ComponentMountingOptions<typeof ChangePasswordDialog>;
+
+  beforeEach(() => {
+    opts = {
+      global: {
+        stubs: { teleport: true },
+      },
+    };
+  });
+
   it('will not render if visible is false', () => {
-    const wrapper = mount(ChangePasswordDialog);
+    const wrapper = mount(ChangePasswordDialog, opts);
     expect(wrapper.find('[data-testid="dialog-modal"]').exists()).toBe(false);
   });
 
@@ -25,6 +39,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     await wrapper.get('[data-testid="dialog-close-button"]').trigger('click');
@@ -38,6 +53,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     await wrapper.get(CancelSelector).trigger('click');
@@ -51,6 +67,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     expect(wrapper.get(OldPasswordSelector).attributes('type')).toBe(
@@ -69,6 +86,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     await wrapper.get(OldPasswordSelector).setValue(OldPassword);
@@ -87,6 +105,7 @@ describe('Change Password dialog', () => {
         visible: true,
         requireOldPassword: false,
       },
+      ...opts,
     });
 
     await wrapper.get(NewPasswordSelector).setValue(StrongPassword);
@@ -105,13 +124,13 @@ describe('Change Password dialog', () => {
         visible: true,
         showPassword: true,
       },
+      ...opts,
     });
 
-    const newPasswordInput = wrapper.get(NewPasswordSelector);
-    expect(newPasswordInput.attributes('type')).toBe('text');
+    expect(wrapper.get(NewPasswordSelector).attributes('type')).toBe('text');
 
     await wrapper.get(OldPasswordSelector).setValue(OldPassword);
-    await newPasswordInput.setValue(StrongPassword);
+    await wrapper.get(NewPasswordSelector).setValue(StrongPassword);
     await wrapper.get(ConfirmSelector).trigger('click');
 
     await flushPromises();
@@ -125,28 +144,32 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
-    const oldPasswordInput = wrapper.get(OldPasswordSelector);
-    const newPasswordInput = wrapper.get(NewPasswordSelector);
-
-    await oldPasswordInput.setValue(OldPassword);
-    await newPasswordInput.setValue(StrongPassword);
+    await wrapper.get(OldPasswordSelector).setValue(OldPassword);
+    await wrapper.get(NewPasswordSelector).setValue(StrongPassword);
     await wrapper.get(ConfirmPasswordSelector).setValue(StrongPassword);
 
     const toggleButton = wrapper.get(ToggleShowPasswordSelector);
     await toggleButton.trigger('click');
     await flushPromises();
 
-    expect(oldPasswordInput.attributes('type')).toBe('password');
-    expect(newPasswordInput.attributes('type')).toBe('text');
+    expect(wrapper.get(OldPasswordSelector).attributes('type')).toBe(
+      'password',
+    );
+    expect(wrapper.get(NewPasswordSelector).attributes('type')).toBe('text');
     expect(wrapper.find(ConfirmPasswordSelector).exists()).toBe(false);
 
     await toggleButton.trigger('click');
     await flushPromises();
 
-    expect(oldPasswordInput.attributes('type')).toBe('password');
-    expect(newPasswordInput.attributes('type')).toBe('password');
+    expect(wrapper.get(OldPasswordSelector).attributes('type')).toBe(
+      'password',
+    );
+    expect(wrapper.get(NewPasswordSelector).attributes('type')).toBe(
+      'password',
+    );
     expect(wrapper.get(ConfirmPasswordSelector).isVisible()).toBe(true);
   });
 
@@ -155,6 +178,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     await wrapper.get(ConfirmSelector).trigger('click');
@@ -178,6 +202,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     await wrapper.get(OldPasswordSelector).setValue(OldPassword);
@@ -197,6 +222,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     await wrapper.get(OldPasswordSelector).setValue(OldPassword);
@@ -216,6 +242,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     await wrapper.get(NewPasswordSelector).setValue('weak sauce');
@@ -255,6 +282,7 @@ describe('Change Password dialog', () => {
       props: {
         visible: true,
       },
+      ...opts,
     });
 
     await wrapper.get(OldPasswordSelector).setValue(OldPassword);

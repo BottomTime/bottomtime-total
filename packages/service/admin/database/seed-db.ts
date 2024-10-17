@@ -9,7 +9,7 @@ export async function seedDatabase(postgresUri: string, requireSsl: boolean) {
   let ds: DataSource | undefined;
 
   try {
-    console.log('Connecting to MongoDb...');
+    console.log('Connecting to database...');
     ds = await getDataSource(postgresUri, requireSsl);
 
     console.log('Generating system tank profiles...');

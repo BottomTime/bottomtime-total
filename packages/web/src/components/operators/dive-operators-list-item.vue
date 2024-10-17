@@ -12,6 +12,7 @@
           type="link"
           size="2xl"
           :test-id="`select-${operator.slug || operator.id}`"
+          @click="$emit('select', operator)"
         >
           <span class="capitalize">{{ operator.name }}</span>
         </FormButton>
@@ -181,4 +182,7 @@ interface DiveOperatorsListItemProps {
 }
 
 defineProps<DiveOperatorsListItemProps>();
+defineEmits<{
+  (e: 'select', operator: DiveOperatorDTO): void;
+}>();
 </script>

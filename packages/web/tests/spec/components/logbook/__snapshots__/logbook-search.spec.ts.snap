@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LogbookSearch component will render correctly with no params 1`] = `
-"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-sm shadow-grey-600 opacity-100 sticky top-20 flex flex-col gap-3">
+"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-sm shadow-grey-600 sticky top-20 flex flex-col gap-3">
   <form>
     <div class="space-y-0 mb-2 last:mb-4" responsive="false">
       <!--v-if-->
       <div class="grow w-full pl-2">
         <div class="relative">
-          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
+          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
             <!--v-if-->
           </div><button class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"><span><i class="fa-solid fa-magnifying-glass"></i></span></button>
         </div>
@@ -87,13 +87,13 @@ exports[`LogbookSearch component will render correctly with no params 1`] = `
 `;
 
 exports[`LogbookSearch component will render correctly with params 1`] = `
-"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-sm shadow-grey-600 opacity-100 sticky top-20 flex flex-col gap-3">
+"<div class="bg-blue-300 dark:bg-blue-900 p-3 rounded-md shadow-sm shadow-grey-600 sticky top-20 flex flex-col gap-3">
   <form>
     <div class="space-y-0 mb-2 last:mb-4" responsive="false">
       <!--v-if-->
       <div class="grow w-full pl-2">
         <div class="relative">
-          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
+          <div class="flex"><input id="searchQuery" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search..." data-testid="search-query">
             <!--v-if-->
           </div><button class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"><span><i class="fa-solid fa-magnifying-glass"></i></span></button>
         </div>

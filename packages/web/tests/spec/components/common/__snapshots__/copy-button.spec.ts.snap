@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CopyButton copmonent will show the notification at the bottom of the button 1`] = `"absolute px-3 z-[600] rounded-full bg-primary-dark text-grey-100 text-sm opacity-100 transition-opacity transition-duration-300 top-[120%] left-[50%] translate-x-[-50%]"`;
+
+exports[`CopyButton copmonent will show the notification at the left of the button 1`] = `"absolute px-3 z-[600] rounded-full bg-primary-dark text-grey-100 text-sm opacity-100 transition-opacity transition-duration-300 top-0 right-[120%]"`;
+
+exports[`CopyButton copmonent will show the notification at the right of the button 1`] = `"absolute px-3 z-[600] rounded-full bg-primary-dark text-grey-100 text-sm opacity-100 transition-opacity transition-duration-300 top-0 left-[120%]"`;
+
+exports[`CopyButton copmonent will show the notification at the top of the button 1`] = `"absolute px-3 z-[600] rounded-full bg-primary-dark text-grey-100 text-sm opacity-100 transition-opacity transition-duration-300 bottom-[120%] left-[50%] translate-x-[-50%]"`;

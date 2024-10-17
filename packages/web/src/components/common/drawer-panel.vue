@@ -3,7 +3,7 @@
   <Transition name="backdrop">
     <div
       v-if="visible"
-      class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-30"
+      class="fixed top-0 left-0 w-full h-full backdrop-blur-sm z-[30]"
       data-testid="drawer-backdrop"
       @click="onClose"
     ></div>
@@ -22,7 +22,7 @@
         class="flex flex-initial flex-row gap-3 items-center"
         data-testid="drawer-title"
       >
-        <p class="font-title dark:text-blue-200 text-4xl grow">
+        <p class="font-title dark:text-blue-200 text-4xl grow capitalize">
           {{ title }}
         </p>
         <a

@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ViewDiveOperator component will render with all properties 1`] = `
+"<div class="flex gap-6" data-testid="view-operator-section">
+  <div>(logo)</div>
+  <article class="space-y-3">
+    <p class="bg-success rounded-full px-2 text-xl font-title flex items-baseline gap-2 w-fit"><span><i class="fa-solid fa-check"></i></span><span>Verified!</span></p>
+    <p class="text-lg">Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
+      Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-2 px-3">
+        <h3 class="text-lg font-bold font-title">Contact Info</h3>
+        <p class="space-x-2"><span><i class="fa-solid fa-map-marker-alt fa-xs fa-fw"></i></span><span class="sr-only">Address</span><span>6713 Ritchie Key Apt. 697, Suffolk, LA, 43097</span></p>
+        <p class="space-x-2"><span><i class="fa-solid fa-phone fa-xs fa-fw"></i></span><span class="sr-only">Phone Number</span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="tel:+19368100307;ext=63779">+1 936 810 0307 ext. 63779</a></p>
+        <p class="space-x-2"><span><i class="fa-solid fa-envelope fa-xs fa-fw"></i></span><span class="sr-only">Email</span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="mailto:Elizabeth_Ernser@hotmail.com">Elizabeth_Ernser@hotmail.com</a></p>
+        <p class="space-x-2"><span><i class="fa-solid fa-globe fa-xs fa-fw"></i></span><span class="sr-only">Website</span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://euphoric-controversy.com" target="_blank">https://euphoric-controversy.com</a></p>
+      </div>
+      <div class="space-y-2 px-3">
+        <h3 class="text-lg font-bold font-title">Socials</h3>
+        <p class="space-x-2"><span><i class="fa-brands fa-facebook fa-xs fa-fw"></i></span><span class="sr-only">Facebook</span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://facebook.com/Nestor34/" target="_blank">Nestor34</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-instagram fa-xs fa-fw"></i></span><span class="sr-only">Instagram</span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://instagram.com/Warren7/" target="_blank">Warren7</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-tiktok fa-xs fa-fw"></i></span><span class="sr-only">TikTok</span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://tiktok.com/@Rickey.Steuber/" target="_blank">Rickey.Steuber</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-x-twitter fa-xs fa-fw"></i></span><span class="sr-only">X</span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://x.com/Pierre_Rogahn/" target="_blank">Pierre_Rogahn</a></p>
+        <p class="space-x-2"><span><i class="fa-brands fa-youtube fa-xs fa-fw"></i></span><span class="sr-only">YouTube</span><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://youtube.com/channel/squeaky_osmosis/" target="_blank">squeaky_osmosis</a></p>
+      </div>
+    </div>
+  </article>
+</div>"
+`;
+
+exports[`ViewDiveOperator component will render with partial properties 1`] = `
+"<div class="flex gap-6" data-testid="view-operator-section">
+  <div>(logo)</div>
+  <article class="space-y-3">
+    <!--v-if-->
+    <p class="text-lg">Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
+      Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-2 px-3">
+        <h3 class="text-lg font-bold font-title">Contact Info</h3>
+        <p class="space-x-2"><span><i class="fa-solid fa-map-marker-alt fa-xs fa-fw"></i></span><span class="sr-only">Address</span><span>6713 Ritchie Key Apt. 697, Suffolk, LA, 43097</span></p>
+        <!--v-if-->
+        <!--v-if-->
+        <!--v-if-->
+      </div>
+      <!--v-if-->
+    </div>
+  </article>
+</div>"
+`;

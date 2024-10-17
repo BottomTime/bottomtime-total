@@ -37,6 +37,7 @@ describe('RequireAnon component', () => {
         provide: {
           [LocationKey as symbol]: location,
         },
+        stubs: { teleport: true },
       },
       slots: {
         default: AnonContent,

@@ -7,7 +7,7 @@ exports[`Static Views will render Cookie Policy 1`] = `
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
   <li><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">Home</a></li>
-  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="text-grey-800 dark:text-grey-200">Cookie Policy</span></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Cookie Policy</span></li>
 </ul>
 <div class="flex flex-col gap-4">
   <p class="font-bold">Effective Date: February 14, 2024</p>
@@ -46,7 +46,7 @@ exports[`Static Views will render Privacy Policy 1`] = `
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
   <li><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">Home</a></li>
-  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="text-grey-800 dark:text-grey-200">Privacy Policy</span></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Privacy Policy</span></li>
 </ul>
 <div class="flex flex-col gap-4">
   <p class="font-bold">Effective Date: February 14, 2024</p>
@@ -119,7 +119,7 @@ exports[`Static Views will render Terms of Service 1`] = `
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
   <li><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">Home</a></li>
-  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="text-grey-800 dark:text-grey-200">Terms of Service</span></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Terms of Service</span></li>
 </ul>
 <div class="space-y-4">
   <p class="font-bold">Effective Date: February 14, 2024</p>

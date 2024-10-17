@@ -2,7 +2,7 @@
 
 exports[`FormSearchBox component will render correctly 1`] = `
 "<div class="relative">
-  <div class="flex"><input id="search-box" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" maxlength="200" placeholder="Search" data-testid="search-box">
+  <div class="flex"><input id="search-box" type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" maxlength="200" placeholder="Search" data-testid="search-box">
     <!--v-if-->
   </div><button class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"><span><i class="fa-solid fa-magnifying-glass"></i></span></button>
 </div>"
@@ -10,7 +10,7 @@ exports[`FormSearchBox component will render correctly 1`] = `
 
 exports[`FormSearchBox component will render correctly with a query value 1`] = `
 "<div class="relative">
-  <div class="flex"><input type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search...">
+  <div class="flex"><input type="text" class="px-2 py-1 w-full  bg-grey-200 dark:bg-grey-300 border border-grey-600 ring-0 rounded-lg text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500" placeholder="Search...">
     <!--v-if-->
   </div><button class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-8 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"><span><i class="fa-solid fa-magnifying-glass"></i></span></button>
 </div>"

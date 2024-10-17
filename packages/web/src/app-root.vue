@@ -1,8 +1,12 @@
 <template>
   <SnackBar />
+
   <div
     class="md:container mx-auto font-content text-grey-900 bg-blue-200 dark:text-grey-100 dark:bg-blue-950 rounded-b-xl shadow-md shadow-white dark:shadow-grey-700 opacity-95"
   >
+    <!-- Placeholder element. Modal dialogs will be "teleported" here to get the z-indexing right. -->
+    <div id="modal"></div>
+
     <section class="mt-16 p-4">
       <RouterView></RouterView>
     </section>

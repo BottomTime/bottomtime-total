@@ -2,7 +2,7 @@
   <textarea
     :id="controlId"
     v-model="value"
-    :class="`px-2 py-1 w-full appearance-none ${resize} bg-grey-200 dark:bg-grey-300 disabled:bg-grey-400 disabled:dark:bg-grey-500 border-2 border-${highlightColour} rounded-md text-grey-950 disabled:text-grey-700 focus:ring-2 focus:ring-${highlightColour} placeholder-grey-700 caret-${highlightColour}`"
+    :class="`px-2 py-1 w-full appearance-none ${resize} bg-grey-200 dark:bg-grey-300 disabled:bg-grey-400 disabled:dark:bg-grey-500 border-2 border-${highlightColour} rounded-md text-grey-950 disabled:text-grey-700 focus:ring-2 focus:ring-${highlightColour} placeholder-grey-500 caret-${highlightColour}`"
     :rows="rows"
     :cols="cols"
     :maxlength="maxlength"

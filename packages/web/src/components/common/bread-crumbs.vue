@@ -11,11 +11,15 @@
         <i class="fas fa-angle-right"></i>
       </span>
 
-      <span v-if="item.active" class="text-grey-800 dark:text-grey-200">
+      <span
+        v-if="item.active"
+        class="capitalize text-grey-800 dark:text-grey-200"
+      >
         {{ itemLabel(item) }}
       </span>
       <NavLink
         v-else-if="item.to"
+        class="capitalize"
         :to="typeof item.to === 'string' ? item.to : item.to.value"
       >
         {{ itemLabel(item) }}

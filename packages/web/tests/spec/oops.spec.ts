@@ -48,6 +48,7 @@ function testOops(
     mount(testComponent, {
       global: {
         plugins: [pinia, router],
+        stubs: { teleport: true },
       },
     });
   });

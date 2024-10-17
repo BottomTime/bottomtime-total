@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormLocationSelect component will render correctly with no value 1`] = `
+"<teleport-stub to="#modal">
+  <transition-stub name="backdrop" appear="false" persisted="false" css="true">
+    <!--v-if-->
+  </transition-stub>
+  <!--v-if-->
+</teleport-stub>
+<!--v-if-->
+<div class="flex gap-2 ml-6"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
+    <!--v-if--><span class="text-xs">Select location... </span>
+  </button>
+  <!--v-if-->
+</div>"
+`;
+
+exports[`FormLocationSelect component will render correctly with radius slider 1`] = `
+"<teleport-stub to="#modal">
+  <transition-stub name="backdrop" appear="false" persisted="false" css="true">
+    <!--v-if-->
+  </transition-stub>
+  <!--v-if-->
+</teleport-stub>
+<div class="text-sm my-2">
+  <p class="space-x-2"><span class="text-danger"><i class="fa-solid fa-map-marker-alt fa-fw"></i></span><label class="font-bold">Coordinates</label></p>
+  <p class="ml-6"><span>25.915738052691395, -80.07950492939037</span></p>
+  <p class="space-x-2"><span><i class="fa-solid fa-ruler-horizontal fa-fw"></i></span><label class="font-bold">Range:</label></p>
+  <p class="ml-6 flex gap-2 items-center">
+  <div class="flex gap-2 items-baseline align-baseline w-full"><input class="grow appearance-none h-2 rounded-full bg-grey-300 dark:bg-grey-400 cursor-pointer accent-blue-500 hover:dark:accent-blue-400 hover:accent-blue-600" type="range" min="10" max="500" step="10">
+    <!--v-if-->
+  </div><span class="text-nowrap text-right min-w-10">80 km </span></p>
+</div>
+<div class="flex gap-2 ml-6"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
+    <!--v-if--><span class="text-xs">Change location... </span>
+  </button><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
+    <!--v-if--><span class="text-xs">Clear location</span>
+  </button></div>"
+`;
+
+exports[`FormLocationSelect component will render correctly without radius slider 1`] = `
+"<teleport-stub to="#modal">
+  <transition-stub name="backdrop" appear="false" persisted="false" css="true">
+    <!--v-if-->
+  </transition-stub>
+  <!--v-if-->
+</teleport-stub>
+<div class="text-sm my-2">
+  <p class="space-x-2"><span class="text-danger"><i class="fa-solid fa-map-marker-alt fa-fw"></i></span><label class="font-bold">Coordinates</label></p>
+  <p class="ml-6"><span>25.915738052691395, -80.07950492939037</span></p>
+  <!--v-if-->
+</div>
+<div class="flex gap-2 ml-6"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
+    <!--v-if--><span class="text-xs">Change location... </span>
+  </button><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
+    <!--v-if--><span class="text-xs">Clear location</span>
+  </button></div>"
+`;

@@ -16,7 +16,9 @@ describe('Page Footer component', () => {
   });
 
   it('will render correctly', () => {
-    const wrapper = mount(PageFooter);
+    const wrapper = mount(PageFooter, {
+      global: { stubs: { teleport: true } },
+    });
     expect(wrapper.html()).toMatchSnapshot();
   });
 });

@@ -73,6 +73,7 @@ describe('Users List component', () => {
       provide: {
         [ApiClientKey as symbol]: client,
       },
+      stubs: { teleport: true },
     };
   });
 

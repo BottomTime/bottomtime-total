@@ -177,6 +177,10 @@ describe('Dive Operators E2E tests', () => {
     it('will create a new dive operator with minimal options', async () => {
       const options: CreateOrUpdateDiveOperatorDTO = {
         name: 'Groundhog Divers',
+        description: 'A sweet dive shop!',
+        address: '111 Street St, Toronto, ON',
+        slug: 'groundhog-divers',
+        socials: {},
       };
       const { body } = await request(server)
         .post(getUrl())
@@ -308,6 +312,8 @@ describe('Dive Operators E2E tests', () => {
       existing.id = '898ae1ca-87ae-4d4b-8803-01aaaf1dceec';
       existing.name = 'Other Operator';
       existing.slug = 'groundhog-divers';
+      existing.description = 'A new dive shop';
+      existing.address = '123 Street St.';
       existing.owner = regularUser;
       await Operators.save(existing);
 
@@ -316,6 +322,9 @@ describe('Dive Operators E2E tests', () => {
         .set(...regularUserAuthHeader)
         .send({
           name: 'Groundhog Divers',
+          slug: existing.slug,
+          description: 'Updaded description',
+          address: existing.address,
         })
         .expect(409);
     });
@@ -551,6 +560,8 @@ describe('Dive Operators E2E tests', () => {
         .send({
           name: 'Groundhog Divers',
           slug: 'taken-slug',
+          description: 'New description',
+          address: '666 Funtime Lane',
         })
         .expect(409);
     });
