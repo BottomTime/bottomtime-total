@@ -60,6 +60,7 @@ describe('DiveOperatorService', () => {
   describe('when creating a new operator', () => {
     it('will create a new operator with minimal properties', async () => {
       const options: CreateDiveOperatorOptions = {
+        active: true,
         name: "Bill's Dive Shop",
         address: '123 Main St',
         description: 'The best dive shop in town!',
@@ -87,6 +88,7 @@ describe('DiveOperatorService', () => {
 
     it('will create a new operator with full properties', async () => {
       const options: CreateDiveOperatorOptions = {
+        active: true,
         name: "Bill's Dive Shop",
         slug: 'bills-dive-shop',
         address: '123 Main St',
@@ -190,6 +192,7 @@ describe('DiveOperatorService', () => {
   describe('when searching for operators', () => {
     let owners: UserEntity[];
     let searchData: DiveOperatorEntity[];
+    let activeOperatorsCount: number;
 
     beforeAll(() => {
       owners = TestOwners.slice(0, 80).map((user) => parseUserJSON(user));
@@ -198,6 +201,7 @@ describe('DiveOperatorService', () => {
         data.owner = owners[index % owners.length];
         return data;
       });
+      activeOperatorsCount = searchData.filter((op) => op.active).length;
     });
 
     beforeEach(async () => {
@@ -208,7 +212,7 @@ describe('DiveOperatorService', () => {
     it('will perform a basic search with no parameters', async () => {
       const results = await service.searchOperators();
       expect(results.operators).toHaveLength(50);
-      expect(results.totalCount).toBe(searchData.length);
+      expect(results.totalCount).toBe(activeOperatorsCount);
       expect(results.operators[0]).toMatchSnapshot();
       expect(results.operators.map((op) => op.name)).toMatchSnapshot();
     });
@@ -216,7 +220,7 @@ describe('DiveOperatorService', () => {
     it('will perform a search with pagination', async () => {
       const results = await service.searchOperators({ skip: 40, limit: 20 });
       expect(results.operators).toHaveLength(20);
-      expect(results.totalCount).toBe(searchData.length);
+      expect(results.totalCount).toBe(activeOperatorsCount);
       expect(results.operators.map((op) => op.name)).toMatchSnapshot();
     });
 
@@ -258,6 +262,21 @@ describe('DiveOperatorService', () => {
         totalCount: results.totalCount,
         operators: results.operators.map((op) => op.name),
       }).toMatchSnapshot();
+    });
+
+    it('will perform a search for dive operators including inactive operators', async () => {
+      const results = await service.searchOperators({
+        showInactive: true,
+      });
+
+      expect(results.operators).toHaveLength(50);
+      expect(results.totalCount).toBe(TestData.length);
+      expect(
+        results.operators.map((op) => ({
+          name: op.name,
+          owner: op.owner.username,
+        })),
+      ).toMatchSnapshot();
     });
   });
 });

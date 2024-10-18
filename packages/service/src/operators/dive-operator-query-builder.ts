@@ -7,6 +7,7 @@ import { User } from '../users';
 
 export const DiveOperatorSelectFields = [
   'operators.id',
+  'operators.active',
   'operators.createdAt',
   'operators.updatedAt',
   'operators.address',
@@ -36,6 +37,7 @@ export const DiveOperatorSelectFields = [
 
 export class DiveOperatorQueryBuilder {
   private query: SelectQueryBuilder<DiveOperatorEntity>;
+  private showInactive: boolean | undefined;
 
   constructor(operators: Repository<DiveOperatorEntity>) {
     this.query = operators
@@ -46,6 +48,9 @@ export class DiveOperatorQueryBuilder {
   }
 
   build(): SelectQueryBuilder<DiveOperatorEntity> {
+    if (!this.showInactive) {
+      return this.query.andWhere('operators.active = true');
+    }
     return this.query;
   }
 
@@ -74,6 +79,11 @@ export class DiveOperatorQueryBuilder {
 
   withPagination(skip?: number, limit?: number): this {
     this.query = this.query.skip(skip ?? 0).take(limit ?? 50);
+    return this;
+  }
+
+  withShowInactive(showInactive?: boolean): this {
+    this.showInactive = showInactive;
     return this;
   }
 
