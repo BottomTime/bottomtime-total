@@ -68,6 +68,11 @@ export class DiveOperatorQueryBuilder {
     return this;
   }
 
+  withInactive(showInactive?: boolean): this {
+    this.showInactive = showInactive;
+    return this;
+  }
+
   withOwner(owner?: User): this {
     if (owner) {
       this.query = this.query.andWhere('owner.id = :ownerId', {

@@ -275,6 +275,7 @@ describe('DiveOperatorService', () => {
         results.operators.map((op) => ({
           name: op.name,
           owner: op.owner.username,
+          active: op.active,
         })),
       ).toMatchSnapshot();
     });

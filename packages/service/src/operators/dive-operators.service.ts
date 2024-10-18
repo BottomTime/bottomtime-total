@@ -89,6 +89,7 @@ export class DiveOperatorsService {
   }> {
     const query = new DiveOperatorQueryBuilder(this.operators)
       .withGeoLocation(options?.location, options?.radius)
+      .withInactive(options?.showInactive)
       .withOwner(options?.owner)
       .withPagination(options?.skip, options?.limit)
       .withTextSearch(options?.query)

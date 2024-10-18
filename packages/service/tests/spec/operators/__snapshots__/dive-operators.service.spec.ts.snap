@@ -178,6 +178,261 @@ exports[`DiveOperatorService when searching for operators will perform a basic s
 ]
 `;
 
+exports[`DiveOperatorService when searching for operators will perform a search for dive operators including inactive operators 1`] = `
+[
+  {
+    "active": true,
+    "name": "absolute, testy prairie",
+    "owner": "Audreanne.Larkin79",
+  },
+  {
+    "active": true,
+    "name": "acceptable, rotten efficacy",
+    "owner": "Jeffry_Kuphal38",
+  },
+  {
+    "active": true,
+    "name": "adventurous, ripe flintlock",
+    "owner": "Steve54",
+  },
+  {
+    "active": false,
+    "name": "ajar, shady win",
+    "owner": "Ken17",
+  },
+  {
+    "active": true,
+    "name": "annual, crowded editor",
+    "owner": "Ken17",
+  },
+  {
+    "active": true,
+    "name": "another, upset harbour",
+    "owner": "Malcolm89",
+  },
+  {
+    "active": true,
+    "name": "apt, dearest croissant",
+    "owner": "Clarabelle_Funk69",
+  },
+  {
+    "active": true,
+    "name": "apt, wicked aluminium",
+    "owner": "Jamison_Veum",
+  },
+  {
+    "active": true,
+    "name": "arid, broken secretary",
+    "owner": "Jewel12",
+  },
+  {
+    "active": true,
+    "name": "athletic, poised cursor",
+    "owner": "Lurline96",
+  },
+  {
+    "active": true,
+    "name": "average, mad gondola",
+    "owner": "Logan41",
+  },
+  {
+    "active": true,
+    "name": "awesome, pertinent spume",
+    "owner": "Brigitte.Kihn",
+  },
+  {
+    "active": true,
+    "name": "baggy, measly tempo",
+    "owner": "Bryce_Thompson97",
+  },
+  {
+    "active": true,
+    "name": "beneficial, knowledgeable gold",
+    "owner": "Trey.Langosh",
+  },
+  {
+    "active": true,
+    "name": "bite-sized, pitiful entree",
+    "owner": "Lurline96",
+  },
+  {
+    "active": true,
+    "name": "bite-sized, unlined query",
+    "owner": "Aiyana.McCullough",
+  },
+  {
+    "active": true,
+    "name": "black, considerate hypothermia",
+    "owner": "Eleonore.Hilpert",
+  },
+  {
+    "active": true,
+    "name": "bland, giant exhaust",
+    "owner": "Jaqueline19",
+  },
+  {
+    "active": true,
+    "name": "blue, evergreen fraudster",
+    "owner": "Larue_Denesik32",
+  },
+  {
+    "active": true,
+    "name": "bogus, thorny macaroni",
+    "owner": "Stephany76",
+  },
+  {
+    "active": true,
+    "name": "brief, interesting chairman",
+    "owner": "Kendra.Haag",
+  },
+  {
+    "active": true,
+    "name": "bumpy, lean hospitalisation",
+    "owner": "Donnell_Abbott",
+  },
+  {
+    "active": true,
+    "name": "careful, worse baboon",
+    "owner": "Aiyana.McCullough",
+  },
+  {
+    "active": true,
+    "name": "cautious, well-to-do supreme",
+    "owner": "Danielle56",
+  },
+  {
+    "active": true,
+    "name": "charming, linear analysis",
+    "owner": "Okey84",
+  },
+  {
+    "active": true,
+    "name": "chief, smug blogger",
+    "owner": "Jewel12",
+  },
+  {
+    "active": true,
+    "name": "clear-cut, shady bend",
+    "owner": "Caesar71",
+  },
+  {
+    "active": true,
+    "name": "close, sizzling sugar",
+    "owner": "Gerald79",
+  },
+  {
+    "active": true,
+    "name": "clumsy, unripe maintainer",
+    "owner": "Ashlynn_Kreiger86",
+  },
+  {
+    "active": true,
+    "name": "composed, hungry potato",
+    "owner": "Marie28",
+  },
+  {
+    "active": false,
+    "name": "confused, steel rocker",
+    "owner": "Lorenz59",
+  },
+  {
+    "active": true,
+    "name": "considerate, organic spool",
+    "owner": "Drew75",
+  },
+  {
+    "active": true,
+    "name": "content, formal clavicle",
+    "owner": "Larue_Denesik32",
+  },
+  {
+    "active": true,
+    "name": "conventional, empty wallaby",
+    "owner": "Delphia.Rohan22",
+  },
+  {
+    "active": true,
+    "name": "cooked, well-to-do ghost",
+    "owner": "Liliane94",
+  },
+  {
+    "active": true,
+    "name": "crafty, roasted eligibility",
+    "owner": "Amara.Cummings13",
+  },
+  {
+    "active": true,
+    "name": "creative, slim escape",
+    "owner": "Ashly71",
+  },
+  {
+    "active": true,
+    "name": "creepy, precious butane",
+    "owner": "Rene47",
+  },
+  {
+    "active": true,
+    "name": "creepy, unusual ephemera",
+    "owner": "Aaron_Wehner28",
+  },
+  {
+    "active": true,
+    "name": "cute, delirious wound",
+    "owner": "Dorothy.Hahn",
+  },
+  {
+    "active": true,
+    "name": "cute, emotional chord",
+    "owner": "Jakob_Goyette",
+  },
+  {
+    "active": true,
+    "name": "daring, delectable proliferation",
+    "owner": "Audreanne.Larkin79",
+  },
+  {
+    "active": true,
+    "name": "darling, insistent sparrow",
+    "owner": "Sigurd_Reinger55",
+  },
+  {
+    "active": false,
+    "name": "decisive, shrill trail",
+    "owner": "Jacey_Bernier",
+  },
+  {
+    "active": true,
+    "name": "defensive, mealy choice",
+    "owner": "Rhianna.Terry",
+  },
+  {
+    "active": true,
+    "name": "delightful, tense pound",
+    "owner": "Julia15",
+  },
+  {
+    "active": true,
+    "name": "descriptive, same infancy",
+    "owner": "Jett_Block95",
+  },
+  {
+    "active": false,
+    "name": "descriptive, terrible today",
+    "owner": "Alessia.Upton8",
+  },
+  {
+    "active": true,
+    "name": "direct, lustrous slang",
+    "owner": "Felton36",
+  },
+  {
+    "active": true,
+    "name": "dirty, flimsy buck",
+    "owner": "Donnell51",
+  },
+]
+`;
+
 exports[`DiveOperatorService when searching for operators will perform a search for dive operators near a given location 1`] = `
 {
   "length": 5,

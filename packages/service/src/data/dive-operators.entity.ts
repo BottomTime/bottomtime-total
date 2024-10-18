@@ -38,6 +38,7 @@ export class DiveOperatorEntity {
   maintainers?: UserEntity[];
 
   @Column({ type: 'boolean', nullable: false, default: true })
+  @Index()
   active: boolean = true;
 
   // Contact Info
