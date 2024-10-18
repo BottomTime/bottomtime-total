@@ -152,6 +152,7 @@ async function updateExistingOperator(
     ...operators.currentDiveOperator,
   });
 
+  operator.active = update.active;
   operator.address = update.address;
   operator.description = update.description;
   operator.email = update.email;

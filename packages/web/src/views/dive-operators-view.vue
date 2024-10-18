@@ -212,6 +212,7 @@ async function onSaveOperator(
       if (state.currentOperator?.id) {
         // Save existing
         const operator = client.diveOperators.wrapDTO(state.currentOperator);
+        operator.active = dto.active;
         operator.name = dto.name;
         operator.slug = dto.slug;
         operator.description = dto.description;

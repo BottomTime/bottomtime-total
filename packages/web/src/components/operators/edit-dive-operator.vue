@@ -131,6 +131,20 @@
               :invalid="v$.description.$error"
             />
           </FormField>
+
+          <FormField
+            label="Active"
+            required
+            control-id="operator-active"
+            :responsive="false"
+          >
+            <FormToggle
+              v-model="formData.active"
+              control-id="operator-active"
+              test-id="active"
+              :label="formData.active ? 'Active' : 'Inactive'"
+            />
+          </FormField>
         </div>
 
         <div>
@@ -355,11 +369,13 @@ import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
+import FormToggle from '../common/form-toggle.vue';
 import TextHeading from '../common/text-heading.vue';
 import AddressDialog from '../dialog/address-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 
 interface EditDiveOperatorFormData {
+  active: boolean;
   address: string;
   description: string;
   email: string;
@@ -382,6 +398,7 @@ interface EditDiveOperatorProps {
 
 function formDataFromDto(dto?: DiveOperatorDTO): EditDiveOperatorFormData {
   return {
+    active: typeof dto?.active === 'boolean' ? dto.active : true,
     address: dto?.address || '',
     description: dto?.description || '',
     email: dto?.email || '',
@@ -523,6 +540,7 @@ async function onSave(): Promise<void> {
 function onConfirmSave() {
   showConfirmChangeSlugDialog.value = false;
   const dto: CreateOrUpdateDiveOperatorDTO = {
+    active: formData.active,
     name: formData.name,
     address: formData.address,
     description: formData.description,
