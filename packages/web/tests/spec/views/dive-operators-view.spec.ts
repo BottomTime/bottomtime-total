@@ -239,6 +239,7 @@ describe('Dive operators view', () => {
       diveOperators.results.operators = [];
       diveOperators.results.totalCount = 0;
       const create: CreateOrUpdateDiveOperatorDTO = {
+        active: true,
         name: 'New Shop',
         slug: 'new-shop',
         gps: {
@@ -298,6 +299,7 @@ describe('Dive operators view', () => {
         owner: ShopOwner.profile,
       };
       const update: CreateOrUpdateDiveOperatorDTO = {
+        active: true,
         address: '1234 Main St',
         description: 'A new dive shop',
         name: 'New Shop',
@@ -341,6 +343,7 @@ describe('Dive operators view', () => {
         owner: ShopOwner.profile,
       };
       const update: CreateOrUpdateDiveOperatorDTO = {
+        active: true,
         address: '1234 Main St',
         description: 'A new dive shop',
         name: 'New Shop',

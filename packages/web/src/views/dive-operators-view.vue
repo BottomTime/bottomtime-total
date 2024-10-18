@@ -182,6 +182,7 @@ function onCreateShop() {
   if (!currentUser.user) return;
 
   state.currentOperator = {
+    active: true,
     createdAt: new Date(),
     id: '',
     name: '',

@@ -1,6 +1,7 @@
 import { DiveOperatorDTO, LogBookSharing } from '@bottomtime/api';
 
 export const BlankDiveOperator: DiveOperatorDTO = {
+  active: true,
   address: '',
   description: '',
   createdAt: new Date(),
@@ -23,6 +24,7 @@ export const BlankDiveOperator: DiveOperatorDTO = {
 };
 
 export const PartialDiveOperator: DiveOperatorDTO = {
+  active: true,
   createdAt: new Date('2024-01-10T10:54:08.909Z'),
   description:
     'Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.\nDolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.',
@@ -46,6 +48,7 @@ export const PartialDiveOperator: DiveOperatorDTO = {
 };
 
 export const FullDiveOperator: DiveOperatorDTO = {
+  active: true,
   createdAt: new Date('2024-01-10T10:54:08.909Z'),
   description:
     'Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.\nDolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.',
