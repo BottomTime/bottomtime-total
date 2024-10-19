@@ -162,7 +162,7 @@ describe('Users End-to-End Tests', () => {
 
     beforeEach(() => {
       jest
-        .spyOn(uuid, 'v4')
+        .spyOn(uuid, 'v7')
         .mockReturnValue('a99a1193-3ef4-4816-85ce-e717a42dc99f');
     });
 

@@ -18,7 +18,7 @@ import {
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 
 import { DataSource, LessThan, Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 
 import { FriendRequestEntity, FriendshipEntity, UserEntity } from '../data';
 import { User } from '../users';

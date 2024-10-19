@@ -7,7 +7,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { LessThan, Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 
 import { NotificationEntity, UserEntity } from '../data';
 import { Notification } from './notification';

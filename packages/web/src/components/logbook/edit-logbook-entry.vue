@@ -300,7 +300,7 @@ import { helpers, integer, required } from '@vuelidate/validators';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 import { computed, onBeforeMount, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 

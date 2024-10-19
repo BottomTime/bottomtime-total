@@ -14,7 +14,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 
 import {
   FriendRequestEntity,

@@ -10,7 +10,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../data';
 import { DiveSite, DiveSitesService } from '../diveSites';

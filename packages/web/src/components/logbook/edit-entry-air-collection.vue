@@ -48,7 +48,7 @@
 <script lang="ts" setup>
 import { PressureUnit, TankDTO } from '@bottomtime/api';
 
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 import { reactive } from 'vue';
 
 import { useCurrentUser } from '../../store';

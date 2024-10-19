@@ -14,7 +14,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { hash } from 'bcryptjs';
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 
 import { Config } from '../config';
 import { UserEntity } from '../data';

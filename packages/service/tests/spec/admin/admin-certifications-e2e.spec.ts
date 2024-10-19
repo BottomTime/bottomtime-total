@@ -201,7 +201,7 @@ describe('Certifications End-to-End', () => {
 
     beforeEach(() => {
       jest
-        .spyOn(uuid, 'v4')
+        .spyOn(uuid, 'v7')
         .mockReturnValue('b24ae74c-0802-47bb-9eab-a88574bb78df');
     });
 
