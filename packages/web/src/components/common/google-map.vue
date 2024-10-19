@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { DiveSiteDTO, GPSCoordinates, GpsCoordinates } from '@bottomtime/api';
 
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 import { onBeforeMount, ref, watch } from 'vue';
 
 import { Config } from '../../config';

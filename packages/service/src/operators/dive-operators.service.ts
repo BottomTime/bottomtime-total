@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import slugify from 'slugify';
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 
 import { DiveOperatorEntity } from '../data';
 import { User } from '../users';

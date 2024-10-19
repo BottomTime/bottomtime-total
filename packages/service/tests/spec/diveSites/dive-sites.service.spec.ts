@@ -165,7 +165,7 @@ describe('Dive Site Service', () => {
     });
 
     beforeEach(() => {
-      jest.spyOn(uuid, 'v4').mockReturnValue(GeneratedId);
+      jest.spyOn(uuid, 'v7').mockReturnValue(GeneratedId);
     });
 
     afterAll(() => {

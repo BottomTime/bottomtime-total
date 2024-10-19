@@ -8,7 +8,7 @@ import { hash } from 'bcryptjs';
 import prompts from 'prompts';
 import { UserEntity } from 'src/data';
 import { DataSource } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 import { z } from 'zod';
 
 import { getDataSource } from '../database/data-source';

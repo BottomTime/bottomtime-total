@@ -12,7 +12,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import dayjs from 'dayjs';
 import { MoreThan, Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
 import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';

@@ -241,7 +241,7 @@ describe('Dive Sites End-to-End Tests', () => {
         waterType: WaterType.Fresh,
       };
 
-      jest.spyOn(uuid, 'v4').mockReturnValue(siteId);
+      jest.spyOn(uuid, 'v7').mockReturnValue(siteId);
     });
 
     it('will create the new site and return the result', async () => {

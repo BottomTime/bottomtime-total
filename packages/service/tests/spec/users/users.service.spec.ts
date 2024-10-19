@@ -96,7 +96,7 @@ describe('Users Service', () => {
         doNotFake: ['nextTick', 'setImmediate'],
       });
       jest
-        .spyOn(uuid, 'v4')
+        .spyOn(uuid, 'v7')
         .mockReturnValue('0ee2c4ff-1013-45df-9f13-e45ed2db9555');
       jest
         .spyOn(bcrypt, 'hash')

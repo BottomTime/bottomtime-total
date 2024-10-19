@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v7 as uuid } from 'uuid';
 
 import {
   DiveSiteEntity,

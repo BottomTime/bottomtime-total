@@ -103,7 +103,7 @@ describe('EditEntryAirCollection component', () => {
 
   it('will emit add event when add tank button is clicked', async () => {
     const id = '84dd66c7-3edf-4b52-8a45-a299d7d5c587';
-    jest.spyOn(uuid, 'v4').mockReturnValue(id);
+    jest.spyOn(uuid, 'v7').mockReturnValue(id);
     const wrapper = mount(EditEntryAirCollection, opts);
     await wrapper.get(AddTankButton).trigger('click');
     expect(wrapper.emitted('add')).toEqual([
