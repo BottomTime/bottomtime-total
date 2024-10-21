@@ -2,6 +2,7 @@
 
 exports[`DiveOperator class will return a JSON representation of the dive operator 1`] = `
 {
+  "active": true,
   "address": "3 Bay St, Tobermory, ON N0H 2R0, Canada",
   "banner": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg",
   "createdAt": 2022-06-20T11:45:21.000Z,
@@ -44,6 +45,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
 
 exports[`DiveOperator class will return a succinct JSON representation of the dive operator 1`] = `
 {
+  "active": true,
   "address": "3 Bay St, Tobermory, ON N0H 2R0, Canada",
   "banner": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg",
   "createdAt": 2022-06-20T11:45:21.000Z,
