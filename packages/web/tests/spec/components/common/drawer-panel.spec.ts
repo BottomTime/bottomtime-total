@@ -13,6 +13,11 @@ describe('Drawer Panel component', () => {
       slots: {
         default: '<div>Test</div>',
       },
+      global: {
+        stubs: {
+          teleport: true,
+        },
+      },
     });
     expect(wrapper.html()).toMatchSnapshot();
   });
@@ -26,6 +31,11 @@ describe('Drawer Panel component', () => {
       },
       slots: {
         default: '<div>Test</div>',
+      },
+      global: {
+        stubs: {
+          teleport: true,
+        },
       },
     });
     await wrapper.find('[data-testid="drawer-close"]').trigger('click');
@@ -42,6 +52,11 @@ describe('Drawer Panel component', () => {
       slots: {
         default: '<div>Test</div>',
       },
+      global: {
+        stubs: {
+          teleport: true,
+        },
+      },
     });
     await wrapper.find('[data-testid="drawer-backdrop"]').trigger('click');
     expect(wrapper.emitted('close')).toBeTruthy();
@@ -56,6 +71,11 @@ describe('Drawer Panel component', () => {
       },
       slots: {
         default: '<div>Test</div>',
+      },
+      global: {
+        stubs: {
+          teleport: true,
+        },
       },
     });
     await wrapper.find('[data-testid="drawer-backdrop"]').trigger('click');
@@ -72,6 +92,11 @@ describe('Drawer Panel component', () => {
       slots: {
         default: '<div>Test</div>',
       },
+      global: {
+        stubs: {
+          teleport: true,
+        },
+      },
     });
     expect(wrapper.find('[data-testid="drawer-close"]').exists()).toBe(false);
   });
@@ -86,6 +111,11 @@ describe('Drawer Panel component', () => {
       },
       slots: {
         default: '<div>Test</div>',
+      },
+      global: {
+        stubs: {
+          teleport: true,
+        },
       },
     });
 

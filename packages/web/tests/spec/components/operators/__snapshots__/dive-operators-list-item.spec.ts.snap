@@ -17,16 +17,16 @@ exports[`DiveOperatorsListItem component will render with full properties 1`] = 
         <div class="flex gap-2"><span><i class="fa-solid fa-map-marker-alt"></i></span><label class="sr-only">Address</label>
           <p class="flex flex-col"><span>123 Street St.</span><span>1, -1</span></p>
         </div>
-        <div class="flex gap-2"><span><i class="fa-solid fa-phone"></i></span><label class="sr-only">Phone</label><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="tel:1 (111) 111-1111">1 (111) 111-1111</a></div>
-        <div class="flex gap-2"><span><i class="fa-solid fa-envelope"></i></span><label class="sr-only">Email</label><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="mailto:email@email.org">email@email.org</a></div>
-        <div class="flex gap-2"><span><i class="fa-solid fa-globe"></i></span><label class="sr-only">Website</label><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://site.com">https://site.com</a></div>
+        <div class="flex gap-2"><span><i class="fa-solid fa-phone"></i></span><label class="sr-only">Phone</label><a href="tel:1 (111) 111-1111">1 (111) 111-1111</a></div>
+        <div class="flex gap-2"><span><i class="fa-solid fa-envelope"></i></span><label class="sr-only">Email</label><a href="mailto:email@email.org">email@email.org</a></div>
+        <div class="flex gap-2"><span><i class="fa-solid fa-globe"></i></span><label class="sr-only">Website</label><a href="https://site.com">https://site.com</a></div>
       </div>
       <div class="space-y-1.5">
-        <div class="flex gap-2"><span><i class="fa-brands fa-facebook"></i></span><label class="sr-only">Facebook</label><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://facebook.com/facebook/" target="_blank">facebook</a></div>
-        <div class="flex gap-2"><span><i class="fa-brands fa-instagram"></i></span><label class="sr-only">Instagram</label><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://instagram.com/instagram/" target="_blank">instagram</a></div>
-        <div class="flex gap-2"><span><i class="fa-brands fa-tiktok"></i></span><label class="sr-only">TikTok</label><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://tiktok.com/@tiktok/" target="_blank">tiktok</a></div>
-        <div class="flex gap-2"><span><i class="fa-brands fa-x-twitter"></i></span><label class="sr-only">X / Twitter</label><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://x.com/omg_elon_sucks/" target="_blank">omg_elon_sucks</a></div>
-        <div class="flex gap-2"><span><i class="fa-brands fa-youtube"></i></span><label class="sr-only">Youtube</label><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="https://youtube.com/@youtube/" target="_blank">youtube</a></div>
+        <div class="flex gap-2"><span><i class="fa-brands fa-facebook"></i></span><label class="sr-only">Facebook</label><a href="https://facebook.com/facebook/" target="_blank">facebook</a></div>
+        <div class="flex gap-2"><span><i class="fa-brands fa-instagram"></i></span><label class="sr-only">Instagram</label><a href="https://instagram.com/instagram/" target="_blank">instagram</a></div>
+        <div class="flex gap-2"><span><i class="fa-brands fa-tiktok"></i></span><label class="sr-only">TikTok</label><a href="https://tiktok.com/@tiktok/" target="_blank">tiktok</a></div>
+        <div class="flex gap-2"><span><i class="fa-brands fa-x-twitter"></i></span><label class="sr-only">X / Twitter</label><a href="https://x.com/omg_elon_sucks/" target="_blank">omg_elon_sucks</a></div>
+        <div class="flex gap-2"><span><i class="fa-brands fa-youtube"></i></span><label class="sr-only">Youtube</label><a href="https://youtube.com/@youtube/" target="_blank">youtube</a></div>
       </div>
     </address>
   </article>

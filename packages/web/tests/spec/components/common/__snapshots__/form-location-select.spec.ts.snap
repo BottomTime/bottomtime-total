@@ -8,7 +8,7 @@ exports[`FormLocationSelect component will render correctly with no value 1`] = 
   <!--v-if-->
 </teleport-stub>
 <!--v-if-->
-<div class="flex gap-2 ml-6"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
+<div class="flex gap-2"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
     <!--v-if--><span class="text-xs">Select location... </span>
   </button>
   <!--v-if-->
@@ -31,7 +31,7 @@ exports[`FormLocationSelect component will render correctly with radius slider 1
     <!--v-if-->
   </div><span class="text-nowrap text-right min-w-10">80 km </span></p>
 </div>
-<div class="flex gap-2 ml-6"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
+<div class="flex gap-2"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
     <!--v-if--><span class="text-xs">Change location... </span>
   </button><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
     <!--v-if--><span class="text-xs">Clear location</span>
@@ -50,7 +50,7 @@ exports[`FormLocationSelect component will render correctly without radius slide
   <p class="ml-6"><span>25.915738052691395, -80.07950492939037</span></p>
   <!--v-if-->
 </div>
-<div class="flex gap-2 ml-6"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
+<div class="flex gap-2"><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
     <!--v-if--><span class="text-xs">Change location... </span>
   </button><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" type="button">
     <!--v-if--><span class="text-xs">Clear location</span>

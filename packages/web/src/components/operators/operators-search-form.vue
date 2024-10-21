@@ -23,14 +23,24 @@
         />
       </FormField>
 
-      <FormField v-if="allowFilterMyShops">
-        <FormCheckbox
-          v-model="state.onlyOwnedShops"
-          control-id="operator-show-mine"
-          test-id="operator-show-mine"
-        >
-          Show only my shops
-        </FormCheckbox>
+      <FormField v-if="allowFilterMyShops" label="Options">
+        <div class="space-y-2">
+          <FormCheckbox
+            v-model="state.onlyOwnedShops"
+            control-id="operator-show-mine"
+            test-id="operator-show-mine"
+          >
+            Show only my shops
+          </FormCheckbox>
+
+          <FormCheckbox
+            v-model="state.showInactive"
+            control-id="operator-show-inactive"
+            test-id="operator-show-inactive"
+          >
+            Show inactive
+          </FormCheckbox>
+        </div>
       </FormField>
 
       <div class="text-center">
@@ -78,8 +88,9 @@ interface OperatorsSearchProps {
 
 interface OperatorsSearchFormState {
   gps?: GpsCoordinates | GpsCoordinatesWithRadius;
-  query: string;
   onlyOwnedShops: boolean;
+  query: string;
+  showInactive: boolean;
 }
 
 const currentUser = useCurrentUser();
@@ -92,8 +103,9 @@ const state = reactive<OperatorsSearchFormState>({
         radius: props.searchParams.radius,
       }
     : undefined,
-  query: props.searchParams.query || '',
   onlyOwnedShops: props.searchParams.owner === currentUser.user?.username,
+  query: props.searchParams.query || '',
+  showInactive: props.searchParams.showInactive ?? false,
 });
 const emit = defineEmits<{
   (e: 'search', params: SearchDiveOperatorsParams): void;
@@ -115,6 +127,7 @@ function onSearch() {
       ? { lat: state.gps.lat, lon: state.gps.lon }
       : undefined,
     radius: state.gps && 'radius' in state.gps ? state.gps.radius : undefined,
+    showInactive: state.showInactive,
   });
 }
 </script>

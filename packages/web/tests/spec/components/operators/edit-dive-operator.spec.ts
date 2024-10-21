@@ -17,6 +17,7 @@ import {
   PartialDiveOperator,
 } from '../../../fixtures/dive-operators';
 
+const ActiveToggle = 'input#operator-active';
 const NameInput = 'input#operator-name';
 const SlugInput = 'input#operator-slug';
 const DescriptionInput = 'textarea#operator-description';
@@ -259,6 +260,7 @@ describe('EditDiveOperator component', () => {
     await wrapper.get(NameInput).setValue(FullDiveOperator.name);
     await wrapper.get(SlugInput).setValue(FullDiveOperator.slug);
     await wrapper.get(DescriptionInput).setValue(FullDiveOperator.description);
+    await wrapper.get(ActiveToggle).setValue(false);
     await wrapper.get(ChangeLocationButton).trigger('click');
     await wrapper
       .get('[data-testid="address-dlg-address"]')
@@ -288,6 +290,7 @@ describe('EditDiveOperator component', () => {
     expect(wrapper.emitted('save')).toEqual([
       [
         {
+          active: false,
           address: FullDiveOperator.address,
           description: FullDiveOperator.description,
           email: FullDiveOperator.email,

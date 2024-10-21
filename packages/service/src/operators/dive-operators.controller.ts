@@ -118,6 +118,12 @@ export class DiveOperatorsController {
    *           minLength: 3
    *           maxLength: 50
    *       - in: query
+   *         name: showInactive
+   *         description: |
+   *           Whether to include inactive dive operators (`active = false`) in the search results. Defaults to `false`.
+   *         required: false
+   *         example: true
+   *       - in: query
    *         name: skip
    *         description: |
    *           The number of results to skip before returning the first result. Used for pagination.
@@ -403,6 +409,7 @@ export class DiveOperatorsController {
     @Body(new ZodValidator(CreateOrUpdateDiveOperatorSchema))
     options: CreateOrUpdateDiveOperatorDTO,
   ): Promise<DiveOperatorDTO> {
+    operator.active = options.active;
     operator.address = options.address;
     operator.description = options.description;
     operator.email = options.email;

@@ -62,6 +62,13 @@ export class DiveOperator {
     return this.data.verified;
   }
 
+  get active(): boolean {
+    return this.data.active;
+  }
+  set active(value: boolean) {
+    this.data.active = value;
+  }
+
   get logo(): string | undefined {
     return this.data.logo ?? undefined;
   }
@@ -163,6 +170,7 @@ export class DiveOperator {
   }
 
   async delete(): Promise<boolean> {
+    // TODO: This should be a soft delete
     const { affected } = await this.operators.delete(this.data.id);
     return affected === 1;
   }
@@ -184,6 +192,7 @@ export class DiveOperator {
 
   toJSON(): DiveOperatorDTO {
     return {
+      active: this.active,
       createdAt: this.createdAt,
       description: this.description,
       email: this.email,

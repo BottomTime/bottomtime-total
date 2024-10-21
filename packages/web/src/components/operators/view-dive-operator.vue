@@ -1,17 +1,23 @@
 <template>
   <div class="flex gap-6" data-testid="view-operator-section">
-    <div>(logo)</div>
+    <div>
+      <p v-if="operator.logo" class="p-2">
+        <img
+          :src="operator.logo"
+          class="rounded-md"
+          width="256px"
+          height="256px"
+        />
+      </p>
+    </div>
 
     <article class="space-y-3">
-      <p
-        v-if="operator.verified"
-        class="bg-success rounded-full px-2 text-xl font-title flex items-baseline gap-2 w-fit"
-      >
+      <PillLabel v-if="operator.verified" type="success" class="text-xl">
         <span>
           <i class="fa-solid fa-check"></i>
         </span>
         <span>Verified!</span>
-      </p>
+      </PillLabel>
 
       <p class="text-lg">
         {{ operator.description }}
@@ -135,6 +141,7 @@ import { parsePhoneNumber } from 'libphonenumber-js';
 import { computed } from 'vue';
 
 import NavLink from '../common/nav-link.vue';
+import PillLabel from '../common/pill-label.vue';
 import TextHeading from '../common/text-heading.vue';
 
 interface ViewDiveOperatorProps {

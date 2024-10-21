@@ -25,6 +25,7 @@ import { ToastType } from '../../../src/common';
 import EditDiveOperator from '../../../src/components/operators/edit-dive-operator.vue';
 import ViewDiveOperator from '../../../src/components/operators/view-dive-operator.vue';
 import { FeaturesServiceKey } from '../../../src/featrues';
+import { LocationKey, MockLocation } from '../../../src/location';
 import {
   useCurrentUser,
   useDiveOperators,
@@ -53,6 +54,7 @@ describe('Dive Operator view', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let features: ConfigCatClientMock;
+  let location: MockLocation;
   let router: Router;
 
   let pinia: Pinia;
@@ -65,6 +67,7 @@ describe('Dive Operator view', () => {
     fetcher = new Fetcher();
     client = new ApiClient({ fetcher });
     features = new ConfigCatClientMock();
+    location = new MockLocation();
     router = createRouter([
       {
         path: '/shops/createNew',
@@ -89,6 +92,7 @@ describe('Dive Operator view', () => {
         provide: {
           [ApiClientKey as symbol]: client,
           [FeaturesServiceKey as symbol]: features,
+          [LocationKey as symbol]: location,
         },
         stubs: {
           teleport: true,
@@ -187,6 +191,7 @@ describe('Dive Operator view', () => {
 
   describe('when rendering on client side', () => {
     const update: CreateOrUpdateDiveOperatorDTO = {
+      active: true,
       address: '1234 Main St',
       description: 'A new dive shop',
       name: 'New Shop',
@@ -199,6 +204,7 @@ describe('Dive Operator view', () => {
     };
 
     const create: CreateOrUpdateDiveOperatorDTO = {
+      active: true,
       address: '74 Main St',
       description: 'We do scuba stuff',
       name: 'Scuba Mega Shop',
@@ -233,7 +239,60 @@ describe('Dive Operator view', () => {
       expect(wrapper.findComponent(ViewDiveOperator).exists()).toBe(false);
     });
 
-    // TODO: Only shop owners and admins can access the /shops/createNew page
+    it('will show login form if unauthenticated user tries to create a new operator', async () => {
+      currentUser.user = null;
+      diveOperators.currentDiveOperator = {
+        ...BlankDiveOperator,
+        owner: ShopOwner.profile,
+      };
+      await router.push('/shops/createNew');
+
+      const wrapper = mount(DiveOperatorView, opts);
+      await flushPromises();
+
+      expect(
+        wrapper.get('[data-testid="require-auth-anonymous"]').isVisible(),
+      ).toBe(true);
+      expect(wrapper.findComponent(EditDiveOperator).exists()).toBe(false);
+    });
+
+    it('will show forbidden message when a regular user tries to create a new operator', async () => {
+      currentUser.user = {
+        ...BasicUser,
+        accountTier: AccountTier.Basic,
+      };
+      diveOperators.currentDiveOperator = {
+        ...BlankDiveOperator,
+        owner: BasicUser.profile,
+      };
+
+      const wrapper = mount(DiveOperatorView, opts);
+      await flushPromises();
+
+      expect(
+        wrapper.find('[data-testid="forbidden-message"]').isVisible(),
+      ).toBe(true);
+      expect(wrapper.findComponent(EditDiveOperator).exists()).toBe(false);
+    });
+
+    it('will show forbidden message when a pro user tries to create a new operator', async () => {
+      currentUser.user = {
+        ...BasicUser,
+        accountTier: AccountTier.Pro,
+      };
+      diveOperators.currentDiveOperator = {
+        ...BlankDiveOperator,
+        owner: BasicUser.profile,
+      };
+
+      const wrapper = mount(DiveOperatorView, opts);
+      await flushPromises();
+
+      expect(
+        wrapper.find('[data-testid="forbidden-message"]').isVisible(),
+      ).toBe(true);
+      expect(wrapper.findComponent(EditDiveOperator).exists()).toBe(false);
+    });
 
     it('will allow a shop owner to create a new dive operator', async () => {
       const expected: DiveOperatorDTO = {

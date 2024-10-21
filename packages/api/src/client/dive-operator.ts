@@ -57,6 +57,13 @@ export class DiveOperator {
     this.data.name = value;
   }
 
+  get active(): boolean {
+    return this.data.active;
+  }
+  set active(value: boolean) {
+    this.data.active = value;
+  }
+
   get description(): string {
     return this.data.description;
   }

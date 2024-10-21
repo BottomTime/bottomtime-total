@@ -22,7 +22,7 @@ type FormButtonProps = {
   disabled?: boolean;
   isLoading?: boolean;
   rounded?: boolean | 'left' | 'right' | 'top' | 'bottom' | 'start' | 'end';
-  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   stretch?: boolean;
   submit?: boolean;
   testId?: string;

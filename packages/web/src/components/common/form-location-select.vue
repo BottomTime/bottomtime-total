@@ -46,7 +46,7 @@
     </template>
   </div>
 
-  <div class="flex gap-2 ml-6">
+  <div class="flex gap-2">
     <FormButton
       :test-id="testId && `${testId}-select-btn`"
       @click="onSelectLocation"

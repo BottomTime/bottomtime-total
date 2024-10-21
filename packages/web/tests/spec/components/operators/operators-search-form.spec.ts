@@ -16,6 +16,7 @@ const SearchInput = 'input#operator-search';
 const CoordsText = '[data-testid="operator-location-coords"]';
 const RadiusSlider = '[data-testid="operator-location-radius"]';
 const ShowMyShopsCheckbox = 'input#operator-show-mine';
+const ShowInactiveCheckbox = 'input#operator-show-inactive';
 const SearchButton = 'button#btn-operator-search';
 
 describe('OperatorsSearchForm component', () => {
@@ -122,6 +123,7 @@ describe('OperatorsSearchForm component', () => {
     await flushPromises();
     await wrapper.get(RadiusSlider).setValue('170');
     await wrapper.get(ShowMyShopsCheckbox).setValue(true);
+    await wrapper.get(ShowInactiveCheckbox).setValue(true);
     await wrapper.get(SearchButton).trigger('click');
     await flushPromises();
 
@@ -132,6 +134,7 @@ describe('OperatorsSearchForm component', () => {
           location: { lat: 20.42, lon: -87.32 },
           radius: 170,
           owner: BasicUser.username,
+          showInactive: true,
         },
       ],
     ]);

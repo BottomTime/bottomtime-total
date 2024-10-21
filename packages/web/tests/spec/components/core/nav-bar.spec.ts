@@ -54,6 +54,9 @@ describe('Nav Bar component', () => {
           [FeaturesServiceKey as symbol]: features,
           [LocationKey as symbol]: new MockLocation(),
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

@@ -12,16 +12,19 @@
       class="fixed top-0 w-full font-content bg-blue-900 text-blue-200 shadow-md shadow-blue-500 z-[40]"
     >
       <div
-        class="container px-3 mx-auto h-16 flex flex-row flex-nowrap items-center justify-between"
+        class="container px-3 mx-auto h-16 flex flex-row flex-nowrap place-items-center justify-between"
       >
         <!-- Brand Logo -->
-        <a href="/" class="flex flex-initial items-center space-x-3">
+        <a
+          href="/"
+          class="flex flex-initial items-center space-x-3 no-underline font-title"
+        >
           <img
             src="/img/flag-logo.png"
             alt="logo"
             class="w-12 h-8 rounded-md shadow-sm shadow-danger"
           />
-          <span class="font-bold text-red text-2xl">
+          <span class="text-red hover:text-danger-dark text-2xl">
             {{ appTitle }}
           </span>
         </a>
@@ -83,9 +86,12 @@
                 v-show="showUserDropdown"
                 id="user-dropdown"
                 data-testid="user-dropdown"
-                class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left"
+                class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left z-[42]"
               >
-                <a class="w-full p-2 hover:bg-blue-700" href="/friends">
+                <a
+                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  href="/friends"
+                >
                   Friends
                 </a>
                 <a
@@ -93,24 +99,33 @@
                     diveOperatorsEnabled.value &&
                     currentUser.user?.accountTier >= AccountTier.ShopOwner
                   "
-                  class="w-full p-2 hover:bg-blue-700"
+                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   :href="`/shops/${currentUser.user?.username}`"
                 >
                   My Dive Shops
                 </a>
                 <hr />
-                <a class="w-full p-2 hover:bg-blue-700" href="/profile">
+                <a
+                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  href="/profile"
+                >
                   Profile
                 </a>
-                <a class="w-full p-2 hover:bg-blue-700" href="/account">
+                <a
+                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  href="/account"
+                >
                   Account
                 </a>
-                <a class="w-full p-2 hover:bg-blue-700" href="/settings">
+                <a
+                  class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
+                  href="/settings"
+                >
                   Settings
                 </a>
                 <hr />
                 <a
-                  class="w-full p-2 rounded-b-md hover:bg-blue-700"
+                  class="w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
                   href="/api/auth/logout"
                 >
                   Logout

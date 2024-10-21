@@ -107,7 +107,7 @@ watch(
   (val) => {
     // The scrollIntoView method ought to work in most browsers but will blow up in tests.
     try {
-      if (val) {
+      if (val && listItemElement.value?.scrollIntoView) {
         listItemElement.value?.scrollIntoView({
           behavior: 'smooth',
           block: 'center',

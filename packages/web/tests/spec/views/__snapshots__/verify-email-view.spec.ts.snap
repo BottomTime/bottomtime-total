@@ -6,7 +6,7 @@ exports[`Verify Email View will display a success message if successful 1`] = `
   <div class="space-y-3">
     <h1 class="text-2xl font-bold font-title">Success!</h1>
     <p>Your email address has been successfully verified!</p>
-    <p> You can click <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">here</a> to return to the home page. </p>
+    <p> You can click <a href="/">here</a> to return to the home page. </p>
   </div>
 </div>"
 `;
@@ -18,7 +18,7 @@ exports[`Verify Email View will show an error message if the query string is mis
     <h1 class="text-2xl font-bold font-title">Failed!</h1>
     <p>Your email address could not be verified. Reason given:</p>
     <p class="font-bold">A valid token was not provided. Please check your email and use the link provided.</p>
-    <p> You can try again later or you can request a new verification email from your <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/account">account page</a>. Alternatively, you can return to the <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">home page</a>. </p>
+    <p> You can try again later or you can request a new verification email from your <a href="/account">account page</a>. Alternatively, you can return to the <a href="/">home page</a>. </p>
   </div>
 </div>"
 `;
@@ -30,7 +30,7 @@ exports[`Verify Email View will show an error message if the server responds wit
     <h1 class="text-2xl font-bold font-title">Failed!</h1>
     <p>Your email address could not be verified. Reason given:</p>
     <p class="font-bold">An unexpected server error occurred while verifying your email. This is a problem on our end and we are looking into it. Please try again later.</p>
-    <p> You can try again later or you can request a new verification email from your <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/account">account page</a>. Alternatively, you can return to the <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">home page</a>. </p>
+    <p> You can try again later or you can request a new verification email from your <a href="/account">account page</a>. Alternatively, you can return to the <a href="/">home page</a>. </p>
   </div>
 </div>"
 `;
@@ -42,7 +42,7 @@ exports[`Verify Email View will show an error message if the token is invalid 1`
     <h1 class="text-2xl font-bold font-title">Failed!</h1>
     <p>Your email address could not be verified. Reason given:</p>
     <p class="font-bold">Your token is hella-expired!</p>
-    <p> You can try again later or you can request a new verification email from your <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/account">account page</a>. Alternatively, you can return to the <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">home page</a>. </p>
+    <p> You can try again later or you can request a new verification email from your <a href="/account">account page</a>. Alternatively, you can return to the <a href="/">home page</a>. </p>
   </div>
 </div>"
 `;

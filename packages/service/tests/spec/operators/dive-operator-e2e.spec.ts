@@ -127,7 +127,7 @@ describe('Dive Operators E2E tests', () => {
 
     it('will perform a basic search with default parameters', async () => {
       const { body } = await request(server).get(getUrl()).expect(200);
-      expect(body.totalCount).toBe(testData.length);
+      expect(body.totalCount).toBe(testData.filter((op) => op.active).length);
       expect(body.operators).toHaveLength(50);
       expect(body.operators[0]).toMatchSnapshot();
       expect(body.operators.map((op) => op.name)).toMatchSnapshot();
@@ -137,8 +137,8 @@ describe('Dive Operators E2E tests', () => {
       const { body } = await request(server)
         .get(getUrl())
         .query({
-          query: 'Pump',
-          location: '63.53,16.19',
+          query: 'Pioneer',
+          location: '18.16,-75.88',
           radius: 100,
           skip: 0,
           limit: 10,
@@ -176,6 +176,7 @@ describe('Dive Operators E2E tests', () => {
   describe('when creating a new dive operator', () => {
     it('will create a new dive operator with minimal options', async () => {
       const options: CreateOrUpdateDiveOperatorDTO = {
+        active: true,
         name: 'Groundhog Divers',
         description: 'A sweet dive shop!',
         address: '111 Street St, Toronto, ON',
@@ -204,6 +205,7 @@ describe('Dive Operators E2E tests', () => {
 
     it('will create a new dive operator with all options', async () => {
       const options: CreateOrUpdateDiveOperatorDTO = {
+        active: false,
         name: 'Groundhog Divers',
         address: '123 Main St',
         description: 'We dive deep',
@@ -269,6 +271,7 @@ describe('Dive Operators E2E tests', () => {
         .post(getUrl())
         .set(...regularUserAuthHeader)
         .send({
+          active: 'sure',
           name: 33,
           description: false,
           address: 44,
@@ -309,6 +312,7 @@ describe('Dive Operators E2E tests', () => {
 
     it('will return a 409 response if the slug is already in use', async () => {
       const existing = new DiveOperatorEntity();
+      existing.active = true;
       existing.id = '898ae1ca-87ae-4d4b-8803-01aaaf1dceec';
       existing.name = 'Other Operator';
       existing.slug = 'groundhog-divers';
@@ -321,6 +325,7 @@ describe('Dive Operators E2E tests', () => {
         .post(getUrl())
         .set(...regularUserAuthHeader)
         .send({
+          active: true,
           name: 'Groundhog Divers',
           slug: existing.slug,
           description: 'Updaded description',
@@ -352,16 +357,15 @@ describe('Dive Operators E2E tests', () => {
   describe('when updating a dive operator', () => {
     let operator: DiveOperatorEntity;
 
-    beforeAll(() => {
-      operator = parseOperatorJSON(TestData[0], regularUser);
-    });
-
     beforeEach(async () => {
+      operator = parseOperatorJSON(TestData[0], regularUser);
+      await Users.save(regularUser);
       await Operators.save(operator);
     });
 
     it('will allow a user to update an existing dive operator', async () => {
       const options: CreateOrUpdateDiveOperatorDTO = {
+        active: false,
         name: 'Groundhog Divers',
         address: '123 Main St',
         description: 'We dive deep',
@@ -388,6 +392,7 @@ describe('Dive Operators E2E tests', () => {
         .send(options)
         .expect(200);
 
+      expect(body.active).toBe(false);
       expect(body.id).toHaveLength(36);
       expect(body.name).toBe(options.name);
       expect(body.description).toBe(options.description);
@@ -397,10 +402,11 @@ describe('Dive Operators E2E tests', () => {
       expect(body.socials).toEqual(options.socials);
       expect(body.website).toBe(options.website);
       expect(body.slug).toBe(options.slug);
-      expect(body.verified).toBe(false);
+      expect(body.verified).toBe(true);
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
       const saved = await Operators.findOneByOrFail({ id: body.id });
+      expect(saved.active).toBe(false);
       expect(saved.updatedAt).toEqual(new Date(body.updatedAt));
       expect(saved.name).toBe(options.name);
       expect(saved.description).toBe(options.description);
@@ -417,11 +423,12 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.youtube).toEqual(options.socials!.youtube);
       expect(saved.website).toBe(options.website);
       expect(saved.slug).toBe(options.slug);
-      expect(saved.verified).toBe(false);
+      expect(saved.verified).toBe(true);
     });
 
     it('will allow an admin to update an existing dive operator', async () => {
       const options: CreateOrUpdateDiveOperatorDTO = {
+        active: false,
         name: 'Groundhog Divers',
         address: '123 Main St',
         description: 'We dive deep',
@@ -448,6 +455,7 @@ describe('Dive Operators E2E tests', () => {
         .send(options)
         .expect(200);
 
+      expect(body.active).toBe(false);
       expect(body.id).toHaveLength(36);
       expect(body.name).toBe(options.name);
       expect(body.description).toBe(options.description);
@@ -457,10 +465,11 @@ describe('Dive Operators E2E tests', () => {
       expect(body.socials).toEqual(options.socials);
       expect(body.website).toBe(options.website);
       expect(body.slug).toBe(options.slug);
-      expect(body.verified).toBe(false);
+      expect(body.verified).toBe(true);
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
       const saved = await Operators.findOneByOrFail({ id: body.id });
+      expect(saved.active).toBe(false);
       expect(saved.updatedAt).toEqual(new Date(body.updatedAt));
       expect(saved.name).toBe(options.name);
       expect(saved.description).toBe(options.description);
@@ -477,7 +486,7 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.youtube).toEqual(options.socials!.youtube);
       expect(saved.website).toBe(options.website);
       expect(saved.slug).toBe(options.slug);
-      expect(saved.verified).toBe(false);
+      expect(saved.verified).toBe(true);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -485,6 +494,7 @@ describe('Dive Operators E2E tests', () => {
         .put(getUrl(operator.slug))
         .set(...regularUserAuthHeader)
         .send({
+          active: true,
           name: 33,
           description: false,
           address: 44,
@@ -558,6 +568,7 @@ describe('Dive Operators E2E tests', () => {
         .put(getUrl(operator.slug))
         .set(...regularUserAuthHeader)
         .send({
+          active: true,
           name: 'Groundhog Divers',
           slug: 'taken-slug',
           description: 'New description',

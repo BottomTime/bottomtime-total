@@ -17,11 +17,22 @@
  *     CreateOrUpdateDiveOperator:
  *       type: object
  *       required:
+ *         - active
  *         - name
  *         - slug
  *         - address
  *         - description
  *       properties:
+ *         active:
+ *           type: boolean
+ *           name: Active
+ *           description: |
+ *             Indicates whether the dive operator is currently active and available. Inactive dive operators will not
+ *             appear in search results unless the `showInactive` parameter is set to `true`.
+ *
+ *             This is meant to work as a "soft delete" for dive operators who have closed, either temporarily or permanently.
+ *             All data will be retained for historical purposes, but the operator will not be shown in search results.
+ *           example: true
  *         name:
  *           type: string
  *           name: Name

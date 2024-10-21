@@ -12,6 +12,7 @@ import { createTestUser } from '../../utils/create-test-user';
 
 const TestData: DiveOperatorEntity = {
   id: 'f6fc189e-126e-49ac-95aa-c2ffd9a03140',
+  active: true,
   createdAt: new Date('2022-06-20T11:45:21Z'),
   updatedAt: new Date('2024-07-29T11:45:21Z'),
   name: "Diver's Den",
@@ -98,6 +99,7 @@ describe('DiveOperator class', () => {
       location: owner.location,
       name: owner.name,
     });
+    expect(operator.active).toBe(TestData.active);
     expect(operator.name).toBe(TestData.name);
     expect(operator.slug).toBe(TestData.slug);
     expect(operator.verified).toBe(TestData.verified);
@@ -131,6 +133,7 @@ describe('DiveOperator class', () => {
   });
 
   it('will allow properties to be updated', () => {
+    const newActive = false;
     const newName = "Dive 'n' Dive";
     const newSlug = 'dive-n-dive';
     const newDescription = 'A new description';
@@ -148,6 +151,7 @@ describe('DiveOperator class', () => {
     const newBanner = 'https://example.com/banner.jpg';
 
     operator.name = newName;
+    operator.active = newActive;
     operator.slug = newSlug;
     operator.description = newDescription;
     operator.address = newAddress;
@@ -163,6 +167,7 @@ describe('DiveOperator class', () => {
     operator.logo = newLogo;
     operator.banner = newBanner;
 
+    expect(operator.active).toBe(newActive);
     expect(operator.name).toBe(newName);
     expect(operator.slug).toBe(newSlug);
     expect(operator.description).toBe(newDescription);
@@ -218,6 +223,7 @@ describe('DiveOperator class', () => {
   it('will update an existing dive operator', async () => {
     await Operators.save(data);
 
+    const newActive = false;
     const newName = "Dive 'n' Dive";
     const newSlug = 'dive-n-dive';
     const newDescription = 'A new description';
@@ -232,6 +238,7 @@ describe('DiveOperator class', () => {
     const newTwitter = 'twitter';
     const newYoutube = 'youtube';
 
+    operator.active = newActive;
     operator.name = newName;
     operator.slug = newSlug;
     operator.description = newDescription;
@@ -253,6 +260,7 @@ describe('DiveOperator class', () => {
       relations: ['owner'],
     });
 
+    expect(savedOperator.active).toBe(newActive);
     expect(savedOperator.address).toBe(newAddress);
     expect(savedOperator.description).toBe(newDescription);
     expect(savedOperator.email).toBe(newEmail);

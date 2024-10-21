@@ -6,7 +6,7 @@ exports[`Static Views will render Cookie Policy 1`] = `
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
-  <li><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">Home</a></li>
+  <li><a href="/">Home</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Cookie Policy</span></li>
 </ul>
 <div class="flex flex-col gap-4">
@@ -27,14 +27,14 @@ exports[`Static Views will render Cookie Policy 1`] = `
   <h1 class="text-2xl font-bold font-title">Changes to this Cookie Policy</h1>
   <p> We reserve the right to update or change this Cookie Policy at any time. Any changes will be effective immediately upon posting the revised Cookie Policy on this page. We encourage you to review this Cookie Policy periodically for any changes. </p>
   <h1 class="text-2xl font-bold font-title">Contact Us</h1>
-  <p> If you have any questions or concerns about this Cookie Policy or our use of cookies, please contact us at <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="mailto:mailto:admin@bottomti.me">mailto:admin@bottomti.me</a>. </p>
+  <p> If you have any questions or concerns about this Cookie Policy or our use of cookies, please contact us at <a href="mailto:mailto:admin@bottomti.me">mailto:admin@bottomti.me</a>. </p>
   <p> By continuing to use our Website, you consent to the use of cookies as described in this Cookie Policy. </p>
 </div>"
 `;
 
 exports[`Static Views will render Not Found Error page 1`] = `
 "<div class="text-center" data-testid="not-found-message">
-  <p class="text-lg mb-5"> Uh oh! The page you are looking for could not be found. Check your URL or click <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">here</a> to go back to the home page. </p>
+  <p class="text-lg mb-5"> Uh oh! The page you are looking for could not be found. Check your URL or click <a href="/">here</a> to go back to the home page. </p>
   <p><img class="rounded-lg drop-shadow-md block m-auto w-1/2" src="/img/diver_lost.jpeg" alt="" aria-hidden="true"></p>
 </div>"
 `;
@@ -45,7 +45,7 @@ exports[`Static Views will render Privacy Policy 1`] = `
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
-  <li><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">Home</a></li>
+  <li><a href="/">Home</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Privacy Policy</span></li>
 </ul>
 <div class="flex flex-col gap-4">
@@ -99,7 +99,7 @@ exports[`Static Views will render Privacy Policy 1`] = `
   <h1 class="text-2xl font-bold font-title">Changes to this Privacy Policy</h1>
   <p> We reserve the right to update or change this Privacy Policy at any time. Any changes will be effective immediately upon posting the revised Privacy Policy on this page. We encourage you to review this Privacy Policy periodically for any changes. </p>
   <h1 class="text-2xl font-bold font-title">Contact Us</h1>
-  <p> If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="mailto:admin@bottomti.me">admin@bottomti.me</a>. </p>
+  <p> If you have any questions or concerns about this Privacy Policy or our privacy practices, please contact us at <a href="mailto:admin@bottomti.me">admin@bottomti.me</a>. </p>
   <p> By using our Website, you consent to the terms of this Privacy Policy. </p>
 </div>"
 `;
@@ -118,7 +118,7 @@ exports[`Static Views will render Terms of Service 1`] = `
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
-  <li><a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">Home</a></li>
+  <li><a href="/">Home</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Terms of Service</span></li>
 </ul>
 <div class="space-y-4">
@@ -143,7 +143,7 @@ exports[`Static Views will render Terms of Service 1`] = `
   <h1 class="text-2xl font-bold font-title">Governing Law</h1>
   <p> These Terms shall be governed by and construed in accordance with the laws of Ontario, Canada, without regard to its conflict of law principles. </p>
   <h1 class="text-2xl font-bold font-title">Contact Us</h1>
-  <p> If you have any questions or concerns about these Terms, please contact us at <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="mailto:mailto:admin@bottomti.me">mailto:admin@bottomti.me</a>. </p>
+  <p> If you have any questions or concerns about these Terms, please contact us at <a href="mailto:mailto:admin@bottomti.me">mailto:admin@bottomti.me</a>. </p>
   <p> By using the Website, you agree to be bound by these Terms of Service. </p>
 </div>"
 `;

@@ -3,21 +3,27 @@
   <BreadCrumbs :items="Breadcrumbs" />
 
   <template v-if="enableDiveOperators.value && operators.currentDiveOperator">
-    <EditDiveOperator
-      v-if="canEdit"
-      :operator="operators.currentDiveOperator"
-      :is-saving="isSaving"
-      @save="saveChanges"
-    />
+    <RequireAuth :authorizer="isAuthorized">
+      <EditDiveOperator
+        v-if="canEdit"
+        :operator="operators.currentDiveOperator"
+        :is-saving="isSaving"
+        @save="saveChanges"
+      />
 
-    <ViewDiveOperator v-else :operator="operators.currentDiveOperator" />
+      <ViewDiveOperator v-else :operator="operators.currentDiveOperator" />
+    </RequireAuth>
   </template>
 
   <NotFound v-else />
 </template>
 
 <script lang="ts" setup>
-import { CreateOrUpdateDiveOperatorDTO, UserRole } from '@bottomtime/api';
+import {
+  AccountTier,
+  CreateOrUpdateDiveOperatorDTO,
+  UserRole,
+} from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { computed, onServerPrefetch, ref } from 'vue';
@@ -28,6 +34,7 @@ import { Breadcrumb, ToastType } from '../common';
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
+import RequireAuth from '../components/common/require-auth2.vue';
 import EditDiveOperator from '../components/operators/edit-dive-operator.vue';
 import ViewDiveOperator from '../components/operators/view-dive-operator.vue';
 import { useFeature } from '../featrues';
@@ -71,6 +78,13 @@ const title = computed(() => {
   if (canEdit.value) return `Edit "${operators.currentDiveOperator?.name}"`;
   return operators.currentDiveOperator?.name || 'View Dive Operator';
 });
+const isAuthorized = computed<boolean>(() => {
+  if (operatorKey.value) return true;
+
+  return (
+    !!currentUser.user && currentUser.user.accountTier >= AccountTier.ShopOwner
+  );
+});
 
 const Breadcrumbs: Breadcrumb[] = [
   {
@@ -89,6 +103,7 @@ onServerPrefetch(async () => {
       // If no key is present then we are on the "Create New Dive Shop" page. No need to fetch anything.
       if (!operatorKey.value) {
         operators.currentDiveOperator = {
+          active: true,
           address: '',
           description: '',
           createdAt: new Date(),
@@ -137,6 +152,7 @@ async function updateExistingOperator(
     ...operators.currentDiveOperator,
   });
 
+  operator.active = update.active;
   operator.address = update.address;
   operator.description = update.description;
   operator.email = update.email;

@@ -87,6 +87,7 @@ describe('Manage Account component', () => {
         },
       },
     };
+    jest.spyOn(client.memberships, 'listMemberships').mockResolvedValue([]);
   });
 
   it('will render timestamps correctly', () => {

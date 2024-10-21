@@ -9,6 +9,7 @@ import {
 } from '../../src/types';
 
 const TestData: DiveOperatorDTO = {
+  active: true,
   address: '3 Bay St, Tobermory, ON N0H 2R0, Canada',
   banner:
     'https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg',
@@ -67,6 +68,7 @@ describe('Dive Operator API class', () => {
 
   it('will return properties correctly', () => {
     expect(operator.id).toBe(TestData.id);
+    expect(operator.active).toBe(TestData.active);
     expect(operator.createdAt).toBe(TestData.createdAt);
     expect(operator.updatedAt).toBe(TestData.updatedAt);
     expect(operator.owner).toEqual(TestData.owner);
@@ -85,6 +87,7 @@ describe('Dive Operator API class', () => {
   });
 
   it('will allow properties to be updated', () => {
+    const newActive = false;
     const newName = 'New Name';
     const newSlug = 'new-slug';
     const newDescription = 'New Description';
@@ -100,6 +103,7 @@ describe('Dive Operator API class', () => {
       tiktok: 'new-tiktok',
     };
 
+    operator.active = newActive;
     operator.name = newName;
     operator.slug = newSlug;
     operator.description = newDescription;
@@ -110,6 +114,7 @@ describe('Dive Operator API class', () => {
     operator.gps = newGPS;
     operator.socials = newSocials;
 
+    expect(operator.active).toBe(newActive);
     expect(operator.name).toBe(newName);
     expect(operator.slug).toBe(newSlug);
     expect(operator.description).toBe(newDescription);
@@ -127,6 +132,7 @@ describe('Dive Operator API class', () => {
 
   it('will save changes to the dive operator', async () => {
     const options: CreateOrUpdateDiveOperatorDTO = {
+      active: true,
       name: 'New Name',
       slug: TestData.slug,
       description: 'New Description',
@@ -156,6 +162,7 @@ describe('Dive Operator API class', () => {
       },
     );
 
+    operator.active = options.active;
     operator.address = options.address;
     operator.description = options.description;
     operator.email = options.email;
@@ -179,6 +186,7 @@ describe('Dive Operator API class', () => {
   it('will change a dive operator slug', async () => {
     const newSlug = 'new-slug';
     const options: CreateOrUpdateDiveOperatorDTO = {
+      active: TestData.active,
       name: TestData.name,
       slug: newSlug,
       description: TestData.description,

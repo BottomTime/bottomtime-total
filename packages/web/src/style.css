@@ -12,3 +12,7 @@
 body * {
   @apply transition-colors duration-[35ms];
 }
+
+a {
+  @apply font-bold text-link underline hover:text-link-hover cursor-pointer;
+}

@@ -6,6 +6,7 @@ import DiveOperatorslistItem from '../../../../src/components/operators/dive-ope
 import { BasicUser } from '../../../fixtures/users';
 
 const MinimalTestData: DiveOperatorDTO = {
+  active: true,
   address: '123 Street St.',
   createdAt: new Date(),
   description: 'Dive shop with a boat',

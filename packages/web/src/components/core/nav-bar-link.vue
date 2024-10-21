@@ -1,7 +1,7 @@
 <template>
   <li :class="classes">
     <a
-      class="w-full md:w-auto"
+      class="w-full md:w-auto no-underline font-title text-grey-300 hover:text-grey-50"
       :data-testid="testId"
       :href="to"
       @click="$emit('click')"

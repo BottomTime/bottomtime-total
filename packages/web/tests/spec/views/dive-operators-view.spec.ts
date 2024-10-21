@@ -220,12 +220,14 @@ describe('Dive operators view', () => {
 
       await wrapper.get('input#operator-search').setValue('deep site');
       await wrapper.get('input#operator-show-mine').setValue(true);
+      await wrapper.get('input#operator-show-inactive').setValue(true);
       await wrapper.get('button#btn-operator-search').trigger('click');
       await flushPromises();
 
       expect(spy).toHaveBeenCalledWith({
         query: 'deep site',
         owner: ShopOwner.username,
+        showInactive: true,
       });
       expect(wrapper.get('[data-testid="operators-count"]').text()).toBe(
         'Showing 3 of 3 dive shop(s)',
@@ -239,6 +241,7 @@ describe('Dive operators view', () => {
       diveOperators.results.operators = [];
       diveOperators.results.totalCount = 0;
       const create: CreateOrUpdateDiveOperatorDTO = {
+        active: true,
         name: 'New Shop',
         slug: 'new-shop',
         gps: {
@@ -298,6 +301,7 @@ describe('Dive operators view', () => {
         owner: ShopOwner.profile,
       };
       const update: CreateOrUpdateDiveOperatorDTO = {
+        active: true,
         address: '1234 Main St',
         description: 'A new dive shop',
         name: 'New Shop',
@@ -341,6 +345,7 @@ describe('Dive operators view', () => {
         owner: ShopOwner.profile,
       };
       const update: CreateOrUpdateDiveOperatorDTO = {
+        active: true,
         address: '1234 Main St',
         description: 'A new dive shop',
         name: 'New Shop',
