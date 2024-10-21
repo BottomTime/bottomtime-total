@@ -6,7 +6,7 @@ exports[`Not Found View will render correctly 1`] = `
   <p class="text-2xl capitalize">(404 Error)</p>
 </div>
 <div class="text-center" data-testid="not-found-message">
-  <p class="text-lg mb-5"> Uh oh! The page you are looking for could not be found. Check your URL or click <a class="font-bold text-link underline hover:text-link-hover cursor-pointer" href="/">here</a> to go back to the home page. </p>
+  <p class="text-lg mb-5"> Uh oh! The page you are looking for could not be found. Check your URL or click <a href="/">here</a> to go back to the home page. </p>
   <p><img class="rounded-lg drop-shadow-md block m-auto w-1/2" src="/img/diver_lost.jpeg" alt="" aria-hidden="true"></p>
 </div>"
 `;

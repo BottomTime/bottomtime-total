@@ -60,6 +60,9 @@ describe('Admin New Tank view', () => {
           [ApiClientKey as symbol]: client,
           [LocationKey as symbol]: location,
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

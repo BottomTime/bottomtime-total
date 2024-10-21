@@ -3,11 +3,13 @@ import { ApiClient } from '@bottomtime/api';
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import RequireAuth from '../../../../src/components/common/require-auth2.vue';
 import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser } from '../../../../src/store';
+import { createRouter } from '../../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
 
 const ProtectedContent = '#protected';
@@ -17,6 +19,7 @@ const ForbiddenMessage = '[data-testid="forbidden-message"]';
 describe('Require Auth component (v2)', () => {
   let client: ApiClient;
   let location: MockLocation;
+  let router: Router;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -26,6 +29,7 @@ describe('Require Auth component (v2)', () => {
   beforeAll(() => {
     client = new ApiClient();
     location = new MockLocation();
+    router = createRouter();
   });
 
   beforeEach(() => {
@@ -34,10 +38,13 @@ describe('Require Auth component (v2)', () => {
     currentUser.user = null;
     opts = {
       global: {
-        plugins: [pinia],
+        plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
           [LocationKey as symbol]: location,
+        },
+        stubs: {
+          teleport: true,
         },
       },
       props: {

@@ -34,6 +34,9 @@ describe('Profile panel component', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

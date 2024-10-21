@@ -82,6 +82,9 @@ describe('Profile View', () => {
           [ApiClientKey as symbol]: client,
           [LocationKey as symbol]: new MockLocation(),
         },
+        stubs: {
+          teleport: true,
+        },
       },
     };
   });

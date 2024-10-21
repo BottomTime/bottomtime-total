@@ -91,5 +91,9 @@ describe('Dive Site View', () => {
     );
   });
 
-  it.todo('will render the site info if the site is found');
+  it('will render the site info if the site is found', () => {
+    diveSites.currentSite = DiveSiteWithFullProperties;
+    const wrapper = mount(DiveSiteView, opts);
+    expect(wrapper.html()).toMatchSnapshot();
+  });
 });
