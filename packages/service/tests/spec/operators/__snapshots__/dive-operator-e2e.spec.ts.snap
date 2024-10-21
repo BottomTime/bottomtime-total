@@ -225,7 +225,7 @@ Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor ben
     "youtube": "Emmitt74",
   },
   "updatedAt": "2024-10-11T20:54:11.726Z",
-  "verified": true,
+  "verificationStatus": "unverified",
   "website": "https://fake-endive.info/",
 }
 `;
@@ -266,7 +266,7 @@ Velit calamitas cogito decor defendo advenio allatus comes tenuis nulla. Praesen
     "youtube": "Nettie_Parisian",
   },
   "updatedAt": "2024-08-06T20:05:26.295Z",
-  "verified": false,
+  "verificationStatus": "unverified",
   "website": "https://golden-beggar.name",
 }
 `;
@@ -364,7 +364,7 @@ Sperno taedium cultellus assumenda. Cum verumtamen maiores aegre demoror rerum s
         "youtube": "Mariela_Kunde64",
       },
       "updatedAt": "2024-06-05T12:34:35.913Z",
-      "verified": false,
+      "verificationStatus": "unverified",
       "website": "https://hopeful-humidity.info",
     },
   ],
@@ -462,7 +462,7 @@ Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor ben
     "youtube": "Emmitt74",
   },
   "updatedAt": 1970-01-01T00:00:00.000Z,
-  "verified": true,
+  "verificationStatus": "unverified",
   "website": "https://fake-endive.info/",
 }
 `;
@@ -503,7 +503,7 @@ Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor ben
     "youtube": "Emmitt74",
   },
   "updatedAt": 1970-01-01T00:00:00.000Z,
-  "verified": true,
+  "verificationStatus": "unverified",
   "website": "https://fake-endive.info/",
 }
 `;

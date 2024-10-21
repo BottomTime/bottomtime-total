@@ -2,6 +2,7 @@ import {
   CreateOrUpdateDiveOperatorDTO,
   LogBookSharing,
   UserRole,
+  VerificationStatus,
 } from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
@@ -192,7 +193,8 @@ describe('Dive Operators E2E tests', () => {
       expect(body.id).toHaveLength(36);
       expect(body.name).toBe(options.name);
       expect(body.slug).toBe('groundhog-divers');
-      expect(body.verified).toBe(false);
+      expect(body.verificationStatus).toBe(VerificationStatus.Unverified);
+      expect(body.verificationMessage).toBeUndefined();
       expect(new Date(body.createdAt).valueOf()).toBeCloseTo(Date.now(), -3);
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -200,7 +202,8 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.createdAt).toEqual(new Date(body.createdAt));
       expect(saved.updatedAt).toEqual(new Date(body.updatedAt));
       expect(saved.name).toBe(options.name);
-      expect(saved.verified).toBe(false);
+      expect(saved.verificationStatus).toBe(VerificationStatus.Unverified);
+      expect(saved.verificationMessage).toBeNull();
     });
 
     it('will create a new dive operator with all options', async () => {
@@ -241,7 +244,8 @@ describe('Dive Operators E2E tests', () => {
       expect(body.socials).toEqual(options.socials);
       expect(body.website).toBe(options.website);
       expect(body.slug).toBe(options.slug);
-      expect(body.verified).toBe(false);
+      expect(body.verificationStatus).toBe(VerificationStatus.Unverified);
+      expect(body.verificationMessage).toBeUndefined();
       expect(new Date(body.createdAt).valueOf()).toBeCloseTo(Date.now(), -3);
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -263,7 +267,8 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.youtube).toEqual(options.socials!.youtube);
       expect(saved.website).toBe(options.website);
       expect(saved.slug).toBe(options.slug);
-      expect(saved.verified).toBe(false);
+      expect(saved.verificationStatus).toBe(VerificationStatus.Unverified);
+      expect(saved.verificationMessage).toBeNull();
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -402,7 +407,7 @@ describe('Dive Operators E2E tests', () => {
       expect(body.socials).toEqual(options.socials);
       expect(body.website).toBe(options.website);
       expect(body.slug).toBe(options.slug);
-      expect(body.verified).toBe(true);
+      expect(body.verificationStatus).toBe(operator.verificationStatus);
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
       const saved = await Operators.findOneByOrFail({ id: body.id });
@@ -423,7 +428,7 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.youtube).toEqual(options.socials!.youtube);
       expect(saved.website).toBe(options.website);
       expect(saved.slug).toBe(options.slug);
-      expect(saved.verified).toBe(true);
+      expect(saved.verificationStatus).toBe(operator.verificationStatus);
     });
 
     it('will allow an admin to update an existing dive operator', async () => {
@@ -465,7 +470,7 @@ describe('Dive Operators E2E tests', () => {
       expect(body.socials).toEqual(options.socials);
       expect(body.website).toBe(options.website);
       expect(body.slug).toBe(options.slug);
-      expect(body.verified).toBe(true);
+      expect(body.verificationStatus).toBe(operator.verificationStatus);
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
       const saved = await Operators.findOneByOrFail({ id: body.id });
@@ -486,7 +491,7 @@ describe('Dive Operators E2E tests', () => {
       expect(saved.youtube).toEqual(options.socials!.youtube);
       expect(saved.website).toBe(options.website);
       expect(saved.slug).toBe(options.slug);
-      expect(saved.verified).toBe(true);
+      expect(saved.verificationStatus).toBe(operator.verificationStatus);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
@@ -581,11 +586,9 @@ describe('Dive Operators E2E tests', () => {
   describe('when deleting a dive operator', () => {
     let operator: DiveOperatorEntity;
 
-    beforeAll(() => {
-      operator = parseOperatorJSON(TestData[0], regularUser);
-    });
-
     beforeEach(async () => {
+      operator = parseOperatorJSON(TestData[0], regularUser);
+      await Users.save(regularUser);
       await Operators.save(operator);
     });
 
@@ -727,6 +730,59 @@ describe('Dive Operators E2E tests', () => {
     });
   });
 
+  describe('when requesting verification for a dive operator', () => {
+    let operator: DiveOperatorEntity;
+
+    beforeEach(async () => {
+      operator = parseOperatorJSON(TestData[0], regularUser);
+      await Users.save(regularUser);
+      await Operators.save(operator);
+    });
+
+    it('will allow operator owners to request verification', async () => {
+      const operator = parseOperatorJSON(TestData[0], regularUser);
+      await Operators.save(operator);
+
+      await request(server)
+        .post(`${getUrl(operator.slug)}/requestVerification`)
+        .set(...regularUserAuthHeader)
+        .expect(204);
+
+      const saved = await Operators.findOneByOrFail({ id: operator.id });
+      expect(saved.verificationStatus).toBe(VerificationStatus.Pending);
+    });
+
+    it('will allow admins to request verification', async () => {
+      await request(server)
+        .post(`${getUrl(operator.slug)}/requestVerification`)
+        .set(...adminUserAuthHeader)
+        .expect(204);
+
+      const saved = await Operators.findOneByOrFail({ id: operator.id });
+      expect(saved.verificationStatus).toBe(VerificationStatus.Pending);
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .post(`${getUrl(operator.slug)}/requestVerification`)
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not the operator owner', async () => {
+      await request(server)
+        .post(`${getUrl(operator.slug)}/requestVerification`)
+        .set(...otherUserAuthHeader)
+        .expect(403);
+    });
+
+    it('will return a 404 response when the operator key cannot be found', async () => {
+      await request(server)
+        .post(`${getUrl('not-a-real-operator')}/requestVerification`)
+        .set(...adminUserAuthHeader)
+        .expect(404);
+    });
+  });
+
   describe('when verifying/unverifying a dive operator', () => {
     let operator: DiveOperatorEntity;
 
@@ -739,7 +795,9 @@ describe('Dive Operators E2E tests', () => {
       it(`will ${
         verified ? 'verify' : 'unverify'
       } a dive operator`, async () => {
-        operator.verified = !verified;
+        const message = 'Omg! A message!!';
+
+        operator.verificationStatus = VerificationStatus.Pending;
         await Operators.save(operator);
 
         await request(server)
@@ -747,17 +805,49 @@ describe('Dive Operators E2E tests', () => {
           .set(...adminUserAuthHeader)
           .send({
             verified,
+            message,
           })
           .expect(204);
 
         const saved = await Operators.findOneByOrFail({ id: operator.id });
-        expect(saved.verified).toBe(verified);
+        expect(saved.verificationStatus).toBe(
+          verified ? VerificationStatus.Verified : VerificationStatus.Rejected,
+        );
+        expect(saved.verificationMessage).toBe(message);
       });
 
-      it(`will perform a no-op if the dive operator is already ${
+      it(`will update message if the dive operator is already ${
         verified ? 'verified' : 'unverified'
       }`, async () => {
-        operator.verified = verified;
+        const message = 'Updated message!';
+
+        operator.verificationStatus = verified
+          ? VerificationStatus.Verified
+          : VerificationStatus.Rejected;
+        await Operators.save(operator);
+
+        await request(server)
+          .post(getVerifyUrl(operator.slug))
+          .set(...adminUserAuthHeader)
+          .send({
+            verified,
+            message,
+          })
+          .expect(204);
+
+        const saved = await Operators.findOneByOrFail({ id: operator.id });
+        expect(saved.verificationStatus).toBe(
+          verified ? VerificationStatus.Verified : VerificationStatus.Rejected,
+        );
+        expect(saved.verificationMessage).toBe(message);
+      });
+
+      it(`will clear message if necessary when status is ${
+        verified ? 'verified' : 'unverified'
+      }`, async () => {
+        operator.verificationStatus = verified
+          ? VerificationStatus.Verified
+          : VerificationStatus.Rejected;
         await Operators.save(operator);
 
         await request(server)
@@ -769,7 +859,10 @@ describe('Dive Operators E2E tests', () => {
           .expect(204);
 
         const saved = await Operators.findOneByOrFail({ id: operator.id });
-        expect(saved.verified).toBe(verified);
+        expect(saved.verificationStatus).toBe(
+          verified ? VerificationStatus.Verified : VerificationStatus.Rejected,
+        );
+        expect(saved.verificationMessage).toBeNull();
       });
     });
 

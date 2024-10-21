@@ -1,6 +1,9 @@
+import { VerificationStatus } from '@bottomtime/api';
+
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
   JoinTable,
@@ -28,6 +31,9 @@ export class DiveOperatorEntity {
   @UpdateDateColumn()
   updatedAt: Date = new Date();
 
+  @DeleteDateColumn()
+  deletedAt: Date | null = null;
+
   @ManyToOne(() => UserEntity, { nullable: false, onDelete: 'CASCADE' })
   owner?: UserEntity;
 
@@ -50,8 +56,16 @@ export class DiveOperatorEntity {
   @Index({ unique: true })
   slug: string = '';
 
-  @Column({ type: 'boolean', nullable: false })
-  verified: boolean = false;
+  @Column({
+    type: 'enum',
+    enum: VerificationStatus,
+    default: VerificationStatus.Unverified,
+  })
+  @Index()
+  verificationStatus: VerificationStatus = VerificationStatus.Unverified;
+
+  @Column({ type: 'varchar', length: 1000, nullable: true })
+  verificationMessage: string | null = null;
 
   @Column({ type: 'text', nullable: true })
   description: string | null = null;

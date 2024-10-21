@@ -147,6 +147,7 @@
  *             - createdAt
  *             - updatedAt
  *             - owner
+ *             - verificationStatus
  *           properties:
  *             id:
  *               type: string
@@ -163,10 +164,25 @@
  *               format: date-time
  *               name: Last Updated
  *               description: The date and time at which the dive operator was last updated.
- *             verified:
- *               type: boolean
- *               name: Verified
- *               description: Indicates whether the dive operator's identity has been verified by an admin.
+ *             verificationStatus:
+ *               type: string
+ *               enum:
+ *                 - unverified
+ *                 - pending
+ *                 - verified
+ *                 - rejected
+ *               name: Verification Status
+ *               description: |
+ *                 The verification status of the dive operator. (The "Verified" badge is only shown for verified operators.)
+ *                 Other statuses are visible only to the owner of the dive operator.
+ *               example: pending
+ *             verificationMessage:
+ *               type: string
+ *               name: Verification Message
+ *               description: |
+ *                 A message from an admin regarding the verification status of the dive operator. This message is only visible
+ *                 to the owner of the dive operator. It may contain instructions for completing the verification process.
+ *               example: Your address could not be verified. Please get into contact with us to resolve this issue.
  *             owner:
  *               $ref: "#/components/schemas/SuccinctProfile"
  *             logo:

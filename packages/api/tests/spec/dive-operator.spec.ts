@@ -6,6 +6,7 @@ import {
   CreateOrUpdateDiveOperatorDTO,
   DiveOperatorDTO,
   LogBookSharing,
+  VerificationStatus,
 } from '../../src/types';
 
 const TestData: DiveOperatorDTO = {
@@ -45,7 +46,8 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     twitter: 'diversden',
   },
   updatedAt: new Date('2024-07-29T11:45:21.000Z'),
-  verified: false,
+  verificationStatus: VerificationStatus.Rejected,
+  verificationMessage: 'Your address is fake!',
   website: 'https://diversden.ca',
 };
 
@@ -72,7 +74,8 @@ describe('Dive Operator API class', () => {
     expect(operator.createdAt).toBe(TestData.createdAt);
     expect(operator.updatedAt).toBe(TestData.updatedAt);
     expect(operator.owner).toEqual(TestData.owner);
-    expect(operator.verified).toBe(TestData.verified);
+    expect(operator.verificationStatus).toBe(TestData.verificationStatus);
+    expect(operator.verificationMessage).toBe(TestData.verificationMessage);
     expect(operator.logo).toBe(TestData.logo);
     expect(operator.banner).toBe(TestData.banner);
     expect(operator.name).toBe(TestData.name);
@@ -249,6 +252,16 @@ describe('Dive Operator API class', () => {
     expect(mockFetch.done()).toBe(true);
   });
 
+  it('will request verification for a dive operator', async () => {
+    mockFetch.post(`/api/operators/${operator.slug}/requestVerification`, 204);
+
+    await operator.requestVerification();
+
+    expect(mockFetch.done()).toBe(true);
+    expect(operator.verificationStatus).toBe(VerificationStatus.Pending);
+    expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+  });
+
   it('will verify a dive operator', async () => {
     mockFetch.post(
       {
@@ -261,7 +274,23 @@ describe('Dive Operator API class', () => {
     await operator.setVerified(true);
 
     expect(mockFetch.done()).toBe(true);
-    expect(operator.verified).toBe(true);
+    expect(operator.verificationStatus).toBe(VerificationStatus.Verified);
     expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+  });
+
+  it('will reject a dive operator verification', async () => {
+    mockFetch.post(
+      {
+        url: `/api/operators/${operator.slug}/verify`,
+        body: { verified: false, message: 'Invalid address' },
+      },
+      204,
+    );
+
+    await operator.setVerified(false, 'Invalid address');
+
+    expect(mockFetch.done()).toBe(true);
+    expect(operator.verificationStatus).toBe(VerificationStatus.Rejected);
+    expect(operator.verificationMessage).toBe('Invalid address');
   });
 });

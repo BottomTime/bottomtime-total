@@ -3,6 +3,7 @@ import {
   DiveOperatorDTO,
   DiveOperatorSchema,
   SuccinctProfileDTO,
+  VerificationStatus,
 } from '../types';
 import { GPSCoordinates } from './dive-site';
 import { Fetcher } from './fetcher';
@@ -38,8 +39,12 @@ export class DiveOperator {
     return this.data.owner;
   }
 
-  get verified(): boolean {
-    return this.data.verified;
+  get verificationStatus(): VerificationStatus {
+    return this.data.verificationStatus;
+  }
+
+  get verificationMessage(): string | undefined {
+    return this.data.verificationMessage;
   }
 
   get logo(): string | undefined {
@@ -152,9 +157,21 @@ export class DiveOperator {
     this.data.owner = data.owner;
   }
 
-  async setVerified(verified: boolean): Promise<void> {
-    await this.client.post(`/api/operators/${this.slug}/verify`, { verified });
-    this.data.verified = verified;
+  async requestVerification(): Promise<void> {
+    await this.client.post(`/api/operators/${this.slug}/requestVerification`);
+    this.data.verificationStatus = VerificationStatus.Pending;
+    this.data.updatedAt = new Date();
+  }
+
+  async setVerified(verified: boolean, message?: string): Promise<void> {
+    await this.client.post(`/api/operators/${this.slug}/verify`, {
+      verified,
+      message,
+    });
+    this.data.verificationStatus = verified
+      ? VerificationStatus.Verified
+      : VerificationStatus.Rejected;
+    this.data.verificationMessage = message;
     this.data.updatedAt = new Date();
   }
 }

@@ -8,6 +8,20 @@ import {
 } from './constants';
 import { SuccinctProfileSchema, UsernameSchema } from './users';
 
+export enum VerificationStatus {
+  /** Verification has not yet been requested for this entity. */
+  Unverified = 'unverified',
+
+  /** Entity is verified. */
+  Verified = 'verified',
+
+  /** Verification has been requested but not yet approved/disapproved. */
+  Pending = 'pending',
+
+  /** Verification has been rejected for this entity pending further action. */
+  Rejected = 'rejected',
+}
+
 export const CreateOrUpdateDiveOperatorSchema = z.object({
   active: z.boolean(),
   name: z.string().trim().min(1).max(200),
@@ -45,7 +59,8 @@ export const DiveOperatorSchema = CreateOrUpdateDiveOperatorSchema.extend({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   owner: SuccinctProfileSchema,
-  verified: z.boolean(),
+  verificationStatus: z.nativeEnum(VerificationStatus),
+  verificationMessage: z.string().optional(),
 
   logo: z.string().optional(),
   banner: z.string().optional(),
@@ -77,6 +92,7 @@ export type SearchDiveOperatorsResponseDTO = z.infer<
 
 export const VerifyDiveOperatorSchema = z.object({
   verified: z.boolean(),
+  message: z.string().max(1000).optional(),
 });
 export type VerifyDiveOperatorDTO = z.infer<typeof VerifyDiveOperatorSchema>;
 

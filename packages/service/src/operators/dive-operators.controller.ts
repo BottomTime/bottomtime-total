@@ -570,6 +570,61 @@ export class DiveOperatorsController {
 
   /**
    * @openapi
+   * /api/operators/{operatorKey}/requestVerification:
+   *   post:
+   *     summary: Request verification for a dive operator
+   *     operationId: requestVerification
+   *     description: |
+   *       Requests verification for a dive operator, marking them as pending verification.
+   *     tags:
+   *       - Dive Operators
+   *     parameters:
+   *       - $ref: "#/components/parameters/DiveOperatorKey"
+   *     responses:
+   *       204:
+   *         description: The dive operator was successfully requested for verification.
+   *       400:
+   *         description: The request failed because the request body was missing or invalid.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user is not authorized to request verification for the dive operator.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the dive operator was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post(`${OperatorKeyParam}/requestVerification`)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AssertDiveOperator, AssertDiveOperatorOwner)
+  async requestVerification(
+    @CurrentDiveOperator() operator: DiveOperator,
+  ): Promise<void> {
+    await operator.requestVerification();
+  }
+
+  /**
+   * @openapi
    * /api/operators/{operatorKey}/verify:
    *   post:
    *     summary: Verify or unverify a dive operator
@@ -594,15 +649,16 @@ export class DiveOperatorsController {
    *                 name: Verified
    *                 description: Whether the dive operator is verified or not.
    *                 example: true
+   *               message:
+   *                 type: string
+   *                 name: Message
+   *                 maxLength: 1000
+   *                 description: |
+   *                   An optional message to attach to the verification status. This message will only be visible to the owner of the dive operator.
+   *                 example: "We were unable to verifiy your address. Please contact us to resolve this issue. Thank you."
    *     responses:
    *       204:
    *         description: The dive operator was successfully verified/unverified.
-   *       400:
-   *         description: The request failed because the request body was invalid or missing.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: "#/components/schemas/Error"
    *       401:
    *         description: The request failed because the user is not authenticated.
    *         content:
@@ -634,12 +690,8 @@ export class DiveOperatorsController {
   async verifyDiveOperator(
     @CurrentDiveOperator() operator: DiveOperator,
     @Body(new ZodValidator(VerifyDiveOperatorSchema))
-    { verified }: VerifyDiveOperatorDTO,
+    { verified, message }: VerifyDiveOperatorDTO,
   ): Promise<void> {
-    if (verified) {
-      await operator.verify();
-    } else {
-      await operator.unverify();
-    }
+    await operator.setVerification(verified, message);
   }
 }

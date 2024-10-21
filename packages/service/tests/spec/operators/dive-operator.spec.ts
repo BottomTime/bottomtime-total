@@ -1,4 +1,8 @@
-import { AccountTier, LogBookSharing } from '@bottomtime/api';
+import {
+  AccountTier,
+  LogBookSharing,
+  VerificationStatus,
+} from '@bottomtime/api';
 
 import { ConflictException } from '@nestjs/common';
 
@@ -15,9 +19,11 @@ const TestData: DiveOperatorEntity = {
   active: true,
   createdAt: new Date('2022-06-20T11:45:21Z'),
   updatedAt: new Date('2024-07-29T11:45:21Z'),
+  deletedAt: null,
   name: "Diver's Den",
   slug: 'divers-den',
-  verified: true,
+  verificationStatus: VerificationStatus.Rejected,
+  verificationMessage: 'Nope',
   description: `Welcome to Tobermory, the Scuba Diving Capital of Canada!
 Discover the world below the waves of the Fathom Five National Marine Park, home to more than 20 shipwrecks.
 Immerse yourself in the captivating history of century old ships and catch a glimpse of their haunting beauty.
@@ -102,7 +108,8 @@ describe('DiveOperator class', () => {
     expect(operator.active).toBe(TestData.active);
     expect(operator.name).toBe(TestData.name);
     expect(operator.slug).toBe(TestData.slug);
-    expect(operator.verified).toBe(TestData.verified);
+    expect(operator.verificationStatus).toBe(TestData.verificationStatus);
+    expect(operator.verificationMessage).toBe(TestData.verificationMessage);
     expect(operator.description).toBe(TestData.description);
     expect(operator.address).toBe(TestData.address);
     expect(operator.phone).toBe(TestData.phone);
@@ -218,6 +225,10 @@ describe('DiveOperator class', () => {
     expect(savedOperator.id).toBe(operator.id);
     expect(savedOperator.createdAt).toEqual(operator.createdAt);
     expect(savedOperator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+    expect(savedOperator.verificationStatus).toBe(operator.verificationStatus);
+    expect(savedOperator.verificationMessage).toBe(
+      operator.verificationMessage,
+    );
   });
 
   it('will update an existing dive operator', async () => {
@@ -292,15 +303,15 @@ describe('DiveOperator class', () => {
     await expect(newOperator.save()).rejects.toThrow(ConflictException);
   });
 
-  it('will delete an operator', async () => {
+  it('will soft delete an operator', async () => {
     await Operators.save(data);
 
     await expect(operator.delete()).resolves.toBe(true);
 
-    const deletedOperator = await Operators.findOne({
-      where: { id: operator.id },
-    });
-    expect(deletedOperator).toBeNull();
+    await expect(Operators.findOneBy({ id: operator.id })).resolves.toBeNull();
+    await expect(
+      Operators.findOne({ where: { id: operator.id }, withDeleted: true }),
+    ).resolves.not.toBeNull();
   });
 
   it('will return false when deleting a non-existent operator', async () => {
@@ -338,46 +349,46 @@ describe('DiveOperator class', () => {
   });
 
   it('will verify a dive operator', async () => {
-    await operator.verify();
+    await operator.setVerification(true);
 
-    expect(operator.verified).toBe(true);
+    expect(operator.verificationStatus).toBe(VerificationStatus.Verified);
+    expect(operator.verificationMessage).toBeUndefined();
     expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
 
     const saved = await Operators.findOneByOrFail({
       id: operator.id,
     });
-    expect(saved.verified).toBe(true);
+    expect(saved.verificationStatus).toBe(VerificationStatus.Verified);
+    expect(saved.verificationMessage).toBeNull();
     expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
-  });
-
-  it('will do nothing when verifying an already verified dive operator', async () => {
-    data.verified = true;
-    await operator.verify();
-
-    const saved = await Operators.findOneByOrFail({ id: operator.id });
-    expect(saved.verified).toBe(true);
   });
 
   it('will unverify a dive operator', async () => {
-    data.verified = true;
-    await Operators.save(data);
+    const message = 'Hell no.';
+    await operator.setVerification(false, message);
 
-    await operator.unverify();
-
-    expect(operator.verified).toBe(false);
+    expect(operator.verificationStatus).toBe(VerificationStatus.Rejected);
+    expect(operator.verificationMessage).toBe(message);
     expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
 
     const saved = await Operators.findOneByOrFail({
       id: operator.id,
     });
-    expect(saved.verified).toBe(false);
+    expect(saved.verificationStatus).toBe(VerificationStatus.Rejected);
+    expect(saved.verificationMessage).toBe(message);
     expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
   });
 
-  it('will do nothing when unverifying an already unverified dive operator', async () => {
-    await operator.unverify();
+  it('will request a verification', async () => {
+    await operator.requestVerification();
 
-    const saved = await Operators.findOneByOrFail({ id: operator.id });
-    expect(saved.verified).toBe(false);
+    expect(operator.verificationStatus).toBe(VerificationStatus.Pending);
+    expect(operator.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+
+    const saved = await Operators.findOneByOrFail({
+      id: operator.id,
+    });
+    expect(saved.verificationStatus).toBe(VerificationStatus.Pending);
+    expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
   });
 });

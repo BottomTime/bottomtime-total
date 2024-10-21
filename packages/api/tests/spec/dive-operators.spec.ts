@@ -10,6 +10,7 @@ import {
   SearchDiveOperatorsParams,
   SearchDiveOperatorsResponseDTO,
   SearchDiveOperatorsResponseSchema,
+  VerificationStatus,
 } from '../../src/types';
 import TestData from '../fixtures/dive-operator-search-results.json';
 
@@ -43,7 +44,7 @@ describe('Operators API client', () => {
         memberSince: new Date(),
         logBookSharing: LogBookSharing.FriendsOnly,
       },
-      verified: true,
+      verificationStatus: VerificationStatus.Verified,
       address: '123 Test St',
       banner: 'https://example.com/banner.jpg',
       description: 'This is a test operator.',
@@ -153,7 +154,7 @@ describe('Operators API client', () => {
         memberSince: new Date(),
         logBookSharing: LogBookSharing.FriendsOnly,
       },
-      verified: true,
+      verificationStatus: VerificationStatus.Unverified,
       banner: 'https://example.com/banner.jpg',
       logo: 'https://example.com/logo.jpg',
     };
@@ -190,7 +191,8 @@ describe('Operators API client', () => {
         memberSince: new Date(),
         logBookSharing: LogBookSharing.FriendsOnly,
       },
-      verified: true,
+      verificationStatus: VerificationStatus.Rejected,
+      verificationMessage: 'nope',
       address: '123 Test St',
       banner: 'https://example.com/banner.jpg',
       description: 'This is a test operator.',

@@ -4,6 +4,7 @@ import {
   GpsCoordinates,
   LogBookSharing,
   SuccinctProfileDTO,
+  VerificationStatus,
 } from '@bottomtime/api';
 
 import { ConflictException } from '@nestjs/common';
@@ -58,8 +59,12 @@ export class DiveOperator {
         };
   }
 
-  get verified(): boolean {
-    return this.data.verified;
+  get verificationStatus(): VerificationStatus {
+    return this.data.verificationStatus;
+  }
+
+  get verificationMessage(): string | undefined {
+    return this.data.verificationMessage ?? undefined;
   }
 
   get active(): boolean {
@@ -170,18 +175,22 @@ export class DiveOperator {
   }
 
   async delete(): Promise<boolean> {
-    // TODO: This should be a soft delete
-    const { affected } = await this.operators.delete(this.data.id);
+    const { affected } = await this.operators.softDelete(this.data.id);
     return affected === 1;
   }
 
-  async verify(): Promise<void> {
-    this.data.verified = true;
+  async requestVerification(): Promise<void> {
+    this.data.verificationStatus = VerificationStatus.Pending;
+    this.data.updatedAt = new Date();
     await this.save();
   }
 
-  async unverify(): Promise<void> {
-    this.data.verified = false;
+  async setVerification(verified: boolean, message?: string): Promise<void> {
+    this.data.verificationStatus = verified
+      ? VerificationStatus.Verified
+      : VerificationStatus.Rejected;
+    this.data.verificationMessage = message ?? null;
+    this.data.updatedAt = new Date();
     await this.save();
   }
 
@@ -207,7 +216,8 @@ export class DiveOperator {
       logo: this.logo,
       phone: this.phone,
       slug: this.slug,
-      verified: this.verified,
+      verificationStatus: this.verificationStatus,
+      verificationMessage: this.verificationMessage,
       website: this.website,
     };
   }
