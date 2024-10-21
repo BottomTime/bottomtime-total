@@ -409,6 +409,7 @@ export class DiveOperatorsController {
     @Body(new ZodValidator(CreateOrUpdateDiveOperatorSchema))
     options: CreateOrUpdateDiveOperatorDTO,
   ): Promise<DiveOperatorDTO> {
+    operator.active = options.active;
     operator.address = options.address;
     operator.description = options.description;
     operator.email = options.email;

@@ -44,302 +44,403 @@
     </div>
   </ConfirmDialog>
 
+  <ConfirmDialog
+    title="Request Verfication?"
+    confirm-text="Request Verification"
+    :visible="showConfirmRequestVerificationDialog"
+    size="md"
+    @confirm="onRequestVerification"
+    @cancel="onCancelRequestVerification"
+  >
+    <div class="flex gap-3">
+      <figure>
+        <span class="text-4xl">
+          <i class="fa-solid fa-circle-question"></i>
+        </span>
+      </figure>
+      <div class="space-y-3">
+        <p>
+          Are you ready to request verification for your dive shop? Your
+          information will be reviewed and, once the information provided is
+          determined to be valid and factual, your dive shop will be marked as
+          verified.
+        </p>
+
+        <p>
+          Some things you should keep in mind before confirming your request:
+        </p>
+
+        <ul class="px-4 list-outside list-disc">
+          <li>The verification process may take several days.</li>
+          <li>
+            All of the information provided will be verified. Errors in the
+            information or details that cannot be verified may cause delays.
+          </li>
+          <li>
+            Changing your details after verification (e.g. changing your dive
+            shop's name) may cause the changes to be verified again.
+            <span class="italic">
+              Your verification status will not be affected during this period
+              but you may be contacted again to verify the changes.
+            </span>
+          </li>
+        </ul>
+
+        <p>
+          Have you double-checked all of the information provided? If so, click
+          <span class="font-bold">Request Verification</span> to proceed.
+        </p>
+      </div>
+    </div>
+  </ConfirmDialog>
+
   <form @submit.prevent="onSave">
-    <fieldset :disabled="isSaving">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
-        <!-- TODO: Logo? Other fields? -->
+    <fieldset :disabled="isSaving" class="space-y-6">
+      <div>
+        <PillLabel v-if="operator?.verified" type="success" class="text-xl">
+          <span>
+            <i class="fa-solid fa-check"></i>
+          </span>
+          <span>Verified!</span>
+        </PillLabel>
 
-        <div>
-          <TextHeading>Basic Info</TextHeading>
+        <p
+          v-else-if="operator?.id"
+          class="flex gap-4 items-center text-sm text-warn px-6"
+        >
+          <span class="text-2xl">
+            <i class="fa-solid fa-circle-exclamation"></i>
+          </span>
+          <span>
+            Your dive shop is not yet verified. Verifying your dive shop will
+            indicate to your customers that your shop is legitimate and can be
+            trusted. Once you have your shop details filled out correctly you
+            can request verification. We will review your details and contact
+            you to verify your shop.
+          </span>
+          <FormButton class="text-nowrap" @click="onConfirmRequestVerification">
+            Request verfication...
+          </FormButton>
+        </p>
+      </div>
 
-          <FormField
-            label="Name"
-            required
-            control-id="operator-name"
-            :error="v$.name.$errors[0]?.$message"
-            :invalid="v$.name.$error"
-            :responsive="false"
-          >
-            <FormTextBox
-              v-model.trim="formData.name"
-              control-id="operator-name"
-              test-id="name"
-              placeholder="Name of dive shop"
-              :maxlength="200"
-              :invalid="v$.name.$error"
-              :autofocus="true"
-            />
-          </FormField>
-
-          <FormField
-            label="URL Shortcut"
-            required
-            control-id="operator-slug"
-            :error="v$.slug.$errors[0]?.$message"
-            :invalid="v$.slug.$error"
-            :responsive="false"
-          >
-            <div class="space-y-2">
-              <FormTextBox
-                v-model.trim="formData.slug"
-                control-id="operator-slug"
-                test-id="slug"
-                placeholder="my-dive-shop"
-                :maxlength="200"
-                :invalid="v$.slug.$error"
-                @change="autoUpdateSlug = false"
-              />
-              <p v-if="formData.slug" class="space-x-2 text-center">
-                <CopyButton tooltip-position="right" :value="newShopUrl" />
-                <span class="underline">
-                  {{ newShopUrl }}
-                </span>
-              </p>
-
-              <p v-if="operator?.id" class="text-sm">
-                <span class="font-bold">NOTE: </span>
-                <span class="italic">
-                  Avoid changing this unless you need to. Changing this value
-                  will change the URL to your dive shop's page. Users' bookmarks
-                  may be broken.
-                </span>
-              </p>
-              <p v-else class="text-sm italic">
-                This will be used to construct the URL to your dive shop. The
-                text may contain lower-case letters, numbers, as well as
-                URL-safe characters: - $ . + ! * ' ( )
-              </p>
-            </div>
-          </FormField>
-
-          <FormField
-            label="Description"
-            required
-            control-id="operator-description"
-            :error="v$.description.$errors[0]?.$message"
-            :invalid="v$.description.$error"
-            :responsive="false"
-          >
-            <FormTextArea
-              v-model.trim="formData.description"
-              control-id="operator-description"
-              test-id="description"
-              :maxlength="2000"
-              :rows="5"
-              resize="none"
-              placeholder="Description of your dive shop and services offered"
-              :invalid="v$.description.$error"
-            />
-          </FormField>
-
-          <FormField
-            label="Active"
-            required
-            control-id="operator-active"
-            :responsive="false"
-          >
-            <FormToggle
-              v-model="formData.active"
-              control-id="operator-active"
-              test-id="active"
-              :label="formData.active ? 'Active' : 'Inactive'"
-            />
-          </FormField>
+      <article class="flex gap-4">
+        <div v-if="operator?.id" class="px-2 py-6">
+          <div v-if="operator?.logo" class="flex flex-col gap-2 justify-center">
+            <img :src="operator.logo" class="rounded-md" />
+            <FormButton class="text-nowrap" size="sm">
+              Change logo...
+            </FormButton>
+            <FormButton class="text-nowrap" size="xs">Remove logo</FormButton>
+          </div>
+          <div v-else class="space-y-2">
+            <FormButton class="text-nowrap" size="xs">
+              Upload logo...
+            </FormButton>
+          </div>
         </div>
 
-        <div>
-          <TextHeading>Contact Info</TextHeading>
+        <div class="space-y-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
+            <div>
+              <TextHeading>Basic Info</TextHeading>
 
-          <FormField
-            label="Location"
-            required
-            :error="v$.address.$errors[0]?.$message"
-            :invalid="v$.address.$error"
-            :responsive="false"
-            test-id="operator-location"
-          >
-            <div class="space-y-1.5 px-4">
-              <p v-if="formData.address">
-                <span data-testid="operator-address">
-                  {{ formData.address }}
-                </span>
-              </p>
-
-              <p v-if="formData.gps" class="space-x-2">
-                <span class="text-danger">
-                  <i class="fa-solid fa-location-dot"></i>
-                </span>
-                <span data-testid="operator-gps">
-                  {{ formData.gps.lat }}, {{ formData.gps.lon }}
-                </span>
-              </p>
-
-              <FormButton
-                size="sm"
-                test-id="btn-operator-location"
-                @click="onChangeAddress"
+              <FormField
+                label="Name"
+                required
+                control-id="operator-name"
+                :error="v$.name.$errors[0]?.$message"
+                :invalid="v$.name.$error"
+                :responsive="false"
               >
-                {{ formData.address ? 'Change' : 'Set' }} Address...
-              </FormButton>
+                <FormTextBox
+                  v-model.trim="formData.name"
+                  control-id="operator-name"
+                  test-id="name"
+                  placeholder="Name of dive shop"
+                  :maxlength="200"
+                  :invalid="v$.name.$error"
+                  :autofocus="true"
+                />
+              </FormField>
+
+              <FormField
+                label="URL Shortcut"
+                required
+                control-id="operator-slug"
+                :error="v$.slug.$errors[0]?.$message"
+                :invalid="v$.slug.$error"
+                :responsive="false"
+              >
+                <div class="space-y-2">
+                  <FormTextBox
+                    v-model.trim="formData.slug"
+                    control-id="operator-slug"
+                    test-id="slug"
+                    placeholder="my-dive-shop"
+                    :maxlength="200"
+                    :invalid="v$.slug.$error"
+                    @change="autoUpdateSlug = false"
+                  />
+                  <p v-if="formData.slug" class="space-x-2 text-center">
+                    <CopyButton tooltip-position="right" :value="newShopUrl" />
+                    <span class="underline">
+                      {{ newShopUrl }}
+                    </span>
+                  </p>
+
+                  <p v-if="operator?.id" class="text-sm">
+                    <span class="font-bold">NOTE: </span>
+                    <span class="italic">
+                      Avoid changing this unless you need to. Changing this
+                      value will change the URL to your dive shop's page. Users'
+                      bookmarks may be broken.
+                    </span>
+                  </p>
+                  <p v-else class="text-sm italic">
+                    This will be used to construct the URL to your dive shop.
+                    The text may contain lower-case letters, numbers, as well as
+                    URL-safe characters: - $ . + ! * ' ( )
+                  </p>
+                </div>
+              </FormField>
+
+              <FormField
+                label="Description"
+                required
+                control-id="operator-description"
+                :error="v$.description.$errors[0]?.$message"
+                :invalid="v$.description.$error"
+                :responsive="false"
+              >
+                <FormTextArea
+                  v-model.trim="formData.description"
+                  control-id="operator-description"
+                  test-id="description"
+                  :maxlength="2000"
+                  :rows="5"
+                  resize="none"
+                  placeholder="Description of your dive shop and services offered"
+                  :invalid="v$.description.$error"
+                />
+              </FormField>
+
+              <FormField
+                label="Active"
+                required
+                control-id="operator-active"
+                :responsive="false"
+              >
+                <FormToggle
+                  v-model="formData.active"
+                  control-id="operator-active"
+                  test-id="active"
+                  :label="formData.active ? 'Active' : 'Inactive'"
+                />
+              </FormField>
+            </div>
+
+            <div>
+              <TextHeading>Contact Info</TextHeading>
+
+              <FormField
+                label="Location"
+                required
+                :error="v$.address.$errors[0]?.$message"
+                :invalid="v$.address.$error"
+                :responsive="false"
+                test-id="operator-location"
+              >
+                <div class="space-y-1.5 px-4">
+                  <p v-if="formData.address">
+                    <span data-testid="operator-address">
+                      {{ formData.address }}
+                    </span>
+                  </p>
+
+                  <p v-if="formData.gps" class="space-x-2">
+                    <span class="text-danger">
+                      <i class="fa-solid fa-location-dot"></i>
+                    </span>
+                    <span data-testid="operator-gps">
+                      {{ formData.gps.lat }}, {{ formData.gps.lon }}
+                    </span>
+                  </p>
+
+                  <FormButton
+                    size="sm"
+                    test-id="btn-operator-location"
+                    @click="onChangeAddress"
+                  >
+                    {{ formData.address ? 'Change' : 'Set' }} Address...
+                  </FormButton>
+                </div>
+              </FormField>
+
+              <FormField
+                label="Phone"
+                required
+                control-id="operator-phone"
+                :error="v$.phone.$errors[0]?.$message"
+                :invalid="v$.phone.$error"
+                :responsive="false"
+              >
+                <FormTextBox
+                  v-model.trim="formData.phone"
+                  control-id="operator-phone"
+                  test-id="phone"
+                  :maxlength="50"
+                  :invalid="v$.phone.$error"
+                  placeholder="1 (555) 555-5555"
+                />
+              </FormField>
+
+              <FormField
+                label="Email"
+                required
+                control-id="operator-email"
+                :error="v$.email.$errors[0]?.$message"
+                :invalid="v$.email.$error"
+                :responsive="false"
+              >
+                <FormTextBox
+                  v-model.trim="formData.email"
+                  control-id="operator-email"
+                  test-id="email"
+                  :maxlength="100"
+                  :invalid="v$.email.$error"
+                  placeholder="example@diveshop.com"
+                />
+              </FormField>
+
+              <FormField
+                label="Website"
+                control-id="operator-website"
+                :error="v$.website.$errors[0]?.$message"
+                :invalid="v$.website.$error"
+                :responsive="false"
+              >
+                <FormTextBox
+                  v-model.trim="formData.website"
+                  control-id="operator-website"
+                  test-id="website"
+                  :maxlength="200"
+                  :invalid="v$.website.$error"
+                  placeholder="https://www.example.com"
+                />
+              </FormField>
+            </div>
+          </div>
+          <TextHeading>Social Media Accounts</TextHeading>
+
+          <FormField
+            :responsive="false"
+            help="Include account names only. Do not write full URLs and do not include any @ symbols."
+          >
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5 m-1"
+            >
+              <div class="flex gap-1.5 items-baseline w-full">
+                <p>
+                  <span>
+                    <i class="fab fa-facebook fa-fw"></i>
+                  </span>
+                  <label class="sr-only" for="operator-facebook">
+                    Facebook
+                  </label>
+                </p>
+                <FormTextBox
+                  v-model.trim="formData.facebook"
+                  class="w-full"
+                  control-id="operator-facebook"
+                  test-id="facebook"
+                  :maxlength="100"
+                />
+              </div>
+
+              <div class="flex gap-1.5 items-baseline w-full">
+                <p>
+                  <span>
+                    <i class="fab fa-instagram fa-fw"></i>
+                  </span>
+                  <label class="sr-only" for="operator-instagram">
+                    Instagram
+                  </label>
+                </p>
+                <FormTextBox
+                  v-model.trim="formData.instagram"
+                  class="w-full"
+                  control-id="operator-instagram"
+                  test-id="instagram"
+                  :maxlength="100"
+                />
+              </div>
+
+              <div class="flex gap-1.5 items-baseline w-full">
+                <p>
+                  <span>
+                    <i class="fab fa-tiktok fa-fw"></i>
+                  </span>
+                  <label class="sr-only" for="operator-tiktok">TikTok</label>
+                </p>
+                <FormTextBox
+                  v-model.trim="formData.tiktok"
+                  class="w-full"
+                  control-id="operator-tiktok"
+                  test-id="tiktok"
+                  :maxlength="100"
+                />
+              </div>
+
+              <div class="flex gap-1.5 items-baseline w-full">
+                <p>
+                  <span>
+                    <i class="fa-brands fa-x-twitter fa-fw"></i>
+                  </span>
+                  <label class="sr-only" for="operator-twitter">
+                    Twitter / X
+                  </label>
+                </p>
+                <FormTextBox
+                  v-model.trim="formData.twitter"
+                  class="w-full"
+                  control-id="operator-twitter"
+                  test-id="twitter"
+                  :maxlength="100"
+                />
+              </div>
+
+              <div class="flex gap-1.5 items-baseline w-full">
+                <p>
+                  <span>
+                    <i class="fab fa-youtube fa-fw"></i>
+                  </span>
+                  <label class="sr-only" for="operator-youtube">Youtube</label>
+                </p>
+                <FormTextBox
+                  v-model.trim="formData.youtube"
+                  class="w-full"
+                  control-id="operator-youtube"
+                  test-id="youtube"
+                  :maxlength="100"
+                />
+              </div>
             </div>
           </FormField>
 
-          <FormField
-            label="Phone"
-            required
-            control-id="operator-phone"
-            :error="v$.phone.$errors[0]?.$message"
-            :invalid="v$.phone.$error"
-            :responsive="false"
-          >
-            <FormTextBox
-              v-model.trim="formData.phone"
-              control-id="operator-phone"
-              test-id="phone"
-              :maxlength="50"
-              :invalid="v$.phone.$error"
-              placeholder="1 (555) 555-5555"
-            />
-          </FormField>
-
-          <FormField
-            label="Email"
-            required
-            control-id="operator-email"
-            :error="v$.email.$errors[0]?.$message"
-            :invalid="v$.email.$error"
-            :responsive="false"
-          >
-            <FormTextBox
-              v-model.trim="formData.email"
-              control-id="operator-email"
-              test-id="email"
-              :maxlength="100"
-              :invalid="v$.email.$error"
-              placeholder="example@diveshop.com"
-            />
-          </FormField>
-
-          <FormField
-            label="Website"
-            control-id="operator-website"
-            :error="v$.website.$errors[0]?.$message"
-            :invalid="v$.website.$error"
-            :responsive="false"
-          >
-            <FormTextBox
-              v-model.trim="formData.website"
-              control-id="operator-website"
-              test-id="website"
-              :maxlength="200"
-              :invalid="v$.website.$error"
-              placeholder="https://www.example.com"
-            />
-          </FormField>
-        </div>
-      </div>
-      <TextHeading>Social Media Accounts</TextHeading>
-
-      <FormField
-        :responsive="false"
-        help="Include account names only. Do not write full URLs and do not include any @ symbols."
-      >
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-5 m-1"
-        >
-          <div class="flex gap-1.5 items-baseline w-full">
-            <p>
-              <span>
-                <i class="fab fa-facebook fa-fw"></i>
-              </span>
-              <label class="sr-only" for="operator-facebook">Facebook</label>
-            </p>
-            <FormTextBox
-              v-model.trim="formData.facebook"
-              class="w-full"
-              control-id="operator-facebook"
-              test-id="facebook"
-              :maxlength="100"
-            />
-          </div>
-
-          <div class="flex gap-1.5 items-baseline w-full">
-            <p>
-              <span>
-                <i class="fab fa-instagram fa-fw"></i>
-              </span>
-              <label class="sr-only" for="operator-instagram">Instagram</label>
-            </p>
-            <FormTextBox
-              v-model.trim="formData.instagram"
-              class="w-full"
-              control-id="operator-instagram"
-              test-id="instagram"
-              :maxlength="100"
-            />
-          </div>
-
-          <div class="flex gap-1.5 items-baseline w-full">
-            <p>
-              <span>
-                <i class="fab fa-tiktok fa-fw"></i>
-              </span>
-              <label class="sr-only" for="operator-tiktok">TikTok</label>
-            </p>
-            <FormTextBox
-              v-model.trim="formData.tiktok"
-              class="w-full"
-              control-id="operator-tiktok"
-              test-id="tiktok"
-              :maxlength="100"
-            />
-          </div>
-
-          <div class="flex gap-1.5 items-baseline w-full">
-            <p>
-              <span>
-                <i class="fa-brands fa-x-twitter fa-fw"></i>
-              </span>
-              <label class="sr-only" for="operator-twitter">Twitter / X</label>
-            </p>
-            <FormTextBox
-              v-model.trim="formData.twitter"
-              class="w-full"
-              control-id="operator-twitter"
-              test-id="twitter"
-              :maxlength="100"
-            />
-          </div>
-
-          <div class="flex gap-1.5 items-baseline w-full">
-            <p>
-              <span>
-                <i class="fab fa-youtube fa-fw"></i>
-              </span>
-              <label class="sr-only" for="operator-youtube">Youtube</label>
-            </p>
-            <FormTextBox
-              v-model.trim="formData.youtube"
-              class="w-full"
-              control-id="operator-youtube"
-              test-id="youtube"
-              :maxlength="100"
-            />
+          <div class="flex justify-center">
+            <FormButton
+              type="primary"
+              :is-loading="isSaving"
+              test-id="btn-save-operator"
+              submit
+              @click="onSave"
+            >
+              {{ operator ? 'Save Changes' : 'Create Dive Shop' }}
+            </FormButton>
           </div>
         </div>
-      </FormField>
-
-      <div class="flex justify-center">
-        <FormButton
-          type="primary"
-          :is-loading="isSaving"
-          test-id="btn-save-operator"
-          submit
-          @click="onSave"
-        >
-          {{ operator ? 'Save Changes' : 'Create Dive Shop' }}
-        </FormButton>
-      </div>
+      </article>
     </fieldset>
   </form>
 </template>
@@ -370,6 +471,7 @@ import FormField from '../common/form-field.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import FormToggle from '../common/form-toggle.vue';
+import PillLabel from '../common/pill-label.vue';
 import TextHeading from '../common/text-heading.vue';
 import AddressDialog from '../dialog/address-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
@@ -429,6 +531,7 @@ const emit = defineEmits<{
 const autoUpdateSlug = ref(!props.operator);
 const showAddressDialog = ref(false);
 const showConfirmChangeSlugDialog = ref(false);
+const showConfirmRequestVerificationDialog = ref(false);
 const formData = reactive<EditDiveOperatorFormData>(
   formDataFromDto(props.operator),
 );
@@ -563,5 +666,17 @@ function onConfirmSave() {
 
 function onCancelSave() {
   showConfirmChangeSlugDialog.value = false;
+}
+
+function onConfirmRequestVerification() {
+  showConfirmRequestVerificationDialog.value = true;
+}
+
+function onCancelRequestVerification() {
+  showConfirmRequestVerificationDialog.value = false;
+}
+
+function onRequestVerification() {
+  showConfirmRequestVerificationDialog.value = false;
 }
 </script>

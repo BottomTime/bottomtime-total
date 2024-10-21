@@ -160,6 +160,7 @@ async function onSearch(params: SearchDiveOperatorsParams): Promise<void> {
         : undefined,
       radius: params.radius || undefined,
       owner: params.owner || undefined,
+      showInactive: params.showInactive ? 'true' : undefined,
       skip: searchParams.skip,
       limit: searchParams.limit,
     },
@@ -170,7 +171,9 @@ async function onSearch(params: SearchDiveOperatorsParams): Promise<void> {
   searchParams.limit = params.limit;
   searchParams.owner = params.owner;
   searchParams.radius = params.radius;
+  searchParams.showInactive = params.showInactive;
   searchParams.skip = params.skip;
+  searchParams.limit = params.limit;
   await refresh();
 }
 

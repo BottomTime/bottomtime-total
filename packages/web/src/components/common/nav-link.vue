@@ -1,11 +1,5 @@
 <template>
-  <a
-    class="font-bold text-link underline hover:text-link-hover cursor-pointer"
-    :href="to"
-    :target="target"
-    :aria-label="label"
-    @click="$emit('click')"
-  >
+  <a :href="to" :target="target" :aria-label="label" @click="$emit('click')">
     <slot></slot>
   </a>
 </template>

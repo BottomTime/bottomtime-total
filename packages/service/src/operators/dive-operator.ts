@@ -170,6 +170,7 @@ export class DiveOperator {
   }
 
   async delete(): Promise<boolean> {
+    // TODO: This should be a soft delete
     const { affected } = await this.operators.delete(this.data.id);
     return affected === 1;
   }
