@@ -9,6 +9,7 @@ import {
   SearchDiveOperatorsResponseDTO,
   SearchDiveOperatorsResponseSchema,
   UserDTO,
+  VerificationStatus,
 } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
@@ -266,7 +267,7 @@ describe('Dive operators view', () => {
         owner: ShopOwner.profile,
         createdAt: new Date('2021-01-01T00:00:00Z'),
         updatedAt: new Date('2021-01-01T00:00:00Z'),
-        verified: false,
+        verificationStatus: VerificationStatus.Unverified,
         ...create,
       };
       const spy = jest

@@ -74,6 +74,7 @@ export const SearchDiveOperatorsSchema = z
     radius: z.coerce.number().gt(0).max(500),
     owner: UsernameSchema,
     showInactive: BooleanString,
+    verification: z.nativeEnum(VerificationStatus),
     skip: z.coerce.number().int().min(0),
     limit: z.coerce.number().int().min(1).max(500),
   })

@@ -7,6 +7,7 @@ import {
   Fetcher,
   HttpException,
   UserDTO,
+  VerificationStatus,
 } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
@@ -300,7 +301,7 @@ describe('Dive Operator view', () => {
         createdAt: new Date('2024-01-10T10:54:08.909Z'),
         updatedAt: new Date('2024-10-09T18:44:28.447Z'),
         owner: ShopOwner.profile,
-        verified: false,
+        verificationStatus: VerificationStatus.Unverified,
         ...create,
       };
       const spy = jest
@@ -331,7 +332,7 @@ describe('Dive Operator view', () => {
         createdAt: new Date('2024-01-10T10:54:08.909Z'),
         updatedAt: new Date('2024-10-09T18:44:28.447Z'),
         owner: AdminUser.profile,
-        verified: false,
+        verificationStatus: VerificationStatus.Unverified,
         ...create,
       };
       const spy = jest

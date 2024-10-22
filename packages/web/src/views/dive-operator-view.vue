@@ -9,6 +9,9 @@
         :operator="operators.currentDiveOperator"
         :is-saving="isSaving"
         @save="saveChanges"
+        @verification-requested="onVerificationRequested"
+        @verified="onVerified"
+        @rejected="onVerificationRejected"
       />
 
       <ViewDiveOperator v-else :operator="operators.currentDiveOperator" />
@@ -23,6 +26,7 @@ import {
   AccountTier,
   CreateOrUpdateDiveOperatorDTO,
   UserRole,
+  VerificationStatus,
 } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
@@ -112,7 +116,7 @@ onServerPrefetch(async () => {
           owner: currentUser.user!.profile,
           slug: '',
           updatedAt: new Date(),
-          verified: false,
+          verificationStatus: VerificationStatus.Unverified,
         };
         return;
       }
@@ -206,5 +210,29 @@ async function saveChanges(
   );
 
   isSaving.value = false;
+}
+
+function onVerificationRequested() {
+  if (operators.currentDiveOperator) {
+    operators.currentDiveOperator.verificationStatus =
+      VerificationStatus.Pending;
+    operators.currentDiveOperator.verificationMessage = undefined;
+  }
+}
+
+function onVerified(message?: string) {
+  if (operators.currentDiveOperator) {
+    operators.currentDiveOperator.verificationStatus =
+      VerificationStatus.Verified;
+    operators.currentDiveOperator.verificationMessage = message;
+  }
+}
+
+function onVerificationRejected(message?: string) {
+  if (operators.currentDiveOperator) {
+    operators.currentDiveOperator.verificationStatus =
+      VerificationStatus.Rejected;
+    operators.currentDiveOperator.verificationMessage = message;
+  }
 }
 </script>

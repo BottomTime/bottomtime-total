@@ -12,7 +12,12 @@
     </div>
 
     <article class="space-y-3">
-      <PillLabel v-if="operator.verified" type="success" class="text-xl">
+      <PillLabel
+        v-if="operator.verificationStatus === VerificationStatus.Verified"
+        type="success"
+        class="text-xl"
+        data-testid="operator-verified"
+      >
         <span>
           <i class="fa-solid fa-check"></i>
         </span>
@@ -135,7 +140,7 @@
 </template>
 
 <script setup lang="ts">
-import { DiveOperatorDTO } from '@bottomtime/api';
+import { DiveOperatorDTO, VerificationStatus } from '@bottomtime/api';
 
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { computed } from 'vue';

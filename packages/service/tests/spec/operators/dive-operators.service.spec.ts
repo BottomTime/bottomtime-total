@@ -1,4 +1,4 @@
-import { LogBookSharing } from '@bottomtime/api';
+import { LogBookSharing, VerificationStatus } from '@bottomtime/api';
 
 import { writeFile } from 'fs/promises';
 import { resolve } from 'path';
@@ -276,6 +276,26 @@ describe('DiveOperatorService', () => {
           name: op.name,
           owner: op.owner.username,
           active: op.active,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    it('will perform a search for dive operators with a specific verification status', async () => {
+      const results = await service.searchOperators({
+        verification: VerificationStatus.Pending,
+      });
+      const expectedCount = searchData.filter(
+        (op) =>
+          op.verificationStatus === VerificationStatus.Pending && op.active,
+      ).length;
+
+      expect(results.operators).toHaveLength(expectedCount);
+      expect(results.totalCount).toBe(expectedCount);
+      expect(
+        results.operators.map((op) => ({
+          name: op.name,
+          owner: op.owner.username,
+          verification: op.verificationStatus,
         })),
       ).toMatchSnapshot();
     });

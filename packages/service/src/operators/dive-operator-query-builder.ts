@@ -1,4 +1,4 @@
-import { GPSCoordinates } from '@bottomtime/api';
+import { GPSCoordinates, VerificationStatus } from '@bottomtime/api';
 
 import { DiveOperatorEntity } from 'src/data';
 import { Repository, SelectQueryBuilder } from 'typeorm';
@@ -25,7 +25,6 @@ export const DiveOperatorSelectFields = [
   'operators.twitter',
   'operators.youtube',
   'operators.verificationStatus',
-  'operators.verificationMessage',
   'operators.website',
   'owner.id',
   'owner.username',
@@ -99,6 +98,18 @@ export class DiveOperatorQueryBuilder {
         "operators.fulltext @@ websearch_to_tsquery('english', :query)",
         {
           query,
+        },
+      );
+    }
+    return this;
+  }
+
+  withVerificationStatus(status?: VerificationStatus): this {
+    if (status) {
+      this.query = this.query.andWhere(
+        'operators.verificationStatus = :status',
+        {
+          status,
         },
       );
     }

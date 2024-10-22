@@ -93,6 +93,7 @@ export class DiveOperatorsService {
       .withOwner(options?.owner)
       .withPagination(options?.skip, options?.limit)
       .withTextSearch(options?.query)
+      .withVerificationStatus(options?.verification)
       .build();
     const [operators, totalCount] = await query.getManyAndCount();
 

@@ -1,7 +1,7 @@
 <template>
   <AddressDialog
     ref="addressDialog"
-    :visible="showAddressDialog"
+    :visible="state.showAddressDialog"
     :address="formData.address"
     :gps="formData.gps"
     @save="onConfirmChangeAddress"
@@ -12,7 +12,7 @@
     title="Change URL Shortcut?"
     confirm-text="Save Changes"
     :is-loading="isSaving"
-    :visible="showConfirmChangeSlugDialog"
+    :visible="state.showConfirmChangeSlugDialog"
     size="md"
     dangerous
     @confirm="onConfirmSave"
@@ -47,9 +47,10 @@
   <ConfirmDialog
     title="Request Verfication?"
     confirm-text="Request Verification"
-    :visible="showConfirmRequestVerificationDialog"
+    :is-loading="state.isRequestingVerification"
+    :visible="state.showConfirmRequestVerificationDialog"
     size="md"
-    @confirm="onRequestVerification"
+    @confirm="onConfirmRequestVerification"
     @cancel="onCancelRequestVerification"
   >
     <div class="flex gap-3">
@@ -96,46 +97,52 @@
 
   <form @submit.prevent="onSave">
     <fieldset :disabled="isSaving" class="space-y-6">
-      <div>
-        <PillLabel v-if="operator?.verified" type="success" class="text-xl">
-          <span>
-            <i class="fa-solid fa-check"></i>
-          </span>
-          <span>Verified!</span>
-        </PillLabel>
-
-        <p
-          v-else-if="operator?.id"
-          class="flex gap-4 items-center text-sm text-warn px-6"
-        >
-          <span class="text-2xl">
-            <i class="fa-solid fa-circle-exclamation"></i>
-          </span>
-          <span>
-            Your dive shop is not yet verified. Verifying your dive shop will
-            indicate to your customers that your shop is legitimate and can be
-            trusted. Once you have your shop details filled out correctly you
-            can request verification. We will review your details and contact
-            you to verify your shop.
-          </span>
-          <FormButton class="text-nowrap" @click="onConfirmRequestVerification">
-            Request verfication...
-          </FormButton>
-        </p>
-      </div>
+      <VerificationBadge
+        v-if="operator?.id"
+        :status="operator?.verificationStatus"
+        :message="operator?.verificationMessage"
+        @request-verification="onRequestVerification"
+        @verify="onOperatorVerified"
+        @reject="onOperatorVerificationRejected"
+      />
 
       <article class="flex gap-4">
         <div v-if="operator?.id" class="px-2 py-6">
           <div v-if="operator?.logo" class="flex flex-col gap-2 justify-center">
             <img :src="operator.logo" class="rounded-md" />
-            <FormButton class="text-nowrap" size="sm">
-              Change logo...
-            </FormButton>
-            <FormButton class="text-nowrap" size="xs">Remove logo</FormButton>
+            <div class="flex">
+              <FormButton class="text-nowrap" size="xs" rounded="left">
+                <span class="sr-only">Change logo...</span>
+                <span>
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </span>
+              </FormButton>
+              <FormButton
+                class="text-nowrap"
+                size="xs"
+                type="danger"
+                rounded="right"
+              >
+                <p>
+                  <span class="sr-only">Remove logo</span>
+                  <span>
+                    <i class="fa-solid fa-trash"></i>
+                  </span>
+                </p>
+              </FormButton>
+            </div>
           </div>
-          <div v-else class="space-y-2">
+          <div v-else class="space-y-2 text-center">
+            <div class="w-[128px] h-[128px]">
+              <i class="fa-solid fa-image fa-8x"></i>
+            </div>
             <FormButton class="text-nowrap" size="xs">
-              Upload logo...
+              <p class="space-x-2">
+                <span>
+                  <i class="fa-solid fa-upload"></i>
+                </span>
+                <span>Upload logo...</span>
+              </p>
             </FormButton>
           </div>
         </div>
@@ -180,7 +187,7 @@
                     placeholder="my-dive-shop"
                     :maxlength="200"
                     :invalid="v$.slug.$error"
-                    @change="autoUpdateSlug = false"
+                    @change="state.autoUpdateSlug = false"
                   />
                   <p v-if="formData.slug" class="space-x-2 text-center">
                     <CopyButton tooltip-position="right" :value="newShopUrl" />
@@ -471,10 +478,10 @@ import FormField from '../common/form-field.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import FormToggle from '../common/form-toggle.vue';
-import PillLabel from '../common/pill-label.vue';
 import TextHeading from '../common/text-heading.vue';
 import AddressDialog from '../dialog/address-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import VerificationBadge from './verification-badge.vue';
 
 interface EditDiveOperatorFormData {
   active: boolean;
@@ -496,6 +503,14 @@ interface EditDiveOperatorFormData {
 interface EditDiveOperatorProps {
   isSaving?: boolean;
   operator?: DiveOperatorDTO;
+}
+
+interface EditDiveOperatorState {
+  autoUpdateSlug: boolean;
+  isRequestingVerification: boolean;
+  showAddressDialog: boolean;
+  showConfirmChangeSlugDialog: boolean;
+  showConfirmRequestVerificationDialog: boolean;
 }
 
 function formDataFromDto(dto?: DiveOperatorDTO): EditDiveOperatorFormData {
@@ -527,11 +542,17 @@ const props = withDefaults(defineProps<EditDiveOperatorProps>(), {
 });
 const emit = defineEmits<{
   (e: 'save', data: CreateOrUpdateDiveOperatorDTO): void;
+  (e: 'verification-requested', operator: DiveOperatorDTO): void;
+  (e: 'verified', message?: string): void;
+  (e: 'rejected', message?: string): void;
 }>();
-const autoUpdateSlug = ref(!props.operator);
-const showAddressDialog = ref(false);
-const showConfirmChangeSlugDialog = ref(false);
-const showConfirmRequestVerificationDialog = ref(false);
+const state = reactive<EditDiveOperatorState>({
+  autoUpdateSlug: !props.operator?.id,
+  isRequestingVerification: false,
+  showAddressDialog: false,
+  showConfirmChangeSlugDialog: false,
+  showConfirmRequestVerificationDialog: false,
+});
 const formData = reactive<EditDiveOperatorFormData>(
   formDataFromDto(props.operator),
 );
@@ -608,7 +629,7 @@ const v$ = useVuelidate(
 watch(
   () => formData.name,
   (name) => {
-    if (autoUpdateSlug.value) {
+    if (state.autoUpdateSlug) {
       formData.slug = slugify(name, { lower: true, strict: true });
     }
   },
@@ -616,17 +637,17 @@ watch(
 
 function onChangeAddress() {
   addressDialog.value?.reset();
-  showAddressDialog.value = true;
+  state.showAddressDialog = true;
 }
 
 function onCancelChangeAddress() {
-  showAddressDialog.value = false;
+  state.showAddressDialog = false;
 }
 
 function onConfirmChangeAddress(address: string, gps: GPSCoordinates | null) {
   formData.address = address;
   formData.gps = gps ?? null;
-  showAddressDialog.value = false;
+  state.showAddressDialog = false;
 }
 
 async function onSave(): Promise<void> {
@@ -634,14 +655,14 @@ async function onSave(): Promise<void> {
   if (!isValid) return;
 
   if (props.operator?.id && props.operator?.slug !== formData.slug) {
-    showConfirmChangeSlugDialog.value = true;
+    state.showConfirmChangeSlugDialog = true;
   } else {
     onConfirmSave();
   }
 }
 
 function onConfirmSave() {
-  showConfirmChangeSlugDialog.value = false;
+  state.showConfirmChangeSlugDialog = false;
   const dto: CreateOrUpdateDiveOperatorDTO = {
     active: formData.active,
     name: formData.name,
@@ -665,18 +686,38 @@ function onConfirmSave() {
 }
 
 function onCancelSave() {
-  showConfirmChangeSlugDialog.value = false;
-}
-
-function onConfirmRequestVerification() {
-  showConfirmRequestVerificationDialog.value = true;
-}
-
-function onCancelRequestVerification() {
-  showConfirmRequestVerificationDialog.value = false;
+  state.showConfirmChangeSlugDialog = false;
 }
 
 function onRequestVerification() {
-  showConfirmRequestVerificationDialog.value = false;
+  state.showConfirmRequestVerificationDialog = true;
+}
+
+async function onConfirmRequestVerification() {
+  state.isRequestingVerification = true;
+
+  await oops(async () => {
+    if (!props.operator) return;
+
+    const operator = client.diveOperators.wrapDTO(props.operator);
+    await operator.requestVerification();
+
+    emit('verification-requested', props.operator);
+    state.showConfirmRequestVerificationDialog = false;
+  });
+
+  state.isRequestingVerification = false;
+}
+
+function onCancelRequestVerification() {
+  state.showConfirmRequestVerificationDialog = false;
+}
+
+function onOperatorVerified(message?: string) {
+  emit('verified', message);
+}
+
+function onOperatorVerificationRejected(message?: string) {
+  emit('rejected', message);
 }
 </script>

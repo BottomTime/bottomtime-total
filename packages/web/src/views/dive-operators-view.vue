@@ -15,6 +15,9 @@
           :is-saving="state.isSaving"
           :operator="state.currentOperator"
           @save="onSaveOperator"
+          @verification-requested="onVerificationRequested"
+          @verified="onVerified"
+          @rejected="onVerificationRejected"
         />
         <ViewDiveOperator v-else :operator="state.currentOperator" />
       </template>
@@ -52,6 +55,7 @@ import {
   SearchDiveOperatorsParams,
   SearchDiveOperatorsSchema,
   UserRole,
+  VerificationStatus,
 } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
@@ -191,7 +195,7 @@ function onCreateShop() {
     name: '',
     owner: currentUser.user.profile,
     updatedAt: new Date(),
-    verified: false,
+    verificationStatus: VerificationStatus.Unverified,
     address: '',
     description: '',
     slug: '',
@@ -287,5 +291,26 @@ async function onLoadMore(): Promise<void> {
   });
 
   state.isLoadingMore = false;
+}
+
+function onVerificationRequested(): void {
+  if (state.currentOperator) {
+    state.currentOperator.verificationStatus = VerificationStatus.Pending;
+    state.currentOperator.verificationMessage = undefined;
+  }
+}
+
+function onVerified(message?: string): void {
+  if (state.currentOperator) {
+    state.currentOperator.verificationStatus = VerificationStatus.Verified;
+    state.currentOperator.verificationMessage = message;
+  }
+}
+
+function onVerificationRejected(message?: string): void {
+  if (state.currentOperator) {
+    state.currentOperator.verificationStatus = VerificationStatus.Rejected;
+    state.currentOperator.verificationMessage = message;
+  }
 }
 </script>

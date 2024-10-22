@@ -1,4 +1,9 @@
-import { ApiClient } from '@bottomtime/api';
+import {
+  ApiClient,
+  DiveOperator,
+  Fetcher,
+  VerificationStatus,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -13,6 +18,7 @@ import { ApiClientKey } from '../../../../src/api-client';
 import EditDiveOperator from '../../../../src/components/operators/edit-dive-operator.vue';
 import { createRouter } from '../../../fixtures/create-router';
 import {
+  BlankDiveOperator,
   FullDiveOperator,
   PartialDiveOperator,
 } from '../../../fixtures/dive-operators';
@@ -42,7 +48,16 @@ const PhoneError = '[data-testid="operator-phone-error"]';
 const EmailError = '[data-testid="operator-email-error"]';
 const WebsiteError = '[data-testid="operator-website-error"]';
 
+const VerifiedBadge = '[data-testid="operator-verified"]';
+const UnverifiedMessage = '[data-testid="operator-unverified"]';
+const VerificationRejectedMessage =
+  '[data-testid="operator-verification-rejected"]';
+const VerificationPendingMessage =
+  '[data-testid="operator-verification-pending"]';
+const RequestVerificationButton = '#btn-request-verification';
+
 describe('EditDiveOperator component', () => {
+  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
 
@@ -50,7 +65,8 @@ describe('EditDiveOperator component', () => {
   let opts: ComponentMountingOptions<typeof EditDiveOperator>;
 
   beforeAll(() => {
-    client = new ApiClient();
+    fetcher = new Fetcher();
+    client = new ApiClient({ fetcher });
     router = createRouter();
   });
 
@@ -348,5 +364,154 @@ describe('EditDiveOperator component', () => {
     await flushPromises();
 
     expect(wrapper.emitted('save')).toBeUndefined();
+  });
+
+  describe('when dealing with verification', () => {
+    it('will not show verification components for new operators that have not been saved yet', () => {
+      const wrapper = mount(EditDiveOperator, {
+        ...opts,
+        props: {
+          operator: BlankDiveOperator,
+        },
+      });
+      expect(wrapper.find(VerifiedBadge).exists()).toBe(false);
+      expect(wrapper.find(UnverifiedMessage).exists()).toBe(false);
+      expect(wrapper.find(VerificationPendingMessage).exists()).toBe(false);
+      expect(wrapper.find(VerificationRejectedMessage).exists()).toBe(false);
+      expect(wrapper.find(RequestVerificationButton).exists()).toBe(false);
+    });
+
+    it('will show when an operator has not yet requested verification', () => {
+      const wrapper = mount(EditDiveOperator, {
+        ...opts,
+        props: {
+          operator: {
+            ...FullDiveOperator,
+            verificationStatus: VerificationStatus.Unverified,
+          },
+        },
+      });
+      expect(wrapper.find(VerifiedBadge).exists()).toBe(false);
+      expect(wrapper.find(UnverifiedMessage).isVisible()).toBe(true);
+      expect(wrapper.find(VerificationPendingMessage).exists()).toBe(false);
+      expect(wrapper.find(VerificationRejectedMessage).exists()).toBe(false);
+      expect(wrapper.find(RequestVerificationButton).isVisible()).toBe(true);
+    });
+
+    it('will show when an operator has been verified', () => {
+      const wrapper = mount(EditDiveOperator, {
+        ...opts,
+        props: {
+          operator: {
+            ...FullDiveOperator,
+            verificationStatus: VerificationStatus.Verified,
+          },
+        },
+      });
+      expect(wrapper.find(VerifiedBadge).isVisible()).toBe(true);
+      expect(wrapper.find(UnverifiedMessage).exists()).toBe(false);
+      expect(wrapper.find(VerificationPendingMessage).exists()).toBe(false);
+      expect(wrapper.find(VerificationRejectedMessage).exists()).toBe(false);
+      expect(wrapper.find(RequestVerificationButton).exists()).toBe(false);
+    });
+
+    it('will show when verification is pending', async () => {
+      const wrapper = mount(EditDiveOperator, {
+        ...opts,
+        props: {
+          operator: {
+            ...FullDiveOperator,
+            verificationStatus: VerificationStatus.Pending,
+          },
+        },
+      });
+      expect(wrapper.find(VerifiedBadge).exists()).toBe(false);
+      expect(wrapper.find(UnverifiedMessage).exists()).toBe(false);
+      expect(wrapper.find(VerificationPendingMessage).isVisible()).toBe(true);
+      expect(wrapper.find(VerificationRejectedMessage).exists()).toBe(false);
+      expect(wrapper.find(RequestVerificationButton).exists()).toBe(false);
+    });
+
+    it('will show when verification has been rejected (with reason)', async () => {
+      const message = 'Omg! A message!!';
+      const wrapper = mount(EditDiveOperator, {
+        ...opts,
+        props: {
+          operator: {
+            ...FullDiveOperator,
+            verificationStatus: VerificationStatus.Rejected,
+            verificationMessage: message,
+          },
+        },
+      });
+      expect(wrapper.find(VerifiedBadge).exists()).toBe(false);
+      expect(wrapper.find(UnverifiedMessage).exists()).toBe(false);
+      expect(wrapper.find(VerificationPendingMessage).exists()).toBe(false);
+      expect(wrapper.find(VerificationRejectedMessage).isVisible()).toBe(true);
+      expect(wrapper.find(RequestVerificationButton).isVisible()).toBe(true);
+      expect(
+        wrapper.find('[data-testid="verification-rejection-message"]').text(),
+      ).toBe(message);
+    });
+
+    it('will allow a user to request verification', async () => {
+      const operatorData = {
+        ...FullDiveOperator,
+        verificationStatus: VerificationStatus.Unverified,
+        verificationMessage: undefined,
+      };
+      const operator = new DiveOperator(fetcher, operatorData);
+      const wrapSpy = jest
+        .spyOn(client.diveOperators, 'wrapDTO')
+        .mockReturnValue(operator);
+      const requestSpy = jest
+        .spyOn(operator, 'requestVerification')
+        .mockResolvedValue();
+      const wrapper = mount(EditDiveOperator, {
+        ...opts,
+        props: {
+          operator: operatorData,
+        },
+      });
+
+      await wrapper.get(RequestVerificationButton).trigger('click');
+      await wrapper
+        .get('[data-testid="dialog-confirm-button"]')
+        .trigger('click');
+      await flushPromises();
+
+      expect(wrapSpy).toHaveBeenCalledWith(operatorData);
+      expect(requestSpy).toHaveBeenCalled();
+      expect(wrapper.emitted('verification-requested')).toEqual([
+        [operatorData],
+      ]);
+    });
+
+    it('will allow a user to cancel a request for verification', async () => {
+      const operatorData = {
+        ...FullDiveOperator,
+        verificationStatus: VerificationStatus.Unverified,
+        verificationMessage: undefined,
+      };
+      const operator = new DiveOperator(fetcher, operatorData);
+      const wrapSpy = jest
+        .spyOn(client.diveOperators, 'wrapDTO')
+        .mockReturnValue(operator);
+      const wrapper = mount(EditDiveOperator, {
+        ...opts,
+        props: {
+          operator: operatorData,
+        },
+      });
+
+      await wrapper.get(RequestVerificationButton).trigger('click');
+      await wrapper
+        .get('[data-testid="dialog-cancel-button"]')
+        .trigger('click');
+      await flushPromises();
+
+      expect(wrapSpy).not.toHaveBeenCalled();
+      expect(wrapper.emitted('verification-requested')).toBeUndefined();
+    });
   });
 });

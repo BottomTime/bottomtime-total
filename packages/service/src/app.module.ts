@@ -22,7 +22,9 @@ import { UsersModule } from './users';
 
 @Module({
   imports: [
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({
+      delimiter: '_',
+    }),
     TypeOrmModule.forRootAsync({
       useFactory: () => PostgresDataSourceOptions,
       dataSourceFactory: async (options?: DataSourceOptions) => {

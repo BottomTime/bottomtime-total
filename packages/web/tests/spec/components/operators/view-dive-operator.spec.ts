@@ -1,3 +1,5 @@
+import { VerificationStatus } from '@bottomtime/api';
+
 import { mount } from '@vue/test-utils';
 
 import ViewDiveOperator from '../../../../src/components/operators/view-dive-operator.vue';
@@ -23,5 +25,19 @@ describe('ViewDiveOperator component', () => {
       },
     });
     expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will show verified badge for verified operators', () => {
+    const wrapper = mount(ViewDiveOperator, {
+      props: {
+        operator: {
+          ...FullDiveOperator,
+          verificationStatus: VerificationStatus.Verified,
+        },
+      },
+    });
+    expect(wrapper.find('[data-testid="operator-verified"]').isVisible()).toBe(
+      true,
+    );
   });
 });

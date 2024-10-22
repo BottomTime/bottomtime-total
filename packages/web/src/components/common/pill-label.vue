@@ -1,9 +1,9 @@
 <template>
-  <p
-    :class="`inline-block ${bgColor} rounded-full px-2 font-title space-x-2 w-fit`"
+  <div
+    :class="`inline-block ${bgColor} rounded-full px-2 h-6 flex items-center w-fit shadow-sm shadow-grey-600 text-xs`"
   >
     <slot></slot>
-  </p>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -26,7 +26,7 @@ const bgColor = computed(() => {
     case 'warning':
       return 'bg-warning';
     case 'info':
-      return 'bg-info';
+      return 'bg-secondary text-grey-950';
   }
 });
 </script>

@@ -7,6 +7,7 @@ import {
   SearchDiveOperatorsSchema,
   TransferDiveOperatorOwnershipDTO,
   TransferDiveOperatorOwnershipSchema,
+  UserRole,
   VerifyDiveOperatorDTO,
   VerifyDiveOperatorSchema,
 } from '@bottomtime/api';
@@ -123,6 +124,21 @@ export class DiveOperatorsController {
    *           Whether to include inactive dive operators (`active = false`) in the search results. Defaults to `false`.
    *         required: false
    *         example: true
+   *         schema:
+   *           type: boolean
+   *       - in: query
+   *         name: verification
+   *         description: |
+   *           Verification status to filter on.
+   *         required: false
+   *         example: pending
+   *         schema:
+   *           type: string
+   *           enum:
+   *             - pending
+   *             - verified
+   *             - rejected
+   *             - unverified
    *       - in: query
    *         name: skip
    *         description: |
@@ -341,9 +357,19 @@ export class DiveOperatorsController {
   @Get(OperatorKeyParam)
   @UseGuards(AssertDiveOperator)
   getDiveOperator(
+    @CurrentUser() user: User | undefined,
     @CurrentDiveOperator() operator: DiveOperator,
   ): DiveOperatorDTO {
-    return operator.toJSON();
+    // Only return the verification message if the user is an admin or the owner of the operator...
+    if (user?.role === UserRole.Admin || user?.id === operator.owner.userId) {
+      return operator.toJSON();
+    }
+
+    // ...otherwise, this information is private.
+    return {
+      ...operator.toJSON(),
+      verificationMessage: undefined,
+    };
   }
 
   /**

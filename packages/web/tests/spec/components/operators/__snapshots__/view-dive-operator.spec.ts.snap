@@ -6,7 +6,7 @@ exports[`ViewDiveOperator component will render with all properties 1`] = `
     <p class="p-2"><img src="https://loremflickr.com/128/128?lock=1873198725464064" class="rounded-md" width="256px" height="256px"></p>
   </div>
   <article class="space-y-3">
-    <p class="inline-block bg-success rounded-full px-2 font-title space-x-2 w-fit text-xl"><span><i class="fa-solid fa-check"></i></span><span>Verified!</span></p>
+    <!--v-if-->
     <p class="text-lg">Aufero accendo amissio suffoco adulescens cruentus despecto vulgaris. Valens delego coma eius universe. Delicate suffragium auditor debilito.
       Dolorum appositus vesper cinis vicissitudo vel cresco cibo brevis. Contabesco ulterius odit recusandae degero. Culpo animus adstringo dicta terebro eaque demo deporto defaeco.</p>
     <div class="grid grid-cols-2 gap-4">

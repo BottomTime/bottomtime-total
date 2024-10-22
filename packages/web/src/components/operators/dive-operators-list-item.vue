@@ -2,11 +2,17 @@
   <li
     class="flex items-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
   >
-    <div class="w-[64px] h-[64px]">
-      <img class="rounded-lg" :src="operator.logo" alt="" />
-    </div>
+    <figure class="w-[128px] h-[128px]">
+      <img
+        v-if="operator.logo"
+        class="rounded-lg"
+        :src="operator.logo"
+        alt=""
+      />
+    </figure>
 
-    <article class="space-y-1">
+    <article class="grow space-y-1">
+      <!-- Title -->
       <div class="flex gap-2 align-top">
         <FormButton
           type="link"
@@ -17,18 +23,43 @@
           <span class="capitalize">{{ operator.name }}</span>
         </FormButton>
 
-        <div class="relative group">
-          <p v-if="operator.verified" class="text-sm text-success space-x-1">
+        <PillLabel
+          v-if="operator.verificationStatus === VerificationStatus.Verified"
+          type="success"
+        >
+          <p class="space-x-2">
             <span>
               <i class="fa-solid fa-circle-check fa-sm"></i>
             </span>
-            <span
-              class="absolute invisible group-hover:visible transition-opacity left-[105%] top-0 bg-success text-grey-950 px-2 rounded-md"
-            >
-              Verified!
-            </span>
+            <span>Verified!</span>
           </p>
-        </div>
+        </PillLabel>
+
+        <template v-if="canEdit">
+          <PillLabel
+            v-if="operator.verificationStatus === VerificationStatus.Pending"
+            type="info"
+          >
+            <p class="space-x-2">
+              <span>
+                <i class="fa-regular fa-clock"></i>
+              </span>
+              <span>Pending verification...</span>
+            </p>
+          </PillLabel>
+
+          <PillLabel
+            v-if="operator.verificationStatus === VerificationStatus.Rejected"
+            type="danger"
+          >
+            <p class="space-x-2">
+              <span>
+                <i class="fa-solid fa-x"></i>
+              </span>
+              <span>Verification rejected</span>
+            </p>
+          </PillLabel>
+        </template>
       </div>
 
       <p v-if="operator.description">
@@ -150,8 +181,8 @@
       </address>
     </article>
 
-    <div class="flex min-w-32">
-      <FormButton v-if="false" rounded="left" size="sm">
+    <div v-if="canEdit" class="flex">
+      <FormButton rounded="left" size="sm" @click="$emit('select', operator)">
         <p>
           <span class="sr-only">Edit {{ operator.name }}</span>
           <span>
@@ -159,7 +190,7 @@
           </span>
         </p>
       </FormButton>
-      <FormButton v-if="false" rounded="right" size="sm" type="danger">
+      <FormButton rounded="right" size="sm" type="danger">
         <p>
           <span class="sr-only">Delete {{ operator.name }}</span>
           <span>
@@ -172,17 +203,28 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveOperatorDTO } from '@bottomtime/api';
+import { DiveOperatorDTO, UserRole, VerificationStatus } from '@bottomtime/api';
 
+import { computed } from 'vue';
+
+import { useCurrentUser } from '../../store';
 import FormButton from '../common/form-button.vue';
 import NavLink from '../common/nav-link.vue';
+import PillLabel from '../common/pill-label.vue';
 
 interface DiveOperatorsListItemProps {
   operator: DiveOperatorDTO;
 }
 
-defineProps<DiveOperatorsListItemProps>();
+const currentUser = useCurrentUser();
+
+const props = defineProps<DiveOperatorsListItemProps>();
 defineEmits<{
   (e: 'select', operator: DiveOperatorDTO): void;
 }>();
+const canEdit = computed<boolean>(
+  () =>
+    currentUser.user?.role === UserRole.Admin ||
+    currentUser.user?.id === props.operator.owner.userId,
+);
 </script>

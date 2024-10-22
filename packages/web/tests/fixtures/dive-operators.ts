@@ -1,4 +1,8 @@
-import { DiveOperatorDTO, LogBookSharing } from '@bottomtime/api';
+import {
+  DiveOperatorDTO,
+  LogBookSharing,
+  VerificationStatus,
+} from '@bottomtime/api';
 
 export const BlankDiveOperator: DiveOperatorDTO = {
   active: true,
@@ -20,7 +24,7 @@ export const BlankDiveOperator: DiveOperatorDTO = {
   },
   slug: '',
   updatedAt: new Date(),
-  verified: false,
+  verificationStatus: VerificationStatus.Unverified,
 };
 
 export const PartialDiveOperator: DiveOperatorDTO = {
@@ -44,7 +48,7 @@ export const PartialDiveOperator: DiveOperatorDTO = {
     name: 'Clementine Mann',
   },
   slug: 'academic-squeaky-osmosis',
-  verified: false,
+  verificationStatus: VerificationStatus.Pending,
 };
 
 export const FullDiveOperator: DiveOperatorDTO = {
@@ -80,6 +84,7 @@ export const FullDiveOperator: DiveOperatorDTO = {
   logo: 'https://loremflickr.com/128/128?lock=1873198725464064',
   phone: '936.810.0307 x63779',
   slug: 'academic-squeaky-osmosis',
-  verified: true,
+  verificationStatus: VerificationStatus.Rejected,
+  verificationMessage: 'Unable to verify your address',
   website: 'https://euphoric-controversy.com',
 };

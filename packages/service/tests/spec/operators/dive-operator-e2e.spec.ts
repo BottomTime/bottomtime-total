@@ -21,6 +21,7 @@ import Owners from '../../fixtures/user-search-data.json';
 import {
   createAuthHeader,
   createTestApp,
+  createTestDiveOperator,
   createTestUser,
   parseOperatorJSON,
   parseUserJSON,
@@ -352,6 +353,63 @@ describe('Dive Operators E2E tests', () => {
         .expect(200);
 
       expect(body).toMatchSnapshot();
+    });
+
+    it('will not return verification message to anonymous users', async () => {
+      const owner = parseUserJSON(Owners[0]);
+      const operator = createTestDiveOperator(owner, {
+        verificationMessage: 'This is a test message',
+      });
+      await Users.save(owner);
+      await Operators.save(operator);
+
+      const { body } = await request(server)
+        .get(getUrl(operator.slug))
+        .expect(200);
+      expect(body.verificationMessage).toBeUndefined();
+    });
+
+    it('will not return verification message to users who do not own the operator', async () => {
+      const owner = parseUserJSON(Owners[0]);
+      const operator = createTestDiveOperator(owner, {
+        verificationMessage: 'Another test message!',
+      });
+      await Users.save(owner);
+      await Operators.save(operator);
+
+      const { body } = await request(server)
+        .get(getUrl(operator.slug))
+        .set(...otherUserAuthHeader)
+        .expect(200);
+      expect(body.verificationMessage).toBeUndefined();
+    });
+
+    it('will return the verification message to operator owners', async () => {
+      const operator = createTestDiveOperator(regularUser, {
+        verificationMessage: 'Another sweet message!',
+      });
+      await Users.save(regularUser);
+      await Operators.save(operator);
+
+      const { body } = await request(server)
+        .get(getUrl(operator.slug))
+        .set(...regularUserAuthHeader)
+        .expect(200);
+      expect(body.verificationMessage).toBe(operator.verificationMessage);
+    });
+
+    it('will return the verification message to admin users', async () => {
+      const operator = createTestDiveOperator(regularUser, {
+        verificationMessage: 'Ok! One more message!',
+      });
+      await Users.save(regularUser);
+      await Operators.save(operator);
+
+      const { body } = await request(server)
+        .get(getUrl(operator.slug))
+        .set(...adminUserAuthHeader)
+        .expect(200);
+      expect(body.verificationMessage).toBe(operator.verificationMessage);
     });
 
     it('will return a 404 response if the operator key cannot be found', async () => {

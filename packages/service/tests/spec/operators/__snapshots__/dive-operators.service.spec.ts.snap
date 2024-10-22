@@ -467,6 +467,26 @@ exports[`DiveOperatorService when searching for operators will perform a search 
 ]
 `;
 
+exports[`DiveOperatorService when searching for operators will perform a search for dive operators with a specific verification status 1`] = `
+[
+  {
+    "name": "creative, slim escape",
+    "owner": "Ashly71",
+    "verification": "pending",
+  },
+  {
+    "name": "heavenly, buttery distinction",
+    "owner": "Jamey87",
+    "verification": "pending",
+  },
+  {
+    "name": "profitable, puzzling young",
+    "owner": "Jefferey_Davis41",
+    "verification": "pending",
+  },
+]
+`;
+
 exports[`DiveOperatorService when searching for operators will perform a search with a query string 1`] = `
 {
   "length": 10,
