@@ -1,3 +1,3 @@
-export * from './dive-operator';
+export * from './operator';
 
-export * from './dive-operators.module';
+export * from './operators.module';

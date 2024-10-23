@@ -1,0 +1,689 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Operators E2E tests when creating a new dive operator will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "boolean",
+      "message": "Expected boolean, received string",
+      "path": [
+        "active",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "name",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "slug",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "description",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "address",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "phone",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid email",
+      "path": [
+        "email",
+      ],
+      "validation": "email",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid url",
+      "path": [
+        "website",
+      ],
+      "validation": "url",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "gps",
+        "lat",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "gps",
+        "lon",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "facebook",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "twitter",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "socials",
+        "instagram",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "socials",
+        "tiktok",
+      ],
+      "received": "boolean",
+    },
+  ],
+}
+`;
+
+exports[`Operators E2E tests when creating a new dive operator will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "boolean",
+      "message": "Required",
+      "path": [
+        "active",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "name",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "slug",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "description",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "address",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`Operators E2E tests when retrieving a single dive operator will retrieve the indicated dive operator 1`] = `
+{
+  "active": true,
+  "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
+  "banner": "https://loremflickr.com/1024/256?lock=7881950486331392",
+  "createdAt": "2021-12-02T10:15:12.327Z",
+  "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
+Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor benevolentia. Tutamen amplitudo curis atavus. Appono somniculosus delicate admoveo.",
+  "email": "Jada_Okuneva@hotmail.com",
+  "gps": {
+    "lat": 6.9546,
+    "lon": -52.6869,
+  },
+  "id": "850fe12a-1873-4a61-9e75-f793f1752688",
+  "logo": "https://loremflickr.com/128/128?lock=2275161833209856",
+  "name": "soft, ornery grape",
+  "owner": {
+    "accountTier": 0,
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
+    "location": "West Covina",
+    "logBookSharing": "private",
+    "memberSince": "2020-02-24T22:30:50.944Z",
+    "name": "Devin Ratke",
+    "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
+    "username": "Ayla.Rippin",
+  },
+  "phone": "1-869-633-8778 x70097",
+  "slug": "soft-ornery-grape",
+  "socials": {
+    "facebook": "Cheyenne.OReilly22",
+    "instagram": "Nathaniel42",
+    "tiktok": "Presley_Heaney91",
+    "twitter": "Clemens30",
+    "youtube": "Emmitt74",
+  },
+  "updatedAt": "2024-10-11T20:54:11.726Z",
+  "verificationStatus": "unverified",
+  "website": "https://fake-endive.info/",
+}
+`;
+
+exports[`Operators E2E tests when searching dive operators will perform a basic search with default parameters 1`] = `
+{
+  "active": true,
+  "address": "47191 Astrid Lane Suite 737, Jarenmouth, MD, 18868",
+  "banner": "https://loremflickr.com/1024/256?lock=1969575207895040",
+  "createdAt": "2023-06-25T22:32:39.551Z",
+  "description": "Nobis aqua odio valens confugo spiculum viriliter. Explicabo torrens eos dolore socius natus facilis. Stipes audax spero uberrime apostolus.
+Velit calamitas cogito decor defendo advenio allatus comes tenuis nulla. Praesentium tempore paulatim pel theatrum brevis a. Eos accommodo libero abscido solvo astrum solus.",
+  "email": "Alverta.Torp@gmail.com",
+  "gps": {
+    "lat": 85.9108,
+    "lon": 87.5066,
+  },
+  "id": "2e825650-4daf-4044-bc86-84513c4abc84",
+  "logo": "https://loremflickr.com/128/128?lock=3880418432516096",
+  "name": "absolute, testy prairie",
+  "owner": {
+    "accountTier": 0,
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1182.jpg",
+    "location": "Evanston",
+    "logBookSharing": "private",
+    "memberSince": "2019-02-17T21:57:07.852Z",
+    "name": "Mrs. Israel Stracke",
+    "userId": "9d72ecc0-b240-47c9-9d42-e6d196a3383f",
+    "username": "Audreanne.Larkin79",
+  },
+  "phone": "270-756-3332 x7034",
+  "slug": "absolute-testy-prairie",
+  "socials": {
+    "facebook": "Fernando.Armstrong56",
+    "instagram": "Verona_Schultz",
+    "tiktok": "Alessandra_Osinski",
+    "twitter": "Andreanne47",
+    "youtube": "Nettie_Parisian",
+  },
+  "updatedAt": "2024-08-06T20:05:26.295Z",
+  "verificationStatus": "unverified",
+  "website": "https://golden-beggar.name",
+}
+`;
+
+exports[`Operators E2E tests when searching dive operators will perform a basic search with default parameters 2`] = `
+[
+  "absolute, testy prairie",
+  "acceptable, rotten efficacy",
+  "adventurous, ripe flintlock",
+  "annual, crowded editor",
+  "another, upset harbour",
+  "apt, dearest croissant",
+  "apt, wicked aluminium",
+  "arid, broken secretary",
+  "athletic, poised cursor",
+  "average, mad gondola",
+  "awesome, pertinent spume",
+  "baggy, measly tempo",
+  "beneficial, knowledgeable gold",
+  "bite-sized, pitiful entree",
+  "bite-sized, unlined query",
+  "black, considerate hypothermia",
+  "bland, giant exhaust",
+  "blue, evergreen fraudster",
+  "bogus, thorny macaroni",
+  "brief, interesting chairman",
+  "bumpy, lean hospitalisation",
+  "careful, worse baboon",
+  "cautious, well-to-do supreme",
+  "charming, linear analysis",
+  "chief, smug blogger",
+  "clear-cut, shady bend",
+  "close, sizzling sugar",
+  "clumsy, unripe maintainer",
+  "composed, hungry potato",
+  "considerate, organic spool",
+  "content, formal clavicle",
+  "conventional, empty wallaby",
+  "cooked, well-to-do ghost",
+  "crafty, roasted eligibility",
+  "creative, slim escape",
+  "creepy, precious butane",
+  "creepy, unusual ephemera",
+  "cute, delirious wound",
+  "cute, emotional chord",
+  "daring, delectable proliferation",
+  "darling, insistent sparrow",
+  "defensive, mealy choice",
+  "delightful, tense pound",
+  "descriptive, same infancy",
+  "direct, lustrous slang",
+  "dirty, flimsy buck",
+  "distinct, fumbling marmalade",
+  "dreary, similar mattock",
+  "elaborate, deep cupcake",
+  "elderly, frozen conspirator",
+]
+`;
+
+exports[`Operators E2E tests when searching dive operators will perform a more complex search with query parameters 1`] = `
+{
+  "operators": [
+    {
+      "active": true,
+      "address": "6368 Poplar Close Apt. 638, New Cara, AL, 26720",
+      "banner": "https://loremflickr.com/1024/256?lock=7721857371340800",
+      "createdAt": "2024-03-04T16:25:27.014Z",
+      "description": "Vesper talis calculus admiratio. Vilicus succurro venustas curatio ipsam sui clamo vir angustus velociter. Ars valens turpis vulgivagus deludo.
+Sperno taedium cultellus assumenda. Cum verumtamen maiores aegre demoror rerum suppellex ulciscor. Voco deinde crepusculum adulatio.",
+      "email": "Kyler.Sporer@gmail.com",
+      "gps": {
+        "lat": 18.1609,
+        "lon": -75.8876,
+      },
+      "id": "533087c1-06d6-48bf-8f20-0e969b443b8a",
+      "logo": "https://picsum.photos/seed/wohjBYVK/128/128",
+      "name": "pink, warm pioneer",
+      "owner": {
+        "accountTier": 0,
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/826.jpg",
+        "location": "Rancho Cucamonga",
+        "logBookSharing": "private",
+        "memberSince": "2019-08-11T20:25:07.035Z",
+        "name": "Sarah Okuneva",
+        "userId": "d8026268-6625-4c2f-acdc-577aa8edb98d",
+        "username": "Jacey_Bernier",
+      },
+      "phone": "1-367-829-8828",
+      "slug": "pink-warm-pioneer",
+      "socials": {
+        "facebook": "Christina87",
+        "instagram": "Zachariah_OConner56",
+        "tiktok": "Sanford41",
+        "twitter": "Stuart.Berge19",
+        "youtube": "Mariela_Kunde64",
+      },
+      "updatedAt": "2024-06-05T12:34:35.913Z",
+      "verificationStatus": "unverified",
+      "website": "https://hopeful-humidity.info",
+    },
+  ],
+  "totalCount": 1,
+}
+`;
+
+exports[`Operators E2E tests when searching dive operators will return a 400 response if the query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "custom",
+      "message": "Must be in the format "<lat>,<lon>"",
+      "path": [
+        "location",
+        "location",
+      ],
+    },
+    {
+      "code": "custom",
+      "message": "Array must contain at least 2 element(s)",
+      "path": [
+        "location",
+        "location",
+      ],
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "radius",
+      ],
+      "received": "nan",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 0",
+      "minimum": 0,
+      "path": [
+        "skip",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 500,
+      "message": "Number must be less than or equal to 500",
+      "path": [
+        "limit",
+      ],
+      "type": "number",
+    },
+  ],
+}
+`;
+
+exports[`Operators E2E tests when transferring ownership of a dive operator will allow an admin to transfer ownership 1`] = `
+{
+  "active": true,
+  "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
+  "banner": "https://loremflickr.com/1024/256?lock=7881950486331392",
+  "createdAt": "2021-12-02T10:15:12.327Z",
+  "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
+Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor benevolentia. Tutamen amplitudo curis atavus. Appono somniculosus delicate admoveo.",
+  "email": "Jada_Okuneva@hotmail.com",
+  "gps": {
+    "lat": 6.9546,
+    "lon": -52.6869,
+  },
+  "id": "850fe12a-1873-4a61-9e75-f793f1752688",
+  "logo": "https://loremflickr.com/128/128?lock=2275161833209856",
+  "name": "soft, ornery grape",
+  "owner": {
+    "accountTier": 0,
+    "avatar": "https://example.com/avatar.png",
+    "location": "Vancouver, BC",
+    "logBookSharing": "public",
+    "memberSince": "2024-07-31T13:00:45.000Z",
+    "name": "Jane Other",
+    "userId": "ca5f6ec9-b9a5-4e9a-8a34-9c27a44d94f8",
+    "username": "Jane.Other",
+  },
+  "phone": "1-869-633-8778 x70097",
+  "slug": "soft-ornery-grape",
+  "socials": {
+    "facebook": "Cheyenne.OReilly22",
+    "instagram": "Nathaniel42",
+    "tiktok": "Presley_Heaney91",
+    "twitter": "Clemens30",
+    "youtube": "Emmitt74",
+  },
+  "updatedAt": 1970-01-01T00:00:00.000Z,
+  "verificationStatus": "unverified",
+  "website": "https://fake-endive.info/",
+}
+`;
+
+exports[`Operators E2E tests when transferring ownership of a dive operator will allow the operator owner to transfer ownership 1`] = `
+{
+  "active": true,
+  "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
+  "banner": "https://loremflickr.com/1024/256?lock=7881950486331392",
+  "createdAt": "2021-12-02T10:15:12.327Z",
+  "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
+Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor benevolentia. Tutamen amplitudo curis atavus. Appono somniculosus delicate admoveo.",
+  "email": "Jada_Okuneva@hotmail.com",
+  "gps": {
+    "lat": 6.9546,
+    "lon": -52.6869,
+  },
+  "id": "850fe12a-1873-4a61-9e75-f793f1752688",
+  "logo": "https://loremflickr.com/128/128?lock=2275161833209856",
+  "name": "soft, ornery grape",
+  "owner": {
+    "accountTier": 0,
+    "avatar": "https://example.com/avatar.png",
+    "location": "Vancouver, BC",
+    "logBookSharing": "public",
+    "memberSince": "2024-07-31T13:00:45.000Z",
+    "name": "Jane Other",
+    "userId": "ca5f6ec9-b9a5-4e9a-8a34-9c27a44d94f8",
+    "username": "Jane.Other",
+  },
+  "phone": "1-869-633-8778 x70097",
+  "slug": "soft-ornery-grape",
+  "socials": {
+    "facebook": "Cheyenne.OReilly22",
+    "instagram": "Nathaniel42",
+    "tiktok": "Presley_Heaney91",
+    "twitter": "Clemens30",
+    "youtube": "Emmitt74",
+  },
+  "updatedAt": 1970-01-01T00:00:00.000Z,
+  "verificationStatus": "unverified",
+  "website": "https://fake-endive.info/",
+}
+`;
+
+exports[`Operators E2E tests when updating a dive operator will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "name",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "slug",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "description",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "address",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "phone",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid email",
+      "path": [
+        "email",
+      ],
+      "validation": "email",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid url",
+      "path": [
+        "website",
+      ],
+      "validation": "url",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "gps",
+        "lat",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received string",
+      "path": [
+        "gps",
+        "lon",
+      ],
+      "received": "string",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "facebook",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "socials",
+        "twitter",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "socials",
+        "instagram",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "socials",
+        "tiktok",
+      ],
+      "received": "boolean",
+    },
+  ],
+}
+`;
+
+exports[`Operators E2E tests when updating a dive operator will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "boolean",
+      "message": "Required",
+      "path": [
+        "active",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "name",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "slug",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "description",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Required",
+      "path": [
+        "address",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;

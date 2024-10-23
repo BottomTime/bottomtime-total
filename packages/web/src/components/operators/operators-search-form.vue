@@ -67,7 +67,7 @@ import {
   AccountTier,
   GpsCoordinates,
   GpsCoordinatesWithRadius,
-  SearchDiveOperatorsParams,
+  SearchOperatorsParams,
   UserRole,
 } from '@bottomtime/api';
 
@@ -83,7 +83,7 @@ import FormSearchBox from '../common/form-search-box.vue';
 import TextHeading from '../common/text-heading.vue';
 
 interface OperatorsSearchProps {
-  searchParams: SearchDiveOperatorsParams;
+  searchParams: SearchOperatorsParams;
 }
 
 interface OperatorsSearchFormState {
@@ -108,7 +108,7 @@ const state = reactive<OperatorsSearchFormState>({
   showInactive: props.searchParams.showInactive ?? false,
 });
 const emit = defineEmits<{
-  (e: 'search', params: SearchDiveOperatorsParams): void;
+  (e: 'search', params: SearchOperatorsParams): void;
 }>();
 
 const allowFilterMyShops = computed(

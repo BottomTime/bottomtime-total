@@ -7,8 +7,8 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-import { DiveOperatorEntity } from './dive-operators.entity';
 import { LogEntryEntity } from './log-entry.entity';
+import { OperatorEntity } from './operators.entity';
 import { MediaType } from './types';
 
 @Entity('media_files')
@@ -22,11 +22,11 @@ export class MediaFileEntity {
   })
   logEntry?: LogEntryEntity;
 
-  @ManyToOne(() => DiveOperatorEntity, (operator) => operator.media, {
+  @ManyToOne(() => OperatorEntity, (operator) => operator.media, {
     nullable: true,
     onDelete: 'CASCADE',
   })
-  diveOperator?: DiveOperatorEntity;
+  diveOperator?: OperatorEntity;
 
   @Column({ type: 'enum', enum: MediaType })
   type: MediaType = MediaType.Image;

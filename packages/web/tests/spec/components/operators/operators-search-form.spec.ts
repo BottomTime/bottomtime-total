@@ -1,4 +1,4 @@
-import { AccountTier, SearchDiveOperatorsParams } from '@bottomtime/api';
+import { AccountTier, SearchOperatorsParams } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -53,7 +53,7 @@ describe('OperatorsSearchForm component', () => {
   });
 
   it('will render with search options provided', () => {
-    const params: SearchDiveOperatorsParams = {
+    const params: SearchOperatorsParams = {
       owner: BasicUser.username,
       query: 'Cozumel',
       location: {

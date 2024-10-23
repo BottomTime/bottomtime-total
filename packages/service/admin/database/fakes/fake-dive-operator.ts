@@ -4,11 +4,11 @@ import { faker } from '@faker-js/faker';
 
 import slugify from 'slugify';
 
-import { DiveOperatorEntity, UserEntity } from '../../../src/data';
+import { OperatorEntity, UserEntity } from '../../../src/data';
 
-export function fakeDiveOperator(userIds: string[]): DiveOperatorEntity {
+export function fakeDiveOperator(userIds: string[]): OperatorEntity {
   const name = `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`;
-  const operator: DiveOperatorEntity = {
+  const operator: OperatorEntity = {
     id: faker.string.uuid(),
     createdAt: faker.date.past({ years: 5 }),
     updatedAt: faker.date.recent({ days: 180 }),

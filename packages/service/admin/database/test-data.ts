@@ -5,11 +5,11 @@ import { DataSource, Repository } from 'typeorm';
 
 import {
   AlertEntity,
-  DiveOperatorEntity,
   DiveSiteEntity,
   FriendRequestEntity,
   FriendshipEntity,
   LogEntryEntity,
+  OperatorEntity,
   UserEntity,
 } from '../../src/data';
 import { getDataSource } from './data-source';
@@ -88,7 +88,7 @@ async function createUsers(
 }
 
 async function createDiveOperators(
-  Operators: Repository<DiveOperatorEntity>,
+  Operators: Repository<OperatorEntity>,
   userIds: string[],
   count: number,
 ): Promise<void> {
@@ -211,7 +211,7 @@ export async function createTestData(
     const Alerts = ds.getRepository(AlertEntity);
     const FriendRequests = ds.getRepository(FriendRequestEntity);
     const Friends = ds.getRepository(FriendshipEntity);
-    const Operators = ds.getRepository(DiveOperatorEntity);
+    const Operators = ds.getRepository(OperatorEntity);
     const LogEntries = ds.getRepository(LogEntryEntity);
     const Users = ds.getRepository(UserEntity);
     const Sites = ds.getRepository(DiveSiteEntity);

@@ -1,12 +1,12 @@
 import { AppMetricsDTO } from '../types';
 import { AlertsApiClient } from './alerts';
 import { ApiClientOptions } from './api-client-options';
-import { DiveOperatorsApiClient } from './dive-operators';
 import { DiveSitesApiClient } from './dive-sites';
 import { Fetcher } from './fetcher';
 import { FriendsApiClient } from './friends';
 import { LogEntriesApiClient } from './log-entries';
 import { MembershipsApiClient } from './memberships';
+import { OperatorsApiClient } from './operators';
 import { TanksApiClient } from './tanks';
 import { UsersApiClient } from './users';
 
@@ -15,7 +15,7 @@ export class ApiClient {
   readonly alerts: AlertsApiClient;
   readonly friends: FriendsApiClient;
   readonly users: UsersApiClient;
-  readonly diveOperators: DiveOperatorsApiClient;
+  readonly operators: OperatorsApiClient;
   readonly diveSites: DiveSitesApiClient;
   readonly logEntries: LogEntriesApiClient;
   readonly memberships: MembershipsApiClient;
@@ -26,7 +26,7 @@ export class ApiClient {
     this.alerts = new AlertsApiClient(this.client);
     this.friends = new FriendsApiClient(this.client);
     this.users = new UsersApiClient(this.client);
-    this.diveOperators = new DiveOperatorsApiClient(this.client);
+    this.operators = new OperatorsApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
     this.memberships = new MembershipsApiClient(this.client);

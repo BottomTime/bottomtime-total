@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker';
 import slugify from 'slugify';
 import { z } from 'zod';
 
-import { DiveOperatorEntity, UserEntity } from '../../src/data';
+import { OperatorEntity, UserEntity } from '../../src/data';
 
 const OperatorSchema = z.object({
   id: z.string(),
@@ -42,14 +42,14 @@ const OperatorSchema = z.object({
   banner: z.string().nullable(),
 });
 
-export function createTestDiveOperator(
+export function createTestOperator(
   owner?: UserEntity,
-  options?: Partial<DiveOperatorEntity>,
-): DiveOperatorEntity {
+  options?: Partial<OperatorEntity>,
+): OperatorEntity {
   const name =
     options?.name ||
     `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`;
-  const operator: DiveOperatorEntity = {
+  const operator: OperatorEntity = {
     id: options?.id ?? faker.string.uuid(),
     createdAt: options?.createdAt ?? faker.date.past({ years: 5 }),
     updatedAt: options?.updatedAt ?? faker.date.recent({ days: 180 }),
@@ -100,8 +100,8 @@ export function createTestDiveOperator(
 export function parseOperatorJSON(
   data: unknown,
   owner?: UserEntity,
-): DiveOperatorEntity {
-  const operator: DiveOperatorEntity = OperatorSchema.parse(data);
+): OperatorEntity {
+  const operator: OperatorEntity = OperatorSchema.parse(data);
   operator.owner ??= owner;
   return operator;
 }

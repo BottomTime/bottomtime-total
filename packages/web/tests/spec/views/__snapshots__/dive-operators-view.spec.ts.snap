@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Dive operators view when performing server-side render will perform a basic search when now query params are provided 1`] = `"<span>Showing </span><span class="font-bold">49</span><span> of </span><span class="font-bold">651</span><span> dive shop(s)</span>"`;
-
-exports[`Dive operators view when performing server-side render will perform a more complicated search when query params are provided 1`] = `"<span>Showing </span><span class="font-bold">0</span><span> of </span><span class="font-bold">0</span><span> dive shop(s)</span>"`;
