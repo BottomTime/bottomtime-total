@@ -47,7 +47,7 @@
   <ConfirmDialog
     title="Request Verfication?"
     confirm-text="Request Verification"
-    :is-loading="state.isRequestingVerification"
+    :is-loading="state.isUpdatingVerification"
     :visible="state.showConfirmRequestVerificationDialog"
     size="md"
     @confirm="onConfirmRequestVerification"
@@ -95,15 +95,47 @@
     </div>
   </ConfirmDialog>
 
+  <ConfirmDialog
+    :visible="state.showConfirmVerifyDialog"
+    title="Verify Dive Shop Details?"
+    confirm-text="Verify"
+    size="md"
+    :is-loading="state.isUpdatingVerification"
+    @confirm="onConfirmVerify"
+    @cancel="onCancelVerify"
+  >
+    <div class="flex gap-3">
+      <p class="text-4xl">
+        <i class="fa-regular fa-circle-question"></i>
+      </p>
+      <div class="space-y-3">
+        <p>
+          Do you certify that the dive shop details displayed on this page have
+          been verified to be accurate and up-to-date?
+        </p>
+
+        <p>If so, click <span class="font-bold">Verify</span> to confirm.</p>
+      </div>
+    </div>
+  </ConfirmDialog>
+
+  <ConfirmRejectVerificationDialog
+    :is-saving="state.isUpdatingVerification"
+    :visible="state.showConfirmRejectDialog"
+    @confirm="onConfirmRejectVerification"
+    @cancel="onCancelRejectVerification"
+  />
+
   <form @submit.prevent="onSave">
     <fieldset :disabled="isSaving" class="space-y-6">
       <VerificationBadge
         v-if="operator?.id"
         :status="operator?.verificationStatus"
         :message="operator?.verificationMessage"
+        :is-saving="state.isUpdatingVerification"
         @request-verification="onRequestVerification"
-        @verify="onOperatorVerified"
-        @reject="onOperatorVerificationRejected"
+        @verify="onVerify"
+        @reject="onRejectVerification"
       />
 
       <article class="flex gap-4">
@@ -481,6 +513,7 @@ import FormToggle from '../common/form-toggle.vue';
 import TextHeading from '../common/text-heading.vue';
 import AddressDialog from '../dialog/address-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import ConfirmRejectVerificationDialog from './confirm-reject-verification-dialog.vue';
 import VerificationBadge from './verification-badge.vue';
 
 interface EditOperatorFormData {
@@ -507,10 +540,12 @@ interface EditOperatorProps {
 
 interface EditOperatorState {
   autoUpdateSlug: boolean;
-  isRequestingVerification: boolean;
+  isUpdatingVerification: boolean;
   showAddressDialog: boolean;
   showConfirmChangeSlugDialog: boolean;
   showConfirmRequestVerificationDialog: boolean;
+  showConfirmVerifyDialog: boolean;
+  showConfirmRejectDialog: boolean;
 }
 
 function formDataFromDto(dto?: OperatorDTO): EditOperatorFormData {
@@ -548,10 +583,12 @@ const emit = defineEmits<{
 }>();
 const state = reactive<EditOperatorState>({
   autoUpdateSlug: !props.operator?.id,
-  isRequestingVerification: false,
+  isUpdatingVerification: false,
   showAddressDialog: false,
   showConfirmChangeSlugDialog: false,
   showConfirmRequestVerificationDialog: false,
+  showConfirmRejectDialog: false,
+  showConfirmVerifyDialog: false,
 });
 const formData = reactive<EditOperatorFormData>(
   formDataFromDto(props.operator),
@@ -694,7 +731,7 @@ function onRequestVerification() {
 }
 
 async function onConfirmRequestVerification() {
-  state.isRequestingVerification = true;
+  state.isUpdatingVerification = true;
 
   await oops(async () => {
     if (!props.operator) return;
@@ -706,18 +743,54 @@ async function onConfirmRequestVerification() {
     state.showConfirmRequestVerificationDialog = false;
   });
 
-  state.isRequestingVerification = false;
+  state.isUpdatingVerification = false;
 }
 
 function onCancelRequestVerification() {
   state.showConfirmRequestVerificationDialog = false;
 }
 
-function onOperatorVerified(message?: string) {
-  emit('verified', message);
+function onVerify() {
+  state.showConfirmVerifyDialog = true;
 }
 
-function onOperatorVerificationRejected(message?: string) {
-  emit('rejected', message);
+async function onConfirmVerify(): Promise<void> {
+  state.isUpdatingVerification = true;
+
+  await oops(async () => {
+    if (!props.operator) return;
+    const operator = client.operators.wrapDTO(props.operator);
+    await operator.setVerified(true);
+    state.showConfirmVerifyDialog = false;
+    emit('verified');
+  });
+
+  state.isUpdatingVerification = false;
+}
+
+function onCancelVerify() {
+  state.showConfirmVerifyDialog = false;
+}
+
+function onRejectVerification() {
+  state.showConfirmRejectDialog = true;
+}
+
+async function onConfirmRejectVerification(message?: string): Promise<void> {
+  state.isUpdatingVerification = true;
+
+  await oops(async () => {
+    if (!props.operator) return;
+    const operator = client.operators.wrapDTO(props.operator);
+    await operator.setVerified(false, message);
+    state.showConfirmRejectDialog = false;
+    emit('rejected', message);
+  });
+
+  state.isUpdatingVerification = false;
+}
+
+function onCancelRejectVerification() {
+  state.showConfirmRejectDialog = false;
 }
 </script>

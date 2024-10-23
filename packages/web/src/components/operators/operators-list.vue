@@ -29,6 +29,7 @@
         :key="operator.slug"
         :operator="operator"
         @select="(dto) => $emit('select', dto)"
+        @delete="(dto) => $emit('delete', dto)"
       />
 
       <li v-if="isLoading" class="my-8 text-xl text-center">
@@ -114,5 +115,6 @@ defineEmits<{
   (e: 'create-shop'): void;
   (e: 'load-more'): void;
   (e: 'select', operator: OperatorDTO): void;
+  (e: 'delete', operator: OperatorDTO): void;
 }>();
 </script>

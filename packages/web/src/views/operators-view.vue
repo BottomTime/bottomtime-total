@@ -1,4 +1,28 @@
 <template>
+  <ConfirmDialog
+    confirm-text="Delete"
+    title="Delete Dive Shop?"
+    dangerous
+    :visible="state.showConfirmDelete"
+    :is-loading="state.isDeleting"
+    @confirm="onConfirmDelete"
+    @cancel="onCancelDelete"
+  >
+    <div class="flex gap-3">
+      <p>
+        <i class="fa-solid fa-trash fa-2x"></i>
+      </p>
+      <div class="space-y-2">
+        <p>
+          Are you sure you want to delete
+          <span class="font-bold">{{ state.currentOperator?.name }}</span>
+          ?
+        </p>
+        <p>This action cannot be undone.</p>
+      </div>
+    </div>
+  </ConfirmDialog>
+
   <template v-if="diveOperatorsEnabled.value">
     <PageTitle title="Dive Shops" />
     <BreadCrumbs :items="Breadcrumbs" />
@@ -40,6 +64,7 @@
           @create-shop="onCreateShop"
           @load-more="onLoadMore"
           @select="onShopSelected"
+          @delete="onDelete"
         />
       </div>
     </div>
@@ -68,6 +93,7 @@ import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import DrawerPanel from '../components/common/drawer-panel.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
+import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import EditOperator from '../components/operators/edit-operator.vue';
 import OperatorsList from '../components/operators/operators-list.vue';
 import OperatorsSearchForm from '../components/operators/operators-search-form.vue';
@@ -78,10 +104,12 @@ import { useCurrentUser, useOperators, useToasts } from '../store';
 
 interface OperatorsViewState {
   currentOperator?: OperatorDTO;
+  isDeleting: boolean;
   isLoading: boolean;
   isLoadingMore: boolean;
   isSaving: boolean;
   showPanel: boolean;
+  showConfirmDelete: boolean;
 }
 
 const OperatorSavedToastId = 'dive-operator-saved';
@@ -110,10 +138,12 @@ function parseQueryString(): SearchOperatorsParams {
 
 const searchParams = reactive<SearchOperatorsParams>(parseQueryString());
 const state = reactive<OperatorsViewState>({
+  isDeleting: false,
   isLoading: false,
   isLoadingMore: false,
   isSaving: false,
   showPanel: false,
+  showConfirmDelete: false,
 });
 const isOperatorOwner = computed(
   () =>
@@ -310,5 +340,43 @@ function onVerificationRejected(message?: string): void {
     state.currentOperator.verificationStatus = VerificationStatus.Rejected;
     state.currentOperator.verificationMessage = message;
   }
+}
+
+function onDelete(operator: OperatorDTO): void {
+  state.currentOperator = operator;
+  state.showConfirmDelete = true;
+}
+
+function onCancelDelete() {
+  state.showConfirmDelete = false;
+}
+
+async function onConfirmDelete(): Promise<void> {
+  state.isDeleting = true;
+
+  await oops(async () => {
+    if (!state.currentOperator) return;
+
+    const operator = client.operators.wrapDTO(state.currentOperator);
+    await operator.delete();
+
+    toasts.toast({
+      id: 'operator-deleted',
+      message: 'Dive shop has been deleted.',
+      type: ToastType.Success,
+    });
+
+    const index = operators.results.operators.findIndex(
+      (op) => op.id === state.currentOperator?.id,
+    );
+    if (index > -1) {
+      operators.results.operators.splice(index, 1);
+      operators.results.totalCount--;
+    }
+
+    state.showConfirmDelete = false;
+  });
+
+  state.isDeleting = false;
 }
 </script>

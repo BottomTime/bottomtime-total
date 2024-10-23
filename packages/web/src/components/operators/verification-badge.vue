@@ -1,39 +1,8 @@
 <template>
-  <ConfirmDialog
-    :visible="state.showConfirmVerify"
-    title="Verify Dive Shop Details?"
-    confirm-text="Verify"
-    size="md"
-    :is-loading="state.isSaving"
-    @confirm="onConfirmVerify"
-    @cancel="onCancelVerify"
-  >
-    <div class="flex gap-3">
-      <p class="text-4xl">
-        <i class="fa-regular fa-circle-question"></i>
-      </p>
-      <div class="space-y-3">
-        <p>
-          Do you certify that the dive shop details displayed on this page have
-          been verified to be accurate and up-to-date?
-        </p>
-
-        <p>If so, click <span class="font-bold">Verify</span> to confirm.</p>
-      </div>
-    </div>
-  </ConfirmDialog>
-
-  <ConfirmRejectVerificationDialog
-    :is-saving="state.isSaving"
-    :visible="state.showConfirmReject"
-    @confirm="onConfirmReject"
-    @cancel="onCancelReject"
-  />
-
   <div v-if="isAdmin" class="mx-auto w-fit">
     <FormBox class="space-y-3">
       <TextHeading level="h3">Verification Status</TextHeading>
-      <div class="flex items-center gap-8">
+      <div class="flex items-start gap-8">
         <div class="flex items-baseline gap-2">
           <span v-if="status === Statuses.Verified" class="text-success">
             <i class="fa-solid fa-check"></i>
@@ -56,26 +25,26 @@
           <FormButton
             v-if="status !== Statuses.Verified"
             :rounded="status === Statuses.Rejected ? true : 'left'"
-            @click="onVerify"
+            @click="$emit('verify')"
           >
-            <p>
+            <p class="space-x-2 text-nowrap">
               <span>
                 <i class="fa-solid fa-check"></i>
               </span>
-              <span class="sr-only">Mark as verified</span>
+              <span>Approve</span>
             </p>
           </FormButton>
           <FormButton
             v-if="status !== Statuses.Rejected"
             :rounded="status === Statuses.Verified ? true : 'right'"
             type="danger"
-            @click="onReject"
+            @click="$emit('reject')"
           >
-            <p>
+            <p class="space-x-2 text-nowrap">
               <span>
                 <i class="fa-solid fa-x"></i>
               </span>
-              <span class="sr-only">Mark as unverified</span>
+              <span>Reject</span>
             </p>
           </FormButton>
         </div>
@@ -170,77 +139,29 @@
 <script lang="ts" setup>
 import { UserRole, VerificationStatus } from '@bottomtime/api';
 
-import { computed, reactive } from 'vue';
+import { computed } from 'vue';
 
 import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import PillLabel from '../common/pill-label.vue';
 import TextHeading from '../common/text-heading.vue';
-import ConfirmDialog from '../dialog/confirm-dialog.vue';
-import ConfirmRejectVerificationDialog from './confirm-reject-verification-dialog.vue';
 
 const Statuses = VerificationStatus;
 
 interface VerificationStatusProps {
-  isSaving?: boolean;
   message?: string;
   status?: VerificationStatus;
 }
 
-interface VerificationStatusState {
-  isSaving: boolean;
-  showConfirmVerify: boolean;
-  showConfirmReject: boolean;
-}
-
 const currentUser = useCurrentUser();
 
-withDefaults(defineProps<VerificationStatusProps>(), {
-  isSaving: false,
-});
-const emit = defineEmits<{
+defineProps<VerificationStatusProps>();
+defineEmits<{
   (e: 'request-verification'): void;
-  (e: 'verify', message?: string): void;
-  (e: 'reject', message?: string): void;
+  (e: 'verify'): void;
+  (e: 'reject'): void;
 }>();
 
 const isAdmin = computed(() => currentUser.user?.role === UserRole.Admin);
-
-const state = reactive<VerificationStatusState>({
-  isSaving: false,
-  showConfirmVerify: false,
-  showConfirmReject: false,
-});
-
-function onVerify() {
-  state.showConfirmVerify = true;
-}
-
-async function onConfirmVerify() {
-  state.isSaving = true;
-
-  state.isSaving = false;
-  emit('verify');
-}
-
-function onCancelVerify() {
-  state.showConfirmVerify = false;
-}
-
-function onReject() {
-  state.showConfirmReject = true;
-}
-
-async function onConfirmReject(message?: string): Promise<void> {
-  state.isSaving = true;
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  state.showConfirmReject = false;
-  state.isSaving = false;
-  emit('reject', message);
-}
-
-function onCancelReject() {
-  state.showConfirmReject = false;
-}
 </script>

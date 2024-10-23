@@ -190,7 +190,12 @@
           </span>
         </p>
       </FormButton>
-      <FormButton rounded="right" size="sm" type="danger">
+      <FormButton
+        rounded="right"
+        size="sm"
+        type="danger"
+        @click="$emit('delete', operator)"
+      >
         <p>
           <span class="sr-only">Delete {{ operator.name }}</span>
           <span>
@@ -221,6 +226,7 @@ const currentUser = useCurrentUser();
 const props = defineProps<OperatorsListItemProps>();
 defineEmits<{
   (e: 'select', operator: OperatorDTO): void;
+  (e: 'delete', operator: OperatorDTO): void;
 }>();
 const canEdit = computed<boolean>(
   () =>
