@@ -191,4 +191,19 @@ describe('OperatorsList component', () => {
     listItem.vm.$emit('select', testData.operators[2]);
     expect(wrapper.emitted('select')).toEqual([[testData.operators[2]]]);
   });
+
+  it('will bubble up a "delete" event when a delete button is clicked from the list', async () => {
+    testData.operators[0].owner = BasicUser.profile;
+    currentUser.user = BasicUser;
+    const wrapper = mount(OperatorsList, {
+      ...opts,
+      props: {
+        operators: testData,
+      },
+    });
+    wrapper
+      .findComponent(OperatorsListItem)
+      .vm.$emit('delete', testData.operators[0]);
+    expect(wrapper.emitted('delete')).toEqual([[testData.operators[0]]]);
+  });
 });

@@ -195,6 +195,7 @@ async function onSearch(params: SearchOperatorsParams): Promise<void> {
       radius: params.radius || undefined,
       owner: params.owner || undefined,
       showInactive: params.showInactive ? 'true' : undefined,
+      verification: params.verification || undefined,
       skip: searchParams.skip,
       limit: searchParams.limit,
     },
@@ -206,6 +207,7 @@ async function onSearch(params: SearchOperatorsParams): Promise<void> {
   searchParams.owner = params.owner;
   searchParams.radius = params.radius;
   searchParams.showInactive = params.showInactive;
+  searchParams.verification = params.verification;
   searchParams.skip = params.skip;
   searchParams.limit = params.limit;
   await refresh();
