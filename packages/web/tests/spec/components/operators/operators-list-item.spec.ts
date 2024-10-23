@@ -5,6 +5,7 @@ import { ComponentMountingOptions, mount } from '@vue/test-utils';
 import { Pinia, createPinia } from 'pinia';
 
 import OperatorslistItem from '../../../../src/components/operators/operators-list-item.vue';
+import { useCurrentUser } from '../../../../src/store';
 import { BasicUser } from '../../../fixtures/users';
 
 const MinimalTestData: OperatorDTO = {
@@ -41,10 +42,12 @@ const FullTestData: OperatorDTO = {
 
 describe('OperatorsListItem component', () => {
   let pinia: Pinia;
+  let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof OperatorslistItem>;
 
   beforeEach(() => {
     pinia = createPinia();
+    currentUser = useCurrentUser(pinia);
     opts = {
       global: {
         plugins: [pinia],
@@ -66,5 +69,53 @@ describe('OperatorsListItem component', () => {
       props: { operator: FullTestData },
     });
     expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  it('will not show edit or delete buttons if user is not authorized', () => {
+    const wrapper = mount(OperatorslistItem, {
+      ...opts,
+      props: { operator: FullTestData },
+    });
+    expect(
+      wrapper.find(`[data-testid="edit-${FullTestData.slug}"]`).exists(),
+    ).toBe(false);
+    expect(
+      wrapper.find(`[data-testid="delete-${FullTestData.slug}"]`).exists(),
+    ).toBe(false);
+  });
+
+  it('will emit select event when name is clicked', async () => {
+    const wrapper = mount(OperatorslistItem, {
+      ...opts,
+      props: { operator: FullTestData },
+    });
+    await wrapper
+      .get(`[data-testid="select-${FullTestData.slug}"]`)
+      .trigger('click');
+    expect(wrapper.emitted('select')).toEqual([[FullTestData]]);
+  });
+
+  it('will emit select event when edit button is clicked', async () => {
+    currentUser.user = BasicUser;
+    const wrapper = mount(OperatorslistItem, {
+      ...opts,
+      props: { operator: FullTestData },
+    });
+    await wrapper
+      .get(`[data-testid="edit-${FullTestData.slug}"]`)
+      .trigger('click');
+    expect(wrapper.emitted('select')).toEqual([[FullTestData]]);
+  });
+
+  it('will emit delete event when delete button is clicked', async () => {
+    currentUser.user = BasicUser;
+    const wrapper = mount(OperatorslistItem, {
+      ...opts,
+      props: { operator: FullTestData },
+    });
+    await wrapper
+      .get(`[data-testid="delete-${FullTestData.slug}"]`)
+      .trigger('click');
+    expect(wrapper.emitted('delete')).toEqual([[FullTestData]]);
   });
 });

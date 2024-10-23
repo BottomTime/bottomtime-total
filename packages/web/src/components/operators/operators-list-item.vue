@@ -1,19 +1,22 @@
 <template>
   <li
-    class="flex items-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
+    class="flex items-start gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
   >
-    <figure class="w-[128px] h-[128px]">
+    <figure class="min-w-[64px] min-h-[64px] text-center">
       <img
         v-if="operator.logo"
         class="rounded-lg"
         :src="operator.logo"
+        width="64px"
+        height="64px"
         alt=""
       />
+      <i v-else class="fa-solid fa-image fa-3x"></i>
     </figure>
 
     <article class="grow space-y-1">
       <!-- Title -->
-      <div class="flex gap-2 align-top">
+      <div class="flex gap-2 items-center">
         <FormButton
           type="link"
           size="2xl"
@@ -182,7 +185,12 @@
     </article>
 
     <div v-if="canEdit" class="flex">
-      <FormButton rounded="left" size="sm" @click="$emit('select', operator)">
+      <FormButton
+        rounded="left"
+        size="sm"
+        :test-id="`edit-${operator.slug || operator.id}`"
+        @click="$emit('select', operator)"
+      >
         <p>
           <span class="sr-only">Edit {{ operator.name }}</span>
           <span>
@@ -194,6 +202,7 @@
         rounded="right"
         size="sm"
         type="danger"
+        :test-id="`delete-${operator.slug || operator.id}`"
         @click="$emit('delete', operator)"
       >
         <p>
