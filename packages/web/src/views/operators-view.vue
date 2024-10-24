@@ -39,6 +39,7 @@
           :is-saving="state.isSaving"
           :operator="state.currentOperator"
           @save="onSaveOperator"
+          @delete="onDelete"
           @verification-requested="onVerificationRequested"
           @verified="onVerified"
           @rejected="onVerificationRejected"
@@ -376,6 +377,8 @@ async function onConfirmDelete(): Promise<void> {
       operators.results.totalCount--;
     }
 
+    state.showPanel = false;
+    state.currentOperator = undefined;
     state.showConfirmDelete = false;
   });
 
