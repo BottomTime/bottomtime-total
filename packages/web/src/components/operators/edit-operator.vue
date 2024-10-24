@@ -11,6 +11,7 @@
   <ConfirmDialog
     title="Change URL Shortcut?"
     confirm-text="Save Changes"
+    icon="fa-regular fa-circle-question fa-2x"
     :is-loading="isSaving"
     :visible="state.showConfirmChangeSlugDialog"
     size="md"
@@ -18,7 +19,7 @@
     @confirm="onConfirmSave"
     @cancel="onCancelSave"
   >
-    <div class="space-y-3 text-center">
+    <div class="text-center">
       <p>
         You are about to change your dive shop's URL shortcut. This change will
         take effect immediately and the old URL will no longer work. Users who
@@ -47,76 +48,59 @@
   <ConfirmDialog
     title="Request Verfication?"
     confirm-text="Request Verification"
+    icon="fa-solid fa-circle-question"
     :is-loading="state.isUpdatingVerification"
     :visible="state.showConfirmRequestVerificationDialog"
     size="md"
     @confirm="onConfirmRequestVerification"
     @cancel="onCancelRequestVerification"
   >
-    <div class="flex gap-3">
-      <figure>
-        <span class="text-4xl">
-          <i class="fa-solid fa-circle-question"></i>
+    <p>
+      Are you ready to request verification for your dive shop? Your information
+      will be reviewed and, once the information provided is determined to be
+      valid and factual, your dive shop will be marked as verified.
+    </p>
+
+    <p>Some things you should keep in mind before confirming your request:</p>
+
+    <ul class="px-4 list-outside list-disc">
+      <li>The verification process may take several days.</li>
+      <li>
+        All of the information provided will be verified. Errors in the
+        information or details that cannot be verified may cause delays.
+      </li>
+      <li>
+        Changing your details after verification (e.g. changing your dive shop's
+        name) may cause the changes to be verified again.
+        <span class="italic">
+          Your verification status will not be affected during this period but
+          you may be contacted again to verify the changes.
         </span>
-      </figure>
-      <div class="space-y-3">
-        <p>
-          Are you ready to request verification for your dive shop? Your
-          information will be reviewed and, once the information provided is
-          determined to be valid and factual, your dive shop will be marked as
-          verified.
-        </p>
+      </li>
+    </ul>
 
-        <p>
-          Some things you should keep in mind before confirming your request:
-        </p>
-
-        <ul class="px-4 list-outside list-disc">
-          <li>The verification process may take several days.</li>
-          <li>
-            All of the information provided will be verified. Errors in the
-            information or details that cannot be verified may cause delays.
-          </li>
-          <li>
-            Changing your details after verification (e.g. changing your dive
-            shop's name) may cause the changes to be verified again.
-            <span class="italic">
-              Your verification status will not be affected during this period
-              but you may be contacted again to verify the changes.
-            </span>
-          </li>
-        </ul>
-
-        <p>
-          Have you double-checked all of the information provided? If so, click
-          <span class="font-bold">Request Verification</span> to proceed.
-        </p>
-      </div>
-    </div>
+    <p>
+      Have you double-checked all of the information provided? If so, click
+      <span class="font-bold">Request Verification</span> to proceed.
+    </p>
   </ConfirmDialog>
 
   <ConfirmDialog
     :visible="state.showConfirmVerifyDialog"
     title="Verify Dive Shop Details?"
     confirm-text="Verify"
+    icon="fa-regular fa-circle-question"
     size="md"
     :is-loading="state.isUpdatingVerification"
     @confirm="onConfirmVerify"
     @cancel="onCancelVerify"
   >
-    <div class="flex gap-3">
-      <p class="text-4xl">
-        <i class="fa-regular fa-circle-question"></i>
-      </p>
-      <div class="space-y-3">
-        <p>
-          Do you certify that the dive shop details displayed on this page have
-          been verified to be accurate and up-to-date?
-        </p>
+    <p>
+      Do you certify that the dive shop details displayed on this page have been
+      verified to be accurate and up-to-date?
+    </p>
 
-        <p>If so, click <span class="font-bold">Verify</span> to confirm.</p>
-      </div>
-    </div>
+    <p>If so, click <span class="font-bold">Verify</span> to confirm.</p>
   </ConfirmDialog>
 
   <ConfirmRejectVerificationDialog

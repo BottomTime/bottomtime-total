@@ -3,24 +3,18 @@
     confirm-text="Delete"
     title="Delete Dive Shop?"
     dangerous
+    icon="fa-solid fa-trash fa-2x"
     :visible="state.showConfirmDelete"
     :is-loading="state.isDeleting"
     @confirm="onConfirmDelete"
     @cancel="onCancelDelete"
   >
-    <div class="flex gap-3">
-      <p>
-        <i class="fa-solid fa-trash fa-2x"></i>
-      </p>
-      <div class="space-y-2">
-        <p>
-          Are you sure you want to delete
-          <span class="font-bold">{{ state.currentOperator?.name }}</span>
-          ?
-        </p>
-        <p>This action cannot be undone.</p>
-      </div>
-    </div>
+    <p>
+      Are you sure you want to delete
+      <span class="font-bold">{{ state.currentOperator?.name }}</span>
+      ?
+    </p>
+    <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
   <template v-if="diveOperatorsEnabled.value">

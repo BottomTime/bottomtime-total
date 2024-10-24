@@ -24,25 +24,18 @@
     size="md"
     title="Delete Tank?"
     confirm-text="Delete"
+    icon="fa-solid fa-trash-can fa-2x"
     dangerous
     @cancel="onCancelDelete"
     @confirm="onConfirmDelete"
   >
-    <div class="flex gap-3">
-      <p class="text-danger mt-2">
-        <i class="fa-solid fa-trash-can fa-2x"></i>
-      </p>
+    <p>
+      <span>Are you sure you want to delete tank profile "</span>
+      <span class="font-bold">{{ tanks.currentTank?.name }}</span>
+      <span>"?</span>
+    </p>
 
-      <div class="space-y-2">
-        <p>
-          <span>Are you sure you want to delete tank profile "</span>
-          <span class="font-bold">{{ tanks.currentTank?.name }}</span>
-          <span>"?</span>
-        </p>
-
-        <p>This action cannot be undone.</p>
-      </div>
-    </div>
+    <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
   <PageTitle title="Manage Tank Profiles" />

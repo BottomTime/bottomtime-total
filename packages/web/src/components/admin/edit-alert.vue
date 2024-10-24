@@ -3,20 +3,14 @@
     :visible="showConfirmCancelDialog"
     confirm-text="Revert Changes"
     title="Revert Changes?"
+    icon="fa-solid fa-circle-question fa-2xl"
     @confirm="onConfirmCancel"
     @cancel="onAbortCancel"
   >
-    <div class="flex space-x-4">
-      <span>
-        <i class="fa-solid fa-circle-question fa-2xl"></i>
-      </span>
-      <div>
-        <p>
-          Are you sure you want to revert your changes? Any unsaved changes will
-          be lost.
-        </p>
-      </div>
-    </div>
+    <p>
+      Are you sure you want to revert your changes? Any unsaved changes will be
+      lost.
+    </p>
   </ConfirmDialog>
 
   <form data-testid="edit-alert-form" @submit.prevent="">

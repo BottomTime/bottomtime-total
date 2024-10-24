@@ -6,28 +6,21 @@
     :visible="state.showConfirmAccept && !!friends.currentRequest"
     confirm-text="Accept"
     title="Accept friend request?"
+    icon="fa-regular fa-circle-question fa-2x"
     :is-loading="state.isAcceptingRequest"
     @confirm="onConfirmAcceptRequest"
     @cancel="onCancelAcceptRequest"
   >
-    <div class="flex space-x-3">
-      <div class="my-2">
-        <i class="fa-regular fa-circle-question fa-2x"></i>
-      </div>
-
-      <div>
-        <p>
-          <span>Are you sure you want to accept a friend request from </span>
-          <span class="font-bold">
-            {{
-              friends.currentRequest?.friend.name ||
-              `@${friends.currentRequest?.friend.username}`
-            }}
-          </span>
-          <span>?</span>
-        </p>
-      </div>
-    </div>
+    <p>
+      <span>Are you sure you want to accept a friend request from </span>
+      <span class="font-bold">
+        {{
+          friends.currentRequest?.friend.name ||
+          `@${friends.currentRequest?.friend.username}`
+        }}
+      </span>
+      <span>?</span>
+    </p>
   </ConfirmDialog>
 
   <!-- Decline request dialog -->
@@ -35,47 +28,36 @@
     :visible="state.showConfirmDecline && !!friends.currentRequest"
     confirm-text="Decline"
     title="Decline friend request?"
+    icon="fa-regular fa-circle-question fa-2x"
     :is-loading="state.isDecliningRequest"
     dangerous
     size="md"
     @confirm="onConfirmDeclineRequest"
     @cancel="onCancelDeclineRequest"
   >
-    <div class="flex space-x-3">
-      <div class="my-2">
-        <i class="fa-regular fa-circle-question fa-2x"></i>
-      </div>
+    <p>
+      <span>Are you sure you want to decline a friend request from </span>
+      <span class="font-bold">
+        {{
+          friends.currentRequest?.friend.name ||
+          `@${friends.currentRequest?.friend.username}`
+        }}
+      </span>
+      <span>? You can provide an optional reason.</span>
+    </p>
 
-      <div class="space-y-2">
-        <p>
-          <span>Are you sure you want to decline a friend request from </span>
-          <span class="font-bold">
-            {{
-              friends.currentRequest?.friend.name ||
-              `@${friends.currentRequest?.friend.username}`
-            }}
-          </span>
-          <span>? You can provide an optional reason.</span>
-        </p>
-
-        <FormField
-          control-id="decline-reason"
-          label="Reason"
-          :responsive="false"
-        >
-          <FormTextBox
-            v-model="state.declineReason"
-            placeholder="Reason for declining request..."
-            control-id="decline-reason"
-            test-id="decline-reason"
-            :maxlength="500"
-            autofocus
-            @enter="onConfirmDeclineRequest"
-            @esc="onCancelDeclineRequest"
-          />
-        </FormField>
-      </div>
-    </div>
+    <FormField control-id="decline-reason" label="Reason" :responsive="false">
+      <FormTextBox
+        v-model="state.declineReason"
+        placeholder="Reason for declining request..."
+        control-id="decline-reason"
+        test-id="decline-reason"
+        :maxlength="500"
+        autofocus
+        @enter="onConfirmDeclineRequest"
+        @esc="onCancelDeclineRequest"
+      />
+    </FormField>
   </ConfirmDialog>
 
   <ProfilePanel

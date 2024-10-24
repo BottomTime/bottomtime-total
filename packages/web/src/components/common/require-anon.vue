@@ -2,24 +2,15 @@
   <ConfirmDialog
     confirm-text="Logout"
     title="Logout?"
+    icon="fa-regular fa-circle-question fa-2x"
     :visible="showConfirmLogout"
     @cancel="onCancelLogout"
     @confirm="onConfirmLogout"
   >
-    <div class="flex gap-3">
-      <div class="mt-2">
-        <span>
-          <i class="fa-regular fa-circle-question fa-2x"></i>
-        </span>
-      </div>
-
-      <div class="space-y-3">
-        <p>
-          Are you sure you want to log out? You will be redirected back to this
-          page as an anonymous user.
-        </p>
-      </div>
-    </div>
+    <p>
+      Are you sure you want to log out? You will be redirected back to this page
+      as an anonymous user.
+    </p>
   </ConfirmDialog>
 
   <FormBox

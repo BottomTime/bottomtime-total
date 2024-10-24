@@ -3,18 +3,14 @@
     :visible="showConfirmCancelDialog"
     confirm-text="Discard changes"
     title="Discard changes?"
+    icon="fas fa-exclamation-triangle fa-2x"
     @confirm="onConfirmDiscard"
     @cancel="onCancelDiscard"
   >
-    <div class="flex gap-3">
-      <span class="text-warning mt-2">
-        <i class="fas fa-exclamation-triangle fa-2x"></i>
-      </span>
-      <p>
-        Are you sure you want to discard your changes? Any unsaved changes will
-        be lost.
-      </p>
-    </div>
+    <p>
+      Are you sure you want to discard your changes? Any unsaved changes will be
+      lost.
+    </p>
   </ConfirmDialog>
 
   <form data-testid="edit-dive-site-form" @submit.prevent="">

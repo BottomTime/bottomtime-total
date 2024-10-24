@@ -7,7 +7,14 @@
     @close="$emit('cancel')"
   >
     <template #default>
-      <slot></slot>
+      <div class="flex gap-4">
+        <figure class="my-2">
+          <i :class="icon"></i>
+        </figure>
+        <div class="space-y-3">
+          <slot></slot>
+        </div>
+      </div>
     </template>
 
     <template #buttons>
@@ -34,6 +41,7 @@ type ConfirmDialogProps = {
   cancelText?: string;
   confirmText?: string;
   dangerous?: boolean;
+  icon?: string;
   isLoading?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   title?: string;
@@ -44,8 +52,9 @@ withDefaults(defineProps<ConfirmDialogProps>(), {
   cancelText: 'Cancel',
   confirmText: 'Confirm',
   dangerous: false,
+  icon: 'fa-regular fa-circle-question',
   isLoading: false,
-  size: 'sm',
+  size: 'md',
   title: 'Confirm?',
   visible: false,
 });

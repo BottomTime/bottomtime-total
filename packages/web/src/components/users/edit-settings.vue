@@ -2,19 +2,15 @@
   <ConfirmDialog
     confirm-text="Reset Settings"
     title="Reset Settings?"
+    icon="fas fa-question-circle fa-2x"
     :visible="showConfirmResetDialog"
     @confirm="onConfirmReset"
     @cancel="onCancelReset"
   >
-    <div class="flex flex-row gap-4">
-      <span class="pt-2">
-        <i class="fas fa-question-circle fa-2x"></i>
-      </span>
-      <p>
-        Are you sure you want to cancel the changes you have made to your
-        settings?
-      </p>
-    </div>
+    <p>
+      Are you sure you want to cancel the changes you have made to your
+      settings?
+    </p>
   </ConfirmDialog>
 
   <form @submit.prevent="">

@@ -5,25 +5,19 @@
   <ConfirmDialog
     title="Delete Shop?"
     confirm-text="Delete"
+    icon="fa-solid fa-trash fa-2x"
     dangerous
     :visible="state.showConfirmDeleteDialog"
     :is-loading="state.isDeleting"
     @confirm="onConfirmDelete"
     @cancel="onCancelDelete"
   >
-    <div class="flex gap-3">
-      <figure class="my-3">
-        <i class="fa-solid fa-trash fa-2x"></i>
-      </figure>
-      <div class="space-y-3">
-        <p>
-          Are you sure you want to delete
-          <span class="font-bold">{{ operators.currentOperator?.name }}</span>
-          ?
-        </p>
-        <p>This action cannot be undone.</p>
-      </div>
-    </div>
+    <p>
+      Are you sure you want to delete
+      <span class="font-bold">{{ operators.currentOperator?.name }}</span>
+      ?
+    </p>
+    <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
   <template v-if="enableDiveOperators.value && operators.currentOperator">

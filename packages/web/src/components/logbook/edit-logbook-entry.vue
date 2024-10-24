@@ -2,24 +2,17 @@
   <ConfirmDialog
     :visible="state.showConfirmRevert"
     title="Revert changes?"
+    icon="fa-regular fa-circle-question fa-2x"
     confirm-text="Revert"
     @confirm="onConfirmRevert"
     @cancel="onCancelRevert"
   >
-    <div class="flex gap-3">
-      <span>
-        <i class="fa-regular fa-circle-question fa-2x"></i>
-      </span>
+    <p>
+      Are you sure you want to revert your unsaved changes? The log entry will
+      be restored to the state that is currently saved.
+    </p>
 
-      <div class="space-y-2">
-        <p>
-          Are you sure you want to revert your unsaved changes? The log entry
-          will be restored to the state that is currently saved.
-        </p>
-
-        <p>This cannot be undone.</p>
-      </div>
-    </div>
+    <p>This cannot be undone.</p>
   </ConfirmDialog>
 
   <DrawerPanel

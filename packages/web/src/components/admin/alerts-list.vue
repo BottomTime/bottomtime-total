@@ -3,22 +3,16 @@
     :visible="showConfirmDeleteDialog"
     confirm-text="Delete"
     title="Delete Alert?"
+    icon="fa-solid fa-circle-question fa-2xl"
     :dangerous="true"
     @confirm="onConfirmDelete"
     @cancel="onCancelDelete"
   >
-    <div class="flex space-x-4">
-      <span class="mt-2">
-        <i class="fa-solid fa-circle-question fa-2xl"></i>
-      </span>
-      <div>
-        <p>
-          Are you sure you want to delete the alert
-          <span class="font-bold">{{ selectedAlert?.title }}</span>
-          ? This action cannot be undone.
-        </p>
-      </div>
-    </div>
+    <p>
+      Are you sure you want to delete the alert
+      <span class="font-bold">{{ selectedAlert?.title }}</span>
+      ? This action cannot be undone.
+    </p>
   </ConfirmDialog>
 
   <FormBox class="flex place-items-baseline">
