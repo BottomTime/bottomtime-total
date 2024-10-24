@@ -1,6 +1,7 @@
 <template>
   <textarea
     :id="controlId"
+    ref="textarea"
     v-model="value"
     :class="`px-2 py-1 w-full appearance-none ${resize} bg-grey-200 dark:bg-grey-300 disabled:bg-grey-400 disabled:dark:bg-grey-500 border-2 border-${highlightColour} rounded-md text-grey-950 disabled:text-grey-700 focus:ring-2 focus:ring-${highlightColour} placeholder-grey-500 caret-${highlightColour}`"
     :rows="rows"
@@ -13,9 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 type FormTextAreaProps = {
+  autofocus?: boolean;
   controlId: string;
   cols?: number;
   invalid?: boolean;
@@ -27,6 +29,7 @@ type FormTextAreaProps = {
 };
 
 const props = withDefaults(defineProps<FormTextAreaProps>(), {
+  autofocus: false,
   invalid: false,
   resize: 'vertical',
 });
@@ -43,6 +46,13 @@ const resize = computed(() => {
       return 'resize-x';
     case 'both':
       return 'resize';
+  }
+});
+const textarea = ref<HTMLTextAreaElement | null>(null);
+
+onMounted(() => {
+  if (props.autofocus) {
+    textarea.value?.focus();
   }
 });
 </script>

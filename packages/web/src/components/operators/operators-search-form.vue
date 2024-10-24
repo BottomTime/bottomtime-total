@@ -23,9 +23,20 @@
         />
       </FormField>
 
-      <FormField v-if="allowFilterMyShops" label="Options">
+      <FormField v-if="isAdmin" label="Verification status">
+        <FormSelect
+          v-model="state.verificationStatus"
+          control-id="operator-verification-status"
+          test-id="operator-verification-status"
+          :options="VerificationStatusOptions"
+          stretch
+        />
+      </FormField>
+
+      <FormField label="Options">
         <div class="space-y-2">
           <FormCheckbox
+            v-if="allowFilterMyShops"
             v-model="state.onlyOwnedShops"
             control-id="operator-show-mine"
             test-id="operator-show-mine"
@@ -67,12 +78,14 @@ import {
   AccountTier,
   GpsCoordinates,
   GpsCoordinatesWithRadius,
-  SearchDiveOperatorsParams,
+  SearchOperatorsParams,
   UserRole,
+  VerificationStatus,
 } from '@bottomtime/api';
 
 import { computed, reactive } from 'vue';
 
+import { SelectOption } from '../../common';
 import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
@@ -80,10 +93,11 @@ import FormCheckbox from '../common/form-checkbox.vue';
 import FormField from '../common/form-field.vue';
 import FormLocationSelect from '../common/form-location-select.vue';
 import FormSearchBox from '../common/form-search-box.vue';
+import FormSelect from '../common/form-select.vue';
 import TextHeading from '../common/text-heading.vue';
 
 interface OperatorsSearchProps {
-  searchParams: SearchDiveOperatorsParams;
+  searchParams: SearchOperatorsParams;
 }
 
 interface OperatorsSearchFormState {
@@ -91,7 +105,31 @@ interface OperatorsSearchFormState {
   onlyOwnedShops: boolean;
   query: string;
   showInactive: boolean;
+  verificationStatus: VerificationStatus | '';
 }
+
+const VerificationStatusOptions: SelectOption[] = [
+  {
+    value: '',
+    label: '(Any)',
+  },
+  {
+    value: VerificationStatus.Pending,
+    label: 'Pending',
+  },
+  {
+    value: VerificationStatus.Rejected,
+    label: 'Rejected',
+  },
+  {
+    value: VerificationStatus.Unverified,
+    label: 'Unverified',
+  },
+  {
+    value: VerificationStatus.Verified,
+    label: 'Verified',
+  },
+];
 
 const currentUser = useCurrentUser();
 const props = defineProps<OperatorsSearchProps>();
@@ -106,9 +144,10 @@ const state = reactive<OperatorsSearchFormState>({
   onlyOwnedShops: props.searchParams.owner === currentUser.user?.username,
   query: props.searchParams.query || '',
   showInactive: props.searchParams.showInactive ?? false,
+  verificationStatus: props.searchParams.verification || '',
 });
 const emit = defineEmits<{
-  (e: 'search', params: SearchDiveOperatorsParams): void;
+  (e: 'search', params: SearchOperatorsParams): void;
 }>();
 
 const allowFilterMyShops = computed(
@@ -117,6 +156,8 @@ const allowFilterMyShops = computed(
     (currentUser.user.role === UserRole.Admin ||
       currentUser.user.accountTier >= AccountTier.ShopOwner),
 );
+
+const isAdmin = computed(() => currentUser.user?.role === UserRole.Admin);
 
 function onSearch() {
   emit('search', {
@@ -127,7 +168,8 @@ function onSearch() {
       ? { lat: state.gps.lat, lon: state.gps.lon }
       : undefined,
     radius: state.gps && 'radius' in state.gps ? state.gps.radius : undefined,
-    showInactive: state.showInactive,
+    showInactive: state.showInactive || undefined,
+    verification: state.verificationStatus || undefined,
   });
 }
 </script>

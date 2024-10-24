@@ -2,17 +2,12 @@
   <ConfirmDialog
     :visible="state.showConfirmRemoveDialog"
     title="Remove Air Tank?"
+    icon="fa-regular fa-circle-question fa-2xl"
     confirm-text="Remove"
     @confirm="onConfirmRemoveEntry"
     @cancel="onCancelRemoveEntry"
   >
-    <div class="flex gap-3">
-      <span class="mt-1">
-        <i class="fa-regular fa-circle-question fa-2xl"></i>
-      </span>
-
-      <p>Are you sure you want to remove the selected air tank?</p>
-    </div>
+    <p>Are you sure you want to remove the selected air tank?</p>
   </ConfirmDialog>
 
   <div class="space-y-2">

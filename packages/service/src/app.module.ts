@@ -16,13 +16,15 @@ import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { FriendsModule } from './friends';
 import { LogEntriesModule } from './logEntries';
 import { MembershipModule } from './membership';
-import { DiveOperatorsModule } from './operators';
+import { OperatorsModule } from './operators';
 import { TanksModule } from './tanks/tanks.module';
 import { UsersModule } from './users';
 
 @Module({
   imports: [
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({
+      delimiter: '_',
+    }),
     TypeOrmModule.forRootAsync({
       useFactory: () => PostgresDataSourceOptions,
       dataSourceFactory: async (options?: DataSourceOptions) => {
@@ -39,7 +41,7 @@ import { UsersModule } from './users';
     AlertsModule,
     AdminModule,
     AuthModule,
-    DiveOperatorsModule,
+    OperatorsModule,
     DiveSitesModule,
     FriendsModule,
     LogEntriesModule,

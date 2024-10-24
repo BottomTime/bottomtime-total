@@ -3,7 +3,7 @@ export * from './badge.entity';
 export * from './certification.entity';
 export * from './dive-site-review.entity';
 export * from './dive-site.entity';
-export * from './dive-operators.entity';
+export * from './operators.entity';
 export * from './friend-request.entity';
 export * from './friendship.entity';
 export * from './invalid-token.entity';

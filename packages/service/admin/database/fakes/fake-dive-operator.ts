@@ -1,21 +1,25 @@
+import { VerificationStatus } from '@bottomtime/api';
+
 import { faker } from '@faker-js/faker';
 
 import slugify from 'slugify';
 
-import { DiveOperatorEntity, UserEntity } from '../../../src/data';
+import { OperatorEntity, UserEntity } from '../../../src/data';
 
-export function fakeDiveOperator(userIds: string[]): DiveOperatorEntity {
+export function fakeDiveOperator(userIds: string[]): OperatorEntity {
   const name = `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`;
-  const operator: DiveOperatorEntity = {
+  const operator: OperatorEntity = {
     id: faker.string.uuid(),
     createdAt: faker.date.past({ years: 5 }),
     updatedAt: faker.date.recent({ days: 180 }),
+    deletedAt: null,
     owner: { id: faker.helpers.arrayElement(userIds) } as UserEntity,
     active: faker.helpers.maybe(() => true, { probability: 0.95 }) ?? false,
 
     name,
     slug: slugify(name),
-    verified: faker.datatype.boolean(),
+    verificationStatus: faker.helpers.enumValue(VerificationStatus),
+    verificationMessage: null,
     description: faker.lorem.paragraphs(2),
 
     address: `${faker.location.streetAddress({

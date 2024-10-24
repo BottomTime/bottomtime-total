@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VerificationBadge component will render badge correctly for admins for verification status: pending 1`] = `
+"<div class="flex items-start gap-8" data-testid="admin-verification-status">
+  <div class="flex items-baseline gap-2"><span class="text-secondary"><i class="fa-regular fa-clock"></i></span><span class="font-bold text-lg capitalize">pending</span><span class="text-sm italic">"Verification message!!"</span></div>
+  <div class="flex items-center"><button id="btn-approve-verification" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-l-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-approve-verification" type="button">
+      <!--v-if-->
+      <p class="space-x-2 text-nowrap"><span><i class="fa-solid fa-check"></i></span><span>Approve</span></p>
+    </button><button id="btn-reject-verification" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-r-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-reject-verification" type="button">
+      <!--v-if-->
+      <p class="space-x-2 text-nowrap"><span><i class="fa-solid fa-x"></i></span><span>Reject</span></p>
+    </button></div>
+</div>"
+`;
+
+exports[`VerificationBadge component will render badge correctly for admins for verification status: rejected 1`] = `
+"<div class="flex items-start gap-8" data-testid="admin-verification-status">
+  <div class="flex items-baseline gap-2"><span class="text-danger"><i class="fa-regular fa-circle-xmark"></i></span><span class="font-bold text-lg capitalize">rejected</span><span class="text-sm italic">"Verification message!!"</span></div>
+  <div class="flex items-center"><button id="btn-approve-verification" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-approve-verification" type="button">
+      <!--v-if-->
+      <p class="space-x-2 text-nowrap"><span><i class="fa-solid fa-check"></i></span><span>Approve</span></p>
+    </button>
+    <!--v-if-->
+  </div>
+</div>"
+`;
+
+exports[`VerificationBadge component will render badge correctly for admins for verification status: unverified 1`] = `
+"<div class="flex items-start gap-8" data-testid="admin-verification-status">
+  <div class="flex items-baseline gap-2"><span class="text-warn"><i class="fa-solid fa-circle-exclamation"></i></span><span class="font-bold text-lg capitalize">unverified</span><span class="text-sm italic">"Verification message!!"</span></div>
+  <div class="flex items-center"><button id="btn-approve-verification" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-l-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="btn-approve-verification" type="button">
+      <!--v-if-->
+      <p class="space-x-2 text-nowrap"><span><i class="fa-solid fa-check"></i></span><span>Approve</span></p>
+    </button><button id="btn-reject-verification" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-r-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-reject-verification" type="button">
+      <!--v-if-->
+      <p class="space-x-2 text-nowrap"><span><i class="fa-solid fa-x"></i></span><span>Reject</span></p>
+    </button></div>
+</div>"
+`;
+
+exports[`VerificationBadge component will render badge correctly for admins for verification status: verified 1`] = `
+"<div class="flex items-start gap-8" data-testid="admin-verification-status">
+  <div class="flex items-baseline gap-2"><span class="text-success"><i class="fa-solid fa-check"></i></span><span class="font-bold text-lg capitalize">verified</span><span class="text-sm italic">"Verification message!!"</span></div>
+  <div class="flex items-center">
+    <!--v-if--><button id="btn-reject-verification" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="btn-reject-verification" type="button">
+      <!--v-if-->
+      <p class="space-x-2 text-nowrap"><span><i class="fa-solid fa-x"></i></span><span>Reject</span></p>
+    </button>
+  </div>
+</div>"
+`;
+
+exports[`VerificationBadge component will render badge correctly for verification status: pending 1`] = `
+"<div data-testid="verification-status">
+  <div class="flex gap-4 justify-center items-center text-sm text-secondary px-6" data-testid="operator-verification-pending"><span class="text-2xl"><i class="fa-regular fa-clock"></i></span><span> Your request for verification has been received and is pending review. Please be patient; this may take several days. </span></div>
+</div>"
+`;
+
+exports[`VerificationBadge component will render badge correctly for verification status: rejected 1`] = `
+"<div data-testid="verification-status">
+  <div class="flex gap-4 justify-center items-center text-sm text-danger px-6" data-testid="operator-verification-rejected"><span class="text-2xl"><i class="fa-solid fa-circle-exclamation"></i></span>
+    <p class="space-y-3"><span> Your request for verification was reviewed but was rejected. Please address any outstanding issues and then request verification again. </span><span class="font-bold" data-testid="verification-rejection-message">Verification message!!</span></p><button id="btn-request-verification" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover text-nowrap" data-testid="btn-request-verification" type="button">
+      <!--v-if--> Request verfication...
+    </button>
+  </div>
+</div>"
+`;
+
+exports[`VerificationBadge component will render badge correctly for verification status: unverified 1`] = `
+"<div data-testid="verification-status">
+  <div class="flex gap-4 justify-center items-center text-sm text-warn px-6" data-testid="operator-unverified"><span class="text-2xl"><i class="fa-solid fa-circle-exclamation"></i></span><span> Your dive shop is not yet verified. Verifying your dive shop will indicate to your customers that your shop is legitimate and can be trusted. Once you have your shop details filled out correctly you can request verification. We will review your details and contact you to verify your shop. </span><button id="btn-request-verification" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover text-nowrap" data-testid="btn-request-verification" type="button">
+      <!--v-if--> Request verfication...
+    </button></div>
+</div>"
+`;
+
+exports[`VerificationBadge component will render badge correctly for verification status: verified 1`] = `
+"<div data-testid="verification-status">
+  <div class="inline-block bg-success rounded-full px-2 h-6 flex items-center w-fit shadow-sm shadow-grey-600 text-xs text-xl" data-testid="operator-verified"><span><i class="fa-solid fa-check"></i></span><span>Verified!</span></div>
+</div>"
+`;

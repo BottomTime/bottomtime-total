@@ -6,7 +6,10 @@
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-items-stretch"
     >
-      <a href="/admin/users">
+      <a
+        href="/admin/users"
+        class="text-grey-800 dark:text-grey-50 no-underline"
+      >
         <FormBox class="space-y-3">
           <TextHeading class="space-x-3">
             <span>
@@ -21,7 +24,10 @@
         </FormBox>
       </a>
 
-      <a href="/admin/alerts">
+      <a
+        href="/admin/alerts"
+        class="text-grey-800 dark:text-grey-50 no-underline"
+      >
         <FormBox class="space-y-3">
           <TextHeading class="space-x-3">
             <span>
@@ -37,7 +43,10 @@
         </FormBox>
       </a>
 
-      <a href="/admin/tanks">
+      <a
+        href="/admin/tanks"
+        class="text-grey-800 dark:text-grey-50 no-underline"
+      >
         <FormBox class="space-y-3">
           <TextHeading class="space-x-3">
             <span>
@@ -48,6 +57,24 @@
           <p class="text-sm italic">
             Add, edit, or delete default tank profiles for users to use in their
             log entries.
+          </p>
+        </FormBox>
+      </a>
+
+      <a
+        href="/admin/shops"
+        class="text-grey-800 dark:text-grey-50 no-underline"
+      >
+        <FormBox class="space-y-3">
+          <TextHeading class="space-x-3">
+            <span>
+              <i class="fa-solid fa-shop"></i>
+            </span>
+            <span>Manage Dive Shops</span>
+          </TextHeading>
+          <p class="text-sm italic">
+            Manage dive shops. Espeicially, for the purposes of fulfilling
+            verification requests.
           </p>
         </FormBox>
       </a>

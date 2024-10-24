@@ -4,31 +4,23 @@
     :visible="state.showConfirmUnfriend && !!friends.currentFriend"
     title="Remove Friend?"
     confirm-text="Unfriend"
+    icon="fa-regular fa-circle-question fa-2x"
     dangerous
     :is-loading="state.isUnfriending"
     @confirm="onConfirmUnfriend"
     @cancel="onCancelUnfriend"
   >
-    <div class="flex space-x-4">
-      <div>
-        <i class="fa-regular fa-circle-question fa-2x"></i>
-      </div>
+    <p>
+      <span>Are you sure you want to remove </span>
+      <span class="font-bold">
+        {{
+          friends.currentFriend?.name || `@${friends.currentFriend?.username}`
+        }}
+      </span>
+      <span> as a friend?</span>
+    </p>
 
-      <div class="flex flex-col space-y-2">
-        <p>
-          <span>Are you sure you want to remove </span>
-          <span class="font-bold">
-            {{
-              friends.currentFriend?.name ||
-              `@${friends.currentFriend?.username}`
-            }}
-          </span>
-          <span> as a friend?</span>
-        </p>
-
-        <p>This action cannot be undone.</p>
-      </div>
-    </div>
+    <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
   <!-- Cancel request dialog -->
@@ -36,28 +28,21 @@
     :visible="state.showConfirmCancelRequest"
     title="Cancel Friend Request?"
     confirm-text="Cancel Request"
+    icon="fa-regular fa-circle-question fa-2x"
     :is-loading="state.isCancellingRequest"
     @confirm="onConfirmCancelRequest"
     @cancel="onCancelCancelRequest"
   >
-    <div class="flex space-x-4">
-      <div>
-        <i class="fa-regular fa-circle-question fa-2x"></i>
-      </div>
-
-      <div class="flex flex-col space-y-2">
-        <p>
-          <span>Are you sure you want to cancel your friend request to </span>
-          <span class="font-bold">
-            {{
-              friends.currentRequest?.friend.name ||
-              `@${friends.currentRequest?.friend.username}`
-            }}
-          </span>
-          <span>?</span>
-        </p>
-      </div>
-    </div>
+    <p>
+      <span>Are you sure you want to cancel your friend request to </span>
+      <span class="font-bold">
+        {{
+          friends.currentRequest?.friend.name ||
+          `@${friends.currentRequest?.friend.username}`
+        }}
+      </span>
+      <span>?</span>
+    </p>
   </ConfirmDialog>
 
   <!-- User proflie drawer -->

@@ -1,19 +1,13 @@
 <template>
   <ConfirmDialog
     title="Log out?"
+    icon="fas fa-question-circle fa-2x text-blue-400 mr-4"
     confirm-text="Log out"
     :visible="showConfirmLogout"
     @cancel="showConfirmLogout = false"
     @confirm="onLogout"
   >
-    <p class="flex justify-start">
-      <span>
-        <i class="fas fa-question-circle fa-2x text-blue-400 mr-4"></i>
-      </span>
-      <span>
-        Are you sure you want to log out? This will end your current session.
-      </span>
-    </p>
+    <p>Are you sure you want to log out? This will end your current session.</p>
   </ConfirmDialog>
   <PageTitle title="Register" />
 

@@ -1,37 +1,28 @@
 <template>
   <ConfirmDialog
     title="Reset Profile?"
+    icon="fas fa-question-circle fa-2x"
     :visible="showConfirmResetDialog"
     @confirm="onConfirmReset"
     @cancel="onCancelReset"
   >
-    <div class="flex flex-row gap-4">
-      <span class="pt-2">
-        <i class="fas fa-question-circle fa-2x"></i>
-      </span>
-      <p>
-        Are you sure you want to cancel the changes you have made to your
-        profile?
-      </p>
-    </div>
+    <p>
+      Are you sure you want to cancel the changes you have made to your profile?
+    </p>
   </ConfirmDialog>
 
   <ConfirmDialog
     title="Delete Avatar?"
+    icon="fas fa-question-circle fa-2x"
     :visible="showDeleteAvatarDialog"
     dangerous
     @confirm="onConfirmDeleteAvatar"
     @cancel="onCancelDeleteAvatar"
   >
-    <div class="flex flex-row gap-4">
-      <span class="pt-2">
-        <i class="fas fa-question-circle fa-2x"></i>
-      </span>
-      <p>
-        Are you sure you want to delete your avatar picture? This cannot be
-        undone.
-      </p>
-    </div>
+    <p>
+      Are you sure you want to delete your avatar picture? This cannot be
+      undone.
+    </p>
   </ConfirmDialog>
 
   <ChangeAvatarDialog

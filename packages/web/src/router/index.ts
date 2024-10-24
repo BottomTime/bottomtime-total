@@ -7,16 +7,16 @@ import {
 
 import { Config } from '../config';
 import { AdminRoutes } from './admin.routes';
-import { DiveOperatorsRoutes } from './dive-operators.routes';
 import { DiveSiteRoutes } from './dive-site.routes';
 import { LogbookRoutes } from './logbook.routes';
+import { OperatorsRoutes } from './operators.routes';
 import { StaticRoutes } from './static.routes';
 import { UserRoutes } from './user.routes';
 
 const routes: RouteRecordRaw[] = [
   ...AdminRoutes,
   ...UserRoutes,
-  ...DiveOperatorsRoutes,
+  ...OperatorsRoutes,
   ...DiveSiteRoutes,
   ...LogbookRoutes,
   ...StaticRoutes,

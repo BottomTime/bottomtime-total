@@ -4,20 +4,16 @@
     :confirm-text="user.isLockedOut ? 'Reactivate' : 'Suspend'"
     :title="user.isLockedOut ? 'Reactivate Account?' : 'Suspend Account?'"
     :visible="state.showConfirmToggleLockout"
+    icon="fas fa-question-circle fa-2x"
     @confirm="onConfirmToggleLockout"
     @cancel="onCancelToggleLockout"
   >
-    <div class="flex gap-3">
-      <span>
-        <i class="fas fa-question-circle fa-2x"></i>
-      </span>
-      <p>
-        Are you sure you want to
-        {{ user.isLockedOut ? 'reactivate' : 'suspend' }} the account for
-        <strong>{{ user.profile?.name || user.username }}</strong
-        >?
-      </p>
-    </div>
+    <p>
+      Are you sure you want to
+      {{ user.isLockedOut ? 'reactivate' : 'suspend' }} the account for
+      <strong>{{ user.profile?.name || user.username }}</strong
+      >?
+    </p>
   </ConfirmDialog>
 
   <div class="flex flex-col gap-4">

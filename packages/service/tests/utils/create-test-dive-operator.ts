@@ -1,18 +1,22 @@
+import { VerificationStatus } from '@bottomtime/api';
+
 import { faker } from '@faker-js/faker';
 
 import slugify from 'slugify';
 import { z } from 'zod';
 
-import { DiveOperatorEntity, UserEntity } from '../../src/data';
+import { OperatorEntity, UserEntity } from '../../src/data';
 
 const OperatorSchema = z.object({
   id: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
+  deletedAt: z.coerce.date().nullable().default(null),
 
   name: z.string(),
   slug: z.string(),
-  verified: z.boolean(),
+  verificationStatus: z.nativeEnum(VerificationStatus),
+  verificationMessage: z.string().nullable().default(null),
   description: z.string().nullable(),
   active: z.boolean().default(true),
 
@@ -38,17 +42,18 @@ const OperatorSchema = z.object({
   banner: z.string().nullable(),
 });
 
-export function createTestDiveOperator(
+export function createTestOperator(
   owner?: UserEntity,
-  options?: Partial<DiveOperatorEntity>,
-): DiveOperatorEntity {
+  options?: Partial<OperatorEntity>,
+): OperatorEntity {
   const name =
     options?.name ||
     `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`;
-  const operator: DiveOperatorEntity = {
+  const operator: OperatorEntity = {
     id: options?.id ?? faker.string.uuid(),
     createdAt: options?.createdAt ?? faker.date.past({ years: 5 }),
     updatedAt: options?.updatedAt ?? faker.date.recent({ days: 180 }),
+    deletedAt: options?.deletedAt ?? null,
     owner,
     active:
       typeof options?.active === 'boolean'
@@ -57,7 +62,10 @@ export function createTestDiveOperator(
 
     name,
     slug: options?.slug ?? slugify(name),
-    verified: options?.verified ?? faker.datatype.boolean(),
+    verificationStatus:
+      options?.verificationStatus ??
+      faker.helpers.enumValue(VerificationStatus),
+    verificationMessage: options?.verificationMessage ?? null,
     description: options?.description ?? faker.lorem.paragraphs(2),
 
     address:
@@ -92,8 +100,8 @@ export function createTestDiveOperator(
 export function parseOperatorJSON(
   data: unknown,
   owner?: UserEntity,
-): DiveOperatorEntity {
-  const operator: DiveOperatorEntity = OperatorSchema.parse(data);
+): OperatorEntity {
+  const operator: OperatorEntity = OperatorSchema.parse(data);
   operator.owner ??= owner;
   return operator;
 }
