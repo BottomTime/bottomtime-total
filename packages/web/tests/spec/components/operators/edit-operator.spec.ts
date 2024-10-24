@@ -2,6 +2,7 @@ import {
   ApiClient,
   Fetcher,
   Operator,
+  OperatorDTO,
   VerificationStatus,
 } from '@bottomtime/api';
 
@@ -16,12 +17,14 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import EditOperator from '../../../../src/components/operators/edit-operator.vue';
+import { useCurrentUser } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import {
   BlankOperator,
   FullOperator,
   PartialOperator,
 } from '../../../fixtures/operators';
+import { AdminUser } from '../../../fixtures/users';
 
 const ActiveToggle = 'input#operator-active';
 const NameInput = 'input#operator-name';
@@ -39,6 +42,7 @@ const TwitterInput = 'input#operator-twitter';
 const YoutubeInput = 'input#operator-youtube';
 const ChangeLocationButton = '[data-testid="btn-operator-location"]';
 const SaveButton = '[data-testid="btn-save-operator"]';
+const DeleteButton = '[data-testid="btn-delete-operator"]';
 
 const NameError = '[data-testid="operator-name-error"]';
 const SlugError = '[data-testid="operator-slug-error"]';
@@ -55,6 +59,8 @@ const VerificationRejectedMessage =
 const VerificationPendingMessage =
   '[data-testid="operator-verification-pending"]';
 const RequestVerificationButton = '#btn-request-verification';
+const ApproveButton = '#btn-approve-verification';
+const RejectButton = '#btn-reject-verification';
 
 describe('EditOperator component', () => {
   let fetcher: Fetcher;
@@ -62,6 +68,7 @@ describe('EditOperator component', () => {
   let router: Router;
 
   let pinia: Pinia;
+  let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof EditOperator>;
 
   beforeAll(() => {
@@ -72,6 +79,7 @@ describe('EditOperator component', () => {
 
   beforeEach(() => {
     pinia = createPinia();
+    currentUser = useCurrentUser(pinia);
     opts = {
       global: {
         plugins: [pinia, router],
@@ -358,7 +366,14 @@ describe('EditOperator component', () => {
     expect(wrapper.emitted('save')).toBeUndefined();
   });
 
-  describe('when dealing with verification', () => {
+  it('will allow a user to delete an operator', async () => {
+    const wrapper = mount(EditOperator, opts);
+    await wrapper.setProps({ operator: FullOperator });
+    await wrapper.get(DeleteButton).trigger('click');
+    expect(wrapper.emitted('delete')).toEqual([[FullOperator]]);
+  });
+
+  describe('when requesting verification', () => {
     it('will not show verification components for new operators that have not been saved yet', () => {
       const wrapper = mount(EditOperator, {
         ...opts,
@@ -504,6 +519,94 @@ describe('EditOperator component', () => {
 
       expect(wrapSpy).not.toHaveBeenCalled();
       expect(wrapper.emitted('verification-requested')).toBeUndefined();
+    });
+  });
+
+  describe('when reviewing verification requests as an admin', () => {
+    let operatorData: OperatorDTO;
+    let operator: Operator;
+
+    beforeEach(() => {
+      currentUser.user = AdminUser;
+      operatorData = {
+        ...FullOperator,
+        verificationStatus: VerificationStatus.Pending,
+        verificationMessage: undefined,
+      };
+      operator = new Operator(fetcher, operatorData);
+      opts = {
+        ...opts,
+        props: {
+          operator: operatorData,
+        },
+      };
+      jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
+    });
+
+    it('will allow an admin to approve a request', async () => {
+      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const wrapper = mount(EditOperator, opts);
+
+      await wrapper.get(ApproveButton).trigger('click');
+      await wrapper
+        .get('[data-testid="dialog-confirm-button"]')
+        .trigger('click');
+      await flushPromises();
+
+      expect(spy).toHaveBeenCalledWith(true);
+      expect(wrapper.emitted('verified')).toBeDefined();
+    });
+
+    it('will allow an admin to change their mind about approving a request', async () => {
+      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const wrapper = mount(EditOperator, opts);
+
+      await wrapper.get(ApproveButton).trigger('click');
+      await wrapper
+        .get('[data-testid="dialog-cancel-button"]')
+        .trigger('click');
+      await flushPromises();
+
+      expect(spy).not.toHaveBeenCalledWith(true);
+      expect(wrapper.emitted('verified')).toBeUndefined();
+    });
+
+    it('will allow an admin to reject a request', async () => {
+      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const wrapper = mount(EditOperator, opts);
+
+      await wrapper.get(RejectButton).trigger('click');
+      await wrapper.get('[data-testid="btn-confirm-reject"]').trigger('click');
+      await flushPromises();
+
+      expect(spy).toHaveBeenCalledWith(false, undefined);
+      expect(wrapper.emitted('rejected')).toEqual([[undefined]]);
+    });
+
+    it('will allow an admin to reject a request with a message', async () => {
+      const message = 'You are not ready';
+      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const wrapper = mount(EditOperator, opts);
+
+      await wrapper.get(RejectButton).trigger('click');
+      await wrapper.get('#reject-reason').setValue(message);
+      await wrapper.get('[data-testid="btn-confirm-reject"]').trigger('click');
+      await flushPromises();
+
+      expect(spy).toHaveBeenCalledWith(false, message);
+      expect(wrapper.emitted('rejected')).toEqual([[message]]);
+    });
+
+    it('will allow an admin to change their mind about rejecting a request', async () => {
+      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const wrapper = mount(EditOperator, opts);
+
+      await wrapper.get(RejectButton).trigger('click');
+      await wrapper.get('[data-testid="btn-cancel-reject"]').trigger('click');
+      await flushPromises();
+
+      expect(spy).not.toHaveBeenCalled();
+      expect(wrapper.emitted('rejected')).toBeUndefined();
     });
   });
 });

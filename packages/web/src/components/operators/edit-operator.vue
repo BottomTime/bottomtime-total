@@ -466,20 +466,41 @@
               </div>
             </div>
           </FormField>
-
-          <div class="flex justify-center">
-            <FormButton
-              type="primary"
-              :is-loading="isSaving"
-              test-id="btn-save-operator"
-              submit
-              @click="onSave"
-            >
-              {{ operator ? 'Save Changes' : 'Create Dive Shop' }}
-            </FormButton>
-          </div>
         </div>
       </article>
+
+      <div class="flex justify-center gap-3">
+        <FormButton
+          type="primary"
+          :is-loading="isSaving"
+          test-id="btn-save-operator"
+          submit
+          @click="onSave"
+        >
+          <p class="space-x-2">
+            <span>
+              <i class="fa-regular fa-floppy-disk"></i>
+            </span>
+            <span>
+              {{ operator ? 'Save Changes' : 'Create Dive Shop' }}
+            </span>
+          </p>
+        </FormButton>
+
+        <FormButton
+          v-if="operator?.id"
+          type="danger"
+          test-id="btn-delete-operator"
+          @click="$emit('delete', operator)"
+        >
+          <p class="space-x-2">
+            <span>
+              <i class="fa-solid fa-trash"></i>
+            </span>
+            <span>Delete</span>
+          </p>
+        </FormButton>
+      </div>
     </fieldset>
   </form>
 </template>
@@ -501,8 +522,10 @@ import { URL } from 'url';
 import { computed, reactive, ref, watch } from 'vue';
 
 import { useClient } from '../../api-client';
+import { ToastType } from '../../common';
 import { Config } from '../../config';
 import { useOops } from '../../oops';
+import { useToasts } from '../../store';
 import { phone } from '../../validators';
 import CopyButton from '../common/copy-button.vue';
 import FormButton from '../common/form-button.vue';
@@ -569,6 +592,7 @@ function formDataFromDto(dto?: OperatorDTO): EditOperatorFormData {
 
 const client = useClient();
 const oops = useOops();
+const toasts = useToasts();
 
 const addressDialog = ref<InstanceType<typeof AddressDialog> | null>(null);
 
@@ -577,6 +601,7 @@ const props = withDefaults(defineProps<EditOperatorProps>(), {
 });
 const emit = defineEmits<{
   (e: 'save', data: CreateOrUpdateOperatorDTO): void;
+  (e: 'delete', operator: OperatorDTO): void;
   (e: 'verification-requested', operator: OperatorDTO): void;
   (e: 'verified', message?: string): void;
   (e: 'rejected', message?: string): void;
@@ -763,6 +788,12 @@ async function onConfirmVerify(): Promise<void> {
     await operator.setVerified(true);
     state.showConfirmVerifyDialog = false;
     emit('verified');
+
+    toasts.toast({
+      id: 'verification',
+      message: 'Verification request has been approved',
+      type: ToastType.Success,
+    });
   });
 
   state.isUpdatingVerification = false;
@@ -785,6 +816,12 @@ async function onConfirmRejectVerification(message?: string): Promise<void> {
     await operator.setVerified(false, message);
     state.showConfirmRejectDialog = false;
     emit('rejected', message);
+
+    toasts.toast({
+      id: 'verification',
+      message: 'Verification request has been rejected',
+      type: ToastType.Success,
+    });
   });
 
   state.isUpdatingVerification = false;

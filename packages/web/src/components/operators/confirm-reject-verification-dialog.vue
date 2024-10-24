@@ -33,6 +33,7 @@
     </template>
     <template #buttons>
       <FormButton
+        test-id="btn-confirm-reject"
         type="danger"
         :is-loading="isSaving"
         submit
@@ -40,13 +41,15 @@
       >
         Reject
       </FormButton>
-      <FormButton @click="onCancel">Cancel</FormButton>
+      <FormButton test-id="btn-cancel-reject" @click="onCancel">
+        Cancel
+      </FormButton>
     </template>
   </DialogBase>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
@@ -77,4 +80,8 @@ function onCancel() {
   reason.value = '';
   emit('cancel');
 }
+
+onMounted(() => {
+  reason.value = '';
+});
 </script>

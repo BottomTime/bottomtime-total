@@ -2,13 +2,49 @@
   <PageTitle :title="title" />
   <BreadCrumbs :items="Breadcrumbs" />
 
+  <ConfirmDialog
+    title="Delete Shop?"
+    confirm-text="Delete"
+    dangerous
+    :visible="state.showConfirmDeleteDialog"
+    :is-loading="state.isDeleting"
+    @confirm="onConfirmDelete"
+    @cancel="onCancelDelete"
+  >
+    <div class="flex gap-3">
+      <figure class="my-3">
+        <i class="fa-solid fa-trash fa-2x"></i>
+      </figure>
+      <div class="space-y-3">
+        <p>
+          Are you sure you want to delete
+          <span class="font-bold">{{ operators.currentOperator?.name }}</span>
+          ?
+        </p>
+        <p>This action cannot be undone.</p>
+      </div>
+    </div>
+  </ConfirmDialog>
+
   <template v-if="enableDiveOperators.value && operators.currentOperator">
     <RequireAuth :authorizer="isAuthorized">
+      <p
+        v-if="state.isDeleted"
+        class="w-full my-8 text-center text-xl space-x-4"
+        data-testid="deleted-message"
+      >
+        <span>
+          <i class="fa-solid fa-circle-info"></i>
+        </span>
+        <span>Shop deleted</span>
+      </p>
+
       <EditOperator
-        v-if="canEdit"
+        v-else-if="canEdit"
         :operator="operators.currentOperator"
-        :is-saving="isSaving"
-        @save="saveChanges"
+        :is-saving="state.isSaving"
+        @save="onSave"
+        @delete="onDelete"
         @verification-requested="onVerificationRequested"
         @verified="onVerified"
         @rejected="onVerificationRejected"
@@ -30,7 +66,7 @@ import {
 } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
-import { computed, onServerPrefetch, ref } from 'vue';
+import { computed, onServerPrefetch, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../api-client';
@@ -39,20 +75,37 @@ import BreadCrumbs from '../components/common/bread-crumbs.vue';
 import NotFound from '../components/common/not-found.vue';
 import PageTitle from '../components/common/page-title.vue';
 import RequireAuth from '../components/common/require-auth2.vue';
+import ConfirmDialog from '../components/dialog/confirm-dialog.vue';
 import EditOperator from '../components/operators/edit-operator.vue';
 import ViewOperator from '../components/operators/view-operator.vue';
 import { useFeature } from '../featrues';
+import { useLocation } from '../location';
 import { useOops } from '../oops';
 import { useCurrentUser, useOperators, useToasts } from '../store';
+
+interface OperatorViewState {
+  isSaving: boolean;
+  isDeleted: boolean;
+  isDeleting: boolean;
+  showConfirmDeleteDialog: boolean;
+}
 
 const client = useClient();
 const currentUser = useCurrentUser();
 const enableDiveOperators = useFeature(ManageDiveOperatorsFeature);
+const location = useLocation();
 const oops = useOops();
 const operators = useOperators();
 const route = useRoute();
 const router = useRouter();
 const toasts = useToasts();
+
+const state = reactive<OperatorViewState>({
+  isSaving: false,
+  isDeleted: false,
+  isDeleting: false,
+  showConfirmDeleteDialog: false,
+});
 
 const canEdit = computed(() => {
   // User must be authenticated and dive operator must exist
@@ -69,7 +122,6 @@ const canEdit = computed(() => {
   // Default to false in all other cases.
   return false;
 });
-const isSaving = ref(false);
 
 const operatorKey = computed(() => {
   if (!route.params.shopKey) return null;
@@ -77,11 +129,13 @@ const operatorKey = computed(() => {
     ? route.params.shopKey
     : route.params.shopKey[0];
 });
+
 const title = computed(() => {
   if (!operatorKey.value) return 'Create New Dive Shop';
   if (canEdit.value) return `Edit "${operators.currentOperator?.name}"`;
   return operators.currentOperator?.name || 'View Dive Operator';
 });
+
 const isAuthorized = computed<boolean>(() => {
   if (operatorKey.value) return true;
 
@@ -183,8 +237,8 @@ async function updateExistingOperator(
   }
 }
 
-async function saveChanges(update: CreateOrUpdateOperatorDTO): Promise<void> {
-  isSaving.value = true;
+async function onSave(update: CreateOrUpdateOperatorDTO): Promise<void> {
+  state.isSaving = true;
 
   await oops(
     async () => {
@@ -205,7 +259,39 @@ async function saveChanges(update: CreateOrUpdateOperatorDTO): Promise<void> {
     },
   );
 
-  isSaving.value = false;
+  state.isSaving = false;
+}
+
+function onDelete() {
+  state.showConfirmDeleteDialog = true;
+}
+
+async function onConfirmDelete(): Promise<void> {
+  state.isDeleting = true;
+
+  await oops(async () => {
+    const operator = client.operators.wrapDTO(operators.currentOperator!);
+    await operator.delete();
+
+    state.showConfirmDeleteDialog = false;
+    state.isDeleting = false;
+
+    toasts.toast({
+      id: 'dive-operator-deleted',
+      message: 'Dive operator deleted successfully',
+      type: ToastType.Success,
+    });
+
+    setTimeout(() => {
+      location.assign('/shops');
+    }, 1000);
+  });
+
+  state.isDeleted = true;
+}
+
+function onCancelDelete() {
+  state.showConfirmDeleteDialog = false;
 }
 
 function onVerificationRequested() {

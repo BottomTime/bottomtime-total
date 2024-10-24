@@ -64,7 +64,6 @@ describe('Operator view', () => {
     fetcher = new Fetcher();
     client = new ApiClient({ fetcher });
     features = new ConfigCatClientMock();
-    location = new MockLocation();
     router = createRouter([
       {
         path: '/shops/createNew',
@@ -78,11 +77,15 @@ describe('Operator view', () => {
   });
 
   beforeEach(() => {
+    jest.useFakeTimers({
+      doNotFake: ['setImmediate', 'nextTick'],
+    });
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     operators = useOperators(pinia);
     toasts = useToasts(pinia);
     features.flags[ManageDiveOperatorsFeature.key] = true;
+    location = new MockLocation();
     opts = {
       global: {
         plugins: [pinia, router],
@@ -96,6 +99,10 @@ describe('Operator view', () => {
         },
       },
     };
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   describe('when rendering on the server side', () => {
@@ -490,6 +497,38 @@ describe('Operator view', () => {
       expect(toasts.toasts[0].id).toBe('dive-operator-slug-taken');
       expect(toasts.toasts[0].type).toBe(ToastType.Warning);
       expect(operators.currentOperator).toEqual(operatorData);
+    });
+
+    it('will allow a user to delete a dive operator', async () => {
+      const operatorData: OperatorDTO = {
+        ...FullOperator,
+        owner: ShopOwner.profile,
+      };
+      const operator = new Operator(fetcher, operatorData);
+      const deleteSpy = jest.spyOn(operator, 'delete').mockResolvedValue();
+      jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
+
+      currentUser.user = ShopOwner;
+      operators.currentOperator = operatorData;
+      await router.push(`/shops/${FullOperator.slug}`);
+
+      const wrapper = mount(OperatorView, opts);
+      await flushPromises();
+
+      await wrapper.get('[data-testid="btn-delete-operator"]').trigger('click');
+      await wrapper
+        .get('[data-testid="dialog-confirm-button"]')
+        .trigger('click');
+      await flushPromises();
+
+      expect(deleteSpy).toHaveBeenCalled();
+      expect(toasts.toasts).toHaveLength(1);
+      expect(toasts.toasts[0].id).toBe('dive-operator-deleted');
+      expect(toasts.toasts[0].type).toBe(ToastType.Success);
+
+      jest.runAllTimers();
+      await flushPromises();
+      expect(location.pathname).toBe('/shops');
     });
   });
 });

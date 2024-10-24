@@ -2,7 +2,10 @@
   <div v-if="isAdmin" class="mx-auto w-fit">
     <FormBox class="space-y-3">
       <TextHeading level="h3">Verification Status</TextHeading>
-      <div class="flex items-start gap-8">
+      <div
+        class="flex items-start gap-8"
+        data-testid="admin-verification-status"
+      >
         <div class="flex items-baseline gap-2">
           <span v-if="status === Statuses.Verified" class="text-success">
             <i class="fa-solid fa-check"></i>
@@ -24,6 +27,8 @@
         <div class="flex items-center">
           <FormButton
             v-if="status !== Statuses.Verified"
+            control-id="btn-approve-verification"
+            test-id="btn-approve-verification"
             :rounded="status === Statuses.Rejected ? true : 'left'"
             @click="$emit('verify')"
           >
@@ -36,6 +41,8 @@
           </FormButton>
           <FormButton
             v-if="status !== Statuses.Rejected"
+            control-id="btn-reject-verification"
+            test-id="btn-reject-verification"
             :rounded="status === Statuses.Verified ? true : 'right'"
             type="danger"
             @click="$emit('reject')"
@@ -52,7 +59,7 @@
     </FormBox>
   </div>
 
-  <template v-else-if="status">
+  <div v-else-if="status" data-testid="verification-status">
     <PillLabel
       v-if="status === Statuses.Verified"
       type="success"
@@ -133,7 +140,7 @@
         Please be patient; this may take several days.
       </span>
     </div>
-  </template>
+  </div>
 </template>
 
 <script lang="ts" setup>
