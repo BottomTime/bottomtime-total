@@ -33,9 +33,10 @@
         />
       </FormField>
 
-      <FormField v-if="allowFilterMyShops" label="Options">
+      <FormField label="Options">
         <div class="space-y-2">
           <FormCheckbox
+            v-if="allowFilterMyShops"
             v-model="state.onlyOwnedShops"
             control-id="operator-show-mine"
             test-id="operator-show-mine"
@@ -167,7 +168,7 @@ function onSearch() {
       ? { lat: state.gps.lat, lon: state.gps.lon }
       : undefined,
     radius: state.gps && 'radius' in state.gps ? state.gps.radius : undefined,
-    showInactive: state.showInactive,
+    showInactive: state.showInactive || undefined,
     verification: state.verificationStatus || undefined,
   });
 }

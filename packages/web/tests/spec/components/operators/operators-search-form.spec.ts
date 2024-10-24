@@ -1,4 +1,9 @@
-import { AccountTier, SearchOperatorsParams } from '@bottomtime/api';
+import {
+  AccountTier,
+  SearchOperatorsParams,
+  UserDTO,
+  VerificationStatus,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -12,11 +17,21 @@ import OperatorsSearchForm from '../../../../src/components/operators/operators-
 import { useCurrentUser } from '../../../../src/store';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
 
+const ShopOwnerUser: UserDTO = {
+  ...BasicUser,
+  accountTier: AccountTier.ShopOwner,
+  profile: {
+    ...BasicUser.profile,
+    accountTier: AccountTier.ShopOwner,
+  },
+};
+
 const SearchInput = 'input#operator-search';
 const CoordsText = '[data-testid="operator-location-coords"]';
 const RadiusSlider = '[data-testid="operator-location-radius"]';
 const ShowMyShopsCheckbox = 'input#operator-show-mine';
 const ShowInactiveCheckbox = 'input#operator-show-inactive';
+const VerificationSelect = 'select#operator-verification-status';
 const SearchButton = 'button#btn-operator-search';
 
 describe('OperatorsSearchForm component', () => {
@@ -38,29 +53,39 @@ describe('OperatorsSearchForm component', () => {
         },
       },
     };
-
-    currentUser.user = { ...BasicUser, accountTier: AccountTier.ShopOwner };
+    currentUser.user = null;
   });
 
   it('will render with default search options', () => {
     const wrapper = mount(OperatorsSearchForm, opts);
     expect(wrapper.get<HTMLInputElement>(SearchInput).element.value).toBe('');
+    expect(
+      wrapper.get<HTMLInputElement>(ShowInactiveCheckbox).element.checked,
+    ).toBe(false);
     expect(wrapper.find(CoordsText).exists()).toBe(false);
     expect(wrapper.find(RadiusSlider).exists()).toBe(false);
-    expect(
-      wrapper.get<HTMLInputElement>(ShowMyShopsCheckbox).element.checked,
-    ).toBe(false);
+    expect(wrapper.find(ShowMyShopsCheckbox).exists()).toBe(false);
+    expect(wrapper.find(VerificationSelect).exists()).toBe(false);
+  });
+
+  it('will render with "Only show my shops" checkbox for shop owners', () => {
+    currentUser.user = ShopOwnerUser;
+    const wrapper = mount(OperatorsSearchForm, opts);
+    expect(wrapper.get(ShowMyShopsCheckbox).isVisible()).toBe(true);
   });
 
   it('will render with search options provided', () => {
+    currentUser.user = AdminUser;
     const params: SearchOperatorsParams = {
-      owner: BasicUser.username,
+      owner: AdminUser.username,
       query: 'Cozumel',
       location: {
         lat: 20.42,
         lon: -87.32,
       },
       radius: 250,
+      verification: VerificationStatus.Verified,
+      showInactive: true,
     };
     const wrapper = mount(OperatorsSearchForm, {
       ...opts,
@@ -80,6 +105,12 @@ describe('OperatorsSearchForm component', () => {
     expect(
       wrapper.get<HTMLInputElement>(ShowMyShopsCheckbox).element.checked,
     ).toBe(true);
+    expect(
+      wrapper.get<HTMLInputElement>(ShowInactiveCheckbox).element.checked,
+    ).toBe(true);
+    expect(
+      wrapper.get<HTMLSelectElement>(VerificationSelect).element.value,
+    ).toBe(params.verification);
   });
 
   [
@@ -112,6 +143,7 @@ describe('OperatorsSearchForm component', () => {
   });
 
   it('will emit "search" event when form is submitted', async () => {
+    currentUser.user = ShopOwnerUser;
     const wrapper = mount(OperatorsSearchForm, opts);
     await wrapper.get(SearchInput).setValue('Cozumel');
     await wrapper
@@ -133,8 +165,24 @@ describe('OperatorsSearchForm component', () => {
           query: 'Cozumel',
           location: { lat: 20.42, lon: -87.32 },
           radius: 170,
-          owner: BasicUser.username,
+          owner: ShopOwnerUser.username,
           showInactive: true,
+        },
+      ],
+    ]);
+  });
+
+  it('will allow admins to search by verified status', async () => {
+    currentUser.user = AdminUser;
+    const wrapper = mount(OperatorsSearchForm, opts);
+    await wrapper.get(VerificationSelect).setValue(VerificationStatus.Verified);
+    await wrapper.get(SearchButton).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.emitted('search')).toEqual([
+      [
+        {
+          verification: VerificationStatus.Verified,
         },
       ],
     ]);
