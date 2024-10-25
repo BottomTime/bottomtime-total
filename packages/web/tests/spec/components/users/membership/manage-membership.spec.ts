@@ -58,9 +58,16 @@ const NoMembership: MembershipStatusDTO = {
   status: MembershipStatus.None,
 };
 
-const NewProMembership: MembershipStatusDTO = {
+const ProMembership: MembershipStatusDTO = {
   accountTier: AccountTier.Pro,
   entitlements: ['pro'],
+  status: MembershipStatus.Active,
+  nextBillingDate: new Date('2025-06-07'),
+};
+
+const ShopOwnerMembership: MembershipStatusDTO = {
+  accountTier: AccountTier.ShopOwner,
+  entitlements: ['pro', 'shop-owner'],
   status: MembershipStatus.Active,
   nextBillingDate: new Date('2025-06-07'),
 };
@@ -75,19 +82,19 @@ function accountTierRadio(tier: AccountTier) {
 
 describe('ManageMembership component', () => {
   let client: ApiClient;
-  let location: MockLocation;
   let router: Router;
 
+  let location: MockLocation;
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof ManageMembership>;
 
   beforeAll(() => {
     router = createRouter();
-    location = new MockLocation();
     client = new ApiClient();
   });
 
   beforeEach(() => {
+    location = new MockLocation();
     pinia = createPinia();
     opts = {
       global: {
@@ -140,21 +147,126 @@ describe('ManageMembership component', () => {
     );
   });
 
-  it('will allow a user to create a new membership', async () => {
+  it('will allow a user to cancel out of the membership form', async () => {
     jest
       .spyOn(client.memberships, 'getMembershipStatus')
       .mockResolvedValue(NoMembership);
-    const spy = jest
-      .spyOn(client.memberships, 'updateMembership')
-      .mockResolvedValue(NewProMembership);
 
     const wrapper = mount(ManageMembership, opts);
     await flushPromises();
 
     await wrapper.get(ChangeMembershipButton).trigger('click');
-    await wrapper.get(accountTierRadio(AccountTier.Pro)).trigger('click');
+    await wrapper.get(accountTierRadio(AccountTier.Pro)).setValue(true);
+    await wrapper.get(CancelButton).trigger('click');
+
+    expect(wrapper.find(accountTierRadio(AccountTier.Pro)).exists()).toBe(
+      false,
+    );
+  });
+
+  it('will allow a user to create a new membership and redirect them to the payment page', async () => {
+    jest
+      .spyOn(client.memberships, 'getMembershipStatus')
+      .mockResolvedValue(NoMembership);
+    const spy = jest
+      .spyOn(client.memberships, 'updateMembership')
+      .mockResolvedValue(ProMembership);
+
+    const wrapper = mount(ManageMembership, opts);
+    await flushPromises();
+
+    await wrapper.get(ChangeMembershipButton).trigger('click');
+    await wrapper.get(accountTierRadio(AccountTier.Pro)).setValue(true);
+    await wrapper.get(ConfirmButton).trigger('click');
+    await flushPromises();
+
+    expect(spy).toHaveBeenCalledWith(BasicUser.username, AccountTier.Pro);
+    expect(location.pathname).toBe('/membership/confirmation');
+  });
+
+  it('will allow a user to alter an existing membership', async () => {
+    jest
+      .spyOn(client.memberships, 'getMembershipStatus')
+      .mockResolvedValue(ProMembership);
+    const spy = jest
+      .spyOn(client.memberships, 'updateMembership')
+      .mockResolvedValue(ShopOwnerMembership);
+
+    const wrapper = mount(ManageMembership, opts);
+    await flushPromises();
+
+    await wrapper.get(ChangeMembershipButton).trigger('click');
+    await wrapper.get(accountTierRadio(AccountTier.ShopOwner)).setValue(true);
     await wrapper.get(ConfirmButton).trigger('click');
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
+
+    expect(spy).toHaveBeenCalledWith(BasicUser.username, AccountTier.ShopOwner);
+    expect(location.pathname).toBe('/membership/confirmation');
+  });
+
+  it('will allow a user to change their mind about altering an existing membership', async () => {
+    jest
+      .spyOn(client.memberships, 'getMembershipStatus')
+      .mockResolvedValue(ProMembership);
+    const spy = jest
+      .spyOn(client.memberships, 'updateMembership')
+      .mockResolvedValue(ShopOwnerMembership);
+    const locationSpy = jest.spyOn(location, 'assign').mockReturnValue();
+
+    const wrapper = mount(ManageMembership, opts);
+    await flushPromises();
+
+    await wrapper.get(ChangeMembershipButton).trigger('click');
+    await wrapper.get(accountTierRadio(AccountTier.ShopOwner)).setValue(true);
+    await wrapper.get(ConfirmButton).trigger('click');
+    await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
+    await flushPromises();
+
+    expect(spy).not.toHaveBeenCalled();
+    expect(locationSpy).not.toHaveBeenCalled();
+  });
+
+  it('will allow a user to cancel a membership', async () => {
+    jest
+      .spyOn(client.memberships, 'getMembershipStatus')
+      .mockResolvedValue(ProMembership);
+    const spy = jest
+      .spyOn(client.memberships, 'cancelMembership')
+      .mockResolvedValue();
+
+    const wrapper = mount(ManageMembership, opts);
+    await flushPromises();
+
+    await wrapper.get(ChangeMembershipButton).trigger('click');
+    await wrapper.get(accountTierRadio(AccountTier.Basic)).setValue(true);
+    await wrapper.get(ConfirmButton).trigger('click');
+    await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
+    await flushPromises();
+
+    expect(spy).toHaveBeenCalledWith(BasicUser.username);
+    expect(location.pathname).toBe('/membership/canceled');
+  });
+
+  it('will allow a user to change their mind about canceling a membership', async () => {
+    jest
+      .spyOn(client.memberships, 'getMembershipStatus')
+      .mockResolvedValue(ProMembership);
+    const spy = jest
+      .spyOn(client.memberships, 'cancelMembership')
+      .mockResolvedValue();
+    const locationSpy = jest.spyOn(location, 'assign').mockReturnValue();
+
+    const wrapper = mount(ManageMembership, opts);
+    await flushPromises();
+
+    await wrapper.get(ChangeMembershipButton).trigger('click');
+    await wrapper.get(accountTierRadio(AccountTier.Basic)).setValue(true);
+    await wrapper.get(ConfirmButton).trigger('click');
+    await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
+    await flushPromises();
+
+    expect(spy).not.toHaveBeenCalled();
+    expect(locationSpy).not.toHaveBeenCalled();
   });
 });

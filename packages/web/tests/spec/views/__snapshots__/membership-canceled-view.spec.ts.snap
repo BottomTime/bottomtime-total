@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Membership Canceled View will render 1`] = `
+"<div class="flex-none h-30 pt-2 pb-7 font-title text-blue-950 dark:text-blue-200">
+  <p class="text-6xl mb-3 capitalize">Membership Canceled</p>
+  <!--v-if-->
+</div>
+<ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
+  <li><a href="/">Home</a></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a href="/account" class="capitalize">Account</a></li>
+  <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Membership Canceled</span></li>
+</ul>
+<div class="grid grid-cols-1 md:grid-cols-5">
+  <div class="col-start-1 col-span-1 md:col-start-2 md:col-span-3">
+    <div class="space-y-3">
+      <h1 class="text-2xl font-bold font-title">We appreciate your patronage!</h1>
+      <p class="italic"> Thanks for trying out our membership program! Your request to cancel your membership has been processed and you have been returned to a free account. </p>
+      <p class="italic"> As a reminder, any data you have provided or uploaded using the features of your previous membership will be retained and you will still have access to it. However, you may not be able to edit, delete, or modify that data without the features of your previous membership. You will also keep all of the XP and badges you have earned while on your previous membership. </p>
+      <p class="italic"> We hope you continue to enjoy using our platform and that you will consider re-instating your membership at a later time. ❤️ </p>
+      <p class="flex flex-col gap-0.5 italic"><span>Cheers,</span><span>The Bottom Time Team</span></p>
+      <p class="flex justify-evenly"><a href="/">Return to home page</a><a href="/account">Return to your account page</a></p>
+    </div>
+  </div>
+</div>"
+`;
