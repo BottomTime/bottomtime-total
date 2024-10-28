@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Membership Confirmation View when handling redirect from Stripe will indicate a successful payment 1`] = `"Membership TierPro Tier"`;
+
+exports[`Membership Confirmation View when handling redirect from Stripe will use incremental back-off to check for payment status when things are slow 1`] = `"Waiting for payment provider... Please do not close the browser tab or refresh."`;

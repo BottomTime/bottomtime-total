@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MembershipPayment component will load the user payment session and render the Stripe component(s) 1`] = `"We have not yet received payment for your membership. Please provide payment details to activate your membership."`;
+
+exports[`MembershipPayment component will load the user payment session and render the Stripe component(s) 2`] = `"Pro MembershipCA$9.99TaxCA$1.00TotalCA$10.99"`;

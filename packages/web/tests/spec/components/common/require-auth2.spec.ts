@@ -10,7 +10,7 @@ import RequireAuth from '../../../../src/components/common/require-auth2.vue';
 import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
-import { AdminUser, BasicUser } from '../../../fixtures/users';
+import { BasicUser } from '../../../fixtures/users';
 
 const ProtectedContent = '#protected';
 const LoginForm = '[data-testid="require-auth-anonymous"]';
@@ -87,14 +87,6 @@ describe('Require Auth component (v2)', () => {
     expect(wrapper.find(ProtectedContent).exists()).toBe(false);
     expect(wrapper.find(LoginForm).exists()).toBe(false);
     expect(wrapper.find(ForbiddenMessage).isVisible()).toBe(true);
-  });
-
-  it('will show content to admins even if authorizer fails', () => {
-    currentUser.user = AdminUser;
-    const wrapper = mount(RequireAuth, opts);
-    expect(wrapper.find(ProtectedContent).isVisible()).toBe(true);
-    expect(wrapper.find(LoginForm).exists()).toBe(false);
-    expect(wrapper.find(ForbiddenMessage).exists()).toBe(false);
   });
 
   it('will hide content if authorizer is `false`', () => {

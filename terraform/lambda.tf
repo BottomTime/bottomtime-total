@@ -171,9 +171,11 @@ resource "aws_lambda_function" "email_service" {
 }
 
 resource "aws_lambda_event_source_mapping" "email_queue" {
-  event_source_arn = aws_sqs_queue.email.arn
-  enabled          = true
-  function_name    = aws_lambda_function.email_service.arn
+  event_source_arn                   = aws_sqs_queue.email.arn
+  enabled                            = true
+  function_name                      = aws_lambda_function.email_service.arn
+  batch_size                         = 15
+  maximum_batching_window_in_seconds = 180
 }
 
 ### KEEP-ALIVE FUNCTION
