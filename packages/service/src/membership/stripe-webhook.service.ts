@@ -9,12 +9,11 @@ import {
 } from '@nestjs/common';
 
 import dayjs from 'dayjs';
+import { EventsService } from 'src/events';
 import Stripe from 'stripe';
 import { URL } from 'url';
 
-import { Queues } from '../common';
 import { Config } from '../config';
-import { IQueue, InjectQueue } from '../queue';
 import { User, UsersService } from '../users';
 import { ProFeature, ShopOwnerFeature } from './constants';
 
@@ -44,7 +43,7 @@ export class StripeWebhookService {
   constructor(
     @Inject(Stripe) private readonly stripe: Stripe,
     @Inject(UsersService) private readonly users: UsersService,
-    @InjectQueue(Queues.email) private readonly emailQueue: IQueue,
+    @Inject(EventsService) private readonly events: EventsService,
   ) {}
 
   /**
@@ -171,12 +170,6 @@ export class StripeWebhookService {
     }
 
     this.sendEmail(opts);
-  }
-
-  private sendEmail(payload: unknown): void {
-    this.emailQueue.add(JSON.stringify(payload)).catch((error) => {
-      this.log.error('Failed to send email:', error);
-    });
   }
 
   /* SUBSCRIPTIONS */
