@@ -6,7 +6,7 @@
       <img
         v-if="operator.logo"
         class="rounded-lg"
-        :src="operator.logo"
+        :src="`${operator.logo}/64x64`"
         width="64px"
         height="64px"
         alt=""

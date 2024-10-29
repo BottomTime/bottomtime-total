@@ -192,7 +192,7 @@ export class Operator {
     }
 
     const { data } = await this.client.postFormData<ListAvatarURLsResponseDTO>(
-      `api/operators/${this.data.slug}/logo`,
+      `/api/operators/${this.data.slug}/logo`,
       formData,
     );
 

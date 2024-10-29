@@ -9,23 +9,29 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Head,
+  HttpCode,
   HttpStatus,
   Inject,
   Logger,
   NotFoundException,
   Param,
+  Post,
   Res,
   UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { Response } from 'express';
 
 import { ImageBuilder } from '../image-builder';
 import { StorageService } from '../storage';
 import { ZodValidator } from '../zod-validator';
+import { AssertOperatorOwner } from './assert-operator-owner.guard';
 import { AssertOperator, CurrentOperator } from './assert-operator.guard';
 import { Operator } from './operator';
 
@@ -351,6 +357,16 @@ export class OperatorLogoController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
+  @Post()
+  @UseGuards(AssertOperatorOwner)
+  @UseInterceptors(
+    FileInterceptor('logo', {
+      limits: {
+        files: 1,
+        fileSize: 10 * 1024 * 1024, // 10Mb
+      },
+    }),
+  )
   async uploadLogo(
     @CurrentOperator() operator: Operator,
     @Body(new ZodValidator(ImageBoundarySchema.optional()))
@@ -468,6 +484,9 @@ export class OperatorLogoController {
    *             schema:
    *               $ref: "#/components/schemas/Error"
    */
+  @Delete()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AssertOperatorOwner)
   async deleteLogo(@CurrentOperator() operator: Operator): Promise<void> {
     this.log.debug('Deleting dive operator logo from storage...');
     await Promise.all(

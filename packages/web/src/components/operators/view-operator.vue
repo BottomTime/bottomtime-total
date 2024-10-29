@@ -3,7 +3,7 @@
     <div>
       <p v-if="operator.logo" class="p-2">
         <img
-          :src="operator.logo"
+          :src="`${operator.logo}/256x256`"
           class="rounded-md"
           width="256px"
           height="256px"
