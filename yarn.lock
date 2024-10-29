@@ -3324,6 +3324,7 @@ __metadata:
     jest-junit: "npm:^16.0.0"
     jest-text-transformer: "npm:^1.0.4"
     jsonwebtoken: "npm:^9.0.1"
+    moq.ts: "npm:^10.0.8"
     mustache: "npm:^4.2.0"
     node-mocks-http: "npm:^1.16.0"
     nodemon: "npm:^2.0.22"
@@ -17624,6 +17625,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moq.ts@npm:^10.0.8":
+  version: 10.1.0
+  resolution: "moq.ts@npm:10.1.0"
+  dependencies:
+    tslib: "npm:*"
+  checksum: 10c0/24d05064a22e749d27e88c278aa5237fb4f7b2a64e4f80f6345f910567118a7251f40fa4cfbc946686ef09ff2f114f794f5f2097469b4252048462c38cc27282
+  languageName: node
+  linkType: hard
+
 "mrmime@npm:^2.0.0":
   version: 2.0.0
   resolution: "mrmime@npm:2.0.0"
@@ -23471,6 +23481,13 @@ __metadata:
     strip-bom: "npm:^3.0.0"
     strip-json-comments: "npm:^2.0.0"
   checksum: 10c0/7a5dec94b9e42017d93041b1962c174afde00fd8f3066eea81a5e5b743065e95f3bedebff0edbe215b2517f8cdace8c9f15651a78d5eb7409cad2fc107e5eb98
+  languageName: node
+  linkType: hard
+
+"tslib@npm:*":
+  version: 2.8.0
+  resolution: "tslib@npm:2.8.0"
+  checksum: 10c0/31e4d14dc1355e9b89e4d3c893a18abb7f90b6886b089c2da91224d0a7752c79f3ddc41bc1aa0a588ac895bd97bb99c5bc2bfdb2f86de849f31caeb3ba79bbe5
   languageName: node
   linkType: hard
 

@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Queues } from '../common';
-import { Config } from '../config';
 import {
   FriendshipEntity,
   NotificationEntity,
   UserEntity,
   UserJsonDataEntity,
 } from '../data';
-import { QueueModule } from '../queue';
+import { EventsModule } from '../events';
 import { StorageModule } from '../storage';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
@@ -29,11 +27,8 @@ import { UsersService } from './users.service';
       FriendshipEntity,
       NotificationEntity,
     ]),
+    EventsModule,
     StorageModule,
-    QueueModule.forFeature({
-      key: Queues.email,
-      queueUrl: Config.aws.sqs.emailQueueUrl,
-    }),
   ],
   providers: [
     UsersService,

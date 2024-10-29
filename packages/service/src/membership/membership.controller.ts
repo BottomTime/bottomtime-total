@@ -202,18 +202,18 @@ export class MembershipController {
     );
     const newTier = user.accountTier;
 
-    if (previousTier !== newTier && user.email) {
+    if (previousTier !== newTier) {
       this.events.emit(
         newTier === AccountTier.Basic
           ? {
-              type: EventKey.MembershipCanceled,
-              user: user.toJSON(),
+              key: EventKey.MembershipCanceled,
+              user: user,
               previousTier,
               previousTierName: this.service.getAccountTierName(previousTier),
             }
           : {
-              type: EventKey.MembershipChanged,
-              user: user.toJSON(),
+              key: EventKey.MembershipChanged,
+              user: user,
               newTier,
               newTierName: this.service.getAccountTierName(newTier),
               previousTier,
@@ -271,11 +271,11 @@ export class MembershipController {
     const previousTier = user.accountTier;
     const result = await this.service.cancelMembership(user);
 
-    if (result && user.email) {
+    if (result) {
       this.log.log(`Membership canceled for user: ${user.username}`);
       this.events.emit({
-        type: EventKey.MembershipCanceled,
-        user: user.toJSON(),
+        key: EventKey.MembershipCanceled,
+        user,
         previousTier,
         previousTierName: this.service.getAccountTierName(previousTier),
       });

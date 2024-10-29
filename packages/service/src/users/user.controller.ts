@@ -17,7 +17,6 @@ import {
   VerifyEmailParamsDTO,
   VerifyEmailParamsSchema,
 } from '@bottomtime/api';
-import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import {
   BadRequestException,
@@ -37,9 +36,8 @@ import {
 
 import { z } from 'zod';
 
-import { Queues } from '../common';
 import { Config } from '../config';
-import { InjectQueue, Queue } from '../queue';
+import { EventKey, EventsService } from '../events';
 import { ZodValidator } from '../zod-validator';
 import {
   AssertAccountOwner,
@@ -56,8 +54,8 @@ export class UserController {
     @Inject(UsersService)
     private readonly users: UsersService,
 
-    @InjectQueue(Queues.email)
-    private readonly emailQueue: Queue,
+    @Inject(EventsService)
+    private readonly events: EventsService,
   ) {}
 
   /**
@@ -620,30 +618,17 @@ export class UserController {
       };
     }
 
-    const title = 'Verify Your Email Address';
-
     const token = await user.requestEmailVerificationToken();
     const search = new URLSearchParams({ user: user.username, token });
     const verifyEmailUrl = new URL('/verifyEmail', Config.baseUrl);
     verifyEmailUrl.search = search.toString();
 
-    const emailMessage: EmailQueueMessage = {
-      to: { to: user.email },
-      subject: title,
-      options: {
-        type: EmailType.VerifyEmail,
-        title,
-        user: {
-          username: user.username,
-          email: user.email,
-          profile: {
-            name: user.profile.name || `@${user.username}`,
-          },
-        },
-        verifyEmailUrl: verifyEmailUrl.toString(),
-      },
-    };
-    await this.emailQueue.add(JSON.stringify(emailMessage));
+    this.events.emit({
+      key: EventKey.UserVerifyEmailRequest,
+      user,
+      verificationToken: token,
+      verificationUrl: verifyEmailUrl.toString(),
+    });
 
     return { succeeded: true };
   }
@@ -769,29 +754,17 @@ export class UserController {
       );
     }
 
-    const title = 'Reset Your Password';
     const token = await user.requestPasswordResetToken();
 
     const search = new URLSearchParams({ user: user.username, token });
     const resetPasswordUrl = new URL('/resetPassword', Config.baseUrl);
     resetPasswordUrl.search = search.toString();
-    const queueMessage: EmailQueueMessage = {
-      to: { to: user.email },
-      subject: title,
-      options: {
-        type: EmailType.ResetPassword,
-        title,
-        user: {
-          username: user.username,
-          email: user.email,
-          profile: {
-            name: user.profile.name || `@${user.username}`,
-          },
-        },
-        resetPasswordUrl: resetPasswordUrl.toString(),
-      },
-    };
-    await this.emailQueue.add(JSON.stringify(queueMessage));
+    this.events.emit({
+      key: EventKey.UserPasswordResetRequest,
+      user,
+      resetToken: token,
+      resetUrl: resetPasswordUrl.toString(),
+    });
   }
 
   /**

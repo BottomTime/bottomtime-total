@@ -6,9 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { Queues } from '../../../src/common';
 import { FriendshipEntity, UserEntity } from '../../../src/data';
-import { QueueModule } from '../../../src/queue';
+import { EventsModule } from '../../../src/events';
 import { UsersService } from '../../../src/users';
 import { UsersController } from '../../../src/users/users.controller';
 import { dataSource } from '../../data-source';
@@ -31,13 +30,7 @@ describe('Searching Profiles E2E Tests', () => {
     users = TestUserData.map((data) => parseUserJSON(data));
     authHeader = await createAuthHeader(users[0].id);
     app = await createTestApp({
-      imports: [
-        TypeOrmModule.forFeature([UserEntity]),
-        QueueModule.forFeature({
-          key: Queues.email,
-          queueUrl: 'http://localhost:4566/000000000000/email-queue',
-        }),
-      ],
+      imports: [TypeOrmModule.forFeature([UserEntity]), EventsModule],
       providers: [UsersService],
       controllers: [UsersController],
     });

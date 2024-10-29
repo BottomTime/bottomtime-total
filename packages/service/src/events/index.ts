@@ -1,4 +1,3 @@
-export * from './event-key';
-export * from './event-data';
+export * from './event-types';
 export * from './events.service';
 export * from './events.module';
