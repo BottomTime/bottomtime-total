@@ -199,6 +199,11 @@ export class Operator {
     await this.save();
   }
 
+  async setLogoUrl(logoUrl: string | null): Promise<void> {
+    await this.operators.update({ id: this.data.id }, { logo: logoUrl });
+    this.data.logo = logoUrl;
+  }
+
   toJSON(): OperatorDTO {
     return {
       active: this.active,

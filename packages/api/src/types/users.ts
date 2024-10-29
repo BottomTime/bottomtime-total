@@ -17,13 +17,6 @@ export enum UsersSortBy {
   MemberSince = 'memberSince',
 }
 
-export enum AvatarSize {
-  Small = '32x32',
-  Medium = '64x64',
-  Large = '128x128',
-  XLarge = '256x256',
-}
-
 export enum LogBookSharing {
   Public = 'public',
   Private = 'private',
@@ -35,14 +28,6 @@ export enum PasswordResetTokenStatus {
   Invalid = 'invalid',
   Expired = 'expired',
 }
-
-const ListAvatarURLsResponseSchema = z.object({
-  root: z.string(),
-  sizes: z.record(z.nativeEnum(AvatarSize), z.string()),
-});
-export type ListAvatarURLsResponseDTO = z.infer<
-  typeof ListAvatarURLsResponseSchema
->;
 
 export const UsernameRegex = /^[a-z0-9_.-]+$/i;
 export const PasswordStrengthRegex =
@@ -199,19 +184,6 @@ export const VerifyEmailParamsSchema = z.object({
   token: z.string().min(1),
 });
 export type VerifyEmailParamsDTO = z.infer<typeof VerifyEmailParamsSchema>;
-
-export const SetProfileAvatarParamsSchema = z.union([
-  z.object({
-    left: z.coerce.number().int().min(0),
-    top: z.coerce.number().int().min(0),
-    width: z.coerce.number().int().min(1),
-    height: z.coerce.number().int().min(1),
-  }),
-  z.object({}),
-]);
-export type SetProfileAvatarParamsDTO = z.infer<
-  typeof SetProfileAvatarParamsSchema
->;
 
 export const ValidateResetPasswordTokenResponseSchema = z.object({
   status: z.nativeEnum(PasswordResetTokenStatus),

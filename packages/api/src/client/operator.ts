@@ -1,5 +1,7 @@
 import {
   CreateOrUpdateOperatorSchema,
+  ImageBoundaryDTO,
+  ListAvatarURLsResponseDTO,
   OperatorDTO,
   OperatorSchema,
   SuccinctProfileDTO,
@@ -173,5 +175,31 @@ export class Operator {
       : VerificationStatus.Rejected;
     this.data.verificationMessage = message;
     this.data.updatedAt = new Date();
+  }
+
+  async uploadLogo(
+    logo: File,
+    region?: ImageBoundaryDTO,
+  ): Promise<ListAvatarURLsResponseDTO> {
+    const formData = new FormData();
+    formData.append('logo', logo);
+
+    if (region && 'left' in region) {
+      formData.append('left', region.left.toString());
+      formData.append('top', region.top.toString());
+      formData.append('width', region.width.toString());
+      formData.append('height', region.height.toString());
+    }
+
+    const { data } = await this.client.postFormData<ListAvatarURLsResponseDTO>(
+      `api/operators/${this.data.slug}/logo`,
+      formData,
+    );
+
+    return data;
+  }
+
+  async deleteLogo(): Promise<void> {
+    await this.client.delete(`/api/operators/${this.slug}/logo`);
   }
 }
