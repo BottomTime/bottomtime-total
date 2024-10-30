@@ -3,7 +3,7 @@
 exports[`ViewOperator component will render with all properties 1`] = `
 "<div class="flex gap-6" data-testid="view-operator-section">
   <div>
-    <p class="p-2"><img src="https://loremflickr.com/128/128?lock=1873198725464064" class="rounded-md" width="256px" height="256px"></p>
+    <p class="p-2"><img src="https://loremflickr.com/128/128?lock=1873198725464064/256x256" class="rounded-md" width="256px" height="256px"></p>
   </div>
   <article class="space-y-3">
     <!--v-if-->

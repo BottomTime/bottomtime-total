@@ -313,7 +313,7 @@ export class OperatorLogoController {
    *
    *                       The uploaded image cannot be more than 10Mb in size and must be a valid image format (e.g. PNG, JPEG, etc.).
    *     responses:
-   *       "204":
+   *       "201":
    *         description: The logo was saved successfully.
    *       "400":
    *         description: |
@@ -369,10 +369,10 @@ export class OperatorLogoController {
   )
   async uploadLogo(
     @CurrentOperator() operator: Operator,
-    @Body(new ZodValidator(ImageBoundarySchema.optional()))
-    params: ImageBoundaryDTO,
     @UploadedFile()
     logo: Express.Multer.File | undefined,
+    @Body(new ZodValidator(ImageBoundarySchema))
+    params: ImageBoundaryDTO,
   ): Promise<ListAvatarURLsResponseDTO> {
     if (!logo) {
       throw new BadRequestException('No logo image was provided.');
