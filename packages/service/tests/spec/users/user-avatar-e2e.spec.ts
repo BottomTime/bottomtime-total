@@ -1,13 +1,7 @@
 import { UserRole } from '@bottomtime/api';
 
 import {
-  BucketAlreadyExists,
-  BucketAlreadyOwnedByYou,
-  CreateBucketCommand,
-  DeleteBucketCommand,
-  DeleteObjectCommand,
   GetObjectCommand,
-  ListObjectsV2Command,
   NoSuchKey,
   PutObjectCommand,
   S3Client,
@@ -27,7 +21,12 @@ import { StorageModule } from '../../../src/storage';
 import { UsersModule } from '../../../src/users';
 import { UserAvatarController } from '../../../src/users/user-avatar.controller';
 import { dataSource } from '../../data-source';
-import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
+import {
+  S3Utils,
+  createAuthHeader,
+  createTestApp,
+  createTestUser,
+} from '../../utils';
 
 jest.mock('../../../src/config');
 
@@ -87,40 +86,6 @@ function getUrl(username?: string, size?: number): string {
   return url;
 }
 
-async function purgeBucket(s3Client: S3Client): Promise<void> {
-  const { Contents } = await s3Client.send(
-    new ListObjectsV2Command({ Bucket: BucketName }),
-  );
-
-  if (Contents?.length) {
-    await Promise.all([
-      ...Contents.map((obj) =>
-        s3Client.send(
-          new DeleteObjectCommand({
-            Bucket: BucketName,
-            Key: obj.Key,
-          }),
-        ),
-      ),
-    ]);
-  }
-}
-
-async function getChecksum(s3Client: S3Client, key: string): Promise<string> {
-  const { Body } = await s3Client.send(
-    new GetObjectCommand({
-      Bucket: BucketName,
-      Key: key,
-    }),
-  );
-  expect(Body).toBeDefined();
-
-  const md5 = createHash('md5')
-    .update(await Body!.transformToByteArray())
-    .digest('hex');
-  return md5;
-}
-
 async function loadTestImage(size: string): Promise<Buffer> {
   let file: FileHandle | undefined;
   try {
@@ -141,6 +106,7 @@ describe('User Avatar E2E tests', () => {
   let adminUser: UserEntity;
   let otherUser: UserEntity;
   let s3Client: S3Client;
+  let s3Utils: S3Utils;
   let testImage: Buffer;
 
   let authHeader: [string, string];
@@ -157,6 +123,7 @@ describe('User Avatar E2E tests', () => {
       endpoint: 'http://localhost:4569',
       region: 'us-east-1',
     });
+    s3Utils = new S3Utils(s3Client);
 
     app = await createTestApp(
       {
@@ -185,30 +152,17 @@ describe('User Avatar E2E tests', () => {
     await Users.save([regularUser, adminUser, otherUser]);
 
     // Check for bucket. Create it if it doesn't exist.
-    try {
-      await s3Client.send(new CreateBucketCommand({ Bucket: BucketName }));
-    } catch (error) {
-      if (
-        error instanceof BucketAlreadyExists ||
-        error instanceof BucketAlreadyOwnedByYou
-      ) {
-        // Bucket already exists. Proceed.
-        return;
-      }
-
-      throw error;
-    }
-
-    await purgeBucket(s3Client);
+    await s3Utils.createBucket(BucketName);
+    await s3Utils.purgeBucket(BucketName);
   });
 
   afterEach(async () => {
-    await purgeBucket(s3Client);
+    await s3Utils.purgeBucket(BucketName);
   });
 
   afterAll(async () => {
     await app.close();
-    await s3Client.send(new DeleteBucketCommand({ Bucket: BucketName }));
+    await s3Utils.deleteBucket(BucketName);
   });
 
   describe('when using HEAD to see if the user has an avatar', () => {
@@ -429,7 +383,10 @@ describe('User Avatar E2E tests', () => {
 
       const checksums = await Promise.all(
         AvatarSizes.map((size) =>
-          getChecksum(s3Client, `avatars/${regularUser.id}/${size}x${size}`),
+          s3Utils.getObjectChecksum(
+            BucketName,
+            `avatars/${regularUser.id}/${size}x${size}`,
+          ),
         ),
       );
       expect(checksums).toMatchSnapshot();
@@ -464,7 +421,10 @@ describe('User Avatar E2E tests', () => {
 
       const checksums = await Promise.all(
         AvatarSizes.map((size) =>
-          getChecksum(s3Client, `avatars/${regularUser.id}/${size}x${size}`),
+          s3Utils.getObjectChecksum(
+            BucketName,
+            `avatars/${regularUser.id}/${size}x${size}`,
+          ),
         ),
       );
       expect(checksums).toMatchSnapshot();
