@@ -146,7 +146,8 @@
       />
 
       <article class="flex gap-4">
-        <div v-if="operator?.id" class="px-2 py-6">
+        <figure v-if="operator?.id" class="px-2 py-6">
+          <!-- Manage Logo -->
           <div v-if="operator?.logo" class="flex flex-col gap-2 justify-center">
             <img :src="`${operator.logo}/256x256`" class="rounded-md" />
             <div class="flex justify-center">
@@ -154,6 +155,7 @@
                 class="text-nowrap"
                 size="xs"
                 rounded="left"
+                test-id="btn-change-logo"
                 @click="onChangeLogo"
               >
                 <span class="sr-only">Change logo...</span>
@@ -166,6 +168,7 @@
                 size="xs"
                 type="danger"
                 rounded="right"
+                test-id="btn-delete-logo"
                 @click="onDeleteLogo"
               >
                 <p>
@@ -177,11 +180,18 @@
               </FormButton>
             </div>
           </div>
+
+          <!-- Upload New Logo -->
           <div v-else class="space-y-2 text-center">
             <div class="w-[128px] h-[128px]">
               <i class="fa-solid fa-image fa-8x"></i>
             </div>
-            <FormButton class="text-nowrap" size="xs" @click="onChangeLogo">
+            <FormButton
+              class="text-nowrap"
+              size="xs"
+              test-id="btn-upload-logo"
+              @click="onChangeLogo"
+            >
               <p class="space-x-2">
                 <span>
                   <i class="fa-solid fa-upload"></i>
@@ -190,7 +200,7 @@
               </p>
             </FormButton>
           </div>
-        </div>
+        </figure>
 
         <div class="space-y-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
