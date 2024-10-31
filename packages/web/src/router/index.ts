@@ -1,17 +1,11 @@
-import {
-  RouteRecordRaw,
-  createMemoryHistory,
-  createRouter,
-  createWebHistory,
-} from 'vue-router';
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 
-import { Config } from '../config';
-import { AdminRoutes } from './admin.routes';
-import { DiveSiteRoutes } from './dive-site.routes';
-import { LogbookRoutes } from './logbook.routes';
-import { OperatorsRoutes } from './operators.routes';
-import { StaticRoutes } from './static.routes';
-import { UserRoutes } from './user.routes';
+import { AdminRouteNames, AdminRoutes } from './admin.routes';
+import { DiveSiteRouteNames, DiveSiteRoutes } from './dive-site.routes';
+import { LogbookRouteNames, LogbookRoutes } from './logbook.routes';
+import { OperatorRouteNames, OperatorsRoutes } from './operators.routes';
+import { StaticRouteNames, StaticRoutes } from './static.routes';
+import { UserRouteNames, UserRoutes } from './users.routes';
 
 const routes: RouteRecordRaw[] = [
   ...AdminRoutes,
@@ -30,7 +24,16 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-const history = Config.isSSR ? createMemoryHistory() : createWebHistory();
+const history = createWebHistory();
+
+export const Routes = {
+  admin: AdminRouteNames,
+  sites: DiveSiteRouteNames,
+  logbook: LogbookRouteNames,
+  operators: OperatorRouteNames,
+  static: StaticRouteNames,
+  users: UserRouteNames,
+} as const;
 
 export const router = createRouter({
   history,

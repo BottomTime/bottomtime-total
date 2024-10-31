@@ -12,7 +12,10 @@
     <!-- Placeholder element. Modal dialogs will be "teleported" here to get the z-indexing right. -->
 
     <section class="mt-16 p-4">
-      <RouterView></RouterView>
+      <div v-if="isLoading" class="flex justify-center text-4xl">
+        <LoadingSpinner message="Loading app..." />
+      </div>
+      <RouterView v-else></RouterView>
     </section>
     <PageFooter />
   </div>
@@ -20,32 +23,29 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
+import { onMounted, ref } from 'vue';
 
-import { ToastType } from './common';
+import { useClient } from './api-client';
+import LoadingSpinner from './components/common/loading-spinner.vue';
 import NavBar from './components/core/nav-bar.vue';
 import PageFooter from './components/core/page-footer.vue';
 import SnackBar from './components/core/snack-bar.vue';
-import { Config } from './config';
-import { useErrors, useToasts } from './store';
+import { useOops } from './oops';
+import { useCurrentUser } from './store';
+import './style.css';
 
-const toasts = useToasts();
-const errors = useErrors();
+const client = useClient();
+const currentUser = useCurrentUser();
+const oops = useOops();
 
-onBeforeMount(() => {
-  if (!Config.isSSR) {
-    if (errors.renderError) {
-      if (!Config.isProduction) {
-        /* eslint-disable-next-line no-console */
-        console.error(errors.renderError);
-      }
-      toasts.toast({
-        id: 'server-prerender-error',
-        message:
-          'A server error has occurred and the page may not have loaded correctly. We apologize for the inconvenience. Please try again later as we investigate the issue.',
-        type: ToastType.Error,
-      });
-    }
-  }
+const isLoading = ref(true);
+
+onMounted(async () => {
+  await oops(async () => {
+    const user = await client.users.getCurrentUser();
+    currentUser.user = user?.toJSON() ?? null;
+  });
+
+  isLoading.value = false;
 });
 </script>

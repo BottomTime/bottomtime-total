@@ -6,6 +6,7 @@ import vue from '@vitejs/plugin-vue';
 import { defineConfig, loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import vueDevTools from 'vite-plugin-vue-devtools';
 
 const envPrefix = 'BTWEB_VITE_';
 
@@ -30,11 +31,25 @@ export default defineConfig(({ mode }) => {
     define,
     envPrefix,
     mode: process.env.NODE_ENV || 'development',
+    build: {
+      rollupOptions: {
+        external: [],
+      },
+    },
+    server: {
+      proxy: {
+        '/api': {
+          target: process.env.BTWEB_API_URL || 'http://localhost:4800',
+          changeOrigin: true,
+        },
+      },
+    },
     plugins: [
       vue(),
-      nodePolyfills({
-        include: ['url'],
-      }),
+      vueDevTools(),
+      // nodePolyfills({
+      //   include: ['url'],
+      // }),
       viteCompression(),
     ],
     resolve: {

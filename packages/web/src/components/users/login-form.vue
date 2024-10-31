@@ -88,10 +88,10 @@ import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 
 import { onMounted, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Toast, ToastType } from '../../common';
-import { useLocation } from '../../location';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
@@ -131,8 +131,8 @@ const oAuthProviders: Readonly<OAuthProvider[]> = [
 
 const currentUser = useCurrentUser();
 const client = useClient();
-const location = useLocation();
 const oops = useOops();
+const router = useRouter();
 const toasts = useToasts();
 
 const props = withDefaults(defineProps<LoginFormProps>(), {
@@ -221,8 +221,7 @@ async function login() {
     emit('close');
     emit('login', user);
 
-    if (props.redirectTo) location.assign(props.redirectTo);
-    else location.reload();
+    if (props.redirectTo) await router.push(props.redirectTo);
   }
 }
 

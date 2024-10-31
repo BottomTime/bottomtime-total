@@ -17,9 +17,6 @@
     <link rel="icon" type="image/png" href="/favicon.ico" />
     <title>{{ appTitle }} | {{ pageTitle }}</title>
     <script src="https://js.stripe.com/v3/" async></script>
-
-    <!-- Placeholder for injecting additional content into the <head> tag. -->
-    {{ &head }}
   </head>
   <body
     class="bg-fixed bg-origin-content bg-blue-50 bg-tortuga dark:bg-blue-950 dark:bg-lionfish"
@@ -31,16 +28,11 @@
       </strong>
     </noscript>
 
-    <!-- Inject the initial state into the page. (Think serialized user profile, etc.) -->
-    <script>
-      window.__INITIAL_STATE__ = {{ &initialState }};
-    </script>
-
     <!-- Vue application will be injected here. -->
-    <div id="app">{{ &content }}</div>
+    <div id="app"></div>
 
     <!-- Execute the client-side code to hydrate the Vue app. -->
-    <script type="module" src="/src/entry-client.ts"></script>
+    <script type="module" src="/src/main.ts"></script>
 
     <!-- Font Awesome -->
     <script

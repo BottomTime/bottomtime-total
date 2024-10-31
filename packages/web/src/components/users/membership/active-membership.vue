@@ -43,8 +43,8 @@ import {
 
 import dayjs from 'dayjs';
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { useLocation } from '../../../location';
 import FormButton from '../../common/form-button.vue';
 import TextHeading from '../../common/text-heading.vue';
 
@@ -53,7 +53,7 @@ interface ActiveMembershipProps {
   membershipStatus: MembershipStatusDTO;
 }
 
-const location = useLocation();
+const router = useRouter();
 
 const props = defineProps<ActiveMembershipProps>();
 const nextBillingDateString = computed(() =>
@@ -68,8 +68,8 @@ const currentMembership = computed(
     )?.name ?? 'Unknown',
 );
 
-function doRedirect() {
-  location.assign('/account');
+async function doRedirect() {
+  await router.push('/account');
 }
 
 function startRedirectTimer() {

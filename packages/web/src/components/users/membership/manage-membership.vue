@@ -101,9 +101,9 @@ import {
 
 import dayjs from 'dayjs';
 import { computed, onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useClient } from '../../../api-client';
-import { useLocation } from '../../../location';
 import { useOops } from '../../../oops';
 import DrawerPanel from '../../common/drawer-panel.vue';
 import FormButton from '../../common/form-button.vue';
@@ -145,8 +145,8 @@ const DefaultStatus: MembershipStatusDTO = {
 } as const;
 
 const client = useClient();
-const location = useLocation();
 const oops = useOops();
+const router = useRouter();
 
 const props = defineProps<ManageMembershipProps>();
 const state = reactive<ManageMembershipState>({
@@ -239,7 +239,7 @@ async function onConfirmCancelMembership(): Promise<void> {
     await client.memberships.cancelMembership(props.user.username);
 
     state.showCancelMembership = false;
-    location.assign('/membership/canceled');
+    await router.push('/membership/canceled');
   });
 
   state.isCanceling = false;
@@ -261,7 +261,7 @@ async function onConfirmChangeMembership(): Promise<void> {
       newAccountTier,
     );
 
-    location.assign('/membership/confirmation');
+    await router.push('/membership/confirmation');
   });
 
   state.isSaving = false;

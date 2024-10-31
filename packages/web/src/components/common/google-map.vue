@@ -116,54 +116,49 @@ function createSiteMarkers(sites: DiveSiteDTO[]) {
 onBeforeMount(async () => {
   const loader = useGoogle();
 
-  // Only load the Google Maps API if we're not server-side rendering.
-  // No need to pay Google $ for requests that the user will never see!
-  if (!Config.isSSR) {
-    // Initialize the map...
-    [mapsLib, markersLib] = await Promise.all([
-      loader.importLibrary('maps'),
-      loader.importLibrary('marker'),
-    ]);
-    map = new mapsLib.Map(mapElement.value!, {
-      mapId: uuid(),
-      center: { lat: currentCenter.value.lat, lng: currentCenter.value.lon },
-      zoom: 5,
-      streetViewControl: false,
-      fullscreenControl: false,
-    });
+  [mapsLib, markersLib] = await Promise.all([
+    loader.importLibrary('maps'),
+    loader.importLibrary('marker'),
+  ]);
+  map = new mapsLib.Map(mapElement.value!, {
+    mapId: uuid(),
+    center: { lat: currentCenter.value.lat, lng: currentCenter.value.lon },
+    zoom: 5,
+    streetViewControl: false,
+    fullscreenControl: false,
+  });
 
-    // Add a click listener to the map
-    map.addListener('click', onMapClick);
+  // Add a click listener to the map
+  map.addListener('click', onMapClick);
 
-    if (!props.center && !props.marker && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          currentCenter.value = {
-            lat: position.coords.latitude,
-            lon: position.coords.longitude,
-          };
-        },
-        (error) => {
-          /* eslint-disable-next-line no-console */
-          console.error('Error getting current position', error);
-        },
-      );
-    }
-
-    if (props.marker) {
-      markerElement = new markersLib.AdvancedMarkerElement({
-        map,
-        position: new globalThis.google.maps.LatLng(
-          props.marker.lat,
-          props.marker.lon,
-        ),
-      });
-    } else {
-      markerElement = null;
-    }
-
-    createSiteMarkers(props.sites);
+  if (!props.center && !props.marker && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        currentCenter.value = {
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        };
+      },
+      (error) => {
+        /* eslint-disable-next-line no-console */
+        console.error('Error getting current position', error);
+      },
+    );
   }
+
+  if (props.marker) {
+    markerElement = new markersLib.AdvancedMarkerElement({
+      map,
+      position: new globalThis.google.maps.LatLng(
+        props.marker.lat,
+        props.marker.lon,
+      ),
+    });
+  } else {
+    markerElement = null;
+  }
+
+  createSiteMarkers(props.sites);
 });
 
 function onMapClick(event: globalThis.google.maps.MapMouseEvent) {

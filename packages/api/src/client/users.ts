@@ -80,6 +80,13 @@ export class UsersApiClient {
     return new User(this.apiClient, data);
   }
 
+  async logout(): Promise<boolean> {
+    const {
+      data: { succeeded },
+    } = await this.apiClient.post<SuccessFailResponseDTO>('/api/auth/logout');
+    return succeeded;
+  }
+
   async requestPasswordResetToken(usernameOrEmail: string): Promise<void> {
     await this.apiClient.post(
       `/api/users/${usernameOrEmail}/requestPasswordReset`,
