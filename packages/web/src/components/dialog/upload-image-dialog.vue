@@ -9,11 +9,9 @@
       <div
         v-if="isSaving"
         class="w-full h-[400px] text-xl italic flex justify-center items-center space-x-3"
+        data-testid="msg-processing-image"
       >
-        <span>
-          <i class="fas fa-spinner fa-spin"></i>
-        </span>
-        <span>Processing image...</span>
+        <LoadingSpinner message="Processing image..." />
       </div>
 
       <!-- Show image cropper if we have a URL -->
@@ -75,6 +73,7 @@ import { Coordinates } from '../../common';
 import FileUpload from '../common/file-upload.vue';
 import FormButton from '../common/form-button.vue';
 import ImageCropper from '../common/image-cropper.vue';
+import LoadingSpinner from '../common/loading-spinner.vue';
 import DialogBase from './dialog-base.vue';
 
 type ChangeAvatarDialogProps = {

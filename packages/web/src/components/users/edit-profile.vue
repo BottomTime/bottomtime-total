@@ -25,7 +25,7 @@
     </p>
   </ConfirmDialog>
 
-  <ChangeAvatarDialog
+  <UploadImageDialog
     ref="changeAvatarDialog"
     :avatar-url="state.avatar"
     :visible="showAvatarDialog"
@@ -213,8 +213,8 @@ import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import NavLink from '../common/nav-link.vue';
 import TextHeading from '../common/text-heading.vue';
-import ChangeAvatarDialog from '../dialog/change-avatar-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import UploadImageDialog from '../dialog/upload-image-dialog.vue';
 import UserAvatar from './user-avatar.vue';
 
 interface EditProfileProps {
@@ -273,7 +273,7 @@ const showDeleteAvatarDialog = ref(false);
 const isSaving = ref(false);
 const isSavingAvatar = ref(false);
 
-const changeAvatarDialog = ref<InstanceType<typeof ChangeAvatarDialog> | null>(
+const changeAvatarDialog = ref<InstanceType<typeof UploadImageDialog> | null>(
   null,
 );
 

@@ -110,7 +110,7 @@
     @cancel="onCancelRejectVerification"
   />
 
-  <ChangeAvatarDialog
+  <UploadImageDialog
     :avatar-url="state.logo"
     :is-saving="state.isSavingLogo"
     :visible="state.showChangeLogoDialog"
@@ -548,8 +548,8 @@ import FormTextBox from '../common/form-text-box.vue';
 import FormToggle from '../common/form-toggle.vue';
 import TextHeading from '../common/text-heading.vue';
 import AddressDialog from '../dialog/address-dialog.vue';
-import ChangeAvatarDialog from '../dialog/change-avatar-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import UploadImageDialog from '../dialog/upload-image-dialog.vue';
 import ConfirmRejectVerificationDialog from './confirm-reject-verification-dialog.vue';
 import VerificationBadge from './verification-badge.vue';
 
