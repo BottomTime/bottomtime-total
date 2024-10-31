@@ -15,11 +15,11 @@
       </div>
 
       <!-- Show image cropper if we have a URL -->
-      <div v-else-if="imageUrl" class="flex justify-center">
+      <div v-else-if="state.imageUrl" class="flex justify-center">
         <ImageCropper
           class="w-[600px] aspect-video"
           default-boundaries="fill"
-          :image="imageUrl"
+          :image="state.imageUrl"
           :target-width="512"
           circle
           @change="onImageCropperChange"
@@ -33,12 +33,16 @@
         test-id="upload-avatar"
         @change="onFileSelect"
       />
+      <p>
+        Coords: {{ state.coordinates }} File:
+        {{ JSON.stringify(state.file?.name) }}
+      </p>
     </template>
 
     <template #buttons>
       <FormButton
-        v-if="file && coordinates"
-        test-id="btn-save-avatar"
+        v-if="state.file && state.coordinates"
+        test-id="btn-save-image"
         type="primary"
         :is-loading="isSaving"
         @click="onSave"
@@ -47,7 +51,7 @@
       </FormButton>
 
       <FormButton
-        v-if="file && coordinates"
+        v-if="state.file && state.coordinates"
         test-id="btn-change-image"
         :disabled="isSaving"
         @click="reset"
@@ -57,7 +61,7 @@
 
       <FormButton
         :disabled="isSaving"
-        test-id="btn-cancel-avatar"
+        test-id="btn-cancel-image"
         @click="$emit('cancel')"
       >
         Cancel
@@ -67,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive } from 'vue';
 
 import { Coordinates } from '../../common';
 import FileUpload from '../common/file-upload.vue';
@@ -76,13 +80,19 @@ import ImageCropper from '../common/image-cropper.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
 import DialogBase from './dialog-base.vue';
 
-type ChangeAvatarDialogProps = {
+type UploadImageDialogProps = {
   avatarUrl?: string;
   isSaving?: boolean;
   visible?: boolean;
 };
 
-withDefaults(defineProps<ChangeAvatarDialogProps>(), {
+type UploadImageDialogState = {
+  file?: File;
+  imageUrl?: string;
+  coordinates?: Coordinates;
+};
+
+withDefaults(defineProps<UploadImageDialogProps>(), {
   isSaving: false,
   visible: false,
 });
@@ -92,32 +102,30 @@ const emit = defineEmits<{
   (e: 'cancel'): void;
 }>();
 
-const file = ref<File | null>(null);
-const imageUrl = ref<string | null>(null);
-const coordinates = ref<Coordinates | null>(null);
+const state = reactive<UploadImageDialogState>({});
 
 function reset() {
-  if (imageUrl.value) URL.revokeObjectURL(imageUrl.value);
-  imageUrl.value = null;
-  file.value = null;
-  coordinates.value = null;
+  if (state.imageUrl) URL.revokeObjectURL(state.imageUrl);
+  state.imageUrl = undefined;
+  state.file = undefined;
+  state.coordinates = undefined;
 }
 
 function onSave() {
-  if (file.value && coordinates.value) {
-    emit('save', file.value, coordinates.value);
+  if (state.file && state.coordinates) {
+    emit('save', state.file, state.coordinates);
   }
 }
 
 function onFileSelect(files: FileList) {
   if (!files.length) return;
 
-  file.value = files[0];
-  imageUrl.value = URL.createObjectURL(file.value);
+  state.file = files[0];
+  state.imageUrl = URL.createObjectURL(state.file);
 }
 
 function onImageCropperChange(coords: Coordinates) {
-  coordinates.value = coords;
+  state.coordinates = coords;
 }
 
 defineExpose({ reset });
