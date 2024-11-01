@@ -1,8 +1,12 @@
 import { ApiClient } from '@bottomtime/api';
+import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
-import { ComponentMountingOptions, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
-import { IConfigCatClient } from 'configcat-common';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
@@ -27,7 +31,7 @@ const LoginLink = '[data-testid="login-link"]';
 describe('Nav Bar component', () => {
   let client: ApiClient;
   let router: Router;
-  let features: IConfigCatClient;
+  let features: ConfigCatClientMock;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -43,6 +47,7 @@ describe('Nav Bar component', () => {
   beforeEach(() => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    features.flags[ManageDiveOperatorsFeature.key] = true;
     opts = {
       global: {
         directives: {
@@ -65,21 +70,24 @@ describe('Nav Bar component', () => {
     localStorage.removeItem('darkMode');
   });
 
-  it('will render correctly for anonymous users', () => {
+  it('will render correctly for anonymous users', async () => {
     currentUser.user = null;
     const wrapper = mount(NavBar, opts);
+    await flushPromises();
     expect(wrapper.html()).toMatchSnapshot();
   });
 
-  it('will render correctly for authenticated users', () => {
+  it('will render correctly for authenticated users', async () => {
     currentUser.user = BasicUser;
     const wrapper = mount(NavBar, opts);
+    await flushPromises();
     expect(wrapper.html()).toMatchSnapshot();
   });
 
-  it('will render correctly for admins', () => {
+  it('will render correctly for admins', async () => {
     currentUser.user = AdminUser;
     const wrapper = mount(NavBar, opts);
+    await flushPromises();
     expect(wrapper.html()).toMatchSnapshot();
   });
 

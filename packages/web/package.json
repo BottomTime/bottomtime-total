@@ -87,6 +87,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-junit": "^16.0.0",
     "jest-transform-css": "^6.0.1",
+    "moq.ts": "10.0.8",
     "node-loader": "^2.0.0",
     "nodemon": "^2.0.22",
     "rollup": "^4.18.0",

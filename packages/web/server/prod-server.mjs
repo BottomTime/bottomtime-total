@@ -5,11 +5,9 @@ import { fileURLToPath } from 'url';
 
 import { Config } from './config.mjs';
 import {
-  DefaultMembership,
   extractEdgeAuthorizationTokenFromRequest,
   extractJwtFromRequest,
   getCurrentUser,
-  getUserMembership,
 } from './http.mjs';
 import { getLogger } from './logger.mjs';
 
@@ -29,14 +27,10 @@ async function requestHandler(req, res, next) {
     const jwt = extractJwtFromRequest(req);
     const edgeAuthToken = extractEdgeAuthorizationTokenFromRequest(req);
     const user = jwt ? await getCurrentUser(jwt, edgeAuthToken, res) : null;
-    const membership = user?.username
-      ? await getUserMembership(user.username, jwt, edgeAuthToken)
-      : DefaultMembership;
 
     const state = {
       currentUser: {
         user,
-        membership,
       },
     };
     const clientOptions = {

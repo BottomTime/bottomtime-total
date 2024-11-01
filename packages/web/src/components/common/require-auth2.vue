@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { UserDTO, UserRole } from '@bottomtime/api';
+import { UserDTO } from '@bottomtime/api';
 
 import { computed } from 'vue';
 
@@ -54,11 +54,9 @@ interface RequireAuthProps {
 const currentUser = useCurrentUser();
 
 const props = withDefaults(defineProps<RequireAuthProps>(), {
-  authorizer: (user: UserDTO | null) => !!user,
+  authorizer: () => (user: UserDTO | null) => !!user,
 });
 const state = computed<AuthState>(() => {
-  if (currentUser.user?.role === UserRole.Admin) return AuthState.Authorized;
-
   const authorized =
     typeof props.authorizer === 'boolean'
       ? props.authorizer

@@ -1,21 +1,40 @@
 <template>
-  <div>
+  <div class="space-y-4">
+    <div
+      v-if="state.noMembership"
+      class="text-left"
+      data-testid="no-membership-message"
+    >
+      <p>
+        We could not find a pending membership associated with your account. If
+        you would like to subscribe to one of our paid membership tiers, please
+        visit your <a href="/account">account page</a> to initiate the process.
+      </p>
+    </div>
+
     <form
+      v-else
       class="space-y-3 text-justify"
       @submit.prevent="onPaymentDetailsEntered"
     >
       <TextHeading>Checkout</TextHeading>
-      <div class="flex gap-3">
-        <span class="my-2 text-secondary">
-          <i :class="paymentIcon"></i>
-        </span>
-
-        <div class="space-y-3">
-          <p class="pb-3">
+      <div>
+        <p class="flex gap-4 items-center text-secondary">
+          <span>
+            <i :class="paymentIcon"></i>
+          </span>
+          <span data-testid="payment-message">
             {{ paymentMessage }}
-          </p>
+          </span>
+        </p>
 
-          <div v-if="state.checkout" class="mx-3 space-y-1 font-mono text-xs">
+        <div v-if="state.checkout" class="space-y-3 my-6">
+          <TextHeading level="h2">Invoice</TextHeading>
+
+          <div
+            class="mx-3 space-y-2 font-mono text-xs"
+            data-testid="payment-invoice"
+          >
             <div
               v-for="lineItem of state.checkout.products"
               :key="lineItem.product"
@@ -61,17 +80,10 @@
               </p>
             </div>
           </div>
-
-          <p class="text-sm text-secondary text-center space-x-1.5">
-            <span class="text-sm">
-              <i class="fa-solid fa-circle-exclamation"></i>
-            </span>
-            <span class="italic">This amount will be billed annually.</span>
-          </p>
         </div>
       </div>
 
-      <div>
+      <div class="text-center">
         <LoadingSpinner
           v-if="state.isLoading"
           message="Loading Stripe payment platform..."
@@ -79,31 +91,21 @@
         <div id="payment-shim"></div>
       </div>
 
-      <p v-if="state.error" class="text-danger text-lg">
+      <p
+        v-if="state.error"
+        class="text-danger text-lg"
+        data-testid="payment-error"
+      >
         {{ state.error }}
       </p>
-
-      <div class="text-sm flex flex-col text-center">
-        <span class="text-4xl text-success">
-          <i class="fa-brands fa-stripe"></i>
-        </span>
-        <p class="">
-          Our secure payment system is provided by
-          <NavLink class="space-x-0.5" to="https://stripe.com" new-tab>
-            Stripe
-          </NavLink>
-          . At no point do we (Bottom Time) store or have access to your payment
-          information. We take your privacy and security very seriously. For
-          more information see our
-          <NavLink to="/privacy" new-tab>privacy policy</NavLink>. Thank you!
-        </p>
-      </div>
 
       <div class="text-center">
         <FormButton
           type="primary"
           size="lg"
           submit
+          test-id="btn-submit-payment"
+          :is-loading="isSubmitting"
           @click="onPaymentDetailsEntered"
         >
           Subscribe
@@ -121,7 +123,7 @@ import {
   UserDTO,
 } from '@bottomtime/api';
 
-import { Stripe, StripeElements } from '@stripe/stripe-js';
+import { StripeElements } from '@stripe/stripe-js';
 
 import { URL } from 'url';
 import { computed, onMounted, reactive, ref } from 'vue';
@@ -129,10 +131,9 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useClient } from '../../../api-client';
 import { Config } from '../../../config';
 import { useOops } from '../../../oops';
-import { useStripe } from '../../../stripe-loader';
+import { useStripeLoader } from '../../../stripe';
 import FormButton from '../../common/form-button.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
-import NavLink from '../../common/nav-link.vue';
 import TextHeading from '../../common/text-heading.vue';
 
 interface MembershipPaymentProps {
@@ -145,19 +146,22 @@ interface MembershipPaymentState {
   checkout?: PaymentSessionDTO;
   error?: string;
   isLoading: boolean;
+  noMembership: boolean;
 }
 
 const client = useClient();
 const oops = useOops();
+const stripeLoader = useStripeLoader();
 
 const props = withDefaults(defineProps<MembershipPaymentProps>(), {
   failure: false,
 });
 
-const stripe = ref<Stripe | null>(null);
 const elements = ref<StripeElements | null>(null);
+const isSubmitting = ref(false);
 const state = reactive<MembershipPaymentState>({
   isLoading: true,
+  noMembership: false,
 });
 
 const paymentMessage = computed(() => {
@@ -200,32 +204,47 @@ function formatPrice(amount: number, currency: string): string {
 
 onMounted(async () => {
   const darkMode = localStorage.getItem('darkMode');
+  const stripe = await stripeLoader.loadStripe();
 
   // Mount Stripe Payment element.
-  await oops(async () => {
-    stripe.value = await useStripe();
-    const session = await client.memberships.createSession(props.user.username);
+  await oops(
+    async () => {
+      const session = await client.memberships.createSession(
+        props.user.username,
+      );
 
-    elements.value = stripe.value.elements({
-      clientSecret: session.clientSecret,
-      appearance: { theme: darkMode === 'true' ? 'night' : 'stripe' },
-    });
-    const payment = elements.value.create('payment', {
-      layout: 'accordion',
-    });
+      elements.value = stripe.elements({
+        clientSecret: session.clientSecret,
+        appearance: { theme: darkMode === 'true' ? 'night' : 'stripe' },
+      });
+      const payment = elements.value.create('payment', {
+        layout: 'accordion',
+      });
 
-    state.checkout = session;
-    state.isLoading = false;
+      state.checkout = session;
 
-    payment.mount('#payment-shim');
-  });
+      payment.mount('#payment-shim');
+    },
+    {
+      [400]: () => {
+        // Payment session could not be created becaues there is no record in Stripe of the user creating a
+        // subscription. They will need to initiate this from the account page.
+        state.noMembership = true;
+      },
+    },
+  );
+
+  state.isLoading = false;
 });
 
 async function onPaymentDetailsEntered(): Promise<void> {
-  if (!stripe.value || !elements.value) return;
+  isSubmitting.value = true;
+
+  const stripe = await stripeLoader.loadStripe();
+  if (!elements.value) return;
 
   const returnUrl = new URL('/membership/confirmation', Config.baseUrl);
-  const { error } = await stripe.value.confirmPayment({
+  const { error } = await stripe.confirmPayment({
     elements: elements.value,
     confirmParams: {
       return_url: returnUrl.toString(),
@@ -234,5 +253,7 @@ async function onPaymentDetailsEntered(): Promise<void> {
 
   if (error) state.error = error.message;
   else state.error = undefined;
+
+  isSubmitting.value = false;
 }
 </script>
