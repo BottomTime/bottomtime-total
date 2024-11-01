@@ -23,7 +23,7 @@
   <ConfirmChangeDialog
     :visible="state.showConfirmChangeDialog"
     :is-changing="state.isSaving"
-    :old-membership="state.currentMembershipOption ?? ErrorMembership"
+    :old-membership="currentMembershipOption ?? ErrorMembership"
     :new-membership="state.desiredMembershipOption ?? ErrorMembership"
     @confirm="onConfirmChangeMembership"
     @cancel="onAbortChangeMembership"
@@ -31,7 +31,7 @@
 
   <LoadingSpinner v-if="state.isLoading" message="Please wait..." />
 
-  <div v-else-if="state.membershipOptions">
+  <div v-else-if="state.membershipOptions.length">
     <FormField label="Account type">
       <fieldset
         class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline"
@@ -54,7 +54,7 @@
             @click="onUpdateAccountType"
           >
             {{
-              props.membership.accountTier === AccountTier.Basic
+              state.currentStatus.accountTier === AccountTier.Basic
                 ? 'Upgrade account...'
                 : 'Change account type...'
             }}
@@ -64,22 +64,26 @@
     </FormField>
 
     <FormField
-      v-if="props.membership.nextBillingDate"
+      v-if="state.currentStatus.nextBillingDate"
       label="Next billing date"
     >
       <p>
-        {{ dayjs(membership.nextBillingDate).format('LL') }}
+        {{ dayjs(state.currentStatus.nextBillingDate).format('LL') }}
       </p>
     </FormField>
   </div>
 
-  <div v-else class="px-3 flex gap-3 items-center">
+  <div
+    v-else
+    class="px-3 flex gap-3 items-center text-danger"
+    data-testid="membership-error"
+  >
     <p>
-      <i class="fas fa-exclamation-triangle text-danger text-2xl"></i>
+      <i class="fas fa-exclamation-triangle text-2xl"></i>
     </p>
     <p>
-      There seems to have been an error while retrieving membership information
-      from the server. Please try back later.
+      There seems to be an issue with retrieving membership information from the
+      server at the moment. Please try back later.
     </p>
   </div>
 </template>
@@ -90,6 +94,7 @@ import {
   BillingFrequency,
   ListMembershipsResponseDTO,
   MembershipDTO,
+  MembershipStatus,
   MembershipStatusDTO,
   UserDTO,
 } from '@bottomtime/api';
@@ -100,7 +105,6 @@ import { computed, onMounted, reactive } from 'vue';
 import { useClient } from '../../../api-client';
 import { useLocation } from '../../../location';
 import { useOops } from '../../../oops';
-import { useCurrentUser } from '../../../store';
 import DrawerPanel from '../../common/drawer-panel.vue';
 import FormButton from '../../common/form-button.vue';
 import FormField from '../../common/form-field.vue';
@@ -111,14 +115,13 @@ import MembershipForm from './membership-form.vue';
 
 interface ManageMembershipProps {
   user: UserDTO;
-  membership: MembershipStatusDTO;
 }
 
 interface ManageMembershipState {
   accountTier: AccountTier;
-  currentMembershipOption?: MembershipDTO;
+  currentStatus: MembershipStatusDTO;
   desiredMembershipOption?: MembershipDTO;
-  membershipOptions?: ListMembershipsResponseDTO;
+  membershipOptions: ListMembershipsResponseDTO;
   isCanceling: boolean;
   isLoading: boolean;
   isSaving: boolean;
@@ -135,20 +138,33 @@ const ErrorMembership: MembershipDTO = {
   name: 'Error retrieving membership data',
 } as const;
 
+const DefaultStatus: MembershipStatusDTO = {
+  accountTier: AccountTier.Basic,
+  entitlements: [],
+  status: MembershipStatus.None,
+} as const;
+
 const client = useClient();
-const currentUser = useCurrentUser();
 const location = useLocation();
 const oops = useOops();
 
 const props = defineProps<ManageMembershipProps>();
 const state = reactive<ManageMembershipState>({
-  accountTier: props.membership.accountTier,
+  accountTier: props.user.accountTier,
+  currentStatus: DefaultStatus,
   isCanceling: false,
   isLoading: true,
   isSaving: false,
+  membershipOptions: [],
   showCancelMembership: false,
   showChangeAccountType: false,
   showConfirmChangeDialog: false,
+});
+
+const currentMembershipOption = computed<MembershipDTO | undefined>(() => {
+  return state.membershipOptions?.find(
+    (m) => m.accountTier === state.currentStatus.accountTier,
+  );
 });
 
 function formatCurrency(amount: number, currency: string): string {
@@ -160,13 +176,13 @@ function formatCurrency(amount: number, currency: string): string {
 
 const accountTier = computed<string>(() => {
   const tier = state.membershipOptions?.find(
-    (m) => m.accountTier === props.membership.accountTier,
+    (m) => m.accountTier === state.currentStatus.accountTier,
   );
   return tier?.name ?? 'Error retrieving membership data';
 });
 const tierPrice = computed<string>(() => {
   const tier = state.membershipOptions?.find(
-    (m) => m.accountTier === props.membership.accountTier,
+    (m) => m.accountTier === state.currentStatus.accountTier,
   );
 
   if (tier) {
@@ -179,19 +195,19 @@ const tierPrice = computed<string>(() => {
 });
 
 function onUpdateAccountType() {
-  state.accountTier = props.membership.accountTier;
+  state.accountTier = state.currentStatus.accountTier;
   state.showChangeAccountType = true;
 }
 
 function onCancelUpdateAccountType() {
   state.showChangeAccountType = false;
-  state.accountTier = props.membership.accountTier;
+  state.accountTier = state.currentStatus.accountTier;
 }
 
 async function onGetFinalConfirmation(
   newAccountTier: AccountTier,
 ): Promise<void> {
-  if (currentUser.membership.accountTier === newAccountTier) {
+  if (state.currentStatus.accountTier === newAccountTier) {
     // No change. Return without doing anything.
     return;
   }
@@ -201,7 +217,7 @@ async function onGetFinalConfirmation(
   );
   if (!state.desiredMembershipOption) return;
 
-  if (currentUser.membership.accountTier === AccountTier.Basic) {
+  if (state.currentStatus.accountTier === AccountTier.Basic) {
     // User is creating a new membership from a free account. No need to confirm a change.
     // Instead, proceed to checkout/payment page.
     await onConfirmChangeMembership();
@@ -220,9 +236,7 @@ async function onConfirmCancelMembership(): Promise<void> {
   state.isCanceling = true;
 
   await oops(async () => {
-    if (!currentUser.user) return;
-
-    await client.memberships.cancelMembership(currentUser.user.username);
+    await client.memberships.cancelMembership(props.user.username);
 
     state.showCancelMembership = false;
     location.assign('/membership/canceled');
@@ -233,7 +247,7 @@ async function onConfirmCancelMembership(): Promise<void> {
 
 function onAbortCancelMembership() {
   state.showCancelMembership = false;
-  state.accountTier = props.membership.accountTier;
+  state.accountTier = state.currentStatus.accountTier;
 }
 
 async function onConfirmChangeMembership(): Promise<void> {
@@ -241,11 +255,9 @@ async function onConfirmChangeMembership(): Promise<void> {
   if (!newAccountTier) return;
 
   await oops(async () => {
-    if (!currentUser.user) return;
-
     state.isSaving = true;
-    currentUser.membership = await client.memberships.updateMembership(
-      currentUser.user.username,
+    state.currentStatus = await client.memberships.updateMembership(
+      props.user.username,
       newAccountTier,
     );
 
@@ -262,15 +274,14 @@ function onAbortChangeMembership() {
 onMounted(async () => {
   await oops(
     async () => {
-      state.membershipOptions = await client.memberships.listMemberships();
-      state.currentMembershipOption = state.membershipOptions?.find(
-        (m) => m.accountTier === props.membership.accountTier,
-      );
+      [state.currentStatus, state.membershipOptions] = await Promise.all([
+        client.memberships.getMembershipStatus(props.user.username),
+        client.memberships.listMemberships(),
+      ]);
     },
     {
-      default: (err: unknown) => {
-        // eslint-disable-next-line no-console
-        console.error(err);
+      default() {
+        state.membershipOptions = [];
       },
     },
   );
