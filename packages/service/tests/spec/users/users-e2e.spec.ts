@@ -9,20 +9,18 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
-import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
-import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { compare } from 'bcryptjs';
+import { It, Mock } from 'moq.ts';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
-import { Queues } from '../../../src/common';
 import { UserEntity } from '../../../src/data';
-import { QueueModule } from '../../../src/queue';
+import { EventKey, EventsModule, EventsService } from '../../../src/events';
 import { User } from '../../../src/users/user';
 import { UsersController } from '../../../src/users/users.controller';
 import { UsersService } from '../../../src/users/users.service';
@@ -35,8 +33,6 @@ function requestUrl(username?: string): string {
   return username ? `/api/users/${username}` : '/api/users';
 }
 
-const EmailQueueUrl =
-  'https://sqs.us-east-1.amazonaws.com/123456789012/MyQueue';
 const TwoDaysInMs = 1000 * 60 * 60 * 24 * 2;
 
 const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
@@ -83,7 +79,7 @@ describe('Users End-to-End Tests', () => {
   let server: unknown;
   let adminAuthHeader: [string, string];
   let regualarAuthHeader: [string, string];
-  let sqsClient: SQSClient;
+  let eventsService: EventsService;
 
   let Users: Repository<UserEntity>;
 
@@ -91,22 +87,19 @@ describe('Users End-to-End Tests', () => {
   let regularUser: UserEntity;
 
   beforeAll(async () => {
-    sqsClient = new SQSClient();
+    eventsService = new Mock<EventsService>()
+      .setup((x) => x.emit(It.IsAny()))
+      .returns()
+      .object();
     app = await createTestApp(
       {
-        imports: [
-          TypeOrmModule.forFeature([UserEntity]),
-          QueueModule.forFeature({
-            key: Queues.email,
-            queueUrl: EmailQueueUrl,
-          }),
-        ],
+        imports: [TypeOrmModule.forFeature([UserEntity]), EventsModule],
         providers: [UsersService],
         controllers: [UsersController],
       },
       {
-        provide: SQSClient,
-        use: sqsClient,
+        provide: EventsService,
+        use: eventsService,
       },
     );
     server = app.getHttpServer();
@@ -171,9 +164,7 @@ describe('Users End-to-End Tests', () => {
     });
 
     it('will create a new account and send welcome email', async () => {
-      const queueSpy = jest
-        .spyOn(sqsClient, 'send')
-        .mockResolvedValue({} as never);
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
 
       const agent = request.agent(server);
       const options: CreateUserParamsDTO = {
@@ -208,16 +199,10 @@ describe('Users End-to-End Tests', () => {
       savedUser!.emailVerificationToken =
         'oqh6qlk1wQsFvYiGO__KK0ZlQcMc6CW6I08zPbsgLtM';
       expect(savedUser).toMatchSnapshot();
-      expect(queueSpy).toHaveBeenCalled();
-
-      const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
-
-      const message = JSON.parse(
-        command.input.MessageBody!,
-      ) as EmailQueueMessage;
-
-      expect(message.to).toEqual({ to: options.email });
-      expect(message.options.type).toEqual(EmailType.Welcome);
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.UserCreated,
+      });
     });
 
     it('will create a new account with minimal properties', async () => {
@@ -553,9 +538,7 @@ describe('Users End-to-End Tests', () => {
     const verifyUrl = `${requestUrl(RegularUserData.username)}/verifyEmail`;
 
     it('will request a verification token', async () => {
-      const queueSpy = jest
-        .spyOn(sqsClient, 'send')
-        .mockResolvedValue({} as never);
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
 
       const {
         body: { succeeded },
@@ -565,27 +548,23 @@ describe('Users End-to-End Tests', () => {
         .expect(202);
       expect(succeeded).toBe(true);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser?.emailVerificationToken).toBeDefined();
-      expect(
-        savedUser?.emailVerificationTokenExpiration?.valueOf(),
-      ).toBeCloseTo(Date.now() + TwoDaysInMs, -2);
+      const savedUser = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(savedUser.emailVerificationToken).toBeDefined();
+      expect(savedUser.emailVerificationTokenExpiration?.valueOf()).toBeCloseTo(
+        Date.now() + TwoDaysInMs,
+        -2,
+      );
 
-      expect(queueSpy).toHaveBeenCalled();
-
-      const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
-
-      const message = JSON.parse(
-        command.input.MessageBody!,
-      ) as EmailQueueMessage;
-      expect(message.to).toEqual({ to: RegularUserData.email });
-      expect(message.options.type).toEqual(EmailType.VerifyEmail);
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.UserVerifyEmailRequest,
+        verificationToken: savedUser.emailVerificationToken,
+        verificationUrl: `http://localhost:4850/verifyEmail?user=${RegularUserData.username}&token=${savedUser.emailVerificationToken}`,
+      });
     });
 
     it('will do nothing if email address is already verified', async () => {
-      const queueSpy = jest
-        .spyOn(sqsClient, 'send')
-        .mockResolvedValue({} as never);
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
 
       regularUser.emailVerified = true;
       await Users.save(regularUser);
@@ -598,15 +577,13 @@ describe('Users End-to-End Tests', () => {
         .expect(202);
       expect(succeeded).toBe(false);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser?.emailVerificationToken).toBeNull();
-      expect(queueSpy).not.toHaveBeenCalled();
+      const savedUser = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(savedUser.emailVerificationToken).toBeNull();
+      expect(eventSpy).not.toHaveBeenCalled();
     });
 
     it('will do nothing if user does not have an email address on their account', async () => {
-      const queueSpy = jest
-        .spyOn(sqsClient, 'send')
-        .mockResolvedValue({} as never);
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
 
       regularUser.email = null;
       regularUser.emailLowered = null;
@@ -620,9 +597,9 @@ describe('Users End-to-End Tests', () => {
         .expect(202);
       expect(succeeded).toBe(false);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser?.emailVerificationToken).toBeNull();
-      expect(queueSpy).not.toHaveBeenCalled();
+      const savedUser = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(savedUser.emailVerificationToken).toBeNull();
+      expect(eventSpy).not.toHaveBeenCalled();
     });
 
     it('will return a 401 response when requesting a verificaiton token if user is unauthenticated', async () => {
@@ -706,26 +683,23 @@ describe('Users End-to-End Tests', () => {
     )}/resetPassword`;
 
     it('will request a password token', async () => {
-      const queueSpy = jest
-        .spyOn(sqsClient, 'send')
-        .mockResolvedValue({} as never);
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
 
       await request(server).post(requestTokenUrl).expect(204);
 
-      const savedUser = await Users.findOneBy({ id: RegularUserId });
-      expect(savedUser?.passwordResetToken).toBeDefined();
-      expect(savedUser?.passwordResetTokenExpiration?.valueOf()).toBeCloseTo(
+      const savedUser = await Users.findOneByOrFail({ id: RegularUserId });
+      expect(savedUser.passwordResetToken).toBeDefined();
+      expect(savedUser.passwordResetTokenExpiration?.valueOf()).toBeCloseTo(
         Date.now() + TwoDaysInMs,
         -2,
       );
 
-      expect(queueSpy).toHaveBeenCalled();
-
-      const command = queueSpy.mock.lastCall![0] as SendMessageCommand;
-
-      const message: EmailQueueMessage = JSON.parse(command.input.MessageBody!);
-      expect(message.to).toEqual({ to: RegularUserData.email });
-      expect(message.options.type).toEqual(EmailType.ResetPassword);
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.UserPasswordResetRequest,
+        resetToken: savedUser.passwordResetToken,
+        resetUrl: `http://localhost:4850/resetPassword?user=${RegularUserData.username}&token=${savedUser.passwordResetToken}`,
+      });
     });
 
     it('will return a 404 response if the indicated user does not exist', async () => {
