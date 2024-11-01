@@ -135,7 +135,9 @@ const isAuthorized = computed<boolean>(() => {
   if (operatorKey.value) return true;
 
   return (
-    !!currentUser.user && currentUser.user.accountTier >= AccountTier.ShopOwner
+    !!currentUser.user &&
+    (currentUser.user.role === UserRole.Admin ||
+      currentUser.user.accountTier >= AccountTier.ShopOwner)
   );
 });
 

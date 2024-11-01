@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`ManageMembership component will render for a basic account 1`] = `"Free account"`;
-
-exports[`ManageMembership component will render for a pro account 1`] = `"Pro account"`;
-
-exports[`ManageMembership component will render for a shop owner account 1`] = `"Dive shop owner"`;

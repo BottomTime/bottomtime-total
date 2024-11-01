@@ -7,7 +7,6 @@ import {
   UserDTO,
   UserRole,
 } from '@bottomtime/api';
-import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import {
   Body,
@@ -24,9 +23,8 @@ import {
 
 import { URL } from 'url';
 
-import { Queues } from '../common';
 import { Config } from '../config';
-import { InjectQueue, Queue } from '../queue';
+import { EventKey, EventsService } from '../events';
 import { ZodValidator } from '../zod-validator';
 import { CurrentUser } from './current-user';
 import { AssertAuth } from './guards';
@@ -41,8 +39,8 @@ export class UsersController {
     @Inject(UsersService)
     private readonly users: UsersService,
 
-    @InjectQueue(Queues.email)
-    private readonly emailQueue: Queue,
+    @Inject(EventsService)
+    private readonly events: EventsService,
   ) {}
 
   /**
@@ -252,26 +250,12 @@ export class UsersController {
       const verificationUrl = new URL('/verifyEmail', Config.baseUrl);
       verificationUrl.searchParams.append('email', user.email);
       verificationUrl.searchParams.append('token', verifyEmailToken);
-      const queueMessage: EmailQueueMessage = {
-        to: { to: user.email },
-        subject: 'Welcome to Bottom Time',
-        options: {
-          type: EmailType.Welcome,
-          title: 'Welcome to Bottom Time',
-          subtitle: 'Get ready to dive in!',
-          user: {
-            username: user.username,
-            email: user.email,
-            profile: {
-              name: user.profile.name || `@${user.username}`,
-            },
-          },
-          logsUrl: new URL('/logbook', Config.baseUrl).toString(),
-          profileUrl: new URL('/profile', Config.baseUrl).toString(),
-          verifyEmailUrl: verificationUrl.toString(),
-        },
-      };
-      await this.emailQueue.add(JSON.stringify(queueMessage));
+      this.events.emit({
+        key: EventKey.UserCreated,
+        user,
+        verificationToken: verifyEmailToken,
+        verificationUrl: verificationUrl.toString(),
+      });
     }
 
     return user.toJSON();

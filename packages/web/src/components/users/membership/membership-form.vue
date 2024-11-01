@@ -2,7 +2,11 @@
   <form @submit.prevent="">
     <fieldset class="px-4 space-y-6" :disabled="isSaving">
       <div class="space-y-6">
-        <div v-for="membership of options" :key="membership.accountTier">
+        <div
+          v-for="membership of options"
+          :key="membership.accountTier"
+          :data-testid="`tier-info-${membership.accountTier}`"
+        >
           <FormRadio
             v-model="accountTier"
             :control-id="`account-tier-${membership.accountTier}`"
@@ -54,7 +58,7 @@
             control-id="confirm-account-change"
             test-id="confirm-account-change"
             submit
-            @click="onConfirmChangeAccountType"
+            @click="$emit('change-membership', parseInt(accountTier, 10))"
           >
             Change account type
           </FormButton>
@@ -62,7 +66,7 @@
           <FormButton
             control-id="cancel-account-change"
             test-id="cancel-account-change"
-            @click="onCancelChangeAccountType"
+            @click="$emit('cancel')"
           >
             Cancel
           </FormButton>
@@ -91,7 +95,7 @@ const props = withDefaults(defineProps<MembershipFormProps>(), {
 });
 const accountTier = ref<string>(props.accountTier.toString());
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'change-membership', accountTier: AccountTier): void;
   (e: 'cancel'): void;
 }>();
@@ -101,13 +105,5 @@ function formatCurrency(amount: number, currency: string): string {
     style: 'currency',
     currency,
   }).format(amount);
-}
-
-function onConfirmChangeAccountType() {
-  emit('change-membership', parseInt(accountTier.value, 10));
-}
-
-function onCancelChangeAccountType() {
-  emit('cancel');
 }
 </script>

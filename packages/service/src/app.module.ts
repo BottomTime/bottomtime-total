@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from './data';
 import { PostgresDataSourceOptions } from './data-source';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
+import { EventsModule } from './events';
 import { FriendsModule } from './friends';
 import { LogEntriesModule } from './logEntries';
 import { MembershipModule } from './membership';
@@ -22,9 +23,7 @@ import { UsersModule } from './users';
 
 @Module({
   imports: [
-    EventEmitterModule.forRoot({
-      delimiter: '_',
-    }),
+    EventEmitterModule.forRoot(),
     TypeOrmModule.forRootAsync({
       useFactory: () => PostgresDataSourceOptions,
       dataSourceFactory: async (options?: DataSourceOptions) => {
@@ -35,6 +34,7 @@ import { UsersModule } from './users';
     PassportModule.register({
       session: false,
     }),
+    EventsModule,
 
     TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
 

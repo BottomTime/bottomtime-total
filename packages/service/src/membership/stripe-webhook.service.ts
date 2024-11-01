@@ -1,5 +1,4 @@
 import { AccountTier } from '@bottomtime/api';
-import { EmailOptions, EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import {
   BadRequestException,
@@ -8,13 +7,10 @@ import {
   Logger,
 } from '@nestjs/common';
 
-import dayjs from 'dayjs';
 import Stripe from 'stripe';
-import { URL } from 'url';
 
-import { Queues } from '../common';
 import { Config } from '../config';
-import { IQueue, InjectQueue } from '../queue';
+import { EventKey, EventsService } from '../events';
 import { User, UsersService } from '../users';
 import { ProFeature, ShopOwnerFeature } from './constants';
 
@@ -44,7 +40,7 @@ export class StripeWebhookService {
   constructor(
     @Inject(Stripe) private readonly stripe: Stripe,
     @Inject(UsersService) private readonly users: UsersService,
-    @InjectQueue(Queues.email) private readonly emailQueue: IQueue,
+    @Inject(EventsService) private readonly events: EventsService,
   ) {}
 
   /**
@@ -120,15 +116,6 @@ export class StripeWebhookService {
   ): Promise<void> {
     if (!user.email) return;
 
-    const userData: EmailOptions['user'] = {
-      email: user.email,
-      profile: {
-        name: user.profile.name || user.username,
-      },
-      username: user.username,
-    };
-    let opts: EmailQueueMessage;
-
     if (user.accountTier === AccountTier.Basic) {
       // User's membership has been suspended or canceled. We won't send an email in this case since there could
       // be several reasons for this (user requested cancellation, payment failed, trial period ended, etc.).
@@ -139,50 +126,32 @@ export class StripeWebhookService {
     // Determine which email template to send.
     if (oldTier === AccountTier.Basic) {
       // User has created a brand new membership.
-      opts = {
-        to: { to: user.email },
-        subject: 'Membership activated',
-        options: {
-          type: EmailType.NewMembership,
-          newTier: AccountTierFriendlyNames[user.accountTier],
-          title: 'Membership activated!',
-          user: userData,
-        },
-      };
+      this.events.emit({
+        key: EventKey.MembershipCreated,
+        user,
+        newTier: user.accountTier,
+        newTierName: AccountTierFriendlyNames[user.accountTier],
+      });
     } else {
       // User has upgraded or downgraded their membership tier.
-      opts = {
-        to: { to: user.email },
-        subject: 'Membership updated',
-        options: {
-          type: EmailType.MembershipChanged,
-          newTier: AccountTierFriendlyNames[user.accountTier],
-          previousTier: AccountTierFriendlyNames[oldTier],
-          title: 'Membership Updated',
-          user: {
-            email: user.email,
-            username: user.username,
-            profile: {
-              name: user.profile?.name || user.username,
-            },
-          },
-        },
-      };
+      this.events.emit({
+        key: EventKey.MembershipChanged,
+        user,
+        previousTier: oldTier,
+        previousTierName: AccountTierFriendlyNames[oldTier],
+        newTier: user.accountTier,
+        newTierName: AccountTierFriendlyNames[user.accountTier],
+      });
     }
-
-    this.sendEmail(opts);
-  }
-
-  private sendEmail(payload: unknown): void {
-    this.emailQueue.add(JSON.stringify(payload)).catch((error) => {
-      this.log.error('Failed to send email:', error);
-    });
   }
 
   /* SUBSCRIPTIONS */
   /**
    * Occurs whenever a customer’s subscription ends.
    * We'll send a confirmation email to the user.
+   *
+   * NOTE: We will not modify the user's account tier in this call. Changes to account tier are handled when
+   * Stripe informs us of the user's entitlements changing.
    */
   private async onSubscriptionCanceled(e: Stripe.Event): Promise<void> {
     if (e.type !== 'customer.subscription.deleted') return;
@@ -195,23 +164,12 @@ export class StripeWebhookService {
       return;
     }
 
-    const message: EmailQueueMessage = {
-      to: { to: user.email },
-      subject: 'Membership canceled',
-      options: {
-        type: EmailType.MembershipCanceled,
-        title: 'Membership Canceled',
-        user: {
-          email: user.email,
-          username: user.username,
-          profile: {
-            name: user.profile?.name || user.username,
-          },
-        },
-      },
-    };
-
-    this.sendEmail(message);
+    this.events.emit({
+      key: EventKey.MembershipCanceled,
+      user,
+      previousTier: user.accountTier,
+      previousTierName: AccountTierFriendlyNames[user.accountTier],
+    });
   }
 
   /**
@@ -252,24 +210,13 @@ export class StripeWebhookService {
     const user = await this.getUserFromStripeCustomer(e.data.object.customer);
     if (!user.email || !e.data.object.trial_end) return;
 
-    const message: EmailQueueMessage = {
-      to: { to: user.email },
-      subject: 'Your free trial of Bottom Time is ending soon...',
-      options: {
-        type: EmailType.TrialEnding,
-        endDate: dayjs(e.data.object.trial_end * 1000).format('LL'),
-        title: 'Your Trial Period Is Ending Soon',
-        user: {
-          email: user.email,
-          profile: {
-            name: user.profile.name || user.username,
-          },
-          username: user.username,
-        },
-      },
-    };
-
-    this.sendEmail(message);
+    this.events.emit({
+      key: EventKey.MembershipTrialEnding,
+      user,
+      currentTier: user.accountTier,
+      currentTierName: AccountTierFriendlyNames[user.accountTier],
+      endDate: new Date(e.data.object.trial_end * 1000),
+    });
   }
 
   /* INVOICES */
@@ -299,10 +246,6 @@ export class StripeWebhookService {
       return;
     }
 
-    const currency = Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: e.data.object.currency,
-    });
     const totalDiscounts = e.data.object.total_discount_amounts?.reduce(
       (total, value) => total + value.amount / 100,
       0,
@@ -312,58 +255,39 @@ export class StripeWebhookService {
       0,
     );
     const period = e.data.object.lines.data.find((line) => line.period)?.period;
-    const message: EmailQueueMessage = {
-      to: { to: user.email, bcc: Config.adminEmail },
-      subject: 'Latest invoice for Bottom Time membership',
-      options: {
-        type: EmailType.Invoice,
-        title: 'Bottom Time Membership',
-        subtitle: 'Your Latest Invoice',
-        invoiceDate: dayjs(
-          e.data.object.effective_at || e.data.object.created,
-        ).format('LLL'),
-        user: {
-          email: user.email,
-          username: user.username,
-          profile: {
-            name: user.profile?.name || user.username,
-          },
-        },
-        currency: e.data.object.currency.toUpperCase(),
-        downloadUrl: e.data.object.invoice_pdf ?? undefined,
-        items: e.data.object.lines.data.map((line) => ({
-          description: line.description || '',
-          quantity: line.quantity ?? 1,
-          unitPrice: currency.format(
-            parseFloat(line.unit_amount_excluding_tax || '0') / 100,
-          ),
-          total: currency.format(
-            (line.amount_excluding_tax ?? line.amount) / 100,
-          ),
-        })),
-        amounts: {
-          due: currency.format(e.data.object.amount_due / 100),
-          paid: currency.format(e.data.object.amount_paid / 100),
-          remaining: currency.format(e.data.object.amount_remaining / 100),
-        },
-        totals: {
-          subtotal: currency.format(e.data.object.subtotal / 100),
-          total: currency.format(e.data.object.total / 100),
-          discounts: totalDiscounts
-            ? currency.format(totalDiscounts)
-            : undefined,
-          taxes: totalTaxes ? currency.format(totalTaxes) : undefined,
-        },
-        period: period
-          ? {
-              start: dayjs(period.start).format('LL'),
-              end: dayjs(period.end).format('LL'),
-            }
-          : undefined,
-      },
-    };
 
-    this.sendEmail(message);
+    this.events.emit({
+      key: EventKey.MembershipInvoiceCreated,
+      user,
+      invoiceDate: new Date(
+        e.data.object.effective_at || e.data.object.created,
+      ),
+      currency: e.data.object.currency.toUpperCase(),
+      downloadUrl: e.data.object.invoice_pdf ?? undefined,
+      items: e.data.object.lines.data.map((line) => ({
+        description: line.description || '',
+        quantity: line.quantity ?? 1,
+        unitPrice: parseFloat(line.unit_amount_excluding_tax || '0') / 100,
+        total: (line.amount_excluding_tax ?? line.amount) / 100,
+      })),
+      amounts: {
+        due: e.data.object.amount_due / 100,
+        paid: e.data.object.amount_paid / 100,
+        remaining: e.data.object.amount_remaining / 100,
+      },
+      totals: {
+        subtotal: e.data.object.subtotal / 100,
+        total: e.data.object.total / 100,
+        discounts: totalDiscounts,
+        taxes: totalTaxes,
+      },
+      period: period
+        ? {
+            start: new Date(period.start),
+            end: new Date(period.end),
+          }
+        : undefined,
+    });
   }
 
   /**
@@ -383,41 +307,19 @@ export class StripeWebhookService {
     // Notify the user, via email, that their payment has failed or needs attention.
     // They will be given a link to click where they can update their payment info.
     if (user.email) {
-      const paymentDue = dayjs(
-        e.data.object.next_payment_attempt || e.data.object.due_date || 0,
-      ).format('LL');
-      const emailOptions: EmailQueueMessage = {
-        to: { to: user.email, cc: Config.adminEmail },
-        subject: 'Important! Please update your payment info.',
-        options: {
-          type: EmailType.PaymentFailed,
-          title: 'Payment Issue',
-          subtitle: 'Your Attention is Required ⚠️',
-          user: {
-            email: user.email,
-            username: user.username,
-            profile: {
-              name: user.profile?.name || user.username,
-            },
-          },
-
-          paymentUrl: new URL(
-            '/membership/confirmation',
-            Config.baseUrl,
-          ).toString(),
-          paymentAmount: Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: e.data.object.currency,
-          }).format(e.data.object.amount_remaining / 100),
-          paymentDue,
-        },
-      };
-
       this.log.log(
         `Sending notification of failed/stalled payment to "${user.username}".`,
         user.email,
       );
-      this.sendEmail(emailOptions);
+      this.events.emit({
+        key: EventKey.MembershipPaymentFailed,
+        user,
+        amountDue: e.data.object.amount_remaining / 100,
+        currency: e.data.object.currency,
+        dueDate: new Date(
+          e.data.object.next_payment_attempt || e.data.object.due_date || 0,
+        ),
+      });
     }
   }
 }

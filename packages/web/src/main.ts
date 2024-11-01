@@ -20,6 +20,7 @@ import { Config } from './config';
 import { FeaturesServiceKey } from './featrues';
 import { LocationKey, MockLocation } from './location';
 import { router } from './router';
+import { StripeLoader, StripeLoaderKey } from './stripe';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
@@ -63,7 +64,8 @@ export function createApp(
     .provide(
       LocationKey,
       typeof window === 'undefined' ? new MockLocation() : window.location,
-    );
+    )
+    .provide(StripeLoaderKey, new StripeLoader());
 
   return { app, router, store: pinia };
 }

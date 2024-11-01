@@ -40,7 +40,3 @@ export type GpsCoordinates = z.infer<typeof GpsCoordinatesSchema>;
 export type PageRenderProps = {
   title: string;
 };
-
-export const Queues: Record<string, symbol> = {
-  email: Symbol('SQSQueue_email'),
-} as const;

@@ -6,7 +6,6 @@
       <FormBox class="md:col-start-2 md:col-span-3">
         <ManageAccount
           :user="currentUser.user!"
-          :membership="currentUser.membership"
           @change-username="onChangeUsername"
           @change-email="onChangeEmail"
           @change-password="onChangePassword"

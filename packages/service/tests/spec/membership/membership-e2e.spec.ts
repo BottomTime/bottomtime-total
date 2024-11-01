@@ -1,19 +1,18 @@
 import { AccountTier, UserRole } from '@bottomtime/api';
 
-import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { INestApplication } from '@nestjs/common';
 
+import { It, Mock } from 'moq.ts';
 import Stripe from 'stripe';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { Queues } from '../../../src/common';
 import { UserEntity } from '../../../src/data';
 import { StripeModule } from '../../../src/dependencies';
+import { EventKey, EventsModule, EventsService } from '../../../src/events';
 import { MembershipController } from '../../../src/membership/membership.controller';
 import { MembershipService } from '../../../src/membership/membership.service';
 import { MembershipsController } from '../../../src/membership/memberships.controller';
-import { QueueModule } from '../../../src/queue';
 import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import {
@@ -71,7 +70,7 @@ describe('Memberships E2E tests', () => {
   let stripe: Stripe;
   let app: INestApplication;
   let server: unknown;
-  let sqsClient: SQSClient;
+  let eventsService: EventsService;
 
   let Users: Repository<UserEntity>;
 
@@ -85,27 +84,25 @@ describe('Memberships E2E tests', () => {
   let otherAuthHeader: [string, string];
 
   beforeAll(async () => {
-    sqsClient = new SQSClient();
+    const eventsServiceMock = new Mock<EventsService>();
+    eventsService = eventsServiceMock
+      .setup((x) => x.emit(It.IsAny()))
+      .returns()
+      .object();
+
     stripe = new Stripe('sk_test_xxxxx');
     jest.spyOn(stripe.prices, 'list').mockResolvedValue(StripePriceData);
 
     // app = await createTestApp({ sqsClient, stripe });
     app = await createTestApp(
       {
-        imports: [
-          QueueModule.forFeature({
-            key: Queues.email,
-            queueUrl: 'https://localhost:4566/MyQueue',
-          }),
-          StripeModule,
-          UsersModule,
-        ],
+        imports: [EventsModule, StripeModule, UsersModule],
         providers: [MembershipService],
         controllers: [MembershipsController, MembershipController],
       },
       {
-        provide: SQSClient,
-        use: sqsClient,
+        provide: EventsService,
+        use: eventsService,
       },
       {
         provide: Stripe,
@@ -216,7 +213,7 @@ describe('Memberships E2E tests', () => {
       const cancelSpy = jest
         .spyOn(stripe.subscriptions, 'cancel')
         .mockResolvedValue({} as Stripe.Response<Stripe.Subscription>);
-      const emailSpy = jest.spyOn(sqsClient, 'send');
+      const eventSpy = jest.spyOn(eventsService, 'emit');
 
       await request(server)
         .delete(getUrl(regularUser.username))
@@ -226,11 +223,12 @@ describe('Memberships E2E tests', () => {
       const saved = await Users.findOneByOrFail({ id: regularUser.id });
       expect(cancelSpy).toHaveBeenCalled();
       expect(saved.accountTier).toBe(AccountTier.Basic);
-      expect(emailSpy).toHaveBeenCalled();
-
-      expect(
-        (emailSpy.mock.calls[0][0] as SendMessageCommand).input.MessageBody,
-      ).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.MembershipCanceled,
+        previousTier: AccountTier.Pro,
+        previousTierName: 'Pro Membership',
+      });
     });
 
     it('will allow an admin to cancel a membership', async () => {
@@ -243,7 +241,7 @@ describe('Memberships E2E tests', () => {
       const cancelSpy = jest
         .spyOn(stripe.subscriptions, 'cancel')
         .mockResolvedValue({} as Stripe.Response<Stripe.Subscription>);
-      const emailSpy = jest.spyOn(sqsClient, 'send');
+      const eventSpy = jest.spyOn(eventsService, 'emit');
 
       await request(server)
         .delete(getUrl(regularUser.username))
@@ -253,7 +251,12 @@ describe('Memberships E2E tests', () => {
       const saved = await Users.findOneByOrFail({ id: regularUser.id });
       expect(cancelSpy).toHaveBeenCalled();
       expect(saved.accountTier).toBe(AccountTier.Basic);
-      expect(emailSpy).toHaveBeenCalled();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.MembershipCanceled,
+        previousTier: AccountTier.Pro,
+        previousTierName: 'Pro Membership',
+      });
     });
 
     it('will do nothing if the user has no membership', async () => {
@@ -263,7 +266,7 @@ describe('Memberships E2E tests', () => {
       const cancelSpy = jest
         .spyOn(stripe.subscriptions, 'cancel')
         .mockResolvedValue({} as Stripe.Response<Stripe.Subscription>);
-      const emailSpy = jest.spyOn(sqsClient, 'send');
+      const emailSpy = jest.spyOn(eventsService, 'emit');
 
       await request(server)
         .delete(getUrl(regularUser.username))
@@ -322,7 +325,7 @@ describe('Memberships E2E tests', () => {
           StripeCustomerShopOwnerMember.subscriptions!
             .data[0] as Stripe.Response<Stripe.Subscription>,
         );
-      const emailSpy = jest.spyOn(sqsClient, 'send');
+      const eventSpy = jest.spyOn(eventsService, 'emit');
       jest
         .spyOn(stripe.entitlements.activeEntitlements, 'list')
         .mockResolvedValue(StripeEntitlementsShopOwner);
@@ -351,10 +354,14 @@ describe('Memberships E2E tests', () => {
 
       const saved = await Users.findOneByOrFail({ id: regularUser.id });
       expect(saved.accountTier).toBe(AccountTier.ShopOwner);
-      expect(emailSpy).toHaveBeenCalled();
-      expect(
-        (emailSpy.mock.calls[0][0] as SendMessageCommand).input.MessageBody,
-      ).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.MembershipChanged,
+        newTier: AccountTier.ShopOwner,
+        newTierName: 'Shop Owner Membership',
+        previousTier: AccountTier.Pro,
+        previousTierName: 'Pro Membership',
+      });
     });
 
     it('will allow a user to cancel a membership by way of update', async () => {
@@ -368,7 +375,7 @@ describe('Memberships E2E tests', () => {
       const cancelSubscriptionSpy = jest
         .spyOn(stripe.subscriptions, 'cancel')
         .mockResolvedValue({} as Stripe.Response<Stripe.Subscription>);
-      const emailSpy = jest.spyOn(sqsClient, 'send');
+      const eventSpy = jest.spyOn(eventsService, 'emit');
       jest
         .spyOn(stripe.entitlements.activeEntitlements, 'list')
         .mockResolvedValue(StripeEntitlementsShopOwner);
@@ -388,10 +395,12 @@ describe('Memberships E2E tests', () => {
 
       const saved = await Users.findOneByOrFail({ id: regularUser.id });
       expect(saved.accountTier).toBe(AccountTier.Basic);
-      expect(emailSpy).toHaveBeenCalled();
-      expect(
-        (emailSpy.mock.calls[0][0] as SendMessageCommand).input.MessageBody,
-      ).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.MembershipCanceled,
+        previousTier: AccountTier.Pro,
+        previousTierName: 'Pro Membership',
+      });
     });
 
     it("will allow an admin to update a user's membership", async () => {
@@ -408,7 +417,7 @@ describe('Memberships E2E tests', () => {
           StripeCustomerShopOwnerMember.subscriptions!
             .data[0] as Stripe.Response<Stripe.Subscription>,
         );
-      const emailSpy = jest.spyOn(sqsClient, 'send');
+      const eventSpy = jest.spyOn(eventsService, 'emit');
       jest
         .spyOn(stripe.entitlements.activeEntitlements, 'list')
         .mockResolvedValue(StripeEntitlementsShopOwner);
@@ -437,10 +446,14 @@ describe('Memberships E2E tests', () => {
 
       const saved = await Users.findOneByOrFail({ id: regularUser.id });
       expect(saved.accountTier).toBe(AccountTier.ShopOwner);
-      expect(emailSpy).toHaveBeenCalled();
-      expect(
-        (emailSpy.mock.calls[0][0] as SendMessageCommand).input.MessageBody,
-      ).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.MembershipChanged,
+        newTier: AccountTier.ShopOwner,
+        newTierName: 'Shop Owner Membership',
+        previousTier: AccountTier.Pro,
+        previousTierName: 'Pro Membership',
+      });
     });
 
     it('will return a 401 response if user is not authenticated', async () => {

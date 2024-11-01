@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MembershipForm component will render the membership options 1`] = `
+"<form>
+  <fieldset class="px-4 space-y-6">
+    <div class="space-y-6">
+      <div data-testid="tier-info-0"><label for="account-tier-0" class="flex flex-row gap-1.5"><input id="account-tier-0" class="accent-blue-800 dark:accent-blue-300" type="radio" name="account-tier" data-testid="account-tier-0" value="0">
+          <p class="flex items-baseline gap-3"><span class="font-bold text-lg">Free Tier</span>
+            <!--v-if--><span class="rounded-full bg-success px-2 text-sm"> Current Membership </span>
+          </p>
+        </label>
+        <div class="space-y-3 pl-8 text-justify">
+          <p>This is the free tier</p>
+          <ul class="list-outside list-disc ml-6">
+            <li>Feature 1</li>
+            <li>Feature 2</li>
+            <li>Feature 3</li>
+          </ul>
+        </div>
+      </div>
+      <div data-testid="tier-info-100"><label for="account-tier-100" class="flex flex-row gap-1.5"><input id="account-tier-100" class="accent-blue-800 dark:accent-blue-300" type="radio" name="account-tier" data-testid="account-tier-100" value="100">
+          <p class="flex items-baseline gap-3"><span class="font-bold text-lg">Pro Tier</span><span class="font-mono text-xs"> ( CA$99.99 / year ) </span>
+            <!--v-if-->
+          </p>
+        </label>
+        <div class="space-y-3 pl-8 text-justify">
+          <p>This is the pro tier</p>
+          <ul class="list-outside list-disc ml-6">
+            <li>Feature 4</li>
+            <li>Feature 5</li>
+            <li>Feature 6</li>
+          </ul>
+        </div>
+      </div>
+      <div data-testid="tier-info-200"><label for="account-tier-200" class="flex flex-row gap-1.5"><input id="account-tier-200" class="accent-blue-800 dark:accent-blue-300" type="radio" name="account-tier" data-testid="account-tier-200" value="200">
+          <p class="flex items-baseline gap-3"><span class="font-bold text-lg">Shop Owner Tier</span><span class="font-mono text-xs"> ( CA$49.99 / month ) </span>
+            <!--v-if-->
+          </p>
+        </label>
+        <div class="space-y-3 pl-8 text-justify">
+          <p>This is the shop owner tier</p>
+          <ul class="list-outside list-disc ml-6">
+            <li>Feature 7</li>
+            <li>Feature 8</li>
+            <li>Feature 9</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flex justify-center gap-3"><button id="confirm-account-change" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-primary-dark hover:to-primary-hover to-primary font-bold" data-testid="confirm-account-change" type="submit" disabled="">
+          <!--v-if--> Change account type
+        </button><button id="cancel-account-change" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="cancel-account-change" type="button">
+          <!--v-if--> Cancel
+        </button></div>
+    </div>
+  </fieldset>
+</form>"
+`;

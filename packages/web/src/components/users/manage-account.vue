@@ -80,13 +80,13 @@
 
       <TextHeading>Membership</TextHeading>
 
-      <ManageMembership :user="user" :membership="membership" />
+      <ManageMembership :user="user" />
     </div>
   </form>
 </template>
 
 <script lang="ts" setup>
-import { MembershipStatusDTO, UserDTO } from '@bottomtime/api';
+import { UserDTO } from '@bottomtime/api';
 
 import { onMounted, reactive } from 'vue';
 
@@ -105,7 +105,6 @@ import UsernameAndEmail from './username-and-email.vue';
 // TYPE DEFS
 type ManageAccountProps = {
   user: UserDTO;
-  membership: MembershipStatusDTO;
 };
 
 type OAuthProvider = {

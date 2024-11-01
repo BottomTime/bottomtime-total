@@ -24,6 +24,9 @@ export default defineConfig(({ mode }) => {
   );
 
   return {
+    build: {
+      sourcemap: true,
+    },
     define,
     envPrefix,
     mode: process.env.NODE_ENV || 'development',

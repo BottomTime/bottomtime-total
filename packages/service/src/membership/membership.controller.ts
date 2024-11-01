@@ -5,7 +5,6 @@ import {
   UpdateMembershipParamsDTO,
   UpdateMembershipParamsSchema,
 } from '@bottomtime/api';
-import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import {
   BadRequestException,
@@ -22,8 +21,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { Queues } from '../common';
-import { InjectQueue, Queue } from '../queue';
+import { EventKey, EventsService } from '../events';
 import {
   AssertAccountOwner,
   AssertAuth,
@@ -43,8 +41,8 @@ export class MembershipController {
     @Inject(MembershipService)
     private readonly service: MembershipService,
 
-    @InjectQueue(Queues.email)
-    private readonly emailQueue: Queue,
+    @Inject(EventsService)
+    private readonly events: EventsService,
   ) {}
 
   /**
@@ -204,42 +202,24 @@ export class MembershipController {
     );
     const newTier = user.accountTier;
 
-    if (previousTier !== newTier && user.email) {
-      const emailOptions: EmailQueueMessage =
+    if (previousTier !== newTier) {
+      this.events.emit(
         newTier === AccountTier.Basic
           ? {
-              to: { to: user.email },
-              subject: 'Membership Canceled',
-              options: {
-                type: EmailType.MembershipCanceled,
-                title: 'Membership Canceled',
-                user: {
-                  username: user.username,
-                  email: user.email,
-                  profile: {
-                    name: user.profile.name || user.username,
-                  },
-                },
-              },
+              key: EventKey.MembershipCanceled,
+              user: user,
+              previousTier,
+              previousTierName: this.service.getAccountTierName(previousTier),
             }
           : {
-              to: { to: user.email },
-              subject: 'Membership Updated',
-              options: {
-                type: EmailType.MembershipChanged,
-                title: 'Membership Updated',
-                user: {
-                  email: user.email,
-                  profile: {
-                    name: user.profile.name || user.username,
-                  },
-                  username: user.username,
-                },
-                newTier: this.service.getAccountTierName(newTier),
-                previousTier: this.service.getAccountTierName(previousTier),
-              },
-            };
-      await this.emailQueue.add(JSON.stringify(emailOptions));
+              key: EventKey.MembershipChanged,
+              user: user,
+              newTier,
+              newTierName: this.service.getAccountTierName(newTier),
+              previousTier,
+              previousTierName: this.service.getAccountTierName(previousTier),
+            },
+      );
     }
 
     return membershipInfo;
@@ -288,27 +268,17 @@ export class MembershipController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async cancelMembership(@TargetUser() user: User): Promise<void> {
     this.log.debug('Cancelling membership for user:', user.username);
+    const previousTier = user.accountTier;
     const result = await this.service.cancelMembership(user);
 
-    if (result && user.email) {
+    if (result) {
       this.log.log(`Membership canceled for user: ${user.username}`);
-
-      const email: EmailQueueMessage = {
-        to: { to: user.email },
-        subject: 'Membership Canceled',
-        options: {
-          type: EmailType.MembershipCanceled,
-          title: 'Membership Canceled',
-          user: {
-            username: user.username,
-            email: user.email,
-            profile: {
-              name: user.profile.name || user.username,
-            },
-          },
-        },
-      };
-      await this.emailQueue.add(JSON.stringify(email));
+      this.events.emit({
+        key: EventKey.MembershipCanceled,
+        user,
+        previousTier,
+        previousTierName: this.service.getAccountTierName(previousTier),
+      });
     }
   }
 

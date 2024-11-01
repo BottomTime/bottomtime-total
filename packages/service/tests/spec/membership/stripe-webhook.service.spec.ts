@@ -2,10 +2,12 @@ import { AccountTier } from '@bottomtime/api';
 
 import { BadRequestException } from '@nestjs/common';
 
+import { It, Mock } from 'moq.ts';
 import Stripe from 'stripe';
 import { Repository } from 'typeorm';
 
 import { UserEntity } from '../../../src/data';
+import { EventKey, EventsService } from '../../../src/events';
 import { StripeWebhookService } from '../../../src/membership/stripe-webhook.service';
 import { UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
@@ -19,7 +21,7 @@ import {
   StripeTrialWillEndEvent,
   getEntitlementsChangedEvent,
 } from '../../fixtures/stripe-events';
-import { TestQueue, createTestUser } from '../../utils';
+import { createTestUser } from '../../utils';
 
 const TestSignature = 'SuperSecretSignature';
 const UserId = 'c07030c9-b650-480e-a5bb-510702ae0b09';
@@ -42,16 +44,19 @@ describe('Stripe webhook handler service', () => {
 
   let Users: Repository<UserEntity>;
 
-  let emailQueue: TestQueue;
+  let eventsService: EventsService;
   let userData: UserEntity;
 
   beforeAll(() => {
     stripe = new Stripe('sk_test_xxxxx');
     Users = dataSource.getRepository(UserEntity);
+    eventsService = new Mock<EventsService>()
+      .setup((x) => x.emit(It.IsAny()))
+      .returns()
+      .object();
 
     usersService = new UsersService(Users);
-    emailQueue = new TestQueue();
-    service = new StripeWebhookService(stripe, usersService, emailQueue);
+    service = new StripeWebhookService(stripe, usersService, eventsService);
   });
 
   beforeEach(async () => {
@@ -69,10 +74,6 @@ describe('Stripe webhook handler service', () => {
       });
   });
 
-  afterEach(() => {
-    emailQueue.clear();
-  });
-
   it('will throw a BadRequestException if the signature is invalid', async () => {
     await Users.save(userData);
     await expect(
@@ -81,10 +82,11 @@ describe('Stripe webhook handler service', () => {
         'InvalidSignature',
       ),
     ).rejects.toThrow(BadRequestException);
+    const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
 
     const saved = await Users.findOneByOrFail({ id: UserId });
     expect(saved.accountTier).toBe(AccountTier.Pro);
-    expect(emailQueue.messages).toHaveLength(0);
+    expect(eventSpy).not.toHaveBeenCalled();
   });
 
   it('will throw a BadRequestException if the customer ID cannot be mapped back to a user', async () => {
@@ -116,21 +118,8 @@ describe('Stripe webhook handler service', () => {
     );
   });
 
-  it('will fail silently if an email cannot be queued', async () => {
-    const spy = jest
-      .spyOn(emailQueue, 'add')
-      .mockRejectedValueOnce(new Error('Failed to queue email'));
-    await Users.save(userData);
-
-    await service.handleWebhookEvent(
-      JSON.stringify(StripeSubscriptionCanceledEvent),
-      TestSignature,
-    );
-
-    expect(spy).toHaveBeenCalled();
-  });
-
   it('will handle a membership cancelation event', async () => {
+    const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
     userData.accountTier = AccountTier.Pro;
     await Users.save(userData);
 
@@ -144,12 +133,17 @@ describe('Stripe webhook handler service', () => {
     const saved = await Users.findOneByOrFail({ id: UserId });
     expect(saved.accountTier).toBe(AccountTier.Pro);
 
-    expect(emailQueue.messages).toHaveLength(1);
-    expect(JSON.parse(emailQueue.messages[0])).toMatchSnapshot();
+    expect(eventSpy).toHaveBeenCalled();
+    expect(eventSpy.mock.calls[0][0]).toMatchObject({
+      key: EventKey.MembershipCanceled,
+      previousTier: AccountTier.Pro,
+      previousTierName: 'Pro Membership',
+    });
   });
 
   describe('when handling entitlements changes', () => {
     it('will handle a change in account tier', async () => {
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
       userData.accountTier = AccountTier.Pro;
       await Users.save(userData);
 
@@ -160,11 +154,18 @@ describe('Stripe webhook handler service', () => {
 
       const saved = await Users.findOneByOrFail({ id: UserId });
       expect(saved.accountTier).toBe(AccountTier.ShopOwner);
-      expect(emailQueue.messages).toHaveLength(1);
-      expect(JSON.parse(emailQueue.messages[0])).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.MembershipChanged,
+        newTier: AccountTier.ShopOwner,
+        newTierName: 'Show Owner Membership',
+        previousTier: AccountTier.Pro,
+        previousTierName: 'Pro Membership',
+      });
     });
 
     it('will handle a new membership activation', async () => {
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
       userData.accountTier = AccountTier.Basic;
       await Users.save(userData);
 
@@ -175,11 +176,16 @@ describe('Stripe webhook handler service', () => {
 
       const saved = await Users.findOneByOrFail({ id: UserId });
       expect(saved.accountTier).toBe(AccountTier.Pro);
-      expect(emailQueue.messages).toHaveLength(1);
-      expect(JSON.parse(emailQueue.messages[0])).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        key: EventKey.MembershipCreated,
+        newTier: AccountTier.Pro,
+        newTierName: 'Pro Membership',
+      });
     });
 
     it('will handle a membership cancelation', async () => {
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
       userData.accountTier = AccountTier.Pro;
       await Users.save(userData);
 
@@ -190,10 +196,11 @@ describe('Stripe webhook handler service', () => {
 
       const saved = await Users.findOneByOrFail({ id: UserId });
       expect(saved.accountTier).toBe(AccountTier.Basic);
-      expect(emailQueue.messages).toHaveLength(0);
+      expect(eventSpy).not.toHaveBeenCalled();
     });
 
     it('will do nothing if the entitlement changes do not indicate a change to account tier', async () => {
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
       userData.accountTier = AccountTier.Pro;
       await Users.save(userData);
 
@@ -204,7 +211,7 @@ describe('Stripe webhook handler service', () => {
 
       const saved = await Users.findOneByOrFail({ id: UserId });
       expect(saved.accountTier).toBe(AccountTier.Pro);
-      expect(emailQueue.messages).toHaveLength(0);
+      expect(eventSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -226,6 +233,7 @@ describe('Stripe webhook handler service', () => {
     });
 
     it('will handle an invoice finalized event', async () => {
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
       await Users.save(userData);
 
       await service.handleWebhookEvent(
@@ -233,13 +241,34 @@ describe('Stripe webhook handler service', () => {
         TestSignature,
       );
 
-      expect(emailQueue.messages).toHaveLength(1);
-      expect(JSON.parse(emailQueue.messages[0])).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        amounts: { due: 20, paid: 0, remaining: 20 },
+        currency: 'USD',
+        downloadUrl:
+          'https://pay.stripe.com/invoice/acct_1PktwnI1ADsIvyhF/test_YWNjdF8xUGt0d25JMUFEc0l2eWhGLF9RclBhSjVsWUViQlBrTWo5ZHdPREtZNlpISHVXdGpOLDExNzA0MDk4NQ0200Rhcub439/pdf?s=ap',
+        invoiceDate: new Date('1970-01-20T23:35:00.185Z'),
+        items: [
+          {
+            description: '(created by Stripe CLI)',
+            quantity: 1,
+            total: 20,
+            unitPrice: 20,
+          },
+        ],
+        key: EventKey.MembershipInvoiceCreated,
+        period: {
+          end: new Date('1970-01-20T23:35:00.184Z'),
+          start: new Date('1970-01-20T23:35:00.184Z'),
+        },
+        totals: { discounts: 0, subtotal: 20, taxes: 0, total: 20 },
+      });
     });
   });
 
   describe('when handling payment issue events', () => {
     it('will handle an action required event', async () => {
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
       userData.accountTier = AccountTier.Pro;
       await Users.save(userData);
 
@@ -250,11 +279,17 @@ describe('Stripe webhook handler service', () => {
 
       const saved = await Users.findOneByOrFail({ id: UserId });
       expect(saved.accountTier).toBe(AccountTier.Pro);
-      expect(emailQueue.messages).toHaveLength(1);
-      expect(JSON.parse(emailQueue.messages[0])).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        amountDue: 20,
+        currency: 'usd',
+        dueDate: new Date('1970-01-01T00:00:00.000Z'),
+        key: EventKey.MembershipPaymentFailed,
+      });
     });
 
     it('will handle a payment failed event', async () => {
+      const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
       userData.accountTier = AccountTier.Pro;
       await Users.save(userData);
 
@@ -265,12 +300,18 @@ describe('Stripe webhook handler service', () => {
 
       const saved = await Users.findOneByOrFail({ id: UserId });
       expect(saved.accountTier).toBe(AccountTier.Pro);
-      expect(emailQueue.messages).toHaveLength(1);
-      expect(JSON.parse(emailQueue.messages[0])).toMatchSnapshot();
+      expect(eventSpy).toHaveBeenCalled();
+      expect(eventSpy.mock.calls[0][0]).toMatchObject({
+        amountDue: 20,
+        currency: 'usd',
+        dueDate: new Date('1970-01-01T00:00:00.000Z'),
+        key: EventKey.MembershipPaymentFailed,
+      });
     });
   });
 
   it('will handle a trial-will-end event', async () => {
+    const eventSpy = jest.spyOn(eventsService, 'emit').mockReturnValue();
     userData.accountTier = AccountTier.Pro;
     await Users.save(userData);
 
@@ -281,7 +322,12 @@ describe('Stripe webhook handler service', () => {
 
     const saved = await Users.findOneByOrFail({ id: UserId });
     expect(saved.accountTier).toBe(AccountTier.Pro);
-    expect(emailQueue.messages).toHaveLength(1);
-    expect(JSON.parse(emailQueue.messages[0])).toMatchSnapshot();
+    expect(eventSpy).toHaveBeenCalled();
+    expect(eventSpy.mock.calls[0][0]).toMatchObject({
+      currentTier: AccountTier.Pro,
+      currentTierName: 'Pro Membership',
+      endDate: new Date('2024-09-17T14:43:00.000Z'),
+      key: EventKey.MembershipTrialEnding,
+    });
   });
 });
