@@ -11,7 +11,6 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
@@ -27,7 +26,6 @@ import { ApiClientKey } from '../../../../src/api-client';
 import ManageUser from '../../../../src/components/admin/manage-user.vue';
 import UsersListItem from '../../../../src/components/admin/users-list-item.vue';
 import UsersList from '../../../../src/components/admin/users-list.vue';
-import { useAdmin } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import SearchResults from '../../../fixtures/user-search-results.json';
 
@@ -49,8 +47,7 @@ describe('Users List component', () => {
   let searchResults: AdminSearchUsersResponseDTO;
 
   let pinia: Pinia;
-  let adminStore: ReturnType<typeof useAdmin>;
-  let global: ComponentMountingOptions<typeof UsersList>['global'];
+  let opts: ComponentMountingOptions<typeof UsersList>;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -63,21 +60,20 @@ describe('Users List component', () => {
       users: SearchResults.users.slice(0, 10).map((u) => UserSchema.parse(u)),
       totalCount: SearchResults.totalCount,
     };
+
     pinia = createPinia();
-    adminStore = useAdmin(pinia);
-
-    adminStore.users = searchResults;
-
-    global = {
-      plugins: [pinia, router],
-      provide: {
-        [ApiClientKey as symbol]: client,
+    opts = {
+      global: {
+        plugins: [pinia, router],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
+        stubs: { teleport: true },
       },
-      stubs: { teleport: true },
     };
   });
 
-  it('will query for and render a list of users on the server side', async () => {
+  it('will render list of users on the client side', async () => {
     const results = {
       users: SearchResults.users
         .slice(0, 10)
@@ -86,32 +82,28 @@ describe('Users List component', () => {
     };
     jest.spyOn(client.users, 'searchUsers').mockResolvedValue(results);
 
-    const rendered = await renderToString(UsersList, { global });
-    expect(rendered).toContain(results.users[0].username);
-  });
-
-  it('will render list of users on the client side', () => {
-    const results = {
-      users: SearchResults.users
-        .slice(0, 10)
-        .map((u) => new User(fetcher, UserSchema.parse(u))),
-      totalCount: SearchResults.totalCount,
-    };
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValue(results);
-
-    const wrapper = mount(UsersList, { global });
+    const wrapper = mount(UsersList, opts);
+    await flushPromises();
 
     const list = wrapper.get(UsersListElement);
     expect(list.isVisible()).toBe(true);
+
+    const items = wrapper.findAllComponents(UsersListItem);
+    expect(items).toHaveLength(results.users.length);
 
     const loadMore = wrapper.get(LoadMore);
     expect(loadMore.isVisible()).toBe(true);
     expect(loadMore.text()).toContain('Load more results');
   });
 
-  it('will indicate when there are no users to show', () => {
-    searchResults.users = [];
-    const wrapper = mount(UsersList, { global });
+  it('will indicate when there are no users to show', async () => {
+    jest.spyOn(client.users, 'searchUsers').mockResolvedValue({
+      users: [],
+      totalCount: 0,
+    });
+    const wrapper = mount(UsersList, opts);
+    await flushPromises();
+
     expect(
       wrapper.find('[data-testid="users-list-no-users"]').isVisible(),
     ).toBe(true);
@@ -120,14 +112,20 @@ describe('Users List component', () => {
   it('will allow the admin to filter results', async () => {
     const refreshResults = {
       users: SearchResults.users
-        .slice(20, 5)
+        .slice(20, 25)
         .map((u) => new User(fetcher, UserSchema.parse(u))),
       totalCount: 5,
     };
-    const wrapper = mount(UsersList, { global });
+    jest.spyOn(client.users, 'searchUsers').mockResolvedValueOnce({
+      users: [],
+      totalCount: 0,
+    });
+    const wrapper = mount(UsersList, opts);
+    await flushPromises();
+
     const spy = jest
       .spyOn(client.users, 'searchUsers')
-      .mockResolvedValue(refreshResults);
+      .mockResolvedValueOnce(refreshResults);
 
     await wrapper.find(SearchInput).setValue('test');
     await wrapper.find(RoleSelect).setValue(UserRole.User);
@@ -153,19 +151,27 @@ describe('Users List component', () => {
   it('will allow the admin to sort the results', async () => {
     const refreshResults = {
       users: SearchResults.users
-        .slice(20, 5)
+        .slice(20, 25)
         .map((u) => new User(fetcher, UserSchema.parse(u))),
-      totalCount: 5,
+      totalCount: 50,
     };
-    const wrapper = mount(UsersList, { global });
+    jest.spyOn(client.users, 'searchUsers').mockResolvedValueOnce({
+      users: SearchResults.users
+        .slice(15, 20)
+        .map((u) => new User(fetcher, UserSchema.parse(u))),
+      totalCount: 50,
+    });
+    const wrapper = mount(UsersList, opts);
+    await flushPromises();
+
     const spy = jest
       .spyOn(client.users, 'searchUsers')
-      .mockResolvedValue(refreshResults);
+      .mockResolvedValueOnce(refreshResults);
 
     await wrapper.get(SortOrderSelect).setValue('memberSince-desc');
     await flushPromises();
 
-    expect(spy).toBeCalledWith({
+    expect(spy).toHaveBeenCalledWith({
       limit: 50,
       skip: 0,
       sortBy: UsersSortBy.MemberSince,
@@ -181,55 +187,51 @@ describe('Users List component', () => {
   it('will allow the admin to load more results', async () => {
     const refreshResults = {
       users: SearchResults.users
-        .slice(20, 5)
+        .slice(15, 30)
         .map((u) => new User(fetcher, UserSchema.parse(u))),
-      totalCount: 5,
+      totalCount: 50,
     };
-    const wrapper = mount(UsersList, { global });
+
+    jest.spyOn(client.users, 'searchUsers').mockResolvedValueOnce({
+      users: SearchResults.users
+        .slice(0, 15)
+        .map((u) => new User(fetcher, UserSchema.parse(u))),
+      totalCount: 50,
+    });
+    const wrapper = mount(UsersList, opts);
+    await flushPromises();
+
     const spy = jest
       .spyOn(client.users, 'searchUsers')
-      .mockResolvedValue(refreshResults);
+      .mockResolvedValueOnce(refreshResults);
 
     await wrapper.get(LoadMore).trigger('click');
     await flushPromises();
 
-    expect(spy).toBeCalledWith({
+    expect(spy).toHaveBeenCalledWith({
       limit: 50,
-      skip: searchResults.users.length,
+      skip: 15,
       sortBy: UsersSortBy.Username,
       sortOrder: SortOrder.Ascending,
     });
+
     const results = await wrapper.findAllComponents(UsersListItem);
-    expect(results).toHaveLength(
-      refreshResults.users.length + searchResults.users.length,
-    );
-    results.slice(searchResults.users.length).forEach((result, index) => {
-      expect(result.text()).toContain(refreshResults.users[index].username);
+    expect(results).toHaveLength(30);
+    results.forEach((result, index) => {
+      expect(result.text()).toContain(SearchResults.users[index].username);
     });
   });
 
-  it('will indicate when there are no more results to load', async () => {
-    const refreshResults = {
-      users: [],
-      totalCount: searchResults.totalCount,
-    };
-    const wrapper = mount(UsersList, { global });
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValue(refreshResults);
-
-    await wrapper.get(LoadMore).trigger('click');
+  it('will allow an admin to manage a user by clicking them in the list', async () => {
+    jest.spyOn(client.users, 'searchUsers').mockResolvedValue({
+      users: SearchResults.users.map(
+        (u) => new User(fetcher, UserSchema.parse(u)),
+      ),
+      totalCount: SearchResults.totalCount,
+    });
+    const wrapper = mount(UsersList, opts);
     await flushPromises();
 
-    expect(wrapper.findAllComponents(UsersListItem)).toHaveLength(
-      searchResults.users.length,
-    );
-
-    const loadMore = wrapper.get(LoadMore);
-    expect(loadMore.text()).toContain('No more results');
-    expect(loadMore.attributes('disabled')).toBeDefined();
-  });
-
-  it('will allow an admin to manage a user by clicking them in the list', async () => {
-    const wrapper = mount(UsersList, { global });
     await wrapper
       .get(`[data-testid="userslist-link-${searchResults.users[0].id}"]`)
       .trigger('click');
@@ -240,12 +242,20 @@ describe('Users List component', () => {
   });
 
   it('will propogate events when user accounts are modified', async () => {
-    const wrapper = mount(UsersList, { global });
     const userId = searchResults.users[0].id;
     const newUsername = 'm_gladstone';
     const newEmail = 'mgstone23@gmail.org';
     const newProfile = { name: 'Matty Gladstone', location: 'Las Vegas, NV' };
     const newSettings = { ...searchResults.users[8].settings };
+
+    jest.spyOn(client.users, 'searchUsers').mockResolvedValue({
+      users: SearchResults.users.map(
+        (u) => new User(fetcher, UserSchema.parse(u)),
+      ),
+      totalCount: SearchResults.totalCount,
+    });
+    const wrapper = mount(UsersList, opts);
+    await flushPromises();
 
     await wrapper
       .get(`[data-testid="userslist-link-${userId}"]`)

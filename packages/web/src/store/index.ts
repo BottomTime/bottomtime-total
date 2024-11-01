@@ -1,4 +1,3 @@
-export * from './admin.store';
 export * from './alerts.store';
 export * from './current-user.store';
 export * from './operators.store';

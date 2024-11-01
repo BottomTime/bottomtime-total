@@ -42,10 +42,10 @@
 
 <script lang="ts" setup>
 import { Breadcrumb } from '../../common';
-import BreadCrumbs from '../components/common/bread-crumbs.vue';
-import NavLink from '../components/common/nav-link.vue';
-import PageTitle from '../components/common/page-title.vue';
-import TextHeading from '../components/common/text-heading.vue';
+import BreadCrumbs from '../../components/common/bread-crumbs.vue';
+import NavLink from '../../components/common/nav-link.vue';
+import PageTitle from '../../components/common/page-title.vue';
+import TextHeading from '../../components/common/text-heading.vue';
 
 const Title = 'Membership Canceled';
 

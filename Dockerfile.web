@@ -1,4 +1,4 @@
-FROM node:20-slim AS base
+FROM node:20-alpine AS base
 RUN corepack enable
 
 FROM base AS build
@@ -27,4 +27,5 @@ ENV NPM_CONFIG_CACHE=/tmp/.npm
 COPY --from=build /app/ /app/
 EXPOSE 4850 9231 24678
 
-ENTRYPOINT [ "yarn", "dev" ]
+ENTRYPOINT [ "yarn" ]
+CMD [ "dev" ]
