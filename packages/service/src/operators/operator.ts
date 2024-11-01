@@ -171,6 +171,13 @@ export class Operator {
     if (this.newSlug) {
       this.data.slug = this.newSlug;
       this.newSlug = undefined;
+
+      // If a logo URL exists and points to our local API endpoint, then the logo URL also needs to be updated when the slug changes.
+      if (this.data.logo && /^\/api\/operators\/.*/.test(this.data.logo)) {
+        const newLogo = `/api/operators/${this.data.slug}/logo`;
+        await this.operators.update({ id: this.data.id }, { logo: newLogo });
+        this.data.logo = newLogo;
+      }
     }
   }
 
@@ -197,6 +204,11 @@ export class Operator {
   async transferOwnership(newOwner: User): Promise<void> {
     this.data.owner = newOwner.toEntity();
     await this.save();
+  }
+
+  async setLogoUrl(logoUrl: string | null): Promise<void> {
+    await this.operators.update({ id: this.data.id }, { logo: logoUrl });
+    this.data.logo = logoUrl;
   }
 
   toJSON(): OperatorDTO {

@@ -6,5 +6,6 @@ export * from './create-test-user';
 export * from './default-user-settings';
 export * from './insertable-user';
 export * from './jwt';
+export * from './s3-utils';
 export * from './test-logger';
 export * from './test-queue';

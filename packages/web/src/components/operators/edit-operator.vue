@@ -110,6 +110,29 @@
     @cancel="onCancelRejectVerification"
   />
 
+  <UploadImageDialog
+    :avatar-url="state.logo"
+    :is-saving="state.isSavingLogo"
+    :visible="state.showChangeLogoDialog"
+    @save="onSaveLogo"
+    @cancel="onCancelChangeLogo"
+  />
+
+  <ConfirmDialog
+    title="Remove Shop Logo?"
+    icon="fa-regular fa-trash-can fa-2x"
+    confirm-text="Remove Logo"
+    :visible="state.showDeleteLogoDialog"
+    dangerous
+    @confirm="onConfirmDeleteLogo"
+    @cancel="onCancelDeleteLogo"
+  >
+    <p>
+      Are you sure you want to delete your dive shop's logo? After performing
+      this action, it will appear in searches with a default logo.
+    </p>
+  </ConfirmDialog>
+
   <form @submit.prevent="onSave">
     <fieldset :disabled="isSaving" class="space-y-6">
       <VerificationBadge
@@ -123,14 +146,21 @@
       />
 
       <article class="flex gap-4">
-        <div v-if="operator?.id" class="px-2 py-6">
+        <figure v-if="operator?.id" class="px-2 py-6">
+          <!-- Manage Logo -->
           <div v-if="operator?.logo" class="flex flex-col gap-2 justify-center">
-            <img :src="operator.logo" class="rounded-md" />
-            <div class="flex">
-              <FormButton class="text-nowrap" size="xs" rounded="left">
+            <img :src="`${operator.logo}/256x256`" class="rounded-md" />
+            <div class="flex justify-center">
+              <FormButton
+                class="text-nowrap"
+                size="xs"
+                rounded="left"
+                test-id="btn-change-logo"
+                @click="onChangeLogo"
+              >
                 <span class="sr-only">Change logo...</span>
                 <span>
-                  <i class="fa-solid fa-pen-to-square"></i>
+                  <i class="fa-solid fa-upload"></i>
                 </span>
               </FormButton>
               <FormButton
@@ -138,6 +168,8 @@
                 size="xs"
                 type="danger"
                 rounded="right"
+                test-id="btn-delete-logo"
+                @click="onDeleteLogo"
               >
                 <p>
                   <span class="sr-only">Remove logo</span>
@@ -148,11 +180,18 @@
               </FormButton>
             </div>
           </div>
+
+          <!-- Upload New Logo -->
           <div v-else class="space-y-2 text-center">
             <div class="w-[128px] h-[128px]">
               <i class="fa-solid fa-image fa-8x"></i>
             </div>
-            <FormButton class="text-nowrap" size="xs">
+            <FormButton
+              class="text-nowrap"
+              size="xs"
+              test-id="btn-upload-logo"
+              @click="onChangeLogo"
+            >
               <p class="space-x-2">
                 <span>
                   <i class="fa-solid fa-upload"></i>
@@ -161,7 +200,7 @@
               </p>
             </FormButton>
           </div>
-        </div>
+        </figure>
 
         <div class="space-y-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
@@ -506,7 +545,7 @@ import { URL } from 'url';
 import { computed, reactive, ref, watch } from 'vue';
 
 import { useClient } from '../../api-client';
-import { ToastType } from '../../common';
+import { Coordinates, ToastType } from '../../common';
 import { Config } from '../../config';
 import { useOops } from '../../oops';
 import { useToasts } from '../../store';
@@ -520,6 +559,7 @@ import FormToggle from '../common/form-toggle.vue';
 import TextHeading from '../common/text-heading.vue';
 import AddressDialog from '../dialog/address-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
+import UploadImageDialog from '../dialog/upload-image-dialog.vue';
 import ConfirmRejectVerificationDialog from './confirm-reject-verification-dialog.vue';
 import VerificationBadge from './verification-badge.vue';
 
@@ -547,12 +587,16 @@ interface EditOperatorProps {
 
 interface EditOperatorState {
   autoUpdateSlug: boolean;
+  isSavingLogo: boolean;
   isUpdatingVerification: boolean;
+  logo: string;
   showAddressDialog: boolean;
+  showChangeLogoDialog: boolean;
   showConfirmChangeSlugDialog: boolean;
   showConfirmRequestVerificationDialog: boolean;
   showConfirmVerifyDialog: boolean;
   showConfirmRejectDialog: boolean;
+  showDeleteLogoDialog: boolean;
 }
 
 function formDataFromDto(dto?: OperatorDTO): EditOperatorFormData {
@@ -586,18 +630,23 @@ const props = withDefaults(defineProps<EditOperatorProps>(), {
 const emit = defineEmits<{
   (e: 'save', data: CreateOrUpdateOperatorDTO): void;
   (e: 'delete', operator: OperatorDTO): void;
+  (e: 'logo-changed', logo: string | undefined): void;
   (e: 'verification-requested', operator: OperatorDTO): void;
   (e: 'verified', message?: string): void;
   (e: 'rejected', message?: string): void;
 }>();
 const state = reactive<EditOperatorState>({
   autoUpdateSlug: !props.operator?.id,
+  isSavingLogo: false,
   isUpdatingVerification: false,
+  logo: props.operator?.logo ?? '',
   showAddressDialog: false,
+  showChangeLogoDialog: false,
   showConfirmChangeSlugDialog: false,
   showConfirmRequestVerificationDialog: false,
   showConfirmRejectDialog: false,
   showConfirmVerifyDialog: false,
+  showDeleteLogoDialog: false,
 });
 const formData = reactive<EditOperatorFormData>(
   formDataFromDto(props.operator),
@@ -813,5 +862,59 @@ async function onConfirmRejectVerification(message?: string): Promise<void> {
 
 function onCancelRejectVerification() {
   state.showConfirmRejectDialog = false;
+}
+
+function onChangeLogo() {
+  state.showChangeLogoDialog = true;
+}
+
+function onCancelChangeLogo() {
+  state.showChangeLogoDialog = false;
+}
+
+async function onSaveLogo(file: File, coords: Coordinates): Promise<void> {
+  state.isSavingLogo = true;
+
+  await oops(async () => {
+    if (!props.operator) return;
+    const operator = client.operators.wrapDTO(props.operator);
+    const logos = await operator.uploadLogo(file, coords);
+
+    state.logo = logos.root;
+    emit('logo-changed', logos.root);
+
+    state.showChangeLogoDialog = false;
+    toasts.toast({
+      id: 'logo-changed',
+      message: 'Shop logo has been updated',
+      type: ToastType.Success,
+    });
+  });
+
+  state.isSavingLogo = false;
+}
+
+function onDeleteLogo() {
+  state.showDeleteLogoDialog = true;
+}
+
+function onCancelDeleteLogo() {
+  state.showDeleteLogoDialog = false;
+}
+
+async function onConfirmDeleteLogo(): Promise<void> {
+  await oops(async () => {
+    const operator = client.operators.wrapDTO(props.operator);
+    await operator.deleteLogo();
+
+    state.logo = '';
+    emit('logo-changed', undefined);
+    toasts.toast({
+      id: 'logo-deleted',
+      message: 'Shop logo was successfully deleted',
+      type: ToastType.Success,
+    });
+    state.showDeleteLogoDialog = false;
+  });
 }
 </script>

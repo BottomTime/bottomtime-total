@@ -39,6 +39,7 @@
         :is-saving="state.isSaving"
         @save="onSave"
         @delete="onDelete"
+        @logo-changed="onLogoChanged"
         @verification-requested="onVerificationRequested"
         @verified="onVerified"
         @rejected="onVerificationRejected"
@@ -308,6 +309,12 @@ function onVerificationRejected(message?: string) {
   if (operators.currentOperator) {
     operators.currentOperator.verificationStatus = VerificationStatus.Rejected;
     operators.currentOperator.verificationMessage = message;
+  }
+}
+
+function onLogoChanged(url?: string) {
+  if (operators.currentOperator) {
+    operators.currentOperator.logo = url;
   }
 }
 </script>

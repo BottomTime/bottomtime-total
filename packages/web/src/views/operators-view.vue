@@ -34,6 +34,7 @@
           :operator="state.currentOperator"
           @save="onSaveOperator"
           @delete="onDelete"
+          @logo-changed="onLogoChanged"
           @verification-requested="onVerificationRequested"
           @verified="onVerified"
           @rejected="onVerificationRejected"
@@ -377,5 +378,11 @@ async function onConfirmDelete(): Promise<void> {
   });
 
   state.isDeleting = false;
+}
+
+function onLogoChanged(url?: string) {
+  if (operators.currentOperator) {
+    operators.currentOperator.logo = url;
+  }
 }
 </script>

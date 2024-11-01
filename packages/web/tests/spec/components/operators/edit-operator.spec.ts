@@ -1,6 +1,7 @@
 import {
   ApiClient,
   Fetcher,
+  ListAvatarURLsResponseDTO,
   Operator,
   OperatorDTO,
   VerificationStatus,
@@ -12,10 +13,15 @@ import {
   mount,
 } from '@vue/test-utils';
 
+import { readFile } from 'fs/promises';
+import { Mock, Times } from 'moq.ts';
+import { resolve } from 'path';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
+import { Coordinates } from '../../../../src/common';
+import UploadImageDialog from '../../../../src/components/dialog/upload-image-dialog.vue';
 import EditOperator from '../../../../src/components/operators/edit-operator.vue';
 import { useCurrentUser } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
@@ -371,6 +377,112 @@ describe('EditOperator component', () => {
     await wrapper.setProps({ operator: FullOperator });
     await wrapper.get(DeleteButton).trigger('click');
     expect(wrapper.emitted('delete')).toEqual([[FullOperator]]);
+  });
+
+  describe('when managing logo', () => {
+    const LogoCoords: Coordinates = {
+      top: 100,
+      left: 100,
+      width: 300,
+      height: 300,
+    };
+    const ExpectedUrls: ListAvatarURLsResponseDTO = {
+      root: '/api/operators/shop/',
+      sizes: {
+        '128x128': '/api/operators/shop/128x128',
+        '256x256': '/api/operators/shop/256x256',
+        '32x32': '/api/operators/shop/32x32',
+        '64x64': '/api/operators/shop/64x64',
+      },
+    };
+    let logoFile: File;
+
+    beforeAll(async () => {
+      const image = await readFile(
+        resolve(__dirname, '../../../fixtures/text-file.txt'),
+      );
+      new File([image], 'floof.jpg', { type: 'image/jpeg' });
+    });
+
+    it('will allow user to upload a new logo', async () => {
+      const operatorData = {
+        ...FullOperator,
+        logo: undefined,
+      };
+      const operator = new Mock<Operator>()
+        .setup((x) => x.uploadLogo(logoFile, LogoCoords))
+        .returnsAsync(ExpectedUrls);
+      jest
+        .spyOn(client.operators, 'wrapDTO')
+        .mockReturnValue(operator.object());
+
+      const wrapper = mount(EditOperator, opts);
+      await wrapper.setProps({
+        operator: operatorData,
+      });
+
+      await wrapper.get('[data-testid="btn-upload-logo"]').trigger('click');
+      wrapper
+        .getComponent(UploadImageDialog)
+        .vm.$emit('save', logoFile, LogoCoords);
+      await flushPromises();
+
+      operator.verify((x) => x.uploadLogo(logoFile, LogoCoords), Times.Once());
+      expect(wrapper.emitted('logo-changed')).toEqual([[ExpectedUrls.root]]);
+    });
+
+    it('will allow user to remove a logo', async () => {
+      const operator = new Mock<Operator>()
+        .setup((x) => x.deleteLogo())
+        .returnsAsync();
+      jest
+        .spyOn(client.operators, 'wrapDTO')
+        .mockReturnValue(operator.object());
+
+      const wrapper = mount(EditOperator, opts);
+      await wrapper.setProps({
+        operator: {
+          ...FullOperator,
+          logo: ExpectedUrls.root,
+        },
+      });
+
+      await wrapper.get('[data-testid="btn-delete-logo"]').trigger('click');
+      await wrapper
+        .get('[data-testid="dialog-confirm-button"]')
+        .trigger('click');
+      await flushPromises();
+
+      operator.verify((x) => x.deleteLogo(), Times.Once());
+      expect(wrapper.emitted('logo-changed')).toEqual([[undefined]]);
+    });
+
+    it('will allow user change a logo', async () => {
+      const operatorData = {
+        ...FullOperator,
+        logo: '/api/operators/old-logo/logo/',
+      };
+      const operator = new Mock<Operator>()
+        .setup((x) => x.uploadLogo(logoFile, LogoCoords))
+        .returnsAsync(ExpectedUrls);
+      jest
+        .spyOn(client.operators, 'wrapDTO')
+        .mockReturnValue(operator.object());
+
+      const wrapper = mount(EditOperator, opts);
+      await wrapper.setProps({
+        operator: operatorData,
+      });
+
+      await wrapper.get('[data-testid="btn-change-logo"]').trigger('click');
+      wrapper
+        .getComponent(UploadImageDialog)
+        .vm.$emit('save', logoFile, LogoCoords);
+      await flushPromises();
+
+      operator.verify((x) => x.uploadLogo(logoFile, LogoCoords), Times.Once());
+      expect(wrapper.emitted('logo-changed')).toEqual([[ExpectedUrls.root]]);
+    });
   });
 
   describe('when requesting verification', () => {

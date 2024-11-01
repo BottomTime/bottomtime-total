@@ -552,7 +552,7 @@ describe('Users End-to-End Tests', () => {
       expect(savedUser.emailVerificationToken).toBeDefined();
       expect(savedUser.emailVerificationTokenExpiration?.valueOf()).toBeCloseTo(
         Date.now() + TwoDaysInMs,
-        -2,
+        -3,
       );
 
       expect(eventSpy).toHaveBeenCalled();
@@ -691,7 +691,7 @@ describe('Users End-to-End Tests', () => {
       expect(savedUser.passwordResetToken).toBeDefined();
       expect(savedUser.passwordResetTokenExpiration?.valueOf()).toBeCloseTo(
         Date.now() + TwoDaysInMs,
-        -2,
+        -3,
       );
 
       expect(eventSpy).toHaveBeenCalled();

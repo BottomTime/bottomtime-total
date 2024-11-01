@@ -81,7 +81,7 @@ test.describe('Account and Profile Management', () => {
       .setInputFiles(resolve(__dirname, '../fixtures/test-image.jpg'));
     await page
       .getByTestId('dialog-modal')
-      .getByTestId('btn-save-avatar')
+      .getByTestId('btn-save-image')
       .click();
 
     await expect(page.getByTestId('dialog-content')).not.toBeVisible();

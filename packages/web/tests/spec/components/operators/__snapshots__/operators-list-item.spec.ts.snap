@@ -2,7 +2,7 @@
 
 exports[`OperatorsListItem component will render with full properties 1`] = `
 "<li class="flex items-start gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
-  <figure class="min-w-[64px] min-h-[64px] text-center"><img class="rounded-lg" src="https://logo.com/logo" width="64px" height="64px" alt=""></figure>
+  <figure class="min-w-[64px] min-h-[64px] text-center"><img class="rounded-lg" src="https://logo.com/logo/64x64" width="64px" height="64px" alt=""></figure>
   <article class="grow space-y-1">
     <!-- Title -->
     <div class="flex gap-2 items-center"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-a-dive-shop" type="button">

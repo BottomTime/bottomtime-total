@@ -52,7 +52,7 @@ withDefaults(defineProps<ConfirmDialogProps>(), {
   cancelText: 'Cancel',
   confirmText: 'Confirm',
   dangerous: false,
-  icon: 'fa-regular fa-circle-question',
+  icon: 'fa-regular fa-circle-question fa-2x',
   isLoading: false,
   size: 'md',
   title: 'Confirm?',

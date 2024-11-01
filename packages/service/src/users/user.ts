@@ -9,13 +9,14 @@ import { ConflictException, Logger } from '@nestjs/common';
 
 import { compare, hash } from 'bcryptjs';
 import { randomBytes } from 'crypto';
-import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 
 import { DefaultUserSettings } from '../common';
 import { Config } from '../config';
 import { UserEntity } from '../data';
 import { Profile } from './profile';
+
+const TwoDaysInMilliseconds = 2 * 24 * 60 * 60 * 1000;
 
 type UserDataSettings = NonNullable<
   Pick<
@@ -165,7 +166,9 @@ export class User implements Express.User {
     const token = randomBytes(32).toString('base64url');
 
     this.data.emailVerificationToken = token;
-    this.data.emailVerificationTokenExpiration = dayjs().add(2, 'day').toDate();
+    this.data.emailVerificationTokenExpiration = new Date(
+      Date.now() + TwoDaysInMilliseconds,
+    );
     await this.Users.save(this.data);
 
     return token;
@@ -244,7 +247,9 @@ export class User implements Express.User {
   async requestPasswordResetToken(): Promise<string> {
     const token = randomBytes(32).toString('base64url');
     this.data.passwordResetToken = token;
-    this.data.passwordResetTokenExpiration = dayjs().add(2, 'day').toDate();
+    this.data.passwordResetTokenExpiration = new Date(
+      Date.now() + TwoDaysInMilliseconds,
+    );
 
     await this.Users.save(this.data);
 

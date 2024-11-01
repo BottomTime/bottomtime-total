@@ -1,8 +1,8 @@
 import {
+  ImageBoundaryDTO,
   ListAvatarURLsResponseDTO,
   LogBookSharing,
   ProfileDTO,
-  SetProfileAvatarParamsDTO,
   UpdateProfileParamsSchema,
 } from '../types';
 import { Fetcher } from './fetcher';
@@ -69,7 +69,7 @@ export class UserProfile {
 
   async uploadAvatar(
     avatar: File,
-    region?: SetProfileAvatarParamsDTO,
+    region?: ImageBoundaryDTO,
   ): Promise<ListAvatarURLsResponseDTO> {
     const formData = new FormData();
     formData.append('avatar', avatar);

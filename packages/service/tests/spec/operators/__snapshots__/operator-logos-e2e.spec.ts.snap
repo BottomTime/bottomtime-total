@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Operator logos E2E tests when listing logo URLs will return the list of available logo sizes 1`] = `
+{
+  "root": "/api/operators/test-operator/logo/",
+  "sizes": {
+    "128x128": "/api/operators/test-operator/logo/128x128",
+    "256x256": "/api/operators/test-operator/logo/256x256",
+    "32x32": "/api/operators/test-operator/logo/32x32",
+    "64x64": "/api/operators/test-operator/logo/64x64",
+  },
+}
+`;
+
+exports[`Operator logos E2E tests when uploading a new logo will allow an admin to upload a new logo 1`] = `
+{
+  "root": "/api/operators/test-operator/logo/",
+  "sizes": {
+    "128x128": "/api/operators/test-operator/logo/128x128",
+    "256x256": "/api/operators/test-operator/logo/256x256",
+    "32x32": "/api/operators/test-operator/logo/32x32",
+    "64x64": "/api/operators/test-operator/logo/64x64",
+  },
+}
+`;
+
+exports[`Operator logos E2E tests when uploading a new logo will upload a new logo and generate various sizes (no boundaries set) 1`] = `
+{
+  "root": "/api/operators/test-operator/logo/",
+  "sizes": {
+    "128x128": "/api/operators/test-operator/logo/128x128",
+    "256x256": "/api/operators/test-operator/logo/256x256",
+    "32x32": "/api/operators/test-operator/logo/32x32",
+    "64x64": "/api/operators/test-operator/logo/64x64",
+  },
+}
+`;
+
+exports[`Operator logos E2E tests when uploading a new logo will upload a new logo and generate various sizes (no boundaries set) 2`] = `
+[
+  "153de6f27a5428c8d4a00d981715fcf2",
+  "ce0ccd4507e9141543b7544fd7b074f3",
+  "9cfbb90430aec096d405fdb2fd6c71ec",
+  "2c8ac7385c8f0d04ef7903b2cf468ecd",
+]
+`;
+
+exports[`Operator logos E2E tests when uploading a new logo will upload a new logo and generate various sizes (with boundaries set) 1`] = `
+{
+  "root": "/api/operators/test-operator/logo/",
+  "sizes": {
+    "128x128": "/api/operators/test-operator/logo/128x128",
+    "256x256": "/api/operators/test-operator/logo/256x256",
+    "32x32": "/api/operators/test-operator/logo/32x32",
+    "64x64": "/api/operators/test-operator/logo/64x64",
+  },
+}
+`;
+
+exports[`Operator logos E2E tests when uploading a new logo will upload a new logo and generate various sizes (with boundaries set) 2`] = `
+[
+  "89a42f0b5b4b8daa29e30b7e4ab2209f",
+  "af25eb4f4fd12328cc3d107c0163a1b5",
+  "832052710e8aa47d889cf318a7fc6f1c",
+  "316ec7ff6381348a3717a897fede1497",
+]
+`;
