@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { StripeModule } from '../dependencies';
+import { EventsModule } from '../events';
 import { UsersModule } from '../users';
 import { MembershipController } from './membership.controller';
 import { MembershipService } from './membership.service';
@@ -9,7 +10,7 @@ import { StripeWebhookController } from './stripe-webhook.controller';
 import { StripeWebhookService } from './stripe-webhook.service';
 
 @Module({
-  imports: [UsersModule, StripeModule],
+  imports: [EventsModule, UsersModule, StripeModule],
   providers: [MembershipService, StripeWebhookService],
   controllers: [
     MembershipsController,
