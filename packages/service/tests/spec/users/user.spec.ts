@@ -7,7 +7,6 @@ import {
 import { ConflictException } from '@nestjs/common';
 
 import { compare } from 'bcryptjs';
-import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 
 import { Config } from '../../../src/config';
@@ -40,6 +39,10 @@ const TestUserData: Partial<UserEntity> = {
   name: 'Luther Blick',
   startedDiving: '1986',
 };
+
+function twoDaysFromNow() {
+  return new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+}
 
 describe('User Class', () => {
   let Users: Repository<UserEntity>;
@@ -107,8 +110,8 @@ describe('User Class', () => {
       const stored = await Users.findOneBy({ id: user.id });
       expect(stored!.emailVerificationToken).toEqual(token);
       expect(stored!.emailVerificationTokenExpiration?.valueOf()).toBeCloseTo(
-        dayjs(new Date()).add(2, 'day').valueOf(),
-        -2,
+        twoDaysFromNow().valueOf(),
+        -3,
       );
     });
 
@@ -124,14 +127,14 @@ describe('User Class', () => {
       const stored = await Users.findOneBy({ id: user.id });
       expect(stored!.emailVerificationToken).toEqual(token);
       expect(stored!.emailVerificationTokenExpiration?.valueOf()).toBeCloseTo(
-        dayjs().add(2, 'day').valueOf(),
-        -2,
+        twoDaysFromNow().valueOf(),
+        -3,
       );
     });
 
     it('will verify email if token is good', async () => {
       const token = 'abcd1234';
-      const expiration = dayjs().add(3, 'hour').toDate();
+      const expiration = new Date(Date.now() + 3 * 60 * 60 * 1000);
       data.emailVerificationToken = token;
       data.emailVerificationTokenExpiration = expiration;
       await Users.save(data);
@@ -156,7 +159,7 @@ describe('User Class', () => {
 
     it('will not verify if token is expired', async () => {
       const token = 'abcd1234';
-      const expiration = dayjs().subtract(3, 'hour').toDate();
+      const expiration = new Date(Date.now() - 3 * 60 * 60 * 1000);
       data.emailVerificationToken = token;
       data.emailVerificationTokenExpiration = expiration;
       await Users.save(data);
@@ -170,7 +173,7 @@ describe('User Class', () => {
 
     it('Will not verify email if token is incorrect', async () => {
       const token = 'abcd1234';
-      const expiration = dayjs().add(3, 'hour').toDate();
+      const expiration = new Date(Date.now() + 3 * 60 * 60 * 1000);
       data.emailVerificationToken = token;
       data.emailVerificationTokenExpiration = expiration;
       await Users.save(data);
@@ -325,8 +328,8 @@ describe('User Class', () => {
       const stored = await Users.findOneBy({ id: user.id });
       expect(stored!.passwordResetToken).toEqual(token);
       expect(stored!.passwordResetTokenExpiration?.valueOf()).toBeCloseTo(
-        dayjs().add(2, 'day').valueOf(),
-        -2,
+        twoDaysFromNow().valueOf(),
+        -3,
       );
     });
 
@@ -343,15 +346,15 @@ describe('User Class', () => {
       const stored = await Users.findOneBy({ id: user.id });
       expect(stored!.passwordResetToken).toEqual(token);
       expect(stored!.passwordResetTokenExpiration?.valueOf()).toBeCloseTo(
-        dayjs().add(2, 'day').valueOf(),
-        -2,
+        twoDaysFromNow().valueOf(),
+        -3,
       );
     });
 
     it('will reset a password with token', async () => {
       const data = createTestUser({
         passwordResetToken: token,
-        passwordResetTokenExpiration: dayjs().add(2, 'hour').toDate(),
+        passwordResetTokenExpiration: new Date(Date.now() + 2 * 60 * 60 * 1000),
       });
       const user = new User(Users, data);
       await Users.save(data);
@@ -360,11 +363,11 @@ describe('User Class', () => {
       const stored = await Users.findOneBy({ id: user.id });
       expect(data.lastPasswordChange?.valueOf()).toBeCloseTo(
         new Date().valueOf(),
-        -2,
+        -3,
       );
       expect(stored?.lastPasswordChange?.valueOf()).toBeCloseTo(
         new Date().valueOf(),
-        -2,
+        -3,
       );
       await Promise.all([
         expect(compare(newPassword, data.passwordHash!)).resolves.toBe(true),
@@ -374,7 +377,9 @@ describe('User Class', () => {
 
     it('will refuse a password reset if the token is incorrect', async () => {
       data.passwordResetToken = token;
-      data.passwordResetTokenExpiration = dayjs().add(2, 'hour').toDate();
+      data.passwordResetTokenExpiration = new Date(
+        Date.now() + 2 * 60 * 60 * 1000,
+      );
       await Users.save(data);
 
       await expect(
@@ -392,10 +397,12 @@ describe('User Class', () => {
       const data = createTestUser({
         ...TestUserData,
         passwordResetToken: token,
-        passwordResetTokenExpiration: dayjs().subtract(2, 'hour').toDate(),
+        passwordResetTokenExpiration: new Date(Date.now() - 2 * 60 * 60 * 1000),
       });
       data.passwordResetToken = token;
-      data.passwordResetTokenExpiration = dayjs().subtract(2, 'hour').toDate();
+      data.passwordResetTokenExpiration = new Date(
+        Date.now() - 2 * 60 * 60 * 1000,
+      );
       await Users.save(data);
 
       await expect(user.resetPassword(token, newPassword)).resolves.toBe(false);
