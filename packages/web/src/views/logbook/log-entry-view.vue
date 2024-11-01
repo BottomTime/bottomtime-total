@@ -19,7 +19,7 @@
 import { LogEntryDTO, UserRole } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
-import { computed, onServerPrefetch, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -74,7 +74,7 @@ const items: Breadcrumb[] = [
   { label: title, active: true },
 ];
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await Promise.all([
     oops(
       async () => {

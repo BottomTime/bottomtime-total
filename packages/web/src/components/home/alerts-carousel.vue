@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onServerPrefetch, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { useClient } from '../../api-client';
 import { useOops } from '../../oops';
@@ -90,11 +90,7 @@ function rotate() {
   setTimeout(rotate, props.rotateInterval);
 }
 
-onMounted(() => {
-  setTimeout(rotate, props.rotateInterval);
-});
-
-onServerPrefetch(async () => {
+onMounted(async () => {
   await oops(async () => {
     const result = await client.alerts.listAlerts({ showDismissed: false });
     alerts.results = {
@@ -102,6 +98,7 @@ onServerPrefetch(async () => {
       totalCount: result.totalCount,
     };
   });
+  setTimeout(rotate, props.rotateInterval);
 });
 
 function onPrevious() {

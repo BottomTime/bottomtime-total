@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { AlertDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -68,7 +68,7 @@ async function onSaveAlert(updated: AlertDTO) {
   });
 }
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   const alertId = route.params.alertId;
   if (typeof alertId !== 'string' || !alertId) {
     // No Alert ID in the URL!

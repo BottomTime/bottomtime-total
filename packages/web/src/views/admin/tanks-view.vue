@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { TankDTO, TankMaterial, UserRole } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
@@ -99,7 +99,7 @@ const state = reactive<AdminTanksState>({
   showTankEditor: false,
 });
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await oops(async () => {
     const results = await client.tanks.listTanks();
     tanks.results.tanks = results.tanks.map((tank) => tank.toJSON());

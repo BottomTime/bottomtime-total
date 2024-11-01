@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { DiveSiteDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -49,7 +49,7 @@ const breadcrumbs: Breadcrumb[] = [
   { label: title, active: true },
 ];
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await oops(
     async () => {
       const siteId =

@@ -66,7 +66,7 @@ import {
   SortOrder,
 } from '@bottomtime/api';
 
-import { onBeforeMount, onServerPrefetch, reactive, ref } from 'vue';
+import { onBeforeMount, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -173,7 +173,7 @@ async function onCreateSite(): Promise<void> {
   await router.push('/diveSites/new');
 }
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   const results = await client.diveSites.searchDiveSites(searchParams);
   diveSites.results.sites = results.sites.map((site) => site.toJSON());
   diveSites.results.totalCount = results.totalCount;

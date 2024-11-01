@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { TankDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -87,7 +87,7 @@ const state = reactive<ProfileTankViewState>({
   showConfirmDelete: false,
 });
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   const tankId = route.params.tankId as string;
 
   await oops(

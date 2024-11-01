@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { AlertDTO, UserRole } from '@bottomtime/api';
 
-import { onServerPrefetch, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
@@ -38,7 +38,7 @@ const Breadcrumbs: Breadcrumb[] = [
   { label: 'Manage Alerts', active: true },
 ];
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await oops(async () => {
     const { alerts: results, totalCount } = await client.alerts.listAlerts({
       showDismissed: true,

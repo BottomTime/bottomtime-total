@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import { TankDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -61,7 +61,7 @@ const Breadcrumbs: Breadcrumb[] = [
   },
 ];
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await oops(
     async () => {
       if (typeof route.params.tankId !== 'string') return;

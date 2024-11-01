@@ -29,7 +29,7 @@ import {
   UserSettingsDTO,
 } from '@bottomtime/api';
 
-import { computed, onServerPrefetch } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -77,7 +77,7 @@ async function fetchUser(): Promise<UserDTO | null> {
   );
 }
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   admin.currentUser = await fetchUser();
 });
 

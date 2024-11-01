@@ -61,7 +61,7 @@ import {
 } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
-import { computed, onServerPrefetch, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -150,7 +150,7 @@ const Breadcrumbs: Breadcrumb[] = [
   },
 ] as const;
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await oops(
     async () => {
       // If no key is present then we are on the "Create New Dive Shop" page. No need to fetch anything.

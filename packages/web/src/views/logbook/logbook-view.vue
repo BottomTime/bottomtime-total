@@ -127,7 +127,7 @@ import {
 
 import dayjs from 'dayjs';
 import qs from 'qs';
-import { computed, onServerPrefetch, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -231,7 +231,7 @@ async function refresh(): Promise<void> {
   state.isLoading = false;
 }
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await refresh();
 
   if (currentUser.user) {

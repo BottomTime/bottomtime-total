@@ -94,7 +94,7 @@
 <script lang="ts" setup>
 import { FriendRequestDTO, FriendRequestDirection } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
@@ -140,7 +140,7 @@ const state = reactive<FriendRequestsViewState>({
   showFriendProfile: false,
 });
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await oops(async () => {
     if (!currentUser.user) return;
 

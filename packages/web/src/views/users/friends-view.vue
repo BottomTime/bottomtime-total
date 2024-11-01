@@ -123,7 +123,7 @@ import {
 } from '@bottomtime/api';
 
 import { URLSearchParams } from 'url';
-import { onServerPrefetch, reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -294,7 +294,7 @@ async function onLoadMoreRequests(): Promise<void> {
   state.isLoadingMoreRequests = false;
 }
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await oops(async () => {
     await Promise.all([refreshFriends(), refreshFriendRequests()]);
   });

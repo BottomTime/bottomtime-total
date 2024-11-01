@@ -28,7 +28,7 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
-import { onServerPrefetch, reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -87,7 +87,7 @@ const state = reactive<NewLogEntryViewState>({
   isSaving: false,
 });
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   await Promise.all([
     oops(
       async () => {

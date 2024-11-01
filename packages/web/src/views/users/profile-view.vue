@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { ProfileDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onServerPrefetch } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -65,7 +65,7 @@ const title = computed(() => {
   }
 });
 
-onServerPrefetch(async () => {
+onMounted(async () => {
   if (!currentUser.user) return;
 
   const username =

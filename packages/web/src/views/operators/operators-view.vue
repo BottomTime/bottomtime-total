@@ -80,7 +80,7 @@ import {
 } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
-import { computed, onServerPrefetch, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -176,7 +176,7 @@ async function refresh(): Promise<void> {
   state.isLoading = false;
 }
 
-onServerPrefetch(async (): Promise<void> => {
+onMounted(async (): Promise<void> => {
   await refresh();
 });
 
