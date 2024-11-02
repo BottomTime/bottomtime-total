@@ -11,16 +11,15 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import { ToastType } from '../../../src/common';
-import EditAlert from '../../../src/components/admin/edit-alert.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useAlerts, useCurrentUser } from '../../../src/store';
-import { useToasts } from '../../../src/store';
-import AdminAlertView from '../../../src/views/admin-alert-view.vue';
-import { createHttpError } from '../../fixtures/create-http-error';
-import { createRouter } from '../../fixtures/create-router';
-import { AdminUser, BasicUser } from '../../fixtures/users';
+import { ApiClientKey } from '../../../../src/api-client';
+import { ToastType } from '../../../../src/common';
+import EditAlert from '../../../../src/components/admin/edit-alert.vue';
+import { useAlerts, useCurrentUser } from '../../../../src/store';
+import { useToasts } from '../../../../src/store';
+import AdminAlertView from '../../../../src/views/admin/alert-view.vue';
+import { createHttpError } from '../../../fixtures/create-http-error';
+import { createRouter } from '../../../fixtures/create-router';
+import { AdminUser, BasicUser } from '../../../fixtures/users';
 
 const TestAlertData: AlertDTO = {
   id: '8bd0b331-36e9-4e3b-afa2-2e020bedaa60',
@@ -37,7 +36,6 @@ describe('Admin Alert View', () => {
   let router: Router;
 
   let pinia: Pinia;
-  let location: Location;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let alerts: ReturnType<typeof useAlerts>;
   let options: ComponentMountingOptions<typeof AdminAlertView>;
@@ -48,7 +46,6 @@ describe('Admin Alert View', () => {
   });
 
   beforeEach(() => {
-    location = new MockLocation();
     router = createRouter([
       {
         path: '/admin/alerts/new',
@@ -73,7 +70,6 @@ describe('Admin Alert View', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
         stubs: { teleport: true },
       },
