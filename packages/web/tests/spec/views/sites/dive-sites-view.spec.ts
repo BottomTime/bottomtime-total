@@ -9,7 +9,6 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
@@ -17,13 +16,12 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import DiveSitesListItem from '../../../src/components/diveSites/dive-sites-list-item.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser, useDiveSites } from '../../../src/store';
-import DiveSitesView from '../../../src/views/dive-sites-view.vue';
-import { createRouter } from '../../fixtures/create-router';
-import SearchResults from '../../fixtures/dive-sites-search-results.json';
+import { ApiClientKey } from '../../../../src/api-client';
+import DiveSitesListItem from '../../../../src/components/diveSites/dive-sites-list-item.vue';
+import { useCurrentUser } from '../../../../src/store';
+import DiveSitesView from '../../../../src/views/sites/dive-sites-view.vue';
+import { createRouter } from '../../../fixtures/create-router';
+import SearchResults from '../../../fixtures/dive-sites-search-results.json';
 
 dayjs.extend(relativeTime);
 
@@ -35,9 +33,8 @@ describe('Dive Sites View', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let diveSites: ReturnType<typeof useDiveSites>;
   let opts: ComponentMountingOptions<typeof DiveSitesView>;
-  let location: MockLocation;
+  let searchSpy: jest.SpyInstance;
 
   beforeAll(() => {
     searchResults = SearchDiveSitesResponseSchema.parse(SearchResults);
@@ -56,31 +53,22 @@ describe('Dive Sites View', () => {
     await router.push('/diveSites');
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    diveSites = useDiveSites(pinia);
 
     currentUser.user = null;
-    diveSites.results = {
-      sites: searchResults.sites.slice(0, 10),
-      totalCount: searchResults.totalCount,
-    };
 
-    location = new MockLocation('http://localhost/diveSites');
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
         stubs: {
           teleport: true,
         },
       },
     };
-  });
 
-  it('will prefetch and render dive sites on the server side', async () => {
-    const spy = await jest
+    searchSpy = jest
       .spyOn(client.diveSites, 'searchDiveSites')
       .mockResolvedValue({
         sites: searchResults.sites
@@ -88,44 +76,29 @@ describe('Dive Sites View', () => {
           .map((site) => new DiveSite(fetcher, site)),
         totalCount: searchResults.totalCount,
       });
+  });
 
-    const html = await renderToString(DiveSitesView, { global: opts.global });
-    expect(spy).toBeCalledWith({});
+  it('will fetch the list of dive sites on initial load', async () => {
+    const wrapper = mount(DiveSitesView, opts);
+    await flushPromises();
 
-    const wrapper = mount(
-      { template: html },
-      {
-        global: {
-          config: {
-            compilerOptions: {
-              isCustomElement: () => true,
-            },
-          },
-        },
-      },
-    );
+    expect(searchSpy).toHaveBeenCalledWith({});
+
     const listText = wrapper.get('[data-testid="sites-list-content"]').text();
-
     for (let i = 0; i < 10; i++) {
       expect(listText).toContain(searchResults.sites[i].name);
     }
   });
 
-  it('will prefetch and render dive sites with a query string', async () => {
+  it('will fetch the list of dive sites on initial load given a search query string', async () => {
     await router.push(
       '/diveSites?limit=100&query=cove&sortBy=name&sortOrder=asc&freeToDive=true&shoreAccess=false&difficulty=1%2C3&rating=3.5%2C5&location=24.99129899138199%2C-76.36965622408646&radius=200',
     );
-    const spy = await jest
-      .spyOn(client.diveSites, 'searchDiveSites')
-      .mockResolvedValue({
-        sites: searchResults.sites
-          .slice(0, 10)
-          .map((site) => new DiveSite(fetcher, site)),
-        totalCount: searchResults.totalCount,
-      });
 
-    const html = await renderToString(DiveSitesView, { global: opts.global });
-    expect(spy).toBeCalledWith({
+    const wrapper = mount(DiveSitesView, opts);
+    await flushPromises();
+
+    expect(searchSpy).toHaveBeenCalledWith({
       query: 'cove',
       location: { lat: 24.99129899138199, lon: -76.36965622408646 },
       radius: 200,
@@ -138,38 +111,53 @@ describe('Dive Sites View', () => {
       limit: 100,
     });
 
-    const wrapper = mount(
-      { template: html },
-      {
-        global: {
-          config: {
-            compilerOptions: {
-              isCustomElement: () => true,
-            },
-          },
-        },
-      },
-    );
     const listText = wrapper.get('[data-testid="sites-list-content"]').text();
-
     for (let i = 0; i < 10; i++) {
       expect(listText).toContain(searchResults.sites[i].name);
     }
   });
 
   it('will allow a user to change the sort order', async () => {
-    const spy = jest.spyOn(location, 'assign').mockReturnValueOnce();
+    const expected = {
+      sites: searchResults.sites
+        .sort((a, b) => -a.name.localeCompare(b.name))
+        .slice(0, 10)
+        .map((site) => new DiveSite(fetcher, site)),
+      totalCount: searchResults.totalCount,
+    };
     const wrapper = mount(DiveSitesView, opts);
+    await flushPromises();
 
+    const refreshSpy = jest
+      .spyOn(client.diveSites, 'searchDiveSites')
+      .mockResolvedValue(expected);
     await wrapper.get('[data-testid="sort-order"]').setValue('name-desc');
     await flushPromises();
 
-    expect(spy).toBeCalledWith('/diveSites?sortBy=name&sortOrder=desc');
+    expect(refreshSpy).toHaveBeenCalledWith({
+      sortBy: 'name',
+      sortOrder: 'desc',
+    });
+    const items = wrapper.findAllComponents(DiveSitesListItem);
+    expect(items).toHaveLength(expected.sites.length);
+    items.forEach((item, i) => {
+      expect(item.props('site')).toEqual(expected.sites[i].toJSON());
+    });
   });
 
   it('will allow the user to refine the search results', async () => {
-    const spy = jest.spyOn(location, 'assign').mockReturnValueOnce();
     const wrapper = mount(DiveSitesView, opts);
+    await flushPromises();
+
+    const expected = {
+      sites: searchResults.sites
+        .slice(10, 20)
+        .map((site) => new DiveSite(fetcher, site)),
+      totalCount: searchResults.totalCount,
+    };
+    const searchSpy = jest
+      .spyOn(client.diveSites, 'searchDiveSites')
+      .mockResolvedValue(expected);
 
     await wrapper.get('[data-testid="search-dive-sites"]').setValue('cove');
     await wrapper.get('[data-testid="select-location"]').trigger('click');
@@ -186,22 +174,38 @@ describe('Dive Sites View', () => {
     await wrapper.get('[data-testid="shore-access-false"]').setValue(true);
     await wrapper.get('[data-testid="free-to-dive-true"]').setValue(true);
     await wrapper.get('[data-testid="refresh-dive-sites"]').trigger('click');
+    await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(
-      '/diveSites?query=cove&freeToDive=true&shoreAccess=false&difficulty=1%2C3.5&rating=3%2C5&location=24.99129899138199%2C-76.36965622408646&radius=150',
-    );
+    expect(searchSpy).toHaveBeenCalledWith({
+      difficulty: { max: 3.5, min: 1 },
+      freeToDive: true,
+      location: { lat: 24.99129899138199, lon: -76.36965622408646 },
+      query: 'cove',
+      radius: 150,
+      rating: { max: 5, min: 3 },
+      shoreAccess: false,
+    });
+
+    const items = wrapper.findAllComponents(DiveSitesListItem);
+    expect(items).toHaveLength(expected.sites.length);
+    items.forEach((item, i) => {
+      expect(item.props('site')).toEqual(expected.sites[i].toJSON());
+    });
   });
 
   it('will load more results upon request', async () => {
-    const spy = jest
-      .spyOn(client.diveSites, 'searchDiveSites')
-      .mockResolvedValue({
-        sites: searchResults.sites
-          .slice(10, 20)
-          .map((site) => new DiveSite(fetcher, site)),
-        totalCount: searchResults.totalCount,
-      });
     const wrapper = mount(DiveSitesView, opts);
+    await flushPromises();
+
+    const results = {
+      sites: searchResults.sites
+        .slice(10, 20)
+        .map((site) => new DiveSite(fetcher, site)),
+      totalCount: searchResults.totalCount,
+    };
+    const loadMoreSpy = jest
+      .spyOn(client.diveSites, 'searchDiveSites')
+      .mockResolvedValue(results);
 
     await wrapper.get('[data-testid="load-more"]').trigger('click');
     await flushPromises();
@@ -213,28 +217,30 @@ describe('Dive Sites View', () => {
       const site = searchResults.sites[index];
       expect(item.props('site')).toEqual(site);
     });
-    expect(spy).toBeCalledWith({ skip: 10 });
+    expect(loadMoreSpy).toHaveBeenCalledWith({ skip: 10 });
   });
 
   it('will load more results building on the previous query', async () => {
     await router.push(
       '/diveSites?query=cove&freeToDive=true&shoreAccess=false&difficulty=1%2C3.5&rating=3%2C5&location=24.99129899138199%2C-76.36965622408646&radius=150&limit=10',
     );
-    const spy = jest
-      .spyOn(client.diveSites, 'searchDiveSites')
-      .mockResolvedValue({
-        sites: searchResults.sites
-          .slice(10, 20)
-          .map((site) => new DiveSite(fetcher, site)),
-        totalCount: searchResults.totalCount,
-      });
     const wrapper = mount(DiveSitesView, opts);
+    await flushPromises();
+
+    const expected = {
+      sites: searchResults.sites
+        .slice(10, 20)
+        .map((site) => new DiveSite(fetcher, site)),
+      totalCount: searchResults.totalCount,
+    };
+    const loadMoreSpy = jest
+      .spyOn(client.diveSites, 'searchDiveSites')
+      .mockResolvedValue(expected);
 
     await wrapper.get('[data-testid="load-more"]').trigger('click');
     await flushPromises();
 
-    const items = wrapper.findAllComponents(DiveSitesListItem);
-    expect(spy).toBeCalledWith({
+    expect(loadMoreSpy).toHaveBeenCalledWith({
       query: 'cove',
       location: { lat: 24.99129899138199, lon: -76.36965622408646 },
       radius: 150,
@@ -245,11 +251,8 @@ describe('Dive Sites View', () => {
       limit: 10,
       skip: 10,
     });
-    expect(items).toHaveLength(20);
 
-    items.forEach((item, index) => {
-      const site = searchResults.sites[index];
-      expect(item.props('site')).toEqual(site);
-    });
+    const items = wrapper.findAllComponents(DiveSitesListItem);
+    expect(items).toHaveLength(20);
   });
 });

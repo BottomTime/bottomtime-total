@@ -1,17 +1,21 @@
 <template>
   <DrawerPanel
-    :visible="!!selectedSite"
-    :title="selectedSite?.name"
-    :full-screen="`/diveSites/${selectedSite?.id}`"
-    @close="selectedSite = null"
+    :visible="!!state.selectedSite"
+    :title="state.selectedSite?.name"
+    :full-screen="`/diveSites/${state.selectedSite?.id}`"
+    @close="state.selectedSite = undefined"
   >
-    <ViewDiveSite v-if="selectedSite" :site="selectedSite" :columns="false" />
+    <ViewDiveSite
+      v-if="state.selectedSite"
+      :site="state.selectedSite"
+      :columns="false"
+    />
   </DrawerPanel>
 
   <PageTitle title="Dive Sites" />
   <div class="grid gap-6 grid-cols-1 lg:grid-cols-3 xl:grid-cols-5">
     <FormBox class="w-full">
-      <SearchDiveSitesForm :params="searchParams" @search="onSearch" />
+      <SearchDiveSitesForm :params="state.searchParams" @search="onSearch" />
     </FormBox>
 
     <div class="lg:col-span-2 xl:col-span-4">
@@ -20,9 +24,9 @@
       >
         <p>
           <span>Showing </span>
-          <span class="font-bold">{{ diveSites.results.sites.length }}</span>
+          <span class="font-bold">{{ state.results.sites.length }}</span>
           <span> of </span>
-          <span class="font-bold">{{ diveSites.results.totalCount }}</span>
+          <span class="font-bold">{{ state.results.totalCount }}</span>
           <span> dive sites</span>
         </p>
 
@@ -33,7 +37,6 @@
             control-id="sort-order"
             test-id="sort-order"
             :options="SortOrderOptions"
-            @change="onChangeSortOrder"
           />
           <FormButton
             v-if="!currentUser.anonymous"
@@ -47,9 +50,9 @@
       </FormBox>
 
       <DiveSitesList
-        :data="diveSites.results"
-        :is-loading-more="isLoadingMore"
-        @site-selected="(site) => (selectedSite = site)"
+        :data="state.results"
+        :is-loading-more="state.isLoadingMore"
+        @site-selected="(site) => (state.selectedSite = site)"
         @load-more="onLoadMore"
       />
     </div>
@@ -62,12 +65,12 @@ import {
   DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesParamsSchema,
-  SearchDiveSitesResponseSchema,
+  SearchDiveSitesResponseDTO,
   SortOrder,
 } from '@bottomtime/api';
 
-import { onBeforeMount, onMounted, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { onMounted, reactive, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { SelectOption } from '../../common';
@@ -80,7 +83,15 @@ import DiveSitesList from '../../components/diveSites/dive-sites-list.vue';
 import SearchDiveSitesForm from '../../components/diveSites/search-dive-sites-form.vue';
 import ViewDiveSite from '../../components/diveSites/view-dive-site.vue';
 import { useOops } from '../../oops';
-import { useCurrentUser, useDiveSites } from '../../store';
+import { useCurrentUser } from '../../store';
+
+interface DiveSitesViewState {
+  selectedSite?: DiveSiteDTO;
+  isLoading: boolean;
+  isLoadingMore: boolean;
+  searchParams: SearchDiveSitesParamsDTO;
+  results: SearchDiveSitesResponseDTO;
+}
 
 const SortOrderOptions: SelectOption[] = [
   {
@@ -103,8 +114,8 @@ const SortOrderOptions: SelectOption[] = [
 
 const client = useClient();
 const currentUser = useCurrentUser();
-const diveSites = useDiveSites();
 const oops = useOops();
+const route = useRoute();
 const router = useRouter();
 
 function parseQueryString(): SearchDiveSitesParamsDTO {
@@ -115,71 +126,77 @@ function parseQueryString(): SearchDiveSitesParamsDTO {
   return query.success ? query.data : {};
 }
 
-const searchParams = reactive<SearchDiveSitesParamsDTO>(parseQueryString());
+const state = reactive<DiveSitesViewState>({
+  isLoading: true,
+  isLoadingMore: false,
+  searchParams: parseQueryString(),
+  results: {
+    sites: [],
+    totalCount: 0,
+  },
+});
 const selectedSortOrder = ref(
-  `${searchParams.sortBy || DiveSitesSortBy.Rating}-${
-    searchParams.sortOrder || SortOrder.Descending
+  `${state.searchParams.sortBy || DiveSitesSortBy.Rating}-${
+    state.searchParams.sortOrder || SortOrder.Descending
   }`,
 );
-const selectedSite = ref<DiveSiteDTO | null>(null);
-const isLoadingMore = ref(false);
 
-async function onChangeSortOrder(): Promise<void> {
-  const [sortBy, sortOrder] = selectedSortOrder.value.split('-');
-  searchParams.sortBy = sortBy as DiveSitesSortBy;
-  searchParams.sortOrder = sortOrder as SortOrder;
-
-  const newPath = `${
-    router.currentRoute.value.path
-  }?${client.diveSites.searchQueryString(searchParams)}`;
-  await router.push(newPath);
+async function refresh(): Promise<void> {
+  await oops(async () => {
+    const results = await client.diveSites.searchDiveSites(state.searchParams);
+    state.results.sites = results.sites.map((site) => site.toJSON());
+    state.results.totalCount = results.totalCount;
+  });
 }
 
 async function onSearch(params: SearchDiveSitesParamsDTO): Promise<void> {
-  searchParams.query = params.query;
-  searchParams.rating = params.rating;
-  searchParams.difficulty = params.difficulty;
-  searchParams.shoreAccess = params.shoreAccess;
-  searchParams.freeToDive = params.freeToDive;
-  searchParams.location = params.location;
-  searchParams.radius = params.radius;
+  state.searchParams.query = params.query;
+  state.searchParams.rating = params.rating;
+  state.searchParams.difficulty = params.difficulty;
+  state.searchParams.shoreAccess = params.shoreAccess;
+  state.searchParams.freeToDive = params.freeToDive;
+  state.searchParams.location = params.location;
+  state.searchParams.radius = params.radius;
 
-  const newPath = `${
-    router.currentRoute.value.path
-  }?${client.diveSites.searchQueryString(searchParams)}`;
-  await router.push(newPath);
+  await router.push({
+    path: route.path,
+    query: client.diveSites.searchQueryString(state.searchParams),
+  });
+  await refresh();
 }
 
 async function onLoadMore(): Promise<void> {
-  isLoadingMore.value = true;
+  state.isLoadingMore = true;
 
   await oops(async () => {
     const params = {
-      ...searchParams,
-      skip: diveSites.results.sites.length,
+      ...state.searchParams,
+      skip: state.results.sites.length,
     };
     const newResults = await client.diveSites.searchDiveSites(params);
 
-    diveSites.results.sites.push(
-      ...newResults.sites.map((site) => site.toJSON()),
-    );
-    diveSites.results.totalCount = newResults.totalCount;
+    state.results.sites.push(...newResults.sites.map((site) => site.toJSON()));
+    state.results.totalCount = newResults.totalCount;
   });
 
-  isLoadingMore.value = false;
+  state.isLoadingMore = false;
 }
 
 async function onCreateSite(): Promise<void> {
   await router.push('/diveSites/new');
 }
 
-onMounted(async () => {
-  const results = await client.diveSites.searchDiveSites(searchParams);
-  diveSites.results.sites = results.sites.map((site) => site.toJSON());
-  diveSites.results.totalCount = results.totalCount;
-});
+onMounted(refresh);
 
-onBeforeMount(() => {
-  diveSites.results = SearchDiveSitesResponseSchema.parse(diveSites.results);
+watch(selectedSortOrder, async (value) => {
+  const [sortBy, sortOrder] = value.split('-');
+  state.searchParams.sortBy = sortBy as DiveSitesSortBy;
+  state.searchParams.sortOrder = sortOrder as SortOrder;
+
+  await router.push({
+    path: route.path,
+    query: client.diveSites.searchQueryString(state.searchParams),
+  });
+  await refresh();
 });
 </script>
