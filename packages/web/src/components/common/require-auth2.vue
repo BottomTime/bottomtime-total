@@ -1,7 +1,9 @@
 <template>
   <slot v-if="state === AuthState.Authorized"></slot>
 
-  <ForbiddenMessage v-else-if="state === AuthState.Forbidden" />
+  <slot v-else-if="state === AuthState.Forbidden" name="forbidden">
+    <ForbiddenMessage />
+  </slot>
 
   <div v-else class="grid grid-cols-1 md:grid-cols-5">
     <div class="md:col-start-2 md:col-span-3">

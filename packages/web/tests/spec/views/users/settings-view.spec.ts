@@ -12,15 +12,14 @@ import { ComponentMountingOptions, mount } from '@vue/test-utils';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import EditSettings from '../../../src/components/users/edit-settings.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
-import SettingsView from '../../../src/views/settings-view.vue';
-import { createRouter } from '../../fixtures/create-router';
-import { BasicUser } from '../../fixtures/users';
+import { ApiClientKey } from '../../../../src/api-client';
+import EditSettings from '../../../../src/components/users/edit-settings.vue';
+import { useCurrentUser } from '../../../../src/store';
+import SettingsView from '../../../../src/views/users/settings-view.vue';
+import { createRouter } from '../../../fixtures/create-router';
+import { BasicUser } from '../../../fixtures/users';
 
-describe('Account View', () => {
+describe('Settings View', () => {
   let client: ApiClient;
   let router: Router;
 
@@ -39,7 +38,6 @@ describe('Account View', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
         stubs: {
           teleport: true,

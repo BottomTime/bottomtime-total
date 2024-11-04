@@ -9,20 +9,18 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import AlertsList from '../../../src/components/admin/alerts-list.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useAlerts, useCurrentUser } from '../../../src/store';
-import AdminAlertsView from '../../../src/views/admin-alerts-view.vue';
-import AlertData from '../../fixtures/alerts.json';
-import { createRouter } from '../../fixtures/create-router';
-import { AdminUser, BasicUser } from '../../fixtures/users';
+import { ApiClientKey } from '../../../../src/api-client';
+import AlertsList from '../../../../src/components/admin/alerts-list.vue';
+import { useCurrentUser } from '../../../../src/store';
+import AdminAlertsView from '../../../../src/views/admin/alerts-view.vue';
+import AlertData from '../../../fixtures/alerts.json';
+import { createRouter } from '../../../fixtures/create-router';
+import { AdminUser, BasicUser } from '../../../fixtures/users';
 
 const AlertsCount = '[data-testid="alerts-count"]';
 
@@ -34,8 +32,8 @@ describe('Admin Alerts View', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let alertsStore: ReturnType<typeof useAlerts>;
   let options: ComponentMountingOptions<typeof AdminAlertsView>;
+  let listSpy: jest.SpyInstance;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -47,20 +45,20 @@ describe('Admin Alerts View', () => {
   beforeEach(() => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    alertsStore = useAlerts(pinia);
 
     currentUser.user = AdminUser;
-    alertsStore.results = {
-      alerts: alertData.alerts.slice(0, 10),
+    listSpy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValue({
+      alerts: alertData.alerts
+        .slice(0, 10)
+        .map((alert) => new Alert(fetcher, alert)),
       totalCount: alertData.totalCount,
-    };
+    });
 
     options = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
         stubs: { teleport: true },
       },
@@ -70,22 +68,30 @@ describe('Admin Alerts View', () => {
   it('will not render if user is not logged in', async () => {
     currentUser.user = null;
     const wrapper = mount(AdminAlertsView, options);
+    await flushPromises();
+
     expect(wrapper.find(AlertsCount).exists()).toBe(false);
     expect(wrapper.find('[data-testid="login-form"]').isVisible()).toBe(true);
+    expect(listSpy).not.toHaveBeenCalled();
   });
 
   it('will not render if user is not an admin', async () => {
     currentUser.user = BasicUser;
     const wrapper = mount(AdminAlertsView, options);
+    await flushPromises();
+
     expect(wrapper.find(AlertsCount).exists()).toBe(false);
     expect(wrapper.find('[data-testid="forbidden-message"]').isVisible()).toBe(
       true,
     );
     expect(wrapper.find(AlertsCount).exists()).toBe(false);
+    expect(listSpy).not.toHaveBeenCalled();
   });
 
   it('will render a list of alerts', async () => {
     const wrapper = mount(AdminAlertsView, options);
+    await flushPromises();
+
     expect(wrapper.find(AlertsCount).text()).toBe('Showing 10 of 30 alerts');
     const alertsList = wrapper.get('[data-testid="alerts-list"]');
     const listItems = alertsList.findAll('li');
@@ -94,25 +100,13 @@ describe('Admin Alerts View', () => {
     for (let i = 0; i < 10; i++) {
       expect(listItems.at(i)?.text()).toContain(alertData.alerts[i].title);
     }
+    expect(listSpy).toHaveBeenCalledWith();
   });
 
-  it('will prefetch alerts on the server side', async () => {
-    const spy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValueOnce({
-      alerts: alertData.alerts
-        .slice(0, 10)
-        .map((dto) => new Alert(fetcher, dto)),
-      totalCount: alertData.totalCount,
-    });
-
-    const html = await renderToString(AdminAlertsView, {
-      global: options.global,
-    });
-    expect(spy).toHaveBeenCalledWith({ showDismissed: true });
-    expect(html).toMatchSnapshot();
-  });
-
-  it('will render a list of alerts on the client side', async () => {
+  it('will render a list of alerts', async () => {
     const wrapper = mount(AdminAlertsView, options);
+    await flushPromises();
+
     const alertsList = wrapper.get('[data-testid="alerts-list"]');
     const listItems = alertsList.findAll('li');
 
@@ -120,6 +114,7 @@ describe('Admin Alerts View', () => {
     for (let i = 0; i < 10; i++) {
       expect(listItems.at(i)?.text()).toContain(alertData.alerts[i].title);
     }
+    expect(listItems).toHaveBeenCalledWith();
   });
 
   it('will delete an alert', async () => {
@@ -128,6 +123,8 @@ describe('Admin Alerts View', () => {
     jest.spyOn(client.alerts, 'wrapDTO').mockReturnValueOnce(alert);
 
     const wrapper = mount(AdminAlertsView, options);
+    await flushPromises();
+
     const listItem = wrapper.getComponent(AlertsList);
     listItem.vm.$emit('delete', alertData.alerts[2]);
 
@@ -144,6 +141,8 @@ describe('Admin Alerts View', () => {
       totalCount: alertData.totalCount,
     });
     const wrapper = mount(AdminAlertsView, options);
+    await flushPromises();
+
     const listItem = wrapper.getComponent<typeof AlertsList>(AlertsList);
 
     listItem.vm.$emit('load-more');

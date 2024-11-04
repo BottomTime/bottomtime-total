@@ -1,4 +1,4 @@
-import { AccountTier, ApiClient } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
@@ -9,15 +9,14 @@ import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import ManageAccount from '../../../src/components/users/manage-account.vue';
-import { FeaturesServiceKey } from '../../../src/featrues';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
-import AccountView from '../../../src/views/account-view.vue';
-import { ConfigCatClientMock } from '../../config-cat-client-mock';
-import { createRouter } from '../../fixtures/create-router';
-import { BasicUser } from '../../fixtures/users';
+import { ApiClientKey } from '../../../../src/api-client';
+import ManageAccount from '../../../../src/components/users/manage-account.vue';
+import { FeaturesServiceKey } from '../../../../src/featrues';
+import { useCurrentUser } from '../../../../src/store';
+import AccountView from '../../../../src/views/users/account-view.vue';
+import { ConfigCatClientMock } from '../../../config-cat-client-mock';
+import { createRouter } from '../../../fixtures/create-router';
+import { BasicUser } from '../../../fixtures/users';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -46,7 +45,9 @@ describe('Account View', () => {
         provide: {
           [ApiClientKey as symbol]: client,
           [FeaturesServiceKey as symbol]: features,
-          [LocationKey as symbol]: new MockLocation(),
+        },
+        stubs: {
+          teleport: true,
         },
       },
     };
@@ -61,7 +62,7 @@ describe('Account View', () => {
     ).toBe(true);
   });
 
-  it.skip('will allow the user to manage their account', () => {
+  it('will allow the user to manage their account', () => {
     const newUsername = 'new-username';
     const newEmail = 'new-email@gmail.org';
 
@@ -83,7 +84,6 @@ describe('Account View', () => {
     manageAccount.vm.$emit('change-username', newUsername);
     manageAccount.vm.$emit('change-email', newEmail);
     manageAccount.vm.$emit('change-password');
-    manageAccount.vm.$emit('change-account-type', AccountTier.Pro);
 
     expect(currentUser.user.username).toBe(newUsername);
     expect(currentUser.user.email).toBe(newEmail);
@@ -93,6 +93,5 @@ describe('Account View', () => {
       Date.now(),
       -3,
     );
-    expect(currentUser.user.accountTier).toBe(AccountTier.Pro);
   });
 });

@@ -1,12 +1,17 @@
 <template>
   <PageTitle :title="title" :subtitle="subtitle" />
-  <RequireAuth :role="role">
+  <RequireAuth :authorizer="isAuthorized">
     <BreadCrumbs :items="breadcrumbs" />
-    <div class="grid grid-cols-1 lg:grid-cols-6">
+
+    <div v-if="state.isLoading" class="flex justify-center text-xl my-8">
+      <LoadingSpinner message="Fetching user..." />
+    </div>
+
+    <div v-else class="grid grid-cols-1 lg:grid-cols-6">
       <div class="lg:col-start-2 lg:col-span-4">
         <ManageUser
-          v-if="admin.currentUser"
-          :user="admin.currentUser"
+          v-if="state.currentUser"
+          :user="state.currentUser"
           @account-lock-toggled="onAccountLockToggled"
           @email-changed="onEmailChanged"
           @password-reset="onPasswordReset"
@@ -29,31 +34,41 @@ import {
   UserSettingsDTO,
 } from '@bottomtime/api';
 
-import { computed, onMounted } from 'vue';
+import { useCurrentUser } from '@/store';
+
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb } from '../../common';
 import ManageUser from '../../components/admin/manage-user.vue';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
+import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
-import RequireAuth from '../../components/common/require-auth.vue';
+import RequireAuth from '../../components/common/require-auth2.vue';
 import { useOops } from '../../oops';
-import { useAdmin } from '../../store';
+
+interface UserViewState {
+  currentUser?: UserDTO;
+  isLoading: boolean;
+}
 
 // Dependencies
-const admin = useAdmin();
 const client = useClient();
-const currentRoute = useRoute();
+const currentUser = useCurrentUser();
+const route = useRoute();
 const oops = useOops();
 
 // Component state
-const role = computed(() => UserRole.Admin);
-const title = computed(() => admin.currentUser?.username || 'Manage User');
+const state = reactive<UserViewState>({
+  isLoading: true,
+});
+const title = computed(() => state.currentUser?.username || 'Manage User');
 const subtitle = computed(() =>
-  admin.currentUser?.profile.name ? `(${admin.currentUser?.profile.name})` : '',
+  state.currentUser?.profile.name ? `(${state.currentUser?.profile.name})` : '',
 );
+const isAuthorized = computed(() => currentUser.user?.role === UserRole.Admin);
 
 const breadcrumbs: Breadcrumb[] = [
   { label: 'Admin', to: '/admin' },
@@ -62,12 +77,14 @@ const breadcrumbs: Breadcrumb[] = [
 ];
 
 // Fetch the user data
-async function fetchUser(): Promise<UserDTO | null> {
-  const username = currentRoute.params.username as string;
-  return await oops(
+async function fetchUser(): Promise<void> {
+  const username = route.params.username as string;
+  await oops(
     async () => {
+      if (!isAuthorized.value) return;
+
       const result = await client.users.getUser(username);
-      return result?.toJSON() ?? null;
+      state.currentUser = result.toJSON();
     },
     {
       404: () => {
@@ -75,54 +92,54 @@ async function fetchUser(): Promise<UserDTO | null> {
       },
     },
   );
-}
 
-onMounted(async () => {
-  admin.currentUser = await fetchUser();
-});
+  state.isLoading = false;
+}
 
 // Event handlers
 function onAccountLockToggled() {
-  if (admin.currentUser) {
-    admin.currentUser.isLockedOut = !admin.currentUser.isLockedOut;
+  if (state.currentUser) {
+    state.currentUser.isLockedOut = !state.currentUser.isLockedOut;
   }
 }
 
 function onEmailChanged(_: string, email: string) {
-  if (admin.currentUser) {
-    admin.currentUser.email = email;
-    admin.currentUser.emailVerified = false;
+  if (state.currentUser) {
+    state.currentUser.email = email;
+    state.currentUser.emailVerified = false;
   }
 }
 
 function onPasswordReset() {
-  if (admin.currentUser) {
-    admin.currentUser.hasPassword = true;
-    admin.currentUser.lastPasswordChange = new Date();
+  if (state.currentUser) {
+    state.currentUser.hasPassword = true;
+    state.currentUser.lastPasswordChange = new Date();
   }
 }
 
 function onRoleChanged(_: string, newRole: UserRole) {
-  if (admin.currentUser) {
-    admin.currentUser.role = newRole;
+  if (state.currentUser) {
+    state.currentUser.role = newRole;
   }
 }
 
 function onUsernameChanged(_: string, username: string) {
-  if (admin.currentUser) {
-    admin.currentUser.username = username;
+  if (state.currentUser) {
+    state.currentUser.username = username;
   }
 }
 
 function onSaveProfile(_: string, profile: ProfileDTO) {
-  if (admin.currentUser) {
-    admin.currentUser.profile = profile;
+  if (state.currentUser) {
+    state.currentUser.profile = profile;
   }
 }
 
 function onSaveSettings(_: string, settings: UserSettingsDTO) {
-  if (admin.currentUser) {
-    admin.currentUser.settings = settings;
+  if (state.currentUser) {
+    state.currentUser.settings = settings;
   }
 }
+
+onMounted(fetchUser);
 </script>

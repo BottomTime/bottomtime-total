@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Admin Tanks View will render the tanks list 1`] = `"Showing 22 tank profile(s)"`;

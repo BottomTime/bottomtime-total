@@ -1,11 +1,15 @@
 <template>
   <PageTitle :title="title" />
-  <RequireAuth :role="UserRole.Admin">
+  <RequireAuth :authorizer="isAuthorized">
     <BreadCrumbs :items="Breadcrumbs" />
 
-    <div v-if="tanks.currentTank">
+    <div v-if="state.isLoading" calss="flex justify-center text-xl my-8">
+      <LoadingSpinner message="Fetching tank profile..." />
+    </div>
+
+    <div v-else-if="state.currentTank">
       <EditTank
-        :tank="tanks.currentTank"
+        :tank="state.currentTank"
         :is-saving="state.isSaving"
         @save="onSave"
       />
@@ -24,28 +28,32 @@ import { useRoute } from 'vue-router';
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
+import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
-import RequireAuth from '../../components/common/require-auth.vue';
+import RequireAuth from '../../components/common/require-auth2.vue';
 import EditTank from '../../components/tanks/edit-tank.vue';
 import { useOops } from '../../oops';
-import { useTanks, useToasts } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 
 interface AdminTankViewState {
+  currentTank?: TankDTO;
+  isLoading: boolean;
   isSaving: boolean;
 }
 
 const client = useClient();
+const currentUser = useCurrentUser();
 const oops = useOops();
 const route = useRoute();
-const tanks = useTanks();
 const toasts = useToasts();
 
 const state = reactive<AdminTankViewState>({
+  isLoading: true,
   isSaving: false,
 });
 
-const title = computed(() => tanks.currentTank?.name || 'Edit Tank Profile');
+const title = computed(() => state.currentTank?.name || 'Edit Tank Profile');
 const Breadcrumbs: Breadcrumb[] = [
   {
     label: 'Admin',
@@ -61,20 +69,25 @@ const Breadcrumbs: Breadcrumb[] = [
   },
 ];
 
+const isAuthorized = computed(() => currentUser.user?.role === UserRole.Admin);
+
 onMounted(async () => {
   await oops(
     async () => {
+      if (!isAuthorized.value) return;
       if (typeof route.params.tankId !== 'string') return;
 
       const tank = await client.tanks.getTank(route.params.tankId);
-      tanks.currentTank = tank.toJSON();
+      state.currentTank = tank.toJSON();
     },
     {
       [404]: () => {
-        tanks.currentTank = null;
+        state.currentTank = undefined;
       },
     },
   );
+
+  state.isLoading = false;
 });
 
 async function onSave(dto: TankDTO): Promise<void> {
@@ -83,7 +96,7 @@ async function onSave(dto: TankDTO): Promise<void> {
   await oops(async () => {
     const tank = client.tanks.wrapDTO(dto);
     await tank.save();
-    tanks.currentTank = dto;
+    state.currentTank = dto;
 
     toasts.toast({
       id: 'tank-saved',

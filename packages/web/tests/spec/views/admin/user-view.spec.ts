@@ -3,8 +3,8 @@ import { ApiClient, User } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
+  flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
@@ -13,17 +13,17 @@ import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import ManageUser from '../../../src/components/admin/manage-user.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useAdmin, useCurrentUser } from '../../../src/store';
-import AdminUserView from '../../../src/views/admin-user-view.vue';
-import { createRouter } from '../../fixtures/create-router';
+import { ApiClientKey } from '../../../../src/api-client';
+import ManageUser from '../../../../src/components/admin/manage-user.vue';
+import { useCurrentUser } from '../../../../src/store';
+import AdminUserView from '../../../../src/views/admin/user-view.vue';
+import { createHttpError } from '../../../fixtures/create-http-error';
+import { createRouter } from '../../../fixtures/create-router';
 import {
   AdminUser,
   BasicUser,
   UserWithFullProfile,
-} from '../../fixtures/users';
+} from '../../../fixtures/users';
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -35,8 +35,9 @@ describe('Account View', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let admin: ReturnType<typeof useAdmin>;
   let opts: ComponentMountingOptions<typeof AdminUserView>;
+  let user: User;
+  let getSpy: jest.SpyInstance;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -50,80 +51,94 @@ describe('Account View', () => {
     ]);
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    admin = useAdmin(pinia);
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
         stubs: {
           teleport: true,
         },
       },
     };
-  });
 
-  it('will query for the target user on SSR', async () => {
-    currentUser.user = AdminUser;
-    const spy = jest
-      .spyOn(client.users, 'getUser')
-      .mockResolvedValue(new User(fetcher, BasicUser));
+    user = new User(fetcher, { ...BasicUser });
+    getSpy = jest.spyOn(client.users, 'getUser').mockResolvedValue(user);
     await router.push(`/admin/users/${BasicUser.username}`);
-
-    const rendered = await renderToString(AdminUserView, {
-      global: opts.global,
-    });
-
-    expect(spy).toBeCalledWith(BasicUser.username);
-    expect(rendered).toContain(BasicUser.username);
   });
 
-  it('will display the login form if the user is not athenticated', () => {
+  it('will retrieve the target user on load', async () => {
+    currentUser.user = AdminUser;
+
+    const wrapper = mount(AdminUserView, opts);
+    await flushPromises();
+
+    expect(getSpy).toHaveBeenCalledWith(BasicUser.username);
+    expect(wrapper.getComponent(ManageUser).props('user')).toEqual(
+      user.toJSON(),
+    );
+  });
+
+  it('will display the login form if the user is not athenticated', async () => {
     currentUser.user = null;
     const wrapper = mount(AdminUserView, opts);
+    await flushPromises();
+
     expect(
       wrapper.get('[data-testid="require-auth-anonymous"]').isVisible(),
     ).toBe(true);
     expect(wrapper.findComponent(ManageUser).exists()).toBe(false);
+    expect(getSpy).not.toHaveBeenCalled();
   });
 
-  it('will display a forbidden message if the user is not an admin', () => {
+  it('will display a forbidden message if the user is not an admin', async () => {
     currentUser.user = BasicUser;
     const wrapper = mount(AdminUserView, opts);
+    await flushPromises();
+
     expect(
       wrapper.get('[data-testid="require-auth-unauthorized"]').isVisible(),
     ).toBe(true);
     expect(wrapper.findComponent(ManageUser).exists()).toBe(false);
+    expect(getSpy).not.toHaveBeenCalled();
   });
 
-  it('will display a not found message if the target user does not exist', () => {
+  it('will display a not found message if the target user does not exist', async () => {
     currentUser.user = AdminUser;
+    getSpy = jest
+      .spyOn(client.users, 'getUser')
+      .mockRejectedValue(createHttpError(404));
     const wrapper = mount(AdminUserView, opts);
+    await flushPromises();
+
     expect(wrapper.get('[data-testid="not-found-message"]').isVisible()).toBe(
       true,
     );
     expect(wrapper.findComponent(ManageUser).exists()).toBe(false);
+    expect(getSpy).toHaveBeenCalledWith(BasicUser.username);
   });
 
-  it("will allow an admin to manage the target user's account", () => {
+  it("will allow an admin to manage the target user's account", async () => {
     const newUsername = 'joe123';
     const newEmail = 'eviljoe@yahoo.com';
     currentUser.user = AdminUser;
-    admin.currentUser = {
-      ...BasicUser,
-      emailVerified: true,
-      hasPassword: false,
-      isLockedOut: false,
-      profile: { ...BasicUser.profile },
-      settings: { ...BasicUser.settings },
-    };
+    getSpy = jest.spyOn(client.users, 'getUser').mockResolvedValue(
+      new User(fetcher, {
+        ...BasicUser,
+        emailVerified: true,
+        hasPassword: false,
+        isLockedOut: false,
+        profile: { ...BasicUser.profile },
+        settings: { ...BasicUser.settings },
+      }),
+    );
     const userId = BasicUser.id;
     const wrapper = mount(AdminUserView, opts);
+    await flushPromises();
 
     expect(wrapper.get('[data-testid="breadcrumbs"]').html()).toMatchSnapshot();
     const manageUser = wrapper.getComponent(ManageUser);

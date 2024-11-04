@@ -2,10 +2,15 @@
   <PageTitle title="Manage Alerts" />
   <BreadCrumbs :items="Breadcrumbs" />
 
-  <RequireAuth :role="UserRole.Admin">
+  <RequireAuth :authorizer="isAuthorized">
+    <div v-if="state.isLoading" class="flex justify-center my-8 text-xl">
+      <LoadingSpinner message="Fetching alerts..." />
+    </div>
+
     <AlertsList
-      :alerts="alerts.results"
-      :is-loading-more="isLoadingMore"
+      v-else
+      :alerts="state.results"
+      :is-loading-more="state.isLoadingMore"
       @load-more="onLoadMore"
       @delete="onDeleteAlert"
     />
@@ -13,38 +18,55 @@
 </template>
 
 <script lang="ts" setup>
-import { AlertDTO, UserRole } from '@bottomtime/api';
+import { AlertDTO, ListAlertsResponseDTO, UserRole } from '@bottomtime/api';
 
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
 import AlertsList from '../../components/admin/alerts-list.vue';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
 import PageTitle from '../../components/common/page-title.vue';
-import RequireAuth from '../../components/common/require-auth.vue';
+import RequireAuth from '../../components/common/require-auth2.vue';
 import { useOops } from '../../oops';
-import { useAlerts, useToasts } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
+import LoadingSpinner from '../components/common/loading-spinner.vue';
 
-const alerts = useAlerts();
+interface AlertsViewState {
+  currentAlert?: AlertDTO;
+  isLoading: boolean;
+  isLoadingMore: boolean;
+  results: ListAlertsResponseDTO;
+}
+
 const client = useClient();
+const currentUser = useCurrentUser();
 const oops = useOops();
 const toasts = useToasts();
-
-const isLoadingMore = ref(false);
 
 const Breadcrumbs: Breadcrumb[] = [
   { label: 'Admin', to: '/admin' },
   { label: 'Manage Alerts', active: true },
 ];
 
+const isAuthorized = computed(() => currentUser.user?.role === UserRole.Admin);
+const state = reactive<AlertsViewState>({
+  isLoading: true,
+  isLoadingMore: false,
+  results: {
+    alerts: [],
+    totalCount: 0,
+  },
+});
+
 onMounted(async () => {
   await oops(async () => {
+    if (!isAuthorized.value) return;
     const { alerts: results, totalCount } = await client.alerts.listAlerts({
       showDismissed: true,
     });
-    alerts.results.alerts = results.map((alert) => alert.toJSON());
-    alerts.results.totalCount = totalCount;
+    state.results.alerts = results.map((alert) => alert.toJSON());
+    state.results.totalCount = totalCount;
   });
 });
 
@@ -53,10 +75,10 @@ async function onDeleteAlert(dto: AlertDTO): Promise<void> {
     const alert = client.alerts.wrapDTO(dto);
     await alert.delete();
 
-    const index = alerts.results.alerts.findIndex((a) => a.id === alert.id);
+    const index = state.results.alerts.findIndex((a) => a.id === alert.id);
     if (index >= 0) {
-      alerts.results.alerts.splice(index, 1);
-      alerts.results.totalCount--;
+      state.results.alerts.splice(index, 1);
+      state.results.totalCount--;
 
       toasts.toast({
         id: 'alert-deleted',
@@ -68,16 +90,16 @@ async function onDeleteAlert(dto: AlertDTO): Promise<void> {
 }
 
 async function onLoadMore(): Promise<void> {
-  isLoadingMore.value = true;
+  state.isLoadingMore = true;
   await oops(async () => {
     const results = await client.alerts.listAlerts({
       showDismissed: true,
-      skip: alerts.results.alerts.length,
+      skip: state.results.alerts.length,
     });
 
-    alerts.results.totalCount = results.totalCount;
-    alerts.results.alerts.push(...results.alerts.map((a) => a.toJSON()));
+    state.results.totalCount = results.totalCount;
+    state.results.alerts.push(...results.alerts.map((a) => a.toJSON()));
   });
-  isLoadingMore.value = false;
+  state.isLoadingMore = false;
 }
 </script>

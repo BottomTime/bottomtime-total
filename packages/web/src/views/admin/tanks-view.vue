@@ -1,17 +1,17 @@
 <template>
   <DrawerPanel
-    :title="tanks.currentTank?.id ? 'Edit Tank Profile' : 'Create New Tank'"
+    :title="state.currentTank?.id ? 'Edit Tank Profile' : 'Create New Tank'"
     :full-screen="
-      tanks.currentTank?.id
-        ? `/admin/tanks/${tanks.currentTank.id}`
+      state.currentTank?.id
+        ? `/admin/tanks/${state.currentTank.id}`
         : '/admin/tanks/new'
     "
-    :visible="state.showTankEditor && !!tanks.currentTank"
+    :visible="state.showTankEditor && !!state.currentTank"
     @close="onCloseTankEditor"
   >
     <EditTank
-      v-if="tanks.currentTank"
-      :tank="tanks.currentTank"
+      v-if="state.currentTank"
+      :tank="state.currentTank"
       :responsive="false"
       :is-saving="state.isSaving"
       @save="onSaveTank"
@@ -31,7 +31,7 @@
   >
     <p>
       <span>Are you sure you want to delete tank profile "</span>
-      <span class="font-bold">{{ tanks.currentTank?.name }}</span>
+      <span class="font-bold">{{ state.currentTank?.name }}</span>
       <span>"?</span>
     </p>
 
@@ -39,10 +39,10 @@
   </ConfirmDialog>
 
   <PageTitle title="Manage Tank Profiles" />
-  <RequireAuth :role="UserRole.Admin">
+  <RequireAuth :authorizer="isAuthorized">
     <BreadCrumbs :items="Breadcrumbs" />
     <TanksList
-      :tanks="tanks.results"
+      :tanks="state.results"
       @add="onAddTank"
       @delete="onDeleteTank"
       @select="onSelectTank"
@@ -51,26 +51,33 @@
 </template>
 
 <script setup lang="ts">
-import { TankDTO, TankMaterial, UserRole } from '@bottomtime/api';
+import {
+  ListTanksResponseDTO,
+  TankDTO,
+  TankMaterial,
+  UserRole,
+} from '@bottomtime/api';
 
-import { onMounted, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
 import DrawerPanel from '../../components/common/drawer-panel.vue';
 import PageTitle from '../../components/common/page-title.vue';
-import RequireAuth from '../../components/common/require-auth.vue';
+import RequireAuth from '../../components/common/require-auth2.vue';
 import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import EditTank from '../../components/tanks/edit-tank.vue';
 import TanksList from '../../components/tanks/tanks-list.vue';
 import { useOops } from '../../oops';
-import { useTanks, useToasts } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 
 interface AdminTanksState {
+  currentTank?: TankDTO;
   isDeleting: boolean;
   isLoading: boolean;
   isSaving: boolean;
+  results: ListTanksResponseDTO;
   showConfirmDelete: boolean;
   showTankEditor: boolean;
 }
@@ -88,27 +95,35 @@ const Breadcrumbs: Breadcrumb[] = [
 
 const client = useClient();
 const oops = useOops();
-const tanks = useTanks();
 const toasts = useToasts();
+const currentUser = useCurrentUser();
 
 const state = reactive<AdminTanksState>({
   isDeleting: false,
-  isLoading: false,
+  isLoading: true,
   isSaving: false,
+  results: {
+    tanks: [],
+    totalCount: 0,
+  },
   showConfirmDelete: false,
   showTankEditor: false,
 });
 
+const isAuthorized = computed(() => currentUser.user?.role === UserRole.Admin);
+
 onMounted(async () => {
   await oops(async () => {
+    if (!isAuthorized.value) return;
     const results = await client.tanks.listTanks();
-    tanks.results.tanks = results.tanks.map((tank) => tank.toJSON());
-    tanks.results.totalCount = results.totalCount;
+    state.results.tanks = results.tanks.map((tank) => tank.toJSON());
+    state.results.totalCount = results.totalCount;
   });
+  state.isLoading = false;
 });
 
 function onAddTank() {
-  tanks.currentTank = {
+  state.currentTank = {
     id: '',
     isSystem: true,
     material: TankMaterial.Aluminum,
@@ -120,12 +135,12 @@ function onAddTank() {
 }
 
 function onSelectTank(tank: TankDTO) {
-  tanks.currentTank = tank;
+  state.currentTank = tank;
   state.showTankEditor = true;
 }
 
 function onDeleteTank(tank: TankDTO) {
-  tanks.currentTank = tank;
+  state.currentTank = tank;
   state.showConfirmDelete = true;
 }
 
@@ -137,12 +152,12 @@ async function onConfirmDelete(): Promise<void> {
   state.isDeleting = true;
 
   await oops(async () => {
-    if (!tanks.currentTank) return;
-    const tank = client.tanks.wrapDTO(tanks.currentTank);
+    if (!state.currentTank) return;
+    const tank = client.tanks.wrapDTO(state.currentTank);
     await tank.delete();
 
-    const index = tanks.results.tanks.findIndex((t) => t.id === tank.id);
-    if (index > -1) tanks.results.tanks.splice(index, 1);
+    const index = state.results.tanks.findIndex((t) => t.id === tank.id);
+    if (index > -1) state.results.tanks.splice(index, 1);
 
     toasts.toast({
       id: 'tank-deleted',
@@ -153,7 +168,7 @@ async function onConfirmDelete(): Promise<void> {
 
   state.showConfirmDelete = false;
   state.isDeleting = false;
-  tanks.currentTank = null;
+  state.currentTank = undefined;
 }
 
 function onCloseTankEditor() {
@@ -168,8 +183,8 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       const tank = client.tanks.wrapDTO(dto);
       await tank.save();
 
-      const index = tanks.results.tanks.findIndex((t) => t.id === tank.id);
-      if (index > -1) tanks.results.tanks.splice(index, 1, tank.toJSON());
+      const index = state.results.tanks.findIndex((t) => t.id === tank.id);
+      if (index > -1) state.results.tanks.splice(index, 1, tank.toJSON());
 
       toasts.toast({
         id: 'tank-saved',
@@ -178,7 +193,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       });
     } else {
       const tank = await client.tanks.createTank(dto);
-      tanks.results.tanks.splice(0, 0, tank.toJSON());
+      state.results.tanks.splice(0, 0, tank.toJSON());
 
       toasts.toast({
         id: 'tank-created',
@@ -188,7 +203,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
     }
   });
 
-  tanks.currentTank = null;
+  state.currentTank = undefined;
   state.showTankEditor = false;
   state.isSaving = false;
 }
