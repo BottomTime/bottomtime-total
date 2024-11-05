@@ -2,21 +2,28 @@
   <PageTitle :title="title" />
   <BreadCrumbs :items="Breadcrumbs" />
   <RequireAuth>
-    <NotFound v-if="!profiles.currentProfile" />
+    <div v-if="state.isLoading" clas="flex justify-center my-8 text-xl">
+      <LoadingSpinner message="Fetching profile info..." />
+    </div>
+
+    <NotFound v-else-if="!state.currentProfile" />
+
     <EditProfile
       v-else-if="canEdit"
-      :profile="profiles.currentProfile"
-      :tanks="tanks.results.totalCount > -1 ? tanks.results : undefined"
+      :profile="state.currentProfile"
+      :tanks="state.tanks.totalCount > -1 ? state.tanks : undefined"
       @save-profile="onSave"
     />
-    <ViewProfile v-else :profile="profiles.currentProfile" />
+    <ViewProfile v-else :profile="state.currentProfile" />
   </RequireAuth>
 </template>
 
 <script setup lang="ts">
-import { ProfileDTO, UserRole } from '@bottomtime/api';
+import { ListTanksResponseDTO, ProfileDTO, UserRole } from '@bottomtime/api';
 
-import { computed, onMounted } from 'vue';
+import LoadingSpinner from '@/components/common/loading-spinner.vue';
+
+import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
@@ -28,7 +35,13 @@ import RequireAuth from '../../components/common/require-auth.vue';
 import EditProfile from '../../components/users/edit-profile.vue';
 import ViewProfile from '../../components/users/view-profile.vue';
 import { useOops } from '../../oops';
-import { useCurrentUser, useProfiles, useTanks } from '../../store';
+import { useCurrentUser } from '../../store';
+
+interface ProfileViewState {
+  currentProfile?: ProfileDTO;
+  isLoading: boolean;
+  tanks: ListTanksResponseDTO;
+}
 
 const Breadcrumbs: Breadcrumb[] = [
   {
@@ -40,71 +53,75 @@ const Breadcrumbs: Breadcrumb[] = [
 const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();
-const profiles = useProfiles();
 const route = useRoute();
-const tanks = useTanks();
 
 const canEdit = computed(() => {
   if (!currentUser.user) return false;
 
   return (
     currentUser.user.role === UserRole.Admin ||
-    currentUser.user.id === profiles.currentProfile?.userId
+    currentUser.user.id === state.currentProfile?.userId
   );
 });
 
 const title = computed(() => {
   if (canEdit.value) {
     return 'Manage Profile';
-  } else if (profiles.currentProfile) {
-    return (
-      profiles.currentProfile.name || `@${profiles.currentProfile.username}`
-    );
+  } else if (state.currentProfile) {
+    return state.currentProfile.name || `@${state.currentProfile.username}`;
   } else {
     return '';
   }
 });
+const username = computed(() =>
+  typeof route.params.username === 'string'
+    ? route.params.username
+    : currentUser.user?.username ?? '',
+);
+
+const state = reactive<ProfileViewState>({
+  isLoading: true,
+  tanks: {
+    tanks: [],
+    totalCount: 0,
+  },
+});
 
 onMounted(async () => {
-  if (!currentUser.user) return;
-
-  const username =
-    typeof route.params.username === 'string'
-      ? route.params.username
-      : currentUser.user.username;
-
   await oops(async () => {
     if (!currentUser.user) return;
 
     // Determine if we need to fetch the requested profile or whether we are just displaying the current
     // user's profile.
     const currentUserRequested =
-      username.toLowerCase() === currentUser.user.username.toLowerCase();
-    profiles.currentProfile = currentUserRequested
+      username.value.toLowerCase() === currentUser.user.username.toLowerCase();
+    state.currentProfile = currentUserRequested
       ? currentUser.user.profile
-      : await client.users.getProfile(username);
+      : await client.users.getProfile(username.value);
 
     // Only Fetch custom tank profiles if the user is viewing their own profile or an admin is.
     if (currentUserRequested || currentUser.user.role === UserRole.Admin) {
       const results = await client.tanks.listTanks({
-        username,
+        username: username.value,
         includeSystem: false,
       });
-      tanks.results = {
+      state.tanks = {
         tanks: results.tanks.map((tank) => tank.toJSON()),
         totalCount: results.totalCount,
       };
     } else {
-      tanks.results = {
+      state.tanks = {
         tanks: [],
         totalCount: -1,
       };
     }
+
+    state.isLoading = false;
   });
 });
 
 function onSave(updated: ProfileDTO) {
-  profiles.currentProfile = updated;
+  state.currentProfile = updated;
   if (currentUser.user?.id === updated.userId) {
     currentUser.user.profile = updated;
   }

@@ -61,6 +61,8 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/vue": "^8.1.0",
     "@types/aws-lambda": "^8.10.140",
     "@types/bunyan": "^1.8.8",
     "@types/compression": "^1.7.5",

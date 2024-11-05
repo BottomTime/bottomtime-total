@@ -16,7 +16,6 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
@@ -25,14 +24,13 @@ import { Pinia, createPinia } from 'pinia';
 import { defineComponent } from 'vue';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import FriendRequestsListItem from '../../../src/components/friends/friend-requests-list-item.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser, useFriends, useToasts } from '../../../src/store';
-import FriendRequestsView from '../../../src/views/friend-requests-view.vue';
-import { createHttpError } from '../../fixtures/create-http-error';
-import { createRouter } from '../../fixtures/create-router';
-import { BasicUser } from '../../fixtures/users';
+import { ApiClientKey } from '../../../../src/api-client';
+import FriendRequestsListItem from '../../../../src/components/friends/friend-requests-list-item.vue';
+import { useCurrentUser, useToasts } from '../../../../src/store';
+import FriendRequestsView from '../../../../src/views/users/friend-requests-view.vue';
+import { createHttpError } from '../../../fixtures/create-http-error';
+import { createRouter } from '../../../fixtures/create-router';
+import { BasicUser } from '../../../fixtures/users';
 
 dayjs.extend(relativeTime);
 
@@ -43,10 +41,10 @@ describe('Friend requests view', () => {
   let friendRequestData: ListFriendRequestsResponseDTO;
 
   let pinia: Pinia;
-  let friendsStore: ReturnType<typeof useFriends>;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let toasts: ReturnType<typeof useToasts>;
   let opts: ComponentMountingOptions<typeof FriendRequestsView>;
+  let listSpy: jest.SpyInstance;
 
   beforeAll(() => {
     friendRequestData = {
@@ -94,60 +92,49 @@ describe('Friend requests view', () => {
 
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    friendsStore = useFriends(pinia);
 
     toasts = useToasts(pinia);
     currentUser.user = userDto;
-    friendsStore.requests = friendRequestData;
 
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
         stubs: {
           teleport: true,
         },
       },
     };
+
+    listSpy = jest
+      .spyOn(client.friends, 'listFriendRequests')
+      .mockResolvedValue({
+        friendRequests: friendRequestData.friendRequests.map(
+          (fr) => new FriendRequest(fetcher, userDto.username, fr),
+        ),
+        totalCount: friendRequestData.totalCount,
+      });
   });
 
-  it('will render login form if user is unauthenticated', () => {
+  it('will render login form if user is unauthenticated', async () => {
     currentUser.user = null;
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     expect(wrapper.find('[data-testid="login-form"]').isVisible()).toBe(true);
     expect(wrapper.find('[data-testid="friend-requests-list"]').exists()).toBe(
       false,
     );
+
+    expect(listSpy).not.toHaveBeenCalled();
   });
 
-  it('will request friends on server-side render and pre-render the list', async () => {
-    const spy = jest
-      .spyOn(client.friends, 'listFriendRequests')
-      .mockResolvedValue({
-        friendRequests: friendRequestData.friendRequests.map(
-          (request) =>
-            new FriendRequest(fetcher, currentUser.user!.username, request),
-        ),
-        totalCount: friendRequestData.totalCount,
-      });
-    const html = await renderToString(FriendRequestsView, {
-      global: opts.global,
-    });
-
-    expect(spy).toBeCalledWith(currentUser.user!.username, {
-      direction: FriendRequestDirection.Incoming,
-      showAcknowledged: false,
-    });
-    friendRequestData.friendRequests.forEach((request) => {
-      expect(html).toContain(request.friend.username);
-    });
-  });
-
-  it('will render correctly on the client-side', () => {
+  it('will render correctly', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const requests = wrapper.findAllComponents(FriendRequestsListItem);
     expect(requests).toHaveLength(friendRequestData.friendRequests.length);
 
@@ -155,10 +142,17 @@ describe('Friend requests view', () => {
       const friendRequest = friendRequestData.friendRequests[index];
       expect(request.text()).toContain(friendRequest.friend.username);
     });
+
+    expect(listSpy).toHaveBeenCalledWith('sam_smith', {
+      direction: 'incoming',
+      showAcknowledged: false,
+    });
   });
 
   it('will allow the user to accept a friend request', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
       fetcher,
@@ -196,6 +190,8 @@ describe('Friend requests view', () => {
 
   it('will allow the user to cancel accepting a friend request', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
       fetcher,
@@ -227,6 +223,8 @@ describe('Friend requests view', () => {
 
   it('will show a message if the user attempts to accept a friend request that no longer exists', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
       fetcher,
@@ -270,6 +268,8 @@ describe('Friend requests view', () => {
 
   it('will allow the user to reject a friend request', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
       fetcher,
@@ -307,6 +307,8 @@ describe('Friend requests view', () => {
 
   it('will allow the user to cancel rejecting a friend request', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
       fetcher,
@@ -338,6 +340,8 @@ describe('Friend requests view', () => {
 
   it('will show a message if the user attempts to reject a friend request that no longer exists', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const requestClient = new FriendRequest(
       fetcher,
@@ -381,6 +385,8 @@ describe('Friend requests view', () => {
 
   it('will display the profile of the user who sent the friend request when their name is clicked', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const profile: ProfileDTO = {
       accountTier: AccountTier.Basic,
@@ -413,6 +419,8 @@ describe('Friend requests view', () => {
 
   it("will show a not found message if the user's profile cannot be retrieved", async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const spy = jest.spyOn(client.users, 'getProfile').mockRejectedValue(
       createHttpError({
@@ -436,6 +444,8 @@ describe('Friend requests view', () => {
 
   it('will show an error toast if something goes wrong while retrieving profile', async () => {
     const wrapper = mount(FriendRequestsView, opts);
+    await flushPromises();
+
     const request = friendRequestData.friendRequests[0];
     const spy = jest
       .spyOn(client.users, 'getProfile')

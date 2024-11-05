@@ -3,7 +3,7 @@
 
   <!-- Accept request dialog -->
   <ConfirmDialog
-    :visible="state.showConfirmAccept && !!friends.currentRequest"
+    :visible="state.showConfirmAccept && !!state.currentRequest"
     confirm-text="Accept"
     title="Accept friend request?"
     icon="fa-regular fa-circle-question fa-2x"
@@ -15,8 +15,8 @@
       <span>Are you sure you want to accept a friend request from </span>
       <span class="font-bold">
         {{
-          friends.currentRequest?.friend.name ||
-          `@${friends.currentRequest?.friend.username}`
+          state.currentRequest?.friend.name ||
+          `@${state.currentRequest?.friend.username}`
         }}
       </span>
       <span>?</span>
@@ -25,7 +25,7 @@
 
   <!-- Decline request dialog -->
   <ConfirmDialog
-    :visible="state.showConfirmDecline && !!friends.currentRequest"
+    :visible="state.showConfirmDecline && !!state.currentRequest"
     confirm-text="Decline"
     title="Decline friend request?"
     icon="fa-regular fa-circle-question fa-2x"
@@ -39,8 +39,8 @@
       <span>Are you sure you want to decline a friend request from </span>
       <span class="font-bold">
         {{
-          friends.currentRequest?.friend.name ||
-          `@${friends.currentRequest?.friend.username}`
+          state.currentRequest?.friend.name ||
+          `@${state.currentRequest?.friend.username}`
         }}
       </span>
       <span>? You can provide an optional reason.</span>
@@ -61,7 +61,7 @@
   </ConfirmDialog>
 
   <ProfilePanel
-    :profile="profiles.currentProfile ?? undefined"
+    :profile="state.currentProfile ?? undefined"
     :is-loading="state.isLoadingProfile"
     :visible="state.showFriendProfile"
     @close="onCloseFriendProfile"
@@ -81,7 +81,7 @@
       </ul>
 
       <FriendRequestsList
-        :requests="friends.requests"
+        :requests="state.results"
         @accept="onAcceptRequest"
         @decline="onDeclineRequest"
         @dismiss="onDismissFriendRequest"
@@ -92,7 +92,12 @@
 </template>
 
 <script lang="ts" setup>
-import { FriendRequestDTO, FriendRequestDirection } from '@bottomtime/api';
+import {
+  FriendRequestDTO,
+  FriendRequestDirection,
+  ListFriendRequestsResponseDTO,
+  ProfileDTO,
+} from '@bottomtime/api';
 
 import { onMounted, reactive } from 'vue';
 
@@ -106,18 +111,16 @@ import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import FriendRequestsList from '../../components/friends/friend-requests-list.vue';
 import ProfilePanel from '../../components/users/profile-panel.vue';
 import { useOops } from '../../oops';
-import {
-  useCurrentUser,
-  useFriends,
-  useProfiles,
-  useToasts,
-} from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 
 interface FriendRequestsViewState {
+  currentProfile?: ProfileDTO;
+  currentRequest?: FriendRequestDTO;
   declineReason: string;
   isAcceptingRequest: boolean;
   isDecliningRequest: boolean;
   isLoadingProfile: boolean;
+  results: ListFriendRequestsResponseDTO;
   showConfirmAccept: boolean;
   showConfirmDecline: boolean;
   showFriendProfile: boolean;
@@ -125,9 +128,7 @@ interface FriendRequestsViewState {
 
 const client = useClient();
 const currentUser = useCurrentUser();
-const friends = useFriends();
 const oops = useOops();
-const profiles = useProfiles();
 const toasts = useToasts();
 
 const state = reactive<FriendRequestsViewState>({
@@ -135,6 +136,10 @@ const state = reactive<FriendRequestsViewState>({
   isAcceptingRequest: false,
   isDecliningRequest: false,
   isLoadingProfile: false,
+  results: {
+    friendRequests: [],
+    totalCount: 0,
+  },
   showConfirmAccept: false,
   showConfirmDecline: false,
   showFriendProfile: false,
@@ -152,21 +157,21 @@ onMounted(async () => {
       },
     );
 
-    friends.requests.friendRequests = friendRequestsResults.friendRequests.map(
+    state.results.friendRequests = friendRequestsResults.friendRequests.map(
       (friend) => friend.toJSON(),
     );
-    friends.requests.totalCount = friendRequestsResults.totalCount;
+    state.results.totalCount = friendRequestsResults.totalCount;
   });
 });
 
 function onAcceptRequest(request: FriendRequestDTO) {
-  friends.currentRequest = request;
+  state.currentRequest = request;
   state.showConfirmAccept = true;
 }
 
 function onCancelAcceptRequest() {
   state.showConfirmAccept = false;
-  friends.currentRequest = null;
+  state.currentRequest = undefined;
 }
 
 async function onConfirmAcceptRequest() {
@@ -178,16 +183,16 @@ async function onConfirmAcceptRequest() {
 
       const request = client.friends.wrapFriendRequestDTO(
         currentUser.user.username,
-        friends.currentRequest,
+        state.currentRequest,
       );
 
       await request.accept();
 
-      const index = friends.requests.friendRequests.findIndex(
+      const index = state.results.friendRequests.findIndex(
         (r) => r.friendId === request.friend.id,
       );
       if (index > -1) {
-        friends.requests.friendRequests[index].accepted = true;
+        state.results.friendRequests[index].accepted = true;
       }
 
       toasts.toast({
@@ -203,18 +208,18 @@ async function onConfirmAcceptRequest() {
         toasts.toast({
           id: 'friend-request-not-found',
           message: `The friend request from ${
-            friends.currentRequest?.friend.name ||
-            `@${friends.currentRequest?.friend.username}`
+            state.currentRequest?.friend.name ||
+            `@${state.currentRequest?.friend.username}`
           } no longer exists. Unable to accept.`,
           type: ToastType.Warning,
         });
 
-        const index = friends.requests.friendRequests.findIndex(
-          (r) => r.friendId === friends.currentRequest?.friend.id,
+        const index = state.results.friendRequests.findIndex(
+          (r) => r.friendId === state.currentRequest?.friend.id,
         );
         if (index > -1) {
-          friends.requests.friendRequests.splice(index, 1);
-          friends.requests.totalCount--;
+          state.results.friendRequests.splice(index, 1);
+          state.results.totalCount--;
         }
       },
     },
@@ -222,18 +227,18 @@ async function onConfirmAcceptRequest() {
 
   state.isAcceptingRequest = false;
   state.showConfirmAccept = false;
-  friends.currentRequest = null;
+  state.currentRequest = undefined;
 }
 
 function onDeclineRequest(request: FriendRequestDTO, reason?: string) {
-  friends.currentRequest = request;
+  state.currentRequest = request;
   state.declineReason = reason || '';
   state.showConfirmDecline = true;
 }
 
 function onCancelDeclineRequest() {
   state.showConfirmDecline = false;
-  friends.currentRequest = null;
+  state.currentRequest = undefined;
 }
 
 async function onConfirmDeclineRequest() {
@@ -241,21 +246,21 @@ async function onConfirmDeclineRequest() {
 
   await oops(
     async () => {
-      if (!currentUser.user || !friends.currentRequest) return;
+      if (!currentUser.user || !state.currentRequest) return;
 
       const request = client.friends.wrapFriendRequestDTO(
         currentUser.user.username,
-        friends.currentRequest,
+        state.currentRequest,
       );
 
       await request.decline(state.declineReason);
 
-      const index = friends.requests.friendRequests.findIndex(
+      const index = state.results.friendRequests.findIndex(
         (r) => r.friendId === request.friend.id,
       );
       if (index > -1) {
-        friends.requests.friendRequests[index].accepted = false;
-        friends.requests.friendRequests[index].reason = state.declineReason;
+        state.results.friendRequests[index].accepted = false;
+        state.results.friendRequests[index].reason = state.declineReason;
       }
 
       toasts.toast({
@@ -271,18 +276,18 @@ async function onConfirmDeclineRequest() {
         toasts.toast({
           id: 'friend-request-not-found',
           message: `The friend request from ${
-            friends.currentRequest?.friend.name ||
-            `@${friends.currentRequest?.friend.username}`
+            state.currentRequest?.friend.name ||
+            `@${state.currentRequest?.friend.username}`
           } no longer exists. Unable to decline.`,
           type: ToastType.Warning,
         });
 
-        const index = friends.requests.friendRequests.findIndex(
-          (r) => r.friendId === friends.currentRequest?.friend.id,
+        const index = state.results.friendRequests.findIndex(
+          (r) => r.friendId === state.currentRequest?.friend.id,
         );
         if (index > -1) {
-          friends.requests.friendRequests.splice(index, 1);
-          friends.requests.totalCount--;
+          state.results.friendRequests.splice(index, 1);
+          state.results.totalCount--;
         }
       },
     },
@@ -290,28 +295,28 @@ async function onConfirmDeclineRequest() {
 
   state.showConfirmDecline = false;
   state.isDecliningRequest = false;
-  friends.currentRequest = null;
+  state.currentRequest = undefined;
 }
 
 function onDismissFriendRequest(dto: FriendRequestDTO) {
-  const index = friends.requests.friendRequests.findIndex(
+  const index = state.results.friendRequests.findIndex(
     (r) => r.friendId === dto.friend.id,
   );
   if (index > -1) {
-    friends.requests.friendRequests.splice(index, 1);
-    friends.requests.totalCount--;
+    state.results.friendRequests.splice(index, 1);
+    state.results.totalCount--;
   }
 }
 
 async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
   state.isLoadingProfile = true;
-  profiles.currentProfile = null;
-  friends.currentRequest = request;
+  state.currentProfile = undefined;
+  state.currentRequest = request;
   state.showFriendProfile = true;
 
   await oops(
     async () => {
-      profiles.currentProfile = await client.users.getProfile(
+      state.currentProfile = await client.users.getProfile(
         request.friend.username,
       );
     },
@@ -336,6 +341,6 @@ async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
 
 function onCloseFriendProfile() {
   state.showFriendProfile = false;
-  friends.currentRequest = null;
+  state.currentRequest = undefined;
 }
 </script>

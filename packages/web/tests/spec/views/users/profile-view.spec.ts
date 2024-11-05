@@ -7,13 +7,13 @@ import {
   LogBookSharing,
   ProfileDTO,
   Tank,
+  UserProfile,
 } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
@@ -22,19 +22,18 @@ import { Pinia, createPinia } from 'pinia';
 import { defineComponent } from 'vue';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import EditProfile from '../../../src/components/users/edit-profile.vue';
-import ViewProfile from '../../../src/components/users/view-profile.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser, useProfiles } from '../../../src/store';
-import ProfileView from '../../../src/views/profile-view.vue';
-import { createRouter } from '../../fixtures/create-router';
-import TestTankData from '../../fixtures/tanks.json';
+import { ApiClientKey } from '../../../../src/api-client';
+import EditProfile from '../../../../src/components/users/edit-profile.vue';
+import ViewProfile from '../../../../src/components/users/view-profile.vue';
+import { useCurrentUser } from '../../../../src/store';
+import ProfileView from '../../../../src/views/users/profile-view.vue';
+import { createRouter } from '../../../fixtures/create-router';
+import TestTankData from '../../../fixtures/tanks.json';
 import {
   AdminUser,
   BasicUser,
   UserWithFullProfile,
-} from '../../fixtures/users';
+} from '../../../fixtures/users';
 
 dayjs.extend(relativeTime);
 
@@ -51,7 +50,6 @@ describe('Profile View', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let profiles: ReturnType<typeof useProfiles>;
   let opts: ComponentMountingOptions<typeof ProfileView>;
 
   beforeAll(() => {
@@ -74,40 +72,42 @@ describe('Profile View', () => {
   beforeEach(() => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    profiles = useProfiles(pinia);
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
         stubs: {
           teleport: true,
         },
       },
     };
+
+    jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
+      tanks: tankData.tanks.map((t) => new Tank(fetcher, t)),
+      totalCount: tankData.totalCount,
+    });
   });
 
-  it('will pre-fetch the indicated profile on the backend', async () => {
+  it('will load the requested user profile when mounted', async () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${UserWithFullProfile.username}`);
     const spy = jest
       .spyOn(client.users, 'getProfile')
       .mockResolvedValue(UserWithFullProfile.profile);
 
-    const html = await renderToString(ProfileView, {
-      global: opts.global,
-    });
+    const wrapper = mount(ProfileView, opts);
+    await flushPromises();
 
-    const div = document.createElement('div');
-    div.innerHTML = html;
+    expect(wrapper.getComponent(ViewProfile).props('profile')).toEqual(
+      UserWithFullProfile.profile,
+    );
 
     expect(spy).toHaveBeenCalledWith(UserWithFullProfile.username);
-    expect(div.querySelector('[data-testid="profile-name"]')).not.toBeNull();
   });
 
-  it('will not attempt to prefetch a profile if there is no username in the path', async () => {
+  it('will not attempt to fetch a profile if there is no username in the path', async () => {
     currentUser.user = BasicUser;
     await router.push('/profile');
     const spy = jest
@@ -115,18 +115,16 @@ describe('Profile View', () => {
       .mockResolvedValue(BasicUser.profile);
     jest.spyOn(client.tanks, 'listTanks').mockResolvedValue(EmptyTankResults);
 
-    const html = await renderToString(ProfileView, {
-      global: opts.global,
-    });
+    const wrapper = mount(ProfileView, opts);
+    await flushPromises();
 
-    const div = document.createElement('div');
-    div.innerHTML = html;
-
+    expect(wrapper.getComponent(EditProfile).props('profile')).toEqual(
+      BasicUser.profile,
+    );
     expect(spy).not.toHaveBeenCalled();
-    expect(div.querySelector('[data-testid="nameInput"]')).not.toBeNull();
   });
 
-  it('will prefetch tank profiles if the current user is viewing their own profile', async () => {
+  it('will load tank profiles if the current user is viewing their own profile', async () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${BasicUser.username.toUpperCase()}`);
     const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
@@ -134,15 +132,11 @@ describe('Profile View', () => {
       totalCount: tankData.totalCount,
     });
 
-    const html = await renderToString(ProfileView, {
-      global: opts.global,
-    });
-
-    const div = document.createElement('div');
-    div.innerHTML = html;
+    const wrapper = mount(ProfileView, opts);
+    await flushPromises();
 
     expect(
-      div.querySelector('[data-testid="tank-profiles"]')?.innerHTML,
+      wrapper.get('[data-testid="tank-profiles"]').html(),
     ).toMatchSnapshot();
 
     expect(spy).toHaveBeenCalledWith({
@@ -151,7 +145,7 @@ describe('Profile View', () => {
     });
   });
 
-  it('will prefetch tank profiles if an admin is viewing the profile', async () => {
+  it('will fetch tank profiles if an admin is viewing the profile', async () => {
     currentUser.user = AdminUser;
     await router.push(`/profile/${BasicUser.username}`);
     jest.spyOn(client.users, 'getProfile').mockResolvedValue(BasicUser.profile);
@@ -160,15 +154,11 @@ describe('Profile View', () => {
       totalCount: tankData.totalCount,
     });
 
-    const html = await renderToString(ProfileView, {
-      global: opts.global,
-    });
-
-    const div = document.createElement('div');
-    div.innerHTML = html;
+    const wrapper = mount(ProfileView, opts);
+    await flushPromises();
 
     expect(
-      div.querySelector('[data-testid="tank-profiles"]')?.innerHTML,
+      wrapper.get('[data-testid="tank-profiles"]').html(),
     ).toMatchSnapshot();
 
     expect(spy).toHaveBeenCalledWith({
@@ -177,7 +167,7 @@ describe('Profile View', () => {
     });
   });
 
-  it('will not prefetch tanks if the current user does not own the requested profile', async () => {
+  it('will not fetch tanks if the current user does not own the requested profile', async () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${UserWithFullProfile.username}`);
     jest
@@ -185,40 +175,35 @@ describe('Profile View', () => {
       .mockResolvedValue(UserWithFullProfile.profile);
     const spy = jest.spyOn(client.tanks, 'listTanks');
 
-    const html = await renderToString(ProfileView, {
-      global: opts.global,
-    });
-
-    const div = document.createElement('div');
-    div.innerHTML = html;
+    const wrapper = mount(ProfileView, opts);
+    await flushPromises();
 
     expect(spy).not.toHaveBeenCalled();
-    expect(div.querySelector('[data-testid="tank-profiles"]')).toBeNull();
+    expect(wrapper.find('[data-testid="tank-profiles"]').exists()).toBe(false);
   });
 
-  it('will not attempt to prefetch a profile if the current user is not authenticated', async () => {
+  it('will not attempt to fetch a profile if the current user is not authenticated', async () => {
     currentUser.user = null;
     await router.push(`/profile/${UserWithFullProfile.username}`);
     const spy = jest
       .spyOn(client.users, 'getProfile')
       .mockResolvedValue(UserWithFullProfile.profile);
 
-    const html = await renderToString(ProfileView, {
-      global: opts.global,
-    });
-
-    const div = document.createElement('div');
-    div.innerHTML = html;
+    const wrapper = mount(ProfileView, opts);
+    await flushPromises();
 
     expect(spy).not.toHaveBeenCalled();
     expect(
-      div.querySelector('[data-testid="require-auth-anonymous"]'),
-    ).not.toBeNull();
+      wrapper.get('[data-testid="require-auth-anonymous"]').isVisible(),
+    ).toBe(true);
   });
 
-  it('will show the login form if user is not authenticated', () => {
+  it('will show the login form if user is not authenticated', async () => {
     currentUser.user = null;
+    const spy = jest.spyOn(client.users, 'getProfile');
     const wrapper = mount(ProfileView, opts);
+    await flushPromises();
+    expect(spy).not.toHaveBeenCalled();
     expect(
       wrapper.find('[data-testid="require-auth-anonymous"]').isVisible(),
     ).toBe(true);
@@ -226,12 +211,14 @@ describe('Profile View', () => {
 
   it("will show the current user's profile if no username is in the path", async () => {
     currentUser.user = BasicUser;
-    profiles.currentProfile = BasicUser.profile;
     await router.push('/profile');
+    const spy = jest.spyOn(client.users, 'getProfile');
 
     const wrapper = mount(ProfileView, opts);
+    await flushPromises();
     const editProfile = wrapper.getComponent(EditProfile);
 
+    expect(spy).not.toHaveBeenCalled();
     expect(editProfile.isVisible()).toBe(true);
     expect(
       editProfile.find<HTMLInputElement>('[data-testid="nameInput"]').element
@@ -241,12 +228,16 @@ describe('Profile View', () => {
 
   it("will show another user's profile in read-only mode", async () => {
     currentUser.user = BasicUser;
-    profiles.currentProfile = UserWithFullProfile.profile;
     await router.push(`/profile/${UserWithFullProfile.username}`);
+    const spy = jest
+      .spyOn(client.users, 'getProfile')
+      .mockResolvedValue(UserWithFullProfile.profile);
 
     const wrapper = mount(ProfileView, opts);
-    const viewProfile = wrapper.getComponent(ViewProfile);
+    await flushPromises();
 
+    const viewProfile = wrapper.getComponent(ViewProfile);
+    expect(spy).toHaveBeenCalledWith(UserWithFullProfile.username);
     expect(viewProfile.isVisible()).toBe(true);
     expect(viewProfile.find('[data-testid="profile-name"]').text()).toBe(
       UserWithFullProfile.profile.name,
@@ -255,7 +246,6 @@ describe('Profile View', () => {
 
   it('will allow the user to modify their profile', async () => {
     currentUser.user = { ...BasicUser };
-    profiles.currentProfile = { ...BasicUser.profile };
     const newProfile: ProfileDTO = {
       accountTier: AccountTier.Basic,
       userId: BasicUser.id,
@@ -266,7 +256,9 @@ describe('Profile View', () => {
       bio: 'New Bio',
       location: 'London, UK',
     };
+    await router.push('/profile');
     const wrapper = mount(ProfileView, opts);
+    await flushPromises();
 
     expect(
       wrapper.get<HTMLInputElement>('[data-testid="nameInput"]').element.value,
@@ -274,6 +266,10 @@ describe('Profile View', () => {
     expect(
       wrapper.find('[data-testid="require-auth-anonymous"]').exists(),
     ).toBe(false);
+
+    const profile = new UserProfile(fetcher, newProfile);
+    const saveSpy = jest.spyOn(profile, 'save').mockResolvedValue();
+    jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(profile);
 
     const editProfile = wrapper.getComponent(EditProfile);
     await editProfile
@@ -285,11 +281,18 @@ describe('Profile View', () => {
       .setValue(newProfile.location);
     await editProfile.get('[data-testid="save-profile"]').trigger('click');
     await flushPromises();
+
+    expect(saveSpy).toHaveBeenCalled();
+    expect(profile.name).toBe(newProfile.name);
+    expect(profile.bio).toBe(newProfile.bio);
+    expect(profile.location).toBe(newProfile.location);
   });
 
   it("will allow admins to edit other user's profiles", async () => {
     currentUser.user = { ...AdminUser };
-    profiles.currentProfile = { ...UserWithFullProfile.profile };
+    jest
+      .spyOn(client.users, 'getProfile')
+      .mockResolvedValue({ ...UserWithFullProfile.profile });
     const newProfile: ProfileDTO = {
       accountTier: AccountTier.Basic,
       userId: UserWithFullProfile.id,
@@ -300,7 +303,10 @@ describe('Profile View', () => {
       bio: 'New Bio',
       location: 'London, UK',
     };
+    await router.push(`/profile/${UserWithFullProfile.username}`);
+
     const wrapper = mount(ProfileView, opts);
+    await flushPromises();
 
     expect(
       wrapper.get<HTMLInputElement>('[data-testid="nameInput"]').element.value,
@@ -308,6 +314,10 @@ describe('Profile View', () => {
     expect(
       wrapper.find('[data-testid="require-auth-anonymous"]').exists(),
     ).toBe(false);
+
+    const profile = new UserProfile(fetcher, newProfile);
+    const saveSpy = jest.spyOn(profile, 'save').mockResolvedValue();
+    jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(profile);
 
     const editProfile = wrapper.getComponent(EditProfile);
     await editProfile
@@ -319,5 +329,10 @@ describe('Profile View', () => {
       .setValue(newProfile.location);
     await editProfile.get('[data-testid="save-profile"]').trigger('click');
     await flushPromises();
+
+    expect(saveSpy).toHaveBeenCalled();
+    expect(profile.name).toBe(newProfile.name);
+    expect(profile.bio).toBe(newProfile.bio);
+    expect(profile.location).toBe(newProfile.location);
   });
 });

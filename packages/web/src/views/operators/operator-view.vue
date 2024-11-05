@@ -14,13 +14,13 @@
   >
     <p>
       Are you sure you want to delete
-      <span class="font-bold">{{ operators.currentOperator?.name }}</span>
+      <span class="font-bold">{{ state.currentOperator?.name }}</span>
       ?
     </p>
     <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
-  <template v-if="enableDiveOperators.value && operators.currentOperator">
+  <template v-if="enableDiveOperators.value && state.currentOperator">
     <RequireAuth :authorizer="isAuthorized">
       <p
         v-if="state.isDeleted"
@@ -35,7 +35,7 @@
 
       <EditOperator
         v-else-if="canEdit"
-        :operator="operators.currentOperator"
+        :operator="state.currentOperator"
         :is-saving="state.isSaving"
         @save="onSave"
         @delete="onDelete"
@@ -45,7 +45,7 @@
         @rejected="onVerificationRejected"
       />
 
-      <ViewOperator v-else :operator="operators.currentOperator" />
+      <ViewOperator v-else :operator="state.currentOperator" />
     </RequireAuth>
   </template>
 
@@ -56,6 +56,8 @@
 import {
   AccountTier,
   CreateOrUpdateOperatorDTO,
+  LogBookSharing,
+  OperatorDTO,
   UserRole,
   VerificationStatus,
 } from '@bottomtime/api';
@@ -75,9 +77,10 @@ import EditOperator from '../../components/operators/edit-operator.vue';
 import ViewOperator from '../../components/operators/view-operator.vue';
 import { useFeature } from '../../featrues';
 import { useOops } from '../../oops';
-import { useCurrentUser, useOperators, useToasts } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 
 interface OperatorViewState {
+  currentOperator?: OperatorDTO;
   isSaving: boolean;
   isDeleted: boolean;
   isDeleting: boolean;
@@ -88,7 +91,6 @@ const client = useClient();
 const currentUser = useCurrentUser();
 const enableDiveOperators = useFeature(ManageDiveOperatorsFeature);
 const oops = useOops();
-const operators = useOperators();
 const route = useRoute();
 const router = useRouter();
 const toasts = useToasts();
@@ -102,13 +104,13 @@ const state = reactive<OperatorViewState>({
 
 const canEdit = computed(() => {
   // User must be authenticated and dive operator must exist
-  if (!operators.currentOperator || !currentUser.user) return false;
+  if (!state.currentOperator || !currentUser.user) return false;
 
   // Admins can edit any dive operator, regardless of state.
   if (currentUser.user.role === UserRole.Admin) return true;
 
-  // Dive operator owners can edit their own entries as long as their shops have not already been verified.
-  if (operators.currentOperator.owner.userId === currentUser.user.id) {
+  // Dive operator owners can edit their own entries.
+  if (state.currentOperator.owner.userId === currentUser.user.id) {
     return true;
   }
 
@@ -117,7 +119,7 @@ const canEdit = computed(() => {
 });
 
 const operatorKey = computed(() => {
-  if (!route.params.shopKey) return null;
+  if (!route.params.shopKey) return undefined;
   return typeof route.params.shopKey === 'string'
     ? route.params.shopKey
     : route.params.shopKey[0];
@@ -125,13 +127,15 @@ const operatorKey = computed(() => {
 
 const title = computed(() => {
   if (!operatorKey.value) return 'Create New Dive Shop';
-  if (canEdit.value) return `Edit "${operators.currentOperator?.name}"`;
-  return operators.currentOperator?.name || 'View Dive Operator';
+  if (canEdit.value) return `Edit "${state.currentOperator?.name}"`;
+  return state.currentOperator?.name || 'View Dive Operator';
 });
 
 const isAuthorized = computed<boolean>(() => {
+  // Any user can view an existing dive operator.
   if (operatorKey.value) return true;
 
+  // Only users with Shop Owner-tiered memberships and admins can create new shops.
   return (
     !!currentUser.user &&
     (currentUser.user.role === UserRole.Admin ||
@@ -154,28 +158,33 @@ onMounted(async () => {
   await oops(
     async () => {
       // If no key is present then we are on the "Create New Dive Shop" page. No need to fetch anything.
-      if (!operatorKey.value) {
-        operators.currentOperator = {
+      if (operatorKey.value) {
+        const operator = await client.operators.getOperator(operatorKey.value);
+        state.currentOperator = operator.toJSON();
+      } else {
+        state.currentOperator = {
           active: true,
           address: '',
           description: '',
           createdAt: new Date(),
           id: '',
           name: '',
-          owner: currentUser.user!.profile,
+          owner: currentUser.user?.profile ?? {
+            accountTier: AccountTier.Basic,
+            logBookSharing: LogBookSharing.Private,
+            memberSince: new Date(),
+            userId: '',
+            username: '',
+          },
           slug: '',
           updatedAt: new Date(),
           verificationStatus: VerificationStatus.Unverified,
         };
-        return;
       }
-
-      const operator = await client.operators.getOperator(operatorKey.value);
-      operators.currentOperator = operator.toJSON();
     },
     {
       [404]: () => {
-        operators.currentOperator = null;
+        state.currentOperator = undefined;
       },
     },
   );
@@ -185,7 +194,7 @@ async function createNewOperator(
   update: CreateOrUpdateOperatorDTO,
 ): Promise<void> {
   const operator = await client.operators.createOperator(update);
-  operators.currentOperator = operator.toJSON();
+  state.currentOperator = operator.toJSON();
   await router.push(`/shops/${operator.slug}`);
 
   toasts.toast({
@@ -198,9 +207,9 @@ async function createNewOperator(
 async function updateExistingOperator(
   update: CreateOrUpdateOperatorDTO,
 ): Promise<void> {
-  const slugChanged = operators.currentOperator?.slug !== update.slug;
+  const slugChanged = state.currentOperator?.slug !== update.slug;
   const operator = client.operators.wrapDTO({
-    ...operators.currentOperator,
+    ...state.currentOperator,
   });
 
   operator.active = update.active;
@@ -221,7 +230,7 @@ async function updateExistingOperator(
     message: 'Dive operator saved successfully',
     type: ToastType.Success,
   });
-  operators.currentOperator = operator.toJSON();
+  state.currentOperator = operator.toJSON();
 
   if (slugChanged) {
     // Redirect to the new slug if it has changed.
@@ -265,7 +274,7 @@ async function onConfirmDelete(): Promise<void> {
   state.isDeleting = true;
 
   await oops(async () => {
-    const operator = client.operators.wrapDTO(operators.currentOperator!);
+    const operator = client.operators.wrapDTO(state.currentOperator!);
     await operator.delete();
 
     state.showConfirmDeleteDialog = false;
@@ -290,29 +299,29 @@ function onCancelDelete() {
 }
 
 function onVerificationRequested() {
-  if (operators.currentOperator) {
-    operators.currentOperator.verificationStatus = VerificationStatus.Pending;
-    operators.currentOperator.verificationMessage = undefined;
+  if (state.currentOperator) {
+    state.currentOperator.verificationStatus = VerificationStatus.Pending;
+    state.currentOperator.verificationMessage = undefined;
   }
 }
 
 function onVerified(message?: string) {
-  if (operators.currentOperator) {
-    operators.currentOperator.verificationStatus = VerificationStatus.Verified;
-    operators.currentOperator.verificationMessage = message;
+  if (state.currentOperator) {
+    state.currentOperator.verificationStatus = VerificationStatus.Verified;
+    state.currentOperator.verificationMessage = message;
   }
 }
 
 function onVerificationRejected(message?: string) {
-  if (operators.currentOperator) {
-    operators.currentOperator.verificationStatus = VerificationStatus.Rejected;
-    operators.currentOperator.verificationMessage = message;
+  if (state.currentOperator) {
+    state.currentOperator.verificationStatus = VerificationStatus.Rejected;
+    state.currentOperator.verificationMessage = message;
   }
 }
 
 function onLogoChanged(url?: string) {
-  if (operators.currentOperator) {
-    operators.currentOperator.logo = url;
+  if (state.currentOperator) {
+    state.currentOperator.logo = url;
   }
 }
 </script>

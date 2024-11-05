@@ -12,6 +12,11 @@ export enum AvatarSize {
   XLarge = '256x256',
 }
 
+export type ApiList<T> = {
+  data: T[];
+  totalCount: number;
+};
+
 const ListAvatarURLsResponseSchema = z.object({
   root: z.string(),
   sizes: z.record(z.nativeEnum(AvatarSize), z.string()),

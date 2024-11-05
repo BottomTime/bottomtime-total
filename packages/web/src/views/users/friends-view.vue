@@ -1,7 +1,7 @@
 <template>
   <!-- Confirm Unfriend dialog -->
   <ConfirmDialog
-    :visible="state.showConfirmUnfriend && !!friends.currentFriend"
+    :visible="state.showConfirmUnfriend && !!state.currentFriend"
     title="Remove Friend?"
     confirm-text="Unfriend"
     icon="fa-regular fa-circle-question fa-2x"
@@ -13,9 +13,7 @@
     <p>
       <span>Are you sure you want to remove </span>
       <span class="font-bold">
-        {{
-          friends.currentFriend?.name || `@${friends.currentFriend?.username}`
-        }}
+        {{ state.currentFriend?.name || `@${state.currentFriend?.username}` }}
       </span>
       <span> as a friend?</span>
     </p>
@@ -37,8 +35,8 @@
       <span>Are you sure you want to cancel your friend request to </span>
       <span class="font-bold">
         {{
-          friends.currentRequest?.friend.name ||
-          `@${friends.currentRequest?.friend.username}`
+          state.currentRequest?.friend.name ||
+          `@${state.currentRequest?.friend.username}`
         }}
       </span>
       <span>?</span>
@@ -47,7 +45,7 @@
 
   <!-- User proflie drawer -->
   <ProfilePanel
-    :profile="profiles.currentProfile ?? undefined"
+    :profile="state.currentProfile ?? undefined"
     :is-loading="state.isLoadingProfile"
     :visible="state.showFriendProfile"
     @close="onCloseFriendProfile"
@@ -82,7 +80,7 @@
       <div class="w-full flex flex-col space-y-3">
         <!-- Friends list-->
         <FriendsList
-          :friends="friends.friends"
+          :friends="state.friends"
           :is-loading-more="state.isLoadingMoreFriends"
           :sort-by="state.queryParams.sortBy"
           :sort-order="state.queryParams.sortOrder"
@@ -100,7 +98,7 @@
         </p>
         <FriendRequestsList
           :is-loading-more="state.isLoadingMoreRequests"
-          :requests="friends.requests"
+          :requests="state.friendRequests"
           @cancel="onCancelRequest"
           @dismiss="onDismissRequest"
           @load-more="onLoadMoreRequests"
@@ -117,12 +115,14 @@ import {
   FriendRequestDTO,
   FriendRequestDirection,
   FriendsSortBy,
+  ListFriendRequestsResponseDTO,
   ListFriendsParams,
   ListFriendsParamsSchema,
+  ListFriendsResponseDTO,
+  ProfileDTO,
   SortOrder,
 } from '@bottomtime/api';
 
-import { URLSearchParams } from 'url';
 import { onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -138,14 +138,14 @@ import FriendsList from '../../components/friends/friends-list.vue';
 import SearchFriendsForm from '../../components/friends/search-friends-form.vue';
 import ProfilePanel from '../../components/users/profile-panel.vue';
 import { useOops } from '../../oops';
-import {
-  useCurrentUser,
-  useFriends,
-  useProfiles,
-  useToasts,
-} from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 
 interface FriendsViewState {
+  currentFriend?: FriendDTO;
+  currentRequest?: FriendRequestDTO;
+  currentProfile?: ProfileDTO;
+  friends: ListFriendsResponseDTO;
+  friendRequests: ListFriendRequestsResponseDTO;
   isCancellingRequest: boolean;
   isLoadingProfile: boolean;
   isLoadingMoreFriends: boolean;
@@ -161,9 +161,7 @@ interface FriendsViewState {
 // Dependencies
 const client = useClient();
 const currentUser = useCurrentUser();
-const friends = useFriends();
 const oops = useOops();
-const profiles = useProfiles();
 const route = useRoute();
 const router = useRouter();
 const toasts = useToasts();
@@ -201,6 +199,14 @@ function parseQueryString(): ListFriendsParams {
 }
 
 const state = reactive<FriendsViewState>({
+  friends: {
+    friends: [],
+    totalCount: 0,
+  },
+  friendRequests: {
+    friendRequests: [],
+    totalCount: 0,
+  },
   isCancellingRequest: false,
   isLoadingProfile: false,
   isLoadingMoreFriends: false,
@@ -223,8 +229,8 @@ async function refreshFriends(): Promise<void> {
       state.queryParams,
     );
 
-    friends.friends.friends = results.friends.map((f) => f.toJSON());
-    friends.friends.totalCount = results.totalCount;
+    state.friends.friends = results.friends.map((f) => f.toJSON());
+    state.friends.totalCount = results.totalCount;
   });
 }
 
@@ -241,10 +247,10 @@ async function refreshFriendRequests(): Promise<void> {
       },
     );
 
-    friends.requests.friendRequests = results.friendRequests.map((r) =>
+    state.friendRequests.friendRequests = results.friendRequests.map((r) =>
       r.toJSON(),
     );
-    friends.requests.totalCount = results.totalCount;
+    state.friendRequests.totalCount = results.totalCount;
   });
 }
 
@@ -258,12 +264,12 @@ async function onLoadMoreFriends(): Promise<void> {
       currentUser.user.username,
       {
         ...state.queryParams,
-        skip: friends.friends.friends.length,
+        skip: state.friends.friends.length,
       },
     );
 
-    friends.friends.friends.push(...results.friends.map((f) => f.toJSON()));
-    friends.friends.totalCount = results.totalCount;
+    state.friends.friends.push(...results.friends.map((f) => f.toJSON()));
+    state.friends.totalCount = results.totalCount;
   });
 
   state.isLoadingMoreFriends = false;
@@ -281,14 +287,14 @@ async function onLoadMoreRequests(): Promise<void> {
         direction: FriendRequestDirection.Outgoing,
         showAcknowledged: true,
         limit: 50,
-        skip: friends.requests.friendRequests.length,
+        skip: state.friendRequests.friendRequests.length,
       },
     );
 
-    friends.requests.friendRequests.push(
+    state.friendRequests.friendRequests.push(
       ...results.friendRequests.map((r) => r.toJSON()),
     );
-    friends.requests.totalCount = results.totalCount;
+    state.friendRequests.totalCount = results.totalCount;
   });
 
   state.isLoadingMoreRequests = false;
@@ -301,13 +307,13 @@ onMounted(async () => {
 });
 
 async function showProfile(username: string): Promise<void> {
-  profiles.currentProfile = null;
+  state.currentProfile = undefined;
   state.isLoadingProfile = true;
   state.showFriendProfile = true;
 
   await oops(
     async () => {
-      profiles.currentProfile = await client.users.getProfile(username);
+      state.currentProfile = await client.users.getProfile(username);
     },
     {
       [404]: () => {
@@ -348,18 +354,18 @@ function onAddFriend() {
 }
 
 function onRequestSent(request: FriendRequestDTO) {
-  friends.requests.friendRequests.unshift(request);
-  friends.requests.totalCount++;
+  state.friendRequests.friendRequests.unshift(request);
+  state.friendRequests.totalCount++;
   state.showSearchUsers = false;
 }
 
 async function onSelectFriend(friend: FriendDTO): Promise<void> {
-  friends.currentFriend = friend;
+  state.currentFriend = friend;
   await showProfile(friend.username);
 }
 
 async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
-  friends.currentRequest = request;
+  state.currentRequest = request;
   await showProfile(request.friend.username);
 }
 
@@ -368,7 +374,7 @@ function onCloseFriendProfile() {
 }
 
 function onUnfriend(friend: FriendDTO) {
-  friends.currentFriend = friend;
+  state.currentFriend = friend;
   state.showConfirmUnfriend = true;
 }
 
@@ -381,7 +387,7 @@ async function onConfirmUnfriend(): Promise<void> {
 
   await oops(
     async () => {
-      const dto = friends.currentFriend;
+      const dto = state.currentFriend;
       if (!dto || !currentUser.user) return;
 
       const friend = client.friends.wrapFriendDTO(
@@ -390,12 +396,10 @@ async function onConfirmUnfriend(): Promise<void> {
       );
       await friend.unfriend();
 
-      const index = friends.friends.friends.findIndex(
-        (f) => f.id === friend.id,
-      );
+      const index = state.friends.friends.findIndex((f) => f.id === friend.id);
       if (index > -1) {
-        friends.friends.friends.splice(index, 1);
-        friends.friends.totalCount--;
+        state.friends.friends.splice(index, 1);
+        state.friends.totalCount--;
       }
 
       toasts.toast({
@@ -408,12 +412,12 @@ async function onConfirmUnfriend(): Promise<void> {
     },
     {
       [404]: () => {
-        const index = friends.friends.friends.findIndex(
-          (f) => f.id === friends.currentFriend?.id,
+        const index = state.friends.friends.findIndex(
+          (f) => f.id === state.currentFriend?.id,
         );
         if (index > -1) {
-          friends.friends.friends.splice(index, 1);
-          friends.friends.totalCount--;
+          state.friends.friends.splice(index, 1);
+          state.friends.totalCount--;
         }
       },
     },
@@ -428,13 +432,13 @@ function onCancelSearchFriends() {
 }
 
 function onCancelRequest(request: FriendRequestDTO) {
-  friends.currentRequest = request;
+  state.currentRequest = request;
   state.showConfirmCancelRequest = true;
 }
 
 function onCancelCancelRequest() {
   state.showConfirmCancelRequest = false;
-  friends.currentRequest = null;
+  state.currentRequest = undefined;
 }
 
 async function onConfirmCancelRequest(): Promise<void> {
@@ -442,28 +446,28 @@ async function onConfirmCancelRequest(): Promise<void> {
 
   await oops(
     async () => {
-      if (!currentUser.user || !friends.currentRequest) return;
+      if (!currentUser.user || !state.currentRequest) return;
 
       const request = client.friends.wrapFriendRequestDTO(
         currentUser.user.username,
-        friends.currentRequest,
+        state.currentRequest,
       );
       await request.cancel();
 
-      const index = friends.requests.friendRequests.findIndex(
-        (r) => r.friendId === friends.currentRequest?.friendId,
+      const index = state.friendRequests.friendRequests.findIndex(
+        (r) => r.friendId === state.currentRequest?.friendId,
       );
 
       if (index > -1) {
-        friends.requests.friendRequests.splice(index, 1);
-        friends.requests.totalCount--;
+        state.friendRequests.friendRequests.splice(index, 1);
+        state.friendRequests.totalCount--;
       }
 
       toasts.toast({
         id: 'cancel-friend-request-succeeded',
         message: `You have successfully canceled your friend request to ${
-          friends.currentRequest.friend.name ||
-          `@${friends.currentRequest.friend.username}`
+          state.currentRequest.friend.name ||
+          `@${state.currentRequest.friend.username}`
         }.`,
         type: ToastType.Success,
       });
@@ -473,18 +477,18 @@ async function onConfirmCancelRequest(): Promise<void> {
         toasts.toast({
           id: 'friend-request-not-found',
           message: `The friend request from ${
-            friends.currentRequest?.friend.name ||
-            `@${friends.currentRequest?.friend.username}`
+            state.currentRequest?.friend.name ||
+            `@${state.currentRequest?.friend.username}`
           } no longer exists. Unable to cancel.`,
           type: ToastType.Warning,
         });
 
-        const index = friends.requests.friendRequests.findIndex(
-          (r) => r.friendId === friends.currentRequest?.friend.id,
+        const index = state.friendRequests.friendRequests.findIndex(
+          (r) => r.friendId === state.currentRequest?.friend.id,
         );
         if (index > -1) {
-          friends.requests.friendRequests.splice(index, 1);
-          friends.requests.totalCount--;
+          state.friendRequests.friendRequests.splice(index, 1);
+          state.friendRequests.totalCount--;
         }
       },
     },
@@ -492,7 +496,7 @@ async function onConfirmCancelRequest(): Promise<void> {
 
   state.showConfirmCancelRequest = false;
   state.isCancellingRequest = false;
-  friends.currentRequest = null;
+  state.currentRequest = undefined;
 }
 
 async function onDismissRequest(dto: FriendRequestDTO): Promise<void> {
@@ -507,24 +511,24 @@ async function onDismissRequest(dto: FriendRequestDTO): Promise<void> {
 
       await request.cancel();
 
-      const index = friends.requests.friendRequests.findIndex(
+      const index = state.friendRequests.friendRequests.findIndex(
         (r) => r.friendId === request.friend.id,
       );
 
       if (index > -1) {
-        friends.requests.friendRequests.splice(index, 1);
-        friends.requests.totalCount--;
+        state.friendRequests.friendRequests.splice(index, 1);
+        state.friendRequests.totalCount--;
       }
     },
     {
       [404]: () => {
-        const index = friends.requests.friendRequests.findIndex(
+        const index = state.friendRequests.friendRequests.findIndex(
           (r) => r.friendId === dto.friend.id,
         );
 
         if (index > -1) {
-          friends.requests.friendRequests.splice(index, 1);
-          friends.requests.totalCount--;
+          state.friendRequests.friendRequests.splice(index, 1);
+          state.friendRequests.totalCount--;
         }
       },
     },

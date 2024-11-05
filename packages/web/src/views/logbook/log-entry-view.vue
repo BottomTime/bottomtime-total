@@ -2,21 +2,34 @@
   <PageTitle :title="title" />
   <BreadCrumbs :items="items" />
 
-  <div v-if="logEntries.currentEntry">
+  <div v-if="state.isLoading" class="flex justify-center text-xl my-8">
+    <LoadingSpinner message="Fetching log entry..." />
+  </div>
+
+  <div v-else-if="state.currentEntry">
     <EditLogbookEntry
       v-if="editMode"
-      :entry="logEntries.currentEntry"
+      :entry="state.currentEntry"
       :is-saving="state.isSaving"
-      :tanks="tanks.results.tanks"
+      :tanks="state.tanks.tanks"
       @save="onSave"
     />
-    <ViewLogbookEntry v-else :entry="logEntries.currentEntry" />
+    <ViewLogbookEntry v-else :entry="state.currentEntry" />
   </div>
+
   <NotFound v-else />
 </template>
 
 <script lang="ts" setup>
-import { LogEntryDTO, UserRole } from '@bottomtime/api';
+import {
+  AccountTier,
+  ListTanksResponseDTO,
+  LogBookSharing,
+  LogEntryDTO,
+  UserRole,
+} from '@bottomtime/api';
+
+import LoadingSpinner from '@/components/common/loading-spinner.vue';
 
 import dayjs from 'dayjs';
 import { computed, onMounted, reactive } from 'vue';
@@ -30,32 +43,45 @@ import PageTitle from '../../components/common/page-title.vue';
 import EditLogbookEntry from '../../components/logbook/edit-logbook-entry.vue';
 import ViewLogbookEntry from '../../components/logbook/view-logbook-entry.vue';
 import { useOops } from '../../oops';
-import {
-  useCurrentUser,
-  useLogEntries,
-  useTanks,
-  useToasts,
-} from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 
 interface LogEntryViewState {
+  currentEntry?: LogEntryDTO;
+  isLoading: boolean;
   isSaving: boolean;
+  tanks: ListTanksResponseDTO;
 }
 
 const client = useClient();
 const currentUser = useCurrentUser();
-const logEntries = useLogEntries();
 const oops = useOops();
 const route = useRoute();
-const tanks = useTanks();
 const toasts = useToasts();
 
 const state = reactive<LogEntryViewState>({
+  isLoading: true,
   isSaving: false,
+  tanks: {
+    tanks: [],
+    totalCount: 0,
+  },
 });
 
+const username = computed(() =>
+  Array.isArray(route.params.username)
+    ? route.params.username[0]
+    : route.params.username,
+);
+const entryId = computed(() => {
+  if (!route.params.entryId) return undefined;
+
+  return Array.isArray(route.params.entryId)
+    ? route.params.entryId[0]
+    : route.params.entryId;
+});
 const title = computed(() =>
-  logEntries.currentEntry
-    ? dayjs(logEntries.currentEntry.timing.entryTime.date).format('LLL')
+  state.currentEntry
+    ? dayjs(state.currentEntry.timing.entryTime.date).format('LLL')
     : 'Log Entry',
 );
 const logbookPath = computed(() =>
@@ -78,41 +104,55 @@ onMounted(async () => {
   await Promise.all([
     oops(
       async () => {
-        if (
-          typeof route.params.entryId !== 'string' ||
-          typeof route.params.username !== 'string'
-        ) {
-          return;
+        if (entryId.value) {
+          const entry = await client.logEntries.getLogEntry(
+            username.value,
+            entryId.value,
+          );
+          state.currentEntry = entry.toJSON();
+        } else {
+          state.currentEntry = {
+            createdAt: new Date(),
+            creator: currentUser.user?.profile ?? {
+              accountTier: AccountTier.Basic,
+              logBookSharing: LogBookSharing.Private,
+              memberSince: new Date(),
+              userId: '',
+              username: '',
+            },
+            id: '',
+            timing: {
+              duration: 0,
+              entryTime: {
+                date: '',
+                timezone: '',
+              },
+            },
+          };
         }
-
-        const entry = await client.logEntries.getLogEntry(
-          route.params.username,
-          route.params.entryId,
-        );
-
-        logEntries.currentEntry = entry.toJSON();
       },
       {
         [403]: () => {
-          logEntries.currentEntry = null;
+          state.currentEntry = undefined;
         },
         [404]: () => {
-          logEntries.currentEntry = null;
+          state.currentEntry = undefined;
         },
       },
     ),
     oops(async () => {
-      if (typeof route.params.username !== 'string') return;
-
       const tanksResult = await client.tanks.listTanks({
-        username: route.params.username,
+        username: username.value,
         includeSystem: true,
       });
 
-      tanks.results.tanks = tanksResult.tanks.map((tank) => tank.toJSON());
-      tanks.results.totalCount = tanksResult.totalCount;
+      state.tanks = {
+        tanks: tanksResult.tanks.map((tank) => tank.toJSON()),
+        totalCount: tanksResult.totalCount,
+      };
     }),
   ]);
+  state.isLoading = false;
 });
 
 async function onSave(data: LogEntryDTO): Promise<void> {
@@ -122,7 +162,7 @@ async function onSave(data: LogEntryDTO): Promise<void> {
     const entry = client.logEntries.wrapDTO(data);
     await entry.save();
 
-    logEntries.currentEntry = entry.toJSON();
+    state.currentEntry = entry.toJSON();
     toasts.toast({
       id: 'log-entry-saved',
       message: 'Log entry has been successfully saved',

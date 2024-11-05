@@ -41,7 +41,7 @@ export const AdminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin/tanks/new',
     name: AdminRouteNames.AdminNewTank,
-    component: () => import('../views/admin/new-tank-view.vue'),
+    component: () => import('../views/admin/tank-view.vue'),
   },
   {
     path: '/admin/tanks/:tankId',

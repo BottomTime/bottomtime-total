@@ -9,15 +9,14 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import RequestPasswordReset from '../../../src/components/users/request-password-reset.vue';
-import ResetPassword from '../../../src/components/users/reset-password.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
-import ResetPasswordView from '../../../src/views/reset-password-view.vue';
-import { createHttpError } from '../../fixtures/create-http-error';
-import { createRouter } from '../../fixtures/create-router';
-import { BasicUser } from '../../fixtures/users';
+import { ApiClientKey } from '../../../../src/api-client';
+import RequestPasswordReset from '../../../../src/components/users/request-password-reset.vue';
+import ResetPassword from '../../../../src/components/users/reset-password.vue';
+import { useCurrentUser } from '../../../../src/store';
+import ResetPasswordView from '../../../../src/views/users/reset-password-view.vue';
+import { createHttpError } from '../../../fixtures/create-http-error';
+import { createRouter } from '../../../fixtures/create-router';
+import { BasicUser } from '../../../fixtures/users';
 
 const UsernameOrEmailInput = '[data-testid="username"]';
 const RequestPasswordResetButton = '[data-testid="reset-password-submit"]';
@@ -31,7 +30,6 @@ describe('ResetPassword view', () => {
   let client: ApiClient;
   let router: Router;
 
-  let location: MockLocation;
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof ResetPasswordView>;
@@ -51,14 +49,12 @@ describe('ResetPassword view', () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     currentUser.user = null;
-    location = new MockLocation();
 
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
         stubs: {
           teleport: true,

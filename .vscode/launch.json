@@ -16,20 +16,6 @@
       }
     },
     {
-      "name": "Attach to web frontend (Docker)",
-      "type": "node",
-      "request": "attach",
-      "port": 9231,
-      "restart": true,
-      "localRoot": "${workspaceFolder}",
-      "remoteRoot": "/app",
-      "sourceMaps": true,
-      "sourceMapPathOverrides": {
-        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
-        "webpack://?:*/*": "${workspaceFolder}/packages/*"
-      }
-    },
-    {
       "name": "Debug backend-end (Nest.js) tests",
       "type": "node",
       "request": "launch",
@@ -55,7 +41,9 @@
         "${fileBasenameNoExtension}"
       ],
       "cwd": "${workspaceFolder}/packages/web",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "sourceMaps": true,
+      "smartStep": true
     }
   ]
 }

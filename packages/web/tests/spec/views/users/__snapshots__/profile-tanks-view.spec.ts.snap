@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Profile Tanks View when fetching on the client side will allow an admin to edit an existing tank profile 1`] = `
+exports[`Profile Tanks View will allow an admin to edit an existing tank profile 1`] = `
 "<li class="flex justify-between items-baseline even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4" data-testid="tank-d9e22779-449f-45c8-a201-09ce4c655bf7">
   <div class="space-y-2"><button class="font-title font-bold text-xl hover:text-link-hover" data-testid="select-tank-d9e22779-449f-45c8-a201-09ce4c655bf7">Modernized Tank</button>
     <div class="flex items-baseline">
@@ -15,7 +15,7 @@ exports[`Profile Tanks View when fetching on the client side will allow an admin
 </li>"
 `;
 
-exports[`Profile Tanks View when fetching on the client side will allow profile owner to edit an existing tank profile 1`] = `
+exports[`Profile Tanks View will allow profile owner to edit an existing tank profile 1`] = `
 "<li class="flex justify-between items-baseline even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4" data-testid="tank-d9e22779-449f-45c8-a201-09ce4c655bf7">
   <div class="space-y-2"><button class="font-title font-bold text-xl hover:text-link-hover" data-testid="select-tank-d9e22779-449f-45c8-a201-09ce4c655bf7">Modernized Tank</button>
     <div class="flex items-baseline">
@@ -30,10 +30,6 @@ exports[`Profile Tanks View when fetching on the client side will allow profile 
 </li>"
 `;
 
-exports[`Profile Tanks View when fetching on the client side will render list for admin 1`] = `"Showing 9 tank profile(s)"`;
+exports[`Profile Tanks View will render list for admin 1`] = `"Showing 9 tank profile(s)"`;
 
-exports[`Profile Tanks View when fetching on the client side will render list for profile owner 1`] = `"Showing 9 tank profile(s)"`;
-
-exports[`Profile Tanks View when prefetching on the server side will render correctly for an admin 1`] = `"<span>Showing </span><span class="font-bold">9</span><span> tank profile(s)</span>"`;
-
-exports[`Profile Tanks View when prefetching on the server side will render the form correctly for the profile owner 1`] = `"<span>Showing </span><span class="font-bold">9</span><span> tank profile(s)</span>"`;
+exports[`Profile Tanks View will render list for profile owner 1`] = `"Showing 9 tank profile(s)"`;

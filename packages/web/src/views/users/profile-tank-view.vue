@@ -13,16 +13,14 @@
   >
   </ConfirmDialog>
 
-  <RequireAuth
-    :auth-check="
-      (currentUser) =>
-        currentUser.role === UserRole.Admin ||
-        currentUser.username.toLowerCase() === username.toLowerCase()
-    "
-  >
-    <div v-if="tanks.currentTank">
+  <RequireAuth :authorizer="authorizer">
+    <div v-if="state.isLoading" class="flex justify-center text-xl my-8">
+      <LoadingSpinner message="Fetching tank profile..." />
+    </div>
+
+    <div v-else-if="state.currentTank">
       <EditTank
-        :tank="tanks.currentTank"
+        :tank="state.currentTank"
         :is-saving="state.isSaving"
         show-delete
         @save="onSave"
@@ -35,7 +33,13 @@
 </template>
 
 <script lang="ts" setup>
-import { TankDTO, UserRole } from '@bottomtime/api';
+import {
+  CreateOrUpdateTankParamsSchema,
+  TankDTO,
+  TankMaterial,
+  UserDTO,
+  UserRole,
+} from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -43,16 +47,19 @@ import { useRoute, useRouter } from 'vue-router';
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
+import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
-import RequireAuth from '../../components/common/require-auth.vue';
+import RequireAuth from '../../components/common/require-auth2.vue';
 import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import EditTank from '../../components/tanks/edit-tank.vue';
 import { useOops } from '../../oops';
-import { useTanks, useToasts } from '../../store';
+import { useToasts } from '../../store';
 
 interface ProfileTankViewState {
+  currentTank?: TankDTO;
   isDeleting: boolean;
+  isLoading: boolean;
   isSaving: boolean;
   showConfirmDelete: boolean;
 }
@@ -61,11 +68,20 @@ const client = useClient();
 const oops = useOops();
 const route = useRoute();
 const router = useRouter();
-const tanks = useTanks();
 const toasts = useToasts();
 
+const state = reactive<ProfileTankViewState>({
+  isDeleting: false,
+  isLoading: true,
+  isSaving: false,
+  showConfirmDelete: false,
+});
+
 const username = computed(() => route.params.username as string);
-const title = computed(() => tanks.currentTank?.name || 'Edit Tank Profile');
+const tankId = computed(() =>
+  typeof route.params.tankId === 'string' ? route.params.tankId : null,
+);
+const title = computed(() => state.currentTank?.name || 'Edit Tank Profile');
 const breadcrumbs: Breadcrumb[] = [
   {
     label: 'Profile',
@@ -81,35 +97,57 @@ const breadcrumbs: Breadcrumb[] = [
   },
 ];
 
-const state = reactive<ProfileTankViewState>({
-  isDeleting: false,
-  isSaving: false,
-  showConfirmDelete: false,
-});
+function authorizer(user?: UserDTO): boolean {
+  if (typeof route.params.username !== 'string') return false;
+  if (!user) return false;
+  if (user.role === UserRole.Admin) return true;
+  return route.params.username.toLowerCase() === user.username.toLowerCase();
+}
 
 onMounted(async () => {
-  const tankId = route.params.tankId as string;
-
   await oops(
     async () => {
-      const tank = await client.tanks.getTank(tankId, username.value);
-      tanks.currentTank = tank.toJSON();
+      if (tankId.value) {
+        const tank = await client.tanks.getTank(tankId.value, username.value);
+        state.currentTank = tank.toJSON();
+      } else {
+        state.currentTank = {
+          id: '',
+          isSystem: false,
+          material: TankMaterial.Aluminum,
+          name: '',
+          volume: 0,
+          workingPressure: 0,
+        };
+      }
     },
     {
       [404]: () => {
-        tanks.currentTank = null;
+        state.currentTank = undefined;
       },
     },
   );
+
+  state.isLoading = false;
 });
 
 async function onSave(dto: TankDTO) {
   state.isSaving = true;
 
   await oops(async () => {
-    const tank = client.tanks.wrapDTO(dto, username.value);
-    await tank.save();
-    tanks.currentTank = dto;
+    if (dto.id) {
+      const tank = client.tanks.wrapDTO(dto, username.value);
+      await tank.save();
+      state.currentTank = dto;
+    } else {
+      const newTank = await client.tanks.createTank(
+        CreateOrUpdateTankParamsSchema.parse(dto),
+        username.value,
+      );
+      state.currentTank = newTank.toJSON();
+      await router.push(`/profile/${username.value}/tanks/${newTank.id}`);
+    }
+
     toasts.toast({
       id: 'tank-saved',
       message: 'Tank profile saved successfully',
@@ -128,8 +166,8 @@ async function onConfirmDelete(): Promise<void> {
   state.isDeleting = true;
 
   await oops(async () => {
-    if (!tanks.currentTank) return;
-    const tank = client.tanks.wrapDTO(tanks.currentTank, username.value);
+    if (!state.currentTank) return;
+    const tank = client.tanks.wrapDTO(state.currentTank, username.value);
     await tank.delete();
     await router.push(`/profile/${username.value}/tanks`);
   });

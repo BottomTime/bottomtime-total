@@ -63,7 +63,7 @@ export const UserRoutes: RouteRecordRaw[] = [
   {
     path: '/profile/:username/tanks/new',
     name: UserRouteNames.ProfileNewTank,
-    component: () => import('../views/users/profile-new-tank-view.vue'),
+    component: () => import('../views/users/profile-tank-view.vue'),
   },
   {
     path: '/profile/:username/tanks/:tankId',

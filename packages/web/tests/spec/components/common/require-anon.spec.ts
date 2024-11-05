@@ -9,7 +9,6 @@ import { defineComponent } from 'vue';
 
 import requireAnon from '../../../../src/components/common/require-anon.vue';
 import RequireAnon from '../../../../src/components/common/require-anon.vue';
-import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser } from '../../../../src/store';
 import { BasicUser } from '../../../fixtures/users';
 
@@ -21,22 +20,17 @@ const AuthContent = '[data-testid="auth-content"]';
 const LogoutButton = '[data-testid="logout-link"]';
 
 describe('RequireAnon component', () => {
-  let location: MockLocation;
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof requireAnon>;
 
   beforeEach(() => {
-    location = new MockLocation();
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
 
     opts = {
       global: {
         plugins: [pinia],
-        provide: {
-          [LocationKey as symbol]: location,
-        },
         stubs: { teleport: true },
       },
       slots: {

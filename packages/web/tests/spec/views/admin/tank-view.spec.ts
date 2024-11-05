@@ -1,5 +1,6 @@
 import {
   ApiClient,
+  CreateOrUpdateTankParamsDTO,
   Fetcher,
   Tank,
   TankDTO,
@@ -56,6 +57,10 @@ describe('Admin Tank View', () => {
     client = new ApiClient({ fetcher });
     router = createRouter([
       {
+        path: '/admin/tanks/new',
+        component: AdminTankView,
+      },
+      {
         path: '/admin/tanks/:tankId',
         component: AdminTankView,
       },
@@ -101,6 +106,35 @@ describe('Admin Tank View', () => {
     expect(wrapper.get<HTMLInputElement>(SteelRadio).element.checked).toBe(
       true,
     );
+  });
+
+  it('will allow a user to create a new tank profile', async () => {
+    const expected: CreateOrUpdateTankParamsDTO = {
+      name: 'New Name',
+      volume: 15,
+      workingPressure: 300,
+      material: TankMaterial.Aluminum,
+    };
+    const tank = new Tank(fetcher, {
+      ...TestData,
+      ...expected,
+    });
+    const spy = jest.spyOn(client.tanks, 'createTank').mockResolvedValue(tank);
+
+    await router.push('/admin/tanks/new');
+    const wrapper = mount(AdminTankView, opts);
+    await wrapper.get(NameInput).setValue(expected.name);
+    await wrapper.get(VolumeInput).setValue(expected.volume.toString());
+    await wrapper
+      .get(PressureInput)
+      .setValue(expected.workingPressure.toString());
+    await wrapper.get(AluminumRadio).setValue(true);
+    await wrapper.get(SaveButton).trigger('click');
+    await flushPromises();
+
+    expect(spy).toHaveBeenCalledWith(expected, AdminUser.username);
+    expect(toasts.toasts[0].message).toMatchSnapshot();
+    expect(router.currentRoute.value.params.tankId).toBe(TestData.id);
   });
 
   it('will allow a user to update a tank profile', async () => {

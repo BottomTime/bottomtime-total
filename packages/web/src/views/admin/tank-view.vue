@@ -20,10 +20,15 @@
 </template>
 
 <script lang="ts" setup>
-import { TankDTO, UserRole } from '@bottomtime/api';
+import {
+  CreateOrUpdateTankParamsSchema,
+  TankDTO,
+  TankMaterial,
+  UserRole,
+} from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
@@ -46,14 +51,36 @@ const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();
 const route = useRoute();
+const router = useRouter();
 const toasts = useToasts();
 
 const state = reactive<AdminTankViewState>({
-  isLoading: true,
+  currentTank: !route.params.tankId
+    ? {
+        id: '',
+        isSystem: true,
+        material: TankMaterial.Aluminum,
+        name: '',
+        volume: 0,
+        workingPressure: 0,
+      }
+    : undefined,
+  isLoading: !!route.params.tankId,
   isSaving: false,
 });
 
-const title = computed(() => state.currentTank?.name || 'Edit Tank Profile');
+const isAuthorized = computed(() => currentUser.user?.role === UserRole.Admin);
+const tankId = computed(() =>
+  typeof route.params.tankId === 'string' ? route.params.tankId : null,
+);
+const title = computed(() => {
+  if (tankId.value) {
+    return state.currentTank?.name || 'Edit Tank Profile';
+  }
+
+  return 'Create New Tank Profile';
+});
+
 const Breadcrumbs: Breadcrumb[] = [
   {
     label: 'Admin',
@@ -69,15 +96,12 @@ const Breadcrumbs: Breadcrumb[] = [
   },
 ];
 
-const isAuthorized = computed(() => currentUser.user?.role === UserRole.Admin);
-
 onMounted(async () => {
   await oops(
     async () => {
-      if (!isAuthorized.value) return;
-      if (typeof route.params.tankId !== 'string') return;
+      if (!isAuthorized.value || !tankId.value) return;
 
-      const tank = await client.tanks.getTank(route.params.tankId);
+      const tank = await client.tanks.getTank(tankId.value);
       state.currentTank = tank.toJSON();
     },
     {
@@ -94,9 +118,22 @@ async function onSave(dto: TankDTO): Promise<void> {
   state.isSaving = true;
 
   await oops(async () => {
-    const tank = client.tanks.wrapDTO(dto);
-    await tank.save();
-    state.currentTank = dto;
+    if (tankId.value) {
+      const tank = client.tanks.wrapDTO(dto);
+      await tank.save();
+      state.currentTank = dto;
+    } else {
+      const tank = await client.tanks.createTank(
+        CreateOrUpdateTankParamsSchema.parse(dto),
+        currentUser.user?.username,
+      );
+      state.currentTank = tank.toJSON();
+      await router.push({
+        params: {
+          tankId: tank.id,
+        },
+      });
+    }
 
     toasts.toast({
       id: 'tank-saved',
