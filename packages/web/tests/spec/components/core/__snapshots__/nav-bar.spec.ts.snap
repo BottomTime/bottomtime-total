@@ -25,7 +25,7 @@ exports[`Nav Bar component will render correctly for admins 1`] = `
             <div id="user-dropdown" data-testid="user-dropdown" class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left z-[42]" style="display: none;"><a class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/friends"> Friends </a>
               <!--v-if-->
               <hr><a class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/profile"> Profile </a><a class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/account"> Account </a><a class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/settings"> Settings </a>
-              <hr><a class="w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/api/auth/logout"> Logout </a>
+              <hr><a class="w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"> Logout </a>
             </div>
           </transition-stub>
         </button><button class="inline-flex items-center p-2 w-10 h-10 justify-center rounded-lg md:hidden" data-testid="hamburger-button" aria-controls="navbar-user" aria-expanded="false"><span class="sr-only">Open Main Menu</span><span aria-hidden="true"><i class="fas fa-bars"></i></span></button>
@@ -114,7 +114,7 @@ exports[`Nav Bar component will render correctly for authenticated users 1`] = `
             <div id="user-dropdown" data-testid="user-dropdown" class="flex flex-col absolute min-w-48 top-16 right-1 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg text-left z-[42]" style="display: none;"><a class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/friends"> Friends </a>
               <!--v-if-->
               <hr><a class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/profile"> Profile </a><a class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/account"> Account </a><a class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/settings"> Settings </a>
-              <hr><a class="w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700" href="/api/auth/logout"> Logout </a>
+              <hr><a class="w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"> Logout </a>
             </div>
           </transition-stub>
         </button><button class="inline-flex items-center p-2 w-10 h-10 justify-center rounded-lg md:hidden" data-testid="hamburger-button" aria-controls="navbar-user" aria-expanded="false"><span class="sr-only">Open Main Menu</span><span aria-hidden="true"><i class="fas fa-bars"></i></span></button>

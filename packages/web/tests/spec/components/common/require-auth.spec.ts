@@ -10,7 +10,6 @@ import { ApiClientKey } from '../../../../src/api-client';
 import ForbiddenMessage from '../../../../src/components/common/forbidden-message.vue';
 import RequireAuth from '../../../../src/components/common/require-auth.vue';
 import LoginForm from '../../../../src/components/users/login-form.vue';
-import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
@@ -24,7 +23,6 @@ describe('Require Auth component', () => {
   let client: ApiClient;
 
   let pinia: Pinia;
-  let location: MockLocation;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof RequireAuth>;
 
@@ -36,14 +34,12 @@ describe('Require Auth component', () => {
   beforeEach(() => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    location = new MockLocation();
 
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
       },
       slots: {
