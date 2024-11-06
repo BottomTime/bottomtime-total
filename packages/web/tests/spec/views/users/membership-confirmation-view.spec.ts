@@ -19,15 +19,14 @@ import { Mock } from 'moq.ts';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import LoadingSpinner from '../../../src/components/common/loading-spinner.vue';
-import MembershipPayment from '../../../src/components/users/membership/membership-payment.vue';
-import { LocationKey, MockLocation } from '../../../src/location';
-import { useCurrentUser } from '../../../src/store';
-import { StripeLoaderKey } from '../../../src/stripe';
-import MembershipConfirmationView from '../../../src/views/membership-confirmation-view.vue';
-import { createRouter } from '../../fixtures/create-router';
-import { BasicUser } from '../../fixtures/users';
+import { ApiClientKey } from '../../../../src/api-client';
+import LoadingSpinner from '../../../../src/components/common/loading-spinner.vue';
+import MembershipPayment from '../../../../src/components/users/membership/membership-payment.vue';
+import { useCurrentUser } from '../../../../src/store';
+import { StripeLoaderKey } from '../../../../src/stripe';
+import MembershipConfirmationView from '../../../../src/views/users/membership-confirmation-view.vue';
+import { createRouter } from '../../../fixtures/create-router';
+import { BasicUser } from '../../../fixtures/users';
 
 const MembershipOptions: ListMembershipsResponseDTO = [
   {
@@ -93,13 +92,16 @@ describe('Membership Confirmation View', () => {
   let stripe: Mock<Stripe>;
 
   let pinia: Pinia;
-  let location: MockLocation;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof MembershipConfirmationView>;
 
   beforeAll(async () => {
     client = new ApiClient();
     router = createRouter([
+      {
+        path: '/account',
+        component: { template: '' },
+      },
       {
         path: '/membership/confirmation',
         name: 'MembershipConfirmation',
@@ -108,7 +110,7 @@ describe('Membership Confirmation View', () => {
     ]);
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.useFakeTimers({
       doNotFake: ['setImmediate', 'nextTick'],
       now: new Date('2024-10-28T08:33:30Z'),
@@ -116,13 +118,11 @@ describe('Membership Confirmation View', () => {
     stripe = new Mock<Stripe>();
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    location = new MockLocation();
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
           [StripeLoaderKey as symbol]: {
             loadStripe: () => Promise.resolve(stripe.object()),
           },
@@ -133,6 +133,7 @@ describe('Membership Confirmation View', () => {
     jest
       .spyOn(client.memberships, 'listMemberships')
       .mockResolvedValue(MembershipOptions);
+    await router.push('/membership/confirmation');
   });
 
   afterEach(() => {
@@ -182,10 +183,11 @@ describe('Membership Confirmation View', () => {
       .mockResolvedValue(ProMembership);
     mount(MembershipConfirmationView, opts);
     await flushPromises();
-    expect(location.pathname).toBe('/');
+    expect(router.currentRoute.value.path).toBe('/membership/confirmation');
 
     jest.runAllTimers();
-    expect(location.pathname).toBe('/account');
+    await flushPromises();
+    expect(router.currentRoute.value.path).toBe('/account');
   });
 
   it('will allow user to return to account page by clicking button', async () => {
@@ -195,10 +197,11 @@ describe('Membership Confirmation View', () => {
       .mockResolvedValue(ProMembership);
     const wrapper = mount(MembershipConfirmationView, opts);
     await flushPromises();
-    expect(location.pathname).toBe('/');
+    expect(router.currentRoute.value.path).toBe('/membership/confirmation');
 
     await wrapper.get('[data-testid="btn-return-to-account"]').trigger('click');
-    expect(location.pathname).toBe('/account');
+    await flushPromises();
+    expect(router.currentRoute.value.path).toBe('/account');
   });
 
   it('will prompt for payment if membership status is in an incomplete state', async () => {

@@ -56,7 +56,7 @@
         <OperatorsList
           :is-loading="state.isLoading"
           :is-loading-more="state.isLoadingMore"
-          :operators="operators.results"
+          :operators="state.results"
           @create-shop="onCreateShop"
           @load-more="onLoadMore"
           @select="onShopSelected"
@@ -74,6 +74,7 @@ import {
   CreateOrUpdateOperatorDTO,
   OperatorDTO,
   SearchOperatorsParams,
+  SearchOperatorsResponseDTO,
   SearchOperatorsSchema,
   UserRole,
   VerificationStatus,
@@ -96,7 +97,7 @@ import OperatorsSearchForm from '../../components/operators/operators-search-for
 import ViewOperator from '../../components/operators/view-operator.vue';
 import { useFeature } from '../../featrues';
 import { useOops } from '../../oops';
-import { useCurrentUser, useOperators, useToasts } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 
 interface OperatorsViewState {
   currentOperator?: OperatorDTO;
@@ -104,6 +105,7 @@ interface OperatorsViewState {
   isLoading: boolean;
   isLoadingMore: boolean;
   isSaving: boolean;
+  results: SearchOperatorsResponseDTO;
   showPanel: boolean;
   showConfirmDelete: boolean;
 }
@@ -117,7 +119,6 @@ const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();
-const operators = useOperators();
 const route = useRoute();
 const router = useRouter();
 const toasts = useToasts();
@@ -138,6 +139,10 @@ const state = reactive<OperatorsViewState>({
   isLoading: false,
   isLoadingMore: false,
   isSaving: false,
+  results: {
+    operators: [],
+    totalCount: 0,
+  },
   showPanel: false,
   showConfirmDelete: false,
 });
@@ -170,8 +175,10 @@ async function refresh(): Promise<void> {
       ...searchParams,
     });
 
-    operators.results.operators = results.operators.map((op) => op.toJSON());
-    operators.results.totalCount = results.totalCount;
+    state.results = {
+      operators: results.operators.map((op) => op.toJSON()),
+      totalCount: results.totalCount,
+    };
   });
   state.isLoading = false;
 }
@@ -257,11 +264,11 @@ async function onSaveOperator(dto: CreateOrUpdateOperatorDTO): Promise<void> {
         operator.socials = dto.socials;
         await operator.save();
 
-        const index = operators.results.operators.findIndex(
+        const index = state.results.operators.findIndex(
           (op) => op.id === operator.id,
         );
         if (index > -1) {
-          operators.results.operators[index] = operator.toJSON();
+          state.results.operators[index] = operator.toJSON();
         }
 
         toasts.toast({
@@ -274,8 +281,8 @@ async function onSaveOperator(dto: CreateOrUpdateOperatorDTO): Promise<void> {
         const newOperator = await client.operators.createOperator(dto);
         state.currentOperator = newOperator.toJSON();
 
-        operators.results.operators.splice(0, 0, state.currentOperator);
-        operators.results.totalCount++;
+        state.results.operators.splice(0, 0, state.currentOperator);
+        state.results.totalCount++;
 
         toasts.toast({
           id: OperatorSavedToastId,
@@ -307,13 +314,11 @@ async function onLoadMore(): Promise<void> {
   await oops(async () => {
     const params: SearchOperatorsParams = {
       ...searchParams,
-      skip: operators.results.operators.length,
+      skip: state.results.operators.length,
     };
     const results = await client.operators.searchOperators(params);
-    operators.results.operators.push(
-      ...results.operators.map((op) => op.toJSON()),
-    );
-    operators.results.totalCount = results.totalCount;
+    state.results.operators.push(...results.operators.map((op) => op.toJSON()));
+    state.results.totalCount = results.totalCount;
   });
 
   state.isLoadingMore = false;
@@ -364,12 +369,12 @@ async function onConfirmDelete(): Promise<void> {
       type: ToastType.Success,
     });
 
-    const index = operators.results.operators.findIndex(
+    const index = state.results.operators.findIndex(
       (op) => op.id === state.currentOperator?.id,
     );
     if (index > -1) {
-      operators.results.operators.splice(index, 1);
-      operators.results.totalCount--;
+      state.results.operators.splice(index, 1);
+      state.results.totalCount--;
     }
 
     state.showPanel = false;
@@ -381,8 +386,8 @@ async function onConfirmDelete(): Promise<void> {
 }
 
 function onLogoChanged(url?: string) {
-  if (operators.currentOperator) {
-    operators.currentOperator.logo = url;
+  if (state.currentOperator) {
+    state.currentOperator.logo = url;
   }
 }
 </script>

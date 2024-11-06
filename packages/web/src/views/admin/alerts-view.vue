@@ -26,11 +26,11 @@ import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
 import AlertsList from '../../components/admin/alerts-list.vue';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
+import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth2.vue';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
-import LoadingSpinner from '../components/common/loading-spinner.vue';
 
 interface AlertsViewState {
   currentAlert?: AlertDTO;

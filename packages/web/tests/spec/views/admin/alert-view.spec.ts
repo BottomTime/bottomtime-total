@@ -5,7 +5,6 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
@@ -14,7 +13,7 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../../src/api-client';
 import { ToastType } from '../../../../src/common';
 import EditAlert from '../../../../src/components/admin/edit-alert.vue';
-import { useAlerts, useCurrentUser } from '../../../../src/store';
+import { useCurrentUser } from '../../../../src/store';
 import { useToasts } from '../../../../src/store';
 import AdminAlertView from '../../../../src/views/admin/alert-view.vue';
 import { createHttpError } from '../../../fixtures/create-http-error';
@@ -37,15 +36,12 @@ describe('Admin Alert View', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let alerts: ReturnType<typeof useAlerts>;
   let options: ComponentMountingOptions<typeof AdminAlertView>;
+  let fetchSpy: jest.SpyInstance;
 
   beforeAll(() => {
     fetcher = new Fetcher();
     client = new ApiClient({ fetcher });
-  });
-
-  beforeEach(() => {
     router = createRouter([
       {
         path: '/admin/alerts/new',
@@ -58,12 +54,14 @@ describe('Admin Alert View', () => {
         component: AdminAlertView,
       },
     ]);
+  });
+
+  beforeEach(async () => {
+    await router.push(`/admin/alerts/${TestAlertData.id}`);
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    alerts = useAlerts(pinia);
 
     currentUser.user = AdminUser;
-    alerts.currentAlert = { ...TestAlertData };
 
     options = {
       global: {
@@ -74,11 +72,17 @@ describe('Admin Alert View', () => {
         stubs: { teleport: true },
       },
     };
+    fetchSpy = jest
+      .spyOn(client.alerts, 'getAlert')
+      .mockResolvedValue(new Alert(fetcher, { ...TestAlertData }));
   });
 
   it('will not render if the user is not logged in', async () => {
     currentUser.user = null;
     const wrapper = mount(AdminAlertView, options);
+    await flushPromises();
+
+    expect(fetchSpy).not.toHaveBeenCalled();
     expect(wrapper.find('[data-testid="login-form"]').isVisible()).toBe(true);
     expect(wrapper.find('[data-testid="edit-alert-form"]').exists()).toBe(
       false,
@@ -88,6 +92,9 @@ describe('Admin Alert View', () => {
   it('will not render if the user is not an admin', async () => {
     currentUser.user = BasicUser;
     const wrapper = mount(AdminAlertView, options);
+    await flushPromises();
+
+    expect(fetchSpy).not.toHaveBeenCalled();
     expect(wrapper.find('[data-testid="forbidden-message"]').isVisible()).toBe(
       true,
     );
@@ -97,8 +104,10 @@ describe('Admin Alert View', () => {
   });
 
   it('will render with the loaded alert data', async () => {
-    await router.push(`/admin/alerts/${TestAlertData.id}`);
     const wrapper = mount(AdminAlertView, options);
+    await flushPromises();
+
+    expect(fetchSpy).toHaveBeenCalledWith(TestAlertData.id);
     expect(
       wrapper.get<HTMLInputElement>('[data-testid="title"]').element.value,
     ).toBe(TestAlertData.title);
@@ -108,9 +117,12 @@ describe('Admin Alert View', () => {
   });
 
   it('will render a not found message if alert is not supplied', async () => {
-    alerts.currentAlert = null;
-    await router.push(`/admin/alerts/${TestAlertData.id}`);
+    jest
+      .spyOn(client.alerts, 'getAlert')
+      .mockRejectedValue(createHttpError(404));
     const wrapper = mount(AdminAlertView, options);
+    await flushPromises();
+
     expect(wrapper.find('[data-testid="edit-alert-form"]').exists()).toBe(
       false,
     );
@@ -119,48 +131,17 @@ describe('Admin Alert View', () => {
     );
   });
 
-  it('will prefetch the alert data on SSR', async () => {
-    const spy = jest
-      .spyOn(client.alerts, 'getAlert')
-      .mockResolvedValue(new Alert(fetcher, TestAlertData));
-    await router.push(`/admin/alerts/${TestAlertData.id}`);
-
-    const html = await renderToString(AdminAlertView, {
-      global: options.global,
-    });
-
-    expect(spy).toHaveBeenCalledWith(TestAlertData.id);
-    expect(html).toMatchSnapshot();
-  });
-
-  it('will render in new alert mode if non alert ID is provided in the URL', async () => {
+  it('will render in new alert mode if no alert ID is provided in the URL', async () => {
     await router.push('/admin/alerts/new');
-    await renderToString(AdminAlertView, { global: options.global });
-    expect(alerts.currentAlert).toEqual({
-      id: '',
-      icon: '',
-      title: '',
-      message: '',
-    });
-  });
+    const wrapper = mount(AdminAlertView, options);
+    await flushPromises();
 
-  it('will render a not found message if the prefetch returns a 404 response', async () => {
-    const spy = jest.spyOn(client.alerts, 'getAlert').mockRejectedValue(
-      createHttpError({
-        status: 404,
-        message: 'Not Found',
-        method: 'GET',
-        path: `/api/alerts/${TestAlertData.id}`,
-      }),
-    );
-    await router.push(`/admin/alerts/${TestAlertData.id}`);
-
-    const html = await renderToString(AdminAlertView, {
-      global: options.global,
-    });
-
-    expect(spy).toHaveBeenCalledWith(TestAlertData.id);
-    expect(html).toMatchSnapshot();
+    expect(
+      wrapper.get<HTMLInputElement>('[data-testid="title"]').element.value,
+    ).toBe('');
+    expect(
+      wrapper.get<HTMLInputElement>('[data-testid="message"]').element.value,
+    ).toBe('');
   });
 
   it('will save an existing alert', async () => {
@@ -179,6 +160,8 @@ describe('Admin Alert View', () => {
     await router.push(`/admin/alerts/${TestAlertData.id}`);
 
     const wrapper = mount(AdminAlertView, options);
+    await flushPromises();
+
     const editAlert = wrapper.getComponent(EditAlert);
 
     editAlert.vm.$emit('save', updated);
@@ -190,29 +173,25 @@ describe('Admin Alert View', () => {
   });
 
   it('will create a new alert', async () => {
+    await router.push('/admin/alerts/new');
     const spy = jest
       .spyOn(client.alerts, 'createAlert')
       .mockResolvedValueOnce(new Alert(fetcher, TestAlertData));
 
-    alerts.currentAlert = {
-      id: '',
-      icon: '',
-      title: '',
-      message: '',
-    };
-
     const wrapper = mount(AdminAlertView, options);
-    const editAlert = wrapper.getComponent(EditAlert);
+    await flushPromises();
 
+    const editAlert = wrapper.getComponent(EditAlert);
     editAlert.vm.$emit('save', {
       ...TestAlertData,
       id: '',
     });
     await flushPromises();
 
+    expect(fetchSpy).not.toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith({ ...TestAlertData, id: '' });
-    expect(location.toString()).toBe(
-      `http://localhost/admin/alerts/${TestAlertData.id}`,
+    expect(router.currentRoute.value.path).toBe(
+      `/admin/alerts/${TestAlertData.id}`,
     );
   });
 });

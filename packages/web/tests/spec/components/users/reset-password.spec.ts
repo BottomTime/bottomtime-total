@@ -12,7 +12,6 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../../src/api-client';
 import FormButton from '../../../../src/components/common/form-button.vue';
 import ResetPassword from '../../../../src/components/users/reset-password.vue';
-import { LocationKey, MockLocation } from '../../../../src/location';
 import { createRouter } from '../../../fixtures/create-router';
 
 const Token = '1234567890';
@@ -36,7 +35,6 @@ describe('ResetPassword component', () => {
   let client: ApiClient;
   let router: Router;
 
-  let location: MockLocation;
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof ResetPassword>;
 
@@ -47,14 +45,12 @@ describe('ResetPassword component', () => {
 
   beforeEach(() => {
     pinia = createPinia();
-    location = new MockLocation();
     opts = {
       props: BaseProps,
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
       },
     };

@@ -15,7 +15,7 @@ export const DiveSiteRoutes: RouteRecordRaw[] = [
   {
     path: '/diveSites/new',
     name: DiveSiteRouteNames.NewDiveSite,
-    component: () => import('../views/sites/new-dive-site-view.vue'),
+    component: () => import('../views/sites/dive-site-view.vue'),
   },
   {
     path: '/diveSites/:siteId',

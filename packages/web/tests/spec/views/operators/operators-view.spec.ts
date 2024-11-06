@@ -16,7 +16,6 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
@@ -28,7 +27,7 @@ import EditOperator from '../../../../src/components/operators/edit-operator.vue
 import OperatorsListItem from '../../../../src/components/operators/operators-list-item.vue';
 import ViewOperator from '../../../../src/components/operators/view-operator.vue';
 import { FeaturesServiceKey } from '../../../../src/featrues';
-import { useCurrentUser, useOperators, useToasts } from '../../../../src/store';
+import { useCurrentUser, useToasts } from '../../../../src/store';
 import OperatorsView from '../../../../src/views/operators/operators-view.vue';
 import { ConfigCatClientMock } from '../../../config-cat-client-mock';
 import { createHttpError } from '../../../fixtures/create-http-error';
@@ -45,7 +44,6 @@ describe('Operators view', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let diveOperators: ReturnType<typeof useOperators>;
   let toasts: ReturnType<typeof useToasts>;
   let opts: ComponentMountingOptions<typeof OperatorsView>;
   let searchSpy: jest.SpyInstance;
@@ -67,7 +65,6 @@ describe('Operators view', () => {
     features.flags[ManageDiveOperatorsFeature.key] = true;
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    diveOperators = useOperators(pinia);
     toasts = useToasts(pinia);
 
     await router.push('/shops');

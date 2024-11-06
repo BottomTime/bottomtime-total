@@ -7,7 +7,6 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import RequireAuth from '../../../../src/components/common/require-auth2.vue';
-import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser } from '../../../../src/store';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
@@ -18,7 +17,6 @@ const ForbiddenMessage = '[data-testid="forbidden-message"]';
 
 describe('Require Auth component (v2)', () => {
   let client: ApiClient;
-  let location: MockLocation;
   let router: Router;
 
   let pinia: Pinia;
@@ -28,7 +26,6 @@ describe('Require Auth component (v2)', () => {
 
   beforeAll(() => {
     client = new ApiClient();
-    location = new MockLocation();
     router = createRouter();
   });
 
@@ -41,7 +38,6 @@ describe('Require Auth component (v2)', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
         stubs: {
           teleport: true,
