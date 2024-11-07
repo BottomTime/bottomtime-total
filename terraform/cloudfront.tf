@@ -83,36 +83,6 @@ resource "aws_cloudfront_cache_policy" "api_lambda" {
   }
 }
 
-resource "aws_cloudfront_cache_policy" "web_lambda" {
-  name        = "bt-web-lambda-${var.env}-cache-policy"
-  min_ttl     = 0
-  default_ttl = 5
-  max_ttl     = 5
-
-  parameters_in_cache_key_and_forwarded_to_origin {
-    cookies_config {
-      cookie_behavior = "whitelist"
-      cookies {
-        items = [local.cookie_name, var.edgeauth_cookie_name]
-      }
-    }
-
-    headers_config {
-      header_behavior = "whitelist"
-      headers {
-        items = ["Authorization", "x-bt-auth", "User-Agent"]
-      }
-    }
-
-    query_strings_config {
-      query_string_behavior = "all"
-    }
-
-    enable_accept_encoding_brotli = true
-    enable_accept_encoding_gzip   = true
-  }
-}
-
 resource "aws_cloudfront_origin_access_identity" "web" {}
 resource "aws_cloudfront_origin_access_identity" "docs" {}
 
@@ -136,19 +106,6 @@ resource "aws_cloudfront_distribution" "web" {
   origin {
     origin_id   = local.web_api_origin_id
     domain_name = "${aws_apigatewayv2_api.service.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "https-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
-    }
-  }
-
-  # API Gateway origin for server-side rendering
-  origin {
-    origin_id   = local.web_ssr_origin_id
-    domain_name = "${aws_apigatewayv2_api.ssr.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
 
     custom_origin_config {
       http_port              = 80
@@ -183,18 +140,6 @@ resource "aws_cloudfront_distribution" "web" {
   }
 
   # Static files are served from S3
-  ordered_cache_behavior {
-    target_origin_id       = local.web_s3_origin_id
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-    cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    compress               = true
-    path_pattern           = "*.*"
-    viewer_protocol_policy = "redirect-to-https"
-
-    cache_policy_id = aws_cloudfront_cache_policy.web_static.id
-  }
-
-  # Default cache behaviour performs server-side rendering
   default_cache_behavior {
     target_origin_id       = local.web_ssr_origin_id
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
@@ -202,7 +147,7 @@ resource "aws_cloudfront_distribution" "web" {
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
 
-    cache_policy_id = aws_cloudfront_cache_policy.web_lambda.id
+    cache_policy_id = aws_cloudfront_cache_policy.web_static.id
   }
 
   tags = {

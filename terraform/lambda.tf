@@ -70,59 +70,6 @@ resource "aws_lambda_permission" "allow_service_api_call" {
   source_arn = "${aws_apigatewayv2_api.service.execution_arn}/*/*"
 }
 
-### FRONTEND SSR
-resource "aws_lambda_function" "ssr" {
-  function_name = "bottomtime-ssr-${var.env}"
-  role          = aws_iam_role.ssr_lambda_fn.arn
-
-  image_uri        = data.aws_ecr_image.web.image_uri
-  source_code_hash = trimprefix(data.aws_ecr_image.web.image_digest, "sha256:")
-  architectures    = ["arm64"]
-  package_type     = "Image"
-
-  description = "BottomTime Server-Side Render Lambda Function"
-  timeout     = 30
-
-  logging_config {
-    log_group  = aws_cloudwatch_log_group.ssr_logs.id
-    log_format = "JSON"
-  }
-
-  tags = {
-    Environment = var.env
-    Region      = data.aws_region.current.name
-  }
-
-  environment {
-    variables = {
-      BT_EDGEAUTH_ENABLED        = "${var.edgeauth_enabled}"
-      BT_EDGEAUTH_AUDIENCE       = local.web_fqdn
-      BT_EDGEAUTH_COOKIE_NAME    = var.edgeauth_cookie_name
-      BT_EDGEAUTH_SESSION_SECRET = local.auth_config.sessionSecret
-
-      BTWEB_API_URL                = "https://${var.api_domain}.${var.root_domain}/"
-      BTWEB_COOKIE_NAME            = local.cookie_name
-      BTWEB_LOG_LEVEL              = var.log_level
-      BTWEB_VITE_BASE_URL          = "https://${local.web_fqdn}/"
-      BTWEB_VITE_CONFIGCAT_API_KEY = var.configcat_sdk_key
-      BTWEB_VITE_ENABLE_PLACES_API = "${var.enable_places_api}"
-      BTWEB_VITE_GOOGLE_API_KEY    = local.secrets.googleApiKey
-      NODE_ENV                     = "production"
-    }
-  }
-
-  depends_on = [aws_cloudwatch_log_group.ssr_logs, aws_iam_role_policy_attachment.ssr_lambda_logging]
-}
-
-resource "aws_lambda_permission" "allow_ssr_call" {
-  statement_id  = "allow_apigateway_${var.env}"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.ssr.function_name
-  principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${aws_apigatewayv2_api.ssr.execution_arn}/*/*"
-}
-
 ### EMAIL SERVICE
 data "archive_file" "email_service" {
   type        = "zip"

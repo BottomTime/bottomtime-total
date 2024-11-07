@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  aws-cli: circleci/aws-cli@5.1.0
+  aws-cli: circleci/aws-cli@5.1.1
   terraform: circleci/terraform@3.3.0
 
 commands:
@@ -36,20 +36,8 @@ commands:
           command: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com
             docker build -t bottomtime-service -f Dockerfile.service .
-            docker build -t bottomtime-web -f Dockerfile.web .
             docker tag bottomtime-service:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:$NODE_ENV-latest
-            docker tag bottomtime-web:latest $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:$NODE_ENV-latest
             docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/service:$NODE_ENV-latest
-            docker push $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/bottomtime/web:$NODE_ENV-latest
-      - run:
-          name: Extract Compiled Web Files
-          command: |
-            docker run -d --name bottomtime-web bottomtime-web:latest
-            docker cp $(docker ps -qf "name=bottomtime-web"):/app/packages/web/dist ./packages/web/dist
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - packages/web/dist/
 
   deploy_env:
     parameters:
@@ -59,6 +47,8 @@ commands:
       state_bucket:
         type: string
         default: 'bottomtime-tfstate'
+      env:
+        type: string
       state_key:
         type: string
       var_file:
@@ -69,6 +59,13 @@ commands:
       - yarn_install
       - attach_workspace:
           at: ./
+
+      # Front-end needs to be recompiled because the appropriate env variables need to be written into the bundle.
+      - run:
+          name: Bundle Front-end
+          working_directory: packages/web/
+          command: yarn build --mode <<parameters.env>>
+
       - run:
           name: Migrate Database
           working_directory: packages/service/
@@ -326,6 +323,7 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
+          env: e2e
           fresh_db: true
           state_key: $AWS_REGION.e2e.tfstate
           var_file: vars/e2e.tfvars
@@ -347,6 +345,7 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
+          env: staging
           state_key: $AWS_REGION.staging.tfstate
           var_file: vars/staging.tfvars
 
@@ -367,6 +366,7 @@ jobs:
     resource_class: medium
     steps:
       - deploy_env:
+          env: production
           state_key: $AWS_REGION.production.tfstate
           var_file: vars/production.tfvars
 
