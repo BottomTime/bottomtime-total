@@ -34,8 +34,6 @@ import {
   UserSettingsDTO,
 } from '@bottomtime/api';
 
-import { useCurrentUser } from '@/store';
-
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -48,6 +46,7 @@ import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth2.vue';
 import { useOops } from '../../oops';
+import { useCurrentUser } from '../../store';
 
 interface UserViewState {
   currentUser?: UserDTO;

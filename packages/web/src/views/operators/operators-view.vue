@@ -125,18 +125,18 @@ const toasts = useToasts();
 
 function parseQueryString(): SearchOperatorsParams {
   const query = SearchOperatorsSchema.safeParse(route.query);
-
-  if (query.success) return query.data;
-
-  /* eslint-disable-next-line no-console */
-  console.warn('Unable to parse query string:', query.error.issues);
+  if (query.success)
+    return {
+      ...query.data,
+      limit: query.data.limit ?? 50,
+    };
   return { limit: 50 };
 }
 
 const searchParams = reactive<SearchOperatorsParams>(parseQueryString());
 const state = reactive<OperatorsViewState>({
   isDeleting: false,
-  isLoading: false,
+  isLoading: true,
   isLoadingMore: false,
   isSaving: false,
   results: {
@@ -182,10 +182,6 @@ async function refresh(): Promise<void> {
   });
   state.isLoading = false;
 }
-
-onMounted(async (): Promise<void> => {
-  await refresh();
-});
 
 async function onSearch(params: SearchOperatorsParams): Promise<void> {
   await router.push({
@@ -390,4 +386,6 @@ function onLogoChanged(url?: string) {
     state.currentOperator.logo = url;
   }
 }
+
+onMounted(refresh);
 </script>

@@ -16,6 +16,7 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
+  renderToString,
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
@@ -34,6 +35,11 @@ import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import TestData from '../../../fixtures/dive-operators.json';
 import { BasicUser } from '../../../fixtures/users';
+
+const ShopOwner: UserDTO = {
+  ...BasicUser,
+  accountTier: AccountTier.ShopOwner,
+};
 
 describe('Operators view', () => {
   let fetcher: Fetcher;
@@ -85,83 +91,74 @@ describe('Operators view', () => {
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        operators: testData.operators
-          .slice(0, 10)
-          .map((op) => new Operator(fetcher, op)),
+        operators: testData.operators.map((op) => new Operator(fetcher, op)),
         totalCount: testData.totalCount,
       });
   });
-
-  describe('when performing server-side render', () => {
-    it('will perform a more complicated search when query params are provided', async () => {
-      const query = {
-        query: 'deep site',
-        location: '20.42,-87.32',
-        radius: 350,
-        owner: 'the_dude',
-      };
-      await router.replace({
-        path: '/shops',
-        query,
-      });
-      const spy = jest
-        .spyOn(client.operators, 'searchOperators')
-        .mockResolvedValue({
-          operators: [],
-          totalCount: 0,
-        });
-      const div = document.createElement('div');
-      div.innerHTML = await renderToString(OperatorsView, {
-        global: opts.global,
-      });
-      expect(spy).toHaveBeenCalledWith({
-        query: query.query,
-        location: { lat: 20.42, lon: -87.32 },
-        radius: 350,
-        owner: query.owner,
-      });
-
-      const count = div.querySelector<HTMLParagraphElement>(
-        '[data-testid="operators-count"]',
-      );
-      expect(count!.innerHTML).toMatchSnapshot();
-
-      const items = div.querySelectorAll('[data-testid="operators-list"]>li');
-      expect(items).toHaveLength(1);
-      expect(items[0].innerHTML).toContain(
-        'There are no dive shops that match your search criteria',
-      );
-
-      expect(diveOperators.results).toEqual({
-        operators: [],
-        totalCount: 0,
-      });
-    });
-  });
-
-  const ShopOwner: UserDTO = {
-    ...BasicUser,
-    accountTier: AccountTier.ShopOwner,
-  };
 
   it('will render with default search params when no query string is provided', async () => {
     const wrapper = mount(OperatorsView, opts);
     await flushPromises();
 
+    expect(searchSpy).toHaveBeenCalledWith({
+      limit: 50,
+    });
     const items = wrapper.findAllComponents(OperatorsListItem);
-    expect(items).toHaveLength(10);
+    expect(items).toHaveLength(testData.operators.length);
     items.forEach((item, i) => {
       expect(item.props('operator')).toEqual(testData.operators[i]);
     });
   });
 
-  it('will render a result set', async () => {
-    diveOperators.results.operators = testData.operators;
-    diveOperators.results.totalCount = testData.totalCount;
+  it('will render with a search query when query string is provided', async () => {
+    const query = {
+      query: 'deep site',
+      location: '20.42,-87.32',
+      radius: 350,
+      owner: 'the_dude',
+    };
+    await router.push({
+      path: '/shops',
+      query,
+    });
 
     const wrapper = mount(OperatorsView, opts);
     await flushPromises();
 
+    expect(searchSpy).toHaveBeenCalledWith({
+      location: {
+        lat: 20.42,
+        lon: -87.32,
+      },
+      owner: 'the_dude',
+      query: 'deep site',
+      radius: 350,
+      limit: 50,
+    });
+    const items = wrapper.findAllComponents(OperatorsListItem);
+    expect(items).toHaveLength(testData.operators.length);
+    items.forEach((item, i) => {
+      expect(item.props('operator')).toEqual(testData.operators[i]);
+    });
+  });
+
+  it('will render with default search params if query string is invalid', async () => {
+    const query = {
+      query: 'deep site',
+      location: 'somewhere',
+      radius: -350,
+    };
+    await router.push({
+      path: '/shops',
+      query,
+    });
+
+    const wrapper = mount(OperatorsView, opts);
+    await flushPromises();
+
+    expect(searchSpy).toHaveBeenCalledWith({
+      limit: 50,
+    });
     const items = wrapper.findAllComponents(OperatorsListItem);
     expect(items).toHaveLength(testData.operators.length);
     items.forEach((item, i) => {
@@ -171,13 +168,13 @@ describe('Operators view', () => {
 
   it('will allow a user to perform a search', async () => {
     currentUser.user = ShopOwner;
-    diveOperators.results.operators = testData.operators;
-    diveOperators.results.totalCount = testData.totalCount;
-
     const expected: SearchOperatorsResponseDTO = {
       operators: testData.operators.slice(0, 3),
       totalCount: 3,
     };
+
+    const wrapper = mount(OperatorsView, opts);
+    await flushPromises();
 
     const spy = jest
       .spyOn(client.operators, 'searchOperators')
@@ -185,9 +182,6 @@ describe('Operators view', () => {
         operators: expected.operators.map((op) => new Operator(fetcher, op)),
         totalCount: expected.totalCount,
       });
-
-    const wrapper = mount(OperatorsView, opts);
-    await flushPromises();
 
     await wrapper.get('input#operator-search').setValue('deep site');
     await wrapper.get('input#operator-show-mine').setValue(true);
@@ -199,6 +193,7 @@ describe('Operators view', () => {
       query: 'deep site',
       owner: ShopOwner.username,
       showInactive: true,
+      limit: 50,
     });
     expect(wrapper.get('[data-testid="operators-count"]').text()).toBe(
       'Showing 3 of 3 dive shop(s)',
@@ -209,8 +204,6 @@ describe('Operators view', () => {
   });
 
   it('will allow a shop owner to create a new dive shop', async () => {
-    diveOperators.results.operators = [];
-    diveOperators.results.totalCount = 0;
     const create: CreateOrUpdateOperatorDTO = {
       active: true,
       name: 'New Shop',
@@ -245,8 +238,6 @@ describe('Operators view', () => {
       .mockResolvedValue(new Operator(fetcher, result));
 
     currentUser.user = ShopOwner;
-    diveOperators.results.operators = testData.operators;
-    diveOperators.results.totalCount = testData.totalCount;
 
     const wrapper = mount(OperatorsView, opts);
     await flushPromises();
@@ -281,11 +272,15 @@ describe('Operators view', () => {
       socials: existing.socials,
       website: existing.website,
     };
-    currentUser.user = ShopOwner;
-    diveOperators.results.operators = [existing];
-    diveOperators.results.totalCount = 1;
-
     const operator = new Operator(fetcher, existing);
+    currentUser.user = ShopOwner;
+    searchSpy = jest
+      .spyOn(client.operators, 'searchOperators')
+      .mockResolvedValue({
+        operators: [operator],
+        totalCount: 1,
+      });
+
     const saveSpy = jest.spyOn(operator, 'save').mockResolvedValue();
     jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
 
@@ -326,10 +321,14 @@ describe('Operators view', () => {
       website: existing.website,
     };
     currentUser.user = ShopOwner;
-    diveOperators.results.operators = [existing];
-    diveOperators.results.totalCount = 1;
-
     const operator = new Operator(fetcher, existing);
+    searchSpy = jest
+      .spyOn(client.operators, 'searchOperators')
+      .mockResolvedValue({
+        operators: [operator],
+        totalCount: 1,
+      });
+
     const saveSpy = jest
       .spyOn(operator, 'save')
       .mockRejectedValue(createHttpError(409));
@@ -363,8 +362,12 @@ describe('Operators view', () => {
   it('will display a dive shop in read-only mode when viewed by a user who is not the owner', async () => {
     currentUser.user = BasicUser;
     const operator = testData.operators[0];
-    diveOperators.results.operators = [operator];
-    diveOperators.results.totalCount = 1;
+    searchSpy = jest
+      .spyOn(client.operators, 'searchOperators')
+      .mockResolvedValue({
+        operators: [new Operator(fetcher, operator)],
+        totalCount: 1,
+      });
 
     const wrapper = mount(OperatorsView, opts);
     await flushPromises();
@@ -378,15 +381,19 @@ describe('Operators view', () => {
   });
 
   it('will allow user to load more results', async () => {
-    diveOperators.results.operators = testData.operators.slice(0, 10);
-    diveOperators.results.totalCount = 20;
+    jest.spyOn(client.operators, 'searchOperators').mockResolvedValueOnce({
+      operators: testData.operators
+        .slice(0, 10)
+        .map((op) => new Operator(fetcher, op)),
+      totalCount: 20,
+    });
 
     const wrapper = mount(OperatorsView, opts);
     await flushPromises();
 
     const spy = jest
       .spyOn(client.operators, 'searchOperators')
-      .mockResolvedValue({
+      .mockResolvedValueOnce({
         operators: testData.operators
           .slice(10, 20)
           .map((op) => new Operator(fetcher, op)),
@@ -398,20 +405,23 @@ describe('Operators view', () => {
 
     expect(spy).toHaveBeenCalledWith({
       skip: 10,
+      limit: 50,
     });
-    expect(diveOperators.results.operators).toHaveLength(20);
-    expect(diveOperators.results.operators).toEqual(
-      testData.operators.slice(0, 20),
-    );
 
-    const items = wrapper.findAllComponents(OperatorsListItem);
-    expect(items).toHaveLength(20);
-    items.forEach((item, i) => {
-      expect(item.props('operator')).toEqual(testData.operators[i]);
+    const results = wrapper.findAllComponents(OperatorsListItem);
+    expect(results).toHaveLength(20);
+    results.forEach((result, index) => {
+      expect(result.props('operator')).toEqual(testData.operators[index]);
     });
   });
 
   it('will retain search criteria while performing "load more" action', async () => {
+    jest.spyOn(client.operators, 'searchOperators').mockResolvedValue({
+      operators: testData.operators
+        .slice(0, 10)
+        .map((op) => new Operator(fetcher, op)),
+      totalCount: 20,
+    });
     const query = {
       query: 'deep site',
       location: '20.42,-87.32',
@@ -447,16 +457,13 @@ describe('Operators view', () => {
       query: 'deep site',
       radius: 350,
       skip: 10,
+      limit: 50,
     });
-    expect(diveOperators.results.operators).toHaveLength(20);
-    expect(diveOperators.results.operators).toEqual(
-      testData.operators.slice(0, 20),
-    );
 
-    const items = wrapper.findAllComponents(OperatorsListItem);
-    expect(items).toHaveLength(20);
-    items.forEach((item, i) => {
-      expect(item.props('operator')).toEqual(testData.operators[i]);
+    const results = wrapper.findAllComponents(OperatorsListItem);
+    expect(results).toHaveLength(20);
+    results.forEach((result, index) => {
+      expect(result.props('operator')).toEqual(testData.operators[index]);
     });
   });
 });

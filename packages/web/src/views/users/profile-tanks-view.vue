@@ -75,8 +75,6 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
-import LoadingSpinner from '@/components/common/loading-spinner.vue';
-
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -84,6 +82,7 @@ import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
 import DrawerPanel from '../../components/common/drawer-panel.vue';
+import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth.vue';

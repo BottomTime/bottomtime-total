@@ -21,7 +21,7 @@ export const LogbookRoutes: RouteRecordRaw[] = [
   {
     path: '/logbook/:username/new',
     name: LogbookRouteNames.NewLogEntry,
-    component: () => import('../views/logbook/new-log-entry-view.vue'),
+    component: () => import('../views/logbook/log-entry-view.vue'),
   },
   {
     path: '/logbook/:username/:entryId',

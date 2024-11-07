@@ -43,7 +43,11 @@
       "cwd": "${workspaceFolder}/packages/web",
       "console": "integratedTerminal",
       "sourceMaps": true,
-      "smartStep": true
+      "smartStep": true,
+      "sourceMapPathOverrides": {
+        "webpack:/*": "${workspaceFolder}/packages/web/src",
+        "/./*": "${workspaceFolder}/packages/web/src"
+      }
     }
   ]
 }
