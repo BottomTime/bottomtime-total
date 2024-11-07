@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { useOops } from '../../oops';
@@ -70,6 +70,7 @@ interface RequireAnonProps {
 const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();
+const route = useRoute();
 const router = useRouter();
 
 const props = defineProps<RequireAnonProps>();
@@ -87,8 +88,10 @@ async function onConfirmLogout() {
   await oops(async () => {
     await client.users.logout();
     currentUser.user = null;
-    const redirectTo = props.redirectTo || '/';
-    await router.push(redirectTo);
+    const redirectTo = props.redirectTo?.startsWith('/')
+      ? props.redirectTo
+      : route.path;
+    await router.push({ path: redirectTo });
   });
 }
 </script>

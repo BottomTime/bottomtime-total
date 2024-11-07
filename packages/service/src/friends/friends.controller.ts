@@ -1,6 +1,6 @@
 import {
   FriendDTO,
-  ListFriendsParams,
+  ListFriendsParamsDTO,
   ListFriendsParamsSchema,
   ListFriendsResponseDTO,
 } from '@bottomtime/api';
@@ -140,7 +140,7 @@ export class FriendsController {
   async listFriends(
     @TargetUser() user: User,
     @Query(new ZodValidator(ListFriendsParamsSchema))
-    options: ListFriendsParams,
+    options: ListFriendsParamsDTO,
   ): Promise<ListFriendsResponseDTO> {
     this.log.debug(
       `Executing query for friends of user ${user.username} with query options:`,

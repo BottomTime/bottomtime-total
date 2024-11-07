@@ -9,10 +9,10 @@ import {
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiClientKey } from '../../../src/api-client';
-import VerifyEmailView from '../../../src/views/verify-email-view.vue';
-import { createHttpError } from '../../fixtures/create-http-error';
-import { createRouter } from '../../fixtures/create-router';
+import { ApiClientKey } from '../../../../src/api-client';
+import VerifyEmailView from '../../../../src/views/users/verify-email-view.vue';
+import { createHttpError } from '../../../fixtures/create-http-error';
+import { createRouter } from '../../../fixtures/create-router';
 
 const Username = 'ricky_bobby44';
 const Token = '1234567890abcdef';

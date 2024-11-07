@@ -2,9 +2,9 @@ import {
   FriendDTO,
   FriendRequestDTO,
   FriendRequestDirection,
-  ListFriendRequestsParams,
+  ListFriendRequestsParamsDTO,
   ListFriendRequestsResponseDTO,
-  ListFriendsParams,
+  ListFriendsParamsDTO,
   ListFriendsResponseDTO,
 } from '@bottomtime/api';
 
@@ -27,14 +27,14 @@ import { FriendRequestQueryBuilder } from './friend-request-query-builder';
 
 // List Friends Types
 export type Friend = FriendDTO;
-export type ListFriendsOptions = ListFriendsParams & {
+export type ListFriendsOptions = ListFriendsParamsDTO & {
   userId: string;
 };
 export type ListFriendsResults = ListFriendsResponseDTO;
 
 // List Friend Requests Types
 export type FriendRequest = FriendRequestDTO;
-export type ListFriendRequestOptions = ListFriendRequestsParams & {
+export type ListFriendRequestOptions = ListFriendRequestsParamsDTO & {
   userId: string;
 };
 export type ListFriendRequestsResults = ListFriendRequestsResponseDTO;

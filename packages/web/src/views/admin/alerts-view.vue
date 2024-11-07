@@ -68,6 +68,8 @@ onMounted(async () => {
     state.results.alerts = results.map((alert) => alert.toJSON());
     state.results.totalCount = totalCount;
   });
+
+  state.isLoading = false;
 });
 
 async function onDeleteAlert(dto: AlertDTO): Promise<void> {

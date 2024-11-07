@@ -16,7 +16,6 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
@@ -58,7 +57,12 @@ describe('Friends view', () => {
   beforeAll(() => {
     fetcher = new Fetcher();
     client = new ApiClient({ fetcher });
-    router = createRouter();
+    router = createRouter([
+      {
+        path: '/friends',
+        component: FriendsView,
+      },
+    ]);
 
     friendsData = ListFriendsResposneSchema.parse(TestFriendsData);
     friendRequestsData = ListFriendRequestsResponseSchema.parse(
@@ -66,7 +70,8 @@ describe('Friends view', () => {
     );
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await router.push('/friends');
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
 
@@ -118,24 +123,47 @@ describe('Friends view', () => {
   });
 
   it('will interpret query string parameters before fetching friends and pending requests', async () => {
-    await router.push('/friends?sortBy=username&sortOrder=desc&limit=100');
-    mount(FriendsView, opts);
+    await router.push({
+      path: '/friends',
+      query: {
+        sortBy: FriendsSortBy.Username,
+        sortOrder: SortOrder.Descending,
+        limit: 100,
+      },
+    });
+    const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    expect(fetchFriendsSpy).toHaveBeenCalledWith(BasicUser.username, {
-      sortBy: FriendsSortBy.Username,
-      sortOrder: SortOrder.Descending,
-      limit: 100,
-    });
+    expect(fetchFriendsSpy).toHaveBeenCalledWith(BasicUser.username, {});
     expect(fetchRequestsSpy).toHaveBeenCalledWith(BasicUser.username, {
       direction: FriendRequestDirection.Outgoing,
       limit: 50,
       showAcknowledged: true,
     });
+
+    const friends = wrapper.findAllComponents(FriendsListItem);
+    expect(friends).toHaveLength(friendsData.friends.length);
+    friends.forEach((friend, index) => {
+      expect(friend.props('friend')).toEqual(friendsData.friends[index]);
+    });
+
+    const requests = wrapper.findAllComponents(FriendRequestsListItem);
+    expect(requests).toHaveLength(friendRequestsData.friendRequests.length);
+    requests.forEach((request, index) => {
+      expect(request.props('request')).toEqual(
+        friendRequestsData.friendRequests[index],
+      );
+    });
   });
 
-  it('will render correctly on the front-end', async () => {
-    await router.push('/friends?sortBy=username&sortOrder=asc');
+  it('will render friends and friend requests lists', async () => {
+    await router.push({
+      path: '/friends',
+      query: {
+        sortBy: FriendsSortBy.Username,
+        sortOrder: SortOrder.Ascending,
+      },
+    });
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
@@ -160,17 +188,26 @@ describe('Friends view', () => {
     expect(wrapper.find<HTMLSelectElement>(SortOrderSelect).element.value).toBe(
       'username-asc',
     );
+
+    expect(fetchFriendsSpy).toHaveBeenCalledWith(BasicUser.username, {});
   });
 
   it('will allow changing the sort order', async () => {
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    await wrapper.get(SortOrderSelect).setValue('friendsSince-asc');
+    await wrapper.get(SortOrderSelect).setValue('friendsSince-desc');
     await flushPromises();
-    expect(router.currentRoute.value.query).toBe(
-      '?sortBy=friendsSince&sortOrder=asc&limit=50',
-    );
+    expect(router.currentRoute.value.query).toEqual({
+      sortBy: FriendsSortBy.FriendsSince,
+      sortOrder: SortOrder.Descending,
+    });
+
+    expect(fetchFriendsSpy).toHaveBeenCalledTimes(2);
+    expect(fetchFriendsSpy).toHaveBeenCalledWith(BasicUser.username, {
+      sortBy: FriendsSortBy.FriendsSince,
+      sortOrder: SortOrder.Descending,
+    });
   });
 
   it('will allow a user to unfriend someone', async () => {
@@ -384,16 +421,24 @@ describe('Friends view', () => {
   });
 
   it('will load more friends when the load more button is clicked', async () => {
-    const spy = jest.spyOn(client.friends, 'listFriends').mockResolvedValue({
+    jest.spyOn(client.friends, 'listFriends').mockResolvedValueOnce({
       friends: friendsData.friends
-        .slice(20, 40)
+        .slice(0, 20)
         .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
       totalCount: friendsData.totalCount,
     });
-    // friendsStore.friends.friends = friendsData.friends.slice(0, 20);
 
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
+
+    const spy = jest
+      .spyOn(client.friends, 'listFriends')
+      .mockResolvedValueOnce({
+        friends: friendsData.friends
+          .slice(20, 40)
+          .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
+        totalCount: friendsData.totalCount,
+      });
 
     await wrapper.get('[data-testid="friends-load-more"]').trigger('click');
     await flushPromises();
@@ -402,29 +447,35 @@ describe('Friends view', () => {
     expect(friends).toHaveLength(40);
 
     friends.forEach((friend, i) => {
-      expect(friend.text()).toContain(friendsData.friends[i].username);
+      expect(friend.props('friend')).toEqual(friendsData.friends[i]);
     });
 
     expect(spy).toHaveBeenCalledWith(BasicUser.username, {
-      limit: 50,
       skip: 20,
     });
   });
 
   it('will load more friend requests when the load more button is clicked', async () => {
-    const spy = jest
-      .spyOn(client.friends, 'listFriendRequests')
-      .mockResolvedValue({
-        friendRequests: friendRequestsData.friendRequests
-          .slice(20, 40)
-          .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
-        totalCount: friendRequestsData.totalCount,
-      });
+    jest.spyOn(client.friends, 'listFriendRequests').mockResolvedValueOnce({
+      friendRequests: friendRequestsData.friendRequests
+        .slice(0, 20)
+        .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
+      totalCount: friendRequestsData.totalCount,
+    });
     // friendsStore.requests.friendRequests =
     //   friendRequestsData.friendRequests.slice(0, 20);
 
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
+
+    const spy = jest
+      .spyOn(client.friends, 'listFriendRequests')
+      .mockResolvedValueOnce({
+        friendRequests: friendRequestsData.friendRequests
+          .slice(20, 40)
+          .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
+        totalCount: friendRequestsData.totalCount,
+      });
 
     await wrapper
       .get('[data-testid="friend-requests-load-more"]')
@@ -435,8 +486,8 @@ describe('Friends view', () => {
     expect(requests).toHaveLength(40);
 
     requests.forEach((request, i) => {
-      expect(request.text()).toContain(
-        friendRequestsData.friendRequests[i].friend.username,
+      expect(request.props('request')).toEqual(
+        friendRequestsData.friendRequests[i],
       );
     });
 

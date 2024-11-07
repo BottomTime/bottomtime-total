@@ -1,3 +1,5 @@
+import { ApiClient } from '@bottomtime/api';
+
 import {
   ComponentMountingOptions,
   flushPromises,
@@ -6,31 +8,55 @@ import {
 
 import { Pinia, createPinia } from 'pinia';
 import { defineComponent } from 'vue';
+import { Router } from 'vue-router';
 
+import { ApiClientKey } from '../../../../src/api-client';
 import requireAnon from '../../../../src/components/common/require-anon.vue';
 import RequireAnon from '../../../../src/components/common/require-anon.vue';
 import { useCurrentUser } from '../../../../src/store';
+import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
 
 const AnonContent = defineComponent({
   template: '<div>Hello anonymous!</div>',
 });
 
+const StartingPage = '/currentPage/something';
 const AuthContent = '[data-testid="auth-content"]';
 const LogoutButton = '[data-testid="logout-link"]';
 
 describe('RequireAnon component', () => {
+  let client: ApiClient;
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof requireAnon>;
+  let router: Router;
 
-  beforeEach(() => {
+  beforeAll(() => {
+    client = new ApiClient();
+    router = createRouter([
+      {
+        path: StartingPage,
+        component: { template: '' },
+      },
+      {
+        path: '/welcome',
+        component: { template: '' },
+      },
+    ]);
+  });
+
+  beforeEach(async () => {
+    await router.push(StartingPage);
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
 
     opts = {
       global: {
-        plugins: [pinia],
+        plugins: [pinia, router],
+        provide: {
+          [ApiClientKey as symbol]: client,
+        },
         stubs: { teleport: true },
       },
       slots: {
@@ -53,29 +79,37 @@ describe('RequireAnon component', () => {
   });
 
   it('will redirect back to the current page, by default, when the user opts to logout', async () => {
-    opts.props = {};
-    location.assign('/currentPage/user');
     currentUser.user = BasicUser;
+    const spy = jest.spyOn(client.users, 'logout').mockResolvedValue(true);
+
     const wrapper = mount(RequireAnon, opts);
     await wrapper.find(LogoutButton).trigger('click');
     await wrapper
       .find('[data-testid="dialog-confirm-button"]')
       .trigger('click');
     await flushPromises();
-    expect(location.search).toBe('?redirectTo=%2FcurrentPage%2Fuser');
+
+    expect(spy).toHaveBeenCalled();
+    expect(router.currentRoute.value.path).toBe(StartingPage);
+    expect(currentUser.user).toBeNull();
   });
 
   it('will redirect to the "redirectTo" path when the user opts to logout', async () => {
     const redirectTo = '/welcome';
     currentUser.user = BasicUser;
-    opts.props = { redirectTo };
+    const spy = jest.spyOn(client.users, 'logout').mockResolvedValue(true);
+
     const wrapper = mount(RequireAnon, opts);
-    await wrapper.find(LogoutButton).trigger('click');
+    await wrapper.setProps({ redirectTo });
+    await wrapper.get(LogoutButton).trigger('click');
     await wrapper
       .find('[data-testid="dialog-confirm-button"]')
       .trigger('click');
     await flushPromises();
-    expect(location.search).toBe('?redirectTo=%2Fwelcome');
+
+    expect(spy).toHaveBeenCalled();
+    expect(router.currentRoute.value.path).toBe(redirectTo);
+    expect(currentUser.user).toBeNull();
   });
 
   it('will allow the user to change their mind about logging out', async () => {

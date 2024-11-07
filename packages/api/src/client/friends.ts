@@ -1,9 +1,9 @@
 import {
   FriendRequestSchema,
   FriendSchema,
-  ListFriendRequestsParams,
+  ListFriendRequestsParamsDTO,
   ListFriendRequestsResponseSchema,
-  ListFriendsParams,
+  ListFriendsParamsDTO,
   ListFriendsResposneSchema,
 } from '../types';
 import { Fetcher } from './fetcher';
@@ -25,7 +25,7 @@ export class FriendsApiClient {
 
   async listFriends(
     username: string,
-    params?: ListFriendsParams,
+    params?: ListFriendsParamsDTO,
   ): Promise<ListFriendsResults> {
     const { data } = await this.apiClient.get(
       `/api/users/${username}/friends`,
@@ -59,7 +59,7 @@ export class FriendsApiClient {
 
   async listFriendRequests(
     username: string,
-    params?: ListFriendRequestsParams,
+    params?: ListFriendRequestsParamsDTO,
   ): Promise<ListFriendRequestsResults> {
     const { data: result } = await this.apiClient.get(
       `/api/users/${username}/friendRequests`,

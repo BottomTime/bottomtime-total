@@ -16,7 +16,6 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';

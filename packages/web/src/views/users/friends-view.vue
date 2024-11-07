@@ -79,7 +79,15 @@
 
       <div class="w-full flex flex-col space-y-3">
         <!-- Friends list-->
+        <div
+          v-if="state.isLoadingFriends"
+          class="flex justify-center text-xl my-8"
+        >
+          <LoadingSpinner message="Fetching list of friends..." />
+        </div>
+
         <FriendsList
+          v-else
           :friends="state.friends"
           :is-loading-more="state.isLoadingMoreFriends"
           :sort-by="state.queryParams.sortBy"
@@ -96,7 +104,15 @@
           These are friend requests that you have sent that have not yet been
           acknowledged.
         </p>
+        <div
+          v-if="state.isLoadingFriendRequests"
+          class="flex justify-center text-xl my-8"
+        >
+          <LoadingSpinner message="Fetching friend requests..." />
+        </div>
+
         <FriendRequestsList
+          v-else
           :is-loading-more="state.isLoadingMoreRequests"
           :requests="state.friendRequests"
           @cancel="onCancelRequest"
@@ -116,7 +132,7 @@ import {
   FriendRequestDirection,
   FriendsSortBy,
   ListFriendRequestsResponseDTO,
-  ListFriendsParams,
+  ListFriendsParamsDTO,
   ListFriendsParamsSchema,
   ListFriendsResponseDTO,
   ProfileDTO,
@@ -129,6 +145,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
 import DrawerPanel from '../../components/common/drawer-panel.vue';
+import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth.vue';
 import TextHeading from '../../components/common/text-heading.vue';
@@ -147,11 +164,13 @@ interface FriendsViewState {
   friends: ListFriendsResponseDTO;
   friendRequests: ListFriendRequestsResponseDTO;
   isCancellingRequest: boolean;
+  isLoadingFriends: boolean;
+  isLoadingFriendRequests: boolean;
   isLoadingProfile: boolean;
   isLoadingMoreFriends: boolean;
   isLoadingMoreRequests: boolean;
   isUnfriending: boolean;
-  queryParams: ListFriendsParams;
+  queryParams: ListFriendsParamsDTO;
   showConfirmCancelRequest: boolean;
   showConfirmUnfriend: boolean;
   showFriendProfile: boolean;
@@ -167,35 +186,10 @@ const router = useRouter();
 const toasts = useToasts();
 
 // State management
-function parseQueryString(): ListFriendsParams {
-  const search = route.params;
-
-  let sortBy: FriendsSortBy | undefined;
-  let sortOrder: SortOrder | undefined;
-  let limit: number = 50;
-
-  if (search['sortBy']) {
-    const parsed = ListFriendsParamsSchema.shape.sortBy.safeParse(
-      search['sortBy'],
-    );
-    sortBy = parsed.success ? parsed.data : undefined;
-  }
-
-  if (search['sortOrder']) {
-    const parsed = ListFriendsParamsSchema.shape.sortOrder.safeParse(
-      search['sortOrder'],
-    );
-    sortOrder = parsed.success ? parsed.data : undefined;
-  }
-
-  if (search['limit']) {
-    const parsed = ListFriendsParamsSchema.shape.limit.safeParse(
-      search['limit'],
-    );
-    if (parsed.success && parsed.data) limit = parsed.data;
-  }
-
-  return { sortBy, sortOrder, limit };
+function parseQueryString(): ListFriendsParamsDTO {
+  const query = ListFriendsParamsSchema.safeParse(route.path);
+  if (query.success) return query.data;
+  else return {};
 }
 
 const state = reactive<FriendsViewState>({
@@ -208,6 +202,8 @@ const state = reactive<FriendsViewState>({
     totalCount: 0,
   },
   isCancellingRequest: false,
+  isLoadingFriends: true,
+  isLoadingFriendRequests: true,
   isLoadingProfile: false,
   isLoadingMoreFriends: false,
   isLoadingMoreRequests: false,
@@ -221,6 +217,7 @@ const state = reactive<FriendsViewState>({
 
 // Loading data from server
 async function refreshFriends(): Promise<void> {
+  state.isLoadingFriends = true;
   await oops(async () => {
     if (!currentUser.user) return;
 
@@ -232,9 +229,11 @@ async function refreshFriends(): Promise<void> {
     state.friends.friends = results.friends.map((f) => f.toJSON());
     state.friends.totalCount = results.totalCount;
   });
+  state.isLoadingFriends = false;
 }
 
 async function refreshFriendRequests(): Promise<void> {
+  state.isLoadingFriendRequests = true;
   await oops(async () => {
     if (!currentUser.user) return;
 
@@ -252,6 +251,7 @@ async function refreshFriendRequests(): Promise<void> {
     );
     state.friendRequests.totalCount = results.totalCount;
   });
+  state.isLoadingFriendRequests = false;
 }
 
 async function onLoadMoreFriends(): Promise<void> {
@@ -342,11 +342,14 @@ async function onChangeFriendsSortOrder(
   await router.push({
     path: '/friends',
     query: {
+      ...route.query,
       sortBy,
       sortOrder,
-      limit: state.queryParams.limit,
     },
   });
+  state.queryParams.sortBy = sortBy;
+  state.queryParams.sortOrder = sortOrder;
+  await refreshFriends();
 }
 
 function onAddFriend() {

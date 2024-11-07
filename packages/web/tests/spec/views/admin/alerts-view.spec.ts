@@ -15,6 +15,7 @@ import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
+import AlertsListItem from '../../../../src/components/admin/alerts-list-item.vue';
 import AlertsList from '../../../../src/components/admin/alerts-list.vue';
 import { useCurrentUser } from '../../../../src/store';
 import AdminAlertsView from '../../../../src/views/admin/alerts-view.vue';
@@ -93,28 +94,13 @@ describe('Admin Alerts View', () => {
     await flushPromises();
 
     expect(wrapper.find(AlertsCount).text()).toBe('Showing 10 of 30 alerts');
-    const alertsList = wrapper.get('[data-testid="alerts-list"]');
-    const listItems = alertsList.findAll('li');
 
-    expect(listItems).toHaveLength(11);
-    for (let i = 0; i < 10; i++) {
-      expect(listItems.at(i)?.text()).toContain(alertData.alerts[i].title);
-    }
-    expect(listSpy).toHaveBeenCalledWith();
-  });
-
-  it('will render a list of alerts', async () => {
-    const wrapper = mount(AdminAlertsView, options);
-    await flushPromises();
-
-    const alertsList = wrapper.get('[data-testid="alerts-list"]');
-    const listItems = alertsList.findAll('li');
-
-    expect(listItems).toHaveLength(11);
-    for (let i = 0; i < 10; i++) {
-      expect(listItems.at(i)?.text()).toContain(alertData.alerts[i].title);
-    }
-    expect(listItems).toHaveBeenCalledWith();
+    const alerts = wrapper.findAllComponents(AlertsListItem);
+    expect(listSpy).toHaveBeenCalledWith({ showDismissed: true });
+    expect(alerts).toHaveLength(10);
+    alerts.forEach((alert, index) => {
+      expect(alert.props('alert')).toEqual(alertData.alerts[index]);
+    });
   });
 
   it('will delete an alert', async () => {
@@ -134,25 +120,28 @@ describe('Admin Alerts View', () => {
   });
 
   it('will load more alerts', async () => {
-    const spy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValueOnce({
-      alerts: alertData.alerts
-        .slice(10, 20)
-        .map((dto) => new Alert(fetcher, dto)),
+    listSpy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValueOnce({
+      alerts: alertData.alerts.slice(0, 5).map((a) => new Alert(fetcher, a)),
       totalCount: alertData.totalCount,
     });
     const wrapper = mount(AdminAlertsView, options);
     await flushPromises();
 
-    const listItem = wrapper.getComponent<typeof AlertsList>(AlertsList);
-
-    listItem.vm.$emit('load-more');
+    const loadMoreSpy = jest
+      .spyOn(client.alerts, 'listAlerts')
+      .mockResolvedValueOnce({
+        alerts: alertData.alerts.slice(5, 10).map((a) => new Alert(fetcher, a)),
+        totalCount: alertData.totalCount,
+      });
+    await wrapper.get('[data-testid="btn-load-more"]').trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith({ showDismissed: true, skip: 10 });
-    const items = wrapper.get('[data-testid="alerts-list"]').findAll('li');
-    expect(items).toHaveLength(21);
-    for (let i = 10; i < 20; i++) {
-      expect(items.at(i)!.text()).toContain(alertData.alerts[i].title);
-    }
+    const alerts = wrapper.findAllComponents(AlertsListItem);
+    expect(listSpy).toHaveBeenCalledWith({ showDismissed: true });
+    expect(loadMoreSpy).toHaveBeenCalledWith({ showDismissed: true, skip: 5 });
+    expect(alerts).toHaveLength(10);
+    alerts.forEach((alert, index) => {
+      expect(alert.props('alert')).toEqual(alertData.alerts[index]);
+    });
   });
 });
