@@ -154,7 +154,7 @@
 
               <div class="m-4 space-y-4">
                 <p class="text-lg italic">
-                  {{ tanks.tanks.map((tank) => `"${tank.name}"`).join(', ') }}
+                  {{ tanks.data.map((tank) => `"${tank.name}"`).join(', ') }}
                 </p>
                 <NavLink :to="`/profile/${profile.username}/tanks`">
                   Manage Tank Profiles...
@@ -193,11 +193,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ListTanksResponseDTO,
-  LogBookSharing,
-  ProfileDTO,
-} from '@bottomtime/api';
+import { ApiList, LogBookSharing, ProfileDTO, TankDTO } from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
 
@@ -220,7 +216,7 @@ import UserAvatar from './user-avatar.vue';
 interface EditProfileProps {
   responsive?: boolean;
   profile: ProfileDTO;
-  tanks?: ListTanksResponseDTO;
+  tanks?: ApiList<TankDTO>;
 }
 
 interface EditProfileState {

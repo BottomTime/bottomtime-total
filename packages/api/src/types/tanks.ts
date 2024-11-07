@@ -26,7 +26,6 @@ export const ListUserTanksParamsSchema = z.object({
 export type ListUserTanksParamsDTO = z.infer<typeof ListUserTanksParamsSchema>;
 
 export const ListTanksResponseSchema = z.object({
-  tanks: TankSchema.array(),
+  data: TankSchema.array(),
   totalCount: z.number().int(),
 });
-export type ListTanksResponseDTO = z.infer<typeof ListTanksResponseSchema>;

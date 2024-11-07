@@ -187,7 +187,7 @@ describe('Users Service', () => {
     it('will return an empty array if no results match', async () => {
       await Users.createQueryBuilder().delete().from(UserEntity).execute();
       await expect(service.searchUsers()).resolves.toEqual({
-        users: [],
+        data: [],
         totalCount: 0,
       });
     });
@@ -195,10 +195,10 @@ describe('Users Service', () => {
     it('will perform text based searches', async () => {
       const results = await service.searchUsers({ query: 'Town' });
 
-      expect(results.users).toHaveLength(2);
+      expect(results.data).toHaveLength(2);
       expect(results.totalCount).toBe(2);
       expect(
-        results.users.map((u) => ({
+        results.data.map((u) => ({
           id: u.id,
           username: u.username,
           memberSince: u.memberSince,
@@ -244,16 +244,16 @@ describe('Users Service', () => {
 
       expect(results.totalCount).toBe(96);
       expect(
-        results.users.map((u) => ({ id: u.id, username: u.username })),
+        results.data.map((u) => ({ id: u.id, username: u.username })),
       ).toMatchSnapshot();
     });
 
     it('will limit "page" size', async () => {
       const results = await service.searchUsers({ limit: 7 });
-      expect(results.users).toHaveLength(7);
+      expect(results.data).toHaveLength(7);
       expect(results.totalCount).toBe(100);
       expect(
-        results.users.map((u: User) => ({
+        results.data.map((u: User) => ({
           id: u.id,
           username: u.username,
           memberSince: u.memberSince,
@@ -263,10 +263,10 @@ describe('Users Service', () => {
 
     it('will allow showing results beyond the first page', async () => {
       const results = await service.searchUsers({ limit: 7, skip: 7 });
-      expect(results.users).toHaveLength(7);
+      expect(results.data).toHaveLength(7);
       expect(results.totalCount).toBe(100);
       expect(
-        results.users.map((u: User) => ({
+        results.data.map((u: User) => ({
           id: u.id,
           username: u.username,
           memberSince: u.memberSince,
@@ -287,7 +287,7 @@ describe('Users Service', () => {
           limit: 5,
         });
         expect(
-          results.users.map((u) => ({
+          results.data.map((u) => ({
             username: u.username,
             memberSince: u.memberSince,
           })),
@@ -298,7 +298,7 @@ describe('Users Service', () => {
     [UserRole.User, UserRole.Admin].forEach((role) => {
       it(`will filter by role: ${role}`, async () => {
         const results = await service.searchUsers({ role, limit: 10 });
-        for (const user of results.users) {
+        for (const user of results.data) {
           expect(user.role).toBe(role);
         }
       });

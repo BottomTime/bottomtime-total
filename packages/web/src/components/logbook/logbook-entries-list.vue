@@ -4,7 +4,7 @@
       <div class="flex justify-between items-baseline">
         <p data-testid="entries-count">
           <span>Showing </span>
-          <span class="font-bold">{{ entries.logEntries.length }}</span>
+          <span class="font-bold">{{ entries.data.length }}</span>
           <span> of </span>
           <span class="font-bold">{{ entries.totalCount }}</span>
           <span> entries</span>
@@ -60,13 +60,9 @@
       <LoadingSpinner message="Fetching logbook entries..." />
     </div>
 
-    <ul
-      v-else-if="entries.logEntries.length"
-      class="px-2"
-      data-testid="logbook-list"
-    >
+    <ul v-else-if="entries.data.length" class="px-2" data-testid="logbook-list">
       <LogbookEntriesListItem
-        v-for="entry in entries.logEntries"
+        v-for="entry in entries.data"
         :key="entry.id"
         :edit-mode="editMode"
         :entry="entry"
@@ -74,7 +70,7 @@
       />
 
       <li
-        v-if="entries.logEntries.length < entries.totalCount"
+        v-if="entries.data.length < entries.totalCount"
         class="min-h-24 text-center flex justify-center items-center"
       >
         <p
@@ -121,7 +117,7 @@
 
 <script lang="ts" setup>
 import {
-  ListLogEntriesResponseDTO,
+  ApiList,
   LogEntryDTO,
   LogEntrySortBy,
   SortOrder,
@@ -159,7 +155,7 @@ const currentUser = useCurrentUser();
 
 interface LogbookEntriesListProps {
   editMode?: boolean;
-  entries: ListLogEntriesResponseDTO;
+  entries: ApiList<LogEntryDTO>;
   isLoading?: boolean;
   isLoadingMore?: boolean;
   sortBy?: LogEntrySortBy;

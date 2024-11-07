@@ -211,17 +211,17 @@ describe('OperatorService', () => {
 
     it('will perform a basic search with no parameters', async () => {
       const results = await service.searchOperators();
-      expect(results.operators).toHaveLength(50);
+      expect(results.data).toHaveLength(50);
       expect(results.totalCount).toBe(activeOperatorsCount);
-      expect(results.operators[0]).toMatchSnapshot();
-      expect(results.operators.map((op) => op.name)).toMatchSnapshot();
+      expect(results.data[0]).toMatchSnapshot();
+      expect(results.data.map((op) => op.name)).toMatchSnapshot();
     });
 
     it('will perform a search with pagination', async () => {
       const results = await service.searchOperators({ skip: 40, limit: 20 });
-      expect(results.operators).toHaveLength(20);
+      expect(results.data).toHaveLength(20);
       expect(results.totalCount).toBe(activeOperatorsCount);
-      expect(results.operators.map((op) => op.name)).toMatchSnapshot();
+      expect(results.data.map((op) => op.name)).toMatchSnapshot();
     });
 
     it('will perform a search for dive operators near a given location', async () => {
@@ -234,9 +234,9 @@ describe('OperatorService', () => {
       });
 
       expect({
-        length: results.operators.length,
+        length: results.data.length,
         totalCount: results.totalCount,
-        operators: results.operators.map((op) => op.name),
+        operators: results.data.map((op) => op.name),
       }).toMatchSnapshot();
     });
 
@@ -245,10 +245,10 @@ describe('OperatorService', () => {
         owner: new User(Users, owners[2]),
       });
 
-      expect(results.operators).toHaveLength(3);
+      expect(results.data).toHaveLength(3);
       expect(results.totalCount).toBe(3);
       expect(
-        results.operators.map((op) => ({
+        results.data.map((op) => ({
           name: op.name,
           owner: op.owner.username,
         })),
@@ -258,9 +258,9 @@ describe('OperatorService', () => {
     it('will perform a search with a query string', async () => {
       const results = await service.searchOperators({ query: 'urbanus' });
       expect({
-        length: results.operators.length,
+        length: results.data.length,
         totalCount: results.totalCount,
-        operators: results.operators.map((op) => op.name),
+        operators: results.data.map((op) => op.name),
       }).toMatchSnapshot();
     });
 
@@ -269,10 +269,10 @@ describe('OperatorService', () => {
         showInactive: true,
       });
 
-      expect(results.operators).toHaveLength(50);
+      expect(results.data).toHaveLength(50);
       expect(results.totalCount).toBe(TestData.length);
       expect(
-        results.operators.map((op) => ({
+        results.data.map((op) => ({
           name: op.name,
           owner: op.owner.username,
           active: op.active,
@@ -289,10 +289,10 @@ describe('OperatorService', () => {
           op.verificationStatus === VerificationStatus.Pending && op.active,
       ).length;
 
-      expect(results.operators).toHaveLength(expectedCount);
+      expect(results.data).toHaveLength(expectedCount);
       expect(results.totalCount).toBe(expectedCount);
       expect(
-        results.operators.map((op) => ({
+        results.data.map((op) => ({
           name: op.name,
           owner: op.owner.username,
           verification: op.verificationStatus,

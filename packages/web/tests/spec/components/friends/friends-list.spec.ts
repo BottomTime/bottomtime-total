@@ -1,6 +1,7 @@
 import {
+  ApiList,
+  FriendDTO,
   FriendsSortBy,
-  ListFriendsResponseDTO,
   ListFriendsResposneSchema,
   SortOrder,
 } from '@bottomtime/api';
@@ -24,7 +25,7 @@ const NoFriendsMessage = '[data-testid="no-friends"]';
 const SortOrderDropdown = '[data-testid="sort-order"]';
 
 describe('Friends list component', () => {
-  let friendData: ListFriendsResponseDTO;
+  let friendData: ApiList<FriendDTO>;
 
   beforeAll(() => {
     friendData = ListFriendsResposneSchema.parse(FriendTestData);
@@ -34,7 +35,7 @@ describe('Friends list component', () => {
     const wrapper = mount(FriendsList, {
       props: {
         friends: {
-          friends: [],
+          data: [],
           totalCount: 0,
         },
       },
@@ -51,7 +52,7 @@ describe('Friends list component', () => {
     const wrapper = mount(FriendsList, {
       props: {
         friends: {
-          friends: friendData.friends.slice(0, 12),
+          data: friendData.data.slice(0, 12),
           totalCount: friendData.totalCount,
         },
       },
@@ -66,7 +67,7 @@ describe('Friends list component', () => {
     expect(list.length).toBe(12);
 
     list.forEach((item, index) => {
-      expect(item.text()).toContain(friendData.friends[index].username);
+      expect(item.text()).toContain(friendData.data[index].username);
     });
   });
 
@@ -83,10 +84,10 @@ describe('Friends list component', () => {
     expect(wrapper.find(LoadMoreMessage).exists()).toBe(false);
 
     const list = wrapper.findAllComponents(FriendsListItem);
-    expect(list.length).toBe(friendData.friends.length);
+    expect(list.length).toBe(friendData.data.length);
 
     list.forEach((item, index) => {
-      expect(item.text()).toContain(friendData.friends[index].username);
+      expect(item.text()).toContain(friendData.data[index].username);
     });
   });
 
@@ -94,7 +95,7 @@ describe('Friends list component', () => {
     const wrapper = mount(FriendsList, {
       props: {
         friends: {
-          friends: friendData.friends.slice(0, 12),
+          data: friendData.data.slice(0, 12),
           totalCount: friendData.totalCount,
         },
       },
@@ -109,7 +110,7 @@ describe('Friends list component', () => {
     const wrapper = mount(FriendsList, {
       props: {
         friends: {
-          friends: friendData.friends.slice(0, 12),
+          data: friendData.data.slice(0, 12),
           totalCount: friendData.totalCount,
         },
         isLoadingMore: true,
@@ -130,9 +131,9 @@ describe('Friends list component', () => {
 
       await wrapper
         .findComponent(FriendsListItem)
-        .vm.$emit(event, friendData.friends[0]);
+        .vm.$emit(event, friendData.data[0]);
 
-      expect(wrapper.emitted(event)).toEqual([[friendData.friends[0]]]);
+      expect(wrapper.emitted(event)).toEqual([[friendData.data[0]]]);
     });
   });
 

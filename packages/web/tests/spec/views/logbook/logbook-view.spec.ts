@@ -1,11 +1,12 @@
 import {
   AccountTier,
   ApiClient,
+  ApiList,
   Fetcher,
-  ListLogEntriesResponseDTO,
   ListLogEntriesResponseSchema,
   LogBookSharing,
   LogEntry,
+  LogEntryDTO,
   LogEntrySortBy,
   ProfileDTO,
   SortOrder,
@@ -44,7 +45,7 @@ describe('Logbook view', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
-  let entryData: ListLogEntriesResponseDTO;
+  let entryData: ApiList<LogEntryDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -90,9 +91,7 @@ describe('Logbook view', () => {
     listSpy = jest
       .spyOn(client.logEntries, 'listLogEntries')
       .mockResolvedValue({
-        logEntries: entryData.logEntries.map(
-          (entry) => new LogEntry(fetcher, entry),
-        ),
+        data: entryData.data.map((entry) => new LogEntry(fetcher, entry)),
         totalCount: entryData.totalCount,
       });
   });
@@ -102,9 +101,9 @@ describe('Logbook view', () => {
     await flushPromises();
 
     const items = wrapper.findAllComponents(LogbookEntriesListItem);
-    expect(items).toHaveLength(entryData.logEntries.length);
+    expect(items).toHaveLength(entryData.data.length);
     items.forEach((item, i) => {
-      expect(item.props('entry').id).toBe(entryData.logEntries[i].id);
+      expect(item.props('entry').id).toBe(entryData.data[i].id);
     });
     expect(listSpy).toHaveBeenCalledWith(ProfileData.username, { skip: 0 });
   });
@@ -118,9 +117,9 @@ describe('Logbook view', () => {
     await flushPromises();
 
     const items = wrapper.findAllComponents(LogbookEntriesListItem);
-    expect(items).toHaveLength(entryData.logEntries.length);
+    expect(items).toHaveLength(entryData.data.length);
     items.forEach((item, i) => {
-      expect(item.props('entry').id).toBe(entryData.logEntries[i].id);
+      expect(item.props('entry').id).toBe(entryData.data[i].id);
     });
     expect(listSpy).toHaveBeenCalledWith(ProfileData.username, {
       endDate: new Date('2025-05-02T16:32:07.300Z'),
@@ -140,9 +139,9 @@ describe('Logbook view', () => {
     await flushPromises();
 
     const items = wrapper.findAllComponents(LogbookEntriesListItem);
-    expect(items).toHaveLength(entryData.logEntries.length);
+    expect(items).toHaveLength(entryData.data.length);
     items.forEach((item, i) => {
-      expect(item.props('entry').id).toBe(entryData.logEntries[i].id);
+      expect(item.props('entry').id).toBe(entryData.data[i].id);
     });
     expect(listSpy).toHaveBeenCalledWith(ProfileData.username, {});
   });
@@ -222,7 +221,7 @@ describe('Logbook view', () => {
     expect(list.isVisible()).toBe(true);
 
     const items = list.findAllComponents(LogbookEntriesListItem);
-    expect(items.length).toBe(entryData.logEntries.length);
+    expect(items.length).toBe(entryData.data.length);
 
     expect(wrapper.find('[data-testid="create-entry"]').exists()).toBe(false);
   });
@@ -236,7 +235,7 @@ describe('Logbook view', () => {
     expect(list.isVisible()).toBe(true);
 
     const items = list.findAllComponents(LogbookEntriesListItem);
-    expect(items.length).toBe(entryData.logEntries.length);
+    expect(items.length).toBe(entryData.data.length);
 
     expect(wrapper.find('[data-testid="create-entry"]').exists()).toBe(false);
   });
@@ -250,7 +249,7 @@ describe('Logbook view', () => {
     expect(list.isVisible()).toBe(true);
 
     const items = list.findAllComponents(LogbookEntriesListItem);
-    expect(items.length).toBe(entryData.logEntries.length);
+    expect(items.length).toBe(entryData.data.length);
 
     expect(wrapper.find('[data-testid="create-entry"]').isVisible()).toBe(true);
   });
@@ -265,7 +264,7 @@ describe('Logbook view', () => {
     expect(list.isVisible()).toBe(true);
 
     const items = list.findAllComponents(LogbookEntriesListItem);
-    expect(items.length).toBe(entryData.logEntries.length);
+    expect(items.length).toBe(entryData.data.length);
 
     expect(wrapper.find('[data-testid="create-entry"]').isVisible()).toBe(true);
   });
@@ -290,7 +289,7 @@ describe('Logbook view', () => {
     listSpy = jest
       .spyOn(client.logEntries, 'listLogEntries')
       .mockResolvedValue({
-        logEntries: entryData.logEntries
+        data: entryData.data
           .slice(0, 10)
           .map((entry) => new LogEntry(fetcher, entry)),
         totalCount: 200,
@@ -305,9 +304,7 @@ describe('Logbook view', () => {
     const loadMoreSpy = jest
       .spyOn(client.logEntries, 'listLogEntries')
       .mockResolvedValue({
-        logEntries: entryData.logEntries
-          .slice(10, 20)
-          .map((e) => new LogEntry(fetcher, e)),
+        data: entryData.data.slice(10, 20).map((e) => new LogEntry(fetcher, e)),
         totalCount: 200,
       });
     await wrapper.find('[data-testid="logbook-load-more"]').trigger('click');
@@ -326,7 +323,7 @@ describe('Logbook view', () => {
     items.forEach((item, index) => {
       expect(
         item
-          .find(`[data-testid="select-${entryData.logEntries[index].id}"]`)
+          .find(`[data-testid="select-${entryData.data[index].id}"]`)
           .isVisible(),
       ).toBe(true);
     });
@@ -353,7 +350,7 @@ describe('Logbook view', () => {
   });
 
   it('will preview a selected log entry in the drawer panel', async () => {
-    const entry = new LogEntry(fetcher, entryData.logEntries[0]);
+    const entry = new LogEntry(fetcher, entryData.data[0]);
     const spy = jest
       .spyOn(client.logEntries, 'getLogEntry')
       .mockResolvedValue(entry);

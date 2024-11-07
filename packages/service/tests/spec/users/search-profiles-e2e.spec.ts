@@ -56,8 +56,8 @@ describe('Searching Profiles E2E Tests', () => {
       .expect(200);
 
     expect(body.totalCount).toBe(100);
-    expect(body.users).toHaveLength(10);
-    expect(body.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
+    expect(body.data).toHaveLength(10);
+    expect(body.data.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
   });
 
   it('will perform a text search for user profiles', async () => {
@@ -71,7 +71,7 @@ describe('Searching Profiles E2E Tests', () => {
       .expect(200);
 
     expect(result.totalCount).toBe(28);
-    expect(result.users.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
+    expect(result.data.map((u: ProfileDTO) => u.username)).toMatchSnapshot();
   });
 
   it('will allow filtering out profiles for the current user', async () => {
@@ -96,7 +96,7 @@ describe('Searching Profiles E2E Tests', () => {
 
     expect(result.totalCount).toBe(97);
     expect(
-      result.users.map((u: ProfileDTO) => ({
+      result.data.map((u: ProfileDTO) => ({
         id: u.userId,
         username: u.username,
       })),
@@ -130,7 +130,7 @@ describe('Searching Profiles E2E Tests', () => {
 
       expect(body.totalCount).toBe(100);
       expect(
-        body.users.map((u: ProfileDTO) => ({
+        body.data.map((u: ProfileDTO) => ({
           username: u.username,
           memberSince: u.memberSince,
         })),
@@ -149,7 +149,7 @@ describe('Searching Profiles E2E Tests', () => {
       .expect(200);
 
     expect(result.totalCount).toBe(0);
-    expect(result.users).toHaveLength(0);
+    expect(result.data).toHaveLength(0);
   });
 
   it('will return a 400 response if the query string is invalid', async () => {

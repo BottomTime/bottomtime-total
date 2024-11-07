@@ -167,18 +167,14 @@ export type SearchUserProfilesParamsDTO = z.infer<
 >;
 
 export const SearchUsersResponseSchema = z.object({
-  users: UserSchema.array(),
+  data: UserSchema.array(),
   totalCount: z.number().int(),
 });
-export type SearchUsersResponseDTO = z.infer<typeof SearchUsersResponseSchema>;
 
 export const SearchProfilesResponseSchema = z.object({
-  users: ProfileSchema.array(),
+  data: ProfileSchema.array(),
   totalCount: z.number().int(),
 });
-export type SearchProfilesResponseDTO = z.infer<
-  typeof SearchProfilesResponseSchema
->;
 
 export const VerifyEmailParamsSchema = z.object({
   token: z.string().min(1),

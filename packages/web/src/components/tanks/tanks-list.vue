@@ -3,7 +3,7 @@
     <FormBox class="flex justify-between items-baseline">
       <p class="text-lg" data-testid="tanks-list-counts">
         <span>Showing </span>
-        <span class="font-bold">{{ tanks.tanks.length }}</span>
+        <span class="font-bold">{{ tanks.data.length }}</span>
         <span> tank profile(s)</span>
       </p>
 
@@ -25,7 +25,7 @@
 
     <TransitionGroup name="list" tag="ul">
       <TanksListItem
-        v-for="tank in tanks.tanks"
+        v-for="tank in tanks.data"
         :key="tank.id"
         :tank="tank"
         @select="$emit('select', tank)"
@@ -33,7 +33,7 @@
       />
 
       <li
-        v-if="tanks.tanks.length === 0"
+        v-if="tanks.data.length === 0"
         class="justify-center my-6 text-lg italic flex gap-3"
         data-testid="tanks-list-empty"
       >
@@ -53,14 +53,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ListTanksResponseDTO, TankDTO } from '@bottomtime/api';
+import { ApiList, TankDTO } from '@bottomtime/api';
 
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import TanksListItem from './tanks-list-item.vue';
 
 interface TanksListProps {
-  tanks: ListTanksResponseDTO;
+  tanks: ApiList<TankDTO>;
   showAddTank?: boolean;
 }
 

@@ -1,7 +1,7 @@
 import {
   ApiClient,
+  ApiList,
   Fetcher,
-  ListTanksResponseDTO,
   ListTanksResponseSchema,
   Tank,
   TankDTO,
@@ -37,7 +37,7 @@ describe('Profile Tanks View', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
-  let tankData: ListTanksResponseDTO;
+  let tankData: ApiList<TankDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -57,8 +57,8 @@ describe('Profile Tanks View', () => {
 
   beforeEach(async () => {
     tankData = ListTanksResponseSchema.parse(TestTankData);
-    tankData.tanks = tankData.tanks.slice(0, 9);
-    tankData.totalCount = tankData.tanks.length;
+    tankData.data = tankData.data.slice(0, 9);
+    tankData.totalCount = tankData.data.length;
 
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
@@ -77,7 +77,7 @@ describe('Profile Tanks View', () => {
     };
 
     listSpy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: tankData.tanks.map((t) => new Tank(fetcher, t)),
+      data: tankData.data.map((t) => new Tank(fetcher, t)),
       totalCount: tankData.totalCount,
     });
   });
@@ -95,13 +95,13 @@ describe('Profile Tanks View', () => {
     ).toMatchSnapshot();
 
     const items = wrapper.findAllComponents(TanksListItem);
-    expect(items).toHaveLength(tankData.tanks.length);
+    expect(items).toHaveLength(tankData.data.length);
     items.forEach((item, index) => {
       expect(
         item
-          .get(`[data-testid="select-tank-${tankData.tanks[index].id}"]`)
+          .get(`[data-testid="select-tank-${tankData.data[index].id}"]`)
           .text(),
-      ).toContain(tankData.tanks[index].name);
+      ).toContain(tankData.data[index].name);
     });
   });
 
@@ -114,13 +114,13 @@ describe('Profile Tanks View', () => {
     ).toMatchSnapshot();
 
     const items = wrapper.findAllComponents(TanksListItem);
-    expect(items).toHaveLength(tankData.tanks.length);
+    expect(items).toHaveLength(tankData.data.length);
     items.forEach((item, index) => {
       expect(
         item
-          .get(`[data-testid="select-tank-${tankData.tanks[index].id}"]`)
+          .get(`[data-testid="select-tank-${tankData.data[index].id}"]`)
           .text(),
-      ).toContain(tankData.tanks[index].name);
+      ).toContain(tankData.data[index].name);
     });
   });
 
@@ -176,7 +176,7 @@ describe('Profile Tanks View', () => {
       };
 
       jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-        tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
+        data: tankData.data.map((tank) => new Tank(fetcher, tank)),
         totalCount: tankData.totalCount,
       });
       const spy = jest
@@ -214,11 +214,11 @@ describe('Profile Tanks View', () => {
       role === UserRole.Admin ? 'an admin' : 'profile owner'
     } a user to delete a tank`, async () => {
       currentUser.user = role === UserRole.Admin ? AdminUser : BasicUser;
-      const dto = tankData.tanks[4];
+      const dto = tankData.data[4];
       const tank = new Tank(fetcher, dto);
 
       jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-        tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
+        data: tankData.data.map((tank) => new Tank(fetcher, tank)),
         totalCount: tankData.totalCount,
       });
       jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((data) => {
@@ -251,10 +251,10 @@ describe('Profile Tanks View', () => {
       role === UserRole.Admin ? 'an admin' : 'profile owner'
     } to change their mind about deleting a tank`, async () => {
       currentUser.user = role === UserRole.Admin ? AdminUser : BasicUser;
-      const dto = tankData.tanks[6];
+      const dto = tankData.data[6];
 
       jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-        tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
+        data: tankData.data.map((tank) => new Tank(fetcher, tank)),
         totalCount: tankData.totalCount,
       });
       const spy = jest.spyOn(client.tanks, 'wrapDTO');
@@ -282,11 +282,11 @@ describe('Profile Tanks View', () => {
       role === UserRole.Admin ? 'an admin' : 'profile owner'
     } to delete a tank from the drawer panel`, async () => {
       currentUser.user = role === UserRole.Admin ? AdminUser : BasicUser;
-      const dto = tankData.tanks[4];
+      const dto = tankData.data[4];
       const tank = new Tank(fetcher, dto);
 
       jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-        tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
+        data: tankData.data.map((tank) => new Tank(fetcher, tank)),
         totalCount: tankData.totalCount,
       });
       jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((data) => {
@@ -320,7 +320,7 @@ describe('Profile Tanks View', () => {
     it(`will allow ${
       role === UserRole.Admin ? 'an admin' : 'profile owner'
     } to edit an existing tank profile`, async () => {
-      const original = tankData.tanks[3];
+      const original = tankData.data[3];
       const updated: TankDTO = {
         ...original,
         name: 'Modernized Tank',
@@ -331,7 +331,7 @@ describe('Profile Tanks View', () => {
       const tank = new Tank(fetcher, updated);
 
       jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-        tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
+        data: tankData.data.map((tank) => new Tank(fetcher, tank)),
         totalCount: tankData.totalCount,
       });
       jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((data) => {
@@ -365,8 +365,8 @@ describe('Profile Tanks View', () => {
 
   it('will not show Add button if user is at their custom tank profile limit', async () => {
     jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: [
-        ...tankData.tanks,
+      data: [
+        ...tankData.data,
         {
           id: '04efab49-cbb3-4741-9b15-f0774f52118b',
           name: 'Final Tank',

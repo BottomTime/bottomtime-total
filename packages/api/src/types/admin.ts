@@ -15,12 +15,9 @@ export type AdminSearchUsersParamsDTO = z.infer<
 >;
 
 export const AdminSearchUsersResponseSchema = z.object({
-  users: UserSchema.array(),
+  data: UserSchema.array(),
   totalCount: z.number().int(),
 });
-export type AdminSearchUsersResponseDTO = z.infer<
-  typeof AdminSearchUsersResponseSchema
->;
 
 export const ChangeRoleParamsSchema = z.object({
   newRole: z.nativeEnum(UserRole),

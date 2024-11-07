@@ -118,9 +118,9 @@
 
 <script lang="ts" setup>
 import {
+  ApiList,
   ListLogEntriesParamsDTO,
   ListLogEntriesParamsSchema,
-  ListLogEntriesResponseDTO,
   LogBookSharing,
   LogEntryDTO,
   LogEntrySortBy,
@@ -153,7 +153,7 @@ interface LogbookViewState {
   isLoading: boolean;
   isLoadingLogEntry: boolean;
   isLoadingMoreEntries: boolean;
-  logEntries?: ListLogEntriesResponseDTO;
+  logEntries?: ApiList<LogEntryDTO>;
   queryParams: ListLogEntriesParamsDTO;
   selectedEntry?: LogEntryDTO | null;
   showSelectedEntry: boolean;
@@ -209,7 +209,7 @@ async function refresh(): Promise<void> {
         state.queryParams,
       );
       state.logEntries = {
-        logEntries: results.logEntries.map((entry) => entry.toJSON()),
+        data: results.data.map((entry) => entry.toJSON()),
         totalCount: results.totalCount,
       };
     },
@@ -248,7 +248,7 @@ async function onLoadMore(): Promise<void> {
     if (!state.logEntries) return;
     const options = {
       ...state.queryParams,
-      skip: state.logEntries.logEntries.length,
+      skip: state.logEntries.data.length,
     };
 
     const results = await client.logEntries.listLogEntries(
@@ -256,9 +256,7 @@ async function onLoadMore(): Promise<void> {
       options,
     );
 
-    state.logEntries.logEntries.push(
-      ...results.logEntries.map((entry) => entry.toJSON()),
-    );
+    state.logEntries.data.push(...results.data.map((entry) => entry.toJSON()));
     state.logEntries.totalCount = results.totalCount;
   });
 

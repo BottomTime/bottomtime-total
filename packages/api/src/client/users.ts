@@ -1,12 +1,12 @@
 import {
   AdminSearchUsersParamsDTO,
   AdminSearchUsersResponseSchema,
+  ApiList,
   CreateUserParamsDTO,
   CurrentUserSchema,
   PasswordResetTokenStatus,
   ProfileDTO,
   ProfileSchema,
-  SearchProfilesResponseDTO,
   SearchProfilesResponseSchema,
   SearchUserProfilesParamsDTO,
   SuccessFailResponseDTO,
@@ -133,9 +133,7 @@ export class UsersApiClient {
     return data;
   }
 
-  async searchUsers(
-    query: AdminSearchUsersParamsDTO,
-  ): Promise<{ users: User[]; totalCount: number }> {
+  async searchUsers(query: AdminSearchUsersParamsDTO): Promise<ApiList<User>> {
     const { data: response } = await this.apiClient.get(
       '/api/admin/users',
       query,
@@ -143,14 +141,14 @@ export class UsersApiClient {
     );
 
     return {
-      users: response.users.map((user) => new User(this.apiClient, user)),
+      data: response.data.map((user) => new User(this.apiClient, user)),
       totalCount: response.totalCount,
     };
   }
 
   async searchProfiles(
     query: SearchUserProfilesParamsDTO,
-  ): Promise<SearchProfilesResponseDTO> {
+  ): Promise<ApiList<ProfileDTO>> {
     const { data } = await this.apiClient.get(
       '/api/users',
       query,

@@ -135,7 +135,7 @@ exports[`Dive Sites End-to-End Tests when getting a dive site will return the di
 
 exports[`Dive Sites End-to-End Tests when searching dive sites will list results from a basic search 1`] = `
 {
-  "sites": [
+  "data": [
     {
       "averageDifficulty": 3.09,
       "averageRating": 4.9832,
@@ -478,7 +478,7 @@ exports[`Dive Sites End-to-End Tests when searching dive sites will return a 400
 
 exports[`Dive Sites End-to-End Tests when searching dive sites will return the results from a filtered search 1`] = `
 {
-  "sites": [
+  "data": [
     {
       "averageDifficulty": 1.75,
       "averageRating": 4.75,

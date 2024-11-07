@@ -51,10 +51,9 @@ export const ListFriendsParamsSchema = z
 export type ListFriendsParamsDTO = z.infer<typeof ListFriendsParamsSchema>;
 
 export const ListFriendsResposneSchema = z.object({
-  friends: FriendSchema.array(),
+  data: FriendSchema.array(),
   totalCount: z.number().int(),
 });
-export type ListFriendsResponseDTO = z.infer<typeof ListFriendsResposneSchema>;
 
 // Listing Friend Requests
 export const ListFriendRequestsParamsSchema = z
@@ -71,12 +70,9 @@ export type ListFriendRequestsParamsDTO = z.infer<
 >;
 
 export const ListFriendRequestsResponseSchema = z.object({
-  friendRequests: FriendRequestSchema.array(),
+  data: FriendRequestSchema.array(),
   totalCount: z.number().int(),
 });
-export type ListFriendRequestsResponseDTO = z.infer<
-  typeof ListFriendRequestsResponseSchema
->;
 
 // Acknowledging Friend Requests
 export const AcknowledgeFriendRequestParamsSchema = z.discriminatedUnion(

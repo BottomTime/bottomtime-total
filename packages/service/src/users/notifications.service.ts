@@ -17,7 +17,7 @@ export type ListNotificationsOptions = ListNotificationsParamsDTO & {
 };
 
 export type ListNotificationsResult = {
-  notifications: Notification[];
+  data: Notification[];
   totalCount: number;
 };
 
@@ -57,7 +57,7 @@ export class NotificationsService {
     const [results, totalCount] = await query.getManyAndCount();
 
     return {
-      notifications: results.map(
+      data: results.map(
         (notification) => new Notification(this.Notifications, notification),
       ),
       totalCount,

@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AlertDTO, ListAlertsResponseDTO, UserRole } from '@bottomtime/api';
+import { AlertDTO, ApiList, UserRole } from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
 
@@ -36,7 +36,7 @@ interface AlertsViewState {
   currentAlert?: AlertDTO;
   isLoading: boolean;
   isLoadingMore: boolean;
-  results: ListAlertsResponseDTO;
+  results: ApiList<AlertDTO>;
 }
 
 const client = useClient();
@@ -54,7 +54,7 @@ const state = reactive<AlertsViewState>({
   isLoading: true,
   isLoadingMore: false,
   results: {
-    alerts: [],
+    data: [],
     totalCount: 0,
   },
 });
@@ -62,10 +62,10 @@ const state = reactive<AlertsViewState>({
 onMounted(async () => {
   await oops(async () => {
     if (!isAuthorized.value) return;
-    const { alerts: results, totalCount } = await client.alerts.listAlerts({
+    const { data: results, totalCount } = await client.alerts.listAlerts({
       showDismissed: true,
     });
-    state.results.alerts = results.map((alert) => alert.toJSON());
+    state.results.data = results.map((alert) => alert.toJSON());
     state.results.totalCount = totalCount;
   });
 
@@ -77,9 +77,9 @@ async function onDeleteAlert(dto: AlertDTO): Promise<void> {
     const alert = client.alerts.wrapDTO(dto);
     await alert.delete();
 
-    const index = state.results.alerts.findIndex((a) => a.id === alert.id);
+    const index = state.results.data.findIndex((a) => a.id === alert.id);
     if (index >= 0) {
-      state.results.alerts.splice(index, 1);
+      state.results.data.splice(index, 1);
       state.results.totalCount--;
 
       toasts.toast({
@@ -96,11 +96,11 @@ async function onLoadMore(): Promise<void> {
   await oops(async () => {
     const results = await client.alerts.listAlerts({
       showDismissed: true,
-      skip: state.results.alerts.length,
+      skip: state.results.data.length,
     });
 
     state.results.totalCount = results.totalCount;
-    state.results.alerts.push(...results.alerts.map((a) => a.toJSON()));
+    state.results.data.push(...results.data.map((a) => a.toJSON()));
   });
   state.isLoadingMore = false;
 }

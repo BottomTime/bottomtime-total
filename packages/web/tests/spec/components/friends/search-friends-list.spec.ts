@@ -1,5 +1,6 @@
 import {
-  SearchProfilesResponseDTO,
+  ApiList,
+  ProfileDTO,
   SearchUsersResponseSchema,
 } from '@bottomtime/api';
 
@@ -21,19 +22,19 @@ const NoFriendsMessage = '[data-testid="search-friends-no-results"]';
 const LoadingMoreMessage = '[data-testid="search-friends-loading-more"]';
 
 describe('Search friends list component', () => {
-  let searchData: SearchProfilesResponseDTO;
+  let searchData: ApiList<ProfileDTO>;
 
   beforeAll(() => {
     const userData = SearchUsersResponseSchema.parse(UsersTestData);
     searchData = {
-      users: userData.users.map((user) => user.profile),
+      data: userData.data.map((user) => user.profile),
       totalCount: userData.totalCount,
     };
   });
 
   it('will render loading spinner if "isLoading" is true', () => {
     const wrapper = mount(SearchFriendsList, {
-      props: { isLoading: true, users: { users: [], totalCount: 0 } },
+      props: { isLoading: true, users: { data: [], totalCount: 0 } },
     });
     expect(
       wrapper.find('[data-testid="search-friends-loading"]').isVisible(),
@@ -43,7 +44,7 @@ describe('Search friends list component', () => {
 
   it('will render correctly with empty list', () => {
     const wrapper = mount(SearchFriendsList, {
-      props: { users: { users: [], totalCount: 0 } },
+      props: { users: { data: [], totalCount: 0 } },
     });
     expect(
       wrapper.find('[data-testid="search-friends-loading"]').exists(),
@@ -56,7 +57,7 @@ describe('Search friends list component', () => {
     const wrapper = mount(SearchFriendsList, {
       props: {
         users: {
-          users: searchData.users.slice(0, 50),
+          data: searchData.data.slice(0, 50),
           totalCount: searchData.totalCount,
         },
       },
@@ -72,7 +73,7 @@ describe('Search friends list component', () => {
     expect(items).toHaveLength(50);
 
     items.forEach((item, index) => {
-      expect(item.text()).toContain(searchData.users[index].username);
+      expect(item.text()).toContain(searchData.data[index].username);
     });
   });
 
@@ -80,8 +81,8 @@ describe('Search friends list component', () => {
     const wrapper = mount(SearchFriendsList, {
       props: {
         users: {
-          users: searchData.users,
-          totalCount: searchData.users.length,
+          data: searchData.data,
+          totalCount: searchData.data.length,
         },
       },
     });
@@ -95,7 +96,7 @@ describe('Search friends list component', () => {
     expect(items).toHaveLength(100);
 
     items.forEach((item, index) => {
-      expect(item.text()).toContain(searchData.users[index].username);
+      expect(item.text()).toContain(searchData.data[index].username);
     });
   });
 
@@ -104,7 +105,7 @@ describe('Search friends list component', () => {
       props: {
         isLoadingMore: true,
         users: {
-          users: searchData.users.slice(0, 50),
+          data: searchData.data.slice(0, 50),
           totalCount: searchData.totalCount,
         },
       },
@@ -120,8 +121,8 @@ describe('Search friends list component', () => {
     });
 
     const item = wrapper.findComponent(SearchFriendsListItem);
-    item.vm.$emit('send-request', searchData.users[0]);
+    item.vm.$emit('send-request', searchData.data[0]);
 
-    expect(wrapper.emitted('send-request')).toEqual([[searchData.users[0]]]);
+    expect(wrapper.emitted('send-request')).toEqual([[searchData.data[0]]]);
   });
 });

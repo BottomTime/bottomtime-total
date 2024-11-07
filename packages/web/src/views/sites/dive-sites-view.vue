@@ -24,7 +24,7 @@
       >
         <p>
           <span>Showing </span>
-          <span class="font-bold">{{ state.results.sites.length }}</span>
+          <span class="font-bold">{{ state.results.data.length }}</span>
           <span> of </span>
           <span class="font-bold">{{ state.results.totalCount }}</span>
           <span> dive sites</span>
@@ -61,11 +61,11 @@
 
 <script lang="ts" setup>
 import {
+  ApiList,
   DiveSiteDTO,
   DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesParamsSchema,
-  SearchDiveSitesResponseDTO,
   SortOrder,
 } from '@bottomtime/api';
 
@@ -90,7 +90,7 @@ interface DiveSitesViewState {
   isLoading: boolean;
   isLoadingMore: boolean;
   searchParams: SearchDiveSitesParamsDTO;
-  results: SearchDiveSitesResponseDTO;
+  results: ApiList<DiveSiteDTO>;
 }
 
 const SortOrderOptions: SelectOption[] = [
@@ -131,7 +131,7 @@ const state = reactive<DiveSitesViewState>({
   isLoadingMore: false,
   searchParams: parseQueryString(),
   results: {
-    sites: [],
+    data: [],
     totalCount: 0,
   },
 });
@@ -144,7 +144,7 @@ const selectedSortOrder = ref(
 async function refresh(): Promise<void> {
   await oops(async () => {
     const results = await client.diveSites.searchDiveSites(state.searchParams);
-    state.results.sites = results.sites.map((site) => site.toJSON());
+    state.results.data = results.data.map((site) => site.toJSON());
     state.results.totalCount = results.totalCount;
   });
 }
@@ -171,11 +171,11 @@ async function onLoadMore(): Promise<void> {
   await oops(async () => {
     const params = {
       ...state.searchParams,
-      skip: state.results.sites.length,
+      skip: state.results.data.length,
     };
     const newResults = await client.diveSites.searchDiveSites(params);
 
-    state.results.sites.push(...newResults.sites.map((site) => site.toJSON()));
+    state.results.data.push(...newResults.data.map((site) => site.toJSON()));
     state.results.totalCount = newResults.totalCount;
   });
 

@@ -1,15 +1,16 @@
 import {
   AccountTier,
   ApiClient,
+  ApiList,
   DepthUnit,
   Fetcher,
-  ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
   LogEntry,
   LogEntryDTO,
   PressureUnit,
   Tank,
+  TankDTO,
   TankMaterial,
 } from '@bottomtime/api';
 
@@ -17,7 +18,6 @@ import {
   ComponentMountingOptions,
   flushPromises,
   mount,
-  renderToString,
 } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
@@ -72,7 +72,7 @@ describe('Log Entry view', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
-  let tankData: ListTanksResponseDTO;
+  let tankData: ApiList<TankDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -122,7 +122,7 @@ describe('Log Entry view', () => {
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
       .mockResolvedValue([]);
     jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: tankData.tanks.map((t) => new Tank(fetcher, t)),
+      data: tankData.data.map((t) => new Tank(fetcher, t)),
       totalCount: tankData.totalCount,
     });
 
@@ -270,7 +270,7 @@ describe('Log Entry view', () => {
       endPressure: 50,
       o2Percent: 21,
       hePercent: 40,
-      tankId: tankData.tanks[0].id,
+      tankId: tankData.data[0].id,
     };
 
     const entry = new LogEntry(fetcher, { ...TestData });
@@ -291,7 +291,7 @@ describe('Log Entry view', () => {
     await wrapper.get('#btn-add-tank').trigger('click');
     await wrapper
       .get('[data-testid="tanks-select"]')
-      .setValue(tankData.tanks[0].id);
+      .setValue(tankData.data[0].id);
     await wrapper.get('[data-testid="doubles"]').setValue(true);
     await wrapper
       .get('[data-testid="start-pressure"]')

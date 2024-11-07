@@ -1,5 +1,6 @@
 import { DiveSite } from '.';
 import {
+  ApiList,
   CreateOrUpdateDiveSiteDTO,
   DiveSiteSchema,
   SearchDiveSitesParamsDTO,
@@ -65,10 +66,9 @@ export class DiveSitesApiClient {
     return query;
   }
 
-  async searchDiveSites(query: SearchDiveSitesParamsDTO = {}): Promise<{
-    sites: DiveSite[];
-    totalCount: number;
-  }> {
+  async searchDiveSites(
+    query: SearchDiveSitesParamsDTO = {},
+  ): Promise<ApiList<DiveSite>> {
     const { data: result } = await this.apiClient.get(
       `/api/diveSites?${this.searchQueryString(query)}`,
       undefined,
@@ -76,7 +76,7 @@ export class DiveSitesApiClient {
     );
 
     return {
-      sites: result.sites.map((site) => new DiveSite(this.apiClient, site)),
+      data: result.data.map((site) => new DiveSite(this.apiClient, site)),
       totalCount: result.totalCount,
     };
   }

@@ -1,7 +1,7 @@
 import {
+  ApiList,
   CreateOrUpdateTankParamsDTO,
   CreateOrUpdateTankParamsSchema,
-  ListTanksResponseDTO,
   ListUserTanksParamsDTO,
   ListUserTanksParamsSchema,
   TankDTO,
@@ -87,13 +87,13 @@ export class UserTanksController {
     @Query(new ZodValidator(ListUserTanksParamsSchema))
     { includeSystem }: ListUserTanksParamsDTO,
     @TargetUser() targetUser: User,
-  ): Promise<ListTanksResponseDTO> {
+  ): Promise<ApiList<TankDTO>> {
     const result = await this.tanksService.listTanks({
       userId: targetUser.id,
       includeSystem,
     });
     return {
-      tanks: result.tanks.map((tank) => tank.toJSON()),
+      data: result.data.map((tank) => tank.toJSON()),
       totalCount: result.totalCount,
     };
   }

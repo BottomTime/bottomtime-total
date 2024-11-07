@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateOperatorDTO,
   SearchOperatorsParams,
 } from '@bottomtime/api';
@@ -78,10 +79,9 @@ export class OperatorsService {
     return await this.operators.existsBy({ slug: slug.trim().toLowerCase() });
   }
 
-  async searchOperators(options?: SearchOperatorOptions): Promise<{
-    operators: Operator[];
-    totalCount: number;
-  }> {
+  async searchOperators(
+    options?: SearchOperatorOptions,
+  ): Promise<ApiList<Operator>> {
     const query = new OperatorQueryBuilder(this.operators)
       .withGeoLocation(options?.location, options?.radius)
       .withInactive(options?.showInactive)
@@ -93,9 +93,7 @@ export class OperatorsService {
     const [operators, totalCount] = await query.getManyAndCount();
 
     return {
-      operators: operators.map(
-        (operator) => new Operator(this.operators, operator),
-      ),
+      data: operators.map((operator) => new Operator(this.operators, operator)),
       totalCount,
     };
   }

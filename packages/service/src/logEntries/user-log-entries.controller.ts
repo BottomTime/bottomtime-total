@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
   DiveSiteDTO,
@@ -7,7 +8,6 @@ import {
   GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesParamsSchema,
-  ListLogEntriesResponseDTO,
   LogEntryDTO,
 } from '@bottomtime/api';
 
@@ -138,8 +138,11 @@ export class UserLogEntriesController {
    *           application/json:
    *             schema:
    *               type: object
+   *               required:
+   *                 - data
+   *                 - totalCount
    *               properties:
-   *                 logEntries:
+   *                 data:
    *                   type: array
    *                   items:
    *                     $ref: "#/components/schemas/SuccinctLogEntry"
@@ -184,17 +187,17 @@ export class UserLogEntriesController {
     @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
     options?: ListLogEntriesParamsDTO,
-  ): Promise<ListLogEntriesResponseDTO> {
+  ): Promise<ApiList<LogEntryDTO>> {
     this.log.debug('Searching for log entries...', options);
-    const { logEntries, totalCount } = await this.service.listLogEntries({
+    const { data, totalCount } = await this.service.listLogEntries({
       ...options,
       ownerId: user.id,
     });
 
-    this.log.debug('Got some log entries', logEntries.length, user.username);
+    this.log.debug('Got some log entries', data.length, user.username);
 
     return {
-      logEntries: logEntries.map((entry) => entry.toSuccinctJSON()),
+      data: data.map((entry) => entry.toSuccinctJSON()),
       totalCount,
     };
   }

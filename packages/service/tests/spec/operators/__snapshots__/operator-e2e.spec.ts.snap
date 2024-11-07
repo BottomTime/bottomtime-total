@@ -328,7 +328,7 @@ exports[`Operators E2E tests when searching dive operators will perform a basic 
 
 exports[`Operators E2E tests when searching dive operators will perform a more complex search with query parameters 1`] = `
 {
-  "operators": [
+  "data": [
     {
       "active": true,
       "address": "6368 Poplar Close Apt. 638, New Cara, AL, 26720",

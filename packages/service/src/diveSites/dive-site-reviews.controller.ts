@@ -1,10 +1,10 @@
 import {
+  ApiList,
   CreateOrUpdateDiveSiteReviewDTO,
   CreateOrUpdateDiveSiteReviewSchema,
   DiveSiteReviewDTO,
   ListDiveSiteReviewsParamsDTO,
   ListDiveSiteReviewsParamsSchema,
-  ListDiveSiteReviewsResponseDTO,
   SuccessFailResponseDTO,
   UserRole,
 } from '@bottomtime/api';
@@ -123,11 +123,11 @@ export class DiveSiteReviewsController {
     @TargetDiveSite() site: DiveSite,
     @Query(new ZodValidator(ListDiveSiteReviewsParamsSchema))
     options: ListDiveSiteReviewsParamsDTO,
-  ): Promise<ListDiveSiteReviewsResponseDTO> {
+  ): Promise<ApiList<DiveSiteReviewDTO>> {
     const results = await site.listReviews(options);
 
     return {
-      reviews: results.reviews.map((review) => review.toJSON()),
+      data: results.data.map((review) => review.toJSON()),
       totalCount: results.totalCount,
     };
   }

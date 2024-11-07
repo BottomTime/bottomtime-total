@@ -130,9 +130,9 @@ describe('Operators E2E tests', () => {
     it('will perform a basic search with default parameters', async () => {
       const { body } = await request(server).get(getUrl()).expect(200);
       expect(body.totalCount).toBe(testData.filter((op) => op.active).length);
-      expect(body.operators).toHaveLength(50);
-      expect(body.operators[0]).toMatchSnapshot();
-      expect(body.operators.map((op) => op.name)).toMatchSnapshot();
+      expect(body.data).toHaveLength(50);
+      expect(body.data[0]).toMatchSnapshot();
+      expect(body.data.map((op) => op.name)).toMatchSnapshot();
     });
 
     it('will perform a more complex search with query parameters', async () => {
@@ -155,7 +155,7 @@ describe('Operators E2E tests', () => {
         .query({ query: 'will not match' })
         .expect(200);
       expect(body).toEqual({
-        operators: [],
+        data: [],
         totalCount: 0,
       });
     });

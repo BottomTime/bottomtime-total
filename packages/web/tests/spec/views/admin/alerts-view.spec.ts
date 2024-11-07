@@ -1,6 +1,7 @@
 import {
+  AlertDTO,
+  ApiList,
   Fetcher,
-  ListAlertsResponseDTO,
   ListAlertsResponseSchema,
 } from '@bottomtime/api';
 import { Alert, ApiClient } from '@bottomtime/api';
@@ -29,7 +30,7 @@ describe('Admin Alerts View', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
-  let alertData: ListAlertsResponseDTO;
+  let alertData: ApiList<AlertDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -49,7 +50,7 @@ describe('Admin Alerts View', () => {
 
     currentUser.user = AdminUser;
     listSpy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValue({
-      alerts: alertData.alerts
+      data: alertData.data
         .slice(0, 10)
         .map((alert) => new Alert(fetcher, alert)),
       totalCount: alertData.totalCount,
@@ -99,12 +100,12 @@ describe('Admin Alerts View', () => {
     expect(listSpy).toHaveBeenCalledWith({ showDismissed: true });
     expect(alerts).toHaveLength(10);
     alerts.forEach((alert, index) => {
-      expect(alert.props('alert')).toEqual(alertData.alerts[index]);
+      expect(alert.props('alert')).toEqual(alertData.data[index]);
     });
   });
 
   it('will delete an alert', async () => {
-    const alert = new Alert(fetcher, alertData.alerts[0]);
+    const alert = new Alert(fetcher, alertData.data[0]);
     const spy = jest.spyOn(alert, 'delete').mockResolvedValueOnce();
     jest.spyOn(client.alerts, 'wrapDTO').mockReturnValueOnce(alert);
 
@@ -112,7 +113,7 @@ describe('Admin Alerts View', () => {
     await flushPromises();
 
     const listItem = wrapper.getComponent(AlertsList);
-    listItem.vm.$emit('delete', alertData.alerts[2]);
+    listItem.vm.$emit('delete', alertData.data[2]);
 
     await flushPromises();
 
@@ -121,7 +122,7 @@ describe('Admin Alerts View', () => {
 
   it('will load more alerts', async () => {
     listSpy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValueOnce({
-      alerts: alertData.alerts.slice(0, 5).map((a) => new Alert(fetcher, a)),
+      data: alertData.data.slice(0, 5).map((a) => new Alert(fetcher, a)),
       totalCount: alertData.totalCount,
     });
     const wrapper = mount(AdminAlertsView, options);
@@ -130,7 +131,7 @@ describe('Admin Alerts View', () => {
     const loadMoreSpy = jest
       .spyOn(client.alerts, 'listAlerts')
       .mockResolvedValueOnce({
-        alerts: alertData.alerts.slice(5, 10).map((a) => new Alert(fetcher, a)),
+        data: alertData.data.slice(5, 10).map((a) => new Alert(fetcher, a)),
         totalCount: alertData.totalCount,
       });
     await wrapper.get('[data-testid="btn-load-more"]').trigger('click');
@@ -141,7 +142,7 @@ describe('Admin Alerts View', () => {
     expect(loadMoreSpy).toHaveBeenCalledWith({ showDismissed: true, skip: 5 });
     expect(alerts).toHaveLength(10);
     alerts.forEach((alert, index) => {
-      expect(alert.props('alert')).toEqual(alertData.alerts[index]);
+      expect(alert.props('alert')).toEqual(alertData.data[index]);
     });
   });
 });

@@ -1,11 +1,11 @@
 import {
   AccountTier,
   ApiClient,
+  ApiList,
   Fetcher,
   FriendRequest,
   FriendRequestDTO,
   FriendRequestDirection,
-  ListFriendRequestsResponseDTO,
   LogBookSharing,
   ProfileDTO,
   UserDTO,
@@ -38,7 +38,7 @@ describe('Friend requests view', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
-  let friendRequestData: ListFriendRequestsResponseDTO;
+  let friendRequestData: ApiList<FriendRequestDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -48,13 +48,13 @@ describe('Friend requests view', () => {
 
   beforeAll(() => {
     friendRequestData = {
-      friendRequests: new Array<FriendRequestDTO>(20),
+      data: new Array<FriendRequestDTO>(20),
       totalCount: 23,
     };
 
-    for (let i = 0; i < friendRequestData.friendRequests.length; i++) {
+    for (let i = 0; i < friendRequestData.data.length; i++) {
       const friendId = faker.string.uuid();
-      friendRequestData.friendRequests[i] = {
+      friendRequestData.data[i] = {
         created: faker.date.recent(),
         expires: faker.date.soon(),
         friend: {
@@ -73,7 +73,7 @@ describe('Friend requests view', () => {
       };
     }
 
-    friendRequestData.friendRequests = friendRequestData.friendRequests.filter(
+    friendRequestData.data = friendRequestData.data.filter(
       (req) => req.direction === FriendRequestDirection.Incoming,
     );
     fetcher = new Fetcher();
@@ -111,7 +111,7 @@ describe('Friend requests view', () => {
     listSpy = jest
       .spyOn(client.friends, 'listFriendRequests')
       .mockResolvedValue({
-        friendRequests: friendRequestData.friendRequests.map(
+        data: friendRequestData.data.map(
           (fr) => new FriendRequest(fetcher, userDto.username, fr),
         ),
         totalCount: friendRequestData.totalCount,
@@ -136,10 +136,10 @@ describe('Friend requests view', () => {
     await flushPromises();
 
     const requests = wrapper.findAllComponents(FriendRequestsListItem);
-    expect(requests).toHaveLength(friendRequestData.friendRequests.length);
+    expect(requests).toHaveLength(friendRequestData.data.length);
 
     requests.forEach((request, index) => {
-      const friendRequest = friendRequestData.friendRequests[index];
+      const friendRequest = friendRequestData.data[index];
       expect(request.text()).toContain(friendRequest.friend.username);
     });
 
@@ -153,7 +153,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const requestClient = new FriendRequest(
       fetcher,
       currentUser.user!.username,
@@ -192,7 +192,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const requestClient = new FriendRequest(
       fetcher,
       currentUser.user!.username,
@@ -225,7 +225,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const requestClient = new FriendRequest(
       fetcher,
       currentUser.user!.username,
@@ -270,7 +270,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const requestClient = new FriendRequest(
       fetcher,
       currentUser.user!.username,
@@ -309,7 +309,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const requestClient = new FriendRequest(
       fetcher,
       currentUser.user!.username,
@@ -342,7 +342,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const requestClient = new FriendRequest(
       fetcher,
       currentUser.user!.username,
@@ -387,7 +387,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const profile: ProfileDTO = {
       accountTier: AccountTier.Basic,
       userId: request.friendId,
@@ -421,7 +421,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const spy = jest.spyOn(client.users, 'getProfile').mockRejectedValue(
       createHttpError({
         message: 'Could not find profile',
@@ -446,7 +446,7 @@ describe('Friend requests view', () => {
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.friendRequests[0];
+    const request = friendRequestData.data[0];
     const spy = jest
       .spyOn(client.users, 'getProfile')
       .mockRejectedValue(new Error('nope'));

@@ -1,9 +1,10 @@
 import {
   ApiClient,
+  ApiList,
   Fetcher,
   FriendRequest,
   FriendRequestDirection,
-  SearchProfilesResponseDTO,
+  ProfileDTO,
   SearchUsersResponseSchema,
 } from '@bottomtime/api';
 
@@ -35,7 +36,7 @@ describe('Search friends form component', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
-  let searchData: SearchProfilesResponseDTO;
+  let searchData: ApiList<ProfileDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -48,7 +49,7 @@ describe('Search friends form component', () => {
 
     const userData = SearchUsersResponseSchema.parse(UserTestData);
     searchData = {
-      users: userData.users.map((user) => user.profile),
+      data: userData.data.map((user) => user.profile),
       totalCount: userData.totalCount,
     };
   });
@@ -86,7 +87,7 @@ describe('Search friends form component', () => {
   it('will perform a search when the user types in the search box and presses enter', async () => {
     const wrapper = mount(SearchFriendsForm, opts);
     const spy = jest.spyOn(client.users, 'searchProfiles').mockResolvedValue({
-      users: searchData.users.slice(0, 50),
+      data: searchData.data.slice(0, 50),
       totalCount: searchData.totalCount,
     });
 
@@ -108,7 +109,7 @@ describe('Search friends form component', () => {
   it('will perform a search when the user types in the search box and clicks the search button', async () => {
     const wrapper = mount(SearchFriendsForm, opts);
     const spy = jest.spyOn(client.users, 'searchProfiles').mockResolvedValue({
-      users: searchData.users.slice(0, 50),
+      data: searchData.data.slice(0, 50),
       totalCount: searchData.totalCount,
     });
 
@@ -131,7 +132,7 @@ describe('Search friends form component', () => {
     const spy = jest
       .spyOn(client.users, 'searchProfiles')
       .mockResolvedValueOnce({
-        users: searchData.users.slice(0, 50),
+        data: searchData.data.slice(0, 50),
         totalCount: searchData.totalCount,
       });
 
@@ -141,7 +142,7 @@ describe('Search friends form component', () => {
     await flushPromises();
 
     spy.mockResolvedValueOnce({
-      users: searchData.users.slice(50, 100),
+      data: searchData.data.slice(50, 100),
       totalCount: searchData.totalCount,
     });
 
@@ -159,13 +160,13 @@ describe('Search friends form component', () => {
     expect(items).toHaveLength(100);
 
     items.forEach((item, index) => {
-      expect(item.text()).toContain(searchData.users[index].username);
+      expect(item.text()).toContain(searchData.data[index].username);
     });
   });
 
   it('will emit a "send-request" event when the user clicks the Send Request button', async () => {
     const wrapper = mount(SearchFriendsForm, opts);
-    const friendo = searchData.users[2];
+    const friendo = searchData.data[2];
     const friendRequest = new FriendRequest(
       fetcher,
       currentUser.user!.username,
@@ -184,7 +185,7 @@ describe('Search friends form component', () => {
     );
 
     jest.spyOn(client.users, 'searchProfiles').mockResolvedValueOnce({
-      users: searchData.users.slice(0, 50),
+      data: searchData.data.slice(0, 50),
       totalCount: searchData.totalCount,
     });
     const spy = jest
@@ -197,12 +198,12 @@ describe('Search friends form component', () => {
     await flushPromises();
 
     await wrapper
-      .find(`[data-testid="send-request-${searchData.users[2].username}"]`)
+      .find(`[data-testid="send-request-${searchData.data[2].username}"]`)
       .trigger('click');
 
     expect(spy).toHaveBeenCalledWith(
       currentUser.user?.username,
-      searchData.users[2].username,
+      searchData.data[2].username,
     );
 
     expect(wrapper.emitted('request-sent')).toEqual([[friendRequest.toJSON()]]);

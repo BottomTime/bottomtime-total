@@ -1,12 +1,13 @@
 import {
   AccountTier,
   ApiClient,
+  ApiList,
   Fetcher,
-  ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
   ProfileDTO,
   Tank,
+  TankDTO,
   UserProfile,
 } from '@bottomtime/api';
 
@@ -37,8 +38,8 @@ import {
 
 dayjs.extend(relativeTime);
 
-const EmptyTankResults: { tanks: Tank[]; totalCount: number } = {
-  tanks: [],
+const EmptyTankResults: { data: Tank[]; totalCount: number } = {
+  data: [],
   totalCount: 0,
 };
 
@@ -46,7 +47,7 @@ describe('Profile View', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
-  let tankData: ListTanksResponseDTO;
+  let tankData: ApiList<TankDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -85,7 +86,7 @@ describe('Profile View', () => {
     };
 
     jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: tankData.tanks.map((t) => new Tank(fetcher, t)),
+      data: tankData.data.map((t) => new Tank(fetcher, t)),
       totalCount: tankData.totalCount,
     });
   });
@@ -128,7 +129,7 @@ describe('Profile View', () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${BasicUser.username.toUpperCase()}`);
     const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
+      data: tankData.data.map((tank) => new Tank(fetcher, tank)),
       totalCount: tankData.totalCount,
     });
 
@@ -150,7 +151,7 @@ describe('Profile View', () => {
     await router.push(`/profile/${BasicUser.username}`);
     jest.spyOn(client.users, 'getProfile').mockResolvedValue(BasicUser.profile);
     const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
+      data: tankData.data.map((tank) => new Tank(fetcher, tank)),
       totalCount: tankData.totalCount,
     });
 

@@ -93,9 +93,9 @@
 
 <script lang="ts" setup>
 import {
+  ApiList,
   FriendRequestDTO,
   FriendRequestDirection,
-  ListFriendRequestsResponseDTO,
   ProfileDTO,
 } from '@bottomtime/api';
 
@@ -120,7 +120,7 @@ interface FriendRequestsViewState {
   isAcceptingRequest: boolean;
   isDecliningRequest: boolean;
   isLoadingProfile: boolean;
-  results: ListFriendRequestsResponseDTO;
+  results: ApiList<FriendRequestDTO>;
   showConfirmAccept: boolean;
   showConfirmDecline: boolean;
   showFriendProfile: boolean;
@@ -137,7 +137,7 @@ const state = reactive<FriendRequestsViewState>({
   isDecliningRequest: false,
   isLoadingProfile: false,
   results: {
-    friendRequests: [],
+    data: [],
     totalCount: 0,
   },
   showConfirmAccept: false,
@@ -157,8 +157,8 @@ onMounted(async () => {
       },
     );
 
-    state.results.friendRequests = friendRequestsResults.friendRequests.map(
-      (friend) => friend.toJSON(),
+    state.results.data = friendRequestsResults.data.map((friend) =>
+      friend.toJSON(),
     );
     state.results.totalCount = friendRequestsResults.totalCount;
   });
@@ -188,11 +188,11 @@ async function onConfirmAcceptRequest() {
 
       await request.accept();
 
-      const index = state.results.friendRequests.findIndex(
+      const index = state.results.data.findIndex(
         (r) => r.friendId === request.friend.id,
       );
       if (index > -1) {
-        state.results.friendRequests[index].accepted = true;
+        state.results.data[index].accepted = true;
       }
 
       toasts.toast({
@@ -214,11 +214,11 @@ async function onConfirmAcceptRequest() {
           type: ToastType.Warning,
         });
 
-        const index = state.results.friendRequests.findIndex(
+        const index = state.results.data.findIndex(
           (r) => r.friendId === state.currentRequest?.friend.id,
         );
         if (index > -1) {
-          state.results.friendRequests.splice(index, 1);
+          state.results.data.splice(index, 1);
           state.results.totalCount--;
         }
       },
@@ -255,12 +255,12 @@ async function onConfirmDeclineRequest() {
 
       await request.decline(state.declineReason);
 
-      const index = state.results.friendRequests.findIndex(
+      const index = state.results.data.findIndex(
         (r) => r.friendId === request.friend.id,
       );
       if (index > -1) {
-        state.results.friendRequests[index].accepted = false;
-        state.results.friendRequests[index].reason = state.declineReason;
+        state.results.data[index].accepted = false;
+        state.results.data[index].reason = state.declineReason;
       }
 
       toasts.toast({
@@ -282,11 +282,11 @@ async function onConfirmDeclineRequest() {
           type: ToastType.Warning,
         });
 
-        const index = state.results.friendRequests.findIndex(
+        const index = state.results.data.findIndex(
           (r) => r.friendId === state.currentRequest?.friend.id,
         );
         if (index > -1) {
-          state.results.friendRequests.splice(index, 1);
+          state.results.data.splice(index, 1);
           state.results.totalCount--;
         }
       },
@@ -299,11 +299,11 @@ async function onConfirmDeclineRequest() {
 }
 
 function onDismissFriendRequest(dto: FriendRequestDTO) {
-  const index = state.results.friendRequests.findIndex(
+  const index = state.results.data.findIndex(
     (r) => r.friendId === dto.friend.id,
   );
   if (index > -1) {
-    state.results.friendRequests.splice(index, 1);
+    state.results.data.splice(index, 1);
     state.results.totalCount--;
   }
 }

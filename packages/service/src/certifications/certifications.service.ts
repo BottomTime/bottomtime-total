@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateCertificationParamsDTO,
   SearchCertificationsParamsDTO,
 } from '@bottomtime/api';
@@ -13,10 +14,6 @@ import { CertificationEntity } from '../data';
 import { Certification } from './certification';
 
 export type SearchCertificationsOptions = SearchCertificationsParamsDTO;
-export type SearchCertificationsResults = {
-  certifications: Certification[];
-  totalCount: number;
-};
 export type CreateCertificationOptions = CreateOrUpdateCertificationParamsDTO;
 
 @Injectable()
@@ -30,7 +27,7 @@ export class CertificationsService {
 
   async searchCertifications(
     options: SearchCertificationsOptions,
-  ): Promise<SearchCertificationsResults> {
+  ): Promise<ApiList<Certification>> {
     let query = this.certifications.createQueryBuilder('certifications');
 
     if (options.agency) {
@@ -56,7 +53,7 @@ export class CertificationsService {
     const [results, totalCount] = await query.getManyAndCount();
 
     return {
-      certifications: results.map(
+      data: results.map(
         (result) => new Certification(this.certifications, result),
       ),
       totalCount,

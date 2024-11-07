@@ -1,21 +1,22 @@
 import {
-  SearchDiveSitesResponseDTO,
+  ApiList,
+  DiveSiteDTO,
   SearchDiveSitesResponseSchema,
 } from '@bottomtime/api';
 
-import DiveSitesListItem from '@/components/diveSites/dive-sites-list-item.vue';
-import DiveSitesList from '@/components/diveSites/dive-sites-list.vue';
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 
+import DiveSitesListItem from '../../../../src/components/diveSites/dive-sites-list-item.vue';
+import DiveSitesList from '../../../../src/components/diveSites/dive-sites-list.vue';
 import SearchResults from '../../../fixtures/dive-sites-search-results.json';
 
 const NoResults = '[data-testid="no-results"]';
 const LoadMore = '[data-testid="load-more"]';
 
 describe('Dive Sites List component', () => {
-  let searchResults: SearchDiveSitesResponseDTO;
+  let searchResults: ApiList<DiveSiteDTO>;
 
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof DiveSitesList>;
@@ -36,7 +37,7 @@ describe('Dive Sites List component', () => {
   it('will indicate when there are no results to show', () => {
     opts.props = {
       data: {
-        sites: [],
+        data: [],
         totalCount: 0,
       },
     };
@@ -50,7 +51,7 @@ describe('Dive Sites List component', () => {
   it('will display the results', () => {
     opts.props = {
       data: {
-        sites: searchResults.sites.slice(0, 10),
+        data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
     };
@@ -60,7 +61,7 @@ describe('Dive Sites List component', () => {
     const items = wrapper.findAllComponents(DiveSitesListItem);
     expect(items).toHaveLength(10);
     items.forEach((item, index) => {
-      const site = searchResults.sites[index];
+      const site = searchResults.data[index];
       expect(item.props('site')).toEqual(site);
     });
   });
@@ -68,7 +69,7 @@ describe('Dive Sites List component', () => {
   it('will emit the site-selected event when a site is clicked', async () => {
     opts.props = {
       data: {
-        sites: searchResults.sites.slice(0, 10),
+        data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
     };
@@ -77,15 +78,13 @@ describe('Dive Sites List component', () => {
     const item = wrapper.findComponent(DiveSitesListItem);
     item.vm.$emit('site-selected');
 
-    expect(wrapper.emitted('site-selected')).toEqual([
-      [searchResults.sites[0]],
-    ]);
+    expect(wrapper.emitted('site-selected')).toEqual([[searchResults.data[0]]]);
   });
 
   it('will display load more if some results are not shown', () => {
     opts.props = {
       data: {
-        sites: searchResults.sites.slice(0, 10),
+        data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
     };
@@ -97,7 +96,7 @@ describe('Dive Sites List component', () => {
   it('will emit load more event when load more is clicked', async () => {
     opts.props = {
       data: {
-        sites: searchResults.sites.slice(0, 10),
+        data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
     };
@@ -111,7 +110,7 @@ describe('Dive Sites List component', () => {
   it('will not display load more if all results are shown', () => {
     opts.props = {
       data: {
-        sites: searchResults.sites.slice(0, 10),
+        data: searchResults.data.slice(0, 10),
         totalCount: 10,
       },
     };
@@ -123,7 +122,7 @@ describe('Dive Sites List component', () => {
   it('will show a loading spinner if actively loading more results', () => {
     opts.props = {
       data: {
-        sites: searchResults.sites.slice(0, 10),
+        data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       },
       isLoadingMore: true,

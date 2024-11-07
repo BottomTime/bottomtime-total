@@ -1,5 +1,6 @@
 import {
-  ListFriendRequestsResponseDTO,
+  ApiList,
+  FriendRequestDTO,
   ListFriendRequestsResponseSchema,
 } from '@bottomtime/api';
 
@@ -15,7 +16,7 @@ const RequestCounts = '[data-testid="request-counts"]';
 const RequestsList = '[data-testid="friend-requests-list"]';
 
 describe('Friend requests list component', () => {
-  let requestsData: ListFriendRequestsResponseDTO;
+  let requestsData: ApiList<FriendRequestDTO>;
 
   beforeAll(() => {
     requestsData = ListFriendRequestsResponseSchema.parse(TestRequestData);
@@ -25,7 +26,7 @@ describe('Friend requests list component', () => {
     const wrapper = mount(FriendRequestsList, {
       props: {
         requests: {
-          friendRequests: [],
+          data: [],
           totalCount: 0,
         },
       },
@@ -41,7 +42,7 @@ describe('Friend requests list component', () => {
     const wrapper = mount(FriendRequestsList, {
       props: {
         requests: {
-          friendRequests: requestsData.friendRequests.slice(0, 12),
+          data: requestsData.data.slice(0, 12),
           totalCount: requestsData.totalCount,
         },
       },
@@ -55,9 +56,7 @@ describe('Friend requests list component', () => {
     expect(list.length).toBe(12);
 
     list.forEach((item, index) => {
-      expect(item.text()).toContain(
-        requestsData.friendRequests[index].friend.username,
-      );
+      expect(item.text()).toContain(requestsData.data[index].friend.username);
     });
   });
 
@@ -76,9 +75,7 @@ describe('Friend requests list component', () => {
     expect(list.length).toBe(68);
 
     list.forEach((item, index) => {
-      expect(item.text()).toContain(
-        requestsData.friendRequests[index].friend.username,
-      );
+      expect(item.text()).toContain(requestsData.data[index].friend.username);
     });
   });
 
@@ -86,7 +83,7 @@ describe('Friend requests list component', () => {
     const wrapper = mount(FriendRequestsList, {
       props: {
         requests: {
-          friendRequests: requestsData.friendRequests.slice(0, 12),
+          data: requestsData.data.slice(0, 12),
           totalCount: requestsData.totalCount,
         },
       },
@@ -101,7 +98,7 @@ describe('Friend requests list component', () => {
     const wrapper = mount(FriendRequestsList, {
       props: {
         requests: {
-          friendRequests: requestsData.friendRequests.slice(0, 12),
+          data: requestsData.data.slice(0, 12),
           totalCount: requestsData.totalCount,
         },
         isLoadingMore: true,
@@ -124,11 +121,9 @@ describe('Friend requests list component', () => {
 
       await wrapper
         .findComponent(FriendRequestsListItem)
-        .vm.$emit(event, requestsData.friendRequests[0]);
+        .vm.$emit(event, requestsData.data[0]);
 
-      expect(wrapper.emitted(event)).toEqual([
-        [requestsData.friendRequests[0]],
-      ]);
+      expect(wrapper.emitted(event)).toEqual([[requestsData.data[0]]]);
     });
   });
 });

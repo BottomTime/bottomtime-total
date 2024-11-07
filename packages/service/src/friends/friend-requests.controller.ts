@@ -1,10 +1,10 @@
 import {
   AcknowledgeFriendRequestParamsDTO,
   AcknowledgeFriendRequestParamsSchema,
+  ApiList,
   FriendRequestDTO,
   ListFriendRequestsParamsDTO,
   ListFriendRequestsParamsSchema,
-  ListFriendRequestsResponseDTO,
 } from '@bottomtime/api';
 
 import {
@@ -104,10 +104,10 @@ export class FriendRequestsController {
    *             schema:
    *               type: object
    *               required:
-   *                 - friendRequests
+   *                 - data
    *                 - totalCount
    *               properties:
-   *                 friendRequests:
+   *                 data:
    *                   type: array
    *                   items:
    *                     $ref: "#/components/schemas/FriendRequest"
@@ -150,7 +150,7 @@ export class FriendRequestsController {
     @TargetUser() user: User,
     @Query(new ZodValidator(ListFriendRequestsParamsSchema))
     options: ListFriendRequestsParamsDTO,
-  ): Promise<ListFriendRequestsResponseDTO> {
+  ): Promise<ApiList<FriendRequestDTO>> {
     const results = await this.friendsService.listFriendRequests({
       ...options,
       userId: user.id,

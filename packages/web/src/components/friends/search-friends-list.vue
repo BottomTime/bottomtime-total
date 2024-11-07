@@ -27,7 +27,7 @@
     <FormBox class="w-full">
       <p data-testid="search-friends-counts">
         <span>Showing </span>
-        <span class="font-bold">{{ props.users.users.length }}</span>
+        <span class="font-bold">{{ props.users.data.length }}</span>
         <span> of </span>
         <span class="font-bold">{{ props.users.totalCount }}</span>
         <span> users</span>
@@ -36,14 +36,14 @@
 
     <ul data-testid="search-friends-list">
       <SearchFriendsListItem
-        v-for="user in props.users.users"
+        v-for="user in props.users.data"
         :key="user.userId"
         :user="user"
         @send-request="$emit('send-request', user)"
       />
 
       <li
-        v-if="users.users.length < users.totalCount"
+        v-if="users.data.length < users.totalCount"
         class="min-h-20 flex items-center justify-center text-lg"
       >
         <p
@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts" setup>
-import { SearchProfilesResponseDTO, SuccinctProfileDTO } from '@bottomtime/api';
+import { ApiList, SuccinctProfileDTO } from '@bottomtime/api';
 
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
@@ -82,7 +82,7 @@ import SearchFriendsListItem from './search-friends-list-item.vue';
 interface SearchFriendsListProps {
   isLoading?: boolean;
   isLoadingMore?: boolean;
-  users: SearchProfilesResponseDTO;
+  users: ApiList<SuccinctProfileDTO>;
 }
 
 const props = withDefaults(defineProps<SearchFriendsListProps>(), {

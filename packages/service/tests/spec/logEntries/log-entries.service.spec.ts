@@ -408,10 +408,10 @@ describe('Log entries service', () => {
       const results = await service.listLogEntries();
 
       expect(results.totalCount).toBe(logEntryData.length);
-      expect(results.logEntries).toHaveLength(50);
+      expect(results.data).toHaveLength(50);
 
       expect(
-        results.logEntries.map((entry) => ({
+        results.data.map((entry) => ({
           id: entry.id,
           entryTime: entry.timing.entryTime,
           site: entry.site?.name,
@@ -424,10 +424,10 @@ describe('Log entries service', () => {
       const results = await service.listLogEntries({ skip: 50, limit: 10 });
 
       expect(results.totalCount).toBe(logEntryData.length);
-      expect(results.logEntries).toHaveLength(10);
+      expect(results.data).toHaveLength(10);
 
       expect(
-        results.logEntries.map((entry) => ({
+        results.data.map((entry) => ({
           id: entry.id,
           entryTime: entry.timing.entryTime,
           site: entry.site?.name,
@@ -447,10 +447,10 @@ describe('Log entries service', () => {
         });
 
         expect(results.totalCount).toBe(logEntryData.length);
-        expect(results.logEntries).toHaveLength(10);
+        expect(results.data).toHaveLength(10);
 
         expect(
-          results.logEntries.map((entry) => ({
+          results.data.map((entry) => ({
             id: entry.id,
             entryTime: entry.timing.entryTime,
             site: entry.site?.name,
@@ -466,10 +466,10 @@ describe('Log entries service', () => {
       });
 
       expect(results.totalCount).toBe(75);
-      expect(results.logEntries).toHaveLength(20);
+      expect(results.data).toHaveLength(20);
 
       expect(
-        results.logEntries.map((entry) => ({
+        results.data.map((entry) => ({
           id: entry.id,
           owner: entry.owner.username,
           entryTime: entry.timing.entryTime,
@@ -509,10 +509,10 @@ describe('Log entries service', () => {
         });
 
         expect(results.totalCount).toBe(expectedTotal);
-        expect(results.logEntries).toHaveLength(expectedLength);
+        expect(results.data).toHaveLength(expectedLength);
 
         expect(
-          results.logEntries.map((entry) => ({
+          results.data.map((entry) => ({
             id: entry.id,
             entryTime: entry.timing.entryTime,
             site: entry.site?.name,

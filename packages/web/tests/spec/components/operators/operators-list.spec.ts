@@ -1,6 +1,7 @@
 import {
   AccountTier,
-  SearchOperatorsResponseDTO,
+  ApiList,
+  OperatorDTO,
   SearchOperatorsResponseSchema,
 } from '@bottomtime/api';
 
@@ -21,7 +22,7 @@ const LoadMoreButton = '[data-testid="operators-load-more"]';
 
 describe('OperatorsList component', () => {
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let testData: SearchOperatorsResponseDTO;
+  let testData: ApiList<OperatorDTO>;
 
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof OperatorsList>;
@@ -36,7 +37,7 @@ describe('OperatorsList component', () => {
     opts = {
       props: {
         operators: {
-          operators: [],
+          data: [],
           totalCount: 0,
         },
       },
@@ -62,7 +63,7 @@ describe('OperatorsList component', () => {
       ...opts,
       props: {
         operators: {
-          operators: testData.operators.slice(0, length),
+          data: testData.data.slice(0, length),
           totalCount: length,
         },
       },
@@ -77,9 +78,7 @@ describe('OperatorsList component', () => {
     expect(items).toHaveLength(length);
 
     items.forEach((item, index) => {
-      expect(item.props('operator').name).toEqual(
-        testData.operators[index].name,
-      );
+      expect(item.props('operator').name).toEqual(testData.data[index].name);
     });
   });
 
@@ -93,16 +92,14 @@ describe('OperatorsList component', () => {
     expect(wrapper.find(NoResultsText).exists()).toBe(false);
     expect(wrapper.find(LoadMoreButton).isVisible()).toBe(true);
     expect(wrapper.get(OperatorsCountText).text()).toBe(
-      `Showing ${testData.operators.length} of ${testData.totalCount} dive shop(s)`,
+      `Showing ${testData.data.length} of ${testData.totalCount} dive shop(s)`,
     );
 
     const items = wrapper.findAllComponents(OperatorsListItem);
-    expect(items).toHaveLength(testData.operators.length);
+    expect(items).toHaveLength(testData.data.length);
 
     items.forEach((item, index) => {
-      expect(item.props('operator').name).toEqual(
-        testData.operators[index].name,
-      );
+      expect(item.props('operator').name).toEqual(testData.data[index].name);
     });
   });
 
@@ -188,12 +185,12 @@ describe('OperatorsList component', () => {
       },
     });
     const listItem = wrapper.findComponent(OperatorsListItem);
-    listItem.vm.$emit('select', testData.operators[2]);
-    expect(wrapper.emitted('select')).toEqual([[testData.operators[2]]]);
+    listItem.vm.$emit('select', testData.data[2]);
+    expect(wrapper.emitted('select')).toEqual([[testData.data[2]]]);
   });
 
   it('will bubble up a "delete" event when a delete button is clicked from the list', async () => {
-    testData.operators[0].owner = BasicUser.profile;
+    testData.data[0].owner = BasicUser.profile;
     currentUser.user = BasicUser;
     const wrapper = mount(OperatorsList, {
       ...opts,
@@ -203,7 +200,7 @@ describe('OperatorsList component', () => {
     });
     wrapper
       .findComponent(OperatorsListItem)
-      .vm.$emit('delete', testData.operators[0]);
-    expect(wrapper.emitted('delete')).toEqual([[testData.operators[0]]]);
+      .vm.$emit('delete', testData.data[0]);
+    expect(wrapper.emitted('delete')).toEqual([[testData.data[0]]]);
   });
 });

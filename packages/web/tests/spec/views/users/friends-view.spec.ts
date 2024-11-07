@@ -1,13 +1,14 @@
 import {
   ApiClient,
+  ApiList,
   Fetcher,
   Friend,
+  FriendDTO,
   FriendRequest,
+  FriendRequestDTO,
   FriendRequestDirection,
   FriendsSortBy,
-  ListFriendRequestsResponseDTO,
   ListFriendRequestsResponseSchema,
-  ListFriendsResponseDTO,
   ListFriendsResposneSchema,
   SortOrder,
 } from '@bottomtime/api';
@@ -45,8 +46,8 @@ describe('Friends view', () => {
   let client: ApiClient;
   let router: Router;
 
-  let friendsData: ListFriendsResponseDTO;
-  let friendRequestsData: ListFriendRequestsResponseDTO;
+  let friendsData: ApiList<FriendDTO>;
+  let friendRequestsData: ApiList<FriendRequestDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -97,7 +98,7 @@ describe('Friends view', () => {
     fetchFriendsSpy = jest
       .spyOn(client.friends, 'listFriends')
       .mockResolvedValue({
-        friends: friendsData.friends.map(
+        data: friendsData.data.map(
           (f) => new Friend(fetcher, BasicUser.username, f),
         ),
         totalCount: friendsData.totalCount,
@@ -105,7 +106,7 @@ describe('Friends view', () => {
     fetchRequestsSpy = jest
       .spyOn(client.friends, 'listFriendRequests')
       .mockResolvedValue({
-        friendRequests: friendRequestsData.friendRequests.map(
+        data: friendRequestsData.data.map(
           (r) => new FriendRequest(fetcher, BasicUser.username, r),
         ),
         totalCount: friendRequestsData.totalCount,
@@ -142,17 +143,15 @@ describe('Friends view', () => {
     });
 
     const friends = wrapper.findAllComponents(FriendsListItem);
-    expect(friends).toHaveLength(friendsData.friends.length);
+    expect(friends).toHaveLength(friendsData.data.length);
     friends.forEach((friend, index) => {
-      expect(friend.props('friend')).toEqual(friendsData.friends[index]);
+      expect(friend.props('friend')).toEqual(friendsData.data[index]);
     });
 
     const requests = wrapper.findAllComponents(FriendRequestsListItem);
-    expect(requests).toHaveLength(friendRequestsData.friendRequests.length);
+    expect(requests).toHaveLength(friendRequestsData.data.length);
     requests.forEach((request, index) => {
-      expect(request.props('request')).toEqual(
-        friendRequestsData.friendRequests[index],
-      );
+      expect(request.props('request')).toEqual(friendRequestsData.data[index]);
     });
   });
 
@@ -170,17 +169,15 @@ describe('Friends view', () => {
     const friends = wrapper.findAllComponents(FriendsListItem);
     const friendRequests = wrapper.findAllComponents(FriendRequestsListItem);
 
-    expect(friends).toHaveLength(friendsData.friends.length);
-    expect(friendRequests).toHaveLength(
-      friendRequestsData.friendRequests.length,
-    );
+    expect(friends).toHaveLength(friendsData.data.length);
+    expect(friendRequests).toHaveLength(friendRequestsData.data.length);
 
     friends.forEach((friend, i) => {
-      expect(friend.text()).toContain(friendsData.friends[i].username);
+      expect(friend.text()).toContain(friendsData.data[i].username);
     });
     friendRequests.forEach((request, i) => {
       expect(request.text()).toContain(
-        friendRequestsData.friendRequests[i].friend.username,
+        friendRequestsData.data[i].friend.username,
       );
     });
 
@@ -217,7 +214,7 @@ describe('Friends view', () => {
     const friend = new Friend(
       fetcher,
       currentUser.user!.username,
-      friendsData.friends[3],
+      friendsData.data[3],
     );
     jest.spyOn(client.friends, 'wrapFriendDTO').mockReturnValue(friend);
     const unfriendSpy = jest.spyOn(friend, 'unfriend').mockResolvedValue();
@@ -243,7 +240,7 @@ describe('Friends view', () => {
     const friend = new Friend(
       fetcher,
       currentUser.user!.username,
-      friendsData.friends[3],
+      friendsData.data[3],
     );
     jest.spyOn(client.friends, 'wrapFriendDTO').mockReturnValue(friend);
     const unfriendSpy = jest.spyOn(friend, 'unfriend').mockResolvedValue();
@@ -271,7 +268,7 @@ describe('Friends view', () => {
     const request = new FriendRequest(
       fetcher,
       currentUser.user!.username,
-      friendRequestsData.friendRequests[3],
+      friendRequestsData.data[3],
     );
     jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
 
@@ -302,7 +299,7 @@ describe('Friends view', () => {
     const request = new FriendRequest(
       fetcher,
       currentUser.user!.username,
-      friendRequestsData.friendRequests[3],
+      friendRequestsData.data[3],
     );
     jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
 
@@ -334,7 +331,7 @@ describe('Friends view', () => {
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    const friend = friendsData.friends[9];
+    const friend = friendsData.data[9];
 
     await wrapper
       .get(`[data-testid="select-friend-${friend.username}"]`)
@@ -361,7 +358,7 @@ describe('Friends view', () => {
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    const friend = friendsData.friends[9];
+    const friend = friendsData.data[9];
 
     await wrapper
       .get(`[data-testid="select-friend-${friend.username}"]`)
@@ -381,7 +378,7 @@ describe('Friends view', () => {
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    const request = friendRequestsData.friendRequests[9];
+    const request = friendRequestsData.data[9];
 
     await wrapper
       .get(`[data-testid="select-request-${request.friend.id}"]`)
@@ -408,7 +405,7 @@ describe('Friends view', () => {
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    const request = friendRequestsData.friendRequests[9];
+    const request = friendRequestsData.data[9];
 
     await wrapper
       .get(`[data-testid="select-request-${request.friend.id}"]`)
@@ -422,7 +419,7 @@ describe('Friends view', () => {
 
   it('will load more friends when the load more button is clicked', async () => {
     jest.spyOn(client.friends, 'listFriends').mockResolvedValueOnce({
-      friends: friendsData.friends
+      data: friendsData.data
         .slice(0, 20)
         .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
       totalCount: friendsData.totalCount,
@@ -434,7 +431,7 @@ describe('Friends view', () => {
     const spy = jest
       .spyOn(client.friends, 'listFriends')
       .mockResolvedValueOnce({
-        friends: friendsData.friends
+        data: friendsData.data
           .slice(20, 40)
           .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
         totalCount: friendsData.totalCount,
@@ -447,7 +444,7 @@ describe('Friends view', () => {
     expect(friends).toHaveLength(40);
 
     friends.forEach((friend, i) => {
-      expect(friend.props('friend')).toEqual(friendsData.friends[i]);
+      expect(friend.props('friend')).toEqual(friendsData.data[i]);
     });
 
     expect(spy).toHaveBeenCalledWith(BasicUser.username, {
@@ -457,7 +454,7 @@ describe('Friends view', () => {
 
   it('will load more friend requests when the load more button is clicked', async () => {
     jest.spyOn(client.friends, 'listFriendRequests').mockResolvedValueOnce({
-      friendRequests: friendRequestsData.friendRequests
+      data: friendRequestsData.data
         .slice(0, 20)
         .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
       totalCount: friendRequestsData.totalCount,
@@ -471,7 +468,7 @@ describe('Friends view', () => {
     const spy = jest
       .spyOn(client.friends, 'listFriendRequests')
       .mockResolvedValueOnce({
-        friendRequests: friendRequestsData.friendRequests
+        data: friendRequestsData.data
           .slice(20, 40)
           .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
         totalCount: friendRequestsData.totalCount,
@@ -486,9 +483,7 @@ describe('Friends view', () => {
     expect(requests).toHaveLength(40);
 
     requests.forEach((request, i) => {
-      expect(request.props('request')).toEqual(
-        friendRequestsData.friendRequests[i],
-      );
+      expect(request.props('request')).toEqual(friendRequestsData.data[i]);
     });
 
     expect(spy).toHaveBeenCalledWith(BasicUser.username, {
@@ -501,13 +496,11 @@ describe('Friends view', () => {
 
   it('will allow a user to dismiss an acknowledged friend request', async () => {
     const requestDTO = {
-      ...friendRequestsData.friendRequests[0],
+      ...friendRequestsData.data[0],
       accepted: true,
     };
     jest.spyOn(client.friends, 'listFriendRequests').mockResolvedValue({
-      friendRequests: [
-        new FriendRequest(fetcher, BasicUser.username, requestDTO),
-      ],
+      data: [new FriendRequest(fetcher, BasicUser.username, requestDTO)],
       totalCount: friendRequestsData.totalCount,
     });
 

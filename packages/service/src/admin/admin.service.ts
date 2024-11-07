@@ -1,5 +1,6 @@
 import {
   AdminSearchUsersParamsDTO,
+  ApiList,
   SortOrder,
   UserRole,
   UsersSortBy,
@@ -16,10 +17,6 @@ import { UserEntity } from '../data';
 import { User } from '../users';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO;
-export type SearchUsersResults = {
-  users: User[];
-  totalCount: number;
-};
 
 @Injectable()
 export class AdminService {
@@ -39,7 +36,7 @@ export class AdminService {
     return user;
   }
 
-  async searchUsers(options: SearchUsersOptions): Promise<SearchUsersResults> {
+  async searchUsers(options: SearchUsersOptions): Promise<ApiList<User>> {
     let query = this.Users.createQueryBuilder('users');
 
     if (options.query) {
@@ -67,7 +64,7 @@ export class AdminService {
     const [users, totalCount] = await query.getManyAndCount();
 
     return {
-      users: users.map((user) => new User(this.Users, user)),
+      data: users.map((user) => new User(this.Users, user)),
       totalCount,
     };
   }

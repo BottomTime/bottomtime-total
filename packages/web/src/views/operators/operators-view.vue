@@ -71,10 +71,10 @@
 
 <script lang="ts" setup>
 import {
+  ApiList,
   CreateOrUpdateOperatorDTO,
   OperatorDTO,
   SearchOperatorsParams,
-  SearchOperatorsResponseDTO,
   SearchOperatorsSchema,
   UserRole,
   VerificationStatus,
@@ -105,7 +105,7 @@ interface OperatorsViewState {
   isLoading: boolean;
   isLoadingMore: boolean;
   isSaving: boolean;
-  results: SearchOperatorsResponseDTO;
+  results: ApiList<OperatorDTO>;
   showPanel: boolean;
   showConfirmDelete: boolean;
 }
@@ -140,7 +140,7 @@ const state = reactive<OperatorsViewState>({
   isLoadingMore: false,
   isSaving: false,
   results: {
-    operators: [],
+    data: [],
     totalCount: 0,
   },
   showPanel: false,
@@ -176,7 +176,7 @@ async function refresh(): Promise<void> {
     });
 
     state.results = {
-      operators: results.operators.map((op) => op.toJSON()),
+      data: results.data.map((op) => op.toJSON()),
       totalCount: results.totalCount,
     };
   });
@@ -260,11 +260,11 @@ async function onSaveOperator(dto: CreateOrUpdateOperatorDTO): Promise<void> {
         operator.socials = dto.socials;
         await operator.save();
 
-        const index = state.results.operators.findIndex(
+        const index = state.results.data.findIndex(
           (op) => op.id === operator.id,
         );
         if (index > -1) {
-          state.results.operators[index] = operator.toJSON();
+          state.results.data[index] = operator.toJSON();
         }
 
         toasts.toast({
@@ -277,7 +277,7 @@ async function onSaveOperator(dto: CreateOrUpdateOperatorDTO): Promise<void> {
         const newOperator = await client.operators.createOperator(dto);
         state.currentOperator = newOperator.toJSON();
 
-        state.results.operators.splice(0, 0, state.currentOperator);
+        state.results.data.splice(0, 0, state.currentOperator);
         state.results.totalCount++;
 
         toasts.toast({
@@ -310,10 +310,10 @@ async function onLoadMore(): Promise<void> {
   await oops(async () => {
     const params: SearchOperatorsParams = {
       ...searchParams,
-      skip: state.results.operators.length,
+      skip: state.results.data.length,
     };
     const results = await client.operators.searchOperators(params);
-    state.results.operators.push(...results.operators.map((op) => op.toJSON()));
+    state.results.data.push(...results.data.map((op) => op.toJSON()));
     state.results.totalCount = results.totalCount;
   });
 
@@ -365,11 +365,11 @@ async function onConfirmDelete(): Promise<void> {
       type: ToastType.Success,
     });
 
-    const index = state.results.operators.findIndex(
+    const index = state.results.data.findIndex(
       (op) => op.id === state.currentOperator?.id,
     );
     if (index > -1) {
-      state.results.operators.splice(index, 1);
+      state.results.data.splice(index, 1);
       state.results.totalCount--;
     }
 

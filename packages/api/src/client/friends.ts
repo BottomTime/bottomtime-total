@@ -1,4 +1,5 @@
 import {
+  ApiList,
   FriendRequestSchema,
   FriendSchema,
   ListFriendRequestsParamsDTO,
@@ -10,23 +11,13 @@ import { Fetcher } from './fetcher';
 import { Friend } from './friend';
 import { FriendRequest } from './friend-request';
 
-export type ListFriendsResults = {
-  friends: Friend[];
-  totalCount: number;
-};
-
-export type ListFriendRequestsResults = {
-  friendRequests: FriendRequest[];
-  totalCount: number;
-};
-
 export class FriendsApiClient {
   constructor(private readonly apiClient: Fetcher) {}
 
   async listFriends(
     username: string,
     params?: ListFriendsParamsDTO,
-  ): Promise<ListFriendsResults> {
+  ): Promise<ApiList<Friend>> {
     const { data } = await this.apiClient.get(
       `/api/users/${username}/friends`,
       params,
@@ -34,7 +25,7 @@ export class FriendsApiClient {
     const result = ListFriendsResposneSchema.parse(data);
 
     return {
-      friends: result.friends.map(
+      data: result.data.map(
         (friend) => new Friend(this.apiClient, username, friend),
       ),
       totalCount: result.totalCount,
@@ -60,7 +51,7 @@ export class FriendsApiClient {
   async listFriendRequests(
     username: string,
     params?: ListFriendRequestsParamsDTO,
-  ): Promise<ListFriendRequestsResults> {
+  ): Promise<ApiList<FriendRequest>> {
     const { data: result } = await this.apiClient.get(
       `/api/users/${username}/friendRequests`,
       params,
@@ -68,7 +59,7 @@ export class FriendsApiClient {
     );
 
     return {
-      friendRequests: result.friendRequests.map(
+      data: result.data.map(
         (request) => new FriendRequest(this.apiClient, username, request),
       ),
       totalCount: result.totalCount,

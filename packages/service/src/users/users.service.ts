@@ -25,7 +25,7 @@ export type SearchUsersOptions = AdminSearchUsersParamsDTO & {
   filterFriendsFor?: string;
 };
 export type SearchUsersResult = {
-  users: User[];
+  data: User[];
   totalCount: number;
 };
 export type CreateUserOptions = CreateUserParamsDTO;
@@ -150,7 +150,7 @@ export class UsersService {
     const [users, totalCount] = await query.getManyAndCount();
 
     return {
-      users: users.map((d) => new User(this.Users, d)),
+      data: users.map((d) => new User(this.Users, d)),
       totalCount,
     };
   }

@@ -1,5 +1,6 @@
 import {
   AlertSchema,
+  ApiList,
   CreateOrUpdateAlertParamsDTO,
   ListAlertsParamsDTO,
   ListAlertsResponseSchema,
@@ -10,19 +11,16 @@ import { Fetcher } from './fetcher';
 export class AlertsApiClient {
   constructor(private readonly apiClient: Fetcher) {}
 
-  async listAlerts(options?: ListAlertsParamsDTO): Promise<{
-    alerts: Alert[];
-    totalCount: number;
-  }> {
-    const { data } = await this.apiClient.get(
+  async listAlerts(options?: ListAlertsParamsDTO): Promise<ApiList<Alert>> {
+    const { data: response } = await this.apiClient.get(
       '/api/alerts',
       options,
       ListAlertsResponseSchema,
     );
 
     return {
-      alerts: data.alerts.map((alert) => new Alert(this.apiClient, alert)),
-      totalCount: data.totalCount,
+      data: response.data.map((alert) => new Alert(this.apiClient, alert)),
+      totalCount: response.totalCount,
     };
   }
 

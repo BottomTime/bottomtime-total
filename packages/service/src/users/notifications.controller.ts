@@ -1,9 +1,9 @@
 import {
+  ApiList,
   CreateOrUpdateNotificationParamsDTO,
   CreateOrUpdateNotificationParamsSchema,
   ListNotificationsParamsDTO,
   ListNotificationsParamsSchema,
-  ListNotificationsResponseDTO,
   NotificationDTO,
 } from '@bottomtime/api';
 
@@ -87,10 +87,10 @@ export class NotificationsController {
    *             schema:
    *               type: object
    *               required:
-   *                 - notifications
+   *                 - data
    *                 - totalCount
    *               properties:
-   *                 notifications:
+   *                 data:
    *                   type: array
    *                   items:
    *                     $ref: "#/components/schemas/Notification"
@@ -135,16 +135,14 @@ export class NotificationsController {
     @TargetUser() user: User,
     @Query(new ZodValidator(ListNotificationsParamsSchema))
     options: ListNotificationsParamsDTO,
-  ): Promise<ListNotificationsResponseDTO> {
+  ): Promise<ApiList<NotificationDTO>> {
     const results = await this.service.listNotifications({
       ...options,
       userId: user.id,
     });
 
     return {
-      notifications: results.notifications.map((notification) =>
-        notification.toJSON(),
-      ),
+      data: results.data.map((notification) => notification.toJSON()),
       totalCount: results.totalCount,
     };
   }

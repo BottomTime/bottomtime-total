@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { ListTanksResponseDTO, ProfileDTO, UserRole } from '@bottomtime/api';
+import { ApiList, ProfileDTO, TankDTO, UserRole } from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
@@ -39,7 +39,7 @@ import { useCurrentUser } from '../../store';
 interface ProfileViewState {
   currentProfile?: ProfileDTO;
   isLoading: boolean;
-  tanks: ListTanksResponseDTO;
+  tanks: ApiList<TankDTO>;
 }
 
 const Breadcrumbs: Breadcrumb[] = [
@@ -81,7 +81,7 @@ const username = computed(() =>
 const state = reactive<ProfileViewState>({
   isLoading: true,
   tanks: {
-    tanks: [],
+    data: [],
     totalCount: 0,
   },
 });
@@ -105,12 +105,12 @@ onMounted(async () => {
         includeSystem: false,
       });
       state.tanks = {
-        tanks: results.tanks.map((tank) => tank.toJSON()),
+        data: results.data.map((tank) => tank.toJSON()),
         totalCount: results.totalCount,
       };
     } else {
       state.tanks = {
-        tanks: [],
+        data: [],
         totalCount: -1,
       };
     }

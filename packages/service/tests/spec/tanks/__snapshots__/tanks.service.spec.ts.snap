@@ -2,7 +2,7 @@
 
 exports[`Tanks Service when listing tanks will list both system and user tanks 1`] = `
 {
-  "tanks": [
+  "data": [
     {
       "id": "6318aa0c-31eb-4ce3-bcc2-234d72a9ced1",
       "isSystem": true,
@@ -250,7 +250,7 @@ exports[`Tanks Service when listing tanks will list both system and user tanks 1
 
 exports[`Tanks Service when listing tanks will list system tanks 1`] = `
 {
-  "tanks": [
+  "data": [
     {
       "id": "6318aa0c-31eb-4ce3-bcc2-234d72a9ced1",
       "isSystem": true,
@@ -418,7 +418,7 @@ exports[`Tanks Service when listing tanks will list system tanks 1`] = `
 
 exports[`Tanks Service when listing tanks will list user tanks 1`] = `
 {
-  "tanks": [
+  "data": [
     {
       "id": "d3d798d6-433a-4f5e-aab0-d474a9883ab8",
       "isSystem": false,

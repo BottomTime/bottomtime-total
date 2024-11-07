@@ -57,12 +57,9 @@ export type ListDiveSiteReviewsParamsDTO = z.infer<
 >;
 
 export const ListDiveSiteReviewsResponseSchema = z.object({
-  reviews: z.array(DiveSiteReviewSchema),
+  data: z.array(DiveSiteReviewSchema),
   totalCount: z.number().int(),
 });
-export type ListDiveSiteReviewsResponseDTO = z.infer<
-  typeof ListDiveSiteReviewsResponseSchema
->;
 
 export const CreateOrUpdateDiveSiteSchema = z.object({
   name: z.string().trim().min(1).max(200),
@@ -118,9 +115,6 @@ export type SearchDiveSitesParamsDTO = z.infer<
 >;
 
 export const SearchDiveSitesResponseSchema = z.object({
-  sites: z.array(DiveSiteSchema),
+  data: z.array(DiveSiteSchema),
   totalCount: z.number().int(),
 });
-export type SearchDiveSitesResponseDTO = z.infer<
-  typeof SearchDiveSitesResponseSchema
->;

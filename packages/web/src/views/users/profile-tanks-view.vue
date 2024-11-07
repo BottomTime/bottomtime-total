@@ -68,12 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ListTanksResponseDTO,
-  TankDTO,
-  TankMaterial,
-  UserRole,
-} from '@bottomtime/api';
+import { ApiList, TankDTO, TankMaterial, UserRole } from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
@@ -99,7 +94,7 @@ interface ProfileTanksViewState {
   isSaving: boolean;
   showConfirmDelete: boolean;
   showEditTank: boolean;
-  tanks?: ListTanksResponseDTO;
+  tanks?: ApiList<TankDTO>;
 }
 
 const client = useClient();
@@ -137,7 +132,7 @@ onMounted(async () => {
       });
 
       state.tanks = {
-        tanks: result.tanks.map((tank) => tank.toJSON()),
+        data: result.data.map((tank) => tank.toJSON()),
         totalCount: result.totalCount,
       };
     },
@@ -191,11 +186,11 @@ async function onConfirmDeleteTank(): Promise<void> {
     const tank = client.tanks.wrapDTO(state.currentTank, username.value);
     await tank.delete();
 
-    const index = state.tanks.tanks.findIndex(
+    const index = state.tanks.data.findIndex(
       (t) => t.id === state.currentTank?.id,
     );
     if (index > -1) {
-      state.tanks.tanks.splice(index, 1);
+      state.tanks.data.splice(index, 1);
     }
 
     toasts.toast({
@@ -221,9 +216,9 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       const tank = client.tanks.wrapDTO(dto, username.value);
       await tank.save();
 
-      const index = state.tanks.tanks.findIndex((t) => t.id === dto.id);
+      const index = state.tanks.data.findIndex((t) => t.id === dto.id);
       if (index > -1) {
-        state.tanks.tanks.splice(index, 1, dto);
+        state.tanks.data.splice(index, 1, dto);
       }
 
       toasts.toast({
@@ -233,7 +228,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       });
     } else {
       const tank = await client.tanks.createTank(dto, username.value);
-      state.tanks.tanks.splice(0, 0, tank.toJSON());
+      state.tanks.data.splice(0, 0, tank.toJSON());
 
       toasts.toast({
         id: 'tank-created',

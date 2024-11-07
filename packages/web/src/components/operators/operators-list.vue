@@ -4,7 +4,7 @@
       <FormBox class="flex justify-between items-baseline">
         <p data-testid="operators-count">
           <span>Showing </span>
-          <span class="font-bold">{{ operators.operators.length }}</span>
+          <span class="font-bold">{{ operators.data.length }}</span>
           <span> of </span>
           <span class="font-bold">{{ operators.totalCount }}</span>
           <span> dive shop(s)</span>
@@ -25,7 +25,7 @@
 
     <ul class="px-2" data-testid="operators-list">
       <OperatorsListItem
-        v-for="operator in operators.operators"
+        v-for="operator in operators.data"
         :key="operator.slug"
         :operator="operator"
         @select="(dto) => $emit('select', dto)"
@@ -38,7 +38,7 @@
 
       <template v-else>
         <li
-          v-if="!operators.operators.length"
+          v-if="!operators.data.length"
           class="my-8"
           data-testid="operators-no-results"
         >
@@ -61,7 +61,7 @@
         </li>
 
         <li
-          v-else-if="operators.operators.length < operators.totalCount"
+          v-else-if="operators.data.length < operators.totalCount"
           class="flex justify-center gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
         >
           <FormButton
@@ -78,12 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  AccountTier,
-  OperatorDTO,
-  SearchOperatorsResponseDTO,
-  UserRole,
-} from '@bottomtime/api';
+import { AccountTier, ApiList, OperatorDTO, UserRole } from '@bottomtime/api';
 
 import { computed } from 'vue';
 
@@ -96,7 +91,7 @@ import OperatorsListItem from './operators-list-item.vue';
 interface OperatorsListProps {
   isLoading?: boolean;
   isLoadingMore?: boolean;
-  operators: SearchOperatorsResponseDTO;
+  operators: ApiList<OperatorDTO>;
 }
 
 const currentUser = useCurrentUser();

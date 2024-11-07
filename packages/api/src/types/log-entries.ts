@@ -167,12 +167,9 @@ export type ListLogEntriesParamsDTO = z.infer<
 >;
 
 export const ListLogEntriesResponseSchema = z.object({
-  logEntries: z.array(SuccinctLogEntrySchema),
+  data: z.array(SuccinctLogEntrySchema),
   totalCount: z.number().int(),
 });
-export type ListLogEntriesResponseDTO = z.infer<
-  typeof ListLogEntriesResponseSchema
->;
 
 export type GetNextAvailableLogNumberResponseDTO = {
   logNumber: number;

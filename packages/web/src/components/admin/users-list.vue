@@ -76,7 +76,7 @@
       <!-- Summary bar and sort order select -->
       <FormBox class="flex flex-row gap-2 items-baseline sticky top-16">
         <span class="font-bold">Showing Users:</span>
-        <span>{{ state.results.users.length }}</span>
+        <span>{{ state.results.data.length }}</span>
         <span>of</span>
         <span class="grow">{{ state.results.totalCount }}</span>
         <label for="sort-order" class="font-bold">Sort order:</label>
@@ -96,7 +96,7 @@
 
       <!-- No results found message -->
       <p
-        v-else-if="state.results.users.length === 0"
+        v-else-if="state.results.data.length === 0"
         class="mt-6 text-lg text-warn"
         data-testid="users-list-no-users"
       >
@@ -108,7 +108,7 @@
 
       <ul v-else data-testid="users-list">
         <UsersListItem
-          v-for="user in state.results.users"
+          v-for="user in state.results.data"
           :key="user.id"
           :user="user"
           @user-click="onUserClick"
@@ -126,7 +126,7 @@
           </div>
 
           <FormButton
-            v-else-if="state.results.users.length < state.results.totalCount"
+            v-else-if="state.results.data.length < state.results.totalCount"
             type="link"
             test-id="users-list-load-more"
             @click="onLoadMore"
@@ -142,7 +142,7 @@
 <script setup lang="ts">
 import {
   AdminSearchUsersParamsDTO,
-  AdminSearchUsersResponseDTO,
+  ApiList,
   ProfileDTO,
   SortOrder,
   UserDTO,
@@ -167,7 +167,7 @@ import ManageUser from './manage-user.vue';
 import UsersListItem from './users-list-item.vue';
 
 interface UsersListState {
-  results: AdminSearchUsersResponseDTO;
+  results: ApiList<UserDTO>;
   searchParams: {
     isLockedOut: string;
     query: string;
@@ -211,7 +211,7 @@ const state = reactive<UsersListState>({
   isLoading: true,
   isLoadingMore: false,
   results: {
-    users: [],
+    data: [],
     totalCount: 0,
   },
   searchParams: {
@@ -241,7 +241,7 @@ async function refreshUsers(): Promise<void> {
   await oops(async () => {
     const response = await client.users.searchUsers(params);
     state.results = {
-      users: response.users.map((u) => u.toJSON()),
+      data: response.data.map((u) => u.toJSON()),
       totalCount: response.totalCount,
     };
   });
@@ -250,12 +250,12 @@ async function refreshUsers(): Promise<void> {
 
 async function onLoadMore(): Promise<void> {
   const params = getSearchParameters();
-  params.skip = state.results.users.length;
+  params.skip = state.results.data.length;
 
   state.isLoadingMore = true;
   await oops(async () => {
     const response = await client.users.searchUsers(params);
-    state.results.users.push(...response.users.map((u) => u.toJSON()));
+    state.results.data.push(...response.data.map((u) => u.toJSON()));
     state.results.totalCount = response.totalCount;
   });
   state.isLoadingMore = false;

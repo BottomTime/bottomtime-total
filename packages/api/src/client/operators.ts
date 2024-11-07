@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateOperatorDTO,
   OperatorSchema,
   SearchOperatorsParams,
@@ -33,11 +34,10 @@ export class OperatorsApiClient {
     return new Operator(this.apiClient, data);
   }
 
-  async searchOperators(options?: SearchOperatorsParams): Promise<{
-    operators: Operator[];
-    totalCount: number;
-  }> {
-    const { data } = await this.apiClient.get(
+  async searchOperators(
+    options?: SearchOperatorsParams,
+  ): Promise<ApiList<Operator>> {
+    const { data: results } = await this.apiClient.get(
       '/api/operators',
       {
         ...options,
@@ -51,8 +51,8 @@ export class OperatorsApiClient {
     );
 
     return {
-      operators: data.operators.map((dto) => new Operator(this.apiClient, dto)),
-      totalCount: data.totalCount,
+      data: results.data.map((dto) => new Operator(this.apiClient, dto)),
+      totalCount: results.totalCount,
     };
   }
 

@@ -1,7 +1,7 @@
 import {
   ApiClient,
+  ApiList,
   Fetcher,
-  ListTanksResponseDTO,
   ListTanksResponseSchema,
   Tank,
   TankDTO,
@@ -41,7 +41,7 @@ describe('Admin Tanks View', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
-  let tankData: ListTanksResponseDTO;
+  let tankData: ApiList<TankDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -74,7 +74,7 @@ describe('Admin Tanks View', () => {
     };
 
     listSpy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: tankData.tanks.map((tank) => new Tank(fetcher, tank)),
+      data: tankData.data.map((tank) => new Tank(fetcher, tank)),
       totalCount: tankData.totalCount,
     });
   });
@@ -87,7 +87,7 @@ describe('Admin Tanks View', () => {
     ).toMatchSnapshot();
 
     const items = wrapper.findAllComponents(TanksListItem);
-    expect(items).toHaveLength(tankData.tanks.length);
+    expect(items).toHaveLength(tankData.data.length);
     expect(listSpy).toHaveBeenCalledWith();
   });
 
@@ -120,12 +120,12 @@ describe('Admin Tanks View', () => {
   });
 
   it('will allow a user to delete a tank', async () => {
-    const dto = tankData.tanks[3];
+    const dto = tankData.data[3];
     const tank = new Tank(fetcher, dto);
     const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
     jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
     jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      tanks: [tank],
+      data: [tank],
       totalCount: 1,
     });
 
@@ -146,7 +146,7 @@ describe('Admin Tanks View', () => {
   });
 
   it('will allow a user to change their mind about deleting a tank', async () => {
-    const dto = tankData.tanks[5];
+    const dto = tankData.data[5];
     const tank = new Tank(fetcher, dto);
     const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
     jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
@@ -205,7 +205,7 @@ describe('Admin Tanks View', () => {
     const name = 'New Name';
     const volume = 12.5;
     const workingPressure = 200;
-    const dto = tankData.tanks[8];
+    const dto = tankData.data[8];
     const expected: TankDTO = {
       ...dto,
       name,

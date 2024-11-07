@@ -1,11 +1,11 @@
 import {
   AccountTier,
   ApiClient,
+  ApiList,
   CreateOrUpdateOperatorDTO,
   Fetcher,
   Operator,
   OperatorDTO,
-  SearchOperatorsResponseDTO,
   SearchOperatorsResponseSchema,
   UserDTO,
   VerificationStatus,
@@ -45,7 +45,7 @@ describe('Operators view', () => {
   let client: ApiClient;
   let features: ConfigCatClientMock;
   let router: Router;
-  let testData: SearchOperatorsResponseDTO;
+  let testData: ApiList<OperatorDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -90,7 +90,7 @@ describe('Operators view', () => {
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        operators: testData.operators.map((op) => new Operator(fetcher, op)),
+        data: testData.data.map((op) => new Operator(fetcher, op)),
         totalCount: testData.totalCount,
       });
   });
@@ -103,9 +103,9 @@ describe('Operators view', () => {
       limit: 50,
     });
     const items = wrapper.findAllComponents(OperatorsListItem);
-    expect(items).toHaveLength(testData.operators.length);
+    expect(items).toHaveLength(testData.data.length);
     items.forEach((item, i) => {
-      expect(item.props('operator')).toEqual(testData.operators[i]);
+      expect(item.props('operator')).toEqual(testData.data[i]);
     });
   });
 
@@ -135,9 +135,9 @@ describe('Operators view', () => {
       limit: 50,
     });
     const items = wrapper.findAllComponents(OperatorsListItem);
-    expect(items).toHaveLength(testData.operators.length);
+    expect(items).toHaveLength(testData.data.length);
     items.forEach((item, i) => {
-      expect(item.props('operator')).toEqual(testData.operators[i]);
+      expect(item.props('operator')).toEqual(testData.data[i]);
     });
   });
 
@@ -159,16 +159,16 @@ describe('Operators view', () => {
       limit: 50,
     });
     const items = wrapper.findAllComponents(OperatorsListItem);
-    expect(items).toHaveLength(testData.operators.length);
+    expect(items).toHaveLength(testData.data.length);
     items.forEach((item, i) => {
-      expect(item.props('operator')).toEqual(testData.operators[i]);
+      expect(item.props('operator')).toEqual(testData.data[i]);
     });
   });
 
   it('will allow a user to perform a search', async () => {
     currentUser.user = ShopOwner;
-    const expected: SearchOperatorsResponseDTO = {
-      operators: testData.operators.slice(0, 3),
+    const expected: ApiList<OperatorDTO> = {
+      data: testData.data.slice(0, 3),
       totalCount: 3,
     };
 
@@ -178,7 +178,7 @@ describe('Operators view', () => {
     const spy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        operators: expected.operators.map((op) => new Operator(fetcher, op)),
+        data: expected.data.map((op) => new Operator(fetcher, op)),
         totalCount: expected.totalCount,
       });
 
@@ -256,7 +256,7 @@ describe('Operators view', () => {
 
   it('will allow a shop owner to edit an existing shop', async () => {
     const existing: OperatorDTO = {
-      ...testData.operators[0],
+      ...testData.data[0],
       owner: ShopOwner.profile,
     };
     const update: CreateOrUpdateOperatorDTO = {
@@ -276,7 +276,7 @@ describe('Operators view', () => {
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        operators: [operator],
+        data: [operator],
         totalCount: 1,
       });
 
@@ -304,7 +304,7 @@ describe('Operators view', () => {
 
   it('will handle a conflict error when saving an operator', async () => {
     const existing: OperatorDTO = {
-      ...testData.operators[0],
+      ...testData.data[0],
       owner: ShopOwner.profile,
     };
     const update: CreateOrUpdateOperatorDTO = {
@@ -324,7 +324,7 @@ describe('Operators view', () => {
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        operators: [operator],
+        data: [operator],
         totalCount: 1,
       });
 
@@ -360,11 +360,11 @@ describe('Operators view', () => {
 
   it('will display a dive shop in read-only mode when viewed by a user who is not the owner', async () => {
     currentUser.user = BasicUser;
-    const operator = testData.operators[0];
+    const operator = testData.data[0];
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        operators: [new Operator(fetcher, operator)],
+        data: [new Operator(fetcher, operator)],
         totalCount: 1,
       });
 
@@ -381,9 +381,7 @@ describe('Operators view', () => {
 
   it('will allow user to load more results', async () => {
     jest.spyOn(client.operators, 'searchOperators').mockResolvedValueOnce({
-      operators: testData.operators
-        .slice(0, 10)
-        .map((op) => new Operator(fetcher, op)),
+      data: testData.data.slice(0, 10).map((op) => new Operator(fetcher, op)),
       totalCount: 20,
     });
 
@@ -393,7 +391,7 @@ describe('Operators view', () => {
     const spy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValueOnce({
-        operators: testData.operators
+        data: testData.data
           .slice(10, 20)
           .map((op) => new Operator(fetcher, op)),
         totalCount: 20,
@@ -410,15 +408,13 @@ describe('Operators view', () => {
     const results = wrapper.findAllComponents(OperatorsListItem);
     expect(results).toHaveLength(20);
     results.forEach((result, index) => {
-      expect(result.props('operator')).toEqual(testData.operators[index]);
+      expect(result.props('operator')).toEqual(testData.data[index]);
     });
   });
 
   it('will retain search criteria while performing "load more" action', async () => {
     jest.spyOn(client.operators, 'searchOperators').mockResolvedValue({
-      operators: testData.operators
-        .slice(0, 10)
-        .map((op) => new Operator(fetcher, op)),
+      data: testData.data.slice(0, 10).map((op) => new Operator(fetcher, op)),
       totalCount: 20,
     });
     const query = {
@@ -438,7 +434,7 @@ describe('Operators view', () => {
     const spy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        operators: testData.operators
+        data: testData.data
           .slice(10, 20)
           .map((op) => new Operator(fetcher, op)),
         totalCount: 20,
@@ -462,7 +458,7 @@ describe('Operators view', () => {
     const results = wrapper.findAllComponents(OperatorsListItem);
     expect(results).toHaveLength(20);
     results.forEach((result, index) => {
-      expect(result.props('operator')).toEqual(testData.operators[index]);
+      expect(result.props('operator')).toEqual(testData.data[index]);
     });
   });
 });

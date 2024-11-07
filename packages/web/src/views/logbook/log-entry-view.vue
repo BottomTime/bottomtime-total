@@ -11,7 +11,7 @@
       v-if="editMode"
       :entry="state.currentEntry"
       :is-saving="state.isSaving"
-      :tanks="state.tanks.tanks"
+      :tanks="state.tanks.data"
       @save="onSave"
     />
     <ViewLogbookEntry v-else :entry="state.currentEntry" />
@@ -23,9 +23,10 @@
 <script lang="ts" setup>
 import {
   AccountTier,
-  ListTanksResponseDTO,
+  ApiList,
   LogBookSharing,
   LogEntryDTO,
+  TankDTO,
   UserRole,
 } from '@bottomtime/api';
 
@@ -48,7 +49,7 @@ interface LogEntryViewState {
   currentEntry?: LogEntryDTO;
   isLoading: boolean;
   isSaving: boolean;
-  tanks: ListTanksResponseDTO;
+  tanks: ApiList<TankDTO>;
 }
 
 const client = useClient();
@@ -61,7 +62,7 @@ const state = reactive<LogEntryViewState>({
   isLoading: true,
   isSaving: false,
   tanks: {
-    tanks: [],
+    data: [],
     totalCount: 0,
   },
 });
@@ -146,7 +147,7 @@ onMounted(async () => {
       });
 
       state.tanks = {
-        tanks: tanksResult.tanks.map((tank) => tank.toJSON()),
+        data: tanksResult.data.map((tank) => tank.toJSON()),
         totalCount: tanksResult.totalCount,
       };
     }),

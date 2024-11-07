@@ -2,8 +2,7 @@
 
 exports[`Admin End-to-End Tests when searching users will filter results based on query string 1`] = `
 {
-  "totalCount": 4,
-  "users": [
+  "data": [
     {
       "accountTier": 0,
       "email": "Rhianna16@hotmail.com",
@@ -133,13 +132,13 @@ exports[`Admin End-to-End Tests when searching users will filter results based o
       "username": "Aliyah.Kunde4",
     },
   ],
+  "totalCount": 4,
 }
 `;
 
 exports[`Admin End-to-End Tests when searching users will return a list of users 1`] = `
 {
-  "totalCount": 102,
-  "users": [
+  "data": [
     {
       "accountTier": 0,
       "email": "Winona_Doyle@yahoo.com",
@@ -621,5 +620,6 @@ exports[`Admin End-to-End Tests when searching users will return a list of users
       "username": "Okey84",
     },
   ],
+  "totalCount": 102,
 }
 `;

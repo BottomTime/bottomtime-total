@@ -2,7 +2,7 @@
 
 exports[`Friends Service when listing friend requests will allow filtering by both friend requests 1`] = `
 {
-  "friendRequests": [
+  "data": [
     {
       "accepted": undefined,
       "created": 2023-12-10T19:11:09.925Z,
@@ -95,7 +95,7 @@ exports[`Friends Service when listing friend requests will allow filtering by bo
 
 exports[`Friends Service when listing friend requests will allow filtering by incoming friend requests 1`] = `
 {
-  "friendRequests": [
+  "data": [
     {
       "accepted": undefined,
       "created": 2023-12-10T19:11:09.925Z,
@@ -188,7 +188,7 @@ exports[`Friends Service when listing friend requests will allow filtering by in
 
 exports[`Friends Service when listing friend requests will allow filtering by outgoing friend requests 1`] = `
 {
-  "friendRequests": [
+  "data": [
     {
       "accepted": undefined,
       "created": 2023-12-05T09:02:34.737Z,
@@ -281,7 +281,7 @@ exports[`Friends Service when listing friend requests will allow filtering by ou
 
 exports[`Friends Service when listing friend requests will allow pagination of friend requests 1`] = `
 {
-  "friendRequests": [
+  "data": [
     {
       "accepted": undefined,
       "created": 2023-11-27T09:21:55.366Z,
@@ -374,7 +374,7 @@ exports[`Friends Service when listing friend requests will allow pagination of f
 
 exports[`Friends Service when listing friend requests will list friend requests with default options 1`] = `
 {
-  "friendRequests": [
+  "data": [
     {
       "accepted": undefined,
       "created": 2023-12-10T19:11:09.925Z,
@@ -1096,7 +1096,7 @@ exports[`Friends Service when listing friend requests will list friend requests 
 
 exports[`Friends Service when listing friend requests will return acknowledged friend requests when requested 1`] = `
 {
-  "friendRequests": [
+  "data": [
     {
       "accepted": undefined,
       "created": 2023-12-10T19:11:09.925Z,
@@ -1954,7 +1954,7 @@ exports[`Friends Service when listing friend requests will return acknowledged f
 
 exports[`Friends Service when listing friends will allow pagination of friends 1`] = `
 {
-  "friends": [
+  "data": [
     {
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/393.jpg",
       "friendsSince": 2023-12-28T12:29:11.764Z,
@@ -2522,7 +2522,7 @@ exports[`Friends Service when listing friends will allow sorting by username in 
 
 exports[`Friends Service when listing friends will list friends with default options 1`] = `
 {
-  "friends": [
+  "data": [
     {
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/189.jpg",
       "friendsSince": 2024-03-08T11:47:58.250Z,

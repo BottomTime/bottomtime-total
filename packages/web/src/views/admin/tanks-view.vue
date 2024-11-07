@@ -51,12 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ListTanksResponseDTO,
-  TankDTO,
-  TankMaterial,
-  UserRole,
-} from '@bottomtime/api';
+import { ApiList, TankDTO, TankMaterial, UserRole } from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
 
@@ -77,7 +72,7 @@ interface AdminTanksState {
   isDeleting: boolean;
   isLoading: boolean;
   isSaving: boolean;
-  results: ListTanksResponseDTO;
+  results: ApiList<TankDTO>;
   showConfirmDelete: boolean;
   showTankEditor: boolean;
 }
@@ -103,7 +98,7 @@ const state = reactive<AdminTanksState>({
   isLoading: true,
   isSaving: false,
   results: {
-    tanks: [],
+    data: [],
     totalCount: 0,
   },
   showConfirmDelete: false,
@@ -116,7 +111,7 @@ onMounted(async () => {
   await oops(async () => {
     if (!isAuthorized.value) return;
     const results = await client.tanks.listTanks();
-    state.results.tanks = results.tanks.map((tank) => tank.toJSON());
+    state.results.data = results.data.map((tank) => tank.toJSON());
     state.results.totalCount = results.totalCount;
   });
   state.isLoading = false;
@@ -156,8 +151,8 @@ async function onConfirmDelete(): Promise<void> {
     const tank = client.tanks.wrapDTO(state.currentTank);
     await tank.delete();
 
-    const index = state.results.tanks.findIndex((t) => t.id === tank.id);
-    if (index > -1) state.results.tanks.splice(index, 1);
+    const index = state.results.data.findIndex((t) => t.id === tank.id);
+    if (index > -1) state.results.data.splice(index, 1);
 
     toasts.toast({
       id: 'tank-deleted',
@@ -183,8 +178,8 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       const tank = client.tanks.wrapDTO(dto);
       await tank.save();
 
-      const index = state.results.tanks.findIndex((t) => t.id === tank.id);
-      if (index > -1) state.results.tanks.splice(index, 1, tank.toJSON());
+      const index = state.results.data.findIndex((t) => t.id === tank.id);
+      if (index > -1) state.results.data.splice(index, 1, tank.toJSON());
 
       toasts.toast({
         id: 'tank-saved',
@@ -193,7 +188,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       });
     } else {
       const tank = await client.tanks.createTank(dto);
-      state.results.tanks.splice(0, 0, tank.toJSON());
+      state.results.data.splice(0, 0, tank.toJSON());
 
       toasts.toast({
         id: 'tank-created',

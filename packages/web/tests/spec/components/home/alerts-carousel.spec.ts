@@ -1,6 +1,7 @@
 import {
+  AlertDTO,
+  ApiList,
   Fetcher,
-  ListAlertsResponseDTO,
   ListAlertsResponseSchema,
 } from '@bottomtime/api';
 import { Alert, ApiClient } from '@bottomtime/api';
@@ -32,7 +33,7 @@ describe('Alerts Carousel component', () => {
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
-  let alertData: ListAlertsResponseDTO;
+  let alertData: ApiList<AlertDTO>;
   let options: ComponentMountingOptions<typeof AlertsCarousel>;
   let fetchSpy: jest.SpyInstance;
 
@@ -47,7 +48,7 @@ describe('Alerts Carousel component', () => {
     currentUser = useCurrentUser(pinia);
 
     alertData = ListAlertsResponseSchema.parse(AlertData);
-    alertData.alerts = alertData.alerts.slice(0, 10);
+    alertData.data = alertData.data.slice(0, 10);
     currentUser.user = null;
 
     options = {
@@ -62,7 +63,7 @@ describe('Alerts Carousel component', () => {
 
   it('will fetch alerts when component is mounted', async () => {
     fetchSpy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValue({
-      alerts: alertData.alerts.map((dto) => new Alert(fetcher, dto)),
+      data: alertData.data.map((dto) => new Alert(fetcher, dto)),
       totalCount: alertData.totalCount,
     });
     const wrapper = mount(AlertsCarousel, options);
@@ -70,9 +71,9 @@ describe('Alerts Carousel component', () => {
 
     expect(fetchSpy).toHaveBeenCalledWith({ showDismissed: false });
     const alerts = wrapper.findAllComponents(AlertsCarouselItem);
-    expect(alerts).toHaveLength(alertData.alerts.length);
+    expect(alerts).toHaveLength(alertData.data.length);
     alerts.forEach((alert, index) => {
-      expect(alert.props('alert')).toEqual(alertData.alerts[index]);
+      expect(alert.props('alert')).toEqual(alertData.data[index]);
     });
 
     expect(wrapper.get(NextButton).isVisible()).toBe(true);
@@ -82,9 +83,7 @@ describe('Alerts Carousel component', () => {
 
   it('will render with a single alert', async () => {
     fetchSpy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValue({
-      alerts: alertData.alerts
-        .slice(0, 1)
-        .map((dto) => new Alert(fetcher, dto)),
+      data: alertData.data.slice(0, 1).map((dto) => new Alert(fetcher, dto)),
       totalCount: alertData.totalCount,
     });
     const wrapper = mount(AlertsCarousel, options);
@@ -93,7 +92,7 @@ describe('Alerts Carousel component', () => {
     expect(fetchSpy).toHaveBeenCalledWith({ showDismissed: false });
     const alerts = wrapper.findAllComponents(AlertsCarouselItem);
     expect(alerts).toHaveLength(1);
-    expect(alerts[0].props('alert')).toEqual(alertData.alerts[0]);
+    expect(alerts[0].props('alert')).toEqual(alertData.data[0]);
 
     expect(wrapper.find(NextButton).exists()).toBe(false);
     expect(wrapper.find(PreviousButton).exists()).toBe(false);
@@ -103,7 +102,7 @@ describe('Alerts Carousel component', () => {
   it('will not render if there are no alerts', async () => {
     fetchSpy = jest
       .spyOn(client.alerts, 'listAlerts')
-      .mockResolvedValue({ alerts: [], totalCount: 0 });
+      .mockResolvedValue({ data: [], totalCount: 0 });
     const wrapper = mount(AlertsCarousel, options);
     await flushPromises();
 

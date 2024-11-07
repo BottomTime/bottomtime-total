@@ -1,11 +1,11 @@
 <template>
-  <div v-if="state.results.alerts.length > 0" class="relative w-full h-64">
+  <div v-if="state.results.data.length > 0" class="relative w-full h-64">
     <div
       class="relative overflow-hidden rounded-lg h-full bg-grey-50"
       data-testid="carousel-content"
     >
       <AlertsCarouselItem
-        v-for="(alert, index) in state.results.alerts"
+        v-for="(alert, index) in state.results.data"
         :key="alert.id"
         :alert="alert"
         :relative-position="index - state.currentIndex"
@@ -13,7 +13,7 @@
     </div>
 
     <button
-      v-if="state.results.alerts.length > 1"
+      v-if="state.results.data.length > 1"
       type="button"
       class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
       data-testid="carousel-prev"
@@ -28,7 +28,7 @@
     </button>
 
     <button
-      v-if="state.results.alerts.length > 1"
+      v-if="state.results.data.length > 1"
       type="button"
       class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
       data-testid="carousel-next"
@@ -43,12 +43,12 @@
     </button>
 
     <div
-      v-if="state.results.alerts.length > 1"
+      v-if="state.results.data.length > 1"
       class="absolute bottom-3 flex items-center justify-center w-full text-grey-950 space-x-3"
       data-testid="carousel-indicators"
     >
       <button
-        v-for="(_, index) in state.results.alerts"
+        v-for="(_, index) in state.results.data"
         :key="index"
         :class="
           index === state.currentIndex ? 'text-grey-950/80' : 'text-grey-950/40'
@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ListAlertsResponseDTO } from '@bottomtime/api';
+import { AlertDTO, ApiList } from '@bottomtime/api';
 
 import { onMounted, reactive } from 'vue';
 
@@ -78,7 +78,7 @@ interface AlertsCarouselProps {
 
 interface AlertsCarouselState {
   currentIndex: number;
-  results: ListAlertsResponseDTO;
+  results: ApiList<AlertDTO>;
 }
 
 const client = useClient();
@@ -90,7 +90,7 @@ const props = withDefaults(defineProps<AlertsCarouselProps>(), {
 const state = reactive<AlertsCarouselState>({
   currentIndex: 0,
   results: {
-    alerts: [],
+    data: [],
     totalCount: 0,
   },
 });
@@ -104,7 +104,7 @@ onMounted(async () => {
   await oops(async () => {
     const result = await client.alerts.listAlerts({ showDismissed: false });
     state.results = {
-      alerts: result.alerts.map((a) => a.toJSON()),
+      data: result.data.map((a) => a.toJSON()),
       totalCount: result.totalCount,
     };
   });
@@ -113,11 +113,11 @@ onMounted(async () => {
 
 function onPrevious() {
   state.currentIndex =
-    (state.currentIndex - 1 + state.results.alerts.length) %
-    state.results.alerts.length;
+    (state.currentIndex - 1 + state.results.data.length) %
+    state.results.data.length;
 }
 
 function onNext() {
-  state.currentIndex = (state.currentIndex + 1) % state.results.alerts.length;
+  state.currentIndex = (state.currentIndex + 1) % state.results.data.length;
 }
 </script>

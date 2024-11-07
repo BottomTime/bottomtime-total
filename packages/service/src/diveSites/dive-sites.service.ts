@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateDiveSiteDTO,
   SearchDiveSitesParamsDTO,
 } from '@bottomtime/api';
@@ -20,10 +21,6 @@ export type CreateDiveSiteOptions = CreateOrUpdateDiveSiteDTO & {
 };
 
 export type SearchDiveSitesOptions = SearchDiveSitesParamsDTO;
-export type SearchDiveSitesResults = {
-  sites: DiveSite[];
-  totalCount: number;
-};
 
 @Injectable()
 export class DiveSitesService {
@@ -39,7 +36,7 @@ export class DiveSitesService {
 
   async searchDiveSites(
     options: SearchDiveSitesOptions,
-  ): Promise<SearchDiveSitesResults> {
+  ): Promise<ApiList<DiveSite>> {
     const query = new DiveSiteQueryBuilder(this.DiveSites)
       .withTextSearch(options.query)
       .withCreatorId(options.creator)
@@ -59,7 +56,7 @@ export class DiveSitesService {
     const [sites, totalCount] = await query.getManyAndCount();
 
     return {
-      sites: sites.map((site) => this.siteFactory.createDiveSite(site)),
+      data: sites.map((site) => this.siteFactory.createDiveSite(site)),
       totalCount,
     };
   }

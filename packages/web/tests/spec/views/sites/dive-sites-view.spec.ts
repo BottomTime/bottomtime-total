@@ -1,6 +1,7 @@
 import {
+  ApiList,
+  DiveSiteDTO,
   Fetcher,
-  SearchDiveSitesResponseDTO,
   SearchDiveSitesResponseSchema,
 } from '@bottomtime/api';
 import { ApiClient, DiveSite } from '@bottomtime/api';
@@ -26,7 +27,7 @@ import SearchResults from '../../../fixtures/dive-sites-search-results.json';
 dayjs.extend(relativeTime);
 
 describe('Dive Sites View', () => {
-  let searchResults: SearchDiveSitesResponseDTO;
+  let searchResults: ApiList<DiveSiteDTO>;
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
@@ -71,7 +72,7 @@ describe('Dive Sites View', () => {
     searchSpy = jest
       .spyOn(client.diveSites, 'searchDiveSites')
       .mockResolvedValue({
-        sites: searchResults.sites
+        data: searchResults.data
           .slice(0, 10)
           .map((site) => new DiveSite(fetcher, site)),
         totalCount: searchResults.totalCount,
@@ -86,7 +87,7 @@ describe('Dive Sites View', () => {
 
     const listText = wrapper.get('[data-testid="sites-list-content"]').text();
     for (let i = 0; i < 10; i++) {
-      expect(listText).toContain(searchResults.sites[i].name);
+      expect(listText).toContain(searchResults.data[i].name);
     }
   });
 
@@ -113,13 +114,13 @@ describe('Dive Sites View', () => {
 
     const listText = wrapper.get('[data-testid="sites-list-content"]').text();
     for (let i = 0; i < 10; i++) {
-      expect(listText).toContain(searchResults.sites[i].name);
+      expect(listText).toContain(searchResults.data[i].name);
     }
   });
 
   it('will allow a user to change the sort order', async () => {
     const expected = {
-      sites: searchResults.sites
+      data: searchResults.data
         .sort((a, b) => -a.name.localeCompare(b.name))
         .slice(0, 10)
         .map((site) => new DiveSite(fetcher, site)),
@@ -139,9 +140,9 @@ describe('Dive Sites View', () => {
       sortOrder: 'desc',
     });
     const items = wrapper.findAllComponents(DiveSitesListItem);
-    expect(items).toHaveLength(expected.sites.length);
+    expect(items).toHaveLength(expected.data.length);
     items.forEach((item, i) => {
-      expect(item.props('site')).toEqual(expected.sites[i].toJSON());
+      expect(item.props('site')).toEqual(expected.data[i].toJSON());
     });
   });
 
@@ -150,7 +151,7 @@ describe('Dive Sites View', () => {
     await flushPromises();
 
     const expected = {
-      sites: searchResults.sites
+      data: searchResults.data
         .slice(10, 20)
         .map((site) => new DiveSite(fetcher, site)),
       totalCount: searchResults.totalCount,
@@ -187,9 +188,9 @@ describe('Dive Sites View', () => {
     });
 
     const items = wrapper.findAllComponents(DiveSitesListItem);
-    expect(items).toHaveLength(expected.sites.length);
+    expect(items).toHaveLength(expected.data.length);
     items.forEach((item, i) => {
-      expect(item.props('site')).toEqual(expected.sites[i].toJSON());
+      expect(item.props('site')).toEqual(expected.data[i].toJSON());
     });
   });
 
@@ -198,7 +199,7 @@ describe('Dive Sites View', () => {
     await flushPromises();
 
     const results = {
-      sites: searchResults.sites
+      data: searchResults.data
         .slice(10, 20)
         .map((site) => new DiveSite(fetcher, site)),
       totalCount: searchResults.totalCount,
@@ -214,7 +215,7 @@ describe('Dive Sites View', () => {
     expect(items).toHaveLength(20);
 
     items.forEach((item, index) => {
-      const site = searchResults.sites[index];
+      const site = searchResults.data[index];
       expect(item.props('site')).toEqual(site);
     });
     expect(loadMoreSpy).toHaveBeenCalledWith({ skip: 10 });
@@ -228,7 +229,7 @@ describe('Dive Sites View', () => {
     await flushPromises();
 
     const expected = {
-      sites: searchResults.sites
+      data: searchResults.data
         .slice(10, 20)
         .map((site) => new DiveSite(fetcher, site)),
       totalCount: searchResults.totalCount,

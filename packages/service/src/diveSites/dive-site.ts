@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateDiveSiteReviewDTO,
   DiveSiteDTO,
   ListDiveSiteReviewsParamsDTO,
@@ -19,12 +20,6 @@ import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
 import { DiveSiteReview } from './dive-site-review';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
-
-export type ListReviewsResult = {
-  reviews: DiveSiteReview[];
-  totalCount: number;
-};
-
 export type CreateDiveSiteReviewOptions = CreateOrUpdateDiveSiteReviewDTO & {
   creatorId: string;
 };
@@ -237,7 +232,7 @@ export class DiveSite {
 
   async listReviews(
     options: ListDiveSiteReviewsParamsDTO,
-  ): Promise<ListReviewsResult> {
+  ): Promise<ApiList<DiveSiteReview>> {
     const query = this.Reviews.createQueryBuilder('review')
       .innerJoin('review.creator', 'creator')
       .where('review.site = :siteId', { siteId: this.id })
@@ -255,7 +250,7 @@ export class DiveSite {
     const [reviews, totalCount] = await query.getManyAndCount();
 
     return {
-      reviews: reviews.map(
+      data: reviews.map(
         (review) => new DiveSiteReview(this.Reviews, this.emitter, review),
       ),
       totalCount,

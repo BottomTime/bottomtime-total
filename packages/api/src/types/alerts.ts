@@ -24,7 +24,6 @@ export const ListAlertsParamsSchema = z.object({
 export type ListAlertsParamsDTO = z.infer<typeof ListAlertsParamsSchema>;
 
 export const ListAlertsResponseSchema = z.object({
-  alerts: z.array(AlertSchema),
+  data: z.array(AlertSchema),
   totalCount: z.number().int(),
 });
-export type ListAlertsResponseDTO = z.infer<typeof ListAlertsResponseSchema>;

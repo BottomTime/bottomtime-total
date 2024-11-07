@@ -10,7 +10,7 @@ exports[`Certifications End-to-End when getting a certification will return a ce
 
 exports[`Certifications End-to-End when searching certifications will allow pagination 1`] = `
 {
-  "certifications": [
+  "data": [
     {
       "agency": "PADI",
       "course": "Fish Identification",
@@ -43,7 +43,7 @@ exports[`Certifications End-to-End when searching certifications will allow pagi
 
 exports[`Certifications End-to-End when searching certifications will filter by agency 1`] = `
 {
-  "certifications": [
+  "data": [
     {
       "agency": "SSI",
       "course": "Advanced Adventurer",
@@ -191,7 +191,7 @@ exports[`Certifications End-to-End when searching certifications will filter by 
 
 exports[`Certifications End-to-End when searching certifications will list all certifications by default 1`] = `
 {
-  "certifications": [
+  "data": [
     {
       "agency": "PADI",
       "course": "Advanced Open Water Diver",
@@ -479,7 +479,7 @@ exports[`Certifications End-to-End when searching certifications will list all c
 
 exports[`Certifications End-to-End when searching certifications will perform a text-based search 1`] = `
 {
-  "certifications": [
+  "data": [
     {
       "agency": "PADI",
       "course": "Advanced Open Water Diver",

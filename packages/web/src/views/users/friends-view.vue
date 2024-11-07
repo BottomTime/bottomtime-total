@@ -127,14 +127,13 @@
 
 <script lang="ts" setup>
 import {
+  ApiList,
   FriendDTO,
   FriendRequestDTO,
   FriendRequestDirection,
   FriendsSortBy,
-  ListFriendRequestsResponseDTO,
   ListFriendsParamsDTO,
   ListFriendsParamsSchema,
-  ListFriendsResponseDTO,
   ProfileDTO,
   SortOrder,
 } from '@bottomtime/api';
@@ -161,8 +160,8 @@ interface FriendsViewState {
   currentFriend?: FriendDTO;
   currentRequest?: FriendRequestDTO;
   currentProfile?: ProfileDTO;
-  friends: ListFriendsResponseDTO;
-  friendRequests: ListFriendRequestsResponseDTO;
+  friends: ApiList<FriendDTO>;
+  friendRequests: ApiList<FriendRequestDTO>;
   isCancellingRequest: boolean;
   isLoadingFriends: boolean;
   isLoadingFriendRequests: boolean;
@@ -194,11 +193,11 @@ function parseQueryString(): ListFriendsParamsDTO {
 
 const state = reactive<FriendsViewState>({
   friends: {
-    friends: [],
+    data: [],
     totalCount: 0,
   },
   friendRequests: {
-    friendRequests: [],
+    data: [],
     totalCount: 0,
   },
   isCancellingRequest: false,
@@ -226,7 +225,7 @@ async function refreshFriends(): Promise<void> {
       state.queryParams,
     );
 
-    state.friends.friends = results.friends.map((f) => f.toJSON());
+    state.friends.data = results.data.map((f) => f.toJSON());
     state.friends.totalCount = results.totalCount;
   });
   state.isLoadingFriends = false;
@@ -246,9 +245,7 @@ async function refreshFriendRequests(): Promise<void> {
       },
     );
 
-    state.friendRequests.friendRequests = results.friendRequests.map((r) =>
-      r.toJSON(),
-    );
+    state.friendRequests.data = results.data.map((r) => r.toJSON());
     state.friendRequests.totalCount = results.totalCount;
   });
   state.isLoadingFriendRequests = false;
@@ -264,11 +261,11 @@ async function onLoadMoreFriends(): Promise<void> {
       currentUser.user.username,
       {
         ...state.queryParams,
-        skip: state.friends.friends.length,
+        skip: state.friends.data.length,
       },
     );
 
-    state.friends.friends.push(...results.friends.map((f) => f.toJSON()));
+    state.friends.data.push(...results.data.map((f) => f.toJSON()));
     state.friends.totalCount = results.totalCount;
   });
 
@@ -287,13 +284,11 @@ async function onLoadMoreRequests(): Promise<void> {
         direction: FriendRequestDirection.Outgoing,
         showAcknowledged: true,
         limit: 50,
-        skip: state.friendRequests.friendRequests.length,
+        skip: state.friendRequests.data.length,
       },
     );
 
-    state.friendRequests.friendRequests.push(
-      ...results.friendRequests.map((r) => r.toJSON()),
-    );
+    state.friendRequests.data.push(...results.data.map((r) => r.toJSON()));
     state.friendRequests.totalCount = results.totalCount;
   });
 
@@ -357,7 +352,7 @@ function onAddFriend() {
 }
 
 function onRequestSent(request: FriendRequestDTO) {
-  state.friendRequests.friendRequests.unshift(request);
+  state.friendRequests.data.unshift(request);
   state.friendRequests.totalCount++;
   state.showSearchUsers = false;
 }
@@ -399,9 +394,9 @@ async function onConfirmUnfriend(): Promise<void> {
       );
       await friend.unfriend();
 
-      const index = state.friends.friends.findIndex((f) => f.id === friend.id);
+      const index = state.friends.data.findIndex((f) => f.id === friend.id);
       if (index > -1) {
-        state.friends.friends.splice(index, 1);
+        state.friends.data.splice(index, 1);
         state.friends.totalCount--;
       }
 
@@ -415,11 +410,11 @@ async function onConfirmUnfriend(): Promise<void> {
     },
     {
       [404]: () => {
-        const index = state.friends.friends.findIndex(
+        const index = state.friends.data.findIndex(
           (f) => f.id === state.currentFriend?.id,
         );
         if (index > -1) {
-          state.friends.friends.splice(index, 1);
+          state.friends.data.splice(index, 1);
           state.friends.totalCount--;
         }
       },
@@ -457,12 +452,12 @@ async function onConfirmCancelRequest(): Promise<void> {
       );
       await request.cancel();
 
-      const index = state.friendRequests.friendRequests.findIndex(
+      const index = state.friendRequests.data.findIndex(
         (r) => r.friendId === state.currentRequest?.friendId,
       );
 
       if (index > -1) {
-        state.friendRequests.friendRequests.splice(index, 1);
+        state.friendRequests.data.splice(index, 1);
         state.friendRequests.totalCount--;
       }
 
@@ -486,11 +481,11 @@ async function onConfirmCancelRequest(): Promise<void> {
           type: ToastType.Warning,
         });
 
-        const index = state.friendRequests.friendRequests.findIndex(
+        const index = state.friendRequests.data.findIndex(
           (r) => r.friendId === state.currentRequest?.friend.id,
         );
         if (index > -1) {
-          state.friendRequests.friendRequests.splice(index, 1);
+          state.friendRequests.data.splice(index, 1);
           state.friendRequests.totalCount--;
         }
       },
@@ -514,23 +509,23 @@ async function onDismissRequest(dto: FriendRequestDTO): Promise<void> {
 
       await request.cancel();
 
-      const index = state.friendRequests.friendRequests.findIndex(
+      const index = state.friendRequests.data.findIndex(
         (r) => r.friendId === request.friend.id,
       );
 
       if (index > -1) {
-        state.friendRequests.friendRequests.splice(index, 1);
+        state.friendRequests.data.splice(index, 1);
         state.friendRequests.totalCount--;
       }
     },
     {
       [404]: () => {
-        const index = state.friendRequests.friendRequests.findIndex(
+        const index = state.friendRequests.data.findIndex(
           (r) => r.friendId === dto.friend.id,
         );
 
         if (index > -1) {
-          state.friendRequests.friendRequests.splice(index, 1);
+          state.friendRequests.data.splice(index, 1);
           state.friendRequests.totalCount--;
         }
       },

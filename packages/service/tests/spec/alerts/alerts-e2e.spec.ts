@@ -101,8 +101,8 @@ describe('Alerts End-to-End Tests', () => {
     it('will return a list of alerts with default params', async () => {
       const { body: result } = await request(server).get(getUrl()).expect(200);
       expect(result.totalCount).toBe(alertData.length);
-      expect(result.alerts).toHaveLength(10);
-      expect(result.alerts).toMatchSnapshot();
+      expect(result.data).toHaveLength(10);
+      expect(result.data).toMatchSnapshot();
     });
 
     it('will return a list of alerts with params provided in the query string', async () => {
@@ -116,8 +116,8 @@ describe('Alerts End-to-End Tests', () => {
         .expect(200);
 
       expect(result.totalCount).toBe(alertData.length);
-      expect(result.alerts).toHaveLength(8);
-      expect(result.alerts).toMatchSnapshot();
+      expect(result.data).toHaveLength(8);
+      expect(result.data).toMatchSnapshot();
     });
 
     it('will return a 400 response if the query string contains invalid params', async () => {
