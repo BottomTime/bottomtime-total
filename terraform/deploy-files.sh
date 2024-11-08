@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Deploy the static assets for the front-end.
-aws s3 sync ../packages/web/dist/client/ s3://$(terraform output -raw web_cf_bucket) --delete --exclude index.html
+aws s3 sync ../packages/web/dist/ s3://$(terraform output -raw web_cf_bucket) --delete
 aws cloudfront create-invalidation \
     --distribution-id $(terraform output -raw web_cf_distribution) \
     --paths "/*"
