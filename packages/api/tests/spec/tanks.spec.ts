@@ -1,9 +1,10 @@
 import mockFetch from 'fetch-mock-jest';
 
 import {
+  ApiList,
   CreateOrUpdateTankParamsSchema,
-  ListTanksResponseDTO,
   ListTanksResponseSchema,
+  TankDTO,
 } from '../../src';
 import { Fetcher } from '../../src/client/fetcher';
 import { TanksApiClient } from '../../src/client/tanks';
@@ -14,7 +15,7 @@ const Username = 'testuser';
 describe('Tanks API client', () => {
   let fetcher: Fetcher;
   let client: TanksApiClient;
-  let tanks: ListTanksResponseDTO;
+  let tanks: ApiList<TankDTO>;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -30,26 +31,26 @@ describe('Tanks API client', () => {
     it('will create a tank', async () => {
       mockFetch.post(`/api/users/${Username}/tanks`, {
         status: 200,
-        body: tanks.tanks[0],
+        body: tanks.data[0],
       });
-      const options = CreateOrUpdateTankParamsSchema.parse(tanks.tanks[0]);
+      const options = CreateOrUpdateTankParamsSchema.parse(tanks.data[0]);
 
       const newTank = await client.createTank(options, Username);
 
-      expect(newTank.toJSON()).toEqual(tanks.tanks[0]);
+      expect(newTank.toJSON()).toEqual(tanks.data[0]);
       expect(newTank.owner).toBe(Username);
       expect(mockFetch.done()).toBe(true);
     });
 
     it('will retrieve a single tank', async () => {
-      mockFetch.get(`/api/users/${Username}/tanks/${tanks.tanks[1].id}`, {
+      mockFetch.get(`/api/users/${Username}/tanks/${tanks.data[1].id}`, {
         status: 200,
-        body: tanks.tanks[1],
+        body: tanks.data[1],
       });
 
-      const tank = await client.getTank(tanks.tanks[1].id, Username);
+      const tank = await client.getTank(tanks.data[1].id, Username);
 
-      expect(tank.toJSON()).toEqual(tanks.tanks[1]);
+      expect(tank.toJSON()).toEqual(tanks.data[1]);
       expect(tank.owner).toBe(Username);
       expect(mockFetch.done()).toBe(true);
     });
@@ -65,9 +66,9 @@ describe('Tanks API client', () => {
         includeSystem: true,
       });
 
-      result.tanks.forEach((tank, index) => {
+      result.data.forEach((tank, index) => {
         const json = tank.toJSON();
-        expect(json).toEqual(tanks.tanks[index]);
+        expect(json).toEqual(tanks.data[index]);
         expect(tank.owner).toBe(json.isSystem ? undefined : Username);
       });
       expect(result.totalCount).toBe(tanks.totalCount);
@@ -77,7 +78,7 @@ describe('Tanks API client', () => {
 
   describe('for system tanks', () => {
     it('will create a tank', async () => {
-      const options = CreateOrUpdateTankParamsSchema.parse(tanks.tanks[3]);
+      const options = CreateOrUpdateTankParamsSchema.parse(tanks.data[3]);
       mockFetch.post(
         {
           url: '/api/admin/tanks',
@@ -85,33 +86,33 @@ describe('Tanks API client', () => {
         },
         {
           status: 201,
-          body: tanks.tanks[3],
+          body: tanks.data[3],
         },
       );
 
       const newTank = await client.createTank(options);
 
-      expect(newTank.toJSON()).toEqual(tanks.tanks[3]);
+      expect(newTank.toJSON()).toEqual(tanks.data[3]);
       expect(newTank.owner).toBeUndefined();
       expect(mockFetch.done()).toBe(true);
     });
 
     it('will retrieve a single tank', async () => {
-      mockFetch.get(`/api/admin/tanks/${tanks.tanks[4].id}`, {
+      mockFetch.get(`/api/admin/tanks/${tanks.data[4].id}`, {
         status: 200,
-        body: tanks.tanks[4],
+        body: tanks.data[4],
       });
 
-      const tank = await client.getTank(tanks.tanks[4].id);
+      const tank = await client.getTank(tanks.data[4].id);
 
-      expect(tank.toJSON()).toEqual(tanks.tanks[4]);
+      expect(tank.toJSON()).toEqual(tanks.data[4]);
       expect(tank.owner).toBeUndefined();
       expect(mockFetch.done()).toBe(true);
     });
 
     it('will list tanks', async () => {
-      const expected: ListTanksResponseDTO = {
-        tanks: tanks.tanks.filter((dto) => dto.isSystem),
+      const expected: ApiList<TankDTO> = {
+        data: tanks.data.filter((dto) => dto.isSystem),
         totalCount: tanks.totalCount,
       };
       mockFetch.get('/api/admin/tanks', {
@@ -121,8 +122,8 @@ describe('Tanks API client', () => {
 
       const result = await client.listTanks();
 
-      result.tanks.forEach((tank, index) => {
-        expect(tank.toJSON()).toEqual(expected.tanks[index]);
+      result.data.forEach((tank, index) => {
+        expect(tank.toJSON()).toEqual(expected.data[index]);
         expect(tank.owner).toBeUndefined();
       });
       expect(result.totalCount).toBe(tanks.totalCount);

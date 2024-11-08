@@ -70,8 +70,8 @@ export class DiveSitesApiClient {
     query: SearchDiveSitesParamsDTO = {},
   ): Promise<ApiList<DiveSite>> {
     const { data: result } = await this.apiClient.get(
-      `/api/diveSites?${this.searchQueryString(query)}`,
-      undefined,
+      '/api/diveSites',
+      this.searchQueryString(query),
       SearchDiveSitesResponseSchema,
     );
 

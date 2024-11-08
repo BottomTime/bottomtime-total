@@ -1,15 +1,16 @@
 import mockFetch from 'fetch-mock-jest';
 
 import {
+  ApiList,
   Friend,
+  FriendDTO,
   FriendRequest,
+  FriendRequestDTO,
   FriendRequestDirection,
   FriendsSortBy,
-  ListFriendRequestsParams,
-  ListFriendRequestsResponseDTO,
+  ListFriendRequestsParamsDTO,
   ListFriendRequestsResponseSchema,
-  ListFriendsParams,
-  ListFriendsResponseDTO,
+  ListFriendsParamsDTO,
   ListFriendsResposneSchema,
   SortOrder,
 } from '../../src';
@@ -23,8 +24,8 @@ const Username = 'mega_user32';
 describe('Friends API client', () => {
   let fetcher: Fetcher;
   let client: FriendsApiClient;
-  let friendsData: ListFriendsResponseDTO;
-  let friendRequestData: ListFriendRequestsResponseDTO;
+  let friendsData: ApiList<FriendDTO>;
+  let friendRequestData: ApiList<FriendRequestDTO>;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -49,24 +50,22 @@ describe('Friends API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(friendsData.totalCount);
-    expect(result.friends).toHaveLength(friendsData.friends.length);
-    result.friends.forEach((friend, index) => {
-      expect(friend.id).toBe(friendsData.friends[index].id);
-      expect(friend.username).toBe(friendsData.friends[index].username);
-      expect(friend.avatar).toBe(friendsData.friends[index].avatar);
-      expect(friend.location).toBe(friendsData.friends[index].location);
-      expect(friend.name).toBe(friendsData.friends[index].name);
-      expect(friend.memberSince).toEqual(
-        friendsData.friends[index].memberSince,
-      );
+    expect(result.data).toHaveLength(friendsData.data.length);
+    result.data.forEach((friend, index) => {
+      expect(friend.id).toBe(friendsData.data[index].id);
+      expect(friend.username).toBe(friendsData.data[index].username);
+      expect(friend.avatar).toBe(friendsData.data[index].avatar);
+      expect(friend.location).toBe(friendsData.data[index].location);
+      expect(friend.name).toBe(friendsData.data[index].name);
+      expect(friend.memberSince).toEqual(friendsData.data[index].memberSince);
       expect(friend.logBookSharing).toBe(
-        friendsData.friends[index].logBookSharing,
+        friendsData.data[index].logBookSharing,
       );
     });
   });
 
   it('will perform a search for friends with parameters', async () => {
-    const options: ListFriendsParams = {
+    const options: ListFriendsParamsDTO = {
       sortBy: FriendsSortBy.Username,
       sortOrder: SortOrder.Ascending,
       skip: 20,
@@ -85,24 +84,22 @@ describe('Friends API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(friendsData.totalCount);
-    expect(result.friends).toHaveLength(friendsData.friends.length);
-    result.friends.forEach((friend, index) => {
-      expect(friend.id).toBe(friendsData.friends[index].id);
-      expect(friend.username).toBe(friendsData.friends[index].username);
-      expect(friend.avatar).toBe(friendsData.friends[index].avatar);
-      expect(friend.location).toBe(friendsData.friends[index].location);
-      expect(friend.name).toBe(friendsData.friends[index].name);
-      expect(friend.memberSince).toEqual(
-        friendsData.friends[index].memberSince,
-      );
+    expect(result.data).toHaveLength(friendsData.data.length);
+    result.data.forEach((friend, index) => {
+      expect(friend.id).toBe(friendsData.data[index].id);
+      expect(friend.username).toBe(friendsData.data[index].username);
+      expect(friend.avatar).toBe(friendsData.data[index].avatar);
+      expect(friend.location).toBe(friendsData.data[index].location);
+      expect(friend.name).toBe(friendsData.data[index].name);
+      expect(friend.memberSince).toEqual(friendsData.data[index].memberSince);
       expect(friend.logBookSharing).toBe(
-        friendsData.friends[index].logBookSharing,
+        friendsData.data[index].logBookSharing,
       );
     });
   });
 
   it('will return a single friend', async () => {
-    const data = friendsData.friends[0];
+    const data = friendsData.data[0];
     mockFetch.get(`/api/users/${Username}/friends/${data.username}`, {
       status: 200,
       body: data,
@@ -138,16 +135,14 @@ describe('Friends API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(friendRequestData.totalCount);
-    expect(result.friendRequests).toHaveLength(
-      friendRequestData.friendRequests.length,
-    );
-    result.friendRequests.forEach((request, index) => {
-      expect(request.toJSON()).toEqual(friendRequestData.friendRequests[index]);
+    expect(result.data).toHaveLength(friendRequestData.data.length);
+    result.data.forEach((request, index) => {
+      expect(request.toJSON()).toEqual(friendRequestData.data[index]);
     });
   });
 
   it('will perform a search for friend requests with parameters', async () => {
-    const options: ListFriendRequestsParams = {
+    const options: ListFriendRequestsParamsDTO = {
       direction: FriendRequestDirection.Incoming,
       showAcknowledged: true,
       showExpired: true,
@@ -167,16 +162,14 @@ describe('Friends API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(friendRequestData.totalCount);
-    expect(result.friendRequests).toHaveLength(
-      friendRequestData.friendRequests.length,
-    );
-    result.friendRequests.forEach((request, index) => {
-      expect(request.toJSON()).toEqual(friendRequestData.friendRequests[index]);
+    expect(result.data).toHaveLength(friendRequestData.data.length);
+    result.data.forEach((request, index) => {
+      expect(request.toJSON()).toEqual(friendRequestData.data[index]);
     });
   });
 
   it('will create a friend request', async () => {
-    const expected = friendRequestData.friendRequests[0];
+    const expected = friendRequestData.data[0];
     mockFetch.put(
       `/api/users/${Username}/friendRequests/${expected.friend.username}`,
       {
@@ -195,7 +188,7 @@ describe('Friends API client', () => {
   });
 
   it('will wrap a friend DTO', () => {
-    const data = friendsData.friends[0];
+    const data = friendsData.data[0];
     const friend = client.wrapFriendDTO(Username, data);
 
     expect(friend).toBeInstanceOf(Friend);
@@ -203,7 +196,7 @@ describe('Friends API client', () => {
   });
 
   it('will wrap a friend request DTO', () => {
-    const data = friendRequestData.friendRequests[0];
+    const data = friendRequestData.data[0];
     const request = client.wrapFriendRequestDTO(Username, data);
 
     expect(request).toBeInstanceOf(FriendRequest);

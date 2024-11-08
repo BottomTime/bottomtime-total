@@ -25,7 +25,6 @@ import {
   AccountTier,
   ApiList,
   CreateOrUpdateLogEntryParamsDTO,
-  CreateOrUpdateLogEntryParamsSchema,
   LogBookSharing,
   LogEntryDTO,
   TankDTO,

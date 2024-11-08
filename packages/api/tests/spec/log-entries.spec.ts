@@ -1,15 +1,15 @@
 import mockFetch from 'fetch-mock-jest';
 
 import {
+  ApiList,
   CreateOrUpdateLogEntryParamsDTO,
   DepthUnit,
+  DiveSiteDTO,
   ListLogEntriesParamsDTO,
-  ListLogEntriesResponseDTO,
   ListLogEntriesResponseSchema,
   LogEntryDTO,
   LogEntrySortBy,
   PressureUnit,
-  SearchDiveSitesResponseDTO,
   SearchDiveSitesResponseSchema,
   SortOrder,
   TankMaterial,
@@ -23,8 +23,8 @@ import { BasicUser } from '../fixtures/users';
 describe('Log entries API client', () => {
   let fetcher: Fetcher;
   let client: LogEntriesApiClient;
-  let logEntryData: ListLogEntriesResponseDTO;
-  let diveSiteData: SearchDiveSitesResponseDTO;
+  let logEntryData: ApiList<LogEntryDTO>;
+  let diveSiteData: ApiList<DiveSiteDTO>;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -61,13 +61,13 @@ describe('Log entries API client', () => {
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(logEntryData.totalCount);
 
-    result.logEntries.forEach((entry, index) => {
-      expect(entry.toJSON()).toEqual(logEntryData.logEntries[index]);
+    result.data.forEach((entry, index) => {
+      expect(entry.toJSON()).toEqual(logEntryData.data[index]);
     });
   });
 
   it('will retrieve a single log entry', async () => {
-    const entryData = logEntryData.logEntries[0];
+    const entryData = logEntryData.data[0];
     mockFetch.get(
       {
         url: `/api/users/${entryData.creator.username}/logbook/${entryData.id}`,
@@ -150,7 +150,7 @@ describe('Log entries API client', () => {
   });
 
   it('will parse a DTO and wrap it in a LogEntry object', () => {
-    const data = logEntryData.logEntries[0];
+    const data = logEntryData.data[0];
     const entry = client.wrapDTO(data);
     expect(entry.toJSON()).toEqual(data);
   });
@@ -164,7 +164,7 @@ describe('Log entries API client', () => {
       },
       {
         status: 200,
-        body: diveSiteData.sites.slice(0, 8),
+        body: diveSiteData.data.slice(0, 8),
       },
     );
 
@@ -173,7 +173,7 @@ describe('Log entries API client', () => {
     expect(mockFetch.done()).toBe(true);
     expect(result.length).toBe(8);
     expect(result.map((site) => ({ id: site.id, name: site.name }))).toEqual(
-      diveSiteData.sites
+      diveSiteData.data
         .slice(0, 8)
         .map((site) => ({ id: site.id, name: site.name })),
     );

@@ -1,13 +1,13 @@
 import mockFetch from 'fetch-mock-jest';
 
-import { Alert } from '../../src/client';
-import { AlertsApiClient } from '../../src/client/alerts';
-import { Fetcher } from '../../src/client/fetcher';
 import {
   AlertDTO,
   CreateOrUpdateAlertParamsDTO,
   ListAlertsParamsDTO,
-} from '../../src/types';
+} from '../../src';
+import { Alert } from '../../src/client';
+import { AlertsApiClient } from '../../src/client/alerts';
+import { Fetcher } from '../../src/client/fetcher';
 
 const AlertData: AlertDTO[] = [
   {
@@ -59,14 +59,14 @@ describe('Alerts API client', () => {
       status: 200,
       body: JSON.parse(
         JSON.stringify({
-          alerts: AlertData,
+          data: AlertData,
           totalCount: 13,
         }),
       ),
     });
 
     const result = await apiClient.listAlerts(options);
-    expect(result.alerts).toHaveLength(AlertData.length);
+    expect(result.data).toHaveLength(AlertData.length);
     expect(result.totalCount).toBe(13);
 
     expect(mockFetch.done()).toBe(true);

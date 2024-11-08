@@ -216,12 +216,12 @@ describe('Users API client', () => {
       { status: 200, body: SearchResults },
     );
 
-    const { users, totalCount } = await client.searchUsers(params);
+    const { data, totalCount } = await client.searchUsers(params);
 
     expect(totalCount).toBe(SearchResults.totalCount);
-    expect(users).toHaveLength(SearchResults.users.length);
-    users.forEach((user, index) => {
-      expect(user.id).toEqual(SearchResults.users[index].id);
+    expect(data).toHaveLength(SearchResults.data.length);
+    data.forEach((user, index) => {
+      expect(user.id).toEqual(SearchResults.data[index].id);
     });
     expect(mockFetch.done()).toBe(true);
   });
