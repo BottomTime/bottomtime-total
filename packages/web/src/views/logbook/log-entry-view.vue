@@ -24,6 +24,8 @@
 import {
   AccountTier,
   ApiList,
+  CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateLogEntryParamsSchema,
   LogBookSharing,
   LogEntryDTO,
   TankDTO,
@@ -32,7 +34,7 @@ import {
 
 import dayjs from 'dayjs';
 import { computed, onMounted, reactive } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
@@ -56,6 +58,7 @@ const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();
 const route = useRoute();
+const router = useRouter();
 const toasts = useToasts();
 
 const state = reactive<LogEntryViewState>({
@@ -159,10 +162,25 @@ async function onSave(data: LogEntryDTO): Promise<void> {
   state.isSaving = true;
 
   await oops(async () => {
-    const entry = client.logEntries.wrapDTO(data);
-    await entry.save();
+    if (entryId.value) {
+      // Entry has an ID: save existing.
+      const entry = client.logEntries.wrapDTO(data);
+      await entry.save();
+      state.currentEntry = entry.toJSON();
+    } else {
+      // An ID has not been assigned yet: create new.
+      const options: CreateOrUpdateLogEntryParamsDTO = {
+        ...data,
+        site: data.site?.id,
+      };
+      const entry = await client.logEntries.createLogEntry(
+        username.value,
+        options,
+      );
+      state.currentEntry = entry.toJSON();
+      await router.push(`/logbook/${username.value}/${entry.id}`);
+    }
 
-    state.currentEntry = entry.toJSON();
     toasts.toast({
       id: 'log-entry-saved',
       message: 'Log entry has been successfully saved',

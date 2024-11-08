@@ -29,7 +29,7 @@ import {
 } from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Breadcrumb } from '../../common';
@@ -52,6 +52,7 @@ const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();
 const route = useRoute();
+const router = useRouter();
 
 const siteId = computed<string | undefined>(() => {
   if (!route.params.siteId) return undefined;
@@ -87,7 +88,10 @@ const breadcrumbs: Breadcrumb[] = [
 onMounted(async () => {
   await oops(
     async () => {
-      if (!siteId.value) {
+      if (siteId.value) {
+        const result = await client.diveSites.getDiveSite(siteId.value);
+        state.currentSite = result.toJSON();
+      } else {
         state.currentSite = {
           createdOn: new Date(),
           creator: currentUser.user?.profile ?? {
@@ -101,11 +105,7 @@ onMounted(async () => {
           location: '',
           name: '',
         };
-        return;
       }
-
-      const result = await client.diveSites.getDiveSite(siteId.value);
-      state.currentSite = result.toJSON();
     },
     {
       404: () => {
@@ -117,7 +117,10 @@ onMounted(async () => {
   state.isLoading = false;
 });
 
-function onSiteUpdated(updated: DiveSiteDTO) {
+async function onSiteUpdated(updated: DiveSiteDTO) {
   state.currentSite = updated;
+  if (!siteId.value) {
+    await router.push(`/diveSites/${updated.id}`);
+  }
 }
 </script>

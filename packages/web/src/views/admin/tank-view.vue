@@ -125,14 +125,9 @@ async function onSave(dto: TankDTO): Promise<void> {
     } else {
       const tank = await client.tanks.createTank(
         CreateOrUpdateTankParamsSchema.parse(dto),
-        currentUser.user?.username,
       );
       state.currentTank = tank.toJSON();
-      await router.push({
-        params: {
-          tankId: tank.id,
-        },
-      });
+      await router.push(`/admin/tanks/${tank.id}`);
     }
 
     toasts.toast({

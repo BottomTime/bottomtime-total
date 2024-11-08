@@ -132,7 +132,7 @@ describe('Admin Tank View', () => {
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(expected, AdminUser.username);
+    expect(spy).toHaveBeenCalledWith(expected);
     expect(toasts.toasts[0].message).toMatchSnapshot();
     expect(router.currentRoute.value.params.tankId).toBe(TestData.id);
   });
