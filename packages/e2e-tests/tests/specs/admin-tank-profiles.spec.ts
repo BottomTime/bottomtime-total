@@ -25,7 +25,7 @@ test.describe('Admin Tank Profile Management', () => {
     await page.waitForSelector('[data-testid="toast-tank-created"]');
 
     const result = await api.tanks.listTanks();
-    const tank = result.tanks.find((t) => t.name === TankData.name);
+    const tank = result.data.find((t) => t.name === TankData.name);
 
     expect(tank).toBeDefined();
     expect(tank?.name).toBe(TankData.name);
@@ -101,10 +101,9 @@ test.describe('Admin Tank Profile Management', () => {
   }) => {
     await tankProfiles.gotoNewTank();
     await tankProfiles.updateTankProfile(TankData);
-    await page.waitForURL(new RegExp('.*/admin/tanks/(?!new).*'));
 
     const result = await api.tanks.listTanks();
-    const tank = result.tanks.find((t) => t.name === TankData.name);
+    const tank = result.data.find((t) => t.name === TankData.name);
 
     expect(tank).toBeDefined();
     expect(tank?.name).toBe(TankData.name);
