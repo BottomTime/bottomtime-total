@@ -1,9 +1,7 @@
 locals {
-  docs_origin_id      = "docs-origin"
-  web_origin_group_id = "web-origin-group"
-  web_s3_origin_id    = "web-s3-origin"
-  web_ssr_origin_id   = "web-ssr-origin"
-  web_api_origin_id   = "web-api-origin"
+  docs_origin_id    = "docs-origin"
+  web_s3_origin_id  = "web-s3-origin"
+  web_api_origin_id = "web-api-origin"
 }
 
 resource "aws_cloudfront_cache_policy" "web_static" {
@@ -141,7 +139,7 @@ resource "aws_cloudfront_distribution" "web" {
 
   # Static files are served from S3
   default_cache_behavior {
-    target_origin_id       = local.web_ssr_origin_id
+    target_origin_id       = local.web_s3_origin_id
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
     compress               = true
