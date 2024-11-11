@@ -127,6 +127,7 @@ jobs:
             - packages/edge-authenticator/dist/
             - packages/emails/dist/
             - packages/keepalive/dist/
+            - packages/service/docs/
             - packages/service/dist/
             - packages/web/dist/
             - cc-test-reporter

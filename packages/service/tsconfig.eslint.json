@@ -9,5 +9,5 @@
     "migrations/**/*.ts",
     "swaggerDefinition.cjs"
   ],
-  "exclude": ["node_modules/", "dist/", "coverage/"]
+  "exclude": ["./node_modules/", "./dist/", "./coverage/", "./docs/"]
 }

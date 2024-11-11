@@ -131,9 +131,6 @@ terraform.tfstate*
 # JUnit Reports
 junit.xml
 
-# Generated Swagger files
-swagger.json
-
 # Vite timestamp files
 vite.config.ts.timestamp*
 

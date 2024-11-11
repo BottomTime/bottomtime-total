@@ -118,5 +118,5 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: packages/service/public/docs/
+          path: packages/service/docs/swagger.json
           target: /usr/share/nginx/html
