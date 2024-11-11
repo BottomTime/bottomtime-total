@@ -116,8 +116,10 @@ resource "aws_cloudfront_distribution" "web" {
 
   restrictions {
     geo_restriction {
-      # locations = ["US", "CA"]
-      restriction_type = "none" # "whitelist" ?
+      # TODO: Open this up later.
+      locations        = ["US", "CA"]
+      restriction_type = "whitelist"
+      # restriction_type = "none"
     }
   }
 
@@ -147,6 +149,13 @@ resource "aws_cloudfront_distribution" "web" {
     viewer_protocol_policy = "redirect-to-https"
 
     cache_policy_id = aws_cloudfront_cache_policy.web_static.id
+  }
+
+  # For unknown routes, serve up the index.html page and let the Vue router figure out what to do.
+  custom_error_response {
+    error_code         = 404
+    response_code      = 200
+    response_page_path = "/index.html"
   }
 
   tags = {
