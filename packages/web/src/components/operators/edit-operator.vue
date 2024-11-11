@@ -190,7 +190,7 @@
               class="text-nowrap"
               size="xs"
               test-id="btn-upload-logo"
-              @click.prevent="onChangeLogo"
+              @click="onChangeLogo"
             >
               <p class="space-x-2">
                 <span>
