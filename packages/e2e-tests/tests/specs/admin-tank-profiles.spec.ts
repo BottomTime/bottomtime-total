@@ -25,7 +25,7 @@ test.describe('Admin Tank Profile Management', () => {
     await page.waitForSelector('[data-testid="toast-tank-created"]');
 
     const result = await api.tanks.listTanks();
-    const tank = result.tanks.find((t) => t.name === TankData.name);
+    const tank = result.data.find((t) => t.name === TankData.name);
 
     expect(tank).toBeDefined();
     expect(tank?.name).toBe(TankData.name);
@@ -101,16 +101,7 @@ test.describe('Admin Tank Profile Management', () => {
   }) => {
     await tankProfiles.gotoNewTank();
     await tankProfiles.updateTankProfile(TankData);
-    await page.waitForURL(new RegExp('.*/admin/tanks/(?!new).*'));
-
-    const result = await api.tanks.listTanks();
-    const tank = result.tanks.find((t) => t.name === TankData.name);
-
-    expect(tank).toBeDefined();
-    expect(tank?.name).toBe(TankData.name);
-    expect(tank?.material).toBe(TankData.material);
-    expect(tank?.volume).toBe(TankData.volume);
-    expect(tank?.workingPressure).toBe(TankData.workingPressure);
+    await page.waitForURL(/.*\/admin\/tanks\/(?!new).*/);
 
     await expect(page.getByTestId('name')).toHaveValue(TankData.name);
     await expect(page.getByTestId('material-al')).toBeChecked();
@@ -120,6 +111,16 @@ test.describe('Admin Tank Profile Management', () => {
     await expect(page.getByTestId('pressure')).toHaveValue(
       TankData.workingPressure.toString(),
     );
+
+    page.url();
+    const result = await api.tanks.listTanks();
+    const tank = result.data.find((t) => t.name === TankData.name);
+
+    expect(tank).toBeDefined();
+    expect(tank?.name).toBe(TankData.name);
+    expect(tank?.material).toBe(TankData.material);
+    expect(tank?.volume).toBe(TankData.volume);
+    expect(tank?.workingPressure).toBe(TankData.workingPressure);
   });
 
   test('will allow an admin to delete a tank profile', async ({

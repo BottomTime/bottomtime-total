@@ -60,14 +60,6 @@ export class Config {
   }
 
   /**
-   * Detects server-side rendering.
-   * Will be true if we are currently executing on the server-side or false if we are running in the browser.
-   */
-  static get isSSR(): boolean {
-    return typeof window === 'undefined';
-  }
-
-  /**
    * Stripe SDK key (publishable key) for accessing the Stripe APIs.
    */
   static get stripeSdkKey(): string {

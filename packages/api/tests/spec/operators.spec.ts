@@ -1,23 +1,23 @@
 import mockFetch from 'fetch-mock-jest';
 
-import { Fetcher, Operator } from '../../src/client';
-import { OperatorsApiClient } from '../../src/client/operators';
 import {
   AccountTier,
+  ApiList,
   CreateOrUpdateOperatorDTO,
   LogBookSharing,
   OperatorDTO,
   SearchOperatorsParams,
-  SearchOperatorsResponseDTO,
   SearchOperatorsResponseSchema,
   VerificationStatus,
-} from '../../src/types';
+} from '../../src';
+import { Fetcher, Operator } from '../../src/client';
+import { OperatorsApiClient } from '../../src/client/operators';
 import TestData from '../fixtures/dive-operator-search-results.json';
 
 describe('Operators API client', () => {
   let fetcher: Fetcher;
   let client: OperatorsApiClient;
-  let testData: SearchOperatorsResponseDTO;
+  let testData: ApiList<OperatorDTO>;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -79,11 +79,11 @@ describe('Operators API client', () => {
     const results = await client.searchOperators();
 
     expect(mockFetch.done()).toBe(true);
-    expect(results.operators).toHaveLength(testData.operators.length);
+    expect(results.data).toHaveLength(testData.data.length);
     expect(results.totalCount).toBe(testData.totalCount);
-    results.operators.forEach((operator, index) => {
+    results.data.forEach((operator, index) => {
       expect(operator).toBeInstanceOf(Operator);
-      expect(operator.toJSON()).toEqual(testData.operators[index]);
+      expect(operator.toJSON()).toEqual(testData.data[index]);
     });
   });
 
@@ -118,11 +118,11 @@ describe('Operators API client', () => {
     const results = await client.searchOperators(options);
 
     expect(mockFetch.calls()).toMatchSnapshot();
-    expect(results.operators).toHaveLength(testData.operators.length);
+    expect(results.data).toHaveLength(testData.data.length);
     expect(results.totalCount).toBe(testData.totalCount);
-    results.operators.forEach((operator, index) => {
+    results.data.forEach((operator, index) => {
       expect(operator).toBeInstanceOf(Operator);
-      expect(operator.toJSON()).toEqual(testData.operators[index]);
+      expect(operator.toJSON()).toEqual(testData.data[index]);
     });
   });
 

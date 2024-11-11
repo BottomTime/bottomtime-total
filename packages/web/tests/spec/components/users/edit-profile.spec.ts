@@ -1,9 +1,10 @@
 import {
   ApiClient,
+  ApiList,
   Fetcher,
-  ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
+  TankDTO,
   UpdateProfileParamsDTO,
   User,
   UserDTO,
@@ -46,7 +47,7 @@ describe('Edit Profile form', () => {
   let client: ApiClient;
   let pinia: Pinia;
   let router: Router;
-  let tankData: ListTanksResponseDTO;
+  let tankData: ApiList<TankDTO>;
 
   let opts: ComponentMountingOptions<typeof EditProfile>;
 
@@ -324,7 +325,7 @@ describe('Edit Profile form', () => {
     opts.props = {
       profile: userData.profile,
       tanks: {
-        tanks: [],
+        data: [],
         totalCount: 0,
       },
     };

@@ -28,7 +28,22 @@ export type ApiResponse<T> = {
 };
 
 export class Fetcher {
-  constructor(private readonly options: ApiClientOptions = {}) {}
+  private readonly headers: HeadersInit;
+
+  constructor(private readonly options: ApiClientOptions = {}) {
+    this.headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    };
+
+    if (this.options.authToken) {
+      this.headers.Authorization = `Bearer ${this.options.authToken}`;
+    }
+
+    if (this.options.edgeAuthToken) {
+      this.headers['x-bt-auth'] = this.options.edgeAuthToken;
+    }
+  }
 
   private getFullUrl(url: string, query?: Record<string, unknown>): string {
     let fullUrl = url;
@@ -80,16 +95,7 @@ export class Fetcher {
       body: options?.body ? JSON.stringify(options.body) : undefined,
       credentials: 'include',
       method,
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        ...(this.options.authToken
-          ? { Authorization: `Bearer ${this.options.authToken}` }
-          : {}),
-        ...(this.options.edgeAuthToken
-          ? { 'x-bt-auth': this.options.edgeAuthToken }
-          : {}),
-      },
+      headers: this.headers,
     });
 
     if (!options?.ignoreErrors) await this.checkResponseForErrors(response);

@@ -90,7 +90,7 @@ describe('Dive Sites End-to-End Tests', () => {
 
   describe('when searching dive sites', () => {
     const EmptyResultSet = {
-      sites: [],
+      data: [],
       totalCount: 0,
     };
     let creators: UserEntity[];

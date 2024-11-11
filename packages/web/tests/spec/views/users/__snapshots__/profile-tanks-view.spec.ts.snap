@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile Tanks View will allow an admin to edit an existing tank profile 1`] = `
+"<li class="flex justify-between items-baseline even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4" data-testid="tank-d9e22779-449f-45c8-a201-09ce4c655bf7">
+  <div class="space-y-2"><button class="font-title font-bold text-xl hover:text-link-hover" data-testid="select-tank-d9e22779-449f-45c8-a201-09ce4c655bf7">Modernized Tank</button>
+    <div class="flex items-baseline">
+      <p class="min-w-40 space-x-2"><span class="font-bold text-lg">Material:</span><span class="font-mono text-sm dark:text-grey-300">Steel</span></p>
+      <p class="min-w-40 space-x-2 text-center"><span class="font-bold text-lg">Volume:</span><span class="font-mono text-sm dark:text-grey-300">7.7 L </span></p>
+      <p class="min-w-40 space-x-2 text-right"><span class="font-bold text-lg">Max Pressure:</span><span class="font-mono text-sm dark:text-grey-300">255 bar </span></p>
+    </div>
+  </div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-tank-d9e22779-449f-45c8-a201-09ce4c655bf7" type="button">
+    <!--v-if-->
+    <p><span><i class="fa-solid fa-trash-can"></i></span><span class="sr-only">Delete tank: Modernized Tank</span></p>
+  </button>
+</li>"
+`;
+
+exports[`Profile Tanks View will allow profile owner to edit an existing tank profile 1`] = `
+"<li class="flex justify-between items-baseline even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4" data-testid="tank-d9e22779-449f-45c8-a201-09ce4c655bf7">
+  <div class="space-y-2"><button class="font-title font-bold text-xl hover:text-link-hover" data-testid="select-tank-d9e22779-449f-45c8-a201-09ce4c655bf7">Modernized Tank</button>
+    <div class="flex items-baseline">
+      <p class="min-w-40 space-x-2"><span class="font-bold text-lg">Material:</span><span class="font-mono text-sm dark:text-grey-300">Steel</span></p>
+      <p class="min-w-40 space-x-2 text-center"><span class="font-bold text-lg">Volume:</span><span class="font-mono text-sm dark:text-grey-300">7.7 L </span></p>
+      <p class="min-w-40 space-x-2 text-right"><span class="font-bold text-lg">Max Pressure:</span><span class="font-mono text-sm dark:text-grey-300">255 bar </span></p>
+    </div>
+  </div><button class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-tank-d9e22779-449f-45c8-a201-09ce4c655bf7" type="button">
+    <!--v-if-->
+    <p><span><i class="fa-solid fa-trash-can"></i></span><span class="sr-only">Delete tank: Modernized Tank</span></p>
+  </button>
+</li>"
+`;
+
+exports[`Profile Tanks View will render list for admin 1`] = `"Showing 9 tank profile(s)"`;
+
+exports[`Profile Tanks View will render list for profile owner 1`] = `"Showing 9 tank profile(s)"`;

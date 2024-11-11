@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateTankParamsDTO,
   ListTanksResponseSchema,
   TankSchema,
@@ -36,9 +37,7 @@ export class TanksApiClient {
     return new Tank(this.apiClient, data, username);
   }
 
-  async listTanks(
-    options?: ListTanksOptions,
-  ): Promise<{ tanks: Tank[]; totalCount: number }> {
+  async listTanks(options?: ListTanksOptions): Promise<ApiList<Tank>> {
     const { data: result } = await this.apiClient.get(
       this.getUrl(options?.username),
       options?.username ? { includeSystem: options?.includeSystem } : undefined,
@@ -46,7 +45,7 @@ export class TanksApiClient {
     );
 
     return {
-      tanks: result.tanks.map(
+      data: result.data.map(
         (tank) =>
           new Tank(
             this.apiClient,

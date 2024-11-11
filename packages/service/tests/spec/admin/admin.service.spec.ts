@@ -134,11 +134,7 @@ describe('Admin Service', () => {
     });
 
     beforeEach(async () => {
-      await Users.createQueryBuilder()
-        .insert()
-        .into(UserEntity)
-        .values(users)
-        .execute();
+      await Users.save(users);
     });
 
     it('will return a list of users', async () => {
@@ -177,7 +173,7 @@ describe('Admin Service', () => {
         });
         expect({
           totalCount: results.totalCount,
-          users: results.users.map((user) => ({
+          users: results.data.map((user) => ({
             username: user.username,
             memberSince: user.memberSince,
           })),
@@ -196,7 +192,7 @@ describe('Admin Service', () => {
         });
         expect({
           totalCount: results.totalCount,
-          users: results.users.map((user) => ({
+          users: results.data.map((user) => ({
             username: user.username,
             role: user.role,
           })),
@@ -211,9 +207,9 @@ describe('Admin Service', () => {
         sortBy: UsersSortBy.Username,
         sortOrder: SortOrder.Ascending,
       });
-      expect(results.users.length).toBe(12);
+      expect(results.data.length).toBe(12);
       expect(results.totalCount).toBe(100);
-      expect(results.users.map((user) => user.username)).toMatchSnapshot();
+      expect(results.data.map((user) => user.username)).toMatchSnapshot();
     });
   });
 });

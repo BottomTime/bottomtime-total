@@ -11,7 +11,7 @@
     "build": "webpack",
     "clean": "rm -rf dist/",
     "dev": "webpack --watch",
-    "docs": "swagger-jsdoc -d swaggerDefinition.cjs -o public/docs/swagger.json ./src/**/*.ts",
+    "docs": "swagger-jsdoc -d swaggerDefinition.cjs -o docs/swagger.json ./src/**/*.ts",
     "migrate:create": "typeorm-ts-node-commonjs migration:create",
     "migrate:down": "typeorm-ts-node-commonjs migration:revert -d data-source.ts",
     "migrate:generate": "typeorm-ts-node-commonjs migration:generate -d data-source.ts",

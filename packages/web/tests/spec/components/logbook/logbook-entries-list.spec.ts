@@ -1,6 +1,7 @@
 import {
-  ListLogEntriesResponseDTO,
+  ApiList,
   ListLogEntriesResponseSchema,
+  LogEntryDTO,
   LogEntrySortBy,
   SortOrder,
 } from '@bottomtime/api';
@@ -23,7 +24,7 @@ const LoadMoreButton = '[data-testid="logbook-load-more"]';
 const SortOrderSelect = '[data-testid="entries-sort-order"]';
 
 describe('LogbookEntriesList component', () => {
-  let entryData: ListLogEntriesResponseDTO;
+  let entryData: ApiList<LogEntryDTO>;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -46,7 +47,7 @@ describe('LogbookEntriesList component', () => {
   it('will render correctly with an empty list', () => {
     opts.props = {
       entries: {
-        logEntries: [],
+        data: [],
         totalCount: 0,
       },
     };
@@ -72,7 +73,7 @@ describe('LogbookEntriesList component', () => {
     items.forEach((item, index) => {
       expect(
         item
-          .find(`[data-testid="select-${entryData.logEntries[index].id}"]`)
+          .find(`[data-testid="select-${entryData.data[index].id}"]`)
           .isVisible(),
       ).toBe(true);
     });
@@ -81,8 +82,8 @@ describe('LogbookEntriesList component', () => {
   it('will render correctly with a full list', () => {
     opts.props = {
       entries: {
-        logEntries: entryData.logEntries,
-        totalCount: entryData.logEntries.length,
+        data: entryData.data,
+        totalCount: entryData.data.length,
       },
     };
     const wrapper = mount(LogbookEntriesList, opts);
@@ -96,7 +97,7 @@ describe('LogbookEntriesList component', () => {
     items.forEach((item, index) => {
       expect(
         item
-          .find(`[data-testid="select-${entryData.logEntries[index].id}"]`)
+          .find(`[data-testid="select-${entryData.data[index].id}"]`)
           .isVisible(),
       ).toBe(true);
     });
@@ -151,9 +152,9 @@ describe('LogbookEntriesList component', () => {
     };
     const wrapper = mount(LogbookEntriesList, opts);
     const item = wrapper.getComponent(LogbookEntriesListItem);
-    item.vm.$emit('select', entryData.logEntries[0]);
+    item.vm.$emit('select', entryData.data[0]);
 
-    expect(wrapper.emitted('select')).toEqual([[entryData.logEntries[0]]]);
+    expect(wrapper.emitted('select')).toEqual([[entryData.data[0]]]);
   });
 
   it('will show Create Entry and Import Entry buttons if the user is logged in and the list is in edit mode', () => {

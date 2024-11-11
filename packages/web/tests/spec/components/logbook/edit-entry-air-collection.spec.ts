@@ -1,7 +1,8 @@
 import {
-  ListTanksResponseDTO,
+  ApiList,
   ListTanksResponseSchema,
   PressureUnit,
+  TankDTO,
   TankMaterial,
 } from '@bottomtime/api';
 
@@ -59,7 +60,7 @@ const TestEntries: EditEntryAirFormData[] = [
 ];
 
 describe('EditEntryAirCollection component', () => {
-  let tankData: ListTanksResponseDTO;
+  let tankData: ApiList<TankDTO>;
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof EditEntryAirCollection>;
 
@@ -68,7 +69,7 @@ describe('EditEntryAirCollection component', () => {
     pinia = createPinia();
     opts = {
       props: {
-        tanks: tankData.tanks,
+        tanks: tankData.data,
         air: [],
       },
       global: {
@@ -88,7 +89,7 @@ describe('EditEntryAirCollection component', () => {
 
   it('will render correctly with a couple of entries', async () => {
     opts.props = {
-      tanks: tankData.tanks,
+      tanks: tankData.data,
       air: TestEntries,
     };
     const wrapper = mount(EditEntryAirCollection, opts);
@@ -124,7 +125,7 @@ describe('EditEntryAirCollection component', () => {
 
   it('will emit remove event when a user removes an entry', async () => {
     opts.props = {
-      tanks: tankData.tanks,
+      tanks: tankData.data,
       air: TestEntries,
     };
     const wrapper = mount(EditEntryAirCollection, opts);
@@ -140,7 +141,7 @@ describe('EditEntryAirCollection component', () => {
 
   it('will allow a user to change their mind about removing an entry', async () => {
     opts.props = {
-      tanks: tankData.tanks,
+      tanks: tankData.data,
       air: TestEntries,
     };
     const wrapper = mount(EditEntryAirCollection, opts);

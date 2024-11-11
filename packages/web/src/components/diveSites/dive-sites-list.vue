@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="data.sites.length === 0"
+    v-if="data.data.length === 0"
     class="text-center text-lg m-6"
     data-testid="no-results"
   >
@@ -17,7 +17,7 @@
     <!-- Dive site entries -->
     <div class="flex justify-center w-full">
       <div class="w-full lg:w-[600px]">
-        <GoogleMap :sites="data.sites" @site-selected="onMapClicked" />
+        <GoogleMap :sites="data.data" @site-selected="onMapClicked" />
       </div>
     </div>
 
@@ -26,7 +26,7 @@
       data-testid="sites-list-content"
     >
       <DiveSitesListItem
-        v-for="site in data.sites"
+        v-for="site in data.data"
         :key="site.id"
         :site="site"
         @site-selected="$emit('site-selected', site)"
@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO, SearchDiveSitesResponseDTO } from '@bottomtime/api';
+import { ApiList, DiveSiteDTO } from '@bottomtime/api';
 
 import { computed } from 'vue';
 
@@ -63,7 +63,7 @@ import GoogleMap from '../common/google-map.vue';
 import DiveSitesListItem from './dive-sites-list-item.vue';
 
 type DiveSitesListProps = {
-  data: SearchDiveSitesResponseDTO;
+  data: ApiList<DiveSiteDTO>;
   isLoadingMore?: boolean;
 };
 
@@ -76,7 +76,7 @@ const emit = defineEmits<{
 }>();
 
 const canLoadMore = computed(
-  () => props.data.sites.length < props.data.totalCount,
+  () => props.data.data.length < props.data.totalCount,
 );
 
 function onMapClicked(site: DiveSiteDTO) {

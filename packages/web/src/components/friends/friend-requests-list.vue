@@ -3,19 +3,16 @@
     <FormBox>
       <p data-testid="request-counts">
         <span>Showing </span>
-        <span class="font-bold">{{ requests.friendRequests.length }}</span>
+        <span class="font-bold">{{ requests.data.length }}</span>
         <span> of </span>
         <span class="font-bold">{{ requests.totalCount }}</span>
         <span> requests</span>
       </p>
     </FormBox>
 
-    <ul
-      v-if="requests.friendRequests.length"
-      data-testid="friend-requests-list"
-    >
+    <ul v-if="requests.data.length" data-testid="friend-requests-list">
       <FriendRequestsListItem
-        v-for="request in requests.friendRequests"
+        v-for="request in requests.data"
         :key="request.friendId"
         :request="request"
         @cancel="(request) => $emit('cancel', request)"
@@ -26,7 +23,7 @@
       />
 
       <li
-        v-if="requests.friendRequests.length < requests.totalCount"
+        v-if="requests.data.length < requests.totalCount"
         class="min-h-24 flex items-center justify-center"
       >
         <p
@@ -66,10 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  FriendRequestDTO,
-  ListFriendRequestsResponseDTO,
-} from '@bottomtime/api';
+import { ApiList, FriendRequestDTO } from '@bottomtime/api';
 
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
@@ -77,7 +71,7 @@ import FriendRequestsListItem from './friend-requests-list-item.vue';
 
 interface FriendRequestsListProps {
   isLoadingMore?: boolean;
-  requests: ListFriendRequestsResponseDTO;
+  requests: ApiList<FriendRequestDTO>;
 }
 
 withDefaults(defineProps<FriendRequestsListProps>(), {

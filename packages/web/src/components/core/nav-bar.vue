@@ -126,7 +126,7 @@
                 <hr />
                 <a
                   class="w-full p-2 rounded-b-md text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
-                  href="/api/auth/logout"
+                  @click="onLogout"
                 >
                   Logout
                 </a>
@@ -199,9 +199,12 @@ import {
 } from '@bottomtime/common';
 
 import { computed, nextTick, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+import { useClient } from '../../api-client';
 import { Config } from '../../config';
 import { useFeature } from '../../featrues';
+import { useOops } from '../../oops';
 import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormButton from '../common/form-button.vue';
@@ -215,6 +218,10 @@ type NavLink = {
   url: string;
   visible: boolean;
 };
+
+const client = useClient();
+const oops = useOops();
+const router = useRouter();
 
 const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const currentUser = useCurrentUser();
@@ -267,6 +274,14 @@ async function toggleLoginForm() {
   if (showLogin.value) {
     loginForm.value?.focusUsername();
   }
+}
+
+async function onLogout(): Promise<void> {
+  await oops(async () => {
+    await client.users.logout();
+    currentUser.user = null;
+    await router.push('/');
+  });
 }
 </script>
 

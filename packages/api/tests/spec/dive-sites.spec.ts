@@ -4,9 +4,10 @@ import { DiveSite } from '../../src/client';
 import { DiveSitesApiClient } from '../../src/client/dive-sites';
 import { Fetcher } from '../../src/client/fetcher';
 import {
+  ApiList,
   CreateOrUpdateDiveSiteSchema,
+  DiveSiteDTO,
   DiveSitesSortBy,
-  SearchDiveSitesResponseDTO,
   SearchDiveSitesResponseSchema,
   SortOrder,
   WaterType,
@@ -17,7 +18,7 @@ import { DiveSiteWithFullProperties } from '../fixtures/sites';
 describe('Dive Site API client', () => {
   let fetcher: Fetcher;
   let apiClient: DiveSitesApiClient;
-  let searchResults: SearchDiveSitesResponseDTO;
+  let searchResults: ApiList<DiveSiteDTO>;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -64,12 +65,34 @@ describe('Dive Site API client', () => {
 
   it('will perform a search for dive sites', async () => {
     mockFetch.get(
-      '/api/diveSites?creator=bob&limit=200&query=Puget+Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250',
+      {
+        url: 'begin:/api/diveSites',
+        query: {
+          creator: 'bob',
+          limit: 200,
+          query: 'Puget Sound',
+          skip: 100,
+          sortBy: 'rating',
+          sortOrder: 'desc',
+          waterType: 'salt',
+          freeToDive: 'true',
+          shoreAccess: 'true',
+          difficulty: '1,3',
+          rating: '3.5,5',
+          location: '47.6,-122.3',
+          radius: '250',
+        },
+      },
+      // '/api/diveSites?creator=bob&limit=200&query=Puget+Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250',
       {
         status: 200,
         body: searchResults,
       },
     );
+    `
+/api/diveSites?creator=bob&limit=200&query=Puget%20Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250
+/api/diveSites?creator=bob&limit=200&query=Puget%20Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250
+`;
 
     const result = await apiClient.searchDiveSites({
       query: 'Puget Sound',
@@ -92,9 +115,9 @@ describe('Dive Site API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(searchResults.totalCount);
-    expect(result.sites).toHaveLength(searchResults.sites.length);
-    expect(result.sites.map((site: DiveSite) => site.toJSON())).toEqual(
-      searchResults.sites,
+    expect(result.data).toHaveLength(searchResults.data.length);
+    expect(result.data.map((site: DiveSite) => site.toJSON())).toEqual(
+      searchResults.data,
     );
   });
 
@@ -105,9 +128,9 @@ describe('Dive Site API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(searchResults.totalCount);
-    expect(result.sites).toHaveLength(searchResults.sites.length);
-    expect(result.sites.map((site: DiveSite) => site.toJSON())).toEqual(
-      searchResults.sites,
+    expect(result.data).toHaveLength(searchResults.data.length);
+    expect(result.data.map((site: DiveSite) => site.toJSON())).toEqual(
+      searchResults.data,
     );
   });
 

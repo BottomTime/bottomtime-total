@@ -1,29 +1,37 @@
 import { RouteRecordRaw } from 'vue-router';
 
+export const StaticRouteNames = {
+  Cookies: 'cookies',
+  Home: 'home',
+  Privacy: 'privacy',
+  ServerError: 'server-error',
+  TermsOfService: 'terms-of-service',
+} as const;
+
 export const StaticRoutes: RouteRecordRaw[] = [
   {
     path: '/cookies',
-    name: 'cookies',
+    name: StaticRouteNames.Cookies,
     component: () => import('../views/cookies-view.vue'),
   },
   {
     path: '/',
-    name: 'home',
+    name: StaticRouteNames.Home,
     component: () => import('../views/home-view.vue'),
   },
   {
     path: '/privacy',
-    name: 'privacy',
+    name: StaticRouteNames.Privacy,
     component: () => import('../views/privacy-view.vue'),
   },
   {
     path: '/serverError',
-    name: 'server-error',
+    name: StaticRouteNames.ServerError,
     component: () => import('../views/server-error-view.vue'),
   },
   {
     path: '/termsOfService',
-    name: 'terms-of-service',
+    name: StaticRouteNames.TermsOfService,
     component: () => import('../views/terms-of-service-view.vue'),
   },
 ];

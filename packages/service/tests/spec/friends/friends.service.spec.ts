@@ -98,7 +98,7 @@ describe('Friends Service', () => {
 
     it('will list friends with default options', async () => {
       const results = await service.listFriends({ userId: userData.id });
-      expect(results.friends).toHaveLength(100);
+      expect(results.data).toHaveLength(100);
       expect(results).toMatchSnapshot();
     });
 
@@ -108,7 +108,7 @@ describe('Friends Service', () => {
         skip: 25,
         limit: 5,
       });
-      expect(results.friends).toHaveLength(5);
+      expect(results.data).toHaveLength(5);
       expect(results).toMatchSnapshot();
     });
 
@@ -128,10 +128,10 @@ describe('Friends Service', () => {
           limit: 10,
         });
 
-        expect(results.friends).toHaveLength(10);
+        expect(results.data).toHaveLength(10);
         expect(results.totalCount).toBe(100);
         expect(
-          results.friends.map((f) => ({
+          results.data.map((f) => ({
             username: f.username,
             friendsSince: f.friendsSince,
             memberSince: f.memberSince,
@@ -264,7 +264,7 @@ describe('Friends Service', () => {
         userId: userData.id,
         showExpired: true,
       });
-      expect(results.friendRequests).toHaveLength(42);
+      expect(results.data).toHaveLength(42);
       expect(results).toMatchSnapshot();
     });
 
@@ -275,7 +275,7 @@ describe('Friends Service', () => {
         skip: 10,
         limit: 5,
       });
-      expect(results.friendRequests).toHaveLength(5);
+      expect(results.data).toHaveLength(5);
       expect(results).toMatchSnapshot();
     });
 
@@ -297,7 +297,7 @@ describe('Friends Service', () => {
         showExpired: true,
         showAcknowledged: true,
       });
-      expect(results.friendRequests).toHaveLength(50);
+      expect(results.data).toHaveLength(50);
       expect(results).toMatchSnapshot();
     });
 
@@ -306,7 +306,7 @@ describe('Friends Service', () => {
         userId: userData.id,
       });
       expect(results).toEqual({
-        friendRequests: [],
+        data: [],
         totalCount: 0,
       });
     });

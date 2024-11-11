@@ -1,13 +1,13 @@
 <template>
   <DrawerPanel
-    :title="selectedUser?.username"
-    :visible="!!selectedUser"
-    :full-screen="`/admin/users/${selectedUser?.username}`"
+    :title="state.selectedUser?.username"
+    :visible="!!state.selectedUser"
+    :full-screen="`/admin/users/${state.selectedUser?.username}`"
     @close="onCloseManageUser"
   >
     <ManageUser
-      v-if="selectedUser"
-      :user="selectedUser"
+      v-if="state.selectedUser"
+      :user="state.selectedUser"
       @account-lock-toggled="onAccountLockToggled"
       @role-changed="onRoleChanged"
       @username-changed="onUsernameChanged"
@@ -23,7 +23,7 @@
       <form class="flex flex-col sticky top-20" @submit.prevent="">
         <FormField :responsive="false">
           <FormTextBox
-            v-model="searchParams.query"
+            v-model="state.searchParams.query"
             control-id="search"
             :maxlength="200"
             placeholder="Search users"
@@ -39,7 +39,7 @@
         </FormField>
         <FormField label="Role" control-id="role" :responsive="false">
           <FormSelect
-            v-model="searchParams.role"
+            v-model="state.searchParams.role"
             control-id="role"
             test-id="role"
             :options="UserRoleOptions"
@@ -52,7 +52,7 @@
           :responsive="false"
         >
           <FormSelect
-            v-model="searchParams.isLockedOut"
+            v-model="state.searchParams.isLockedOut"
             control-id="account-status"
             test-id="account-status"
             :options="AccountStatusOptions"
@@ -76,12 +76,12 @@
       <!-- Summary bar and sort order select -->
       <FormBox class="flex flex-row gap-2 items-baseline sticky top-16">
         <span class="font-bold">Showing Users:</span>
-        <span>{{ admin.users.users.length }}</span>
+        <span>{{ state.results.data.length }}</span>
         <span>of</span>
-        <span class="grow">{{ admin.users.totalCount }}</span>
+        <span class="grow">{{ state.results.totalCount }}</span>
         <label for="sort-order" class="font-bold">Sort order:</label>
         <FormSelect
-          v-model="searchParams.sortOrder"
+          v-model="state.searchParams.sortOrder"
           control-id="sort-order"
           test-id="sort-order"
           :options="SortOrderOptions"
@@ -90,13 +90,13 @@
       </FormBox>
 
       <!-- Loading message -->
-      <div v-if="isLoading" class="mt-6 text-lg text-center text-info">
-        <LoadingSpinner v-if="isLoading" message="Loading users..." />
+      <div v-if="state.isLoading" class="mt-6 text-lg text-center text-info">
+        <LoadingSpinner v-if="state.isLoading" message="Loading users..." />
       </div>
 
       <!-- No results found message -->
       <p
-        v-else-if="admin.users.users.length === 0"
+        v-else-if="state.results.data.length === 0"
         class="mt-6 text-lg text-warn"
         data-testid="users-list-no-users"
       >
@@ -108,7 +108,7 @@
 
       <ul v-else data-testid="users-list">
         <UsersListItem
-          v-for="user in admin.users.users"
+          v-for="user in state.results.data"
           :key="user.id"
           :user="user"
           @user-click="onUserClick"
@@ -116,7 +116,7 @@
 
         <li class="text-center text-lg mt-2">
           <div
-            v-if="isLoadingMore"
+            v-if="state.isLoadingMore"
             class="mt-4 flex gap-3 justify-center align-middle"
           >
             <span>
@@ -126,17 +126,12 @@
           </div>
 
           <FormButton
-            v-else
+            v-else-if="state.results.data.length < state.results.totalCount"
             type="link"
-            :disabled="noMoreResults"
             test-id="users-list-load-more"
             @click="onLoadMore"
           >
-            <span>
-              {{
-                noMoreResults ? 'No more results to show' : 'Load more results'
-              }}
-            </span>
+            Load more results
           </FormButton>
         </li>
       </ul>
@@ -147,7 +142,7 @@
 <script setup lang="ts">
 import {
   AdminSearchUsersParamsDTO,
-  AdminSearchUsersResponseSchema,
+  ApiList,
   ProfileDTO,
   SortOrder,
   UserDTO,
@@ -156,12 +151,11 @@ import {
   UsersSortBy,
 } from '@bottomtime/api';
 
-import { onBeforeMount, onServerPrefetch, reactive, ref } from 'vue';
+import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { SelectOption } from '../../common';
 import { useOops } from '../../oops';
-import { useAdmin } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
@@ -171,6 +165,19 @@ import FormTextBox from '../common/form-text-box.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
 import ManageUser from './manage-user.vue';
 import UsersListItem from './users-list-item.vue';
+
+interface UsersListState {
+  results: ApiList<UserDTO>;
+  searchParams: {
+    isLockedOut: string;
+    query: string;
+    role: UserRole | '';
+    sortOrder: string;
+  };
+  isLoading: boolean;
+  isLoadingMore: boolean;
+  selectedUser?: UserDTO;
+}
 
 const SortOrderOptions: SelectOption[] = [
   {
@@ -197,31 +204,29 @@ const AccountStatusOptions: SelectOption[] = [
   { label: 'Suspended', value: 'suspended' },
 ];
 
-const admin = useAdmin();
 const client = useClient();
 const oops = useOops();
 
-const searchParams = reactive<{
-  isLockedOut: string;
-  query: string;
-  role: UserRole | '';
-  sortOrder: string;
-}>({
-  isLockedOut: '',
-  query: '',
-  role: '',
-  sortOrder: SortOrderOptions[0].value,
+const state = reactive<UsersListState>({
+  isLoading: true,
+  isLoadingMore: false,
+  results: {
+    data: [],
+    totalCount: 0,
+  },
+  searchParams: {
+    isLockedOut: '',
+    query: '',
+    role: '',
+    sortOrder: SortOrderOptions[0].value,
+  },
 });
-const isLoading = ref(false);
-const isLoadingMore = ref(false);
-const noMoreResults = ref(false);
-const selectedUser = ref<UserDTO | null>(null);
 
 function getSearchParameters(): AdminSearchUsersParamsDTO {
-  const [sortBy, sortOrder] = searchParams.sortOrder.split('-');
+  const [sortBy, sortOrder] = state.searchParams.sortOrder.split('-');
   return {
-    query: searchParams.query || undefined,
-    role: searchParams.role || undefined,
+    query: state.searchParams.query || undefined,
+    role: state.searchParams.role || undefined,
     sortBy: sortBy as UsersSortBy,
     sortOrder: sortOrder as SortOrder,
     skip: 0,
@@ -232,94 +237,81 @@ function getSearchParameters(): AdminSearchUsersParamsDTO {
 async function refreshUsers(): Promise<void> {
   const params = getSearchParameters();
 
-  isLoading.value = true;
+  state.isLoading = true;
   await oops(async () => {
     const response = await client.users.searchUsers(params);
-    admin.users = {
-      users: response.users.map((u) => u.toJSON()),
+    state.results = {
+      data: response.data.map((u) => u.toJSON()),
       totalCount: response.totalCount,
     };
   });
-  noMoreResults.value = admin.users.users.length < (params.limit || 50);
-  isLoading.value = false;
+  state.isLoading = false;
 }
 
 async function onLoadMore(): Promise<void> {
   const params = getSearchParameters();
-  params.skip = admin.users.users.length;
+  params.skip = state.results.data.length;
 
-  isLoadingMore.value = true;
-  let resultCount = params.limit;
+  state.isLoadingMore = true;
   await oops(async () => {
     const response = await client.users.searchUsers(params);
-    resultCount = response.users.length;
-    admin.users.users.push(...response.users.map((u) => u.toJSON()));
-    admin.users.totalCount = response.totalCount;
+    state.results.data.push(...response.data.map((u) => u.toJSON()));
+    state.results.totalCount = response.totalCount;
   });
-  noMoreResults.value = resultCount ? resultCount < (params.limit || 50) : true;
-  isLoadingMore.value = false;
+  state.isLoadingMore = false;
 }
 
-onServerPrefetch(async () => {
-  const params = getSearchParameters();
-  const response = await client.users.searchUsers(params);
-  admin.users.users = response.users.map((u) => u.toJSON());
-  admin.users.totalCount = response.totalCount;
-});
-
-onBeforeMount(() => {
-  admin.users = AdminSearchUsersResponseSchema.parse(admin.users);
-});
-
 function onUserClick(user: UserDTO): void {
-  selectedUser.value = user;
+  state.selectedUser = user;
 }
 
 function onCloseManageUser() {
-  selectedUser.value = null;
+  state.selectedUser = undefined;
 }
 
 function onAccountLockToggled() {
-  if (selectedUser.value) {
-    selectedUser.value.isLockedOut = !selectedUser.value.isLockedOut;
+  if (state.selectedUser) {
+    state.selectedUser.isLockedOut = !state.selectedUser.isLockedOut;
   }
 }
 
 function onRoleChanged(_id: string, role: UserRole) {
-  if (selectedUser.value) {
-    selectedUser.value.role = role;
+  if (state.selectedUser) {
+    state.selectedUser.role = role;
   }
 }
 
 function onUsernameChanged(_id: string, username: string) {
-  if (selectedUser.value) {
-    selectedUser.value.username = username;
+  if (state.selectedUser) {
+    state.selectedUser.username = username;
   }
 }
 
 function onEmailChanged(_id: string, email: string) {
-  if (selectedUser.value) {
-    selectedUser.value.email = email;
-    selectedUser.value.emailVerified = false;
+  if (state.selectedUser) {
+    state.selectedUser.email = email;
+    state.selectedUser.emailVerified = false;
   }
 }
 
 function onPasswordReset() {
-  if (selectedUser.value) {
-    selectedUser.value.hasPassword = true;
-    selectedUser.value.lastPasswordChange = new Date();
+  if (state.selectedUser) {
+    state.selectedUser.hasPassword = true;
+    state.selectedUser.lastPasswordChange = new Date();
   }
 }
 
 function onSaveSettings(_id: string, settings: UserSettingsDTO) {
-  if (selectedUser.value) {
-    selectedUser.value.settings = settings;
+  if (state.selectedUser) {
+    state.selectedUser.settings = settings;
   }
 }
 
 function onSaveProfile(_id: string, profile: ProfileDTO) {
-  if (selectedUser.value) {
-    selectedUser.value.profile = profile;
+  if (state.selectedUser) {
+    state.selectedUser.profile = profile;
   }
 }
+
+onMounted(refreshUsers);
 </script>

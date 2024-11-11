@@ -31,7 +31,7 @@ test.describe('User Tank Profile Management', () => {
       username: Username,
       includeSystem: false,
     });
-    const tank = result.tanks.find((t) => t.name === TankData.name);
+    const tank = result.data.find((t) => t.name === TankData.name);
 
     expect(tank).toBeDefined();
     expect(tank?.name).toBe(TankData.name);
@@ -124,7 +124,7 @@ test.describe('User Tank Profile Management', () => {
       username: Username,
       includeSystem: false,
     });
-    const tank = result.tanks.find((t) => t.name === TankData.name);
+    const tank = result.data.find((t) => t.name === TankData.name);
 
     expect(tank).toBeDefined();
     expect(tank?.name).toBe(TankData.name);

@@ -1,7 +1,8 @@
 import {
+  ApiList,
   CreateUserOptionsSchema,
   CreateUserParamsDTO,
-  SearchProfilesResponseDTO,
+  ProfileDTO,
   SearchUserProfilesParamsDTO,
   SearchUserProfilesParamsSchema,
   UserDTO,
@@ -78,10 +79,10 @@ export class UsersController {
    *             schema:
    *               type: object
    *               required:
-   *                 - users
+   *                 - data
    *                 - totalCount
    *               properties:
-   *                 users:
+   *                 data:
    *                   type: array
    *                   items:
    *                     $ref: "#/components/schemas/Profile"
@@ -118,14 +119,14 @@ export class UsersController {
     @CurrentUser() currentUser: User,
     @Query(new ZodValidator(SearchUserProfilesParamsSchema))
     params: SearchUserProfilesParamsDTO,
-  ): Promise<SearchProfilesResponseDTO> {
+  ): Promise<ApiList<ProfileDTO>> {
     const result = await this.users.searchUsers({
       ...params,
       filterFriendsFor:
         params.filterFriends === true ? currentUser.id : undefined,
     });
     return {
-      users: result.users.map((u) => u.profile.toJSON()),
+      data: result.data.map((u) => u.profile.toJSON()),
       totalCount: result.totalCount,
     };
   }

@@ -18,12 +18,9 @@ export type SearchCertificationsParamsDTO = z.infer<
 >;
 
 export const SearchCertificationsResponseSchema = z.object({
-  certifications: CertificationSchema.array(),
+  data: CertificationSchema.array(),
   totalCount: z.number().int(),
 });
-export type SearchCertificationsResponseDTO = z.infer<
-  typeof SearchCertificationsResponseSchema
->;
 
 export const CreateOrUpdateCertificationParamsSchema = CertificationSchema.omit(
   { id: true },

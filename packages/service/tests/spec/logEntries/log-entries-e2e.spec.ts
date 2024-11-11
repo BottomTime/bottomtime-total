@@ -242,10 +242,10 @@ describe('Log entries E2E tests', () => {
         .expect(200);
 
       expect(body.totalCount).toBe(75);
-      expect(body.logEntries).toHaveLength(50);
+      expect(body.data).toHaveLength(50);
 
       expect(
-        body.logEntries.map((entry: LogEntryDTO) => ({
+        body.data.map((entry: LogEntryDTO) => ({
           id: entry.id,
           owner: entry.creator.username,
           entryTime: entry.timing.entryTime,
@@ -272,10 +272,10 @@ describe('Log entries E2E tests', () => {
         .expect(200);
 
       expect(body.totalCount).toBe(23);
-      expect(body.logEntries).toHaveLength(8);
+      expect(body.data).toHaveLength(8);
 
       expect(
-        body.logEntries.map((entry: LogEntryDTO) => ({
+        body.data.map((entry: LogEntryDTO) => ({
           id: entry.id,
           owner: entry.creator.username,
           entryTime: entry.timing.entryTime,
@@ -292,10 +292,10 @@ describe('Log entries E2E tests', () => {
         .expect(200);
 
       expect(body.totalCount).toBe(75);
-      expect(body.logEntries).toHaveLength(50);
+      expect(body.data).toHaveLength(50);
 
       expect(
-        body.logEntries.map((entry: LogEntryDTO) => ({
+        body.data.map((entry: LogEntryDTO) => ({
           id: entry.id,
           owner: entry.creator.username,
           entryTime: entry.timing.entryTime,

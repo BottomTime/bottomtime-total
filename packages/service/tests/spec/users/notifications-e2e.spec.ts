@@ -142,8 +142,8 @@ describe('Notifications End-to-End Tests', () => {
         .expect(200);
 
       expect(result.totalCount).toBe(21);
-      expect(result.notifications).toHaveLength(21);
-      expect(result.notifications).toMatchSnapshot();
+      expect(result.data).toHaveLength(21);
+      expect(result.data).toMatchSnapshot();
     });
 
     it('will allow notifications to be listed given query string options', async () => {
@@ -154,8 +154,8 @@ describe('Notifications End-to-End Tests', () => {
         .expect(200);
 
       expect(result.totalCount).toBe(50);
-      expect(result.notifications).toHaveLength(5);
-      expect(result.notifications).toMatchSnapshot();
+      expect(result.data).toHaveLength(5);
+      expect(result.data).toMatchSnapshot();
     });
 
     it('will allow admins to view notifications for another user', async () => {
@@ -165,11 +165,9 @@ describe('Notifications End-to-End Tests', () => {
         .expect(200);
 
       expect(result.totalCount).toBe(21);
-      expect(result.notifications).toHaveLength(21);
+      expect(result.data).toHaveLength(21);
       expect(
-        result.notifications.map(
-          (notification: NotificationDTO) => notification.title,
-        ),
+        result.data.map((notification: NotificationDTO) => notification.title),
       ).toMatchSnapshot();
     });
 
@@ -180,7 +178,7 @@ describe('Notifications End-to-End Tests', () => {
         .expect(200);
 
       expect(result.totalCount).toBe(0);
-      expect(result.notifications).toHaveLength(0);
+      expect(result.data).toHaveLength(0);
     });
 
     it('will return a 400 response if the query string parameters are invalid', async () => {

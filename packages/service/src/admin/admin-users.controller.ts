@@ -1,11 +1,12 @@
 import {
   AdminSearchUsersParamsDTO,
   AdminSearchUsersParamsSchema,
-  AdminSearchUsersResponseDTO,
+  ApiList,
   ChangeRoleParams,
   ChangeRoleParamsSchema,
   ResetPasswordParams,
   ResetPasswordParamsSchema,
+  UserDTO,
 } from '@bottomtime/api';
 
 import {
@@ -74,10 +75,10 @@ export class AdminUsersController {
    *             schema:
    *               type: object
    *               required:
-   *                 - users
+   *                 - data
    *                 - totalCount
    *               properties:
-   *                 users:
+   *                 data:
    *                   type: array
    *                   description: The list of users matching the search criteria.
    *                   items:
@@ -115,11 +116,11 @@ export class AdminUsersController {
   async searchUsers(
     @Query(new ZodValidator(AdminSearchUsersParamsSchema))
     params: AdminSearchUsersParamsDTO,
-  ): Promise<AdminSearchUsersResponseDTO> {
+  ): Promise<ApiList<UserDTO>> {
     this.log.debug('Search users...', params);
     const results = await this.adminService.searchUsers(params);
     return {
-      users: results.users.map((user) => user.toJSON()),
+      data: results.data.map((user) => user.toJSON()),
       totalCount: results.totalCount,
     };
   }

@@ -18,7 +18,6 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../../src/api-client';
 import ManageMembership from '../../../../../src/components/users/membership/manage-membership.vue';
-import { LocationKey, MockLocation } from '../../../../../src/location';
 import { createRouter } from '../../../../fixtures/create-router';
 import { BasicUser } from '../../../../fixtures/users';
 
@@ -84,24 +83,35 @@ describe('ManageMembership component', () => {
   let client: ApiClient;
   let router: Router;
 
-  let location: MockLocation;
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof ManageMembership>;
 
   beforeAll(() => {
-    router = createRouter();
+    router = createRouter([
+      {
+        path: '/account',
+        component: { template: '' },
+      },
+      {
+        path: '/membership/confirmation',
+        component: { template: '' },
+      },
+      {
+        path: '/membership/canceled',
+        component: { template: '' },
+      },
+    ]);
     client = new ApiClient();
   });
 
-  beforeEach(() => {
-    location = new MockLocation();
+  beforeEach(async () => {
+    await router.push('/account');
     pinia = createPinia();
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
         stubs: {
           teleport: true,
@@ -181,7 +191,7 @@ describe('ManageMembership component', () => {
     await flushPromises();
 
     expect(spy).toHaveBeenCalledWith(BasicUser.username, AccountTier.Pro);
-    expect(location.pathname).toBe('/membership/confirmation');
+    expect(router.currentRoute.value.path).toBe('/membership/confirmation');
   });
 
   it('will allow a user to alter an existing membership', async () => {
@@ -202,7 +212,7 @@ describe('ManageMembership component', () => {
     await flushPromises();
 
     expect(spy).toHaveBeenCalledWith(BasicUser.username, AccountTier.ShopOwner);
-    expect(location.pathname).toBe('/membership/confirmation');
+    expect(router.currentRoute.value.path).toBe('/membership/confirmation');
   });
 
   it('will allow a user to change their mind about altering an existing membership', async () => {
@@ -212,7 +222,6 @@ describe('ManageMembership component', () => {
     const spy = jest
       .spyOn(client.memberships, 'updateMembership')
       .mockResolvedValue(ShopOwnerMembership);
-    const locationSpy = jest.spyOn(location, 'assign').mockReturnValue();
 
     const wrapper = mount(ManageMembership, opts);
     await flushPromises();
@@ -224,7 +233,7 @@ describe('ManageMembership component', () => {
     await flushPromises();
 
     expect(spy).not.toHaveBeenCalled();
-    expect(locationSpy).not.toHaveBeenCalled();
+    expect(router.currentRoute.value.path).toBe('/account');
   });
 
   it('will allow a user to cancel a membership', async () => {
@@ -245,7 +254,7 @@ describe('ManageMembership component', () => {
     await flushPromises();
 
     expect(spy).toHaveBeenCalledWith(BasicUser.username);
-    expect(location.pathname).toBe('/membership/canceled');
+    expect(router.currentRoute.value.path).toBe('/membership/canceled');
   });
 
   it('will allow a user to change their mind about canceling a membership', async () => {
@@ -255,7 +264,6 @@ describe('ManageMembership component', () => {
     const spy = jest
       .spyOn(client.memberships, 'cancelMembership')
       .mockResolvedValue();
-    const locationSpy = jest.spyOn(location, 'assign').mockReturnValue();
 
     const wrapper = mount(ManageMembership, opts);
     await flushPromises();
@@ -267,6 +275,6 @@ describe('ManageMembership component', () => {
     await flushPromises();
 
     expect(spy).not.toHaveBeenCalled();
-    expect(locationSpy).not.toHaveBeenCalled();
+    expect(router.currentRoute.value.path).toBe('/account');
   });
 });

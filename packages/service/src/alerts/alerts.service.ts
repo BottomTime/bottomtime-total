@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateAlertParamsDTO,
   ListAlertsParamsDTO,
 } from '@bottomtime/api';
@@ -13,10 +14,6 @@ import { AlertEntity } from '../data';
 import { Alert } from './alert';
 
 export type ListAlertsOptions = ListAlertsParamsDTO & { userId?: string };
-export type ListAlertsResults = {
-  alerts: Alert[];
-  totalCount: number;
-};
 
 @Injectable()
 export class AlertsService {
@@ -25,7 +22,7 @@ export class AlertsService {
     private readonly Alerts: Repository<AlertEntity>,
   ) {}
 
-  async listAlerts(options: ListAlertsOptions): Promise<ListAlertsResults> {
+  async listAlerts(options: ListAlertsOptions): Promise<ApiList<Alert>> {
     let query = this.Alerts.createQueryBuilder('alert')
       .select([
         'alert.id',
@@ -47,7 +44,7 @@ export class AlertsService {
 
     const [results, totalCount] = await query.getManyAndCount();
     return {
-      alerts: results.map((alert) => new Alert(this.Alerts, alert)),
+      data: results.map((alert) => new Alert(this.Alerts, alert)),
       totalCount,
     };
   }

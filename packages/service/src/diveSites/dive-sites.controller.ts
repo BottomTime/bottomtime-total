@@ -1,11 +1,11 @@
 import {
+  ApiList,
   CreateOrUpdateDiveSiteDTO,
   CreateOrUpdateDiveSiteSchema,
   DiveSiteDTO,
   DiveSitesSortBy,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesParamsSchema,
-  SearchDiveSitesResponseDTO,
   SortOrder,
 } from '@bottomtime/api';
 
@@ -139,8 +139,11 @@ export class DiveSitesController {
    *           application/json:
    *             schema:
    *               type: object
+   *               required:
+   *                 - data
+   *                 - totalCount
    *               properties:
-   *                 sites:
+   *                 data:
    *                   type: array
    *                   items:
    *                     $ref: "#/components/schemas/DiveSite"
@@ -164,7 +167,7 @@ export class DiveSitesController {
   async searchDiveSites(
     @Query(new ZodValidator(SearchDiveSitesParamsSchema))
     options: SearchDiveSitesParamsDTO,
-  ): Promise<SearchDiveSitesResponseDTO> {
+  ): Promise<ApiList<DiveSiteDTO>> {
     options.radius = options.radius ?? 50;
     options.skip = options.skip ?? 0;
     options.limit = options.limit ?? 50;
@@ -181,7 +184,7 @@ export class DiveSitesController {
 
       if (!creator) {
         return {
-          sites: [],
+          data: [],
           totalCount: 0,
         };
       }
@@ -192,7 +195,7 @@ export class DiveSitesController {
     this.log.debug('Searching dive sites', options);
     const results = await this.diveSitesService.searchDiveSites(options);
     return {
-      sites: results.sites.map((site) => site.toJSON()),
+      data: results.data.map((site) => site.toJSON()),
       totalCount: results.totalCount,
     };
   }

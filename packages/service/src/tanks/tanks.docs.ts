@@ -68,10 +68,10 @@
  *     ListTanksResponse:
  *       type: object
  *       required:
- *         - tanks
+ *         - data
  *         - totalCount
  *       properties:
- *         tanks:
+ *         data:
  *           type: array
  *           items:
  *             $ref: "#/components/schemas/Tank"

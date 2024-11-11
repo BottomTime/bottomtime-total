@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateLogEntryParamsDTO,
   DiveSiteSchema,
   GetNextAvailableLogNumberResponseDTO,
@@ -16,21 +17,16 @@ export class LogEntriesApiClient {
   async listLogEntries(
     username: string,
     params?: ListLogEntriesParamsDTO,
-  ): Promise<{
-    logEntries: LogEntry[];
-    totalCount: number;
-  }> {
-    const { data } = await this.apiClient.get(
+  ): Promise<ApiList<LogEntry>> {
+    const { data: results } = await this.apiClient.get(
       `/api/users/${username}/logbook`,
       params,
       ListLogEntriesResponseSchema,
     );
 
     return {
-      logEntries: data.logEntries.map(
-        (entry) => new LogEntry(this.apiClient, entry),
-      ),
-      totalCount: data.totalCount,
+      data: results.data.map((entry) => new LogEntry(this.apiClient, entry)),
+      totalCount: results.totalCount,
     };
   }
 

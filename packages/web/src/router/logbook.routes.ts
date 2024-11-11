@@ -1,24 +1,31 @@
 import { RouteRecordRaw } from 'vue-router';
 
+export const LogbookRouteNames = {
+  ImportLogs: 'import-logs',
+  NamedLogs: 'named-logs',
+  NewLogEntry: 'new-log-entry',
+  LogEntry: 'log-entry',
+};
+
 export const LogbookRoutes: RouteRecordRaw[] = [
   {
     path: '/importLogs/:username',
-    name: 'import-logs',
-    component: () => import('../views/import-logs-view.vue'),
+    name: LogbookRouteNames.ImportLogs,
+    component: () => import('../views/logbook/import-logs-view.vue'),
   },
   {
     path: '/logbook/:username',
-    name: 'named-logs',
-    component: () => import('../views/logbook-view.vue'),
+    name: LogbookRouteNames.NamedLogs,
+    component: () => import('../views/logbook/logbook-view.vue'),
   },
   {
     path: '/logbook/:username/new',
-    name: 'new-log-entry',
-    component: () => import('../views/new-log-entry-view.vue'),
+    name: LogbookRouteNames.NewLogEntry,
+    component: () => import('../views/logbook/log-entry-view.vue'),
   },
   {
     path: '/logbook/:username/:entryId',
-    name: 'log-entry',
-    component: () => import('../views/log-entry-view.vue'),
+    name: LogbookRouteNames.LogEntry,
+    component: () => import('../views/logbook/log-entry-view.vue'),
   },
 ];

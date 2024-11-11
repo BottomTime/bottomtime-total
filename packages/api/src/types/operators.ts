@@ -82,12 +82,9 @@ export const SearchOperatorsSchema = z
 export type SearchOperatorsParams = z.infer<typeof SearchOperatorsSchema>;
 
 export const SearchOperatorsResponseSchema = z.object({
-  operators: OperatorSchema.array(),
+  data: OperatorSchema.array(),
   totalCount: z.number().int(),
 });
-export type SearchOperatorsResponseDTO = z.infer<
-  typeof SearchOperatorsResponseSchema
->;
 
 export const VerifyOperatorSchema = z.object({
   verified: z.boolean(),

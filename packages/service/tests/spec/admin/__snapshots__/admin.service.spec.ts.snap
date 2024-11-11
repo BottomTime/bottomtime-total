@@ -175,8 +175,7 @@ exports[`Admin Service when searching user accounts will filter results by role 
 
 exports[`Admin Service when searching user accounts will perform a text-based search 1`] = `
 {
-  "totalCount": 2,
-  "users": [
+  "data": [
     {
       "accountTier": 0,
       "email": "Bryce_Thompson47@hotmail.com",
@@ -242,13 +241,13 @@ exports[`Admin Service when searching user accounts will perform a text-based se
       "username": "Lurline96",
     },
   ],
+  "totalCount": 2,
 }
 `;
 
 exports[`Admin Service when searching user accounts will return a list of users 1`] = `
 {
-  "totalCount": 100,
-  "users": [
+  "data": [
     {
       "accountTier": 0,
       "email": "Aaron_Wehner14@yahoo.com",
@@ -570,6 +569,7 @@ exports[`Admin Service when searching user accounts will return a list of users 
       "username": "Barrett_Stracke77",
     },
   ],
+  "totalCount": 100,
 }
 `;
 

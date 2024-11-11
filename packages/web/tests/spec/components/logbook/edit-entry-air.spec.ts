@@ -1,7 +1,8 @@
 import {
-  ListTanksResponseDTO,
+  ApiList,
   ListTanksResponseSchema,
   PressureUnit,
+  TankDTO,
 } from '@bottomtime/api';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
@@ -22,7 +23,7 @@ const HeliumPercentage = `#he-${TestId}`;
 
 describe('EditEntryAir component', () => {
   let opts: ComponentMountingOptions<typeof EditEntryAir>;
-  let tankData: ListTanksResponseDTO;
+  let tankData: ApiList<TankDTO>;
   let air: EditEntryAirFormData;
 
   beforeAll(() => {
@@ -38,15 +39,15 @@ describe('EditEntryAir component', () => {
       o2Percent: 32,
       pressureUnit: PressureUnit.PSI,
       startPressure: 3000,
-      tankId: tankData.tanks[0].id,
+      tankId: tankData.data[0].id,
       tankInfo: {
-        ...tankData.tanks[0],
+        ...tankData.data[0],
       },
     };
 
     opts = {
       props: {
-        tanks: tankData.tanks,
+        tanks: tankData.data,
         ordinal: 2,
         air,
       },
@@ -91,7 +92,7 @@ describe('EditEntryAir component', () => {
       tankId: '',
     };
     opts.props = {
-      tanks: tankData.tanks,
+      tanks: tankData.data,
       ordinal: 2,
       air: blank,
     };
@@ -112,7 +113,7 @@ describe('EditEntryAir component', () => {
 
   it('will render correctly if saved tank info does not match an item in the list', () => {
     opts.props = {
-      tanks: tankData.tanks,
+      tanks: tankData.data,
       ordinal: 2,
       air: {
         ...air,
@@ -141,7 +142,7 @@ describe('EditEntryAir component', () => {
 
   it('will render with "Doubles" checked if count is 2', () => {
     opts.props = {
-      tanks: tankData.tanks,
+      tanks: tankData.data,
       ordinal: 2,
       air: {
         ...air,

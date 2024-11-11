@@ -1,3 +1,3 @@
 FROM nginx:1.27.0-alpine
-COPY packages/service/public/docs/ /usr/share/nginx/html/
+COPY packages/service/docs/ /usr/share/nginx/html/
 EXPOSE 4890

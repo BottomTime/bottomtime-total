@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateLogEntryParamsDTO,
   DepthUnit,
   ListLogEntriesParamsDTO,
@@ -57,7 +58,7 @@ export class LogEntriesService {
 
   async listLogEntries(
     options?: ListLogEntriesOptions,
-  ): Promise<ListLogEntriesResults> {
+  ): Promise<ApiList<LogEntry>> {
     const query = new LogEntryQueryBuilder(this.Entries)
       .withDateRange(options?.startDate, options?.endDate)
       .withOwner(options?.ownerId)
@@ -71,9 +72,7 @@ export class LogEntriesService {
     const [entries, totalCount] = await query.getManyAndCount();
 
     return {
-      logEntries: entries.map((entry) =>
-        this.logEntryFactory.createLogEntry(entry),
-      ),
+      data: entries.map((entry) => this.logEntryFactory.createLogEntry(entry)),
       totalCount,
     };
   }

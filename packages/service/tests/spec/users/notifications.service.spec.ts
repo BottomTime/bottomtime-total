@@ -52,8 +52,8 @@ describe('Notifications Service', () => {
         userId: UserId,
       });
       expect(result.totalCount).toBe(21);
-      expect(result.notifications).toHaveLength(21);
-      expect(result.notifications).toMatchSnapshot();
+      expect(result.data).toHaveLength(21);
+      expect(result.data).toMatchSnapshot();
     });
 
     it('will return an empty result set if user ID does not exist', async () => {
@@ -61,7 +61,7 @@ describe('Notifications Service', () => {
         userId: OtherUserId,
       });
       expect(result.totalCount).toBe(0);
-      expect(result.notifications).toHaveLength(0);
+      expect(result.data).toHaveLength(0);
     });
 
     it('will list notifications with pagination', async () => {
@@ -71,8 +71,8 @@ describe('Notifications Service', () => {
         limit: 10,
       });
       expect(result.totalCount).toBe(21);
-      expect(result.notifications).toHaveLength(10);
-      expect(result.notifications).toMatchSnapshot();
+      expect(result.data).toHaveLength(10);
+      expect(result.data).toMatchSnapshot();
     });
 
     it('will list notifications and include dismissed notifications upon request', async () => {
@@ -81,8 +81,8 @@ describe('Notifications Service', () => {
         showDismissed: true,
       });
       expect(result.totalCount).toBe(NotificationTestData.length);
-      expect(result.notifications).toHaveLength(50);
-      expect(result.notifications).toMatchSnapshot();
+      expect(result.data).toHaveLength(50);
+      expect(result.data).toMatchSnapshot();
     });
   });
 

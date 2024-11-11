@@ -1,7 +1,4 @@
-import {
-  ListAlertsResponseDTO,
-  ListAlertsResponseSchema,
-} from '@bottomtime/api';
+import { AlertDTO, ApiList, ListAlertsResponseSchema } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -13,8 +10,8 @@ import AlertsListItem from '../../../../src/components/admin/alerts-list-item.vu
 import AlertsList from '../../../../src/components/admin/alerts-list.vue';
 import AlertData from '../../../fixtures/alerts.json';
 
-const EmptyResultSet: ListAlertsResponseDTO = {
-  alerts: [],
+const EmptyResultSet: ApiList<AlertDTO> = {
+  data: [],
   totalCount: 0,
 };
 
@@ -23,7 +20,7 @@ const AlertsListElement = 'ul[data-testid="alerts-list"]';
 const LoadMoreButton = 'button[data-testid="btn-load-more"]';
 
 describe('Alerts list component', () => {
-  let alertData: ListAlertsResponseDTO;
+  let alertData: ApiList<AlertDTO>;
   let opts: ComponentMountingOptions<typeof AlertsList>;
 
   beforeEach(() => {
@@ -49,7 +46,7 @@ describe('Alerts list component', () => {
   });
 
   it('will render a partial list', async () => {
-    alertData.alerts = alertData.alerts.slice(0, 10);
+    alertData.data = alertData.data.slice(0, 10);
     const wrapper = mount(AlertsList, {
       props: { alerts: alertData },
       ...opts,
@@ -64,13 +61,13 @@ describe('Alerts list component', () => {
     const listItems = list.findAll('li');
     expect(listItems.length).toBe(11);
 
-    alertData.alerts.forEach((alert, i) => {
+    alertData.data.forEach((alert, i) => {
       expect(listItems.at(i)!.text()).toContain(alert.title);
     });
   });
 
   it('will show the loading spinner if isLoadingMore is true', () => {
-    alertData.alerts = alertData.alerts.slice(0, 10);
+    alertData.data = alertData.data.slice(0, 10);
     const wrapper = mount(AlertsList, {
       props: { alerts: alertData, isLoadingMore: true },
       ...opts,
@@ -89,19 +86,19 @@ describe('Alerts list component', () => {
     });
 
     const listItem = wrapper.getComponent(AlertsListItem);
-    listItem.vm.$emit('delete', alertData.alerts[0]);
+    listItem.vm.$emit('delete', alertData.data[0]);
     await flushPromises();
 
     const dialog = wrapper.get('[data-testid="dialog-modal"]');
     expect(dialog.isVisible()).toBe(true);
-    expect(dialog.text()).toContain(alertData.alerts[0].title);
+    expect(dialog.text()).toContain(alertData.data[0].title);
     await dialog
       .get('button[data-testid="dialog-confirm-button"]')
       .trigger('click');
     await flushPromises();
 
     expect(wrapper.find('[data-testid="dialog-modal"]').exists()).toBe(false);
-    expect(wrapper.emitted('delete')).toEqual([[alertData.alerts[0]]]);
+    expect(wrapper.emitted('delete')).toEqual([[alertData.data[0]]]);
   });
 
   it('will allow a user to cancel a deletion', async () => {
@@ -111,12 +108,12 @@ describe('Alerts list component', () => {
     });
 
     const listItem = wrapper.getComponent(AlertsListItem);
-    listItem.vm.$emit('delete', alertData.alerts[0]);
+    listItem.vm.$emit('delete', alertData.data[0]);
     await flushPromises();
 
     const dialog = wrapper.get('[data-testid="dialog-modal"]');
     expect(dialog.isVisible()).toBe(true);
-    expect(dialog.text()).toContain(alertData.alerts[0].title);
+    expect(dialog.text()).toContain(alertData.data[0].title);
     await dialog
       .get('button[data-testid="dialog-cancel-button"]')
       .trigger('click');

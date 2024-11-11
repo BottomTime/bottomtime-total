@@ -3,7 +3,7 @@
     <FormBox class="flex flex-col lg:flex-row justify-between items-center">
       <p data-testid="friends-count">
         <span>Showing </span>
-        <span class="font-bold">{{ friends.friends.length }}</span>
+        <span class="font-bold">{{ friends.data.length }}</span>
         <span> of </span>
         <span class="font-bold">{{ friends.totalCount }}</span>
         <span> friends</span>
@@ -27,9 +27,9 @@
       </div>
     </FormBox>
 
-    <ul v-if="friends.friends.length" data-testid="friends-list">
+    <ul v-if="friends.data.length" data-testid="friends-list">
       <FriendsListItem
-        v-for="friend in friends.friends"
+        v-for="friend in friends.data"
         :key="friend.id"
         :friend="friend"
         @select="(friend) => $emit('select', friend)"
@@ -37,7 +37,7 @@
       />
 
       <li
-        v-if="friends.friends.length < friends.totalCount"
+        v-if="friends.data.length < friends.totalCount"
         class="min-h-24 flex items-center justify-center"
       >
         <p
@@ -83,12 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  FriendDTO,
-  FriendsSortBy,
-  ListFriendsResponseDTO,
-  SortOrder,
-} from '@bottomtime/api';
+import { ApiList, FriendDTO, FriendsSortBy, SortOrder } from '@bottomtime/api';
 
 import { ref, watch } from 'vue';
 
@@ -99,7 +94,7 @@ import FormSelect from '../common/form-select.vue';
 import FriendsListItem from './friends-list-item.vue';
 
 interface FriendsListProps {
-  friends: ListFriendsResponseDTO;
+  friends: ApiList<FriendDTO>;
   isLoadingMore?: boolean;
   sortBy?: FriendsSortBy;
   sortOrder?: SortOrder;

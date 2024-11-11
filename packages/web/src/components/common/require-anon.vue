@@ -53,8 +53,10 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-import { useLocation } from '../../location';
+import { useClient } from '../../api-client';
+import { useOops } from '../../oops';
 import { useCurrentUser } from '../../store';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import FormBox from './form-box.vue';
@@ -65,8 +67,11 @@ interface RequireAnonProps {
   redirectTo?: string;
 }
 
+const client = useClient();
 const currentUser = useCurrentUser();
-const location = useLocation();
+const oops = useOops();
+const route = useRoute();
+const router = useRouter();
 
 const props = defineProps<RequireAnonProps>();
 const showConfirmLogout = ref(false);
@@ -79,11 +84,14 @@ function onCancelLogout() {
   showConfirmLogout.value = false;
 }
 
-function onConfirmLogout() {
-  location.assign(
-    `/api/auth/logout?redirectTo=${encodeURIComponent(
-      props.redirectTo || location.pathname,
-    )}`,
-  );
+async function onConfirmLogout() {
+  await oops(async () => {
+    await client.users.logout();
+    currentUser.user = null;
+    const redirectTo = props.redirectTo?.startsWith('/')
+      ? props.redirectTo
+      : route.path;
+    await router.push({ path: redirectTo });
+  });
 }
 </script>

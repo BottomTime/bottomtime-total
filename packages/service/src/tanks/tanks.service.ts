@@ -15,7 +15,7 @@ export type CreateTankOptions = CreateOrUpdateTankParamsDTO & {
 };
 export type UpdateTankOptions = Partial<Omit<Tank, 'id' | 'userId'>>;
 export type ListTanksResponse = {
-  tanks: Tank[];
+  data: Tank[];
   totalCount: number;
 };
 export type ListTanksOptions =
@@ -55,7 +55,7 @@ export class TanksService {
     const [tanks, totalCount] = await query.getManyAndCount();
 
     return {
-      tanks: tanks.map((tank) => new Tank(this.Tanks, tank)),
+      data: tanks.map((tank) => new Tank(this.Tanks, tank)),
       totalCount,
     };
   }

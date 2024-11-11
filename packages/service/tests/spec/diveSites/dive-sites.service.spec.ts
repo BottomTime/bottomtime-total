@@ -286,13 +286,13 @@ describe('Dive Site Service', () => {
           limit: 5,
         });
 
-        const sites = results.sites.map((site) => ({
+        const sites = results.data.map((site) => ({
           name: site.name,
           rating: site.averageRating,
         }));
 
         expect(results.totalCount).toEqual(200);
-        expect(results.sites).toHaveLength(5);
+        expect(results.data).toHaveLength(5);
         expect(sites).toMatchSnapshot();
       });
     });
@@ -306,10 +306,10 @@ describe('Dive Site Service', () => {
         limit: 8,
       });
 
-      const sites = results.sites.map((site) => site.name);
+      const sites = results.data.map((site) => site.name);
 
       expect(results.totalCount).toEqual(200);
-      expect(results.sites).toHaveLength(8);
+      expect(results.data).toHaveLength(8);
       expect(sites).toMatchSnapshot();
     });
 
@@ -323,7 +323,7 @@ describe('Dive Site Service', () => {
         sortOrder: SortOrder.Descending,
       });
 
-      const sites = results.sites.map((site) => site.toJSON());
+      const sites = results.data.map((site) => site.toJSON());
       expect(results.totalCount).toEqual(13);
       expect(sites).toMatchSnapshot();
     });
@@ -339,7 +339,7 @@ describe('Dive Site Service', () => {
       });
 
       expect(results.totalCount).toEqual(100);
-      results.sites.forEach((site) => {
+      results.data.forEach((site) => {
         expect(site.creator.userId).toEqual(otherUser.id);
       });
     });
@@ -364,7 +364,7 @@ describe('Dive Site Service', () => {
         });
 
         expect(results.totalCount).toEqual(testCase.expectedCount);
-        results.sites.forEach((site) => {
+        results.data.forEach((site) => {
           if (testCase.name === 'freeToDive') {
             expect(site.freeToDive).toBe(testCase.value);
           } else if (testCase.name === 'shoreAccess') {
@@ -394,7 +394,7 @@ describe('Dive Site Service', () => {
           sortOrder: SortOrder.Descending,
         });
 
-        const sites = results.sites.map((site) => site.gps);
+        const sites = results.data.map((site) => site.gps);
         expect(results.totalCount).toEqual(testCase.expectedCount);
         expect(sites).toMatchSnapshot();
       });
@@ -411,7 +411,7 @@ describe('Dive Site Service', () => {
       });
 
       expect(results.totalCount).toBe(25);
-      results.sites.forEach((site) => {
+      results.data.forEach((site) => {
         expect(site.averageRating).toBeGreaterThanOrEqual(3.1);
         expect(site.averageRating).toBeLessThanOrEqual(3.5);
       });
@@ -428,7 +428,7 @@ describe('Dive Site Service', () => {
       });
 
       expect(results.totalCount).toBe(22);
-      results.sites.forEach((site) => {
+      results.data.forEach((site) => {
         expect(site.averageDifficulty).toBeGreaterThanOrEqual(2.2);
         expect(site.averageDifficulty).toBeLessThanOrEqual(2.7);
       });

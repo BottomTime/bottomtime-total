@@ -86,7 +86,7 @@ exports[`Tanks End-to-End Tests when creating a new tank will return 400 if the 
 
 exports[`Tanks End-to-End Tests when listing tanks will list system tanks 1`] = `
 {
-  "tanks": [
+  "data": [
     {
       "id": "fc1b9f65-4b5d-4a93-804a-b44213cb67ce",
       "isSystem": true,

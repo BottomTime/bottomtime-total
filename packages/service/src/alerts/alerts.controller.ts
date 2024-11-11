@@ -1,10 +1,10 @@
 import {
   AlertDTO,
+  ApiList,
   CreateOrUpdateAlertParamsDTO,
   CreateOrUpdateAlertParamsSchema,
   ListAlertsParamsDTO,
   ListAlertsParamsSchema,
-  ListAlertsResponseDTO,
 } from '@bottomtime/api';
 
 import {
@@ -67,9 +67,20 @@ export class AlertsController {
    *         content:
    *           application/json:
    *             schema:
-   *               type: array
-   *               items:
-   *                 $ref: "#/components/schemas/Alert"
+   *               type: object
+   *               required:
+   *                 - data
+   *                 - totalCount
+   *               properties:
+   *                 data:
+   *                   type: array
+   *                   description: The list of alerts matching the search criteria.
+   *                   items:
+   *                     $ref: "#/components/schemas/Alert"
+   *                 totalCount:
+   *                   type: integer
+   *                   description: The total number of alerts matching the search criteria.
+   *                   example: 18
    *       400:
    *         description: The request was rejected because one or more of the query string parameters were invalid.
    *         content:
@@ -90,13 +101,13 @@ export class AlertsController {
     @CurrentUser() user: User | undefined,
     @Query(new ZodValidator(ListAlertsParamsSchema))
     options: ListAlertsParamsDTO,
-  ): Promise<ListAlertsResponseDTO> {
-    const { alerts, totalCount } = await this.service.listAlerts({
+  ): Promise<ApiList<AlertDTO>> {
+    const { data: alerts, totalCount } = await this.service.listAlerts({
       ...options,
       userId: user?.id,
     });
     return {
-      alerts: alerts.map((alert) => alert.toJSON()),
+      data: alerts.map((alert) => alert.toJSON()),
       totalCount,
     };
   }

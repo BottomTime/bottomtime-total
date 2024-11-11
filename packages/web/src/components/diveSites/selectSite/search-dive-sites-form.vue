@@ -13,7 +13,7 @@
       <div class="px-16 space-y-1.5">
         <GoogleMap
           :marker="state.location"
-          :sites="state.sites?.sites"
+          :sites="state.sites?.data"
           @click="onLocationChange"
           @site-selected="onSiteHighlighted"
         />
@@ -57,7 +57,7 @@
     <div v-else-if="state.sites">
       <p class="text-center my-1.5" data-testid="search-sites-counts">
         <span>Showing </span>
-        <span class="font-bold">{{ state.sites.sites.length }}</span>
+        <span class="font-bold">{{ state.sites.data.length }}</span>
         <span> of </span>
         <span class="font-bold">{{ state.sites.totalCount }}</span>
         <span> dive sites.</span>
@@ -69,7 +69,7 @@
         data-testid="search-sites-results-list"
       >
         <SelectDiveSiteListItem
-          v-for="site in state.sites.sites"
+          v-for="site in state.sites.data"
           :key="site.id"
           :site="site"
           :selected="site.id === state.selectedSite"
@@ -78,7 +78,7 @@
         />
 
         <li
-          v-if="state.sites.sites.length < state.sites.totalCount"
+          v-if="state.sites.data.length < state.sites.totalCount"
           class="py-12 text-center"
         >
           <LoadingSpinner
@@ -121,10 +121,10 @@
 
 <script lang="ts" setup>
 import {
+  ApiList,
   DiveSiteDTO,
   GPSCoordinates,
   SearchDiveSitesParamsDTO,
-  SearchDiveSitesResponseDTO,
 } from '@bottomtime/api';
 
 import { reactive } from 'vue';
@@ -147,7 +147,7 @@ interface SelectDiveSiteListState {
   radius: number;
   search: string;
   selectedSite?: string;
-  sites?: SearchDiveSitesResponseDTO;
+  sites?: ApiList<DiveSiteDTO>;
 }
 
 const client = useClient();
@@ -184,7 +184,7 @@ async function onSearch(): Promise<void> {
   await oops(async () => {
     const results = await client.diveSites.searchDiveSites(getSearchParams());
     state.sites = {
-      sites: results.sites.map((site) => site.toJSON()),
+      data: results.data.map((site) => site.toJSON()),
       totalCount: results.totalCount,
     };
   });
@@ -198,9 +198,9 @@ async function onLoadMore(): Promise<void> {
   await oops(async () => {
     const results = await client.diveSites.searchDiveSites({
       ...getSearchParams(),
-      skip: state.sites?.sites.length,
+      skip: state.sites?.data.length,
     });
-    state.sites!.sites.push(...results.sites.map((site) => site.toJSON()));
+    state.sites!.data.push(...results.data.map((site) => site.toJSON()));
     state.sites!.totalCount = results.totalCount;
   });
 

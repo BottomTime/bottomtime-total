@@ -13,7 +13,6 @@ import { Router } from 'vue-router';
 import { ApiClientKey } from '../../../../src/api-client';
 import NavBar from '../../../../src/components/core/nav-bar.vue';
 import { FeaturesServiceKey } from '../../../../src/featrues';
-import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser } from '../../../../src/store';
 import { ConfigCatClientMock } from '../../../config-cat-client-mock';
 import { createRouter } from '../../../fixtures/create-router';
@@ -57,7 +56,6 @@ describe('Nav Bar component', () => {
         provide: {
           [ApiClientKey as symbol]: client,
           [FeaturesServiceKey as symbol]: features,
-          [LocationKey as symbol]: new MockLocation(),
         },
         stubs: {
           teleport: true,

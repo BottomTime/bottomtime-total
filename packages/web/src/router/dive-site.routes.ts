@@ -1,19 +1,25 @@
 import { RouteRecordRaw } from 'vue-router';
 
+export const DiveSiteRouteNames = {
+  DiveSites: 'dive-sites',
+  NewDiveSite: 'new-dive-site',
+  DiveSite: 'dive-site',
+} as const;
+
 export const DiveSiteRoutes: RouteRecordRaw[] = [
   {
     path: '/diveSites',
-    name: 'dive-sites',
-    component: () => import('../views/dive-sites-view.vue'),
+    name: DiveSiteRouteNames.DiveSites,
+    component: () => import('../views/sites/dive-sites-view.vue'),
   },
   {
     path: '/diveSites/new',
-    name: 'new-dive-site',
-    component: () => import('../views/new-dive-site-view.vue'),
+    name: DiveSiteRouteNames.NewDiveSite,
+    component: () => import('../views/sites/dive-site-view.vue'),
   },
   {
     path: '/diveSites/:siteId',
-    name: 'dive-site',
-    component: () => import('../views/dive-site-view.vue'),
+    name: DiveSiteRouteNames.DiveSite,
+    component: () => import('../views/sites/dive-site-view.vue'),
   },
 ];

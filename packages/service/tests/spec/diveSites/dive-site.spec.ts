@@ -390,7 +390,7 @@ describe('Dive Site Class', () => {
 
         expect(results.totalCount).toBe(100);
 
-        const reviews = results.reviews.map((r) => ({
+        const reviews = results.data.map((r) => ({
           title: r.title,
           rating: r.rating,
           createdOn: r.createdOn,
@@ -408,9 +408,9 @@ describe('Dive Site Class', () => {
       });
 
       expect(results.totalCount).toBe(100);
-      expect(results.reviews).toHaveLength(28);
+      expect(results.data).toHaveLength(28);
       expect(
-        results.reviews.map((review) => ({
+        results.data.map((review) => ({
           title: review.title,
           rating: review.rating,
         })),

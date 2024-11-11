@@ -18,7 +18,7 @@ exports[`Certifications End-to-End when getting a certification will return a ce
 
 exports[`Certifications End-to-End when searching certifications will perform a search for certifications 1`] = `
 {
-  "certifications": [
+  "data": [
     {
       "agency": "SSI",
       "course": "Equipment Techniques",

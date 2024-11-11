@@ -56,8 +56,9 @@
 
 <script lang="ts" setup>
 import {
+  ApiList,
   FriendRequestDTO,
-  SearchProfilesResponseDTO,
+  ProfileDTO,
   SuccinctProfileDTO,
 } from '@bottomtime/api';
 
@@ -75,7 +76,7 @@ interface SearchFriendsFormState {
   query: string;
   isLoading: boolean;
   isLoadingMore: boolean;
-  users?: SearchProfilesResponseDTO;
+  users?: ApiList<ProfileDTO>;
 }
 
 const currentUser = useCurrentUser();
@@ -117,11 +118,11 @@ async function onLoadMore(): Promise<void> {
     const results = await client.users.searchProfiles({
       query: state.query,
       filterFriends: true,
-      skip: state.users?.users.length,
+      skip: state.users?.data.length,
       limit: 50,
     });
 
-    state.users.users.push(...results.users);
+    state.users.data.push(...results.data);
     state.users.totalCount = results.totalCount;
   });
 

@@ -1,12 +1,13 @@
 import {
   AccountTier,
   ApiClient,
+  ApiList,
   DepthUnit,
   DiveSiteDTO,
-  ListTanksResponseDTO,
   ListTanksResponseSchema,
   LogBookSharing,
   PressureUnit,
+  TankDTO,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -71,7 +72,7 @@ const LogNumber = 99;
 describe('EditLogbookEntry component', () => {
   let router: Router;
   let client: ApiClient;
-  let tankData: ListTanksResponseDTO;
+  let tankData: ApiList<TankDTO>;
 
   let pinia: Pinia;
   let opts: ComponentMountingOptions<typeof EditLogbookEntry>;
@@ -107,7 +108,7 @@ describe('EditLogbookEntry component', () => {
           teleport: true,
         },
       },
-      props: { entry: BlankLogEntry, tanks: tankData.tanks },
+      props: { entry: BlankLogEntry, tanks: tankData.data },
     };
   });
 
@@ -134,7 +135,7 @@ describe('EditLogbookEntry component', () => {
   });
 
   it('will load values for minimal log entry', async () => {
-    opts.props = { entry: MinimalLogEntry, tanks: tankData.tanks };
+    opts.props = { entry: MinimalLogEntry, tanks: tankData.data };
     const wrapper = mount(EditLogbookEntry, opts);
     await flushPromises();
 
@@ -159,7 +160,7 @@ describe('EditLogbookEntry component', () => {
   });
 
   it('will load values for full log entry', async () => {
-    opts.props = { entry: FullLogEntry, tanks: tankData.tanks };
+    opts.props = { entry: FullLogEntry, tanks: tankData.data };
     const wrapper = mount(EditLogbookEntry, opts);
     await flushPromises();
 
@@ -430,7 +431,7 @@ describe('EditLogbookEntry component', () => {
         ...BlankLogEntry,
         site: { ...DiveSiteWithMinimalProperties },
       },
-      tanks: tankData.tanks,
+      tanks: tankData.data,
     };
     const wrapper = mount(EditLogbookEntry, opts);
     await wrapper.get('[data-testid="btn-change-site"]').trigger('click');
@@ -459,7 +460,7 @@ describe('EditLogbookEntry component', () => {
         endPressure: 50,
         o2Percent: 21,
         hePercent: 40,
-        tankId: tankData.tanks[0].id,
+        tankId: tankData.data[0].id,
       };
 
       const wrapper = mount(EditLogbookEntry, opts);
@@ -476,7 +477,7 @@ describe('EditLogbookEntry component', () => {
       await wrapper.get(AddTankButton).trigger('click');
       await wrapper
         .get('[data-testid="tanks-select"]')
-        .setValue(tankData.tanks[0].id);
+        .setValue(tankData.data[0].id);
       await wrapper.get('[data-testid="doubles"]').setValue(true);
       await wrapper
         .get('[data-testid="start-pressure"]')
@@ -503,13 +504,13 @@ describe('EditLogbookEntry component', () => {
                 count: air.count,
                 endPressure: air.endPressure,
                 hePercent: air.hePercent,
-                material: tankData.tanks[0].material,
-                name: tankData.tanks[0].name,
+                material: tankData.data[0].material,
+                name: tankData.data[0].name,
                 o2Percent: air.o2Percent,
                 pressureUnit: PressureUnit.Bar,
                 startPressure: air.startPressure,
-                volume: tankData.tanks[0].volume,
-                workingPressure: tankData.tanks[0].workingPressure,
+                volume: tankData.data[0].volume,
+                workingPressure: tankData.data[0].workingPressure,
               },
             ],
             timing: {

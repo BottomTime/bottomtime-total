@@ -2,7 +2,7 @@
 
 exports[`Friend Requests End-to-End Tests when listing friend requests will allow admins to view friend requests for any user 1`] = `
 {
-  "friendRequests": [
+  "data": [
     {
       "created": "2023-11-27T09:21:55.366Z",
       "direction": "outgoing",
@@ -131,7 +131,7 @@ exports[`Friend Requests End-to-End Tests when listing friend requests will retu
 
 exports[`Friend Requests End-to-End Tests when listing friend requests will return a list of the user's friend requests 1`] = `
 {
-  "friendRequests": [
+  "data": [
     {
       "created": "2023-11-27T09:21:55.366Z",
       "direction": "outgoing",

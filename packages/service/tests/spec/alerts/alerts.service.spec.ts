@@ -48,15 +48,15 @@ describe('Alerts Service', () => {
       const results = await service.listAlerts({});
 
       expect(results.totalCount).toBe(alertData.length);
-      expect(results.alerts).toHaveLength(10);
-      expect(results.alerts).toMatchSnapshot();
+      expect(results.data).toHaveLength(10);
+      expect(results.data).toMatchSnapshot();
     });
 
     it('will return non-dismissed alerts by default', async () => {
       const results = await service.listAlerts({ userId: user.id });
       expect(results.totalCount).toBe(12);
-      expect(results.alerts).toHaveLength(10);
-      expect(results.alerts).toMatchSnapshot();
+      expect(results.data).toHaveLength(10);
+      expect(results.data).toMatchSnapshot();
     });
 
     it('will return all alerts if requested', async () => {
@@ -65,8 +65,8 @@ describe('Alerts Service', () => {
         showDismissed: true,
       });
       expect(results.totalCount).toBe(alertData.length);
-      expect(results.alerts).toHaveLength(10);
-      expect(results.alerts).toMatchSnapshot();
+      expect(results.data).toHaveLength(10);
+      expect(results.data).toMatchSnapshot();
     });
 
     it('will allow pagination of results', async () => {
@@ -76,15 +76,15 @@ describe('Alerts Service', () => {
         limit: 6,
       });
       expect(results.totalCount).toBe(12);
-      expect(results.alerts).toHaveLength(5);
-      expect(results.alerts).toMatchSnapshot();
+      expect(results.data).toHaveLength(5);
+      expect(results.data).toMatchSnapshot();
     });
 
     it('will return an empty result set if no alerts can be found', async () => {
       await Alerts.delete({});
       const results = await service.listAlerts({});
       expect(results).toEqual({
-        alerts: [],
+        data: [],
         totalCount: 0,
       });
     });

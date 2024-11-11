@@ -36,8 +36,8 @@ test.describe('Friends Management', () => {
     const results = await api.friends.listFriendRequests(Username, {
       direction: FriendRequestDirection.Outgoing,
     });
-    expect(results.friendRequests).toHaveLength(1);
-    expect(results.friendRequests[0].friend.username).toBe('Elroy_Carter');
+    expect(results.data).toHaveLength(1);
+    expect(results.data[0].friend.username).toBe('Elroy_Carter');
   });
 
   test('will allow a user to accept a friend request', async ({
@@ -59,8 +59,8 @@ test.describe('Friends Management', () => {
     await friends.gotoFriends();
 
     const friendsData = await api.friends.listFriends(Username);
-    expect(friendsData.friends).toHaveLength(1);
-    expect(friendsData.friends[0].username).toBe(friendUsername);
+    expect(friendsData.data).toHaveLength(1);
+    expect(friendsData.data[0].username).toBe(friendUsername);
 
     await expect(
       page.getByTestId(`select-friend-${friendUsername}`),
@@ -90,9 +90,9 @@ test.describe('Friends Management', () => {
         showAcknowledged: true,
       }),
     ]);
-    expect(friendsData.friends).toHaveLength(0);
-    expect(friendRequests.friendRequests).toHaveLength(1);
-    expect(friendRequests.friendRequests[0].declineReason).toBe(reason);
+    expect(friendsData.data).toHaveLength(0);
+    expect(friendRequests.data).toHaveLength(1);
+    expect(friendRequests.data[0].declineReason).toBe(reason);
   });
 
   test('will allow a user to cancel a friend request', async ({

@@ -1,5 +1,6 @@
 import { DiveSite } from '.';
 import {
+  ApiList,
   CreateOrUpdateDiveSiteDTO,
   DiveSiteSchema,
   SearchDiveSitesParamsDTO,
@@ -28,56 +29,54 @@ export class DiveSitesApiClient {
     return new DiveSite(this.apiClient, data);
   }
 
-  searchQueryString(params: SearchDiveSitesParamsDTO = {}): string {
-    const query = new URLSearchParams();
+  searchQueryString(
+    params: SearchDiveSitesParamsDTO = {},
+  ): Record<string, string> {
+    const query: Record<string, string> = {};
 
-    if (params.creator) query.set('creator', params.creator);
-    if (params.limit) query.set('limit', params.limit.toString());
-    if (params.query) query.set('query', params.query);
-    if (params.skip) query.set('skip', params.skip.toString());
-    if (params.sortBy) query.set('sortBy', params.sortBy);
-    if (params.sortOrder) query.set('sortOrder', params.sortOrder);
-    if (params.waterType) query.set('waterType', params.waterType);
+    if (params.creator) query.creator = params.creator;
+    if (params.limit) query.limit = params.limit.toString();
+    if (params.query) query.query = params.query;
+    if (params.skip) query.skip = params.skip.toString();
+    if (params.sortBy) query.sortBy = params.sortBy;
+    if (params.sortOrder) query.sortOrder = params.sortOrder;
+    if (params.waterType) query.waterType = params.waterType;
 
     if (typeof params.freeToDive === 'boolean') {
-      query.set('freeToDive', params.freeToDive.toString());
+      query.freeToDive = params.freeToDive.toString();
     }
 
     if (typeof params.shoreAccess === 'boolean') {
-      query.set('shoreAccess', params.shoreAccess.toString());
+      query.shoreAccess = params.shoreAccess.toString();
     }
 
     if (params.difficulty) {
-      query.set(
-        'difficulty',
-        `${params.difficulty.min},${params.difficulty.max}`,
-      );
+      query.difficulty = `${params.difficulty.min},${params.difficulty.max}`;
     }
 
     if (params.rating) {
-      query.set('rating', `${params.rating.min},${params.rating.max}`);
+      query.rating = `${params.rating.min},${params.rating.max}`;
     }
 
     if (params.location) {
-      query.set('location', `${params.location.lat},${params.location.lon}`);
-      query.set('radius', params.radius?.toString() || '50');
+      query.location = `${params.location.lat},${params.location.lon}`;
+      query.radius = params.radius?.toString() || '50';
     }
 
-    return query.toString();
+    return query;
   }
 
-  async searchDiveSites(query: SearchDiveSitesParamsDTO = {}): Promise<{
-    sites: DiveSite[];
-    totalCount: number;
-  }> {
+  async searchDiveSites(
+    query: SearchDiveSitesParamsDTO = {},
+  ): Promise<ApiList<DiveSite>> {
     const { data: result } = await this.apiClient.get(
-      `/api/diveSites?${this.searchQueryString(query)}`,
-      undefined,
+      '/api/diveSites',
+      this.searchQueryString(query),
       SearchDiveSitesResponseSchema,
     );
 
     return {
-      sites: result.sites.map((site) => new DiveSite(this.apiClient, site)),
+      data: result.data.map((site) => new DiveSite(this.apiClient, site)),
       totalCount: result.totalCount,
     };
   }

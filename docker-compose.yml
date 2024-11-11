@@ -87,8 +87,6 @@ services:
       - packages/web/.env
     environment:
       - BTWEB_API_URL=http://bottomtime-service:4800/
-    entrypoint: /app/packages/web/bootstrap-docker.sh
-    command: []
     working_dir: /app/packages/web
     depends_on:
       service:
@@ -105,9 +103,6 @@ services:
           path: packages/web/public
           target: /app/packages/web/public
         - action: sync
-          path: packages/web/server
-          target: /app/packages/web/server
-        - action: sync
           path: packages/web/src
           target: /app/packages/web/src
 
@@ -123,5 +118,5 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: packages/service/public/docs/
+          path: packages/service/docs/swagger.json
           target: /usr/share/nginx/html

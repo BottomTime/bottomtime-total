@@ -105,11 +105,7 @@ describe('Admin End-to-End Tests', () => {
     });
 
     beforeEach(async () => {
-      await Users.createQueryBuilder()
-        .insert()
-        .into(UserEntity)
-        .values(userData)
-        .execute();
+      await Users.save(userData);
     });
 
     it('will return a list of users', async () => {
@@ -132,7 +128,7 @@ describe('Admin End-to-End Tests', () => {
         .set(...adminAuthHeader)
         .expect(200);
 
-      expect(result.users).toHaveLength(4);
+      expect(result.data).toHaveLength(4);
       expect(result).toMatchSnapshot();
     });
 

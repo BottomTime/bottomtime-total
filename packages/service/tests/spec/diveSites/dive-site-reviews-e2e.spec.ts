@@ -127,9 +127,9 @@ describe('Dive Site Reviews End-to-End Tests', () => {
     it('will query for a list of reviews and return the results', async () => {
       const { body: results } = await request(server).get(getUrl()).expect(200);
       expect(results.totalCount).toBe(reviewData.length);
-      expect(results.reviews).toHaveLength(50);
+      expect(results.data).toHaveLength(50);
       expect(
-        results.reviews.map((review: DiveSiteReviewDTO) => review.title),
+        results.data.map((review: DiveSiteReviewDTO) => review.title),
       ).toMatchSnapshot();
     });
 
@@ -144,9 +144,9 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         })
         .expect(200);
       expect(results.totalCount).toBe(reviewData.length);
-      expect(results.reviews).toHaveLength(5);
+      expect(results.data).toHaveLength(5);
       expect(
-        results.reviews.map((review: DiveSiteReviewDTO) => review.title),
+        results.data.map((review: DiveSiteReviewDTO) => review.title),
       ).toMatchSnapshot();
     });
 

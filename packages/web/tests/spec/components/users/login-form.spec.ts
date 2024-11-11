@@ -19,7 +19,6 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import LoginForm from '../../../../src/components/users/login-form.vue';
-import { LocationKey, MockLocation } from '../../../../src/location';
 import { useCurrentUser, useToasts } from '../../../../src/store';
 import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
@@ -75,7 +74,6 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
       },
     });
@@ -99,7 +97,6 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
       },
     });
@@ -126,7 +123,6 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
       },
     });
@@ -154,7 +150,6 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: new MockLocation(),
         },
       },
     });
@@ -173,7 +168,6 @@ describe('Login Form component', () => {
   });
 
   it('will redirect on successful login if "redirectTo" prop is set', async () => {
-    const location = new MockLocation();
     const spy = jest
       .spyOn(client.users, 'login')
       .mockResolvedValue(new User(fetcher, UserData));
@@ -185,7 +179,6 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
       },
     });
@@ -196,7 +189,7 @@ describe('Login Form component', () => {
     await flushPromises();
 
     expect(spy).toHaveBeenCalled();
-    expect(location.pathname).toEqual('/profile');
+    expect(router.currentRoute.value.path).toEqual('/profile');
   });
 
   it('will prefill username if "username" prop is set', async () => {
@@ -209,7 +202,6 @@ describe('Login Form component', () => {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
-          [LocationKey as symbol]: location,
         },
       },
     });

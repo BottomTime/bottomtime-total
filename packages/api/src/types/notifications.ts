@@ -29,9 +29,6 @@ export type ListNotificationsParamsDTO = z.infer<
 >;
 
 export const ListNotificationsResponseSchema = z.object({
-  notifications: z.array(NotificationSchema),
+  data: z.array(NotificationSchema),
   totalCount: z.number().int(),
 });
-export type ListNotificationsResponseDTO = z.infer<
-  typeof ListNotificationsResponseSchema
->;

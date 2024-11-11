@@ -1,11 +1,10 @@
 import {
+  ApiList,
   FriendDTO,
   FriendRequestDTO,
   FriendRequestDirection,
-  ListFriendRequestsParams,
-  ListFriendRequestsResponseDTO,
-  ListFriendsParams,
-  ListFriendsResponseDTO,
+  ListFriendRequestsParamsDTO,
+  ListFriendsParamsDTO,
 } from '@bottomtime/api';
 
 import {
@@ -27,17 +26,17 @@ import { FriendRequestQueryBuilder } from './friend-request-query-builder';
 
 // List Friends Types
 export type Friend = FriendDTO;
-export type ListFriendsOptions = ListFriendsParams & {
+export type ListFriendsOptions = ListFriendsParamsDTO & {
   userId: string;
 };
-export type ListFriendsResults = ListFriendsResponseDTO;
+export type ListFriendsResults = ApiList<FriendDTO>;
 
 // List Friend Requests Types
 export type FriendRequest = FriendRequestDTO;
-export type ListFriendRequestOptions = ListFriendRequestsParams & {
+export type ListFriendRequestOptions = ListFriendRequestsParamsDTO & {
   userId: string;
 };
-export type ListFriendRequestsResults = ListFriendRequestsResponseDTO;
+export type ListFriendRequestsResults = ApiList<FriendRequestDTO>;
 
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
 
@@ -113,7 +112,7 @@ export class FriendsService {
     const [friends, totalCount] = await query.getManyAndCount();
 
     return {
-      friends: friends.map(FriendsService.toFriendDTO),
+      data: friends.map(FriendsService.toFriendDTO),
       totalCount,
     };
   }
@@ -186,7 +185,7 @@ export class FriendsService {
     const [requests, totalCount] = await query.getManyAndCount();
 
     return {
-      friendRequests: requests.map((friend) =>
+      data: requests.map((friend) =>
         FriendsService.toFriendRequestDTO(friend, options.userId),
       ),
       totalCount,

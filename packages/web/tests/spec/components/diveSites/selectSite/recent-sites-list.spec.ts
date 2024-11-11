@@ -47,9 +47,9 @@ describe('RecentSitesList component', () => {
       `/logbook/${BasicUser.username}/42373d47-1e26-4875-87ed-04f21bec6951`,
     );
 
-    const { sites } = SearchDiveSitesResponseSchema.parse(TestDiveSites);
-    recentSites = sites.slice(0, 10);
-    extraSite = sites[10];
+    const { data } = SearchDiveSitesResponseSchema.parse(TestDiveSites);
+    recentSites = data.slice(0, 10);
+    extraSite = data[10];
   });
 
   beforeEach(() => {

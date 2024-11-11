@@ -1,9 +1,9 @@
 import {
+  ApiList,
   CreateOrUpdateOperatorDTO,
   CreateOrUpdateOperatorSchema,
   OperatorDTO,
   SearchOperatorsParams,
-  SearchOperatorsResponseDTO,
   SearchOperatorsSchema,
   TransferOperatorOwnershipDTO,
   TransferOperatorOwnershipSchema,
@@ -169,10 +169,10 @@ export class OperatorsController {
    *             schema:
    *               type: object
    *               required:
-   *                 - operators
+   *                 - data
    *                 - totalCount
    *               properties:
-   *                 operators:
+   *                 data:
    *                   type: array
    *                   name: Dive Operators
    *                   description: A list of dive operators that matched the search criteria.
@@ -200,7 +200,7 @@ export class OperatorsController {
   async searchOperators(
     @Query(new ZodValidator(SearchOperatorsSchema))
     options?: SearchOperatorsParams,
-  ): Promise<SearchOperatorsResponseDTO> {
+  ): Promise<ApiList<OperatorDTO>> {
     this.log.debug(
       'Performing search for dive operators with search options:',
       options,
@@ -215,7 +215,7 @@ export class OperatorsController {
       owner,
     });
     return {
-      operators: results.operators.map((op) => op.toJSON()),
+      data: results.data.map((op) => op.toJSON()),
       totalCount: results.totalCount,
     };
   }

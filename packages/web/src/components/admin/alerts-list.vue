@@ -17,7 +17,7 @@
 
   <FormBox class="flex place-items-baseline">
     <p class="grow" data-testid="alerts-count">
-      Showing <span class="font-bold">{{ alerts.alerts.length }}</span> of
+      Showing <span class="font-bold">{{ alerts.data.length }}</span> of
       <span class="font-bold">{{ alerts.totalCount }}</span> alerts
     </p>
 
@@ -27,7 +27,7 @@
   </FormBox>
 
   <p
-    v-if="alerts.alerts.length === 0"
+    v-if="alerts.data.length === 0"
     class="my-6 text-center text-lg italic space-x-3"
     data-testid="alerts-list-empty"
   >
@@ -41,7 +41,7 @@
   </p>
 
   <ul v-else data-testid="alerts-list">
-    <li v-for="alert in alerts.alerts" :key="alert.id" class="space-y-3">
+    <li v-for="alert in alerts.data" :key="alert.id" class="space-y-3">
       <AlertsListItem :alert="alert" @delete="onDelete" />
     </li>
     <li v-if="isLoadingMore">
@@ -55,10 +55,7 @@
         <span>Loading...</span>
       </p>
     </li>
-    <li
-      v-else-if="alerts.alerts.length < alerts.totalCount"
-      class="text-center"
-    >
+    <li v-else-if="alerts.data.length < alerts.totalCount" class="text-center">
       <FormButton
         size="lg"
         type="link"
@@ -72,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AlertDTO, ListAlertsResponseDTO } from '@bottomtime/api';
+import { AlertDTO, ApiList } from '@bottomtime/api';
 
 import { ref } from 'vue';
 
@@ -83,7 +80,7 @@ import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import AlertsListItem from './alerts-list-item.vue';
 
 interface AlertsListProps {
-  alerts: ListAlertsResponseDTO;
+  alerts: ApiList<AlertDTO>;
   isLoadingMore?: boolean;
 }
 

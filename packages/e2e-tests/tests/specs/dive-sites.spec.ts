@@ -74,16 +74,16 @@ test.describe('Dive Sites', () => {
       lon: 34.5600764,
     };
 
-    await page.getByTestId('new-site-location').fill(location);
-    await page.getByTestId('new-site-lat').fill(gps.lat.toString());
-    await page.getByTestId('new-site-lon').fill(gps.lon.toString());
-    await page.getByTestId('new-site-directions').fill(directions);
-    await page.getByTestId('new-site-name').fill(name);
-    await page.getByTestId('new-site-depth-bottomless').click();
-    await page.getByTestId('new-site-description').fill(description);
+    await page.getByTestId('location').fill(location);
+    await page.getByTestId('gps-lat').fill(gps.lat.toString());
+    await page.getByTestId('gps-lon').fill(gps.lon.toString());
+    await page.getByTestId('directions').fill(directions);
+    await page.getByTestId('name').fill(name);
+    await page.getByTestId('depth-bottomless').click();
+    await page.getByTestId('description').fill(description);
     await page.getByTestId('free-to-dive-true').click();
     await page.getByTestId('shore-access-true').click();
-    await page.getByTestId('save-new-site').click();
+    await page.getByTestId('save-site').click();
 
     await page.waitForURL(/\/diveSites\/(?!new)/);
 

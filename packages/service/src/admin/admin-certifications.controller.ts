@@ -1,10 +1,10 @@
 import {
+  ApiList,
   CertificationDTO,
   CreateOrUpdateCertificationParamsDTO,
   CreateOrUpdateCertificationParamsSchema,
   SearchCertificationsParamsDTO,
   SearchCertificationsParamsSchema,
-  SearchCertificationsResponseDTO,
 } from '@bottomtime/api';
 
 import {
@@ -60,10 +60,10 @@ export class AdminCertificationsController {
    *             schema:
    *               type: object
    *               required:
-   *                 - certifications
+   *                 - data
    *                 - totalCount
    *               properties:
-   *                 certifications:
+   *                 data:
    *                   type: array
    *                   description: The list of certifications matching the search criteria.
    *                   items:
@@ -95,12 +95,12 @@ export class AdminCertificationsController {
   async searchCertifications(
     @Query(new ZodValidator(SearchCertificationsParamsSchema))
     options: SearchCertificationsParamsDTO,
-  ): Promise<SearchCertificationsResponseDTO> {
+  ): Promise<ApiList<CertificationDTO>> {
     const results = await this.certificationsService.searchCertifications(
       options,
     );
     return {
-      certifications: results.certifications.map((cert) => cert.toJSON()),
+      data: results.data.map((cert) => cert.toJSON()),
       totalCount: results.totalCount,
     };
   }

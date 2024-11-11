@@ -1,49 +1,61 @@
 import { RouteRecordRaw } from 'vue-router';
 
+export const AdminRouteNames = {
+  AdminDashboard: 'admin-dashboard',
+  AdminAlerts: 'admin-alerts',
+  NewAlert: 'new-alert',
+  EditAlert: 'edit-alert',
+  AdminTanks: 'admin-tanks',
+  AdminNewTank: 'admin-new-tank',
+  AdminTank: 'admin-tank',
+  AdminUsers: 'admin-users',
+  AdminUser: 'admin-user',
+} as const;
+
 export const AdminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin',
-    name: 'admin-dashboard',
-    component: () => import('../views/admin-dashboard-view.vue'),
+    name: AdminRouteNames.AdminDashboard,
+    component: () => import('../views/admin/dashboard-view.vue'),
   },
   {
     path: '/admin/alerts',
-    name: 'admin-alerts',
-    component: () => import('../views/admin-alerts-view.vue'),
+    name: AdminRouteNames.AdminAlerts,
+    component: () => import('../views/admin/alerts-view.vue'),
   },
   {
     path: '/admin/alerts/new',
-    name: 'new-alert',
-    component: () => import('../views/admin-alert-view.vue'),
+    name: AdminRouteNames.NewAlert,
+    component: () => import('../views/admin/alert-view.vue'),
   },
   {
     path: '/admin/alerts/:alertId',
-    name: 'edit-alert',
-    component: () => import('../views/admin-alert-view.vue'),
+    name: AdminRouteNames.EditAlert,
+    component: () => import('../views/admin/alert-view.vue'),
   },
   {
     path: '/admin/tanks',
-    name: 'admin-tanks',
-    component: () => import('../views/admin-tanks-view.vue'),
+    name: AdminRouteNames.AdminTanks,
+    component: () => import('../views/admin/tanks-view.vue'),
   },
   {
     path: '/admin/tanks/new',
-    name: 'admin-new-tank',
-    component: () => import('../views/admin-new-tank-view.vue'),
+    name: AdminRouteNames.AdminNewTank,
+    component: () => import('../views/admin/tank-view.vue'),
   },
   {
     path: '/admin/tanks/:tankId',
-    name: 'admin-tank',
-    component: () => import('../views/admin-tank-view.vue'),
+    name: AdminRouteNames.AdminTank,
+    component: () => import('../views/admin/tank-view.vue'),
   },
   {
     path: '/admin/users',
-    name: 'admin-users',
-    component: () => import('../views/admin-users-view.vue'),
+    name: AdminRouteNames.AdminUsers,
+    component: () => import('../views/admin/users-view.vue'),
   },
   {
     path: '/admin/users/:username',
-    name: 'admin-user',
-    component: () => import('../views/admin-user-view.vue'),
+    name: AdminRouteNames.AdminUser,
+    component: () => import('../views/admin/user-view.vue'),
   },
 ];

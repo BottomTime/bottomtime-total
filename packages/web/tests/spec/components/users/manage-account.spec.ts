@@ -24,7 +24,6 @@ import ManageAccount from '../../../../src/components/users/manage-account.vue';
 import ManagePassword from '../../../../src/components/users/manage-password.vue';
 import UsernameAndEmail from '../../../../src/components/users/username-and-email.vue';
 import { FeaturesServiceKey } from '../../../../src/featrues';
-import { LocationKey, MockLocation } from '../../../../src/location';
 import { ConfigCatClientMock } from '../../../config-cat-client-mock';
 import { createRouter } from '../../../fixtures/create-router';
 import { BasicUser } from '../../../fixtures/users';
@@ -34,7 +33,6 @@ dayjs.extend(utc);
 
 describe('Manage Account component', () => {
   let features: ConfigCatClientMock;
-  let location: MockLocation;
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
@@ -65,7 +63,6 @@ describe('Manage Account component', () => {
       profile: { ...BasicUser.profile },
       settings: { ...BasicUser.settings },
     };
-    location = new MockLocation();
     opts = {
       props: {
         user: userData,
@@ -80,7 +77,6 @@ describe('Manage Account component', () => {
         provide: {
           [ApiClientKey as symbol]: client,
           [FeaturesServiceKey as symbol]: features,
-          [LocationKey as symbol]: location,
         },
         stubs: {
           teleport: true,

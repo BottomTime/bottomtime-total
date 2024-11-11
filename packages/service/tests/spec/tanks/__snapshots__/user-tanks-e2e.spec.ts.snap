@@ -2,7 +2,7 @@
 
 exports[`User-defined Tank Profiles End-to-End Tests when listing user-defined tanks will allow admins to list all user-defined tanks 1`] = `
 {
-  "tanks": [
+  "data": [
     {
       "id": "9c145eab-6983-4efa-a17c-44845a55c50e",
       "isSystem": false,
@@ -90,7 +90,7 @@ exports[`User-defined Tank Profiles End-to-End Tests when listing user-defined t
 
 exports[`User-defined Tank Profiles End-to-End Tests when listing user-defined tanks will list both system and user-defined tanks 1`] = `
 {
-  "tanks": [
+  "data": [
     {
       "id": "6318aa0c-31eb-4ce3-bcc2-234d72a9ced1",
       "isSystem": true,
@@ -338,7 +338,7 @@ exports[`User-defined Tank Profiles End-to-End Tests when listing user-defined t
 
 exports[`User-defined Tank Profiles End-to-End Tests when listing user-defined tanks will list user-defined tanks 1`] = `
 {
-  "tanks": [
+  "data": [
     {
       "id": "9c145eab-6983-4efa-a17c-44845a55c50e",
       "isSystem": false,

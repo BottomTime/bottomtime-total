@@ -1,7 +1,7 @@
 import {
+  ApiList,
   CreateOrUpdateTankParamsDTO,
   CreateOrUpdateTankParamsSchema,
-  ListTanksResponseDTO,
   TankDTO,
 } from '@bottomtime/api';
 
@@ -69,12 +69,12 @@ export class AdminTanksController {
    */
   @Get()
   @UseGuards(AssertAuth)
-  async listTanks(): Promise<ListTanksResponseDTO> {
+  async listTanks(): Promise<ApiList<TankDTO>> {
     this.log.debug('Querying for tanks...');
     const tankData = await this.tanksService.listTanks();
 
     return {
-      tanks: tankData.tanks.map((tank) => tank.toJSON()),
+      data: tankData.data.map((tank) => tank.toJSON()),
       totalCount: tankData.totalCount,
     };
   }
