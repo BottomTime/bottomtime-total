@@ -97,7 +97,7 @@
                 <a
                   v-if="currentUser.user?.accountTier >= AccountTier.ShopOwner"
                   class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
-                  :href="`/shops/${currentUser.user?.username}`"
+                  :href="`/shops?owner=${currentUser.user?.username}`"
                 >
                   My Dive Shops
                 </a>
