@@ -153,7 +153,7 @@ resource "aws_cloudfront_distribution" "web" {
 
   # For unknown routes, serve up the index.html page and let the Vue router figure out what to do.
   custom_error_response {
-    error_code         = 404
+    error_code         = 403
     response_code      = 200
     response_page_path = "/index.html"
   }
