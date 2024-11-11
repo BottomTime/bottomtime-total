@@ -4,7 +4,7 @@ import {
   SearchOperatorsParams,
 } from '@bottomtime/api';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import slugify from 'slugify';
@@ -26,12 +26,18 @@ export type SearchOperatorOptions = Omit<SearchOperatorsParams, 'owner'> & {
 
 @Injectable()
 export class OperatorsService {
+  private readonly log = new Logger(OperatorsService.name);
+
   constructor(
     @InjectRepository(OperatorEntity)
     private readonly operators: Repository<OperatorEntity>,
   ) {}
 
   async createOperator(options: CreateOperatorOptions): Promise<Operator> {
+    this.log.debug(
+      'Attempting to create new dive operator with options:',
+      options,
+    );
     const data = new OperatorEntity();
     data.id = uuid();
     data.name = options.name;
@@ -55,11 +61,15 @@ export class OperatorsService {
       options.slug || slugify(options.name, { lower: true, trim: true });
 
     await operator.save();
+    this.log.log(
+      `Created new dive operator: "${operator.name}" (${operator.id})`,
+    );
 
     return operator;
   }
 
   async getOperator(id: string): Promise<Operator | undefined> {
+    this.log.debug(`Attempting to retrieve operator with ID: "${id}"`);
     const data = await this.operators.findOne({
       where: { id },
       relations: ['owner'],
@@ -68,20 +78,25 @@ export class OperatorsService {
   }
 
   async getOperatorBySlug(slug: string): Promise<Operator | undefined> {
+    this.log.debug(`Attempting to retrieve operator with slug: "${slug}"`);
+    slug = slug.trim().toLowerCase();
     const data = await this.operators.findOne({
-      where: { slug: slug.toLowerCase() },
+      where: { slug },
       relations: ['owner'],
     });
     return data ? new Operator(this.operators, data) : undefined;
   }
 
   async isSlugInUse(slug: string): Promise<boolean> {
-    return await this.operators.existsBy({ slug: slug.trim().toLowerCase() });
+    this.log.debug(`Checking for existence of operator with slug: "${slug}"`);
+    slug = slug.trim().toLowerCase();
+    return await this.operators.exists({ where: { slug }, withDeleted: true });
   }
 
   async searchOperators(
     options?: SearchOperatorOptions,
   ): Promise<ApiList<Operator>> {
+    this.log.debug('Performing search for dive operators:', options);
     const query = new OperatorQueryBuilder(this.operators)
       .withGeoLocation(options?.location, options?.radius)
       .withInactive(options?.showInactive)

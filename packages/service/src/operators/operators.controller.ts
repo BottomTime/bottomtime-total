@@ -309,7 +309,7 @@ export class OperatorsController {
    *       500:
    *         description: The request failed because of an internal server error.
    */
-  @Head(OperatorKeyName)
+  @Head(OperatorKeyParam)
   async diveOperatorExists(@Param(OperatorKeyName) key: string): Promise<void> {
     const exists = await this.service.isSlugInUse(key);
     if (!exists) {

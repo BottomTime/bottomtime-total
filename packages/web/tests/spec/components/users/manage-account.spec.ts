@@ -1,10 +1,4 @@
-import {
-  ApiClient,
-  Fetcher,
-  MembershipStatus,
-  User,
-  UserDTO,
-} from '@bottomtime/api';
+import { ApiClient, Fetcher, User, UserDTO } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,

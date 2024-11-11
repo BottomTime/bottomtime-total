@@ -66,6 +66,7 @@
 import {
   ApiList,
   CreateOrUpdateOperatorDTO,
+  CreateOrUpdateOperatorSchema,
   OperatorDTO,
   SearchOperatorsParams,
   SearchOperatorsSchema,
@@ -263,7 +264,9 @@ async function onSaveOperator(dto: CreateOrUpdateOperatorDTO): Promise<void> {
         });
       } else {
         // Create new dive operator.
-        const newOperator = await client.operators.createOperator(dto);
+        const newOperator = await client.operators.createOperator(
+          CreateOrUpdateOperatorSchema.parse(dto),
+        );
         state.currentOperator = newOperator.toJSON();
 
         state.results.data.splice(0, 0, state.currentOperator);
