@@ -114,6 +114,9 @@ jobs:
           command: |
             yarn lint
             yarn build --stream
+      - run:
+          name: Generate API Docs
+          command: npx lerna run docs --scope=@bottomtime/service
       - save_cache:
           key: bt-nx-build-{{ .Branch }}
           paths:

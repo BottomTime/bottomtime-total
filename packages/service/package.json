@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "admin": "tsx admin/bt-admin.ts",
-    "build": "webpack && yarn docs",
+    "build": "webpack",
     "clean": "rm -rf dist/",
     "dev": "webpack --watch",
     "docs": "swagger-jsdoc -d swaggerDefinition.cjs -o docs/swagger.json ./src/**/*.ts",
