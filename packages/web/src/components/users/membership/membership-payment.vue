@@ -125,7 +125,6 @@ import {
 
 import { StripeElements } from '@stripe/stripe-js';
 
-import { URL } from 'url';
 import { computed, onMounted, reactive, ref } from 'vue';
 
 import { useClient } from '../../../api-client';

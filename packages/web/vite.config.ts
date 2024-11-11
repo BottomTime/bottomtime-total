@@ -29,9 +29,6 @@ export default defineConfig(({ mode }) => {
     mode: process.env.NODE_ENV || 'development',
     build: {
       sourcemap: true,
-      rollupOptions: {
-        external: [],
-      },
     },
     server: {
       hmr: true,
@@ -53,6 +50,9 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       preserveSymlinks: true,
+      alias: {
+        url: 'url/',
+      },
     },
     ...(mode === 'production'
       ? {

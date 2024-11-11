@@ -11,6 +11,7 @@ import { EdgeAuthFixture } from './edge-auth.fixture';
 import { FriendsFixture } from './friends.fixture';
 import { createAuthToken } from './jwt';
 import { LogEntriesFixture } from './log-entries.fixture';
+import { OperatorsFixture } from './operators.fixture';
 import { PostgresFixture } from './postgres.fixture';
 import { TankProfilesFixture } from './tank-profiles.fixture';
 
@@ -22,6 +23,7 @@ export const test = base.extend<{
   edgeAuth: EdgeAuthFixture;
   friends: FriendsFixture;
   logEntries: LogEntriesFixture;
+  operators: OperatorsFixture;
   tankProfiles: TankProfilesFixture;
 }>({
   api: async ({ baseURL, db, edgeAuth }, use) => {
@@ -78,6 +80,11 @@ export const test = base.extend<{
   logEntries: async ({ page }, use) => {
     const logEntries = new LogEntriesFixture(page);
     await use(logEntries);
+  },
+
+  operators: async ({ page }, use) => {
+    const operators = new OperatorsFixture(page);
+    await use(operators);
   },
 
   tankProfiles: async ({ page }, use) => {

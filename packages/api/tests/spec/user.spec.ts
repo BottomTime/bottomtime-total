@@ -4,7 +4,7 @@ import { UserProfile } from '../../src/client';
 import { Fetcher } from '../../src/client/fetcher';
 import { User } from '../../src/client/user';
 import { UserSettings } from '../../src/client/user-settings';
-import { UserDTO, UserRole } from '../../src/types';
+import { AccountTier, UserDTO, UserRole } from '../../src/types';
 import { BasicUser } from '../fixtures/users';
 
 function getUser(fetcher: Fetcher, data?: Partial<UserDTO>): User {
@@ -147,6 +147,20 @@ describe('User API client', () => {
       204,
     );
     await user.changeUsername(newUsername);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it("will change a user's membership tier", async () => {
+    user = getUser(fetcher);
+    const newAccountTier = AccountTier.Pro;
+    mockFetch.post(
+      {
+        url: `/api/admin/users/${BasicUser.username}/membership`,
+        body: { newAccountTier },
+      },
+      204,
+    );
+    await user.changeMembership(newAccountTier);
     expect(mockFetch.done()).toBe(true);
   });
 

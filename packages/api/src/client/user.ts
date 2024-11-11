@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   ChangeEmailParamsDTO,
   ChangePasswordParamsDTO,
   ChangeRoleParams,
@@ -117,6 +118,13 @@ export class User {
     const params: ChangeUsernameParamsDTO = { newUsername };
     await this.client.post(`/api/users/${this.username}/username`, params);
     this.data.username = newUsername;
+  }
+
+  async changeMembership(newAccountTier: AccountTier): Promise<void> {
+    await this.client.post(`/api/admin/users/${this.username}/membership`, {
+      newAccountTier,
+    });
+    this.data.accountTier = newAccountTier;
   }
 
   async requestEmailVerification(): Promise<void> {

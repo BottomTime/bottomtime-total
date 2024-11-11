@@ -133,7 +133,7 @@
     </p>
   </ConfirmDialog>
 
-  <form @submit.prevent="onSave">
+  <form @submit.prevent="">
     <fieldset :disabled="isSaving" class="space-y-6">
       <VerificationBadge
         v-if="operator?.id"
@@ -190,7 +190,7 @@
               class="text-nowrap"
               size="xs"
               test-id="btn-upload-logo"
-              @click="onChangeLogo"
+              @click.prevent="onChangeLogo"
             >
               <p class="space-x-2">
                 <span>
@@ -541,7 +541,6 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required, url } from '@vuelidate/validators';
 
 import slugify from 'slugify';
-import { URL } from 'url';
 import { computed, reactive, ref, watch } from 'vue';
 
 import { useClient } from '../../api-client';
