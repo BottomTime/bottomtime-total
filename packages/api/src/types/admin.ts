@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { UserRole } from './constants';
+import { AccountTier } from './memberships';
 import { PasswordStrengthSchema, UserSchema } from './users';
 import { SearchUserProfilesParamsSchema } from './users';
 
@@ -23,6 +24,13 @@ export const ChangeRoleParamsSchema = z.object({
   newRole: z.nativeEnum(UserRole),
 });
 export type ChangeRoleParams = z.infer<typeof ChangeRoleParamsSchema>;
+
+export const ChangeMembershipParamsSchema = z.object({
+  newAccountTier: z.nativeEnum(AccountTier),
+});
+export type ChangeMembershipParams = z.infer<
+  typeof ChangeMembershipParamsSchema
+>;
 
 export const ResetPasswordParamsSchema = z.object({
   newPassword: PasswordStrengthSchema,

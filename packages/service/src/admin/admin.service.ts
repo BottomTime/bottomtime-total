@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   AdminSearchUsersParamsDTO,
   ApiList,
   SortOrder,
@@ -84,8 +85,8 @@ export class AdminService {
     return false;
   }
 
-  async lockAccount(usernameOrPassword: string): Promise<boolean> {
-    const user = await this.findUser(usernameOrPassword);
+  async lockAccount(usernameOrEmail: string): Promise<boolean> {
+    const user = await this.findUser(usernameOrEmail);
 
     if (user) {
       user.isLockedOut = true;
@@ -114,11 +115,26 @@ export class AdminService {
     return false;
   }
 
-  async unlockAccount(usernameOrPassword: string): Promise<boolean> {
-    const user = await this.findUser(usernameOrPassword);
+  async unlockAccount(usernameOrEmail: string): Promise<boolean> {
+    const user = await this.findUser(usernameOrEmail);
 
     if (user) {
       user.isLockedOut = false;
+      await this.Users.save(user);
+      return true;
+    }
+
+    return false;
+  }
+
+  async changeMembership(
+    usernameOrEmail: string,
+    newTier: AccountTier,
+  ): Promise<boolean> {
+    const user = await this.findUser(usernameOrEmail);
+
+    if (user) {
+      user.accountTier = newTier;
       await this.Users.save(user);
       return true;
     }

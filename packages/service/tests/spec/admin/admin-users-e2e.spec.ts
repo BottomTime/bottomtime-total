@@ -1,4 +1,5 @@
 import {
+  AccountTier,
   DepthUnit,
   PressureUnit,
   TemperatureUnit,
@@ -375,6 +376,75 @@ describe('Admin End-to-End Tests', () => {
 
       const newData = await Users.findOneByOrFail({ id: oldData.id });
       expect(newData.isLockedOut).toBe(true);
+    });
+  });
+
+  describe("when changing a user's account tier", () => {
+    let user: UserEntity;
+
+    beforeEach(async () => {
+      user = createTestUser({ accountTier: AccountTier.Pro });
+      await Users.save(user);
+    });
+
+    it("will change a user's account tier", async () => {
+      await request(server)
+        .post(`/api/admin/users/${user.username}/membership`)
+        .set(...adminAuthHeader)
+        .send({ newAccountTier: AccountTier.ShopOwner })
+        .expect(204);
+
+      const updatedUser = await Users.findOneByOrFail({ id: user.id });
+      expect(updatedUser.accountTier).toBe(AccountTier.ShopOwner);
+    });
+
+    it('will succeed if the user is already at the requested tier', async () => {
+      await request(server)
+        .post(`/api/admin/users/${user.username}/membership`)
+        .set(...adminAuthHeader)
+        .send({ newAccountTier: AccountTier.Pro })
+        .expect(204);
+
+      const updatedUser = await Users.findOneByOrFail({ id: user.id });
+      expect(updatedUser.accountTier).toBe(AccountTier.Pro);
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      await request(server)
+        .post(`/api/admin/users/${user.username}/membership`)
+        .set(...adminAuthHeader)
+        .expect(400);
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      await request(server)
+        .post(`/api/admin/users/${user.username}/membership`)
+        .set(...adminAuthHeader)
+        .send({ newAccountTier: 'Not a valid tier' })
+        .expect(400);
+    });
+
+    it('will return a 401 response if the user is not logged in', async () => {
+      await request(server)
+        .post(`/api/admin/users/${user.username}/membership`)
+        .send({ newAccountTier: AccountTier.ShopOwner })
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not an administrator', async () => {
+      await request(server)
+        .post(`/api/admin/users/${user.username}/membership`)
+        .set(...regualarAuthHeader)
+        .send({ newAccountTier: AccountTier.ShopOwner })
+        .expect(403);
+    });
+
+    it('will return a 404 response if the user does not exist', async () => {
+      await request(server)
+        .post(`/api/admin/users/nope/membership`)
+        .set(...adminAuthHeader)
+        .send({ newAccountTier: AccountTier.ShopOwner })
+        .expect(404);
     });
   });
 });

@@ -2,6 +2,8 @@ import {
   AdminSearchUsersParamsDTO,
   AdminSearchUsersParamsSchema,
   ApiList,
+  ChangeMembershipParams,
+  ChangeMembershipParamsSchema,
   ChangeRoleParams,
   ChangeRoleParamsSchema,
   ResetPasswordParams,
@@ -14,6 +16,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpStatus,
   Inject,
   Logger,
   NotFoundException,
@@ -245,7 +248,7 @@ export class AdminUsersController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`:${UsernameParam}/role`)
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async changeRole(
     @Param(UsernameParam) usernameOrEmail: string,
     @Body(new ZodValidator(ChangeRoleParamsSchema))
@@ -321,7 +324,7 @@ export class AdminUsersController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`:${UsernameParam}/password`)
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async resetPassword(
     @Param(UsernameParam) usernameOrEmail: string,
     @Body(new ZodValidator(ResetPasswordParamsSchema))
@@ -385,7 +388,7 @@ export class AdminUsersController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`:${UsernameParam}/lockAccount`)
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async lockUserAccount(
     @Param(UsernameParam) usernameOrEmail: string,
   ): Promise<void> {
@@ -444,11 +447,97 @@ export class AdminUsersController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`:${UsernameParam}/unlockAccount`)
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async unlockUserAccount(
     @Param(UsernameParam) usernameOrEmail: string,
   ): Promise<void> {
     const result = await this.adminService.unlockAccount(usernameOrEmail);
+
+    if (!result) {
+      throw new NotFoundException(
+        `Username or email not found: ${usernameOrEmail}`,
+      );
+    }
+  }
+
+  /**
+   * @openapi
+   * /api/admin/users/{username}/membership:
+   *   post:
+   *     summary: Change a user's account tier
+   *     operationId: changeMembership
+   *     tags:
+   *       - Admin
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       description: The new account tier to assign to the user.
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required:
+   *               - newAccountTier
+   *             properties:
+   *               newAccountTier:
+   *                 type: integer
+   *                 description: |
+   *                   The new account tier to assign to the user:
+   *                   * 0: Free
+   *                   * 100: Pro
+   *                   * 200: Shop Owner
+   *                 enum:
+   *                   - 0
+   *                   - 100
+   *                   - 200
+   *                 example: 100
+   *     responses:
+   *       204:
+   *         description: The request succeeded and the user's account tier was changed.
+   *       400:
+   *         description: The request failed because the request body was invalid.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the user is not authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user is not an admin.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the target user was not found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because of an internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post(`:${UsernameParam}/membership`)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async changeMembership(
+    @Param(UsernameParam) usernameOrEmail: string,
+    @Body(new ZodValidator(ChangeMembershipParamsSchema))
+    { newAccountTier }: ChangeMembershipParams,
+  ): Promise<void> {
+    const result = await this.adminService.changeMembership(
+      usernameOrEmail,
+      newAccountTier,
+    );
 
     if (!result) {
       throw new NotFoundException(

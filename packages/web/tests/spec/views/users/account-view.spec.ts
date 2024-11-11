@@ -1,5 +1,4 @@
 import { ApiClient } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
@@ -32,9 +31,7 @@ describe('Account View', () => {
   beforeAll(() => {
     client = new ApiClient();
     router = createRouter();
-    features = new ConfigCatClientMock({
-      [ManageDiveOperatorsFeature.key]: true,
-    });
+    features = new ConfigCatClientMock({});
   });
 
   beforeEach(() => {

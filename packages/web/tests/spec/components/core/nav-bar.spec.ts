@@ -1,5 +1,4 @@
 import { ApiClient } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import {
   ComponentMountingOptions,
@@ -46,7 +45,6 @@ describe('Nav Bar component', () => {
   beforeEach(() => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
-    features.flags[ManageDiveOperatorsFeature.key] = true;
     opts = {
       global: {
         directives: {

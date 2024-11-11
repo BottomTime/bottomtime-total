@@ -1,4 +1,4 @@
-import { SortOrder, UserRole, UsersSortBy } from '@bottomtime/api';
+import { AccountTier, SortOrder, UserRole, UsersSortBy } from '@bottomtime/api';
 
 import { compare } from 'bcryptjs';
 import { Repository } from 'typeorm';
@@ -119,6 +119,25 @@ describe('Admin Service', () => {
   it('will return false if resetting the password for a user that does not exist', async () => {
     await expect(
       service.resetPassword('does-not-exist', newPassword),
+    ).resolves.toBe(false);
+  });
+
+  it("will change a user's membership tier", async () => {
+    const data = createTestUser({ accountTier: AccountTier.Pro });
+    const user = new User(Users, data);
+    await Users.save(data);
+
+    await expect(
+      service.changeMembership(user.username, AccountTier.ShopOwner),
+    ).resolves.toBe(true);
+
+    const stored = await Users.findOneByOrFail({ id: user.id });
+    expect(stored.accountTier).toBe(AccountTier.ShopOwner);
+  });
+
+  it('will return false if changing a membership tier for a user that does not exist', async () => {
+    await expect(
+      service.changeMembership('does-not-exist', AccountTier.Pro),
     ).resolves.toBe(false);
   });
 

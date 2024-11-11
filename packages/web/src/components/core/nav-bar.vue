@@ -95,12 +95,9 @@
                   Friends
                 </a>
                 <a
-                  v-if="
-                    diveOperatorsEnabled.value &&
-                    currentUser.user?.accountTier >= AccountTier.ShopOwner
-                  "
+                  v-if="currentUser.user?.accountTier >= AccountTier.ShopOwner"
                   class="w-full p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700"
-                  :href="`/shops/${currentUser.user?.username}`"
+                  :href="`/shops?owner=${currentUser.user?.username}`"
                 >
                   My Dive Shops
                 </a>
@@ -193,10 +190,7 @@
 
 <script setup lang="ts">
 import { AccountTier, UserRole } from '@bottomtime/api';
-import {
-  ManageDiveOperatorsFeature,
-  NotificationsFeature,
-} from '@bottomtime/common';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import { computed, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -223,7 +217,6 @@ const client = useClient();
 const oops = useOops();
 const router = useRouter();
 
-const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const currentUser = useCurrentUser();
 const notificationsEnabled = useFeature(NotificationsFeature);
 
@@ -252,7 +245,7 @@ const navLinks = computed<NavLink[]>(() => {
     {
       title: 'Dive Shops',
       url: '/shops',
-      visible: diveOperatorsEnabled.value,
+      visible: true,
     },
     {
       title: 'Admin',

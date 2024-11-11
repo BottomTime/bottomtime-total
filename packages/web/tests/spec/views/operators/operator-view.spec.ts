@@ -8,7 +8,6 @@ import {
   UserDTO,
   VerificationStatus,
 } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import {
   ComponentMountingOptions,
@@ -84,7 +83,6 @@ describe('Operator view', () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     toasts = useToasts(pinia);
-    features.flags[ManageDiveOperatorsFeature.key] = true;
     opts = {
       global: {
         plugins: [pinia, router],
