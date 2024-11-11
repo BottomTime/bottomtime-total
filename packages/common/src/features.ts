@@ -11,8 +11,3 @@ export const NotificationsFeature: Feature<boolean> = {
   key: 'notifications',
   defaultValue: false,
 };
-
-export const ManageDiveOperatorsFeature: Feature<boolean> = {
-  key: 'manageDiveOperators',
-  defaultValue: false,
-};

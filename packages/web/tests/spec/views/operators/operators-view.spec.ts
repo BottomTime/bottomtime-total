@@ -10,7 +10,6 @@ import {
   UserDTO,
   VerificationStatus,
 } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import {
   ComponentMountingOptions,
@@ -67,7 +66,6 @@ describe('Operators view', () => {
 
   beforeEach(async () => {
     testData = SearchOperatorsResponseSchema.parse(TestData);
-    features.flags[ManageDiveOperatorsFeature.key] = true;
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     toasts = useToasts(pinia);

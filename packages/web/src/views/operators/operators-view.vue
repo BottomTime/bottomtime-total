@@ -17,56 +17,49 @@
     <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
-  <template v-if="diveOperatorsEnabled.value">
-    <PageTitle title="Dive Shops" />
-    <BreadCrumbs :items="Breadcrumbs" />
+  <PageTitle title="Dive Shops" />
+  <BreadCrumbs :items="Breadcrumbs" />
 
-    <DrawerPanel
-      :full-screen="fullScreenUrl"
-      :title="drawerPanelTitle"
-      :visible="state.showPanel"
-      @close="onCloseDrawer"
-    >
-      <template v-if="state.currentOperator">
-        <EditOperator
-          v-if="isOperatorOwner"
-          :is-saving="state.isSaving"
-          :operator="state.currentOperator"
-          @save="onSaveOperator"
-          @delete="onDelete"
-          @logo-changed="onLogoChanged"
-          @verification-requested="onVerificationRequested"
-          @verified="onVerified"
-          @rejected="onVerificationRejected"
-        />
-        <ViewOperator v-else :operator="state.currentOperator" />
-      </template>
-    </DrawerPanel>
+  <DrawerPanel
+    :full-screen="fullScreenUrl"
+    :title="drawerPanelTitle"
+    :visible="state.showPanel"
+    @close="onCloseDrawer"
+  >
+    <template v-if="state.currentOperator">
+      <EditOperator
+        v-if="isOperatorOwner"
+        :is-saving="state.isSaving"
+        :operator="state.currentOperator"
+        @save="onSaveOperator"
+        @delete="onDelete"
+        @logo-changed="onLogoChanged"
+        @verification-requested="onVerificationRequested"
+        @verified="onVerified"
+        @rejected="onVerificationRejected"
+      />
+      <ViewOperator v-else :operator="state.currentOperator" />
+    </template>
+  </DrawerPanel>
 
-    <div class="grid gap-3 grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
-      <div class="col-span-1">
-        <div class="sticky top-24">
-          <OperatorsSearchForm
-            :search-params="searchParams"
-            @search="onSearch"
-          />
-        </div>
-      </div>
-      <div class="col-span-1 lg:col-span-2 xl:col-span-3">
-        <OperatorsList
-          :is-loading="state.isLoading"
-          :is-loading-more="state.isLoadingMore"
-          :operators="state.results"
-          @create-shop="onCreateShop"
-          @load-more="onLoadMore"
-          @select="onShopSelected"
-          @delete="onDelete"
-        />
+  <div class="grid gap-3 grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
+    <div class="col-span-1">
+      <div class="sticky top-24">
+        <OperatorsSearchForm :search-params="searchParams" @search="onSearch" />
       </div>
     </div>
-  </template>
-
-  <NotFound v-else />
+    <div class="col-span-1 lg:col-span-2 xl:col-span-3">
+      <OperatorsList
+        :is-loading="state.isLoading"
+        :is-loading-more="state.isLoadingMore"
+        :operators="state.results"
+        @create-shop="onCreateShop"
+        @load-more="onLoadMore"
+        @select="onShopSelected"
+        @delete="onDelete"
+      />
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -79,7 +72,6 @@ import {
   UserRole,
   VerificationStatus,
 } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -88,14 +80,12 @@ import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
 import DrawerPanel from '../../components/common/drawer-panel.vue';
-import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import EditOperator from '../../components/operators/edit-operator.vue';
 import OperatorsList from '../../components/operators/operators-list.vue';
 import OperatorsSearchForm from '../../components/operators/operators-search-form.vue';
 import ViewOperator from '../../components/operators/view-operator.vue';
-import { useFeature } from '../../featrues';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
 
@@ -115,7 +105,6 @@ const Breadcrumbs: Breadcrumb[] = [
   { label: 'Dive Shops', to: '/shops', active: true },
 ] as const;
 
-const diveOperatorsEnabled = useFeature(ManageDiveOperatorsFeature);
 const client = useClient();
 const currentUser = useCurrentUser();
 const oops = useOops();

@@ -5,7 +5,6 @@ import {
   User,
   UserDTO,
 } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import {
   ComponentMountingOptions,
@@ -49,9 +48,7 @@ describe('Manage Account component', () => {
     fetcher = new Fetcher();
     client = new ApiClient({ fetcher });
     router = createRouter();
-    features = new ConfigCatClientMock({
-      [ManageDiveOperatorsFeature.key]: true,
-    });
+    features = new ConfigCatClientMock({});
   });
 
   beforeEach(() => {
@@ -66,11 +63,6 @@ describe('Manage Account component', () => {
     opts = {
       props: {
         user: userData,
-        membership: {
-          accountTier: BasicUser.accountTier,
-          entitlements: [],
-          status: MembershipStatus.None,
-        },
       },
       global: {
         plugins: [pinia, router],

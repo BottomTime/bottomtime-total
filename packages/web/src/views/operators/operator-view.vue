@@ -20,7 +20,7 @@
     <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
-  <template v-if="enableDiveOperators.value && state.currentOperator">
+  <template v-if="state.currentOperator">
     <RequireAuth :authorizer="isAuthorized">
       <p
         v-if="state.isDeleted"
@@ -61,7 +61,6 @@ import {
   UserRole,
   VerificationStatus,
 } from '@bottomtime/api';
-import { ManageDiveOperatorsFeature } from '@bottomtime/common';
 
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -75,7 +74,6 @@ import RequireAuth from '../../components/common/require-auth2.vue';
 import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import EditOperator from '../../components/operators/edit-operator.vue';
 import ViewOperator from '../../components/operators/view-operator.vue';
-import { useFeature } from '../../featrues';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
 
@@ -89,7 +87,6 @@ interface OperatorViewState {
 
 const client = useClient();
 const currentUser = useCurrentUser();
-const enableDiveOperators = useFeature(ManageDiveOperatorsFeature);
 const oops = useOops();
 const route = useRoute();
 const router = useRouter();
