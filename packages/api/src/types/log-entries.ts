@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import {
+  BooleanString,
   DateWithTimezoneSchema,
   DepthUnit,
   ExposureSuit,
@@ -13,7 +14,7 @@ import {
 } from './constants';
 import { DiveSiteSchema } from './dive-sites';
 import { CreateOrUpdateTankParamsSchema } from './tanks';
-import { SuccinctProfileSchema } from './users';
+import { SuccinctProfileSchema, UsernameSchema } from './users';
 
 export enum LogEntrySortBy {
   EntryTime = 'entryTime',
@@ -180,4 +181,33 @@ export const GetMostRecentDiveSitesRequestParamsSchema = z.object({
 });
 export type GetMostRecentDiveSitesRequestParamsDTO = z.infer<
   typeof GetMostRecentDiveSitesRequestParamsSchema
+>;
+
+export const CreateLogsImportParamsSchema = z
+  .object({
+    device: z.string().max(200),
+    deviceId: z.string().max(200),
+    bookmark: z.string().max(200),
+  })
+  .partial();
+export type CreateLogsImportParamsDTO = z.infer<
+  typeof CreateLogsImportParamsSchema
+>;
+
+export const LogsImportSchema = CreateLogsImportParamsSchema.extend({
+  id: z.string(),
+  date: z.coerce.date(),
+  owner: z.string(),
+  finalized: BooleanString,
+});
+export type LogsImportDTO = z.infer<typeof LogsImportSchema>;
+
+export const ListLogEntryImportsParamsSchema = z.object({
+  owner: UsernameSchema,
+  showFinalized: BooleanString.optional(),
+  skip: z.number().int().min(0).optional(),
+  limit: z.number().int().min(1).max(500).optional(),
+});
+export type ListLogEntryImportsParamsDTO = z.infer<
+  typeof ListLogEntryImportsParamsSchema
 >;

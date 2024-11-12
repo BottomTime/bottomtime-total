@@ -175,6 +175,10 @@ export class LogEntryEntity {
   samples?: LogEntrySampleEntity[];
 
   // Import record
-  @ManyToOne(() => LogEntryImportEntity, (i) => i.entries, { nullable: true })
+  @ManyToOne(() => LogEntryImportEntity, (i) => i.entries, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @Index()
   import: LogEntryImportEntity | null = null;
 }

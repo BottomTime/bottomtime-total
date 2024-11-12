@@ -349,5 +349,6 @@ export function parseLogEntryJSON(
     ...entry,
     owner,
     site,
+    import: null,
   };
 }

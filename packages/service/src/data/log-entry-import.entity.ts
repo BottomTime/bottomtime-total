@@ -20,6 +20,9 @@ export class LogEntryImportEntity {
   @Index()
   date: Date = new Date();
 
+  @Column('timestamp', { nullable: true })
+  finalized: Date | null = null;
+
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   owner: UserEntity = new UserEntity();
 
@@ -32,12 +35,9 @@ export class LogEntryImportEntity {
   @Column('varchar', { length: 200, nullable: true })
   bookmark: string | null = null;
 
-  @Column('varchar', { length: 100, nullable: true })
-  resumeToken: string | null = null;
-
   @OneToMany(() => LogEntryEntity, (entry) => entry.import, {
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   })
   entries?: LogEntryEntity[];
 }
