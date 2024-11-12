@@ -82,8 +82,13 @@ export class OperatorEntity {
   @Column({ type: 'varchar', length: 200, nullable: true })
   website: string | null = null;
 
-  @Column({ type: 'geography', nullable: true })
-  @Index({ spatial: true, sparse: true })
+  @Column({
+    type: 'geography',
+    nullable: true,
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
+  @Index({ spatial: true })
   gps: Point | null = null;
 
   // Socials

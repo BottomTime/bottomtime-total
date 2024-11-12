@@ -49,7 +49,12 @@ export class MediaFileEntity {
   @Column({ type: 'float', nullable: true })
   length: number | null = null;
 
-  @Column({ type: 'geography', nullable: true })
+  @Column({
+    type: 'geography',
+    nullable: true,
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
   @Index({ spatial: true })
   gps: Point | null = null;
 

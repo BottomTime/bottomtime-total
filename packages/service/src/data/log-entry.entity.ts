@@ -20,6 +20,7 @@ import {
 
 import { DiveSiteEntity } from './dive-site.entity';
 import { LogEntryAirEntity } from './log-entry-air.entity';
+import { LogEntryImportEntity } from './log-entry-import.entity';
 import { LogEntrySampleEntity } from './log-entry-samples.entity';
 import { LogEntrySignatureEntity } from './log-entry-signature.entity';
 import { MediaFileEntity } from './media-file.entity';
@@ -172,4 +173,8 @@ export class LogEntryEntity {
     onDelete: 'CASCADE',
   })
   samples?: LogEntrySampleEntity[];
+
+  // Import record
+  @ManyToOne(() => LogEntryImportEntity, (i) => i.entries, { nullable: true })
+  import: LogEntryImportEntity | null = null;
 }
