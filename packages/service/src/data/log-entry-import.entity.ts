@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   ManyToOne,
@@ -15,7 +16,7 @@ export class LogEntryImportEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
-  @Column('timestamp')
+  @CreateDateColumn({ type: 'timestamp' })
   @Index()
   date: Date = new Date();
 
@@ -30,6 +31,9 @@ export class LogEntryImportEntity {
 
   @Column('varchar', { length: 200, nullable: true })
   bookmark: string | null = null;
+
+  @Column('varchar', { length: 100, nullable: true })
+  resumeToken: string | null = null;
 
   @OneToMany(() => LogEntryEntity, (entry) => entry.import, {
     onUpdate: 'CASCADE',
