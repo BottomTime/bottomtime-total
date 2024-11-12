@@ -1,6 +1,11 @@
-import { DepthUnit, TemperatureUnit } from '@bottomtime/api';
-
-import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  Point,
+  PrimaryColumn,
+} from 'typeorm';
 
 import { LogEntryEntity } from './log-entry.entity';
 
@@ -15,18 +20,19 @@ export class LogEntrySampleEntity {
   })
   logEntry: LogEntryEntity = new LogEntryEntity();
 
-  @Column({ type: 'float' })
+  @Column({ type: 'integer' })
   timeOffset: number = 0;
 
   @Column({ type: 'float', nullable: true })
   depth: number | null = null;
 
-  @Column({ type: 'enum', enum: DepthUnit, nullable: true })
-  depthUnit: DepthUnit | null = null;
-
   @Column({ type: 'float', nullable: true })
   temperature: number | null = null;
 
-  @Column({ type: 'enum', enum: TemperatureUnit, nullable: true })
-  temperatureUnit: TemperatureUnit | null = null;
+  @Column('geography', {
+    nullable: true,
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
+  gps: Point | null = null;
 }

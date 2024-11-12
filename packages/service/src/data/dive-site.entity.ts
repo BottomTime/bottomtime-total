@@ -52,8 +52,12 @@ export class DiveSiteEntity {
   @Column('varchar', { length: 500, nullable: true })
   directions: string | null = null;
 
-  @Column('geography', { nullable: true })
-  @Index({ spatial: true, sparse: true })
+  @Column('geography', {
+    nullable: true,
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
+  @Index({ spatial: true })
   gps: Point | null = null;
 
   @Column('boolean', { nullable: true })
