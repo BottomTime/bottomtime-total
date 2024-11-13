@@ -1,0 +1,176 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Import log entries E2E tests when initializing a new import session will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "device",
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "deviceId",
+      ],
+      "received": "boolean",
+    },
+  ],
+}
+`;
+
+exports[`Import log entries E2E tests when listing import sessions will allow an administrator to retrieve a list of import sessions for any user 1`] = `
+{
+  "data": [
+    {
+      "bookmark": "pXXaZCWxZM",
+      "date": "2024-06-02T08:49:45.724Z",
+      "device": "Aqua Lung i300C",
+      "deviceId": "978-1-75461-809-3",
+      "finalized": false,
+      "id": "53f682d4-89fa-46f0-882b-95e51e0dbe82",
+      "owner": "other_guy23",
+    },
+    {
+      "bookmark": "nfagbeqY1A",
+      "date": "2024-10-15T13:55:33.953Z",
+      "device": "Cressi Neon",
+      "deviceId": "978-1-0394-7008-8",
+      "finalized": true,
+      "id": "1fc70a0e-4ac5-49cb-946a-ec9c0c62329b",
+      "owner": "other_guy23",
+    },
+    {
+      "bookmark": "gTZSYfyzA8",
+      "date": "2024-09-18T22:23:32.307Z",
+      "device": "Shearwater Teric",
+      "deviceId": "978-1-9779-3701-8",
+      "finalized": true,
+      "id": "567c23e0-9797-4dbc-b831-8852446c10e6",
+      "owner": "other_guy23",
+    },
+    {
+      "bookmark": "gTk60QjRWF",
+      "date": "2024-07-20T15:14:56.493Z",
+      "device": "Shearwater Teric",
+      "deviceId": "978-0-7864-7458-5",
+      "finalized": true,
+      "id": "3ace0181-a7d1-4c42-b274-df0d0540b667",
+      "owner": "other_guy23",
+    },
+    {
+      "bookmark": "gs2Izf7OTW",
+      "date": "2024-05-28T03:54:32.890Z",
+      "device": "Shearwater Perdix 2 Ti",
+      "deviceId": "978-0-468-42044-2",
+      "finalized": true,
+      "id": "f45e62a0-4c11-454f-938a-553bb0a5153b",
+      "owner": "other_guy23",
+    },
+  ],
+  "totalCount": 5,
+}
+`;
+
+exports[`Import log entries E2E tests when listing import sessions will retrieve a list of import sessions for the target user 1`] = `
+{
+  "data": [
+    {
+      "bookmark": "wHwuvt8OFg",
+      "date": "2024-10-30T00:44:50.840Z",
+      "device": "Mares Puck Pro Plus",
+      "deviceId": "978-1-60349-681-0",
+      "finalized": false,
+      "id": "b6200822-bd68-4cbc-8c90-fbcc26e810ff",
+      "owner": "testuser",
+    },
+    {
+      "bookmark": "JR2mEOArUO",
+      "date": "2024-10-09T01:51:46.636Z",
+      "device": "Cressi Neon",
+      "deviceId": "978-1-966583-24-0",
+      "finalized": false,
+      "id": "7a3e48d4-b249-4d8d-81cf-3291ca706b29",
+      "owner": "testuser",
+    },
+    {
+      "bookmark": "fgwyuoelLF",
+      "date": "2024-08-15T17:20:30.544Z",
+      "device": "Suunto D5",
+      "deviceId": "978-0-7193-8660-2",
+      "finalized": false,
+      "id": "2d618a56-08fe-4e40-80cc-7689f5db6d60",
+      "owner": "testuser",
+    },
+    {
+      "bookmark": "3XvoPw8lMm",
+      "date": "2024-06-28T15:51:44.543Z",
+      "device": "Shearwater Teric",
+      "deviceId": "978-1-56875-465-9",
+      "finalized": false,
+      "id": "324e82d4-5595-42c8-b253-0e742ed8bd64",
+      "owner": "testuser",
+    },
+    {
+      "bookmark": "AGNuL6j78a",
+      "date": "2024-05-22T06:21:46.799Z",
+      "device": "Mares Puck Pro Plus",
+      "deviceId": "978-1-4475-3366-5",
+      "finalized": false,
+      "id": "d381104f-0744-4598-8430-949ff198ee3f",
+      "owner": "testuser",
+    },
+    {
+      "bookmark": "zJ5GBwllll",
+      "date": "2024-05-20T21:45:17.961Z",
+      "device": "Suunto D5",
+      "deviceId": "978-0-260-40525-8",
+      "finalized": false,
+      "id": "9a1e1d21-f712-4dcb-b122-6b114966e144",
+      "owner": "testuser",
+    },
+  ],
+  "totalCount": 6,
+}
+`;
+
+exports[`Import log entries E2E tests when listing import sessions will return a 400 response if the query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_string",
+      "message": "Value must be one of "true", "false", "1", or "0"",
+      "path": [
+        "showFinalized",
+      ],
+      "validation": "regex",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 0",
+      "minimum": 0,
+      "path": [
+        "skip",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "limit",
+      ],
+      "received": "nan",
+    },
+  ],
+}
+`;

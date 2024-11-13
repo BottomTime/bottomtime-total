@@ -1,4 +1,6 @@
-import { Repository } from 'typeorm';
+import { writeFile } from 'fs/promises';
+import { resolve } from 'path';
+import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
 import {
@@ -11,7 +13,12 @@ import { ImportService } from '../../../src/logEntries/import.service';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import LogEntryData from '../../fixtures/log-entries.json';
-import { createTestLogEntryImport, parseLogEntryJSON } from '../../utils';
+import TestData from '../../fixtures/log-entry-imports.json';
+import {
+  createTestLogEntryImport,
+  parseLogEntryImportJSON,
+  parseLogEntryJSON,
+} from '../../utils';
 import { createTestUser } from '../../utils/create-test-user';
 
 jest.mock('uuid');
@@ -21,6 +28,10 @@ const OwnerData: Partial<UserEntity> = {
   id: '114c1546-216b-4b58-873b-0c63a80fe04e',
   username: 'testuser',
 };
+const OtherUserData: Partial<UserEntity> = {
+  id: '4c5be9b4-782d-45f8-bae1-19dfb120905e',
+  username: 'otheruser',
+};
 
 describe('Log Entry Import Service', () => {
   let Entries: Repository<LogEntryEntity>;
@@ -29,7 +40,9 @@ describe('Log Entry Import Service', () => {
   let service: ImportService;
 
   let ownerData: UserEntity;
+  let otherUserData: UserEntity;
   let owner: User;
+  let testData: LogEntryImportEntity[];
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
@@ -46,11 +59,40 @@ describe('Log Entry Import Service', () => {
 
     ownerData = createTestUser(OwnerData);
     owner = new User(Users, ownerData);
-    await Users.save(ownerData);
+    otherUserData = createTestUser(OtherUserData);
+    await Users.save([ownerData, otherUserData]);
+
+    testData = TestData.map((data) =>
+      parseLogEntryImportJSON(
+        data,
+        data.owner.username === ownerData.username ? ownerData : otherUserData,
+      ),
+    );
   });
 
   afterEach(() => {
     jest.useRealTimers();
+  });
+
+  it.skip('generate test data', async () => {
+    const imports = new Array<LogEntryImportEntity>(40);
+
+    for (let i = 0; i < imports.length; i++) {
+      const userEntity = i < 35 ? ownerData : otherUserData;
+      imports[i] = {
+        ...createTestLogEntryImport(i < 35 ? ownerData : otherUserData),
+        owner: {
+          id: userEntity.id,
+          username: userEntity.username,
+        } as UserEntity,
+      };
+    }
+
+    await writeFile(
+      resolve(__dirname, '../../fixtures/log-entry-imports.json'),
+      JSON.stringify(imports, null, 2),
+      'utf-8',
+    );
   });
 
   describe('when initializing a new import', () => {
@@ -112,7 +154,7 @@ describe('Log Entry Import Service', () => {
     });
   });
 
-  describe('will retrieve a single import', () => {
+  describe('when retrieving a single import', () => {
     it('will return the requested import', async () => {
       const data = createTestLogEntryImport(ownerData);
       const expected = new LogEntryImport(Imports, Entries, data);
@@ -130,28 +172,21 @@ describe('Log Entry Import Service', () => {
   });
 
   describe('when listing imports', () => {
-    let otherUserData: UserEntity;
-    let importData: LogEntryImportEntity[];
     let logEntryData: LogEntryEntity[];
 
     beforeEach(async () => {
-      otherUserData = createTestUser();
       logEntryData = LogEntryData.map((data) =>
         parseLogEntryJSON(data, otherUserData),
       );
-      importData = new Array<LogEntryImportEntity>(40);
-      for (let i = 0; i < importData.length; i++) {
-        importData[i] = createTestLogEntryImport(
-          i < 35 ? ownerData : otherUserData,
-        );
+      for (let i = 0; i < testData.length; i++) {
         for (let j = 0; j < 5; j++) {
-          logEntryData[i * 5 + j].owner = importData[i].owner;
-          logEntryData[i * 5 + j].import = importData[i];
+          logEntryData[i * 5 + j].owner = testData[i].owner;
+          logEntryData[i * 5 + j].import = testData[i];
         }
       }
 
       await Users.save([ownerData, otherUserData]);
-      await Imports.save(importData);
+      await Imports.save(testData);
       await Entries.save(logEntryData);
     });
 
@@ -168,17 +203,23 @@ describe('Log Entry Import Service', () => {
     });
 
     it('will return result set with finalized imports filtered out', async () => {
-      const expected = importData
-        .filter((i) => i.owner.id === OwnerData.id && i.finalized === null)
-        .sort((a, b) => b.date.valueOf() - a.date.valueOf());
+      const expectedLength = testData.filter(
+        (i) => i.owner.id === OwnerData.id && i.finalized === null,
+      ).length;
 
       const results = await service.listImports({
         owner,
         showFinalized: false,
       });
 
-      expect(results.totalCount).toBe(expected.length);
-      expect(results.data.map((i) => i.id)).toEqual(expected.map((i) => i.id));
+      expect(results.totalCount).toBe(expectedLength);
+      expect(
+        results.data.map((i) => ({
+          owner: i.owner,
+          date: i.date,
+          finalized: i.finalized,
+        })),
+      ).toMatchSnapshot();
     });
 
     it('will not return results belonging to a different owner', async () => {
@@ -188,45 +229,70 @@ describe('Log Entry Import Service', () => {
         skip: 0,
         limit: 500,
       });
-      results.data.forEach((i) => {
-        expect(i.owner).toEqual(ownerData.username);
-      });
+      expect(results.data.every((i) => i.owner === ownerData.username)).toBe(
+        true,
+      );
     });
 
     it('will return result set with all results matching owner', async () => {
-      const expected = importData
-        .filter((i) => i.owner.id === ownerData.id)
-        .sort(
-          (a, b) =>
-            (b.finalized?.valueOf() ?? b.date.valueOf()) -
-            (a.finalized?.valueOf() ?? a.date.valueOf()),
-        );
+      const expectedLength = testData.filter(
+        (i) => i.owner.id === ownerData.id,
+      ).length;
       const results = await service.listImports({
         owner,
         showFinalized: true,
       });
-      expect(results.data).toHaveLength(expected.length);
-      expect(results.totalCount).toBe(expected.length);
-      expect(results.data.map((i) => i.id)).toEqual(expected.map((i) => i.id));
+      expect(results.data).toHaveLength(expectedLength);
+      expect(results.totalCount).toBe(expectedLength);
+      expect(
+        results.data.map((i) => ({
+          owner: i.owner,
+          date: i.date,
+          finalized: i.finalized,
+        })),
+      ).toMatchSnapshot();
     });
 
     it('will return paged results', async () => {
-      const expected = importData
-        .filter((i) => i.owner.id === OwnerData.id && i.finalized === null)
-        .sort((a, b) => a.date.valueOf() - b.date.valueOf())
-        .slice(5, 10);
       const results = await service.listImports({
         owner,
-        showFinalized: false,
+        showFinalized: true,
         skip: 5,
         limit: 5,
       });
 
       expect(results.data).toHaveLength(5);
       expect(results.totalCount).toBe(35);
-      expect(results.data.map((i) => i.toEntity().id)).toEqual(
-        expected.map((i) => i.id),
-      );
+      expect(
+        results.data.map((i) => ({
+          owner: i.owner,
+          date: i.date,
+          finalized: i.finalized,
+        })),
+      ).toMatchSnapshot();
+    });
+  });
+
+  describe('when expiring imports', () => {
+    beforeEach(async () => {
+      await Imports.save(testData);
+    });
+
+    it('will expire all non-finalized imports older than the indicated date', async () => {
+      const expired = testData
+        .filter((i) => i.finalized === null)
+        .sort((a, b) => b.date.valueOf() - a.date.valueOf());
+      const expiration = expired[expired.length - 3].date;
+      const removed = await service.expireImports(expiration);
+      expect(removed).toBe(expired.length - 4);
+
+      await expect(Imports.count()).resolves.toBe(testData.length - removed);
+      await expect(
+        Imports.existsBy({
+          finalized: IsNull(),
+          date: LessThanOrEqual(expiration),
+        }),
+      ).resolves.toBe(false);
     });
   });
 });

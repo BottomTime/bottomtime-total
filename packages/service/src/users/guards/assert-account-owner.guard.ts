@@ -4,6 +4,8 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { User } from '../user';
@@ -13,6 +15,16 @@ export class AssertAccountOwner implements CanActivate {
     const req = ctx.switchToHttp().getRequest();
     const currentUser: User = req.user;
     const targetUser: User = req.targetUser;
+
+    if (!currentUser) {
+      throw new UnauthorizedException(
+        'You must be logged in to access this resource.',
+      );
+    }
+
+    if (!targetUser) {
+      throw new NotFoundException('The indicated user account does not exist.');
+    }
 
     if (
       currentUser.role === UserRole.Admin ||

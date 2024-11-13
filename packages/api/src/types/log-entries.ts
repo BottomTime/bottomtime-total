@@ -14,7 +14,7 @@ import {
 } from './constants';
 import { DiveSiteSchema } from './dive-sites';
 import { CreateOrUpdateTankParamsSchema } from './tanks';
-import { SuccinctProfileSchema, UsernameSchema } from './users';
+import { SuccinctProfileSchema } from './users';
 
 export enum LogEntrySortBy {
   EntryTime = 'entryTime',
@@ -203,10 +203,9 @@ export const LogsImportSchema = CreateLogsImportParamsSchema.extend({
 export type LogsImportDTO = z.infer<typeof LogsImportSchema>;
 
 export const ListLogEntryImportsParamsSchema = z.object({
-  owner: UsernameSchema,
   showFinalized: BooleanString.optional(),
-  skip: z.number().int().min(0).optional(),
-  limit: z.number().int().min(1).max(500).optional(),
+  skip: z.coerce.number().int().min(0).optional(),
+  limit: z.coerce.number().int().min(1).max(500).optional(),
 });
 export type ListLogEntryImportsParamsDTO = z.infer<
   typeof ListLogEntryImportsParamsSchema

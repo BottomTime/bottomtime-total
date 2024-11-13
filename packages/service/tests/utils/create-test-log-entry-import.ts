@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 
+import { z } from 'zod';
+
 import { LogEntryImportEntity, UserEntity } from '../../src/data';
 
 const DiveComputers = [
@@ -13,6 +15,15 @@ const DiveComputers = [
   'Shearwater Teric',
   'Scubapro G2',
 ];
+
+const LogEntryImportSchema = z.object({
+  id: z.string(),
+  date: z.coerce.date(),
+  finalized: z.coerce.date().nullable(),
+  device: z.string().nullable(),
+  deviceId: z.string().nullable(),
+  bookmark: z.string().nullable(),
+});
 
 export function createTestLogEntryImport(
   owner: UserEntity,
@@ -37,4 +48,15 @@ export function createTestLogEntryImport(
   };
 
   return data;
+}
+
+export function parseLogEntryImportJSON(
+  data: unknown,
+  owner: UserEntity,
+): LogEntryImportEntity {
+  const result = LogEntryImportSchema.parse(data);
+  return {
+    ...result,
+    owner,
+  };
 }

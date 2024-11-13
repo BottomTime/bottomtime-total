@@ -1,0 +1,246 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Log Entry Import Service when listing imports will return paged results 1`] = `
+[
+  {
+    "date": 2024-05-20T21:45:17.961Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-11-12T05:20:31.505Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-24T19:26:33.797Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-11T08:12:02.577Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-09T13:10:30.383Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+]
+`;
+
+exports[`Log Entry Import Service when listing imports will return result set with all results matching owner 1`] = `
+[
+  {
+    "date": 2024-10-30T00:44:50.840Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-09T01:51:46.636Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-08-15T17:20:30.544Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-06-28T15:51:44.543Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-05-22T06:21:46.799Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-05-20T21:45:17.961Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-11-12T05:20:31.505Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-24T19:26:33.797Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-11T08:12:02.577Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-09T13:10:30.383Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-08T11:49:58.856Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-06T22:16:17.486Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-01T22:21:49.989Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-01T06:56:04.708Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-09-20T23:46:14.207Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-09-20T08:10:03.645Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-09-03T18:03:26.149Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-09-02T12:09:25.472Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-09-01T08:48:52.581Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-08-29T00:04:55.257Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-08-21T21:20:29.984Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-08-16T16:13:23.402Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-08-10T14:15:56.594Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-07-29T05:12:50.929Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-07-19T15:06:47.597Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-07-19T03:28:39.842Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-07-18T00:11:44.426Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-07-11T19:57:33.174Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-07-07T21:45:42.949Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-06-24T03:43:03.900Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-06-23T10:42:38.083Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-06-21T17:49:07.151Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-06-06T03:41:42.098Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-06-01T03:53:59.529Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-05-31T06:05:33.958Z,
+    "finalized": true,
+    "owner": "testuser",
+  },
+]
+`;
+
+exports[`Log Entry Import Service when listing imports will return result set with finalized imports filtered out 1`] = `
+[
+  {
+    "date": 2024-10-30T00:44:50.840Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-10-09T01:51:46.636Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-08-15T17:20:30.544Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-06-28T15:51:44.543Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-05-22T06:21:46.799Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+  {
+    "date": 2024-05-20T21:45:17.961Z,
+    "finalized": false,
+    "owner": "testuser",
+  },
+]
+`;

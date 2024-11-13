@@ -7,7 +7,7 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
 import { LogEntryEntity, LogEntryImportEntity } from '../data';
@@ -15,10 +15,7 @@ import { User } from '../users';
 import { LogEntryImport } from './log-entry-import';
 import { LogEntryImportQueryBuilder } from './log-entry-import-query-builder';
 
-type ListLogEntryImportsOptions = Omit<
-  ListLogEntryImportsParamsDTO,
-  'owner'
-> & {
+type ListLogEntryImportsOptions = ListLogEntryImportsParamsDTO & {
   owner: User;
 };
 
@@ -67,7 +64,13 @@ export class ImportService {
     return undefined;
   }
 
-  expireImports() {}
+  async expireImports(expiration: Date): Promise<number> {
+    const { affected } = await this.imports.delete({
+      finalized: IsNull(),
+      date: LessThanOrEqual(expiration),
+    });
+    return affected ?? 0;
+  }
 
   async createImport(
     user: User,

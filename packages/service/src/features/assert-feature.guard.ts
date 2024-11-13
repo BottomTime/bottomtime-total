@@ -3,6 +3,7 @@ import { Feature } from '@bottomtime/common';
 import {
   CanActivate,
   ExecutionContext,
+  Inject,
   NotImplementedException,
 } from '@nestjs/common';
 
@@ -10,7 +11,9 @@ import { User } from '../users';
 import { FeaturesService } from './features.service';
 
 export abstract class AssertFeature implements CanActivate {
-  constructor(private readonly features: FeaturesService) {}
+  constructor(
+    @Inject(FeaturesService) private readonly features: FeaturesService,
+  ) {}
 
   protected abstract feature: Feature<boolean>;
 
