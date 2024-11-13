@@ -1,9 +1,9 @@
 import { Controller, UseGuards } from '@nestjs/common';
 
-import { ImportFeatureGuard } from './import-feature.guard';
+import { AssertImportFeature } from './assert-import-feature.guard';
 
 @Controller('api/users/:username/logbook/import/:importId')
-@UseGuards(ImportFeatureGuard)
+@UseGuards(AssertImportFeature)
 export class ImportController {
   cancelImport() {}
 

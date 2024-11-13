@@ -1,24 +1,24 @@
-import { LogImportFeature } from '@bottomtime/common';
+import { Feature } from '@bottomtime/common';
 
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
   NotImplementedException,
 } from '@nestjs/common';
 
-import { FeaturesService } from '../features';
 import { User } from '../users';
+import { FeaturesService } from './features.service';
 
-@Injectable()
-export class ImportFeatureGuard implements CanActivate {
+export abstract class AssertFeature implements CanActivate {
   constructor(private readonly features: FeaturesService) {}
+
+  protected abstract feature: Feature<boolean>;
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     const user = req.user instanceof User ? req.user : undefined;
 
-    const feature = await this.features.getFeature(LogImportFeature, user);
+    const feature = await this.features.getFeature(this.feature, user);
     if (!feature) {
       throw new NotImplementedException('Feature is not yet implemented');
     }
