@@ -15,8 +15,8 @@ import {
 } from '../../../../src/data';
 import { ConfigCatClient } from '../../../../src/dependencies';
 import { FeaturesModule } from '../../../../src/features';
-import { ImportController } from '../../../../src/logEntries/import/import.controller';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
+import { LogEntryImportController } from '../../../../src/logEntries/import/log-entry-import.controller';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
 import { UsersModule } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
@@ -72,7 +72,7 @@ describe('Log entry import session E2E tests', () => {
           UsersModule,
         ],
         providers: [LogEntryImportFactory, LogEntryImportService],
-        controllers: [ImportController],
+        controllers: [LogEntryImportController],
       },
       {
         provide: ConfigCatClient,

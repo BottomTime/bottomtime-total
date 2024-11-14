@@ -29,7 +29,7 @@ import { LogEntryImportService } from './log-entry-import.service';
 
 @Controller('api/users/:username/logImports')
 @UseGuards(AssertImportFeature, AssertTargetUser, AssertAccountOwner)
-export class ImportsController {
+export class LogEntryImportsController {
   constructor(
     @Inject(LogEntryImportService)
     private readonly service: LogEntryImportService,

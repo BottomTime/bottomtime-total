@@ -17,8 +17,8 @@ import { LogEntryImport } from './log-entry-import';
   AssertTargetImport,
   AssertImportOwner,
 )
-export class ImportController {
-  private readonly log = new Logger(ImportController.name);
+export class LogEntryImportController {
+  private readonly log = new Logger(LogEntryImportController.name);
 
   @Delete()
   async cancelImport(@TargetImport() importEntity: LogEntryImport) {
