@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import {
   LogEntryEntity,
   LogEntryImportEntity,
+  LogEntryImportRecordEntity,
   UserEntity,
 } from '../../../../src/data';
 import { ConfigCatClient } from '../../../../src/dependencies';
@@ -65,6 +66,7 @@ describe('Import log entries E2E tests', () => {
             UserEntity,
             LogEntryEntity,
             LogEntryImportEntity,
+            LogEntryImportRecordEntity,
           ]),
           FeaturesModule,
           UsersModule,

@@ -8,7 +8,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-import { LogEntryEntity } from './log-entry.entity';
+import { LogEntryImportRecordEntity } from './log-entry-import-record.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entry_imports')
@@ -35,9 +35,8 @@ export class LogEntryImportEntity {
   @Column('varchar', { length: 200, nullable: true })
   bookmark: string | null = null;
 
-  @OneToMany(() => LogEntryEntity, (entry) => entry.import, {
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL',
+  @OneToMany(() => LogEntryImportRecordEntity, (record) => record.import, {
+    onDelete: 'CASCADE',
   })
-  entries?: LogEntryEntity[];
+  records?: LogEntryImportRecordEntity[];
 }

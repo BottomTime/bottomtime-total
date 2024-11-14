@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+
 import { writeFile } from 'fs/promises';
 import { resolve } from 'path';
 import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
@@ -6,6 +8,7 @@ import * as uuid from 'uuid';
 import {
   LogEntryEntity,
   LogEntryImportEntity,
+  LogEntryImportRecordEntity,
   UserEntity,
 } from '../../../../src/data';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
@@ -17,7 +20,6 @@ import TestData from '../../../fixtures/log-entry-imports.json';
 import {
   createTestLogEntryImport,
   parseLogEntryImportJSON,
-  parseLogEntryJSON,
 } from '../../../utils';
 import { createTestUser } from '../../../utils/create-test-user';
 
@@ -36,6 +38,7 @@ const OtherUserData: Partial<UserEntity> = {
 describe('Log Entry Import Service', () => {
   let Entries: Repository<LogEntryEntity>;
   let Imports: Repository<LogEntryImportEntity>;
+  let ImportRecords: Repository<LogEntryImportRecordEntity>;
   let Users: Repository<UserEntity>;
   let service: LogEntryImportService;
   let importFactory: LogEntryImportFactory;
@@ -48,11 +51,17 @@ describe('Log Entry Import Service', () => {
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
+    ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
 
     const userFactory = new UserFactory(Users);
-    importFactory = new LogEntryImportFactory(Imports, Entries, userFactory);
-    service = new LogEntryImportService(Imports, Entries, importFactory);
+    importFactory = new LogEntryImportFactory(
+      Imports,
+      ImportRecords,
+      Entries,
+      userFactory,
+    );
+    service = new LogEntryImportService(Imports, importFactory);
   });
 
   beforeEach(async () => {
@@ -176,22 +185,23 @@ describe('Log Entry Import Service', () => {
   });
 
   describe('when listing imports', () => {
-    let logEntryData: LogEntryEntity[];
+    let logEntryData: LogEntryImportRecordEntity[];
 
     beforeEach(async () => {
-      logEntryData = LogEntryData.map((data) =>
-        parseLogEntryJSON(data, otherUserData),
-      );
+      logEntryData = LogEntryData.map((data) => ({
+        id: faker.string.uuid(),
+        import: testData[0],
+        data: JSON.stringify(data),
+      }));
       for (let i = 0; i < testData.length; i++) {
         for (let j = 0; j < 5; j++) {
-          logEntryData[i * 5 + j].owner = testData[i].owner;
           logEntryData[i * 5 + j].import = testData[i];
         }
       }
 
       await Users.save([ownerData, otherUserData]);
       await Imports.save(testData);
-      await Entries.save(logEntryData);
+      await ImportRecords.save(logEntryData);
     });
 
     it('will return an empty set if no imports match the criteria', async () => {

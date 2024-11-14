@@ -1,17 +1,19 @@
 import { MethodNotAllowedException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
+import { v7 as uuid } from 'uuid';
 
 import {
   LogEntryEntity,
   LogEntryImportEntity,
+  LogEntryImportRecordEntity,
   UserEntity,
 } from '../../../../src/data';
 import { LogEntryImport } from '../../../../src/logEntries';
 import { UserFactory } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
 import LogEntryData from '../../../fixtures/log-entries.json';
-import { createTestUser, parseLogEntryJSON } from '../../../utils';
+import { createTestUser } from '../../../utils';
 
 const OwnerData = createTestUser({
   id: 'acd229a9-b160-4c6f-83c6-f171f9ee11be',
@@ -30,9 +32,11 @@ const TestData: LogEntryImportEntity = {
 describe('Log Entry Import class', () => {
   let Entries: Repository<LogEntryEntity>;
   let Imports: Repository<LogEntryImportEntity>;
+  let ImportRecords: Repository<LogEntryImportRecordEntity>;
+
   let Users: Repository<UserEntity>;
   let userFactory: UserFactory;
-  let logEntryData: LogEntryEntity[];
+  let logEntryData: LogEntryImportRecordEntity[];
 
   let logEntryImportData: LogEntryImportEntity;
   let logEntryImport: LogEntryImport;
@@ -40,12 +44,14 @@ describe('Log Entry Import class', () => {
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
+    ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
     userFactory = new UserFactory(Users);
 
     logEntryData = LogEntryData.map((data) => ({
-      ...parseLogEntryJSON(data, OwnerData),
+      id: uuid(),
       import: TestData,
+      data: JSON.stringify(data),
     }));
   });
 
@@ -53,6 +59,7 @@ describe('Log Entry Import class', () => {
     logEntryImportData = { ...TestData };
     logEntryImport = new LogEntryImport(
       Imports,
+      ImportRecords,
       Entries,
       userFactory,
       logEntryImportData,
@@ -117,17 +124,17 @@ describe('Log Entry Import class', () => {
     });
 
     it('will cancel an import that already has log entries but has not been finalized', async () => {
-      await Entries.save(logEntryData.slice(0, 5));
+      await ImportRecords.save(logEntryData.slice(0, 5));
       await expect(logEntryImport.cancel()).resolves.toBe(true);
       expect(logEntryImport.canceled).toBe(true);
       await expect(
         Imports.findOneBy({ id: logEntryImportData.id }),
       ).resolves.toBeNull();
-      await expect(Entries.find()).resolves.toHaveLength(0);
+      await expect(ImportRecords.find()).resolves.toHaveLength(0);
     });
 
     it('will throw an exception if the import has already been finalized', async () => {
-      await Entries.save(logEntryData.slice(0, 5));
+      await ImportRecords.save(logEntryData.slice(0, 5));
       await Imports.update(logEntryImportData.id, {
         finalized: TestData.finalized,
       });
@@ -143,7 +150,7 @@ describe('Log Entry Import class', () => {
     beforeEach(async () => {
       logEntryImportData.finalized = null;
       await Imports.save(logEntryImportData);
-      await Entries.save(logEntryData.slice(0, 5));
+      await ImportRecords.save(logEntryData.slice(0, 5));
     });
 
     it('will finalize an import with log entries', async () => {
@@ -159,7 +166,7 @@ describe('Log Entry Import class', () => {
     });
 
     it('will throw an exception if the import does not yet have log entries', async () => {
-      await Entries.delete({ import: { id: logEntryImport.id } });
+      await ImportRecords.delete({ import: { id: logEntryImport.id } });
       await expect(logEntryImport.finalize()).rejects.toThrow(
         MethodNotAllowedException,
       );

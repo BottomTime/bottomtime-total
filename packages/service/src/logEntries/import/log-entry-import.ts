@@ -4,7 +4,11 @@ import { MethodNotAllowedException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity, LogEntryImportEntity } from '../../data';
+import {
+  LogEntryEntity,
+  LogEntryImportEntity,
+  LogEntryImportRecordEntity,
+} from '../../data';
 import { User, UserFactory } from '../../users';
 
 export class LogEntryImport {
@@ -13,6 +17,7 @@ export class LogEntryImport {
 
   constructor(
     private readonly imports: Repository<LogEntryImportEntity>,
+    private readonly importRecords: Repository<LogEntryImportRecordEntity>,
     private readonly logEntries: Repository<LogEntryEntity>,
     private readonly userFactory: UserFactory,
     private readonly data: LogEntryImportEntity,
@@ -56,7 +61,7 @@ export class LogEntryImport {
   async finalize(): Promise<boolean> {
     if (this.finalized) return false;
 
-    const hasEntries = await this.logEntries.existsBy({
+    const hasEntries = await this.importRecords.existsBy({
       import: { id: this.data.id },
     });
 
@@ -80,7 +85,7 @@ export class LogEntryImport {
       );
     }
 
-    await this.logEntries.delete({ import: { id: this.data.id } });
+    await this.importRecords.delete({ import: { id: this.data.id } });
     const { affected } = await this.imports.delete(this.data.id);
     this._canceled = true;
     return affected === 1;

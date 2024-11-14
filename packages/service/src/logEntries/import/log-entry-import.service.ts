@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { LogEntryEntity, LogEntryImportEntity } from '../../data';
+import { LogEntryImportEntity } from '../../data';
 import { User } from '../../users';
 import { LogEntryImport } from './log-entry-import';
 import { LogEntryImportFactory } from './log-entry-import-factory';
@@ -27,9 +27,6 @@ export class LogEntryImportService {
   constructor(
     @InjectRepository(LogEntryImportEntity)
     private readonly imports: Repository<LogEntryImportEntity>,
-
-    @InjectRepository(LogEntryEntity)
-    private readonly logEntries: Repository<LogEntryEntity>,
 
     @Inject(LogEntryImportFactory)
     private readonly importFactory: LogEntryImportFactory,
