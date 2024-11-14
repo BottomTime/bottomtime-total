@@ -5,6 +5,7 @@ import {
   LogEntryAirEntity,
   LogEntryEntity,
   LogEntryImportEntity,
+  LogEntryImportRecordEntity,
 } from '../data';
 import { DiveSitesModule } from '../diveSites';
 import { FeaturesModule } from '../features';
@@ -24,6 +25,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
       LogEntryEntity,
       LogEntryAirEntity,
       LogEntryImportEntity,
+      LogEntryImportRecordEntity,
     ]),
     UsersModule,
     FeaturesModule,
