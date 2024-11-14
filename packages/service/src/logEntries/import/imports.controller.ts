@@ -22,15 +22,18 @@ import {
   AssertTargetUser,
   TargetUser,
   User,
-} from '../users';
-import { ZodValidator } from '../zod-validator';
+} from '../../users';
+import { ZodValidator } from '../../zod-validator';
 import { AssertImportFeature } from './assert-import-feature.guard';
-import { ImportService } from './import.service';
+import { LogEntryImportService } from './log-entry-import.service';
 
 @Controller('api/users/:username/logImports')
 @UseGuards(AssertImportFeature, AssertTargetUser, AssertAccountOwner)
 export class ImportsController {
-  constructor(@Inject(ImportService) private readonly service: ImportService) {}
+  constructor(
+    @Inject(LogEntryImportService)
+    private readonly service: LogEntryImportService,
+  ) {}
 
   @Get()
   async listImports(

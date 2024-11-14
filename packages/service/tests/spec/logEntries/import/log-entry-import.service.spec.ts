@@ -7,19 +7,19 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   UserEntity,
-} from '../../../src/data';
-import { LogEntryImport } from '../../../src/logEntries';
-import { ImportService } from '../../../src/logEntries/import.service';
-import { User } from '../../../src/users';
-import { dataSource } from '../../data-source';
-import LogEntryData from '../../fixtures/log-entries.json';
-import TestData from '../../fixtures/log-entry-imports.json';
+} from '../../../../src/data';
+import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
+import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
+import { User, UserFactory } from '../../../../src/users';
+import { dataSource } from '../../../data-source';
+import LogEntryData from '../../../fixtures/log-entries.json';
+import TestData from '../../../fixtures/log-entry-imports.json';
 import {
   createTestLogEntryImport,
   parseLogEntryImportJSON,
   parseLogEntryJSON,
-} from '../../utils';
-import { createTestUser } from '../../utils/create-test-user';
+} from '../../../utils';
+import { createTestUser } from '../../../utils/create-test-user';
 
 jest.mock('uuid');
 
@@ -37,7 +37,8 @@ describe('Log Entry Import Service', () => {
   let Entries: Repository<LogEntryEntity>;
   let Imports: Repository<LogEntryImportEntity>;
   let Users: Repository<UserEntity>;
-  let service: ImportService;
+  let service: LogEntryImportService;
+  let importFactory: LogEntryImportFactory;
 
   let ownerData: UserEntity;
   let otherUserData: UserEntity;
@@ -48,7 +49,10 @@ describe('Log Entry Import Service', () => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
     Users = dataSource.getRepository(UserEntity);
-    service = new ImportService(Imports, Entries);
+
+    const userFactory = new UserFactory(Users);
+    importFactory = new LogEntryImportFactory(Imports, Entries, userFactory);
+    service = new LogEntryImportService(Imports, Entries, importFactory);
   });
 
   beforeEach(async () => {
@@ -157,7 +161,7 @@ describe('Log Entry Import Service', () => {
   describe('when retrieving a single import', () => {
     it('will return the requested import', async () => {
       const data = createTestLogEntryImport(ownerData);
-      const expected = new LogEntryImport(Imports, Entries, data);
+      const expected = importFactory.createImport(data);
       await Imports.save(data);
 
       const actual = await service.getImport(data.id);
@@ -215,7 +219,7 @@ describe('Log Entry Import Service', () => {
       expect(results.totalCount).toBe(expectedLength);
       expect(
         results.data.map((i) => ({
-          owner: i.owner,
+          owner: i.owner.username,
           date: i.date,
           finalized: i.finalized,
         })),
@@ -229,9 +233,7 @@ describe('Log Entry Import Service', () => {
         skip: 0,
         limit: 500,
       });
-      expect(results.data.every((i) => i.owner === ownerData.username)).toBe(
-        true,
-      );
+      expect(results.data.every((i) => i.owner.id === ownerData.id)).toBe(true);
     });
 
     it('will return result set with all results matching owner', async () => {
@@ -246,7 +248,7 @@ describe('Log Entry Import Service', () => {
       expect(results.totalCount).toBe(expectedLength);
       expect(
         results.data.map((i) => ({
-          owner: i.owner,
+          owner: i.owner.username,
           date: i.date,
           finalized: i.finalized,
         })),
@@ -265,7 +267,7 @@ describe('Log Entry Import Service', () => {
       expect(results.totalCount).toBe(35);
       expect(
         results.data.map((i) => ({
-          owner: i.owner,
+          owner: i.owner.username,
           date: i.date,
           finalized: i.finalized,
         })),

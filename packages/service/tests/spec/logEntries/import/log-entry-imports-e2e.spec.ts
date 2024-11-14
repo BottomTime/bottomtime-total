@@ -12,21 +12,22 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   UserEntity,
-} from '../../../src/data';
-import { ConfigCatClient } from '../../../src/dependencies';
-import { FeaturesModule } from '../../../src/features';
-import { ImportService } from '../../../src/logEntries/import.service';
-import { ImportsController } from '../../../src/logEntries/imports.controller';
-import { UsersModule } from '../../../src/users';
-import { dataSource } from '../../data-source';
-import TestData from '../../fixtures/log-entry-imports.json';
+} from '../../../../src/data';
+import { ConfigCatClient } from '../../../../src/dependencies';
+import { FeaturesModule } from '../../../../src/features';
+import { ImportsController } from '../../../../src/logEntries/import/imports.controller';
+import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
+import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
+import { UsersModule } from '../../../../src/users';
+import { dataSource } from '../../../data-source';
+import TestData from '../../../fixtures/log-entry-imports.json';
 import {
   ConfigCatClientMock,
   createAuthHeader,
   createTestApp,
   createTestUser,
   parseLogEntryImportJSON,
-} from '../../utils';
+} from '../../../utils';
 
 const OwnerData: Partial<UserEntity> = {
   id: '6e23d9d9-513c-4319-a489-918d77739a4d',
@@ -68,7 +69,7 @@ describe('Import log entries E2E tests', () => {
           FeaturesModule,
           UsersModule,
         ],
-        providers: [ImportService],
+        providers: [LogEntryImportService, LogEntryImportFactory],
         controllers: [ImportsController],
       },
       {

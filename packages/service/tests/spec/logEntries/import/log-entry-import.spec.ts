@@ -6,11 +6,12 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   UserEntity,
-} from '../../../src/data';
-import { LogEntryImport } from '../../../src/logEntries';
-import { dataSource } from '../../data-source';
-import LogEntryData from '../../fixtures/log-entries.json';
-import { createTestUser, parseLogEntryJSON } from '../../utils';
+} from '../../../../src/data';
+import { LogEntryImport } from '../../../../src/logEntries';
+import { UserFactory } from '../../../../src/users';
+import { dataSource } from '../../../data-source';
+import LogEntryData from '../../../fixtures/log-entries.json';
+import { createTestUser, parseLogEntryJSON } from '../../../utils';
 
 const OwnerData = createTestUser({
   id: 'acd229a9-b160-4c6f-83c6-f171f9ee11be',
@@ -30,6 +31,7 @@ describe('Log Entry Import class', () => {
   let Entries: Repository<LogEntryEntity>;
   let Imports: Repository<LogEntryImportEntity>;
   let Users: Repository<UserEntity>;
+  let userFactory: UserFactory;
   let logEntryData: LogEntryEntity[];
 
   let logEntryImportData: LogEntryImportEntity;
@@ -39,6 +41,7 @@ describe('Log Entry Import class', () => {
     Entries = dataSource.getRepository(LogEntryEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
     Users = dataSource.getRepository(UserEntity);
+    userFactory = new UserFactory(Users);
 
     logEntryData = LogEntryData.map((data) => ({
       ...parseLogEntryJSON(data, OwnerData),
@@ -48,13 +51,18 @@ describe('Log Entry Import class', () => {
 
   beforeEach(async () => {
     logEntryImportData = { ...TestData };
-    logEntryImport = new LogEntryImport(Imports, Entries, logEntryImportData);
+    logEntryImport = new LogEntryImport(
+      Imports,
+      Entries,
+      userFactory,
+      logEntryImportData,
+    );
     await Users.save(OwnerData);
   });
 
   it('will return properties correctly', () => {
     expect(logEntryImport.id).toBe('8c6613e6-a7b8-446b-b07d-3ddc81757337');
-    expect(logEntryImport.owner).toBe('testuser');
+    expect(logEntryImport.owner.id).toBe(OwnerData.id);
     expect(logEntryImport.date).toEqual(new Date('2024-11-12T10:07:48-05:00'));
     expect(logEntryImport.finalized).toBe(true);
     expect(logEntryImport.device).toBe('Test Device');

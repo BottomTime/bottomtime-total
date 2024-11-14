@@ -1,7 +1,7 @@
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import { LogEntryImportEntity } from '../data';
-import { User } from '../users';
+import { LogEntryImportEntity } from '../../data';
+import { User } from '../../users';
 
 export class LogEntryImportQueryBuilder {
   private query: SelectQueryBuilder<LogEntryImportEntity>;

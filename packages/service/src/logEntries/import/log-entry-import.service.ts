@@ -4,15 +4,16 @@ import {
   ListLogEntryImportsParamsDTO,
 } from '@bottomtime/api';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { LogEntryEntity, LogEntryImportEntity } from '../data';
-import { User } from '../users';
+import { LogEntryEntity, LogEntryImportEntity } from '../../data';
+import { User } from '../../users';
 import { LogEntryImport } from './log-entry-import';
+import { LogEntryImportFactory } from './log-entry-import-factory';
 import { LogEntryImportQueryBuilder } from './log-entry-import-query-builder';
 
 type ListLogEntryImportsOptions = ListLogEntryImportsParamsDTO & {
@@ -20,8 +21,8 @@ type ListLogEntryImportsOptions = ListLogEntryImportsParamsDTO & {
 };
 
 @Injectable()
-export class ImportService {
-  private readonly log = new Logger(ImportService.name);
+export class LogEntryImportService {
+  private readonly log = new Logger(LogEntryImportService.name);
 
   constructor(
     @InjectRepository(LogEntryImportEntity)
@@ -29,6 +30,9 @@ export class ImportService {
 
     @InjectRepository(LogEntryEntity)
     private readonly logEntries: Repository<LogEntryEntity>,
+
+    @Inject(LogEntryImportFactory)
+    private readonly importFactory: LogEntryImportFactory,
   ) {}
 
   async listImports(
@@ -44,9 +48,7 @@ export class ImportService {
     const [imports, totalCount] = await query.getManyAndCount();
 
     return {
-      data: imports.map(
-        (i) => new LogEntryImport(this.imports, this.logEntries, i),
-      ),
+      data: imports.map((i) => this.importFactory.createImport(i)),
       totalCount,
     };
   }
@@ -58,7 +60,7 @@ export class ImportService {
     });
 
     if (result) {
-      return new LogEntryImport(this.imports, this.logEntries, result);
+      return this.importFactory.createImport(result);
     }
 
     return undefined;
@@ -87,6 +89,6 @@ export class ImportService {
     };
 
     await this.imports.save(importData);
-    return new LogEntryImport(this.imports, this.logEntries, importData);
+    return this.importFactory.createImport(importData);
   }
 }

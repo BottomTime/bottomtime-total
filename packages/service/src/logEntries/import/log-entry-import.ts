@@ -4,14 +4,17 @@ import { MethodNotAllowedException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 
-import { LogEntryEntity, LogEntryImportEntity } from '../data';
+import { LogEntryEntity, LogEntryImportEntity } from '../../data';
+import { User, UserFactory } from '../../users';
 
 export class LogEntryImport {
   private _canceled = false;
+  private _owner: User | undefined;
 
   constructor(
     private readonly imports: Repository<LogEntryImportEntity>,
     private readonly logEntries: Repository<LogEntryEntity>,
+    private readonly userFactory: UserFactory,
     private readonly data: LogEntryImportEntity,
   ) {}
 
@@ -19,8 +22,11 @@ export class LogEntryImport {
     return this.data.id;
   }
 
-  get owner(): string {
-    return this.data.owner.username;
+  get owner(): User {
+    if (!this._owner) {
+      this._owner = this.userFactory.createUser(this.data.owner);
+    }
+    return this._owner;
   }
 
   get date(): Date {
@@ -83,7 +89,7 @@ export class LogEntryImport {
   toJSON(): LogsImportDTO {
     return {
       id: this.id,
-      owner: this.owner,
+      owner: this.data.owner.username,
       date: this.date,
       finalized: this.finalized,
       bookmark: this.bookmark,
