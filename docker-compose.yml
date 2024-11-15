@@ -1,20 +1,18 @@
 services:
-  s3:
-    container_name: bottomtime-s3
-    image: lphoward/fake-s3
-    restart: always
+  localstack:
+    container_name: bottomtime-localstack
+    image: localstack/localstack
     ports:
-      - '4569:4569'
+      - '127.0.0.1:4566:4566' # LocalStack Gateway
+      - '127.0.0.1:4510-4559:4510-4559' # external services port range
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+      - SERVICES=s3,sqs,ses
     volumes:
-      - ./.s3/:/fakes3_root/
-
-  elasticmq:
-    container_name: bottomtime-elasticmq
-    build:
-      context: ./
-      dockerfile: Dockerfile.elasticmq
-    ports:
-      - '9324:9324'
+      - './init-localstack.sh:/etc/localstack/init/ready.d/init-localstack.sh'
+      - './.localstack:/var/lib/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
 
   postgres:
     container_name: bottomtime-postgres
@@ -45,17 +43,15 @@ services:
     env_file:
       - packages/service/.env
     environment:
-      - BT_AWS_S3_ENDPOINT=http://s3:4569/
-      - BT_AWS_SQS_EMAIL_QUEUE_URL=http://elasticmq:9324/000000000000/emails
-      - BT_AWS_SQS_ENDPOINT=http://elasticmq:9324/
+      - BT_AWS_S3_ENDPOINT=http://localstack:4566/
+      - BT_AWS_SQS_EMAIL_QUEUE_URL=http://localstack:4566/000000000000/email
+      - BT_AWS_SQS_ENDPOINT=http://localstack:4566/
       - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
     entrypoint: /app/packages/service/bootstrap-docker.sh
     command: []
     working_dir: /app/packages/service
     depends_on:
-      s3:
-        condition: service_started
-      elasticmq:
+      localstack:
         condition: service_started
       postgres:
         condition: service_healthy

@@ -135,5 +135,6 @@ junit.xml
 vite.config.ts.timestamp*
 
 # Docker container volumes
+.localstack/
 .postgresql/
 .s3/

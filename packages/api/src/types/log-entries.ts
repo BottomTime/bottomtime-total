@@ -118,6 +118,18 @@ export type CreateOrUpdateLogEntryParamsDTO = z.infer<
   typeof CreateOrUpdateLogEntryParamsSchema
 >;
 
+export const LogEntrySampleSchema = z.object({
+  offset: z.number().int().min(0),
+  depth: z.number().positive(),
+  temperature: z.number().optional(),
+  gps: z
+    .object({
+      lat: z.number().min(-90).max(90),
+      lng: z.number().min(-180).max(180),
+    })
+    .optional(),
+});
+
 export const LogEntrySchema = LogEntryBaseSchema.extend({
   id: z.string(),
   createdAt: z.coerce.date(),

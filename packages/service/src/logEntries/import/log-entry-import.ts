@@ -85,7 +85,6 @@ export class LogEntryImport {
       );
     }
 
-    await this.importRecords.delete({ import: { id: this.data.id } });
     const { affected } = await this.imports.delete(this.data.id);
     this._canceled = true;
     return affected === 1;
