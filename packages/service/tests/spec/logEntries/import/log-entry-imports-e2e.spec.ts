@@ -9,13 +9,16 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import {
+  LogEntryAirEntity,
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
   UserEntity,
 } from '../../../../src/data';
 import { ConfigCatClient } from '../../../../src/dependencies';
+import { DiveSitesModule } from '../../../../src/diveSites';
 import { FeaturesModule } from '../../../../src/features';
+import { LogEntriesService, LogEntryFactory } from '../../../../src/logEntries';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
 import { LogEntryImportsController } from '../../../../src/logEntries/import/log-entry-imports.controller';
@@ -64,14 +67,21 @@ describe('Import log entries E2E tests', () => {
         imports: [
           TypeOrmModule.forFeature([
             UserEntity,
+            LogEntryAirEntity,
             LogEntryEntity,
             LogEntryImportEntity,
             LogEntryImportRecordEntity,
           ]),
+          DiveSitesModule,
           FeaturesModule,
           UsersModule,
         ],
-        providers: [LogEntryImportService, LogEntryImportFactory],
+        providers: [
+          LogEntryImportService,
+          LogEntryImportFactory,
+          LogEntryFactory,
+          LogEntriesService,
+        ],
         controllers: [LogEntryImportsController],
       },
       {

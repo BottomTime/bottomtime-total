@@ -1,24 +1,23 @@
 import { LogsImportDTO } from '@bottomtime/api';
 
-import { MethodNotAllowedException } from '@nestjs/common';
+import { Logger, MethodNotAllowedException } from '@nestjs/common';
 
+import { Observable, from } from 'rxjs';
 import { Repository } from 'typeorm';
 
-import {
-  LogEntryEntity,
-  LogEntryImportEntity,
-  LogEntryImportRecordEntity,
-} from '../../data';
+import { LogEntryImportEntity, LogEntryImportRecordEntity } from '../../data';
 import { User, UserFactory } from '../../users';
+import { LogEntry } from '../log-entry';
+import { IImporter } from './importer';
 
 export class LogEntryImport {
+  private readonly log = new Logger(LogEntryImport.name);
   private _canceled = false;
   private _owner: User | undefined;
 
   constructor(
     private readonly imports: Repository<LogEntryImportEntity>,
     private readonly importRecords: Repository<LogEntryImportRecordEntity>,
-    private readonly logEntries: Repository<LogEntryEntity>,
     private readonly userFactory: UserFactory,
     private readonly data: LogEntryImportEntity,
   ) {}
@@ -58,24 +57,81 @@ export class LogEntryImport {
     return this.data.deviceId || undefined;
   }
 
-  async finalize(): Promise<boolean> {
-    if (this.finalized) return false;
-
-    const hasEntries = await this.importRecords.existsBy({
+  private async *streamRecords(): AsyncGenerator<
+    LogEntryImportRecordEntity,
+    number
+  > {
+    const batchSize = 50;
+    const totalCount = await this.importRecords.countBy({
       import: { id: this.data.id },
     });
 
-    if (!hasEntries || this.canceled) {
+    if (totalCount === 0) {
       throw new MethodNotAllowedException(
-        'Cannot finalize an import operation before log entries have been added',
+        'Cannot finalize an import with no records',
       );
     }
 
+    let skip = 0;
+    while (true) {
+      const results = await this.importRecords.find({
+        where: { import: { id: this.data.id } },
+        order: { id: 'ASC' },
+        skip,
+        take: batchSize,
+      });
+
+      for (const record of results) {
+        yield record;
+      }
+
+      if (results.length < batchSize) break;
+      skip += batchSize;
+    }
+
+    return totalCount;
+  }
+
+  private async markFinalized(): Promise<void> {
     const finalized = new Date();
     await this.imports.update({ id: this.id }, { finalized });
-
+    await this.importRecords.delete({ import: { id: this.id } });
     this.data.finalized = finalized;
-    return true;
+  }
+
+  finalize(importer: IImporter): Observable<LogEntry> {
+    if (this.finalized) {
+      throw new MethodNotAllowedException(
+        'This import session has already been finalized.',
+      );
+    }
+
+    return new Observable<LogEntry>((subscriber) => {
+      importer
+        .import({
+          device: this.device,
+          deviceId: this.deviceId,
+          owner: this.owner,
+          data: from(this.streamRecords()),
+        })
+        .subscribe({
+          next: subscriber.next,
+          error: (err) => {
+            // TODO: Rollback?
+            this.log.error(err);
+          },
+          complete: () => {
+            this.markFinalized()
+              .catch((error) => {
+                // TODO: What now? Rollback?
+                subscriber.error(error);
+              })
+              .finally(() => {
+                subscriber.complete();
+              });
+          },
+        });
+    });
   }
 
   async cancel(): Promise<boolean> {

@@ -3,11 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import {
-  LogEntryEntity,
-  LogEntryImportEntity,
-  LogEntryImportRecordEntity,
-} from '../../data';
+import { LogEntryImportEntity, LogEntryImportRecordEntity } from '../../data';
 import { UserFactory } from '../../users';
 import { LogEntryImport } from './log-entry-import';
 
@@ -20,9 +16,6 @@ export class LogEntryImportFactory {
     @InjectRepository(LogEntryImportRecordEntity)
     private readonly importRecords: Repository<LogEntryImportRecordEntity>,
 
-    @InjectRepository(LogEntryEntity)
-    private readonly logEntries: Repository<LogEntryEntity>,
-
     @Inject(UserFactory) private readonly userFactory: UserFactory,
   ) {}
 
@@ -30,7 +23,6 @@ export class LogEntryImportFactory {
     return new LogEntryImport(
       this.imports,
       this.importRecords,
-      this.logEntries,
       this.userFactory,
       data,
     );

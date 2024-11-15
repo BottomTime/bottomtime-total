@@ -1,5 +1,6 @@
 import { MethodNotAllowedException } from '@nestjs/common';
 
+import { Mock } from 'moq.ts';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
@@ -9,7 +10,7 @@ import {
   LogEntryImportRecordEntity,
   UserEntity,
 } from '../../../../src/data';
-import { LogEntryImport } from '../../../../src/logEntries';
+import { LogEntriesService, LogEntryImport } from '../../../../src/logEntries';
 import { UserFactory } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
 import LogEntryData from '../../../fixtures/log-entries.json';
@@ -30,9 +31,9 @@ const TestData: LogEntryImportEntity = {
 };
 
 describe('Log Entry Import class', () => {
-  let Entries: Repository<LogEntryEntity>;
   let Imports: Repository<LogEntryImportEntity>;
   let ImportRecords: Repository<LogEntryImportRecordEntity>;
+  let entries: LogEntriesService;
 
   let Users: Repository<UserEntity>;
   let userFactory: UserFactory;
@@ -42,11 +43,11 @@ describe('Log Entry Import class', () => {
   let logEntryImport: LogEntryImport;
 
   beforeAll(() => {
-    Entries = dataSource.getRepository(LogEntryEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
     ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
     userFactory = new UserFactory(Users);
+    entries = new Mock<LogEntriesService>().object();
 
     logEntryData = LogEntryData.map((data) => ({
       id: uuid(),
@@ -60,7 +61,7 @@ describe('Log Entry Import class', () => {
     logEntryImport = new LogEntryImport(
       Imports,
       ImportRecords,
-      Entries,
+      entries,
       userFactory,
       logEntryImportData,
     );

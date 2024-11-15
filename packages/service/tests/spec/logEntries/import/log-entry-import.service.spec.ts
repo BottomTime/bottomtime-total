@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 import { writeFile } from 'fs/promises';
+import { Mock } from 'moq.ts';
 import { resolve } from 'path';
 import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import * as uuid from 'uuid';
@@ -11,6 +12,7 @@ import {
   LogEntryImportRecordEntity,
   UserEntity,
 } from '../../../../src/data';
+import { LogEntriesService } from '../../../../src/logEntries';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
 import { User, UserFactory } from '../../../../src/users';
@@ -36,10 +38,11 @@ const OtherUserData: Partial<UserEntity> = {
 };
 
 describe('Log Entry Import Service', () => {
-  let Entries: Repository<LogEntryEntity>;
   let Imports: Repository<LogEntryImportEntity>;
   let ImportRecords: Repository<LogEntryImportRecordEntity>;
+  let Entries: Repository<LogEntryEntity>;
   let Users: Repository<UserEntity>;
+  let entriesService: LogEntriesService;
   let service: LogEntryImportService;
   let importFactory: LogEntryImportFactory;
 
@@ -53,12 +56,13 @@ describe('Log Entry Import Service', () => {
     Imports = dataSource.getRepository(LogEntryImportEntity);
     ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
+    entriesService = new Mock<LogEntriesService>().object();
 
     const userFactory = new UserFactory(Users);
     importFactory = new LogEntryImportFactory(
       Imports,
       ImportRecords,
-      Entries,
+      entriesService,
       userFactory,
     );
     service = new LogEntryImportService(Imports, importFactory);

@@ -111,13 +111,6 @@ const LogEntryBaseSchema = z.object({
   tags: z.string().max(100).array().optional(),
 });
 
-export const CreateOrUpdateLogEntryParamsSchema = LogEntryBaseSchema.extend({
-  site: z.string().uuid().optional(),
-});
-export type CreateOrUpdateLogEntryParamsDTO = z.infer<
-  typeof CreateOrUpdateLogEntryParamsSchema
->;
-
 export const LogEntrySampleSchema = z.object({
   offset: z.number().int().min(0),
   depth: z.number().positive(),
@@ -129,6 +122,15 @@ export const LogEntrySampleSchema = z.object({
     })
     .optional(),
 });
+export type LogEntrySampleDTO = z.infer<typeof LogEntrySampleSchema>;
+
+export const CreateOrUpdateLogEntryParamsSchema = LogEntryBaseSchema.extend({
+  site: z.string().uuid().optional(),
+  samples: LogEntrySampleSchema.array().optional(),
+});
+export type CreateOrUpdateLogEntryParamsDTO = z.infer<
+  typeof CreateOrUpdateLogEntryParamsSchema
+>;
 
 export const LogEntrySchema = LogEntryBaseSchema.extend({
   id: z.string(),
@@ -136,6 +138,7 @@ export const LogEntrySchema = LogEntryBaseSchema.extend({
   updatedAt: z.coerce.date().optional(),
   creator: SuccinctProfileSchema,
   site: DiveSiteSchema.optional(),
+  samples: LogEntrySampleSchema.array().optional(),
 });
 export type LogEntryDTO = z.infer<typeof LogEntrySchema>;
 
