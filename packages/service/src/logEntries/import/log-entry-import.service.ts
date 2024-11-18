@@ -7,7 +7,7 @@ import {
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { LessThanOrEqual, Repository } from 'typeorm';
+import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
 import { LogEntryImportEntity } from '../../data';
@@ -65,6 +65,7 @@ export class LogEntryImportService {
 
   async expireImports(expiration: Date): Promise<number> {
     const { affected } = await this.imports.delete({
+      finalized: IsNull(),
       date: LessThanOrEqual(expiration),
     });
     return affected ?? 0;

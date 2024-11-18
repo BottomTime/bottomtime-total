@@ -1,27 +1,46 @@
+import { CreateOrUpdateLogEntryParamsSchema } from '@bottomtime/api';
+
 import { MethodNotAllowedException } from '@nestjs/common';
 
+import dayjs from 'dayjs';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { Mock } from 'moq.ts';
+import { Observable, map } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
 import {
+  LogEntryAirEntity,
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
   UserEntity,
 } from '../../../../src/data';
-import { LogEntriesService, LogEntryImport } from '../../../../src/logEntries';
+import { DiveSiteFactory } from '../../../../src/diveSites';
+import {
+  LogEntry,
+  LogEntryFactory,
+  LogEntryImport,
+} from '../../../../src/logEntries';
+import { DefaultImporter } from '../../../../src/logEntries/import/default-importer';
+import {
+  IImporter,
+  ImportOptions,
+} from '../../../../src/logEntries/import/importer';
 import { UserFactory } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
+import TestData from '../../../fixtures/import-records.json';
 import LogEntryData from '../../../fixtures/log-entries.json';
 import { createTestUser } from '../../../utils';
 
+const ImportSessionId = '3d540444-9e2c-4c13-a90a-8b499cd5d3e3';
 const OwnerData = createTestUser({
   id: 'acd229a9-b160-4c6f-83c6-f171f9ee11be',
   username: 'testuser',
 });
-const TestData: LogEntryImportEntity = {
-  id: '8c6613e6-a7b8-446b-b07d-3ddc81757337',
+const ImportSession: LogEntryImportEntity = {
+  id: ImportSessionId,
   owner: OwnerData,
   date: new Date('2024-11-12T10:07:21-05:00'),
   finalized: new Date('2024-11-12T10:07:48-05:00'),
@@ -30,46 +49,56 @@ const TestData: LogEntryImportEntity = {
   bookmark: 'Test Bookmark',
 };
 
+dayjs.extend(tz);
+dayjs.extend(utc);
+
 describe('Log Entry Import class', () => {
+  let Entries: Repository<LogEntryEntity>;
+  let EntryAir: Repository<LogEntryAirEntity>;
   let Imports: Repository<LogEntryImportEntity>;
   let ImportRecords: Repository<LogEntryImportRecordEntity>;
-  let entries: LogEntriesService;
-
   let Users: Repository<UserEntity>;
+
   let userFactory: UserFactory;
+  let entryFactory: LogEntryFactory;
   let logEntryData: LogEntryImportRecordEntity[];
 
   let logEntryImportData: LogEntryImportEntity;
   let logEntryImport: LogEntryImport;
 
   beforeAll(() => {
+    Entries = dataSource.getRepository(LogEntryEntity);
+    EntryAir = dataSource.getRepository(LogEntryAirEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
     ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
     userFactory = new UserFactory(Users);
-    entries = new Mock<LogEntriesService>().object();
+    entryFactory = new LogEntryFactory(
+      Entries,
+      EntryAir,
+      new Mock<DiveSiteFactory>().object(),
+    );
 
     logEntryData = LogEntryData.map((data) => ({
       id: uuid(),
-      import: TestData,
+      import: ImportSession,
       data: JSON.stringify(data),
     }));
   });
 
   beforeEach(async () => {
-    logEntryImportData = { ...TestData };
+    logEntryImportData = { ...ImportSession };
     logEntryImport = new LogEntryImport(
-      Imports,
-      ImportRecords,
-      entries,
+      dataSource,
       userFactory,
+      entryFactory,
       logEntryImportData,
     );
     await Users.save(OwnerData);
   });
 
   it('will return properties correctly', () => {
-    expect(logEntryImport.id).toBe('8c6613e6-a7b8-446b-b07d-3ddc81757337');
+    expect(logEntryImport.id).toBe(ImportSessionId);
     expect(logEntryImport.owner.id).toBe(OwnerData.id);
     expect(logEntryImport.date).toEqual(new Date('2024-11-12T10:07:48-05:00'));
     expect(logEntryImport.finalized).toBe(true);
@@ -90,7 +119,7 @@ describe('Log Entry Import class', () => {
 
   it('will return JSON correctly', () => {
     expect(logEntryImport.toJSON()).toEqual({
-      id: '8c6613e6-a7b8-446b-b07d-3ddc81757337',
+      id: ImportSessionId,
       owner: 'testuser',
       date: new Date('2024-11-12T10:07:48-05:00'),
       finalized: true,
@@ -137,9 +166,9 @@ describe('Log Entry Import class', () => {
     it('will throw an exception if the import has already been finalized', async () => {
       await ImportRecords.save(logEntryData.slice(0, 5));
       await Imports.update(logEntryImportData.id, {
-        finalized: TestData.finalized,
+        finalized: ImportSession.finalized,
       });
-      logEntryImportData.finalized = TestData.finalized;
+      logEntryImportData.finalized = ImportSession.finalized;
 
       await expect(logEntryImport.cancel()).rejects.toThrow(
         MethodNotAllowedException,
@@ -151,46 +180,88 @@ describe('Log Entry Import class', () => {
     beforeEach(async () => {
       logEntryImportData.finalized = null;
       await Imports.save(logEntryImportData);
-      await ImportRecords.save(logEntryData.slice(0, 5));
     });
 
     it('will finalize an import with log entries', async () => {
-      await expect(logEntryImport.finalize()).resolves.toBe(true);
-      expect(logEntryImport.finalized).toBe(true);
-      expect(logEntryImportData.finalized?.valueOf()).toBeCloseTo(
-        Date.now(),
-        -3,
+      await ImportRecords.save(TestData);
+      const observer = await logEntryImport.finalize(
+        new DefaultImporter(entryFactory),
       );
+      const results = await new Promise<LogEntry[]>((resolve, reject) => {
+        const generatedEntries: LogEntry[] = [];
+        observer.subscribe({
+          next: (entry) => generatedEntries.push(entry),
+          error: reject,
+          complete: () => resolve(generatedEntries),
+        });
+      });
 
-      const saved = await Imports.findOneByOrFail({ id: logEntryImport.id });
-      expect(saved.finalized).toEqual(logEntryImportData.finalized);
+      expect(results).toHaveLength(TestData.length);
+
+      const { finalized } = await Imports.findOneByOrFail({
+        id: ImportSession.id,
+      });
+      expect(finalized!.valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const updatedImport = await Imports.findOneByOrFail({
+        id: logEntryImport.id,
+      });
+      expect(updatedImport.finalized).toEqual(logEntryImportData.finalized);
+
+      await expect(
+        ImportRecords.existsBy({ import: { id: ImportSession.id } }),
+      ).resolves.toBe(false);
+
+      const saved = await Entries.find();
+      expect(saved).toHaveLength(TestData.length);
+
+      // TODO: Check that the saved entries match the expected data
     });
 
     it('will throw an exception if the import does not yet have log entries', async () => {
-      await ImportRecords.delete({ import: { id: logEntryImport.id } });
-      await expect(logEntryImport.finalize()).rejects.toThrow(
-        MethodNotAllowedException,
+      const observer = await logEntryImport.finalize(
+        new DefaultImporter(entryFactory),
       );
+      await ImportRecords.delete({ import: { id: logEntryImport.id } });
+      await expect(
+        new Promise<LogEntry[]>((resolve, reject) => {
+          const generatedEntries: LogEntry[] = [];
+          observer.subscribe({
+            next: (entry) => generatedEntries.push(entry),
+            error: reject,
+            complete: () => resolve(generatedEntries),
+          });
+        }),
+      ).rejects.toThrow(MethodNotAllowedException);
+
       expect(logEntryImport.finalized).toBe(false);
+
+      const saved = await Imports.findOneByOrFail({ id: logEntryImport.id });
+      expect(saved.finalized).toBeNull();
+    });
+
+    it('will rollback if the import contains invalid records', async () => {
+      throw new Error('nope');
     });
 
     it('will throw an exception if the import has been canceled', async () => {
       await logEntryImport.cancel();
-      await expect(logEntryImport.finalize()).rejects.toThrow(
-        MethodNotAllowedException,
-      );
+      await expect(
+        logEntryImport.finalize(new DefaultImporter(entryFactory)),
+      ).rejects.toThrow(MethodNotAllowedException);
       expect(logEntryImport.finalized).toBe(false);
       await expect(
         Imports.findOneBy({ id: logEntryImport.id }),
       ).resolves.toBeNull();
     });
 
-    it('will do nothing if the import is already finalized', async () => {
+    it('will throw exception if the import is already finalized', async () => {
       const finalized = new Date();
       await Imports.update({ id: logEntryImport.id }, { finalized });
       logEntryImportData.finalized = finalized;
-      await expect(logEntryImport.finalize()).resolves.toBe(false);
-      expect(logEntryImport.finalized).toBe(true);
+      await expect(
+        logEntryImport.finalize(new DefaultImporter(entryFactory)),
+      ).rejects.toThrow(MethodNotAllowedException);
     });
   });
 });

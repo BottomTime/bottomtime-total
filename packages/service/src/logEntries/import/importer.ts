@@ -1,17 +1,17 @@
 import { Observable } from 'rxjs';
 
+import { LogEntryEntity } from '../../data';
 import { User } from '../../users';
-import { LogEntry } from '../log-entry';
 
 export const LogsImporter = Symbol('LogsImporter');
 
 export type ImportOptions = {
-  data: Observable<unknown>;
+  data: Observable<string>;
   device?: string;
   deviceId?: string;
   owner: User;
 };
 
 export interface IImporter {
-  import(options: ImportOptions): Observable<LogEntry>;
+  import(options: ImportOptions): Observable<LogEntryEntity>;
 }

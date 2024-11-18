@@ -85,6 +85,9 @@ const LogEntrySchema = z.object({
     })
     .array()
     .optional(),
+
+  deviceId: z.string().nullable().default(null),
+  deviceName: z.string().nullable().default(null),
 });
 
 export function createTestLogEntryAir(
@@ -134,7 +137,7 @@ export function createTestLogEntryAir(
   data.hePercent =
     options?.hePercent ??
     faker.helpers.maybe(
-      () => faker.number.float({ min: 0, max: 80, multipleOf: 0.1 }),
+      () => faker.number.float({ min: 0, max: 40, multipleOf: 0.1 }),
       { probability: 0.05 },
     ) ??
     null;
@@ -349,6 +352,5 @@ export function parseLogEntryJSON(
     ...entry,
     owner,
     site,
-    import: null,
   };
 }

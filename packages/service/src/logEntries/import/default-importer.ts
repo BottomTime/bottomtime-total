@@ -1,33 +1,28 @@
-import {
-  CreateOrUpdateLogEntryParamsDTO,
-  CreateOrUpdateLogEntryParamsSchema,
-} from '@bottomtime/api';
+import { CreateOrUpdateLogEntryParamsSchema } from '@bottomtime/api';
 
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 
 import dayjs from 'dayjs';
-import { Observable, bufferCount, map } from 'rxjs';
-import { LogEntryEntity } from 'src/data';
-import { Repository } from 'typeorm';
+import { Observable, map } from 'rxjs';
 import { v7 as uuid } from 'uuid';
 
-import { User } from '../../users';
-import { LogEntry } from '../log-entry';
+import { DiveSiteEntity, LogEntryEntity } from '../../data';
 import { LogEntryFactory } from '../log-entry-factory';
 import { IImporter, ImportOptions } from './importer';
 
 @Injectable()
 export class DefaultImporter implements IImporter {
-  constructor(
-    @InjectRepository(LogEntryEntity)
-    private readonly entries: Repository<LogEntryEntity>,
+  private readonly log = new Logger(DefaultImporter.name);
 
+  constructor(
     @Inject(LogEntryFactory) private readonly entryFactory: LogEntryFactory,
   ) {}
 
-  private parseData(owner: User, raw: unknown): LogEntryEntity {
-    const parsed = CreateOrUpdateLogEntryParamsSchema.parse(raw);
+  private parseData(options: ImportOptions, raw: string): LogEntryEntity {
+    this.log.verbose('Parsing raw log entry data', raw);
+    const json = JSON.parse(raw);
+    const parsed = CreateOrUpdateLogEntryParamsSchema.parse(json);
+
     const now = new Date();
     const entryTime = dayjs(parsed.timing.entryTime.date);
     const entry: LogEntryEntity = {
@@ -41,6 +36,8 @@ export class DefaultImporter implements IImporter {
       createdAt: now,
       current: parsed.conditions?.current ?? null,
       depthUnit: parsed.depths?.depthUnit ?? null,
+      deviceId: options.deviceId ?? null,
+      deviceName: options.device ?? null,
       duration: parsed.timing.duration,
       entryTime: entryTime.format('YYYY-MM-DDTHH:mm:ss'),
       exposureSuit: parsed.equipment?.exposureSuit ?? null,
@@ -50,7 +47,7 @@ export class DefaultImporter implements IImporter {
       logNumber: parsed.logNumber ?? null,
       maxDepth: parsed.depths?.maxDepth ?? null,
       notes: parsed.notes ?? null,
-      owner: owner.toEntity(),
+      owner: options.owner.toEntity(),
       scooter: parsed.equipment?.scooter ?? null,
       site: null, // TODO
       surfaceTemperature: parsed.conditions?.surfaceTemperature ?? null,
@@ -71,28 +68,34 @@ export class DefaultImporter implements IImporter {
       weightUnit: parsed.equipment?.weightUnit ?? null,
     };
 
-    // TODO: Air, other stuff.
+    if (parsed.air) {
+      entry.air = parsed.air.map((tank, index) => ({
+        count: tank.count,
+        endPressure: tank.endPressure,
+        hePercent: tank.hePercent ?? null,
+        id: uuid(),
+        material: tank.material,
+        name: tank.name,
+        o2Percent: tank.o2Percent ?? null,
+        ordinal: index + 1,
+        pressureUnit: tank.pressureUnit,
+        startPressure: tank.startPressure,
+        volume: tank.volume,
+        workingPressure: tank.workingPressure,
+      }));
+    }
+
+    if (parsed.site) {
+      entry.site = { id: parsed.site } as DiveSiteEntity;
+    }
 
     return entry;
   }
 
-  import(options: ImportOptions): Observable<LogEntry> {
-    return new Observable<LogEntry>((subscriber) => {
-      options.data
-        .pipe(
-          map((data) => this.parseData(options.owner, data)),
-          bufferCount(20),
-        )
-        .subscribe((batch: LogEntryEntity[]) => {
-          this.entries
-            .save(batch)
-            .then(() => {
-              batch.forEach((data) => {
-                subscriber.next(this.entryFactory.createLogEntry(data));
-              });
-            })
-            .catch(subscriber.error);
-        });
-    });
+  import(options: ImportOptions): Observable<LogEntryEntity> {
+    return options.data.pipe(
+      // Parse raw JSON data.
+      map((data) => this.parseData(options, data)),
+    );
   }
 }

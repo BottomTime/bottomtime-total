@@ -172,4 +172,11 @@ export class LogEntryEntity {
     onDelete: 'CASCADE',
   })
   samples?: LogEntrySampleEntity[];
+
+  // Import metadata
+  @Column('varchar', { length: 200, nullable: true })
+  deviceName: string | null = null;
+
+  @Column('varchar', { length: 200, nullable: true })
+  deviceId: string | null = null;
 }
