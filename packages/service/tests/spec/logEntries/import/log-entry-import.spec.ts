@@ -9,6 +9,7 @@ import { Mock } from 'moq.ts';
 import { Observable, map } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
+import { ZodError } from 'zod';
 
 import {
   LogEntryAirEntity,
@@ -241,7 +242,35 @@ describe('Log Entry Import class', () => {
     });
 
     it('will rollback if the import contains invalid records', async () => {
-      throw new Error('nope');
+      await ImportRecords.save(TestData);
+      await ImportRecords.save({
+        id: 'c8a5ecfa-9a00-414d-a428-0fbc25f525ca',
+        import: { id: ImportSession.id } as LogEntryImportEntity,
+        data: JSON.stringify({ nope: true }),
+      });
+
+      const observer = await logEntryImport.finalize(
+        new DefaultImporter(entryFactory),
+      );
+      await expect(
+        new Promise<LogEntry[]>((resolve, reject) => {
+          const generatedEntries: LogEntry[] = [];
+          observer.subscribe({
+            next: (entry) => generatedEntries.push(entry),
+            error: reject,
+            complete: () => resolve(generatedEntries),
+          });
+        }),
+      ).rejects.toThrow(ZodError);
+
+      expect(logEntryImport.finalized).toBe(false);
+
+      const saved = await Imports.findOneByOrFail({ id: logEntryImport.id });
+      expect(saved.finalized).toBeNull();
+
+      await expect(
+        ImportRecords.countBy({ import: { id: ImportSession.id } }),
+      ).resolves.toBe(TestData.length + 1);
     });
 
     it('will throw an exception if the import has been canceled', async () => {

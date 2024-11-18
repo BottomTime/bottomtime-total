@@ -111,6 +111,13 @@ export class LogEntryImport {
         'This import session has already been finalized.',
       );
     }
+
+    if (this.canceled) {
+      throw new MethodNotAllowedException(
+        'Unable to finalize an import that has been canceled.',
+      );
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
 
