@@ -72,6 +72,11 @@ module.exports = {
       description: 'Endpoints pertaining to the management of dive sites.',
     },
     {
+      name: 'Experimental',
+      description:
+        'Endpoints that are currently marked as `experimental` may change or may not be accessible yet.',
+    },
+    {
       name: 'Friends',
       description:
         'Endpoints pertaining to the management of friends and friend requests.',

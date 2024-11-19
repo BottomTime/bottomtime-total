@@ -1,0 +1,14 @@
+FROM alpine:3.20
+
+RUN apk update && \
+    apk add postfix && \
+    rm -rf /var/cache/apk/*
+
+COPY postfix.cf /etc/postfix/main.cf
+
+EXPOSE 25 465 587
+
+# CMD postmap /etc/postfix/aliases && \
+#     postmap /etc/postfix/roleaccount_exceptions && \
+#     postmap /etc/postfix/virtual && \
+CMD /usr/sbin/postfix start-fg

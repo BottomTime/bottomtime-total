@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import {
+  BooleanString,
   DateWithTimezoneSchema,
   DepthUnit,
   ExposureSuit,
@@ -110,8 +111,22 @@ const LogEntryBaseSchema = z.object({
   tags: z.string().max(100).array().optional(),
 });
 
+export const LogEntrySampleSchema = z.object({
+  offset: z.number().int().min(0),
+  depth: z.number().positive(),
+  temperature: z.number().optional(),
+  gps: z
+    .object({
+      lat: z.number().min(-90).max(90),
+      lng: z.number().min(-180).max(180),
+    })
+    .optional(),
+});
+export type LogEntrySampleDTO = z.infer<typeof LogEntrySampleSchema>;
+
 export const CreateOrUpdateLogEntryParamsSchema = LogEntryBaseSchema.extend({
   site: z.string().uuid().optional(),
+  samples: LogEntrySampleSchema.array().optional(),
 });
 export type CreateOrUpdateLogEntryParamsDTO = z.infer<
   typeof CreateOrUpdateLogEntryParamsSchema
@@ -123,6 +138,7 @@ export const LogEntrySchema = LogEntryBaseSchema.extend({
   updatedAt: z.coerce.date().optional(),
   creator: SuccinctProfileSchema,
   site: DiveSiteSchema.optional(),
+  samples: LogEntrySampleSchema.array().optional(),
 });
 export type LogEntryDTO = z.infer<typeof LogEntrySchema>;
 
@@ -180,4 +196,40 @@ export const GetMostRecentDiveSitesRequestParamsSchema = z.object({
 });
 export type GetMostRecentDiveSitesRequestParamsDTO = z.infer<
   typeof GetMostRecentDiveSitesRequestParamsSchema
+>;
+
+export const CreateLogsImportParamsSchema = z
+  .object({
+    device: z.string().max(200),
+    deviceId: z.string().max(200),
+    bookmark: z.string().max(200),
+  })
+  .partial();
+export type CreateLogsImportParamsDTO = z.infer<
+  typeof CreateLogsImportParamsSchema
+>;
+
+export const LogsImportSchema = CreateLogsImportParamsSchema.extend({
+  id: z.string(),
+  date: z.coerce.date(),
+  owner: z.string(),
+  finalized: BooleanString,
+});
+export type LogsImportDTO = z.infer<typeof LogsImportSchema>;
+
+export const ListLogEntryImportsParamsSchema = z.object({
+  showFinalized: BooleanString.optional(),
+  skip: z.coerce.number().int().min(0).optional(),
+  limit: z.coerce.number().int().min(1).max(500).optional(),
+});
+export type ListLogEntryImportsParamsDTO = z.infer<
+  typeof ListLogEntryImportsParamsSchema
+>;
+
+export const AddLogEntryImportRecordsResponseSchema = z.object({
+  addedRecords: z.number(),
+  totalRecords: z.number(),
+});
+export type AddLogEntryImportRecordsResponseDTO = z.infer<
+  typeof AddLogEntryImportRecordsResponseSchema
 >;

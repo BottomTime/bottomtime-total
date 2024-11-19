@@ -12,6 +12,7 @@ export * from './log-entry.entity';
 export * from './log-entry-air.entity';
 export * from './media-file.entity';
 export * from './log-entry-import.entity';
+export * from './log-entry-import-record.entity';
 export * from './log-entry-samples.entity';
 export * from './log-entry-signature.entity';
 export * from './notification.entity';

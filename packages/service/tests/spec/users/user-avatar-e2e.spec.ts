@@ -120,7 +120,7 @@ describe('User Avatar E2E tests', () => {
 
     s3Client = new S3Client({
       forcePathStyle: true,
-      endpoint: 'http://localhost:4569',
+      endpoint: 'http://localhost:4566',
       region: 'us-east-1',
     });
     s3Utils = new S3Utils(s3Client);

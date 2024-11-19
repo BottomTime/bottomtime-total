@@ -4,17 +4,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 import Logger from 'bunyan';
 import cookieParser from 'cookie-parser';
-import { NextFunction, Request, Response } from 'express';
 import useragent from 'express-useragent';
 import helmet from 'helmet';
-import requestStats from 'request-stats';
 
 import { JwtOrAnonAuthGuard } from './auth/strategies/jwt.strategy';
 import { BunyanLoggerService } from './bunyan-logger-service';
-import { Config } from './config';
-import { edgeAuth } from './edge-auth';
+import { EdgeAuthGuard } from './edge-auth.guard';
 import { GlobalErrorFilter } from './global-error-filter';
-import { User } from './users';
+import { LogRequestInterceptor } from './log-request.interceptor';
 
 export async function createApp(
   rootModule: unknown,
@@ -39,33 +36,12 @@ export async function createApp(
   app.use(helmet());
   app.use(cookieParser());
   app.use(useragent.express());
-  app.use(edgeAuth(Config.edgeAuth, logger));
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    requestStats(req, res, (stats) => {
-      const user = req.user ? (req.user as User) : undefined;
-      logService.log('Request', {
-        method: req.method,
-        path: req.path,
-        ip: req.ip,
-        userAgent: req.useragent?.source,
-        statusCode: res.statusCode,
-        duration: stats.time,
-        bytesRecieved: stats.req.bytes,
-        bytesSent: stats.res.bytes,
-        user: user
-          ? {
-              id: user.id,
-              username: user.username,
-            }
-          : '<anonymous>',
-      });
-    });
 
-    next();
-  });
+  // Add request logging.
+  app.useGlobalInterceptors(new LogRequestInterceptor());
 
-  // Add JWT authentication
-  app.useGlobalGuards(new JwtOrAnonAuthGuard());
+  // Add JWT authentication and Edge Auth for protected environments.
+  app.useGlobalGuards(new EdgeAuthGuard(), new JwtOrAnonAuthGuard());
 
   // Add global error filter to format all error responses using standard JSON format.
   const httpAdapterHost = app.get(HttpAdapterHost);

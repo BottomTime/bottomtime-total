@@ -33,10 +33,6 @@
         test-id="upload-avatar"
         @change="onFileSelect"
       />
-      <p>
-        Coords: {{ state.coordinates }} File:
-        {{ JSON.stringify(state.file?.name) }}
-      </p>
     </template>
 
     <template #buttons>

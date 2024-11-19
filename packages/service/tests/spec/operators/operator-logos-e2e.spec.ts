@@ -79,7 +79,7 @@ describe('Operator logos E2E tests', () => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
     s3Client = new S3Client({
-      endpoint: 'http://localhost:4569',
+      endpoint: 'http://localhost:4566',
       forcePathStyle: true,
       region: 'us-east-1',
     });

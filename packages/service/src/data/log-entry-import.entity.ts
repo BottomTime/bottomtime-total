@@ -8,7 +8,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
-import { LogEntryEntity } from './log-entry.entity';
+import { LogEntryImportRecordEntity } from './log-entry-import-record.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entry_imports')
@@ -19,6 +19,9 @@ export class LogEntryImportEntity {
   @CreateDateColumn({ type: 'timestamp' })
   @Index()
   date: Date = new Date();
+
+  @Column('timestamp', { nullable: true })
+  finalized: Date | null = null;
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   owner: UserEntity = new UserEntity();
@@ -32,12 +35,8 @@ export class LogEntryImportEntity {
   @Column('varchar', { length: 200, nullable: true })
   bookmark: string | null = null;
 
-  @Column('varchar', { length: 100, nullable: true })
-  resumeToken: string | null = null;
-
-  @OneToMany(() => LogEntryEntity, (entry) => entry.import, {
-    onUpdate: 'CASCADE',
+  @OneToMany(() => LogEntryImportRecordEntity, (record) => record.import, {
     onDelete: 'CASCADE',
   })
-  entries?: LogEntryEntity[];
+  records?: LogEntryImportRecordEntity[];
 }
