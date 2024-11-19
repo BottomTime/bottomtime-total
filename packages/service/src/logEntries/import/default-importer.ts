@@ -1,25 +1,17 @@
 import { CreateOrUpdateLogEntryParamsSchema } from '@bottomtime/api';
 
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import dayjs from 'dayjs';
 import { Observable, map } from 'rxjs';
 import { v7 as uuid } from 'uuid';
 
 import { DiveSiteEntity, LogEntryEntity } from '../../data';
-import { LogEntryFactory } from '../log-entry-factory';
 import { IImporter, ImportOptions } from './importer';
 
 @Injectable()
 export class DefaultImporter implements IImporter {
-  private readonly log = new Logger(DefaultImporter.name);
-
-  constructor(
-    @Inject(LogEntryFactory) private readonly entryFactory: LogEntryFactory,
-  ) {}
-
   private parseData(options: ImportOptions, raw: string): LogEntryEntity {
-    this.log.verbose('Parsing raw log entry data', raw);
     const json = JSON.parse(raw);
     const parsed = CreateOrUpdateLogEntryParamsSchema.parse(json);
 

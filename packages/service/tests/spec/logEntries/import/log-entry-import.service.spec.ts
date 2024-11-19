@@ -7,12 +7,14 @@ import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
 import {
+  LogEntryAirEntity,
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
   UserEntity,
 } from '../../../../src/data';
-import { LogEntriesService } from '../../../../src/logEntries';
+import { DiveSiteFactory } from '../../../../src/diveSites';
+import { LogEntryFactory } from '../../../../src/logEntries';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
 import { User, UserFactory } from '../../../../src/users';
@@ -41,8 +43,8 @@ describe('Log Entry Import Service', () => {
   let Imports: Repository<LogEntryImportEntity>;
   let ImportRecords: Repository<LogEntryImportRecordEntity>;
   let Entries: Repository<LogEntryEntity>;
+  let EntriesAir: Repository<LogEntryAirEntity>;
   let Users: Repository<UserEntity>;
-  let entriesService: LogEntriesService;
   let service: LogEntryImportService;
   let importFactory: LogEntryImportFactory;
 
@@ -53,17 +55,21 @@ describe('Log Entry Import Service', () => {
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
+    EntriesAir = dataSource.getRepository(LogEntryAirEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
     ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
-    entriesService = new Mock<LogEntriesService>().object();
 
     const userFactory = new UserFactory(Users);
+    const entryFactory = new LogEntryFactory(
+      Entries,
+      EntriesAir,
+      new Mock<DiveSiteFactory>().object(),
+    );
     importFactory = new LogEntryImportFactory(
-      Imports,
-      ImportRecords,
-      entriesService,
+      dataSource,
       userFactory,
+      entryFactory,
     );
     service = new LogEntryImportService(Imports, importFactory);
   });

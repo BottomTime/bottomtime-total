@@ -1,12 +1,9 @@
-import { CreateOrUpdateLogEntryParamsSchema } from '@bottomtime/api';
-
 import { MethodNotAllowedException } from '@nestjs/common';
 
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Mock } from 'moq.ts';
-import { Observable, map } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 import { ZodError } from 'zod';
@@ -25,10 +22,6 @@ import {
   LogEntryImport,
 } from '../../../../src/logEntries';
 import { DefaultImporter } from '../../../../src/logEntries/import/default-importer';
-import {
-  IImporter,
-  ImportOptions,
-} from '../../../../src/logEntries/import/importer';
 import { UserFactory } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
 import TestData from '../../../fixtures/import-records.json';
@@ -185,9 +178,7 @@ describe('Log Entry Import class', () => {
 
     it('will finalize an import with log entries', async () => {
       await ImportRecords.save(TestData);
-      const observer = await logEntryImport.finalize(
-        new DefaultImporter(entryFactory),
-      );
+      const observer = await logEntryImport.finalize(new DefaultImporter());
       const results = await new Promise<LogEntry[]>((resolve, reject) => {
         const generatedEntries: LogEntry[] = [];
         observer.subscribe({
@@ -220,9 +211,7 @@ describe('Log Entry Import class', () => {
     });
 
     it('will throw an exception if the import does not yet have log entries', async () => {
-      const observer = await logEntryImport.finalize(
-        new DefaultImporter(entryFactory),
-      );
+      const observer = await logEntryImport.finalize(new DefaultImporter());
       await ImportRecords.delete({ import: { id: logEntryImport.id } });
       await expect(
         new Promise<LogEntry[]>((resolve, reject) => {
@@ -249,9 +238,7 @@ describe('Log Entry Import class', () => {
         data: JSON.stringify({ nope: true }),
       });
 
-      const observer = await logEntryImport.finalize(
-        new DefaultImporter(entryFactory),
-      );
+      const observer = await logEntryImport.finalize(new DefaultImporter());
       await expect(
         new Promise<LogEntry[]>((resolve, reject) => {
           const generatedEntries: LogEntry[] = [];
@@ -276,7 +263,7 @@ describe('Log Entry Import class', () => {
     it('will throw an exception if the import has been canceled', async () => {
       await logEntryImport.cancel();
       await expect(
-        logEntryImport.finalize(new DefaultImporter(entryFactory)),
+        logEntryImport.finalize(new DefaultImporter()),
       ).rejects.toThrow(MethodNotAllowedException);
       expect(logEntryImport.finalized).toBe(false);
       await expect(
@@ -289,7 +276,7 @@ describe('Log Entry Import class', () => {
       await Imports.update({ id: logEntryImport.id }, { finalized });
       logEntryImportData.finalized = finalized;
       await expect(
-        logEntryImport.finalize(new DefaultImporter(entryFactory)),
+        logEntryImport.finalize(new DefaultImporter()),
       ).rejects.toThrow(MethodNotAllowedException);
     });
   });

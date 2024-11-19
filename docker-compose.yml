@@ -1,4 +1,5 @@
 services:
+  # LocalStack (https://www.localstack.cloud/) to emulate AWS services
   localstack:
     container_name: bottomtime-localstack
     image: localstack/localstack
@@ -14,6 +15,18 @@ services:
       - './.localstack:/var/lib/localstack'
       - '/var/run/docker.sock:/var/run/docker.sock'
 
+  # Postfix SMTP server to act as an email relay
+  postfix:
+    container_name: bottomtime-postfix
+    build:
+      context: ./
+      dockerfile: Dockerfile.postfix
+    ports:
+      - '25:25'
+      - '465:465'
+      - '587:587'
+
+  # Postgres SQL database
   postgres:
     container_name: bottomtime-postgres
     image: postgis/postgis:14-3.4-alpine
@@ -32,6 +45,7 @@ services:
       timeout: 3s
       retries: 3
 
+  # Bottom Time backend service
   service:
     container_name: bottomtime-service
     build:
@@ -70,6 +84,7 @@ services:
           path: packages/service/src
           target: /app/packages/service/src
 
+  # Containerized web front-end
   web:
     container_name: bottomtime-web
     build:
@@ -102,6 +117,7 @@ services:
           path: packages/web/src
           target: /app/packages/web/src
 
+  # API documentation
   docs:
     container_name: bottomtime-docs
     build:

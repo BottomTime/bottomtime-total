@@ -99,6 +99,7 @@ export class LogEntryImport {
     imports: Repository<LogEntryImportEntity>,
     importRecords: Repository<LogEntryImportRecordEntity>,
   ): Promise<void> {
+    this.log.debug('Marking import as finalized...');
     const finalized = new Date();
     await imports.update({ id: this.id }, { finalized });
     await importRecords.delete({ import: { id: this.id } });
@@ -118,6 +119,7 @@ export class LogEntryImport {
       );
     }
 
+    this.log.debug('Starting database transaction to finalize import...');
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
 
@@ -148,7 +150,9 @@ export class LogEntryImport {
           // Save entities in batches of 50.
           bufferCount(50),
           concatMap(async (batch) => {
-            this.log.debug('Saving batch of imported log entries...');
+            this.log.debug(
+              `Saving batch of ${batch.length} imported log entries...`,
+            );
             await entries.save(batch);
             await air.save(
               batch.reduce<LogEntryAirEntity[]>((acc, value) => {
@@ -174,18 +178,25 @@ export class LogEntryImport {
         .subscribe({
           next: (entry) => subscriber.next(entry),
           error: async (error): Promise<void> => {
-            this.log.error(error);
+            this.log.error('Error parsing or inserting log entry data:', error);
             subscriber.error(error);
             subscriber.unsubscribe();
             await queryRunner.rollbackTransaction();
+            this.log.debug(
+              'Database transaction rolled back and import has been aborted.',
+            );
           },
           complete: async (): Promise<void> => {
             try {
               await this.markFinalized(imports, importRecords);
               await queryRunner.commitTransaction();
               subscriber.complete();
+              this.log.log(`Import finalized successfully: ${this.id}`);
             } catch (error) {
-              this.log.error(error);
+              this.log.error(
+                `Error finalizing import "${this.id}". Rolling back...`,
+                error,
+              );
               await queryRunner.rollbackTransaction();
               subscriber.error(error);
             }
@@ -201,6 +212,7 @@ export class LogEntryImport {
       );
     }
 
+    this.log.debug(`Canceling import session: ${this.id}...`);
     const { affected } = await this.imports.delete(this.data.id);
     this._canceled = true;
     return affected === 1;

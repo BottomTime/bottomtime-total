@@ -1,29 +1,27 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 
-import { LogEntryImportEntity, LogEntryImportRecordEntity } from '../../data';
+import { LogEntryImportEntity } from '../../data';
 import { UserFactory } from '../../users';
+import { LogEntryFactory } from '../log-entry-factory';
 import { LogEntryImport } from './log-entry-import';
 
 @Injectable()
 export class LogEntryImportFactory {
   constructor(
-    @InjectRepository(LogEntryImportEntity)
-    private readonly imports: Repository<LogEntryImportEntity>,
-
-    @InjectRepository(LogEntryImportRecordEntity)
-    private readonly importRecords: Repository<LogEntryImportRecordEntity>,
-
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
     @Inject(UserFactory) private readonly userFactory: UserFactory,
+    @Inject(LogEntryFactory) private readonly entryFactory: LogEntryFactory,
   ) {}
 
   createImport(data: LogEntryImportEntity): LogEntryImport {
     return new LogEntryImport(
-      this.imports,
-      this.importRecords,
+      this.dataSource,
       this.userFactory,
+      this.entryFactory,
       data,
     );
   }

@@ -98,7 +98,7 @@ describe('Default Importer', () => {
 
     const siteFactory = new Mock<DiveSiteFactory>().object();
     entryFactory = new LogEntryFactory(Entries, EntryAir, siteFactory);
-    importer = new DefaultImporter(entryFactory);
+    importer = new DefaultImporter();
 
     owner = createTestUser(OwnerData);
     entries = new Array<LogEntryEntity>(200);
