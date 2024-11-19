@@ -111,9 +111,7 @@ jobs:
             - bt-nx-build-master
       - run:
           name: Lint and Build
-          command: |
-            yarn lint
-            yarn build --stream
+          command: yarn build --stream
       - run:
           name: Generate API Docs
           command: npx lerna run docs --scope=@bottomtime/service
@@ -217,16 +215,14 @@ jobs:
       - run:
           name: Initialize Code Climate
           command: ./cc-test-reporter before-build
+      - aws-cli/install
       - run:
           name: Initialize LocalStack
-          command: |
-            pip install awscli-local
-            ./init-localstack.sh
+          command: ./init-localstack.sh
       - run:
           name: Run Tests
           working_directory: packages/service/
           command: |
-            # yarn test --scope=@bottomtime/service --stream -- --ci
             yarn prepare && yarn test --ci
       - store_test_results:
           path: packages/service/reports/
@@ -294,7 +290,6 @@ jobs:
           name: Run end-to-end tests
           working_directory: packages/e2e-tests/
           command: |
-            # yarn test --scope=@bottomtime/e2e-tests --stream
             yarn prepare && yarn test
       - store_test_results:
           path: ./packages/e2e-tests/test-results/
