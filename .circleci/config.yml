@@ -203,7 +203,9 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
-      - image: lphoward/fake-s3
+      - image: localstack/localstack
+        environment:
+          - SERVICES=s3,sqs,ses
     resource_class: medium+
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
@@ -215,6 +217,11 @@ jobs:
       - run:
           name: Initialize Code Climate
           command: ./cc-test-reporter before-build
+      - run:
+          name: Initialize LocalStack
+          command: |
+            pip install awscli-local
+            ./init-localstack.sh
       - run:
           name: Run Tests
           working_directory: packages/service/
