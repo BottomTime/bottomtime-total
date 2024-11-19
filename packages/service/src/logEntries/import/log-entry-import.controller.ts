@@ -41,12 +41,106 @@ export class LogEntryImportController {
 
   constructor(@Inject(LogsImporter) private readonly importer: IImporter) {}
 
+  /**
+   * @openapi
+   * /api/users/{username}/logImports/{importId}:
+   *   delete:
+   *     tags:
+   *       - Dive Logs
+   *       - Experimental
+   *     summary: Cancel remove an import session
+   *     description: Cancel and remove an import session for a user
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/LogEntryImportId"
+   *     responses:
+   *       200:
+   *         description: The import session was successfully canceled. The details of the session will be returned in the response body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/LogEntryImport"
+   *       401:
+   *         description: The request failed because the user could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user does not have permission to modify the indicated logbook.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the indicated logbook or import session could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       405:
+   *         description: The request failed because the import session has already been finalized and can no longer be canceled.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because an unexpected error occurred while processing the request.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Delete()
   async cancelImport(@TargetImport() importEntity: LogEntryImport) {
     await importEntity.cancel();
     return importEntity.toJSON();
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/logImports/{importId}:
+   *   get:
+   *     tags:
+   *       - Dive Logs
+   *       - Experimental
+   *     summary: Get import session
+   *     description: Retrieve the details of an import session for a user
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/LogEntryImportId"
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body will contain the details of the import session.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/LogEntryImport"
+   *       401:
+   *         description: The request failed because the user could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user does not have permission to view the indicated logbook.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the indicated logbook or import session could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because an unexpected error occurred while processing the request.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Get()
   async getImport(
     @TargetImport() importEntity: LogEntryImport,
@@ -54,6 +148,88 @@ export class LogEntryImportController {
     return importEntity.toJSON();
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/logImports/{importId}:
+   *   post:
+   *     tags:
+   *       - Dive Logs
+   *       - Experimental
+   *     summary: Import a batch of log entries
+   *     description: Import a batch of log entries into an import session
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/LogEntryImportId"
+   *     requestBody:
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: array
+   *             items:
+   *               $ref: "#/components/schemas/CreateOrUpdateLogEntry"
+   *             minItems: 1
+   *             required: true
+   *       required: true
+   *     responses:
+   *       201:
+   *         description: The request succeeded and the entries were successfully added to the import session.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - addedRecords
+   *                 - totalRecords
+   *               properties:
+   *                 addedRecords:
+   *                   type: number
+   *                   format: int32
+   *                   description: The number of records that were successfully added to the import session as a result of this request.
+   *                   example: 50
+   *                 totalRecords:
+   *                   type: number
+   *                   format: int32
+   *                   description: The total number of records that have been added to the import session so far.
+   *                   example: 111
+   *       400:
+   *         description: The request failed because the request body was invalid or missing.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       401:
+   *         description: The request failed because the user could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user does not have permission to modify the indicated logbook.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the indicated logbook or import session could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       413:
+   *         description: |
+   *           The request failed because the request body was too large. For a large import operation it is best to break
+   *           the list of records up into batches and call this route multiple times.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because an unexpected error occurred while processing the request.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Post()
   async importBatch(
     @TargetImport() importEntity: LogEntryImport,
@@ -69,6 +245,61 @@ export class LogEntryImportController {
     };
   }
 
+  /**
+   * @openapi
+   * /api/users/{username}/logImports/{importId}/finalize:
+   *   post:
+   *     tags:
+   *       - Dive Logs
+   *       - Experimental
+   *     summary: Finalize an import session
+   *     description: Finalize an import session and import all records into the target logbook
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - $ref: "#/components/parameters/LogEntryImportId"
+   *     responses:
+   *       200:
+   *         description: The request succeeded and the response body will contain an array of log entries that were successfully imported into the target logbook.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: "#/components/schemas/LogEntry"
+   *               required: true
+   *       401:
+   *         description: The request failed because the user could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       403:
+   *         description: The request failed because the user does not have permission to modify the indicated logbook.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       404:
+   *         description: The request failed because the indicated logbook or import session could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       405:
+   *         description: |
+   *           The request failed because the indicated import session has already been finalized
+   *           or has not yet had any records added to it.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       500:
+   *         description: The request failed because an unexpected error occurred while processing the request.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
   @Post('finalize')
   finalizeImport(
     @TargetImport() importEntity: LogEntryImport,

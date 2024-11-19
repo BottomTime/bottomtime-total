@@ -131,4 +131,4 @@ services:
       watch:
         - action: sync+restart
           path: packages/service/docs/swagger.json
-          target: /usr/share/nginx/html
+          target: /usr/share/nginx/html/swagger.json

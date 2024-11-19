@@ -10,6 +10,16 @@
  *       schema:
  *         type: string
  *         format: uuid
+ *         example: 123e4567-e89b-12d3-a456-426614174000
+ *     LogEntryImportId:
+ *       name: importId
+ *       in: path
+ *       description: The ID of the log entry import being requested.
+ *       required: true
+ *       schema:
+ *         type: string
+ *         format: uuid
+ *         example: 123e4567-e89b-12d3-a456-426614174000
  *   schemas:
  *     LogEntryAir:
  *       type: object
@@ -379,4 +389,47 @@
  *       allOf:
  *         - $ref: "#/components/schemas/LogEntryGeneratedProps"
  *         - $ref: "#/components/schemas/LogEntryBase"
+ *     LogEntryImport:
+ *       type: object
+ *       required:
+ *         - id
+ *         - date
+ *         - owner
+ *         - finalized
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: The unique ID of the log entry import.
+ *           example: 123e4567-e89b-12d3-a456-426614174000
+ *         date:
+ *           type: string
+ *           format: date-time
+ *           description: The date and time at which the import was initiated (or finalized if it has been finalized).
+ *           example: 2021-07-04T12:00:00.345
+ *         owner:
+ *           type: string
+ *           description: The user who initiated the import.
+ *           example: johndoe
+ *         finalized:
+ *           type: boolean
+ *           description: Indicates whether the import has been finalized or whether it is still pending.
+ *           example: true
+ *         device:
+ *           type: string
+ *           description: The name of the device from which the import was made.
+ *           example: Shearwater Perdix 2 Ti
+ *           maxLength: 200
+ *         deviceId:
+ *           type: string
+ *           description: The unique identifier of the device from which the import was made.
+ *           example: 1234567890
+ *           maxLength: 200
+ *         bookmark:
+ *           type: string
+ *           description: |
+ *             A bookmark or note associated with the import. Used to indicate where to begin the next import from
+ *             the device to avoid duplication of log entries.
+ *           example: "bookmark_12345"
+ *           maxLength: 200
  */

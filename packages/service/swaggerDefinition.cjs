@@ -74,7 +74,7 @@ module.exports = {
     {
       name: 'Experimental',
       description:
-        'Endpoints that are currently marked as `experimental` and may change or may not be accessible yet.',
+        'Endpoints that are currently marked as `experimental` may change or may not be accessible yet.',
     },
     {
       name: 'Friends',
