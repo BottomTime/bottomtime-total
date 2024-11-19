@@ -276,7 +276,7 @@ describe('Log Entry Import class', () => {
 
     it('will finalize an import with log entries', async () => {
       await ImportRecords.save(TestData);
-      const observer = await logEntryImport.finalize(new DefaultImporter());
+      const observer = logEntryImport.finalize(new DefaultImporter());
       const results = await new Promise<LogEntry[]>((resolve, reject) => {
         const generatedEntries: LogEntry[] = [];
         observer.subscribe({
@@ -309,7 +309,7 @@ describe('Log Entry Import class', () => {
     });
 
     it('will throw an exception if the import does not yet have log entries', async () => {
-      const observer = await logEntryImport.finalize(new DefaultImporter());
+      const observer = logEntryImport.finalize(new DefaultImporter());
       await ImportRecords.delete({ import: { id: logEntryImport.id } });
       await expect(
         new Promise<LogEntry[]>((resolve, reject) => {
@@ -336,7 +336,7 @@ describe('Log Entry Import class', () => {
         data: JSON.stringify({ nope: true }),
       });
 
-      const observer = await logEntryImport.finalize(new DefaultImporter());
+      const observer = logEntryImport.finalize(new DefaultImporter());
       await expect(
         new Promise<LogEntry[]>((resolve, reject) => {
           const generatedEntries: LogEntry[] = [];
@@ -360,9 +360,9 @@ describe('Log Entry Import class', () => {
 
     it('will throw an exception if the import has been canceled', async () => {
       await logEntryImport.cancel();
-      await expect(
-        logEntryImport.finalize(new DefaultImporter()),
-      ).rejects.toThrow(MethodNotAllowedException);
+      expect(() => logEntryImport.finalize(new DefaultImporter())).toThrow(
+        MethodNotAllowedException,
+      );
       expect(logEntryImport.finalized).toBe(false);
       await expect(
         Imports.findOneBy({ id: logEntryImport.id }),
@@ -373,9 +373,9 @@ describe('Log Entry Import class', () => {
       const finalized = new Date();
       await Imports.update({ id: logEntryImport.id }, { finalized });
       logEntryImportData.finalized = finalized;
-      await expect(
-        logEntryImport.finalize(new DefaultImporter()),
-      ).rejects.toThrow(MethodNotAllowedException);
+      expect(() => logEntryImport.finalize(new DefaultImporter())).toThrow(
+        MethodNotAllowedException,
+      );
     });
   });
 });

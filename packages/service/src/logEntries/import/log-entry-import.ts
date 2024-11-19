@@ -6,7 +6,7 @@ import {
 import { Logger, MethodNotAllowedException } from '@nestjs/common';
 
 import { Observable, bufferCount, concatMap, from, throwIfEmpty } from 'rxjs';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
 import {
@@ -73,15 +73,24 @@ export class LogEntryImport {
     return this.data.deviceId || undefined;
   }
 
-  private async *streamRecords(): AsyncGenerator<string, number> {
+  private async *streamRecords(
+    queryRunner: QueryRunner,
+  ): AsyncGenerator<string, number> {
+    this.log.debug('Starting database transaction to finalize import...');
+    await queryRunner.startTransaction();
+
+    const importRecords = queryRunner.manager.getRepository(
+      LogEntryImportRecordEntity,
+    );
+
     const batchSize = 50;
-    const totalCount = await this.importRecords.countBy({
+    const totalCount = await importRecords.countBy({
       import: { id: this.data.id },
     });
 
     let skip = 0;
     while (true) {
-      const results = await this.importRecords.find({
+      const results = await importRecords.find({
         where: { import: { id: this.data.id } },
         order: { id: 'ASC' },
         skip,
@@ -110,7 +119,7 @@ export class LogEntryImport {
     this.data.finalized = finalized;
   }
 
-  async finalize(importer: IImporter): Promise<Observable<LogEntry>> {
+  finalize(importer: IImporter): Observable<LogEntry> {
     if (this.finalized) {
       throw new MethodNotAllowedException(
         'This import session has already been finalized.',
@@ -123,9 +132,7 @@ export class LogEntryImport {
       );
     }
 
-    this.log.debug('Starting database transaction to finalize import...');
     const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
 
     return new Observable<LogEntry>((subscriber) => {
       const entries = queryRunner.manager.getRepository(LogEntryEntity);
@@ -139,7 +146,7 @@ export class LogEntryImport {
           device: this.device,
           deviceId: this.deviceId,
           owner: this.owner,
-          data: from(this.streamRecords()),
+          data: from(this.streamRecords(queryRunner)),
         })
         .pipe(
           throwIfEmpty(() => {
