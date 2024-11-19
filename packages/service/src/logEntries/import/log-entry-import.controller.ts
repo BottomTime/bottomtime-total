@@ -1,8 +1,22 @@
-import { LogsImportDTO } from '@bottomtime/api';
+import {
+  AddLogEntryImportRecordsResponseDTO,
+  CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateLogEntryParamsSchema,
+  LogsImportDTO,
+} from '@bottomtime/api';
 
-import { Controller, Delete, Get, Logger, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Logger,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 
 import { AssertAccountOwner, AssertAuth, AssertTargetUser } from '../../users';
+import { ZodValidator } from '../../zod-validator';
 import { AssertImportFeature } from './assert-import-feature.guard';
 import { AssertImportOwner } from './assert-import-owner.guard';
 import { AssertTargetImport, TargetImport } from './assert-target-import.guard';
@@ -35,5 +49,20 @@ export class LogEntryImportController {
     return importEntity.toJSON();
   }
 
-  importBatch() {}
+  listRecords() {}
+
+  @Post()
+  async importBatch(
+    @TargetImport() importEntity: LogEntryImport,
+    @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema.array().min(1)))
+    records: CreateOrUpdateLogEntryParamsDTO[],
+  ): Promise<AddLogEntryImportRecordsResponseDTO> {
+    await importEntity.addRecords(records);
+    const totalRecords = await importEntity.getRecordCount();
+
+    return {
+      addedRecords: records.length,
+      totalRecords,
+    };
+  }
 }

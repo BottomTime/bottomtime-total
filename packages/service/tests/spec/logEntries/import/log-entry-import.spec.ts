@@ -1,3 +1,8 @@
+import {
+  CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateLogEntryParamsSchema,
+} from '@bottomtime/api';
+
 import { MethodNotAllowedException } from '@nestjs/common';
 
 import dayjs from 'dayjs';
@@ -120,6 +125,99 @@ describe('Log Entry Import class', () => {
       device: 'Test Device',
       deviceId: 'Test Device ID',
       bookmark: 'Test Bookmark',
+    });
+  });
+
+  describe('when requesting or managing records', () => {
+    let records: CreateOrUpdateLogEntryParamsDTO[];
+
+    beforeAll(() => {
+      records = TestData.map((ir) =>
+        CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
+      );
+    });
+
+    beforeEach(async () => {
+      logEntryImportData.finalized = null;
+      await Imports.save(logEntryImportData);
+    });
+
+    it('will return 0 when requesting record count for an import session with no records', async () => {
+      await expect(logEntryImport.getRecordCount()).resolves.toBe(0);
+    });
+
+    it('will return the correct record count when the import session has records', async () => {
+      await ImportRecords.save(TestData);
+      await expect(logEntryImport.getRecordCount()).resolves.toBe(
+        TestData.length,
+      );
+    });
+
+    it('will add records to a new import session', async () => {
+      const expected = records
+        .slice(0, 10)
+        .sort((a, b) =>
+          b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
+        );
+
+      await logEntryImport.addRecords(expected);
+
+      const saved = await ImportRecords.findBy({
+        import: { id: logEntryImport.id },
+      });
+      expect(saved).toHaveLength(expected.length);
+      const actual = saved
+        .map((ir) =>
+          CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
+        )
+        .sort((a, b) =>
+          b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
+        );
+      expect(actual).toEqual(expected);
+    });
+
+    it('will add records to an import session that already has some', async () => {
+      const expected = records
+        .slice(0, 30)
+        .sort((a, b) =>
+          b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
+        );
+      await logEntryImport.addRecords(expected.slice(0, 15));
+      await logEntryImport.addRecords(expected.slice(15, 30));
+
+      const saved = await ImportRecords.findBy({
+        import: { id: logEntryImport.id },
+      });
+      expect(saved).toHaveLength(expected.length);
+      const actual = saved
+        .map((ir) =>
+          CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
+        )
+        .sort((a, b) =>
+          b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
+        );
+      expect(actual).toEqual(expected);
+    });
+
+    it('will throw an exception when adding records to an import session that has been finalized', async () => {
+      logEntryImportData.finalized = new Date();
+      await Imports.save(logEntryImportData);
+      await expect(logEntryImport.addRecords(records)).rejects.toThrow(
+        MethodNotAllowedException,
+      );
+      await expect(
+        ImportRecords.existsBy({ import: { id: logEntryImport.id } }),
+      ).resolves.toBe(false);
+    });
+
+    it('will throw an exception when adding records to an import session that has been canceled', async () => {
+      await logEntryImport.cancel();
+      await expect(logEntryImport.addRecords(records)).rejects.toThrow(
+        MethodNotAllowedException,
+      );
+      await expect(
+        ImportRecords.existsBy({ import: { id: logEntryImport.id } }),
+      ).resolves.toBe(false);
     });
   });
 

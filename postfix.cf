@@ -1,8 +1,8 @@
 # /etc/postfix/main.cf
 
 # Basic settings
-myhostname = mail.example.com
-mydomain = example.com
+myhostname = postfix
+mydomain = postfix
 myorigin = $mydomain
 
 # Network settings

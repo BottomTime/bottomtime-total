@@ -1,4 +1,8 @@
-import { UserRole } from '@bottomtime/api';
+import {
+  CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateLogEntryParamsSchema,
+  UserRole,
+} from '@bottomtime/api';
 import { LogImportFeature } from '@bottomtime/common';
 
 import { INestApplication } from '@nestjs/common';
@@ -24,6 +28,7 @@ import { LogEntryImportController } from '../../../../src/logEntries/import/log-
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
 import { UsersModule } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
+import TestImportRecords from '../../../fixtures/import-records.json';
 import TestData from '../../../fixtures/log-entry-imports.json';
 import {
   ConfigCatClientMock,
@@ -53,6 +58,7 @@ describe('Log entry import session E2E tests', () => {
 
   let Users: Repository<UserEntity>;
   let Imports: Repository<LogEntryImportEntity>;
+  let ImportRecords: Repository<LogEntryImportRecordEntity>;
 
   let owner: UserEntity;
   let otherUser: UserEntity;
@@ -96,6 +102,7 @@ describe('Log entry import session E2E tests', () => {
 
     Users = dataSource.getRepository(UserEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
+    ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
 
     owner = createTestUser(OwnerData);
     otherUser = createTestUser(OtherUserData);
@@ -284,6 +291,162 @@ describe('Log entry import session E2E tests', () => {
       await request(server)
         .delete(getUrl(importData.id))
         .set(...ownerAuthToken)
+        .expect(501);
+    });
+  });
+
+  describe('when adding a batch of new records to the import session', () => {
+    let importRecords: CreateOrUpdateLogEntryParamsDTO[];
+    let importSession: LogEntryImportEntity;
+
+    beforeAll(() => {
+      importRecords = TestImportRecords.map((ir) =>
+        CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
+      ).sort((a, b) =>
+        b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
+      );
+    });
+
+    beforeEach(async () => {
+      importSession = { ...testData[8], finalized: null };
+      await Imports.save(importSession);
+    });
+
+    it('will commit new records to the session', async () => {
+      const expected = importRecords.slice(0, 20);
+      const { body } = await request(server)
+        .post(getUrl(importSession.id))
+        .set(...ownerAuthToken)
+        .send(expected)
+        .expect(201);
+
+      expect(body).toEqual({
+        addedRecords: expected.length,
+        totalRecords: expected.length,
+      });
+
+      const actual = (
+        await ImportRecords.findBy({
+          import: { id: importSession.id },
+        })
+      )
+        .map((ir) =>
+          CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
+        )
+        .sort((a, b) =>
+          b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
+        );
+      expect(actual).toHaveLength(expected.length);
+      expect(actual).toEqual(expected);
+    });
+
+    it("will allow an admin to commit records to another user's import session", async () => {
+      const expected = importRecords.slice(0, 20);
+      const { body } = await request(server)
+        .post(getUrl(importSession.id))
+        .set(...adminAuthToken)
+        .send(expected)
+        .expect(201);
+
+      expect(body).toEqual({
+        addedRecords: expected.length,
+        totalRecords: expected.length,
+      });
+
+      const actual = (
+        await ImportRecords.findBy({
+          import: { id: importSession.id },
+        })
+      )
+        .map((ir) =>
+          CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
+        )
+        .sort((a, b) =>
+          b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
+        );
+      expect(actual).toHaveLength(expected.length);
+      expect(actual).toEqual(expected);
+    });
+
+    it('will return a 400 response if request body is missing', async () => {
+      const { body } = await request(server)
+        .post(getUrl(importSession.id))
+        .set(...ownerAuthToken)
+        .expect(400);
+
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      const { body } = await request(server)
+        .post(getUrl(importSession.id))
+        .send([
+          {
+            logNumber: 'seven',
+            invalid: true,
+          },
+        ])
+        .set(...ownerAuthToken)
+        .expect(400);
+
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the request body contains no entries', async () => {
+      const { body } = await request(server)
+        .post(getUrl(importSession.id))
+        .send([])
+        .set(...ownerAuthToken)
+        .expect(400);
+
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .post(getUrl(importSession.id))
+        .send(importRecords.slice(0, 10))
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not authorized to modify the import session', async () => {
+      await request(server)
+        .post(getUrl(importSession.id))
+        .set(...otherUserAuthToken)
+        .send(importRecords.slice(0, 10))
+        .expect(403);
+    });
+
+    it('will return a 404 response if the user does not exist', async () => {
+      await request(server)
+        .post(getUrl(importSession.id, 'no_such_user'))
+        .set(...adminAuthToken)
+        .send(importRecords.slice(0, 10))
+        .expect(404);
+    });
+
+    it('will return a 404 response if the import session does not exist', async () => {
+      await request(server)
+        .post(getUrl('ce9d2317-be9a-422b-8b87-d9579a307e39'))
+        .set(...adminAuthToken)
+        .send(importRecords.slice(0, 10))
+        .expect(404);
+    });
+
+    it('will return a 413 response if the request body is too large', async () => {
+      await request(server)
+        .post(getUrl(importSession.id))
+        .set(...adminAuthToken)
+        .send(importRecords)
+        .expect(413);
+    });
+
+    it('will return a 501 response if the feature flag is not enabled', async () => {
+      features.flags[LogImportFeature.key] = false;
+      await request(server)
+        .post(getUrl(importSession.id))
+        .set(...adminAuthToken)
+        .send(importRecords.slice(0, 50))
         .expect(501);
     });
   });

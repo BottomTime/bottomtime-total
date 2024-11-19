@@ -1,9 +1,13 @@
-import { LogsImportDTO } from '@bottomtime/api';
+import {
+  CreateOrUpdateLogEntryParamsDTO,
+  LogsImportDTO,
+} from '@bottomtime/api';
 
 import { Logger, MethodNotAllowedException } from '@nestjs/common';
 
 import { Observable, bufferCount, concatMap, from, throwIfEmpty } from 'rxjs';
 import { DataSource, Repository } from 'typeorm';
+import { v7 as uuid } from 'uuid';
 
 import {
   LogEntryAirEntity,
@@ -216,6 +220,31 @@ export class LogEntryImport {
     const { affected } = await this.imports.delete(this.data.id);
     this._canceled = true;
     return affected === 1;
+  }
+
+  async getRecordCount(): Promise<number> {
+    return await this.importRecords.countBy({ import: { id: this.id } });
+  }
+
+  async addRecords(records: CreateOrUpdateLogEntryParamsDTO[]): Promise<void> {
+    if (this.canceled) {
+      throw new MethodNotAllowedException(
+        'Unable to add new records to an import session that has been aborted',
+      );
+    }
+
+    if (this.finalized) {
+      throw new MethodNotAllowedException(
+        'Unable to add new records to an import session that has already been finalized.',
+      );
+    }
+
+    const newRecords: LogEntryImportRecordEntity[] = records.map((r) => ({
+      id: uuid(),
+      import: this.data,
+      data: JSON.stringify(r),
+    }));
+    await this.importRecords.save(newRecords);
   }
 
   toJSON(): LogsImportDTO {

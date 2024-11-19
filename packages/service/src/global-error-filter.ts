@@ -59,6 +59,12 @@ export class GlobalErrorFilter implements ExceptionFilter {
       response.message = 'Request validation failed';
       response.details = details;
       response.status = 400;
+    } else if (
+      'statusCode' in exception &&
+      typeof exception.statusCode === 'number'
+    ) {
+      response.message = exception.message;
+      response.status = exception.statusCode;
     } else {
       this.log.error(exception);
     }
