@@ -47,7 +47,7 @@ module.exports = {
     }),
     new webpack.IgnorePlugin({
       resourceRegExp:
-        /(aws-lambda|@mikro-orm\/core|@nestjs\/(microservices|mongoose|sequelize|websockets)|class-(validator|transformer))/,
+        /(aws-lambda|@mikro-orm\/core|@nestjs\/(microservices|mongoose|sequelize)|class-(validator|transformer))/,
     }),
     new webpack.ProgressPlugin(),
   ],

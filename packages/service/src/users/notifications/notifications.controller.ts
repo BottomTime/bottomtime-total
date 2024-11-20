@@ -20,20 +20,22 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { ValidateIds } from '../validate-ids.guard';
-import { ZodValidator } from '../zod-validator';
+import { ValidateIds } from '../../validate-ids.guard';
+import { ZodValidator } from '../../zod-validator';
 import {
   AssertAdmin,
   AssertAuth,
-  AssertTargetNotification,
   AssertTargetUser,
-  TargetNotification,
   TargetUser,
-} from './guards';
-import { AssertAccountOwner } from './guards/assert-account-owner.guard';
+} from '../guards';
+import { AssertAccountOwner } from '../guards/assert-account-owner.guard';
+import { User } from '../user';
+import {
+  AssertTargetNotification,
+  TargetNotification,
+} from './assert-target-notification.guard';
 import { Notification } from './notification';
 import { NotificationsService } from './notifications.service';
-import { User } from './user';
 
 const UsernameParam = 'username';
 const NotificationIdParamName = 'notificationId';
@@ -138,7 +140,7 @@ export class NotificationsController {
   ): Promise<ApiList<NotificationDTO>> {
     const results = await this.service.listNotifications({
       ...options,
-      userId: user.id,
+      user,
     });
 
     return {
@@ -213,7 +215,7 @@ export class NotificationsController {
   ): Promise<NotificationDTO> {
     const notification = await this.service.createNotification({
       ...options,
-      userId: user.id,
+      user,
     });
 
     return notification.toJSON();

@@ -258,7 +258,7 @@ export class LogEntryImportController {
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/LogEntryImportId"
    *     responses:
-   *       200:
+   *       201:
    *         description: The request succeeded and the response body will contain an array of log entries that were successfully imported into the target logbook.
    *         content:
    *           application/json:

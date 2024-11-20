@@ -9,8 +9,9 @@ import {
 } from '../data';
 import { EventsModule } from '../events';
 import { StorageModule } from '../storage';
-import { NotificationsController } from './notifications.controller';
-import { NotificationsService } from './notifications.service';
+import { NotificationsController } from './notifications/notifications.controller';
+import { NotificationsGateway } from './notifications/notifications.gateway';
+import { NotificationsService } from './notifications/notifications.service';
 import { UserAvatarController } from './user-avatar.controller';
 import { UserCustomDataController } from './user-custom-data.controller';
 import { UserCustomDataService } from './user-custom-data.service';
@@ -34,6 +35,7 @@ import { UsersService } from './users.service';
     UsersService,
     UserFactory,
     NotificationsService,
+    NotificationsGateway,
     UserCustomDataService,
   ],
   controllers: [

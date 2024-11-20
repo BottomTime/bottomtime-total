@@ -9,6 +9,7 @@ export enum EventKey {
   MembershipInvoiceCreated = 'membership.invoiceCreated',
   MembershipPaymentFailed = 'membership.paymentFailed',
   MembershipTrialEnding = 'membership.trialEnding',
+  NotificationCreated = 'notifications.created',
   UserCreated = 'user.created',
   UserPasswordResetRequest = 'user.passwordResetRequest',
   UserVerifyEmailRequest = 'users.verifyEmailRequest',
@@ -80,6 +81,11 @@ export type MembershipTrialEndingEvent = {
   currentTier: AccountTier;
   currentTierName: string;
   endDate: Date;
+};
+
+export type NotificationCreatedEvent = {
+  key: EventKey.NotificationCreated;
+  notification: Notification;
 };
 
 export type UserCreatedEvent = {

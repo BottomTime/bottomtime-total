@@ -2,7 +2,7 @@ import { NotificationDTO } from '@bottomtime/api';
 
 import { Repository } from 'typeorm';
 
-import { NotificationEntity } from '../data';
+import { NotificationEntity } from '../../data';
 
 export class Notification {
   constructor(

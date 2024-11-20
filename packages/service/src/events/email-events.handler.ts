@@ -25,8 +25,8 @@ import {
 type UserProfileInfo = EmailQueueMessage['options']['user'];
 
 @Injectable()
-export class EmailNotificationsHandler {
-  private readonly log = new Logger(EmailNotificationsHandler.name);
+export class EmailEventsHandler {
+  private readonly log = new Logger(EmailEventsHandler.name);
 
   constructor(@Inject(SQSClient) private readonly sqs: SQSClient) {}
 

@@ -1,8 +1,8 @@
 export * from './guards';
 export * from './current-user';
 
-export * from './notification';
-export * from './notifications.service';
+export * from './notifications/notification';
+export * from './notifications/notifications.service';
 export * from './user';
 export * from './user-factory';
 export * from './users.service';
