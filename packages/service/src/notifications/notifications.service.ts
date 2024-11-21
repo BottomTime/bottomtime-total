@@ -2,6 +2,7 @@ import {
   ApiList,
   CreateOrUpdateNotificationParamsDTO,
   ListNotificationsParamsDTO,
+  NotificationType,
 } from '@bottomtime/api';
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -10,7 +11,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { NotificationEntity } from '../data';
+import { NotificationEntity, NotificationWhitelistEntity } from '../data';
+import { EventKey } from '../events';
 import { User } from '../users/user';
 import { Notification } from './notification';
 import { NotificationsQueryBuilder } from './notifications-query-builder';
@@ -30,7 +32,44 @@ export class NotificationsService {
   constructor(
     @InjectRepository(NotificationEntity)
     private readonly Notifications: Repository<NotificationEntity>,
+
+    @InjectRepository(NotificationWhitelistEntity)
+    private readonly Whitelists: Repository<NotificationWhitelistEntity>,
   ) {}
+
+  private treeify(keys: string[], root: string = ''): string[] {
+    const children: Record<string, string[]> = {};
+    const values: string[] = [];
+
+    for (const key of keys) {
+      if (key === '') continue;
+
+      const [parent, ...rest] = key.split('.');
+      if (!children[parent]) children[parent] = [];
+      children[parent].push(rest.join('.'));
+    }
+
+    for (const key of Object.keys(children)) {
+      const childValues = this.treeify(
+        children[key],
+        root ? `${root}.${key}` : key,
+      );
+
+      if (childValues.length) {
+        values.push(...childValues);
+        values.push(root ? `${root}.${key}.*` : `${key}.*`);
+        ``;
+      } else {
+        values.push(root ? `${root}.${key}` : key);
+      }
+    }
+
+    return values;
+  }
+
+  private getKeys(): string[] {
+    return [...this.treeify(Object.values(EventKey)), '*'];
+  }
 
   async listNotifications(
     options: ListNotificationsOptions,
@@ -95,4 +134,53 @@ export class NotificationsService {
     });
     return typeof affected === 'number' ? affected : 0;
   }
+
+  async getNotificationWhitelist(
+    user: User,
+    type: NotificationType,
+  ): Promise<Set<string>> {
+    const result = await this.Whitelists.findOneBy({
+      user: { id: user.id },
+      type,
+    });
+
+    if (!result) return new Set(['*']);
+
+    return new Set(result.whitelist);
+  }
+
+  async updateNotificationWhitelist(
+    user: User,
+    type: NotificationType,
+    data: Set<string>,
+  ): Promise<void> {
+    let entity: NotificationWhitelistEntity | null =
+      await this.Whitelists.findOneBy({
+        user: { id: user.id },
+        type,
+      });
+
+    if (!entity) {
+      entity = {
+        id: uuid(),
+        type,
+        user: user.toEntity(),
+        whitelist: Array.from(data),
+      };
+    } else {
+      entity.whitelist = Array.from(data);
+    }
+
+    await this.Whitelists.save(entity);
+  }
+
+  isAuthorizedByWhitelist(event: EventKey, whitelist: Set<string>): boolean {
+    return false;
+  }
+
+  isNotificationAuthorized(
+    user: User,
+    type: NotificationType,
+    event: EventKey,
+  ) {}
 }

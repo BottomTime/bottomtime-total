@@ -16,6 +16,7 @@ export * from './log-entry-import-record.entity';
 export * from './log-entry-samples.entity';
 export * from './log-entry-signature.entity';
 export * from './notification.entity';
+export * from './notification-whitelist.entity';
 export * from './tank.entity';
 export * from './user-certification.entity';
 export * from './user-oauth.entity';

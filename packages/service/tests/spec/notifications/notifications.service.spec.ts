@@ -1,6 +1,13 @@
+import { NotificationType } from '@bottomtime/api';
+
 import { Repository } from 'typeorm';
 
-import { NotificationEntity, UserEntity } from '../../../src/data';
+import {
+  NotificationEntity,
+  NotificationWhitelistEntity,
+  UserEntity,
+} from '../../../src/data';
+import { EventKey } from '../../../src/events';
 import {
   CreateNotificationOptions,
   NotificationsService,
@@ -17,6 +24,7 @@ const OtherUserId = '3ab16273-2932-435d-a703-e03cb5a8c53c';
 describe('Notifications Service', () => {
   let Users: Repository<UserEntity>;
   let Notifications: Repository<NotificationEntity>;
+  let NotificationWhitelists: Repository<NotificationWhitelistEntity>;
   let service: NotificationsService;
 
   let userData: UserEntity;
@@ -26,10 +34,13 @@ describe('Notifications Service', () => {
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     Notifications = dataSource.getRepository(NotificationEntity);
+    NotificationWhitelists = dataSource.getRepository(
+      NotificationWhitelistEntity,
+    );
     userData = createTestUser({ id: UserId });
     otherUserData = createTestUser({ id: OtherUserId });
 
-    service = new NotificationsService(Notifications);
+    service = new NotificationsService(Notifications, NotificationWhitelists);
     user = new User(Users, userData);
   });
 
@@ -238,6 +249,125 @@ describe('Notifications Service', () => {
             notification.expires?.valueOf() > now,
         ).toBe(true);
       }
+    });
+  });
+
+  describe('when retrieving notification whitelist for a user', () => {
+    it('willl return the notification whitelist for a user with a given type', async () => {
+      const whitelist: NotificationWhitelistEntity = {
+        id: '17a140b2-43ac-42ad-8d9e-b67c77daff15',
+        user: userData,
+        type: NotificationType.Email,
+        whitelist: ['friendRequests.*', 'membership.*'],
+      };
+      await NotificationWhitelists.save(whitelist);
+      const result = await service.getNotificationWhitelist(
+        user,
+        NotificationType.Email,
+      );
+
+      expect(result).toBeDefined();
+      const values = Array.from(result.values());
+      expect(values).toEqual(whitelist.whitelist);
+    });
+
+    it('will return default whitelist if no whitelist exists for a user with a given type', async () => {
+      const whitelist: NotificationWhitelistEntity = {
+        id: '17a140b2-43ac-42ad-8d9e-b67c77daff15',
+        user: userData,
+        type: NotificationType.Email,
+        whitelist: ['friendRequests.*', 'membership.*'],
+      };
+      await NotificationWhitelists.save(whitelist);
+      const result = await service.getNotificationWhitelist(
+        user,
+        NotificationType.PushNotification,
+      );
+
+      expect(result).toBeDefined();
+      const values = Array.from(result.values());
+      expect(values).toEqual(['*']);
+    });
+  });
+
+  describe('when updating notification whitelist for a user', () => {
+    it('will add a new record for users that do not yet have a whitelist', async () => {
+      const otherWhitelist: NotificationWhitelistEntity = {
+        id: '17a140b2-43ac-42ad-8d9e-b67c77daff15',
+        user: userData,
+        type: NotificationType.PushNotification,
+        whitelist: ['friendRequests.*', 'membership.*'],
+      };
+      await NotificationWhitelists.save(otherWhitelist);
+
+      const whitelist = new Set(['friendRequests.*', 'membership.*']);
+      await service.updateNotificationWhitelist(
+        user,
+        NotificationType.Email,
+        whitelist,
+      );
+
+      const result = await NotificationWhitelists.findOneBy({
+        user: userData,
+        type: NotificationType.Email,
+      });
+
+      expect(result).toBeDefined();
+      expect(result?.whitelist).toEqual(Array.from(whitelist));
+
+      await NotificationWhitelists.findOneOrFail({
+        where: {
+          user: userData,
+          type: NotificationType.PushNotification,
+        },
+      });
+    });
+
+    it('will update an existing whitelist record for a user', async () => {
+      const whitelist: NotificationWhitelistEntity = {
+        id: '17a140b2-43ac-42ad-8d9e-b67c77daff15',
+        user: userData,
+        type: NotificationType.Email,
+        whitelist: ['friendRequests.*', 'membership.*'],
+      };
+      await NotificationWhitelists.save(whitelist);
+
+      const newWhitelist = new Set([
+        'friendRequests.accepted',
+        'membership.*',
+        'user.*',
+      ]);
+      await service.updateNotificationWhitelist(
+        user,
+        NotificationType.Email,
+        newWhitelist,
+      );
+
+      const result = await NotificationWhitelists.findOneBy({
+        user: userData,
+        type: NotificationType.Email,
+      });
+
+      expect(result).toBeDefined();
+      expect(result?.whitelist).toEqual(Array.from(newWhitelist));
+    });
+
+    it.todo('will throw an exception if whitelist is invalid');
+
+    it('will allow users to set an empty whitelist', async () => {
+      await service.updateNotificationWhitelist(
+        user,
+        NotificationType.Email,
+        new Set(),
+      );
+
+      const result = await NotificationWhitelists.findOneBy({
+        user: userData,
+        type: NotificationType.Email,
+      });
+
+      expect(result).toBeDefined();
+      expect(result?.whitelist).toEqual([]);
     });
   });
 });

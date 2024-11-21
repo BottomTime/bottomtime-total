@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export enum NotificationType {
+  Email = 'email',
+  PushNotification = 'pushNotification',
+}
+
 export const CreateOrUpdateNotificationParamsSchema = z.object({
   icon: z.string().min(1).max(100),
   title: z.string().min(1).max(200),
