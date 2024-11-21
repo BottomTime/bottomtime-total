@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 
 import { AWSModule } from '../dependencies';
-import { EmailEventsHandler } from './email-events.handler';
 import { EventsService } from './events.service';
 
 @Module({
   imports: [AWSModule],
-  providers: [EventsService, EmailEventsHandler],
+  providers: [EventsService],
   exports: [EventsService],
 })
 export class EventsModule {}

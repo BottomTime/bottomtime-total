@@ -522,9 +522,11 @@ describe('Friends Service', () => {
       await Users.save([originUser, destinationUser]);
       await FriendRequests.save(friendRequest);
 
-      await expect(
-        service.acceptFriendRequest(originUser.id, destinationUser.id),
-      ).resolves.toBe(true);
+      const result = await service.acceptFriendRequest(
+        originUser.id,
+        destinationUser.id,
+      );
+      expect(result!.accepted).toBe(true);
 
       const [relations, request] = await Promise.all([
         Friends.findBy([
@@ -554,7 +556,7 @@ describe('Friends Service', () => {
 
       await expect(
         service.acceptFriendRequest(originUser.id, destinationUser.id),
-      ).resolves.toBe(false);
+      ).resolves.toBeUndefined();
     });
 
     it('will not accept a friend request that has already been accepted', async () => {
@@ -699,9 +701,12 @@ describe('Friends Service', () => {
       await Users.save([originUser, destinationUser]);
       await FriendRequests.save(friendRequest);
 
-      await expect(
-        service.rejectFriendRequest(originUser.id, destinationUser.id),
-      ).resolves.toBe(true);
+      const result = await service.rejectFriendRequest(
+        originUser.id,
+        destinationUser.id,
+      );
+      expect(result!.accepted).toBe(false);
+      expect(result!.reason).toBeUndefined();
 
       const request = await FriendRequests.findOneByOrFail({
         from: originUser,
@@ -731,9 +736,13 @@ describe('Friends Service', () => {
       await Users.save([originUser, destinationUser]);
       await FriendRequests.save(friendRequest);
 
-      await expect(
-        service.rejectFriendRequest(originUser.id, destinationUser.id, reason),
-      ).resolves.toBe(true);
+      const result = await service.rejectFriendRequest(
+        originUser.id,
+        destinationUser.id,
+        reason,
+      );
+      expect(result!.accepted).toBe(false);
+      expect(result!.reason).toBe(reason);
 
       const request = await FriendRequests.findOneByOrFail({
         from: originUser,
@@ -755,7 +764,7 @@ describe('Friends Service', () => {
 
       await expect(
         service.rejectFriendRequest(originUser.id, destinationUser.id),
-      ).resolves.toBe(false);
+      ).resolves.toBeUndefined();
     });
 
     it('will not reject a friend request that has already been accepted', async () => {

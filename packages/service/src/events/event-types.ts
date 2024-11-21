@@ -1,19 +1,31 @@
-import { AccountTier } from '@bottomtime/api';
+import { AccountTier, FriendRequestDTO } from '@bottomtime/api';
 
 import { User } from '../users';
 
 export enum EventKey {
+  FriendRequestAccepted = 'friendRequest.accepted',
+  FriendRequestCreated = 'friendRequest.created',
+  FriendRequestRejected = 'friendRequest.rejected',
   MembershipCanceled = 'membership.canceled',
   MembershipChanged = 'membership.changed',
   MembershipCreated = 'membership.created',
   MembershipInvoiceCreated = 'membership.invoiceCreated',
   MembershipPaymentFailed = 'membership.paymentFailed',
   MembershipTrialEnding = 'membership.trialEnding',
-  NotificationCreated = 'notifications.created',
   UserCreated = 'user.created',
   UserPasswordResetRequest = 'user.passwordResetRequest',
   UserVerifyEmailRequest = 'users.verifyEmailRequest',
 }
+
+export type FriendRequestEvent = {
+  key:
+    | EventKey.FriendRequestAccepted
+    | EventKey.FriendRequestCreated
+    | EventKey.FriendRequestRejected;
+  user: User;
+  friend: User;
+  friendRequest: FriendRequestDTO;
+};
 
 export type MembershipCanceledEvent = {
   key: EventKey.MembershipCanceled;
@@ -83,11 +95,6 @@ export type MembershipTrialEndingEvent = {
   endDate: Date;
 };
 
-export type NotificationCreatedEvent = {
-  key: EventKey.NotificationCreated;
-  notification: Notification;
-};
-
 export type UserCreatedEvent = {
   key: EventKey.UserCreated;
   user: User;
@@ -110,6 +117,7 @@ export type UserVerifyEmailRequestEvent = {
 };
 
 export type EventData =
+  | FriendRequestEvent
   | MembershipCanceledEvent
   | MembershipChangedEvent
   | MembershipCreatedEvent

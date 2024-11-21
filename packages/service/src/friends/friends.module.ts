@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { FriendRequestEntity, FriendshipEntity, UserEntity } from '../data';
+import { EventsModule } from '../events';
 import { UsersModule } from '../users';
 import { AssertFriendshipOwner } from './assert-friendship-owner.guard';
 import { FriendRequestsController } from './friend-requests.controller';
@@ -16,6 +17,7 @@ import { FriendsService } from './friends.service';
       FriendRequestEntity,
     ]),
 
+    EventsModule,
     UsersModule,
   ],
   providers: [FriendsService, AssertFriendshipOwner],

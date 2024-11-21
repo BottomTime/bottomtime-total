@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from './data';
 import { PostgresDataSourceOptions } from './data-source';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
+import { EmailModule } from './email';
 import { EventsModule } from './events';
 import { FriendsModule } from './friends';
 import { LogEntriesModule } from './logEntries';
@@ -44,6 +45,7 @@ import { UsersModule } from './users';
     AuthModule,
     OperatorsModule,
     DiveSitesModule,
+    EmailModule,
     FriendsModule,
     LogEntriesModule,
     MembershipModule,

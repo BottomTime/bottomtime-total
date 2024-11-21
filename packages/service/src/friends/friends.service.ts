@@ -25,18 +25,14 @@ import { FriendQueryBuilder } from './friend-query-builder';
 import { FriendRequestQueryBuilder } from './friend-request-query-builder';
 
 // List Friends Types
-export type Friend = FriendDTO;
 export type ListFriendsOptions = ListFriendsParamsDTO & {
   userId: string;
 };
-export type ListFriendsResults = ApiList<FriendDTO>;
 
 // List Friend Requests Types
-export type FriendRequest = FriendRequestDTO;
 export type ListFriendRequestOptions = ListFriendRequestsParamsDTO & {
   userId: string;
 };
-export type ListFriendRequestsResults = ApiList<FriendRequestDTO>;
 
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
 
@@ -97,7 +93,7 @@ export class FriendsService {
     };
   }
 
-  async listFriends(options: ListFriendsOptions): Promise<ListFriendsResults> {
+  async listFriends(options: ListFriendsOptions): Promise<ApiList<FriendDTO>> {
     const query = new FriendQueryBuilder(this.Friends)
       .withUserId(options.userId)
       .withSortOrder(options.sortBy, options.sortOrder)
@@ -133,7 +129,7 @@ export class FriendsService {
   async getFriend(
     userId: string,
     friendId: string,
-  ): Promise<Friend | undefined> {
+  ): Promise<FriendDTO | undefined> {
     const query = new FriendQueryBuilder(this.Friends)
       .withUserId(userId)
       .withFriendId(friendId)
@@ -169,7 +165,7 @@ export class FriendsService {
 
   async listFriendRequests(
     options: ListFriendRequestOptions,
-  ): Promise<ListFriendRequestsResults> {
+  ): Promise<ApiList<FriendRequestDTO>> {
     const query = new FriendRequestQueryBuilder(this.FriendRequests)
       .withAcknowledged(options.showAcknowledged)
       .withExpired(options.showExpired)
@@ -195,7 +191,7 @@ export class FriendsService {
   async getFriendRequest(
     userId: string,
     friendId: string,
-  ): Promise<FriendRequest | undefined> {
+  ): Promise<FriendRequestDTO | undefined> {
     const query = new FriendRequestQueryBuilder(this.FriendRequests)
       .withRequest(userId, friendId)
       .build();
@@ -211,7 +207,10 @@ export class FriendsService {
       : undefined;
   }
 
-  async createFriendRequest(user: User, friend: User): Promise<FriendRequest> {
+  async createFriendRequest(
+    user: User,
+    friend: User,
+  ): Promise<FriendRequestDTO> {
     if (user.id === friend.id) {
       throw new BadRequestException('You cannot friend yourself.');
     }
@@ -250,7 +249,10 @@ export class FriendsService {
     return FriendsService.toFriendRequestDTO(request, user.id);
   }
 
-  async acceptFriendRequest(from: string, to: string): Promise<boolean> {
+  async acceptFriendRequest(
+    from: string,
+    to: string,
+  ): Promise<FriendRequestDTO | undefined> {
     const runner = this.dataSource.createQueryRunner();
     await runner.connect();
     await runner.startTransaction();
@@ -267,7 +269,7 @@ export class FriendsService {
         select: ['id', 'accepted', 'expires'],
       });
 
-      if (!request) return false;
+      if (!request) return undefined;
       if (request.accepted) {
         throw new BadRequestException(
           'Friend request has already been accepted.',
@@ -298,7 +300,7 @@ export class FriendsService {
       await friends.save(friendships);
       await runner.commitTransaction();
 
-      return true;
+      return FriendsService.toFriendRequestDTO(request, from);
     } catch (error) {
       await runner.rollbackTransaction();
       throw error;
@@ -309,7 +311,7 @@ export class FriendsService {
     from: string,
     to: string,
     reason?: string,
-  ): Promise<boolean> {
+  ): Promise<FriendRequestDTO | undefined> {
     const request = await this.FriendRequests.findOne({
       where: {
         from: { id: from },
@@ -318,7 +320,7 @@ export class FriendsService {
       select: ['id', 'accepted', 'expires'],
     });
 
-    if (!request) return false;
+    if (!request) return undefined;
 
     if (request.accepted === true) {
       throw new BadRequestException(
@@ -341,7 +343,7 @@ export class FriendsService {
     request.to = { id: to } as UserEntity;
     await this.FriendRequests.save(request);
 
-    return true;
+    return FriendsService.toFriendRequestDTO(request, from);
   }
 
   async cancelFriendRequest(from: string, to: string): Promise<boolean> {
