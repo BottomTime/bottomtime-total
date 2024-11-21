@@ -17,6 +17,7 @@ import { EventsModule } from './events';
 import { FriendsModule } from './friends';
 import { LogEntriesModule } from './logEntries';
 import { MembershipModule } from './membership';
+import { NotificationsModule } from './notifications';
 import { OperatorsModule } from './operators';
 import { TanksModule } from './tanks/tanks.module';
 import { UsersModule } from './users';
@@ -46,6 +47,7 @@ import { UsersModule } from './users';
     FriendsModule,
     LogEntriesModule,
     MembershipModule,
+    NotificationsModule,
     TanksModule,
     UsersModule,
   ],

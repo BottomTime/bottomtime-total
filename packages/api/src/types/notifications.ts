@@ -19,11 +19,15 @@ export const NotificationSchema = CreateOrUpdateNotificationParamsSchema.extend(
 );
 export type NotificationDTO = z.infer<typeof NotificationSchema>;
 
-export const ListNotificationsParamsSchema = z.object({
-  showDismissed: z.coerce.boolean().optional(),
-  skip: z.coerce.number().int().optional(),
-  limit: z.coerce.number().int().optional(),
-});
+export const ListNotificationsParamsSchema = z
+  .object({
+    showAfter: z.coerce.date(),
+    showDismissed: z.coerce.boolean(),
+    skip: z.coerce.number().int(),
+    limit: z.coerce.number().int(),
+  })
+  .partial()
+  .optional();
 export type ListNotificationsParamsDTO = z.infer<
   typeof ListNotificationsParamsSchema
 >;

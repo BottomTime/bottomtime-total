@@ -4,7 +4,8 @@ import { NotificationEntity, UserEntity } from '../../../src/data';
 import {
   CreateNotificationOptions,
   NotificationsService,
-} from '../../../src/users';
+} from '../../../src/notifications';
+import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import NotificationTestData from '../../fixtures/notifications.json';
 import { parseNotificationJSON } from '../../utils/create-test-notification';
@@ -20,6 +21,7 @@ describe('Notifications Service', () => {
 
   let userData: UserEntity;
   let otherUserData: UserEntity;
+  let user: User;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
@@ -28,6 +30,7 @@ describe('Notifications Service', () => {
     otherUserData = createTestUser({ id: OtherUserId });
 
     service = new NotificationsService(Notifications);
+    user = new User(Users, userData);
   });
 
   beforeEach(async () => {
@@ -49,7 +52,7 @@ describe('Notifications Service', () => {
 
     it('will list notifications with default options', async () => {
       const result = await service.listNotifications({
-        userId: UserId,
+        user,
       });
       expect(result.totalCount).toBe(21);
       expect(result.data).toHaveLength(21);
@@ -58,7 +61,10 @@ describe('Notifications Service', () => {
 
     it('will return an empty result set if user ID does not exist', async () => {
       const result = await service.listNotifications({
-        userId: OtherUserId,
+        user: new User(
+          Users,
+          createTestUser({ id: '4262171d-9ac9-46d9-9ad9-e2d3628eab37' }),
+        ),
       });
       expect(result.totalCount).toBe(0);
       expect(result.data).toHaveLength(0);
@@ -66,7 +72,7 @@ describe('Notifications Service', () => {
 
     it('will list notifications with pagination', async () => {
       const result = await service.listNotifications({
-        userId: UserId,
+        user,
         skip: 8,
         limit: 10,
       });
@@ -77,11 +83,21 @@ describe('Notifications Service', () => {
 
     it('will list notifications and include dismissed notifications upon request', async () => {
       const result = await service.listNotifications({
-        userId: UserId,
+        user,
         showDismissed: true,
       });
       expect(result.totalCount).toBe(NotificationTestData.length);
       expect(result.data).toHaveLength(50);
+      expect(result.data).toMatchSnapshot();
+    });
+
+    it('will list notifications marked active after a given timestamp', async () => {
+      const result = await service.listNotifications({
+        user,
+        showAfter: new Date('2024-01-21T17:06:46.681Z'),
+      });
+      expect(result.totalCount).toBe(8);
+      expect(result.data).toHaveLength(8);
       expect(result.data).toMatchSnapshot();
     });
   });
@@ -130,7 +146,7 @@ describe('Notifications Service', () => {
   describe('when creating a new notification', () => {
     it('will create a new notification with minimal properties', async () => {
       const options: CreateNotificationOptions = {
-        userId: UserId,
+        user,
         icon: 'fas fa-bell',
         title: 'Test Notification',
         message: 'This is a test notification.',
@@ -158,7 +174,7 @@ describe('Notifications Service', () => {
 
     it('will create a new notification with all properties', async () => {
       const options: CreateNotificationOptions = {
-        userId: UserId,
+        user,
         icon: 'fas fa-bell',
         title: 'Test Notification',
         message: 'This is a test notification.',

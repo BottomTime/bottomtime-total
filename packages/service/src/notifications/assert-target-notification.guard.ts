@@ -8,7 +8,7 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
-import { User } from '../user';
+import { User } from '../users/user';
 import { Notification } from './notification';
 import { NotificationsService } from './notifications.service';
 

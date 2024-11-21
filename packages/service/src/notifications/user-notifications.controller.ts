@@ -20,16 +20,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { ValidateIds } from '../../validate-ids.guard';
-import { ZodValidator } from '../../zod-validator';
 import {
   AssertAdmin,
   AssertAuth,
   AssertTargetUser,
   TargetUser,
-} from '../guards';
-import { AssertAccountOwner } from '../guards/assert-account-owner.guard';
-import { User } from '../user';
+} from '../users/guards';
+import { AssertAccountOwner } from '../users/guards/assert-account-owner.guard';
+import { User } from '../users/user';
+import { ValidateIds } from '../validate-ids.guard';
+import { ZodValidator } from '../zod-validator';
 import {
   AssertTargetNotification,
   TargetNotification,
@@ -43,7 +43,7 @@ const NotificationIdParam = `:${NotificationIdParamName}`;
 
 @Controller(`api/users/:${UsernameParam}/notifications`)
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
-export class NotificationsController {
+export class UserNotificationsController {
   constructor(
     @Inject(NotificationsService)
     private readonly service: NotificationsService,

@@ -10,8 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { NotificationEntity } from '../../data';
-import { User } from '../user';
+import { NotificationEntity } from '../data';
+import { User } from '../users/user';
 import { Notification } from './notification';
 import { NotificationsQueryBuilder } from './notifications-query-builder';
 
@@ -38,6 +38,7 @@ export class NotificationsService {
     const query = new NotificationsQueryBuilder(this.Notifications)
       .withDismissed(options.showDismissed)
       .withRecipient(options.user)
+      .withNewerThan(options.showAfter)
       .withPagination(options.skip, options.limit)
       .build();
 

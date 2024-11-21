@@ -1,7 +1,7 @@
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
-import { NotificationEntity } from '../../data';
-import { User } from '../user';
+import { NotificationEntity } from '../data';
+import { User } from '../users/user';
 
 export class NotificationsQueryBuilder {
   private query: SelectQueryBuilder<NotificationEntity>;
