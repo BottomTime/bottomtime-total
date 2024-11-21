@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 
 import { NotificationEntity, UserEntity } from '../../../src/data';
-import { Notification } from '../../../src/users';
+import { Notification } from '../../../src/notifications';
 import { dataSource } from '../../data-source';
 import { createTestNotification } from '../../utils/create-test-notification';
 import { createTestUser } from '../../utils/create-test-user';

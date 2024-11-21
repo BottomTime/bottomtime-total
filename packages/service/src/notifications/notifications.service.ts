@@ -1,4 +1,5 @@
 import {
+  ApiList,
   CreateOrUpdateNotificationParamsDTO,
   ListNotificationsParamsDTO,
 } from '@bottomtime/api';
@@ -9,20 +10,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { NotificationEntity, UserEntity } from '../data';
+import { NotificationEntity } from '../data';
+import { User } from '../users/user';
 import { Notification } from './notification';
+import { NotificationsQueryBuilder } from './notifications-query-builder';
 
 export type ListNotificationsOptions = ListNotificationsParamsDTO & {
-  userId: string;
-};
-
-export type ListNotificationsResult = {
-  data: Notification[];
-  totalCount: number;
+  user: User;
 };
 
 export type CreateNotificationOptions = CreateOrUpdateNotificationParamsDTO & {
-  userId: string;
+  user: User;
 };
 
 @Injectable()
@@ -36,21 +34,16 @@ export class NotificationsService {
 
   async listNotifications(
     options: ListNotificationsOptions,
-  ): Promise<ListNotificationsResult> {
-    let query = this.Notifications.createQueryBuilder('notifications')
-      .where('notifications.recipient = :recipientId', {
-        recipientId: options.userId,
-      })
-      .orderBy('notifications.active', 'DESC')
-      .offset(options.skip ?? 0)
-      .limit(options.limit ?? 50);
-
-    if (!options.showDismissed) {
-      query = query.andWhere('notifications.dismissed = FALSE');
-    }
+  ): Promise<ApiList<Notification>> {
+    const query = new NotificationsQueryBuilder(this.Notifications)
+      .withDismissed(options.showDismissed)
+      .withRecipient(options.user)
+      .withNewerThan(options.showAfter)
+      .withPagination(options.skip, options.limit)
+      .build();
 
     this.log.debug(
-      `Requesting notifications for user with ID "${options.userId}"...`,
+      `Requesting notifications for user with ID "${options.user.id}"...`,
     );
     this.log.verbose(query.getSql());
 
@@ -88,7 +81,7 @@ export class NotificationsService {
     notification.active = options.active ?? new Date();
     notification.expires = options.expires ?? null;
     notification.dismissed = false;
-    notification.recipient = { id: options.userId } as UserEntity;
+    notification.recipient = options.user.toEntity();
 
     await this.Notifications.save(notification);
 

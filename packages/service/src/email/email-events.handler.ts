@@ -8,7 +8,6 @@ import dayjs from 'dayjs';
 import { URL } from 'url';
 
 import { Config } from '../config';
-import { User } from '../users';
 import {
   EventKey,
   MembershipCanceledEvent,
@@ -20,13 +19,14 @@ import {
   UserCreatedEvent,
   UserPasswordResetRequestEvent,
   UserVerifyEmailRequestEvent,
-} from './event-types';
+} from '../events/event-types';
+import { User } from '../users';
 
 type UserProfileInfo = EmailQueueMessage['options']['user'];
 
 @Injectable()
-export class EmailNotificationsHandler {
-  private readonly log = new Logger(EmailNotificationsHandler.name);
+export class EmailEventsHandler {
+  private readonly log = new Logger(EmailEventsHandler.name);
 
   constructor(@Inject(SQSClient) private readonly sqs: SQSClient) {}
 

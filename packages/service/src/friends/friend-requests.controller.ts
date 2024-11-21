@@ -22,6 +22,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { EventKey, EventsService, FriendRequestEvent } from '../events';
 import { AssertAuth, AssertTargetUser, TargetUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { AssertFriend, TargetFriend } from './assert-friend.guard';
@@ -38,6 +39,7 @@ export class FriendRequestsController {
 
   constructor(
     @Inject(FriendsService) private readonly friendsService: FriendsService,
+    @Inject(EventsService) private readonly events: EventsService,
   ) {}
 
   /**
@@ -288,6 +290,15 @@ export class FriendRequestsController {
       `Sending friend request from ${user.username} to ${friend.username}...`,
     );
     const result = await this.friendsService.createFriendRequest(user, friend);
+
+    const event: FriendRequestEvent = {
+      key: EventKey.FriendRequestCreated,
+      friend,
+      user,
+      friendRequest: result,
+    };
+    this.events.emit(event);
+
     return result;
   }
 
@@ -370,32 +381,41 @@ export class FriendRequestsController {
     @Body(new ZodValidator(AcknowledgeFriendRequestParamsSchema))
     params: AcknowledgeFriendRequestParamsDTO,
   ): Promise<void> {
-    let success: boolean;
-
     this.log.log(
       `Acknowledging friend request from ${friend.username} to ${
         user.username
       }: ${params.accepted ? 'accept' : 'reject'}.`,
     );
 
+    let friendRequest: FriendRequestDTO | undefined;
     if (params.accepted) {
-      success = await this.friendsService.acceptFriendRequest(
+      friendRequest = await this.friendsService.acceptFriendRequest(
         friend.id,
         user.id,
       );
     } else {
-      success = await this.friendsService.rejectFriendRequest(
+      friendRequest = await this.friendsService.rejectFriendRequest(
         friend.id,
         user.id,
         params.reason,
       );
     }
 
-    if (!success) {
+    if (!friendRequest) {
       throw new NotFoundException(
         'Unable to acknowledge friend request. Friend request was not found',
       );
     }
+
+    const event: FriendRequestEvent = {
+      friend,
+      user,
+      friendRequest,
+      key: params.accepted
+        ? EventKey.FriendRequestAccepted
+        : EventKey.FriendRequestRejected,
+    };
+    this.events.emit(event);
   }
 
   /**

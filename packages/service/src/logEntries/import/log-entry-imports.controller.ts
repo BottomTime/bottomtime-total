@@ -172,7 +172,7 @@ export class LogEntryImportsController {
    *                   This is useful for not generating duplicate imports when occasionally importing from the same device.
    *                 maxLength: 200
    *     responses:
-   *       "200":
+   *       "201":
    *         description: The request succeeded and the response body will contain the new log entry import session.
    *         content:
    *           application/json:

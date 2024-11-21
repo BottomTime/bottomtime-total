@@ -455,6 +455,83 @@ exports[`Notifications Service when listing notifications for a user will list n
 ]
 `;
 
+exports[`Notifications Service when listing notifications for a user will list notifications marked active after a given timestamp 1`] = `
+[
+  {
+    "active": 2024-03-23T15:14:37.852Z,
+    "dismissed": false,
+    "expires": undefined,
+    "icon": "muscle",
+    "id": "66c5d4d7-8126-4b05-9f2a-6774a7313d2b",
+    "message": "Eaque animi aperiam officiis similique. Atque doloribus voluptates alias ipsum eaque. Quam dolore dignissimos porro voluptate porro iste quae. Fuga nesciunt debitis. Cupiditate fugiat fugiat est eos quam officia occaecati voluptatem. Delectus at corrupti ipsam.",
+    "title": "Similique nesciunt optio.",
+  },
+  {
+    "active": 2024-03-18T21:31:26.978Z,
+    "dismissed": false,
+    "expires": 2024-04-05T17:40:44.964Z,
+    "icon": "chop",
+    "id": "e0692ce8-27f5-48bd-82a6-db01488799ee",
+    "message": "Aperiam itaque voluptas. Quasi et aliquam corporis. Culpa voluptas ab. Totam vel quos. Est voluptatibus placeat facere officia at. Libero soluta facilis eius.",
+    "title": "Repellendus aliquam ullam.",
+  },
+  {
+    "active": 2024-03-18T12:34:32.992Z,
+    "dismissed": false,
+    "expires": 2024-04-09T18:50:14.358Z,
+    "icon": "reprocessing",
+    "id": "62b7c664-d3ba-4016-8af1-e3c488d5823e",
+    "message": "At earum voluptas quia. Corporis rerum totam saepe cumque repellendus laboriosam quisquam quibusdam magnam. Veritatis incidunt optio animi quod id amet aperiam.",
+    "title": "Magni quas impedit dolorum accusamus rem facilis.",
+  },
+  {
+    "active": 2024-03-04T07:17:52.302Z,
+    "dismissed": false,
+    "expires": 2024-04-23T14:16:53.120Z,
+    "icon": "silo",
+    "id": "882ee7cf-bcd4-4671-aac9-80f7bfd84b7c",
+    "message": "Ratione dolores quod illo nisi fuga corrupti. Quaerat iure doloremque minima. Quod voluptatum laborum provident neque eos libero. Itaque quibusdam nihil molestiae. Rem placeat sint quas eius provident doloribus ut.",
+    "title": "Voluptatem ullam explicabo accusamus culpa placeat reiciendis.",
+  },
+  {
+    "active": 2024-02-02T10:12:43.860Z,
+    "dismissed": false,
+    "expires": 2024-03-27T09:28:01.364Z,
+    "icon": "gamma-ray",
+    "id": "e7c28880-7bdf-4fe6-bfbf-23a8fd49043e",
+    "message": "Nisi doloremque repudiandae. Velit fugit laborum illum culpa ducimus mollitia explicabo esse. Molestiae voluptatum nesciunt odit amet voluptate. Labore corrupti voluptates et earum modi adipisci. Similique laborum fugit facere.",
+    "title": "Quia eum possimus accusantium optio ex reiciendis.",
+  },
+  {
+    "active": 2024-01-28T04:40:26.392Z,
+    "dismissed": false,
+    "expires": 2024-03-27T05:10:17.406Z,
+    "icon": "luxury",
+    "id": "24fe8aca-9a75-4b23-8734-9214f319195e",
+    "message": "Dicta asperiores odio. Aut aut non aliquam deserunt quae quia adipisci. Earum in eos placeat dolores placeat nobis optio id veritatis. Cum non quasi magni. A ex praesentium pariatur.",
+    "title": "Ea accusantium tempora.",
+  },
+  {
+    "active": 2024-01-27T09:05:02.434Z,
+    "dismissed": false,
+    "expires": 2024-03-26T19:39:13.679Z,
+    "icon": "alley",
+    "id": "f8c26922-638a-4bac-a9b4-2d0a6a6e5512",
+    "message": "Hic ducimus ducimus. Impedit error asperiores laudantium sint. Illum ipsum nulla veniam praesentium iste.",
+    "title": "Quae expedita natus eum molestiae eaque accusamus vitae.",
+  },
+  {
+    "active": 2024-01-25T23:44:16.285Z,
+    "dismissed": false,
+    "expires": 2024-04-17T12:42:46.217Z,
+    "icon": "vitamin",
+    "id": "180a8843-cd33-4871-8383-899753b8fa31",
+    "message": "Assumenda dolorem ab quibusdam cupiditate pariatur consequuntur laborum. Veritatis unde explicabo itaque optio inventore fuga et tempore. Iure ad ratione natus quaerat nisi architecto veniam. Voluptatibus quas ipsa repudiandae consequatur dignissimos quo consequuntur itaque modi.",
+    "title": "Consectetur illo officiis corrupti labore veniam saepe maxime dolorum autem.",
+  },
+]
+`;
+
 exports[`Notifications Service when listing notifications for a user will list notifications with default options 1`] = `
 [
   {

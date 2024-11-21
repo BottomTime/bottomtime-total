@@ -1,7 +1,7 @@
 import {
   DepthUnit,
   FriendRequestDirection,
-  ListFriendRequestsParams,
+  ListFriendRequestsParamsDTO,
   LogBookSharing,
   PressureUnit,
   TemperatureUnit,
@@ -21,12 +21,19 @@ import {
   FriendshipEntity,
   UserEntity,
 } from '../../../src/data';
+import {
+  EventKey,
+  EventsModule,
+  EventsService,
+  FriendRequestEvent,
+} from '../../../src/events';
 import { FriendRequestsController, FriendsService } from '../../../src/friends';
 import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestUserData from '../../fixtures/user-search-data.json';
 import {
+  MockEventsService,
   createAuthHeader,
   createTestApp,
   createTestUser,
@@ -84,6 +91,7 @@ describe('Friend Requests End-to-End Tests', () => {
   let server: unknown;
   let adminAuthHeader: [string, string];
   let regularAuthHeader: [string, string];
+  let eventsService: MockEventsService;
 
   let adminUser: UserEntity;
   let regularUser: UserEntity;
@@ -94,24 +102,32 @@ describe('Friend Requests End-to-End Tests', () => {
     Users = dataSource.getRepository(UserEntity);
     Friends = dataSource.getRepository(FriendshipEntity);
     FriendRequests = dataSource.getRepository(FriendRequestEntity);
+    eventsService = new MockEventsService();
 
     adminUser = createTestUser(AdminUserData);
     regularUser = createTestUser(RegularUserData);
 
     friends = TestUserData.map((data) => parseUserJSON(data));
 
-    app = await createTestApp({
-      imports: [
-        TypeOrmModule.forFeature([
-          UserEntity,
-          FriendshipEntity,
-          FriendRequestEntity,
-        ]),
-        UsersModule,
-      ],
-      providers: [FriendsService],
-      controllers: [FriendRequestsController],
-    });
+    app = await createTestApp(
+      {
+        imports: [
+          TypeOrmModule.forFeature([
+            UserEntity,
+            FriendshipEntity,
+            FriendRequestEntity,
+          ]),
+          EventsModule,
+          UsersModule,
+        ],
+        providers: [FriendsService],
+        controllers: [FriendRequestsController],
+      },
+      {
+        provide: EventsService,
+        use: eventsService,
+      },
+    );
     server = app.getHttpServer();
     adminAuthHeader = await createAuthHeader(AdminUserId);
     regularAuthHeader = await createAuthHeader(RegularUserId);
@@ -119,6 +135,10 @@ describe('Friend Requests End-to-End Tests', () => {
 
   beforeEach(async () => {
     await Users.save([adminUser, regularUser]);
+  });
+
+  afterEach(() => {
+    eventsService.clear();
   });
 
   afterAll(async () => {
@@ -184,7 +204,7 @@ describe('Friend Requests End-to-End Tests', () => {
     });
 
     it("will return a list of the user's friend requests", async () => {
-      const options: ListFriendRequestsParams = {
+      const options: ListFriendRequestsParamsDTO = {
         direction: FriendRequestDirection.Both,
         skip: 12,
         limit: 6,
@@ -201,7 +221,7 @@ describe('Friend Requests End-to-End Tests', () => {
     });
 
     it('will allow admins to view friend requests for any user', async () => {
-      const options: ListFriendRequestsParams = {
+      const options: ListFriendRequestsParamsDTO = {
         direction: FriendRequestDirection.Both,
         skip: 12,
         limit: 6,
@@ -374,6 +394,12 @@ describe('Friend Requests End-to-End Tests', () => {
         -3,
       );
       expect(body.friendId).toEqual(friend.id);
+
+      const event = eventsService.events[0] as FriendRequestEvent;
+      expect(event).toBeDefined();
+      expect(event.key).toEqual(EventKey.FriendRequestCreated);
+      expect(event.user.id).toEqual(regularUser.id);
+      expect(event.friend.id).toEqual(friend.id);
     });
   });
 
@@ -543,6 +569,12 @@ describe('Friend Requests End-to-End Tests', () => {
 
           expect(friendRelations).toHaveLength(2);
           expect(friendRequest.accepted).toBe(true);
+
+          const event = eventsService.events[0] as FriendRequestEvent;
+          expect(event).toBeDefined();
+          expect(event.key).toEqual(EventKey.FriendRequestAccepted);
+          expect(event.user.id).toEqual(regularUser.id);
+          expect(event.friend.id).toEqual(friend.id);
         });
       } else {
         it('will not create a new friend relationship when the friend request is declined', async () => {
@@ -573,6 +605,13 @@ describe('Friend Requests End-to-End Tests', () => {
           expect(friendRelations).toHaveLength(0);
           expect(friendRequest.accepted).toBe(false);
           expect(friendRequest.reason).toBe(reason);
+
+          const event = eventsService.events[0] as FriendRequestEvent;
+          expect(event).toBeDefined();
+          expect(event.key).toEqual(EventKey.FriendRequestRejected);
+          expect(event.user.id).toEqual(regularUser.id);
+          expect(event.friend.id).toEqual(friend.id);
+          expect(event.friendRequest.reason).toEqual(reason);
         });
       }
     });

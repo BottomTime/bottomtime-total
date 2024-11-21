@@ -3,6 +3,7 @@ import {
   NotificationDTO,
   UserRole,
 } from '@bottomtime/api';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,11 +12,18 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import { NotificationEntity, UserEntity } from '../../../src/data';
-import { NotificationsService, UsersModule } from '../../../src/users';
-import { NotificationsController } from '../../../src/users/notifications.controller';
+import { ConfigCatClient } from '../../../src/dependencies';
+import { NotificationsService } from '../../../src/notifications/notifications.service';
+import { UserNotificationsController } from '../../../src/notifications/user-notifications.controller';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import NotificationTestData from '../../fixtures/notifications.json';
-import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
+import {
+  ConfigCatClientMock,
+  createAuthHeader,
+  createTestApp,
+  createTestUser,
+} from '../../utils';
 import { parseNotificationJSON } from '../../utils/create-test-notification';
 
 const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
@@ -87,6 +95,7 @@ describe('Notifications End-to-End Tests', () => {
   let server: unknown;
   let Users: Repository<UserEntity>;
   let Notifications: Repository<NotificationEntity>;
+  let features: ConfigCatClientMock;
 
   let regularUser: UserEntity;
   let adminUser: UserEntity;
@@ -96,11 +105,19 @@ describe('Notifications End-to-End Tests', () => {
   let adminAuthHeader: [string, string];
 
   beforeAll(async () => {
-    app = await createTestApp({
-      imports: [TypeOrmModule.forFeature([NotificationEntity]), UsersModule],
-      providers: [NotificationsService],
-      controllers: [NotificationsController],
-    });
+    features = new ConfigCatClientMock();
+
+    app = await createTestApp(
+      {
+        imports: [TypeOrmModule.forFeature([NotificationEntity]), UsersModule],
+        providers: [NotificationsService],
+        controllers: [UserNotificationsController],
+      },
+      {
+        provide: ConfigCatClient,
+        use: features,
+      },
+    );
     server = app.getHttpServer();
     Users = dataSource.getRepository(UserEntity);
     Notifications = dataSource.getRepository(NotificationEntity);
@@ -115,6 +132,7 @@ describe('Notifications End-to-End Tests', () => {
   });
 
   beforeEach(async () => {
+    features.flags[NotificationsFeature.key] = true;
     await Users.save([regularUser, otherUser, adminUser]);
   });
 

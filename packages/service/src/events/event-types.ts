@@ -1,8 +1,11 @@
-import { AccountTier } from '@bottomtime/api';
+import { AccountTier, FriendRequestDTO } from '@bottomtime/api';
 
 import { User } from '../users';
 
 export enum EventKey {
+  FriendRequestAccepted = 'friendRequest.accepted',
+  FriendRequestCreated = 'friendRequest.created',
+  FriendRequestRejected = 'friendRequest.rejected',
   MembershipCanceled = 'membership.canceled',
   MembershipChanged = 'membership.changed',
   MembershipCreated = 'membership.created',
@@ -13,6 +16,16 @@ export enum EventKey {
   UserPasswordResetRequest = 'user.passwordResetRequest',
   UserVerifyEmailRequest = 'users.verifyEmailRequest',
 }
+
+export type FriendRequestEvent = {
+  key:
+    | EventKey.FriendRequestAccepted
+    | EventKey.FriendRequestCreated
+    | EventKey.FriendRequestRejected;
+  user: User;
+  friend: User;
+  friendRequest: FriendRequestDTO;
+};
 
 export type MembershipCanceledEvent = {
   key: EventKey.MembershipCanceled;
@@ -104,6 +117,7 @@ export type UserVerifyEmailRequestEvent = {
 };
 
 export type EventData =
+  | FriendRequestEvent
   | MembershipCanceledEvent
   | MembershipChangedEvent
   | MembershipCreatedEvent
