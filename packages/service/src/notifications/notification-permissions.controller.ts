@@ -24,6 +24,7 @@ import {
   User,
 } from '../users';
 import { ZodValidator } from '../zod-validator';
+import { AssertNotificationsFeature } from './assert-notifications-feature.guard';
 import { NotificationsService } from './notifications.service';
 
 const NotificationTypeParam = 'notificationType';
@@ -31,7 +32,12 @@ const NotificationTypeParam = 'notificationType';
 @Controller(
   `api/users/:username/notifications/permissions/:${NotificationTypeParam}(email|pushNotification)`,
 )
-@UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+@UseGuards(
+  AssertNotificationsFeature,
+  AssertAuth,
+  AssertTargetUser,
+  AssertAccountOwner,
+)
 export class NotificationPermissionsController {
   private readonly log = new Logger(NotificationPermissionsController.name);
 

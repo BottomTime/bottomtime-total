@@ -1,22 +1,30 @@
 import { NotificationType, UserRole } from '@bottomtime/api';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Server } from 'http';
 import request from 'supertest';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import {
   NotificationEntity,
   NotificationWhitelistEntity,
   UserEntity,
 } from '../../../src/data';
+import { ConfigCatClient } from '../../../src/dependencies';
+import { FeaturesModule } from '../../../src/features';
 import { NotificationsService } from '../../../src/notifications';
 import { NotificationPermissionsController } from '../../../src/notifications/notification-permissions.controller';
 import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
-import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
+import {
+  ConfigCatClientMock,
+  createAuthHeader,
+  createTestApp,
+  createTestUser,
+} from '../../utils';
 
 const UserData: Partial<UserEntity> = {
   id: '379d35a8-08bf-4bd4-b7d7-f6cc627243a7',
@@ -37,6 +45,7 @@ describe('Notification whitelist management E2E tests', () => {
   let server: Server;
   let Users: Repository<UserEntity>;
   let Whitelists: Repository<NotificationWhitelistEntity>;
+  let features: ConfigCatClientMock;
 
   let user: UserEntity;
   let otherUser: UserEntity;
@@ -47,17 +56,25 @@ describe('Notification whitelist management E2E tests', () => {
   let adminAuthHeader: [string, string];
 
   beforeAll(async () => {
-    app = await createTestApp({
-      imports: [
-        TypeOrmModule.forFeature([
-          NotificationEntity,
-          NotificationWhitelistEntity,
-        ]),
-        UsersModule,
-      ],
-      providers: [NotificationsService],
-      controllers: [NotificationPermissionsController],
-    });
+    features = new ConfigCatClientMock();
+    app = await createTestApp(
+      {
+        imports: [
+          TypeOrmModule.forFeature([
+            NotificationEntity,
+            NotificationWhitelistEntity,
+          ]),
+          FeaturesModule,
+          UsersModule,
+        ],
+        providers: [NotificationsService],
+        controllers: [NotificationPermissionsController],
+      },
+      {
+        provide: ConfigCatClient,
+        use: features,
+      },
+    );
     await app.init();
     server = app.getHttpAdapter().getInstance();
 
@@ -77,6 +94,7 @@ describe('Notification whitelist management E2E tests', () => {
 
   beforeEach(async () => {
     await Users.save([user, otherUser, admin]);
+    features.flags[NotificationsFeature.key] = true;
   });
 
   afterAll(async () => {
@@ -141,6 +159,14 @@ describe('Notification whitelist management E2E tests', () => {
         .get(getUrl(undefined, 'nonexistent_user'))
         .set(...adminAuthHeader)
         .expect(404);
+    });
+
+    it('will return a 501 response if the notifications feature is not enabled', async () => {
+      features.flags[NotificationsFeature.key] = false;
+      await request(server)
+        .get(getUrl())
+        .set(...userAuthHeader)
+        .expect(501);
     });
   });
 
@@ -247,6 +273,15 @@ describe('Notification whitelist management E2E tests', () => {
         .send(['user.*', 'friendRequest.accepted'])
         .expect(404);
     });
+
+    it('will return a 501 response if the notification feature is not enabled', async () => {
+      features.flags[NotificationsFeature.key] = false;
+      await request(server)
+        .put(getUrl())
+        .set(...userAuthHeader)
+        .send(['user.*', 'friendRequest.accepted'])
+        .expect(501);
+    });
   });
 
   describe('when resetting a whitelist', () => {
@@ -308,6 +343,14 @@ describe('Notification whitelist management E2E tests', () => {
         .delete(getUrl(undefined, 'nonexistent_user'))
         .set(...adminAuthHeader)
         .expect(404);
+    });
+
+    it('will return a 501 response if the notifications feature is not enabled', async () => {
+      features.flags[NotificationsFeature.key] = false;
+      await request(server)
+        .delete(getUrl())
+        .set(...userAuthHeader)
+        .expect(501);
     });
   });
 });
