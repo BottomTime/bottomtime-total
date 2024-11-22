@@ -1,3 +1,4 @@
+import { NotificationType } from '@bottomtime/api';
 import { NotificationsFeature } from '@bottomtime/common';
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
@@ -7,10 +8,6 @@ import { EventKey, FriendRequestEvent } from '../events';
 import { FeaturesService } from '../features';
 import { User, UsersService } from '../users';
 import { NotificationsService } from './notifications.service';
-
-export enum NotificationCategory {
-  FriendRequest = 'friendRequest',
-}
 
 const ThirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
 
@@ -31,7 +28,7 @@ export class NotificationEventsHandler {
 
   private async createNotification(
     user: User,
-    category: NotificationCategory,
+    eventKey: EventKey,
     title: string,
     message: string,
     expirationInMs?: number,
@@ -45,6 +42,13 @@ export class NotificationEventsHandler {
       `Notification event received. Sending notification to user "${user.username}": ${title}`,
     );
     try {
+      const isAuthorized = await this.notifications.isNotificationAuthorized(
+        user,
+        NotificationType.PushNotification,
+        eventKey,
+      );
+      if (!isAuthorized) return;
+
       await this.notifications.createNotification({
         icon: '',
         message,
@@ -105,7 +109,7 @@ export class NotificationEventsHandler {
 
     await this.createNotification(
       recipient,
-      NotificationCategory.FriendRequest,
+      event.key,
       title,
       message,
       expires,

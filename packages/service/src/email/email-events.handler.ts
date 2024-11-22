@@ -1,3 +1,4 @@
+import { NotificationType } from '@bottomtime/api';
 import { EmailQueueMessage, EmailType } from '@bottomtime/common';
 
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
@@ -20,6 +21,7 @@ import {
   UserPasswordResetRequestEvent,
   UserVerifyEmailRequestEvent,
 } from '../events/event-types';
+import { NotificationsService } from '../notifications';
 import { User } from '../users';
 
 type UserProfileInfo = EmailQueueMessage['options']['user'];
@@ -28,7 +30,11 @@ type UserProfileInfo = EmailQueueMessage['options']['user'];
 export class EmailEventsHandler {
   private readonly log = new Logger(EmailEventsHandler.name);
 
-  constructor(@Inject(SQSClient) private readonly sqs: SQSClient) {}
+  constructor(
+    @Inject(SQSClient) private readonly sqs: SQSClient,
+    @Inject(NotificationsService)
+    private readonly notifications: NotificationsService,
+  ) {}
 
   private getUserProfile(user: User): UserProfileInfo {
     return {
@@ -40,26 +46,35 @@ export class EmailEventsHandler {
     };
   }
 
-  private queueEmail(message: EmailQueueMessage) {
-    this.sqs
-      .send(
+  private async queueEmail(
+    user: User,
+    eventKey: EventKey,
+    message: EmailQueueMessage,
+  ): Promise<void> {
+    try {
+      const isAuthorized = await this.notifications.isNotificationAuthorized(
+        user,
+        NotificationType.Email,
+        eventKey,
+      );
+      if (!isAuthorized) return;
+
+      await this.sqs.send(
         new SendMessageCommand({
           QueueUrl: Config.aws.sqs.emailQueueUrl,
           MessageBody: JSON.stringify(message),
         }),
-      )
-      .then(() => {
-        this.log.verbose('Email message queued:', message);
-      })
-      .catch((error) => {
-        this.log.error('Failed to queue email notification', error);
-      });
+      );
+      this.log.verbose('Email message queued:', message);
+    } catch (error) {
+      this.log.error('Failed to queue email notification', error);
+    }
   }
 
   @OnEvent(EventKey.MembershipCanceled)
   onMembershipCanceled(event: MembershipCanceledEvent) {
     if (!event.user.email) return;
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.MembershipCanceled, {
       to: { to: event.user.email },
       subject: 'Membership Canceled',
       options: {
@@ -73,7 +88,7 @@ export class EmailEventsHandler {
   @OnEvent(EventKey.MembershipChanged)
   onMembershipChanged(event: MembershipChangedEvent) {
     if (!event.user.email) return;
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.MembershipChanged, {
       to: { to: event.user.email },
       subject: 'Membership Updated',
       options: {
@@ -90,7 +105,7 @@ export class EmailEventsHandler {
   onMembershipCreated(event: MembershipCreatedEvent) {
     const title = 'Membership Activated!';
     if (!event.user.email) return;
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.MembershipCreated, {
       to: { to: event.user.email },
       subject: 'Membership activated',
       options: {
@@ -110,7 +125,7 @@ export class EmailEventsHandler {
       style: 'currency',
       currency: event.currency,
     });
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.MembershipInvoiceCreated, {
       to: { to: event.user.email, bcc: Config.adminEmail },
       subject: 'Latest invoice for Bottom Time membership',
       options: {
@@ -155,7 +170,7 @@ export class EmailEventsHandler {
   @OnEvent(EventKey.MembershipPaymentFailed)
   onMembershipPaymentFailed(event: MembershipPaymentFailedEvent) {
     if (!event.user.email) return;
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.MembershipPaymentFailed, {
       to: { to: event.user.email, cc: Config.adminEmail },
       subject: 'Important! Please update your payment info.',
       options: {
@@ -179,7 +194,7 @@ export class EmailEventsHandler {
   @OnEvent(EventKey.MembershipTrialEnding)
   onMembershipTrialEnding(event: MembershipTrialEndingEvent) {
     if (!event.user.email) return;
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.MembershipTrialEnding, {
       to: { to: event.user.email },
       subject: 'Your free trial of Bottom Time is ending soon...',
       options: {
@@ -193,7 +208,7 @@ export class EmailEventsHandler {
 
   onUserCreated(event: UserCreatedEvent) {
     if (!event.user.email) return;
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.UserCreated, {
       to: { to: event.user.email },
       subject: 'Welcome to Bottom Time',
       options: {
@@ -212,7 +227,7 @@ export class EmailEventsHandler {
   onUserPasswordResetRequest(event: UserPasswordResetRequestEvent) {
     if (!event.user.email) return;
     const title = 'Reset Your Password';
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.UserPasswordResetRequest, {
       to: { to: event.user.email },
       subject: title,
       options: {
@@ -228,7 +243,7 @@ export class EmailEventsHandler {
   onUserVerifyEmailRequest(event: UserVerifyEmailRequestEvent) {
     const title = 'Verify Your Email Address';
     if (!event.user.email) return;
-    this.queueEmail({
+    this.queueEmail(event.user, EventKey.UserVerifyEmailRequest, {
       to: { to: event.user.email },
       subject: title,
       options: {
