@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { LessThan, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
+import { z } from 'zod';
 
 import { NotificationEntity, NotificationWhitelistEntity } from '../data';
 import { EventKey } from '../events';
@@ -28,6 +29,7 @@ export type CreateNotificationOptions = CreateOrUpdateNotificationParamsDTO & {
 @Injectable()
 export class NotificationsService {
   private readonly log = new Logger(NotificationsService.name);
+  private readonly _acceptedKeys: Set<string>;
 
   constructor(
     @InjectRepository(NotificationEntity)
@@ -35,7 +37,9 @@ export class NotificationsService {
 
     @InjectRepository(NotificationWhitelistEntity)
     private readonly Whitelists: Repository<NotificationWhitelistEntity>,
-  ) {}
+  ) {
+    this._acceptedKeys = new Set(this.getKeys());
+  }
 
   private treeify(keys: string[], root: string = ''): string[] {
     const children: Record<string, string[]> = {};
@@ -68,7 +72,9 @@ export class NotificationsService {
   }
 
   private getKeys(): string[] {
-    return [...this.treeify(Object.values(EventKey)), '*'];
+    const keys = this.treeify(Object.values(EventKey));
+    keys.push('*');
+    return keys;
   }
 
   async listNotifications(
@@ -154,6 +160,11 @@ export class NotificationsService {
     type: NotificationType,
     data: Set<string>,
   ): Promise<void> {
+    z.string()
+      .refine((value) => this._acceptedKeys.has(value), 'Not a valid event key')
+      .array()
+      .parse(Array.from(data));
+
     let entity: NotificationWhitelistEntity | null =
       await this.Whitelists.findOneBy({
         user: { id: user.id },
@@ -175,12 +186,24 @@ export class NotificationsService {
   }
 
   isAuthorizedByWhitelist(event: EventKey, whitelist: Set<string>): boolean {
+    if (whitelist.has(event)) return true;
+
+    const parts = event.split('.');
+    while (parts.length > 0) {
+      parts[parts.length - 1] = '*';
+      if (whitelist.has(parts.join('.'))) return true;
+      parts.pop();
+    }
+
     return false;
   }
 
-  isNotificationAuthorized(
+  async isNotificationAuthorized(
     user: User,
     type: NotificationType,
     event: EventKey,
-  ) {}
+  ): Promise<boolean> {
+    const whitelist = await this.getNotificationWhitelist(user, type);
+    return this.isAuthorizedByWhitelist(event, whitelist);
+  }
 }
