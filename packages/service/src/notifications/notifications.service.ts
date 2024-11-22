@@ -185,6 +185,18 @@ export class NotificationsService {
     await this.Whitelists.save(entity);
   }
 
+  async removeNotificationWhitelist(
+    user: User,
+    type: NotificationType,
+  ): Promise<boolean> {
+    const { affected } = await this.Whitelists.delete({
+      user: { id: user.id },
+      type,
+    });
+
+    return typeof affected === 'number' && affected > 0;
+  }
+
   isAuthorizedByWhitelist(event: EventKey, whitelist: Set<string>): boolean {
     if (whitelist.has(event)) return true;
 
