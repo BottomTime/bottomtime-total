@@ -14,7 +14,10 @@ export enum EventKey {
   MembershipTrialEnding = 'membership.trialEnding',
   UserCreated = 'user.created',
   UserPasswordResetRequest = 'user.passwordResetRequest',
-  UserVerifyEmailRequest = 'users.verifyEmailRequest',
+  UserVerifyEmailRequest = 'user.verifyEmailRequest',
+
+  Test = 'test.level.one',
+  TestTwo = 'test.level.two',
 }
 
 export type FriendRequestEvent = {

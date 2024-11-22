@@ -20,6 +20,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { UuidRegex } from '../common';
 import {
   AssertAdmin,
   AssertAuth,
@@ -39,7 +40,7 @@ import { NotificationsService } from './notifications.service';
 
 const UsernameParam = 'username';
 const NotificationIdParamName = 'notificationId';
-const NotificationIdParam = `:${NotificationIdParamName}`;
+const NotificationIdParam = `:${NotificationIdParamName}(${UuidRegex})`;
 
 @Controller(`api/users/:${UsernameParam}/notifications`)
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)

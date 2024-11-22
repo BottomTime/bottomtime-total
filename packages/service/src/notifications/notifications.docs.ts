@@ -11,7 +11,16 @@
  *         type: string
  *         format: uuid
  *         example: 01234567-89ab-cdef-0123-456789abcdef
- *
+ *     NotificationType:
+ *       in: path
+ *       name: notificationType
+ *       description: Indicates the type of notification (one of `email` or `pushNotification`).
+ *       required: true
+ *       schema:
+ *         type: string
+ *         enum:
+ *           - email
+ *           - pushNotification
  *   schemas:
  *     CreateOrUpdateNotification:
  *       type: object
@@ -47,7 +56,6 @@
  *             The date and time the notification should expire and no longer be shown to the user. Expired notifications will be
  *             automatically deleted at an unspecified time.
  *           example: 2022-01-31T23:59:59Z
- *
  *     Notification:
  *       allOf:
  *         - $ref: "#/components/schemas/CreateOrUpdateNotification"
