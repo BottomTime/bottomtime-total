@@ -11,7 +11,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { NotificationEntity, UserEntity } from '../../../src/data';
+import {
+  NotificationEntity,
+  NotificationWhitelistEntity,
+  UserEntity,
+} from '../../../src/data';
 import { ConfigCatClient } from '../../../src/dependencies';
 import { NotificationsService } from '../../../src/notifications/notifications.service';
 import { UserNotificationsController } from '../../../src/notifications/user-notifications.controller';
@@ -109,7 +113,13 @@ describe('Notifications End-to-End Tests', () => {
 
     app = await createTestApp(
       {
-        imports: [TypeOrmModule.forFeature([NotificationEntity]), UsersModule],
+        imports: [
+          TypeOrmModule.forFeature([
+            NotificationEntity,
+            NotificationWhitelistEntity,
+          ]),
+          UsersModule,
+        ],
         providers: [NotificationsService],
         controllers: [UserNotificationsController],
       },
