@@ -16,7 +16,7 @@ export type HttpMethod =
   | 'DELETE';
 
 export type SendRequestOptions = {
-  body?: Record<string, unknown>;
+  body?: unknown;
   params?: Record<string, unknown>;
   ignoreErrors?: boolean;
 };
@@ -137,7 +137,7 @@ export class Fetcher {
 
   async patch<T>(
     url: string,
-    params?: Record<string, unknown>,
+    params?: unknown,
     parser?: ZodType<T, ZodType, unknown>,
   ): Promise<ApiResponse<T>> {
     const response = await this.sendRequest('PATCH', url, { body: params });
@@ -152,7 +152,7 @@ export class Fetcher {
 
   async post<T>(
     url: string,
-    params?: Record<string, unknown>,
+    params?: unknown,
     parser?: ZodType<T, ZodTypeDef, unknown>,
   ): Promise<ApiResponse<T>> {
     const response = await this.sendRequest('POST', url, { body: params });
@@ -192,7 +192,7 @@ export class Fetcher {
 
   async put<T>(
     url: string,
-    params?: Record<string, unknown>,
+    params?: unknown,
     parser?: ZodType<T, ZodTypeDef, unknown>,
   ): Promise<ApiResponse<T>> {
     const response = await this.sendRequest('PUT', url, { body: params });

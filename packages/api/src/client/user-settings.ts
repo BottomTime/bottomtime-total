@@ -1,11 +1,16 @@
+import { z } from 'zod';
+
 import {
   DepthUnit,
+  NotificationType,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
   WeightUnit,
 } from '../types';
 import { Fetcher } from './fetcher';
+
+export type NotificationWhitelists = Record<NotificationType, string[]>;
 
 export class UserSettings {
   constructor(
@@ -45,6 +50,36 @@ export class UserSettings {
     await this.client.put(
       `/api/users/${this.data.username}/settings`,
       this.data.settings,
+    );
+  }
+
+  async getNotificationWhitelists(): Promise<NotificationWhitelists> {
+    const [{ data: emailWhitelist }, { data: pushNotificationWhitelist }] =
+      await Promise.all([
+        this.client.get(
+          `api/users/${this.data.username}/notifications/permissions/${NotificationType.Email}`,
+          {},
+          z.string().array(),
+        ),
+        this.client.get(
+          `api/users/${this.data.username}/notifications/permissions/${NotificationType.PushNotification}`,
+          {},
+          z.string().array(),
+        ),
+      ]);
+    return {
+      [NotificationType.Email]: emailWhitelist,
+      [NotificationType.PushNotification]: pushNotificationWhitelist,
+    };
+  }
+
+  async updateNotificationWhitelist(
+    type: NotificationType,
+    whitelist: string[],
+  ): Promise<void> {
+    await this.client.put(
+      `api/users/${this.data.username}/notifications/permissions/${type}`,
+      whitelist,
     );
   }
 }

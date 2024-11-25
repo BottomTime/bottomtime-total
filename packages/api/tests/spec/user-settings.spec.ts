@@ -1,9 +1,13 @@
 import mockFetch from 'fetch-mock-jest';
 
 import { Fetcher } from '../../src/client/fetcher';
-import { UserSettings } from '../../src/client/user-settings';
+import {
+  NotificationWhitelists,
+  UserSettings,
+} from '../../src/client/user-settings';
 import {
   DepthUnit,
+  NotificationType,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
@@ -74,5 +78,43 @@ describe('User Settings client object', () => {
     await settings.save();
 
     expect(mockFetch.done()).toBe(true);
+  });
+
+  describe('when working with notifications', () => {
+    it('will retrieve notification whitelists', async () => {
+      const expected: NotificationWhitelists = {
+        [NotificationType.Email]: ['membership.*', 'user.*'],
+        [NotificationType.PushNotification]: ['*'],
+      };
+      mockFetch.get(
+        `/api/users/${BasicUser.username}/notifications/permissions/${NotificationType.Email}`,
+        expected[NotificationType.Email],
+      );
+      mockFetch.get(
+        `/api/users/${BasicUser.username}/notifications/permissions/${NotificationType.PushNotification}`,
+        expected[NotificationType.PushNotification],
+      );
+
+      const actual = await settings.getNotificationWhitelists();
+      expect(mockFetch.done()).toBe(true);
+      expect(actual).toEqual(expected);
+    });
+
+    it('will update notification whitelists', async () => {
+      const newWhitelist = ['friendRequest.*'];
+      mockFetch.put(
+        {
+          url: `/api/users/${BasicUser.username}/notifications/permissions/${NotificationType.PushNotification}`,
+          body: newWhitelist,
+        },
+        204,
+      );
+
+      await settings.updateNotificationWhitelist(
+        NotificationType.PushNotification,
+        newWhitelist,
+      );
+      expect(mockFetch.done()).toBe(true);
+    });
   });
 });
