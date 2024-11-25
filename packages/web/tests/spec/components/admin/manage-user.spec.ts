@@ -1,25 +1,42 @@
 import { UserDTO, UserRole } from '@bottomtime/api';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import { ComponentMountingOptions, shallowMount } from '@vue/test-utils';
+
+import { Pinia, createPinia } from 'pinia';
 
 import AdminManageUser from '../../../../src/components/admin/manage-user.vue';
 import FormBox from '../../../../src/components/common/form-box.vue';
 import TabsPanel from '../../../../src/components/common/tabs-panel.vue';
 import EditProfile from '../../../../src/components/users/edit-profile.vue';
+import { FeaturesServiceKey } from '../../../../src/featrues';
+import { ConfigCatClientMock } from '../../../config-cat-client-mock';
 import { BasicUser } from '../../../fixtures/users';
 import MockEditProfile from '../../../stubs/edit-profile.stub.vue';
 import MockEditSettings from '../../../stubs/edit-settings.stub.vue';
 import MockManageUserAccount from '../../../stubs/manage-user-account.stub.vue';
 
 describe('Admin Manage User component', () => {
+  let pinia: Pinia;
   let userData: UserDTO;
   let opts: ComponentMountingOptions<typeof AdminManageUser>;
+  let features: ConfigCatClientMock;
+
+  beforeAll(() => {
+    features = new ConfigCatClientMock();
+  });
 
   beforeEach(() => {
+    pinia = createPinia();
+    features.flags[NotificationsFeature.key] = true;
     userData = { ...BasicUser };
     opts = {
       props: { user: userData },
       global: {
+        plugins: [pinia],
+        provide: {
+          [FeaturesServiceKey as symbol]: features,
+        },
         stubs: {
           EditProfile: MockEditProfile,
           EditSettings: MockEditSettings,
