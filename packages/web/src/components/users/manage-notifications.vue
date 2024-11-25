@@ -1,4 +1,18 @@
 <template>
+  <ConfirmDialog
+    title="Discard Changes?"
+    confirm-text="Discard Changes"
+    :visible="state.showConfirmRevertDialog"
+    @confirm="onConfirmRevert"
+    @cancel="onCancelRevert"
+  >
+    <p>
+      Are you sure you want to discard your changes to your notification
+      settings?
+    </p>
+    <p>The settings will be reset to their previous values.</p>
+  </ConfirmDialog>
+
   <form @submit.prevent="onSave">
     <fieldset :disabled="state.isSaving">
       <TextHeading>Manage Notifications</TextHeading>
@@ -11,6 +25,7 @@
 
       <p
         v-else-if="state.loadingFailed"
+        data-testid="notifications-load-failed"
         class="space-x-2 text-danger text-center my-4"
       >
         <span>
@@ -22,7 +37,7 @@
         </span>
       </p>
 
-      <div v-else class="mt-2">
+      <div v-else class="mt-2" data-testid="notifications-grid">
         <div class="grid grid-cols-3">
           <p class="ml-2 font-bold text-xl font-title">Event</p>
           <p class="font-bold text-xl font-title">Email</p>
@@ -48,7 +63,10 @@
                 v-if="event.availability.has(NotificationType.Email)"
                 class="text-center"
               >
-                <FormCheckbox v-model="state.emailWhitelist[event.key]">
+                <FormCheckbox
+                  v-model="state.emailWhitelist[event.key]"
+                  :test-id="`notify-email-${event.key}`"
+                >
                   <span class="sr-only">
                     Enable email notifications for: {{ event.name }}
                   </span>
@@ -60,6 +78,7 @@
               >
                 <FormCheckbox
                   v-model="state.pushNotificationWhitelist[event.key]"
+                  :test-id="`notify-pushNotification-${event.key}`"
                 >
                   <span class="sr-only">
                     Enable push notifications for: {{ event.name }}
@@ -73,6 +92,8 @@
 
       <div class="text-center space-x-3 mt-3">
         <FormButton
+          id="btn-save-notifications"
+          test-id="btn-save-notifications"
           type="primary"
           :is-loading="state.isSaving"
           submit
@@ -81,7 +102,13 @@
           Save Changes
         </FormButton>
 
-        <FormButton>Cancel</FormButton>
+        <FormButton
+          id="btn-cancel-notifications"
+          test-id="btn-cancel-notifications"
+          @click="onRevert"
+        >
+          Cancel
+        </FormButton>
       </div>
     </fieldset>
   </form>
@@ -101,6 +128,7 @@ import FormButton from '../common/form-button.vue';
 import FormCheckbox from '../common/form-checkbox.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
 import TextHeading from '../common/text-heading.vue';
+import ConfirmDialog from '../dialog/confirm-dialog.vue';
 
 type NotificationEventData = Record<
   EventKey,
@@ -181,6 +209,7 @@ interface ManageNotificationsState {
   loadingFailed: boolean;
   emailWhitelist: WhitelistState;
   pushNotificationWhitelist: WhitelistState;
+  showConfirmRevertDialog: boolean;
 }
 
 const client = useClient();
@@ -220,6 +249,7 @@ const state = reactive<ManageNotificationsState>({
     [EventKey.UserPasswordResetRequest]: false,
     [EventKey.UserVerifyEmailRequest]: false,
   },
+  showConfirmRevertDialog: false,
 });
 
 function listEvents(category: string): {
@@ -342,5 +372,18 @@ async function onSave(): Promise<void> {
   });
 
   state.isSaving = false;
+}
+
+function onRevert() {
+  state.showConfirmRevertDialog = true;
+}
+
+function onCancelRevert() {
+  state.showConfirmRevertDialog = false;
+}
+
+async function onConfirmRevert(): Promise<void> {
+  await refreshWhitelists();
+  state.showConfirmRevertDialog = false;
 }
 </script>
