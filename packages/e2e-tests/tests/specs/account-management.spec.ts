@@ -118,6 +118,39 @@ test.describe('Account and Profile Management', () => {
     expect(user.settings.weightUnit).toBe(WeightUnit.Pounds);
   });
 
+  test('will allow users to manage their notifications', async ({
+    api,
+    page,
+  }) => {
+    await page.goto('/settings');
+    await page.getByTestId('notify-email-membership.invoiceCreated').uncheck();
+    await page.getByTestId('notify-email-membership.paymentFailed').uncheck();
+    await page.getByTestId('notify-email-membership.trialEnding').uncheck();
+    await page.getByTestId('notify-email-friendRequest.accepted').uncheck();
+    await page.getByTestId('notify-email-friendRequest.rejected').uncheck();
+    await page
+      .getByTestId('notify-pushNotification-friendRequest.accepted')
+      .uncheck();
+    await page
+      .getByTestId('notify-pushNotification-friendRequest.rejected')
+      .uncheck();
+    await page.getByTestId('btn-save-notifications').click();
+    await page.waitForSelector('[data-testid="toast-notifications-saved"]');
+
+    const user = await api.users.getUser(TestUser.username);
+    const whitelists = await user.settings.getNotificationWhitelists();
+    expect(whitelists).toEqual({
+      email: [
+        'user.*',
+        'membership.canceled',
+        'membership.changed',
+        'membership.created',
+        'friendRequest.created',
+      ],
+      pushNotification: ['user.*', 'membership.*', 'friendRequest.created'],
+    });
+  });
+
   test('will allow users to change their username', async ({ api, page }) => {
     const newUsername = 'Julian_23';
     await page.goto('/account');
