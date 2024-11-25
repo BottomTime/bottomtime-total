@@ -1,5 +1,6 @@
 import { Fetcher, UserDTO, UserRole } from '@bottomtime/api';
 import { ApiClient, User } from '@bottomtime/api';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import {
   ComponentMountingOptions,
@@ -15,8 +16,10 @@ import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
 import ManageUser from '../../../../src/components/admin/manage-user.vue';
+import { FeaturesServiceKey } from '../../../../src/featrues';
 import { useCurrentUser } from '../../../../src/store';
 import AdminUserView from '../../../../src/views/admin/user-view.vue';
+import { ConfigCatClientMock } from '../../../config-cat-client-mock';
 import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import {
@@ -32,6 +35,7 @@ describe('Account View', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
+  let features: ConfigCatClientMock;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
@@ -49,16 +53,19 @@ describe('Account View', () => {
         component: ManageUser,
       },
     ]);
+    features = new ConfigCatClientMock();
   });
 
   beforeEach(async () => {
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
+    features.flags[NotificationsFeature.key] = true;
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [FeaturesServiceKey as symbol]: features,
         },
         stubs: {
           teleport: true,

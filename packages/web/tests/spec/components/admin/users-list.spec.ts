@@ -7,6 +7,7 @@ import {
   UserRole,
   UsersSortBy,
 } from '@bottomtime/api';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import {
   ComponentMountingOptions,
@@ -24,6 +25,8 @@ import { ApiClientKey } from '../../../../src/api-client';
 import ManageUser from '../../../../src/components/admin/manage-user.vue';
 import UsersListItem from '../../../../src/components/admin/users-list-item.vue';
 import UsersList from '../../../../src/components/admin/users-list.vue';
+import { FeaturesServiceKey } from '../../../../src/featrues';
+import { ConfigCatClientMock } from '../../../config-cat-client-mock';
 import { createRouter } from '../../../fixtures/create-router';
 import SearchResults from '../../../fixtures/user-search-results.json';
 
@@ -42,6 +45,7 @@ describe('Users List component', () => {
   let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
+  let features: ConfigCatClientMock;
   let searchResults: ApiList<UserDTO>;
 
   let pinia: Pinia;
@@ -51,6 +55,7 @@ describe('Users List component', () => {
     fetcher = new Fetcher();
     client = new ApiClient({ fetcher });
     router = createRouter();
+    features = new ConfigCatClientMock();
   });
 
   beforeEach(() => {
@@ -59,12 +64,15 @@ describe('Users List component', () => {
       totalCount: SearchResults.totalCount,
     };
 
+    features.flags[NotificationsFeature.key] = true;
+
     pinia = createPinia();
     opts = {
       global: {
         plugins: [pinia, router],
         provide: {
           [ApiClientKey as symbol]: client,
+          [FeaturesServiceKey as symbol]: features,
         },
         stubs: { teleport: true },
       },

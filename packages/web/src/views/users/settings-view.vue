@@ -11,7 +11,7 @@
           />
         </FormBox>
 
-        <FormBox>
+        <FormBox v-if="notificationsEnabled.value">
           <ManageNotifications
             v-if="currentUser.user"
             :user="currentUser.user"
@@ -24,15 +24,18 @@
 
 <script setup lang="ts">
 import { UserSettingsDTO } from '@bottomtime/api';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import FormBox from '../../components/common/form-box.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth.vue';
 import EditSettings from '../../components/users/edit-settings.vue';
 import ManageNotifications from '../../components/users/manage-notifications.vue';
+import { useFeature } from '../../featrues';
 import { useCurrentUser } from '../../store';
 
 const currentUser = useCurrentUser();
+const notificationsEnabled = useFeature(NotificationsFeature);
 
 function onSave(settings: UserSettingsDTO) {
   if (currentUser.user) {

@@ -29,7 +29,7 @@
           "
         />
 
-        <ManageNotifications :user="user" />
+        <ManageNotifications v-if="notificationsEnabled.value" :user="user" />
       </div>
     </div>
   </TabsPanel>
@@ -42,10 +42,12 @@ import {
   UserRole,
   UserSettingsDTO,
 } from '@bottomtime/api';
+import { NotificationsFeature } from '@bottomtime/common';
 
 import { ref } from 'vue';
 
 import { TabInfo } from '../../common';
+import { useFeature } from '../../featrues';
 import TabsPanel from '../common/tabs-panel.vue';
 import EditProfile from '../users/edit-profile.vue';
 import EditSettings from '../users/edit-settings.vue';
@@ -61,6 +63,8 @@ const Tabs: TabInfo[] = [
   { key: 'profile', label: 'Profile' },
   { key: 'settings', label: 'Settings' },
 ];
+
+const notificationsEnabled = useFeature(NotificationsFeature);
 const activeTab = ref(Tabs[0].key);
 const editProfileTab = ref<InstanceType<typeof EditProfile> | null>(null);
 
