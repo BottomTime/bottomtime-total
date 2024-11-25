@@ -5,11 +5,11 @@ import { mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
 import { defineComponent, onMounted } from 'vue';
-import { Router, createMemoryHistory, createRouter } from 'vue-router';
 
 import {
   ErrorHandlers,
   ForbiddenErrorToast,
+  ResourceNotFoundToast,
   ServerErrorToast,
   useOops,
 } from '../../src/oops';
@@ -17,7 +17,6 @@ import { useCurrentUser, useToasts } from '../../src/store';
 import { BasicUser } from '../fixtures/users';
 
 let pinia: Pinia;
-let router: Router;
 
 function getErrorResponse(status: number, method = 'GET'): HttpException {
   return new HttpException(status, '', 'Nope!', {
@@ -47,7 +46,7 @@ function testOops(
 
     mount(testComponent, {
       global: {
-        plugins: [pinia, router],
+        plugins: [pinia],
         stubs: { teleport: true },
       },
     });
@@ -57,16 +56,6 @@ function testOops(
 describe('"Oops" error handler', () => {
   beforeEach(() => {
     pinia = createPinia();
-    router = createRouter({
-      history: createMemoryHistory(),
-      routes: [
-        {
-          path: '/:pathMatch(.*)*',
-          name: 'test',
-          component: defineComponent({}),
-        },
-      ],
-    });
   });
 
   it('will return the value of the function if it succeeds', async () => {
@@ -137,12 +126,15 @@ describe('"Oops" error handler', () => {
       expect(toasts.toasts[0]).toMatchObject(ForbiddenErrorToast);
     });
 
-    it('will redirect to 404 page on not found errors', async () => {
+    it('will show a toast on 404 errors', async () => {
+      const toasts = useToasts(pinia);
+
       const result = await testOops(
         jest.fn().mockRejectedValue(getErrorResponse(404)),
       );
+
       expect(result).toBeNull();
-      expect(router.currentRoute.value.fullPath).toBe('/notFound');
+      expect(toasts.toasts[0]).toMatchObject(ResourceNotFoundToast);
     });
   });
 });
