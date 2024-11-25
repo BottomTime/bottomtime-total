@@ -5,6 +5,7 @@ import { NotificationEntity, NotificationWhitelistEntity } from '../data';
 import { FeaturesModule } from '../features';
 import { UsersModule } from '../users';
 import { NotificationEventsHandler } from './notification-events.handler';
+import { NotificationPermissionsController } from './notification-permissions.controller';
 import { NotificationsGateway } from './notifications.gateway';
 import { NotificationsService } from './notifications.service';
 import { UserNotificationsController } from './user-notifications.controller';
@@ -20,7 +21,7 @@ import { UserNotificationsController } from './user-notifications.controller';
     NotificationsGateway,
     NotificationEventsHandler,
   ],
-  controllers: [UserNotificationsController],
+  controllers: [UserNotificationsController, NotificationPermissionsController],
   exports: [NotificationsService],
 })
 export class NotificationsModule {}

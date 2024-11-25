@@ -128,6 +128,8 @@ export default defineConfig({
           url: 'http://localhost:4801/',
           cwd: '../service',
           env: {
+            BT_AWS_MEDIA_BUCKET: 'media',
+            BT_AWS_S3_ENDPOINT: 'http://localhost:4566',
             BT_AWS_SQS_ENDPOINT: 'http://localhost:4566',
             BT_AWS_SQS_EMAIL_QUEUE_URL:
               'http://localhost:9324/000000000000/emails',

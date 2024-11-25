@@ -1,4 +1,5 @@
 import { AccountTier } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import {
   BadRequestException,
@@ -10,7 +11,7 @@ import {
 import Stripe from 'stripe';
 
 import { Config } from '../config';
-import { EventKey, EventsService } from '../events';
+import { EventsService } from '../events';
 import { User, UsersService } from '../users';
 import { ProFeature, ShopOwnerFeature } from './constants';
 

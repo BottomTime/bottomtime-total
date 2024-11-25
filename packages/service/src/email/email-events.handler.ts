@@ -1,5 +1,5 @@
 import { NotificationType } from '@bottomtime/api';
-import { EmailQueueMessage, EmailType } from '@bottomtime/common';
+import { EmailQueueMessage, EmailType, EventKey } from '@bottomtime/common';
 
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { Inject, Injectable, Logger } from '@nestjs/common';
@@ -10,7 +10,6 @@ import { URL } from 'url';
 
 import { Config } from '../config';
 import {
-  EventKey,
   MembershipCanceledEvent,
   MembershipChangedEvent,
   MembershipCreatedEvent,

@@ -21,11 +21,16 @@
         @save-profile="(profile) => $emit('save-profile', user.id, profile)"
       />
 
-      <EditSettings
-        v-else-if="activeTab === Tabs[2].key"
-        :user="user"
-        @save-settings="(settings) => $emit('save-settings', user.id, settings)"
-      />
+      <div v-else-if="activeTab === Tabs[2].key" class="space-y-4">
+        <EditSettings
+          :user="user"
+          @save-settings="
+            (settings) => $emit('save-settings', user.id, settings)
+          "
+        />
+
+        <ManageNotifications :user="user" />
+      </div>
     </div>
   </TabsPanel>
 </template>
@@ -44,6 +49,7 @@ import { TabInfo } from '../../common';
 import TabsPanel from '../common/tabs-panel.vue';
 import EditProfile from '../users/edit-profile.vue';
 import EditSettings from '../users/edit-settings.vue';
+import ManageNotifications from '../users/manage-notifications.vue';
 import ManageUserAccount from './manage-user-account.vue';
 
 type ManageUserProps = {

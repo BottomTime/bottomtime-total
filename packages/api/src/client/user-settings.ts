@@ -1,5 +1,9 @@
+import { z } from 'zod';
+
 import {
   DepthUnit,
+  NotificationType,
+  NotificationWhitelists,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
@@ -45,6 +49,36 @@ export class UserSettings {
     await this.client.put(
       `/api/users/${this.data.username}/settings`,
       this.data.settings,
+    );
+  }
+
+  async getNotificationWhitelists(): Promise<NotificationWhitelists> {
+    const [{ data: emailWhitelist }, { data: pushNotificationWhitelist }] =
+      await Promise.all([
+        this.client.get(
+          `/api/users/${this.data.username}/notifications/permissions/${NotificationType.Email}`,
+          undefined,
+          z.string().array(),
+        ),
+        this.client.get(
+          `/api/users/${this.data.username}/notifications/permissions/${NotificationType.PushNotification}`,
+          undefined,
+          z.string().array(),
+        ),
+      ]);
+    return {
+      [NotificationType.Email]: emailWhitelist,
+      [NotificationType.PushNotification]: pushNotificationWhitelist,
+    };
+  }
+
+  async updateNotificationWhitelist(
+    type: NotificationType,
+    whitelist: string[],
+  ): Promise<void> {
+    await this.client.put(
+      `/api/users/${this.data.username}/notifications/permissions/${type}`,
+      whitelist,
     );
   }
 }

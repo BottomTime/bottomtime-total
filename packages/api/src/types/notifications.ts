@@ -41,3 +41,5 @@ export const ListNotificationsResponseSchema = z.object({
   data: z.array(NotificationSchema),
   totalCount: z.number().int(),
 });
+
+export type NotificationWhitelists = Record<NotificationType, string[]>;

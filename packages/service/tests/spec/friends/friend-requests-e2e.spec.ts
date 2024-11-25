@@ -8,6 +8,7 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,7 +23,6 @@ import {
   UserEntity,
 } from '../../../src/data';
 import {
-  EventKey,
   EventsModule,
   EventsService,
   FriendRequestEvent,

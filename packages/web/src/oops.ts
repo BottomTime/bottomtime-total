@@ -4,8 +4,6 @@ import {
   HttpException,
 } from '@bottomtime/api';
 
-import { useRouter } from 'vue-router';
-
 import { Toast, ToastType } from './common';
 import { Config } from './config';
 import { useCurrentUser, useErrors, useToasts } from './store';
@@ -65,6 +63,13 @@ export const NetworkErrorToast: Toast = {
   type: ToastType.Error,
 } as const;
 
+export const ResourceNotFoundToast: Toast = {
+  id: 'resource-not-found',
+  message:
+    'The resource you are looking for could not be found. Please check the URL and try again.',
+  type: ToastType.Error,
+};
+
 export const ServerErrorToast: Toast = {
   id: 'server-error',
   message:
@@ -98,7 +103,6 @@ export type OopsFunction = <T>(
 export function useOops(): OopsFunction {
   const currentUser = useCurrentUser();
   const errors = useErrors();
-  const router = useRouter();
   const toasts = useToasts();
 
   return async <T>(
@@ -118,9 +122,10 @@ export function useOops(): OopsFunction {
         // Show a toast.
         toasts.toast(ForbiddenErrorToast);
       },
-      async [404](): Promise<void> {
+      async [404](error): Promise<void> {
         // Resource not found. By default we'll redirect to the 404 page.
-        await router.push('notFound');
+        toasts.toast(ResourceNotFoundToast);
+        errors.renderError = error;
       },
       networkError(error) {
         // Network error. Show a toast.
