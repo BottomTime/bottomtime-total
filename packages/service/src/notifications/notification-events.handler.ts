@@ -1,10 +1,10 @@
 import { NotificationType } from '@bottomtime/api';
-import { NotificationsFeature } from '@bottomtime/common';
+import { EventKey, NotificationsFeature } from '@bottomtime/common';
 
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
-import { EventKey, FriendRequestEvent } from '../events';
+import { FriendRequestEvent } from '../events';
 import { FeaturesService } from '../features';
 import { User, UsersService } from '../users';
 import { NotificationsService } from './notifications.service';

@@ -5,6 +5,7 @@ import {
   UpdateMembershipParamsDTO,
   UpdateMembershipParamsSchema,
 } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import {
   BadRequestException,
@@ -21,7 +22,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { EventKey, EventsService } from '../events';
+import { EventsService } from '../events';
 import {
   AssertAccountOwner,
   AssertAuth,

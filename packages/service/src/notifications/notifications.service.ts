@@ -4,6 +4,7 @@ import {
   ListNotificationsParamsDTO,
   NotificationType,
 } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,7 +14,6 @@ import { v7 as uuid } from 'uuid';
 import { z } from 'zod';
 
 import { NotificationEntity, NotificationWhitelistEntity } from '../data';
-import { EventKey } from '../events';
 import { User } from '../users/user';
 import { Notification } from './notification';
 import { NotificationsQueryBuilder } from './notifications-query-builder';

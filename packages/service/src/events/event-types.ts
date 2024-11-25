@@ -1,24 +1,7 @@
 import { AccountTier, FriendRequestDTO } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import { User } from '../users';
-
-export enum EventKey {
-  FriendRequestAccepted = 'friendRequest.accepted',
-  FriendRequestCreated = 'friendRequest.created',
-  FriendRequestRejected = 'friendRequest.rejected',
-  MembershipCanceled = 'membership.canceled',
-  MembershipChanged = 'membership.changed',
-  MembershipCreated = 'membership.created',
-  MembershipInvoiceCreated = 'membership.invoiceCreated',
-  MembershipPaymentFailed = 'membership.paymentFailed',
-  MembershipTrialEnding = 'membership.trialEnding',
-  UserCreated = 'user.created',
-  UserPasswordResetRequest = 'user.passwordResetRequest',
-  UserVerifyEmailRequest = 'user.verifyEmailRequest',
-
-  Test = 'test.level.one',
-  TestTwo = 'test.level.two',
-}
 
 export type FriendRequestEvent = {
   key:

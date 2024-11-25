@@ -6,6 +6,7 @@ import {
   ListFriendRequestsParamsDTO,
   ListFriendRequestsParamsSchema,
 } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import {
   Body,
@@ -22,7 +23,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { EventKey, EventsService, FriendRequestEvent } from '../events';
+import { EventsService, FriendRequestEvent } from '../events';
 import { AssertAuth, AssertTargetUser, TargetUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { AssertFriend, TargetFriend } from './assert-friend.guard';

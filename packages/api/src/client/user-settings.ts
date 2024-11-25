@@ -3,14 +3,13 @@ import { z } from 'zod';
 import {
   DepthUnit,
   NotificationType,
+  NotificationWhitelists,
   PressureUnit,
   TemperatureUnit,
   UserDTO,
   WeightUnit,
 } from '../types';
 import { Fetcher } from './fetcher';
-
-export type NotificationWhitelists = Record<NotificationType, string[]>;
 
 export class UserSettings {
   constructor(
@@ -57,13 +56,13 @@ export class UserSettings {
     const [{ data: emailWhitelist }, { data: pushNotificationWhitelist }] =
       await Promise.all([
         this.client.get(
-          `api/users/${this.data.username}/notifications/permissions/${NotificationType.Email}`,
-          {},
+          `/api/users/${this.data.username}/notifications/permissions/${NotificationType.Email}`,
+          undefined,
           z.string().array(),
         ),
         this.client.get(
-          `api/users/${this.data.username}/notifications/permissions/${NotificationType.PushNotification}`,
-          {},
+          `/api/users/${this.data.username}/notifications/permissions/${NotificationType.PushNotification}`,
+          undefined,
           z.string().array(),
         ),
       ]);
@@ -78,7 +77,7 @@ export class UserSettings {
     whitelist: string[],
   ): Promise<void> {
     await this.client.put(
-      `api/users/${this.data.username}/notifications/permissions/${type}`,
+      `/api/users/${this.data.username}/notifications/permissions/${type}`,
       whitelist,
     );
   }

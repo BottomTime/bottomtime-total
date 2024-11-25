@@ -8,6 +8,7 @@ import {
   UserDTO,
   UserRole,
 } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import {
   Body,
@@ -25,7 +26,7 @@ import {
 import { URL } from 'url';
 
 import { Config } from '../config';
-import { EventKey, EventsService } from '../events';
+import { EventsService } from '../events';
 import { ZodValidator } from '../zod-validator';
 import { CurrentUser } from './current-user';
 import { AssertAuth } from './guards';

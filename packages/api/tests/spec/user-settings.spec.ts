@@ -1,13 +1,11 @@
 import mockFetch from 'fetch-mock-jest';
 
 import { Fetcher } from '../../src/client/fetcher';
-import {
-  NotificationWhitelists,
-  UserSettings,
-} from '../../src/client/user-settings';
+import { UserSettings } from '../../src/client/user-settings';
 import {
   DepthUnit,
   NotificationType,
+  NotificationWhitelists,
   PressureUnit,
   TemperatureUnit,
   UserDTO,

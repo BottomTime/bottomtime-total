@@ -17,6 +17,7 @@ import {
   VerifyEmailParamsDTO,
   VerifyEmailParamsSchema,
 } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import {
   BadRequestException,
@@ -37,7 +38,7 @@ import {
 import { z } from 'zod';
 
 import { Config } from '../config';
-import { EventKey, EventsService } from '../events';
+import { EventsService } from '../events';
 import { ZodValidator } from '../zod-validator';
 import {
   AssertAccountOwner,
