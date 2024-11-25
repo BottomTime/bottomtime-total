@@ -1,4 +1,5 @@
 import { AccountTier, UserRole } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import { INestApplication } from '@nestjs/common';
 
@@ -9,7 +10,7 @@ import { Repository } from 'typeorm';
 
 import { UserEntity } from '../../../src/data';
 import { StripeModule } from '../../../src/dependencies';
-import { EventKey, EventsModule, EventsService } from '../../../src/events';
+import { EventsModule, EventsService } from '../../../src/events';
 import { MembershipController } from '../../../src/membership/membership.controller';
 import { MembershipService } from '../../../src/membership/membership.service';
 import { MembershipsController } from '../../../src/membership/memberships.controller';

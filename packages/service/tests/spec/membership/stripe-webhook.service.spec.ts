@@ -1,4 +1,5 @@
 import { AccountTier } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import { BadRequestException } from '@nestjs/common';
 
@@ -7,7 +8,7 @@ import Stripe from 'stripe';
 import { Repository } from 'typeorm';
 
 import { UserEntity } from '../../../src/data';
-import { EventKey, EventsService } from '../../../src/events';
+import { EventsService } from '../../../src/events';
 import { StripeWebhookService } from '../../../src/membership/stripe-webhook.service';
 import { UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';

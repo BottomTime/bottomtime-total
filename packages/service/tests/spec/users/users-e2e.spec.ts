@@ -9,6 +9,7 @@ import {
   UserRole,
   WeightUnit,
 } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,7 +21,7 @@ import { Repository } from 'typeorm';
 import * as uuid from 'uuid';
 
 import { UserEntity } from '../../../src/data';
-import { EventKey, EventsModule, EventsService } from '../../../src/events';
+import { EventsModule, EventsService } from '../../../src/events';
 import { User } from '../../../src/users/user';
 import { UsersController } from '../../../src/users/users.controller';
 import { UsersService } from '../../../src/users/users.service';

@@ -1,4 +1,5 @@
 import { NotificationType } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import { Repository } from 'typeorm';
 import { ZodError } from 'zod';
@@ -8,7 +9,6 @@ import {
   NotificationWhitelistEntity,
   UserEntity,
 } from '../../../src/data';
-import { EventKey } from '../../../src/events';
 import {
   CreateNotificationOptions,
   NotificationsService,
