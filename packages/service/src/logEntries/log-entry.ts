@@ -22,7 +22,7 @@ import { Logger } from '@nestjs/common';
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
 import 'dayjs/plugin/utc';
-import { Observable } from 'rxjs';
+import { Observable, bufferCount, concatMap, from, map } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import {
@@ -32,6 +32,7 @@ import {
 } from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
 import { LogEntryAirUtils } from './log-entry-air-utils';
+import { LogEntrySampleUtils } from './log-entry-sample-utils';
 
 const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 
@@ -374,7 +375,29 @@ export class LogEntry {
     this.data.tags = value;
   }
 
-  private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, void> {}
+  private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, void> {
+    const batchSize = 1000;
+    let skip = 0;
+    let batch: LogEntrySampleEntity[];
+
+    do {
+      this.log.debug(
+        `Querying for batch of data samples for log entry "${this.id}"...`,
+      );
+      batch = await this.EntrySamples.find({
+        where: { logEntry: { id: this.id } },
+        order: { timeOffset: 'ASC' },
+        skip,
+        take: batchSize,
+      });
+
+      for (const sample of batch) {
+        yield sample;
+      }
+
+      skip += batchSize;
+    } while (batch.length === batchSize);
+  }
 
   toJSON(): LogEntryDTO {
     return {
@@ -433,10 +456,27 @@ export class LogEntry {
   }
 
   getSamples(): Observable<LogEntrySampleDTO> {
-    throw new Error('Method not implemented.');
+    return from(this.loadSamples()).pipe(map(LogEntrySampleUtils.entityToDTO));
   }
 
   async saveSamples(samples: Observable<LogEntrySampleDTO>): Promise<void> {
-    await this.EntrySamples.delete({ logEntry: { id: this.data.id } });
+    return new Promise<void>((complete, error) => {
+      samples
+        .pipe(
+          map((sample) => LogEntrySampleUtils.dtoToEntity(sample, this.id)),
+          bufferCount(500),
+          concatMap(async (batch) => {
+            await this.EntrySamples.save(batch);
+          }),
+        )
+        .subscribe({ complete, error });
+    });
+  }
+
+  async clearSamples(): Promise<number> {
+    const { affected } = await this.EntrySamples.delete({
+      logEntry: { id: this.id },
+    });
+    return typeof affected === 'number' ? affected : 0;
   }
 }

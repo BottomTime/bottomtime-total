@@ -15,6 +15,7 @@ import {
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import { from, map } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
@@ -28,7 +29,9 @@ import {
 import { DiveSiteFactory } from '../../../src/diveSites/dive-site-factory';
 import { LogEntry } from '../../../src/logEntries';
 import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
+import { LogEntrySampleUtils } from '../../../src/logEntries/log-entry-sample-utils';
 import { dataSource } from '../../data-source';
+import TestSamples from '../../fixtures/dive-profile.json';
 import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
 import { createTestDiveSite } from '../../utils/create-test-dive-site';
 import { createTestLogEntry } from '../../utils/create-test-log-entry';
@@ -591,6 +594,110 @@ describe('Log Entry class', () => {
       expect(saved.air).toHaveLength(0);
 
       await expect(EntriesAir.count()).resolves.toBe(3);
+    });
+  });
+
+  describe('when working with entry samples', () => {
+    let sampleData: LogEntrySampleEntity[];
+
+    beforeAll(() => {
+      sampleData = TestSamples.map((sample) => ({
+        ...(sample as LogEntrySampleEntity),
+        logEntry: { id: TestLogEntryData.id } as LogEntryEntity,
+      }));
+    });
+
+    beforeEach(async () => {
+      await logEntry.save();
+    });
+
+    it('will return an empty Observable if the log entry does not have any data samples', (cb) => {
+      let count = 0;
+      logEntry.getSamples().subscribe({
+        next: () => {
+          count++;
+        },
+        error: cb,
+        complete: () => {
+          expect(count).toBe(0);
+          cb();
+        },
+      });
+    });
+
+    it('will return samples in batches via Observable', (cb) => {
+      let count = 0;
+      EntrySamples.save(sampleData)
+        .then(() => {
+          logEntry.getSamples().subscribe({
+            next: (sample) => {
+              expect(sample.offset).toEqual(sampleData[count].timeOffset);
+              expect(sample.depth).toEqual(sampleData[count].depth);
+              expect(sample.temperature).toEqual(sampleData[count].temperature);
+              count++;
+            },
+            error: cb,
+            complete: () => {
+              expect(count).toBe(sampleData.length);
+              cb();
+            },
+          });
+        })
+        .catch(cb);
+    });
+
+    it('will save sample data to a log entry', async () => {
+      await logEntry.saveSamples(
+        from(sampleData).pipe(map(LogEntrySampleUtils.entityToDTO)),
+      );
+      const [saved, count] = await EntrySamples.findAndCount({
+        where: { logEntry: { id: logEntry.id } },
+        order: { timeOffset: 'ASC' },
+        select: { id: true, timeOffset: true, depth: true, temperature: true },
+        take: 200,
+      });
+      expect(count).toEqual(sampleData.length);
+      saved.forEach((sample, index) => {
+        expect(sample.timeOffset).toEqual(sampleData[index].timeOffset);
+        expect(sample.depth).toEqual(sampleData[index].depth);
+        expect(sample.temperature).toEqual(sampleData[index].temperature);
+      });
+    });
+
+    it('will save sample data to a log entry in batches', async () => {
+      await logEntry.saveSamples(
+        from(sampleData.slice(0, 100)).pipe(
+          map(LogEntrySampleUtils.entityToDTO),
+        ),
+      );
+      await logEntry.saveSamples(
+        from(sampleData.slice(100, 200)).pipe(
+          map(LogEntrySampleUtils.entityToDTO),
+        ),
+      );
+      const [saved, count] = await EntrySamples.findAndCount({
+        where: { logEntry: { id: logEntry.id } },
+        order: { timeOffset: 'ASC' },
+        select: { id: true, timeOffset: true, depth: true, temperature: true },
+      });
+      expect(count).toEqual(200);
+      saved.forEach((sample, index) => {
+        expect(sample.timeOffset).toEqual(sampleData[index].timeOffset);
+        expect(sample.depth).toEqual(sampleData[index].depth);
+        expect(sample.temperature).toEqual(sampleData[index].temperature);
+      });
+    });
+
+    it('will clear samples from a log entry', async () => {
+      await EntrySamples.save(sampleData.slice(0, 100));
+      await expect(logEntry.clearSamples()).resolves.toBe(100);
+      await expect(
+        EntrySamples.existsBy({ logEntry: { id: logEntry.id } }),
+      ).resolves.toBe(false);
+    });
+
+    it('will do nothing when clearing samples from a log entry that does not have any', async () => {
+      await expect(logEntry.clearSamples()).resolves.toBe(0);
     });
   });
 });
