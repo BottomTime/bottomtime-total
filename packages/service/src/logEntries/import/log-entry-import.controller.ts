@@ -11,7 +11,6 @@ import {
   Controller,
   Delete,
   Get,
-  Inject,
   Logger,
   Post,
   UseGuards,
@@ -24,7 +23,6 @@ import { ZodValidator } from '../../zod-validator';
 import { AssertImportFeature } from './assert-import-feature.guard';
 import { AssertImportOwner } from './assert-import-owner.guard';
 import { AssertTargetImport, TargetImport } from './assert-target-import.guard';
-import { IImporter, LogsImporter } from './importer';
 import { LogEntryImport } from './log-entry-import';
 
 @Controller('api/users/:username/logImports/:importId')
@@ -38,8 +36,6 @@ import { LogEntryImport } from './log-entry-import';
 )
 export class LogEntryImportController {
   private readonly log = new Logger(LogEntryImportController.name);
-
-  constructor(@Inject(LogsImporter) private readonly importer: IImporter) {}
 
   /**
    * @openapi
@@ -304,7 +300,7 @@ export class LogEntryImportController {
   finalizeImport(
     @TargetImport() importEntity: LogEntryImport,
   ): Observable<LogEntryDTO[]> {
-    return importEntity.finalize(this.importer).pipe(
+    return importEntity.finalize().pipe(
       map((e) => e.toJSON()),
       buffer(EMPTY),
     );

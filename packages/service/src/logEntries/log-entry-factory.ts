@@ -1,10 +1,15 @@
+import { CreateOrUpdateLogEntryParamsDTO } from '@bottomtime/api';
+
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
+import { v7 as uuid } from 'uuid';
 
-import { LogEntryAirEntity, LogEntryEntity } from '../data';
+import { DiveSiteEntity, LogEntryAirEntity, LogEntryEntity } from '../data';
 import { DiveSiteFactory } from '../diveSites';
+import { User } from '../users';
 import { LogEntry } from './log-entry';
 
 @Injectable()
@@ -22,5 +27,74 @@ export class LogEntryFactory {
 
   createLogEntry(data: LogEntryEntity): LogEntry {
     return new LogEntry(this.Entries, this.EntriesAir, this.siteFactory, data);
+  }
+
+  createLogEntryFromCreateDTO(
+    owner: User,
+    data: CreateOrUpdateLogEntryParamsDTO,
+  ): LogEntry {
+    const now = new Date();
+    const entryTime = dayjs(data.timing.entryTime.date);
+    const entry: LogEntryEntity = {
+      airTemperature: data.conditions?.airTemperature ?? null,
+      averageDepth: data.depths?.averageDepth ?? null,
+      boots: data.equipment?.boots ?? null,
+      bottomTemperature: data.conditions?.bottomTemperature ?? null,
+      bottomTime: data.timing.bottomTime ?? null,
+      camera: data.equipment?.camera ?? null,
+      chop: data.conditions?.chop ?? null,
+      createdAt: now,
+      current: data.conditions?.current ?? null,
+      depthUnit: data.depths?.depthUnit ?? null,
+      deviceId: null,
+      deviceName: null,
+      duration: data.timing.duration,
+      entryTime: entryTime.format('YYYY-MM-DDTHH:mm:ss'),
+      exposureSuit: data.equipment?.exposureSuit ?? null,
+      gloves: data.equipment?.gloves ?? null,
+      hood: data.equipment?.hood ?? null,
+      id: uuid(),
+      logNumber: data.logNumber ?? null,
+      maxDepth: data.depths?.maxDepth ?? null,
+      notes: data.notes ?? null,
+      owner: owner.toEntity(),
+      scooter: data.equipment?.scooter ?? null,
+      site: data.site ? ({ id: data.site } as DiveSiteEntity) : null,
+      surfaceTemperature: data.conditions?.surfaceTemperature ?? null,
+      tags: data.tags ?? [],
+      temperatureUnit: data.conditions?.temperatureUnit ?? null,
+      timestamp: entryTime
+        .tz(data.timing.entryTime.timezone, true)
+        .utc()
+        .toDate(),
+      torch: data.equipment?.torch ?? null,
+      timezone: data.timing.entryTime.timezone,
+      trimCorrectness: data.equipment?.trimCorrectness ?? null,
+      updatedAt: null,
+      visibility: data.conditions?.visibility ?? null,
+      weather: data.conditions?.weather ?? null,
+      weight: data.equipment?.weight ?? null,
+      weightCorrectness: data.equipment?.weightCorrectness ?? null,
+      weightUnit: data.equipment?.weightUnit ?? null,
+    };
+
+    if (data.air) {
+      entry.air = data.air.map((tank, index) => ({
+        count: tank.count,
+        endPressure: tank.endPressure,
+        hePercent: tank.hePercent ?? null,
+        id: uuid(),
+        material: tank.material,
+        name: tank.name,
+        o2Percent: tank.o2Percent ?? null,
+        ordinal: index + 1,
+        pressureUnit: tank.pressureUnit,
+        startPressure: tank.startPressure,
+        volume: tank.volume,
+        workingPressure: tank.workingPressure,
+      }));
+    }
+
+    return new LogEntry(this.Entries, this.EntriesAir, this.siteFactory, entry);
   }
 }

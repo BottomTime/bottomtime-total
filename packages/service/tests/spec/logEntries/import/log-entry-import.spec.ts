@@ -26,7 +26,6 @@ import {
   LogEntryFactory,
   LogEntryImport,
 } from '../../../../src/logEntries';
-import { DefaultImporter } from '../../../../src/logEntries/import/default-importer';
 import { UserFactory } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
 import TestData from '../../../fixtures/import-records.json';
@@ -276,7 +275,7 @@ describe('Log Entry Import class', () => {
 
     it('will finalize an import with log entries', async () => {
       await ImportRecords.save(TestData);
-      const observer = logEntryImport.finalize(new DefaultImporter());
+      const observer = logEntryImport.finalize();
       const results = await new Promise<LogEntry[]>((resolve, reject) => {
         const generatedEntries: LogEntry[] = [];
         observer.subscribe({
@@ -309,7 +308,7 @@ describe('Log Entry Import class', () => {
     });
 
     it('will throw an exception if the import does not yet have log entries', async () => {
-      const observer = logEntryImport.finalize(new DefaultImporter());
+      const observer = logEntryImport.finalize();
       await ImportRecords.delete({ import: { id: logEntryImport.id } });
       await expect(
         new Promise<LogEntry[]>((resolve, reject) => {
@@ -336,7 +335,7 @@ describe('Log Entry Import class', () => {
         data: JSON.stringify({ nope: true }),
       });
 
-      const observer = logEntryImport.finalize(new DefaultImporter());
+      const observer = logEntryImport.finalize();
       await expect(
         new Promise<LogEntry[]>((resolve, reject) => {
           const generatedEntries: LogEntry[] = [];
@@ -360,7 +359,7 @@ describe('Log Entry Import class', () => {
 
     it('will throw an exception if the import has been canceled', async () => {
       await logEntryImport.cancel();
-      expect(() => logEntryImport.finalize(new DefaultImporter())).toThrow(
+      expect(() => logEntryImport.finalize()).toThrow(
         MethodNotAllowedException,
       );
       expect(logEntryImport.finalized).toBe(false);
@@ -373,7 +372,7 @@ describe('Log Entry Import class', () => {
       const finalized = new Date();
       await Imports.update({ id: logEntryImport.id }, { finalized });
       logEntryImportData.finalized = finalized;
-      expect(() => logEntryImport.finalize(new DefaultImporter())).toThrow(
+      expect(() => logEntryImport.finalize()).toThrow(
         MethodNotAllowedException,
       );
     });

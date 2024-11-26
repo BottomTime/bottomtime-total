@@ -1,11 +1,19 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateLogEntryParamsSchema,
   LogsImportDTO,
 } from '@bottomtime/api';
 
 import { Logger, MethodNotAllowedException } from '@nestjs/common';
 
-import { Observable, bufferCount, concatMap, from, throwIfEmpty } from 'rxjs';
+import {
+  Observable,
+  bufferCount,
+  concatMap,
+  from,
+  map,
+  throwIfEmpty,
+} from 'rxjs';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
@@ -18,7 +26,13 @@ import {
 import { User, UserFactory } from '../../users';
 import { LogEntry } from '../log-entry';
 import { LogEntryFactory } from '../log-entry-factory';
-import { IImporter } from './importer';
+
+export type ImportOptions = {
+  data: Observable<string>;
+  device?: string;
+  deviceId?: string;
+  owner: User;
+};
 
 export class LogEntryImport {
   private readonly log = new Logger(LogEntryImport.name);
@@ -119,7 +133,7 @@ export class LogEntryImport {
     this.data.finalized = finalized;
   }
 
-  finalize(importer: IImporter): Observable<LogEntry> {
+  finalize(): Observable<LogEntry> {
     if (this.finalized) {
       throw new MethodNotAllowedException(
         'This import session has already been finalized.',
@@ -141,14 +155,10 @@ export class LogEntryImport {
       const importRecords = queryRunner.manager.getRepository(
         LogEntryImportRecordEntity,
       );
-      importer
-        .import({
-          device: this.device,
-          deviceId: this.deviceId,
-          owner: this.owner,
-          data: from(this.streamRecords(queryRunner)),
-        })
+
+      from(this.streamRecords(queryRunner))
         .pipe(
+          // Throw an exception if there are no records to import.
           throwIfEmpty(() => {
             this.log.warn(
               `Attempted to finalize import with ID "${this.id}" when no records were uploaded.`,
@@ -156,6 +166,15 @@ export class LogEntryImport {
             return new MethodNotAllowedException(
               'Cannot finalize an import that has no import records attached.',
             );
+          }),
+
+          // Parse JSON and transform data into LogEntryEntity objects
+          map((record) => {
+            const raw = JSON.parse(record);
+            const parsed = CreateOrUpdateLogEntryParamsSchema.parse(raw);
+            return this.entryFactory
+              .createLogEntryFromCreateDTO(this.owner, parsed)
+              .toEntity();
           }),
 
           // Save entities in batches of 50.

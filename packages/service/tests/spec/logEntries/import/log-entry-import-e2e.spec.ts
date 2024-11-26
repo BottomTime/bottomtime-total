@@ -30,8 +30,6 @@ import { ConfigCatClient } from '../../../../src/dependencies';
 import { DiveSiteFactory, DiveSitesModule } from '../../../../src/diveSites';
 import { FeaturesModule } from '../../../../src/features';
 import { LogEntriesService, LogEntryFactory } from '../../../../src/logEntries';
-import { DefaultImporter } from '../../../../src/logEntries/import/default-importer';
-import { LogsImporter } from '../../../../src/logEntries/import/importer';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportController } from '../../../../src/logEntries/import/log-entry-import.controller';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
@@ -126,10 +124,6 @@ describe('Log entry import session E2E tests', () => {
           LogEntryImportService,
           LogEntryFactory,
           LogEntriesService,
-          {
-            provide: LogsImporter,
-            useFactory: () => new DefaultImporter(),
-          },
         ],
         controllers: [LogEntryImportController],
       },
