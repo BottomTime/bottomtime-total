@@ -22,6 +22,7 @@ import {
   DiveSiteEntity,
   LogEntryAirEntity,
   LogEntryEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSiteFactory } from '../../../src/diveSites/dive-site-factory';
@@ -160,6 +161,7 @@ describe('Log Entry class', () => {
   let Users: Repository<UserEntity>;
   let Entries: Repository<LogEntryEntity>;
   let EntriesAir: Repository<LogEntryAirEntity>;
+  let EntrySamples: Repository<LogEntrySampleEntity>;
   let Sites: Repository<DiveSiteEntity>;
 
   let user: UserEntity;
@@ -172,6 +174,7 @@ describe('Log Entry class', () => {
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     EntriesAir = dataSource.getRepository(LogEntryAirEntity);
+    EntrySamples = dataSource.getRepository(LogEntrySampleEntity);
     Users = dataSource.getRepository(UserEntity);
     Sites = dataSource.getRepository(DiveSiteEntity);
 
@@ -183,7 +186,13 @@ describe('Log Entry class', () => {
 
   beforeEach(async () => {
     data = createTestLogEntry(user, TestLogEntryData);
-    logEntry = new LogEntry(Entries, EntriesAir, siteFactory, data);
+    logEntry = new LogEntry(
+      Entries,
+      EntriesAir,
+      EntrySamples,
+      siteFactory,
+      data,
+    );
 
     await Users.save(user);
     await Sites.save(diveSite);
@@ -471,7 +480,13 @@ describe('Log Entry class', () => {
 
     it('will return an empty array if no airTanks does not exist', () => {
       data.air = undefined;
-      logEntry = new LogEntry(Entries, EntriesAir, siteFactory, data);
+      logEntry = new LogEntry(
+        Entries,
+        EntriesAir,
+        EntrySamples,
+        siteFactory,
+        data,
+      );
       expect(logEntry.air).toHaveLength(0);
     });
 
@@ -508,6 +523,7 @@ describe('Log Entry class', () => {
           ...tank,
           ordinal: index,
           id: saved.air![index].id,
+          logEntry: undefined,
         })),
       );
 
@@ -553,46 +569,14 @@ describe('Log Entry class', () => {
       expect(saved.air).toHaveLength(3);
       expect(saved.air).toEqual(
         updated.map((tank, index) => ({
-          ...LogEntryAirUtils.dtoToEntity(tank),
+          ...LogEntryAirUtils.dtoToEntity(tank, index, saved.id),
           ordinal: index,
           id: saved.air![index].id,
+          logEntry: undefined,
         })),
       );
 
       await expect(EntriesAir.count()).resolves.toBe(6);
-    });
-
-    it('will save changes made directly to the air tanks array', async () => {
-      await logEntry.save();
-      logEntry.air[1].endPressure = 888;
-      logEntry.air.push({
-        count: 1,
-        endPressure: 1111,
-        material: TankMaterial.Steel,
-        name: 'HP120',
-        o2Percent: 0.32,
-        hePercent: 0.5,
-        pressureUnit: PressureUnit.PSI,
-        startPressure: 3500,
-        volume: 120,
-        workingPressure: 3442,
-      });
-      await logEntry.save();
-
-      const saved = await Entries.findOneOrFail({
-        where: { id: logEntry.id },
-        relations: ['air'],
-      });
-      expect(saved.air).toHaveLength(4);
-      expect(saved.air).toEqual(
-        logEntry.air.map((tank, index) => ({
-          ...LogEntryAirUtils.dtoToEntity(tank),
-          ordinal: index,
-          id: saved.air![index].id,
-        })),
-      );
-
-      await expect(EntriesAir.count()).resolves.toBe(7);
     });
 
     it('will remove all air tanks if the array is cleared', async () => {

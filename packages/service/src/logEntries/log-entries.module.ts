@@ -6,6 +6,7 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
 } from '../data';
 import { DiveSitesModule } from '../diveSites';
 import { FeaturesModule } from '../features';
@@ -24,6 +25,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     TypeOrmModule.forFeature([
       LogEntryEntity,
       LogEntryAirEntity,
+      LogEntrySampleEntity,
       LogEntryImportEntity,
       LogEntryImportRecordEntity,
     ]),

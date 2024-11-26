@@ -2,16 +2,21 @@ import { LogEntryAirDTO } from '@bottomtime/api';
 
 import { v7 as uuid } from 'uuid';
 
-import { LogEntryAirEntity } from '../data';
+import { LogEntryAirEntity, LogEntryEntity } from '../data';
 
 export class LogEntryAirUtils {
-  static dtoToEntity(dto: LogEntryAirDTO): LogEntryAirEntity {
+  static dtoToEntity(
+    dto: LogEntryAirDTO,
+    ordinal: number,
+    logEntryId: string,
+  ): LogEntryAirEntity {
     return {
       ...dto,
       id: uuid(),
-      ordinal: 0,
+      ordinal,
       o2Percent: dto.o2Percent ?? null,
       hePercent: dto.hePercent ?? null,
+      logEntry: logEntryId ? ({ id: logEntryId } as LogEntryEntity) : undefined,
     };
   }
 

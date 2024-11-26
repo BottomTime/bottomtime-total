@@ -24,6 +24,7 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../../src/data';
 import { ConfigCatClient } from '../../../../src/dependencies';
@@ -112,6 +113,7 @@ describe('Log entry import session E2E tests', () => {
             UserEntity,
             LogEntryEntity,
             LogEntryAirEntity,
+            LogEntrySampleEntity,
             LogEntryImportEntity,
             LogEntryImportRecordEntity,
           ]),
@@ -156,6 +158,7 @@ describe('Log entry import session E2E tests', () => {
     entryFactory = new LogEntryFactory(
       Entries,
       dataSource.getRepository(LogEntryAirEntity),
+      dataSource.getRepository(LogEntrySampleEntity),
       new Mock<DiveSiteFactory>().object(),
     );
   });

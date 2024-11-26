@@ -25,6 +25,7 @@ import {
   DiveSiteEntity,
   LogEntryAirEntity,
   LogEntryEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSitesModule } from '../../../src/diveSites';
@@ -101,7 +102,11 @@ describe('Log entries E2E tests', () => {
   beforeAll(async () => {
     app = await createTestApp({
       imports: [
-        TypeOrmModule.forFeature([LogEntryEntity, LogEntryAirEntity]),
+        TypeOrmModule.forFeature([
+          LogEntryEntity,
+          LogEntryAirEntity,
+          LogEntrySampleEntity,
+        ]),
         DiveSitesModule,
         FriendsModule,
         UsersModule,
@@ -707,9 +712,9 @@ describe('Log entries E2E tests', () => {
       expect(saved.notes).toBe(updatedEntry.notes);
       expect(saved.air).toEqual(
         updatedEntry.air?.map((tank, index) => ({
-          ...LogEntryAirUtils.dtoToEntity(tank),
+          ...LogEntryAirUtils.dtoToEntity(tank, index, saved.id),
           id: saved.air![index].id,
-          ordinal: index,
+          logEntry: undefined,
         })),
       );
     });

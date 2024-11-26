@@ -23,7 +23,11 @@ import 'dayjs/plugin/timezone';
 import 'dayjs/plugin/utc';
 import { Repository } from 'typeorm';
 
-import { LogEntryAirEntity, LogEntryEntity } from '../data';
+import {
+  LogEntryAirEntity,
+  LogEntryEntity,
+  LogEntrySampleEntity,
+} from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
 import { LogEntryAirUtils } from './log-entry-air-utils';
 
@@ -277,7 +281,6 @@ class EntryTiming {
 
 export class LogEntry {
   private readonly log = new Logger(LogEntry.name);
-  private airTanks: LogEntryAirDTO[];
 
   readonly conditions: EntryConditions;
   readonly depths: EntryDepths;
@@ -286,11 +289,11 @@ export class LogEntry {
 
   constructor(
     private readonly Entries: Repository<LogEntryEntity>,
-    private readonly EntriesAir: Repository<LogEntryAirEntity>,
+    private readonly EntryAir: Repository<LogEntryAirEntity>,
+    private readonly EntrySamples: Repository<LogEntrySampleEntity>,
     private readonly siteFactory: DiveSiteFactory,
     private readonly data: LogEntryEntity,
   ) {
-    this.airTanks = data.air?.map(LogEntryAirUtils.entityToDTO) ?? [];
     this.conditions = new EntryConditions(data);
     this.depths = new EntryDepths(data);
     this.equipment = new EntryEquipment(data);
@@ -341,11 +344,17 @@ export class LogEntry {
   }
 
   // Air consumption
-  get air(): LogEntryAirDTO[] {
-    return this.airTanks;
+  get air(): readonly LogEntryAirDTO[] {
+    return (
+      this.data.air
+        ?.sort((a, b) => a.ordinal - b.ordinal)
+        .map(LogEntryAirUtils.entityToDTO) ?? []
+    );
   }
-  set air(values: LogEntryAirDTO[]) {
-    this.airTanks = values;
+  set air(values: readonly LogEntryAirDTO[]) {
+    this.data.air = values.map((air, ordinal) =>
+      LogEntryAirUtils.dtoToEntity(air, ordinal, this.id),
+    );
   }
 
   // Misc.
@@ -372,7 +381,7 @@ export class LogEntry {
 
       logNumber: this.logNumber,
       site: this.site?.toJSON(),
-      air: this.air,
+      air: [...this.air],
 
       conditions: this.conditions.toJSON(),
       depths: this.depths.toJSON(),
@@ -403,21 +412,20 @@ export class LogEntry {
 
   async save(): Promise<void> {
     this.log.debug(`Attempting to save log entry "${this.id}"...`);
-
-    this.data.air = this.airTanks.map((tank, index) => ({
-      ...LogEntryAirUtils.dtoToEntity(tank),
-      ordinal: index,
-    }));
     this.data.updatedAt = new Date();
 
-    await this.EntriesAir.delete({ logEntry: { id: this.data.id } });
+    await this.EntryAir.delete({ logEntry: { id: this.data.id } });
     await this.Entries.save(this.data);
-    await this.EntriesAir.save(
-      this.data.air.map((tank) => ({
-        ...tank,
-        logEntry: { id: this.data.id },
-      })),
-    );
+
+    if (this.data.air) {
+      await this.EntryAir.delete({ logEntry: { id: this.data.id } });
+      await this.EntryAir.save(this.data.air);
+    }
+
+    if (this.data.samples) {
+      await this.EntrySamples.delete({ logEntry: { id: this.data.id } });
+      await this.EntrySamples.save(this.data.samples);
+    }
   }
 
   async delete(): Promise<void> {

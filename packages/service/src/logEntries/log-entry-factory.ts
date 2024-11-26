@@ -7,7 +7,12 @@ import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { DiveSiteEntity, LogEntryAirEntity, LogEntryEntity } from '../data';
+import {
+  DiveSiteEntity,
+  LogEntryAirEntity,
+  LogEntryEntity,
+  LogEntrySampleEntity,
+} from '../data';
 import { DiveSiteFactory } from '../diveSites';
 import { User } from '../users';
 import { LogEntry } from './log-entry';
@@ -19,14 +24,23 @@ export class LogEntryFactory {
     private readonly Entries: Repository<LogEntryEntity>,
 
     @InjectRepository(LogEntryAirEntity)
-    private readonly EntriesAir: Repository<LogEntryAirEntity>,
+    private readonly EntryAir: Repository<LogEntryAirEntity>,
+
+    @InjectRepository(LogEntrySampleEntity)
+    private readonly EntrySamples: Repository<LogEntrySampleEntity>,
 
     @Inject(DiveSiteFactory)
     private readonly siteFactory: DiveSiteFactory,
   ) {}
 
   createLogEntry(data: LogEntryEntity): LogEntry {
-    return new LogEntry(this.Entries, this.EntriesAir, this.siteFactory, data);
+    return new LogEntry(
+      this.Entries,
+      this.EntryAir,
+      this.EntrySamples,
+      this.siteFactory,
+      data,
+    );
   }
 
   createLogEntryFromCreateDTO(
@@ -92,9 +106,32 @@ export class LogEntryFactory {
         startPressure: tank.startPressure,
         volume: tank.volume,
         workingPressure: tank.workingPressure,
+        logEntry: { id: entry.id } as LogEntryEntity,
       }));
     }
 
-    return new LogEntry(this.Entries, this.EntriesAir, this.siteFactory, entry);
+    if (data.samples) {
+      entry.samples = data.samples.map((sample) => ({
+        depth: sample.depth ?? null,
+        gps: sample.gps
+          ? {
+              coordinates: [sample.gps.lng, sample.gps.lat],
+              type: 'Point',
+            }
+          : null,
+        id: uuid(),
+        logEntry: { id: entry.id } as LogEntryEntity,
+        temperature: sample.temperature ?? null,
+        timeOffset: sample.offset,
+      }));
+    }
+
+    return new LogEntry(
+      this.Entries,
+      this.EntryAir,
+      this.EntrySamples,
+      this.siteFactory,
+      entry,
+    );
   }
 }

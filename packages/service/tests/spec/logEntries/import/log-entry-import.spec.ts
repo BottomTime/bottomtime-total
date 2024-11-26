@@ -18,6 +18,7 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../../src/data';
 import { DiveSiteFactory } from '../../../../src/diveSites';
@@ -53,6 +54,7 @@ dayjs.extend(utc);
 describe('Log Entry Import class', () => {
   let Entries: Repository<LogEntryEntity>;
   let EntryAir: Repository<LogEntryAirEntity>;
+  let EntrySamples: Repository<LogEntrySampleEntity>;
   let Imports: Repository<LogEntryImportEntity>;
   let ImportRecords: Repository<LogEntryImportRecordEntity>;
   let Users: Repository<UserEntity>;
@@ -67,6 +69,7 @@ describe('Log Entry Import class', () => {
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     EntryAir = dataSource.getRepository(LogEntryAirEntity);
+    EntrySamples = dataSource.getRepository(LogEntrySampleEntity);
     Imports = dataSource.getRepository(LogEntryImportEntity);
     ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
@@ -74,6 +77,7 @@ describe('Log Entry Import class', () => {
     entryFactory = new LogEntryFactory(
       Entries,
       EntryAir,
+      EntrySamples,
       new Mock<DiveSiteFactory>().object(),
     );
 

@@ -172,9 +172,14 @@ export class LogEntryImport {
           map((record) => {
             const raw = JSON.parse(record);
             const parsed = CreateOrUpdateLogEntryParamsSchema.parse(raw);
-            return this.entryFactory
+            const entity = this.entryFactory
               .createLogEntryFromCreateDTO(this.owner, parsed)
               .toEntity();
+
+            entity.deviceId = this.deviceId ?? null;
+            entity.deviceName = this.device ?? null;
+
+            return entity;
           }),
 
           // Save entities in batches of 50.

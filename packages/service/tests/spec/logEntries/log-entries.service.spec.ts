@@ -22,6 +22,7 @@ import {
   DiveSiteEntity,
   LogEntryAirEntity,
   LogEntryEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSiteFactory, DiveSitesService } from '../../../src/diveSites';
@@ -50,6 +51,7 @@ dayjs.extend(utc);
 describe('Log entries service', () => {
   let Entries: Repository<LogEntryEntity>;
   let EntriesAir: Repository<LogEntryAirEntity>;
+  let EntrySamples: Repository<LogEntrySampleEntity>;
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
   let siteFactory: DiveSiteFactory;
@@ -65,11 +67,17 @@ describe('Log entries service', () => {
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     EntriesAir = dataSource.getRepository(LogEntryAirEntity);
+    EntrySamples = dataSource.getRepository(LogEntrySampleEntity);
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
 
     siteFactory = createDiveSiteFactory();
-    entryFactory = new LogEntryFactory(Entries, EntriesAir, siteFactory);
+    entryFactory = new LogEntryFactory(
+      Entries,
+      EntriesAir,
+      EntrySamples,
+      siteFactory,
+    );
 
     diveSitesService = new DiveSitesService(DiveSites, siteFactory);
     service = new LogEntriesService(Entries, entryFactory, diveSitesService);
@@ -293,9 +301,9 @@ describe('Log entries service', () => {
       expect(saved.notes).toEqual(options.notes);
       expect(saved.air).toEqual(
         options.air!.map((tank, index) => ({
-          ...LogEntryAirUtils.dtoToEntity(tank),
+          ...LogEntryAirUtils.dtoToEntity(tank, index + 1, saved.id),
           id: saved.air![index].id,
-          ordinal: index,
+          logEntry: undefined,
         })),
       );
     });

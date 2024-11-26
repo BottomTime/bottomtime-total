@@ -13,6 +13,7 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../../src/data';
 import { ConfigCatClient } from '../../../../src/dependencies';
@@ -68,6 +69,7 @@ describe('Import log entries E2E tests', () => {
           TypeOrmModule.forFeature([
             UserEntity,
             LogEntryAirEntity,
+            LogEntrySampleEntity,
             LogEntryEntity,
             LogEntryImportEntity,
             LogEntryImportRecordEntity,
