@@ -113,7 +113,7 @@ const LogEntryBaseSchema = z.object({
 
 export const LogEntrySampleSchema = z.object({
   offset: z.number().int().min(0),
-  depth: z.number().positive(),
+  depth: z.number().gte(0),
   temperature: z.number().optional(),
   gps: z
     .object({

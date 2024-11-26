@@ -27,8 +27,10 @@ import {
   LogEntryFactory,
   LogEntryImport,
 } from '../../../../src/logEntries';
+import { LogEntrySampleUtils } from '../../../../src/logEntries/log-entry-sample-utils';
 import { UserFactory } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
+import SampleData from '../../../fixtures/dive-profile.json';
 import TestData from '../../../fixtures/import-records.json';
 import LogEntryData from '../../../fixtures/log-entries.json';
 import { createTestUser } from '../../../utils';
@@ -310,6 +312,46 @@ describe('Log Entry Import class', () => {
 
       // TODO: Check that the saved entries match the expected data
     });
+
+    it('will import sample data from a dive computer', async () => {
+      const importData = { ...TestData[0] };
+      const parsedData = CreateOrUpdateLogEntryParamsSchema.parse(
+        JSON.parse(importData.data),
+      );
+      parsedData.samples = SampleData.map((entity) =>
+        LogEntrySampleUtils.entityToDTO(entity as LogEntrySampleEntity),
+      );
+      importData.data = JSON.stringify(parsedData);
+
+      await ImportRecords.save(importData);
+      const observer = logEntryImport.finalize();
+
+      const results = await new Promise<LogEntry[]>((resolve, reject) => {
+        const generatedEntries: LogEntry[] = [];
+        observer.subscribe({
+          next: (entry) => generatedEntries.push(entry),
+          error: reject,
+          complete: () => resolve(generatedEntries),
+        });
+      });
+
+      expect(results).toHaveLength(1);
+
+      const [saved, count] = await EntrySamples.findAndCount({
+        where: { logEntry: { id: results[0].id } },
+        order: { timeOffset: 'ASC' },
+        take: 100,
+      });
+
+      expect(count).toBe(SampleData.length);
+      saved.forEach((sample, index) => {
+        expect(sample.depth).toEqual(SampleData[index].depth);
+        expect(sample.temperature).toEqual(SampleData[index].temperature);
+        expect(sample.timeOffset).toEqual(SampleData[index].timeOffset);
+      });
+    });
+
+    it.todo('will calculate aggregate data from imported sample data');
 
     it('will throw an exception if the import does not yet have log entries', async () => {
       const observer = logEntryImport.finalize();

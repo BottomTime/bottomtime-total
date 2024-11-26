@@ -22,6 +22,7 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
 } from '../../data';
 import { User, UserFactory } from '../../users';
 import { LogEntry } from '../log-entry';
@@ -151,6 +152,7 @@ export class LogEntryImport {
     return new Observable<LogEntry>((subscriber) => {
       const entries = queryRunner.manager.getRepository(LogEntryEntity);
       const air = queryRunner.manager.getRepository(LogEntryAirEntity);
+      const samples = queryRunner.manager.getRepository(LogEntrySampleEntity);
       const imports = queryRunner.manager.getRepository(LogEntryImportEntity);
       const importRecords = queryRunner.manager.getRepository(
         LogEntryImportRecordEntity,
@@ -185,6 +187,7 @@ export class LogEntryImport {
           // Save entities in batches of 50.
           bufferCount(50),
           concatMap(async (batch) => {
+            // TODO: This needs optimization.
             this.log.debug(
               `Saving batch of ${batch.length} imported log entries...`,
             );
@@ -194,6 +197,17 @@ export class LogEntryImport {
                 value.air?.forEach((air) => {
                   acc.push({
                     ...air,
+                    logEntry: { id: value.id } as LogEntryEntity,
+                  });
+                });
+                return acc;
+              }, []),
+            );
+            await samples.save(
+              batch.reduce<LogEntrySampleEntity[]>((acc, value) => {
+                value.samples?.forEach((sample) => {
+                  acc.push({
+                    ...sample,
                     logEntry: { id: value.id } as LogEntryEntity,
                   });
                 });
