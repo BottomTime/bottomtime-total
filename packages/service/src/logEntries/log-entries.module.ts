@@ -18,6 +18,7 @@ import { LogEntryImportService } from './import/log-entry-import.service';
 import { LogEntryImportsController } from './import/log-entry-imports.controller';
 import { LogEntriesService } from './log-entries.service';
 import { LogEntryFactory } from './log-entry-factory';
+import { LogEntrySampleController } from './log-entry-sample.controller';
 import { UserLogEntriesController } from './user-log-entries.controller';
 
 @Module({
@@ -42,6 +43,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
   ],
   controllers: [
     UserLogEntriesController,
+    LogEntrySampleController,
     LogEntryImportsController,
     LogEntryImportController,
   ],
