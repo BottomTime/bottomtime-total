@@ -7,6 +7,7 @@ import {
   LogEntryDTO,
   LogEntryDepthsDTO,
   LogEntryEquipmentDTO,
+  LogEntrySampleDTO,
   LogEntryTimingDTO,
   SuccinctLogEntryDTO,
   SuccinctProfileDTO,
@@ -21,6 +22,7 @@ import { Logger } from '@nestjs/common';
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
 import 'dayjs/plugin/utc';
+import { Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import {
@@ -372,6 +374,8 @@ export class LogEntry {
     this.data.tags = value;
   }
 
+  private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, void> {}
+
   toJSON(): LogEntryDTO {
     return {
       id: this.id,
@@ -421,15 +425,18 @@ export class LogEntry {
       await this.EntryAir.delete({ logEntry: { id: this.data.id } });
       await this.EntryAir.save(this.data.air);
     }
-
-    if (this.data.samples) {
-      await this.EntrySamples.delete({ logEntry: { id: this.data.id } });
-      await this.EntrySamples.save(this.data.samples);
-    }
   }
 
   async delete(): Promise<void> {
     this.log.debug(`Attempting to delete log entry "${this.id}"...`);
     await this.Entries.delete(this.id);
+  }
+
+  getSamples(): Observable<LogEntrySampleDTO> {
+    throw new Error('Method not implemented.');
+  }
+
+  async saveSamples(samples: Observable<LogEntrySampleDTO>): Promise<void> {
+    await this.EntrySamples.delete({ logEntry: { id: this.data.id } });
   }
 }

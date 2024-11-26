@@ -16,6 +16,7 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import fs from 'fs/promises';
 import path from 'path';
+import { EMPTY, buffer } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import {
@@ -38,6 +39,7 @@ import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
 import TestUserData from '../../fixtures/user-search-data.json';
 import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
+import { createTestDiveProfile } from '../../utils/create-test-dive-profile';
 import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
 import {
   createTestLogEntry,
@@ -130,6 +132,20 @@ describe('Log entries service', () => {
       JSON.stringify(data, null, 2),
       'utf-8',
     );
+  });
+
+  it.skip('will generate a dive profile', () => {
+    createTestDiveProfile('7dfcb883-110a-4941-bd48-d5c374f6abc6')
+      .pipe(buffer(EMPTY))
+      .subscribe({
+        next: async (stuff) => {
+          await fs.writeFile(
+            path.resolve(__dirname, '../../fixtures/dive-profile.json'),
+            JSON.stringify(stuff, null, 2),
+            'utf-8',
+          );
+        },
+      });
   });
 
   describe('when creating a new log entry', () => {
