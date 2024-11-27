@@ -17,13 +17,13 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { Logger } from '@nestjs/common';
+import { ConflictException, Logger } from '@nestjs/common';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
 import 'dayjs/plugin/utc';
 import { Observable, bufferCount, concatMap, from, map } from 'rxjs';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import {
   LogEntryAirEntity,
@@ -471,6 +471,26 @@ export class LogEntry {
           map((sample) => LogEntrySampleUtils.dtoToEntity(sample, this.id)),
           bufferCount(500),
           concatMap(async (batch) => {
+            const conflict = await this.EntrySamples.find({
+              where: {
+                logEntry: { id: this.id },
+                timeOffset: In(batch.map((s) => s.timeOffset)),
+              },
+              order: { timeOffset: 'ASC' },
+              select: ['timeOffset'],
+            });
+            if (conflict.length) {
+              throw new ConflictException(
+                'Sample time offsets must be unique.',
+                {
+                  cause: {
+                    conflictingOffsets: conflict.map(
+                      (sample) => sample.timeOffset,
+                    ),
+                  },
+                },
+              );
+            }
             await this.EntrySamples.save(batch);
           }),
         )

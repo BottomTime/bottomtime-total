@@ -1,4 +1,4 @@
-import { UserRole } from '@bottomtime/api';
+import { LogEntrySampleDTO, UserRole } from '@bottomtime/api';
 import { UsersApiClient } from '@bottomtime/api/dist/client/users';
 
 import { INestApplication } from '@nestjs/common';
@@ -25,6 +25,7 @@ import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestSamples from '../../fixtures/dive-profile.json';
 import {
+  Log,
   createAuthHeader,
   createTestApp,
   createTestLogEntry,
@@ -179,6 +180,155 @@ describe('Log Entry Samples E2E', () => {
         .get(getUrl(undefined, 'jane_doe'))
         .set(...adminAuthToken)
         .expect(404);
+    });
+  });
+
+  describe('when adding samples to a log entry', () => {
+    const BasicSample: LogEntrySampleDTO = {
+      depth: 20,
+      offset: 0,
+      gps: { lat: 0, lng: 0 },
+      temperature: 18,
+    };
+
+    it('will add new samples to the log entry', async () => {
+      const samples = sampleData
+        .slice(0, 20)
+        .map(LogEntrySampleUtils.entityToDTO);
+
+      await request(server)
+        .post(getUrl())
+        .set(...ownerAuthToken)
+        .send(samples.slice(0, 10))
+        .expect(201);
+      await request(server)
+        .post(getUrl())
+        .set(...ownerAuthToken)
+        .send(samples.slice(10, 20))
+        .expect(201);
+
+      const saved = await Samples.find({
+        where: { logEntry: { id: logEntry.id } },
+        order: { timeOffset: 'ASC' },
+      });
+
+      expect(saved).toHaveLength(samples.length);
+      saved.forEach((sample, index) => {
+        const expected = samples[index];
+        expect(sample.depth).toBe(expected.depth);
+        expect(sample.timeOffset).toBe(expected.offset);
+        expect(sample.temperature).toBe(expected.temperature);
+        expect(sample.gps!.coordinates[1]).toBeCloseTo(expected.gps!.lat, -4);
+        expect(sample.gps!.coordinates[0]).toBeCloseTo(expected.gps!.lng, -4);
+      });
+    });
+
+    it('will handle a large number of samples', async () => {
+      await request(server)
+        .post(getUrl())
+        .set(...ownerAuthToken)
+        .send(sampleData.slice(0, 500).map(LogEntrySampleUtils.entityToDTO))
+        .expect(201);
+
+      await expect(
+        Samples.countBy({ logEntry: { id: logEntry.id } }),
+      ).resolves.toBe(500);
+    });
+
+    it("will allow an admin to add samples to another user's log entry", async () => {
+      const samples = sampleData
+        .slice(0, 10)
+        .map(LogEntrySampleUtils.entityToDTO);
+
+      await request(server)
+        .post(getUrl())
+        .set(...adminAuthToken)
+        .send(samples)
+        .expect(201);
+
+      const saved = await Samples.find({
+        where: { logEntry: { id: logEntry.id } },
+        order: { timeOffset: 'ASC' },
+      });
+
+      expect(saved).toHaveLength(samples.length);
+      saved.forEach((sample, index) => {
+        const expected = samples[index];
+        expect(sample.depth).toBe(expected.depth);
+        expect(sample.timeOffset).toBe(expected.offset);
+        expect(sample.temperature).toBe(expected.temperature);
+        expect(sample.gps!.coordinates[1]).toBeCloseTo(expected.gps!.lat, -4);
+        expect(sample.gps!.coordinates[0]).toBeCloseTo(expected.gps!.lng, -4);
+      });
+    });
+
+    it('will return a 400 response if the request body is empty', async () => {
+      const { body } = await request(server)
+        .post(getUrl())
+        .set(...ownerAuthToken)
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      const { body } = await request(server)
+        .post(getUrl())
+        .set(...ownerAuthToken)
+        .send({ valid: 'nope' })
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if the request body array does not contain any elements', async () => {
+      const { body } = await request(server)
+        .post(getUrl())
+        .set(...ownerAuthToken)
+        .send([])
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server).post(getUrl()).send([BasicSample]).expect(401);
+    });
+
+    it('will return a 403 response if the user is not authorized to add samples to the log entry', async () => {
+      await request(server)
+        .post(getUrl())
+        .set(...otherUserAuthToken)
+        .send([BasicSample])
+        .expect(403);
+    });
+
+    it('will return a 404 response if the log entry does not exist', async () => {
+      await request(server)
+        .post(getUrl('4df12282-0741-429d-8935-e8dbaa562d90'))
+        .set(...adminAuthToken)
+        .send([BasicSample])
+        .expect(404);
+    });
+
+    it('will return a 404 response if the user does not exist', async () => {
+      await request(server)
+        .post(getUrl(undefined, 'jane_doe'))
+        .set(...adminAuthToken)
+        .send([BasicSample])
+        .expect(404);
+    });
+
+    it('will return a 409 response if the log entry already has samples with conflicting offsets', async () => {
+      const samples = sampleData
+        .slice(10, 15)
+        .map(LogEntrySampleUtils.entityToDTO);
+
+      await Samples.save(sampleData.slice(0, 20));
+      const { body } = await request(server)
+        .post(getUrl())
+        .set(...ownerAuthToken)
+        .send(samples)
+        .expect(409);
+
+      expect(body.details).toMatchSnapshot();
     });
   });
 });

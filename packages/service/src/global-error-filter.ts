@@ -52,6 +52,10 @@ export class GlobalErrorFilter implements ExceptionFilter {
       } else {
         this.log.error(exception);
       }
+
+      if (exception.cause) {
+        response.details = exception.cause;
+      }
     } else if (this.isZodError(exception)) {
       this.log.debug('Zod validation error', exception.issues);
 

@@ -1,6 +1,8 @@
-import { LogEntrySampleDTO } from '@bottomtime/api';
+import { LogEntrySampleDTO, LogEntrySampleSchema } from '@bottomtime/api';
 
 import {
+  Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -9,9 +11,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { Observable, toArray } from 'rxjs';
+import { Observable, from, toArray } from 'rxjs';
 
 import { AssertAccountOwner, AssertAuth, AssertTargetUser } from '../users';
+import { ZodValidator } from '../zod-validator';
 import {
   AssertTargetLogEntry,
   TargetLogEntry,
@@ -39,7 +42,21 @@ export class LogEntrySampleController {
   }
 
   @Post()
-  addSampleData() {}
+  async addSampleData(
+    @TargetLogEntry() entry: LogEntry,
+    @Body(new ZodValidator(LogEntrySampleSchema.array().min(1).max(500)))
+    samples: LogEntrySampleDTO[],
+  ): Promise<void> {
+    this.log.debug(
+      `Adding ${samples.length} data sample(s) to log entry with ID "${entry.id}"...`,
+    );
+
+    await entry.saveSamples(from(samples));
+
+    // new ConflictException
+    // TODO: Update aggregates?
+    // TODO: Return value?
+  }
 
   @Delete()
   clearSamples() {}
