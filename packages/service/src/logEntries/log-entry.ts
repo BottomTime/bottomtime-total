@@ -375,8 +375,9 @@ export class LogEntry {
     this.data.tags = value;
   }
 
-  private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, void> {
+  private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, number> {
     const batchSize = 1000;
+    let totalCount = 0;
     let skip = 0;
     let batch: LogEntrySampleEntity[];
 
@@ -390,6 +391,7 @@ export class LogEntry {
         skip,
         take: batchSize,
       });
+      totalCount += batch.length;
 
       for (const sample of batch) {
         yield sample;
@@ -397,6 +399,9 @@ export class LogEntry {
 
       skip += batchSize;
     } while (batch.length === batchSize);
+
+    this.log.debug('Finished loading samples.');
+    return totalCount;
   }
 
   toJSON(): LogEntryDTO {
