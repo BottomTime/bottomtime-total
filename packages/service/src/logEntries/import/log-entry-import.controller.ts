@@ -1,9 +1,9 @@
 import {
-  AddLogEntryImportRecordsResponseDTO,
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
   LogEntryDTO,
   LogsImportDTO,
+  RecordsAddedResponseDTO,
 } from '@bottomtime/api';
 
 import {
@@ -231,7 +231,7 @@ export class LogEntryImportController {
     @TargetImport() importEntity: LogEntryImport,
     @Body(new ZodValidator(CreateOrUpdateLogEntryParamsSchema.array().min(1)))
     records: CreateOrUpdateLogEntryParamsDTO[],
-  ): Promise<AddLogEntryImportRecordsResponseDTO> {
+  ): Promise<RecordsAddedResponseDTO> {
     await importEntity.addRecords(records);
     const totalRecords = await importEntity.getRecordCount();
 

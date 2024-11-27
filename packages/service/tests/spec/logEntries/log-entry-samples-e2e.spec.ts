@@ -1,5 +1,4 @@
 import { LogEntrySampleDTO, UserRole } from '@bottomtime/api';
-import { UsersApiClient } from '@bottomtime/api/dist/client/users';
 
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,7 +24,6 @@ import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestSamples from '../../fixtures/dive-profile.json';
 import {
-  Log,
   createAuthHeader,
   createTestApp,
   createTestLogEntry,
@@ -201,7 +199,7 @@ describe('Log Entry Samples E2E', () => {
         .set(...ownerAuthToken)
         .send(samples.slice(0, 10))
         .expect(201);
-      await request(server)
+      const { body } = await request(server)
         .post(getUrl())
         .set(...ownerAuthToken)
         .send(samples.slice(10, 20))
@@ -220,6 +218,11 @@ describe('Log Entry Samples E2E', () => {
         expect(sample.temperature).toBe(expected.temperature);
         expect(sample.gps!.coordinates[1]).toBeCloseTo(expected.gps!.lat, -4);
         expect(sample.gps!.coordinates[0]).toBeCloseTo(expected.gps!.lng, -4);
+      });
+
+      expect(body).toEqual({
+        addedRecords: 10,
+        totalRecords: 20,
       });
     });
 
@@ -329,6 +332,64 @@ describe('Log Entry Samples E2E', () => {
         .expect(409);
 
       expect(body.details).toMatchSnapshot();
+    });
+  });
+
+  describe('when clearing data', () => {
+    it('will clear all samples for a log entry', async () => {
+      await Samples.save(sampleData);
+      await request(server)
+        .delete(getUrl())
+        .set(...ownerAuthToken)
+        .expect(204);
+
+      await expect(
+        Samples.existsBy({ logEntry: { id: logEntry.id } }),
+      ).resolves.toBe(false);
+    });
+
+    it('will do nothing if the log entry does not have any samples', async () => {
+      await request(server)
+        .delete(getUrl())
+        .set(...ownerAuthToken)
+        .expect(204);
+    });
+
+    it('will allow an admin to clear samples for another user', async () => {
+      await Samples.save(sampleData.slice(0, 10));
+      await request(server)
+        .delete(getUrl())
+        .set(...adminAuthToken)
+        .expect(204);
+
+      await expect(
+        Samples.existsBy({ logEntry: { id: logEntry.id } }),
+      ).resolves.toBe(false);
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server).delete(getUrl()).expect(401);
+    });
+
+    it('will return a 403 response if the user is not authorized to clear samples', async () => {
+      await request(server)
+        .delete(getUrl())
+        .set(...otherUserAuthToken)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the log entry does not exist', async () => {
+      await request(server)
+        .delete(getUrl('6f3d3103-bb50-4e63-85d3-cc8cd969e6c2'))
+        .set(...adminAuthToken)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the user does not exist', async () => {
+      await request(server)
+        .delete(getUrl(undefined, 'jane_doe'))
+        .set(...adminAuthToken)
+        .expect(404);
     });
   });
 });

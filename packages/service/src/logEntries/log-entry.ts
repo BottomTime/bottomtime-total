@@ -464,6 +464,10 @@ export class LogEntry {
     return from(this.loadSamples()).pipe(map(LogEntrySampleUtils.entityToDTO));
   }
 
+  async getSampleCount(): Promise<number> {
+    return await this.EntrySamples.countBy({ logEntry: { id: this.id } });
+  }
+
   async saveSamples(samples: Observable<LogEntrySampleDTO>): Promise<void> {
     return new Promise<void>((complete, error) => {
       samples

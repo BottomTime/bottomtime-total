@@ -1,11 +1,16 @@
-import { LogEntrySampleDTO, LogEntrySampleSchema } from '@bottomtime/api';
+import {
+  LogEntrySampleDTO,
+  LogEntrySampleSchema,
+  RecordsAddedResponseDTO,
+} from '@bottomtime/api';
 
 import {
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Logger,
   Post,
   UseGuards,
@@ -46,18 +51,29 @@ export class LogEntrySampleController {
     @TargetLogEntry() entry: LogEntry,
     @Body(new ZodValidator(LogEntrySampleSchema.array().min(1).max(500)))
     samples: LogEntrySampleDTO[],
-  ): Promise<void> {
+  ): Promise<RecordsAddedResponseDTO> {
     this.log.debug(
       `Adding ${samples.length} data sample(s) to log entry with ID "${entry.id}"...`,
     );
 
     await entry.saveSamples(from(samples));
 
-    // new ConflictException
+    const totalRecords = await entry.getSampleCount();
+
     // TODO: Update aggregates?
-    // TODO: Return value?
+
+    return {
+      addedRecords: samples.length,
+      totalRecords,
+    };
   }
 
   @Delete()
-  clearSamples() {}
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async clearSamples(@TargetLogEntry() entry: LogEntry): Promise<void> {
+    this.log.debug(
+      `Clearing all data samples for log entry with ID "${entry.id}"...`,
+    );
+    await entry.clearSamples();
+  }
 }
