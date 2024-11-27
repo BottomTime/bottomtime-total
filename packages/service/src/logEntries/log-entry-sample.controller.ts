@@ -60,8 +60,6 @@ export class LogEntrySampleController {
 
     const totalRecords = await entry.getSampleCount();
 
-    // TODO: Update aggregates?
-
     return {
       addedRecords: samples.length,
       totalRecords,

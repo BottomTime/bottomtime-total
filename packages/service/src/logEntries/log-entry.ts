@@ -469,7 +469,7 @@ export class LogEntry {
   }
 
   async saveSamples(samples: Observable<LogEntrySampleDTO>): Promise<void> {
-    return new Promise<void>((complete, error) => {
+    await new Promise<void>((complete, error) => {
       samples
         .pipe(
           map((sample) => LogEntrySampleUtils.dtoToEntity(sample, this.id)),
@@ -500,6 +500,26 @@ export class LogEntry {
         )
         .subscribe({ complete, error });
     });
+
+    const [maxDepth, avgDepth] = await Promise.all([
+      // Casting to "any" is necessary here due to a limitation in the TypeORM library:
+      // Only NOT NULL columns can be used in aggregate functions - despite the fact that
+      // Postgres permits performing aggregate functions on nullable columns.
+
+      /* eslint-disable-next-line */
+      this.EntrySamples.maximum('depth' as any, {
+        logEntry: { id: this.id },
+      }),
+      /* eslint-disable-next-line */
+      this.EntrySamples.average('depth' as any, {
+        logEntry: { id: this.id },
+      }),
+    ]);
+
+    if (maxDepth) this.depths.maxDepth = maxDepth;
+    if (avgDepth) this.depths.averageDepth = avgDepth;
+
+    await this.save();
   }
 
   async clearSamples(): Promise<number> {
