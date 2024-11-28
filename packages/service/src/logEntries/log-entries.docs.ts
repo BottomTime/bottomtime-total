@@ -95,6 +95,56 @@
  *           example: 41.5
  *           minimum: 0.0
  *           maximum: 100.0
+ *     LogEntrySample:
+ *       type: object
+ *       required:
+ *         - offset
+ *         - depth
+ *       properties:
+ *         offset:
+ *           type: number
+ *           format: int32
+ *           name: Time offset
+ *           description: |
+ *             The time offset from the beginning of the dive at which the sample was taken.
+ *             Specified in milliseconds.
+ *           example: 144000
+ *           minimum: 0
+ *         depth:
+ *           type: number
+ *           format: float
+ *           name: Depth
+ *           description: The depth recorded at the time of the sample. Specified in the same units as the depth values in the log entry.
+ *           example: 30.5
+ *           minimum: 0
+ *         temperature:
+ *           type: number
+ *           format: float
+ *           name: Temperature
+ *           description: The temperature recorded at the time of the sample. Specified in the same units as the temperature values in the log entry.
+ *           example: 26.3
+ *         gps:
+ *           type: object
+ *           required:
+ *             - lat
+ *             - lng
+ *           properties:
+ *             lat:
+ *               type: number
+ *               format: float
+ *               name: Latitude
+ *               description: The latitude at which the sample was taken.
+ *               example: 20.480903
+ *               minimum: -90
+ *               maximum: 90
+ *             lng:
+ *               type: number
+ *               format: float
+ *               name: Longitude
+ *               description: The longitude at which the sample was taken.
+ *               example: -86.993041
+ *               minimum: -180
+ *               maximum: 180
  *     LogEntryBase:
  *       type: object
  *       required:
@@ -351,6 +401,12 @@
  *               title: Location
  *               description: A reference to the dive site where the dive took place. (Must be a valid ID.)
  *               example: 2c33c9a8-66d8-4352-8d1e-6c12d9aa76ac
+ *             samples:
+ *               type: array
+ *               description: An array of data samples taken during the dive by a dive computer.
+ *               title: Dive Computer Data Samples
+ *               items:
+ *                 $ref: "#/components/schemas/LogEntrySample"
  *     LogEntryGeneratedProps:
  *       type: object
  *       required:
