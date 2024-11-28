@@ -225,11 +225,3 @@ export const ListLogEntryImportsParamsSchema = z.object({
 export type ListLogEntryImportsParamsDTO = z.infer<
   typeof ListLogEntryImportsParamsSchema
 >;
-
-export const AddLogEntryImportRecordsResponseSchema = z.object({
-  addedRecords: z.number(),
-  totalRecords: z.number(),
-});
-export type AddLogEntryImportRecordsResponseDTO = z.infer<
-  typeof AddLogEntryImportRecordsResponseSchema
->;

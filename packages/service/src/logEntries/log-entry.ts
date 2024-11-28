@@ -17,13 +17,13 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { Logger } from '@nestjs/common';
+import { ConflictException, Logger } from '@nestjs/common';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
 import 'dayjs/plugin/utc';
 import { Observable, bufferCount, concatMap, from, map } from 'rxjs';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import {
   LogEntryAirEntity,
@@ -375,8 +375,9 @@ export class LogEntry {
     this.data.tags = value;
   }
 
-  private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, void> {
+  private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, number> {
     const batchSize = 1000;
+    let totalCount = 0;
     let skip = 0;
     let batch: LogEntrySampleEntity[];
 
@@ -390,6 +391,7 @@ export class LogEntry {
         skip,
         take: batchSize,
       });
+      totalCount += batch.length;
 
       for (const sample of batch) {
         yield sample;
@@ -397,6 +399,9 @@ export class LogEntry {
 
       skip += batchSize;
     } while (batch.length === batchSize);
+
+    this.log.debug('Finished loading samples.');
+    return totalCount;
   }
 
   toJSON(): LogEntryDTO {
@@ -459,18 +464,62 @@ export class LogEntry {
     return from(this.loadSamples()).pipe(map(LogEntrySampleUtils.entityToDTO));
   }
 
+  async getSampleCount(): Promise<number> {
+    return await this.EntrySamples.countBy({ logEntry: { id: this.id } });
+  }
+
   async saveSamples(samples: Observable<LogEntrySampleDTO>): Promise<void> {
-    return new Promise<void>((complete, error) => {
+    await new Promise<void>((complete, error) => {
       samples
         .pipe(
           map((sample) => LogEntrySampleUtils.dtoToEntity(sample, this.id)),
           bufferCount(500),
           concatMap(async (batch) => {
+            const conflict = await this.EntrySamples.find({
+              where: {
+                logEntry: { id: this.id },
+                timeOffset: In(batch.map((s) => s.timeOffset)),
+              },
+              order: { timeOffset: 'ASC' },
+              select: ['timeOffset'],
+            });
+            if (conflict.length) {
+              throw new ConflictException(
+                'Sample time offsets must be unique.',
+                {
+                  cause: {
+                    conflictingOffsets: conflict.map(
+                      (sample) => sample.timeOffset,
+                    ),
+                  },
+                },
+              );
+            }
             await this.EntrySamples.save(batch);
           }),
         )
         .subscribe({ complete, error });
     });
+
+    const [maxDepth, avgDepth] = await Promise.all([
+      // Casting to "any" is necessary here due to a limitation in the TypeORM library:
+      // Only NOT NULL columns can be used in aggregate functions - despite the fact that
+      // Postgres permits performing aggregate functions on nullable columns.
+
+      /* eslint-disable-next-line */
+      this.EntrySamples.maximum('depth' as any, {
+        logEntry: { id: this.id },
+      }),
+      /* eslint-disable-next-line */
+      this.EntrySamples.average('depth' as any, {
+        logEntry: { id: this.id },
+      }),
+    ]);
+
+    if (maxDepth) this.depths.maxDepth = maxDepth;
+    if (avgDepth) this.depths.averageDepth = avgDepth;
+
+    await this.save();
   }
 
   async clearSamples(): Promise<number> {

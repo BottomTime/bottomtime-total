@@ -1,6 +1,7 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  LogEntrySampleDTO,
   LogsImportDTO,
 } from '@bottomtime/api';
 
@@ -10,8 +11,10 @@ import {
   Observable,
   bufferCount,
   concatMap,
+  filter,
   from,
   map,
+  of,
   throwIfEmpty,
 } from 'rxjs';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
@@ -27,6 +30,7 @@ import {
 import { User, UserFactory } from '../../users';
 import { LogEntry } from '../log-entry';
 import { LogEntryFactory } from '../log-entry-factory';
+import { LogEntrySampleUtils } from '../log-entry-sample-utils';
 
 export type ImportOptions = {
   data: Observable<string>;
@@ -187,33 +191,35 @@ export class LogEntryImport {
           // Save entities in batches of 50.
           bufferCount(50),
           concatMap(async (batch) => {
-            // TODO: This needs optimization.
             this.log.debug(
               `Saving batch of ${batch.length} imported log entries...`,
             );
+
             await entries.save(batch);
             await air.save(
-              batch.reduce<LogEntryAirEntity[]>((acc, value) => {
-                value.air?.forEach((air) => {
+              batch.reduce<LogEntryAirEntity[]>((acc, entry) => {
+                entry.air?.forEach((air) => {
                   acc.push({
                     ...air,
-                    logEntry: { id: value.id } as LogEntryEntity,
+                    logEntry: { id: entry.id } as LogEntryEntity,
                   });
                 });
                 return acc;
               }, []),
             );
-            await samples.save(
-              batch.reduce<LogEntrySampleEntity[]>((acc, value) => {
-                value.samples?.forEach((sample) => {
-                  acc.push({
-                    ...sample,
-                    logEntry: { id: value.id } as LogEntryEntity,
-                  });
-                });
-                return acc;
-              }, []),
-            );
+
+            // await samples.save(
+            //   batch.reduce<LogEntrySampleEntity[]>((acc, value) => {
+            //     value.samples?.forEach((sample) => {
+            //       acc.push({
+            //         ...sample,
+            //         logEntry: { id: value.id } as LogEntryEntity,
+            //       });
+            //     });
+            //     return acc;
+            //   }, []),
+            // );
+
             return batch;
           }),
 
