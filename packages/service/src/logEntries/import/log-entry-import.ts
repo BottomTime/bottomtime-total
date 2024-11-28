@@ -1,7 +1,6 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
-  LogEntrySampleDTO,
   LogsImportDTO,
 } from '@bottomtime/api';
 
@@ -11,11 +10,20 @@ import {
   Observable,
   bufferCount,
   concatMap,
+  connect,
+  defaultIfEmpty,
   filter,
   from,
+  groupBy,
+  ignoreElements,
   map,
-  of,
+  max,
+  merge,
+  reduce,
+  switchMap,
+  tap,
   throwIfEmpty,
+  zip,
 } from 'rxjs';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
@@ -30,7 +38,7 @@ import {
 import { User, UserFactory } from '../../users';
 import { LogEntry } from '../log-entry';
 import { LogEntryFactory } from '../log-entry-factory';
-import { LogEntrySampleUtils } from '../log-entry-sample-utils';
+import { Importer } from './importer';
 
 export type ImportOptions = {
   data: Observable<string>;
@@ -92,41 +100,6 @@ export class LogEntryImport {
     return this.data.deviceId || undefined;
   }
 
-  private async *streamRecords(
-    queryRunner: QueryRunner,
-  ): AsyncGenerator<string, number> {
-    this.log.debug('Starting database transaction to finalize import...');
-    await queryRunner.startTransaction();
-
-    const importRecords = queryRunner.manager.getRepository(
-      LogEntryImportRecordEntity,
-    );
-
-    const batchSize = 50;
-    const totalCount = await importRecords.countBy({
-      import: { id: this.data.id },
-    });
-
-    let skip = 0;
-    while (true) {
-      const results = await importRecords.find({
-        where: { import: { id: this.data.id } },
-        order: { id: 'ASC' },
-        skip,
-        take: batchSize,
-      });
-
-      for (const record of results) {
-        yield record.data;
-      }
-
-      if (results.length < batchSize) break;
-      skip += batchSize;
-    }
-
-    return totalCount;
-  }
-
   private async markFinalized(
     imports: Repository<LogEntryImportEntity>,
     importRecords: Repository<LogEntryImportRecordEntity>,
@@ -152,112 +125,156 @@ export class LogEntryImport {
     }
 
     const queryRunner = this.dataSource.createQueryRunner();
+    const importer = new Importer(queryRunner, this.entryFactory);
 
-    return new Observable<LogEntry>((subscriber) => {
-      const entries = queryRunner.manager.getRepository(LogEntryEntity);
-      const air = queryRunner.manager.getRepository(LogEntryAirEntity);
-      const samples = queryRunner.manager.getRepository(LogEntrySampleEntity);
-      const imports = queryRunner.manager.getRepository(LogEntryImportEntity);
-      const importRecords = queryRunner.manager.getRepository(
-        LogEntryImportRecordEntity,
-      );
+    return importer.doImport(this.data, this.owner);
 
-      from(this.streamRecords(queryRunner))
-        .pipe(
-          // Throw an exception if there are no records to import.
-          throwIfEmpty(() => {
-            this.log.warn(
-              `Attempted to finalize import with ID "${this.id}" when no records were uploaded.`,
-            );
-            return new MethodNotAllowedException(
-              'Cannot finalize an import that has no import records attached.',
-            );
-          }),
+    return from(this.streamRecords(queryRunner)).pipe(
+      // Throw an exception if there are no records to import.
+      throwIfEmpty(() => {
+        this.log.warn(
+          `Attempted to finalize import with ID "${this.id}" when no records were uploaded.`,
+        );
+        return new MethodNotAllowedException(
+          'Cannot finalize an import that has no import records attached.',
+        );
+      }),
 
-          // Parse JSON and transform data into LogEntryEntity objects
-          map((record) => {
-            const raw = JSON.parse(record);
-            const parsed = CreateOrUpdateLogEntryParamsSchema.parse(raw);
-            const entity = this.entryFactory
-              .createLogEntryFromCreateDTO(this.owner, parsed)
-              .toEntity();
+      // Parse JSON and transform data into LogEntryEntity objects
+      map((record) => {
+        const raw = JSON.parse(record);
+        const parsed = CreateOrUpdateLogEntryParamsSchema.parse(raw);
+        const entity = this.entryFactory
+          .createLogEntryFromCreateDTO(this.owner, parsed)
+          .toEntity();
 
-            entity.deviceId = this.deviceId ?? null;
-            entity.deviceName = this.device ?? null;
+        entity.deviceId = this.deviceId ?? null;
+        entity.deviceName = this.device ?? null;
 
-            return entity;
-          }),
+        return entity;
+      }),
 
-          // Save entities in batches of 50.
-          bufferCount(50),
-          concatMap(async (batch) => {
-            this.log.debug(
-              `Saving batch of ${batch.length} imported log entries...`,
-            );
+      // Save entities in batches of 50.
+      bufferCount(50),
+      concatMap(async (batch) => {
+        this.log.debug(
+          `Saving batch of ${batch.length} imported log entries...`,
+        );
 
-            await entries.save(batch);
-            await air.save(
-              batch.reduce<LogEntryAirEntity[]>((acc, entry) => {
-                entry.air?.forEach((air) => {
-                  acc.push({
-                    ...air,
-                    logEntry: { id: entry.id } as LogEntryEntity,
-                  });
-                });
-                return acc;
-              }, []),
-            );
+        await entries.save(batch);
+        await air.save(
+          batch.reduce<LogEntryAirEntity[]>((acc, entry) => {
+            entry.air?.forEach((air) => {
+              acc.push({
+                ...air,
+                logEntry: { id: entry.id } as LogEntryEntity,
+              });
+            });
+            return acc;
+          }, []),
+        );
 
-            // await samples.save(
-            //   batch.reduce<LogEntrySampleEntity[]>((acc, value) => {
-            //     value.samples?.forEach((sample) => {
-            //       acc.push({
-            //         ...sample,
-            //         logEntry: { id: value.id } as LogEntryEntity,
-            //       });
-            //     });
-            //     return acc;
-            //   }, []),
-            // );
+        return batch;
+      }),
+      concatMap((batch) => from(batch)),
 
-            return batch;
-          }),
-
-          // Return LogEntry instances.
-          concatMap((batch: LogEntryEntity[]) =>
-            from<LogEntry[]>(
-              batch.map((entry) => this.entryFactory.createLogEntry(entry)),
-            ),
+      connect((shared) =>
+        merge(
+          // Pipe entities to LogEntry objects.
+          shared.pipe(
+            map((entity) => this.entryFactory.createLogEntry(entity)),
           ),
-        )
-        .subscribe({
-          next: (entry) => subscriber.next(entry),
-          error: async (error): Promise<void> => {
-            this.log.error('Error parsing or inserting log entry data:', error);
-            subscriber.error(error);
-            subscriber.unsubscribe();
-            await queryRunner.rollbackTransaction();
-            this.log.debug(
-              'Database transaction rolled back and import has been aborted.',
+
+          // Meanwhile, pipe data samples to the database and update aggregate values.
+          shared.pipe(
+            filter((entry) => !!entry.samples && entry.samples.length > 0),
+            concatMap((entry) => from(entry.samples!)),
+            bufferCount(1000),
+            concatMap((sampleBatch) =>
+              (async () => {
+                this.log.debug('Saving batch of log entry data samples...');
+                await samples.save(sampleBatch);
+                return sampleBatch;
+              })(),
+            ),
+            concatMap((sampleBatch) => from(sampleBatch)),
+            groupBy((sample) => sample.logEntry.id),
+            switchMap((group) =>
+              group.pipe(
+                connect((shared) =>
+                  zip(
+                    // Find max depth
+                    shared.pipe(
+                      filter((sample) => !!sample.depth),
+                      max((a, b) => a.depth! - b.depth!),
+                      map((deepest) => deepest.depth!),
+                      defaultIfEmpty(null),
+                    ),
+
+                    // Find average depth
+                    shared.pipe(
+                      reduce(
+                        (acc, value) => {
+                          if (value.depth) {
+                            return {
+                              sum: acc.sum + value.depth,
+                              count: acc.count + 1,
+                            };
+                          }
+                          return acc;
+                        },
+                        { sum: 0, count: 0 },
+                      ),
+                      map(({ sum, count }) => (count > 0 ? sum / count : null)),
+                    ),
+                  ),
+                ),
+
+                concatMap(async ([maxDepth, averageDepth]) => {
+                  this.log.debug(
+                    `Calculated aggregate values for log entry ${group.key}`,
+                    { maxDepth, averageDepth },
+                  );
+                  if (maxDepth) {
+                    await entries.update({ id: group.key }, { maxDepth });
+                  }
+
+                  if (averageDepth) {
+                    await entries.update({ id: group.key }, { averageDepth });
+                  }
+                }),
+              ),
+            ),
+            ignoreElements(),
+          ),
+        ),
+      ),
+      tap({
+        // Log any errors that occur
+        error: async (error): Promise<void> => {
+          this.log.error('Error parsing or inserting log entry data:', error);
+          await queryRunner.rollbackTransaction();
+          this.log.debug(
+            'Database transaction rolled back and import has been aborted.',
+          );
+        },
+
+        // Mark the import as finalized and commit the Postgres transaction if everything completes successfully
+        complete: async (): Promise<void> => {
+          try {
+            await this.markFinalized(imports, importRecords);
+            await queryRunner.commitTransaction();
+            this.log.log(`Import finalized successfully: ${this.id}`);
+          } catch (error) {
+            this.log.error(
+              `Error finalizing import "${this.id}". Rolling back...`,
+              error,
             );
-          },
-          complete: async (): Promise<void> => {
-            try {
-              await this.markFinalized(imports, importRecords);
-              await queryRunner.commitTransaction();
-              subscriber.complete();
-              this.log.log(`Import finalized successfully: ${this.id}`);
-            } catch (error) {
-              this.log.error(
-                `Error finalizing import "${this.id}". Rolling back...`,
-                error,
-              );
-              await queryRunner.rollbackTransaction();
-              subscriber.error(error);
-            }
-          },
-        });
-    });
+            await queryRunner.rollbackTransaction();
+          }
+        },
+      }),
+    );
   }
 
   async cancel(): Promise<boolean> {

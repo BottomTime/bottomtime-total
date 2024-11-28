@@ -16,7 +16,7 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import fs from 'fs/promises';
 import path from 'path';
-import { EMPTY, buffer } from 'rxjs';
+import { toArray } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import {
@@ -135,8 +135,16 @@ describe('Log entries service', () => {
   });
 
   it.skip('will generate a dive profile', () => {
-    createTestDiveProfile('7dfcb883-110a-4941-bd48-d5c374f6abc6')
-      .pipe(buffer(EMPTY))
+    createTestDiveProfile('7dfcb883-110a-4941-bd48-d5c374f6abc6', {
+      highTemp: 22,
+      lowTemp: 15,
+      descentTime: 55,
+      duration: 3354,
+      maxDepth: 28.2,
+      timeAtDepth: 0.5,
+      thermocline: 18.1,
+    })
+      .pipe(toArray())
       .subscribe({
         next: async (stuff) => {
           await fs.writeFile(

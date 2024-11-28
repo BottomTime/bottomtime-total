@@ -7,43 +7,66 @@ import { v7 as uuid } from 'uuid';
 
 import { LogEntryEntity, LogEntrySampleEntity } from '../../src/data';
 
+export type DiveProfileOptions = {
+  /** Time taken to descend to depth (seconds) */
+  descentTime?: number;
+
+  /** Total dive duration (seconds) */
+  duration?: number;
+
+  /** Temperature above thermocline */
+  highTemp?: number;
+
+  /** Temperature below thermocline */
+  lowTemp?: number;
+
+  /** Maximum depth of dive profile */
+  maxDepth?: number;
+
+  /** Depth of the thermocline */
+  thermocline?: number;
+
+  /** Duration spent at (or near) the bottom (seconds) */
+  timeAtDepth?: number;
+};
+
 export function createTestDiveProfile(
   logEntryId: string,
+  options: DiveProfileOptions = {},
 ): Observable<LogEntrySampleEntity> {
-  const duration = faker.number.int({ min: 1200, max: 4200 }); // 20-70 minutes (in seconds)
-  const thermocline = faker.number.float({
+  options.duration ??= faker.number.int({ min: 1200, max: 4200 }); // 20-70 minutes (in seconds)
+  options.thermocline ??= faker.number.float({
     min: 15.24,
     max: 19.81,
     fractionDigits: 2,
   });
-  const highTemp = faker.number.float({
+  options.highTemp ??= faker.number.float({
     min: 18.0,
     max: 22.0,
     fractionDigits: 1,
   });
-  const lowTemp = faker.number.float({
+  options.lowTemp ??= faker.number.float({
     min: 10.0,
     max: 15.0,
     fractionDigits: 1,
   });
-  const descentTime = faker.number.float({
+  options.descentTime ??= faker.number.float({
     min: 30,
     max: 120,
     fractionDigits: 2,
   }); // 30-120 seconds
-  const maxDepth = faker.number.float({
+  options.maxDepth ??= faker.number.float({
     min: 7.0,
     max: 40.0,
     fractionDigits: 2,
   });
-  const timeAtDepth =
-    duration *
-    faker.number.float({
-      min: 0.1,
-      max: 0.7,
-      fractionDigits: 3,
-    });
-  const ascentTime = duration - descentTime - timeAtDepth;
+  options.timeAtDepth ??= faker.number.float({
+    min: 0.1,
+    max: 0.7,
+    fractionDigits: 3,
+  });
+  const ascentTime =
+    options.duration - options.descentTime - options.timeAtDepth;
   const startingPosition: GpsCoordinates = {
     lat: 20.480903,
     lon: -86.993041,
@@ -53,33 +76,36 @@ export function createTestDiveProfile(
     lon: 0.000001,
   };
 
-  return range(0, duration).pipe(
+  return range(0, options.duration).pipe(
     map((offset) => {
       let depth: number = 0;
 
-      if (offset < descentTime) {
-        depth = (offset / descentTime) * maxDepth;
-      } else if (offset < descentTime + timeAtDepth) {
+      if (offset < options.descentTime!) {
+        depth = (offset / options.descentTime!) * options.maxDepth!;
+      } else if (offset < options.descentTime! + options.timeAtDepth!) {
         depth =
-          maxDepth -
+          options.maxDepth! -
           faker.number.float({ min: 0.1, max: 1.5, fractionDigits: 2 });
       } else {
         depth =
-          maxDepth -
-          ((offset - descentTime - timeAtDepth) / ascentTime) * maxDepth;
+          options.maxDepth! -
+          ((offset - options.descentTime! - options.timeAtDepth!) /
+            ascentTime) *
+            options.maxDepth!;
       }
 
       return {
         id: uuid(),
         depth,
-        temperature: depth > thermocline ? lowTemp : highTemp,
+        temperature:
+          depth > options.thermocline! ? options.lowTemp! : options.highTemp!,
         logEntry: { id: logEntryId } as LogEntryEntity,
         timeOffset: offset * 1000,
         gps: {
           type: 'Point',
           coordinates: [
-            startingPosition.lon + directonVector.lon * duration,
-            startingPosition.lat + directonVector.lat * duration,
+            startingPosition.lon + directonVector.lon * options.duration!,
+            startingPosition.lat + directonVector.lat * options.duration!,
           ],
         },
       };

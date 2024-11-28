@@ -318,6 +318,8 @@ describe('Log Entry Import class', () => {
       const parsedData = CreateOrUpdateLogEntryParamsSchema.parse(
         JSON.parse(importData.data),
       );
+      parsedData.depths!.averageDepth = undefined;
+      parsedData.depths!.maxDepth = undefined;
       parsedData.samples = SampleData.map((entity) =>
         LogEntrySampleUtils.entityToDTO(entity as LogEntrySampleEntity),
       );
@@ -337,21 +339,23 @@ describe('Log Entry Import class', () => {
 
       expect(results).toHaveLength(1);
 
-      const [saved, count] = await EntrySamples.findAndCount({
+      const result = await Entries.findOneByOrFail({ id: results[0].id });
+      expect(result.maxDepth).toBe(28.195725329695314);
+      expect(result.averageDepth).toBe(14.106098697086912);
+
+      const [samples, count] = await EntrySamples.findAndCount({
         where: { logEntry: { id: results[0].id } },
         order: { timeOffset: 'ASC' },
         take: 100,
       });
 
       expect(count).toBe(SampleData.length);
-      saved.forEach((sample, index) => {
+      samples.forEach((sample, index) => {
         expect(sample.depth).toEqual(SampleData[index].depth);
         expect(sample.temperature).toEqual(SampleData[index].temperature);
         expect(sample.timeOffset).toEqual(SampleData[index].timeOffset);
       });
     });
-
-    it.todo('will calculate aggregate data from imported sample data');
 
     it('will throw an exception if the import does not yet have log entries', async () => {
       const observer = logEntryImport.finalize();
