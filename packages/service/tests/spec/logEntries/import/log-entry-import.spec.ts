@@ -313,17 +313,30 @@ describe('Log Entry Import class', () => {
       // TODO: Check that the saved entries match the expected data
     });
 
-    it('will import sample data from a dive computer', async () => {
-      const importData = { ...TestData[0] };
-      const parsedData = CreateOrUpdateLogEntryParamsSchema.parse(
-        JSON.parse(importData.data),
-      );
-      parsedData.depths!.averageDepth = undefined;
-      parsedData.depths!.maxDepth = undefined;
-      parsedData.samples = SampleData.map((entity) =>
+    it.only('will import sample data from a dive computer', async () => {
+      const importData = [{ ...TestData[0] }, { ...TestData[1] }];
+      const parsedData = [
+        CreateOrUpdateLogEntryParamsSchema.parse(
+          JSON.parse(importData[0].data),
+        ),
+        CreateOrUpdateLogEntryParamsSchema.parse(
+          JSON.parse(importData[1].data),
+        ),
+      ];
+
+      parsedData[0].depths!.averageDepth = undefined;
+      parsedData[0].depths!.maxDepth = undefined;
+      parsedData[0].samples = SampleData.map((entity) =>
         LogEntrySampleUtils.entityToDTO(entity as LogEntrySampleEntity),
       );
-      importData.data = JSON.stringify(parsedData);
+      importData[0].data = JSON.stringify(parsedData[0]);
+
+      parsedData[1].depths!.averageDepth = undefined;
+      parsedData[1].depths!.maxDepth = undefined;
+      parsedData[1].samples = SampleData.map((entity) =>
+        LogEntrySampleUtils.entityToDTO(entity as LogEntrySampleEntity),
+      );
+      importData[1].data = JSON.stringify(parsedData[1]);
 
       await ImportRecords.save(importData);
       const observer = logEntryImport.finalize();
@@ -337,7 +350,7 @@ describe('Log Entry Import class', () => {
         });
       });
 
-      expect(results).toHaveLength(1);
+      expect(results).toHaveLength(2);
 
       const result = await Entries.findOneByOrFail({ id: results[0].id });
       expect(result.maxDepth).toBe(28.195725329695314);
@@ -355,7 +368,7 @@ describe('Log Entry Import class', () => {
         expect(sample.temperature).toEqual(SampleData[index].temperature);
         expect(sample.timeOffset).toEqual(SampleData[index].timeOffset);
       });
-    });
+    }, 20000);
 
     it('will throw an exception if the import does not yet have log entries', async () => {
       const observer = logEntryImport.finalize();
