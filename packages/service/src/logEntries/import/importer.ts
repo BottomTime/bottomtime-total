@@ -1,9 +1,16 @@
 import { CreateOrUpdateLogEntryParamsSchema } from '@bottomtime/api';
 
-import { Logger, MethodNotAllowedException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  Logger,
+  MethodNotAllowedException,
+} from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
   Observable,
+  OperatorFunction,
   bufferCount,
   concatMap,
   connect,
@@ -12,10 +19,11 @@ import {
   ignoreElements,
   map,
   merge,
+  mergeMap,
   tap,
   throwIfEmpty,
 } from 'rxjs';
-import { QueryRunner, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 
 import {
   LogEntryAirEntity,
@@ -28,9 +36,11 @@ import { User } from '../../users';
 import { LogEntry } from '../log-entry';
 import { LogEntryFactory } from '../log-entry-factory';
 
+@Injectable()
 export class Importer {
   private readonly log = new Logger(Importer.name);
 
+  private readonly queryRunner: QueryRunner;
   private readonly entries: Repository<LogEntryEntity>;
   private readonly air: Repository<LogEntryAirEntity>;
   private readonly samples: Repository<LogEntrySampleEntity>;
@@ -38,9 +48,13 @@ export class Importer {
   private readonly importRecords: Repository<LogEntryImportRecordEntity>;
 
   constructor(
-    private readonly queryRunner: QueryRunner,
+    @InjectDataSource()
+    dataSource: DataSource,
+
+    @Inject(LogEntryFactory)
     private readonly entryFactory: LogEntryFactory,
   ) {
+    const queryRunner = dataSource.createQueryRunner();
     this.entries = queryRunner.manager.getRepository(LogEntryEntity);
     this.air = queryRunner.manager.getRepository(LogEntryAirEntity);
     this.samples = queryRunner.manager.getRepository(LogEntrySampleEntity);
@@ -48,6 +62,7 @@ export class Importer {
     this.importRecords = queryRunner.manager.getRepository(
       LogEntryImportRecordEntity,
     );
+    this.queryRunner = queryRunner;
   }
 
   private async *streamRecords(
@@ -95,24 +110,19 @@ export class Importer {
   }
 
   private async updateEntryAggregates(
-    entries: LogEntryEntity[],
-  ): Promise<LogEntryEntity[]> {
+    entry: LogEntryEntity,
+  ): Promise<LogEntryEntity> {
     this.log.debug(
-      `Saving updated aggregate values for ${entries.length} log entries...`,
+      `Saving updated aggregate values for log entry "${entry.id}" log entries...`,
+      { averageDepth: entry.averageDepth, maxDepth: entry.maxDepth },
     );
 
-    const params: unknown[] = [];
-    let query = '';
-    let paramIndex = 1;
+    await this.entries.update(entry.id, {
+      averageDepth: entry.averageDepth,
+      maxDepth: entry.maxDepth,
+    });
 
-    for (const entry of entries) {
-      query += `UPDATE "log_entries" SET "maxDepth" = $${paramIndex++}, "averageDepth" = $${paramIndex++}, "updatedAt" = CURRENT_TIMESTAMP WHERE "id" = $${paramIndex++};`;
-      params.push(entry.maxDepth, entry.averageDepth, entry.id);
-    }
-
-    this.log.verbose(query);
-
-    return entries;
+    return entry;
   }
 
   private async saveAir(
@@ -133,9 +143,7 @@ export class Importer {
     return samples;
   }
 
-  importAirEntries(): (
-    source: Observable<LogEntryEntity>,
-  ) => Observable<never> {
+  importAirEntries(): OperatorFunction<LogEntryEntity, never> {
     return (source) =>
       source.pipe(
         // Stream individual air entries from each log entry...
@@ -154,9 +162,10 @@ export class Importer {
       );
   }
 
-  calculateAggregates(): (
-    source: Observable<LogEntryEntity>,
-  ) => Observable<LogEntryEntity | LogEntrySampleEntity> {
+  calculateAggregates(): OperatorFunction<
+    LogEntryEntity,
+    LogEntryEntity | LogEntrySampleEntity
+  > {
     return (source) =>
       new Observable((subscriber) => {
         source.subscribe({
@@ -180,13 +189,6 @@ export class Importer {
             entry.averageDepth =
               depthSum / entry.samples.length || entry.averageDepth || null;
 
-            this.log.debug(
-              `Calculated aggregate values for log entry "${entry.id}"`,
-              {
-                averageDepth: entry.averageDepth,
-                maxDepth: entry.maxDepth,
-              },
-            );
             subscriber.next(entry);
           },
 
@@ -200,9 +202,7 @@ export class Importer {
       });
   }
 
-  importDataSamples(): (
-    source: Observable<LogEntryEntity>,
-  ) => Observable<LogEntryEntity> {
+  importDataSamples(): OperatorFunction<LogEntryEntity, LogEntryEntity> {
     return (source) =>
       source.pipe(
         // Stream data samples and log entries with aggregate values updated.
@@ -212,11 +212,12 @@ export class Importer {
           merge(
             // Log entries with updated aggregate values need to be updated in the database.
             shared.pipe(
-              filter((item) => 'timestamp' in item),
-              bufferCount(500),
-              // TODO: Need a way to do this efficiently.
-              concatMap((batch) => from(this.updateEntryAggregates(batch))),
-              concatMap((batch) => from(batch)),
+              filter(
+                (
+                  item: LogEntryEntity | LogEntrySampleEntity,
+                ): item is LogEntryEntity => 'timestamp' in item,
+              ),
+              mergeMap((entry) => from(this.updateEntryAggregates(entry))),
               tap({
                 complete: () =>
                   this.log.debug(
@@ -227,7 +228,11 @@ export class Importer {
 
             // And the data samples just need to be written to the database.
             shared.pipe(
-              filter((item) => 'timeOffset' in item),
+              filter(
+                (
+                  item: LogEntryEntity | LogEntrySampleEntity,
+                ): item is LogEntrySampleEntity => 'timeOffset' in item,
+              ),
               bufferCount(500),
               concatMap((batch) => from(this.saveSamples(batch))),
               tap({
@@ -240,6 +245,28 @@ export class Importer {
           ),
         ),
       );
+  }
+
+  finalizeImport<T>(importId: string): OperatorFunction<T, T> {
+    return (source: Observable<T>) =>
+      new Observable<T>((subscriber) => {
+        source.subscribe({
+          next: (value) => subscriber.next(value),
+          error: (error) => subscriber.error(error),
+          complete: async () => {
+            try {
+              this.log.debug(
+                'Marking import as finalized and committing transaction...',
+              );
+              await this.imports.update(importId, { finalized: new Date() });
+              await this.queryRunner.commitTransaction();
+              subscriber.complete();
+            } catch (error) {
+              subscriber.error(error);
+            }
+          },
+        });
+      });
   }
 
   doImport(
@@ -292,9 +319,8 @@ export class Importer {
       // 5) Pipe entities to LogEntry instances for output.
       map((entity) => this.entryFactory.createLogEntry(entity)),
 
-      tap({
-        complete: () => this.log.debug('Finished streaming log entry data.'),
-      }),
+      // 6) Mark import as finalized and commit transaction.
+      this.finalizeImport(importData.id),
     );
   }
 }

@@ -99,8 +99,7 @@ export class LogEntryImport {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    const importer = new Importer(queryRunner, this.entryFactory);
+    const importer = new Importer(this.dataSource, this.entryFactory);
 
     return importer.doImport(this.data, this.owner);
   }

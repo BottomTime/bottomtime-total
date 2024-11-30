@@ -313,7 +313,7 @@ describe('Log Entry Import class', () => {
       // TODO: Check that the saved entries match the expected data
     });
 
-    it.only('will import sample data from a dive computer', async () => {
+    it('will import sample data from a dive computer', async () => {
       const importData = [{ ...TestData[0] }, { ...TestData[1] }];
       const parsedData = [
         CreateOrUpdateLogEntryParamsSchema.parse(
@@ -345,7 +345,7 @@ describe('Log Entry Import class', () => {
         const generatedEntries: LogEntry[] = [];
         observer.subscribe({
           next: (entry) => generatedEntries.push(entry),
-          error: reject,
+          error: (error) => reject(error),
           complete: () => resolve(generatedEntries),
         });
       });
@@ -354,7 +354,7 @@ describe('Log Entry Import class', () => {
 
       const result = await Entries.findOneByOrFail({ id: results[0].id });
       expect(result.maxDepth).toBe(28.195725329695314);
-      expect(result.averageDepth).toBe(14.106098697086912);
+      expect(result.averageDepth).toBe(14.101892943152182);
 
       const [samples, count] = await EntrySamples.findAndCount({
         where: { logEntry: { id: results[0].id } },
