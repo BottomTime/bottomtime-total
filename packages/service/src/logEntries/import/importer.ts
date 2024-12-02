@@ -171,8 +171,7 @@ export class Importer {
         source.subscribe({
           next: (entry) => {
             if (!entry.samples || !entry.samples.length) {
-              // No samples? Just pass the entry through without modification.
-              subscriber.next(entry);
+              // No samples? No need to pass this log entry down the pipe!
               return;
             }
 
@@ -202,7 +201,7 @@ export class Importer {
       });
   }
 
-  importDataSamples(): OperatorFunction<LogEntryEntity, LogEntryEntity> {
+  importDataSamples(): OperatorFunction<LogEntryEntity, never> {
     return (source) =>
       source.pipe(
         // Stream data samples and log entries with aggregate values updated.
@@ -224,6 +223,7 @@ export class Importer {
                     'Finished updating aggregates for log entries.',
                   ),
               }),
+              ignoreElements(),
             ),
 
             // And the data samples just need to be written to the database.
@@ -247,7 +247,7 @@ export class Importer {
       );
   }
 
-  finalizeImport<T>(importId: string): OperatorFunction<T, T> {
+  finalizeImport<T>(importData: LogEntryImportEntity): OperatorFunction<T, T> {
     return (source: Observable<T>) =>
       new Observable<T>((subscriber) => {
         source.subscribe({
@@ -258,12 +258,42 @@ export class Importer {
               this.log.debug(
                 'Marking import as finalized and committing transaction...',
               );
-              await this.imports.update(importId, { finalized: new Date() });
+              const finalized = new Date();
+              await this.imports.update(importData.id, { finalized });
+              await this.importRecords.delete({
+                import: { id: importData.id },
+              });
               await this.queryRunner.commitTransaction();
+              importData.finalized = finalized;
               subscriber.complete();
             } catch (error) {
               subscriber.error(error);
             }
+          },
+        });
+      });
+  }
+
+  abortOnError<T>(): OperatorFunction<T, T> {
+    return (source) =>
+      new Observable<T>((subscriber) => {
+        let failed = false;
+        source.subscribe({
+          next: (value) => subscriber.next(value),
+          complete: () => {
+            if (!failed) subscriber.complete();
+          },
+
+          error: async (error) => {
+            failed = true;
+            this.log.warn('Aborting and rolling back transaction...');
+            this.log.error(error);
+            try {
+              await this.queryRunner.rollbackTransaction();
+            } catch (rollbackError) {
+              this.log.error(rollbackError);
+            }
+            subscriber.error(error);
           },
         });
       });
@@ -313,14 +343,20 @@ export class Importer {
         merge(
           shared.pipe(this.importAirEntries()),
           shared.pipe(this.importDataSamples()),
+          shared.pipe(
+            map((entity) => this.entryFactory.createLogEntry(entity)),
+          ),
         ),
       ),
 
       // 5) Pipe entities to LogEntry instances for output.
-      map((entity) => this.entryFactory.createLogEntry(entity)),
+      // map((entity) => this.entryFactory.createLogEntry(entity)),
 
       // 6) Mark import as finalized and commit transaction.
-      this.finalizeImport(importData.id),
+      this.finalizeImport<LogEntry>(importData),
+
+      // Add an error handler to abort and rollback the transaction if an error occurs.
+      this.abortOnError<LogEntry>(),
     );
   }
 }
