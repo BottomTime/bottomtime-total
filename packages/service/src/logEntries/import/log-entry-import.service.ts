@@ -83,6 +83,7 @@ export class LogEntryImportService {
       device: options?.device ?? null,
       deviceId: options?.deviceId ?? null,
       finalized: null,
+      error: null,
     };
 
     await this.imports.save(importData);

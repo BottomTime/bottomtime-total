@@ -47,6 +47,7 @@ const ImportSession: LogEntryImportEntity = {
   device: 'Test Device',
   deviceId: 'Test Device ID',
   bookmark: 'Test Bookmark',
+  error: null,
 };
 
 dayjs.extend(tz);

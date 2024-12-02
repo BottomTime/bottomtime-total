@@ -1,7 +1,6 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
-  LogEntryDTO,
   LogsImportDTO,
   RecordsAddedResponseDTO,
 } from '@bottomtime/api';
@@ -11,12 +10,12 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Logger,
   Post,
   UseGuards,
 } from '@nestjs/common';
-
-import { EMPTY, Observable, buffer, map } from 'rxjs';
 
 import { AssertAccountOwner, AssertAuth, AssertTargetUser } from '../../users';
 import { ZodValidator } from '../../zod-validator';
@@ -254,15 +253,8 @@ export class LogEntryImportController {
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/LogEntryImportId"
    *     responses:
-   *       201:
-   *         description: The request succeeded and the response body will contain an array of log entries that were successfully imported into the target logbook.
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: array
-   *               items:
-   *                 $ref: "#/components/schemas/LogEntry"
-   *               required: true
+   *       202:
+   *         description: The request was accpeted and the import will be processed. The status can be checked by polling the import session's route.
    *       401:
    *         description: The request failed because the user could not be authenticated.
    *         content:
@@ -297,12 +289,23 @@ export class LogEntryImportController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post('finalize')
-  finalizeImport(
-    @TargetImport() importEntity: LogEntryImport,
-  ): Observable<LogEntryDTO[]> {
-    return importEntity.finalize().pipe(
-      map((e) => e.toJSON()),
-      buffer(EMPTY),
-    );
+  @HttpCode(HttpStatus.ACCEPTED)
+  finalizeImport(@TargetImport() importEntity: LogEntryImport) {
+    let entryCount = 0;
+    importEntity.finalize().subscribe({
+      next: () => {
+        entryCount++;
+      },
+      error: async (error) => {
+        this.log.error(error);
+        // try {
+        // } catch (blah) {}
+      },
+      complete: () => {
+        this.log.log(
+          `Import with ID "${importEntity.id}" finalized. Imported ${entryCount} log entries successfully.`,
+        );
+      },
+    });
   }
 }

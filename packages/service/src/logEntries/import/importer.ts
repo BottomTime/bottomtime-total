@@ -266,7 +266,10 @@ export class Importer {
                 'Marking import as finalized and committing transaction...',
               );
               const finalized = new Date();
-              await this.imports.update(importData.id, { finalized });
+              await this.imports.update(importData.id, {
+                finalized,
+                error: null,
+              });
               await this.importRecords.delete({
                 import: { id: importData.id },
               });
@@ -281,7 +284,9 @@ export class Importer {
       });
   }
 
-  private abortOnError<T>(): OperatorFunction<T, T> {
+  private abortOnError<T>(
+    importData: LogEntryImportEntity,
+  ): OperatorFunction<T, T> {
     return (source) =>
       new Observable<T>((subscriber) => {
         let failed = false;
@@ -297,6 +302,11 @@ export class Importer {
             this.log.error(error);
             try {
               await this.queryRunner.rollbackTransaction();
+              await this.imports.update(importData.id, {
+                error:
+                  error.message ??
+                  'An unknown error occurred and the import was aborted.',
+              });
             } catch (rollbackError) {
               this.log.error(rollbackError);
             }
@@ -362,7 +372,7 @@ export class Importer {
       this.finalizeImport<LogEntry>(importData),
 
       // Add an error handler to abort and rollback the transaction if an error occurs.
-      this.abortOnError<LogEntry>(),
+      this.abortOnError<LogEntry>(importData),
     );
   }
 }

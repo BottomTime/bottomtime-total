@@ -23,6 +23,9 @@ export class LogEntryImportEntity {
   @Column('timestamp', { nullable: true })
   finalized: Date | null = null;
 
+  @Column('varchar', { length: 500, nullable: true })
+  error: string | null = null;
+
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   owner: UserEntity = new UserEntity();
 
@@ -30,6 +33,7 @@ export class LogEntryImportEntity {
   device: string | null = null;
 
   @Column('varchar', { length: 200, nullable: true })
+  @Index()
   deviceId: string | null = null;
 
   @Column('varchar', { length: 200, nullable: true })
