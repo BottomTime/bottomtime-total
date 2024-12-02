@@ -13,6 +13,7 @@ import {
   FriendshipEntity,
   LogEntryAirEntity,
   LogEntryEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSitesModule } from '../../../src/diveSites';
@@ -83,7 +84,11 @@ describe('Log entries E2E security', () => {
   beforeAll(async () => {
     app = await createTestApp({
       imports: [
-        TypeOrmModule.forFeature([LogEntryEntity, LogEntryAirEntity]),
+        TypeOrmModule.forFeature([
+          LogEntryEntity,
+          LogEntryAirEntity,
+          LogEntrySampleEntity,
+        ]),
         DiveSitesModule,
         FriendsModule,
         UsersModule,

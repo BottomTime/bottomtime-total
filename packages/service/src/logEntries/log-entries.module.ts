@@ -6,19 +6,20 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
 } from '../data';
 import { DiveSitesModule } from '../diveSites';
 import { FeaturesModule } from '../features';
 import { FriendsModule } from '../friends';
 import { UsersModule } from '../users';
-import { DefaultImporter } from './import/default-importer';
-import { LogsImporter } from './import/importer';
+import { Importer } from './import/importer';
 import { LogEntryImportFactory } from './import/log-entry-import-factory';
 import { LogEntryImportController } from './import/log-entry-import.controller';
 import { LogEntryImportService } from './import/log-entry-import.service';
 import { LogEntryImportsController } from './import/log-entry-imports.controller';
 import { LogEntriesService } from './log-entries.service';
 import { LogEntryFactory } from './log-entry-factory';
+import { LogEntrySampleController } from './log-entry-sample.controller';
 import { UserLogEntriesController } from './user-log-entries.controller';
 
 @Module({
@@ -26,6 +27,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     TypeOrmModule.forFeature([
       LogEntryEntity,
       LogEntryAirEntity,
+      LogEntrySampleEntity,
       LogEntryImportEntity,
       LogEntryImportRecordEntity,
     ]),
@@ -39,13 +41,11 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     LogEntriesService,
     LogEntryFactory,
     LogEntryImportService,
-    {
-      provide: LogsImporter,
-      useClass: DefaultImporter,
-    },
+    Importer,
   ],
   controllers: [
     UserLogEntriesController,
+    LogEntrySampleController,
     LogEntryImportsController,
     LogEntryImportController,
   ],

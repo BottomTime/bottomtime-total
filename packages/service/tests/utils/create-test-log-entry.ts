@@ -97,6 +97,7 @@ export function createTestLogEntryAir(
 
   data.id = options?.id ?? faker.string.uuid();
   data.ordinal = options?.ordinal ?? 0;
+  data.logEntry = options?.logEntry;
 
   data.name = options?.name ?? `${faker.word.adjective()} ${faker.word.noun()}`;
   data.material =
@@ -190,7 +191,10 @@ export function createTestLogEntry(
     null;
 
   if (options?.air) {
-    data.air = options.air;
+    data.air = options.air.map((air) => ({
+      ...air,
+      logEntry: { id: data.id } as LogEntryEntity,
+    }));
   } else {
     let airCount = faker.number.int({ min: 1, max: 100 });
 
@@ -201,6 +205,7 @@ export function createTestLogEntry(
     data.air = Array.from({ length: airCount }, (_, i) =>
       createTestLogEntryAir({
         ordinal: i,
+        logEntry: { id: data.id } as LogEntryEntity,
       }),
     );
   }

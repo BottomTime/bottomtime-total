@@ -13,12 +13,14 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../../src/data';
 import { ConfigCatClient } from '../../../../src/dependencies';
 import { DiveSitesModule } from '../../../../src/diveSites';
 import { FeaturesModule } from '../../../../src/features';
 import { LogEntriesService, LogEntryFactory } from '../../../../src/logEntries';
+import { Importer } from '../../../../src/logEntries/import/importer';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
 import { LogEntryImportsController } from '../../../../src/logEntries/import/log-entry-imports.controller';
@@ -68,6 +70,7 @@ describe('Import log entries E2E tests', () => {
           TypeOrmModule.forFeature([
             UserEntity,
             LogEntryAirEntity,
+            LogEntrySampleEntity,
             LogEntryEntity,
             LogEntryImportEntity,
             LogEntryImportRecordEntity,
@@ -81,6 +84,7 @@ describe('Import log entries E2E tests', () => {
           LogEntryImportFactory,
           LogEntryFactory,
           LogEntriesService,
+          Importer,
         ],
         controllers: [LogEntryImportsController],
       },

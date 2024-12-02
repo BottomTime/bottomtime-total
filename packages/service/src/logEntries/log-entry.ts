@@ -7,6 +7,7 @@ import {
   LogEntryDTO,
   LogEntryDepthsDTO,
   LogEntryEquipmentDTO,
+  LogEntrySampleDTO,
   LogEntryTimingDTO,
   SuccinctLogEntryDTO,
   SuccinctProfileDTO,
@@ -16,16 +17,22 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
-import { Logger } from '@nestjs/common';
+import { ConflictException, Logger } from '@nestjs/common';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
 import 'dayjs/plugin/utc';
-import { Repository } from 'typeorm';
+import { Observable, bufferCount, concatMap, from, map } from 'rxjs';
+import { In, Repository } from 'typeorm';
 
-import { LogEntryAirEntity, LogEntryEntity } from '../data';
+import {
+  LogEntryAirEntity,
+  LogEntryEntity,
+  LogEntrySampleEntity,
+} from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
 import { LogEntryAirUtils } from './log-entry-air-utils';
+import { LogEntrySampleUtils } from './log-entry-sample-utils';
 
 const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 
@@ -277,7 +284,6 @@ class EntryTiming {
 
 export class LogEntry {
   private readonly log = new Logger(LogEntry.name);
-  private airTanks: LogEntryAirDTO[];
 
   readonly conditions: EntryConditions;
   readonly depths: EntryDepths;
@@ -286,11 +292,11 @@ export class LogEntry {
 
   constructor(
     private readonly Entries: Repository<LogEntryEntity>,
-    private readonly EntriesAir: Repository<LogEntryAirEntity>,
+    private readonly EntryAir: Repository<LogEntryAirEntity>,
+    private readonly EntrySamples: Repository<LogEntrySampleEntity>,
     private readonly siteFactory: DiveSiteFactory,
     private readonly data: LogEntryEntity,
   ) {
-    this.airTanks = data.air?.map(LogEntryAirUtils.entityToDTO) ?? [];
     this.conditions = new EntryConditions(data);
     this.depths = new EntryDepths(data);
     this.equipment = new EntryEquipment(data);
@@ -341,11 +347,17 @@ export class LogEntry {
   }
 
   // Air consumption
-  get air(): LogEntryAirDTO[] {
-    return this.airTanks;
+  get air(): readonly LogEntryAirDTO[] {
+    return (
+      this.data.air
+        ?.sort((a, b) => a.ordinal - b.ordinal)
+        .map(LogEntryAirUtils.entityToDTO) ?? []
+    );
   }
-  set air(values: LogEntryAirDTO[]) {
-    this.airTanks = values;
+  set air(values: readonly LogEntryAirDTO[]) {
+    this.data.air = values.map((air, ordinal) =>
+      LogEntryAirUtils.dtoToEntity(air, ordinal, this.id),
+    );
   }
 
   // Misc.
@@ -363,6 +375,35 @@ export class LogEntry {
     this.data.tags = value;
   }
 
+  private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, number> {
+    const batchSize = 1000;
+    let totalCount = 0;
+    let skip = 0;
+    let batch: LogEntrySampleEntity[];
+
+    do {
+      this.log.debug(
+        `Querying for batch of data samples for log entry "${this.id}"...`,
+      );
+      batch = await this.EntrySamples.find({
+        where: { logEntry: { id: this.id } },
+        order: { timeOffset: 'ASC' },
+        skip,
+        take: batchSize,
+      });
+      totalCount += batch.length;
+
+      for (const sample of batch) {
+        yield sample;
+      }
+
+      skip += batchSize;
+    } while (batch.length === batchSize);
+
+    this.log.debug('Finished loading samples.');
+    return totalCount;
+  }
+
   toJSON(): LogEntryDTO {
     return {
       id: this.id,
@@ -372,7 +413,7 @@ export class LogEntry {
 
       logNumber: this.logNumber,
       site: this.site?.toJSON(),
-      air: this.air,
+      air: [...this.air],
 
       conditions: this.conditions.toJSON(),
       depths: this.depths.toJSON(),
@@ -403,25 +444,88 @@ export class LogEntry {
 
   async save(): Promise<void> {
     this.log.debug(`Attempting to save log entry "${this.id}"...`);
-
-    this.data.air = this.airTanks.map((tank, index) => ({
-      ...LogEntryAirUtils.dtoToEntity(tank),
-      ordinal: index,
-    }));
     this.data.updatedAt = new Date();
 
-    await this.EntriesAir.delete({ logEntry: { id: this.data.id } });
+    await this.EntryAir.delete({ logEntry: { id: this.data.id } });
     await this.Entries.save(this.data);
-    await this.EntriesAir.save(
-      this.data.air.map((tank) => ({
-        ...tank,
-        logEntry: { id: this.data.id },
-      })),
-    );
+
+    if (this.data.air) {
+      await this.EntryAir.delete({ logEntry: { id: this.data.id } });
+      await this.EntryAir.save(this.data.air);
+    }
   }
 
   async delete(): Promise<void> {
     this.log.debug(`Attempting to delete log entry "${this.id}"...`);
     await this.Entries.delete(this.id);
+  }
+
+  getSamples(): Observable<LogEntrySampleDTO> {
+    return from(this.loadSamples()).pipe(map(LogEntrySampleUtils.entityToDTO));
+  }
+
+  async getSampleCount(): Promise<number> {
+    return await this.EntrySamples.countBy({ logEntry: { id: this.id } });
+  }
+
+  async saveSamples(samples: Observable<LogEntrySampleDTO>): Promise<void> {
+    await new Promise<void>((complete, error) => {
+      samples
+        .pipe(
+          map((sample) => LogEntrySampleUtils.dtoToEntity(sample, this.id)),
+          bufferCount(500),
+          concatMap(async (batch) => {
+            const conflict = await this.EntrySamples.find({
+              where: {
+                logEntry: { id: this.id },
+                timeOffset: In(batch.map((s) => s.timeOffset)),
+              },
+              order: { timeOffset: 'ASC' },
+              select: ['timeOffset'],
+            });
+            if (conflict.length) {
+              throw new ConflictException(
+                'Sample time offsets must be unique.',
+                {
+                  cause: {
+                    conflictingOffsets: conflict.map(
+                      (sample) => sample.timeOffset,
+                    ),
+                  },
+                },
+              );
+            }
+            await this.EntrySamples.save(batch);
+          }),
+        )
+        .subscribe({ complete, error });
+    });
+
+    const [maxDepth, avgDepth] = await Promise.all([
+      // Casting to "any" is necessary here due to a limitation in the TypeORM library:
+      // Only NOT NULL columns can be used in aggregate functions - despite the fact that
+      // Postgres permits performing aggregate functions on nullable columns.
+
+      /* eslint-disable-next-line */
+      this.EntrySamples.maximum('depth' as any, {
+        logEntry: { id: this.id },
+      }),
+      /* eslint-disable-next-line */
+      this.EntrySamples.average('depth' as any, {
+        logEntry: { id: this.id },
+      }),
+    ]);
+
+    if (maxDepth) this.depths.maxDepth = maxDepth;
+    if (avgDepth) this.depths.averageDepth = avgDepth;
+
+    await this.save();
+  }
+
+  async clearSamples(): Promise<number> {
+    const { affected } = await this.EntrySamples.delete({
+      logEntry: { id: this.id },
+    });
+    return typeof affected === 'number' ? affected : 0;
   }
 }

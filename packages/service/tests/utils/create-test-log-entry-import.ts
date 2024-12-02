@@ -23,6 +23,7 @@ const LogEntryImportSchema = z.object({
   device: z.string().nullable(),
   deviceId: z.string().nullable(),
   bookmark: z.string().nullable(),
+  error: z.string().nullable().default(null),
 });
 
 export function createTestLogEntryImport(
@@ -45,6 +46,7 @@ export function createTestLogEntryImport(
         { probability: 0.85 },
       ) ??
       null,
+    error: options?.error ?? null,
   };
 
   return data;

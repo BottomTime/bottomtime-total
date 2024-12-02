@@ -1,8 +1,6 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
-  LogEntryDTO,
-  LogEntrySchema,
   UserRole,
 } from '@bottomtime/api';
 import { LogImportFeature } from '@bottomtime/common';
@@ -15,6 +13,7 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Server } from 'http';
 import { Mock } from 'moq.ts';
+import { EMPTY } from 'rxjs';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
@@ -24,14 +23,14 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../../src/data';
 import { ConfigCatClient } from '../../../../src/dependencies';
 import { DiveSiteFactory, DiveSitesModule } from '../../../../src/diveSites';
 import { FeaturesModule } from '../../../../src/features';
 import { LogEntriesService, LogEntryFactory } from '../../../../src/logEntries';
-import { DefaultImporter } from '../../../../src/logEntries/import/default-importer';
-import { LogsImporter } from '../../../../src/logEntries/import/importer';
+import { Importer } from '../../../../src/logEntries/import/importer';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportController } from '../../../../src/logEntries/import/log-entry-import.controller';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
@@ -59,25 +58,6 @@ const OtherUserData: Partial<UserEntity> = {
   username: 'other_guy23',
 };
 
-function compare(
-  actual: LogEntryDTO,
-  expected: LogEntryDTO | CreateOrUpdateLogEntryParamsDTO,
-) {
-  expect(actual.timing).toEqual(expected.timing);
-  expect(actual.conditions).toEqual(expected.conditions);
-  expect(actual.creator.userId).toEqual(OwnerData.id);
-  expect(actual.depths).toEqual(expected.depths);
-  expect(actual.equipment).toEqual(expected.equipment);
-  expect(actual.air?.sort((a, b) => a.name.localeCompare(b.name))).toEqual(
-    expected.air?.sort((a, b) => a.name.localeCompare(b.name)),
-  );
-  expect(actual.id).toHaveLength(36);
-  expect(actual.logNumber).toEqual(expected.logNumber);
-  expect(actual.notes).toEqual(expected.notes);
-  expect(actual.samples).toEqual(expected.samples);
-  expect(actual.tags).toEqual(expected.tags);
-}
-
 function getBaseUrl(importId: string, username?: string): string {
   return `/api/users/${username || OwnerData.username}/logImports/${importId}`;
 }
@@ -96,6 +76,7 @@ describe('Log entry import session E2E tests', () => {
   let Imports: Repository<LogEntryImportEntity>;
   let ImportRecords: Repository<LogEntryImportRecordEntity>;
   let entryFactory: LogEntryFactory;
+  let importer: Importer;
 
   let owner: UserEntity;
   let otherUser: UserEntity;
@@ -106,7 +87,19 @@ describe('Log entry import session E2E tests', () => {
   let testData: LogEntryImportEntity[];
 
   beforeAll(async () => {
+    Users = dataSource.getRepository(UserEntity);
+    Entries = dataSource.getRepository(LogEntryEntity);
+    Imports = dataSource.getRepository(LogEntryImportEntity);
+    ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
+
     features = new ConfigCatClientMock();
+    entryFactory = new LogEntryFactory(
+      Entries,
+      dataSource.getRepository(LogEntryAirEntity),
+      dataSource.getRepository(LogEntrySampleEntity),
+      new Mock<DiveSiteFactory>().object(),
+    );
+    importer = new Importer(dataSource, entryFactory);
     app = await createTestApp(
       {
         imports: [
@@ -114,6 +107,7 @@ describe('Log entry import session E2E tests', () => {
             UserEntity,
             LogEntryEntity,
             LogEntryAirEntity,
+            LogEntrySampleEntity,
             LogEntryImportEntity,
             LogEntryImportRecordEntity,
           ]),
@@ -126,10 +120,7 @@ describe('Log entry import session E2E tests', () => {
           LogEntryImportService,
           LogEntryFactory,
           LogEntriesService,
-          {
-            provide: LogsImporter,
-            useFactory: () => new DefaultImporter(),
-          },
+          Importer,
         ],
         controllers: [LogEntryImportController],
       },
@@ -137,14 +128,13 @@ describe('Log entry import session E2E tests', () => {
         provide: ConfigCatClient,
         use: features,
       },
+      {
+        provide: Importer,
+        use: importer,
+      },
     );
     await app.init();
     server = app.getHttpAdapter().getInstance();
-
-    Users = dataSource.getRepository(UserEntity);
-    Entries = dataSource.getRepository(LogEntryEntity);
-    Imports = dataSource.getRepository(LogEntryImportEntity);
-    ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
 
     owner = createTestUser(OwnerData);
     otherUser = createTestUser(OtherUserData);
@@ -158,12 +148,6 @@ describe('Log entry import session E2E tests', () => {
       createAuthHeader(otherUser.id),
       createAuthHeader(admin.id),
     ]);
-
-    entryFactory = new LogEntryFactory(
-      Entries,
-      dataSource.getRepository(LogEntryAirEntity),
-      new Mock<DiveSiteFactory>().object(),
-    );
   });
 
   beforeEach(async () => {
@@ -527,65 +511,29 @@ describe('Log entry import session E2E tests', () => {
     });
 
     it('will finalize an import session', async () => {
-      const { body } = await request(server)
+      const importSpy = jest.spyOn(importer, 'doImport').mockReturnValue(EMPTY);
+      await request(server)
         .post(getFinalizeUrl(importSession.id))
         .set(...ownerAuthToken)
-        .expect(201);
+        .expect(202);
 
-      const savedImport = await Imports.findOneByOrFail({
-        id: importSession.id,
-      });
-      expect(savedImport.finalized!.valueOf()).toBeCloseTo(Date.now(), -3);
-      await expect(
-        ImportRecords.existsBy({ import: { id: importSession.id } }),
-      ).resolves.toBe(false);
-
-      const newLogs = await Entries.find({ relations: ['owner', 'air'] });
-      expect(newLogs).toHaveLength(importRecords.length);
-
-      let actual = newLogs
-        .map((e) => entryFactory.createLogEntry(e).toJSON())
-        .sort((a, b) => a.id.localeCompare(b.id));
-      actual.forEach((e, index) => {
-        compare(e, importRecords[index]);
-      });
-
-      expect(body).toHaveLength(importRecords.length);
-      actual = LogEntrySchema.array().parse(body);
-      actual.forEach((e, index) => {
-        compare(e, importRecords[index]);
-      });
+      expect(importSpy).toHaveBeenCalled();
+      const [importData, owner] = importSpy.mock.calls[0];
+      expect(importData.id).toBe(importSession.id);
+      expect(owner.id).toBe(OwnerData.id);
     });
 
     it("will allow an admin to finalize another user's import", async () => {
-      const { body } = await request(server)
+      const importSpy = jest.spyOn(importer, 'doImport').mockReturnValue(EMPTY);
+      await request(server)
         .post(getFinalizeUrl(importSession.id))
         .set(...adminAuthToken)
-        .expect(201);
+        .expect(202);
 
-      const savedImport = await Imports.findOneByOrFail({
-        id: importSession.id,
-      });
-      expect(savedImport.finalized!.valueOf()).toBeCloseTo(Date.now(), -3);
-      await expect(
-        ImportRecords.existsBy({ import: { id: importSession.id } }),
-      ).resolves.toBe(false);
-
-      const newLogs = await Entries.find({ relations: ['owner', 'air'] });
-      expect(newLogs).toHaveLength(importRecords.length);
-
-      let actual = newLogs
-        .map((e) => entryFactory.createLogEntry(e).toJSON())
-        .sort((a, b) => a.id.localeCompare(b.id));
-      actual.forEach((e, index) => {
-        compare(e, importRecords[index]);
-      });
-
-      expect(body).toHaveLength(importRecords.length);
-      actual = LogEntrySchema.array().parse(body);
-      actual.forEach((e, index) => {
-        compare(e, importRecords[index]);
-      });
+      expect(importSpy).toHaveBeenCalled();
+      const [importData, owner] = importSpy.mock.calls[0];
+      expect(importData.id).toBe(importSession.id);
+      expect(owner.id).toBe(OwnerData.id);
     });
 
     it('will return a 401 response if the user is not authenticated', async () => {

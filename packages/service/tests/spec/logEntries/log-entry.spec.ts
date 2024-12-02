@@ -15,6 +15,7 @@ import {
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import { from, map } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
@@ -22,12 +23,15 @@ import {
   DiveSiteEntity,
   LogEntryAirEntity,
   LogEntryEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSiteFactory } from '../../../src/diveSites/dive-site-factory';
 import { LogEntry } from '../../../src/logEntries';
 import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
+import { LogEntrySampleUtils } from '../../../src/logEntries/log-entry-sample-utils';
 import { dataSource } from '../../data-source';
+import TestSamples from '../../fixtures/dive-profile.json';
 import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
 import { createTestDiveSite } from '../../utils/create-test-dive-site';
 import { createTestLogEntry } from '../../utils/create-test-log-entry';
@@ -160,6 +164,7 @@ describe('Log Entry class', () => {
   let Users: Repository<UserEntity>;
   let Entries: Repository<LogEntryEntity>;
   let EntriesAir: Repository<LogEntryAirEntity>;
+  let EntrySamples: Repository<LogEntrySampleEntity>;
   let Sites: Repository<DiveSiteEntity>;
 
   let user: UserEntity;
@@ -172,6 +177,7 @@ describe('Log Entry class', () => {
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     EntriesAir = dataSource.getRepository(LogEntryAirEntity);
+    EntrySamples = dataSource.getRepository(LogEntrySampleEntity);
     Users = dataSource.getRepository(UserEntity);
     Sites = dataSource.getRepository(DiveSiteEntity);
 
@@ -183,7 +189,13 @@ describe('Log Entry class', () => {
 
   beforeEach(async () => {
     data = createTestLogEntry(user, TestLogEntryData);
-    logEntry = new LogEntry(Entries, EntriesAir, siteFactory, data);
+    logEntry = new LogEntry(
+      Entries,
+      EntriesAir,
+      EntrySamples,
+      siteFactory,
+      data,
+    );
 
     await Users.save(user);
     await Sites.save(diveSite);
@@ -471,7 +483,13 @@ describe('Log Entry class', () => {
 
     it('will return an empty array if no airTanks does not exist', () => {
       data.air = undefined;
-      logEntry = new LogEntry(Entries, EntriesAir, siteFactory, data);
+      logEntry = new LogEntry(
+        Entries,
+        EntriesAir,
+        EntrySamples,
+        siteFactory,
+        data,
+      );
       expect(logEntry.air).toHaveLength(0);
     });
 
@@ -508,6 +526,7 @@ describe('Log Entry class', () => {
           ...tank,
           ordinal: index,
           id: saved.air![index].id,
+          logEntry: undefined,
         })),
       );
 
@@ -553,46 +572,14 @@ describe('Log Entry class', () => {
       expect(saved.air).toHaveLength(3);
       expect(saved.air).toEqual(
         updated.map((tank, index) => ({
-          ...LogEntryAirUtils.dtoToEntity(tank),
+          ...LogEntryAirUtils.dtoToEntity(tank, index, saved.id),
           ordinal: index,
           id: saved.air![index].id,
+          logEntry: undefined,
         })),
       );
 
       await expect(EntriesAir.count()).resolves.toBe(6);
-    });
-
-    it('will save changes made directly to the air tanks array', async () => {
-      await logEntry.save();
-      logEntry.air[1].endPressure = 888;
-      logEntry.air.push({
-        count: 1,
-        endPressure: 1111,
-        material: TankMaterial.Steel,
-        name: 'HP120',
-        o2Percent: 0.32,
-        hePercent: 0.5,
-        pressureUnit: PressureUnit.PSI,
-        startPressure: 3500,
-        volume: 120,
-        workingPressure: 3442,
-      });
-      await logEntry.save();
-
-      const saved = await Entries.findOneOrFail({
-        where: { id: logEntry.id },
-        relations: ['air'],
-      });
-      expect(saved.air).toHaveLength(4);
-      expect(saved.air).toEqual(
-        logEntry.air.map((tank, index) => ({
-          ...LogEntryAirUtils.dtoToEntity(tank),
-          ordinal: index,
-          id: saved.air![index].id,
-        })),
-      );
-
-      await expect(EntriesAir.count()).resolves.toBe(7);
     });
 
     it('will remove all air tanks if the array is cleared', async () => {
@@ -607,6 +594,110 @@ describe('Log Entry class', () => {
       expect(saved.air).toHaveLength(0);
 
       await expect(EntriesAir.count()).resolves.toBe(3);
+    });
+  });
+
+  describe('when working with entry samples', () => {
+    let sampleData: LogEntrySampleEntity[];
+
+    beforeAll(() => {
+      sampleData = TestSamples.map((sample) => ({
+        ...(sample as LogEntrySampleEntity),
+        logEntry: { id: TestLogEntryData.id } as LogEntryEntity,
+      }));
+    });
+
+    beforeEach(async () => {
+      await logEntry.save();
+    });
+
+    it('will return an empty Observable if the log entry does not have any data samples', (cb) => {
+      let count = 0;
+      logEntry.getSamples().subscribe({
+        next: () => {
+          count++;
+        },
+        error: cb,
+        complete: () => {
+          expect(count).toBe(0);
+          cb();
+        },
+      });
+    });
+
+    it('will return samples in batches via Observable', (cb) => {
+      let count = 0;
+      EntrySamples.save(sampleData)
+        .then(() => {
+          logEntry.getSamples().subscribe({
+            next: (sample) => {
+              expect(sample.offset).toEqual(sampleData[count].timeOffset);
+              expect(sample.depth).toEqual(sampleData[count].depth);
+              expect(sample.temperature).toEqual(sampleData[count].temperature);
+              count++;
+            },
+            error: cb,
+            complete: () => {
+              expect(count).toBe(sampleData.length);
+              cb();
+            },
+          });
+        })
+        .catch(cb);
+    });
+
+    it('will save sample data to a log entry', async () => {
+      await logEntry.saveSamples(
+        from(sampleData).pipe(map(LogEntrySampleUtils.entityToDTO)),
+      );
+      const [saved, count] = await EntrySamples.findAndCount({
+        where: { logEntry: { id: logEntry.id } },
+        order: { timeOffset: 'ASC' },
+        select: { id: true, timeOffset: true, depth: true, temperature: true },
+        take: 200,
+      });
+      expect(count).toEqual(sampleData.length);
+      saved.forEach((sample, index) => {
+        expect(sample.timeOffset).toEqual(sampleData[index].timeOffset);
+        expect(sample.depth).toEqual(sampleData[index].depth);
+        expect(sample.temperature).toEqual(sampleData[index].temperature);
+      });
+    });
+
+    it('will save sample data to a log entry in batches', async () => {
+      await logEntry.saveSamples(
+        from(sampleData.slice(0, 100)).pipe(
+          map(LogEntrySampleUtils.entityToDTO),
+        ),
+      );
+      await logEntry.saveSamples(
+        from(sampleData.slice(100, 200)).pipe(
+          map(LogEntrySampleUtils.entityToDTO),
+        ),
+      );
+      const [saved, count] = await EntrySamples.findAndCount({
+        where: { logEntry: { id: logEntry.id } },
+        order: { timeOffset: 'ASC' },
+        select: { id: true, timeOffset: true, depth: true, temperature: true },
+      });
+      expect(count).toEqual(200);
+      saved.forEach((sample, index) => {
+        expect(sample.timeOffset).toEqual(sampleData[index].timeOffset);
+        expect(sample.depth).toEqual(sampleData[index].depth);
+        expect(sample.temperature).toEqual(sampleData[index].temperature);
+      });
+    });
+
+    it('will clear samples from a log entry', async () => {
+      await EntrySamples.save(sampleData.slice(0, 100));
+      await expect(logEntry.clearSamples()).resolves.toBe(100);
+      await expect(
+        EntrySamples.existsBy({ logEntry: { id: logEntry.id } }),
+      ).resolves.toBe(false);
+    });
+
+    it('will do nothing when clearing samples from a log entry that does not have any', async () => {
+      await expect(logEntry.clearSamples()).resolves.toBe(0);
     });
   });
 });

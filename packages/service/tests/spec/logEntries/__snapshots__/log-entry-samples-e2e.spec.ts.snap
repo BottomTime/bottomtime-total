@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Log Entry Samples E2E when adding samples to a log entry will return a 400 response if the request body array does not contain any elements 1`] = `
+{
+  "issues": [
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Array must contain at least 1 element(s)",
+      "minimum": 1,
+      "path": [],
+      "type": "array",
+    },
+  ],
+}
+`;
+
+exports[`Log Entry Samples E2E when adding samples to a log entry will return a 400 response if the request body is empty 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Expected array, received object",
+      "path": [],
+      "received": "object",
+    },
+  ],
+}
+`;
+
+exports[`Log Entry Samples E2E when adding samples to a log entry will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Expected array, received object",
+      "path": [],
+      "received": "object",
+    },
+  ],
+}
+`;
+
+exports[`Log Entry Samples E2E when adding samples to a log entry will return a 409 response if the log entry already has samples with conflicting offsets 1`] = `
+{
+  "conflictingOffsets": [
+    10000,
+    11000,
+    12000,
+    13000,
+    14000,
+  ],
+}
+`;

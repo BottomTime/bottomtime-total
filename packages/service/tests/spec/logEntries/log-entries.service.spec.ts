@@ -16,12 +16,14 @@ import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import fs from 'fs/promises';
 import path from 'path';
+import { toArray } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import {
   DiveSiteEntity,
   LogEntryAirEntity,
   LogEntryEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSiteFactory, DiveSitesService } from '../../../src/diveSites';
@@ -37,6 +39,7 @@ import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
 import TestUserData from '../../fixtures/user-search-data.json';
 import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
+import { createTestDiveProfile } from '../../utils/create-test-dive-profile';
 import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
 import {
   createTestLogEntry,
@@ -50,6 +53,7 @@ dayjs.extend(utc);
 describe('Log entries service', () => {
   let Entries: Repository<LogEntryEntity>;
   let EntriesAir: Repository<LogEntryAirEntity>;
+  let EntrySamples: Repository<LogEntrySampleEntity>;
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
   let siteFactory: DiveSiteFactory;
@@ -65,11 +69,17 @@ describe('Log entries service', () => {
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
     EntriesAir = dataSource.getRepository(LogEntryAirEntity);
+    EntrySamples = dataSource.getRepository(LogEntrySampleEntity);
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
 
     siteFactory = createDiveSiteFactory();
-    entryFactory = new LogEntryFactory(Entries, EntriesAir, siteFactory);
+    entryFactory = new LogEntryFactory(
+      Entries,
+      EntriesAir,
+      EntrySamples,
+      siteFactory,
+    );
 
     diveSitesService = new DiveSitesService(DiveSites, siteFactory);
     service = new LogEntriesService(Entries, entryFactory, diveSitesService);
@@ -122,6 +132,28 @@ describe('Log entries service', () => {
       JSON.stringify(data, null, 2),
       'utf-8',
     );
+  });
+
+  it.skip('will generate a dive profile', () => {
+    createTestDiveProfile('7dfcb883-110a-4941-bd48-d5c374f6abc6', {
+      highTemp: 22,
+      lowTemp: 15,
+      descentTime: 55,
+      duration: 3354,
+      maxDepth: 28.2,
+      timeAtDepth: 0.5,
+      thermocline: 18.1,
+    })
+      .pipe(toArray())
+      .subscribe({
+        next: async (stuff) => {
+          await fs.writeFile(
+            path.resolve(__dirname, '../../fixtures/dive-profile.json'),
+            JSON.stringify(stuff, null, 2),
+            'utf-8',
+          );
+        },
+      });
   });
 
   describe('when creating a new log entry', () => {
@@ -293,9 +325,9 @@ describe('Log entries service', () => {
       expect(saved.notes).toEqual(options.notes);
       expect(saved.air).toEqual(
         options.air!.map((tank, index) => ({
-          ...LogEntryAirUtils.dtoToEntity(tank),
+          ...LogEntryAirUtils.dtoToEntity(tank, index + 1, saved.id),
           id: saved.air![index].id,
-          ordinal: index,
+          logEntry: undefined,
         })),
       );
     });

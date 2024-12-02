@@ -212,6 +212,14 @@ export const RatingRangeSchema = z
   });
 export type RatingRange = z.infer<typeof RatingRangeSchema>;
 
+export const RecordsAddedResponseSchema = z.object({
+  addedRecords: z.number(),
+  totalRecords: z.number(),
+});
+export type RecordsAddedResponseDTO = z.infer<
+  typeof RecordsAddedResponseSchema
+>;
+
 export const SlugRegex = /^[a-z0-9\-$_.+!*'()]+$/;
 
 export const SuccessFailResponseSchema = z.object({

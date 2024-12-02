@@ -6,6 +6,7 @@ exports[`Log entries service when creating a new log entry will create a new log
     {
       "count": 1,
       "endPressure": 1210,
+      "hePercent": undefined,
       "material": "fe",
       "name": "ornate parcel",
       "o2Percent": 25.6,

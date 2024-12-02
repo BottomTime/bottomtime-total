@@ -11,10 +11,12 @@ import {
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
+  LogEntrySampleEntity,
   UserEntity,
 } from '../../../../src/data';
 import { DiveSiteFactory } from '../../../../src/diveSites';
 import { LogEntryFactory } from '../../../../src/logEntries';
+import { Importer } from '../../../../src/logEntries/import/importer';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
 import { User, UserFactory } from '../../../../src/users';
@@ -64,12 +66,14 @@ describe('Log Entry Import Service', () => {
     const entryFactory = new LogEntryFactory(
       Entries,
       EntriesAir,
+      dataSource.getRepository(LogEntrySampleEntity),
       new Mock<DiveSiteFactory>().object(),
     );
     importFactory = new LogEntryImportFactory(
-      dataSource,
+      Imports,
+      ImportRecords,
       userFactory,
-      entryFactory,
+      new Importer(dataSource, entryFactory),
     );
     service = new LogEntryImportService(Imports, importFactory);
   });
