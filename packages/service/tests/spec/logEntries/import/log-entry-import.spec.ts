@@ -1,6 +1,7 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  DepthUnit,
 } from '@bottomtime/api';
 
 import { MethodNotAllowedException } from '@nestjs/common';
@@ -9,6 +10,7 @@ import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Mock } from 'moq.ts';
+import { concatMap, from, lastValueFrom, map, range, toArray } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 import { ZodError } from 'zod';
@@ -22,18 +24,14 @@ import {
   UserEntity,
 } from '../../../../src/data';
 import { DiveSiteFactory } from '../../../../src/diveSites';
-import {
-  LogEntry,
-  LogEntryFactory,
-  LogEntryImport,
-} from '../../../../src/logEntries';
+import { LogEntryFactory, LogEntryImport } from '../../../../src/logEntries';
 import { LogEntrySampleUtils } from '../../../../src/logEntries/log-entry-sample-utils';
 import { UserFactory } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
 import SampleData from '../../../fixtures/dive-profile.json';
 import TestData from '../../../fixtures/import-records.json';
 import LogEntryData from '../../../fixtures/log-entries.json';
-import { createTestUser } from '../../../utils';
+import { createTestDiveProfile, createTestUser } from '../../../utils';
 
 const ImportSessionId = '3d540444-9e2c-4c13-a90a-8b499cd5d3e3';
 const OwnerData = createTestUser({
@@ -281,15 +279,9 @@ describe('Log Entry Import class', () => {
 
     it('will finalize an import with log entries', async () => {
       await ImportRecords.save(TestData);
-      const observer = logEntryImport.finalize();
-      const results = await new Promise<LogEntry[]>((resolve, reject) => {
-        const generatedEntries: LogEntry[] = [];
-        observer.subscribe({
-          next: (entry) => generatedEntries.push(entry),
-          error: reject,
-          complete: () => resolve(generatedEntries),
-        });
-      });
+      const results = await lastValueFrom(
+        logEntryImport.finalize().pipe(toArray()),
+      );
 
       expect(results).toHaveLength(TestData.length);
 
@@ -311,6 +303,10 @@ describe('Log Entry Import class', () => {
       expect(saved).toHaveLength(TestData.length);
 
       // TODO: Check that the saved entries match the expected data
+      saved.forEach((entry) => {
+        expect(entry.deviceId).toBe(logEntryImport.deviceId);
+        expect(entry.deviceName).toBe(logEntryImport.device);
+      });
     });
 
     it('will import sample data from a dive computer', async () => {
@@ -339,16 +335,10 @@ describe('Log Entry Import class', () => {
       importData[1].data = JSON.stringify(parsedData[1]);
 
       await ImportRecords.save(importData);
-      const observer = logEntryImport.finalize();
 
-      const results = await new Promise<LogEntry[]>((resolve, reject) => {
-        const generatedEntries: LogEntry[] = [];
-        observer.subscribe({
-          next: (entry) => generatedEntries.push(entry),
-          error: (error) => reject(error),
-          complete: () => resolve(generatedEntries),
-        });
-      });
+      const results = await lastValueFrom(
+        logEntryImport.finalize().pipe(toArray()),
+      );
 
       expect(results).toHaveLength(2);
 
@@ -368,20 +358,12 @@ describe('Log Entry Import class', () => {
         expect(sample.temperature).toEqual(SampleData[index].temperature);
         expect(sample.timeOffset).toEqual(SampleData[index].timeOffset);
       });
-    }, 20000);
+    }, 10000);
 
     it('will throw an exception if the import does not yet have log entries', async () => {
-      const observer = logEntryImport.finalize();
       await ImportRecords.delete({ import: { id: logEntryImport.id } });
       await expect(
-        new Promise<LogEntry[]>((resolve, reject) => {
-          const generatedEntries: LogEntry[] = [];
-          observer.subscribe({
-            next: (entry) => generatedEntries.push(entry),
-            error: reject,
-            complete: () => resolve(generatedEntries),
-          });
-        }),
+        lastValueFrom(logEntryImport.finalize().pipe(toArray())),
       ).rejects.toThrow(MethodNotAllowedException);
 
       expect(logEntryImport.finalized).toBe(false);
@@ -398,16 +380,8 @@ describe('Log Entry Import class', () => {
         data: JSON.stringify({ nope: true }),
       });
 
-      const observer = logEntryImport.finalize();
       await expect(
-        new Promise<LogEntry[]>((resolve, reject) => {
-          const generatedEntries: LogEntry[] = [];
-          observer.subscribe({
-            next: (entry) => generatedEntries.push(entry),
-            error: reject,
-            complete: () => resolve(generatedEntries),
-          });
-        }),
+        lastValueFrom(logEntryImport.finalize().pipe(toArray())),
       ).rejects.toThrow(ZodError);
 
       expect(logEntryImport.finalized).toBe(false);
@@ -439,5 +413,58 @@ describe('Log Entry Import class', () => {
         MethodNotAllowedException,
       );
     });
+
+    // This is meant as a bit of a stress test.
+    // Feel free to run locally, but running this in CI is not recommended!! 💀
+    it.skip('will import a large number of records', async () => {
+      const importData = await lastValueFrom(
+        range(0, TestData.length).pipe(
+          concatMap(() =>
+            from(createTestDiveProfile('')).pipe(
+              map(LogEntrySampleUtils.entityToDTO),
+              toArray(),
+            ),
+          ),
+          map((profile, index) => {
+            const parsed = CreateOrUpdateLogEntryParamsSchema.parse(
+              JSON.parse(TestData[index].data),
+            );
+            parsed.depths = { depthUnit: DepthUnit.Meters };
+            parsed.depths!.averageDepth = undefined;
+            parsed.depths!.maxDepth = undefined;
+            parsed.samples = profile;
+
+            const record: LogEntryImportRecordEntity = {
+              ...TestData[index],
+              import: logEntryImportData,
+              data: JSON.stringify(parsed),
+            };
+            return record;
+          }),
+          toArray(),
+        ),
+      );
+      await ImportRecords.save(importData);
+
+      const results = await lastValueFrom(
+        logEntryImport.finalize().pipe(toArray()),
+      );
+
+      expect(results).toHaveLength(TestData.length);
+
+      const result = await Entries.findOneByOrFail({ id: results[0].id });
+      expect(result.maxDepth).toBe(
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        await EntrySamples.maximum('depth' as any, {
+          logEntry: { id: results[0].id },
+        }),
+      );
+      expect(result.averageDepth).toBe(
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        await EntrySamples.average('depth' as any, {
+          logEntry: { id: results[0].id },
+        }),
+      );
+    }, 60000);
   });
 });

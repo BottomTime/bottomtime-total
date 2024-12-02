@@ -9,21 +9,22 @@ import {
 import { InjectDataSource } from '@nestjs/typeorm';
 
 import {
+  MonoTypeOperatorFunction,
   Observable,
   OperatorFunction,
   bufferCount,
   concatMap,
   connect,
+  distinctUntilKeyChanged,
   filter,
   from,
   ignoreElements,
   map,
   merge,
-  mergeMap,
   tap,
   throwIfEmpty,
 } from 'rxjs';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { DataSource, In, QueryRunner, Repository } from 'typeorm';
 
 import {
   LogEntryAirEntity,
@@ -31,6 +32,7 @@ import {
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
   LogEntrySampleEntity,
+  UserEntity,
 } from '../../data';
 import { User } from '../../users';
 import { LogEntry } from '../log-entry';
@@ -71,7 +73,7 @@ export class Importer {
     this.log.debug('Starting database transaction to finalize import...');
     await this.queryRunner.startTransaction();
 
-    const batchSize = 50;
+    const batchSize = 20;
     let totalCount = 0;
 
     let skip = 0;
@@ -90,9 +92,7 @@ export class Importer {
 
       totalCount += results.length;
 
-      for (const record of results) {
-        yield record.data;
-      }
+      for (const record of results) yield record.data;
 
       if (results.length < batchSize) break;
       skip += batchSize;
@@ -105,31 +105,71 @@ export class Importer {
     entries: LogEntryEntity[],
   ): Promise<LogEntryEntity[]> {
     this.log.debug(`Saving batch of ${entries.length} log entries...`);
-    await this.entries.save(entries);
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    await this.entries.insert(
+      entries.map(
+        (entry) =>
+          ({
+            ...entry,
+            air: undefined,
+            samples: undefined,
+            owner: { id: entry.owner.id } as UserEntity,
+          } as any),
+      ),
+    );
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     return entries;
   }
 
-  private async updateEntryAggregates(
-    entry: LogEntryEntity,
-  ): Promise<LogEntryEntity> {
+  private async bulkUpdateEntryAggregates(
+    entries: LogEntryEntity[],
+  ): Promise<LogEntryEntity[]> {
     this.log.debug(
-      `Saving updated aggregate values for log entry "${entry.id}" log entries...`,
-      { averageDepth: entry.averageDepth, maxDepth: entry.maxDepth },
+      `Saving updated aggregate values for ${entries.length} log entries...`,
     );
 
-    await this.entries.update(entry.id, {
-      averageDepth: entry.averageDepth,
-      maxDepth: entry.maxDepth,
-    });
+    const ids = entries.map((entry) => entry.id);
+    const [, updateCount] = await this.queryRunner.query(
+      `UPDATE log_entries
+      SET ("averageDepth", "maxDepth") = (
+        SELECT AVG(depth), MAX(depth) FROM log_entry_samples WHERE "logEntryId" = log_entries.id
+      )
+      WHERE id IN(${entries.map((_, i) => `$${i + 1}`).join(', ')})`,
+      ids,
+    );
 
-    return entry;
+    this.log.debug(`${updateCount} records updated with aggregates.`);
+
+    const updatedEntities = await this.entries.find({
+      where: { id: In(ids) },
+      select: { id: true, maxDepth: true, averageDepth: true },
+    });
+    const updatedAggregates = updatedEntities.reduce<
+      Record<string, Pick<LogEntryEntity, 'averageDepth' | 'maxDepth'>>
+    >((map, entity) => {
+      map[entity.id] = {
+        averageDepth: entity.averageDepth,
+        maxDepth: entity.maxDepth,
+      };
+      return map;
+    }, {});
+
+    for (const entry of entries) {
+      if (updatedAggregates[entry.id]) {
+        entry.averageDepth = updatedAggregates[entry.id].averageDepth;
+        entry.maxDepth = updatedAggregates[entry.id].maxDepth;
+      }
+    }
+
+    return entries;
   }
 
   private async saveAir(
     air: LogEntryAirEntity[],
   ): Promise<LogEntryAirEntity[]> {
     this.log.debug(`Saving batch of ${air.length} log entry air data...`);
-    await this.air.save(air);
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    await this.air.insert(air as any);
     return air;
   }
 
@@ -139,22 +179,30 @@ export class Importer {
     this.log.debug(
       `Saving batch of ${samples.length} log entry data samples...`,
     );
-    await this.samples.save(samples);
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    await this.samples.insert(samples as any);
     return samples;
   }
 
-  importAirEntries(): OperatorFunction<LogEntryEntity, never> {
+  private importAirEntries(): OperatorFunction<LogEntryEntity, never> {
+    let totalAirEntries = 0;
     return (source) =>
       source.pipe(
         // Stream individual air entries from each log entry...
         concatMap((entry) => from(entry.air ?? [])),
 
         // ...and write them to the database in batches of 500.
-        bufferCount(500),
+        bufferCount(1000),
         concatMap((batch) => from(this.saveAir(batch))),
 
         tap({
-          complete: () => this.log.debug('Finished saving air entries'),
+          next: (batch) => {
+            totalAirEntries += batch.length;
+          },
+          complete: () =>
+            this.log.debug(
+              `Finished saving ${totalAirEntries} total air entries`,
+            ),
         }),
 
         // Supress output of this observable - we won't need it in the final stream.
@@ -162,92 +210,51 @@ export class Importer {
       );
   }
 
-  calculateAggregates(): OperatorFunction<
-    LogEntryEntity,
-    LogEntryEntity | LogEntrySampleEntity
-  > {
-    return (source) =>
-      new Observable((subscriber) => {
-        source.subscribe({
-          next: (entry) => {
-            if (!entry.samples || !entry.samples.length) {
-              // No samples? No need to pass this log entry down the pipe!
-              return;
-            }
-
-            let depthSum = 0;
-            let maxDepth = 0;
-
-            for (const sample of entry.samples) {
-              depthSum += sample.depth ?? 0;
-              maxDepth = Math.max(maxDepth, sample.depth ?? 0);
-              subscriber.next(sample);
-            }
-
-            entry.maxDepth = maxDepth || entry.maxDepth || null;
-            entry.averageDepth =
-              depthSum / entry.samples.length || entry.averageDepth || null;
-
-            subscriber.next(entry);
-          },
-
-          error: (error) => {
-            subscriber.error(error);
-          },
-          complete: () => {
-            subscriber.complete();
-          },
-        });
-      });
-  }
-
-  importDataSamples(): OperatorFunction<LogEntryEntity, never> {
+  private importDataSamples(): OperatorFunction<LogEntryEntity, never> {
+    let totalSamples = 0;
     return (source) =>
       source.pipe(
-        // Stream data samples and log entries with aggregate values updated.
-        this.calculateAggregates(),
+        // 1) Ignore entries with no data samples attached.
+        filter((entry) => !!entry.samples && entry.samples.length > 0),
 
-        connect((shared) =>
-          merge(
-            // Log entries with updated aggregate values need to be updated in the database.
-            shared.pipe(
-              filter(
-                (
-                  item: LogEntryEntity | LogEntrySampleEntity,
-                ): item is LogEntryEntity => 'timestamp' in item,
-              ),
-              mergeMap((entry) => from(this.updateEntryAggregates(entry))),
-              tap({
-                complete: () =>
-                  this.log.debug(
-                    'Finished updating aggregates for log entries.',
-                  ),
-              }),
-              ignoreElements(),
-            ),
-
-            // And the data samples just need to be written to the database.
-            shared.pipe(
-              filter(
-                (
-                  item: LogEntryEntity | LogEntrySampleEntity,
-                ): item is LogEntrySampleEntity => 'timeOffset' in item,
-              ),
-              bufferCount(500),
-              concatMap((batch) => from(this.saveSamples(batch))),
-              tap({
-                complete: () => this.log.debug('Finished saving data samples.'),
-              }),
-
-              // Data samples are not needed in the final output.
-              ignoreElements(),
-            ),
+        // 2) Save all data samples to the database in batches of 1000.
+        concatMap((entry) =>
+          from(entry.samples ?? []).pipe(
+            map((sample) => {
+              sample.logEntry = entry;
+              return sample;
+            }),
           ),
         ),
-      );
+        bufferCount(1000),
+        concatMap((batch) => from(this.saveSamples(batch))),
+        tap({
+          next: (batch) => {
+            totalSamples += batch.length;
+          },
+          complete: () => {
+            this.log.debug(
+              `Finished saving ${totalSamples} total data samples.`,
+            );
+          },
+        }),
+
+        // 3) Calculate aggregates for log entries and update them in the database.
+        concatMap((batch) =>
+          from(batch).pipe(map((sample) => sample.logEntry)),
+        ),
+        distinctUntilKeyChanged('id'),
+        bufferCount(20),
+        concatMap((batch) => from(this.bulkUpdateEntryAggregates(batch))),
+
+        // 4) Supress output of this observable - we won't need it in the final stream.
+        ignoreElements(),
+      ) as Observable<never>;
   }
 
-  finalizeImport<T>(importData: LogEntryImportEntity): OperatorFunction<T, T> {
+  finalizeImport<T>(
+    importData: LogEntryImportEntity,
+  ): MonoTypeOperatorFunction<T> {
     return (source: Observable<T>) =>
       new Observable<T>((subscriber) => {
         source.subscribe({
@@ -334,7 +341,7 @@ export class Importer {
       }),
 
       // 3) Write log entry entities to the database in batches of 100.
-      bufferCount(100),
+      bufferCount(20),
       concatMap((batch) => from(this.saveEntries(batch))),
       concatMap((batch) => from(batch)),
 
@@ -343,14 +350,13 @@ export class Importer {
         merge(
           shared.pipe(this.importAirEntries()),
           shared.pipe(this.importDataSamples()),
+
+          // 5) Pipe entities to LogEntry instances for output.
           shared.pipe(
             map((entity) => this.entryFactory.createLogEntry(entity)),
           ),
         ),
       ),
-
-      // 5) Pipe entities to LogEntry instances for output.
-      // map((entity) => this.entryFactory.createLogEntry(entity)),
 
       // 6) Mark import as finalized and commit transaction.
       this.finalizeImport<LogEntry>(importData),
