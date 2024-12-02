@@ -12,6 +12,7 @@ import { DiveSitesModule } from '../diveSites';
 import { FeaturesModule } from '../features';
 import { FriendsModule } from '../friends';
 import { UsersModule } from '../users';
+import { Importer } from './import/importer';
 import { LogEntryImportFactory } from './import/log-entry-import-factory';
 import { LogEntryImportController } from './import/log-entry-import.controller';
 import { LogEntryImportService } from './import/log-entry-import.service';
@@ -40,6 +41,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     LogEntriesService,
     LogEntryFactory,
     LogEntryImportService,
+    Importer,
   ],
   controllers: [
     UserLogEntriesController,

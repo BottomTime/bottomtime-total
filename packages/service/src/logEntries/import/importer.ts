@@ -252,7 +252,7 @@ export class Importer {
       ) as Observable<never>;
   }
 
-  finalizeImport<T>(
+  private finalizeImport<T>(
     importData: LogEntryImportEntity,
   ): MonoTypeOperatorFunction<T> {
     return (source: Observable<T>) =>
@@ -281,7 +281,7 @@ export class Importer {
       });
   }
 
-  abortOnError<T>(): OperatorFunction<T, T> {
+  private abortOnError<T>(): OperatorFunction<T, T> {
     return (source) =>
       new Observable<T>((subscriber) => {
         let failed = false;

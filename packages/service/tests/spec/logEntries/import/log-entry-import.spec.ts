@@ -25,6 +25,7 @@ import {
 } from '../../../../src/data';
 import { DiveSiteFactory } from '../../../../src/diveSites';
 import { LogEntryFactory, LogEntryImport } from '../../../../src/logEntries';
+import { Importer } from '../../../../src/logEntries/import/importer';
 import { LogEntrySampleUtils } from '../../../../src/logEntries/log-entry-sample-utils';
 import { UserFactory } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
@@ -91,9 +92,10 @@ describe('Log Entry Import class', () => {
   beforeEach(async () => {
     logEntryImportData = { ...ImportSession };
     logEntryImport = new LogEntryImport(
-      dataSource,
+      Imports,
+      ImportRecords,
       userFactory,
-      entryFactory,
+      new Importer(dataSource, entryFactory),
       logEntryImportData,
     );
     await Users.save(OwnerData);

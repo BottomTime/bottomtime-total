@@ -6,13 +6,12 @@ import {
 import { Logger, MethodNotAllowedException } from '@nestjs/common';
 
 import { Observable } from 'rxjs';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
 import { LogEntryImportEntity, LogEntryImportRecordEntity } from '../../data';
 import { User, UserFactory } from '../../users';
 import { LogEntry } from '../log-entry';
-import { LogEntryFactory } from '../log-entry-factory';
 import { Importer } from './importer';
 
 export type ImportOptions = {
@@ -24,21 +23,17 @@ export type ImportOptions = {
 
 export class LogEntryImport {
   private readonly log = new Logger(LogEntryImport.name);
-  private readonly imports: Repository<LogEntryImportEntity>;
-  private readonly importRecords: Repository<LogEntryImportRecordEntity>;
 
   private _canceled = false;
   private _owner: User | undefined;
 
   constructor(
-    private readonly dataSource: DataSource,
+    private readonly imports: Repository<LogEntryImportEntity>,
+    private readonly importRecords: Repository<LogEntryImportRecordEntity>,
     private readonly userFactory: UserFactory,
-    private readonly entryFactory: LogEntryFactory,
+    private readonly importer: Importer,
     private readonly data: LogEntryImportEntity,
-  ) {
-    this.imports = dataSource.getRepository(LogEntryImportEntity);
-    this.importRecords = dataSource.getRepository(LogEntryImportRecordEntity);
-  }
+  ) {}
 
   get id(): string {
     return this.data.id;
@@ -99,9 +94,7 @@ export class LogEntryImport {
       );
     }
 
-    const importer = new Importer(this.dataSource, this.entryFactory);
-
-    return importer.doImport(this.data, this.owner);
+    return this.importer.doImport(this.data, this.owner);
   }
 
   async cancel(): Promise<boolean> {
