@@ -272,15 +272,15 @@ export class LogEntryImportController {
    *                   - auto
    *                   - all
    *                 example: all
-   *             startingLogNumber:
-   *               type: number
-   *               description: |
-   *                 The number from which to start numbering log entries as they are imported.
-   *                 (E.g. the first entry will be `startingLogNumber`, then `startingLogNumber + 1`, etc.)
-   *                 This is required if `logNumberGenerationMode` is set to `all` or `auto`.
-   *               format: int32
-   *               minimum: 1
-   *               example: 109
+   *               startingLogNumber:
+   *                 type: number
+   *                 description: |
+   *                   The number from which to start numbering log entries as they are imported.
+   *                   (E.g. the first entry will be `startingLogNumber`, then `startingLogNumber + 1`, etc.)
+   *                   This is required if `logNumberGenerationMode` is set to `all` or `auto`.
+   *                 format: int32
+   *                 minimum: 1
+   *                 example: 109
    *     responses:
    *       202:
    *         description: The request was accpeted and the import will be processed. The status can be checked by polling the import session's route.
