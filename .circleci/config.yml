@@ -248,6 +248,7 @@ jobs:
     environment:
       JEST_JUNIT_OUTPUT_DIR: ./reports/
       NODE_OPTIONS: '--max-old-space-size=8192'
+    parallelism: 3
     steps:
       - checkout
       - yarn_install
@@ -259,7 +260,7 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            yarn test --scope=@bottomtime/web --stream -- --runInBand --ci
+            yarn test --scope=@bottomtime/web --stream -- --runInBand --ci --shard $(($CIRCLE_NODE_INDEX+1))/$CIRCLE_NODE_TOTAL
       - store_test_results:
           path: packages/web/reports/
       - run:
@@ -269,12 +270,14 @@ jobs:
             ../../cc-test-reporter format-coverage "coverage/lcov.info" \
               --add-prefix "packages/web/" \
               -t lcov \
-              -o "../../web.coverage.json" \
+              -o "../../web-$CIRCLE_NODE_INDEX.coverage.json" \
       - persist_to_workspace:
           root: ./
           paths:
             - packages/web/coverage/
-            - web.coverage.json
+            - web-0.coverage.json
+            - web-1.coverage.json
+            - web-2.coverage.json
 
   test_e2e:
     docker:
@@ -311,7 +314,7 @@ jobs:
       - run:
           name: Report coverage
           command: |
-            ./cc-test-reporter sum-coverage -o codeclimate.json -p 5 *.coverage.json
+            ./cc-test-reporter sum-coverage -o codeclimate.json -p 7 *.coverage.json
             ./cc-test-reporter upload-coverage -i codeclimate.json
 
   docker_e2e:
