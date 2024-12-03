@@ -450,6 +450,7 @@
  *       required:
  *         - id
  *         - date
+ *         - failed
  *         - owner
  *         - finalized
  *       properties:
@@ -463,6 +464,16 @@
  *           format: date-time
  *           description: The date and time at which the import was initiated (or finalized if it has been finalized).
  *           example: 2021-07-04T12:00:00.345
+ *         error:
+ *           type: string
+ *           description: |
+ *             A more detailed error message on why an import failed. This value may only be accessible to admins for debugging
+ *             purposes.
+ *           example: Error writing to database.
+ *         failed:
+ *           type: boolean
+ *           description: Indicates whether the import failed due to some unforeseen error.
+ *           example: false
  *         owner:
  *           type: string
  *           description: The user who initiated the import.

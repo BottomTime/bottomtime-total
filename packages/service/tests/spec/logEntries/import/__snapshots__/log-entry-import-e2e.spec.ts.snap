@@ -56,3 +56,48 @@ exports[`Log entry import session E2E tests when adding a batch of new records t
   ],
 }
 `;
+
+exports[`Log entry import session E2E tests when finalizing an import will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_enum_value",
+      "message": "Invalid enum value. Expected 'none' | 'auto' | 'all', received 'whatever'",
+      "options": [
+        "none",
+        "auto",
+        "all",
+      ],
+      "path": [
+        "logNumberGenerationMode",
+      ],
+      "received": "whatever",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": false,
+      "message": "Number must be greater than 0",
+      "minimum": 0,
+      "path": [
+        "startingLogNumber",
+      ],
+      "type": "number",
+    },
+  ],
+}
+`;
+
+exports[`Log entry import session E2E tests when finalizing an import will return a 400 response if the request body is invalid 2`] = `
+{
+  "issues": [
+    {
+      "code": "custom",
+      "message": "\`startingLogNumber\` is required when \`logNumberGenerationMode\` is 'auto' or 'all'.",
+      "path": [
+        "startingLogNumber",
+      ],
+    },
+  ],
+}
+`;

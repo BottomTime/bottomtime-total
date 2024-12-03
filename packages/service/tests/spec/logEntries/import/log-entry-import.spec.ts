@@ -2,6 +2,7 @@ import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
   DepthUnit,
+  LogNumberGenerationMode,
 } from '@bottomtime/api';
 
 import { MethodNotAllowedException } from '@nestjs/common';
@@ -60,6 +61,7 @@ describe('Log Entry Import class', () => {
   let Imports: Repository<LogEntryImportEntity>;
   let ImportRecords: Repository<LogEntryImportRecordEntity>;
   let Users: Repository<UserEntity>;
+  let testData: LogEntryImportRecordEntity[];
 
   let userFactory: UserFactory;
   let entryFactory: LogEntryFactory;
@@ -86,8 +88,22 @@ describe('Log Entry Import class', () => {
     logEntryData = LogEntryData.map((data) => ({
       id: uuid(),
       import: ImportSession,
+      timestamp: new Date(data.timestamp),
       data: JSON.stringify(data),
     }));
+
+    testData = TestData.map((data) => {
+      const parsed = JSON.parse(data.data);
+      return {
+        id: data.id,
+        import: ImportSession,
+        timestamp: dayjs(parsed.timing.entryTime.date)
+          .tz(parsed.timing.entryTime.timezone, true)
+          .utc()
+          .toDate(),
+        data: data.data,
+      };
+    }).sort((a, b) => a.timestamp.valueOf() - b.timestamp.valueOf());
   });
 
   beforeEach(async () => {
@@ -107,19 +123,25 @@ describe('Log Entry Import class', () => {
     expect(logEntryImport.owner.id).toBe(OwnerData.id);
     expect(logEntryImport.date).toEqual(new Date('2024-11-12T10:07:48-05:00'));
     expect(logEntryImport.finalized).toBe(true);
+    expect(logEntryImport.error).toBeUndefined();
+    expect(logEntryImport.failed).toBe(false);
     expect(logEntryImport.device).toBe('Test Device');
     expect(logEntryImport.deviceId).toBe('Test Device ID');
     expect(logEntryImport.bookmark).toBe('Test Bookmark');
 
+    const errorMessage = 'Ruh roh! Something happened!';
     logEntryImportData.finalized = null;
     logEntryImportData.device = null;
     logEntryImportData.deviceId = null;
     logEntryImportData.bookmark = null;
+    logEntryImportData.error = errorMessage;
 
     expect(logEntryImport.finalized).toBe(false);
     expect(logEntryImport.device).toBeUndefined();
     expect(logEntryImport.deviceId).toBeUndefined();
     expect(logEntryImport.bookmark).toBeUndefined();
+    expect(logEntryImport.error).toBe(errorMessage);
+    expect(logEntryImport.failed).toBe(true);
   });
 
   it('will return JSON correctly', () => {
@@ -127,6 +149,7 @@ describe('Log Entry Import class', () => {
       id: ImportSessionId,
       owner: 'testuser',
       date: new Date('2024-11-12T10:07:48-05:00'),
+      failed: false,
       finalized: true,
       device: 'Test Device',
       deviceId: 'Test Device ID',
@@ -138,7 +161,7 @@ describe('Log Entry Import class', () => {
     let records: CreateOrUpdateLogEntryParamsDTO[];
 
     beforeAll(() => {
-      records = TestData.map((ir) =>
+      records = testData.map((ir) =>
         CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
       );
     });
@@ -153,9 +176,9 @@ describe('Log Entry Import class', () => {
     });
 
     it('will return the correct record count when the import session has records', async () => {
-      await ImportRecords.save(TestData);
+      await ImportRecords.save(testData);
       await expect(logEntryImport.getRecordCount()).resolves.toBe(
-        TestData.length,
+        testData.length,
       );
     });
 
@@ -281,12 +304,12 @@ describe('Log Entry Import class', () => {
     });
 
     it('will finalize an import with log entries', async () => {
-      await ImportRecords.save(TestData);
+      await ImportRecords.save(testData);
       const results = await lastValueFrom(
         logEntryImport.finalize().pipe(toArray()),
       );
 
-      expect(results).toHaveLength(TestData.length);
+      expect(results).toHaveLength(testData.length);
 
       const { finalized } = await Imports.findOneByOrFail({
         id: ImportSession.id,
@@ -302,18 +325,66 @@ describe('Log Entry Import class', () => {
         ImportRecords.existsBy({ import: { id: ImportSession.id } }),
       ).resolves.toBe(false);
 
-      const saved = await Entries.find();
-      expect(saved).toHaveLength(TestData.length);
+      const saved = await Entries.find({
+        where: { owner: { id: OwnerData.id } },
+        order: { timestamp: 'ASC' },
+      });
+      expect(saved).toHaveLength(testData.length);
 
       // TODO: Check that the saved entries match the expected data
-      saved.forEach((entry) => {
+      saved.forEach((entry, index) => {
         expect(entry.deviceId).toBe(logEntryImport.deviceId);
         expect(entry.deviceName).toBe(logEntryImport.device);
+        expect(entry.timestamp).toEqual(testData[index].timestamp);
+      });
+    });
+
+    it('will finalize an import and set log numbers if requested', async () => {
+      const startingLogNumber = 118;
+      await ImportRecords.save(testData);
+      const results = await lastValueFrom(
+        logEntryImport
+          .finalize({
+            startingLogNumber,
+            logNumberGenerationMode: LogNumberGenerationMode.All,
+          })
+          .pipe(toArray()),
+      );
+
+      expect(results).toHaveLength(testData.length);
+      results.forEach((result, index) => {
+        expect(result.logNumber).toBe(startingLogNumber + index);
+      });
+
+      const { finalized } = await Imports.findOneByOrFail({
+        id: ImportSession.id,
+      });
+      expect(finalized!.valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const updatedImport = await Imports.findOneByOrFail({
+        id: logEntryImport.id,
+      });
+      expect(updatedImport.finalized).toEqual(logEntryImportData.finalized);
+
+      await expect(
+        ImportRecords.existsBy({ import: { id: ImportSession.id } }),
+      ).resolves.toBe(false);
+
+      const saved = await Entries.find({
+        where: { owner: { id: OwnerData.id } },
+        order: { timestamp: 'ASC' },
+      });
+      expect(saved).toHaveLength(testData.length);
+
+      saved.forEach((entry, index) => {
+        expect(entry.deviceId).toBe(logEntryImport.deviceId);
+        expect(entry.deviceName).toBe(logEntryImport.device);
+        expect(entry.logNumber).toBe(startingLogNumber + index);
       });
     });
 
     it('will import sample data from a dive computer', async () => {
-      const importData = [{ ...TestData[0] }, { ...TestData[1] }];
+      const importData = [{ ...testData[0] }, { ...testData[1] }];
       const parsedData = [
         CreateOrUpdateLogEntryParamsSchema.parse(
           JSON.parse(importData[0].data),
@@ -376,7 +447,7 @@ describe('Log Entry Import class', () => {
     });
 
     it('will rollback if the import contains invalid records', async () => {
-      await ImportRecords.save(TestData);
+      await ImportRecords.save(testData);
       await ImportRecords.save({
         id: 'c8a5ecfa-9a00-414d-a428-0fbc25f525ca',
         import: { id: ImportSession.id } as LogEntryImportEntity,
@@ -394,7 +465,7 @@ describe('Log Entry Import class', () => {
 
       await expect(
         ImportRecords.countBy({ import: { id: ImportSession.id } }),
-      ).resolves.toBe(TestData.length + 1);
+      ).resolves.toBe(testData.length + 1);
     });
 
     it('will throw an exception if the import has been canceled', async () => {
@@ -421,7 +492,7 @@ describe('Log Entry Import class', () => {
     // Feel free to run locally, but running this in CI is not recommended!! 💀
     it.skip('will import a large number of records', async () => {
       const importData = await lastValueFrom(
-        range(0, TestData.length).pipe(
+        range(0, testData.length).pipe(
           concatMap(() =>
             from(createTestDiveProfile('')).pipe(
               map(LogEntrySampleUtils.entityToDTO),
@@ -430,7 +501,7 @@ describe('Log Entry Import class', () => {
           ),
           map((profile, index) => {
             const parsed = CreateOrUpdateLogEntryParamsSchema.parse(
-              JSON.parse(TestData[index].data),
+              JSON.parse(testData[index].data),
             );
             parsed.depths = { depthUnit: DepthUnit.Meters };
             parsed.depths!.averageDepth = undefined;
@@ -438,8 +509,12 @@ describe('Log Entry Import class', () => {
             parsed.samples = profile;
 
             const record: LogEntryImportRecordEntity = {
-              ...TestData[index],
+              ...testData[index],
               import: logEntryImportData,
+              timestamp: dayjs(parsed.timing.entryTime.date)
+                .tz(parsed.timing.entryTime.timezone, true)
+                .utc()
+                .toDate(),
               data: JSON.stringify(parsed),
             };
             return record;
@@ -453,7 +528,7 @@ describe('Log Entry Import class', () => {
         logEntryImport.finalize().pipe(toArray()),
       );
 
-      expect(results).toHaveLength(TestData.length);
+      expect(results).toHaveLength(testData.length);
 
       const result = await Entries.findOneByOrFail({ id: results[0].id });
       expect(result.maxDepth).toBe(

@@ -23,7 +23,7 @@ export class LogEntryImportEntity {
   @Column('timestamp', { nullable: true })
   finalized: Date | null = null;
 
-  @Column('varchar', { length: 500, nullable: true })
+  @Column('text', { nullable: true })
   error: string | null = null;
 
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })

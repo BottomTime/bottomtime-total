@@ -21,6 +21,24 @@ export enum LogEntrySortBy {
   LogNumber = 'logNumber',
 }
 
+/** Indicates how log entry numbers will be generated during an import operation */
+export enum LogNumberGenerationMode {
+  /** Do not auto-generate log number during import. (This is the default mode.) */
+  None = 'none',
+
+  /**
+   * A log number will be generated for for a log entry if one is not supplied in the import data.
+   * Otherwise, the number in the import data will be used.
+   */
+  Auto = 'auto',
+
+  /**
+   * A log number will be generated for all log entries during import.
+   * Log numbers found in the import data will be ignored.
+   */
+  All = 'all',
+}
+
 export const LogEntryAirSchema = CreateOrUpdateTankParamsSchema.extend({
   count: z.number().int().min(1).max(10),
   startPressure: z.number().min(0.0),
@@ -213,7 +231,9 @@ export const LogsImportSchema = CreateLogsImportParamsSchema.extend({
   id: z.string(),
   date: z.coerce.date(),
   owner: z.string(),
-  finalized: BooleanString,
+  error: z.string().optional(),
+  failed: z.coerce.boolean(),
+  finalized: z.coerce.boolean(),
 });
 export type LogsImportDTO = z.infer<typeof LogsImportSchema>;
 
@@ -224,4 +244,26 @@ export const ListLogEntryImportsParamsSchema = z.object({
 });
 export type ListLogEntryImportsParamsDTO = z.infer<
   typeof ListLogEntryImportsParamsSchema
+>;
+
+export const FinalizeImportParamsSchema = z
+  .object({
+    logNumberGenerationMode: z.nativeEnum(LogNumberGenerationMode),
+    startingLogNumber: z.number().int().positive(),
+  })
+  .partial()
+  .refine(
+    // startingLogNumber is required when logNumberGenerationMode is "auto" or "all"
+    (val) =>
+      !val.logNumberGenerationMode ||
+      val.logNumberGenerationMode === LogNumberGenerationMode.None ||
+      !!val.startingLogNumber,
+    {
+      message:
+        "`startingLogNumber` is required when `logNumberGenerationMode` is 'auto' or 'all'.",
+      path: ['startingLogNumber'],
+    },
+  );
+export type FinalizeImportParamsDTO = z.infer<
+  typeof FinalizeImportParamsSchema
 >;

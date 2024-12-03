@@ -1,6 +1,8 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  FinalizeImportParamsDTO,
+  FinalizeImportParamsSchema,
   LogsImportDTO,
   RecordsAddedResponseDTO,
 } from '@bottomtime/api';
@@ -252,9 +254,42 @@ export class LogEntryImportController {
    *     parameters:
    *       - $ref: "#/components/parameters/Username"
    *       - $ref: "#/components/parameters/LogEntryImportId"
+   *     requestBody:
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               logNumberGenerationMode:
+   *                 type: string
+   *                 description: |
+   *                   Indicates how log numbers will be generated for log entries that are imported.
+   *                   - `none`: Log numbers will not be generated for any log entries.
+   *                   - `auto`: A log number will be generated for log entries that do not have one.
+   *                   - `all`: A log number will be generated for all log entries (ignoring values that may be in the import data).
+   *                 enum:
+   *                   - none
+   *                   - auto
+   *                   - all
+   *                 example: all
+   *               startingLogNumber:
+   *                 type: number
+   *                 description: |
+   *                   The number from which to start numbering log entries as they are imported.
+   *                   (E.g. the first entry will be `startingLogNumber`, then `startingLogNumber + 1`, etc.)
+   *                   This is required if `logNumberGenerationMode` is set to `all` or `auto`.
+   *                 format: int32
+   *                 minimum: 1
+   *                 example: 109
    *     responses:
    *       202:
    *         description: The request was accpeted and the import will be processed. The status can be checked by polling the import session's route.
+   *       400:
+   *         description: The request failed because the request body failed validation. Check the response body for more details.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
    *       401:
    *         description: The request failed because the user could not be authenticated.
    *         content:
@@ -290,16 +325,18 @@ export class LogEntryImportController {
    */
   @Post('finalize')
   @HttpCode(HttpStatus.ACCEPTED)
-  finalizeImport(@TargetImport() importEntity: LogEntryImport) {
+  finalizeImport(
+    @TargetImport() importEntity: LogEntryImport,
+    @Body(new ZodValidator(FinalizeImportParamsSchema))
+    options: FinalizeImportParamsDTO,
+  ) {
     let entryCount = 0;
-    importEntity.finalize().subscribe({
+    importEntity.finalize(options).subscribe({
       next: () => {
         entryCount++;
       },
       error: async (error) => {
         this.log.error(error);
-        // try {
-        // } catch (blah) {}
       },
       complete: () => {
         this.log.log(

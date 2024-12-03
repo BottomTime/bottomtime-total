@@ -1,10 +1,12 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
+  FinalizeImportParamsDTO,
   LogsImportDTO,
 } from '@bottomtime/api';
 
 import { Logger, MethodNotAllowedException } from '@nestjs/common';
 
+import dayjs from 'dayjs';
 import { Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
@@ -50,6 +52,14 @@ export class LogEntryImport {
     return this.data.finalized || this.data.date;
   }
 
+  get error(): string | undefined {
+    return this.data.error || undefined;
+  }
+
+  get failed(): boolean {
+    return !!this.data.error;
+  }
+
   get finalized(): boolean {
     return this.data.finalized instanceof Date;
   }
@@ -70,18 +80,7 @@ export class LogEntryImport {
     return this.data.deviceId || undefined;
   }
 
-  private async markFinalized(
-    imports: Repository<LogEntryImportEntity>,
-    importRecords: Repository<LogEntryImportRecordEntity>,
-  ): Promise<void> {
-    this.log.debug('Marking import as finalized...');
-    const finalized = new Date();
-    await imports.update({ id: this.id }, { finalized });
-    await importRecords.delete({ import: { id: this.id } });
-    this.data.finalized = finalized;
-  }
-
-  finalize(): Observable<LogEntry> {
+  finalize(options?: FinalizeImportParamsDTO): Observable<LogEntry> {
     if (this.finalized) {
       throw new MethodNotAllowedException(
         'This import session has already been finalized.',
@@ -94,7 +93,7 @@ export class LogEntryImport {
       );
     }
 
-    return this.importer.doImport(this.data, this.owner);
+    return this.importer.doImport(this.data, this.owner, options);
   }
 
   async cancel(): Promise<boolean> {
@@ -130,6 +129,10 @@ export class LogEntryImport {
     const newRecords: LogEntryImportRecordEntity[] = records.map((r) => ({
       id: uuid(),
       import: this.data,
+      timestamp: dayjs(r.timing.entryTime.date)
+        .tz(r.timing.entryTime.timezone, true)
+        .utc()
+        .toDate(),
       data: JSON.stringify(r),
     }));
     await this.importRecords.save(newRecords);
@@ -140,6 +143,7 @@ export class LogEntryImport {
       id: this.id,
       owner: this.data.owner.username,
       date: this.date,
+      failed: this.failed,
       finalized: this.finalized,
       bookmark: this.bookmark,
       device: this.device,
