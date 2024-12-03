@@ -2,6 +2,7 @@ import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
   DepthUnit,
+  LogNumberGenerationMode,
 } from '@bottomtime/api';
 
 import { MethodNotAllowedException } from '@nestjs/common';
@@ -324,13 +325,61 @@ describe('Log Entry Import class', () => {
         ImportRecords.existsBy({ import: { id: ImportSession.id } }),
       ).resolves.toBe(false);
 
-      const saved = await Entries.find();
+      const saved = await Entries.find({
+        where: { owner: { id: OwnerData.id } },
+        order: { timestamp: 'ASC' },
+      });
       expect(saved).toHaveLength(testData.length);
 
       // TODO: Check that the saved entries match the expected data
-      saved.forEach((entry) => {
+      saved.forEach((entry, index) => {
         expect(entry.deviceId).toBe(logEntryImport.deviceId);
         expect(entry.deviceName).toBe(logEntryImport.device);
+        expect(entry.timestamp).toEqual(testData[index].timestamp);
+      });
+    });
+
+    it('will finalize an import and set log numbers if requested', async () => {
+      const startingLogNumber = 118;
+      await ImportRecords.save(testData);
+      const results = await lastValueFrom(
+        logEntryImport
+          .finalize({
+            startingLogNumber,
+            logNumberGenerationMode: LogNumberGenerationMode.All,
+          })
+          .pipe(toArray()),
+      );
+
+      expect(results).toHaveLength(testData.length);
+      results.forEach((result, index) => {
+        expect(result.logNumber).toBe(startingLogNumber + index);
+      });
+
+      const { finalized } = await Imports.findOneByOrFail({
+        id: ImportSession.id,
+      });
+      expect(finalized!.valueOf()).toBeCloseTo(Date.now(), -3);
+
+      const updatedImport = await Imports.findOneByOrFail({
+        id: logEntryImport.id,
+      });
+      expect(updatedImport.finalized).toEqual(logEntryImportData.finalized);
+
+      await expect(
+        ImportRecords.existsBy({ import: { id: ImportSession.id } }),
+      ).resolves.toBe(false);
+
+      const saved = await Entries.find({
+        where: { owner: { id: OwnerData.id } },
+        order: { timestamp: 'ASC' },
+      });
+      expect(saved).toHaveLength(testData.length);
+
+      saved.forEach((entry, index) => {
+        expect(entry.deviceId).toBe(logEntryImport.deviceId);
+        expect(entry.deviceName).toBe(logEntryImport.device);
+        expect(entry.logNumber).toBe(startingLogNumber + index);
       });
     });
 
