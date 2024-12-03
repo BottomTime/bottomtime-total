@@ -275,7 +275,9 @@ jobs:
           root: ./
           paths:
             - packages/web/coverage/
-            - web-$CIRCLE_NODE_INDEX.coverage.json
+            - web-0.coverage.json
+            - web-1.coverage.json
+            - web-2.coverage.json
 
   test_e2e:
     docker:
