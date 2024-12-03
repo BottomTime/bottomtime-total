@@ -508,6 +508,10 @@ describe('Log entry import session E2E tests', () => {
           (ir): LogEntryImportRecordEntity => ({
             id: uuid(),
             import: importSession,
+            timestamp: dayjs(ir.timing.entryTime.date)
+              .tz(ir.timing.entryTime.timezone, true)
+              .utc()
+              .toDate(),
             data: JSON.stringify(ir),
           }),
         ),

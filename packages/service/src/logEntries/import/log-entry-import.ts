@@ -6,6 +6,7 @@ import {
 
 import { Logger, MethodNotAllowedException } from '@nestjs/common';
 
+import dayjs from 'dayjs';
 import { Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
@@ -128,6 +129,10 @@ export class LogEntryImport {
     const newRecords: LogEntryImportRecordEntity[] = records.map((r) => ({
       id: uuid(),
       import: this.data,
+      timestamp: dayjs(r.timing.entryTime.date)
+        .tz(r.timing.entryTime.timezone, true)
+        .utc()
+        .toDate(),
       data: JSON.stringify(r),
     }));
     await this.importRecords.save(newRecords);

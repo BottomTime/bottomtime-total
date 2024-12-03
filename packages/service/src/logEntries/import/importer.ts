@@ -89,7 +89,7 @@ export class Importer {
       );
       const results = await this.importRecords.find({
         where: { import: { id: importId } },
-        order: { id: 'ASC' }, // TODO: FIX THIS!! Should be ordered by timestamp so that we can stream in order. (That way log numbers will be assigned in order.)
+        order: { timestamp: 'ASC' },
         skip,
         take: batchSize,
       });

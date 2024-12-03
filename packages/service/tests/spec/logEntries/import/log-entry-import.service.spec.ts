@@ -207,6 +207,7 @@ describe('Log Entry Import Service', () => {
       logEntryData = LogEntryData.map((data) => ({
         id: faker.string.uuid(),
         import: testData[0],
+        timestamp: new Date(data.timestamp),
         data: JSON.stringify(data),
       }));
       for (let i = 0; i < testData.length; i++) {

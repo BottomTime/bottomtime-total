@@ -60,6 +60,7 @@ describe('Log Entry Import class', () => {
   let Imports: Repository<LogEntryImportEntity>;
   let ImportRecords: Repository<LogEntryImportRecordEntity>;
   let Users: Repository<UserEntity>;
+  let testData: LogEntryImportRecordEntity[];
 
   let userFactory: UserFactory;
   let entryFactory: LogEntryFactory;
@@ -86,8 +87,22 @@ describe('Log Entry Import class', () => {
     logEntryData = LogEntryData.map((data) => ({
       id: uuid(),
       import: ImportSession,
+      timestamp: new Date(data.timestamp),
       data: JSON.stringify(data),
     }));
+
+    testData = TestData.map((data) => {
+      const parsed = JSON.parse(data.data);
+      return {
+        id: data.id,
+        import: ImportSession,
+        timestamp: dayjs(parsed.timing.entryTime.date)
+          .tz(parsed.timing.entryTime.timezone, true)
+          .utc()
+          .toDate(),
+        data: data.data,
+      };
+    }).sort((a, b) => a.timestamp.valueOf() - b.timestamp.valueOf());
   });
 
   beforeEach(async () => {
@@ -145,7 +160,7 @@ describe('Log Entry Import class', () => {
     let records: CreateOrUpdateLogEntryParamsDTO[];
 
     beforeAll(() => {
-      records = TestData.map((ir) =>
+      records = testData.map((ir) =>
         CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
       );
     });
@@ -160,9 +175,9 @@ describe('Log Entry Import class', () => {
     });
 
     it('will return the correct record count when the import session has records', async () => {
-      await ImportRecords.save(TestData);
+      await ImportRecords.save(testData);
       await expect(logEntryImport.getRecordCount()).resolves.toBe(
-        TestData.length,
+        testData.length,
       );
     });
 
@@ -288,12 +303,12 @@ describe('Log Entry Import class', () => {
     });
 
     it('will finalize an import with log entries', async () => {
-      await ImportRecords.save(TestData);
+      await ImportRecords.save(testData);
       const results = await lastValueFrom(
         logEntryImport.finalize().pipe(toArray()),
       );
 
-      expect(results).toHaveLength(TestData.length);
+      expect(results).toHaveLength(testData.length);
 
       const { finalized } = await Imports.findOneByOrFail({
         id: ImportSession.id,
@@ -310,7 +325,7 @@ describe('Log Entry Import class', () => {
       ).resolves.toBe(false);
 
       const saved = await Entries.find();
-      expect(saved).toHaveLength(TestData.length);
+      expect(saved).toHaveLength(testData.length);
 
       // TODO: Check that the saved entries match the expected data
       saved.forEach((entry) => {
@@ -320,7 +335,7 @@ describe('Log Entry Import class', () => {
     });
 
     it('will import sample data from a dive computer', async () => {
-      const importData = [{ ...TestData[0] }, { ...TestData[1] }];
+      const importData = [{ ...testData[0] }, { ...testData[1] }];
       const parsedData = [
         CreateOrUpdateLogEntryParamsSchema.parse(
           JSON.parse(importData[0].data),
@@ -383,7 +398,7 @@ describe('Log Entry Import class', () => {
     });
 
     it('will rollback if the import contains invalid records', async () => {
-      await ImportRecords.save(TestData);
+      await ImportRecords.save(testData);
       await ImportRecords.save({
         id: 'c8a5ecfa-9a00-414d-a428-0fbc25f525ca',
         import: { id: ImportSession.id } as LogEntryImportEntity,
@@ -401,7 +416,7 @@ describe('Log Entry Import class', () => {
 
       await expect(
         ImportRecords.countBy({ import: { id: ImportSession.id } }),
-      ).resolves.toBe(TestData.length + 1);
+      ).resolves.toBe(testData.length + 1);
     });
 
     it('will throw an exception if the import has been canceled', async () => {
@@ -428,7 +443,7 @@ describe('Log Entry Import class', () => {
     // Feel free to run locally, but running this in CI is not recommended!! 💀
     it.skip('will import a large number of records', async () => {
       const importData = await lastValueFrom(
-        range(0, TestData.length).pipe(
+        range(0, testData.length).pipe(
           concatMap(() =>
             from(createTestDiveProfile('')).pipe(
               map(LogEntrySampleUtils.entityToDTO),
@@ -437,7 +452,7 @@ describe('Log Entry Import class', () => {
           ),
           map((profile, index) => {
             const parsed = CreateOrUpdateLogEntryParamsSchema.parse(
-              JSON.parse(TestData[index].data),
+              JSON.parse(testData[index].data),
             );
             parsed.depths = { depthUnit: DepthUnit.Meters };
             parsed.depths!.averageDepth = undefined;
@@ -445,8 +460,12 @@ describe('Log Entry Import class', () => {
             parsed.samples = profile;
 
             const record: LogEntryImportRecordEntity = {
-              ...TestData[index],
+              ...testData[index],
               import: logEntryImportData,
+              timestamp: dayjs(parsed.timing.entryTime.date)
+                .tz(parsed.timing.entryTime.timezone, true)
+                .utc()
+                .toDate(),
               data: JSON.stringify(parsed),
             };
             return record;
@@ -460,7 +479,7 @@ describe('Log Entry Import class', () => {
         logEntryImport.finalize().pipe(toArray()),
       );
 
-      expect(results).toHaveLength(TestData.length);
+      expect(results).toHaveLength(testData.length);
 
       const result = await Entries.findOneByOrFail({ id: results[0].id });
       expect(result.maxDepth).toBe(
