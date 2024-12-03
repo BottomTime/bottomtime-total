@@ -4,6 +4,9 @@ import { EventKey, NotificationsFeature } from '@bottomtime/common';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
+import { RedisClientType } from 'redis';
+
+import { RedisClient } from '../dependencies';
 import { FriendRequestEvent } from '../events';
 import { FeaturesService } from '../features';
 import { User, UsersService } from '../users';
@@ -21,6 +24,9 @@ export class NotificationEventsHandler {
 
     @Inject(UsersService)
     private readonly users: UsersService,
+
+    @Inject(RedisClient)
+    private readonly redis: RedisClientType,
 
     @Inject(FeaturesService)
     private readonly features: FeaturesService,
@@ -59,6 +65,10 @@ export class NotificationEventsHandler {
           ? new Date(Date.now() + expirationInMs)
           : undefined,
       });
+      await this.redis.publish(
+        `notify-${user.id}`,
+        JSON.stringify({ eventKey, title, message }),
+      );
     } catch (error) {
       this.log.error(
         `Failed to create notification for user "${user.username}"`,

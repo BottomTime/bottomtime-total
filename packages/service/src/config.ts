@@ -82,6 +82,7 @@ export interface AppConfig {
   port: number;
   postgresRequireSsl: boolean;
   postgresUri: string;
+  redisUri: string;
 }
 
 const ConfigSchema = z
@@ -156,6 +157,7 @@ const ConfigSchema = z
       .default(
         'postgresql://bt_user:bt_admin1234@localhost:5432/bottomtime_local',
       ),
+    BT_REDIS_URI: z.string().default('redis://localhost:6379/0'),
     NODE_ENV: z.string().default('local'),
   })
   .transform<AppConfig>((env) => ({
@@ -226,6 +228,7 @@ const ConfigSchema = z
     port: env.BT_PORT,
     postgresRequireSsl: env.BT_POSTGRES_REQUIRE_SSL,
     postgresUri: env.BT_POSTGRES_URI,
+    redisUri: env.BT_REDIS_URI,
   }));
 
 export const Config = ConfigSchema.parse(process.env);

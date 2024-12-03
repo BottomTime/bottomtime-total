@@ -6,6 +6,7 @@ import { Fetcher } from './fetcher';
 import { FriendsApiClient } from './friends';
 import { LogEntriesApiClient } from './log-entries';
 import { MembershipsApiClient } from './memberships';
+import { NotificationsApiClient } from './notifications';
 import { OperatorsApiClient } from './operators';
 import { TanksApiClient } from './tanks';
 import { UsersApiClient } from './users';
@@ -19,6 +20,7 @@ export class ApiClient {
   readonly diveSites: DiveSitesApiClient;
   readonly logEntries: LogEntriesApiClient;
   readonly memberships: MembershipsApiClient;
+  readonly notifications: NotificationsApiClient;
   readonly tanks: TanksApiClient;
 
   constructor(options?: ApiClientOptions) {
@@ -30,6 +32,7 @@ export class ApiClient {
     this.diveSites = new DiveSitesApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
     this.memberships = new MembershipsApiClient(this.client);
+    this.notifications = new NotificationsApiClient();
     this.tanks = new TanksApiClient(this.client);
   }
 
