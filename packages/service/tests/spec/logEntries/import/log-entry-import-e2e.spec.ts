@@ -1,6 +1,7 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  LogNumberGenerationMode,
   UserRole,
 } from '@bottomtime/api';
 import { LogImportFeature } from '@bottomtime/common';
@@ -538,6 +539,27 @@ describe('Log entry import session E2E tests', () => {
       const [importData, owner] = importSpy.mock.calls[0];
       expect(importData.id).toBe(importSession.id);
       expect(owner.id).toBe(OwnerData.id);
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      let response = await request(server)
+        .post(getFinalizeUrl(importSession.id))
+        .set(...ownerAuthToken)
+        .send({
+          logNumberGenerationMode: 'whatever',
+          startingLogNumber: -1,
+        })
+        .expect(400);
+      expect(response.body.details).toMatchSnapshot();
+
+      response = await request(server)
+        .post(getFinalizeUrl(importSession.id))
+        .set(...ownerAuthToken)
+        .send({
+          logNumberGenerationMode: LogNumberGenerationMode.All,
+        })
+        .expect(400);
+      expect(response.body.details).toMatchSnapshot();
     });
 
     it('will return a 401 response if the user is not authenticated', async () => {

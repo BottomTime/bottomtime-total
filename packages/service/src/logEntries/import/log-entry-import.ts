@@ -1,5 +1,6 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
+  FinalizeImportParamsDTO,
   LogsImportDTO,
 } from '@bottomtime/api';
 
@@ -78,18 +79,7 @@ export class LogEntryImport {
     return this.data.deviceId || undefined;
   }
 
-  private async markFinalized(
-    imports: Repository<LogEntryImportEntity>,
-    importRecords: Repository<LogEntryImportRecordEntity>,
-  ): Promise<void> {
-    this.log.debug('Marking import as finalized...');
-    const finalized = new Date();
-    await imports.update({ id: this.id }, { finalized });
-    await importRecords.delete({ import: { id: this.id } });
-    this.data.finalized = finalized;
-  }
-
-  finalize(): Observable<LogEntry> {
+  finalize(options?: FinalizeImportParamsDTO): Observable<LogEntry> {
     if (this.finalized) {
       throw new MethodNotAllowedException(
         'This import session has already been finalized.',
@@ -102,7 +92,7 @@ export class LogEntryImport {
       );
     }
 
-    return this.importer.doImport(this.data, this.owner);
+    return this.importer.doImport(this.data, this.owner, options);
   }
 
   async cancel(): Promise<boolean> {

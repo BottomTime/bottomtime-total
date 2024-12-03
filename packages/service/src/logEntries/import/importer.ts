@@ -1,4 +1,8 @@
-import { CreateOrUpdateLogEntryParamsSchema } from '@bottomtime/api';
+import {
+  CreateOrUpdateLogEntryParamsSchema,
+  FinalizeImportParamsDTO,
+  LogNumberGenerationMode,
+} from '@bottomtime/api';
 
 import {
   Inject,
@@ -85,7 +89,7 @@ export class Importer {
       );
       const results = await this.importRecords.find({
         where: { import: { id: importId } },
-        order: { id: 'ASC' },
+        order: { id: 'ASC' }, // TODO: FIX THIS!! Should be ordered by timestamp so that we can stream in order. (That way log numbers will be assigned in order.)
         skip,
         take: batchSize,
       });
@@ -303,9 +307,7 @@ export class Importer {
             try {
               await this.queryRunner.rollbackTransaction();
               await this.imports.update(importData.id, {
-                error:
-                  error.message ??
-                  'An unknown error occurred and the import was aborted.',
+                error: JSON.stringify(error),
               });
             } catch (rollbackError) {
               this.log.error(rollbackError);
@@ -319,7 +321,12 @@ export class Importer {
   doImport(
     importData: LogEntryImportEntity,
     owner: User,
+    options?: FinalizeImportParamsDTO,
   ): Observable<LogEntry> {
+    const logNumberGenerationMode =
+      options?.logNumberGenerationMode ?? LogNumberGenerationMode.None;
+    const startingLogNumber = options?.startingLogNumber || 1;
+
     return from(this.streamRecords(importData.id)).pipe(
       tap({
         complete: () =>
@@ -337,12 +344,18 @@ export class Importer {
       }),
 
       // 2) Parse JSON and transform data into LogEntryEntity objects.
-      map((record) => {
+      map((record, index) => {
         const raw = JSON.parse(record);
         const parsed = CreateOrUpdateLogEntryParamsSchema.parse(raw);
         const entity = this.entryFactory
           .createLogEntryFromCreateDTO(owner, parsed)
           .toEntity();
+
+        if (logNumberGenerationMode === LogNumberGenerationMode.Auto) {
+          entity.logNumber ??= startingLogNumber + index;
+        } else if (logNumberGenerationMode === LogNumberGenerationMode.All) {
+          entity.logNumber = startingLogNumber + index;
+        }
 
         entity.deviceId = importData.deviceId ?? null;
         entity.deviceName = importData.device ?? null;
