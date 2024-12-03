@@ -260,7 +260,7 @@ jobs:
       - run:
           name: Run Tests
           command: |
-            yarn test --scope=@bottomtime/web --stream -- --runInBand --ci --shard $CIRCLE_NODE_INDEX/$CIRCLE_NODE_TOTAL
+            yarn test --scope=@bottomtime/web --stream -- --runInBand --ci --shard (($CIRCLE_NODE_INDEX+1))/$CIRCLE_NODE_TOTAL
       - store_test_results:
           path: packages/web/reports/
       - run:
