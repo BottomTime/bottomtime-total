@@ -213,7 +213,8 @@ export const LogsImportSchema = CreateLogsImportParamsSchema.extend({
   id: z.string(),
   date: z.coerce.date(),
   owner: z.string(),
-  finalized: BooleanString,
+  failed: z.coerce.boolean(),
+  finalized: z.coerce.boolean(),
 });
 export type LogsImportDTO = z.infer<typeof LogsImportSchema>;
 
@@ -224,4 +225,14 @@ export const ListLogEntryImportsParamsSchema = z.object({
 });
 export type ListLogEntryImportsParamsDTO = z.infer<
   typeof ListLogEntryImportsParamsSchema
+>;
+
+export const FinalizeImportParamsSchema = z
+  .object({
+    logNumberMode: z.string(),
+    startingLogNumber: z.number().int().positive(),
+  })
+  .partial();
+export type FinalizeImportParamsDTO = z.infer<
+  typeof FinalizeImportParamsSchema
 >;

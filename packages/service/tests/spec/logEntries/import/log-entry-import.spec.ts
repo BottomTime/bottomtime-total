@@ -107,19 +107,25 @@ describe('Log Entry Import class', () => {
     expect(logEntryImport.owner.id).toBe(OwnerData.id);
     expect(logEntryImport.date).toEqual(new Date('2024-11-12T10:07:48-05:00'));
     expect(logEntryImport.finalized).toBe(true);
+    expect(logEntryImport.error).toBeUndefined();
+    expect(logEntryImport.failed).toBe(false);
     expect(logEntryImport.device).toBe('Test Device');
     expect(logEntryImport.deviceId).toBe('Test Device ID');
     expect(logEntryImport.bookmark).toBe('Test Bookmark');
 
+    const errorMessage = 'Ruh roh! Something happened!';
     logEntryImportData.finalized = null;
     logEntryImportData.device = null;
     logEntryImportData.deviceId = null;
     logEntryImportData.bookmark = null;
+    logEntryImportData.error = errorMessage;
 
     expect(logEntryImport.finalized).toBe(false);
     expect(logEntryImport.device).toBeUndefined();
     expect(logEntryImport.deviceId).toBeUndefined();
     expect(logEntryImport.bookmark).toBeUndefined();
+    expect(logEntryImport.error).toBe(errorMessage);
+    expect(logEntryImport.failed).toBe(true);
   });
 
   it('will return JSON correctly', () => {
@@ -127,6 +133,7 @@ describe('Log Entry Import class', () => {
       id: ImportSessionId,
       owner: 'testuser',
       date: new Date('2024-11-12T10:07:48-05:00'),
+      failed: false,
       finalized: true,
       device: 'Test Device',
       deviceId: 'Test Device ID',

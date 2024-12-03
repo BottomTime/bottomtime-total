@@ -178,6 +178,7 @@ describe('Log entry import session E2E tests', () => {
         date: importData.date.toISOString(),
         device: importData.device,
         deviceId: importData.deviceId,
+        failed: false,
         finalized: false,
         id: importData.id,
         owner: OwnerData.username,
@@ -195,6 +196,7 @@ describe('Log entry import session E2E tests', () => {
         date: importData.date.toISOString(),
         device: importData.device,
         deviceId: importData.deviceId,
+        failed: false,
         finalized: false,
         id: importData.id,
         owner: OwnerData.username,
@@ -254,6 +256,7 @@ describe('Log entry import session E2E tests', () => {
         date: importData.date.toISOString(),
         device: importData.device,
         deviceId: importData.deviceId,
+        failed: false,
         finalized: false,
         id: importData.id,
         owner: OwnerData.username,
@@ -272,6 +275,7 @@ describe('Log entry import session E2E tests', () => {
 
       expect(body).toEqual({
         bookmark: importData.bookmark,
+        failed: false,
         date: importData.date.toISOString(),
         device: importData.device,
         deviceId: importData.deviceId,

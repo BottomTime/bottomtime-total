@@ -50,6 +50,14 @@ export class LogEntryImport {
     return this.data.finalized || this.data.date;
   }
 
+  get error(): string | undefined {
+    return this.data.error || undefined;
+  }
+
+  get failed(): boolean {
+    return !!this.data.error;
+  }
+
   get finalized(): boolean {
     return this.data.finalized instanceof Date;
   }
@@ -140,6 +148,7 @@ export class LogEntryImport {
       id: this.id,
       owner: this.data.owner.username,
       date: this.date,
+      failed: this.failed,
       finalized: this.finalized,
       bookmark: this.bookmark,
       device: this.device,

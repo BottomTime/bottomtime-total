@@ -131,6 +131,7 @@ describe('Log Entry Import Service', () => {
         id,
         owner: owner.username,
         date: Now,
+        failed: false,
         finalized: false,
       });
 
@@ -162,6 +163,7 @@ describe('Log Entry Import Service', () => {
         id,
         owner: owner.username,
         date: Now,
+        failed: false,
         finalized: false,
         device,
         deviceId,
