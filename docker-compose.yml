@@ -68,7 +68,7 @@ services:
       - BT_AWS_SQS_EMAIL_QUEUE_URL=http://localstack:4566/000000000000/email
       - BT_AWS_SQS_ENDPOINT=http://localstack:4566/
       - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
-      - BT_REDIS_URI=redis://redis:6379/bottomtime_local
+      - BT_REDIS_URI=redis://redis:6379/0
     entrypoint: /app/packages/service/bootstrap-docker.sh
     command: []
     working_dir: /app/packages/service
