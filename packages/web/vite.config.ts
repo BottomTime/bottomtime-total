@@ -39,6 +39,10 @@ export default defineConfig(({ mode }) => {
           target: process.env.BTWEB_API_URL || 'http://localhost:4800',
           changeOrigin: true,
         },
+        '/ws': {
+          target: process.env.BTWEB_API_URL || 'http://localhost:4800',
+          ws: true,
+        },
       },
     },
     plugins: [

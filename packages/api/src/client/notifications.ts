@@ -1,25 +1,14 @@
 /* eslint-disable no-console */
+import { Socket, io } from 'socket.io-client';
+
 export class NotificationsApiClient {
-  private socket: WebSocket | undefined;
+  private socket: Socket | undefined;
 
-  connect(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (this.socket) {
-        reject(new Error('Already connected. Call disconnect() first.'));
-      }
-
-      this.socket = new WebSocket('ws://localhost:4800/notifications');
-      this.socket.onopen = () => {};
-      this.socket.onclose = () => {};
-      this.socket.onmessage = (event) => {};
-      this.socket.onerror = (error) => {};
+  connect() {
+    this.socket = io('/notifications', {
+      path: '/ws/',
+      transports: ['websocket'],
+      withCredentials: true,
     });
-  }
-
-  disconnect(): void {
-    if (this.socket) {
-      this.socket.close();
-      this.socket = undefined;
-    }
   }
 }
