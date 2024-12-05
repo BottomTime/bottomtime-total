@@ -160,10 +160,10 @@ watch(
     if (user) {
       notificationListener.value = client.notifications.connect({
         init: (data) => {
-          // notifications.initNotifications(data);
+          notifications.initNotifications(data);
         },
         newNotification: (data) => {
-          notifications.appendNotifications(data);
+          notifications.addNotifications(data.data, data.totalCount);
         },
       });
     } else {

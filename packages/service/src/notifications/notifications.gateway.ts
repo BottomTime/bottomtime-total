@@ -91,6 +91,35 @@ export class NotificationsGateway
       });
 
       client.emit('init', result);
+
+      // TODO: Duplicate client for this...
+      this.redis.subscribe(`notify-${user.id}`, (msg) => {
+        client.emit('notify', JSON.parse(msg));
+      });
+
+      interval(10000)
+        .pipe(
+          map(
+            (index): NotificationDTO => ({
+              id: uuid(),
+              dismissed: false,
+              icon: '🤞',
+              message: 'New message',
+              title: `Notification #${index + 1}`,
+            }),
+          ),
+        )
+        .subscribe(async (notification): Promise<void> => {
+          try {
+            // TODO: WTF? What's wrong with this???
+            await this.redis.publish(
+              `notify-${user.id}`,
+              JSON.stringify(notification),
+            );
+          } catch (error) {
+            this.log.error(error);
+          }
+        });
     } catch (error) {
       this.log.error(error);
       client.emit(

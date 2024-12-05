@@ -19,6 +19,21 @@ export const useNotifications = defineStore('notifications', () => {
     }
   }
 
+  function addNotifications(
+    notifications: NotificationDTO | NotificationDTO[],
+    totalCount?: number,
+  ) {
+    if (Array.isArray(notifications)) {
+      notificationData.data.splice(0, 0, ...notifications);
+    } else {
+      notificationData.data.splice(0, 0, notifications);
+    }
+
+    if (typeof totalCount === 'number') {
+      notificationData.totalCount = totalCount;
+    }
+  }
+
   function initNotifications(notifications: ApiList<NotificationDTO>) {
     notificationData.data = notifications.data;
     notificationData.totalCount = notifications.totalCount;
@@ -30,6 +45,7 @@ export const useNotifications = defineStore('notifications', () => {
   }
 
   return {
+    addNotifications,
     appendNotifications,
     data,
     dismissNotification,

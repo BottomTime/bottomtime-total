@@ -15,9 +15,11 @@ export const RedisClient = Symbol('RedisClient');
         log.debug(
           `Creating Redis client with connection string: ${Config.redisUri}...`,
         );
-        return await createClient({
+        const client = await createClient({
           url: Config.redisUri,
         });
+        await client.connect();
+        return client as RedisClientType;
       },
     },
   ],
