@@ -1,3 +1,5 @@
+import { NotificationCallToAction } from '@bottomtime/api';
+
 import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { UserEntity } from './user.entity';
@@ -15,6 +17,9 @@ export class NotificationEntity {
 
   @Column({ type: 'varchar', length: 2000 })
   message: string = '';
+
+  @Column({ type: 'jsonb', nullable: true })
+  callsToAction: NotificationCallToAction[] | null = null;
 
   @Column('timestamp')
   @Index()

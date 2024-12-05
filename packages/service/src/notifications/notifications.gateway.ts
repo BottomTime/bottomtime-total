@@ -86,6 +86,7 @@ export class NotificationsGateway
 
       const result = await this.notifications.listNotifications({
         user,
+        limit: 10,
         showDismissed: false,
       });
 

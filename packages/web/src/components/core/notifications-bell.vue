@@ -12,7 +12,7 @@
           class="rounded-full bg-danger-dark text-grey-50 px-1.5 text-xs absolute -top-1 left-2.5"
         >
           {{
-            notifications.data.length.toLocaleString(['en-US', 'en-CA'], {
+            notifications.totalCount.toLocaleString(['en-US', 'en-CA'], {
               useGrouping: true,
             })
           }}
@@ -22,7 +22,7 @@
     <Transition name="nav-dropdown">
       <div
         v-if="showNotifications && notifications.data.length > 0"
-        class="absolute min-w-96 top-10 -right-16 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg z-[42]"
+        class="absolute min-w-96 max-h-96 top-10 -right-16 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg z-[42] overflow-y-scroll"
       >
         <ul>
           <li
@@ -33,10 +33,29 @@
           >
             <span class="text-2xl">{{ notification.icon }}</span>
             <div class="space-y-0.5 grow">
-              <p class="font-bold">{{ notification.title }}</p>
+              <p class="font-bold capitalize">{{ notification.title }}</p>
               <p>{{ notification.message }}</p>
-              <p>
-                <a href="" class="text-secondary">Click here</a>
+              <p class="flex gap-2">
+                <span
+                  v-for="(action, i) in notification.callsToAction"
+                  :key="i"
+                >
+                  <RouterLink
+                    v-if="action.type === NotificationCallToActionType.Link"
+                    :to="action.url"
+                  >
+                    {{ action.caption }}
+                  </RouterLink>
+                  <a
+                    v-else-if="
+                      action.type === NotificationCallToActionType.LinkToNewTab
+                    "
+                    :href="action.url"
+                    target="_blank"
+                  >
+                    {{ action.caption }}
+                  </a>
+                </span>
               </p>
             </div>
             <div>
@@ -47,6 +66,13 @@
               </button>
             </div>
           </li>
+
+          <li
+            v-if="notifications.data.length < notifications.totalCount"
+            class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2 justify-center"
+          >
+            <a @click="onLoadMore">Load more...</a>
+          </li>
         </ul>
       </div>
     </Transition>
@@ -54,9 +80,13 @@
 </template>
 
 <script lang="ts" setup>
-import { INotificationListener } from '@bottomtime/api';
+import {
+  INotificationListener,
+  NotificationCallToActionType,
+} from '@bottomtime/api';
 
 import { ref, watch } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { useOops } from '../../oops';
@@ -82,6 +112,14 @@ async function onDismissNotification(id: string): Promise<void> {
   });
   notifications.dismissNotification(id);
   showNotifications.value = false;
+}
+
+async function onLoadMore(): Promise<void> {
+  await oops(async () => {
+    if (currentUser.user) {
+      // await client.notifications.
+    }
+  });
 }
 
 watch(

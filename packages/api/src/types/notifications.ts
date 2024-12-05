@@ -9,10 +9,32 @@ export enum NotificationType {
   PushNotification = 'pushNotification',
 }
 
+export enum NotificationCallToActionType {
+  Link = 'link',
+  LinkToNewTab = 'linkToNewTab',
+}
+
+export const NotificationCallToActionSchema = z
+  .discriminatedUnion('type', [
+    z.object({
+      type: z.literal(NotificationCallToActionType.Link),
+      url: z.string(),
+    }),
+    z.object({
+      type: z.literal(NotificationCallToActionType.LinkToNewTab),
+      url: z.string(),
+    }),
+  ])
+  .and(z.object({ caption: z.string().min(1).max(100) }));
+export type NotificationCallToAction = z.infer<
+  typeof NotificationCallToActionSchema
+>;
+
 export const CreateOrUpdateNotificationParamsSchema = z.object({
   icon: z.string().min(1).max(100),
   title: z.string().min(1).max(200),
   message: z.string().max(2000),
+  callsToAction: NotificationCallToActionSchema.array().max(3).optional(),
   active: z.coerce.date().optional(),
   expires: z.coerce.date().optional(),
 });

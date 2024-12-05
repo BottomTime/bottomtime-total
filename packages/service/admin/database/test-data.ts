@@ -9,6 +9,7 @@ import {
   FriendRequestEntity,
   FriendshipEntity,
   LogEntryEntity,
+  NotificationEntity,
   OperatorEntity,
   UserEntity,
 } from '../../src/data';
@@ -20,6 +21,7 @@ import {
   fakeFriendRequest,
   fakeFriendship,
   fakeLogEntry,
+  fakeNotification,
   fakeUser,
 } from './fakes';
 
@@ -30,6 +32,7 @@ export type EntityCounts = {
   friendRequests: number;
   friends: number;
   logEntries: number;
+  notifications: number;
   users: number;
   targetUser?: string;
 };
@@ -199,6 +202,20 @@ async function createLogEntries(
   );
 }
 
+async function createNotifications(
+  Notifications: Repository<NotificationEntity>,
+  userIds: string[],
+  count: number,
+): Promise<void> {
+  await batch(
+    () => fakeNotification(userIds),
+    async (notifications) => {
+      await Notifications.save(notifications);
+    },
+    count,
+  );
+}
+
 export async function createTestData(
   postgresUri: string,
   requireSsl: boolean,
@@ -213,6 +230,7 @@ export async function createTestData(
     const Friends = ds.getRepository(FriendshipEntity);
     const Operators = ds.getRepository(OperatorEntity);
     const LogEntries = ds.getRepository(LogEntryEntity);
+    const Notifications = ds.getRepository(NotificationEntity);
     const Users = ds.getRepository(UserEntity);
     const Sites = ds.getRepository(DiveSiteEntity);
 
@@ -303,6 +321,15 @@ export async function createTestData(
         targetUser ? [targetUser.id] : userIds,
         siteIds,
         counts.logEntries,
+      );
+    }
+
+    if (counts.notifications) {
+      console.log(`Creating ${counts.notifications} notifications...`);
+      await createNotifications(
+        Notifications,
+        targetUser ? [targetUser.id] : userIds,
+        counts.notifications,
       );
     }
 
