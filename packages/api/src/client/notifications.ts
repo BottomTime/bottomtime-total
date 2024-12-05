@@ -4,6 +4,7 @@ import { Socket, io } from 'socket.io-client';
 import {
   ApiList,
   INotificationListener,
+  ListNotificationsParamsDTO,
   ListNotificationsResponseSchema,
   NotificationDTO,
 } from '../types';
@@ -93,5 +94,17 @@ export class NotificationsApiClient {
     await this.client.post(
       `/api/users/${username}/notifications/${notificationId}/dismiss`,
     );
+  }
+
+  async listNotifications(
+    username: string,
+    options?: ListNotificationsParamsDTO,
+  ): Promise<ApiList<NotificationDTO>> {
+    const { data } = await this.client.get(
+      `/api/users/${username}/notifications`,
+      options,
+      ListNotificationsResponseSchema,
+    );
+    return data;
   }
 }

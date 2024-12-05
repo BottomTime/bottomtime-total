@@ -68,10 +68,16 @@
           </li>
 
           <li
-            v-if="notifications.data.length < notifications.totalCount"
+            v-if="isLoadingMore"
             class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2 justify-center"
           >
-            <a @click="onLoadMore">Load more...</a>
+            <LoadingSpinner message="Fetching more notifications..." />
+          </li>
+          <li
+            v-else-if="notifications.data.length < notifications.totalCount"
+            class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2 justify-center"
+          >
+            <a @click.stop="onLoadMore">Load more...</a>
           </li>
         </ul>
       </div>
@@ -91,12 +97,14 @@ import { RouterLink } from 'vue-router';
 import { useClient } from '../../api-client';
 import { useOops } from '../../oops';
 import { useCurrentUser, useNotifications } from '../../store';
+import LoadingSpinner from '../common/loading-spinner.vue';
 
 const client = useClient();
 const oops = useOops();
 const currentUser = useCurrentUser();
 const notifications = useNotifications();
 
+const isLoadingMore = ref(false);
 const showNotifications = ref(false);
 
 const notificationListener = ref<INotificationListener | null>(null);
@@ -115,11 +123,24 @@ async function onDismissNotification(id: string): Promise<void> {
 }
 
 async function onLoadMore(): Promise<void> {
+  isLoadingMore.value = true;
+
   await oops(async () => {
     if (currentUser.user) {
-      // await client.notifications.
+      const results = await client.notifications.listNotifications(
+        currentUser.user.username,
+        {
+          showDismissed: false,
+          skip: notifications.data.length,
+          limit: 10,
+        },
+      );
+
+      notifications.appendNotifications(results);
     }
   });
+
+  isLoadingMore.value = false;
 }
 
 watch(
