@@ -21,12 +21,20 @@
     </button>
     <Transition name="nav-dropdown">
       <div
-        v-if="showNotifications && notifications.data.length > 0"
+        v-if="showNotifications"
         class="absolute min-w-96 max-h-96 top-10 -right-16 bg-gradient-to-b from-blue-900 to-blue-950 rounded-b-md drop-shadow-lg z-[42] overflow-y-scroll"
       >
         <ul>
           <li
+            v-if="notifications.data.length === 0"
+            class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2 justify-center"
+          >
+            <span>👌</span>
+            <span class="italic">You have no new notifications!</span>
+          </li>
+          <li
             v-for="notification in notifications.data"
+            v-else
             :key="notification.id"
             class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2"
             @click.stop=""
@@ -34,7 +42,7 @@
             <span class="text-2xl">{{ notification.icon }}</span>
             <div class="space-y-0.5 grow">
               <p class="font-bold capitalize">{{ notification.title }}</p>
-              <p>{{ notification.message }}</p>
+              <p class="italic">{{ notification.message }}</p>
               <p class="flex gap-2">
                 <span
                   v-for="(action, i) in notification.callsToAction"
@@ -74,7 +82,10 @@
             <LoadingSpinner message="Fetching more notifications..." />
           </li>
           <li
-            v-else-if="notifications.data.length < notifications.totalCount"
+            v-else-if="
+              notifications.data.length > 0 &&
+              notifications.data.length < notifications.totalCount
+            "
             class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2 justify-center"
           >
             <a @click.stop="onLoadMore">Load more...</a>
@@ -149,7 +160,7 @@ watch(
     if (user) {
       notificationListener.value = client.notifications.connect({
         init: (data) => {
-          notifications.initNotifications(data);
+          // notifications.initNotifications(data);
         },
         newNotification: (data) => {
           notifications.appendNotifications(data);
