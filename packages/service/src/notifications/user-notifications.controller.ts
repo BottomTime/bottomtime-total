@@ -457,11 +457,7 @@ export class UserNotificationsController {
    */
   @Post(`${NotificationIdParam}/dismiss`)
   @HttpCode(204)
-  @UseGuards(
-    ValidateIds(NotificationIdParamName),
-    AssertAdmin,
-    AssertTargetNotification,
-  )
+  @UseGuards(ValidateIds(NotificationIdParamName), AssertTargetNotification)
   async dismissNotification(
     @TargetNotification() notification: Notification,
   ): Promise<void> {
@@ -512,11 +508,7 @@ export class UserNotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`${NotificationIdParam}/undismiss`)
-  @UseGuards(
-    ValidateIds(NotificationIdParamName),
-    AssertAdmin,
-    AssertTargetNotification,
-  )
+  @UseGuards(ValidateIds(NotificationIdParamName), AssertTargetNotification)
   @HttpCode(204)
   async undismissNotification(
     @TargetNotification() notifification: Notification,

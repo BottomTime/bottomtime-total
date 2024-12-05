@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AuthModule } from '../auth';
 import { NotificationEntity, NotificationWhitelistEntity } from '../data';
 import { RedisModule } from '../dependencies';
 import { FeaturesModule } from '../features';
@@ -16,6 +17,7 @@ import { UserNotificationsController } from './user-notifications.controller';
     RedisModule,
     TypeOrmModule.forFeature([NotificationEntity, NotificationWhitelistEntity]),
     FeaturesModule,
+    AuthModule,
     UsersModule,
   ],
   providers: [

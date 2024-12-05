@@ -32,7 +32,7 @@ export class ApiClient {
     this.diveSites = new DiveSitesApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
     this.memberships = new MembershipsApiClient(this.client);
-    this.notifications = new NotificationsApiClient();
+    this.notifications = new NotificationsApiClient(this.client);
     this.tanks = new TanksApiClient(this.client);
   }
 

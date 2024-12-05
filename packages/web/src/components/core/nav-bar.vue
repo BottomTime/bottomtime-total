@@ -51,12 +51,7 @@
           </ul>
 
           <!-- Notifications alert -->
-          <button v-if="notificationsEnabled.value && currentUser.user">
-            <span class="fa-layers fa-fw">
-              <i class="fa-solid fa-bell"></i>
-              <span class="fa-layers-counter fa-layers-bottom-right"> 1 </span>
-            </span>
-          </button>
+          <NotificationsBell v-if="notificationsEnabled.value" />
 
           <!-- Avatar for authenticated users -->
           <button
@@ -206,6 +201,7 @@ import LoginForm from '../users/login-form.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import DarkModeToggle from './dark-mode-toggle.vue';
 import NavBarLink from './nav-bar-link.vue';
+import NotificationsBell from './notifications-bell.vue';
 
 type NavLink = {
   title: string;

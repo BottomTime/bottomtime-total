@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+export interface INotificationListener {
+  disconnect(): void;
+}
+
 export enum NotificationType {
   Email = 'email',
   PushNotification = 'pushNotification',
