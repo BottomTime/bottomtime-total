@@ -9,6 +9,7 @@ export const UserRouteNames = {
   MembershipConfirmation: 'membership-confirmation',
   Profile: 'profile',
   NamedProfile: 'named-profile',
+  Notifications: 'notifications',
   ProfileTanks: 'profile-tanks',
   ProfileNewTank: 'profile-new-tank',
   ProfileTank: 'profile-tank',
@@ -44,6 +45,11 @@ export const UserRoutes: RouteRecordRaw[] = [
     path: '/membership/confirmation',
     name: UserRouteNames.MembershipConfirmation,
     component: () => import('../views/users/membership-confirmation-view.vue'),
+  },
+  {
+    path: '/notifications',
+    name: UserRouteNames.Notifications,
+    component: () => import('../views/users/notifications-view.vue'),
   },
   {
     path: '/profile',

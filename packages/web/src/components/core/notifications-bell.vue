@@ -26,6 +26,13 @@
       >
         <ul>
           <li
+            class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2 justify-center"
+          >
+            <RouterLink to="/notifications">
+              Go to notifications...
+            </RouterLink>
+          </li>
+          <li
             v-if="notifications.data.length === 0"
             class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2 justify-center"
           >
@@ -98,6 +105,7 @@ import {
 } from '@bottomtime/api';
 
 import { ref, watch } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { useOops } from '../../oops';
