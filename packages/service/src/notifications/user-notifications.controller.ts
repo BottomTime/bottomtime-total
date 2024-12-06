@@ -32,6 +32,7 @@ import { AssertAccountOwner } from '../users/guards/assert-account-owner.guard';
 import { User } from '../users/user';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
+import { AssertNotificationsFeature } from './assert-notifications-feature.guard';
 import {
   AssertTargetNotification,
   TargetNotification,
@@ -44,7 +45,12 @@ const NotificationIdParamName = 'notificationId';
 const NotificationIdParam = `:${NotificationIdParamName}(${UuidRegex})`;
 
 @Controller(`api/users/:${UsernameParam}/notifications`)
-@UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner)
+@UseGuards(
+  AssertNotificationsFeature,
+  AssertAuth,
+  AssertTargetUser,
+  AssertAccountOwner,
+)
 export class UserNotificationsController {
   constructor(
     @Inject(NotificationsService)
