@@ -1,5 +1,3 @@
-import { NotificationDTO } from '@bottomtime/api';
-
 import {
   Inject,
   Logger,
@@ -15,9 +13,7 @@ import {
 import { parse as parseCookies } from 'cookie';
 import { IncomingHttpHeaders } from 'http';
 import { RedisClientType } from 'redis';
-import { interval, map } from 'rxjs';
 import { Socket } from 'socket.io';
-import { v7 as uuid } from 'uuid';
 
 import { AuthService } from '../auth';
 import { Config } from '../config';
@@ -36,6 +32,7 @@ export class NotificationsGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
   private readonly log = new Logger(NotificationsGateway.name);
+  private readonly subscriptions: Record<string, RedisClientType> = {};
 
   constructor(
     @Inject(NotificationsService)
@@ -92,34 +89,14 @@ export class NotificationsGateway
 
       client.emit('init', result);
 
-      // TODO: Duplicate client for this...
-      this.redis.subscribe(`notify-${user.id}`, (msg) => {
+      const redisClient = this.redis.duplicate();
+      await redisClient.connect();
+      redisClient.subscribe(`notify-${user.id}`, (msg) => {
+        this.log.debug(`Received notification: ${msg}`);
         client.emit('notify', JSON.parse(msg));
       });
 
-      interval(10000)
-        .pipe(
-          map(
-            (index): NotificationDTO => ({
-              id: uuid(),
-              dismissed: false,
-              icon: '🤞',
-              message: 'New message',
-              title: `Notification #${index + 1}`,
-            }),
-          ),
-        )
-        .subscribe(async (notification): Promise<void> => {
-          try {
-            // TODO: WTF? What's wrong with this???
-            await this.redis.publish(
-              `notify-${user.id}`,
-              JSON.stringify(notification),
-            );
-          } catch (error) {
-            this.log.error(error);
-          }
-        });
+      this.subscriptions[client.id] = redisClient;
     } catch (error) {
       this.log.error(error);
       client.emit(
@@ -133,6 +110,10 @@ export class NotificationsGateway
   }
 
   async handleDisconnect(client: Socket): Promise<void> {
-    this.log.debug('Disconnected');
+    if (this.subscriptions[client.id]) {
+      this.log.debug('Disconnecting Websocket client...');
+      await this.subscriptions[client.id].disconnect();
+      delete this.subscriptions[client.id];
+    }
   }
 }
