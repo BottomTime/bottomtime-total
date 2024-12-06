@@ -5,6 +5,7 @@ import {
   ListNotificationsParamsDTO,
   ListNotificationsParamsSchema,
   NotificationDTO,
+  TotalCountDTO,
 } from '@bottomtime/api';
 
 import {
@@ -67,6 +68,12 @@ export class UserNotificationsController {
    *         schema:
    *           type: boolean
    *         description: Whether to include dismissed notifications.
+   *       - in: query
+   *         name: showAfter
+   *         schema:
+   *           type: string
+   *           format: date-time
+   *         description: The date after which notifications should be shown. (Earlier notifications will be filtered out.)
    *       - in: query
    *         name: skip
    *         schema:
@@ -148,6 +155,85 @@ export class UserNotificationsController {
       data: results.data.map((notification) => notification.toJSON()),
       totalCount: results.totalCount,
     };
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/notifications/count:
+   *   get:
+   *     summary: Get notification count
+   *     description: Get the total number of notifications for a user, matching a given search criteria.
+   *     operationId: getNotificationCount
+   *     tags:
+   *       - Notifications
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *       - in: query
+   *         name: showDismissed
+   *         schema:
+   *           type: boolean
+   *         description: Whether to include dismissed notifications.
+   *       - in: query
+   *         name: showAfter
+   *         schema:
+   *           type: string
+   *           format: date-time
+   *         description: The date after which notifications should be shown. (Earlier notifications will be filtered out.)
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the total number of notifications will be returned in the request body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - totalCount
+   *               properties:
+   *                 totalCount:
+   *                   type: integer
+   *                   minimum: 0
+   *                   description: The total number of notifications.
+   *                   example: 7
+   *       "400":
+   *         description: The request failed because the query string parameters were invalid.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to view notifications for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: The request failed because of an unexpected internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Get('count')
+  async getNotificationCount(
+    @TargetUser() user: User,
+    @Query(new ZodValidator(ListNotificationsParamsSchema))
+    options: ListNotificationsParamsDTO,
+  ): Promise<TotalCountDTO> {
+    const totalCount = await this.service.getNotificationsCount(user, options);
+    return { totalCount };
   }
 
   /**

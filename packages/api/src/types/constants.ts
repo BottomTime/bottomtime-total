@@ -17,6 +17,11 @@ export type ApiList<T> = {
   totalCount: number;
 };
 
+export const TotalCountSchema = z.object({
+  totalCount: z.number().int().min(0),
+});
+export type TotalCountDTO = z.infer<typeof TotalCountSchema>;
+
 const ListAvatarURLsResponseSchema = z.object({
   root: z.string(),
   sizes: z.record(z.nativeEnum(AvatarSize), z.string()),

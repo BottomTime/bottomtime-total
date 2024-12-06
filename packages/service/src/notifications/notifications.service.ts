@@ -1,6 +1,7 @@
 import {
   ApiList,
   CreateOrUpdateNotificationParamsDTO,
+  GetNotificationsCountParamsDTO,
   ListNotificationsParamsDTO,
   NotificationType,
 } from '@bottomtime/api';
@@ -102,6 +103,19 @@ export class NotificationsService {
     };
   }
 
+  async getNotificationsCount(
+    user: User,
+    options: GetNotificationsCountParamsDTO,
+  ): Promise<number> {
+    const query = new NotificationsQueryBuilder(this.Notifications)
+      .withDismissed(options.showDismissed)
+      .withRecipient(user)
+      .withNewerThan(options.showAfter)
+      .build();
+
+    return await query.getCount();
+  }
+
   async getNotification(
     userId: string,
     notificationid: string,
@@ -125,6 +139,7 @@ export class NotificationsService {
     notification.message = options.message;
     notification.active = options.active ?? new Date();
     notification.expires = options.expires ?? null;
+    notification.callsToAction = options.callsToAction ?? [];
     notification.dismissed = false;
     notification.recipient = options.user.toEntity();
 

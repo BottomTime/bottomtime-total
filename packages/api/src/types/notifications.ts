@@ -57,10 +57,18 @@ export const ListNotificationsParamsSchema = z
     skip: z.coerce.number().int(),
     limit: z.coerce.number().int(),
   })
-  .partial()
-  .optional();
+  .partial();
 export type ListNotificationsParamsDTO = z.infer<
   typeof ListNotificationsParamsSchema
+>;
+
+export const GetNotificationsCountParamsSchema =
+  ListNotificationsParamsSchema.omit({
+    skip: true,
+    limit: true,
+  });
+export type GetNotificationsCountParamsDTO = z.infer<
+  typeof GetNotificationsCountParamsSchema
 >;
 
 export const ListNotificationsResponseSchema = z.object({

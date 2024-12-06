@@ -7,6 +7,7 @@ import {
   ListNotificationsParamsDTO,
   ListNotificationsResponseSchema,
   NotificationDTO,
+  TotalCountSchema,
 } from '../types';
 import { Fetcher } from './fetcher';
 
@@ -106,5 +107,17 @@ export class NotificationsApiClient {
       ListNotificationsResponseSchema,
     );
     return data;
+  }
+
+  async getNotficationsCount(
+    username: string,
+    options?: ListNotificationsParamsDTO,
+  ): Promise<number> {
+    const { data } = await this.client.get(
+      `/api/users/${username}/notifications/count`,
+      options,
+      TotalCountSchema,
+    );
+    return data.totalCount;
   }
 }

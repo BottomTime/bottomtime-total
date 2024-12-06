@@ -32,9 +32,8 @@
  *         icon:
  *           type: string
  *           description: |
- *             The icon to display with the notification. (Must be a FontAwesome v5 icon name.)
- *             https://fontawesome.com/v5/search
- *           example: fas fa-bell
+ *             The icon to display with the notification. An emoji works great here.
+ *           example: 👌
  *         title:
  *           type: string
  *           description: The title of the notification.
@@ -43,6 +42,35 @@
  *           type: string
  *           description: The message content of the notification.
  *           example: We're excited to have you on board!
+ *         callsToAction:
+ *           type: array
+ *           description: |
+ *             An array of calls to action that should be displayed with the notification. Each call to action should
+ *             contain a `caption` and `type` property. The `type` property must be one of `link` or `linkToNewTab`.
+ *             items:
+ *               type: object
+ *               required:
+ *                 - caption
+ *                 - type
+ *                 - url
+ *               properties:
+ *                 caption:
+ *                   type: string
+ *                   description: The text to display for the call to action.
+ *                   example: View your profile
+ *                 type:
+ *                   type: string
+ *                   enum:
+ *                     - link
+ *                     - linkToNewTab
+ *                   description: |
+ *                     The type of call to action. `link` will open the URL in the same tab, while `linkToNewTab` will open
+ *                     the URL in a new tab.
+ *                   example: link
+ *                 url:
+ *                   type: string
+ *                   description: The URL the call to action should navigate to.
+ *                   example: /profile
  *         active:
  *           type: string
  *           format: date-time

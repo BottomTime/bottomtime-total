@@ -48,18 +48,13 @@
                   v-for="(action, i) in notification.callsToAction"
                   :key="i"
                 >
-                  <RouterLink
-                    v-if="action.type === NotificationCallToActionType.Link"
-                    :to="action.url"
-                  >
-                    {{ action.caption }}
-                  </RouterLink>
                   <a
-                    v-else-if="
-                      action.type === NotificationCallToActionType.LinkToNewTab
-                    "
                     :href="action.url"
-                    target="_blank"
+                    :target="
+                      action.type === NotificationCallToActionType.Link
+                        ? '_self'
+                        : '_blank'
+                    "
                   >
                     {{ action.caption }}
                   </a>
@@ -103,7 +98,6 @@ import {
 } from '@bottomtime/api';
 
 import { ref, watch } from 'vue';
-import { RouterLink } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { useOops } from '../../oops';
