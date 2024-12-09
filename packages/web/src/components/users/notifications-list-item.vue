@@ -17,19 +17,19 @@
     </figure>
 
     <div class="grow space-y-1">
-      <div class="flex gap-2 items-center">
+      <div class="flex flex-col lg:flex-row gap-2 items-start lg:items-center">
         <p
           v-if="!notification.dismissed"
           class="bg-success font-mono text-grey-800 px-1 text-xs rounded-full font-bold"
         >
           New
         </p>
-        <div class="flex gap-2 items-baseline">
+        <div class="flex flex-col lg:flex-row gap-2 items-baseline">
           <p class="text-2xl font-bold capitalize">{{ notification.title }}</p>
-          <p class="italic">{{ activeDate }}</p>
+          <p class="italic text-sm">{{ activeDate }}</p>
         </div>
       </div>
-      <p class="italic">{{ notification.message }}</p>
+      <p>{{ notification.message }}</p>
       <div class="flex gap-2">
         <a
           v-for="(action, index) in notification.callsToAction"

@@ -32,7 +32,7 @@
         <p>This action cannot be undone.</p>
       </ConfirmDialog>
 
-      <div class="grid grid-cols-4 gap-3">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
         <div>
           <FormBox class="sticky top-16">
             <form @submit.prevent="">
@@ -59,7 +59,7 @@
           </FormBox>
         </div>
 
-        <div class="col-span-3">
+        <div class="col-span-1 lg:col-span-3">
           <NotificationsList
             :notifications="state.notifications"
             :is-loading="state.isLoading"
