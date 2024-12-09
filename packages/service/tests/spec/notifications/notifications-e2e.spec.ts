@@ -9,7 +9,7 @@ import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import {
   NotificationEntity,
@@ -17,6 +17,7 @@ import {
   UserEntity,
 } from '../../../src/data';
 import { ConfigCatClient } from '../../../src/dependencies';
+import { FeaturesModule } from '../../../src/features';
 import { NotificationsService } from '../../../src/notifications/notifications.service';
 import { UserNotificationsController } from '../../../src/notifications/user-notifications.controller';
 import { UsersModule } from '../../../src/users';
@@ -28,7 +29,10 @@ import {
   createTestApp,
   createTestUser,
 } from '../../utils';
-import { parseNotificationJSON } from '../../utils/create-test-notification';
+import {
+  createTestNotification,
+  parseNotificationJSON,
+} from '../../utils/create-test-notification';
 
 const AdminUserId = 'f3669787-82e5-458f-a8ad-98d3f57dda6e';
 const AdminUserData: Partial<UserEntity> = {
@@ -118,6 +122,7 @@ describe('Notifications End-to-End Tests', () => {
             NotificationEntity,
             NotificationWhitelistEntity,
           ]),
+          FeaturesModule,
           UsersModule,
         ],
         providers: [NotificationsService],
@@ -750,7 +755,7 @@ describe('Notifications End-to-End Tests', () => {
           .expect(401);
       });
 
-      it('will return a 403 response if the user is not an admin', async () => {
+      it('will return a 403 response if the user is not authorized to modify the notification', async () => {
         await request(server)
           .post(
             getUrl(
@@ -759,7 +764,7 @@ describe('Notifications End-to-End Tests', () => {
               dismissed ? 'undismiss' : 'dismiss',
             ),
           )
-          .set(...authHeader)
+          .set(...otherAuthHeader)
           .expect(403);
       });
 
@@ -801,6 +806,205 @@ describe('Notifications End-to-End Tests', () => {
           )
           .set(...adminAuthHeader)
           .expect(404);
+      });
+    });
+  });
+
+  describe('when performing bulk operations', () => {
+    let notificationData: NotificationEntity[];
+    let extraNotifications: NotificationEntity[];
+    let bulkIds: string[];
+
+    beforeAll(() => {
+      notificationData = NotificationTestData.map((notification) =>
+        parseNotificationJSON(notification, regularUser),
+      );
+      extraNotifications = Array.from({ length: 10 }, () =>
+        createTestNotification(otherUser),
+      );
+      bulkIds = [
+        notificationData[0].id,
+        notificationData[3].id,
+        notificationData[12].id,
+        notificationData[17].id,
+        extraNotifications[2].id,
+        extraNotifications[6].id,
+        'da0b7fc1-ca8d-4428-aeed-4772417659c3',
+      ];
+    });
+
+    beforeEach(async () => {
+      await Notifications.save([...notificationData, ...extraNotifications]);
+    });
+
+    describe('when performing bulk deletions', () => {
+      it('will delete a batch of notifications', async () => {
+        const { body } = await request(server)
+          .delete(getUrl())
+          .set(...authHeader)
+          .send(bulkIds)
+          .expect(200);
+
+        expect(body).toEqual({ totalCount: 4 });
+
+        await expect(Notifications.count()).resolves.toBe(
+          notificationData.length + extraNotifications.length - 4,
+        );
+        await expect(
+          Notifications.findBy({ id: In(bulkIds.slice(0, 4)) }),
+        ).resolves.toEqual([]);
+      });
+
+      it("will allow an admin to delete another user's notifications", async () => {
+        const { body } = await request(server)
+          .delete(getUrl())
+          .set(...adminAuthHeader)
+          .send(bulkIds)
+          .expect(200);
+
+        expect(body).toEqual({ totalCount: 4 });
+
+        await expect(Notifications.count()).resolves.toBe(
+          notificationData.length + extraNotifications.length - 4,
+        );
+        await expect(
+          Notifications.findBy({ id: In(bulkIds.slice(0, 4)) }),
+        ).resolves.toEqual([]);
+      });
+
+      it('will return a 400 response if the request body is missing', async () => {
+        const { body } = await request(server)
+          .delete(getUrl())
+          .set(...adminAuthHeader)
+          .expect(400);
+
+        expect(body.details).toMatchSnapshot();
+      });
+
+      it('will return a 400 response if the request body is invalid', async () => {
+        const { body } = await request(server)
+          .delete(getUrl())
+          .set(...adminAuthHeader)
+          .send({
+            ids: ['1'],
+          })
+          .expect(400);
+
+        expect(body.details).toMatchSnapshot();
+      });
+
+      it('will return a 401 response if the request is not authenticated', async () => {
+        await request(server).delete(getUrl()).send(bulkIds).expect(401);
+      });
+
+      it("will return a 403 response if the user attempts to delete another user's notifications", async () => {
+        await request(server)
+          .delete(getUrl())
+          .set(...otherAuthHeader)
+          .send(bulkIds)
+          .expect(403);
+      });
+
+      it('will return a 404 response if the target user does not exist', async () => {
+        await request(server)
+          .delete(getUrl(undefined, 'no_such_user'))
+          .set(...adminAuthHeader)
+          .send(bulkIds)
+          .expect(404);
+      });
+    });
+
+    [true, false].forEach((dismissed) => {
+      const verb = dismissed ? 'dismiss' : 'undismiss';
+      const presentParticiple = dismissed ? 'dismissing' : 'undismissing';
+      const url = `${getUrl()}/${verb}`;
+
+      describe(`when ${presentParticiple} a batch of notifications`, () => {
+        it(`will ${verb} a batch of notifications`, async () => {
+          await Notifications.update({}, { dismissed: !dismissed });
+          const { body } = await request(server)
+            .post(url)
+            .set(...authHeader)
+            .send(bulkIds)
+            .expect(200);
+
+          expect(body).toEqual({ totalCount: 4 });
+          const saved = await Notifications.find({
+            select: { id: true, dismissed: true },
+          });
+          expect(saved).toHaveLength(
+            notificationData.length + extraNotifications.length,
+          );
+
+          const expected = new Set(bulkIds.slice(0, 4));
+          for (const item of saved) {
+            expect(item.dismissed).toBe(
+              dismissed ? expected.has(item.id) : !expected.has(item.id),
+            );
+          }
+        });
+
+        it(`will allow an admin to ${verb} another user's notifications`, async () => {
+          await Notifications.update({}, { dismissed: !dismissed });
+          const { body } = await request(server)
+            .post(url)
+            .set(...authHeader)
+            .send(bulkIds)
+            .expect(200);
+
+          expect(body).toEqual({ totalCount: 4 });
+          const saved = await Notifications.find({
+            select: { id: true, dismissed: true },
+          });
+          expect(saved).toHaveLength(
+            notificationData.length + extraNotifications.length,
+          );
+
+          const expected = new Set(bulkIds.slice(0, 4));
+          for (const item of saved) {
+            expect(item.dismissed).toBe(
+              dismissed ? expected.has(item.id) : !expected.has(item.id),
+            );
+          }
+        });
+
+        it('will return a 400 response if the request body is missing', async () => {
+          const { body } = await request(server)
+            .post(url)
+            .set(...authHeader)
+            .expect(400);
+          expect(body.details).toMatchSnapshot();
+        });
+
+        it('will return a 400 response if the request body is invalid', async () => {
+          const { body } = await request(server)
+            .post(url)
+            .set(...authHeader)
+            .send([8, '11'])
+            .expect(400);
+          expect(body.details).toMatchSnapshot();
+        });
+
+        it('will return a 401 response if the request is not authenticated', async () => {
+          await request(server).post(url).send(bulkIds).expect(401);
+        });
+
+        it(`will return a 403 response if the user attempts to ${verb} another user's notifications`, async () => {
+          await request(server)
+            .post(url)
+            .set(...otherAuthHeader)
+            .send(bulkIds)
+            .expect(403);
+        });
+
+        it('will return a 404 response if the user does not exist', async () => {
+          const url = `${getUrl(undefined, 'no_such_user')}/${verb}`;
+          await request(server)
+            .post(url)
+            .set(...adminAuthHeader)
+            .send(bulkIds)
+            .expect(404);
+        });
       });
     });
   });

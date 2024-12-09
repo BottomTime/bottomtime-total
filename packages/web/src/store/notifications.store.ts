@@ -44,12 +44,23 @@ export const useNotifications = defineStore('notifications', () => {
     notificationData.totalCount = notifications.totalCount;
   }
 
+  function removeNotifications(notificationIds: string[]) {
+    const ids = new Set(notificationIds);
+    notificationData.totalCount -= ids.size;
+    for (let i = notificationData.data.length - 1; i >= 0; i--) {
+      if (ids.has(notificationData.data[i].id)) {
+        notificationData.data.splice(i, 1);
+      }
+    }
+  }
+
   return {
     addNotifications,
     appendNotifications,
     data,
     dismissNotification,
     initNotifications,
+    removeNotifications,
     totalCount,
   };
 });

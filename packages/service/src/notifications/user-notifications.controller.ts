@@ -14,12 +14,15 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Inject,
   Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
+
+import { z } from 'zod';
 
 import { UuidRegex } from '../common';
 import {
@@ -43,6 +46,7 @@ import { NotificationsService } from './notifications.service';
 const UsernameParam = 'username';
 const NotificationIdParamName = 'notificationId';
 const NotificationIdParam = `:${NotificationIdParamName}(${UuidRegex})`;
+const IdsList = z.string().uuid().array().min(1).max(500);
 
 @Controller(`api/users/:${UsernameParam}/notifications`)
 @UseGuards(
@@ -165,6 +169,87 @@ export class UserNotificationsController {
 
   /**
    * @openapi
+   * /api/users/{username}/notifications:
+   *   delete:
+   *     summary: Bulk delete notifications
+   *     description: Delete a group of notifications for a user.
+   *     operationId: bulkDeleteNotifications
+   *     tags:
+   *       - Notifications
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: array
+   *             items:
+   *               type: string
+   *               format: uuid
+   *             minItems: 1
+   *             maxItems: 500
+   *             uniqueItems: true
+   *           description: The IDs of the notifications to delete.
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the total number of notifications will be returned in the request body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - totalCount
+   *               properties:
+   *                 totalCount:
+   *                   type: integer
+   *                   minimum: 0
+   *                   description: The total number of notifications.
+   *                   example: 7
+   *       "400":
+   *         description: The request failed because the request body was invalid.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to delete notifications for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: The request failed because of an unexpected internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Delete()
+  async deleteNotifications(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(IdsList))
+    ids: string[],
+  ): Promise<TotalCountDTO> {
+    const totalCount = await this.service.deleteNotifications(user, ids);
+    return { totalCount };
+  }
+
+  /**
+   * @openapi
    * /api/users/{username}/notifications/count:
    *   get:
    *     summary: Get notification count
@@ -239,6 +324,170 @@ export class UserNotificationsController {
     options: ListNotificationsParamsDTO,
   ): Promise<TotalCountDTO> {
     const totalCount = await this.service.getNotificationsCount(user, options);
+    return { totalCount };
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/notifications/dismiss:
+   *   post:
+   *     summary: Dismiss notifications
+   *     description: Dismiss a group of notifications for a user. (This will also set an expiration date on the notifications so that they are automatically removed at some point in the future.)
+   *     operationId: bulkDismissNotifications
+   *     tags:
+   *       - Notifications
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: array
+   *             items:
+   *               type: string
+   *               format: uuid
+   *             minItems: 1
+   *             maxItems: 500
+   *             uniqueItems: true
+   *           description: The IDs of the notifications to dismiss.
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the total number of notifications will be returned in the request body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - totalCount
+   *               properties:
+   *                 totalCount:
+   *                   type: integer
+   *                   minimum: 0
+   *                   description: The total number of notifications.
+   *                   example: 7
+   *       "400":
+   *         description: The request failed because the request body was invalid.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to dismiss notifications for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: The request failed because of an unexpected internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post('dismiss')
+  @HttpCode(HttpStatus.OK)
+  async dismissNotifications(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(IdsList))
+    ids: string[],
+  ): Promise<TotalCountDTO> {
+    const totalCount = await this.service.dismissNotifications(user, ids);
+    return { totalCount };
+  }
+
+  /**
+   * @openapi
+   * /api/users/{username}/notifications/undismiss:
+   *   post:
+   *     summary: Undismiss notifications
+   *     description: Undismiss a group of notifications for a user. The notifications will once again appear as new to the user.
+   *     operationId: bulkUndismissNotifications
+   *     tags:
+   *       - Notifications
+   *       - Users
+   *     parameters:
+   *       - $ref: "#/components/parameters/Username"
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: array
+   *             items:
+   *               type: string
+   *               format: uuid
+   *             minItems: 1
+   *             maxItems: 500
+   *             uniqueItems: true
+   *           description: The IDs of the notifications to undismiss.
+   *     responses:
+   *       "200":
+   *         description: The request succeeded and the total number of notifications will be returned in the request body.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               required:
+   *                 - totalCount
+   *               properties:
+   *                 totalCount:
+   *                   type: integer
+   *                   minimum: 0
+   *                   description: The total number of notifications.
+   *                   example: 7
+   *       "400":
+   *         description: The request failed because the request body was invalid.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "401":
+   *         description: The request failed because the request could not be authenticated.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "403":
+   *         description: The request failed because the current user is not authorized to undismiss notifications for the target user.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "404":
+   *         description: The request failed because the target user could not be found.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   *       "500":
+   *         description: The request failed because of an unexpected internal server error.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: "#/components/schemas/Error"
+   */
+  @Post('undismiss')
+  @HttpCode(HttpStatus.OK)
+  async undismissNotifications(
+    @TargetUser() user: User,
+    @Body(new ZodValidator(IdsList))
+    ids: string[],
+  ): Promise<TotalCountDTO> {
+    const totalCount = await this.service.undismissNotifications(user, ids);
     return { totalCount };
   }
 

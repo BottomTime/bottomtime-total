@@ -88,6 +88,23 @@ export class NotificationsApiClient {
     return new NotificationListener(socket);
   }
 
+  async deleteNotifications(
+    username: string,
+    ids: string | string[],
+  ): Promise<number> {
+    if (Array.isArray(ids)) {
+      const { data } = await this.client.delete(
+        `/api/users/${username}/notifications`,
+        ids,
+        TotalCountSchema,
+      );
+      return data.totalCount;
+    }
+
+    await this.client.delete(`/api/users/${username}/notifications/${ids}`);
+    return 1;
+  }
+
   async dismissNotification(
     username: string,
     notificationId: string,

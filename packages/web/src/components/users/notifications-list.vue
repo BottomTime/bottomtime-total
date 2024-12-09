@@ -1,5 +1,44 @@
 <template>
-  <div>List goes here.</div>
+  <FormBox class="sticky top-16">
+    <p class="space-x-1">
+      <span>Showing</span>
+      <span class="font-bold font-mono">{{ notifications.data.length }}</span>
+      <span>of</span>
+      <span class="font-bold font-mono">{{ notifications.totalCount }}</span>
+      <span>notifications.</span>
+    </p>
+  </FormBox>
+  <div class="mx-2">
+    <div v-if="isLoading" class="my-8 text-xl text-center">
+      <LoadingSpinner message="Loading notifications..." />
+    </div>
+    <TransitionGroup tag="ul" name="list-fade">
+      <NotificationsListItem
+        v-for="notification in notifications.data"
+        :key="notification.id"
+        :notification="notification"
+        @delete="(notification) => $emit('delete', notification)"
+      />
+    </TransitionGroup>
+  </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ApiList, NotificationDTO } from '@bottomtime/api';
+
+import FormBox from '../common/form-box.vue';
+import LoadingSpinner from '../common/loading-spinner.vue';
+import NotificationsListItem from './notifications-list-item.vue';
+
+interface NotificationsListProps {
+  notifications: ApiList<NotificationDTO>;
+  isLoading?: boolean;
+}
+
+withDefaults(defineProps<NotificationsListProps>(), {
+  isLoading: false,
+});
+defineEmits<{
+  (e: 'delete', notifications: NotificationDTO | NotificationDTO[]): void;
+}>();
+</script>
