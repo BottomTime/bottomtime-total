@@ -30,7 +30,12 @@
         </div>
       </div>
       <p>{{ notification.message }}</p>
-      <div class="flex gap-2">
+      <div
+        v-if="
+          !!notification.callsToAction && notification.callsToAction.length > 0
+        "
+        class="flex gap-2"
+      >
         <a
           v-for="(action, index) in notification.callsToAction"
           :key="index"
@@ -48,7 +53,12 @@
     </div>
 
     <div class="flex justify-end text-sm min-w-16">
-      <FormButton rounded="left" @click="$emit('toggle-dismiss', notification)">
+      <FormButton
+        :control-id="`toggle-dismiss-${notification.id}`"
+        :test-id="`toggle-dismiss-${notification.id}`"
+        rounded="left"
+        @click="$emit('toggle-dismiss', notification)"
+      >
         <span class="sr-only"
           >Mark "{{ notification.title }}" as
           {{ notification.dismissed ? 'unread' : 'read' }}</span
@@ -61,6 +71,8 @@
         </span>
       </FormButton>
       <FormButton
+        :control-id="`delete-${notification.id}`"
+        :test-id="`delete-${notification.id}`"
         type="danger"
         rounded="right"
         @click="$emit('delete', notification)"

@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotificationsListItem component will render a notification that has been dismissed 1`] = `
+"<li class="flex items-center gap-4 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
+  <div class="mt-2.5"><label for="select-61203013-9339-40a2-b0e5-2e22b4f38952" class="flex space-x-3 items-center"><input id="select-61203013-9339-40a2-b0e5-2e22b4f38952" type="checkbox" data-testid="select-61203013-9339-40a2-b0e5-2e22b4f38952" class="form-checkbox h-4 w-4 text-primary rounded-md">
+      <div><span class="sr-only">Select "Test Notification"</span></div>
+    </label></div>
+  <figure class="mt-1"><span class="text-2xl">👌</span></figure>
+  <div class="grow space-y-1">
+    <div class="flex flex-col lg:flex-row gap-2 items-start lg:items-center">
+      <!--v-if-->
+      <div class="flex flex-col lg:flex-row gap-2 items-baseline">
+        <p class="text-2xl font-bold capitalize">Test Notification</p>
+        <p class="italic text-sm">2 days ago</p>
+      </div>
+    </div>
+    <p>This is a test notification</p>
+    <div class="flex gap-2"><a class="text-lg" href="/coolestPage" target="_self">Do something cool</a></div>
+  </div>
+  <div class="flex justify-end text-sm min-w-16"><button id="toggle-dismiss-61203013-9339-40a2-b0e5-2e22b4f38952" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-l-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="toggle-dismiss-61203013-9339-40a2-b0e5-2e22b4f38952" type="button">
+      <!--v-if--><span class="sr-only">Mark "Test Notification" as unread</span><span><i class="fa-solid fa-envelope"></i></span>
+    </button><button id="delete-61203013-9339-40a2-b0e5-2e22b4f38952" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-r-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-61203013-9339-40a2-b0e5-2e22b4f38952" type="button">
+      <!--v-if--><span class="sr-only">Delete "Test Notification"</span><span><i class="fa-solid fa-trash"></i></span>
+    </button></div>
+</li>"
+`;
+
+exports[`NotificationsListItem component will render a notification with no calls to action 1`] = `
+"<li class="flex items-center gap-4 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
+  <div class="mt-2.5"><label for="select-61203013-9339-40a2-b0e5-2e22b4f38952" class="flex space-x-3 items-center"><input id="select-61203013-9339-40a2-b0e5-2e22b4f38952" type="checkbox" data-testid="select-61203013-9339-40a2-b0e5-2e22b4f38952" class="form-checkbox h-4 w-4 text-primary rounded-md">
+      <div><span class="sr-only">Select "Test Notification"</span></div>
+    </label></div>
+  <figure class="mt-1"><span class="text-2xl">👌</span></figure>
+  <div class="grow space-y-1">
+    <div class="flex flex-col lg:flex-row gap-2 items-start lg:items-center">
+      <p class="bg-success font-mono text-grey-800 px-1 text-xs rounded-full font-bold"> New </p>
+      <div class="flex flex-col lg:flex-row gap-2 items-baseline">
+        <p class="text-2xl font-bold capitalize">Test Notification</p>
+        <p class="italic text-sm">2 days ago</p>
+      </div>
+    </div>
+    <p>This is a test notification</p>
+    <!--v-if-->
+  </div>
+  <div class="flex justify-end text-sm min-w-16"><button id="toggle-dismiss-61203013-9339-40a2-b0e5-2e22b4f38952" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-l-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="toggle-dismiss-61203013-9339-40a2-b0e5-2e22b4f38952" type="button">
+      <!--v-if--><span class="sr-only">Mark "Test Notification" as read</span><span><i class="fa-solid fa-envelope-open"></i></span>
+    </button><button id="delete-61203013-9339-40a2-b0e5-2e22b4f38952" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-r-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-61203013-9339-40a2-b0e5-2e22b4f38952" type="button">
+      <!--v-if--><span class="sr-only">Delete "Test Notification"</span><span><i class="fa-solid fa-trash"></i></span>
+    </button></div>
+</li>"
+`;
+
+exports[`NotificationsListItem component will render typical notification 1`] = `
+"<li class="flex items-center gap-4 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4">
+  <div class="mt-2.5"><label for="select-61203013-9339-40a2-b0e5-2e22b4f38952" class="flex space-x-3 items-center"><input id="select-61203013-9339-40a2-b0e5-2e22b4f38952" type="checkbox" data-testid="select-61203013-9339-40a2-b0e5-2e22b4f38952" class="form-checkbox h-4 w-4 text-primary rounded-md">
+      <div><span class="sr-only">Select "Test Notification"</span></div>
+    </label></div>
+  <figure class="mt-1"><span class="text-2xl">👌</span></figure>
+  <div class="grow space-y-1">
+    <div class="flex flex-col lg:flex-row gap-2 items-start lg:items-center">
+      <p class="bg-success font-mono text-grey-800 px-1 text-xs rounded-full font-bold"> New </p>
+      <div class="flex flex-col lg:flex-row gap-2 items-baseline">
+        <p class="text-2xl font-bold capitalize">Test Notification</p>
+        <p class="italic text-sm">2 days ago</p>
+      </div>
+    </div>
+    <p>This is a test notification</p>
+    <div class="flex gap-2"><a class="text-lg" href="/coolestPage" target="_self">Do something cool</a></div>
+  </div>
+  <div class="flex justify-end text-sm min-w-16"><button id="toggle-dismiss-61203013-9339-40a2-b0e5-2e22b4f38952" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-l-md disabled:text-grey-500 bg-secondary hover:bg-secondary-hover" data-testid="toggle-dismiss-61203013-9339-40a2-b0e5-2e22b4f38952" type="button">
+      <!--v-if--><span class="sr-only">Mark "Test Notification" as read</span><span><i class="fa-solid fa-envelope-open"></i></span>
+    </button><button id="delete-61203013-9339-40a2-b0e5-2e22b4f38952" class="text-grey-950 p-2 m-0 text-sm border-1 border-grey-800 shadow-sm shadow-grey-800 rounded-r-md bg-gradient-to-t disabled:text-grey-300 from-danger-dark hover:to-danger-hover to-danger" data-testid="delete-61203013-9339-40a2-b0e5-2e22b4f38952" type="button">
+      <!--v-if--><span class="sr-only">Delete "Test Notification"</span><span><i class="fa-solid fa-trash"></i></span>
+    </button></div>
+</li>"
+`;
