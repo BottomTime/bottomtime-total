@@ -1,48 +1,99 @@
 <template>
   <PageTitle title="Notifications" />
   <template v-if="notificationsFeature.value">
-    <ConfirmDialog
-      confirm-text="Delete"
-      dangerous
-      icon="fa-solid fa-trash fa-2x"
-      title="Delete notification?"
-      :visible="state.showDeleteDialog"
-      :is-loading="state.isDeleting"
-      @confirm="onConfirmDelete"
-      @cancel="onCancelDelete"
-    >
-      <p v-if="Array.isArray(state.selectedNotifications)"></p>
-      <p v-else-if="!!state.selectedNotifications">
-        Are you sure you want to delete
-        <span class="font-bold">"{{ state.selectedNotifications.title }}"</span
-        >?
-      </p>
-
-      <p>This action cannot be undone.</p>
-    </ConfirmDialog>
-
     <RequireAuth2>
-      <NotificationsList
-        :notifications="state.notifications"
-        :is-loading="state.isLoading"
-        @delete="onDelete"
-      />
+      <ConfirmDialog
+        confirm-text="Delete"
+        dangerous
+        icon="fa-solid fa-trash fa-2x"
+        title="Delete notification?"
+        :visible="state.showDeleteDialog"
+        :is-loading="state.isDeleting"
+        @confirm="onConfirmDelete"
+        @cancel="onCancelDelete"
+      >
+        <p
+          v-if="
+            !!state.selectedNotifications &&
+            state.selectedNotifications.length > 0
+          "
+        >
+          Are you sure you want to delete
+          <span class="font-bold">
+            "{{
+              state.selectedNotifications.length > 1
+                ? `${state.selectedNotifications.length} notifications`
+                : state.selectedNotifications[0].title
+            }}"
+          </span>
+          ?
+        </p>
+
+        <p>This action cannot be undone.</p>
+      </ConfirmDialog>
+
+      <div class="grid grid-cols-4 gap-3">
+        <div>
+          <FormBox class="sticky top-16">
+            <form @submit.prevent="">
+              <fieldset class="space-y-3" :disabled="state.isLoading">
+                <TextHeading>Search Options</TextHeading>
+
+                <FormField control-id="showDismissed">
+                  <FormCheckbox v-model="state.searchOptions.showDismissed">
+                    Show "read" notifications
+                  </FormCheckbox>
+                </FormField>
+
+                <div class="text-center">
+                  <FormButton
+                    :is-loading="state.isLoading"
+                    submit
+                    @click="refreshNotifications"
+                  >
+                    Refresh
+                  </FormButton>
+                </div>
+              </fieldset>
+            </form>
+          </FormBox>
+        </div>
+
+        <div class="col-span-3">
+          <NotificationsList
+            :notifications="state.notifications"
+            :is-loading="state.isLoading"
+            @delete="onDelete"
+            @dismiss="onDismiss"
+            @undismiss="onUndismiss"
+          />
+        </div>
+      </div>
     </RequireAuth2>
   </template>
   <NotFound v-else />
 </template>
 
 <script lang="ts" setup>
-import { ApiList, NotificationDTO } from '@bottomtime/api';
+import {
+  ApiList,
+  ListNotificationsParamsDTO,
+  NotificationDTO,
+} from '@bottomtime/api';
 import { NotificationsFeature } from '@bottomtime/common';
 
 import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../api-client';
 import { ToastType } from '../../common';
+import FormBox from '../../components/common/form-box.vue';
+import FormButton from '../../components/common/form-button.vue';
+import FormCheckbox from '../../components/common/form-checkbox.vue';
+import FormField from '../../components/common/form-field.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth2 from '../../components/common/require-auth2.vue';
+import TextHeading from '../../components/common/text-heading.vue';
 import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import NotificationsList from '../../components/users/notifications-list.vue';
 import { useFeature } from '../../featrues';
@@ -52,8 +103,9 @@ import { useCurrentUser, useNotifications, useToasts } from '../../store';
 interface NotificationsViewState {
   isDeleting: boolean;
   isLoading: boolean;
-  notifications: ApiList<NotificationDTO>;
-  selectedNotifications?: NotificationDTO | NotificationDTO[];
+  notifications: ApiList<NotificationDTO & { selected?: boolean }>;
+  searchOptions: ListNotificationsParamsDTO;
+  selectedNotifications?: NotificationDTO[];
   showDeleteDialog: boolean;
 }
 
@@ -71,6 +123,9 @@ const state = reactive<NotificationsViewState>({
     data: [],
     totalCount: 0,
   },
+  searchOptions: {
+    showDismissed: false,
+  },
   showDeleteDialog: false,
 });
 
@@ -81,16 +136,16 @@ async function refreshNotifications(): Promise<void> {
 
     state.notifications = await client.notifications.listNotifications(
       currentUser.user.username,
-      {
-        showDismissed: true,
-      },
+      state.searchOptions,
     );
   });
   state.isLoading = false;
 }
 
 function onDelete(notifications: NotificationDTO | NotificationDTO[]): void {
-  state.selectedNotifications = notifications;
+  state.selectedNotifications = Array.isArray(notifications)
+    ? notifications
+    : [notifications];
   state.showDeleteDialog = true;
 }
 
@@ -99,41 +154,102 @@ function onCancelDelete(): void {
 }
 
 async function onConfirmDelete(): Promise<void> {
-  if (
-    Array.isArray(state.selectedNotifications) ||
-    !state.selectedNotifications
-  ) {
-    return;
-  }
-
   state.isDeleting = true;
 
-  // TODO: Lolol
   await oops(async () => {
-    if (!currentUser.user) return;
+    if (!currentUser.user || !state.selectedNotifications) return;
+
+    const ids = state.selectedNotifications.map((n) => n.id);
     await client.notifications.deleteNotifications(
       currentUser.user.username,
-      (state.selectedNotifications as NotificationDTO).id,
+      ids,
     );
+
+    const idsSet = new Set(ids);
+    for (let i = state.notifications.data.length - 1; i >= 0; i--) {
+      if (idsSet.has(state.notifications.data[i].id)) {
+        state.notifications.data.splice(i, 1);
+        state.notifications.totalCount--;
+      }
+    }
+    notificationStore.removeNotifications(ids);
+
+    toasts.toast({
+      id: 'notification-deleted',
+      message: 'Notification deleted.',
+      type: ToastType.Success,
+    });
+
+    state.showDeleteDialog = false;
   });
 
-  const index = state.notifications.data.findIndex(
-    (n) => n.id === (state.selectedNotifications as NotificationDTO).id,
-  );
-  if (index > -1) {
-    state.notifications.data.splice(index, 1);
-    state.notifications.totalCount--;
-  }
-  notificationStore.removeNotifications([state.selectedNotifications.id]);
-
-  toasts.toast({
-    id: 'notification-deleted',
-    message: 'Notification deleted.',
-    type: ToastType.Success,
-  });
-
-  state.showDeleteDialog = false;
   state.isDeleting = false;
+}
+
+async function onDismiss(
+  notifications: NotificationDTO | NotificationDTO[],
+): Promise<void> {
+  if (!Array.isArray(notifications)) {
+    notifications = [notifications];
+  }
+
+  await oops(async () => {
+    if (!currentUser.user) return;
+    const ids = notifications.map((n) => n.id);
+    const idsSet = new Set(ids);
+
+    await client.notifications.dismissNotifications(
+      currentUser.user.username,
+      ids,
+    );
+
+    for (let i = state.notifications.data.length - 1; i >= 0; i--) {
+      if (idsSet.has(state.notifications.data[i].id)) {
+        state.notifications.data[i].dismissed = true;
+      }
+    }
+
+    for (const id of ids) {
+      notificationStore.dismissNotification(id);
+    }
+
+    toasts.toast({
+      id: 'notification-dismissed',
+      message: 'Notification(s) marked as read.',
+      type: ToastType.Success,
+    });
+  });
+}
+
+async function onUndismiss(
+  notifications: NotificationDTO | NotificationDTO[],
+): Promise<void> {
+  if (!Array.isArray(notifications)) {
+    notifications = [notifications];
+  }
+
+  await oops(async () => {
+    if (!currentUser.user) return;
+    const ids = notifications.map((n) => n.id);
+    const idsSet = new Set(ids);
+
+    await client.notifications.undismissNotifications(
+      currentUser.user.username,
+      ids,
+    );
+
+    for (let i = state.notifications.data.length - 1; i >= 0; i--) {
+      if (idsSet.has(state.notifications.data[i].id)) {
+        state.notifications.data[i].dismissed = false;
+      }
+    }
+
+    toasts.toast({
+      id: 'notification-undismissed',
+      message: 'Notification(s) marked as unread.',
+      type: ToastType.Success,
+    });
+  });
 }
 
 onMounted(refreshNotifications);

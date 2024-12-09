@@ -18,6 +18,10 @@
         :key="notification.id"
         :notification="notification"
         @delete="(notification) => $emit('delete', notification)"
+        @toggle-dismiss="onToggleDismiss"
+        @select="
+          (notification, selected) => $emit('select', notification, selected)
+        "
       />
     </TransitionGroup>
   </div>
@@ -31,14 +35,25 @@ import LoadingSpinner from '../common/loading-spinner.vue';
 import NotificationsListItem from './notifications-list-item.vue';
 
 interface NotificationsListProps {
-  notifications: ApiList<NotificationDTO>;
+  notifications: ApiList<NotificationDTO & { selected?: boolean }>;
   isLoading?: boolean;
 }
 
 withDefaults(defineProps<NotificationsListProps>(), {
   isLoading: false,
 });
-defineEmits<{
+const emit = defineEmits<{
   (e: 'delete', notifications: NotificationDTO | NotificationDTO[]): void;
+  (e: 'dismiss', notifications: NotificationDTO | NotificationDTO[]): void;
+  (e: 'undismiss', notifications: NotificationDTO | NotificationDTO[]): void;
+  (e: 'select', notification: NotificationDTO, selected: boolean): void;
 }>();
+
+function onToggleDismiss(notification: NotificationDTO) {
+  if (notification.dismissed) {
+    emit('undismiss', notification);
+  } else {
+    emit('dismiss', notification);
+  }
+}
 </script>

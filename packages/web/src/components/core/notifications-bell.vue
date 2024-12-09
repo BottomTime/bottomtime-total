@@ -125,7 +125,7 @@ const notificationListener = ref<INotificationListener | null>(null);
 async function onDismissNotification(id: string): Promise<void> {
   await oops(async () => {
     if (currentUser.user) {
-      await client.notifications.dismissNotification(
+      await client.notifications.dismissNotifications(
         currentUser.user.username,
         id,
       );

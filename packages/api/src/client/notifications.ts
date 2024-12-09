@@ -90,28 +90,83 @@ export class NotificationsApiClient {
 
   async deleteNotifications(
     username: string,
-    ids: string | string[],
+    notificationIds: string | string[],
   ): Promise<number> {
-    if (Array.isArray(ids)) {
-      const { data } = await this.client.delete(
-        `/api/users/${username}/notifications`,
-        ids,
-        TotalCountSchema,
-      );
-      return data.totalCount;
+    if (typeof notificationIds === 'string') {
+      notificationIds = [notificationIds];
     }
 
-    await this.client.delete(`/api/users/${username}/notifications/${ids}`);
-    return 1;
+    if (notificationIds.length === 0) return 0;
+
+    if (notificationIds.length === 1) {
+      await this.client.delete(
+        `/api/users/${username}/notifications/${notificationIds[0]}`,
+      );
+      return 1;
+    }
+
+    const {
+      data: { totalCount },
+    } = await this.client.delete(
+      `/api/users/${username}/notifications`,
+      notificationIds,
+      TotalCountSchema,
+    );
+    return totalCount;
   }
 
-  async dismissNotification(
+  async dismissNotifications(
     username: string,
-    notificationId: string,
-  ): Promise<void> {
-    await this.client.post(
-      `/api/users/${username}/notifications/${notificationId}/dismiss`,
+    notificationIds: string | string[],
+  ): Promise<number> {
+    if (typeof notificationIds === 'string') {
+      notificationIds = [notificationIds];
+    }
+
+    if (notificationIds.length === 0) return 0;
+
+    if (notificationIds.length === 1) {
+      await this.client.post(
+        `/api/users/${username}/notifications/${notificationIds[0]}/dismiss`,
+      );
+      return 1;
+    }
+
+    const {
+      data: { totalCount },
+    } = await this.client.post(
+      `/api/users/${username}/notifications/dismiss`,
+      notificationIds,
+      TotalCountSchema,
     );
+    return totalCount;
+  }
+
+  async undismissNotifications(
+    username: string,
+    notificationIds: string | string[],
+  ): Promise<number> {
+    if (typeof notificationIds === 'string') {
+      notificationIds = [notificationIds];
+    }
+
+    if (notificationIds.length === 0) return 0;
+
+    if (notificationIds.length === 1) {
+      await this.client.post(
+        `/api/users/${username}/notifications/${notificationIds[0]}/undismiss`,
+      );
+      return 1;
+    }
+
+    const {
+      data: { totalCount },
+    } = await this.client.post(
+      `/api/users/${username}/notifications/undismiss`,
+      notificationIds,
+      TotalCountSchema,
+    );
+    return totalCount;
   }
 
   async listNotifications(

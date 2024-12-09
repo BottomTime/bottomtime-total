@@ -52,6 +52,39 @@ describe('Notifications API Client', () => {
     mockFetch.restore();
   });
 
+  it('will delete a notification', async () => {
+    const notificationId = '9eb43845-9fbb-4cac-84a8-7d4dfa734080';
+    mockFetch.delete(
+      `/api/users/${Username}/notifications/${notificationId}`,
+      204,
+    );
+
+    await client.deleteNotifications(Username, notificationId);
+
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will delete multiple notifications', async () => {
+    const notificationIds = [
+      '9eb43845-9fbb-4cac-84a8-7d4dfa734080',
+      '8b2dfaba-8993-4f0d-b096-839792e5345b',
+      '39b337cb-b006-41cc-ab55-777181417427',
+    ];
+    mockFetch.delete(
+      {
+        url: `/api/users/${Username}/notifications`,
+        body: notificationIds,
+      },
+      { totalCount: 3 },
+    );
+
+    await expect(
+      client.deleteNotifications(Username, notificationIds),
+    ).resolves.toBe(3);
+
+    expect(mockFetch.done()).toBe(true);
+  });
+
   it('will dismiss a notification', async () => {
     const notificationId = '9eb43845-9fbb-4cac-84a8-7d4dfa734080';
     mockFetch.post(
@@ -59,7 +92,61 @@ describe('Notifications API Client', () => {
       204,
     );
 
-    await client.dismissNotification(Username, notificationId);
+    await client.dismissNotifications(Username, notificationId);
+
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will dismiss multiple notifications', async () => {
+    const notificationIds = [
+      '9eb43845-9fbb-4cac-84a8-7d4dfa734080',
+      '8b2dfaba-8993-4f0d-b096-839792e5345b',
+      '39b337cb-b006-41cc-ab55-777181417427',
+    ];
+    mockFetch.post(
+      {
+        url: `/api/users/${Username}/notifications/dismiss`,
+        body: notificationIds,
+      },
+      { totalCount: 3 },
+    );
+
+    await expect(
+      client.dismissNotifications(Username, notificationIds),
+    ).resolves.toBe(3);
+
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will undismiss a notification', async () => {
+    const notificationId = '9eb43845-9fbb-4cac-84a8-7d4dfa734080';
+    mockFetch.post(
+      `/api/users/${Username}/notifications/${notificationId}/undismiss`,
+      204,
+    );
+
+    await client.undismissNotifications(Username, notificationId);
+
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will undismiss multiple notifications', async () => {
+    const notificationIds = [
+      '9eb43845-9fbb-4cac-84a8-7d4dfa734080',
+      '8b2dfaba-8993-4f0d-b096-839792e5345b',
+      '39b337cb-b006-41cc-ab55-777181417427',
+    ];
+    mockFetch.post(
+      {
+        url: `/api/users/${Username}/notifications/undismiss`,
+        body: notificationIds,
+      },
+      { totalCount: 3 },
+    );
+
+    await expect(
+      client.undismissNotifications(Username, notificationIds),
+    ).resolves.toBe(3);
 
     expect(mockFetch.done()).toBe(true);
   });

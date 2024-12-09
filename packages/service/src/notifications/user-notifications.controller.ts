@@ -16,6 +16,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Logger,
   Post,
   Put,
   Query,
@@ -56,6 +57,8 @@ const IdsList = z.string().uuid().array().min(1).max(500);
   AssertAccountOwner,
 )
 export class UserNotificationsController {
+  private readonly log = new Logger(UserNotificationsController.name);
+
   constructor(
     @Inject(NotificationsService)
     private readonly service: NotificationsService,
@@ -156,6 +159,7 @@ export class UserNotificationsController {
     @Query(new ZodValidator(ListNotificationsParamsSchema))
     options: ListNotificationsParamsDTO,
   ): Promise<ApiList<NotificationDTO>> {
+    this.log.debug('Listing notifications for user', options);
     const results = await this.service.listNotifications({
       ...options,
       user,
@@ -741,11 +745,7 @@ export class UserNotificationsController {
    */
   @Delete(NotificationIdParam)
   @HttpCode(204)
-  @UseGuards(
-    ValidateIds(NotificationIdParamName),
-    AssertAdmin,
-    AssertTargetNotification,
-  )
+  @UseGuards(ValidateIds(NotificationIdParamName), AssertTargetNotification)
   async deleteNotification(
     @TargetNotification() notification: Notification,
   ): Promise<void> {

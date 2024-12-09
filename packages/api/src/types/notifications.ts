@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { BooleanString } from './constants';
+
 export interface INotificationListener {
   disconnect(): void;
 }
@@ -53,7 +55,7 @@ export type NotificationDTO = z.infer<typeof NotificationSchema>;
 export const ListNotificationsParamsSchema = z
   .object({
     showAfter: z.coerce.date(),
-    showDismissed: z.coerce.boolean(),
+    showDismissed: BooleanString,
     skip: z.coerce.number().int(),
     limit: z.coerce.number().int(),
   })
