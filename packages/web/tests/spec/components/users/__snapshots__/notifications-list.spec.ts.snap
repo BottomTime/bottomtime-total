@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotificationsList component will render a list of notifications 1`] = `"Showing50of137notifications."`;

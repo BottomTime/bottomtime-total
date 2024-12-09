@@ -1,10 +1,6 @@
 import { NotificationCallToActionType } from '@bottomtime/api';
 
-import {
-  ComponentMountingOptions,
-  flushPromises,
-  mount,
-} from '@vue/test-utils';
+import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';

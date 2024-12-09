@@ -1,22 +1,38 @@
 <template>
   <FormBox class="sticky top-16 flex gap-2 items-baseline">
-    <p class="space-x-1 grow">
+    <p class="space-x-1 grow" data-testid="notification-counts">
       <span>Showing</span>
       <span class="font-bold font-mono">{{ notifications.data.length }}</span>
       <span>of</span>
       <span class="font-bold font-mono">{{ notifications.totalCount }}</span>
       <span>notifications.</span>
     </p>
+
     <fieldset>
-      <FormButton size="sm" rounded="left" @click="onSelectAll">
+      <FormButton
+        size="sm"
+        rounded="left"
+        test-id="btn-select-all"
+        @click="onSelectAll"
+      >
         Select All
       </FormButton>
-      <FormButton size="sm" rounded="right" @click="onSelectNone">
+      <FormButton
+        size="sm"
+        rounded="right"
+        test-id="btn-select-none"
+        @click="onSelectNone"
+      >
         Select None
       </FormButton>
     </fieldset>
+
     <fieldset :disabled="!bulkEnabled">
-      <FormButton rounded="left" @click="onBulkDismiss">
+      <FormButton
+        test-id="btn-bulk-dismiss"
+        rounded="left"
+        @click="onBulkDismiss"
+      >
         <p class="space-x-2">
           <span>
             <i class="fa-solid fa-envelope-open"></i>
@@ -24,7 +40,11 @@
           <span>Mark as read</span>
         </p>
       </FormButton>
-      <FormButton :rounded="false" @click="onBulkUndismiss">
+      <FormButton
+        test-id="btn-bulk-undismiss"
+        :rounded="false"
+        @click="onBulkUndismiss"
+      >
         <p class="space-x-2">
           <span>
             <i class="fa-solid fa-envelope"></i>
@@ -32,7 +52,12 @@
           <span>Mark as unread</span>
         </p>
       </FormButton>
-      <FormButton rounded="right" type="danger" @click="onBulkDelete">
+      <FormButton
+        test-id="btn-bulk-delete"
+        rounded="right"
+        type="danger"
+        @click="onBulkDelete"
+      >
         <p class="space-x-2">
           <span>
             <i class="fa-solid fa-trash"></i>
@@ -42,11 +67,23 @@
       </FormButton>
     </fieldset>
   </FormBox>
+
   <div class="mx-2">
     <div v-if="isLoading" class="my-8 text-xl text-center">
       <LoadingSpinner message="Loading notifications..." />
     </div>
-    <TransitionGroup tag="ul" name="list-fade">
+    <TransitionGroup tag="ul" name="list-fade" data-testid="notifications-list">
+      <li
+        v-if="notifications.data.length === 0"
+        class="flex justify-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-8"
+        data-testid="msg-no-notifications"
+      >
+        <p class="text-lg italic space-x-3">
+          <span>👌</span>
+          <span>You do not have any notifications to view.</span>
+        </p>
+      </li>
+
       <NotificationsListItem
         v-for="notification in notifications.data"
         :key="notification.id"
@@ -66,7 +103,9 @@
           v-if="isLoadingMore"
           message="Fetching more notifications..."
         />
-        <a v-else @click="$emit('load-more')">Load more...</a>
+        <a v-else data-testid="btn-load-more" @click="$emit('load-more')">
+          Load more...
+        </a>
       </li>
     </TransitionGroup>
   </div>
