@@ -63,9 +63,11 @@
           <NotificationsList
             :notifications="state.notifications"
             :is-loading="state.isLoading"
+            :is-loading-more="state.isLoadingMore"
             @delete="onDelete"
             @dismiss="onDismiss"
             @undismiss="onUndismiss"
+            @load-more="onLoadMore"
           />
         </div>
       </div>
@@ -103,6 +105,7 @@ import { useCurrentUser, useNotifications, useToasts } from '../../store';
 interface NotificationsViewState {
   isDeleting: boolean;
   isLoading: boolean;
+  isLoadingMore: boolean;
   notifications: ApiList<NotificationDTO & { selected?: boolean }>;
   searchOptions: ListNotificationsParamsDTO;
   selectedNotifications?: NotificationDTO[];
@@ -119,6 +122,7 @@ const toasts = useToasts();
 const state = reactive<NotificationsViewState>({
   isDeleting: false,
   isLoading: true,
+  isLoadingMore: false,
   notifications: {
     data: [],
     totalCount: 0,
@@ -140,6 +144,26 @@ async function refreshNotifications(): Promise<void> {
     );
   });
   state.isLoading = false;
+}
+
+async function onLoadMore(): Promise<void> {
+  state.isLoadingMore = true;
+
+  await oops(async () => {
+    if (!currentUser.user) return;
+    const results = await client.notifications.listNotifications(
+      currentUser.user.username,
+      {
+        ...state.searchOptions,
+        skip: state.notifications.data.length,
+      },
+    );
+
+    state.notifications.data.push(...results.data);
+    state.notifications.totalCount = results.totalCount;
+  });
+
+  state.isLoadingMore = false;
 }
 
 function onDelete(notifications: NotificationDTO | NotificationDTO[]): void {

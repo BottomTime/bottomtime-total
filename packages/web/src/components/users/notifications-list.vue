@@ -23,6 +23,17 @@
           (notification, selected) => $emit('select', notification, selected)
         "
       />
+
+      <li
+        v-if="notifications.data.length < notifications.totalCount"
+        class="flex justify-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4 text-lg"
+      >
+        <LoadingSpinner
+          v-if="isLoadingMore"
+          message="Fetching more notifications..."
+        />
+        <a v-else @click="$emit('load-more')">Load more...</a>
+      </li>
     </TransitionGroup>
   </div>
 </template>
@@ -37,16 +48,19 @@ import NotificationsListItem from './notifications-list-item.vue';
 interface NotificationsListProps {
   notifications: ApiList<NotificationDTO & { selected?: boolean }>;
   isLoading?: boolean;
+  isLoadingMore?: boolean;
 }
 
 withDefaults(defineProps<NotificationsListProps>(), {
   isLoading: false,
+  isLoadingMore: false,
 });
 const emit = defineEmits<{
   (e: 'delete', notifications: NotificationDTO | NotificationDTO[]): void;
   (e: 'dismiss', notifications: NotificationDTO | NotificationDTO[]): void;
   (e: 'undismiss', notifications: NotificationDTO | NotificationDTO[]): void;
   (e: 'select', notification: NotificationDTO, selected: boolean): void;
+  (e: 'load-more'): void;
 }>();
 
 function onToggleDismiss(notification: NotificationDTO) {
