@@ -68,6 +68,7 @@
             @dismiss="onDismiss"
             @undismiss="onUndismiss"
             @load-more="onLoadMore"
+            @select="onSelection"
           />
         </div>
       </div>
@@ -77,11 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ApiList,
-  ListNotificationsParamsDTO,
-  NotificationDTO,
-} from '@bottomtime/api';
+import { ApiList, ListNotificationsParamsDTO } from '@bottomtime/api';
 import { NotificationsFeature } from '@bottomtime/common';
 
 import { onMounted, reactive } from 'vue';
@@ -98,6 +95,7 @@ import RequireAuth2 from '../../components/common/require-auth2.vue';
 import TextHeading from '../../components/common/text-heading.vue';
 import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import NotificationsList from '../../components/users/notifications-list.vue';
+import { NotificationWithSelection } from '../../components/users/types';
 import { useFeature } from '../../featrues';
 import { useOops } from '../../oops';
 import { useCurrentUser, useNotifications, useToasts } from '../../store';
@@ -106,9 +104,9 @@ interface NotificationsViewState {
   isDeleting: boolean;
   isLoading: boolean;
   isLoadingMore: boolean;
-  notifications: ApiList<NotificationDTO & { selected?: boolean }>;
+  notifications: ApiList<NotificationWithSelection>;
   searchOptions: ListNotificationsParamsDTO;
-  selectedNotifications?: NotificationDTO[];
+  selectedNotifications?: NotificationWithSelection[];
   showDeleteDialog: boolean;
 }
 
@@ -138,10 +136,16 @@ async function refreshNotifications(): Promise<void> {
   await oops(async () => {
     if (!currentUser.user) return;
 
-    state.notifications = await client.notifications.listNotifications(
+    const results = await client.notifications.listNotifications(
       currentUser.user.username,
       state.searchOptions,
     );
+
+    state.notifications.data = results.data.map((n) => ({
+      ...n,
+      selected: false,
+    }));
+    state.notifications.totalCount = results.totalCount;
   });
   state.isLoading = false;
 }
@@ -159,14 +163,21 @@ async function onLoadMore(): Promise<void> {
       },
     );
 
-    state.notifications.data.push(...results.data);
+    state.notifications.data.push(
+      ...results.data.map((n) => ({
+        ...n,
+        selected: false,
+      })),
+    );
     state.notifications.totalCount = results.totalCount;
   });
 
   state.isLoadingMore = false;
 }
 
-function onDelete(notifications: NotificationDTO | NotificationDTO[]): void {
+function onDelete(
+  notifications: NotificationWithSelection | NotificationWithSelection[],
+): void {
   state.selectedNotifications = Array.isArray(notifications)
     ? notifications
     : [notifications];
@@ -211,7 +222,7 @@ async function onConfirmDelete(): Promise<void> {
 }
 
 async function onDismiss(
-  notifications: NotificationDTO | NotificationDTO[],
+  notifications: NotificationWithSelection | NotificationWithSelection[],
 ): Promise<void> {
   if (!Array.isArray(notifications)) {
     notifications = [notifications];
@@ -246,7 +257,7 @@ async function onDismiss(
 }
 
 async function onUndismiss(
-  notifications: NotificationDTO | NotificationDTO[],
+  notifications: NotificationWithSelection | NotificationWithSelection[],
 ): Promise<void> {
   if (!Array.isArray(notifications)) {
     notifications = [notifications];
@@ -273,6 +284,22 @@ async function onUndismiss(
       message: 'Notification(s) marked as unread.',
       type: ToastType.Success,
     });
+  });
+}
+
+function onSelection(
+  notifications: NotificationWithSelection | NotificationWithSelection[],
+  selected: boolean,
+): void {
+  if (!Array.isArray(notifications)) {
+    notifications = [notifications];
+  }
+
+  const ids = new Set(notifications.map((n) => n.id));
+  state.notifications.data.forEach((notification) => {
+    if (ids.has(notification.id)) {
+      notification.selected = selected;
+    }
   });
 }
 

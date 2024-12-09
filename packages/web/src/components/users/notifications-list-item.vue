@@ -75,23 +75,28 @@
 </template>
 
 <script lang="ts" setup>
-import { NotificationCallToActionType, NotificationDTO } from '@bottomtime/api';
+import { NotificationCallToActionType } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 import { computed, ref, watch } from 'vue';
 
 import FormButton from '../common/form-button.vue';
 import FormCheckbox from '../common/form-checkbox.vue';
+import { NotificationWithSelection } from './types';
 
 interface NotificationsListItemProps {
-  notification: NotificationDTO & { selected?: boolean };
+  notification: NotificationWithSelection;
 }
 
 const props = defineProps<NotificationsListItemProps>();
 const emit = defineEmits<{
-  (e: 'delete', notification: NotificationDTO): void;
-  (e: 'toggle-dismiss', notification: NotificationDTO): void;
-  (e: 'select', notification: NotificationDTO, selected: boolean): void;
+  (e: 'delete', notification: NotificationWithSelection): void;
+  (e: 'toggle-dismiss', notification: NotificationWithSelection): void;
+  (
+    e: 'select',
+    notification: NotificationWithSelection,
+    selected: boolean,
+  ): void;
 }>();
 
 const selected = ref(props.notification.selected ?? false);
@@ -104,4 +109,11 @@ const activeDate = computed<string | undefined>(() => {
 watch(selected, (value) => {
   emit('select', props.notification, value);
 });
+
+watch(
+  () => props.notification.selected,
+  (value) => {
+    selected.value = value;
+  },
+);
 </script>

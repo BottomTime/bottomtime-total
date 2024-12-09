@@ -1,12 +1,46 @@
 <template>
-  <FormBox class="sticky top-16">
-    <p class="space-x-1">
+  <FormBox class="sticky top-16 flex gap-2 items-baseline">
+    <p class="space-x-1 grow">
       <span>Showing</span>
       <span class="font-bold font-mono">{{ notifications.data.length }}</span>
       <span>of</span>
       <span class="font-bold font-mono">{{ notifications.totalCount }}</span>
       <span>notifications.</span>
     </p>
+    <fieldset>
+      <FormButton size="sm" rounded="left" @click="onSelectAll">
+        Select All
+      </FormButton>
+      <FormButton size="sm" rounded="right" @click="onSelectNone">
+        Select None
+      </FormButton>
+    </fieldset>
+    <fieldset :disabled="!bulkEnabled">
+      <FormButton rounded="left" @click="onBulkDismiss">
+        <p class="space-x-2">
+          <span>
+            <i class="fa-solid fa-envelope-open"></i>
+          </span>
+          <span>Mark as read</span>
+        </p>
+      </FormButton>
+      <FormButton :rounded="false" @click="onBulkUndismiss">
+        <p class="space-x-2">
+          <span>
+            <i class="fa-solid fa-envelope"></i>
+          </span>
+          <span>Mark as unread</span>
+        </p>
+      </FormButton>
+      <FormButton rounded="right" type="danger" @click="onBulkDelete">
+        <p class="space-x-2">
+          <span>
+            <i class="fa-solid fa-trash"></i>
+          </span>
+          <span>Delete</span>
+        </p>
+      </FormButton>
+    </fieldset>
   </FormBox>
   <div class="mx-2">
     <div v-if="isLoading" class="my-8 text-xl text-center">
@@ -39,35 +73,85 @@
 </template>
 
 <script lang="ts" setup>
-import { ApiList, NotificationDTO } from '@bottomtime/api';
+import { ApiList } from '@bottomtime/api';
+
+import { computed } from 'vue';
 
 import FormBox from '../common/form-box.vue';
+import FormButton from '../common/form-button.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
 import NotificationsListItem from './notifications-list-item.vue';
+import { NotificationWithSelection } from './types';
 
 interface NotificationsListProps {
-  notifications: ApiList<NotificationDTO & { selected?: boolean }>;
+  notifications: ApiList<NotificationWithSelection>;
   isLoading?: boolean;
   isLoadingMore?: boolean;
 }
 
-withDefaults(defineProps<NotificationsListProps>(), {
+const props = withDefaults(defineProps<NotificationsListProps>(), {
   isLoading: false,
   isLoadingMore: false,
 });
 const emit = defineEmits<{
-  (e: 'delete', notifications: NotificationDTO | NotificationDTO[]): void;
-  (e: 'dismiss', notifications: NotificationDTO | NotificationDTO[]): void;
-  (e: 'undismiss', notifications: NotificationDTO | NotificationDTO[]): void;
-  (e: 'select', notification: NotificationDTO, selected: boolean): void;
+  (
+    e: 'delete',
+    notifications: NotificationWithSelection | NotificationWithSelection[],
+  ): void;
+  (
+    e: 'dismiss',
+    notifications: NotificationWithSelection | NotificationWithSelection[],
+  ): void;
+  (
+    e: 'undismiss',
+    notifications: NotificationWithSelection | NotificationWithSelection[],
+  ): void;
+  (
+    e: 'select',
+    notifications: NotificationWithSelection | NotificationWithSelection[],
+    selected: boolean,
+  ): void;
   (e: 'load-more'): void;
 }>();
 
-function onToggleDismiss(notification: NotificationDTO) {
+const bulkEnabled = computed(() => {
+  return props.notifications.data.some((n) => n.selected);
+});
+
+function onToggleDismiss(notification: NotificationWithSelection) {
   if (notification.dismissed) {
     emit('undismiss', notification);
   } else {
     emit('dismiss', notification);
   }
+}
+
+function onSelectAll() {
+  emit('select', props.notifications.data, true);
+}
+
+function onSelectNone() {
+  emit('select', props.notifications.data, false);
+}
+
+function onBulkDismiss() {
+  emit(
+    'dismiss',
+    props.notifications.data.filter((n) => n.selected),
+  );
+}
+
+function onBulkUndismiss() {
+  emit(
+    'undismiss',
+    props.notifications.data.filter((n) => n.selected),
+  );
+}
+
+function onBulkDelete() {
+  emit(
+    'delete',
+    props.notifications.data.filter((n) => n.selected),
+  );
 }
 </script>
