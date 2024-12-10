@@ -81,6 +81,15 @@ export type MembershipTrialEndingEvent = {
   endDate: Date;
 };
 
+export type NotificationManagementEvent = {
+  key:
+    | EventKey.NotificationsDeleted
+    | EventKey.NotificationsDismissed
+    | EventKey.NotificationsUndismissed;
+  user: User;
+  notificationIds: string[];
+};
+
 export type UserCreatedEvent = {
   key: EventKey.UserCreated;
   user: User;
@@ -110,6 +119,7 @@ export type EventData =
   | MembershipInvoiceCreatedEvent
   | MembershipPaymentFailedEvent
   | MembershipTrialEndingEvent
+  | NotificationManagementEvent
   | UserCreatedEvent
   | UserPasswordResetRequestEvent
   | UserVerifyEmailRequestEvent;

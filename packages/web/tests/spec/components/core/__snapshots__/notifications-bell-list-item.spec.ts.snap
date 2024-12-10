@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NotificationsBellListItem component will render a notification 1`] = `
+"<li class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2"><span class="text-2xl">👌</span>
+  <div class="space-y-0.5 grow">
+    <p class="font-bold capitalize">Test!</p>
+    <p class="text-xs">10 days ago</p>
+    <p class="italic">Test notification</p>
+    <p class="flex gap-2"><span><!-- Router link for internal links --><a href="/home" class="" target="_self">Click me!</a></span><span><!-- Router link for internal links --><!-- Regular <a> tag for external links --><a href="https://external.site.com/" target="_blank">Or click me!</a></span></p>
+  </div>
+  <div><button data-testid="btn-dismiss-notification-7a6e5dfd-2d4e-4b62-932c-71f897240a20"><span class="sr-only">Dismiss "Test!"</span><span><i class="fa-solid fa-circle-xmark hover:text-secondary"></i></span></button></div>
+</li>"
+`;
+
+exports[`NotificationsBellListItem component will render with no calls to action 1`] = `
+"<li class="p-2 text-grey-300 hover:text-grey-50 no-underline hover:bg-blue-700 rounded-md flex gap-2"><span class="text-2xl">👌</span>
+  <div class="space-y-0.5 grow">
+    <p class="font-bold capitalize">Test!</p>
+    <p class="text-xs">10 days ago</p>
+    <p class="italic">Test notification</p>
+    <!--v-if-->
+  </div>
+  <div><button data-testid="btn-dismiss-notification-7a6e5dfd-2d4e-4b62-932c-71f897240a20"><span class="sr-only">Dismiss "Test!"</span><span><i class="fa-solid fa-circle-xmark hover:text-secondary"></i></span></button></div>
+</li>"
+`;

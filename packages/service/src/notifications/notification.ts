@@ -42,6 +42,13 @@ export class Notification {
     this.data.active = value;
   }
 
+  get callsToAction(): NotificationDTO['callsToAction'] {
+    return this.data.callsToAction ? [...this.data.callsToAction] : undefined;
+  }
+  set(value: NotificationDTO['callsToAction']) {
+    this.data.callsToAction = value ?? null;
+  }
+
   get expires(): Date | undefined {
     return this.data.expires ?? undefined;
   }
@@ -75,8 +82,9 @@ export class Notification {
       icon: this.icon,
       message: this.message,
       title: this.title,
+      callsToAction: this.callsToAction,
       active: this.active,
-      expires: this.expires ?? undefined,
+      expires: this.expires,
     };
   }
 }

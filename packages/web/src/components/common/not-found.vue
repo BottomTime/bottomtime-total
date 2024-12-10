@@ -2,7 +2,7 @@
   <div class="text-center" data-testid="not-found-message">
     <p class="text-lg mb-5">
       Uh oh! The page you are looking for could not be found. Check your URL or
-      click <NavLink to="/">here</NavLink> to go back to the home page.
+      click <RouterLink to="/">here</RouterLink> to go back to the home page.
     </p>
 
     <p>
@@ -17,5 +17,5 @@
 </template>
 
 <script setup lang="ts">
-import NavLink from './nav-link.vue';
+import { RouterLink } from 'vue-router';
 </script>

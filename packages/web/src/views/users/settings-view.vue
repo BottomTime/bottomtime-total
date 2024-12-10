@@ -31,11 +31,11 @@ import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth.vue';
 import EditSettings from '../../components/users/edit-settings.vue';
 import ManageNotifications from '../../components/users/manage-notifications.vue';
-import { useFeature } from '../../featrues';
+import { useFeatureToggle } from '../../featrues';
 import { useCurrentUser } from '../../store';
 
 const currentUser = useCurrentUser();
-const notificationsEnabled = useFeature(NotificationsFeature);
+const notificationsEnabled = useFeatureToggle(NotificationsFeature);
 
 function onSave(settings: UserSettingsDTO) {
   if (currentUser.user) {

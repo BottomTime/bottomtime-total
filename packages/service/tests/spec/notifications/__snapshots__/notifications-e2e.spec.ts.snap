@@ -147,6 +147,14 @@ exports[`Notifications End-to-End Tests when listing notifications will return a
 {
   "issues": [
     {
+      "code": "invalid_string",
+      "message": "Value must be one of "true", "false", "1", or "0"",
+      "path": [
+        "showDismissed",
+      ],
+      "validation": "regex",
+    },
+    {
       "code": "invalid_type",
       "expected": "number",
       "message": "Expected number, received nan",
@@ -347,6 +355,110 @@ exports[`Notifications End-to-End Tests when listing notifications will return u
     "title": "Asperiores occaecati ipsa pariatur iure similique incidunt.",
   },
 ]
+`;
+
+exports[`Notifications End-to-End Tests when performing bulk operations when dismissing a batch of notifications will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        0,
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid uuid",
+      "path": [
+        1,
+      ],
+      "validation": "uuid",
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when performing bulk operations when dismissing a batch of notifications will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Expected array, received object",
+      "path": [],
+      "received": "object",
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when performing bulk operations when performing bulk deletions will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Expected array, received object",
+      "path": [],
+      "received": "object",
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when performing bulk operations when performing bulk deletions will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Expected array, received object",
+      "path": [],
+      "received": "object",
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when performing bulk operations when undismissing a batch of notifications will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        0,
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid uuid",
+      "path": [
+        1,
+      ],
+      "validation": "uuid",
+    },
+  ],
+}
+`;
+
+exports[`Notifications End-to-End Tests when performing bulk operations when undismissing a batch of notifications will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Expected array, received object",
+      "path": [],
+      "received": "object",
+    },
+  ],
+}
 `;
 
 exports[`Notifications End-to-End Tests when retrieving a single notification will retrieve the requested notification 1`] = `

@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { randomBytes } from 'crypto';
 import { CookieOptions, Request, Response } from 'express';
-import { JwtPayload, decode, sign } from 'jsonwebtoken';
+import { JwtPayload, decode, sign, verify } from 'jsonwebtoken';
 import { LessThan, Repository } from 'typeorm';
 
 import { Config } from '../config';
@@ -105,20 +105,31 @@ export class AuthService {
     });
   }
 
-  async validateJwt(payload: JwtPayload): Promise<User> {
-    if (!payload.sub) {
+  async validateJwt(tokenOrPayload: string | JwtPayload): Promise<User> {
+    if (typeof tokenOrPayload === 'string') {
+      try {
+        tokenOrPayload = verify(tokenOrPayload, Config.sessions.sessionSecret, {
+          complete: false,
+        }) as JwtPayload;
+      } catch (error) {
+        this.log.warn(error);
+        throw new UnauthorizedException('JWT could not be verified.');
+      }
+    }
+
+    if (!tokenOrPayload.sub) {
       throw new UnauthorizedException('JWT payload did not contain a subject.');
     }
 
-    if (!/^user\|.*/.test(payload.sub)) {
+    if (!/^user\|.*/.test(tokenOrPayload.sub)) {
       throw new UnauthorizedException('Invalid subject in the JWT.');
     }
 
-    const userId = payload.sub.substring(5);
+    const userId = tokenOrPayload.sub.substring(5);
     const [user, tokenInvalidated] = await Promise.all([
       this.users.getUserById(userId),
-      payload.jti
-        ? this.invalidTokens.existsBy({ token: payload.jti })
+      tokenOrPayload.jti
+        ? this.invalidTokens.existsBy({ token: tokenOrPayload.jti })
         : Promise.resolve(false),
     ]);
 

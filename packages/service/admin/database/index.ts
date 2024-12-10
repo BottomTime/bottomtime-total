@@ -60,6 +60,11 @@ export const dbModule: CommandModule<{
               description: 'The number of dive log entries to generate',
               type: 'number',
             })
+            .option('notifications', {
+              default: 0,
+              description: 'The number of notifications to generate',
+              type: 'number',
+            })
             .option('operators', {
               default: 0,
               description: 'The number of dive operators to generate',
@@ -90,6 +95,7 @@ export const dbModule: CommandModule<{
             diveOperators: yargs.operators,
             diveSites: yargs.sites,
             logEntries: yargs.logEntries,
+            notifications: yargs.notifications,
             users: yargs.users,
             targetUser: yargs.username,
           });

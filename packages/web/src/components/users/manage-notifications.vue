@@ -185,6 +185,18 @@ const NotificationEvents: NotificationEventData = {
     name: 'Membership trial ending',
     availability: new Set([NotificationType.Email]),
   },
+  [EventKey.NotificationsDeleted]: {
+    name: 'Notifications deleted',
+    availability: new Set(),
+  },
+  [EventKey.NotificationsDismissed]: {
+    name: 'Notifications marked as read',
+    availability: new Set(),
+  },
+  [EventKey.NotificationsUndismissed]: {
+    name: 'Notifications marked as unread',
+    availability: new Set(),
+  },
   [EventKey.UserCreated]: {
     name: 'Account created',
     availability: new Set(),
@@ -231,6 +243,9 @@ const state = reactive<ManageNotificationsState>({
     [EventKey.MembershipInvoiceCreated]: false,
     [EventKey.MembershipPaymentFailed]: false,
     [EventKey.MembershipTrialEnding]: false,
+    [EventKey.NotificationsDeleted]: false,
+    [EventKey.NotificationsDismissed]: false,
+    [EventKey.NotificationsUndismissed]: false,
     [EventKey.UserCreated]: false,
     [EventKey.UserPasswordResetRequest]: false,
     [EventKey.UserVerifyEmailRequest]: false,
@@ -245,6 +260,9 @@ const state = reactive<ManageNotificationsState>({
     [EventKey.MembershipInvoiceCreated]: false,
     [EventKey.MembershipPaymentFailed]: false,
     [EventKey.MembershipTrialEnding]: false,
+    [EventKey.NotificationsDeleted]: false,
+    [EventKey.NotificationsDismissed]: false,
+    [EventKey.NotificationsUndismissed]: false,
     [EventKey.UserCreated]: false,
     [EventKey.UserPasswordResetRequest]: false,
     [EventKey.UserVerifyEmailRequest]: false,

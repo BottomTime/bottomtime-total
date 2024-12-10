@@ -16,7 +16,10 @@ import {
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import NotificationTestData from '../../fixtures/notifications.json';
-import { parseNotificationJSON } from '../../utils/create-test-notification';
+import {
+  createTestNotification,
+  parseNotificationJSON,
+} from '../../utils/create-test-notification';
 import { createTestUser } from '../../utils/create-test-user';
 
 const UserId = '3850992b-d5cb-47f9-be99-3249d4fad24f';
@@ -31,6 +34,7 @@ describe('Notifications Service', () => {
   let userData: UserEntity;
   let otherUserData: UserEntity;
   let user: User;
+  let otherUser: User;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
@@ -43,10 +47,11 @@ describe('Notifications Service', () => {
 
     service = new NotificationsService(Notifications, NotificationWhitelists);
     user = new User(Users, userData);
+    otherUser = new User(Users, otherUserData);
   });
 
   beforeEach(async () => {
-    await Users.save(userData);
+    await Users.save([userData, otherUserData]);
   });
 
   describe('when listing notifications for a user', () => {
@@ -63,6 +68,10 @@ describe('Notifications Service', () => {
     });
 
     it('will list notifications with default options', async () => {
+      const extraNotifications = Array.from({ length: 5 }, () =>
+        createTestNotification(otherUserData),
+      );
+      await Notifications.save(extraNotifications);
       const result = await service.listNotifications({
         user,
       });
@@ -488,6 +497,138 @@ describe('Notifications Service', () => {
       );
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('when performing bulk operations', () => {
+    let notificationsData: NotificationEntity[];
+
+    beforeAll(() => {
+      notificationsData = NotificationTestData.map((notification) =>
+        parseNotificationJSON(notification, userData),
+      );
+    });
+
+    beforeEach(async () => {
+      await Notifications.save(notificationsData);
+    });
+
+    describe('when performing a bulk deletion of notifications', () => {
+      it('will delete a batch of notifications for a user', async () => {
+        const ids = [
+          notificationsData[0].id,
+          notificationsData[3].id,
+          notificationsData[12].id,
+          notificationsData[17].id,
+          '9b71c7e5-2af9-4759-9d38-c788fd66ff22',
+        ];
+
+        const count = await service.deleteNotifications(user, ids);
+        expect(count).toBe(4);
+
+        const [items, remaining] = await Notifications.findAndCount({
+          where: { recipient: userData },
+          select: { id: true },
+        });
+        expect(remaining).toBe(notificationsData.length - 4);
+
+        const deleted = new Set(ids);
+        for (const item of items) {
+          expect(deleted.has(item.id)).toBe(false);
+        }
+      });
+
+      it("will not allow users to delete other users's notifications", async () => {
+        const ids = [
+          notificationsData[0].id,
+          notificationsData[3].id,
+          notificationsData[12].id,
+          notificationsData[17].id,
+          '9b71c7e5-2af9-4759-9d38-c788fd66ff22',
+        ];
+
+        const count = await service.deleteNotifications(otherUser, ids);
+        expect(count).toBe(0);
+
+        const remaining = await Notifications.count({
+          where: { recipient: userData },
+          select: { id: true },
+        });
+        expect(remaining).toBe(notificationsData.length);
+      });
+    });
+
+    [true, false].forEach((dismissed) => {
+      describe(`when performing a bulk ${
+        dismissed ? '' : 'un'
+      }dismissal of notifications`, () => {
+        it(`will mark a batch of notifications as ${
+          dismissed ? '' : 'un'
+        }dismissed`, async () => {
+          await Notifications.update(
+            {},
+            {
+              dismissed: !dismissed,
+            },
+          );
+          const ids = [
+            notificationsData[0].id,
+            notificationsData[3].id,
+            notificationsData[12].id,
+            notificationsData[17].id,
+            '9b71c7e5-2af9-4759-9d38-c788fd66ff22',
+          ];
+
+          const count = dismissed
+            ? await service.dismissNotifications(user, ids)
+            : await service.undismissNotifications(user, ids);
+          expect(count).toBe(4);
+
+          const items = await Notifications.find({
+            where: { recipient: userData },
+            select: { id: true, dismissed: true },
+          });
+          expect(items).toHaveLength(notificationsData.length);
+
+          const modified = new Set(ids);
+          for (const item of items) {
+            expect(item.dismissed).toBe(
+              dismissed ? modified.has(item.id) : !modified.has(item.id),
+            );
+          }
+        });
+
+        it(`will not ${
+          dismissed ? '' : 'un'
+        }dismiss notifications belonging to other users`, async () => {
+          await Notifications.update(
+            {},
+            {
+              dismissed: !dismissed,
+            },
+          );
+          const ids = [
+            notificationsData[0].id,
+            notificationsData[3].id,
+            notificationsData[12].id,
+            notificationsData[17].id,
+            '9b71c7e5-2af9-4759-9d38-c788fd66ff22',
+          ];
+
+          const count = await service.dismissNotifications(otherUser, ids);
+          expect(count).toBe(0);
+
+          const items = await Notifications.find({
+            where: { recipient: userData },
+            select: { id: true, dismissed: true },
+          });
+          expect(items).toHaveLength(notificationsData.length);
+
+          for (const item of items) {
+            expect(item.dismissed).toBe(!dismissed);
+          }
+        });
+      });
     });
   });
 });

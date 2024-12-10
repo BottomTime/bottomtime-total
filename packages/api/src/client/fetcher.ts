@@ -102,9 +102,13 @@ export class Fetcher {
     return response;
   }
 
-  async delete<T>(url: string): Promise<ApiResponse<T>> {
-    const response = await this.sendRequest('DELETE', url);
-    const data = await this.parseResponseBody<T>(response);
+  async delete<T>(
+    url: string,
+    params?: unknown,
+    parser?: ZodType<T, ZodTypeDef, unknown>,
+  ): Promise<ApiResponse<T>> {
+    const response = await this.sendRequest('DELETE', url, { body: params });
+    const data = await this.parseResponseBody<T>(response, parser);
 
     return {
       data,

@@ -1,6 +1,7 @@
 import {
   ApiList,
   CreateOrUpdateNotificationParamsDTO,
+  GetNotificationsCountParamsDTO,
   ListNotificationsParamsDTO,
   NotificationType,
 } from '@bottomtime/api';
@@ -9,11 +10,15 @@ import { EventKey } from '@bottomtime/common';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { LessThan, Repository } from 'typeorm';
+import { In, LessThan, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 import { z } from 'zod';
 
-import { NotificationEntity, NotificationWhitelistEntity } from '../data';
+import {
+  NotificationEntity,
+  NotificationWhitelistEntity,
+  UserEntity,
+} from '../data';
 import { User } from '../users/user';
 import { Notification } from './notification';
 import { NotificationsQueryBuilder } from './notifications-query-builder';
@@ -102,6 +107,19 @@ export class NotificationsService {
     };
   }
 
+  async getNotificationsCount(
+    user: User,
+    options: GetNotificationsCountParamsDTO,
+  ): Promise<number> {
+    const query = new NotificationsQueryBuilder(this.Notifications)
+      .withDismissed(options.showDismissed)
+      .withRecipient(user)
+      .withNewerThan(options.showAfter)
+      .build();
+
+    return await query.getCount();
+  }
+
   async getNotification(
     userId: string,
     notificationid: string,
@@ -125,12 +143,59 @@ export class NotificationsService {
     notification.message = options.message;
     notification.active = options.active ?? new Date();
     notification.expires = options.expires ?? null;
+    notification.callsToAction = options.callsToAction ?? [];
     notification.dismissed = false;
     notification.recipient = options.user.toEntity();
 
     await this.Notifications.save(notification);
 
     return new Notification(this.Notifications, notification);
+  }
+
+  async deleteNotifications(
+    user: User,
+    ids: string | string[],
+  ): Promise<number> {
+    if (typeof ids === 'string') ids = [ids];
+    this.log.debug(`Deleting batch of notifications for user "${user.id}"...`);
+    this.log.verbose('Deleting notificaitons:', ids);
+    const { affected } = await this.Notifications.delete({
+      id: In(ids),
+      recipient: { id: user.id } as UserEntity,
+    });
+    return affected || 0;
+  }
+
+  async dismissNotifications(
+    user: User,
+    ids: string | string[],
+  ): Promise<number> {
+    if (typeof ids === 'string') ids = [ids];
+    const { affected } = await this.Notifications.update(
+      {
+        recipient: { id: user.id } as UserEntity,
+        id: In(ids),
+      },
+      { dismissed: true },
+    );
+    return affected || 0;
+  }
+
+  async undismissNotifications(
+    user: User,
+    ids: string | string[],
+  ): Promise<number> {
+    if (typeof ids === 'string') ids = [ids];
+    const { affected } = await this.Notifications.update(
+      {
+        recipient: { id: user.id } as UserEntity,
+        id: In(ids),
+      },
+      {
+        dismissed: false,
+      },
+    );
+    return affected || 0;
   }
 
   async purgeExpiredNotifications(): Promise<number> {

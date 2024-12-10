@@ -51,12 +51,7 @@
           </ul>
 
           <!-- Notifications alert -->
-          <button v-if="notificationsEnabled.value && currentUser.user">
-            <span class="fa-layers fa-fw">
-              <i class="fa-solid fa-bell"></i>
-              <span class="fa-layers-counter fa-layers-bottom-right"> 1 </span>
-            </span>
-          </button>
+          <NotificationsBell v-if="notificationsEnabled.value" />
 
           <!-- Avatar for authenticated users -->
           <button
@@ -197,7 +192,7 @@ import { useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Config } from '../../config';
-import { useFeature } from '../../featrues';
+import { useFeatureToggle } from '../../featrues';
 import { useOops } from '../../oops';
 import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
@@ -206,6 +201,7 @@ import LoginForm from '../users/login-form.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import DarkModeToggle from './dark-mode-toggle.vue';
 import NavBarLink from './nav-bar-link.vue';
+import NotificationsBell from './notifications-bell.vue';
 
 type NavLink = {
   title: string;
@@ -218,7 +214,7 @@ const oops = useOops();
 const router = useRouter();
 
 const currentUser = useCurrentUser();
-const notificationsEnabled = useFeature(NotificationsFeature);
+const notificationsEnabled = useFeatureToggle(NotificationsFeature);
 
 const showLogin = ref(false);
 const showHamburger = ref(false);

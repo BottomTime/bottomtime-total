@@ -212,6 +212,7 @@ values specified:
 - `googleClientId` - Client ID for Google OAuth.
 - `googleClientSecret` - Client secret for Google OAuth.
 - `postgresUri` - The connection string needed to connect to the Postgres database.
+- `redisUri` - The connection string needed to connect to the Redis cache.
 - `sessionSecret` - A string used to encrypt the JWT authentication token. This should, ideally, be a long, randomly-generated string.
 - `smtpHost` - Domain name of the SMTP server that will be used to send emails to users.
 - `smtpPassword` - Password used to authenticate with the SMTP server.

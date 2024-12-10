@@ -15,6 +15,13 @@ services:
       - './.localstack:/var/lib/localstack'
       - '/var/run/docker.sock:/var/run/docker.sock'
 
+  # Redis caching server
+  redis:
+    container_name: bottomtime-redis
+    image: redis:7.4-alpine3.20
+    ports:
+      - '6379:6379'
+
   # Postfix SMTP server to act as an email relay
   postfix:
     container_name: bottomtime-postfix
@@ -61,11 +68,14 @@ services:
       - BT_AWS_SQS_EMAIL_QUEUE_URL=http://localstack:4566/000000000000/email
       - BT_AWS_SQS_ENDPOINT=http://localstack:4566/
       - BT_POSTGRES_URI=postgresql://bt_user:bt_admin1234@postgres:5432/bottomtime_local
+      - BT_REDIS_URI=redis://redis:6379/0
     entrypoint: /app/packages/service/bootstrap-docker.sh
     command: []
     working_dir: /app/packages/service
     depends_on:
       localstack:
+        condition: service_started
+      redis:
         condition: service_started
       postgres:
         condition: service_healthy
@@ -74,12 +84,12 @@ services:
         - action: rebuild
           path: packages/service/yarn.lock
           target: /app/packages/service/yarn.lock
-        - action: rebuild
-          path: packages/api/src
-          target: /app/packages/api/src
-        - action: rebuild
-          path: packages/common/src
-          target: /app/packages/common/src
+        - action: sync+restart
+          path: packages/api/dist
+          target: /app/packages/api/dist
+        - action: sync+restart
+          path: packages/common/dist
+          target: /app/packages/common/dist
         - action: sync
           path: packages/service/src
           target: /app/packages/service/src
@@ -107,9 +117,12 @@ services:
         - action: rebuild
           path: packages/web/yarn.lock
           target: /app/packages/web/yarn.lock
-        - action: rebuild
-          path: packages/api/src
-          target: /app/packages/api/src
+        - action: sync+restart
+          path: packages/api/dist
+          target: /app/packages/api/dist
+        - action: sync+restart
+          path: packages/common/dist
+          target: /app/packages/common/dist
         - action: sync
           path: packages/web/public
           target: /app/packages/web/public

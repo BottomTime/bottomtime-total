@@ -43,6 +43,7 @@ resource "aws_lambda_function" "service" {
       BT_PASSWORD_SALT_ROUNDS    = "${var.password_salt_rounds}"
       BT_POSTGRES_REQUIRE_SSL    = "true"
       BT_POSTGRES_URI            = local.secrets.postgresUri
+      BT_REDIS_URI               = local.secrets.redisUri
       BT_SESSION_COOKIE_DOMAIN   = local.web_fqdn
       BT_SESSION_COOKIE_NAME     = local.cookie_name
       BT_SESSION_SECRET          = local.secrets.sessionSecret

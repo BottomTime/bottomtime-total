@@ -1,12 +1,21 @@
 import { mount } from '@vue/test-utils';
 
-import NotFound from '../../../src/components/common/not-found.vue';
+import { Router } from 'vue-router';
+
 import CookiePolicy from '../../../src/views/cookies-view.vue';
+import NotFound from '../../../src/views/not-found-view.vue';
 import PrivacyPolicy from '../../../src/views/privacy-view.vue';
 import ServerError from '../../../src/views/server-error-view.vue';
 import TermsOfService from '../../../src/views/terms-of-service-view.vue';
+import { createRouter } from '../../fixtures/create-router';
 
 describe('Static Views', () => {
+  let router: Router;
+
+  beforeAll(() => {
+    router = createRouter();
+  });
+
   it('will render Cookie Policy', () => {
     const wrapper = mount(CookiePolicy);
     expect(wrapper.html()).toMatchSnapshot();
@@ -23,7 +32,7 @@ describe('Static Views', () => {
   });
 
   it('will render Not Found Error page', () => {
-    const wrapper = mount(NotFound);
+    const wrapper = mount(NotFound, { global: { plugins: [router] } });
     expect(wrapper.html()).toMatchSnapshot();
   });
 
