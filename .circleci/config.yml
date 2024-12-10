@@ -201,6 +201,7 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_USER: bt_user
           POSTGRES_PASSWORD: bt_admin1234
+      - image: redis:7.4-alpine3.20
       - image: localstack/localstack
         environment:
           - SERVICES=s3,sqs,ses
