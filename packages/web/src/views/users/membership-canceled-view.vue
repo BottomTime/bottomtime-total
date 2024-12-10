@@ -32,8 +32,8 @@
         </p>
 
         <p class="flex justify-evenly">
-          <NavLink to="/">Return to home page</NavLink>
-          <NavLink to="/account">Return to your account page</NavLink>
+          <RouterLink to="/">Return to home page</RouterLink>
+          <RouterLink to="/account">Return to your account page</RouterLink>
         </p>
       </div>
     </div>
@@ -41,9 +41,10 @@
 </template>
 
 <script lang="ts" setup>
+import { RouterLink } from 'vue-router';
+
 import { Breadcrumb } from '../../common';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
-import NavLink from '../../components/common/nav-link.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import TextHeading from '../../components/common/text-heading.vue';
 

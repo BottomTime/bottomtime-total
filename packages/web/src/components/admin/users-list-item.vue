@@ -27,14 +27,14 @@
         <div class="grow">
           <!-- Email -->
           <p>
-            <NavLink :to="`mailto:${user.email}`">
+            <a :to="`mailto:${user.email}`">
               <span class="mr-1">
                 <i class="fas fa-envelope fa-xs"></i>
               </span>
               <span>
                 {{ user.email }}
               </span>
-            </NavLink>
+            </a>
           </p>
 
           <!-- Location -->
@@ -78,7 +78,6 @@ import dayjs from 'dayjs';
 import 'dayjs/plugin/relativeTime';
 
 import FormButton from '../common/form-button.vue';
-import NavLink from '../common/nav-link.vue';
 import UserAvatar from '../users/user-avatar.vue';
 
 type UsersListItemProps = {

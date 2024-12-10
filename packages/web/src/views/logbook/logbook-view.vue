@@ -79,7 +79,10 @@
             </p>
 
             <p>
-              <span>You can do so <NavLink to="/friends">here</NavLink>.</span>
+              <span>
+                You can do so
+                <RouterLink to="/friends">here</RouterLink>.
+              </span>
             </p>
           </div>
         </div>
@@ -131,13 +134,12 @@ import {
 
 import dayjs from 'dayjs';
 import { computed, onMounted, reactive } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
 import DrawerPanel from '../../components/common/drawer-panel.vue';
 import LoadingSpinner from '../../components/common/loading-spinner.vue';
-import NavLink from '../../components/common/nav-link.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth2.vue';

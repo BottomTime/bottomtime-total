@@ -27,7 +27,7 @@
         </p>
         <p>
           If you continue to have trouble, please contact
-          <NavLink :to="adminEmail">support</NavLink> for help.
+          <a :href="adminEmail">support</a> for help.
         </p>
       </div>
     </FormBox>
@@ -89,7 +89,6 @@ import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextBox from '../common/form-text-box.vue';
-import NavLink from '../common/nav-link.vue';
 
 interface RequestPasswordResetProps {
   emailSent?: boolean;

@@ -45,7 +45,7 @@
               <i class="fa-solid fa-phone fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">Phone Number</span>
-            <NavLink :to="phoneUri">{{ formattedPhone }}</NavLink>
+            <a :href="phoneUri" target="_blank">{{ formattedPhone }}</a>
           </p>
 
           <p v-if="operator.email" class="space-x-2">
@@ -53,9 +53,9 @@
               <i class="fa-solid fa-envelope fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">Email</span>
-            <NavLink :to="`mailto:${operator.email}`">
+            <a :href="`mailto:${operator.email}`" target="_blank">
               {{ operator.email }}
-            </NavLink>
+            </a>
           </p>
 
           <p v-if="operator.website" class="space-x-2">
@@ -63,9 +63,9 @@
               <i class="fa-solid fa-globe fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">Website</span>
-            <NavLink :to="operator.website" new-tab>
+            <a :href="operator.website" target="_blank">
               {{ operator.website }}
-            </NavLink>
+            </a>
           </p>
         </div>
 
@@ -77,12 +77,12 @@
               <i class="fa-brands fa-facebook fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">Facebook</span>
-            <NavLink
-              :to="`https://facebook.com/${operator.socials.facebook}/`"
-              new-tab
+            <a
+              :href="`https://facebook.com/${operator.socials.facebook}/`"
+              target="_blank"
             >
               {{ operator.socials.facebook }}
-            </NavLink>
+            </a>
           </p>
 
           <p v-if="operator.socials?.instagram" class="space-x-2">
@@ -90,12 +90,12 @@
               <i class="fa-brands fa-instagram fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">Instagram</span>
-            <NavLink
-              :to="`https://instagram.com/${operator.socials.instagram}/`"
-              new-tab
+            <a
+              :href="`https://instagram.com/${operator.socials.instagram}/`"
+              target="_blank"
             >
               {{ operator.socials.instagram }}
-            </NavLink>
+            </a>
           </p>
 
           <p v-if="operator.socials?.tiktok" class="space-x-2">
@@ -103,12 +103,12 @@
               <i class="fa-brands fa-tiktok fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">TikTok</span>
-            <NavLink
-              :to="`https://tiktok.com/@${operator.socials.tiktok}/`"
-              new-tab
+            <a
+              :href="`https://tiktok.com/@${operator.socials.tiktok}/`"
+              target="_blank"
             >
               {{ operator.socials.tiktok }}
-            </NavLink>
+            </a>
           </p>
 
           <p v-if="operator.socials?.twitter" class="space-x-2">
@@ -116,9 +116,12 @@
               <i class="fa-brands fa-x-twitter fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">X</span>
-            <NavLink :to="`https://x.com/${operator.socials.twitter}/`" new-tab>
+            <a
+              :href="`https://x.com/${operator.socials.twitter}/`"
+              target="_blank"
+            >
               {{ operator.socials.twitter }}
-            </NavLink>
+            </a>
           </p>
 
           <p v-if="operator.socials?.youtube" class="space-x-2">
@@ -126,12 +129,12 @@
               <i class="fa-brands fa-youtube fa-xs fa-fw"></i>
             </span>
             <span class="sr-only">YouTube</span>
-            <NavLink
-              :to="`https://youtube.com/channel/${operator.socials.youtube}/`"
-              new-tab
+            <a
+              :href="`https://youtube.com/channel/${operator.socials.youtube}/`"
+              target="_blank"
             >
               {{ operator.socials.youtube }}
-            </NavLink>
+            </a>
           </p>
         </div>
       </div>
@@ -145,7 +148,6 @@ import { OperatorDTO, VerificationStatus } from '@bottomtime/api';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { computed } from 'vue';
 
-import NavLink from '../common/nav-link.vue';
 import PillLabel from '../common/pill-label.vue';
 import TextHeading from '../common/text-heading.vue';
 

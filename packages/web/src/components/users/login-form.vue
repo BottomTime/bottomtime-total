@@ -51,7 +51,7 @@
     </div>
     <div class="text-center mb-6">
       Forgot your username or password? No problem!
-      <NavLink to="/resetPassword">Recover them here</NavLink>.
+      <RouterLink to="/resetPassword">Recover them here</RouterLink>.
     </div>
 
     <hr />
@@ -88,7 +88,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 
 import { onMounted, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Toast, ToastType } from '../../common';
@@ -97,7 +97,6 @@ import { useCurrentUser, useToasts } from '../../store';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextBox from '../common/form-text-box.vue';
-import NavLink from '../common/nav-link.vue';
 
 type LoginFormProps = {
   redirectTo?: string;

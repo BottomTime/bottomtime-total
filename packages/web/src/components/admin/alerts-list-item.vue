@@ -6,9 +6,9 @@
 
     <div class="grow space-y-2">
       <p class="text-xl font-title capitalize">
-        <NavLink :to="`/admin/alerts/${alert.id}`">
+        <RouterLink :to="`/admin/alerts/${alert.id}`">
           {{ alert.title }}
-        </NavLink>
+        </RouterLink>
       </p>
       <div class="flex space-x-12">
         <p class="space-x-4">
@@ -59,8 +59,9 @@
 <script lang="ts" setup>
 import { AlertDTO } from '@bottomtime/api';
 
+import { RouterLink } from 'vue-router';
+
 import FormButton from '../common/form-button.vue';
-import NavLink from '../common/nav-link.vue';
 
 interface AlertsListItemProps {
   alert: AlertDTO;

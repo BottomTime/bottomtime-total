@@ -9,24 +9,24 @@
     <p>
       An error occurred while attempting to process your order. Please try again
       later. If the problem persists, please contact us at
-      <NavLink :to="`mailto:${adminEmail}`">
+      <a :href="`mailto:${adminEmail}`">
         {{ adminEmail }}
-      </NavLink>
+      </a>
       .
     </p>
 
     <div class="flex justify-evenly">
-      <NavLink to="/">Return to Home Page</NavLink>
-      <NavLink to="/account">Return to Account Page</NavLink>
+      <RouterLink to="/">Return to Home Page</RouterLink>
+      <RouterLink to="/account">Return to Account Page</RouterLink>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { computed } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { Config } from '../../../config';
-import NavLink from '../../common/nav-link.vue';
 import TextHeading from '../../common/text-heading.vue';
 
 const adminEmail = computed(() => Config.adminEmail);

@@ -16,8 +16,8 @@
             <TextHeading>Success!</TextHeading>
             <p>Your email address has been successfully verified!</p>
             <p>
-              You can click <NavLink to="/">here</NavLink> to return to the home
-              page.
+              You can click <RouterLink to="/">here</RouterLink> to return to
+              the home page.
             </p>
           </div>
         </div>
@@ -40,8 +40,9 @@
             <p>
               You can try again later or you can request a new verification
               email from your
-              <NavLink to="/account">account page</NavLink>. Alternatively, you
-              can return to the <NavLink to="/">home page</NavLink>.
+              <RouterLink to="/account">account page</RouterLink>.
+              Alternatively, you can return to the
+              <RouterLink to="/">home page</RouterLink>.
             </p>
           </div>
         </div>
@@ -56,12 +57,11 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive } from 'vue';
-import { useRoute } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 import { z } from 'zod';
 
 import { useClient } from '../../api-client';
 import LoadingSpinner from '../../components/common/loading-spinner.vue';
-import NavLink from '../../components/common/nav-link.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import TextHeading from '../../components/common/text-heading.vue';
 import { useOops } from '../../oops';

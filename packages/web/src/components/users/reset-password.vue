@@ -43,15 +43,13 @@
 
             <p>
               If you think this is an error, you can go
-              <NavLink to="/resetPassword">back here</NavLink> and try
+              <RouterLink to="/resetPassword">back here</RouterLink> and try
               requesting a new token.
             </p>
 
             <p>
               If you are still stuck, you can try contacting an
-              <NavLink :to="`mailto:${Config.adminEmail}`"
-                >administrator
-              </NavLink>
+              <a :href="`mailto:${Config.adminEmail}`">administrator</a>
               for help.
             </p>
           </div>
@@ -143,13 +141,13 @@ import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 
 import { reactive } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { Config } from '../../config';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
 import FormTextBox from '../common/form-text-box.vue';
-import NavLink from '../common/nav-link.vue';
 import LoginForm from './login-form.vue';
 import PasswordRequirements from './password-requirements.vue';
 
