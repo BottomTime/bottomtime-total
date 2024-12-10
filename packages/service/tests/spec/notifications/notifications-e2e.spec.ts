@@ -17,6 +17,7 @@ import {
   UserEntity,
 } from '../../../src/data';
 import { ConfigCatClient } from '../../../src/dependencies';
+import { EventsModule } from '../../../src/events';
 import { FeaturesModule } from '../../../src/features';
 import { NotificationsService } from '../../../src/notifications/notifications.service';
 import { UserNotificationsController } from '../../../src/notifications/user-notifications.controller';
@@ -122,6 +123,7 @@ describe('Notifications End-to-End Tests', () => {
             NotificationEntity,
             NotificationWhitelistEntity,
           ]),
+          EventsModule,
           FeaturesModule,
           UsersModule,
         ],
@@ -396,17 +398,16 @@ describe('Notifications End-to-End Tests', () => {
       await request(server).post(getUrl()).send(options).expect(401);
     });
 
-    it('will return a 403 response if the user is not an admin', async () => {
+    it('will return a 403 response if the user is not authorized to modify the notification', async () => {
       const options = {
         icon: true,
-        title: '',
+        title: 'Hi title!',
         message: 'The bleep-blorps are blarping now.',
-        active: 'soon',
-        expires: 2077,
+        active: new Date(),
       };
       await request(server)
         .post(getUrl())
-        .set(...authHeader)
+        .set(...otherAuthHeader)
         .send(options)
         .expect(403);
     });
@@ -567,7 +568,7 @@ describe('Notifications End-to-End Tests', () => {
         .expect(401);
     });
 
-    it('will return a 403 response if the user is not an admin', async () => {
+    it('will return a 403 response if the user is not authorized to update the notification', async () => {
       const newOptions: CreateOrUpdateNotificationParamsDTO = {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
@@ -577,7 +578,7 @@ describe('Notifications End-to-End Tests', () => {
       };
       await request(server)
         .put(getUrl(notifcationData.id))
-        .set(...authHeader)
+        .set(...otherAuthHeader)
         .send(newOptions)
         .expect(403);
     });
@@ -656,10 +657,10 @@ describe('Notifications End-to-End Tests', () => {
       await request(server).delete(getUrl(notificationData.id)).expect(401);
     });
 
-    it('will return a 403 response if the user is not an admin', async () => {
+    it('will return a 403 response if the user is not authorized to delete the notification', async () => {
       await request(server)
         .delete(getUrl(notificationData.id))
-        .set(...authHeader)
+        .set(...otherAuthHeader)
         .expect(403);
     });
 

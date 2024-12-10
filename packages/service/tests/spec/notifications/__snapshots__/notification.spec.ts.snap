@@ -3,6 +3,7 @@
 exports[`Notification class will render as JSON correctly 1`] = `
 {
   "active": 2024-03-20T17:06:46.681Z,
+  "callsToAction": undefined,
   "dismissed": true,
   "expires": 2024-04-20T17:06:46.681Z,
   "icon": "fas fa-bell",

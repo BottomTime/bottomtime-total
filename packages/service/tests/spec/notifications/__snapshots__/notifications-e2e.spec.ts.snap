@@ -147,6 +147,14 @@ exports[`Notifications End-to-End Tests when listing notifications will return a
 {
   "issues": [
     {
+      "code": "invalid_string",
+      "message": "Value must be one of "true", "false", "1", or "0"",
+      "path": [
+        "showDismissed",
+      ],
+      "validation": "regex",
+    },
+    {
       "code": "invalid_type",
       "expected": "number",
       "message": "Expected number, received nan",
