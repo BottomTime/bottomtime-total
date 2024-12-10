@@ -1,16 +1,10 @@
 import { ApiList, ListNotificationsResponseSchema } from '@bottomtime/api';
 
-import {
-  ComponentMountingOptions,
-  VueWrapper,
-  flushPromises,
-  mount,
-} from '@vue/test-utils';
+import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-import FormCheckbox from '../../../../src/components/common/form-checkbox.vue';
 import NotificationsListItem from '../../../../src/components/users/notifications-list-item.vue';
 import NotificationsList from '../../../../src/components/users/notifications-list.vue';
 import { NotificationWithSelection } from '../../../../src/components/users/types';
@@ -18,7 +12,6 @@ import TestData from '../../../fixtures/notifications.json';
 
 dayjs.extend(relativeTime);
 
-const NotificationsListElement = '[data-testid="notifications-list"]';
 const Counts = '[data-testid="notification-counts"]';
 const LoadMoreButton = '[data-testid="btn-load-more"]';
 const NoNotificationsMessage = '[data-testid="msg-no-notifications"]';
@@ -135,7 +128,6 @@ describe('NotificationsList component', () => {
 
   describe('when performing bulk operations', () => {
     let selectedNotifications: NotificationWithSelection[];
-    let selectedIds: string[];
     let testDataWithSelections: ApiList<NotificationWithSelection>;
 
     beforeAll(() => {
@@ -149,7 +141,6 @@ describe('NotificationsList component', () => {
         testDataWithSelections.data[12],
         testDataWithSelections.data[23],
       ];
-      selectedIds = testDataWithSelections.data.map((n) => n.id);
       testDataWithSelections.data[0].selected = true;
       testDataWithSelections.data[7].selected = true;
       testDataWithSelections.data[12].selected = true;

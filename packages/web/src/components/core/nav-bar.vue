@@ -192,7 +192,7 @@ import { useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { Config } from '../../config';
-import { useFeature } from '../../featrues';
+import { useFeatureToggle } from '../../featrues';
 import { useOops } from '../../oops';
 import { useCurrentUser } from '../../store';
 import DrawerPanel from '../common/drawer-panel.vue';
@@ -214,7 +214,7 @@ const oops = useOops();
 const router = useRouter();
 
 const currentUser = useCurrentUser();
-const notificationsEnabled = useFeature(NotificationsFeature);
+const notificationsEnabled = useFeatureToggle(NotificationsFeature);
 
 const showLogin = ref(false);
 const showHamburger = ref(false);
