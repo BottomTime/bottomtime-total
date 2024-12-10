@@ -4,7 +4,7 @@
     data-testid="breadcrumbs"
   >
     <li>
-      <NavLink to="/">Home</NavLink>
+      <RouterLink to="/">Home</RouterLink>
     </li>
     <li v-for="(item, index) in items" :key="index">
       <span class="mr-5">
@@ -17,21 +17,22 @@
       >
         {{ itemLabel(item) }}
       </span>
-      <NavLink
+      <RouterLink
         v-else-if="item.to"
         class="capitalize"
         :to="typeof item.to === 'string' ? item.to : item.to.value"
       >
         {{ itemLabel(item) }}
-      </NavLink>
+      </RouterLink>
       <span v-else>{{ itemLabel(item) }}</span>
     </li>
   </ul>
 </template>
 
 <script lang="ts" setup>
+import { RouterLink } from 'vue-router';
+
 import { Breadcrumb } from '../../common';
-import NavLink from './nav-link.vue';
 
 type BreadCrumbsProps = {
   items: Breadcrumb[];

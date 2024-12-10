@@ -23,14 +23,14 @@
       <p class="mb-3">
         It looks like you are trying to create a new account but you are already
         signed in. If you are here by mistake, try navigating back to the
-        <NavLink to="/">home page</NavLink> or navigating to where you want to
-        be using the nav bar at the top of the page.
+        <RouterLink to="/">home page</RouterLink> or navigating to where you
+        want to be using the nav bar at the top of the page.
       </p>
       <p>
         If you are interested in creating a new account, you must first log out
         and then return to this page. Click
-        <NavLink to="#" @click="showConfirmLogout = true">here</NavLink> to log
-        out.
+        <RouterLink to="#" @click="showConfirmLogout = true">here</RouterLink>
+        to log out.
       </p>
     </div>
   </div>
@@ -38,9 +38,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { useClient } from '../../api-client';
-import NavLink from '../../components/common/nav-link.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
 import RegisterForm from '../../components/users/register-form.vue';

@@ -89,9 +89,9 @@
               <i class="fa-solid fa-phone"></i>
             </span>
             <label class="sr-only">Phone</label>
-            <NavLink :to="`tel:${operator.phone}`">
+            <a :href="`tel:${operator.phone}`">
               {{ operator.phone }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.email" class="flex gap-2">
@@ -99,9 +99,9 @@
               <i class="fa-solid fa-envelope"></i>
             </span>
             <label class="sr-only">Email</label>
-            <NavLink :to="`mailto:${operator.email}`">
+            <a :href="`mailto:${operator.email}`">
               {{ operator.email }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.website" class="flex gap-2">
@@ -109,9 +109,9 @@
               <i class="fa-solid fa-globe"></i>
             </span>
             <label class="sr-only">Website</label>
-            <NavLink :to="operator.website">
+            <a :href="operator.website">
               {{ operator.website }}
-            </NavLink>
+            </a>
           </div>
         </div>
 
@@ -121,12 +121,12 @@
               <i class="fa-brands fa-facebook"></i>
             </span>
             <label class="sr-only">Facebook</label>
-            <NavLink
-              :to="`https://facebook.com/${operator.socials?.facebook}/`"
-              new-tab
+            <a
+              :href="`https://facebook.com/${operator.socials?.facebook}/`"
+              target="_blank"
             >
               {{ operator.socials?.facebook }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.socials?.instagram" class="flex gap-2">
@@ -134,12 +134,12 @@
               <i class="fa-brands fa-instagram"></i>
             </span>
             <label class="sr-only">Instagram</label>
-            <NavLink
-              :to="`https://instagram.com/${operator.socials?.instagram}/`"
-              new-tab
+            <a
+              :href="`https://instagram.com/${operator.socials?.instagram}/`"
+              target="_blank"
             >
               {{ operator.socials?.instagram }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.socials?.tiktok" class="flex gap-2">
@@ -147,12 +147,12 @@
               <i class="fa-brands fa-tiktok"></i>
             </span>
             <label class="sr-only">TikTok</label>
-            <NavLink
-              :to="`https://tiktok.com/@${operator.socials?.tiktok}/`"
-              new-tab
+            <a
+              :href="`https://tiktok.com/@${operator.socials?.tiktok}/`"
+              target="_blank"
             >
               {{ operator.socials?.tiktok }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.socials?.twitter" class="flex gap-2">
@@ -160,12 +160,12 @@
               <i class="fa-brands fa-x-twitter"></i>
             </span>
             <label class="sr-only">X / Twitter</label>
-            <NavLink
-              :to="`https://x.com/${operator.socials?.twitter}/`"
-              new-tab
+            <a
+              :href="`https://x.com/${operator.socials?.twitter}/`"
+              target="_blank"
             >
               {{ operator.socials?.twitter }}
-            </NavLink>
+            </a>
           </div>
 
           <div v-if="operator.socials?.youtube" class="flex gap-2">
@@ -173,12 +173,12 @@
               <i class="fa-brands fa-youtube"></i>
             </span>
             <label class="sr-only">Youtube</label>
-            <NavLink
-              :to="`https://youtube.com/@${operator.socials?.youtube}/`"
-              new-tab
+            <a
+              :href="`https://youtube.com/@${operator.socials?.youtube}/`"
+              target="_blank"
             >
               {{ operator.socials?.youtube }}
-            </NavLink>
+            </a>
           </div>
         </div>
       </address>
@@ -223,7 +223,6 @@ import { computed } from 'vue';
 
 import { useCurrentUser } from '../../store';
 import FormButton from '../common/form-button.vue';
-import NavLink from '../common/nav-link.vue';
 import PillLabel from '../common/pill-label.vue';
 
 interface OperatorsListItemProps {

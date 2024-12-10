@@ -29,8 +29,8 @@
       </p>
 
       <p>
-        You can return to the <NavLink to="/">home page</NavLink> or continue
-        browsing.
+        You can return to the <RouterLink to="/">home page</RouterLink> or
+        continue browsing.
       </p>
 
       <p>
@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 import { useClient } from '../../api-client';
 import { useOops } from '../../oops';
@@ -61,7 +61,6 @@ import { useCurrentUser } from '../../store';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import FormBox from './form-box.vue';
 import FormButton from './form-button.vue';
-import NavLink from './nav-link.vue';
 
 interface RequireAnonProps {
   redirectTo?: string;

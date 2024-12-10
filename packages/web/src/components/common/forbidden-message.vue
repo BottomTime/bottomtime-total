@@ -16,8 +16,8 @@
             </p>
             <p>
               You can return to the
-              <NavLink to="/">home page</NavLink> or navigate to where you want
-              to be using the nav bar at the top of the page.
+              <RouterLink to="/">home page</RouterLink> or navigate to where you
+              want to be using the nav bar at the top of the page.
             </p>
           </div>
         </div>
@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import NavLink from './nav-link.vue';
+import { RouterLink } from 'vue-router';
+
 import TextHeading from './text-heading.vue';
 </script>

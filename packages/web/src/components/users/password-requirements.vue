@@ -39,9 +39,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import CloseButton from '../common/close-button.vue';
 import FormButton from '../common/form-button.vue';
-import NavLink from '../common/nav-link.vue';
 
 type PasswordRequirementsProps = {
   showText?: boolean;

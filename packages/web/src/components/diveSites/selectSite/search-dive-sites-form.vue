@@ -111,7 +111,7 @@
           <p>
             Try widening your search preferences, or if you can't find the site
             you're looking for, try
-            <NavLink @click="$emit('create')">creating it</NavLink>!
+            <a @click="$emit('create')">creating it</a>!
           </p>
         </div>
       </div>
@@ -137,7 +137,6 @@ import FormSearchBox from '../../common/form-search-box.vue';
 import FormSlider from '../../common/form-slider.vue';
 import GoogleMap from '../../common/google-map.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
-import NavLink from '../../common/nav-link.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
 interface SelectDiveSiteListState {

@@ -14,7 +14,7 @@
             </p>
             <p>
               If you don't have an account yet, you can
-              <NavLink to="/register">register</NavLink> for one.
+              <RouterLink to="/register">register</RouterLink> for one.
             </p>
           </div>
         </div>
@@ -37,12 +37,12 @@
 import { UserDTO, UserRole } from '@bottomtime/api';
 
 import { computed } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { useCurrentUser } from '../../store';
 import LoginForm from '../users/login-form.vue';
 import ForbiddenMessage from './forbidden-message.vue';
 import FormBox from './form-box.vue';
-import NavLink from './nav-link.vue';
 
 type RequireAuthProps = {
   role?: UserRole;

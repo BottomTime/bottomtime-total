@@ -35,8 +35,8 @@
       <i class="fa-solid fa-info-circle"></i>
     </span>
     <span>
-      No alerts found. Click <NavLink to="/admin/alerts/new">here</NavLink> to
-      create one.
+      No alerts found. Click
+      <RouterLink to="/admin/alerts/new">here</RouterLink> to create one.
     </span>
   </p>
 
@@ -72,10 +72,10 @@
 import { AlertDTO, ApiList } from '@bottomtime/api';
 
 import { ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
-import NavLink from '../common/nav-link.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import AlertsListItem from './alerts-list-item.vue';
 

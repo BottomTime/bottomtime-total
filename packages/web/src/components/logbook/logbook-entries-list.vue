@@ -106,9 +106,9 @@
       </span>
       <p>
         <span>No log entries match your search criteria! Click </span>
-        <NavLink :to="`/logbook/${currentUser.user?.username}/new`">
+        <RouterLink :to="`/logbook/${currentUser.user?.username}/new`">
           here
-        </NavLink>
+        </RouterLink>
         <span> to add a new dive!</span>
       </p>
     </div>
@@ -124,6 +124,7 @@ import {
 } from '@bottomtime/api';
 
 import { ref, watch } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { SelectOption } from '../../common';
 import { useCurrentUser } from '../../store';
@@ -131,7 +132,6 @@ import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import FormSelect from '../common/form-select.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
-import NavLink from '../common/nav-link.vue';
 import LogbookEntriesListItem from './logbook-entries-list-item.vue';
 
 const SortOrderOptions: SelectOption[] = [

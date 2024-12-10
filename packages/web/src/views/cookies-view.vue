@@ -77,7 +77,7 @@
     <p>
       If you have any questions or concerns about this Cookie Policy or our use
       of cookies, please contact us at
-      <NavLink :to="`mailto:${adminEmail}`">{{ adminEmail }}</NavLink
+      <a :href="`mailto:${adminEmail}`">{{ adminEmail }}</a
       >.
     </p>
 
@@ -92,7 +92,6 @@
 import { computed } from 'vue';
 
 import BreadCrumbs from '../components/common/bread-crumbs.vue';
-import NavLink from '../components/common/nav-link.vue';
 import PageTitle from '../components/common/page-title.vue';
 import TextHeading from '../components/common/text-heading.vue';
 import { Config } from '../config';
