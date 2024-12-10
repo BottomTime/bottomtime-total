@@ -92,15 +92,25 @@ export class NotificationsGateway
       const redisClient = this.redis.duplicate();
       await redisClient.connect();
       redisClient.subscribe(`notify-${user.id}`, async (msg): Promise<void> => {
-        this.log.debug(`Received notification: ${msg}`);
+        this.log.debug('Received notification from Redis Pub/Sub...');
+        this.log.verbose(msg);
         const totalCount = await this.notifications.getNotificationsCount(
           user,
           { showDismissed: false },
         );
-        client.emit('notify', {
-          data: [JSON.parse(msg)],
-          totalCount,
-        });
+        const parsed = JSON.parse(msg);
+        if (parsed.reInit) {
+          this.log.debug('Sending re-init message to client...');
+          client.emit('init', {
+            data: [JSON.parse(msg)],
+            totalCount,
+          });
+        } else {
+          client.emit('notify', {
+            data: [JSON.parse(msg)],
+            totalCount,
+          });
+        }
       });
 
       this.subscriptions[client.id] = redisClient;

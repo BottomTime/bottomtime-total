@@ -84,12 +84,12 @@ services:
         - action: rebuild
           path: packages/service/yarn.lock
           target: /app/packages/service/yarn.lock
-        - action: rebuild
-          path: packages/api/src
-          target: /app/packages/api/src
-        - action: rebuild
-          path: packages/common/src
-          target: /app/packages/common/src
+        - action: sync+restart
+          path: packages/api/dist
+          target: /app/packages/api/dist
+        - action: sync+restart
+          path: packages/common/dist
+          target: /app/packages/common/dist
         - action: sync
           path: packages/service/src
           target: /app/packages/service/src
@@ -117,9 +117,12 @@ services:
         - action: rebuild
           path: packages/web/yarn.lock
           target: /app/packages/web/yarn.lock
-        - action: rebuild
-          path: packages/api/src
-          target: /app/packages/api/src
+        - action: sync+restart
+          path: packages/api/dist
+          target: /app/packages/api/dist
+        - action: sync+restart
+          path: packages/common/dist
+          target: /app/packages/common/dist
         - action: sync
           path: packages/web/public
           target: /app/packages/web/public

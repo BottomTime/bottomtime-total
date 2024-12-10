@@ -11,9 +11,9 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { RedisClientType } from 'redis';
 
 import { RedisClient } from '../dependencies';
-import { FriendRequestEvent } from '../events';
+import { FriendRequestEvent, NotificationManagementEvent } from '../events';
 import { FeaturesService } from '../features';
-import { User, UsersService } from '../users';
+import { User } from '../users';
 import { NotificationsService } from './notifications.service';
 
 const ThirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
@@ -33,9 +33,6 @@ export class NotificationEventsHandler {
   constructor(
     @Inject(NotificationsService)
     private readonly notifications: NotificationsService,
-
-    @Inject(UsersService)
-    private readonly users: UsersService,
 
     @Inject(RedisClient)
     private readonly redis: RedisClientType,
@@ -134,5 +131,23 @@ export class NotificationEventsHandler {
       callsToAction,
       expires: expires ? new Date(Date.now() + expires) : undefined,
     });
+  }
+
+  @OnEvent(EventKey.NotificationsDeleted)
+  @OnEvent(EventKey.NotificationsDismissed)
+  @OnEvent(EventKey.NotificationsUndismissed)
+  async notificationModified(
+    event: NotificationManagementEvent,
+  ): Promise<void> {
+    const results = await this.notifications.listNotifications({
+      user: event.user,
+      limit: 10,
+      showDismissed: false,
+    });
+
+    this.redis.publish(
+      `notify-${event.user.id}`,
+      JSON.stringify({ ...results, reInit: true }),
+    );
   }
 }

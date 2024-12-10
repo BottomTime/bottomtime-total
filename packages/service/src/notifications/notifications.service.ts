@@ -95,7 +95,7 @@ export class NotificationsService {
     this.log.debug(
       `Requesting notifications for user with ID "${options.user.id}"...`,
     );
-    this.log.debug(query.getSql());
+    this.log.verbose(query.getSql());
 
     const [results, totalCount] = await query.getManyAndCount();
 

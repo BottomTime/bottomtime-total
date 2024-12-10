@@ -79,7 +79,7 @@ import NotificationsList from '../../components/users/notifications-list.vue';
 import { NotificationWithSelection } from '../../components/users/types';
 import { useFeatureToggle } from '../../featrues';
 import { useOops } from '../../oops';
-import { useCurrentUser, useNotifications, useToasts } from '../../store';
+import { useCurrentUser, useToasts } from '../../store';
 import NotificationsSearchForm from './notifications-search-form.vue';
 
 interface NotificationsViewState {
@@ -96,7 +96,6 @@ const client = useClient();
 const oops = useOops();
 const currentUser = useCurrentUser();
 const notificationsFeature = useFeatureToggle(NotificationsFeature);
-const notificationStore = useNotifications();
 const route = useRoute();
 const router = useRouter();
 const toasts = useToasts();
@@ -200,7 +199,6 @@ async function onConfirmDelete(): Promise<void> {
         state.notifications.totalCount--;
       }
     }
-    notificationStore.removeNotifications(ids);
 
     toasts.toast({
       id: 'notification-deleted',
@@ -235,10 +233,6 @@ async function onDismiss(
       if (idsSet.has(state.notifications.data[i].id)) {
         state.notifications.data[i].dismissed = true;
       }
-    }
-
-    for (const id of ids) {
-      notificationStore.dismissNotification(id);
     }
 
     toasts.toast({

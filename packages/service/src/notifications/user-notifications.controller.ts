@@ -7,6 +7,7 @@ import {
   NotificationDTO,
   TotalCountDTO,
 } from '@bottomtime/api';
+import { EventKey } from '@bottomtime/common';
 
 import {
   Body,
@@ -26,6 +27,7 @@ import {
 import { z } from 'zod';
 
 import { UuidRegex } from '../common';
+import { EventsService } from '../events';
 import {
   AssertAdmin,
   AssertAuth,
@@ -34,7 +36,6 @@ import {
 } from '../users/guards';
 import { AssertAccountOwner } from '../users/guards/assert-account-owner.guard';
 import { User } from '../users/user';
-import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { AssertNotificationsFeature } from './assert-notifications-feature.guard';
 import {
@@ -62,6 +63,9 @@ export class UserNotificationsController {
   constructor(
     @Inject(NotificationsService)
     private readonly service: NotificationsService,
+
+    @Inject(EventsService)
+    private readonly events: EventsService,
   ) {}
 
   /**
@@ -249,6 +253,11 @@ export class UserNotificationsController {
     ids: string[],
   ): Promise<TotalCountDTO> {
     const totalCount = await this.service.deleteNotifications(user, ids);
+    this.events.emit({
+      key: EventKey.NotificationsDeleted,
+      user,
+      notificationIds: ids,
+    });
     return { totalCount };
   }
 
@@ -410,6 +419,11 @@ export class UserNotificationsController {
     ids: string[],
   ): Promise<TotalCountDTO> {
     const totalCount = await this.service.dismissNotifications(user, ids);
+    this.events.emit({
+      key: EventKey.NotificationsDismissed,
+      user,
+      notificationIds: ids,
+    });
     return { totalCount };
   }
 
@@ -492,6 +506,11 @@ export class UserNotificationsController {
     ids: string[],
   ): Promise<TotalCountDTO> {
     const totalCount = await this.service.undismissNotifications(user, ids);
+    this.events.emit({
+      key: EventKey.NotificationsUndismissed,
+      user,
+      notificationIds: ids,
+    });
     return { totalCount };
   }
 
@@ -613,7 +632,7 @@ export class UserNotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(NotificationIdParam)
-  @UseGuards(ValidateIds(NotificationIdParamName), AssertTargetNotification)
+  @UseGuards(AssertTargetNotification)
   async getNotification(
     @TargetNotification() notification: Notification,
   ): Promise<NotificationDTO> {
@@ -679,11 +698,7 @@ export class UserNotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(NotificationIdParam)
-  @UseGuards(
-    ValidateIds(NotificationIdParamName),
-    AssertAdmin,
-    AssertTargetNotification,
-  )
+  @UseGuards(AssertAdmin, AssertTargetNotification)
   async updateNotification(
     @TargetNotification() notification: Notification,
     @Body(new ZodValidator(CreateOrUpdateNotificationParamsSchema))
@@ -745,11 +760,17 @@ export class UserNotificationsController {
    */
   @Delete(NotificationIdParam)
   @HttpCode(204)
-  @UseGuards(ValidateIds(NotificationIdParamName), AssertTargetNotification)
+  @UseGuards(AssertTargetNotification)
   async deleteNotification(
+    @TargetUser() user: User,
     @TargetNotification() notification: Notification,
   ): Promise<void> {
     await notification.delete();
+    this.events.emit({
+      key: EventKey.NotificationsDeleted,
+      user,
+      notificationIds: [notification.id],
+    });
   }
 
   /**
@@ -798,11 +819,17 @@ export class UserNotificationsController {
    */
   @Post(`${NotificationIdParam}/dismiss`)
   @HttpCode(204)
-  @UseGuards(ValidateIds(NotificationIdParamName), AssertTargetNotification)
+  @UseGuards(AssertTargetNotification)
   async dismissNotification(
+    @TargetUser() user: User,
     @TargetNotification() notification: Notification,
   ): Promise<void> {
     await notification.markDismissed(true);
+    this.events.emit({
+      key: EventKey.NotificationsDismissed,
+      user,
+      notificationIds: [notification.id],
+    });
   }
 
   /**
@@ -849,11 +876,17 @@ export class UserNotificationsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`${NotificationIdParam}/undismiss`)
-  @UseGuards(ValidateIds(NotificationIdParamName), AssertTargetNotification)
+  @UseGuards(AssertTargetNotification)
   @HttpCode(204)
   async undismissNotification(
+    @TargetUser() user: User,
     @TargetNotification() notifification: Notification,
   ): Promise<void> {
     await notifification.markDismissed(false);
+    this.events.emit({
+      key: EventKey.NotificationsUndismissed,
+      user,
+      notificationIds: [notifification.id],
+    });
   }
 }
