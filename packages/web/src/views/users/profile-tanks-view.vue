@@ -126,15 +126,10 @@ const username = computed(() => route.params.username as string);
 onMounted(async () => {
   await oops(
     async () => {
-      const result = await client.tanks.listTanks({
+      state.tanks = await client.tanks.listTanks({
         username: username.value,
         includeSystem: false,
       });
-
-      state.tanks = {
-        data: result.data.map((tank) => tank.toJSON()),
-        totalCount: result.totalCount,
-      };
     },
     {
       [404]: () => {
@@ -183,8 +178,7 @@ async function onConfirmDeleteTank(): Promise<void> {
   await oops(async () => {
     if (!state.currentTank || !state.tanks) return;
 
-    const tank = client.tanks.wrapDTO(state.currentTank, username.value);
-    await tank.delete();
+    await client.tanks.deleteTank(state.currentTank.id, username.value);
 
     const index = state.tanks.data.findIndex(
       (t) => t.id === state.currentTank?.id,
@@ -213,8 +207,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
     if (!state.tanks) return;
 
     if (dto.id) {
-      const tank = client.tanks.wrapDTO(dto, username.value);
-      await tank.save();
+      await client.tanks.updateTank(dto);
 
       const index = state.tanks.data.findIndex((t) => t.id === dto.id);
       if (index > -1) {
@@ -228,7 +221,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       });
     } else {
       const tank = await client.tanks.createTank(dto, username.value);
-      state.tanks.data.splice(0, 0, tank.toJSON());
+      state.tanks.data.splice(0, 0, tank);
 
       toasts.toast({
         id: 'tank-created',

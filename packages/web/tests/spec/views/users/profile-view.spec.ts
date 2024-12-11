@@ -6,7 +6,6 @@ import {
   ListTanksResponseSchema,
   LogBookSharing,
   ProfileDTO,
-  Tank,
   TankDTO,
   UserProfile,
 } from '@bottomtime/api';
@@ -38,7 +37,7 @@ import {
 
 dayjs.extend(relativeTime);
 
-const EmptyTankResults: { data: Tank[]; totalCount: number } = {
+const EmptyTankResults: ApiList<TankDTO> = {
   data: [],
   totalCount: 0,
 };
@@ -85,10 +84,7 @@ describe('Profile View', () => {
       },
     };
 
-    jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      data: tankData.data.map((t) => new Tank(fetcher, t)),
-      totalCount: tankData.totalCount,
-    });
+    jest.spyOn(client.tanks, 'listTanks').mockResolvedValue(tankData);
   });
 
   it('will load the requested user profile when mounted', async () => {
@@ -128,10 +124,9 @@ describe('Profile View', () => {
   it('will load tank profiles if the current user is viewing their own profile', async () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${BasicUser.username.toUpperCase()}`);
-    const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      data: tankData.data.map((tank) => new Tank(fetcher, tank)),
-      totalCount: tankData.totalCount,
-    });
+    const spy = jest
+      .spyOn(client.tanks, 'listTanks')
+      .mockResolvedValue(tankData);
 
     const wrapper = mount(ProfileView, opts);
     await flushPromises();
@@ -150,10 +145,9 @@ describe('Profile View', () => {
     currentUser.user = AdminUser;
     await router.push(`/profile/${BasicUser.username}`);
     jest.spyOn(client.users, 'getProfile').mockResolvedValue(BasicUser.profile);
-    const spy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      data: tankData.data.map((tank) => new Tank(fetcher, tank)),
-      totalCount: tankData.totalCount,
-    });
+    const spy = jest
+      .spyOn(client.tanks, 'listTanks')
+      .mockResolvedValue(tankData);
 
     const wrapper = mount(ProfileView, opts);
     await flushPromises();

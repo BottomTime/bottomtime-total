@@ -1,11 +1,13 @@
 import {
   ApiList,
   CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateLogEntryParamsSchema,
   DiveSiteDTO,
   DiveSiteSchema,
   GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
+  LogEntryDTO,
   LogEntrySchema,
 } from '../types';
 import { Fetcher } from './fetcher';
@@ -68,6 +70,25 @@ export class LogEntriesApiClient {
     );
 
     return data;
+  }
+
+  async updateLogEntry(
+    ownerUsername: string,
+    entryId: string,
+    entryData: CreateOrUpdateLogEntryParamsDTO,
+  ): Promise<LogEntryDTO> {
+    const { data } = await this.apiClient.put(
+      `/api/users/${ownerUsername}/logbook/${entryId}`,
+      CreateOrUpdateLogEntryParamsSchema.parse(entryData),
+      LogEntrySchema,
+    );
+    return data;
+  }
+
+  async deleteLogEntry(ownerUsername: string, entryId: string): Promise<void> {
+    await this.apiClient.delete(
+      `/api/users/${ownerUsername}/logbook/${entryId}`,
+    );
   }
 
   wrapDTO(data: unknown): LogEntry {

@@ -2,7 +2,6 @@ import {
   ApiClient,
   CreateOrUpdateTankParamsDTO,
   Fetcher,
-  Tank,
   TankDTO,
   TankMaterial,
 } from '@bottomtime/api';
@@ -49,7 +48,6 @@ describe('Admin Tank View', () => {
   let toasts: ReturnType<typeof useToasts>;
   let opts: ComponentMountingOptions<typeof AdminTankView>;
   let tankDto: TankDTO;
-  let tank: Tank;
   let getSpy: jest.SpyInstance;
 
   beforeAll(() => {
@@ -69,7 +67,6 @@ describe('Admin Tank View', () => {
 
   beforeEach(async () => {
     tankDto = TestData;
-    tank = new Tank(fetcher, tankDto);
     pinia = createPinia();
     currentUser = useCurrentUser(pinia);
     toasts = useToasts(pinia);
@@ -87,7 +84,7 @@ describe('Admin Tank View', () => {
       },
     };
 
-    getSpy = jest.spyOn(client.tanks, 'getTank').mockResolvedValue(tank);
+    getSpy = jest.spyOn(client.tanks, 'getTank').mockResolvedValue(tankDto);
   });
 
   it('will display a tank profile', async () => {
@@ -115,11 +112,10 @@ describe('Admin Tank View', () => {
       workingPressure: 300,
       material: TankMaterial.Aluminum,
     };
-    const tank = new Tank(fetcher, {
-      ...TestData,
+    const spy = jest.spyOn(client.tanks, 'createTank').mockResolvedValue({
+      ...tankDto,
       ...expected,
     });
-    const spy = jest.spyOn(client.tanks, 'createTank').mockResolvedValue(tank);
 
     await router.push('/admin/tanks/new');
     const wrapper = mount(AdminTankView, opts);
@@ -132,7 +128,11 @@ describe('Admin Tank View', () => {
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(expected);
+    expect(spy).toHaveBeenCalledWith({
+      id: '',
+      isSystem: true,
+      ...expected,
+    });
     expect(toasts.toasts[0].message).toMatchSnapshot();
     expect(router.currentRoute.value.params.tankId).toBe(TestData.id);
   });
@@ -146,12 +146,7 @@ describe('Admin Tank View', () => {
       material: TankMaterial.Aluminum,
     };
 
-    const tank = new Tank(fetcher, expected);
-    jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((dto) => {
-      expect(dto).toEqual(expected);
-      return tank;
-    });
-    const spy = jest.spyOn(tank, 'save').mockResolvedValue();
+    const spy = jest.spyOn(client.tanks, 'updateTank').mockResolvedValue();
 
     const wrapper = mount(AdminTankView, opts);
     await flushPromises();
@@ -165,13 +160,12 @@ describe('Admin Tank View', () => {
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(expected);
     expect(toasts.toasts[0].message).toMatchSnapshot();
   });
 
   it('will prevent users form saving tanks if there are validation errors', async () => {
-    const spy = jest.spyOn(client.tanks, 'wrapDTO');
-
+    const spy = jest.spyOn(client.tanks, 'updateTank').mockResolvedValue();
     const wrapper = mount(AdminTankView, opts);
     await flushPromises();
 

@@ -9,7 +9,6 @@ import {
   LogEntry,
   LogEntryDTO,
   PressureUnit,
-  Tank,
   TankDTO,
   TankMaterial,
 } from '@bottomtime/api';
@@ -121,10 +120,7 @@ describe('Log Entry view', () => {
     jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
       .mockResolvedValue([]);
-    jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      data: tankData.data.map((t) => new Tank(fetcher, t)),
-      totalCount: tankData.totalCount,
-    });
+    jest.spyOn(client.tanks, 'listTanks').mockResolvedValue(tankData);
 
     fetchSpy = jest
       .spyOn(client.logEntries, 'getLogEntry')

@@ -33,13 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  CreateOrUpdateTankParamsSchema,
-  TankDTO,
-  TankMaterial,
-  UserDTO,
-  UserRole,
-} from '@bottomtime/api';
+import { TankDTO, TankMaterial, UserDTO, UserRole } from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -108,8 +102,10 @@ onMounted(async () => {
   await oops(
     async () => {
       if (tankId.value) {
-        const tank = await client.tanks.getTank(tankId.value, username.value);
-        state.currentTank = tank.toJSON();
+        state.currentTank = await client.tanks.getTank(
+          tankId.value,
+          username.value,
+        );
       } else {
         state.currentTank = {
           id: '',
@@ -136,16 +132,13 @@ async function onSave(dto: TankDTO) {
 
   await oops(async () => {
     if (dto.id) {
-      const tank = client.tanks.wrapDTO(dto, username.value);
-      await tank.save();
+      await client.tanks.updateTank(dto, username.value);
       state.currentTank = dto;
     } else {
-      const newTank = await client.tanks.createTank(
-        CreateOrUpdateTankParamsSchema.parse(dto),
-        username.value,
+      state.currentTank = await client.tanks.createTank(dto, username.value);
+      await router.push(
+        `/profile/${username.value}/tanks/${state.currentTank.id}`,
       );
-      state.currentTank = newTank.toJSON();
-      await router.push(`/profile/${username.value}/tanks/${newTank.id}`);
     }
 
     toasts.toast({
@@ -167,8 +160,7 @@ async function onConfirmDelete(): Promise<void> {
 
   await oops(async () => {
     if (!state.currentTank) return;
-    const tank = client.tanks.wrapDTO(state.currentTank, username.value);
-    await tank.delete();
+    await client.tanks.deleteTank(state.currentTank.id, username.value);
     await router.push(`/profile/${username.value}/tanks`);
   });
 

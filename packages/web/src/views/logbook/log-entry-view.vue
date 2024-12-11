@@ -143,15 +143,10 @@ onMounted(async () => {
       },
     ),
     oops(async () => {
-      const tanksResult = await client.tanks.listTanks({
+      state.tanks = await client.tanks.listTanks({
         username: username.value,
         includeSystem: true,
       });
-
-      state.tanks = {
-        data: tanksResult.data.map((tank) => tank.toJSON()),
-        totalCount: tanksResult.totalCount,
-      };
     }),
   ]);
   state.isLoading = false;

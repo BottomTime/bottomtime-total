@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import mockFetch from 'fetch-mock-jest';
 
 import {
@@ -5,6 +6,7 @@ import {
   CreateOrUpdateLogEntryParamsDTO,
   DepthUnit,
   DiveSiteDTO,
+  ExposureSuit,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
   LogEntryDTO,
@@ -13,12 +15,90 @@ import {
   SearchDiveSitesResponseSchema,
   SortOrder,
   TankMaterial,
+  TemperatureUnit,
+  TrimCorrectness,
+  WeightCorrectness,
+  WeightUnit,
 } from '../../src';
 import { Fetcher } from '../../src/client/fetcher';
 import { LogEntriesApiClient } from '../../src/client/log-entries';
 import DiveSiteTestData from '../fixtures/dive-sites-search-results.json';
 import LogEntryTestData from '../fixtures/log-entries-search-results.json';
 import { BasicUser } from '../fixtures/users';
+
+const timestamp = new Date('2024-04-30T20:48:16.436Z');
+const PartialTestData: LogEntryDTO = {
+  id: 'bf1d4299-0c0b-47d4-bde1-d51f3573139b',
+  createdAt: new Date('2024-07-23T12:09:55Z'),
+  timing: {
+    entryTime: {
+      date: dayjs(timestamp).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      timezone: 'Pacific/Pohnpei',
+    },
+    duration: 45.5,
+  },
+  creator: BasicUser.profile,
+};
+const FullTestData: LogEntryDTO = {
+  ...PartialTestData,
+  conditions: {
+    airTemperature: 80,
+    surfaceTemperature: 78,
+    bottomTemperature: 72,
+    temperatureUnit: TemperatureUnit.Fahrenheit,
+    chop: 2,
+    current: 3,
+    weather: 'Sunny',
+    visibility: 4,
+  },
+  createdAt: new Date('2024-07-23T12:09:55Z'),
+  updatedAt: new Date('2024-07-23T12:09:55Z'),
+  site: {
+    id: 'f0c5b4d4-2d1d-4b5d-8e7d-9b7a4d4b8f1d',
+    createdOn: new Date('2024-07-23T12:09:55Z'),
+    name: 'The Wreck of the RMS Titanic',
+    location: 'Atlantic Ocean',
+    creator: BasicUser.profile,
+  },
+  timing: {
+    ...PartialTestData.timing,
+    bottomTime: 40.2,
+  },
+  logNumber: 444,
+  depths: {
+    averageDepth: 55.3,
+    maxDepth: 92.3,
+    depthUnit: DepthUnit.Feet,
+  },
+  equipment: {
+    weight: 10,
+    weightUnit: WeightUnit.Pounds,
+    weightCorrectness: WeightCorrectness.Good,
+    trimCorrectness: TrimCorrectness.Good,
+    exposureSuit: ExposureSuit.Wetsuit5mm,
+    hood: true,
+    gloves: true,
+    boots: true,
+    camera: true,
+    torch: true,
+    scooter: true,
+  },
+  notes: 'Sick shipwreck!',
+  air: [
+    {
+      name: 'lean photographer',
+      material: TankMaterial.Aluminum,
+      workingPressure: 300,
+      volume: 4,
+      count: 1,
+      startPressure: 227.7898846170865,
+      endPressure: 69.807624156354,
+      pressureUnit: PressureUnit.Bar,
+      o2Percent: 27.6,
+    },
+  ],
+  tags: ['wreck', 'deep', 'cold'],
+};
 
 describe('Log entries API client', () => {
   let fetcher: Fetcher;
@@ -177,5 +257,74 @@ describe('Log entries API client', () => {
         .slice(0, 8)
         .map((site) => ({ id: site.id, name: site.name })),
     );
+  });
+
+  it('will update an existing log entry', async () => {
+    const options: CreateOrUpdateLogEntryParamsDTO = {
+      timing: {
+        duration: 50.5,
+        entryTime: {
+          date: '2024-04-30T20:48:16',
+          timezone: 'Pacific/Pohnpei',
+        },
+        bottomTime: 50.2,
+      },
+      conditions: { ...FullTestData.conditions },
+      logNumber: 555,
+      depths: {
+        ...FullTestData.depths,
+        maxDepth: 95.3,
+        depthUnit: DepthUnit.Feet,
+      },
+      notes: 'Awesome dive!',
+      equipment: {
+        ...FullTestData.equipment,
+        weight: 5.2,
+        weightUnit: WeightUnit.Pounds,
+      },
+      air: [
+        {
+          name: 'robust spokesman',
+          material: TankMaterial.Steel,
+          workingPressure: 207,
+          volume: 4,
+          count: 1,
+          startPressure: 213.0432935175486,
+          endPressure: 62.67623910983093,
+          pressureUnit: PressureUnit.Bar,
+          o2Percent: 21.6,
+        },
+      ],
+      tags: FullTestData.tags,
+      site: FullTestData.site!.id,
+    };
+
+    mockFetch.put(
+      {
+        url: `/api/users/${FullTestData.creator.username}/logbook/${FullTestData.id}`,
+        body: options,
+      },
+      {
+        status: 200,
+        body: FullTestData,
+      },
+    );
+
+    await client.updateLogEntry(
+      FullTestData.creator.username,
+      FullTestData.id,
+      options,
+    );
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will delete a log entry', async () => {
+    const username = 'greg';
+    const entryId = '83edf350-d0c3-4fd4-a2d3-03018aff6f46';
+    mockFetch.delete(`/api/users/${username}/logbook/${entryId}`, 204);
+
+    await client.deleteLogEntry(username, entryId);
+
+    expect(mockFetch.done()).toBe(true);
   });
 });

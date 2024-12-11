@@ -110,9 +110,7 @@ const isAuthorized = computed(() => currentUser.user?.role === UserRole.Admin);
 onMounted(async () => {
   await oops(async () => {
     if (!isAuthorized.value) return;
-    const results = await client.tanks.listTanks();
-    state.results.data = results.data.map((tank) => tank.toJSON());
-    state.results.totalCount = results.totalCount;
+    state.results = await client.tanks.listTanks();
   });
   state.isLoading = false;
 });
@@ -148,10 +146,11 @@ async function onConfirmDelete(): Promise<void> {
 
   await oops(async () => {
     if (!state.currentTank) return;
-    const tank = client.tanks.wrapDTO(state.currentTank);
-    await tank.delete();
+    await client.tanks.deleteTank(state.currentTank.id);
 
-    const index = state.results.data.findIndex((t) => t.id === tank.id);
+    const index = state.results.data.findIndex(
+      (t) => t.id === state.currentTank?.id,
+    );
     if (index > -1) state.results.data.splice(index, 1);
 
     toasts.toast({
@@ -175,11 +174,10 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
 
   await oops(async () => {
     if (dto.id) {
-      const tank = client.tanks.wrapDTO(dto);
-      await tank.save();
+      await client.tanks.updateTank(dto);
 
-      const index = state.results.data.findIndex((t) => t.id === tank.id);
-      if (index > -1) state.results.data.splice(index, 1, tank.toJSON());
+      const index = state.results.data.findIndex((t) => t.id === dto.id);
+      if (index > -1) state.results.data.splice(index, 1, dto);
 
       toasts.toast({
         id: 'tank-saved',
@@ -188,7 +186,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
       });
     } else {
       const tank = await client.tanks.createTank(dto);
-      state.results.data.splice(0, 0, tank.toJSON());
+      state.results.data.splice(0, 0, tank);
 
       toasts.toast({
         id: 'tank-created',
