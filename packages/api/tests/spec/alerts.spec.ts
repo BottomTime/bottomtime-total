@@ -5,7 +5,6 @@ import {
   CreateOrUpdateAlertParamsDTO,
   ListAlertsParamsDTO,
 } from '../../src';
-import { Alert } from '../../src/client';
 import { AlertsApiClient } from '../../src/client/alerts';
 import { Fetcher } from '../../src/client/fetcher';
 
@@ -80,8 +79,7 @@ describe('Alerts API client', () => {
 
     const result = await apiClient.getAlert(AlertData[1].id);
 
-    expect(result.active).toEqual(AlertData[1].active);
-    expect(result.toJSON()).toEqual(AlertData[1]);
+    expect(result).toEqual(AlertData[1]);
     expect(mockFetch.done()).toBe(true);
   });
 
@@ -108,9 +106,7 @@ describe('Alerts API client', () => {
     );
 
     const result = await apiClient.createAlert(options);
-    expect(result).toBeInstanceOf(Alert);
-    expect(result.active).toEqual(options.active);
-    expect(result.toJSON()).toEqual({
+    expect(result).toEqual({
       id: alertId,
       ...options,
     });
@@ -118,10 +114,28 @@ describe('Alerts API client', () => {
     expect(mockFetch.done()).toBe(true);
   });
 
-  it('will wrap a DTO in an alert object', () => {
-    const alert = apiClient.wrapDTO(AlertData[2]);
-    expect(alert).toBeInstanceOf(Alert);
-    expect(alert.active).toEqual(AlertData[2].active);
-    expect(alert.toJSON()).toEqual(AlertData[2]);
+  it('will save changes to an alert', async () => {
+    mockFetch.put(
+      {
+        url: `/api/alerts/${AlertData[0].id}`,
+      },
+      {
+        status: 200,
+        body: AlertData[0],
+      },
+    );
+
+    await apiClient.updateAlert(AlertData[0]);
+
+    // TODO: mockFetch is kinda shitty. See if we can get this test passing properly.
+    expect(mockFetch.calls()[0]).toEqual({});
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will delete an alert', async () => {
+    const id = '1f54d768-025b-4fc5-a82c-3bc21fd42e17';
+    mockFetch.delete(`/api/alerts/${id}`, 204);
+    await apiClient.deleteAlert(id);
+    expect(mockFetch.done()).toBe(true);
   });
 });
