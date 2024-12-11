@@ -62,11 +62,9 @@ const state = reactive<AlertsViewState>({
 onMounted(async () => {
   await oops(async () => {
     if (!isAuthorized.value) return;
-    const { data: results, totalCount } = await client.alerts.listAlerts({
+    state.results = await client.alerts.listAlerts({
       showDismissed: true,
     });
-    state.results.data = results.map((alert) => alert.toJSON());
-    state.results.totalCount = totalCount;
   });
 
   state.isLoading = false;
@@ -74,10 +72,9 @@ onMounted(async () => {
 
 async function onDeleteAlert(dto: AlertDTO): Promise<void> {
   await oops(async () => {
-    const alert = client.alerts.wrapDTO(dto);
-    await alert.delete();
+    await client.alerts.deleteAlert(dto.id);
 
-    const index = state.results.data.findIndex((a) => a.id === alert.id);
+    const index = state.results.data.findIndex((a) => a.id === dto.id);
     if (index >= 0) {
       state.results.data.splice(index, 1);
       state.results.totalCount--;
@@ -100,7 +97,7 @@ async function onLoadMore(): Promise<void> {
     });
 
     state.results.totalCount = results.totalCount;
-    state.results.data.push(...results.data.map((a) => a.toJSON()));
+    state.results.data.push(...results.data);
   });
   state.isLoadingMore = false;
 }

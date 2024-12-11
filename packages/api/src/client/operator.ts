@@ -7,7 +7,7 @@ import {
   SuccinctProfileDTO,
   VerificationStatus,
 } from '../types';
-import { GPSCoordinates } from './dive-site';
+import { GpsCoordinates } from '../types';
 import { Fetcher } from './fetcher';
 
 export class Operator {
@@ -106,10 +106,10 @@ export class Operator {
     this.data.website = value;
   }
 
-  get gps(): GPSCoordinates | undefined {
+  get gps(): GpsCoordinates | undefined {
     return this.data.gps;
   }
-  set gps(value: GPSCoordinates | undefined) {
+  set gps(value: GpsCoordinates | undefined) {
     this.data.gps = value;
   }
 

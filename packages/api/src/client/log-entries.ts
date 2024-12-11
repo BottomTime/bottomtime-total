@@ -1,13 +1,13 @@
 import {
   ApiList,
   CreateOrUpdateLogEntryParamsDTO,
+  DiveSiteDTO,
   DiveSiteSchema,
   GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
   LogEntrySchema,
 } from '../types';
-import { DiveSite } from './dive-site';
 import { Fetcher } from './fetcher';
 import { LogEntry } from './log-entry';
 
@@ -60,14 +60,14 @@ export class LogEntriesApiClient {
   async getMostRecentDiveSites(
     username: string,
     count?: number,
-  ): Promise<DiveSite[]> {
+  ): Promise<DiveSiteDTO[]> {
     const { data } = await this.apiClient.get(
       `/api/users/${username}/logbook/recentDiveSites`,
       { count },
       DiveSiteSchema.array(),
     );
 
-    return data.map((site) => new DiveSite(this.apiClient, site));
+    return data;
   }
 
   wrapDTO(data: unknown): LogEntry {

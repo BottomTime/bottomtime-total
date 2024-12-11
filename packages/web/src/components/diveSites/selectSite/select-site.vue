@@ -83,7 +83,7 @@ async function onSaveNewSite(dto: CreateOrUpdateDiveSiteDTO): Promise<void> {
 
   await oops(async () => {
     const site = await client.diveSites.createDiveSite(dto);
-    emit('site-selected', site.toJSON());
+    emit('site-selected', site);
 
     toasts.toast({
       id: 'dive-site-created',

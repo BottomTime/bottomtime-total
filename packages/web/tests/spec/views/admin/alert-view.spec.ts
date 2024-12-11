@@ -1,5 +1,5 @@
 import { AlertDTO, Fetcher } from '@bottomtime/api';
-import { Alert, ApiClient } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -74,7 +74,7 @@ describe('Admin Alert View', () => {
     };
     fetchSpy = jest
       .spyOn(client.alerts, 'getAlert')
-      .mockResolvedValue(new Alert(fetcher, { ...TestAlertData }));
+      .mockResolvedValue(TestAlertData);
   });
 
   it('will not render if the user is not logged in', async () => {
@@ -154,9 +154,9 @@ describe('Admin Alert View', () => {
       expires: new Date('2028-02-01T00:00:00.000Z'),
     };
     const toasts = useToasts();
-    const alert = new Alert(fetcher, TestAlertData);
-    const saveSpy = jest.spyOn(alert, 'save').mockResolvedValueOnce();
-    jest.spyOn(client.alerts, 'wrapDTO').mockReturnValueOnce(alert);
+    const saveSpy = jest
+      .spyOn(client.alerts, 'updateAlert')
+      .mockResolvedValueOnce();
     await router.push(`/admin/alerts/${TestAlertData.id}`);
 
     const wrapper = mount(AdminAlertView, options);
@@ -167,7 +167,7 @@ describe('Admin Alert View', () => {
     editAlert.vm.$emit('save', updated);
     await flushPromises();
 
-    expect(saveSpy).toHaveBeenCalled();
+    expect(saveSpy).toHaveBeenCalledWith(updated);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].type).toBe(ToastType.Success);
   });
@@ -176,7 +176,7 @@ describe('Admin Alert View', () => {
     await router.push('/admin/alerts/new');
     const spy = jest
       .spyOn(client.alerts, 'createAlert')
-      .mockResolvedValueOnce(new Alert(fetcher, TestAlertData));
+      .mockResolvedValueOnce(TestAlertData);
 
     const wrapper = mount(AdminAlertView, options);
     await flushPromises();

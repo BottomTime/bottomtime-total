@@ -1,9 +1,7 @@
 import {
   ApiClient,
   ApiList,
-  DiveSite,
   DiveSiteDTO,
-  Fetcher,
   SearchDiveSitesResponseSchema,
 } from '@bottomtime/api';
 
@@ -32,7 +30,6 @@ const NoResultsMessage = '[data-testid="search-sites-no-results"]';
 const LoadMoreButton = '[data-testid="search-sites-load-more"]';
 
 describe('SearchDiveSitesForm component', () => {
-  let fetcher: Fetcher;
   let client: ApiClient;
   let router: Router;
   let results: ApiList<DiveSiteDTO>;
@@ -41,7 +38,6 @@ describe('SearchDiveSitesForm component', () => {
   let opts: ComponentMountingOptions<typeof SearchDiveSitesForm>;
 
   beforeAll(() => {
-    fetcher = new Fetcher();
     client = new ApiClient();
     router = createRouter();
     results = SearchDiveSitesResponseSchema.parse(TestDiveSiteData);
@@ -127,10 +123,7 @@ describe('SearchDiveSitesForm component', () => {
   });
 
   it('will display results when they are returned', async () => {
-    jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue({
-      data: results.data.map((site) => new DiveSite(fetcher, site)),
-      totalCount: results.totalCount,
-    });
+    jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue(results);
 
     const wrapper = mount(SearchDiveSitesForm, opts);
     await wrapper.get(SearchButton).trigger('click');
@@ -154,15 +147,11 @@ describe('SearchDiveSitesForm component', () => {
     const spy = jest
       .spyOn(client.diveSites, 'searchDiveSites')
       .mockResolvedValueOnce({
-        data: results.data
-          .slice(0, 5)
-          .map((site) => new DiveSite(fetcher, site)),
+        data: results.data.slice(0, 5),
         totalCount: results.totalCount,
       })
       .mockResolvedValueOnce({
-        data: results.data
-          .slice(5, 10)
-          .map((site) => new DiveSite(fetcher, site)),
+        data: results.data.slice(5, 10),
         totalCount: results.totalCount,
       });
 
@@ -196,7 +185,7 @@ describe('SearchDiveSitesForm component', () => {
 
   it('will not show load more button if all results are loaded', async () => {
     jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue({
-      data: results.data.map((site) => new DiveSite(fetcher, site)),
+      data: results.data,
       totalCount: results.data.length,
     });
 
@@ -208,10 +197,7 @@ describe('SearchDiveSitesForm component', () => {
   });
 
   it('will re-emit event when dive site is selected', async () => {
-    jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue({
-      data: results.data.map((site) => new DiveSite(fetcher, site)),
-      totalCount: results.data.length,
-    });
+    jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue(results);
 
     const wrapper = mount(SearchDiveSitesForm, opts);
     await wrapper.get(SearchButton).trigger('click');
@@ -225,10 +211,7 @@ describe('SearchDiveSitesForm component', () => {
   });
 
   it('will highlight the selected site when it is clicked', async () => {
-    jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue({
-      data: results.data.map((site) => new DiveSite(fetcher, site)),
-      totalCount: results.data.length,
-    });
+    jest.spyOn(client.diveSites, 'searchDiveSites').mockResolvedValue(results);
 
     const wrapper = mount(SearchDiveSitesForm, opts);
     await wrapper.get(SearchButton).trigger('click');

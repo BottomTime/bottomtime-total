@@ -20,8 +20,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { UuidRegex } from 'src/common';
-
+import { UuidRegex } from '../common';
 import { AssertAdmin, AssertAuth, CurrentUser, User } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { Alert } from './alert';

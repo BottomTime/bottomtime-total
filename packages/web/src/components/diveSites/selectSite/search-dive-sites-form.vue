@@ -123,7 +123,7 @@
 import {
   ApiList,
   DiveSiteDTO,
-  GPSCoordinates,
+  GpsCoordinates,
   SearchDiveSitesParamsDTO,
 } from '@bottomtime/api';
 
@@ -143,7 +143,7 @@ import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 interface SelectDiveSiteListState {
   isLoadingMore: boolean;
   isSearching: boolean;
-  location?: GPSCoordinates;
+  location?: GpsCoordinates;
   radius: number;
   search: string;
   selectedSite?: string;
@@ -165,7 +165,7 @@ const state = reactive<SelectDiveSiteListState>({
   search: '',
 });
 
-function onLocationChange(location?: GPSCoordinates): void {
+function onLocationChange(location?: GpsCoordinates): void {
   state.location = location;
 }
 
@@ -182,11 +182,7 @@ async function onSearch(): Promise<void> {
   state.isSearching = true;
 
   await oops(async () => {
-    const results = await client.diveSites.searchDiveSites(getSearchParams());
-    state.sites = {
-      data: results.data.map((site) => site.toJSON()),
-      totalCount: results.totalCount,
-    };
+    state.sites = await client.diveSites.searchDiveSites(getSearchParams());
   });
 
   state.isSearching = false;
@@ -200,7 +196,7 @@ async function onLoadMore(): Promise<void> {
       ...getSearchParams(),
       skip: state.sites?.data.length,
     });
-    state.sites!.data.push(...results.data.map((site) => site.toJSON()));
+    state.sites!.data.push(...results.data);
     state.sites!.totalCount = results.totalCount;
   });
 

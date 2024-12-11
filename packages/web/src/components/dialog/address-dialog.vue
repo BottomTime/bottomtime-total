@@ -87,7 +87,7 @@
 </template>
 
 <script lang="ts" setup>
-import { GPSCoordinates } from '@bottomtime/api';
+import { GpsCoordinates } from '@bottomtime/api';
 
 import useVuelidate from '@vuelidate/core';
 import { between, helpers, required } from '@vuelidate/validators';
@@ -104,7 +104,7 @@ import DialogBase from './dialog-base.vue';
 interface AddressDialogProps {
   address?: string;
   controlId?: string;
-  gps?: GPSCoordinates | null;
+  gps?: GpsCoordinates | null;
   testId?: string;
   title?: string;
   visible?: boolean;
@@ -134,7 +134,7 @@ const formData = reactive<AddressDialogFormState>({
   },
 });
 
-const mapGPS = computed<GPSCoordinates | undefined>(() => {
+const mapGPS = computed<GpsCoordinates | undefined>(() => {
   if (
     typeof formData.gps.lat === 'number' &&
     typeof formData.gps.lon === 'number' &&
@@ -179,17 +179,17 @@ const v$ = useVuelidate(
 
 const emit = defineEmits<{
   (e: 'cancel'): void;
-  (e: 'save', address: string, coordinates: GPSCoordinates | null): void;
+  (e: 'save', address: string, coordinates: GpsCoordinates | null): void;
 }>();
 
-function onPlaceChanged(coordinates?: GPSCoordinates) {
+function onPlaceChanged(coordinates?: GpsCoordinates) {
   if (coordinates) {
     formData.gps.lat = coordinates.lat;
     formData.gps.lon = coordinates.lon;
   }
 }
 
-function onMapClicked(coordinates?: GPSCoordinates) {
+function onMapClicked(coordinates?: GpsCoordinates) {
   if (coordinates) {
     formData.gps.lat = coordinates.lat;
     formData.gps.lon = coordinates.lon;

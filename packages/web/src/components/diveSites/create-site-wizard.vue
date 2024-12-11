@@ -324,7 +324,7 @@
 import {
   CreateOrUpdateDiveSiteDTO,
   DepthDTO,
-  GPSCoordinates,
+  GpsCoordinates,
 } from '@bottomtime/api';
 
 import useVuelidate from '@vuelidate/core';
@@ -405,7 +405,7 @@ withDefaults(defineProps<CreateSiteWizardProps>(), {
   offsetTop: false,
 });
 
-const gps = computed<GPSCoordinates | undefined>(() => {
+const gps = computed<GpsCoordinates | undefined>(() => {
   if (
     typeof formData.gps.lat === 'number' &&
     typeof formData.gps.lon === 'number'
@@ -462,14 +462,14 @@ const v$ = useVuelidate(
   formData,
 );
 
-function onLocationChange(newLocation: NonNullable<GPSCoordinates>) {
+function onLocationChange(newLocation: NonNullable<GpsCoordinates>) {
   if (!gps.value) {
     formData.gps = newLocation;
     map.value?.moveCenter(newLocation);
   }
 }
 
-function onMapClick(coords: GPSCoordinates) {
+function onMapClick(coords: GpsCoordinates) {
   if (coords) {
     formData.gps.lat = coords.lat;
     formData.gps.lon = coords.lon;

@@ -89,8 +89,7 @@ onMounted(async () => {
   await oops(
     async () => {
       if (siteId.value) {
-        const result = await client.diveSites.getDiveSite(siteId.value);
-        state.currentSite = result.toJSON();
+        state.currentSite = await client.diveSites.getDiveSite(siteId.value);
       } else {
         state.currentSite = {
           createdOn: new Date(),

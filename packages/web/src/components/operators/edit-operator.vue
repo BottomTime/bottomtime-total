@@ -531,7 +531,6 @@
 <script lang="ts" setup>
 import {
   CreateOrUpdateOperatorDTO,
-  GPSCoordinates,
   GpsCoordinates,
   OperatorDTO,
   SlugRegex,
@@ -738,7 +737,7 @@ function onCancelChangeAddress() {
   state.showAddressDialog = false;
 }
 
-function onConfirmChangeAddress(address: string, gps: GPSCoordinates | null) {
+function onConfirmChangeAddress(address: string, gps: GpsCoordinates | null) {
   formData.address = address;
   formData.gps = gps ?? null;
   state.showAddressDialog = false;

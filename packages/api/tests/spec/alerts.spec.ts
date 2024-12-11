@@ -115,9 +115,17 @@ describe('Alerts API client', () => {
   });
 
   it('will save changes to an alert', async () => {
+    const update: CreateOrUpdateAlertParamsDTO = {
+      icon: AlertData[0].icon,
+      title: AlertData[0].title,
+      message: AlertData[0].message,
+      active: AlertData[0].active,
+      expires: AlertData[0].expires,
+    };
     mockFetch.put(
       {
         url: `/api/alerts/${AlertData[0].id}`,
+        body: JSON.parse(JSON.stringify(update)),
       },
       {
         status: 200,
@@ -127,8 +135,6 @@ describe('Alerts API client', () => {
 
     await apiClient.updateAlert(AlertData[0]);
 
-    // TODO: mockFetch is kinda shitty. See if we can get this test passing properly.
-    expect(mockFetch.calls()[0]).toEqual({});
     expect(mockFetch.done()).toBe(true);
   });
 
