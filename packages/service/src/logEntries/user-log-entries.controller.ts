@@ -185,7 +185,7 @@ export class UserLogEntriesController {
    */
   @Get()
   @UseGuards(AssertLogbookRead)
-  @UseInterceptors(CacheInterceptor)
+  // @UseInterceptors(CacheInterceptor)
   async searchLogs(
     @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
@@ -411,7 +411,7 @@ export class UserLogEntriesController {
    */
   @Get('recentDiveSites')
   @UseGuards(AssertAuth, AssertAccountOwner)
-  @UseInterceptors(CacheInterceptor)
+  // @UseInterceptors(CacheInterceptor)
   async getRecentDiveSites(
     @TargetUser() user: User,
     @Query(new ZodValidator(GetMostRecentDiveSitesRequestParamsSchema))

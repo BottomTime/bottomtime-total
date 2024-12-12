@@ -49,7 +49,7 @@ export class GeolocationMiddleware implements NestMiddleware {
 
       // ...and cache the response for future requests.
       await this.redis.set(this.getCacheKey(req.ip), JSON.stringify(response), {
-        EX: 1000 * 60 * 60 * 24, // Cache for one day
+        EX: 1000 * 60 * 60 * 24 * 30, // Cache for 30 days
       });
 
       next();
