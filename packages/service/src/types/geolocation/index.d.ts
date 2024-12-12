@@ -1,6 +1,6 @@
 export interface GeolocationData {
   ip: string;
-  hostname: string;
+  hostname?: string;
   continent_code: string;
   continent_name: string;
   country_code2: string;
@@ -25,7 +25,7 @@ export interface GeolocationData {
   connection_type: string;
   organization: string;
   country_emoji: string;
-  asn: string;
+  asn?: string;
   currency: {
     code: string;
     name: string;
