@@ -21,6 +21,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from './data';
 import { PostgresDataSourceOptions } from './data-source';
+import { RedisModule } from './dependencies';
 import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule } from './email';
 import { EventsModule } from './events';
@@ -48,6 +49,7 @@ import { UsersModule } from './users';
     PassportModule.register({
       session: false,
     }),
+    RedisModule,
     EventsModule,
 
     TypeOrmModule.forFeature([UserEntity, DiveSiteEntity, LogEntryEntity]),
