@@ -12,6 +12,7 @@ import {
   WeightUnit,
 } from '@bottomtime/api';
 
+import { CacheModule } from '@nestjs/cache-manager';
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -107,6 +108,7 @@ describe('Log entries E2E tests', () => {
           LogEntryAirEntity,
           LogEntrySampleEntity,
         ]),
+        CacheModule.register(),
         DiveSitesModule,
         FriendsModule,
         UsersModule,

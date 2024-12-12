@@ -19,9 +19,13 @@ export class FeaturesService {
   async getFeature<T extends boolean | string | number>(
     feature: Feature<T>,
     user?: User,
+    country?: string,
+    stateOrProvince?: string,
   ): Promise<T> {
     const configCatUser = user
-      ? new ConfigCatUser(user.id, user.email ?? undefined)
+      ? new ConfigCatUser(user.id, user.email ?? undefined, country, {
+          ...(stateOrProvince ? { stateOrProvince } : {}),
+        })
       : undefined;
     const value = await this.client.getValueAsync<T>(
       feature.key,

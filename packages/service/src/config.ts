@@ -77,6 +77,7 @@ export interface AppConfig {
   friendsLimit: number;
   isProduction: boolean;
   env: string;
+  ipGeolocationApiKey?: string;
   logLevel: LogLevel;
   passwordSaltRounds: number;
   port: number;
@@ -148,6 +149,7 @@ const ConfigSchema = z
     BT_BASE_URL: z.string().url().default('http://localhost:4850'),
     BT_CONFIGCAT_SDK_KEY: z.string().default(''),
     BT_FRIENDS_LIMIT: z.coerce.number().int().min(1).max(5000).default(1000),
+    BT_IPGEOLOCATION_API_KEY: z.string().optional(),
     BT_LOG_LEVEL: LogLevelSchema.default('debug'),
     BT_PASSWORD_SALT_ROUNDS: z.coerce.number().int().min(1).default(15),
     BT_PORT: z.coerce.number().int().min(1).max(65535).default(4800),
@@ -223,6 +225,7 @@ const ConfigSchema = z
     friendsLimit: env.BT_FRIENDS_LIMIT,
     isProduction: env.NODE_ENV === 'production',
     env: env.NODE_ENV,
+    ipGeolocationApiKey: env.BT_IPGEOLOCATION_API_KEY,
     logLevel: env.BT_LOG_LEVEL,
     passwordSaltRounds: env.BT_PASSWORD_SALT_ROUNDS,
     port: env.BT_PORT,

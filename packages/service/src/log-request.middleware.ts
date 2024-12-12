@@ -1,34 +1,27 @@
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  Logger,
-  NestInterceptor,
-} from '@nestjs/common';
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import requestStats from 'request-stats';
-import { Observable } from 'rxjs';
 
 import { User } from './users';
 
 @Injectable()
-export class LogRequestInterceptor implements NestInterceptor {
+export class LogRequestMiddleware implements NestMiddleware {
   private readonly log = new Logger('RequestLog');
 
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler<unknown>,
-  ): Observable<unknown> {
-    const http = context.switchToHttp();
-    const req = http.getRequest<Request>();
-    const res = http.getResponse<Response>();
-
+  use(req: Request, res: Response, next: NextFunction) {
     requestStats(req, res, (stats) => {
       const user = req.user instanceof User ? req.user : undefined;
       this.log.log({
         method: req.method,
         path: req.path,
+        geolocation: req.geolocation
+          ? {
+              country: req.geolocation.country_name,
+              stateOrProvince: req.geolocation.state_prov,
+              timezone: req.geolocation.time_zone.name,
+            }
+          : undefined,
         ip: req.ip,
         userAgent: req.useragent?.source,
         statusCode: res.statusCode,
@@ -44,6 +37,6 @@ export class LogRequestInterceptor implements NestInterceptor {
       });
     });
 
-    return next.handle();
+    next();
   }
 }

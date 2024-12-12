@@ -11,6 +11,7 @@ import {
   LogEntryDTO,
 } from '@bottomtime/api';
 
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   BadRequestException,
   Body,
@@ -24,6 +25,7 @@ import {
   Put,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { DiveSite, DiveSitesService } from '../diveSites';
@@ -183,6 +185,7 @@ export class UserLogEntriesController {
    */
   @Get()
   @UseGuards(AssertLogbookRead)
+  // @UseInterceptors(CacheInterceptor)
   async searchLogs(
     @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
@@ -408,6 +411,7 @@ export class UserLogEntriesController {
    */
   @Get('recentDiveSites')
   @UseGuards(AssertAuth, AssertAccountOwner)
+  // @UseInterceptors(CacheInterceptor)
   async getRecentDiveSites(
     @TargetUser() user: User,
     @Query(new ZodValidator(GetMostRecentDiveSitesRequestParamsSchema))
