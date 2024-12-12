@@ -1,5 +1,6 @@
 import { LogBookSharing, UserRole } from '@bottomtime/api';
 
+import { CacheModule } from '@nestjs/cache-manager';
 import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -89,6 +90,7 @@ describe('Log entries E2E security', () => {
           LogEntryAirEntity,
           LogEntrySampleEntity,
         ]),
+        CacheModule.register(),
         DiveSitesModule,
         FriendsModule,
         UsersModule,

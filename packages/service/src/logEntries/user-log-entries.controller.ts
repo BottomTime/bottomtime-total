@@ -51,7 +51,6 @@ const LogEntryIdParam = `:${LogEntryIdParamName}`;
 
 @Controller('api/users/:username/logbook')
 @UseGuards(AssertTargetUser)
-@UseInterceptors(CacheInterceptor)
 export class UserLogEntriesController {
   private readonly log = new Logger(UserLogEntriesController.name);
 
@@ -186,6 +185,7 @@ export class UserLogEntriesController {
    */
   @Get()
   @UseGuards(AssertLogbookRead)
+  @UseInterceptors(CacheInterceptor)
   async searchLogs(
     @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
@@ -411,6 +411,7 @@ export class UserLogEntriesController {
    */
   @Get('recentDiveSites')
   @UseGuards(AssertAuth, AssertAccountOwner)
+  @UseInterceptors(CacheInterceptor)
   async getRecentDiveSites(
     @TargetUser() user: User,
     @Query(new ZodValidator(GetMostRecentDiveSitesRequestParamsSchema))
