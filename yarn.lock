@@ -3462,6 +3462,7 @@ __metadata:
   resolution: "@bottomtime/api@workspace:packages/api"
   dependencies:
     "@types/node": "npm:^20.11.28"
+    dayjs: "npm:^1.11.7"
     fetch-mock-jest: "npm:^1.5.1"
     jest: "npm:^29.7.0"
     jest-junit: "npm:^16.0.0"

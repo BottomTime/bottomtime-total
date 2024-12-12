@@ -1,4 +1,4 @@
-import { GPSCoordinates, VerificationStatus } from '@bottomtime/api';
+import { GpsCoordinates, VerificationStatus } from '@bottomtime/api';
 
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
@@ -54,7 +54,7 @@ export class OperatorQueryBuilder {
     return this.query;
   }
 
-  withGeoLocation(position?: GPSCoordinates, distance?: number): this {
+  withGeoLocation(position?: GpsCoordinates, distance?: number): this {
     if (position && distance) {
       this.query = this.query.andWhere(
         'ST_DWithin(operators.gps::geography, ST_MakePoint(:lon, :lat), :distance)',
