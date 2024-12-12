@@ -46,6 +46,7 @@ export class NotificationEventsHandler {
   ): Promise<void> {
     const notificationsEnabled = await this.features.getFeature(
       NotificationsFeature,
+      options.user,
     );
     if (!notificationsEnabled) return;
 

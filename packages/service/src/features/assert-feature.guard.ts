@@ -23,7 +23,13 @@ export abstract class AssertFeature implements CanActivate {
     const req = context.switchToHttp().getRequest<Request>();
     const user = req.user instanceof User ? req.user : undefined;
 
-    const feature = await this.features.getFeature(this.feature, user);
+    const feature = await this.features.getFeature(
+      this.feature,
+      user,
+      req.geolocation?.country_name,
+      req.geolocation?.state_prov,
+    );
+
     if (!feature) {
       throw new NotImplementedException('Feature is not yet implemented');
     }
