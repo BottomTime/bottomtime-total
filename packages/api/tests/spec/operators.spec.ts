@@ -10,7 +10,7 @@ import {
   SearchOperatorsResponseSchema,
   VerificationStatus,
 } from '../../src';
-import { Fetcher, Operator } from '../../src/client';
+import { Fetcher } from '../../src/client';
 import { OperatorsApiClient } from '../../src/client/operators';
 import TestData from '../fixtures/dive-operator-search-results.json';
 
@@ -67,7 +67,7 @@ describe('Operators API client', () => {
     const operator = await client.getOperator(key);
 
     expect(mockFetch.done()).toBe(true);
-    expect(operator.toJSON()).toEqual(expected);
+    expect(operator).toEqual(expected);
   });
 
   it('will perform a basic search of operators', async () => {
@@ -82,8 +82,7 @@ describe('Operators API client', () => {
     expect(results.data).toHaveLength(testData.data.length);
     expect(results.totalCount).toBe(testData.totalCount);
     results.data.forEach((operator, index) => {
-      expect(operator).toBeInstanceOf(Operator);
-      expect(operator.toJSON()).toEqual(testData.data[index]);
+      expect(operator).toEqual(testData.data[index]);
     });
   });
 
@@ -121,8 +120,7 @@ describe('Operators API client', () => {
     expect(results.data).toHaveLength(testData.data.length);
     expect(results.totalCount).toBe(testData.totalCount);
     results.data.forEach((operator, index) => {
-      expect(operator).toBeInstanceOf(Operator);
-      expect(operator.toJSON()).toEqual(testData.data[index]);
+      expect(operator).toEqual(testData.data[index]);
     });
   });
 
@@ -173,42 +171,10 @@ describe('Operators API client', () => {
     const operator = await client.createOperator(options);
 
     expect(mockFetch.done()).toBe(true);
-    expect(operator.toJSON()).toEqual(expected);
+    expect(operator).toEqual(expected);
   });
 
-  it('will wrap an existing DTO in a Operator instance', () => {
-    const key = 'test-operator';
-    const expected: OperatorDTO = {
-      active: true,
-      createdAt: new Date(),
-      id: 'fd5b16ef-0693-469f-a9f3-57d8885029b9',
-      name: 'Test Operator',
-      updatedAt: new Date(),
-      owner: {
-        accountTier: AccountTier.Basic,
-        userId: '16dc9384-82bf-4ac3-bad2-b46456ed786e',
-        username: 'test-user',
-        memberSince: new Date(),
-        logBookSharing: LogBookSharing.FriendsOnly,
-      },
-      verificationStatus: VerificationStatus.Rejected,
-      verificationMessage: 'nope',
-      address: '123 Test St',
-      banner: 'https://example.com/banner.jpg',
-      description: 'This is a test operator.',
-      email: 'test@email.org',
-      gps: {
-        lat: 0,
-        lon: 0,
-      },
-      phone: '123-456-7890',
-      logo: 'https://example.com/logo.jpg',
-      slug: key,
-      website: 'https://example.com',
-    };
-
-    const operator = client.wrapDTO(expected);
-    expect(operator).toBeInstanceOf(Operator);
-    expect(operator.toJSON()).toEqual(expected);
-  });
+  it.todo(
+    'write some new tests to cover the remaining methods transferred from the old Operator class',
+  );
 });
