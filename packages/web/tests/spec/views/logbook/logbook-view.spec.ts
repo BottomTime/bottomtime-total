@@ -5,7 +5,6 @@ import {
   Fetcher,
   ListLogEntriesResponseSchema,
   LogBookSharing,
-  LogEntry,
   LogEntryDTO,
   LogEntrySortBy,
   ProfileDTO,
@@ -90,10 +89,7 @@ describe('Logbook view', () => {
       .mockResolvedValue({ ...ProfileData });
     listSpy = jest
       .spyOn(client.logEntries, 'listLogEntries')
-      .mockResolvedValue({
-        data: entryData.data.map((entry) => new LogEntry(fetcher, entry)),
-        totalCount: entryData.totalCount,
-      });
+      .mockResolvedValue(entryData);
   });
 
   it('will render correctly after querying for entries', async () => {
@@ -289,9 +285,7 @@ describe('Logbook view', () => {
     listSpy = jest
       .spyOn(client.logEntries, 'listLogEntries')
       .mockResolvedValue({
-        data: entryData.data
-          .slice(0, 10)
-          .map((entry) => new LogEntry(fetcher, entry)),
+        data: entryData.data.slice(0, 10),
         totalCount: 200,
       });
     await router.push(
@@ -304,7 +298,7 @@ describe('Logbook view', () => {
     const loadMoreSpy = jest
       .spyOn(client.logEntries, 'listLogEntries')
       .mockResolvedValue({
-        data: entryData.data.slice(10, 20).map((e) => new LogEntry(fetcher, e)),
+        data: entryData.data.slice(10, 20),
         totalCount: 200,
       });
     await wrapper.find('[data-testid="logbook-load-more"]').trigger('click');
@@ -350,7 +344,7 @@ describe('Logbook view', () => {
   });
 
   it('will preview a selected log entry in the drawer panel', async () => {
-    const entry = new LogEntry(fetcher, entryData.data[0]);
+    const entry = entryData.data[0];
     const spy = jest
       .spyOn(client.logEntries, 'getLogEntry')
       .mockResolvedValue(entry);

@@ -32,7 +32,7 @@ const PartialTestData: LogEntryDTO = {
   createdAt: new Date('2024-07-23T12:09:55Z'),
   timing: {
     entryTime: {
-      date: dayjs(timestamp).format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
+      date: dayjs(timestamp).format('YYYY-MM-DDTHH:mm:ss'),
       timezone: 'Pacific/Pohnpei',
     },
     duration: 45.5,
@@ -142,7 +142,7 @@ describe('Log entries API client', () => {
     expect(result.totalCount).toBe(logEntryData.totalCount);
 
     result.data.forEach((entry, index) => {
-      expect(entry.toJSON()).toEqual(logEntryData.data[index]);
+      expect(entry).toEqual(logEntryData.data[index]);
     });
   });
 
@@ -164,7 +164,7 @@ describe('Log entries API client', () => {
     );
 
     expect(mockFetch.done()).toBe(true);
-    expect(entry.toJSON()).toEqual(entryData);
+    expect(entry).toEqual(entryData);
   });
 
   it('will create a new log entry without a dive site', async () => {
@@ -212,7 +212,7 @@ describe('Log entries API client', () => {
     const entry = await client.createLogEntry(BasicUser.username, options);
 
     expect(mockFetch.done()).toBe(true);
-    expect(entry.toJSON()).toEqual(expected);
+    expect(entry).toEqual(expected);
   });
 
   it('will return the next available log number', async () => {
@@ -227,12 +227,6 @@ describe('Log entries API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(result).toBe(logNumber);
-  });
-
-  it('will parse a DTO and wrap it in a LogEntry object', () => {
-    const data = logEntryData.data[0];
-    const entry = client.wrapDTO(data);
-    expect(entry.toJSON()).toEqual(data);
   });
 
   it('will request most recently logged dive sites', async () => {

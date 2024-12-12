@@ -107,11 +107,10 @@ onMounted(async () => {
     oops(
       async () => {
         if (entryId.value) {
-          const entry = await client.logEntries.getLogEntry(
+          state.currentEntry = await client.logEntries.getLogEntry(
             username.value,
             entryId.value,
           );
-          state.currentEntry = entry.toJSON();
         } else {
           state.currentEntry = {
             createdAt: new Date(),
@@ -158,21 +157,25 @@ async function onSave(data: LogEntryDTO): Promise<void> {
   await oops(async () => {
     if (entryId.value) {
       // Entry has an ID: save existing.
-      const entry = client.logEntries.wrapDTO(data);
-      await entry.save();
-      state.currentEntry = entry.toJSON();
+      state.currentEntry = await client.logEntries.updateLogEntry(
+        username.value,
+        entryId.value,
+        {
+          ...data,
+          site: data.site ? data.site.id : undefined,
+        },
+      );
     } else {
       // An ID has not been assigned yet: create new.
       const options: CreateOrUpdateLogEntryParamsDTO = {
         ...data,
         site: data.site?.id,
       };
-      const entry = await client.logEntries.createLogEntry(
+      state.currentEntry = await client.logEntries.createLogEntry(
         username.value,
         options,
       );
-      state.currentEntry = entry.toJSON();
-      await router.push(`/logbook/${username.value}/${entry.id}`);
+      await router.push(`/logbook/${username.value}/${state.currentEntry.id}`);
     }
 
     toasts.toast({

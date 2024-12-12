@@ -11,7 +11,6 @@ import {
   LogEntrySchema,
 } from '../types';
 import { Fetcher } from './fetcher';
-import { LogEntry } from './log-entry';
 
 export class LogEntriesApiClient {
   constructor(private readonly apiClient: Fetcher) {}
@@ -19,35 +18,34 @@ export class LogEntriesApiClient {
   async listLogEntries(
     username: string,
     params?: ListLogEntriesParamsDTO,
-  ): Promise<ApiList<LogEntry>> {
+  ): Promise<ApiList<LogEntryDTO>> {
     const { data: results } = await this.apiClient.get(
       `/api/users/${username}/logbook`,
       params,
       ListLogEntriesResponseSchema,
     );
-
-    return {
-      data: results.data.map((entry) => new LogEntry(this.apiClient, entry)),
-      totalCount: results.totalCount,
-    };
+    return results;
   }
 
-  async getLogEntry(username: string, entryId: string): Promise<LogEntry> {
+  async getLogEntry(username: string, entryId: string): Promise<LogEntryDTO> {
     const { data } = await this.apiClient.get(
       `/api/users/${username}/logbook/${entryId}`,
+      undefined,
+      LogEntrySchema,
     );
-    return this.wrapDTO(data);
+    return data;
   }
 
   async createLogEntry(
     username: string,
     options: CreateOrUpdateLogEntryParamsDTO,
-  ): Promise<LogEntry> {
+  ): Promise<LogEntryDTO> {
     const { data } = await this.apiClient.post(
       `/api/users/${username}/logbook`,
       options,
+      LogEntrySchema,
     );
-    return this.wrapDTO(data);
+    return data;
   }
 
   async getNextAvailableLogNumber(username: string): Promise<number> {
@@ -89,9 +87,5 @@ export class LogEntriesApiClient {
     await this.apiClient.delete(
       `/api/users/${ownerUsername}/logbook/${entryId}`,
     );
-  }
-
-  wrapDTO(data: unknown): LogEntry {
-    return new LogEntry(this.apiClient, LogEntrySchema.parse(data));
   }
 }

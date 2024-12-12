@@ -6,7 +6,6 @@ import {
   Fetcher,
   ListTanksResponseSchema,
   LogBookSharing,
-  LogEntry,
   LogEntryDTO,
   PressureUnit,
   TankDTO,
@@ -124,9 +123,7 @@ describe('Log Entry view', () => {
 
     fetchSpy = jest
       .spyOn(client.logEntries, 'getLogEntry')
-      .mockResolvedValue(
-        new LogEntry(fetcher, { ...TestData, creator: BasicUser.profile }),
-      );
+      .mockResolvedValue({ ...TestData, creator: BasicUser.profile });
   });
 
   it('will render in edit mode if the user owns the log entry', async () => {
@@ -203,11 +200,9 @@ describe('Log Entry view', () => {
       },
       notes: 'New notes',
     };
-    const entry = new LogEntry(fetcher, { ...TestData });
-    const saveSpy = jest.spyOn(entry, 'save').mockResolvedValue();
-    const wrapSpy = jest
-      .spyOn(client.logEntries, 'wrapDTO')
-      .mockReturnValue(entry);
+    const saveSpy = jest
+      .spyOn(client.logEntries, 'updateLogEntry')
+      .mockResolvedValue(expected);
 
     await router.push(`/logbook/${BasicUser.username}/${TestData.id}`);
 
@@ -220,8 +215,11 @@ describe('Log Entry view', () => {
     await wrapper.get('#btnSave').trigger('click');
     await flushPromises();
 
-    expect(saveSpy).toHaveBeenCalled();
-    expect(wrapSpy).toHaveBeenCalledWith(expected);
+    expect(saveSpy).toHaveBeenCalledWith(
+      BasicUser.username,
+      TestData.id,
+      expected,
+    );
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('log-entry-saved');
     expect(wrapper.find<HTMLInputElement>('#logNumber').element.value).toBe(
@@ -268,12 +266,9 @@ describe('Log Entry view', () => {
       hePercent: 40,
       tankId: tankData.data[0].id,
     };
-
-    const entry = new LogEntry(fetcher, { ...TestData });
-    const saveSpy = jest.spyOn(entry, 'save').mockResolvedValue();
-    const wrapSpy = jest
-      .spyOn(client.logEntries, 'wrapDTO')
-      .mockReturnValue(entry);
+    const saveSpy = jest
+      .spyOn(client.logEntries, 'updateLogEntry')
+      .mockResolvedValue(expected);
 
     await router.push(`/logbook/${BasicUser.username}/${TestData.id}`);
 
@@ -301,8 +296,11 @@ describe('Log Entry view', () => {
     await wrapper.get('#btnSave').trigger('click');
     await flushPromises();
 
-    expect(saveSpy).toHaveBeenCalled();
-    expect(wrapSpy).toHaveBeenCalledWith(expected);
+    expect(saveSpy).toHaveBeenCalledWith(
+      BasicUser.username,
+      TestData.id,
+      expected,
+    );
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('log-entry-saved');
   });
