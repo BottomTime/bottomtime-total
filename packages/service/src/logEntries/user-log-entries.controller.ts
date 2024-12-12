@@ -11,6 +11,7 @@ import {
   LogEntryDTO,
 } from '@bottomtime/api';
 
+import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   BadRequestException,
   Body,
@@ -24,6 +25,7 @@ import {
   Put,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { DiveSite, DiveSitesService } from '../diveSites';
@@ -49,6 +51,7 @@ const LogEntryIdParam = `:${LogEntryIdParamName}`;
 
 @Controller('api/users/:username/logbook')
 @UseGuards(AssertTargetUser)
+@UseInterceptors(CacheInterceptor)
 export class UserLogEntriesController {
   private readonly log = new Logger(UserLogEntriesController.name);
 

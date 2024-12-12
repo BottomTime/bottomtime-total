@@ -9,8 +9,6 @@ import { Config } from './config';
 import { RedisClient } from './dependencies';
 import { GeolocationData } from './types/geolocation';
 
-const RedisKey = 'geolocation';
-
 @Injectable()
 export class GeolocationMiddleware implements NestMiddleware {
   private readonly log = new Logger(GeolocationMiddleware.name);
@@ -20,13 +18,17 @@ export class GeolocationMiddleware implements NestMiddleware {
     @Inject(RedisClient) private readonly redis: RedisClientType,
   ) {}
 
+  private getCacheKey(ip: string): string {
+    return `geolocation:${ip}`;
+  }
+
   async use(req: Request, _res: Response, next: NextFunction): Promise<void> {
     try {
       // Skip look up if the API key is not set or the request has no IP to lookup.
       if (!Config.ipGeolocationApiKey || !req.ip) return next();
 
       // Attempt to retrieve data from Redis.
-      const json = await this.redis.hGet(RedisKey, req.ip);
+      const json = await this.redis.get(this.getCacheKey(req.ip));
       if (json) {
         this.log.debug(`Geolocation cache hit for IP "${req.ip}"`);
         req.geolocation = JSON.parse(json);
@@ -46,7 +48,9 @@ export class GeolocationMiddleware implements NestMiddleware {
       req.geolocation = response;
 
       // ...and cache the response for future requests.
-      await this.redis.hSet(RedisKey, req.ip, JSON.stringify(response));
+      await this.redis.set(this.getCacheKey(req.ip), JSON.stringify(response), {
+        EX: 1000 * 60 * 60 * 24, // Cache for one day
+      });
 
       next();
     } catch (error) {

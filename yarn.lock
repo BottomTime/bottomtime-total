@@ -3618,6 +3618,7 @@ __metadata:
     "@codegenie/serverless-express": "npm:^4.14.1"
     "@faker-js/faker": "npm:^8.4.1"
     "@nestjs/axios": "npm:^3.1.3"
+    "@nestjs/cache-manager": "npm:^2.3.0"
     "@nestjs/common": "npm:^10.4.1"
     "@nestjs/core": "npm:^10.4.1"
     "@nestjs/event-emitter": "npm:^2.0.4"
@@ -3655,6 +3656,7 @@ __metadata:
     axios: "npm:^1.7.9"
     bcryptjs: "npm:^2.4.3"
     bunyan: "npm:^1.8.15"
+    cache-manager: "npm:^5.7.6"
     configcat-node: "npm:^11.3.0"
     cookie: "npm:^1.0.2"
     cookie-parser: "npm:^1.4.6"
@@ -5240,6 +5242,18 @@ __metadata:
     axios: ^1.3.1
     rxjs: ^6.0.0 || ^7.0.0
   checksum: 10c0/3b3f5ecc9a17317daafbf6ffe0cb792c5bd44d9fe7c6e2bda5d87163b9c2ed05a71a49d4e2d810c455eaa94f25e85e63673da21d674917bd9c16dfb937771109
+  languageName: node
+  linkType: hard
+
+"@nestjs/cache-manager@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@nestjs/cache-manager@npm:2.3.0"
+  peerDependencies:
+    "@nestjs/common": ^9.0.0 || ^10.0.0
+    "@nestjs/core": ^9.0.0 || ^10.0.0
+    cache-manager: <=5
+    rxjs: ^7.0.0
+  checksum: 10c0/5f9a698024098aa4cf565dbf0bfdf8d334e99e11c44e5d2b6cd786f51f1ee658dc2ec67a2b7846a53a9cccb8d4c0ab866b08dc518c8fc75253881a355c6df5c9
   languageName: node
   linkType: hard
 
@@ -10809,6 +10823,18 @@ __metadata:
     tar: "npm:^6.1.11"
     unique-filename: "npm:^3.0.0"
   checksum: 10c0/6c055bafed9de4f3dcc64ac3dc7dd24e863210902b7c470eb9ce55a806309b3efff78033e3d8b4f7dcc5d467f2db43c6a2857aaaf26f0094b8a351d44c42179f
+  languageName: node
+  linkType: hard
+
+"cache-manager@npm:^5.7.6":
+  version: 5.7.6
+  resolution: "cache-manager@npm:5.7.6"
+  dependencies:
+    eventemitter3: "npm:^5.0.1"
+    lodash.clonedeep: "npm:^4.5.0"
+    lru-cache: "npm:^10.2.2"
+    promise-coalesce: "npm:^1.1.2"
+  checksum: 10c0/fdf99c4cb3682187fd57f5b7053573dae91800f57f785c7644e5b923d4146833ab600759678eb1a5a94be74db9301850a0ff4391fc97cffd89a0f13ae4358175
   languageName: node
   linkType: hard
 
@@ -21644,6 +21670,13 @@ __metadata:
   version: 3.0.1
   resolution: "promise-call-limit@npm:3.0.1"
   checksum: 10c0/2bf66a7238b9986c9b1ae0b3575c1446485b85b4befd9ee359d8386d26050d053cb2aaa57e0fc5d91e230a77e29ad546640b3afe3eb86bcfc204aa0d330f49b4
+  languageName: node
+  linkType: hard
+
+"promise-coalesce@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "promise-coalesce@npm:1.1.2"
+  checksum: 10c0/9bcdc954a645b30ccb094ae76e36212af2ee7ecc6b9fc67634d7d4f490d082c1efc39590737d957a32f6df93e7c5f51ca232549095e9e2d7291c0482d1bb1557
   languageName: node
   linkType: hard
 

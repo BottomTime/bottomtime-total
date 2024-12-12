@@ -1,3 +1,4 @@
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -8,6 +9,7 @@ import {
   LogEntryImportRecordEntity,
   LogEntrySampleEntity,
 } from '../data';
+import { RedisCacheConfigService, RedisModule } from '../dependencies';
 import { DiveSitesModule } from '../diveSites';
 import { FeaturesModule } from '../features';
 import { FriendsModule } from '../friends';
@@ -31,6 +33,10 @@ import { UserLogEntriesController } from './user-log-entries.controller';
       LogEntryImportEntity,
       LogEntryImportRecordEntity,
     ]),
+    CacheModule.registerAsync({
+      imports: [RedisModule],
+      useExisting: RedisCacheConfigService,
+    }),
     UsersModule,
     FeaturesModule,
     FriendsModule,
