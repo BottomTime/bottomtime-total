@@ -3617,6 +3617,7 @@ __metadata:
     "@bottomtime/common": "workspace:*"
     "@codegenie/serverless-express": "npm:^4.14.1"
     "@faker-js/faker": "npm:^8.4.1"
+    "@nestjs/axios": "npm:^3.1.3"
     "@nestjs/common": "npm:^10.4.1"
     "@nestjs/core": "npm:^10.4.1"
     "@nestjs/event-emitter": "npm:^2.0.4"
@@ -3651,6 +3652,7 @@ __metadata:
     "@types/supertest": "npm:^2.0.12"
     "@types/uuid": "npm:^10.0.0"
     aws-lambda: "npm:^1.0.7"
+    axios: "npm:^1.7.9"
     bcryptjs: "npm:^2.4.3"
     bunyan: "npm:^1.8.15"
     configcat-node: "npm:^11.3.0"
@@ -5227,6 +5229,17 @@ __metadata:
   bin:
     maizzle: bin/maizzle
   checksum: 10c0/8f4684a5a4c3dc4eab213db7dfcb8d11ad848ee53596a0ec632a7ab08b1e8e9bebaf16f09793409b7abe1418a895466fbd4670b824f98a3c3e3ac8e66773b04e
+  languageName: node
+  linkType: hard
+
+"@nestjs/axios@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "@nestjs/axios@npm:3.1.3"
+  peerDependencies:
+    "@nestjs/common": ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+    axios: ^1.3.1
+    rxjs: ^6.0.0 || ^7.0.0
+  checksum: 10c0/3b3f5ecc9a17317daafbf6ffe0cb792c5bd44d9fe7c6e2bda5d87163b9c2ed05a71a49d4e2d810c455eaa94f25e85e63673da21d674917bd9c16dfb937771109
   languageName: node
   linkType: hard
 
@@ -10082,6 +10095,17 @@ __metadata:
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
   checksum: 10c0/4499efc89e86b0b49ffddc018798de05fab26e3bf57913818266be73279a6418c3ce8f9e934c7d2d707ab8c095e837fc6c90608fb7715b94d357720b5f568af7
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.7.9":
+  version: 1.7.9
+  resolution: "axios@npm:1.7.9"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10c0/b7a41e24b59fee5f0f26c1fc844b45b17442832eb3a0fb42dd4f1430eb4abc571fe168e67913e8a1d91c993232bd1d1ab03e20e4d1fee8c6147649b576fc1b0b
   languageName: node
   linkType: hard
 

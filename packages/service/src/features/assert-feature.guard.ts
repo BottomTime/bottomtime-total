@@ -7,6 +7,8 @@ import {
   NotImplementedException,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { User } from '../users';
 import { FeaturesService } from './features.service';
 
@@ -18,7 +20,7 @@ export abstract class AssertFeature implements CanActivate {
   protected abstract feature: Feature<boolean>;
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
     const user = req.user instanceof User ? req.user : undefined;
 
     const feature = await this.features.getFeature(this.feature, user);

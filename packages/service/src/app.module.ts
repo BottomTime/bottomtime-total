@@ -1,8 +1,17 @@
-import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import cookieParser from 'cookie-parser';
+import useragent from 'express-useragent';
+import helmet from 'helmet';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 import { AdminModule } from './admin';
@@ -16,6 +25,8 @@ import { DiveSitesModule } from './diveSites/dive-sites.module';
 import { EmailModule } from './email';
 import { EventsModule } from './events';
 import { FriendsModule } from './friends';
+import { GeolocationMiddleware } from './geolocation.middleware';
+import { LogRequestMiddleware } from './log-request.middleware';
 import { LogEntriesModule } from './logEntries';
 import { MembershipModule } from './membership';
 import { NotificationsModule } from './notifications';
@@ -33,6 +44,7 @@ import { UsersModule } from './users';
         return await ds.initialize();
       },
     }),
+    HttpModule.register({}),
     PassportModule.register({
       session: false,
     }),
@@ -57,4 +69,19 @@ import { UsersModule } from './users';
   providers: [AppService],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        helmet(),
+        cookieParser(),
+        useragent.express(),
+        GeolocationMiddleware,
+        LogRequestMiddleware,
+      )
+      .forRoutes({
+        method: RequestMethod.ALL,
+        path: '*',
+      });
+  }
+}
