@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { BinaryLike, createHash } from 'crypto';
 import mockFetch from 'fetch-mock-jest';
 import fs from 'fs/promises';
 import path from 'path';
@@ -141,7 +141,11 @@ describe('UserProfile client object', () => {
       fileReader.readAsArrayBuffer(file);
       fileReader.onloadend = () => {
         const md5 = createHash('md5')
-          .update(Buffer.from(fileReader.result as ArrayBuffer))
+          .update(
+            Buffer.from(
+              fileReader.result as ArrayBuffer,
+            ) as unknown as BinaryLike,
+          )
           .digest('hex');
         expect(md5).toMatchSnapshot();
         resolve();
@@ -175,7 +179,11 @@ describe('UserProfile client object', () => {
       fileReader.readAsArrayBuffer(file);
       fileReader.onloadend = () => {
         const md5 = createHash('md5')
-          .update(Buffer.from(fileReader.result as ArrayBuffer))
+          .update(
+            Buffer.from(
+              fileReader.result as ArrayBuffer,
+            ) as unknown as BinaryLike,
+          )
           .digest('hex');
         expect(md5).toMatchSnapshot();
         resolve();

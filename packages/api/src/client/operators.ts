@@ -59,63 +59,67 @@ export class OperatorsApiClient {
     return results;
   }
 
-  async updateOperator(data: OperatorDTO, newSlug?: string): Promise<void> {
-    await this.apiClient.put(
-      `/api/operators/${data.slug}`,
-      CreateOrUpdateOperatorSchema.parse({
-        ...data,
-        slug: newSlug ?? data.slug,
-      }),
+  async updateOperator(
+    operatorSlug: string,
+    update: CreateOrUpdateOperatorDTO,
+  ): Promise<OperatorDTO> {
+    const { data } = await this.apiClient.put<OperatorDTO>(
+      `/api/operators/${operatorSlug}`,
+      CreateOrUpdateOperatorSchema.parse(update),
       OperatorSchema,
     );
-
-    if (newSlug) {
-      data.slug = newSlug;
-    }
-
-    data.updatedAt = new Date();
+    return data;
   }
 
-  async delete(operatorSlug: string): Promise<void> {
+  async deleteOperator(operatorSlug: string): Promise<void> {
     await this.apiClient.delete(`/api/operators/${operatorSlug}`);
   }
 
   async transferOwnership(
     operator: OperatorDTO,
     newOwner: string,
-  ): Promise<void> {
+  ): Promise<OperatorDTO> {
     const { data } = await this.apiClient.post(
       `/api/operators/${operator.slug}/transfer`,
       { newOwner },
       OperatorSchema,
     );
 
-    operator.updatedAt = data.updatedAt;
-    operator.owner = data.owner;
+    return {
+      ...operator,
+      updatedAt: data.updatedAt,
+      owner: data.owner,
+    };
   }
 
-  async requestVerification(operator: OperatorDTO): Promise<void> {
+  async requestVerification(operator: OperatorDTO): Promise<OperatorDTO> {
     await this.apiClient.post(
       `/api/operators/${operator.slug}/requestVerification`,
     );
-    operator.verificationStatus = VerificationStatus.Pending;
-    operator.updatedAt = new Date();
+    return {
+      ...operator,
+      verificationStatus: VerificationStatus.Pending,
+      updatedAt: new Date(),
+    };
   }
 
   async setVerified(
     operator: OperatorDTO,
     verified: boolean,
     message?: string,
-  ): Promise<void> {
+  ): Promise<OperatorDTO> {
     await this.apiClient.post(`/api/operators/${operator.slug}/verify`, {
       verified,
       message,
     });
-    operator.verificationStatus = verified
-      ? VerificationStatus.Verified
-      : VerificationStatus.Rejected;
-    operator.verificationMessage = message;
-    operator.updatedAt = new Date();
+    return {
+      ...operator,
+      verificationStatus: verified
+        ? VerificationStatus.Verified
+        : VerificationStatus.Rejected,
+      verificationMessage: message,
+      updatedAt: new Date(),
+    };
   }
 
   async uploadLogo(
