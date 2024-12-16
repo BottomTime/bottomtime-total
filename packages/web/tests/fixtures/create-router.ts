@@ -17,6 +17,12 @@ export function createRouter(routes?: RouteRecordRaw[]): Router {
         }),
       },
       ...(routes ?? []),
+      {
+        path: '/:pathMatch(.*)*',
+        component: defineComponent({
+          template: '<div>404 Not Found</div>',
+        }),
+      },
     ],
   });
   return router;

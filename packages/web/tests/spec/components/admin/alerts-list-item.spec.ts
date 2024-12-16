@@ -3,6 +3,7 @@ import { AlertDTO } from '@bottomtime/api';
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import AlertsListItem from '../../../../src/components/admin/alerts-list-item.vue';
+import { createRouter } from '../../../fixtures/create-router';
 
 const TestAlertData: AlertDTO = {
   id: '2fbcb477-26d8-499f-9558-4d3ee1500b96',
@@ -16,9 +17,13 @@ const TestAlertData: AlertDTO = {
 function getMountOptions(
   alert?: Partial<AlertDTO>,
 ): ComponentMountingOptions<typeof AlertsListItem> {
+  const router = createRouter();
   return {
     props: {
       alert: { ...TestAlertData, ...alert },
+    },
+    global: {
+      plugins: [router],
     },
   };
 }

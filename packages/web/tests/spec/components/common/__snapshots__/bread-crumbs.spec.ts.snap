@@ -2,7 +2,7 @@
 
 exports[`Breadcrumbs component will render correctly 1`] = `
 "<ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
-  <li><a href="/">Home</a></li>
+  <li><a href="/" class="">Home</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a href="/top" class="capitalize">Top level</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a href="/top/middle" class="capitalize">Middle level</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span>Inactive</span></li>

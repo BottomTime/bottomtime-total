@@ -3,7 +3,7 @@
 exports[`Alerts List Item component will render details correctly 1`] = `
 "<div class="flex space-x-4 p-4"><span class="mt-1.5"><i class="fa-solid fa-circle-chevron-right"></i></span>
   <div class="grow space-y-2">
-    <p class="text-xl font-title capitalize"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96">Test Alert</a></p>
+    <p class="text-xl font-title capitalize"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96" class="">Test Alert</a></p>
     <div class="flex space-x-12">
       <p class="space-x-4"><label class="font-bold">Active:</label><span>Tue Apr 02 2024</span></p>
       <p class="flex space-x-4"><label class="font-bold">Exires:</label><span>Thu May 02 2024</span></p>
@@ -22,7 +22,7 @@ exports[`Alerts List Item component will render details correctly 1`] = `
 exports[`Alerts List Item component will render details correctly when dates are not set 1`] = `
 "<div class="flex space-x-4 p-4"><span class="mt-1.5"><i class="fa-solid fa-circle-chevron-right"></i></span>
   <div class="grow space-y-2">
-    <p class="text-xl font-title capitalize"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96">Test Alert</a></p>
+    <p class="text-xl font-title capitalize"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96" class="">Test Alert</a></p>
     <div class="flex space-x-12">
       <p class="space-x-4"><label class="font-bold">Active:</label><span>always active</span></p>
       <p class="flex space-x-4"><label class="font-bold">Exires:</label><span>no expiration</span></p>

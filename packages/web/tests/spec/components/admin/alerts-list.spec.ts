@@ -6,9 +6,12 @@ import {
   mount,
 } from '@vue/test-utils';
 
+import { Router } from 'vue-router';
+
 import AlertsListItem from '../../../../src/components/admin/alerts-list-item.vue';
 import AlertsList from '../../../../src/components/admin/alerts-list.vue';
 import AlertData from '../../../fixtures/alerts.json';
+import { createRouter } from '../../../fixtures/create-router';
 
 const EmptyResultSet: ApiList<AlertDTO> = {
   data: [],
@@ -21,12 +24,18 @@ const LoadMoreButton = 'button[data-testid="btn-load-more"]';
 
 describe('Alerts list component', () => {
   let alertData: ApiList<AlertDTO>;
+  let router: Router;
   let opts: ComponentMountingOptions<typeof AlertsList>;
+
+  beforeAll(() => {
+    router = createRouter();
+  });
 
   beforeEach(() => {
     alertData = ListAlertsResponseSchema.parse(AlertData);
     opts = {
       global: {
+        plugins: [router],
         stubs: { teleport: true },
       },
     };

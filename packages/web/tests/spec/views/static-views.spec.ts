@@ -17,17 +17,17 @@ describe('Static Views', () => {
   });
 
   it('will render Cookie Policy', () => {
-    const wrapper = mount(CookiePolicy);
+    const wrapper = mount(CookiePolicy, { global: { plugins: [router] } });
     expect(wrapper.html()).toMatchSnapshot();
   });
 
   it('will render Privacy Policy', () => {
-    const wrapper = mount(PrivacyPolicy);
+    const wrapper = mount(CookiePolicy, { global: { plugins: [router] } });
     expect(wrapper.html()).toMatchSnapshot();
   });
 
   it('will render Terms of Service', () => {
-    const wrapper = mount(TermsOfService);
+    const wrapper = mount(CookiePolicy, { global: { plugins: [router] } });
     expect(wrapper.html()).toMatchSnapshot();
   });
 

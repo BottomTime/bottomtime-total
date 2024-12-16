@@ -168,7 +168,7 @@ export default {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.ts$': ['ts-jest', { tsconfig: './tsconfig.test.json' }],
+    '^.+\\.ts$': ['ts-jest', { tsconfig: './tests/tsconfig.json' }],
     '^.+\\.vue$': '@vue/vue3-jest',
     '^.+\\.css$': ['jest-transform-css', { modules: true }],
   },

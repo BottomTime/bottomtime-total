@@ -4,7 +4,6 @@ import {
   ApiList,
   CreateOrUpdateOperatorDTO,
   Fetcher,
-  Operator,
   OperatorDTO,
   SearchOperatorsResponseSchema,
   UserDTO,
@@ -87,10 +86,7 @@ describe('Operators view', () => {
 
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
-      .mockResolvedValue({
-        data: testData.data.map((op) => new Operator(fetcher, op)),
-        totalCount: testData.totalCount,
-      });
+      .mockResolvedValue(testData);
   });
 
   it('will render with default search params when no query string is provided', async () => {
@@ -175,10 +171,7 @@ describe('Operators view', () => {
 
     const spy = jest
       .spyOn(client.operators, 'searchOperators')
-      .mockResolvedValue({
-        data: expected.data.map((op) => new Operator(fetcher, op)),
-        totalCount: expected.totalCount,
-      });
+      .mockResolvedValue(expected);
 
     await wrapper.get('input#operator-search').setValue('deep site');
     await wrapper.get('input#operator-show-mine').setValue(true);
@@ -232,7 +225,7 @@ describe('Operators view', () => {
     };
     const spy = jest
       .spyOn(client.operators, 'createOperator')
-      .mockResolvedValue(new Operator(fetcher, result));
+      .mockResolvedValue(result);
 
     currentUser.user = ShopOwner;
 
@@ -269,17 +262,21 @@ describe('Operators view', () => {
       socials: existing.socials,
       website: existing.website,
     };
-    const operator = new Operator(fetcher, existing);
+    const expected: OperatorDTO = {
+      ...existing,
+      ...update,
+    };
     currentUser.user = ShopOwner;
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        data: [operator],
+        data: [existing],
         totalCount: 1,
       });
 
-    const saveSpy = jest.spyOn(operator, 'save').mockResolvedValue();
-    jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
+    const saveSpy = jest
+      .spyOn(client.operators, 'updateOperator')
+      .mockResolvedValue(expected);
 
     const wrapper = mount(OperatorsView, opts);
     await flushPromises();
@@ -292,11 +289,7 @@ describe('Operators view', () => {
     editor.vm.$emit('save', update);
     await flushPromises();
 
-    expect(operator.toJSON()).toEqual({
-      ...existing,
-      ...update,
-    });
-    expect(saveSpy).toHaveBeenCalled();
+    expect(saveSpy).toHaveBeenCalledWith(existing.slug, update);
     expect(wrapper.findComponent(EditOperator).exists()).toBe(false);
   });
 
@@ -317,19 +310,21 @@ describe('Operators view', () => {
       socials: existing.socials,
       website: existing.website,
     };
+    const expected: OperatorDTO = {
+      ...existing,
+      ...update,
+    };
     currentUser.user = ShopOwner;
-    const operator = new Operator(fetcher, existing);
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        data: [operator],
+        data: [existing],
         totalCount: 1,
       });
 
     const saveSpy = jest
-      .spyOn(operator, 'save')
+      .spyOn(client.operators, 'updateOperator')
       .mockRejectedValue(createHttpError(409));
-    jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
 
     const wrapper = mount(OperatorsView, opts);
     await flushPromises();
@@ -342,11 +337,7 @@ describe('Operators view', () => {
     editor.vm.$emit('save', update);
     await flushPromises();
 
-    expect(operator.toJSON()).toEqual({
-      ...existing,
-      ...update,
-    });
-    expect(saveSpy).toHaveBeenCalled();
+    expect(saveSpy).toHaveBeenCalledWith(existing.slug, update);
     expect(wrapper.findComponent(EditOperator).isVisible()).toBe(true);
 
     expect(toasts.toasts).toHaveLength(1);
@@ -362,7 +353,7 @@ describe('Operators view', () => {
     searchSpy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        data: [new Operator(fetcher, operator)],
+        data: [operator],
         totalCount: 1,
       });
 
@@ -379,7 +370,7 @@ describe('Operators view', () => {
 
   it('will allow user to load more results', async () => {
     jest.spyOn(client.operators, 'searchOperators').mockResolvedValueOnce({
-      data: testData.data.slice(0, 10).map((op) => new Operator(fetcher, op)),
+      data: testData.data.slice(0, 10),
       totalCount: 20,
     });
 
@@ -389,9 +380,7 @@ describe('Operators view', () => {
     const spy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValueOnce({
-        data: testData.data
-          .slice(10, 20)
-          .map((op) => new Operator(fetcher, op)),
+        data: testData.data.slice(10, 20),
         totalCount: 20,
       });
 
@@ -412,7 +401,7 @@ describe('Operators view', () => {
 
   it('will retain search criteria while performing "load more" action', async () => {
     jest.spyOn(client.operators, 'searchOperators').mockResolvedValue({
-      data: testData.data.slice(0, 10).map((op) => new Operator(fetcher, op)),
+      data: testData.data.slice(0, 10),
       totalCount: 20,
     });
     const query = {
@@ -432,9 +421,7 @@ describe('Operators view', () => {
     const spy = jest
       .spyOn(client.operators, 'searchOperators')
       .mockResolvedValue({
-        data: testData.data
-          .slice(10, 20)
-          .map((op) => new Operator(fetcher, op)),
+        data: testData.data.slice(10, 20),
         totalCount: 20,
       });
 

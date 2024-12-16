@@ -2,7 +2,7 @@
 
 exports[`Account View will allow an admin to manage the target user's account 1`] = `
 "<ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
-  <li><a href="/">Home</a></li>
+  <li><a href="/" class="">Home</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a href="/admin" class="capitalize">Admin</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a href="/admin/users" class="capitalize">Users</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">sam_smith</span></li>
