@@ -1,6 +1,7 @@
 import { AppMetricsDTO } from '../types';
 import { AlertsApiClient } from './alerts';
 import { ApiClientOptions } from './api-client-options';
+import { AuthApiClient } from './auth';
 import { DiveSitesApiClient } from './dive-sites';
 import { Fetcher } from './fetcher';
 import { FriendsApiClient } from './friends';
@@ -9,31 +10,38 @@ import { MembershipsApiClient } from './memberships';
 import { NotificationsApiClient } from './notifications';
 import { OperatorsApiClient } from './operators';
 import { TanksApiClient } from './tanks';
-import { UsersApiClient } from './users';
+import { UserAccountsApiClient } from './user-accounts';
+import { UserProfilesApiClient } from './user-profiles';
 
 export class ApiClient {
   private readonly client: Fetcher;
+
   readonly alerts: AlertsApiClient;
-  readonly friends: FriendsApiClient;
-  readonly users: UsersApiClient;
-  readonly operators: OperatorsApiClient;
+  readonly auth: AuthApiClient;
   readonly diveSites: DiveSitesApiClient;
+  readonly friends: FriendsApiClient;
   readonly logEntries: LogEntriesApiClient;
   readonly memberships: MembershipsApiClient;
   readonly notifications: NotificationsApiClient;
+  readonly operators: OperatorsApiClient;
   readonly tanks: TanksApiClient;
+  readonly userAccounts: UserAccountsApiClient;
+  readonly userProfiles: UserProfilesApiClient;
 
   constructor(options?: ApiClientOptions) {
     this.client = options?.fetcher ?? new Fetcher(options);
+
     this.alerts = new AlertsApiClient(this.client);
-    this.friends = new FriendsApiClient(this.client);
-    this.users = new UsersApiClient(this.client);
-    this.operators = new OperatorsApiClient(this.client);
+    this.auth = new AuthApiClient(this.client);
     this.diveSites = new DiveSitesApiClient(this.client);
+    this.friends = new FriendsApiClient(this.client);
     this.logEntries = new LogEntriesApiClient(this.client);
     this.memberships = new MembershipsApiClient(this.client);
     this.notifications = new NotificationsApiClient(this.client);
+    this.operators = new OperatorsApiClient(this.client);
     this.tanks = new TanksApiClient(this.client);
+    this.userAccounts = new UserAccountsApiClient(this.client);
+    this.userProfiles = new UserProfilesApiClient(this.client);
   }
 
   async getAppMetrics(): Promise<AppMetricsDTO> {
