@@ -2,7 +2,7 @@ import {
   ApiClient,
   ApiList,
   Fetcher,
-  FriendRequest,
+  FriendRequestDTO,
   FriendRequestDirection,
   ProfileDTO,
   SearchUsersResponseSchema,
@@ -167,22 +167,18 @@ describe('Search friends form component', () => {
   it('will emit a "send-request" event when the user clicks the Send Request button', async () => {
     const wrapper = mount(SearchFriendsForm, opts);
     const friendo = searchData.data[2];
-    const friendRequest = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      {
-        created: dayjs().toDate(),
-        expires: dayjs().add(14, 'days').toDate(),
-        direction: FriendRequestDirection.Outgoing,
-        friend: {
-          id: friendo.userId,
-          username: friendo.username,
-          memberSince: friendo.memberSince,
-          logBookSharing: friendo.logBookSharing,
-        },
-        friendId: friendo.userId,
+    const friendRequest: FriendRequestDTO = {
+      created: dayjs().toDate(),
+      expires: dayjs().add(14, 'days').toDate(),
+      direction: FriendRequestDirection.Outgoing,
+      friend: {
+        id: friendo.userId,
+        username: friendo.username,
+        memberSince: friendo.memberSince,
+        logBookSharing: friendo.logBookSharing,
       },
-    );
+      friendId: friendo.userId,
+    };
 
     jest.spyOn(client.users, 'searchProfiles').mockResolvedValueOnce({
       data: searchData.data.slice(0, 50),
@@ -206,6 +202,6 @@ describe('Search friends form component', () => {
       searchData.data[2].username,
     );
 
-    expect(wrapper.emitted('request-sent')).toEqual([[friendRequest.toJSON()]]);
+    expect(wrapper.emitted('request-sent')).toEqual([[friendRequest]]);
   });
 });

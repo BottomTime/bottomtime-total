@@ -3,7 +3,6 @@ import {
   ApiClient,
   ApiList,
   Fetcher,
-  FriendRequest,
   FriendRequestDTO,
   FriendRequestDirection,
   LogBookSharing,
@@ -110,12 +109,7 @@ describe('Friend requests view', () => {
 
     listSpy = jest
       .spyOn(client.friends, 'listFriendRequests')
-      .mockResolvedValue({
-        data: friendRequestData.data.map(
-          (fr) => new FriendRequest(fetcher, userDto.username, fr),
-        ),
-        totalCount: friendRequestData.totalCount,
-      });
+      .mockResolvedValue(friendRequestData);
   });
 
   it('will render login form if user is unauthenticated', async () => {
@@ -150,19 +144,18 @@ describe('Friend requests view', () => {
   });
 
   it('will allow the user to accept a friend request', async () => {
+    const request = friendRequestData.data[0];
+    const expected: FriendRequestDTO = {
+      ...request,
+      accepted: true,
+      reason: undefined,
+    };
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.data[0];
-    const requestClient = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      request,
-    );
-    const acceptSpy = jest.spyOn(requestClient, 'accept').mockResolvedValue();
-    jest
-      .spyOn(client.friends, 'wrapFriendRequestDTO')
-      .mockReturnValue(requestClient);
+    const spy = jest
+      .spyOn(client.friends, 'acceptFriendRequest')
+      .mockResolvedValue(expected);
 
     await wrapper
       .get(`[data-testid="accept-request-${request.friendId}"]`)
@@ -172,7 +165,7 @@ describe('Friend requests view', () => {
     await flushPromises();
 
     // Check that the API was called correctly and look for the confirmation toast.
-    expect(acceptSpy).toBeCalled();
+    expect(spy).toHaveBeenCalledWith(currentUser.user!.username, request);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('friend-request-accepted');
 
@@ -193,15 +186,9 @@ describe('Friend requests view', () => {
     await flushPromises();
 
     const request = friendRequestData.data[0];
-    const requestClient = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      request,
-    );
-    const acceptSpy = jest.spyOn(requestClient, 'accept').mockResolvedValue();
-    jest
-      .spyOn(client.friends, 'wrapFriendRequestDTO')
-      .mockReturnValue(requestClient);
+    const spy = jest
+      .spyOn(client.friends, 'acceptFriendRequest')
+      .mockResolvedValue(request);
 
     await wrapper
       .get(`[data-testid="accept-request-${request.friendId}"]`)
@@ -210,7 +197,7 @@ describe('Friend requests view', () => {
     await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
     await flushPromises();
 
-    expect(acceptSpy).not.toBeCalled();
+    expect(spy).not.toHaveBeenCalled();
     expect(
       wrapper
         .find(`[data-testid="accept-request-${request.friendId}"]`)
@@ -222,26 +209,20 @@ describe('Friend requests view', () => {
   });
 
   it('will show a message if the user attempts to accept a friend request that no longer exists', async () => {
+    const request = friendRequestData.data[0];
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.data[0];
-    const requestClient = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      request,
-    );
-    const acceptSpy = jest.spyOn(requestClient, 'accept').mockRejectedValue(
-      createHttpError({
-        message: 'Friend request no longer exists',
-        method: 'POST',
-        status: 404,
-        path: '/api/users/a/friendRequests/b/acknowledge',
-      }),
-    );
-    jest
-      .spyOn(client.friends, 'wrapFriendRequestDTO')
-      .mockReturnValue(requestClient);
+    const spy = jest
+      .spyOn(client.friends, 'acceptFriendRequest')
+      .mockRejectedValue(
+        createHttpError({
+          message: 'Friend request no longer exists',
+          method: 'POST',
+          status: 404,
+          path: '/api/users/a/friendRequests/b/acknowledge',
+        }),
+      );
 
     await wrapper
       .get(`[data-testid="accept-request-${request.friendId}"]`)
@@ -251,7 +232,7 @@ describe('Friend requests view', () => {
     await flushPromises();
 
     // Check that the API was called correctly and look for the confirmation toast.
-    expect(acceptSpy).toBeCalled();
+    expect(spy).toHaveBeenCalledWith(currentUser.user!.username, request);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('friend-request-not-found');
     expect(wrapper.find('[data-testid="dialog-confirm-button"]').exists()).toBe(
@@ -267,19 +248,17 @@ describe('Friend requests view', () => {
   });
 
   it('will allow the user to reject a friend request', async () => {
+    const request = friendRequestData.data[0];
+    const expected: FriendRequestDTO = {
+      ...request,
+      accepted: false,
+    };
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.data[0];
-    const requestClient = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      request,
-    );
-    const declineSpy = jest.spyOn(requestClient, 'decline').mockResolvedValue();
-    jest
-      .spyOn(client.friends, 'wrapFriendRequestDTO')
-      .mockReturnValue(requestClient);
+    const spy = jest
+      .spyOn(client.friends, 'declineFriendRequest')
+      .mockResolvedValue(expected);
 
     await wrapper
       .get(`[data-testid="decline-request-${request.friendId}"]`)
@@ -289,7 +268,11 @@ describe('Friend requests view', () => {
     await flushPromises();
 
     // Check that the API was called correctly and look for the confirmation toast.
-    expect(declineSpy).toBeCalled();
+    expect(spy).toHaveBeenCalledWith(
+      currentUser.user!.username,
+      request,
+      undefined,
+    );
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('friend-request-declined');
 
@@ -306,19 +289,13 @@ describe('Friend requests view', () => {
   });
 
   it('will allow the user to cancel rejecting a friend request', async () => {
+    const request = friendRequestData.data[1];
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.data[0];
-    const requestClient = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      request,
-    );
-    const declineSpy = jest.spyOn(requestClient, 'decline').mockResolvedValue();
-    jest
-      .spyOn(client.friends, 'wrapFriendRequestDTO')
-      .mockReturnValue(requestClient);
+    const spy = jest
+      .spyOn(client.friends, 'declineFriendRequest')
+      .mockResolvedValue(request);
 
     await wrapper
       .get(`[data-testid="decline-request-${request.friendId}"]`)
@@ -327,7 +304,7 @@ describe('Friend requests view', () => {
     await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
     await flushPromises();
 
-    expect(declineSpy).not.toBeCalled();
+    expect(spy).not.toHaveBeenCalled();
     expect(
       wrapper
         .find(`[data-testid="decline-request-${request.friendId}"]`)
@@ -339,26 +316,20 @@ describe('Friend requests view', () => {
   });
 
   it('will show a message if the user attempts to reject a friend request that no longer exists', async () => {
+    const request = friendRequestData.data[1];
     const wrapper = mount(FriendRequestsView, opts);
     await flushPromises();
 
-    const request = friendRequestData.data[0];
-    const requestClient = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      request,
-    );
-    const declineSpy = jest.spyOn(requestClient, 'decline').mockRejectedValue(
-      createHttpError({
-        message: 'Friend request no longer exists',
-        method: 'POST',
-        status: 404,
-        path: '/api/users/a/friendRequests/b/acknowledge',
-      }),
-    );
-    jest
-      .spyOn(client.friends, 'wrapFriendRequestDTO')
-      .mockReturnValue(requestClient);
+    const declineSpy = jest
+      .spyOn(client.friends, 'declineFriendRequest')
+      .mockRejectedValue(
+        createHttpError({
+          message: 'Friend request no longer exists',
+          method: 'POST',
+          status: 404,
+          path: '/api/users/a/friendRequests/b/acknowledge',
+        }),
+      );
 
     await wrapper
       .get(`[data-testid="decline-request-${request.friendId}"]`)
@@ -368,7 +339,11 @@ describe('Friend requests view', () => {
     await flushPromises();
 
     // Check that the API was called correctly and look for the confirmation toast.
-    expect(declineSpy).toHaveBeenCalled();
+    expect(declineSpy).toHaveBeenCalledWith(
+      currentUser.user!.username,
+      request,
+      undefined,
+    );
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('friend-request-not-found');
     expect(wrapper.find('[data-testid="dialog-confirm-button"]').exists()).toBe(

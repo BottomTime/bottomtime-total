@@ -2,9 +2,7 @@ import mockFetch from 'fetch-mock-jest';
 
 import {
   ApiList,
-  Friend,
   FriendDTO,
-  FriendRequest,
   FriendRequestDTO,
   FriendRequestDirection,
   FriendsSortBy,
@@ -108,7 +106,7 @@ describe('Friends API client', () => {
     const friend = await client.getFriend(Username, data.username);
 
     expect(mockFetch.done()).toBe(true);
-    expect(friend.toJSON()).toEqual(data);
+    expect(friend).toEqual(data);
   });
 
   it('will return true if areFriends is called and the two users are friends', async () => {
@@ -137,7 +135,7 @@ describe('Friends API client', () => {
     expect(result.totalCount).toBe(friendRequestData.totalCount);
     expect(result.data).toHaveLength(friendRequestData.data.length);
     result.data.forEach((request, index) => {
-      expect(request.toJSON()).toEqual(friendRequestData.data[index]);
+      expect(request).toEqual(friendRequestData.data[index]);
     });
   });
 
@@ -164,7 +162,7 @@ describe('Friends API client', () => {
     expect(result.totalCount).toBe(friendRequestData.totalCount);
     expect(result.data).toHaveLength(friendRequestData.data.length);
     result.data.forEach((request, index) => {
-      expect(request.toJSON()).toEqual(friendRequestData.data[index]);
+      expect(request).toEqual(friendRequestData.data[index]);
     });
   });
 
@@ -184,22 +182,117 @@ describe('Friends API client', () => {
     );
 
     expect(mockFetch.done()).toBe(true);
-    expect(request.toJSON()).toEqual(expected);
+    expect(request).toEqual(expected);
   });
 
-  it('will wrap a friend DTO', () => {
-    const data = friendsData.data[0];
-    const friend = client.wrapFriendDTO(Username, data);
-
-    expect(friend).toBeInstanceOf(Friend);
-    expect(friend.toJSON()).toEqual(data);
+  it('will unfriend a friend', async () => {
+    const friend = friendsData.data[0].username;
+    mockFetch.delete(`/api/users/${Username}/friends/${friend}`, 204);
+    await client.unfriend(Username, friend);
+    expect(mockFetch.done()).toBe(true);
   });
 
-  it('will wrap a friend request DTO', () => {
-    const data = friendRequestData.data[0];
-    const request = client.wrapFriendRequestDTO(Username, data);
+  it('will cancel an incoming friend request', async () => {
+    const request: FriendRequestDTO = {
+      ...friendRequestData.data[0],
+      direction: FriendRequestDirection.Incoming,
+      accepted: undefined,
+      reason: undefined,
+    };
+    mockFetch.delete(
+      `/api/users/${request.friend.username}/friendRequests/${Username}`,
+      204,
+    );
+    await client.cancelFriendRequest(Username, request);
+    expect(mockFetch.done()).toBe(true);
+  });
 
-    expect(request).toBeInstanceOf(FriendRequest);
-    expect(request.toJSON()).toEqual(data);
+  it('will cancel an outgoing friend request', async () => {
+    const request: FriendRequestDTO = {
+      ...friendRequestData.data[0],
+      direction: FriendRequestDirection.Outgoing,
+      accepted: undefined,
+      reason: undefined,
+    };
+    mockFetch.delete(
+      `/api/users/${Username}/friendRequests/${request.friend.username}`,
+      204,
+    );
+    await client.cancelFriendRequest(Username, request);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will accept an incoming friend request', async () => {
+    const request: FriendRequestDTO = {
+      ...friendRequestData.data[0],
+      direction: FriendRequestDirection.Incoming,
+      accepted: undefined,
+      reason: undefined,
+    };
+    mockFetch.post(
+      {
+        url: `/api/users/${Username}/friendRequests/${request.friend.username}/acknowledge`,
+        body: { accepted: true },
+      },
+      204,
+    );
+    await client.acceptFriendRequest(Username, request);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will accept an outgoing friend request', async () => {
+    const request: FriendRequestDTO = {
+      ...friendRequestData.data[0],
+      direction: FriendRequestDirection.Outgoing,
+      accepted: undefined,
+      reason: undefined,
+    };
+    mockFetch.post(
+      {
+        url: `/api/users/${request.friend.username}/friendRequests/${Username}/acknowledge`,
+        body: { accepted: true },
+      },
+      204,
+    );
+    await client.acceptFriendRequest(Username, request);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will reject an incoming friend request', async () => {
+    const reason = 'Nope';
+    const request: FriendRequestDTO = {
+      ...friendRequestData.data[0],
+      direction: FriendRequestDirection.Incoming,
+      accepted: undefined,
+      reason: undefined,
+    };
+    mockFetch.post(
+      {
+        url: `/api/users/${Username}/friendRequests/${request.friend.username}/acknowledge`,
+        body: { accepted: false, reason },
+      },
+      204,
+    );
+    await client.declineFriendRequest(Username, request, reason);
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will reject an outgoing friend request', async () => {
+    const reason = 'Nope';
+    const request: FriendRequestDTO = {
+      ...friendRequestData.data[0],
+      direction: FriendRequestDirection.Outgoing,
+      accepted: undefined,
+      reason: undefined,
+    };
+    mockFetch.post(
+      {
+        url: `/api/users/${request.friend.username}/friendRequests/${Username}/acknowledge`,
+        body: { accepted: false, reason },
+      },
+      204,
+    );
+    await client.declineFriendRequest(Username, request, reason);
+    expect(mockFetch.done()).toBe(true);
   });
 });

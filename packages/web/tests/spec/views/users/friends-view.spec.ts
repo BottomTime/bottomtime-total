@@ -2,9 +2,7 @@ import {
   ApiClient,
   ApiList,
   Fetcher,
-  Friend,
   FriendDTO,
-  FriendRequest,
   FriendRequestDTO,
   FriendRequestDirection,
   FriendsSortBy,
@@ -97,20 +95,10 @@ describe('Friends view', () => {
 
     fetchFriendsSpy = jest
       .spyOn(client.friends, 'listFriends')
-      .mockResolvedValue({
-        data: friendsData.data.map(
-          (f) => new Friend(fetcher, BasicUser.username, f),
-        ),
-        totalCount: friendsData.totalCount,
-      });
+      .mockResolvedValue(friendsData);
     fetchRequestsSpy = jest
       .spyOn(client.friends, 'listFriendRequests')
-      .mockResolvedValue({
-        data: friendRequestsData.data.map(
-          (r) => new FriendRequest(fetcher, BasicUser.username, r),
-        ),
-        totalCount: friendRequestsData.totalCount,
-      });
+      .mockResolvedValue(friendRequestsData);
   });
 
   it('will render login form if the current user is anonymous', async () => {
@@ -208,16 +196,11 @@ describe('Friends view', () => {
   });
 
   it('will allow a user to unfriend someone', async () => {
+    const friend = friendsData.data[3];
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    const friend = new Friend(
-      fetcher,
-      currentUser.user!.username,
-      friendsData.data[3],
-    );
-    jest.spyOn(client.friends, 'wrapFriendDTO').mockReturnValue(friend);
-    const unfriendSpy = jest.spyOn(friend, 'unfriend').mockResolvedValue();
+    const spy = jest.spyOn(client.friends, 'unfriend').mockResolvedValue();
 
     await wrapper
       .get(`[data-testid="unfriend-${friend.username}"]`)
@@ -225,7 +208,10 @@ describe('Friends view', () => {
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
 
-    expect(unfriendSpy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(
+      currentUser.user!.username,
+      friend.username,
+    );
 
     expect(
       wrapper.find(`[data-testid="select-friend-${friend.username}"]`).exists(),
@@ -234,16 +220,11 @@ describe('Friends view', () => {
   });
 
   it('will allow a user to change their mind about unfriending someone', async () => {
+    const friend = friendsData.data[3];
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    const friend = new Friend(
-      fetcher,
-      currentUser.user!.username,
-      friendsData.data[3],
-    );
-    jest.spyOn(client.friends, 'wrapFriendDTO').mockReturnValue(friend);
-    const unfriendSpy = jest.spyOn(friend, 'unfriend').mockResolvedValue();
+    const spy = jest.spyOn(client.friends, 'unfriend').mockResolvedValue();
 
     await wrapper
       .get(`[data-testid="unfriend-${friend.username}"]`)
@@ -251,7 +232,7 @@ describe('Friends view', () => {
     await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
     await flushPromises();
 
-    expect(unfriendSpy).not.toHaveBeenCalled();
+    expect(spy).not.toHaveBeenCalled();
 
     expect(
       wrapper
@@ -262,17 +243,13 @@ describe('Friends view', () => {
   });
 
   it('will allow a user to cancel a friend request', async () => {
+    const request = friendRequestsData.data[3];
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    const request = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      friendRequestsData.data[3],
-    );
-    jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
-
-    const cancelSpy = jest.spyOn(request, 'cancel').mockResolvedValue();
+    const spy = jest
+      .spyOn(client.friends, 'cancelFriendRequest')
+      .mockResolvedValue();
 
     await wrapper
       .get(`[data-testid="cancel-request-${request.friend.id}"]`)
@@ -280,7 +257,7 @@ describe('Friends view', () => {
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
 
-    expect(cancelSpy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(currentUser.user!.username, request);
 
     expect(
       wrapper
@@ -293,17 +270,13 @@ describe('Friends view', () => {
   });
 
   it('will allow a user to change their mind about cancelling a friend request', async () => {
+    const request = friendRequestsData.data[3];
     const wrapper = mount(FriendsView, opts);
     await flushPromises();
 
-    const request = new FriendRequest(
-      fetcher,
-      currentUser.user!.username,
-      friendRequestsData.data[3],
-    );
-    jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
-
-    const cancelSpy = jest.spyOn(request, 'cancel').mockResolvedValue();
+    const spy = jest
+      .spyOn(client.friends, 'cancelFriendRequest')
+      .mockResolvedValue();
 
     await wrapper
       .get(`[data-testid="cancel-request-${request.friend.id}"]`)
@@ -311,7 +284,7 @@ describe('Friends view', () => {
     await wrapper.get('[data-testid="dialog-cancel-button"]').trigger('click');
     await flushPromises();
 
-    expect(cancelSpy).not.toHaveBeenCalled();
+    expect(spy).not.toHaveBeenCalled();
 
     expect(
       wrapper
@@ -419,9 +392,7 @@ describe('Friends view', () => {
 
   it('will load more friends when the load more button is clicked', async () => {
     jest.spyOn(client.friends, 'listFriends').mockResolvedValueOnce({
-      data: friendsData.data
-        .slice(0, 20)
-        .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
+      data: friendsData.data.slice(0, 20),
       totalCount: friendsData.totalCount,
     });
 
@@ -431,9 +402,7 @@ describe('Friends view', () => {
     const spy = jest
       .spyOn(client.friends, 'listFriends')
       .mockResolvedValueOnce({
-        data: friendsData.data
-          .slice(20, 40)
-          .map((f) => new Friend(fetcher, currentUser.user!.username, f)),
+        data: friendsData.data.slice(20, 40),
         totalCount: friendsData.totalCount,
       });
 
@@ -454,9 +423,7 @@ describe('Friends view', () => {
 
   it('will load more friend requests when the load more button is clicked', async () => {
     jest.spyOn(client.friends, 'listFriendRequests').mockResolvedValueOnce({
-      data: friendRequestsData.data
-        .slice(0, 20)
-        .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
+      data: friendRequestsData.data.slice(0, 20),
       totalCount: friendRequestsData.totalCount,
     });
     // friendsStore.requests.friendRequests =
@@ -468,9 +435,7 @@ describe('Friends view', () => {
     const spy = jest
       .spyOn(client.friends, 'listFriendRequests')
       .mockResolvedValueOnce({
-        data: friendRequestsData.data
-          .slice(20, 40)
-          .map((r) => new FriendRequest(fetcher, BasicUser.username, r)),
+        data: friendRequestsData.data.slice(20, 40),
         totalCount: friendRequestsData.totalCount,
       });
 
@@ -495,18 +460,18 @@ describe('Friends view', () => {
   });
 
   it('will allow a user to dismiss an acknowledged friend request', async () => {
-    const requestDTO = {
+    const request = {
       ...friendRequestsData.data[0],
       accepted: true,
     };
     jest.spyOn(client.friends, 'listFriendRequests').mockResolvedValue({
-      data: [new FriendRequest(fetcher, BasicUser.username, requestDTO)],
+      data: [request],
       totalCount: friendRequestsData.totalCount,
     });
 
-    const request = new FriendRequest(fetcher, BasicUser.username, requestDTO);
-    jest.spyOn(client.friends, 'wrapFriendRequestDTO').mockReturnValue(request);
-    const spy = jest.spyOn(request, 'cancel').mockResolvedValue();
+    const spy = jest
+      .spyOn(client.friends, 'cancelFriendRequest')
+      .mockResolvedValue();
 
     const wrapper = mount(FriendsView, opts);
     await flushPromises();

@@ -137,7 +137,7 @@ async function onSendRequest(targetUser: SuccinctProfileDTO): Promise<void> {
       targetUser.username,
     );
 
-    emit('request-sent', newRequest.toJSON());
+    emit('request-sent', newRequest);
 
     toasts.toast({
       id: 'friend-request-sent',

@@ -1,7 +1,5 @@
 export * from './errors';
 
-export * from './friend';
-export * from './friend-request';
 export * from './user-profile';
 export * from './user';
 
