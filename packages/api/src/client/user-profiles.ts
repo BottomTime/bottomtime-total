@@ -10,6 +10,7 @@ import {
   ProfileSchema,
   SearchProfilesResponseSchema,
   SearchUserProfilesParamsDTO,
+  UpdateProfileParamsDTO,
   UserDTO,
   UserSettingsDTO,
 } from '../types';
@@ -38,8 +39,18 @@ export class UserProfilesApiClient {
     return data;
   }
 
-  async updateProfile(profile: ProfileDTO): Promise<void> {
-    await this.apiClient.put(`/api/users/${profile.username}`, profile);
+  async updateProfile(
+    user: UserDTO,
+    update: UpdateProfileParamsDTO,
+  ): Promise<UserDTO> {
+    await this.apiClient.put(`/api/users/${user.username}`, update);
+    return {
+      ...user,
+      profile: {
+        ...user.profile,
+        ...update,
+      },
+    };
   }
 
   async uploadAvatar(

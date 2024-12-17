@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User profiles API client will allow users to upload a new avatar with bounding region 1`] = `"cac7bb0ed0a07e3fed4c0977b8ca87fc"`;
+
+exports[`User profiles API client will allow users to upload a new avatar without bounding region 1`] = `"cac7bb0ed0a07e3fed4c0977b8ca87fc"`;

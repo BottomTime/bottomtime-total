@@ -1,17 +1,25 @@
 import { BinaryLike, createHash } from 'crypto';
 import mockFetch from 'fetch-mock-jest';
-import fs from 'fs/promises';
-import path from 'path';
+import { readFile } from 'fs/promises';
+import { resolve } from 'path';
 
-import { Fetcher } from '../../src/client/fetcher';
-import { UserProfile } from '../../src/client/user-profile';
 import {
   AvatarSize,
+  DepthUnit,
+  Fetcher,
   ListAvatarURLsResponseDTO,
   LogBookSharing,
-  UpdateProfileParamsSchema,
+  NotificationType,
+  NotificationWhitelists,
+  PressureUnit,
+  ProfileDTO,
+  TemperatureUnit,
+  UpdateProfileParamsDTO,
   UserDTO,
-} from '../../src/types';
+  UserSettingsDTO,
+  WeightUnit,
+} from '../../src';
+import { UserProfilesApiClient } from '../../src/client/user-profiles';
 import { BasicUser } from '../fixtures/users';
 
 const TestURLs: ListAvatarURLsResponseDTO = {
@@ -24,21 +32,16 @@ const TestURLs: ListAvatarURLsResponseDTO = {
   },
 } as const;
 
-describe('UserProfile client object', () => {
-  let fetcher: Fetcher;
-  let profile: UserProfile;
+describe('User profiles API client', () => {
+  let client: UserProfilesApiClient;
   let testUser: UserDTO;
-
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  let testFile: any; // Need to use "any" type here to avoid mismatch with JSDOM File type.
+  let testFile: File;
 
   beforeAll(async () => {
-    fetcher = new Fetcher();
-
-    const img = await fs.readFile(
-      path.resolve(__dirname, '../fixtures/waltito.png'),
-      { flag: 'r' },
-    );
+    client = new UserProfilesApiClient(new Fetcher());
+    const img = await readFile(resolve(__dirname, '../fixtures/waltito.png'), {
+      flag: 'r',
+    });
     testFile = new File([img], 'waltito.png', { type: 'image/png' });
   });
 
@@ -59,67 +62,46 @@ describe('UserProfile client object', () => {
         logBookSharing: LogBookSharing.FriendsOnly,
       },
     };
-
-    profile = new UserProfile(fetcher, testUser.profile);
   });
 
   afterEach(() => {
     mockFetch.restore();
   });
 
-  it('will return properties correctly', () => {
-    expect(profile.bio).toBe(testUser.profile.bio);
-    expect(profile.location).toBe(testUser.profile.location);
-    expect(profile.experienceLevel).toBe(testUser.profile.experienceLevel);
-    expect(profile.name).toBe(testUser.profile.name);
-    expect(profile.startedDiving).toBe(testUser.profile.startedDiving);
-    expect(profile.logBookSharing).toBe(testUser.profile.logBookSharing);
-  });
-
-  it('will update properties correctly', () => {
-    profile.bio = 'This is an updated bio';
-    profile.location = 'Updatedville, Updatedland';
-    profile.experienceLevel = 'Beginner';
-    profile.name = 'Updated User';
-    profile.startedDiving = '2011-01-01';
-    profile.logBookSharing = LogBookSharing.Public;
-
-    expect(testUser.profile.bio).toBe('This is an updated bio');
-    expect(testUser.profile.location).toBe('Updatedville, Updatedland');
-    expect(testUser.profile.experienceLevel).toBe('Beginner');
-    expect(testUser.profile.name).toBe('Updated User');
-    expect(testUser.profile.startedDiving).toBe('2011-01-01');
-    expect(testUser.profile.logBookSharing).toBe(LogBookSharing.Public);
-  });
-
-  it('will save changes', async () => {
-    profile.bio = 'This is an updated bio';
-    profile.location = 'Updatedville, Updatedland';
-    profile.experienceLevel = 'Beginner';
-    profile.name = 'Updated User';
-    profile.startedDiving = '2011-01-01';
-    profile.logBookSharing = LogBookSharing.Private;
-
-    const expected = UpdateProfileParamsSchema.parse(profile);
-
+  it('will save changes to a user profile', async () => {
+    const update: UpdateProfileParamsDTO = {
+      bio: 'This is an updated bio',
+      location: 'Updatedville, Updatedland',
+      experienceLevel: 'Beginner',
+      name: 'Updated User',
+      startedDiving: '2011-01-01',
+      logBookSharing: LogBookSharing.Private,
+    };
+    const expected: UserDTO = {
+      ...testUser,
+      profile: {
+        ...testUser.profile,
+        ...update,
+      },
+    };
     mockFetch.put(
       {
         url: `/api/users/${testUser.username}`,
-        body: expected,
+        body: update,
       },
       {
         status: 200,
-        body: testUser.profile,
+        body: expected,
       },
     );
-    await profile.save();
-
+    const result = await client.updateProfile(testUser, update);
     expect(mockFetch.done()).toBe(true);
+    expect(result).toEqual(expected);
   });
 
   it('will allow users to delete their avatar', async () => {
     mockFetch.delete(`/api/users/${testUser.username}/avatar`, 204);
-    await profile.deleteAvatar();
+    await client.deleteAvatar(testUser.username);
     expect(mockFetch.done()).toBe(true);
   });
 
@@ -128,9 +110,7 @@ describe('UserProfile client object', () => {
       status: 201,
       body: TestURLs,
     });
-
-    const urls = await profile.uploadAvatar(testFile);
-
+    const urls = await client.uploadAvatar(testUser.username, testFile);
     expect(mockFetch.done()).toBe(true);
     expect(urls).toEqual(TestURLs);
 
@@ -158,7 +138,7 @@ describe('UserProfile client object', () => {
       status: 201,
       body: TestURLs,
     });
-    const urls = await profile.uploadAvatar(testFile, {
+    const urls = await client.uploadAvatar(testUser.username, testFile, {
       left: 230,
       top: 410,
       width: 312,
@@ -188,6 +168,70 @@ describe('UserProfile client object', () => {
         expect(md5).toMatchSnapshot();
         resolve();
       };
+    });
+  });
+
+  it('will save changes to settings', async () => {
+    const update: UserSettingsDTO = {
+      depthUnit: DepthUnit.Feet,
+      pressureUnit: PressureUnit.PSI,
+      temperatureUnit: TemperatureUnit.Fahrenheit,
+      weightUnit: WeightUnit.Pounds,
+    };
+    const expected: UserDTO = {
+      ...testUser,
+      settings: update,
+    };
+    mockFetch.put(
+      {
+        url: `/api/users/${testUser.username}/settings`,
+        body: update,
+      },
+      {
+        status: 200,
+        body: expected,
+      },
+    );
+    const result = await client.updateSettings(testUser, update);
+    expect(mockFetch.done()).toBe(true);
+    expect(result).toEqual(expected);
+  });
+
+  describe('when working with notifications', () => {
+    it('will retrieve notification whitelists', async () => {
+      const expected: NotificationWhitelists = {
+        [NotificationType.Email]: ['membership.*', 'user.*'],
+        [NotificationType.PushNotification]: ['*'],
+      };
+      mockFetch.get(
+        `/api/users/${BasicUser.username}/notifications/permissions/${NotificationType.Email}`,
+        expected[NotificationType.Email],
+      );
+      mockFetch.get(
+        `/api/users/${BasicUser.username}/notifications/permissions/${NotificationType.PushNotification}`,
+        expected[NotificationType.PushNotification],
+      );
+
+      const actual = await client.getNotificationWhitelists(testUser.username);
+      expect(mockFetch.done()).toBe(true);
+      expect(actual).toEqual(expected);
+    });
+
+    it('will update notification whitelists', async () => {
+      const newWhitelist = ['friendRequest.*'];
+      mockFetch.put(
+        {
+          url: `/api/users/${BasicUser.username}/notifications/permissions/${NotificationType.PushNotification}`,
+          body: newWhitelist,
+        },
+        204,
+      );
+      await client.updateNotificationWhitelist(
+        testUser.username,
+        NotificationType.PushNotification,
+        newWhitelist,
+      );
+      expect(mockFetch.done()).toBe(true);
     });
   });
 });
