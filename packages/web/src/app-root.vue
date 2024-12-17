@@ -42,8 +42,7 @@ const isLoading = ref(true);
 
 onMounted(async () => {
   await oops(async () => {
-    const user = await client.users.getCurrentUser();
-    currentUser.user = user?.toJSON() ?? null;
+    currentUser.user = await client.auth.getCurrentUser();
   });
 
   isLoading.value = false;

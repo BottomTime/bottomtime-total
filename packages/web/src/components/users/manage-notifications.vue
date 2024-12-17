@@ -342,8 +342,9 @@ async function refreshWhitelists(): Promise<void> {
 
   await oops(
     async () => {
-      const user = client.users.wrapDTO(props.user);
-      const whitelists = await user.settings.getNotificationWhitelists();
+      const whitelists = await client.userProfiles.getNotificationWhitelists(
+        props.user.username,
+      );
       parseWhitelist(state.emailWhitelist, whitelists.email);
       parseWhitelist(
         state.pushNotificationWhitelist,
@@ -366,17 +367,18 @@ async function onSave(): Promise<void> {
   state.isSaving = true;
 
   await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
     const emailWhitelist = condenseWhitelist(state.emailWhitelist);
     const pushNotificationWhitelist = condenseWhitelist(
       state.pushNotificationWhitelist,
     );
     await Promise.all([
-      user.settings.updateNotificationWhitelist(
+      client.userProfiles.updateNotificationWhitelist(
+        props.user.username,
         NotificationType.Email,
         emailWhitelist,
       ),
-      user.settings.updateNotificationWhitelist(
+      client.userProfiles.updateNotificationWhitelist(
+        props.user.username,
         NotificationType.PushNotification,
         pushNotificationWhitelist,
       ),

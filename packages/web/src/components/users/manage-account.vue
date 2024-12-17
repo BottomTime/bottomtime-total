@@ -160,8 +160,9 @@ const state = reactive<ManageAccountState>({
 
 onMounted(async () => {
   await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
-    const connectedProviders = await user.getOAuthProviders();
+    const connectedProviders = await client.auth.getOAuthProviders(
+      props.user.username,
+    );
 
     state.providers = OAuthProviders.map((provider) => ({
       ...provider,
@@ -174,8 +175,7 @@ onMounted(async () => {
 // METHODS
 const onUnlinkAccount = async (providerKey: string) => {
   await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
-    await user.unlinkOAuthProvider(providerKey);
+    await client.auth.unlinkOAuthProvider(props.user.username, providerKey);
     toasts.toast({
       id: `account-unlinked-${providerKey}`,
       message: 'Account unlinked successfully!',

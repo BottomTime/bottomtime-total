@@ -96,7 +96,7 @@ onMounted(async () => {
       username.value.toLowerCase() === currentUser.user.username.toLowerCase();
     state.currentProfile = currentUserRequested
       ? currentUser.user.profile
-      : await client.users.getProfile(username.value);
+      : await client.userProfiles.getProfile(username.value);
 
     // Only Fetch custom tank profiles if the user is viewing their own profile or an admin is.
     if (currentUserRequested || currentUser.user.role === UserRole.Admin) {

@@ -40,16 +40,13 @@ export class UserProfilesApiClient {
   }
 
   async updateProfile(
-    user: UserDTO,
+    profile: ProfileDTO,
     update: UpdateProfileParamsDTO,
-  ): Promise<UserDTO> {
-    await this.apiClient.put(`/api/users/${user.username}`, update);
+  ): Promise<ProfileDTO> {
+    await this.apiClient.put(`/api/users/${profile.username}`, update);
     return {
-      ...user,
-      profile: {
-        ...user.profile,
-        ...update,
-      },
+      ...profile,
+      ...update,
     };
   }
 

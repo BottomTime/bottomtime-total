@@ -302,7 +302,7 @@ async function showProfile(username: string): Promise<void> {
 
   await oops(
     async () => {
-      state.currentProfile = await client.users.getProfile(username);
+      state.currentProfile = await client.userProfiles.getProfile(username);
     },
     {
       [404]: () => {

@@ -267,7 +267,7 @@ async function toggleLoginForm() {
 
 async function onLogout(): Promise<void> {
   await oops(async () => {
-    await client.users.logout();
+    await client.auth.logout();
     currentUser.user = null;
     await router.push('/');
   });

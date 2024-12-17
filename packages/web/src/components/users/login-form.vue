@@ -81,8 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { LoginParamsDTO } from '@bottomtime/api';
-import { User } from '@bottomtime/api';
+import { LoginParamsDTO, UserDTO } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
@@ -159,7 +158,7 @@ const passwordTextBox = ref<InstanceType<typeof FormTextBox> | null>();
 const isLoading = ref(false);
 const emit = defineEmits<{
   (e: 'close'): void;
-  (e: 'login', user: User): void;
+  (e: 'login', user: UserDTO): void;
 }>();
 const LoginAttemptFailedToast: Toast = {
   id: 'login-attempt-failed',
@@ -201,9 +200,9 @@ async function login() {
   if (!isValid) return;
 
   isLoading.value = true;
-  const user = await oops<User>(
+  const user = await oops<UserDTO>(
     () =>
-      client.users.login(loginDetails.usernameOrEmail, loginDetails.password),
+      client.auth.login(loginDetails.usernameOrEmail, loginDetails.password),
     {
       401: () => {
         toasts.toast(LoginAttemptFailedToast);
@@ -216,7 +215,7 @@ async function login() {
   isLoading.value = false;
 
   if (user) {
-    currentUser.user = user.toJSON();
+    currentUser.user = user;
     reset(true);
     emit('close');
     emit('login', user);

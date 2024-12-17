@@ -310,7 +310,7 @@ async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
 
   await oops(
     async () => {
-      state.currentProfile = await client.users.getProfile(
+      state.currentProfile = await client.userProfiles.getProfile(
         request.friend.username,
       );
     },

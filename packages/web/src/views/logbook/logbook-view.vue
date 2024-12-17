@@ -232,7 +232,9 @@ onMounted(async () => {
 
   if (currentUser.user) {
     await oops(async () => {
-      state.currentProfile = await client.users.getProfile(username.value);
+      state.currentProfile = await client.userProfiles.getProfile(
+        username.value,
+      );
     });
   }
 });

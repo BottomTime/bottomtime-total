@@ -86,7 +86,7 @@ function onCancelLogout() {
 
 async function onConfirmLogout() {
   await oops(async () => {
-    await client.users.logout();
+    await client.auth.logout();
     currentUser.user = null;
     const redirectTo = props.redirectTo?.startsWith('/')
       ? props.redirectTo

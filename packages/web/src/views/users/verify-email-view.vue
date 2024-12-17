@@ -80,7 +80,7 @@ const state = reactive<VerifyEmailViewState>({});
 async function verifyEmail(user: string, token: string): Promise<void> {
   await oops(
     async () => {
-      const result = await client.users.verifyEmail(user, token);
+      const result = await client.userAccounts.verifyEmail(user, token);
       state.succeeded = result.succeeded;
       state.error = result.reason;
     },

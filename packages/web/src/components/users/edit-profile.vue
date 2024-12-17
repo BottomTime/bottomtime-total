@@ -193,7 +193,13 @@
 </template>
 
 <script setup lang="ts">
-import { ApiList, LogBookSharing, ProfileDTO, TankDTO } from '@bottomtime/api';
+import {
+  ApiList,
+  LogBookSharing,
+  ProfileDTO,
+  TankDTO,
+  UpdateProfileParamsDTO,
+} from '@bottomtime/api';
 
 import { reactive, ref } from 'vue';
 
@@ -288,9 +294,11 @@ async function onAvatarChanged(file: File, coords: Coordinates) {
   isSavingAvatar.value = true;
 
   await oops(async () => {
-    const profile = client.users.wrapProfileDTO(props.profile);
-
-    const avatars = await profile.uploadAvatar(file, coords);
+    const avatars = await client.userProfiles.uploadAvatar(
+      props.profile.username,
+      file,
+      coords,
+    );
     state.avatar = avatars.root;
     emit('save-profile', {
       ...props.profile,
@@ -311,16 +319,16 @@ async function onSave() {
   isSaving.value = true;
 
   await oops(async () => {
-    const profile = client.users.wrapProfileDTO(props.profile);
+    const update: UpdateProfileParamsDTO = {
+      bio: state.bio || undefined,
+      experienceLevel: state.experienceLevel || undefined,
+      location: state.location || undefined,
+      logBookSharing: state.logBookSharing,
+      name: state.name || undefined,
+      startedDiving: state.startedDiving || undefined,
+    };
 
-    profile.bio = state.bio || undefined;
-    profile.experienceLevel = state.experienceLevel || undefined;
-    profile.location = state.location || undefined;
-    profile.logBookSharing = state.logBookSharing;
-    profile.name = state.name || undefined;
-    profile.startedDiving = state.startedDiving || undefined;
-
-    await profile.save();
+    await client.userProfiles.updateProfile(props.profile, update);
 
     emit('save-profile', {
       ...props.profile,
@@ -366,8 +374,7 @@ function onDeleteAvatar() {
 
 async function onConfirmDeleteAvatar(): Promise<void> {
   await oops(async () => {
-    const profile = client.users.wrapProfileDTO(props.profile);
-    await profile.deleteAvatar();
+    await client.userProfiles.deleteAvatar(props.profile.username);
 
     state.avatar = '';
     emit('save-profile', {

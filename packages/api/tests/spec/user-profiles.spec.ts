@@ -94,9 +94,9 @@ describe('User profiles API client', () => {
         body: expected,
       },
     );
-    const result = await client.updateProfile(testUser, update);
+    const result = await client.updateProfile(testUser.profile, update);
     expect(mockFetch.done()).toBe(true);
-    expect(result).toEqual(expected);
+    expect(result).toEqual(expected.profile);
   });
 
   it('will allow users to delete their avatar', async () => {
