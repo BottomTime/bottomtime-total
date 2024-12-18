@@ -63,8 +63,8 @@ test.describe('User Tank Profile Management', () => {
     await page.waitForSelector('[data-testid="toast-tank-saved"]');
 
     const result = await api.tanks.getTank(tank.id, Username);
-    expect(result.toJSON()).toEqual({
-      ...tank.toJSON(),
+    expect(result).toEqual({
+      ...tank,
       ...newData,
     });
 
@@ -96,8 +96,8 @@ test.describe('User Tank Profile Management', () => {
     });
 
     const result = await api.tanks.getTank(tank.id, Username);
-    expect(result.toJSON()).toEqual({
-      ...tank.toJSON(),
+    expect(result).toEqual({
+      ...tank,
       ...newData,
     });
   });

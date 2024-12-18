@@ -207,7 +207,7 @@ async function onSaveTank(dto: TankDTO): Promise<void> {
     if (!state.tanks) return;
 
     if (dto.id) {
-      await client.tanks.updateTank(dto);
+      await client.tanks.updateTank(dto, username.value);
 
       const index = state.tanks.data.findIndex((t) => t.id === dto.id);
       if (index > -1) {

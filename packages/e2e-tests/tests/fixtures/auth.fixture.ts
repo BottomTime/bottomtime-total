@@ -15,7 +15,7 @@ export class AuthFixture {
     username = username || this.DefaultAdminUsername;
     password = password || this.DefaultAdminPassword;
 
-    await this.api.users.createUser({
+    await this.api.userAccounts.createUser({
       username,
       password,
       role: UserRole.Admin,
@@ -25,7 +25,7 @@ export class AuthFixture {
   }
 
   async createUserAndLogin(username: string, password: string): Promise<void> {
-    await this.api.users.createUser({
+    await this.api.userAccounts.createUser({
       username,
       password,
       email: `${username}@testing.org`,

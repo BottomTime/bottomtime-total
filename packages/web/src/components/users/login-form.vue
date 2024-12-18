@@ -51,7 +51,9 @@
     </div>
     <div class="text-center mb-6">
       Forgot your username or password? No problem!
-      <NavLink to="/resetPassword">Recover them here</NavLink>.
+      <NavLink to="/resetPassword" @click="$emit('close')">
+        Recover them here </NavLink
+      >.
     </div>
 
     <hr />

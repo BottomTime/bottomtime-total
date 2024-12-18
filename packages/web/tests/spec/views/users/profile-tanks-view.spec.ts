@@ -321,7 +321,7 @@ describe('Profile Tanks View', () => {
       await wrapper.get('#save-tank').trigger('click');
       await flushPromises();
 
-      expect(spy).toHaveBeenCalledWith(updated);
+      expect(spy).toHaveBeenCalledWith(updated, BasicUser.username);
       expect(wrapper.find('#save-tank').exists()).toBe(false);
       expect(
         wrapper.find(`[data-testid="tank-${original.id}"]`).html(),

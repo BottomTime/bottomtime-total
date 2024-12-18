@@ -2,7 +2,7 @@ import {
   AccountTier,
   CreateOrUpdateOperatorDTO,
   HttpException,
-  User,
+  UserDTO,
 } from '@bottomtime/api';
 
 import { expect, test } from '../fixtures';
@@ -32,15 +32,18 @@ const OperatorData: CreateOrUpdateOperatorDTO = {
 };
 
 test.describe('Operators', () => {
-  let user: User;
+  let user: UserDTO;
 
   test.describe('as a shop owner', () => {
     test.beforeEach(async ({ api, auth }) => {
-      user = await api.users.createUser({
+      user = await api.userAccounts.createUser({
         username: Username,
         password: Password,
       });
-      await user.changeMembership(AccountTier.ShopOwner);
+      user = await api.userAccounts.changeMembership(
+        user,
+        AccountTier.ShopOwner,
+      );
       await auth.login(Username, Password);
     });
 
