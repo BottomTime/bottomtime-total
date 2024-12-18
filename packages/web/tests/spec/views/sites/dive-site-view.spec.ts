@@ -1,4 +1,4 @@
-import { ApiClient, DiveSite, DiveSiteDTO } from '@bottomtime/api';
+import { ApiClient, DiveSiteDTO } from '@bottomtime/api';
 import { Fetcher } from '@bottomtime/api';
 
 import {
@@ -33,7 +33,6 @@ describe('Dive Site View', () => {
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof DiveSiteView>;
   let siteData: DiveSiteDTO;
-  let site: DiveSite;
 
   beforeAll(() => {
     fetcher = new Fetcher();
@@ -62,7 +61,6 @@ describe('Dive Site View', () => {
       ...DiveSiteWithFullProperties,
       creator: BasicUser.profile,
     };
-    site = new DiveSite(fetcher, siteData);
 
     opts = {
       global: {
@@ -94,7 +92,7 @@ describe('Dive Site View', () => {
     await router.push('/diveSites/new');
     const spy = jest
       .spyOn(client.diveSites, 'getDiveSite')
-      .mockRejectedValue(site);
+      .mockRejectedValue(siteData);
     const wrapper = mount(DiveSiteView, opts);
     await flushPromises();
 
@@ -108,7 +106,7 @@ describe('Dive Site View', () => {
   it('will render in read-only mode for anonymous users', async () => {
     const spy = jest
       .spyOn(client.diveSites, 'getDiveSite')
-      .mockResolvedValue(site);
+      .mockResolvedValue(siteData);
     const wrapper = mount(DiveSiteView, opts);
     await flushPromises();
 
@@ -122,7 +120,7 @@ describe('Dive Site View', () => {
     currentUser.user = UserWithEmptyProfile;
     const spy = jest
       .spyOn(client.diveSites, 'getDiveSite')
-      .mockResolvedValue(site);
+      .mockResolvedValue(siteData);
     const wrapper = mount(DiveSiteView, opts);
     await flushPromises();
 
@@ -136,7 +134,7 @@ describe('Dive Site View', () => {
     currentUser.user = BasicUser;
     const spy = jest
       .spyOn(client.diveSites, 'getDiveSite')
-      .mockResolvedValue(site);
+      .mockResolvedValue(siteData);
     const wrapper = mount(DiveSiteView, opts);
     await flushPromises();
 
@@ -150,7 +148,7 @@ describe('Dive Site View', () => {
     currentUser.user = AdminUser;
     const spy = jest
       .spyOn(client.diveSites, 'getDiveSite')
-      .mockResolvedValue(site);
+      .mockResolvedValue(siteData);
     const wrapper = mount(DiveSiteView, opts);
     await flushPromises();
 
@@ -171,7 +169,7 @@ describe('Dive Site View', () => {
     };
 
     currentUser.user = BasicUser;
-    jest.spyOn(client.diveSites, 'getDiveSite').mockResolvedValue(site);
+    jest.spyOn(client.diveSites, 'getDiveSite').mockResolvedValue(siteData);
     const wrapper = mount(DiveSiteView, opts);
     await flushPromises();
 

@@ -4,7 +4,7 @@ import {
   DiveSiteDTO,
   Fetcher,
 } from '@bottomtime/api';
-import { ApiClient, DiveSite } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -208,11 +208,9 @@ describe('Edit Dive Site component', () => {
       directions: 'new site directions',
     };
 
-    const site = new DiveSite(fetcher, { ...BlankDiveSiteWithId });
-    const wrapSpy = jest
-      .spyOn(client.diveSites, 'wrapDTO')
-      .mockReturnValue(site);
-    const saveSpy = jest.spyOn(site, 'save').mockResolvedValue();
+    const saveSpy = jest
+      .spyOn(client.diveSites, 'updateSite')
+      .mockResolvedValue();
 
     await wrapper.get(NameInput).setValue(expected.name);
     await wrapper.get(DescriptionInput).setValue(expected.description);
@@ -228,10 +226,7 @@ describe('Edit Dive Site component', () => {
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
-    expect(wrapSpy).toHaveBeenCalledWith(BlankDiveSiteWithId);
-    expect(saveSpy).toHaveBeenCalled();
-    expect(site.toJSON()).toEqual(expected);
-
+    expect(saveSpy).toHaveBeenCalledWith(expected);
     expect(wrapper.emitted('site-updated')).toEqual([[expected]]);
   });
 
@@ -258,10 +253,9 @@ describe('Edit Dive Site component', () => {
       directions: 'new site directions',
     };
 
-    const site = new DiveSite(fetcher, expected);
     const createSpy = jest
       .spyOn(client.diveSites, 'createDiveSite')
-      .mockResolvedValue(site);
+      .mockResolvedValue(expected);
 
     await wrapper.get(NameInput).setValue(expected.name);
     await wrapper.get(DescriptionInput).setValue(expected.description);
@@ -278,7 +272,6 @@ describe('Edit Dive Site component', () => {
     await flushPromises();
 
     expect(wrapper.emitted('site-updated')).toEqual([[expected]]);
-    expect(site.toJSON()).toEqual(expected);
     expect(createSpy).toHaveBeenCalledWith(
       CreateOrUpdateDiveSiteSchema.parse(expected),
     );

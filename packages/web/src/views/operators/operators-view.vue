@@ -160,14 +160,9 @@ const fullScreenUrl = computed(() =>
 async function refresh(): Promise<void> {
   state.isLoading = true;
   await oops(async () => {
-    const results = await client.operators.searchOperators({
+    state.results = await client.operators.searchOperators({
       ...searchParams,
     });
-
-    state.results = {
-      data: results.data.map((op) => op.toJSON()),
-      totalCount: results.totalCount,
-    };
   });
   state.isLoading = false;
 }
@@ -235,25 +230,16 @@ async function onSaveOperator(dto: CreateOrUpdateOperatorDTO): Promise<void> {
   await oops(
     async () => {
       if (state.currentOperator?.id) {
-        // Save existing
-        const operator = client.operators.wrapDTO(state.currentOperator);
-        operator.active = dto.active;
-        operator.name = dto.name;
-        operator.slug = dto.slug;
-        operator.description = dto.description;
-        operator.address = dto.address;
-        operator.phone = dto.phone;
-        operator.email = dto.email;
-        operator.website = dto.website;
-        operator.gps = dto.gps;
-        operator.socials = dto.socials;
-        await operator.save();
+        state.currentOperator = await client.operators.updateOperator(
+          state.currentOperator.slug,
+          dto,
+        );
 
         const index = state.results.data.findIndex(
-          (op) => op.id === operator.id,
+          (op) => op.id === state.currentOperator?.id,
         );
         if (index > -1) {
-          state.results.data[index] = operator.toJSON();
+          state.results.data[index] = state.currentOperator;
         }
 
         toasts.toast({
@@ -263,9 +249,7 @@ async function onSaveOperator(dto: CreateOrUpdateOperatorDTO): Promise<void> {
         });
       } else {
         // Create new dive operator.
-        const newOperator = await client.operators.createOperator(dto);
-        state.currentOperator = newOperator.toJSON();
-
+        state.currentOperator = await client.operators.createOperator(dto);
         state.results.data.splice(0, 0, state.currentOperator);
         state.results.totalCount++;
 
@@ -302,7 +286,7 @@ async function onLoadMore(): Promise<void> {
       skip: state.results.data.length,
     };
     const results = await client.operators.searchOperators(params);
-    state.results.data.push(...results.data.map((op) => op.toJSON()));
+    state.results.data.push(...results.data);
     state.results.totalCount = results.totalCount;
   });
 
@@ -345,8 +329,7 @@ async function onConfirmDelete(): Promise<void> {
   await oops(async () => {
     if (!state.currentOperator) return;
 
-    const operator = client.operators.wrapDTO(state.currentOperator);
-    await operator.delete();
+    await client.operators.deleteOperator(state.currentOperator.slug);
 
     toasts.toast({
       id: 'operator-deleted',

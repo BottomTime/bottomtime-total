@@ -90,14 +90,16 @@ async function onConfirmChangePassword(
   state.isSavingPassword = true;
 
   await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
-
     if (props.admin) {
-      await user.resetPassword(newPassword);
+      await client.auth.resetPassword(props.user, newPassword);
     } else {
-      const success = await user.changePassword(oldPassword ?? '', newPassword);
+      const { succeeded } = await client.auth.changePassword(
+        props.user,
+        oldPassword ?? '',
+        newPassword,
+      );
 
-      if (!success) {
+      if (!succeeded) {
         toasts.toast({
           id: 'password-incorrect',
           message: 'Your old password was incorrect. Please try again.',

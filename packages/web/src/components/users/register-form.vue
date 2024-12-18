@@ -200,7 +200,7 @@ async function isUsernameOrEmailAvailable(
   if (usernameOrEmail.length < 3) return true;
 
   const available = await oops<boolean>(async () => {
-    const available = await client.users.isUsernameOrEmailAvailable(
+    const available = await client.userAccounts.isUsernameOrEmailAvailable(
       usernameOrEmail,
     );
     return available;
@@ -216,7 +216,7 @@ async function register() {
   isLoading.value = true;
   await oops(
     async () => {
-      await client.users.createUser({
+      await client.userAccounts.createUser({
         username: data.username,
         email: data.email,
         password: data.password,
@@ -225,8 +225,7 @@ async function register() {
           location: data.location,
         },
       });
-      const user = await client.users.login(data.username, data.password);
-      currentUser.user = user.toJSON();
+      currentUser.user = await client.auth.login(data.username, data.password);
       router.push('/welcome');
     },
     {

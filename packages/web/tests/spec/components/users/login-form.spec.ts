@@ -6,7 +6,6 @@ import {
   LogBookSharing,
   PressureUnit,
   TemperatureUnit,
-  User,
   UserDTO,
   UserRole,
   WeightUnit,
@@ -100,9 +99,7 @@ describe('Login Form component', () => {
         },
       },
     });
-    const spy = jest
-      .spyOn(client.users, 'login')
-      .mockResolvedValue(new User(fetcher, UserData));
+    const spy = jest.spyOn(client.auth, 'login').mockResolvedValue(UserData);
 
     await wrapper.find(UsernameInput).setValue(usernameOrEmail);
     await wrapper.find(PasswordInput).setValue(password);
@@ -126,7 +123,7 @@ describe('Login Form component', () => {
         },
       },
     });
-    jest.spyOn(client.users, 'login').mockRejectedValue(
+    jest.spyOn(client.auth, 'login').mockRejectedValue(
       createHttpError({
         status: 401,
         message: 'Nope',
@@ -168,9 +165,7 @@ describe('Login Form component', () => {
   });
 
   it('will redirect on successful login if "redirectTo" prop is set', async () => {
-    const spy = jest
-      .spyOn(client.users, 'login')
-      .mockResolvedValue(new User(fetcher, UserData));
+    const spy = jest.spyOn(client.auth, 'login').mockResolvedValue(UserData);
     const wrapper = mount(LoginForm, {
       props: {
         redirectTo: '/profile',

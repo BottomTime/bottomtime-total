@@ -3,7 +3,6 @@ import {
   ApiClient,
   CreateOrUpdateOperatorDTO,
   Fetcher,
-  Operator,
   OperatorDTO,
   UserDTO,
   VerificationStatus,
@@ -98,9 +97,7 @@ describe('Operator view', () => {
 
     fetchSpy = jest
       .spyOn(client.operators, 'getOperator')
-      .mockResolvedValue(
-        new Operator(fetcher, { ...FullOperator, owner: ShopOwner.profile }),
-      );
+      .mockResolvedValue({ ...FullOperator, owner: ShopOwner.profile });
     await router.push(`/shops/${FullOperator.slug}`);
   });
 
@@ -219,7 +216,7 @@ describe('Operator view', () => {
     };
     const spy = jest
       .spyOn(client.operators, 'createOperator')
-      .mockResolvedValue(new Operator(fetcher, expected));
+      .mockResolvedValue(expected);
 
     currentUser.user = ShopOwner;
     await router.push('/shops/createNew');
@@ -245,7 +242,7 @@ describe('Operator view', () => {
     };
     const spy = jest
       .spyOn(client.operators, 'createOperator')
-      .mockResolvedValue(new Operator(fetcher, expected));
+      .mockResolvedValue(expected);
 
     currentUser.user = AdminUser;
     await router.push('/shops/createNew');
@@ -283,9 +280,13 @@ describe('Operator view', () => {
   });
 
   it('will allow a shop owner to update a dive operator', async () => {
-    const operator = new Operator(fetcher, { ...FullOperator });
-    const saveSpy = jest.spyOn(operator, 'save').mockResolvedValue();
-    jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
+    const expected = {
+      ...FullOperator,
+      ...update,
+    };
+    const saveSpy = jest
+      .spyOn(client.operators, 'updateOperator')
+      .mockResolvedValue(expected);
 
     currentUser.user = ShopOwner;
     await router.push(`/shops/${FullOperator.slug}`);
@@ -298,21 +299,20 @@ describe('Operator view', () => {
     editor.vm.$emit('save', update);
     await flushPromises();
 
-    const expected = {
-      ...FullOperator,
-      ...update,
-    };
-    expect(operator.toJSON()).toEqual(expected);
-    expect(saveSpy).toHaveBeenCalled();
+    expect(saveSpy).toHaveBeenCalledWith(FullOperator.slug, update);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('dive-operator-saved');
     expect(toasts.toasts[0].type).toBe(ToastType.Success);
   });
 
   it('will allow an admin to update a dive operator', async () => {
-    const operator = new Operator(fetcher, { ...FullOperator });
-    const saveSpy = jest.spyOn(operator, 'save').mockResolvedValue();
-    jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
+    const expected = {
+      ...FullOperator,
+      ...update,
+    };
+    const saveSpy = jest
+      .spyOn(client.operators, 'updateOperator')
+      .mockResolvedValue(expected);
 
     currentUser.user = { ...AdminUser };
     await router.push(`/shops/${FullOperator.slug}`);
@@ -325,12 +325,7 @@ describe('Operator view', () => {
     editor.vm.$emit('save', update);
     await flushPromises();
 
-    const expected = {
-      ...FullOperator,
-      ...update,
-    };
-    expect(operator.toJSON()).toEqual(expected);
-    expect(saveSpy).toHaveBeenCalled();
+    expect(saveSpy).toHaveBeenCalledWith(FullOperator.slug, update);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('dive-operator-saved');
     expect(toasts.toasts[0].type).toBe(ToastType.Success);
@@ -341,11 +336,9 @@ describe('Operator view', () => {
       ...FullOperator,
       owner: ShopOwner.profile,
     };
-    const operator = new Operator(fetcher, { ...operatorData });
     const saveSpy = jest
-      .spyOn(operator, 'save')
+      .spyOn(client.operators, 'updateOperator')
       .mockRejectedValue(createHttpError(409));
-    jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
 
     currentUser.user = ShopOwner;
     await router.push(`/shops/${FullOperator.slug}`);
@@ -362,7 +355,6 @@ describe('Operator view', () => {
       ...operatorData,
       ...update,
     };
-    expect(operator.toJSON()).toEqual(expected);
     expect(saveSpy).toHaveBeenCalled();
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('dive-operator-slug-taken');
@@ -370,13 +362,13 @@ describe('Operator view', () => {
   });
 
   it('will allow a user to delete a dive operator', async () => {
-    const operatorData: OperatorDTO = {
-      ...FullOperator,
-      owner: ShopOwner.profile,
-    };
-    const operator = new Operator(fetcher, operatorData);
-    const deleteSpy = jest.spyOn(operator, 'delete').mockResolvedValue();
-    jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
+    // const operatorData: OperatorDTO = {
+    //   ...FullOperator,
+    //   owner: ShopOwner.profile,
+    // };
+    const deleteSpy = jest
+      .spyOn(client.operators, 'deleteOperator')
+      .mockResolvedValue();
 
     currentUser.user = ShopOwner;
     await router.push(`/shops/${FullOperator.slug}`);
@@ -388,7 +380,7 @@ describe('Operator view', () => {
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
 
-    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith(FullOperator.slug);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('dive-operator-deleted');
     expect(toasts.toasts[0].type).toBe(ToastType.Success);

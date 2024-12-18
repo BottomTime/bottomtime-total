@@ -99,7 +99,7 @@ async function onSearch(): Promise<void> {
   state.isLoading = true;
 
   await oops(async () => {
-    state.users = await client.users.searchProfiles({
+    state.users = await client.userProfiles.searchProfiles({
       query: state.query,
       filterFriends: true,
       limit: 50,
@@ -115,7 +115,7 @@ async function onLoadMore(): Promise<void> {
   await oops(async () => {
     if (!state.users) return;
 
-    const results = await client.users.searchProfiles({
+    const results = await client.userProfiles.searchProfiles({
       query: state.query,
       filterFriends: true,
       skip: state.users?.data.length,
@@ -137,7 +137,7 @@ async function onSendRequest(targetUser: SuccinctProfileDTO): Promise<void> {
       targetUser.username,
     );
 
-    emit('request-sent', newRequest.toJSON());
+    emit('request-sent', newRequest);
 
     toasts.toast({
       id: 'friend-request-sent',

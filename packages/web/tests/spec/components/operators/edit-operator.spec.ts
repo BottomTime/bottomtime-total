@@ -2,7 +2,6 @@ import {
   ApiClient,
   Fetcher,
   ListAvatarURLsResponseDTO,
-  Operator,
   OperatorDTO,
   VerificationStatus,
 } from '@bottomtime/api';
@@ -401,7 +400,7 @@ describe('EditOperator component', () => {
       const image = await readFile(
         resolve(__dirname, '../../../fixtures/text-file.txt'),
       );
-      new File([image], 'floof.jpg', { type: 'image/jpeg' });
+      logoFile = new File([image], 'floof.jpg', { type: 'image/jpeg' });
     });
 
     it('will allow user to upload a new logo', async () => {
@@ -409,12 +408,9 @@ describe('EditOperator component', () => {
         ...FullOperator,
         logo: undefined,
       };
-      const operator = new Mock<Operator>()
-        .setup((x) => x.uploadLogo(logoFile, LogoCoords))
-        .returnsAsync(ExpectedUrls);
-      jest
-        .spyOn(client.operators, 'wrapDTO')
-        .mockReturnValue(operator.object());
+      const spy = jest
+        .spyOn(client.operators, 'uploadLogo')
+        .mockResolvedValue(ExpectedUrls);
 
       const wrapper = mount(EditOperator, opts);
       await wrapper.setProps({
@@ -427,17 +423,14 @@ describe('EditOperator component', () => {
         .vm.$emit('save', logoFile, LogoCoords);
       await flushPromises();
 
-      operator.verify((x) => x.uploadLogo(logoFile, LogoCoords), Times.Once());
+      expect(spy).toHaveBeenCalledWith(operatorData, logoFile, LogoCoords);
       expect(wrapper.emitted('logo-changed')).toEqual([[ExpectedUrls.root]]);
     });
 
     it('will allow user to remove a logo', async () => {
-      const operator = new Mock<Operator>()
-        .setup((x) => x.deleteLogo())
-        .returnsAsync();
-      jest
-        .spyOn(client.operators, 'wrapDTO')
-        .mockReturnValue(operator.object());
+      const spy = jest
+        .spyOn(client.operators, 'deleteLogo')
+        .mockResolvedValue();
 
       const wrapper = mount(EditOperator, opts);
       await wrapper.setProps({
@@ -453,7 +446,7 @@ describe('EditOperator component', () => {
         .trigger('click');
       await flushPromises();
 
-      operator.verify((x) => x.deleteLogo(), Times.Once());
+      expect(spy).toHaveBeenCalledWith(FullOperator.slug);
       expect(wrapper.emitted('logo-changed')).toEqual([[undefined]]);
     });
 
@@ -462,12 +455,9 @@ describe('EditOperator component', () => {
         ...FullOperator,
         logo: '/api/operators/old-logo/logo/',
       };
-      const operator = new Mock<Operator>()
-        .setup((x) => x.uploadLogo(logoFile, LogoCoords))
-        .returnsAsync(ExpectedUrls);
-      jest
-        .spyOn(client.operators, 'wrapDTO')
-        .mockReturnValue(operator.object());
+      const spy = jest
+        .spyOn(client.operators, 'uploadLogo')
+        .mockResolvedValue(ExpectedUrls);
 
       const wrapper = mount(EditOperator, opts);
       await wrapper.setProps({
@@ -480,7 +470,7 @@ describe('EditOperator component', () => {
         .vm.$emit('save', logoFile, LogoCoords);
       await flushPromises();
 
-      operator.verify((x) => x.uploadLogo(logoFile, LogoCoords), Times.Once());
+      expect(spy).toHaveBeenCalledWith(operatorData, logoFile, LogoCoords);
       expect(wrapper.emitted('logo-changed')).toEqual([[ExpectedUrls.root]]);
     });
   });
@@ -579,13 +569,9 @@ describe('EditOperator component', () => {
         verificationStatus: VerificationStatus.Unverified,
         verificationMessage: undefined,
       };
-      const operator = new Operator(fetcher, operatorData);
-      const wrapSpy = jest
-        .spyOn(client.operators, 'wrapDTO')
-        .mockReturnValue(operator);
-      const requestSpy = jest
-        .spyOn(operator, 'requestVerification')
-        .mockResolvedValue();
+      const spy = jest
+        .spyOn(client.operators, 'requestVerification')
+        .mockResolvedValue(operatorData);
       const wrapper = mount(EditOperator, {
         ...opts,
         props: {
@@ -599,8 +585,7 @@ describe('EditOperator component', () => {
         .trigger('click');
       await flushPromises();
 
-      expect(wrapSpy).toHaveBeenCalledWith(operatorData);
-      expect(requestSpy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith(operatorData);
       expect(wrapper.emitted('verification-requested')).toEqual([
         [operatorData],
       ]);
@@ -612,10 +597,9 @@ describe('EditOperator component', () => {
         verificationStatus: VerificationStatus.Unverified,
         verificationMessage: undefined,
       };
-      const operator = new Operator(fetcher, operatorData);
-      const wrapSpy = jest
-        .spyOn(client.operators, 'wrapDTO')
-        .mockReturnValue(operator);
+      const spy = jest
+        .spyOn(client.operators, 'requestVerification')
+        .mockResolvedValue(operatorData);
       const wrapper = mount(EditOperator, {
         ...opts,
         props: {
@@ -629,14 +613,13 @@ describe('EditOperator component', () => {
         .trigger('click');
       await flushPromises();
 
-      expect(wrapSpy).not.toHaveBeenCalled();
+      expect(spy).not.toHaveBeenCalled();
       expect(wrapper.emitted('verification-requested')).toBeUndefined();
     });
   });
 
   describe('when reviewing verification requests as an admin', () => {
     let operatorData: OperatorDTO;
-    let operator: Operator;
 
     beforeEach(() => {
       currentUser.user = AdminUser;
@@ -645,18 +628,18 @@ describe('EditOperator component', () => {
         verificationStatus: VerificationStatus.Pending,
         verificationMessage: undefined,
       };
-      operator = new Operator(fetcher, operatorData);
       opts = {
         ...opts,
         props: {
           operator: operatorData,
         },
       };
-      jest.spyOn(client.operators, 'wrapDTO').mockReturnValue(operator);
     });
 
     it('will allow an admin to approve a request', async () => {
-      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const spy = jest
+        .spyOn(client.operators, 'setVerified')
+        .mockResolvedValue(operatorData);
       const wrapper = mount(EditOperator, opts);
 
       await wrapper.get(ApproveButton).trigger('click');
@@ -665,12 +648,14 @@ describe('EditOperator component', () => {
         .trigger('click');
       await flushPromises();
 
-      expect(spy).toHaveBeenCalledWith(true);
+      expect(spy).toHaveBeenCalledWith(operatorData, true);
       expect(wrapper.emitted('verified')).toBeDefined();
     });
 
     it('will allow an admin to change their mind about approving a request', async () => {
-      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const spy = jest
+        .spyOn(client.operators, 'setVerified')
+        .mockResolvedValue(operatorData);
       const wrapper = mount(EditOperator, opts);
 
       await wrapper.get(ApproveButton).trigger('click');
@@ -679,25 +664,29 @@ describe('EditOperator component', () => {
         .trigger('click');
       await flushPromises();
 
-      expect(spy).not.toHaveBeenCalledWith(true);
+      expect(spy).not.toHaveBeenCalled();
       expect(wrapper.emitted('verified')).toBeUndefined();
     });
 
     it('will allow an admin to reject a request', async () => {
-      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const spy = jest
+        .spyOn(client.operators, 'setVerified')
+        .mockResolvedValue(operatorData);
       const wrapper = mount(EditOperator, opts);
 
       await wrapper.get(RejectButton).trigger('click');
       await wrapper.get('[data-testid="btn-confirm-reject"]').trigger('click');
       await flushPromises();
 
-      expect(spy).toHaveBeenCalledWith(false, undefined);
+      expect(spy).toHaveBeenCalledWith(operatorData, false, undefined);
       expect(wrapper.emitted('rejected')).toEqual([[undefined]]);
     });
 
     it('will allow an admin to reject a request with a message', async () => {
       const message = 'You are not ready';
-      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const spy = jest
+        .spyOn(client.operators, 'setVerified')
+        .mockResolvedValue(operatorData);
       const wrapper = mount(EditOperator, opts);
 
       await wrapper.get(RejectButton).trigger('click');
@@ -705,12 +694,14 @@ describe('EditOperator component', () => {
       await wrapper.get('[data-testid="btn-confirm-reject"]').trigger('click');
       await flushPromises();
 
-      expect(spy).toHaveBeenCalledWith(false, message);
+      expect(spy).toHaveBeenCalledWith(operatorData, false, message);
       expect(wrapper.emitted('rejected')).toEqual([[message]]);
     });
 
     it('will allow an admin to change their mind about rejecting a request', async () => {
-      const spy = jest.spyOn(operator, 'setVerified').mockResolvedValue();
+      const spy = jest
+        .spyOn(client.operators, 'setVerified')
+        .mockResolvedValue(operatorData);
       const wrapper = mount(EditOperator, opts);
 
       await wrapper.get(RejectButton).trigger('click');

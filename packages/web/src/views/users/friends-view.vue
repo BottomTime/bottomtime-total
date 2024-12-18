@@ -220,13 +220,10 @@ async function refreshFriends(): Promise<void> {
   await oops(async () => {
     if (!currentUser.user) return;
 
-    const results = await client.friends.listFriends(
+    state.friends = await client.friends.listFriends(
       currentUser.user.username,
       state.queryParams,
     );
-
-    state.friends.data = results.data.map((f) => f.toJSON());
-    state.friends.totalCount = results.totalCount;
   });
   state.isLoadingFriends = false;
 }
@@ -236,7 +233,7 @@ async function refreshFriendRequests(): Promise<void> {
   await oops(async () => {
     if (!currentUser.user) return;
 
-    const results = await client.friends.listFriendRequests(
+    state.friendRequests = await client.friends.listFriendRequests(
       currentUser.user.username,
       {
         direction: FriendRequestDirection.Outgoing,
@@ -244,9 +241,6 @@ async function refreshFriendRequests(): Promise<void> {
         limit: 50,
       },
     );
-
-    state.friendRequests.data = results.data.map((r) => r.toJSON());
-    state.friendRequests.totalCount = results.totalCount;
   });
   state.isLoadingFriendRequests = false;
 }
@@ -265,7 +259,7 @@ async function onLoadMoreFriends(): Promise<void> {
       },
     );
 
-    state.friends.data.push(...results.data.map((f) => f.toJSON()));
+    state.friends.data.push(...results.data);
     state.friends.totalCount = results.totalCount;
   });
 
@@ -288,7 +282,7 @@ async function onLoadMoreRequests(): Promise<void> {
       },
     );
 
-    state.friendRequests.data.push(...results.data.map((r) => r.toJSON()));
+    state.friendRequests.data.push(...results.data);
     state.friendRequests.totalCount = results.totalCount;
   });
 
@@ -308,7 +302,7 @@ async function showProfile(username: string): Promise<void> {
 
   await oops(
     async () => {
-      state.currentProfile = await client.users.getProfile(username);
+      state.currentProfile = await client.userProfiles.getProfile(username);
     },
     {
       [404]: () => {
@@ -385,16 +379,16 @@ async function onConfirmUnfriend(): Promise<void> {
 
   await oops(
     async () => {
-      const dto = state.currentFriend;
-      if (!dto || !currentUser.user) return;
+      if (!state.currentFriend || !currentUser.user) return;
 
-      const friend = client.friends.wrapFriendDTO(
+      await client.friends.unfriend(
         currentUser.user.username,
-        dto,
+        state.currentFriend.username,
       );
-      await friend.unfriend();
 
-      const index = state.friends.data.findIndex((f) => f.id === friend.id);
+      const index = state.friends.data.findIndex(
+        (f) => f.id === state.currentFriend?.id,
+      );
       if (index > -1) {
         state.friends.data.splice(index, 1);
         state.friends.totalCount--;
@@ -403,7 +397,7 @@ async function onConfirmUnfriend(): Promise<void> {
       toasts.toast({
         id: 'unfriend-succeeded',
         message: `You have successfully unfriended ${
-          friend.name || `@${friend.username}`
+          state.currentFriend.name || `@${state.currentFriend.username}`
         }.`,
         type: ToastType.Success,
       });
@@ -446,11 +440,10 @@ async function onConfirmCancelRequest(): Promise<void> {
     async () => {
       if (!currentUser.user || !state.currentRequest) return;
 
-      const request = client.friends.wrapFriendRequestDTO(
+      await client.friends.cancelFriendRequest(
         currentUser.user.username,
         state.currentRequest,
       );
-      await request.cancel();
 
       const index = state.friendRequests.data.findIndex(
         (r) => r.friendId === state.currentRequest?.friendId,
@@ -502,15 +495,10 @@ async function onDismissRequest(dto: FriendRequestDTO): Promise<void> {
     async () => {
       if (!currentUser.user) return;
 
-      const request = client.friends.wrapFriendRequestDTO(
-        currentUser.user.username,
-        dto,
-      );
-
-      await request.cancel();
+      await client.friends.cancelFriendRequest(currentUser.user.username, dto);
 
       const index = state.friendRequests.data.findIndex(
-        (r) => r.friendId === request.friend.id,
+        (r) => r.friendId === dto.friend.id,
       );
 
       if (index > -1) {

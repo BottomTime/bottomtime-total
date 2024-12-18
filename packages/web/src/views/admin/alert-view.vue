@@ -74,8 +74,7 @@ async function onSaveAlert(updated: AlertDTO) {
   await oops(async () => {
     if (state.currentAlert?.id) {
       // Alert already exists, update it.
-      const alert = client.alerts.wrapDTO(updated);
-      await alert.save();
+      await client.alerts.updateAlert(updated);
       toasts.toast({
         id: 'alert-saved',
         message: 'Alert successfully saved',
@@ -96,8 +95,7 @@ onMounted(async () => {
     await oops(
       async () => {
         if (alertId.value) {
-          const result = await client.alerts.getAlert(alertId.value);
-          state.currentAlert = result.toJSON();
+          state.currentAlert = await client.alerts.getAlert(alertId.value);
         } else {
           state.currentAlert = {
             icon: '',

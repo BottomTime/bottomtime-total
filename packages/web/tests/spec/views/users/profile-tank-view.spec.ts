@@ -1,10 +1,4 @@
-import {
-  ApiClient,
-  Fetcher,
-  Tank,
-  TankDTO,
-  TankMaterial,
-} from '@bottomtime/api';
+import { ApiClient, Fetcher, TankDTO, TankMaterial } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -73,9 +67,7 @@ describe('Profile Tank View', () => {
     currentUser = useCurrentUser(pinia);
     toasts = useToasts(pinia);
     currentUser.user = BasicUser;
-    jest
-      .spyOn(client.tanks, 'getTank')
-      .mockResolvedValue(new Tank(fetcher, { ...TestData }));
+    jest.spyOn(client.tanks, 'getTank').mockResolvedValue({ ...TestData });
 
     opts = {
       global: {
@@ -127,7 +119,7 @@ describe('Profile Tank View', () => {
     };
     const createSpy = jest
       .spyOn(client.tanks, 'createTank')
-      .mockResolvedValue(new Tank(fetcher, expected));
+      .mockResolvedValue(expected);
 
     const wrapper = mount(ProfileTankView, opts);
     await flushPromises();
@@ -143,6 +135,8 @@ describe('Profile Tank View', () => {
 
     expect(createSpy).toHaveBeenCalledWith(
       {
+        id: '',
+        isSystem: false,
         material: TankMaterial.Steel,
         name: 'Updated Tank',
         volume: 9.78,
@@ -163,12 +157,7 @@ describe('Profile Tank View', () => {
       workingPressure: 180,
       material: TankMaterial.Steel,
     };
-    const tank = new Tank(fetcher, expected);
-    jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((actual) => {
-      expect(actual).toEqual(expected);
-      return tank;
-    });
-    const spy = jest.spyOn(tank, 'save').mockResolvedValue();
+    const spy = jest.spyOn(client.tanks, 'updateTank').mockResolvedValue();
 
     const wrapper = mount(ProfileTankView, opts);
     await flushPromises();
@@ -182,15 +171,13 @@ describe('Profile Tank View', () => {
     await wrapper.get('#save-tank').trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(expected, BasicUser.username);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('tank-saved');
   });
 
   it('will allow a user to delete a tank', async () => {
-    const tank = new Tank(fetcher, TestData);
-    jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
-    const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
+    const spy = jest.spyOn(client.tanks, 'deleteTank').mockResolvedValue();
 
     const wrapper = mount(ProfileTankView, opts);
     await flushPromises();
@@ -199,14 +186,14 @@ describe('Profile Tank View', () => {
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(TestData.id, BasicUser.username);
     expect(router.currentRoute.value.path).toBe(
       `/profile/${BasicUser.username}/tanks`,
     );
   });
 
   it('will allow a user to change their mind about deleting a tank', async () => {
-    const spy = jest.spyOn(client.tanks, 'wrapDTO');
+    const spy = jest.spyOn(client.tanks, 'deleteTank').mockResolvedValue();
     const wrapper = mount(ProfileTankView, opts);
     await flushPromises();
 
@@ -230,12 +217,7 @@ describe('Profile Tank View', () => {
       workingPressure: 180,
       material: TankMaterial.Steel,
     };
-    const tank = new Tank(fetcher, expected);
-    jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((actual) => {
-      expect(actual).toEqual(expected);
-      return tank;
-    });
-    const spy = jest.spyOn(tank, 'save').mockResolvedValue();
+    const spy = jest.spyOn(client.tanks, 'updateTank').mockResolvedValue();
 
     const wrapper = mount(ProfileTankView, opts);
     await flushPromises();
@@ -249,13 +231,13 @@ describe('Profile Tank View', () => {
     await wrapper.get('#save-tank').trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(expected, BasicUser.username);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('tank-saved');
   });
 
   it('will not submit a save request if validation fails', async () => {
-    const spy = jest.spyOn(client.tanks, 'wrapDTO');
+    const spy = jest.spyOn(client.tanks, 'updateTank').mockResolvedValue();
 
     const wrapper = mount(ProfileTankView, opts);
     await flushPromises();
@@ -272,9 +254,7 @@ describe('Profile Tank View', () => {
 
   it('will allow an admin to delete a tank', async () => {
     currentUser.user = AdminUser;
-    const tank = new Tank(fetcher, TestData);
-    jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
-    const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
+    const spy = jest.spyOn(client.tanks, 'deleteTank').mockResolvedValue();
 
     const wrapper = mount(ProfileTankView, opts);
     await flushPromises();
@@ -283,7 +263,7 @@ describe('Profile Tank View', () => {
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(TestData.id, BasicUser.username);
     expect(router.currentRoute.value.path).toBe(
       `/profile/${BasicUser.username}/tanks`,
     );

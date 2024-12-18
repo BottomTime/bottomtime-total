@@ -26,7 +26,7 @@ const TestData: CreateOrUpdateLogEntryParamsDTO = {
 
 test.describe('Log Entries', () => {
   test.beforeEach(async ({ api, auth }) => {
-    await api.users.createUser({
+    await api.userAccounts.createUser({
       username: Username,
       password: Password,
     });

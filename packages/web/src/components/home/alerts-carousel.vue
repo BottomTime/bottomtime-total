@@ -102,11 +102,7 @@ function rotate() {
 
 onMounted(async () => {
   await oops(async () => {
-    const result = await client.alerts.listAlerts({ showDismissed: false });
-    state.results = {
-      data: result.data.map((a) => a.toJSON()),
-      totalCount: result.totalCount,
-    };
+    state.results = await client.alerts.listAlerts({ showDismissed: false });
   });
   setTimeout(rotate, props.rotateInterval);
 });

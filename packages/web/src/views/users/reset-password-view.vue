@@ -78,7 +78,7 @@ async function onRequestEmail(username: string): Promise<void> {
 
   await oops(
     async () => {
-      await client.users.requestPasswordResetToken(username);
+      await client.auth.requestPasswordResetToken(username);
     },
     {
       [404]: () => {
@@ -96,7 +96,7 @@ async function onResetPassword(newPassword: string): Promise<void> {
 
   await oops(
     async () => {
-      const succeeded = await client.users.resetPasswordWithToken(
+      const succeeded = await client.auth.resetPasswordWithToken(
         params.value.username,
         params.value.token,
         newPassword,
@@ -122,7 +122,7 @@ onMounted(async () => {
     async () => {
       if (!params.value.hasToken) return;
 
-      const tokenStatus = await client.users.validatePasswordResetToken(
+      const tokenStatus = await client.auth.validatePasswordResetToken(
         params.value.username,
         params.value.token,
       );

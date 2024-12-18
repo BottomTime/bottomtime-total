@@ -81,9 +81,7 @@ async function fetchUser(): Promise<void> {
   await oops(
     async () => {
       if (!isAuthorized.value) return;
-
-      const result = await client.users.getUser(username);
-      state.currentUser = result.toJSON();
+      state.currentUser = await client.userAccounts.getUser(username);
     },
     {
       404: () => {

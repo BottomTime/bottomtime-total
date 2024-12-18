@@ -8,12 +8,11 @@
 </template>
 
 <script setup lang="ts">
-import { DiveSiteDTO, GPSCoordinates, GpsCoordinates } from '@bottomtime/api';
+import { DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
 
 import { v7 as uuid } from 'uuid';
 import { onBeforeMount, ref, watch } from 'vue';
 
-import { Config } from '../../config';
 import { useGoogle } from '../../google-loader';
 
 type GoogleMapProps = {
@@ -170,7 +169,7 @@ function onMapClick(event: globalThis.google.maps.MapMouseEvent) {
   }
 }
 
-function moveCenter(newCenter: NonNullable<GPSCoordinates>) {
+function moveCenter(newCenter: NonNullable<GpsCoordinates>) {
   currentCenter.value = newCenter;
   map.setCenter(
     new globalThis.google.maps.LatLng(newCenter.lat, newCenter.lon),

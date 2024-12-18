@@ -149,18 +149,13 @@ onMounted(async () => {
   await oops(async () => {
     if (!currentUser.user) return;
 
-    const friendRequestsResults = await client.friends.listFriendRequests(
+    state.results = await client.friends.listFriendRequests(
       currentUser.user.username,
       {
         direction: FriendRequestDirection.Incoming,
         showAcknowledged: false,
       },
     );
-
-    state.results.data = friendRequestsResults.data.map((friend) =>
-      friend.toJSON(),
-    );
-    state.results.totalCount = friendRequestsResults.totalCount;
   });
 });
 
@@ -179,17 +174,15 @@ async function onConfirmAcceptRequest() {
 
   await oops(
     async () => {
-      if (!currentUser.user) return;
+      if (!currentUser.user || !state.currentRequest) return;
 
-      const request = client.friends.wrapFriendRequestDTO(
+      state.currentRequest = await client.friends.acceptFriendRequest(
         currentUser.user.username,
         state.currentRequest,
       );
 
-      await request.accept();
-
       const index = state.results.data.findIndex(
-        (r) => r.friendId === request.friend.id,
+        (r) => r.friendId === state.currentRequest?.friend.id,
       );
       if (index > -1) {
         state.results.data[index].accepted = true;
@@ -198,7 +191,8 @@ async function onConfirmAcceptRequest() {
       toasts.toast({
         id: 'friend-request-accepted',
         message: `You are now friends with ${
-          request.friend.name || request.friend.username
+          state.currentRequest.friend.name ||
+          state.currentRequest.friend.username
         }.`,
         type: ToastType.Success,
       });
@@ -248,15 +242,14 @@ async function onConfirmDeclineRequest() {
     async () => {
       if (!currentUser.user || !state.currentRequest) return;
 
-      const request = client.friends.wrapFriendRequestDTO(
+      state.currentRequest = await client.friends.declineFriendRequest(
         currentUser.user.username,
         state.currentRequest,
+        state.declineReason || undefined,
       );
 
-      await request.decline(state.declineReason);
-
       const index = state.results.data.findIndex(
-        (r) => r.friendId === request.friend.id,
+        (r) => r.friendId === state.currentRequest?.friend.id,
       );
       if (index > -1) {
         state.results.data[index].accepted = false;
@@ -266,7 +259,8 @@ async function onConfirmDeclineRequest() {
       toasts.toast({
         id: 'friend-request-declined',
         message: `You have successfully declined friend request from ${
-          request.friend.name || request.friend.username
+          state.currentRequest.friend.name ||
+          state.currentRequest.friend.username
         }.`,
         type: ToastType.Success,
       });
@@ -316,7 +310,7 @@ async function onSelectFriendRequest(request: FriendRequestDTO): Promise<void> {
 
   await oops(
     async () => {
-      state.currentProfile = await client.users.getProfile(
+      state.currentProfile = await client.userProfiles.getProfile(
         request.friend.username,
       );
     },

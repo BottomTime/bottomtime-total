@@ -239,11 +239,7 @@ async function refreshUsers(): Promise<void> {
 
   state.isLoading = true;
   await oops(async () => {
-    const response = await client.users.searchUsers(params);
-    state.results = {
-      data: response.data.map((u) => u.toJSON()),
-      totalCount: response.totalCount,
-    };
+    state.results = await client.userAccounts.searchUsers(params);
   });
   state.isLoading = false;
 }
@@ -254,8 +250,8 @@ async function onLoadMore(): Promise<void> {
 
   state.isLoadingMore = true;
   await oops(async () => {
-    const response = await client.users.searchUsers(params);
-    state.results.data.push(...response.data.map((u) => u.toJSON()));
+    const response = await client.userAccounts.searchUsers(params);
+    state.results.data.push(...response.data);
     state.results.totalCount = response.totalCount;
   });
   state.isLoadingMore = false;

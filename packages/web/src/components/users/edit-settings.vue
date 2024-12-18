@@ -264,14 +264,14 @@ async function onSave(): Promise<void> {
   isSaving.value = true;
 
   await oops(async () => {
-    const { settings } = client.users.wrapDTO(props.user);
+    const update: UserSettingsDTO = {
+      depthUnit: data.depthUnit,
+      pressureUnit: data.pressureUnit,
+      temperatureUnit: data.temperatureUnit,
+      weightUnit: data.weightUnit,
+    };
 
-    settings.depthUnit = data.depthUnit;
-    settings.pressureUnit = data.pressureUnit;
-    settings.temperatureUnit = data.temperatureUnit;
-    settings.weightUnit = data.weightUnit;
-
-    await settings.save();
+    await client.userProfiles.updateSettings(props.user, update);
     emit('save-settings', data);
     toasts.toast({
       id: 'settings-saved',

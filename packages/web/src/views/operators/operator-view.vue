@@ -156,8 +156,9 @@ onMounted(async () => {
     async () => {
       // If no key is present then we are on the "Create New Dive Shop" page. No need to fetch anything.
       if (operatorKey.value) {
-        const operator = await client.operators.getOperator(operatorKey.value);
-        state.currentOperator = operator.toJSON();
+        state.currentOperator = await client.operators.getOperator(
+          operatorKey.value,
+        );
       } else {
         state.currentOperator = {
           active: true,
@@ -190,9 +191,8 @@ onMounted(async () => {
 async function createNewOperator(
   update: CreateOrUpdateOperatorDTO,
 ): Promise<void> {
-  const operator = await client.operators.createOperator(update);
-  state.currentOperator = operator.toJSON();
-  await router.push(`/shops/${operator.slug}`);
+  state.currentOperator = await client.operators.createOperator(update);
+  await router.push(`/shops/${state.currentOperator.slug}`);
 
   toasts.toast({
     id: 'dive-operator-saved',
@@ -204,36 +204,25 @@ async function createNewOperator(
 async function updateExistingOperator(
   update: CreateOrUpdateOperatorDTO,
 ): Promise<void> {
-  const slugChanged = state.currentOperator?.slug !== update.slug;
-  const operator = client.operators.wrapDTO({
-    ...state.currentOperator,
-  });
+  if (!state.currentOperator) return;
 
-  operator.active = update.active;
-  operator.address = update.address;
-  operator.description = update.description;
-  operator.email = update.email;
-  operator.gps = update.gps;
-  operator.name = update.name;
-  operator.phone = update.phone;
-  operator.slug = update.slug || operator.slug;
-  operator.socials = update.socials;
-  operator.website = update.website;
-
-  await operator.save();
+  const slugChanged = state.currentOperator.slug !== update.slug;
+  state.currentOperator = await client.operators.updateOperator(
+    state.currentOperator.slug,
+    update,
+  );
 
   toasts.toast({
     id: 'dive-operator-saved',
     message: 'Dive operator saved successfully',
     type: ToastType.Success,
   });
-  state.currentOperator = operator.toJSON();
 
   if (slugChanged) {
     // Redirect to the new slug if it has changed.
-    await router.replace({
+    await router.push({
       name: 'dive-operator',
-      params: { shopKey: operator.slug },
+      params: { shopKey: state.currentOperator.slug },
     });
   }
 }
@@ -271,8 +260,9 @@ async function onConfirmDelete(): Promise<void> {
   state.isDeleting = true;
 
   await oops(async () => {
-    const operator = client.operators.wrapDTO(state.currentOperator!);
-    await operator.delete();
+    if (!state.currentOperator) return;
+
+    await client.operators.deleteOperator(state.currentOperator.slug);
 
     state.showConfirmDeleteDialog = false;
     state.isDeleting = false;

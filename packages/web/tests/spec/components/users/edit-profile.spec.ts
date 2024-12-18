@@ -6,7 +6,6 @@ import {
   LogBookSharing,
   TankDTO,
   UpdateProfileParamsDTO,
-  User,
   UserDTO,
 } from '@bottomtime/api';
 
@@ -143,9 +142,6 @@ describe('Edit Profile form', () => {
     const userData = getUser(UserWithFullProfile);
     opts.props = { profile: userData.profile };
     const wrapper = mount(EditProfile, opts);
-    const user = new User(fetcher, userData);
-    const spy = jest.spyOn(user.profile, 'save').mockResolvedValue();
-    jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(user.profile);
 
     const updatedProfile: UpdateProfileParamsDTO = {
       name: 'Updated Name',
@@ -159,6 +155,9 @@ describe('Edit Profile form', () => {
       ...userData.profile,
       ...updatedProfile,
     };
+    const spy = jest
+      .spyOn(client.userProfiles, 'updateProfile')
+      .mockResolvedValue(expected);
 
     await wrapper.get('input#name').setValue(updatedProfile.name);
     await wrapper.get('input#location').setValue(updatedProfile.location);
@@ -175,8 +174,10 @@ describe('Edit Profile form', () => {
     await wrapper.get('[data-testid="save-profile"]').trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalled();
-    expect(user.toJSON().profile).toEqual(expected);
+    expect(spy).toHaveBeenCalledWith(
+      UserWithFullProfile.profile,
+      updatedProfile,
+    );
     expect(wrapper.emitted('save-profile')).toEqual([[expected]]);
   });
 

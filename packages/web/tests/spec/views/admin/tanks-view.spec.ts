@@ -3,10 +3,8 @@ import {
   ApiList,
   Fetcher,
   ListTanksResponseSchema,
-  Tank,
   TankDTO,
   TankMaterial,
-  TankSchema,
 } from '@bottomtime/api';
 
 import {
@@ -73,10 +71,7 @@ describe('Admin Tanks View', () => {
       },
     };
 
-    listSpy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      data: tankData.data.map((tank) => new Tank(fetcher, tank)),
-      totalCount: tankData.totalCount,
-    });
+    listSpy = jest.spyOn(client.tanks, 'listTanks').mockResolvedValue(tankData);
   });
 
   it('will render the tanks list', async () => {
@@ -121,11 +116,9 @@ describe('Admin Tanks View', () => {
 
   it('will allow a user to delete a tank', async () => {
     const dto = tankData.data[3];
-    const tank = new Tank(fetcher, dto);
-    const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
-    jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
+    const spy = jest.spyOn(client.tanks, 'deleteTank').mockResolvedValue();
     jest.spyOn(client.tanks, 'listTanks').mockResolvedValue({
-      data: [tank],
+      data: [dto],
       totalCount: 1,
     });
 
@@ -136,7 +129,7 @@ describe('Admin Tanks View', () => {
     await wrapper.get('[data-testid="dialog-confirm-button"]').trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(dto.id);
     expect(wrapper.find(`[data-testid="select-tank-${dto.id}"]`).exists()).toBe(
       false,
     );
@@ -147,9 +140,7 @@ describe('Admin Tanks View', () => {
 
   it('will allow a user to change their mind about deleting a tank', async () => {
     const dto = tankData.data[5];
-    const tank = new Tank(fetcher, dto);
-    const spy = jest.spyOn(tank, 'delete').mockResolvedValue();
-    jest.spyOn(client.tanks, 'wrapDTO').mockReturnValue(tank);
+    const spy = jest.spyOn(client.tanks, 'deleteTank').mockResolvedValue();
 
     const wrapper = mount(AdminTanksView, opts);
     await flushPromises();
@@ -177,9 +168,7 @@ describe('Admin Tanks View', () => {
       material: TankMaterial.Aluminum,
     };
 
-    const spy = jest
-      .spyOn(client.tanks, 'createTank')
-      .mockResolvedValue(new Tank(fetcher, data));
+    const spy = jest.spyOn(client.tanks, 'createTank').mockResolvedValue(data);
 
     const wrapper = mount(AdminTanksView, opts);
     await flushPromises();
@@ -213,14 +202,7 @@ describe('Admin Tanks View', () => {
       workingPressure,
       material: TankMaterial.Steel,
     };
-    const tank = new Tank(fetcher, expected);
-    const spy = jest.spyOn(tank, 'save').mockResolvedValue();
-    let savedDTO: TankDTO | undefined;
-
-    jest.spyOn(client.tanks, 'wrapDTO').mockImplementation((dto) => {
-      savedDTO = TankSchema.parse(dto);
-      return tank;
-    });
+    const spy = jest.spyOn(client.tanks, 'updateTank').mockResolvedValue();
 
     const tankSelector = `[data-testid="select-tank-${dto.id}"]`;
 
@@ -236,8 +218,7 @@ describe('Admin Tanks View', () => {
     await flushPromises();
 
     expect(wrapper.find(NameInput).exists()).toBe(false);
-    expect(spy).toHaveBeenCalled();
-    expect(savedDTO).toEqual(expected);
+    expect(spy).toHaveBeenCalledWith(expected);
 
     expect(wrapper.find(tankSelector).text()).toBe(name);
   });

@@ -455,11 +455,11 @@ async function createSite(): Promise<void> {
     message: 'Dive site was successfully created',
     type: ToastType.Success,
   });
-  emit('site-updated', newSite.toJSON());
+  emit('site-updated', newSite);
 }
 
 async function updateSite(): Promise<void> {
-  const dto = client.diveSites.wrapDTO(props.site);
+  const dto: DiveSiteDTO = { ...props.site };
   dto.name = state.name;
   dto.description = state.description || undefined;
   dto.depth = typeof state.depth === 'string' ? undefined : state.depth;
@@ -472,14 +472,14 @@ async function updateSite(): Promise<void> {
     state.shoreAccess === '' ? undefined : state.shoreAccess === 'true';
   dto.waterType = state.waterType || undefined;
 
-  await dto.save();
+  await client.diveSites.updateSite(dto);
 
   toasts.toast({
     id: 'site-updated',
     message: 'Dive site was successfully updated',
     type: ToastType.Success,
   });
-  emit('site-updated', dto.toJSON());
+  emit('site-updated', dto);
 }
 
 async function onSave(): Promise<void> {

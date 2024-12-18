@@ -4,7 +4,7 @@ import {
   Fetcher,
   SearchDiveSitesResponseSchema,
 } from '@bottomtime/api';
-import { ApiClient, DiveSite } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -72,9 +72,7 @@ describe('Dive Sites View', () => {
     searchSpy = jest
       .spyOn(client.diveSites, 'searchDiveSites')
       .mockResolvedValue({
-        data: searchResults.data
-          .slice(0, 10)
-          .map((site) => new DiveSite(fetcher, site)),
+        data: searchResults.data.slice(0, 10),
         totalCount: searchResults.totalCount,
       });
   });
@@ -122,8 +120,7 @@ describe('Dive Sites View', () => {
     const expected = {
       data: searchResults.data
         .sort((a, b) => -a.name.localeCompare(b.name))
-        .slice(0, 10)
-        .map((site) => new DiveSite(fetcher, site)),
+        .slice(0, 10),
       totalCount: searchResults.totalCount,
     };
     const wrapper = mount(DiveSitesView, opts);
@@ -142,7 +139,7 @@ describe('Dive Sites View', () => {
     const items = wrapper.findAllComponents(DiveSitesListItem);
     expect(items).toHaveLength(expected.data.length);
     items.forEach((item, i) => {
-      expect(item.props('site')).toEqual(expected.data[i].toJSON());
+      expect(item.props('site')).toEqual(expected.data[i]);
     });
   });
 
@@ -151,9 +148,7 @@ describe('Dive Sites View', () => {
     await flushPromises();
 
     const expected = {
-      data: searchResults.data
-        .slice(10, 20)
-        .map((site) => new DiveSite(fetcher, site)),
+      data: searchResults.data.slice(10, 20),
       totalCount: searchResults.totalCount,
     };
     const searchSpy = jest
@@ -190,7 +185,7 @@ describe('Dive Sites View', () => {
     const items = wrapper.findAllComponents(DiveSitesListItem);
     expect(items).toHaveLength(expected.data.length);
     items.forEach((item, i) => {
-      expect(item.props('site')).toEqual(expected.data[i].toJSON());
+      expect(item.props('site')).toEqual(expected.data[i]);
     });
   });
 
@@ -199,9 +194,7 @@ describe('Dive Sites View', () => {
     await flushPromises();
 
     const results = {
-      data: searchResults.data
-        .slice(10, 20)
-        .map((site) => new DiveSite(fetcher, site)),
+      data: searchResults.data.slice(10, 20),
       totalCount: searchResults.totalCount,
     };
     const loadMoreSpy = jest
@@ -229,9 +222,7 @@ describe('Dive Sites View', () => {
     await flushPromises();
 
     const expected = {
-      data: searchResults.data
-        .slice(10, 20)
-        .map((site) => new DiveSite(fetcher, site)),
+      data: searchResults.data.slice(10, 20),
       totalCount: searchResults.totalCount,
     };
     const loadMoreSpy = jest

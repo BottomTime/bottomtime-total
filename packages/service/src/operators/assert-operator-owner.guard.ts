@@ -1,4 +1,4 @@
-import { User, UserRole } from '@bottomtime/api';
+import { UserRole } from '@bottomtime/api';
 
 import {
   CanActivate,
@@ -9,6 +9,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
+import { User } from '../users';
 import { Operator } from './operator';
 
 @Injectable()

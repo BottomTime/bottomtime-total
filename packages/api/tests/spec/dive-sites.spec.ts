@@ -1,11 +1,11 @@
 import mockFetch from 'fetch-mock-jest';
 
-import { DiveSite } from '../../src/client';
 import { DiveSitesApiClient } from '../../src/client/dive-sites';
 import { Fetcher } from '../../src/client/fetcher';
 import {
   ApiList,
   CreateOrUpdateDiveSiteSchema,
+  DepthUnit,
   DiveSiteDTO,
   DiveSitesSortBy,
   SearchDiveSitesResponseSchema,
@@ -13,7 +13,10 @@ import {
   WaterType,
 } from '../../src/types';
 import SearchResults from '../fixtures/dive-sites-search-results.json';
-import { DiveSiteWithFullProperties } from '../fixtures/sites';
+import {
+  DiveSiteWithFullProperties,
+  DiveSiteWithMinimalProperties,
+} from '../fixtures/sites';
 
 describe('Dive Site API client', () => {
   let fetcher: Fetcher;
@@ -39,7 +42,7 @@ describe('Dive Site API client', () => {
 
     const result = await apiClient.getDiveSite(DiveSiteWithFullProperties.id);
 
-    expect(result.toJSON()).toEqual(DiveSiteWithFullProperties);
+    expect(result).toEqual(DiveSiteWithFullProperties);
     expect(mockFetch.done()).toBe(true);
   });
 
@@ -59,7 +62,7 @@ describe('Dive Site API client', () => {
     );
 
     const result = await apiClient.createDiveSite(options);
-    expect(result.toJSON()).toEqual(DiveSiteWithFullProperties);
+    expect(result).toEqual(DiveSiteWithFullProperties);
     expect(mockFetch.done()).toBe(true);
   });
 
@@ -83,7 +86,6 @@ describe('Dive Site API client', () => {
           radius: '250',
         },
       },
-      // '/api/diveSites?creator=bob&limit=200&query=Puget+Sound&skip=100&sortBy=rating&sortOrder=desc&waterType=salt&freeToDive=true&shoreAccess=true&difficulty=1%2C3&rating=3.5%2C5&location=47.6%2C-122.3&radius=250',
       {
         status: 200,
         body: searchResults,
@@ -115,10 +117,7 @@ describe('Dive Site API client', () => {
 
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(searchResults.totalCount);
-    expect(result.data).toHaveLength(searchResults.data.length);
-    expect(result.data.map((site: DiveSite) => site.toJSON())).toEqual(
-      searchResults.data,
-    );
+    expect(result.data).toEqual(searchResults.data);
   });
 
   it('will perform a search with minimal options', async () => {
@@ -129,14 +128,57 @@ describe('Dive Site API client', () => {
     expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(searchResults.totalCount);
     expect(result.data).toHaveLength(searchResults.data.length);
-    expect(result.data.map((site: DiveSite) => site.toJSON())).toEqual(
-      searchResults.data,
-    );
+    expect(result.data).toEqual(searchResults.data);
   });
 
-  it('will wrap a DTO in a DiveSite object', () => {
-    const obj = apiClient.wrapDTO(DiveSiteWithFullProperties);
-    expect(obj).toBeInstanceOf(DiveSite);
-    expect(obj.id).toBe(DiveSiteWithFullProperties.id);
+  it('will save changes to a dive site', async () => {
+    const options: DiveSiteDTO = {
+      ...DiveSiteWithMinimalProperties,
+      name: 'new name',
+      description: 'new description',
+      depth: { depth: 10, unit: DepthUnit.Meters },
+      location: 'new location',
+      directions: 'new directions',
+      gps: { lat: 0, lon: 0 },
+      freeToDive: true,
+      shoreAccess: true,
+      waterType: WaterType.Mixed,
+    };
+    mockFetch.put(
+      {
+        url: `/api/diveSites/${DiveSiteWithMinimalProperties.id}`,
+        body: {
+          name: options.name,
+          description: options.description,
+          depth: options.depth,
+          location: options.location,
+          directions: options.directions,
+          gps: options.gps,
+          freeToDive: options.freeToDive,
+          shoreAccess: options.shoreAccess,
+          waterType: options.waterType,
+        },
+      },
+      {
+        status: 200,
+        body: {
+          ...DiveSiteWithMinimalProperties,
+          name: 'new name',
+          description: 'new description',
+          depth: { depth: 10, unit: DepthUnit.Meters },
+          location: 'new location',
+          directions: 'new directions',
+          gps: { lat: 0, lon: 0 },
+          freeToDive: true,
+          shoreAccess: true,
+          waterType: WaterType.Mixed,
+        },
+      },
+    );
+
+    await apiClient.updateSite(options);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(options.updatedOn!.valueOf()).toBeCloseTo(Date.now(), -3);
   });
 });

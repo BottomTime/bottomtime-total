@@ -1,3 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Nav Link component will render a link 1`] = `"<a href="/login" aria-label="Login">Click to Login</a>"`;
+exports[`Nav Link component will render an external link 1`] = `"<a href="https://somewesite.com/" aria-label="External Site">W00T!</a>"`;
+
+exports[`Nav Link component will render an internal link 1`] = `"<a href="/login" class="" aria-label="Login">Click to Login</a>"`;

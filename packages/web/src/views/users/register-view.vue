@@ -54,7 +54,7 @@ const showConfirmLogout = ref(false);
 
 async function onLogout() {
   await oops(async () => {
-    await client.users.logout();
+    await client.auth.logout();
     currentUser.user = null;
   });
 }

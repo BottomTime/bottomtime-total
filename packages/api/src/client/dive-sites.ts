@@ -1,7 +1,8 @@
-import { DiveSite } from '.';
 import {
   ApiList,
   CreateOrUpdateDiveSiteDTO,
+  CreateOrUpdateDiveSiteSchema,
+  DiveSiteDTO,
   DiveSiteSchema,
   SearchDiveSitesParamsDTO,
   SearchDiveSitesResponseSchema,
@@ -11,22 +12,22 @@ import { Fetcher } from './fetcher';
 export class DiveSitesApiClient {
   constructor(private readonly apiClient: Fetcher) {}
 
-  async createDiveSite(site: CreateOrUpdateDiveSiteDTO): Promise<DiveSite> {
+  async createDiveSite(site: CreateOrUpdateDiveSiteDTO): Promise<DiveSiteDTO> {
     const { data } = await this.apiClient.post(
       '/api/diveSites',
       site,
       DiveSiteSchema,
     );
-    return new DiveSite(this.apiClient, data);
+    return data;
   }
 
-  async getDiveSite(id: string): Promise<DiveSite> {
+  async getDiveSite(id: string): Promise<DiveSiteDTO> {
     const { data } = await this.apiClient.get(
       `/api/diveSites/${id}`,
       undefined,
       DiveSiteSchema,
     );
-    return new DiveSite(this.apiClient, data);
+    return data;
   }
 
   searchQueryString(
@@ -68,20 +69,19 @@ export class DiveSitesApiClient {
 
   async searchDiveSites(
     query: SearchDiveSitesParamsDTO = {},
-  ): Promise<ApiList<DiveSite>> {
-    const { data: result } = await this.apiClient.get(
+  ): Promise<ApiList<DiveSiteDTO>> {
+    const { data: results } = await this.apiClient.get(
       '/api/diveSites',
       this.searchQueryString(query),
       SearchDiveSitesResponseSchema,
     );
 
-    return {
-      data: result.data.map((site) => new DiveSite(this.apiClient, site)),
-      totalCount: result.totalCount,
-    };
+    return results;
   }
 
-  wrapDTO(dto: unknown): DiveSite {
-    return new DiveSite(this.apiClient, DiveSiteSchema.parse(dto));
+  async updateSite(site: DiveSiteDTO): Promise<void> {
+    const params = CreateOrUpdateDiveSiteSchema.parse(site);
+    await this.apiClient.put(`/api/diveSites/${site.id}`, params);
+    site.updatedOn = new Date();
   }
 }

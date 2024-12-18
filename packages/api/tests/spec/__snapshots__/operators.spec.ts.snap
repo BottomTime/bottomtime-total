@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Operators API client will allow a user to upload a new logo 1`] = `"cac7bb0ed0a07e3fed4c0977b8ca87fc"`;
+
 exports[`Operators API client will perform a search with search parameters 1`] = `
 [
   [

@@ -1,5 +1,5 @@
 import { Fetcher, UserDTO } from '@bottomtime/api';
-import { ApiClient, User } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -72,9 +72,12 @@ describe('Username and Email component', () => {
   it('will allow editing username', async () => {
     const username = 'new.user123';
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(fetcher, user);
-    const spy = jest.spyOn(userObject, 'changeUsername').mockResolvedValue();
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObject);
+    const spy = jest
+      .spyOn(client.userAccounts, 'changeUsername')
+      .mockResolvedValue({
+        ...user,
+        username,
+      });
 
     expect(wrapper.get(UsernameValue).text()).toBe(user.username);
     await wrapper.get(EditUsername).trigger('click');
@@ -84,7 +87,7 @@ describe('Username and Email component', () => {
     await wrapper.get(SaveUsername).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(username);
+    expect(spy).toHaveBeenCalledWith(user, username);
     expect(wrapper.emitted('change-username')).toEqual([[username]]);
     expect(wrapper.find(UsernameInput).exists()).toBe(false);
     expect(wrapper.get(UsernameValue).isVisible()).toBe(true);
@@ -92,7 +95,7 @@ describe('Username and Email component', () => {
 
   it('will fail validation if username is not entered', async () => {
     const wrapper = mount(UsernameAndEmail, opts);
-    const spy = jest.spyOn(client.users, 'wrapDTO');
+    const spy = jest.spyOn(client.userAccounts, 'changeUsername');
 
     await wrapper.get(EditUsername).trigger('click');
     await wrapper.get(UsernameInput).setValue('');
@@ -106,7 +109,7 @@ describe('Username and Email component', () => {
 
   it('will fail validation if username is invalid', async () => {
     const wrapper = mount(UsernameAndEmail, opts);
-    const spy = jest.spyOn(client.users, 'wrapDTO');
+    const spy = jest.spyOn(client.userAccounts, 'changeUsername');
 
     await wrapper.get(EditUsername).trigger('click');
     await wrapper.get(UsernameInput).setValue('nope!!');
@@ -140,16 +143,16 @@ describe('Username and Email component', () => {
     const username = 'new.user123';
     const message = 'Username is already taken';
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(fetcher, user);
-    const spy = jest.spyOn(userObject, 'changeUsername').mockRejectedValue(
-      createHttpError({
-        status: 409,
-        message,
-        path: '/api/users/',
-        method: 'POST',
-      }),
-    );
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObject);
+    const spy = jest
+      .spyOn(client.userAccounts, 'changeUsername')
+      .mockRejectedValue(
+        createHttpError({
+          status: 409,
+          message,
+          path: '/api/users/',
+          method: 'POST',
+        }),
+      );
     const toasts = useToasts(pinia);
 
     await wrapper.get(EditUsername).trigger('click');
@@ -157,7 +160,7 @@ describe('Username and Email component', () => {
     await wrapper.get(SaveUsername).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(username);
+    expect(spy).toHaveBeenCalledWith(user, username);
     expect(wrapper.find(UsernameInput).isVisible()).toBe(true);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].message).toBe(
@@ -169,9 +172,13 @@ describe('Username and Email component', () => {
   it('will allow editing email', async () => {
     const email = 'new_email@whodis.org';
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(fetcher, user);
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObject);
-    const spy = jest.spyOn(userObject, 'changeEmail').mockResolvedValue();
+    const spy = jest
+      .spyOn(client.userAccounts, 'changeEmail')
+      .mockResolvedValue({
+        ...user,
+        email,
+        emailVerified: false,
+      });
 
     expect(wrapper.get(EmailValue).text()).toBe(user.email);
     await wrapper.get(EditEmail).trigger('click');
@@ -181,7 +188,7 @@ describe('Username and Email component', () => {
     await wrapper.get(SaveEmail).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(email);
+    expect(spy).toHaveBeenCalledWith(user, email);
     expect(wrapper.emitted('change-email')).toEqual([[email]]);
     expect(wrapper.find(EmailInput).exists()).toBe(false);
     expect(wrapper.get(EmailValue).isVisible()).toBe(true);
@@ -189,7 +196,7 @@ describe('Username and Email component', () => {
 
   it('will fail validation if email is not entered', async () => {
     const wrapper = mount(UsernameAndEmail, opts);
-    const spy = jest.spyOn(client.users, 'wrapDTO');
+    const spy = jest.spyOn(client.userAccounts, 'changeEmail');
 
     await wrapper.get(EditEmail).trigger('click');
     await wrapper.get(EmailInput).setValue('');
@@ -205,7 +212,7 @@ describe('Username and Email component', () => {
 
   it('will fail validation if email is invalid', async () => {
     const wrapper = mount(UsernameAndEmail, opts);
-    const spy = jest.spyOn(client.users, 'wrapDTO');
+    const spy = jest.spyOn(client.userAccounts, 'changeEmail');
 
     await wrapper.get(EditEmail).trigger('click');
     await wrapper.get(EmailInput).setValue('nope');
@@ -239,16 +246,16 @@ describe('Username and Email component', () => {
     const email = 'greg@greg.net';
     const message = 'Email is already taken';
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(fetcher, user);
-    const spy = jest.spyOn(userObject, 'changeEmail').mockRejectedValue(
-      createHttpError({
-        status: 409,
-        message,
-        path: '/api/users/',
-        method: 'POST',
-      }),
-    );
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObject);
+    const spy = jest
+      .spyOn(client.userAccounts, 'changeEmail')
+      .mockRejectedValue(
+        createHttpError({
+          status: 409,
+          message,
+          path: '/api/users/',
+          method: 'POST',
+        }),
+      );
     const toasts = useToasts(pinia);
 
     await wrapper.get(EditEmail).trigger('click');
@@ -256,7 +263,7 @@ describe('Username and Email component', () => {
     await wrapper.get(SaveEmail).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(email);
+    expect(spy).toHaveBeenCalledWith(user, email);
     expect(wrapper.find(EmailInput).isVisible()).toBe(true);
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].message).toBe(
@@ -282,16 +289,14 @@ describe('Username and Email component', () => {
   it('will send a verification email upon request', async () => {
     user.emailVerified = false;
     const wrapper = mount(UsernameAndEmail, opts);
-    const userObject = new User(fetcher, user);
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObject);
     const spy = jest
-      .spyOn(userObject, 'requestEmailVerification')
+      .spyOn(client.userAccounts, 'requestEmailVerification')
       .mockResolvedValue();
 
     await wrapper.get(SendVerificationEmail).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(user.username);
     expect(wrapper.find(SendVerificationEmail).exists()).toBe(false);
     expect(wrapper.get(EmailVerificationStatus).html()).toMatchSnapshot();
   });

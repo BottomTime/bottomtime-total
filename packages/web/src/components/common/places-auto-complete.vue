@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { GPSCoordinates } from '@bottomtime/api';
+import { GpsCoordinates } from '@bottomtime/api';
 
 import { onMounted, ref } from 'vue';
 
@@ -22,7 +22,7 @@ import FormTextBox from './form-text-box.vue';
 
 interface PlacesAutoCompleteProps {
   autofocus?: boolean;
-  center?: GPSCoordinates;
+  center?: GpsCoordinates;
   controlId: string;
   invalid?: boolean;
   placeholder?: string;
@@ -34,7 +34,7 @@ const input = ref<InstanceType<typeof FormTextBox> | null>(null);
 const value = defineModel<string>({ default: '' });
 const props = defineProps<PlacesAutoCompleteProps>();
 const emit = defineEmits<{
-  (e: 'place-changed', place: NonNullable<GPSCoordinates>): void;
+  (e: 'place-changed', place: NonNullable<GpsCoordinates>): void;
 }>();
 const autocomplete = ref<globalThis.google.maps.places.Autocomplete | null>(
   null,

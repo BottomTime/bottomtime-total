@@ -1,5 +1,5 @@
 import { Fetcher, UserDTO } from '@bottomtime/api';
-import { ApiClient, User } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -80,9 +80,9 @@ describe('Manage Password component', () => {
 
   it('will allow users to change their password', async () => {
     const wrapper = mount(ManagePassword, opts);
-    const userObj = new User(fetcher, user);
-    const spy = jest.spyOn(userObj, 'changePassword').mockResolvedValue(true);
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObj);
+    const spy = jest
+      .spyOn(client.auth, 'changePassword')
+      .mockResolvedValue({ succeeded: true, user });
 
     await wrapper.get(ChangePassword).trigger('click');
     await wrapper.get(OldPasswordInput).setValue(OldPassword);
@@ -91,16 +91,16 @@ describe('Manage Password component', () => {
     await wrapper.get(SavePassword).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(OldPassword, StrongPassword);
+    expect(spy).toHaveBeenCalledWith(user, OldPassword, StrongPassword);
     expect(wrapper.find(SavePassword).exists()).toBe(false);
     expect(wrapper.emitted('change-password')).toEqual([[]]);
   });
 
   it('will alert the user if their old password was incorrect', async () => {
     const wrapper = mount(ManagePassword, opts);
-    const userObj = new User(fetcher, user);
-    const spy = jest.spyOn(userObj, 'changePassword').mockResolvedValue(false);
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObj);
+    const spy = jest
+      .spyOn(client.auth, 'changePassword')
+      .mockResolvedValue({ succeeded: false, reason: 'Nope' });
     const toasts = useToasts(pinia);
 
     await wrapper.get(ChangePassword).trigger('click');
@@ -110,7 +110,7 @@ describe('Manage Password component', () => {
     await wrapper.get(SavePassword).trigger('click');
     await flushPromises();
 
-    expect(spy).toHaveBeenCalledWith(OldPassword, StrongPassword);
+    expect(spy).toHaveBeenCalledWith(user, OldPassword, StrongPassword);
     expect(wrapper.find(SavePassword).exists()).toBe(true);
     expect(wrapper.emitted('change-password')).toBeUndefined();
     expect(toasts.toasts).toHaveLength(1);
@@ -129,9 +129,9 @@ describe('Manage Password component', () => {
   it('will allow admins to reset a password', async () => {
     opts.props!.admin = true;
     const wrapper = mount(ManagePassword, opts);
-    const userObj = new User(fetcher, user);
-    const spy = jest.spyOn(userObj, 'resetPassword').mockResolvedValue();
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(userObj);
+    const spy = jest
+      .spyOn(client.auth, 'resetPassword')
+      .mockResolvedValue(user);
 
     await wrapper.get(ChangePassword).trigger('click');
     expect(wrapper.find(OldPasswordInput).exists()).toBe(false);
@@ -142,7 +142,7 @@ describe('Manage Password component', () => {
     await flushPromises();
 
     expect(wrapper.find(SavePassword).exists()).toBe(false);
-    expect(spy).toHaveBeenCalledWith(StrongPassword);
+    expect(spy).toHaveBeenCalledWith(user, StrongPassword);
     expect(wrapper.emitted('change-password')).toEqual([[]]);
   });
 });

@@ -20,12 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  CreateOrUpdateTankParamsSchema,
-  TankDTO,
-  TankMaterial,
-  UserRole,
-} from '@bottomtime/api';
+import { TankDTO, TankMaterial, UserRole } from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -101,8 +96,7 @@ onMounted(async () => {
     async () => {
       if (!isAuthorized.value || !tankId.value) return;
 
-      const tank = await client.tanks.getTank(tankId.value);
-      state.currentTank = tank.toJSON();
+      state.currentTank = await client.tanks.getTank(tankId.value);
     },
     {
       [404]: () => {
@@ -119,15 +113,11 @@ async function onSave(dto: TankDTO): Promise<void> {
 
   await oops(async () => {
     if (tankId.value) {
-      const tank = client.tanks.wrapDTO(dto);
-      await tank.save();
+      await client.tanks.updateTank(dto);
       state.currentTank = dto;
     } else {
-      const tank = await client.tanks.createTank(
-        CreateOrUpdateTankParamsSchema.parse(dto),
-      );
-      state.currentTank = tank.toJSON();
-      await router.push(`/admin/tanks/${tank.id}`);
+      state.currentTank = await client.tanks.createTank(dto);
+      await router.push(`/admin/tanks/${state.currentTank.id}`);
     }
 
     toasts.toast({

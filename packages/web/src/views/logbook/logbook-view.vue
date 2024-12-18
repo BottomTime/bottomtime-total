@@ -204,14 +204,10 @@ async function refresh(): Promise<void> {
 
   await oops(
     async () => {
-      const results = await client.logEntries.listLogEntries(
+      state.logEntries = await client.logEntries.listLogEntries(
         username.value,
         state.queryParams,
       );
-      state.logEntries = {
-        data: results.data.map((entry) => entry.toJSON()),
-        totalCount: results.totalCount,
-      };
     },
     {
       [401]: () => {
@@ -236,7 +232,9 @@ onMounted(async () => {
 
   if (currentUser.user) {
     await oops(async () => {
-      state.currentProfile = await client.users.getProfile(username.value);
+      state.currentProfile = await client.userProfiles.getProfile(
+        username.value,
+      );
     });
   }
 });
@@ -256,7 +254,7 @@ async function onLoadMore(): Promise<void> {
       options,
     );
 
-    state.logEntries.data.push(...results.data.map((entry) => entry.toJSON()));
+    state.logEntries.data.push(...results.data);
     state.logEntries.totalCount = results.totalCount;
   });
 
@@ -271,9 +269,10 @@ async function onSelectLogEntry(dto: LogEntryDTO): Promise<void> {
   await oops(
     async () => {
       if (!username.value) return;
-      const entry = await client.logEntries.getLogEntry(username.value, dto.id);
-
-      state.selectedEntry = entry.toJSON();
+      state.selectedEntry = await client.logEntries.getLogEntry(
+        username.value,
+        dto.id,
+      );
     },
     {
       [404]: () => {

@@ -1,6 +1,5 @@
 import {
   ApiClient,
-  DiveSite,
   DiveSiteDTO,
   Fetcher,
   SearchDiveSitesResponseSchema,
@@ -86,9 +85,7 @@ describe('RecentSitesList component', () => {
   it('will mount with recent sites', async () => {
     const spy = jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
-      .mockResolvedValue(
-        recentSites.map((site) => new DiveSite(fetcher, site)),
-      );
+      .mockResolvedValue(recentSites);
 
     const wrapper = mount(RecentSitesList, opts);
     await flushPromises();
@@ -106,9 +103,7 @@ describe('RecentSitesList component', () => {
   it('will render with current site listed at the top', async () => {
     const spy = jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
-      .mockResolvedValue(
-        recentSites.map((site) => new DiveSite(fetcher, site)),
-      );
+      .mockResolvedValue(recentSites);
 
     opts.props = {
       currentSite: extraSite,
@@ -135,9 +130,7 @@ describe('RecentSitesList component', () => {
   it('will re-emit select event when a site is selected', async () => {
     jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
-      .mockResolvedValue(
-        recentSites.map((site) => new DiveSite(fetcher, site)),
-      );
+      .mockResolvedValue(recentSites);
 
     const wrapper = mount(RecentSitesList, opts);
     await flushPromises();
@@ -152,9 +145,7 @@ describe('RecentSitesList component', () => {
   it('will highlight the indicated site when it is clicked', async () => {
     jest
       .spyOn(client.logEntries, 'getMostRecentDiveSites')
-      .mockResolvedValue(
-        recentSites.map((site) => new DiveSite(fetcher, site)),
-      );
+      .mockResolvedValue(recentSites);
 
     const wrapper = mount(RecentSitesList, opts);
     await flushPromises();

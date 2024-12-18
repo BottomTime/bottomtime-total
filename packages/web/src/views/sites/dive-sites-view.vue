@@ -143,9 +143,7 @@ const selectedSortOrder = ref(
 
 async function refresh(): Promise<void> {
   await oops(async () => {
-    const results = await client.diveSites.searchDiveSites(state.searchParams);
-    state.results.data = results.data.map((site) => site.toJSON());
-    state.results.totalCount = results.totalCount;
+    state.results = await client.diveSites.searchDiveSites(state.searchParams);
   });
 }
 
@@ -175,7 +173,7 @@ async function onLoadMore(): Promise<void> {
     };
     const newResults = await client.diveSites.searchDiveSites(params);
 
-    state.results.data.push(...newResults.data.map((site) => site.toJSON()));
+    state.results.data.push(...newResults.data);
     state.results.totalCount = newResults.totalCount;
   });
 

@@ -54,7 +54,7 @@ test.describe('Registration', () => {
     await page.getByTestId('register-submit').click();
     await page.waitForURL('**/welcome');
 
-    const user = await api.users.getUser(TestUser.username);
+    const user = await api.userAccounts.getUser(TestUser.username);
     expect(user.username).toBe(TestUser.username);
     expect(user.email).toBe(TestUser.email);
     expect(user.profile?.name).toBe(TestUser.profile!.name);
@@ -65,7 +65,7 @@ test.describe('Registration', () => {
     api,
     page,
   }) => {
-    await api.users.createUser({
+    await api.userAccounts.createUser({
       username: 'randy_randerson',
       email: 'randy-bobandy@microsoft.com',
     });
@@ -94,7 +94,7 @@ test.describe('Registration', () => {
   });
 
   test('will allow a user to log into their account', async ({ api, page }) => {
-    await api.users.createUser({
+    await api.userAccounts.createUser({
       username: TestUser.username,
       email: TestUser.email,
       password: TestPassword,
@@ -121,7 +121,7 @@ test.describe('Registration', () => {
     api,
     page,
   }) => {
-    await api.users.createUser({
+    await api.userAccounts.createUser({
       username: TestUser.username,
       email: TestUser.email,
       password: TestPassword,

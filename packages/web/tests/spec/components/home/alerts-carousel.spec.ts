@@ -4,7 +4,7 @@ import {
   Fetcher,
   ListAlertsResponseSchema,
 } from '@bottomtime/api';
-import { Alert, ApiClient } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -62,10 +62,9 @@ describe('Alerts Carousel component', () => {
   });
 
   it('will fetch alerts when component is mounted', async () => {
-    fetchSpy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValue({
-      data: alertData.data.map((dto) => new Alert(fetcher, dto)),
-      totalCount: alertData.totalCount,
-    });
+    fetchSpy = jest
+      .spyOn(client.alerts, 'listAlerts')
+      .mockResolvedValue(alertData);
     const wrapper = mount(AlertsCarousel, options);
     await flushPromises();
 
@@ -83,7 +82,7 @@ describe('Alerts Carousel component', () => {
 
   it('will render with a single alert', async () => {
     fetchSpy = jest.spyOn(client.alerts, 'listAlerts').mockResolvedValue({
-      data: alertData.data.slice(0, 1).map((dto) => new Alert(fetcher, dto)),
+      data: alertData.data.slice(0, 1),
       totalCount: alertData.totalCount,
     });
     const wrapper = mount(AlertsCarousel, options);

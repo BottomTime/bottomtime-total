@@ -6,7 +6,7 @@ import {
   UserDTO,
   UserRole,
 } from '@bottomtime/api';
-import { ApiClient, User } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -121,7 +121,7 @@ describe('Registration form', () => {
 
   it('will fail validation if username is invalid', async () => {
     jest
-      .spyOn(client.users, 'isUsernameOrEmailAvailable')
+      .spyOn(client.userAccounts, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(true);
     const wrapper = mount(RegisterForm, { global });
 
@@ -138,7 +138,7 @@ describe('Registration form', () => {
 
   it('will fail validation if username is taken', async () => {
     jest
-      .spyOn(client.users, 'isUsernameOrEmailAvailable')
+      .spyOn(client.userAccounts, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(false);
     const wrapper = mount(RegisterForm, { global });
 
@@ -153,7 +153,7 @@ describe('Registration form', () => {
 
   it('will fail validation if email is invalid', async () => {
     jest
-      .spyOn(client.users, 'isUsernameOrEmailAvailable')
+      .spyOn(client.userAccounts, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(true);
     const wrapper = mount(RegisterForm, { global });
 
@@ -170,7 +170,7 @@ describe('Registration form', () => {
 
   it('will fail validation if email is taken', async () => {
     jest
-      .spyOn(client.users, 'isUsernameOrEmailAvailable')
+      .spyOn(client.userAccounts, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(false);
     const wrapper = mount(RegisterForm, { global });
 
@@ -185,7 +185,7 @@ describe('Registration form', () => {
 
   it('will fail validation if password is too weak', async () => {
     jest
-      .spyOn(client.users, 'isUsernameOrEmailAvailable')
+      .spyOn(client.userAccounts, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(true);
     const wrapper = mount(RegisterForm, { global });
 
@@ -202,7 +202,7 @@ describe('Registration form', () => {
 
   it('will fail validation if passwords do not match', async () => {
     jest
-      .spyOn(client.users, 'isUsernameOrEmailAvailable')
+      .spyOn(client.userAccounts, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(true);
     const wrapper = mount(RegisterForm, { global });
 
@@ -227,10 +227,10 @@ describe('Registration form', () => {
       path: '/api/users',
     };
     jest
-      .spyOn(client.users, 'isUsernameOrEmailAvailable')
+      .spyOn(client.userAccounts, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(true);
     const spy = jest
-      .spyOn(client.users, 'createUser')
+      .spyOn(client.userAccounts, 'createUser')
       .mockRejectedValue(createHttpError(errorResponse));
 
     const wrapper = mount(RegisterForm, { global });
@@ -260,14 +260,15 @@ describe('Registration form', () => {
 
   it('will create a new user and sign them in', async () => {
     const password = 'StrongP@ssword123';
-    const user = new User(fetcher, NewUser);
     jest
-      .spyOn(client.users, 'isUsernameOrEmailAvailable')
+      .spyOn(client.userAccounts, 'isUsernameOrEmailAvailable')
       .mockResolvedValue(true);
     const createSpy = jest
-      .spyOn(client.users, 'createUser')
-      .mockResolvedValue(user);
-    const loginSpy = jest.spyOn(client.users, 'login').mockResolvedValue(user);
+      .spyOn(client.userAccounts, 'createUser')
+      .mockResolvedValue(NewUser);
+    const loginSpy = jest
+      .spyOn(client.auth, 'login')
+      .mockResolvedValue(NewUser);
 
     const wrapper = mount(RegisterForm, { global });
     const currentUser = useCurrentUser(pinia);

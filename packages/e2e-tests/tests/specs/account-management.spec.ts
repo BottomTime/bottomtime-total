@@ -36,7 +36,7 @@ const UserProfile: Partial<ProfileDTO> = {
 
 test.describe('Account and Profile Management', () => {
   test.beforeEach(async ({ api, auth }) => {
-    await api.users.createUser(TestUser);
+    await api.userAccounts.createUser(TestUser);
     await auth.login(TestUser.username, TestPassword);
   });
 
@@ -62,7 +62,7 @@ test.describe('Account and Profile Management', () => {
       UserProfile.name!,
     );
 
-    const user = await api.users.getUser(TestUser.username);
+    const user = await api.userAccounts.getUser(TestUser.username);
     expect(user.profile.bio).toBe(UserProfile.bio);
     expect(user.profile.experienceLevel).toBe(UserProfile.experienceLevel);
     expect(user.profile.logBookSharing).toBe(UserProfile.logBookSharing);
@@ -111,7 +111,7 @@ test.describe('Account and Profile Management', () => {
 
     await expect(page.getByTestId('toast-settings-saved')).toBeVisible();
 
-    const user = await api.users.getUser(TestUser.username);
+    const user = await api.userAccounts.getUser(TestUser.username);
     expect(user.settings.depthUnit).toBe(DepthUnit.Feet);
     expect(user.settings.pressureUnit).toBe(PressureUnit.PSI);
     expect(user.settings.temperatureUnit).toBe(TemperatureUnit.Fahrenheit);
@@ -137,8 +137,10 @@ test.describe('Account and Profile Management', () => {
     await page.getByTestId('btn-save-notifications').click();
     await page.waitForSelector('[data-testid="toast-notifications-saved"]');
 
-    const user = await api.users.getUser(TestUser.username);
-    const whitelists = await user.settings.getNotificationWhitelists();
+    const user = await api.userAccounts.getUser(TestUser.username);
+    const whitelists = await api.userProfiles.getNotificationWhitelists(
+      user.username,
+    );
     expect(whitelists).toEqual({
       email: [
         'user.*',
@@ -162,7 +164,7 @@ test.describe('Account and Profile Management', () => {
     await expect(page.getByTestId('toast-username-changed')).toBeVisible();
     await expect(page.getByTestId('username-value')).toHaveText(newUsername);
 
-    await api.users.getUser(newUsername);
+    await api.userAccounts.getUser(newUsername);
   });
 
   test('will allow users to change their email address', async ({
@@ -179,7 +181,7 @@ test.describe('Account and Profile Management', () => {
     await expect(page.getByTestId('toast-email-changed')).toBeVisible();
     await expect(page.getByTestId('email-value')).toHaveText(newEmail);
 
-    await api.users.getUser(newEmail);
+    await api.userAccounts.getUser(newEmail);
   });
 
   test('will allow users to change their password', async ({ api, page }) => {
@@ -194,7 +196,7 @@ test.describe('Account and Profile Management', () => {
 
     await expect(page.getByTestId('toast-password-changed')).toBeVisible();
 
-    await api.users.login(TestUser.username, newPassword);
+    await api.auth.login(TestUser.username, newPassword);
   });
 
   test('will allow user to reset a forgotten password', async ({
@@ -205,7 +207,7 @@ test.describe('Account and Profile Management', () => {
   }) => {
     const username = 'bubbles7';
     const newPassword = 'Sup3r__sTr0ng!!';
-    await api.users.createUser({
+    await api.userAccounts.createUser({
       username,
       email: 'bubbles@mail.org.com',
       password: 'N0pe!!3333333',
@@ -218,7 +220,8 @@ test.describe('Account and Profile Management', () => {
     await page.getByRole('link', { name: 'Recover them here' }).click();
     await page.waitForURL('**/resetPassword');
 
-    await page.getByLabel('Username or email:*').fill('Bubbles7');
+    await page.waitForSelector('[data-testid="username"]');
+    await page.getByTestId('username').fill('Bubbles7');
     await page.getByTestId('reset-password-submit').click();
     await expect(page.getByTestId('email-sent-message')).toBeVisible();
 

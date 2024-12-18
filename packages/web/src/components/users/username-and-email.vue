@@ -306,8 +306,7 @@ async function onConfirmChangeUsername() {
   state.isSavingUsername = true;
   await oops(
     async () => {
-      const user = client.users.wrapDTO(props.user);
-      await user.changeUsername(username.value);
+      await client.userAccounts.changeUsername(props.user, username.value);
       emit('change-username', username.value);
       toasts.toast({
         id: 'username-changed',
@@ -356,8 +355,7 @@ async function onConfirmChangeEmail(): Promise<void> {
 
   await oops(
     async () => {
-      const user = client.users.wrapDTO(props.user);
-      await user.changeEmail(email.value);
+      await client.userAccounts.changeEmail(props.user, email.value);
       emit('change-email', email.value);
       toasts.toast({
         id: 'email-changed',
@@ -393,8 +391,7 @@ async function onSendVerificationEmail(): Promise<void> {
   state.verificationEmail = VerificationEmailState.Sending;
 
   await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
-    await user.requestEmailVerification();
+    await client.userAccounts.requestEmailVerification(props.user.username);
     state.verificationEmail = VerificationEmailState.Sent;
   });
 

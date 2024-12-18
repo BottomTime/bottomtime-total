@@ -106,10 +106,9 @@ onMounted(async () => {
 
   await oops(async () => {
     if (typeof route.params.username !== 'string') return;
-    const recentSites = await client.logEntries.getMostRecentDiveSites(
+    state.recentSites = await client.logEntries.getMostRecentDiveSites(
       route.params.username,
     );
-    state.recentSites = recentSites.map((site) => site.toJSON());
   });
 
   state.isLoading = false;

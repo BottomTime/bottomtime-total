@@ -5,6 +5,7 @@ import {
   CreateOrUpdateTankParamsSchema,
   ListTanksResponseSchema,
   TankDTO,
+  TankMaterial,
 } from '../../src';
 import { Fetcher } from '../../src/client/fetcher';
 import { TanksApiClient } from '../../src/client/tanks';
@@ -37,8 +38,7 @@ describe('Tanks API client', () => {
 
       const newTank = await client.createTank(options, Username);
 
-      expect(newTank.toJSON()).toEqual(tanks.data[0]);
-      expect(newTank.owner).toBe(Username);
+      expect(newTank).toEqual(tanks.data[0]);
       expect(mockFetch.done()).toBe(true);
     });
 
@@ -50,8 +50,7 @@ describe('Tanks API client', () => {
 
       const tank = await client.getTank(tanks.data[1].id, Username);
 
-      expect(tank.toJSON()).toEqual(tanks.data[1]);
-      expect(tank.owner).toBe(Username);
+      expect(tank).toEqual(tanks.data[1]);
       expect(mockFetch.done()).toBe(true);
     });
 
@@ -67,11 +66,45 @@ describe('Tanks API client', () => {
       });
 
       result.data.forEach((tank, index) => {
-        const json = tank.toJSON();
-        expect(json).toEqual(tanks.data[index]);
-        expect(tank.owner).toBe(json.isSystem ? undefined : Username);
+        expect(tank).toEqual(tanks.data[index]);
       });
       expect(result.totalCount).toBe(tanks.totalCount);
+      expect(mockFetch.done()).toBe(true);
+    });
+
+    it('will save changes to a tank', async () => {
+      const update: TankDTO = {
+        ...tanks.data[2],
+        material: TankMaterial.Steel,
+        name: 'New Name',
+        volume: 12.7,
+        workingPressure: 87.2,
+      };
+      mockFetch.put(
+        {
+          url: `/api/users/${Username}/tanks/${update.id}`,
+          body: {
+            material: TankMaterial.Steel,
+            name: 'New Name',
+            volume: 12.7,
+            workingPressure: 87.2,
+          },
+        },
+        {
+          status: 200,
+          body: update,
+        },
+      );
+
+      await client.updateTank(update, Username);
+
+      expect(mockFetch.done()).toBe(true);
+    });
+
+    it('will delete a tank', async () => {
+      const id = 'dfed89b9-1117-4816-bdb9-330b101bee80';
+      mockFetch.delete(`/api/users/${Username}/tanks/${id}`, 204);
+      await client.deleteTank(id, Username);
       expect(mockFetch.done()).toBe(true);
     });
   });
@@ -92,8 +125,7 @@ describe('Tanks API client', () => {
 
       const newTank = await client.createTank(options);
 
-      expect(newTank.toJSON()).toEqual(tanks.data[3]);
-      expect(newTank.owner).toBeUndefined();
+      expect(newTank).toEqual(tanks.data[3]);
       expect(mockFetch.done()).toBe(true);
     });
 
@@ -105,8 +137,7 @@ describe('Tanks API client', () => {
 
       const tank = await client.getTank(tanks.data[4].id);
 
-      expect(tank.toJSON()).toEqual(tanks.data[4]);
-      expect(tank.owner).toBeUndefined();
+      expect(tank).toEqual(tanks.data[4]);
       expect(mockFetch.done()).toBe(true);
     });
 
@@ -123,10 +154,45 @@ describe('Tanks API client', () => {
       const result = await client.listTanks();
 
       result.data.forEach((tank, index) => {
-        expect(tank.toJSON()).toEqual(expected.data[index]);
-        expect(tank.owner).toBeUndefined();
+        expect(tank).toEqual(expected.data[index]);
       });
       expect(result.totalCount).toBe(tanks.totalCount);
+      expect(mockFetch.done()).toBe(true);
+    });
+
+    it('will save changes to a tank', async () => {
+      const update: TankDTO = {
+        ...tanks.data[2],
+        material: TankMaterial.Steel,
+        name: 'New Name',
+        volume: 12.7,
+        workingPressure: 87.2,
+      };
+      mockFetch.put(
+        {
+          url: `/api/admin/tanks/${update.id}`,
+          body: {
+            material: TankMaterial.Steel,
+            name: 'New Name',
+            volume: 12.7,
+            workingPressure: 87.2,
+          },
+        },
+        {
+          status: 200,
+          body: update,
+        },
+      );
+
+      await client.updateTank(update);
+
+      expect(mockFetch.done()).toBe(true);
+    });
+
+    it('will delete a tank', async () => {
+      const id = 'dfed89b9-1117-4816-bdb9-330b101bee80';
+      mockFetch.delete(`/api/admin/tanks/${id}`, 204);
+      await client.deleteTank(id);
       expect(mockFetch.done()).toBe(true);
     });
   });

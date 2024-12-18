@@ -7,7 +7,7 @@ const Password = 'R@lphage23134__';
 
 test.describe('Friends Management', () => {
   test.beforeEach(async ({ api, auth }) => {
-    await api.users.createUser({
+    await api.userAccounts.createUser({
       username: Username,
       password: Password,
     });
@@ -19,7 +19,7 @@ test.describe('Friends Management', () => {
     friends,
     page,
   }) => {
-    const { id: friendId } = await api.users.createUser({
+    const { id: friendId } = await api.userAccounts.createUser({
       username: 'Elroy_Carter',
       profile: {
         name: 'Elroy Carter',
@@ -46,7 +46,7 @@ test.describe('Friends Management', () => {
     page,
   }) => {
     const friendUsername = 'jimmy_T';
-    const { id: friendId } = await api.users.createUser({
+    const { id: friendId } = await api.userAccounts.createUser({
       username: friendUsername,
       profile: {
         name: 'Jimmy McJimmerson',
@@ -73,7 +73,7 @@ test.describe('Friends Management', () => {
   }) => {
     const friendUsername = 'bob1';
     const reason = 'Stranger danger!!';
-    const { id: friendId } = await api.users.createUser({
+    const { id: friendId } = await api.userAccounts.createUser({
       username: friendUsername,
       profile: {
         name: 'Bob McBobberson',
@@ -92,7 +92,7 @@ test.describe('Friends Management', () => {
     ]);
     expect(friendsData.data).toHaveLength(0);
     expect(friendRequests.data).toHaveLength(1);
-    expect(friendRequests.data[0].declineReason).toBe(reason);
+    expect(friendRequests.data[0].reason).toBe(reason);
   });
 
   test('will allow a user to cancel a friend request', async ({
@@ -100,7 +100,7 @@ test.describe('Friends Management', () => {
     friends,
     page,
   }) => {
-    const { id: friendId } = await api.users.createUser({
+    const { id: friendId } = await api.userAccounts.createUser({
       username: 'Jenn32',
       profile: {
         name: 'Jenny Boyd',
@@ -129,7 +129,7 @@ test.describe('Friends Management', () => {
     page,
   }) => {
     const friendUsername = 'Jenn32';
-    const { id: friendId } = await api.users.createUser({
+    const { id: friendId } = await api.userAccounts.createUser({
       username: friendUsername,
       profile: {
         name: 'Jenny Boyd',
@@ -139,7 +139,7 @@ test.describe('Friends Management', () => {
       Username,
       friendUsername,
     );
-    await request.accept();
+    await api.friends.acceptFriendRequest(Username, request);
 
     await friends.gotoFriends();
     await friends.unfriend(friendUsername);
@@ -155,7 +155,7 @@ test.describe('Friends Management', () => {
     page,
   }) => {
     const friendUsername = 'Jenn32';
-    await api.users.createUser({
+    await api.userAccounts.createUser({
       username: friendUsername,
       profile: {
         name: 'Jenny Boyd',
@@ -165,7 +165,7 @@ test.describe('Friends Management', () => {
       Username,
       friendUsername,
     );
-    await request.accept();
+    await api.friends.acceptFriendRequest(Username, request);
 
     await friends.gotoFriends();
     await friends.openFriendProfile(friendUsername);

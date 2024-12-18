@@ -9,11 +9,13 @@ import {
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
 import { Pinia, createPinia } from 'pinia';
+import { Router } from 'vue-router';
 
 import FormCheckbox from '../../../../src/components/common/form-checkbox.vue';
 import LogbookEntriesListItem from '../../../../src/components/logbook/logbook-entries-list-item.vue';
 import LogbookEntriesList from '../../../../src/components/logbook/logbook-entries-list.vue';
 import { useCurrentUser } from '../../../../src/store';
+import { createRouter } from '../../../fixtures/create-router';
 import TestData from '../../../fixtures/log-entries.json';
 import { BasicUser } from '../../../fixtures/users';
 
@@ -25,12 +27,14 @@ const SortOrderSelect = '[data-testid="entries-sort-order"]';
 
 describe('LogbookEntriesList component', () => {
   let entryData: ApiList<LogEntryDTO>;
+  let router: Router;
 
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof LogbookEntriesList>;
 
   beforeAll(() => {
+    router = createRouter();
     entryData = ListLogEntriesResponseSchema.parse(TestData);
   });
 
@@ -39,7 +43,7 @@ describe('LogbookEntriesList component', () => {
     currentUser = useCurrentUser(pinia);
     opts = {
       global: {
-        plugins: [pinia],
+        plugins: [pinia, router],
       },
     };
   });

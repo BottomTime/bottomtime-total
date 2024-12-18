@@ -20,15 +20,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { UuidRegex } from '../common';
 import { AssertAdmin, AssertAuth, CurrentUser, User } from '../users';
-import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
 import { Alert } from './alert';
 import { AlertsService } from './alerts.service';
 import { AssertTargetAlert, TargetAlert } from './assert-target-alert.guard';
 
 const AlertIdParamName = 'alertId';
-const AlertIdParam = `:${AlertIdParamName}`;
+const AlertIdParam = `:${AlertIdParamName}(${UuidRegex})`;
 
 @Controller('api/alerts')
 export class AlertsController {
@@ -144,7 +144,7 @@ export class AlertsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Get(AlertIdParam)
-  @UseGuards(ValidateIds(AlertIdParamName), AssertTargetAlert)
+  @UseGuards(AssertTargetAlert)
   async getAlert(@TargetAlert() alert: Alert): Promise<AlertDTO> {
     return alert.toJSON();
   }
@@ -262,7 +262,7 @@ export class AlertsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Put(AlertIdParam)
-  @UseGuards(ValidateIds(AlertIdParamName), AssertAdmin, AssertTargetAlert)
+  @UseGuards(AssertAdmin, AssertTargetAlert)
   async updateAlert(
     @TargetAlert() alert: Alert,
     @Body(new ZodValidator(CreateOrUpdateAlertParamsSchema))
@@ -319,7 +319,7 @@ export class AlertsController {
    */
   @Delete(AlertIdParam)
   @HttpCode(204)
-  @UseGuards(ValidateIds(AlertIdParamName), AssertAdmin, AssertTargetAlert)
+  @UseGuards(AssertAdmin, AssertTargetAlert)
   async deleteAlert(@TargetAlert() alert: Alert): Promise<void> {
     await alert.delete();
   }
@@ -358,7 +358,7 @@ export class AlertsController {
    *               $ref: "#/components/schemas/Error"
    */
   @Post(`${AlertIdParam}/dismiss`)
-  @UseGuards(ValidateIds(AlertIdParamName), AssertAuth, AssertTargetAlert)
+  @UseGuards(AssertAuth, AssertTargetAlert)
   @HttpCode(204)
   async dismissAlert(
     @CurrentUser() user: User,

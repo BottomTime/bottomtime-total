@@ -531,7 +531,6 @@
 <script lang="ts" setup>
 import {
   CreateOrUpdateOperatorDTO,
-  GPSCoordinates,
   GpsCoordinates,
   OperatorDTO,
   SlugRegex,
@@ -738,7 +737,7 @@ function onCancelChangeAddress() {
   state.showAddressDialog = false;
 }
 
-function onConfirmChangeAddress(address: string, gps: GPSCoordinates | null) {
+function onConfirmChangeAddress(address: string, gps: GpsCoordinates | null) {
   formData.address = address;
   formData.gps = gps ?? null;
   state.showAddressDialog = false;
@@ -793,8 +792,7 @@ async function onConfirmRequestVerification() {
   await oops(async () => {
     if (!props.operator) return;
 
-    const operator = client.operators.wrapDTO(props.operator);
-    await operator.requestVerification();
+    await client.operators.requestVerification(props.operator);
 
     emit('verification-requested', props.operator);
     state.showConfirmRequestVerificationDialog = false;
@@ -816,8 +814,8 @@ async function onConfirmVerify(): Promise<void> {
 
   await oops(async () => {
     if (!props.operator) return;
-    const operator = client.operators.wrapDTO(props.operator);
-    await operator.setVerified(true);
+
+    await client.operators.setVerified(props.operator, true);
     state.showConfirmVerifyDialog = false;
     emit('verified');
 
@@ -844,8 +842,8 @@ async function onConfirmRejectVerification(message?: string): Promise<void> {
 
   await oops(async () => {
     if (!props.operator) return;
-    const operator = client.operators.wrapDTO(props.operator);
-    await operator.setVerified(false, message);
+
+    await client.operators.setVerified(props.operator, false, message);
     state.showConfirmRejectDialog = false;
     emit('rejected', message);
 
@@ -876,9 +874,12 @@ async function onSaveLogo(file: File, coords: Coordinates): Promise<void> {
 
   await oops(async () => {
     if (!props.operator) return;
-    const operator = client.operators.wrapDTO(props.operator);
-    const logos = await operator.uploadLogo(file, coords);
 
+    const logos = await client.operators.uploadLogo(
+      props.operator,
+      file,
+      coords,
+    );
     state.logo = logos.root;
     emit('logo-changed', logos.root);
 
@@ -903,8 +904,9 @@ function onCancelDeleteLogo() {
 
 async function onConfirmDeleteLogo(): Promise<void> {
   await oops(async () => {
-    const operator = client.operators.wrapDTO(props.operator);
-    await operator.deleteLogo();
+    if (!props.operator) return;
+
+    await client.operators.deleteLogo(props.operator.slug);
 
     state.logo = '';
     emit('logo-changed', undefined);

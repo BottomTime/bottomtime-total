@@ -4,9 +4,10 @@ import {
   PressureUnit,
   TemperatureUnit,
   UserDTO,
+  UserSettingsDTO,
   WeightUnit,
 } from '@bottomtime/api';
-import { ApiClient, User } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 
 import { flushPromises, mount } from '@vue/test-utils';
 
@@ -83,6 +84,12 @@ describe('Edit Settings form', () => {
         weightUnit: WeightUnit.Pounds,
       },
     };
+    const update: UserSettingsDTO = {
+      depthUnit: DepthUnit.Meters,
+      pressureUnit: PressureUnit.Bar,
+      temperatureUnit: TemperatureUnit.Celsius,
+      weightUnit: WeightUnit.Kilograms,
+    };
     const wrapper = mount(EditSettings, {
       props: {
         user: userData,
@@ -95,9 +102,9 @@ describe('Edit Settings form', () => {
         stubs: { teleport: true },
       },
     });
-    const user = new User(fetcher, userData);
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
-    const spy = jest.spyOn(user.settings, 'save').mockResolvedValueOnce();
+    const spy = jest
+      .spyOn(client.userProfiles, 'updateSettings')
+      .mockResolvedValueOnce(userData);
 
     await wrapper.get('input#depth-meters').setValue(true);
     await wrapper.get('input#pressure-bar').setValue(true);
@@ -106,11 +113,7 @@ describe('Edit Settings form', () => {
     await wrapper.get('[data-testid="save-settings"]').trigger('click');
     await flushPromises();
 
-    expect(user.settings.depthUnit).toBe(DepthUnit.Meters);
-    expect(user.settings.pressureUnit).toBe(PressureUnit.Bar);
-    expect(user.settings.temperatureUnit).toBe(TemperatureUnit.Celsius);
-    expect(user.settings.weightUnit).toBe(WeightUnit.Kilograms);
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(userData, update);
 
     expect(wrapper.emitted('save-settings')).toEqual([
       [

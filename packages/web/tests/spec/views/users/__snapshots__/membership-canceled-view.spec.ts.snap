@@ -6,7 +6,7 @@ exports[`Membership Canceled View will render 1`] = `
   <!--v-if-->
 </div>
 <ul class="flex flex-row gap-5 font-bold text-link mb-4" data-testid="breadcrumbs">
-  <li><a href="/">Home</a></li>
+  <li><a href="/" class="">Home</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><a href="/account" class="capitalize">Account</a></li>
   <li><span class="mr-5"><i class="fas fa-angle-right"></i></span><span class="capitalize text-grey-800 dark:text-grey-200">Membership Canceled</span></li>
 </ul>
@@ -18,7 +18,7 @@ exports[`Membership Canceled View will render 1`] = `
       <p class="italic"> As a reminder, any data you have provided or uploaded using the features of your previous membership will be retained and you will still have access to it. However, you may not be able to edit, delete, or modify that data without the features of your previous membership. You will also keep all of the XP and badges you have earned while on your previous membership. </p>
       <p class="italic"> We hope you continue to enjoy using our platform and that you will consider re-instating your membership at a later time. ❤️ </p>
       <p class="flex flex-col gap-0.5 italic"><span>Cheers,</span><span>The Bottom Time Team</span></p>
-      <p class="flex justify-evenly"><a href="/">Return to home page</a><a href="/account">Return to your account page</a></p>
+      <p class="flex justify-evenly"><a href="/" class="">Return to home page</a><a href="/account" class="">Return to your account page</a></p>
     </div>
   </div>
 </div>"

@@ -1,4 +1,4 @@
-import { ApiClient, Fetcher, User, UserDTO } from '@bottomtime/api';
+import { ApiClient, Fetcher, UserDTO } from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -100,10 +100,8 @@ describe('Manage Account component', () => {
   });
 
   it('will load the OAuth connections when the component is mounted', async () => {
-    const user = new User(fetcher, userData);
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     jest
-      .spyOn(user, 'getOAuthProviders')
+      .spyOn(client.auth, 'getOAuthProviders')
       .mockResolvedValue(new Set(['github']));
 
     const wrapper = mount(ManageAccount, opts);
@@ -117,13 +115,11 @@ describe('Manage Account component', () => {
   });
 
   it('will allow users to unlink an OAuth account', async () => {
-    const user = new User(fetcher, userData);
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
     jest
-      .spyOn(user, 'getOAuthProviders')
+      .spyOn(client.auth, 'getOAuthProviders')
       .mockResolvedValue(new Set(['github']));
     const unlinkSpy = jest
-      .spyOn(user, 'unlinkOAuthProvider')
+      .spyOn(client.auth, 'unlinkOAuthProvider')
       .mockResolvedValue();
 
     const wrapper = mount(ManageAccount, opts);
@@ -132,7 +128,7 @@ describe('Manage Account component', () => {
     await wrapper.get('[data-testid="unlink-github"]').trigger('click');
     await flushPromises();
 
-    expect(unlinkSpy).toHaveBeenCalledWith('github');
+    expect(unlinkSpy).toHaveBeenCalledWith(BasicUser.username, 'github');
     expect(wrapper.find('[data-testid="unlink-github"]').exists()).toBe(false);
   });
 });

@@ -187,14 +187,13 @@ async function onConfirmToggleLockout(): Promise<void> {
   state.showConfirmToggleLockout = false;
 
   await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
-    await user.toggleAccountLock();
-    emit('account-lock-toggled', user.id);
+    const { isLockedOut } = await client.auth.toggleAccountLock(props.user);
+    emit('account-lock-toggled', props.user.id);
     toasts.toast({
       id: 'account-lock-toggled',
       type: ToastType.Success,
       message: `Account has successfully been ${
-        user.isLockedOut ? 'suspended' : 'reactivated'
+        isLockedOut ? 'suspended' : 'reactivated'
       }.`,
     });
   });
@@ -213,9 +212,8 @@ function onChangeRole() {
 async function onSaveRoleChange(): Promise<void> {
   state.isChangingRole = false;
   await oops(async () => {
-    const user = client.users.wrapDTO(props.user);
-    await user.changeRole(state.selectedRole);
-    emit('role-changed', user.id, state.selectedRole);
+    await client.auth.changeRole(props.user, state.selectedRole);
+    emit('role-changed', props.user.id, state.selectedRole);
     toasts.toast({
       id: 'role-changed',
       type: ToastType.Success,
