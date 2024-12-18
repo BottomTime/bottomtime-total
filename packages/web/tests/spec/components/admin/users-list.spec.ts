@@ -1,10 +1,11 @@
 import {
   ApiClient,
+  ApiList,
   Fetcher,
   SortOrder,
-  User,
   UserDTO,
   UserRole,
+  UserSchema,
   UsersSortBy,
 } from '@bottomtime/api';
 import { NotificationsFeature } from '@bottomtime/common';
@@ -20,7 +21,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
-import { ApiList, UserSchema } from '../../../../../api/src';
 import { ApiClientKey } from '../../../../src/api-client';
 import ManageUser from '../../../../src/components/admin/manage-user.vue';
 import UsersListItem from '../../../../src/components/admin/users-list-item.vue';
@@ -81,12 +81,10 @@ describe('Users List component', () => {
 
   it('will render list of users on the client side', async () => {
     const results = {
-      data: SearchResults.data
-        .slice(0, 10)
-        .map((u) => new User(fetcher, UserSchema.parse(u))),
-      totalCount: SearchResults.totalCount,
+      data: searchResults.data.slice(0, 10),
+      totalCount: searchResults.totalCount,
     };
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValue(results);
+    jest.spyOn(client.userAccounts, 'searchUsers').mockResolvedValue(results);
 
     const wrapper = mount(UsersList, opts);
     await flushPromises();
@@ -103,7 +101,7 @@ describe('Users List component', () => {
   });
 
   it('will indicate when there are no users to show', async () => {
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValue({
+    jest.spyOn(client.userAccounts, 'searchUsers').mockResolvedValue({
       data: [],
       totalCount: 0,
     });
@@ -117,12 +115,10 @@ describe('Users List component', () => {
 
   it('will allow the admin to filter results', async () => {
     const refreshResults = {
-      data: SearchResults.data
-        .slice(20, 25)
-        .map((u) => new User(fetcher, UserSchema.parse(u))),
+      data: searchResults.data.slice(20, 25),
       totalCount: 5,
     };
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValueOnce({
+    jest.spyOn(client.userAccounts, 'searchUsers').mockResolvedValueOnce({
       data: [],
       totalCount: 0,
     });
@@ -130,7 +126,7 @@ describe('Users List component', () => {
     await flushPromises();
 
     const spy = jest
-      .spyOn(client.users, 'searchUsers')
+      .spyOn(client.userAccounts, 'searchUsers')
       .mockResolvedValueOnce(refreshResults);
 
     await wrapper.find(SearchInput).setValue('test');
@@ -156,22 +152,18 @@ describe('Users List component', () => {
 
   it('will allow the admin to sort the results', async () => {
     const refreshResults = {
-      data: SearchResults.data
-        .slice(20, 25)
-        .map((u) => new User(fetcher, UserSchema.parse(u))),
+      data: searchResults.data.slice(20, 25),
       totalCount: 50,
     };
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValueOnce({
-      data: SearchResults.data
-        .slice(15, 20)
-        .map((u) => new User(fetcher, UserSchema.parse(u))),
+    jest.spyOn(client.userAccounts, 'searchUsers').mockResolvedValueOnce({
+      data: searchResults.data.slice(15, 20),
       totalCount: 50,
     });
     const wrapper = mount(UsersList, opts);
     await flushPromises();
 
     const spy = jest
-      .spyOn(client.users, 'searchUsers')
+      .spyOn(client.userAccounts, 'searchUsers')
       .mockResolvedValueOnce(refreshResults);
 
     await wrapper.get(SortOrderSelect).setValue('memberSince-desc');
@@ -192,23 +184,19 @@ describe('Users List component', () => {
 
   it('will allow the admin to load more results', async () => {
     const refreshResults = {
-      data: SearchResults.data
-        .slice(15, 30)
-        .map((u) => new User(fetcher, UserSchema.parse(u))),
+      data: searchResults.data.slice(15, 30),
       totalCount: 50,
     };
 
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValueOnce({
-      data: SearchResults.data
-        .slice(0, 15)
-        .map((u) => new User(fetcher, UserSchema.parse(u))),
+    jest.spyOn(client.userAccounts, 'searchUsers').mockResolvedValueOnce({
+      data: searchResults.data.slice(0, 15),
       totalCount: 50,
     });
     const wrapper = mount(UsersList, opts);
     await flushPromises();
 
     const spy = jest
-      .spyOn(client.users, 'searchUsers')
+      .spyOn(client.userAccounts, 'searchUsers')
       .mockResolvedValueOnce(refreshResults);
 
     await wrapper.get(LoadMore).trigger('click');
@@ -216,25 +204,22 @@ describe('Users List component', () => {
 
     expect(spy).toHaveBeenCalledWith({
       limit: 50,
-      skip: 15,
+      skip: 10,
       sortBy: UsersSortBy.Username,
       sortOrder: SortOrder.Ascending,
     });
 
     const results = await wrapper.findAllComponents(UsersListItem);
-    expect(results).toHaveLength(30);
+    expect(results).toHaveLength(10);
     results.forEach((result, index) => {
       expect(result.text()).toContain(SearchResults.data[index].username);
     });
   });
 
   it('will allow an admin to manage a user by clicking them in the list', async () => {
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValue({
-      data: SearchResults.data.map(
-        (u) => new User(fetcher, UserSchema.parse(u)),
-      ),
-      totalCount: SearchResults.totalCount,
-    });
+    jest
+      .spyOn(client.userAccounts, 'searchUsers')
+      .mockResolvedValue(searchResults);
     const wrapper = mount(UsersList, opts);
     await flushPromises();
 
@@ -254,12 +239,9 @@ describe('Users List component', () => {
     const newProfile = { name: 'Matty Gladstone', location: 'Las Vegas, NV' };
     const newSettings = { ...searchResults.data[8].settings };
 
-    jest.spyOn(client.users, 'searchUsers').mockResolvedValue({
-      data: SearchResults.data.map(
-        (u) => new User(fetcher, UserSchema.parse(u)),
-      ),
-      totalCount: SearchResults.totalCount,
-    });
+    jest
+      .spyOn(client.userAccounts, 'searchUsers')
+      .mockResolvedValue(searchResults);
     const wrapper = mount(UsersList, opts);
     await flushPromises();
 

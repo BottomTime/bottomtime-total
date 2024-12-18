@@ -377,7 +377,7 @@ describe('Friend requests view', () => {
       startedDiving: '1989',
     };
     const spy = jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue(profile);
 
     await wrapper
@@ -397,7 +397,7 @@ describe('Friend requests view', () => {
     await flushPromises();
 
     const request = friendRequestData.data[0];
-    const spy = jest.spyOn(client.users, 'getProfile').mockRejectedValue(
+    const spy = jest.spyOn(client.userProfiles, 'getProfile').mockRejectedValue(
       createHttpError({
         message: 'Could not find profile',
         method: 'GET',
@@ -423,7 +423,7 @@ describe('Friend requests view', () => {
 
     const request = friendRequestData.data[0];
     const spy = jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockRejectedValue(new Error('nope'));
 
     await wrapper

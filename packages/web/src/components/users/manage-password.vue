@@ -93,13 +93,13 @@ async function onConfirmChangePassword(
     if (props.admin) {
       await client.auth.resetPassword(props.user, newPassword);
     } else {
-      const success = await client.auth.changePassword(
+      const { succeeded } = await client.auth.changePassword(
         props.user,
         oldPassword ?? '',
         newPassword,
       );
 
-      if (!success) {
+      if (!succeeded) {
         toasts.toast({
           id: 'password-incorrect',
           message: 'Your old password was incorrect. Please try again.',

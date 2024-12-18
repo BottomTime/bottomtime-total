@@ -1,5 +1,5 @@
 import { Fetcher, UserDTO, UserRole } from '@bottomtime/api';
-import { ApiClient, User } from '@bottomtime/api';
+import { ApiClient } from '@bottomtime/api';
 import { NotificationsFeature } from '@bottomtime/common';
 
 import {
@@ -40,7 +40,6 @@ describe('Account View', () => {
   let pinia: Pinia;
   let currentUser: ReturnType<typeof useCurrentUser>;
   let opts: ComponentMountingOptions<typeof AdminUserView>;
-  let user: User;
   let getSpy: jest.SpyInstance;
 
   beforeAll(() => {
@@ -73,8 +72,9 @@ describe('Account View', () => {
       },
     };
 
-    user = new User(fetcher, { ...BasicUser });
-    getSpy = jest.spyOn(client.users, 'getUser').mockResolvedValue(user);
+    getSpy = jest
+      .spyOn(client.userAccounts, 'getUser')
+      .mockResolvedValue(BasicUser);
     await router.push(`/admin/users/${BasicUser.username}`);
   });
 
@@ -85,9 +85,7 @@ describe('Account View', () => {
     await flushPromises();
 
     expect(getSpy).toHaveBeenCalledWith(BasicUser.username);
-    expect(wrapper.getComponent(ManageUser).props('user')).toEqual(
-      user.toJSON(),
-    );
+    expect(wrapper.getComponent(ManageUser).props('user')).toEqual(BasicUser);
   });
 
   it('will display the login form if the user is not athenticated', async () => {
@@ -117,7 +115,7 @@ describe('Account View', () => {
   it('will display a not found message if the target user does not exist', async () => {
     currentUser.user = AdminUser;
     getSpy = jest
-      .spyOn(client.users, 'getUser')
+      .spyOn(client.userAccounts, 'getUser')
       .mockRejectedValue(createHttpError(404));
     const wrapper = mount(AdminUserView, opts);
     await flushPromises();
@@ -133,16 +131,14 @@ describe('Account View', () => {
     const newUsername = 'joe123';
     const newEmail = 'eviljoe@yahoo.com';
     currentUser.user = AdminUser;
-    getSpy = jest.spyOn(client.users, 'getUser').mockResolvedValue(
-      new User(fetcher, {
-        ...BasicUser,
-        emailVerified: true,
-        hasPassword: false,
-        isLockedOut: false,
-        profile: { ...BasicUser.profile },
-        settings: { ...BasicUser.settings },
-      }),
-    );
+    getSpy = jest.spyOn(client.userAccounts, 'getUser').mockResolvedValue({
+      ...BasicUser,
+      emailVerified: true,
+      hasPassword: false,
+      isLockedOut: false,
+      profile: { ...BasicUser.profile },
+      settings: { ...BasicUser.settings },
+    });
     const userId = BasicUser.id;
     const wrapper = mount(AdminUserView, opts);
     await flushPromises();

@@ -86,10 +86,12 @@ describe('Search friends form component', () => {
 
   it('will perform a search when the user types in the search box and presses enter', async () => {
     const wrapper = mount(SearchFriendsForm, opts);
-    const spy = jest.spyOn(client.users, 'searchProfiles').mockResolvedValue({
-      data: searchData.data.slice(0, 50),
-      totalCount: searchData.totalCount,
-    });
+    const spy = jest
+      .spyOn(client.userProfiles, 'searchProfiles')
+      .mockResolvedValue({
+        data: searchData.data.slice(0, 50),
+        totalCount: searchData.totalCount,
+      });
 
     const searchBox = wrapper.get(SearchBox);
     await searchBox.setValue('test');
@@ -108,10 +110,12 @@ describe('Search friends form component', () => {
 
   it('will perform a search when the user types in the search box and clicks the search button', async () => {
     const wrapper = mount(SearchFriendsForm, opts);
-    const spy = jest.spyOn(client.users, 'searchProfiles').mockResolvedValue({
-      data: searchData.data.slice(0, 50),
-      totalCount: searchData.totalCount,
-    });
+    const spy = jest
+      .spyOn(client.userProfiles, 'searchProfiles')
+      .mockResolvedValue({
+        data: searchData.data.slice(0, 50),
+        totalCount: searchData.totalCount,
+      });
 
     await wrapper.find(SearchBox).setValue('test');
     await wrapper.find('[data-testid="search-users-right"]').trigger('click');
@@ -130,7 +134,7 @@ describe('Search friends form component', () => {
   it('will request more results when the user clicks the Load More button', async () => {
     const wrapper = mount(SearchFriendsForm, opts);
     const spy = jest
-      .spyOn(client.users, 'searchProfiles')
+      .spyOn(client.userProfiles, 'searchProfiles')
       .mockResolvedValueOnce({
         data: searchData.data.slice(0, 50),
         totalCount: searchData.totalCount,
@@ -180,7 +184,7 @@ describe('Search friends form component', () => {
       friendId: friendo.userId,
     };
 
-    jest.spyOn(client.users, 'searchProfiles').mockResolvedValueOnce({
+    jest.spyOn(client.userProfiles, 'searchProfiles').mockResolvedValueOnce({
       data: searchData.data.slice(0, 50),
       totalCount: searchData.totalCount,
     });

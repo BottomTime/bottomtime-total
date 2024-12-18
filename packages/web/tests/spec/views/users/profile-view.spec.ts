@@ -7,7 +7,7 @@ import {
   LogBookSharing,
   ProfileDTO,
   TankDTO,
-  UserProfile,
+  UpdateProfileParamsDTO,
 } from '@bottomtime/api';
 
 import {
@@ -91,7 +91,7 @@ describe('Profile View', () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${UserWithFullProfile.username}`);
     const spy = jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue(UserWithFullProfile.profile);
 
     const wrapper = mount(ProfileView, opts);
@@ -108,7 +108,7 @@ describe('Profile View', () => {
     currentUser.user = BasicUser;
     await router.push('/profile');
     const spy = jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue(BasicUser.profile);
     jest.spyOn(client.tanks, 'listTanks').mockResolvedValue(EmptyTankResults);
 
@@ -144,7 +144,9 @@ describe('Profile View', () => {
   it('will fetch tank profiles if an admin is viewing the profile', async () => {
     currentUser.user = AdminUser;
     await router.push(`/profile/${BasicUser.username}`);
-    jest.spyOn(client.users, 'getProfile').mockResolvedValue(BasicUser.profile);
+    jest
+      .spyOn(client.userProfiles, 'getProfile')
+      .mockResolvedValue(BasicUser.profile);
     const spy = jest
       .spyOn(client.tanks, 'listTanks')
       .mockResolvedValue(tankData);
@@ -166,7 +168,7 @@ describe('Profile View', () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${UserWithFullProfile.username}`);
     jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue(UserWithFullProfile.profile);
     const spy = jest.spyOn(client.tanks, 'listTanks');
 
@@ -181,7 +183,7 @@ describe('Profile View', () => {
     currentUser.user = null;
     await router.push(`/profile/${UserWithFullProfile.username}`);
     const spy = jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue(UserWithFullProfile.profile);
 
     const wrapper = mount(ProfileView, opts);
@@ -195,7 +197,7 @@ describe('Profile View', () => {
 
   it('will show the login form if user is not authenticated', async () => {
     currentUser.user = null;
-    const spy = jest.spyOn(client.users, 'getProfile');
+    const spy = jest.spyOn(client.userProfiles, 'getProfile');
     const wrapper = mount(ProfileView, opts);
     await flushPromises();
     expect(spy).not.toHaveBeenCalled();
@@ -207,7 +209,7 @@ describe('Profile View', () => {
   it("will show the current user's profile if no username is in the path", async () => {
     currentUser.user = BasicUser;
     await router.push('/profile');
-    const spy = jest.spyOn(client.users, 'getProfile');
+    const spy = jest.spyOn(client.userProfiles, 'getProfile');
 
     const wrapper = mount(ProfileView, opts);
     await flushPromises();
@@ -225,7 +227,7 @@ describe('Profile View', () => {
     currentUser.user = BasicUser;
     await router.push(`/profile/${UserWithFullProfile.username}`);
     const spy = jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue(UserWithFullProfile.profile);
 
     const wrapper = mount(ProfileView, opts);
@@ -241,15 +243,15 @@ describe('Profile View', () => {
 
   it('will allow the user to modify their profile', async () => {
     currentUser.user = { ...BasicUser };
-    const newProfile: ProfileDTO = {
-      accountTier: AccountTier.Basic,
-      userId: BasicUser.id,
-      memberSince: BasicUser.memberSince,
-      username: BasicUser.username,
-      logBookSharing: LogBookSharing.FriendsOnly,
-      name: 'New Name',
+    const update: UpdateProfileParamsDTO = {
       bio: 'New Bio',
       location: 'London, UK',
+      logBookSharing: LogBookSharing.FriendsOnly,
+      name: 'New Name',
+    };
+    const newProfile: ProfileDTO = {
+      ...UserWithFullProfile.profile,
+      ...update,
     };
     await router.push('/profile');
     const wrapper = mount(ProfileView, opts);
@@ -262,9 +264,9 @@ describe('Profile View', () => {
       wrapper.find('[data-testid="require-auth-anonymous"]').exists(),
     ).toBe(false);
 
-    const profile = new UserProfile(fetcher, newProfile);
-    const saveSpy = jest.spyOn(profile, 'save').mockResolvedValue();
-    jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(profile);
+    const saveSpy = jest
+      .spyOn(client.userProfiles, 'updateProfile')
+      .mockResolvedValue(newProfile);
 
     const editProfile = wrapper.getComponent(EditProfile);
     await editProfile
@@ -277,26 +279,25 @@ describe('Profile View', () => {
     await editProfile.get('[data-testid="save-profile"]').trigger('click');
     await flushPromises();
 
-    expect(saveSpy).toHaveBeenCalled();
-    expect(profile.name).toBe(newProfile.name);
-    expect(profile.bio).toBe(newProfile.bio);
-    expect(profile.location).toBe(newProfile.location);
+    expect(saveSpy).toHaveBeenCalledWith(BasicUser.profile, update);
   });
 
   it("will allow admins to edit other user's profiles", async () => {
     currentUser.user = { ...AdminUser };
     jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue({ ...UserWithFullProfile.profile });
-    const newProfile: ProfileDTO = {
-      accountTier: AccountTier.Basic,
-      userId: UserWithFullProfile.id,
-      memberSince: UserWithFullProfile.memberSince,
-      username: UserWithFullProfile.username,
-      logBookSharing: LogBookSharing.Public,
-      name: 'New Name',
+    const update: UpdateProfileParamsDTO = {
       bio: 'New Bio',
+      experienceLevel: 'Experienced',
       location: 'London, UK',
+      logBookSharing: LogBookSharing.FriendsOnly,
+      name: 'New Name',
+      startedDiving: '2018-11-20',
+    };
+    const newProfile: ProfileDTO = {
+      ...UserWithFullProfile.profile,
+      ...update,
     };
     await router.push(`/profile/${UserWithFullProfile.username}`);
 
@@ -310,9 +311,9 @@ describe('Profile View', () => {
       wrapper.find('[data-testid="require-auth-anonymous"]').exists(),
     ).toBe(false);
 
-    const profile = new UserProfile(fetcher, newProfile);
-    const saveSpy = jest.spyOn(profile, 'save').mockResolvedValue();
-    jest.spyOn(client.users, 'wrapProfileDTO').mockReturnValue(profile);
+    const saveSpy = jest
+      .spyOn(client.userProfiles, 'updateProfile')
+      .mockResolvedValue(newProfile);
 
     const editProfile = wrapper.getComponent(EditProfile);
     await editProfile
@@ -325,9 +326,6 @@ describe('Profile View', () => {
     await editProfile.get('[data-testid="save-profile"]').trigger('click');
     await flushPromises();
 
-    expect(saveSpy).toHaveBeenCalled();
-    expect(profile.name).toBe(newProfile.name);
-    expect(profile.bio).toBe(newProfile.bio);
-    expect(profile.location).toBe(newProfile.location);
+    expect(saveSpy).toHaveBeenCalledWith(UserWithFullProfile.profile, update);
   });
 });

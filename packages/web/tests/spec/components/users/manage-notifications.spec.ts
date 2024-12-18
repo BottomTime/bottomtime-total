@@ -1,10 +1,4 @@
-import {
-  ApiClient,
-  Fetcher,
-  NotificationType,
-  User,
-  UserDTO,
-} from '@bottomtime/api';
+import { ApiClient, Fetcher, NotificationType, UserDTO } from '@bottomtime/api';
 import { EventKey } from '@bottomtime/common';
 
 import {
@@ -36,7 +30,6 @@ describe('ManageNotifications component', () => {
   let client: ApiClient;
 
   let userData: UserDTO;
-  let user: User;
   let pinia: Pinia;
   let toasts: ReturnType<typeof useToasts>;
   let opts: ComponentMountingOptions<typeof ManageNotifications>;
@@ -48,7 +41,6 @@ describe('ManageNotifications component', () => {
 
   beforeEach(() => {
     userData = BasicUser;
-    user = new User(fetcher, userData);
     pinia = createPinia();
     toasts = useToasts(pinia);
     opts = {
@@ -61,12 +53,11 @@ describe('ManageNotifications component', () => {
         stubs: { teleport: true },
       },
     };
-    jest.spyOn(client.users, 'wrapDTO').mockReturnValue(user);
   });
 
   it('will render an error message if notification settings cannot be retrieved', async () => {
     jest
-      .spyOn(user.settings, 'getNotificationWhitelists')
+      .spyOn(client.userProfiles, 'getNotificationWhitelists')
       .mockRejectedValue(new Error('nope'));
 
     const wrapper = mount(ManageNotifications, opts);
@@ -77,10 +68,12 @@ describe('ManageNotifications component', () => {
   });
 
   it('will render with all notifications enabled', async () => {
-    jest.spyOn(user.settings, 'getNotificationWhitelists').mockResolvedValue({
-      email: ['*'],
-      pushNotification: ['*'],
-    });
+    jest
+      .spyOn(client.userProfiles, 'getNotificationWhitelists')
+      .mockResolvedValue({
+        email: ['*'],
+        pushNotification: ['*'],
+      });
 
     const wrapper = mount(ManageNotifications, opts);
     await flushPromises();
@@ -95,10 +88,12 @@ describe('ManageNotifications component', () => {
   });
 
   it('will render with no notifications enabled', async () => {
-    jest.spyOn(user.settings, 'getNotificationWhitelists').mockResolvedValue({
-      email: [],
-      pushNotification: [],
-    });
+    jest
+      .spyOn(client.userProfiles, 'getNotificationWhitelists')
+      .mockResolvedValue({
+        email: [],
+        pushNotification: [],
+      });
 
     const wrapper = mount(ManageNotifications, opts);
     await flushPromises();
@@ -113,10 +108,12 @@ describe('ManageNotifications component', () => {
   });
 
   it('will render with some notifications enabled', async () => {
-    jest.spyOn(user.settings, 'getNotificationWhitelists').mockResolvedValue({
-      email: ['friendRequest.*', 'membership.canceled', 'user.*'],
-      pushNotification: ['friendRequest.accepted'],
-    });
+    jest
+      .spyOn(client.userProfiles, 'getNotificationWhitelists')
+      .mockResolvedValue({
+        email: ['friendRequest.*', 'membership.canceled', 'user.*'],
+        pushNotification: ['friendRequest.accepted'],
+      });
 
     const wrapper = mount(ManageNotifications, opts);
     await flushPromises();
@@ -215,12 +212,14 @@ describe('ManageNotifications component', () => {
   });
 
   it('will allow users to update their notification settings', async () => {
-    jest.spyOn(user.settings, 'getNotificationWhitelists').mockResolvedValue({
-      email: [],
-      pushNotification: ['*'],
-    });
+    jest
+      .spyOn(client.userProfiles, 'getNotificationWhitelists')
+      .mockResolvedValue({
+        email: [],
+        pushNotification: ['*'],
+      });
     const saveSpy = jest
-      .spyOn(user.settings, 'updateNotificationWhitelist')
+      .spyOn(client.userProfiles, 'updateNotificationWhitelist')
       .mockResolvedValue();
 
     const wrapper = mount(ManageNotifications, opts);
@@ -254,26 +253,33 @@ describe('ManageNotifications component', () => {
     await wrapper.get(SaveButton).trigger('click');
     await flushPromises();
 
-    expect(saveSpy).toHaveBeenCalledWith(NotificationType.Email, [
-      EventKey.MembershipPaymentFailed,
-      EventKey.FriendRequestAccepted,
-    ]);
-    expect(saveSpy).toHaveBeenCalledWith(NotificationType.PushNotification, [
-      'user.*',
-      'membership.*',
-      EventKey.FriendRequestCreated,
-      EventKey.FriendRequestRejected,
-    ]);
+    expect(saveSpy).toHaveBeenCalledWith(
+      BasicUser.username,
+      NotificationType.Email,
+      [EventKey.MembershipPaymentFailed, EventKey.FriendRequestAccepted],
+    );
+    expect(saveSpy).toHaveBeenCalledWith(
+      BasicUser.username,
+      NotificationType.PushNotification,
+      [
+        'user.*',
+        'membership.*',
+        EventKey.FriendRequestCreated,
+        EventKey.FriendRequestRejected,
+      ],
+    );
     expect(toasts.toasts[0].id).toBe('notifications-saved');
   });
 
   it('will allow users to revert their changes before saving', async () => {
-    jest.spyOn(user.settings, 'getNotificationWhitelists').mockResolvedValue({
-      email: [],
-      pushNotification: [],
-    });
+    jest
+      .spyOn(client.userProfiles, 'getNotificationWhitelists')
+      .mockResolvedValue({
+        email: [],
+        pushNotification: [],
+      });
     const saveSpy = jest
-      .spyOn(user.settings, 'updateNotificationWhitelist')
+      .spyOn(client.userProfiles, 'updateNotificationWhitelist')
       .mockResolvedValue();
 
     const wrapper = mount(ManageNotifications, opts);
@@ -317,12 +323,14 @@ describe('ManageNotifications component', () => {
   });
 
   it('will allow users to change their minds about canceling changes', async () => {
-    jest.spyOn(user.settings, 'getNotificationWhitelists').mockResolvedValue({
-      email: [],
-      pushNotification: [],
-    });
+    jest
+      .spyOn(client.userProfiles, 'getNotificationWhitelists')
+      .mockResolvedValue({
+        email: [],
+        pushNotification: [],
+      });
     const saveSpy = jest
-      .spyOn(user.settings, 'updateNotificationWhitelist')
+      .spyOn(client.userProfiles, 'updateNotificationWhitelist')
       .mockResolvedValue();
 
     const wrapper = mount(ManageNotifications, opts);

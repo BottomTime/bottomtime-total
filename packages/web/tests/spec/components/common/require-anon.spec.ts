@@ -80,7 +80,7 @@ describe('RequireAnon component', () => {
 
   it('will redirect back to the current page, by default, when the user opts to logout', async () => {
     currentUser.user = BasicUser;
-    const spy = jest.spyOn(client.users, 'logout').mockResolvedValue(true);
+    const spy = jest.spyOn(client.auth, 'logout').mockResolvedValue(true);
 
     const wrapper = mount(RequireAnon, opts);
     await wrapper.find(LogoutButton).trigger('click');
@@ -97,7 +97,7 @@ describe('RequireAnon component', () => {
   it('will redirect to the "redirectTo" path when the user opts to logout', async () => {
     const redirectTo = '/welcome';
     currentUser.user = BasicUser;
-    const spy = jest.spyOn(client.users, 'logout').mockResolvedValue(true);
+    const spy = jest.spyOn(client.auth, 'logout').mockResolvedValue(true);
 
     const wrapper = mount(RequireAnon, opts);
     await wrapper.setProps({ redirectTo });

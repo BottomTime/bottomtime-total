@@ -298,7 +298,7 @@ describe('Friends view', () => {
 
   it('will show the profile of a friend when clicked', async () => {
     const profileSpy = jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue(UserWithFullProfile.profile);
 
     const wrapper = mount(FriendsView, opts);
@@ -319,7 +319,7 @@ describe('Friends view', () => {
   });
 
   it('will show not found message if friend profile is not found', async () => {
-    jest.spyOn(client.users, 'getProfile').mockRejectedValue(
+    jest.spyOn(client.userProfiles, 'getProfile').mockRejectedValue(
       createHttpError({
         message: 'Could not find profile',
         method: 'GET',
@@ -345,7 +345,7 @@ describe('Friends view', () => {
 
   it('will show the profile of a friend request when clicked', async () => {
     const profileSpy = jest
-      .spyOn(client.users, 'getProfile')
+      .spyOn(client.userProfiles, 'getProfile')
       .mockResolvedValue(UserWithFullProfile.profile);
 
     const wrapper = mount(FriendsView, opts);
@@ -366,7 +366,7 @@ describe('Friends view', () => {
   });
 
   it('will show not found message if friend request profile is not found', async () => {
-    jest.spyOn(client.users, 'getProfile').mockRejectedValue(
+    jest.spyOn(client.userProfiles, 'getProfile').mockRejectedValue(
       createHttpError({
         message: 'Could not find profile',
         method: 'GET',

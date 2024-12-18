@@ -57,7 +57,7 @@ describe('Verify Email View', () => {
 
   it('will display a success message if successful', async () => {
     const spy = jest
-      .spyOn(client.users, 'verifyEmail')
+      .spyOn(client.userAccounts, 'verifyEmail')
       .mockResolvedValue({ succeeded: true });
     const wrapper = mount(VerifyEmailView, opts);
     await flushPromises();
@@ -70,10 +70,12 @@ describe('Verify Email View', () => {
   });
 
   it('will show an error message if the token is invalid', async () => {
-    const spy = jest.spyOn(client.users, 'verifyEmail').mockResolvedValue({
-      succeeded: false,
-      reason: 'Your token is hella-expired!',
-    });
+    const spy = jest
+      .spyOn(client.userAccounts, 'verifyEmail')
+      .mockResolvedValue({
+        succeeded: false,
+        reason: 'Your token is hella-expired!',
+      });
     const wrapper = mount(VerifyEmailView, opts);
     await flushPromises();
 
@@ -86,7 +88,7 @@ describe('Verify Email View', () => {
 
   it('will show an error message if the server responds with a 500', async () => {
     const spy = jest
-      .spyOn(client.users, 'verifyEmail')
+      .spyOn(client.userAccounts, 'verifyEmail')
       .mockRejectedValue(createHttpError(500));
     const wrapper = mount(VerifyEmailView, opts);
     await flushPromises();
@@ -100,7 +102,7 @@ describe('Verify Email View', () => {
 
   it('will show an error message if the query string is missing', async () => {
     await router.push('/verifyEmail');
-    const spy = jest.spyOn(client.users, 'verifyEmail');
+    const spy = jest.spyOn(client.userAccounts, 'verifyEmail');
     const wrapper = mount(VerifyEmailView, opts);
     await flushPromises();
 

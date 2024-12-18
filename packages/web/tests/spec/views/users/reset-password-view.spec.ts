@@ -77,7 +77,7 @@ describe('ResetPassword view', () => {
     });
 
     it('will render the request password reset form if the user is not logged and query string is missing', () => {
-      const spy = jest.spyOn(client.users, 'validatePasswordResetToken');
+      const spy = jest.spyOn(client.auth, 'validatePasswordResetToken');
       const wrapper = mount(ResetPasswordView, opts);
       expect(wrapper.find('[data-testid="auth-content"]').exists()).toBe(false);
       expect(wrapper.findComponent(ResetPassword).exists()).toBe(false);
@@ -89,7 +89,7 @@ describe('ResetPassword view', () => {
 
     it('will do nothing if form validation fails', async () => {
       const spy = jest
-        .spyOn(client.users, 'requestPasswordResetToken')
+        .spyOn(client.auth, 'requestPasswordResetToken')
         .mockResolvedValue();
       const wrapper = mount(ResetPasswordView, opts);
 
@@ -107,7 +107,7 @@ describe('ResetPassword view', () => {
 
     it('will request a password reset token', async () => {
       const spy = jest
-        .spyOn(client.users, 'requestPasswordResetToken')
+        .spyOn(client.auth, 'requestPasswordResetToken')
         .mockResolvedValue();
       const username = 'roger_bob';
       const wrapper = mount(ResetPasswordView, opts);
@@ -123,7 +123,7 @@ describe('ResetPassword view', () => {
     it('will indicate success even if the request fails with a 404 response', async () => {
       const username = 'roger_bob';
       const spy = jest
-        .spyOn(client.users, 'requestPasswordResetToken')
+        .spyOn(client.auth, 'requestPasswordResetToken')
         .mockRejectedValue(
           createHttpError({
             status: 404,
@@ -153,7 +153,7 @@ describe('ResetPassword view', () => {
 
     it('will render failed message if token is invalid', async () => {
       jest
-        .spyOn(client.users, 'validatePasswordResetToken')
+        .spyOn(client.auth, 'validatePasswordResetToken')
         .mockResolvedValue(PasswordResetTokenStatus.Invalid);
       const wrapper = mount(ResetPasswordView, opts);
       await flushPromises();
@@ -164,7 +164,7 @@ describe('ResetPassword view', () => {
 
     it('will render failed message if token is expired', async () => {
       jest
-        .spyOn(client.users, 'validatePasswordResetToken')
+        .spyOn(client.auth, 'validatePasswordResetToken')
         .mockResolvedValue(PasswordResetTokenStatus.Expired);
       const wrapper = mount(ResetPasswordView, opts);
       await flushPromises();
@@ -175,7 +175,7 @@ describe('ResetPassword view', () => {
 
     it('will render the reset form if the token is valid', async () => {
       jest
-        .spyOn(client.users, 'validatePasswordResetToken')
+        .spyOn(client.auth, 'validatePasswordResetToken')
         .mockResolvedValue(PasswordResetTokenStatus.Valid);
       const wrapper = mount(ResetPasswordView, opts);
       await flushPromises();
@@ -186,10 +186,10 @@ describe('ResetPassword view', () => {
 
     it('will do nothing if validation fails', async () => {
       jest
-        .spyOn(client.users, 'validatePasswordResetToken')
+        .spyOn(client.auth, 'validatePasswordResetToken')
         .mockResolvedValue(PasswordResetTokenStatus.Valid);
       const spy = jest
-        .spyOn(client.users, 'resetPasswordWithToken')
+        .spyOn(client.auth, 'resetPasswordWithToken')
         .mockResolvedValue(true);
       const wrapper = mount(ResetPasswordView, opts);
       await flushPromises();
@@ -207,10 +207,10 @@ describe('ResetPassword view', () => {
 
     it("will reset the user's password", async () => {
       jest
-        .spyOn(client.users, 'validatePasswordResetToken')
+        .spyOn(client.auth, 'validatePasswordResetToken')
         .mockResolvedValue(PasswordResetTokenStatus.Valid);
       const spy = jest
-        .spyOn(client.users, 'resetPasswordWithToken')
+        .spyOn(client.auth, 'resetPasswordWithToken')
         .mockResolvedValue(true);
       const newPassword = 'Str0ng__S3cret!';
       const wrapper = mount(ResetPasswordView, opts);
@@ -229,10 +229,10 @@ describe('ResetPassword view', () => {
 
     it('will show failed message if password reset is rejected', async () => {
       jest
-        .spyOn(client.users, 'validatePasswordResetToken')
+        .spyOn(client.auth, 'validatePasswordResetToken')
         .mockResolvedValue(PasswordResetTokenStatus.Valid);
       const spy = jest
-        .spyOn(client.users, 'resetPasswordWithToken')
+        .spyOn(client.auth, 'resetPasswordWithToken')
         .mockResolvedValue(false);
       const newPassword = 'Str0ng__S3cret!';
       const wrapper = mount(ResetPasswordView, opts);
@@ -251,10 +251,10 @@ describe('ResetPassword view', () => {
 
     it('will show failed message if password reset fails with a 404 response', async () => {
       jest
-        .spyOn(client.users, 'validatePasswordResetToken')
+        .spyOn(client.auth, 'validatePasswordResetToken')
         .mockResolvedValue(PasswordResetTokenStatus.Valid);
       const spy = jest
-        .spyOn(client.users, 'resetPasswordWithToken')
+        .spyOn(client.auth, 'resetPasswordWithToken')
         .mockRejectedValue(
           createHttpError({
             status: 404,
