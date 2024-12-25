@@ -44,7 +44,7 @@ export class Operator {
           accountTier: this.data.owner.accountTier,
           userId: this.data.owner.id,
           username: this.data.owner.username,
-          memberSince: this.data.owner.memberSince,
+          memberSince: this.data.owner.memberSince.valueOf(),
           logBookSharing: this.data.owner.logBookSharing,
           avatar: this.data.owner.avatar,
           location: this.data.owner.location,
@@ -54,7 +54,7 @@ export class Operator {
           accountTier: AccountTier.Basic,
           userId: '',
           username: '',
-          memberSince: new Date(0),
+          memberSince: new Date(0).valueOf(),
           logBookSharing: LogBookSharing.Private,
         };
   }
@@ -214,7 +214,7 @@ export class Operator {
   toJSON(): OperatorDTO {
     return {
       active: this.active,
-      createdAt: this.createdAt,
+      createdAt: this.createdAt.valueOf(),
       description: this.description,
       email: this.email,
       gps: this.gps,
@@ -222,7 +222,7 @@ export class Operator {
       name: this.name,
       owner: this.owner,
       socials: this.socials.toJSON(),
-      updatedAt: this.updatedAt,
+      updatedAt: this.updatedAt.valueOf(),
       address: this.address,
       banner: this.banner,
       logo: this.logo,

@@ -156,8 +156,8 @@ describe('Alerts End-to-End Tests', () => {
       expect(result.icon).toBe(alert.icon);
       expect(result.title).toBe(alert.title);
       expect(result.message).toBe(alert.message);
-      expect(result.active).toEqual(alert.active.toISOString());
-      expect(result.expires).toBe(alert.expires!.toISOString());
+      expect(result.active).toEqual(alert.active.valueOf());
+      expect(result.expires).toBe(alert.expires!.valueOf());
     });
 
     it('will return the indicated alert even if it was dismissed by the current user', async () => {
@@ -169,8 +169,8 @@ describe('Alerts End-to-End Tests', () => {
       expect(result.icon).toBe(alert.icon);
       expect(result.title).toBe(alert.title);
       expect(result.message).toBe(alert.message);
-      expect(result.active).toEqual(alert.active.toISOString());
-      expect(result.expires).toBe(alert.expires!.toISOString());
+      expect(result.active).toEqual(alert.active.valueOf());
+      expect(result.expires).toBe(alert.expires!.valueOf());
     });
 
     it('will return a 404 response if the alert ID is invalid', async () => {
@@ -190,8 +190,8 @@ describe('Alerts End-to-End Tests', () => {
         icon: 'icon',
         title: 'title',
         message: 'message',
-        active: new Date(),
-        expires: new Date(),
+        active: new Date().valueOf(),
+        expires: new Date().valueOf(),
       };
 
       const { body: result } = await request(server)
@@ -203,12 +203,12 @@ describe('Alerts End-to-End Tests', () => {
       expect(result.icon).toBe(alert.icon);
       expect(result.title).toBe(alert.title);
       expect(result.message).toBe(alert.message);
-      expect(result.active).toEqual(alert.active.toISOString());
-      expect(result.expires).toBe(alert.expires.toISOString());
+      expect(result.active).toEqual(alert.active);
+      expect(result.expires).toBe(alert.expires);
 
       const saved = await Alerts.findOneByOrFail({ id: result.id });
-      expect(saved.active).toEqual(alert.active);
-      expect(saved.expires).toEqual(alert.expires);
+      expect(saved.active).toEqual(new Date(alert.active));
+      expect(saved.expires).toEqual(new Date(alert.expires));
       expect(saved.icon).toBe(alert.icon);
       expect(saved.message).toBe(alert.message);
       expect(saved.title).toBe(alert.title);
@@ -334,8 +334,8 @@ describe('Alerts End-to-End Tests', () => {
         icon: 'new icon',
         title: 'new title',
         message: 'new message',
-        active: new Date('2024-03-26T21:33:45.497Z'),
-        expires: new Date('2024-04-26T21:33:45.497Z'),
+        active: new Date('2024-03-26T21:33:45.497Z').valueOf(),
+        expires: new Date('2024-04-26T21:33:45.497Z').valueOf(),
       };
 
       const { body: result } = await request(server)
@@ -347,12 +347,12 @@ describe('Alerts End-to-End Tests', () => {
       expect(result.icon).toBe(updated.icon);
       expect(result.title).toBe(updated.title);
       expect(result.message).toBe(updated.message);
-      expect(result.active).toEqual(updated.active.toISOString());
-      expect(result.expires).toBe(updated.expires.toISOString());
+      expect(result.active).toEqual(updated.active);
+      expect(result.expires).toBe(updated.expires);
 
       const saved = await Alerts.findOneByOrFail({ id: result.id });
-      expect(saved.active).toEqual(updated.active);
-      expect(saved.expires).toEqual(updated.expires);
+      expect(saved.active).toEqual(new Date(updated.active));
+      expect(saved.expires).toEqual(new Date(updated.expires));
       expect(saved.icon).toBe(updated.icon);
       expect(saved.message).toBe(updated.message);
       expect(saved.title).toBe(updated.title);

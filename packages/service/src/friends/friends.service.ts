@@ -53,8 +53,8 @@ export class FriendsService {
     return {
       id: friend.friend.id,
       username: friend.friend.username,
-      memberSince: friend.friend.memberSince,
-      friendsSince: friend.friendsSince,
+      memberSince: friend.friend.memberSince.valueOf(),
+      friendsSince: friend.friendsSince.valueOf(),
       avatar: friend.friend.avatar ?? undefined,
       name: friend.friend.name ?? undefined,
       location: friend.friend.location ?? undefined,
@@ -75,8 +75,8 @@ export class FriendsService {
       direction === FriendRequestDirection.Outgoing ? request.to : request.from;
 
     return {
-      created: request.created,
-      expires: request.expires,
+      created: request.created.valueOf(),
+      expires: request.expires.valueOf(),
       direction,
       accepted: request.accepted ?? undefined,
       reason: request.reason ?? undefined,
@@ -84,7 +84,7 @@ export class FriendsService {
       friend: {
         id: friend.id,
         username: friend.username,
-        memberSince: friend.memberSince,
+        memberSince: friend.memberSince.valueOf(),
         avatar: friend.avatar ?? undefined,
         name: friend.name ?? undefined,
         location: friend.location ?? undefined,

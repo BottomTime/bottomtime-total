@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 import {
   BooleanString,
-  DateWithTimezoneSchema,
   DepthUnit,
   ExposureSuit,
   PressureUnit,
@@ -78,7 +77,8 @@ const LogEntryBaseSchema = z.object({
   logNumber: z.number().int().positive().optional(),
 
   timing: z.object({
-    entryTime: DateWithTimezoneSchema,
+    entryTime: z.number(),
+    timezone: z.string(),
     bottomTime: z.number().positive().optional(),
     duration: z.number().positive(),
   }),
@@ -152,8 +152,8 @@ export type CreateOrUpdateLogEntryParamsDTO = z.infer<
 
 export const LogEntrySchema = LogEntryBaseSchema.extend({
   id: z.string(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date().optional(),
+  createdAt: z.number(),
+  updatedAt: z.number().optional(),
   creator: SuccinctProfileSchema,
   site: DiveSiteSchema.optional(),
   samples: LogEntrySampleSchema.array().optional(),
@@ -181,8 +181,8 @@ export type SuccinctLogEntryDTO = z.infer<typeof SuccinctLogEntrySchema>;
 export const ListLogEntriesParamsSchema = z
   .object({
     query: z.string().max(500),
-    startDate: z.coerce.date().optional(),
-    endDate: z.coerce.date().optional(),
+    startDate: z.coerce.number().optional(),
+    endDate: z.coerce.number().optional(),
     skip: z.coerce.number().int().min(0),
     limit: z.coerce.number().int().min(1).max(500),
     sortBy: z.nativeEnum(LogEntrySortBy),
@@ -229,7 +229,7 @@ export type CreateLogsImportParamsDTO = z.infer<
 
 export const LogsImportSchema = CreateLogsImportParamsSchema.extend({
   id: z.string(),
-  date: z.coerce.date(),
+  date: z.number(),
   owner: z.string(),
   error: z.string().optional(),
   failed: z.coerce.boolean(),

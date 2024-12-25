@@ -161,10 +161,8 @@ describe('Log entries service', () => {
       const options: CreateLogEntryOptions = {
         owner: new User(Users, ownerData[0]),
         timing: {
-          entryTime: {
-            date: '2024-03-28T13:45:00',
-            timezone: 'Europe/Amsterdam',
-          },
+          entryTime: new Date('2024-03-28T13:45:00').valueOf(),
+          timezone: 'Europe/Amsterdam',
           duration: 3120,
         },
       };
@@ -175,17 +173,15 @@ describe('Log entries service', () => {
         accountTier: ownerData[0].accountTier,
         userId: ownerData[0].id,
         username: ownerData[0].username,
-        memberSince: ownerData[0].memberSince,
+        memberSince: ownerData[0].memberSince.valueOf(),
         logBookSharing: ownerData[0].logBookSharing,
         name: ownerData[0].name,
         location: ownerData[0].location,
         avatar: ownerData[0].avatar,
       });
       expect(entry.timing.toJSON()).toEqual({
-        entryTime: {
-          date: '2024-03-28T13:45:00',
-          timezone: 'Europe/Amsterdam',
-        },
+        entryTime: new Date('2024-03-28T13:45:00').valueOf(),
+        timezone: 'Europe/Amsterdam',
         duration: 3120,
         bottomTime: undefined,
       });
@@ -194,11 +190,10 @@ describe('Log entries service', () => {
         where: { id: entry.id },
         relations: ['air', 'owner'],
       });
-      expect(saved.entryTime).toEqual(entry.timing.entryTime.date);
-      expect(saved.timezone).toEqual(entry.timing.entryTime.timezone);
+      expect(saved.entryTime).toEqual(entry.timing.entryTime);
+      expect(saved.timezone).toEqual(entry.timing.timezone);
       expect(saved.duration).toEqual(options.timing.duration);
       expect(saved.owner.id).toEqual(ownerData[0].id);
-      expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
       expect(saved.air).toHaveLength(0);
     });
 
@@ -208,10 +203,8 @@ describe('Log entries service', () => {
         logNumber: 123,
 
         timing: {
-          entryTime: {
-            date: '2024-03-28T13:45:00',
-            timezone: 'Europe/Amsterdam',
-          },
+          entryTime: new Date('2024-03-28T13:45:00').valueOf(),
+          timezone: 'Europe/Amsterdam',
           bottomTime: 2880,
           duration: 3120,
         },
@@ -282,10 +275,9 @@ describe('Log entries service', () => {
         relations: ['air', 'owner'],
       });
       expect(saved.logNumber).toEqual(options.logNumber);
-      expect(saved.entryTime).toEqual(options.timing.entryTime.date);
-      expect(saved.timezone).toEqual(options.timing.entryTime.timezone);
+      expect(saved.entryTime).toEqual(new Date(options.timing.entryTime));
+      expect(saved.timezone).toEqual(options.timing.timezone);
       expect(saved.owner.id).toEqual(ownerData[0].id);
-      expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
       expect(saved.bottomTime).toEqual(options.timing.bottomTime);
       expect(saved.duration).toEqual(options.timing.duration);
       expect(saved.maxDepth).toEqual(options.depths!.maxDepth);
@@ -336,10 +328,8 @@ describe('Log entries service', () => {
       const options: CreateLogEntryOptions = {
         owner: new User(Users, ownerData[0]),
         timing: {
-          entryTime: {
-            date: '2024-03-28T13:45:00',
-            timezone: 'Europe/Amsterdam',
-          },
+          entryTime: new Date('2024-03-28T13:45:00').valueOf(),
+          timezone: 'Europe/Amsterdam',
           duration: 52,
         },
         site: siteFactory.createDiveSite(diveSiteData[2]),
@@ -351,16 +341,14 @@ describe('Log entries service', () => {
         accountTier: ownerData[0].accountTier,
         userId: ownerData[0].id,
         username: ownerData[0].username,
-        memberSince: ownerData[0].memberSince,
+        memberSince: ownerData[0].memberSince.valueOf(),
         logBookSharing: ownerData[0].logBookSharing,
         name: ownerData[0].name,
         location: ownerData[0].location,
         avatar: ownerData[0].avatar,
       });
-      expect(entry.timing.entryTime).toEqual({
-        date: '2024-03-28T13:45:00',
-        timezone: 'Europe/Amsterdam',
-      });
+      expect(entry.timing.entryTime).toEqual(new Date('2024-03-28T13:45:00'));
+      expect(entry.timing.timezone).toEqual(options.timing.timezone);
       expect(entry.timing.duration).toEqual(options.timing.duration);
       expect(entry.site?.id).toEqual(diveSiteData[2].id);
 
@@ -368,11 +356,10 @@ describe('Log entries service', () => {
         where: { id: entry.id },
         relations: ['owner', 'site'],
       });
-      expect(saved.entryTime).toEqual(entry.timing.entryTime.date);
-      expect(saved.timezone).toEqual(entry.timing.entryTime.timezone);
+      expect(saved.entryTime).toEqual(entry.timing.entryTime);
+      expect(saved.timezone).toEqual(entry.timing.timezone);
       expect(saved.duration).toEqual(options.timing.duration);
       expect(saved.owner.id).toEqual(ownerData[0].id);
-      expect(saved.timestamp).toEqual(new Date('2024-03-28T12:45:00.000Z'));
       expect(saved.site?.id).toEqual(diveSiteData[2].id);
     });
   });
@@ -446,6 +433,7 @@ describe('Log entries service', () => {
         results.data.map((entry) => ({
           id: entry.id,
           entryTime: entry.timing.entryTime,
+          timezone: entry.timing.timezone,
           site: entry.site?.name,
           air: entry.air,
         })),
@@ -454,17 +442,14 @@ describe('Log entries service', () => {
 
     it('will perform a search with pagination', async () => {
       const results = await service.listLogEntries({ skip: 50, limit: 10 });
-
-      expect(results.totalCount).toBe(logEntryData.length);
-      expect(results.data).toHaveLength(10);
-
-      expect(
-        results.data.map((entry) => ({
+      expect({
+        data: results.data.map((entry) => ({
           id: entry.id,
           entryTime: entry.timing.entryTime,
           site: entry.site?.name,
         })),
-      ).toMatchSnapshot();
+        total: results.totalCount,
+      }).toMatchSnapshot();
     });
 
     [
@@ -496,18 +481,15 @@ describe('Log entries service', () => {
         ownerId: ownerData[0].id,
         limit: 20,
       });
-
-      expect(results.totalCount).toBe(75);
-      expect(results.data).toHaveLength(20);
-
-      expect(
-        results.data.map((entry) => ({
+      expect({
+        data: results.data.map((entry) => ({
           id: entry.id,
           owner: entry.owner.username,
           entryTime: entry.timing.entryTime,
           site: entry.site?.name,
         })),
-      ).toMatchSnapshot();
+        totalCount: results.totalCount,
+      }).toMatchSnapshot();
     });
 
     [
@@ -515,41 +497,32 @@ describe('Log entries service', () => {
         name: 'between a start date and end date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: new Date('2023-10-01T00:00:00.000Z'),
-        expectedTotal: 5,
-        expectedLength: 5,
       },
       {
         name: 'after a start date',
         start: new Date('2023-09-01T00:00:00.000Z'),
         end: undefined,
-        expectedTotal: 86,
-        expectedLength: 15,
       },
       {
         name: 'before an end date',
         start: undefined,
         end: new Date('2023-10-01T00:00:00.000Z'),
-        expectedTotal: 219,
-        expectedLength: 15,
       },
-    ].forEach(({ name, start, end, expectedTotal, expectedLength }) => {
+    ].forEach(({ name, start, end }) => {
       it(`will perform a search for log entries ${name}`, async () => {
         const results = await service.listLogEntries({
-          startDate: start,
-          endDate: end,
+          startDate: start?.valueOf(),
+          endDate: end?.valueOf(),
           limit: 15,
         });
-
-        expect(results.totalCount).toBe(expectedTotal);
-        expect(results.data).toHaveLength(expectedLength);
-
-        expect(
-          results.data.map((entry) => ({
+        expect({
+          data: results.data.map((entry) => ({
             id: entry.id,
             entryTime: entry.timing.entryTime,
             site: entry.site?.name,
           })),
-        ).toMatchSnapshot();
+          totalCount: results.totalCount,
+        }).toMatchSnapshot();
       });
     });
   });

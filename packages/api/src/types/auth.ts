@@ -8,9 +8,9 @@ export type LoginParamsDTO = z.infer<typeof LoginParamsSchema>;
 
 export const PurgeJwtInvalidationsRequestSchema = z
   .object({
-    invalidatedBefore: z.coerce.date(),
+    invalidatedBefore: z.number(),
   })
-  .refine(({ invalidatedBefore }) => invalidatedBefore < new Date(), {
+  .refine(({ invalidatedBefore }) => invalidatedBefore < Date.now(), {
     message: 'invalidatedBefore must be in the past',
   });
 export type PurgeJwtInvalidationsRequestDTO = z.infer<

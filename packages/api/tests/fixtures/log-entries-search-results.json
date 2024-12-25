@@ -1,12 +1,12 @@
 {
   "data": [
     {
-      "createdAt": "2021-07-20T07:13:28.835Z",
+      "createdAt": 1626765208835,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -19,11 +19,9 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-25T20:09:42",
-          "timezone": "Africa/Banjul"
-        },
-        "duration": 4343.4
+        "entryTime": 1721952582000,
+        "duration": 4343.4,
+        "timezone": "Africa/Banjul"
       },
       "logNumber": 703,
       "site": {
@@ -32,19 +30,25 @@
           "accountTier": 0,
           "userId": "0e1b2663-b6ae-45ac-a4db-6ea7a088117a",
           "username": "Carleton_Dach",
-          "memberSince": "2016-11-11T07:25:24.509Z",
+          "memberSince": 1478849124509,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/304.jpg",
           "location": "Lake Dannieside, IL, MZ",
           "name": "Carleton Dach"
         },
-        "createdOn": "2022-04-16T18:47:42.865Z",
+        "createdOn": 1650134862865,
         "name": "severe, gullible quinoa",
         "description": "Tribuo neque vitium ducimus. Abstergo vilis acceptus deputo laudantium urbanus adsidue. Tertius vilis cognatus atqui vomica trans.",
-        "depth": { "depth": 10.88, "unit": "m" },
+        "depth": {
+          "depth": 10.88,
+          "unit": "m"
+        },
         "location": "Hansenchester, NV, GN",
         "directions": "Sint cognatus cenaculum aspicio deficio. Solio porro bibo subiungo thema peccatus. Spiculum tabesco depopulo tres utrimque sub somniculosus eaque cito.",
-        "gps": { "lon": -149.0096, "lat": -1.0024 },
+        "gps": {
+          "lon": -149.0096,
+          "lat": -1.0024
+        },
         "freeToDive": true,
         "shoreAccess": true,
         "averageRating": 4.7,
@@ -52,26 +56,28 @@
       }
     },
     {
-      "createdAt": "2020-06-21T07:01:53.367Z",
+      "createdAt": 1592722913367,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "c3b70f8a-8906-44e7-990a-fdc27b62d276",
-      "depths": { "averageDepth": 88.35, "maxDepth": 142.5, "depthUnit": "ft" },
+      "depths": {
+        "averageDepth": 88.35,
+        "maxDepth": 142.5,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-22T21:09:53",
-          "timezone": "America/Tegucigalpa"
-        },
+        "entryTime": 1721696993000,
         "duration": 6841.3,
-        "bottomTime": 6831.8
+        "bottomTime": 6831.8,
+        "timezone": "America/Tegucigalpa"
       },
       "logNumber": 378,
       "site": {
@@ -80,19 +86,22 @@
           "accountTier": 0,
           "userId": "b256f55b-f325-4128-aa8d-b97cdd280db4",
           "username": "Joanie85",
-          "memberSince": "2022-08-06T18:05:36.310Z",
+          "memberSince": 1659809136310,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/836.jpg",
           "location": "North Kieranstead, DE, MK",
           "name": "Joanie Hamill"
         },
-        "createdOn": "2024-04-19T16:26:54.186Z",
-        "updatedOn": "2023-12-02T06:57:34.242Z",
+        "createdOn": 1713544014186,
+        "updatedOn": 1701500254242,
         "name": "circular, posh epoxy",
         "description": "A consequuntur curso sortitus. Saepe conqueror validus vulnero caveo contra modi tollo. Arx amo cui totam.",
         "location": "Cicero, VT, GM",
         "directions": "Veritas super autem. Spiculum utilis solitudo itaque vinco sequi vomito. Cupiditas collum censura textilis colo.",
-        "gps": { "lon": -87.1029, "lat": 58.8558 },
+        "gps": {
+          "lon": -87.1029,
+          "lat": 58.8558
+        },
         "freeToDive": true,
         "shoreAccess": true,
         "averageRating": 2.8,
@@ -100,25 +109,26 @@
       }
     },
     {
-      "createdAt": "2017-08-11T06:14:47.516Z",
+      "createdAt": 1502432087516,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "5ac5b26e-510a-440b-990e-6f39ea53a36f",
-      "depths": { "maxDepth": 55, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 55,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-22T13:59:18",
-          "timezone": "America/Belize"
-        },
-        "duration": 4091
+        "entryTime": 1721671158000,
+        "duration": 4091,
+        "timezone": "America/Belize"
       },
       "logNumber": 655,
       "site": {
@@ -127,17 +137,20 @@
           "accountTier": 0,
           "userId": "91badbbd-473f-4924-8892-192ce8e7f045",
           "username": "Skyla_Harber",
-          "memberSince": "2020-06-17T03:46:05.671Z",
+          "memberSince": 1592365565671,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/529.jpg",
           "location": "Huelboro, AR, AR",
           "name": "Skyla Harber"
         },
-        "createdOn": "2019-09-08T18:24:24.422Z",
-        "updatedOn": "2022-10-17T12:41:00.825Z",
+        "createdOn": 1567967064422,
+        "updatedOn": 1666010460825,
         "name": "zigzag, antique pitching",
         "description": "Valde ventosus amplus vespillo alius urbs sit speciosus urbanus volva. Comparo concido adulescens paens summa comprehendo vester. Minus consuasor denuo vociferor tredecim.",
-        "depth": { "depth": 17.2, "unit": "m" },
+        "depth": {
+          "depth": 17.2,
+          "unit": "m"
+        },
         "location": "Kuhicburgh, NY, CU",
         "directions": "Abduco ullam sperno contra doloribus solutio clibanus. Utroque tubineus defendo autem aequus. Cura provident comminor pax aequitas tepesco vado demonstro.",
         "freeToDive": true,
@@ -147,12 +160,12 @@
       }
     },
     {
-      "createdAt": "2022-08-03T23:01:01.767Z",
+      "createdAt": 1659567661767,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -165,12 +178,10 @@
         "depthUnit": "ft"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-22T12:24:37",
-          "timezone": "Europe/Lisbon"
-        },
+        "entryTime": 1721665477000,
         "duration": 4796,
-        "bottomTime": 4791.3
+        "bottomTime": 4791.3,
+        "timezone": "Europe/Lisbon"
       },
       "logNumber": 853,
       "site": {
@@ -179,19 +190,25 @@
           "accountTier": 0,
           "userId": "c76a9ebe-f042-468c-b6f7-c9eb1389d2e2",
           "username": "Julien_Murphy90",
-          "memberSince": "2021-06-11T07:25:00.400Z",
+          "memberSince": 1623396300400,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/731.jpg",
           "location": "West Marion, MA, BZ",
           "name": "Julien Murphy"
         },
-        "createdOn": "2021-10-07T23:12:57.333Z",
-        "updatedOn": "2022-06-22T20:47:08.039Z",
+        "createdOn": 1633648377333,
+        "updatedOn": 1655930828039,
         "name": "naughty, capital frog",
         "description": "Defungo temeritas laboriosam viscus thymbra alter pecus suasoria. Patior distinctio canis cupressus pectus creber spargo. Repellat ultio uter aliquam aeger excepturi.",
-        "depth": { "depth": 19.66, "unit": "m" },
+        "depth": {
+          "depth": 19.66,
+          "unit": "m"
+        },
         "location": "Gleichnerstead, UT, SL",
-        "gps": { "lon": 25.3453, "lat": -8.7614 },
+        "gps": {
+          "lon": 25.3453,
+          "lat": -8.7614
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 3,
@@ -199,12 +216,12 @@
       }
     },
     {
-      "createdAt": "2019-01-29T12:41:51.043Z",
+      "createdAt": 1548765711043,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -217,12 +234,10 @@
         "depthUnit": "ft"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-21T19:02:27",
-          "timezone": "Atlantic/Reykjavik"
-        },
+        "entryTime": 1721602947000,
         "duration": 3903.6,
-        "bottomTime": 3900.1
+        "bottomTime": 3900.1,
+        "timezone": "Atlantic/Reykjavik"
       },
       "logNumber": 293,
       "site": {
@@ -231,18 +246,21 @@
           "accountTier": 0,
           "userId": "fcde9dae-9f79-4953-ae63-9d6e7c86608a",
           "username": "Heather55",
-          "memberSince": "2019-10-02T02:27:36.248Z",
+          "memberSince": 1569983256248,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1188.jpg",
           "location": "North Efren, MS, NZ",
           "name": "Heather Strosin"
         },
-        "createdOn": "2024-04-05T03:48:02.192Z",
-        "updatedOn": "2024-01-16T20:16:45.017Z",
+        "createdOn": 1712288882192,
+        "updatedOn": 1705436205017,
         "name": "costly, kosher appointment",
         "description": "Tardus pauci tres. Volutabrum spargo spargo. Necessitatibus cupiditas rem cupiditate.",
         "location": "Reingertown, WV, KI",
-        "gps": { "lon": -35.354, "lat": 48.794 },
+        "gps": {
+          "lon": -35.354,
+          "lat": 48.794
+        },
         "freeToDive": true,
         "shoreAccess": false,
         "averageRating": 1.4,
@@ -250,12 +268,12 @@
       }
     },
     {
-      "createdAt": "2021-04-06T10:38:17.907Z",
+      "createdAt": 1617705497907,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -268,12 +286,10 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-21T05:18:56",
-          "timezone": "Pacific/Auckland"
-        },
+        "entryTime": 1721553536000,
         "duration": 5737.7,
-        "bottomTime": 5730.099999999999
+        "bottomTime": 5730.099999999999,
+        "timezone": "Pacific/Auckland"
       },
       "logNumber": 578,
       "site": {
@@ -282,19 +298,25 @@
           "accountTier": 0,
           "userId": "d45e9ad0-3b09-46c9-9677-199791b34d00",
           "username": "Christelle_Leffler",
-          "memberSince": "2017-07-21T12:39:01.986Z",
+          "memberSince": 1500640741986,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/547.jpg",
           "location": "Port Madelynn, PA, BM",
           "name": "Christelle Leffler"
         },
-        "createdOn": "2021-09-24T20:59:46.774Z",
-        "updatedOn": "2023-07-14T05:21:18.972Z",
+        "createdOn": 1632517186774,
+        "updatedOn": 1689312078972,
         "name": "babyish, nervous dissemination",
         "description": "Carpo placeat suffragium tergiversatio illo cernuus. Molestias expedita vulnus subito defaeco vere subseco. Contabesco totidem soleo sponte accendo tonsor totus.",
-        "depth": { "depth": 20.84, "unit": "m" },
+        "depth": {
+          "depth": 20.84,
+          "unit": "m"
+        },
         "location": "O'Connerborough, NH, EE",
-        "gps": { "lon": -79.4263, "lat": 72.8091 },
+        "gps": {
+          "lon": -79.4263,
+          "lat": 72.8091
+        },
         "freeToDive": true,
         "shoreAccess": false,
         "averageRating": 1.3,
@@ -302,26 +324,28 @@
       }
     },
     {
-      "createdAt": "2015-05-17T05:51:45.673Z",
+      "createdAt": 1431841905673,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "cf6485a5-d1bc-4dc0-8f9e-31ed71865207",
-      "depths": { "averageDepth": 74.088, "maxDepth": 88.2, "depthUnit": "ft" },
+      "depths": {
+        "averageDepth": 74.088,
+        "maxDepth": 88.2,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-20T05:55:23",
-          "timezone": "Europe/Warsaw"
-        },
+        "entryTime": 1721469323000,
         "duration": 3246,
-        "bottomTime": 3240.4
+        "bottomTime": 3240.4,
+        "timezone": "Europe/Warsaw"
       },
       "logNumber": 937,
       "site": {
@@ -330,20 +354,26 @@
           "accountTier": 0,
           "userId": "1d708bdf-8f20-45f4-8319-52b896b2b67c",
           "username": "Easter.Batz",
-          "memberSince": "2022-07-13T17:22:17.236Z",
+          "memberSince": 1657732937236,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/67.jpg",
           "location": "Ponce, WV, YE",
           "name": "Easter Batz"
         },
-        "createdOn": "2021-10-01T16:53:51.891Z",
-        "updatedOn": "2024-02-28T03:01:03.277Z",
+        "createdOn": 1633107231891,
+        "updatedOn": 1709089263277,
         "name": "ultimate, that nut",
         "description": "Ater vereor delinquo sui tandem quidem aliqua delicate suus balbus. Tabernus omnis cimentarius. Supra totidem adsum.",
-        "depth": { "depth": 23.9, "unit": "ft" },
+        "depth": {
+          "depth": 23.9,
+          "unit": "ft"
+        },
         "location": "East Vincenzofort, IL, MC",
         "directions": "Tempore voco cito taedium carmen surculus utique. Triduana uxor aggredior atavus talus cito auctor. Arx aeneus quidem tollo rem.",
-        "gps": { "lon": 92.4324, "lat": -44.7981 },
+        "gps": {
+          "lon": 92.4324,
+          "lat": -44.7981
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 2.3,
@@ -351,12 +381,12 @@
       }
     },
     {
-      "createdAt": "2015-09-07T17:50:32.095Z",
+      "createdAt": 1441648232095,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -369,11 +399,9 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-16T07:07:58",
-          "timezone": "Asia/Samarkand"
-        },
-        "duration": 2327.2
+        "entryTime": 1721128078000,
+        "duration": 2327.2,
+        "timezone": "Asia/Samarkand"
       },
       "logNumber": 557,
       "site": {
@@ -382,16 +410,19 @@
           "accountTier": 0,
           "userId": "834a2cbb-3730-442f-825d-a4885feaada2",
           "username": "Triston31",
-          "memberSince": "2017-07-03T07:27:10.302Z",
+          "memberSince": 1499066830302,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/565.jpg",
           "location": "New Raven, OH, GY",
           "name": "Triston Johnston"
         },
-        "createdOn": "2023-03-12T05:15:52.804Z",
-        "updatedOn": "2023-09-16T08:34:48.728Z",
+        "createdOn": 1678598152804,
+        "updatedOn": 1694853288728,
         "name": "limited, worthy passport",
-        "depth": { "depth": 138.7, "unit": "ft" },
+        "depth": {
+          "depth": 138.7,
+          "unit": "ft"
+        },
         "location": "Lake Ruthe, OR, BT",
         "directions": "Comis cito excepturi deputo tunc arbustum apparatus conicio vilicus. Tego cohaero tabella suggero despecto deleniti mollitia. Debitis tempus utroque soleo culpa crebro arbor commemoro.",
         "freeToDive": false,
@@ -400,26 +431,28 @@
       }
     },
     {
-      "createdAt": "2022-09-19T17:09:57.957Z",
+      "createdAt": 1663607397957,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "0054d51c-b8ca-4304-8c6e-7e8b2de9ed9e",
-      "depths": { "averageDepth": 20.971, "maxDepth": 31.3, "depthUnit": "ft" },
+      "depths": {
+        "averageDepth": 20.971,
+        "maxDepth": 31.3,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-15T19:43:30",
-          "timezone": "America/St_Thomas"
-        },
+        "entryTime": 1721087010000,
         "duration": 5175.1,
-        "bottomTime": 5165.900000000001
+        "bottomTime": 5165.900000000001,
+        "timezone": "America/St_Thomas"
       },
       "logNumber": 639,
       "site": {
@@ -428,16 +461,19 @@
           "accountTier": 0,
           "userId": "69369a6c-172e-47b8-9131-c3d99cac4cc2",
           "username": "Joana64",
-          "memberSince": "2017-02-03T09:02:58.440Z",
+          "memberSince": 1486112578440,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/223.jpg",
           "location": "South Simeonview, WV, NG",
           "name": "Joana Yost"
         },
-        "createdOn": "2023-01-04T21:22:56.756Z",
+        "createdOn": 1672867376756,
         "name": "official, impassioned haircut",
         "description": "Varietas arcus succedo terreo adopto adnuo considero autus vociferor. Accendo adfectus absque. Deprimo amissio aqua sordeo altus sumo denuncio comburo optio caput.",
-        "depth": { "depth": 23.57, "unit": "m" },
+        "depth": {
+          "depth": 23.57,
+          "unit": "m"
+        },
         "location": "North Winifred, KS, BN",
         "directions": "Dolorum texo conturbo contego surgo neque baiulus vomito itaque. Sed correptius pecus vita vinco provident nostrum. Ut sunt decumbo defessus appello demitto verto doloribus pel cedo.",
         "freeToDive": true,
@@ -447,26 +483,27 @@
       }
     },
     {
-      "createdAt": "2021-08-03T02:34:22.810Z",
+      "createdAt": 1627958062810,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "22f2417e-ab9d-4165-b091-e7e5724aa4d4",
-      "depths": { "maxDepth": 15.74, "depthUnit": "m" },
+      "depths": {
+        "maxDepth": 15.74,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-14T21:14:55",
-          "timezone": "Asia/Yakutsk"
-        },
+        "entryTime": 1721006095000,
         "duration": 6448.6,
-        "bottomTime": 6443.900000000001
+        "bottomTime": 6443.900000000001,
+        "timezone": "Asia/Yakutsk"
       },
       "logNumber": 966,
       "site": {
@@ -475,16 +512,19 @@
           "accountTier": 0,
           "userId": "85d4c095-4802-432d-8241-78543ea5c08c",
           "username": "Perry_Boyle50",
-          "memberSince": "2023-12-03T03:08:59.583Z",
+          "memberSince": 1701572939583,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/202.jpg",
           "location": "Port Katharina, CO, QA",
           "name": "Perry Boyle"
         },
-        "createdOn": "2023-10-30T10:21:29.259Z",
-        "updatedOn": "2023-04-29T01:58:41.147Z",
+        "createdOn": 1698661289259,
+        "updatedOn": 1682733521147,
         "name": "harmless, long-term testament",
-        "depth": { "depth": 12.63, "unit": "m" },
+        "depth": {
+          "depth": 12.63,
+          "unit": "m"
+        },
         "location": "O'Connellworth, NH, ST",
         "directions": "Vinum velociter cilicium comitatus saepe sed conturbo. Socius coma acsi modi maiores occaecati. Angulus tamdiu bellum abscido.",
         "shoreAccess": true,
@@ -493,26 +533,27 @@
       }
     },
     {
-      "createdAt": "2016-10-05T22:01:12.815Z",
+      "createdAt": 1475704872815,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "1ecdcb01-7b61-478f-8322-dd328b87cd11",
-      "depths": { "maxDepth": 30.1, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 30.1,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-14T02:03:46",
-          "timezone": "America/Martinique"
-        },
+        "entryTime": 1720937026000,
         "duration": 6476,
-        "bottomTime": 6467.6
+        "bottomTime": 6467.6,
+        "timezone": "America/Martinique"
       },
       "logNumber": 900,
       "site": {
@@ -521,17 +562,20 @@
           "accountTier": 0,
           "userId": "d45e9ad0-3b09-46c9-9677-199791b34d00",
           "username": "Christelle_Leffler",
-          "memberSince": "2017-07-21T12:39:01.986Z",
+          "memberSince": 1500640741986,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/547.jpg",
           "location": "Port Madelynn, PA, BM",
           "name": "Christelle Leffler"
         },
-        "createdOn": "2022-04-23T15:58:09.901Z",
+        "createdOn": 1650729489901,
         "name": "formal, infatuated shorts",
         "description": "Modi angelus deputo cunctatio vita praesentium. Talus deripio vir advenio cinis caveo. Statim quisquam bene earum.",
         "location": "Collinshaven, UT, SH",
-        "gps": { "lon": -6.7982, "lat": -52.0977 },
+        "gps": {
+          "lon": -6.7982,
+          "lat": -52.0977
+        },
         "freeToDive": false,
         "shoreAccess": true,
         "averageRating": 1.1,
@@ -539,25 +583,26 @@
       }
     },
     {
-      "createdAt": "2015-07-24T21:31:54.895Z",
+      "createdAt": 1437773514895,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "2bd5f486-46a3-47a2-855b-6cd9bc9763c4",
-      "depths": { "maxDepth": 133.9, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 133.9,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-13T22:11:28",
-          "timezone": "America/Menominee"
-        },
-        "duration": 5665.2
+        "entryTime": 1720923088000,
+        "duration": 5665.2,
+        "timezone": "America/Menominee"
       },
       "logNumber": 114,
       "site": {
@@ -566,16 +611,19 @@
           "accountTier": 0,
           "userId": "24cf089d-ee8f-4234-bf6c-f15e55e47b4a",
           "username": "Kayla_Balistreri47",
-          "memberSince": "2017-09-30T07:01:06.580Z",
+          "memberSince": 1506754866580,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/131.jpg",
           "location": "Lake Tyrique, NE, CA",
           "name": "Kayla Balistreri"
         },
-        "createdOn": "2021-03-13T15:01:46.945Z",
-        "updatedOn": "2023-02-09T07:49:20.999Z",
+        "createdOn": 1615647706945,
+        "updatedOn": 1675928960999,
         "name": "swift, excitable tin",
-        "depth": { "depth": 20.4, "unit": "ft" },
+        "depth": {
+          "depth": 20.4,
+          "unit": "ft"
+        },
         "location": "New Rowenafurt, AR, TV",
         "directions": "Ter sub inflammatio sapiente alius utpote creator conculco adfero. Voluptatibus sui creptio cavus arbustum vulgaris totidem tutis audeo. Dapifer validus cetera vacuus autus ipsum titulus tamisium.",
         "freeToDive": true,
@@ -585,12 +633,12 @@
       }
     },
     {
-      "createdAt": "2022-03-17T02:50:47.046Z",
+      "createdAt": 1647485447046,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -603,12 +651,10 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-13T18:35:47",
-          "timezone": "Asia/Yekaterinburg"
-        },
+        "entryTime": 1720910147000,
         "duration": 5199.3,
-        "bottomTime": 5192.2
+        "bottomTime": 5192.2,
+        "timezone": "Asia/Yekaterinburg"
       },
       "logNumber": 381,
       "site": {
@@ -617,19 +663,25 @@
           "accountTier": 0,
           "userId": "cfc14a20-b544-42f9-af41-398776488c04",
           "username": "Parker_Fay75",
-          "memberSince": "2023-07-28T02:49:04.142Z",
+          "memberSince": 1690512544142,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/344.jpg",
           "location": "South Keyshawnchester, NH, AS",
           "name": "Parker Fay"
         },
-        "createdOn": "2019-12-26T20:29:46.167Z",
-        "updatedOn": "2022-12-09T08:42:43.021Z",
+        "createdOn": 1577392186167,
+        "updatedOn": 1670575363021,
         "name": "actual, mature steamroller",
         "description": "Apud audio tepesco congregatio aggredior abutor. Bibo adaugeo vitiosus laborum apostolus vilicus degero. Tamdiu virtus soleo arca crebro arca.",
-        "depth": { "depth": 38.7, "unit": "ft" },
+        "depth": {
+          "depth": 38.7,
+          "unit": "ft"
+        },
         "location": "Miami Beach, PA, SS",
-        "gps": { "lon": 129.5754, "lat": -23.717 },
+        "gps": {
+          "lon": 129.5754,
+          "lat": -23.717
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 4.8,
@@ -637,25 +689,26 @@
       }
     },
     {
-      "createdAt": "2018-08-01T19:25:46.369Z",
+      "createdAt": 1533151546369,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "f349c18f-8711-46a6-bc26-e5994a1f49a4",
-      "depths": { "maxDepth": 27.1, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 27.1,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-12T04:20:23",
-          "timezone": "America/Matamoros"
-        },
-        "duration": 6443
+        "entryTime": 1720772423000,
+        "duration": 6443,
+        "timezone": "America/Matamoros"
       },
       "logNumber": 900,
       "site": {
@@ -664,43 +717,48 @@
           "accountTier": 0,
           "userId": "50da48d8-0197-4082-a719-82e61a02f5bf",
           "username": "Ivah_Conn",
-          "memberSince": "2021-09-24T11:30:59.752Z",
+          "memberSince": 1632483059752,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/993.jpg",
           "location": "Lynchview, OK, VC",
           "name": "Ivah Conn"
         },
-        "createdOn": "2019-11-18T04:59:04.431Z",
+        "createdOn": 1574053144431,
         "name": "majestic, well-to-do comedy",
         "description": "Hic aeneus comburo absum condico dedecor. Super capio audax vita clementia cavus quasi capio adsuesco venustas. Iure vespillo ipsum similique testimonium universe ager demitto aegrus.",
         "location": "Enricocester, PA, BL",
-        "gps": { "lon": 28.8039, "lat": -21.3397 },
+        "gps": {
+          "lon": 28.8039,
+          "lat": -21.3397
+        },
         "freeToDive": false,
         "averageRating": 3.7,
         "averageDifficulty": 3.2
       }
     },
     {
-      "createdAt": "2015-01-22T09:30:39.877Z",
+      "createdAt": 1421919039877,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "6c1b407d-8d24-4fec-96a8-70d0fbe1eef3",
-      "depths": { "averageDepth": 83.4, "maxDepth": 111.2, "depthUnit": "ft" },
+      "depths": {
+        "averageDepth": 83.4,
+        "maxDepth": 111.2,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-10T16:24:31",
-          "timezone": "Australia/Adelaide"
-        },
+        "entryTime": 1720643071000,
         "duration": 2376,
-        "bottomTime": 2370.2
+        "bottomTime": 2370.2,
+        "timezone": "Australia/Adelaide"
       },
       "logNumber": 8,
       "site": {
@@ -709,19 +767,25 @@
           "accountTier": 0,
           "userId": "9ac34968-d2b7-4561-a155-bfb8c8991bcc",
           "username": "Hermina.Gutmann7",
-          "memberSince": "2021-07-08T04:48:43.974Z",
+          "memberSince": 1625719723974,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/478.jpg",
           "location": "Kreigerstead, WV, LI",
           "name": "Hermina Gutmann"
         },
-        "createdOn": "2023-03-21T20:43:30.117Z",
+        "createdOn": 1679431410117,
         "name": "wonderful, awful bustle",
         "description": "Pax tabernus quia sopor cohaero cotidie corrigo delibero corrumpo. Asporto supplanto uxor. Temporibus allatus contego decor ambitus earum nulla cimentarius volo toties.",
-        "depth": { "depth": 10.83, "unit": "m" },
+        "depth": {
+          "depth": 10.83,
+          "unit": "m"
+        },
         "location": "Denesikport, OH, AW",
         "directions": "Ullam allatus necessitatibus valetudo ex illo tondeo urbs. Ancilla recusandae cibo temptatio soluta bardus. Beneficium et ad dolores summopere cetera perspiciatis vomer vulariter verto.",
-        "gps": { "lon": -43.9332, "lat": -13.1376 },
+        "gps": {
+          "lon": -43.9332,
+          "lat": -13.1376
+        },
         "freeToDive": false,
         "shoreAccess": true,
         "averageRating": 4.3,
@@ -729,26 +793,28 @@
       }
     },
     {
-      "createdAt": "2019-04-23T05:34:33.489Z",
+      "createdAt": 1555997673489,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "c4b2fc0d-846d-42f0-969f-6458ba603622",
-      "depths": { "averageDepth": 27.1, "maxDepth": 54.2, "depthUnit": "m" },
+      "depths": {
+        "averageDepth": 27.1,
+        "maxDepth": 54.2,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-07T21:35:29",
-          "timezone": "Asia/Aqtobe"
-        },
+        "entryTime": 1720402529000,
         "duration": 6472.5,
-        "bottomTime": 6468.1
+        "bottomTime": 6468.1,
+        "timezone": "Asia/Aqtobe"
       },
       "logNumber": 48,
       "site": {
@@ -757,17 +823,20 @@
           "accountTier": 0,
           "userId": "99d676ad-c787-4051-b24e-cd551e30b92d",
           "username": "Loren72",
-          "memberSince": "2020-07-17T10:13:31.581Z",
+          "memberSince": 1594980811581,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/899.jpg",
           "location": "West Greg, WY, IS",
           "name": "Loren Carroll"
         },
-        "createdOn": "2023-02-23T15:14:07.531Z",
+        "createdOn": 1677165247531,
         "name": "decimal, cultivated happiness",
         "description": "Ater ater crastinus mollitia curo angustus demo strues. Aliquam vindico accendo cinis inventore. Tutamen vereor deludo thalassinus.",
         "location": "Toledo, SD, GI",
-        "gps": { "lon": 129.6694, "lat": 41.7362 },
+        "gps": {
+          "lon": 129.6694,
+          "lat": 41.7362
+        },
         "freeToDive": true,
         "shoreAccess": false,
         "averageRating": 2.9,
@@ -775,26 +844,27 @@
       }
     },
     {
-      "createdAt": "2023-02-22T17:45:14.111Z",
+      "createdAt": 1677087914111,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "bb0ddbeb-173b-4f4e-bc71-740de5645ae7",
-      "depths": { "maxDepth": 50, "depthUnit": "m" },
+      "depths": {
+        "maxDepth": 50,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-04T10:26:02",
-          "timezone": "Africa/Abidjan"
-        },
+        "entryTime": 1720103162000,
         "duration": 4196.4,
-        "bottomTime": 4190.599999999999
+        "bottomTime": 4190.599999999999,
+        "timezone": "Africa/Abidjan"
       },
       "logNumber": 231,
       "site": {
@@ -803,20 +873,26 @@
           "accountTier": 0,
           "userId": "9126cccc-287b-47ae-ae50-c40381cc49f7",
           "username": "Elna28",
-          "memberSince": "2014-07-06T10:38:18.309Z",
+          "memberSince": 1404643098309,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/623.jpg",
           "location": "Dooleychester, MS, HT",
           "name": "Elna Erdman"
         },
-        "createdOn": "2019-09-07T23:50:27.975Z",
-        "updatedOn": "2023-05-07T00:10:38.428Z",
+        "createdOn": 1567900227975,
+        "updatedOn": 1683418238428,
         "name": "klutzy, flaky makeup",
         "description": "Catena tergeo nihil. Itaque administratio deludo comparo absque cattus caelestis aggero collum supra. Vergo ubi umquam aedificium delicate spectaculum accusantium vox aeger.",
-        "depth": { "depth": 64.9, "unit": "ft" },
+        "depth": {
+          "depth": 64.9,
+          "unit": "ft"
+        },
         "location": "Rocky Mount, MD, SX",
         "directions": "Confero audentia cavus cornu contego sono aliquam creber odio thermae. Argentum stips credo cura usus veniam cohors summopere sodalitas. Adflicto acidus esse.",
-        "gps": { "lon": -171.2776, "lat": -28.9576 },
+        "gps": {
+          "lon": -171.2776,
+          "lat": -28.9576
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 1.3,
@@ -824,12 +900,12 @@
       }
     },
     {
-      "createdAt": "2016-08-26T10:13:50.897Z",
+      "createdAt": 1472206430897,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -842,12 +918,10 @@
         "depthUnit": "ft"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-04T09:33:23",
-          "timezone": "Africa/Kinshasa"
-        },
+        "entryTime": 1720100003000,
         "duration": 2368.7,
-        "bottomTime": 2363.7
+        "bottomTime": 2363.7,
+        "timezone": "Africa/Kinshasa"
       },
       "logNumber": 625,
       "site": {
@@ -856,16 +930,19 @@
           "accountTier": 0,
           "userId": "9e918456-6dac-48c6-884e-bba76a36887c",
           "username": "Effie_Considine",
-          "memberSince": "2020-01-12T02:14:33.311Z",
+          "memberSince": 1578795273311,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/832.jpg",
           "location": "Brianneland, VA, DZ",
           "name": "Effie Considine"
         },
-        "createdOn": "2024-02-13T13:48:49.366Z",
+        "createdOn": 1707832129366,
         "name": "knowing, warped settler",
         "description": "Nemo debitis bardus blandior clarus desino circumvenio. Aperio credo annus verbera causa crinis cado texo cupio tempora. Uter cumque quia combibo.",
-        "depth": { "depth": 29.26, "unit": "m" },
+        "depth": {
+          "depth": 29.26,
+          "unit": "m"
+        },
         "location": "Brekkeshire, SD, SV",
         "directions": "Solio sint sed turpis. Deputo vetus tepidus suscipio ascisco compello tamisium sordeo cultura iusto. Quam vel iusto circumvenio commodo curvo temeritas tunc.",
         "freeToDive": true,
@@ -875,26 +952,28 @@
       }
     },
     {
-      "createdAt": "2017-04-12T22:18:16.166Z",
+      "createdAt": 1492035496166,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "82e95580-1649-486d-b159-920863a02f62",
-      "depths": { "averageDepth": 6.534, "maxDepth": 7.26, "depthUnit": "m" },
+      "depths": {
+        "averageDepth": 6.534,
+        "maxDepth": 7.26,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-03T04:07:22",
-          "timezone": "Europe/Ulyanovsk"
-        },
+        "entryTime": 1719994042000,
         "duration": 4738.8,
-        "bottomTime": 4735.8
+        "bottomTime": 4735.8,
+        "timezone": "Europe/Ulyanovsk"
       },
       "logNumber": 860,
       "site": {
@@ -903,18 +982,24 @@
           "accountTier": 0,
           "userId": "dd2a3914-4642-4d11-ab63-c8722361378d",
           "username": "Jarred_Kuvalis",
-          "memberSince": "2015-03-06T05:43:17.621Z",
+          "memberSince": 1425620597621,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/333.jpg",
           "location": "Fort Maynardview, VA, LB",
           "name": "Jarred Kuvalis"
         },
-        "createdOn": "2023-02-12T12:32:02.504Z",
-        "updatedOn": "2023-08-05T10:09:07.870Z",
+        "createdOn": 1676205122504,
+        "updatedOn": 1691230147870,
         "name": "broken, buzzing autoimmunity",
-        "depth": { "depth": 37.05, "unit": "m" },
+        "depth": {
+          "depth": 37.05,
+          "unit": "m"
+        },
         "location": "Jacobiland, ME, VA",
-        "gps": { "lon": -167.9026, "lat": 77.5651 },
+        "gps": {
+          "lon": -167.9026,
+          "lat": 77.5651
+        },
         "freeToDive": true,
         "shoreAccess": true,
         "averageRating": 2.5,
@@ -922,12 +1007,12 @@
       }
     },
     {
-      "createdAt": "2018-07-04T14:56:42.362Z",
+      "createdAt": 1530716202362,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -940,11 +1025,9 @@
         "depthUnit": "ft"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-02T11:43:53",
-          "timezone": "America/Indiana/Winamac"
-        },
-        "duration": 2562.5
+        "entryTime": 1719935033000,
+        "duration": 2562.5,
+        "timezone": "America/Indiana/Winamac"
       },
       "logNumber": 900,
       "site": {
@@ -953,18 +1036,21 @@
           "accountTier": 0,
           "userId": "49832cf0-eae6-4209-819a-3747d4d20f91",
           "username": "Maybelle88",
-          "memberSince": "2016-08-07T17:08:10.949Z",
+          "memberSince": 1470589690949,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/413.jpg",
           "location": "East Andrefort, ID, GH",
           "name": "Maybelle Reichel"
         },
-        "createdOn": "2020-05-29T14:32:31.277Z",
+        "createdOn": 1590762751277,
         "name": "spotless, old-fashioned middle",
         "description": "Damno pecus atrocitas dolores odio neque deduco. Somniculosus beatus demergo supplanto urbanus valeo. Impedit minus deprecator uberrime.",
         "location": "DuBuqueland, TN, ES",
         "directions": "Voluptate tardus voco. Harum talus bos decretum usque turba calamitas. Accedo vinitor vox.",
-        "gps": { "lon": 89.7167, "lat": 88.6004 },
+        "gps": {
+          "lon": 89.7167,
+          "lat": 88.6004
+        },
         "freeToDive": true,
         "shoreAccess": true,
         "averageRating": 3.6,
@@ -972,12 +1058,12 @@
       }
     },
     {
-      "createdAt": "2017-05-24T11:41:27.740Z",
+      "createdAt": 1495626087740,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -990,12 +1076,10 @@
         "depthUnit": "ft"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-07-01T07:38:57",
-          "timezone": "America/Nuuk"
-        },
+        "entryTime": 1719833937000,
         "duration": 2048.9,
-        "bottomTime": 2045.1000000000001
+        "bottomTime": 2045.1000000000001,
+        "timezone": "America/Nuuk"
       },
       "logNumber": 83,
       "site": {
@@ -1004,19 +1088,25 @@
           "accountTier": 0,
           "userId": "a91b3240-47c7-4b2e-aac3-dcce774f84be",
           "username": "Kitty_Hickle",
-          "memberSince": "2018-01-08T07:01:52.268Z",
+          "memberSince": 1515394912268,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/325.jpg",
           "location": "West Avis, OH, KP",
           "name": "Kitty Hickle"
         },
-        "createdOn": "2021-06-27T08:44:49.516Z",
-        "updatedOn": "2023-02-12T00:28:07.501Z",
+        "createdOn": 1624783489516,
+        "updatedOn": 1676161687501,
         "name": "splendid, warmhearted guarantee",
         "description": "Ventus via advoco peior desipio cupio. Ceno laborum voluptate ater tum arca cauda turpis. Degenero amitto hic surculus.",
-        "depth": { "depth": 83.7, "unit": "ft" },
+        "depth": {
+          "depth": 83.7,
+          "unit": "ft"
+        },
         "location": "North Raul, PA, RO",
-        "gps": { "lon": -160.832, "lat": -69.0502 },
+        "gps": {
+          "lon": -160.832,
+          "lat": -69.0502
+        },
         "freeToDive": true,
         "shoreAccess": false,
         "averageRating": 4.2,
@@ -1024,12 +1114,12 @@
       }
     },
     {
-      "createdAt": "2022-10-07T12:21:05.986Z",
+      "createdAt": 1665145265986,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -1042,12 +1132,10 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-30T04:45:50",
-          "timezone": "Pacific/Tahiti"
-        },
+        "entryTime": 1719737150000,
         "duration": 6504.1,
-        "bottomTime": 6494.6
+        "bottomTime": 6494.6,
+        "timezone": "Pacific/Tahiti"
       },
       "logNumber": 363,
       "site": {
@@ -1056,45 +1144,53 @@
           "accountTier": 0,
           "userId": "1793acb7-5765-49e0-9bfb-23c710a2130b",
           "username": "Nathaniel_Rice0",
-          "memberSince": "2016-07-28T18:49:53.042Z",
+          "memberSince": 1469731793042,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1098.jpg",
           "location": "Buffalo Grove, ME, HN",
           "name": "Nathaniel Rice"
         },
-        "createdOn": "2024-04-17T23:04:37.449Z",
+        "createdOn": 1713395077449,
         "name": "near, spiteful hydrolysis",
         "description": "Conicio cattus varietas aestas amor celo. Curis caries cupiditas suffoco baiulus totam. Convoco bibo illo vis currus tondeo theatrum.",
-        "depth": { "depth": 87.7, "unit": "ft" },
+        "depth": {
+          "depth": 87.7,
+          "unit": "ft"
+        },
         "location": "Boca Raton, ME, CL",
         "directions": "Suffragium earum cultellus versus iure vulgivagus illum vespillo. Cursus vereor aufero ipsum adeptio cohors cum solum patrocinor vomica. Bos defetiscor nobis impedit in tunc una callide iste vobis.",
-        "gps": { "lon": 179.7829, "lat": -2.5662 },
+        "gps": {
+          "lon": 179.7829,
+          "lat": -2.5662
+        },
         "shoreAccess": false,
         "averageRating": 3.8,
         "averageDifficulty": 3.8
       }
     },
     {
-      "createdAt": "2018-12-10T14:25:12.306Z",
+      "createdAt": 1544451912306,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "e6971c74-53f5-4103-89f2-8738af81cb27",
-      "depths": { "averageDepth": 23.652, "maxDepth": 39.42, "depthUnit": "m" },
+      "depths": {
+        "averageDepth": 23.652,
+        "maxDepth": 39.42,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-30T15:33:33",
-          "timezone": "Africa/Brazzaville"
-        },
+        "entryTime": 1719776013000,
         "duration": 6195.5,
-        "bottomTime": 6186
+        "bottomTime": 6186,
+        "timezone": "Africa/Brazzaville"
       },
       "logNumber": 7,
       "site": {
@@ -1103,45 +1199,49 @@
           "accountTier": 0,
           "userId": "dbfca2b0-faca-45df-a327-99452991cfdb",
           "username": "Bailey_Mills",
-          "memberSince": "2018-12-09T04:44:41.465Z",
+          "memberSince": 1544330681465,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/470.jpg",
           "location": "La Habra, GA, ML",
           "name": "Bailey Mills"
         },
-        "createdOn": "2022-10-26T07:15:03.437Z",
-        "updatedOn": "2023-07-08T00:35:21.609Z",
+        "createdOn": 1666768503437,
+        "updatedOn": 1688776521609,
         "name": "flustered, basic locust",
         "description": "Desidero asporto calculus arbustum apto. Arcus terreo astrum accedo soluta textilis. Arto supra aufero venustas confero.",
         "location": "Hayesstead, AZ, TD",
         "directions": "Absum decumbo canonicus crapula. Quae compello cotidie conspergo. Verus acervus virgo pecco arto vilitas aufero depopulo aro.",
-        "gps": { "lon": -145.6598, "lat": 47.0335 },
+        "gps": {
+          "lon": -145.6598,
+          "lat": 47.0335
+        },
         "freeToDive": true,
         "averageRating": 4.4,
         "averageDifficulty": 2.6
       }
     },
     {
-      "createdAt": "2018-07-18T03:33:19.538Z",
+      "createdAt": 1531884799538,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "1b7ec246-0d3e-45fc-9e76-981f6772c27e",
-      "depths": { "maxDepth": 48.13, "depthUnit": "m" },
+      "depths": {
+        "maxDepth": 48.13,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-30T10:16:53",
-          "timezone": "America/St_Kitts"
-        },
+        "entryTime": 1719757013000,
         "duration": 6906.7,
-        "bottomTime": 6900.5
+        "bottomTime": 6900.5,
+        "timezone": "America/St_Kitts"
       },
       "logNumber": 713,
       "site": {
@@ -1150,13 +1250,13 @@
           "accountTier": 0,
           "userId": "2927eb78-3d0e-4af5-94b5-1da4e9b1617c",
           "username": "Jennie.Olson",
-          "memberSince": "2024-02-12T23:39:31.988Z",
+          "memberSince": 1707781171988,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/107.jpg",
           "location": "Brendanhaven, WY, BS",
           "name": "Jennie Olson"
         },
-        "createdOn": "2021-12-09T19:05:43.856Z",
+        "createdOn": 1639076743856,
         "name": "difficult, untidy replacement",
         "location": "South Kip, IN, CF",
         "freeToDive": true,
@@ -1166,23 +1266,27 @@
       }
     },
     {
-      "createdAt": "2017-04-23T09:15:38.976Z",
+      "createdAt": 1492938938976,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "e2896496-a7bc-401a-8b4b-96b45b886374",
-      "depths": { "maxDepth": 142.2, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 142.2,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": { "date": "2024-06-29T06:48:07", "timezone": "Asia/Baku" },
+        "entryTime": 1719658087000,
         "duration": 1794,
-        "bottomTime": 1786.3
+        "bottomTime": 1786.3,
+        "timezone": "Asia/Baku"
       },
       "logNumber": 856,
       "site": {
@@ -1191,19 +1295,25 @@
           "accountTier": 0,
           "userId": "0105c4d7-6e1b-48f9-878f-809e9c06c41b",
           "username": "Brianne2",
-          "memberSince": "2022-04-15T09:49:31.218Z",
+          "memberSince": 1650016171218,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/866.jpg",
           "location": "North Kellichester, WA, DJ",
           "name": "Brianne Considine"
         },
-        "createdOn": "2023-09-04T21:23:49.563Z",
-        "updatedOn": "2022-09-15T18:48:30.634Z",
+        "createdOn": 1693862629563,
+        "updatedOn": 1663267710634,
         "name": "wild, hopeful afternoon",
         "description": "Deludo cuius civitas. Defluo curriculum subseco dolore caelestis. Ut cito somnus.",
-        "depth": { "depth": 41.28, "unit": "m" },
+        "depth": {
+          "depth": 41.28,
+          "unit": "m"
+        },
         "location": "Modestaport, IL, TK",
-        "gps": { "lon": -115.6035, "lat": -44.0919 },
+        "gps": {
+          "lon": -115.6035,
+          "lat": -44.0919
+        },
         "freeToDive": false,
         "shoreAccess": true,
         "averageRating": 3.3,
@@ -1211,26 +1321,27 @@
       }
     },
     {
-      "createdAt": "2018-02-24T20:48:27.655Z",
+      "createdAt": 1519505307655,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "dd3a7a7f-9d86-4075-94e1-aff3da0a3876",
-      "depths": { "maxDepth": 21.2, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 21.2,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-28T21:14:27",
-          "timezone": "America/Indiana/Knox"
-        },
+        "entryTime": 1719623667000,
         "duration": 5975.6,
-        "bottomTime": 5970.8
+        "bottomTime": 5970.8,
+        "timezone": "America/Indiana/Knox"
       },
       "logNumber": 242,
       "site": {
@@ -1239,18 +1350,21 @@
           "accountTier": 0,
           "userId": "a631a523-5925-40f1-8253-d952f85fe5be",
           "username": "Oswaldo47",
-          "memberSince": "2018-04-14T08:03:27.550Z",
+          "memberSince": 1523693007550,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/491.jpg",
           "location": "South Karlichester, ND, FI",
           "name": "Oswaldo Kunde"
         },
-        "createdOn": "2020-03-02T01:52:06.987Z",
+        "createdOn": 1583113926987,
         "name": "ecstatic, sick alarm",
         "description": "Usitas subvenio porro maiores arcesso neque exercitationem ipsa absconditus. Demulceo conventus audacia xiphias acquiro. Supellex tenax deserunt umbra sodalitas ad admoveo aliquam.",
         "location": "Julianatown, MI, KI",
         "directions": "Ratione avaritia reprehenderit virtus corrumpo ex virgo provident. Uberrime vito subito voluntarius tabernus absens. Studio admoveo assentator voluptate quo anser agnosco harum civis non.",
-        "gps": { "lon": 25.4692, "lat": -46.6298 },
+        "gps": {
+          "lon": 25.4692,
+          "lat": -46.6298
+        },
         "freeToDive": true,
         "shoreAccess": false,
         "averageRating": 3.1,
@@ -1258,25 +1372,26 @@
       }
     },
     {
-      "createdAt": "2019-12-21T21:27:05.584Z",
+      "createdAt": 1576963625584,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "333c5e02-31d7-43cd-8047-ae7bce9770ea",
-      "depths": { "maxDepth": 102.8, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 102.8,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-29T02:39:07",
-          "timezone": "Asia/Yerevan"
-        },
-        "duration": 5866.9
+        "entryTime": 1719643147000,
+        "duration": 5866.9,
+        "timezone": "Asia/Yerevan"
       },
       "logNumber": 768,
       "site": {
@@ -1285,45 +1400,53 @@
           "accountTier": 0,
           "userId": "68fdb6e3-d1c4-48cc-8bbe-12fa9f3ee558",
           "username": "Therese56",
-          "memberSince": "2020-05-19T01:22:29.346Z",
+          "memberSince": 1589851349346,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/139.jpg",
           "location": "Yasminefield, LA, RU",
           "name": "Therese McCullough"
         },
-        "createdOn": "2022-06-22T01:28:00.410Z",
-        "updatedOn": "2023-11-24T18:52:07.086Z",
+        "createdOn": 1655861280410,
+        "updatedOn": 1700851927086,
         "name": "cheap, frilly emerald",
         "description": "Doloremque decimus utpote cotidie amplitudo bellicus crinis sto. Addo absens usque abeo termes tersus clam voveo termes. Constans venia benevolentia.",
-        "depth": { "depth": 30.28, "unit": "m" },
+        "depth": {
+          "depth": 30.28,
+          "unit": "m"
+        },
         "location": "East Rasheedview, FL, AM",
         "directions": "Suffoco voro denique torrens debitis tepesco. Cuius in atqui harum tabesco capto. Vilitas cunae tamquam necessitatibus sequi autem timidus tantum talus.",
-        "gps": { "lon": -0.5915, "lat": 26.452 },
+        "gps": {
+          "lon": -0.5915,
+          "lat": 26.452
+        },
         "freeToDive": false,
         "averageRating": 4.6,
         "averageDifficulty": 4.4
       }
     },
     {
-      "createdAt": "2014-11-15T01:31:43.303Z",
+      "createdAt": 1416015103303,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "1ed0341f-6fe7-44ff-b4fd-a66050a390bd",
-      "depths": { "averageDepth": 72.42, "maxDepth": 85.2, "depthUnit": "ft" },
+      "depths": {
+        "averageDepth": 72.42,
+        "maxDepth": 85.2,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-28T09:26:00",
-          "timezone": "America/Whitehorse"
-        },
-        "duration": 5416
+        "entryTime": 1719581160000,
+        "duration": 5416,
+        "timezone": "America/Whitehorse"
       },
       "logNumber": 937,
       "site": {
@@ -1332,31 +1455,37 @@
           "accountTier": 0,
           "userId": "16210406-27b1-4df8-8275-216435525600",
           "username": "Humberto34",
-          "memberSince": "2022-04-08T07:59:01.412Z",
+          "memberSince": 1649404741412,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/47.jpg",
           "location": "West Eloisa, IL, DE",
           "name": "Humberto Durgan"
         },
-        "createdOn": "2022-06-24T22:51:31.972Z",
-        "updatedOn": "2023-04-28T02:08:07.368Z",
+        "createdOn": 1656111091972,
+        "updatedOn": 1682647687368,
         "name": "colossal, menacing jailhouse",
         "description": "Caelestis ipsam cariosus odit aspernatur demum magnam. Testimonium id cupiditate cognomen corona corrupti sunt. Ambulo agnosco uterque harum astrum verecundia articulus avarus.",
-        "depth": { "depth": 95.8, "unit": "ft" },
+        "depth": {
+          "depth": 95.8,
+          "unit": "ft"
+        },
         "location": "Mayfort, AK, MP",
-        "gps": { "lon": -25.4757, "lat": -35.9476 },
+        "gps": {
+          "lon": -25.4757,
+          "lat": -35.9476
+        },
         "shoreAccess": false,
         "averageRating": 1.8,
         "averageDifficulty": 4.2
       }
     },
     {
-      "createdAt": "2015-06-08T05:21:57.580Z",
+      "createdAt": 1433740917580,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -1369,12 +1498,10 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-28T05:23:20",
-          "timezone": "America/Swift_Current"
-        },
+        "entryTime": 1719566600000,
         "duration": 6423,
-        "bottomTime": 6419.2
+        "bottomTime": 6419.2,
+        "timezone": "America/Swift_Current"
       },
       "logNumber": 267,
       "site": {
@@ -1383,20 +1510,26 @@
           "accountTier": 0,
           "userId": "93b5ed57-9ed5-4a7a-8657-9dd31954dec5",
           "username": "Gilbert.Hickle3",
-          "memberSince": "2022-10-10T03:33:02.339Z",
+          "memberSince": 1665372782339,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/162.jpg",
           "location": "Draper, MN, AU",
           "name": "Gilbert Hickle"
         },
-        "createdOn": "2024-01-28T12:50:55.231Z",
-        "updatedOn": "2023-08-29T08:01:14.466Z",
+        "createdOn": 1706446255231,
+        "updatedOn": 1693296074466,
         "name": "frayed, ornery spy",
         "description": "Vulnus verbera solium adulescens amiculum. Alveus desparatus caecus cumque vinitor. Sint totam depopulo coniuratio conatus.",
-        "depth": { "depth": 33.63, "unit": "m" },
+        "depth": {
+          "depth": 33.63,
+          "unit": "m"
+        },
         "location": "La Mirada, SC, SR",
         "directions": "Placeat thymum crepusculum iure asperiores accusator. Aer verumtamen pel. Certus suggero cruciamentum ancilla.",
-        "gps": { "lon": 69.5114, "lat": 38.9994 },
+        "gps": {
+          "lon": 69.5114,
+          "lat": 38.9994
+        },
         "freeToDive": true,
         "shoreAccess": false,
         "averageRating": 3.2,
@@ -1404,26 +1537,27 @@
       }
     },
     {
-      "createdAt": "2017-08-20T08:04:20.814Z",
+      "createdAt": 1503216260814,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "2c722df0-8b04-48e6-a0fa-8706cea74cfa",
-      "depths": { "maxDepth": 118.5, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 118.5,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-27T23:35:39",
-          "timezone": "America/La_Paz"
-        },
+        "entryTime": 1719545739000,
         "duration": 5701.3,
-        "bottomTime": 5693.1
+        "bottomTime": 5693.1,
+        "timezone": "America/La_Paz"
       },
       "logNumber": 965,
       "site": {
@@ -1432,44 +1566,52 @@
           "accountTier": 0,
           "userId": "75aa254f-8a8a-48fe-b644-df53832f1a97",
           "username": "Name55",
-          "memberSince": "2017-08-01T21:57:19.309Z",
+          "memberSince": 1501624639309,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/971.jpg",
           "location": "Revere, ND, SO",
           "name": "Name Jones"
         },
-        "createdOn": "2022-07-15T05:43:08.362Z",
+        "createdOn": 1657863788362,
         "name": "definite, quaint inventor",
         "description": "Uterque stella tantillus consectetur cohaero tot turba excepturi viduo tribuo. Nisi suppellex circumvenio inflammatio ventosus apto terra. Terreo curatio altus conor cohors excepturi.",
-        "depth": { "depth": 15.66, "unit": "m" },
+        "depth": {
+          "depth": 15.66,
+          "unit": "m"
+        },
         "location": "Palm Desert, DE, BW",
-        "gps": { "lon": -149.8201, "lat": -46.0394 },
+        "gps": {
+          "lon": -149.8201,
+          "lat": -46.0394
+        },
         "shoreAccess": true,
         "averageRating": 2.5,
         "averageDifficulty": 1.6
       }
     },
     {
-      "createdAt": "2017-12-10T18:04:00.837Z",
+      "createdAt": 1512929040837,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "27198644-0497-4895-9cca-38b793afa162",
-      "depths": { "averageDepth": 55.796, "maxDepth": 96.2, "depthUnit": "ft" },
+      "depths": {
+        "averageDepth": 55.796,
+        "maxDepth": 96.2,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-27T03:50:32",
-          "timezone": "Europe/Kyiv"
-        },
+        "entryTime": 1719474632000,
         "duration": 4147.5,
-        "bottomTime": 4139.1
+        "bottomTime": 4139.1,
+        "timezone": "Europe/Kyiv"
       },
       "logNumber": 538,
       "site": {
@@ -1478,30 +1620,36 @@
           "accountTier": 0,
           "userId": "b9a46c45-3c42-4461-a767-d04c7bc1314b",
           "username": "Sanford_Kertzmann",
-          "memberSince": "2023-01-15T21:48:10.592Z",
+          "memberSince": 1673819290592,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1221.jpg",
           "location": "Port Melvin, ID, SC",
           "name": "Sanford Kertzmann"
         },
-        "createdOn": "2021-03-19T12:59:03.948Z",
+        "createdOn": 1616158743948,
         "name": "gray, neglected stop",
         "description": "Degenero aurum timor error recusandae. Deduco careo utor supellex facere doloremque ars vos. Sapiente defaeco ascisco crustulum vulgivagus timidus amicitia textor aro communis.",
-        "depth": { "depth": 65, "unit": "ft" },
+        "depth": {
+          "depth": 65,
+          "unit": "ft"
+        },
         "location": "Erdmanboro, OH, BJ",
-        "gps": { "lon": 103.2163, "lat": 11.3568 },
+        "gps": {
+          "lon": 103.2163,
+          "lat": 11.3568
+        },
         "freeToDive": false,
         "averageRating": 3.2,
         "averageDifficulty": 2.3
       }
     },
     {
-      "createdAt": "2021-04-07T12:46:46.092Z",
+      "createdAt": 1617799606092,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -1514,12 +1662,10 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-26T14:04:34",
-          "timezone": "Pacific/Tarawa"
-        },
+        "entryTime": 1719425074000,
         "duration": 1938.9,
-        "bottomTime": 1930.1000000000001
+        "bottomTime": 1930.1000000000001,
+        "timezone": "Pacific/Tarawa"
       },
       "logNumber": 148,
       "site": {
@@ -1528,19 +1674,25 @@
           "accountTier": 0,
           "userId": "5b0d0525-51c7-4cc2-9887-dbbae04c6913",
           "username": "Izaiah83",
-          "memberSince": "2021-12-16T07:19:54.276Z",
+          "memberSince": 1639639194276,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/237.jpg",
           "location": "Union City, KS, BE",
           "name": "Izaiah Wolf"
         },
-        "createdOn": "2022-03-07T20:58:22.761Z",
-        "updatedOn": "2023-04-04T07:18:03.141Z",
+        "createdOn": 1646686702761,
+        "updatedOn": 1680592683141,
         "name": "magnificent, robust default",
         "description": "Defessus audeo tergum caelestis sequi volo cursus. Conspergo votum sopor conturbo tumultus depereo caelestis. Torrens adaugeo atrocitas claro atavus altus tricesimus adhuc.",
-        "depth": { "depth": 37.28, "unit": "m" },
+        "depth": {
+          "depth": 37.28,
+          "unit": "m"
+        },
         "location": "Fort Amy, NY, ID",
-        "gps": { "lon": -21.449, "lat": -75.6674 },
+        "gps": {
+          "lon": -21.449,
+          "lat": -75.6674
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 2.6,
@@ -1548,26 +1700,28 @@
       }
     },
     {
-      "createdAt": "2020-05-22T16:23:08.432Z",
+      "createdAt": 1590164588432,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "c48f6595-bd10-4368-9a52-12d9c1955914",
-      "depths": { "averageDepth": 13.32, "maxDepth": 18, "depthUnit": "m" },
+      "depths": {
+        "averageDepth": 13.32,
+        "maxDepth": 18,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-25T19:23:04",
-          "timezone": "Africa/Bamako"
-        },
+        "entryTime": 1719357784000,
         "duration": 2297.5,
-        "bottomTime": 2294.1
+        "bottomTime": 2294.1,
+        "timezone": "Africa/Bamako"
       },
       "logNumber": 165,
       "site": {
@@ -1576,17 +1730,20 @@
           "accountTier": 0,
           "userId": "99d676ad-c787-4051-b24e-cd551e30b92d",
           "username": "Loren72",
-          "memberSince": "2020-07-17T10:13:31.581Z",
+          "memberSince": 1594980811581,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/899.jpg",
           "location": "West Greg, WY, IS",
           "name": "Loren Carroll"
         },
-        "createdOn": "2023-02-23T15:14:07.531Z",
+        "createdOn": 1677165247531,
         "name": "decimal, cultivated happiness",
         "description": "Ater ater crastinus mollitia curo angustus demo strues. Aliquam vindico accendo cinis inventore. Tutamen vereor deludo thalassinus.",
         "location": "Toledo, SD, GI",
-        "gps": { "lon": 129.6694, "lat": 41.7362 },
+        "gps": {
+          "lon": 129.6694,
+          "lat": 41.7362
+        },
         "freeToDive": true,
         "shoreAccess": false,
         "averageRating": 2.9,
@@ -1594,26 +1751,27 @@
       }
     },
     {
-      "createdAt": "2017-03-02T06:11:37.649Z",
+      "createdAt": 1488435097649,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "fa46d759-64f9-45aa-9611-b344a0a0ec28",
-      "depths": { "maxDepth": 49.3, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 49.3,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-25T16:12:21",
-          "timezone": "Europe/Madrid"
-        },
+        "entryTime": 1719346341000,
         "duration": 1469.2,
-        "bottomTime": 1461.3
+        "bottomTime": 1461.3,
+        "timezone": "Europe/Madrid"
       },
       "logNumber": 824,
       "site": {
@@ -1622,20 +1780,26 @@
           "accountTier": 0,
           "userId": "fb13030b-904a-4438-9e08-ae20db7afc55",
           "username": "Josue43",
-          "memberSince": "2022-03-10T13:14:47.257Z",
+          "memberSince": 1646918087257,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/995.jpg",
           "location": "Port Jovaniville, HI, MN",
           "name": "Josue Sporer"
         },
-        "createdOn": "2022-05-07T09:13:13.907Z",
-        "updatedOn": "2023-05-21T10:14:23.941Z",
+        "createdOn": 1651914793907,
+        "updatedOn": 1684664063941,
         "name": "monthly, educated seal",
         "description": "Defaeco viduo voluptatem. Tripudio tricesimus tunc benigne cogito quas arbor earum cilicium. Cimentarius concedo cultellus odit aiunt voluptatum fugit defero a.",
-        "depth": { "depth": 6.49, "unit": "m" },
+        "depth": {
+          "depth": 6.49,
+          "unit": "m"
+        },
         "location": "Port Maximillian, VT, PG",
         "directions": "Officia cruciamentum tamisium sustineo. Clementia cogo admitto odio termes amiculum. Patrocinor tero delego vobis maiores dolore.",
-        "gps": { "lon": -46.1577, "lat": 89.4888 },
+        "gps": {
+          "lon": -46.1577,
+          "lat": 89.4888
+        },
         "freeToDive": true,
         "shoreAccess": true,
         "averageRating": 4.3,
@@ -1643,12 +1807,12 @@
       }
     },
     {
-      "createdAt": "2018-02-11T08:18:29.620Z",
+      "createdAt": 1518337109620,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -1661,11 +1825,9 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-24T08:12:06",
-          "timezone": "Asia/Barnaul"
-        },
-        "duration": 4371.8
+        "entryTime": 1719231126000,
+        "duration": 4371.8,
+        "timezone": "Asia/Barnaul"
       },
       "logNumber": 62,
       "site": {
@@ -1674,44 +1836,49 @@
           "accountTier": 0,
           "userId": "5cae6626-e934-4ef5-b76f-bfecff39dbbf",
           "username": "Marcos.Cummerata26",
-          "memberSince": "2023-05-01T16:06:19.391Z",
+          "memberSince": 1682957179391,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/91.jpg",
           "location": "Creminstead, WV, TJ",
           "name": "Marcos Cummerata"
         },
-        "createdOn": "2019-12-26T23:32:01.251Z",
+        "createdOn": 1577403121251,
         "name": "steep, hot prow",
         "description": "Studio volva cursim coerceo admitto averto arx admoveo tendo. Spectaculum tergeo coruscus spiritus tricesimus curia collum angustus. Tener decretum vinco aufero cohibeo eius victus dolorem.",
         "location": "Urbandale, TX, BN",
         "directions": "Coniecto alter verus amissio quidem. Facilis sto amita repellendus tumultus minus subito toties cubicularis. Dignissimos vorago nam amor arto.",
-        "gps": { "lon": -28.4586, "lat": 86.0179 },
+        "gps": {
+          "lon": -28.4586,
+          "lat": 86.0179
+        },
         "shoreAccess": true,
         "averageRating": 2,
         "averageDifficulty": 1.1
       }
     },
     {
-      "createdAt": "2015-05-28T07:30:52.650Z",
+      "createdAt": 1432798252650,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "bcc230d6-5512-4bae-9104-b9a844f23f7c",
-      "depths": { "averageDepth": 7.08, "maxDepth": 14.16, "depthUnit": "m" },
+      "depths": {
+        "averageDepth": 7.08,
+        "maxDepth": 14.16,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-23T08:07:11",
-          "timezone": "America/Anguilla"
-        },
+        "entryTime": 1719144431000,
         "duration": 4294.5,
-        "bottomTime": 4290.8
+        "bottomTime": 4290.8,
+        "timezone": "America/Anguilla"
       },
       "logNumber": 762,
       "site": {
@@ -1720,16 +1887,19 @@
           "accountTier": 0,
           "userId": "cad471a3-2c63-482d-a238-51985625f8f4",
           "username": "Joaquin.Powlowski34",
-          "memberSince": "2017-03-02T18:39:49.784Z",
+          "memberSince": 1488479989784,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/613.jpg",
           "location": "East Pierreworth, MN, BA",
           "name": "Joaquin Powlowski"
         },
-        "createdOn": "2021-01-27T21:20:10.227Z",
+        "createdOn": 1611782410227,
         "name": "false, belated unibody",
         "description": "Cuius suffragium suasoria vis adulescens cicuta pecto amo consuasor peior. Umerus adflicto audio arcesso asporto fugit aliquid claro at tempore. Eligendi tandem vilis ut.",
-        "depth": { "depth": 32.92, "unit": "m" },
+        "depth": {
+          "depth": 32.92,
+          "unit": "m"
+        },
         "location": "South Hank, KY, FJ",
         "directions": "Aer deinde thermae abduco substantia dapifer candidus sub textilis. Coniecto arca sono cubo totus culpa supellex tamquam occaecati. Rem cum cursus vesper.",
         "freeToDive": true,
@@ -1739,26 +1909,28 @@
       }
     },
     {
-      "createdAt": "2014-10-15T05:55:30.247Z",
+      "createdAt": 1413352530247,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "816e74d9-f354-40e9-aaa8-487d17fd732e",
-      "depths": { "averageDepth": 4.4486, "maxDepth": 7.67, "depthUnit": "m" },
+      "depths": {
+        "averageDepth": 4.4486,
+        "maxDepth": 7.67,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-22T15:58:05",
-          "timezone": "Pacific/Apia"
-        },
+        "entryTime": 1719086285000,
         "duration": 3805.4,
-        "bottomTime": 3800
+        "bottomTime": 3800,
+        "timezone": "Pacific/Apia"
       },
       "logNumber": 997,
       "site": {
@@ -1767,20 +1939,26 @@
           "accountTier": 0,
           "userId": "030618cb-167d-4ad6-9773-b5a62c2f13f4",
           "username": "Charles_Botsford",
-          "memberSince": "2019-12-10T10:37:25.110Z",
+          "memberSince": 1575974245110,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/55.jpg",
           "location": "Arecibo, ID, NP",
           "name": "Charles Botsford"
         },
-        "createdOn": "2023-06-12T22:17:46.853Z",
-        "updatedOn": "2023-07-16T15:07:52.506Z",
+        "createdOn": 1686608266853,
+        "updatedOn": 1689520072506,
         "name": "vengeful, hasty degree",
         "description": "Umbra comminor apparatus cuppedia delectatio et. Carus demonstro administratio caute vox amor audentia. Undique velociter summopere cunabula tabella certus comburo iure.",
-        "depth": { "depth": 140.1, "unit": "ft" },
+        "depth": {
+          "depth": 140.1,
+          "unit": "ft"
+        },
         "location": "North Maud, NC, PG",
         "directions": "Usus adeptio timidus. Nihil vitiosus cometes odio tum thymum utilis calculus. Aeneus bellum ocer tenax.",
-        "gps": { "lon": 177.2539, "lat": -45.5866 },
+        "gps": {
+          "lon": 177.2539,
+          "lat": -45.5866
+        },
         "freeToDive": true,
         "shoreAccess": true,
         "averageRating": 4.9,
@@ -1788,12 +1966,12 @@
       }
     },
     {
-      "createdAt": "2024-01-27T09:35:12.216Z",
+      "createdAt": 1706348112216,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -1806,12 +1984,10 @@
         "depthUnit": "ft"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-20T11:33:29",
-          "timezone": "Pacific/Marquesas"
-        },
+        "entryTime": 1718897609000,
         "duration": 5305.1,
-        "bottomTime": 5297
+        "bottomTime": 5297,
+        "timezone": "Pacific/Marquesas"
       },
       "logNumber": 285,
       "site": {
@@ -1820,17 +1996,20 @@
           "accountTier": 0,
           "userId": "8e6d8814-ad5b-408f-8ade-5b851db7ddca",
           "username": "Beaulah.Thompson",
-          "memberSince": "2015-09-22T12:10:03.022Z",
+          "memberSince": 1442923803022,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/503.jpg",
           "location": "Quincy, RI, KP",
           "name": "Beaulah Thompson"
         },
-        "createdOn": "2021-08-19T00:30:58.526Z",
+        "createdOn": 1629333058526,
         "name": "grateful, impressionable climb",
         "description": "Tantillus tricesimus speciosus vigilo ubi. Volutabrum demum reprehenderit adulatio absorbeo cursus. Color cunctatio agnosco animadverto.",
         "location": "New Ezequielfield, RI, UZ",
-        "gps": { "lon": 171.7613, "lat": 70.5109 },
+        "gps": {
+          "lon": 171.7613,
+          "lat": 70.5109
+        },
         "freeToDive": false,
         "shoreAccess": true,
         "averageRating": 2,
@@ -1838,12 +2017,12 @@
       }
     },
     {
-      "createdAt": "2019-09-24T03:33:15.988Z",
+      "createdAt": 1569295995988,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -1856,11 +2035,9 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-19T04:33:58",
-          "timezone": "America/Guatemala"
-        },
-        "duration": 6663.5
+        "entryTime": 1718786038000,
+        "duration": 6663.5,
+        "timezone": "America/Guatemala"
       },
       "logNumber": 598,
       "site": {
@@ -1869,16 +2046,19 @@
           "accountTier": 0,
           "userId": "c113d182-f82a-4485-96bb-577996fb0b5c",
           "username": "Kathleen_Spencer",
-          "memberSince": "2023-05-10T01:59:31.276Z",
+          "memberSince": 1683683971276,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/760.jpg",
           "location": "Marielaside, SD, VI",
           "name": "Kathleen Spencer"
         },
-        "createdOn": "2019-07-19T04:40:44.369Z",
+        "createdOn": 1563511244369,
         "name": "athletic, coarse scale",
         "description": "Depereo recusandae infit vomica cras tondeo adsuesco. Terga claro id suadeo clamo vae fugiat. Patruus odit confero communis baiulus sapiente harum deludo defleo autus.",
-        "depth": { "depth": 12.3, "unit": "m" },
+        "depth": {
+          "depth": 12.3,
+          "unit": "m"
+        },
         "location": "Romanview, FL, VN",
         "directions": "Molestiae cupio clarus delectus vesper demulceo itaque cauda. Voluptatem surgo blandior auctor. Officia benigne sumptus temporibus cibo crebro sordeo utique.",
         "freeToDive": false,
@@ -1888,26 +2068,27 @@
       }
     },
     {
-      "createdAt": "2018-01-30T02:10:27.949Z",
+      "createdAt": 1517278227949,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "5ded643d-c988-4f22-b7f3-e6a929ed56cf",
-      "depths": { "maxDepth": 148.9, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 148.9,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-18T22:43:04",
-          "timezone": "Europe/Ljubljana"
-        },
+        "entryTime": 1718764984000,
         "duration": 4299.3,
-        "bottomTime": 4294.6
+        "bottomTime": 4294.6,
+        "timezone": "Europe/Ljubljana"
       },
       "logNumber": 297,
       "site": {
@@ -1916,19 +2097,25 @@
           "accountTier": 0,
           "userId": "6dc6df21-5032-4245-80f0-676a8ea1b9f4",
           "username": "Kattie.Larson",
-          "memberSince": "2023-05-11T23:40:54.111Z",
+          "memberSince": 1683848454111,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1045.jpg",
           "location": "El Paso, MI, NE",
           "name": "Kattie Larson"
         },
-        "createdOn": "2024-03-17T01:38:39.246Z",
+        "createdOn": 1710639519246,
         "name": "medium, loud chain",
         "description": "Tutamen adfero clam conscendo cui cattus vereor argumentum. Pecus talis basium eveniet deinde explicabo officia. Succedo tum argumentum sodalitas adopto alter deduco adhuc cogito.",
-        "depth": { "depth": 121.9, "unit": "ft" },
+        "depth": {
+          "depth": 121.9,
+          "unit": "ft"
+        },
         "location": "West Helga, CO, FR",
         "directions": "Adeo calcar denuo nihil cur aranea velut desino solutio. Subito vulticulus ars cavus solutio. Doloribus veniam accusantium necessitatibus absorbeo.",
-        "gps": { "lon": 16.7949, "lat": 55.1754 },
+        "gps": {
+          "lon": 16.7949,
+          "lat": 55.1754
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 3.9,
@@ -1936,25 +2123,26 @@
       }
     },
     {
-      "createdAt": "2023-01-09T06:04:53.478Z",
+      "createdAt": 1673244293478,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "04bef536-cbb5-44b9-97c2-9535f12fa633",
-      "depths": { "maxDepth": 95.3, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 95.3,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-18T08:25:37",
-          "timezone": "America/St_Thomas"
-        },
-        "duration": 4909.6
+        "entryTime": 1718713537000,
+        "duration": 4909.6,
+        "timezone": "America/St_Thomas"
       },
       "logNumber": 87,
       "site": {
@@ -1963,17 +2151,20 @@
           "accountTier": 0,
           "userId": "851130dc-68cb-470a-9a00-f1875f2df26d",
           "username": "Francisco94",
-          "memberSince": "2021-01-17T20:57:46.037Z",
+          "memberSince": 1610917066037,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1092.jpg",
           "location": "West Shayna, HI, SJ",
           "name": "Francisco Greenfelder"
         },
-        "createdOn": "2022-05-23T15:51:35.399Z",
+        "createdOn": 1653321095399,
         "name": "specific, self-reliant pagan",
         "description": "Strues tener harum est adulatio paulatim tamquam victus. Contra vulnus cotidie torqueo sumptus. Comis tantillus sopor supplanto sub denuncio dolores.",
         "location": "Jonesfort, IL, TO",
-        "gps": { "lon": -26.8464, "lat": -83.9728 },
+        "gps": {
+          "lon": -26.8464,
+          "lat": -83.9728
+        },
         "freeToDive": false,
         "shoreAccess": true,
         "averageRating": 3.9,
@@ -1981,25 +2172,27 @@
       }
     },
     {
-      "createdAt": "2016-06-02T19:46:14.663Z",
+      "createdAt": 1464896774663,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "ac31328f-fedc-4065-918b-9f9aadcd36c3",
-      "depths": { "averageDepth": 71.75, "maxDepth": 87.5, "depthUnit": "ft" },
+      "depths": {
+        "averageDepth": 71.75,
+        "maxDepth": 87.5,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-15T02:59:14",
-          "timezone": "America/Martinique"
-        },
-        "duration": 3065.2
+        "entryTime": 1718434754000,
+        "duration": 3065.2,
+        "timezone": "America/Martinique"
       },
       "logNumber": 791,
       "site": {
@@ -2008,18 +2201,21 @@
           "accountTier": 0,
           "userId": "a4967da9-3cee-42e8-abbf-4e04f4ef7d78",
           "username": "Karli.Emard",
-          "memberSince": "2014-11-04T14:21:08.727Z",
+          "memberSince": 1415110868727,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/695.jpg",
           "location": "Fort Dinoburgh, DE, LB",
           "name": "Karli Emard"
         },
-        "createdOn": "2021-08-03T23:43:52.278Z",
-        "updatedOn": "2022-06-26T02:15:09.079Z",
+        "createdOn": 1628034232278,
+        "updatedOn": 1656209709079,
         "name": "lucky, false hospice",
         "description": "At surgo torqueo somniculosus aegrus villa. Valeo clam conqueror patior delego usus cariosus pectus contra. Corrupti cunabula accusator molestiae adsidue apto cavus decet virga.",
         "location": "West Vito, TN, BD",
-        "gps": { "lon": 152.6813, "lat": -21.7355 },
+        "gps": {
+          "lon": 152.6813,
+          "lat": -21.7355
+        },
         "freeToDive": false,
         "shoreAccess": true,
         "averageRating": 2.7,
@@ -2027,12 +2223,12 @@
       }
     },
     {
-      "createdAt": "2016-10-09T16:22:52.608Z",
+      "createdAt": 1476030172608,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -2045,12 +2241,10 @@
         "depthUnit": "ft"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-15T08:23:48",
-          "timezone": "Asia/Famagusta"
-        },
+        "entryTime": 1718454228000,
         "duration": 4314.7,
-        "bottomTime": 4307.3
+        "bottomTime": 4307.3,
+        "timezone": "Asia/Famagusta"
       },
       "logNumber": 600,
       "site": {
@@ -2059,18 +2253,21 @@
           "accountTier": 0,
           "userId": "b27cb791-01c0-425a-90f6-2486aeaa9abc",
           "username": "Narciso96",
-          "memberSince": "2018-08-06T00:39:37.247Z",
+          "memberSince": 1533515977247,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/679.jpg",
           "location": "Florin, AR, GE",
           "name": "Narciso Herzog"
         },
-        "createdOn": "2020-07-09T22:15:55.523Z",
-        "updatedOn": "2023-07-26T16:02:11.612Z",
+        "createdOn": 1594332955523,
+        "updatedOn": 1690387331612,
         "name": "aware, likely glimpse",
         "description": "Bonus ex coniecto spiculum sophismata vesco. Commodi subseco subiungo a antiquus agnitio amplus dedico. Animi adsidue ademptio temporibus vigilo defetiscor attollo toties.",
         "location": "North Annie, VA, KE",
-        "gps": { "lon": -137.1827, "lat": 61.9178 },
+        "gps": {
+          "lon": -137.1827,
+          "lat": 61.9178
+        },
         "freeToDive": true,
         "shoreAccess": true,
         "averageRating": 4.9,
@@ -2078,26 +2275,28 @@
       }
     },
     {
-      "createdAt": "2023-03-12T01:23:24.468Z",
+      "createdAt": 1678584204468,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "72d8661c-8797-44c0-9339-9c78a0e5cdea",
-      "depths": { "averageDepth": 5.7646, "maxDepth": 7.03, "depthUnit": "m" },
+      "depths": {
+        "averageDepth": 5.7646,
+        "maxDepth": 7.03,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-14T03:45:27",
-          "timezone": "Asia/Riyadh"
-        },
+        "entryTime": 1718351127000,
         "duration": 6153.5,
-        "bottomTime": 6145
+        "bottomTime": 6145,
+        "timezone": "Asia/Riyadh"
       },
       "logNumber": 237,
       "site": {
@@ -2106,20 +2305,26 @@
           "accountTier": 0,
           "userId": "25d22289-d391-4834-ac19-6f021755fd46",
           "username": "Ulices56",
-          "memberSince": "2016-09-23T18:12:52.154Z",
+          "memberSince": 1474654372154,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/600.jpg",
           "location": "Uptonton, KY, MA",
           "name": "Ulices Cummings"
         },
-        "createdOn": "2019-12-29T22:25:53.170Z",
-        "updatedOn": "2023-12-01T16:18:58.437Z",
+        "createdOn": 1577658353170,
+        "updatedOn": 1701447538437,
         "name": "small, forceful lag",
         "description": "Esse depraedor clarus. Cogo speciosus cibo animadverto. Tenax reiciendis triumphus.",
-        "depth": { "depth": 41.36, "unit": "m" },
+        "depth": {
+          "depth": 41.36,
+          "unit": "m"
+        },
         "location": "North Eusebiostead, LA, SD",
         "directions": "Totus verto attonbitus desipio. Cumque umquam absorbeo ambulo tenetur adipiscor quasi. Sto triumphus cinis vesco.",
-        "gps": { "lon": 50.7868, "lat": 73.3996 },
+        "gps": {
+          "lon": 50.7868,
+          "lat": 73.3996
+        },
         "freeToDive": true,
         "shoreAccess": true,
         "averageRating": 4.3,
@@ -2127,12 +2332,12 @@
       }
     },
     {
-      "createdAt": "2022-01-27T00:44:55.875Z",
+      "createdAt": 1643244295875,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -2145,12 +2350,10 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-14T11:10:07",
-          "timezone": "Pacific/Bougainville"
-        },
+        "entryTime": 1718377807000,
         "duration": 2510.8,
-        "bottomTime": 2506.5
+        "bottomTime": 2506.5,
+        "timezone": "Pacific/Bougainville"
       },
       "logNumber": 890,
       "site": {
@@ -2159,16 +2362,19 @@
           "accountTier": 0,
           "userId": "7cd7513b-67fe-4539-9ac0-26af50227db3",
           "username": "Claudine34",
-          "memberSince": "2021-05-23T22:08:06.706Z",
+          "memberSince": 1621807686706,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/785.jpg",
           "location": "Miami, MS, SX",
           "name": "Claudine Lakin"
         },
-        "createdOn": "2020-05-23T06:57:08.454Z",
+        "createdOn": 1590217028454,
         "name": "fake, illustrious headlight",
         "description": "Amiculum cado vacuus ulterius avarus. Infit talio statua advenio. Volva aro vel patria clam utilis.",
-        "depth": { "depth": 54.2, "unit": "ft" },
+        "depth": {
+          "depth": 54.2,
+          "unit": "ft"
+        },
         "location": "Feestbury, MA, PF",
         "freeToDive": true,
         "shoreAccess": false,
@@ -2177,25 +2383,26 @@
       }
     },
     {
-      "createdAt": "2018-10-14T19:56:13.993Z",
+      "createdAt": 1539546973993,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "ddd311e4-4742-4705-b05c-d924ef9af392",
-      "depths": { "maxDepth": 14.9, "depthUnit": "m" },
+      "depths": {
+        "maxDepth": 14.9,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-12T01:28:41",
-          "timezone": "Africa/El_Aaiun"
-        },
-        "duration": 5196.8
+        "entryTime": 1718170121000,
+        "duration": 5196.8,
+        "timezone": "Africa/El_Aaiun"
       },
       "logNumber": 757,
       "site": {
@@ -2204,14 +2411,14 @@
           "accountTier": 0,
           "userId": "7ae77d91-ac94-4307-b58a-c2ee3416033a",
           "username": "Hazel9",
-          "memberSince": "2016-09-23T02:27:31.808Z",
+          "memberSince": 1474597651808,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/515.jpg",
           "location": "Wichita Falls, GA, ZW",
           "name": "Hazel Heaney"
         },
-        "createdOn": "2021-06-15T01:09:57.403Z",
-        "updatedOn": "2023-12-10T17:08:28.947Z",
+        "createdOn": 1623719397403,
+        "updatedOn": 1702228108947,
         "name": "joint, active status",
         "description": "Defero expedita est solitudo curso casus claustrum aestus thesis adeptio. Torqueo antiquus acervus. Suspendo amoveo bonus accusantium iure tutamen defendo voluptatum.",
         "location": "Schoenshire, CO, NA",
@@ -2223,26 +2430,27 @@
       }
     },
     {
-      "createdAt": "2024-01-09T04:21:41.979Z",
+      "createdAt": 1704774101979,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "a667b123-f8d1-43a1-b03c-d6c9e571c4d4",
-      "depths": { "maxDepth": 67.9, "depthUnit": "ft" },
+      "depths": {
+        "maxDepth": 67.9,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-10T06:49:04",
-          "timezone": "Asia/Tbilisi"
-        },
+        "entryTime": 1718016544000,
         "duration": 6263.3,
-        "bottomTime": 6255.2
+        "bottomTime": 6255.2,
+        "timezone": "Asia/Tbilisi"
       },
       "logNumber": 890,
       "site": {
@@ -2251,19 +2459,25 @@
           "accountTier": 0,
           "userId": "25711161-5f17-4915-90ec-3d70e75961ef",
           "username": "Keanu29",
-          "memberSince": "2022-08-24T04:18:08.129Z",
+          "memberSince": 1661314688129,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/256.jpg",
           "location": "Fort Ena, SC, SG",
           "name": "Keanu Bradtke"
         },
-        "createdOn": "2022-11-10T09:18:24.776Z",
+        "createdOn": 1668071904776,
         "name": "last, unknown location",
         "description": "Clementia civis quidem animadverto ex voluptatem sequi vinculum voluptate dicta. Ciminatio acsi confugo turbo tremo deserunt alius vulgaris sollicito super. Tener umbra tricesimus nobis.",
-        "depth": { "depth": 37.59, "unit": "m" },
+        "depth": {
+          "depth": 37.59,
+          "unit": "m"
+        },
         "location": "New Ashleighstad, MN, LA",
         "directions": "Conduco surculus distinctio accusator. Vergo apud sumptus. Celo tergum defluo villa caelestis amplitudo cena defero cibus.",
-        "gps": { "lon": 50.5668, "lat": -6.2736 },
+        "gps": {
+          "lon": 50.5668,
+          "lat": -6.2736
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 2.3,
@@ -2271,26 +2485,28 @@
       }
     },
     {
-      "createdAt": "2016-12-23T17:49:36.229Z",
+      "createdAt": 1482515376229,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "3c7a9734-985b-4d67-a7b0-5b72bc12fee8",
-      "depths": { "averageDepth": 27.797, "maxDepth": 36.1, "depthUnit": "ft" },
+      "depths": {
+        "averageDepth": 27.797,
+        "maxDepth": 36.1,
+        "depthUnit": "ft"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-07T18:18:37",
-          "timezone": "Asia/Kuching"
-        },
+        "entryTime": 1717798717000,
         "duration": 5255.2,
-        "bottomTime": 5249.3
+        "bottomTime": 5249.3,
+        "timezone": "Asia/Kuching"
       },
       "logNumber": 979,
       "site": {
@@ -2299,30 +2515,33 @@
           "accountTier": 0,
           "userId": "2e18cdbc-2894-4b73-b448-814401cb9882",
           "username": "Solon44",
-          "memberSince": "2015-09-13T13:40:47.130Z",
+          "memberSince": 1442151647130,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1219.jpg",
           "location": "Kulascester, MT, BM",
           "name": "Solon Toy"
         },
-        "createdOn": "2023-06-16T18:31:04.694Z",
-        "updatedOn": "2023-12-24T05:12:36.029Z",
+        "createdOn": 1686940264694,
+        "updatedOn": 1703394756029,
         "name": "tough, scaly microwave",
         "description": "Quidem volup verbum a tricesimus decens brevis cilicium clam theologus. Audio tum amplexus. Adflicto urbs infit brevis depono triumphus tardus claro.",
         "location": "West Tabithamouth, SC, VA",
-        "gps": { "lon": -100.565, "lat": 14.6116 },
+        "gps": {
+          "lon": -100.565,
+          "lat": 14.6116
+        },
         "freeToDive": false,
         "averageRating": 3.1,
         "averageDifficulty": 4.3
       }
     },
     {
-      "createdAt": "2016-08-21T08:08:35.892Z",
+      "createdAt": 1471766915892,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
@@ -2335,12 +2554,10 @@
         "depthUnit": "m"
       },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-06T13:58:21",
-          "timezone": "Asia/Taipei"
-        },
+        "entryTime": 1717696701000,
         "duration": 5592.5,
-        "bottomTime": 5585.6
+        "bottomTime": 5585.6,
+        "timezone": "Asia/Taipei"
       },
       "logNumber": 38,
       "site": {
@@ -2349,19 +2566,25 @@
           "accountTier": 0,
           "userId": "6e148521-5911-421a-9f8b-440489de49f2",
           "username": "Reuben_Green",
-          "memberSince": "2020-04-16T04:09:17.774Z",
+          "memberSince": 1587010157774,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/834.jpg",
           "location": "Celinechester, DE, NG",
           "name": "Reuben Green"
         },
-        "createdOn": "2022-11-03T09:15:34.314Z",
+        "createdOn": 1667466934314,
         "name": "decent, standard barbeque",
         "description": "Decor volo subvenio amplus titulus sumptus. Succurro bos vesco. Voro balbus quidem quaerat beneficium tardus auditor.",
-        "depth": { "depth": 13.98, "unit": "m" },
+        "depth": {
+          "depth": 13.98,
+          "unit": "m"
+        },
         "location": "North Nicholaus, SD, PL",
         "directions": "Vorago tenax ante defessus. Aestas deporto videlicet cupiditas cattus. Vinco apparatus conventus adfectus conicio ter carmen culpo terga tandem.",
-        "gps": { "lon": 21.0941, "lat": 4.6836 },
+        "gps": {
+          "lon": 21.0941,
+          "lat": 4.6836
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 2.7,
@@ -2369,26 +2592,27 @@
       }
     },
     {
-      "createdAt": "2017-09-14T09:10:59.983Z",
+      "createdAt": 1505380259983,
       "creator": {
         "accountTier": 0,
         "userId": "cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1",
         "username": "Chris",
-        "memberSince": "2024-04-17T13:38:34.242Z",
+        "memberSince": 1713361114242,
         "logBookSharing": "private",
         "avatar": null,
         "name": "Chris C",
         "location": "Cambridge, ON"
       },
       "id": "0f1a156e-4696-4305-aa00-87efb3c41459",
-      "depths": { "maxDepth": 30.72, "depthUnit": "m" },
+      "depths": {
+        "maxDepth": 30.72,
+        "depthUnit": "m"
+      },
       "timing": {
-        "entryTime": {
-          "date": "2024-06-06T02:33:33",
-          "timezone": "Asia/Bangkok"
-        },
+        "entryTime": 1717655613000,
         "duration": 2881,
-        "bottomTime": 2872.3
+        "bottomTime": 2872.3,
+        "timezone": "Asia/Bangkok"
       },
       "logNumber": 486,
       "site": {
@@ -2397,19 +2621,22 @@
           "accountTier": 0,
           "userId": "6dc6df21-5032-4245-80f0-676a8ea1b9f4",
           "username": "Kattie.Larson",
-          "memberSince": "2023-05-11T23:40:54.111Z",
+          "memberSince": 1683848454111,
           "logBookSharing": "private",
           "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1045.jpg",
           "location": "El Paso, MI, NE",
           "name": "Kattie Larson"
         },
-        "createdOn": "2023-02-06T16:13:27.838Z",
-        "updatedOn": "2022-08-06T19:02:11.166Z",
+        "createdOn": 1675700007838,
+        "updatedOn": 1659812531166,
         "name": "anxious, suburban number",
         "description": "Templum tubineus deinde thymbra virgo ipsa casus alter sono. Avaritia abstergo substantia taceo. Baiulus debilito speciosus venia adsum apto amoveo sperno dens.",
         "location": "Karaworth, KS, SM",
         "directions": "Quos coerceo crustulum curo bene adfectus. Vulpes ipsam chirographum sequi centum crapula. Vitae ciminatio correptius minima custodia.",
-        "gps": { "lon": 167.3095, "lat": -65.4949 },
+        "gps": {
+          "lon": 167.3095,
+          "lat": -65.4949
+        },
         "freeToDive": false,
         "shoreAccess": false,
         "averageRating": 4.8,

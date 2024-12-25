@@ -704,8 +704,10 @@ export class UserNotificationsController {
     @Body(new ZodValidator(CreateOrUpdateNotificationParamsSchema))
     options: CreateOrUpdateNotificationParamsDTO,
   ): Promise<NotificationDTO> {
-    notification.active = options.active ?? new Date();
-    notification.expires = options.expires;
+    notification.active = new Date(options.active ?? Date.now());
+    notification.expires = options.expires
+      ? new Date(options.expires)
+      : undefined;
     notification.icon = options.icon;
     notification.message = options.message;
     notification.title = options.title;

@@ -181,7 +181,7 @@ module.exports = {
       'ts-jest',
       {
         isolatedModules: true,
-        tsconfig: '<rootDir>/tsconfig.test.json',
+        tsconfig: '<rootDir>/tests/tsconfig.json',
       },
     ],
     '^.+\\.html$': 'jest-text-transformer',

@@ -27,7 +27,7 @@ export class DiveSiteReview {
   get creator(): SuccinctProfileDTO {
     return {
       accountTier: this.data.creator.accountTier,
-      memberSince: this.data.creator.memberSince,
+      memberSince: this.data.creator.memberSince.valueOf(),
       userId: this.data.creator.id,
       username: this.data.creator.username,
       logBookSharing: this.data.creator.logBookSharing,
@@ -108,8 +108,8 @@ export class DiveSiteReview {
     return {
       id: this.id,
       creator: this.creator,
-      createdOn: this.createdOn,
-      updatedOn: this.updatedOn,
+      createdOn: this.createdOn.valueOf(),
+      updatedOn: this.updatedOn?.valueOf(),
       title: this.title,
       rating: this.rating,
       difficulty: this.difficulty,

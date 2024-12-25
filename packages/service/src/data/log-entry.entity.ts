@@ -26,6 +26,7 @@ import { MediaFileEntity } from './media-file.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entries')
+@Index(['owner', 'entryTime'], { unique: true })
 export class LogEntryEntity {
   // Identifiers
   @PrimaryColumn('uuid')
@@ -48,11 +49,7 @@ export class LogEntryEntity {
 
   // Timing
   @Column({ type: 'timestamp', nullable: false })
-  @Index()
-  timestamp: Date = new Date();
-
-  @Column({ type: 'varchar', length: 20, nullable: false })
-  entryTime: string = '';
+  entryTime: Date = new Date();
 
   @Column({ type: 'text', nullable: false })
   timezone: string = '';

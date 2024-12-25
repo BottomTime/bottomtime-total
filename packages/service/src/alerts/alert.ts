@@ -55,8 +55,8 @@ export class Alert {
       icon: this.icon,
       title: this.title,
       message: this.message,
-      active: this.active,
-      expires: this.expires,
+      active: this.active.valueOf(),
+      expires: this.expires?.valueOf(),
     };
   }
 

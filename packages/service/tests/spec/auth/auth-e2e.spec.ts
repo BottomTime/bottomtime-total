@@ -95,7 +95,7 @@ describe('Auth Module E2E Tests', () => {
       })
       .expect(200);
     const login = UserSchema.parse(loginResponse);
-    userData.lastLogin = login.lastLogin!;
+    userData.lastLogin = new Date(login.lastLogin!);
 
     // Last login should be updated.
     expect(login.lastLogin?.valueOf()).toBeCloseTo(Date.now(), -3);
@@ -525,7 +525,7 @@ describe('Auth Module E2E Tests', () => {
         .delete('/api/auth/invalidations')
         .set(...adminAuthHeader)
         .send({
-          invalidatedBefore: '2024-09-18T15:46:44Z',
+          invalidatedBefore: new Date('2024-09-18T15:46:44Z').valueOf(),
         })
         .expect(200);
 

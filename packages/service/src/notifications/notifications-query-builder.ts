@@ -25,10 +25,10 @@ export class NotificationsQueryBuilder {
     return this;
   }
 
-  withNewerThan(newerThan?: Date): this {
+  withNewerThan(newerThan?: number): this {
     if (newerThan) {
       this.query.andWhere('notifications.active >= :timestamp', {
-        timestamp: newerThan,
+        timestamp: new Date(newerThan),
       });
     }
     return this;

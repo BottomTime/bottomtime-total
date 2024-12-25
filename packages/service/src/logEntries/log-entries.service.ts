@@ -89,7 +89,6 @@ export class LogEntriesService {
         'entries.createdAt',
         'entries.updatedAt',
         'entries.logNumber',
-        'entries.timestamp',
         'entries.entryTime',
         'entries.timezone',
         'entries.bottomTime',

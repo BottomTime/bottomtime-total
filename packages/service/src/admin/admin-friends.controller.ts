@@ -32,13 +32,13 @@ export class AdminFriendsController {
     { expiration }: PurgeExpiredFriendRequestsParamsDTO,
   ): Promise<PurgeExpiredFriendRequestsResultsDTO> {
     this.log.log(
-      `Purging expired friend requests with expiration ${
-        expiration ?? new Date()
-      }`,
+      `Purging expired friend requests with expiration ${new Date(
+        expiration ?? Date.now(),
+      )}`,
     );
 
     const requestsDeleted = await this.service.purgeExpiredFriendRequests(
-      expiration,
+      new Date(expiration ?? Date.now()),
     );
     return { requestsDeleted };
   }

@@ -353,15 +353,15 @@ export class MembershipService implements OnModuleInit {
     return {
       accountTier,
       cancellationDate: subscription.canceled_at
-        ? new Date(subscription.canceled_at * 1000)
+        ? subscription.canceled_at * 1000
         : undefined,
       entitlements: entitlementsData.data.map((e) => e.lookup_key),
       nextBillingDate: subscription.current_period_end
-        ? new Date(subscription.current_period_end * 1000)
+        ? subscription.current_period_end * 1000
         : undefined,
       status,
       trialEndDate: subscription.trial_end
-        ? new Date(subscription.trial_end * 1000)
+        ? subscription.trial_end * 1000
         : undefined,
     };
   }

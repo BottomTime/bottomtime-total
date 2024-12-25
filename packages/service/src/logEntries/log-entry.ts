@@ -1,5 +1,4 @@
 import {
-  DateWithTimezoneDTO,
   DepthUnit,
   ExposureSuit,
   LogEntryAirDTO,
@@ -242,21 +241,18 @@ class EntryEquipment {
 class EntryTiming {
   constructor(private readonly data: LogEntryEntity) {}
 
-  get entryTime(): DateWithTimezoneDTO {
-    return {
-      date: dayjs(this.data.entryTime).format(DateTimeFormat),
-      timezone: this.data.timezone,
-    };
+  get entryTime(): Date {
+    return this.data.entryTime;
   }
-  set entryTime(value: DateWithTimezoneDTO) {
-    const entryTime = dayjs(value.date);
-    this.data.timestamp = entryTime.tz(value.timezone, true).utc().toDate();
-    this.data.entryTime = entryTime.format(DateTimeFormat);
-    this.data.timezone = value.timezone;
+  set entryTime(value: Date) {
+    this.data.entryTime = value;
   }
 
-  get timestamp(): Date {
-    return this.data.timestamp;
+  get timezone(): string {
+    return this.data.timezone;
+  }
+  set timezone(value: string) {
+    this.data.timezone = value;
   }
 
   get duration(): number {
@@ -275,7 +271,8 @@ class EntryTiming {
 
   toJSON(): LogEntryTimingDTO {
     return {
-      entryTime: this.entryTime,
+      entryTime: this.entryTime.valueOf(),
+      timezone: this.timezone,
       duration: this.duration,
       bottomTime: this.bottomTime,
     };
@@ -321,7 +318,7 @@ export class LogEntry {
       accountTier: this.data.owner.accountTier,
       userId: this.data.owner.id,
       username: this.data.owner.username,
-      memberSince: this.data.owner.memberSince,
+      memberSince: this.data.owner.memberSince.valueOf(),
       logBookSharing: this.data.owner.logBookSharing,
       avatar: this.data.owner.avatar,
       name: this.data.owner.name,
@@ -407,8 +404,8 @@ export class LogEntry {
   toJSON(): LogEntryDTO {
     return {
       id: this.id,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
+      createdAt: this.createdAt.valueOf(),
+      updatedAt: this.updatedAt?.valueOf(),
       creator: this.owner,
 
       logNumber: this.logNumber,
@@ -427,14 +424,14 @@ export class LogEntry {
 
   toSuccinctJSON(): SuccinctLogEntryDTO {
     return {
-      createdAt: this.createdAt,
+      createdAt: this.createdAt.valueOf(),
       creator: this.owner,
       id: this.id,
       depths: this.depths.toJSON(),
       timing: this.timing.toJSON(),
       logNumber: this.logNumber,
       site: this.site?.toJSON(),
-      updatedAt: this.updatedAt,
+      updatedAt: this.updatedAt?.valueOf(),
     };
   }
 

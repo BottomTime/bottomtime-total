@@ -339,9 +339,7 @@ describe('Log entry import session E2E tests', () => {
     beforeAll(() => {
       importRecords = TestImportRecords.map((ir) =>
         CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
-      ).sort((a, b) =>
-        b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
-      );
+      ).sort((a, b) => b.timing.entryTime - a.timing.entryTime);
     });
 
     beforeEach(async () => {
@@ -370,9 +368,7 @@ describe('Log entry import session E2E tests', () => {
         .map((ir) =>
           CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
         )
-        .sort((a, b) =>
-          b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
-        );
+        .sort((a, b) => b.timing.entryTime - a.timing.entryTime);
       expect(actual).toHaveLength(expected.length);
       expect(actual).toEqual(expected);
     });
@@ -398,9 +394,7 @@ describe('Log entry import session E2E tests', () => {
         .map((ir) =>
           CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
         )
-        .sort((a, b) =>
-          b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
-        );
+        .sort((a, b) => b.timing.entryTime - a.timing.entryTime);
       expect(actual).toHaveLength(expected.length);
       expect(actual).toEqual(expected);
     });
@@ -495,9 +489,7 @@ describe('Log entry import session E2E tests', () => {
     beforeAll(() => {
       importRecords = TestImportRecords.map((ir) =>
         CreateOrUpdateLogEntryParamsSchema.parse(JSON.parse(ir.data)),
-      ).sort((a, b) =>
-        b.timing.entryTime.date.localeCompare(a.timing.entryTime.date),
-      );
+      ).sort((a, b) => b.timing.entryTime - a.timing.entryTime);
     });
 
     beforeEach(async () => {
@@ -508,10 +500,7 @@ describe('Log entry import session E2E tests', () => {
           (ir): LogEntryImportRecordEntity => ({
             id: uuid(),
             import: importSession,
-            timestamp: dayjs(ir.timing.entryTime.date)
-              .tz(ir.timing.entryTime.timezone, true)
-              .utc()
-              .toDate(),
+            timestamp: new Date(ir.timing.entryTime),
             data: JSON.stringify(ir),
           }),
         ),

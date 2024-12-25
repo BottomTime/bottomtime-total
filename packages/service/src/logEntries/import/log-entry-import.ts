@@ -129,10 +129,7 @@ export class LogEntryImport {
     const newRecords: LogEntryImportRecordEntity[] = records.map((r) => ({
       id: uuid(),
       import: this.data,
-      timestamp: dayjs(r.timing.entryTime.date)
-        .tz(r.timing.entryTime.timezone, true)
-        .utc()
-        .toDate(),
+      timestamp: new Date(r.timing.entryTime),
       data: JSON.stringify(r),
     }));
     await this.importRecords.save(newRecords);
@@ -142,7 +139,7 @@ export class LogEntryImport {
     return {
       id: this.id,
       owner: this.data.owner.username,
-      date: this.date,
+      date: this.date.valueOf(),
       failed: this.failed,
       finalized: this.finalized,
       bookmark: this.bookmark,

@@ -5,7 +5,7 @@ exports[`Operator class will return a JSON representation of the dive operator 1
   "active": true,
   "address": "3 Bay St, Tobermory, ON N0H 2R0, Canada",
   "banner": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg",
-  "createdAt": 2022-06-20T11:45:21.000Z,
+  "createdAt": 1655725521000,
   "description": "Welcome to Tobermory, the Scuba Diving Capital of Canada!
 Discover the world below the waves of the Fathom Five National Marine Park, home to more than 20 shipwrecks.
 Immerse yourself in the captivating history of century old ships and catch a glimpse of their haunting beauty.
@@ -23,7 +23,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     "avatar": "https://example.com/avatar.png",
     "location": "Toronto, ON, Canada",
     "logBookSharing": "public",
-    "memberSince": 2021-06-10T03:00:00.000Z,
+    "memberSince": 1623294000000,
     "name": "Test User",
     "userId": "54ca5e54-de92-4e15-a523-4087c52b40eb",
     "username": "testuser",
@@ -37,7 +37,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     "twitter": "diversden",
     "youtube": "diversden",
   },
-  "updatedAt": 2024-07-29T11:45:21.000Z,
+  "updatedAt": 1722253521000,
   "verificationMessage": "Nope",
   "verificationStatus": "rejected",
   "website": "https://diversden.ca",
@@ -49,7 +49,7 @@ exports[`Operator class will return a succinct JSON representation of the dive o
   "active": true,
   "address": "3 Bay St, Tobermory, ON N0H 2R0, Canada",
   "banner": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg",
-  "createdAt": 2022-06-20T11:45:21.000Z,
+  "createdAt": 1655725521000,
   "description": "Welcome to Tobermory, the Scuba Diving Capital of Canada!
 Discover the world below the waves of the Fathom Five National Marine Park, home to more than 20 shipwrecks.
 Immerse yourself in the captivating history of century old ships and catch a glimpse of their haunting beauty.
@@ -67,7 +67,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     "avatar": "https://example.com/avatar.png",
     "location": "Toronto, ON, Canada",
     "logBookSharing": "public",
-    "memberSince": 2021-06-10T03:00:00.000Z,
+    "memberSince": 1623294000000,
     "name": "Test User",
     "userId": "54ca5e54-de92-4e15-a523-4087c52b40eb",
     "username": "testuser",
@@ -81,7 +81,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
     "twitter": "diversden",
     "youtube": "diversden",
   },
-  "updatedAt": 2024-07-29T11:45:21.000Z,
+  "updatedAt": 1722253521000,
   "verificationMessage": "Nope",
   "verificationStatus": "rejected",
   "website": "https://diversden.ca",

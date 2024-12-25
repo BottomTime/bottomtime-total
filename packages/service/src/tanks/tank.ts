@@ -47,7 +47,7 @@ export class Tank {
     return this.data.user
       ? {
           accountTier: this.data.user.accountTier,
-          memberSince: this.data.user.memberSince,
+          memberSince: this.data.user.memberSince.valueOf(),
           userId: this.data.user.id,
           username: this.data.user.username,
           logBookSharing: this.data.user.logBookSharing,

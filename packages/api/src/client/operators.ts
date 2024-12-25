@@ -99,7 +99,7 @@ export class OperatorsApiClient {
     return {
       ...operator,
       verificationStatus: VerificationStatus.Pending,
-      updatedAt: new Date(),
+      updatedAt: Date.now(),
     };
   }
 
@@ -118,7 +118,7 @@ export class OperatorsApiClient {
         ? VerificationStatus.Verified
         : VerificationStatus.Rejected,
       verificationMessage: message,
-      updatedAt: new Date(),
+      updatedAt: Date.now(),
     };
   }
 

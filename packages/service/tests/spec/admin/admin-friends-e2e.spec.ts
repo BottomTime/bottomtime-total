@@ -138,7 +138,7 @@ describe('Admin friends E2E tests', () => {
       const { body } = await request(server)
         .delete(FriendRequestsUrl)
         .set(...adminAuthHeader)
-        .send({ expiration: targetDate })
+        .send({ expiration: targetDate.valueOf() })
         .expect(200);
 
       expect(body).toEqual({

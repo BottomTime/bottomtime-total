@@ -22,7 +22,7 @@ exports[`Memberships E2E tests when retrieving membership status will allow an a
     "shop-owner-features",
     "pro-features",
   ],
-  "nextBillingDate": "2025-09-03T12:23:19.000Z",
+  "nextBillingDate": 1756902199000,
   "status": "trialing",
 }
 `;
@@ -33,7 +33,7 @@ exports[`Memberships E2E tests when retrieving membership status will return mem
   "entitlements": [
     "pro-features",
   ],
-  "nextBillingDate": "2025-10-28T14:04:00.000Z",
+  "nextBillingDate": 1761660240000,
   "status": "active",
 }
 `;
@@ -56,7 +56,7 @@ exports[`Memberships E2E tests when updating a membership will allow a user to u
     "shop-owner-features",
     "pro-features",
   ],
-  "nextBillingDate": "2025-09-03T12:23:19.000Z",
+  "nextBillingDate": 1756902199000,
   "status": "trialing",
 }
 `;
@@ -68,7 +68,7 @@ exports[`Memberships E2E tests when updating a membership will allow an admin to
     "shop-owner-features",
     "pro-features",
   ],
-  "nextBillingDate": "2025-09-03T12:23:19.000Z",
+  "nextBillingDate": 1756902199000,
   "status": "trialing",
 }
 `;

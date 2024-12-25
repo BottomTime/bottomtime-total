@@ -1,482 +1,482 @@
 [
   {
-    "id": "4366e1b4-df31-4450-b9ca-1bdd26811b51",
+    "id": "5a038811-9867-469d-878b-99ca1f42f327",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-10-08T11:49:46.964Z",
-    "device": "Garmin Descent Mk2",
-    "deviceId": "978-0-452-38764-5",
-    "bookmark": "oQjprV9pz1",
-    "finalized": "2024-10-08T11:49:58.856Z"
-  },
-  {
-    "id": "e4858ab4-b5b6-459e-a990-9fc9fe5a6475",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-09-20T23:46:06.123Z",
-    "device": "Garmin Descent Mk2",
-    "deviceId": "978-1-0711-5149-5",
-    "bookmark": "sYjDZKijYM",
-    "finalized": "2024-09-20T23:46:14.207Z"
-  },
-  {
-    "id": "7a3e48d4-b249-4d8d-81cf-3291ca706b29",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-10-09T01:51:46.636Z",
-    "device": "Cressi Neon",
-    "deviceId": "978-1-966583-24-0",
-    "bookmark": "JR2mEOArUO",
-    "finalized": null
-  },
-  {
-    "id": "b6200822-bd68-4cbc-8c90-fbcc26e810ff",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-10-30T00:44:50.840Z",
-    "device": "Mares Puck Pro Plus",
-    "deviceId": "978-1-60349-681-0",
-    "bookmark": "wHwuvt8OFg",
-    "finalized": null
-  },
-  {
-    "id": "ca04f129-60eb-4933-849e-53444a6ce293",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-10-01T06:55:57.245Z",
-    "device": "Garmin Descent Mk2",
-    "deviceId": "978-1-0738-2883-8",
-    "bookmark": "KVP6ogcoaD",
-    "finalized": "2024-10-01T06:56:04.708Z"
-  },
-  {
-    "id": "2d618a56-08fe-4e40-80cc-7689f5db6d60",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-08-15T17:20:30.544Z",
+    "date": "2024-09-19T17:51:57.831Z",
     "device": "Suunto D5",
-    "deviceId": "978-0-7193-8660-2",
-    "bookmark": "fgwyuoelLF",
-    "finalized": null
+    "deviceId": "978-1-9860-9880-9",
+    "bookmark": "3GjgGUEPHr",
+    "finalized": null,
+    "error": null
   },
   {
-    "id": "ec8ae38c-7073-4079-90d4-a3723c2358f1",
+    "id": "c68943d2-9330-4e38-9642-4d0ce4c1dc61",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-06-01T03:53:52.937Z",
+    "date": "2024-07-29T17:17:39.436Z",
     "device": "Shearwater Teric",
-    "deviceId": "978-0-292-18580-7",
-    "bookmark": "Yw2mNA1m4w",
-    "finalized": "2024-06-01T03:53:59.529Z"
+    "deviceId": "978-0-11-848605-7",
+    "bookmark": "PBQmIqYLFv",
+    "finalized": "2024-07-29T17:17:42.576Z",
+    "error": null
   },
   {
-    "id": "79ca214c-d6fc-42cc-ba2b-e4ff875ace9e",
+    "id": "666b964b-7f46-460d-8123-4875ac7f894c",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-09-02T12:09:08.721Z",
-    "device": "Suunto D5",
-    "deviceId": "978-0-7945-7581-6",
-    "bookmark": "lAq8toT67J",
-    "finalized": "2024-09-02T12:09:25.472Z"
-  },
-  {
-    "id": "63061750-3272-4984-969a-a03521bb243f",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-06-21T17:49:02.825Z",
+    "date": "2024-07-05T03:02:07.179Z",
     "device": "Shearwater Teric",
-    "deviceId": "978-0-246-92888-7",
-    "bookmark": "uN7U3zAgPa",
-    "finalized": "2024-06-21T17:49:07.151Z"
+    "deviceId": "978-1-922947-18-5",
+    "bookmark": "SBy36R0ATf",
+    "finalized": "2024-07-05T03:02:15.514Z",
+    "error": null
   },
   {
-    "id": "cf027e00-c114-434f-9e0a-694cd233fabc",
+    "id": "1da66a2d-081d-4f8b-b39c-3f4465412271",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-09-20T08:10:00.178Z",
-    "device": "Suunto D5",
-    "deviceId": "978-1-56542-153-0",
-    "bookmark": "56QzJrs2vQ",
-    "finalized": "2024-09-20T08:10:03.645Z"
-  },
-  {
-    "id": "b37acd5a-ca4b-473e-9747-c51a8c3138a2",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-08-10T14:15:46.305Z",
-    "device": "Shearwater Perdix 2 Ti",
-    "deviceId": "978-0-318-53219-6",
-    "bookmark": "HHVTUqD3qb",
-    "finalized": "2024-08-10T14:15:56.594Z"
-  },
-  {
-    "id": "9a1e1d21-f712-4dcb-b122-6b114966e144",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-05-20T21:45:17.961Z",
-    "device": "Suunto D5",
-    "deviceId": "978-0-260-40525-8",
-    "bookmark": "zJ5GBwllll",
-    "finalized": null
-  },
-  {
-    "id": "486104ec-a149-4ee9-b125-e4251b6ef638",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-07-18T00:11:43.791Z",
+    "date": "2024-11-06T07:14:39.060Z",
     "device": "Mares Puck Pro Plus",
-    "deviceId": "978-1-233-90837-0",
-    "bookmark": "EWijg3vIBL",
-    "finalized": "2024-07-18T00:11:44.426Z"
+    "deviceId": "978-0-451-49728-4",
+    "bookmark": "UcRvf6dLDR",
+    "finalized": "2024-11-06T07:14:51.322Z",
+    "error": null
   },
   {
-    "id": "1810b511-1a6e-4f54-ad88-59571f6e77c9",
+    "id": "cbd43805-f2b0-4fe5-bd0e-b26fc4e8f2f7",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-07-11T19:57:27.706Z",
+    "date": "2024-11-11T13:32:03.502Z",
     "device": "Mares Puck Pro Plus",
-    "deviceId": "978-0-311-16831-6",
-    "bookmark": "YfISarhxTQ",
-    "finalized": "2024-07-11T19:57:33.174Z"
+    "deviceId": "978-0-8479-3536-9",
+    "bookmark": "nTmIpPsQe5",
+    "finalized": "2024-11-11T13:32:07.051Z",
+    "error": null
   },
   {
-    "id": "5a4bd225-21dc-4ffb-adc2-d184d8a77278",
+    "id": "5df7a129-87d5-4870-a617-4d9249f94023",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-10-11T08:11:44.520Z",
-    "device": "Aqua Lung i300C",
-    "deviceId": "978-1-957589-35-0",
-    "bookmark": "n4ZTtmcqBa",
-    "finalized": "2024-10-11T08:12:02.577Z"
-  },
-  {
-    "id": "b661752a-0f47-407a-b22f-f4c627ff32a0",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-10-09T13:10:12.248Z",
-    "device": "Garmin Descent Mk2",
-    "deviceId": "978-1-7983-1064-9",
-    "bookmark": "S5XYXiPS1E",
-    "finalized": "2024-10-09T13:10:30.383Z"
-  },
-  {
-    "id": "24e4fc64-ab83-4667-aa50-3d421b7579b6",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-08-16T16:13:20.515Z",
-    "device": "Garmin Descent Mk2",
-    "deviceId": "978-0-7295-4888-5",
-    "bookmark": "Ge4dnkFP3P",
-    "finalized": "2024-08-16T16:13:23.402Z"
-  },
-  {
-    "id": "e2980277-274c-4b94-baa5-63168da526b3",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-06-06T03:41:26.211Z",
-    "device": "Cressi Neon",
-    "deviceId": "978-1-76301-429-9",
-    "bookmark": "2ytXxdR8xO",
-    "finalized": "2024-06-06T03:41:42.098Z"
-  },
-  {
-    "id": "99c54c86-7728-4e33-9586-c37f5e2df0c5",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-11-12T05:20:28.652Z",
+    "date": "2024-10-04T20:59:42.455Z",
     "device": "Oceanic Geo 4.0",
-    "deviceId": "978-1-173-86293-0",
-    "bookmark": "5SEX0KJfnB",
-    "finalized": "2024-11-12T05:20:31.505Z"
+    "deviceId": "978-0-7804-5764-5",
+    "bookmark": "a0dkbGnUo0",
+    "finalized": "2024-10-04T20:59:58.070Z",
+    "error": null
   },
   {
-    "id": "3c145640-02fe-4538-a12b-5c557a612891",
+    "id": "7e26228d-f432-4c63-a837-aa653d3c67b6",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-06-23T10:42:22.530Z",
-    "device": "Shearwater Teric",
-    "deviceId": "978-0-7425-6587-6",
-    "bookmark": "2W9mrMeP19",
-    "finalized": "2024-06-23T10:42:38.083Z"
-  },
-  {
-    "id": "02f9e5f0-8012-4408-b24e-3ef6ca3fc097",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-07-19T15:06:32.786Z",
+    "date": "2024-09-18T03:28:32.562Z",
     "device": "Shearwater Perdix 2 Ti",
-    "deviceId": "978-1-908050-12-0",
-    "bookmark": "NWBkNP0Z4W",
-    "finalized": "2024-07-19T15:06:47.597Z"
+    "deviceId": "978-0-08-016468-7",
+    "bookmark": "MsyQcmFSDo",
+    "finalized": "2024-09-18T03:28:49.078Z",
+    "error": null
   },
   {
-    "id": "8604500b-19d2-41bd-8773-657d0caaa878",
+    "id": "ec2e34b7-22c2-423b-9f23-ddcb3cff13c1",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-07-29T05:12:37.589Z",
+    "date": "2024-07-22T12:18:44.327Z",
+    "device": "Suunto D5",
+    "deviceId": "978-0-7301-3507-4",
+    "bookmark": "z77eLS9DCi",
+    "finalized": "2024-07-22T12:19:02.561Z",
+    "error": null
+  },
+  {
+    "id": "d7f13eed-751d-4564-b606-33483c711545",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-07-19T00:27:53.903Z",
+    "device": "Mares Puck Pro Plus",
+    "deviceId": "978-0-17-038939-6",
+    "bookmark": "SNSvZPTjUh",
+    "finalized": "2024-07-19T00:27:57.413Z",
+    "error": null
+  },
+  {
+    "id": "80065e0a-5888-41b3-b4ff-da1fd2bd7943",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-10-13T18:13:13.735Z",
+    "device": "Suunto D5",
+    "deviceId": "978-1-913178-37-6",
+    "bookmark": "NYChrTbbfJ",
+    "finalized": "2024-10-13T18:13:16.503Z",
+    "error": null
+  },
+  {
+    "id": "0de4c32f-ad61-4c72-a060-6e2d14e4ab66",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-07-09T05:07:39.901Z",
     "device": "Shearwater Teric",
-    "deviceId": "978-0-216-87944-7",
-    "bookmark": "cCxFiIPGUg",
-    "finalized": "2024-07-29T05:12:50.929Z"
+    "deviceId": "978-0-530-52243-2",
+    "bookmark": "5ugpDE4IpH",
+    "finalized": "2024-07-09T05:07:58.687Z",
+    "error": null
   },
   {
-    "id": "e26ca819-ffb3-4f15-93f6-71e302dd4a73",
+    "id": "72d7cee5-1a12-4401-8d6f-4346866f0052",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-08-21T21:20:10.906Z",
-    "device": "Mares Puck Pro Plus",
-    "deviceId": "978-0-17-626159-7",
-    "bookmark": "0WiiAKKlLh",
-    "finalized": "2024-08-21T21:20:29.984Z"
-  },
-  {
-    "id": "bcbbabfa-4c87-412a-8f6f-0259f4571346",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-09-03T18:03:10.748Z",
-    "device": "Aqua Lung i300C",
-    "deviceId": "978-1-306-86177-9",
-    "bookmark": "VfpS8wZo8U",
-    "finalized": "2024-09-03T18:03:26.149Z"
-  },
-  {
-    "id": "b7f6ad3a-0787-4e8d-bcc8-b18f6455ac92",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-05-31T06:05:33.640Z",
-    "device": "Mares Puck Pro Plus",
-    "deviceId": "978-0-03-625135-5",
-    "bookmark": "efj1qNKrrD",
-    "finalized": "2024-05-31T06:05:33.958Z"
-  },
-  {
-    "id": "721aaebe-5570-4c88-9f44-a33aa667e549",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-07-07T21:45:23.470Z",
+    "date": "2024-08-04T04:15:28.212Z",
     "device": "Oceanic Geo 4.0",
-    "deviceId": "978-1-112-39548-2",
-    "bookmark": "CxfivFVbWL",
-    "finalized": "2024-07-07T21:45:42.949Z"
+    "deviceId": "978-0-86310-326-1",
+    "bookmark": "LZMVpcY2fS",
+    "finalized": "2024-08-04T04:15:29.854Z",
+    "error": null
   },
   {
-    "id": "beb7f5a5-8154-4593-a7fc-b89f5fb226cb",
+    "id": "d149136f-ab16-4dd8-9cb8-233fb1966b21",
     "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-10-01T22:21:36.761Z",
-    "device": "Cressi Neon",
-    "deviceId": "978-0-322-97197-4",
-    "bookmark": "gD5E6yJyX9",
-    "finalized": "2024-10-01T22:21:49.989Z"
-  },
-  {
-    "id": "e12c5c67-d456-457a-9c41-7b94ff5284e8",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-08-29T00:04:45.332Z",
-    "device": "Oceanic Geo 4.0",
-    "deviceId": "978-1-324-94782-0",
-    "bookmark": "OAECUn3uPT",
-    "finalized": "2024-08-29T00:04:55.257Z"
-  },
-  {
-    "id": "3559b67e-1ab1-4a96-a490-5f5188b47497",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-06-24T03:42:46.806Z",
-    "device": "Shearwater Teric",
-    "deviceId": "978-1-81805-272-6",
-    "bookmark": "eSweHxO0nP",
-    "finalized": "2024-06-24T03:43:03.900Z"
-  },
-  {
-    "id": "99d1a372-0999-47bc-ae13-d283fc2f208b",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-09-01T08:48:52.268Z",
-    "device": "Aqua Lung i300C",
-    "deviceId": "978-0-900881-30-5",
-    "bookmark": "qc9NkwTs6I",
-    "finalized": "2024-09-01T08:48:52.581Z"
-  },
-  {
-    "id": "867a2a21-428f-4c37-bf18-b4234e3818b8",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-07-19T03:28:25.817Z",
-    "device": "Cressi Neon",
-    "deviceId": "978-1-116-32511-9",
-    "bookmark": "TzVUXj6bri",
-    "finalized": "2024-07-19T03:28:39.842Z"
-  },
-  {
-    "id": "e86c5ac7-37a7-4b97-95d5-c19fd7152996",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-10-24T19:26:33.165Z",
-    "device": "Shearwater Teric",
-    "deviceId": "978-1-80519-150-6",
-    "bookmark": "1dSahff2xa",
-    "finalized": "2024-10-24T19:26:33.797Z"
-  },
-  {
-    "id": "c1c44a84-d4fd-47b0-a741-9402eb8698b8",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-10-06T22:16:07.325Z",
-    "device": "Aqua Lung i300C",
-    "deviceId": "978-0-438-86532-7",
-    "bookmark": "Ofod0oqpVU",
-    "finalized": "2024-10-06T22:16:17.486Z"
-  },
-  {
-    "id": "324e82d4-5595-42c8-b253-0e742ed8bd64",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-06-28T15:51:44.543Z",
-    "device": "Shearwater Teric",
-    "deviceId": "978-1-56875-465-9",
-    "bookmark": "3XvoPw8lMm",
-    "finalized": null
-  },
-  {
-    "id": "d381104f-0744-4598-8430-949ff198ee3f",
-    "owner": {
-      "id": "114c1546-216b-4b58-873b-0c63a80fe04e",
-      "username": "testuser"
-    },
-    "date": "2024-05-22T06:21:46.799Z",
+    "date": "2024-09-27T08:07:54.223Z",
     "device": "Mares Puck Pro Plus",
-    "deviceId": "978-1-4475-3366-5",
-    "bookmark": "AGNuL6j78a",
-    "finalized": null
+    "deviceId": "978-0-384-20561-1",
+    "bookmark": "yBOCRmif3R",
+    "finalized": "2024-09-27T08:08:04.556Z",
+    "error": null
   },
   {
-    "id": "53f682d4-89fa-46f0-882b-95e51e0dbe82",
+    "id": "396a2bab-9049-4fab-b4bd-33ffde0d5049",
     "owner": {
-      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e",
-      "username": "otheruser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-06-02T08:49:45.724Z",
-    "device": "Aqua Lung i300C",
-    "deviceId": "978-1-75461-809-3",
-    "bookmark": "pXXaZCWxZM",
-    "finalized": null
+    "date": "2024-09-12T00:04:26.491Z",
+    "device": "Garmin Descent Mk2",
+    "deviceId": "978-1-57063-936-4",
+    "bookmark": "p9SuvocrgF",
+    "finalized": "2024-09-12T00:04:28.160Z",
+    "error": null
   },
   {
-    "id": "567c23e0-9797-4dbc-b831-8852446c10e6",
+    "id": "875b1e2a-57a0-4e1f-9b13-7278d6051e4b",
     "owner": {
-      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e",
-      "username": "otheruser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-09-18T22:23:17.393Z",
+    "date": "2024-10-23T02:44:22.813Z",
+    "device": "Oceanic Geo 4.0",
+    "deviceId": "978-0-8011-1689-6",
+    "bookmark": "K2H5yXC1Wj",
+    "finalized": "2024-10-23T02:44:34.441Z",
+    "error": null
+  },
+  {
+    "id": "aa82e463-9f8b-4643-be3a-31da97642670",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-08-29T13:47:58.850Z",
+    "device": "Mares Puck Pro Plus",
+    "deviceId": "978-0-554-89867-4",
+    "bookmark": "H0cYs9ayp3",
+    "finalized": "2024-08-29T13:48:02.324Z",
+    "error": null
+  },
+  {
+    "id": "bd1a8a48-9223-4e33-bf70-2fe97f7bf2b3",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-07-18T02:54:25.719Z",
     "device": "Shearwater Teric",
-    "deviceId": "978-1-9779-3701-8",
-    "bookmark": "gTZSYfyzA8",
-    "finalized": "2024-09-18T22:23:32.307Z"
+    "deviceId": "978-1-78839-496-3",
+    "bookmark": "LGAQHbkPP9",
+    "finalized": "2024-07-18T02:54:32.514Z",
+    "error": null
   },
   {
-    "id": "3ace0181-a7d1-4c42-b274-df0d0540b667",
+    "id": "8f765c28-e6f1-4400-bcf4-63dc0d4089a4",
     "owner": {
-      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e",
-      "username": "otheruser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-07-20T15:14:53.944Z",
-    "device": "Shearwater Teric",
-    "deviceId": "978-0-7864-7458-5",
-    "bookmark": "gTk60QjRWF",
-    "finalized": "2024-07-20T15:14:56.493Z"
+    "date": "2024-05-26T13:08:21.225Z",
+    "device": "Suunto D5",
+    "deviceId": "978-0-667-50472-1",
+    "bookmark": "1cfLcpf0NS",
+    "finalized": "2024-05-26T13:08:25.116Z",
+    "error": null
   },
   {
-    "id": "1fc70a0e-4ac5-49cb-946a-ec9c0c62329b",
+    "id": "79995e8f-41db-4b05-80b6-90d1b233f119",
     "owner": {
-      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e",
-      "username": "otheruser"
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
     },
-    "date": "2024-10-15T13:55:32.990Z",
-    "device": "Cressi Neon",
-    "deviceId": "978-1-0394-7008-8",
-    "bookmark": "nfagbeqY1A",
-    "finalized": "2024-10-15T13:55:33.953Z"
-  },
-  {
-    "id": "f45e62a0-4c11-454f-938a-553bb0a5153b",
-    "owner": {
-      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e",
-      "username": "otheruser"
-    },
-    "date": "2024-05-28T03:54:27.256Z",
+    "date": "2024-07-04T18:33:36.249Z",
     "device": "Shearwater Perdix 2 Ti",
-    "deviceId": "978-0-468-42044-2",
-    "bookmark": "gs2Izf7OTW",
-    "finalized": "2024-05-28T03:54:32.890Z"
+    "deviceId": "978-0-8425-5262-2",
+    "bookmark": "TEY5saUjQb",
+    "finalized": "2024-07-04T18:33:38.410Z",
+    "error": null
+  },
+  {
+    "id": "218f75b7-50e8-4e24-9178-0fec080f6b5a",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-07-27T00:10:29.349Z",
+    "device": "Suunto D5",
+    "deviceId": "978-0-684-30604-9",
+    "bookmark": "mExrULEsBq",
+    "finalized": "2024-07-27T00:10:46.617Z",
+    "error": null
+  },
+  {
+    "id": "87b955f3-5ff2-4982-a5d2-c654ce738f51",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-09-22T02:13:21.808Z",
+    "device": "Oceanic Geo 4.0",
+    "deviceId": "978-0-89824-728-2",
+    "bookmark": "vfkL4JkOi8",
+    "finalized": "2024-09-22T02:13:23.053Z",
+    "error": null
+  },
+  {
+    "id": "6cf25d9f-052f-4dc6-b45d-6678a4f2292b",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-06-02T18:30:06.343Z",
+    "device": "Aqua Lung i300C",
+    "deviceId": "978-0-940493-07-0",
+    "bookmark": "DSZJP77ShW",
+    "finalized": "2024-06-02T18:30:24.049Z",
+    "error": null
+  },
+  {
+    "id": "bfd2c99b-d441-4d71-8039-8a932a01422a",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-10-23T20:32:24.235Z",
+    "device": "Garmin Descent Mk2",
+    "deviceId": "978-1-139-54430-6",
+    "bookmark": "1Bwh6Svdaq",
+    "finalized": null,
+    "error": null
+  },
+  {
+    "id": "24b65ba1-ac2f-4b60-acff-8ccc3cce1f02",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-10-03T16:11:52.964Z",
+    "device": "Garmin Descent Mk2",
+    "deviceId": "978-1-4110-4947-5",
+    "bookmark": "L14ZIhmC5b",
+    "finalized": null,
+    "error": null
+  },
+  {
+    "id": "1c51a450-4b8a-499d-bbfe-7d8b9d6174dc",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-11-11T00:12:01.781Z",
+    "device": "Mares Puck Pro Plus",
+    "deviceId": "978-1-156-00424-1",
+    "bookmark": "LqEowyZCgD",
+    "finalized": "2024-11-11T00:12:15.744Z",
+    "error": null
+  },
+  {
+    "id": "78842611-60b5-401e-9432-c08ccbfabce3",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-08-03T05:47:59.550Z",
+    "device": "Shearwater Perdix 2 Ti",
+    "deviceId": "978-1-68585-211-5",
+    "bookmark": "PnsUwyqsmN",
+    "finalized": "2024-08-03T05:48:16.574Z",
+    "error": null
+  },
+  {
+    "id": "3c8a7f4d-abb8-4445-bcd3-aa29719369a8",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-07-16T13:28:39.067Z",
+    "device": "Garmin Descent Mk2",
+    "deviceId": "978-1-186-61324-6",
+    "bookmark": "J3tBIhTjwT",
+    "finalized": "2024-07-16T13:28:55.101Z",
+    "error": null
+  },
+  {
+    "id": "b93b9b72-876e-495a-853e-af51180082dd",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-06-10T23:52:07.324Z",
+    "device": "Scubapro G2",
+    "deviceId": "978-1-4441-0667-1",
+    "bookmark": "ZQYjubppts",
+    "finalized": "2024-06-10T23:52:10.656Z",
+    "error": null
+  },
+  {
+    "id": "8673a0e3-32e6-49a4-9ab6-605f490c6e05",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-11-08T10:31:27.268Z",
+    "device": "Cressi Neon",
+    "deviceId": "978-0-352-39247-3",
+    "bookmark": "RN9s4Jkwk9",
+    "finalized": "2024-11-08T10:31:47.081Z",
+    "error": null
+  },
+  {
+    "id": "e6917209-56bc-44f4-979d-0e1ecd684eaf",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-08-10T09:13:47.245Z",
+    "device": "Suunto D5",
+    "deviceId": "978-0-233-87829-4",
+    "bookmark": "19ISOjd5cK",
+    "finalized": "2024-08-10T09:14:03.721Z",
+    "error": null
+  },
+  {
+    "id": "c42aea3c-3dd5-4149-bfdb-c66c75b39863",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-08-07T15:31:37.948Z",
+    "device": "Mares Puck Pro Plus",
+    "deviceId": "978-1-6918-9676-9",
+    "bookmark": "9L1iYmBMu0",
+    "finalized": "2024-08-07T15:31:51.932Z",
+    "error": null
+  },
+  {
+    "id": "54be4afc-5a80-4802-883e-ea43b418bee0",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-06-15T17:58:34.204Z",
+    "device": "Mares Puck Pro Plus",
+    "deviceId": "978-1-031-65711-1",
+    "bookmark": "PSEzFMO4IW",
+    "finalized": "2024-06-15T17:58:35.625Z",
+    "error": null
+  },
+  {
+    "id": "667cd1a4-9a72-4e8f-b354-585ba9a902e4",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-08-15T11:46:31.864Z",
+    "device": "Aqua Lung i300C",
+    "deviceId": "978-0-503-74879-1",
+    "bookmark": "X7vADlLhwF",
+    "finalized": null,
+    "error": null
+  },
+  {
+    "id": "3fdd1545-f322-4e91-b164-dfe65b9ddc5c",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-08-03T11:32:11.654Z",
+    "device": "Cressi Neon",
+    "deviceId": "978-0-580-54956-4",
+    "bookmark": "KY0m8XVUCp",
+    "finalized": "2024-08-03T11:32:19.413Z",
+    "error": null
+  },
+  {
+    "id": "3fe69d42-6fe0-4174-b371-3c5116297606",
+    "owner": {
+      "id": "114c1546-216b-4b58-873b-0c63a80fe04e"
+    },
+    "date": "2024-08-16T09:29:39.347Z",
+    "device": "Scubapro G2",
+    "deviceId": "978-1-326-46926-9",
+    "bookmark": "xUXV98nLWj",
+    "finalized": "2024-08-16T09:29:47.743Z",
+    "error": null
+  },
+  {
+    "id": "40f2de99-424e-401e-9c36-d5247df71e0a",
+    "owner": {
+      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e"
+    },
+    "date": "2024-09-27T12:09:36.042Z",
+    "device": "Suunto D5",
+    "deviceId": "978-0-674-56946-1",
+    "bookmark": "Q8LD2eKOIh",
+    "finalized": "2024-09-27T12:09:43.961Z",
+    "error": null
+  },
+  {
+    "id": "e65438d9-b40f-440f-9519-0105d7d9cef8",
+    "owner": {
+      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e"
+    },
+    "date": "2024-10-23T15:05:22.120Z",
+    "device": "Shearwater Perdix 2 Ti",
+    "deviceId": "978-0-906602-14-0",
+    "bookmark": "EKFC0HqXSy",
+    "finalized": "2024-10-23T15:05:28.121Z",
+    "error": null
+  },
+  {
+    "id": "0a6cc573-a173-429d-8a58-eb8fd7a3846a",
+    "owner": {
+      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e"
+    },
+    "date": "2024-09-06T12:28:25.680Z",
+    "device": "Scubapro G2",
+    "deviceId": "978-1-59602-697-1",
+    "bookmark": "tekzWFSiQM",
+    "finalized": "2024-09-06T12:28:33.887Z",
+    "error": null
+  },
+  {
+    "id": "69e00d61-8caf-4a8d-b60e-44976e1e9706",
+    "owner": {
+      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e"
+    },
+    "date": "2024-08-29T19:06:06.487Z",
+    "device": "Garmin Descent Mk2",
+    "deviceId": "978-0-9693787-6-1",
+    "bookmark": "vW4Ivnzp5n",
+    "finalized": "2024-08-29T19:06:16.465Z",
+    "error": null
+  },
+  {
+    "id": "3cf4da31-7460-4bc5-b318-b0da7d5d32a5",
+    "owner": {
+      "id": "4c5be9b4-782d-45f8-bae1-19dfb120905e"
+    },
+    "date": "2024-08-31T00:15:09.876Z",
+    "device": "Garmin Descent Mk2",
+    "deviceId": "978-1-5192-4464-2",
+    "bookmark": "L15UkmlVN7",
+    "finalized": "2024-08-31T00:15:15.576Z",
+    "error": null
   }
 ]

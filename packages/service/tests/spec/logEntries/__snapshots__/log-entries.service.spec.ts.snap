@@ -32,7 +32,7 @@ exports[`Log entries service when creating a new log entry will create a new log
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
     "location": "West Covina",
     "logBookSharing": "private",
-    "memberSince": 2020-02-24T22:30:50.944Z,
+    "memberSince": 1582583450944,
     "name": "Devin Ratke",
     "userId": "5da4efd8-c514-4b3b-802c-133dd25f5f87",
     "username": "Ayla.Rippin",
@@ -63,10 +63,8 @@ exports[`Log entries service when creating a new log entry will create a new log
   "timing": {
     "bottomTime": 2880,
     "duration": 3120,
-    "entryTime": {
-      "date": "2024-03-28T13:45:00",
-      "timezone": "Europe/Amsterdam",
-    },
+    "entryTime": 1711647900000,
+    "timezone": "Europe/Amsterdam",
   },
   "updatedAt": 2024-07-23T14:22:09.372Z,
 }
@@ -76,1103 +74,828 @@ exports[`Log entries service when listing log entries will perform a basic searc
 [
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-07-22T14:35:19",
-      "timezone": "Asia/Yakutsk",
-    },
-    "id": "6c79010b-564e-43c3-b46d-dc1727573237",
-    "site": "good-natured bountiful relay",
+    "entryTime": 2024-12-11T18:54:16.993Z,
+    "id": "ed072537-423a-4d14-89b3-6851c9009eb7",
+    "site": "humming past mathematics",
+    "timezone": "Asia/Kolkata",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-07-21T05:17:29",
-      "timezone": "Atlantic/South_Georgia",
-    },
-    "id": "f8617b1a-dca9-4a6a-b7f6-656147977c11",
-    "site": "tattered worn graffiti",
+    "entryTime": 2024-12-10T00:43:52.099Z,
+    "id": "14855a1f-5a9d-4904-83df-4dc9cb479b70",
+    "site": "remarkable unique shoelace",
+    "timezone": "Asia/Samarkand",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-07-21T02:48:32",
-      "timezone": "Africa/Ndjamena",
-    },
-    "id": "aa5fb198-782e-4eb3-95c3-14354e0b9911",
-    "site": "deadly idealistic gerbil",
+    "entryTime": 2024-12-09T16:29:49.763Z,
+    "id": "7be7ad19-c083-4c28-8c87-6808d8f5bcfb",
+    "site": "cluttered frizzy stylus",
+    "timezone": "Europe/Simferopol",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-07-17T00:54:29",
-      "timezone": "Africa/Bangui",
-    },
-    "id": "5c024ea3-1f23-4dab-ba03-00b01c605d4a",
-    "site": "piercing joyful hospitality",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-30T16:43:52",
-      "timezone": "America/Winnipeg",
-    },
-    "id": "5b73b780-6a22-4411-b152-10b7143c104d",
-    "site": "silky sharp brilliant",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-30T10:07:41",
-      "timezone": "America/Asuncion",
-    },
-    "id": "7c1b840c-033f-4d92-b3e5-59d5253997c2",
-    "site": "gloomy acceptable hummus",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-29T11:12:20",
-      "timezone": "Asia/Bishkek",
-    },
-    "id": "5d963469-e10f-4d54-bcea-96d90b38e80f",
-    "site": "spotless gifted gallon",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-25T05:38:18",
-      "timezone": "Australia/Adelaide",
-    },
-    "id": "13a27848-8720-4961-be84-647adc581c7e",
-    "site": "graceful rich contrail",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-22T17:24:30",
-      "timezone": "Atlantic/Reykjavik",
-    },
-    "id": "e1242310-8e3b-489b-a071-b6daa0741210",
-    "site": "tall trivial clause",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-20T23:22:14",
-      "timezone": "America/Hermosillo",
-    },
-    "id": "0b603579-3cf0-4118-9d17-ef46ae396d49",
-    "site": "scornful well-worn baggage",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-20T16:26:31",
-      "timezone": "America/Argentina/La_Rioja",
-    },
-    "id": "05e6545e-fba2-4426-93c1-f40db7ecad8f",
-    "site": "major limping airbag",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-16T15:58:20",
-      "timezone": "Asia/Singapore",
-    },
-    "id": "14b4a3b3-c8b4-4949-87a1-66ad17a5681f",
-    "site": "frizzy excited outback",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-15T13:24:04",
-      "timezone": "Antarctica/Palmer",
-    },
-    "id": "093c7a96-cdd0-4324-8989-78f8a5f9cc96",
-    "site": "tattered worn graffiti",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-14T00:22:34",
-      "timezone": "Asia/Sakhalin",
-    },
-    "id": "3a99c02e-d580-4648-a6ed-ace263795ea8",
-    "site": "giant broken meat",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-12T06:35:21",
-      "timezone": "Asia/Kamchatka",
-    },
-    "id": "f9168957-a5f1-466b-83ff-8764d139dce7",
-    "site": "intelligent greedy monster",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-12T05:16:30",
-      "timezone": "Europe/Vatican",
-    },
-    "id": "7ca83221-a175-4469-9db9-20c5332bc0e2",
-    "site": "gruesome welcome expense",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-08T11:19:32",
-      "timezone": "Europe/Simferopol",
-    },
-    "id": "394fb770-0b2a-4c70-ad2a-629bb861a76c",
-    "site": "steep aromatic broccoli",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-06-06T06:27:56",
-      "timezone": "Asia/Ust-Nera",
-    },
-    "id": "d4bfece9-772d-4d40-91f7-42e810895289",
-    "site": "grounded lost vendor",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-05-30T07:21:24",
-      "timezone": "America/New_York",
-    },
-    "id": "f264b411-5040-4642-83ca-161a8da5529c",
-    "site": "stormy strict fries",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-05-25T18:42:23",
-      "timezone": "Pacific/Kiritimati",
-    },
-    "id": "df9f7077-ba9d-4359-95b2-6046aeea5767",
-    "site": "untidy puzzled birth",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-05-23T11:21:32",
-      "timezone": "America/Rio_Branco",
-    },
-    "id": "cea6ee94-c6e6-4031-9f36-110638dd9dc0",
-    "site": "unruly angry suppression",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-05-12T06:40:31",
-      "timezone": "America/Juneau",
-    },
-    "id": "a7aea7c9-2fce-4d6d-8a05-a712944de218",
+    "entryTime": 2024-12-06T03:41:17.445Z,
+    "id": "522e29a5-3a94-48ea-92a9-75bcb5e0dad7",
     "site": "wise gullible administrator",
+    "timezone": "Europe/Budapest",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-05-06T12:07:16",
-      "timezone": "Africa/Nouakchott",
-    },
-    "id": "ee2885fe-5d8e-416c-9af3-d90b26c60a41",
-    "site": "apt colossal initial",
+    "entryTime": 2024-12-04T16:08:31.217Z,
+    "id": "cfbe9a05-8fbd-46e9-a655-0083eebe5949",
+    "site": "mild mixed crewman",
+    "timezone": "America/Paramaribo",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-05-06T07:55:57",
-      "timezone": "America/Halifax",
-    },
-    "id": "c4292abd-1d6c-4fe1-a00a-a013dc43829f",
-    "site": "lost profuse garlic",
+    "entryTime": 2024-12-03T21:32:56.266Z,
+    "id": "f19a4a8e-5928-4bb6-8ee3-f980f1dea45e",
+    "site": "deadly idealistic gerbil",
+    "timezone": "Asia/Anadyr",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-05-01T17:41:56",
-      "timezone": "Africa/Kigali",
-    },
-    "id": "3612def5-8537-40c8-9c91-f38640516d58",
-    "site": "jumpy canine antechamber",
+    "entryTime": 2024-11-30T04:40:35.930Z,
+    "id": "217a32f7-c249-430a-8a5a-670a9d862c93",
+    "site": "specific infinite chalice",
+    "timezone": "Asia/Yerevan",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-04-23T15:24:20",
-      "timezone": "Asia/Phnom_Penh",
-    },
-    "id": "1308b043-6eed-4aba-9932-af48e53e3a43",
+    "entryTime": 2024-11-25T16:47:07.828Z,
+    "id": "7c998dd4-1203-4f46-ad6e-58621cc7451f",
+    "site": "cruel wealthy lieu",
+    "timezone": "Africa/Maputo",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-11-23T11:30:43.580Z,
+    "id": "3b71f0e9-7a09-4b0f-8a1d-55453fbca1d9",
+    "site": "flamboyant old mate",
+    "timezone": "Europe/Berlin",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-11-21T19:33:18.695Z,
+    "id": "266423f9-7824-4a59-80dc-7707bf3ff57d",
+    "site": "exotic warmhearted aside",
+    "timezone": "Africa/Lagos",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-11-21T14:29:00.737Z,
+    "id": "9a205586-e2b9-444e-a869-bd261d32efbe",
+    "site": "spotless gifted gallon",
+    "timezone": "America/Tortola",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-11-21T03:56:30.184Z,
+    "id": "9f5cc359-6672-4248-af2c-2810c8498684",
+    "site": "lazy winged conscience",
+    "timezone": "Asia/Brunei",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-11-17T12:27:11.094Z,
+    "id": "17db36a9-a27a-4e16-83dd-425e647e0773",
+    "site": "frugal monstrous title",
+    "timezone": "America/Caracas",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-11-16T12:56:20.090Z,
+    "id": "d2dcb57f-d686-4506-8312-d59f18cc91ef",
+    "site": "frizzy excited outback",
+    "timezone": "America/Antigua",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-11-11T03:22:38.496Z,
+    "id": "62f2d18c-901a-4831-a69d-426922dd40ab",
+    "site": "voluminous heartfelt imprisonment",
+    "timezone": "America/Marigot",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-11-09T06:29:59.953Z,
+    "id": "e38c3ef1-a861-494a-b017-56f8fbbf5acd",
     "site": "good-natured bountiful relay",
+    "timezone": "Asia/Choibalsan",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-04-19T23:24:15",
-      "timezone": "Pacific/Galapagos",
-    },
-    "id": "2aa9d0cc-d01e-4edd-aee7-e1fb725625fa",
-    "site": "friendly criminal waffle",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-04-19T00:30:49",
-      "timezone": "Europe/Oslo",
-    },
-    "id": "4f0dbd6d-184d-41c3-8385-75fa14148370",
-    "site": "thoughtful lumpy quotation",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-04-15T21:44:58",
-      "timezone": "Arctic/Longyearbyen",
-    },
-    "id": "89f12c10-e1e3-4da9-902d-d2f1e4773dfd",
-    "site": "cultured pointless glass",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-04-12T06:08:04",
-      "timezone": "Europe/Monaco",
-    },
-    "id": "fe25d3fa-3df0-49a1-aa80-911220cbd734",
-    "site": "rude ajar aggradation",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-04-10T17:36:28",
-      "timezone": "Asia/Brunei",
-    },
-    "id": "942c23da-816d-46ca-abc8-f513f21b9356",
+    "entryTime": 2024-10-27T03:36:42.041Z,
+    "id": "d843f325-698e-4e10-bba3-efb13b557127",
     "site": "dark heavy boss",
+    "timezone": "Asia/Taipei",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-04-01T22:51:21",
-      "timezone": "Africa/Algiers",
-    },
-    "id": "e786d59e-b8c3-4a69-bf73-227f21232044",
-    "site": "mundane known blocker",
+    "entryTime": 2024-10-25T19:42:43.197Z,
+    "id": "4c9493d1-4763-4283-b14d-3fd44b69998e",
+    "site": "unwelcome exemplary alpaca",
+    "timezone": "Asia/Srednekolymsk",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-04-01T14:11:06",
-      "timezone": "Asia/Khandyga",
-    },
-    "id": "5b78cfb5-0b1f-493e-a58e-fbe668466489",
+    "entryTime": 2024-10-25T07:26:33.382Z,
+    "id": "2e71637f-3859-45a0-b076-18f56add7a13",
+    "site": "gentle careless sequence",
+    "timezone": "Europe/Berlin",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-10-23T18:01:39.056Z,
+    "id": "5b7d3fdf-3aa3-4ae6-bcf9-e08e42f052c6",
+    "site": "frequent realistic paramedic",
+    "timezone": "Asia/Tomsk",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-10-21T13:48:32.071Z,
+    "id": "1efc00ba-cc42-44a3-9986-45769586ac09",
+    "site": "knowledgeable oily sweatshirt",
+    "timezone": "Africa/Kinshasa",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-10-16T03:30:04.365Z,
+    "id": "20a9a522-7cd0-4e8e-802b-14b397e9aa64",
+    "site": "other necessary fedora",
+    "timezone": "Europe/Podgorica",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-10-15T12:02:45.039Z,
+    "id": "d8f22656-7784-4734-9701-9d35c69cfa83",
+    "site": "safe welcome designation",
+    "timezone": "Africa/Sao_Tome",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-10-13T04:15:27.157Z,
+    "id": "9cc2da23-72fe-4444-a26f-7c2f4bac1d52",
+    "site": "rude ajar aggradation",
+    "timezone": "America/Argentina/Jujuy",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-10-13T02:01:41.647Z,
+    "id": "941cd2ba-489c-4e9b-9ff3-e92ce11c7f34",
+    "site": "acidic similar juggernaut",
+    "timezone": "Australia/Eucla",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-10-12T20:42:35.830Z,
+    "id": "72951077-8d09-42e1-9275-7250e63972e7",
+    "site": "intelligent powerful breakpoint",
+    "timezone": "Atlantic/Cape_Verde",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-10-03T20:49:06.116Z,
+    "id": "6e7812db-fce4-44a8-a9d2-fb0bd8a9f659",
+    "site": "mild mixed crewman",
+    "timezone": "Asia/Pyongyang",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-09-28T00:47:30.581Z,
+    "id": "30a316cd-82f4-4c01-8b5b-d87dfcc56560",
+    "site": "impolite hungry hunt",
+    "timezone": "Pacific/Easter",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-09-21T03:39:29.288Z,
+    "id": "126f2417-13e9-4c2e-acdd-b9998650728a",
+    "site": "unsightly kaleidoscopic web",
+    "timezone": "Asia/Jakarta",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-09-20T06:20:17.641Z,
+    "id": "7b19035d-4347-438f-b9ec-abec0a9d4de7",
+    "site": "specific infinite chalice",
+    "timezone": "America/Havana",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-09-17T09:27:27.817Z,
+    "id": "1910f8fc-9c4d-49b0-bbc0-d30cfcaa3bd1",
+    "site": "internal crisp trove",
+    "timezone": "Antarctica/Palmer",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-09-17T03:02:42.373Z,
+    "id": "6696cb4e-5004-4395-ad86-0f62f55f027b",
     "site": "definitive tart hierarchy",
+    "timezone": "America/Kralendijk",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-03-29T19:46:17",
-      "timezone": "Asia/Baku",
-    },
-    "id": "8f764090-c254-4ad6-a762-6ce2e1166b4d",
-    "site": "shameful glorious noodles",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-03-24T16:42:13",
-      "timezone": "America/Winnipeg",
-    },
-    "id": "a08fa86a-2bd6-4f2c-b6e4-a61b573f77f8",
-    "site": "quiet complete current",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-03-24T15:35:28",
-      "timezone": "America/Grenada",
-    },
-    "id": "7772621c-d8aa-4a83-aca1-962eefa14360",
-    "site": "phony even pass",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-03-24T00:50:37",
-      "timezone": "Antarctica/Davis",
-    },
-    "id": "b1f35ab1-ab10-44b8-b208-65181b43a8ba",
-    "site": "legal incomplete trachoma",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-03-15T16:17:20",
-      "timezone": "America/Santiago",
-    },
-    "id": "d6757ff5-e1ee-470d-aacd-168c9508c838",
-    "site": "keen specific comedy",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-03-12T06:19:08",
-      "timezone": "Pacific/Chatham",
-    },
-    "id": "bc80a1ed-8d16-4db6-87ae-5542c15d687b",
-    "site": "awkward limping hard-hat",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-03-10T15:39:44",
-      "timezone": "America/Bahia",
-    },
-    "id": "de6ab3e2-e969-4b57-a267-f9ceb7ac6336",
-    "site": "reflecting handsome chalk",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-03-04T11:15:33",
-      "timezone": "Europe/Amsterdam",
-    },
-    "id": "365c367e-857e-4dac-8029-aded02c0a258",
-    "site": "cultured pointless glass",
-  },
-  {
-    "air": [],
-    "entryTime": {
-      "date": "2024-02-29T21:38:04",
-      "timezone": "America/Havana",
-    },
-    "id": "593bca2e-9d2a-4a35-9e5c-514a5cb14f66",
+    "entryTime": 2024-09-12T02:54:14.534Z,
+    "id": "dc29c094-dcb1-4449-8689-8648315fc73d",
     "site": "apt pastel moai",
+    "timezone": "America/Cambridge_Bay",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-02-27T21:57:44",
-      "timezone": "America/Grenada",
-    },
-    "id": "a6eba206-2c71-46c2-aaee-027c80479bce",
-    "site": "concerned specific printing",
+    "entryTime": 2024-09-07T00:50:44.602Z,
+    "id": "a9732edf-d509-4f12-aa25-7f25b69a973f",
+    "site": "frozen extra-small freezing",
+    "timezone": "America/Cayman",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-02-27T12:40:17",
-      "timezone": "Australia/Sydney",
-    },
-    "id": "f4383674-c416-4448-8b21-7ab5f36784ad",
-    "site": "bustling normal convert",
+    "entryTime": 2024-09-05T15:37:19.295Z,
+    "id": "88a357de-eec6-4be6-851d-5bdd7af01aeb",
+    "site": "whirlwind deafening concept",
+    "timezone": "America/Fortaleza",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-02-25T22:55:28",
-      "timezone": "Asia/Gaza",
-    },
-    "id": "bd9b723e-5633-42c9-9e73-24a155d5ce60",
-    "site": "phony even pass",
+    "entryTime": 2024-09-04T09:32:31.763Z,
+    "id": "bd6e62c1-2d0c-4fec-b803-4868fd016c2d",
+    "site": "modern sorrowful girdle",
+    "timezone": "Europe/Skopje",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-02-22T19:17:20",
-      "timezone": "America/Port-au-Prince",
-    },
-    "id": "83c07ad6-2eaa-452c-8377-14847c443c24",
-    "site": "humble crazy cockpit",
+    "entryTime": 2024-09-02T10:59:02.004Z,
+    "id": "19f5a4ff-cc77-4956-932a-d135d784eda9",
+    "site": "dazzling easy-going shortwave",
+    "timezone": "America/Dawson",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-02-22T16:25:14",
-      "timezone": "Asia/Yakutsk",
-    },
-    "id": "777bfe88-2edc-4093-9249-6ff62c87d7fc",
-    "site": "sympathetic mortified taxicab",
+    "entryTime": 2024-08-27T16:34:23.109Z,
+    "id": "71d34458-c1df-4090-9400-ddb8c7a81c21",
+    "site": "thoughtful lumpy quotation",
+    "timezone": "Europe/Oslo",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-02-22T11:44:06",
-      "timezone": "Africa/Abidjan",
-    },
-    "id": "80a06a52-8221-4c11-a4c5-ac9c5eb5fbc5",
-    "site": "cultured illiterate acid",
+    "entryTime": 2024-08-24T12:18:29.681Z,
+    "id": "34244a4c-e2f9-4321-8b9e-79930e6471ee",
+    "site": "aggravating unhappy vest",
+    "timezone": "Asia/Damascus",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-02-18T16:10:08",
-      "timezone": "Asia/Dili",
-    },
-    "id": "b69cc091-7a89-464c-a1fb-8348fdf55c4d",
-    "site": "specific dead ramen",
+    "entryTime": 2024-08-21T21:10:22.203Z,
+    "id": "8c681da5-d22a-4a98-938f-9de416a0beff",
+    "site": "tattered rigid forever",
+    "timezone": "Africa/Douala",
   },
   {
     "air": [],
-    "entryTime": {
-      "date": "2024-02-15T01:17:49",
-      "timezone": "America/Nassau",
-    },
-    "id": "2c35ae91-9cc9-427a-b7b8-1af4b1179e73",
-    "site": "voluminous good-natured antiquity",
+    "entryTime": 2024-08-15T09:45:48.982Z,
+    "id": "adcb2ff5-e086-42dd-9e35-f2443bfab8f4",
+    "site": "damp forsaken chapter",
+    "timezone": "America/Montserrat",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-08-15T09:34:31.828Z,
+    "id": "cc80f224-44b1-48f0-94ac-a7ee516afaef",
+    "site": "funny substantial strength",
+    "timezone": "Asia/Pyongyang",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-08-07T19:00:55.591Z,
+    "id": "bdf818ca-03d5-402c-b294-0919ca512a8a",
+    "site": "original pitiful resource",
+    "timezone": "America/Blanc-Sablon",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-08-05T22:13:37.798Z,
+    "id": "62179aed-2b7f-4a22-b5dc-03ede91e6899",
+    "site": "second pleasing berry",
+    "timezone": "Pacific/Bougainville",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-07-29T04:04:21.198Z,
+    "id": "302b87f6-f7f9-4360-bef4-a608e0d49d5b",
+    "site": "agitated high field",
+    "timezone": "Indian/Mahe",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-07-23T08:02:48.538Z,
+    "id": "e9ef1b9c-c5b7-4d2e-a38c-b18fca833c68",
+    "site": "quiet complete current",
+    "timezone": "Antarctica/Casey",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-07-20T23:00:30.460Z,
+    "id": "74020122-72c9-4c37-8761-36622f65b99c",
+    "site": "silky sharp brilliant",
+    "timezone": "America/Cambridge_Bay",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-07-17T08:06:13.415Z,
+    "id": "c6a03fac-69a9-42d4-b312-acab4d4c0edd",
+    "site": "silky dental dragon",
+    "timezone": "America/St_Johns",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-07-13T09:45:06.004Z,
+    "id": "9274467f-4fef-4a57-80d1-680aace83f0f",
+    "site": "offensive monumental teapot",
+    "timezone": "Atlantic/Stanley",
+  },
+  {
+    "air": [],
+    "entryTime": 2024-07-11T23:11:34.351Z,
+    "id": "9089e0ec-e876-4bb1-96f0-bea1bb1cab4d",
+    "site": "sharp vicious minibus",
+    "timezone": "America/Mexico_City",
   },
 ]
 `;
 
 exports[`Log entries service when listing log entries will perform a search for log entries after a start date 1`] = `
-[
-  {
-    "entryTime": {
-      "date": "2024-07-22T14:35:19",
-      "timezone": "Asia/Yakutsk",
+{
+  "data": [
+    {
+      "entryTime": 2024-12-11T18:54:16.993Z,
+      "id": "ed072537-423a-4d14-89b3-6851c9009eb7",
+      "site": "humming past mathematics",
     },
-    "id": "6c79010b-564e-43c3-b46d-dc1727573237",
-    "site": "good-natured bountiful relay",
-  },
-  {
-    "entryTime": {
-      "date": "2024-07-21T05:17:29",
-      "timezone": "Atlantic/South_Georgia",
+    {
+      "entryTime": 2024-12-10T00:43:52.099Z,
+      "id": "14855a1f-5a9d-4904-83df-4dc9cb479b70",
+      "site": "remarkable unique shoelace",
     },
-    "id": "f8617b1a-dca9-4a6a-b7f6-656147977c11",
-    "site": "tattered worn graffiti",
-  },
-  {
-    "entryTime": {
-      "date": "2024-07-21T02:48:32",
-      "timezone": "Africa/Ndjamena",
+    {
+      "entryTime": 2024-12-09T16:29:49.763Z,
+      "id": "7be7ad19-c083-4c28-8c87-6808d8f5bcfb",
+      "site": "cluttered frizzy stylus",
     },
-    "id": "aa5fb198-782e-4eb3-95c3-14354e0b9911",
-    "site": "deadly idealistic gerbil",
-  },
-  {
-    "entryTime": {
-      "date": "2024-07-17T00:54:29",
-      "timezone": "Africa/Bangui",
+    {
+      "entryTime": 2024-12-06T03:41:17.445Z,
+      "id": "522e29a5-3a94-48ea-92a9-75bcb5e0dad7",
+      "site": "wise gullible administrator",
     },
-    "id": "5c024ea3-1f23-4dab-ba03-00b01c605d4a",
-    "site": "piercing joyful hospitality",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-30T16:43:52",
-      "timezone": "America/Winnipeg",
+    {
+      "entryTime": 2024-12-04T16:08:31.217Z,
+      "id": "cfbe9a05-8fbd-46e9-a655-0083eebe5949",
+      "site": "mild mixed crewman",
     },
-    "id": "5b73b780-6a22-4411-b152-10b7143c104d",
-    "site": "silky sharp brilliant",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-30T10:07:41",
-      "timezone": "America/Asuncion",
+    {
+      "entryTime": 2024-12-03T21:32:56.266Z,
+      "id": "f19a4a8e-5928-4bb6-8ee3-f980f1dea45e",
+      "site": "deadly idealistic gerbil",
     },
-    "id": "7c1b840c-033f-4d92-b3e5-59d5253997c2",
-    "site": "gloomy acceptable hummus",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-29T11:12:20",
-      "timezone": "Asia/Bishkek",
+    {
+      "entryTime": 2024-11-30T04:40:35.930Z,
+      "id": "217a32f7-c249-430a-8a5a-670a9d862c93",
+      "site": "specific infinite chalice",
     },
-    "id": "5d963469-e10f-4d54-bcea-96d90b38e80f",
-    "site": "spotless gifted gallon",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-25T05:38:18",
-      "timezone": "Australia/Adelaide",
+    {
+      "entryTime": 2024-11-25T16:47:07.828Z,
+      "id": "7c998dd4-1203-4f46-ad6e-58621cc7451f",
+      "site": "cruel wealthy lieu",
     },
-    "id": "13a27848-8720-4961-be84-647adc581c7e",
-    "site": "graceful rich contrail",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-22T17:24:30",
-      "timezone": "Atlantic/Reykjavik",
+    {
+      "entryTime": 2024-11-23T11:30:43.580Z,
+      "id": "3b71f0e9-7a09-4b0f-8a1d-55453fbca1d9",
+      "site": "flamboyant old mate",
     },
-    "id": "e1242310-8e3b-489b-a071-b6daa0741210",
-    "site": "tall trivial clause",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-20T23:22:14",
-      "timezone": "America/Hermosillo",
+    {
+      "entryTime": 2024-11-21T19:33:18.695Z,
+      "id": "266423f9-7824-4a59-80dc-7707bf3ff57d",
+      "site": "exotic warmhearted aside",
     },
-    "id": "0b603579-3cf0-4118-9d17-ef46ae396d49",
-    "site": "scornful well-worn baggage",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-20T16:26:31",
-      "timezone": "America/Argentina/La_Rioja",
+    {
+      "entryTime": 2024-11-21T14:29:00.737Z,
+      "id": "9a205586-e2b9-444e-a869-bd261d32efbe",
+      "site": "spotless gifted gallon",
     },
-    "id": "05e6545e-fba2-4426-93c1-f40db7ecad8f",
-    "site": "major limping airbag",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-16T15:58:20",
-      "timezone": "Asia/Singapore",
+    {
+      "entryTime": 2024-11-21T03:56:30.184Z,
+      "id": "9f5cc359-6672-4248-af2c-2810c8498684",
+      "site": "lazy winged conscience",
     },
-    "id": "14b4a3b3-c8b4-4949-87a1-66ad17a5681f",
-    "site": "frizzy excited outback",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-15T13:24:04",
-      "timezone": "Antarctica/Palmer",
+    {
+      "entryTime": 2024-11-17T12:27:11.094Z,
+      "id": "17db36a9-a27a-4e16-83dd-425e647e0773",
+      "site": "frugal monstrous title",
     },
-    "id": "093c7a96-cdd0-4324-8989-78f8a5f9cc96",
-    "site": "tattered worn graffiti",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-14T00:22:34",
-      "timezone": "Asia/Sakhalin",
+    {
+      "entryTime": 2024-11-16T12:56:20.090Z,
+      "id": "d2dcb57f-d686-4506-8312-d59f18cc91ef",
+      "site": "frizzy excited outback",
     },
-    "id": "3a99c02e-d580-4648-a6ed-ace263795ea8",
-    "site": "giant broken meat",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-12T06:35:21",
-      "timezone": "Asia/Kamchatka",
+    {
+      "entryTime": 2024-11-11T03:22:38.496Z,
+      "id": "62f2d18c-901a-4831-a69d-426922dd40ab",
+      "site": "voluminous heartfelt imprisonment",
     },
-    "id": "f9168957-a5f1-466b-83ff-8764d139dce7",
-    "site": "intelligent greedy monster",
-  },
-]
+  ],
+  "totalCount": 138,
+}
 `;
 
 exports[`Log entries service when listing log entries will perform a search for log entries before an end date 1`] = `
-[
-  {
-    "entryTime": {
-      "date": "2023-09-25T12:59:10",
-      "timezone": "Pacific/Tongatapu",
+{
+  "data": [
+    {
+      "entryTime": 2023-09-30T23:45:02.566Z,
+      "id": "a323ead5-a55b-4624-b238-58f092781c8e",
+      "site": "illustrious clueless supervisor",
     },
-    "id": "9d68ec7d-f432-4cb5-aab4-121978faa47a",
-    "site": "far-off critical machine",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-22T23:18:01",
-      "timezone": "America/Atikokan",
+    {
+      "entryTime": 2023-09-30T03:36:24.965Z,
+      "id": "92bd0414-4cbe-446d-8df0-953611b3d79d",
+      "site": "bustling normal convert",
     },
-    "id": "a253f12a-38bd-4c57-8df9-4f50482352ed",
-    "site": "delightful female toad",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-16T07:31:17",
-      "timezone": "Europe/San_Marino",
+    {
+      "entryTime": 2023-09-24T12:07:55.727Z,
+      "id": "8e2342b7-6bf9-4c56-8908-66bf9abd55fe",
+      "site": "avaricious flamboyant subtitle",
     },
-    "id": "a3bea3e7-55e5-48af-af39-667248993d5f",
-    "site": "splendid vital wound",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-09T17:52:08",
-      "timezone": "America/Argentina/Catamarca",
+    {
+      "entryTime": 2023-09-24T02:06:27.156Z,
+      "id": "0965314e-ac8f-4fdb-a188-91599fef0a5d",
+      "site": "belated turbulent koala",
     },
-    "id": "22387685-efdc-4e62-a6c4-ad5ac55fec97",
-    "site": "wry boring examiner",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-08T07:54:19",
-      "timezone": "Asia/Kuching",
+    {
+      "entryTime": 2023-09-21T20:44:52.696Z,
+      "id": "c4353406-f438-4731-abd1-3cd00586d7d0",
+      "site": "snarling round astrolabe",
     },
-    "id": "089f13d1-e100-4a92-9103-d93103a3eb22",
-    "site": "vicious difficult skean",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-27T05:43:43",
-      "timezone": "America/Argentina/Catamarca",
+    {
+      "entryTime": 2023-09-11T20:26:17.955Z,
+      "id": "32f0eac5-4402-475e-bad9-e70f9e10dbc4",
+      "site": "major limping airbag",
     },
-    "id": "3a9485b2-2888-442c-87e3-4a0cb75830ba",
-    "site": "visible friendly nonconformist",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-27T00:59:05",
-      "timezone": "Pacific/Pago_Pago",
+    {
+      "entryTime": 2023-09-09T03:57:34.209Z,
+      "id": "9833ce6a-7ea3-45c7-8361-18cd857c0b98",
+      "site": "carefree fussy crewman",
     },
-    "id": "7ba7e06a-4f2a-49db-9ad9-789370679815",
-    "site": "defiant thorny knife-edge",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-22T22:17:29",
-      "timezone": "Australia/Brisbane",
+    {
+      "entryTime": 2023-09-08T10:06:20.673Z,
+      "id": "46637844-9a07-42be-8e2b-1c2469a763af",
+      "site": "sniveling weepy temporariness",
     },
-    "id": "298d086c-d25d-40a6-9127-cb112192017f",
-    "site": "rapid flustered revenue",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-10T20:04:15",
-      "timezone": "America/Dawson",
+    {
+      "entryTime": 2023-09-07T18:10:38.644Z,
+      "id": "90f69dc6-46ad-49a6-8d6d-213b83235613",
+      "site": "impeccable overcooked soybean",
     },
-    "id": "3cf8fb11-544e-473d-b239-71054fa34380",
-    "site": "cultured illiterate acid",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-07T19:46:03",
-      "timezone": "America/St_Kitts",
+    {
+      "entryTime": 2023-09-07T16:03:10.698Z,
+      "id": "a8578a1e-d5be-4384-ad05-bfdf4d6890e9",
+      "site": "alert awesome intuition",
     },
-    "id": "4fde5a4c-ddeb-4f00-9bf1-6339e5bcd2ed",
-    "site": "unwelcome exemplary alpaca",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-02T21:55:38",
-      "timezone": "Asia/Tashkent",
+    {
+      "entryTime": 2023-09-05T18:43:40.524Z,
+      "id": "f19fa59c-eb4e-4462-b2d1-5402a8642e76",
+      "site": "wasteful hollow corn",
     },
-    "id": "590e8a08-1da6-4350-9c9a-fb7e1b2395cb",
-    "site": "likable infamous scimitar",
-  },
-  {
-    "entryTime": {
-      "date": "2023-08-02T18:52:29",
-      "timezone": "Asia/Yangon",
+    {
+      "entryTime": 2023-09-04T10:22:04.013Z,
+      "id": "032a2033-8c2b-4c97-a667-c25bb7605031",
+      "site": "delightful female toad",
     },
-    "id": "dbbadc14-9510-46e3-a5c6-f9d3a5632efc",
-    "site": "internal crisp trove",
-  },
-  {
-    "entryTime": {
-      "date": "2023-07-27T10:10:31",
-      "timezone": "America/Inuvik",
+    {
+      "entryTime": 2023-08-26T09:49:09.454Z,
+      "id": "93533d3a-9d24-4cea-928d-bb86fafd846f",
+      "site": "far-off critical machine",
     },
-    "id": "2043fbfb-79fd-438c-b0ba-0457f2488d93",
-    "site": "knowledgeable oily sweatshirt",
-  },
-  {
-    "entryTime": {
-      "date": "2023-07-25T11:03:59",
-      "timezone": "Asia/Amman",
+    {
+      "entryTime": 2023-08-21T17:47:10.325Z,
+      "id": "9d63e6e4-3144-42ad-9828-39a9575350f1",
+      "site": "voluminous heartfelt imprisonment",
     },
-    "id": "3bd1cd41-6ed6-42f7-a1cd-8f0eafa03ed7",
-    "site": "snarling round astrolabe",
-  },
-  {
-    "entryTime": {
-      "date": "2023-07-24T22:43:29",
-      "timezone": "Atlantic/Cape_Verde",
+    {
+      "entryTime": 2023-08-19T07:50:07.330Z,
+      "id": "ea4a01cf-afb1-4b02-908d-2425cfb9ad10",
+      "site": "silky sharp brilliant",
     },
-    "id": "9e71ec55-05d0-466c-a5c3-5e986cec0264",
-    "site": "intelligent greedy monster",
-  },
-]
+  ],
+  "totalCount": 174,
+}
 `;
 
 exports[`Log entries service when listing log entries will perform a search for log entries belonging to a specific diver 1`] = `
-[
-  {
-    "entryTime": {
-      "date": "2024-07-22T14:35:19",
-      "timezone": "Asia/Yakutsk",
+{
+  "data": [
+    {
+      "entryTime": 2024-12-11T18:54:16.993Z,
+      "id": "ed072537-423a-4d14-89b3-6851c9009eb7",
+      "owner": "Ayla.Rippin",
+      "site": "humming past mathematics",
     },
-    "id": "6c79010b-564e-43c3-b46d-dc1727573237",
-    "owner": "Ayla.Rippin",
-    "site": "good-natured bountiful relay",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-30T16:43:52",
-      "timezone": "America/Winnipeg",
+    {
+      "entryTime": 2024-12-10T00:43:52.099Z,
+      "id": "14855a1f-5a9d-4904-83df-4dc9cb479b70",
+      "owner": "Ayla.Rippin",
+      "site": "remarkable unique shoelace",
     },
-    "id": "5b73b780-6a22-4411-b152-10b7143c104d",
-    "owner": "Ayla.Rippin",
-    "site": "silky sharp brilliant",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-30T10:07:41",
-      "timezone": "America/Asuncion",
+    {
+      "entryTime": 2024-11-30T04:40:35.930Z,
+      "id": "217a32f7-c249-430a-8a5a-670a9d862c93",
+      "owner": "Ayla.Rippin",
+      "site": "specific infinite chalice",
     },
-    "id": "7c1b840c-033f-4d92-b3e5-59d5253997c2",
-    "owner": "Ayla.Rippin",
-    "site": "gloomy acceptable hummus",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-29T11:12:20",
-      "timezone": "Asia/Bishkek",
+    {
+      "entryTime": 2024-11-21T19:33:18.695Z,
+      "id": "266423f9-7824-4a59-80dc-7707bf3ff57d",
+      "owner": "Ayla.Rippin",
+      "site": "exotic warmhearted aside",
     },
-    "id": "5d963469-e10f-4d54-bcea-96d90b38e80f",
-    "owner": "Ayla.Rippin",
-    "site": "spotless gifted gallon",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-20T23:22:14",
-      "timezone": "America/Hermosillo",
+    {
+      "entryTime": 2024-11-21T14:29:00.737Z,
+      "id": "9a205586-e2b9-444e-a869-bd261d32efbe",
+      "owner": "Ayla.Rippin",
+      "site": "spotless gifted gallon",
     },
-    "id": "0b603579-3cf0-4118-9d17-ef46ae396d49",
-    "owner": "Ayla.Rippin",
-    "site": "scornful well-worn baggage",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-14T00:22:34",
-      "timezone": "Asia/Sakhalin",
+    {
+      "entryTime": 2024-11-11T03:22:38.496Z,
+      "id": "62f2d18c-901a-4831-a69d-426922dd40ab",
+      "owner": "Ayla.Rippin",
+      "site": "voluminous heartfelt imprisonment",
     },
-    "id": "3a99c02e-d580-4648-a6ed-ace263795ea8",
-    "owner": "Ayla.Rippin",
-    "site": "giant broken meat",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-08T11:19:32",
-      "timezone": "Europe/Simferopol",
+    {
+      "entryTime": 2024-11-09T06:29:59.953Z,
+      "id": "e38c3ef1-a861-494a-b017-56f8fbbf5acd",
+      "owner": "Ayla.Rippin",
+      "site": "good-natured bountiful relay",
     },
-    "id": "394fb770-0b2a-4c70-ad2a-629bb861a76c",
-    "owner": "Ayla.Rippin",
-    "site": "steep aromatic broccoli",
-  },
-  {
-    "entryTime": {
-      "date": "2024-05-06T12:07:16",
-      "timezone": "Africa/Nouakchott",
+    {
+      "entryTime": 2024-10-23T18:01:39.056Z,
+      "id": "5b7d3fdf-3aa3-4ae6-bcf9-e08e42f052c6",
+      "owner": "Ayla.Rippin",
+      "site": "frequent realistic paramedic",
     },
-    "id": "ee2885fe-5d8e-416c-9af3-d90b26c60a41",
-    "owner": "Ayla.Rippin",
-    "site": "apt colossal initial",
-  },
-  {
-    "entryTime": {
-      "date": "2024-05-06T07:55:57",
-      "timezone": "America/Halifax",
+    {
+      "entryTime": 2024-10-13T04:15:27.157Z,
+      "id": "9cc2da23-72fe-4444-a26f-7c2f4bac1d52",
+      "owner": "Ayla.Rippin",
+      "site": "rude ajar aggradation",
     },
-    "id": "c4292abd-1d6c-4fe1-a00a-a013dc43829f",
-    "owner": "Ayla.Rippin",
-    "site": "lost profuse garlic",
-  },
-  {
-    "entryTime": {
-      "date": "2024-04-23T15:24:20",
-      "timezone": "Asia/Phnom_Penh",
+    {
+      "entryTime": 2024-09-20T06:20:17.641Z,
+      "id": "7b19035d-4347-438f-b9ec-abec0a9d4de7",
+      "owner": "Ayla.Rippin",
+      "site": "specific infinite chalice",
     },
-    "id": "1308b043-6eed-4aba-9932-af48e53e3a43",
-    "owner": "Ayla.Rippin",
-    "site": "good-natured bountiful relay",
-  },
-  {
-    "entryTime": {
-      "date": "2024-04-12T06:08:04",
-      "timezone": "Europe/Monaco",
+    {
+      "entryTime": 2024-09-04T09:32:31.763Z,
+      "id": "bd6e62c1-2d0c-4fec-b803-4868fd016c2d",
+      "owner": "Ayla.Rippin",
+      "site": "modern sorrowful girdle",
     },
-    "id": "fe25d3fa-3df0-49a1-aa80-911220cbd734",
-    "owner": "Ayla.Rippin",
-    "site": "rude ajar aggradation",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-29T19:46:17",
-      "timezone": "Asia/Baku",
+    {
+      "entryTime": 2024-08-21T21:10:22.203Z,
+      "id": "8c681da5-d22a-4a98-938f-9de416a0beff",
+      "owner": "Ayla.Rippin",
+      "site": "tattered rigid forever",
     },
-    "id": "8f764090-c254-4ad6-a762-6ce2e1166b4d",
-    "owner": "Ayla.Rippin",
-    "site": "shameful glorious noodles",
-  },
-  {
-    "entryTime": {
-      "date": "2024-03-24T00:50:37",
-      "timezone": "Antarctica/Davis",
+    {
+      "entryTime": 2024-08-15T09:45:48.982Z,
+      "id": "adcb2ff5-e086-42dd-9e35-f2443bfab8f4",
+      "owner": "Ayla.Rippin",
+      "site": "damp forsaken chapter",
     },
-    "id": "b1f35ab1-ab10-44b8-b208-65181b43a8ba",
-    "owner": "Ayla.Rippin",
-    "site": "legal incomplete trachoma",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-27T12:40:17",
-      "timezone": "Australia/Sydney",
+    {
+      "entryTime": 2024-08-15T09:34:31.828Z,
+      "id": "cc80f224-44b1-48f0-94ac-a7ee516afaef",
+      "owner": "Ayla.Rippin",
+      "site": "funny substantial strength",
     },
-    "id": "f4383674-c416-4448-8b21-7ab5f36784ad",
-    "owner": "Ayla.Rippin",
-    "site": "bustling normal convert",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-22T19:17:20",
-      "timezone": "America/Port-au-Prince",
+    {
+      "entryTime": 2024-08-07T19:00:55.591Z,
+      "id": "bdf818ca-03d5-402c-b294-0919ca512a8a",
+      "owner": "Ayla.Rippin",
+      "site": "original pitiful resource",
     },
-    "id": "83c07ad6-2eaa-452c-8377-14847c443c24",
-    "owner": "Ayla.Rippin",
-    "site": "humble crazy cockpit",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-22T16:25:14",
-      "timezone": "Asia/Yakutsk",
+    {
+      "entryTime": 2024-07-20T23:00:30.460Z,
+      "id": "74020122-72c9-4c37-8761-36622f65b99c",
+      "owner": "Ayla.Rippin",
+      "site": "silky sharp brilliant",
     },
-    "id": "777bfe88-2edc-4093-9249-6ff62c87d7fc",
-    "owner": "Ayla.Rippin",
-    "site": "sympathetic mortified taxicab",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-18T16:10:08",
-      "timezone": "Asia/Dili",
+    {
+      "entryTime": 2024-06-06T07:52:20.600Z,
+      "id": "03dfa322-9d45-45e7-beec-c7d85face253",
+      "owner": "Ayla.Rippin",
+      "site": "sympathetic mortified taxicab",
     },
-    "id": "b69cc091-7a89-464c-a1fb-8348fdf55c4d",
-    "owner": "Ayla.Rippin",
-    "site": "specific dead ramen",
-  },
-  {
-    "entryTime": {
-      "date": "2024-01-28T19:38:33",
-      "timezone": "America/Belem",
+    {
+      "entryTime": 2024-06-01T21:44:31.035Z,
+      "id": "669333a9-575f-40d1-9fef-945936cbf473",
+      "owner": "Ayla.Rippin",
+      "site": "giant broken meat",
     },
-    "id": "1ad7a960-ee20-4b69-8762-67ddf939f5c1",
-    "owner": "Ayla.Rippin",
-    "site": "spotless gifted gallon",
-  },
-  {
-    "entryTime": {
-      "date": "2023-12-29T08:14:25",
-      "timezone": "America/Mazatlan",
+    {
+      "entryTime": 2024-05-26T19:06:40.946Z,
+      "id": "50b754cb-5ee1-4c31-8c5f-b0178a1fdd27",
+      "owner": "Ayla.Rippin",
+      "site": "meaty weird good",
     },
-    "id": "15701e41-4126-4f22-bf9d-10dcafea8276",
-    "owner": "Ayla.Rippin",
-    "site": "frequent realistic paramedic",
-  },
-  {
-    "entryTime": {
-      "date": "2023-12-26T17:04:38",
-      "timezone": "America/Detroit",
+    {
+      "entryTime": 2024-05-06T21:27:47.283Z,
+      "id": "2933b80f-9e32-4d2a-9b8a-0dd281e2c001",
+      "owner": "Ayla.Rippin",
+      "site": "bold staid lode",
     },
-    "id": "f39774ee-0d59-49ba-8bbb-f59a45fd1bf2",
-    "owner": "Ayla.Rippin",
-    "site": "funny substantial strength",
-  },
-]
+  ],
+  "totalCount": 75,
+}
 `;
 
 exports[`Log entries service when listing log entries will perform a search for log entries between a start date and end date 1`] = `
-[
-  {
-    "entryTime": {
-      "date": "2023-09-25T12:59:10",
-      "timezone": "Pacific/Tongatapu",
+{
+  "data": [
+    {
+      "entryTime": 2023-09-30T23:45:02.566Z,
+      "id": "a323ead5-a55b-4624-b238-58f092781c8e",
+      "site": "illustrious clueless supervisor",
     },
-    "id": "9d68ec7d-f432-4cb5-aab4-121978faa47a",
-    "site": "far-off critical machine",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-22T23:18:01",
-      "timezone": "America/Atikokan",
+    {
+      "entryTime": 2023-09-30T03:36:24.965Z,
+      "id": "92bd0414-4cbe-446d-8df0-953611b3d79d",
+      "site": "bustling normal convert",
     },
-    "id": "a253f12a-38bd-4c57-8df9-4f50482352ed",
-    "site": "delightful female toad",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-16T07:31:17",
-      "timezone": "Europe/San_Marino",
+    {
+      "entryTime": 2023-09-24T12:07:55.727Z,
+      "id": "8e2342b7-6bf9-4c56-8908-66bf9abd55fe",
+      "site": "avaricious flamboyant subtitle",
     },
-    "id": "a3bea3e7-55e5-48af-af39-667248993d5f",
-    "site": "splendid vital wound",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-09T17:52:08",
-      "timezone": "America/Argentina/Catamarca",
+    {
+      "entryTime": 2023-09-24T02:06:27.156Z,
+      "id": "0965314e-ac8f-4fdb-a188-91599fef0a5d",
+      "site": "belated turbulent koala",
     },
-    "id": "22387685-efdc-4e62-a6c4-ad5ac55fec97",
-    "site": "wry boring examiner",
-  },
-  {
-    "entryTime": {
-      "date": "2023-09-08T07:54:19",
-      "timezone": "Asia/Kuching",
+    {
+      "entryTime": 2023-09-21T20:44:52.696Z,
+      "id": "c4353406-f438-4731-abd1-3cd00586d7d0",
+      "site": "snarling round astrolabe",
     },
-    "id": "089f13d1-e100-4a92-9103-d93103a3eb22",
-    "site": "vicious difficult skean",
-  },
-]
+    {
+      "entryTime": 2023-09-11T20:26:17.955Z,
+      "id": "32f0eac5-4402-475e-bad9-e70f9e10dbc4",
+      "site": "major limping airbag",
+    },
+    {
+      "entryTime": 2023-09-09T03:57:34.209Z,
+      "id": "9833ce6a-7ea3-45c7-8361-18cd857c0b98",
+      "site": "carefree fussy crewman",
+    },
+    {
+      "entryTime": 2023-09-08T10:06:20.673Z,
+      "id": "46637844-9a07-42be-8e2b-1c2469a763af",
+      "site": "sniveling weepy temporariness",
+    },
+    {
+      "entryTime": 2023-09-07T18:10:38.644Z,
+      "id": "90f69dc6-46ad-49a6-8d6d-213b83235613",
+      "site": "impeccable overcooked soybean",
+    },
+    {
+      "entryTime": 2023-09-07T16:03:10.698Z,
+      "id": "a8578a1e-d5be-4384-ad05-bfdf4d6890e9",
+      "site": "alert awesome intuition",
+    },
+    {
+      "entryTime": 2023-09-05T18:43:40.524Z,
+      "id": "f19fa59c-eb4e-4462-b2d1-5402a8642e76",
+      "site": "wasteful hollow corn",
+    },
+    {
+      "entryTime": 2023-09-04T10:22:04.013Z,
+      "id": "032a2033-8c2b-4c97-a667-c25bb7605031",
+      "site": "delightful female toad",
+    },
+  ],
+  "totalCount": 12,
+}
 `;
 
 exports[`Log entries service when listing log entries will perform a search with pagination 1`] = `
-[
-  {
-    "entryTime": {
-      "date": "2024-02-07T02:45:28",
-      "timezone": "America/Nome",
+{
+  "data": [
+    {
+      "entryTime": 2024-07-10T03:30:07.606Z,
+      "id": "3620ee8b-7977-4bc0-9f30-dbc0b16535d5",
+      "site": "defiant thorny knife-edge",
     },
-    "id": "048b9b22-9f58-478a-8960-c9521c514547",
-    "site": "frugal monstrous title",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-06T02:37:02",
-      "timezone": "America/Maceio",
+    {
+      "entryTime": 2024-07-08T20:50:08.111Z,
+      "id": "f5c49932-b6b8-4ce8-ad2a-0f38b32adef1",
+      "site": "stormy strict fries",
     },
-    "id": "11fc2683-017b-46f9-b3cd-c67ded447a58",
-    "site": "earnest stingy metro",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-04T20:04:33",
-      "timezone": "Antarctica/Syowa",
+    {
+      "entryTime": 2024-06-27T09:54:01.988Z,
+      "id": "5cd73fbe-3a56-4d9f-8fd3-bb25b7d29151",
+      "site": "tattered worn graffiti",
     },
-    "id": "0063d418-9884-44b5-8a8f-2e00c95d7d0a",
-    "site": "youthful numb glow",
-  },
-  {
-    "entryTime": {
-      "date": "2024-02-02T00:59:18",
-      "timezone": "Asia/Qostanay",
+    {
+      "entryTime": 2024-06-23T01:59:05.983Z,
+      "id": "822e216d-f00c-425f-9e24-49659cae1c00",
+      "site": "wonderful useful magnet",
     },
-    "id": "a7348ae4-3a55-477e-91d9-35db1a6079f9",
-    "site": "earnest stingy metro",
-  },
-  {
-    "entryTime": {
-      "date": "2024-01-28T19:38:33",
-      "timezone": "America/Belem",
+    {
+      "entryTime": 2024-06-21T09:26:46.237Z,
+      "id": "e3988bce-8ec1-42a3-9930-53bdf26b6899",
+      "site": "friendly criminal waffle",
     },
-    "id": "1ad7a960-ee20-4b69-8762-67ddf939f5c1",
-    "site": "spotless gifted gallon",
-  },
-  {
-    "entryTime": {
-      "date": "2024-01-25T18:40:54",
-      "timezone": "America/Los_Angeles",
+    {
+      "entryTime": 2024-06-10T00:34:38.763Z,
+      "id": "cef7693a-0d42-4721-a61d-d513e86634e1",
+      "site": "opulent violent boolean",
     },
-    "id": "891b5949-66ec-427a-b827-38d836db70c6",
-    "site": "mixed honest workforce",
-  },
-  {
-    "entryTime": {
-      "date": "2024-01-20T23:53:54",
-      "timezone": "Europe/Vienna",
+    {
+      "entryTime": 2024-06-07T21:12:52.544Z,
+      "id": "142fc2db-3d8e-4edc-bd6b-62176e84be90",
+      "site": "untidy puzzled birth",
     },
-    "id": "b75e7ec6-43f0-4f5c-abe0-811d61699ebe",
-    "site": "avaricious flamboyant subtitle",
-  },
-  {
-    "entryTime": {
-      "date": "2024-01-20T04:29:48",
-      "timezone": "Africa/Asmara",
+    {
+      "entryTime": 2024-06-06T07:52:20.600Z,
+      "id": "03dfa322-9d45-45e7-beec-c7d85face253",
+      "site": "sympathetic mortified taxicab",
     },
-    "id": "bed71448-f1f6-410f-af7b-5e0c59e12c08",
-    "site": "mixed honest workforce",
-  },
-  {
-    "entryTime": {
-      "date": "2024-01-13T15:15:55",
-      "timezone": "Pacific/Nauru",
+    {
+      "entryTime": 2024-06-06T04:30:18.486Z,
+      "id": "a56323d2-b9b3-4531-bf5a-4d8086fcaad2",
+      "site": "courageous blaring volume",
     },
-    "id": "cdf99b3b-07f4-46eb-8d9e-6688772697a2",
-    "site": "second pleasing berry",
-  },
-  {
-    "entryTime": {
-      "date": "2024-01-03T20:57:19",
-      "timezone": "America/Chihuahua",
+    {
+      "entryTime": 2024-06-01T21:44:31.035Z,
+      "id": "669333a9-575f-40d1-9fef-945936cbf473",
+      "site": "giant broken meat",
     },
-    "id": "9bfaa432-eac5-4656-9e4d-623dcb0df4d6",
-    "site": "aromatic steel walrus",
-  },
-]
+  ],
+  "total": 300,
+}
 `;
 
 exports[`Log entries service when listing log entries will sort log entries by "entryTime" in "asc" order 1`] = `
 [
   {
-    "entryTime": {
-      "date": "2021-07-24T19:39:57",
-      "timezone": "America/Moncton",
-    },
-    "id": "914492bd-ed7e-4434-aa96-35140276a67d",
-    "site": "carefree fussy crewman",
+    "entryTime": 2022-01-01T14:44:04.027Z,
+    "id": "b32bc46f-5f36-407a-bfb5-2db9f744c6e1",
+    "site": "utter extraneous calm",
   },
   {
-    "entryTime": {
-      "date": "2021-07-29T19:37:16",
-      "timezone": "Asia/Kuwait",
-    },
-    "id": "6286b26b-3d4b-4049-bff9-80fca95091ed",
-    "site": "peaceful well-worn intention",
+    "entryTime": 2022-01-04T09:31:02.206Z,
+    "id": "84a4bfe1-eb7c-42ed-a0c1-4e63d0e4abbb",
+    "site": "neat darling tip",
   },
   {
-    "entryTime": {
-      "date": "2021-08-01T16:43:13",
-      "timezone": "Antarctica/DumontDUrville",
-    },
-    "id": "eacb923a-d0a5-42d8-bfc5-e6befed5143b",
-    "site": "acidic similar juggernaut",
+    "entryTime": 2022-01-10T05:04:50.414Z,
+    "id": "8024885b-af40-4cf9-9609-8cfa0e9cbe07",
+    "site": "meaty weird good",
   },
   {
-    "entryTime": {
-      "date": "2021-08-04T23:55:59",
-      "timezone": "America/Kralendijk",
-    },
-    "id": "b9da37d0-be78-449a-a0fe-0777a5d382bc",
-    "site": "gruesome welcome expense",
+    "entryTime": 2022-01-17T07:21:11.559Z,
+    "id": "146566d8-0c2f-4e36-a836-ce829eea6eb9",
+    "site": "fearless passionate phone",
   },
   {
-    "entryTime": {
-      "date": "2021-08-09T19:13:17",
-      "timezone": "Africa/El_Aaiun",
-    },
-    "id": "e855d72d-0fc7-4730-9df0-7b59e8437a21",
-    "site": "silky sharp brilliant",
+    "entryTime": 2022-01-17T09:45:49.179Z,
+    "id": "2902b2d4-d645-4181-bdec-bfb0930607ca",
+    "site": "bold talkative cymbal",
   },
   {
-    "entryTime": {
-      "date": "2021-08-16T22:43:15",
-      "timezone": "America/Nassau",
-    },
-    "id": "dc7d1770-cabe-421e-acd4-b9a810313baf",
-    "site": "exhausted wretched cyclone",
+    "entryTime": 2022-01-18T12:08:19.536Z,
+    "id": "e8800b8a-b256-4cac-9d18-d19da9a1082c",
+    "site": "humble crazy cockpit",
   },
   {
-    "entryTime": {
-      "date": "2021-08-23T18:26:06",
-      "timezone": "Pacific/Pitcairn",
-    },
-    "id": "47c85dff-2ce5-4d42-9112-9f94956d1bc8",
-    "site": "wonderful useful magnet",
+    "entryTime": 2022-01-19T13:46:57.251Z,
+    "id": "1b022c2c-eb6f-4b47-97b5-61dd1af2c8e4",
+    "site": "concerned specific printing",
   },
   {
-    "entryTime": {
-      "date": "2021-08-29T07:13:11",
-      "timezone": "Asia/Damascus",
-    },
-    "id": "e036981b-9e4d-45e4-b2d3-a326065413e4",
-    "site": "mild mixed crewman",
+    "entryTime": 2022-01-22T05:14:05.244Z,
+    "id": "0167bd7a-8ca6-4dfe-ac34-66299043d3d0",
+    "site": "wobbly immaculate pear",
   },
   {
-    "entryTime": {
-      "date": "2021-08-30T01:20:02",
-      "timezone": "America/Punta_Arenas",
-    },
-    "id": "89ac8349-b5ec-4c3f-be69-80724c7a5f16",
-    "site": "specific infinite chalice",
+    "entryTime": 2022-01-31T04:54:01.676Z,
+    "id": "cd2d10b1-5fac-4808-bd6f-d3763e8bac55",
+    "site": "tall trivial clause",
   },
   {
-    "entryTime": {
-      "date": "2021-08-31T01:37:51",
-      "timezone": "America/Moncton",
-    },
-    "id": "fd898ead-7fec-4163-97d8-fe340741e8a5",
-    "site": "modern sorrowful girdle",
+    "entryTime": 2022-02-01T06:30:14.756Z,
+    "id": "a912a2ab-47cc-4385-8231-b4924d32879e",
+    "site": "ample unused billboard",
   },
 ]
 `;
@@ -1180,84 +903,54 @@ exports[`Log entries service when listing log entries will sort log entries by "
 exports[`Log entries service when listing log entries will sort log entries by "entryTime" in "desc" order 1`] = `
 [
   {
-    "entryTime": {
-      "date": "2024-07-22T14:35:19",
-      "timezone": "Asia/Yakutsk",
-    },
-    "id": "6c79010b-564e-43c3-b46d-dc1727573237",
-    "site": "good-natured bountiful relay",
+    "entryTime": 2024-12-11T18:54:16.993Z,
+    "id": "ed072537-423a-4d14-89b3-6851c9009eb7",
+    "site": "humming past mathematics",
   },
   {
-    "entryTime": {
-      "date": "2024-07-21T05:17:29",
-      "timezone": "Atlantic/South_Georgia",
-    },
-    "id": "f8617b1a-dca9-4a6a-b7f6-656147977c11",
-    "site": "tattered worn graffiti",
+    "entryTime": 2024-12-10T00:43:52.099Z,
+    "id": "14855a1f-5a9d-4904-83df-4dc9cb479b70",
+    "site": "remarkable unique shoelace",
   },
   {
-    "entryTime": {
-      "date": "2024-07-21T02:48:32",
-      "timezone": "Africa/Ndjamena",
-    },
-    "id": "aa5fb198-782e-4eb3-95c3-14354e0b9911",
+    "entryTime": 2024-12-09T16:29:49.763Z,
+    "id": "7be7ad19-c083-4c28-8c87-6808d8f5bcfb",
+    "site": "cluttered frizzy stylus",
+  },
+  {
+    "entryTime": 2024-12-06T03:41:17.445Z,
+    "id": "522e29a5-3a94-48ea-92a9-75bcb5e0dad7",
+    "site": "wise gullible administrator",
+  },
+  {
+    "entryTime": 2024-12-04T16:08:31.217Z,
+    "id": "cfbe9a05-8fbd-46e9-a655-0083eebe5949",
+    "site": "mild mixed crewman",
+  },
+  {
+    "entryTime": 2024-12-03T21:32:56.266Z,
+    "id": "f19a4a8e-5928-4bb6-8ee3-f980f1dea45e",
     "site": "deadly idealistic gerbil",
   },
   {
-    "entryTime": {
-      "date": "2024-07-17T00:54:29",
-      "timezone": "Africa/Bangui",
-    },
-    "id": "5c024ea3-1f23-4dab-ba03-00b01c605d4a",
-    "site": "piercing joyful hospitality",
+    "entryTime": 2024-11-30T04:40:35.930Z,
+    "id": "217a32f7-c249-430a-8a5a-670a9d862c93",
+    "site": "specific infinite chalice",
   },
   {
-    "entryTime": {
-      "date": "2024-06-30T16:43:52",
-      "timezone": "America/Winnipeg",
-    },
-    "id": "5b73b780-6a22-4411-b152-10b7143c104d",
-    "site": "silky sharp brilliant",
+    "entryTime": 2024-11-25T16:47:07.828Z,
+    "id": "7c998dd4-1203-4f46-ad6e-58621cc7451f",
+    "site": "cruel wealthy lieu",
   },
   {
-    "entryTime": {
-      "date": "2024-06-30T10:07:41",
-      "timezone": "America/Asuncion",
-    },
-    "id": "7c1b840c-033f-4d92-b3e5-59d5253997c2",
-    "site": "gloomy acceptable hummus",
+    "entryTime": 2024-11-23T11:30:43.580Z,
+    "id": "3b71f0e9-7a09-4b0f-8a1d-55453fbca1d9",
+    "site": "flamboyant old mate",
   },
   {
-    "entryTime": {
-      "date": "2024-06-29T11:12:20",
-      "timezone": "Asia/Bishkek",
-    },
-    "id": "5d963469-e10f-4d54-bcea-96d90b38e80f",
-    "site": "spotless gifted gallon",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-25T05:38:18",
-      "timezone": "Australia/Adelaide",
-    },
-    "id": "13a27848-8720-4961-be84-647adc581c7e",
-    "site": "graceful rich contrail",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-22T17:24:30",
-      "timezone": "Atlantic/Reykjavik",
-    },
-    "id": "e1242310-8e3b-489b-a071-b6daa0741210",
-    "site": "tall trivial clause",
-  },
-  {
-    "entryTime": {
-      "date": "2024-06-20T23:22:14",
-      "timezone": "America/Hermosillo",
-    },
-    "id": "0b603579-3cf0-4118-9d17-ef46ae396d49",
-    "site": "scornful well-worn baggage",
+    "entryTime": 2024-11-21T19:33:18.695Z,
+    "id": "266423f9-7824-4a59-80dc-7707bf3ff57d",
+    "site": "exotic warmhearted aside",
   },
 ]
 `;
@@ -1265,52 +958,52 @@ exports[`Log entries service when listing log entries will sort log entries by "
 exports[`Log entries service when listing recent dive sites will return a distinct list of the most recently used dive sites 1`] = `
 [
   {
-    "id": "d7de84b7-130f-4d3c-be13-bff50cd40596",
-    "name": "apt colossal initial",
+    "id": "c14340a8-858b-478e-8308-c800149777a7",
+    "name": "damp forsaken chapter",
   },
   {
-    "id": "b9cd677a-d240-403d-9dab-620dec47451d",
-    "name": "giant broken meat",
+    "id": "74aa1202-9d61-443b-b8f5-44dde5ef18d5",
+    "name": "exotic warmhearted aside",
   },
   {
-    "id": "f92f8727-7c36-46bf-b282-8f02f9ebe968",
-    "name": "gloomy acceptable hummus",
+    "id": "30d994f4-e4b6-41fe-9a47-8c11f263272b",
+    "name": "frequent realistic paramedic",
   },
   {
     "id": "5f799498-2730-452f-b78b-933510c1174c",
     "name": "good-natured bountiful relay",
   },
   {
-    "id": "81162750-b95e-4ac5-97e3-d8a5d42ed48c",
-    "name": "legal incomplete trachoma",
+    "id": "f991d081-5092-4a31-a256-c1a1bd55aab5",
+    "name": "humming past mathematics",
   },
   {
-    "id": "2c8f33c5-8775-4a84-906b-bbf218b176fd",
-    "name": "lost profuse garlic",
+    "id": "0272ce1a-5715-4a42-a05a-86fdf63cc6ed",
+    "name": "modern sorrowful girdle",
+  },
+  {
+    "id": "6f7332db-9422-4c5b-a76d-06c4e602990a",
+    "name": "remarkable unique shoelace",
   },
   {
     "id": "fac282b1-e048-4534-857c-dfef02ee9889",
     "name": "rude ajar aggradation",
   },
   {
-    "id": "ff54a265-50e4-4051-a30b-d0aae3b2f178",
-    "name": "scornful well-worn baggage",
-  },
-  {
-    "id": "90bcafd4-90b6-41d5-9b70-db36b470dcaf",
-    "name": "shameful glorious noodles",
-  },
-  {
-    "id": "1561e4a5-8777-433a-9e9d-e8a07452ce88",
-    "name": "silky sharp brilliant",
+    "id": "92c2d776-81fe-442f-ad63-dc83822deafe",
+    "name": "specific infinite chalice",
   },
   {
     "id": "31564910-9f3d-45dc-b0c8-f836e7ff7b8d",
     "name": "spotless gifted gallon",
   },
   {
-    "id": "60c05ea8-b642-48cf-a2f3-39e7eb2bc8b5",
-    "name": "steep aromatic broccoli",
+    "id": "b24146f0-08ed-47fc-8bb3-98371c2c2909",
+    "name": "tattered rigid forever",
+  },
+  {
+    "id": "0bf18d16-01a4-4e78-8c7f-4abf1b8e5e49",
+    "name": "voluminous heartfelt imprisonment",
   },
 ]
 `;
@@ -1320,25 +1013,25 @@ exports[`Log entries service when retrieving a single log entry will retrieve a 
   "air": [
     {
       "count": 1,
-      "endPressure": 48.50097664538771,
+      "endPressure": 64.7606461821124,
       "hePercent": undefined,
       "material": "fe",
-      "name": "live fundraising",
-      "o2Percent": 40,
+      "name": "biodegradable announcement",
+      "o2Percent": 35.6,
       "pressureUnit": "bar",
-      "startPressure": 228.86165590956807,
-      "volume": 4,
+      "startPressure": 227.60948110138997,
+      "volume": 15,
       "workingPressure": 182,
     },
   ],
   "conditions": {
-    "airTemperature": 10.1,
-    "bottomTemperature": 16.7,
+    "airTemperature": 28.5,
+    "bottomTemperature": undefined,
     "chop": 1.5,
-    "current": 3.9,
-    "surfaceTemperature": 16.7,
+    "current": 4.8,
+    "surfaceTemperature": 11.3,
     "temperatureUnit": "C",
-    "visibility": undefined,
+    "visibility": 4.8,
     "weather": undefined,
   },
   "createdAt": 2023-02-15T01:23:32.000Z,
@@ -1347,42 +1040,42 @@ exports[`Log entries service when retrieving a single log entry will retrieve a 
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/725.jpg",
     "location": "Cape Coral",
     "logBookSharing": "private",
-    "memberSince": 2022-03-28T18:30:41.189Z,
+    "memberSince": 1648492241189,
     "name": "Johnnie Abernathy",
     "userId": "e0a5fab0-9484-4f54-a128-21d73552b08a",
     "username": "Reina54",
   },
   "depths": {
-    "averageDepth": undefined,
+    "averageDepth": 13.832,
     "depthUnit": "m",
-    "maxDepth": 25.17,
+    "maxDepth": 17.29,
   },
   "equipment": {
-    "boots": true,
+    "boots": false,
     "camera": true,
     "exposureSuit": "3mm",
-    "gloves": true,
-    "hood": false,
-    "scooter": true,
+    "gloves": false,
+    "hood": true,
+    "scooter": undefined,
     "torch": true,
-    "trimCorrectness": undefined,
-    "weight": undefined,
-    "weightCorrectness": "under",
+    "trimCorrectness": "kneesDown",
+    "weight": 5.7,
+    "weightCorrectness": "over",
     "weightUnit": "kg",
   },
-  "id": "936b49e7-c3e8-4f79-8144-ec159f1a8d27",
-  "logNumber": undefined,
-  "notes": "Arbitro sordeo conqueror. Quam ea adficio. Comitatus eligendi claustrum curvo amaritudo velit.",
+  "id": "c2a96653-d5e7-47ec-98b8-9aa98989a9c7",
+  "logNumber": 73,
+  "notes": "Conicio tego adficio vito deripio cumque. Coaegresco synagoga aestus corroboro cibo explicabo. Desipio timor tendo terminatio vilitas universe aspicio triumphus.",
   "site": {
     "averageDifficulty": 2.89,
     "averageRating": 1.48,
-    "createdOn": 2024-01-23T09:42:26.453Z,
+    "createdOn": 1706002946453,
     "creator": {
       "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/725.jpg",
       "location": "Cape Coral",
       "logBookSharing": "private",
-      "memberSince": 2022-03-28T18:30:41.189Z,
+      "memberSince": 1648492241189,
       "name": "Johnnie Abernathy",
       "userId": "e0a5fab0-9484-4f54-a128-21d73552b08a",
       "username": "Reina54",
@@ -1402,17 +1095,15 @@ exports[`Log entries service when retrieving a single log entry will retrieve a 
     "location": "Redlands",
     "name": "untrue sparse comics",
     "shoreAccess": undefined,
-    "updatedOn": 2024-05-27T07:14:30.481Z,
+    "updatedOn": 1716794070481,
     "waterType": "mixed",
   },
   "tags": [],
   "timing": {
-    "bottomTime": 3694,
-    "duration": 4064,
-    "entryTime": {
-      "date": "2023-02-14T20:23:32",
-      "timezone": "America/Anguilla",
-    },
+    "bottomTime": 4822,
+    "duration": 5305,
+    "entryTime": 1654916155958,
+    "timezone": "Asia/Bishkek",
   },
   "updatedAt": undefined,
 }
@@ -1423,25 +1114,25 @@ exports[`Log entries service when retrieving a single log entry will return the 
   "air": [
     {
       "count": 1,
-      "endPressure": 48.50097664538771,
+      "endPressure": 64.7606461821124,
       "hePercent": undefined,
       "material": "fe",
-      "name": "live fundraising",
-      "o2Percent": 40,
+      "name": "biodegradable announcement",
+      "o2Percent": 35.6,
       "pressureUnit": "bar",
-      "startPressure": 228.86165590956807,
-      "volume": 4,
+      "startPressure": 227.60948110138997,
+      "volume": 15,
       "workingPressure": 182,
     },
   ],
   "conditions": {
-    "airTemperature": 10.1,
-    "bottomTemperature": 16.7,
+    "airTemperature": 28.5,
+    "bottomTemperature": undefined,
     "chop": 1.5,
-    "current": 3.9,
-    "surfaceTemperature": 16.7,
+    "current": 4.8,
+    "surfaceTemperature": 11.3,
     "temperatureUnit": "C",
-    "visibility": undefined,
+    "visibility": 4.8,
     "weather": undefined,
   },
   "createdAt": 2023-02-15T01:23:32.000Z,
@@ -1450,42 +1141,42 @@ exports[`Log entries service when retrieving a single log entry will return the 
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/725.jpg",
     "location": "Cape Coral",
     "logBookSharing": "private",
-    "memberSince": 2022-03-28T18:30:41.189Z,
+    "memberSince": 1648492241189,
     "name": "Johnnie Abernathy",
     "userId": "e0a5fab0-9484-4f54-a128-21d73552b08a",
     "username": "Reina54",
   },
   "depths": {
-    "averageDepth": undefined,
+    "averageDepth": 13.832,
     "depthUnit": "m",
-    "maxDepth": 25.17,
+    "maxDepth": 17.29,
   },
   "equipment": {
-    "boots": true,
+    "boots": false,
     "camera": true,
     "exposureSuit": "3mm",
-    "gloves": true,
-    "hood": false,
-    "scooter": true,
+    "gloves": false,
+    "hood": true,
+    "scooter": undefined,
     "torch": true,
-    "trimCorrectness": undefined,
-    "weight": undefined,
-    "weightCorrectness": "under",
+    "trimCorrectness": "kneesDown",
+    "weight": 5.7,
+    "weightCorrectness": "over",
     "weightUnit": "kg",
   },
-  "id": "936b49e7-c3e8-4f79-8144-ec159f1a8d27",
-  "logNumber": undefined,
-  "notes": "Arbitro sordeo conqueror. Quam ea adficio. Comitatus eligendi claustrum curvo amaritudo velit.",
+  "id": "c2a96653-d5e7-47ec-98b8-9aa98989a9c7",
+  "logNumber": 73,
+  "notes": "Conicio tego adficio vito deripio cumque. Coaegresco synagoga aestus corroboro cibo explicabo. Desipio timor tendo terminatio vilitas universe aspicio triumphus.",
   "site": {
     "averageDifficulty": 2.89,
     "averageRating": 1.48,
-    "createdOn": 2024-01-23T09:42:26.453Z,
+    "createdOn": 1706002946453,
     "creator": {
       "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/725.jpg",
       "location": "Cape Coral",
       "logBookSharing": "private",
-      "memberSince": 2022-03-28T18:30:41.189Z,
+      "memberSince": 1648492241189,
       "name": "Johnnie Abernathy",
       "userId": "e0a5fab0-9484-4f54-a128-21d73552b08a",
       "username": "Reina54",
@@ -1505,17 +1196,15 @@ exports[`Log entries service when retrieving a single log entry will return the 
     "location": "Redlands",
     "name": "untrue sparse comics",
     "shoreAccess": undefined,
-    "updatedOn": 2024-05-27T07:14:30.481Z,
+    "updatedOn": 1716794070481,
     "waterType": "mixed",
   },
   "tags": [],
   "timing": {
-    "bottomTime": 3694,
-    "duration": 4064,
-    "entryTime": {
-      "date": "2023-02-14T20:23:32",
-      "timezone": "America/Anguilla",
-    },
+    "bottomTime": 4822,
+    "duration": 5305,
+    "entryTime": 1654916155958,
+    "timezone": "Asia/Bishkek",
   },
   "updatedAt": undefined,
 }

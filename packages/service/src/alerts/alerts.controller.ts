@@ -268,8 +268,8 @@ export class AlertsController {
     @Body(new ZodValidator(CreateOrUpdateAlertParamsSchema))
     options: CreateOrUpdateAlertParamsDTO,
   ): Promise<AlertDTO> {
-    alert.active = options.active ?? new Date();
-    alert.expires = options.expires;
+    if (options.active) alert.active = new Date(options.active);
+    alert.expires = options.expires ? new Date(options.expires) : undefined;
     alert.icon = options.icon;
     alert.message = options.message;
     alert.title = options.title;

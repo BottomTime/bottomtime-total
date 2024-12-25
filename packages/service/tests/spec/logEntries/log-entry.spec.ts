@@ -76,8 +76,7 @@ const TestLogEntryData: Partial<LogEntryEntity> = {
   createdAt: new Date('2014-10-27T01:35:36.540Z'),
   logNumber: 42,
 
-  timestamp: new Date('2021-01-01T04:34:56'),
-  entryTime: '2021-01-01T12:34:56',
+  entryTime: new Date('2021-01-01T12:34:56'),
   timezone: 'America/Los_Angeles',
 
   bottomTime: 2700,
@@ -220,7 +219,7 @@ describe('Log Entry class', () => {
   it('will update properties correctly', () => {
     const newLogNumber = 43;
 
-    const newEntryTime = '2021-01-01T13:34:56';
+    const newEntryTime = new Date('2021-01-01T13:34:56');
     const newTimezone = 'America/Toronto';
     const newBottomTime = 50;
     const newDuration = 55;
@@ -254,10 +253,8 @@ describe('Log Entry class', () => {
     const newNotes = 'This was an even better dive!';
 
     logEntry.logNumber = newLogNumber;
-    logEntry.timing.entryTime = {
-      date: newEntryTime,
-      timezone: newTimezone,
-    };
+    logEntry.timing.entryTime = newEntryTime;
+    logEntry.timing.timezone = newTimezone;
     logEntry.timing.bottomTime = newBottomTime;
     logEntry.timing.duration = newDuration;
 
@@ -289,10 +286,8 @@ describe('Log Entry class', () => {
     logEntry.notes = newNotes;
 
     expect(logEntry.logNumber).toBe(newLogNumber);
-    expect(logEntry.timing.entryTime).toEqual({
-      date: newEntryTime,
-      timezone: newTimezone,
-    });
+    expect(logEntry.timing.entryTime).toEqual(newEntryTime);
+    expect(logEntry.timing.timezone).toBe(newTimezone);
     expect(logEntry.timing.bottomTime).toBe(newBottomTime);
     expect(logEntry.timing.duration).toBe(newDuration);
 
@@ -341,8 +336,7 @@ describe('Log Entry class', () => {
     expect(saved.id).toBe(logEntry.id);
     expect(saved.logNumber).toBe(logEntry.logNumber);
     expect(saved.owner.id).toEqual(user.id);
-    expect(saved.timestamp).toEqual(data.timestamp);
-    expect(saved.entryTime).toBe(data.entryTime);
+    expect(saved.entryTime).toEqual(data.entryTime);
     expect(saved.timezone).toBe(data.timezone);
     expect(saved.bottomTime).toBe(data.bottomTime);
     expect(saved.duration).toBe(data.duration);
@@ -376,10 +370,8 @@ describe('Log Entry class', () => {
     await Entries.save(data);
 
     logEntry.logNumber = 44;
-    logEntry.timing.entryTime = {
-      date: '2024-05-08T08:34:56',
-      timezone: 'Asia/Singapore',
-    };
+    logEntry.timing.entryTime = new Date('2024-05-08T08:34:56Z');
+    logEntry.timing.timezone = 'Asia/Singapore';
     logEntry.timing.bottomTime = 55;
     logEntry.timing.duration = 60;
 
@@ -420,9 +412,8 @@ describe('Log Entry class', () => {
     expect(saved.id).toBe(logEntry.id);
     expect(saved.logNumber).toBe(logEntry.logNumber);
     expect(saved.owner.id).toEqual(user.id);
-    expect(saved.entryTime).toBe('2024-05-08T08:34:56');
     expect(saved.timezone).toBe('Asia/Singapore');
-    expect(saved.timestamp).toEqual(new Date('2024-05-08T00:34:56.000Z'));
+    expect(saved.entryTime).toEqual(logEntry.timing.entryTime);
     expect(saved.bottomTime).toBe(logEntry.timing.bottomTime);
     expect(saved.duration).toBe(logEntry.timing.duration);
 

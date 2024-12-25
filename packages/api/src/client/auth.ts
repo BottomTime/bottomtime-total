@@ -97,7 +97,7 @@ export class AuthApiClient {
         user: {
           ...user,
           hasPassword: true,
-          lastPasswordChange: new Date(),
+          lastPasswordChange: Date.now(),
         },
       };
     }
@@ -147,7 +147,7 @@ export class AuthApiClient {
     return {
       ...user,
       hasPassword: true,
-      lastPasswordChange: new Date(),
+      lastPasswordChange: Date.now(),
     };
   }
 

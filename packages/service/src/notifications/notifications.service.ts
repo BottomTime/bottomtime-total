@@ -141,8 +141,8 @@ export class NotificationsService {
     notification.icon = options.icon;
     notification.title = options.title;
     notification.message = options.message;
-    notification.active = options.active ?? new Date();
-    notification.expires = options.expires ?? null;
+    notification.active = new Date(options.active ?? Date.now());
+    notification.expires = options.expires ? new Date(options.expires) : null;
     notification.callsToAction = options.callsToAction ?? [];
     notification.dismissed = false;
     notification.recipient = options.user.toEntity();
