@@ -83,7 +83,7 @@ const entryId = computed(() => {
 });
 const title = computed(() =>
   state.currentEntry
-    ? dayjs(state.currentEntry.timing.entryTime.date).format('LLL')
+    ? dayjs(state.currentEntry.timing.entryTime).format('LLL')
     : 'Log Entry',
 );
 const logbookPath = computed(() =>
@@ -113,21 +113,19 @@ onMounted(async () => {
           );
         } else {
           state.currentEntry = {
-            createdAt: new Date(),
+            createdAt: Date.now(),
             creator: currentUser.user?.profile ?? {
               accountTier: AccountTier.Basic,
               logBookSharing: LogBookSharing.Private,
-              memberSince: new Date(),
+              memberSince: 0,
               userId: '',
               username: '',
             },
             id: '',
             timing: {
               duration: 0,
-              entryTime: {
-                date: '',
-                timezone: '',
-              },
+              entryTime: NaN,
+              timezone: '',
             },
           };
         }

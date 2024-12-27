@@ -21,11 +21,9 @@
           :test-id="`select-${entry.id}`"
           @click="$emit('select', entry)"
         >
-          {{ dayjs(entry.timing.entryTime.date).format('LLL') }}
+          {{ dayjs(entry.timing.entryTime).format('LLL') }}
         </FormButton>
-        <span class="italic text-sm">{{
-          entry.timing.entryTime.timezone
-        }}</span>
+        <span class="italic text-sm">{{ entry.timing.timezone }}</span>
       </p>
 
       <div

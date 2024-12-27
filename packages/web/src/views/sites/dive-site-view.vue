@@ -92,12 +92,12 @@ onMounted(async () => {
         state.currentSite = await client.diveSites.getDiveSite(siteId.value);
       } else {
         state.currentSite = {
-          createdOn: new Date(),
+          createdOn: Date.now(),
           creator: currentUser.user?.profile ?? {
             accountTier: AccountTier.Basic,
             userId: '',
             logBookSharing: LogBookSharing.Private,
-            memberSince: new Date(),
+            memberSince: 0,
             username: '',
           },
           id: '',

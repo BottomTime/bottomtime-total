@@ -13,15 +13,11 @@
       <div class="flex space-x-12">
         <p class="space-x-4">
           <label class="font-bold">Active:</label>
-          <span>{{
-            alert.active ? alert.active.toDateString() : 'always active'
-          }}</span>
+          <span>{{ formatTimestamp(alert.active, 'always active') }}</span>
         </p>
         <p class="flex space-x-4">
           <label class="font-bold">Exires:</label>
-          <span>
-            {{ alert.expires ? alert.expires.toDateString() : 'no expiration' }}
-          </span>
+          <span>{{ formatTimestamp(alert.expires, 'never') }}</span>
         </p>
       </div>
     </div>
@@ -59,6 +55,8 @@
 <script lang="ts" setup>
 import { AlertDTO } from '@bottomtime/api';
 
+import dayjs from 'dayjs';
+
 import FormButton from '../common/form-button.vue';
 import NavLink from '../common/nav-link.vue';
 
@@ -71,4 +69,11 @@ defineEmits<{
   (e: 'delete', alert: AlertDTO): void;
   (e: 'edit', alert: AlertDTO): void;
 }>();
+
+function formatTimestamp(
+  timestamp: number | undefined,
+  defaultText: string,
+): string {
+  return timestamp ? dayjs(timestamp).format('LLL') : defaultText;
+}
 </script>

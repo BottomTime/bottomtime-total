@@ -10,11 +10,9 @@
     <div class="flex flex-col">
       <label class="font-bold">Entry time:</label>
       <span class="italic">
-        {{ dayjs(entry.timing.entryTime.date).format('LLL') }}
+        {{ dayjs(entry.timing.entryTime).format('LLL') }}
       </span>
-      <span class="italic text-sm"
-        >({{ entry.timing.entryTime.timezone }})</span
-      >
+      <span class="italic text-sm">({{ entry.timing.timezone }})</span>
     </div>
 
     <div v-if="entry.depths?.maxDepth" class="flex flex-col">
