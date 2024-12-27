@@ -6,12 +6,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { User } from '../user';
 
 @Injectable()
 export class AssertVerifiedAuth implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
     const user = req.user instanceof User ? req.user : undefined;
 
     if (!user) {

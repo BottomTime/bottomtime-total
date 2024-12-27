@@ -8,13 +8,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { User } from '../user';
 
 export class AssertAccountOwner implements CanActivate {
   canActivate(ctx: ExecutionContext): boolean {
-    const req = ctx.switchToHttp().getRequest();
-    const currentUser: User = req.user;
-    const targetUser: User = req.targetUser;
+    const req = ctx.switchToHttp().getRequest<Request>();
+    const currentUser = req.user instanceof User ? req.user : undefined;
+    const targetUser = req.targetUser;
 
     if (!currentUser) {
       throw new UnauthorizedException(

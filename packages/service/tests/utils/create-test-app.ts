@@ -2,6 +2,7 @@ import { INestApplication, ModuleMetadata } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PassportModule } from '@nestjs/passport';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -58,7 +59,7 @@ export async function createTestApp(
   }
 
   const module = await moduleBuilder.compile();
-  const app = await module.createNestApplication({
+  const app = await module.createNestApplication<NestExpressApplication>({
     cors: {
       origin(_origin, cb) {
         cb(null, true);
@@ -69,6 +70,7 @@ export async function createTestApp(
     logger: logService,
   });
 
+  app.useBodyParser('json', { limit: '1mb' });
   app.use(helmet());
   app.use(cookieParser());
 

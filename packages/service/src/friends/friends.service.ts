@@ -267,6 +267,7 @@ export class FriendsService {
           to: { id: to },
         },
         select: ['id', 'accepted', 'expires'],
+        relations: ['to', 'from'],
       });
 
       if (!request) return undefined;
@@ -281,8 +282,6 @@ export class FriendsService {
 
       request.accepted = true;
       request.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
-      request.from = { id: from } as UserEntity;
-      request.to = { id: to } as UserEntity;
       await friendRequests.save(request);
 
       const friendships = [new FriendshipEntity(), new FriendshipEntity()];
@@ -318,6 +317,7 @@ export class FriendsService {
         to: { id: to },
       },
       select: ['id', 'accepted', 'expires'],
+      relations: ['to', 'from'],
     });
 
     if (!request) return undefined;
@@ -339,8 +339,6 @@ export class FriendsService {
     request.accepted = false;
     request.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
     request.reason = reason ?? null;
-    request.from = { id: from } as UserEntity;
-    request.to = { id: to } as UserEntity;
     await this.FriendRequests.save(request);
 
     return FriendsService.toFriendRequestDTO(request, from);

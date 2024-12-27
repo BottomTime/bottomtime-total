@@ -330,8 +330,8 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-circle',
         title: 'Alert!!',
         message: 'The bleep-blorps are blarping now.',
-        active: new Date('2024-03-26T12:39:38.187Z'),
-        expires: new Date('2024-04-26T12:39:38.187Z'),
+        active: new Date('2024-03-26T12:39:38.187Z').valueOf(),
+        expires: new Date('2024-04-26T12:39:38.187Z').valueOf(),
       };
 
       const { body: result } = await request(server)
@@ -344,13 +344,13 @@ describe('Notifications End-to-End Tests', () => {
       expect(result.icon).toBe(options.icon);
       expect(result.title).toBe(options.title);
       expect(result.message).toBe(options.message);
-      expect(result.active).toBe(options.active!.toISOString());
-      expect(result.expires).toBe(options.expires!.toISOString());
+      expect(result.active).toBe(options.active);
+      expect(result.expires).toBe(options.expires);
       expect(result.dismissed).toBe(false);
 
       const saved = await Notifications.findOneByOrFail({ id: result.id });
-      expect(saved.active).toEqual(options.active);
-      expect(saved.expires).toEqual(options.expires);
+      expect(saved.active.valueOf()).toEqual(options.active);
+      expect(saved.expires?.valueOf()).toEqual(options.expires);
       expect(saved.icon).toBe(options.icon);
       expect(saved.message).toBe(options.message);
       expect(saved.title).toBe(options.title);
@@ -447,8 +447,8 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
         message: 'The bleep-blorps are still blarping.',
-        active: new Date('2024-03-28T12:39:38.187Z'),
-        expires: new Date('2024-04-28T12:39:38.187Z'),
+        active: new Date('2024-03-28T12:39:38.187Z').valueOf(),
+        expires: new Date('2024-04-28T12:39:38.187Z').valueOf(),
       };
 
       const { body: result } = await request(server)
@@ -460,13 +460,13 @@ describe('Notifications End-to-End Tests', () => {
       expect(result.icon).toBe(newOptions.icon);
       expect(result.title).toBe(newOptions.title);
       expect(result.message).toBe(newOptions.message);
-      expect(result.active).toBe(newOptions.active!.toISOString());
-      expect(result.expires).toBe(newOptions.expires!.toISOString());
+      expect(result.active).toBe(newOptions.active);
+      expect(result.expires).toBe(newOptions.expires);
       expect(result.dismissed).toBe(false);
 
       const saved = await Notifications.findOneByOrFail({ id: result.id });
-      expect(saved.active).toEqual(newOptions.active);
-      expect(saved.expires).toEqual(newOptions.expires);
+      expect(saved.active).toEqual(new Date(newOptions.active!));
+      expect(saved.expires).toEqual(new Date(newOptions.expires!));
       expect(saved.icon).toBe(newOptions.icon);
       expect(saved.message).toBe(newOptions.message);
       expect(saved.title).toBe(newOptions.title);
@@ -482,8 +482,8 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
         message: 'The bleep-blorps are still blarping.',
-        active: new Date('2024-03-28T12:39:38.187Z'),
-        expires: new Date('2024-04-28T12:39:38.187Z'),
+        active: new Date('2024-03-28T12:39:38.187Z').valueOf(),
+        expires: new Date('2024-04-28T12:39:38.187Z').valueOf(),
       };
 
       const { body: result } = await request(server)
@@ -495,13 +495,13 @@ describe('Notifications End-to-End Tests', () => {
       expect(result.icon).toBe(newOptions.icon);
       expect(result.title).toBe(newOptions.title);
       expect(result.message).toBe(newOptions.message);
-      expect(result.active).toBe(newOptions.active!.toISOString());
-      expect(result.expires).toBe(newOptions.expires!.toISOString());
+      expect(result.active).toBe(newOptions.active);
+      expect(result.expires).toBe(newOptions.expires);
       expect(result.dismissed).toBe(false);
 
       const saved = await Notifications.findOneByOrFail({ id: result.id });
-      expect(saved.active).toEqual(newOptions.active);
-      expect(saved.expires).toEqual(newOptions.expires);
+      expect(saved.active).toEqual(new Date(newOptions.active!));
+      expect(saved.expires).toEqual(new Date(newOptions.expires!));
       expect(saved.icon).toBe(newOptions.icon);
       expect(saved.message).toBe(newOptions.message);
       expect(saved.title).toBe(newOptions.title);
@@ -513,7 +513,7 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
         message: 'The bleep-blorps are still blarping.',
-        expires: new Date('2024-04-28T12:39:38.187Z'),
+        expires: new Date('2024-04-28T12:39:38.187Z').valueOf(),
       };
 
       const now = Date.now();
@@ -559,8 +559,8 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
         message: 'The bleep-blorps are still blarping.',
-        active: new Date('2024-03-28T12:39:38.187Z'),
-        expires: new Date('2024-04-28T12:39:38.187Z'),
+        active: new Date('2024-03-28T12:39:38.187Z').valueOf(),
+        expires: new Date('2024-04-28T12:39:38.187Z').valueOf(),
       };
       await request(server)
         .put(getUrl(notifcationData.id))
@@ -573,8 +573,8 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
         message: 'The bleep-blorps are still blarping.',
-        active: new Date('2024-03-28T12:39:38.187Z'),
-        expires: new Date('2024-04-28T12:39:38.187Z'),
+        active: new Date('2024-03-28T12:39:38.187Z').valueOf(),
+        expires: new Date('2024-04-28T12:39:38.187Z').valueOf(),
       };
       await request(server)
         .put(getUrl(notifcationData.id))
@@ -588,8 +588,8 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
         message: 'The bleep-blorps are still blarping.',
-        active: new Date('2024-03-28T12:39:38.187Z'),
-        expires: new Date('2024-04-28T12:39:38.187Z'),
+        active: new Date('2024-03-28T12:39:38.187Z').valueOf(),
+        expires: new Date('2024-04-28T12:39:38.187Z').valueOf(),
       };
       await request(server)
         .put(getUrl('invalid-id'))
@@ -603,8 +603,8 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
         message: 'The bleep-blorps are still blarping.',
-        active: new Date('2024-03-28T12:39:38.187Z'),
-        expires: new Date('2024-04-28T12:39:38.187Z'),
+        active: new Date('2024-03-28T12:39:38.187Z').valueOf(),
+        expires: new Date('2024-04-28T12:39:38.187Z').valueOf(),
       };
       await request(server)
         .put(getUrl(notifcationData.id, 'joe.blow'))
@@ -618,8 +618,8 @@ describe('Notifications End-to-End Tests', () => {
         icon: 'fas fa-exclamation-triangle',
         title: 'Warning!',
         message: 'The bleep-blorps are still blarping.',
-        active: new Date('2024-03-28T12:39:38.187Z'),
-        expires: new Date('2024-04-28T12:39:38.187Z'),
+        active: new Date('2024-03-28T12:39:38.187Z').valueOf(),
+        expires: new Date('2024-04-28T12:39:38.187Z').valueOf(),
       };
       await request(server)
         .put(getUrl('f3669787-82e5-458f-a8ad-98d3f57dda6e'))

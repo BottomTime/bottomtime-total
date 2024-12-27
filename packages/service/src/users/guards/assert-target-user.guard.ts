@@ -7,6 +7,8 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { User } from '../user';
 import { UsersService } from '../users.service';
 
@@ -17,7 +19,7 @@ export class AssertTargetUser implements CanActivate {
   ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const req = ctx.switchToHttp().getRequest();
+    const req = ctx.switchToHttp().getRequest<Request>();
     const targetUser = await this.usersService.getUserByUsernameOrEmail(
       req.params.username,
     );

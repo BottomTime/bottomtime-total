@@ -446,8 +446,8 @@ describe('Friends Service', () => {
       expect(result).toBeDefined();
       expect(result?.friendId).toBe(destinationUser.id);
       expect(result?.direction).toBe(FriendRequestDirection.Outgoing);
-      expect(result?.created).toEqual(friendRequest.created);
-      expect(result?.expires).toEqual(friendRequest.expires);
+      expect(result?.created).toEqual(friendRequest.created.valueOf());
+      expect(result?.expires).toEqual(friendRequest.expires.valueOf());
       expect(result?.friend.username).toBe(destinationUser.username);
     });
 
@@ -473,8 +473,8 @@ describe('Friends Service', () => {
       expect(result).toBeDefined();
       expect(result?.friendId).toBe(destinationUser.id);
       expect(result?.direction).toBe(FriendRequestDirection.Incoming);
-      expect(result?.created).toEqual(friendRequest.created);
-      expect(result?.expires).toEqual(friendRequest.expires);
+      expect(result?.created).toEqual(friendRequest.created.valueOf());
+      expect(result?.expires).toEqual(friendRequest.expires.valueOf());
       expect(result?.friend.username).toBe(destinationUser.username);
     });
 

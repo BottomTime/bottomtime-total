@@ -6,8 +6,11 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+
+import { Request } from 'express';
 
 import { FriendsService } from '../friends';
 import { User } from '../users';
@@ -19,9 +22,13 @@ export class AssertLogbookRead implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
-    const currentUser: User = req.user;
-    const targetUser: User = req.targetUser;
+    const req = context.switchToHttp().getRequest<Request>();
+    const currentUser = req.user instanceof User ? req.user : undefined;
+    const targetUser = req.targetUser;
+
+    if (!targetUser) {
+      throw new NotFoundException('Target user not found.');
+    }
 
     // Public logbooks can be viewed by anyone (including anonymous users).
     if (targetUser.profile.logBookSharing === LogBookSharing.Public) {
