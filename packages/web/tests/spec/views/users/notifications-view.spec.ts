@@ -152,7 +152,7 @@ describe('Notifications view', () => {
 
   it('will parse the query string to derive search options', async () => {
     const options = {
-      showAfter: new Date('2024-12-10T08:23:34-05:00'),
+      showAfter: new Date('2024-12-10T08:23:34-05:00').valueOf(),
       showDismissed: true,
     };
     await router.push({

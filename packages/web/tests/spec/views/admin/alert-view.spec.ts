@@ -25,8 +25,8 @@ const TestAlertData: AlertDTO = {
   icon: '',
   title: 'Test Alert',
   message: 'This is a test alert.',
-  active: new Date('2021-01-01T00:00:00.000Z'),
-  expires: new Date('2021-02-01T00:00:00.000Z'),
+  active: new Date('2021-01-01T00:00:00.000Z').valueOf(),
+  expires: new Date('2021-02-01T00:00:00.000Z').valueOf(),
 };
 
 describe('Admin Alert View', () => {
@@ -150,8 +150,8 @@ describe('Admin Alert View', () => {
       icon: '',
       title: 'Updated Alert',
       message: 'This is the updated alert.',
-      active: new Date('2028-01-01T00:00:00.000Z'),
-      expires: new Date('2028-02-01T00:00:00.000Z'),
+      active: new Date('2028-01-01T00:00:00.000Z').valueOf(),
+      expires: new Date('2028-02-01T00:00:00.000Z').valueOf(),
     };
     const toasts = useToasts();
     const saveSpy = jest

@@ -53,11 +53,11 @@ const CancelButton = '#btnCancel';
 const AddTankButton = '#btn-add-tank';
 
 const DiveSite: DiveSiteDTO = {
-  createdOn: new Date(),
+  createdOn: Date.now(),
   creator: {
     accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.FriendsOnly,
-    memberSince: new Date(),
+    memberSince: Date.now(),
     userId: '7ba2eebd-9747-4adb-a820-f268cb6c84f3',
     username: 'diver_dan',
   },
@@ -143,10 +143,10 @@ describe('EditLogbookEntry component', () => {
       LogNumber.toString(),
     );
     expect(wrapper.getComponent(FormDatePicker).props().modelValue).toEqual(
-      new Date(FullLogEntry.timing.entryTime.date),
+      new Date(FullLogEntry.timing.entryTime),
     );
     expect(wrapper.get<HTMLSelectElement>(TimezoneSelect).element.value).toBe(
-      MinimalLogEntry.timing.entryTime.timezone,
+      MinimalLogEntry.timing.timezone,
     );
     expect(wrapper.get<HTMLInputElement>(DurationInput).element.value).toBe(
       MinimalLogEntry.timing.duration.toString(),
@@ -168,10 +168,10 @@ describe('EditLogbookEntry component', () => {
       FullLogEntry.logNumber?.toString(),
     );
     expect(wrapper.getComponent(FormDatePicker).props().modelValue).toEqual(
-      new Date(FullLogEntry.timing.entryTime.date),
+      new Date(FullLogEntry.timing.entryTime),
     );
     expect(wrapper.get<HTMLSelectElement>(TimezoneSelect).element.value).toBe(
-      FullLogEntry.timing.entryTime.timezone,
+      FullLogEntry.timing.timezone,
     );
     expect(wrapper.get<HTMLInputElement>(DurationInput).element.value).toBe(
       FullLogEntry.timing.duration.toString(),
@@ -281,10 +281,8 @@ describe('EditLogbookEntry component', () => {
           timing: {
             bottomTime,
             duration,
-            entryTime: {
-              date: dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss'),
-              timezone: 'America/Vancouver',
-            },
+            entryTime: entryTime.valueOf(),
+            timezone: 'America/Vancouver',
           },
           logNumber,
           depths: {
@@ -516,10 +514,8 @@ describe('EditLogbookEntry component', () => {
             timing: {
               bottomTime,
               duration,
-              entryTime: {
-                date: dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss'),
-                timezone: 'America/Vancouver',
-              },
+              entryTime: entryTime.valueOf(),
+              timezone: 'America/Vancouver',
             },
             depths: {
               maxDepth,

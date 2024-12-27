@@ -62,7 +62,7 @@ const ProMembership: MembershipStatusDTO = {
   accountTier: AccountTier.Pro,
   status: MembershipStatus.Active,
   entitlements: ['pro'],
-  nextBillingDate: new Date('2025-01-22'),
+  nextBillingDate: new Date('2025-01-22').valueOf(),
 };
 
 const NoMembership: MembershipStatusDTO = {

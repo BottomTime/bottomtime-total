@@ -54,12 +54,12 @@ describe('Friend requests view', () => {
     for (let i = 0; i < friendRequestData.data.length; i++) {
       const friendId = faker.string.uuid();
       friendRequestData.data[i] = {
-        created: faker.date.recent(),
-        expires: faker.date.soon(),
+        created: faker.date.recent().valueOf(),
+        expires: faker.date.soon().valueOf(),
         friend: {
           id: friendId,
           username: faker.internet.userName(),
-          memberSince: faker.date.past(),
+          memberSince: faker.date.past().valueOf(),
           avatar: faker.image.avatar(),
           logBookSharing: faker.helpers.arrayElement(
             Object.values(LogBookSharing),
@@ -366,7 +366,7 @@ describe('Friend requests view', () => {
     const profile: ProfileDTO = {
       accountTier: AccountTier.Basic,
       userId: request.friendId,
-      memberSince: new Date(),
+      memberSince: Date.now(),
       username: request.friend.username,
       avatar: request.friend.avatar,
       bio: faker.person.bio(),

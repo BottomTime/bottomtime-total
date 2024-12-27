@@ -17,7 +17,7 @@ const TestNotification: NotificationDTO = {
   icon: '👌',
   message: 'Test notification',
   title: 'Test!',
-  active: new Date('2024-12-01T00:00:00Z'),
+  active: new Date('2024-12-01T00:00:00Z').valueOf(),
   callsToAction: [
     {
       caption: 'Click me!',

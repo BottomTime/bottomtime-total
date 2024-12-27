@@ -17,7 +17,7 @@
         </p>
         <p class="flex space-x-4">
           <label class="font-bold">Exires:</label>
-          <span>{{ formatTimestamp(alert.expires, 'never') }}</span>
+          <span>{{ formatTimestamp(alert.expires, 'no expiration') }}</span>
         </p>
       </div>
     </div>

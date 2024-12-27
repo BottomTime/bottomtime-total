@@ -17,8 +17,8 @@ const TestAlertData: AlertDTO = {
   icon: '',
   title: 'Test Alert',
   message: 'This is a test alert',
-  active: new Date('2024-04-02T09:56:27.566Z'),
-  expires: new Date('2024-05-02T09:56:27.566Z'),
+  active: new Date('2024-04-02T09:56:27.566Z').valueOf(),
+  expires: new Date('2024-05-02T09:56:27.566Z').valueOf(),
 };
 
 const BlankAlertData: AlertDTO = {
@@ -115,8 +115,8 @@ describe('Edit Alert form component', () => {
     const wrapper = mount(
       EditAlert,
       getMountOptions({
-        active: new Date('2024-05-02T09:56:27.566Z'),
-        expires: new Date('2024-04-02T09:56:27.566Z'),
+        active: new Date('2024-05-02T09:56:27.566Z').valueOf(),
+        expires: new Date('2024-04-02T09:56:27.566Z').valueOf(),
       }),
     );
 

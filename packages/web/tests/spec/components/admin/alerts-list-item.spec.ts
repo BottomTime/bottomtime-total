@@ -2,16 +2,21 @@ import { AlertDTO } from '@bottomtime/api';
 
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
+import dayjs from 'dayjs';
+import localized from 'dayjs/plugin/localizedFormat';
+
 import AlertsListItem from '../../../../src/components/admin/alerts-list-item.vue';
 import { createRouter } from '../../../fixtures/create-router';
+
+dayjs.extend(localized);
 
 const TestAlertData: AlertDTO = {
   id: '2fbcb477-26d8-499f-9558-4d3ee1500b96',
   icon: '',
   title: 'Test Alert',
   message: 'This is a test alert',
-  active: new Date('2024-04-02T09:56:27.566Z'),
-  expires: new Date('2024-05-02T09:56:27.566Z'),
+  active: new Date('2024-04-02T09:56:27.566Z').valueOf(),
+  expires: new Date('2024-05-02T09:56:27.566Z').valueOf(),
 };
 
 function getMountOptions(

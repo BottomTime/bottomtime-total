@@ -12,13 +12,13 @@ import { Pinia, createPinia } from 'pinia';
 import SelectDiveSiteListItem from '../../../../../src/components/diveSites/selectSite/select-dive-site-list-item.vue';
 
 const PartialDiveSite: DiveSiteDTO = {
-  createdOn: new Date('2024-05-27T14:51:25.767Z'),
+  createdOn: new Date('2024-05-27T14:51:25.767Z').valueOf(),
   id: '4f5fd49f-734a-4bb7-9912-d58b0f4d61ef',
   name: 'Awesome Site 7',
   creator: {
     accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.Private,
-    memberSince: new Date('2024-05-27T14:51:25.767Z'),
+    memberSince: new Date('2024-05-27T14:51:25.767Z').valueOf(),
     userId: 'c24863fb-0692-4b17-b8f3-a2adcda6f7c9',
     username: 'user_mcuserson',
   },

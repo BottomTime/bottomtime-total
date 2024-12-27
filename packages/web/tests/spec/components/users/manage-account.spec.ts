@@ -49,8 +49,8 @@ describe('Manage Account component', () => {
     pinia = createPinia();
     userData = {
       ...BasicUser,
-      lastLogin: new Date('2024-02-16T14:36:09.000Z'),
-      lastPasswordChange: new Date('2023-12-10T19:20:44.000Z'),
+      lastLogin: new Date('2024-02-16T14:36:09.000Z').valueOf(),
+      lastPasswordChange: new Date('2023-12-10T19:20:44.000Z').valueOf(),
       profile: { ...BasicUser.profile },
       settings: { ...BasicUser.settings },
     };

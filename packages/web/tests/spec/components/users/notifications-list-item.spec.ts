@@ -19,7 +19,7 @@ const TestData: NotificationWithSelection = {
   message: 'This is a test notification',
   title: 'Test Notification',
   selected: false,
-  active: new Date('2024-12-07T13:14:47-05:00'),
+  active: new Date('2024-12-07T13:14:47-05:00').valueOf(),
   callsToAction: [
     {
       caption: 'Do something cool',

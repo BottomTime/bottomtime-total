@@ -172,8 +172,8 @@ describe('Search friends form component', () => {
     const wrapper = mount(SearchFriendsForm, opts);
     const friendo = searchData.data[2];
     const friendRequest: FriendRequestDTO = {
-      created: dayjs().toDate(),
-      expires: dayjs().add(14, 'days').toDate(),
+      created: dayjs().valueOf(),
+      expires: dayjs().add(14, 'days').valueOf(),
       direction: FriendRequestDirection.Outgoing,
       friend: {
         id: friendo.userId,

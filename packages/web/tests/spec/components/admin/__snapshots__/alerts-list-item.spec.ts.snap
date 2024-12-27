@@ -5,8 +5,8 @@ exports[`Alerts List Item component will render details correctly 1`] = `
   <div class="grow space-y-2">
     <p class="text-xl font-title capitalize"><a href="/admin/alerts/2fbcb477-26d8-499f-9558-4d3ee1500b96" class="">Test Alert</a></p>
     <div class="flex space-x-12">
-      <p class="space-x-4"><label class="font-bold">Active:</label><span>Tue Apr 02 2024</span></p>
-      <p class="flex space-x-4"><label class="font-bold">Exires:</label><span>Thu May 02 2024</span></p>
+      <p class="space-x-4"><label class="font-bold">Active:</label><span>April 2, 2024 5:56 AM</span></p>
+      <p class="flex space-x-4"><label class="font-bold">Exires:</label><span>May 2, 2024 5:56 AM</span></p>
     </div>
   </div>
   <div>

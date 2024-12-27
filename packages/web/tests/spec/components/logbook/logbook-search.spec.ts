@@ -16,8 +16,8 @@ describe('LogbookSearch component', () => {
       props: {
         params: {
           query: 'yo!',
-          startDate: new Date('2024-01-01T00:00:00Z'),
-          endDate: new Date('2024-02-01T00:00:00Z'),
+          startDate: new Date('2024-01-01T00:00:00Z').valueOf(),
+          endDate: new Date('2024-02-01T00:00:00Z').valueOf(),
         },
       },
     });
@@ -35,8 +35,8 @@ describe('LogbookSearch component', () => {
 
   it('will perform a robust search with all options', async () => {
     const query = 'weeeee!!!';
-    const startDate = new Date('2024-01-01T00:00:00Z');
-    const endDate = new Date('2024-02-01T00:00:00Z');
+    const startDate = new Date('2024-01-01T00:00:00Z').valueOf();
+    const endDate = new Date('2024-02-01T00:00:00Z').valueOf();
     const wrapper = mount(LogbookSearch, {
       props: { params: { startDate, endDate } },
     });

@@ -61,14 +61,14 @@ const ProMembership: MembershipStatusDTO = {
   accountTier: AccountTier.Pro,
   entitlements: ['pro'],
   status: MembershipStatus.Active,
-  nextBillingDate: new Date('2025-06-07'),
+  nextBillingDate: new Date('2025-06-07').valueOf(),
 };
 
 const ShopOwnerMembership: MembershipStatusDTO = {
   accountTier: AccountTier.ShopOwner,
   entitlements: ['pro', 'shop-owner'],
   status: MembershipStatus.Active,
-  nextBillingDate: new Date('2025-06-07'),
+  nextBillingDate: new Date('2025-06-07').valueOf(),
 };
 
 const ChangeMembershipButton = 'button#change-account-type';
