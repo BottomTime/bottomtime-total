@@ -11,10 +11,8 @@ const TestData: CreateOrUpdateLogEntryParamsDTO = {
   timing: {
     duration: 99,
     bottomTime: 82,
-    entryTime: {
-      date: '2022-04-23T09:18:13',
-      timezone: 'Asia/Bangkok',
-    },
+    entryTime: new Date('2022-04-23T09:18:13').valueOf(),
+    timezone: 'Asia/Bangkok',
   },
   depths: {
     maxDepth: 93,
@@ -47,13 +45,11 @@ test.describe('Log Entries', () => {
     await page.getByTestId('log-number').fill(TestData.logNumber!.toString());
     await page
       .getByPlaceholder('Select entry time')
-      .fill(
-        dayjs(TestData.timing.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
-      );
+      .fill(dayjs(TestData.timing.entryTime).format('YYYY-MMM-DD hh:mm:ss A'));
     await page.getByPlaceholder('Select entry time').press('Tab');
     await page
       .getByTestId('entry-time-timezone')
-      .selectOption(TestData.timing.entryTime.timezone);
+      .selectOption(TestData.timing.timezone);
     await page
       .getByTestId('duration')
       .fill(TestData.timing.duration!.toString());
@@ -72,10 +68,8 @@ test.describe('Log Entries', () => {
     const logEntryId = page.url().split('/').pop()!;
     const entry = await api.logEntries.getLogEntry(Username, logEntryId);
     expect(entry.logNumber).toBe(TestData.logNumber);
-    expect(entry.timing.entryTime.date).toBe(TestData.timing.entryTime.date);
-    expect(entry.timing.entryTime.timezone).toBe(
-      TestData.timing.entryTime.timezone,
-    );
+    expect(entry.timing.entryTime).toBe(TestData.timing.entryTime);
+    expect(entry.timing.timezone).toBe(TestData.timing.timezone);
     expect(entry.timing.duration).toBe(TestData.timing.duration);
     expect(entry.timing.bottomTime).toBe(TestData.timing.bottomTime);
     expect(entry.depths?.maxDepth).toBe(TestData.depths!.maxDepth!);
@@ -86,10 +80,10 @@ test.describe('Log Entries', () => {
       TestData.logNumber!.toString(),
     );
     await expect(page.getByPlaceholder('Select entry time')).toHaveValue(
-      dayjs(TestData.timing.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
+      dayjs(TestData.timing.entryTime).format('YYYY-MMM-DD hh:mm:ss A'),
     );
     await expect(page.getByTestId('entry-time-timezone')).toHaveValue(
-      TestData.timing.entryTime.timezone,
+      TestData.timing.timezone,
     );
     await expect(page.getByTestId('duration')).toHaveValue(
       TestData.timing.duration!.toString(),
@@ -125,10 +119,10 @@ test.describe('Log Entries', () => {
       TestData.logNumber!.toString(),
     );
     await expect(page.getByPlaceholder('Select entry time')).toHaveValue(
-      dayjs(TestData.timing.entryTime.date).format('YYYY-MMM-DD hh:mm:ss A'),
+      dayjs(TestData.timing.entryTime).format('YYYY-MMM-DD hh:mm:ss A'),
     );
     await expect(page.getByTestId('entry-time-timezone')).toHaveValue(
-      TestData.timing.entryTime.timezone,
+      TestData.timing.timezone,
     );
     await expect(page.getByTestId('duration')).toHaveValue(
       TestData.timing.duration!.toString(),
@@ -175,8 +169,8 @@ test.describe('Log Entries', () => {
     const updated = await api.logEntries.getLogEntry(Username, entry.id);
     expect(updated.timing.bottomTime).toBe(newBottomTime);
     expect(updated.timing.duration).toBe(newDuration);
-    expect(updated.timing.entryTime.date).toBe(newEntryTime);
-    expect(updated.timing.entryTime.timezone).toBe(newTimezone);
+    expect(updated.timing.entryTime).toBe(newEntryTime);
+    expect(updated.timing.timezone).toBe(newTimezone);
     expect(updated.logNumber).toBe(newLogNumber);
     expect(updated.depths!.maxDepth).toBe(newMaxDepth);
     expect(updated.depths!.depthUnit).toBe(DepthUnit.Meters);
@@ -195,10 +189,8 @@ test.describe('Log Entries', () => {
     await api.logEntries.createLogEntry(Username, {
       timing: {
         duration: 99,
-        entryTime: {
-          date: '2022-04-23T09:18:13',
-          timezone: 'Asia/Bangkok',
-        },
+        entryTime: new Date('2022-04-23T09:18:13').valueOf(),
+        timezone: 'Asia/Bangkok',
       },
       site: site.id,
     });
