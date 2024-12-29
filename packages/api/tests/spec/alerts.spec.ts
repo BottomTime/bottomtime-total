@@ -14,24 +14,24 @@ const AlertData: AlertDTO[] = [
     icon: 'fas fa-info',
     title: 'Informational Alert',
     message: 'This is an informational alert.',
-    active: new Date('2024-03-27T14:56:09.288Z'),
-    expires: new Date('2024-04-27T14:56:09.288Z'),
+    active: new Date('2024-03-27T14:56:09.288Z').valueOf(),
+    expires: new Date('2024-04-27T14:56:09.288Z').valueOf(),
   },
   {
     id: 'aaac1bec-e089-4944-b11c-c595c068493b',
     icon: 'fas fa-exclamation',
     title: 'Warning Alert',
     message: 'This is a warning alert.',
-    active: new Date('2024-05-27T14:56:09.288Z'),
-    expires: new Date('2024-06-27T14:56:09.288Z'),
+    active: new Date('2024-05-27T14:56:09.288Z').valueOf(),
+    expires: new Date('2024-06-27T14:56:09.288Z').valueOf(),
   },
   {
     id: '53f52538-c296-4f3c-a40f-c8b494c750a8',
     icon: 'fas fa-ban',
     title: 'Error Alert',
     message: 'This is an error alert.',
-    active: new Date('2024-07-27T14:56:09.288Z'),
-    expires: new Date('2024-08-27T14:56:09.288Z'),
+    active: new Date('2024-07-27T14:56:09.288Z').valueOf(),
+    expires: new Date('2024-08-27T14:56:09.288Z').valueOf(),
   },
 ];
 
@@ -89,7 +89,7 @@ describe('Alerts API client', () => {
       icon: 'fas fa-bell',
       title: 'Wow! A new alert!',
       message: 'Alert body goes here.',
-      active: new Date('2024-03-27T14:56:09.288Z'),
+      active: new Date('2024-03-27T14:56:09.288Z').valueOf(),
     };
     mockFetch.post(
       {

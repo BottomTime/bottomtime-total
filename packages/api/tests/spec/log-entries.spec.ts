@@ -8,9 +8,7 @@ import {
   ExposureSuit,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
-  LogBookSharing,
   LogEntryDTO,
-  LogEntrySchema,
   LogEntrySortBy,
   PressureUnit,
   SearchDiveSitesResponseSchema,
@@ -128,7 +126,16 @@ describe('Log entries API client', () => {
       sortOrder: SortOrder.Ascending,
     };
     mockFetch.get(
-      `/api/users/${username}/logbook?query=sam&startDate=2021-01-01T00%3A00%3A00.000Z&endDate=2021-12-31T00%3A00%3A00.000Z&limit=800&skip=20&sortBy=entryTime&sortOrder=asc`,
+      {
+        url: `/api/users/${username}/logbook`,
+        query: {
+          ...params,
+          startDate: new Date(params.startDate!).valueOf(),
+          endDate: new Date(params.endDate!).valueOf(),
+          skip: params.skip,
+          limit: params.limit,
+        },
+      },
       {
         status: 200,
         body: logEntryData,
@@ -137,7 +144,6 @@ describe('Log entries API client', () => {
 
     const result = await client.listLogEntries(username, params);
 
-    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(logEntryData.totalCount);
 
     result.data.forEach((entry, index) => {

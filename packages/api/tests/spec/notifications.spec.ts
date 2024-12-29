@@ -25,7 +25,7 @@ const Notifications: ApiList<NotificationDTO> = {
       message: 'This is a test notification',
       icon: '👌',
       dismissed: false,
-      active: new Date('2021-01-01T00:00:00Z'),
+      active: new Date('2021-01-01T00:00:00Z').valueOf(),
     },
     {
       id: '9eb43845-9fbb-4cac-84a8-7d4dfa734080',
@@ -33,7 +33,7 @@ const Notifications: ApiList<NotificationDTO> = {
       message: 'This is a different test notification',
       icon: '👍',
       dismissed: false,
-      active: new Date('2020-07-08T00:00:00Z'),
+      active: new Date('2020-07-08T00:00:00Z').valueOf(),
     },
   ],
   totalCount: 8,
@@ -153,7 +153,7 @@ describe('Notifications API Client', () => {
 
   it('will list notifications for a user', async () => {
     const options: ListNotificationsParamsDTO = {
-      showAfter: new Date('2020-01-01T00:00:00Z'),
+      showAfter: new Date('2020-01-01T00:00:00Z').valueOf(),
       showDismissed: false,
       skip: 10,
       limit: 2,
@@ -163,7 +163,7 @@ describe('Notifications API Client', () => {
         url: `/api/users/${Username}/notifications`,
         query: {
           ...options,
-          showAfter: options.showAfter!.toISOString(),
+          showAfter: options.showAfter!.valueOf(),
         },
       },
       { status: 200, body: Notifications },
@@ -176,7 +176,7 @@ describe('Notifications API Client', () => {
 
   it('will return notification count for a user', async () => {
     const options: GetNotificationsCountParamsDTO = {
-      showAfter: new Date('2020-01-01T00:00:00Z'),
+      showAfter: new Date('2020-01-01T00:00:00Z').valueOf(),
       showDismissed: true,
     };
     const totalCount = 9;
@@ -185,7 +185,7 @@ describe('Notifications API Client', () => {
         url: `/api/users/${Username}/notifications/count`,
         query: {
           showDismissed: true,
-          showAfter: options.showAfter!.toISOString(),
+          showAfter: options.showAfter!.valueOf(),
         },
       },
       { status: 200, body: { totalCount } },

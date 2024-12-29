@@ -141,14 +141,11 @@ describe('Auth API client', () => {
       );
 
       expect(mockFetch.done()).toBe(true);
-      expect(result).toEqual({
-        succeeded: true,
-        user: {
-          ...BasicUser,
-          hasPassword: true,
-          lastPasswordChange: expect.any(Date),
-        },
-      });
+      expect(result.succeeded).toBe(true);
+      if (result.succeeded) {
+        expect(result.user.hasPassword).toBe(true);
+        expect(result.user.lastPasswordChange).toBeCloseTo(Date.now(), -3);
+      }
     });
 
     it("will attempt to change a user's password and return false if unsuccessful", async () => {

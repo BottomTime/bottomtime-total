@@ -22,15 +22,15 @@ import TestData from '../fixtures/dive-operator-search-results.json';
 const TestKey = 'test-operator';
 const TestOperator: OperatorDTO = {
   active: true,
-  createdAt: new Date(),
+  createdAt: Date.now(),
   id: 'fd5b16ef-0693-469f-a9f3-57d8885029b9',
   name: 'Test Operator',
-  updatedAt: new Date(),
+  updatedAt: Date.now(),
   owner: {
     accountTier: AccountTier.Basic,
     userId: '16dc9384-82bf-4ac3-bad2-b46456ed786e',
     username: 'test-user',
-    memberSince: new Date(),
+    memberSince: Date.now(),
     logBookSharing: LogBookSharing.FriendsOnly,
   },
   verificationStatus: VerificationStatus.Verified,
@@ -296,11 +296,11 @@ describe('Operators API client', () => {
     const newOwner = 'Diver.McDiverface';
     const updated: OperatorDTO = {
       ...TestOperator,
-      updatedAt: new Date(),
+      updatedAt: Date.now(),
       owner: {
         accountTier: AccountTier.Pro,
         logBookSharing: LogBookSharing.Public,
-        memberSince: new Date(),
+        memberSince: Date.now(),
         userId: '62ed009e-4b21-44e0-a23d-58468124e998',
         username: newOwner,
       },
