@@ -2,6 +2,7 @@ import {
   AccountTier,
   ApiClient,
   ApiList,
+  CreateOrUpdateLogEntryParamsSchema,
   DepthUnit,
   Fetcher,
   ListTanksResponseSchema,
@@ -216,7 +217,7 @@ describe('Log Entry view', () => {
     expect(saveSpy).toHaveBeenCalledWith(
       BasicUser.username,
       TestData.id,
-      expected,
+      CreateOrUpdateLogEntryParamsSchema.parse(expected),
     );
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('log-entry-saved');
@@ -297,7 +298,7 @@ describe('Log Entry view', () => {
     expect(saveSpy).toHaveBeenCalledWith(
       BasicUser.username,
       TestData.id,
-      expected,
+      CreateOrUpdateLogEntryParamsSchema.parse(expected),
     );
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('log-entry-saved');
