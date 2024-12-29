@@ -63,7 +63,7 @@ exports[`Log entries service when creating a new log entry will create a new log
   "timing": {
     "bottomTime": 2880,
     "duration": 3120,
-    "entryTime": 1711647900000,
+    "entryTime": 1711658700000,
     "timezone": "Europe/Amsterdam",
   },
   "updatedAt": 2024-07-23T14:22:09.372Z,

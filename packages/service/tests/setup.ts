@@ -11,6 +11,7 @@ export default async function (): Promise<void> {
 
   // Generate super insecure passwords for testing. We don't need the test suite taking forever to run
   // and we don't care about security in a testing context.
+  process.env.TZ = 'America/Los_Angeles';
   process.env.BT_PASSWORD_SALT_ROUNDS = '1';
   process.env.BT_SESSION_COOKIE_DOMAIN = '127.0.0.1';
 

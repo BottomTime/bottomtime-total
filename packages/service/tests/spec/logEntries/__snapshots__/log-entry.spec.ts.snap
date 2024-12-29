@@ -118,7 +118,7 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
   "timing": {
     "bottomTime": 2700,
     "duration": 3000,
-    "entryTime": 1609522496000,
+    "entryTime": 1609533296000,
     "timezone": "America/Los_Angeles",
   },
   "updatedAt": undefined,
@@ -179,7 +179,7 @@ exports[`Log Entry class will return properties correctly 5`] = `
 {
   "bottomTime": 2700,
   "duration": 3000,
-  "entryTime": 1609522496000,
+  "entryTime": 1609533296000,
   "timezone": "America/Los_Angeles",
 }
 `;
