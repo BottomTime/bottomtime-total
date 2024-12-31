@@ -80,8 +80,8 @@ describe('Alert class', () => {
       icon: alertData.icon,
       title: alertData.title,
       message: alertData.message,
-      active: alertData.active,
-      expires: alertData.expires,
+      active: alertData.active.valueOf(),
+      expires: alertData.expires?.valueOf(),
     });
   });
 

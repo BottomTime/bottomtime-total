@@ -157,7 +157,7 @@ describe('Profile Class', () => {
       logBookSharing: TestUserData.logBookSharing,
       name: TestUserData.name,
       startedDiving: TestUserData.startedDiving,
-      memberSince: TestUserData.memberSince,
+      memberSince: TestUserData.memberSince.valueOf(),
       username: TestUserData.username,
       userId: TestUserData.id,
     });

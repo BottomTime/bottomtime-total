@@ -50,13 +50,13 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
     "visibility": 4.2,
     "weather": "Sunny",
   },
-  "createdAt": 2014-10-27T01:35:36.540Z,
+  "createdAt": 1414373736540,
   "creator": {
     "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",
     "location": "Underwater",
     "logBookSharing": "friends",
-    "memberSince": 2021-01-01T00:00:00.000Z,
+    "memberSince": 1609459200000,
     "name": "Dan Diver",
     "userId": "5ac8b2c0-c9b7-4293-989c-13c2aa4e4dd5",
     "username": "Diver.Dan",
@@ -85,13 +85,13 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
   "site": {
     "averageDifficulty": 2.2,
     "averageRating": 3.8,
-    "createdOn": 2024-05-21T19:46:14.342Z,
+    "createdOn": 1716320774342,
     "creator": {
       "accountTier": 0,
       "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",
       "location": "Underwater",
       "logBookSharing": "friends",
-      "memberSince": 2021-01-01T00:00:00.000Z,
+      "memberSince": 1609459200000,
       "name": "Dan Diver",
       "userId": "5ac8b2c0-c9b7-4293-989c-13c2aa4e4dd5",
       "username": "Diver.Dan",
@@ -111,17 +111,15 @@ exports[`Log Entry class will render a JSON object correctly 1`] = `
     "location": "Ocean",
     "name": "Dive Site of Awesomeness",
     "shoreAccess": false,
-    "updatedOn": 2024-05-21T19:46:14.342Z,
+    "updatedOn": 1716320774342,
     "waterType": "salt",
   },
   "tags": [],
   "timing": {
     "bottomTime": 2700,
     "duration": 3000,
-    "entryTime": {
-      "date": "2021-01-01T12:34:56",
-      "timezone": "America/Los_Angeles",
-    },
+    "entryTime": 1609533296000,
+    "timezone": "America/Los_Angeles",
   },
   "updatedAt": undefined,
 }
@@ -133,7 +131,7 @@ exports[`Log Entry class will return properties correctly 1`] = `
   "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/873.jpg",
   "location": "Underwater",
   "logBookSharing": "friends",
-  "memberSince": 2021-01-01T00:00:00.000Z,
+  "memberSince": 1609459200000,
   "name": "Dan Diver",
   "userId": "5ac8b2c0-c9b7-4293-989c-13c2aa4e4dd5",
   "username": "Diver.Dan",
@@ -181,9 +179,7 @@ exports[`Log Entry class will return properties correctly 5`] = `
 {
   "bottomTime": 2700,
   "duration": 3000,
-  "entryTime": {
-    "date": "2021-01-01T12:34:56",
-    "timezone": "America/Los_Angeles",
-  },
+  "entryTime": 1609533296000,
+  "timezone": "America/Los_Angeles",
 }
 `;

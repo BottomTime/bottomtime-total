@@ -28,6 +28,10 @@ export async function createApp(
     rawBody: true,
   });
 
+  // Increase maximum supported size of JSON request bodies to 1MB.
+  // This allows larger requests to import dive computer data to not be limited too much.
+  app.useBodyParser('json', { limit: '1mb' });
+
   // Add JWT authentication and Edge Auth for protected environments.
   app.useGlobalGuards(new EdgeAuthGuard(), new JwtOrAnonAuthGuard());
 

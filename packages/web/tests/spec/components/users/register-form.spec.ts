@@ -47,11 +47,11 @@ const NewUser: UserDTO = {
   emailVerified: false,
   hasPassword: true,
   isLockedOut: false,
-  memberSince: new Date(),
+  memberSince: Date.now(),
   role: UserRole.User,
   profile: {
     accountTier: AccountTier.Basic,
-    memberSince: new Date(),
+    memberSince: Date.now(),
     username: 'john_doe32',
     name: 'John Doe',
     logBookSharing: LogBookSharing.Public,

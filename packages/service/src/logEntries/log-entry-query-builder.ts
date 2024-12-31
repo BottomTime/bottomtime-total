@@ -35,7 +35,6 @@ export class LogEntryQueryBuilder {
         'entries.logNumber',
         'entries.tags',
 
-        'entries.timestamp',
         'entries.entryTime',
         'entries.timezone',
         'entries.bottomTime',
@@ -62,21 +61,23 @@ export class LogEntryQueryBuilder {
     return this.query;
   }
 
-  withDateRange(start?: Date, end?: Date): this {
+  withDateRange(start?: number, end?: number): this {
     if (start && end) {
       this.query = this.query.andWhere(
-        'entries.timestamp BETWEEN :start AND :end',
+        'entries.entryTime BETWEEN :start AND :end',
         {
-          start,
-          end,
+          start: new Date(start),
+          end: new Date(end),
         },
       );
     } else if (start) {
-      this.query = this.query.andWhere('entries.timestamp >= :start', {
-        start,
+      this.query = this.query.andWhere('entries.entryTime >= :start', {
+        start: new Date(start),
       });
     } else if (end) {
-      this.query = this.query.andWhere('entries.timestamp < :end', { end });
+      this.query = this.query.andWhere('entries.entryTime < :end', {
+        end: new Date(end),
+      });
     }
 
     return this;
@@ -104,12 +105,12 @@ export class LogEntryQueryBuilder {
       case LogEntrySortBy.LogNumber:
         this.query = this.query
           .orderBy('entries.logNumber', sortOrderField, 'NULLS LAST')
-          .addOrderBy('entries.timestamp', sortOrderField);
+          .addOrderBy('entries.entryTime', sortOrderField);
         break;
 
       case LogEntrySortBy.EntryTime:
       default:
-        this.query = this.query.orderBy('entries.timestamp', sortOrderField);
+        this.query = this.query.orderBy('entries.entryTime', sortOrderField);
         break;
     }
 

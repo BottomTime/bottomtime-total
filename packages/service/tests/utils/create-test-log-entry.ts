@@ -34,8 +34,7 @@ const LogEntrySchema = z.object({
   id: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date().nullable().default(null),
-  timestamp: z.coerce.date(),
-  entryTime: z.string(),
+  entryTime: z.coerce.date(),
   timezone: z.string(),
   logNumber: z.number().nullable(),
   bottomTime: z.number().nullable(),
@@ -163,10 +162,7 @@ export function createTestLogEntry(
     null;
   data.owner = owner;
 
-  data.timestamp = options?.timestamp ?? faker.date.past({ years: 3 });
-  data.entryTime =
-    options?.entryTime ??
-    dayjs(data.timestamp).tz(timezone, true).format('YYYY-MM-DDTHH:mm:ss');
+  data.entryTime = options?.entryTime ?? faker.date.past({ years: 3 });
   data.timezone = timezone;
   data.bottomTime =
     options?.bottomTime ?? faker.number.int({ min: 720, max: 5700 });

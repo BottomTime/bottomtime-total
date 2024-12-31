@@ -53,8 +53,8 @@ export class FriendsService {
     return {
       id: friend.friend.id,
       username: friend.friend.username,
-      memberSince: friend.friend.memberSince,
-      friendsSince: friend.friendsSince,
+      memberSince: friend.friend.memberSince.valueOf(),
+      friendsSince: friend.friendsSince.valueOf(),
       avatar: friend.friend.avatar ?? undefined,
       name: friend.friend.name ?? undefined,
       location: friend.friend.location ?? undefined,
@@ -75,8 +75,8 @@ export class FriendsService {
       direction === FriendRequestDirection.Outgoing ? request.to : request.from;
 
     return {
-      created: request.created,
-      expires: request.expires,
+      created: request.created.valueOf(),
+      expires: request.expires.valueOf(),
       direction,
       accepted: request.accepted ?? undefined,
       reason: request.reason ?? undefined,
@@ -84,7 +84,7 @@ export class FriendsService {
       friend: {
         id: friend.id,
         username: friend.username,
-        memberSince: friend.memberSince,
+        memberSince: friend.memberSince.valueOf(),
         avatar: friend.avatar ?? undefined,
         name: friend.name ?? undefined,
         location: friend.location ?? undefined,
@@ -267,6 +267,7 @@ export class FriendsService {
           to: { id: to },
         },
         select: ['id', 'accepted', 'expires'],
+        relations: ['to', 'from'],
       });
 
       if (!request) return undefined;
@@ -281,8 +282,6 @@ export class FriendsService {
 
       request.accepted = true;
       request.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
-      request.from = { id: from } as UserEntity;
-      request.to = { id: to } as UserEntity;
       await friendRequests.save(request);
 
       const friendships = [new FriendshipEntity(), new FriendshipEntity()];
@@ -318,6 +317,7 @@ export class FriendsService {
         to: { id: to },
       },
       select: ['id', 'accepted', 'expires'],
+      relations: ['to', 'from'],
     });
 
     if (!request) return undefined;
@@ -339,8 +339,6 @@ export class FriendsService {
     request.accepted = false;
     request.expires = new Date(Date.now() + TwoWeeksInMilliseconds);
     request.reason = reason ?? null;
-    request.from = { id: from } as UserEntity;
-    request.to = { id: to } as UserEntity;
     await this.FriendRequests.save(request);
 
     return FriendsService.toFriendRequestDTO(request, from);

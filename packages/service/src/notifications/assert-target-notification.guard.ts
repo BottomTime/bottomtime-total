@@ -8,6 +8,8 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { User } from '../users/user';
 import { Notification } from './notification';
 import { NotificationsService } from './notifications.service';
@@ -22,7 +24,7 @@ export class AssertTargetNotification implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
 
     this.log.debug(
       `Received request to act on notification with ID "${req.params.notificationId}" belonging to user "${req.params.username}".`,

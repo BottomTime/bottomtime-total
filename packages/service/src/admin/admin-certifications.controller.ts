@@ -24,8 +24,10 @@ import { Certification, CertificationsService } from '../certifications';
 import { AssertAdmin } from '../users';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
-import { TargetCertification } from './admin.decorators';
-import { AssertCertification } from './assert-certificaiton.guard';
+import {
+  AssertCertification,
+  TargetCertification,
+} from './assert-certificaiton.guard';
 
 const CertificationIdParam = 'certificationId';
 

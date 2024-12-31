@@ -106,9 +106,9 @@ export const MembershipStatusSchema = z.object({
   accountTier: z.nativeEnum(AccountTier),
   entitlements: z.string().array(),
   status: z.nativeEnum(MembershipStatus),
-  cancellationDate: z.coerce.date().optional(),
-  nextBillingDate: z.coerce.date().optional(),
-  trialEndDate: z.coerce.date().optional(),
+  cancellationDate: z.number().optional(),
+  nextBillingDate: z.number().optional(),
+  trialEndDate: z.number().optional(),
 });
 export type MembershipStatusDTO = z.infer<typeof MembershipStatusSchema>;
 

@@ -37,8 +37,8 @@ export const CreateOrUpdateNotificationParamsSchema = z.object({
   title: z.string().min(1).max(200),
   message: z.string().max(2000),
   callsToAction: NotificationCallToActionSchema.array().max(3).optional(),
-  active: z.coerce.date().optional(),
-  expires: z.coerce.date().optional(),
+  active: z.number().optional(),
+  expires: z.number().optional(),
 });
 export type CreateOrUpdateNotificationParamsDTO = z.infer<
   typeof CreateOrUpdateNotificationParamsSchema
@@ -54,7 +54,7 @@ export type NotificationDTO = z.infer<typeof NotificationSchema>;
 
 export const ListNotificationsParamsSchema = z
   .object({
-    showAfter: z.coerce.date(),
+    showAfter: z.coerce.number(),
     showDismissed: BooleanString,
     skip: z.coerce.number().int(),
     limit: z.coerce.number().int(),

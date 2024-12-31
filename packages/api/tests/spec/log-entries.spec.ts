@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import mockFetch from 'fetch-mock-jest';
 
 import {
@@ -29,12 +28,10 @@ import { BasicUser } from '../fixtures/users';
 const timestamp = new Date('2024-04-30T20:48:16.436Z');
 const PartialTestData: LogEntryDTO = {
   id: 'bf1d4299-0c0b-47d4-bde1-d51f3573139b',
-  createdAt: new Date('2024-07-23T12:09:55Z'),
+  createdAt: new Date('2024-07-23T12:09:55Z').valueOf(),
   timing: {
-    entryTime: {
-      date: dayjs(timestamp).format('YYYY-MM-DDTHH:mm:ss'),
-      timezone: 'Pacific/Pohnpei',
-    },
+    entryTime: timestamp.valueOf(),
+    timezone: 'Pacific/Pohnpei',
     duration: 45.5,
   },
   creator: BasicUser.profile,
@@ -51,11 +48,11 @@ const FullTestData: LogEntryDTO = {
     weather: 'Sunny',
     visibility: 4,
   },
-  createdAt: new Date('2024-07-23T12:09:55Z'),
-  updatedAt: new Date('2024-07-23T12:09:55Z'),
+  createdAt: new Date('2024-07-23T12:09:55Z').valueOf(),
+  updatedAt: new Date('2024-07-23T12:09:55Z').valueOf(),
   site: {
     id: 'f0c5b4d4-2d1d-4b5d-8e7d-9b7a4d4b8f1d',
-    createdOn: new Date('2024-07-23T12:09:55Z'),
+    createdOn: new Date('2024-07-23T12:09:55Z').valueOf(),
     name: 'The Wreck of the RMS Titanic',
     location: 'Atlantic Ocean',
     creator: BasicUser.profile,
@@ -121,15 +118,24 @@ describe('Log entries API client', () => {
     const username = 'greg';
     const params: ListLogEntriesParamsDTO = {
       query: 'sam',
-      startDate: new Date('2021-01-01'),
-      endDate: new Date('2021-12-31'),
+      startDate: new Date('2021-01-01').valueOf(),
+      endDate: new Date('2021-12-31').valueOf(),
       limit: 800,
       skip: 20,
       sortBy: LogEntrySortBy.EntryTime,
       sortOrder: SortOrder.Ascending,
     };
     mockFetch.get(
-      `/api/users/${username}/logbook?query=sam&startDate=2021-01-01T00%3A00%3A00.000Z&endDate=2021-12-31T00%3A00%3A00.000Z&limit=800&skip=20&sortBy=entryTime&sortOrder=asc`,
+      {
+        url: `/api/users/${username}/logbook`,
+        query: {
+          ...params,
+          startDate: new Date(params.startDate!).valueOf(),
+          endDate: new Date(params.endDate!).valueOf(),
+          skip: params.skip,
+          limit: params.limit,
+        },
+      },
       {
         status: 200,
         body: logEntryData,
@@ -138,7 +144,6 @@ describe('Log entries API client', () => {
 
     const result = await client.listLogEntries(username, params);
 
-    expect(mockFetch.done()).toBe(true);
     expect(result.totalCount).toBe(logEntryData.totalCount);
 
     result.data.forEach((entry, index) => {
@@ -171,10 +176,8 @@ describe('Log entries API client', () => {
     const options: CreateOrUpdateLogEntryParamsDTO = {
       timing: {
         duration: 50.5,
-        entryTime: {
-          date: '2024-04-30T20:48:16',
-          timezone: 'Pacific/Pohnpei',
-        },
+        entryTime: new Date('2024-04-30T20:48:16').valueOf(),
+        timezone: 'Pacific/Pohnpei',
         bottomTime: 50.2,
       },
       logNumber: 555,
@@ -201,7 +204,7 @@ describe('Log entries API client', () => {
       ...options,
       site: undefined,
       creator: BasicUser.profile,
-      createdAt: new Date('2024-04-30T20:48:16'),
+      createdAt: new Date('2024-04-30T20:48:16').valueOf(),
       id: '62389e6e-0332-4288-9d87-9bd94ba830da',
     };
     mockFetch.post(`/api/users/${BasicUser.username}/logbook`, {
@@ -257,10 +260,8 @@ describe('Log entries API client', () => {
     const options: CreateOrUpdateLogEntryParamsDTO = {
       timing: {
         duration: 50.5,
-        entryTime: {
-          date: '2024-04-30T20:48:16',
-          timezone: 'Pacific/Pohnpei',
-        },
+        entryTime: new Date('2024-04-30T20:48:16').valueOf(),
+        timezone: 'Pacific/Pohnpei',
         bottomTime: 50.2,
       },
       conditions: { ...FullTestData.conditions },

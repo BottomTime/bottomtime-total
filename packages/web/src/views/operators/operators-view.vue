@@ -205,11 +205,11 @@ function onCreateShop() {
 
   state.currentOperator = {
     active: true,
-    createdAt: new Date(),
+    createdAt: Date.now(),
     id: '',
     name: '',
     owner: currentUser.user.profile,
-    updatedAt: new Date(),
+    updatedAt: Date.now(),
     verificationStatus: VerificationStatus.Unverified,
     address: '',
     description: '',

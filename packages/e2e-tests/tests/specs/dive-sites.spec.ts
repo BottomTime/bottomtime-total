@@ -83,7 +83,9 @@ test.describe('Dive Sites', () => {
     await page.getByTestId('description').fill(description);
     await page.getByTestId('free-to-dive-true').click();
     await page.getByTestId('shore-access-true').click();
-    await page.getByTestId('save-site').click();
+    await page.getByTestId('save-site').scrollIntoViewIfNeeded();
+    // await page.getByTestId('save-site').click({ delay: 100 });
+    await page.getByTestId('save-site').dblclick();
 
     await page.waitForURL(/\/diveSites\/(?!new)/);
 

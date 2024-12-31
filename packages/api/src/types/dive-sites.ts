@@ -38,8 +38,8 @@ export type CreateOrUpdateDiveSiteReviewDTO = z.infer<
 export const DiveSiteReviewSchema = CreateOrUpdateDiveSiteReviewSchema.extend({
   id: z.string().uuid(),
   creator: ProfileSchema,
-  createdOn: z.coerce.date(),
-  updatedOn: z.coerce.date().optional(),
+  createdOn: z.number(),
+  updatedOn: z.number().optional(),
 });
 export type DiveSiteReviewDTO = z.infer<typeof DiveSiteReviewSchema>;
 
@@ -86,8 +86,8 @@ export type CreateOrUpdateDiveSiteDTO = z.infer<
 export const DiveSiteSchema = CreateOrUpdateDiveSiteSchema.extend({
   id: z.string().uuid(),
   creator: ProfileSchema,
-  createdOn: z.coerce.date(),
-  updatedOn: z.coerce.date().optional(),
+  createdOn: z.number(),
+  updatedOn: z.number().optional(),
   averageRating: z.number().min(1).max(5).optional(),
   averageDifficulty: z.number().min(1).max(5).optional(),
 });

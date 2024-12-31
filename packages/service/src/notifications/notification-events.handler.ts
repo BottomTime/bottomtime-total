@@ -130,7 +130,7 @@ export class NotificationEventsHandler {
       message,
       icon,
       callsToAction,
-      expires: expires ? new Date(Date.now() + expires) : undefined,
+      expires: expires ? Date.now() + expires : undefined,
     });
   }
 

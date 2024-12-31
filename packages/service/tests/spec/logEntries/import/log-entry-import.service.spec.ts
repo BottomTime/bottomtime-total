@@ -25,6 +25,7 @@ import LogEntryData from '../../../fixtures/log-entries.json';
 import TestData from '../../../fixtures/log-entry-imports.json';
 import {
   createTestLogEntryImport,
+  createTestLogEntryImportRecord,
   parseLogEntryImportJSON,
 } from '../../../utils';
 import { createTestUser } from '../../../utils/create-test-user';
@@ -92,7 +93,7 @@ describe('Log Entry Import Service', () => {
     testData = TestData.map((data) =>
       parseLogEntryImportJSON(
         data,
-        data.owner.username === ownerData.username ? ownerData : otherUserData,
+        data.owner.id === ownerData.id ? ownerData : otherUserData,
       ),
     );
   });
@@ -103,21 +104,33 @@ describe('Log Entry Import Service', () => {
 
   it.skip('generate test data', async () => {
     const imports = new Array<LogEntryImportEntity>(40);
+    const importRecords = new Array<LogEntryImportRecordEntity>(
+      faker.number.int({ min: 10, max: 20 }),
+    );
 
     for (let i = 0; i < imports.length; i++) {
       const userEntity = i < 35 ? ownerData : otherUserData;
-      imports[i] = {
-        ...createTestLogEntryImport(i < 35 ? ownerData : otherUserData),
-        owner: {
-          id: userEntity.id,
-          username: userEntity.username,
-        } as UserEntity,
-      };
+      imports[i] = createTestLogEntryImport({
+        id: userEntity.id,
+      } as UserEntity);
+    }
+
+    imports[0].finalized = null;
+    for (let i = 0; i < importRecords.length; i++) {
+      importRecords[i] = await createTestLogEntryImportRecord(ownerData, {
+        import: { id: imports[0].id } as LogEntryImportEntity,
+      });
     }
 
     await writeFile(
-      resolve(__dirname, '../../fixtures/log-entry-imports.json'),
+      resolve(__dirname, '../../../fixtures/log-entry-imports.json'),
       JSON.stringify(imports, null, 2),
+      'utf-8',
+    );
+
+    await writeFile(
+      resolve(__dirname, '../../../fixtures/import-records.json'),
+      JSON.stringify(importRecords, null, 2),
       'utf-8',
     );
   });
@@ -130,7 +143,7 @@ describe('Log Entry Import Service', () => {
       expect(result.toJSON()).toEqual({
         id,
         owner: owner.username,
-        date: Now,
+        date: Now.valueOf(),
         failed: false,
         finalized: false,
       });
@@ -162,7 +175,7 @@ describe('Log Entry Import Service', () => {
       expect(result.toJSON()).toEqual({
         id,
         owner: owner.username,
-        date: Now,
+        date: Now.valueOf(),
         failed: false,
         finalized: false,
         device,
@@ -207,7 +220,7 @@ describe('Log Entry Import Service', () => {
       logEntryData = LogEntryData.map((data) => ({
         id: faker.string.uuid(),
         import: testData[0],
-        timestamp: new Date(data.timestamp),
+        timestamp: new Date(data.entryTime),
         data: JSON.stringify(data),
       }));
       for (let i = 0; i < testData.length; i++) {
@@ -313,7 +326,7 @@ describe('Log Entry Import Service', () => {
         .sort((a, b) => b.date.valueOf() - a.date.valueOf());
       const expiration = expired[expired.length - 3].date;
       const removed = await service.expireImports(expiration);
-      expect(removed).toBe(expired.length - 4);
+      expect(removed).toBe(3);
 
       await expect(Imports.count()).resolves.toBe(testData.length - removed);
       await expect(

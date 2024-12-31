@@ -2,6 +2,7 @@ import {
   AccountTier,
   ApiClient,
   ApiList,
+  CreateOrUpdateLogEntryParamsSchema,
   DepthUnit,
   Fetcher,
   ListTanksResponseSchema,
@@ -45,16 +46,14 @@ const TestData: LogEntryDTO = {
     accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.Public,
     username: 'logbook_guy',
-    memberSince: new Date('2021-01-01T12:00'),
+    memberSince: new Date('2021-01-01T12:00').valueOf(),
     userId: 'bfb8f31f-8ac0-427e-84a5-f17111855727',
   },
-  createdAt: new Date('2021-01-01T12:00'),
+  createdAt: new Date('2021-01-01T12:00').valueOf(),
   timing: {
     duration: 48.2,
-    entryTime: {
-      date: '2021-01-01T12:00:00',
-      timezone: 'America/Los_Angeles',
-    },
+    entryTime: new Date('2021-01-01T12:00:00').valueOf(),
+    timezone: 'America/Los_Angeles',
     bottomTime: 44.1,
   },
   id: '1f3c6568-d63c-4e52-8679-2a85d6f6b1f4',
@@ -218,7 +217,7 @@ describe('Log Entry view', () => {
     expect(saveSpy).toHaveBeenCalledWith(
       BasicUser.username,
       TestData.id,
-      expected,
+      CreateOrUpdateLogEntryParamsSchema.parse(expected),
     );
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('log-entry-saved');
@@ -299,7 +298,7 @@ describe('Log Entry view', () => {
     expect(saveSpy).toHaveBeenCalledWith(
       BasicUser.username,
       TestData.id,
-      expected,
+      CreateOrUpdateLogEntryParamsSchema.parse(expected),
     );
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('log-entry-saved');

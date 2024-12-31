@@ -180,7 +180,7 @@ describe('Dive Site View', () => {
 
   it('will allow the user to create a new site', async () => {
     const expected: DiveSiteDTO = {
-      createdOn: new Date(),
+      createdOn: Date.now(),
       creator: BasicUser.profile,
       id: '',
       description: 'New description',

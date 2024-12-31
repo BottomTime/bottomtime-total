@@ -145,8 +145,8 @@ const data = reactive<EditAlertData>({
   icon: '',
   title: props.alert.title,
   message: props.alert.message,
-  active: props.alert.active ?? '',
-  expires: props.alert.expires ?? '',
+  active: props.alert.active ? new Date(props.alert.active) : '',
+  expires: props.alert.expires ? new Date(props.alert.expires) : '',
 });
 const showConfirmCancelDialog = ref(false);
 
@@ -184,8 +184,8 @@ async function onSave(): Promise<void> {
       icon: data.icon,
       title: data.title,
       message: data.message,
-      active: data.active ? dayjs(data.active).toDate() : undefined,
-      expires: data.expires ? dayjs(data.expires).toDate() : undefined,
+      active: data.active ? dayjs(data.active).valueOf() : undefined,
+      expires: data.expires ? dayjs(data.expires).valueOf() : undefined,
     });
   }
 }
@@ -199,8 +199,8 @@ function onConfirmCancel(): void {
   data.icon = props.alert.icon;
   data.title = props.alert.title;
   data.message = props.alert.message;
-  data.active = props.alert.active ?? '';
-  data.expires = props.alert.expires ?? '';
+  data.active = props.alert.active ? new Date(props.alert.active) : '';
+  data.expires = props.alert.expires ? new Date(props.alert.expires) : '';
 }
 
 function onAbortCancel(): void {

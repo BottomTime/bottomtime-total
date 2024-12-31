@@ -164,18 +164,18 @@ onMounted(async () => {
           active: true,
           address: '',
           description: '',
-          createdAt: new Date(),
+          createdAt: Date.now(),
           id: '',
           name: '',
           owner: currentUser.user?.profile ?? {
             accountTier: AccountTier.Basic,
             logBookSharing: LogBookSharing.Private,
-            memberSince: new Date(),
+            memberSince: 0,
             userId: '',
             username: '',
           },
           slug: '',
-          updatedAt: new Date(),
+          updatedAt: Date.now(),
           verificationStatus: VerificationStatus.Unverified,
         };
       }

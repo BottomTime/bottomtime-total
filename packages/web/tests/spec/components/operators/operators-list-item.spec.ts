@@ -11,13 +11,13 @@ import { BasicUser } from '../../../fixtures/users';
 const MinimalTestData: OperatorDTO = {
   active: true,
   address: '123 Street St.',
-  createdAt: new Date(),
+  createdAt: Date.now(),
   description: 'Dive shop with a boat',
   id: '8e18dc69-df18-40f6-8e12-4978cebfadba',
   name: 'A Dive Shop',
   owner: BasicUser.profile,
   slug: 'a-dive-shop',
-  updatedAt: new Date(),
+  updatedAt: Date.now(),
   verificationStatus: VerificationStatus.Unverified,
 };
 const FullTestData: OperatorDTO = {

@@ -30,7 +30,7 @@ describe('NotificationsSearchForm component', () => {
       props: {
         searchOptions: {
           showDismissed: true,
-          showAfter: new Date('2024-12-10T08:07:59-05:00'),
+          showAfter: new Date('2024-12-10T08:07:59-05:00').valueOf(),
         },
       },
     });
@@ -44,7 +44,7 @@ describe('NotificationsSearchForm component', () => {
     await wrapper.setProps({
       searchOptions: {
         showDismissed: true,
-        showAfter: new Date('2024-12-10T08:07:59-05:00'),
+        showAfter: new Date('2024-12-10T08:07:59-05:00').valueOf(),
       },
     });
     expect(

@@ -346,10 +346,10 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
     bottomTime: props.entry.timing.bottomTime ?? '',
     duration:
       props.entry.timing.duration === -1 ? '' : props.entry.timing.duration,
-    entryTime: props.entry.timing.entryTime.date
-      ? new Date(props.entry.timing.entryTime.date)
-      : undefined,
-    entryTimezone: props.entry.timing.entryTime.timezone || dayjs.tz.guess(),
+    entryTime: Number.isNaN(props.entry.timing.entryTime)
+      ? undefined
+      : new Date(props.entry.timing.entryTime),
+    entryTimezone: props.entry.timing.timezone || dayjs.tz.guess(),
     logNumber: props.entry.logNumber || '',
     maxDepth: props.entry.depths?.maxDepth
       ? {
@@ -489,10 +489,8 @@ async function onSave(): Promise<void> {
           ? formData.bottomTime
           : undefined,
       duration: formData.duration as number,
-      entryTime: {
-        date: dayjs(formData.entryTime).format('YYYY-MM-DDTHH:mm:ss'),
-        timezone: formData.entryTimezone,
-      },
+      entryTime: formData.entryTime!.valueOf(),
+      timezone: formData.entryTimezone,
     },
     logNumber:
       typeof formData.logNumber === 'number' ? formData.logNumber : undefined,

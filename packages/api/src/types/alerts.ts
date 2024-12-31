@@ -4,8 +4,8 @@ export const CreateOrUpdateAlertParamsSchema = z.object({
   icon: z.string().trim().max(100),
   title: z.string().trim().min(1).max(200),
   message: z.string().trim().min(1).max(10000),
-  active: z.coerce.date().optional(),
-  expires: z.coerce.date().optional(),
+  active: z.number().optional(),
+  expires: z.number().optional(),
 });
 export type CreateOrUpdateAlertParamsDTO = z.infer<
   typeof CreateOrUpdateAlertParamsSchema

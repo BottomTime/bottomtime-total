@@ -135,7 +135,7 @@ describe('Auth Service', () => {
       expect(actual?.lastLogin?.valueOf()).toBeCloseTo(Date.now(), -3);
       expect(actual?.toJSON()).toEqual({
         ...expected.toJSON(),
-        lastLogin: actual?.lastLogin,
+        lastLogin: actual?.lastLogin?.valueOf(),
       });
     });
 
@@ -152,7 +152,7 @@ describe('Auth Service', () => {
       expect(actual?.lastLogin?.valueOf()).toBeCloseTo(Date.now(), -2);
       expect(actual?.toJSON()).toEqual({
         ...expected.toJSON(),
-        lastLogin: actual?.lastLogin,
+        lastLogin: actual?.lastLogin?.valueOf(),
       });
     });
 

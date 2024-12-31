@@ -56,8 +56,8 @@ export type CreateOrUpdateOperatorDTO = z.infer<
 
 export const OperatorSchema = CreateOrUpdateOperatorSchema.extend({
   id: z.string(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
+  createdAt: z.number(),
+  updatedAt: z.number(),
   owner: SuccinctProfileSchema,
   verificationStatus: z.nativeEnum(VerificationStatus),
   verificationMessage: z.string().optional(),

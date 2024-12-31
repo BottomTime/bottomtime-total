@@ -99,7 +99,7 @@ describe('Operator class', () => {
       accountTier: owner.accountTier,
       userId: owner.id,
       username: owner.username,
-      memberSince: owner.memberSince,
+      memberSince: owner.memberSince.valueOf(),
       logBookSharing: owner.logBookSharing,
       avatar: owner.avatar,
       location: owner.location,
@@ -134,7 +134,7 @@ describe('Operator class', () => {
       accountTier: AccountTier.Basic,
       userId: '',
       username: '',
-      memberSince: new Date(0),
+      memberSince: new Date(0).valueOf(),
       logBookSharing: LogBookSharing.Private,
     });
   });

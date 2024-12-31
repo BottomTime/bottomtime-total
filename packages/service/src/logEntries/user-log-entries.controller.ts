@@ -11,7 +11,6 @@ import {
   LogEntryDTO,
 } from '@bottomtime/api';
 
-import { CacheInterceptor } from '@nestjs/cache-manager';
 import {
   BadRequestException,
   Body,
@@ -25,7 +24,6 @@ import {
   Put,
   Query,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 
 import { DiveSite, DiveSitesService } from '../diveSites';
@@ -582,7 +580,8 @@ export class UserLogEntriesController {
     logEntry.notes = options.notes;
     logEntry.tags = options.tags ?? [];
 
-    logEntry.timing.entryTime = options.timing.entryTime;
+    logEntry.timing.entryTime = new Date(options.timing.entryTime);
+    logEntry.timing.timezone = options.timing.timezone;
     logEntry.timing.bottomTime = options.timing.bottomTime;
     logEntry.timing.duration = options.timing.duration;
 

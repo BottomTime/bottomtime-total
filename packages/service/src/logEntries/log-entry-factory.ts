@@ -3,7 +3,6 @@ import { CreateOrUpdateLogEntryParamsDTO } from '@bottomtime/api';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
@@ -48,7 +47,6 @@ export class LogEntryFactory {
     data: CreateOrUpdateLogEntryParamsDTO,
   ): LogEntry {
     const now = new Date();
-    const entryTime = dayjs(data.timing.entryTime.date);
     const entry: LogEntryEntity = {
       airTemperature: data.conditions?.airTemperature ?? null,
       averageDepth: data.depths?.averageDepth ?? null,
@@ -63,7 +61,6 @@ export class LogEntryFactory {
       deviceId: null,
       deviceName: null,
       duration: data.timing.duration,
-      entryTime: entryTime.format('YYYY-MM-DDTHH:mm:ss'),
       exposureSuit: data.equipment?.exposureSuit ?? null,
       gloves: data.equipment?.gloves ?? null,
       hood: data.equipment?.hood ?? null,
@@ -77,12 +74,9 @@ export class LogEntryFactory {
       surfaceTemperature: data.conditions?.surfaceTemperature ?? null,
       tags: data.tags ?? [],
       temperatureUnit: data.conditions?.temperatureUnit ?? null,
-      timestamp: entryTime
-        .tz(data.timing.entryTime.timezone, true)
-        .utc()
-        .toDate(),
+      entryTime: new Date(data.timing.entryTime),
       torch: data.equipment?.torch ?? null,
-      timezone: data.timing.entryTime.timezone,
+      timezone: data.timing.timezone,
       trimCorrectness: data.equipment?.trimCorrectness ?? null,
       updatedAt: null,
       visibility: data.conditions?.visibility ?? null,

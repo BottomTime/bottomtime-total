@@ -8,6 +8,8 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { Operator } from './operator';
 import { OperatorsService } from './operators.service';
 
@@ -19,15 +21,15 @@ export class AssertOperator implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
     const operatorKey = req.params.operatorKey;
 
     if (operatorKey && typeof operatorKey !== 'string') {
       throw new BadRequestException('Operator key is missing or invalid.');
     }
 
-    req.diveOperator = await this.service.getOperatorBySlug(operatorKey);
-    if (!req.diveOperator) {
+    req.targetDiveOperator = await this.service.getOperatorBySlug(operatorKey);
+    if (!req.targetDiveOperator) {
       throw new NotFoundException(
         `Dive operator with key ${operatorKey} not found.`,
       );
@@ -38,8 +40,8 @@ export class AssertOperator implements CanActivate {
 }
 
 export const CurrentOperator = createParamDecorator(
-  (_: unknown, ctx: ExecutionContext): Operator => {
-    const req = ctx.switchToHttp().getRequest();
-    return req.diveOperator;
+  (_: unknown, ctx: ExecutionContext): Operator | undefined => {
+    const req = ctx.switchToHttp().getRequest<Request>();
+    return req.targetDiveOperator;
   },
 );

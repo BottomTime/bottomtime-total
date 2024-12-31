@@ -113,9 +113,9 @@ const emit = defineEmits<{
 
 const selected = ref(props.notification.selected ?? false);
 const activeDate = computed<string | undefined>(() => {
-  return (
-    props.notification.active && dayjs(props.notification.active).fromNow()
-  );
+  return props.notification.active
+    ? dayjs(props.notification.active).fromNow()
+    : undefined;
 });
 
 watch(selected, (value) => {

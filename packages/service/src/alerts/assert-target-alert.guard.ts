@@ -7,6 +7,8 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { Alert } from './alert';
 import { AlertsService } from './alerts.service';
 
@@ -15,7 +17,7 @@ export class AssertTargetAlert implements CanActivate {
   constructor(@Inject(AlertsService) private readonly service: AlertsService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
 
     const targetAlert = await this.service.getAlert(req.params.alertId);
     if (!targetAlert) {
@@ -30,8 +32,8 @@ export class AssertTargetAlert implements CanActivate {
 }
 
 export const TargetAlert = createParamDecorator(
-  (_: unknown, ctx: ExecutionContext): Alert => {
-    const req = ctx.switchToHttp().getRequest();
+  (_: unknown, ctx: ExecutionContext): Alert | undefined => {
+    const req = ctx.switchToHttp().getRequest<Request>();
     return req.targetAlert;
   },
 );

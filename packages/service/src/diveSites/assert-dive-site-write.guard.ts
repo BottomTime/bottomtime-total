@@ -1,26 +1,41 @@
+import { UserRole } from '@bottomtime/api';
+
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
+
+import { Request } from 'express';
+
 import { User } from '../users';
-import { DiveSite } from './dive-site';
-import { UserRole } from '@bottomtime/api';
 
 @Injectable()
 export class AssertDiveSiteWrite implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
 
-    const user: User = req.user;
-    const site: DiveSite = req.diveSite;
+    const currentUser = req.user instanceof User ? req.user : undefined;
+    const site = req.targetDiveSite;
 
-    if (user.role === UserRole.Admin) {
+    if (!currentUser) {
+      throw new UnauthorizedException(
+        'You must be logged in to modify or delete a dive site.',
+      );
+    }
+
+    if (!site) {
+      throw new NotFoundException('Dive site not found');
+    }
+
+    if (currentUser.role === UserRole.Admin) {
       return true;
     }
 
-    if (site.creator.userId === user.id) {
+    if (site.creator.userId === currentUser.id) {
       return true;
     }
 

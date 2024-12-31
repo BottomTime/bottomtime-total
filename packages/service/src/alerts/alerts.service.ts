@@ -60,8 +60,8 @@ export class AlertsService {
       icon: options.icon,
       title: options.title,
       message: options.message,
-      active: options.active ?? new Date(),
-      expires: options.expires ?? null,
+      active: new Date(options.active ?? Date.now()),
+      expires: options.expires ? new Date(options.expires) : null,
     };
 
     const alert = new Alert(this.Alerts, data);

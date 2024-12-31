@@ -50,7 +50,7 @@ function onChangeEmail(email: string) {
 function onChangePassword() {
   if (currentUser.user) {
     currentUser.user.hasPassword = true;
-    currentUser.user.lastPasswordChange = new Date();
+    currentUser.user.lastPasswordChange = Date.now();
   }
 }
 </script>

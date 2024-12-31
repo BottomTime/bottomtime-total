@@ -2,10 +2,10 @@
 
 exports[`Notification class will render as JSON correctly 1`] = `
 {
-  "active": 2024-03-20T17:06:46.681Z,
+  "active": 1710954406681,
   "callsToAction": undefined,
   "dismissed": true,
-  "expires": 2024-04-20T17:06:46.681Z,
+  "expires": 1713632806681,
   "icon": "fas fa-bell",
   "id": "2a1d56fa-236a-49d1-a475-068b60cf3621",
   "message": "This is a test notification.",

@@ -218,8 +218,8 @@ describe('Operators view', () => {
     const result: OperatorDTO = {
       id: 'new-shop',
       owner: ShopOwner.profile,
-      createdAt: new Date('2021-01-01T00:00:00Z'),
-      updatedAt: new Date('2021-01-01T00:00:00Z'),
+      createdAt: new Date('2021-01-01T00:00:00Z').valueOf(),
+      updatedAt: new Date('2021-01-01T00:00:00Z').valueOf(),
       verificationStatus: VerificationStatus.Unverified,
       ...create,
     };

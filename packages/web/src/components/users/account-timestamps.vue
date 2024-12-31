@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<AccountTimestampsProps>(), {
   exactTimes: false,
 });
 
-function formatTime(time?: Date) {
+function formatTime(time?: number) {
   if (!time) return 'Never';
   return props.exactTimes
     ? dayjs(time).utc().format('MMM D, YYYY H:mm:ss (UTC)')

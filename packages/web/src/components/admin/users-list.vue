@@ -293,7 +293,7 @@ function onEmailChanged(_id: string, email: string) {
 function onPasswordReset() {
   if (state.selectedUser) {
     state.selectedUser.hasPassword = true;
-    state.selectedUser.lastPasswordChange = new Date();
+    state.selectedUser.lastPasswordChange = Date.now();
   }
 }
 

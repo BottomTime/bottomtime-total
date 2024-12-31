@@ -34,7 +34,7 @@ import { AdminUser, BasicUser } from '../../../fixtures/users';
 const ProfileData: ProfileDTO = {
   accountTier: AccountTier.Basic,
   logBookSharing: LogBookSharing.Public,
-  memberSince: new Date('2021-01-01T00:00:00.000Z'),
+  memberSince: new Date('2021-01-01T00:00:00.000Z').valueOf(),
   userId: '5550f3c1-c6e3-415d-9760-578fb5e9306b',
   username: 'testy_mcgee',
   name: 'Testy McGee',
@@ -105,9 +105,20 @@ describe('Logbook view', () => {
   });
 
   it('will render correctly given a search query', async () => {
-    await router.push(
-      '/logbook/testy_mcgee?startDate=2023-05-02T16:32:07.300Z&endDate=2025-05-02T16:32:07.300Z&skip=10&limit=100&query=yolo&sortBy=entryTime&sortOrder=asc',
-    );
+    const endDate = new Date('2025-05-02T16:32:07.300Z').valueOf();
+    const startDate = new Date('2023-05-02T16:32:07.300Z').valueOf();
+    await router.push({
+      path: '/logbook/testy_mcgee',
+      query: {
+        startDate,
+        endDate,
+        skip: 10,
+        limit: 100,
+        query: 'yolo',
+        sortBy: LogEntrySortBy.EntryTime,
+        sortOrder: SortOrder.Ascending,
+      },
+    });
 
     const wrapper = mount(LogbookView, opts);
     await flushPromises();
@@ -118,13 +129,13 @@ describe('Logbook view', () => {
       expect(item.props('entry').id).toBe(entryData.data[i].id);
     });
     expect(listSpy).toHaveBeenCalledWith(ProfileData.username, {
-      endDate: new Date('2025-05-02T16:32:07.300Z'),
+      endDate,
       limit: 100,
       query: 'yolo',
       skip: 0,
       sortBy: 'entryTime',
       sortOrder: 'asc',
-      startDate: new Date('2023-05-02T16:32:07.300Z'),
+      startDate,
     });
   });
 
@@ -266,9 +277,11 @@ describe('Logbook view', () => {
   });
 
   it('will change sort order when dropdown is used', async () => {
-    await router.push(
-      '/logbook/testy_mcgee?startDate=2024-05-08T18%3A53%3A58.388Z',
-    );
+    const startDate = new Date('2024-05-08T18:53:58.388Z').valueOf();
+    await router.push({
+      path: '/logbook/testy_mcgee',
+      query: { startDate },
+    });
     const wrapper = mount(LogbookView, opts);
     await flushPromises();
 
@@ -277,20 +290,26 @@ describe('Logbook view', () => {
     expect(router.currentRoute.value.query).toEqual({
       sortBy: 'entryTime',
       sortOrder: 'asc',
-      startDate: '2024-05-08T18:53:58.388Z',
+      startDate: startDate.toString(),
     });
   });
 
   it('will load more results when Load More button is clicked', async () => {
+    const endDate = new Date('2024-05-08T19:29:31.551Z').valueOf();
     listSpy = jest
       .spyOn(client.logEntries, 'listLogEntries')
       .mockResolvedValue({
         data: entryData.data.slice(0, 10),
         totalCount: 200,
       });
-    await router.push(
-      `/logbook/${ProfileData.username}?endDate=2024-05-08T19%3A29%3A31.551Z&sortBy=entryTime&sortOrder=asc`,
-    );
+    await router.push({
+      path: `/logbook/${ProfileData.username}`,
+      query: {
+        endDate,
+        sortBy: LogEntrySortBy.EntryTime,
+        sortOrder: SortOrder.Ascending,
+      },
+    });
 
     const wrapper = mount(LogbookView, opts);
     await flushPromises();
@@ -305,7 +324,7 @@ describe('Logbook view', () => {
     await flushPromises();
 
     expect(loadMoreSpy).toHaveBeenCalledWith(ProfileData.username, {
-      endDate: new Date('2024-05-08T19:29:31.551Z'),
+      endDate: new Date('2024-05-08T19:29:31.551Z').valueOf(),
       sortBy: LogEntrySortBy.EntryTime,
       sortOrder: SortOrder.Ascending,
       skip: 10,

@@ -8,6 +8,7 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
+import { Request } from 'express';
 import { z } from 'zod';
 
 import { LogEntryImport } from './log-entry-import';
@@ -21,7 +22,7 @@ export class AssertTargetImport implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
     const importId = z.string().trim().uuid().safeParse(req.params.importId);
 
     if (!importId.success) {
@@ -35,14 +36,14 @@ export class AssertTargetImport implements CanActivate {
       );
     }
 
-    req.import = importEntity;
+    req.targetLogEntryImport = importEntity;
     return true;
   }
 }
 
 export const TargetImport = createParamDecorator(
-  (_, ctx): LogEntryImport | undefined => {
-    const req = ctx.switchToHttp().getRequest();
-    return req.import;
+  (_: unknown, ctx: ExecutionContext): LogEntryImport | undefined => {
+    const req = ctx.switchToHttp().getRequest<Request>();
+    return req.targetLogEntryImport;
   },
 );

@@ -7,6 +7,8 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { User } from '../users';
 import { LogEntriesService } from './log-entries.service';
 import { LogEntry } from './log-entry';
@@ -18,7 +20,7 @@ export class AssertTargetLogEntry implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
 
     const targetUser: User | undefined = req.targetUser;
     if (!targetUser) {
@@ -42,8 +44,8 @@ export class AssertTargetLogEntry implements CanActivate {
 }
 
 export const TargetLogEntry = createParamDecorator(
-  (_: unknown, ctx: ExecutionContext): LogEntry => {
-    const req = ctx.switchToHttp().getRequest();
+  (_: unknown, ctx: ExecutionContext): LogEntry | undefined => {
+    const req = ctx.switchToHttp().getRequest<Request>();
     return req.targetLogEntry;
   },
 );

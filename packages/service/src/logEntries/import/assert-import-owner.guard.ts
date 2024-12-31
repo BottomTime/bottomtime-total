@@ -7,6 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 
 import { User } from '../../users';
@@ -16,11 +17,12 @@ export class AssertImportOwner implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const req = context.switchToHttp().getRequest();
-    const currentUser: User | undefined =
-      req.user instanceof User ? req.user : undefined;
-    const currentImport: LogEntryImport | undefined =
-      req.import instanceof LogEntryImport ? req.import : undefined;
+    const req = context.switchToHttp().getRequest<Request>();
+    const currentUser = req.user instanceof User ? req.user : undefined;
+    const currentImport =
+      req.targetLogEntryImport instanceof LogEntryImport
+        ? req.targetLogEntryImport
+        : undefined;
 
     // User must be logged in
     if (!currentUser) {

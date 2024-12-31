@@ -7,6 +7,8 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { User } from '../users';
 import { Tank } from './tank';
 import { TanksService } from './tanks.service';
@@ -18,9 +20,13 @@ export class AssertTank implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
 
-    const targetUser: User = req.targetUser;
+    const targetUser = req.targetUser;
+    if (!targetUser) {
+      throw new NotFoundException('Unable to find user profile.');
+    }
+
     const tank = await this.tanksService.getTank(req.params.tankId);
 
     if (!tank || tank.user?.userId !== targetUser.id) {
@@ -29,14 +35,14 @@ export class AssertTank implements CanActivate {
       );
     }
 
-    req.selectedTank = tank;
+    req.targetTank = tank;
     return true;
   }
 }
 
 export const SelectedTank = createParamDecorator<Tank>(
-  (_: unknown, ctx: ExecutionContext): Tank => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.selectedTank;
+  (_: unknown, ctx: ExecutionContext): Tank | undefined => {
+    const request = ctx.switchToHttp().getRequest<Request>();
+    return request.targetTank;
   },
 );

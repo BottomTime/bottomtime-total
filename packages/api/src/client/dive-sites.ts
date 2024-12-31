@@ -82,6 +82,6 @@ export class DiveSitesApiClient {
   async updateSite(site: DiveSiteDTO): Promise<void> {
     const params = CreateOrUpdateDiveSiteSchema.parse(site);
     await this.apiClient.put(`/api/diveSites/${site.id}`, params);
-    site.updatedOn = new Date();
+    site.updatedOn = Date.now();
   }
 }

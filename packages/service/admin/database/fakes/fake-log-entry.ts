@@ -38,8 +38,7 @@ export function fakeLogEntry(
   data.logNumber = faker.number.int({ min: 1, max: 1000 });
   data.owner = { id: faker.helpers.arrayElement(userIds) } as UserEntity;
 
-  data.timestamp = timestamp;
-  data.entryTime = dayjs(entryTime).format('YYYY-MM-DDTHH:mm:ss');
+  data.entryTime = timestamp;
   data.timezone = timezone;
   data.duration = faker.number.float({ min: 1200, max: 7200, multipleOf: 0.1 }); // 20mins - 2hrs
   data.bottomTime =

@@ -134,7 +134,7 @@ describe('Users End-to-End Tests', () => {
         .expect(200);
       expect(actual).toEqual({
         ...expected,
-        memberSince: expected.memberSince.toISOString(),
+        memberSince: expected.memberSince,
       });
     });
 

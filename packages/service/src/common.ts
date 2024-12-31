@@ -18,7 +18,7 @@ export const AnonymousUserProfile: SuccinctProfileDTO = {
   username: '<anonymous>',
   accountTier: AccountTier.Basic,
   logBookSharing: LogBookSharing.Private,
-  memberSince: new Date(0),
+  memberSince: new Date(0).valueOf(),
   name: 'Anonymous',
 };
 

@@ -38,7 +38,7 @@ export const ResetPasswordParamsSchema = z.object({
 export type ResetPasswordParams = z.infer<typeof ResetPasswordParamsSchema>;
 
 export const PurgeExpiredFriendRequestsParamsSchema = z.object({
-  expiration: z.coerce.date().optional(),
+  expiration: z.number().optional(),
 });
 export type PurgeExpiredFriendRequestsParamsDTO = z.infer<
   typeof PurgeExpiredFriendRequestsParamsSchema

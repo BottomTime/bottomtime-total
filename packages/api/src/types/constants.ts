@@ -257,12 +257,6 @@ export const PressureSchema = z.object({
 });
 export type PressureDTO = z.infer<typeof PressureSchema>;
 
-export const DateWithTimezoneSchema = z.object({
-  date: z.string().regex(DateTimeRegex),
-  timezone: z.string(),
-});
-export type DateWithTimezoneDTO = z.infer<typeof DateWithTimezoneSchema>;
-
 export type AppMetricsDTO = {
   users: {
     total: number;

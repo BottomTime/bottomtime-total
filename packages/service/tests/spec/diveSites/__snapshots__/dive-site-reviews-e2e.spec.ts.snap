@@ -164,13 +164,13 @@ exports[`Dive Site Reviews End-to-End Tests when listing reviews will return a 4
 exports[`Dive Site Reviews End-to-End Tests when retrieving a single review will return a review when it is requested 1`] = `
 {
   "comments": "Provident illo repellat. Eius tempora ullam voluptas ullam quo optio quaerat adipisci qui. Tempora expedita tenetur.",
-  "createdOn": "2020-03-12T23:08:09.751Z",
+  "createdOn": 1584054489751,
   "creator": {
     "accountTier": 0,
     "avatar": "https://testy.com/avatar.jpg",
     "location": "People's Democratic Republic of Testing",
     "logBookSharing": "friends",
-    "memberSince": "2024-03-20T13:12:03.449Z",
+    "memberSince": 1710940323449,
     "name": "Testy McTestface",
     "userId": "9dcf5f2e-db68-4061-aba4-6a3d6dc088bb",
     "username": "testy_mctestface",
@@ -179,7 +179,7 @@ exports[`Dive Site Reviews End-to-End Tests when retrieving a single review will
   "id": "d94ec3e1-b178-4e15-b486-c372adeb8aef",
   "rating": 4.91,
   "title": "attractive inasmuch lumbering moon",
-  "updatedOn": "2023-04-18T11:07:27.008Z",
+  "updatedOn": 1681816047008,
 }
 `;
 

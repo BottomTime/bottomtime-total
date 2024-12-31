@@ -18,9 +18,9 @@ export enum FriendRequestDirection {
 // Data Transfer Objects
 export const FriendSchema = z.object({
   id: z.string().uuid(),
-  friendsSince: z.coerce.date(),
+  friendsSince: z.number(),
   username: z.string(),
-  memberSince: z.coerce.date(),
+  memberSince: z.number(),
   logBookSharing: z.nativeEnum(LogBookSharing),
   avatar: z.string().optional(),
   name: z.string().optional(),
@@ -31,8 +31,8 @@ export type FriendDTO = z.infer<typeof FriendSchema>;
 export const FriendRequestSchema = z.object({
   friendId: z.string().uuid(),
   direction: z.nativeEnum(FriendRequestDirection),
-  created: z.coerce.date(),
-  expires: z.coerce.date(),
+  created: z.number(),
+  expires: z.number(),
   friend: FriendSchema.omit({ friendsSince: true }),
   accepted: z.boolean().optional(),
   reason: z.string().optional(),

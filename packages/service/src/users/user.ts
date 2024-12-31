@@ -317,13 +317,13 @@ export class User implements Express.User {
       hasPassword: this.hasPassword,
       id: this.id,
       isLockedOut: this.isLockedOut,
-      memberSince: this.memberSince,
+      memberSince: this.memberSince.valueOf(),
       profile: this.profile.toJSON(),
       role: this.role,
       username: this.username,
       email: this.email ?? undefined,
-      lastLogin: this.lastLogin ?? undefined,
-      lastPasswordChange: this.lastPasswordChange ?? undefined,
+      lastLogin: this.lastLogin?.valueOf() ?? undefined,
+      lastPasswordChange: this.lastPasswordChange?.valueOf() ?? undefined,
       settings: this.settings,
     };
   }

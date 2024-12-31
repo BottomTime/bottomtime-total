@@ -4,6 +4,8 @@ import {
   HttpException,
 } from '@bottomtime/api';
 
+import { ZodError } from 'zod';
+
 import { Toast, ToastType } from './common';
 import { Config } from './config';
 import { useCurrentUser, useErrors, useToasts } from './store';
@@ -20,6 +22,14 @@ export type ErrorHandlers = {
   default: ErrorFunc;
 };
 
+function isZodError(exception: unknown): exception is ZodError {
+  return (
+    exception instanceof Error &&
+    exception.name === 'ZodError' &&
+    'issues' in exception
+  );
+}
+
 async function oops<T>(
   f: () => T | Promise<T>,
   handlers: ErrorHandlers,
@@ -28,7 +38,12 @@ async function oops<T>(
     return await f();
   } catch (error) {
     /* eslint-disable-next-line no-console */
-    if (!Config.isProduction && Config.env !== 'test') console.error(error);
+    if (!Config.isProduction && Config.env !== 'test') {
+      console.error(error);
+      if (isZodError(error)) {
+        console.error(error.issues);
+      }
+    }
 
     if (error instanceof HttpException) {
       // Server responded with an error

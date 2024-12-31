@@ -22,10 +22,10 @@ const AuthenticatedUser: UserDTO = {
   role: UserRole.User,
   hasPassword: true,
   isLockedOut: false,
-  memberSince: new Date('2021-01-01T00:00:00.000Z'),
+  memberSince: new Date('2021-01-01T00:00:00.000Z').valueOf(),
   profile: {
     accountTier: AccountTier.Basic,
-    memberSince: new Date('2021-01-01T00:00:00.000Z'),
+    memberSince: new Date('2021-01-01T00:00:00.000Z').valueOf(),
     userId: '123',
     username: 'realuser',
     name: 'Real User',

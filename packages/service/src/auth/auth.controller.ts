@@ -483,7 +483,7 @@ export class AuthController {
     { invalidatedBefore }: PurgeJwtInvalidationsRequestDTO,
   ): Promise<PurgeJwtInvalidationsResultDTO> {
     const purged = await this.authService.purgeExpiredInvalidations(
-      invalidatedBefore,
+      new Date(invalidatedBefore),
     );
     return { purged };
   }

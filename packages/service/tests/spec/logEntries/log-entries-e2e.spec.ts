@@ -264,8 +264,8 @@ describe('Log entries E2E tests', () => {
     it('will allow a search with parameters', async () => {
       const query: ListLogEntriesParamsDTO = {
         query: 'dive',
-        startDate: new Date('2023-01-01T00:00:00.000Z'),
-        endDate: new Date('2024-01-01T00:00:00.000Z'),
+        startDate: new Date('2023-01-01T00:00:00.000Z').valueOf(),
+        endDate: new Date('2024-01-01T00:00:00.000Z').valueOf(),
         sortBy: LogEntrySortBy.EntryTime,
         sortOrder: SortOrder.Ascending,
         skip: 5,
@@ -278,18 +278,16 @@ describe('Log entries E2E tests', () => {
         .set(...authHeader)
         .expect(200);
 
-      expect(body.totalCount).toBe(23);
-      expect(body.data).toHaveLength(8);
-
-      expect(
-        body.data.map((entry: LogEntryDTO) => ({
+      expect({
+        data: body.data.map((entry: LogEntryDTO) => ({
           id: entry.id,
           owner: entry.creator.username,
           entryTime: entry.timing.entryTime,
           site: entry.site?.name,
           air: entry.air,
         })),
-      ).toMatchSnapshot();
+        totalCount: body.totalCount,
+      }).toMatchSnapshot();
     });
 
     it("will allow admins to search another user's log entries", async () => {
@@ -370,10 +368,8 @@ describe('Log entries E2E tests', () => {
       timing: {
         duration: 58.32,
         bottomTime: 46,
-        entryTime: {
-          date: '2024-03-20T13:12:00',
-          timezone: 'Asia/Tokyo',
-        },
+        entryTime: new Date('2024-03-20T13:12:00Z').valueOf(),
+        timezone: 'Asia/Tokyo',
       },
       depths: {
         maxDepth: 28.2,
@@ -413,8 +409,8 @@ describe('Log entries E2E tests', () => {
       expect({
         ...body,
         id: 'ab81b769-109b-4920-aa49-24a17a4d939e',
-        createdAt: '2024-07-23T13:17:17.799Z',
-        updatedAt: '2024-07-23T14:18:56.813Z',
+        createdAt: new Date('2024-07-23T13:17:17.799Z').valueOf(),
+        updatedAt: new Date('2024-07-23T14:18:56.813Z').valueOf(),
       }).toMatchSnapshot();
       expect(new Date(body.createdAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -424,13 +420,8 @@ describe('Log entries E2E tests', () => {
       });
       expect(saved.bottomTime).toBe(newEntry.timing.bottomTime);
       expect(saved.duration).toBe(newEntry.timing.duration);
-      expect(saved.entryTime).toEqual(newEntry.timing.entryTime.date);
-      expect(saved.timezone).toBe(newEntry.timing.entryTime.timezone);
-      expect(saved.timestamp).toEqual(
-        dayjs(newEntry.timing.entryTime.date)
-          .tz(newEntry.timing.entryTime.timezone, true)
-          .toDate(),
-      );
+      expect(saved.entryTime).toEqual(new Date(newEntry.timing.entryTime));
+      expect(saved.timezone).toBe(newEntry.timing.timezone);
       expect(saved.logNumber).toBe(newEntry.logNumber);
       expect(saved.maxDepth).toEqual(newEntry.depths!.maxDepth);
       expect(saved.depthUnit).toBe(newEntry.depths!.depthUnit);
@@ -450,8 +441,8 @@ describe('Log entries E2E tests', () => {
       expect({
         ...body,
         id: 'de92700b-73c2-478b-90b9-167d3e2b1383',
-        createdAt: '2024-07-23T13:17:17.900Z',
-        updatedAt: '2024-07-23T14:14:19.838Z',
+        createdAt: new Date('2024-07-23T13:17:17.900Z').valueOf(),
+        updatedAt: new Date('2024-07-23T14:14:19.838Z').valueOf(),
       }).toMatchSnapshot();
       expect(new Date(body.createdAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -461,13 +452,8 @@ describe('Log entries E2E tests', () => {
       });
       expect(saved.bottomTime).toBe(newEntry.timing.bottomTime);
       expect(saved.duration).toBe(newEntry.timing.duration);
-      expect(saved.entryTime).toEqual(newEntry.timing.entryTime.date);
-      expect(saved.timezone).toBe(newEntry.timing.entryTime.timezone);
-      expect(saved.timestamp).toEqual(
-        dayjs(newEntry.timing.entryTime.date)
-          .tz(newEntry.timing.entryTime.timezone, true)
-          .toDate(),
-      );
+      expect(saved.entryTime).toEqual(new Date(newEntry.timing.entryTime));
+      expect(saved.timezone).toBe(newEntry.timing.timezone);
       expect(saved.logNumber).toBe(newEntry.logNumber);
       expect(saved.maxDepth).toEqual(newEntry.depths!.maxDepth);
       expect(saved.depthUnit).toBe(newEntry.depths!.depthUnit);
@@ -628,10 +614,8 @@ describe('Log entries E2E tests', () => {
       timing: {
         duration: 58.32,
         bottomTime: 46,
-        entryTime: {
-          date: '2024-03-20T13:12:00',
-          timezone: 'Asia/Tokyo',
-        },
+        entryTime: new Date('2024-03-20T13:12:00').valueOf(),
+        timezone: 'Asia/Tokyo',
       },
       logNumber: 102,
       depths: {
@@ -688,8 +672,8 @@ describe('Log entries E2E tests', () => {
 
       expect({
         ...body,
-        createdAt: '2023-02-03T15:50:47.000Z',
-        updatedAt: '2024-07-23T18:04:13.101Z',
+        createdAt: new Date('2023-02-03T15:50:47.000Z').valueOf(),
+        updatedAt: new Date('2024-07-23T18:04:13.101Z').valueOf(),
       }).toMatchSnapshot();
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -699,13 +683,8 @@ describe('Log entries E2E tests', () => {
       });
       expect(saved.bottomTime).toBe(updatedEntry.timing.bottomTime);
       expect(saved.duration).toBe(updatedEntry.timing.duration);
-      expect(saved.entryTime).toEqual(updatedEntry.timing.entryTime.date);
-      expect(saved.timezone).toBe(updatedEntry.timing.entryTime.timezone);
-      expect(saved.timestamp).toEqual(
-        dayjs(updatedEntry.timing.entryTime.date)
-          .tz(updatedEntry.timing.entryTime.timezone, true)
-          .toDate(),
-      );
+      expect(saved.entryTime).toEqual(new Date(updatedEntry.timing.entryTime));
+      expect(saved.timezone).toBe(updatedEntry.timing.timezone);
       expect(saved.logNumber).toBe(updatedEntry.logNumber);
       expect(saved.maxDepth).toEqual(updatedEntry.depths!.maxDepth);
       expect(saved.depthUnit).toBe(updatedEntry.depths!.depthUnit);
@@ -730,8 +709,8 @@ describe('Log entries E2E tests', () => {
 
       expect({
         ...body,
-        createdAt: '2023-02-03T15:50:47.000Z',
-        updatedAt: '2024-07-23T18:04:13.236Z',
+        createdAt: new Date('2023-02-03T15:50:47.000Z').valueOf(),
+        updatedAt: new Date('2024-07-23T18:04:13.236Z').valueOf(),
       }).toMatchSnapshot();
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -741,13 +720,8 @@ describe('Log entries E2E tests', () => {
       });
       expect(saved.bottomTime).toBe(updatedEntry.timing.bottomTime);
       expect(saved.duration).toBe(updatedEntry.timing.duration);
-      expect(saved.entryTime).toEqual(updatedEntry.timing.entryTime.date);
-      expect(saved.timezone).toBe(updatedEntry.timing.entryTime.timezone);
-      expect(saved.timestamp).toEqual(
-        dayjs(updatedEntry.timing.entryTime.date)
-          .tz(updatedEntry.timing.entryTime.timezone, true)
-          .toDate(),
-      );
+      expect(saved.entryTime).toEqual(new Date(updatedEntry.timing.entryTime));
+      expect(saved.timezone).toBe(updatedEntry.timing.timezone);
       expect(saved.logNumber).toBe(updatedEntry.logNumber);
       expect(saved.maxDepth).toEqual(updatedEntry.depths!.maxDepth);
       expect(saved.depthUnit).toBe(updatedEntry.depths!.depthUnit);

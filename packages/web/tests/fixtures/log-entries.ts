@@ -13,17 +13,15 @@ export const BlankLogEntry: LogEntryDTO = {
   creator: {
     accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.FriendsOnly,
-    memberSince: new Date('2021-04-11T18:16:12'),
+    memberSince: new Date('2021-04-11T18:16:12').valueOf(),
     userId: 'd62607ba-67e6-4ef0-9cdf-c1fe3c0b2752',
     username: 'jackie32',
   },
-  createdAt: new Date(0),
+  createdAt: new Date(0).valueOf(),
   timing: {
     duration: -1,
-    entryTime: {
-      date: '',
-      timezone: '',
-    },
+    entryTime: NaN,
+    timezone: '',
   },
   id: '',
 };
@@ -32,23 +30,21 @@ export const MinimalLogEntry: LogEntryDTO = {
   creator: {
     accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.FriendsOnly,
-    memberSince: new Date('2021-04-11T18:16:12'),
+    memberSince: new Date('2021-04-11T18:16:12').valueOf(),
     userId: 'eda44e68-1df1-44ce-87ca-3a0e2061808c',
     username: 'logbook_guy',
   },
-  createdAt: new Date('2024-07-23T12:52:10Z'),
+  createdAt: new Date('2024-07-23T12:52:10Z').valueOf(),
   timing: {
     duration: 44.1,
-    entryTime: {
-      date: '2023-01-31T09:16:12',
-      timezone: 'America/Los_Angeles',
-    },
+    entryTime: new Date('2023-01-31T09:16:12').valueOf(),
+    timezone: 'America/Los_Angeles',
   },
   id: '1d3d41c9-794a-4280-8335-65f503a3bee7',
 };
 
 export const FullLogEntry: LogEntryDTO = {
-  createdAt: new Date('2024-07-23T12:52:10Z'),
+  createdAt: new Date('2024-07-23T12:52:10Z').valueOf(),
   air: [
     {
       count: 1,
@@ -65,7 +61,7 @@ export const FullLogEntry: LogEntryDTO = {
   creator: {
     accountTier: AccountTier.Basic,
     logBookSharing: LogBookSharing.Public,
-    memberSince: new Date('2021-04-11T18:16:12'),
+    memberSince: new Date('2021-04-11T18:16:12').valueOf(),
     userId: '60b2238b-06c8-4333-9675-f5d6d0912f59',
     username: 'jake32',
     avatar: 'https://example.com/avatar.jpg',
@@ -83,11 +79,11 @@ export const FullLogEntry: LogEntryDTO = {
     weather: 'Sunny',
   },
   site: {
-    createdOn: new Date('2021-04-11T18:16:12'),
+    createdOn: new Date('2021-04-11T18:16:12').valueOf(),
     creator: {
       accountTier: AccountTier.Basic,
       logBookSharing: LogBookSharing.FriendsOnly,
-      memberSince: new Date('2021-04-11T18:16:12'),
+      memberSince: new Date('2021-04-11T18:16:12').valueOf(),
       userId: '7e2a8d3b-ae2e-48f5-a476-4bfce3993b33',
       username: 'scuba_steve',
     },
@@ -97,14 +93,12 @@ export const FullLogEntry: LogEntryDTO = {
   },
   timing: {
     duration: 88.34,
-    entryTime: {
-      date: '2023-01-31T09:16:12',
-      timezone: 'Europe/Dublin',
-    },
+    entryTime: new Date('2023-01-31T09:16:12').valueOf(),
+    timezone: 'Europe/Dublin',
     bottomTime: 77.77,
   },
   tags: ['wreck', 'night'],
-  updatedAt: new Date('2024-07-23T12:52:10Z'),
+  updatedAt: new Date('2024-07-23T12:52:10Z').valueOf(),
   id: '4ca3e53c-1364-40b2-a6db-ce8e92380b1f',
   logNumber: 12,
   depths: {

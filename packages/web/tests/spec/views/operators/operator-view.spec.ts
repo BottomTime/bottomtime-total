@@ -208,8 +208,8 @@ describe('Operator view', () => {
   it('will allow a shop owner to create a new dive operator', async () => {
     const expected: OperatorDTO = {
       id: '31a6723a-88de-460c-af33-b2363b7aec47',
-      createdAt: new Date('2024-01-10T10:54:08.909Z'),
-      updatedAt: new Date('2024-10-09T18:44:28.447Z'),
+      createdAt: new Date('2024-01-10T10:54:08.909Z').valueOf(),
+      updatedAt: new Date('2024-10-09T18:44:28.447Z').valueOf(),
       owner: ShopOwner.profile,
       verificationStatus: VerificationStatus.Unverified,
       ...create,
@@ -234,8 +234,8 @@ describe('Operator view', () => {
   it('will allow an admin to create a new dive operator', async () => {
     const expected: OperatorDTO = {
       id: '31a6723a-88de-460c-af33-b2363b7aec47',
-      createdAt: new Date('2024-01-10T10:54:08.909Z'),
-      updatedAt: new Date('2024-10-09T18:44:28.447Z'),
+      createdAt: new Date('2024-01-10T10:54:08.909Z').valueOf(),
+      updatedAt: new Date('2024-10-09T18:44:28.447Z').valueOf(),
       owner: AdminUser.profile,
       verificationStatus: VerificationStatus.Unverified,
       ...create,

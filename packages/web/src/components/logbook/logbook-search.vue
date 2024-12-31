@@ -62,8 +62,10 @@ interface LogbookSearchState {
 const props = defineProps<LogbookSearchProps>();
 const state = reactive<LogbookSearchState>({
   query: props.params.query || '',
-  startDate: props.params.startDate,
-  endDate: props.params.endDate,
+  startDate: props.params.startDate
+    ? new Date(props.params.startDate)
+    : undefined,
+  endDate: props.params.endDate ? new Date(props.params.endDate) : undefined,
 });
 
 const emit = defineEmits<{
@@ -73,8 +75,8 @@ const emit = defineEmits<{
 function onSearch() {
   emit('search', {
     query: state.query,
-    startDate: state.startDate,
-    endDate: state.endDate,
+    startDate: state.startDate?.valueOf(),
+    endDate: state.endDate?.valueOf(),
   });
 }
 </script>

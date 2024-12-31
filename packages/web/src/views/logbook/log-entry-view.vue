@@ -24,7 +24,7 @@
 import {
   AccountTier,
   ApiList,
-  CreateOrUpdateLogEntryParamsDTO,
+  CreateOrUpdateLogEntryParamsSchema,
   LogBookSharing,
   LogEntryDTO,
   TankDTO,
@@ -81,11 +81,13 @@ const entryId = computed(() => {
     ? route.params.entryId[0]
     : route.params.entryId;
 });
-const title = computed(() =>
-  state.currentEntry
-    ? dayjs(state.currentEntry.timing.entryTime.date).format('LLL')
-    : 'Log Entry',
-);
+const title = computed(() => {
+  if (!state.currentEntry) return 'Log Entry';
+
+  return Number.isNaN(state.currentEntry.timing.entryTime)
+    ? 'New Log Entry'
+    : dayjs(state.currentEntry.timing.entryTime).format('LLL');
+});
 const logbookPath = computed(() =>
   typeof route.params.username === 'string'
     ? `/logbook/${route.params.username}`
@@ -113,21 +115,19 @@ onMounted(async () => {
           );
         } else {
           state.currentEntry = {
-            createdAt: new Date(),
+            createdAt: Date.now(),
             creator: currentUser.user?.profile ?? {
               accountTier: AccountTier.Basic,
               logBookSharing: LogBookSharing.Private,
-              memberSince: new Date(),
+              memberSince: 0,
               userId: '',
               username: '',
             },
             id: '',
             timing: {
               duration: 0,
-              entryTime: {
-                date: '',
-                timezone: '',
-              },
+              entryTime: NaN,
+              timezone: '',
             },
           };
         }
@@ -153,24 +153,21 @@ onMounted(async () => {
 
 async function onSave(data: LogEntryDTO): Promise<void> {
   state.isSaving = true;
-
   await oops(async () => {
+    const options = CreateOrUpdateLogEntryParamsSchema.parse({
+      ...data,
+      site: data.site?.id,
+    });
+
     if (entryId.value) {
       // Entry has an ID: save existing.
       state.currentEntry = await client.logEntries.updateLogEntry(
         username.value,
         entryId.value,
-        {
-          ...data,
-          site: data.site ? data.site.id : undefined,
-        },
+        options,
       );
     } else {
       // An ID has not been assigned yet: create new.
-      const options: CreateOrUpdateLogEntryParamsDTO = {
-        ...data,
-        site: data.site?.id,
-      };
       state.currentEntry = await client.logEntries.createLogEntry(
         username.value,
         options,

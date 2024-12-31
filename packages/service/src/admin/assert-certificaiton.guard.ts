@@ -4,9 +4,12 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  createParamDecorator,
 } from '@nestjs/common';
 
-import { CertificationsService } from '../certifications';
+import { Request } from 'express';
+
+import { Certification, CertificationsService } from '../certifications';
 
 @Injectable()
 export class AssertCertification implements CanActivate {
@@ -16,7 +19,7 @@ export class AssertCertification implements CanActivate {
   ) {}
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const req = ctx.switchToHttp().getRequest();
+    const req = ctx.switchToHttp().getRequest<Request>();
     const cert = await this.certificationsService.getCertification(
       req.params.certificationId,
     );
@@ -31,3 +34,10 @@ export class AssertCertification implements CanActivate {
     return true;
   }
 }
+
+export const TargetCertification = createParamDecorator(
+  (_: unknown, ctx: ExecutionContext): Certification | undefined => {
+    const req = ctx.switchToHttp().getRequest<Request>();
+    return req.targetCertification;
+  },
+);

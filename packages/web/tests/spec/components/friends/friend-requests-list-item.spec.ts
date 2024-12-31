@@ -11,13 +11,13 @@ import IncomingFriendRequestItem from '../../../../src/components/friends/incomi
 import OutgoingFriendRequestItem from '../../../../src/components/friends/outgoing-friend-request-item.vue';
 
 const TestRequestItem: FriendRequestDTO = {
-  created: new Date('2024-04-23T12:25:09.653Z'),
-  expires: new Date('2024-04-30T12:25:09.653Z'),
+  created: new Date('2024-04-23T12:25:09.653Z').valueOf(),
+  expires: new Date('2024-04-30T12:25:09.653Z').valueOf(),
   direction: FriendRequestDirection.Incoming,
   friendId: 'c0175aac-fe45-4a53-a3f7-41eb0f0f52b6',
   friend: {
     id: 'c0175aac-fe45-4a53-a3f7-41eb0f0f52b6',
-    memberSince: new Date('2022-02-18T12:25:09.653Z'),
+    memberSince: new Date('2022-02-18T12:25:09.653Z').valueOf(),
     username: 'testuser',
     logBookSharing: LogBookSharing.FriendsOnly,
     avatar: 'https://example.com/avatar.jpg',

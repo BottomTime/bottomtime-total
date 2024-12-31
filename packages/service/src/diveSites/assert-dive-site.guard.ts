@@ -7,6 +7,8 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 
+import { Request } from 'express';
+
 import { DiveSite } from './dive-site';
 import { DiveSitesService } from './dive-sites.service';
 
@@ -18,7 +20,7 @@ export class AssertDiveSite implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest();
+    const req = context.switchToHttp().getRequest<Request>();
     const diveSite = await this.service.getDiveSite(req.params.siteId);
 
     if (!diveSite) {
@@ -27,14 +29,14 @@ export class AssertDiveSite implements CanActivate {
       );
     }
 
-    req.diveSite = diveSite;
+    req.targetDiveSite = diveSite;
     return true;
   }
 }
 
 export const TargetDiveSite = createParamDecorator(
-  (_: unknown, ctx: ExecutionContext): DiveSite => {
-    const req = ctx.switchToHttp().getRequest();
-    return req.diveSite;
+  (_: unknown, ctx: ExecutionContext): DiveSite | undefined => {
+    const req = ctx.switchToHttp().getRequest<Request>();
+    return req.targetDiveSite;
   },
 );

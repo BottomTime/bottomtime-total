@@ -83,8 +83,8 @@ export class Notification {
       message: this.message,
       title: this.title,
       callsToAction: this.callsToAction,
-      active: this.active,
-      expires: this.expires,
+      active: this.active.valueOf(),
+      expires: this.expires?.valueOf(),
     };
   }
 }

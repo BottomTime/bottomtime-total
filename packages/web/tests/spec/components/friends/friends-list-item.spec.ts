@@ -11,8 +11,8 @@ dayjs.extend(relativeTime);
 
 const FullTestFriendData: FriendDTO = {
   id: '80fd5b82-e90d-4417-a8a5-51d8311e91a7',
-  memberSince: new Date('2021-01-01T00:00:00Z'),
-  friendsSince: new Date('2024-02-21T00:00:00Z'),
+  memberSince: new Date('2021-01-01T00:00:00Z').valueOf(),
+  friendsSince: new Date('2024-02-21T00:00:00Z').valueOf(),
   logBookSharing: LogBookSharing.FriendsOnly,
   username: 'bob32',
   avatar: 'https://example.com/avatar.jpg',
@@ -22,8 +22,8 @@ const FullTestFriendData: FriendDTO = {
 
 const PartialTestFriendData: FriendDTO = {
   id: '80fd5b82-e90d-4417-a8a5-51d8311e91a7',
-  memberSince: new Date('2021-01-01T00:00:00Z'),
-  friendsSince: new Date('2024-02-21T00:00:00Z'),
+  memberSince: new Date('2021-01-01T00:00:00Z').valueOf(),
+  friendsSince: new Date('2024-02-21T00:00:00Z').valueOf(),
   logBookSharing: LogBookSharing.Public,
   username: 'bob32',
 };
