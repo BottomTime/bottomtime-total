@@ -1,0 +1,21 @@
+{
+  "name": "@bottomtime/review-aggregates",
+  "version": "1.0.0",
+  "description": "BottomTime review aggregation Lambda function",
+  "main": "dist/index.js",
+  "author": "Chris Carleton <mrchriscarleton@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "packageManager": "yarn@4.3.0",
+  "scripts": {
+    "clean": "rm -rf dist/",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.140",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.92.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

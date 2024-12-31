@@ -16,7 +16,9 @@ import {
 } from 'typeorm';
 
 import { DiveSiteEntity } from './dive-site.entity';
+import { LogEntryEntity } from './log-entry.entity';
 import { MediaFileEntity } from './media-file.entity';
+import { OperatorReviewEntity } from './operator-review.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('dive_operators')
@@ -126,6 +128,20 @@ export class OperatorEntity {
     name: 'dive_operator_sites',
   })
   diveSites?: DiveSiteEntity[];
+
+  @OneToMany(() => LogEntryEntity, (entry) => entry.operator, {
+    onDelete: 'CASCADE',
+  })
+  loggedDives?: LogEntryEntity[];
+
+  @OneToMany(() => OperatorReviewEntity, (review) => review.operator, {
+    onDelete: 'CASCADE',
+  })
+  reviews?: OperatorReviewEntity[];
+
+  @Column({ type: 'float', nullable: true })
+  @Index()
+  averageRating: number | null = null;
 
   @Column({
     type: 'tsvector',

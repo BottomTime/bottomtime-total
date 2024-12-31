@@ -8,46 +8,43 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { DiveSiteEntity } from './dive-site.entity';
 import { LogEntryEntity } from './log-entry.entity';
+import { OperatorEntity } from './operators.entity';
 import { UserEntity } from './user.entity';
 
-@Entity('dive_site_reviews')
-export class DiveSiteReviewEntity {
+@Entity('dive_operator_reviews')
+@Index(['operator', 'creator', 'createdAt'], { unique: true })
+export class OperatorReviewEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
+  @CreateDateColumn()
+  createdAt: Date = new Date();
+
+  @UpdateDateColumn()
+  updatedAt: Date = new Date();
+
   @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+  @Index()
   creator: UserEntity = new UserEntity();
 
-  @ManyToOne(() => DiveSiteEntity, (site) => site.reviews, {
+  @ManyToOne(() => OperatorEntity, (operator) => operator.reviews, {
     onDelete: 'CASCADE',
   })
-  site: DiveSiteEntity = new DiveSiteEntity();
+  operator: OperatorEntity = new OperatorEntity();
 
-  @ManyToOne(() => LogEntryEntity, { onDelete: 'SET NULL' })
+  @ManyToOne(() => LogEntryEntity, { onDelete: 'CASCADE' })
   @Index()
   logEntry: LogEntryEntity | null = null;
 
-  @CreateDateColumn({ nullable: false })
-  @Index()
-  createdOn?: Date;
-
-  @UpdateDateColumn({ nullable: true })
-  updatedOn: Date | null = null;
-
-  @Column('varchar', { length: 200 })
-  title: string = '';
-
-  @Column('float')
+  @Column({ type: 'float', nullable: false })
   @Index()
   rating: number = 0;
 
-  @Column('float', { nullable: true })
-  @Index()
-  difficulty: number | null = null;
+  @Column({ type: 'varchar', length: 200 })
+  title: string = '';
 
-  @Column('varchar', { length: 1000, nullable: true })
+  @Column({ type: 'varchar', length: 1000, nullable: true })
   comments: string | null = null;
 
   @Column({
