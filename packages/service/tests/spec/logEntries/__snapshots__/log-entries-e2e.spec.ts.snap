@@ -18,7 +18,7 @@ exports[`Log entries E2E tests when creating log entries will allow admins to cr
   "conditions": {
     "temperatureUnit": "C",
   },
-  "createdAt": "2024-07-23T13:17:17.900Z",
+  "createdAt": 1721740637900,
   "creator": {
     "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
@@ -44,10 +44,10 @@ exports[`Log entries E2E tests when creating log entries will allow admins to cr
   "timing": {
     "bottomTime": 46,
     "duration": 58.32,
-    "entryTime": 1710954720000,
+    "entryTime": 1710940320000,
     "timezone": "Asia/Tokyo",
   },
-  "updatedAt": "2024-07-23T14:14:19.838Z",
+  "updatedAt": 1721744059838,
 }
 `;
 
@@ -69,7 +69,7 @@ exports[`Log entries E2E tests when creating log entries will create and return 
   "conditions": {
     "temperatureUnit": "C",
   },
-  "createdAt": "2024-07-23T13:17:17.799Z",
+  "createdAt": 1721740637799,
   "creator": {
     "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
@@ -126,10 +126,10 @@ exports[`Log entries E2E tests when creating log entries will create and return 
   "timing": {
     "bottomTime": 46,
     "duration": 58.32,
-    "entryTime": 1710954720000,
+    "entryTime": 1710940320000,
     "timezone": "Asia/Tokyo",
   },
-  "updatedAt": "2024-07-23T14:18:56.813Z",
+  "updatedAt": 1721744336813,
 }
 `;
 
@@ -1316,7 +1316,7 @@ exports[`Log entries E2E tests when updating an existing log entry will allow an
   "conditions": {
     "temperatureUnit": "F",
   },
-  "createdAt": "2023-02-03T15:50:47.000Z",
+  "createdAt": 1675439447000,
   "creator": {
     "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
@@ -1342,10 +1342,10 @@ exports[`Log entries E2E tests when updating an existing log entry will allow an
   "timing": {
     "bottomTime": 46,
     "duration": 58.32,
-    "entryTime": 1710954720000,
+    "entryTime": 1710965520000,
     "timezone": "Asia/Tokyo",
   },
-  "updatedAt": "2024-07-23T18:04:13.236Z",
+  "updatedAt": 1721757853236,
 }
 `;
 
@@ -1448,7 +1448,7 @@ exports[`Log entries E2E tests when updating an existing log entry will update t
   "conditions": {
     "temperatureUnit": "F",
   },
-  "createdAt": "2023-02-03T15:50:47.000Z",
+  "createdAt": 1675439447000,
   "creator": {
     "accountTier": 0,
     "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/724.jpg",
@@ -1474,9 +1474,9 @@ exports[`Log entries E2E tests when updating an existing log entry will update t
   "timing": {
     "bottomTime": 46,
     "duration": 58.32,
-    "entryTime": 1710954720000,
+    "entryTime": 1710965520000,
     "timezone": "Asia/Tokyo",
   },
-  "updatedAt": "2024-07-23T18:04:13.101Z",
+  "updatedAt": 1721757853101,
 }
 `;

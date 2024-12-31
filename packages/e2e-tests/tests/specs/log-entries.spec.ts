@@ -23,12 +23,8 @@ const TestData: CreateOrUpdateLogEntryParamsDTO = {
 };
 
 test.describe('Log Entries', () => {
-  test.beforeEach(async ({ api, auth }) => {
-    await api.userAccounts.createUser({
-      username: Username,
-      password: Password,
-    });
-    await auth.login(Username, Password);
+  test.beforeEach(async ({ auth }) => {
+    await auth.createUserAndLogin(Username, Password);
   });
 
   test('will allow a user to create a log entry', async ({
@@ -169,7 +165,7 @@ test.describe('Log Entries', () => {
     const updated = await api.logEntries.getLogEntry(Username, entry.id);
     expect(updated.timing.bottomTime).toBe(newBottomTime);
     expect(updated.timing.duration).toBe(newDuration);
-    expect(updated.timing.entryTime).toBe(newEntryTime);
+    expect(updated.timing.entryTime).toBe(new Date(newEntryTime).valueOf());
     expect(updated.timing.timezone).toBe(newTimezone);
     expect(updated.logNumber).toBe(newLogNumber);
     expect(updated.depths!.maxDepth).toBe(newMaxDepth);
@@ -189,7 +185,7 @@ test.describe('Log Entries', () => {
     await api.logEntries.createLogEntry(Username, {
       timing: {
         duration: 99,
-        entryTime: new Date('2022-04-23T09:18:13').valueOf(),
+        entryTime: new Date('2022-04-23T08:18:13').valueOf(),
         timezone: 'Asia/Bangkok',
       },
       site: site.id,

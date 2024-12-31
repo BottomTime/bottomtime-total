@@ -156,7 +156,7 @@ export default defineConfig({
           // stdout: 'pipe',
         },
         {
-          command: 'yarn dev',
+          command: 'yarn dev --force',
           url: 'http://localhost:4851/',
           cwd: '../web',
           env: {

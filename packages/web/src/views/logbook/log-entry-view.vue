@@ -153,12 +153,12 @@ onMounted(async () => {
 
 async function onSave(data: LogEntryDTO): Promise<void> {
   state.isSaving = true;
-
   await oops(async () => {
     const options = CreateOrUpdateLogEntryParamsSchema.parse({
       ...data,
       site: data.site?.id,
     });
+
     if (entryId.value) {
       // Entry has an ID: save existing.
       state.currentEntry = await client.logEntries.updateLogEntry(

@@ -368,7 +368,7 @@ describe('Log entries E2E tests', () => {
       timing: {
         duration: 58.32,
         bottomTime: 46,
-        entryTime: new Date('2024-03-20T13:12:00').valueOf(),
+        entryTime: new Date('2024-03-20T13:12:00Z').valueOf(),
         timezone: 'Asia/Tokyo',
       },
       depths: {
@@ -409,8 +409,8 @@ describe('Log entries E2E tests', () => {
       expect({
         ...body,
         id: 'ab81b769-109b-4920-aa49-24a17a4d939e',
-        createdAt: '2024-07-23T13:17:17.799Z',
-        updatedAt: '2024-07-23T14:18:56.813Z',
+        createdAt: new Date('2024-07-23T13:17:17.799Z').valueOf(),
+        updatedAt: new Date('2024-07-23T14:18:56.813Z').valueOf(),
       }).toMatchSnapshot();
       expect(new Date(body.createdAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -441,8 +441,8 @@ describe('Log entries E2E tests', () => {
       expect({
         ...body,
         id: 'de92700b-73c2-478b-90b9-167d3e2b1383',
-        createdAt: '2024-07-23T13:17:17.900Z',
-        updatedAt: '2024-07-23T14:14:19.838Z',
+        createdAt: new Date('2024-07-23T13:17:17.900Z').valueOf(),
+        updatedAt: new Date('2024-07-23T14:14:19.838Z').valueOf(),
       }).toMatchSnapshot();
       expect(new Date(body.createdAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -672,8 +672,8 @@ describe('Log entries E2E tests', () => {
 
       expect({
         ...body,
-        createdAt: '2023-02-03T15:50:47.000Z',
-        updatedAt: '2024-07-23T18:04:13.101Z',
+        createdAt: new Date('2023-02-03T15:50:47.000Z').valueOf(),
+        updatedAt: new Date('2024-07-23T18:04:13.101Z').valueOf(),
       }).toMatchSnapshot();
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
@@ -709,8 +709,8 @@ describe('Log entries E2E tests', () => {
 
       expect({
         ...body,
-        createdAt: '2023-02-03T15:50:47.000Z',
-        updatedAt: '2024-07-23T18:04:13.236Z',
+        createdAt: new Date('2023-02-03T15:50:47.000Z').valueOf(),
+        updatedAt: new Date('2024-07-23T18:04:13.236Z').valueOf(),
       }).toMatchSnapshot();
       expect(new Date(body.updatedAt).valueOf()).toBeCloseTo(Date.now(), -3);
 
