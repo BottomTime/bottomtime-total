@@ -16,7 +16,7 @@ import {
 import { AssertOperator } from './assert-operator.guard';
 import { OperatorReview } from './operator-review';
 
-@Controller(`api/operators/:operatorKey/reviews/:reviewId`)
+@Controller('api/operators/:operatorKey/reviews/:reviewId')
 @UseGuards(AssertOperator, AssertOperatorReview)
 export class OperatorReviewController {
   @Get()

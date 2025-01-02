@@ -1,5 +1,787 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Operator class when working with reviews when listing reviews will allow pagination 1`] = `
+{
+  "data": [
+    {
+      "createdAt": 1735811736227,
+      "creator": "Lucy55",
+      "id": "ce351b3c-d146-48a6-9f06-a9f389de7515",
+      "rating": 4.38,
+    },
+    {
+      "createdAt": 1735781874025,
+      "creator": "Reina54",
+      "id": "f514fca2-83b1-47f1-8212-13a7d9679d94",
+      "rating": 4.38,
+    },
+    {
+      "createdAt": 1735805898820,
+      "creator": "Bulah_Bins",
+      "id": "c3db73d5-b188-4898-aff3-46e937ba9c04",
+      "rating": 4.36,
+    },
+    {
+      "createdAt": 1735815567679,
+      "creator": "Jamison_Veum",
+      "id": "645ee41f-b97c-4a55-8f71-0c5bb5003015",
+      "rating": 4.35,
+    },
+    {
+      "createdAt": 1735772470261,
+      "creator": "Julia15",
+      "id": "5220e482-0b20-4870-8c4b-6c5a3fa226ef",
+      "rating": 4.33,
+    },
+    {
+      "createdAt": 1735797633399,
+      "creator": "Jamison_Veum",
+      "id": "a8d731d3-ccf4-4a1a-af00-df195ee1ff3f",
+      "rating": 4.33,
+    },
+  ],
+  "totalCount": 120,
+}
+`;
+
+exports[`Operator class when working with reviews when listing reviews will filter reviews by creator 1`] = `
+{
+  "data": [
+    {
+      "createdAt": 1735772470261,
+      "creator": "Julia15",
+      "id": "5220e482-0b20-4870-8c4b-6c5a3fa226ef",
+      "rating": 4.33,
+    },
+    {
+      "createdAt": 1735766538104,
+      "creator": "Julia15",
+      "id": "0bef5b48-9e2a-4dbf-8103-7ed9a0ee6890",
+      "rating": 4.13,
+    },
+    {
+      "createdAt": 1735791243153,
+      "creator": "Julia15",
+      "id": "fa1a1b1a-1037-40ea-96a1-05d30e17db43",
+      "rating": 4.1,
+    },
+    {
+      "createdAt": 1735798900883,
+      "creator": "Julia15",
+      "id": "0db5511b-13e5-4815-8bbe-74d966ff404e",
+      "rating": 3.79,
+    },
+    {
+      "createdAt": 1735786417118,
+      "creator": "Julia15",
+      "id": "76352a17-206a-414a-a8f8-ff5bec06b187",
+      "rating": 3.62,
+    },
+    {
+      "createdAt": 1735773881372,
+      "creator": "Julia15",
+      "id": "2cae0606-75e5-465f-953f-d06d137bd979",
+      "rating": 3.59,
+    },
+    {
+      "createdAt": 1735820707367,
+      "creator": "Julia15",
+      "id": "a88b6925-04dd-4229-945e-c2d4d682db31",
+      "rating": 3.4,
+    },
+    {
+      "createdAt": 1735829050355,
+      "creator": "Julia15",
+      "id": "593d2b5d-9ef4-4028-8756-5badcee6905f",
+      "rating": 3.35,
+    },
+    {
+      "createdAt": 1735830122106,
+      "creator": "Julia15",
+      "id": "130e7ee5-9d00-41f5-806d-dbf29da325f0",
+      "rating": 3.33,
+    },
+    {
+      "createdAt": 1735752439230,
+      "creator": "Julia15",
+      "id": "287e6d32-ba3f-457c-9fea-634ede642f74",
+      "rating": 3.14,
+    },
+    {
+      "createdAt": 1735770723075,
+      "creator": "Julia15",
+      "id": "184576bc-faa1-40af-bd5d-0075c37daf88",
+      "rating": 2.5,
+    },
+    {
+      "createdAt": 1735827949141,
+      "creator": "Julia15",
+      "id": "1a9ed8fc-3fb5-40a5-91f6-0fbd9eaea4e5",
+      "rating": 2.49,
+    },
+    {
+      "createdAt": 1735823371519,
+      "creator": "Julia15",
+      "id": "368d124f-fe70-441f-82d3-efcf3086f1ad",
+      "rating": 2.16,
+    },
+    {
+      "createdAt": 1735772442266,
+      "creator": "Julia15",
+      "id": "094b6e1f-4d10-4947-a6ab-6b0761f0dac1",
+      "rating": 1.83,
+    },
+    {
+      "createdAt": 1735799754295,
+      "creator": "Julia15",
+      "id": "3bcc1f7e-4ac1-4e6c-89cd-e9cc82cf5654",
+      "rating": 1.55,
+    },
+    {
+      "createdAt": 1735802534075,
+      "creator": "Julia15",
+      "id": "79f25e7c-eed7-4562-ba8f-e7be622bbd35",
+      "rating": 1.51,
+    },
+  ],
+  "totalCount": 16,
+}
+`;
+
+exports[`Operator class when working with reviews when listing reviews will perform a basic search 1`] = `
+{
+  "data": [
+    {
+      "createdAt": 1735836721821,
+      "creator": "Reina54",
+      "id": "6ed64c6c-9d09-465f-8f50-e9448e7ed538",
+      "rating": 4.97,
+    },
+    {
+      "createdAt": 1735784532855,
+      "creator": "Ashlynn_Kreiger86",
+      "id": "3fdbd541-d44a-4c03-ae48-72057dce7ce1",
+      "rating": 4.93,
+    },
+    {
+      "createdAt": 1735751832380,
+      "creator": "Ayla.Rippin",
+      "id": "71658c31-ea72-4827-a4b5-08144b7be4e1",
+      "rating": 4.89,
+    },
+    {
+      "createdAt": 1735808503576,
+      "creator": "Ayla.Rippin",
+      "id": "9ed10917-e21f-4276-94a1-a9d542e624db",
+      "rating": 4.83,
+    },
+    {
+      "createdAt": 1735813722767,
+      "creator": "Lucy55",
+      "id": "f2e55242-5331-4589-981d-7654864a66e1",
+      "rating": 4.81,
+    },
+    {
+      "createdAt": 1735834591206,
+      "creator": "Reina54",
+      "id": "bbb740e6-fe1d-4895-8642-0404b7b07ba6",
+      "rating": 4.8,
+    },
+    {
+      "createdAt": 1735778546998,
+      "creator": "Nigel_Herman30",
+      "id": "bf0da90a-56d0-4769-88eb-9c0041edb953",
+      "rating": 4.73,
+    },
+    {
+      "createdAt": 1735789883411,
+      "creator": "Ashlynn_Kreiger86",
+      "id": "8933880d-4a5a-41f7-9a76-5b04c3f403e9",
+      "rating": 4.72,
+    },
+    {
+      "createdAt": 1735775596353,
+      "creator": "Nigel_Herman30",
+      "id": "9ac1bd20-c19d-481c-b1c0-545b9db15dc9",
+      "rating": 4.72,
+    },
+    {
+      "createdAt": 1735771159158,
+      "creator": "Ashlynn_Kreiger86",
+      "id": "1a37f405-ef99-4c98-9c5a-0b3d5de437a7",
+      "rating": 4.72,
+    },
+    {
+      "createdAt": 1735779317236,
+      "creator": "Lucy55",
+      "id": "1021d19c-2bad-4d44-b078-25617fccfc93",
+      "rating": 4.71,
+    },
+    {
+      "createdAt": 1735782440514,
+      "creator": "Jamison_Veum",
+      "id": "5a414ce9-70c7-4a66-a809-4ce6066eaee2",
+      "rating": 4.67,
+    },
+    {
+      "createdAt": 1735791770838,
+      "creator": "Bulah_Bins",
+      "id": "76aeb7d5-824c-4981-8c50-777bc87cbc64",
+      "rating": 4.55,
+    },
+    {
+      "createdAt": 1735818896660,
+      "creator": "Jamison_Veum",
+      "id": "11a562d5-7935-407a-9b4c-50d99ee4d2bb",
+      "rating": 4.54,
+    },
+    {
+      "createdAt": 1735774947284,
+      "creator": "Jamison_Veum",
+      "id": "30f67fd5-28ab-413d-b9cb-08eb2e5f3b11",
+      "rating": 4.52,
+    },
+    {
+      "createdAt": 1735831439909,
+      "creator": "Ashlynn_Kreiger86",
+      "id": "d3c74d5a-14c2-4900-acd6-7f6a4adf9df2",
+      "rating": 4.44,
+    },
+    {
+      "createdAt": 1735769189009,
+      "creator": "Bulah_Bins",
+      "id": "48fbc54e-2186-452f-8d52-c0f3e621dcb4",
+      "rating": 4.44,
+    },
+    {
+      "createdAt": 1735781874025,
+      "creator": "Reina54",
+      "id": "f514fca2-83b1-47f1-8212-13a7d9679d94",
+      "rating": 4.38,
+    },
+    {
+      "createdAt": 1735811736227,
+      "creator": "Lucy55",
+      "id": "ce351b3c-d146-48a6-9f06-a9f389de7515",
+      "rating": 4.38,
+    },
+    {
+      "createdAt": 1735805898820,
+      "creator": "Bulah_Bins",
+      "id": "c3db73d5-b188-4898-aff3-46e937ba9c04",
+      "rating": 4.36,
+    },
+    {
+      "createdAt": 1735815567679,
+      "creator": "Jamison_Veum",
+      "id": "645ee41f-b97c-4a55-8f71-0c5bb5003015",
+      "rating": 4.35,
+    },
+    {
+      "createdAt": 1735797633399,
+      "creator": "Jamison_Veum",
+      "id": "a8d731d3-ccf4-4a1a-af00-df195ee1ff3f",
+      "rating": 4.33,
+    },
+    {
+      "createdAt": 1735772470261,
+      "creator": "Julia15",
+      "id": "5220e482-0b20-4870-8c4b-6c5a3fa226ef",
+      "rating": 4.33,
+    },
+    {
+      "createdAt": 1735785351336,
+      "creator": "Reina54",
+      "id": "dfb2c1ec-f43f-4c52-a371-3a81001c2b40",
+      "rating": 4.3,
+    },
+    {
+      "createdAt": 1735770950109,
+      "creator": "Ashlynn_Kreiger86",
+      "id": "b2feb8bf-df15-42c6-baab-8e7777160754",
+      "rating": 4.28,
+    },
+    {
+      "createdAt": 1735756425497,
+      "creator": "Bulah_Bins",
+      "id": "99e46844-204c-4f50-b2c6-e75db9cae511",
+      "rating": 4.27,
+    },
+    {
+      "createdAt": 1735802788393,
+      "creator": "Ashlynn_Kreiger86",
+      "id": "7c909a02-6b2a-47d9-9976-ce864e1dcaaa",
+      "rating": 4.23,
+    },
+    {
+      "createdAt": 1735810967521,
+      "creator": "Ayla.Rippin",
+      "id": "8462d9ea-defa-4211-b9f3-c28a46a79efa",
+      "rating": 4.22,
+    },
+    {
+      "createdAt": 1735786038323,
+      "creator": "Lucy55",
+      "id": "d6e2a048-2f73-4168-9f8b-22e541aba423",
+      "rating": 4.19,
+    },
+    {
+      "createdAt": 1735766538104,
+      "creator": "Julia15",
+      "id": "0bef5b48-9e2a-4dbf-8103-7ed9a0ee6890",
+      "rating": 4.13,
+    },
+    {
+      "createdAt": 1735763907706,
+      "creator": "Bulah_Bins",
+      "id": "7c6b3e91-fe31-493f-918e-9c029627df28",
+      "rating": 4.1,
+    },
+    {
+      "createdAt": 1735791243153,
+      "creator": "Julia15",
+      "id": "fa1a1b1a-1037-40ea-96a1-05d30e17db43",
+      "rating": 4.1,
+    },
+    {
+      "createdAt": 1735785605496,
+      "creator": "Reina54",
+      "id": "3264121b-21fc-4604-bc6b-36e40c0304d1",
+      "rating": 4.09,
+    },
+    {
+      "createdAt": 1735768419182,
+      "creator": "Reina54",
+      "id": "a6f88a47-806f-4c33-8b19-4072f2376e16",
+      "rating": 4.06,
+    },
+    {
+      "createdAt": 1735764151659,
+      "creator": "Reina54",
+      "id": "2c1d90fb-37f8-43bd-a55e-756b5394f968",
+      "rating": 4.03,
+    },
+    {
+      "createdAt": 1735785657429,
+      "creator": "Reina54",
+      "id": "7fb8200a-c667-4eb9-90c1-fb00eef09224",
+      "rating": 4,
+    },
+    {
+      "createdAt": 1735800565064,
+      "creator": "Lucy55",
+      "id": "08487d5a-0b4c-4e5e-9068-ca03cd3bfc84",
+      "rating": 3.98,
+    },
+    {
+      "createdAt": 1735793982514,
+      "creator": "Reina54",
+      "id": "00e81cbf-d50c-4db4-bc70-7439d6eada5e",
+      "rating": 3.98,
+    },
+    {
+      "createdAt": 1735791682120,
+      "creator": "Jamison_Veum",
+      "id": "95d7b7f3-e1ce-4523-a9ac-58b0be90a2c8",
+      "rating": 3.95,
+    },
+    {
+      "createdAt": 1735778411067,
+      "creator": "Jamison_Veum",
+      "id": "7fd3cead-0461-45a9-bd80-6bd9244f22ef",
+      "rating": 3.81,
+    },
+    {
+      "createdAt": 1735807483402,
+      "creator": "Ashlynn_Kreiger86",
+      "id": "b1bf786c-872e-4cfa-bef3-e7706fa66e08",
+      "rating": 3.79,
+    },
+    {
+      "createdAt": 1735798900883,
+      "creator": "Julia15",
+      "id": "0db5511b-13e5-4815-8bbe-74d966ff404e",
+      "rating": 3.79,
+    },
+    {
+      "createdAt": 1735760573652,
+      "creator": "Bulah_Bins",
+      "id": "be73a24e-bd5d-41b9-bd60-cae3f50be489",
+      "rating": 3.77,
+    },
+    {
+      "createdAt": 1735825995945,
+      "creator": "Nigel_Herman30",
+      "id": "2e758194-09a1-4d3c-8fa2-e7eb4ac1f0e7",
+      "rating": 3.75,
+    },
+    {
+      "createdAt": 1735830596343,
+      "creator": "Ashlynn_Kreiger86",
+      "id": "3f3e9d51-f025-436f-8307-a92a610c04cd",
+      "rating": 3.73,
+    },
+    {
+      "createdAt": 1735783292259,
+      "creator": "Jamison_Veum",
+      "id": "740fef1e-2869-42cf-9797-ecf28541b4d8",
+      "rating": 3.71,
+    },
+    {
+      "createdAt": 1735767224138,
+      "creator": "Reina54",
+      "id": "119eb6d6-c1e9-498b-acf0-0c7e6803074e",
+      "rating": 3.7,
+    },
+    {
+      "createdAt": 1735827376897,
+      "creator": "Nigel_Herman30",
+      "id": "e1149a54-3d23-4ce5-b9ff-6897edac0b25",
+      "rating": 3.7,
+    },
+    {
+      "createdAt": 1735814879865,
+      "creator": "Ayla.Rippin",
+      "id": "b3314977-5058-46a7-89c8-bc123f8f5076",
+      "rating": 3.63,
+    },
+    {
+      "createdAt": 1735786417118,
+      "creator": "Julia15",
+      "id": "76352a17-206a-414a-a8f8-ff5bec06b187",
+      "rating": 3.62,
+    },
+  ],
+  "totalCount": 120,
+}
+`;
+
+exports[`Operator class when working with reviews when listing reviews will perform a text-based search 1`] = `
+{
+  "data": [
+    {
+      "createdAt": 1735813722767,
+      "creator": "Lucy55",
+      "id": "f2e55242-5331-4589-981d-7654864a66e1",
+      "rating": 4.81,
+    },
+    {
+      "createdAt": 1735805898820,
+      "creator": "Bulah_Bins",
+      "id": "c3db73d5-b188-4898-aff3-46e937ba9c04",
+      "rating": 4.36,
+    },
+    {
+      "createdAt": 1735791682120,
+      "creator": "Jamison_Veum",
+      "id": "95d7b7f3-e1ce-4523-a9ac-58b0be90a2c8",
+      "rating": 3.95,
+    },
+    {
+      "createdAt": 1735765370955,
+      "creator": "Nigel_Herman30",
+      "id": "ec3194c8-dda7-42dc-aeff-42c8eea670ec",
+      "rating": 3.4,
+    },
+    {
+      "createdAt": 1735820733082,
+      "creator": "Nigel_Herman30",
+      "id": "369ead28-be73-43b4-aaa1-f677fb6b14cf",
+      "rating": 2.45,
+    },
+    {
+      "createdAt": 1735805890242,
+      "creator": "Bulah_Bins",
+      "id": "c2de87b2-6c27-4275-88e6-58f1cbce50cb",
+      "rating": 1.82,
+    },
+  ],
+  "totalCount": 6,
+}
+`;
+
+exports[`Operator class when working with reviews when listing reviews will sort reviews by createdAt in asc order 1`] = `
+[
+  {
+    "createdAt": 1735751260750,
+    "rating": 2.2,
+  },
+  {
+    "createdAt": 1735751832380,
+    "rating": 4.89,
+  },
+  {
+    "createdAt": 1735752439230,
+    "rating": 3.14,
+  },
+  {
+    "createdAt": 1735755548883,
+    "rating": 2.05,
+  },
+  {
+    "createdAt": 1735756425497,
+    "rating": 4.27,
+  },
+  {
+    "createdAt": 1735758645157,
+    "rating": 2.72,
+  },
+  {
+    "createdAt": 1735760155820,
+    "rating": 3.41,
+  },
+  {
+    "createdAt": 1735760573652,
+    "rating": 3.77,
+  },
+  {
+    "createdAt": 1735761117622,
+    "rating": 1.05,
+  },
+  {
+    "createdAt": 1735762216007,
+    "rating": 1.66,
+  },
+  {
+    "createdAt": 1735762780909,
+    "rating": 3.39,
+  },
+  {
+    "createdAt": 1735763907706,
+    "rating": 4.1,
+  },
+  {
+    "createdAt": 1735764151659,
+    "rating": 4.03,
+  },
+  {
+    "createdAt": 1735765370955,
+    "rating": 3.4,
+  },
+  {
+    "createdAt": 1735765972370,
+    "rating": 2.66,
+  },
+]
+`;
+
+exports[`Operator class when working with reviews when listing reviews will sort reviews by createdAt in desc order 1`] = `
+[
+  {
+    "createdAt": 1735836721821,
+    "rating": 4.97,
+  },
+  {
+    "createdAt": 1735836366297,
+    "rating": 3.35,
+  },
+  {
+    "createdAt": 1735834773218,
+    "rating": 2.29,
+  },
+  {
+    "createdAt": 1735834591206,
+    "rating": 4.8,
+  },
+  {
+    "createdAt": 1735831439909,
+    "rating": 4.44,
+  },
+  {
+    "createdAt": 1735830596343,
+    "rating": 3.73,
+  },
+  {
+    "createdAt": 1735830122106,
+    "rating": 3.33,
+  },
+  {
+    "createdAt": 1735830028723,
+    "rating": 3.31,
+  },
+  {
+    "createdAt": 1735829328445,
+    "rating": 2.38,
+  },
+  {
+    "createdAt": 1735829050355,
+    "rating": 3.35,
+  },
+  {
+    "createdAt": 1735827949141,
+    "rating": 2.49,
+  },
+  {
+    "createdAt": 1735827847154,
+    "rating": 1.34,
+  },
+  {
+    "createdAt": 1735827376897,
+    "rating": 3.7,
+  },
+  {
+    "createdAt": 1735825995945,
+    "rating": 3.75,
+  },
+  {
+    "createdAt": 1735824934772,
+    "rating": 1.68,
+  },
+]
+`;
+
+exports[`Operator class when working with reviews when listing reviews will sort reviews by rating in asc order 1`] = `
+[
+  {
+    "createdAt": 1735761117622,
+    "rating": 1.05,
+  },
+  {
+    "createdAt": 1735827847154,
+    "rating": 1.34,
+  },
+  {
+    "createdAt": 1735796986790,
+    "rating": 1.35,
+  },
+  {
+    "createdAt": 1735819385405,
+    "rating": 1.4,
+  },
+  {
+    "createdAt": 1735777051339,
+    "rating": 1.44,
+  },
+  {
+    "createdAt": 1735795172841,
+    "rating": 1.45,
+  },
+  {
+    "createdAt": 1735792309279,
+    "rating": 1.46,
+  },
+  {
+    "createdAt": 1735802534075,
+    "rating": 1.51,
+  },
+  {
+    "createdAt": 1735799754295,
+    "rating": 1.55,
+  },
+  {
+    "createdAt": 1735801520306,
+    "rating": 1.56,
+  },
+  {
+    "createdAt": 1735795828855,
+    "rating": 1.56,
+  },
+  {
+    "createdAt": 1735821540933,
+    "rating": 1.64,
+  },
+  {
+    "createdAt": 1735762216007,
+    "rating": 1.66,
+  },
+  {
+    "createdAt": 1735824934772,
+    "rating": 1.68,
+  },
+  {
+    "createdAt": 1735776213435,
+    "rating": 1.71,
+  },
+]
+`;
+
+exports[`Operator class when working with reviews when listing reviews will sort reviews by rating in desc order 1`] = `
+[
+  {
+    "createdAt": 1735836721821,
+    "rating": 4.97,
+  },
+  {
+    "createdAt": 1735784532855,
+    "rating": 4.93,
+  },
+  {
+    "createdAt": 1735751832380,
+    "rating": 4.89,
+  },
+  {
+    "createdAt": 1735808503576,
+    "rating": 4.83,
+  },
+  {
+    "createdAt": 1735813722767,
+    "rating": 4.81,
+  },
+  {
+    "createdAt": 1735834591206,
+    "rating": 4.8,
+  },
+  {
+    "createdAt": 1735778546998,
+    "rating": 4.73,
+  },
+  {
+    "createdAt": 1735789883411,
+    "rating": 4.72,
+  },
+  {
+    "createdAt": 1735775596353,
+    "rating": 4.72,
+  },
+  {
+    "createdAt": 1735771159158,
+    "rating": 4.72,
+  },
+  {
+    "createdAt": 1735779317236,
+    "rating": 4.71,
+  },
+  {
+    "createdAt": 1735782440514,
+    "rating": 4.67,
+  },
+  {
+    "createdAt": 1735791770838,
+    "rating": 4.55,
+  },
+  {
+    "createdAt": 1735818896660,
+    "rating": 4.54,
+  },
+  {
+    "createdAt": 1735774947284,
+    "rating": 4.52,
+  },
+]
+`;
+
+exports[`Operator class when working with reviews when retrieving a single review will return the requested review 1`] = `
+{
+  "comments": "Videlicet aspernatur tamisium iusto sed stipes. Iure vociferor barba. Defungo vilis crur tubineus.
+Consequatur sodalitas defero terra verecundia ulterius bellum aliquam terebro acies. Infit autem caries pecus damno terreo coerceo. Cohaero deprecator tersus aqua unde vesco cito crinis cervus tricesimus.
+Audentia ventus aggero decretum verbera solutio. Vero aqua carmen appono aliquam voluptatibus valens. Abduco valeo triumphus ars teneo eius ancilla cunabula.",
+  "createdAt": 1735770355264,
+  "creator": {
+    "accountTier": 0,
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/85.jpg",
+    "location": "Moore",
+    "logBookSharing": "private",
+    "memberSince": 1529968727167,
+    "name": "Eileen Bartoletti DVM",
+    "userId": "f9919636-4939-4975-90be-4854c5ed58b4",
+    "username": "Lucy55",
+  },
+  "id": "8922de67-b22a-42f8-814e-f0445b9b2895",
+  "rating": 1.8,
+  "updatedAt": 1735770355264,
+}
+`;
+
 exports[`Operator class will return a JSON representation of the dive operator 1`] = `
 {
   "active": true,

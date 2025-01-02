@@ -22,7 +22,7 @@ import { ZodValidator } from '../zod-validator';
 import { AssertOperator, TargetOperator } from './assert-operator.guard';
 import { Operator } from './operator';
 
-@Controller(`api/operators/:operatorKey/reviews`)
+@Controller('api/operators/:operatorKey/reviews')
 @UseGuards(AssertOperator)
 export class OperatorReviewsController {
   constructor(@Inject(UsersService) private readonly users: UsersService) {}

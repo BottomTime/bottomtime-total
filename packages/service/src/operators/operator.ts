@@ -10,9 +10,9 @@ import {
   VerificationStatus,
 } from '@bottomtime/api';
 
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, HttpException } from '@nestjs/common';
 
-import { Not, Repository } from 'typeorm';
+import { MoreThan, Not, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
 import { OperatorEntity, OperatorReviewEntity } from '../data';
@@ -244,14 +244,14 @@ export class Operator {
   }
 
   async listReviews(
-    options: ListOperatorReviewsOptions,
+    options?: ListOperatorReviewsOptions,
   ): Promise<ApiList<OperatorReview>> {
     const query = new OperatorReviewQueryBuilder(this.reviews)
       .withOperator(this)
-      .withCreator(options.creator)
-      .withQuery(options.query)
-      .withPagination(options.skip, options.limit)
-      .withSortOrder(options.sortBy, options.sortOrder)
+      .withCreator(options?.creator)
+      .withQuery(options?.query)
+      .withPagination(options?.skip, options?.limit)
+      .withSortOrder(options?.sortBy, options?.sortOrder)
       .build();
 
     const [data, totalCount] = await query.getManyAndCount();
@@ -265,6 +265,18 @@ export class Operator {
   async createReview(
     options: CreateOperatorReviewOptions,
   ): Promise<OperatorReview> {
+    const existing = await this.reviews.existsBy({
+      operator: { id: this.data.id },
+      creator: { id: options.creator.id },
+      createdAt: MoreThan(new Date(Date.now() - 1000 * 60 * 60 * 48)),
+    });
+    if (existing) {
+      throw new HttpException(
+        'You may not review the same operator twice in the same 48 hour period.',
+        429,
+      );
+    }
+
     const data = new OperatorReviewEntity();
     data.id = uuid();
     data.creator = options.creator.toEntity();

@@ -11,7 +11,6 @@ const SelectFields = [
   'reviews.createdAt',
   'reviews.updatedAt',
   'reviews.rating',
-  'reviews.title',
   'reviews.comments',
   'creator.id',
   'creator.accountTier',
@@ -54,7 +53,7 @@ export class OperatorReviewQueryBuilder {
   }
 
   withPagination(skip?: number, limit?: number): this {
-    this.query = this.query.skip(skip ?? 0).take(limit ?? 100);
+    this.query = this.query.skip(skip ?? 0).take(limit ?? 50);
     return this;
   }
 
