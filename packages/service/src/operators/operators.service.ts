@@ -11,7 +11,7 @@ import slugify from 'slugify';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { OperatorEntity } from '../data';
+import { OperatorEntity, OperatorReviewEntity } from '../data';
 import { User } from '../users';
 import { Operator } from './operator';
 import { OperatorQueryBuilder } from './operator-query-builder';
@@ -31,6 +31,9 @@ export class OperatorsService {
   constructor(
     @InjectRepository(OperatorEntity)
     private readonly operators: Repository<OperatorEntity>,
+
+    @InjectRepository(OperatorReviewEntity)
+    private readonly reviews: Repository<OperatorReviewEntity>,
   ) {}
 
   async createOperator(options: CreateOperatorOptions): Promise<Operator> {
@@ -43,7 +46,7 @@ export class OperatorsService {
     data.name = options.name;
     data.owner = options.owner.toEntity();
 
-    const operator = new Operator(this.operators, data);
+    const operator = new Operator(this.operators, this.reviews, data);
     operator.address = options.address;
     operator.description = options.description;
     operator.email = options.email;
@@ -74,7 +77,7 @@ export class OperatorsService {
       where: { id },
       relations: ['owner'],
     });
-    return data ? new Operator(this.operators, data) : undefined;
+    return data ? new Operator(this.operators, this.reviews, data) : undefined;
   }
 
   async getOperatorBySlug(slug: string): Promise<Operator | undefined> {
@@ -84,7 +87,7 @@ export class OperatorsService {
       where: { slug },
       relations: ['owner'],
     });
-    return data ? new Operator(this.operators, data) : undefined;
+    return data ? new Operator(this.operators, this.reviews, data) : undefined;
   }
 
   async isSlugInUse(slug: string): Promise<boolean> {
@@ -108,7 +111,9 @@ export class OperatorsService {
     const [operators, totalCount] = await query.getManyAndCount();
 
     return {
-      data: operators.map((operator) => new Operator(this.operators, operator)),
+      data: operators.map(
+        (operator) => new Operator(this.operators, this.reviews, operator),
+      ),
       totalCount,
     };
   }

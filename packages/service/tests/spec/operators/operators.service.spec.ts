@@ -4,7 +4,11 @@ import { writeFile } from 'fs/promises';
 import { resolve } from 'path';
 import { Repository } from 'typeorm';
 
-import { OperatorEntity, UserEntity } from '../../../src/data';
+import {
+  OperatorEntity,
+  OperatorReviewEntity,
+  UserEntity,
+} from '../../../src/data';
 import {
   CreateOperatorOptions,
   OperatorsService,
@@ -19,6 +23,7 @@ import { createTestUser, parseUserJSON } from '../../utils/create-test-user';
 describe('OperatorService', () => {
   let Users: Repository<UserEntity>;
   let Operators: Repository<OperatorEntity>;
+  let Reviews: Repository<OperatorReviewEntity>;
   let service: OperatorsService;
 
   let owner: User;
@@ -26,8 +31,9 @@ describe('OperatorService', () => {
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
+    Reviews = dataSource.getRepository(OperatorReviewEntity);
 
-    service = new OperatorsService(Operators);
+    service = new OperatorsService(Operators, Reviews);
   });
 
   beforeEach(async () => {

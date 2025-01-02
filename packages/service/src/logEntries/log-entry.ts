@@ -18,9 +18,6 @@ import {
 
 import { ConflictException, Logger } from '@nestjs/common';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/timezone';
-import 'dayjs/plugin/utc';
 import { Observable, bufferCount, concatMap, from, map } from 'rxjs';
 import { In, Repository } from 'typeorm';
 
@@ -32,8 +29,6 @@ import {
 import { DiveSite, DiveSiteFactory } from '../diveSites';
 import { LogEntryAirUtils } from './log-entry-air-utils';
 import { LogEntrySampleUtils } from './log-entry-sample-utils';
-
-const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 
 class EntryConditions {
   constructor(private readonly data: LogEntryEntity) {}

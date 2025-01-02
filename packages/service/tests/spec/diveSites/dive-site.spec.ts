@@ -294,7 +294,6 @@ describe('Dive Site Class', () => {
 
     it('will create a new dive site review with all options', async () => {
       const options: CreateDiveSiteReviewOptions = {
-        title: 'OMG! Diving!!',
         comments: 'This is a great dive site!',
         rating: 4.5,
         difficulty: 3.2,
@@ -314,7 +313,6 @@ describe('Dive Site Class', () => {
       });
       expect(review.difficulty).toEqual(options.difficulty);
       expect(review.rating).toEqual(options.rating);
-      expect(review.title).toEqual(options.title);
       expect(review.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
 
       const savedReview = await Reviews.findOneOrFail({
@@ -327,13 +325,11 @@ describe('Dive Site Class', () => {
       expect(savedReview.difficulty).toEqual(options.difficulty);
       expect(savedReview.site.id).toEqual(site.id);
       expect(savedReview.rating).toEqual(options.rating);
-      expect(savedReview.title).toEqual(options.title);
       expect(savedReview.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
     });
 
     it('will create a new review with minimal options', async () => {
       const options: CreateDiveSiteReviewOptions = {
-        title: 'OMG! Diving!!',
         rating: 4.5,
         creatorId: regularUser.id,
       };
@@ -351,7 +347,6 @@ describe('Dive Site Class', () => {
       });
       expect(review.difficulty).toBeUndefined();
       expect(review.rating).toEqual(options.rating);
-      expect(review.title).toEqual(options.title);
       expect(review.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
 
       const savedReview = await Reviews.findOneOrFail({
@@ -364,7 +359,6 @@ describe('Dive Site Class', () => {
       expect(savedReview.difficulty).toBeNull();
       expect(savedReview.site.id).toEqual(site.id);
       expect(savedReview.rating).toEqual(options.rating);
-      expect(savedReview.title).toEqual(options.title);
       expect(savedReview.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
     });
 
@@ -391,7 +385,6 @@ describe('Dive Site Class', () => {
         expect(results.totalCount).toBe(100);
 
         const reviews = results.data.map((r) => ({
-          title: r.title,
           rating: r.rating,
           createdOn: r.createdOn,
         }));
@@ -411,7 +404,6 @@ describe('Dive Site Class', () => {
       expect(results.data).toHaveLength(28);
       expect(
         results.data.map((review) => ({
-          title: review.title,
           rating: review.rating,
         })),
       ).toMatchSnapshot();
@@ -419,13 +411,11 @@ describe('Dive Site Class', () => {
 
     it('will throw an error if user attempts to review the same site twice within 48 hours.', async () => {
       await site.createReview({
-        title: 'OMG! Diving!!',
         rating: 4.5,
         creatorId: regularUser.id,
       });
       await expect(
         site.createReview({
-          title: 'OMG! Another review!!',
           rating: 4.5,
           creatorId: regularUser.id,
         }),

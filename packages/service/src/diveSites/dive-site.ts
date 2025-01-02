@@ -3,7 +3,6 @@ import {
   CreateOrUpdateDiveSiteReviewDTO,
   DiveSiteDTO,
   ListDiveSiteReviewsParamsDTO,
-  SortOrder,
   SuccinctProfileDTO,
   WaterType,
 } from '@bottomtime/api';
@@ -18,6 +17,7 @@ import { v7 as uuid } from 'uuid';
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
 import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
 import { DiveSiteReview } from './dive-site-review';
+import { DiveSiteReviewsQueryBuilder } from './dive-site-reviews-query-builder';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
 export type CreateDiveSiteReviewOptions = CreateOrUpdateDiveSiteReviewDTO & {
@@ -205,7 +205,6 @@ export class DiveSite {
     data.comments = options.comments ?? null;
     data.rating = options.rating;
     data.difficulty = options.difficulty ?? null;
-    data.title = options.title;
 
     data.site = this.data;
     data.creator = creator;
@@ -233,16 +232,10 @@ export class DiveSite {
   async listReviews(
     options: ListDiveSiteReviewsParamsDTO,
   ): Promise<ApiList<DiveSiteReview>> {
-    const query = this.Reviews.createQueryBuilder('review')
-      .innerJoin('review.creator', 'creator')
-      .where('review.site = :siteId', { siteId: this.id })
-      .addOrderBy(
-        `review.${options.sortBy}`,
-        options.sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
-      )
-      .addOrderBy('review.title', 'ASC')
-      .offset(options.skip)
-      .limit(options.limit);
+    const query = new DiveSiteReviewsQueryBuilder(this.Reviews, this)
+      .withSortOrder(options.sortBy, options.sortOrder)
+      .withPagination(options.skip, options.limit)
+      .build();
 
     this.log.debug(`Listing reviews for dive site ${this.id}...`);
     this.log.verbose(query.getSql());

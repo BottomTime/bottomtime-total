@@ -41,9 +41,6 @@ export class OperatorReviewEntity {
   @Index()
   rating: number = 0;
 
-  @Column({ type: 'varchar', length: 200 })
-  title: string = '';
-
   @Column({ type: 'varchar', length: 1000, nullable: true })
   comments: string | null = null;
 
@@ -53,7 +50,7 @@ export class OperatorReviewEntity {
     nullable: true,
     insert: false,
     update: false,
-    asExpression: `setweight(to_tsvector('english', coalesce(title, '')), 'A') || setweight(to_tsvector('english', coalesce(comments, '')), 'B')`,
+    asExpression: `setweight(to_tsvector('english', coalesce(comments, '')), 'A')`,
     generatedType: 'STORED',
   })
   @Index()

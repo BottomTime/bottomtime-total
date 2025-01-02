@@ -26,7 +26,6 @@ export enum DiveSiteReviewsSortBy {
 }
 
 export const CreateOrUpdateDiveSiteReviewSchema = z.object({
-  title: z.string().trim().min(1).max(200),
   rating: z.number().min(1).max(5),
   difficulty: z.number().min(1).max(5).optional(),
   comments: z.string().trim().max(1000).optional(),

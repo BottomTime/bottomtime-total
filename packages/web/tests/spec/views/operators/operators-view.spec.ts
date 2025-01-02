@@ -3,7 +3,6 @@ import {
   ApiClient,
   ApiList,
   CreateOrUpdateOperatorDTO,
-  Fetcher,
   OperatorDTO,
   SearchOperatorsResponseSchema,
   UserDTO,
@@ -39,7 +38,6 @@ const ShopOwner: UserDTO = {
 };
 
 describe('Operators view', () => {
-  let fetcher: Fetcher;
   let client: ApiClient;
   let features: ConfigCatClientMock;
   let router: Router;
@@ -52,7 +50,6 @@ describe('Operators view', () => {
   let searchSpy: jest.SpyInstance;
 
   beforeAll(() => {
-    fetcher = new Fetcher();
     client = new ApiClient();
     router = createRouter([
       {
@@ -309,10 +306,6 @@ describe('Operators view', () => {
       email: existing.email,
       socials: existing.socials,
       website: existing.website,
-    };
-    const expected: OperatorDTO = {
-      ...existing,
-      ...update,
     };
     currentUser.user = ShopOwner;
     searchSpy = jest

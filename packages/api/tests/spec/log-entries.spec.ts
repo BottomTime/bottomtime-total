@@ -203,6 +203,7 @@ describe('Log entries API client', () => {
     const expected: LogEntryDTO = {
       ...options,
       site: undefined,
+      operator: undefined,
       creator: BasicUser.profile,
       createdAt: new Date('2024-04-30T20:48:16').valueOf(),
       id: '62389e6e-0332-4288-9d87-9bd94ba830da',

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Reviews1735665853842 implements MigrationInterface {
-  name = 'Reviews1735665853842';
+export class ReviewsUpdate1735824085873 implements MigrationInterface {
+  name = 'ReviewsUpdate1735824085873';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -15,11 +15,11 @@ export class Reviews1735665853842 implements MigrationInterface {
         'dive_operator_reviews',
         'GENERATED_COLUMN',
         'fulltext',
-        "setweight(to_tsvector('english', coalesce(title, '')), 'A') || setweight(to_tsvector('english', coalesce(comments, '')), 'B')",
+        "setweight(to_tsvector('english', coalesce(comments, '')), 'A')",
       ],
     );
     await queryRunner.query(
-      `CREATE TABLE "dive_operator_reviews" ("id" uuid NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "rating" double precision NOT NULL, "title" character varying(200) NOT NULL, "comments" character varying(1000), "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(title, '')), 'A') || setweight(to_tsvector('english', coalesce(comments, '')), 'B')) STORED, "creatorId" uuid, "operatorId" uuid, "logEntryId" uuid, CONSTRAINT "PK_65dcced1b3df182b32cd0d72720" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "dive_operator_reviews" ("id" uuid NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "rating" double precision NOT NULL, "comments" character varying(1000), "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(comments, '')), 'A')) STORED, "creatorId" uuid, "operatorId" uuid, "logEntryId" uuid, CONSTRAINT "PK_65dcced1b3df182b32cd0d72720" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_8bcfe49632985aea9baacee4ec" ON "dive_operator_reviews" ("creatorId") `,
@@ -37,12 +37,29 @@ export class Reviews1735665853842 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_ec6ad3ecdcc6d7935b218111f9" ON "dive_operator_reviews" ("operatorId", "creatorId", "createdAt") `,
     );
     await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" DROP COLUMN "title"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "dive_operators" ADD "averageRating" double precision`,
     );
     await queryRunner.query(
       `ALTER TABLE "log_entries" ADD "rating" double precision`,
     );
     await queryRunner.query(`ALTER TABLE "log_entries" ADD "operatorId" uuid`);
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(comments, '')), 'A')) STORED`,
+    );
+    await queryRunner.query(
+      `INSERT INTO "typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES ($1, $2, $3, $4, $5, $6)`,
+      [
+        'bottomtime_local',
+        'public',
+        'dive_site_reviews',
+        'GENERATED_COLUMN',
+        'fulltext',
+        "setweight(to_tsvector('english', coalesce(comments, '')), 'A')",
+      ],
+    );
     await queryRunner.query(
       `ALTER TABLE "dive_site_reviews" ADD "logEntryId" uuid`,
     );
@@ -54,6 +71,9 @@ export class Reviews1735665853842 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_022dd51f87f0f021ad3182e1f4" ON "dive_site_reviews" ("logEntryId") `,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_4605a0835b21a7625811e711f1" ON "dive_site_reviews" ("fulltext") `,
     );
     await queryRunner.query(
       `ALTER TABLE "dive_operator_reviews" ADD CONSTRAINT "FK_8bcfe49632985aea9baacee4ec4" FOREIGN KEY ("creatorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -89,6 +109,9 @@ export class Reviews1735665853842 implements MigrationInterface {
       `ALTER TABLE "dive_operator_reviews" DROP CONSTRAINT "FK_8bcfe49632985aea9baacee4ec4"`,
     );
     await queryRunner.query(
+      `DROP INDEX "public"."IDX_4605a0835b21a7625811e711f1"`,
+    );
+    await queryRunner.query(
       `DROP INDEX "public"."IDX_022dd51f87f0f021ad3182e1f4"`,
     );
     await queryRunner.query(
@@ -101,11 +124,27 @@ export class Reviews1735665853842 implements MigrationInterface {
       `ALTER TABLE "dive_site_reviews" DROP COLUMN "logEntryId"`,
     );
     await queryRunner.query(
+      `DELETE FROM "typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "database" = $3 AND "schema" = $4 AND "table" = $5`,
+      [
+        'GENERATED_COLUMN',
+        'fulltext',
+        'bottomtime_local',
+        'public',
+        'dive_site_reviews',
+      ],
+    );
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" DROP COLUMN "fulltext"`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "log_entries" DROP COLUMN "operatorId"`,
     );
     await queryRunner.query(`ALTER TABLE "log_entries" DROP COLUMN "rating"`);
     await queryRunner.query(
       `ALTER TABLE "dive_operators" DROP COLUMN "averageRating"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" ADD "title" character varying(200) NOT NULL DEFAULT ''`,
     );
     await queryRunner.query(
       `DROP INDEX "public"."IDX_ec6ad3ecdcc6d7935b218111f9"`,

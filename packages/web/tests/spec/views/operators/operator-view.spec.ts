@@ -332,10 +332,6 @@ describe('Operator view', () => {
   });
 
   it('will show an error if there is a slug conflict when saving an existing operator', async () => {
-    const operatorData: OperatorDTO = {
-      ...FullOperator,
-      owner: ShopOwner.profile,
-    };
     const saveSpy = jest
       .spyOn(client.operators, 'updateOperator')
       .mockRejectedValue(createHttpError(409));
@@ -351,10 +347,6 @@ describe('Operator view', () => {
     editor.vm.$emit('save', update);
     await flushPromises();
 
-    const expected = {
-      ...operatorData,
-      ...update,
-    };
     expect(saveSpy).toHaveBeenCalled();
     expect(toasts.toasts).toHaveLength(1);
     expect(toasts.toasts[0].id).toBe('dive-operator-slug-taken');

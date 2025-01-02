@@ -36,11 +36,8 @@ import {
 } from '../users';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
+import { AssertLogEntry, TargetLogEntry } from './assert-log-entry.guard';
 import { AssertLogbookRead } from './assert-logbook-read.guard';
-import {
-  AssertTargetLogEntry,
-  TargetLogEntry,
-} from './assert-target-log-entry.guard';
 import { LogEntriesService } from './log-entries.service';
 import { LogEntry } from './log-entry';
 
@@ -468,7 +465,7 @@ export class UserLogEntriesController {
   @UseGuards(
     ValidateIds(LogEntryIdParamName),
     AssertLogbookRead,
-    AssertTargetLogEntry,
+    AssertLogEntry,
   )
   getLog(@TargetLogEntry() logEntry: LogEntry): LogEntryDTO {
     return logEntry.toJSON();
@@ -536,7 +533,7 @@ export class UserLogEntriesController {
     ValidateIds(LogEntryIdParamName),
     AssertAuth,
     AssertAccountOwner,
-    AssertTargetLogEntry,
+    AssertLogEntry,
   )
   async updateLog(
     @TargetLogEntry() logEntry: LogEntry,
@@ -648,7 +645,7 @@ export class UserLogEntriesController {
     ValidateIds(LogEntryIdParamName),
     AssertAuth,
     AssertAccountOwner,
-    AssertTargetLogEntry,
+    AssertLogEntry,
   )
   async deleteLog(@TargetLogEntry() logEntry: LogEntry): Promise<void> {
     await logEntry.delete();

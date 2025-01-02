@@ -45,13 +45,6 @@ export class DiveSiteReview {
     return this.data.updatedOn ?? undefined;
   }
 
-  get title(): string {
-    return this.data.title;
-  }
-  set title(value: string) {
-    this.data.title = value;
-  }
-
   get rating(): number {
     return this.data.rating;
   }
@@ -110,7 +103,6 @@ export class DiveSiteReview {
       creator: this.creator,
       createdOn: this.createdOn.valueOf(),
       updatedOn: this.updatedOn?.valueOf(),
-      title: this.title,
       rating: this.rating,
       difficulty: this.difficulty,
       comments: this.comments,

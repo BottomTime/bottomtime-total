@@ -1,6 +1,9 @@
 import {
   AccountTier,
+  ApiList,
+  CreateOrUpdateOperatorReviewDTO,
   GpsCoordinates,
+  ListOperatorReviewsParams,
   LogBookSharing,
   OperatorDTO,
   SuccinctProfileDTO,
@@ -10,10 +13,21 @@ import {
 import { ConflictException } from '@nestjs/common';
 
 import { Not, Repository } from 'typeorm';
+import { v7 as uuid } from 'uuid';
 
-import { OperatorEntity } from '../data';
+import { OperatorEntity, OperatorReviewEntity } from '../data';
 import { User } from '../users';
+import { OperatorReview } from './operator-review';
+import { OperatorReviewQueryBuilder } from './operator-review-query-builder';
 import { OperatorSocials } from './operator-socials';
+
+export type ListOperatorReviewsOptions = {
+  creator?: User;
+} & Omit<ListOperatorReviewsParams, 'creator'>;
+
+export type CreateOperatorReviewOptions = {
+  creator: User;
+} & CreateOrUpdateOperatorReviewDTO;
 
 export class Operator {
   readonly socials: OperatorSocials;
@@ -21,6 +35,7 @@ export class Operator {
 
   constructor(
     private readonly operators: Repository<OperatorEntity>,
+    private readonly reviews: Repository<OperatorReviewEntity>,
     private readonly data: OperatorEntity,
   ) {
     this.socials = new OperatorSocials(this.data);
@@ -57,6 +72,10 @@ export class Operator {
           memberSince: new Date(0).valueOf(),
           logBookSharing: LogBookSharing.Private,
         };
+  }
+
+  get averageRating(): number | undefined {
+    return this.data.averageRating ?? undefined;
   }
 
   get verificationStatus(): VerificationStatus {
@@ -209,6 +228,54 @@ export class Operator {
   async setLogoUrl(logoUrl: string | null): Promise<void> {
     await this.operators.update({ id: this.data.id }, { logo: logoUrl });
     this.data.logo = logoUrl;
+  }
+
+  async getReview(reviewId: string): Promise<OperatorReview | undefined> {
+    const data = await this.reviews.findOne({
+      where: { operator: { id: this.data.id }, id: reviewId },
+      relations: ['creator'],
+    });
+
+    if (data) {
+      return new OperatorReview(this.reviews, data);
+    }
+
+    return undefined;
+  }
+
+  async listReviews(
+    options: ListOperatorReviewsOptions,
+  ): Promise<ApiList<OperatorReview>> {
+    const query = new OperatorReviewQueryBuilder(this.reviews)
+      .withOperator(this)
+      .withCreator(options.creator)
+      .withQuery(options.query)
+      .withPagination(options.skip, options.limit)
+      .withSortOrder(options.sortBy, options.sortOrder)
+      .build();
+
+    const [data, totalCount] = await query.getManyAndCount();
+
+    return {
+      data: data.map((review) => new OperatorReview(this.reviews, review)),
+      totalCount,
+    };
+  }
+
+  async createReview(
+    options: CreateOperatorReviewOptions,
+  ): Promise<OperatorReview> {
+    const data = new OperatorReviewEntity();
+    data.id = uuid();
+    data.creator = options.creator.toEntity();
+    data.operator = this.data;
+
+    const review = new OperatorReview(this.reviews, data);
+    review.comments = options.comments;
+    review.rating = options.rating;
+
+    await review.save();
+    return review;
   }
 
   toJSON(): OperatorDTO {

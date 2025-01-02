@@ -3,7 +3,7 @@ import { Certification } from '../../certifications';
 import { DiveSite, DiveSiteReview } from '../../diveSites';
 import { LogEntry, LogEntryImport } from '../../logEntries';
 import { Notification } from '../../notifications';
-import { Operator } from '../../operators';
+import { Operator, OperatorReview } from '../../operators';
 import { Tank } from '../../tanks';
 import { User as BTUser } from '../../users';
 
@@ -13,6 +13,7 @@ declare global {
       targetAlert: Alert | undefined;
       targetCertification: Certification | undefined;
       targetDiveOperator: Operator | undefined;
+      targetDiveOperatorReview: OperatorReview | undefined;
       targetDiveSite: DiveSite | undefined;
       targetDiveSiteReview: DiveSiteReview | undefined;
       targetFriend: BTUser | undefined;

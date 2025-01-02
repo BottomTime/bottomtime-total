@@ -86,7 +86,7 @@ export class ConfigCatClientMock implements IConfigCatClient {
     throw new Error('Method not implemented.');
   }
 
-  isOffline: boolean;
+  isOffline: boolean = false;
 
   setOnline(): void {
     throw new Error('Method not implemented.');

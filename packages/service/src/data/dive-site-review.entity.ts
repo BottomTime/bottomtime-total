@@ -36,9 +36,6 @@ export class DiveSiteReviewEntity {
   @UpdateDateColumn({ nullable: true })
   updatedOn: Date | null = null;
 
-  @Column('varchar', { length: 200 })
-  title: string = '';
-
   @Column('float')
   @Index()
   rating: number = 0;
@@ -56,7 +53,7 @@ export class DiveSiteReviewEntity {
     nullable: true,
     insert: false,
     update: false,
-    asExpression: `setweight(to_tsvector('english', coalesce(title, '')), 'A') || setweight(to_tsvector('english', coalesce(comments, '')), 'B')`,
+    asExpression: `setweight(to_tsvector('english', coalesce(comments, '')), 'A')`,
     generatedType: 'STORED',
   })
   @Index()

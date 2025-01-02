@@ -12,4 +12,3 @@ export * from './jwt';
 export * from './mock-event-service';
 export * from './s3-utils';
 export * from './test-logger';
-export * from './test-queue';

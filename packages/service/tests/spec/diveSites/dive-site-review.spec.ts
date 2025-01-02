@@ -47,7 +47,6 @@ const FullReviewData: Partial<DiveSiteReviewEntity> = {
   comments: 'This site is amazing',
   difficulty: 1.5,
   rating: 4.5,
-  title: 'Great Dive',
   updatedOn: new Date('2023-03-08T00:00:00Z'),
 };
 
@@ -89,7 +88,6 @@ describe('Dive Site Review Class', () => {
     expect(review.id).toEqual(FullReviewData.id);
     expect(review.createdOn).toEqual(FullReviewData.createdOn);
     expect(review.updatedOn).toEqual(FullReviewData.updatedOn);
-    expect(review.title).toEqual(FullReviewData.title);
     expect(review.rating).toEqual(FullReviewData.rating);
     expect(review.difficulty).toEqual(FullReviewData.difficulty);
     expect(review.comments).toEqual(FullReviewData.comments);
@@ -108,22 +106,18 @@ describe('Dive Site Review Class', () => {
   it('will return undefined for null properties', () => {
     const data = new DiveSiteReviewEntity();
     data.id = '8a1e4390-c0ae-48de-a76e-37e1a6093232';
-    data.title = 'Dive Site';
     const review = new DiveSiteReview(Reviews, emitter, data);
     expect(review.difficulty).toBeUndefined();
     expect(review.comments).toBeUndefined();
   });
 
   it('will update properties correctly', () => {
-    const newTitle = 'New Title';
     const newRating = 3.5;
     const newDifficulty = 2.5;
     const newComments = 'New comments';
-    review.title = newTitle;
     review.rating = newRating;
     review.difficulty = newDifficulty;
     review.comments = newComments;
-    expect(review.title).toEqual(newTitle);
     expect(review.rating).toEqual(newRating);
     expect(review.difficulty).toEqual(newDifficulty);
     expect(review.comments).toEqual(newComments);
@@ -144,7 +138,6 @@ describe('Dive Site Review Class', () => {
       },
       createdOn: FullReviewData.createdOn?.valueOf(),
       updatedOn: FullReviewData.updatedOn?.valueOf(),
-      title: FullReviewData.title,
       rating: FullReviewData.rating,
       difficulty: FullReviewData.difficulty,
       comments: FullReviewData.comments,
@@ -161,7 +154,6 @@ describe('Dive Site Review Class', () => {
       relations: ['creator', 'site'],
     });
     expect(savedReview.id).toEqual(review.id);
-    expect(savedReview.title).toEqual(review.title);
     expect(savedReview.rating).toEqual(review.rating);
     expect(savedReview.difficulty).toEqual(review.difficulty);
     expect(savedReview.comments).toEqual(review.comments);
@@ -174,11 +166,9 @@ describe('Dive Site Review Class', () => {
 
   it('will update an existing dive site review', async () => {
     await Reviews.save(data);
-    const newTitle = 'New Title';
     const newRating = 3.5;
     const newDifficulty = 2.5;
     const newComments = 'New comments';
-    review.title = newTitle;
     review.rating = newRating;
     review.difficulty = newDifficulty;
     review.comments = newComments;
@@ -189,7 +179,6 @@ describe('Dive Site Review Class', () => {
       relations: ['creator', 'site'],
     });
     expect(savedReview.id).toEqual(review.id);
-    expect(savedReview.title).toEqual(newTitle);
     expect(savedReview.rating).toEqual(newRating);
     expect(savedReview.difficulty).toEqual(newDifficulty);
     expect(savedReview.comments).toEqual(newComments);

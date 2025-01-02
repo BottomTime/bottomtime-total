@@ -8,7 +8,11 @@ import { ConflictException } from '@nestjs/common';
 
 import { Repository } from 'typeorm';
 
-import { OperatorEntity, UserEntity } from '../../../src/data';
+import {
+  OperatorEntity,
+  OperatorReviewEntity,
+  UserEntity,
+} from '../../../src/data';
 import { Operator } from '../../../src/operators';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
@@ -17,6 +21,7 @@ import { createTestUser } from '../../utils/create-test-user';
 const TestData: OperatorEntity = {
   id: 'f6fc189e-126e-49ac-95aa-c2ffd9a03140',
   active: true,
+  averageRating: 3.8,
   createdAt: new Date('2022-06-20T11:45:21Z'),
   updatedAt: new Date('2024-07-29T11:45:21Z'),
   deletedAt: null,
@@ -49,6 +54,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
 describe('Operator class', () => {
   let Users: Repository<UserEntity>;
   let Operators: Repository<OperatorEntity>;
+  let Reviews: Repository<OperatorReviewEntity>;
 
   let owner: UserEntity;
   let otherUser: UserEntity;
@@ -58,6 +64,7 @@ describe('Operator class', () => {
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
+    Reviews = dataSource.getRepository(OperatorReviewEntity);
 
     owner = createTestUser({
       accountTier: AccountTier.Basic,
@@ -88,7 +95,7 @@ describe('Operator class', () => {
       ...TestData,
       owner,
     };
-    operator = new Operator(Operators, data);
+    operator = new Operator(Operators, Reviews, data);
   });
 
   it('will return properties correctly', () => {
@@ -106,6 +113,7 @@ describe('Operator class', () => {
       name: owner.name,
     });
     expect(operator.active).toBe(TestData.active);
+    expect(operator.averageRating).toBe(TestData.averageRating);
     expect(operator.name).toBe(TestData.name);
     expect(operator.slug).toBe(TestData.slug);
     expect(operator.verificationStatus).toBe(TestData.verificationStatus);
@@ -297,7 +305,7 @@ describe('Operator class', () => {
     newData.name = 'Different Operator';
     newData.slug = TestData.slug;
     newData.owner = owner;
-    const newOperator = new Operator(Operators, newData);
+    const newOperator = new Operator(Operators, Reviews, newData);
     await Operators.save(data);
 
     await expect(newOperator.save()).rejects.toThrow(ConflictException);

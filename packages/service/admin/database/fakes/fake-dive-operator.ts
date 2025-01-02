@@ -44,6 +44,7 @@ export function fakeDiveOperator(userIds: string[]): OperatorEntity {
 
     logo: faker.image.url({ width: 128, height: 128 }),
     banner: faker.image.url({ width: 1024, height: 256 }),
+    averageRating: null,
   };
 
   return operator;

@@ -1,3 +1,5 @@
+import { NotificationCallToActionSchema } from '@bottomtime/api';
+
 import { faker } from '@faker-js/faker';
 
 import { z } from 'zod';
@@ -11,6 +13,9 @@ const NotificationSchema = z.object({
   message: z.string(),
   active: z.coerce.date(),
   expires: z.coerce.date().nullable().default(null),
+  callsToAction: NotificationCallToActionSchema.array()
+    .nullable()
+    .default(null),
   dismissed: z.boolean(),
 });
 

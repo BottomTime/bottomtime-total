@@ -39,7 +39,7 @@ export class AssertOperator implements CanActivate {
   }
 }
 
-export const CurrentOperator = createParamDecorator(
+export const TargetOperator = createParamDecorator(
   (_: unknown, ctx: ExecutionContext): Operator | undefined => {
     const req = ctx.switchToHttp().getRequest<Request>();
     return req.targetDiveOperator;

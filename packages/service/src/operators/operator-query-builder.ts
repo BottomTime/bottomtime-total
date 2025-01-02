@@ -27,6 +27,7 @@ export const OperatorSelectFields = [
   'operators.verificationStatus',
   'operators.website',
   'owner.id',
+  'owner.accountTier',
   'owner.username',
   'owner.memberSince',
   'owner.logBookSharing',

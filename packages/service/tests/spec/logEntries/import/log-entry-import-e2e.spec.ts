@@ -43,7 +43,6 @@ import {
   ConfigCatClientMock,
   createAuthHeader,
   createTestApp,
-  createTestLogEntryImportRecord,
   createTestUser,
   parseLogEntryImportJSON,
 } from '../../../utils';

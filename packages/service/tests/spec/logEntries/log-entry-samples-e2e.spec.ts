@@ -119,13 +119,13 @@ describe('Log Entry Samples E2E', () => {
         .expect(200);
 
       expect(body).toHaveLength(sampleData.length);
-      body.slice(0, 20).forEach((sample, index) => {
+      body.slice(0, 20).forEach((sample: LogEntrySampleDTO, index: number) => {
         const expected = LogEntrySampleUtils.entityToDTO(sampleData[index]);
         expect(sample.depth).toBe(expected.depth);
         expect(sample.offset).toBe(expected.offset);
         expect(sample.temperature).toBe(expected.temperature);
-        expect(sample.gps.lat).toBeCloseTo(expected.gps!.lat, -4);
-        expect(sample.gps.lng).toBeCloseTo(expected.gps!.lng, -4);
+        expect(sample.gps?.lat).toBeCloseTo(expected.gps!.lat, -4);
+        expect(sample.gps?.lng).toBeCloseTo(expected.gps!.lng, -4);
       });
     });
 
@@ -145,13 +145,13 @@ describe('Log Entry Samples E2E', () => {
         .expect(200);
 
       expect(body).toHaveLength(sampleData.length);
-      body.slice(0, 20).forEach((sample, index) => {
+      body.slice(0, 20).forEach((sample: LogEntrySampleDTO, index: number) => {
         const expected = LogEntrySampleUtils.entityToDTO(sampleData[index]);
         expect(sample.depth).toBe(expected.depth);
         expect(sample.offset).toBe(expected.offset);
         expect(sample.temperature).toBe(expected.temperature);
-        expect(sample.gps.lat).toBeCloseTo(expected.gps!.lat, -4);
-        expect(sample.gps.lng).toBeCloseTo(expected.gps!.lng, -4);
+        expect(sample.gps?.lat).toBeCloseTo(expected.gps!.lat, -4);
+        expect(sample.gps?.lng).toBeCloseTo(expected.gps!.lng, -4);
       });
     });
 

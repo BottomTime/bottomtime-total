@@ -1,6 +1,7 @@
 import { AccountTier } from '@bottomtime/api';
 
 import { INestApplication } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { Server } from 'http';
 import Stripe from 'stripe';
@@ -9,12 +10,13 @@ import { Repository } from 'typeorm';
 
 import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
+import { EventsService } from '../../../src/events';
 import { StripeWebhookController } from '../../../src/membership/stripe-webhook.controller';
 import { StripeWebhookService } from '../../../src/membership/stripe-webhook.service';
 import { UsersModule, UsersService } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { getEntitlementsChangedEvent } from '../../fixtures/stripe-events';
-import { TestQueue, createTestApp, createTestUser } from '../../utils';
+import { createTestApp, createTestUser } from '../../utils';
 
 const UserData: Partial<UserEntity> = {
   id: '7f73a521-ea15-4f4f-801e-c9b8ddd794fc',
@@ -35,7 +37,7 @@ describe('Stripe webhook controller', () => {
   let Users: Repository<UserEntity>;
   let usersService: UsersService;
   let service: StripeWebhookService;
-  let emailQueue: TestQueue;
+  let events: EventsService;
 
   let user: UserEntity;
 
@@ -43,8 +45,8 @@ describe('Stripe webhook controller', () => {
     stripe = new Stripe('sk_test_xxxxx');
     Users = dataSource.getRepository(UserEntity);
     usersService = new UsersService(Users);
-    emailQueue = new TestQueue();
-    service = new StripeWebhookService(stripe, usersService, emailQueue);
+    events = new EventsService(new EventEmitter2());
+    service = new StripeWebhookService(stripe, usersService, events);
     app = await createTestApp(
       {
         imports: [UsersModule],
@@ -78,6 +80,7 @@ describe('Stripe webhook controller', () => {
           typeof payload === 'string' ? payload : payload.toString('utf-8'),
         ),
       );
+    const eventSpy = jest.spyOn(events, 'emit');
 
     await request(server)
       .post('/api/stripe')
@@ -93,7 +96,7 @@ describe('Stripe webhook controller', () => {
 
     const saved = await Users.findOneByOrFail({ id: user.id });
     expect(saved.accountTier).toBe(AccountTier.Basic);
-    expect(emailQueue.messages).toHaveLength(0);
+    expect(eventSpy).not.toHaveBeenCalled();
   });
 
   it('will return a 400 response if the message payload is missing', async () => {

@@ -12,7 +12,6 @@ import {
   NotificationType,
   NotificationWhitelists,
   PressureUnit,
-  ProfileDTO,
   TemperatureUnit,
   UpdateProfileParamsDTO,
   UserDTO,

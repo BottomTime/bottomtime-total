@@ -20,19 +20,11 @@ import { Observable, from, toArray } from 'rxjs';
 
 import { AssertAccountOwner, AssertAuth, AssertTargetUser } from '../users';
 import { ZodValidator } from '../zod-validator';
-import {
-  AssertTargetLogEntry,
-  TargetLogEntry,
-} from './assert-target-log-entry.guard';
+import { AssertLogEntry, TargetLogEntry } from './assert-log-entry.guard';
 import { LogEntry } from './log-entry';
 
 @Controller('api/users/:username/logbook/:entryId/samples')
-@UseGuards(
-  AssertAuth,
-  AssertTargetUser,
-  AssertAccountOwner,
-  AssertTargetLogEntry,
-)
+@UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner, AssertLogEntry)
 export class LogEntrySampleController {
   private readonly log = new Logger(LogEntrySampleController.name);
 

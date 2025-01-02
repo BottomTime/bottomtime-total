@@ -6,7 +6,6 @@ import {
 
 import { Logger, MethodNotAllowedException } from '@nestjs/common';
 
-import dayjs from 'dayjs';
 import { Observable } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';

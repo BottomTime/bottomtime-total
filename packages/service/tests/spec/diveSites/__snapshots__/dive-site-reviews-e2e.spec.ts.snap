@@ -5,15 +5,6 @@ exports[`Dive Site Reviews End-to-End Tests when creating a review will return a
   "issues": [
     {
       "code": "invalid_type",
-      "expected": "string",
-      "message": "Required",
-      "path": [
-        "title",
-      ],
-      "received": "undefined",
-    },
-    {
-      "code": "invalid_type",
       "expected": "number",
       "message": "Expected number, received string",
       "path": [
@@ -47,66 +38,286 @@ exports[`Dive Site Reviews End-to-End Tests when creating a review will return a
 
 exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for a list of reviews and return the results 1`] = `
 [
-  "noxious so adept depressive",
-  "keen why unfinished drizzle",
-  "vengeful yet tattered puppet",
-  "dry inasmuch cheery skyscraper",
-  "attractive inasmuch lumbering moon",
-  "different who anchored dignity",
-  "outlying whereas lined townhouse",
-  "handsome what uncommon noodles",
-  "homely yet envious importance",
-  "offensive inasmuch loud wire",
-  "slippery provided scented tornado",
-  "golden so handy leopard",
-  "blushing why colossal departure",
-  "difficult yet striped downturn",
-  "tough though reliable perfection",
-  "formal meanwhile triangular command",
-  "slow nor disgusting lid",
-  "zealous instead alienated nightmare",
-  "dim incidentally stunning flintlock",
-  "unwitting yet pure spreadsheet",
-  "sugary unless blue stair",
-  "energetic whether clever divalent",
-  "canine even adored calm",
-  "cautious while wealthy hesitation",
-  "glass nor unconscious covariate",
-  "metallic till lustrous rocket-ship",
-  "high-level incidentally jittery plover",
-  "shy till fearful tortoise",
-  "melodic who lazy sow",
-  "hollow and talkative programme",
-  "jovial than great criterion",
-  "smug till unsightly epic",
-  "imperturbable and unknown belligerency",
-  "acrobatic if square stain",
-  "unsightly when horrible kitten",
-  "shabby when awesome laborer",
-  "messy until cylindrical massage",
-  "moist whether mammoth processing",
-  "pessimistic but courteous center",
-  "illiterate furthermore filthy faith",
-  "necessary supposing oily frontier",
-  "quiet which sophisticated executive",
-  "bumpy furthermore wiggly allergist",
-  "slippery as defensive avenue",
-  "quick-witted once powerless tutu",
-  "reasonable until vague similarity",
-  "substantial after monthly overview",
-  "easy finally salty principle",
-  "well-worn although physical rocket-ship",
-  "difficult even needy exit",
+  {
+    "createdOn": 1557588954502,
+    "id": "afcbe2c0-1d32-425b-9183-1c57d10cf55d",
+    "rating": 4.97,
+  },
+  {
+    "createdOn": 1585535248828,
+    "id": "6ad7e736-be52-4fc6-864e-459c8b233e9d",
+    "rating": 4.96,
+  },
+  {
+    "createdOn": 1619189951826,
+    "id": "ecdb8d20-acda-42dd-bba4-aabecf906032",
+    "rating": 4.95,
+  },
+  {
+    "createdOn": 1603115986762,
+    "id": "222b1868-d343-4675-92e0-dd985f6b2f06",
+    "rating": 4.94,
+  },
+  {
+    "createdOn": 1584054489751,
+    "id": "d94ec3e1-b178-4e15-b486-c372adeb8aef",
+    "rating": 4.91,
+  },
+  {
+    "createdOn": 1581484388516,
+    "id": "aa74bab5-ecec-4f33-9971-f6c5f7f729f9",
+    "rating": 4.91,
+  },
+  {
+    "createdOn": 1553857584608,
+    "id": "3f5de3c9-0cb6-444e-8565-6544c736739e",
+    "rating": 4.89,
+  },
+  {
+    "createdOn": 1623921261067,
+    "id": "0fd64c10-9dee-4389-b6fa-9a53374b4852",
+    "rating": 4.87,
+  },
+  {
+    "createdOn": 1685309479126,
+    "id": "e3013ed6-1f25-4efd-a5a1-e75e0498fb33",
+    "rating": 4.86,
+  },
+  {
+    "createdOn": 1692225697304,
+    "id": "b6a357a8-2b72-4853-9dc0-2fbf729873a8",
+    "rating": 4.77,
+  },
+  {
+    "createdOn": 1619373227492,
+    "id": "7025f8f6-8f37-4d84-ab5a-55609ae19bff",
+    "rating": 4.76,
+  },
+  {
+    "createdOn": 1697829955030,
+    "id": "59d451e4-8eb2-4a29-8d5e-5e27c4e902a1",
+    "rating": 4.74,
+  },
+  {
+    "createdOn": 1677148374193,
+    "id": "f583997b-70f9-4bf9-bb94-59388f064920",
+    "rating": 4.67,
+  },
+  {
+    "createdOn": 1670722203157,
+    "id": "f76c114e-e7c7-445d-9008-c37b366ca539",
+    "rating": 4.66,
+  },
+  {
+    "createdOn": 1577646209309,
+    "id": "97ac0707-0bc6-4d07-91e4-1e545147e86a",
+    "rating": 4.66,
+  },
+  {
+    "createdOn": 1685887296357,
+    "id": "c3b804ed-e086-45ea-b158-5441404fc8c6",
+    "rating": 4.57,
+  },
+  {
+    "createdOn": 1644868289741,
+    "id": "c2b2b9d3-c5b9-4251-a2b3-eb81e6b7156f",
+    "rating": 4.5,
+  },
+  {
+    "createdOn": 1603799569271,
+    "id": "c2cfb06e-1338-48b1-8629-fab34f75c7a6",
+    "rating": 4.37,
+  },
+  {
+    "createdOn": 1683737874428,
+    "id": "646c8248-11c9-4e09-9a74-22a0661ec17e",
+    "rating": 4.34,
+  },
+  {
+    "createdOn": 1598463346604,
+    "id": "ee8aad5e-92e7-41e6-9e5d-a51822777a02",
+    "rating": 4.24,
+  },
+  {
+    "createdOn": 1565789933610,
+    "id": "1e078414-f889-4a3a-8958-8528de286891",
+    "rating": 4.2,
+  },
+  {
+    "createdOn": 1611723010013,
+    "id": "f5288ac8-321d-43a0-be19-b7093acb6283",
+    "rating": 4.15,
+  },
+  {
+    "createdOn": 1639007824438,
+    "id": "440c04e4-d49f-4d64-a1e8-02e243ba4f4b",
+    "rating": 4.11,
+  },
+  {
+    "createdOn": 1568046262881,
+    "id": "fe276014-3716-4251-8365-f0f588b1f9be",
+    "rating": 4.11,
+  },
+  {
+    "createdOn": 1607727986331,
+    "id": "8cb3a7b3-7857-4d14-81ad-b1b2f512a9ab",
+    "rating": 4.02,
+  },
+  {
+    "createdOn": 1585851373826,
+    "id": "7fa3fc44-839a-4e7f-a5d3-6c2f9f254c1d",
+    "rating": 4,
+  },
+  {
+    "createdOn": 1684727984676,
+    "id": "f159469f-ed4a-4215-b310-079ddca3f7f5",
+    "rating": 3.96,
+  },
+  {
+    "createdOn": 1661607148443,
+    "id": "66c55407-4db0-4c3f-9cde-ea45a5556abf",
+    "rating": 3.96,
+  },
+  {
+    "createdOn": 1557189188237,
+    "id": "f0613bbf-0bdf-4092-b2b8-e72d7fd59921",
+    "rating": 3.95,
+  },
+  {
+    "createdOn": 1684627538260,
+    "id": "6bfc580f-ef10-46f2-ace3-0f1d74752d44",
+    "rating": 3.84,
+  },
+  {
+    "createdOn": 1554079994328,
+    "id": "5efbe1d7-7016-4aab-91f4-f445c0a1fb51",
+    "rating": 3.76,
+  },
+  {
+    "createdOn": 1555420945539,
+    "id": "d78b14d3-a1c7-4750-b341-8690e585fd80",
+    "rating": 3.66,
+  },
+  {
+    "createdOn": 1559617778503,
+    "id": "8b3219e1-f2ac-43dd-bd1a-e87d7eef21bc",
+    "rating": 3.57,
+  },
+  {
+    "createdOn": 1582155393506,
+    "id": "82a84d4b-9878-412b-9eab-fe6c97f3ba6a",
+    "rating": 3.55,
+  },
+  {
+    "createdOn": 1699412846580,
+    "id": "b9d84a09-22ce-4985-9212-7a4eaef81eea",
+    "rating": 3.37,
+  },
+  {
+    "createdOn": 1698766205929,
+    "id": "7680e022-ed32-4052-bead-0acc529b9477",
+    "rating": 3.32,
+  },
+  {
+    "createdOn": 1586812400866,
+    "id": "6b136b41-634c-4c10-92b2-48a8d0aae054",
+    "rating": 3.3,
+  },
+  {
+    "createdOn": 1676145346237,
+    "id": "1c0de883-8ec6-4e79-b90e-3109217ac8bd",
+    "rating": 3.29,
+  },
+  {
+    "createdOn": 1555907216070,
+    "id": "ec8fe3da-aad1-498b-9939-8f08ecd9349a",
+    "rating": 3.28,
+  },
+  {
+    "createdOn": 1675244849505,
+    "id": "768176d2-cdde-435e-b7c4-5db291b7bd88",
+    "rating": 3.25,
+  },
+  {
+    "createdOn": 1674114259444,
+    "id": "fc8cdad1-a1c0-4696-b7de-e109e34412f9",
+    "rating": 3.24,
+  },
+  {
+    "createdOn": 1600675722797,
+    "id": "8c308ac4-c495-4dda-b053-e1e842009ead",
+    "rating": 3.23,
+  },
+  {
+    "createdOn": 1626389218583,
+    "id": "0e67246e-3810-4bf8-8afd-0064b66431da",
+    "rating": 3.18,
+  },
+  {
+    "createdOn": 1675613119949,
+    "id": "472cb332-34ce-4d5c-bd9b-52f0643528f8",
+    "rating": 3.16,
+  },
+  {
+    "createdOn": 1623956858139,
+    "id": "5df10e14-2ed8-4170-8fa2-d8b89928cb9b",
+    "rating": 3.14,
+  },
+  {
+    "createdOn": 1660335865485,
+    "id": "e2f17385-bdb7-4a3f-aad2-378831b1274b",
+    "rating": 3.09,
+  },
+  {
+    "createdOn": 1661741128448,
+    "id": "0c042570-9cb7-4869-ab49-b00584a8a4ef",
+    "rating": 3.08,
+  },
+  {
+    "createdOn": 1555308788935,
+    "id": "b7d8dea9-96b9-43ed-b4d0-4c23620dbe47",
+    "rating": 3.04,
+  },
+  {
+    "createdOn": 1558045928602,
+    "id": "318db18e-3884-43a0-8758-b07c3080a786",
+    "rating": 2.93,
+  },
+  {
+    "createdOn": 1584894265678,
+    "id": "ccf85c7d-4273-4cb4-b397-2c83118a6f9b",
+    "rating": 2.85,
+  },
 ]
 `;
 
 exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for a list of reviews given query string options 1`] = `
 [
-  "golden so handy leopard",
-  "unimportant likewise basic copy",
-  "offensive inasmuch loud wire",
-  "little incidentally flustered deck",
-  "formal meanwhile triangular command",
+  {
+    "createdOn": 1697829955030,
+    "id": "59d451e4-8eb2-4a29-8d5e-5e27c4e902a1",
+    "rating": 4.74,
+  },
+  {
+    "createdOn": 1695025476973,
+    "id": "d058482f-6a15-4120-b9fd-109eaf0aa76a",
+    "rating": 2.7,
+  },
+  {
+    "createdOn": 1692225697304,
+    "id": "b6a357a8-2b72-4853-9dc0-2fbf729873a8",
+    "rating": 4.77,
+  },
+  {
+    "createdOn": 1686260525734,
+    "id": "0908b36b-990f-45a8-b942-5a6f870bce26",
+    "rating": 2.04,
+  },
+  {
+    "createdOn": 1685887296357,
+    "id": "c3b804ed-e086-45ea-b158-5441404fc8c6",
+    "rating": 4.57,
+  },
 ]
 `;
 
@@ -178,7 +389,6 @@ exports[`Dive Site Reviews End-to-End Tests when retrieving a single review will
   "difficulty": 1.02,
   "id": "d94ec3e1-b178-4e15-b486-c372adeb8aef",
   "rating": 4.91,
-  "title": "attractive inasmuch lumbering moon",
   "updatedOn": 1681816047008,
 }
 `;
@@ -186,15 +396,6 @@ exports[`Dive Site Reviews End-to-End Tests when retrieving a single review will
 exports[`Dive Site Reviews End-to-End Tests when updating a review will return a 400 response if the the request body is invalid 1`] = `
 {
   "issues": [
-    {
-      "code": "invalid_type",
-      "expected": "string",
-      "message": "Required",
-      "path": [
-        "title",
-      ],
-      "received": "undefined",
-    },
     {
       "code": "invalid_type",
       "expected": "number",

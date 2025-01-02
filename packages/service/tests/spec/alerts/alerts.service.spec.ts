@@ -124,23 +124,23 @@ describe('Alerts Service', () => {
 
   it('will create a new alert and return it', async () => {
     const options: CreateOrUpdateAlertParamsDTO = {
-      active: new Date('2023-03-26T15:02:14.037Z'),
-      expires: new Date('2025-04-26T15:02:14.037Z'),
+      active: new Date('2023-03-26T15:02:14.037Z').valueOf(),
+      expires: new Date('2025-04-26T15:02:14.037Z').valueOf(),
       icon: 'fas fa-user',
       message: 'This is a test alert.',
       title: 'Test Alert',
     };
 
     const alert = await service.createAlert(options);
-    expect(alert.active).toEqual(options.active);
-    expect(alert.expires).toEqual(options.expires);
+    expect(alert.active.valueOf()).toEqual(options.active);
+    expect(alert.expires?.valueOf()).toEqual(options.expires);
     expect(alert.icon).toBe(options.icon);
     expect(alert.message).toBe(options.message);
     expect(alert.title).toBe(options.title);
 
     const saved = await Alerts.findOneByOrFail({ id: alert.id });
-    expect(saved.active).toEqual(options.active);
-    expect(saved.expires).toEqual(options.expires);
+    expect(saved.active.valueOf()).toEqual(options.active);
+    expect(saved.expires?.valueOf()).toEqual(options.expires);
     expect(saved.icon).toBe(options.icon);
     expect(saved.message).toBe(options.message);
     expect(saved.title).toBe(options.title);

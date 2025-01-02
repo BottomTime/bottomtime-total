@@ -12,6 +12,7 @@ import {
   WeightUnit,
 } from './constants';
 import { DiveSiteSchema } from './dive-sites';
+import { SuccinctOperatorSchema } from './operators';
 import { CreateOrUpdateTankParamsSchema } from './tanks';
 import { SuccinctProfileSchema } from './users';
 
@@ -126,6 +127,7 @@ const LogEntryBaseSchema = z.object({
     .optional(),
 
   notes: z.string().max(5000).optional(),
+  rating: z.number().min(1).max(5).optional(),
   tags: z.string().max(100).array().optional(),
 });
 
@@ -144,6 +146,7 @@ export type LogEntrySampleDTO = z.infer<typeof LogEntrySampleSchema>;
 
 export const CreateOrUpdateLogEntryParamsSchema = LogEntryBaseSchema.extend({
   site: z.string().uuid().optional(),
+  operator: z.string().uuid().optional(),
   samples: LogEntrySampleSchema.array().optional(),
 });
 export type CreateOrUpdateLogEntryParamsDTO = z.infer<
@@ -156,6 +159,7 @@ export const LogEntrySchema = LogEntryBaseSchema.extend({
   updatedAt: z.number().optional(),
   creator: SuccinctProfileSchema,
   site: DiveSiteSchema.optional(),
+  operator: SuccinctOperatorSchema.optional(),
   samples: LogEntrySampleSchema.array().optional(),
 });
 export type LogEntryDTO = z.infer<typeof LogEntrySchema>;

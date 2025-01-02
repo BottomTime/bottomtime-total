@@ -4,9 +4,7 @@ import { Router } from 'vue-router';
 
 import CookiePolicy from '../../../src/views/cookies-view.vue';
 import NotFound from '../../../src/views/not-found-view.vue';
-import PrivacyPolicy from '../../../src/views/privacy-view.vue';
 import ServerError from '../../../src/views/server-error-view.vue';
-import TermsOfService from '../../../src/views/terms-of-service-view.vue';
 import { createRouter } from '../../fixtures/create-router';
 
 describe('Static Views', () => {

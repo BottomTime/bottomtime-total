@@ -1,6 +1,5 @@
 import {
   CreateOrUpdateLogEntryParamsDTO,
-  CreateOrUpdateLogEntryParamsSchema,
   LogEntrySampleDTO,
 } from '@bottomtime/api';
 
@@ -9,10 +8,8 @@ import { faker } from '@faker-js/faker';
 import { lastValueFrom, map, toArray } from 'rxjs';
 
 import {
-  DiveSiteEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
-  LogEntrySampleEntity,
   UserEntity,
 } from '../../src/data';
 import { createTestDiveProfile } from './create-test-dive-profile';
@@ -20,7 +17,6 @@ import { createTestLogEntry } from './create-test-log-entry';
 
 async function createRecordData(
   owner: UserEntity,
-  entryData?: Partial<CreateOrUpdateLogEntryParamsDTO>,
 ): Promise<CreateOrUpdateLogEntryParamsDTO> {
   const data = createTestLogEntry(owner);
   return {
@@ -99,13 +95,12 @@ async function createRecordData(
 export async function createTestLogEntryImportRecord(
   owner: UserEntity,
   options?: Partial<Omit<LogEntryImportRecordEntity, 'data'>>,
-  entryData?: Partial<CreateOrUpdateLogEntryParamsDTO>,
 ): Promise<LogEntryImportRecordEntity> {
   return {
     id: options?.id || faker.string.uuid(),
     import:
       options?.import ?? ({ id: faker.string.uuid() } as LogEntryImportEntity),
     timestamp: options?.timestamp ?? faker.date.past({ years: 3 }),
-    data: JSON.stringify(await createRecordData(owner, entryData)),
+    data: JSON.stringify(await createRecordData(owner)),
   };
 }
