@@ -3613,8 +3613,12 @@ __metadata:
   dependencies:
     "@aws-sdk/client-sqs": "npm:^3.614.0"
     "@types/aws-lambda": "npm:^8.10.140"
+    "@types/jest": "npm:^29.4.0"
     "@types/pg": "npm:^8.11.2"
+    jest: "npm:^29.7.0"
+    jest-junit: "npm:^16.0.0"
     pg: "npm:^8.11.3"
+    ts-jest: "npm:^29.0.5"
     ts-loader: "npm:^9.5.1"
     webpack: "npm:^5.92.0"
     webpack-cli: "npm:^5.1.4"
