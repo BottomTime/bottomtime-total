@@ -237,6 +237,7 @@ export class Operator {
     });
 
     if (data) {
+      data.operator = this.data;
       return new OperatorReview(this.reviews, data);
     }
 

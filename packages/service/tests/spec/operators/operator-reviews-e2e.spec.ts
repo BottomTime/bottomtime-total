@@ -5,6 +5,7 @@ import {
   LogBookSharing,
   OperatorReviewSortBy,
   SortOrder,
+  UserRole,
   VerificationStatus,
 } from '@bottomtime/api';
 
@@ -83,11 +84,13 @@ describe('Operator Reviews E2E tests', () => {
 
   let owner: UserEntity;
   let otherOwner: UserEntity;
+  let admin: UserEntity;
   let operator: OperatorEntity;
   let otherOperator: OperatorEntity;
   let testCreators: UserEntity[];
   let testReviews: OperatorReviewEntity[];
-  let creatorAuthTokens: [string, string][];
+  let creatorAuthHeaders: [string, string][];
+  let adminAuthHeader: [string, string];
 
   beforeAll(async () => {
     Operators = dataSource.getRepository(OperatorEntity);
@@ -104,6 +107,7 @@ describe('Operator Reviews E2E tests', () => {
       location: 'Toronto, ON, Canada',
       name: 'Test User',
     });
+    admin = createTestUser({ role: UserRole.Admin });
     operator = {
       ...TestOperator,
       owner,
@@ -113,9 +117,10 @@ describe('Operator Reviews E2E tests', () => {
     otherOperator = createTestOperator(otherOwner);
 
     testCreators = TestCreators.slice(0, 8).map(parseUserJSON);
-    creatorAuthTokens = await Promise.all(
+    creatorAuthHeaders = await Promise.all(
       testCreators.map((user) => createAuthHeader(user.id)),
     );
+    adminAuthHeader = await createAuthHeader(admin.id);
 
     testReviews = TestReviews.map((review, index) =>
       parseOperatorReviewJSON(
@@ -137,7 +142,7 @@ describe('Operator Reviews E2E tests', () => {
   });
 
   beforeEach(async () => {
-    await Users.save([owner, otherOwner, ...testCreators]);
+    await Users.save([owner, otherOwner, admin, ...testCreators]);
     await Operators.save([operator, otherOperator]);
   });
 
@@ -182,7 +187,7 @@ describe('Operator Reviews E2E tests', () => {
       };
       const { body } = await request(server)
         .post(getUrl())
-        .set(...creatorAuthTokens[2])
+        .set(...creatorAuthHeaders[2])
         .send(options)
         .expect(201);
 
@@ -204,14 +209,14 @@ describe('Operator Reviews E2E tests', () => {
     it('will return a 400 response if the request body is missing', async () => {
       await request(server)
         .post(getUrl())
-        .set(...creatorAuthTokens[2])
+        .set(...creatorAuthHeaders[2])
         .expect(400);
     });
 
     it('will return a 400 response if the request body is invalid', async () => {
       const { body } = await request(server)
         .post(getUrl())
-        .set(...creatorAuthTokens[2])
+        .set(...creatorAuthHeaders[2])
         .send({ rating: 'good', comments: 77 })
         .expect(400);
       expect(body.details).toMatchSnapshot();
@@ -232,7 +237,7 @@ describe('Operator Reviews E2E tests', () => {
       };
       await request(server)
         .post(getUrl(undefined, 'not-a-real-operator'))
-        .set(...creatorAuthTokens[1])
+        .set(...creatorAuthHeaders[1])
         .send(options)
         .expect(404);
     });
@@ -288,7 +293,188 @@ describe('Operator Reviews E2E tests', () => {
     });
   });
 
-  describe('when updating an operator review', () => {});
+  describe('when updating an operator review', () => {
+    let review: OperatorReviewEntity;
+    let creator: UserEntity;
+    let authHeader: [string, string];
 
-  describe('when deleting an operator review', () => {});
+    beforeEach(async () => {
+      creator = testCreators[6];
+      authHeader = creatorAuthHeaders[6];
+      review = {
+        comments: 'This review is lame. It needs an update.',
+        createdAt: new Date('2025-01-03T09:53:08-05:00'),
+        updatedAt: new Date('2025-01-03T09:53:08-05:00'),
+        creator,
+        id: '87750e9b-935e-4c53-b20f-13172dd89c4e',
+        operator,
+        logEntry: null,
+        rating: 2.99,
+      };
+
+      await Reviews.save(review);
+    });
+
+    it('will save changes to an opeator review', async () => {
+      const options: CreateOrUpdateOperatorReviewDTO = {
+        rating: 4.1,
+        comments: 'Updated comments.',
+      };
+
+      const { body } = await request(server)
+        .put(getUrl(review.id))
+        .set(...authHeader)
+        .send(options)
+        .expect(200);
+      expect(body.comments).toBe(options.comments);
+      expect(body.rating).toBe(options.rating);
+      expect(body.updatedAt).toBeCloseTo(Date.now(), -3);
+
+      const saved = await Reviews.findOneByOrFail({ id: review.id });
+      expect(saved.comments).toBe(options.comments);
+      expect(saved.rating).toBe(options.rating);
+      expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+    });
+
+    it('will allow an admin to save changes to an opeator review', async () => {
+      const options: CreateOrUpdateOperatorReviewDTO = {
+        rating: 4.1,
+        comments: 'Updated comments.',
+      };
+
+      const { body } = await request(server)
+        .put(getUrl(review.id))
+        .set(...adminAuthHeader)
+        .send(options)
+        .expect(200);
+      expect(body.comments).toBe(options.comments);
+      expect(body.rating).toBe(options.rating);
+      expect(body.updatedAt).toBeCloseTo(Date.now(), -3);
+
+      const saved = await Reviews.findOneByOrFail({ id: review.id });
+      expect(saved.comments).toBe(options.comments);
+      expect(saved.rating).toBe(options.rating);
+      expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+    });
+
+    it('will return a 400 response if the request body is missing', async () => {
+      await request(server)
+        .put(getUrl(review.id))
+        .set(...authHeader)
+        .expect(400);
+    });
+
+    it('will return a 400 response if the request body is invalid', async () => {
+      const { body } = await request(server)
+        .put(getUrl(review.id))
+        .set(...authHeader)
+        .send({ rating: 8.2, comments: true })
+        .expect(400);
+      expect(body.details).toMatchSnapshot();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      const options: CreateOrUpdateOperatorReviewDTO = {
+        rating: 4.1,
+        comments: 'Updated comments.',
+      };
+      await request(server).put(getUrl(review.id)).send(options).expect(401);
+    });
+
+    it('will return a 403 response if the user is not authoirzed to update the review', async () => {
+      const options: CreateOrUpdateOperatorReviewDTO = {
+        rating: 4.1,
+        comments: 'Updated comments.',
+      };
+      await request(server)
+        .put(getUrl(review.id))
+        .set(...creatorAuthHeaders[3])
+        .send(options)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the operator does not exist', async () => {
+      const options: CreateOrUpdateOperatorReviewDTO = {
+        rating: 4.1,
+        comments: 'Updated comments.',
+      };
+      await request(server)
+        .put(getUrl(review.id, 'no-such-operator'))
+        .set(...adminAuthHeader)
+        .send(options)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the review does not exist', async () => {
+      const options: CreateOrUpdateOperatorReviewDTO = {
+        rating: 4.1,
+        comments: 'Updated comments.',
+      };
+      await request(server)
+        .put(getUrl('54bee0c3-08d0-48ee-95b8-35ceec901555'))
+        .set(...adminAuthHeader)
+        .send(options)
+        .expect(404);
+    });
+  });
+
+  describe('when deleting an operator review', () => {
+    let review: OperatorReviewEntity;
+
+    beforeEach(async () => {
+      review = testReviews[3];
+      await Reviews.save(review);
+    });
+
+    it('will delete an operator review', async () => {
+      const { body } = await request(server)
+        .delete(getUrl(review.id))
+        .set(...creatorAuthHeaders[3])
+        .expect(200);
+
+      expect(body).toEqual({
+        succeeded: true,
+      });
+
+      await expect(Reviews.existsBy({ id: review.id })).resolves.toBe(false);
+    });
+
+    it('will allow an admin to delete an operator review', async () => {
+      const { body } = await request(server)
+        .delete(getUrl(review.id))
+        .set(...adminAuthHeader)
+        .expect(200);
+
+      expect(body).toEqual({
+        succeeded: true,
+      });
+
+      await expect(Reviews.existsBy({ id: review.id })).resolves.toBe(false);
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server).delete(getUrl(review.id)).expect(401);
+    });
+
+    it('will return a 403 response if the user is not authoirzed to delete the review', async () => {
+      await request(server)
+        .delete(getUrl(review.id))
+        .set(...creatorAuthHeaders[6])
+        .expect(403);
+    });
+
+    it('will return a 404 response if the operator does not exist', async () => {
+      await request(server)
+        .delete(getUrl(review.id, 'no-such-operator'))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+
+    it('will return a 404 response if the review does not exist', async () => {
+      await request(server)
+        .delete(getUrl('54bee0c3-08d0-48ee-95b8-35ceec901555'))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+  });
 });

@@ -55,6 +55,7 @@ export class OperatorReview {
   }
 
   async save(): Promise<void> {
+    this.data.updatedAt = new Date();
     await this.reviews.save(this.data);
   }
 

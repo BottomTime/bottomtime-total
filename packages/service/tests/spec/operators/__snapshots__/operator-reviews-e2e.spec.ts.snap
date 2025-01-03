@@ -1127,3 +1127,30 @@ Vigor voco spoliatio cerno eveniet defessus blanditiis. Calcar torqueo vallum vo
   "updatedAt": 1735761117622,
 }
 `;
+
+exports[`Operator Reviews E2E tests when updating an operator review will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "comments",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 5,
+      "message": "Number must be less than or equal to 5",
+      "path": [
+        "rating",
+      ],
+      "type": "number",
+    },
+  ],
+}
+`;
