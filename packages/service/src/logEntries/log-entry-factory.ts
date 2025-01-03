@@ -13,6 +13,7 @@ import {
   LogEntrySampleEntity,
 } from '../data';
 import { DiveSiteFactory } from '../diveSites';
+import { OperatorFactory } from '../operators';
 import { User } from '../users';
 import { LogEntry } from './log-entry';
 
@@ -30,6 +31,9 @@ export class LogEntryFactory {
 
     @Inject(DiveSiteFactory)
     private readonly siteFactory: DiveSiteFactory,
+
+    @Inject(OperatorFactory)
+    private readonly operatorFactory: OperatorFactory,
   ) {}
 
   createLogEntry(data: LogEntryEntity): LogEntry {
@@ -38,6 +42,7 @@ export class LogEntryFactory {
       this.EntryAir,
       this.EntrySamples,
       this.siteFactory,
+      this.operatorFactory,
       data,
     );
   }
@@ -127,6 +132,7 @@ export class LogEntryFactory {
       this.EntryAir,
       this.EntrySamples,
       this.siteFactory,
+      this.operatorFactory,
       entry,
     );
   }

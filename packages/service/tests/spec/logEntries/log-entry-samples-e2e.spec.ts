@@ -20,6 +20,7 @@ import { DiveSitesModule } from '../../../src/diveSites';
 import { LogEntriesService, LogEntryFactory } from '../../../src/logEntries';
 import { LogEntrySampleUtils } from '../../../src/logEntries/log-entry-sample-utils';
 import { LogEntrySampleController } from '../../../src/logEntries/log-entry-sample.controller';
+import { OperatorsModule } from '../../../src/operators';
 import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestSamples from '../../fixtures/dive-profile.json';
@@ -74,6 +75,7 @@ describe('Log Entry Samples E2E', () => {
           LogEntrySampleEntity,
         ]),
         DiveSitesModule,
+        OperatorsModule,
         UsersModule,
       ],
       providers: [LogEntryFactory, LogEntriesService],

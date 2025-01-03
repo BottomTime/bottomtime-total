@@ -22,7 +22,7 @@ export function createTestDiveOperatorReview(
   creator: UserEntity,
   options?: Partial<OperatorReviewEntity>,
 ): OperatorReviewEntity {
-  const createdAt = options?.createdAt ?? faker.date.recent();
+  const createdAt = options?.createdAt ?? faker.date.past({ years: 3 });
   return {
     creator: { id: creator.id } as UserEntity,
     operator: { id: operator.id } as OperatorEntity,
@@ -33,7 +33,8 @@ export function createTestDiveOperatorReview(
       options?.rating ??
       faker.number.float({ min: 1, max: 5, fractionDigits: 2 }),
     createdAt,
-    updatedAt: options?.updatedAt ?? createdAt,
+    updatedAt:
+      options?.updatedAt ?? faker.date.soon({ days: 40, refDate: createdAt }),
     logEntry: options?.logEntry ?? null,
   };
 }

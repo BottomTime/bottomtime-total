@@ -20,6 +20,7 @@ import {
   OperatorReviewEntity,
   UserEntity,
 } from '../../../src/data';
+import { OperatorFactory } from '../../../src/operators';
 import { OperatorReviewController } from '../../../src/operators/operator-review.controller';
 import { OperatorReviewsController } from '../../../src/operators/operator-reviews.controller';
 import { OperatorsService } from '../../../src/operators/operators.service';
@@ -135,7 +136,7 @@ describe('Operator Reviews E2E tests', () => {
         TypeOrmModule.forFeature([OperatorEntity, OperatorReviewEntity]),
         UsersModule,
       ],
-      providers: [OperatorsService],
+      providers: [OperatorsService, OperatorFactory],
       controllers: [OperatorReviewsController, OperatorReviewController],
     });
     server = app.getHttpServer();

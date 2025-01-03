@@ -4,11 +4,8 @@ import { writeFile } from 'fs/promises';
 import { resolve } from 'path';
 import { Repository } from 'typeorm';
 
-import {
-  OperatorEntity,
-  OperatorReviewEntity,
-  UserEntity,
-} from '../../../src/data';
+import { OperatorEntity, UserEntity } from '../../../src/data';
+import { OperatorFactory } from '../../../src/operators';
 import {
   CreateOperatorOptions,
   OperatorsService,
@@ -17,13 +14,17 @@ import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestData from '../../fixtures/operators.json';
 import TestOwners from '../../fixtures/user-search-data.json';
-import { createTestOperator, parseOperatorJSON } from '../../utils';
+import {
+  createOperatorFactory,
+  createTestOperator,
+  parseOperatorJSON,
+} from '../../utils';
 import { createTestUser, parseUserJSON } from '../../utils/create-test-user';
 
 describe('OperatorService', () => {
   let Users: Repository<UserEntity>;
   let Operators: Repository<OperatorEntity>;
-  let Reviews: Repository<OperatorReviewEntity>;
+  let operatorFactory: OperatorFactory;
   let service: OperatorsService;
 
   let owner: User;
@@ -31,9 +32,10 @@ describe('OperatorService', () => {
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
-    Reviews = dataSource.getRepository(OperatorReviewEntity);
 
-    service = new OperatorsService(Operators, Reviews);
+    operatorFactory = createOperatorFactory();
+
+    service = new OperatorsService(Operators, operatorFactory);
   });
 
   beforeEach(async () => {

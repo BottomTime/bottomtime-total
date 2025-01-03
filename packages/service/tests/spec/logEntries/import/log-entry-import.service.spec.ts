@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 
 import { writeFile } from 'fs/promises';
-import { Mock } from 'moq.ts';
 import { resolve } from 'path';
 import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import * as uuid from 'uuid';
@@ -14,7 +13,6 @@ import {
   LogEntrySampleEntity,
   UserEntity,
 } from '../../../../src/data';
-import { DiveSiteFactory } from '../../../../src/diveSites';
 import { LogEntryFactory } from '../../../../src/logEntries';
 import { Importer } from '../../../../src/logEntries/import/importer';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
@@ -24,6 +22,8 @@ import { dataSource } from '../../../data-source';
 import LogEntryData from '../../../fixtures/log-entries.json';
 import TestData from '../../../fixtures/log-entry-imports.json';
 import {
+  createDiveSiteFactory,
+  createOperatorFactory,
   createTestLogEntryImport,
   createTestLogEntryImportRecord,
   parseLogEntryImportJSON,
@@ -68,7 +68,8 @@ describe('Log Entry Import Service', () => {
       Entries,
       EntriesAir,
       dataSource.getRepository(LogEntrySampleEntity),
-      new Mock<DiveSiteFactory>().object(),
+      createDiveSiteFactory(),
+      createOperatorFactory(),
     );
     importFactory = new LogEntryImportFactory(
       Imports,

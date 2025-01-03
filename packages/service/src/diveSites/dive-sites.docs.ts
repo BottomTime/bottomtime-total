@@ -115,15 +115,15 @@
  *             creator:
  *               $ref: "#/components/schemas/Profile"
  *             createdOn:
- *               type: string
- *               format: date-time
- *               description: The date and time the dive site was created.
- *               example: 2021-06-10T03:00:00.000Z
+ *               type: integer
+ *               format: int64
+ *               description: The date and time the dive site was created. (Specified in milliseconds since Unix Epoch time.)
+ *               example: 1630000000000
  *             updatedOn:
- *               type: string
- *               format: date-time
- *               description: The date and time the dive site was last updated.
- *               example: 2021-06-10T03:00:00.000Z
+ *               type: integer
+ *               format: int64
+ *               description: The date and time the dive site was last updated. (Specified in milliseconds since Unix Epoch time.)
+ *               example: 1630000000000
  *             averageRating:
  *               type: number
  *               description: The average rating of the dive site.
@@ -186,14 +186,14 @@
  *               description: The ID of the user who created the review.
  *               example: 123e4567-e89b-12d3-a456-426614174000
  *             createdOn:
- *               type: string
- *               format: date-time
- *               description: The date and time the dive site review was created.
- *               example: 2021-06-10T03:00:00.000Z
+ *               type: integer
+ *               format: int64
+ *               description: The date and time the dive site review was created. (Specified in milliseconds since Unix Epoch time.)
+ *               example: 1630000000000
  *             updatedOn:
- *               type: string
- *               format: date-time
- *               description: The date and time the dive site review was last updated.
- *               example: 2021-06-10T03:00:00.000Z
+ *               type: integer
+ *               format: int64
+ *               description: The date and time the dive site review was last updated. (Specified in milliseconds since Unix Epoch time.)
+ *               example: 1630000000000
  *         - $ref: "#/components/schemas/CreateOrUpdateDiveSiteReview"
  */

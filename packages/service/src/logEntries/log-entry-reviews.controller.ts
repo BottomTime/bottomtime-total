@@ -17,6 +17,8 @@ import { LogEntry } from './log-entry';
 @Controller('api/users/:username/logbook/:entryId')
 @UseGuards(AssertAuth, AssertTargetUser, AssertAccountOwner, AssertLogEntry)
 export class LogEntryReviewsController {
+  constructor() {}
+
   @Put('reviewOperator')
   async reviewOperator(
     @TargetLogEntry() logEntry: LogEntry,

@@ -155,15 +155,15 @@
  *               name: ID
  *               description: The unique identifier for the dive operator.
  *             createdAt:
- *               type: string
- *               format: date-time
+ *               type: integer
+ *               format: int64
  *               name: Creation Date
- *               description: The date and time at which the dive operator was first created.
+ *               description: The date and time at which the dive operator was first created. Specified in milliseconds since the Unix epoch.
  *             updatedAt:
- *               type: string
- *               format: date-time
+ *               type: integer
+ *               format: int64
  *               name: Last Updated
- *               description: The date and time at which the dive operator was last updated.
+ *               description: The date and time at which the dive operator was last updated. Specified in milliseconds since the Unix epoch.
  *             verificationStatus:
  *               type: string
  *               enum:

@@ -171,22 +171,16 @@
  *               example: 2783.1
  *               exclusiveMinimum: 0
  *             entryTime:
- *               type: object
- *               required:
- *                 - date
- *                 - timezone
- *               properties:
- *                 date:
- *                   type: string
- *                   pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?$
- *                   name: Entry Date/Time
- *                   description: Time and date at which the dive began (specified in local time).
- *                   example: 2021-07-04T12:00:00.345
- *                 timezone:
- *                   type: string
- *                   name: Timezone
- *                   description: The timezone in which the dive took place.
- *                   example: America/New_York
+ *               type: integer
+ *               format: int64
+ *               name: Entry Date/Time
+ *               description: Time and date at which the dive began (specified in milliseconds since Unix Epoch time).
+ *               example: 1625419200000
+ *             timezone:
+ *               type: string
+ *               name: Timezone
+ *               description: The timezone in which the dive took place.
+ *               example: America/New_York
  *             duration:
  *               type: number
  *               format: float
@@ -426,17 +420,17 @@
  *         site:
  *           $ref: "#/components/schemas/DiveSite"
  *         createdAt:
- *           type: string
- *           format: date-time
+ *           type: integer
+ *           format: int64
  *           name: Created At
- *           description: The date and time at which the log entry was first created.
- *           example: 2021-07-04T12:00:00.345
+ *           description: The date and time at which the log entry was first created. (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1625419200000
  *         updatedAt:
- *           type: string
- *           format: date-time
+ *           type: integer
+ *           format: int64
  *           name: Updated At
- *           description: The date and time at which the log entry was last updated.
- *           example: 2021-07-04T12:00:00
+ *           description: The date and time at which the log entry was last updated. (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1625419200000
  *     LogEntry:
  *       allOf:
  *         - $ref: "#/components/schemas/LogEntryGeneratedProps"
@@ -460,10 +454,10 @@
  *           description: The unique ID of the log entry import.
  *           example: 123e4567-e89b-12d3-a456-426614174000
  *         date:
- *           type: string
- *           format: date-time
- *           description: The date and time at which the import was initiated (or finalized if it has been finalized).
- *           example: 2021-07-04T12:00:00.345
+ *           type: integer
+ *           format: int64
+ *           description: The date and time at which the import was initiated (or finalized if it has been finalized). (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1625419200000
  *         error:
  *           type: string
  *           description: |

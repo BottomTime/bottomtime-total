@@ -33,19 +33,21 @@ import {
 } from '../../../src/logEntries';
 import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { LogEntryFactory } from '../../../src/logEntries/log-entry-factory';
+import { OperatorFactory } from '../../../src/operators';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
 import TestUserData from '../../fixtures/user-search-data.json';
-import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
-import { createTestDiveProfile } from '../../utils/create-test-dive-profile';
-import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
 import {
+  createDiveSiteFactory,
+  createOperatorFactory,
+  createTestDiveProfile,
   createTestLogEntry,
+  parseDiveSiteJSON,
   parseLogEntryJSON,
-} from '../../utils/create-test-log-entry';
-import { parseUserJSON } from '../../utils/create-test-user';
+  parseUserJSON,
+} from '../../utils';
 
 dayjs.extend(tz);
 dayjs.extend(utc);
@@ -57,6 +59,7 @@ describe('Log entries service', () => {
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
   let siteFactory: DiveSiteFactory;
+  let operatorFactory: OperatorFactory;
   let entryFactory: LogEntryFactory;
   let diveSitesService: DiveSitesService;
   let service: LogEntriesService;
@@ -74,11 +77,13 @@ describe('Log entries service', () => {
     DiveSites = dataSource.getRepository(DiveSiteEntity);
 
     siteFactory = createDiveSiteFactory();
+    operatorFactory = createOperatorFactory();
     entryFactory = new LogEntryFactory(
       Entries,
       EntriesAir,
       EntrySamples,
       siteFactory,
+      operatorFactory,
     );
 
     diveSitesService = new DiveSitesService(DiveSites, siteFactory);

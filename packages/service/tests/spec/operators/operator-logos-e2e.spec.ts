@@ -16,6 +16,7 @@ import {
   OperatorReviewEntity,
   UserEntity,
 } from '../../../src/data';
+import { OperatorFactory } from '../../../src/operators';
 import { OperatorLogoController } from '../../../src/operators/operator-logo.controller';
 import { OperatorsService } from '../../../src/operators/operators.service';
 import { StorageModule } from '../../../src/storage';
@@ -98,7 +99,7 @@ describe('Operator logos E2E tests', () => {
               TypeOrmModule.forFeature([OperatorEntity, OperatorReviewEntity]),
               StorageModule,
             ],
-            providers: [OperatorsService],
+            providers: [OperatorsService, OperatorFactory],
             controllers: [OperatorLogoController],
           },
           {

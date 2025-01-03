@@ -75,19 +75,19 @@ export class UserLogEntriesController {
    *         required: false
    *       - in: query
    *         name: startDate
-   *         description: The earliest date and time at which a dive began.
+   *         description: The earliest date and time at which a dive began. (Specified in milliseconds since Unix Epoch time.)
    *         schema:
-   *           type: string
-   *           format: date-time
-   *           example: "2021-07-04T12:00"
+   *           type: integer
+   *           format: int64
+   *           example: 1628089200000
    *         required: false
    *       - in: query
    *         name: endDate
-   *         description: The latest date and time at which a dive began.
+   *         description: The latest date and time at which a dive began. (Specified in milliseconds since Unix Epoch time.)
    *         schema:
-   *           type: string
-   *           format: date-time
-   *           example: "2021-08-04T12:00"
+   *           type: integer
+   *           format: int64
+   *           example: 1628089200000
    *         required: false
    *       - in: query
    *         name: skip

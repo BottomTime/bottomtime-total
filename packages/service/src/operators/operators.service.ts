@@ -4,16 +4,17 @@ import {
   SearchOperatorsParams,
 } from '@bottomtime/api';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import slugify from 'slugify';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { OperatorEntity, OperatorReviewEntity } from '../data';
+import { OperatorEntity } from '../data';
 import { User } from '../users';
 import { Operator } from './operator';
+import { OperatorFactory } from './operator-factory';
 import { OperatorQueryBuilder } from './operator-query-builder';
 
 export type CreateOperatorOptions = CreateOrUpdateOperatorDTO & {
@@ -32,8 +33,8 @@ export class OperatorsService {
     @InjectRepository(OperatorEntity)
     private readonly operators: Repository<OperatorEntity>,
 
-    @InjectRepository(OperatorReviewEntity)
-    private readonly reviews: Repository<OperatorReviewEntity>,
+    @Inject(OperatorFactory)
+    private readonly operatorFactory: OperatorFactory,
   ) {}
 
   async createOperator(options: CreateOperatorOptions): Promise<Operator> {
@@ -46,7 +47,7 @@ export class OperatorsService {
     data.name = options.name;
     data.owner = options.owner.toEntity();
 
-    const operator = new Operator(this.operators, this.reviews, data);
+    const operator = this.operatorFactory.createOperator(data);
     operator.address = options.address;
     operator.description = options.description;
     operator.email = options.email;
@@ -77,7 +78,7 @@ export class OperatorsService {
       where: { id },
       relations: ['owner'],
     });
-    return data ? new Operator(this.operators, this.reviews, data) : undefined;
+    return data ? this.operatorFactory.createOperator(data) : undefined;
   }
 
   async getOperatorBySlug(slug: string): Promise<Operator | undefined> {
@@ -87,7 +88,7 @@ export class OperatorsService {
       where: { slug },
       relations: ['owner'],
     });
-    return data ? new Operator(this.operators, this.reviews, data) : undefined;
+    return data ? this.operatorFactory.createOperator(data) : undefined;
   }
 
   async isSlugInUse(slug: string): Promise<boolean> {
@@ -111,9 +112,7 @@ export class OperatorsService {
     const [operators, totalCount] = await query.getManyAndCount();
 
     return {
-      data: operators.map(
-        (operator) => new Operator(this.operators, this.reviews, operator),
-      ),
+      data: operators.map((item) => this.operatorFactory.createOperator(item)),
       totalCount,
     };
   }

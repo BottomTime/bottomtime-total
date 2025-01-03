@@ -27,6 +27,7 @@ import {
   LogEntrySampleEntity,
 } from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
+import { Operator, OperatorFactory } from '../operators';
 import { LogEntryAirUtils } from './log-entry-air-utils';
 import { LogEntrySampleUtils } from './log-entry-sample-utils';
 
@@ -287,6 +288,7 @@ export class LogEntry {
     private readonly EntryAir: Repository<LogEntryAirEntity>,
     private readonly EntrySamples: Repository<LogEntrySampleEntity>,
     private readonly siteFactory: DiveSiteFactory,
+    private readonly operatorFactory: OperatorFactory,
     private readonly data: LogEntryEntity,
   ) {
     this.conditions = new EntryConditions(data);
@@ -336,6 +338,15 @@ export class LogEntry {
   }
   set site(value: DiveSite | undefined) {
     this.data.site = value?.toEntity() ?? null;
+  }
+
+  get operator(): Operator | undefined {
+    return this.data.operator
+      ? this.operatorFactory.createOperator(this.data.operator)
+      : undefined;
+  }
+  set operator(value: Operator | undefined) {
+    this.data.operator = value?.toEntity() ?? null;
   }
 
   // Air consumption

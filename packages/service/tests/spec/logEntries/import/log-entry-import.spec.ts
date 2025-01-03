@@ -10,7 +10,6 @@ import { MethodNotAllowedException } from '@nestjs/common';
 import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { Mock } from 'moq.ts';
 import { concatMap, from, lastValueFrom, map, range, toArray } from 'rxjs';
 import { Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
@@ -24,7 +23,6 @@ import {
   LogEntrySampleEntity,
   UserEntity,
 } from '../../../../src/data';
-import { DiveSiteFactory } from '../../../../src/diveSites';
 import { LogEntryFactory, LogEntryImport } from '../../../../src/logEntries';
 import { Importer } from '../../../../src/logEntries/import/importer';
 import { LogEntrySampleUtils } from '../../../../src/logEntries/log-entry-sample-utils';
@@ -33,7 +31,12 @@ import { dataSource } from '../../../data-source';
 import SampleData from '../../../fixtures/dive-profile.json';
 import TestImportRecords from '../../../fixtures/import-records.json';
 import LogEntryData from '../../../fixtures/log-entries.json';
-import { createTestDiveProfile, createTestUser } from '../../../utils';
+import {
+  createDiveSiteFactory,
+  createOperatorFactory,
+  createTestDiveProfile,
+  createTestUser,
+} from '../../../utils';
 
 const ImportSessionId = '3d540444-9e2c-4c13-a90a-8b499cd5d3e3';
 const OwnerData = createTestUser({
@@ -82,7 +85,8 @@ describe('Log Entry Import class', () => {
       Entries,
       EntryAir,
       EntrySamples,
-      new Mock<DiveSiteFactory>().object(),
+      createDiveSiteFactory(),
+      createOperatorFactory(),
     );
 
     logEntryData = LogEntryData.map((data) => ({

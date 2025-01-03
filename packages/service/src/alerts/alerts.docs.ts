@@ -40,16 +40,16 @@
  *           example: Check out our new feature!
  *         active:
  *           title: Active
- *           type: string
- *           format: date-time
- *           description: The date and time after which the alert should be displayed.
- *           example: 2022-01-01T00:00:00Z
+ *           type: integer
+ *           format: int64
+ *           description: The date and time after which the alert should be displayed. (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1630000000000
  *         expires:
  *           title: Expires
- *           type: string
- *           format: date-time
- *           description: The date and time the alert should no longer be displayed.
- *           example: 2022-01-01T00:00:00Z
+ *           type: integer
+ *           format: int64
+ *           description: The date and time the alert should no longer be displayed. (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1630000000000
  *
  *     Alert:
  *       allOf:

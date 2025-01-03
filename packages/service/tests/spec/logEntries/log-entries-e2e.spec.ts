@@ -35,6 +35,7 @@ import { LogEntriesService } from '../../../src/logEntries/log-entries.service';
 import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { LogEntryFactory } from '../../../src/logEntries/log-entry-factory';
 import { UserLogEntriesController } from '../../../src/logEntries/user-log-entries.controller';
+import { OperatorsModule } from '../../../src/operators';
 import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
@@ -110,6 +111,7 @@ describe('Log entries E2E tests', () => {
         ]),
         CacheModule.register(),
         DiveSitesModule,
+        OperatorsModule,
         FriendsModule,
         UsersModule,
       ],

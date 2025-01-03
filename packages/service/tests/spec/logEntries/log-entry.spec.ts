@@ -30,12 +30,16 @@ import { DiveSiteFactory } from '../../../src/diveSites/dive-site-factory';
 import { LogEntry } from '../../../src/logEntries';
 import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { LogEntrySampleUtils } from '../../../src/logEntries/log-entry-sample-utils';
+import { OperatorFactory } from '../../../src/operators';
 import { dataSource } from '../../data-source';
 import TestSamples from '../../fixtures/dive-profile.json';
-import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
-import { createTestDiveSite } from '../../utils/create-test-dive-site';
-import { createTestLogEntry } from '../../utils/create-test-log-entry';
-import { createTestlogEntryAir } from '../../utils/create-test-log-entry-air';
+import {
+  createDiveSiteFactory,
+  createOperatorFactory,
+  createTestDiveSite,
+  createTestLogEntry,
+  createTestlogEntryAir,
+} from '../../utils';
 import { createTestUser } from '../../utils/create-test-user';
 
 const CreatorData: Partial<UserEntity> = {
@@ -172,6 +176,7 @@ describe('Log Entry class', () => {
   let diveSite: DiveSiteEntity;
 
   let siteFactory: DiveSiteFactory;
+  let operatorFactory: OperatorFactory;
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
@@ -184,6 +189,7 @@ describe('Log Entry class', () => {
     diveSite = createTestDiveSite(user, TestSiteData);
 
     siteFactory = createDiveSiteFactory();
+    operatorFactory = createOperatorFactory();
   });
 
   beforeEach(async () => {
@@ -193,6 +199,7 @@ describe('Log Entry class', () => {
       EntriesAir,
       EntrySamples,
       siteFactory,
+      operatorFactory,
       data,
     );
 
@@ -479,6 +486,7 @@ describe('Log Entry class', () => {
         EntriesAir,
         EntrySamples,
         siteFactory,
+        operatorFactory,
         data,
       );
       expect(logEntry.air).toHaveLength(0);
