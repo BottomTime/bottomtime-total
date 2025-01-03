@@ -19,6 +19,11 @@ export enum EventKey {
   NotificationsDismissed = 'notifications.dismissed',
   NotificationsUndismissed = 'notifications.undismissed',
 
+  OperatorCreated = 'operator.created',
+  OperatorReviewAdded = 'operator.reviewAdded',
+  OperatorReviewDeleted = 'operator.reviewDeleted',
+  OperatorReviewModified = 'operator.reviewModified',
+
   UserCreated = 'user.created',
   UserPasswordResetRequest = 'user.passwordResetRequest',
   UserVerifyEmailRequest = 'user.verifyEmailRequest',

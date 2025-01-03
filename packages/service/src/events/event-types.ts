@@ -3,6 +3,19 @@ import { EventKey } from '@bottomtime/common';
 
 import { User } from '../users';
 
+export type DiveSiteReviewEvent = {
+  key:
+    | EventKey.DiveSiteReviewAdded
+    | EventKey.DiveSiteReviewDeleted
+    | EventKey.DiveSiteReviewModified;
+  diveSite: {
+    id: string;
+    name: string;
+  };
+  rating: number;
+  comments?: string;
+};
+
 export type FriendRequestEvent = {
   key:
     | EventKey.FriendRequestAccepted
@@ -90,6 +103,20 @@ export type NotificationManagementEvent = {
   notificationIds: string[];
 };
 
+export type OperatorReviewEvent = {
+  key:
+    | EventKey.OperatorReviewAdded
+    | EventKey.OperatorReviewDeleted
+    | EventKey.OperatorReviewModified;
+  operator: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  rating: number;
+  comments?: string;
+};
+
 export type UserCreatedEvent = {
   key: EventKey.UserCreated;
   user: User;
@@ -112,6 +139,7 @@ export type UserVerifyEmailRequestEvent = {
 };
 
 export type EventData =
+  | DiveSiteReviewEvent
   | FriendRequestEvent
   | MembershipCanceledEvent
   | MembershipChangedEvent
@@ -120,6 +148,7 @@ export type EventData =
   | MembershipPaymentFailedEvent
   | MembershipTrialEndingEvent
   | NotificationManagementEvent
+  | OperatorReviewEvent
   | UserCreatedEvent
   | UserPasswordResetRequestEvent
   | UserVerifyEmailRequestEvent;
