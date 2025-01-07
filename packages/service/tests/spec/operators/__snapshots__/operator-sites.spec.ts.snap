@@ -1,0 +1,257 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OperatorSites class will allow pagination when listing associated dive sites 1`] = `
+{
+  "data": [
+    {
+      "id": "db393e5a-3917-4447-9a2f-23b13a74c7c6",
+      "name": "frightened blond beak",
+    },
+    {
+      "id": "02ac8db1-4a16-484e-818a-d08010d1a6af",
+      "name": "frugal monstrous title",
+    },
+    {
+      "id": "05a9adb4-6ed5-48d3-9b4d-c6f25b7e96e7",
+      "name": "gentle careless sequence",
+    },
+    {
+      "id": "b9cd677a-d240-403d-9dab-620dec47451d",
+      "name": "giant broken meat",
+    },
+    {
+      "id": "5f799498-2730-452f-b78b-933510c1174c",
+      "name": "good-natured bountiful relay",
+    },
+    {
+      "id": "32f2880c-879b-4492-aafb-a9241d9553e2",
+      "name": "gruesome welcome expense",
+    },
+    {
+      "id": "1a6a15fd-d4d4-4fa6-8c78-eeb131850e70",
+      "name": "happy-go-lucky shiny cartload",
+    },
+    {
+      "id": "7737963a-bf8b-44ee-955f-066a098ef80b",
+      "name": "ideal blond spume",
+    },
+    {
+      "id": "8d5118d2-4dbc-401d-ac25-db970b324b08",
+      "name": "impolite hungry hunt",
+    },
+    {
+      "id": "d571ab57-2b70-4a02-9cd3-574bf6bc01a7",
+      "name": "intelligent greedy monster",
+    },
+  ],
+  "totalCount": 90,
+}
+`;
+
+exports[`OperatorSites class will list associated dive sites 1`] = `
+{
+  "data": [
+    {
+      "id": "fb698d5e-d945-4819-ab76-55537d68eb6e",
+      "name": "aggravating unhappy vest",
+    },
+    {
+      "id": "237bbc5d-f98c-42e6-95db-8280d4103840",
+      "name": "agitated high field",
+    },
+    {
+      "id": "5b125836-5b5b-4ccc-a56e-58891f8bebfc",
+      "name": "alert awesome intuition",
+    },
+    {
+      "id": "10f33946-a9a2-4cca-96ca-4093113ed9bf",
+      "name": "another submissive subconscious",
+    },
+    {
+      "id": "d7de84b7-130f-4d3c-be13-bff50cd40596",
+      "name": "apt colossal initial",
+    },
+    {
+      "id": "67477c7b-149d-4ea5-bd5c-766ea53dec36",
+      "name": "apt pastel moai",
+    },
+    {
+      "id": "b3c2caf2-fc71-484f-80c3-2584c6e822d4",
+      "name": "basic long-term coupon",
+    },
+    {
+      "id": "25f82dcd-7f9e-46d1-86dd-0eb376194308",
+      "name": "beloved difficult attack",
+    },
+    {
+      "id": "17b819c5-0541-46cd-8dfd-800a9ccddcba",
+      "name": "bewitched all turnstile",
+    },
+    {
+      "id": "87339ea2-2d2c-4b95-aeac-8b398db59dfb",
+      "name": "bold talkative cymbal",
+    },
+    {
+      "id": "3c5286b8-3428-4d21-9847-fce371ec1175",
+      "name": "bustling normal convert",
+    },
+    {
+      "id": "4e1bf1df-0838-413e-97e7-e6229eada2ed",
+      "name": "carefree fussy crewman",
+    },
+    {
+      "id": "f2026af7-0f73-4fc0-b29b-491dc2846842",
+      "name": "caring nutty grub",
+    },
+    {
+      "id": "ebeaa2cc-c48b-4f5c-90d3-8329d4c06436",
+      "name": "courageous blaring volume",
+    },
+    {
+      "id": "bbbb7755-0878-4984-97c5-34b430fd5fb0",
+      "name": "cultured illiterate acid",
+    },
+    {
+      "id": "b453bf69-351f-47fd-b60a-a0b4ba239a50",
+      "name": "cultured pointless glass",
+    },
+    {
+      "id": "e51c2812-a611-4c63-a319-1ecfdb612f60",
+      "name": "deadly idealistic gerbil",
+    },
+    {
+      "id": "4e87dc06-4d51-4d11-ba93-37e51924ff44",
+      "name": "deadly lean mobile",
+    },
+    {
+      "id": "c93ae150-12b5-4776-9d70-40d0c5604ce1",
+      "name": "earnest stingy metro",
+    },
+    {
+      "id": "97bbe1df-6687-453a-82db-eda796518eb0",
+      "name": "exhausted wretched cyclone",
+    },
+    {
+      "id": "74aa1202-9d61-443b-b8f5-44dde5ef18d5",
+      "name": "exotic warmhearted aside",
+    },
+    {
+      "id": "f2925b7f-0609-4281-b294-a4d58052efcf",
+      "name": "extra-small plain trader",
+    },
+    {
+      "id": "1d60387d-7abd-4a46-99bc-800e14bc842b",
+      "name": "far-off critical machine",
+    },
+    {
+      "id": "7286c60f-c846-41fc-bb89-ad3eb6e74b3e",
+      "name": "fearless passionate phone",
+    },
+    {
+      "id": "325d483c-159f-424c-a8e0-9b675d0af915",
+      "name": "flamboyant old mate",
+    },
+    {
+      "id": "db393e5a-3917-4447-9a2f-23b13a74c7c6",
+      "name": "frightened blond beak",
+    },
+    {
+      "id": "02ac8db1-4a16-484e-818a-d08010d1a6af",
+      "name": "frugal monstrous title",
+    },
+    {
+      "id": "05a9adb4-6ed5-48d3-9b4d-c6f25b7e96e7",
+      "name": "gentle careless sequence",
+    },
+    {
+      "id": "b9cd677a-d240-403d-9dab-620dec47451d",
+      "name": "giant broken meat",
+    },
+    {
+      "id": "5f799498-2730-452f-b78b-933510c1174c",
+      "name": "good-natured bountiful relay",
+    },
+    {
+      "id": "32f2880c-879b-4492-aafb-a9241d9553e2",
+      "name": "gruesome welcome expense",
+    },
+    {
+      "id": "1a6a15fd-d4d4-4fa6-8c78-eeb131850e70",
+      "name": "happy-go-lucky shiny cartload",
+    },
+    {
+      "id": "7737963a-bf8b-44ee-955f-066a098ef80b",
+      "name": "ideal blond spume",
+    },
+    {
+      "id": "8d5118d2-4dbc-401d-ac25-db970b324b08",
+      "name": "impolite hungry hunt",
+    },
+    {
+      "id": "d571ab57-2b70-4a02-9cd3-574bf6bc01a7",
+      "name": "intelligent greedy monster",
+    },
+    {
+      "id": "542736c4-c29f-4e30-8c9b-5d9b3a3ab372",
+      "name": "internal crisp trove",
+    },
+    {
+      "id": "eb327e87-7ba8-4131-beac-b341c29f6465",
+      "name": "keen specific comedy",
+    },
+    {
+      "id": "3ab250cc-d0d7-4947-b187-c6c43a3d65cc",
+      "name": "knotty serpentine shoulder",
+    },
+    {
+      "id": "d95eb90e-25b8-4321-9691-c926374509dd",
+      "name": "knowledgeable oily sweatshirt",
+    },
+    {
+      "id": "922b457e-f166-4c70-ad99-fa1b582faaf9",
+      "name": "light drab gym",
+    },
+    {
+      "id": "d60e1a28-8813-4327-a36f-1057553cbc74",
+      "name": "likable infamous scimitar",
+    },
+    {
+      "id": "4d91a56c-f68a-4c11-9b06-ed1030cecec0",
+      "name": "meaty weird good",
+    },
+    {
+      "id": "36a98bea-6fa9-4120-a751-359d999c0764",
+      "name": "mild mixed crewman",
+    },
+    {
+      "id": "0272ce1a-5715-4a42-a05a-86fdf63cc6ed",
+      "name": "modern sorrowful girdle",
+    },
+    {
+      "id": "636e20af-18a2-45f0-bdd2-1d9edaf2b5c7",
+      "name": "mortified frilly transition",
+    },
+    {
+      "id": "d60f6588-0c16-4176-860b-c41b8794c12f",
+      "name": "mysterious faraway lox",
+    },
+    {
+      "id": "06d6a87b-2139-4b06-85ee-8691b116ccea",
+      "name": "natural celebrated paint",
+    },
+    {
+      "id": "81c5dec4-32c7-4ec7-9c1a-6dbe8811f196",
+      "name": "neat darling tip",
+    },
+    {
+      "id": "6d702c5a-85e3-496e-9974-c491abe1f667",
+      "name": "opulent violent boolean",
+    },
+    {
+      "id": "b51c9d49-2df1-4c9f-96bf-73a252036880",
+      "name": "original pitiful resource",
+    },
+  ],
+  "totalCount": 90,
+}
+`;

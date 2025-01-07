@@ -37,55 +37,30 @@
           <p class="font-bold">Location</p>
           <p>{{ site.location }}</p>
         </div>
-
-        <div class="text-center">
-          <p class="font-bold">Max depth</p>
-          <p v-if="site.depth">
-            <DepthText :depth="site.depth.depth" :unit="site.depth.unit" />
-          </p>
-          <p v-else>(unspecified)</p>
-        </div>
-
-        <div class="text-center">
-          <p class="font-bold">Free to dive</p>
-          <p v-if="typeof site.freeToDive === 'boolean'">
-            {{ site.freeToDive ? 'Yes' : 'No' }}
-          </p>
-          <p v-else>(unspecified)</p>
-        </div>
-
-        <div class="text-center">
-          <p class="font-bold">Shore access</p>
-          <p v-if="typeof site.shoreAccess === 'boolean'">
-            {{ site.shoreAccess ? 'Yes' : 'No' }}
-          </p>
-          <p v-else>(unspecified)</p>
-        </div>
       </div>
     </div>
   </li>
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO } from '@bottomtime/api';
+import { SuccinctDiveSiteDTO } from '@bottomtime/api';
 
 import { computed, ref, watch } from 'vue';
 
-import DepthText from '../../common/depth-text.vue';
 import FormButton from '../../common/form-button.vue';
 import StarRating from '../../common/star-rating.vue';
 
 interface SelectDiveSiteListItemProps {
   selected?: boolean;
-  site: DiveSiteDTO;
+  site: SuccinctDiveSiteDTO;
 }
 
 const props = withDefaults(defineProps<SelectDiveSiteListItemProps>(), {
   selected: false,
 });
 defineEmits<{
-  (e: 'select', site: DiveSiteDTO): void;
-  (e: 'highlight', site: DiveSiteDTO): void;
+  (e: 'select', site: SuccinctDiveSiteDTO): void;
+  (e: 'highlight', site: SuccinctDiveSiteDTO): void;
 }>();
 
 const listItemElement = ref<HTMLLIElement | null>(null);

@@ -3,7 +3,6 @@ import { LogEntrySortBy, SortOrder } from '@bottomtime/api';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
 import { LogEntryEntity } from '../data';
-import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
 
 export const LogEntryAirSelectFields = [
   'site_air.ordinal',
@@ -27,7 +26,7 @@ export class LogEntryQueryBuilder {
       .createQueryBuilder('entries')
       .innerJoin('entries.owner', 'owners')
       .leftJoin('entries.site', 'sites')
-      .leftJoin('sites.creator', 'site_creators')
+      .leftJoin('entries.operator', 'operators')
       .select([
         'entries.id',
         'entries.createdAt',
@@ -53,7 +52,22 @@ export class LogEntryQueryBuilder {
         'owners.location',
         'owners.avatar',
 
-        ...DiveSiteSelectFields,
+        'operators.address',
+        'operators.averageRating',
+        'operators.id',
+        'operators.gps',
+        'operators.logo',
+        'operators.name',
+        'operators.slug',
+        'operators.phone',
+        'operators.website',
+
+        'sites.averageRating',
+        'sites.id',
+        'sites.name',
+        'sites.description',
+        'sites.location',
+        'sites.gps',
       ]);
   }
 

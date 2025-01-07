@@ -4,6 +4,7 @@ exports[`OperatorService when retrieving a single operator will return the opera
 {
   "active": true,
   "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
+  "averageRating": undefined,
   "banner": "https://loremflickr.com/1024/256?lock=7881950486331392",
   "createdAt": 1638440112327,
   "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
@@ -46,6 +47,7 @@ exports[`OperatorService when retrieving an operator by its slug will return the
 {
   "active": true,
   "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
+  "averageRating": undefined,
   "banner": "https://loremflickr.com/1024/256?lock=7881950486331392",
   "createdAt": 1638440112327,
   "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
@@ -84,10 +86,136 @@ Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor ben
 }
 `;
 
+exports[`OperatorService when retrieving multiple operators will retrieve several operators at once 1`] = `
+[
+  {
+    "active": true,
+    "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
+    "averageRating": undefined,
+    "banner": "https://loremflickr.com/1024/256?lock=7881950486331392",
+    "createdAt": 1638440112327,
+    "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
+Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor benevolentia. Tutamen amplitudo curis atavus. Appono somniculosus delicate admoveo.",
+    "email": "Jada_Okuneva@hotmail.com",
+    "gps": {
+      "lat": 6.9546,
+      "lon": -52.6869,
+    },
+    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
+    "logo": "https://loremflickr.com/128/128?lock=2275161833209856",
+    "name": "soft, ornery grape",
+    "owner": {
+      "accountTier": 0,
+      "avatar": "https://example.com/avatar.png",
+      "location": "Toronto, ON, Canada",
+      "logBookSharing": "public",
+      "memberSince": 1623294000000,
+      "name": "Test User",
+      "userId": "54ca5e54-de92-4e15-a523-4087c52b40eb",
+      "username": "testuser",
+    },
+    "phone": "1-869-633-8778 x70097",
+    "slug": "soft-ornery-grape",
+    "socials": {
+      "facebook": "Cheyenne.OReilly22",
+      "instagram": "Nathaniel42",
+      "tiktok": "Presley_Heaney91",
+      "twitter": "Clemens30",
+      "youtube": "Emmitt74",
+    },
+    "updatedAt": 1728680051726,
+    "verificationMessage": undefined,
+    "verificationStatus": "unverified",
+    "website": "https://fake-endive.info/",
+  },
+  {
+    "active": true,
+    "address": "959 Alexys Burg Suite 955, North Bethesda, NE, 34813-8348",
+    "averageRating": undefined,
+    "banner": "https://loremflickr.com/1024/256?lock=4726526075469824",
+    "createdAt": 1627998794619,
+    "description": "Deduco denego audax tam. Quo conduco thermae urbs inventore vulgivagus auditor. Dicta cuppedia adsum creber turpis.
+Cubicularis defleo creptio aggredior. Vaco casso quis audax strenuus. Similique nobis desolo bardus curso.",
+    "email": "Ernestine51@yahoo.com",
+    "gps": {
+      "lat": 68.3899,
+      "lon": -29.5619,
+    },
+    "id": "98ae6fdf-285c-4b4e-aade-79fd967f08bf",
+    "logo": "https://picsum.photos/seed/lF5vXE6Fg/128/128",
+    "name": "forked, striking developing",
+    "owner": {
+      "accountTier": 0,
+      "avatar": "https://example.com/avatar.png",
+      "location": "Toronto, ON, Canada",
+      "logBookSharing": "public",
+      "memberSince": 1623294000000,
+      "name": "Test User",
+      "userId": "54ca5e54-de92-4e15-a523-4087c52b40eb",
+      "username": "testuser",
+    },
+    "phone": "(919) 571-9030 x9932",
+    "slug": "forked-striking-developing",
+    "socials": {
+      "facebook": "Hettie_Mills",
+      "instagram": "Kailee_Quitzon",
+      "tiktok": "Bonnie_Becker44",
+      "twitter": "Karen_Bogisich-Kunze",
+      "youtube": "Maudie_Schmitt62",
+    },
+    "updatedAt": 1727764175796,
+    "verificationMessage": undefined,
+    "verificationStatus": "unverified",
+    "website": "https://mild-egg.org/",
+  },
+  {
+    "active": true,
+    "address": "540 Sandringham Road Apt. 988, Creolachester, NE, 47119",
+    "averageRating": undefined,
+    "banner": "https://loremflickr.com/1024/256?lock=1946475686789120",
+    "createdAt": 1687561706125,
+    "description": "Tepidus caritas aiunt quis. Vociferor cotidie aliqua collum adnuo bonus admitto argentum defetiscor. Audax caput valens debilito coruscus adipiscor verumtamen.
+Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Assumenda aeneus decens cogo auditor vulgaris excepturi spargo. Terra curo cicuta stillicidium acies antea.",
+    "email": "Dillan14@yahoo.com",
+    "gps": {
+      "lat": 77.2672,
+      "lon": -119.1238,
+    },
+    "id": "65704209-2883-4851-be84-78a6b95b9ad3",
+    "logo": "https://loremflickr.com/128/128?lock=6087808152240128",
+    "name": "miniature, unlawful hydrocarbon",
+    "owner": {
+      "accountTier": 0,
+      "avatar": "https://example.com/avatar.png",
+      "location": "Toronto, ON, Canada",
+      "logBookSharing": "public",
+      "memberSince": 1623294000000,
+      "name": "Test User",
+      "userId": "54ca5e54-de92-4e15-a523-4087c52b40eb",
+      "username": "testuser",
+    },
+    "phone": "1-226-591-0255",
+    "slug": "miniature-unlawful-hydrocarbon",
+    "socials": {
+      "facebook": "Isai.Stracke66",
+      "instagram": "Adrienne.Stoltenberg53",
+      "tiktok": "Johnson_Dicki64",
+      "twitter": "Judd_Berge",
+      "youtube": "Felipe3",
+    },
+    "updatedAt": 1720435396038,
+    "verificationMessage": undefined,
+    "verificationStatus": "unverified",
+    "website": "https://exhausted-milepost.biz",
+  },
+]
+`;
+
 exports[`OperatorService when searching for operators will perform a basic search with no parameters 1`] = `
 {
   "active": true,
   "address": "47191 Astrid Lane Suite 737, Jarenmouth, MD, 18868",
+  "averageRating": undefined,
   "banner": "https://loremflickr.com/1024/256?lock=1969575207895040",
   "createdAt": 1687732359551,
   "description": "Nobis aqua odio valens confugo spiculum viriliter. Explicabo torrens eos dolore socius natus facilis. Stipes audax spero uberrime apostolus.

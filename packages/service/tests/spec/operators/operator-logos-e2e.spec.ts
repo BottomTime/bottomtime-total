@@ -12,10 +12,12 @@ import { Repository } from 'typeorm';
 
 import { Config } from '../../../src/config';
 import {
+  OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
   UserEntity,
 } from '../../../src/data';
+import { DiveSitesModule } from '../../../src/diveSites';
 import { OperatorFactory } from '../../../src/operators';
 import { OperatorLogoController } from '../../../src/operators/operator-logo.controller';
 import { OperatorsService } from '../../../src/operators/operators.service';
@@ -96,8 +98,13 @@ describe('Operator logos E2E tests', () => {
         createTestApp(
           {
             imports: [
-              TypeOrmModule.forFeature([OperatorEntity, OperatorReviewEntity]),
+              TypeOrmModule.forFeature([
+                OperatorEntity,
+                OperatorDiveSiteEntity,
+                OperatorReviewEntity,
+              ]),
               StorageModule,
+              DiveSitesModule,
             ],
             providers: [OperatorsService, OperatorFactory],
             controllers: [OperatorLogoController],

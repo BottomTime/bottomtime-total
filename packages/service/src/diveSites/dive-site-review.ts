@@ -5,7 +5,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import { Repository } from 'typeorm';
 
-import { DiveSiteReviewEntity } from '../data';
+import { DiveSiteReviewEntity, LogEntryEntity } from '../data';
 import {
   DiveSite_ReviewDeleted,
   DiveSite_ReviewSaved,
@@ -64,6 +64,13 @@ export class DiveSiteReview {
   }
   set comments(value: string | undefined) {
     this.data.comments = value ?? null;
+  }
+
+  get logEntryId(): string | undefined {
+    return this.data.logEntry?.id;
+  }
+  set logEntryId(value: string | undefined) {
+    this.data.logEntry = value ? ({ id: value } as LogEntryEntity) : null;
   }
 
   async save(): Promise<void> {

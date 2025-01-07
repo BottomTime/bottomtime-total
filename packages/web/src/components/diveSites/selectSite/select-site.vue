@@ -26,7 +26,10 @@
 </template>
 
 <script lang="ts" setup>
-import { CreateOrUpdateDiveSiteDTO, DiveSiteDTO } from '@bottomtime/api';
+import {
+  CreateOrUpdateDiveSiteDTO,
+  SuccinctDiveSiteDTO,
+} from '@bottomtime/api';
 
 import { computed, reactive } from 'vue';
 
@@ -51,7 +54,7 @@ interface SelectSiteState {
 }
 
 interface SelectSiteProps {
-  currentSite?: DiveSiteDTO;
+  currentSite?: SuccinctDiveSiteDTO;
 }
 
 const client = useClient();
@@ -60,7 +63,7 @@ const toasts = useToasts();
 
 defineProps<SelectSiteProps>();
 const emit = defineEmits<{
-  (e: 'site-selected', site: DiveSiteDTO): void;
+  (e: 'site-selected', site: SuccinctDiveSiteDTO): void;
 }>();
 
 const tabs = computed<TabInfo[]>(() => [

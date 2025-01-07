@@ -279,9 +279,9 @@
 import {
   DepthDTO,
   DepthUnit,
-  DiveSiteDTO,
   LogEntryAirDTO,
   LogEntryDTO,
+  SuccinctDiveSiteDTO,
   TankDTO,
   TankMaterial,
   WeightDTO,
@@ -337,7 +337,7 @@ interface LogEntryData {
   maxDepth: DepthDTO | string;
   notes: string;
   air: EditEntryAirFormData[];
-  site?: DiveSiteDTO;
+  site?: SuccinctDiveSiteDTO;
   weights: WeightDTO | string;
 }
 
@@ -567,7 +567,7 @@ function onOpenDiveSitePanel() {
   state.showSelectDiveSite = true;
 }
 
-function onSiteSelected(site: DiveSiteDTO) {
+function onSiteSelected(site: SuccinctDiveSiteDTO) {
   formData.site = site;
   state.showSelectDiveSite = false;
 }

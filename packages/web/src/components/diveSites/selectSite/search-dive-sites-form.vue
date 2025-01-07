@@ -125,6 +125,7 @@ import {
   DiveSiteDTO,
   GpsCoordinates,
   SearchDiveSitesParamsDTO,
+  SuccinctDiveSiteDTO,
 } from '@bottomtime/api';
 
 import { reactive } from 'vue';
@@ -155,7 +156,7 @@ const oops = useOops();
 
 defineEmits<{
   (e: 'create'): void;
-  (e: 'site-selected', site: DiveSiteDTO): void;
+  (e: 'site-selected', site: SuccinctDiveSiteDTO): void;
 }>();
 
 const state = reactive<SelectDiveSiteListState>({
@@ -203,7 +204,7 @@ async function onLoadMore(): Promise<void> {
   state.isLoadingMore = false;
 }
 
-function onSiteHighlighted(site: DiveSiteDTO): void {
+function onSiteHighlighted(site: SuccinctDiveSiteDTO): void {
   state.selectedSite = site.id;
 }
 </script>

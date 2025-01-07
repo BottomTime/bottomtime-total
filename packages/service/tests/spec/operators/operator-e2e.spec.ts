@@ -13,10 +13,12 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import {
+  OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
   UserEntity,
 } from '../../../src/data';
+import { DiveSitesModule } from '../../../src/diveSites';
 import { OperatorFactory } from '../../../src/operators';
 import { OperatorsController } from '../../../src/operators/operators.controller';
 import { OperatorsService } from '../../../src/operators/operators.service';
@@ -93,8 +95,13 @@ describe('Operators E2E tests', () => {
   beforeAll(async () => {
     app = await createTestApp({
       imports: [
-        TypeOrmModule.forFeature([OperatorEntity, OperatorReviewEntity]),
+        TypeOrmModule.forFeature([
+          OperatorEntity,
+          OperatorDiveSiteEntity,
+          OperatorReviewEntity,
+        ]),
         UsersModule,
+        DiveSitesModule,
       ],
       providers: [OperatorsService, OperatorFactory],
       controllers: [OperatorsController],

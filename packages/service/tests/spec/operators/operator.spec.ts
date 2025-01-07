@@ -13,6 +13,7 @@ import { resolve } from 'path';
 import { Repository } from 'typeorm';
 
 import {
+  OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
   UserEntity,
@@ -23,6 +24,7 @@ import { dataSource } from '../../data-source';
 import TestReviews from '../../fixtures/operator-reviews.json';
 import TestUsers from '../../fixtures/user-search-data.json';
 import {
+  createDiveSiteFactory,
   createTestDiveOperatorReview,
   createTestOperator,
   createTestUser,
@@ -107,7 +109,13 @@ describe('Operator class', () => {
       ...TestData,
       owner,
     };
-    operator = new Operator(Operators, Reviews, data);
+    operator = new Operator(
+      Operators,
+      dataSource.getRepository(OperatorDiveSiteEntity),
+      Reviews,
+      createDiveSiteFactory(),
+      data,
+    );
   });
 
   it('will return properties correctly', () => {
@@ -317,7 +325,13 @@ describe('Operator class', () => {
     newData.name = 'Different Operator';
     newData.slug = TestData.slug;
     newData.owner = owner;
-    const newOperator = new Operator(Operators, Reviews, newData);
+    const newOperator = new Operator(
+      Operators,
+      dataSource.getRepository(OperatorDiveSiteEntity),
+      Reviews,
+      createDiveSiteFactory(),
+      newData,
+    );
     await Operators.save(data);
 
     await expect(newOperator.save()).rejects.toThrow(ConflictException);

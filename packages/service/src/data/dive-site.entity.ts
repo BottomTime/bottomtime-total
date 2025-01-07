@@ -14,6 +14,8 @@ import {
 
 import { DiveSiteReviewEntity } from './dive-site-review.entity';
 import { LogEntryEntity } from './log-entry.entity';
+import { OperatorDiveSiteEntity } from './operator-dive-site.entity';
+import { OperatorEntity } from './operators.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('dive_sites')
@@ -94,4 +96,9 @@ export class DiveSiteEntity {
 
   @Column('float', { nullable: true })
   averageDifficulty: number | null = null;
+
+  @OneToMany(() => OperatorDiveSiteEntity, (relation) => relation.site, {
+    onDelete: 'CASCADE',
+  })
+  operators?: OperatorEntity[];
 }

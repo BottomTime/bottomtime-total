@@ -6,19 +6,26 @@ import {
   ListOperatorReviewsParams,
   LogBookSharing,
   OperatorDTO,
+  SuccinctOperatorDTO,
   SuccinctProfileDTO,
   VerificationStatus,
 } from '@bottomtime/api';
 
 import { ConflictException, HttpException } from '@nestjs/common';
 
+import { DiveSiteFactory } from 'src/diveSites';
 import { MoreThan, Not, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
-import { OperatorEntity, OperatorReviewEntity } from '../data';
+import {
+  OperatorDiveSiteEntity,
+  OperatorEntity,
+  OperatorReviewEntity,
+} from '../data';
 import { User } from '../users';
 import { OperatorReview } from './operator-review';
 import { OperatorReviewQueryBuilder } from './operator-review-query-builder';
+import { OperatorSites } from './operator-sites';
 import { OperatorSocials } from './operator-socials';
 
 export type ListOperatorReviewsOptions = {
@@ -27,6 +34,7 @@ export type ListOperatorReviewsOptions = {
 
 export type CreateOperatorReviewOptions = {
   creator: User;
+  logEntryId?: string;
 } & CreateOrUpdateOperatorReviewDTO;
 
 export class Operator {
@@ -35,11 +43,21 @@ export class Operator {
 
   constructor(
     private readonly operators: Repository<OperatorEntity>,
+    private readonly operatorDiveSites: Repository<OperatorDiveSiteEntity>,
     private readonly reviews: Repository<OperatorReviewEntity>,
+    private readonly siteFacotry: DiveSiteFactory,
     private readonly data: OperatorEntity,
   ) {
     this.socials = new OperatorSocials(this.data);
+    this.sites = new OperatorSites(
+      this.operators,
+      this.operatorDiveSites,
+      this.siteFacotry,
+      this.data,
+    );
   }
+
+  readonly sites: OperatorSites;
 
   get id(): string {
     return this.data.id;
@@ -233,7 +251,23 @@ export class Operator {
   async getReview(reviewId: string): Promise<OperatorReview | undefined> {
     const data = await this.reviews.findOne({
       where: { operator: { id: this.data.id }, id: reviewId },
-      relations: ['creator'],
+      relations: ['creator', 'logEntry'],
+    });
+
+    if (data) {
+      data.operator = this.data;
+      return new OperatorReview(this.reviews, data);
+    }
+
+    return undefined;
+  }
+
+  async getReviewByLogEntry(
+    logEntryId: string,
+  ): Promise<OperatorReview | undefined> {
+    const data = await this.reviews.findOne({
+      where: { operator: { id: this.data.id }, logEntry: { id: logEntryId } },
+      relations: ['creator', 'logEntry'],
     });
 
     if (data) {
@@ -286,6 +320,7 @@ export class Operator {
     const review = new OperatorReview(this.reviews, data);
     review.comments = options.comments;
     review.rating = options.rating;
+    review.logEntryId = options.logEntryId;
 
     await review.save();
     return review;
@@ -294,6 +329,7 @@ export class Operator {
   toJSON(): OperatorDTO {
     return {
       active: this.active,
+      averageRating: this.averageRating,
       createdAt: this.createdAt.valueOf(),
       description: this.description,
       email: this.email,
@@ -310,6 +346,21 @@ export class Operator {
       slug: this.slug,
       verificationStatus: this.verificationStatus,
       verificationMessage: this.verificationMessage,
+      website: this.website,
+    };
+  }
+
+  toSuccinctJSON(): SuccinctOperatorDTO {
+    return {
+      address: this.address,
+      averageRating: this.averageRating,
+      gps: this.gps,
+      id: this.id,
+      logo: this.logo,
+      name: this.name,
+      description: this.description,
+      phone: this.phone,
+      slug: this.slug,
       website: this.website,
     };
   }

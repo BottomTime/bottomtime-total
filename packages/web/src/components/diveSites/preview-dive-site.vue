@@ -37,13 +37,13 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO } from '@bottomtime/api';
+import { SuccinctDiveSiteDTO } from '@bottomtime/api';
 
 import FormBox from '../common/form-box.vue';
 import StarRating from '../common/star-rating.vue';
 
 interface PreviewDiveSiteProps {
-  site: DiveSiteDTO;
+  site: SuccinctDiveSiteDTO;
 }
 
 defineProps<PreviewDiveSiteProps>();

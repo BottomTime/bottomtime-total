@@ -6,7 +6,6 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -18,6 +17,7 @@ import {
 import { DiveSiteEntity } from './dive-site.entity';
 import { LogEntryEntity } from './log-entry.entity';
 import { MediaFileEntity } from './media-file.entity';
+import { OperatorDiveSiteEntity } from './operator-dive-site.entity';
 import { OperatorReviewEntity } from './operator-review.entity';
 import { UserEntity } from './user.entity';
 
@@ -120,12 +120,8 @@ export class OperatorEntity {
   media?: MediaFileEntity[];
 
   // Other
-  @ManyToMany(() => DiveSiteEntity, {
+  @OneToMany(() => OperatorDiveSiteEntity, (relation) => relation.operator, {
     onDelete: 'CASCADE',
-    createForeignKeyConstraints: true,
-  })
-  @JoinTable({
-    name: 'dive_operator_sites',
   })
   diveSites?: DiveSiteEntity[];
 

@@ -9,23 +9,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import { DiveSiteEntity, LogEntryEntity, UserEntity } from '../data';
+import {
+  DiveSiteEntity,
+  LogEntryEntity,
+  OperatorEntity,
+  UserEntity,
+} from '../data';
 import { DiveSite, DiveSitesService } from '../diveSites';
-import { DiveSiteSelectFields } from '../diveSites/dive-site-query-builder';
+import { Operator, OperatorsService } from '../operators';
 import { User } from '../users';
 import { LogEntry } from './log-entry';
 import { LogEntryFactory } from './log-entry-factory';
-import {
-  LogEntryAirSelectFields,
-  LogEntryQueryBuilder,
-} from './log-entry-query-builder';
+import { LogEntryQueryBuilder } from './log-entry-query-builder';
 
 export type CreateLogEntryOptions = Omit<
   CreateOrUpdateLogEntryParamsDTO,
-  'site'
+  'site' | 'operator'
 > & {
   owner: User;
   site?: DiveSite;
+  operator?: Operator;
 };
 
 export type ListLogEntriesOptions = ListLogEntriesParamsDTO & {
@@ -50,6 +53,9 @@ export class LogEntriesService {
 
     @Inject(DiveSitesService)
     private readonly diveSitesService: DiveSitesService,
+
+    @Inject(OperatorsService)
+    private readonly operatorsService: OperatorsService,
   ) {}
 
   async listLogEntries(
@@ -77,64 +83,12 @@ export class LogEntriesService {
     entryId: string,
     ownerId?: string,
   ): Promise<LogEntry | undefined> {
-    const query = this.Entries.createQueryBuilder()
-      .from(LogEntryEntity, 'entries')
-      .innerJoin('entries.owner', 'owners')
-      .leftJoin('entries.site', 'sites')
-      .leftJoin('sites.creator', 'site_creators')
-      .leftJoin('entries.air', 'site_air')
-      .where('entries.id = :id', { id: entryId })
-      .select([
-        'entries.id',
-        'entries.createdAt',
-        'entries.updatedAt',
-        'entries.logNumber',
-        'entries.entryTime',
-        'entries.timezone',
-        'entries.bottomTime',
-        'entries.duration',
-        'entries.averageDepth',
-        'entries.maxDepth',
-        'entries.depthUnit',
-        'entries.weight',
-        'entries.weightUnit',
-        'entries.weightCorrectness',
-        'entries.trimCorrectness',
-        'entries.exposureSuit',
-        'entries.hood',
-        'entries.gloves',
-        'entries.boots',
-        'entries.camera',
-        'entries.torch',
-        'entries.scooter',
-        'entries.airTemperature',
-        'entries.surfaceTemperature',
-        'entries.bottomTemperature',
-        'entries.temperatureUnit',
-        'entries.chop',
-        'entries.current',
-        'entries.visibility',
-        'entries.notes',
-        'owners.id',
-        'owners.accountTier',
-        'owners.logBookSharing',
-        'owners.username',
-        'owners.memberSince',
-        'owners.name',
-        'owners.location',
-        'owners.avatar',
-        ...DiveSiteSelectFields,
-        ...LogEntryAirSelectFields,
-      ]);
-
-    if (ownerId) {
-      query.andWhere('owners.id = :ownerId', { ownerId });
-    }
-
     this.log.debug(`Attempting to retrieve log entry with ID "${entryId}"...`);
-    this.log.verbose(query.getSql());
+    const data = await this.Entries.findOne({
+      where: { id: entryId, ...(ownerId ? { owner: { id: ownerId } } : {}) },
+      relations: ['owner', 'site', 'site.creator', 'operator', 'air'],
+    });
 
-    const data = await query.getOne();
     return data ? this.logEntryFactory.createLogEntry(data) : undefined;
   }
 
@@ -144,10 +98,12 @@ export class LogEntriesService {
       {
         ...options,
         site: undefined,
+        operator: undefined,
       },
     );
 
     entry.site = options.site;
+    entry.operator = options.operator;
     await entry.save();
 
     return entry;
@@ -202,5 +158,45 @@ export class LogEntriesService {
       Array.from(recentSiteIds),
     );
     return recentSites;
+  }
+
+  async getRecentOperators(ownerId: string, count = 10): Promise<Operator[]> {
+    const query = this.Entries.createQueryBuilder('entries')
+      .innerJoinAndMapOne(
+        'entries.operator',
+        OperatorEntity,
+        'operators',
+        'entries.operatorId = operators.id',
+      )
+      .innerJoinAndMapOne(
+        'operators.owner',
+        UserEntity,
+        'operator_owners',
+        'operators.ownerId = operator_owners.id',
+      )
+      .where({
+        owner: { id: ownerId },
+      })
+      .select(['operators.id AS "operatorId"'])
+      .orderBy('entries.createdAt', 'DESC')
+      .take(200);
+
+    this.log.debug('Querying for most recently used dive operator IDs...');
+    this.log.verbose(query.getSql());
+
+    const rawOperatorIds = await query.getRawMany<{
+      operatorId: string;
+    }>();
+
+    const recentOperatorIds = new Set<string>();
+    for (const { operatorId } of rawOperatorIds) {
+      recentOperatorIds.add(operatorId);
+      if (recentOperatorIds.size >= count) break;
+    }
+
+    const recentOperators = await this.operatorsService.getOperators(
+      Array.from(recentOperatorIds),
+    );
+    return recentOperators;
   }
 }

@@ -1,0 +1,377 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Operator Dive Sites E2E tests when adding dive sites to an operator will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "siteIds",
+        0,
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid uuid",
+      "path": [
+        "siteIds",
+        1,
+      ],
+      "validation": "uuid",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "siteIds",
+        2,
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid uuid",
+      "path": [
+        "siteIds",
+        3,
+      ],
+      "validation": "uuid",
+    },
+  ],
+}
+`;
+
+exports[`Operator Dive Sites E2E tests when adding dive sites to an operator will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Required",
+      "path": [
+        "siteIds",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;
+
+exports[`Operator Dive Sites E2E tests when listing dive sites associated with an operator will allow listing dive sites associated with an operator with pagination 1`] = `
+{
+  "data": [
+    {
+      "id": "4e1bf1df-0838-413e-97e7-e6229eada2ed",
+      "name": "carefree fussy crewman",
+    },
+    {
+      "id": "f2026af7-0f73-4fc0-b29b-491dc2846842",
+      "name": "caring nutty grub",
+    },
+    {
+      "id": "14a4bd43-d196-492e-b028-44c0e6b937db",
+      "name": "clear-cut generous originality",
+    },
+    {
+      "id": "b791dee1-3568-4f87-9c6a-2674fedce1ca",
+      "name": "cluttered frizzy stylus",
+    },
+    {
+      "id": "c8fcbd65-78d2-41a2-b715-f81a49f0061b",
+      "name": "colorless impressive impropriety",
+    },
+  ],
+  "totalCount": 200,
+}
+`;
+
+exports[`Operator Dive Sites E2E tests when listing dive sites associated with an operator will request a list of dive sites associated with an operator 1`] = `
+{
+  "data": [
+    {
+      "id": "c061b5c6-4394-4ee1-81bd-e32f8f5cd3dc",
+      "name": "acidic similar juggernaut",
+    },
+    {
+      "id": "fb698d5e-d945-4819-ab76-55537d68eb6e",
+      "name": "aggravating unhappy vest",
+    },
+    {
+      "id": "237bbc5d-f98c-42e6-95db-8280d4103840",
+      "name": "agitated high field",
+    },
+    {
+      "id": "5b125836-5b5b-4ccc-a56e-58891f8bebfc",
+      "name": "alert awesome intuition",
+    },
+    {
+      "id": "635030db-6336-4e79-9175-510f6b0fdf4b",
+      "name": "altruistic well-worn disconnection",
+    },
+    {
+      "id": "3c3005aa-4cac-47a5-8660-987e156ca33a",
+      "name": "ample unused billboard",
+    },
+    {
+      "id": "10f33946-a9a2-4cca-96ca-4093113ed9bf",
+      "name": "another submissive subconscious",
+    },
+    {
+      "id": "d7de84b7-130f-4d3c-be13-bff50cd40596",
+      "name": "apt colossal initial",
+    },
+    {
+      "id": "67477c7b-149d-4ea5-bd5c-766ea53dec36",
+      "name": "apt pastel moai",
+    },
+    {
+      "id": "ade65a81-5646-4282-89c9-9362d6019a45",
+      "name": "aromatic steel walrus",
+    },
+    {
+      "id": "4bf89bc5-c8ff-4fa3-895e-322cc00848b1",
+      "name": "avaricious flamboyant subtitle",
+    },
+    {
+      "id": "73f26d0e-d1fa-44f1-873e-107726fa1625",
+      "name": "awkward limping hard-hat",
+    },
+    {
+      "id": "b3c2caf2-fc71-484f-80c3-2584c6e822d4",
+      "name": "basic long-term coupon",
+    },
+    {
+      "id": "9b6ec3a8-0f6b-456a-9400-de32fe6488ed",
+      "name": "belated turbulent koala",
+    },
+    {
+      "id": "25f82dcd-7f9e-46d1-86dd-0eb376194308",
+      "name": "beloved difficult attack",
+    },
+    {
+      "id": "17b819c5-0541-46cd-8dfd-800a9ccddcba",
+      "name": "bewitched all turnstile",
+    },
+    {
+      "id": "4c256b3d-bc5b-4d56-9041-0d29e0621585",
+      "name": "blind qualified marksman",
+    },
+    {
+      "id": "d80a65f2-1984-4090-8c0c-82a0472315c7",
+      "name": "bold staid lode",
+    },
+    {
+      "id": "87339ea2-2d2c-4b95-aeac-8b398db59dfb",
+      "name": "bold talkative cymbal",
+    },
+    {
+      "id": "3c5286b8-3428-4d21-9847-fce371ec1175",
+      "name": "bustling normal convert",
+    },
+    {
+      "id": "4e1bf1df-0838-413e-97e7-e6229eada2ed",
+      "name": "carefree fussy crewman",
+    },
+    {
+      "id": "f2026af7-0f73-4fc0-b29b-491dc2846842",
+      "name": "caring nutty grub",
+    },
+    {
+      "id": "14a4bd43-d196-492e-b028-44c0e6b937db",
+      "name": "clear-cut generous originality",
+    },
+    {
+      "id": "b791dee1-3568-4f87-9c6a-2674fedce1ca",
+      "name": "cluttered frizzy stylus",
+    },
+    {
+      "id": "c8fcbd65-78d2-41a2-b715-f81a49f0061b",
+      "name": "colorless impressive impropriety",
+    },
+    {
+      "id": "bb9df418-3780-4cd5-be61-8d258bac57a5",
+      "name": "complex third sitar",
+    },
+    {
+      "id": "98f43695-3744-4f31-9daa-6e2f570f4b94",
+      "name": "concerned specific printing",
+    },
+    {
+      "id": "ebeaa2cc-c48b-4f5c-90d3-8329d4c06436",
+      "name": "courageous blaring volume",
+    },
+    {
+      "id": "e763f903-f5aa-4f33-8878-ae73c70417a4",
+      "name": "cruel wealthy lieu",
+    },
+    {
+      "id": "bbbb7755-0878-4984-97c5-34b430fd5fb0",
+      "name": "cultured illiterate acid",
+    },
+    {
+      "id": "b453bf69-351f-47fd-b60a-a0b4ba239a50",
+      "name": "cultured pointless glass",
+    },
+    {
+      "id": "c14340a8-858b-478e-8308-c800149777a7",
+      "name": "damp forsaken chapter",
+    },
+    {
+      "id": "fce01d67-96f1-4f82-87b7-6dd1c98a8864",
+      "name": "dark heavy boss",
+    },
+    {
+      "id": "b6346f2c-3523-4b9b-8f6a-eb075efe9878",
+      "name": "dazzling easy-going shortwave",
+    },
+    {
+      "id": "e51c2812-a611-4c63-a319-1ecfdb612f60",
+      "name": "deadly idealistic gerbil",
+    },
+    {
+      "id": "4e87dc06-4d51-4d11-ba93-37e51924ff44",
+      "name": "deadly lean mobile",
+    },
+    {
+      "id": "3743ae60-e9bc-4182-b18a-7fc495be2398",
+      "name": "defiant thorny knife-edge",
+    },
+    {
+      "id": "8049b2ff-740a-4d78-8a5e-50881ea4c72b",
+      "name": "definitive tart hierarchy",
+    },
+    {
+      "id": "100e5537-741b-4eeb-82df-0db04cac8293",
+      "name": "delightful female toad",
+    },
+    {
+      "id": "c93ae150-12b5-4776-9d70-40d0c5604ce1",
+      "name": "earnest stingy metro",
+    },
+    {
+      "id": "873d2b0d-c5ef-4324-8468-2dc27baaff61",
+      "name": "elastic uniform animal",
+    },
+    {
+      "id": "3f849b78-6ba8-41b8-b565-bb34a783dfd9",
+      "name": "elastic unripe dhow",
+    },
+    {
+      "id": "3525e645-141c-4ebe-8d0d-565b8124c9b1",
+      "name": "equatorial trivial spy",
+    },
+    {
+      "id": "97bbe1df-6687-453a-82db-eda796518eb0",
+      "name": "exhausted wretched cyclone",
+    },
+    {
+      "id": "74aa1202-9d61-443b-b8f5-44dde5ef18d5",
+      "name": "exotic warmhearted aside",
+    },
+    {
+      "id": "f2925b7f-0609-4281-b294-a4d58052efcf",
+      "name": "extra-small plain trader",
+    },
+    {
+      "id": "1d60387d-7abd-4a46-99bc-800e14bc842b",
+      "name": "far-off critical machine",
+    },
+    {
+      "id": "7286c60f-c846-41fc-bb89-ad3eb6e74b3e",
+      "name": "fearless passionate phone",
+    },
+    {
+      "id": "749b74b4-dd47-4493-8455-6ed530bd66e7",
+      "name": "filthy present prestige",
+    },
+    {
+      "id": "325d483c-159f-424c-a8e0-9b675d0af915",
+      "name": "flamboyant old mate",
+    },
+  ],
+  "totalCount": 200,
+}
+`;
+
+exports[`Operator Dive Sites E2E tests when listing dive sites associated with an operator will return a 400 response if query string is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "skip",
+      ],
+      "received": "nan",
+    },
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to 1",
+      "minimum": 1,
+      "path": [
+        "limit",
+      ],
+      "type": "number",
+    },
+  ],
+}
+`;
+
+exports[`Operator Dive Sites E2E tests when removing dive sites from an operator will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        "siteIds",
+        0,
+      ],
+      "received": "number",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "siteIds",
+        1,
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid uuid",
+      "path": [
+        "siteIds",
+        2,
+      ],
+      "validation": "uuid",
+    },
+  ],
+}
+`;
+
+exports[`Operator Dive Sites E2E tests when removing dive sites from an operator will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "array",
+      "message": "Required",
+      "path": [
+        "siteIds",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;

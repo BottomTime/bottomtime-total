@@ -179,6 +179,34 @@ describe('OperatorService', () => {
     });
   });
 
+  describe('when retrieving multiple operators', () => {
+    it('will retrieve several operators at once', async () => {
+      const ownerData = owner.toEntity();
+      const data = TestData.slice(0, 3).map((op) =>
+        parseOperatorJSON(op, ownerData),
+      );
+      await Operators.save(data);
+
+      const operators = await service.getOperators(data.map((op) => op.id));
+      expect(operators).toHaveLength(3);
+      expect(operators.map((op) => op.toJSON())).toMatchSnapshot();
+    });
+
+    it('will return an empty array if passed an empty list of operator IDs', async () => {
+      await expect(service.getOperators([])).resolves.toHaveLength(0);
+    });
+
+    it('will return an empty array if no operators are found', async () => {
+      await expect(
+        service.getOperators([
+          '33cb0d72-cf70-4071-b602-89204d6e7bdf',
+          'f7afed72-f002-44e0-886d-ed3d46a973f0',
+          '32049dec-3891-47df-be19-89dd410a3d6b',
+        ]),
+      ).resolves.toHaveLength(0);
+    });
+  });
+
   describe('when retrieving an operator by its slug', () => {
     it('will return the indicated operator', async () => {
       const data = parseOperatorJSON(TestData[0]);

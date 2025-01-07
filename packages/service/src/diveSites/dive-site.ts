@@ -3,6 +3,7 @@ import {
   CreateOrUpdateDiveSiteReviewDTO,
   DiveSiteDTO,
   ListDiveSiteReviewsParamsDTO,
+  SuccinctDiveSiteDTO,
   SuccinctProfileDTO,
   WaterType,
 } from '@bottomtime/api';
@@ -22,6 +23,7 @@ import { DiveSiteReviewsQueryBuilder } from './dive-site-reviews-query-builder';
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
 export type CreateDiveSiteReviewOptions = CreateOrUpdateDiveSiteReviewDTO & {
   creatorId: string;
+  logEntryId?: string;
 };
 
 export class DiveSite {
@@ -202,14 +204,14 @@ export class DiveSite {
 
     const data = new DiveSiteReviewEntity();
     data.id = uuid();
-    data.comments = options.comments ?? null;
-    data.rating = options.rating;
-    data.difficulty = options.difficulty ?? null;
-
     data.site = this.data;
     data.creator = creator;
 
     const review = new DiveSiteReview(this.Reviews, this.emitter, data);
+    review.comments = options.comments;
+    review.rating = options.rating;
+    review.difficulty = options.difficulty;
+    review.logEntryId = options.logEntryId;
     await review.save();
 
     return review;
@@ -218,7 +220,23 @@ export class DiveSite {
   async getReview(reviewId: string): Promise<DiveSiteReview | undefined> {
     const data = await this.Reviews.findOne({
       where: { id: reviewId, site: { id: this.data.id } },
-      relations: ['creator'],
+      relations: ['creator', 'logEntry'],
+    });
+
+    if (data) {
+      data.site = this.data;
+      return new DiveSiteReview(this.Reviews, this.emitter, data);
+    }
+
+    return undefined;
+  }
+
+  async getReviewByLogEntry(
+    logEntryId: string,
+  ): Promise<DiveSiteReview | undefined> {
+    const data = await this.Reviews.findOne({
+      where: { site: { id: this.data.id }, logEntry: { id: logEntryId } },
+      relations: ['creator', 'logEntry'],
     });
 
     if (data) {
@@ -267,6 +285,17 @@ export class DiveSite {
       waterType: this.waterType,
       averageRating: this.averageRating,
       averageDifficulty: this.averageDifficulty,
+    };
+  }
+
+  toSuccinctJSON(): SuccinctDiveSiteDTO {
+    return {
+      id: this.id,
+      name: this.name,
+      location: this.location,
+      gps: this.gps,
+      averageRating: this.averageRating,
+      description: this.description,
     };
   }
 

@@ -135,7 +135,7 @@ exports[`Operator class when working with reviews when listing reviews will filt
       "createdAt": 1722356997950,
       "creator": "Julia15",
       "id": "0a926fb7-bc11-448f-8659-460a5ece4db9",
-      "rating": 1.51,
+      "rating": 1.516,
     },
     {
       "createdAt": 1663081816554,
@@ -437,13 +437,13 @@ exports[`Operator class when working with reviews when listing reviews will perf
       "createdAt": 1699576330416,
       "creator": "Ayla.Rippin",
       "id": "5e040147-7750-4a50-85c7-5de542508c41",
-      "rating": 3.66,
+      "rating": 3.665,
     },
     {
       "createdAt": 1693044277692,
       "creator": "Ayla.Rippin",
       "id": "832742b6-fe0f-4311-a172-949ff0a70661",
-      "rating": 3.66,
+      "rating": 3.662,
     },
     {
       "createdAt": 1667481661858,
@@ -615,7 +615,7 @@ exports[`Operator class when working with reviews when listing reviews will sort
   },
   {
     "createdAt": 1727545136259,
-    "rating": 1.03,
+    "rating": 1.033,
   },
   {
     "createdAt": 1725815554218,
@@ -640,11 +640,11 @@ exports[`Operator class when working with reviews when listing reviews will sort
 [
   {
     "createdAt": 1727545136259,
-    "rating": 1.03,
+    "rating": 1.033,
   },
   {
     "createdAt": 1696848390176,
-    "rating": 1.03,
+    "rating": 1.038,
   },
   {
     "createdAt": 1663081816554,
@@ -679,12 +679,12 @@ exports[`Operator class when working with reviews when listing reviews will sort
     "rating": 1.39,
   },
   {
-    "createdAt": 1722356997950,
-    "rating": 1.51,
+    "createdAt": 1715894076800,
+    "rating": 1.512,
   },
   {
-    "createdAt": 1715894076800,
-    "rating": 1.51,
+    "createdAt": 1722356997950,
+    "rating": 1.516,
   },
   {
     "createdAt": 1716453263284,
@@ -792,6 +792,7 @@ exports[`Operator class will return a JSON representation of the dive operator 1
 {
   "active": true,
   "address": "3 Bay St, Tobermory, ON N0H 2R0, Canada",
+  "averageRating": 3.8,
   "banner": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg",
   "createdAt": 1655725521000,
   "description": "Welcome to Tobermory, the Scuba Diving Capital of Canada!
@@ -836,6 +837,7 @@ exports[`Operator class will return a succinct JSON representation of the dive o
 {
   "active": true,
   "address": "3 Bay St, Tobermory, ON N0H 2R0, Canada",
+  "averageRating": 3.8,
   "banner": "https://diversden.ca/wp-content/uploads/2021/06/divers-den-banner.jpg",
   "createdAt": 1655725521000,
   "description": "Welcome to Tobermory, the Scuba Diving Capital of Canada!

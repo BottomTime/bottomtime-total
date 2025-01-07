@@ -27,18 +27,6 @@ exports[`SelectDiveSiteListItem component will render with full site data 1`] = 
         <p class="font-bold">Location</p>
         <p>Somewhere</p>
       </div>
-      <div class="text-center">
-        <p class="font-bold">Max depth</p>
-        <p><span>10.00 m</span></p>
-      </div>
-      <div class="text-center">
-        <p class="font-bold">Free to dive</p>
-        <p>Yes</p>
-      </div>
-      <div class="text-center">
-        <p class="font-bold">Shore access</p>
-        <p>Yes</p>
-      </div>
     </div>
   </div>
 </li>"
@@ -63,18 +51,6 @@ exports[`SelectDiveSiteListItem component will render with partial dive site 1`]
         <p class="font-bold">Location</p>
         <p>Somewhere</p>
       </div>
-      <div class="text-center">
-        <p class="font-bold">Max depth</p>
-        <p>(unspecified)</p>
-      </div>
-      <div class="text-center">
-        <p class="font-bold">Free to dive</p>
-        <p>(unspecified)</p>
-      </div>
-      <div class="text-center">
-        <p class="font-bold">Shore access</p>
-        <p>(unspecified)</p>
-      </div>
     </div>
   </div>
 </li>"
@@ -98,18 +74,6 @@ exports[`SelectDiveSiteListItem component will show as highlighted when selected
       <div class="text-center">
         <p class="font-bold">Location</p>
         <p>Somewhere</p>
-      </div>
-      <div class="text-center">
-        <p class="font-bold">Max depth</p>
-        <p>(unspecified)</p>
-      </div>
-      <div class="text-center">
-        <p class="font-bold">Free to dive</p>
-        <p>(unspecified)</p>
-      </div>
-      <div class="text-center">
-        <p class="font-bold">Shore access</p>
-        <p>(unspecified)</p>
       </div>
     </div>
   </div>

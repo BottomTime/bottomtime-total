@@ -8,7 +8,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import slugify from 'slugify';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
 import { OperatorEntity } from '../data';
@@ -38,10 +38,9 @@ export class OperatorsService {
   ) {}
 
   async createOperator(options: CreateOperatorOptions): Promise<Operator> {
-    this.log.debug(
-      'Attempting to create new dive operator with options:',
-      options,
-    );
+    this.log.debug('Attempting to create new dive operator...');
+    this.log.verbose(options);
+
     const data = new OperatorEntity();
     data.id = uuid();
     data.name = options.name;
@@ -81,6 +80,15 @@ export class OperatorsService {
     return data ? this.operatorFactory.createOperator(data) : undefined;
   }
 
+  async getOperators(ids: string[]): Promise<Operator[]> {
+    this.log.debug(`Attempting to retrieve ${ids.length} operators...`);
+    const results = await this.operators.find({
+      where: { id: In(ids) },
+      relations: ['owner'],
+    });
+    return results.map((item) => this.operatorFactory.createOperator(item));
+  }
+
   async getOperatorBySlug(slug: string): Promise<Operator | undefined> {
     this.log.debug(`Attempting to retrieve operator with slug: "${slug}"`);
     slug = slug.trim().toLowerCase();
@@ -100,7 +108,10 @@ export class OperatorsService {
   async searchOperators(
     options?: SearchOperatorOptions,
   ): Promise<ApiList<Operator>> {
-    this.log.debug('Performing search for dive operators:', options);
+    this.log.debug('Performing search for dive operators:', {
+      ...options,
+      owner: options?.owner ? options.owner.username : undefined,
+    });
     const query = new OperatorQueryBuilder(this.operators)
       .withGeoLocation(options?.location, options?.radius)
       .withInactive(options?.showInactive)

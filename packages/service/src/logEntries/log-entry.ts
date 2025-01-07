@@ -415,13 +415,15 @@ export class LogEntry {
       creator: this.owner,
 
       logNumber: this.logNumber,
-      site: this.site?.toJSON(),
       air: [...this.air],
 
       conditions: this.conditions.toJSON(),
       depths: this.depths.toJSON(),
       equipment: this.equipment.toJSON(),
       timing: this.timing.toJSON(),
+
+      operator: this.operator?.toSuccinctJSON(),
+      site: this.site?.toSuccinctJSON(),
 
       notes: this.notes,
       tags: this.tags,

@@ -5,6 +5,7 @@ import {
   ListLogEntriesParamsDTO,
   LogEntryDTO,
   LogEntrySortBy,
+  OperatorSchema,
   PressureUnit,
   SortOrder,
   TankMaterial,
@@ -27,6 +28,7 @@ import {
   LogEntryAirEntity,
   LogEntryEntity,
   LogEntrySampleEntity,
+  OperatorEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSitesModule } from '../../../src/diveSites';
@@ -40,11 +42,13 @@ import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
+import TestOperatorData from '../../fixtures/operators.json';
 import TestUserData from '../../fixtures/user-search-data.json';
 import {
   createAuthHeader,
   createTestApp,
   createTestUser,
+  parseOperatorJSON,
   parseUserJSON,
 } from '../../utils';
 import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
@@ -65,6 +69,10 @@ function getNextLogEntryUrl(username: string): string {
 
 function getRecentDiveSitesUrl(username: string): string {
   return `/api/users/${username}/logbook/recentDiveSites`;
+}
+
+function getRecentOperatorsUrl(username: string): string {
+  return `/api/users/${username}/logbook/recentOperators`;
 }
 
 const AdminUserData: Partial<UserEntity> = {
@@ -91,11 +99,13 @@ describe('Log entries E2E tests', () => {
   let logEntryData: LogEntryEntity[];
   let airData: LogEntryAirEntity[];
   let diveSiteData: DiveSiteEntity[];
+  let operatorData: OperatorEntity[];
 
   let Users: Repository<UserEntity>;
   let Entries: Repository<LogEntryEntity>;
   let EntriesAir: Repository<LogEntryAirEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
+  let Operators: Repository<OperatorEntity>;
 
   let authHeader: [string, string];
   let adminAuthHeader: [string, string];
@@ -124,11 +134,15 @@ describe('Log entries E2E tests', () => {
     Entries = dataSource.getRepository(LogEntryEntity);
     EntriesAir = dataSource.getRepository(LogEntryAirEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
+    Operators = dataSource.getRepository(OperatorEntity);
 
     adminData = createTestUser(AdminUserData);
     ownerData = TestUserData.slice(0, 4).map((user) => parseUserJSON(user));
     diveSiteData = TestDiveSiteData.map((site, i) =>
       parseDiveSiteJSON(site, ownerData[i % ownerData.length]),
+    );
+    operatorData = TestOperatorData.slice(0, 30).map((operator, i) =>
+      parseOperatorJSON(operator, ownerData[i % ownerData.length]),
     );
     logEntryData = TestLogEntryData.map((entry, i) =>
       parseLogEntryJSON(
@@ -138,6 +152,7 @@ describe('Log entries E2E tests', () => {
         },
         ownerData[i % ownerData.length],
         diveSiteData[i % diveSiteData.length],
+        operatorData[i % operatorData.length],
       ),
     );
 
@@ -161,6 +176,7 @@ describe('Log entries E2E tests', () => {
   beforeEach(async () => {
     await Users.save([...ownerData, AdminUserData]);
     await DiveSites.save(diveSiteData);
+    await Operators.save(operatorData);
   });
 
   afterAll(async () => {
@@ -1025,6 +1041,79 @@ describe('Log entries E2E tests', () => {
     it('will return a 404 response if the target user does not exist', async () => {
       await request(server)
         .get(getRecentDiveSitesUrl('not_a_user'))
+        .set(...adminAuthHeader)
+        .expect(404);
+    });
+  });
+
+  describe('when fetching recent dive operators', () => {
+    beforeEach(async () => {
+      await Entries.save(logEntryData);
+    });
+
+    it('will return the most recently visited dive operators', async () => {
+      const { body } = await request(server)
+        .get(getRecentOperatorsUrl(ownerData[0].username))
+        .set(...authHeader)
+        .query({ count: 15 })
+        .expect(200);
+
+      const result = OperatorSchema.array().parse(body);
+      expect(result).toHaveLength(15);
+      expect(
+        result.map((operator) => ({
+          id: operator.id,
+          name: operator.name,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    it('will allow admins to query the most recent dive operators for any user', async () => {
+      const { body } = await request(server)
+        .get(getRecentOperatorsUrl(ownerData[0].username))
+        .set(...adminAuthHeader)
+        .expect(200);
+
+      const result = OperatorSchema.array().parse(body);
+      expect(result).toHaveLength(10);
+      expect(
+        result.map((operator) => ({
+          id: operator.id,
+          name: operator.name,
+        })),
+      ).toMatchSnapshot();
+    });
+
+    it('will return a 400 response if query string is invalid', async () => {
+      const {
+        body: { details },
+      } = await request(server)
+        .get(getRecentOperatorsUrl(ownerData[0].username))
+        .set(...authHeader)
+        .query({
+          count: 'all',
+        })
+        .expect(400);
+
+      expect(details).toMatchSnapshot();
+    });
+
+    it('will return a 401 response if the user is not authenticated', async () => {
+      await request(server)
+        .get(getRecentOperatorsUrl(ownerData[0].username))
+        .expect(401);
+    });
+
+    it('will return a 403 response if the user is not authorized to query recent dive operators', async () => {
+      await request(server)
+        .get(getRecentOperatorsUrl(ownerData[0].username))
+        .set(...otherAuthHeader)
+        .expect(403);
+    });
+
+    it('will return a 404 response if the target user does not exist', async () => {
+      await request(server)
+        .get(getRecentOperatorsUrl('not_a_user'))
         .set(...adminAuthHeader)
         .expect(404);
     });

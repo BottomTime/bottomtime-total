@@ -2,7 +2,7 @@ import { OperatorReviewDTO, SuccinctProfileDTO } from '@bottomtime/api';
 
 import { Repository } from 'typeorm';
 
-import { OperatorReviewEntity } from '../data';
+import { LogEntryEntity, OperatorReviewEntity } from '../data';
 
 export class OperatorReview {
   constructor(
@@ -47,6 +47,13 @@ export class OperatorReview {
   }
   set rating(val: number) {
     this.data.rating = val;
+  }
+
+  get logEntryId(): string | undefined {
+    return this.data.logEntry?.id;
+  }
+  set logEntryId(val: string | undefined) {
+    this.data.logEntry = val ? ({ id: val } as LogEntryEntity) : null;
   }
 
   async delete(): Promise<boolean> {

@@ -92,6 +92,16 @@ export const DiveSiteSchema = CreateOrUpdateDiveSiteSchema.extend({
 });
 export type DiveSiteDTO = z.infer<typeof DiveSiteSchema>;
 
+export const SuccinctDiveSiteSchema = DiveSiteSchema.pick({
+  averageRating: true,
+  description: true,
+  name: true,
+  id: true,
+  location: true,
+  gps: true,
+});
+export type SuccinctDiveSiteDTO = z.infer<typeof SuccinctDiveSiteSchema>;
+
 export const SearchDiveSitesParamsSchema = z
   .object({
     query: z.string().trim().max(200),

@@ -137,6 +137,57 @@
  *               min: 1.0
  *               max: 5.0
  *         - $ref: "#/components/schemas/CreateOrUpdateDiveSite"
+ *     SuccinctDiveSite:
+ *       type: object
+ *       required:
+ *         - id
+ *         - name
+ *         - location
+ *       properties:
+ *         averageRating:
+ *           type: number
+ *           description: The average rating of the dive site.
+ *           example: 4.5
+ *           min: 1.0
+ *           max: 5.0
+ *         description:
+ *           type: string
+ *           description: A description of the dive site.
+ *           example: A wall dive with a maximum depth of 120 feet.
+ *           maxlength: 2000
+ *         name:
+ *           type: string
+ *           description: The name of the dive site.
+ *           example: The Wall
+ *           maxlength: 200
+ *         id:
+ *           type: string
+ *           format: uuid
+ *           description: The ID of the dive site.
+ *           example: 123e4567-e89b-12d3-a456-426614174000
+ *         location:
+ *           type: string
+ *           description: The location of the dive site.
+ *           example: Key Largo, FL
+ *           maxlength: 200
+ *         gps:
+ *           type: object
+ *           required:
+ *             - lat
+ *             - lon
+ *           properties:
+ *             lat:
+ *               type: number
+ *               description: The latitude of the dive site.
+ *               example: 25.0865
+ *               min: -90
+ *               max: 90
+ *             lon:
+ *               type: number
+ *               description: The longitude of the dive site.
+ *               example: -80.4473
+ *               min: -180
+ *               max: 180
  *     CreateOrUpdateDiveSiteReview:
  *       type: object
  *       required:
