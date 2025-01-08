@@ -131,7 +131,7 @@ import TextHeading from '../common/text-heading.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 
 type NotificationEventData = Record<
-  EventKey,
+  string,
   { name: string; availability: Set<NotificationType> }
 >;
 const Categories: Record<string, { name: string; visible: boolean }> = {
@@ -210,7 +210,7 @@ const NotificationEvents: NotificationEventData = {
     availability: new Set(),
   },
 } as const;
-type WhitelistState = Record<EventKey, boolean>;
+type WhitelistState = Record<string, boolean>;
 
 interface ManageNotificationsProps {
   user: UserDTO;

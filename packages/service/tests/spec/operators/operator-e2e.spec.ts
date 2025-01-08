@@ -1,6 +1,7 @@
 import {
   CreateOrUpdateOperatorDTO,
   LogBookSharing,
+  OperatorDTO,
   UserRole,
   VerificationStatus,
 } from '@bottomtime/api';
@@ -11,7 +12,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { OperatorEntity, UserEntity } from '../../../src/data';
+import {
+  OperatorDiveSiteEntity,
+  OperatorEntity,
+  OperatorReviewEntity,
+  UserEntity,
+} from '../../../src/data';
+import { DiveSitesModule } from '../../../src/diveSites';
+import { OperatorFactory } from '../../../src/operators';
 import { OperatorsController } from '../../../src/operators/operators.controller';
 import { OperatorsService } from '../../../src/operators/operators.service';
 import { UsersModule } from '../../../src/users';
@@ -86,8 +94,16 @@ describe('Operators E2E tests', () => {
 
   beforeAll(async () => {
     app = await createTestApp({
-      imports: [TypeOrmModule.forFeature([OperatorEntity]), UsersModule],
-      providers: [OperatorsService],
+      imports: [
+        TypeOrmModule.forFeature([
+          OperatorEntity,
+          OperatorDiveSiteEntity,
+          OperatorReviewEntity,
+        ]),
+        UsersModule,
+        DiveSitesModule,
+      ],
+      providers: [OperatorsService, OperatorFactory],
       controllers: [OperatorsController],
     });
     server = app.getHttpServer();
@@ -132,7 +148,7 @@ describe('Operators E2E tests', () => {
       expect(body.totalCount).toBe(testData.filter((op) => op.active).length);
       expect(body.data).toHaveLength(50);
       expect(body.data[0]).toMatchSnapshot();
-      expect(body.data.map((op) => op.name)).toMatchSnapshot();
+      expect(body.data.map((op: OperatorDTO) => op.name)).toMatchSnapshot();
     });
 
     it('will perform a more complex search with query parameters', async () => {

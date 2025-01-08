@@ -1,5 +1,4 @@
 import {
-  AccountTier,
   ApiClient,
   ApiList,
   Fetcher,

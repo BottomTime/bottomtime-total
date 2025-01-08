@@ -1,22 +1,41 @@
 import {
   AccountTier,
   LogBookSharing,
+  OperatorReviewSortBy,
+  SortOrder,
   VerificationStatus,
 } from '@bottomtime/api';
 
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, HttpException } from '@nestjs/common';
 
+import { writeFile } from 'fs/promises';
+import { resolve } from 'path';
 import { Repository } from 'typeorm';
 
-import { OperatorEntity, UserEntity } from '../../../src/data';
-import { Operator } from '../../../src/operators';
+import {
+  OperatorDiveSiteEntity,
+  OperatorEntity,
+  OperatorReviewEntity,
+  UserEntity,
+} from '../../../src/data';
+import { CreateOperatorReviewOptions, Operator } from '../../../src/operators';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
-import { createTestUser } from '../../utils/create-test-user';
+import TestReviews from '../../fixtures/operator-reviews.json';
+import TestUsers from '../../fixtures/user-search-data.json';
+import {
+  createDiveSiteFactory,
+  createTestDiveOperatorReview,
+  createTestOperator,
+  createTestUser,
+  parseOperatorReviewJSON,
+  parseUserJSON,
+} from '../../utils';
 
 const TestData: OperatorEntity = {
   id: 'f6fc189e-126e-49ac-95aa-c2ffd9a03140',
   active: true,
+  averageRating: 3.8,
   createdAt: new Date('2022-06-20T11:45:21Z'),
   updatedAt: new Date('2024-07-29T11:45:21Z'),
   deletedAt: null,
@@ -49,6 +68,7 @@ Whether or not you are a certified scuba diver, you can explore this hidden worl
 describe('Operator class', () => {
   let Users: Repository<UserEntity>;
   let Operators: Repository<OperatorEntity>;
+  let Reviews: Repository<OperatorReviewEntity>;
 
   let owner: UserEntity;
   let otherUser: UserEntity;
@@ -58,6 +78,7 @@ describe('Operator class', () => {
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
+    Reviews = dataSource.getRepository(OperatorReviewEntity);
 
     owner = createTestUser({
       accountTier: AccountTier.Basic,
@@ -88,7 +109,13 @@ describe('Operator class', () => {
       ...TestData,
       owner,
     };
-    operator = new Operator(Operators, data);
+    operator = new Operator(
+      Operators,
+      dataSource.getRepository(OperatorDiveSiteEntity),
+      Reviews,
+      createDiveSiteFactory(),
+      data,
+    );
   });
 
   it('will return properties correctly', () => {
@@ -106,6 +133,7 @@ describe('Operator class', () => {
       name: owner.name,
     });
     expect(operator.active).toBe(TestData.active);
+    expect(operator.averageRating).toBe(TestData.averageRating);
     expect(operator.name).toBe(TestData.name);
     expect(operator.slug).toBe(TestData.slug);
     expect(operator.verificationStatus).toBe(TestData.verificationStatus);
@@ -297,7 +325,13 @@ describe('Operator class', () => {
     newData.name = 'Different Operator';
     newData.slug = TestData.slug;
     newData.owner = owner;
-    const newOperator = new Operator(Operators, newData);
+    const newOperator = new Operator(
+      Operators,
+      dataSource.getRepository(OperatorDiveSiteEntity),
+      Reviews,
+      createDiveSiteFactory(),
+      newData,
+    );
     await Operators.save(data);
 
     await expect(newOperator.save()).rejects.toThrow(ConflictException);
@@ -390,5 +424,204 @@ describe('Operator class', () => {
     });
     expect(saved.verificationStatus).toBe(VerificationStatus.Pending);
     expect(saved.updatedAt.valueOf()).toBeCloseTo(Date.now(), -3);
+  });
+
+  describe('when working with reviews', () => {
+    let creatorData: UserEntity[];
+    let otherOperator: OperatorEntity;
+    let testReviews: OperatorReviewEntity[];
+
+    beforeAll(() => {
+      creatorData = TestUsers.slice(0, 8).map(parseUserJSON);
+      otherOperator = createTestOperator(owner, {
+        id: 'fa15e395-5f67-4f68-8ab4-0514b9e9df95',
+      });
+      testReviews = TestReviews.map((item, index) =>
+        parseOperatorReviewJSON(
+          item,
+          index % 5 === 0 ? otherOperator : data,
+          creatorData[index % creatorData.length],
+        ),
+      );
+    });
+
+    beforeEach(async () => {
+      await Users.save(creatorData);
+      await Operators.save([data, otherOperator]);
+    });
+
+    it.skip('will generate some test data', async () => {
+      const path = resolve(__dirname, '../../fixtures/operator-reviews.json');
+      const reviews = Array.from({ length: 150 }, (_: never, index: number) =>
+        createTestDiveOperatorReview(
+          index % 5 === 0 ? otherOperator : data,
+          creatorData[index % creatorData.length],
+        ),
+      );
+      await writeFile(path, JSON.stringify(reviews, null, 2), 'utf-8');
+    });
+
+    describe('when retrieving a single review', () => {
+      it('will return the requested review', async () => {
+        const review = testReviews[2];
+        await Reviews.save(review);
+        const result = await operator.getReview(review.id);
+        expect(result).toMatchSnapshot();
+      });
+
+      it('will return undefined if the review does not exist', async () => {
+        const review = testReviews[2];
+        const result = await operator.getReview(review.id);
+        expect(result).toBeUndefined();
+      });
+
+      it('will return undefined if the review is associated with another operator', async () => {
+        const review = testReviews[0];
+        await Reviews.save(review);
+        const result = await operator.getReview(review.id);
+        expect(result).toBeUndefined();
+      });
+    });
+
+    describe('when listing reviews', () => {
+      beforeEach(async () => {
+        await Reviews.save(testReviews);
+      });
+
+      it('will perform a basic search', async () => {
+        const result = await operator.listReviews();
+        expect({
+          data: result.data.map((review) => ({
+            id: review.id,
+            rating: review.rating,
+            creator: review.creator.username,
+            createdAt: review.createdAt.valueOf(),
+          })),
+          totalCount: result.totalCount,
+        }).toMatchSnapshot();
+      });
+
+      it('will filter reviews by creator', async () => {
+        const result = await operator.listReviews({
+          creator: new User(Users, creatorData[3]),
+        });
+        expect({
+          data: result.data.map((review) => ({
+            id: review.id,
+            rating: review.rating,
+            creator: review.creator.username,
+            createdAt: review.createdAt.valueOf(),
+          })),
+          totalCount: result.totalCount,
+        }).toMatchSnapshot();
+      });
+
+      it('will allow pagination', async () => {
+        const result = await operator.listReviews({
+          limit: 6,
+          skip: 17,
+        });
+        expect({
+          data: result.data.map((review) => ({
+            id: review.id,
+            rating: review.rating,
+            creator: review.creator.username,
+            createdAt: review.createdAt.valueOf(),
+          })),
+          totalCount: result.totalCount,
+        }).toMatchSnapshot();
+      });
+
+      it('will perform a text-based search', async () => {
+        const result = await operator.listReviews({
+          query: 'Demonstro',
+        });
+        expect({
+          data: result.data.map((review) => ({
+            id: review.id,
+            rating: review.rating,
+            creator: review.creator.username,
+            createdAt: review.createdAt.valueOf(),
+          })),
+          totalCount: result.totalCount,
+        }).toMatchSnapshot();
+      });
+
+      [
+        { sortBy: OperatorReviewSortBy.Age, sortOrder: SortOrder.Descending },
+        { sortBy: OperatorReviewSortBy.Age, sortOrder: SortOrder.Ascending },
+        {
+          sortBy: OperatorReviewSortBy.Rating,
+          sortOrder: SortOrder.Descending,
+        },
+        {
+          sortBy: OperatorReviewSortBy.Rating,
+          sortOrder: SortOrder.Ascending,
+        },
+      ].forEach(({ sortBy, sortOrder }) => {
+        it(`will sort reviews by ${sortBy} in ${sortOrder} order`, async () => {
+          const result = await operator.listReviews({
+            sortBy,
+            sortOrder,
+            limit: 15,
+          });
+          expect(
+            result.data.map((review) => ({
+              rating: review.rating,
+              createdAt: review.createdAt.valueOf(),
+            })),
+          ).toMatchSnapshot();
+        });
+      });
+    });
+
+    describe('when creating a review', () => {
+      it('will submit a new review', async () => {
+        const options: CreateOperatorReviewOptions = {
+          creator: new User(Users, creatorData[2]),
+          rating: 3.88,
+          comments: 'This place is okay.',
+        };
+        const review = await operator.createReview(options);
+        expect(review.id).toHaveLength(36);
+        expect(review.createdAt.valueOf()).toBeCloseTo(Date.now(), -3);
+        expect(review.creator.username).toBe(options.creator.username);
+        expect(review.rating).toBe(options.rating);
+        expect(review.comments).toBe(options.comments);
+
+        const saved = await Reviews.findOneOrFail({
+          where: { id: review.id },
+          relations: ['creator', 'operator'],
+        });
+        expect(saved.createdAt.valueOf()).toBeCloseTo(Date.now(), -3);
+        expect(saved.creator.id).toBe(options.creator.id);
+        expect(saved.rating).toBe(options.rating);
+        expect(saved.comments).toBe(options.comments);
+        expect(saved.operator.id).toBe(operator.id);
+      });
+
+      it('will throw an exception if the creator has previously reviewed this operator in the last 48 hours', async () => {
+        const creator = creatorData[4];
+        const previousReview = createTestDiveOperatorReview(data, creator, {
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 46),
+        });
+        const options: CreateOperatorReviewOptions = {
+          creator: new User(Users, creator),
+          rating: 3.88,
+          comments: 'This place is okay.',
+        };
+        await Reviews.save(previousReview);
+
+        await expect(operator.createReview(options)).rejects.toThrow(
+          HttpException,
+        );
+
+        const count = await Reviews.countBy({
+          creator: { id: creator.id },
+          operator: { id: operator.id },
+        });
+        expect(count).toBe(1);
+      });
+    });
   });
 });

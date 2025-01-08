@@ -13,6 +13,7 @@ import { RedisCacheConfigService, RedisModule } from '../dependencies';
 import { DiveSitesModule } from '../diveSites';
 import { FeaturesModule } from '../features';
 import { FriendsModule } from '../friends';
+import { OperatorsModule } from '../operators';
 import { UsersModule } from '../users';
 import { Importer } from './import/importer';
 import { LogEntryImportFactory } from './import/log-entry-import-factory';
@@ -21,6 +22,7 @@ import { LogEntryImportService } from './import/log-entry-import.service';
 import { LogEntryImportsController } from './import/log-entry-imports.controller';
 import { LogEntriesService } from './log-entries.service';
 import { LogEntryFactory } from './log-entry-factory';
+import { LogEntryReviewsController } from './log-entry-reviews.controller';
 import { LogEntrySampleController } from './log-entry-sample.controller';
 import { UserLogEntriesController } from './user-log-entries.controller';
 
@@ -41,6 +43,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     FeaturesModule,
     FriendsModule,
     DiveSitesModule,
+    OperatorsModule,
   ],
   providers: [
     LogEntryImportFactory,
@@ -54,6 +57,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     LogEntrySampleController,
     LogEntryImportsController,
     LogEntryImportController,
+    LogEntryReviewsController,
   ],
   exports: [LogEntriesService, LogEntryFactory],
 })

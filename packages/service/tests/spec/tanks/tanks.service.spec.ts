@@ -51,24 +51,20 @@ describe('Tanks Service', () => {
         return entity;
       });
 
-      await Tanks.createQueryBuilder()
-        .insert()
-        .into(TankEntity)
-        .values(
-          tanks.map((t: TankEntity) => ({
-            ...t,
-            user: {
-              ...t.user,
-              friends: undefined,
-              tanks: undefined,
-              oauth: undefined,
-              customData: null,
-              certifications: undefined,
-              fulltext: undefined,
-            },
-          })),
-        )
-        .execute();
+      await Tanks.save(
+        tanks.map((t: TankEntity) => ({
+          ...t,
+          user: {
+            ...t.user,
+            friends: undefined,
+            tanks: undefined,
+            oauth: undefined,
+            customData: null,
+            certifications: undefined,
+            fulltext: undefined,
+          },
+        })),
+      );
     });
 
     it('will list system tanks', async () => {
@@ -176,24 +172,20 @@ describe('Tanks Service', () => {
         return entity;
       });
 
-      await Tanks.createQueryBuilder()
-        .insert()
-        .into(TankEntity)
-        .values(
-          tanks.map((t: TankEntity) => ({
-            ...t,
-            user: {
-              ...t.user,
-              friends: undefined,
-              tanks: undefined,
-              oauth: undefined,
-              customData: null,
-              certifications: undefined,
-              fulltext: undefined,
-            },
-          })),
-        )
-        .execute();
+      await Tanks.save(
+        tanks.map((t: TankEntity) => ({
+          ...t,
+          user: {
+            ...t.user,
+            friends: undefined,
+            tanks: undefined,
+            oauth: undefined,
+            customData: null,
+            certifications: undefined,
+            fulltext: undefined,
+          },
+        })),
+      );
 
       const options: CreateTankOptions = {
         material: TankMaterial.Steel,

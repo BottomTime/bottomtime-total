@@ -9,7 +9,6 @@ import {
 
 import { Request } from 'express';
 
-import { User } from '../users';
 import { Tank } from './tank';
 import { TanksService } from './tanks.service';
 

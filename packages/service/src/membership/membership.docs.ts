@@ -114,23 +114,28 @@
  *           example: active
  *         cancellationDate:
  *           title: Cancellation Date
- *           type: string
- *           format: date-time
- *           description: The date and time at which this membership will be cancelled.
- *           example: 2021-07-01T12:00:00Z
+ *           type: integer
+ *           format: int64
+ *           description: |
+ *             The date and time at which this membership will be cancelled. This is only present if the status is `canceled`.
+ *             The value is a Unix timestamp representing the number of milliseconds since the Unix epoch.
+ *           example: 1628089200000
  *         trialEndDate:
  *           title: Trial End Date
- *           type: string
- *           format: date-time
+ *           type: integer
+ *           format: int64
  *           description: |
  *             The date and time at which the user's trial period will end. After this,
  *             the membership status will transition from `trialing` to `active` and the user will
- *             be charged for their first year.
- *           example: 2021-07-01T12:00:00Z
+ *             be charged for their first year. The value is a Unix timestamp representing the number of milliseconds
+ *             since the Unix epoch.
+ *           example: 1628089200000
  *         nextBillingDate:
  *           title: Next Billing Date
- *           type: string
- *           format: date-time
- *           description: The date and time at which the user will be billed for their next subscription period.
- *           example: 2022-07-01T12:00:00Z
+ *           type: integer
+ *           format: int64
+ *           description: |
+ *             The date and time at which the user will be billed for their next subscription period.
+ *             The value is a Unix timestamp representing the number of milliseconds since the Unix epoch.
+ *           example: 1628089200000
  */

@@ -19,6 +19,14 @@ describe('Servless Handler', () => {
     client = new MockMailClient();
     jest.mocked(logger.createLogger).mockImplementation(() => Log);
     jest.mocked(mailClient.createMailClient).mockReturnValueOnce(client);
+    jest.useFakeTimers({
+      now: new Date('2024-07-23T12:52:10Z'),
+      doNotFake: ['nextTick', 'setImmediate'],
+    });
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
   });
 
   it('will handle a number of records', async () => {

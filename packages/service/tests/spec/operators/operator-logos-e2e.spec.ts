@@ -11,7 +11,14 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import { Config } from '../../../src/config';
-import { OperatorEntity, UserEntity } from '../../../src/data';
+import {
+  OperatorDiveSiteEntity,
+  OperatorEntity,
+  OperatorReviewEntity,
+  UserEntity,
+} from '../../../src/data';
+import { DiveSitesModule } from '../../../src/diveSites';
+import { OperatorFactory } from '../../../src/operators';
 import { OperatorLogoController } from '../../../src/operators/operator-logo.controller';
 import { OperatorsService } from '../../../src/operators/operators.service';
 import { StorageModule } from '../../../src/storage';
@@ -91,10 +98,15 @@ describe('Operator logos E2E tests', () => {
         createTestApp(
           {
             imports: [
-              TypeOrmModule.forFeature([OperatorEntity]),
+              TypeOrmModule.forFeature([
+                OperatorEntity,
+                OperatorDiveSiteEntity,
+                OperatorReviewEntity,
+              ]),
               StorageModule,
+              DiveSitesModule,
             ],
-            providers: [OperatorsService],
+            providers: [OperatorsService, OperatorFactory],
             controllers: [OperatorLogoController],
           },
           {

@@ -428,12 +428,12 @@ export class AuthController {
    *             properties:
    *               invalidatedBefore:
    *                 title: Invalidated Before
-   *                 type: string
-   *                 format: date-time
+   *                 type: integer
+   *                 format: int64
    *                 description: |
    *                   The date before which invalidations should be purged. All invalidations with timestamps before this date will be
-   *                   removed. This date must be in the past or the request will fail.
-   *                 example: 2021-01-01T00:00:00Z
+   *                   removed. This date must be in the past or the request will fail. (Specified in milliseconds since Unix Epoch time.)
+   *                 example: 1630000000000
    *     responses:
    *       200:
    *         description: The request succeeded and the response body contains the number of invalidations purged.

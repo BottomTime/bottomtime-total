@@ -24,6 +24,7 @@ import {
   LogEntryAirEntity,
   LogEntryEntity,
   LogEntrySampleEntity,
+  OperatorEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSiteFactory, DiveSitesService } from '../../../src/diveSites';
@@ -33,19 +34,23 @@ import {
 } from '../../../src/logEntries';
 import { LogEntryAirUtils } from '../../../src/logEntries/log-entry-air-utils';
 import { LogEntryFactory } from '../../../src/logEntries/log-entry-factory';
+import { OperatorFactory, OperatorsService } from '../../../src/operators';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestDiveSiteData from '../../fixtures/dive-sites.json';
 import TestLogEntryData from '../../fixtures/log-entries.json';
+import TestOperatorData from '../../fixtures/operators.json';
 import TestUserData from '../../fixtures/user-search-data.json';
-import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
-import { createTestDiveProfile } from '../../utils/create-test-dive-profile';
-import { parseDiveSiteJSON } from '../../utils/create-test-dive-site';
 import {
+  createDiveSiteFactory,
+  createOperatorFactory,
+  createTestDiveProfile,
   createTestLogEntry,
+  parseDiveSiteJSON,
   parseLogEntryJSON,
-} from '../../utils/create-test-log-entry';
-import { parseUserJSON } from '../../utils/create-test-user';
+  parseOperatorJSON,
+  parseUserJSON,
+} from '../../utils';
 
 dayjs.extend(tz);
 dayjs.extend(utc);
@@ -56,15 +61,19 @@ describe('Log entries service', () => {
   let EntrySamples: Repository<LogEntrySampleEntity>;
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
+  let Operators: Repository<OperatorEntity>;
   let siteFactory: DiveSiteFactory;
+  let operatorFactory: OperatorFactory;
   let entryFactory: LogEntryFactory;
   let diveSitesService: DiveSitesService;
+  let operatorsService: OperatorsService;
   let service: LogEntriesService;
 
   let ownerData: UserEntity[];
   let logEntryData: LogEntryEntity[];
   let airData: LogEntryAirEntity[];
   let diveSiteData: DiveSiteEntity[];
+  let operatorData: OperatorEntity[];
 
   beforeAll(() => {
     Entries = dataSource.getRepository(LogEntryEntity);
@@ -72,21 +81,33 @@ describe('Log entries service', () => {
     EntrySamples = dataSource.getRepository(LogEntrySampleEntity);
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
+    Operators = dataSource.getRepository(OperatorEntity);
 
     siteFactory = createDiveSiteFactory();
+    operatorFactory = createOperatorFactory();
     entryFactory = new LogEntryFactory(
       Entries,
       EntriesAir,
       EntrySamples,
       siteFactory,
+      operatorFactory,
     );
 
     diveSitesService = new DiveSitesService(DiveSites, siteFactory);
-    service = new LogEntriesService(Entries, entryFactory, diveSitesService);
+    operatorsService = new OperatorsService(Operators, operatorFactory);
+    service = new LogEntriesService(
+      Entries,
+      entryFactory,
+      diveSitesService,
+      operatorsService,
+    );
 
     ownerData = TestUserData.slice(0, 4).map((data) => parseUserJSON(data));
     diveSiteData = TestDiveSiteData.map((site, i) =>
       parseDiveSiteJSON(site, ownerData[i % ownerData.length]),
+    );
+    operatorData = TestOperatorData.map((data, i) =>
+      parseOperatorJSON(data, ownerData[i % ownerData.length]),
     );
     logEntryData = TestLogEntryData.map((data, i) =>
       parseLogEntryJSON(
@@ -96,6 +117,7 @@ describe('Log entries service', () => {
         },
         ownerData[i % ownerData.length],
         diveSiteData[i % diveSiteData.length],
+        operatorData[i % operatorData.length],
       ),
     );
 
@@ -115,6 +137,7 @@ describe('Log entries service', () => {
   beforeEach(async () => {
     await Users.save(ownerData);
     await DiveSites.save(diveSiteData);
+    await Operators.save(operatorData);
   });
 
   it.skip('will generate some sweet, sweet test data', async () => {
@@ -125,6 +148,9 @@ describe('Log entries service', () => {
       data[i].site = {
         id: diveSiteData[i % diveSiteData.length].id,
       } as DiveSiteEntity;
+      data[i].operator = {
+        id: operatorData[i % operatorData.length].id,
+      } as OperatorEntity;
     }
 
     await fs.writeFile(
@@ -362,12 +388,52 @@ describe('Log entries service', () => {
       expect(saved.owner.id).toEqual(ownerData[0].id);
       expect(saved.site?.id).toEqual(diveSiteData[2].id);
     });
+
+    it('will create a new log entry with an operator attached', async () => {
+      const options: CreateLogEntryOptions = {
+        owner: new User(Users, ownerData[0]),
+        timing: {
+          entryTime: new Date('2024-03-28T13:45:00').valueOf(),
+          timezone: 'Europe/Amsterdam',
+          duration: 52,
+        },
+        operator: operatorFactory.createOperator(operatorData[1]),
+      };
+
+      const entry = await service.createLogEntry(options);
+      expect(entry.id).toBeDefined();
+      expect(entry.owner).toEqual({
+        accountTier: ownerData[0].accountTier,
+        userId: ownerData[0].id,
+        username: ownerData[0].username,
+        memberSince: ownerData[0].memberSince.valueOf(),
+        logBookSharing: ownerData[0].logBookSharing,
+        name: ownerData[0].name,
+        location: ownerData[0].location,
+        avatar: ownerData[0].avatar,
+      });
+      expect(entry.timing.entryTime).toEqual(new Date('2024-03-28T13:45:00'));
+      expect(entry.timing.timezone).toEqual(options.timing.timezone);
+      expect(entry.timing.duration).toEqual(options.timing.duration);
+      expect(entry.operator?.id).toEqual(operatorData[1].id);
+
+      const saved = await Entries.findOneOrFail({
+        where: { id: entry.id },
+        relations: ['owner', 'operator'],
+      });
+      expect(saved.entryTime).toEqual(entry.timing.entryTime);
+      expect(saved.timezone).toEqual(entry.timing.timezone);
+      expect(saved.duration).toEqual(options.timing.duration);
+      expect(saved.owner.id).toEqual(ownerData[0].id);
+      expect(saved.operator?.id).toEqual(operatorData[1].id);
+    });
   });
 
   describe('when retrieving a single log entry', () => {
     it('will return the requested log entry', async () => {
       const data = logEntryData[1];
       data.site = diveSiteData[5];
+      data.operator = operatorData[2];
       await Entries.save(data);
       await EntriesAir.save(
         data.air!.map((tank) => ({
@@ -565,6 +631,23 @@ describe('Log entries service', () => {
       expect(results).toHaveLength(12);
       expect(
         results.map((site) => ({ id: site.id, name: site.name })),
+      ).toMatchSnapshot();
+    });
+  });
+
+  describe('when listing recent operators', () => {
+    it('will return an empty list if user has no entries', async () => {
+      await expect(
+        service.getRecentOperators(ownerData[0].id),
+      ).resolves.toHaveLength(0);
+    });
+
+    it('will return a distinct list of the most recently used operators', async () => {
+      await Entries.save(logEntryData);
+      const results = await service.getRecentOperators(ownerData[0].id, 12);
+      expect(results).toHaveLength(12);
+      expect(
+        results.map((operator) => ({ id: operator.id, name: operator.name })),
       ).toMatchSnapshot();
     });
   });

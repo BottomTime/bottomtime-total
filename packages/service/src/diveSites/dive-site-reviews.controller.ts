@@ -322,7 +322,6 @@ export class DiveSiteReviewsController {
 
     review.comments = options.comments;
     review.rating = options.rating;
-    review.title = options.title;
     review.difficulty = options.difficulty;
 
     await review.save();

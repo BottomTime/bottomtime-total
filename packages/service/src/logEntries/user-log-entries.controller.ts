@@ -3,12 +3,14 @@ import {
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
   DiveSiteDTO,
-  GetMostRecentDiveSitesRequestParamsDTO,
-  GetMostRecentDiveSitesRequestParamsSchema,
+  GetMostRecentEntitiesParamsDTO,
+  GetMostRecentEntitiesParamsSchema,
   GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesParamsSchema,
   LogEntryDTO,
+  OperatorDTO,
+  SuccinctLogEntryDTO,
 } from '@bottomtime/api';
 
 import {
@@ -27,6 +29,8 @@ import {
 } from '@nestjs/common';
 
 import { DiveSite, DiveSitesService } from '../diveSites';
+import { OperatorsService } from '../operators';
+import { Operator } from '../operators';
 import {
   AssertAccountOwner,
   AssertAuth,
@@ -36,11 +40,8 @@ import {
 } from '../users';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
+import { AssertLogEntry, TargetLogEntry } from './assert-log-entry.guard';
 import { AssertLogbookRead } from './assert-logbook-read.guard';
-import {
-  AssertTargetLogEntry,
-  TargetLogEntry,
-} from './assert-target-log-entry.guard';
 import { LogEntriesService } from './log-entries.service';
 import { LogEntry } from './log-entry';
 
@@ -55,6 +56,7 @@ export class UserLogEntriesController {
   constructor(
     @Inject(LogEntriesService) private readonly service: LogEntriesService,
     @Inject(DiveSitesService) private readonly diveSites: DiveSitesService,
+    @Inject(OperatorsService) private readonly operators: OperatorsService,
   ) {}
 
   /**
@@ -78,19 +80,19 @@ export class UserLogEntriesController {
    *         required: false
    *       - in: query
    *         name: startDate
-   *         description: The earliest date and time at which a dive began.
+   *         description: The earliest date and time at which a dive began. (Specified in milliseconds since Unix Epoch time.)
    *         schema:
-   *           type: string
-   *           format: date-time
-   *           example: "2021-07-04T12:00"
+   *           type: integer
+   *           format: int64
+   *           example: 1628089200000
    *         required: false
    *       - in: query
    *         name: endDate
-   *         description: The latest date and time at which a dive began.
+   *         description: The latest date and time at which a dive began. (Specified in milliseconds since Unix Epoch time.)
    *         schema:
-   *           type: string
-   *           format: date-time
-   *           example: "2021-08-04T12:00"
+   *           type: integer
+   *           format: int64
+   *           example: 1628089200000
    *         required: false
    *       - in: query
    *         name: skip
@@ -188,7 +190,7 @@ export class UserLogEntriesController {
     @TargetUser() user: User,
     @Query(new ZodValidator(ListLogEntriesParamsSchema))
     options?: ListLogEntriesParamsDTO,
-  ): Promise<ApiList<LogEntryDTO>> {
+  ): Promise<ApiList<SuccinctLogEntryDTO>> {
     this.log.debug('Searching for log entries...', options);
     const { data, totalCount } = await this.service.listLogEntries({
       ...options,
@@ -267,6 +269,7 @@ export class UserLogEntriesController {
     options: CreateOrUpdateLogEntryParamsDTO,
   ): Promise<LogEntryDTO> {
     let site: DiveSite | undefined;
+    let operator: Operator | undefined;
 
     if (options.site) {
       site = await this.diveSites.getDiveSite(options.site);
@@ -277,10 +280,20 @@ export class UserLogEntriesController {
       }
     }
 
+    if (options.operator) {
+      operator = await this.operators.getOperator(options.operator);
+      if (!operator) {
+        throw new BadRequestException(
+          `Operator with ID "${options.operator}" not found.`,
+        );
+      }
+    }
+
     const logEntry = await this.service.createLogEntry({
       ...options,
       owner,
       site,
+      operator,
     });
 
     return logEntry.toJSON();
@@ -412,11 +425,22 @@ export class UserLogEntriesController {
   // @UseInterceptors(CacheInterceptor)
   async getRecentDiveSites(
     @TargetUser() user: User,
-    @Query(new ZodValidator(GetMostRecentDiveSitesRequestParamsSchema))
-    { count }: GetMostRecentDiveSitesRequestParamsDTO,
+    @Query(new ZodValidator(GetMostRecentEntitiesParamsSchema))
+    { count }: GetMostRecentEntitiesParamsDTO,
   ): Promise<DiveSiteDTO[]> {
     const sites = await this.service.getRecentDiveSites(user.id, count);
     return sites.map((site) => site.toJSON());
+  }
+
+  @Get('recentOperators')
+  @UseGuards(AssertAuth, AssertAccountOwner)
+  async getRecentOperators(
+    @TargetUser() user: User,
+    @Query(new ZodValidator(GetMostRecentEntitiesParamsSchema))
+    { count }: GetMostRecentEntitiesParamsDTO,
+  ): Promise<OperatorDTO[]> {
+    const operators = await this.service.getRecentOperators(user.id, count);
+    return operators.map((operator) => operator.toJSON());
   }
 
   /**
@@ -468,7 +492,7 @@ export class UserLogEntriesController {
   @UseGuards(
     ValidateIds(LogEntryIdParamName),
     AssertLogbookRead,
-    AssertTargetLogEntry,
+    AssertLogEntry,
   )
   getLog(@TargetLogEntry() logEntry: LogEntry): LogEntryDTO {
     return logEntry.toJSON();
@@ -536,7 +560,7 @@ export class UserLogEntriesController {
     ValidateIds(LogEntryIdParamName),
     AssertAuth,
     AssertAccountOwner,
-    AssertTargetLogEntry,
+    AssertLogEntry,
   )
   async updateLog(
     @TargetLogEntry() logEntry: LogEntry,
@@ -648,7 +672,7 @@ export class UserLogEntriesController {
     ValidateIds(LogEntryIdParamName),
     AssertAuth,
     AssertAccountOwner,
-    AssertTargetLogEntry,
+    AssertLogEntry,
   )
   async deleteLog(@TargetLogEntry() logEntry: LogEntry): Promise<void> {
     await logEntry.delete();

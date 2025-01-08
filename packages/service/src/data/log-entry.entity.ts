@@ -23,6 +23,7 @@ import { LogEntryAirEntity } from './log-entry-air.entity';
 import { LogEntrySampleEntity } from './log-entry-samples.entity';
 import { LogEntrySignatureEntity } from './log-entry-signature.entity';
 import { MediaFileEntity } from './media-file.entity';
+import { OperatorEntity } from './operators.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entries')
@@ -65,6 +66,11 @@ export class LogEntryEntity {
     nullable: true,
   })
   site: DiveSiteEntity | null = null;
+
+  @ManyToOne(() => OperatorEntity, (operator) => operator.loggedDives, {
+    onDelete: 'SET NULL',
+  })
+  operator: OperatorEntity | null = null;
 
   // Dive characteristics
   @OneToMany(() => LogEntryAirEntity, (air) => air.logEntry, {
@@ -143,6 +149,10 @@ export class LogEntryEntity {
   // Miscellaneous data
   @Column({ type: 'text', nullable: true })
   notes: string | null = null;
+
+  @Column({ type: 'float', nullable: true })
+  @Index()
+  rating: number | null = null;
 
   @Column({
     type: 'jsonb',

@@ -19,6 +19,7 @@ const OperatorSchema = z.object({
   verificationMessage: z.string().nullable().default(null),
   description: z.string().nullable(),
   active: z.boolean().default(true),
+  averageRating: z.number().nullable().default(null),
 
   address: z.string().nullable(),
   phone: z.string().nullable(),
@@ -51,6 +52,7 @@ export function createTestOperator(
     `${faker.word.adjective()}, ${faker.word.adjective()} ${faker.word.noun()}`;
   const operator: OperatorEntity = {
     id: options?.id ?? faker.string.uuid(),
+    averageRating: options?.averageRating ?? null,
     createdAt: options?.createdAt ?? faker.date.past({ years: 5 }),
     updatedAt: options?.updatedAt ?? faker.date.recent({ days: 180 }),
     deletedAt: options?.deletedAt ?? null,

@@ -34,10 +34,10 @@
  *           example: friend.mcfriendface
  *         memberSince:
  *           title: Member Since
- *           type: string
- *           format: date-time
- *           description: The date and time the friend joined Bottom Time.
- *           example: 2021-01-01T00:00:00.000Z
+ *           type: integer
+ *           format: int64
+ *           description: The date and time the friend joined Bottom Time. (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1630000000000
  *         avatar:
  *           title: Avatar
  *           type: string
@@ -64,10 +64,10 @@
  *           properties:
  *             friendsSince:
  *               title: Friends Since
- *               type: string
- *               format: date-time
- *               description: The date and time the friendship was established.
- *               example: 2021-01-01T00:00:00.000Z
+ *               type: integer
+ *               format: int64
+ *               description: The date and time the friendship was established. (Specified in milliseconds since Unix Epoch time.)
+ *               example: 1630000000000
  *
  *     FriendRequest:
  *       type: object
@@ -97,18 +97,18 @@
  *           example: incoming
  *         created:
  *           title: Created
- *           type: string
- *           format: date-time
- *           description: The date and time the friend request was created.
- *           example: 2021-01-01T00:00:00.000Z
+ *           type: integer
+ *           format: int64
+ *           description: The date and time the friend request was created. (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1630000000000
  *         expires:
  *           title: Expires
- *           type: string
- *           format: date-time
+ *           type: integer
+ *           format: int64
  *           description: |
  *             The date and time the friend request expires. It will automatically be deleted if it is
- *             not acknowledged by this time.
- *           example: 2021-01-01T00:00:00.000Z
+ *             not acknowledged by this time. (Specified in milliseconds since Unix Epoch time.)
+ *           example: 1630000000000
  *         friend:
  *           description: |
  *             Some relevant information on the friend's profile. Some information may be omitted depending on the

@@ -14,7 +14,7 @@ import { LogEntriesService } from './log-entries.service';
 import { LogEntry } from './log-entry';
 
 @Injectable()
-export class AssertTargetLogEntry implements CanActivate {
+export class AssertLogEntry implements CanActivate {
   constructor(
     @Inject(LogEntriesService) private readonly service: LogEntriesService,
   ) {}

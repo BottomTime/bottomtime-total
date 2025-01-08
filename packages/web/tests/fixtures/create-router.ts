@@ -1,3 +1,4 @@
+/* eslint-disable vue/one-component-per-file */
 import { defineComponent } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
 import {

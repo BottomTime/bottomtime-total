@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
   ErrorResponseDTO,
   ErrorResponseSchema,
@@ -37,7 +38,6 @@ async function oops<T>(
   try {
     return await f();
   } catch (error) {
-    /* eslint-disable-next-line no-console */
     if (!Config.isProduction && Config.env !== 'test') {
       console.error(error);
       if (isZodError(error)) {

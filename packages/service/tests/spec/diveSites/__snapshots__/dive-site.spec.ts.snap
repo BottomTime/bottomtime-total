@@ -5,52 +5,42 @@ exports[`Dive Site Class Reviews will list reviews sorted by createdOn in asc or
   {
     "createdOn": 2019-03-29T11:06:24.608Z,
     "rating": 4.89,
-    "title": "outlying whereas lined townhouse",
   },
   {
     "createdOn": 2019-04-01T00:53:14.328Z,
     "rating": 3.76,
-    "title": "jovial than great criterion",
   },
   {
     "createdOn": 2019-04-01T03:30:07.652Z,
     "rating": 2.66,
-    "title": "downright wherever glaring collagen",
   },
   {
     "createdOn": 2019-04-15T06:13:08.935Z,
     "rating": 3.04,
-    "title": "easy finally salty principle",
   },
   {
     "createdOn": 2019-04-16T13:22:25.539Z,
     "rating": 3.66,
-    "title": "smug till unsightly epic",
   },
   {
     "createdOn": 2019-04-22T04:26:56.070Z,
     "rating": 3.28,
-    "title": "pessimistic but courteous center",
   },
   {
     "createdOn": 2019-05-07T00:33:08.237Z,
     "rating": 3.95,
-    "title": "melodic who lazy sow",
   },
   {
     "createdOn": 2019-05-11T15:35:54.502Z,
     "rating": 4.97,
-    "title": "noxious so adept depressive",
   },
   {
     "createdOn": 2019-05-16T22:32:08.602Z,
     "rating": 2.93,
-    "title": "well-worn although physical rocket-ship",
   },
   {
     "createdOn": 2019-05-24T07:11:23.354Z,
     "rating": 2.18,
-    "title": "dull that appropriate revelation",
   },
 ]
 `;
@@ -60,52 +50,42 @@ exports[`Dive Site Class Reviews will list reviews sorted by createdOn in desc o
   {
     "createdOn": 2024-03-06T03:47:34.473Z,
     "rating": 2.59,
-    "title": "idiotic after shabby fill",
   },
   {
     "createdOn": 2023-12-17T16:28:56.656Z,
     "rating": 1.98,
-    "title": "striking but kindly beanstalk",
   },
   {
     "createdOn": 2023-12-07T15:01:44.414Z,
     "rating": 2.01,
-    "title": "studious provided pleasing sandwich",
   },
   {
     "createdOn": 2023-11-08T03:07:26.580Z,
     "rating": 3.37,
-    "title": "unsightly when horrible kitten",
   },
   {
     "createdOn": 2023-10-31T15:30:05.929Z,
     "rating": 3.32,
-    "title": "shabby when awesome laborer",
   },
   {
     "createdOn": 2023-10-20T19:25:55.030Z,
     "rating": 4.74,
-    "title": "golden so handy leopard",
   },
   {
     "createdOn": 2023-09-18T08:24:36.973Z,
     "rating": 2.7,
-    "title": "unimportant likewise basic copy",
   },
   {
     "createdOn": 2023-08-16T22:41:37.304Z,
     "rating": 4.77,
-    "title": "offensive inasmuch loud wire",
   },
   {
     "createdOn": 2023-06-08T21:42:05.734Z,
     "rating": 2.04,
-    "title": "little incidentally flustered deck",
   },
   {
     "createdOn": 2023-06-04T14:01:36.357Z,
     "rating": 4.57,
-    "title": "formal meanwhile triangular command",
   },
 ]
 `;
@@ -113,54 +93,44 @@ exports[`Dive Site Class Reviews will list reviews sorted by createdOn in desc o
 exports[`Dive Site Class Reviews will list reviews sorted by rating in asc order 1`] = `
 [
   {
-    "createdOn": 2021-11-09T04:57:59.012Z,
-    "rating": 1.04,
-    "title": "hairy now shocking chemotaxis",
-  },
-  {
     "createdOn": 2022-08-06T18:52:22.475Z,
     "rating": 1.04,
-    "title": "watery even ornate forum",
+  },
+  {
+    "createdOn": 2021-11-09T04:57:59.012Z,
+    "rating": 1.04,
   },
   {
     "createdOn": 2021-07-19T01:39:11.524Z,
     "rating": 1.05,
-    "title": "fake finally forked crash",
   },
   {
     "createdOn": 2022-04-21T19:49:51.730Z,
     "rating": 1.15,
-    "title": "stiff and authentic cattle",
   },
   {
     "createdOn": 2019-06-04T16:33:01.120Z,
     "rating": 1.19,
-    "title": "giving so dense naturalisation",
   },
   {
     "createdOn": 2023-05-08T11:50:47.552Z,
     "rating": 1.29,
-    "title": "minty that shy coleslaw",
   },
   {
     "createdOn": 2020-12-24T23:36:36.789Z,
     "rating": 1.43,
-    "title": "alarmed supposing taut spite",
   },
   {
     "createdOn": 2019-12-10T12:30:13.423Z,
     "rating": 1.43,
-    "title": "impassioned lest frequent miter",
   },
   {
     "createdOn": 2022-02-01T10:16:28.573Z,
     "rating": 1.44,
-    "title": "remarkable though bustling grey",
   },
   {
     "createdOn": 2020-08-04T01:34:19.903Z,
     "rating": 1.45,
-    "title": "glistening yet aware neuron",
   },
 ]
 `;
@@ -170,52 +140,42 @@ exports[`Dive Site Class Reviews will list reviews sorted by rating in desc orde
   {
     "createdOn": 2019-05-11T15:35:54.502Z,
     "rating": 4.97,
-    "title": "noxious so adept depressive",
   },
   {
     "createdOn": 2020-03-30T02:27:28.828Z,
     "rating": 4.96,
-    "title": "keen why unfinished drizzle",
   },
   {
     "createdOn": 2021-04-23T14:59:11.826Z,
     "rating": 4.95,
-    "title": "vengeful yet tattered puppet",
   },
   {
     "createdOn": 2020-10-19T13:59:46.762Z,
     "rating": 4.94,
-    "title": "dry inasmuch cheery skyscraper",
   },
   {
     "createdOn": 2020-03-12T23:08:09.751Z,
     "rating": 4.91,
-    "title": "attractive inasmuch lumbering moon",
   },
   {
     "createdOn": 2020-02-12T05:13:08.516Z,
     "rating": 4.91,
-    "title": "different who anchored dignity",
   },
   {
     "createdOn": 2019-03-29T11:06:24.608Z,
     "rating": 4.89,
-    "title": "outlying whereas lined townhouse",
   },
   {
     "createdOn": 2021-06-17T09:14:21.067Z,
     "rating": 4.87,
-    "title": "handsome what uncommon noodles",
   },
   {
     "createdOn": 2023-05-28T21:31:19.126Z,
     "rating": 4.86,
-    "title": "homely yet envious importance",
   },
   {
     "createdOn": 2023-08-16T22:41:37.304Z,
     "rating": 4.77,
-    "title": "offensive inasmuch loud wire",
   },
 ]
 `;
@@ -224,115 +184,87 @@ exports[`Dive Site Class Reviews will list reviews with pagination 1`] = `
 [
   {
     "rating": 4.2,
-    "title": "sugary unless blue stair",
   },
   {
     "rating": 4.15,
-    "title": "energetic whether clever divalent",
   },
   {
     "rating": 4.11,
-    "title": "canine even adored calm",
   },
   {
     "rating": 4.11,
-    "title": "cautious while wealthy hesitation",
   },
   {
     "rating": 4.02,
-    "title": "glass nor unconscious covariate",
   },
   {
     "rating": 4,
-    "title": "metallic till lustrous rocket-ship",
   },
   {
     "rating": 3.96,
-    "title": "high-level incidentally jittery plover",
   },
   {
     "rating": 3.96,
-    "title": "shy till fearful tortoise",
   },
   {
     "rating": 3.95,
-    "title": "melodic who lazy sow",
   },
   {
     "rating": 3.84,
-    "title": "hollow and talkative programme",
   },
   {
     "rating": 3.76,
-    "title": "jovial than great criterion",
   },
   {
     "rating": 3.66,
-    "title": "smug till unsightly epic",
   },
   {
     "rating": 3.57,
-    "title": "imperturbable and unknown belligerency",
   },
   {
     "rating": 3.55,
-    "title": "acrobatic if square stain",
   },
   {
     "rating": 3.37,
-    "title": "unsightly when horrible kitten",
   },
   {
     "rating": 3.32,
-    "title": "shabby when awesome laborer",
   },
   {
     "rating": 3.3,
-    "title": "messy until cylindrical massage",
   },
   {
     "rating": 3.29,
-    "title": "moist whether mammoth processing",
   },
   {
     "rating": 3.28,
-    "title": "pessimistic but courteous center",
   },
   {
     "rating": 3.25,
-    "title": "illiterate furthermore filthy faith",
   },
   {
     "rating": 3.24,
-    "title": "necessary supposing oily frontier",
   },
   {
     "rating": 3.23,
-    "title": "quiet which sophisticated executive",
   },
   {
     "rating": 3.18,
-    "title": "bumpy furthermore wiggly allergist",
   },
   {
     "rating": 3.16,
-    "title": "slippery as defensive avenue",
   },
   {
     "rating": 3.14,
-    "title": "quick-witted once powerless tutu",
   },
   {
     "rating": 3.09,
-    "title": "reasonable until vague similarity",
   },
   {
     "rating": 3.08,
-    "title": "substantial after monthly overview",
   },
   {
     "rating": 3.04,
-    "title": "easy finally salty principle",
   },
 ]
 `;

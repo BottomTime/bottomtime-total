@@ -56,7 +56,7 @@ describe('User accounts API client', () => {
       `/api/users/${BasicUser.username}/requestEmailVerification`,
       204,
     );
-    const result = await client.requestEmailVerification(BasicUser.username);
+    await client.requestEmailVerification(BasicUser.username);
     mockFetch.done();
     expect({
       ...BasicUser,

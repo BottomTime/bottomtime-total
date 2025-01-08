@@ -129,7 +129,11 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       expect(results.totalCount).toBe(reviewData.length);
       expect(results.data).toHaveLength(50);
       expect(
-        results.data.map((review: DiveSiteReviewDTO) => review.title),
+        results.data.map((review: DiveSiteReviewDTO) => ({
+          id: review.id,
+          createdOn: review.createdOn,
+          rating: review.rating,
+        })),
       ).toMatchSnapshot();
     });
 
@@ -146,7 +150,11 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       expect(results.totalCount).toBe(reviewData.length);
       expect(results.data).toHaveLength(5);
       expect(
-        results.data.map((review: DiveSiteReviewDTO) => review.title),
+        results.data.map((review: DiveSiteReviewDTO) => ({
+          id: review.id,
+          createdOn: review.createdOn,
+          rating: review.rating,
+        })),
       ).toMatchSnapshot();
     });
 
@@ -232,7 +240,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         location: user.location,
       });
       expect(body.difficulty).toBe(newReview.difficulty);
-      expect(body.title).toBe(newReview.title);
       expect(body.rating).toBe(newReview.rating);
       expect(body.comments).toBe(newReview.comments);
 
@@ -242,7 +249,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       });
       expect(review.comments).toBe(newReview.comments);
       expect(review.difficulty).toBe(newReview.difficulty);
-      expect(review.title).toBe(newReview.title);
       expect(review.rating).toBe(newReview.rating);
       expect(review.creator.id).toBe(user.id);
       expect(review.site.id).toBe(diveSite.id);
@@ -349,7 +355,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         location: user.location,
       });
       expect(body.difficulty).toBe(1.5);
-      expect(body.title).toBe('Changed My Mind');
       expect(body.rating).toBe(3.8);
       expect(body.comments).toBe('This site is just ok.');
 
@@ -359,7 +364,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       });
       expect(review.comments).toBe('This site is just ok.');
       expect(review.difficulty).toBe(1.5);
-      expect(review.title).toBe('Changed My Mind');
       expect(review.rating).toBe(3.8);
       expect(review.creator.id).toBe(user.id);
       expect(review.site.id).toBe(diveSite.id);
@@ -389,7 +393,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
         location: user.location,
       });
       expect(body.difficulty).toBe(1.5);
-      expect(body.title).toBe('Changed My Mind');
       expect(body.rating).toBe(3.8);
       expect(body.comments).toBe('This site is just ok.');
 
@@ -399,7 +402,6 @@ describe('Dive Site Reviews End-to-End Tests', () => {
       });
       expect(review.comments).toBe('This site is just ok.');
       expect(review.difficulty).toBe(1.5);
-      expect(review.title).toBe('Changed My Mind');
       expect(review.rating).toBe(3.8);
       expect(review.creator.id).toBe(user.id);
       expect(review.site.id).toBe(diveSite.id);

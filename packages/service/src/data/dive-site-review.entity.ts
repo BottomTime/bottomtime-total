@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 
 import { DiveSiteEntity } from './dive-site.entity';
+import { LogEntryEntity } from './log-entry.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('dive_site_reviews')
@@ -24,16 +25,16 @@ export class DiveSiteReviewEntity {
   })
   site: DiveSiteEntity = new DiveSiteEntity();
 
+  @ManyToOne(() => LogEntryEntity, { onDelete: 'SET NULL' })
+  @Index()
+  logEntry: LogEntryEntity | null = null;
+
   @CreateDateColumn({ nullable: false })
   @Index()
   createdOn?: Date;
 
   @UpdateDateColumn({ nullable: true })
   updatedOn: Date | null = null;
-
-  @Column('varchar', { length: 200 })
-  @Index()
-  title: string = '';
 
   @Column('float')
   @Index()
@@ -52,7 +53,7 @@ export class DiveSiteReviewEntity {
     nullable: true,
     insert: false,
     update: false,
-    asExpression: `setweight(to_tsvector('english', coalesce(title, '')), 'A') || setweight(to_tsvector('english', coalesce(comments, '')), 'B')`,
+    asExpression: `setweight(to_tsvector('english', coalesce(comments, '')), 'A')`,
     generatedType: 'STORED',
   })
   @Index()

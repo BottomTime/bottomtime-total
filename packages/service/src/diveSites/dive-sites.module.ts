@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
+import { EventsModule } from '../events';
 import { UsersModule } from '../users';
 import { DiveSiteFactory } from './dive-site-factory';
 import { DiveSiteReviewEventListener } from './dive-site-review.listener';
@@ -16,6 +17,7 @@ import { DiveSitesService } from './dive-sites.service';
       DiveSiteEntity,
       DiveSiteReviewEntity,
     ]),
+    EventsModule,
     UsersModule,
   ],
   providers: [DiveSitesService, DiveSiteReviewEventListener, DiveSiteFactory],

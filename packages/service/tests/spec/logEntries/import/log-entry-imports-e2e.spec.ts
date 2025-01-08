@@ -24,6 +24,7 @@ import { Importer } from '../../../../src/logEntries/import/importer';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
 import { LogEntryImportsController } from '../../../../src/logEntries/import/log-entry-imports.controller';
+import { OperatorsModule } from '../../../../src/operators';
 import { UsersModule } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
 import TestData from '../../../fixtures/log-entry-imports.json';
@@ -76,6 +77,7 @@ describe('Import log entries E2E tests', () => {
             LogEntryImportRecordEntity,
           ]),
           DiveSitesModule,
+          OperatorsModule,
           FeaturesModule,
           UsersModule,
         ],

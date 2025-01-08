@@ -32,7 +32,7 @@ import { ImageBuilder } from '../image-builder';
 import { StorageService } from '../storage';
 import { ZodValidator } from '../zod-validator';
 import { AssertOperatorOwner } from './assert-operator-owner.guard';
-import { AssertOperator, CurrentOperator } from './assert-operator.guard';
+import { AssertOperator, TargetOperator } from './assert-operator.guard';
 import { Operator } from './operator';
 
 const LogoSizes: ReadonlyArray<string> = ['32', '64', '128', '256'];
@@ -84,7 +84,7 @@ export class OperatorLogoController {
    *         description: The request failed due to an unexpected internal server error.
    */
   @Head()
-  hasLogo(@CurrentOperator() operator: Operator, @Res() res: Response) {
+  hasLogo(@TargetOperator() operator: Operator, @Res() res: Response) {
     res.sendStatus(operator.logo ? HttpStatus.OK : HttpStatus.NOT_FOUND);
   }
 
@@ -147,7 +147,7 @@ export class OperatorLogoController {
    */
   @Get()
   async getLogoUrls(
-    @CurrentOperator() operator: Operator,
+    @TargetOperator() operator: Operator,
   ): Promise<ListAvatarURLsResponseDTO> {
     if (!operator.logo) {
       throw new NotFoundException('Dive operator does not have a logo saved.');
@@ -201,7 +201,7 @@ export class OperatorLogoController {
    */
   @Get(':size')
   async getLogo(
-    @CurrentOperator() operator: Operator,
+    @TargetOperator() operator: Operator,
     @Param('size') size: string,
     @Res() res: Response,
   ): Promise<void> {
@@ -368,7 +368,7 @@ export class OperatorLogoController {
     }),
   )
   async uploadLogo(
-    @CurrentOperator() operator: Operator,
+    @TargetOperator() operator: Operator,
     @UploadedFile()
     logo: Express.Multer.File | undefined,
     @Body(new ZodValidator(ImageBoundarySchema))
@@ -487,7 +487,7 @@ export class OperatorLogoController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AssertOperatorOwner)
-  async deleteLogo(@CurrentOperator() operator: Operator): Promise<void> {
+  async deleteLogo(@TargetOperator() operator: Operator): Promise<void> {
     this.log.debug('Deleting dive operator logo from storage...');
     await Promise.all(
       LogoSizes.map((size) =>

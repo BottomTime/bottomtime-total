@@ -18,9 +18,6 @@ import {
 
 import { ConflictException, Logger } from '@nestjs/common';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/timezone';
-import 'dayjs/plugin/utc';
 import { Observable, bufferCount, concatMap, from, map } from 'rxjs';
 import { In, Repository } from 'typeorm';
 
@@ -30,10 +27,9 @@ import {
   LogEntrySampleEntity,
 } from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
+import { Operator, OperatorFactory } from '../operators';
 import { LogEntryAirUtils } from './log-entry-air-utils';
 import { LogEntrySampleUtils } from './log-entry-sample-utils';
-
-const DateTimeFormat = 'YYYY-MM-DDTHH:mm:ss';
 
 class EntryConditions {
   constructor(private readonly data: LogEntryEntity) {}
@@ -292,6 +288,7 @@ export class LogEntry {
     private readonly EntryAir: Repository<LogEntryAirEntity>,
     private readonly EntrySamples: Repository<LogEntrySampleEntity>,
     private readonly siteFactory: DiveSiteFactory,
+    private readonly operatorFactory: OperatorFactory,
     private readonly data: LogEntryEntity,
   ) {
     this.conditions = new EntryConditions(data);
@@ -341,6 +338,15 @@ export class LogEntry {
   }
   set site(value: DiveSite | undefined) {
     this.data.site = value?.toEntity() ?? null;
+  }
+
+  get operator(): Operator | undefined {
+    return this.data.operator
+      ? this.operatorFactory.createOperator(this.data.operator)
+      : undefined;
+  }
+  set operator(value: Operator | undefined) {
+    this.data.operator = value?.toEntity() ?? null;
   }
 
   // Air consumption
@@ -409,13 +415,15 @@ export class LogEntry {
       creator: this.owner,
 
       logNumber: this.logNumber,
-      site: this.site?.toJSON(),
       air: [...this.air],
 
       conditions: this.conditions.toJSON(),
       depths: this.depths.toJSON(),
       equipment: this.equipment.toJSON(),
       timing: this.timing.toJSON(),
+
+      operator: this.operator?.toSuccinctJSON(),
+      site: this.site?.toSuccinctJSON(),
 
       notes: this.notes,
       tags: this.tags,

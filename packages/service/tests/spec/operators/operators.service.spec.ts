@@ -5,6 +5,7 @@ import { resolve } from 'path';
 import { Repository } from 'typeorm';
 
 import { OperatorEntity, UserEntity } from '../../../src/data';
+import { OperatorFactory } from '../../../src/operators';
 import {
   CreateOperatorOptions,
   OperatorsService,
@@ -13,12 +14,17 @@ import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestData from '../../fixtures/operators.json';
 import TestOwners from '../../fixtures/user-search-data.json';
-import { createTestOperator, parseOperatorJSON } from '../../utils';
+import {
+  createOperatorFactory,
+  createTestOperator,
+  parseOperatorJSON,
+} from '../../utils';
 import { createTestUser, parseUserJSON } from '../../utils/create-test-user';
 
 describe('OperatorService', () => {
   let Users: Repository<UserEntity>;
   let Operators: Repository<OperatorEntity>;
+  let operatorFactory: OperatorFactory;
   let service: OperatorsService;
 
   let owner: User;
@@ -27,7 +33,9 @@ describe('OperatorService', () => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
 
-    service = new OperatorsService(Operators);
+    operatorFactory = createOperatorFactory();
+
+    service = new OperatorsService(Operators, operatorFactory);
   });
 
   beforeEach(async () => {
@@ -168,6 +176,34 @@ describe('OperatorService', () => {
       await expect(
         service.getOperator('b32b8b8e-fbb1-4202-8c90-cf254118c5e1'),
       ).resolves.toBeUndefined();
+    });
+  });
+
+  describe('when retrieving multiple operators', () => {
+    it('will retrieve several operators at once', async () => {
+      const ownerData = owner.toEntity();
+      const data = TestData.slice(0, 3).map((op) =>
+        parseOperatorJSON(op, ownerData),
+      );
+      await Operators.save(data);
+
+      const operators = await service.getOperators(data.map((op) => op.id));
+      expect(operators).toHaveLength(3);
+      expect(operators.map((op) => op.toJSON())).toMatchSnapshot();
+    });
+
+    it('will return an empty array if passed an empty list of operator IDs', async () => {
+      await expect(service.getOperators([])).resolves.toHaveLength(0);
+    });
+
+    it('will return an empty array if no operators are found', async () => {
+      await expect(
+        service.getOperators([
+          '33cb0d72-cf70-4071-b602-89204d6e7bdf',
+          'f7afed72-f002-44e0-886d-ed3d46a973f0',
+          '32049dec-3891-47df-be19-89dd410a3d6b',
+        ]),
+      ).resolves.toHaveLength(0);
     });
   });
 

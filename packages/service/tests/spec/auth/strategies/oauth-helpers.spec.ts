@@ -8,7 +8,7 @@ import {
 } from '../../../../src/auth/oauth.service';
 import { verifyOAuth } from '../../../../src/auth/strategies/oauth-helpers';
 import { UserEntity, UserOAuthEntity } from '../../../../src/data';
-import { User } from '../../../../src/users';
+import { User, UserFactory, UsersService } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
 import { createTestUser } from '../../../utils/create-test-user';
 
@@ -21,12 +21,16 @@ describe('OAuth helpers', () => {
   let service: OAuthService;
 
   let user: UserEntity;
+  let userFactory: UserFactory;
+  let usersService: UsersService;
   let otherUser: UserEntity;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
     OAuth = dataSource.getRepository(UserOAuthEntity);
-    service = new OAuthService(Users, OAuth);
+    userFactory = new UserFactory(Users);
+    usersService = new UsersService(Users);
+    service = new OAuthService(usersService, userFactory, OAuth);
   });
 
   beforeEach(() => {

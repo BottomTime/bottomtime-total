@@ -115,7 +115,7 @@ describe('Notifications Service', () => {
     it('will list notifications marked active after a given timestamp', async () => {
       const result = await service.listNotifications({
         user,
-        showAfter: new Date('2024-01-21T17:06:46.681Z'),
+        showAfter: new Date('2024-01-21T17:06:46.681Z').valueOf(),
       });
       expect(result.totalCount).toBe(8);
       expect(result.data).toHaveLength(8);
@@ -199,14 +199,14 @@ describe('Notifications Service', () => {
         icon: 'fas fa-bell',
         title: 'Test Notification',
         message: 'This is a test notification.',
-        active: new Date('2024-03-21T17:06:46.681Z'),
-        expires: new Date('2024-04-21T17:06:46.681Z'),
+        active: new Date('2024-03-21T17:06:46.681Z').valueOf(),
+        expires: new Date('2024-04-21T17:06:46.681Z').valueOf(),
       };
 
       const result = await service.createNotification(options);
-      expect(result.active).toEqual(options.active);
+      expect(result.active.valueOf()).toEqual(options.active);
       expect(result.dismissed).toBe(false);
-      expect(result.expires).toEqual(options.expires);
+      expect(result.expires?.valueOf()).toEqual(options.expires);
       expect(result.icon).toBe(options.icon);
       expect(result.message).toBe(options.message);
       expect(result.title).toBe(options.title);
@@ -215,9 +215,9 @@ describe('Notifications Service', () => {
         relations: ['recipient'],
         where: { id: result.id },
       });
-      expect(saved.active).toEqual(options.active);
+      expect(saved.active.valueOf()).toEqual(options.active);
       expect(saved.dismissed).toBe(false);
-      expect(saved.expires).toEqual(options.expires);
+      expect(saved.expires?.valueOf()).toEqual(options.expires);
       expect(saved.icon).toBe(options.icon);
       expect(saved.message).toBe(options.message);
       expect(saved.title).toBe(options.title);

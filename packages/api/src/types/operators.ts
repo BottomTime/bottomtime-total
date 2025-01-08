@@ -5,6 +5,7 @@ import {
   GpsCoordinatesSchema,
   PhoneNumber,
   SlugRegex,
+  SortOrder,
 } from './constants';
 import { SuccinctProfileSchema, UsernameSchema } from './users';
 
@@ -20,6 +21,11 @@ export enum VerificationStatus {
 
   /** Verification has been rejected for this entity pending further action. */
   Rejected = 'rejected',
+}
+
+export enum OperatorReviewSortBy {
+  Age = 'createdAt',
+  Rating = 'rating',
 }
 
 export const CreateOrUpdateOperatorSchema = z.object({
@@ -58,6 +64,7 @@ export const OperatorSchema = CreateOrUpdateOperatorSchema.extend({
   id: z.string(),
   createdAt: z.number(),
   updatedAt: z.number(),
+  averageRating: z.number().optional(),
   owner: SuccinctProfileSchema,
   verificationStatus: z.nativeEnum(VerificationStatus),
   verificationMessage: z.string().optional(),
@@ -66,6 +73,20 @@ export const OperatorSchema = CreateOrUpdateOperatorSchema.extend({
   banner: z.string().optional(),
 });
 export type OperatorDTO = z.infer<typeof OperatorSchema>;
+
+export const SuccinctOperatorSchema = OperatorSchema.pick({
+  address: true,
+  averageRating: true,
+  description: true,
+  id: true,
+  gps: true,
+  logo: true,
+  name: true,
+  slug: true,
+  phone: true,
+  website: true,
+});
+export type SuccinctOperatorDTO = z.infer<typeof SuccinctOperatorSchema>;
 
 export const SearchOperatorsSchema = z
   .object({
@@ -97,4 +118,65 @@ export const TransferOperatorOwnershipSchema = z.object({
 });
 export type TransferOperatorOwnershipDTO = z.infer<
   typeof TransferOperatorOwnershipSchema
+>;
+
+export const CreateOrUpdateOperatorReviewSchema = z.object({
+  comments: z.string().trim().max(1000).optional(),
+  rating: z.number().min(1).max(5),
+});
+export type CreateOrUpdateOperatorReviewDTO = z.infer<
+  typeof CreateOrUpdateOperatorReviewSchema
+>;
+
+export const OperatorReviewSchema = CreateOrUpdateOperatorReviewSchema.extend({
+  id: z.string().uuid(),
+  createdAt: z.number(),
+  updatedAt: z.number(),
+  creator: SuccinctProfileSchema,
+});
+export type OperatorReviewDTO = z.infer<typeof OperatorReviewSchema>;
+
+export const ListOperatorReviewsSchema = z
+  .object({
+    query: z.string().max(200),
+    creator: UsernameSchema,
+    skip: z.coerce.number().int().min(0),
+    limit: z.coerce.number().int().min(1).max(500),
+    sortBy: z.nativeEnum(OperatorReviewSortBy),
+    sortOrder: z.nativeEnum(SortOrder),
+  })
+  .partial();
+export type ListOperatorReviewsParams = z.infer<
+  typeof ListOperatorReviewsSchema
+>;
+
+export const ListOperatorDiveSitesParamsSchema = z
+  .object({
+    skip: z.coerce.number().int().min(0),
+    limit: z.coerce.number().int().min(1).max(500),
+  })
+  .partial();
+export type ListOperatorDiveSitesParams = z.infer<
+  typeof ListOperatorDiveSitesParamsSchema
+>;
+
+export const DiveSiteIdsParamsSchema = z.object({
+  siteIds: z.string().uuid().array().min(1).max(500),
+});
+export type DiveSiteIdsParamsDTO = z.infer<typeof DiveSiteIdsParamsSchema>;
+
+export const AttachDiveSitesResponseSchema = z.object({
+  attached: z.number().int(),
+  skipped: z.number().int(),
+});
+export type AttachDiveSitesResponseDTO = z.infer<
+  typeof AttachDiveSitesResponseSchema
+>;
+
+export const RemoveDiveSitesResponseSchema = z.object({
+  removed: z.number().int(),
+  skipped: z.number().int(),
+});
+export type RemoveDiveSitesResponseDTO = z.infer<
+  typeof RemoveDiveSitesResponseSchema
 >;

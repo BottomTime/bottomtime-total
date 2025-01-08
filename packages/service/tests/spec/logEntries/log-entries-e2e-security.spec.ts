@@ -22,6 +22,7 @@ import { FriendsModule } from '../../../src/friends';
 import { LogEntriesService } from '../../../src/logEntries/log-entries.service';
 import { LogEntryFactory } from '../../../src/logEntries/log-entry-factory';
 import { UserLogEntriesController } from '../../../src/logEntries/user-log-entries.controller';
+import { OperatorsModule } from '../../../src/operators';
 import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import {
@@ -92,6 +93,7 @@ describe('Log entries E2E security', () => {
         ]),
         CacheModule.register(),
         DiveSitesModule,
+        OperatorsModule,
         FriendsModule,
         UsersModule,
       ],

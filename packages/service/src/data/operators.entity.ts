@@ -6,7 +6,6 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -16,7 +15,10 @@ import {
 } from 'typeorm';
 
 import { DiveSiteEntity } from './dive-site.entity';
+import { LogEntryEntity } from './log-entry.entity';
 import { MediaFileEntity } from './media-file.entity';
+import { OperatorDiveSiteEntity } from './operator-dive-site.entity';
+import { OperatorReviewEntity } from './operator-review.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('dive_operators')
@@ -118,14 +120,24 @@ export class OperatorEntity {
   media?: MediaFileEntity[];
 
   // Other
-  @ManyToMany(() => DiveSiteEntity, {
+  @OneToMany(() => OperatorDiveSiteEntity, (relation) => relation.operator, {
     onDelete: 'CASCADE',
-    createForeignKeyConstraints: true,
-  })
-  @JoinTable({
-    name: 'dive_operator_sites',
   })
   diveSites?: DiveSiteEntity[];
+
+  @OneToMany(() => LogEntryEntity, (entry) => entry.operator, {
+    onDelete: 'CASCADE',
+  })
+  loggedDives?: LogEntryEntity[];
+
+  @OneToMany(() => OperatorReviewEntity, (review) => review.operator, {
+    onDelete: 'CASCADE',
+  })
+  reviews?: OperatorReviewEntity[];
+
+  @Column({ type: 'float', nullable: true })
+  @Index()
+  averageRating: number | null = null;
 
   @Column({
     type: 'tsvector',

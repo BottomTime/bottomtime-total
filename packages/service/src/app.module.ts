@@ -32,6 +32,7 @@ import { LogEntriesModule } from './logEntries';
 import { MembershipModule } from './membership';
 import { NotificationsModule } from './notifications';
 import { OperatorsModule } from './operators';
+import { ReviewsModule } from './reviews';
 import { TanksModule } from './tanks/tanks.module';
 import { UsersModule } from './users';
 
@@ -64,6 +65,7 @@ import { UsersModule } from './users';
     LogEntriesModule,
     MembershipModule,
     NotificationsModule,
+    ReviewsModule,
     TanksModule,
     UsersModule,
   ],

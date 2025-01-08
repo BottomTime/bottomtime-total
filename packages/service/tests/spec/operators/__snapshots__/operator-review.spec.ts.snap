@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OperatorReview class should return properties correctly 1`] = `
+{
+  "accountTier": 0,
+  "avatar": "https://example.com/avatar.jpg",
+  "location": "Testville, Testland",
+  "logBookSharing": "public",
+  "memberSince": 1735689600000,
+  "name": "Testy McTestFace",
+  "userId": "3978ee62-9743-4919-af33-254efa821654",
+  "username": "TestyMcTestFace",
+}
+`;
+
+exports[`OperatorReview class will render as a JSON DTO 1`] = `
+{
+  "comments": "This operator was great! Great staff, great service, great experience! They showed me the secret handshake and everything!",
+  "createdAt": 1735832526000,
+  "creator": {
+    "accountTier": 0,
+    "avatar": "https://example.com/avatar.jpg",
+    "location": "Testville, Testland",
+    "logBookSharing": "public",
+    "memberSince": 1735689600000,
+    "name": "Testy McTestFace",
+    "userId": "3978ee62-9743-4919-af33-254efa821654",
+    "username": "TestyMcTestFace",
+  },
+  "id": "8f5106e0-e9be-4c37-9fd0-aadf6f964ddb",
+  "rating": 4.7,
+  "updatedAt": 1735832526000,
+}
+`;

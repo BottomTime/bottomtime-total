@@ -175,7 +175,7 @@ const config = {
     '^.+\\.ts$': [
       'ts-jest',
       {
-        tsconfig: '<rootDir>/tsconfig.test.json',
+        tsconfig: '<rootDir>/tests/tsconfig.json',
       },
     ],
   },

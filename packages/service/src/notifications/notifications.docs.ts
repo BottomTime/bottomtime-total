@@ -72,18 +72,19 @@
  *                   description: The URL the call to action should navigate to.
  *                   example: /profile
  *         active:
- *           type: string
- *           format: date-time
+ *           type: integer
+ *           format: int64
  *           description: |
  *             The date and time the notification should become active - notifications will not be shown to the user until this time.
- *           example: 2022-01-01T00:00:00Z
+ *             If not provided, the notification will be active immediately. Specified in milliseconds since the Unix epoch.
+ *           example: 1628089200000
  *         expires:
- *           type: string
- *           format: date-time
+ *           type: integer
+ *           format: int64
  *           description: |
  *             The date and time the notification should expire and no longer be shown to the user. Expired notifications will be
- *             automatically deleted at an unspecified time.
- *           example: 2022-01-31T23:59:59Z
+ *             automatically deleted at an unspecified time. Specified in milliseconds since the Unix epoch.
+ *           example: 1628089200000
  *     Notification:
  *       allOf:
  *         - $ref: "#/components/schemas/CreateOrUpdateNotification"

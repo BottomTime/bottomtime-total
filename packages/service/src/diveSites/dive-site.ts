@@ -3,7 +3,7 @@ import {
   CreateOrUpdateDiveSiteReviewDTO,
   DiveSiteDTO,
   ListDiveSiteReviewsParamsDTO,
-  SortOrder,
+  SuccinctDiveSiteDTO,
   SuccinctProfileDTO,
   WaterType,
 } from '@bottomtime/api';
@@ -18,10 +18,12 @@ import { v7 as uuid } from 'uuid';
 import { AnonymousUserProfile, Depth, GpsCoordinates } from '../common';
 import { DiveSiteEntity, DiveSiteReviewEntity, UserEntity } from '../data';
 import { DiveSiteReview } from './dive-site-review';
+import { DiveSiteReviewsQueryBuilder } from './dive-site-reviews-query-builder';
 
 export type GPSCoordinates = NonNullable<DiveSiteDTO['gps']>;
 export type CreateDiveSiteReviewOptions = CreateOrUpdateDiveSiteReviewDTO & {
   creatorId: string;
+  logEntryId?: string;
 };
 
 export class DiveSite {
@@ -202,15 +204,14 @@ export class DiveSite {
 
     const data = new DiveSiteReviewEntity();
     data.id = uuid();
-    data.comments = options.comments ?? null;
-    data.rating = options.rating;
-    data.difficulty = options.difficulty ?? null;
-    data.title = options.title;
-
     data.site = this.data;
     data.creator = creator;
 
     const review = new DiveSiteReview(this.Reviews, this.emitter, data);
+    review.comments = options.comments;
+    review.rating = options.rating;
+    review.difficulty = options.difficulty;
+    review.logEntryId = options.logEntryId;
     await review.save();
 
     return review;
@@ -219,7 +220,23 @@ export class DiveSite {
   async getReview(reviewId: string): Promise<DiveSiteReview | undefined> {
     const data = await this.Reviews.findOne({
       where: { id: reviewId, site: { id: this.data.id } },
-      relations: ['creator'],
+      relations: ['creator', 'logEntry'],
+    });
+
+    if (data) {
+      data.site = this.data;
+      return new DiveSiteReview(this.Reviews, this.emitter, data);
+    }
+
+    return undefined;
+  }
+
+  async getReviewByLogEntry(
+    logEntryId: string,
+  ): Promise<DiveSiteReview | undefined> {
+    const data = await this.Reviews.findOne({
+      where: { site: { id: this.data.id }, logEntry: { id: logEntryId } },
+      relations: ['creator', 'logEntry'],
     });
 
     if (data) {
@@ -233,16 +250,10 @@ export class DiveSite {
   async listReviews(
     options: ListDiveSiteReviewsParamsDTO,
   ): Promise<ApiList<DiveSiteReview>> {
-    const query = this.Reviews.createQueryBuilder('review')
-      .innerJoin('review.creator', 'creator')
-      .where('review.site = :siteId', { siteId: this.id })
-      .addOrderBy(
-        `review.${options.sortBy}`,
-        options.sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
-      )
-      .addOrderBy('review.title', 'ASC')
-      .offset(options.skip)
-      .limit(options.limit);
+    const query = new DiveSiteReviewsQueryBuilder(this.Reviews, this)
+      .withSortOrder(options.sortBy, options.sortOrder)
+      .withPagination(options.skip, options.limit)
+      .build();
 
     this.log.debug(`Listing reviews for dive site ${this.id}...`);
     this.log.verbose(query.getSql());
@@ -274,6 +285,17 @@ export class DiveSite {
       waterType: this.waterType,
       averageRating: this.averageRating,
       averageDifficulty: this.averageDifficulty,
+    };
+  }
+
+  toSuccinctJSON(): SuccinctDiveSiteDTO {
+    return {
+      id: this.id,
+      name: this.name,
+      location: this.location,
+      gps: this.gps,
+      averageRating: this.averageRating,
+      description: this.description,
     };
   }
 

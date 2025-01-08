@@ -135,10 +135,10 @@
  *               example: johndoe
  *             memberSince:
  *               title: Member Since
- *               type: string
- *               format: date-time
- *               description: The date and time the user joined Bottom Time.
- *               example: 2021-01-01T00:00:00.000Z
+ *               type: integer
+ *               format: int64
+ *               description: The date and time the user joined Bottom Time. Specified in milliseconds since the Unix epoch.
+ *               example: 1628089200000
  *     SuccinctProfile:
  *       type: object
  *       required:
@@ -160,10 +160,10 @@
  *           example: johndoe
  *         memberSince:
  *           title: Member Since
- *           type: string
- *           format: date-time
- *           description: The date and time the user joined Bottom Time.
- *           example: 2021-01-01T00:00:00.000Z
+ *           type: integer
+ *           format: int64
+ *           description: The date and time the user joined Bottom Time. Specified in milliseconds since the Unix epoch.
+ *           example: 1628089200000
  *         avatar:
  *           title: Avatar
  *           description: A URL to an image that can be displayed as the diver's avatar.
@@ -288,16 +288,16 @@
  *           example: true
  *         lastLogin:
  *           title: Last Login
- *           type: string
- *           format: date-time
- *           description: The date and time the user last logged in.
- *           example: 2021-01-01T00:00:00.000Z
+ *           type: integer
+ *           format: int64
+ *           description: The date and time the user last logged in. Specified in milliseconds since the Unix epoch.
+ *           example: 1628089200000
  *         lastPasswordChange:
  *           title: Last Password Change
- *           type: string
- *           format: date-time
- *           description: The date and time the user last changed their password.
- *           example: 2021-01-01T00:00:00.000Z
+ *           type: integer
+ *           format: int64
+ *           description: The date and time the user last changed their password. Specified in milliseconds since the Unix epoch.
+ *           example: 1628089200000
  *         isLockedOut:
  *           title: Is Locked Out
  *           type: boolean
@@ -305,10 +305,10 @@
  *           example: false
  *         memberSince:
  *           title: Member Since
- *           type: string
- *           format: date-time
- *           description: The date and time the user joined Bottom Time.
- *           example: 2021-01-01T00:00:00.000Z
+ *           type: integer
+ *           format: int64
+ *           description: The date and time the user joined Bottom Time. Specified in milliseconds since the Unix epoch.
+ *           example: 1628089200000
  *         profile:
  *           $ref: "#/components/schemas/Profile"
  *         role:

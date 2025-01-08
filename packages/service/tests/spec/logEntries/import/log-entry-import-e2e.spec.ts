@@ -13,7 +13,6 @@ import dayjs from 'dayjs';
 import tz from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { Server } from 'http';
-import { Mock } from 'moq.ts';
 import { EMPTY } from 'rxjs';
 import request from 'supertest';
 import { Repository } from 'typeorm';
@@ -28,13 +27,14 @@ import {
   UserEntity,
 } from '../../../../src/data';
 import { ConfigCatClient } from '../../../../src/dependencies';
-import { DiveSiteFactory, DiveSitesModule } from '../../../../src/diveSites';
+import { DiveSitesModule } from '../../../../src/diveSites';
 import { FeaturesModule } from '../../../../src/features';
 import { LogEntriesService, LogEntryFactory } from '../../../../src/logEntries';
 import { Importer } from '../../../../src/logEntries/import/importer';
 import { LogEntryImportFactory } from '../../../../src/logEntries/import/log-entry-import-factory';
 import { LogEntryImportController } from '../../../../src/logEntries/import/log-entry-import.controller';
 import { LogEntryImportService } from '../../../../src/logEntries/import/log-entry-import.service';
+import { OperatorsModule } from '../../../../src/operators';
 import { UsersModule } from '../../../../src/users';
 import { dataSource } from '../../../data-source';
 import TestImportRecords from '../../../fixtures/import-records.json';
@@ -42,8 +42,9 @@ import TestData from '../../../fixtures/log-entry-imports.json';
 import {
   ConfigCatClientMock,
   createAuthHeader,
+  createDiveSiteFactory,
+  createOperatorFactory,
   createTestApp,
-  createTestLogEntryImportRecord,
   createTestUser,
   parseLogEntryImportJSON,
 } from '../../../utils';
@@ -99,7 +100,8 @@ describe('Log entry import session E2E tests', () => {
       Entries,
       dataSource.getRepository(LogEntryAirEntity),
       dataSource.getRepository(LogEntrySampleEntity),
-      new Mock<DiveSiteFactory>().object(),
+      createDiveSiteFactory(),
+      createOperatorFactory(),
     );
     importer = new Importer(dataSource, entryFactory);
     app = await createTestApp(
@@ -114,6 +116,7 @@ describe('Log entry import session E2E tests', () => {
             LogEntryImportRecordEntity,
           ]),
           DiveSitesModule,
+          OperatorsModule,
           FeaturesModule,
           UsersModule,
         ],

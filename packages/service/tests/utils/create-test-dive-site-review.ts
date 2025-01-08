@@ -12,7 +12,6 @@ const DiveSiteReviewSchema = z.object({
   id: z.string(),
   createdOn: z.coerce.date(),
   updatedOn: z.coerce.date().nullable().optional().default(null),
-  title: z.string(),
   rating: z.number(),
   difficulty: z.number().nullable().optional().default(null),
   comments: z.string().nullable().optional().default(null),
@@ -23,7 +22,6 @@ export function createTestDiveSiteReview(
   site: DiveSiteEntity,
   options?: Partial<DiveSiteReviewEntity>,
 ): DiveSiteReviewEntity {
-  const title = `${faker.word.adjective()} ${faker.word.conjunction()} ${faker.word.adjective()} ${faker.word.noun()}`;
   const comments =
     faker.helpers.maybe(() => faker.lorem.paragraph(2), { probability: 0.8 }) ??
     null;
@@ -40,7 +38,6 @@ export function createTestDiveSiteReview(
       probability: 0.85,
     }) ??
     null;
-  data.title = options?.title || title;
   data.rating =
     options?.rating ?? faker.number.float({ min: 1, max: 5, multipleOf: 0.01 });
   data.difficulty =

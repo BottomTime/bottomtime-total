@@ -4,16 +4,17 @@ import {
   SearchOperatorsParams,
 } from '@bottomtime/api';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import slugify from 'slugify';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
 import { OperatorEntity } from '../data';
 import { User } from '../users';
 import { Operator } from './operator';
+import { OperatorFactory } from './operator-factory';
 import { OperatorQueryBuilder } from './operator-query-builder';
 
 export type CreateOperatorOptions = CreateOrUpdateOperatorDTO & {
@@ -31,19 +32,21 @@ export class OperatorsService {
   constructor(
     @InjectRepository(OperatorEntity)
     private readonly operators: Repository<OperatorEntity>,
+
+    @Inject(OperatorFactory)
+    private readonly operatorFactory: OperatorFactory,
   ) {}
 
   async createOperator(options: CreateOperatorOptions): Promise<Operator> {
-    this.log.debug(
-      'Attempting to create new dive operator with options:',
-      options,
-    );
+    this.log.debug('Attempting to create new dive operator...');
+    this.log.verbose(options);
+
     const data = new OperatorEntity();
     data.id = uuid();
     data.name = options.name;
     data.owner = options.owner.toEntity();
 
-    const operator = new Operator(this.operators, data);
+    const operator = this.operatorFactory.createOperator(data);
     operator.address = options.address;
     operator.description = options.description;
     operator.email = options.email;
@@ -74,7 +77,16 @@ export class OperatorsService {
       where: { id },
       relations: ['owner'],
     });
-    return data ? new Operator(this.operators, data) : undefined;
+    return data ? this.operatorFactory.createOperator(data) : undefined;
+  }
+
+  async getOperators(ids: string[]): Promise<Operator[]> {
+    this.log.debug(`Attempting to retrieve ${ids.length} operators...`);
+    const results = await this.operators.find({
+      where: { id: In(ids) },
+      relations: ['owner'],
+    });
+    return results.map((item) => this.operatorFactory.createOperator(item));
   }
 
   async getOperatorBySlug(slug: string): Promise<Operator | undefined> {
@@ -84,7 +96,7 @@ export class OperatorsService {
       where: { slug },
       relations: ['owner'],
     });
-    return data ? new Operator(this.operators, data) : undefined;
+    return data ? this.operatorFactory.createOperator(data) : undefined;
   }
 
   async isSlugInUse(slug: string): Promise<boolean> {
@@ -96,7 +108,10 @@ export class OperatorsService {
   async searchOperators(
     options?: SearchOperatorOptions,
   ): Promise<ApiList<Operator>> {
-    this.log.debug('Performing search for dive operators:', options);
+    this.log.debug('Performing search for dive operators:', {
+      ...options,
+      owner: options?.owner ? options.owner.username : undefined,
+    });
     const query = new OperatorQueryBuilder(this.operators)
       .withGeoLocation(options?.location, options?.radius)
       .withInactive(options?.showInactive)
@@ -108,7 +123,7 @@ export class OperatorsService {
     const [operators, totalCount] = await query.getManyAndCount();
 
     return {
-      data: operators.map((operator) => new Operator(this.operators, operator)),
+      data: operators.map((item) => this.operatorFactory.createOperator(item)),
       totalCount,
     };
   }

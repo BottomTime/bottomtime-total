@@ -11,14 +11,13 @@ import {
 
 import { faker } from '@faker-js/faker';
 
-import dayjs from 'dayjs';
-import 'dayjs/plugin/timezone';
 import { z } from 'zod';
 
 import {
   DiveSiteEntity,
   LogEntryAirEntity,
   LogEntryEntity,
+  OperatorEntity,
   UserEntity,
 } from '../../src/data';
 
@@ -64,6 +63,7 @@ const LogEntrySchema = z.object({
   weather: z.string().nullable(),
   visibility: z.number().nullable(),
 
+  rating: z.number().nullable().default(null),
   notes: z.string().nullable(),
   tags: z.string().array(),
 
@@ -339,6 +339,7 @@ export function createTestLogEntry(
     options?.weather ?? faker.helpers.arrayElement(WeatherConditions);
 
   data.notes = options?.notes ?? faker.lorem.paragraph();
+  data.rating = options?.rating ?? faker.number.float({ min: 1, max: 5 });
 
   return data;
 }
@@ -347,11 +348,13 @@ export function parseLogEntryJSON(
   data: unknown,
   owner: UserEntity,
   site: DiveSiteEntity | null = null,
+  operator: OperatorEntity | null = null,
 ): LogEntryEntity {
   const entry = LogEntrySchema.parse(data);
   return {
     ...entry,
     owner,
     site,
+    operator,
   };
 }

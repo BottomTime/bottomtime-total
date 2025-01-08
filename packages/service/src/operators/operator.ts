@@ -1,19 +1,41 @@
 import {
   AccountTier,
+  ApiList,
+  CreateOrUpdateOperatorReviewDTO,
   GpsCoordinates,
+  ListOperatorReviewsParams,
   LogBookSharing,
   OperatorDTO,
+  SuccinctOperatorDTO,
   SuccinctProfileDTO,
   VerificationStatus,
 } from '@bottomtime/api';
 
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, HttpException } from '@nestjs/common';
 
-import { Not, Repository } from 'typeorm';
+import { DiveSiteFactory } from 'src/diveSites';
+import { MoreThan, Not, Repository } from 'typeorm';
+import { v7 as uuid } from 'uuid';
 
-import { OperatorEntity } from '../data';
+import {
+  OperatorDiveSiteEntity,
+  OperatorEntity,
+  OperatorReviewEntity,
+} from '../data';
 import { User } from '../users';
+import { OperatorReview } from './operator-review';
+import { OperatorReviewQueryBuilder } from './operator-review-query-builder';
+import { OperatorSites } from './operator-sites';
 import { OperatorSocials } from './operator-socials';
+
+export type ListOperatorReviewsOptions = {
+  creator?: User;
+} & Omit<ListOperatorReviewsParams, 'creator'>;
+
+export type CreateOperatorReviewOptions = {
+  creator: User;
+  logEntryId?: string;
+} & CreateOrUpdateOperatorReviewDTO;
 
 export class Operator {
   readonly socials: OperatorSocials;
@@ -21,10 +43,21 @@ export class Operator {
 
   constructor(
     private readonly operators: Repository<OperatorEntity>,
+    private readonly operatorDiveSites: Repository<OperatorDiveSiteEntity>,
+    private readonly reviews: Repository<OperatorReviewEntity>,
+    private readonly siteFacotry: DiveSiteFactory,
     private readonly data: OperatorEntity,
   ) {
     this.socials = new OperatorSocials(this.data);
+    this.sites = new OperatorSites(
+      this.operators,
+      this.operatorDiveSites,
+      this.siteFacotry,
+      this.data,
+    );
   }
+
+  readonly sites: OperatorSites;
 
   get id(): string {
     return this.data.id;
@@ -57,6 +90,10 @@ export class Operator {
           memberSince: new Date(0).valueOf(),
           logBookSharing: LogBookSharing.Private,
         };
+  }
+
+  get averageRating(): number | undefined {
+    return this.data.averageRating ?? undefined;
   }
 
   get verificationStatus(): VerificationStatus {
@@ -211,9 +248,88 @@ export class Operator {
     this.data.logo = logoUrl;
   }
 
+  async getReview(reviewId: string): Promise<OperatorReview | undefined> {
+    const data = await this.reviews.findOne({
+      where: { operator: { id: this.data.id }, id: reviewId },
+      relations: ['creator', 'logEntry'],
+    });
+
+    if (data) {
+      data.operator = this.data;
+      return new OperatorReview(this.reviews, data);
+    }
+
+    return undefined;
+  }
+
+  async getReviewByLogEntry(
+    logEntryId: string,
+  ): Promise<OperatorReview | undefined> {
+    const data = await this.reviews.findOne({
+      where: { operator: { id: this.data.id }, logEntry: { id: logEntryId } },
+      relations: ['creator', 'logEntry'],
+    });
+
+    if (data) {
+      data.operator = this.data;
+      return new OperatorReview(this.reviews, data);
+    }
+
+    return undefined;
+  }
+
+  async listReviews(
+    options?: ListOperatorReviewsOptions,
+  ): Promise<ApiList<OperatorReview>> {
+    const query = new OperatorReviewQueryBuilder(this.reviews)
+      .withOperator(this)
+      .withCreator(options?.creator)
+      .withQuery(options?.query)
+      .withPagination(options?.skip, options?.limit)
+      .withSortOrder(options?.sortBy, options?.sortOrder)
+      .build();
+
+    const [data, totalCount] = await query.getManyAndCount();
+
+    return {
+      data: data.map((review) => new OperatorReview(this.reviews, review)),
+      totalCount,
+    };
+  }
+
+  async createReview(
+    options: CreateOperatorReviewOptions,
+  ): Promise<OperatorReview> {
+    const existing = await this.reviews.existsBy({
+      operator: { id: this.data.id },
+      creator: { id: options.creator.id },
+      createdAt: MoreThan(new Date(Date.now() - 1000 * 60 * 60 * 48)),
+    });
+    if (existing) {
+      throw new HttpException(
+        'You may not review the same operator twice in the same 48 hour period.',
+        429,
+      );
+    }
+
+    const data = new OperatorReviewEntity();
+    data.id = uuid();
+    data.creator = options.creator.toEntity();
+    data.operator = this.data;
+
+    const review = new OperatorReview(this.reviews, data);
+    review.comments = options.comments;
+    review.rating = options.rating;
+    review.logEntryId = options.logEntryId;
+
+    await review.save();
+    return review;
+  }
+
   toJSON(): OperatorDTO {
     return {
       active: this.active,
+      averageRating: this.averageRating,
       createdAt: this.createdAt.valueOf(),
       description: this.description,
       email: this.email,
@@ -230,6 +346,21 @@ export class Operator {
       slug: this.slug,
       verificationStatus: this.verificationStatus,
       verificationMessage: this.verificationMessage,
+      website: this.website,
+    };
+  }
+
+  toSuccinctJSON(): SuccinctOperatorDTO {
+    return {
+      address: this.address,
+      averageRating: this.averageRating,
+      gps: this.gps,
+      id: this.id,
+      logo: this.logo,
+      name: this.name,
+      description: this.description,
+      phone: this.phone,
+      slug: this.slug,
       website: this.website,
     };
   }

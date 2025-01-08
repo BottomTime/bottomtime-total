@@ -11,7 +11,8 @@ import {
   WeightCorrectness,
   WeightUnit,
 } from './constants';
-import { DiveSiteSchema } from './dive-sites';
+import { SuccinctDiveSiteSchema } from './dive-sites';
+import { SuccinctOperatorSchema } from './operators';
 import { CreateOrUpdateTankParamsSchema } from './tanks';
 import { SuccinctProfileSchema } from './users';
 
@@ -126,6 +127,7 @@ const LogEntryBaseSchema = z.object({
     .optional(),
 
   notes: z.string().max(5000).optional(),
+  rating: z.number().min(1).max(5).optional(),
   tags: z.string().max(100).array().optional(),
 });
 
@@ -144,6 +146,7 @@ export type LogEntrySampleDTO = z.infer<typeof LogEntrySampleSchema>;
 
 export const CreateOrUpdateLogEntryParamsSchema = LogEntryBaseSchema.extend({
   site: z.string().uuid().optional(),
+  operator: z.string().uuid().optional(),
   samples: LogEntrySampleSchema.array().optional(),
 });
 export type CreateOrUpdateLogEntryParamsDTO = z.infer<
@@ -155,7 +158,8 @@ export const LogEntrySchema = LogEntryBaseSchema.extend({
   createdAt: z.number(),
   updatedAt: z.number().optional(),
   creator: SuccinctProfileSchema,
-  site: DiveSiteSchema.optional(),
+  site: SuccinctDiveSiteSchema.optional(),
+  operator: SuccinctOperatorSchema.optional(),
   samples: LogEntrySampleSchema.array().optional(),
 });
 export type LogEntryDTO = z.infer<typeof LogEntrySchema>;
@@ -209,11 +213,12 @@ export type GetNextAvailableLogNumberResponseDTO = {
   logNumber: number;
 };
 
-export const GetMostRecentDiveSitesRequestParamsSchema = z.object({
+// TODO: Need a new name for this so it works for operators too.
+export const GetMostRecentEntitiesParamsSchema = z.object({
   count: z.coerce.number().int().positive().max(200).optional(),
 });
-export type GetMostRecentDiveSitesRequestParamsDTO = z.infer<
-  typeof GetMostRecentDiveSitesRequestParamsSchema
+export type GetMostRecentEntitiesParamsDTO = z.infer<
+  typeof GetMostRecentEntitiesParamsSchema
 >;
 
 export const CreateLogsImportParamsSchema = z

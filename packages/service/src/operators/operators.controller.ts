@@ -42,7 +42,7 @@ import {
 } from '../users';
 import { ZodValidator } from '../zod-validator';
 import { AssertOperatorOwner } from './assert-operator-owner.guard';
-import { AssertOperator, CurrentOperator } from './assert-operator.guard';
+import { AssertOperator, TargetOperator } from './assert-operator.guard';
 import { Operator } from './operator';
 import { OperatorsService } from './operators.service';
 
@@ -355,7 +355,7 @@ export class OperatorsController {
   @UseGuards(AssertOperator)
   getOperator(
     @CurrentUser() user: User | undefined,
-    @CurrentOperator() operator: Operator,
+    @TargetOperator() operator: Operator,
   ): OperatorDTO {
     // Only return the verification message if the user is an admin or the owner of the operator...
     if (user?.role === UserRole.Admin || user?.id === operator.owner.userId) {
@@ -428,7 +428,7 @@ export class OperatorsController {
   @Put(OperatorKeyParam)
   @UseGuards(AssertAuth, AssertOperator, AssertOperatorOwner)
   async updateOperator(
-    @CurrentOperator() operator: Operator,
+    @TargetOperator() operator: Operator,
     @Body(new ZodValidator(CreateOrUpdateOperatorSchema))
     options: CreateOrUpdateOperatorDTO,
   ): Promise<OperatorDTO> {
@@ -497,7 +497,7 @@ export class OperatorsController {
   @Delete(OperatorKeyParam)
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AssertAuth, AssertOperator, AssertOperatorOwner)
-  async deleteOperator(@CurrentOperator() operator: Operator): Promise<void> {
+  async deleteOperator(@TargetOperator() operator: Operator): Promise<void> {
     await operator.delete();
   }
 
@@ -573,7 +573,7 @@ export class OperatorsController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AssertAuth, AssertOperator, AssertOperatorOwner)
   async transferOperatorOwnership(
-    @CurrentOperator() operator: Operator,
+    @TargetOperator() operator: Operator,
     @Body(new ZodValidator(TransferOperatorOwnershipSchema))
     { newOwner: username }: TransferOperatorOwnershipDTO,
   ): Promise<OperatorDTO> {
@@ -639,7 +639,7 @@ export class OperatorsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AssertOperator, AssertOperatorOwner)
   async requestVerification(
-    @CurrentOperator() operator: Operator,
+    @TargetOperator() operator: Operator,
   ): Promise<void> {
     await operator.requestVerification();
   }
@@ -709,7 +709,7 @@ export class OperatorsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AssertAdmin, AssertOperator)
   async verifyOperator(
-    @CurrentOperator() operator: Operator,
+    @TargetOperator() operator: Operator,
     @Body(new ZodValidator(VerifyOperatorSchema))
     { verified, message }: VerifyOperatorDTO,
   ): Promise<void> {

@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO } from '@bottomtime/api';
+import { DiveSiteDTO, SuccinctDiveSiteDTO } from '@bottomtime/api';
 
 import { onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
@@ -77,10 +77,10 @@ import TextHeading from '../../common/text-heading.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
 interface RecentSitesListProps {
-  currentSite?: DiveSiteDTO;
+  currentSite?: SuccinctDiveSiteDTO;
 }
 
-interface RecetSitesState {
+interface RecentSitesState {
   isLoading?: boolean;
   selectedSite?: string;
   recentSites: DiveSiteDTO[];
@@ -92,10 +92,10 @@ const route = useRoute();
 
 const props = defineProps<RecentSitesListProps>();
 defineEmits<{
-  (e: 'site-selected', site: DiveSiteDTO): void;
+  (e: 'site-selected', site: SuccinctDiveSiteDTO): void;
   (e: 'search'): void;
 }>();
-const state = reactive<RecetSitesState>({
+const state = reactive<RecentSitesState>({
   isLoading: true,
   selectedSite: props.currentSite?.id,
   recentSites: [],
@@ -114,7 +114,7 @@ onMounted(async () => {
   state.isLoading = false;
 });
 
-function onSiteHighlighted(site: DiveSiteDTO) {
+function onSiteHighlighted(site: SuccinctDiveSiteDTO) {
   state.selectedSite = site.id;
 }
 </script>
