@@ -1,5 +1,61 @@
 <template>
-  <div v-if="entry" class="space-y-3" data-testid="logbook-entry">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="border-2 border-secondary p-2 rounded-md space-y-3">
+      <TextHeading level="h3">Dive Info</TextHeading>
+      <div class="flex flex-col gap-0.5">
+        <label class="font-bold">Entry time:</label>
+        <span class="italic">
+          {{
+            dayjs(entry.timing.entryTime)
+              .tz(entry.timing.timezone)
+              .format('LLL')
+          }}
+        </span>
+        <span class="italic">{{ entry.timing.timezone }}</span>
+      </div>
+
+      <div class="flex flex-col gap-0.5">
+        <label class="font-bold">Duration:</label>
+        <span class="italic">
+          {{ getFormattedDuration(entry.timing.duration) }}
+        </span>
+      </div>
+
+      <div v-if="entry.timing.bottomTime" class="flex flex-col gap-0.5">
+        <label class="font-bold">Bottom time:</label>
+        <span class="italic">
+          {{ getFormattedDuration(entry.timing.bottomTime) }}
+        </span>
+      </div>
+
+      <div v-if="entry.depths?.maxDepth" class="flex flex-col gap-0.5">
+        <label class="font-bold">Maximum depth:</label>
+        <DepthText
+          class="italic"
+          :depth="entry.depths.maxDepth"
+          :unit="entry.depths.depthUnit || DepthUnit.Meters"
+        />
+      </div>
+
+      <div v-if="entry.depths?.averageDepth" class="flex flex-col gap-0.5">
+        <label class="font-bold">Average depth:</label>
+        <DepthText
+          class="italic"
+          :depth="entry.depths.averageDepth"
+          :unit="entry.depths.depthUnit || DepthUnit.Meters"
+        />
+      </div>
+    </div>
+
+    <div
+      v-if="entry.depths?.averageDepth || entry.depths?.maxDepth"
+      class="border-2 border-secondary p-2 rounded-md space-y-3"
+    >
+      <TextHeading level="h3">Conditions</TextHeading>
+    </div>
+  </div>
+
+  <div class="space-y-3" data-testid="logbook-entry">
     <div v-if="entry.logNumber" class="flex flex-col">
       <label class="font-bold">Log #:</label>
       <span class="italic" data-testid="entry-logNumber">
@@ -47,10 +103,23 @@ import { DepthUnit, LogEntryDTO } from '@bottomtime/api';
 import dayjs from 'dayjs';
 
 import DepthText from '../common/depth-text.vue';
+import TextHeading from '../common/text-heading.vue';
 
 interface ViewLogbookEntryProps {
-  entry: LogEntryDTO | null;
+  entry: LogEntryDTO;
+  narrow?: boolean;
 }
 
-defineProps<ViewLogbookEntryProps>();
+withDefaults(defineProps<ViewLogbookEntryProps>(), {
+  narrow: false,
+});
+
+function getFormattedDuration(duration: number): string {
+  const hours = Math.floor(duration / 3600);
+  const mins = Math.floor((duration % 3600) / 60);
+  const secs = Math.ceil(duration % 60);
+  return `${hours}:${mins.toString().padStart(2, '0')}:${secs
+    .toString()
+    .padStart(2, '0')}`;
+}
 </script>
