@@ -37,15 +37,15 @@ export class ReviewsUpdate1735824085873 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_ec6ad3ecdcc6d7935b218111f9" ON "dive_operator_reviews" ("operatorId", "creatorId", "createdAt") `,
     );
     await queryRunner.query(
-      `ALTER TABLE "dive_site_reviews" DROP COLUMN "title"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "dive_operators" ADD "averageRating" double precision`,
     );
     await queryRunner.query(
       `ALTER TABLE "log_entries" ADD "rating" double precision`,
     );
     await queryRunner.query(`ALTER TABLE "log_entries" ADD "operatorId" uuid`);
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" DROP COLUMN "fulltext"`,
+    );
     await queryRunner.query(
       `ALTER TABLE "dive_site_reviews" ADD "fulltext" tsvector GENERATED ALWAYS AS (setweight(to_tsvector('english', coalesce(comments, '')), 'A')) STORED`,
     );
@@ -74,6 +74,9 @@ export class ReviewsUpdate1735824085873 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_4605a0835b21a7625811e711f1" ON "dive_site_reviews" ("fulltext") `,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "dive_site_reviews" DROP COLUMN "title"`,
     );
     await queryRunner.query(
       `ALTER TABLE "dive_operator_reviews" ADD CONSTRAINT "FK_8bcfe49632985aea9baacee4ec4" FOREIGN KEY ("creatorId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
