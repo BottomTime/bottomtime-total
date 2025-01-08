@@ -19,6 +19,10 @@ export const handler: Handler = async () => {
 
     const queueReader = new QueueReader(sqsClient, Config.sqsQueueUrl);
     const aggregator = new Aggregator(pgClient);
+
+    const batch = await queueReader.getBatch();
+    await aggregator.aggregate(batch);
+    await batch.finalize();
   } catch (error) {
     // TODO: Need to introduce a logger here.
   }
