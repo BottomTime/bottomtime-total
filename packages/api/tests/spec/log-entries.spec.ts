@@ -52,10 +52,8 @@ const FullTestData: LogEntryDTO = {
   updatedAt: new Date('2024-07-23T12:09:55Z').valueOf(),
   site: {
     id: 'f0c5b4d4-2d1d-4b5d-8e7d-9b7a4d4b8f1d',
-    createdOn: new Date('2024-07-23T12:09:55Z').valueOf(),
     name: 'The Wreck of the RMS Titanic',
     location: 'Atlantic Ocean',
-    creator: BasicUser.profile,
   },
   timing: {
     ...PartialTestData.timing,

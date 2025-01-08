@@ -79,14 +79,6 @@ export const FullLogEntry: LogEntryDTO = {
     weather: 'Sunny',
   },
   site: {
-    createdOn: new Date('2021-04-11T18:16:12').valueOf(),
-    creator: {
-      accountTier: AccountTier.Basic,
-      logBookSharing: LogBookSharing.FriendsOnly,
-      memberSince: new Date('2021-04-11T18:16:12').valueOf(),
-      userId: '7e2a8d3b-ae2e-48f5-a476-4bfce3993b33',
-      username: 'scuba_steve',
-    },
     id: '3dcf256f-9e75-44bc-9177-ff5f5f281aac',
     name: 'Catalina Island',
     location: 'California',
