@@ -15,7 +15,7 @@ describe('Config class', () => {
   it('will return configuration correctly', () => {
     process.env.BT_POSTGRES_URI = 'postgres://user:password@localhost:5432/db';
     process.env.BT_POSTGRES_REQUIRE_SSL = 'true';
-    process.env.BT_SQS_QUEUE_URL =
+    process.env.BT_AWS_SQS_REVIEWS_QUEUE_URL =
       'http://localstack:4566/000000000000/mah_queue';
     process.env.BT_LOG_LEVEL = 'debug';
 
@@ -32,7 +32,7 @@ describe('Config class', () => {
   it('will return default values where appropriate', () => {
     delete process.env.BT_POSTGRES_URI;
     delete process.env.BT_POSTGRES_REQUIRE_SSL;
-    delete process.env.BT_SQS_QUEUE_URL;
+    delete process.env.BT_AWS_SQS_REVIEWS_QUEUE_URL;
     delete process.env.BT_LOG_LEVEL;
 
     expect(Config.postgresUri).toBe(

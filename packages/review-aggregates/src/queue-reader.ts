@@ -1,16 +1,11 @@
+import { ReviewChangedQueueMessageSchema } from '@bottomtime/common';
+
 import { Message, ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 
 import Logger from 'bunyan';
 import { filter, from, lastValueFrom, tap, toArray } from 'rxjs';
-import { z } from 'zod';
 
 import { QueueReaderBatch } from './queue-reader-batch';
-
-const ReviewQueueMessage = z.object({
-  entity: z.enum(['diveSite', 'operator']),
-  id: z.string().uuid(),
-});
-type ReviewQueueMessage = z.infer<typeof ReviewQueueMessage>;
 
 export class QueueReader {
   private static readonly MaxMessages = 200;
@@ -51,7 +46,7 @@ export class QueueReader {
         tap((msg) => {
           try {
             const json = JSON.parse(msg.Body ?? '{}');
-            const data = ReviewQueueMessage.parse(json);
+            const data = ReviewChangedQueueMessageSchema.parse(json);
             if (data.entity === 'diveSite') {
               diveSiteIds.add(data.id);
             }

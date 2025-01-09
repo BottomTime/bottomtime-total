@@ -1,15 +1,11 @@
-import { EventKey } from '@bottomtime/common';
+import { EventKey, ReviewChangedMessage } from '@bottomtime/common';
 
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
+import { Config } from '../config';
 import { EventData } from '../events';
-
-type ReviewsQueueMessage = {
-  entity: 'diveSite' | 'operator';
-  id: string;
-};
 
 @Injectable()
 export class ReviewEventsHandler {
@@ -24,7 +20,7 @@ export class ReviewEventsHandler {
   @OnEvent(EventKey.OperatorReviewModified)
   @OnEvent(EventKey.OperatorReviewDeleted)
   async handleReviewEvent(event: EventData): Promise<void> {
-    let message: ReviewsQueueMessage;
+    let message: ReviewChangedMessage;
 
     switch (event.key) {
       case EventKey.DiveSiteReviewAdded:
@@ -52,7 +48,7 @@ export class ReviewEventsHandler {
     try {
       await this.sqs.send(
         new SendMessageCommand({
-          QueueUrl: '', // TODO: This needs to be configurable.
+          QueueUrl: Config.aws.sqs.reviewsQueueUrl,
           MessageBody: JSON.stringify(message),
         }),
       );
