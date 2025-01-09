@@ -18,7 +18,7 @@ export class Config {
 
   static get sqsQueueUrl(): string {
     return (
-      process.env.BT_SQS_QUEUE_URL ||
+      process.env.BT_AWS_SQS_REVIEWS_QUEUE_URL ||
       'http://localstack:4566/000000000000/reviews'
     );
   }
