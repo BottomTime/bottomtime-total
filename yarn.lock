@@ -3613,9 +3613,11 @@ __metadata:
   dependencies:
     "@aws-sdk/client-sqs": "npm:^3.614.0"
     "@bottomtime/service": "workspace:*"
+    "@faker-js/faker": "npm:^8.4.1"
     "@types/aws-lambda": "npm:^8.10.140"
     "@types/jest": "npm:^29.4.0"
     "@types/pg": "npm:^8.11.2"
+    bunyan: "npm:^1.8.15"
     jest: "npm:^29.7.0"
     jest-junit: "npm:^16.0.0"
     pg: "npm:^8.11.3"

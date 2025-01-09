@@ -1,8 +1,8 @@
 import { DiveSiteReviewsSortBy, SortOrder } from '@bottomtime/api';
 
-import { DiveSiteReviewEntity } from 'src/data';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 
+import { DiveSiteReviewEntity } from '../data';
 import { DiveSite } from './dive-site';
 
 const SelectFields = [

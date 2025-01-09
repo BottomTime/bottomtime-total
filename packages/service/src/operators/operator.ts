@@ -13,7 +13,6 @@ import {
 
 import { ConflictException, HttpException } from '@nestjs/common';
 
-import { DiveSiteFactory } from 'src/diveSites';
 import { MoreThan, Not, Repository } from 'typeorm';
 import { v7 as uuid } from 'uuid';
 
@@ -22,6 +21,7 @@ import {
   OperatorEntity,
   OperatorReviewEntity,
 } from '../data';
+import { DiveSiteFactory } from '../diveSites';
 import { User } from '../users';
 import { OperatorReview } from './operator-review';
 import { OperatorReviewQueryBuilder } from './operator-review-query-builder';

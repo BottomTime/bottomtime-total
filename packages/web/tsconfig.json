@@ -20,10 +20,12 @@
     "jsxImportSource": "vue",
     "typeRoots": [
       "../../node_modules/@types",
+      "../../node_modules",
       "./node_modules/@types",
+      "./node_modules",
       "./src/types"
     ] /* Specify multiple folders that act like './node_modules/@types'. */,
-    "types": ["google.maps", "vite-env", "node"],
+    "types": ["google.maps", "vite/client", "vite-env", "node"],
 
     /* Linting */
     "strict": true

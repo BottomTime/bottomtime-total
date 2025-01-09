@@ -5,6 +5,7 @@ export * from './create-test-dive-operator';
 export * from './create-test-dive-operator-review';
 export * from './create-test-dive-profile';
 export * from './create-test-dive-site';
+export * from './create-test-dive-site-review';
 export * from './create-test-log-entry';
 export * from './create-test-log-entry-air';
 export * from './create-test-log-entry-import';

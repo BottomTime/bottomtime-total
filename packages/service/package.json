@@ -2,7 +2,6 @@
   "name": "@bottomtime/service",
   "version": "1.0.0",
   "description": "BottomTime backend service",
-  "main": "src/index.ts",
   "author": "Chris Carleton <mrchriscarleton@gmail.com>",
   "license": "MIT",
   "private": true,

@@ -1,6 +1,7 @@
 import { Message, ReceiveMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 
-import { filter, from, lastValueFrom, map, tap, toArray } from 'rxjs';
+import Logger from 'bunyan';
+import { filter, from, lastValueFrom, tap, toArray } from 'rxjs';
 import { z } from 'zod';
 
 import { QueueReaderBatch } from './queue-reader-batch';
@@ -16,6 +17,7 @@ export class QueueReader {
 
   constructor(
     private readonly client: SQSClient,
+    private readonly log: Logger,
     private readonly queueUrl: string,
   ) {}
 
@@ -43,22 +45,27 @@ export class QueueReader {
   async getBatch(): Promise<QueueReaderBatch> {
     const logEntryIds = new Set<string>();
     const diveSiteIds = new Set<string>();
-    const messageIds = await lastValueFrom(
+    const messages = await lastValueFrom(
       from(this.retrieveMessages()).pipe(
         filter((msg) => !!msg.MessageId),
         tap((msg) => {
-          const parsed = ReviewQueueMessage.safeParse(msg.Body);
-          if (parsed.success) {
-            if (parsed.data.entity === 'diveSite') {
-              diveSiteIds.add(parsed.data.id);
+          try {
+            const json = JSON.parse(msg.Body ?? '{}');
+            const data = ReviewQueueMessage.parse(json);
+            if (data.entity === 'diveSite') {
+              diveSiteIds.add(data.id);
             }
 
-            if (parsed.data.entity === 'operator') {
-              logEntryIds.add(parsed.data.id);
+            if (data.entity === 'operator') {
+              logEntryIds.add(data.id);
             }
+          } catch (error) {
+            this.log.warn(
+              `Failed to parse JSON from SQS message with ID "${msg.MessageId}":`,
+              error,
+            );
           }
         }),
-        map((msg) => msg.MessageId!),
         toArray(),
       ),
     );
@@ -66,7 +73,8 @@ export class QueueReader {
     return new QueueReaderBatch(
       this.client,
       this.queueUrl,
-      messageIds,
+      this.log,
+      messages,
       Array.from(logEntryIds),
       Array.from(diveSiteIds),
     );
