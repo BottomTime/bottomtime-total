@@ -3,7 +3,7 @@
     "sourceMap": true,
     "moduleResolution": "Node",
     "esModuleInterop": true,
-    "types": ["google.maps", "node", "jest", "vite/client", "vite-env"]
+    "types": ["google.maps", "node", "jest", "vite-env"]
   },
   "extends": "../tsconfig.json",
   "include": ["../src/**/*.ts", "../src/**/*.vue", "./**/*.ts", "./**/*.vue"]
