@@ -1,4 +1,9 @@
 /* eslint-disable no-process-env */
+import { z } from 'zod';
+
+const LogLevel = z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']);
+type LogLevel = z.infer<typeof LogLevel>;
+
 export class Config {
   static get postgresUri(): string {
     return (
@@ -12,6 +17,14 @@ export class Config {
   }
 
   static get sqsQueueUrl(): string {
-    return process.env.BT_SQS_QUEUE_URL || '';
+    return (
+      process.env.BT_SQS_QUEUE_URL ||
+      'http://localstack:4566/000000000000/reviews'
+    );
+  }
+
+  static get logLevel(): LogLevel {
+    const parsed = LogLevel.safeParse(process.env.BT_LOG_LEVEL);
+    return parsed.success ? parsed.data : 'info';
   }
 }

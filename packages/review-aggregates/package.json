@@ -15,12 +15,14 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.614.0",
+    "bunyan": "^1.8.15",
     "pg": "^8.11.3",
     "rxjs": "^7.8.1",
     "zod": "3.22.4"
   },
   "devDependencies": {
     "@bottomtime/service": "workspace:*",
+    "@faker-js/faker": "^8.4.1",
     "@types/aws-lambda": "^8.10.140",
     "@types/jest": "^29.4.0",
     "@types/pg": "^8.11.2",
