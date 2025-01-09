@@ -11,12 +11,14 @@ import { useCurrentUser } from '../../store';
 
 interface WeightTextProps {
   weight: number;
-  unit: WeightUnit;
+  unit?: WeightUnit;
 }
 
 const currentUser = useCurrentUser();
 
-const props = defineProps<WeightTextProps>();
+const props = withDefaults(defineProps<WeightTextProps>(), {
+  unit: WeightUnit.Kilograms,
+});
 const text = computed(() => {
   if (!currentUser.user) {
     return props.unit === WeightUnit.Kilograms
