@@ -26,6 +26,9 @@
   <form data-testid="edit-log-entry" @submit.prevent="">
     <fieldset class="space-y-4" :disabled="isSaving">
       <!-- Basic Info -->
+      <div class="grid grid-cols-3">
+        <div></div>
+      </div>
       <TextHeading>Basic Info</TextHeading>
       <section class="ml-3 lg:ml-0">
         <FormField

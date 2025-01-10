@@ -1,71 +1,128 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+  <div class="flex gap-5 justify-between items-center my-2">
+    <div>
+      <TextHeading v-if="entry.logNumber" level="h1">
+        #{{ entry.logNumber }}
+      </TextHeading>
+    </div>
+    <UserAvatar :profile="entry.creator" show-name />
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
     <!-- General Dive Info -->
-    <div class="border-2 border-secondary p-2 rounded-md space-y-3">
-      <TextHeading level="h2">Dive Info</TextHeading>
+    <div class="border-2 border-secondary p-2 rounded-md space-y-3 px-6">
+      <TextHeading class="-ml-3" level="h2">Dive Info</TextHeading>
       <div class="flex flex-col gap-0.5">
-        <label class="font-bold">Entry time:</label>
-        <span class="italic">
-          {{
-            dayjs(entry.timing.entryTime)
-              .tz(entry.timing.timezone)
-              .format('LLL')
-          }}
+        <label class="font-bold">Timing:</label>
+        <div class="flex gap-5">
+          <div class="flex flex-col items-center px-2">
+            <span>Entry Time</span>
+            <span class="font-mono text-xs">
+              {{
+                dayjs(entry.timing.entryTime)
+                  .tz(entry.timing.timezone)
+                  .format('LLL')
+              }}
+            </span>
+            <span class="font-mono text-xs">{{ entry.timing.timezone }}</span>
+          </div>
+
+          <div class="flex flex-col items-center px-2">
+            <span>Duration</span>
+            <span class="font-mono text-xs">
+              {{ getFormattedDuration(entry.timing.duration) }}
+            </span>
+          </div>
+
+          <div class="flex flex-col items-center px-2">
+            <span>Bottom Time</span>
+            <span class="font-mono text-xs">
+              {{ getFormattedDuration(entry.timing.bottomTime) }}
+            </span>
+          </div>
+
+          <div class="flex flex-col items-center px-2">
+            <span>Surface Interval</span>
+            <span class="font-mono text-xs">
+              <!-- {{ getFormattedDuration(entry.timing.surfaceInterval) }} -->
+              TODO
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-0.5">
+        <label class="font-bold">Depth:</label>
+        <div class="flex gap-5">
+          <div class="flex flex-col items-center px-2">
+            <span>Maximum</span>
+            <DepthText
+              v-if="entry.depths?.maxDepth"
+              class="font-mono text-xs"
+              :depth="entry.depths.maxDepth"
+              :unit="entry.depths.depthUnit"
+            />
+            <span v-else class="font-mono text-xs">Unspecified</span>
+          </div>
+
+          <div class="flex flex-col items-center px-2">
+            <span>Average</span>
+            <DepthText
+              v-if="entry.depths?.averageDepth"
+              class="font-mono text-xs"
+              :depth="entry.depths.averageDepth"
+              :unit="entry.depths.depthUnit"
+            />
+            <span v-else class="font-mono text-xs">Unspecified</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location -->
+    <div class="border-2 border-secondary p-2 rounded-md space-y-3 px-6">
+      <TextHeading class="-ml-3" level="h2">Location</TextHeading>
+
+      <div class="flex flex-col gap-0.5">
+        <label class="font-bold">Dive Site:</label>
+        <span class="font-mono text-xs capitalize">
+          {{ entry.site?.name || 'Unspecified' }}
         </span>
-        <span class="italic">{{ entry.timing.timezone }}</span>
       </div>
 
       <div class="flex flex-col gap-0.5">
-        <label class="font-bold">Duration:</label>
-        <span class="italic">
-          {{ getFormattedDuration(entry.timing.duration) }}
-        </span>
-      </div>
-
-      <div class="flex flex-col gap-0.5">
-        <label class="font-bold">Bottom time:</label>
-        <span class="italic">
-          {{
-            entry.timing.bottomTime
-              ? getFormattedDuration(entry.timing.bottomTime)
-              : 'Unspecified'
-          }}
-        </span>
-      </div>
-
-      <div class="flex flex-col gap-0.5">
-        <label class="font-bold">Maximum depth:</label>
-        <DepthText
-          v-if="entry.depths?.maxDepth"
-          class="italic"
-          :depth="entry.depths.maxDepth"
-          :unit="entry.depths.depthUnit"
-        />
-        <span v-else class="italic">Unspecified</span>
-      </div>
-
-      <div class="flex flex-col gap-0.5">
-        <label class="font-bold">Average depth:</label>
-        <DepthText
-          v-if="entry.depths?.averageDepth"
-          class="italic"
-          :depth="entry.depths.averageDepth"
-          :unit="entry.depths.depthUnit"
-        />
-        <span v-else class="italic">Unspecified</span>
+        <label class="font-bold">Location:</label>
+        <p class="font-mono text-xs capitalize">
+          {{ entry.site?.location || 'Unspecified' }}
+        </p>
+        <p
+          v-if="entry.site?.gps"
+          class="font-mono text-xs flex gap-2 items-center"
+        >
+          <span class="text-danger">
+            <i class="fa-solid fa-location-dot"></i>
+          </span>
+          <span>
+            {{ entry.site.gps.lat }}
+            {{ entry.site.gps.lat > 0 ? 'N' : 'S' }},
+            {{ entry.site.gps.lon }}
+            {{ entry.site.gps.lon > 0 ? 'E' : 'W' }}
+          </span>
+        </p>
       </div>
     </div>
 
     <!-- Dive Conditions -->
     <div
       v-if="entry.conditions"
-      class="border-2 border-secondary p-2 rounded-md space-y-3"
+      class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
     >
-      <TextHeading level="h2">Conditions</TextHeading>
+      <TextHeading class="-ml-3" level="h2">Conditions</TextHeading>
 
-      <div v-if="entry.conditions.weather" class="flex flex-col gap-0.5">
+      <div class="flex flex-col gap-0.5">
         <label class="font-bold">Weather:</label>
-        <span class="italic capitalize">{{ entry.conditions.weather }}</span>
+        <span class="font-mono text-xs capitalize">
+          {{ entry.conditions.weather || 'Unspecified' }}
+        </span>
       </div>
 
       <div
@@ -78,40 +135,37 @@
       >
         <label class="font-bold">Temperature:</label>
         <div class="flex gap-5">
-          <div
-            v-if="entry.conditions.airTemperature"
-            class="flex flex-col items-center px-2"
-          >
+          <div class="flex flex-col items-center px-2">
             <span>Air Temp</span>
             <TemperatureText
-              class="italic"
+              v-if="entry.conditions.airTemperature"
+              class="font-mono text-xs"
               :temperature="entry.conditions.airTemperature"
               :unit="entry.conditions.temperatureUnit"
             />
+            <span v-else class="font-mono text-xs">Unspecified</span>
           </div>
 
-          <div
-            v-if="entry.conditions.surfaceTemperature"
-            class="flex flex-col items-center px-2"
-          >
+          <div class="flex flex-col items-center px-2">
             <span>Water Temp</span>
             <TemperatureText
-              class="italic"
+              v-if="entry.conditions.surfaceTemperature"
+              class="font-mono text-xs"
               :temperature="entry.conditions.surfaceTemperature"
               :unit="entry.conditions.temperatureUnit"
             />
+            <span v-else class="font-mono text-xs">Unspecified</span>
           </div>
 
-          <div
-            v-if="entry.conditions.bottomTemperature"
-            class="flex flex-col items-center px-2"
-          >
+          <div class="flex flex-col items-center px-2">
             <span>Thermocline</span>
             <TemperatureText
-              class="italic"
+              v-if="entry.conditions.bottomTemperature"
+              class="font-mono text-xs"
               :temperature="entry.conditions.bottomTemperature"
               :unit="entry.conditions.temperatureUnit"
             />
+            <span v-else class="font-mono text-xs">Unspecified</span>
           </div>
         </div>
       </div>
@@ -121,17 +175,17 @@
         <div class="flex gap-5">
           <div class="flex flex-col items-center px-2">
             <span>Current</span>
-            <span class="italic">{{ current }}</span>
+            <span class="font-mono text-xs">{{ current }}</span>
           </div>
 
           <div class="flex flex-col items-center px-2">
             <span>Visibility</span>
-            <span class="italic">{{ visibility }}</span>
+            <span class="font-mono text-xs">{{ visibility }}</span>
           </div>
 
           <div class="flex flex-col items-center px-2">
             <span>Chop</span>
-            <span class="italic">{{ chop }}</span>
+            <span class="font-mono text-xs">{{ chop }}</span>
           </div>
         </div>
       </div>
@@ -140,9 +194,9 @@
     <!-- Gas Consumption -->
     <div
       v-if="entry.air && entry.air.length"
-      class="border-2 border-secondary p-2 rounded-md space-y-3"
+      class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
     >
-      <TextHeading level="h2">Breathing Gas</TextHeading>
+      <TextHeading class="-ml-3" level="h2">Breathing Gas</TextHeading>
 
       <div
         v-for="(tank, index) in entry.air"
@@ -174,44 +228,69 @@
       </div>
     </div>
 
+    <!-- Equipment -->
     <div
       v-if="entry.equipment"
-      class="border-2 border-secondary p-2 rounded-md space-y-3"
+      class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
     >
-      <TextHeading level="h2">Equipment</TextHeading>
-
-      <div class="flex flex-col gap-0.5">
-        <label class="font-bold">Weight:</label>
-        <WeightText
-          v-if="entry.equipment.weight"
-          class="italic"
-          :weight="entry.equipment.weight"
-          :unit="entry.equipment.weightUnit"
-        />
-        <span v-else class="italic">Unspecified</span>
-      </div>
-
-      <div class="flex flex-col gap-0.5">
-        <label class="font-bold">Exposure Suit:</label>
-        <span class="italic">{{ exposureSuit }}</span>
-      </div>
+      <TextHeading class="-ml-3" level="h2">Equipment</TextHeading>
 
       <div class="flex flex-col gap-0.5">
         <label class="font-bold">Weight Configuration:</label>
         <div class="flex gap-5">
           <div class="flex flex-col items-center px-2">
-            <span>Amount</span>
-            <span class="italic">{{ weightCorrectness }}</span>
+            <span>Weight</span>
+            <WeightText
+              v-if="entry.equipment.weight"
+              class="font-mono text-xs"
+              :weight="entry.equipment.weight"
+              :unit="entry.equipment.weightUnit"
+            />
+            <span v-else class="font-mono text-xs">Unspecified</span>
+          </div>
+
+          <div class="flex flex-col items-center px-2">
+            <span>Correctness</span>
+            <span class="font-mono text-xs">{{ weightCorrectness }}</span>
           </div>
 
           <div class="flex flex-col items-center px-2">
             <span>Trim</span>
-            <span class="italic">{{ trim }}</span>
+            <span class="font-mono text-xs">{{ trim }}</span>
           </div>
         </div>
       </div>
 
-      <p>{{ JSON.stringify(entry.equipment) }}</p>
+      <div class="flex flex-col gap-0.5">
+        <label class="font-bold">Exposure Suit:</label>
+        <span class="font-mono text-xs">{{ exposureSuit }}</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <EquipmentIndicator label="Boots" :value="entry.equipment.boots" />
+        <EquipmentIndicator label="Camera" :value="entry.equipment.camera" />
+        <EquipmentIndicator label="Gloves" :value="entry.equipment.gloves" />
+        <EquipmentIndicator label="Hood" :value="entry.equipment.hood" />
+        <EquipmentIndicator label="Scooter" :value="entry.equipment.scooter" />
+        <EquipmentIndicator label="Torch" :value="entry.equipment.torch" />
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="border-2 border-secondary p-2 rounded-md px-6">
+      <div class="flex flex-col gap-0.5">
+        <TextHeading class="-ml-3" level="h2">Notes</TextHeading>
+        <label class="font-bold">Comments:</label>
+        <p v-if="entry.notes" class="font-mono text-xs">{{ entry.notes }}</p>
+
+        <label class="font-bold">Rating:</label>
+        <p class="flex gap-2 items-center">
+          <StarRating :rating="entry.rating" read-only />
+          <span class="font-mono text-xs">
+            {{ entry.rating?.toFixed(1) ?? 'not rated' }}
+          </span>
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -229,9 +308,12 @@ import { computed } from 'vue';
 
 import DepthText from '../common/depth-text.vue';
 import PressureText from '../common/pressure-text.vue';
+import StarRating from '../common/star-rating.vue';
 import TemperatureText from '../common/temperature-text.vue';
 import TextHeading from '../common/text-heading.vue';
 import WeightText from '../common/weight-text.vue';
+import UserAvatar from '../users/user-avatar.vue';
+import EquipmentIndicator from './equipment-indicator.vue';
 
 interface ViewLogbookEntryProps {
   entry: LogEntryDTO;
@@ -242,7 +324,9 @@ const props = withDefaults(defineProps<ViewLogbookEntryProps>(), {
   narrow: false,
 });
 
-function getFormattedDuration(duration: number): string {
+function getFormattedDuration(duration: number | undefined): string {
+  if (duration === undefined) return 'Unspecified';
+
   const hours = Math.floor(duration / 3600);
   const mins = Math.floor((duration % 3600) / 60);
   const secs = Math.ceil(duration % 60);
