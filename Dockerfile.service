@@ -1,5 +1,5 @@
 # Base image running AWS Lambda Runtime Interface Client (RIC)
-FROM public.ecr.aws/lambda/nodejs:20 AS base
+FROM public.ecr.aws/lambda/nodejs:22 AS base
 RUN corepack enable
 
 FROM base AS build

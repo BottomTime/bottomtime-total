@@ -87,7 +87,7 @@ resource "aws_lambda_function" "email_service" {
 
   description = "BottomTime Email Service Lambda Function"
   handler     = "service/sls.handler"
-  runtime     = "nodejs20.x"
+  runtime     = "nodejs22.x"
   timeout     = 30
   memory_size = 256
 
@@ -142,7 +142,7 @@ resource "aws_lambda_function" "keepalive" {
 
   description = "BottomTime Keep-Alive Lambda Function"
   handler     = "index.handler"
-  runtime     = "nodejs20.x"
+  runtime     = "nodejs22.x"
   timeout     = 60
 
   logging_config {
