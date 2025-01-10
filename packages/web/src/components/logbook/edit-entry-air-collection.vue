@@ -23,7 +23,7 @@
       />
     </TransitionGroup>
 
-    <div class="flex space-x-3">
+    <div class="flex justify-center space-x-3">
       <FormButton
         control-id="btn-add-tank"
         test-id="btn-add-tank"
