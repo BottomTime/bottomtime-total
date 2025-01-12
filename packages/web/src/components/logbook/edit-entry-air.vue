@@ -44,44 +44,30 @@
             Doubles
           </FormCheckbox>
         </div>
+
+        <div
+          v-if="formData.tankInfo"
+          class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3"
+          data-testid="tank-summary"
+        >
+          <div class="flex gap-2 items-baseline">
+            <p class="font-bold">Working Pressure:</p>
+            <p class="font-mono text-sm">
+              {{ formData.tankInfo.workingPressure }}bar
+            </p>
+          </div>
+          <div class="flex gap-2 items-baseline">
+            <p class="font-bold">Volume</p>
+            <p class="font-mono text-sm">{{ formData.tankInfo.volume }}L</p>
+          </div>
+          <div class="flex gap-2 items-baseline">
+            <p class="font-bold">Material</p>
+            <p class="font-mono text-sm">
+              {{ tankMaterialString }}
+            </p>
+          </div>
+        </div>
       </FormField>
-
-      <TipBox
-        v-if="ordinal === 0"
-        class="order-2 grid-cols-1 md:col-span-2 lg:col-span-4 text-sm text-justify"
-      >
-        <span class="font-bold">Hint: </span>
-        <span class="italic">
-          Check "Doubles" if you are diving with two tanks of the same size that
-          are connected by a manifold. (I.e. the start and end pressures will be
-          the same.) If you are diving sidemount with two independent tanks that
-          are not connected, leave "Doubles" unchecked and log the tanks
-          individually.
-        </span>
-      </TipBox>
-
-      <div
-        v-if="formData.tankInfo"
-        class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3 mb-2"
-        data-testid="tank-summary"
-      >
-        <div class="text-center">
-          <p class="font-bold">Working Pressure</p>
-          <p class="font-mono text-sm">
-            {{ formData.tankInfo.workingPressure }}bar
-          </p>
-        </div>
-        <div class="text-center">
-          <p class="font-bold">Volume</p>
-          <p class="font-mono text-sm">{{ formData.tankInfo.volume }}L</p>
-        </div>
-        <div class="text-center">
-          <p class="font-bold">Material</p>
-          <p class="font-mono text-sm">
-            {{ tankMaterialString }}
-          </p>
-        </div>
-      </div>
 
       <FormField
         class="order-4"
@@ -207,7 +193,6 @@ import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import FormTextBox from '../common/form-text-box.vue';
 import TextHeading from '../common/text-heading.vue';
-import TipBox from '../common/tip-box.vue';
 import { EditEntryAirFormData } from './edit-entry-air-form-data';
 
 interface EditEntryAirProps {

@@ -26,64 +26,67 @@
   <form data-testid="edit-log-entry" @submit.prevent="">
     <fieldset class="space-y-4" :disabled="isSaving">
       <!-- Basic Info -->
-      <TextHeading>Basic Info</TextHeading>
-      <section class="ml-3 lg:ml-0">
-        <FormField
-          label="Log #"
-          control-id="logNumber"
-          :invalid="v$.logNumber.$error"
-          :error="v$.logNumber.$errors[0]?.$message"
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <section
+          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
         >
-          <div class="relative">
-            <FormTextBox
-              v-model.number="formData.logNumber"
-              control-id="logNumber"
-              test-id="log-number"
-              autofocus
-              :invalid="v$.logNumber.$error"
-            />
-            <button
-              class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 flex justify-center items-center px-2 text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
-              data-testid="get-next-log-number"
-              @click="getNextAvailableLogNumber"
-            >
-              Use Next Available Number
-            </button>
-          </div>
-        </FormField>
+          <TextHeading class="-ml-3" level="h2">Basic Info</TextHeading>
 
-        <FormField
-          label="Entry Time"
-          control-id="dp-input-entryTime"
-          required
-          :invalid="v$.entryTime.$error"
-          :error="v$.entryTime.$errors[0]?.$message"
-        >
-          <div class="flex flex-col gap-2 md:flex-row md:gap-3 items-baseline">
-            <FormDatePicker
-              v-model="formData.entryTime"
-              control-id="entryTime"
-              mode="datetime"
-              placeholder="Select entry time"
-              :invalid="v$.entryTime.$error"
-              :max-date="dayjs().endOf('day').toDate()"
-            />
-
-            <FormSelect
-              v-model="formData.entryTimezone"
-              control-id="entryTimeTimezone"
-              test-id="entry-time-timezone"
-              mode="datetime"
-              placeholder="Select timezone"
-              :options="timezones"
-            />
-          </div>
-        </FormField>
-
-        <div>
-          <div
-            class="flex flex-col gap-0 justify-start md:flex-row md:gap-6 md:justify-stretch"
+          <FormField
+            label="Log #"
+            control-id="logNumber"
+            :invalid="v$.logNumber.$error"
+            :error="v$.logNumber.$errors[0]?.$message"
           >
+            <div class="relative">
+              <FormTextBox
+                v-model.number="formData.logNumber"
+                control-id="logNumber"
+                test-id="log-number"
+                autofocus
+                :invalid="v$.logNumber.$error"
+              />
+              <button
+                class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 flex justify-center items-center px-2 text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
+                data-testid="get-next-log-number"
+                @click="getNextAvailableLogNumber"
+              >
+                Use Next Available Number
+              </button>
+            </div>
+          </FormField>
+
+          <FormField
+            label="Entry Time"
+            control-id="dp-input-entryTime"
+            required
+            :invalid="v$.entryTime.$error"
+            :error="v$.entryTime.$errors[0]?.$message"
+          >
+            <div
+              class="flex flex-col gap-2 md:flex-row md:gap-3 items-baseline"
+            >
+              <FormDatePicker
+                v-model="formData.entryTime"
+                control-id="entryTime"
+                mode="datetime"
+                placeholder="Select entry time"
+                :invalid="v$.entryTime.$error"
+                :max-date="dayjs().endOf('day').toDate()"
+              />
+
+              <FormSelect
+                v-model="formData.entryTimezone"
+                control-id="entryTimeTimezone"
+                test-id="entry-time-timezone"
+                mode="datetime"
+                placeholder="Select timezone"
+                :options="timezones"
+              />
+            </div>
+          </FormField>
+
+          <div class="flex flex-col md:flex-row gap-2 justify-between">
             <FormField
               class="grow"
               label="Duration"
@@ -130,81 +133,162 @@
                 </span>
               </div>
             </FormField>
-          </div>
 
-          <div class="flex gap-2 mb-3">
-            <div class="hidden lg:block min-w-40 xl:min-w-48"></div>
-            <ul
-              class="italic ml-2 px-4 py-2 border-l-4 text-grey-950 border-blue-400 bg-blue-300 dark:bg-blue-800 dark:text-grey-200 rounded-r-lg w-full"
+            <FormField
+              class="grow"
+              label="Surface Interval"
+              control-id="surfaceInterval"
+              :invalid="v$.surfaceInterval.$error"
+              :error="v$.surfaceInterval.$errors[0]?.$message"
             >
-              <li>
-                <span class="font-bold">Duration</span>
-                <span>
-                  is the total time you spend underwater. (From descent until
-                  you arrive back at the surface.)
+              <div class="relative">
+                <FormTextBox
+                  v-model.number="formData.surfaceInterval"
+                  control-id="surfaceInterval"
+                  test-id="surfaceInterval"
+                  :maxlength="10"
+                  :invalid="v$.surfaceInterval.$error"
+                  disabled
+                />
+                <span
+                  class="absolute end-0 inset-y-0 font-bold text-grey-200 bg-grey-700 border border-grey-950 dark:text-grey-200 dark:bg-grey-700 rounded-r-lg flex justify-center items-center w-10 pointer-events-none"
+                >
+                  mins
                 </span>
-              </li>
-              <li>
-                <span class="font-bold">Bottom time</span>
-                <span>
-                  is the time from when you start the descent until you begin
-                  your final ascent and safety stop.
-                </span>
-              </li>
-            </ul>
+              </div>
+            </FormField>
           </div>
-        </div>
 
-        <FormField
-          label="Max depth"
-          control-id="maxDepth"
-          :invalid="v$.maxDepth.$error"
-          :error="v$.maxDepth.$errors[0]?.$message"
-        >
-          <DepthInput
-            v-model="formData.maxDepth"
-            control-id="maxDepth"
-            test-id="max-depth"
-            :invalid="v$.maxDepth.$error"
-          />
-        </FormField>
-      </section>
-
-      <!-- Dive Site -->
-      <TextHeading>Location</TextHeading>
-      <FormField>
-        <div v-if="formData.site" class="space-y-2">
-          <PreviewDiveSite :site="formData.site" />
-          <FormButton
-            type="link"
-            size="md"
-            test-id="btn-change-site"
-            @click="onOpenDiveSitePanel"
+          <ul
+            class="-mt-3 mx-8 text-xs px-2 py-1 border-l-4 text-grey-950 border-blue-400 bg-blue-300 dark:bg-blue-800 dark:text-grey-200 rounded-r-lg"
           >
-            Change site...
-          </FormButton>
-        </div>
+            <li class="text-md font-bold">Hint:</li>
+            <li>
+              <span class="font-bold">Duration</span>
+              <span class="italic">
+                is the total time you spend underwater. (From descent until you
+                arrive back at the surface.)
+              </span>
+            </li>
+            <li>
+              <span class="font-bold">Bottom time</span>
+              <span class="italic">
+                is the time from when you start the descent until you begin your
+                final ascent and safety stop.
+              </span>
+            </li>
+          </ul>
 
-        <FormButton
-          v-else
-          test-id="btn-select-site"
-          @click="onOpenDiveSitePanel"
+          <div class="flex flex-col md:flex-row gap-2 justify-between">
+            <FormField
+              class="grow"
+              label="Max depth"
+              control-id="maxDepth"
+              :invalid="v$.maxDepth.$error"
+              :error="v$.maxDepth.$errors[0]?.$message"
+            >
+              <DepthInput
+                v-model="formData.maxDepth"
+                control-id="maxDepth"
+                test-id="max-depth"
+                :invalid="v$.maxDepth.$error"
+              />
+            </FormField>
+
+            <FormField
+              class="grow"
+              label="Average depth"
+              control-id="avgDepth"
+              :invalid="v$.avgDepth.$error"
+              :error="v$.avgDepth.$errors[0]?.$message"
+            >
+              <DepthInput
+                v-model="formData.avgDepth"
+                control-id="avgDepth"
+                test-id="avg-depth"
+                :invalid="v$.avgDepth.$error"
+              />
+            </FormField>
+          </div>
+        </section>
+
+        <!-- Dive Site -->
+        <section
+          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
         >
-          Select Dive Site...
-        </FormButton>
-      </FormField>
+          <TextHeading class="-ml-3" level="h2">Location</TextHeading>
+          <FormField>
+            <div v-if="formData.site" class="space-y-2">
+              <PreviewDiveSite :site="formData.site" />
+              <FormButton
+                type="link"
+                size="md"
+                test-id="btn-change-site"
+                @click="onOpenDiveSitePanel"
+              >
+                Change site...
+              </FormButton>
+            </div>
 
-      <!-- Gas -->
-      <TextHeading>Gas</TextHeading>
-      <FormField>
-        <EditEntryAirCollection
-          :air="formData.air"
-          :tanks="tanks"
-          @add="onAddAirEntry"
-          @update="onUpdateAirEntry"
-          @remove="onRemoveAirEntry"
-        />
-      </FormField>
+            <FormButton
+              v-else
+              test-id="btn-select-site"
+              @click="onOpenDiveSitePanel"
+            >
+              Select Dive Site...
+            </FormButton>
+          </FormField>
+        </section>
+
+        <!-- Dive Conditions -->
+        <section
+          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
+        >
+          <TextHeading class="-ml-3" level="h2">Conditions</TextHeading>
+        </section>
+
+        <!-- Breathing Gas -->
+        <section
+          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
+        >
+          <TextHeading class="-ml-3" level="h2">Breathing Gas</TextHeading>
+
+          <FormField>
+            <EditEntryAirCollection
+              :air="formData.air"
+              :tanks="tanks"
+              @add="onAddAirEntry"
+              @update="onUpdateAirEntry"
+              @remove="onRemoveAirEntry"
+            />
+          </FormField>
+        </section>
+
+        <!-- Equipment -->
+        <section
+          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
+        >
+          <TextHeading class="-ml-3" level="h2">Equipment</TextHeading>
+        </section>
+
+        <!-- Notes -->
+        <section
+          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
+        >
+          <TextHeading class="-ml-3" level="h2">Notes</TextHeading>
+
+          <FormField control-id="notes">
+            <FormTextArea
+              v-model="formData.notes"
+              control-id="notes"
+              test-id="notes"
+              placeholder="Enter any other notes on the dive here"
+              :maxlength="5000"
+              :rows="6"
+            />
+          </FormField>
+        </section>
+      </div>
 
       <!-- Equipment -->
       <TextHeading>Equipment</TextHeading>
@@ -223,16 +307,6 @@
       </FormField>
 
       <TextHeading>Other Info</TextHeading>
-      <FormField label="Notes" control-id="notes">
-        <FormTextArea
-          v-model="formData.notes"
-          control-id="notes"
-          test-id="notes"
-          placeholder="Enter any other notes on the dive here"
-          :maxlength="5000"
-          :rows="6"
-        />
-      </FormField>
 
       <TextHeading>Save</TextHeading>
       <div
@@ -289,7 +363,7 @@ import {
 } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
-import { helpers, integer, required } from '@vuelidate/validators';
+import { helpers, integer, minValue, required } from '@vuelidate/validators';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
@@ -331,9 +405,11 @@ interface EditLogbookEntryState {
 interface LogEntryData {
   bottomTime: string | number;
   duration: string | number;
+  surfaceInterval: string | number;
   entryTime?: Date;
   entryTimezone: string;
   logNumber: string | number;
+  avgDepth: DepthDTO | string;
   maxDepth: DepthDTO | string;
   notes: string;
   air: EditEntryAirFormData[];
@@ -346,6 +422,7 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
     bottomTime: props.entry.timing.bottomTime ?? '',
     duration:
       props.entry.timing.duration === -1 ? '' : props.entry.timing.duration,
+    surfaceInterval: '',
     entryTime: Number.isNaN(props.entry.timing.entryTime)
       ? undefined
       : new Date(props.entry.timing.entryTime),
@@ -357,6 +434,7 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
           unit: props.entry.depths.depthUnit || DepthUnit.Meters,
         }
       : '',
+    avgDepth: '',
     notes: props.entry.notes ?? '',
     air:
       props.entry.air?.map((air) => ({
@@ -432,6 +510,12 @@ const v$ = useVuelidate<LogEntryData>(
         greaterThan(0),
       ),
     },
+    surfaceInterval: {
+      positive: helpers.withMessage(
+        'Surface interval time must be a positive number',
+        minValue(0),
+      ),
+    },
     entryTime: {
       required: helpers.withMessage('Entry time is required', required),
     },
@@ -449,6 +533,16 @@ const v$ = useVuelidate<LogEntryData>(
       positive: helpers.withMessage(
         'Depth must be numeric and greater than zero',
         depth,
+      ),
+    },
+    avgDepth: {
+      positive: helpers.withMessage(
+        'Depth must be numeric and greater than zero',
+        depth,
+      ),
+      lessThanMaxDepth: helpers.withMessage(
+        'Average depth must be less than max depth',
+        (val, others) => lessThan(others.maxDepth || Infinity)(val),
       ),
     },
     weights: {
