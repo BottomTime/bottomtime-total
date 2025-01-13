@@ -12,40 +12,39 @@
     <div class="border-2 border-secondary p-2 rounded-md space-y-3 px-6">
       <TextHeading class="-ml-3" level="h2">Dive Info</TextHeading>
       <div class="flex flex-col gap-0.5">
-        <label class="font-bold">Timing:</label>
+        <label class="font-bold">Entry time:</label>
+        <span class="font-mono text-xs">
+          {{
+            dayjs(entry.timing.entryTime)
+              .tz(entry.timing.timezone)
+              .format('LLL')
+          }}
+        </span>
+        <span class="font-mono text-xs">{{ entry.timing.timezone }}</span>
+      </div>
+
+      <div class="flex flex-col gap-0.5">
+        <label class="font-bold">Duration:</label>
         <div class="flex gap-5">
           <div class="flex flex-col items-center px-2">
-            <span>Entry Time</span>
-            <span class="font-mono text-xs">
-              {{
-                dayjs(entry.timing.entryTime)
-                  .tz(entry.timing.timezone)
-                  .format('LLL')
-              }}
-            </span>
-            <span class="font-mono text-xs">{{ entry.timing.timezone }}</span>
-          </div>
-
-          <div class="flex flex-col items-center px-2">
             <span>Duration</span>
-            <span class="font-mono text-xs">
-              {{ getFormattedDuration(entry.timing.duration) }}
-            </span>
+            <DurationText
+              class="font-mono text-xs"
+              :duration="entry.timing.duration"
+            />
           </div>
 
           <div class="flex flex-col items-center px-2">
             <span>Bottom Time</span>
-            <span class="font-mono text-xs">
-              {{ getFormattedDuration(entry.timing.bottomTime) }}
-            </span>
+            <DurationText
+              class="font-mono text-xs"
+              :duration="entry.timing.bottomTime"
+            />
           </div>
 
           <div class="flex flex-col items-center px-2">
             <span>Surface Interval</span>
-            <span class="font-mono text-xs">
-              <!-- {{ getFormattedDuration(entry.timing.surfaceInterval) }} -->
-              TODO
-            </span>
+            <DurationText class="font-mono text-xs" />
           </div>
         </div>
       </div>
@@ -125,47 +124,34 @@
         </span>
       </div>
 
-      <div
-        v-if="
-          entry.conditions.airTemperature ||
-          entry.conditions.surfaceTemperature ||
-          entry.conditions.bottomTemperature
-        "
-        class="flex flex-col gap-0.5"
-      >
+      <div class="flex flex-col gap-0.5">
         <label class="font-bold">Temperature:</label>
         <div class="flex gap-5">
           <div class="flex flex-col items-center px-2">
             <span>Air Temp</span>
             <TemperatureText
-              v-if="entry.conditions.airTemperature"
               class="font-mono text-xs"
               :temperature="entry.conditions.airTemperature"
               :unit="entry.conditions.temperatureUnit"
             />
-            <span v-else class="font-mono text-xs">Unspecified</span>
           </div>
 
           <div class="flex flex-col items-center px-2">
             <span>Water Temp</span>
             <TemperatureText
-              v-if="entry.conditions.surfaceTemperature"
               class="font-mono text-xs"
               :temperature="entry.conditions.surfaceTemperature"
               :unit="entry.conditions.temperatureUnit"
             />
-            <span v-else class="font-mono text-xs">Unspecified</span>
           </div>
 
           <div class="flex flex-col items-center px-2">
             <span>Thermocline</span>
             <TemperatureText
-              v-if="entry.conditions.bottomTemperature"
               class="font-mono text-xs"
               :temperature="entry.conditions.bottomTemperature"
               :unit="entry.conditions.temperatureUnit"
             />
-            <span v-else class="font-mono text-xs">Unspecified</span>
           </div>
         </div>
       </div>
@@ -280,8 +266,10 @@
     <div class="border-2 border-secondary p-2 rounded-md px-6">
       <div class="flex flex-col gap-0.5">
         <TextHeading class="-ml-3" level="h2">Notes</TextHeading>
-        <label class="font-bold">Comments:</label>
-        <p v-if="entry.notes" class="font-mono text-xs">{{ entry.notes }}</p>
+        <div v-if="entry.notes">
+          <label class="font-bold">Comments:</label>
+          <p v-if="entry.notes" class="font-mono text-xs">{{ entry.notes }}</p>
+        </div>
 
         <label class="font-bold">Rating:</label>
         <p class="flex gap-2 items-center">
@@ -307,6 +295,7 @@ import dayjs from 'dayjs';
 import { computed } from 'vue';
 
 import DepthText from '../common/depth-text.vue';
+import DurationText from '../common/duration-text.vue';
 import PressureText from '../common/pressure-text.vue';
 import StarRating from '../common/star-rating.vue';
 import TemperatureText from '../common/temperature-text.vue';
@@ -323,17 +312,6 @@ interface ViewLogbookEntryProps {
 const props = withDefaults(defineProps<ViewLogbookEntryProps>(), {
   narrow: false,
 });
-
-function getFormattedDuration(duration: number | undefined): string {
-  if (duration === undefined) return 'Unspecified';
-
-  const hours = Math.floor(duration / 3600);
-  const mins = Math.floor((duration % 3600) / 60);
-  const secs = Math.ceil(duration % 60);
-  return `${hours}:${mins.toString().padStart(2, '0')}:${secs
-    .toString()
-    .padStart(2, '0')}`;
-}
 
 const current = computed(() => {
   const value = Math.round(props.entry.conditions?.current ?? 0);

@@ -92,7 +92,7 @@
       </div>
 
       <div
-        v-if="state.logEntries"
+        v-else-if="state.logEntries"
         class="grid gap-2 grid-cols-1 lg:grid-cols-4 xl:grid-cols-5"
       >
         <div>

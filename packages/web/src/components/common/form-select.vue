@@ -45,7 +45,7 @@ const props = withDefaults(defineProps<FormSelectProps>(), {
 const selectInput = ref<HTMLSelectElement | null>();
 const classes = computed(() => {
   const width = props.stretch ? 'w-full' : 'min-w-36';
-  return `bg-grey-200 border ${
+  return `bg-grey-200 border-2 ${
     props.invalid ? 'border-danger ' : 'border-grey-600'
   } text-grey-950 rounded-lg block py-1 px-2 h-8 dark:bg-grey-300 dark:placeholder-grey-400 disabled:bg-grey-400 disabled:text-grey-700 disabled:dark:bg-grey-500 ${width}`;
 });

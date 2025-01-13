@@ -1,29 +1,31 @@
 <template>
-  <div class="flex gap-1.5 text-sm place-items-baseline">
-    <div v-for="index of [1, 2, 3, 4, 5]" :key="index">
-      <span v-if="rating < index - 0.5" class="fa-layers text-grey-500">
-        <i class="far fa-star"></i>
-      </span>
-      <span v-else-if="rating < index" class="fa-layers">
-        <i class="far fa-star text-grey-500"></i>
-        <i class="fas fa-star-half text-warn-hover"></i>
-      </span>
-      <span v-else class="text-warn-hover fa-layers">
-        <i class="fas fa-star"></i>
-      </span>
-    </div>
-    <span v-if="rating > 0">{{ rating.toFixed(2) }}</span>
+  <div class="flex items-center gap-2">
+    <StarRating
+      :id="controlId"
+      v-model="rating"
+      :data-testid="testId"
+      :disable-click="readonly"
+    />
+    <span>{{ ratingText }}</span>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
+import StarRating from 'vue3-star-ratings';
+
 type StarRatingProps = {
-  rating?: number;
+  controlId?: string;
   readonly?: boolean;
+  testId?: string;
 };
 
+const rating = defineModel<number | undefined>({ required: false });
 withDefaults(defineProps<StarRatingProps>(), {
-  rating: 0,
-  readonly: true,
+  readonly: false,
 });
+
+const ratingText = computed(() =>
+  rating.value === undefined ? 'Not rated' : rating.value.toFixed(1),
+);
 </script>

@@ -323,7 +323,7 @@
 <script lang="ts" setup>
 import {
   CreateOrUpdateDiveSiteDTO,
-  DepthDTO,
+  DepthUnit,
   GpsCoordinates,
 } from '@bottomtime/api';
 
@@ -332,6 +332,7 @@ import { helpers, required } from '@vuelidate/validators';
 
 import { Ref, computed, reactive, ref } from 'vue';
 
+import { useCurrentUser } from '../../store';
 import { depth } from '../../validators';
 import DepthInput from '../common/depth-input.vue';
 import FormButton from '../common/form-button.vue';
@@ -357,7 +358,8 @@ interface CreateSiteWizardProps {
 }
 
 interface CreateSiteWizardFormData {
-  depth: DepthDTO | string;
+  depth: number | string;
+  depthUnit: DepthUnit;
   description: string;
   directions: string;
   freeToDive: string;
@@ -369,6 +371,8 @@ interface CreateSiteWizardFormData {
   name: string;
   shoreAccess: string;
 }
+
+const currentUser = useCurrentUser();
 
 const LocationHeading = ref<InstanceType<typeof TextHeading> | null>(null);
 const DetailsHeading = ref<InstanceType<typeof TextHeading> | null>(null);
@@ -387,6 +391,7 @@ const HeadingRefs: Record<
 const formData = reactive<CreateSiteWizardFormData>({
   directions: '',
   depth: '',
+  depthUnit: currentUser.user?.settings.depthUnit || DepthUnit.Meters,
   description: '',
   freeToDive: '',
   gps: {
@@ -489,7 +494,10 @@ async function onSave(): Promise<void> {
   const diveSite: CreateOrUpdateDiveSiteDTO = {
     location: formData.location,
     name: formData.name,
-    depth: typeof formData.depth === 'string' ? undefined : formData.depth,
+    depth:
+      typeof formData.depth === 'string'
+        ? undefined
+        : { depth: formData.depth, unit: formData.depthUnit },
     description: formData.description || undefined,
     directions: formData.directions || undefined,
     freeToDive: formData.freeToDive.length

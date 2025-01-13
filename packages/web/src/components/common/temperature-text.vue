@@ -10,7 +10,7 @@ import { computed } from 'vue';
 import { useCurrentUser } from '../../store';
 
 interface TemperatureTextProps {
-  temperature: number;
+  temperature?: number;
   unit?: TemperatureUnit;
 }
 
@@ -20,6 +20,8 @@ const props = withDefaults(defineProps<TemperatureTextProps>(), {
 const currentUser = useCurrentUser();
 
 const text = computed(() => {
+  if (props.temperature === undefined) return 'Unspecified';
+
   if (!currentUser.user) {
     return props.unit === TemperatureUnit.Celsius
       ? `${props.temperature.toFixed(1)} °C`

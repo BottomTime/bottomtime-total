@@ -19,7 +19,7 @@
       </div>
 
       <div v-if="site.averageRating">
-        <StarRating :rating="site.averageRating" />
+        <StarRating :rating="site.averageRating" readonly />
       </div>
     </div>
 

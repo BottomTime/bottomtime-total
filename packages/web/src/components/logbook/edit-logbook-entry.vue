@@ -95,20 +95,12 @@
               :error="v$.duration.$errors[0]?.$message"
               required
             >
-              <div class="relative">
-                <FormTextBox
-                  v-model.number="formData.duration"
-                  control-id="duration"
-                  test-id="duration"
-                  :maxlength="10"
-                  :invalid="v$.duration.$error"
-                />
-                <span
-                  class="absolute end-0 inset-y-0 font-bold text-grey-200 bg-grey-700 border border-grey-950 dark:text-grey-200 dark:bg-grey-700 rounded-r-lg flex justify-center items-center w-10 pointer-events-none"
-                >
-                  mins
-                </span>
-              </div>
+              <DurationInput
+                v-model="formData.duration"
+                control-id="duration"
+                test-id="duration"
+                :invalid="v$.duration.$error"
+              />
             </FormField>
 
             <FormField
@@ -118,20 +110,12 @@
               :invalid="v$.bottomTime.$error"
               :error="v$.bottomTime.$errors[0]?.$message"
             >
-              <div class="relative">
-                <FormTextBox
-                  v-model.number="formData.bottomTime"
-                  control-id="bottomTime"
-                  test-id="bottomTime"
-                  :maxlength="10"
-                  :invalid="v$.bottomTime.$error"
-                />
-                <span
-                  class="absolute end-0 inset-y-0 font-bold text-grey-200 bg-grey-700 border border-grey-950 dark:text-grey-200 dark:bg-grey-700 rounded-r-lg flex justify-center items-center w-10 pointer-events-none"
-                >
-                  mins
-                </span>
-              </div>
+              <DurationInput
+                v-model="formData.bottomTime"
+                control-id="bottomTime"
+                test-id="bottomTime"
+                :invalid="v$.bottomTime.$error"
+              />
             </FormField>
 
             <FormField
@@ -141,21 +125,13 @@
               :invalid="v$.surfaceInterval.$error"
               :error="v$.surfaceInterval.$errors[0]?.$message"
             >
-              <div class="relative">
-                <FormTextBox
-                  v-model.number="formData.surfaceInterval"
-                  control-id="surfaceInterval"
-                  test-id="surfaceInterval"
-                  :maxlength="10"
-                  :invalid="v$.surfaceInterval.$error"
-                  disabled
-                />
-                <span
-                  class="absolute end-0 inset-y-0 font-bold text-grey-200 bg-grey-700 border border-grey-950 dark:text-grey-200 dark:bg-grey-700 rounded-r-lg flex justify-center items-center w-10 pointer-events-none"
-                >
-                  mins
-                </span>
-              </div>
+              <DurationInput
+                v-model="formData.surfaceInterval"
+                control-id="surfaceInterval"
+                test-id="surfaceInterval"
+                :invalid="v$.surfaceInterval.$error"
+                disabled
+              />
             </FormField>
           </div>
 
@@ -191,7 +167,9 @@
                 v-model="formData.maxDepth"
                 control-id="maxDepth"
                 test-id="max-depth"
+                :unit="formData.depthUnit"
                 :invalid="v$.maxDepth.$error"
+                @toggle-unit="onToggleDepthUnit"
               />
             </FormField>
 
@@ -206,7 +184,9 @@
                 v-model="formData.avgDepth"
                 control-id="avgDepth"
                 test-id="avg-depth"
+                :unit="formData.depthUnit"
                 :invalid="v$.avgDepth.$error"
+                @toggle-unit="onToggleDepthUnit"
               />
             </FormField>
           </div>
@@ -245,6 +225,75 @@
           class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
         >
           <TextHeading class="-ml-3" level="h2">Conditions</TextHeading>
+
+          <FormField label="Weather" control-id="weather">
+            <FormSelect
+              v-model="formData.weather"
+              control-id="weather"
+              test-id="weather"
+              :options="WeatherOptions"
+              stretch
+            />
+          </FormField>
+
+          <div class="flex flex-col md:flex-row gap-2 justify-between">
+            <FormField label="Air Temp">
+              <TemperatureInput
+                v-model.number="formData.airTemp"
+                :unit="formData.tempUnit"
+                @toggle-unit="onToggleTempUnit"
+              />
+            </FormField>
+
+            <FormField label="Water Temp">
+              <TemperatureInput
+                v-model.number="formData.waterTemp"
+                :unit="formData.tempUnit"
+                @toggle-unit="onToggleTempUnit"
+              />
+            </FormField>
+
+            <FormField label="Thermocline">
+              <TemperatureInput
+                v-model.number="formData.thermocline"
+                :unit="formData.tempUnit"
+                @toggle-unit="onToggleTempUnit"
+              />
+            </FormField>
+          </div>
+
+          <FormField label="Current">
+            <div class="flex gap-2 items-center">
+              <FormSlider
+                v-model="formData.current"
+                :min="0"
+                :show-value="false"
+              />
+              <span class="min-w-24">{{ currentText }}</span>
+            </div>
+          </FormField>
+
+          <FormField label="Visibility">
+            <div class="flex gap-2 items-center">
+              <FormSlider
+                v-model="formData.visibility"
+                :min="0"
+                :show-value="false"
+              />
+              <span class="min-w-24">{{ visibilityText }}</span>
+            </div>
+          </FormField>
+
+          <FormField label="Chop">
+            <div class="flex gap-2 items-center">
+              <FormSlider
+                v-model="formData.chop"
+                :min="0"
+                :show-value="false"
+              />
+              <span class="min-w-24">{{ chopText }}</span>
+            </div>
+          </FormField>
         </section>
 
         <!-- Breathing Gas -->
@@ -269,6 +318,62 @@
           class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
         >
           <TextHeading class="-ml-3" level="h2">Equipment</TextHeading>
+
+          <FormField
+            label="Weight"
+            control-id="weight"
+            :invalid="v$.weight.$error"
+          >
+            <WeightInput
+              v-model="formData.weight"
+              :unit="formData.weightUnit"
+              control-id="weight"
+              test-id="weight"
+              :invalid="v$.weight.$error"
+              @toggle-unit="onToggleWeightUnit"
+            />
+          </FormField>
+
+          <div class="flex flex-col md:flex-row gap-2 justify-between">
+            <FormField label="Weight Accuracy" control-id="weightCorrectness">
+              <FormSelect
+                v-model="formData.weightCorrectness"
+                control-id="weightCorrectness"
+                test-id="weight-correctness"
+                :options="WeightAccuracyOptions"
+              />
+            </FormField>
+
+            <FormField label="Trim" control-id="trim">
+              <FormSelect
+                v-model="formData.trim"
+                control-id="trim"
+                test-id="trim"
+                :options="TrimOptions"
+              />
+            </FormField>
+          </div>
+
+          <FormField label="Exposure Suit" control-id="exposureSuit">
+            <FormSelect
+              v-model="formData.exposureSuit"
+              control-id="exposureSuit"
+              test-id="exposureSuit"
+              :options="ExposureSuitOptions"
+              stretch
+            />
+          </FormField>
+
+          <FormField label="Other Equipment:">
+            <div class="grid grid-cols-2">
+              <FormCheckbox v-model="formData.boots">Boots</FormCheckbox>
+              <FormCheckbox v-model="formData.camera">Camera</FormCheckbox>
+              <FormCheckbox v-model="formData.hood">Hood</FormCheckbox>
+              <FormCheckbox v-model="formData.gloves">Gloves</FormCheckbox>
+              <FormCheckbox v-model="formData.scooter">Scooter</FormCheckbox>
+              <FormCheckbox v-model="formData.torch">Torch</FormCheckbox>
+            </div>
+          </FormField>
         </section>
 
         <!-- Notes -->
@@ -287,28 +392,13 @@
               :rows="6"
             />
           </FormField>
+
+          <FormField label="Rating" control-id="rating">
+            <StarRating id="rating" v-model="formData.rating" />
+          </FormField>
         </section>
       </div>
 
-      <!-- Equipment -->
-      <TextHeading>Equipment</TextHeading>
-      <FormField
-        label="Weights"
-        control-id="weights"
-        :invalid="v$.weights.$error"
-        :error="v$.weights.$errors[0]?.$message"
-      >
-        <WeightInput
-          v-model="formData.weights"
-          control-id="weights"
-          test-id="weights"
-          :invalid="v$.weights.$error"
-        />
-      </FormField>
-
-      <TextHeading>Other Info</TextHeading>
-
-      <TextHeading>Save</TextHeading>
       <div
         v-if="v$.$error"
         class="text-danger text-lg"
@@ -351,14 +441,16 @@
 
 <script lang="ts" setup>
 import {
-  DepthDTO,
   DepthUnit,
+  ExposureSuit,
   LogEntryAirDTO,
   LogEntryDTO,
   SuccinctDiveSiteDTO,
   TankDTO,
   TankMaterial,
-  WeightDTO,
+  TemperatureUnit,
+  TrimCorrectness,
+  WeightCorrectness,
   WeightUnit,
 } from '@bottomtime/api';
 
@@ -374,15 +466,21 @@ import { useRoute } from 'vue-router';
 import { useClient } from '../../api-client';
 import { SelectOption } from '../../common';
 import { useOops } from '../../oops';
+import { useCurrentUser } from '../../store';
 import { depth, greaterThan, lessThan, weight } from '../../validators';
 import DepthInput from '../common/depth-input.vue';
 import DrawerPanel from '../common/drawer-panel.vue';
+import DurationInput from '../common/duration-input.vue';
 import FormButton from '../common/form-button.vue';
+import FormCheckbox from '../common/form-checkbox.vue';
 import FormDatePicker from '../common/form-date-picker.vue';
 import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
+import FormSlider from '../common/form-slider.vue';
 import FormTextArea from '../common/form-text-area.vue';
 import FormTextBox from '../common/form-text-box.vue';
+import StarRating from '../common/star-rating.vue';
+import TemperatureInput from '../common/temperature-input.vue';
 import TextHeading from '../common/text-heading.vue';
 import WeightInput from '../common/weight-input.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
@@ -409,13 +507,72 @@ interface LogEntryData {
   entryTime?: Date;
   entryTimezone: string;
   logNumber: string | number;
-  avgDepth: DepthDTO | string;
-  maxDepth: DepthDTO | string;
+  avgDepth: number | string;
+  maxDepth: number | string;
+  depthUnit: DepthUnit;
   notes: string;
   air: EditEntryAirFormData[];
   site?: SuccinctDiveSiteDTO;
-  weights: WeightDTO | string;
+  weather: string;
+  weight: number | string;
+  weightUnit: WeightUnit;
+  weightCorrectness: WeightCorrectness | '';
+  trim: TrimCorrectness | '';
+  exposureSuit: ExposureSuit | '';
+  boots?: boolean;
+  camera?: boolean;
+  hood?: boolean;
+  gloves?: boolean;
+  scooter?: boolean;
+  torch?: boolean;
+
+  chop: number;
+  current: number;
+  visibility: number;
+
+  airTemp: number | string;
+  waterTemp: number | string;
+  thermocline: number | string;
+  tempUnit: TemperatureUnit;
+  rating?: number;
 }
+
+const WeatherOptions: SelectOption[] = [
+  { label: '(Unspecified)', value: '' },
+  { label: '☀️ Sunny', value: 'Sunny' },
+  { label: '🌤️ Partly cloudy', value: 'Partly cloudy' },
+  { label: '☁️ Overcast', value: 'Overcast' },
+  { label: '🌧️ Raining', value: 'Light rain' },
+  { label: '⛈️ Stormy', value: 'Stormy' },
+  { label: '🌨️ Snowing', value: 'Snowing' },
+];
+
+const WeightAccuracyOptions: SelectOption[] = [
+  { label: '(Unspecified)', value: '' },
+  { label: 'Good', value: WeightCorrectness.Good },
+  { label: 'Too much', value: WeightCorrectness.Over },
+  { label: 'Too little', value: WeightCorrectness.Under },
+];
+
+const TrimOptions: SelectOption[] = [
+  { label: '(Unspecified)', value: '' },
+  { label: 'Good', value: TrimCorrectness.Good },
+  { label: 'Head down', value: TrimCorrectness.HeadDown },
+  { label: 'Knees down', value: TrimCorrectness.KneesDown },
+];
+
+const ExposureSuitOptions: SelectOption[] = [
+  { label: '(Unspecified)', value: '' },
+  { label: 'None', value: ExposureSuit.None },
+  { label: 'Shorty', value: ExposureSuit.Shorty },
+  { label: 'Rashguard', value: ExposureSuit.Rashguard },
+  { label: 'Wetsuit (3mm)', value: ExposureSuit.Wetsuit3mm },
+  { label: 'Wetsuit (5mm)', value: ExposureSuit.Wetsuit5mm },
+  { label: 'Wetsuit (7mm)', value: ExposureSuit.Wetsuit7mm },
+  { label: 'Wetsuit (9mm)', value: ExposureSuit.Wetsuit9mm },
+  { label: 'Drysuit', value: ExposureSuit.Drysuit },
+  { label: 'Other', value: ExposureSuit.Other },
+];
 
 function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
   return {
@@ -428,13 +585,12 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
       : new Date(props.entry.timing.entryTime),
     entryTimezone: props.entry.timing.timezone || dayjs.tz.guess(),
     logNumber: props.entry.logNumber || '',
-    maxDepth: props.entry.depths?.maxDepth
-      ? {
-          depth: props.entry.depths.maxDepth,
-          unit: props.entry.depths.depthUnit || DepthUnit.Meters,
-        }
-      : '',
-    avgDepth: '',
+    maxDepth: props.entry.depths?.maxDepth || '',
+    avgDepth: props.entry.depths?.averageDepth || '',
+    depthUnit:
+      props.entry.depths?.depthUnit ||
+      currentUser.user?.settings.depthUnit ||
+      DepthUnit.Meters,
     notes: props.entry.notes ?? '',
     air:
       props.entry.air?.map((air) => ({
@@ -458,18 +614,36 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
           : undefined,
       })) ?? [],
     site: props.entry.site,
-    weights: props.entry.equipment?.weight
-      ? {
-          weight: props.entry.equipment.weight,
-          unit: props.entry.equipment.weightUnit || WeightUnit.Kilograms,
-        }
-      : '',
+    weather: props.entry.conditions?.weather || '',
+    weight: props.entry.equipment?.weight || '',
+    weightUnit:
+      props.entry.equipment?.weightUnit ||
+      currentUser.user?.settings.weightUnit ||
+      WeightUnit.Kilograms,
+    weightCorrectness: props.entry.equipment?.weightCorrectness || '',
+    trim: props.entry.equipment?.trimCorrectness || '',
+    exposureSuit: props.entry.equipment?.exposureSuit || '',
+
+    airTemp: props.entry.conditions?.airTemperature || '',
+    waterTemp: props.entry.conditions?.surfaceTemperature || '',
+    thermocline: props.entry.conditions?.bottomTemperature || '',
+    tempUnit:
+      props.entry.conditions?.temperatureUnit ||
+      currentUser.user?.settings.temperatureUnit ||
+      TemperatureUnit.Celsius,
+
+    chop: props.entry.conditions?.chop || 0,
+    current: props.entry.conditions?.current || 0,
+    visibility: props.entry.conditions?.visibility || 0,
+
+    rating: props.entry.rating,
   };
 }
 
 const client = useClient();
 const oops = useOops();
 const route = useRoute();
+const currentUser = useCurrentUser();
 
 const timezones = computed<SelectOption[]>(() =>
   Intl.supportedValuesOf('timeZone').map((tz) => ({
@@ -545,15 +719,51 @@ const v$ = useVuelidate<LogEntryData>(
         (val, others) => lessThan(others.maxDepth || Infinity)(val),
       ),
     },
-    weights: {
+    weight: {
       valid: helpers.withMessage(
         'Weight must be numeric and cannot be less than zero',
-        weight,
+        (val) => weight({ weight: val, unit: formData.weightUnit }),
       ),
     },
   },
   formData,
 );
+
+const currentText = computed(() => {
+  const value = Math.round(formData.current);
+
+  if (value === 1) return 'None';
+  if (value === 2) return 'Light';
+  if (value === 3) return 'Moderate';
+  if (value === 4) return 'Strong';
+  if (value === 5) return 'Extreme';
+
+  return 'Unspecified';
+});
+
+const visibilityText = computed(() => {
+  const value = Math.round(formData.visibility);
+
+  if (value === 1) return 'Nil';
+  if (value === 2) return 'Poor';
+  if (value === 3) return 'Fair';
+  if (value === 4) return 'Good';
+  if (value === 5) return 'Excellent';
+
+  return 'Unspecified';
+});
+
+const chopText = computed(() => {
+  const value = Math.round(formData.chop ?? 0);
+
+  if (value === 1) return 'Calm';
+  if (value === 2) return 'Light';
+  if (value === 3) return 'Moderate';
+  if (value === 4) return 'Heavy';
+  if (value === 5) return 'Severe';
+
+  return 'Unspecified';
+});
 
 function airFormDataToDto(air: EditEntryAirFormData): LogEntryAirDTO {
   return {
@@ -588,23 +798,20 @@ async function onSave(): Promise<void> {
     },
     logNumber:
       typeof formData.logNumber === 'number' ? formData.logNumber : undefined,
-    depths:
-      typeof formData.maxDepth === 'object'
-        ? {
-            maxDepth: formData.maxDepth.depth,
-            depthUnit: formData.maxDepth.unit,
-          }
-        : undefined,
+    depths: {
+      averageDepth:
+        typeof formData.avgDepth === 'number' ? formData.avgDepth : undefined,
+      maxDepth:
+        typeof formData.maxDepth === 'number' ? formData.maxDepth : undefined,
+      depthUnit: formData.depthUnit,
+    },
     notes: formData.notes,
     site: formData.site,
     air: formData.air.map(airFormDataToDto),
-    equipment:
-      typeof formData.weights === 'object'
-        ? {
-            weight: formData.weights.weight,
-            weightUnit: formData.weights.unit,
-          }
-        : undefined,
+    equipment: {
+      weight: typeof formData.weight === 'number' ? formData.weight : undefined,
+      weightUnit: formData.weightUnit,
+    },
   });
 }
 
@@ -664,5 +871,17 @@ function onOpenDiveSitePanel() {
 function onSiteSelected(site: SuccinctDiveSiteDTO) {
   formData.site = site;
   state.showSelectDiveSite = false;
+}
+
+function onToggleTempUnit(newUnit: TemperatureUnit) {
+  formData.tempUnit = newUnit;
+}
+
+function onToggleDepthUnit(newUnit: DepthUnit) {
+  formData.depthUnit = newUnit;
+}
+
+function onToggleWeightUnit(newUnit: WeightUnit) {
+  formData.weightUnit = newUnit;
 }
 </script>

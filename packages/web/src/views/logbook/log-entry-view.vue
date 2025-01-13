@@ -125,7 +125,7 @@ onMounted(async () => {
             },
             id: '',
             timing: {
-              duration: 0,
+              duration: -1,
               entryTime: NaN,
               timezone: '',
             },

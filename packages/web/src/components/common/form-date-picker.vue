@@ -50,7 +50,7 @@ const props = withDefaults(defineProps<FormDatePickerProps>(), {
 });
 
 const inputClasses = computed(() => {
-  return `px-1 py-0 border ${
+  return `px-1 py-0 border-2 ${
     props.invalid ? 'border-danger' : 'border-grey-600'
   } bg-grey-200 dark:bg-grey-300 rounded-lg text-grey-950 placeholder-grey-700 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500 disabled:ring-0`;
 });

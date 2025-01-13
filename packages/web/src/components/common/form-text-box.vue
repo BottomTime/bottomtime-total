@@ -12,6 +12,8 @@
       :disabled="disabled"
       @keyup.enter="$emit('enter')"
       @keyup.esc="$emit('esc')"
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"
     />
     <button
       v-if="showRight"
@@ -68,9 +70,9 @@ const inputClasses = computed(() => {
     roundingStyle = 'rounded-lg';
   }
 
-  return `px-2 py-1 w-full ${selectStyle} bg-grey-200 dark:bg-grey-300 border ${
+  return `px-2 py-1 w-full ${selectStyle} bg-grey-200 dark:bg-grey-300 border-2 ${
     props.invalid ? 'border-danger' : 'border-grey-600'
-  } ring-0 ${roundingStyle} text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500`;
+  } ${roundingStyle} text-grey-950 h-8 placeholder-grey-400 disabled:text-grey-700 disabled:bg-grey-400 disabled:dark:bg-grey-500`;
 });
 
 const rightSlotClasses = computed(() => {
@@ -82,6 +84,8 @@ defineEmits<{
   (e: 'enter'): void;
   (e: 'esc'): void;
   (e: 'right-button-click'): void;
+  (e: 'focus'): void;
+  (e: 'blur'): void;
 }>();
 
 function focus() {

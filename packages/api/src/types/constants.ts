@@ -257,6 +257,12 @@ export const PressureSchema = z.object({
 });
 export type PressureDTO = z.infer<typeof PressureSchema>;
 
+export const TemperatureSchema = z.object({
+  temperature: z.number(),
+  unit: z.nativeEnum(TemperatureUnit),
+});
+export type TemperatureDTO = z.infer<typeof TemperatureSchema>;
+
 export type AppMetricsDTO = {
   users: {
     total: number;

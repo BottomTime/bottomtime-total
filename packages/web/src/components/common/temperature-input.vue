@@ -1,57 +1,55 @@
 <template>
-  <div class="space-y-1.5">
+  <fieldset class="space-y-1.5" :disabled="disabled">
     <div class="relative">
       <FormTextBox
-        v-model.number="weight"
+        v-model.number="temperature"
         :control-id="controlId"
         :test-id="testId"
         :invalid="invalid"
-        :disabled="disabled"
         :maxlength="10"
       />
       <button
         :id="controlId ? `${controlId}-unit` : undefined"
         class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 w-10 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
         :data-testid="testId ? `${testId}-unit` : undefined"
-        :disabled="disabled"
         @click.prevent="
           $emit(
             'toggle-unit',
-            unit === WeightUnit.Kilograms
-              ? WeightUnit.Pounds
-              : WeightUnit.Kilograms,
+            unit === TemperatureUnit.Celsius
+              ? TemperatureUnit.Fahrenheit
+              : TemperatureUnit.Celsius,
           )
         "
       >
-        {{ unit }}
+        °{{ unit }}
       </button>
     </div>
-  </div>
+  </fieldset>
 </template>
 
 <script lang="ts" setup>
-import { WeightUnit } from '@bottomtime/api';
+import { TemperatureUnit } from '@bottomtime/api';
 
 import FormTextBox from './form-text-box.vue';
 
-interface WeightInputProps {
+interface TemperatureInputProps {
   controlId?: string;
   disabled?: boolean;
   invalid?: boolean;
   testId?: string;
-  unit?: WeightUnit;
+  unit?: TemperatureUnit;
 }
 
-const weight = defineModel<number | string>({
+const temperature = defineModel<number | string>({
   required: false,
   default: '',
 });
-withDefaults(defineProps<WeightInputProps>(), {
+withDefaults(defineProps<TemperatureInputProps>(), {
   disabled: false,
   invalid: false,
-  unit: WeightUnit.Kilograms,
+  unit: TemperatureUnit.Celsius,
 });
 defineEmits<{
-  (e: 'toggle-unit', newUnit: WeightUnit): void;
+  (e: 'toggle-unit', newUnit: TemperatureUnit): void;
 }>();
 </script>

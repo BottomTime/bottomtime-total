@@ -2,11 +2,11 @@
   <div :class="`grid grid-cols-1 ${columns ? 'lg:grid-cols-2 ' : ''}gap-3`">
     <div>
       <FormField v-if="site.averageRating" label="Average rating">
-        <StarRating class="mt-2" :rating="site.averageRating" />
+        <StarRating class="mt-2" :rating="site.averageRating" readonly />
       </FormField>
 
       <FormField v-if="site.averageDifficulty" label="Difficulty rating">
-        <StarRating class="mt-2" :rating="site.averageDifficulty" />
+        <StarRating class="mt-2" :rating="site.averageDifficulty" readonly />
       </FormField>
     </div>
 
