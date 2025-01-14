@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { SuccinctDiveSiteDTO } from '@bottomtime/api';
+import { DiveSiteDTO } from '@bottomtime/api';
 
 import { computed, ref, watch } from 'vue';
 
@@ -52,15 +52,15 @@ import StarRating from '../../common/star-rating.vue';
 
 interface SelectDiveSiteListItemProps {
   selected?: boolean;
-  site: SuccinctDiveSiteDTO;
+  site: DiveSiteDTO;
 }
 
 const props = withDefaults(defineProps<SelectDiveSiteListItemProps>(), {
   selected: false,
 });
 defineEmits<{
-  (e: 'select', site: SuccinctDiveSiteDTO): void;
-  (e: 'highlight', site: SuccinctDiveSiteDTO): void;
+  (e: 'select', site: DiveSiteDTO): void;
+  (e: 'highlight', site: DiveSiteDTO): void;
 }>();
 
 const listItemElement = ref<HTMLLIElement | null>(null);
@@ -81,6 +81,7 @@ watch(
   () => props.selected,
   (val) => {
     // The scrollIntoView method ought to work in most browsers but will blow up in tests.
+    // Hence, the try/catch.
     try {
       if (val && listItemElement.value?.scrollIntoView) {
         listItemElement.value?.scrollIntoView({

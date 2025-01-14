@@ -20,281 +20,114 @@
     :visible="state.showSelectDiveSite"
     @close="onCloseDiveSitePanel"
   >
-    <SelectSite :current-site="formData.site" @site-selected="onSiteSelected" />
+    <SelectSite
+      :current-site="formDataOld.site"
+      :current-operator="formDataOld.operator"
+      @site-selected="onSiteSelected"
+    />
+  </DrawerPanel>
+
+  <DrawerPanel
+    title="Select Dive Shop"
+    :visible="state.showSelectOperator"
+    @close="onCloseOperatorPanel"
+  >
+    <SelectOperator
+      :current-operator="formDataOld.operator"
+      @operator-selected="onOperatorSelected"
+    />
   </DrawerPanel>
 
   <form data-testid="edit-log-entry" @submit.prevent="">
     <fieldset class="space-y-4" :disabled="isSaving">
       <!-- Basic Info -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <section
-          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
-        >
-          <TextHeading class="-ml-3" level="h2">Basic Info</TextHeading>
+        <EditBasicInfo v-model="formData.basicInfo" />
 
-          <FormField
-            label="Log #"
-            control-id="logNumber"
-            :invalid="v$.logNumber.$error"
-            :error="v$.logNumber.$errors[0]?.$message"
-          >
-            <div class="relative">
-              <FormTextBox
-                v-model.number="formData.logNumber"
-                control-id="logNumber"
-                test-id="log-number"
-                autofocus
-                :invalid="v$.logNumber.$error"
-              />
-              <button
-                class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 flex justify-center items-center px-2 text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
-                data-testid="get-next-log-number"
-                @click="getNextAvailableLogNumber"
-              >
-                Use Next Available Number
-              </button>
-            </div>
-          </FormField>
-
-          <FormField
-            label="Entry Time"
-            control-id="dp-input-entryTime"
-            required
-            :invalid="v$.entryTime.$error"
-            :error="v$.entryTime.$errors[0]?.$message"
-          >
-            <div
-              class="flex flex-col gap-2 md:flex-row md:gap-3 items-baseline"
-            >
-              <FormDatePicker
-                v-model="formData.entryTime"
-                control-id="entryTime"
-                mode="datetime"
-                placeholder="Select entry time"
-                :invalid="v$.entryTime.$error"
-                :max-date="dayjs().endOf('day').toDate()"
-              />
-
-              <FormSelect
-                v-model="formData.entryTimezone"
-                control-id="entryTimeTimezone"
-                test-id="entry-time-timezone"
-                mode="datetime"
-                placeholder="Select timezone"
-                :options="timezones"
-              />
-            </div>
-          </FormField>
-
-          <div class="flex flex-col md:flex-row gap-2 justify-between">
-            <FormField
-              class="grow"
-              label="Duration"
-              control-id="duration"
-              :invalid="v$.duration.$error"
-              :error="v$.duration.$errors[0]?.$message"
-              required
-            >
-              <DurationInput
-                v-model="formData.duration"
-                control-id="duration"
-                test-id="duration"
-                :invalid="v$.duration.$error"
-              />
-            </FormField>
-
-            <FormField
-              class="grow"
-              label="Bottom time"
-              control-id="bottomTime"
-              :invalid="v$.bottomTime.$error"
-              :error="v$.bottomTime.$errors[0]?.$message"
-            >
-              <DurationInput
-                v-model="formData.bottomTime"
-                control-id="bottomTime"
-                test-id="bottomTime"
-                :invalid="v$.bottomTime.$error"
-              />
-            </FormField>
-
-            <FormField
-              class="grow"
-              label="Surface Interval"
-              control-id="surfaceInterval"
-              :invalid="v$.surfaceInterval.$error"
-              :error="v$.surfaceInterval.$errors[0]?.$message"
-            >
-              <DurationInput
-                v-model="formData.surfaceInterval"
-                control-id="surfaceInterval"
-                test-id="surfaceInterval"
-                :invalid="v$.surfaceInterval.$error"
-                disabled
-              />
-            </FormField>
-          </div>
-
-          <ul
-            class="-mt-3 mx-8 text-xs px-2 py-1 border-l-4 text-grey-950 border-blue-400 bg-blue-300 dark:bg-blue-800 dark:text-grey-200 rounded-r-lg"
-          >
-            <li class="text-md font-bold">Hint:</li>
-            <li>
-              <span class="font-bold">Duration</span>
-              <span class="italic">
-                is the total time you spend underwater. (From descent until you
-                arrive back at the surface.)
-              </span>
-            </li>
-            <li>
-              <span class="font-bold">Bottom time</span>
-              <span class="italic">
-                is the time from when you start the descent until you begin your
-                final ascent and safety stop.
-              </span>
-            </li>
-          </ul>
-
-          <div class="flex flex-col md:flex-row gap-2 justify-between">
-            <FormField
-              class="grow"
-              label="Max depth"
-              control-id="maxDepth"
-              :invalid="v$.maxDepth.$error"
-              :error="v$.maxDepth.$errors[0]?.$message"
-            >
-              <DepthInput
-                v-model="formData.maxDepth"
-                control-id="maxDepth"
-                test-id="max-depth"
-                :unit="formData.depthUnit"
-                :invalid="v$.maxDepth.$error"
-                @toggle-unit="onToggleDepthUnit"
-              />
-            </FormField>
-
-            <FormField
-              class="grow"
-              label="Average depth"
-              control-id="avgDepth"
-              :invalid="v$.avgDepth.$error"
-              :error="v$.avgDepth.$errors[0]?.$message"
-            >
-              <DepthInput
-                v-model="formData.avgDepth"
-                control-id="avgDepth"
-                test-id="avg-depth"
-                :unit="formData.depthUnit"
-                :invalid="v$.avgDepth.$error"
-                @toggle-unit="onToggleDepthUnit"
-              />
-            </FormField>
-          </div>
-        </section>
-
-        <!-- Dive Site -->
+        <!-- Dive Site / Dive Shop -->
         <section
           class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
         >
           <TextHeading class="-ml-3" level="h2">Location</TextHeading>
-          <FormField>
-            <div v-if="formData.site" class="space-y-2">
-              <PreviewDiveSite :site="formData.site" />
-              <FormButton
-                type="link"
-                size="md"
-                test-id="btn-change-site"
-                @click="onOpenDiveSitePanel"
-              >
-                Change site...
-              </FormButton>
+          <FormField label="Dive Shop">
+            <div v-if="formDataOld.operator" class="space-y-2">
+              <PreviewOperator :operator="formDataOld.operator" />
+              <div class="flex gap-3 justify-center">
+                <FormButton
+                  size="xs"
+                  test-id="btn-change-shop"
+                  @click="onOpenOperatorPanel"
+                >
+                  Change dive shop...
+                </FormButton>
+                <FormButton
+                  size="xs"
+                  test-id="btn-remove-shop"
+                  @click="onRemoveOperator"
+                >
+                  Remove dive shop
+                </FormButton>
+              </div>
             </div>
 
-            <FormButton
-              v-else
-              test-id="btn-select-site"
-              @click="onOpenDiveSitePanel"
-            >
-              Select Dive Site...
-            </FormButton>
+            <div v-else class="flex gap-3 items-center">
+              <FormButton
+                class="min-w-36"
+                test-id="btn-select-operator"
+                @click="onOpenOperatorPanel"
+              >
+                Select Dive Shop...
+              </FormButton>
+              <p class="text-lg">
+                Were you diving with a dive shop? (E.g. on a chartered boat?)
+              </p>
+            </div>
+          </FormField>
+
+          <FormField label="Dive Site">
+            <div v-if="state.isLoadingSite">
+              <LoadingSpinner message="Fetching dive site..." />
+            </div>
+
+            <div v-else-if="formDataOld.site" class="space-y-2">
+              <PreviewDiveSite :site="formDataOld.site" />
+              <div class="flex gap-3 justify-center">
+                <FormButton
+                  size="xs"
+                  test-id="btn-change-site"
+                  @click="onOpenDiveSitePanel"
+                >
+                  Change site...
+                </FormButton>
+                <FormButton
+                  size="xs"
+                  test-id="btn-remove-site"
+                  @click="onRemoveSite"
+                >
+                  Remove site
+                </FormButton>
+              </div>
+            </div>
+
+            <div v-else class="flex gap-3 items-center">
+              <FormButton
+                class="min-w-36"
+                test-id="btn-select-site"
+                @click="onOpenDiveSitePanel"
+              >
+                Select Dive Site...
+              </FormButton>
+              <p class="text-lg">
+                Where did you dive? Pick out the dive site! Or if it's not in
+                our database, you can add it so that you and other users can log
+                dives there in the future!
+              </p>
+            </div>
           </FormField>
         </section>
 
         <!-- Dive Conditions -->
-        <section
-          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
-        >
-          <TextHeading class="-ml-3" level="h2">Conditions</TextHeading>
-
-          <FormField label="Weather" control-id="weather">
-            <FormSelect
-              v-model="formData.weather"
-              control-id="weather"
-              test-id="weather"
-              :options="WeatherOptions"
-              stretch
-            />
-          </FormField>
-
-          <div class="flex flex-col md:flex-row gap-2 justify-between">
-            <FormField label="Air Temp">
-              <TemperatureInput
-                v-model.number="formData.airTemp"
-                :unit="formData.tempUnit"
-                @toggle-unit="onToggleTempUnit"
-              />
-            </FormField>
-
-            <FormField label="Water Temp">
-              <TemperatureInput
-                v-model.number="formData.waterTemp"
-                :unit="formData.tempUnit"
-                @toggle-unit="onToggleTempUnit"
-              />
-            </FormField>
-
-            <FormField label="Thermocline">
-              <TemperatureInput
-                v-model.number="formData.thermocline"
-                :unit="formData.tempUnit"
-                @toggle-unit="onToggleTempUnit"
-              />
-            </FormField>
-          </div>
-
-          <FormField label="Current">
-            <div class="flex gap-2 items-center">
-              <FormSlider
-                v-model="formData.current"
-                :min="0"
-                :show-value="false"
-              />
-              <span class="min-w-24">{{ currentText }}</span>
-            </div>
-          </FormField>
-
-          <FormField label="Visibility">
-            <div class="flex gap-2 items-center">
-              <FormSlider
-                v-model="formData.visibility"
-                :min="0"
-                :show-value="false"
-              />
-              <span class="min-w-24">{{ visibilityText }}</span>
-            </div>
-          </FormField>
-
-          <FormField label="Chop">
-            <div class="flex gap-2 items-center">
-              <FormSlider
-                v-model="formData.chop"
-                :min="0"
-                :show-value="false"
-              />
-              <span class="min-w-24">{{ chopText }}</span>
-            </div>
-          </FormField>
-        </section>
+        <EditConditions v-model="formData.conditions" />
 
         <!-- Breathing Gas -->
         <section
@@ -304,7 +137,7 @@
 
           <FormField>
             <EditEntryAirCollection
-              :air="formData.air"
+              :air="formDataOld.air"
               :tanks="tanks"
               @add="onAddAirEntry"
               @update="onUpdateAirEntry"
@@ -314,89 +147,10 @@
         </section>
 
         <!-- Equipment -->
-        <section
-          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
-        >
-          <TextHeading class="-ml-3" level="h2">Equipment</TextHeading>
-
-          <FormField
-            label="Weight"
-            control-id="weight"
-            :invalid="v$.weight.$error"
-          >
-            <WeightInput
-              v-model="formData.weight"
-              :unit="formData.weightUnit"
-              control-id="weight"
-              test-id="weight"
-              :invalid="v$.weight.$error"
-              @toggle-unit="onToggleWeightUnit"
-            />
-          </FormField>
-
-          <div class="flex flex-col md:flex-row gap-2 justify-between">
-            <FormField label="Weight Accuracy" control-id="weightCorrectness">
-              <FormSelect
-                v-model="formData.weightCorrectness"
-                control-id="weightCorrectness"
-                test-id="weight-correctness"
-                :options="WeightAccuracyOptions"
-              />
-            </FormField>
-
-            <FormField label="Trim" control-id="trim">
-              <FormSelect
-                v-model="formData.trim"
-                control-id="trim"
-                test-id="trim"
-                :options="TrimOptions"
-              />
-            </FormField>
-          </div>
-
-          <FormField label="Exposure Suit" control-id="exposureSuit">
-            <FormSelect
-              v-model="formData.exposureSuit"
-              control-id="exposureSuit"
-              test-id="exposureSuit"
-              :options="ExposureSuitOptions"
-              stretch
-            />
-          </FormField>
-
-          <FormField label="Other Equipment:">
-            <div class="grid grid-cols-2">
-              <FormCheckbox v-model="formData.boots">Boots</FormCheckbox>
-              <FormCheckbox v-model="formData.camera">Camera</FormCheckbox>
-              <FormCheckbox v-model="formData.hood">Hood</FormCheckbox>
-              <FormCheckbox v-model="formData.gloves">Gloves</FormCheckbox>
-              <FormCheckbox v-model="formData.scooter">Scooter</FormCheckbox>
-              <FormCheckbox v-model="formData.torch">Torch</FormCheckbox>
-            </div>
-          </FormField>
-        </section>
+        <EditEquipment v-model="formData.equipment" />
 
         <!-- Notes -->
-        <section
-          class="border-2 border-secondary p-2 rounded-md space-y-3 px-6"
-        >
-          <TextHeading class="-ml-3" level="h2">Notes</TextHeading>
-
-          <FormField control-id="notes">
-            <FormTextArea
-              v-model="formData.notes"
-              control-id="notes"
-              test-id="notes"
-              placeholder="Enter any other notes on the dive here"
-              :maxlength="5000"
-              :rows="6"
-            />
-          </FormField>
-
-          <FormField label="Rating" control-id="rating">
-            <StarRating id="rating" v-model="formData.rating" />
-          </FormField>
-        </section>
+        <EditNotes v-model="formData.notes" />
       </div>
 
       <div
@@ -442,10 +196,11 @@
 <script lang="ts" setup>
 import {
   DepthUnit,
+  DiveSiteDTO,
   ExposureSuit,
   LogEntryAirDTO,
   LogEntryDTO,
-  SuccinctDiveSiteDTO,
+  OperatorDTO,
   TankDTO,
   TankMaterial,
   TemperatureUnit,
@@ -455,39 +210,33 @@ import {
 } from '@bottomtime/api';
 
 import { useVuelidate } from '@vuelidate/core';
-import { helpers, integer, minValue, required } from '@vuelidate/validators';
 
 import dayjs from 'dayjs';
 import 'dayjs/plugin/timezone';
 import { v7 as uuid } from 'uuid';
-import { computed, onBeforeMount, reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { useClient } from '../../api-client';
-import { SelectOption } from '../../common';
 import { useOops } from '../../oops';
 import { useCurrentUser } from '../../store';
-import { depth, greaterThan, lessThan, weight } from '../../validators';
-import DepthInput from '../common/depth-input.vue';
 import DrawerPanel from '../common/drawer-panel.vue';
-import DurationInput from '../common/duration-input.vue';
 import FormButton from '../common/form-button.vue';
-import FormCheckbox from '../common/form-checkbox.vue';
-import FormDatePicker from '../common/form-date-picker.vue';
 import FormField from '../common/form-field.vue';
-import FormSelect from '../common/form-select.vue';
-import FormSlider from '../common/form-slider.vue';
-import FormTextArea from '../common/form-text-area.vue';
-import FormTextBox from '../common/form-text-box.vue';
-import StarRating from '../common/star-rating.vue';
-import TemperatureInput from '../common/temperature-input.vue';
+import LoadingSpinner from '../common/loading-spinner.vue';
 import TextHeading from '../common/text-heading.vue';
-import WeightInput from '../common/weight-input.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import PreviewDiveSite from '../diveSites/preview-dive-site.vue';
 import SelectSite from '../diveSites/selectSite/select-site.vue';
+import PreviewOperator from '../operators/preview-operator.vue';
+import SelectOperator from '../operators/selectOperator/select-operator.vue';
 import EditEntryAirCollection from './edit-entry-air-collection.vue';
 import { EditEntryAirFormData } from './edit-entry-air-form-data';
+import EditBasicInfo from './editor/edit-basic-info.vue';
+import EditConditions from './editor/edit-conditions.vue';
+import EditEquipment from './editor/edit-equipment.vue';
+import EditNotes from './editor/edit-notes.vue';
+import { LogEntryFormData } from './editor/types';
 
 interface EditLogbookEntryProps {
   entry: LogEntryDTO;
@@ -496,8 +245,10 @@ interface EditLogbookEntryProps {
 }
 
 interface EditLogbookEntryState {
+  isLoadingSite: boolean;
   showConfirmRevert: boolean;
   showSelectDiveSite: boolean;
+  showSelectOperator: boolean;
 }
 
 interface LogEntryData {
@@ -512,7 +263,8 @@ interface LogEntryData {
   depthUnit: DepthUnit;
   notes: string;
   air: EditEntryAirFormData[];
-  site?: SuccinctDiveSiteDTO;
+  site?: DiveSiteDTO;
+  operator?: OperatorDTO;
   weather: string;
   weight: number | string;
   weightUnit: WeightUnit;
@@ -537,44 +289,68 @@ interface LogEntryData {
   rating?: number;
 }
 
-const WeatherOptions: SelectOption[] = [
-  { label: '(Unspecified)', value: '' },
-  { label: '☀️ Sunny', value: 'Sunny' },
-  { label: '🌤️ Partly cloudy', value: 'Partly cloudy' },
-  { label: '☁️ Overcast', value: 'Overcast' },
-  { label: '🌧️ Raining', value: 'Light rain' },
-  { label: '⛈️ Stormy', value: 'Stormy' },
-  { label: '🌨️ Snowing', value: 'Snowing' },
-];
+function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryFormData {
+  return {
+    basicInfo: {
+      avgDepth: props.entry.depths?.averageDepth || '',
+      bottomTime: props.entry.timing.bottomTime || '',
+      depthUnit:
+        props.entry.depths?.depthUnit ||
+        currentUser.user?.settings.depthUnit ||
+        DepthUnit.Meters,
+      duration:
+        props.entry.timing.duration === -1 ? '' : props.entry.timing.duration,
+      entryTimezone: props.entry.timing.timezone || dayjs.tz.guess(),
+      logNumber: props.entry.logNumber || '',
+      maxDepth: props.entry.depths?.maxDepth || '',
+      surfaceInterval: '', // TODO
+      entryTime: Number.isNaN(props.entry.timing.entryTime)
+        ? undefined
+        : new Date(props.entry.timing.entryTime),
+    },
 
-const WeightAccuracyOptions: SelectOption[] = [
-  { label: '(Unspecified)', value: '' },
-  { label: 'Good', value: WeightCorrectness.Good },
-  { label: 'Too much', value: WeightCorrectness.Over },
-  { label: 'Too little', value: WeightCorrectness.Under },
-];
+    conditions: {
+      airTemp: props.entry.conditions?.airTemperature || '',
+      waterTemp: props.entry.conditions?.surfaceTemperature || '',
+      thermocline: props.entry.conditions?.bottomTemperature || '',
+      tempUnit:
+        props.entry.conditions?.temperatureUnit ||
+        currentUser.user?.settings.temperatureUnit ||
+        TemperatureUnit.Celsius,
 
-const TrimOptions: SelectOption[] = [
-  { label: '(Unspecified)', value: '' },
-  { label: 'Good', value: TrimCorrectness.Good },
-  { label: 'Head down', value: TrimCorrectness.HeadDown },
-  { label: 'Knees down', value: TrimCorrectness.KneesDown },
-];
+      chop: props.entry.conditions?.chop || 0,
+      current: props.entry.conditions?.current || 0,
+      visibility: props.entry.conditions?.visibility || 0,
 
-const ExposureSuitOptions: SelectOption[] = [
-  { label: '(Unspecified)', value: '' },
-  { label: 'None', value: ExposureSuit.None },
-  { label: 'Shorty', value: ExposureSuit.Shorty },
-  { label: 'Rashguard', value: ExposureSuit.Rashguard },
-  { label: 'Wetsuit (3mm)', value: ExposureSuit.Wetsuit3mm },
-  { label: 'Wetsuit (5mm)', value: ExposureSuit.Wetsuit5mm },
-  { label: 'Wetsuit (7mm)', value: ExposureSuit.Wetsuit7mm },
-  { label: 'Wetsuit (9mm)', value: ExposureSuit.Wetsuit9mm },
-  { label: 'Drysuit', value: ExposureSuit.Drysuit },
-  { label: 'Other', value: ExposureSuit.Other },
-];
+      weather: props.entry.conditions?.weather || '',
+    },
 
-function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
+    equipment: {
+      weight: props.entry.equipment?.weight || '',
+      weightUnit:
+        props.entry.equipment?.weightUnit ||
+        currentUser.user?.settings.weightUnit ||
+        WeightUnit.Kilograms,
+      weightCorrectness: props.entry.equipment?.weightCorrectness || '',
+      trim: props.entry.equipment?.trimCorrectness || '',
+      exposureSuit: props.entry.equipment?.exposureSuit || '',
+
+      boots: props.entry.equipment?.boots,
+      camera: props.entry.equipment?.camera,
+      gloves: props.entry.equipment?.gloves,
+      hood: props.entry.equipment?.hood,
+      scooter: props.entry.equipment?.scooter,
+      torch: props.entry.equipment?.torch,
+    },
+
+    notes: {
+      notes: props.entry.notes || '',
+      rating: props.entry.rating,
+    },
+  };
+}
+
+function getFormDataFromPropsOld(props: EditLogbookEntryProps): LogEntryData {
   return {
     bottomTime: props.entry.timing.bottomTime ?? '',
     duration:
@@ -613,7 +389,6 @@ function getFormDataFromProps(props: EditLogbookEntryProps): LogEntryData {
             }
           : undefined,
       })) ?? [],
-    site: props.entry.site,
     weather: props.entry.conditions?.weather || '',
     weight: props.entry.equipment?.weight || '',
     weightUnit:
@@ -645,13 +420,6 @@ const oops = useOops();
 const route = useRoute();
 const currentUser = useCurrentUser();
 
-const timezones = computed<SelectOption[]>(() =>
-  Intl.supportedValuesOf('timeZone').map((tz) => ({
-    label: tz,
-    value: tz,
-  })),
-);
-
 const props = withDefaults(defineProps<EditLogbookEntryProps>(), {
   isSaving: false,
 });
@@ -660,110 +428,15 @@ const emit = defineEmits<{
 }>();
 
 const state = reactive<EditLogbookEntryState>({
+  isLoadingSite: false,
   showConfirmRevert: false,
   showSelectDiveSite: false,
+  showSelectOperator: false,
 });
 
-const formData = reactive<LogEntryData>(getFormDataFromProps(props));
-const v$ = useVuelidate<LogEntryData>(
-  {
-    bottomTime: {
-      positive: helpers.withMessage(
-        'Bottom time must be a positive number',
-        greaterThan(0),
-      ),
-      lessThanDuration: helpers.withMessage(
-        'Bottom time must be less than duration',
-        (val, others) => lessThan(others.duration || Infinity)(val),
-      ),
-    },
-    duration: {
-      required: helpers.withMessage('Duration is required', required),
-      positive: helpers.withMessage(
-        'Duration must be a positive number',
-        greaterThan(0),
-      ),
-    },
-    surfaceInterval: {
-      positive: helpers.withMessage(
-        'Surface interval time must be a positive number',
-        minValue(0),
-      ),
-    },
-    entryTime: {
-      required: helpers.withMessage('Entry time is required', required),
-    },
-    logNumber: {
-      integer: helpers.withMessage(
-        'Log number must be a positive integer',
-        integer,
-      ),
-      positive: helpers.withMessage(
-        'Log number must be a positive number',
-        greaterThan(0),
-      ),
-    },
-    maxDepth: {
-      positive: helpers.withMessage(
-        'Depth must be numeric and greater than zero',
-        depth,
-      ),
-    },
-    avgDepth: {
-      positive: helpers.withMessage(
-        'Depth must be numeric and greater than zero',
-        depth,
-      ),
-      lessThanMaxDepth: helpers.withMessage(
-        'Average depth must be less than max depth',
-        (val, others) => lessThan(others.maxDepth || Infinity)(val),
-      ),
-    },
-    weight: {
-      valid: helpers.withMessage(
-        'Weight must be numeric and cannot be less than zero',
-        (val) => weight({ weight: val, unit: formData.weightUnit }),
-      ),
-    },
-  },
-  formData,
-);
-
-const currentText = computed(() => {
-  const value = Math.round(formData.current);
-
-  if (value === 1) return 'None';
-  if (value === 2) return 'Light';
-  if (value === 3) return 'Moderate';
-  if (value === 4) return 'Strong';
-  if (value === 5) return 'Extreme';
-
-  return 'Unspecified';
-});
-
-const visibilityText = computed(() => {
-  const value = Math.round(formData.visibility);
-
-  if (value === 1) return 'Nil';
-  if (value === 2) return 'Poor';
-  if (value === 3) return 'Fair';
-  if (value === 4) return 'Good';
-  if (value === 5) return 'Excellent';
-
-  return 'Unspecified';
-});
-
-const chopText = computed(() => {
-  const value = Math.round(formData.chop ?? 0);
-
-  if (value === 1) return 'Calm';
-  if (value === 2) return 'Light';
-  if (value === 3) return 'Moderate';
-  if (value === 4) return 'Heavy';
-  if (value === 5) return 'Severe';
-
-  return 'Unspecified';
-});
+const formData = reactive<LogEntryFormData>(getFormDataFromProps(props));
+const formDataOld = reactive<LogEntryData>(getFormDataFromPropsOld(props));
+const v$ = useVuelidate<LogEntryFormData>({}, formData);
 
 function airFormDataToDto(air: EditEntryAirFormData): LogEntryAirDTO {
   return {
@@ -789,28 +462,35 @@ async function onSave(): Promise<void> {
     ...props.entry,
     timing: {
       bottomTime:
-        typeof formData.bottomTime === 'number'
-          ? formData.bottomTime
+        typeof formDataOld.bottomTime === 'number'
+          ? formDataOld.bottomTime
           : undefined,
-      duration: formData.duration as number,
-      entryTime: formData.entryTime!.valueOf(),
-      timezone: formData.entryTimezone,
+      duration: formDataOld.duration as number,
+      entryTime: formDataOld.entryTime!.valueOf(),
+      timezone: formDataOld.entryTimezone,
     },
     logNumber:
-      typeof formData.logNumber === 'number' ? formData.logNumber : undefined,
+      typeof formDataOld.logNumber === 'number'
+        ? formDataOld.logNumber
+        : undefined,
     depths: {
       averageDepth:
-        typeof formData.avgDepth === 'number' ? formData.avgDepth : undefined,
+        typeof formDataOld.avgDepth === 'number'
+          ? formDataOld.avgDepth
+          : undefined,
       maxDepth:
-        typeof formData.maxDepth === 'number' ? formData.maxDepth : undefined,
-      depthUnit: formData.depthUnit,
+        typeof formDataOld.maxDepth === 'number'
+          ? formDataOld.maxDepth
+          : undefined,
+      depthUnit: formDataOld.depthUnit,
     },
-    notes: formData.notes,
-    site: formData.site,
-    air: formData.air.map(airFormDataToDto),
+    notes: formDataOld.notes,
+    site: formDataOld.site,
+    air: formDataOld.air.map(airFormDataToDto),
     equipment: {
-      weight: typeof formData.weight === 'number' ? formData.weight : undefined,
-      weightUnit: formData.weightUnit,
+      weight:
+        typeof formDataOld.weight === 'number' ? formDataOld.weight : undefined,
+      weightUnit: formDataOld.weightUnit,
     },
   });
 }
@@ -824,7 +504,7 @@ function onCancelRevert() {
 }
 
 function onConfirmRevert() {
-  Object.assign(formData, getFormDataFromProps(props));
+  Object.assign(formDataOld, getFormDataFromPropsOld(props));
   state.showConfirmRevert = false;
 }
 
@@ -836,28 +516,43 @@ async function getNextAvailableLogNumber(): Promise<void> {
     const nextLogNumber = await client.logEntries.getNextAvailableLogNumber(
       username,
     );
-    formData.logNumber = nextLogNumber;
+    formDataOld.logNumber = nextLogNumber;
   });
 }
 
-onBeforeMount(async () => {
-  if (formData.logNumber === '') {
+onMounted(async () => {
+  if (formDataOld.logNumber === '') {
     await getNextAvailableLogNumber();
   }
+
+  await oops(
+    async () => {
+      if (props.entry.site) {
+        formDataOld.site = await client.diveSites.getDiveSite(
+          props.entry.site.id,
+        );
+      }
+    },
+    {
+      [404]: () => {
+        // Unable to retrieve info on dive site
+      },
+    },
+  );
 });
 
 function onAddAirEntry(newEntry: EditEntryAirFormData) {
-  formData.air = [...formData.air, newEntry];
+  formDataOld.air = [...formDataOld.air, newEntry];
 }
 
 function onUpdateAirEntry(update: EditEntryAirFormData) {
-  const index = formData.air.findIndex((air) => air.id === update.id);
-  if (index > -1) formData.air[index] = update;
+  const index = formDataOld.air.findIndex((air) => air.id === update.id);
+  if (index > -1) formDataOld.air[index] = update;
 }
 
 function onRemoveAirEntry(id: string) {
-  const index = formData.air.findIndex((air) => air.id === id);
-  if (index > -1) formData.air.splice(index, 1);
+  const index = formDataOld.air.findIndex((air) => air.id === id);
+  if (index > -1) formDataOld.air.splice(index, 1);
 }
 
 function onCloseDiveSitePanel() {
@@ -868,20 +563,29 @@ function onOpenDiveSitePanel() {
   state.showSelectDiveSite = true;
 }
 
-function onSiteSelected(site: SuccinctDiveSiteDTO) {
-  formData.site = site;
+function onCloseOperatorPanel() {
+  state.showSelectOperator = false;
+}
+
+function onOpenOperatorPanel() {
+  state.showSelectOperator = true;
+}
+
+function onSiteSelected(site: DiveSiteDTO) {
+  formDataOld.site = site;
   state.showSelectDiveSite = false;
 }
 
-function onToggleTempUnit(newUnit: TemperatureUnit) {
-  formData.tempUnit = newUnit;
+function onRemoveSite() {
+  formDataOld.site = undefined;
 }
 
-function onToggleDepthUnit(newUnit: DepthUnit) {
-  formData.depthUnit = newUnit;
+function onOperatorSelected(operator: OperatorDTO) {
+  formDataOld.operator = operator;
+  state.showSelectOperator = false;
 }
 
-function onToggleWeightUnit(newUnit: WeightUnit) {
-  formData.weightUnit = newUnit;
+function onRemoveOperator() {
+  formDataOld.operator = undefined;
 }
 </script>

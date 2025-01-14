@@ -9,6 +9,8 @@ import {
   ListLogEntriesResponseSchema,
   LogEntryDTO,
   LogEntrySchema,
+  OperatorDTO,
+  OperatorSchema,
 } from '../types';
 import { Fetcher } from './fetcher';
 
@@ -66,7 +68,18 @@ export class LogEntriesApiClient {
       { count },
       DiveSiteSchema.array(),
     );
+    return data;
+  }
 
+  async getMostRecentDiveOperators(
+    username: string,
+    count?: number,
+  ): Promise<OperatorDTO[]> {
+    const { data } = await this.apiClient.get(
+      `/api/users/${username}/logbook/recentOperators`,
+      { count },
+      OperatorSchema.array(),
+    );
     return data;
   }
 

@@ -1,6 +1,22 @@
-import { DepthSchema, PhoneNumber, WeightSchema } from '@bottomtime/api';
+import {
+  AirTemperatureSchema,
+  DepthSchema,
+  PhoneNumber,
+  WaterTemperatureSchema,
+  WeightSchema,
+} from '@bottomtime/api';
 
 import { helpers } from '@vuelidate/validators';
+
+export function airTemperature(val: unknown): boolean {
+  const { success } = AirTemperatureSchema.safeParse(val);
+  return success;
+}
+
+export function waterTemperature(val: unknown): boolean {
+  const { success } = WaterTemperatureSchema.safeParse(val);
+  return success;
+}
 
 export function depth(val: unknown): boolean {
   if (!helpers.req(val)) return true;
@@ -9,7 +25,6 @@ export function depth(val: unknown): boolean {
 }
 
 export function weight(val: unknown): boolean {
-  if (!helpers.req(val)) return true;
   const { success } = WeightSchema.safeParse(val);
   return success;
 }

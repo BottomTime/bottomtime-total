@@ -94,6 +94,7 @@ export type DiveSiteDTO = z.infer<typeof DiveSiteSchema>;
 
 export const SuccinctDiveSiteSchema = DiveSiteSchema.pick({
   averageRating: true,
+  depth: true,
   description: true,
   name: true,
   id: true,

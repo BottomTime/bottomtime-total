@@ -14,7 +14,7 @@ body * {
 }
 
 a {
-  @apply font-bold text-link underline hover:text-link-hover cursor-pointer;
+  @apply font-bold text-link hover:text-link-hover cursor-pointer;
 }
 
 /* 1. declare transition */

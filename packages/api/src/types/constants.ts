@@ -263,6 +263,29 @@ export const TemperatureSchema = z.object({
 });
 export type TemperatureDTO = z.infer<typeof TemperatureSchema>;
 
+type TemperatureBounds = Record<TemperatureUnit, { min: number; max: number }>;
+const AirTempBounds: TemperatureBounds = {
+  [TemperatureUnit.Celsius]: { min: -50, max: 60 },
+  [TemperatureUnit.Fahrenheit]: { min: -58, max: 140 },
+};
+const WaterTempBounds: TemperatureBounds = {
+  [TemperatureUnit.Celsius]: { min: -2, max: 60 },
+  [TemperatureUnit.Fahrenheit]: { min: 28, max: 140 },
+};
+
+export const AirTemperatureSchema = TemperatureSchema.refine(
+  (val) =>
+    val.temperature >= AirTempBounds[val.unit].min &&
+    val.temperature <= AirTempBounds[val.unit].max,
+  'Temperature must be between -50 and 60°C (-58 and 140°F)',
+);
+export const WaterTemperatureSchema = TemperatureSchema.refine(
+  (val) =>
+    val.temperature >= WaterTempBounds[val.unit].min &&
+    val.temperature <= WaterTempBounds[val.unit].max,
+  'Temperature must be between -2 and 60°C (28 and 140°F)',
+);
+
 export type AppMetricsDTO = {
   users: {
     total: number;

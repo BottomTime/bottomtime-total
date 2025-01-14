@@ -28,7 +28,8 @@
 <script lang="ts" setup>
 import {
   CreateOrUpdateDiveSiteDTO,
-  SuccinctDiveSiteDTO,
+  DiveSiteDTO,
+  OperatorDTO,
 } from '@bottomtime/api';
 
 import { computed, reactive } from 'vue';
@@ -44,6 +45,7 @@ import SearchDiveSitesForm from './search-dive-sites-form.vue';
 
 enum SelectSiteTabs {
   Recent = 'recent',
+  FromOperator = 'fromOperator',
   Search = 'search',
   Create = 'create',
 }
@@ -54,19 +56,23 @@ interface SelectSiteState {
 }
 
 interface SelectSiteProps {
-  currentSite?: SuccinctDiveSiteDTO;
+  currentSite?: DiveSiteDTO;
+  currentOperator?: OperatorDTO;
 }
 
 const client = useClient();
 const oops = useOops();
 const toasts = useToasts();
 
-defineProps<SelectSiteProps>();
+const props = defineProps<SelectSiteProps>();
 const emit = defineEmits<{
-  (e: 'site-selected', site: SuccinctDiveSiteDTO): void;
+  (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
 const tabs = computed<TabInfo[]>(() => [
+  ...(props.currentOperator
+    ? [{ key: SelectSiteTabs.FromOperator, label: 'Offered by Your Dive Shop' }]
+    : []),
   { key: SelectSiteTabs.Recent, label: 'Recent Sites' },
   { key: SelectSiteTabs.Search, label: 'Search for a Site' },
   { key: SelectSiteTabs.Create, label: 'Create a New Site' },

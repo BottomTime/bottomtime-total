@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <form class="space-y-4" @submit.prevent="onSearch">
+    <form class="space-y-4" @submit.prevent="">
       <FormSearchBox
         v-model="state.search"
         control-id="siteSearchQuery"
@@ -43,6 +43,7 @@
           type="primary"
           control-id="searchSites"
           test-id="search-sites"
+          submit
           @click="onSearch"
         >
           Search
@@ -63,9 +64,8 @@
         <span> dive sites.</span>
       </p>
 
-      <ul
+      <TransitionList
         v-if="state.sites.totalCount"
-        class="*:odd:bg-blue-300/40 *:odd:dark:bg-blue-900/40"
         data-testid="search-sites-results-list"
       >
         <SelectDiveSiteListItem
@@ -96,7 +96,7 @@
             Load more...
           </FormButton>
         </li>
-      </ul>
+      </TransitionList>
 
       <div
         v-else
@@ -125,7 +125,6 @@ import {
   DiveSiteDTO,
   GpsCoordinates,
   SearchDiveSitesParamsDTO,
-  SuccinctDiveSiteDTO,
 } from '@bottomtime/api';
 
 import { reactive } from 'vue';
@@ -139,6 +138,7 @@ import FormSlider from '../../common/form-slider.vue';
 import GoogleMap from '../../common/google-map.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
 import NavLink from '../../common/nav-link.vue';
+import TransitionList from '../../common/transition-list.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
 interface SelectDiveSiteListState {
@@ -156,7 +156,7 @@ const oops = useOops();
 
 defineEmits<{
   (e: 'create'): void;
-  (e: 'site-selected', site: SuccinctDiveSiteDTO): void;
+  (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
 const state = reactive<SelectDiveSiteListState>({
@@ -204,7 +204,7 @@ async function onLoadMore(): Promise<void> {
   state.isLoadingMore = false;
 }
 
-function onSiteHighlighted(site: SuccinctDiveSiteDTO): void {
+function onSiteHighlighted(site: DiveSiteDTO): void {
   state.selectedSite = site.id;
 }
 </script>
