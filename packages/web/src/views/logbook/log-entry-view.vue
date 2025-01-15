@@ -41,7 +41,7 @@ import BreadCrumbs from '../../components/common/bread-crumbs.vue';
 import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
-import EditLogbookEntry from '../../components/logbook/edit-logbook-entry.vue';
+import EditLogbookEntry from '../../components/logbook/editor/edit-logbook-entry.vue';
 import ViewLogbookEntry from '../../components/logbook/view-logbook-entry.vue';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
@@ -157,6 +157,7 @@ async function onSave(data: LogEntryDTO): Promise<void> {
     const options = CreateOrUpdateLogEntryParamsSchema.parse({
       ...data,
       site: data.site?.id,
+      operator: data.operator?.id,
     });
 
     if (entryId.value) {

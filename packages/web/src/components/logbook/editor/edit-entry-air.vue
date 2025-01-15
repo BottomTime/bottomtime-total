@@ -1,21 +1,10 @@
 <template>
-  <li class="space-y-1.5">
-    <div class="flex justify-between">
-      <TextHeading level="h4">#{{ ordinal + 1 }}</TextHeading>
-
-      <button
-        class="text-danger hover:text-danger-hover"
-        data-testid="remove-tank"
-        @click="$emit('remove', formData.id)"
-      >
-        <span class="sr-only">Remove air entry #{{ ordinal + 1 }}</span>
-        <span>
-          <i class="fa-solid fa-x fa-xs"></i>
-        </span>
-      </button>
+  <li class="flex gap-3 items-baseline">
+    <div>
+      <p class="font-bold text-xl">#{{ ordinal + 1 }}</p>
     </div>
 
-    <FormBox class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1">
       <FormField
         class="order-1 col-span-1 md:col-span-2 lg:col-span-4"
         label="Tank"
@@ -24,7 +13,7 @@
         :invalid="v$.tankId.$error"
         :error="v$.tankId.$errors[0]?.$message"
       >
-        <div class="flex items-center gap-3">
+        <div class="flex items-baseline gap-3">
           <FormSelect
             v-model="formData.tankId"
             class="grow"
@@ -36,7 +25,7 @@
           />
 
           <FormCheckbox
-            v-model="doubles"
+            v-model="formData.doubles"
             :control-id="`doubles-${formData.id}`"
             test-id="doubles"
             class="mx-3"
@@ -77,22 +66,14 @@
         :error="v$.startPressure.$errors[0]?.$message"
         :responsive="false"
       >
-        <div class="relative">
-          <FormTextBox
-            v-model.number="formData.startPressure"
-            :control-id="`start-pressure-${formData.id}`"
-            test-id="start-pressure"
-            :invalid="v$.startPressure.$error"
-          />
-          <button
-            :class="`absolute inset-y-0 end-0 rounded-r-lg border ${
-              v$.startPressure.$error ? 'border-danger' : 'border-grey-950 '
-            } w-10 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover`"
-            @click="onTogglePressureUnit"
-          >
-            {{ formData.pressureUnit }}
-          </button>
-        </div>
+        <PressureInput
+          v-model.number="formData.startPressure"
+          :unit="formData.pressureUnit"
+          :control-id="`start-pressure-${formData.id}`"
+          test-id="start-pressure"
+          :invalid="v$.startPressure.$error"
+          @toggle-unit="onTogglePressureUnit"
+        />
       </FormField>
 
       <FormField
@@ -103,22 +84,14 @@
         :invalid="v$.endPressure.$error"
         :error="v$.endPressure.$errors[0]?.$message"
       >
-        <div class="relative">
-          <FormTextBox
-            v-model.number="formData.endPressure"
-            :control-id="`end-pressure-${formData.id}`"
-            test-id="end-pressure"
-            :invalid="v$.endPressure.$error"
-          />
-          <button
-            :class="`absolute inset-y-0 end-0 rounded-r-lg border ${
-              v$.endPressure.$error ? 'border-danger' : 'border-grey-950'
-            } w-10 flex justify-center items-center text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover`"
-            @click="onTogglePressureUnit"
-          >
-            {{ formData.pressureUnit }}
-          </button>
-        </div>
+        <PressureInput
+          v-model.number="formData.endPressure"
+          :unit="formData.pressureUnit"
+          :control-id="`end-pressure-${formData.id}`"
+          test-id="end-pressure"
+          :invalid="v$.endPressure.$error"
+          @toggle-unit="onTogglePressureUnit"
+        />
       </FormField>
 
       <FormField
@@ -174,7 +147,20 @@
           </span>
         </div>
       </FormField>
-    </FormBox>
+    </div>
+
+    <div class="min-w-6">
+      <button
+        class="text-danger hover:text-danger-hover"
+        data-testid="remove-tank"
+        @click="$emit('remove', formData.id)"
+      >
+        <span class="sr-only">Remove air entry #{{ ordinal + 1 }}</span>
+        <span>
+          <i class="fa-solid fa-x fa-xs"></i>
+        </span>
+      </button>
+    </div>
   </li>
 </template>
 
@@ -184,19 +170,18 @@ import { PressureUnit, TankDTO, TankMaterial } from '@bottomtime/api';
 import { useVuelidate } from '@vuelidate/core';
 import { between, helpers, required } from '@vuelidate/validators';
 
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 
-import { SelectOption } from '../../common';
-import FormBox from '../common/form-box.vue';
-import FormCheckbox from '../common/form-checkbox.vue';
-import FormField from '../common/form-field.vue';
-import FormSelect from '../common/form-select.vue';
-import FormTextBox from '../common/form-text-box.vue';
-import TextHeading from '../common/text-heading.vue';
-import { EditEntryAirFormData } from './edit-entry-air-form-data';
+import { SelectOption } from '../../../common';
+import FormCheckbox from '../../common/form-checkbox.vue';
+import FormField from '../../common/form-field.vue';
+import FormSelect from '../../common/form-select.vue';
+import FormTextBox from '../../common/form-text-box.vue';
+import PressureInput from '../../common/pressure-input.vue';
+import { LogEntryAir } from './types';
 
 interface EditEntryAirProps {
-  air: EditEntryAirFormData;
+  air: LogEntryAir;
   ordinal: number;
   tanks: TankDTO[];
 }
@@ -204,7 +189,7 @@ interface EditEntryAirProps {
 const props = defineProps<EditEntryAirProps>();
 const emit = defineEmits<{
   (e: 'remove', id: string): void;
-  (e: 'update', air: EditEntryAirFormData): void;
+  (e: 'update', air: LogEntryAir): void;
 }>();
 
 const tankOptions = computed<SelectOption[]>(() => [
@@ -217,11 +202,10 @@ const tankOptions = computed<SelectOption[]>(() => [
   })),
 ]);
 
-const formData = reactive<EditEntryAirFormData>({
+const formData = reactive<LogEntryAir>({
   ...props.air,
   tankId: props.air.tankId || (props.air.tankInfo ? 'current' : ''),
 });
-const doubles = ref(typeof formData.count === 'number' && formData.count > 1);
 
 const tankMaterialString = computed(() => {
   if (!formData.tankInfo) return '';
@@ -286,19 +270,12 @@ const v$ = useVuelidate(
   formData,
 );
 
-function onTogglePressureUnit() {
-  formData.pressureUnit =
-    formData.pressureUnit === PressureUnit.Bar
-      ? PressureUnit.PSI
-      : PressureUnit.Bar;
+function onTogglePressureUnit(newUnit: PressureUnit) {
+  formData.pressureUnit = newUnit;
 }
 
 watch(formData, (newData) => {
   newData.tankInfo = props.tanks.find((tank) => tank.id === newData.tankId);
   emit('update', newData);
-});
-
-watch(doubles, (isDoubles) => {
-  formData.count = isDoubles ? 2 : 1;
 });
 </script>

@@ -257,6 +257,10 @@ async function getNextAvailableLogNumber(): Promise<void> {
   });
 }
 
+function onToggleDepthUnit(newUnit: DepthUnit) {
+  formData.value.depthUnit = newUnit;
+}
+
 onMounted(async () => {
   await oops(async () => {
     if (formData.value.logNumber !== '') {
@@ -264,8 +268,4 @@ onMounted(async () => {
     }
   });
 });
-
-function onToggleDepthUnit(newUnit: DepthUnit) {
-  formData.value.depthUnit = newUnit;
-}
 </script>
