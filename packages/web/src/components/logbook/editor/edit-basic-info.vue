@@ -159,6 +159,13 @@
         />
       </FormField>
     </div>
+
+    <FormField label="Tags">
+      <FormTags
+        v-model="formData.tags"
+        :autocomplete="getTagAutoCompleteOptions"
+      />
+    </FormField>
   </section>
 </template>
 
@@ -180,6 +187,7 @@ import DurationInput from '../../common/duration-input.vue';
 import FormDatePicker from '../../common/form-date-picker.vue';
 import FormField from '../../common/form-field.vue';
 import FormSelect from '../../common/form-select.vue';
+import FormTags from '../../common/form-tags.vue';
 import FormTextBox from '../../common/form-text-box.vue';
 import TextHeading from '../../common/text-heading.vue';
 import { LogEntryBasicInfo, Timezones } from './types';
@@ -187,6 +195,15 @@ import { LogEntryBasicInfo, Timezones } from './types';
 const client = useClient();
 const oops = useOops();
 const route = useRoute();
+
+const tags = {
+  'night dive': 'Night dive',
+  'reef dive': 'Reef dive',
+  'wreck dive': 'Wreck dive',
+  'drift dive': 'Drift dive',
+  'deep dive': 'Deep dive',
+  'ice dive': 'Ice dive',
+};
 
 const formData = defineModel<LogEntryBasicInfo>({ required: true });
 const v$ = useVuelidate<LogEntryBasicInfo>(
@@ -259,6 +276,12 @@ async function getNextAvailableLogNumber(): Promise<void> {
 
 function onToggleDepthUnit(newUnit: DepthUnit) {
   formData.value.depthUnit = newUnit;
+}
+
+function getTagAutoCompleteOptions(prefix: string): string[] {
+  return Object.entries(tags)
+    .filter(([key]) => key.startsWith(prefix.toLowerCase()))
+    .map(([, value]) => value);
 }
 
 onMounted(async () => {

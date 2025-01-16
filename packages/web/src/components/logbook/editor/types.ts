@@ -29,6 +29,7 @@ export interface LogEntryBasicInfo {
   logNumber: string | number;
   maxDepth: number | string;
   surfaceInterval: string | number;
+  tags: string[];
 }
 
 export interface LogEntryConditions {
@@ -167,6 +168,7 @@ export function dtoToFormData(
       entryTime: Number.isNaN(entry.timing.entryTime)
         ? undefined
         : new Date(entry.timing.entryTime),
+      tags: entry.tags ?? [],
     },
 
     conditions: {
@@ -266,16 +268,17 @@ export function formDataToDTO(
       weightCorrectness: getNullableEnumValue(data.equipment.weightCorrectness),
       weightUnit: data.equipment.weightUnit,
     },
-    logNumber: getNumericValue(data.basicInfo.logNumber),
-    notes: data.notes.notes,
-    operator: data.location.operator,
-    site: data.location.site,
-    rating: data.notes.rating,
     timing: {
       duration: getNumericValue(data.basicInfo.duration) ?? 0,
       entryTime: data.basicInfo.entryTime?.valueOf() ?? 0,
       timezone: data.basicInfo.entryTimezone,
       bottomTime: getNumericValue(data.basicInfo.bottomTime),
     },
+    logNumber: getNumericValue(data.basicInfo.logNumber),
+    notes: data.notes.notes,
+    operator: data.location.operator,
+    site: data.location.site,
+    rating: data.notes.rating,
+    tags: data.basicInfo.tags.length ? data.basicInfo.tags : undefined,
   };
 }
