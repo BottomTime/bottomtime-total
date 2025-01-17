@@ -20,12 +20,12 @@ type StarRatingProps = {
   testId?: string;
 };
 
-const rating = defineModel<number | undefined>({ required: false });
+const rating = defineModel<number>({ required: false, default: 0 });
 withDefaults(defineProps<StarRatingProps>(), {
   readonly: false,
 });
 
 const ratingText = computed(() =>
-  rating.value === undefined ? 'Not rated' : rating.value.toFixed(1),
+  rating.value === 0 ? 'Not rated' : rating.value.toFixed(1),
 );
 </script>

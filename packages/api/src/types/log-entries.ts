@@ -82,6 +82,7 @@ const LogEntryBaseSchema = z.object({
     timezone: z.string(),
     bottomTime: z.number().positive().optional(),
     duration: z.number().positive(),
+    surfaceInterval: z.number().positive().optional(),
   }),
 
   depths: z

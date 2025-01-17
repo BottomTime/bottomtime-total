@@ -88,33 +88,52 @@ const duration = defineModel<string | number>({
 });
 const state = reactive<DurationInputState>(parseValue(duration.value));
 
-watch(state, (newValue) => {
-  const hours = parseInt(newValue.hours, 10);
-  const minutes = parseInt(newValue.minutes, 10);
-  const seconds = parseInt(newValue.seconds, 10);
+function updateModel() {
+  const hours = parseInt(state.hours, 10);
+  const minutes = parseInt(state.minutes, 10);
+  const seconds = parseInt(state.seconds, 10);
 
-  if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-    duration.value = `${newValue.hours}:${newValue.minutes}:${newValue.seconds}`;
+  if (isNaN(hours) && isNaN(minutes) && isNaN(seconds)) {
+    duration.value = '';
+  } else {
+    let newValue = 0;
+
+    if (!isNaN(hours)) newValue += hours * 3600;
+    if (!isNaN(minutes)) newValue += minutes * 60;
+    if (!isNaN(seconds)) newValue += seconds;
+
+    duration.value = newValue;
   }
+}
 
-  duration.value = hours * 3600 + minutes * 60 + seconds;
+watch(duration, (value) => {
+  const { hours, minutes, seconds } = parseValue(value);
+  state.hours = hours;
+  state.minutes = minutes;
+  state.seconds = seconds;
 });
 
 function onBlurHours() {
-  if (!isNaN(parseInt(state.hours, 10))) {
-    state.hours = state.hours.padStart(2, '0');
+  const hours = parseInt(state.hours, 10);
+  if (!isNaN(hours)) {
+    state.hours = hours.toString().padStart(2, '0');
   }
+  updateModel();
 }
 
 function onBlurMinutes() {
-  if (!isNaN(parseInt(state.minutes, 10))) {
-    state.minutes = state.minutes.padStart(2, '0');
+  const minutes = parseInt(state.minutes, 10);
+  if (!isNaN(minutes)) {
+    state.minutes = minutes.toString().padStart(2, '0');
   }
+  updateModel();
 }
 
 function onBlurSeconds() {
-  if (!isNaN(parseInt(state.seconds, 10))) {
-    state.seconds = state.seconds.padStart(2, '0');
+  const seconds = parseFloat(state.seconds);
+  if (!isNaN(seconds)) {
+    state.seconds = seconds.toFixed(2).padStart(5, '0');
   }
+  updateModel();
 }
 </script>

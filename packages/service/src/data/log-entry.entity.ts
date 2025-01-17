@@ -61,6 +61,9 @@ export class LogEntryEntity {
   @Column({ type: 'float', nullable: false })
   duration: number = 0;
 
+  @Column({ type: 'float', nullable: true })
+  surfaceInterval: number | null = null;
+
   // Location
   @ManyToOne(() => DiveSiteEntity, (site) => site.logEntries, {
     nullable: true,

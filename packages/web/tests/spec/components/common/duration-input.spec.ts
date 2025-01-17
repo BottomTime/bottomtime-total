@@ -1,4 +1,8 @@
-import { ComponentMountingOptions, mount } from '@vue/test-utils';
+import {
+  ComponentMountingOptions,
+  flushPromises,
+  mount,
+} from '@vue/test-utils';
 
 import DurationInput from '../../../../src/components/common/duration-input.vue';
 
@@ -44,5 +48,20 @@ describe('DurationInput component', () => {
     expect(
       wrapper.get<HTMLInputElement>(DurationInputText.Seconds).element.value,
     ).toBe('43.33');
+  });
+
+  it('will update the input boxes when the model value changes', async () => {
+    const wrapper = mount(DurationInput, getOpts(''));
+    await wrapper.setProps({ modelValue: 4123.33 });
+    await flushPromises();
+    expect(
+      wrapper.get<HTMLInputElement>(DurationInputText.Hours).element.value,
+    ).toBe('01');
+    expect(
+      wrapper.get<HTMLInputElement>(DurationInputText.Minutes).element.value,
+    ).toBe('08');
+    expect(
+      wrapper.get<HTMLInputElement>(DurationInputText.Seconds).element.value,
+    ).toBe('43.00');
   });
 });

@@ -20,6 +20,8 @@
       >
         <TemperatureInput
           v-model.number="formData.airTemp"
+          control-id="airTemp"
+          test-id="air-temp"
           :unit="formData.tempUnit"
           :invalid="v$.airTemp.$error"
           @toggle-unit="onToggleTempUnit"
@@ -33,6 +35,8 @@
       >
         <TemperatureInput
           v-model.number="formData.waterTemp"
+          control-id="waterTemp"
+          test-id="water-temp"
           :unit="formData.tempUnit"
           :invalid="v$.waterTemp.$error"
           @toggle-unit="onToggleTempUnit"
@@ -46,6 +50,8 @@
       >
         <TemperatureInput
           v-model.number="formData.thermocline"
+          control-id="thermocline"
+          test-id="thermocline"
           :unit="formData.tempUnit"
           :invalid="v$.thermocline.$error"
           @toggle-unit="onToggleTempUnit"
@@ -55,7 +61,13 @@
 
     <FormField label="Current">
       <div class="flex gap-2 items-center">
-        <FormSlider v-model="formData.current" :min="0" :show-value="false" />
+        <FormSlider
+          v-model="formData.current"
+          control-id="current"
+          test-id="current"
+          :min="0"
+          :show-value="false"
+        />
         <span class="min-w-24">{{ currentText }}</span>
       </div>
     </FormField>
@@ -64,6 +76,8 @@
       <div class="flex gap-2 items-center">
         <FormSlider
           v-model="formData.visibility"
+          control-id="visibility"
+          test-id="visibility"
           :min="0"
           :show-value="false"
         />
@@ -73,7 +87,13 @@
 
     <FormField label="Chop">
       <div class="flex gap-2 items-center">
-        <FormSlider v-model="formData.chop" :min="0" :show-value="false" />
+        <FormSlider
+          v-model="formData.chop"
+          control-id="chop"
+          test-id="chop"
+          :min="0"
+          :show-value="false"
+        />
         <span class="min-w-24">{{ chopText }}</span>
       </div>
     </FormField>

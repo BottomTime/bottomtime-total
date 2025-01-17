@@ -265,12 +265,20 @@ class EntryTiming {
     this.data.bottomTime = value ?? null;
   }
 
+  get surfaceInterval(): number | undefined {
+    return this.data.surfaceInterval ?? undefined;
+  }
+  set surfaceInterval(val: number | undefined) {
+    this.data.surfaceInterval = val ?? null;
+  }
+
   toJSON(): LogEntryTimingDTO {
     return {
       entryTime: this.entryTime.valueOf(),
       timezone: this.timezone,
       duration: this.duration,
       bottomTime: this.bottomTime,
+      surfaceInterval: this.surfaceInterval,
     };
   }
 }

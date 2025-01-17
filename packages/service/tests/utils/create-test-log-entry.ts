@@ -37,6 +37,7 @@ const LogEntrySchema = z.object({
   timezone: z.string(),
   logNumber: z.number().nullable(),
   bottomTime: z.number().nullable(),
+  surfaceInterval: z.number().nullable().default(null),
   duration: z.number(),
   averageDepth: z.number().nullable(),
   maxDepth: z.number().nullable(),

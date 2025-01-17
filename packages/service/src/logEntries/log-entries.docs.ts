@@ -188,6 +188,13 @@
  *               description: The total duration of the dive. (I.e. The total time underwater.) Specified in seconds.
  *               example: 3442.89
  *               exclusiveMinimum: 0
+ *             surfaceInterval:
+ *               type: number
+ *               format: float
+ *               name: Surface Interval
+ *               description: The length of the surface interval since the previous dive (assuming there was one). Specified in seconds.
+ *               example: 3442.89
+ *               exclusiveMinimum: 0
  *         depths:
  *           type: object
  *           properties:
