@@ -99,7 +99,6 @@
           control-id="surfaceInterval"
           test-id="surfaceInterval"
           :invalid="v$.surfaceInterval.$error"
-          disabled
         />
       </FormField>
     </div>
@@ -247,13 +246,15 @@ const v$ = useVuelidate<LogEntryBasicInfo>(
     maxDepth: {
       positive: helpers.withMessage(
         'Depth must be numeric and greater than zero',
-        depth,
+        (val, { depthUnit }) =>
+          !helpers.req(val) || depth({ depth: val, unit: depthUnit }),
       ),
     },
     avgDepth: {
       positive: helpers.withMessage(
         'Depth must be numeric and greater than zero',
-        depth,
+        (val, { depthUnit }) =>
+          !helpers.req(val) || depth({ depth: val, unit: depthUnit }),
       ),
       lessThanMaxDepth: helpers.withMessage(
         'Average depth must be less than max depth',
@@ -286,7 +287,8 @@ function getTagAutoCompleteOptions(prefix: string): string[] {
 
 onMounted(async () => {
   await oops(async () => {
-    if (formData.value.logNumber !== '') {
+    const entryId = route.params.entryId;
+    if (formData.value.logNumber === '' && !entryId) {
       await getNextAvailableLogNumber();
     }
   });

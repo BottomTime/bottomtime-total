@@ -13,7 +13,6 @@
     />
     <span>:</span>
     <FormTextBox
-      :id="controlId ? `${controlId}-minutes` : undefined"
       v-model.trim="state.minutes"
       placeholder="mm"
       :maxlength="2"
@@ -21,12 +20,12 @@
         invalid ||
         (state.minutes.length > 0 && isNaN(parseInt(state.minutes, 10)))
       "
+      :control-id="controlId ? `${controlId}-minutes` : undefined"
       :data-testid="testId ? `${testId}-minutes` : undefined"
       @blur="onBlurMinutes"
     />
     <span>:</span>
     <FormTextBox
-      :id="controlId ? `${controlId}-seconds` : undefined"
       v-model.trim="state.seconds"
       placeholder="ss"
       :maxlength="2"
@@ -34,6 +33,7 @@
         invalid ||
         (state.seconds.length > 0 && isNaN(parseInt(state.seconds, 10)))
       "
+      :control-id="controlId ? `${controlId}-seconds` : undefined"
       :data-testid="testId ? `${testId}-seconds` : undefined"
       @blur="onBlurSeconds"
     />
@@ -82,11 +82,11 @@ withDefaults(defineProps<DurationInputProps>(), {
   disabled: false,
   invalid: false,
 });
-const model = defineModel<string | number>({
+const duration = defineModel<string | number>({
   required: false,
   default: '',
 });
-const state = reactive<DurationInputState>(parseValue(model.value));
+const state = reactive<DurationInputState>(parseValue(duration.value));
 
 watch(state, (newValue) => {
   const hours = parseInt(newValue.hours, 10);
@@ -94,10 +94,10 @@ watch(state, (newValue) => {
   const seconds = parseInt(newValue.seconds, 10);
 
   if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-    model.value = `${newValue.hours}:${newValue.minutes}:${newValue.seconds}`;
+    duration.value = `${newValue.hours}:${newValue.minutes}:${newValue.seconds}`;
   }
 
-  model.value = hours * 3600 + minutes * 60 + seconds;
+  duration.value = hours * 3600 + minutes * 60 + seconds;
 });
 
 function onBlurHours() {

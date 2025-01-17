@@ -75,6 +75,11 @@
           </div>
         </div>
       </div>
+
+      <div class="flex flex-col gap-0.5">
+        <label class="font-bold">Tags:</label>
+        <FormTags :value="entry.tags" readonly />
+      </div>
     </div>
 
     <!-- Location -->
@@ -296,6 +301,7 @@ import { computed } from 'vue';
 
 import DepthText from '../common/depth-text.vue';
 import DurationText from '../common/duration-text.vue';
+import FormTags from '../common/form-tags.vue';
 import PressureText from '../common/pressure-text.vue';
 import StarRating from '../common/star-rating.vue';
 import TemperatureText from '../common/temperature-text.vue';

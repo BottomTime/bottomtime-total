@@ -49,10 +49,8 @@ describe('WeightInput component', () => {
     currentUser.user = user;
     opts.props = {
       ...opts.props,
-      modelValue: {
-        weight: 5.5,
-        unit: WeightUnit.Pounds,
-      },
+      modelValue: 5.5,
+      unit: WeightUnit.Pounds,
     };
     const wrapper = mount(WeightInput, opts);
     expect(wrapper.get<HTMLInputElement>(WeightInputText).element.value).toBe(
@@ -69,5 +67,32 @@ describe('WeightInput component', () => {
       'yo!',
     );
     expect(wrapper.get(UnitButton).text()).toBe('kg');
+  });
+
+  it('will fire an event when user toggles the unit', async () => {
+    const user: UserDTO = {
+      ...BasicUser,
+      settings: {
+        ...BasicUser.settings,
+        weightUnit: WeightUnit.Pounds,
+      },
+    };
+    currentUser.user = user;
+    opts.props = {
+      ...opts.props,
+      modelValue: 5.5,
+      unit: WeightUnit.Pounds,
+    };
+
+    const wrapper = mount(WeightInput, opts);
+
+    await wrapper.get(UnitButton).trigger('click');
+    await wrapper.setProps({ unit: WeightUnit.Kilograms });
+    await wrapper.get(UnitButton).trigger('click');
+
+    expect(wrapper.emitted('toggle-unit')).toEqual([
+      [WeightUnit.Kilograms],
+      [WeightUnit.Pounds],
+    ]);
   });
 });

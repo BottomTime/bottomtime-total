@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DurationText component will render a shorter time correctly 1`] = `"0:00:23.45"`;
+
+exports[`DurationText component will render an empty value correctly 1`] = `"Unspecified"`;
+
+exports[`DurationText component will render correctly given a duration 1`] = `"1:11:14.23"`;

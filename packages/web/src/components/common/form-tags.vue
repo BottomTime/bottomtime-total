@@ -12,12 +12,15 @@
       <button
         v-if="!readonly"
         class="hover:bg-danger-hover rounded-full px-1"
+        :data-testid="`btn-remove-tag-${tag}`"
         @click.stop="() => onRemoveTag(index)"
       >
         <i class="fa-solid fa-xmark"></i>
         <span class="sr-only">Remove tag "{{ tag }}"</span>
       </button>
     </p>
+
+    <p v-if="readonly && tags.length === 0">No tags</p>
 
     <div v-if="!readonly" class="flex flex-wrap gap-2 items-baseline">
       <template v-if="state.isAddMode">
@@ -99,7 +102,7 @@
 
 <script lang="ts" setup>
 import useVuelidate from '@vuelidate/core';
-import { helpers, required } from '@vuelidate/validators';
+import { helpers, requiredIf } from '@vuelidate/validators';
 
 import { nextTick, reactive, ref } from 'vue';
 import { z } from 'zod';
@@ -149,10 +152,13 @@ const addTagButton = ref<HTMLButtonElement | null>(null);
 const v$ = useVuelidate<Pick<FormTagsState, 'newTag'>>(
   {
     newTag: {
-      required: helpers.withMessage('New tag is required', required),
+      required: helpers.withMessage(
+        'New tag is required',
+        requiredIf(() => state.isAddMode),
+      ),
       regex: helpers.withMessage(
         'New tag must be at least 3 characters long and contain only letters, numbers, and spaces',
-        (tag) => TagSchema.safeParse(tag).success,
+        (tag) => !helpers.req(tag) || TagSchema.safeParse(tag).success,
       ),
       unique: helpers.withMessage(
         'Tag already exists',
@@ -197,6 +203,7 @@ async function onConfirmNewTag(): Promise<void> {
   tags.value.push(tag);
   state.tagSet.add(tag.toLowerCase());
   state.isAddMode = false;
+  state.newTag = '';
 
   await nextTick();
   addTagButton.value?.focus();

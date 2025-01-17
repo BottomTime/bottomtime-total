@@ -167,7 +167,7 @@ export function dtoToFormData(
       surfaceInterval: '', // TODO
       entryTime: Number.isNaN(entry.timing.entryTime)
         ? undefined
-        : new Date(entry.timing.entryTime),
+        : dayjs(entry.timing.entryTime).tz(entry.timing.timezone).toDate(),
       tags: entry.tags ?? [],
     },
 
@@ -216,6 +216,10 @@ function getNumericValue(
   return typeof value === 'number' ? value : undefined;
 }
 
+function getRangeValue(value: number): number | undefined {
+  return value >= 1 && value <= 5 ? value : undefined;
+}
+
 function getNullableEnumValue<T>(value: T | ''): T | undefined {
   return value === '' ? undefined : value;
 }
@@ -243,11 +247,11 @@ export function formDataToDTO(
     conditions: {
       airTemperature: getNumericValue(data.conditions.airTemp),
       bottomTemperature: getNumericValue(data.conditions.thermocline),
-      chop: data.conditions.chop,
-      current: data.conditions.current,
+      chop: getRangeValue(data.conditions.chop),
+      current: getRangeValue(data.conditions.current),
       surfaceTemperature: getNumericValue(data.conditions.waterTemp),
       temperatureUnit: data.conditions.tempUnit,
-      visibility: data.conditions.visibility,
+      visibility: getRangeValue(data.conditions.visibility),
       weather: data.conditions.weather,
     },
     depths: {
@@ -270,7 +274,11 @@ export function formDataToDTO(
     },
     timing: {
       duration: getNumericValue(data.basicInfo.duration) ?? 0,
-      entryTime: data.basicInfo.entryTime?.valueOf() ?? 0,
+      entryTime: data.basicInfo.entryTime
+        ? dayjs(data.basicInfo.entryTime)
+            .tz(data.basicInfo.entryTimezone)
+            .valueOf()
+        : 0,
       timezone: data.basicInfo.entryTimezone,
       bottomTime: getNumericValue(data.basicInfo.bottomTime),
     },
