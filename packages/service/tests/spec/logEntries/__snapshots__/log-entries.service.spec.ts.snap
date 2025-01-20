@@ -65,6 +65,7 @@ exports[`Log entries service when creating a new log entry will create a new log
     "bottomTime": 2880,
     "duration": 3120,
     "entryTime": 1711658700000,
+    "surfaceInterval": undefined,
     "timezone": "Europe/Amsterdam",
   },
   "updatedAt": 2024-07-23T14:22:09.372Z,
@@ -1128,6 +1129,10 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
   },
   "site": {
     "averageRating": 1.48,
+    "depth": {
+      "depth": 10.58,
+      "unit": "ft",
+    },
     "description": "Adipiscor verus theologus chirographum cimentarius benigne tamquam occaecati corona. Tam verbum audacia. Aureus tolero acerbitas virgo impedit.",
     "gps": {
       "lat": -2.7163,
@@ -1142,6 +1147,7 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
     "bottomTime": 3021,
     "duration": 3324,
     "entryTime": 1656290866796,
+    "surfaceInterval": undefined,
     "timezone": "Asia/Atyrau",
   },
   "updatedAt": undefined,
@@ -1224,6 +1230,10 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
   },
   "site": {
     "averageRating": 1.48,
+    "depth": {
+      "depth": 10.58,
+      "unit": "ft",
+    },
     "description": "Adipiscor verus theologus chirographum cimentarius benigne tamquam occaecati corona. Tam verbum audacia. Aureus tolero acerbitas virgo impedit.",
     "gps": {
       "lat": -2.7163,
@@ -1238,6 +1248,7 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
     "bottomTime": 3021,
     "duration": 3324,
     "entryTime": 1656290866796,
+    "surfaceInterval": undefined,
     "timezone": "Asia/Atyrau",
   },
   "updatedAt": undefined,

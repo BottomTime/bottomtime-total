@@ -93,6 +93,10 @@ exports[`Log entries E2E tests when creating log entries will create and return 
   "notes": "I did a dive!",
   "site": {
     "averageRating": 3.09,
+    "depth": {
+      "depth": 12.86,
+      "unit": "m",
+    },
     "description": "Cui sopor assumenda minus conduco vehemens varius ipsa uredo. Strenuus conculco bis. Capitulus teneo desidero dedecor arbitro voluptatum.",
     "gps": {
       "lat": -57.4046,
@@ -516,6 +520,10 @@ Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor ben
   },
   "site": {
     "averageRating": 1.43,
+    "depth": {
+      "depth": 36.14,
+      "unit": "ft",
+    },
     "description": "Mollitia crebro solutio comedo velit theca cresco. Tardus una attonbitus aurum versus confero triumphus canto sumptus. Asporto dolore adaugeo censura amplus synagoga unde demoror ara commodo.",
     "gps": {
       "lat": 27.2481,
@@ -616,6 +624,10 @@ Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor ben
   },
   "site": {
     "averageRating": 1.43,
+    "depth": {
+      "depth": 36.14,
+      "unit": "ft",
+    },
     "description": "Mollitia crebro solutio comedo velit theca cresco. Tardus una attonbitus aurum versus confero triumphus canto sumptus. Asporto dolore adaugeo censura amplus synagoga unde demoror ara commodo.",
     "gps": {
       "lat": 27.2481,
