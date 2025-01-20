@@ -164,10 +164,12 @@ export function dtoToFormData(
       entryTimezone: entry.timing.timezone || dayjs.tz.guess(),
       logNumber: entry.logNumber || '',
       maxDepth: entry.depths?.maxDepth || '',
-      surfaceInterval: '', // TODO
+      surfaceInterval: entry.timing.surfaceInterval || '',
       entryTime: Number.isNaN(entry.timing.entryTime)
         ? undefined
-        : dayjs(entry.timing.entryTime).tz(entry.timing.timezone).toDate(),
+        : dayjs(entry.timing.entryTime)
+            .tz(entry.timing.timezone, true)
+            .toDate(),
       tags: entry.tags ?? [],
     },
 
@@ -276,11 +278,12 @@ export function formDataToDTO(
       duration: getNumericValue(data.basicInfo.duration) ?? 0,
       entryTime: data.basicInfo.entryTime
         ? dayjs(data.basicInfo.entryTime)
-            .tz(data.basicInfo.entryTimezone)
+            .tz(data.basicInfo.entryTimezone, true)
             .valueOf()
         : 0,
       timezone: data.basicInfo.entryTimezone,
       bottomTime: getNumericValue(data.basicInfo.bottomTime),
+      surfaceInterval: getNumericValue(data.basicInfo.surfaceInterval),
     },
     logNumber: getNumericValue(data.basicInfo.logNumber),
     notes: data.notes.notes,

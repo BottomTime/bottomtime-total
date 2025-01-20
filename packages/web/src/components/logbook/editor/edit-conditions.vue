@@ -15,6 +15,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
       <FormField
         label="Air Temperature"
+        control-id="airTemp"
         :invalid="v$.airTemp.$error"
         :error="v$.airTemp.$errors[0]?.$message"
       >
@@ -30,6 +31,7 @@
 
       <FormField
         label="Water Temperature"
+        control-id="waterTemp"
         :invalid="v$.waterTemp.$error"
         :error="v$.waterTemp.$errors[0]?.$message"
       >
@@ -45,6 +47,7 @@
 
       <FormField
         label="Thermocline"
+        control-id="thermocline"
         :invalid="v$.thermocline.$error"
         :error="v$.thermocline.$errors[0]?.$message"
       >

@@ -90,7 +90,7 @@ import {
 import { useVuelidate } from '@vuelidate/core';
 
 import 'dayjs/plugin/timezone';
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, watch } from 'vue';
 
 import { useClient } from '../../../api-client';
 import { useOops } from '../../../oops';
@@ -198,4 +198,21 @@ onMounted(async () => {
     },
   );
 });
+
+watch(
+  () => props.entry,
+  (newValue) => {
+    Object.assign(
+      formData,
+      dtoToFormData(newValue, {
+        depth: currentUser.user?.settings.depthUnit || DepthUnit.Meters,
+        pressure: currentUser.user?.settings.pressureUnit || PressureUnit.Bar,
+        temperature:
+          currentUser.user?.settings.temperatureUnit || TemperatureUnit.Celsius,
+        weight: currentUser.user?.settings.weightUnit || WeightUnit.Kilograms,
+      }),
+    );
+  },
+  { deep: true },
+);
 </script>

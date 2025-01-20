@@ -50,12 +50,44 @@
 
     <FormField label="Other Equipment:">
       <div class="grid grid-cols-2">
-        <FormCheckbox v-model="formData.boots">Boots</FormCheckbox>
-        <FormCheckbox v-model="formData.camera">Camera</FormCheckbox>
-        <FormCheckbox v-model="formData.hood">Hood</FormCheckbox>
-        <FormCheckbox v-model="formData.gloves">Gloves</FormCheckbox>
-        <FormCheckbox v-model="formData.scooter">Scooter</FormCheckbox>
-        <FormCheckbox v-model="formData.torch">Torch</FormCheckbox>
+        <FormCheckbox
+          v-model="formData.boots"
+          control-id="boots"
+          test-id="boots"
+        >
+          Boots
+        </FormCheckbox>
+        <FormCheckbox
+          v-model="formData.camera"
+          control-id="camera"
+          test-id="camera"
+        >
+          Camera
+        </FormCheckbox>
+        <FormCheckbox v-model="formData.hood" control-id="hood" test-id="hood">
+          Hood
+        </FormCheckbox>
+        <FormCheckbox
+          v-model="formData.gloves"
+          control-id="gloves"
+          test-id="gloves"
+        >
+          Gloves
+        </FormCheckbox>
+        <FormCheckbox
+          v-model="formData.scooter"
+          control-id="scooter"
+          test-id="scooter"
+        >
+          Scooter
+        </FormCheckbox>
+        <FormCheckbox
+          v-model="formData.torch"
+          control-id="torch"
+          test-id="torch"
+        >
+          Torch
+        </FormCheckbox>
       </div>
     </FormField>
   </section>
