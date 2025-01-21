@@ -8,9 +8,11 @@ import {
   ApiList,
   AvatarSize,
   CreateOrUpdateOperatorDTO,
+  DiveSiteDTO,
   ListAvatarURLsResponseDTO,
   LogBookSharing,
   OperatorDTO,
+  SearchDiveSitesResponseSchema,
   SearchOperatorsParams,
   SearchOperatorsResponseSchema,
   VerificationStatus,
@@ -18,6 +20,7 @@ import {
 import { Fetcher } from '../../src/client';
 import { OperatorsApiClient } from '../../src/client/operators';
 import TestData from '../fixtures/dive-operator-search-results.json';
+import TestDiveSites from '../fixtures/dive-sites-search-results.json';
 
 const TestKey = 'test-operator';
 const TestOperator: OperatorDTO = {
@@ -61,6 +64,7 @@ describe('Operators API client', () => {
   let fetcher: Fetcher;
   let client: OperatorsApiClient;
   let testData: ApiList<OperatorDTO>;
+  let diveSites: ApiList<DiveSiteDTO>;
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   let testFile: any; // Need to use "any" type here to avoid mismatch with JSDOM File type.
@@ -69,6 +73,7 @@ describe('Operators API client', () => {
     fetcher = new Fetcher();
     client = new OperatorsApiClient(fetcher);
     testData = SearchOperatorsResponseSchema.parse(TestData);
+    diveSites = SearchDiveSitesResponseSchema.parse(TestDiveSites);
 
     const img = await fs.readFile(
       path.resolve(__dirname, '../fixtures/waltito.png'),
@@ -402,6 +407,22 @@ describe('Operators API client', () => {
         expect(md5).toMatchSnapshot();
         resolve();
       };
+    });
+  });
+
+  it('will request dive sites for a given operator', async () => {
+    mockFetch.get(`/api/operators/${TestKey}/sites`, {
+      status: 200,
+      body: diveSites,
+    });
+
+    const sites = await client.listDiveSites(TestKey);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(sites.data).toHaveLength(diveSites.data.length);
+    expect(sites.totalCount).toBe(diveSites.totalCount);
+    sites.data.forEach((site, index) => {
+      expect(site).toEqual(diveSites.data[index]);
     });
   });
 });

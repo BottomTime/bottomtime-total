@@ -187,7 +187,7 @@ onMounted(async () => {
       }
       if (props.entry.operator) {
         formData.location.operator = await client.operators.getOperator(
-          props.entry.operator.id,
+          props.entry.operator.slug,
         );
       }
     },

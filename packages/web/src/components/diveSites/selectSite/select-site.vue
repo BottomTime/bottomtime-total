@@ -4,6 +4,14 @@
     :active-tab="state.activeTab"
     @tab-changed="onTabChanged"
   >
+    <OfferedByOperatorList
+      v-if="
+        state.activeTab === SelectSiteTabs.FromOperator && props.currentOperator
+      "
+      :operator="props.currentOperator"
+      :current-site="currentSite"
+    />
+
     <RecentSitesList
       v-if="state.activeTab === SelectSiteTabs.Recent"
       :current-site="currentSite"
@@ -40,6 +48,7 @@ import { useOops } from '../../../oops';
 import { useToasts } from '../../../store';
 import TabsPanel from '../../common/tabs-panel.vue';
 import CreateSiteWizard from '../create-site-wizard.vue';
+import OfferedByOperatorList from './offered-by-operator-list.vue';
 import RecentSitesList from './recent-sites-list.vue';
 import SearchDiveSitesForm from './search-dive-sites-form.vue';
 
@@ -79,7 +88,9 @@ const tabs = computed<TabInfo[]>(() => [
 ]);
 
 const state = reactive<SelectSiteState>({
-  activeTab: SelectSiteTabs.Recent,
+  activeTab: props.currentOperator
+    ? SelectSiteTabs.FromOperator
+    : SelectSiteTabs.Recent,
   isSavingNewSite: false,
 });
 

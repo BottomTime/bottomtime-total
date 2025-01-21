@@ -2,10 +2,12 @@ import {
   ApiList,
   CreateOrUpdateOperatorDTO,
   CreateOrUpdateOperatorSchema,
+  DiveSiteDTO,
   ImageBoundaryDTO,
   ListAvatarURLsResponseDTO,
   OperatorDTO,
   OperatorSchema,
+  SearchDiveSitesResponseSchema,
   SearchOperatorsParams,
   SearchOperatorsResponseSchema,
   VerificationStatus,
@@ -148,5 +150,14 @@ export class OperatorsApiClient {
 
   async deleteLogo(operatorSlug: string): Promise<void> {
     await this.apiClient.delete(`/api/operators/${operatorSlug}/logo`);
+  }
+
+  async listDiveSites(operatorSlug: string): Promise<ApiList<DiveSiteDTO>> {
+    const { data } = await this.apiClient.get(
+      `/api/operators/${operatorSlug}/sites`,
+      {},
+      SearchDiveSitesResponseSchema,
+    );
+    return data;
   }
 }

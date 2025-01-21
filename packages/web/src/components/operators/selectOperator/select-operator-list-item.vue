@@ -14,7 +14,7 @@
       <div class="flex align-baseline justify-between">
         <div class="flex gap-2">
           <button
-            :data-testid="`site-name-${operator.slug}`"
+            :data-testid="`operator-name-${operator.slug}`"
             @click="$emit('highlight', operator)"
           >
             <p class="text-lg font-title capitalize hover:text-link-hover">

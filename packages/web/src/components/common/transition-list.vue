@@ -7,20 +7,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 
-interface TransitionListProps {
-  inverted?: boolean;
-}
-
-const props = withDefaults(defineProps<TransitionListProps>(), {
-  inverted: false,
-});
-
 const classes = computed(() => ({
-  'even:*:bg-blue-900/40': props.inverted,
-  'dark:even:*:bg-blue-300/40': props.inverted,
-  'even:*:bg-blue-300/40': !props.inverted,
-  'dark:even:*:bg-blue-900/40': !props.inverted,
-  '*:rounded-md': true,
+  '*:border-b-2': true,
+  '*:border-secondary': true,
   '*:p-2': true,
+  'last:*:border-0': true,
 }));
 </script>

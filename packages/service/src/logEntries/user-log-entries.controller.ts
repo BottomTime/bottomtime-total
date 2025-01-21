@@ -621,6 +621,18 @@ export class UserLogEntriesController {
       logEntry.site = undefined;
     }
 
+    if (options.operator) {
+      const operator = await this.operators.getOperator(options.operator);
+      if (!operator) {
+        throw new BadRequestException(
+          `Operator with ID "${options.operator}" not found.`,
+        );
+      }
+      logEntry.operator = operator;
+    } else {
+      logEntry.operator = undefined;
+    }
+
     await logEntry.save();
     return logEntry.toJSON();
   }

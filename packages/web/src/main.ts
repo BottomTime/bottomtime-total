@@ -17,6 +17,7 @@ import AppComponent from './app-root.vue';
 import { clickOutside } from './click-outside';
 import { Config } from './config';
 import { FeaturesServiceKey } from './featrues';
+import { Geolocation, GeolocationKey } from './geolocation';
 import { router } from './router';
 import { StripeLoader, StripeLoaderKey } from './stripe';
 
@@ -44,6 +45,7 @@ const app = createApp(AppComponent)
   .use(pinia)
   .provide(ApiClientKey, client)
   .provide(FeaturesServiceKey, configCat)
+  .provide(GeolocationKey, new Geolocation())
   .provide(StripeLoaderKey, StripeLoader);
 
 app.mount('#app');

@@ -11,7 +11,51 @@
           @search="onSearch"
         />
 
-        <div>
+        <FormField label="Location">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <GoogleMap :marker="state.location" @click="onLocationSelected" />
+
+            <div class="space-y-3 text-center">
+              <div class="flex flex-col">
+                <label class="font-bold">GPS Coordinates</label>
+                <div class="flex justify-center items-baseline gap-2">
+                  <GpsCoordinatesText
+                    class="font-mono text-sm"
+                    :coordinates="state.location"
+                  />
+                  <button
+                    v-if="state.location"
+                    id="btn-clear-operator-location"
+                    data-testid="btn-clear-operator-location"
+                    class="bg-secondary-dark hover:bg-secondary-hover w-6 h-6 rounded-full shadow-md shadow-grey-900"
+                    @click="onClearLocation"
+                  >
+                    <i class="fa-solid fa-xmark"></i>
+                    <span class="sr-only">Clear location</span>
+                  </button>
+                </div>
+              </div>
+
+              <div v-if="state.location">
+                <label class="font-bold">Distance</label>
+                <div class="flex items-baseline gap-2">
+                  <FormSlider
+                    v-model="state.radius"
+                    :min="10"
+                    :max="500"
+                    :step="10"
+                    :show-value="false"
+                  />
+                  <span class="font-mono text-sm min-w-10 text-right"
+                    >{{ state.radius }}km</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </FormField>
+
+        <FormField>
           <FormCheckbox
             v-model="state.verified"
             control-id="operatorSearchVerified"
@@ -19,7 +63,7 @@
           >
             Show only verified dive shops
           </FormCheckbox>
-        </div>
+        </FormField>
 
         <div class="text-center">
           <FormButton
@@ -69,6 +113,7 @@
         <li
           v-else-if="state.operators.data.length === 0"
           class="space-x-2 text-center italic text-lg"
+          data-testid="search-operators-no-results"
         >
           <span>
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -91,7 +136,6 @@
           </FormButton>
         </li>
       </TransitionList>
-      <ul class="*:odd:bg-blue-300/40 *:odd:dark:bg-blue-900/40"></ul>
     </div>
   </div>
 </template>
@@ -105,13 +149,18 @@ import {
   VerificationStatus,
 } from '@bottomtime/api';
 
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 
 import { useClient } from '../../../api-client';
+import { useGeolocation } from '../../../geolocation';
 import { useOops } from '../../../oops';
 import FormButton from '../../common/form-button.vue';
 import FormCheckbox from '../../common/form-checkbox.vue';
+import FormField from '../../common/form-field.vue';
 import FormSearchBox from '../../common/form-search-box.vue';
+import FormSlider from '../../common/form-slider.vue';
+import GoogleMap from '../../common/google-map.vue';
+import GpsCoordinatesText from '../../common/gps-coordinates-text.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
 import TransitionList from '../../common/transition-list.vue';
 import SelectOperatorListItem from './select-operator-list-item.vue';
@@ -128,6 +177,7 @@ interface SearchOperatorsFormState {
 }
 
 const client = useClient();
+const geolocation = useGeolocation();
 const oops = useOops();
 
 defineEmits<{
@@ -182,7 +232,19 @@ async function onLoadMore(): Promise<void> {
   state.isLoadingMore = false;
 }
 
-function onOperatorHighlighted(operator: OperatorDTO): void {
+function onOperatorHighlighted(operator: OperatorDTO) {
   state.selectedOperator = operator.id;
 }
+
+function onLocationSelected(location: GpsCoordinates) {
+  state.location = location;
+}
+
+function onClearLocation() {
+  state.location = undefined;
+}
+
+onMounted(async () => {
+  state.location = await geolocation.getCurrentLocation();
+});
 </script>
