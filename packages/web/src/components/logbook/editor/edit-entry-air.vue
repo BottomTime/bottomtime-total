@@ -8,7 +8,7 @@
       <FormField
         class="order-1 col-span-1 md:col-span-2 lg:col-span-4"
         label="Tank"
-        :control-id="`tanks-select-${formData.id}`"
+        :control-id="`tanks-select-${ordinal}`"
         :responsive="false"
         :invalid="v$.tankId.$error"
         :error="v$.tankId.$errors[0]?.$message"
@@ -17,8 +17,8 @@
           <FormSelect
             v-model="formData.tankId"
             class="grow"
-            :control-id="`tanks-select-${formData.id}`"
-            test-id="tanks-select"
+            :control-id="`tanks-select-${ordinal}`"
+            :test-id="`tanks-select-${ordinal}`"
             :options="tankOptions"
             :invalid="v$.tankId.$error"
             stretch
@@ -26,7 +26,7 @@
 
           <FormCheckbox
             v-model="formData.doubles"
-            :control-id="`doubles-${formData.id}`"
+            :control-id="`doubles-${ordinal}`"
             test-id="doubles"
             class="mx-3"
           >
@@ -61,7 +61,7 @@
       <FormField
         class="order-4"
         label="Start Pressure"
-        :control-id="`start-pressure-${formData.id}`"
+        :control-id="`start-pressure-${ordinal}`"
         :invalid="v$.startPressure.$error"
         :error="v$.startPressure.$errors[0]?.$message"
         :responsive="false"
@@ -69,8 +69,8 @@
         <PressureInput
           v-model.number="formData.startPressure"
           :unit="formData.pressureUnit"
-          :control-id="`start-pressure-${formData.id}`"
-          test-id="start-pressure"
+          :control-id="`start-pressure-${ordinal}`"
+          :test-id="`start-pressure-${ordinal}`"
           :invalid="v$.startPressure.$error"
           @toggle-unit="onTogglePressureUnit"
         />
@@ -79,7 +79,7 @@
       <FormField
         class="order-5"
         label="End Pressure"
-        :control-id="`end-pressure-${formData.id}`"
+        :control-id="`end-pressure-${ordinal}`"
         :responsive="false"
         :invalid="v$.endPressure.$error"
         :error="v$.endPressure.$errors[0]?.$message"
@@ -87,8 +87,8 @@
         <PressureInput
           v-model.number="formData.endPressure"
           :unit="formData.pressureUnit"
-          :control-id="`end-pressure-${formData.id}`"
-          test-id="end-pressure"
+          :control-id="`end-pressure-${ordinal}`"
+          :test-id="`end-pressure-${ordinal}`"
           :invalid="v$.endPressure.$error"
           @toggle-unit="onTogglePressureUnit"
         />
@@ -97,7 +97,7 @@
       <FormField
         class="order-6"
         label="O₂ %"
-        :control-id="`o2-${formData.id}`"
+        :control-id="`o2-${ordinal}`"
         :responsive="false"
         :invalid="v$.o2Percent.$error"
         :error="v$.o2Percent.$errors[0]?.$message"
@@ -105,8 +105,8 @@
         <div class="relative">
           <FormTextBox
             v-model.number="formData.o2Percent"
-            :control-id="`o2-${formData.id}`"
-            test-id="o2"
+            :control-id="`o2-${ordinal}`"
+            :test-id="`o2-${ordinal}`"
             :invalid="v$.o2Percent.$error"
           />
           <span
@@ -124,7 +124,7 @@
       <FormField
         class="order-7"
         label="He %"
-        :control-id="`he-${formData.id}`"
+        :control-id="`he-${ordinal}`"
         :responsive="false"
         :invalid="v$.hePercent.$error"
         :error="v$.hePercent.$errors[0]?.$message"
@@ -132,8 +132,8 @@
         <div class="relative">
           <FormTextBox
             v-model.number="formData.hePercent"
-            :control-id="`he-${formData.id}`"
-            test-id="he"
+            :control-id="`he-${ordinal}`"
+            :test-id="`he-${ordinal}`"
             :invalid="v$.hePercent.$error"
           />
           <span
@@ -151,8 +151,8 @@
 
     <div class="min-w-6">
       <button
-        class="text-danger hover:text-danger-hover"
-        data-testid="remove-tank"
+        class="rounded-full px-2 shadow-lg shadow-grey-800 bg-danger-dark hover:bg-danger-hover text-grey-100"
+        :data-testid="`remove-tank-${ordinal}`"
         @click="$emit('remove', formData.id)"
       >
         <span class="sr-only">Remove air entry #{{ ordinal + 1 }}</span>
@@ -194,7 +194,7 @@ const emit = defineEmits<{
 
 const tankOptions = computed<SelectOption[]>(() => [
   props.air.tankId === '' && props.air.tankInfo
-    ? { value: 'current', label: '(current tank)' }
+    ? { value: 'current', label: props.air.tankInfo.name }
     : { value: '', label: '(select tank)' },
   ...props.tanks.map((tank) => ({
     value: tank.id,

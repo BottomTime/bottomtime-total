@@ -173,30 +173,30 @@ const v$ = useVuelidate<LogEntryConditions>(
     airTemp: {
       valid: helpers.withMessage(
         'Air temperature must be between -50 and 60°C (-58 and 140°F)',
-        (val) =>
+        (val, { tempUnit }) =>
           !helpers.req(val) ||
-          airTemperature({ temperature: val, unit: formData.value.tempUnit }),
+          airTemperature({ temperature: val, unit: tempUnit }),
       ),
     },
     waterTemp: {
       valid: helpers.withMessage(
         'Water temperature must be between -2 and 60°C (28 and 140°F)',
-        (val) =>
+        (val, { tempUnit }) =>
           !helpers.req(val) ||
           waterTemperature({
             temperature: val,
-            unit: formData.value.waterTemp,
+            unit: tempUnit,
           }),
       ),
     },
     thermocline: {
       valid: helpers.withMessage(
         'Thermocline temperature must be between -2 and 60°C (28 and 140°F)',
-        (val) =>
+        (val, { tempUnit }) =>
           !helpers.req(val) ||
           waterTemperature({
             temperature: val,
-            unit: formData.value.waterTemp,
+            unit: tempUnit,
           }),
       ),
     },

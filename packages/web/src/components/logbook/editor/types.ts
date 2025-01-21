@@ -168,7 +168,7 @@ export function dtoToFormData(
       entryTime: Number.isNaN(entry.timing.entryTime)
         ? undefined
         : dayjs(entry.timing.entryTime)
-            .tz(entry.timing.timezone, true)
+            .tz(entry.timing.timezone, false)
             .toDate(),
       tags: entry.tags ?? [],
     },
@@ -278,7 +278,7 @@ export function formDataToDTO(
       duration: getNumericValue(data.basicInfo.duration) ?? 0,
       entryTime: data.basicInfo.entryTime
         ? dayjs(data.basicInfo.entryTime)
-            .tz(data.basicInfo.entryTimezone, true)
+            .tz(data.basicInfo.entryTimezone, false)
             .valueOf()
         : 0,
       timezone: data.basicInfo.entryTimezone,

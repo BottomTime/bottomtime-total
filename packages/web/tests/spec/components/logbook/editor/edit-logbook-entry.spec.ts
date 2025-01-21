@@ -1,4 +1,15 @@
-import { ApiClient, LogEntryDTO, TankDTO, TankSchema } from '@bottomtime/api';
+import {
+  ApiClient,
+  DepthUnit,
+  ExposureSuit,
+  LogEntryDTO,
+  TankDTO,
+  TankSchema,
+  TemperatureUnit,
+  TrimCorrectness,
+  WeightCorrectness,
+  WeightUnit,
+} from '@bottomtime/api';
 
 import {
   ComponentMountingOptions,
@@ -37,6 +48,7 @@ const LogNumberInput = '#logNumber';
 const TimezoneSelect = '#entryTimeTimezone';
 const MaxDepthInput = '#maxDepth';
 const AvgDepthInput = '#avgDepth';
+const DepthUnitToggle = '#maxDepth-unit';
 const WeatherSelect = '#weather';
 const AirTempInput = '#airTemp';
 const WaterTempInput = '#waterTemp';
@@ -82,7 +94,7 @@ function compareForm(
   expect(wrapper.getComponent(FormDatePicker).props('modelValue')).toEqual(
     isNaN(entry.timing.entryTime)
       ? undefined
-      : dayjs(entry.timing.entryTime).tz(entry.timing.timezone, true).toDate(),
+      : dayjs(entry.timing.entryTime).tz(entry.timing.timezone, false).toDate(),
   );
   expect(wrapper.get<HTMLSelectElement>(TimezoneSelect).element.value).toBe(
     entry.timing.timezone || 'America/Los_Angeles',
@@ -298,10 +310,6 @@ describe('Log entry editor', () => {
     });
   });
 
-  describe('when working with dive operators', () => {});
-
-  describe('when working with dive sites', () => {});
-
   describe('when validating input', () => {
     let wrapper: VueWrapper<InstanceType<typeof EditLogbookEntry>>;
 
@@ -420,5 +428,111 @@ describe('Log entry editor', () => {
     });
   });
 
-  describe('when saving changes', () => {});
+  describe('when saving changes', () => {
+    it('will emit a save event when the log entry is saved', async () => {
+      const expected: LogEntryDTO = {
+        ...FullLogEntry,
+        logNumber: 777,
+        conditions: {
+          weather: 'Overcast',
+          airTemperature: 18.2,
+          bottomTemperature: 7.4,
+          surfaceTemperature: 12.3,
+          chop: 3,
+          current: 2,
+          visibility: 4.5,
+          temperatureUnit: TemperatureUnit.Celsius,
+        },
+        depths: {
+          maxDepth: 21.3,
+          averageDepth: 16.5,
+          depthUnit: DepthUnit.Meters,
+        },
+        equipment: {
+          boots: true,
+          camera: false,
+          exposureSuit: ExposureSuit.Wetsuit3mm,
+          gloves: false,
+          hood: false,
+          scooter: false,
+          torch: false,
+          trimCorrectness: TrimCorrectness.KneesDown,
+          weight: 3.2,
+          weightCorrectness: WeightCorrectness.Over,
+          weightUnit: WeightUnit.Kilograms,
+        },
+        notes: 'Updated notes',
+        rating: 3.88,
+        timing: {
+          entryTime: new Date('2024-07-23T12:52:10Z').valueOf(),
+          timezone: 'America/St_Johns',
+          duration: 2183,
+          bottomTime: 2022,
+        },
+        operator: undefined,
+        site: undefined,
+      };
+
+      const wrapper = mount(EditLogbookEntry, opts);
+
+      await wrapper.get(LogNumberInput).setValue(expected.logNumber);
+      await wrapper
+        .getComponent(FormDatePicker)
+        .setValue(
+          dayjs(expected.timing.entryTime)
+            .tz(expected.timing.timezone, false)
+            .toDate(),
+        );
+      await wrapper.get(TimezoneSelect).setValue(expected.timing.timezone);
+      const [duration, bottomTime, surfaceInterval] =
+        wrapper.findAllComponents(DurationInput);
+      await duration.setValue(expected.timing.duration);
+      await bottomTime.setValue(expected.timing.bottomTime);
+      await surfaceInterval.setValue('');
+      await wrapper.get(DepthUnitToggle).trigger('click');
+      await wrapper.get(MaxDepthInput).setValue(expected.depths?.maxDepth);
+      await wrapper.get(AvgDepthInput).setValue(expected.depths?.averageDepth);
+
+      await wrapper.get(WeatherSelect).setValue(expected.conditions?.weather);
+      await wrapper.get(TempUnitToggle).trigger('click');
+      await wrapper
+        .get(AirTempInput)
+        .setValue(expected.conditions?.airTemperature);
+      await wrapper
+        .get(WaterTempInput)
+        .setValue(expected.conditions?.surfaceTemperature);
+      await wrapper
+        .get(ThermoclineInput)
+        .setValue(expected.conditions?.bottomTemperature);
+      await wrapper.get(CurrentSlider).setValue(expected.conditions?.current);
+      await wrapper
+        .get(VisibilitySlider)
+        .setValue(expected.conditions?.visibility);
+      await wrapper.get(ChopSlider).setValue(expected.conditions?.chop);
+
+      await wrapper.get(WeightUnitToggle).trigger('click');
+      await wrapper.get(WeightInput).setValue(expected.equipment?.weight);
+      await wrapper
+        .get(WeightAccuracySelect)
+        .setValue(expected.equipment?.weightCorrectness);
+      await wrapper
+        .get(TrimAccuracySelect)
+        .setValue(expected.equipment?.trimCorrectness);
+      await wrapper.get(SuitSelect).setValue(expected.equipment?.exposureSuit);
+      await wrapper.get(BootsCheckbox).setValue(expected.equipment?.boots);
+      await wrapper.get(HoodCheckbox).setValue(expected.equipment?.hood);
+      await wrapper.get(GlovesCheckbox).setValue(expected.equipment?.gloves);
+      await wrapper.get(CameraCheckbox).setValue(expected.equipment?.camera);
+      await wrapper.get(ScooterCheckbox).setValue(expected.equipment?.scooter);
+      await wrapper.get(TorchCheckbox).setValue(expected.equipment?.torch);
+
+      await wrapper.get(NotesInput).setValue(expected.notes);
+      await wrapper.getComponent(StarRatingStub).setValue(expected.rating);
+
+      await wrapper.get(SaveButton).trigger('click');
+      await flushPromises();
+
+      expect(wrapper.emitted('save')).toEqual([[expected]]);
+    });
+  });
 });
