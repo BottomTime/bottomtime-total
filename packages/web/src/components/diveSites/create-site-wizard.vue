@@ -175,10 +175,12 @@
         >
           <DepthInput
             v-model="formData.depth"
+            :unit="formData.depthUnit"
             control-id="newSiteDepth"
             test-id="new-site-depth"
             :invalid="v$.depth.$error"
             allow-bottomless
+            @toggle-unit="onToggleDepthUnit"
           />
         </FormField>
 
@@ -425,12 +427,13 @@ const gps = computed<GpsCoordinates | undefined>(() => {
 });
 const map = ref<InstanceType<typeof GoogleMap> | null>(null);
 
-const v$ = useVuelidate(
+const v$ = useVuelidate<CreateSiteWizardFormData>(
   {
     depth: {
       valid: helpers.withMessage(
         'Depth must be a positive number and no more than 300m (984ft)',
-        depth,
+        (val, { depthUnit }) =>
+          !helpers.req(val) || depth({ depth: val, unit: depthUnit }),
       ),
     },
     gps: {
@@ -510,5 +513,9 @@ async function onSave(): Promise<void> {
   };
 
   emit('save', diveSite);
+}
+
+function onToggleDepthUnit(unit: DepthUnit) {
+  formData.depthUnit = unit;
 }
 </script>

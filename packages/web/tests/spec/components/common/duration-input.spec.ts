@@ -62,6 +62,6 @@ describe('DurationInput component', () => {
     ).toBe('08');
     expect(
       wrapper.get<HTMLInputElement>(DurationInputText.Seconds).element.value,
-    ).toBe('43.00');
+    ).toBe('43.33');
   });
 });

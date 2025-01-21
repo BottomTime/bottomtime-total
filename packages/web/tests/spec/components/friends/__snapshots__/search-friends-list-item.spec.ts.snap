@@ -2,7 +2,11 @@
 
 exports[`Search friends list item component will render correctly for full profile 1`] = `
 "<li class="flex space-x-3 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-sm p-2">
-  <div class="w-[32px]"><img class="rounded-full" width="32px" height="32px" alt="" src="https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg"></div>
+  <div class="w-[32px]">
+    <p class="rounded-full bg-link flex gap-2 items-center"><img class="rounded-full" width="32px" height="32px" alt="" src="https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/601.jpg">
+      <!--v-if-->
+    </p>
+  </div>
   <div class="flex flex-col space-y-1 grow">
     <p class="flex space-x-3 items-baseline"><span class="text-xl font-bold">Abel Koss</span><span class="text-lg">@Abel_Koss49</span></p>
     <p class="flex space-x-2"><span class="text-danger"><i class="fa-solid fa-location-dot"></i></span><span>Hamillside, CO, AZ</span></p>
@@ -16,7 +20,11 @@ exports[`Search friends list item component will render correctly for full profi
 
 exports[`Search friends list item component will render correctly for partial profile 1`] = `
 "<li class="flex space-x-3 items-center even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-sm p-2">
-  <div class="w-[32px]"><img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=Adolf19"></div>
+  <div class="w-[32px]">
+    <p class="rounded-full bg-link flex gap-2 items-center"><img class="rounded-full" width="32px" height="32px" alt="" src="https://ui-avatars.com/api/?name=Adolf19">
+      <!--v-if-->
+    </p>
+  </div>
   <div class="flex flex-col space-y-1 grow">
     <p class="flex space-x-3 items-baseline"><span class="text-xl font-bold">@Adolf19</span>
       <!--v-if-->

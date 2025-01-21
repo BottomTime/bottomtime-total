@@ -19,7 +19,6 @@ export function waterTemperature(val: unknown): boolean {
 }
 
 export function depth(val: unknown): boolean {
-  if (!helpers.req(val)) return true;
   const { success } = DepthSchema.safeParse(val);
   return success;
 }

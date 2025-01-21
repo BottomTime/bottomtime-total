@@ -33,19 +33,19 @@
           <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left">
             Bottom time / Duration:
           </p>
-          <span class="italic">
-            {{ `${entry.timing.bottomTime.toFixed(1)}min` }} /
-            {{ `${entry.timing.duration.toFixed(1)}min` }}
-          </span>
+          <p class="italic">
+            <DurationText :duration="entry.timing.bottomTime" />
+            / <DurationText :duration="entry.timing.duration" />
+          </p>
         </div>
 
         <div v-else class="flex space-x-2">
           <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left">
             Duration:
           </p>
-          <span class="italic">
-            {{ `${entry.timing.duration.toFixed(1)}min` }}
-          </span>
+          <p class="italic">
+            <DurationText :duration="entry.timing.duration" />
+          </p>
         </div>
 
         <div v-if="entry.depths?.maxDepth" class="flex space-x-2">
@@ -81,6 +81,7 @@ import { DepthUnit, LogEntryDTO } from '@bottomtime/api';
 import dayjs from 'dayjs';
 
 import DepthText from '../common/depth-text.vue';
+import DurationText from '../common/duration-text.vue';
 import FormButton from '../common/form-button.vue';
 import FormCheckbox from '../common/form-checkbox.vue';
 

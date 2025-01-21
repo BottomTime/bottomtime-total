@@ -10,13 +10,7 @@ exports[`SelectDiveSiteListItem component will render with full site data 1`] = 
         <p class="text-xl font-title capitalize hover:text-link-hover">Awesome Site 7</p>
       </button>
       <p class="flex gap-2">
-      <div class="flex gap-1.5 text-sm place-items-baseline">
-        <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-        <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-        <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-        <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-        <div><span class="fa-layers text-grey-500"><i class="far fa-star"></i></span></div><span>4.20</span>
-      </div>
+      <div readonly="">4.2</div>
       </p>
     </div>
     <div class="flex ml-2 justify-between">

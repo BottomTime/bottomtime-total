@@ -1,7 +1,11 @@
 <template>
   <div class="flex gap-5 justify-between items-center my-2">
     <div>
-      <TextHeading v-if="entry.logNumber" level="h1">
+      <TextHeading
+        v-if="entry.logNumber"
+        level="h1"
+        data-testid="entry-logNumber"
+      >
         #{{ entry.logNumber }}
       </TextHeading>
     </div>
@@ -278,7 +282,7 @@
 
         <label class="font-bold">Rating:</label>
         <p class="flex gap-2 items-center">
-          <StarRating :rating="entry.rating" read-only />
+          <StarRating :model-value="entry.rating" read-only />
           <span class="font-mono text-xs">
             {{ entry.rating?.toFixed(1) ?? 'not rated' }}
           </span>

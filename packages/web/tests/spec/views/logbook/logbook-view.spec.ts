@@ -26,10 +26,12 @@ import LogbookEntriesList from '../../../../src/components/logbook/logbook-entri
 import LogbookSearch from '../../../../src/components/logbook/logbook-search.vue';
 import { useCurrentUser } from '../../../../src/store';
 import LogbookView from '../../../../src/views/logbook/logbook-view.vue';
+import '../../../dayjs';
 import { createHttpError } from '../../../fixtures/create-http-error';
 import { createRouter } from '../../../fixtures/create-router';
 import LogEntryTestData from '../../../fixtures/log-entries.json';
 import { AdminUser, BasicUser } from '../../../fixtures/users';
+import StarRatingStub from '../../../star-rating-stub.vue';
 
 const ProfileData: ProfileDTO = {
   accountTier: AccountTier.Basic,
@@ -80,6 +82,7 @@ describe('Logbook view', () => {
         },
         stubs: {
           teleport: true,
+          StarRating: StarRatingStub,
         },
       },
     };
@@ -378,7 +381,7 @@ describe('Logbook view', () => {
 
     expect(wrapper.find('[data-testid="drawer-panel"]').isVisible()).toBe(true);
     expect(wrapper.find('[data-testid="entry-logNumber"]').text()).toBe(
-      entry.logNumber?.toString(),
+      `#${entry.logNumber}`,
     );
 
     await wrapper.find('[data-testid="drawer-close"]').trigger('click');

@@ -87,14 +87,14 @@
         <div v-if="site.averageRating" class="text-left">
           <p class="font-bold">Rating:</p>
           <p>
-            <StarRating :rating="site.averageRating" readonly />
+            <StarRating :model-value="site.averageRating" readonly />
           </p>
         </div>
         <div class="grow"></div>
         <div v-if="site.averageDifficulty" class="text-right">
           <p class="font-bold">Difficulty:</p>
           <p>
-            <StarRating :rating="site.averageDifficulty" readonly />
+            <StarRating :model-value="site.averageDifficulty" readonly />
           </p>
         </div>
       </div>

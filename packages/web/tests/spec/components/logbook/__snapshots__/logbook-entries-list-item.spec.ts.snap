@@ -12,7 +12,8 @@ exports[`LobbookEntriesListItem component will render correctly for partial logb
       </button><span class="italic text-sm">America/Los_Angeles</span></p>
     <div class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between">
       <div class="flex space-x-2">
-        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Duration: </p><span class="italic">44.1min</span>
+        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Duration: </p>
+        <p class="italic"><span>0:00:44.10</span></p>
       </div>
       <!--v-if-->
     </div>
@@ -35,7 +36,8 @@ exports[`LobbookEntriesListItem component will render correctly with full logboo
       </button><span class="italic text-sm">Europe/Dublin</span></p>
     <div class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between">
       <div class="flex space-x-2">
-        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Bottom time / Duration: </p><span class="italic">77.8min / 88.3min</span>
+        <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Bottom time / Duration: </p>
+        <p class="italic"><span>0:35:3.00</span> / <span>0:40:55.00</span></p>
       </div>
       <div class="flex space-x-2">
         <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left"> Max depth: </p><span class="italic">10.15 m</span>

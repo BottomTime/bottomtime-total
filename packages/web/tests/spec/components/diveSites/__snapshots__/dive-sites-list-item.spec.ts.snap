@@ -40,26 +40,14 @@ exports[`Dive Sites List Item component will render a dive site with full proper
       <div class="text-left">
         <p class="font-bold">Rating:</p>
         <p>
-        <div class="flex gap-1.5 text-sm place-items-baseline">
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div><span>5.00</span>
-        </div>
+        <div readonly="">5</div>
         </p>
       </div>
       <div class="grow"></div>
       <div class="text-right">
         <p class="font-bold">Difficulty:</p>
         <p>
-        <div class="flex gap-1.5 text-sm place-items-baseline">
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-          <div><span class="text-warn-hover fa-layers"><i class="fas fa-star"></i></span></div>
-          <div><span class="fa-layers text-grey-500"><i class="far fa-star"></i></span></div><span>4.40</span>
-        </div>
+        <div readonly="">4.4</div>
         </p>
       </div>
     </div>

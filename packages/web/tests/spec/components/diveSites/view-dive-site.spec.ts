@@ -7,6 +7,7 @@ import {
   DiveSiteWithFullProperties,
   DiveSiteWithMinimalProperties,
 } from '../../../fixtures/sites';
+import StarRatingStub from '../../../star-rating-stub.vue';
 
 describe('View Dive Site component', () => {
   let pinia: Pinia;
@@ -30,6 +31,9 @@ describe('View Dive Site component', () => {
       },
       global: {
         plugins: [pinia],
+        stubs: {
+          StarRating: StarRatingStub,
+        },
       },
     });
     expect(wrapper.html()).toMatchSnapshot();

@@ -11,6 +11,8 @@ import {
   PressureUnit,
   TankDTO,
   TankMaterial,
+  TemperatureUnit,
+  WeightUnit,
 } from '@bottomtime/api';
 
 import {
@@ -21,11 +23,14 @@ import {
 
 import dayjs from 'dayjs';
 import localized from 'dayjs/plugin/localizedFormat';
+import tz from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { Pinia, createPinia } from 'pinia';
 import { Router } from 'vue-router';
 
 import { ApiClientKey } from '../../../../src/api-client';
-import EditLogbookEntry from '../../../../src/components/logbook/edit-logbook-entry.vue';
+import DurationInput from '../../../../src/components/common/duration-input.vue';
+import EditLogbookEntry from '../../../../src/components/logbook/editor/edit-logbook-entry.vue';
 import ViewLogbookEntry from '../../../../src/components/logbook/view-logbook-entry.vue';
 import { useCurrentUser } from '../../../../src/store';
 import { useToasts } from '../../../../src/store';
@@ -38,8 +43,11 @@ import {
   BasicUser,
   UserWithEmptyProfile,
 } from '../../../fixtures/users';
+import StarRatingStub from '../../../star-rating-stub.vue';
 
 dayjs.extend(localized);
+dayjs.extend(utc);
+dayjs.extend(tz);
 
 const TestData: LogEntryDTO = {
   creator: {
@@ -111,7 +119,7 @@ describe('Log Entry view', () => {
         provide: {
           [ApiClientKey as symbol]: client,
         },
-        stubs: { teleport: true },
+        stubs: { teleport: true, StarRating: StarRatingStub },
       },
     };
 
@@ -190,8 +198,28 @@ describe('Log Entry view', () => {
   it('will allow a user to save changes to a log entry', async () => {
     const expected: LogEntryDTO = {
       ...TestData,
-      air: [],
+      air: [
+        {
+          count: 1,
+          endPressure: 50,
+          hePercent: undefined,
+          material: TankMaterial.Aluminum,
+          name: 'AL13 (CCR 2L): Aluminum XS-13',
+          o2Percent: undefined,
+          pressureUnit: PressureUnit.Bar,
+          startPressure: 207,
+          volume: 1.8,
+          workingPressure: 207,
+        },
+      ],
       creator: BasicUser.profile,
+      conditions: {
+        temperatureUnit: TemperatureUnit.Celsius,
+        weather: '',
+      },
+      equipment: {
+        weightUnit: WeightUnit.Kilograms,
+      },
       logNumber: 13,
       timing: {
         ...TestData.timing,
@@ -209,8 +237,11 @@ describe('Log Entry view', () => {
     await flushPromises();
 
     await wrapper.get('#logNumber').setValue('13');
-    await wrapper.get('#duration').setValue('66');
+    await wrapper.getComponent(DurationInput).setValue(66);
     await wrapper.get('#notes').setValue('New notes');
+    await wrapper.get('#tanks-select-0').setValue(tankData.data[0].id);
+    await wrapper.get('#start-pressure-0').setValue('207');
+    await wrapper.get('#end-pressure-0').setValue('50');
     await wrapper.get('#btnSave').trigger('click');
     await flushPromises();
 
@@ -224,9 +255,7 @@ describe('Log Entry view', () => {
     expect(wrapper.find<HTMLInputElement>('#logNumber').element.value).toBe(
       '13',
     );
-    expect(wrapper.find<HTMLInputElement>('#duration').element.value).toBe(
-      '66',
-    );
+    expect(wrapper.getComponent(DurationInput).props('modelValue')).toBe(66);
     expect(wrapper.find<HTMLTextAreaElement>('#notes').element.value).toBe(
       'New notes',
     );
@@ -250,6 +279,13 @@ describe('Log Entry view', () => {
         },
       ],
       creator: BasicUser.profile,
+      conditions: {
+        temperatureUnit: TemperatureUnit.Celsius,
+        weather: '',
+      },
+      equipment: {
+        weightUnit: WeightUnit.Kilograms,
+      },
       logNumber: 13,
       timing: {
         ...TestData.timing,
@@ -275,22 +311,25 @@ describe('Log Entry view', () => {
     await flushPromises();
 
     await wrapper.get('#logNumber').setValue('13');
-    await wrapper.get('#duration').setValue('66');
+    await wrapper.getComponent(DurationInput).setValue(66);
     await wrapper.get('#notes').setValue('New notes');
 
-    await wrapper.get('#btn-add-tank').trigger('click');
     await wrapper
-      .get('[data-testid="tanks-select"]')
+      .get('[data-testid="tanks-select-0"]')
       .setValue(tankData.data[0].id);
     await wrapper.get('[data-testid="doubles"]').setValue(true);
     await wrapper
-      .get('[data-testid="start-pressure"]')
+      .get('[data-testid="start-pressure-0"]')
       .setValue(air.startPressure.toString());
     await wrapper
-      .get('[data-testid="end-pressure"]')
+      .get('[data-testid="end-pressure-0"]')
       .setValue(air.endPressure.toString());
-    await wrapper.get('[data-testid="o2"]').setValue(air.o2Percent.toString());
-    await wrapper.get('[data-testid="he"]').setValue(air.hePercent.toString());
+    await wrapper
+      .get('[data-testid="o2-0"]')
+      .setValue(air.o2Percent.toString());
+    await wrapper
+      .get('[data-testid="he-0"]')
+      .setValue(air.hePercent.toString());
 
     await wrapper.get('#btnSave').trigger('click');
     await flushPromises();

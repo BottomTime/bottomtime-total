@@ -58,10 +58,12 @@
           <div class="flex flex-wrap gap-3">
             <DepthInput
               v-model="state.depth"
+              :unit="state.depthUnit"
               control-id="depth"
               test-id="depth"
               :invalid="v$.depth.$error"
               allow-bottomless
+              @toggle-unit="onToggleDepthUnit"
             />
           </div>
         </FormField>
@@ -521,5 +523,9 @@ function onConfirmDiscard(): void {
   Object.assign(state, newState);
   v$.value.$reset();
   showConfirmCancelDialog.value = false;
+}
+
+function onToggleDepthUnit(newUnit: DepthUnit) {
+  state.depthUnit = newUnit;
 }
 </script>

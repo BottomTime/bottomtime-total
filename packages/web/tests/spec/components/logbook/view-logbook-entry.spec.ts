@@ -1,13 +1,11 @@
 import { ComponentMountingOptions, mount } from '@vue/test-utils';
 
-import dayjs from 'dayjs';
-import localized from 'dayjs/plugin/localizedFormat';
 import { Pinia, createPinia } from 'pinia';
 
 import ViewLogbookEntry from '../../../../src/components/logbook/view-logbook-entry.vue';
+import '../../../dayjs';
 import { FullLogEntry, MinimalLogEntry } from '../../../fixtures/log-entries';
-
-dayjs.extend(localized);
+import StarRatingStub from '../../../star-rating-stub.vue';
 
 describe('ViewLogbookEntry component', () => {
   let pinia: Pinia;
@@ -19,6 +17,9 @@ describe('ViewLogbookEntry component', () => {
     opts = {
       global: {
         plugins: [pinia],
+        stubs: {
+          StarRating: StarRatingStub,
+        },
       },
     };
   });

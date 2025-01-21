@@ -20,6 +20,7 @@ import SearchDiveSitesForm from '../../../../../src/components/diveSites/selectS
 import SelectDiveSiteListItem from '../../../../../src/components/diveSites/selectSite/select-dive-site-list-item.vue';
 import { createRouter } from '../../../../fixtures/create-router';
 import TestDiveSiteData from '../../../../fixtures/dive-sites-search-results.json';
+import StarRatingStub from '../../../../star-rating-stub.vue';
 
 const SearchButton = '[data-testid="search-sites"]';
 const ResultsCounts = '[data-testid="search-sites-counts"]';
@@ -54,6 +55,7 @@ describe('SearchDiveSitesForm component', () => {
         },
         stubs: {
           teleport: true,
+          StarRating: StarRatingStub,
         },
       },
     };

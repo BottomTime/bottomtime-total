@@ -23,6 +23,7 @@ import { useCurrentUser } from '../../../../src/store';
 import DiveSitesView from '../../../../src/views/sites/dive-sites-view.vue';
 import { createRouter } from '../../../fixtures/create-router';
 import SearchResults from '../../../fixtures/dive-sites-search-results.json';
+import StarRatingStub from '../../../star-rating-stub.vue';
 
 dayjs.extend(relativeTime);
 
@@ -65,6 +66,7 @@ describe('Dive Sites View', () => {
         },
         stubs: {
           teleport: true,
+          StarRating: StarRatingStub,
         },
       },
     };

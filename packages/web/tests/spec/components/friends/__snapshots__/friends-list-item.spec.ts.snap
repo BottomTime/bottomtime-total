@@ -2,7 +2,11 @@
 
 exports[`Friends list item component will render correctly with full friend data 1`] = `
 "<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
-  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="min-w-[64px]">
+    <p class="rounded-full bg-link flex gap-2 items-center"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg">
+      <!--v-if-->
+    </p>
+  </div>
   <div class="grow flex flex-col space-y-1">
     <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl text-2xl" data-testid="select-friend-bob32" type="button">
         <!--v-if-->Bob the Diver
@@ -21,7 +25,11 @@ exports[`Friends list item component will render correctly with full friend data
 
 exports[`Friends list item component will render correctly with partial friend data 1`] = `
 "<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
-  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://ui-avatars.com/api/?name=bob32"></div>
+  <div class="min-w-[64px]">
+    <p class="rounded-full bg-link flex gap-2 items-center"><img class="rounded-full" width="64px" height="64px" alt="" src="https://ui-avatars.com/api/?name=bob32">
+      <!--v-if-->
+    </p>
+  </div>
   <div class="grow flex flex-col space-y-1">
     <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl text-2xl" data-testid="select-friend-bob32" type="button">
         <!--v-if-->@bob32

@@ -22,7 +22,7 @@
         </button>
 
         <p v-if="site.averageRating" class="flex gap-2">
-          <StarRating :rating="site.averageRating" readonly />
+          <StarRating :model-value="site.averageRating" readonly />
         </p>
       </div>
 

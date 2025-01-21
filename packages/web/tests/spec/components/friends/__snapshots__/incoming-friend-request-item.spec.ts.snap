@@ -2,7 +2,11 @@
 
 exports[`Incoming friend request list item will render correctly 1`] = `
 "<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
-  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="min-w-[64px]">
+    <p class="rounded-full bg-link flex gap-2 items-center"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg">
+      <!--v-if-->
+    </p>
+  </div>
   <div class="grow flex flex-col space-y-1">
     <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if-->Test User
@@ -22,7 +26,11 @@ exports[`Incoming friend request list item will render correctly 1`] = `
 
 exports[`Incoming friend request list item will render correctly for a declined request with a reason 1`] = `
 "<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
-  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="min-w-[64px]">
+    <p class="rounded-full bg-link flex gap-2 items-center"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg">
+      <!--v-if-->
+    </p>
+  </div>
   <div class="grow flex flex-col space-y-1">
     <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if-->Test User
@@ -43,7 +51,11 @@ exports[`Incoming friend request list item will render correctly for a declined 
 
 exports[`Incoming friend request list item will render correctly for a declined request with no reason 1`] = `
 "<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
-  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="min-w-[64px]">
+    <p class="rounded-full bg-link flex gap-2 items-center"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg">
+      <!--v-if-->
+    </p>
+  </div>
   <div class="grow flex flex-col space-y-1">
     <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if-->Test User
@@ -64,7 +76,11 @@ exports[`Incoming friend request list item will render correctly for a declined 
 
 exports[`Incoming friend request list item will render correctly for an accepted request 1`] = `
 "<li class="min-h-24 flex space-x-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-2 items-center">
-  <div class="min-w-[64px]"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg"></div>
+  <div class="min-w-[64px]">
+    <p class="rounded-full bg-link flex gap-2 items-center"><img class="rounded-full" width="64px" height="64px" alt="" src="https://example.com/avatar.jpg">
+      <!--v-if-->
+    </p>
+  </div>
   <div class="grow flex flex-col space-y-1">
     <p class="flex flex-col md:flex-row space-x-0 md:space-x-3 items-baseline"><button class="text-link hover:text-link-hover text-2xl" data-testid="select-request-c0175aac-fe45-4a53-a3f7-41eb0f0f52b6" type="button">
         <!--v-if-->Test User
