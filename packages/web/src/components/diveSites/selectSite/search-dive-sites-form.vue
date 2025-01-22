@@ -73,6 +73,7 @@
           :key="site.id"
           :site="site"
           :selected="site.id === state.selectedSite"
+          :multi-select="multiSelect"
           @highlight="onSiteHighlighted"
           @select="(site) => $emit('site-selected', site)"
         />
@@ -141,6 +142,10 @@ import NavLink from '../../common/nav-link.vue';
 import TransitionList from '../../common/transition-list.vue';
 import SelectDiveSiteListItem from './select-dive-site-list-item.vue';
 
+interface SelectDiveSiteListProps {
+  multiSelect: boolean;
+}
+
 interface SelectDiveSiteListState {
   isLoadingMore: boolean;
   isSearching: boolean;
@@ -159,6 +164,9 @@ defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
 
+withDefaults(defineProps<SelectDiveSiteListProps>(), {
+  multiSelect: false,
+});
 const state = reactive<SelectDiveSiteListState>({
   isLoadingMore: false,
   isSearching: false,

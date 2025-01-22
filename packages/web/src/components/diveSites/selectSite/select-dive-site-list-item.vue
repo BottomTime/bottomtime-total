@@ -1,7 +1,9 @@
 <template>
   <li ref="listItemElement" :class="classes">
     <div>
+      <FormCheckbox v-if="multiSelect" />
       <FormButton
+        v-else
         ref="selectButton"
         size="sm"
         :test-id="`select-site-${site.id}`"
@@ -48,14 +50,17 @@ import { DiveSiteDTO } from '@bottomtime/api';
 import { computed, ref, watch } from 'vue';
 
 import FormButton from '../../common/form-button.vue';
+import FormCheckbox from '../../common/form-checkbox.vue';
 import StarRating from '../../common/star-rating.vue';
 
 interface SelectDiveSiteListItemProps {
+  multiSelect?: boolean;
   selected?: boolean;
   site: DiveSiteDTO;
 }
 
 const props = withDefaults(defineProps<SelectDiveSiteListItemProps>(), {
+  multiSelect: false,
   selected: false,
 });
 defineEmits<{
@@ -66,11 +71,7 @@ defineEmits<{
 const listItemElement = ref<HTMLLIElement | null>(null);
 const classes = computed(() => ({
   border: props.selected,
-  'odd:bg-blue-500/40': true,
-  'odd:dark:bg-blue-600/40': true,
   'border-success': props.selected,
-  'rounded-md': true,
-  'p-2': true,
   'space-y-2': true,
   flex: true,
   'gap-2': true,

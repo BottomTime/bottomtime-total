@@ -21,6 +21,7 @@
 
     <SearchDiveSitesForm
       v-else-if="state.activeTab === SelectSiteTabs.Search"
+      :multi-select="multiSelect"
       @create="state.activeTab = SelectSiteTabs.Create"
       @site-selected="(site) => $emit('site-selected', site)"
     />
@@ -67,13 +68,18 @@ interface SelectSiteState {
 interface SelectSiteProps {
   currentSite?: DiveSiteDTO;
   currentOperator?: OperatorDTO;
+  multiSelect?: boolean;
+  showRecent?: boolean;
 }
 
 const client = useClient();
 const oops = useOops();
 const toasts = useToasts();
 
-const props = defineProps<SelectSiteProps>();
+const props = withDefaults(defineProps<SelectSiteProps>(), {
+  multiSelect: false,
+  showRecent: true,
+});
 const emit = defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
 }>();
@@ -82,7 +88,9 @@ const tabs = computed<TabInfo[]>(() => [
   ...(props.currentOperator
     ? [{ key: SelectSiteTabs.FromOperator, label: 'Offered by Your Dive Shop' }]
     : []),
-  { key: SelectSiteTabs.Recent, label: 'Recent Sites' },
+  ...(props.showRecent
+    ? [{ key: SelectSiteTabs.Recent, label: 'Recent Sites' }]
+    : []),
   { key: SelectSiteTabs.Search, label: 'Search for a Site' },
   { key: SelectSiteTabs.Create, label: 'Create a New Site' },
 ]);
@@ -90,7 +98,9 @@ const tabs = computed<TabInfo[]>(() => [
 const state = reactive<SelectSiteState>({
   activeTab: props.currentOperator
     ? SelectSiteTabs.FromOperator
-    : SelectSiteTabs.Recent,
+    : props.showRecent
+    ? SelectSiteTabs.Recent
+    : SelectSiteTabs.Search,
   isSavingNewSite: false,
 });
 

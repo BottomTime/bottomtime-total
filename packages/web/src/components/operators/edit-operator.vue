@@ -145,7 +145,7 @@
         @reject="onRejectVerification"
       />
 
-      <article class="flex gap-4">
+      <div class="flex gap-4">
         <figure v-if="operator?.id" class="px-2 py-6">
           <!-- Manage Logo -->
           <div v-if="operator?.logo" class="flex flex-col gap-2 justify-center">
@@ -202,7 +202,7 @@
           </div>
         </figure>
 
-        <div class="space-y-3">
+        <article class="space-y-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-10">
             <div>
               <TextHeading>Basic Info</TextHeading>
@@ -393,6 +393,7 @@
               </FormField>
             </div>
           </div>
+
           <TextHeading>Social Media Accounts</TextHeading>
 
           <FormField
@@ -489,8 +490,13 @@
               </div>
             </div>
           </FormField>
-        </div>
-      </article>
+
+          <div v-if="operator?.id" class="space-y-3">
+            <TextHeading>Dive Sites</TextHeading>
+            <EditOperatorSites :operator="operator" />
+          </div>
+        </article>
+      </div>
 
       <div class="flex justify-center gap-3">
         <FormButton
@@ -559,6 +565,7 @@ import AddressDialog from '../dialog/address-dialog.vue';
 import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UploadImageDialog from '../dialog/upload-image-dialog.vue';
 import ConfirmRejectVerificationDialog from './confirm-reject-verification-dialog.vue';
+import EditOperatorSites from './edit-operator-sites.vue';
 import VerificationBadge from './verification-badge.vue';
 
 interface EditOperatorFormData {
