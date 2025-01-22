@@ -14,9 +14,13 @@
         </button>
       </li>
     </ul>
-    <FormBox rounding="bottom" role="tabpanel" :aria-labelledby="labelledBy">
+    <div
+      class="bg-blue-400 dark:bg-blue-800 p-3 rounded-b-md shadow-md shadow-grey-800"
+      role="tabpanel"
+      :aria-labelledby="labelledBy"
+    >
       <slot></slot>
-    </FormBox>
+    </div>
   </div>
 </template>
 
@@ -24,7 +28,6 @@
 import { computed } from 'vue';
 
 import { TabInfo } from '../../common';
-import FormBox from './form-box.vue';
 
 type TabsPanelProps = {
   tabs: TabInfo[];
@@ -34,7 +37,7 @@ type TabsPanelProps = {
 const BaseTabStyle =
   'font-title p-2 hover:text-blue-500 hover:dark:text-blue-500';
 const inactiveTabStyle = `${BaseTabStyle} text-gray-500`;
-const activeTabStyle = `${BaseTabStyle} text-blue-800 dark:text-blue-300 font-bold rounded-t-md bg-blue-300 dark:bg-blue-900`;
+const activeTabStyle = `${BaseTabStyle} text-blue-800 dark:text-blue-300 font-bold rounded-t-md bg-blue-400 dark:bg-blue-800`;
 
 const props = defineProps<TabsPanelProps>();
 defineEmits<{

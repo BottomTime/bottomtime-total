@@ -21,9 +21,11 @@
 
     <SearchDiveSitesForm
       v-else-if="state.activeTab === SelectSiteTabs.Search"
+      :is-adding-sites="isAddingSites"
       :multi-select="multiSelect"
       @create="state.activeTab = SelectSiteTabs.Create"
       @site-selected="(site) => $emit('site-selected', site)"
+      @add="(sites) => $emit('multi-select', sites)"
     />
 
     <CreateSiteWizard
@@ -68,6 +70,7 @@ interface SelectSiteState {
 interface SelectSiteProps {
   currentSite?: DiveSiteDTO;
   currentOperator?: OperatorDTO;
+  isAddingSites?: boolean;
   multiSelect?: boolean;
   showRecent?: boolean;
 }
@@ -77,11 +80,13 @@ const oops = useOops();
 const toasts = useToasts();
 
 const props = withDefaults(defineProps<SelectSiteProps>(), {
+  isAddingSites: false,
   multiSelect: false,
   showRecent: true,
 });
 const emit = defineEmits<{
   (e: 'site-selected', site: DiveSiteDTO): void;
+  (e: 'multi-select', site: DiveSiteDTO[]): void;
 }>();
 
 const tabs = computed<TabInfo[]>(() => [

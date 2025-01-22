@@ -9,6 +9,7 @@ import {
   DiveSiteEntity,
   OperatorDiveSiteEntity,
   OperatorEntity,
+  UserEntity,
 } from '../data';
 import { DiveSite, DiveSiteFactory } from '../diveSites';
 
@@ -29,6 +30,12 @@ export class OperatorSites {
       .getRepository(DiveSiteEntity)
       .createQueryBuilder('sites')
       .innerJoin('sites.operators', 'operators')
+      .innerJoinAndMapOne(
+        'sites.creator',
+        UserEntity,
+        'creators',
+        'creators.id = sites.creatorId',
+      )
       .where('operators.operatorId = :operatorId', {
         operatorId: this.entity.id,
       })

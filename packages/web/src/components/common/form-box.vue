@@ -16,7 +16,7 @@ type FormBoxProps = {
 
 const props = withDefaults(defineProps<FormBoxProps>(), {
   rounding: 'all',
-  shadow: false,
+  shadow: true,
 });
 
 const roundingStyle = computed(() => {
@@ -33,6 +33,6 @@ const roundingStyle = computed(() => {
   }
 });
 const shadowStyle = computed(() =>
-  props.shadow ? 'shadow-sm shadow-grey-600' : '',
+  props.shadow ? 'shadow-md shadow-grey-800' : '',
 );
 </script>

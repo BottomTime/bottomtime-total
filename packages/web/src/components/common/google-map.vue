@@ -2,7 +2,7 @@
   <div
     :id="id"
     ref="mapElement"
-    class="w-full aspect-video"
+    class="w-full aspect-video shadow-md shadow-grey-900 rounded-sm"
     :data-testid="testId"
   ></div>
 </template>
@@ -29,6 +29,7 @@ let mapsLib: globalThis.google.maps.MapsLibrary;
 let markersLib: globalThis.google.maps.MarkerLibrary;
 
 let map: globalThis.google.maps.Map;
+
 let markerElement: globalThis.google.maps.marker.AdvancedMarkerElement | null;
 let siteMarkers: globalThis.google.maps.marker.AdvancedMarkerElement[];
 
@@ -50,7 +51,9 @@ const currentCenter = ref<GpsCoordinates>(
 
 function createSiteMarkers(sites: DiveSiteDTO[]) {
   if (map) {
-    if (siteMarkers) siteMarkers.forEach((siteMarker) => siteMarker.remove());
+    siteMarkers?.forEach((siteMarker) => {
+      siteMarker.map = null;
+    });
     siteMarkers = sites
       .filter((site) => !!site.gps)
       .map((site) => {
@@ -130,21 +133,6 @@ onBeforeMount(async () => {
   // Add a click listener to the map
   map.addListener('click', onMapClick);
 
-  if (!props.center && !props.marker && navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        currentCenter.value = {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        };
-      },
-      (error) => {
-        /* eslint-disable-next-line no-console */
-        console.error('Error getting current position', error);
-      },
-    );
-  }
-
   if (props.marker) {
     markerElement = new markersLib.AdvancedMarkerElement({
       map,
@@ -179,9 +167,12 @@ function moveCenter(newCenter: NonNullable<GpsCoordinates>) {
 watch(
   () => props.marker,
   (newMarker) => {
+    if (markerElement) {
+      markerElement.map = null;
+    }
+
     if (map) {
       if (newMarker) {
-        if (markerElement) markerElement.remove();
         markerElement = new markersLib.AdvancedMarkerElement({
           map,
           position: new globalThis.google.maps.LatLng(
@@ -190,7 +181,6 @@ watch(
           ),
         });
       } else {
-        if (markerElement) markerElement.remove();
         markerElement = null;
       }
     }

@@ -1,103 +1,66 @@
 <template>
-  <div
-    class="flex flex-col gap-0 bg-gradient-to-b from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-950 shadow-xl rounded-md border-blue-900 border-opacity-75 border-2 relative"
-  >
+  <div class="flex flex-col gap-0 relative">
     <a class="absolute -top-32" :name="site.id"></a>
 
-    <!-- Site Name -->
-    <div class="text-center bg-blue-200 rounded-t-md">
+    <!-- Site name and creator -->
+    <div class="flex justify-between items-baseline">
       <FormButton
         type="link"
         :test-id="`select-site-${site.id}`"
         @click="$emit('site-selected', site)"
       >
-        <h1 class="text-2xl font-bold capitalize py-1.5">{{ site.name }}</h1>
+        <h1 class="text-xl font-bold capitalize py-1.5">{{ site.name }}</h1>
       </FormButton>
+
+      <UserAvatar :profile="site.creator" size="small" show-name />
     </div>
 
-    <div class="flex flex-col gap-3 p-3 grow">
-      <!-- Location and creator -->
-      <div class="flex align-baseline items-baseline">
-        <p class="grow">
-          <span class="text-danger mr-2">
-            <i class="fas fa-map-marker-alt fa-fw"></i>
-          </span>
-          <span>{{ site.location }}</span>
-        </p>
-        <p>
-          <FormButton
-            type="link"
-            size="lg"
-            :test-id="`site-creator-${site.id}`"
-            @click="$emit('user-selected', site.creator.username)"
-          >
-            <span class="mr-2">
-              <i class="fas fa-user fa-fw"></i>
-            </span>
-            <span>{{ `@${site.creator.username}` }}</span>
-          </FormButton>
-        </p>
+    <!-- Description -->
+    <div class="text-sm text-justify italic">
+      {{ site.description }}
+    </div>
+
+    <!-- Other info -->
+    <div class="grid grid-cols-4 gap-3">
+      <div class="flex flex-col items-center">
+        <label class="font-bold">Location</label>
+        <span>{{ site.location }}</span>
+        <GpsCoordinatesText
+          v-if="site.gps"
+          class="text-xs font-mono"
+          :coordinates="site.gps"
+        />
       </div>
 
-      <!-- Description -->
-      <div class="text-sm text-justify italic">
-        {{ site.description }}
+      <div class="flex flex-col items-center">
+        <label class="font-bold">Depth</label>
+        <DepthText
+          v-if="site.depth"
+          :depth="site.depth.depth"
+          :unit="site.depth.unit"
+        />
+        <span v-else>Unspecified</span>
       </div>
 
-      <!-- Shim to force the rest of the content to the bottom -->
-      <div class="grow"></div>
-
-      <!-- Shore access, free to dive -->
-      <div class="flex gap-1.5 justify-between">
-        <div class="text-left">
-          <p class="font-bold">Shore Access:</p>
-          <p class="text-sm italic">
-            {{ shoreAccess }}
-          </p>
-        </div>
-        <div class="text-right">
-          <p class="font-bold">Free to Dive:</p>
-          <p class="text-sm italic">
-            {{ freeToDive }}
-          </p>
-        </div>
+      <div class="flex flex-col items-center">
+        <label class="font-bold">Shore Dive</label>
+        <span>{{ booleanString(site.shoreAccess) }}</span>
       </div>
 
-      <!-- Depth and water type -->
-      <div class="flex gap-1.5 justify-between">
-        <div class="text-left">
-          <p class="font-bold">Depth:</p>
-          <p class="text-sm italic">
-            <DepthText
-              v-if="site.depth"
-              :depth="site.depth.depth"
-              :unit="site.depth.unit"
-            />
-            <span v-else>Unknown</span>
-          </p>
-        </div>
-        <div class="text-right">
-          <p class="font-bold">Water Type:</p>
-          <p class="text-sm italic">{{ waterType }}</p>
-        </div>
+      <div class="flex flex-col items-center">
+        <label class="font-bold">Free to Dive</label>
+        <span>{{ booleanString(site.freeToDive) }}</span>
       </div>
 
-      <!-- Rating and difficulty -->
-      <div class="flex items-center justify-between">
-        <div v-if="site.averageRating" class="text-left">
-          <p class="font-bold">Rating:</p>
-          <p>
-            <StarRating :model-value="site.averageRating" readonly />
-          </p>
-        </div>
-        <div class="grow"></div>
-        <div v-if="site.averageDifficulty" class="text-right">
-          <p class="font-bold">Difficulty:</p>
-          <p>
-            <StarRating :model-value="site.averageDifficulty" readonly />
-          </p>
-        </div>
-      </div>
+      <span class="flex flex-col items-center">
+        <label class="font-bold">Rating</label>
+        <StarRating :model-value="site.averageRating" readonly />
+      </span>
+
+      <span class="flex flex-col items-center">
+        <label class="font-bold">Difficulty</label>
+        <StarRating :model-value="site.averageDifficulty" readonly />
+      </span>
     </div>
   </div>
 </template>
@@ -109,7 +72,9 @@ import { computed } from 'vue';
 
 import DepthText from '../common/depth-text.vue';
 import FormButton from '../common/form-button.vue';
+import GpsCoordinatesText from '../common/gps-coordinates-text.vue';
 import StarRating from '../common/star-rating.vue';
+import UserAvatar from '../users/user-avatar.vue';
 
 type DiveSitesListItemProps = {
   site: DiveSiteDTO;
@@ -147,4 +112,10 @@ const waterType = computed(() => {
       return 'Unknown';
   }
 });
+
+function booleanString(value?: boolean): string {
+  if (value === true) return 'Yes';
+  if (value === false) return 'No';
+  return 'Unspecified';
+}
 </script>

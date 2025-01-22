@@ -35,6 +35,7 @@ export class Geolocation implements IGeolocation {
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn('Failed to lookup current location', error);
+      return undefined;
     }
   }
 }

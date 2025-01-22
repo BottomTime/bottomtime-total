@@ -425,4 +425,28 @@ describe('Operators API client', () => {
       expect(site).toEqual(diveSites.data[index]);
     });
   });
+
+  it('will add dive sites to an operator', async () => {
+    const siteIds = [
+      '56d4558e-6b4e-484b-8b94-2ad907ee6f9b',
+      '18ae7cba-62cc-4c34-b104-3d1842075989',
+      'c5b79659-a76f-403f-94ae-889d5718fc21',
+    ];
+    mockFetch.post(
+      {
+        url: `/api/operators/${TestKey}/sites`,
+        body: { siteIds },
+      },
+      {
+        status: 200,
+        body: { attached: siteIds.length, skipped: 0 },
+      },
+    );
+
+    await expect(client.addDiveSites(TestKey, siteIds)).resolves.toBe(
+      siteIds.length,
+    );
+
+    expect(mockFetch.done()).toBe(true);
+  });
 });

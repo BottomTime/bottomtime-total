@@ -1,22 +1,32 @@
 <template>
-  <p class="rounded-full bg-link flex gap-2 items-center">
-    <img
-      class="rounded-full"
-      :width="size"
-      :height="size"
-      alt=""
-      :src="avatar"
-      :data-testid="testId"
-    />
-    <span v-if="showName" class="pr-3">
-      {{ props.profile?.name || props.profile?.username }}
+  <p
+    :class="`rounded-full bg-secondary text-grey-900 flex items-center gap-1 ${height} ${width}`"
+  >
+    <span class="relative">
+      <img
+        class="rounded-full"
+        :width="size"
+        :height="size"
+        alt=""
+        :src="avatar"
+        :data-testid="testId"
+      />
+      <span
+        v-if="(profile?.accountTier ?? 0) > AccountTier.Basic"
+        class="absolute -bottom-1.5 mx-auto text-xs bg-warn-hover rounded-full text-grey-900 w-8 h-4 text-center"
+      >
+        PRO
+      </span>
+    </span>
+    <span v-if="showName" :class="`pr-2 ${fontSize}`">
+      {{ profile?.name || `@${profile?.username}` }}
     </span>
   </p>
 </template>
 
 <script setup lang="ts">
 /* eslint-disable deprecation/deprecation */
-import { AvatarSize, SuccinctProfileDTO } from '@bottomtime/api';
+import { AccountTier, AvatarSize, SuccinctProfileDTO } from '@bottomtime/api';
 
 import { computed } from 'vue';
 
@@ -57,6 +67,29 @@ const size = computed(() => {
     case 'small':
     default:
       return '32px';
+  }
+});
+
+const height = computed(() => `h-[${size.value}]`);
+const width = computed(() => (props.showName ? `w-auto` : `w-[${size.value}]`));
+
+const fontSize = computed(() => {
+  switch (props.size) {
+    case 'x-large':
+      return 'text-4xl';
+
+    case 'large':
+      return 'text-2xl';
+
+    case 'medium':
+      return 'text-lg';
+
+    case 'x-small':
+      return 'text-xs';
+
+    case 'small':
+    default:
+      return 'text-sm';
   }
 });
 

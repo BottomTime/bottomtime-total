@@ -1,7 +1,11 @@
 <template>
   <li ref="listItemElement" :class="classes">
     <div>
-      <FormCheckbox v-if="multiSelect" />
+      <FormCheckbox
+        v-if="multiSelect"
+        :model-value="site.selected ?? false"
+        @update:model-value="$emit('toggle-checked', site)"
+      />
       <FormButton
         v-else
         ref="selectButton"
@@ -12,7 +16,7 @@
         Select
       </FormButton>
     </div>
-    <div>
+    <div class="grow space-y-2">
       <div class="flex align-baseline justify-between">
         <button
           :data-testid="`site-name-${site.id}`"
@@ -28,16 +32,38 @@
         </p>
       </div>
 
-      <div class="flex ml-2 justify-between">
+      <div class="">
         <p v-if="site.description" class="text-sm text-justify italic">
           {{ site.description }}
         </p>
       </div>
 
-      <div class="flex justify-evenly text-sm">
+      <div class="flex justify-between text-sm">
         <div class="text-center">
-          <p class="font-bold">Location</p>
+          <label class="font-bold">Location</label>
           <p>{{ site.location }}</p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Depth</label>
+          <p>
+            <DepthText
+              v-if="site.depth"
+              :depth="site.depth.depth"
+              :unit="site.depth.unit"
+            />
+            <span>Unspecified</span>
+          </p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Free to dive</label>
+          <p>{{ booleanText(site.freeToDive) }}</p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Shore dive</label>
+          <p>{{ booleanText(site.shoreAccess) }}</p>
         </div>
       </div>
     </div>
@@ -49,6 +75,7 @@ import { DiveSiteDTO } from '@bottomtime/api';
 
 import { computed, ref, watch } from 'vue';
 
+import DepthText from '../../common/depth-text.vue';
 import FormButton from '../../common/form-button.vue';
 import FormCheckbox from '../../common/form-checkbox.vue';
 import StarRating from '../../common/star-rating.vue';
@@ -56,7 +83,7 @@ import StarRating from '../../common/star-rating.vue';
 interface SelectDiveSiteListItemProps {
   multiSelect?: boolean;
   selected?: boolean;
-  site: DiveSiteDTO;
+  site: DiveSiteDTO & { selected?: boolean };
 }
 
 const props = withDefaults(defineProps<SelectDiveSiteListItemProps>(), {
@@ -66,6 +93,7 @@ const props = withDefaults(defineProps<SelectDiveSiteListItemProps>(), {
 defineEmits<{
   (e: 'select', site: DiveSiteDTO): void;
   (e: 'highlight', site: DiveSiteDTO): void;
+  (e: 'toggle-checked', site: DiveSiteDTO & { selected?: boolean }): void;
 }>();
 
 const listItemElement = ref<HTMLLIElement | null>(null);
@@ -77,6 +105,12 @@ const classes = computed(() => ({
   'gap-2': true,
   'items-center': true,
 }));
+
+function booleanText(value?: boolean): string {
+  if (value === true) return 'Yes';
+  if (value === false) return 'No';
+  return 'Unspecified';
+}
 
 watch(
   () => props.selected,

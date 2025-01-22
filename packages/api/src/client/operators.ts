@@ -1,5 +1,6 @@
 import {
   ApiList,
+  AttachDiveSitesResponseSchema,
   CreateOrUpdateOperatorDTO,
   CreateOrUpdateOperatorSchema,
   DiveSiteDTO,
@@ -159,5 +160,14 @@ export class OperatorsApiClient {
       SearchDiveSitesResponseSchema,
     );
     return data;
+  }
+
+  async addDiveSites(operatorSlug: string, siteIds: string[]): Promise<number> {
+    const { data } = await this.apiClient.post(
+      `/api/operators/${operatorSlug}/sites`,
+      { siteIds },
+      AttachDiveSitesResponseSchema,
+    );
+    return data.attached;
   }
 }
