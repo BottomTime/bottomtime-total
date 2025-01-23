@@ -14,7 +14,11 @@
       <span>.</span>
     </FormBox>
 
-    <TransitionList> </TransitionList>
+    <DiveSitesList
+      :sites="state.sites"
+      :show-map="false"
+      @site-selected="(site) => $emit('site-selected', site)"
+    />
   </div>
 </template>
 
@@ -27,7 +31,7 @@ import { useClient } from '../../../api-client';
 import { useOops } from '../../../oops';
 import FormBox from '../../common/form-box.vue';
 import LoadingSpinner from '../../common/loading-spinner.vue';
-import TransitionList from '../../common/transition-list.vue';
+import DiveSitesList from '../dive-sites-list.vue';
 
 interface OfferedByOperatorListProps {
   currentSite?: DiveSiteDTO;
@@ -50,6 +54,9 @@ const state = reactive<OfferedByOperatorListState>({
     totalCount: 0,
   },
 });
+defineEmits<{
+  (e: 'site-selected', site: DiveSiteDTO): void;
+}>();
 
 onMounted(async () => {
   await oops(async () => {

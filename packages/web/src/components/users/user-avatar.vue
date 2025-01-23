@@ -1,6 +1,6 @@
 <template>
   <p
-    :class="`rounded-full bg-secondary text-grey-900 flex items-center gap-1 ${height} ${width}`"
+    :class="`rounded-full bg-gradient-to-b from-secondary-dark to-secondary-hover text-grey-900 flex items-center gap-1 ${height} ${width} shadow-inner shadow-grey-800`"
   >
     <span class="relative">
       <img
@@ -18,7 +18,7 @@
         PRO
       </span>
     </span>
-    <span v-if="showName" :class="`pr-2 ${fontSize}`">
+    <span v-if="showName" :class="`pr-2 font-bold ${fontSize}`">
       {{ profile?.name || `@${profile?.username}` }}
     </span>
   </p>

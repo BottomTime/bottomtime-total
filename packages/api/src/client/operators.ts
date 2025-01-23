@@ -8,6 +8,7 @@ import {
   ListAvatarURLsResponseDTO,
   OperatorDTO,
   OperatorSchema,
+  RemoveDiveSitesResponseSchema,
   SearchDiveSitesResponseSchema,
   SearchOperatorsParams,
   SearchOperatorsResponseSchema,
@@ -169,5 +170,17 @@ export class OperatorsApiClient {
       AttachDiveSitesResponseSchema,
     );
     return data.attached;
+  }
+
+  async removeDiveSites(
+    operatorSlug: string,
+    siteIds: string[],
+  ): Promise<number> {
+    const { data } = await this.apiClient.delete(
+      `/api/operators/${operatorSlug}/sites`,
+      { siteIds },
+      RemoveDiveSitesResponseSchema,
+    );
+    return data.removed;
   }
 }

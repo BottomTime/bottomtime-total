@@ -25,6 +25,7 @@ export type TabInfo = {
   key: string;
   label: string;
   disabled?: boolean;
+  visible?: boolean;
 };
 
 export enum ToastType {
@@ -39,3 +40,5 @@ export type Toast = {
   message: string;
   type: ToastType;
 };
+
+export type Selectable<T> = T & { selected?: boolean };

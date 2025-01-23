@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="data.data.length === 0"
+    v-if="sites.data.length === 0"
     class="text-center text-lg m-6"
     data-testid="no-results"
   >
@@ -17,16 +17,17 @@
     <!-- Dive site entries -->
     <div v-if="showMap" class="flex justify-center w-full">
       <div class="w-full lg:w-[600px]">
-        <GoogleMap :sites="data.data" @site-selected="onMapClicked" />
+        <GoogleMap :sites="sites.data" @site-selected="onMapClicked" />
       </div>
     </div>
 
     <TransitionList class="px-2" data-testid="sites-list-content">
       <DiveSitesListItem
-        v-for="site in data.data"
+        v-for="site in sites.data"
         :key="site.id"
         :site="site"
         @site-selected="$emit('site-selected', site)"
+        @toggle-selection="onToggleSiteSelected"
       />
     </TransitionList>
 
@@ -55,19 +56,22 @@ import { ApiList, DiveSiteDTO } from '@bottomtime/api';
 
 import { computed } from 'vue';
 
+import { Selectable } from '../../common';
 import FormButton from '../common/form-button.vue';
 import GoogleMap from '../common/google-map.vue';
 import TransitionList from '../common/transition-list.vue';
 import DiveSitesListItem from './dive-sites-list-item.vue';
 
 type DiveSitesListProps = {
-  data: ApiList<DiveSiteDTO>;
+  sites: ApiList<Selectable<DiveSiteDTO>>;
   isLoadingMore?: boolean;
+  multiSelect?: boolean;
   showMap?: boolean;
 };
 
 const props = withDefaults(defineProps<DiveSitesListProps>(), {
   isLoadingMore: false,
+  multiSelect: false,
   showMap: true,
 });
 const emit = defineEmits<{
@@ -76,10 +80,14 @@ const emit = defineEmits<{
 }>();
 
 const canLoadMore = computed(
-  () => props.data.data.length < props.data.totalCount,
+  () => props.sites.data.length < props.sites.totalCount,
 );
 
 function onMapClicked(site: DiveSiteDTO) {
   emit('site-selected', site);
+}
+
+function onToggleSiteSelected(site: Selectable<DiveSiteDTO>) {
+  site.selected = !site.selected;
 }
 </script>

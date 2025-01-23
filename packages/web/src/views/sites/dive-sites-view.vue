@@ -50,7 +50,7 @@
       </FormBox>
 
       <DiveSitesList
-        :data="state.results"
+        :sites="state.results"
         :is-loading-more="state.isLoadingMore"
         @site-selected="(site) => (state.selectedSite = site)"
         @load-more="onLoadMore"

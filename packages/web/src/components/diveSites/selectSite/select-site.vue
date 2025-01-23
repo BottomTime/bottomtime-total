@@ -10,6 +10,7 @@
       "
       :operator="props.currentOperator"
       :current-site="currentSite"
+      @site-selected="(site) => $emit('site-selected', site)"
     />
 
     <RecentSitesList

@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="flex flex-row" role="tablist">
-      <li v-for="tab in tabs" :key="tab.key" :class="tabStyle(tab.key)">
+      <li v-for="tab in visibleTabs" :key="tab.key" :class="tabStyle(tab.key)">
         <button
           :id="`tab-${tab.key}`"
           :data-testid="`tab-${tab.key}`"
@@ -43,8 +43,13 @@ const props = defineProps<TabsPanelProps>();
 defineEmits<{
   (e: 'tab-changed', key: string): void;
 }>();
+
 const labelledBy = computed(() =>
   props.activeTab ? `tab-${props.activeTab}` : undefined,
+);
+
+const visibleTabs = computed(() =>
+  props.tabs.filter((tab) => tab.visible !== false),
 );
 
 function isActive(key: string): boolean {
