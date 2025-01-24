@@ -18,6 +18,7 @@ export * from './notification.entity';
 export * from './notification-whitelist.entity';
 export * from './operator-dive-site.entity';
 export * from './operator-review.entity';
+export * from './operator-team-member.entity';
 export * from './operators.entity';
 export * from './tank.entity';
 export * from './user-certification.entity';

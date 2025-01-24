@@ -7,7 +7,7 @@ import {
   SlugRegex,
   SortOrder,
 } from './constants';
-import { SuccinctProfileSchema, UsernameSchema } from './users';
+import { ProfileSchema, SuccinctProfileSchema, UsernameSchema } from './users';
 
 export enum VerificationStatus {
   /** Verification has not yet been requested for this entity. */
@@ -180,3 +180,16 @@ export const RemoveDiveSitesResponseSchema = z.object({
 export type RemoveDiveSitesResponseDTO = z.infer<
   typeof RemoveDiveSitesResponseSchema
 >;
+
+export const CreateOrUpdateTeamMemberSchema = z.object({
+  title: z.string().trim().max(200).optional(),
+  joined: z.number().int().optional(),
+});
+export type CreateOrUpdateTeamMemberDTO = z.infer<
+  typeof CreateOrUpdateTeamMemberSchema
+>;
+
+export const TeamMemberSchema = CreateOrUpdateTeamMemberSchema.extend({
+  member: ProfileSchema,
+});
+export type TeamMemberDTO = z.infer<typeof TeamMemberSchema>;

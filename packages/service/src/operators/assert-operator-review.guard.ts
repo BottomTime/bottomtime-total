@@ -1,7 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  Inject,
   Injectable,
   NotFoundException,
   createParamDecorator,
@@ -10,14 +9,9 @@ import {
 import { Request } from 'express';
 
 import { OperatorReview } from './operator-review';
-import { OperatorsService } from './operators.service';
 
 @Injectable()
 export class AssertOperatorReview implements CanActivate {
-  constructor(
-    @Inject(OperatorsService) private readonly service: OperatorsService,
-  ) {}
-
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
     if (!req.targetDiveOperator) {

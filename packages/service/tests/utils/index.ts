@@ -10,6 +10,7 @@ export * from './create-test-log-entry';
 export * from './create-test-log-entry-air';
 export * from './create-test-log-entry-import';
 export * from './create-test-log-entry-import-record';
+export * from './create-test-team-member';
 export * from './create-test-app';
 export * from './create-test-user';
 export * from './default-user-settings';

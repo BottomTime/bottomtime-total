@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OperatorTeamMember class will render as JSON 1`] = `
+{
+  "joined": 1609459200000,
+  "member": {
+    "accountTier": 0,
+    "avatar": "https://example.com/avatar.jpg",
+    "bio": "OMG! Diving!!",
+    "experienceLevel": "Expert",
+    "location": "San Francisco, CA",
+    "logBookSharing": "friends",
+    "memberSince": 1609459200000,
+    "name": "John Doe",
+    "startedDiving": "2008",
+    "userId": "9d1cf2fc-e112-43dd-9584-5800477c2af2",
+    "username": "Diver McDiverface",
+  },
+  "title": "Lead Instructor",
+}
+`;
