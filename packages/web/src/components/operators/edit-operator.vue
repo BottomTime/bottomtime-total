@@ -92,6 +92,12 @@
       v-else-if="state.activeTab === TabKey.DiveSites && operator"
       :operator="operator"
     />
+
+    <EditTeamMembers
+      v-else-if="state.activeTab === TabKey.TeamMembers && operator"
+      :operator="operator"
+      :is-saving="isSaving"
+    />
   </TabsPanel>
 </template>
 
@@ -109,6 +115,7 @@ import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import ConfirmRejectVerificationDialog from './confirm-reject-verification-dialog.vue';
 import EditOperatorInfo from './editor/edit-operator-info.vue';
 import EditOperatorSites from './editor/edit-operator-sites.vue';
+import EditTeamMembers from './editor/edit-team-members.vue';
 import VerificationBadge from './verification-badge.vue';
 
 enum TabKey {

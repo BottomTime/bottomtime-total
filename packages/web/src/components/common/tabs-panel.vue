@@ -15,7 +15,9 @@
       </li>
     </ul>
     <div
-      class="bg-blue-400 dark:bg-blue-800 p-3 rounded-b-md shadow-md shadow-grey-800"
+      :class="`bg-blue-400 dark:bg-blue-800 p-3 rounded-b-md rounded-tr-md shadow-md shadow-grey-800 ${
+        activeTab === visibleTabs[0]?.key ? '' : 'rounded-tl-md'
+      }`"
       role="tabpanel"
       :aria-labelledby="labelledBy"
     >

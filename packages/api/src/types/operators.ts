@@ -194,3 +194,8 @@ export const TeamMemberSchema = CreateOrUpdateTeamMemberSchema.extend({
   member: ProfileSchema,
 });
 export type TeamMemberDTO = z.infer<typeof TeamMemberSchema>;
+
+export const ListTeamMembersResponseSchema = z.object({
+  data: TeamMemberSchema.array(),
+  totalCount: z.number().int(),
+});

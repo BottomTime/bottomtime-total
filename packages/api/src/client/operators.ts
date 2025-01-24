@@ -3,15 +3,20 @@ import {
   AttachDiveSitesResponseSchema,
   CreateOrUpdateOperatorDTO,
   CreateOrUpdateOperatorSchema,
+  CreateOrUpdateTeamMemberDTO,
   DiveSiteDTO,
   ImageBoundaryDTO,
   ListAvatarURLsResponseDTO,
+  ListTeamMembersResponseSchema,
   OperatorDTO,
   OperatorSchema,
   RemoveDiveSitesResponseSchema,
   SearchDiveSitesResponseSchema,
   SearchOperatorsParams,
   SearchOperatorsResponseSchema,
+  SuccessCountSchema,
+  TeamMemberDTO,
+  TeamMemberSchema,
   VerificationStatus,
 } from '../types';
 import { Fetcher } from './fetcher';
@@ -182,5 +187,40 @@ export class OperatorsApiClient {
       RemoveDiveSitesResponseSchema,
     );
     return data.removed;
+  }
+
+  async listTeamMembers(operatorSlug: string): Promise<ApiList<TeamMemberDTO>> {
+    const { data } = await this.apiClient.get(
+      `/api/operators/${operatorSlug}/team`,
+      undefined,
+      ListTeamMembersResponseSchema,
+    );
+    return data;
+  }
+
+  async addOrUpdateTeamMember(
+    operatorSlug: string,
+    teamMember: string,
+    options: CreateOrUpdateTeamMemberDTO,
+  ): Promise<TeamMemberDTO> {
+    const { data } = await this.apiClient.put(
+      `/api/operators/${operatorSlug}/team/${teamMember}`,
+      options,
+      TeamMemberSchema,
+    );
+    return data;
+  }
+
+  async removeTeamMembers(
+    operatorSlug: string,
+    teamMembers: string | string[],
+  ): Promise<number> {
+    if (typeof teamMembers === 'string') teamMembers = [teamMembers];
+    const { data } = await this.apiClient.delete(
+      `/api/operators/${operatorSlug}/team`,
+      teamMembers,
+      SuccessCountSchema,
+    );
+    return data.succeeded;
   }
 }
