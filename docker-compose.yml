@@ -9,6 +9,7 @@ services:
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       - DEBUG=${DEBUG:-0}
+      - PERSISTENCE=1
       - SERVICES=s3,sqs,ses
     volumes:
       - './init-localstack.sh:/etc/localstack/init/ready.d/init-localstack.sh'

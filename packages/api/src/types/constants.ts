@@ -233,6 +233,12 @@ export const SuccessFailResponseSchema = z.object({
 });
 export type SuccessFailResponseDTO = z.infer<typeof SuccessFailResponseSchema>;
 
+export const SuccessCountSchema = z.object({
+  succeeded: z.number().int().min(0),
+  skipped: z.number().int().min(0),
+});
+export type SuccessCountDTO = z.infer<typeof SuccessCountSchema>;
+
 export const DepthSchema = z
   .object({
     depth: z.number().min(0),

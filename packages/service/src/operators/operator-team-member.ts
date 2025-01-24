@@ -19,10 +19,10 @@ export class OperatorTeamMember {
     this.data.title = value ?? null;
   }
 
-  get joined(): Date | undefined {
+  get joined(): string | undefined {
     return this.data.joined ?? undefined;
   }
-  set joined(value: Date | undefined) {
+  set joined(value: string | undefined) {
     this.data.joined = value ?? null;
   }
 

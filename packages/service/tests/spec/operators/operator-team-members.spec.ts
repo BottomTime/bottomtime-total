@@ -43,7 +43,7 @@ describe('OperatorTeamMembers class', () => {
 
     teamMemberData = userData
       .map((user) => createTestTeamMember(operator, user))
-      .sort((a, b) => b.joined!.valueOf() - a.joined!.valueOf());
+      .sort((a, b) => b.joined!.localeCompare(a.joined!));
     teamMemberData.push(createTestTeamMember(otherOperator, userData[1]));
     teamMemberData.push(createTestTeamMember(otherOperator, otherUser));
 
@@ -98,14 +98,14 @@ describe('OperatorTeamMembers class', () => {
 
   it('will add a new member to a dive operator', async () => {
     const title = 'Technical Instructor';
-    const joined = new Date('2025-01-15T00:00:00Z');
+    const joined = '2025-01-15';
     const userData = createTestUser();
 
     await Users.save(userData);
 
     const member = await teamMembers.addMember({
       title,
-      joined: joined.valueOf(),
+      joined,
       member: userFactory.createUser(userData),
     });
 

@@ -52,7 +52,7 @@ describe('OperatorTeamMember class', () => {
       operator,
       teamMember: user,
       title: 'Lead Instructor',
-      joined: new Date('2021-01-01T00:00:00Z'),
+      joined: '2021-01-01',
     };
 
     await Users.save(user);
@@ -93,7 +93,7 @@ describe('OperatorTeamMember class', () => {
     await Members.save(data);
 
     const newTitle = 'Dive Master';
-    const newJoined = new Date('2024-04-04T00:00:00Z');
+    const newJoined = '2024-04-04';
     teamMember.title = newTitle;
     teamMember.joined = newJoined;
     await teamMember.save();

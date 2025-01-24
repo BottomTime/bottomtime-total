@@ -13,18 +13,21 @@ import { resolve } from 'path';
 import { Repository } from 'typeorm';
 
 import {
-  OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
   UserEntity,
 } from '../../../src/data';
-import { CreateOperatorReviewOptions, Operator } from '../../../src/operators';
+import {
+  CreateOperatorReviewOptions,
+  Operator,
+  OperatorFactory,
+} from '../../../src/operators';
 import { User } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestReviews from '../../fixtures/operator-reviews.json';
 import TestUsers from '../../fixtures/user-search-data.json';
 import {
-  createDiveSiteFactory,
+  createOperatorFactory,
   createTestDiveOperatorReview,
   createTestOperator,
   createTestUser,
@@ -69,6 +72,7 @@ describe('Operator class', () => {
   let Users: Repository<UserEntity>;
   let Operators: Repository<OperatorEntity>;
   let Reviews: Repository<OperatorReviewEntity>;
+  let operatorFactory: OperatorFactory;
 
   let owner: UserEntity;
   let otherUser: UserEntity;
@@ -79,6 +83,7 @@ describe('Operator class', () => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
     Reviews = dataSource.getRepository(OperatorReviewEntity);
+    operatorFactory = createOperatorFactory();
 
     owner = createTestUser({
       accountTier: AccountTier.Basic,
@@ -109,13 +114,7 @@ describe('Operator class', () => {
       ...TestData,
       owner,
     };
-    operator = new Operator(
-      Operators,
-      dataSource.getRepository(OperatorDiveSiteEntity),
-      Reviews,
-      createDiveSiteFactory(),
-      data,
-    );
+    operator = operatorFactory.createOperator(data);
   });
 
   it('will return properties correctly', () => {
@@ -325,13 +324,7 @@ describe('Operator class', () => {
     newData.name = 'Different Operator';
     newData.slug = TestData.slug;
     newData.owner = owner;
-    const newOperator = new Operator(
-      Operators,
-      dataSource.getRepository(OperatorDiveSiteEntity),
-      Reviews,
-      createDiveSiteFactory(),
-      newData,
-    );
+    const newOperator = operatorFactory.createOperator(newData);
     await Operators.save(data);
 
     await expect(newOperator.save()).rejects.toThrow(ConflictException);

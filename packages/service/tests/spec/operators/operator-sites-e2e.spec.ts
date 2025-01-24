@@ -12,11 +12,13 @@ import {
   OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
+  OperatorTeamMemberEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSitesModule } from '../../../src/diveSites';
 import { OperatorFactory, OperatorsService } from '../../../src/operators';
 import { OperatorSitesController } from '../../../src/operators/operator-sites.controller';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestSites from '../../fixtures/dive-sites.json';
 import {
@@ -81,8 +83,11 @@ describe('Operator Dive Sites E2E tests', () => {
           OperatorEntity,
           OperatorDiveSiteEntity,
           OperatorReviewEntity,
+          OperatorTeamMemberEntity,
+          UserEntity,
         ]),
         DiveSitesModule,
+        UsersModule,
       ],
       providers: [OperatorsService, OperatorFactory],
       controllers: [OperatorSitesController],

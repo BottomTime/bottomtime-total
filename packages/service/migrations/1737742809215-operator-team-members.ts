@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class OperatorTeamMembers1737652907534 implements MigrationInterface {
-  name = 'OperatorTeamMembers1737652907534';
+export class OperatorTeamMembers1737742809215 implements MigrationInterface {
+  name = 'OperatorTeamMembers1737742809215';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "dive_operator_team_members" ("id" uuid NOT NULL, "title" character varying(200), "joined" TIMESTAMP, "operatorId" uuid, "teamMemberId" uuid, CONSTRAINT "PK_58878c76afbddeabf1a0202742c" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "dive_operator_team_members" ("id" uuid NOT NULL, "title" character varying(200), "joined" character varying(20), "operatorId" uuid, "teamMemberId" uuid, CONSTRAINT "PK_58878c76afbddeabf1a0202742c" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_f34ae3cb78fff54be41e3a55d1" ON "dive_operator_team_members" ("operatorId", "teamMemberId") `,

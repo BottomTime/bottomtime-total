@@ -2,7 +2,7 @@
 
 exports[`OperatorTeamMember class will render as JSON 1`] = `
 {
-  "joined": 1609459200000,
+  "joined": "2021-01-01",
   "member": {
     "accountTier": 0,
     "avatar": "https://example.com/avatar.jpg",

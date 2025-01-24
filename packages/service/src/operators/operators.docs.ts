@@ -13,6 +13,14 @@
  *         pattern: ^[a-zA-Z0-9\-$_.+!*'()]+$
  *         minLength: 1
  *         maxLength: 200
+ *     TeamMemberUsername:
+ *       name: teamMember
+ *       in: path
+ *       description: The username of the dive operator's team member being requested or operated upon.
+ *       required: true
+ *       example: Dan_McDiverson99
+ *       schema:
+ *         type: string
  *   schemas:
  *     CreateOrUpdateDiveOperator:
  *       type: object
@@ -347,4 +355,29 @@
  *               format: int64
  *               name: Last Updated
  *               description: The date and time at which the dive operator review was last updated. Specified in milliseconds since the Unix epoch.
+ *     CreateOrUpdateDiveOperatorTeamMember:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *           name: Title
+ *           description: |
+ *             The title or position of the team member within the dive operator's team.
+ *           example: Assistant Instructor
+ *         joined:
+ *           type: string
+ *           pattern: ^\d{4}(-\d{2}(-\d{2})?)?$
+ *           name: Joined
+ *           description: |
+ *             The date at which the team member joined the dive operator's team.
+ *           example: 2021-09-01
+ *     DiveOperatorTeamMember:
+ *       allOf:
+ *         - $ref: "#/components/schemas/CreateOrUpdateDiveOperatorTeamMember"
+ *         - type: object
+ *           required:
+ *             - member
+ *           properties:
+ *             member:
+ *               $ref: "#/components/schemas/Profile"
  */

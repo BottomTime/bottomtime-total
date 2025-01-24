@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import {
   BooleanString,
+  FuzzyDateRegex,
   GpsCoordinatesSchema,
   PhoneNumber,
   SlugRegex,
@@ -183,7 +184,7 @@ export type RemoveDiveSitesResponseDTO = z.infer<
 
 export const CreateOrUpdateTeamMemberSchema = z.object({
   title: z.string().trim().max(200).optional(),
-  joined: z.number().int().optional(),
+  joined: z.string().trim().regex(FuzzyDateRegex).optional(),
 });
 export type CreateOrUpdateTeamMemberDTO = z.infer<
   typeof CreateOrUpdateTeamMemberSchema

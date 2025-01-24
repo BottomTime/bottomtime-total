@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Operator Team Members E2E tests when adding or updating a team member will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "title",
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid",
+      "path": [
+        "joined",
+      ],
+      "validation": "regex",
+    },
+  ],
+}
+`;
+
+exports[`Operator Team Members E2E tests when bulk deleting team members will return a 400 response if the no usernames are provided in the request body 1`] = `
+{
+  "issues": [
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Array must contain at least 1 element(s)",
+      "minimum": 1,
+      "path": [],
+      "type": "array",
+    },
+  ],
+}
+`;
+
+exports[`Operator Team Members E2E tests when bulk deleting team members will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        0,
+      ],
+      "received": "boolean",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received number",
+      "path": [
+        2,
+      ],
+      "received": "number",
+    },
+  ],
+}
+`;

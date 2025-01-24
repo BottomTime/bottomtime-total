@@ -3,7 +3,7 @@ import { Certification } from '../../certifications';
 import { DiveSite, DiveSiteReview } from '../../diveSites';
 import { LogEntry, LogEntryImport } from '../../logEntries';
 import { Notification } from '../../notifications';
-import { Operator, OperatorReview, OperatorTeamMember } from '../../operators';
+import { Operator, OperatorReview } from '../../operators';
 import { Tank } from '../../tanks';
 import { User as BTUser } from '../../users';
 
@@ -21,7 +21,6 @@ declare global {
       targetLogEntryImport: LogEntryImport | undefined;
       targetNotification: Notification | undefined;
       targetTank: Tank | undefined;
-      targetTeamMember: OperatorTeamMember | undefined;
       targetUser: BTUser | undefined;
     }
   }

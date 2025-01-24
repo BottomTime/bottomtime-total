@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 
+import dayjs from 'dayjs';
+
 import {
   OperatorEntity,
   OperatorTeamMemberEntity,
@@ -21,6 +23,6 @@ export function createTestTeamMember(
       'Owner',
       'Manager',
     ]),
-    joined: faker.date.past({ years: 6 }),
+    joined: dayjs(faker.date.past({ years: 6 })).format('yyyy-mm-dd'),
   };
 }

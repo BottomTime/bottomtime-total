@@ -1468,21 +1468,6 @@ exports[`Log entries E2E tests when updating an existing log entry will allow an
   "id": "216ddf91-9cd4-4345-99a3-cfeea61ad12b",
   "logNumber": 102,
   "notes": "I did a dive!",
-  "operator": {
-    "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
-    "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
-Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor benevolentia. Tutamen amplitudo curis atavus. Appono somniculosus delicate admoveo.",
-    "gps": {
-      "lat": 6.9546,
-      "lon": -52.6869,
-    },
-    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
-    "logo": "https://loremflickr.com/128/128?lock=2275161833209856",
-    "name": "soft, ornery grape",
-    "phone": "1-869-633-8778 x70097",
-    "slug": "soft-ornery-grape",
-    "website": "https://fake-endive.info/",
-  },
   "tags": [],
   "timing": {
     "bottomTime": 46,
@@ -1615,21 +1600,6 @@ exports[`Log entries E2E tests when updating an existing log entry will update t
   "id": "216ddf91-9cd4-4345-99a3-cfeea61ad12b",
   "logNumber": 102,
   "notes": "I did a dive!",
-  "operator": {
-    "address": "1880 W Bridge Street Suite 633, South Felipestead, WY, 04394-9613",
-    "description": "Vomer carpo cogito pauci recusandae. Arto apto copiose animus. Xiphias civitas voluptatem ademptio tabesco viridis.
-Compello atqui comprehendo theatrum caterva abstergo color thymbra vociferor benevolentia. Tutamen amplitudo curis atavus. Appono somniculosus delicate admoveo.",
-    "gps": {
-      "lat": 6.9546,
-      "lon": -52.6869,
-    },
-    "id": "850fe12a-1873-4a61-9e75-f793f1752688",
-    "logo": "https://loremflickr.com/128/128?lock=2275161833209856",
-    "name": "soft, ornery grape",
-    "phone": "1-869-633-8778 x70097",
-    "slug": "soft-ornery-grape",
-    "website": "https://fake-endive.info/",
-  },
   "tags": [],
   "timing": {
     "bottomTime": 46,

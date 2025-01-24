@@ -16,6 +16,7 @@ import {
   OperatorDiveSiteEntity,
   OperatorEntity,
   OperatorReviewEntity,
+  OperatorTeamMemberEntity,
   UserEntity,
 } from '../../../src/data';
 import { DiveSitesModule } from '../../../src/diveSites';
@@ -99,6 +100,8 @@ describe('Operators E2E tests', () => {
           OperatorEntity,
           OperatorDiveSiteEntity,
           OperatorReviewEntity,
+          OperatorTeamMemberEntity,
+          UserEntity,
         ]),
         UsersModule,
         DiveSitesModule,

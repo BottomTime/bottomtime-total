@@ -74,7 +74,7 @@ export class OperatorTeamMembers {
       this.userFactory,
       {
         id: uuid(),
-        joined: options.joined ? new Date(options.joined) : null,
+        joined: options.joined ?? null,
         title: options.title ?? null,
         teamMember: options.member.toEntity(),
         operator: this.data,

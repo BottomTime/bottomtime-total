@@ -12,8 +12,8 @@ export class OperatorTeamMemberEntity {
   @Column({ type: 'varchar', length: 200, nullable: true })
   title: string | null = null;
 
-  @Column({ type: 'timestamp', nullable: true })
-  joined: Date | null = null;
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  joined: string | null = null;
 
   @ManyToOne(() => OperatorEntity, (operator) => operator.teamMembers, {
     onDelete: 'CASCADE',
