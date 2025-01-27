@@ -23,12 +23,15 @@
           class="flex flex-initial flex-row gap-3 items-center"
           data-testid="drawer-title"
         >
-          <p class="font-title dark:text-blue-200 text-4xl grow capitalize">
+          <p
+            class="font-title dark:text-blue-200 text-4xl grow flex-wrap capitalize"
+          >
             {{ title }}
           </p>
-          <a
+          <RouterLink
             v-if="fullScreen"
-            :href="fullScreen"
+            class="text-grey-900 dark:text-grey-100"
+            :to="fullScreen"
             data-testid="drawer-fullscreen"
             aria-label="Open panel full screen"
           >
@@ -36,10 +39,23 @@
               <span
                 class="text-grey-100 hover:text-grey-400 dark:text-grey-200 hover:dark:text-grey-500"
               >
+                <span class="sr-only">Open full screen</span>
                 <i class="fas fa-expand-alt"></i>
               </span>
             </button>
-          </a>
+          </RouterLink>
+          <RouterLink
+            v-if="edit"
+            class="text-grey-900 dark:text-grey-100"
+            :to="edit"
+            data-testid="drawer-edit"
+            :aria-label="`Edit ${title}`"
+          >
+            <button>
+              <span class="sr-only">Edit {{ title }}</span>
+              <i class="fa-solid fa-pencil"></i>
+            </button>
+          </RouterLink>
           <CloseButton
             v-if="showClose"
             data-testid="drawer-close"
@@ -60,9 +76,12 @@
 </template>
 
 <script setup lang="ts">
+import { RouterLink } from 'vue-router';
+
 import CloseButton from './close-button.vue';
 
 type DrawerPanelProps = {
+  edit?: string;
   fullScreen?: string;
   title?: string;
   showClose?: boolean;

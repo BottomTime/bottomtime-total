@@ -13,11 +13,14 @@ export class UsersQueryBuilder {
       .select([
         'users.id',
         'users.avatar',
+        'users.bio',
+        'users.experienceLevel',
         'users.location',
         'users.memberSince',
         'users.logBookSharing',
         'users.name',
         'users.role',
+        'users.startedDiving',
         'users.username',
       ]);
   }

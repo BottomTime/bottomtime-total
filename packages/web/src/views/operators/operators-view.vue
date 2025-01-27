@@ -21,24 +21,13 @@
   <BreadCrumbs :items="Breadcrumbs" />
 
   <DrawerPanel
-    :full-screen="fullScreenUrl"
+    :edit="fullScreenUrl"
     :title="drawerPanelTitle"
     :visible="state.showPanel"
     @close="onCloseDrawer"
   >
     <template v-if="state.currentOperator">
-      <EditOperator
-        v-if="isOperatorOwner"
-        :is-saving="state.isSaving"
-        :operator="state.currentOperator"
-        @save="onSaveOperator"
-        @delete="onDelete"
-        @logo-changed="onLogoChanged"
-        @verification-requested="onVerificationRequested"
-        @verified="onVerified"
-        @rejected="onVerificationRejected"
-      />
-      <ViewOperator v-else :operator="state.currentOperator" />
+      <ViewOperator :operator="state.currentOperator" />
     </template>
   </DrawerPanel>
 
@@ -65,7 +54,6 @@
 <script lang="ts" setup>
 import {
   ApiList,
-  CreateOrUpdateOperatorDTO,
   OperatorDTO,
   SearchOperatorsParams,
   SearchOperatorsSchema,
@@ -82,7 +70,6 @@ import BreadCrumbs from '../../components/common/bread-crumbs.vue';
 import DrawerPanel from '../../components/common/drawer-panel.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import ConfirmDialog from '../../components/dialog/confirm-dialog.vue';
-import EditOperator from '../../components/operators/edit-operator.vue';
 import OperatorsList from '../../components/operators/operators-list.vue';
 import OperatorsSearchForm from '../../components/operators/operators-search-form.vue';
 import ViewOperator from '../../components/operators/view-operator.vue';
@@ -100,7 +87,6 @@ interface OperatorsViewState {
   showConfirmDelete: boolean;
 }
 
-const OperatorSavedToastId = 'dive-operator-saved';
 const Breadcrumbs: Breadcrumb[] = [
   { label: 'Dive Shops', to: '/shops', active: true },
 ] as const;
@@ -224,59 +210,6 @@ function onShopSelected(dto: OperatorDTO) {
   state.showPanel = true;
 }
 
-async function onSaveOperator(dto: CreateOrUpdateOperatorDTO): Promise<void> {
-  state.isSaving = true;
-
-  await oops(
-    async () => {
-      if (state.currentOperator?.id) {
-        state.currentOperator = await client.operators.updateOperator(
-          state.currentOperator.slug,
-          dto,
-        );
-
-        const index = state.results.data.findIndex(
-          (op) => op.id === state.currentOperator?.id,
-        );
-        if (index > -1) {
-          state.results.data[index] = state.currentOperator;
-        }
-
-        toasts.toast({
-          id: OperatorSavedToastId,
-          message: 'Changes to dive shop have been saved successfully.',
-          type: ToastType.Success,
-        });
-      } else {
-        // Create new dive operator.
-        state.currentOperator = await client.operators.createOperator(dto);
-        state.results.data.splice(0, 0, state.currentOperator);
-        state.results.totalCount++;
-
-        toasts.toast({
-          id: OperatorSavedToastId,
-          message: 'New dive shop has been created.',
-          type: ToastType.Success,
-        });
-      }
-
-      state.showPanel = false;
-    },
-    {
-      [409]: () => {
-        toasts.toast({
-          id: OperatorSavedToastId,
-          message:
-            'Unable to save dive shop. URL slug is already in use. Please change your slug to make it unique and then try again.',
-          type: ToastType.Warning,
-        });
-      },
-    },
-  );
-
-  state.isSaving = false;
-}
-
 async function onLoadMore(): Promise<void> {
   state.isLoadingMore = true;
 
@@ -291,27 +224,6 @@ async function onLoadMore(): Promise<void> {
   });
 
   state.isLoadingMore = false;
-}
-
-function onVerificationRequested(): void {
-  if (state.currentOperator) {
-    state.currentOperator.verificationStatus = VerificationStatus.Pending;
-    state.currentOperator.verificationMessage = undefined;
-  }
-}
-
-function onVerified(message?: string): void {
-  if (state.currentOperator) {
-    state.currentOperator.verificationStatus = VerificationStatus.Verified;
-    state.currentOperator.verificationMessage = message;
-  }
-}
-
-function onVerificationRejected(message?: string): void {
-  if (state.currentOperator) {
-    state.currentOperator.verificationStatus = VerificationStatus.Rejected;
-    state.currentOperator.verificationMessage = message;
-  }
 }
 
 function onDelete(operator: OperatorDTO): void {
@@ -351,12 +263,6 @@ async function onConfirmDelete(): Promise<void> {
   });
 
   state.isDeleting = false;
-}
-
-function onLogoChanged(url?: string) {
-  if (state.currentOperator) {
-    state.currentOperator.logo = url;
-  }
 }
 
 onMounted(refresh);

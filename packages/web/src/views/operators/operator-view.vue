@@ -20,7 +20,13 @@
     <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
-  <template v-if="state.currentOperator">
+  <LoadingSpinner
+    v-if="state.isLoading"
+    class="text-xl text-center my-8"
+    message="Fetching dive shop..."
+  />
+
+  <template v-else-if="state.currentOperator">
     <RequireAuth :authorizer="isAuthorized">
       <p
         v-if="state.isDeleted"
@@ -68,6 +74,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useClient } from '../../api-client';
 import { Breadcrumb, ToastType } from '../../common';
 import BreadCrumbs from '../../components/common/bread-crumbs.vue';
+import LoadingSpinner from '../../components/common/loading-spinner.vue';
 import NotFound from '../../components/common/not-found.vue';
 import PageTitle from '../../components/common/page-title.vue';
 import RequireAuth from '../../components/common/require-auth2.vue';
@@ -79,6 +86,7 @@ import { useCurrentUser, useToasts } from '../../store';
 
 interface OperatorViewState {
   currentOperator?: OperatorDTO;
+  isLoading: boolean;
   isSaving: boolean;
   isDeleted: boolean;
   isDeleting: boolean;
@@ -93,6 +101,7 @@ const router = useRouter();
 const toasts = useToasts();
 
 const state = reactive<OperatorViewState>({
+  isLoading: true,
   isSaving: false,
   isDeleted: false,
   isDeleting: false,
@@ -186,6 +195,8 @@ onMounted(async () => {
       },
     },
   );
+
+  state.isLoading = false;
 });
 
 async function createNewOperator(
