@@ -3780,6 +3780,7 @@ __metadata:
     aws-lambda: "npm:^1.0.7"
     babel-jest: "npm:^29.7.0"
     bunyan: "npm:^1.8.15"
+    chart.js: "npm:^4.4.7"
     compression: "npm:^1.7.4"
     configcat-common: "npm:^9.3.0"
     configcat-js: "npm:^9.5.0"
@@ -3820,6 +3821,7 @@ __metadata:
     vite-plugin-vue-devtools: "npm:^7.6.1"
     vue: "npm:^3.3.13"
     vue-advanced-cropper: "npm:^2.8.8"
+    vue-chart-3: "npm:^3.1.8"
     vue-router: "npm:^4.2.5"
     vue-tsc: "npm:^2.1.6"
     vue3-star-ratings: "npm:^3.0.5"
@@ -5100,6 +5102,13 @@ __metadata:
   version: 7.1.3
   resolution: "@jsdevtools/ono@npm:7.1.3"
   checksum: 10c0/a9f7e3e8e3bc315a34959934a5e2f874c423cf4eae64377d3fc9de0400ed9f36cb5fd5ebce3300d2e8f4085f557c4a8b591427a583729a87841fda46e6c216b9
+  languageName: node
+  linkType: hard
+
+"@kurkle/color@npm:^0.3.0":
+  version: 0.3.4
+  resolution: "@kurkle/color@npm:0.3.4"
+  checksum: 10c0/0e9fd55c614b005c5f0c4c755bca19ec0293bc7513b4ea3ec1725234f9c2fa81afbc78156baf555c8b9cb0d305619253c3f5bca016067daeebb3d00ebb4ea683
   languageName: node
   linkType: hard
 
@@ -9218,7 +9227,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/runtime-core@npm:3.5.13":
+"@vue/runtime-core@npm:3.5.13, @vue/runtime-core@npm:latest":
   version: 3.5.13
   resolution: "@vue/runtime-core@npm:3.5.13"
   dependencies:
@@ -9240,7 +9249,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/runtime-dom@npm:3.5.13":
+"@vue/runtime-dom@npm:3.5.13, @vue/runtime-dom@npm:latest":
   version: 3.5.13
   resolution: "@vue/runtime-dom@npm:3.5.13"
   dependencies:
@@ -11173,6 +11182,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chart.js@npm:^4.4.7":
+  version: 4.4.7
+  resolution: "chart.js@npm:4.4.7"
+  dependencies:
+    "@kurkle/color": "npm:^0.3.0"
+  checksum: 10c0/9db499993c561f11184112003956ba96cf00513e025f58846be36e75ebddc6cbab2f93626c3734c305bc801e9362a9ef193b9591e679c59903b2ecb48cfcb317
+  languageName: node
+  linkType: hard
+
 "cheerio-select@npm:^2.1.0":
   version: 2.1.0
   resolution: "cheerio-select@npm:2.1.0"
@@ -12378,7 +12396,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csstype@npm:^3.1.3":
+"csstype@npm:^3.1.3, csstype@npm:latest":
   version: 3.1.3
   resolution: "csstype@npm:3.1.3"
   checksum: 10c0/80c089d6f7e0c5b2bd83cf0539ab41474198579584fa10d86d0cafe0642202343cbc119e076a0b1aece191989477081415d66c9fefbf3c957fc2fc4b7009f248
@@ -17900,6 +17918,13 @@ __metadata:
   dependencies:
     p-locate: "npm:^5.0.0"
   checksum: 10c0/d3972ab70dfe58ce620e64265f90162d247e87159b6126b01314dd67be43d50e96a50b517bce2d9452a79409c7614054c277b5232377de50416564a77ac7aad3
+  languageName: node
+  linkType: hard
+
+"lodash-es@npm:latest":
+  version: 4.17.21
+  resolution: "lodash-es@npm:4.17.21"
+  checksum: 10c0/fb407355f7e6cd523a9383e76e6b455321f0f153a6c9625e21a8827d10c54c2a2341bd2ae8d034358b60e07325e1330c14c224ff582d04612a46a4f0479ff2f2
   languageName: node
   linkType: hard
 
@@ -25605,6 +25630,21 @@ __metadata:
   peerDependencies:
     vue: ^3.0.0
   checksum: 10c0/c5b5d769ad6c8d1d14de7a425d0774bf63d971c3f9c576c8b2d8f85d1796208ccff605cdc58fbfeff88d1c4b2fe2bf29066eff191982f3b11d9f1453df3d2ec0
+  languageName: node
+  linkType: hard
+
+"vue-chart-3@npm:^3.1.8":
+  version: 3.1.8
+  resolution: "vue-chart-3@npm:3.1.8"
+  dependencies:
+    "@vue/runtime-core": "npm:latest"
+    "@vue/runtime-dom": "npm:latest"
+    csstype: "npm:latest"
+    lodash-es: "npm:latest"
+  peerDependencies:
+    chart.js: "*"
+    vue: ">= 3"
+  checksum: 10c0/9f67aa469bf521b69868dedb7ea250d72510ac1a330b875b695cf704776d05ead241596a46b48f0f3971903c2813a86c2e3afabb3b4a9abffe826ea348d43c07
   languageName: node
   linkType: hard
 

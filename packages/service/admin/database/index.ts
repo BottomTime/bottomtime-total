@@ -2,6 +2,7 @@
 import prompts from 'prompts';
 import { CommandModule } from 'yargs';
 
+import { generateDiveProfile } from './dive-profile';
 import { initDatabase } from './init-db';
 import { purgeDatabase } from './purge-db';
 import { seedDatabase } from './seed-db';
@@ -142,6 +143,28 @@ export const dbModule: CommandModule<{
         },
         async (yargs) => {
           await seedDatabase(yargs.postgresUri, yargs.requireSsl);
+        },
+      )
+      .command(
+        'dive-profile [entry-id]',
+        'Generate a test dive profile for a log entry',
+        (yargs) => {
+          return yargs
+            .positional('entry-id', {
+              alias: 'e',
+              type: 'string',
+              description:
+                'The ID of the log entry to append a dive profile to',
+            })
+            .demandOption('entry-id')
+            .help();
+        },
+        async (yargs) => {
+          await generateDiveProfile(
+            yargs.postgresUri,
+            yargs.requireSsl,
+            yargs.entryId,
+          );
         },
       );
   },

@@ -87,7 +87,12 @@
             <span> to the dive site.</span>
           </p>
 
-          <GoogleMap ref="map" :marker="gps" @click="onMapClick" />
+          <GoogleMap
+            ref="map"
+            :marker="gps"
+            :center="mapCenter"
+            @click="onMapClick"
+          />
         </FormField>
 
         <div class="flex justify-evenly">
@@ -389,6 +394,7 @@ const HeadingRefs: Record<
   [WizardStep.Metadata]: MetadataHeading,
   [WizardStep.Save]: SaveHeading,
 } as const;
+const mapCenter = ref<GpsCoordinates | undefined>(undefined);
 
 const formData = reactive<CreateSiteWizardFormData>({
   directions: '',
@@ -473,7 +479,7 @@ const v$ = useVuelidate<CreateSiteWizardFormData>(
 function onLocationChange(newLocation: NonNullable<GpsCoordinates>) {
   if (!gps.value) {
     formData.gps = newLocation;
-    map.value?.moveCenter(newLocation);
+    mapCenter.value = newLocation;
   }
 }
 

@@ -13,7 +13,7 @@
       />
       <span
         v-if="(profile?.accountTier ?? 0) > AccountTier.Basic"
-        class="absolute -bottom-1.5 mx-auto text-xs bg-warn-hover rounded-full text-grey-900 w-8 h-4 text-center"
+        class="absolute -bottom-1 mx-auto text-xs bg-warn-hover rounded-full text-grey-900 w-8 h-4 text-center"
       >
         PRO
       </span>

@@ -1,15 +1,23 @@
 import {
   ApiList,
+  CreateOrUpdateDiveSiteReviewDTO,
   CreateOrUpdateLogEntryParamsDTO,
   CreateOrUpdateLogEntryParamsSchema,
+  CreateOrUpdateOperatorReviewDTO,
   DiveSiteDTO,
+  DiveSiteReviewDTO,
+  DiveSiteReviewSchema,
   DiveSiteSchema,
   GetNextAvailableLogNumberResponseDTO,
   ListLogEntriesParamsDTO,
   ListLogEntriesResponseSchema,
   LogEntryDTO,
+  LogEntrySampleDTO,
+  LogEntrySampleSchema,
   LogEntrySchema,
   OperatorDTO,
+  OperatorReviewDTO,
+  OperatorReviewSchema,
   OperatorSchema,
 } from '../types';
 import { Fetcher } from './fetcher';
@@ -17,12 +25,28 @@ import { Fetcher } from './fetcher';
 export class LogEntriesApiClient {
   constructor(private readonly apiClient: Fetcher) {}
 
+  private getLogbookUrl(username: string): string {
+    return `/api/users/${username}/logbook`;
+  }
+
+  private getLogEntryUrl(username: string, entryId: string): string {
+    return `${this.getLogbookUrl(username)}/${entryId}`;
+  }
+
+  private getOperatorReviewUrl(username: string, entryId: string): string {
+    return `${this.getLogEntryUrl(username, entryId)}/reviewOperator`;
+  }
+
+  private getSiteReviewUrl(username: string, entryId: string): string {
+    return `${this.getLogEntryUrl(username, entryId)}/reviewSite`;
+  }
+
   async listLogEntries(
     username: string,
     params?: ListLogEntriesParamsDTO,
   ): Promise<ApiList<LogEntryDTO>> {
     const { data: results } = await this.apiClient.get(
-      `/api/users/${username}/logbook`,
+      this.getLogbookUrl(username),
       params,
       ListLogEntriesResponseSchema,
     );
@@ -31,7 +55,7 @@ export class LogEntriesApiClient {
 
   async getLogEntry(username: string, entryId: string): Promise<LogEntryDTO> {
     const { data } = await this.apiClient.get(
-      `/api/users/${username}/logbook/${entryId}`,
+      this.getLogEntryUrl(username, entryId),
       undefined,
       LogEntrySchema,
     );
@@ -43,7 +67,7 @@ export class LogEntriesApiClient {
     options: CreateOrUpdateLogEntryParamsDTO,
   ): Promise<LogEntryDTO> {
     const { data } = await this.apiClient.post(
-      `/api/users/${username}/logbook`,
+      this.getLogbookUrl(username),
       options,
       LogEntrySchema,
     );
@@ -54,7 +78,7 @@ export class LogEntriesApiClient {
     const {
       data: { logNumber },
     } = await this.apiClient.get<GetNextAvailableLogNumberResponseDTO>(
-      `/api/users/${username}/logbook/nextLogEntryNumber`,
+      `${this.getLogbookUrl(username)}/nextLogEntryNumber`,
     );
     return logNumber;
   }
@@ -64,7 +88,7 @@ export class LogEntriesApiClient {
     count?: number,
   ): Promise<DiveSiteDTO[]> {
     const { data } = await this.apiClient.get(
-      `/api/users/${username}/logbook/recentDiveSites`,
+      `${this.getLogbookUrl(username)}/recentDiveSites`,
       { count },
       DiveSiteSchema.array(),
     );
@@ -76,7 +100,7 @@ export class LogEntriesApiClient {
     count?: number,
   ): Promise<OperatorDTO[]> {
     const { data } = await this.apiClient.get(
-      `/api/users/${username}/logbook/recentOperators`,
+      `${this.getLogbookUrl(username)}/recentOperators`,
       { count },
       OperatorSchema.array(),
     );
@@ -89,7 +113,7 @@ export class LogEntriesApiClient {
     entryData: CreateOrUpdateLogEntryParamsDTO,
   ): Promise<LogEntryDTO> {
     const { data } = await this.apiClient.put(
-      `/api/users/${ownerUsername}/logbook/${entryId}`,
+      this.getLogEntryUrl(ownerUsername, entryId),
       CreateOrUpdateLogEntryParamsSchema.parse(entryData),
       LogEntrySchema,
     );
@@ -97,8 +121,68 @@ export class LogEntriesApiClient {
   }
 
   async deleteLogEntry(ownerUsername: string, entryId: string): Promise<void> {
-    await this.apiClient.delete(
-      `/api/users/${ownerUsername}/logbook/${entryId}`,
+    await this.apiClient.delete(this.getLogEntryUrl(ownerUsername, entryId));
+  }
+
+  async loadLogEntrySampleData(
+    username: string,
+    logEntryId: string,
+  ): Promise<LogEntrySampleDTO[]> {
+    const { data } = await this.apiClient.get(
+      `${this.getLogEntryUrl(username, logEntryId)}/samples`,
+      undefined,
+      LogEntrySampleSchema.array(),
     );
+    return data;
+  }
+
+  async getOperatorReview(
+    username: string,
+    entryId: string,
+  ): Promise<OperatorReviewDTO> {
+    const { data } = await this.apiClient.get(
+      this.getOperatorReviewUrl(username, entryId),
+      undefined,
+      OperatorReviewSchema,
+    );
+    return data;
+  }
+
+  async reviewOperator(
+    username: string,
+    entryId: string,
+    review: CreateOrUpdateOperatorReviewDTO,
+  ): Promise<OperatorReviewDTO> {
+    const { data } = await this.apiClient.put(
+      this.getOperatorReviewUrl(username, entryId),
+      review,
+      OperatorReviewSchema,
+    );
+    return data;
+  }
+
+  async getSiteReview(
+    username: string,
+    entryId: string,
+  ): Promise<DiveSiteReviewDTO> {
+    const { data } = await this.apiClient.get(
+      this.getSiteReviewUrl(username, entryId),
+      undefined,
+      DiveSiteReviewSchema,
+    );
+    return data;
+  }
+
+  async reviewSite(
+    username: string,
+    entryId: string,
+    review: CreateOrUpdateDiveSiteReviewDTO,
+  ): Promise<DiveSiteReviewDTO> {
+    const { data } = await this.apiClient.put(
+      this.getSiteReviewUrl(username, entryId),
+      review,
+      DiveSiteReviewSchema,
+    );
+    return data;
   }
 }

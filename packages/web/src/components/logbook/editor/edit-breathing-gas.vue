@@ -10,7 +10,9 @@
     <p>Are you sure you want to remove the selected air tank?</p>
   </ConfirmDialog>
 
-  <section class="border-2 border-secondary p-2 rounded-md space-y-3 px-6">
+  <section
+    class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700 to-blue-500 p-2 rounded-md space-y-3 px-6"
+  >
     <TextHeading class="-ml-3" level="h2">Breathing Gas</TextHeading>
 
     <FormField>

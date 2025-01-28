@@ -22,7 +22,7 @@
         <EditBasicInfo v-model="formData.basicInfo" />
 
         <!-- Dive Site / Dive Shop -->
-        <EditDiveLocation v-model="formData.location" />
+        <EditDiveLocation v-model="formData.location" :entry-id="entry.id" />
 
         <!-- Dive Conditions -->
         <EditConditions v-model="formData.conditions" />

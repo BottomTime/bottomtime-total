@@ -19,9 +19,11 @@ type GoogleMapProps = {
   id?: string;
   center?: GpsCoordinates;
   disabled?: boolean;
+  divePath?: GpsCoordinates[];
   marker?: GpsCoordinates;
   sites?: DiveSiteDTO[];
   testId?: string;
+  zoom?: number;
 };
 
 const mapElement = ref<HTMLElement | null>(null);
@@ -32,6 +34,7 @@ let map: globalThis.google.maps.Map;
 
 let markerElement: globalThis.google.maps.marker.AdvancedMarkerElement | null;
 let siteMarkers: globalThis.google.maps.marker.AdvancedMarkerElement[];
+let divePathPoly: globalThis.google.maps.Polyline | null;
 
 // Toronto, Ontario... for now
 const DefaultCenter = { lat: 43.70011, lon: -79.4163 };
@@ -39,6 +42,7 @@ const DefaultCenter = { lat: 43.70011, lon: -79.4163 };
 const props = withDefaults(defineProps<GoogleMapProps>(), {
   disabled: false,
   sites: () => [],
+  zoom: 5,
 });
 const emit = defineEmits<{
   (e: 'click', location: GpsCoordinates): void;
@@ -125,7 +129,7 @@ onBeforeMount(async () => {
   map = new mapsLib.Map(mapElement.value!, {
     mapId: uuid(),
     center: { lat: currentCenter.value.lat, lng: currentCenter.value.lon },
-    zoom: 5,
+    zoom: props.zoom,
     streetViewControl: false,
     fullscreenControl: false,
   });
@@ -146,6 +150,21 @@ onBeforeMount(async () => {
   }
 
   createSiteMarkers(props.sites);
+
+  if (props.divePath) {
+    divePathPoly = new mapsLib.Polyline({
+      geodesic: true,
+      strokeColor: '#FF0000',
+      visible: true,
+      map,
+      path: props.divePath.map((point) => ({
+        lat: point.lat,
+        lng: point.lon,
+      })),
+    });
+  } else {
+    divePathPoly = null;
+  }
 });
 
 function onMapClick(event: globalThis.google.maps.MapMouseEvent) {
@@ -203,5 +222,36 @@ watch(
   },
 );
 
-defineExpose({ moveCenter });
+watch(
+  () => props.zoom,
+  (newZoom) => {
+    if (map) {
+      map.setZoom(newZoom);
+    }
+  },
+);
+
+watch(
+  () => props.divePath,
+  (path) => {
+    if (divePathPoly) {
+      divePathPoly.setMap(null);
+    }
+
+    if (path) {
+      divePathPoly = new mapsLib.Polyline({
+        geodesic: true,
+        strokeColor: '#FF0000',
+        visible: true,
+        map,
+        path: path.map((point) => ({
+          lat: point.lat,
+          lng: point.lon,
+        })),
+      });
+    } else {
+      divePathPoly = null;
+    }
+  },
+);
 </script>
