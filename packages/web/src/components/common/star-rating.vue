@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center gap-1">
+  <div class="flex items-center gap-1 min-w-fit">
     <StarRating
       :id="controlId"
       v-model="rating"
