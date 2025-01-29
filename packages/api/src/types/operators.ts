@@ -151,6 +151,11 @@ export type ListOperatorReviewsParams = z.infer<
   typeof ListOperatorReviewsSchema
 >;
 
+export const ListOperatorReviewsResponseSchema = z.object({
+  data: OperatorReviewSchema.array(),
+  totalCount: z.number().int(),
+});
+
 export const ListOperatorDiveSitesParamsSchema = z
   .object({
     skip: z.coerce.number().int().min(0),

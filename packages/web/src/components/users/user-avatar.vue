@@ -1,6 +1,6 @@
 <template>
-  <p
-    :class="`rounded-full bg-gradient-to-b from-secondary-dark to-secondary-hover text-grey-900 flex items-center gap-1 ${height} ${width} shadow-inner shadow-grey-800`"
+  <div
+    :class="`rounded-full bg-gradient-to-b from-link to-link-hover text-grey-900 flex items-center gap-1.5 ${height} ${width} shadow-inner shadow-grey-800`"
   >
     <span class="relative">
       <img
@@ -21,7 +21,7 @@
     <span v-if="showName" :class="`pr-2 font-bold ${fontSize}`">
       {{ profile?.name || `@${profile?.username}` }}
     </span>
-  </p>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -71,7 +71,7 @@ const size = computed(() => {
 });
 
 const height = computed(() => `h-[${size.value}]`);
-const width = computed(() => (props.showName ? `w-auto` : `w-[${size.value}]`));
+const width = computed(() => (props.showName ? `w-fit` : `w-[${size.value}]`));
 
 const fontSize = computed(() => {
   switch (props.size) {

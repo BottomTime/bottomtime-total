@@ -8,6 +8,7 @@ import { FriendsApiClient } from './friends';
 import { LogEntriesApiClient } from './log-entries';
 import { MembershipsApiClient } from './memberships';
 import { NotificationsApiClient } from './notifications';
+import { OperatorReviewsApiClient } from './operator-reviews';
 import { OperatorsApiClient } from './operators';
 import { TanksApiClient } from './tanks';
 import { UserAccountsApiClient } from './user-accounts';
@@ -23,6 +24,7 @@ export class ApiClient {
   readonly logEntries: LogEntriesApiClient;
   readonly memberships: MembershipsApiClient;
   readonly notifications: NotificationsApiClient;
+  readonly operatorReviews: OperatorReviewsApiClient;
   readonly operators: OperatorsApiClient;
   readonly tanks: TanksApiClient;
   readonly userAccounts: UserAccountsApiClient;
@@ -38,6 +40,7 @@ export class ApiClient {
     this.logEntries = new LogEntriesApiClient(this.client);
     this.memberships = new MembershipsApiClient(this.client);
     this.notifications = new NotificationsApiClient(this.client);
+    this.operatorReviews = new OperatorReviewsApiClient(this.client);
     this.operators = new OperatorsApiClient(this.client);
     this.tanks = new TanksApiClient(this.client);
     this.userAccounts = new UserAccountsApiClient(this.client);

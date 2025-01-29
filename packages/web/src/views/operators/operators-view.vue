@@ -21,7 +21,8 @@
   <BreadCrumbs :items="Breadcrumbs" />
 
   <DrawerPanel
-    :edit="fullScreenUrl"
+    :full-screen="isOperatorOwner ? undefined : fullScreenUrl"
+    :edit="isOperatorOwner ? fullScreenUrl : undefined"
     :title="drawerPanelTitle"
     :visible="state.showPanel"
     @close="onCloseDrawer"

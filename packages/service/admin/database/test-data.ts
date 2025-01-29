@@ -11,6 +11,7 @@ import {
   LogEntryEntity,
   NotificationEntity,
   OperatorEntity,
+  OperatorReviewEntity,
   UserEntity,
 } from '../../src/data';
 import { getDataSource } from './data-source';
@@ -24,10 +25,12 @@ import {
   fakeNotification,
   fakeUser,
 } from './fakes';
+import { fakeDiveOperatorReview } from './fakes/fake-dive-operator-review';
 
 export type EntityCounts = {
   alerts: number;
   diveOperators: number;
+  diveOperatorReviews: number;
   diveSites: number;
   friendRequests: number;
   friends: number;
@@ -35,6 +38,7 @@ export type EntityCounts = {
   notifications: number;
   users: number;
   targetUser?: string;
+  targetOperator?: string;
 };
 
 /**
@@ -99,6 +103,21 @@ async function createDiveOperators(
     () => fakeDiveOperator(userIds),
     async (operators) => {
       await Operators.save(operators);
+    },
+    count,
+  );
+}
+
+async function createDiveOperatorReviews(
+  OperatorReviews: Repository<OperatorReviewEntity>,
+  userIds: string[],
+  operatorIds: string[],
+  count: number,
+): Promise<void> {
+  await batch(
+    () => fakeDiveOperatorReview(userIds, operatorIds),
+    async (reviews) => {
+      await OperatorReviews.save(reviews);
     },
     count,
   );
@@ -229,6 +248,7 @@ export async function createTestData(
     const FriendRequests = ds.getRepository(FriendRequestEntity);
     const Friends = ds.getRepository(FriendshipEntity);
     const Operators = ds.getRepository(OperatorEntity);
+    const OperatorReviews = ds.getRepository(OperatorReviewEntity);
     const LogEntries = ds.getRepository(LogEntryEntity);
     const Notifications = ds.getRepository(NotificationEntity);
     const Users = ds.getRepository(UserEntity);
@@ -336,6 +356,23 @@ export async function createTestData(
     if (counts.diveOperators > 0) {
       console.log(`Creating ${counts.diveOperators} dive operators...`);
       await createDiveOperators(Operators, userIds, counts.diveOperators);
+    }
+
+    if (counts.diveOperatorReviews > 0) {
+      console.log(`Creating ${counts.diveOperatorReviews} operator reviews...`);
+      const operatorIds = (
+        await Operators.find({
+          select: ['id'],
+          where: { slug: counts.targetOperator?.trim().toLowerCase() },
+          take: 1000,
+        })
+      ).map((operator) => operator.id);
+      await createDiveOperatorReviews(
+        OperatorReviews,
+        userIds,
+        operatorIds,
+        counts.diveOperatorReviews,
+      );
     }
 
     console.log('Finished inserting test data');
