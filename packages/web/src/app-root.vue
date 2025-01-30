@@ -6,12 +6,13 @@
   ></div>
   <div id="drawer"></div>
 
+  <NavBar />
   <div
     class="md:container mx-auto font-content text-grey-900 bg-blue-200 dark:text-grey-100 dark:bg-blue-950 rounded-b-xl shadow-md shadow-white dark:shadow-grey-700 opacity-95"
   >
     <!-- Placeholder element. Modal dialogs will be "teleported" here to get the z-indexing right. -->
 
-    <section class="mt-16 p-4">
+    <section class="p-4">
       <div v-if="isLoading" class="flex justify-center text-4xl">
         <LoadingSpinner message="Loading app..." />
       </div>
@@ -19,7 +20,6 @@
     </section>
     <PageFooter />
   </div>
-  <NavBar />
 </template>
 
 <script setup lang="ts">

@@ -251,6 +251,7 @@ export class DiveSite {
     options: ListDiveSiteReviewsParamsDTO,
   ): Promise<ApiList<DiveSiteReview>> {
     const query = new DiveSiteReviewsQueryBuilder(this.Reviews, this)
+      .withCreator(options.creator)
       .withSortOrder(options.sortBy, options.sortOrder)
       .withPagination(options.skip, options.limit)
       .build();

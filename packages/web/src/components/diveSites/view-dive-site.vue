@@ -13,62 +13,49 @@
     />
   </DrawerPanel>
 
+  <ConfirmDialog
+    v-if="state.currentReview"
+    title="Delete Review?"
+    confirm-text="Delete"
+    :is-loading="state.isSavingReview"
+    :visible="state.showConfirmDeleteReview"
+    dangerous
+    @confirm="onConfirmDeleteReview"
+    @cancel="onCancelDeleteReview"
+  >
+    <p>
+      <span>Are you sure you want to delete the review from </span>
+      <span class="font-bold">{{
+        dayjs(
+          state.currentReview.updatedOn ?? state.currentReview.createdOn,
+        ).format('LL')
+      }}</span>
+      <span>?</span>
+    </p>
+
+    <p>This action cannot be undone.</p>
+  </ConfirmDialog>
+
+  <div class="flex items-baseline gap-6 my-4">
+    <UserAvatar :profile="site.creator" show-name />
+    <p>{{ dayjs(site.createdOn).fromNow() }}</p>
+  </div>
+
   <div :class="`grid grid-cols-1 ${columns ? 'lg:grid-cols-2 ' : ''}gap-3`">
-    <div>
-      <FormField v-if="site.depth" label="Depth">
-        <div class="mt-1.5">
-          <span class="mr-1">
-            <i class="fas fa-tachometer-alt fa-sm"></i>
-          </span>
-          <DepthText :depth="site.depth.depth" :unit="site.depth.unit" />
-        </div>
-      </FormField>
-
-      <FormField label="Shore access">
-        <div class="mt-1.5">
-          <span class="mr-1">
-            <i class="fas fa-anchor fa-sm"></i>
-          </span>
-          <span>{{ shoreAccess }}</span>
-        </div>
-      </FormField>
-
-      <FormField label="Free to dive">
-        <div class="mt-1.5">
-          <span class="mr-1">
-            <i class="far fa-money-bill-alt fa-sm"></i>
-          </span>
-          <span>{{ freeToDive }}</span>
-        </div>
-      </FormField>
-
-      <FormField label="Water type" control-id="waterType">
-        <div class="mt-1.5">
-          <span class="mr-1">
-            <i class="fa-solid fa-droplet"></i>
-          </span>
-          <span>{{ waterType }}</span>
-        </div>
-      </FormField>
-    </div>
-
     <div class="space-y-3">
       <TextHeading>Location</TextHeading>
       <div class="flex gap-2 items-baseline">
         <p class="text-lg">{{ site.location }}</p>
         <p class="ml-2">
-          <span class="mr-1 text-danger">
-            <i class="fas fa-map-marker-alt fa-sm"></i>
-          </span>
-          <span v-if="site.gps">{{ site.gps.lat }}, {{ site.gps.lon }}</span>
+          <GpsCoordinatesText :coordinates="site.gps" />
         </p>
       </div>
-      <div v-if="site.gps" class="mx-auto">
+      <div v-if="site.gps" class="mx-auto w-auto md:w-[640px] aspect-video">
         <GoogleMap :marker="site.gps" />
       </div>
     </div>
 
-    <div v-if="site.description || site.directions" class="space-y-3">
+    <div class="space-y-3">
       <div v-if="site.directions">
         <TextHeading>Directions</TextHeading>
         <p>{{ site.directions }}</p>
@@ -79,28 +66,60 @@
         <p>{{ site.description }}</p>
       </div>
 
-      <div class="flex justify-evenly gap-6">
-        <FormField label="Created by" :responsive="false">
-          <a href="#" class="flex space-x-2 items-center">
-            <UserAvatar
-              size="x-small"
-              :avatar="site.creator.avatar ?? undefined"
-              :display-name="site.creator.name || site.creator.username"
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="text-center">
+          <label class="font-bold">Depth</label>
+          <p class="mt-1.5">
+            <span class="mr-1">
+              <i class="fas fa-tachometer-alt fa-sm"></i>
+            </span>
+            <DepthText
+              v-if="site.depth"
+              :depth="site.depth.depth"
+              :unit="site.depth.unit"
             />
-            <span>{{ site.creator.name || `@${site.creator.username}` }}</span>
-          </a>
-        </FormField>
+            <span v-else>Unspecified</span>
+          </p>
+        </div>
 
-        <FormField label="Created" :responsive="false">
-          <span>{{ dayjs(site.createdOn).fromNow() }}</span>
-        </FormField>
+        <div class="text-center">
+          <label class="font-bold">Shore Access</label>
+          <p class="mt-1.5">
+            <span class="mr-1">
+              <i class="fas fa-anchor fa-sm"></i>
+            </span>
+            <span>{{ shoreAccess }}</span>
+          </p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Free To Dive</label>
+          <div class="mt-1.5">
+            <span class="mr-1">
+              <i class="far fa-money-bill-alt fa-sm"></i>
+            </span>
+            <span>{{ freeToDive }}</span>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Water Type</label>
+          <div class="mt-1.5">
+            <span class="mr-1">
+              <i class="fa-solid fa-droplet"></i>
+            </span>
+            <span>{{ waterType }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="col-span-1 lg:col-span-2">
+    <div class="col-span-1 lg:col-span-2 space-y-3">
       <TextHeading>Reviews</TextHeading>
 
-      <FormBox class="flex justify-between items-baseline sticky top-16 z-[40]">
+      <FormBox
+        class="flex flex-col md:flex-row justify-start md:justify-between items-center md:items-baseline sticky top-16 z-[40]"
+      >
         <p>
           <span>Showing </span>
           <span class="font-bold">{{ state.reviews.data.length }}</span>
@@ -109,16 +128,25 @@
           <span> reviews</span>
         </p>
 
-        <div>
-          <div><!-- TODO Average rating/difficulty --></div>
-          <div class="flex gap-2 items-baseline">
+        <div class="space-y-1">
+          <div class="flex gap-1 justify-end">
+            <label class="font-bold">Rating:</label>
+            <StarRating :model-value="site.averageRating" readonly />
+            <label class="font-bold ml-3">Difficulty:</label>
+            <StarRating :model-value="site.averageDifficulty" readonly />
+          </div>
+          <div class="flex justify-center md:justify-end gap-2 items-baseline">
             <FormSelect
               v-model="state.sortOrder"
               control-id="site-reviews-sort-order"
               test-id="site-reviews-sort-order"
               :options="SortOptions"
             />
-            <FormButton type="primary" @click="onSubmitReview">
+            <FormButton
+              v-if="state.canSubmitReview"
+              type="primary"
+              @click="onSubmitReview"
+            >
               <p class="space-x-1">
                 <span>
                   <i class="fa-regular fa-star"></i>
@@ -147,6 +175,8 @@
           v-for="review in state.reviews.data"
           :key="review.id"
           :review="review"
+          @edit="onEditReview"
+          @delete="onDeleteReview"
         />
       </TransitionList>
     </div>
@@ -177,12 +207,14 @@ import DrawerPanel from '../common/drawer-panel.vue';
 import EditDiveSiteReview from '../common/edit-dive-site-review.vue';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
-import FormField from '../common/form-field.vue';
 import FormSelect from '../common/form-select.vue';
 import GoogleMap from '../common/google-map.vue';
+import GpsCoordinatesText from '../common/gps-coordinates-text.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
+import StarRating from '../common/star-rating.vue';
 import TextHeading from '../common/text-heading.vue';
 import TransitionList from '../common/transition-list.vue';
+import ConfirmDialog from '../dialog/confirm-dialog.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import DiveSiteReviewsListItem from './dive-site-reviews-list-item.vue';
 
@@ -194,10 +226,12 @@ type ViewDiveSiteProps = {
 };
 
 type ViewDiveSiteState = {
+  canSubmitReview: boolean;
   currentReview?: DiveSiteReviewDTO;
   isLoadingReviews: boolean;
   isSavingReview: boolean;
   reviews: ApiList<DiveSiteReviewDTO>;
+  showConfirmDeleteReview: boolean;
   showEditReview: boolean;
   sortOrder: string;
 };
@@ -237,12 +271,14 @@ const props = withDefaults(defineProps<ViewDiveSiteProps>(), {
   columns: true,
 });
 const state = reactive<ViewDiveSiteState>({
+  canSubmitReview: false,
   isLoadingReviews: true,
   isSavingReview: false,
   reviews: {
     data: [],
     totalCount: 0,
   },
+  showConfirmDeleteReview: false,
   showEditReview: false,
   sortOrder: SortOptions[0].value,
 });
@@ -289,6 +325,11 @@ function onSubmitReview() {
   state.showEditReview = true;
 }
 
+function onEditReview(review: DiveSiteReviewDTO) {
+  state.currentReview = review;
+  state.showEditReview = true;
+}
+
 function onCancelEditReview() {
   state.showEditReview = false;
 }
@@ -298,7 +339,17 @@ async function onSaveReview(data: DiveSiteReviewDTO): Promise<void> {
 
   await oops(async () => {
     if (data.id) {
-      // TODO
+      const updated = await client.diveSiteReviews.updateReview(
+        props.site.id,
+        data.id,
+        data,
+      );
+
+      const index = state.reviews.data.findIndex((r) => r.id === data.id);
+      if (index > -1) state.reviews.data.splice(index, 1, updated);
+
+      state.showEditReview = false;
+      toasts.success('site-review-modified', 'Review saved successfully!');
     } else {
       const newReview = await client.diveSiteReviews.createReview(
         props.site.id,
@@ -307,10 +358,51 @@ async function onSaveReview(data: DiveSiteReviewDTO): Promise<void> {
       state.reviews.data.unshift(newReview);
       state.reviews.totalCount++;
 
-      toasts.success('review-added', 'Your review has been added. Thank you!');
-
       state.showEditReview = false;
+      toasts.success(
+        'site-review-added',
+        'Your review has been added. Thank you!',
+      );
+
+      await canSubmitReview();
     }
+  });
+
+  state.isSavingReview = false;
+}
+
+function onDeleteReview(review: DiveSiteReviewDTO) {
+  state.currentReview = review;
+  state.showConfirmDeleteReview = true;
+}
+
+function onCancelDeleteReview() {
+  state.showConfirmDeleteReview = false;
+}
+
+async function onConfirmDeleteReview(): Promise<void> {
+  state.isSavingReview = true;
+
+  await oops(async () => {
+    if (!state.currentReview) return;
+
+    await client.diveSiteReviews.deleteReview(
+      props.site.id,
+      state.currentReview.id,
+    );
+
+    const index = state.reviews.data.findIndex(
+      (r) => r.id === state.currentReview?.id,
+    );
+    if (index > -1) state.reviews.data.splice(index, 1);
+
+    state.showConfirmDeleteReview = false;
+    toasts.success(
+      'site-review-deleted',
+      'The review has been deleted successfully.',
+    );
+
+    await canSubmitReview();
   });
 
   state.isSavingReview = false;
@@ -322,6 +414,27 @@ function getListReviewsParams(): ListDiveSiteReviewsParamsDTO {
     SortOrder,
   ];
   return { sortBy, sortOrder };
+}
+
+async function canSubmitReview(): Promise<void> {
+  await oops(async () => {
+    if (!currentUser.user) {
+      state.canSubmitReview = false;
+      return;
+    }
+
+    const { data } = await client.diveSiteReviews.listReviews(props.site.id, {
+      creator: currentUser.user.username,
+      limit: 1,
+      sortBy: DiveSiteReviewsSortBy.CreatedOn,
+      sortOrder: SortOrder.Descending,
+    });
+
+    const twentyFourHoursAgo = Date.now() - 1000 * 60 * 60 * 24;
+    const lastSubmission = data[0]?.updatedOn ?? data[0]?.createdOn ?? 0;
+
+    state.canSubmitReview = twentyFourHoursAgo >= lastSubmission;
+  });
 }
 
 async function refreshReviews(): Promise<void> {
@@ -337,7 +450,9 @@ async function refreshReviews(): Promise<void> {
   state.isLoadingReviews = false;
 }
 
-onMounted(refreshReviews);
+onMounted(async () => {
+  await Promise.all([refreshReviews(), canSubmitReview()]);
+});
 
 watch(() => state.sortOrder, refreshReviews);
 </script>

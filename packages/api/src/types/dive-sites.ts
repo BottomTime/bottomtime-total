@@ -44,13 +44,13 @@ export type DiveSiteReviewDTO = z.infer<typeof DiveSiteReviewSchema>;
 
 export const ListDiveSiteReviewsParamsSchema = z
   .object({
+    creator: UsernameSchema,
     sortBy: z
       .nativeEnum(DiveSiteReviewsSortBy)
-      .optional()
       .default(DiveSiteReviewsSortBy.Rating),
-    sortOrder: z.nativeEnum(SortOrder).optional().default(SortOrder.Descending),
-    skip: z.coerce.number().int().min(0).optional().default(0),
-    limit: z.coerce.number().int().gt(0).max(200).optional().default(50),
+    sortOrder: z.nativeEnum(SortOrder).default(SortOrder.Descending),
+    skip: z.coerce.number().int().min(0).default(0),
+    limit: z.coerce.number().int().gt(0).max(200).default(50),
   })
   .partial();
 export type ListDiveSiteReviewsParamsDTO = z.infer<

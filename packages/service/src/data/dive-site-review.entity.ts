@@ -29,12 +29,12 @@ export class DiveSiteReviewEntity {
   @Index()
   logEntry: LogEntryEntity | null = null;
 
-  @CreateDateColumn({ nullable: false })
-  @Index()
-  createdOn?: Date;
+  @CreateDateColumn()
+  createdOn: Date = new Date();
 
-  @UpdateDateColumn({ nullable: true })
-  updatedOn: Date | null = null;
+  @UpdateDateColumn()
+  @Index()
+  updatedOn: Date = new Date();
 
   @Column('float')
   @Index()
