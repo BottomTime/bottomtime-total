@@ -1,40 +1,40 @@
 <template>
   <li class="flex gap-3 items-center">
-    <figure>
+    <figure class="min-w-36">
       <StarRating :model-value="review.rating" readonly />
     </figure>
 
     <article class="grow flex flex-col gap-4">
-      <div class="flex gap-3 items-baseline">
+      <div class="flex flex-col md:flex-row gap-1 md:gap-3 items-baseline">
         <UserAvatar :profile="review.creator" show-name />
-        <p>{{ posted }}</p>
+        <p class="text-sm">{{ posted }}</p>
       </div>
 
       <p v-if="review.comments" class="italic text-pretty">
         {{ review.comments }}
       </p>
-    </article>
 
-    <div v-if="canEdit">
-      <FormButton rounded="left" @click="$emit('edit', review)">
-        <span>
-          <i class="fa-solid fa-pen"></i>
-        </span>
-        <span class="sr-only">
-          Edit review from {{ dayjs(review.updatedAt).format('LL') }}
-        </span>
-      </FormButton>
-      <FormButton
-        rounded="right"
-        type="danger"
-        @click="$emit('delete', review)"
-      >
-        <span>
-          <i class="fa-solid fa-trash"></i>
-        </span>
-        <span class="sr-only"></span>
-      </FormButton>
-    </div>
+      <div v-if="canEdit">
+        <FormButton rounded="left" @click="$emit('edit', review)">
+          <span>
+            <i class="fa-solid fa-pen"></i>
+          </span>
+          <span class="sr-only">
+            Edit review from {{ dayjs(review.updatedAt).format('LL') }}
+          </span>
+        </FormButton>
+        <FormButton
+          rounded="right"
+          type="danger"
+          @click="$emit('delete', review)"
+        >
+          <span>
+            <i class="fa-solid fa-trash"></i>
+          </span>
+          <span class="sr-only"></span>
+        </FormButton>
+      </div>
+    </article>
   </li>
 </template>
 

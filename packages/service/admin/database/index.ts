@@ -86,6 +86,11 @@ export const dbModule: CommandModule<{
               description: 'The number of dive sites to generate',
               type: 'number',
             })
+            .option('site-reviews', {
+              default: 0,
+              description: 'The number of dive site reviews to generate',
+              type: 'number',
+            })
             .option('username', {
               description:
                 'The username for which friend relations, friend requests, or log entries will be generated for. (Defaults to everyone.)',
@@ -94,6 +99,11 @@ export const dbModule: CommandModule<{
             .option('operator', {
               description:
                 'The key (slug) identifying the operator for which operator reviews will be generated',
+              type: 'string',
+            })
+            .option('site', {
+              description:
+                'The ID of the dive site for which site reviews will be generated',
               type: 'string',
             })
             .help();
@@ -106,10 +116,12 @@ export const dbModule: CommandModule<{
             diveOperators: yargs.operators,
             diveOperatorReviews: yargs.operatorReviews,
             diveSites: yargs.sites,
+            diveSiteReviews: yargs.siteReviews,
             logEntries: yargs.logEntries,
             notifications: yargs.notifications,
             users: yargs.users,
             targetUser: yargs.username,
+            targetDiveSite: yargs.site,
             targetOperator: yargs.operator,
           });
         },

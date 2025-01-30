@@ -36,12 +36,12 @@
     <p>This action cannot be undone.</p>
   </ConfirmDialog>
 
-  <div class="flex items-baseline gap-6 my-4">
+  <div class="flex items-baseline gap-6">
     <UserAvatar :profile="site.creator" show-name />
     <p>{{ dayjs(site.createdOn).fromNow() }}</p>
   </div>
 
-  <div :class="`grid grid-cols-1 ${columns ? 'lg:grid-cols-2 ' : ''}gap-3`">
+  <div class="`grid grid-cols-1 lg:grid-cols-2 gap-3`">
     <div class="space-y-3">
       <TextHeading>Location</TextHeading>
       <div class="flex gap-2 items-baseline">
@@ -178,6 +178,23 @@
           @edit="onEditReview"
           @delete="onDeleteReview"
         />
+
+        <li
+          v-if="state.reviews.data.length < state.reviews.totalCount"
+          key="Load More Reviews"
+          class="text-center my-8 text-lg"
+        >
+          <LoadingSpinner
+            v-if="state.isLoadingMoreReviews"
+            message="Fetching more reviews..."
+          />
+          <a v-else class="space-x-1" @click="onLoadMore">
+            <span>
+              <i class="fa-solid fa-arrow-down"></i>
+            </span>
+            <span>Load more</span>
+          </a>
+        </li>
       </TransitionList>
     </div>
   </div>
@@ -228,6 +245,7 @@ type ViewDiveSiteProps = {
 type ViewDiveSiteState = {
   canSubmitReview: boolean;
   currentReview?: DiveSiteReviewDTO;
+  isLoadingMoreReviews: boolean;
   isLoadingReviews: boolean;
   isSavingReview: boolean;
   reviews: ApiList<DiveSiteReviewDTO>;
@@ -272,6 +290,7 @@ const props = withDefaults(defineProps<ViewDiveSiteProps>(), {
 });
 const state = reactive<ViewDiveSiteState>({
   canSubmitReview: false,
+  isLoadingMoreReviews: false,
   isLoadingReviews: true,
   isSavingReview: false,
   reviews: {
@@ -408,12 +427,12 @@ async function onConfirmDeleteReview(): Promise<void> {
   state.isSavingReview = false;
 }
 
-function getListReviewsParams(): ListDiveSiteReviewsParamsDTO {
+function getListReviewsParams(skip?: number): ListDiveSiteReviewsParamsDTO {
   const [sortBy, sortOrder] = state.sortOrder.split('-') as [
     DiveSiteReviewsSortBy,
     SortOrder,
   ];
-  return { sortBy, sortOrder };
+  return { sortBy, sortOrder, skip };
 }
 
 async function canSubmitReview(): Promise<void> {
@@ -432,7 +451,6 @@ async function canSubmitReview(): Promise<void> {
 
     const twentyFourHoursAgo = Date.now() - 1000 * 60 * 60 * 24;
     const lastSubmission = data[0]?.updatedOn ?? data[0]?.createdOn ?? 0;
-
     state.canSubmitReview = twentyFourHoursAgo >= lastSubmission;
   });
 }
@@ -448,6 +466,22 @@ async function refreshReviews(): Promise<void> {
   });
 
   state.isLoadingReviews = false;
+}
+
+async function onLoadMore(): Promise<void> {
+  state.isLoadingMoreReviews = true;
+
+  await oops(async () => {
+    const results = await client.diveSiteReviews.listReviews(
+      props.site.id,
+      getListReviewsParams(state.reviews.data.length),
+    );
+
+    state.reviews.data.push(...results.data);
+    state.reviews.totalCount = results.totalCount;
+  });
+
+  state.isLoadingMoreReviews = false;
 }
 
 onMounted(async () => {

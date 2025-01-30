@@ -14,13 +14,13 @@
     <Transition name="drawer">
       <div
         v-if="visible"
-        class="fixed box-border right-0 top-16 shadow-sm shadow-grey-800 pb-20 md:w-1/2 w-full h-full font-content flex flex-col gap-6 bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-[35] overflow-x-hidden overflow-y-auto"
+        class="fixed box-border right-0 top-0 mt-16 shadow-sm shadow-grey-800 pb-20 md:w-1/2 w-full h-full font-content flex flex-col gap-6 bg-grey-200 text-grey-900 dark:bg-grey-900 dark:text-grey-100 drop-shadow-md md:rounded-l-md opacity-100 z-[35]"
         data-testid="drawer-panel"
       >
         <!-- Title and close button. -->
         <div
           v-if="title || showClose"
-          class="sticky top-0 h-18 p-3 flex flex-initial flex-row gap-3 items-center bg-grey-200 dark:bg-grey-900 z-[32]"
+          class="fixed top-0 h-18 w-full p-3 flex gap-3 items-baseline bg-grey-200 dark:bg-grey-900 z-[32]"
           data-testid="drawer-title"
         >
           <p
@@ -64,7 +64,10 @@
         </div>
 
         <!-- Content. -->
-        <div class="grow mt-16 px-3" data-testid="drawer-content">
+        <div
+          class="grow px-3 pt-20 overflow-x-hidden overflow-y-scroll"
+          data-testid="drawer-content"
+        >
           <slot></slot>
         </div>
       </div>

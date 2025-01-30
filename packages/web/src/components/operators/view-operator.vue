@@ -66,7 +66,7 @@
         {{ operator.description }}
       </p>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="space-y-2 px-3">
           <TextHeading level="h3">Contact Info</TextHeading>
 
@@ -179,7 +179,9 @@
   <div class="space-y-3">
     <TextHeading>Reviews</TextHeading>
 
-    <FormBox class="flex justify-between items-baseline sticky top-16 z-[40]">
+    <FormBox
+      class="flex flex-col gap-1 md:flex-row justify-between items-center md:items-baseline sticky top-16 z-[40]"
+    >
       <p>
         <span>Showing </span>
         <span class="font-bold">{{ state.reviews.data.length }}</span>
@@ -189,9 +191,16 @@
       </p>
 
       <div
-        class="flex flex-col xl:flex-row gap-0 xl:gap-3 items-end xl:items-baseline"
+        class="flex flex-col gap-1 xl:flex-row xl:gap-3 items-center md:items-end xl:items-baseline"
       >
-        <div class="flex items-baseline gap-3 xl:order-1">
+        <div class="flex flex-wrap gap-2 items-baseline">
+          <p class="font-bold">Rating:</p>
+          <StarRating :model-value="operator.averageRating" readonly />
+        </div>
+
+        <div
+          class="flex flex-col lg:flex-row items-center md:items-end lg:items-baseline gap-3"
+        >
           <FormSelect
             v-model="state.sortOrder"
             control-id="reviews-sort-order"
@@ -199,6 +208,7 @@
             :options="SortOptions"
           />
           <FormButton
+            v-if="state.canSubmitReview"
             type="primary"
             control-id="btn-new-review"
             test-id="btn-new-review"
@@ -211,11 +221,6 @@
               <span>Submit Review</span>
             </p>
           </FormButton>
-        </div>
-
-        <div class="flex flex-wrap gap-2 items-baseline">
-          <p class="font-bold">Average rating:</p>
-          <StarRating :model-value="operator.averageRating" readonly />
         </div>
       </div>
     </FormBox>
@@ -302,6 +307,7 @@ interface ViewOperatorProps {
 }
 
 interface ViewOperatorState {
+  canSubmitReview: boolean;
   currentReview?: OperatorReviewDTO;
   isLoadingMore: boolean;
   isLoadingReviews: boolean;
@@ -341,6 +347,7 @@ const DefaultReview: OperatorReviewDTO = {
 
 const props = defineProps<ViewOperatorProps>();
 const state = reactive<ViewOperatorState>({
+  canSubmitReview: false,
   isLoadingReviews: true,
   isLoadingMore: false,
   isSavingReview: false,
@@ -416,6 +423,8 @@ async function onConfirmEditReview(review: OperatorReviewDTO): Promise<void> {
         'review-submitted',
         'Your review has been added! Thank you!',
       );
+
+      await canSubmitReview();
     }
 
     state.showEditReview = false;
@@ -457,6 +466,8 @@ async function onConfirmDeleteReview(): Promise<void> {
       'Your review has been deleted successfully.',
     );
 
+    await canSubmitReview();
+
     state.showConfirmDeleteReview = false;
   });
 
@@ -474,6 +485,29 @@ function getListReviewsParams(skip?: number): ListOperatorReviewsParams {
     sortBy,
     sortOrder,
   };
+}
+
+async function canSubmitReview(): Promise<void> {
+  await oops(async () => {
+    if (!currentUser.user) {
+      state.canSubmitReview = false;
+      return;
+    }
+
+    const { data } = await client.operatorReviews.listReviews(
+      props.operator.slug,
+      {
+        creator: currentUser.user.username,
+        limit: 1,
+        sortBy: OperatorReviewSortBy.Age,
+        sortOrder: SortOrder.Descending,
+      },
+    );
+
+    const lastSubmission = data[0]?.updatedAt ?? data[0]?.createdAt ?? 0;
+    const twentyFourHoursAgo = Date.now() - 1000 * 60 * 60 * 48;
+    state.canSubmitReview = twentyFourHoursAgo >= lastSubmission;
+  });
 }
 
 async function refreshReviews(): Promise<void> {
@@ -505,7 +539,9 @@ async function onLoadMoreReviews() {
   state.isLoadingMore = false;
 }
 
-onMounted(refreshReviews);
+onMounted(async () => {
+  await Promise.all([refreshReviews(), canSubmitReview()]);
+});
 
 watch(() => state.sortOrder, refreshReviews);
 </script>

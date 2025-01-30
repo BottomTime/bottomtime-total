@@ -24,13 +24,15 @@
             alt="logo"
             class="w-12 h-8 rounded-md shadow-sm shadow-danger"
           />
-          <span class="text-red hover:text-danger-dark text-2xl">
+          <span
+            class="text-red hover:text-danger-dark text-2xl hidden lg:block"
+          >
             {{ appTitle }}
           </span>
         </a>
 
         <!-- Right-Hand Dropdown (always visible) -->
-        <div class="flex items-center space-x-0 md:order-2 md:space-x-3">
+        <div class="flex min-w-fit items-center space-x-3 md:order-2">
           <DarkModeToggle />
 
           <!-- Login/register links for anonymous users -->
@@ -51,7 +53,9 @@
           </ul>
 
           <!-- Notifications alert -->
-          <NotificationsBell v-if="notificationsEnabled.value" />
+          <NotificationsBell
+            v-if="currentUser.user && notificationsEnabled.value"
+          />
 
           <!-- Avatar for authenticated users -->
           <button
@@ -68,7 +72,7 @@
               :avatar="currentUser.user?.profile?.avatar ?? undefined"
               :display-name="currentUser.displayName"
             />
-            <span class="text-lg hidden md:block">
+            <span class="text-lg hidden lg:block">
               {{ currentUser.displayName }}
             </span>
             <span class="text-lg hidden md:block">
