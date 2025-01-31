@@ -1,7 +1,5 @@
 <template>
-  <li
-    class="flex items-start gap-3 even:bg-blue-300/40 even:dark:bg-blue-900/40 rounded-md p-4"
-  >
+  <li class="flex items-start gap-3">
     <figure class="min-w-[64px] min-h-[64px] text-center">
       <img
         v-if="operator.logo"
@@ -14,7 +12,7 @@
       <i v-else class="fa-solid fa-image fa-3x"></i>
     </figure>
 
-    <article class="grow space-y-1">
+    <article class="grow space-y-2">
       <!-- Title -->
       <div class="flex gap-2 items-center">
         <FormButton
@@ -182,37 +180,37 @@
           </div>
         </div>
       </address>
-    </article>
 
-    <div v-if="canEdit" class="flex">
-      <FormButton
-        rounded="left"
-        size="sm"
-        :test-id="`edit-${operator.slug || operator.id}`"
-        @click="$emit('select', operator)"
-      >
-        <p>
-          <span class="sr-only">Edit {{ operator.name }}</span>
-          <span>
-            <i class="fa-solid fa-edit fa-sm"></i>
-          </span>
-        </p>
-      </FormButton>
-      <FormButton
-        rounded="right"
-        size="sm"
-        type="danger"
-        :test-id="`delete-${operator.slug || operator.id}`"
-        @click="$emit('delete', operator)"
-      >
-        <p>
-          <span class="sr-only">Delete {{ operator.name }}</span>
-          <span>
-            <i class="fa-solid fa-trash fa-sm"></i>
-          </span>
-        </p>
-      </FormButton>
-    </div>
+      <div v-if="canEdit" class="flex px-2">
+        <FormButton
+          rounded="left"
+          size="sm"
+          :test-id="`edit-${operator.slug || operator.id}`"
+          @click="$emit('select', operator)"
+        >
+          <p>
+            <span class="sr-only">Edit {{ operator.name }}</span>
+            <span>
+              <i class="fa-solid fa-pen fa-sm"></i>
+            </span>
+          </p>
+        </FormButton>
+        <FormButton
+          rounded="right"
+          size="sm"
+          type="danger"
+          :test-id="`delete-${operator.slug || operator.id}`"
+          @click="$emit('delete', operator)"
+        >
+          <p>
+            <span class="sr-only">Delete {{ operator.name }}</span>
+            <span>
+              <i class="fa-solid fa-trash fa-sm"></i>
+            </span>
+          </p>
+        </FormButton>
+      </div>
+    </article>
   </li>
 </template>
 

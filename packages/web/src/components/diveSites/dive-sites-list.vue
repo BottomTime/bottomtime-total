@@ -25,6 +25,7 @@
 
       <DiveSitesListItem
         v-for="site in sites.data"
+        ref="items"
         :key="site.id"
         :site="site"
         @site-selected="$emit('site-selected', site)"
@@ -56,7 +57,7 @@
 <script lang="ts" setup>
 import { ApiList, DiveSiteDTO } from '@bottomtime/api';
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { Selectable } from '../../common';
 import GoogleMap from '../common/google-map.vue';
@@ -81,11 +82,15 @@ const emit = defineEmits<{
   (e: 'load-more'): void;
 }>();
 
+const items = ref<InstanceType<typeof DiveSitesListItem>[]>([]);
+
 const canLoadMore = computed(
   () => props.sites.data.length < props.sites.totalCount,
 );
 
 function onMapClicked(site: DiveSiteDTO) {
+  const item = items.value.find((i) => i.$props.site.id === site.id);
+  item?.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   emit('site-selected', site);
 }
 

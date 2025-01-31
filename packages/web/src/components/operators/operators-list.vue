@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-3">
-    <FormBox class="sticky top-16 flex justify-between items-baseline">
+    <FormBox class="sticky top-16 flex justify-between items-baseline z-40">
       <p data-testid="operators-count">
         <span>Showing </span>
         <span class="font-bold">{{ operators.data.length }}</span>
@@ -21,15 +21,18 @@
       </div>
     </FormBox>
 
-    <div class="w-full">
-      <div class="mx-auto w-auto md:w-[640px] aspect-video">
-        <GoogleMap :center="mapCenter" :operators="operators.data" />
-      </div>
+    <div class="w-full md:w-[640px] mx-auto aspect-video">
+      <GoogleMap
+        :center="mapCenter"
+        :operators="operators.data"
+        @operator-selected="onOperatorSelected"
+      />
     </div>
 
-    <ul class="px-2" data-testid="operators-list">
+    <TransitionList class="px-2" data-testid="operators-list">
       <OperatorsListItem
         v-for="operator in operators.data"
+        ref="items"
         :key="operator.slug"
         :operator="operator"
         @select="(dto) => $emit('select', dto)"
@@ -77,7 +80,7 @@
           </FormButton>
         </li>
       </template>
-    </ul>
+    </TransitionList>
   </div>
 </template>
 
@@ -90,13 +93,14 @@ import {
   UserRole,
 } from '@bottomtime/api';
 
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
 import GoogleMap from '../common/google-map.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
+import TransitionList from '../common/transition-list.vue';
 import OperatorsListItem from './operators-list-item.vue';
 
 interface OperatorsListProps {
@@ -105,6 +109,8 @@ interface OperatorsListProps {
   mapCenter?: GpsCoordinates;
   operators: ApiList<OperatorDTO>;
 }
+
+const items = ref<InstanceType<typeof OperatorsListItem>[]>([]);
 
 const currentUser = useCurrentUser();
 const isShopOwner = computed(
@@ -118,10 +124,18 @@ withDefaults(defineProps<OperatorsListProps>(), {
   isLoadingMore: false,
 });
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'create-shop'): void;
   (e: 'load-more'): void;
   (e: 'select', operator: OperatorDTO): void;
   (e: 'delete', operator: OperatorDTO): void;
 }>();
+
+function onOperatorSelected(operator: OperatorDTO) {
+  const item = items.value.find(
+    (i) => i.$props.operator.slug === operator.slug,
+  );
+  item?.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  emit('select', operator);
+}
 </script>

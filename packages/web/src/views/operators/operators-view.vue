@@ -34,7 +34,7 @@
 
   <div class="grid gap-3 grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
     <div class="col-span-1">
-      <div class="sticky top-24">
+      <div class="sticky top-16">
         <OperatorsSearchForm :search-params="searchParams" @search="onSearch" />
       </div>
     </div>

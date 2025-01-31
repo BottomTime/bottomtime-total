@@ -14,46 +14,53 @@
 
   <PageTitle title="Dive Sites" />
   <div class="grid gap-6 grid-cols-1 lg:grid-cols-3 xl:grid-cols-5">
-    <FormBox class="w-full">
+    <FormBox class="w-full sticky top-16 z-[40]">
       <SearchDiveSitesForm :params="state.searchParams" @search="onSearch" />
     </FormBox>
 
-    <FormBox
-      class="flex flex-row gap-2 sticky top-16 items-baseline justify-between shadow-lg"
-    >
-      <p>
-        <span>Showing </span>
-        <span class="font-bold">{{ state.results.data.length }}</span>
-        <span> of </span>
-        <span class="font-bold">{{ state.results.totalCount }}</span>
-        <span> dive sites</span>
-      </p>
+    <div class="col-span-1 lg:col-span-2 xl:col-span-4">
+      <FormBox
+        class="flex flex-col justify-between items-center md:flex-row md:justify-between md:items-baseline gap-1 sticky top-28 lg:top-16 shadow-lg z-[40]"
+      >
+        <p>
+          <span>Showing </span>
+          <span class="font-bold">{{ state.results.data.length }}</span>
+          <span> of </span>
+          <span class="font-bold">{{ state.results.totalCount }}</span>
+          <span> dive sites</span>
+        </p>
 
-      <div class="flex gap-2 items-baseline">
-        <label for="sort-order" class="font-bold">Sort order:</label>
-        <FormSelect
-          v-model="selectedSortOrder"
-          control-id="sort-order"
-          test-id="sort-order"
-          :options="SortOrderOptions"
-        />
-        <FormButton
-          v-if="!currentUser.anonymous"
-          type="primary"
-          test-id="create-dive-site"
-          @click="onCreateSite"
-        >
-          Create Site
-        </FormButton>
-      </div>
-    </FormBox>
+        <div class="flex gap-2 items-baseline">
+          <label for="sort-order" class="font-bold">Sort order:</label>
+          <FormSelect
+            v-model="selectedSortOrder"
+            control-id="sort-order"
+            test-id="sort-order"
+            :options="SortOrderOptions"
+          />
+          <FormButton
+            v-if="!currentUser.anonymous"
+            type="primary"
+            test-id="create-dive-site"
+            @click="onCreateSite"
+          >
+            <p class="space-x-1">
+              <span>
+                <i class="fa-solid fa-plus"></i>
+              </span>
+              <span>Create Site</span>
+            </p>
+          </FormButton>
+        </div>
+      </FormBox>
 
-    <DiveSitesList
-      :sites="state.results"
-      :is-loading-more="state.isLoadingMore"
-      @site-selected="(site) => (state.selectedSite = site)"
-      @load-more="onLoadMore"
-    />
+      <DiveSitesList
+        :sites="state.results"
+        :is-loading-more="state.isLoadingMore"
+        @site-selected="(site) => (state.selectedSite = site)"
+        @load-more="onLoadMore"
+      />
+    </div>
   </div>
 </template>
 
@@ -140,9 +147,13 @@ const selectedSortOrder = ref(
 );
 
 async function refresh(): Promise<void> {
+  state.isLoading = true;
+
   await oops(async () => {
     state.results = await client.diveSites.searchDiveSites(state.searchParams);
   });
+
+  state.isLoading = false;
 }
 
 async function onSearch(params: SearchDiveSitesParamsDTO): Promise<void> {

@@ -1,5 +1,5 @@
 <template>
-  <FormBox class="sticky top-20 flex flex-col gap-3" shadow>
+  <FormBox class="sticky top-16 flex flex-col gap-3" shadow>
     <form @submit.prevent="onSearch">
       <FormField :responsive="false">
         <FormSearchBox

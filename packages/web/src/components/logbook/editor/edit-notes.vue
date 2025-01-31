@@ -1,6 +1,6 @@
 <template>
   <section
-    class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700 to-blue-500 p-2 rounded-md space-y-3 px-6"
+    class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700/40 to-blue-500/40 p-2 rounded-md space-y-3 px-6"
   >
     <TextHeading class="-ml-3" level="h2">Notes</TextHeading>
 
