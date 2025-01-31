@@ -2,281 +2,393 @@
   {
     "id": "6b12745f-dc89-47d4-b6d7-07deb2127340",
     "course": "Open Water Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "040752f8-460d-436e-9d73-fd4224ec8fc5",
     "course": "Advanced Open Water Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "12990a9d-6656-453c-83a2-b4dd2e81a865",
     "course": "Rescue Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "5e85fb4f-efd7-4723-9558-7deba1dd4bdb",
     "course": "Master Scuba Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "0a352ccc-4135-479a-ac1b-7ce62bdc0b65",
     "course": "Divemaster",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "d7d3fde6-f24c-4a8e-a634-addcb4d77039",
     "course": "Assistant Instructor",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "2e68f278-d51e-404b-8194-eb3440642abb",
     "course": "Open Water Scuba Instructor",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "4bc3792d-1c81-4b9a-a7e3-75f8e9d6b972",
     "course": "Enriched Air Diver (Nitrox)",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "5e3cd4c4-8ddd-4bf3-9745-42cc883edbfb",
     "course": "Deep Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "4a4e8d09-a348-4c39-b6a3-4da500070574",
     "course": "Night Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "9a2f5781-a4fd-40f8-acaf-03d8d27bf314",
     "course": "Wreck Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "8fdca4d0-fd40-4079-a9d5-65f9d59b76e4",
     "course": "Underwater Navigator",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "49a05ee2-3ae8-4328-ba7d-de885b753b8e",
     "course": "Peak Performance Buoyancy",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "e97ff3b7-f140-4ad7-92af-c8a77980327e",
     "course": "Drift Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "b79f40f6-0642-44fe-8aac-798c0371ad4a",
     "course": "Search and Recovery Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "bd1cf92c-6f0e-4ab4-9e45-36a7f25ea650",
     "course": "Underwater Photography",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "79c3c2df-5c0e-4f14-99e6-f17a92ecbd5f",
     "course": "Dry Suit Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "d86c930a-9b59-47ba-87c2-192044b1c94a",
     "course": "Equipment Specialist",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "398bbcac-1d0f-4077-851c-1d4ecdf1de79",
     "course": "Project AWARE (Conservation)",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "f85ef584-9f5b-4690-9490-1ead7c6e2d9b",
     "course": "Coral Reef Conservation",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "e8ddfecb-bad6-4ea7-9ca9-8dbc8b348854",
     "course": "Fish Identification",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "d5530f73-1f80-449d-b0ea-d9a303cd58ac",
     "course": "Digital Underwater Photography",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "dc911fda-fbcf-4b1d-999c-f0c3d95d5e9f",
     "course": "Sidemount Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "80cba2df-c854-4a20-b6be-84382e3b6210",
     "course": "Rebreather Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "4c58f0dd-871e-4057-b805-ec2008694f39",
     "course": "Ice Diver",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "3d2dad9b-a900-4e1e-943e-7d8953839765",
     "course": "Tec 40",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "cbb49a90-990e-4e6c-817b-e42c68db293f",
     "course": "Tec 45",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "287e013c-d9e9-4d16-8a00-bbf8f8844bf8",
     "course": "Tec 50",
-    "agency": "PADI"
+    "agency": {
+      "id": "aa170980-9a68-4168-9859-1f71e0d023df"
+    }
   },
   {
     "id": "18f79e85-9676-4557-8009-2fc63f3150fa",
     "course": "Scuba Diver",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "e9356339-da23-43d3-a16e-6e512f847832",
     "course": "Open Water Diver",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "41abe56e-3b6a-406a-8902-4b296ce89271",
     "course": "Advanced Adventurer",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "1420c473-e97c-49ae-a2c2-c4900f52cd7f",
     "course": "Diver Stress & Rescue",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "f3e57d9e-135a-4faf-9a36-57d6316d4d1e",
     "course": "Master Diver",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "2f0113b0-bfc1-43d3-a28d-2afa0619d680",
     "course": "Dive Guide",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "8b542d89-146b-4b5a-ba9d-14e9ce3bac94",
     "course": "Dive Control Specialist",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "cf1bc979-1fee-48c7-93e8-a49d486611eb",
     "course": "Open Water Instructor",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "c2aa9790-c87e-4efd-bb42-94be0d469667",
     "course": "Enriched Air Nitrox Diver",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "3dd54ec4-89f0-4f07-ae2e-20dbbc96da64",
     "course": "Deep Diving",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "3118c00f-1e14-44ae-911f-bc4dc7fbbffb",
     "course": "Wreck Diving",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "9725da3f-3fd5-4922-b904-883d8c100dd1",
     "course": "Night Diving and Limited Visibility",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "df2d1520-6b86-4a03-932a-60b995e8cc37",
     "course": "Navigation",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "d183d199-67ec-4fd6-af12-94ea26c5da1f",
     "course": "Perfect Buoyancy",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "4b50f4a0-4cac-4aaa-8daf-eaff086ce52f",
     "course": "Science of Diving",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "9f0e249d-3d3d-485f-89a0-4d5f996d58ec",
     "course": "Search and Recovery",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "23909859-561c-4486-bf90-6880ac93f5b2",
     "course": "Boat Diving",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "f9e0294b-6fb5-4103-bd6e-a26dc3c08087",
     "course": "Equipment Techniques",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "43464ac1-62f0-40d1-9ab3-dcb672993156",
     "course": "Digital Underwater Photography",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "eaba24cf-5922-427a-ab81-9bab5b240854",
     "course": "Stress and Rescue",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "36e309af-12a5-4775-a0dc-92f714b787b4",
     "course": "Waves, Tides and Currents",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "0a314d67-7398-445f-9cdb-d129518c557e",
     "course": "Freediving 1",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "c1834a92-8f26-4824-bf58-4a739b9a354a",
     "course": "Freediving 2",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "16971174-46dd-450c-92e6-c34f9b9148c6",
     "course": "Extended Range",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "44413666-6639-459c-a1ea-880d34485d42",
     "course": "Decompression Procedures",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "ccf15870-d93c-4731-b5ad-979d90aea794",
     "course": "XR Nitrox",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "58b2ff9f-f928-47c8-9b63-ca65c58e2e2c",
     "course": "XR Advanced Wreck",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   },
   {
     "id": "018c0ae2-ad60-424e-b9fa-d4b1c2a8d79c",
     "course": "CCR (Closed Circuit Rebreather) Diving.",
-    "agency": "SSI"
+    "agency": {
+      "id": "d85b955b-04f3-4803-ba74-c31c27bc26de"
+    }
   }
 ]

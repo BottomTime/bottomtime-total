@@ -60,7 +60,11 @@
       <LoadingSpinner message="Fetching logbook entries..." />
     </div>
 
-    <ul v-else-if="entries.data.length" class="px-2" data-testid="logbook-list">
+    <TransitionList
+      v-else-if="entries.data.length"
+      class="px-2"
+      data-testid="logbook-list"
+    >
       <LogbookEntriesListItem
         v-for="entry in entries.data"
         :key="entry.id"
@@ -94,7 +98,7 @@
           Load more entries...
         </FormButton>
       </li>
-    </ul>
+    </TransitionList>
 
     <div
       v-else
@@ -132,6 +136,7 @@ import FormButton from '../common/form-button.vue';
 import FormSelect from '../common/form-select.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
 import NavLink from '../common/nav-link.vue';
+import TransitionList from '../common/transition-list.vue';
 import LogbookEntriesListItem from './logbook-entries-list-item.vue';
 
 const SortOrderOptions: SelectOption[] = [

@@ -1,10 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Certification Class will render class to JSON correctly 1`] = `
+{
+  "agency": {
+    "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+    "logo": "https://www.padi.com",
+    "name": "PADI",
+    "website": "https://www.padi.com",
+  },
+  "course": "Open Water Diver",
+  "id": "4659ca3e-46c4-4865-b2a2-b9cc16818ed6",
+}
+`;
+
 exports[`Certification Class will save a new certification to the database 1`] = `
 CertificationEntity {
-  "agency": "PADI",
+  "agency": AgencyEntity {
+    "id": "aa170980-9a68-4168-9859-1f71e0d023df",
+    "logo": "https://www.padi.com",
+    "name": "PADI",
+    "ordinal": 1,
+    "website": "https://www.padi.com",
+  },
   "course": "Open Water Diver",
-  "fulltext": undefined,
   "id": "4659ca3e-46c4-4865-b2a2-b9cc16818ed6",
 }
 `;

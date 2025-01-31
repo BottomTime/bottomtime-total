@@ -6,8 +6,13 @@ import request from 'supertest';
 import { Repository } from 'typeorm';
 
 import { CertificationsModule } from '../../../src/certifications';
-import { CertificationEntity, UserEntity } from '../../../src/data';
+import {
+  AgencyEntity,
+  CertificationEntity,
+  UserEntity,
+} from '../../../src/data';
 import { dataSource } from '../../data-source';
+import { TestAgencies } from '../../fixtures/agencies';
 import CertificationTestData from '../../fixtures/certifications.json';
 import { createAuthHeader, createTestApp } from '../../utils';
 
@@ -24,6 +29,7 @@ const RegularUserData: Partial<UserEntity> = {
 
 describe('Certifications End-to-End', () => {
   let Users: Repository<UserEntity>;
+  let Agencies: Repository<AgencyEntity>;
   let Certifications: Repository<CertificationEntity>;
 
   let app: INestApplication;
@@ -34,6 +40,7 @@ describe('Certifications End-to-End', () => {
 
   beforeAll(async () => {
     Users = dataSource.getRepository(UserEntity);
+    Agencies = dataSource.getRepository(AgencyEntity);
     Certifications = dataSource.getRepository(CertificationEntity);
 
     app = await createTestApp({
@@ -52,7 +59,7 @@ describe('Certifications End-to-End', () => {
   });
 
   beforeEach(async () => {
-    await Users.save(regularUser);
+    await Promise.all([Users.save(regularUser), Agencies.save(TestAgencies)]);
   });
 
   afterAll(async () => {
@@ -91,7 +98,7 @@ describe('Certifications End-to-End', () => {
       const { body } = await request(server)
         .get('/api/certifications')
         .query({
-          agency: 'SSI',
+          agency: 'naui',
         })
         .set(...regularAuthHeader)
         .expect(200);

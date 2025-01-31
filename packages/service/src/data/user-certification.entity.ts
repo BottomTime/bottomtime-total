@@ -1,5 +1,6 @@
 import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
+import { AgencyEntity } from './agency.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('user_certifications')
@@ -13,8 +14,8 @@ export class UserCertificationEntity {
   })
   user: UserEntity = new UserEntity();
 
-  @Column({ type: 'varchar', length: 100 })
-  agency: string = '';
+  @ManyToOne(() => AgencyEntity, { onDelete: 'CASCADE' })
+  agency?: AgencyEntity;
 
   @Column({ type: 'varchar', length: 200 })
   course: string = '';

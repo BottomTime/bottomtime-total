@@ -1,5 +1,6 @@
 export * from './constants';
 
+export * from './agencies';
 export * from './alerts';
 export * from './certifications';
 export * from './admin';

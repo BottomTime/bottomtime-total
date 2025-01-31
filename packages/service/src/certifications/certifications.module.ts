@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CertificationEntity } from '../data';
+import { AgencyEntity, CertificationEntity } from '../data';
+import { AgenciesController } from './agencies.controller';
+import { AgenciesService } from './agencies.service';
 import { CertificationsController } from './certifications.controller';
 import { CertificationsService } from './certifications.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CertificationEntity])],
-  providers: [CertificationsService],
-  controllers: [CertificationsController],
-  exports: [CertificationsService],
+  imports: [TypeOrmModule.forFeature([AgencyEntity, CertificationEntity])],
+  providers: [AgenciesService, CertificationsService],
+  controllers: [AgenciesController, CertificationsController],
+  exports: [AgenciesService, CertificationsService],
 })
 export class CertificationsModule {}

@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
+import { AgencySchema } from './agencies';
+
 export const CertificationSchema = z.object({
   id: z.string().uuid(),
-  agency: z.string().trim().max(100),
+  agency: AgencySchema,
   course: z.string().trim().max(200),
 });
 export type CertificationDTO = z.infer<typeof CertificationSchema>;
@@ -23,8 +25,10 @@ export const SearchCertificationsResponseSchema = z.object({
 });
 
 export const CreateOrUpdateCertificationParamsSchema = CertificationSchema.omit(
-  { id: true },
-);
+  { id: true, agency: true },
+).extend({
+  agency: z.string().uuid(),
+});
 export type CreateOrUpdateCertificationParamsDTO = z.infer<
   typeof CreateOrUpdateCertificationParamsSchema
 >;

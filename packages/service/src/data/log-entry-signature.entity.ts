@@ -8,6 +8,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 
+import { AgencyEntity } from './agency.entity';
 import { LogEntryEntity } from './log-entry.entity';
 import { UserEntity } from './user.entity';
 
@@ -29,6 +30,9 @@ export class LogEntrySignatureEntity {
 
   @Column({ type: 'enum', enum: BuddyType })
   type: BuddyType = BuddyType.Buddy;
+
+  @ManyToOne(() => AgencyEntity, { onDelete: 'CASCADE', nullable: true })
+  agency?: AgencyEntity;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   certificationNumber: string | null = null;
