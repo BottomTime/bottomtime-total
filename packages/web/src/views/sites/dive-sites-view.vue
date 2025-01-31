@@ -18,44 +18,42 @@
       <SearchDiveSitesForm :params="state.searchParams" @search="onSearch" />
     </FormBox>
 
-    <div class="lg:col-span-2 xl:col-span-4">
-      <FormBox
-        class="flex flex-row gap-2 sticky top-16 items-baseline justify-between shadow-lg z-30"
-      >
-        <p>
-          <span>Showing </span>
-          <span class="font-bold">{{ state.results.data.length }}</span>
-          <span> of </span>
-          <span class="font-bold">{{ state.results.totalCount }}</span>
-          <span> dive sites</span>
-        </p>
+    <FormBox
+      class="flex flex-row gap-2 sticky top-16 items-baseline justify-between shadow-lg"
+    >
+      <p>
+        <span>Showing </span>
+        <span class="font-bold">{{ state.results.data.length }}</span>
+        <span> of </span>
+        <span class="font-bold">{{ state.results.totalCount }}</span>
+        <span> dive sites</span>
+      </p>
 
-        <div class="flex gap-2 items-baseline">
-          <label for="sort-order" class="font-bold">Sort order:</label>
-          <FormSelect
-            v-model="selectedSortOrder"
-            control-id="sort-order"
-            test-id="sort-order"
-            :options="SortOrderOptions"
-          />
-          <FormButton
-            v-if="!currentUser.anonymous"
-            type="primary"
-            test-id="create-dive-site"
-            @click="onCreateSite"
-          >
-            Create Site
-          </FormButton>
-        </div>
-      </FormBox>
+      <div class="flex gap-2 items-baseline">
+        <label for="sort-order" class="font-bold">Sort order:</label>
+        <FormSelect
+          v-model="selectedSortOrder"
+          control-id="sort-order"
+          test-id="sort-order"
+          :options="SortOrderOptions"
+        />
+        <FormButton
+          v-if="!currentUser.anonymous"
+          type="primary"
+          test-id="create-dive-site"
+          @click="onCreateSite"
+        >
+          Create Site
+        </FormButton>
+      </div>
+    </FormBox>
 
-      <DiveSitesList
-        :sites="state.results"
-        :is-loading-more="state.isLoadingMore"
-        @site-selected="(site) => (state.selectedSite = site)"
-        @load-more="onLoadMore"
-      />
-    </div>
+    <DiveSitesList
+      :sites="state.results"
+      :is-loading-more="state.isLoadingMore"
+      @site-selected="(site) => (state.selectedSite = site)"
+      @load-more="onLoadMore"
+    />
   </div>
 </template>
 

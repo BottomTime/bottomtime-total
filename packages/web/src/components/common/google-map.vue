@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { DiveSiteDTO, GpsCoordinates } from '@bottomtime/api';
+import { DiveSiteDTO, GpsCoordinates, OperatorDTO } from '@bottomtime/api';
 
 import { v7 as uuid } from 'uuid';
 import { onBeforeMount, ref, watch } from 'vue';
@@ -22,6 +22,7 @@ type GoogleMapProps = {
   divePath?: GpsCoordinates[];
   marker?: GpsCoordinates;
   sites?: DiveSiteDTO[];
+  operators?: OperatorDTO[];
   testId?: string;
   zoom?: number;
 };
@@ -34,6 +35,7 @@ let map: globalThis.google.maps.Map;
 
 let markerElement: globalThis.google.maps.marker.AdvancedMarkerElement | null;
 let siteMarkers: globalThis.google.maps.marker.AdvancedMarkerElement[];
+let operatorMarkers: globalThis.google.maps.marker.AdvancedMarkerElement[];
 let divePathPoly: globalThis.google.maps.Polyline | null;
 
 // Toronto, Ontario... for now
@@ -42,11 +44,13 @@ const DefaultCenter = { lat: 43.70011, lon: -79.4163 };
 const props = withDefaults(defineProps<GoogleMapProps>(), {
   disabled: false,
   sites: () => [],
+  operators: () => [],
   zoom: 5,
 });
 const emit = defineEmits<{
   (e: 'click', location: GpsCoordinates): void;
   (e: 'site-selected', site: DiveSiteDTO): void;
+  (e: 'operator-selected', site: OperatorDTO): void;
 }>();
 
 const currentCenter = ref<GpsCoordinates>(
@@ -113,6 +117,72 @@ function createSiteMarkers(sites: DiveSiteDTO[]) {
 
         marker.addListener('click', () => {
           emit('site-selected', site);
+        });
+        return marker;
+      });
+  }
+}
+
+function createOperatorMarkers(operators: OperatorDTO[]) {
+  if (map) {
+    operatorMarkers?.forEach((operatorMarker) => {
+      operatorMarker.map = null;
+    });
+    operatorMarkers = operators
+      .filter((operator) => !!operator.gps)
+      .map((operator) => {
+        const content = document.createElement('div');
+        content.classList.add(
+          'flex',
+          'items-center',
+          'space-x-1',
+          'pr-0',
+          'z-10',
+          'hover:z-30',
+          'hover:pr-1',
+          'rounded-md',
+          'h-[16px]',
+          'shadow-sm',
+          'bg-grey-200',
+          'group',
+        );
+        const img = document.createElement('img');
+        img.src = '/img/shop.svg';
+        img.alt = operator.name;
+        img.classList.add(
+          'w-[16px]',
+          'h-[16px]',
+          'rounded-md',
+          'shadow-sm',
+          'shadow-danger-hover',
+        );
+
+        const span = document.createElement('span');
+        span.classList.add(
+          'hidden',
+          'group-hover:block',
+          'text-grey-950',
+          'text-xs',
+          'capitalize',
+        );
+        span.textContent = operator.name;
+
+        content.appendChild(img);
+        content.appendChild(span);
+
+        const marker = new markersLib.AdvancedMarkerElement({
+          map,
+          position: new globalThis.google.maps.LatLng(
+            operator.gps!.lat,
+            operator.gps!.lon,
+          ),
+          title: operator.name,
+          content,
+          gmpClickable: true,
+        });
+
+        marker.addListener('click', () => {
+          emit('operator-selected', operator);
         });
         return marker;
       });
@@ -219,6 +289,13 @@ watch(
   () => props.sites,
   (newSites) => {
     createSiteMarkers(newSites);
+  },
+);
+
+watch(
+  () => props.operators,
+  (newOperators) => {
+    createOperatorMarkers(newOperators);
   },
 );
 

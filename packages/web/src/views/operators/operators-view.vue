@@ -43,6 +43,7 @@
         :is-loading="state.isLoading"
         :is-loading-more="state.isLoadingMore"
         :operators="state.results"
+        :map-center="state.mapCenter"
         @create-shop="onCreateShop"
         @load-more="onLoadMore"
         @select="onShopSelected"
@@ -55,6 +56,7 @@
 <script lang="ts" setup>
 import {
   ApiList,
+  GpsCoordinates,
   OperatorDTO,
   SearchOperatorsParams,
   SearchOperatorsSchema,
@@ -83,6 +85,7 @@ interface OperatorsViewState {
   isLoading: boolean;
   isLoadingMore: boolean;
   isSaving: boolean;
+  mapCenter?: GpsCoordinates;
   results: ApiList<OperatorDTO>;
   showPanel: boolean;
   showConfirmDelete: boolean;
@@ -180,6 +183,9 @@ async function onSearch(params: SearchOperatorsParams): Promise<void> {
   searchParams.verification = params.verification;
   searchParams.skip = params.skip;
   searchParams.limit = params.limit;
+
+  if (searchParams.location) state.mapCenter = searchParams.location;
+
   await refresh();
 }
 

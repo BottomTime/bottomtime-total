@@ -7,6 +7,11 @@ export class Config {
     return process.env.BTWEB_VITE_ADMIN_EMAIL || 'admin@bottomti.me';
   }
 
+  /** URL to the API documentation. */
+  static get apiDocsUrl(): string {
+    return process.env.BTWEB_VITE_API_DOCS_URL || 'https://docs.bottomti.me/';
+  }
+
   /** The application title as it should appear in the browser tab, etc. */
   static get appTitle(): string {
     return process.env.BTWEB_VITE_APP_TITLE || 'Bottom Time';

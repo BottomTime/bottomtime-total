@@ -1,26 +1,30 @@
 <template>
   <div class="space-y-3">
-    <div class="sticky top-16">
-      <FormBox class="flex justify-between items-baseline">
-        <p data-testid="operators-count">
-          <span>Showing </span>
-          <span class="font-bold">{{ operators.data.length }}</span>
-          <span> of </span>
-          <span class="font-bold">{{ operators.totalCount }}</span>
-          <span> dive shop(s)</span>
-        </p>
+    <FormBox class="sticky top-16 flex justify-between items-baseline">
+      <p data-testid="operators-count">
+        <span>Showing </span>
+        <span class="font-bold">{{ operators.data.length }}</span>
+        <span> of </span>
+        <span class="font-bold">{{ operators.totalCount }}</span>
+        <span> dive shop(s)</span>
+      </p>
 
-        <div>
-          <FormButton
-            v-if="isShopOwner"
-            type="primary"
-            test-id="operators-create-shop"
-            @click="$emit('create-shop')"
-          >
-            Create a Dive Shop
-          </FormButton>
-        </div>
-      </FormBox>
+      <div>
+        <FormButton
+          v-if="isShopOwner"
+          type="primary"
+          test-id="operators-create-shop"
+          @click="$emit('create-shop')"
+        >
+          Create a Dive Shop
+        </FormButton>
+      </div>
+    </FormBox>
+
+    <div class="w-full">
+      <div class="mx-auto w-auto md:w-[640px] aspect-video">
+        <GoogleMap :center="mapCenter" :operators="operators.data" />
+      </div>
     </div>
 
     <ul class="px-2" data-testid="operators-list">
@@ -78,19 +82,27 @@
 </template>
 
 <script setup lang="ts">
-import { AccountTier, ApiList, OperatorDTO, UserRole } from '@bottomtime/api';
+import {
+  AccountTier,
+  ApiList,
+  GpsCoordinates,
+  OperatorDTO,
+  UserRole,
+} from '@bottomtime/api';
 
 import { computed } from 'vue';
 
 import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
+import GoogleMap from '../common/google-map.vue';
 import LoadingSpinner from '../common/loading-spinner.vue';
 import OperatorsListItem from './operators-list-item.vue';
 
 interface OperatorsListProps {
   isLoading?: boolean;
   isLoadingMore?: boolean;
+  mapCenter?: GpsCoordinates;
   operators: ApiList<OperatorDTO>;
 }
 
