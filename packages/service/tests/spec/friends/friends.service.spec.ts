@@ -22,12 +22,12 @@ import {
   UserEntity,
 } from '../../../src/data';
 import { FriendsService } from '../../../src/friends';
-import { User } from '../../../src/users';
+import { UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestFriendRequestData from '../../fixtures/friend-requests.json';
 import TestFriendshipData from '../../fixtures/friends.json';
 import TestFriendData from '../../fixtures/user-search-data.json';
-import { createTestUser, parseUserJSON } from '../../utils';
+import { createTestUser, createUserFactory, parseUserJSON } from '../../utils';
 import { createTestFriendRequest } from '../../utils/create-test-friend-request';
 
 const TwoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000;
@@ -63,6 +63,7 @@ describe('Friends Service', () => {
   let Users: Repository<UserEntity>;
   let Friends: Repository<FriendshipEntity>;
   let FriendRequests: Repository<FriendRequestEntity>;
+  let userFactory: UserFactory;
 
   let service: FriendsService;
   let userData: UserEntity;
@@ -72,6 +73,7 @@ describe('Friends Service', () => {
     Users = dataSource.getRepository(UserEntity);
     Friends = dataSource.getRepository(FriendshipEntity);
     FriendRequests = dataSource.getRepository(FriendRequestEntity);
+    userFactory = createUserFactory();
 
     service = new FriendsService(dataSource, Friends, FriendRequests);
     userData = createTestUser(TestUserData);
@@ -314,8 +316,8 @@ describe('Friends Service', () => {
 
   describe('when creating a friend request', () => {
     it('will create a new friend request', async () => {
-      const originUser = new User(Users, createTestUser());
-      const destinationUser = new User(Users, createTestUser());
+      const originUser = userFactory.createUser(createTestUser());
+      const destinationUser = userFactory.createUser(createTestUser());
 
       await Users.save([originUser.toEntity(), destinationUser.toEntity()]);
       const friendRequest = await service.createFriendRequest(
@@ -345,7 +347,7 @@ describe('Friends Service', () => {
 
     it('will not create a friend request if the origin and destination user are the same', async () => {
       const userData = createTestUser();
-      const user = new User(Users, userData);
+      const user = userFactory.createUser(userData);
       await Users.save(userData);
       await expect(service.createFriendRequest(user, user)).rejects.toThrow(
         BadRequestException,
@@ -368,8 +370,8 @@ describe('Friends Service', () => {
 
       await expect(
         service.createFriendRequest(
-          new User(Users, originUser),
-          new User(Users, destinationUser),
+          userFactory.createUser(originUser),
+          userFactory.createUser(destinationUser),
         ),
       ).rejects.toThrow(ConflictException);
     });
@@ -390,8 +392,8 @@ describe('Friends Service', () => {
 
       await expect(
         service.createFriendRequest(
-          new User(Users, originUser),
-          new User(Users, destinationUser),
+          userFactory.createUser(originUser),
+          userFactory.createUser(destinationUser),
         ),
       ).rejects.toThrow(ConflictException);
     });
@@ -416,8 +418,8 @@ describe('Friends Service', () => {
 
       await expect(
         service.createFriendRequest(
-          new User(Users, originUser),
-          new User(Users, destinationUser),
+          userFactory.createUser(originUser),
+          userFactory.createUser(destinationUser),
         ),
       ).rejects.toThrow(ConflictException);
     });

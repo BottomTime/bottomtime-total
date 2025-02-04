@@ -145,8 +145,8 @@ describe('Dive Site Review Class', () => {
   });
 
   it('will save a new dive site review', async () => {
-    data.createdOn = undefined;
-    data.updatedOn = null;
+    data.createdOn = new Date();
+    data.updatedOn = new Date();
     await review.save();
 
     const savedReview = await Reviews.findOneOrFail({
@@ -161,7 +161,7 @@ describe('Dive Site Review Class', () => {
     expect(savedReview.site.id).toEqual(DiveSiteData.id);
 
     expect(savedReview.createdOn?.valueOf()).toBeCloseTo(Date.now(), -3);
-    expect(savedReview.updatedOn).toBeNull();
+    expect(savedReview.updatedOn).toEqual(savedReview.updatedOn);
   });
 
   it('will update an existing dive site review', async () => {

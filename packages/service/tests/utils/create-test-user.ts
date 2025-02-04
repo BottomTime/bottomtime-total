@@ -93,9 +93,9 @@ export function createTestUser(
   const lastName = faker.person.lastName();
   const email = options?.email ?? faker.internet.email({ firstName, lastName });
   const username =
-    options?.username ?? faker.internet.userName({ firstName, lastName });
+    options?.username ?? faker.internet.username({ firstName, lastName });
 
-  const data: Partial<UserEntity> = {
+  const user: UserEntity = {
     id: options?.id ?? faker.string.uuid(),
 
     accountTier: options?.accountTier ?? AccountTier.Basic,
@@ -128,7 +128,7 @@ export function createTestUser(
 
     role: options?.role ?? UserRole.User,
     username,
-    usernameLowered: options?.usernameLowered ?? username.toLowerCase(),
+    usernameLowered: username.toLowerCase(),
 
     depthUnit: options?.depthUnit ?? DepthUnit.Meters,
     pressureUnit: options?.pressureUnit ?? PressureUnit.Bar,
@@ -137,19 +137,19 @@ export function createTestUser(
     xp: options?.xp ?? faker.number.int({ min: 0, max: 10000 }),
 
     stripeCustomerId: options?.stripeCustomerId ?? null,
+
+    customData: null,
+    passwordHash: null,
   };
 
   if (typeof password === 'string') {
-    data.passwordHash = hashSync(password, 1);
+    user.passwordHash = hashSync(password, 1);
     // Hash the password parameter.
   } else if (password === undefined) {
     // Use the password hash from the options (or default to a random password).
-    data.passwordHash =
+    user.passwordHash =
       options?.passwordHash ?? hashSync(createTestPassword(), 1);
   } // If password === null do NOT set a password hash on the user account!
-
-  const user = new UserEntity();
-  Object.assign(user, data);
 
   return user;
 }

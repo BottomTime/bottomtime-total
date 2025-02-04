@@ -21,6 +21,13 @@ export class Agency {
     this.data.name = value;
   }
 
+  get longName(): string | undefined {
+    return this.data.longName ?? undefined;
+  }
+  set longName(value: string | undefined) {
+    this.data.longName = value ?? null;
+  }
+
   get logo(): string {
     return this.data.logo;
   }
@@ -55,6 +62,7 @@ export class Agency {
       id: this.id,
       logo: this.logo,
       name: this.name,
+      longName: this.longName,
       website: this.website,
     };
   }

@@ -22,11 +22,11 @@ import * as uuid from 'uuid';
 
 import { UserEntity } from '../../../src/data';
 import { EventsModule, EventsService } from '../../../src/events';
-import { User } from '../../../src/users/user';
+import { UserFactory, UsersService } from '../../../src/users';
 import { UsersController } from '../../../src/users/users.controller';
-import { UsersService } from '../../../src/users/users.service';
 import { dataSource } from '../../data-source';
 import { createAuthHeader, createTestApp, createTestUser } from '../../utils';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 jest.mock('uuid');
 
@@ -81,6 +81,7 @@ describe('Users End-to-End Tests', () => {
   let adminAuthHeader: [string, string];
   let regualarAuthHeader: [string, string];
   let eventsService: EventsService;
+  let userFactory: UserFactory;
 
   let Users: Repository<UserEntity>;
 
@@ -95,7 +96,7 @@ describe('Users End-to-End Tests', () => {
     app = await createTestApp(
       {
         imports: [TypeOrmModule.forFeature([UserEntity]), EventsModule],
-        providers: [UsersService],
+        providers: [UsersService, UserFactory],
         controllers: [UsersController],
       },
       {
@@ -104,6 +105,8 @@ describe('Users End-to-End Tests', () => {
       },
     );
     server = app.getHttpServer();
+
+    userFactory = createUserFactory();
 
     adminAuthHeader = await createAuthHeader(AdminUserId);
     regualarAuthHeader = await createAuthHeader(RegularUserId);
@@ -124,7 +127,7 @@ describe('Users End-to-End Tests', () => {
   describe('when requesting a user profile', () => {
     it('will return the requested profile', async () => {
       const data = createTestUser();
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
       const expected = user.profile.toJSON();
 
       await Users.save(data);

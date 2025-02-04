@@ -125,7 +125,10 @@ describe('Dive Site Reviews End-to-End Tests', () => {
 
   describe('when listing reviews', () => {
     it('will query for a list of reviews and return the results', async () => {
-      const { body: results } = await request(server).get(getUrl()).expect(200);
+      const { body: results } = await request(server)
+        .get(getUrl())
+        .query({ limit: 50 })
+        .expect(200);
       expect(results.totalCount).toBe(reviewData.length);
       expect(results.data).toHaveLength(50);
       expect(

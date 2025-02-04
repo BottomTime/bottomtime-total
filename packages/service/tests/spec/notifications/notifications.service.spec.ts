@@ -13,7 +13,7 @@ import {
   CreateNotificationOptions,
   NotificationsService,
 } from '../../../src/notifications';
-import { User } from '../../../src/users';
+import { User, UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import NotificationTestData from '../../fixtures/notifications.json';
 import {
@@ -21,6 +21,7 @@ import {
   parseNotificationJSON,
 } from '../../utils/create-test-notification';
 import { createTestUser } from '../../utils/create-test-user';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 const UserId = '3850992b-d5cb-47f9-be99-3249d4fad24f';
 const OtherUserId = '3ab16273-2932-435d-a703-e03cb5a8c53c';
@@ -30,6 +31,7 @@ describe('Notifications Service', () => {
   let Notifications: Repository<NotificationEntity>;
   let NotificationWhitelists: Repository<NotificationWhitelistEntity>;
   let service: NotificationsService;
+  let userFactory: UserFactory;
 
   let userData: UserEntity;
   let otherUserData: UserEntity;
@@ -44,10 +46,11 @@ describe('Notifications Service', () => {
     );
     userData = createTestUser({ id: UserId });
     otherUserData = createTestUser({ id: OtherUserId });
+    userFactory = createUserFactory();
 
     service = new NotificationsService(Notifications, NotificationWhitelists);
-    user = new User(Users, userData);
-    otherUser = new User(Users, otherUserData);
+    user = userFactory.createUser(userData);
+    otherUser = userFactory.createUser(otherUserData);
   });
 
   beforeEach(async () => {
@@ -82,8 +85,7 @@ describe('Notifications Service', () => {
 
     it('will return an empty result set if user ID does not exist', async () => {
       const result = await service.listNotifications({
-        user: new User(
-          Users,
+        user: userFactory.createUser(
           createTestUser({ id: '4262171d-9ac9-46d9-9ad9-e2d3628eab37' }),
         ),
       });

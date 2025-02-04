@@ -18,10 +18,10 @@ import {
   DiveSiteFactory,
   DiveSitesService,
 } from '../../../src/diveSites';
-import { User } from '../../../src/users';
+import { UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import DiveSiteTestData from '../../fixtures/dive-sites.json';
-import { createTestUser } from '../../utils';
+import { createTestUser, createUserFactory } from '../../utils';
 import { createDiveSiteFactory } from '../../utils/create-dive-site-factory';
 import {
   createTestDiveSite,
@@ -61,6 +61,7 @@ describe('Dive Site Service', () => {
   let Users: Repository<UserEntity>;
   let DiveSites: Repository<DiveSiteEntity>;
   let siteFactory: DiveSiteFactory;
+  let userFactory: UserFactory;
 
   let service: DiveSitesService;
   let regularUser: UserEntity;
@@ -71,6 +72,7 @@ describe('Dive Site Service', () => {
     Users = dataSource.getRepository(UserEntity);
     DiveSites = dataSource.getRepository(DiveSiteEntity);
     siteFactory = createDiveSiteFactory();
+    userFactory = createUserFactory();
 
     regularUser = createTestUser(RegularUserData);
     otherUser = createTestUser(OtherUserData);
@@ -173,7 +175,7 @@ describe('Dive Site Service', () => {
     });
 
     it('will create a new site and save it to the database', async () => {
-      const creator = new User(Users, regularUser);
+      const creator = userFactory.createUser(regularUser);
       const options: CreateDiveSiteOptions = {
         creator,
         name: 'Test Site',
@@ -229,7 +231,7 @@ describe('Dive Site Service', () => {
     });
 
     it('will create a new dive site with minimal information', async () => {
-      const creator = new User(Users, regularUser);
+      const creator = userFactory.createUser(regularUser);
       const options: CreateDiveSiteOptions = {
         creator,
         name: 'Test Site',

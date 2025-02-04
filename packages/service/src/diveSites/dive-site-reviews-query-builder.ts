@@ -61,7 +61,7 @@ export class DiveSiteReviewsQueryBuilder {
 
       case DiveSiteReviewsSortBy.CreatedOn:
       default:
-        sortByColumn = 'reviews.updatedOn';
+        sortByColumn = 'reviews.createdOn';
         break;
     }
     this.query.orderBy(sortByColumn, sortOrderValue, 'NULLS LAST');

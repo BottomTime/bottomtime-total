@@ -8,21 +8,20 @@ import {
   UserEntity,
 } from '../../src/data';
 import { OperatorFactory } from '../../src/operators';
-import { UserFactory } from '../../src/users';
 import { dataSource } from '../data-source';
 import { createDiveSiteFactory } from './create-dive-site-factory';
+import { createUserFactory } from './create-user-factory';
 
 export function createOperatorFactory(
   emitter?: EventEmitter2,
 ): OperatorFactory {
-  const users = dataSource.getRepository(UserEntity);
   return new OperatorFactory(
     dataSource.getRepository(OperatorEntity),
     dataSource.getRepository(OperatorReviewEntity),
     dataSource.getRepository(OperatorTeamMemberEntity),
     dataSource.getRepository(OperatorDiveSiteEntity),
-    users,
+    dataSource.getRepository(UserEntity),
     createDiveSiteFactory(emitter),
-    new UserFactory(users),
+    createUserFactory(),
   );
 }

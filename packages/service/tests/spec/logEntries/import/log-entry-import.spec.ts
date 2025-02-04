@@ -36,6 +36,7 @@ import {
   createOperatorFactory,
   createTestDiveProfile,
   createTestUser,
+  createUserFactory,
 } from '../../../utils';
 
 const ImportSessionId = '3d540444-9e2c-4c13-a90a-8b499cd5d3e3';
@@ -80,7 +81,7 @@ describe('Log Entry Import class', () => {
     Imports = dataSource.getRepository(LogEntryImportEntity);
     ImportRecords = dataSource.getRepository(LogEntryImportRecordEntity);
     Users = dataSource.getRepository(UserEntity);
-    userFactory = new UserFactory(Users);
+    userFactory = createUserFactory();
     entryFactory = new LogEntryFactory(
       Entries,
       EntryAir,

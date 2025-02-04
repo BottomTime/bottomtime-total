@@ -36,11 +36,11 @@ export function fakeDiveOperator(userIds: string[]): OperatorEntity {
       coordinates: [faker.location.longitude(), faker.location.latitude()],
     },
 
-    facebook: faker.internet.userName(),
-    instagram: faker.internet.userName(),
-    tiktok: faker.internet.userName(),
-    twitter: faker.internet.userName(),
-    youtube: faker.internet.userName(),
+    facebook: faker.internet.username(),
+    instagram: faker.internet.username(),
+    tiktok: faker.internet.username(),
+    twitter: faker.internet.username(),
+    youtube: faker.internet.username(),
 
     logo: faker.image.url({ width: 128, height: 128 }),
     banner: faker.image.url({ width: 1024, height: 256 }),

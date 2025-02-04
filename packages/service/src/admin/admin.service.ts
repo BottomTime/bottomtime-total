@@ -7,7 +7,7 @@ import {
   UsersSortBy,
 } from '@bottomtime/api';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { hash } from 'bcryptjs';
@@ -15,7 +15,7 @@ import { Repository } from 'typeorm';
 
 import { Config } from '../config';
 import { UserEntity } from '../data';
-import { User } from '../users';
+import { User, UserFactory } from '../users';
 
 export type SearchUsersOptions = AdminSearchUsersParamsDTO;
 
@@ -26,6 +26,8 @@ export class AdminService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly Users: Repository<UserEntity>,
+
+    @Inject(UserFactory) private readonly userFactory: UserFactory,
   ) {}
 
   private async findUser(usernameOrEmail: string): Promise<UserEntity | null> {
@@ -65,7 +67,7 @@ export class AdminService {
     const [users, totalCount] = await query.getManyAndCount();
 
     return {
-      data: users.map((user) => new User(this.Users, user)),
+      data: users.map((user) => this.userFactory.createUser(user)),
       totalCount,
     };
   }

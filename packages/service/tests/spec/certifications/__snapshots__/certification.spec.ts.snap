@@ -5,6 +5,7 @@ exports[`Certification Class will render class to JSON correctly 1`] = `
   "agency": {
     "id": "aa170980-9a68-4168-9859-1f71e0d023df",
     "logo": "https://www.padi.com",
+    "longName": "Professional Association of Diving Instructors",
     "name": "PADI",
     "website": "https://www.padi.com",
   },
@@ -18,6 +19,7 @@ CertificationEntity {
   "agency": AgencyEntity {
     "id": "aa170980-9a68-4168-9859-1f71e0d023df",
     "logo": "https://www.padi.com",
+    "longName": "Professional Association of Diving Instructors",
     "name": "PADI",
     "ordinal": 1,
     "website": "https://www.padi.com",

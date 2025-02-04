@@ -14,13 +14,18 @@ import {
   Get,
   HttpCode,
   Inject,
+  NotFoundException,
   Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
 
-import { Certification, CertificationsService } from '../certifications';
+import {
+  AgenciesService,
+  Certification,
+  CertificationsService,
+} from '../certifications';
 import { AssertAdmin } from '../users';
 import { ValidateIds } from '../validate-ids.guard';
 import { ZodValidator } from '../zod-validator';
@@ -37,6 +42,9 @@ export class AdminCertificationsController {
   constructor(
     @Inject(CertificationsService)
     private readonly certificationsService: CertificationsService,
+
+    @Inject(AgenciesService)
+    private readonly agenciesService: AgenciesService,
   ) {}
 
   /**
@@ -156,6 +164,7 @@ export class AdminCertificationsController {
   getCertification(
     @TargetCertification() cert: Certification,
   ): CertificationDTO {
+    this.agenciesService.getAgency;
     return cert.toJSON();
   }
 
@@ -213,7 +222,16 @@ export class AdminCertificationsController {
     @Body(new ZodValidator(CreateOrUpdateCertificationParamsSchema))
     data: CreateOrUpdateCertificationParamsDTO,
   ): Promise<CertificationDTO> {
-    const cert = await this.certificationsService.createCertification(data);
+    const agency = await this.agenciesService.getAgency(data.agency);
+    if (!agency) {
+      throw new NotFoundException(`Agency with ID "${data.agency}" not found.`);
+    }
+
+    const cert = await this.certificationsService.createCertification({
+      ...data,
+      agency,
+    });
+
     return cert.toJSON();
   }
 
@@ -281,7 +299,12 @@ export class AdminCertificationsController {
     @Body(new ZodValidator(CreateOrUpdateCertificationParamsSchema))
     data: CreateOrUpdateCertificationParamsDTO,
   ): Promise<CertificationDTO> {
-    cert.agency = data.agency;
+    const agency = await this.agenciesService.getAgency(data.agency);
+    if (!agency) {
+      throw new NotFoundException(`Agency with ID "${data.agency}" not found.`);
+    }
+
+    cert.agency = agency;
     cert.course = data.course;
     await cert.save();
     return cert.toJSON();

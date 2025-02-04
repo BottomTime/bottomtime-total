@@ -48,6 +48,7 @@ export class CertificationsService {
         'certifications.course',
         'agency.id',
         'agency.name',
+        'agency.longName',
         'agency.logo',
         'agency.website',
         'agency.ordinal',
@@ -59,9 +60,12 @@ export class CertificationsService {
       .limit(options.limit);
 
     if (options.agency) {
-      query = query.andWhere('agency.name ILIKE :agencyName', {
-        agencyName: `%${options.agency}%`,
-      });
+      query = query.andWhere(
+        'agency.name ILIKE :agencyName OR agency.longName ILIKE :agencyName',
+        {
+          agencyName: `%${options.agency}%`,
+        },
+      );
     }
 
     this.log.verbose('Querying for certifications using query', query.getSql());

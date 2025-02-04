@@ -15,6 +15,7 @@ import {
   createTestUser,
   parseUserJSON,
 } from '../../utils';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 describe('OperatorTeamMembers class', () => {
   let Users: Repository<UserEntity>;
@@ -34,7 +35,7 @@ describe('OperatorTeamMembers class', () => {
     Users = dataSource.getRepository(UserEntity);
     Operators = dataSource.getRepository(OperatorEntity);
     TeamMembers = dataSource.getRepository(OperatorTeamMemberEntity);
-    userFactory = new UserFactory(Users);
+    userFactory = createUserFactory();
 
     userData = TestUsers.slice(0, 10).map((user) => parseUserJSON(user));
     otherUser = createTestUser();

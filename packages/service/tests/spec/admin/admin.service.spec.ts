@@ -6,21 +6,23 @@ import { Repository } from 'typeorm';
 import { AdminService } from '../../../src/admin';
 import { Config } from '../../../src/config';
 import { UserEntity } from '../../../src/data';
-import { User } from '../../../src/users';
+import { UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestUserData from '../../fixtures/user-search-data.json';
-import { InsertableUser, createTestUser } from '../../utils';
+import { InsertableUser, createTestUser, createUserFactory } from '../../utils';
 
 jest.mock('../../../src/config');
 
 describe('Admin Service', () => {
   const newPassword = 'IUHI9h023480213(*&*^^&';
   let Users: Repository<UserEntity>;
+  let userFactory: UserFactory;
   let service: AdminService;
 
   beforeAll(() => {
     Users = dataSource.getRepository(UserEntity);
-    service = new AdminService(Users);
+    userFactory = createUserFactory();
+    service = new AdminService(Users, userFactory);
     Config.passwordSaltRounds = 1;
   });
 
@@ -30,7 +32,7 @@ describe('Admin Service', () => {
   ].forEach((testCase) => {
     it(`will change a user role from ${testCase.from} to ${testCase.to}`, async () => {
       const data = createTestUser({ role: testCase.from });
-      const user = new User(Users, data);
+      const user = userFactory.createUser(data);
       await Users.save(data);
 
       await expect(
@@ -50,7 +52,7 @@ describe('Admin Service', () => {
 
   it('will lock a user account', async () => {
     const data = createTestUser({ isLockedOut: false });
-    const user = new User(Users, data);
+    const user = userFactory.createUser(data);
     await Users.save(data);
 
     await expect(service.lockAccount(user.username)).resolves.toBe(true);
@@ -61,7 +63,7 @@ describe('Admin Service', () => {
 
   it('will return true when locking account that is already suspended', async () => {
     const data = createTestUser({ isLockedOut: true });
-    const user = new User(Users, data);
+    const user = userFactory.createUser(data);
     await Users.save(data);
 
     await expect(service.lockAccount(user.username)).resolves.toBe(true);
@@ -76,7 +78,7 @@ describe('Admin Service', () => {
 
   it('will unlock a user account', async () => {
     const data = createTestUser({ isLockedOut: true });
-    const user = new User(Users, data);
+    const user = userFactory.createUser(data);
     await Users.save(data);
 
     await expect(service.unlockAccount(user.username)).resolves.toBe(true);
@@ -87,7 +89,7 @@ describe('Admin Service', () => {
 
   it('will return true when unlocking account that is not suspended', async () => {
     const data = createTestUser({ isLockedOut: false });
-    const user = new User(Users, data);
+    const user = userFactory.createUser(data);
     await Users.save(data);
 
     await expect(service.unlockAccount(user.username)).resolves.toBe(true);
@@ -102,7 +104,7 @@ describe('Admin Service', () => {
 
   it("will reset a user's password", async () => {
     const data = createTestUser();
-    const user = new User(Users, data);
+    const user = userFactory.createUser(data);
     await Users.save(data);
 
     await expect(
@@ -124,7 +126,7 @@ describe('Admin Service', () => {
 
   it("will change a user's membership tier", async () => {
     const data = createTestUser({ accountTier: AccountTier.Pro });
-    const user = new User(Users, data);
+    const user = userFactory.createUser(data);
     await Users.save(data);
 
     await expect(

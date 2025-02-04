@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 import { DataSource } from 'typeorm';
 
-import { TankEntity } from '../../src/data';
+import { AgencyEntity, TankEntity } from '../../src/data';
 import { getDataSource } from './data-source';
-import TankData from './seed/tanks.json';
+import { SeedAgencies } from './seed/agencies';
+import { SeedTankProfiles } from './seed/tanks';
 
 export async function seedDatabase(postgresUri: string, requireSsl: boolean) {
   let ds: DataSource | undefined;
@@ -14,7 +15,11 @@ export async function seedDatabase(postgresUri: string, requireSsl: boolean) {
 
     console.log('Generating system tank profiles...');
     const tanks = ds.getRepository(TankEntity);
-    await tanks.save(TankData as TankEntity[]);
+    await tanks.save(SeedTankProfiles);
+
+    console.log('Generating dive agencies data...');
+    const agencies = ds.getRepository(AgencyEntity);
+    await agencies.save(SeedAgencies);
 
     console.log('Database seeded.');
   } catch (error) {

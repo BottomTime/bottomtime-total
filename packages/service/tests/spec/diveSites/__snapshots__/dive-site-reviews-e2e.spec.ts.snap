@@ -39,174 +39,19 @@ exports[`Dive Site Reviews End-to-End Tests when creating a review will return a
 exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for a list of reviews and return the results 1`] = `
 [
   {
-    "createdOn": 1557588954502,
-    "id": "afcbe2c0-1d32-425b-9183-1c57d10cf55d",
-    "rating": 4.97,
+    "createdOn": 1709696854473,
+    "id": "b2ba244c-46e0-4f4a-9c70-16bde78edbce",
+    "rating": 2.59,
   },
   {
-    "createdOn": 1585535248828,
-    "id": "6ad7e736-be52-4fc6-864e-459c8b233e9d",
-    "rating": 4.96,
+    "createdOn": 1702830536656,
+    "id": "5e94edcd-894e-4983-90b9-c3d565938064",
+    "rating": 1.98,
   },
   {
-    "createdOn": 1619189951826,
-    "id": "ecdb8d20-acda-42dd-bba4-aabecf906032",
-    "rating": 4.95,
-  },
-  {
-    "createdOn": 1603115986762,
-    "id": "222b1868-d343-4675-92e0-dd985f6b2f06",
-    "rating": 4.94,
-  },
-  {
-    "createdOn": 1584054489751,
-    "id": "d94ec3e1-b178-4e15-b486-c372adeb8aef",
-    "rating": 4.91,
-  },
-  {
-    "createdOn": 1581484388516,
-    "id": "aa74bab5-ecec-4f33-9971-f6c5f7f729f9",
-    "rating": 4.91,
-  },
-  {
-    "createdOn": 1553857584608,
-    "id": "3f5de3c9-0cb6-444e-8565-6544c736739e",
-    "rating": 4.89,
-  },
-  {
-    "createdOn": 1623921261067,
-    "id": "0fd64c10-9dee-4389-b6fa-9a53374b4852",
-    "rating": 4.87,
-  },
-  {
-    "createdOn": 1685309479126,
-    "id": "e3013ed6-1f25-4efd-a5a1-e75e0498fb33",
-    "rating": 4.86,
-  },
-  {
-    "createdOn": 1692225697304,
-    "id": "b6a357a8-2b72-4853-9dc0-2fbf729873a8",
-    "rating": 4.77,
-  },
-  {
-    "createdOn": 1619373227492,
-    "id": "7025f8f6-8f37-4d84-ab5a-55609ae19bff",
-    "rating": 4.76,
-  },
-  {
-    "createdOn": 1697829955030,
-    "id": "59d451e4-8eb2-4a29-8d5e-5e27c4e902a1",
-    "rating": 4.74,
-  },
-  {
-    "createdOn": 1677148374193,
-    "id": "f583997b-70f9-4bf9-bb94-59388f064920",
-    "rating": 4.67,
-  },
-  {
-    "createdOn": 1670722203157,
-    "id": "f76c114e-e7c7-445d-9008-c37b366ca539",
-    "rating": 4.66,
-  },
-  {
-    "createdOn": 1577646209309,
-    "id": "97ac0707-0bc6-4d07-91e4-1e545147e86a",
-    "rating": 4.66,
-  },
-  {
-    "createdOn": 1685887296357,
-    "id": "c3b804ed-e086-45ea-b158-5441404fc8c6",
-    "rating": 4.57,
-  },
-  {
-    "createdOn": 1644868289741,
-    "id": "c2b2b9d3-c5b9-4251-a2b3-eb81e6b7156f",
-    "rating": 4.5,
-  },
-  {
-    "createdOn": 1603799569271,
-    "id": "c2cfb06e-1338-48b1-8629-fab34f75c7a6",
-    "rating": 4.37,
-  },
-  {
-    "createdOn": 1683737874428,
-    "id": "646c8248-11c9-4e09-9a74-22a0661ec17e",
-    "rating": 4.34,
-  },
-  {
-    "createdOn": 1598463346604,
-    "id": "ee8aad5e-92e7-41e6-9e5d-a51822777a02",
-    "rating": 4.24,
-  },
-  {
-    "createdOn": 1565789933610,
-    "id": "1e078414-f889-4a3a-8958-8528de286891",
-    "rating": 4.2,
-  },
-  {
-    "createdOn": 1611723010013,
-    "id": "f5288ac8-321d-43a0-be19-b7093acb6283",
-    "rating": 4.15,
-  },
-  {
-    "createdOn": 1639007824438,
-    "id": "440c04e4-d49f-4d64-a1e8-02e243ba4f4b",
-    "rating": 4.11,
-  },
-  {
-    "createdOn": 1568046262881,
-    "id": "fe276014-3716-4251-8365-f0f588b1f9be",
-    "rating": 4.11,
-  },
-  {
-    "createdOn": 1607727986331,
-    "id": "8cb3a7b3-7857-4d14-81ad-b1b2f512a9ab",
-    "rating": 4.02,
-  },
-  {
-    "createdOn": 1585851373826,
-    "id": "7fa3fc44-839a-4e7f-a5d3-6c2f9f254c1d",
-    "rating": 4,
-  },
-  {
-    "createdOn": 1684727984676,
-    "id": "f159469f-ed4a-4215-b310-079ddca3f7f5",
-    "rating": 3.96,
-  },
-  {
-    "createdOn": 1661607148443,
-    "id": "66c55407-4db0-4c3f-9cde-ea45a5556abf",
-    "rating": 3.96,
-  },
-  {
-    "createdOn": 1557189188237,
-    "id": "f0613bbf-0bdf-4092-b2b8-e72d7fd59921",
-    "rating": 3.95,
-  },
-  {
-    "createdOn": 1684627538260,
-    "id": "6bfc580f-ef10-46f2-ace3-0f1d74752d44",
-    "rating": 3.84,
-  },
-  {
-    "createdOn": 1554079994328,
-    "id": "5efbe1d7-7016-4aab-91f4-f445c0a1fb51",
-    "rating": 3.76,
-  },
-  {
-    "createdOn": 1555420945539,
-    "id": "d78b14d3-a1c7-4750-b341-8690e585fd80",
-    "rating": 3.66,
-  },
-  {
-    "createdOn": 1559617778503,
-    "id": "8b3219e1-f2ac-43dd-bd1a-e87d7eef21bc",
-    "rating": 3.57,
-  },
-  {
-    "createdOn": 1582155393506,
-    "id": "82a84d4b-9878-412b-9eab-fe6c97f3ba6a",
-    "rating": 3.55,
+    "createdOn": 1701961304414,
+    "id": "02b15b66-f0f3-425a-b909-4b1b84e52dcd",
+    "rating": 2.01,
   },
   {
     "createdOn": 1699412846580,
@@ -219,9 +64,69 @@ exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for 
     "rating": 3.32,
   },
   {
-    "createdOn": 1586812400866,
-    "id": "6b136b41-634c-4c10-92b2-48a8d0aae054",
-    "rating": 3.3,
+    "createdOn": 1697829955030,
+    "id": "59d451e4-8eb2-4a29-8d5e-5e27c4e902a1",
+    "rating": 4.74,
+  },
+  {
+    "createdOn": 1695025476973,
+    "id": "d058482f-6a15-4120-b9fd-109eaf0aa76a",
+    "rating": 2.7,
+  },
+  {
+    "createdOn": 1692225697304,
+    "id": "b6a357a8-2b72-4853-9dc0-2fbf729873a8",
+    "rating": 4.77,
+  },
+  {
+    "createdOn": 1686260525734,
+    "id": "0908b36b-990f-45a8-b942-5a6f870bce26",
+    "rating": 2.04,
+  },
+  {
+    "createdOn": 1685887296357,
+    "id": "c3b804ed-e086-45ea-b158-5441404fc8c6",
+    "rating": 4.57,
+  },
+  {
+    "createdOn": 1685591257077,
+    "id": "4114587d-f650-4876-a387-5b638cedaca5",
+    "rating": 2,
+  },
+  {
+    "createdOn": 1685309479126,
+    "id": "e3013ed6-1f25-4efd-a5a1-e75e0498fb33",
+    "rating": 4.86,
+  },
+  {
+    "createdOn": 1684727984676,
+    "id": "f159469f-ed4a-4215-b310-079ddca3f7f5",
+    "rating": 3.96,
+  },
+  {
+    "createdOn": 1684627538260,
+    "id": "6bfc580f-ef10-46f2-ace3-0f1d74752d44",
+    "rating": 3.84,
+  },
+  {
+    "createdOn": 1684025748123,
+    "id": "d53b3cfa-02b1-490e-9eef-42993a5ff4fe",
+    "rating": 2.33,
+  },
+  {
+    "createdOn": 1683737874428,
+    "id": "646c8248-11c9-4e09-9a74-22a0661ec17e",
+    "rating": 4.34,
+  },
+  {
+    "createdOn": 1683546647552,
+    "id": "f4569f63-67a3-485a-92be-f8a78daf3bb0",
+    "rating": 1.29,
+  },
+  {
+    "createdOn": 1677148374193,
+    "id": "f583997b-70f9-4bf9-bb94-59388f064920",
+    "rating": 4.67,
   },
   {
     "createdOn": 1676145346237,
@@ -229,9 +134,9 @@ exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for 
     "rating": 3.29,
   },
   {
-    "createdOn": 1555907216070,
-    "id": "ec8fe3da-aad1-498b-9939-8f08ecd9349a",
-    "rating": 3.28,
+    "createdOn": 1675613119949,
+    "id": "472cb332-34ce-4d5c-bd9b-52f0643528f8",
+    "rating": 3.16,
   },
   {
     "createdOn": 1675244849505,
@@ -244,29 +149,29 @@ exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for 
     "rating": 3.24,
   },
   {
-    "createdOn": 1600675722797,
-    "id": "8c308ac4-c495-4dda-b053-e1e842009ead",
-    "rating": 3.23,
+    "createdOn": 1670722203157,
+    "id": "f76c114e-e7c7-445d-9008-c37b366ca539",
+    "rating": 4.66,
   },
   {
-    "createdOn": 1626389218583,
-    "id": "0e67246e-3810-4bf8-8afd-0064b66431da",
-    "rating": 3.18,
+    "createdOn": 1668679677660,
+    "id": "fcb1aec0-b618-49e7-a9b8-2d14a24ad2cc",
+    "rating": 1.74,
   },
   {
-    "createdOn": 1675613119949,
-    "id": "472cb332-34ce-4d5c-bd9b-52f0643528f8",
-    "rating": 3.16,
+    "createdOn": 1664295257150,
+    "id": "cd664fa1-4621-4b91-8921-a439ac7b8ecd",
+    "rating": 2.66,
   },
   {
-    "createdOn": 1623956858139,
-    "id": "5df10e14-2ed8-4170-8fa2-d8b89928cb9b",
-    "rating": 3.14,
+    "createdOn": 1664084568635,
+    "id": "81c96304-35fa-4892-9d79-edc0126941cf",
+    "rating": 2.22,
   },
   {
-    "createdOn": 1660335865485,
-    "id": "e2f17385-bdb7-4a3f-aad2-378831b1274b",
-    "rating": 3.09,
+    "createdOn": 1662505337527,
+    "id": "db5a92a4-03f5-4e40-9282-4ea37e136455",
+    "rating": 2.3,
   },
   {
     "createdOn": 1661741128448,
@@ -274,19 +179,114 @@ exports[`Dive Site Reviews End-to-End Tests when listing reviews will query for 
     "rating": 3.08,
   },
   {
-    "createdOn": 1555308788935,
-    "id": "b7d8dea9-96b9-43ed-b4d0-4c23620dbe47",
-    "rating": 3.04,
+    "createdOn": 1661607148443,
+    "id": "66c55407-4db0-4c3f-9cde-ea45a5556abf",
+    "rating": 3.96,
   },
   {
-    "createdOn": 1558045928602,
-    "id": "318db18e-3884-43a0-8758-b07c3080a786",
-    "rating": 2.93,
+    "createdOn": 1660335865485,
+    "id": "e2f17385-bdb7-4a3f-aad2-378831b1274b",
+    "rating": 3.09,
   },
   {
-    "createdOn": 1584894265678,
-    "id": "ccf85c7d-4273-4cb4-b397-2c83118a6f9b",
-    "rating": 2.85,
+    "createdOn": 1659811942475,
+    "id": "a7473b63-27c2-400c-9536-60f655bf48da",
+    "rating": 1.04,
+  },
+  {
+    "createdOn": 1657733220284,
+    "id": "54239b68-4ad4-4274-bcc7-7a1a464e17bb",
+    "rating": 2.32,
+  },
+  {
+    "createdOn": 1657450849780,
+    "id": "4b82a562-7ac5-4e95-8526-d054e4fd9096",
+    "rating": 1.59,
+  },
+  {
+    "createdOn": 1652308500792,
+    "id": "cd17ec3e-d027-4692-bf79-87ef116197d0",
+    "rating": 2.37,
+  },
+  {
+    "createdOn": 1652235346298,
+    "id": "e901c89d-7dd7-4846-9a85-d56a40af76cb",
+    "rating": 1.84,
+  },
+  {
+    "createdOn": 1650570591730,
+    "id": "51449cb9-b0d9-4e38-9624-be3b1da1aec1",
+    "rating": 1.15,
+  },
+  {
+    "createdOn": 1644868289741,
+    "id": "c2b2b9d3-c5b9-4251-a2b3-eb81e6b7156f",
+    "rating": 4.5,
+  },
+  {
+    "createdOn": 1643710588573,
+    "id": "58cccf1a-547a-4a89-9e40-2246e83daee0",
+    "rating": 1.44,
+  },
+  {
+    "createdOn": 1643246091109,
+    "id": "5e08bd27-7ed3-4b7d-b759-ef95e06e8b35",
+    "rating": 1.54,
+  },
+  {
+    "createdOn": 1639667360367,
+    "id": "e47e48d8-7b1d-40e9-9fec-4261cb5cc236",
+    "rating": 2.01,
+  },
+  {
+    "createdOn": 1639007824438,
+    "id": "440c04e4-d49f-4d64-a1e8-02e243ba4f4b",
+    "rating": 4.11,
+  },
+  {
+    "createdOn": 1636433879012,
+    "id": "92e5e3c9-14e1-44a7-87a0-4aa754df7ce6",
+    "rating": 1.04,
+  },
+  {
+    "createdOn": 1635090329347,
+    "id": "90077328-8607-4925-a27d-1c4ae31596e1",
+    "rating": 2.07,
+  },
+  {
+    "createdOn": 1629487087319,
+    "id": "d2017e91-dd66-4c8a-af2e-d3ef01bfc2b7",
+    "rating": 2.84,
+  },
+  {
+    "createdOn": 1626658751524,
+    "id": "afef475f-7d7a-4627-ac44-e36a4b704573",
+    "rating": 1.05,
+  },
+  {
+    "createdOn": 1626389218583,
+    "id": "0e67246e-3810-4bf8-8afd-0064b66431da",
+    "rating": 3.18,
+  },
+  {
+    "createdOn": 1625171805659,
+    "id": "a378a77f-13ab-43b9-9329-50d180f00569",
+    "rating": 1.88,
+  },
+  {
+    "createdOn": 1623956858139,
+    "id": "5df10e14-2ed8-4170-8fa2-d8b89928cb9b",
+    "rating": 3.14,
+  },
+  {
+    "createdOn": 1623921261067,
+    "id": "0fd64c10-9dee-4389-b6fa-9a53374b4852",
+    "rating": 4.87,
+  },
+  {
+    "createdOn": 1619373227492,
+    "id": "7025f8f6-8f37-4d84-ab5a-55609ae19bff",
+    "rating": 4.76,
   },
 ]
 `;

@@ -3,8 +3,8 @@ import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 import { AgencyEntity } from './agency.entity';
 import { UserEntity } from './user.entity';
 
-@Entity('user_professional_affiliations')
-export class UserProfessionalAffiliationEntity {
+@Entity('user_professional_associations')
+export class UserProfessionalAssociationsEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 

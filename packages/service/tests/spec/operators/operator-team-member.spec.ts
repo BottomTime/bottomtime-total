@@ -11,6 +11,7 @@ import { OperatorTeamMember } from '../../../src/operators/operator-team-member'
 import { UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { createTestOperator, createTestUser } from '../../utils';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 describe('OperatorTeamMember class', () => {
   let Users: Repository<UserEntity>;
@@ -28,7 +29,7 @@ describe('OperatorTeamMember class', () => {
     Operators = dataSource.getRepository(OperatorEntity);
     Members = dataSource.getRepository(OperatorTeamMemberEntity);
 
-    userFactory = new UserFactory(Users);
+    userFactory = createUserFactory();
 
     user = createTestUser({
       id: '9d1cf2fc-e112-43dd-9584-5800477c2af2',

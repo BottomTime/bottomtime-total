@@ -19,6 +19,7 @@ import { AlertsModule } from './alerts';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { CertificationsModule } from './certifications';
 import { DiveSiteEntity, LogEntryEntity, UserEntity } from './data';
 import { PostgresDataSourceOptions } from './data-source';
 import { RedisModule } from './dependencies';
@@ -58,13 +59,14 @@ import { UsersModule } from './users';
     AlertsModule,
     AdminModule,
     AuthModule,
-    OperatorsModule,
+    CertificationsModule,
     DiveSitesModule,
     EmailModule,
     FriendsModule,
     LogEntriesModule,
     MembershipModule,
     NotificationsModule,
+    OperatorsModule,
     ReviewsModule,
     TanksModule,
     UsersModule,

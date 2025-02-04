@@ -13,6 +13,9 @@ export class AgencyEntity {
   @Index()
   name: string = '';
 
+  @Column({ type: 'varchar', length: 200, nullable: true })
+  longName: string | null = null;
+
   @Column({ type: 'varchar', length: 250 })
   logo: string = '';
 

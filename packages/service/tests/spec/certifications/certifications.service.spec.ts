@@ -105,6 +105,7 @@ describe('Certifications Service', () => {
       agency: {
         id: TestAgencies[1].id,
         name: TestAgencies[1].name,
+        longName: TestAgencies[1].longName,
         logo: TestAgencies[1].logo,
         website: TestAgencies[1].website,
         ordinal: TestAgencies[1].ordinal,

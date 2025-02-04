@@ -40,3 +40,11 @@ export class ZodParamValidator<T> implements PipeTransform {
     );
   }
 }
+
+export function bodyValidator<T>(zodSchema: ZodType<T, ZodTypeDef, unknown>) {
+  return new ZodValidator(zodSchema);
+}
+
+export function paramValidator<T>(zodSchema: ZodType<T, ZodTypeDef, unknown>) {
+  return new ZodParamValidator(zodSchema);
+}

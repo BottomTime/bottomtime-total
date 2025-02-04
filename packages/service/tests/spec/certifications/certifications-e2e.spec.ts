@@ -1,16 +1,21 @@
 import { UserRole } from '@bottomtime/api';
 
 import { HttpServer, INestApplication } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { CertificationsModule } from '../../../src/certifications';
+import {
+  CertificationsController,
+  CertificationsService,
+} from '../../../src/certifications';
 import {
   AgencyEntity,
   CertificationEntity,
   UserEntity,
 } from '../../../src/data';
+import { UsersModule } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import { TestAgencies } from '../../fixtures/agencies';
 import CertificationTestData from '../../fixtures/certifications.json';
@@ -44,7 +49,12 @@ describe('Certifications End-to-End', () => {
     Certifications = dataSource.getRepository(CertificationEntity);
 
     app = await createTestApp({
-      imports: [CertificationsModule],
+      imports: [
+        TypeOrmModule.forFeature([AgencyEntity, CertificationEntity]),
+        UsersModule,
+      ],
+      providers: [CertificationsService],
+      controllers: [CertificationsController],
     });
     server = app.getHttpServer();
     certData = CertificationTestData.map((data) => {

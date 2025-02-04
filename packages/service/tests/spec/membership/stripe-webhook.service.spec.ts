@@ -22,7 +22,7 @@ import {
   StripeTrialWillEndEvent,
   getEntitlementsChangedEvent,
 } from '../../fixtures/stripe-events';
-import { createTestUser } from '../../utils';
+import { createTestUser, createUserFactory } from '../../utils';
 
 const TestSignature = 'SuperSecretSignature';
 const UserId = 'c07030c9-b650-480e-a5bb-510702ae0b09';
@@ -56,7 +56,7 @@ describe('Stripe webhook handler service', () => {
       .returns()
       .object();
 
-    usersService = new UsersService(Users);
+    usersService = new UsersService(Users, createUserFactory());
     service = new StripeWebhookService(stripe, usersService, eventsService);
   });
 

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Agencies1738351626292 implements MigrationInterface {
-  name = 'Agencies1738351626292';
+export class Agencies1738598201592 implements MigrationInterface {
+  name = 'Agencies1738598201592';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -17,7 +17,7 @@ export class Agencies1738351626292 implements MigrationInterface {
       `ALTER TABLE "certifications" RENAME COLUMN "agency" TO "agencyId"`,
     );
     await queryRunner.query(
-      `CREATE TABLE "agencies" ("id" uuid NOT NULL, "ordinal" integer, "name" character varying(200) NOT NULL, "logo" character varying(250) NOT NULL, "website" character varying(250) NOT NULL, CONSTRAINT "PK_8ab1f1f53f56c8255b0d7e68b28" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "agencies" ("id" uuid NOT NULL, "ordinal" integer, "name" character varying(200) NOT NULL, "longName" character varying(200), "logo" character varying(250) NOT NULL, "website" character varying(250) NOT NULL, CONSTRAINT "PK_8ab1f1f53f56c8255b0d7e68b28" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_45d2714a776160d0868300f119" ON "agencies" ("ordinal") `,
@@ -26,10 +26,10 @@ export class Agencies1738351626292 implements MigrationInterface {
       `CREATE INDEX "IDX_1ea16c73ecef4bab2f61c31c88" ON "agencies" ("name") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "user_professional_affiliations" ("id" uuid NOT NULL, "title" character varying(200) NOT NULL, "identificationNumber" character varying(100) NOT NULL, "startDate" character varying(20), "agencyId" uuid, "userId" uuid, CONSTRAINT "PK_affd613bfadee206235cb40f70e" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "user_professional_associations" ("id" uuid NOT NULL, "title" character varying(200) NOT NULL, "identificationNumber" character varying(100) NOT NULL, "startDate" character varying(20), "agencyId" uuid, "userId" uuid, CONSTRAINT "PK_e7d9353a66b97ce9550796dd8bd" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "IDX_149437f30feeb28064f89c73a7" ON "user_professional_affiliations" ("userId") `,
+      `CREATE INDEX "IDX_80038d4ee282fc06cc9044e610" ON "user_professional_associations" ("userId") `,
     );
     await queryRunner.query(
       `ALTER TABLE "log_entry_signatures" ADD "agencyId" uuid`,
@@ -60,19 +60,19 @@ export class Agencies1738351626292 implements MigrationInterface {
       `ALTER TABLE "log_entry_signatures" ADD CONSTRAINT "FK_225ab26441a705f1f216de32c4b" FOREIGN KEY ("agencyId") REFERENCES "agencies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "user_professional_affiliations" ADD CONSTRAINT "FK_6542d68b4cb941da02022217e47" FOREIGN KEY ("agencyId") REFERENCES "agencies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "user_professional_associations" ADD CONSTRAINT "FK_b2a78652b1bb5d310943f320410" FOREIGN KEY ("agencyId") REFERENCES "agencies"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "user_professional_affiliations" ADD CONSTRAINT "FK_149437f30feeb28064f89c73a7b" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "user_professional_associations" ADD CONSTRAINT "FK_80038d4ee282fc06cc9044e6102" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE "user_professional_affiliations" DROP CONSTRAINT "FK_149437f30feeb28064f89c73a7b"`,
+      `ALTER TABLE "user_professional_associations" DROP CONSTRAINT "FK_80038d4ee282fc06cc9044e6102"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "user_professional_affiliations" DROP CONSTRAINT "FK_6542d68b4cb941da02022217e47"`,
+      `ALTER TABLE "user_professional_associations" DROP CONSTRAINT "FK_b2a78652b1bb5d310943f320410"`,
     );
     await queryRunner.query(
       `ALTER TABLE "log_entry_signatures" DROP CONSTRAINT "FK_225ab26441a705f1f216de32c4b"`,
@@ -105,9 +105,9 @@ export class Agencies1738351626292 implements MigrationInterface {
       `ALTER TABLE "log_entry_signatures" DROP COLUMN "agencyId"`,
     );
     await queryRunner.query(
-      `DROP INDEX "public"."IDX_149437f30feeb28064f89c73a7"`,
+      `DROP INDEX "public"."IDX_80038d4ee282fc06cc9044e610"`,
     );
-    await queryRunner.query(`DROP TABLE "user_professional_affiliations"`);
+    await queryRunner.query(`DROP TABLE "user_professional_associations"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_1ea16c73ecef4bab2f61c31c88"`,
     );

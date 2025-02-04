@@ -58,7 +58,7 @@ describe('Friend requests view', () => {
         expires: faker.date.soon().valueOf(),
         friend: {
           id: friendId,
-          username: faker.internet.userName(),
+          username: faker.internet.username(),
           memberSince: faker.date.past().valueOf(),
           avatar: faker.image.avatar(),
           logBookSharing: faker.helpers.arrayElement(

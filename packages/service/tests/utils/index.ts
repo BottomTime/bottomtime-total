@@ -13,6 +13,7 @@ export * from './create-test-log-entry-import-record';
 export * from './create-test-team-member';
 export * from './create-test-app';
 export * from './create-test-user';
+export * from './create-user-factory';
 export * from './default-user-settings';
 export * from './insertable-user';
 export * from './jwt';

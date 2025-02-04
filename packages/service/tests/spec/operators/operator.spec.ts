@@ -22,7 +22,7 @@ import {
   Operator,
   OperatorFactory,
 } from '../../../src/operators';
-import { User } from '../../../src/users';
+import { UserFactory } from '../../../src/users';
 import { dataSource } from '../../data-source';
 import TestReviews from '../../fixtures/operator-reviews.json';
 import TestUsers from '../../fixtures/user-search-data.json';
@@ -34,6 +34,7 @@ import {
   parseOperatorReviewJSON,
   parseUserJSON,
 } from '../../utils';
+import { createUserFactory } from '../../utils/create-user-factory';
 
 const TestData: OperatorEntity = {
   id: 'f6fc189e-126e-49ac-95aa-c2ffd9a03140',
@@ -73,6 +74,7 @@ describe('Operator class', () => {
   let Operators: Repository<OperatorEntity>;
   let Reviews: Repository<OperatorReviewEntity>;
   let operatorFactory: OperatorFactory;
+  let userFactory: UserFactory;
 
   let owner: UserEntity;
   let otherUser: UserEntity;
@@ -84,6 +86,7 @@ describe('Operator class', () => {
     Operators = dataSource.getRepository(OperatorEntity);
     Reviews = dataSource.getRepository(OperatorReviewEntity);
     operatorFactory = createOperatorFactory();
+    userFactory = createUserFactory();
 
     owner = createTestUser({
       accountTier: AccountTier.Basic,
@@ -361,7 +364,7 @@ describe('Operator class', () => {
   });
 
   it('will transfer ownership to a new user', async () => {
-    const newOwner = new User(Users, otherUser);
+    const newOwner = userFactory.createUser(otherUser);
     await operator.transferOwnership(newOwner);
 
     expect(operator.owner.userId).toEqual(newOwner.id);
@@ -496,7 +499,7 @@ describe('Operator class', () => {
 
       it('will filter reviews by creator', async () => {
         const result = await operator.listReviews({
-          creator: new User(Users, creatorData[3]),
+          creator: userFactory.createUser(creatorData[3]),
         });
         expect({
           data: result.data.map((review) => ({
@@ -571,7 +574,7 @@ describe('Operator class', () => {
     describe('when creating a review', () => {
       it('will submit a new review', async () => {
         const options: CreateOperatorReviewOptions = {
-          creator: new User(Users, creatorData[2]),
+          creator: userFactory.createUser(creatorData[2]),
           rating: 3.88,
           comments: 'This place is okay.',
         };
@@ -599,7 +602,7 @@ describe('Operator class', () => {
           createdAt: new Date(Date.now() - 1000 * 60 * 60 * 46),
         });
         const options: CreateOperatorReviewOptions = {
-          creator: new User(Users, creator),
+          creator: userFactory.createUser(creator),
           rating: 3.88,
           comments: 'This place is okay.',
         };
