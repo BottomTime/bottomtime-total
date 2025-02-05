@@ -10,7 +10,25 @@
  *       schema:
  *         type: string
  *         format: uuid
- *         example: 00000000-0000-0000-0000-000000000000
+ *         example: 3fe0868e-3b88-4ecc-907a-0e92e886cfae
+ *     AgencyId:
+ *       name: agencyId
+ *       in: path
+ *       required: true
+ *       description: The agency's unique ID.
+ *       schema:
+ *         type: string
+ *         format: uuid
+ *         example: 57ac305a-beb1-4fcd-a96c-bb16ed5687cd
+ *     ProfessionalAssociationId:
+ *       name: associationId
+ *       in: path
+ *       required: true
+ *       description: The professional association's unique ID.
+ *       schema:
+ *         type: string
+ *         format: uuid
+ *         example: 57ac305a-beb1-4fcd-a96c-bb16ed5687cd
  *     CertificationQuery:
  *       name: query
  *       in: query
@@ -44,8 +62,47 @@
  *         maximum: 400
  *       default: 100
  *       example: 100
- *
  *   schemas:
+ *     Agency:
+ *       type: object
+ *       required:
+ *         - id
+ *         - name
+ *         - logo
+ *         - website
+ *       properties:
+ *         id:
+ *           title: Agency ID
+ *           type: string
+ *           format: uuid
+ *           description: A unique ID used to identify the agency in API calls.
+ *           example: 39910b4a-73e8-4155-9b49-5782307c6951
+ *         name:
+ *           title: Short Name (Abbreviation)
+ *           type: string
+ *           maxLength: 200
+ *           description: The agency's short name.
+ *           example: PADI
+ *         longName:
+ *           title: Full Name
+ *           type: string
+ *           maxLength: 200
+ *           description: The agency's full name.
+ *           example: Professional Association of Diving Instructors
+ *         logo:
+ *           title: Logo URL
+ *           type: string
+ *           maxLength: 250
+ *           description: |
+ *             The URL of the agency's logo. Ideally, it should be a 256x256 pixel image.
+ *           example: https://example.com/logo.png
+ *         website:
+ *           title: Website URL
+ *           type: string
+ *           format: uri
+ *           maxLength: 250
+ *           description: The URL of the agency's website.
+ *           example: https://padidive.com
  *     UpdateCertification:
  *       type: object
  *       required:
@@ -53,16 +110,14 @@
  *         - course
  *       properties:
  *         agency:
+ *           $ref: "#/components/schemas/Agency"
  *           title: Agency
- *           type: string
  *           description: The certification's agency.
- *           example: PADI
  *         course:
  *           title: Course
  *           type: string
- *           description: The certification's course.
+ *           description: The course title or name of the certification.
  *           example: Open Water Diver
- *
  *     Certification:
  *       allOf:
  *         - $ref: "#/components/schemas/UpdateCertification"
@@ -76,4 +131,39 @@
  *               format: uuid
  *               description: The certification's unique ID.
  *               example: 00000000-0000-0000-0000-000000000000
+ *     ProfessionalAssociation:
+ *       type: object
+ *       required:
+ *         - agency
+ *         - identificationNumber
+ *         - startDate
+ *         - title
+ *       properties:
+ *         id:
+ *           title: Association ID
+ *           type: string
+ *           format: uuid
+ *           description: The professional association's unique ID.
+ *           example: 223e89de-1b92-4f72-b110-7ec074c3d43b
+ *         agency:
+ *           $ref: "#/components/schemas/Agency"
+ *           title: Agency
+ *           description: The professional association's agency.
+ *         identificationNumber:
+ *           title: Identification Number
+ *           type: string
+ *           description: |
+ *             The professional association's identification number. (E.g. PADI Pro number)
+ *           example: 123456
+ *         startDate:
+ *           title: Start Date
+ *           type: string
+ *           format: date
+ *           description: The professional association's start date.
+ *           example: 2021-01-01
+ *         title:
+ *           title: Title
+ *           type: string
+ *           description: The professional association's title.
+ *           example: Divemaster
  */

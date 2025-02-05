@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { AgencySchema } from './agencies';
 import {
   BooleanString,
   DepthUnit,
@@ -187,25 +186,4 @@ export const ValidateResetPasswordTokenResponseSchema = z.object({
 });
 export type ValidateResetPasswordTokenResponseDTO = z.infer<
   typeof ValidateResetPasswordTokenResponseSchema
->;
-
-export const CreateOrUpdateProfessionalAssociationParamsSchema = z.object({
-  agency: z.string().uuid(),
-  identificationNumber: z.string().trim().max(100),
-  title: z.string().trim().min(1).max(200),
-  startDate: z.string().trim().regex(FuzzyDateRegex).optional(),
-});
-export type CreateOrUpdateProfessionalAssociationParamsDTO = z.infer<
-  typeof CreateOrUpdateProfessionalAssociationParamsSchema
->;
-
-export const ProfessionalAssociationSchema =
-  CreateOrUpdateProfessionalAssociationParamsSchema.omit({
-    agency: true,
-  }).extend({
-    id: z.string().uuid(),
-    agency: AgencySchema,
-  });
-export type ProfessionalAssociationDTO = z.infer<
-  typeof ProfessionalAssociationSchema
 >;
