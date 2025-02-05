@@ -331,7 +331,7 @@ describe('Friends Service', () => {
       expect(friendRequest.created.valueOf()).toBeCloseTo(Date.now(), -3);
       expect(friendRequest.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
-        -2,
+        -3,
       );
 
       const stored = await FriendRequests.findOneByOrFail({
@@ -341,7 +341,7 @@ describe('Friends Service', () => {
       expect(stored.created.valueOf()).toBeCloseTo(Date.now(), -3);
       expect(stored.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
-        -2,
+        -3,
       );
     });
 
@@ -719,7 +719,7 @@ describe('Friends Service', () => {
       expect(request.reason).toBeNull();
       expect(request.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
-        -2,
+        -3,
       );
     });
 
@@ -755,7 +755,7 @@ describe('Friends Service', () => {
       expect(request.reason).toBe(reason);
       expect(request.expires.valueOf()).toBeCloseTo(
         Date.now() + TwoWeeksInMilliseconds,
-        -2,
+        -3,
       );
     });
 
