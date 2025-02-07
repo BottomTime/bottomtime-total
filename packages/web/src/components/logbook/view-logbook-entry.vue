@@ -308,10 +308,7 @@
 
             <label class="font-bold">Rating:</label>
             <p class="flex gap-2 items-center">
-              <StarRating :model-value="entry.rating" read-only />
-              <span class="font-mono text-xs">
-                {{ entry.rating?.toFixed(1) ?? 'not rated' }}
-              </span>
+              <StarRating :model-value="entry.rating" readonly />
             </p>
           </div>
         </div>

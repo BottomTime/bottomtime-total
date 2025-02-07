@@ -1,11 +1,11 @@
 <template>
-  <div class="flex gap-3">
-    <figure class="min-w-[64px] min-h-[64px]">
-      <!-- TODO: Icon? Logo? -->
+  <div class="flex flex-col gap-3">
+    <figure class="min-w-[64px] min-h-[64px] hidden">
+      <!-- TODO: Icon? Logo? Map? -->
     </figure>
 
     <article class="grow flex flex-col gap-4">
-      <div class="flex justify-between items-baseline">
+      <div class="flex flex-col lg:flex-row justify-between items-center">
         <div class="flex gap-2 items-baseline">
           <button
             class="text-xl font-title capitalize hover:text-link-hover"
@@ -23,71 +23,63 @@
           </a>
         </div>
 
-        <div v-if="site.averageRating">
-          <StarRating :rating="site.averageRating" readonly />
-        </div>
+        <StarRating :rating="site.averageRating" readonly />
       </div>
 
-      <div class="grid grid-cols-3 gap-4">
-        <div class="col-span-2">
-          <span class="sr-only">Location</span>
-          <p>{{ site.location }}</p>
+      <div class="grid grid-cols-4 gap-1.5 text-sm">
+        <label class="font-bold text-right">Location:</label>
+        <div class="col-span-3">
+          <AddressText :address="site.location" />
           <p v-if="site.gps" class="space-x-1">
-            <span class="text-danger">
-              <i class="fa-solid fa-location-dot"></i>
-            </span>
             <a
-              class="text-sm font-mono"
               :href="`https://www.google.com/maps/search/?api=1&query=${site.gps.lat},${site.gps.lon}`"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ site.gps.lat }}{{ site.gps.lat > 0 ? 'N' : 'S' }},
-              {{ site.gps.lon }}{{ site.gps.lon > 0 ? 'E' : 'W' }}
+              <GpsCoordinatesText :coordinates="site.gps" />
             </a>
           </p>
         </div>
 
-        <div>
-          <p class="font-bold">Depth</p>
-          <p>
-            <DepthText
-              v-if="site.depth"
-              :depth="site.depth.depth"
-              :unit="site.depth.unit"
-            />
-            <span v-else>Unspecified</span>
-          </p>
-        </div>
+        <label class="font-bold text-right">Shore Dive:</label>
+        <p>{{ yesNoBoolean(site.shoreAccess) }}</p>
 
-        <div>
-          <p class="font-bold">Shore Dive</p>
-          <span>{{ yesNoBoolean(site.shoreAccess) }}</span>
-        </div>
+        <label class="font-bold text-right">Free To Dive:</label>
+        <p>{{ yesNoBoolean(site.freeToDive) }}</p>
 
-        <div>
-          <p class="font-bold">Free To Dive</p>
-          <span>{{ yesNoBoolean(site.freeToDive) }}</span>
-        </div>
+        <label class="font-bold text-right">Depth:</label>
+        <p>
+          <DepthText
+            v-if="site.depth"
+            :depth="site.depth.depth"
+            :unit="site.depth.unit"
+          />
+          <span v-else>Unspecified</span>
+        </p>
 
-        <div>
-          <p class="font-bold">Difficulty</p>
-          <p v-if="site.averageDifficulty">
+        <label class="font-bold text-right">Water:</label>
+        <p>{{ waterType }}</p>
+
+        <label class="font-bold text-right">Difficulty:</label>
+        <p class="col-span-3 space-x-2">
+          <span v-if="site.averageDifficulty">
             {{ site.averageDifficulty.toFixed(1) }}/5.0
-          </p>
-          <p>{{ difficultyString }}</p>
-        </div>
+          </span>
+          <span class="italic">{{ difficultyString }}</span>
+        </p>
       </div>
     </article>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { DiveSiteDTO } from '@bottomtime/api';
+import { DiveSiteDTO, WaterType } from '@bottomtime/api';
 
 import { computed } from 'vue';
 
+import AddressText from '../common/address-text.vue';
 import DepthText from '../common/depth-text.vue';
+import GpsCoordinatesText from '../common/gps-coordinates-text.vue';
 import StarRating from '../common/star-rating.vue';
 
 interface PreviewDiveSiteProps {
@@ -109,6 +101,19 @@ const difficultyString = computed(() => {
   if (rounded === 3) return 'Moderate. Advanced open water is recommended';
   if (rounded === 2) return 'No sweat! Most divers can handle it!';
   return 'Easy-peasy! Any diver can handle it.';
+});
+
+const waterType = computed(() => {
+  switch (props.site.waterType) {
+    case WaterType.Fresh:
+      return 'Fresh water';
+    case WaterType.Salt:
+      return 'Salt water';
+    case WaterType.Mixed:
+      return 'Brackish water';
+    default:
+      return 'Unspecified';
+  }
 });
 
 function yesNoBoolean(value?: boolean) {

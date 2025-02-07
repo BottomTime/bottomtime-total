@@ -20,11 +20,11 @@
           :error="v$.logNumber.$errors[0]?.$message"
         />
         <button
-          class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 flex justify-center items-center px-2 text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover"
+          class="absolute inset-y-0 end-0 rounded-r-lg border border-grey-950 flex justify-center items-center px-2 text-grey-950 disabled:text-grey-500 bg-secondary hover:bg-secondary-hover text-sm"
           data-testid="get-next-log-number"
           @click="getNextAvailableLogNumber"
         >
-          Use Next Available Number
+          Next Available Number
         </button>
       </div>
     </FormField>
@@ -36,7 +36,7 @@
       :invalid="v$.entryTime.$error"
       :error="v$.entryTime.$errors[0]?.$message"
     >
-      <div class="flex flex-col gap-2 md:flex-row md:gap-3 items-baseline">
+      <div class="flex flex-col gap-1.5 lg:flex-row items-baseline">
         <FormDatePicker
           v-model="formData.entryTime"
           control-id="entryTime"
@@ -57,7 +57,7 @@
       </div>
     </FormField>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
       <FormField
         class="grow"
         label="Duration"
@@ -104,26 +104,6 @@
         />
       </FormField>
     </div>
-
-    <ul
-      class="-mt-3 mx-8 text-xs px-2 py-1 border-l-4 text-grey-950 border-blue-400 bg-blue-300 dark:bg-blue-800 dark:text-grey-200 rounded-r-lg"
-    >
-      <li class="text-md font-bold">Hint:</li>
-      <li>
-        <span class="font-bold">Duration</span>
-        <span class="italic">
-          is the total time you spend underwater. (From descent until you arrive
-          back at the surface.)
-        </span>
-      </li>
-      <li>
-        <span class="font-bold">Bottom time</span>
-        <span class="italic">
-          is the time from when you start the descent until you begin your final
-          ascent and safety stop.
-        </span>
-      </li>
-    </ul>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
       <FormField

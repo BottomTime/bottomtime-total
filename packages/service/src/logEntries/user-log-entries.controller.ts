@@ -602,6 +602,7 @@ export class UserLogEntriesController {
 
     logEntry.logNumber = options.logNumber;
     logEntry.notes = options.notes;
+    logEntry.rating = options.rating;
     logEntry.tags = options.tags ?? [];
 
     logEntry.timing.entryTime = new Date(options.timing.entryTime);

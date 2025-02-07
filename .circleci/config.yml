@@ -222,11 +222,13 @@ jobs:
           command: |
             aws s3api create-bucket --endpoint-url http://localhost:4566 --bucket media
             aws sqs create-queue  --endpoint-url http://localhost:4566 --queue-name email
+            aws sqs create-queue  --endpoint-url http://localhost:4566 --queue-name reviews
       - run:
           name: Run Tests
           working_directory: packages/service/
           command: |
-            yarn prepare && yarn test --ci
+            yarn prepare
+            yarn test --ci
       - store_test_results:
           path: packages/service/reports/
       - run:

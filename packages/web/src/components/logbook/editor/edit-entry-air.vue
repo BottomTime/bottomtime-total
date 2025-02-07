@@ -1,72 +1,73 @@
 <template>
-  <li class="flex gap-3 items-baseline">
-    <div>
-      <div class="flex items-center justify-between">
-        <p class="font-bold text-xl">#{{ ordinal + 1 }}</p>
-        <CloseButton
-          class="min-w-6"
-          :test-id="`remove-tank-${ordinal}`"
-          dangerous
-          @close="$emit('remove', formData.id)"
-        />
-      </div>
+  <li class="flex flex-col gap-1">
+    <div class="flex items-center justify-between">
+      <p class="text-2xl">#{{ ordinal + 1 }}</p>
+      <CloseButton
+        class="min-w-6"
+        :test-id="`remove-tank-${ordinal}`"
+        dangerous
+        @close="$emit('remove', formData.id)"
+      />
+    </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1">
-        <FormField
-          class="order-1 col-span-1 md:col-span-2 lg:col-span-4"
-          label="Tank"
+    <FormField
+      label="Tank"
+      :control-id="`tanks-select-${ordinal}`"
+      :responsive="false"
+      :invalid="v$.tankId.$error"
+      :error="v$.tankId.$errors[0]?.$message"
+    >
+      <div class="flex flex-col lg:flex-row items-baseline gap-1 lg:gap-3">
+        <FormSelect
+          v-model="formData.tankId"
+          class="grow"
           :control-id="`tanks-select-${ordinal}`"
-          :responsive="false"
+          :test-id="`tanks-select-${ordinal}`"
+          :options="tankOptions"
           :invalid="v$.tankId.$error"
-          :error="v$.tankId.$errors[0]?.$message"
+          stretch
+        />
+
+        <FormCheckbox
+          v-model="formData.doubles"
+          :control-id="`doubles-${ordinal}`"
+          test-id="doubles"
+          class="mx-3"
         >
-          <div class="flex items-baseline gap-3">
-            <FormSelect
-              v-model="formData.tankId"
-              class="grow"
-              :control-id="`tanks-select-${ordinal}`"
-              :test-id="`tanks-select-${ordinal}`"
-              :options="tankOptions"
-              :invalid="v$.tankId.$error"
-              stretch
-            />
+          Doubles
+        </FormCheckbox>
+      </div>
+    </FormField>
 
-            <FormCheckbox
-              v-model="formData.doubles"
-              :control-id="`doubles-${ordinal}`"
-              test-id="doubles"
-              class="mx-3"
-            >
-              Doubles
-            </FormCheckbox>
-          </div>
+    <div
+      v-if="formData.tankInfo"
+      class="flex justify-evenly text-sm"
+      data-testid="tank-summary"
+    >
+      <div class="text-center">
+        <label class="font-bold">Working Pressure</label>
+        <p class="text-xs font-mono">
+          <PressureText
+            :pressure="formData.tankInfo.workingPressure"
+            :unit="PressureUnit.Bar"
+          />
+        </p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Volume</p>
+        <p class="font-mono text-xs">{{ formData.tankInfo.volume }}L</p>
+      </div>
+      <div class="text-center">
+        <p class="font-bold">Material</p>
+        <p class="font-mono text-xs">
+          {{ tankMaterialString }}
+        </p>
+      </div>
+    </div>
 
-          <div
-            v-if="formData.tankInfo"
-            class="flex justify-evenly col-span-1 md:col-span-2 lg:col-span-4 order-3 md:order-3"
-            data-testid="tank-summary"
-          >
-            <div class="flex gap-2 items-baseline">
-              <p class="font-bold">Working Pressure:</p>
-              <p class="font-mono text-sm">
-                {{ formData.tankInfo.workingPressure }}bar
-              </p>
-            </div>
-            <div class="flex gap-2 items-baseline">
-              <p class="font-bold">Volume</p>
-              <p class="font-mono text-sm">{{ formData.tankInfo.volume }}L</p>
-            </div>
-            <div class="flex gap-2 items-baseline">
-              <p class="font-bold">Material</p>
-              <p class="font-mono text-sm">
-                {{ tankMaterialString }}
-              </p>
-            </div>
-          </div>
-        </FormField>
-
+    <div class="flex flex-col xl:flex-row gap-0 xl:gap-2">
+      <div class="flex justify-between gap-2">
         <FormField
-          class="order-4"
           label="Start Pressure"
           :control-id="`start-pressure-${ordinal}`"
           :invalid="v$.startPressure.$error"
@@ -84,7 +85,6 @@
         </FormField>
 
         <FormField
-          class="order-5"
           label="End Pressure"
           :control-id="`end-pressure-${ordinal}`"
           :responsive="false"
@@ -100,9 +100,10 @@
             @toggle-unit="onTogglePressureUnit"
           />
         </FormField>
+      </div>
 
+      <div class="flex justify-between gap-2">
         <FormField
-          class="order-6"
           label="O₂ %"
           :control-id="`o2-${ordinal}`"
           :responsive="false"
@@ -129,7 +130,6 @@
         </FormField>
 
         <FormField
-          class="order-7"
           label="He %"
           :control-id="`he-${ordinal}`"
           :responsive="false"
@@ -174,6 +174,7 @@ import FormField from '../../common/form-field.vue';
 import FormSelect from '../../common/form-select.vue';
 import FormTextBox from '../../common/form-text-box.vue';
 import PressureInput from '../../common/pressure-input.vue';
+import PressureText from '../../common/pressure-text.vue';
 import { LogEntryAir } from './types';
 
 interface EditEntryAirProps {

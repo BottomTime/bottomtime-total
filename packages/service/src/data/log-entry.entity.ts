@@ -189,4 +189,16 @@ export class LogEntryEntity {
 
   @Column('varchar', { length: 200, nullable: true })
   deviceId: string | null = null;
+
+  @Column({
+    type: 'tsvector',
+    select: false,
+    nullable: true,
+    insert: false,
+    update: false,
+    asExpression: `setweight(to_tsvector('english', coalesce(notes, '') || ' ' || tags), 'A')`,
+    generatedType: 'STORED',
+  })
+  @Index()
+  fulltext?: string;
 }

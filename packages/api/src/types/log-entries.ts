@@ -4,6 +4,7 @@ import {
   BooleanString,
   DepthUnit,
   ExposureSuit,
+  GpsCoordinatesSchema,
   PressureUnit,
   SortOrder,
   TemperatureUnit,
@@ -19,6 +20,7 @@ import { SuccinctProfileSchema } from './users';
 export enum LogEntrySortBy {
   EntryTime = 'entryTime',
   LogNumber = 'logNumber',
+  Rating = 'rating',
 }
 
 /** Indicates how log entry numbers will be generated during an import operation */
@@ -128,7 +130,7 @@ const LogEntryBaseSchema = z.object({
     .optional(),
 
   notes: z.string().max(5000).optional(),
-  rating: z.number().min(1).max(5).optional(),
+  rating: z.number().min(0).max(5).optional(),
   tags: z.string().max(100).array().optional(),
 });
 
@@ -176,6 +178,9 @@ export const SuccinctLogEntrySchema = LogEntrySchema.pick({
   id: true,
   depths: true,
   logNumber: true,
+  notes: true,
+  operator: true,
+  rating: true,
   site: true,
   tags: true,
   timing: true,
@@ -188,6 +193,10 @@ export const ListLogEntriesParamsSchema = z
     query: z.string().max(500),
     startDate: z.coerce.number().optional(),
     endDate: z.coerce.number().optional(),
+    location: GpsCoordinatesSchema,
+    radius: z.coerce.number().positive().max(500),
+    minRating: z.coerce.number().min(0).max(5),
+    maxRating: z.coerce.number().min(0).max(5),
     skip: z.coerce.number().int().min(0),
     limit: z.coerce.number().int().min(1).max(500),
     sortBy: z.nativeEnum(LogEntrySortBy),
@@ -200,7 +209,14 @@ export const ListLogEntriesParamsSchema = z
     }
 
     return true;
-  }, 'Start date must be before end date.');
+  }, 'Start date must be before end date.')
+  .refine((params) => {
+    if (params.minRating && params.maxRating) {
+      return params.minRating < params.maxRating;
+    }
+
+    return true;
+  }, 'Minimum rating must be less than maximum rating.');
 export type ListLogEntriesParamsDTO = z.infer<
   typeof ListLogEntriesParamsSchema
 >;

@@ -26,22 +26,22 @@
           @remove="onRemoveEntry"
           @update="onUpdateAirEntry"
         />
-
-        <li class="flex justify-center space-x-3">
-          <FormButton
-            control-id="btn-add-tank"
-            test-id="btn-add-tank"
-            @click="onAddTank"
-          >
-            <p class="space-x-1">
-              <span>
-                <i class="fa-solid fa-plus"></i>
-              </span>
-              <span>Add tank</span>
-            </p>
-          </FormButton>
-        </li>
       </TransitionList>
+      <div class="text-center">
+        <FormButton
+          control-id="btn-add-tank"
+          size="sm"
+          test-id="btn-add-tank"
+          @click="onAddTank"
+        >
+          <p class="space-x-1 text-sm">
+            <span>
+              <i class="fa-solid fa-plus"></i>
+            </span>
+            <span>Add tank</span>
+          </p>
+        </FormButton>
+      </div>
     </FormField>
   </section>
 </template>

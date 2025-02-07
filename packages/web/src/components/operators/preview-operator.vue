@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-3">
+  <div class="flex flex-col xl:flex-row gap-2 items-center">
     <figure class="min-w-[64px] min-h-[64px]">
       <img
         v-if="operator.logo"
@@ -10,7 +10,7 @@
     </figure>
 
     <article class="grow flex flex-col gap-4">
-      <div class="flex justify-between">
+      <div class="flex flex-col lg:flex-row justify-between items-center">
         <div class="flex gap-2 items-center">
           <button
             class="font-title text-xl capitalize hover:text-link-hover"
@@ -43,48 +43,51 @@
         <StarRating :value="operator.averageRating" readonly />
       </div>
 
-      <div class="grid grid-cols-3 gap-4">
-        <div>
-          <span class="sr-only">Address</span>
-          <p>{{ operator.address }}</p>
-          <p v-if="operator.gps" class="space-x-1">
-            <span class="text-danger">
-              <i class="fa-solid fa-location-dot"></i>
-            </span>
-            <a
-              class="text-sm font-mono"
-              :href="`https://www.google.com/maps/search/?api=1&query=${operator.gps.lat},${operator.gps.lon}`"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ operator.gps.lat }}{{ operator.gps.lat > 0 ? 'N' : 'S' }},
-              {{ operator.gps.lon }}{{ operator.gps.lon > 0 ? 'E' : 'W' }}
-            </a>
-          </p>
+      <div class="grid grid-cols-4 gap-1.5 text-sm">
+        <label class="font-bold text-right">Address:</label>
+        <!-- <div class="text-center col-span-2 lg:col-span-2">
+          <label class="font-bold">Address</label> -->
+        <div class="text-pretty col-span-3">
+          <AddressText :address="operator.address" />
+          <a
+            v-if="operator.gps"
+            :href="`https://www.google.com/maps/search/?api=1&query=${operator.gps.lat},${operator.gps.lon}`"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <GpsCoordinatesText :coordinates="operator.gps" />
+          </a>
         </div>
 
-        <div>
-          <div v-if="operator.phone" class="space-x-1">
-            <span>
-              <i class="fa-solid fa-phone"></i>
-            </span>
-            <span class="sr-only">Phone</span>
-            <a :href="`tel:${operator.phone}`">{{ operator.phone }}</a>
-          </div>
-        </div>
+        <label class="font-bold space-x-1 text-right">
+          <span>
+            <i class="fa-solid fa-phone"></i>
+          </span>
+          <span>Phone:</span>
+        </label>
+        <p class="col-span-3">
+          <a v-if="operator.phone" :href="`tel:${operator.phone}`">
+            {{ operator.phone }}
+          </a>
+          <span v-else>Unspecified</span>
+        </p>
 
-        <div>
-          <p v-if="operator.email" class="space-x-1">
-            <span>
-              <i class="fa-solid fa-envelope"></i>
-            </span>
-            <span class="sr-only">Email</span>
-            <a :href="`mailto:${operator.email}`">{{ operator.email }}</a>
-          </p>
-        </div>
+        <label class="font-bold space-x-1 text-right">
+          <span>
+            <i class="fa-solid fa-envelope"></i>
+          </span>
+          <span>Email:</span>
+        </label>
+        <p class="col-span-3">
+          <a v-if="operator.email" :href="`mailto:${operator.email}`">
+            {{ operator.email }}
+          </a>
+          <span v-else>Unspecified</span>
+        </p>
 
-        <div v-if="operator.socials?.facebook">
-          <p class="space-x-1">
+        <label class="font-bold text-right">Socials:</label>
+        <div class="flex flex-wrap gap-3">
+          <p v-if="operator.socials?.facebook" class="space-x-1">
             <span>
               <i class="fa-brands fa-facebook"></i>
             </span>
@@ -97,10 +100,8 @@
               {{ operator.socials.facebook }}
             </a>
           </p>
-        </div>
 
-        <div v-if="operator.socials?.instagram">
-          <p class="space-x-1">
+          <p v-if="operator.socials?.instagram" class="space-x-1">
             <span>
               <i class="fa-brands fa-instagram"></i>
             </span>
@@ -113,10 +114,8 @@
               {{ operator.socials.instagram }}
             </a>
           </p>
-        </div>
 
-        <div v-if="operator.socials?.tiktok">
-          <p class="space-x-1">
+          <p v-if="operator.socials?.tiktok" class="space-x-1">
             <span>
               <i class="fa-brands fa-tiktok"></i>
             </span>
@@ -129,10 +128,8 @@
               {{ operator.socials.tiktok }}
             </a>
           </p>
-        </div>
 
-        <div v-if="operator.socials?.twitter">
-          <p class="space-x-1">
+          <p v-if="operator.socials?.twitter" class="space-x-1">
             <span>
               <i class="fa-brands fa-x-twitter"></i>
             </span>
@@ -145,10 +142,8 @@
               {{ operator.socials.twitter }}
             </a>
           </p>
-        </div>
 
-        <div v-if="operator.socials?.youtube">
-          <p class="space-x-1">
+          <p v-if="operator.socials?.youtube" class="space-x-1">
             <span>
               <i class="fa-brands fa-youtube"></i>
             </span>
@@ -163,6 +158,8 @@
           </p>
         </div>
       </div>
+
+      <div class="text-center"></div>
     </article>
   </div>
 </template>
@@ -170,6 +167,8 @@
 <script lang="ts" setup>
 import { OperatorDTO, VerificationStatus } from '@bottomtime/api';
 
+import AddressText from '../common/address-text.vue';
+import GpsCoordinatesText from '../common/gps-coordinates-text.vue';
 import PillLabel from '../common/pill-label.vue';
 import StarRating from '../common/star-rating.vue';
 

@@ -80,14 +80,14 @@ export class DiveSiteQueryBuilder {
     return this;
   }
 
-  withGeoLocation(position?: GpsCoordinates, distance?: number): this {
-    if (position && distance) {
+  withGeoLocation(location?: GpsCoordinates, radius?: number): this {
+    if (location) {
       this.query = this.query.andWhere(
         'ST_DWithin(sites.gps::geography, ST_MakePoint(:lon, :lat), :distance)',
         {
-          lon: position.lon,
-          lat: position.lat,
-          distance: distance * 1000, // Distance must be converted from km to meters
+          lon: location.lon,
+          lat: location.lat,
+          distance: (radius ?? 50) * 1000, // Distance must be converted from km to meters
         },
       );
     }

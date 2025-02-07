@@ -5,72 +5,109 @@
     <div class="min-w-16 flex">
       <FormCheckbox
         v-if="editMode"
+        :model-value="entry.selected"
         :control-id="`toggle-${entry.id}`"
         :test-id="`toggle-${entry.id}`"
+        @update:model-value="$emit('toggle-select', entry)"
       />
       <p v-if="entry.logNumber" class="font-bold">#{{ entry.logNumber }}</p>
     </div>
 
     <div class="flex flex-col gap-3 grow">
-      <p
-        class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"
-      >
-        <FormButton
-          type="link"
-          size="2xl"
-          :test-id="`select-${entry.id}`"
-          @click="$emit('select', entry)"
-        >
-          {{ dayjs(entry.timing.entryTime).format('LLL') }}
-        </FormButton>
-        <span class="italic text-sm">{{ entry.timing.timezone }}</span>
-      </p>
-
       <div
-        class="flex flex-col justify-start gap-0 lg:flex-row lg:justify-between"
+        class="flex flex-col md:flex-row justify-between items-center md:items-baseline"
       >
-        <div v-if="entry.timing.bottomTime" class="flex space-x-2">
-          <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left">
-            Bottom time / Duration:
-          </p>
-          <p class="italic">
-            <DurationText :duration="entry.timing.bottomTime" />
-            / <DurationText :duration="entry.timing.duration" />
-          </p>
+        <p
+          class="flex flex-col gap-0.5 md:flex-row md:gap-2 items-center md:items-baseline w-full"
+        >
+          <a
+            :id="`${entry.id}`"
+            class="text-2xl"
+            :href="`#${entry.id}`"
+            :data-testid="`select-${entry.id}`"
+            @click="$emit('highlight', entry)"
+          >
+            {{ dayjs(entry.timing.entryTime).format('LLL') }}
+          </a>
+          <span class="italic text-sm">({{ entry.timing.timezone }})</span>
+        </p>
+
+        <StarRating :model-value="entry.rating" readonly />
+      </div>
+
+      <div v-if="entry.notes" class="text-pretty">
+        {{ entry.notes }}
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6">
+        <div class="text-center col-span-2 md:col-span-4 xl:col-span-2">
+          <label class="font-bold">Dive Site</label>
+          <div v-if="entry.site" class="italic capitalize">
+            <p>{{ entry.site.name }}</p>
+            <p>{{ entry.site.location }}</p>
+          </div>
+          <p v-else class="italic">Unspecified</p>
         </div>
 
-        <div v-else class="flex space-x-2">
-          <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left">
-            Duration:
-          </p>
+        <div class="text-center">
+          <label class="font-bold">Duration</label>
           <p class="italic">
             <DurationText :duration="entry.timing.duration" />
           </p>
         </div>
 
-        <div v-if="entry.depths?.maxDepth" class="flex space-x-2">
-          <p class="font-bold min-w-40 text-right lg:min-w-0 lg:text-left">
-            Max depth:
+        <div class="text-center">
+          <label class="font-bold">Bottom time</label>
+          <p class="italic">
+            <DurationText :duration="entry.timing.bottomTime" />
           </p>
-          <DepthText
-            class="italic"
-            :depth="entry.depths.maxDepth"
-            :unit="entry.depths.depthUnit || DepthUnit.Meters"
-          />
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Max Depth</label>
+          <p v-if="entry.depths?.maxDepth">
+            <DepthText
+              v-if="entry.depths?.maxDepth"
+              class="italic"
+              :depth="entry.depths.maxDepth"
+              :unit="entry.depths.depthUnit || DepthUnit.Meters"
+            />
+          </p>
+          <p v-else class="italic">Unspecified</p>
+        </div>
+
+        <div class="text-center">
+          <label class="font-bold">Average Depth</label>
+          <p v-if="entry.depths?.averageDepth">
+            <DepthText
+              v-if="entry.depths?.averageDepth"
+              class="italic"
+              :depth="entry.depths.averageDepth"
+              :unit="entry.depths.depthUnit || DepthUnit.Meters"
+            />
+          </p>
+          <p v-else class="italic">Unspecified</p>
         </div>
       </div>
 
-      <div>
-        <p v-if="entry.site" class="flex space-x-2">
-          <span class="text-danger">
-            <i class="fa-solid fa-location-dot"></i>
-          </span>
-          <span class="capitalize">
-            {{ entry.site.name }}
-          </span>
-          <span>({{ entry.site.location }})</span>
-        </p>
+      <div v-if="entry.tags?.length" class="flex justify-center">
+        <FormTags :model-value="entry.tags" readonly />
       </div>
+    </div>
+
+    <div v-if="editMode" class="min-w-fit">
+      <FormButton rounded="left" @click="$emit('edit', entry)">
+        <span>
+          <i class="fa-solid fa-pen"></i>
+        </span>
+        <span class="sr-only">Edit</span>
+      </FormButton>
+      <FormButton type="danger" rounded="right" @click="$emit('delete', entry)">
+        <span>
+          <i class="fa-solid fa-trash"></i>
+        </span>
+        <span class="sr-only">Delete</span>
+      </FormButton>
     </div>
   </li>
 </template>
@@ -80,20 +117,26 @@ import { DepthUnit, LogEntryDTO } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
 
+import { Selectable } from '../../common';
 import DepthText from '../common/depth-text.vue';
 import DurationText from '../common/duration-text.vue';
 import FormButton from '../common/form-button.vue';
 import FormCheckbox from '../common/form-checkbox.vue';
+import FormTags from '../common/form-tags.vue';
+import StarRating from '../common/star-rating.vue';
 
 interface LogbookEntriesListItemProps {
   editMode?: boolean;
-  entry: LogEntryDTO;
+  entry: Selectable<LogEntryDTO>;
 }
 
 withDefaults(defineProps<LogbookEntriesListItemProps>(), {
   editMode: false,
 });
 defineEmits<{
-  (e: 'select', entry: LogEntryDTO): void;
+  (e: 'edit', entry: LogEntryDTO): void;
+  (e: 'delete', entry: LogEntryDTO): void;
+  (e: 'highlight', entry: LogEntryDTO): void;
+  (e: 'toggle-select', entry: LogEntryDTO): void;
 }>();
 </script>

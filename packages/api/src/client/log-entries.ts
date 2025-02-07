@@ -41,13 +41,39 @@ export class LogEntriesApiClient {
     return `${this.getLogEntryUrl(username, entryId)}/reviewSite`;
   }
 
+  searchQueryString(
+    params: ListLogEntriesParamsDTO = {},
+  ): Record<string, string> {
+    const query: Record<string, string> = {};
+
+    if (params.endDate) query.endDate = params.endDate.valueOf().toString();
+    if (params.limit) query.limit = params.limit.toString();
+    if (params.location) {
+      query.location = `${params.location.lat.toFixed(
+        5,
+      )},${params.location.lon.toFixed(5)}`;
+      query.radius = params.radius?.toString() || '50';
+    }
+    if (params.maxRating) query.maxRating = params.maxRating.toFixed(1);
+    if (params.minRating) query.minRating = params.minRating.toFixed(1);
+    if (params.query) query.query = params.query;
+    if (params.skip) query.skip = params.skip.toString();
+    if (params.sortBy) query.sortBy = params.sortBy;
+    if (params.sortOrder) query.sortOrder = params.sortOrder;
+    if (params.startDate) {
+      query.startDate = params.startDate.valueOf().toString();
+    }
+
+    return query;
+  }
+
   async listLogEntries(
     username: string,
     params?: ListLogEntriesParamsDTO,
   ): Promise<ApiList<LogEntryDTO>> {
     const { data: results } = await this.apiClient.get(
       this.getLogbookUrl(username),
-      params,
+      this.searchQueryString(params),
       ListLogEntriesResponseSchema,
     );
     return results;

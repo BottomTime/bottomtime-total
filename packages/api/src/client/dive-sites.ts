@@ -60,7 +60,9 @@ export class DiveSitesApiClient {
     }
 
     if (params.location) {
-      query.location = `${params.location.lat},${params.location.lon}`;
+      query.location = `${params.location.lat.toFixed(
+        5,
+      )},${params.location.lon.toFixed(5)}`;
       query.radius = params.radius?.toString() || '50';
     }
 

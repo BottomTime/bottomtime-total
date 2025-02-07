@@ -63,51 +63,53 @@
 
     <div class="space-y-2">
       <TextHeading level="h3">Dive Shop</TextHeading>
-      <div v-if="formData.operator" class="space-y-2 ml-4">
+      <div v-if="formData.operator" class="flex flex-col gap-2 ml-4">
         <PreviewOperator :operator="formData.operator" />
-        <div class="flex justify-center items-baseline">
-          <FormButton
-            size="xs"
-            test-id="btn-change-shop"
-            rounded="left"
-            @click="onOpenOperatorPanel"
-          >
-            <p class="space-x-1">
-              <span>
-                <i class="fa-solid fa-pen"></i>
-              </span>
-              <span>Change shop</span>
-            </p>
-          </FormButton>
-          <FormButton
-            size="xs"
-            :rounded="false"
-            test-id="btn-remove-shop"
-            @click="onRemoveOperator"
-          >
-            <p class="space-x-1">
-              <span>
-                <i class="fa-solid fa-x"></i>
-              </span>
-              <span>Remove shop</span>
-            </p>
-          </FormButton>
-          <FormButton
-            size="xs"
-            rounded="right"
-            test-id="btn-review-shop"
-            @click="onReviewOperator"
-          >
-            <p class="space-x-1">
-              <span>
-                <i class="fa-regular fa-star"></i>
-              </span>
-              <span>Review dive shop</span>
-            </p>
-          </FormButton>
+        <div class="flex flex-col gap-1 xl:flex-row justify-between">
+          <div class="flex justify-center items-baseline">
+            <FormButton
+              size="xs"
+              test-id="btn-change-shop"
+              rounded="left"
+              @click="onOpenOperatorPanel"
+            >
+              <p class="space-x-1">
+                <span>
+                  <i class="fa-solid fa-pen"></i>
+                </span>
+                <span>Change shop</span>
+              </p>
+            </FormButton>
+            <FormButton
+              size="xs"
+              :rounded="false"
+              test-id="btn-remove-shop"
+              @click="onRemoveOperator"
+            >
+              <p class="space-x-1">
+                <span>
+                  <i class="fa-solid fa-x"></i>
+                </span>
+                <span>Remove shop</span>
+              </p>
+            </FormButton>
+            <FormButton
+              size="xs"
+              rounded="right"
+              test-id="btn-review-shop"
+              @click="onReviewOperator"
+            >
+              <p class="space-x-1">
+                <span>
+                  <i class="fa-regular fa-star"></i>
+                </span>
+                <span>Review dive shop</span>
+              </p>
+            </FormButton>
+          </div>
           <div
             v-if="state.operatorReview"
-            class="ml-3 flex gap-1 items-baseline"
+            class="flex flex-row gap-1 justify-center items-baseline text-sm"
           >
             <span class="font-bold">Your rating:</span>
             <StarRating :model-value="state.operatorReview.rating" readonly />
@@ -137,47 +139,52 @@
 
       <div v-else-if="formData.site" class="space-y-2 ml-4">
         <PreviewDiveSite :site="formData.site" />
-        <div class="flex justify-center items-baseline">
-          <FormButton
-            size="xs"
-            rounded="left"
-            test-id="btn-change-site"
-            @click="onOpenDiveSitePanel"
+        <div class="flex flex-col gap-1 xl:flex-row justify-between">
+          <div class="flex justify-center items-baseline">
+            <FormButton
+              size="xs"
+              rounded="left"
+              test-id="btn-change-site"
+              @click="onOpenDiveSitePanel"
+            >
+              <p class="space-x-1">
+                <span>
+                  <i class="fa-solid fa-pen"></i>
+                </span>
+                <span>Change site</span>
+              </p>
+            </FormButton>
+            <FormButton
+              size="xs"
+              :rounded="false"
+              test-id="btn-remove-site"
+              @click="onRemoveSite"
+            >
+              <p class="space-x-1">
+                <span>
+                  <i class="fa-solid fa-x"></i>
+                </span>
+                <span>Remove site</span>
+              </p>
+            </FormButton>
+            <FormButton
+              size="xs"
+              rounded="right"
+              test-id="btn-review-site"
+              @click="onReviewSite"
+            >
+              <p class="space-x-1">
+                <span>
+                  <i class="fa-regular fa-star"></i>
+                </span>
+                <span>Review dive site</span>
+              </p>
+            </FormButton>
+          </div>
+          <div
+            v-if="state.siteReview"
+            class="flex flex-row gap-1 justify-center items-baseline text-sm"
           >
-            <p class="space-x-1">
-              <span>
-                <i class="fa-solid fa-pen"></i>
-              </span>
-              <span>Change site</span>
-            </p>
-          </FormButton>
-          <FormButton
-            size="xs"
-            :rounded="false"
-            test-id="btn-remove-site"
-            @click="onRemoveSite"
-          >
-            <p class="space-x-1">
-              <span>
-                <i class="fa-solid fa-x"></i>
-              </span>
-              <span>Remove site</span>
-            </p>
-          </FormButton>
-          <FormButton
-            size="xs"
-            rounded="right"
-            test-id="btn-review-site"
-            @click="onReviewSite"
-          >
-            <p class="space-x-1">
-              <span>
-                <i class="fa-regular fa-star"></i>
-              </span>
-              <span>Review dive site</span>
-            </p>
-          </FormButton>
-          <div v-if="state.siteReview" class="ml-3 flex gap-1 items-baseline">
             <span class="font-bold">Your rating:</span>
             <StarRating :model-value="state.siteReview.rating" readonly />
           </div>

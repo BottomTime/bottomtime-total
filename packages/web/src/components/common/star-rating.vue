@@ -6,7 +6,7 @@
       class="mx-1"
       :data-testid="testId"
       :disable-click="readonly"
-      :star-size="15"
+      :star-size="18"
     />
     <span v-if="showValue">{{ ratingText }}</span>
   </div>

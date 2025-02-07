@@ -386,6 +386,13 @@ export class LogEntry {
     this.data.tags = value;
   }
 
+  get rating(): number | undefined {
+    return this.data.rating ?? undefined;
+  }
+  set rating(value: number | undefined) {
+    this.data.rating = value ?? null;
+  }
+
   private async *loadSamples(): AsyncGenerator<LogEntrySampleEntity, number> {
     const batchSize = 1000;
     let totalCount = 0;
@@ -433,6 +440,7 @@ export class LogEntry {
       operator: this.operator?.toSuccinctJSON(),
       site: this.site?.toSuccinctJSON(),
 
+      rating: this.rating,
       notes: this.notes,
       tags: this.tags,
     };
@@ -446,7 +454,11 @@ export class LogEntry {
       depths: this.depths.toJSON(),
       timing: this.timing.toJSON(),
       logNumber: this.logNumber,
-      site: this.site?.toJSON(),
+      notes: this.notes,
+      operator: this.operator?.toSuccinctJSON(),
+      site: this.site?.toSuccinctJSON(),
+      rating: this.rating,
+      tags: this.tags,
       updatedAt: this.updatedAt?.valueOf(),
     };
   }
