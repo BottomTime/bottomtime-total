@@ -10,14 +10,11 @@
       </p>
 
       <div>
-        <FormButton
-          v-if="isShopOwner"
-          type="primary"
-          test-id="operators-create-shop"
-          @click="$emit('create-shop')"
-        >
-          Create a Dive Shop
-        </FormButton>
+        <RouterLink v-if="isShopOwner" to="/shops/createNew">
+          <FormButton type="primary" test-id="operators-create-shop">
+            Create a Dive Shop
+          </FormButton>
+        </RouterLink>
       </div>
     </FormBox>
 
@@ -94,6 +91,7 @@ import {
 } from '@bottomtime/api';
 
 import { computed, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 import { useCurrentUser } from '../../store';
 import FormBox from '../common/form-box.vue';
@@ -125,7 +123,6 @@ withDefaults(defineProps<OperatorsListProps>(), {
 });
 
 const emit = defineEmits<{
-  (e: 'create-shop'): void;
   (e: 'load-more'): void;
   (e: 'select', operator: OperatorDTO): void;
   (e: 'delete', operator: OperatorDTO): void;

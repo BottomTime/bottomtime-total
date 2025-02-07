@@ -27,9 +27,10 @@
     :visible="state.showPanel"
     @close="onCloseDrawer"
   >
-    <template v-if="state.currentOperator">
-      <ViewOperator :operator="state.currentOperator" />
-    </template>
+    <ViewOperator
+      v-if="state.currentOperator"
+      :operator="state.currentOperator"
+    />
   </DrawerPanel>
 
   <div class="grid gap-3 grid-cols-1 lg:grid-cols-3 xl:grid-cols-4">
@@ -44,7 +45,6 @@
         :is-loading-more="state.isLoadingMore"
         :operators="state.results"
         :map-center="state.mapCenter"
-        @create-shop="onCreateShop"
         @load-more="onLoadMore"
         @select="onShopSelected"
         @delete="onDelete"
@@ -61,7 +61,6 @@ import {
   SearchOperatorsParams,
   SearchOperatorsSchema,
   UserRole,
-  VerificationStatus,
 } from '@bottomtime/api';
 
 import { computed, onMounted, reactive } from 'vue';
@@ -191,25 +190,6 @@ async function onSearch(params: SearchOperatorsParams): Promise<void> {
 
 function onCloseDrawer() {
   state.showPanel = false;
-}
-
-function onCreateShop() {
-  if (!currentUser.user) return;
-
-  state.currentOperator = {
-    active: true,
-    createdAt: Date.now(),
-    id: '',
-    name: '',
-    owner: currentUser.user.profile,
-    updatedAt: Date.now(),
-    verificationStatus: VerificationStatus.Unverified,
-    address: '',
-    description: '',
-    slug: '',
-    socials: {},
-  };
-  state.showPanel = true;
 }
 
 function onShopSelected(dto: OperatorDTO) {

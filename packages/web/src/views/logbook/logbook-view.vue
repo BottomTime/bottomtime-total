@@ -24,6 +24,7 @@
     <ViewLogbookEntry
       v-else-if="state.selectedEntry"
       :entry="state.selectedEntry"
+      narrow
     />
   </DrawerPanel>
 

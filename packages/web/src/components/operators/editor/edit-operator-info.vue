@@ -36,15 +36,6 @@
     </div>
   </ConfirmDialog>
 
-  <AddressDialog
-    ref="addressDialog"
-    :visible="state.showAddressDialog"
-    :address="formData.address"
-    :gps="formData.gps"
-    @save="onConfirmChangeAddress"
-    @cancel="onCancelChangeAddress"
-  />
-
   <UploadImageDialog
     :avatar-url="state.logo"
     :is-saving="state.isSavingLogo"
@@ -244,29 +235,15 @@
                 :responsive="false"
                 test-id="operator-location"
               >
-                <div class="space-y-1.5 px-4">
-                  <p v-if="formData.address">
-                    <span data-testid="operator-address">
-                      {{ formData.address }}
-                    </span>
-                  </p>
-
-                  <p v-if="formData.gps" class="space-x-2">
-                    <span class="text-danger">
-                      <i class="fa-solid fa-location-dot"></i>
-                    </span>
-                    <span data-testid="operator-gps">
-                      {{ formData.gps.lat }}, {{ formData.gps.lon }}
-                    </span>
-                  </p>
-
-                  <FormButton
-                    size="sm"
-                    test-id="btn-operator-location"
-                    @click="onChangeAddress"
-                  >
-                    {{ formData.address ? 'Change' : 'Set' }} Address...
-                  </FormButton>
+                <div class="space-y-2">
+                  <PlacesAutoComplete
+                    v-model="formData.address"
+                    control-id="operator-address"
+                    test-id="operator-address"
+                    :maxlength="500"
+                    @place-changed="onChangeAddress"
+                  />
+                  <FormLocationPicker v-model="formData.gps" />
                 </div>
               </FormField>
 
@@ -472,7 +449,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { email, helpers, required, url } from '@vuelidate/validators';
 
 import slugify from 'slugify';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 
 import { useClient } from '../../../api-client';
 import { Coordinates, ToastType } from '../../../common';
@@ -483,11 +460,12 @@ import { phone } from '../../../validators';
 import CopyButton from '../../common/copy-button.vue';
 import FormButton from '../../common/form-button.vue';
 import FormField from '../../common/form-field.vue';
+import FormLocationPicker from '../../common/form-location-picker.vue';
 import FormTextArea from '../../common/form-text-area.vue';
 import FormTextBox from '../../common/form-text-box.vue';
 import FormToggle from '../../common/form-toggle.vue';
+import PlacesAutoComplete from '../../common/places-auto-complete.vue';
 import TextHeading from '../../common/text-heading.vue';
-import AddressDialog from '../../dialog/address-dialog.vue';
 import ConfirmDialog from '../../dialog/confirm-dialog.vue';
 import UploadImageDialog from '../../dialog/upload-image-dialog.vue';
 
@@ -512,7 +490,7 @@ interface EditOperatorInfoFormData {
   description: string;
   email: string;
   facebook: string;
-  gps: GpsCoordinates | null;
+  gps?: GpsCoordinates;
   instagram: string;
   name: string;
   phone: string;
@@ -534,7 +512,7 @@ function formDataFromDto(dto: OperatorDTO): EditOperatorInfoFormData {
     description: dto.description || '',
     email: dto.email || '',
     facebook: dto.socials?.facebook || '',
-    gps: dto.gps ?? null,
+    gps: dto.gps,
     instagram: dto.socials?.instagram || '',
     name: dto.name || '',
     phone: dto.phone || '',
@@ -545,8 +523,6 @@ function formDataFromDto(dto: OperatorDTO): EditOperatorInfoFormData {
     youtube: dto.socials?.youtube || '',
   };
 }
-
-const addressDialog = ref<InstanceType<typeof AddressDialog> | null>(null);
 
 const props = withDefaults(defineProps<EditOperatorInfoProps>(), {
   isSaving: false,
@@ -639,19 +615,8 @@ const v$ = useVuelidate(
   formData,
 );
 
-function onChangeAddress() {
-  addressDialog.value?.reset();
-  state.showAddressDialog = true;
-}
-
-function onCancelChangeAddress() {
-  state.showAddressDialog = false;
-}
-
-function onConfirmChangeAddress(address: string, gps: GpsCoordinates | null) {
-  formData.address = address;
-  formData.gps = gps ?? null;
-  state.showAddressDialog = false;
+function onChangeAddress(coordinates: GpsCoordinates) {
+  formData.gps = coordinates;
 }
 
 function onChangeLogo() {

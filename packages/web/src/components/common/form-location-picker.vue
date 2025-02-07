@@ -7,7 +7,7 @@
         <a class="text-sm" @click="onClearLocation">Clear</a>
       </p>
 
-      <p class="flex items-baseline gap-0.5">
+      <p v-if="location.radius" class="flex items-baseline gap-0.5">
         <FormSlider
           v-model="location.radius"
           :min="10"
@@ -28,7 +28,9 @@ import FormSlider from './form-slider.vue';
 import GoogleMap from './google-map.vue';
 import GpsCoordinatesText from './gps-coordinates-text.vue';
 
-const location = defineModel<GpsCoordinatesWithRadius>({ required: false });
+const location = defineModel<GpsCoordinatesWithRadius>({
+  required: false,
+});
 
 function onMapClick(newLocation: GpsCoordinates) {
   location.value = {

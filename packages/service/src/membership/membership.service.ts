@@ -153,7 +153,7 @@ export class MembershipService implements OnModuleInit {
   }
 
   private async ensureStripeCustomer(user: User): Promise<Stripe.Customer> {
-    let customer: Stripe.Customer;
+    let customer: Stripe.Customer | undefined;
 
     if (user.stripeCustomerId) {
       const returnedCustomer = await this.stripe.customers.retrieve(
@@ -162,14 +162,15 @@ export class MembershipService implements OnModuleInit {
       );
 
       if (returnedCustomer.deleted) {
+        // Wat? Well, this shouldn't happen. For now, we'll allow a new Stripe customer to be created for the user.
         // TODO: Should we provision a new Stripe customer here?? Might not be the safest thing to do.
-        throw new InternalServerErrorException(
-          `Stripe customer with ID ${user.stripeCustomerId} was deleted and cannot be retrieved.`,
-        );
+        // throw new InternalServerErrorException(
+        //   `Stripe customer with ID ${user.stripeCustomerId} was deleted and cannot be retrieved.`,
+        // );
       }
+    }
 
-      customer = returnedCustomer;
-    } else {
+    if (!customer) {
       if (!user.email || !user.emailVerified) {
         throw new ForbiddenException('User must have a verified email address');
       }

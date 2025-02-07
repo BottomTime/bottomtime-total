@@ -134,7 +134,7 @@
   </FormField>
 
   <!-- Email verification -->
-  <FormField>
+  <FormField v-if="user.email">
     <div class="flex flex-col lg:flex-row gap-2 lg:gap-4 items-baseline">
       <div class="grow w-full" data-testid="email-verification-status">
         <span

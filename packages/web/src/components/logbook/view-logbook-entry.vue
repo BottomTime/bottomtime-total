@@ -17,10 +17,10 @@
         </div>
         <UserAvatar :profile="entry.creator" show-name />
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div :class="`grid grid-cols-1 ${narrow ? '' : 'md:grid-cols-2'} gap-3`">
         <!-- General Dive Info -->
         <div
-          class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700 to-blue-500 p-2 rounded-md space-y-3 px-6"
+          class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6"
         >
           <TextHeading class="-ml-3" level="h2">Dive Info</TextHeading>
           <div class="flex flex-col gap-0.5">
@@ -96,43 +96,41 @@
 
         <!-- Location -->
         <div
-          class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700 to-blue-500 p-2 rounded-md space-y-3 px-6"
+          class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6"
         >
           <TextHeading class="-ml-3" level="h2">Location</TextHeading>
-
-          <div class="flex flex-col gap-0.5">
+          <div>
             <label class="font-bold">Dive Site:</label>
-            <span class="font-mono text-xs capitalize">
-              {{ entry.site?.name || 'Unspecified' }}
-            </span>
+            <template v-if="entry.site?.id">
+              <LoadingSpinner
+                v-if="state.isLoadingData"
+                message="Fetching dive site data..."
+              />
+              <PreviewDiveSite v-else-if="state.site" :site="state.site" />
+            </template>
+            <p v-else>Unspecified</p>
           </div>
 
-          <div class="flex flex-col gap-0.5">
-            <label class="font-bold">Location:</label>
-            <p class="font-mono text-xs capitalize">
-              {{ entry.site?.location || 'Unspecified' }}
-            </p>
-            <p
-              v-if="entry.site?.gps"
-              class="font-mono text-xs flex gap-2 items-center"
-            >
-              <span class="text-danger">
-                <i class="fa-solid fa-location-dot"></i>
-              </span>
-              <span>
-                {{ entry.site.gps.lat }}
-                {{ entry.site.gps.lat > 0 ? 'N' : 'S' }},
-                {{ entry.site.gps.lon }}
-                {{ entry.site.gps.lon > 0 ? 'E' : 'W' }}
-              </span>
-            </p>
+          <div>
+            <label class="font-bold">Dive shop:</label>
+            <template v-if="entry.operator?.id">
+              <LoadingSpinner
+                v-if="state.isLoadingData"
+                message="Fetching dive shop data..."
+              />
+              <PreviewOperator
+                v-else-if="state.operator"
+                :operator="state.operator"
+              />
+            </template>
+            <p v-else>Unspecified</p>
           </div>
         </div>
 
         <!-- Dive Conditions -->
         <div
           v-if="entry.conditions"
-          class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700 to-blue-500 p-2 rounded-md space-y-3 px-6"
+          class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6"
         >
           <TextHeading class="-ml-3" level="h2">Conditions</TextHeading>
 
@@ -199,7 +197,7 @@
         <!-- Gas Consumption -->
         <div
           v-if="entry.air && entry.air.length"
-          class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700 to-blue-500 p-2 rounded-md space-y-3 px-6"
+          class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6"
         >
           <TextHeading class="-ml-3" level="h2">Breathing Gas</TextHeading>
 
@@ -239,7 +237,7 @@
         <!-- Equipment -->
         <div
           v-if="entry.equipment"
-          class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700 to-blue-500 p-2 rounded-md space-y-3 px-6"
+          class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6"
         >
           <TextHeading class="-ml-3" level="h2">Equipment</TextHeading>
 
@@ -295,7 +293,7 @@
 
         <!-- Notes -->
         <div
-          class="shadow-md shadow-grey-400 bg-gradient-to-t from-blue-700 to-blue-500 p-2 rounded-md space-y-3 px-6"
+          class="shadow-md shadow-grey-300/60 bg-gradient-to-t from-blue-300 to-blue-100 dark:from-blue-900 dark:to-blue-700 p-2 rounded-md space-y-3 px-6"
         >
           <div class="flex flex-col gap-0.5">
             <TextHeading class="-ml-3" level="h2">Notes</TextHeading>
@@ -325,25 +323,32 @@
 
 <script lang="ts" setup>
 import {
+  DiveSiteDTO,
   ExposureSuit,
   LogEntryDTO,
+  OperatorDTO,
   TrimCorrectness,
   WeightCorrectness,
 } from '@bottomtime/api';
 
 import dayjs from 'dayjs';
-import { computed, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 
+import { useClient } from '../../api-client';
 import { TabInfo } from '../../common';
+import { useOops } from '../../oops';
 import DepthText from '../common/depth-text.vue';
 import DurationText from '../common/duration-text.vue';
 import FormTags from '../common/form-tags.vue';
+import LoadingSpinner from '../common/loading-spinner.vue';
 import PressureText from '../common/pressure-text.vue';
 import StarRating from '../common/star-rating.vue';
 import TabsPanel from '../common/tabs-panel.vue';
 import TemperatureText from '../common/temperature-text.vue';
 import TextHeading from '../common/text-heading.vue';
 import WeightText from '../common/weight-text.vue';
+import PreviewDiveSite from '../diveSites/preview-dive-site.vue';
+import PreviewOperator from '../operators/preview-operator.vue';
 import UserAvatar from '../users/user-avatar.vue';
 import EquipmentIndicator from './equipment-indicator.vue';
 import ViewDiveProfile from './view-dive-profile.vue';
@@ -360,7 +365,13 @@ interface ViewLogbookEntryProps {
 
 interface ViewLogbookEntryState {
   activeTab: TabKey;
+  isLoadingData: boolean;
+  site?: DiveSiteDTO;
+  operator?: OperatorDTO;
 }
+
+const client = useClient();
+const oops = useOops();
 
 const tabs = computed<TabInfo[]>(() => [
   { label: 'General Info', key: TabKey.General },
@@ -372,6 +383,7 @@ const props = withDefaults(defineProps<ViewLogbookEntryProps>(), {
 });
 const state = reactive<ViewLogbookEntryState>({
   activeTab: TabKey.General,
+  isLoadingData: true,
 });
 
 const current = computed(() => {
@@ -470,4 +482,23 @@ const exposureSuit = computed(() => {
 function onTabChanged(tab: string) {
   state.activeTab = tab as TabKey;
 }
+
+onMounted(async () => {
+  await Promise.allSettled([
+    oops(async () => {
+      if (props.entry.site) {
+        state.site = await client.diveSites.getDiveSite(props.entry.site.id);
+      }
+    }),
+    oops(async () => {
+      if (props.entry.operator) {
+        state.operator = await client.operators.getOperator(
+          props.entry.operator.slug,
+        );
+      }
+    }),
+  ]);
+
+  state.isLoadingData = false;
+});
 </script>
