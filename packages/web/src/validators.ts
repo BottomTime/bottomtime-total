@@ -8,6 +8,8 @@ import {
 
 import { helpers } from '@vuelidate/validators';
 
+import { SocialMediaNetwork } from './socials';
+
 export function airTemperature(val: unknown): boolean {
   const { success } = AirTemperatureSchema.safeParse(val);
   return success;
@@ -43,4 +45,10 @@ export function maxDate(date?: Date): (val: unknown) => boolean {
 
 export function phone(val: unknown): boolean {
   return !helpers.req(val) || PhoneNumber.safeParse(val).success;
+}
+
+export function socialMediaUsername(
+  network: SocialMediaNetwork,
+): (val: unknown) => boolean {
+  return () => true;
 }

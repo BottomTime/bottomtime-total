@@ -221,6 +221,12 @@
                   test-id="active"
                   :label="formData.active ? 'Active' : 'Inactive'"
                 />
+                <p class="text-sm italic">
+                  Active shops will appear in search results and on the map.
+                  Inactive shops will still be visible on the site (if, say, a
+                  user follows a link to your shop) but will not appear in
+                  search results.
+                </p>
               </FormField>
             </div>
 
@@ -230,7 +236,6 @@
               <FormField
                 label="Location"
                 required
-                :error="v$.address.$errors[0]?.$message"
                 :invalid="v$.address.$error"
                 :responsive="false"
                 test-id="operator-location"
@@ -243,7 +248,10 @@
                     :maxlength="500"
                     @place-changed="onChangeAddress"
                   />
-                  <FormLocationPicker v-model="formData.gps" />
+                  <p v-if="v$.address.$error" class="text-sm text-danger">
+                    {{ v$.address.$errors[0]?.$message }}
+                  </p>
+                  <FormLocationPicker v-model="formData.gps" class="px-2" />
                 </div>
               </FormField>
 
@@ -320,13 +328,18 @@
                     Facebook
                   </label>
                 </p>
-                <FormTextBox
-                  v-model.trim="formData.facebook"
-                  class="w-full"
-                  control-id="operator-facebook"
-                  test-id="facebook"
-                  :maxlength="100"
-                />
+                <div class="grow">
+                  <FormTextBox
+                    v-model.trim="formData.facebook"
+                    control-id="operator-facebook"
+                    test-id="facebook"
+                    :maxlength="100"
+                    :invalid="v$.facebook.$error"
+                  />
+                  <p v-if="v$.facebook.$error" class="text-sm text-danger">
+                    {{ v$.facebook.$errors[0]?.$message }}
+                  </p>
+                </div>
               </div>
 
               <div class="flex gap-1.5 items-baseline w-full">
@@ -610,6 +623,12 @@ const v$ = useVuelidate(
     },
     website: {
       url: helpers.withMessage('Must be a valid URL', url),
+    },
+    facebook: {
+      regex: helpers.withMessage(
+        'Must be a valid Facebook username',
+        helpers.regex(/^[a-z0-9.]+$/i),
+      ),
     },
   },
   formData,

@@ -20,7 +20,12 @@ import { DiveSitesService } from './dive-sites.service';
     EventsModule,
     UsersModule,
   ],
-  providers: [DiveSitesService, DiveSiteReviewEventListener, DiveSiteFactory],
+  providers: [
+    DiveSitesService,
+    DiveSiteReviewEventListener,
+    DiveSiteFactory,
+    DiveSiteReviewEventListener,
+  ],
   controllers: [DiveSitesController, DiveSiteReviewsController],
   exports: [DiveSitesService, DiveSiteFactory],
 })

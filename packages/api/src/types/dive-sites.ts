@@ -26,8 +26,8 @@ export enum DiveSiteReviewsSortBy {
 }
 
 export const CreateOrUpdateDiveSiteReviewSchema = z.object({
-  rating: z.number().min(1).max(5),
-  difficulty: z.number().min(1).max(5).optional(),
+  rating: z.number().min(0).max(5),
+  difficulty: z.number().min(0).max(5).optional(),
   comments: z.string().trim().max(1000).optional(),
 });
 export type CreateOrUpdateDiveSiteReviewDTO = z.infer<
@@ -89,8 +89,8 @@ export const DiveSiteSchema = CreateOrUpdateDiveSiteSchema.extend({
   creator: ProfileSchema,
   createdOn: z.number(),
   updatedOn: z.number().optional(),
-  averageRating: z.number().min(1).max(5).optional(),
-  averageDifficulty: z.number().min(1).max(5).optional(),
+  averageRating: z.number().min(0).max(5).optional(),
+  averageDifficulty: z.number().min(0).max(5).optional(),
 });
 export type DiveSiteDTO = z.infer<typeof DiveSiteSchema>;
 

@@ -48,10 +48,11 @@ export const CreateOrUpdateOperatorSchema = z.object({
 
   socials: z
     .object({
+      bluesky: z.string().max(100),
       facebook: z.string().max(100),
-      twitter: z.string().max(100),
       instagram: z.string().max(100),
       tiktok: z.string().max(100),
+      twitter: z.string().max(100),
       youtube: z.string().max(100),
     })
     .partial()

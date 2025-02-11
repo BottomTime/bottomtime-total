@@ -17,8 +17,8 @@
         </FormField>
 
         <FormField label="Difficulty" control-id="dive-site-review-difficulty">
-          <StarRating
-            v-model.number="state.difficulty"
+          <DifficultyInput
+            v-model="state.difficulty"
             test-id="dive-site-review-difficulty"
             control-id="dive-site-review-difficulty"
           />
@@ -58,6 +58,7 @@ import { helpers, minValue } from '@vuelidate/validators';
 
 import { reactive } from 'vue';
 
+import DifficultyInput from './difficulty-input.vue';
 import FormButton from './form-button.vue';
 import FormField from './form-field.vue';
 import FormTextArea from './form-text-area.vue';

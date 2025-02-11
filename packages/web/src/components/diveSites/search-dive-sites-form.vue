@@ -1,12 +1,4 @@
 <template>
-  <LocationDialog
-    ref="locationDialog"
-    :visible="state.showLocationDialog"
-    :location="state.gps"
-    @cancel="onCancelSelectLocation"
-    @confirm="onConfirmSelectLocation"
-  />
-
   <form class="flex flex-col sticky top-20" @submit.prevent="">
     <FormField :responsive="false">
       <FormSearchBox
@@ -22,58 +14,7 @@
 
     <div :class="state.showAdvancedSearch ? '' : 'hidden lg:block'">
       <FormField label="Location" :responsive="false">
-        <div v-if="state.gps" class="text-sm mb-2">
-          <p class="flex gap-2">
-            <span class="text-danger">
-              <i class="fas fa-map-marker-alt"></i>
-            </span>
-            <label class="font-bold">Coordinates:</label>
-          </p>
-          <p class="ml-6">
-            <span data-testid="search-coordinates">
-              {{ state.gps.lat }}, {{ state.gps.lon }}
-            </span>
-          </p>
-          <p class="flex gap-2">
-            <span>
-              <i class="fas fa-ruler-horizontal"></i>
-            </span>
-            <label class="font-bold">Range:</label>
-          </p>
-          <p class="ml-6 my-2">
-            <FormSlider
-              v-model="state.range"
-              control-id="search-range"
-              test-id="search-range"
-              :min="10"
-              :max="500"
-              :step="10"
-              :show-value="false"
-            />
-          </p>
-          <p class="ml-6">
-            <span>{{ state.range }} km</span>
-          </p>
-        </div>
-
-        <div class="flex gap-2">
-          <FormButton
-            test-id="select-location"
-            size="sm"
-            @click="onSelectLocation"
-          >
-            {{ state.gps ? 'Change' : 'Select' }} Location...
-          </FormButton>
-
-          <FormButton
-            v-if="state.gps"
-            size="sm"
-            test-id="clear-location"
-            @click="onClearLocation"
-          >
-            Clear
-          </FormButton>
-        </div>
+        <FormLocationPicker v-model="state.gps" show-radius />
       </FormField>
 
       <FormField label="Minimum Rating" control-id="rating" :responsive="false">
@@ -228,19 +169,19 @@
 
 <script setup lang="ts">
 import {
-  GpsCoordinates,
+  GpsCoordinatesWithRadius,
   SearchDiveSitesParamsDTO,
   WaterType,
 } from '@bottomtime/api';
 
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 
 import FormButton from '../common/form-button.vue';
 import FormField from '../common/form-field.vue';
+import FormLocationPicker from '../common/form-location-picker.vue';
 import FormRadio from '../common/form-radio.vue';
 import FormSearchBox from '../common/form-search-box.vue';
 import FormSlider from '../common/form-slider.vue';
-import LocationDialog from '../dialog/location-dialog.vue';
 
 type SearchDiveSitesFormProps = {
   params: SearchDiveSitesParamsDTO;
@@ -250,13 +191,11 @@ type SearchDiveSitesFormState = {
   maxDifficulty: number;
   minRating: number;
   query: string;
-  gps?: GpsCoordinates;
-  range: number;
+  gps?: GpsCoordinatesWithRadius;
   shoreAccess: string;
   freeToDive: string;
   waterType: WaterType | '';
   showAdvancedSearch: boolean;
-  showLocationDialog: boolean;
 };
 
 const props = defineProps<SearchDiveSitesFormProps>();
@@ -267,8 +206,12 @@ const state = reactive<SearchDiveSitesFormState>({
   maxDifficulty: props.params.difficulty?.max || 5,
   minRating: props.params.rating?.min || 1,
   query: props.params.query || '',
-  gps: props.params.location,
-  range: props.params.radius ?? 50,
+  gps: props.params.location
+    ? {
+        ...props.params.location,
+        radius: props.params.radius,
+      }
+    : undefined,
   shoreAccess:
     typeof props.params.shoreAccess === 'boolean'
       ? props.params.shoreAccess.toString()
@@ -280,9 +223,7 @@ const state = reactive<SearchDiveSitesFormState>({
   waterType: props.params.waterType || '',
 
   showAdvancedSearch: false,
-  showLocationDialog: false,
 });
-const locationDialog = ref<InstanceType<typeof LocationDialog> | null>(null);
 
 function onRefresh() {
   const query: SearchDiveSitesParamsDTO = {
@@ -307,29 +248,12 @@ function onRefresh() {
       state.freeToDive === '' ? undefined : state.freeToDive === 'true',
     waterType:
       state.waterType === '' ? undefined : (state.waterType as WaterType),
-    location: state.gps,
-    radius: state.range,
+    location: state.gps
+      ? { lat: state.gps.lat, lon: state.gps.lon }
+      : undefined,
+    radius: state.gps?.radius,
   };
 
   emit('search', query);
-}
-
-function onSelectLocation() {
-  state.showLocationDialog = true;
-}
-
-function onConfirmSelectLocation(location: GpsCoordinates) {
-  state.showLocationDialog = false;
-  state.gps = location;
-}
-
-function onCancelSelectLocation() {
-  state.showLocationDialog = false;
-  locationDialog.value?.reset();
-}
-
-function onClearLocation() {
-  state.gps = undefined;
-  locationDialog.value?.reset();
 }
 </script>

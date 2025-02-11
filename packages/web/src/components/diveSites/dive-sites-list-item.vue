@@ -64,16 +64,19 @@
           <label class="font-bold">Water Type</label>
           <span>{{ waterType }}</span>
         </div>
+      </div>
 
-        <span class="flex flex-col items-center">
-          <label class="font-bold">Rating</label>
+      <!-- Rating and difficulty-->
+      <div class="flex flex-wrap gap-7 justify-evenly my-1.5">
+        <p class="flex items-baseline gap-1 min-w-fit">
+          <label class="font-bold">Rating:</label>
           <StarRating :model-value="site.averageRating" readonly />
-        </span>
+        </p>
 
-        <span class="flex flex-col items-center">
-          <label class="font-bold">Difficulty</label>
-          <StarRating :model-value="site.averageDifficulty" readonly />
-        </span>
+        <p class="flex items-baseline gap-1 min-w-fit">
+          <label class="font-bold">Difficulty:</label>
+          <DifficultyText :difficulty="site.averageDifficulty" />
+        </p>
       </div>
     </div>
   </li>
@@ -86,6 +89,7 @@ import { computed } from 'vue';
 
 import { Selectable } from '../../common';
 import DepthText from '../common/depth-text.vue';
+import DifficultyText from '../common/difficulty-text.vue';
 import FormButton from '../common/form-button.vue';
 import FormCheckbox from '../common/form-checkbox.vue';
 import GpsCoordinatesText from '../common/gps-coordinates-text.vue';

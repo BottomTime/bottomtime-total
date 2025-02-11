@@ -1,18 +1,4 @@
 <template>
-  <DrawerPanel
-    v-if="state.currentReview"
-    :title="state.currentReview.id ? 'Edit Review' : 'Add Review'"
-    :visible="state.showEditReview"
-    @close="onCancelEditReview"
-  >
-    <EditDiveSiteReview
-      :review="state.currentReview"
-      :is-saving="state.isSavingReview"
-      @save="onSaveReview"
-      @cancel="onCancelEditReview"
-    />
-  </DrawerPanel>
-
   <ConfirmDialog
     v-if="state.currentReview"
     title="Delete Review?"
@@ -117,24 +103,18 @@
     <div class="col-span-1 lg:col-span-2 space-y-3">
       <TextHeading>Reviews</TextHeading>
 
-      <FormBox
-        class="flex flex-col md:flex-row justify-start md:justify-between items-center md:items-baseline sticky top-16 z-[40]"
-      >
-        <p>
-          <span>Showing </span>
-          <span class="font-bold">{{ state.reviews.data.length }}</span>
-          <span> of </span>
-          <span class="font-bold">{{ state.reviews.totalCount }}</span>
-          <span> reviews</span>
-        </p>
+      <FormBox class="flex flex-col gap-1 sticky top-16 z-[40]">
+        <div
+          class="flex flex-col items-center justify-start lg:flex-row lg:items-baseline lg:justify-between"
+        >
+          <p>
+            <span>Showing </span>
+            <span class="font-bold">{{ state.reviews.data.length }}</span>
+            <span> of </span>
+            <span class="font-bold">{{ state.reviews.totalCount }}</span>
+            <span> reviews</span>
+          </p>
 
-        <div class="space-y-1">
-          <div class="flex gap-1 justify-end">
-            <label class="font-bold">Rating:</label>
-            <StarRating :model-value="site.averageRating" readonly />
-            <label class="font-bold ml-3">Difficulty:</label>
-            <StarRating :model-value="site.averageDifficulty" readonly />
-          </div>
           <div class="flex justify-center md:justify-end gap-2 items-baseline">
             <FormSelect
               v-model="state.sortOrder"
@@ -156,6 +136,19 @@
             </FormButton>
           </div>
         </div>
+
+        <div
+          class="flex flex-col items-center justify-start lg:flex-row lg:items-baseline lg:justify-between"
+        >
+          <div class="flex gap-1">
+            <label class="font-bold">Average Rating:</label>
+            <StarRating :model-value="site.averageRating" readonly />
+          </div>
+          <div class="flex gap-1">
+            <label class="font-bold ml-3">Average Difficulty:</label>
+            <DifficultyText :difficulty="site.averageDifficulty" />
+          </div>
+        </div>
       </FormBox>
 
       <div v-if="state.isLoadingReviews" class="text-center text-lg my-8">
@@ -163,6 +156,19 @@
       </div>
 
       <TransitionList v-else class="px-2">
+        <li
+          v-if="state.showEditReview && state.currentReview?.id === ''"
+          ref="newReviewElement"
+        >
+          <TextHeading>Add a Review</TextHeading>
+          <EditDiveSiteReview
+            :review="state.currentReview"
+            :is-saving="state.isSavingReview"
+            @save="onSaveReview"
+            @cancel="onCancelEditReview"
+          />
+        </li>
+
         <li
           v-if="state.reviews.data.length === 0"
           key="No Reviews"
@@ -173,29 +179,36 @@
 
         <DiveSiteReviewsListItem
           v-for="review in state.reviews.data"
+          ref="reviewElements"
           :key="review.id"
           :review="review"
+          :is-saving="state.isSavingReview"
+          :edit-mode="
+            state.showEditReview && state.currentReview?.id === review.id
+          "
+          @cancel="onCancelEditReview"
+          @save="onSaveReview"
           @edit="onEditReview"
           @delete="onDeleteReview"
         />
-
-        <li
-          v-if="state.reviews.data.length < state.reviews.totalCount"
-          key="Load More Reviews"
-          class="text-center my-8 text-lg"
-        >
-          <LoadingSpinner
-            v-if="state.isLoadingMoreReviews"
-            message="Fetching more reviews..."
-          />
-          <a v-else class="space-x-1" @click="onLoadMore">
-            <span>
-              <i class="fa-solid fa-arrow-down"></i>
-            </span>
-            <span>Load more</span>
-          </a>
-        </li>
       </TransitionList>
+
+      <div
+        v-if="state.reviews.data.length < state.reviews.totalCount"
+        key="Load More Reviews"
+        class="text-center my-8 text-lg"
+      >
+        <LoadingSpinner
+          v-if="state.isLoadingMoreReviews"
+          message="Fetching more reviews..."
+        />
+        <a v-else class="space-x-1" @click="onLoadMore">
+          <span>
+            <i class="fa-solid fa-arrow-down"></i>
+          </span>
+          <span>Load more</span>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -213,14 +226,14 @@ import {
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { computed, onMounted, reactive, watch } from 'vue';
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import { useClient } from '../../api-client';
 import { DefaultProfile, SelectOption } from '../../common';
 import { useOops } from '../../oops';
 import { useCurrentUser, useToasts } from '../../store';
 import DepthText from '../common/depth-text.vue';
-import DrawerPanel from '../common/drawer-panel.vue';
+import DifficultyText from '../common/difficulty-text.vue';
 import EditDiveSiteReview from '../common/edit-dive-site-review.vue';
 import FormBox from '../common/form-box.vue';
 import FormButton from '../common/form-button.vue';
@@ -301,6 +314,8 @@ const state = reactive<ViewDiveSiteState>({
   showEditReview: false,
   sortOrder: SortOptions[0].value,
 });
+const newReviewElement = ref<HTMLLIElement | null>(null);
+const reviewElements = ref<HTMLLIElement[]>([]);
 
 const freeToDive = computed(() => {
   if (props.site.freeToDive === true) {
@@ -339,14 +354,27 @@ const waterType = computed(() => {
   }
 });
 
-function onSubmitReview() {
+async function onSubmitReview(): Promise<void> {
   state.currentReview = { ...DefaultReview };
   state.showEditReview = true;
+
+  await nextTick();
+
+  if (newReviewElement.value?.scrollIntoView) {
+    newReviewElement.value.scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
-function onEditReview(review: DiveSiteReviewDTO) {
+async function onEditReview(review: DiveSiteReviewDTO): Promise<void> {
   state.currentReview = review;
   state.showEditReview = true;
+
+  await nextTick();
+
+  const index = state.reviews.data.findIndex((r) => r.id === review.id);
+  if (index > -1) {
+    reviewElements.value[index].scrollIntoView({ behavior: 'smooth' });
+  }
 }
 
 function onCancelEditReview() {
@@ -378,6 +406,7 @@ async function onSaveReview(data: DiveSiteReviewDTO): Promise<void> {
       state.reviews.totalCount++;
 
       state.showEditReview = false;
+      state.currentReview = undefined;
       toasts.success(
         'site-review-added',
         'Your review has been added. Thank you!',
@@ -413,7 +442,10 @@ async function onConfirmDeleteReview(): Promise<void> {
     const index = state.reviews.data.findIndex(
       (r) => r.id === state.currentReview?.id,
     );
-    if (index > -1) state.reviews.data.splice(index, 1);
+    if (index > -1) {
+      state.reviews.data.splice(index, 1);
+      state.reviews.totalCount--;
+    }
 
     state.showConfirmDeleteReview = false;
     toasts.success(

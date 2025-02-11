@@ -26,7 +26,7 @@ type FormSliderProps = {
   testId?: string;
 };
 
-const value = defineModel<number>({ default: 1, required: true });
+const value = defineModel<number>({ required: false });
 withDefaults(defineProps<FormSliderProps>(), {
   min: 1,
   max: 5,
@@ -34,5 +34,5 @@ withDefaults(defineProps<FormSliderProps>(), {
   step: 0.5,
 });
 
-const valueString = computed(() => value.value.toFixed(1));
+const valueString = computed(() => value.value?.toFixed(1) ?? '');
 </script>
