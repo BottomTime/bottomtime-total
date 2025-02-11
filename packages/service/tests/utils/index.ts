@@ -1,5 +1,7 @@
 export * from './config-cat-client-mock';
+export * from './create-agency-factory';
 export * from './create-dive-site-factory';
+export * from './create-log-entry-signature-factory';
 export * from './create-operator-factory';
 export * from './create-test-dive-operator';
 export * from './create-test-dive-operator-review';

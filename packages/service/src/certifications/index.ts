@@ -1,4 +1,5 @@
 export * from './agency';
+export * from './agency-factory';
 export * from './agencies.service';
 
 export * from './professional-association';

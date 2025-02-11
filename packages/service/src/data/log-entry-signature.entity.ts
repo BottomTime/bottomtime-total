@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
@@ -13,11 +14,13 @@ import { LogEntryEntity } from './log-entry.entity';
 import { UserEntity } from './user.entity';
 
 @Entity('log_entry_signatures')
+@Index(['logEntry', 'buddy'], { unique: true })
 export class LogEntrySignatureEntity {
   @PrimaryColumn('uuid')
   id: string = '';
 
   @CreateDateColumn()
+  @Index()
   signed: Date = new Date();
 
   @ManyToOne(() => LogEntryEntity, (logEntry) => logEntry.signatures, {

@@ -9,6 +9,7 @@ import {
 import { UsersModule } from '../users';
 import { AgenciesController } from './agencies.controller';
 import { AgenciesService } from './agencies.service';
+import { AgencyFactory } from './agency-factory';
 import { CertificationsController } from './certifications.controller';
 import { CertificationsService } from './certifications.service';
 import { ProfessionalAssociationsController } from './professional-associations.controller';
@@ -24,6 +25,7 @@ import { ProfessionalAssociationsService } from './professional-associations.ser
     UsersModule,
   ],
   providers: [
+    AgencyFactory,
     AgenciesService,
     CertificationsService,
     ProfessionalAssociationsService,
@@ -34,6 +36,7 @@ import { ProfessionalAssociationsService } from './professional-associations.ser
     ProfessionalAssociationsController,
   ],
   exports: [
+    AgencyFactory,
     AgenciesService,
     CertificationsService,
     ProfessionalAssociationsService,

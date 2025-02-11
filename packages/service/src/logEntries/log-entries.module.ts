@@ -2,12 +2,14 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { CertificationsModule } from '../certifications';
 import {
   LogEntryAirEntity,
   LogEntryEntity,
   LogEntryImportEntity,
   LogEntryImportRecordEntity,
   LogEntrySampleEntity,
+  LogEntrySignatureEntity,
 } from '../data';
 import { RedisCacheConfigService, RedisModule } from '../dependencies';
 import { DiveSitesModule } from '../diveSites';
@@ -24,6 +26,8 @@ import { LogEntriesService } from './log-entries.service';
 import { LogEntryFactory } from './log-entry-factory';
 import { LogEntryReviewsController } from './log-entry-reviews.controller';
 import { LogEntrySampleController } from './log-entry-sample.controller';
+import { LogEntrySignatureFactory } from './log-entry-signature-factory';
+import { LogEntrySignaturesService } from './log-entry-signatures.service';
 import { UserLogEntriesController } from './user-log-entries.controller';
 
 @Module({
@@ -32,6 +36,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
       LogEntryEntity,
       LogEntryAirEntity,
       LogEntrySampleEntity,
+      LogEntrySignatureEntity,
       LogEntryImportEntity,
       LogEntryImportRecordEntity,
     ]),
@@ -40,6 +45,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
       useExisting: RedisCacheConfigService,
     }),
     UsersModule,
+    CertificationsModule,
     FeaturesModule,
     FriendsModule,
     DiveSitesModule,
@@ -47,6 +53,8 @@ import { UserLogEntriesController } from './user-log-entries.controller';
   ],
   providers: [
     LogEntryImportFactory,
+    LogEntrySignatureFactory,
+    LogEntrySignaturesService,
     LogEntriesService,
     LogEntryFactory,
     LogEntryImportService,
