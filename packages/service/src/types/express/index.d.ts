@@ -11,6 +11,7 @@ declare global {
   namespace Express {
     interface Request {
       targetAlert: Alert | undefined;
+      targetBuddy: BTUser | undefined;
       targetCertification: Certification | undefined;
       targetDiveOperator: Operator | undefined;
       targetDiveOperatorReview: OperatorReview | undefined;

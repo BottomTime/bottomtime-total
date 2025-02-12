@@ -17,7 +17,7 @@ import {
 import { SuccinctDiveSiteSchema } from './dive-sites';
 import { SuccinctOperatorSchema } from './operators';
 import { CreateOrUpdateTankParamsSchema } from './tanks';
-import { SuccinctProfileSchema, UsernameSchema } from './users';
+import { SuccinctProfileSchema } from './users';
 
 export enum LogEntrySortBy {
   EntryTime = 'entryTime',
@@ -292,11 +292,18 @@ export type FinalizeImportParamsDTO = z.infer<
   typeof FinalizeImportParamsSchema
 >;
 
-export const CreateOrUpdateLogEntrySignatureSchema = z.object({
-  buddy: UsernameSchema,
-  buddyType: z.nativeEnum(BuddyType),
-  professionalAssociation: z.string().max(200).optional(),
-});
+export const CreateOrUpdateLogEntrySignatureSchema = z
+  .object({
+    buddyType: z.nativeEnum(BuddyType),
+    agency: z.string().uuid().optional(),
+    certificationNumber: z.string().max(200).optional(),
+  })
+  .refine(
+    (val) =>
+      (val.agency && val.certificationNumber) ||
+      (!val.agency && !val.certificationNumber),
+    'Agency and certification number must both be provided or both be omitted.',
+  );
 export type CreateOrUpdateLogEntrySignatureDTO = z.infer<
   typeof CreateOrUpdateLogEntrySignatureSchema
 >;

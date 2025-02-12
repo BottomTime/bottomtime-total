@@ -27,6 +27,7 @@ import { LogEntryFactory } from './log-entry-factory';
 import { LogEntryReviewsController } from './log-entry-reviews.controller';
 import { LogEntrySampleController } from './log-entry-sample.controller';
 import { LogEntrySignatureFactory } from './log-entry-signature-factory';
+import { LogEntrySignaturesController } from './log-entry-signatures.controller';
 import { LogEntrySignaturesService } from './log-entry-signatures.service';
 import { UserLogEntriesController } from './user-log-entries.controller';
 
@@ -66,6 +67,7 @@ import { UserLogEntriesController } from './user-log-entries.controller';
     LogEntryImportsController,
     LogEntryImportController,
     LogEntryReviewsController,
+    LogEntrySignaturesController,
   ],
   exports: [LogEntriesService, LogEntryFactory],
 })

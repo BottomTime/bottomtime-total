@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Log entry signatures E2E tests when creating or updating a signature will return a 400 response if the request body is invalid 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "'buddy' | 'divemaster' | 'instructor'",
+      "message": "Required",
+      "path": [
+        "buddyType",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "Expected string, received boolean",
+      "path": [
+        "certificationNumber",
+      ],
+      "received": "boolean",
+    },
+  ],
+}
+`;
+
+exports[`Log entry signatures E2E tests when creating or updating a signature will return a 400 response if the request body is missing 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "'buddy' | 'divemaster' | 'instructor'",
+      "message": "Required",
+      "path": [
+        "buddyType",
+      ],
+      "received": "undefined",
+    },
+  ],
+}
+`;

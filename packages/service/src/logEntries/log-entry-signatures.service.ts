@@ -85,9 +85,10 @@ export class LogEntrySignaturesService {
     const [data, totalCount] = await query.getManyAndCount();
 
     return {
-      data: data.map((signature) =>
-        this.signatureFactory.createSignature(signature),
-      ),
+      data: data.map((signature) => {
+        signature.logEntry = entry.toEntity();
+        return this.signatureFactory.createSignature(signature);
+      }),
       totalCount,
     };
   }
@@ -106,7 +107,12 @@ export class LogEntrySignaturesService {
     this.log.verbose(query.getSql());
 
     const data = await query.getOne();
-    return data ? this.signatureFactory.createSignature(data) : undefined;
+    if (data) {
+      data.logEntry = entry.toEntity();
+      return this.signatureFactory.createSignature(data);
+    }
+
+    return undefined;
   }
 
   async getSignatureByBuddy(
@@ -126,7 +132,12 @@ export class LogEntrySignaturesService {
     this.log.verbose(query.getSql());
 
     const data = await query.getOne();
-    return data ? this.signatureFactory.createSignature(data) : undefined;
+    if (data) {
+      data.logEntry = entry.toEntity();
+      return this.signatureFactory.createSignature(data);
+    }
+
+    return undefined;
   }
 
   async addSignature(
