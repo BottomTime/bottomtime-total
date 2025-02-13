@@ -320,15 +320,24 @@ describe('MembershipService class', () => {
       expect(changeMembershipSpy).toHaveBeenCalledWith(AccountTier.Basic);
     });
 
-    it('will throw an exception if the Stripe customer was deleted', async () => {
+    it("will create a new Stripe customer if the user's original customer was deleted", async () => {
       userData.accountTier = AccountTier.Pro;
       jest
         .spyOn(stripe.customers, 'retrieve')
         .mockResolvedValue(StripeCustomerDeleted);
+      const createSpy = jest
+        .spyOn(stripe.customers, 'create')
+        .mockResolvedValue(StripeCustomerProMember);
+      const updateSpy = jest
+        .spyOn(stripe.subscriptions, 'update')
+        .mockResolvedValue({} as Stripe.Response<Stripe.Subscription>);
 
-      await expect(
-        service.updateMembership(user, AccountTier.ShopOwner),
-      ).rejects.toThrow(InternalServerErrorException);
+      await service.updateMembership(user, AccountTier.ShopOwner);
+      expect(createSpy).toHaveBeenCalledWith({
+        email: user.email,
+        name: user.profile.name,
+      });
+      expect(updateSpy).toHaveBeenCalled();
     });
 
     it('will perform a no-op if the user is already at the requested account tier', async () => {

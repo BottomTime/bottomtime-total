@@ -281,7 +281,7 @@ describe('Log entries E2E tests', () => {
 
     it('will allow a search with parameters', async () => {
       const query: ListLogEntriesParamsDTO = {
-        query: 'dive',
+        query: 'Capillus',
         startDate: new Date('2023-01-01T00:00:00.000Z').valueOf(),
         endDate: new Date('2024-01-01T00:00:00.000Z').valueOf(),
         sortBy: LogEntrySortBy.EntryTime,

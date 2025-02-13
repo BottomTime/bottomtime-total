@@ -132,29 +132,25 @@ export class DiveSiteQueryBuilder {
   }
 
   withSortOrder(sortBy?: DiveSitesSortBy, sortOrder?: SortOrder): this {
-    let sortByField: string;
-    let sortOrderString: 'ASC' | 'DESC';
-    let nulls: 'NULLS FIRST' | 'NULLS LAST' | undefined;
-
-    if (sortOrder) {
-      sortOrderString = sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC';
-    }
-
     switch (sortBy) {
       case DiveSitesSortBy.Name:
-        sortByField = 'sites.name';
-        sortOrderString ||= 'ASC';
+        this.query = this.query.orderBy(
+          'sites.name',
+          sortOrder === SortOrder.Descending ? 'DESC' : 'ASC',
+        );
         break;
 
       case DiveSitesSortBy.Rating:
       default:
-        sortByField = 'sites.averageRating';
-        sortOrderString ||= 'DESC';
-        nulls = 'NULLS LAST';
+        this.query = this.query.orderBy(
+          'sites.averageRating',
+          sortOrder === SortOrder.Ascending ? 'ASC' : 'DESC',
+          'NULLS LAST',
+        );
+        this.query.addOrderBy('sites.name', 'ASC');
         break;
     }
 
-    this.query = this.query.orderBy(sortByField, sortOrderString, nulls);
     return this;
   }
 

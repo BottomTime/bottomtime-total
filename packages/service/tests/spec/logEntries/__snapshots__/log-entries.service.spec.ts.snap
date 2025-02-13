@@ -59,6 +59,7 @@ exports[`Log entries service when creating a new log entry will create a new log
   "logNumber": 123,
   "notes": "Great dive! Saw fish.",
   "operator": undefined,
+  "rating": 3.8,
   "site": undefined,
   "tags": [],
   "timing": {
@@ -1127,6 +1128,7 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
     "slug": "miniature-unlawful-hydrocarbon",
     "website": "https://exhausted-milepost.biz",
   },
+  "rating": 2.8949975958094,
   "site": {
     "averageRating": 1.48,
     "depth": {
@@ -1228,6 +1230,7 @@ Accusantium tollo casso excepturi verumtamen reprehenderit commodi abundans. Ass
     "slug": "miniature-unlawful-hydrocarbon",
     "website": "https://exhausted-milepost.biz",
   },
+  "rating": 2.8949975958094,
   "site": {
     "averageRating": 1.48,
     "depth": {

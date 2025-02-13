@@ -272,6 +272,7 @@ describe('Log entries service', () => {
         },
 
         notes: 'Great dive! Saw fish.',
+        rating: 3.8,
         tags: [],
 
         air: [
