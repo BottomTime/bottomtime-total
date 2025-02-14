@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dive Site Reviews API client will create a new review 1`] = `
+{
+  "comments": "Great site!",
+  "createdOn": 1739472709639,
+  "creator": {
+    "accountTier": 200,
+    "avatar": "/api/users/Jack.S/avatar",
+    "location": "Nassau, Bahamas",
+    "logBookSharing": "private",
+    "memberSince": 1713361114242,
+    "name": "Jack Sparrow",
+    "userId": "4177d67c-10d3-4f9e-a51b-1afc62477bc9",
+    "username": "Jack.S",
+  },
+  "difficulty": 1.2,
+  "id": "019500a7-2808-7ff0-8a8c-8a04fa81a3cc",
+  "rating": 5,
+  "updatedOn": 1739472709640,
+}
+`;
+
+exports[`Dive Site Reviews API client will list reviews for a site 1`] = `
+{
+  "data": [
+    {
+      "comments": "Huzzah! A review.",
+      "createdOn": 1739472709639,
+      "creator": {
+        "accountTier": 200,
+        "avatar": "/api/users/Jack.S/avatar",
+        "location": "Nassau, Bahamas",
+        "logBookSharing": "private",
+        "memberSince": 1713361114242,
+        "name": "Jack Sparrow",
+        "userId": "4177d67c-10d3-4f9e-a51b-1afc62477bc9",
+        "username": "Jack.S",
+      },
+      "difficulty": 0.6,
+      "id": "019500a7-2808-7ff0-8a8c-8a04fa81a3cc",
+      "rating": 3.7,
+      "updatedOn": 1739472709640,
+    },
+  ],
+  "totalCount": 1,
+}
+`;
+
+exports[`Dive Site Reviews API client will retrieve a single review 1`] = `
+{
+  "comments": "Huzzah! A review.",
+  "createdOn": 1739472709639,
+  "creator": {
+    "accountTier": 200,
+    "avatar": "/api/users/Jack.S/avatar",
+    "location": "Nassau, Bahamas",
+    "logBookSharing": "private",
+    "memberSince": 1713361114242,
+    "name": "Jack Sparrow",
+    "userId": "4177d67c-10d3-4f9e-a51b-1afc62477bc9",
+    "username": "Jack.S",
+  },
+  "difficulty": 0.6,
+  "id": "019500a7-2808-7ff0-8a8c-8a04fa81a3cc",
+  "rating": 3.7,
+  "updatedOn": 1739472709640,
+}
+`;
+
+exports[`Dive Site Reviews API client will update an existing review 1`] = `
+{
+  "comments": "Great site!",
+  "createdOn": 1739472709639,
+  "creator": {
+    "accountTier": 200,
+    "avatar": "/api/users/Jack.S/avatar",
+    "location": "Nassau, Bahamas",
+    "logBookSharing": "private",
+    "memberSince": 1713361114242,
+    "name": "Jack Sparrow",
+    "userId": "4177d67c-10d3-4f9e-a51b-1afc62477bc9",
+    "username": "Jack.S",
+  },
+  "difficulty": 1.2,
+  "id": "019500a7-2808-7ff0-8a8c-8a04fa81a3cc",
+  "rating": 5,
+  "updatedOn": 1739472709640,
+}
+`;

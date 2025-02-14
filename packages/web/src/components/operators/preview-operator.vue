@@ -86,7 +86,7 @@
         </p>
 
         <label class="font-bold text-right">Socials:</label>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap *:mr-3 col-span-3">
           <p v-if="operator.socials?.facebook" class="space-x-1">
             <span>
               <i class="fa-brands fa-facebook"></i>
@@ -111,7 +111,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ operator.socials.instagram }}
+              @{{ operator.socials.instagram }}
             </a>
           </p>
 
@@ -125,7 +125,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ operator.socials.tiktok }}
+              @{{ operator.socials.tiktok }}
             </a>
           </p>
 

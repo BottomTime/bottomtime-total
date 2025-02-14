@@ -8,6 +8,7 @@ import {
   ApiList,
   AvatarSize,
   CreateOrUpdateOperatorDTO,
+  CreateOrUpdateTeamMemberDTO,
   DiveSiteDTO,
   ListAvatarURLsResponseDTO,
   LogBookSharing,
@@ -15,6 +16,7 @@ import {
   SearchDiveSitesResponseSchema,
   SearchOperatorsParams,
   SearchOperatorsResponseSchema,
+  TeamMemberDTO,
   VerificationStatus,
 } from '../../src';
 import { Fetcher } from '../../src/client';
@@ -59,6 +61,40 @@ const TestURLs: ListAvatarURLsResponseDTO = {
     [AvatarSize.XLarge]: 'https://example.com/avatars/test_user/256x256',
   },
 } as const;
+
+const TeamMembers: TeamMemberDTO[] = [
+  {
+    title: 'Instructor',
+    joined: '2016-04',
+    member: {
+      accountTier: 200,
+      avatar: '/api/users/Chris/avatar',
+      location: 'Cambridge, ON',
+      logBookSharing: LogBookSharing.Private,
+      memberSince: 1713361114242,
+      name: 'Chris Carleton',
+      userId: 'cb12fb5b-f1b3-499f-a6ae-dfb467d3d2d1',
+      username: 'Chris',
+    },
+  },
+  {
+    title: 'Dive Master',
+    member: {
+      accountTier: 0,
+      avatar:
+        'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/613.jpg',
+      bio: 'At tenetur libero ullam aspernatur culpa provident nobis explicabo eos. Non voluptas aliquid quos repellendus incidunt veniam. Suscipit voluptates modi saepe rerum. In similique magni cupiditate sit ea beatae quisquam rerum corrupti.',
+      experienceLevel: 'Expert',
+      location: 'Kshlerinburgh, NH, NF',
+      logBookSharing: LogBookSharing.Private,
+      memberSince: 1422446556022,
+      name: 'Ashley Bruen',
+      startedDiving: '2015-06-14',
+      userId: '7ea68b2a-3f35-4650-bbd5-99c9325e0c09',
+      username: 'Ashley_Bruen35',
+    },
+  },
+] as const;
 
 describe('Operators API client', () => {
   let fetcher: Fetcher;
@@ -471,6 +507,69 @@ describe('Operators API client', () => {
       siteIds.length,
     );
 
+    expect(mockFetch.done()).toBe(true);
+  });
+
+  it('will list team members', async () => {
+    mockFetch.get(`/api/operators/${TestKey}/team`, {
+      status: 200,
+      body: {
+        data: TeamMembers,
+        totalCount: TeamMembers.length,
+      },
+    });
+
+    const results = await client.listTeamMembers(TestKey);
+
+    expect(mockFetch.done()).toBe(true);
+    expect(results).toMatchSnapshot();
+  });
+
+  it('will add or update a team member', async () => {
+    const options: CreateOrUpdateTeamMemberDTO = {
+      joined: '2012-08-08',
+      title: 'Diver Dude',
+    };
+    mockFetch.put(
+      {
+        url: `/api/operators/${TestKey}/team/${TeamMembers[0].member.username}`,
+        body: options,
+      },
+      {
+        status: 200,
+        body: {
+          ...TeamMembers[0],
+          ...options,
+        },
+      },
+    );
+
+    const result = await client.addOrUpdateTeamMember(
+      TestKey,
+      TeamMembers[0].member.username,
+      options,
+    );
+
+    expect(mockFetch.done()).toBe(true);
+    expect(result).toMatchSnapshot();
+  });
+
+  it('will remove team members', async () => {
+    const username = 'sandra12';
+    mockFetch.delete(
+      {
+        url: `/api/operators/${TestKey}/team`,
+        body: [username],
+      },
+      {
+        status: 200,
+        body: {
+          succeeded: 1,
+          skipped: 0,
+        },
+      },
+    );
+    await client.removeTeamMembers(TestKey, username);
     expect(mockFetch.done()).toBe(true);
   });
 });

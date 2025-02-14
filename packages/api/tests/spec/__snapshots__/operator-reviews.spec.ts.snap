@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Operator Reviews API client will create a new review 1`] = `
+{
+  "comments": "Great experience!",
+  "createdAt": 1737737746569,
+  "creator": {
+    "accountTier": 0,
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1045.jpg",
+    "location": "El Paso, MI, NE",
+    "logBookSharing": "private",
+    "memberSince": 1683848454111,
+    "name": "Kattie Larson",
+    "userId": "6dc6df21-5032-4245-80f0-676a8ea1b9f4",
+    "username": "Kattie.Larson",
+  },
+  "id": "0e46ead7-df78-4f76-bd41-2cd02154f814",
+  "rating": 4.5,
+  "updatedAt": 1737737746569,
+}
+`;
+
+exports[`Operator Reviews API client will list reviews 1`] = `
+{
+  "data": [
+    {
+      "comments": "Vulgo arcus corrupti decretum varietas clibanus aestas. Sapiente adnuo comedo cotidie aggredior eum ars omnis sol debitis. Aequus deleo impedit odit demum anser cado.
+Tero auxilium necessitatibus sollicito. Benigne compello cito. Certe allatus sodalitas avaritia adipiscor adeptio pecus laudantium.
+Suppellex summisse animadverto. Amplexus terror sonitus denego. Voluptates amo recusandae deleo totus timor annus.",
+      "createdAt": 1737737746569,
+      "creator": {
+        "accountTier": 0,
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1045.jpg",
+        "location": "El Paso, MI, NE",
+        "logBookSharing": "private",
+        "memberSince": 1683848454111,
+        "name": "Kattie Larson",
+        "userId": "6dc6df21-5032-4245-80f0-676a8ea1b9f4",
+        "username": "Kattie.Larson",
+      },
+      "id": "0e46ead7-df78-4f76-bd41-2cd02154f814",
+      "rating": 4.3,
+      "updatedAt": 1737737746569,
+    },
+    {
+      "comments": "Defessus repellat antiquus volaticus spes arbustum bellicus thesaurus verto vel. Tolero tergum ambitus tandem expedita curso damno aperte creptio. Valetudo tui tot.
+Arcesso coepi subseco. Ante taceo adnuo fugiat atrocitas nobis approbo torqueo cupiditate modi. Valeo truculenter abstergo amor eos commodo.
+Coadunatio utrimque beatus ventus tempore confido. Tum autus sit sumptus aestus. Conqueror cupio degenero aqua anser sulum utilis casso templum odio.",
+      "createdAt": 1737658463117,
+      "creator": {
+        "accountTier": 0,
+        "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1162.jpg",
+        "location": "Whitecester, UT, AE",
+        "logBookSharing": "private",
+        "memberSince": 1701284399758,
+        "name": "Greyson Bailey",
+        "userId": "9df9bdd2-fb0e-4b49-a4a5-a9026c869277",
+        "username": "Greyson.Bailey",
+      },
+      "id": "f5913269-088a-405f-8d55-39b2e9ca1a7e",
+      "rating": 3.9,
+      "updatedAt": 1737658463117,
+    },
+  ],
+  "totalCount": 2,
+}
+`;
+
+exports[`Operator Reviews API client will retrieve a single review 1`] = `
+{
+  "comments": "Vulgo arcus corrupti decretum varietas clibanus aestas. Sapiente adnuo comedo cotidie aggredior eum ars omnis sol debitis. Aequus deleo impedit odit demum anser cado.
+Tero auxilium necessitatibus sollicito. Benigne compello cito. Certe allatus sodalitas avaritia adipiscor adeptio pecus laudantium.
+Suppellex summisse animadverto. Amplexus terror sonitus denego. Voluptates amo recusandae deleo totus timor annus.",
+  "createdAt": 1737737746569,
+  "creator": {
+    "accountTier": 0,
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1045.jpg",
+    "location": "El Paso, MI, NE",
+    "logBookSharing": "private",
+    "memberSince": 1683848454111,
+    "name": "Kattie Larson",
+    "userId": "6dc6df21-5032-4245-80f0-676a8ea1b9f4",
+    "username": "Kattie.Larson",
+  },
+  "id": "0e46ead7-df78-4f76-bd41-2cd02154f814",
+  "rating": 4.3,
+  "updatedAt": 1737737746569,
+}
+`;
+
+exports[`Operator Reviews API client will update an existing review 1`] = `
+{
+  "comments": "Great experience!",
+  "createdAt": 1737737746569,
+  "creator": {
+    "accountTier": 0,
+    "avatar": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1045.jpg",
+    "location": "El Paso, MI, NE",
+    "logBookSharing": "private",
+    "memberSince": 1683848454111,
+    "name": "Kattie Larson",
+    "userId": "6dc6df21-5032-4245-80f0-676a8ea1b9f4",
+    "username": "Kattie.Larson",
+  },
+  "id": "0e46ead7-df78-4f76-bd41-2cd02154f814",
+  "rating": 4.5,
+  "updatedAt": 1737737746569,
+}
+`;
